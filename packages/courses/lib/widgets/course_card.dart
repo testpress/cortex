@@ -55,38 +55,42 @@ class _ProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            AppText.caption('Progress', color: AppColors.textSecondary),
-            AppText.caption(
-              '${(progress * 100).toInt()}%',
-              color: AppColors.textSecondary,
-            ),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        Container(
-          height: 6,
-          decoration: BoxDecoration(
-            color: AppColors.progressBackground,
-            borderRadius: BorderRadius.circular(AppRadius.full),
+    return AppSemantics.progressValue(
+      value: progress,
+      label: 'Course progress',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AppText.caption('Progress', color: AppColors.textSecondary),
+              AppText.caption(
+                '${(progress * 100).toInt()}%',
+                color: AppColors.textSecondary,
+              ),
+            ],
           ),
-          child: FractionallySizedBox(
-            alignment: Alignment.centerLeft,
-            widthFactor: progress,
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.progressForeground,
-                borderRadius: BorderRadius.circular(AppRadius.full),
+          const SizedBox(height: AppSpacing.xs),
+          Container(
+            height: 6,
+            decoration: BoxDecoration(
+              color: AppColors.progressBackground,
+              borderRadius: BorderRadius.circular(AppRadius.full),
+            ),
+            child: FractionallySizedBox(
+              alignment: Alignment.centerLeft,
+              widthFactor: progress,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.progressForeground,
+                  borderRadius: BorderRadius.circular(AppRadius.full),
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
