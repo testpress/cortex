@@ -21,6 +21,15 @@ cortex/
 - **SDK-first design**: Clean public API via `package:testpress`
 - **White-label ready**: No platform-specific visual bias
 
+## Documentation
+
+**Architecture decisions and AI context live in [`packages/core/docs/`](packages/core/docs/).**
+
+This keeps the repo root clean while providing structured documentation for:
+- Architecture overview
+- Design decisions (ADRs)
+- AI-native context for future sessions
+
 ## Public API
 
 ```dart
