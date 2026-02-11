@@ -19,3 +19,8 @@ export 'shell/app_shell.dart';
 
 // Navigation
 export 'navigation/app_route.dart';
+
+// Accessibility
+export 'accessibility/app_semantics.dart';
+export 'accessibility/app_focus.dart';
+export 'accessibility/accessibility_guard.dart';
