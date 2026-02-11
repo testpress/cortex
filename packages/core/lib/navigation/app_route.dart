@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import '../tokens/motion.dart';
+import '../motion/accessibility_motion.dart';
 
 /// Platform-neutral page route with consistent transitions.
 ///
@@ -11,6 +12,9 @@ class AppRoute<T> extends PageRouteBuilder<T> {
         settings: settings,
         pageBuilder: (context, animation, secondaryAnimation) => page,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          // Respect motion accessibility preferences
+          final curve = MotionPreferences.curve(context, AppMotion.easeOut);
+
           // Slide transition from right to left
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
@@ -18,7 +22,7 @@ class AppRoute<T> extends PageRouteBuilder<T> {
           final tween = Tween(
             begin: begin,
             end: end,
-          ).chain(CurveTween(curve: AppMotion.easeOut));
+          ).chain(CurveTween(curve: curve));
 
           final offsetAnimation = animation.drive(tween);
 

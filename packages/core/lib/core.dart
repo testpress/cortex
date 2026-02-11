@@ -24,3 +24,6 @@ export 'navigation/app_route.dart';
 export 'accessibility/app_semantics.dart';
 export 'accessibility/app_focus.dart';
 export 'accessibility/accessibility_guard.dart';
+
+// Motion
+export 'motion/accessibility_motion.dart';
