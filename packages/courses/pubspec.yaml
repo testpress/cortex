@@ -1,5 +1,6 @@
 name: courses
 description: "A new Flutter package project."
+publish_to: 'none'
 version: 0.0.1
 homepage:
 
@@ -10,6 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  core:
+    path: ../core
 
 dev_dependencies:
   flutter_test:
