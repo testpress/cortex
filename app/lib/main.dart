@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:testpress/course_list.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(const CortexApp());
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+/// Cortex reference application.
+///
+/// Demonstrates consumption of the testpress SDK. Uses MaterialApp
+/// as a container only - no Material widgets in the UI layer.
+class CortexApp extends StatelessWidget {
+  const CortexApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+      title: 'Cortex',
+      debugShowCheckedModeBanner: false,
+      home: CourseListScreen(),
     );
   }
 }
