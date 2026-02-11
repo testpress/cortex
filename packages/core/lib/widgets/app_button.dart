@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import '../design/design_provider.dart';
 import '../navigation/app_route.dart';
 import '../accessibility/app_semantics.dart';
+import '../accessibility/app_focusable.dart';
 import 'app_text.dart';
 
 /// Platform-neutral button widget with semantic variants.
@@ -71,12 +72,13 @@ class AppButton extends StatelessWidget {
       label: label,
       onTap: handleTap,
       enabled: !isDisabled,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(
-          minHeight: 48.0, // WCAG 2.5.5 + Android/iOS accessibility standard
-        ),
-        child: GestureDetector(
-          onTap: isDisabled ? null : handleTap,
+      child: AppFocusable(
+        onTap: isDisabled ? null : handleTap,
+        borderRadius: design.radius.button,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            minHeight: 48.0, // WCAG 2.5.5 + Android/iOS accessibility standard
+          ),
           child: Container(
             width: fullWidth ? double.infinity : null,
             padding: EdgeInsets.symmetric(
