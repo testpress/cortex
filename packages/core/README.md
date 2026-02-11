@@ -1,39 +1,138 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Core Package
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
+Platform-neutral design system and UI primitives for the Cortex SDK.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
+## Philosophy
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+### Neutral UI
+No Material or Cupertino visual widgets. Flutter is used as a **rendering engine**, not a widget library. All primitives are built from first principles using `Container`, `GestureDetector`, and `CustomPaint`.
 
-## Features
+### Runtime Design Governance
+The `DesignProvider` injects design tokens at runtime via `InheritedWidget`. All widgets read from `Design.of(context)` instead of static imports, enabling white-label branding and AI-adaptive UX without breaking SDK contracts.
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+### Accessibility-First
+Every interactive widget uses semantic helpers (`AppSemantics.button`, `AppSemantics.header`, etc.). Motion respects `MediaQuery.disableAnimations`. WCAG 2.1 AA compliance is mandatory.
 
-## Getting started
+## Architecture
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
+```
+core/
+├── design/              # Runtime design system
+│   ├── design_config.dart
+│   ├── design_context.dart
+│   └── design_provider.dart
+├── widgets/             # Neutral primitives
+│   ├── app_text.dart
+│   ├── app_button.dart
+│   ├── app_card.dart
+│   ├── app_header.dart
+│   └── app_scroll.dart
+├── accessibility/       # Semantic helpers
+├── motion/              # Animation layer
+├── navigation/          # Platform-neutral routing
+└── shell/               # App container
 ```
 
-## Additional information
+## Design System
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+### DesignProvider
+Wrap your app root with `DesignProvider` to inject design tokens:
+
+```dart
+DesignProvider(
+  config: DesignConfig.defaults(),
+  child: YourApp(),
+)
+```
+
+### Design Tokens
+All widgets source tokens from context:
+
+```dart
+final design = Design.of(context);
+
+Container(
+  color: design.colors.primary,
+  padding: EdgeInsets.all(design.spacing.md),
+  decoration: BoxDecoration(
+    borderRadius: design.radius.card,
+  ),
+)
+```
+
+### Token Groups
+- **Colors**: 22 semantic colors (primary, surface, success, error, text, etc.)
+- **Spacing**: 11 values (xs → xxxl, semantic use cases)
+- **Typography**: 9 text styles (display, headline, title, body, label, caption)
+- **Motion**: 5 durations + 5 curves + accessibility flag
+- **Radius**: 7 values + 4 semantic BorderRadius constants
+
+## Primitives
+
+### AppText
+Semantic text widget with typography variants:
+
+```dart
+AppText.headline('Title')
+AppText.body('Content')
+AppText.caption('Metadata')
+```
+
+### AppButton
+Platform-neutral button with primary/secondary variants:
+
+```dart
+AppButton.primary(
+  label: 'Submit',
+  onPressed: () {},
+)
+```
+
+### AppCard
+Consistent card container:
+
+```dart
+AppCard(
+  child: Column(children: [...]),
+)
+```
+
+## Accessibility
+
+### Semantic Helpers
+Mandatory for all interactive widgets:
+
+```dart
+AppSemantics.button(
+  label: 'Submit',
+  onTap: handleSubmit,
+  child: buttonWidget,
+)
+```
+
+### Motion Preferences
+Respects user animation preferences:
+
+```dart
+if (MotionPreferences.shouldAnimate(context)) {
+  // Animate
+}
+```
+
+## SDK Contract
+
+**Core acts as the design runtime for all SDK modules.**
+
+- `courses` and `exams` import `package:core/core.dart`
+- `testpress` re-exports public APIs
+- `app` imports ONLY `package:testpress`
+
+This ensures clean SDK boundaries and prevents internal leakage.
+
+## Documentation
+
+**Architecture decisions and AI context:** [`docs/`](docs/)
+
+- [`architecture.md`](docs/architecture.md) - High-level system design
+- [`ai_context.md`](docs/ai_context.md) - Rules for future Antigravity sessions
+- [`decisions/`](docs/decisions/) - Architecture Decision Records (ADRs)
