@@ -104,6 +104,7 @@ class DesignColors {
     required this.textInverse,
     required this.progressBackground,
     required this.progressForeground,
+    required this.focus,
   });
 
   // Primary brand colors
@@ -139,6 +140,7 @@ class DesignColors {
   // Progress indicator
   final Color progressBackground;
   final Color progressForeground;
+  final Color focus;
 
   factory DesignColors.defaults() {
     return const DesignColors(
@@ -164,6 +166,7 @@ class DesignColors {
       textInverse: Color(0xFFFFFFFF),
       progressBackground: Color(0xFFE5E7EB),
       progressForeground: Color(0xFF6366F1),
+      focus: Color(0x666366F1), // Translucent primary
     );
   }
 
@@ -193,6 +196,7 @@ class DesignColors {
     Color textSecondary = const Color(0xFF6B7280),
     Color textTertiary = const Color(0xFF9CA3AF),
     Color? progressForeground,
+    Color? focus,
   }) {
     // Auto-calculate contrasting text colors
     final onPrimary = _contrastingColor(primary);
@@ -230,6 +234,7 @@ class DesignColors {
       textInverse: const Color(0xFFFFFFFF),
       progressBackground: border,
       progressForeground: progressForeground ?? primary,
+      focus: focus ?? primary.withOpacity(0.4),
     );
   }
 
