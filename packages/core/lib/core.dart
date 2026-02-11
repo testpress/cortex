@@ -16,3 +16,6 @@ export 'widgets/app_scroll.dart';
 
 // Shell
 export 'shell/app_shell.dart';
+
+// Navigation
+export 'navigation/app_route.dart';

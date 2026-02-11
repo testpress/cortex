@@ -3,6 +3,7 @@ import '../tokens/colors.dart';
 import '../tokens/radius.dart';
 import '../tokens/spacing.dart';
 import '../tokens/typography.dart';
+import '../navigation/app_route.dart';
 
 /// Platform-neutral button widget with semantic variants.
 ///
@@ -13,13 +14,15 @@ class AppButton extends StatelessWidget {
   const AppButton({
     super.key,
     required this.label,
-    required this.onPressed,
+    this.onPressed,
+    this.onNavigate,
     this.variant = AppButtonVariant.primary,
     this.fullWidth = false,
   });
 
   final String label;
   final VoidCallback? onPressed;
+  final Widget? onNavigate; // If provided, navigates to this widget
   final AppButtonVariant variant;
   final bool fullWidth;
 
@@ -27,20 +30,22 @@ class AppButton extends StatelessWidget {
   const AppButton.primary({
     super.key,
     required this.label,
-    required this.onPressed,
+    this.onPressed,
+    this.onNavigate,
     this.fullWidth = false,
   }) : variant = AppButtonVariant.primary;
 
   const AppButton.secondary({
     super.key,
     required this.label,
-    required this.onPressed,
+    this.onPressed,
+    this.onNavigate,
     this.fullWidth = false,
   }) : variant = AppButtonVariant.secondary;
 
   @override
   Widget build(BuildContext context) {
-    final isDisabled = onPressed == null;
+    final isDisabled = onPressed == null && onNavigate == null;
 
     final backgroundColor = variant == AppButtonVariant.primary
         ? (isDisabled ? AppColors.border : AppColors.primary)
@@ -52,10 +57,18 @@ class AppButton extends StatelessWidget {
 
     final borderColor = variant == AppButtonVariant.secondary
         ? (isDisabled ? AppColors.border : AppColors.primary)
-        : Colors.transparent;
+        : const Color(0x00000000); // Transparent
+
+    void handleTap() {
+      if (onNavigate != null) {
+        Navigator.of(context).push(AppRoute(page: onNavigate!));
+      } else if (onPressed != null) {
+        onPressed!();
+      }
+    }
 
     return GestureDetector(
-      onTap: onPressed,
+      onTap: isDisabled ? null : handleTap,
       child: Container(
         width: fullWidth ? double.infinity : null,
         padding: const EdgeInsets.symmetric(
