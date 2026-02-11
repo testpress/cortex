@@ -3,7 +3,9 @@ import 'package:testpress/course_list.dart';
 import 'package:core/core.dart';
 
 void main() {
-  runApp(const CortexApp());
+  runApp(
+    DesignProvider(config: DesignConfig.defaults(), child: const CortexApp()),
+  );
 }
 
 /// Cortex reference application.
@@ -15,13 +17,14 @@ class CortexApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final design = Design.of(context);
     return MaterialApp(
       title: 'Cortex',
       debugShowCheckedModeBanner: false,
       home: DefaultTextStyle(
         // Required: AppText uses Text internally which needs DefaultTextStyle
-        style: AppTypography.body.copyWith(
-          color: AppColors.textPrimary,
+        style: design.typography.body.copyWith(
+          color: design.colors.textPrimary,
           decoration: TextDecoration.none,
         ),
         child: const CourseListScreen(),

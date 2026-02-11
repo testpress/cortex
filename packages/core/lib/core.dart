@@ -1,11 +1,21 @@
-library core;
+/// Cortex Core Package
+///
+/// Platform-neutral UI primitives and design system for the Cortex SDK.
+/// This package provides first-principles components that work identically
+/// across all platforms without Material or Cupertino dependencies.
+library;
 
-// Tokens
+// Design system (runtime)
+export 'design/design_config.dart';
+export 'design/design_context.dart';
+export 'design/design_provider.dart';
+
+// Tokens (legacy - prefer Design.of(context))
 export 'tokens/colors.dart';
 export 'tokens/spacing.dart';
 export 'tokens/typography.dart';
-export 'tokens/motion.dart';
 export 'tokens/radius.dart';
+export 'tokens/motion.dart';
 
 // Widgets
 export 'widgets/app_text.dart';
