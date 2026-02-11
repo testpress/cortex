@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:math';
 import 'package:flutter/widgets.dart';
 
 /// Runtime design configuration.
@@ -164,6 +165,104 @@ class DesignColors {
       progressBackground: Color(0xFFE5E7EB),
       progressForeground: Color(0xFF6366F1),
     );
+  }
+
+  /// Smart factory that automatically calculates contrasting text colors.
+  ///
+  /// This factory computes WCAG AA-compliant text colors based on the
+  /// background colors you provide. Perfect for hot reload testing!
+  ///
+  /// Example:
+  /// ```dart
+  /// DesignColors.smart(
+  ///   primary: Color(0xFF00FF00), // Green
+  ///   // onPrimary is automatically calculated (dark text)
+  /// )
+  /// ```
+  factory DesignColors.smart({
+    Color primary = const Color(0xFF6366F1),
+    Color? primaryContainer,
+    Color surface = const Color(0xFFFFFFFF),
+    Color? surfaceVariant,
+    Color border = const Color(0xFFE5E7EB),
+    Color divider = const Color(0xFFF3F4F6),
+    Color success = const Color(0xFF10B981),
+    Color error = const Color(0xFFEF4444),
+    Color warning = const Color(0xFFF59E0B),
+    Color textPrimary = const Color(0xFF111827),
+    Color textSecondary = const Color(0xFF6B7280),
+    Color textTertiary = const Color(0xFF9CA3AF),
+    Color? progressForeground,
+  }) {
+    // Auto-calculate contrasting text colors
+    final onPrimary = _contrastingColor(primary);
+    final onSuccess = _contrastingColor(success);
+    final onError = _contrastingColor(error);
+    final onWarning = _contrastingColor(warning);
+
+    final computedPrimaryContainer = primaryContainer ?? _lighten(primary, 0.9);
+    final onPrimaryContainer = _contrastingColor(computedPrimaryContainer);
+
+    final computedSurfaceVariant = surfaceVariant ?? _lighten(surface, 0.98);
+    final onSurface = _contrastingColor(surface);
+    final onSurfaceVariant = _contrastingColor(computedSurfaceVariant);
+
+    return DesignColors(
+      primary: primary,
+      onPrimary: onPrimary,
+      primaryContainer: computedPrimaryContainer,
+      onPrimaryContainer: onPrimaryContainer,
+      surface: surface,
+      onSurface: onSurface,
+      surfaceVariant: computedSurfaceVariant,
+      onSurfaceVariant: onSurfaceVariant,
+      border: border,
+      divider: divider,
+      success: success,
+      onSuccess: onSuccess,
+      error: error,
+      onError: onError,
+      warning: warning,
+      onWarning: onWarning,
+      textPrimary: textPrimary,
+      textSecondary: textSecondary,
+      textTertiary: textTertiary,
+      textInverse: const Color(0xFFFFFFFF),
+      progressBackground: border,
+      progressForeground: progressForeground ?? primary,
+    );
+  }
+
+  /// Calculate relative luminance (WCAG formula)
+  static double _luminance(Color color) {
+    double r = color.red / 255.0;
+    double g = color.green / 255.0;
+    double b = color.blue / 255.0;
+
+    r = r <= 0.03928 ? r / 12.92 : pow((r + 0.055) / 1.055, 2.4).toDouble();
+    g = g <= 0.03928 ? g / 12.92 : pow((g + 0.055) / 1.055, 2.4).toDouble();
+    b = b <= 0.03928 ? b / 12.92 : pow((b + 0.055) / 1.055, 2.4).toDouble();
+
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  }
+
+  /// Return white or black based on which has better contrast
+  static Color _contrastingColor(Color background) {
+    final luminance = _luminance(background);
+    // WCAG recommends 4.5:1 contrast ratio for normal text
+    // Luminance > 0.5 means light background → use dark text
+    return luminance > 0.5
+        ? const Color(0xFF111827) // Dark gray
+        : const Color(0xFFFFFFFF); // White
+  }
+
+  /// Lighten a color by a factor (0.0 = original, 1.0 = white)
+  static Color _lighten(Color color, double factor) {
+    assert(factor >= 0.0 && factor <= 1.0);
+    final int r = (color.red + (255 - color.red) * factor).round();
+    final int g = (color.green + (255 - color.green) * factor).round();
+    final int b = (color.blue + (255 - color.blue) * factor).round();
+    return Color.fromARGB(color.alpha, r, g, b);
   }
 
   @override
