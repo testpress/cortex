@@ -19,7 +19,7 @@ class CortexApp extends StatelessWidget {
       title: 'Cortex',
       debugShowCheckedModeBanner: false,
       home: DefaultTextStyle(
-        // Provide default text style to prevent debug decorations
+        // Required: AppText uses Text internally which needs DefaultTextStyle
         style: AppTypography.body.copyWith(
           color: AppColors.textPrimary,
           decoration: TextDecoration.none,
