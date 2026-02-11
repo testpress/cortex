@@ -107,6 +107,8 @@ class AppText extends StatelessWidget {
       textAlign: textAlign,
       maxLines: maxLines,
       overflow: overflow,
+      // Respect system font scaling for accessibility
+      textScaler: TextScaler.linear(MediaQuery.textScaleFactorOf(context)),
     );
   }
 }

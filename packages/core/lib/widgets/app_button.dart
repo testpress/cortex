@@ -4,6 +4,7 @@ import '../tokens/radius.dart';
 import '../tokens/spacing.dart';
 import '../tokens/typography.dart';
 import '../navigation/app_route.dart';
+import 'app_text.dart';
 
 /// Platform-neutral button widget with semantic variants.
 ///
@@ -83,10 +84,10 @@ class AppButton extends StatelessWidget {
             width: variant == AppButtonVariant.secondary ? 1.5 : 0,
           ),
         ),
-        child: Text(
+        child: AppText(
           label,
-          style: AppTypography.label.copyWith(color: foregroundColor),
-          textAlign: TextAlign.center,
+          style: AppTypography.label,
+          color: foregroundColor,
         ),
       ),
     );
