@@ -21,6 +21,14 @@ The **accessibility_guard** is an architectural interceptor that enforces WCAG 2
 3. **Hierarchy Landmarks**: Screen headers and major sections must be marked as headers to allow screen reader users to jump between landmarks.
 4. **State Transparency**: Buttons and toggles must expose their state (enabled/disabled, active/inactive) to the accessibility tree.
 
+# Typography Accessibility
+
+### Text Scaling Governance
+Since we use a custom typography system, we must manually ensure compliance with **WCAG 1.4.4 (Resize Text)**. This is handled through:
+- **AppText Centralization**: By forcing all text through `AppText`, we ensure that `MediaQuery.textScaler` is respected and that line heights are dynamically adjusted to prevent clipping during 200% scaling.
+- **Minimum Contrast**: The `DesignColors.smart()` factory guarantees that text-to-background contrast ratios meet or exceed 4.5:1 (AA) for normal text and 3:1 for large text.
+- **Semantic Mapping**: AppText automatically assigns `header` or `staticText` roles based on the design token variant used, ensuring the accessibility tree maintains a proper content hierarchy.
+
 # What Future Contributors Must NOT Do
 
 - **Never wrap primitives with raw Semantics**: Always use the provided `AppSemantics` helpers to maintain role consistency.
