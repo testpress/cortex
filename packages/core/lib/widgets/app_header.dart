@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import '../tokens/colors.dart';
 import '../tokens/spacing.dart';
+import '../accessibility/app_semantics.dart';
 import 'app_text.dart';
 
 /// Platform-neutral app header (replaces AppBar/CupertinoNavigationBar).
@@ -38,7 +39,10 @@ class AppHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppText.headline(title, color: AppColors.textPrimary),
+                AppSemantics.header(
+                  label: title,
+                  child: AppText.headline(title, color: AppColors.textPrimary),
+                ),
                 if (subtitle != null) ...[
                   const SizedBox(height: AppSpacing.xs),
                   AppText.bodySmall(subtitle!, color: AppColors.textSecondary),

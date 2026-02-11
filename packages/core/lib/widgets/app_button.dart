@@ -4,6 +4,7 @@ import '../tokens/radius.dart';
 import '../tokens/spacing.dart';
 import '../tokens/typography.dart';
 import '../navigation/app_route.dart';
+import '../accessibility/app_semantics.dart';
 import 'app_text.dart';
 
 /// Platform-neutral button widget with semantic variants.
@@ -68,31 +69,36 @@ class AppButton extends StatelessWidget {
       }
     }
 
-    return ConstrainedBox(
-      constraints: const BoxConstraints(
-        minHeight: 48.0, // WCAG 2.5.5 + Android/iOS accessibility standard
-      ),
-      child: GestureDetector(
-        onTap: isDisabled ? null : handleTap,
-        child: Container(
-          width: fullWidth ? double.infinity : null,
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.lg,
-            vertical: AppSpacing.md,
-          ),
-          decoration: BoxDecoration(
-            color: backgroundColor,
-            borderRadius: AppRadius.button,
-            border: Border.all(
-              color: borderColor,
-              width: variant == AppButtonVariant.secondary ? 1.5 : 0,
+    return AppSemantics.button(
+      label: label,
+      onTap: handleTap,
+      enabled: !isDisabled,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          minHeight: 48.0, // WCAG 2.5.5 + Android/iOS accessibility standard
+        ),
+        child: GestureDetector(
+          onTap: isDisabled ? null : handleTap,
+          child: Container(
+            width: fullWidth ? double.infinity : null,
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.lg,
+              vertical: AppSpacing.md,
             ),
-          ),
-          child: Center(
-            child: AppText(
-              label,
-              style: AppTypography.label,
-              color: foregroundColor,
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              borderRadius: AppRadius.button,
+              border: Border.all(
+                color: borderColor,
+                width: variant == AppButtonVariant.secondary ? 1.5 : 0,
+              ),
+            ),
+            child: Center(
+              child: AppText(
+                label,
+                style: AppTypography.label,
+                color: foregroundColor,
+              ),
             ),
           ),
         ),
