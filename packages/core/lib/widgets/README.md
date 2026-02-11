@@ -24,6 +24,20 @@ A primitive must never check `Platform.isIOS` or `Platform.isAndroid` to determi
 - **AppHeader**: An architectural landmark that replaces the standard `AppBar`. It handles status-bar transparency and semantic landmark exposure.
 - **AppScroll**: A physics-governed container that standardizes `OverscrollIndicator` behavior and screen-edge padding.
 
+# Typography and Scaling Contract
+
+### Controlled Text Scaling Strategy
+All text rendering in the Cortex SDK is centralized through the **AppText** primitive. We do not use raw `Text` widgets at the module level. This allows us to enforce a strict scaling policy:
+- **Respecting MediaQuery.textScaler**: We do not disable font scaling. We explicitly adapt layouts to accommodate user-defined text sizes.
+- **Accessibility for Aging Populations**: Our typography system is designed to maintain legibility even at 200% scaling, ensuring that users with visual impairments have a premium experience.
+- **WCAG 1.4.4 Compliance**: By centralizing scaling logic, we guarantee that text can be resized up to 200 percent without loss of content or functionality (the "Resize Text" requirement).
+
+### Why Typography Is Centralized
+Direct usage of `TextStyle` with hardcoded `fontSize` and `height` is an architectural violation. Centralization allows us to:
+1. **Enforce Line Height**: Every typography variant has a fixed height ratio to prevent text clipping during scaling.
+2. **Handle Semantic Resolving**: AppText resolves the appropriate `TextStyle` from `Design.of(context)` based on the variant (`headline`, `body`, etc.).
+3. **Inject Semantics**: AppText automatically adds semantic roles (header, body) based on the constructor used.
+
 # Accessibility Integration
 Every primitive is architected with a "Semantics-First" mindset. Interactive primitives MUST be wrapped in the appropriate `AppSemantics` helper within their `build` method. Developers should never need to add raw `Semantics` tags when consuming these primitives.
 
