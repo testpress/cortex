@@ -68,26 +68,33 @@ class AppButton extends StatelessWidget {
       }
     }
 
-    return GestureDetector(
-      onTap: isDisabled ? null : handleTap,
-      child: Container(
-        width: fullWidth ? double.infinity : null,
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.lg,
-          vertical: AppSpacing.md,
-        ),
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: AppRadius.button,
-          border: Border.all(
-            color: borderColor,
-            width: variant == AppButtonVariant.secondary ? 1.5 : 0,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(
+        minHeight: 48.0, // WCAG 2.5.5 + Android/iOS accessibility standard
+      ),
+      child: GestureDetector(
+        onTap: isDisabled ? null : handleTap,
+        child: Container(
+          width: fullWidth ? double.infinity : null,
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.md,
           ),
-        ),
-        child: AppText(
-          label,
-          style: AppTypography.label,
-          color: foregroundColor,
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: AppRadius.button,
+            border: Border.all(
+              color: borderColor,
+              width: variant == AppButtonVariant.secondary ? 1.5 : 0,
+            ),
+          ),
+          child: Center(
+            child: AppText(
+              label,
+              style: AppTypography.label,
+              color: foregroundColor,
+            ),
+          ),
         ),
       ),
     );
