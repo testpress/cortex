@@ -29,6 +29,7 @@ void main() {
           textInverse: Color(0xFFFFFFFF),
           progressBackground: Color(0xFFE5E7EB),
           progressForeground: Color(0xFF6366F1),
+          focus: Color(0x666366F1),
         ),
         spacing: DesignSpacing.defaults(),
         typography: DesignTypography.defaults(),
@@ -39,18 +40,25 @@ void main() {
       await tester.pumpWidget(
         DesignProvider(
           config: customConfig,
-          child: const Directionality(
+          child: Directionality(
             textDirection: TextDirection.ltr,
-            child: AppButton.primary(label: 'Test'),
+            child: AppButton.primary(label: 'Test', onPressed: () {}),
           ),
         ),
       );
 
       // Find the Container that has the background color
+      // Since we added AppFocusable (which uses a Stack), we need to be more specific
       final container = tester.widget<Container>(
         find.descendant(
           of: find.byType(AppButton),
-          matching: find.byType(Container).last,
+          matching: find.byWidgetPredicate(
+            (widget) =>
+                widget is Container &&
+                widget.decoration is BoxDecoration &&
+                (widget.decoration as BoxDecoration).color ==
+                    const Color(0xFF00FF00),
+          ),
         ),
       );
 
@@ -85,6 +93,7 @@ void main() {
           textInverse: Color(0xFFFFFFFF),
           progressBackground: Color(0xFFE5E7EB),
           progressForeground: Color(0xFF6366F1),
+          focus: Color(0x666366F1),
         ),
         spacing: DesignSpacing.defaults(),
         typography: DesignTypography.defaults(),
