@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import '../design/design_provider.dart';
 
 /// Motion accessibility preferences.
 ///
@@ -10,13 +11,16 @@ import 'package:flutter/widgets.dart';
 /// Material widgets automatically respect disableAnimations, but our neutral
 /// UI navigation (AppRoute) uses custom PageRouteBuilder which does NOT.
 /// This layer ensures we don't exclude users who need reduced motion.
+///
+/// Now sources from Design context instead of MediaQuery directly, enabling
+/// runtime design governance and future AI-adaptive UX.
 class MotionPreferences {
   MotionPreferences._();
 
   /// Returns true if animations should be enabled.
   ///
-  /// Checks MediaQuery.disableAnimations preference set by the user
-  /// in system accessibility settings.
+  /// Reads from Design context which computes this from MediaQuery at
+  /// provider initialization.
   ///
   /// Usage:
   /// ```dart
@@ -24,10 +28,9 @@ class MotionPreferences {
   ///   // Apply animation
   /// } else {
   ///   // Skip animation, show final state immediately
-  /// }
-  /// ```
+  /// }\n  /// ```
   static bool shouldAnimate(BuildContext context) {
-    return !MediaQuery.disableAnimationsOf(context);
+    return Design.of(context).motion.shouldAnimate;
   }
 
   /// Returns appropriate duration based on motion preferences.
