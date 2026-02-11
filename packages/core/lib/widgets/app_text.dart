@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
-import '../tokens/colors.dart';
-import '../tokens/typography.dart';
+import '../design/design_provider.dart';
 
 /// Platform-neutral text widget with semantic variants.
 ///
@@ -15,7 +14,7 @@ class AppText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
-  });
+  }) : _variant = null;
 
   final String text;
   final TextStyle? style;
@@ -23,6 +22,7 @@ class AppText extends StatelessWidget {
   final TextAlign? textAlign;
   final int? maxLines;
   final TextOverflow? overflow;
+  final _AppTextVariant? _variant;
 
   // Semantic constructors
   const AppText.display(
@@ -32,7 +32,8 @@ class AppText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
-  }) : style = AppTypography.display;
+  }) : style = null,
+       _variant = _AppTextVariant.display;
 
   const AppText.headline(
     this.text, {
@@ -41,7 +42,8 @@ class AppText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
-  }) : style = AppTypography.headline;
+  }) : style = null,
+       _variant = _AppTextVariant.headline;
 
   const AppText.title(
     this.text, {
@@ -50,7 +52,8 @@ class AppText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
-  }) : style = AppTypography.title;
+  }) : style = null,
+       _variant = _AppTextVariant.title;
 
   const AppText.subtitle(
     this.text, {
@@ -59,7 +62,8 @@ class AppText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
-  }) : style = AppTypography.subtitle;
+  }) : style = null,
+       _variant = _AppTextVariant.subtitle;
 
   const AppText.body(
     this.text, {
@@ -68,7 +72,8 @@ class AppText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
-  }) : style = AppTypography.body;
+  }) : style = null,
+       _variant = _AppTextVariant.body;
 
   const AppText.bodySmall(
     this.text, {
@@ -77,7 +82,8 @@ class AppText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
-  }) : style = AppTypography.bodySmall;
+  }) : style = null,
+       _variant = _AppTextVariant.bodySmall;
 
   const AppText.label(
     this.text, {
@@ -86,7 +92,8 @@ class AppText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
-  }) : style = AppTypography.label;
+  }) : style = null,
+       _variant = _AppTextVariant.label;
 
   const AppText.caption(
     this.text, {
@@ -95,15 +102,35 @@ class AppText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
-  }) : style = AppTypography.caption;
+  }) : style = null,
+       _variant = _AppTextVariant.caption;
 
   @override
   Widget build(BuildContext context) {
+    final design = Design.of(context);
+
+    // Determine effective style based on variant or explicit style
+    final TextStyle effectiveStyle;
+    if (style != null) {
+      effectiveStyle = style!;
+    } else if (_variant != null) {
+      effectiveStyle = switch (_variant) {
+        _AppTextVariant.display => design.typography.display,
+        _AppTextVariant.headline => design.typography.headline,
+        _AppTextVariant.title => design.typography.title,
+        _AppTextVariant.subtitle => design.typography.subtitle,
+        _AppTextVariant.body => design.typography.body,
+        _AppTextVariant.bodySmall => design.typography.bodySmall,
+        _AppTextVariant.label => design.typography.label,
+        _AppTextVariant.caption => design.typography.caption,
+      };
+    } else {
+      effectiveStyle = design.typography.body;
+    }
+
     return Text(
       text,
-      style: (style ?? AppTypography.body).copyWith(
-        color: color ?? AppColors.textPrimary,
-      ),
+      style: effectiveStyle.copyWith(color: color ?? design.colors.textPrimary),
       textAlign: textAlign,
       maxLines: maxLines,
       overflow: overflow,
@@ -111,4 +138,15 @@ class AppText extends StatelessWidget {
       textScaler: TextScaler.linear(MediaQuery.textScaleFactorOf(context)),
     );
   }
+}
+
+enum _AppTextVariant {
+  display,
+  headline,
+  title,
+  subtitle,
+  body,
+  bodySmall,
+  label,
+  caption,
 }

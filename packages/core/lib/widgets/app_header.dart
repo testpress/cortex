@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
-import '../tokens/colors.dart';
-import '../tokens/spacing.dart';
+import '../design/design_provider.dart';
 import '../accessibility/app_semantics.dart';
 import 'app_text.dart';
 
@@ -22,16 +21,19 @@ class AppHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final design = Design.of(context);
     return Container(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.screenPadding,
-        AppSpacing.xl,
-        AppSpacing.screenPadding,
-        AppSpacing.md,
+      padding: EdgeInsets.fromLTRB(
+        design.spacing.screenPadding,
+        design.spacing.xl,
+        design.spacing.screenPadding,
+        design.spacing.md,
       ),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        border: Border(bottom: BorderSide(color: AppColors.divider, width: 1)),
+      decoration: BoxDecoration(
+        color: design.colors.surface,
+        border: Border(
+          bottom: BorderSide(color: design.colors.divider, width: 1),
+        ),
       ),
       child: Row(
         children: [
@@ -41,11 +43,17 @@ class AppHeader extends StatelessWidget {
               children: [
                 AppSemantics.header(
                   label: title,
-                  child: AppText.headline(title, color: AppColors.textPrimary),
+                  child: AppText.headline(
+                    title,
+                    color: design.colors.textPrimary,
+                  ),
                 ),
                 if (subtitle != null) ...[
-                  const SizedBox(height: AppSpacing.xs),
-                  AppText.bodySmall(subtitle!, color: AppColors.textSecondary),
+                  SizedBox(height: design.spacing.xs),
+                  AppText.bodySmall(
+                    subtitle!,
+                    color: design.colors.textSecondary,
+                  ),
                 ],
               ],
             ),

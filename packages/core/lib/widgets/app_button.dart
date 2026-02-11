@@ -1,8 +1,5 @@
 import 'package:flutter/widgets.dart';
-import '../tokens/colors.dart';
-import '../tokens/radius.dart';
-import '../tokens/spacing.dart';
-import '../tokens/typography.dart';
+import '../design/design_provider.dart';
 import '../navigation/app_route.dart';
 import '../accessibility/app_semantics.dart';
 import 'app_text.dart';
@@ -47,18 +44,19 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final design = Design.of(context);
     final isDisabled = onPressed == null && onNavigate == null;
 
     final backgroundColor = variant == AppButtonVariant.primary
-        ? (isDisabled ? AppColors.border : AppColors.primary)
-        : AppColors.surface;
+        ? (isDisabled ? design.colors.border : design.colors.primary)
+        : design.colors.surface;
 
     final foregroundColor = variant == AppButtonVariant.primary
-        ? AppColors.onPrimary
-        : (isDisabled ? AppColors.textTertiary : AppColors.primary);
+        ? design.colors.onPrimary
+        : (isDisabled ? design.colors.textTertiary : design.colors.primary);
 
     final borderColor = variant == AppButtonVariant.secondary
-        ? (isDisabled ? AppColors.border : AppColors.primary)
+        ? (isDisabled ? design.colors.border : design.colors.primary)
         : const Color(0x00000000); // Transparent
 
     void handleTap() {
@@ -81,13 +79,13 @@ class AppButton extends StatelessWidget {
           onTap: isDisabled ? null : handleTap,
           child: Container(
             width: fullWidth ? double.infinity : null,
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.lg,
-              vertical: AppSpacing.md,
+            padding: EdgeInsets.symmetric(
+              horizontal: design.spacing.lg,
+              vertical: design.spacing.md,
             ),
             decoration: BoxDecoration(
               color: backgroundColor,
-              borderRadius: AppRadius.button,
+              borderRadius: design.radius.button,
               border: Border.all(
                 color: borderColor,
                 width: variant == AppButtonVariant.secondary ? 1.5 : 0,
@@ -96,7 +94,7 @@ class AppButton extends StatelessWidget {
             child: Center(
               child: AppText(
                 label,
-                style: AppTypography.label,
+                style: design.typography.label,
                 color: foregroundColor,
               ),
             ),

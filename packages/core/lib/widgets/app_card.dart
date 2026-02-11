@@ -1,7 +1,5 @@
 import 'package:flutter/widgets.dart';
-import '../tokens/colors.dart';
-import '../tokens/radius.dart';
-import '../tokens/spacing.dart';
+import '../design/design_provider.dart';
 
 /// Platform-neutral card container.
 ///
@@ -16,12 +14,13 @@ class AppCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final design = Design.of(context);
     final cardContent = Container(
-      padding: padding ?? const EdgeInsets.all(AppSpacing.cardPadding),
+      padding: padding ?? EdgeInsets.all(design.spacing.cardPadding),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: AppRadius.card,
-        border: Border.all(color: AppColors.border, width: 1),
+        color: design.colors.surface,
+        borderRadius: design.radius.card,
+        border: Border.all(color: design.colors.border, width: 1),
       ),
       child: child,
     );

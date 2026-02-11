@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import '../tokens/spacing.dart';
+import '../design/design_provider.dart';
 
 /// Platform-neutral scrollable container.
 ///
@@ -13,8 +13,9 @@ class AppScroll extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final design = Design.of(context);
     return SingleChildScrollView(
-      padding: padding ?? const EdgeInsets.all(AppSpacing.screenPadding),
+      padding: padding ?? EdgeInsets.all(design.spacing.screenPadding),
       physics: const BouncingScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

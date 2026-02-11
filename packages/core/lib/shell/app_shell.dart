@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import '../tokens/colors.dart';
+import '../design/design_provider.dart';
 
 /// Root application shell container.
 ///
@@ -13,8 +13,9 @@ class AppShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final design = Design.of(context);
     return Container(
-      color: backgroundColor ?? AppColors.surface,
+      color: backgroundColor ?? design.colors.surface,
       child: SafeArea(child: child),
     );
   }

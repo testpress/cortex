@@ -1,5 +1,7 @@
+import 'package:core/design/design_provider.dart';
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
+import 'package:core/design/design_provider.dart';
 import '../models/course.dart';
 
 /// Course card widget displaying course information and progress.
@@ -55,6 +57,7 @@ class _ProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final design = Design.of(context);
     return AppSemantics.progressValue(
       value: progress,
       label: 'Course progress',
@@ -64,27 +67,27 @@ class _ProgressIndicator extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              AppText.caption('Progress', color: AppColors.textSecondary),
+              AppText.caption('Progress', color: design.colors.textSecondary),
               AppText.caption(
                 '${(progress * 100).toInt()}%',
-                color: AppColors.textSecondary,
+                color: design.colors.textSecondary,
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.xs),
+          SizedBox(height: design.spacing.xs),
           Container(
             height: 6,
             decoration: BoxDecoration(
-              color: AppColors.progressBackground,
-              borderRadius: BorderRadius.circular(AppRadius.full),
+              color: design.colors.progressBackground,
+              borderRadius: BorderRadius.circular(design.radius.full),
             ),
             child: FractionallySizedBox(
               alignment: Alignment.centerLeft,
               widthFactor: progress,
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.progressForeground,
-                  borderRadius: BorderRadius.circular(AppRadius.full),
+                  color: design.colors.progressForeground,
+                  borderRadius: BorderRadius.circular(design.radius.full),
                 ),
               ),
             ),
