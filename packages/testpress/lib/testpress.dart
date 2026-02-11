@@ -1,5 +1,10 @@
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+library testpress;
+
+// Re-export core design system
+export 'package:core/core.dart';
+
+// Re-export courses module
+export 'package:courses/courses.dart';
+
+// Re-export exams module
+export 'package:exams/exams.dart';
