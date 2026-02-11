@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:testpress/course_list.dart';
+import 'package:core/core.dart';
 
 void main() {
   runApp(const CortexApp());
@@ -14,10 +15,17 @@ class CortexApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Cortex',
       debugShowCheckedModeBanner: false,
-      home: CourseListScreen(),
+      home: DefaultTextStyle(
+        // Provide default text style to prevent debug decorations
+        style: AppTypography.body.copyWith(
+          color: AppColors.textPrimary,
+          decoration: TextDecoration.none,
+        ),
+        child: const CourseListScreen(),
+      ),
     );
   }
 }
