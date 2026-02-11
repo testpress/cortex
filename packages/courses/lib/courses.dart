@@ -1,5 +1,6 @@
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+library courses;
+
+export 'models/course.dart';
+export 'data/mock_courses.dart';
+export 'screens/course_list_screen.dart';
+export 'widgets/course_card.dart';
