@@ -66,4 +66,51 @@ void main() {
       expect(semanticsFinder, findsOneWidget);
     });
   });
+
+  group('AppButton Touch Targets', () {
+    testWidgets('meets 48dp minimum height requirement', (tester) async {
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: AppButton.primary(label: 'OK', onPressed: () {}),
+        ),
+      );
+
+      // Find the ConstrainedBox that enforces minimum height
+      final constrainedBoxFinder = find.byType(ConstrainedBox);
+      expect(constrainedBoxFinder, findsOneWidget);
+
+      final constrainedBox = tester.widget<ConstrainedBox>(
+        constrainedBoxFinder,
+      );
+      expect(constrainedBox.constraints.minHeight, 48.0);
+    });
+
+    testWidgets('maintains minimum height with short labels', (tester) async {
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: AppButton.secondary(label: 'X', onPressed: () {}),
+        ),
+      );
+
+      final buttonBox = tester.getRect(find.byType(AppButton));
+      expect(buttonBox.height, greaterThanOrEqualTo(48.0));
+    });
+
+    testWidgets('maintains minimum height with long labels', (tester) async {
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: AppButton.primary(
+            label: 'This is a very long button label',
+            onPressed: () {},
+          ),
+        ),
+      );
+
+      final buttonBox = tester.getRect(find.byType(AppButton));
+      expect(buttonBox.height, greaterThanOrEqualTo(48.0));
+    });
+  });
 }
