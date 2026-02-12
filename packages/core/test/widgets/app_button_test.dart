@@ -3,21 +3,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:core/core.dart';
 
 void main() {
+  Widget wrap(Widget child) {
+    return DesignProvider(
+      config: DesignConfig.defaults(),
+      child: Directionality(textDirection: TextDirection.ltr, child: child),
+    );
+  }
+
   group('AppButton Semantics', () {
     testWidgets('exposes button role to screen readers', (tester) async {
-      bool tapped = false;
-
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: AppButton.primary(
-            label: 'Submit',
-            onPressed: () => tapped = true,
-          ),
-        ),
+        wrap(AppButton.primary(label: 'Submit', onPressed: () {})),
       );
 
-      // Find the Semantics widget with button role
       final semanticsFinder = find.byWidgetPredicate(
         (widget) =>
             widget is Semantics &&
@@ -30,16 +28,9 @@ void main() {
 
     testWidgets('announces disabled state', (tester) async {
       await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: AppButton.primary(
-            label: 'Submit',
-            onPressed: null, // Disabled
-          ),
-        ),
+        wrap(const AppButton.primary(label: 'Submit', onPressed: null)),
       );
 
-      // Find the Semantics widget with enabled=false
       final semanticsFinder = find.byWidgetPredicate(
         (widget) =>
             widget is Semantics &&
@@ -52,13 +43,9 @@ void main() {
 
     testWidgets('label is accessible to screen readers', (tester) async {
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: AppButton.secondary(label: 'Cancel', onPressed: () {}),
-        ),
+        wrap(AppButton.secondary(label: 'Cancel', onPressed: () {})),
       );
 
-      // Verify label is exposed in semantics
       final semanticsFinder = find.byWidgetPredicate(
         (widget) => widget is Semantics && widget.properties.label == 'Cancel',
       );
@@ -70,14 +57,13 @@ void main() {
   group('AppButton Touch Targets', () {
     testWidgets('meets 48dp minimum height requirement', (tester) async {
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: AppButton.primary(label: 'OK', onPressed: () {}),
-        ),
+        wrap(AppButton.primary(label: 'OK', onPressed: () {})),
       );
 
-      // Find the ConstrainedBox that enforces minimum height
-      final constrainedBoxFinder = find.byType(ConstrainedBox);
+      final constrainedBoxFinder = find.descendant(
+        of: find.byType(AppButton),
+        matching: find.byType(ConstrainedBox),
+      );
       expect(constrainedBoxFinder, findsOneWidget);
 
       final constrainedBox = tester.widget<ConstrainedBox>(
@@ -88,10 +74,7 @@ void main() {
 
     testWidgets('maintains minimum height with short labels', (tester) async {
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: AppButton.secondary(label: 'X', onPressed: () {}),
-        ),
+        wrap(AppButton.secondary(label: 'X', onPressed: () {})),
       );
 
       final buttonBox = tester.getRect(find.byType(AppButton));
@@ -100,9 +83,8 @@ void main() {
 
     testWidgets('maintains minimum height with long labels', (tester) async {
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: AppButton.primary(
+        wrap(
+          AppButton.primary(
             label: 'This is a very long button label',
             onPressed: () {},
           ),

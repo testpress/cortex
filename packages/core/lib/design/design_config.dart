@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'dart:math';
 import 'package:flutter/widgets.dart';
 
@@ -234,15 +233,15 @@ class DesignColors {
       textInverse: const Color(0xFFFFFFFF),
       progressBackground: border,
       progressForeground: progressForeground ?? primary,
-      focus: focus ?? primary.withOpacity(0.4),
+      focus: focus ?? primary.withValues(alpha: 0.4),
     );
   }
 
   /// Calculate relative luminance (WCAG formula)
   static double _luminance(Color color) {
-    double r = color.red / 255.0;
-    double g = color.green / 255.0;
-    double b = color.blue / 255.0;
+    double r = color.r;
+    double g = color.g;
+    double b = color.b;
 
     r = r <= 0.03928 ? r / 12.92 : pow((r + 0.055) / 1.055, 2.4).toDouble();
     g = g <= 0.03928 ? g / 12.92 : pow((g + 0.055) / 1.055, 2.4).toDouble();
@@ -264,10 +263,10 @@ class DesignColors {
   /// Lighten a color by a factor (0.0 = original, 1.0 = white)
   static Color _lighten(Color color, double factor) {
     assert(factor >= 0.0 && factor <= 1.0);
-    final int r = (color.red + (255 - color.red) * factor).round();
-    final int g = (color.green + (255 - color.green) * factor).round();
-    final int b = (color.blue + (255 - color.blue) * factor).round();
-    return Color.fromARGB(color.alpha, r, g, b);
+    final double r = color.r + (1.0 - color.r) * factor;
+    final double g = color.g + (1.0 - color.g) * factor;
+    final double b = color.b + (1.0 - color.b) * factor;
+    return Color.from(alpha: color.a, red: r, green: g, blue: b);
   }
 
   @override

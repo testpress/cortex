@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import 'package:core/design/design_provider.dart';
 import '../models/course.dart';
 
 /// Course card widget displaying course information and progress.
@@ -38,7 +37,7 @@ class CourseCard extends StatelessWidget {
           AppButton.primary(
             label: course.isStarted ? 'Continue' : 'Start',
             onPressed: () {
-              // TODO: Navigate to course detail
+              // TODO: Navigate to course detail (Screen not yet implemented)
             },
             fullWidth: true,
           ),

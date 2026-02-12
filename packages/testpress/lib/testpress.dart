@@ -1,5 +1,3 @@
-library testpress;
-
 // Re-export core design system
 export 'package:core/core.dart';
 

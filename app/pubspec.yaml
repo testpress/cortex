@@ -11,6 +11,8 @@ dependencies:
     sdk: flutter
   testpress:
     path: ../packages/testpress
+  core:
+    path: ../packages/core
 
 dev_dependencies:
   flutter_test:

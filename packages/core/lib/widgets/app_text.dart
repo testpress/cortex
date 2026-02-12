@@ -32,8 +32,8 @@ class AppText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
-  }) : style = null,
-       _variant = _AppTextVariant.display;
+    this.style,
+  }) : _variant = _AppTextVariant.display;
 
   const AppText.headline(
     this.text, {
@@ -42,8 +42,8 @@ class AppText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
-  }) : style = null,
-       _variant = _AppTextVariant.headline;
+    this.style,
+  }) : _variant = _AppTextVariant.headline;
 
   const AppText.title(
     this.text, {
@@ -52,8 +52,8 @@ class AppText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
-  }) : style = null,
-       _variant = _AppTextVariant.title;
+    this.style,
+  }) : _variant = _AppTextVariant.title;
 
   const AppText.subtitle(
     this.text, {
@@ -62,8 +62,8 @@ class AppText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
-  }) : style = null,
-       _variant = _AppTextVariant.subtitle;
+    this.style,
+  }) : _variant = _AppTextVariant.subtitle;
 
   const AppText.body(
     this.text, {
@@ -72,8 +72,8 @@ class AppText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
-  }) : style = null,
-       _variant = _AppTextVariant.body;
+    this.style,
+  }) : _variant = _AppTextVariant.body;
 
   const AppText.bodySmall(
     this.text, {
@@ -82,8 +82,8 @@ class AppText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
-  }) : style = null,
-       _variant = _AppTextVariant.bodySmall;
+    this.style,
+  }) : _variant = _AppTextVariant.bodySmall;
 
   const AppText.label(
     this.text, {
@@ -92,8 +92,8 @@ class AppText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
-  }) : style = null,
-       _variant = _AppTextVariant.label;
+    this.style,
+  }) : _variant = _AppTextVariant.label;
 
   const AppText.caption(
     this.text, {
@@ -102,8 +102,8 @@ class AppText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
-  }) : style = null,
-       _variant = _AppTextVariant.caption;
+    this.style,
+  }) : _variant = _AppTextVariant.caption;
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +135,7 @@ class AppText extends StatelessWidget {
       maxLines: maxLines,
       overflow: overflow,
       // Respect system font scaling for accessibility
-      textScaler: TextScaler.linear(MediaQuery.textScaleFactorOf(context)),
+      textScaler: MediaQuery.textScalerOf(context),
     );
   }
 }

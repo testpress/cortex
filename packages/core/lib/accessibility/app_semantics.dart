@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter/semantics.dart';
 
 /// Centralized semantics helpers for neutral UI.
 ///

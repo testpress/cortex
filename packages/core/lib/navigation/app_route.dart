@@ -7,9 +7,8 @@ import '../motion/accessibility_motion.dart';
 /// Replaces Material's MaterialPageRoute and Cupertino's
 /// CupertinoPageRoute with identical cross-platform behavior.
 class AppRoute<T> extends PageRouteBuilder<T> {
-  AppRoute({required Widget page, RouteSettings? settings})
+  AppRoute({required Widget page, super.settings})
     : super(
-        settings: settings,
         pageBuilder: (context, animation, secondaryAnimation) => page,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           final design = Design.of(context);
