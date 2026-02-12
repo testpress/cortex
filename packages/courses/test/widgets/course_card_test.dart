@@ -4,6 +4,13 @@ import 'package:core/core.dart';
 import 'package:courses/courses.dart';
 
 void main() {
+  Widget wrap(Widget child) {
+    return DesignProvider(
+      config: DesignConfig.defaults(),
+      child: Directionality(textDirection: TextDirection.ltr, child: child),
+    );
+  }
+
   group('CourseCard Accessibility', () {
     final testCourse = Course(
       id: '1',
@@ -13,24 +20,14 @@ void main() {
     );
 
     testWidgets('course title is accessible', (tester) async {
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: CourseCard(course: testCourse),
-        ),
-      );
+      await tester.pumpWidget(wrap(CourseCard(course: testCourse)));
 
       // Verify title is rendered
       expect(find.text('Flutter Basics'), findsOneWidget);
     });
 
     testWidgets('progress indicator exposes value semantics', (tester) async {
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: CourseCard(course: testCourse),
-        ),
-      );
+      await tester.pumpWidget(wrap(CourseCard(course: testCourse)));
 
       // Find the Semantics widget with progress value
       final semanticsFinder = find.byWidgetPredicate(
@@ -44,12 +41,7 @@ void main() {
     });
 
     testWidgets('action button is accessible', (tester) async {
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: CourseCard(course: testCourse),
-        ),
-      );
+      await tester.pumpWidget(wrap(CourseCard(course: testCourse)));
 
       // Find the button with correct label
       final buttonFinder = find.byWidgetPredicate(
@@ -63,12 +55,7 @@ void main() {
     });
 
     testWidgets('card composes primitives correctly', (tester) async {
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: CourseCard(course: testCourse),
-        ),
-      );
+      await tester.pumpWidget(wrap(CourseCard(course: testCourse)));
 
       // Verify composition: AppCard contains AppText and AppButton
       expect(find.byType(AppCard), findsOneWidget);
@@ -84,12 +71,7 @@ void main() {
         progress: 0.0,
       );
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: CourseCard(course: notStartedCourse),
-        ),
-      );
+      await tester.pumpWidget(wrap(CourseCard(course: notStartedCourse)));
 
       // Find the button with "Start" label
       final buttonFinder = find.byWidgetPredicate(

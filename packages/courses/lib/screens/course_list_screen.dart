@@ -12,6 +12,7 @@ class CourseListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final design = Design.of(context);
     return AppShell(
       child: Column(
         children: [
@@ -21,7 +22,7 @@ class CourseListScreen extends StatelessWidget {
               children: [
                 ...mockCourses.map(
                   (course) => Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                    padding: EdgeInsets.only(bottom: design.spacing.md),
                     child: CourseCard(course: course),
                   ),
                 ),

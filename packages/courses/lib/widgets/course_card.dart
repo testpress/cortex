@@ -12,26 +12,27 @@ class CourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final design = Design.of(context);
     return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Title
-          AppText.title(course.title, color: AppColors.textPrimary),
-          const SizedBox(height: AppSpacing.sm),
+          AppText.title(course.title, color: design.colors.textPrimary),
+          SizedBox(height: design.spacing.sm),
 
           // Description
           AppText.bodySmall(
             course.description,
-            color: AppColors.textSecondary,
+            color: design.colors.textSecondary,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: AppSpacing.md),
+          SizedBox(height: design.spacing.md),
 
           // Progress indicator
           _ProgressIndicator(progress: course.progress),
-          const SizedBox(height: AppSpacing.md),
+          SizedBox(height: design.spacing.md),
 
           // Action button
           AppButton.primary(

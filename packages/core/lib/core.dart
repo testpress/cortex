@@ -10,12 +10,7 @@ export 'design/design_config.dart';
 export 'design/design_context.dart';
 export 'design/design_provider.dart';
 
-// Tokens (legacy - prefer Design.of(context))
-export 'tokens/colors.dart';
-export 'tokens/spacing.dart';
-export 'tokens/typography.dart';
-export 'tokens/radius.dart';
-export 'tokens/motion.dart';
+// Tokens (legacy tokens removed - use Design.of(context))
 
 // Widgets
 export 'widgets/app_text.dart';

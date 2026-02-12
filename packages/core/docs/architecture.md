@@ -142,7 +142,7 @@ Navigator.of(context).push(
 )
 ```
 
-Transition duration: 250ms (hardcoded to match `AppMotion.normal` default)  
+Transition duration: 250ms (matches `design.motion.normal` default)  
 Transition curve: `design.motion.easeOut`
 
 ## Testing Strategy
@@ -164,7 +164,7 @@ Transition curve: `design.motion.easeOut`
 
 ## Future Work
 
-1. **Deprecate static tokens** - Add `@Deprecated` to `AppColors`, `AppSpacing`, etc.
+1. **Deprecate static tokens** - [COMPLETED] Added `@Deprecated` to legacy token classes.
 2. **Dynamic theming** - Runtime theme switching via `Builder` widget
 3. **White-label branding** - Custom `DesignConfig` per tenant
 4. **AI-adaptive UX** - Adjust design tokens based on user context

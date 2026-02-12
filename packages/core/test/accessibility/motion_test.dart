@@ -3,6 +3,23 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:core/core.dart';
 
 void main() {
+  Widget wrap(Widget child, {required bool disableAnimations}) {
+    return MediaQuery(
+      data: MediaQueryData(disableAnimations: disableAnimations),
+      child: Builder(
+        builder: (context) {
+          return DesignProvider(
+            config: DesignConfig.defaults(context: context),
+            child: Directionality(
+              textDirection: TextDirection.ltr,
+              child: child,
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   group('Motion Accessibility', () {
     testWidgets('shouldAnimate returns false when animations disabled', (
       tester,
@@ -10,14 +27,14 @@ void main() {
       bool? shouldAnimate;
 
       await tester.pumpWidget(
-        MediaQuery(
-          data: const MediaQueryData(disableAnimations: true),
-          child: Builder(
+        wrap(
+          Builder(
             builder: (context) {
               shouldAnimate = MotionPreferences.shouldAnimate(context);
               return const SizedBox();
             },
           ),
+          disableAnimations: true,
         ),
       );
 
@@ -30,14 +47,14 @@ void main() {
       bool? shouldAnimate;
 
       await tester.pumpWidget(
-        MediaQuery(
-          data: const MediaQueryData(disableAnimations: false),
-          child: Builder(
+        wrap(
+          Builder(
             builder: (context) {
               shouldAnimate = MotionPreferences.shouldAnimate(context);
               return const SizedBox();
             },
           ),
+          disableAnimations: false,
         ),
       );
 
@@ -50,9 +67,8 @@ void main() {
       Duration? resultDuration;
 
       await tester.pumpWidget(
-        MediaQuery(
-          data: const MediaQueryData(disableAnimations: true),
-          child: Builder(
+        wrap(
+          Builder(
             builder: (context) {
               resultDuration = MotionPreferences.duration(
                 context,
@@ -61,6 +77,7 @@ void main() {
               return const SizedBox();
             },
           ),
+          disableAnimations: true,
         ),
       );
 
@@ -74,9 +91,8 @@ void main() {
       const normalDuration = Duration(milliseconds: 250);
 
       await tester.pumpWidget(
-        MediaQuery(
-          data: const MediaQueryData(disableAnimations: false),
-          child: Builder(
+        wrap(
+          Builder(
             builder: (context) {
               resultDuration = MotionPreferences.duration(
                 context,
@@ -85,6 +101,7 @@ void main() {
               return const SizedBox();
             },
           ),
+          disableAnimations: false,
         ),
       );
 
@@ -97,14 +114,14 @@ void main() {
       Curve? resultCurve;
 
       await tester.pumpWidget(
-        MediaQuery(
-          data: const MediaQueryData(disableAnimations: true),
-          child: Builder(
+        wrap(
+          Builder(
             builder: (context) {
               resultCurve = MotionPreferences.curve(context, Curves.easeOut);
               return const SizedBox();
             },
           ),
+          disableAnimations: true,
         ),
       );
 

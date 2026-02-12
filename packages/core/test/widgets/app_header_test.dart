@@ -3,14 +3,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:core/core.dart';
 
 void main() {
+  Widget wrap(Widget child) {
+    return DesignProvider(
+      config: DesignConfig.defaults(),
+      child: Directionality(textDirection: TextDirection.ltr, child: child),
+    );
+  }
+
   group('AppHeader Semantics', () {
     testWidgets('title has header semantics', (tester) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: AppHeader(title: 'Course Library'),
-        ),
-      );
+      await tester.pumpWidget(wrap(const AppHeader(title: 'Course Library')));
 
       // Find the Semantics widget with header role
       final semanticsFinder = find.byWidgetPredicate(
@@ -25,10 +27,7 @@ void main() {
 
     testWidgets('subtitle is accessible', (tester) async {
       await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: AppHeader(title: 'Courses', subtitle: '6 available'),
-        ),
+        wrap(const AppHeader(title: 'Courses', subtitle: '6 available')),
       );
 
       // Verify subtitle text is rendered
@@ -39,9 +38,8 @@ void main() {
       bool actionTapped = false;
 
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: AppHeader(
+        wrap(
+          AppHeader(
             title: 'Settings',
             actions: [
               GestureDetector(

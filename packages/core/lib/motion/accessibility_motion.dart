@@ -41,7 +41,7 @@ class MotionPreferences {
   /// Usage:
   /// ```dart
   /// AnimatedContainer(
-  ///   duration: MotionPreferences.duration(context, AppMotion.normal),
+  ///   duration: MotionPreferences.duration(context, Design.of(context).motion.normal),
   ///   ...
   /// )
   /// ```
@@ -57,7 +57,7 @@ class MotionPreferences {
   /// Usage:
   /// ```dart
   /// Tween(...).animate(CurvedAnimation(
-  ///   curve: MotionPreferences.curve(context, AppMotion.easeOut),
+  ///   curve: MotionPreferences.curve(context, Design.of(context).motion.easeOut),
   ///   ...
   /// ))
   /// ```
