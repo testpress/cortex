@@ -4,7 +4,7 @@ import 'package:drift/drift.dart';
 class CoursesTable extends Table {
   TextColumn get id => text()();
   TextColumn get title => text()();
-  TextColumn get subjectColor => text()();
+  IntColumn get colorIndex => integer()();
   IntColumn get chapterCount => integer()();
   TextColumn get totalDuration => text()();
   IntColumn get progress => integer().withDefault(const Constant(0))();

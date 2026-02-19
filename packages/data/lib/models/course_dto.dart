@@ -2,8 +2,12 @@
 class CourseDto {
   final String id;
   final String title;
-  final String
-  subjectColor; // e.g. 'physics', 'chemistry', 'math', 'biology', 'english', 'exam'
+
+  /// Index into [DesignSubjectPalette]. The design system resolves this to
+  /// a [SubjectColors] via `Design.of(context).subjectPalette.atIndex(colorIndex)`.
+  /// Provided by the API; does NOT encode a subject name — works for any tenant.
+  final int colorIndex;
+
   final int chapterCount;
   final String totalDuration;
   final int progress; // 0–100
@@ -13,7 +17,7 @@ class CourseDto {
   const CourseDto({
     required this.id,
     required this.title,
-    required this.subjectColor,
+    required this.colorIndex,
     required this.chapterCount,
     required this.totalDuration,
     required this.progress,
@@ -24,7 +28,7 @@ class CourseDto {
   CourseDto copyWith({
     String? id,
     String? title,
-    String? subjectColor,
+    int? colorIndex,
     int? chapterCount,
     String? totalDuration,
     int? progress,
@@ -34,7 +38,7 @@ class CourseDto {
     return CourseDto(
       id: id ?? this.id,
       title: title ?? this.title,
-      subjectColor: subjectColor ?? this.subjectColor,
+      colorIndex: colorIndex ?? this.colorIndex,
       chapterCount: chapterCount ?? this.chapterCount,
       totalDuration: totalDuration ?? this.totalDuration,
       progress: progress ?? this.progress,

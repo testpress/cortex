@@ -19,12 +19,12 @@ class $CoursesTableTable extends CoursesTable
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
       'title', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _subjectColorMeta =
-      const VerificationMeta('subjectColor');
+  static const VerificationMeta _colorIndexMeta =
+      const VerificationMeta('colorIndex');
   @override
-  late final GeneratedColumn<String> subjectColor = GeneratedColumn<String>(
-      'subject_color', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<int> colorIndex = GeneratedColumn<int>(
+      'color_index', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _chapterCountMeta =
       const VerificationMeta('chapterCount');
   @override
@@ -63,7 +63,7 @@ class $CoursesTableTable extends CoursesTable
   List<GeneratedColumn> get $columns => [
         id,
         title,
-        subjectColor,
+        colorIndex,
         chapterCount,
         totalDuration,
         progress,
@@ -91,13 +91,13 @@ class $CoursesTableTable extends CoursesTable
     } else if (isInserting) {
       context.missing(_titleMeta);
     }
-    if (data.containsKey('subject_color')) {
+    if (data.containsKey('color_index')) {
       context.handle(
-          _subjectColorMeta,
-          subjectColor.isAcceptableOrUnknown(
-              data['subject_color']!, _subjectColorMeta));
+          _colorIndexMeta,
+          colorIndex.isAcceptableOrUnknown(
+              data['color_index']!, _colorIndexMeta));
     } else if (isInserting) {
-      context.missing(_subjectColorMeta);
+      context.missing(_colorIndexMeta);
     }
     if (data.containsKey('chapter_count')) {
       context.handle(
@@ -146,8 +146,8 @@ class $CoursesTableTable extends CoursesTable
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       title: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
-      subjectColor: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}subject_color'])!,
+      colorIndex: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}color_index'])!,
       chapterCount: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}chapter_count'])!,
       totalDuration: attachedDatabase.typeMapping
@@ -171,7 +171,7 @@ class CoursesTableData extends DataClass
     implements Insertable<CoursesTableData> {
   final String id;
   final String title;
-  final String subjectColor;
+  final int colorIndex;
   final int chapterCount;
   final String totalDuration;
   final int progress;
@@ -180,7 +180,7 @@ class CoursesTableData extends DataClass
   const CoursesTableData(
       {required this.id,
       required this.title,
-      required this.subjectColor,
+      required this.colorIndex,
       required this.chapterCount,
       required this.totalDuration,
       required this.progress,
@@ -191,7 +191,7 @@ class CoursesTableData extends DataClass
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['title'] = Variable<String>(title);
-    map['subject_color'] = Variable<String>(subjectColor);
+    map['color_index'] = Variable<int>(colorIndex);
     map['chapter_count'] = Variable<int>(chapterCount);
     map['total_duration'] = Variable<String>(totalDuration);
     map['progress'] = Variable<int>(progress);
@@ -204,7 +204,7 @@ class CoursesTableData extends DataClass
     return CoursesTableCompanion(
       id: Value(id),
       title: Value(title),
-      subjectColor: Value(subjectColor),
+      colorIndex: Value(colorIndex),
       chapterCount: Value(chapterCount),
       totalDuration: Value(totalDuration),
       progress: Value(progress),
@@ -219,7 +219,7 @@ class CoursesTableData extends DataClass
     return CoursesTableData(
       id: serializer.fromJson<String>(json['id']),
       title: serializer.fromJson<String>(json['title']),
-      subjectColor: serializer.fromJson<String>(json['subjectColor']),
+      colorIndex: serializer.fromJson<int>(json['colorIndex']),
       chapterCount: serializer.fromJson<int>(json['chapterCount']),
       totalDuration: serializer.fromJson<String>(json['totalDuration']),
       progress: serializer.fromJson<int>(json['progress']),
@@ -233,7 +233,7 @@ class CoursesTableData extends DataClass
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'title': serializer.toJson<String>(title),
-      'subjectColor': serializer.toJson<String>(subjectColor),
+      'colorIndex': serializer.toJson<int>(colorIndex),
       'chapterCount': serializer.toJson<int>(chapterCount),
       'totalDuration': serializer.toJson<String>(totalDuration),
       'progress': serializer.toJson<int>(progress),
@@ -245,7 +245,7 @@ class CoursesTableData extends DataClass
   CoursesTableData copyWith(
           {String? id,
           String? title,
-          String? subjectColor,
+          int? colorIndex,
           int? chapterCount,
           String? totalDuration,
           int? progress,
@@ -254,7 +254,7 @@ class CoursesTableData extends DataClass
       CoursesTableData(
         id: id ?? this.id,
         title: title ?? this.title,
-        subjectColor: subjectColor ?? this.subjectColor,
+        colorIndex: colorIndex ?? this.colorIndex,
         chapterCount: chapterCount ?? this.chapterCount,
         totalDuration: totalDuration ?? this.totalDuration,
         progress: progress ?? this.progress,
@@ -265,9 +265,8 @@ class CoursesTableData extends DataClass
     return CoursesTableData(
       id: data.id.present ? data.id.value : this.id,
       title: data.title.present ? data.title.value : this.title,
-      subjectColor: data.subjectColor.present
-          ? data.subjectColor.value
-          : this.subjectColor,
+      colorIndex:
+          data.colorIndex.present ? data.colorIndex.value : this.colorIndex,
       chapterCount: data.chapterCount.present
           ? data.chapterCount.value
           : this.chapterCount,
@@ -289,7 +288,7 @@ class CoursesTableData extends DataClass
     return (StringBuffer('CoursesTableData(')
           ..write('id: $id, ')
           ..write('title: $title, ')
-          ..write('subjectColor: $subjectColor, ')
+          ..write('colorIndex: $colorIndex, ')
           ..write('chapterCount: $chapterCount, ')
           ..write('totalDuration: $totalDuration, ')
           ..write('progress: $progress, ')
@@ -300,7 +299,7 @@ class CoursesTableData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(id, title, subjectColor, chapterCount,
+  int get hashCode => Object.hash(id, title, colorIndex, chapterCount,
       totalDuration, progress, completedLessons, totalLessons);
   @override
   bool operator ==(Object other) =>
@@ -308,7 +307,7 @@ class CoursesTableData extends DataClass
       (other is CoursesTableData &&
           other.id == this.id &&
           other.title == this.title &&
-          other.subjectColor == this.subjectColor &&
+          other.colorIndex == this.colorIndex &&
           other.chapterCount == this.chapterCount &&
           other.totalDuration == this.totalDuration &&
           other.progress == this.progress &&
@@ -319,7 +318,7 @@ class CoursesTableData extends DataClass
 class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
   final Value<String> id;
   final Value<String> title;
-  final Value<String> subjectColor;
+  final Value<int> colorIndex;
   final Value<int> chapterCount;
   final Value<String> totalDuration;
   final Value<int> progress;
@@ -329,7 +328,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
   const CoursesTableCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
-    this.subjectColor = const Value.absent(),
+    this.colorIndex = const Value.absent(),
     this.chapterCount = const Value.absent(),
     this.totalDuration = const Value.absent(),
     this.progress = const Value.absent(),
@@ -340,7 +339,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
   CoursesTableCompanion.insert({
     required String id,
     required String title,
-    required String subjectColor,
+    required int colorIndex,
     required int chapterCount,
     required String totalDuration,
     this.progress = const Value.absent(),
@@ -349,14 +348,14 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         title = Value(title),
-        subjectColor = Value(subjectColor),
+        colorIndex = Value(colorIndex),
         chapterCount = Value(chapterCount),
         totalDuration = Value(totalDuration),
         totalLessons = Value(totalLessons);
   static Insertable<CoursesTableData> custom({
     Expression<String>? id,
     Expression<String>? title,
-    Expression<String>? subjectColor,
+    Expression<int>? colorIndex,
     Expression<int>? chapterCount,
     Expression<String>? totalDuration,
     Expression<int>? progress,
@@ -367,7 +366,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (title != null) 'title': title,
-      if (subjectColor != null) 'subject_color': subjectColor,
+      if (colorIndex != null) 'color_index': colorIndex,
       if (chapterCount != null) 'chapter_count': chapterCount,
       if (totalDuration != null) 'total_duration': totalDuration,
       if (progress != null) 'progress': progress,
@@ -380,7 +379,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
   CoursesTableCompanion copyWith(
       {Value<String>? id,
       Value<String>? title,
-      Value<String>? subjectColor,
+      Value<int>? colorIndex,
       Value<int>? chapterCount,
       Value<String>? totalDuration,
       Value<int>? progress,
@@ -390,7 +389,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     return CoursesTableCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
-      subjectColor: subjectColor ?? this.subjectColor,
+      colorIndex: colorIndex ?? this.colorIndex,
       chapterCount: chapterCount ?? this.chapterCount,
       totalDuration: totalDuration ?? this.totalDuration,
       progress: progress ?? this.progress,
@@ -409,8 +408,8 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     if (title.present) {
       map['title'] = Variable<String>(title.value);
     }
-    if (subjectColor.present) {
-      map['subject_color'] = Variable<String>(subjectColor.value);
+    if (colorIndex.present) {
+      map['color_index'] = Variable<int>(colorIndex.value);
     }
     if (chapterCount.present) {
       map['chapter_count'] = Variable<int>(chapterCount.value);
@@ -438,7 +437,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     return (StringBuffer('CoursesTableCompanion(')
           ..write('id: $id, ')
           ..write('title: $title, ')
-          ..write('subjectColor: $subjectColor, ')
+          ..write('colorIndex: $colorIndex, ')
           ..write('chapterCount: $chapterCount, ')
           ..write('totalDuration: $totalDuration, ')
           ..write('progress: $progress, ')
@@ -2384,7 +2383,7 @@ typedef $$CoursesTableTableCreateCompanionBuilder = CoursesTableCompanion
     Function({
   required String id,
   required String title,
-  required String subjectColor,
+  required int colorIndex,
   required int chapterCount,
   required String totalDuration,
   Value<int> progress,
@@ -2396,7 +2395,7 @@ typedef $$CoursesTableTableUpdateCompanionBuilder = CoursesTableCompanion
     Function({
   Value<String> id,
   Value<String> title,
-  Value<String> subjectColor,
+  Value<int> colorIndex,
   Value<int> chapterCount,
   Value<String> totalDuration,
   Value<int> progress,
@@ -2420,8 +2419,8 @@ class $$CoursesTableTableFilterComposer
   ColumnFilters<String> get title => $composableBuilder(
       column: $table.title, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get subjectColor => $composableBuilder(
-      column: $table.subjectColor, builder: (column) => ColumnFilters(column));
+  ColumnFilters<int> get colorIndex => $composableBuilder(
+      column: $table.colorIndex, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<int> get chapterCount => $composableBuilder(
       column: $table.chapterCount, builder: (column) => ColumnFilters(column));
@@ -2455,9 +2454,8 @@ class $$CoursesTableTableOrderingComposer
   ColumnOrderings<String> get title => $composableBuilder(
       column: $table.title, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get subjectColor => $composableBuilder(
-      column: $table.subjectColor,
-      builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<int> get colorIndex => $composableBuilder(
+      column: $table.colorIndex, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<int> get chapterCount => $composableBuilder(
       column: $table.chapterCount,
@@ -2494,8 +2492,8 @@ class $$CoursesTableTableAnnotationComposer
   GeneratedColumn<String> get title =>
       $composableBuilder(column: $table.title, builder: (column) => column);
 
-  GeneratedColumn<String> get subjectColor => $composableBuilder(
-      column: $table.subjectColor, builder: (column) => column);
+  GeneratedColumn<int> get colorIndex => $composableBuilder(
+      column: $table.colorIndex, builder: (column) => column);
 
   GeneratedColumn<int> get chapterCount => $composableBuilder(
       column: $table.chapterCount, builder: (column) => column);
@@ -2541,7 +2539,7 @@ class $$CoursesTableTableTableManager extends RootTableManager<
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
             Value<String> title = const Value.absent(),
-            Value<String> subjectColor = const Value.absent(),
+            Value<int> colorIndex = const Value.absent(),
             Value<int> chapterCount = const Value.absent(),
             Value<String> totalDuration = const Value.absent(),
             Value<int> progress = const Value.absent(),
@@ -2552,7 +2550,7 @@ class $$CoursesTableTableTableManager extends RootTableManager<
               CoursesTableCompanion(
             id: id,
             title: title,
-            subjectColor: subjectColor,
+            colorIndex: colorIndex,
             chapterCount: chapterCount,
             totalDuration: totalDuration,
             progress: progress,
@@ -2563,7 +2561,7 @@ class $$CoursesTableTableTableManager extends RootTableManager<
           createCompanionCallback: ({
             required String id,
             required String title,
-            required String subjectColor,
+            required int colorIndex,
             required int chapterCount,
             required String totalDuration,
             Value<int> progress = const Value.absent(),
@@ -2574,7 +2572,7 @@ class $$CoursesTableTableTableManager extends RootTableManager<
               CoursesTableCompanion.insert(
             id: id,
             title: title,
-            subjectColor: subjectColor,
+            colorIndex: colorIndex,
             chapterCount: chapterCount,
             totalDuration: totalDuration,
             progress: progress,

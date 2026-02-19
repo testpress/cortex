@@ -21,7 +21,7 @@ class MockDataSource implements DataSource {
         const CourseDto(
           id: 'jee-main-2026',
           title: 'JEE Main 2026',
-          subjectColor: 'exam',
+          colorIndex: 0, // indigo
           chapterCount: 12,
           totalDuration: '180 hrs',
           progress: 34,
@@ -31,7 +31,7 @@ class MockDataSource implements DataSource {
         const CourseDto(
           id: 'neet-2026',
           title: 'NEET 2026',
-          subjectColor: 'exam',
+          colorIndex: 4, // rose
           chapterCount: 10,
           totalDuration: '160 hrs',
           progress: 18,
@@ -41,7 +41,7 @@ class MockDataSource implements DataSource {
         const CourseDto(
           id: 'jee-advanced-2026',
           title: 'JEE Advanced 2026',
-          subjectColor: 'exam',
+          colorIndex: 3, // violet
           chapterCount: 8,
           totalDuration: '120 hrs',
           progress: 5,

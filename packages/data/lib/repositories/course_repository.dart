@@ -20,8 +20,8 @@ class CourseRepository {
   /// Live stream of all courses from the local DB (single source of truth).
   Stream<List<CourseDto>> watchCourses() {
     return _db.watchAllCourses().map(
-      (rows) => rows.map(_rowToCourseDto).toList(),
-    );
+          (rows) => rows.map(_rowToCourseDto).toList(),
+        );
   }
 
   /// Fetch courses from [DataSource] and persist to local DB.
@@ -64,21 +64,21 @@ class CourseRepository {
   // ─────────────────────────────────────────────────────────────────────────
 
   CourseDto _rowToCourseDto(CoursesTableData row) => CourseDto(
-    id: row.id,
-    title: row.title,
-    subjectColor: row.subjectColor,
-    chapterCount: row.chapterCount,
-    totalDuration: row.totalDuration,
-    progress: row.progress,
-    completedLessons: row.completedLessons,
-    totalLessons: row.totalLessons,
-  );
+        id: row.id,
+        title: row.title,
+        colorIndex: row.colorIndex,
+        chapterCount: row.chapterCount,
+        totalDuration: row.totalDuration,
+        progress: row.progress,
+        completedLessons: row.completedLessons,
+        totalLessons: row.totalLessons,
+      );
 
   CoursesTableCompanion _courseDtoToCompanion(CourseDto dto) =>
       CoursesTableCompanion.insert(
         id: dto.id,
         title: dto.title,
-        subjectColor: dto.subjectColor,
+        colorIndex: dto.colorIndex,
         chapterCount: dto.chapterCount,
         totalDuration: dto.totalDuration,
         progress: Value(dto.progress),
@@ -87,13 +87,13 @@ class CourseRepository {
       );
 
   ChapterDto _rowToChapterDto(ChaptersTableData row) => ChapterDto(
-    id: row.id,
-    courseId: row.courseId,
-    title: row.title,
-    lessonCount: row.lessonCount,
-    assessmentCount: row.assessmentCount,
-    orderIndex: row.orderIndex,
-  );
+        id: row.id,
+        courseId: row.courseId,
+        title: row.title,
+        lessonCount: row.lessonCount,
+        assessmentCount: row.assessmentCount,
+        orderIndex: row.orderIndex,
+      );
 
   ChaptersTableCompanion _chapterDtoToCompanion(ChapterDto dto) =>
       ChaptersTableCompanion.insert(
@@ -106,15 +106,15 @@ class CourseRepository {
       );
 
   LessonDto _rowToLessonDto(LessonsTableData row) => LessonDto(
-    id: row.id,
-    chapterId: row.chapterId,
-    title: row.title,
-    type: _parseType(row.type),
-    duration: row.duration,
-    progressStatus: _parseStatus(row.progressStatus),
-    isLocked: row.isLocked,
-    orderIndex: row.orderIndex,
-  );
+        id: row.id,
+        chapterId: row.chapterId,
+        title: row.title,
+        type: _parseType(row.type),
+        duration: row.duration,
+        progressStatus: _parseStatus(row.progressStatus),
+        isLocked: row.isLocked,
+        orderIndex: row.orderIndex,
+      );
 
   LessonsTableCompanion _lessonDtoToCompanion(LessonDto dto) =>
       LessonsTableCompanion.insert(
@@ -129,9 +129,9 @@ class CourseRepository {
       );
 
   LessonType _parseType(String s) => LessonType.values.firstWhere(
-    (e) => e.name == s,
-    orElse: () => LessonType.video,
-  );
+        (e) => e.name == s,
+        orElse: () => LessonType.video,
+      );
 
   LessonProgressStatus _parseStatus(String s) =>
       LessonProgressStatus.values.firstWhere(
