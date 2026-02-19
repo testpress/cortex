@@ -30,6 +30,9 @@ packages/core/docs/ai_context.md
 
 Agents MUST respect those rules during implementation phases.
 
-Commit bodies must explain intent naturally.
-Avoid prefixes like "Why:", "What:", or "How:".
-Write commit messages in natural engineering prose.
+Commit bodies must be short and scannable.
+
+- Explain intent naturally.
+- Use 1–3 short lines.
+- Prefer simple sentences over long paragraphs.
+- Avoid prefixes like "Why:" or academic explanations.
