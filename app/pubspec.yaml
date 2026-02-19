@@ -13,6 +13,9 @@ dependencies:
     path: ../packages/testpress
   core:
     path: ../packages/core
+  data:
+    path: ../packages/data
+  flutter_riverpod: ^2.5.1
 
 dev_dependencies:
   flutter_test:

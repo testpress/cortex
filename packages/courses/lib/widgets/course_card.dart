@@ -1,35 +1,31 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import '../models/course.dart';
+import 'package:data/data.dart';
 
 /// Course card widget displaying course information and progress.
 ///
-/// Shows title, description, progress indicator, and action button.
+/// Accepts a [CourseDto] from the data layer (repository/Riverpod).
 class CourseCard extends StatelessWidget {
   const CourseCard({super.key, required this.course});
 
-  final Course course;
+  final CourseDto course;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
-    // Dynamic localization lookup based on ID
-    final title = _getLocalizedTitle(l10n, course.id);
-    final description = _getLocalizedDescription(l10n, course.id);
-
     return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Title
-          AppText.title(title, color: design.colors.textPrimary),
+          AppText.title(course.title, color: design.colors.textPrimary),
           SizedBox(height: design.spacing.sm),
 
-          // Description
+          // Chapter count & duration metadata
           AppText.bodySmall(
-            description,
+            '${course.chapterCount} chapters · ${course.totalDuration}',
             color: design.colors.textSecondary,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -37,14 +33,19 @@ class CourseCard extends StatelessWidget {
           SizedBox(height: design.spacing.md),
 
           // Progress indicator
-          _ProgressIndicator(progress: course.progress),
+          _ProgressIndicator(
+            progress: course.progress / 100.0,
+            completedLessons: course.completedLessons,
+            totalLessons: course.totalLessons,
+            l10n: l10n,
+          ),
           SizedBox(height: design.spacing.md),
 
           // Action button
           AppButton.primary(
-            label: course.isStarted ? l10n.labelContinue : l10n.labelStart,
+            label: course.progress > 0 ? l10n.labelContinue : l10n.labelStart,
             onPressed: () {
-              // TODO: Navigate to course detail (Screen not yet implemented)
+              // TODO: Navigate to course detail screen
             },
             fullWidth: true,
           ),
@@ -52,56 +53,25 @@ class CourseCard extends StatelessWidget {
       ),
     );
   }
-
-  String _getLocalizedTitle(AppLocalizations l10n, String id) {
-    switch (id) {
-      case '1':
-        return l10n.course_1_title;
-      case '2':
-        return l10n.course_2_title;
-      case '3':
-        return l10n.course_3_title;
-      case '4':
-        return l10n.course_4_title;
-      case '5':
-        return l10n.course_5_title;
-      case '6':
-        return l10n.course_6_title;
-      default:
-        return course.title;
-    }
-  }
-
-  String _getLocalizedDescription(AppLocalizations l10n, String id) {
-    switch (id) {
-      case '1':
-        return l10n.course_1_description;
-      case '2':
-        return l10n.course_2_description;
-      case '3':
-        return l10n.course_3_description;
-      case '4':
-        return l10n.course_4_description;
-      case '5':
-        return l10n.course_5_description;
-      case '6':
-        return l10n.course_6_description;
-      default:
-        return course.description;
-    }
-  }
 }
 
 /// Custom progress indicator widget.
 class _ProgressIndicator extends StatelessWidget {
-  const _ProgressIndicator({required this.progress});
+  const _ProgressIndicator({
+    required this.progress,
+    required this.completedLessons,
+    required this.totalLessons,
+    required this.l10n,
+  });
 
-  final double progress;
+  final double progress; // 0.0 to 1.0
+  final int completedLessons;
+  final int totalLessons;
+  final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final l10n = L10n.of(context);
     return AppSemantics.progressValue(
       value: progress,
       label: l10n.labelCourseProgress,
@@ -116,7 +86,7 @@ class _ProgressIndicator extends StatelessWidget {
                 color: design.colors.textSecondary,
               ),
               AppText.caption(
-                '${(progress * 100).toInt()}%',
+                '$completedLessons / $totalLessons lessons',
                 color: design.colors.textSecondary,
               ),
             ],
@@ -130,7 +100,7 @@ class _ProgressIndicator extends StatelessWidget {
             ),
             child: FractionallySizedBox(
               alignment: Alignment.centerLeft,
-              widthFactor: progress,
+              widthFactor: progress.clamp(0.0, 1.0),
               child: Container(
                 decoration: BoxDecoration(
                   color: design.colors.progressForeground,

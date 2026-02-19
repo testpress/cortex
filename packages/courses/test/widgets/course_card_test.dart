@@ -1,3 +1,4 @@
+import 'package:data/data.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:core/core.dart';
@@ -7,20 +8,40 @@ void main() {
   Widget wrap(Widget child) {
     return DesignProvider(
       config: DesignConfig.defaults(),
-      child: Directionality(textDirection: TextDirection.ltr, child: child),
+      child: LocalizationProvider(
+        child: Builder(
+          builder: (context) {
+            final locale = LocalizationProvider.of(context).locale;
+            return Localizations(
+              locale: locale,
+              delegates: LocalizationProvider.delegates,
+              child: Directionality(
+                textDirection: TextDirection.ltr,
+                child: child,
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 
   group('CourseCard Accessibility', () {
-    final testCourse = Course(
+    // CourseDto with 65% progress
+    final testCourse = CourseDto(
       id: '1',
       title: 'Flutter Basics',
-      description: 'Learn Flutter fundamentals',
-      progress: 0.65,
+      subjectColor: '#4F46E5',
+      chapterCount: 5,
+      totalDuration: '10h',
+      progress: 65,
+      completedLessons: 65,
+      totalLessons: 100,
     );
 
     testWidgets('course title is accessible', (tester) async {
       await tester.pumpWidget(wrap(CourseCard(course: testCourse)));
+      await tester.pumpAndSettle();
 
       // Verify title is rendered
       expect(find.text('Flutter Basics'), findsOneWidget);
@@ -28,6 +49,7 @@ void main() {
 
     testWidgets('progress indicator exposes value semantics', (tester) async {
       await tester.pumpWidget(wrap(CourseCard(course: testCourse)));
+      await tester.pumpAndSettle();
 
       // Find the Semantics widget with progress value
       final semanticsFinder = find.byWidgetPredicate(
@@ -42,6 +64,7 @@ void main() {
 
     testWidgets('action button is accessible', (tester) async {
       await tester.pumpWidget(wrap(CourseCard(course: testCourse)));
+      await tester.pumpAndSettle();
 
       // Find the button with correct label
       final buttonFinder = find.byWidgetPredicate(
@@ -56,6 +79,7 @@ void main() {
 
     testWidgets('card composes primitives correctly', (tester) async {
       await tester.pumpWidget(wrap(CourseCard(course: testCourse)));
+      await tester.pumpAndSettle();
 
       // Verify composition: AppCard contains AppText and AppButton
       expect(find.byType(AppCard), findsOneWidget);
@@ -64,14 +88,19 @@ void main() {
     });
 
     testWidgets('not started course shows Start button', (tester) async {
-      final notStartedCourse = Course(
+      final notStartedCourse = CourseDto(
         id: '2',
         title: 'Advanced Flutter',
-        description: 'Advanced concepts',
-        progress: 0.0,
+        subjectColor: '#4F46E5',
+        chapterCount: 3,
+        totalDuration: '6h',
+        progress: 0,
+        completedLessons: 0,
+        totalLessons: 50,
       );
 
       await tester.pumpWidget(wrap(CourseCard(course: notStartedCourse)));
+      await tester.pumpAndSettle();
 
       // Find the button with "Start" label
       final buttonFinder = find.byWidgetPredicate(

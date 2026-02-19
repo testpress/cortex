@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:testpress/course_list.dart';
 import 'package:core/core.dart';
 
-void main() {
-  runApp(const CortexAppRoot());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const ProviderScope(child: CortexAppRoot()));
 }
 
 /// Root widget with mutable DesignConfig for hot reload testing.

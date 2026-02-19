@@ -1,0 +1,33 @@
+name: data
+description: "Offline-first data layer for the LMS app: Drift local DB, repository pattern, MockDataSource, and Riverpod providers."
+publish_to: 'none'
+version: 0.0.1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # Local DB
+  drift: ^2.21.0
+  sqlite3_flutter_libs: ^0.5.30
+  # State management
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+  # Utilities
+  path_provider: ^2.1.4
+  path: ^1.9.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  # Codegen
+  build_runner: ^2.4.12
+  drift_dev: ^2.21.0
+  riverpod_generator: ^2.4.3
+
+flutter:
+  # No UI assets in data package
