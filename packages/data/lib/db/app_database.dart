@@ -28,7 +28,18 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (m, from, to) async {
+          if (from < 2) {
+            // Simplified for development: drop and recreate the table to handle renamed column
+            await m.deleteTable(coursesTable.actualTableName);
+            await m.createTable(coursesTable);
+          }
+        },
+      );
 
   // ── Courses ──────────────────────────────────────────────────────────────
 
@@ -77,7 +88,8 @@ class AppDatabase extends _$AppDatabase {
   Stream<List<ForumThreadsTableData>> watchThreadsForCourse(String courseId) =>
       (select(
         forumThreadsTable,
-      )..where((t) => t.courseId.equals(courseId))).watch();
+      )..where((t) => t.courseId.equals(courseId)))
+          .watch();
 
   Future<void> upsertForumThreads(List<ForumThreadsTableCompanion> rows) =>
       batch((b) => b.insertAllOnConflictUpdate(forumThreadsTable, rows));
@@ -87,7 +99,8 @@ class AppDatabase extends _$AppDatabase {
   Stream<List<UserProgressTableData>> watchProgressForUser(String userId) =>
       (select(
         userProgressTable,
-      )..where((t) => t.userId.equals(userId))).watch();
+      )..where((t) => t.userId.equals(userId)))
+          .watch();
 
   Future<void> upsertProgress(List<UserProgressTableCompanion> rows) =>
       batch((b) => b.insertAllOnConflictUpdate(userProgressTable, rows));
