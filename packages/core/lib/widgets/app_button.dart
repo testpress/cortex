@@ -81,7 +81,7 @@ class AppButton extends StatelessWidget {
           ),
           child: Container(
             width: fullWidth ? double.infinity : null,
-            padding: EdgeInsets.symmetric(
+            padding: EdgeInsetsDirectional.symmetric(
               horizontal: design.spacing.lg,
               vertical: design.spacing.md,
             ),

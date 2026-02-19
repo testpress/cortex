@@ -32,3 +32,7 @@ export 'accessibility/accessibility_guard.dart';
 
 // Motion
 export 'motion/accessibility_motion.dart';
+
+// Localization
+export 'localization/localization_provider.dart';
+export 'localization/l10n_helper.dart';

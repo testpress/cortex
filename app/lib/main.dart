@@ -23,39 +23,67 @@ class _CortexAppRootState extends State<CortexAppRoot> {
   @override
   Widget build(BuildContext context) {
     // 🎨 DARK MODE SUPPORT: Both configs are now passed to DesignProvider.
-    // It will automatically switch based on system brightness!
     final lightConfig = DesignConfig.light();
     final darkConfig = DesignConfig.dark();
 
-    return DesignProvider(
-      config: lightConfig,
-      darkConfig: darkConfig,
-      mode: DesignMode.system, // This is the default
-      child: const CortexApp(),
+    // 🌍 LOCALIZATION SUPPORT: Wrapping the root with LocalizationProvider.
+    return LocalizationProvider(
+      child: DesignProvider(
+        config: lightConfig,
+        darkConfig: darkConfig,
+        mode: DesignMode.system,
+        child: const CortexApp(),
+      ),
     );
   }
 }
 
 /// Cortex reference application.
-///
-/// Demonstrates consumption of the testpress SDK. Uses MaterialApp
-/// as a container only - no Material widgets in the UI layer.
 class CortexApp extends StatelessWidget {
   const CortexApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final localization = LocalizationProvider.of(context);
+    final locale = localization.locale;
+    final isArabic = locale.languageCode == 'ar';
+
     return MaterialApp(
       title: 'Cortex',
       debugShowCheckedModeBanner: false,
-      home: DefaultTextStyle(
-        // Required: AppText uses Text internally which needs DefaultTextStyle
-        style: design.typography.body.copyWith(
-          color: design.colors.textPrimary,
-          decoration: TextDecoration.none,
-        ),
-        child: const CourseListScreen(),
+      locale: locale,
+      localizationsDelegates: LocalizationProvider.delegates,
+      supportedLocales: LocalizationProvider.supportedLocales,
+      home: Builder(
+        builder: (context) {
+          final l10n = L10n.of(context);
+          return DefaultTextStyle(
+            style: design.typography.body.copyWith(
+              color: design.colors.textPrimary,
+              decoration: TextDecoration.none,
+            ),
+            child: Column(
+              children: [
+                AppHeader(
+                  title: l10n.appTitle,
+                  subtitle: l10n.welcomeMessage,
+                  actions: [
+                    AppButton.secondary(
+                      label: isArabic ? 'English' : 'Arabic',
+                      onPressed: () {
+                        localization.setLocale(
+                          isArabic ? const Locale('en') : const Locale('ar'),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                const Expanded(child: CourseListScreen()),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

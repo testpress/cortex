@@ -23,7 +23,7 @@ class AppHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     return Container(
-      padding: EdgeInsets.fromLTRB(
+      padding: EdgeInsetsDirectional.fromSTEB(
         design.spacing.screenPadding,
         design.spacing.xl,
         design.spacing.screenPadding,

@@ -1,0 +1,15 @@
+{
+  "@@locale": "en",
+  "appTitle": "Cortex SDK",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "loginButton": "Login",
+  "@loginButton": {
+    "description": "Text for the login button"
+  },
+  "welcomeMessage": "Welcome to Cortex",
+  "@welcomeMessage": {
+    "description": "A welcome message for the user"
+  }
+}
