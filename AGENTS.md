@@ -29,3 +29,7 @@ Implementation rules and UI constraints are defined in:
 packages/core/docs/ai_context.md
 
 Agents MUST respect those rules during implementation phases.
+
+Commit bodies must explain intent naturally.
+Avoid prefixes like "Why:", "What:", or "How:".
+Write commit messages in natural engineering prose.
