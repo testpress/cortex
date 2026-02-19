@@ -1,5 +1,6 @@
 # Flutter Screen Inventory: LMS Coaching App
-## Reference Implementation Source (Local ReactJS): `/Users/bharath/Downloads/project`
+## Reference Implementation Source: [LOCAL_PATH_TO_REACTJS_PROJECT]
+> **Note to Agent:** This implementation follows a ReactJS project (Figma Make export) as a reference. If the path above is not set, ask the user for the local location of the ReactJS source.
 ## Mapping: React (Figma Make) → Cortex Flutter SDK
 
 This is a **JEE/NEET coaching institute LMS** with three user states and 5 nav tabs.
