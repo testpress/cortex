@@ -32,6 +32,8 @@ class DesignConfig {
     required this.typography,
     required this.motion,
     required this.radius,
+    required this.subjectPalette,
+    required this.statusColors,
   });
 
   final DesignColors colors;
@@ -39,6 +41,8 @@ class DesignConfig {
   final DesignTypography typography;
   final DesignMotion motion;
   final DesignRadius radius;
+  final DesignSubjectPalette subjectPalette;
+  final DesignStatusColors statusColors;
 
   /// Default configuration matching current static tokens.
   ///
@@ -56,6 +60,8 @@ class DesignConfig {
       typography: DesignTypography.defaults(),
       motion: DesignMotion.defaults(context: context),
       radius: DesignRadius.defaults(),
+      subjectPalette: DesignSubjectPalette.light(),
+      statusColors: DesignStatusColors.light(),
     );
   }
 
@@ -67,6 +73,8 @@ class DesignConfig {
       typography: DesignTypography.defaults(),
       motion: DesignMotion.defaults(context: context),
       radius: DesignRadius.defaults(),
+      subjectPalette: DesignSubjectPalette.dark(),
+      statusColors: DesignStatusColors.dark(),
     );
   }
 
@@ -76,6 +84,8 @@ class DesignConfig {
     DesignTypography? typography,
     DesignMotion? motion,
     DesignRadius? radius,
+    DesignSubjectPalette? subjectPalette,
+    DesignStatusColors? statusColors,
   }) {
     return DesignConfig(
       colors: colors ?? this.colors,
@@ -83,6 +93,8 @@ class DesignConfig {
       typography: typography ?? this.typography,
       motion: motion ?? this.motion,
       radius: radius ?? this.radius,
+      subjectPalette: subjectPalette ?? this.subjectPalette,
+      statusColors: statusColors ?? this.statusColors,
     );
   }
 
@@ -94,12 +106,22 @@ class DesignConfig {
         other.spacing == spacing &&
         other.typography == typography &&
         other.motion == motion &&
-        other.radius == radius;
+        other.radius == radius &&
+        other.subjectPalette == subjectPalette &&
+        other.statusColors == statusColors;
   }
 
   @override
   int get hashCode {
-    return Object.hash(colors, spacing, typography, motion, radius);
+    return Object.hash(
+      colors,
+      spacing,
+      typography,
+      motion,
+      radius,
+      subjectPalette,
+      statusColors,
+    );
   }
 }
 
@@ -117,6 +139,8 @@ class DesignColors {
     required this.onSurface,
     required this.surfaceVariant,
     required this.onSurfaceVariant,
+    required this.card,
+    required this.onCard,
     required this.border,
     required this.divider,
     required this.success,
@@ -145,6 +169,10 @@ class DesignColors {
   final Color onSurface;
   final Color surfaceVariant;
   final Color onSurfaceVariant;
+
+  // Card surface (distinct from page surface for visual layering)
+  final Color card;
+  final Color onCard;
 
   // Border and divider
   final Color border;
@@ -175,10 +203,12 @@ class DesignColors {
       onPrimary: Color(0xFFFFFFFF),
       primaryContainer: Color(0xFFE0E7FF),
       onPrimaryContainer: Color(0xFF1E1B4B),
-      surface: Color(0xFFFFFFFF),
+      surface: Color(0xFFF9FAFB),
       onSurface: Color(0xFF1F2937),
-      surfaceVariant: Color(0xFFF9FAFB),
+      surfaceVariant: Color(0xFFF3F4F6),
       onSurfaceVariant: Color(0xFF6B7280),
+      card: Color(0xFFFFFFFF),
+      onCard: Color(0xFF111827),
       border: Color(0xFFE5E7EB),
       divider: Color(0xFFF3F4F6),
       success: Color(0xFF10B981),
@@ -207,6 +237,8 @@ class DesignColors {
       onSurface: Color(0xFFF8FAFC),
       surfaceVariant: Color(0xFF1E293B), // Slate 800
       onSurfaceVariant: Color(0xFF94A3B8),
+      card: Color(0xFF1E293B), // Slate 800 — card sits above slate-900 surface
+      onCard: Color(0xFFF8FAFC),
       border: Color(0xFF334155),
       divider: Color(0xFF1E293B),
       success: Color(0xFF34D399),
@@ -243,8 +275,9 @@ class DesignColors {
   factory DesignColors.smart({
     Color primary = const Color(0xFF6366F1),
     Color? primaryContainer,
-    Color surface = const Color(0xFFFFFFFF),
+    Color surface = const Color(0xFFF9FAFB),
     Color? surfaceVariant,
+    Color? card,
     Color border = const Color(0xFFE5E7EB),
     Color divider = const Color(0xFFF3F4F6),
     Color success = const Color(0xFF10B981),
@@ -268,6 +301,8 @@ class DesignColors {
     final computedSurfaceVariant = surfaceVariant ?? _lighten(surface, 0.98);
     final onSurface = _contrastingColor(surface);
     final onSurfaceVariant = _contrastingColor(computedSurfaceVariant);
+    final computedCard = card ?? const Color(0xFFFFFFFF);
+    final onCard = _contrastingColor(computedCard);
 
     return DesignColors(
       primary: primary,
@@ -278,6 +313,8 @@ class DesignColors {
       onSurface: onSurface,
       surfaceVariant: computedSurfaceVariant,
       onSurfaceVariant: onSurfaceVariant,
+      card: computedCard,
+      onCard: onCard,
       border: border,
       divider: divider,
       success: success,
@@ -340,6 +377,8 @@ class DesignColors {
         other.onSurface == onSurface &&
         other.surfaceVariant == surfaceVariant &&
         other.onSurfaceVariant == onSurfaceVariant &&
+        other.card == card &&
+        other.onCard == onCard &&
         other.border == border &&
         other.divider == divider &&
         other.success == success &&
@@ -367,6 +406,8 @@ class DesignColors {
       onSurface,
       surfaceVariant,
       onSurfaceVariant,
+      card,
+      onCard,
       border,
       divider,
       success,
@@ -383,6 +424,294 @@ class DesignColors {
       progressForeground,
     ]);
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Subject Palette
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// A single color slot in the subject palette.
+///
+/// Subjects from the API carry a `colorIndex` (0-based). Widgets call
+/// `DesignSubjectPalette.atIndex(colorIndex)` to get this object.
+/// No subject names are stored here — subjects are API-driven and tenant-specific.
+@immutable
+class SubjectColors {
+  const SubjectColors({
+    required this.background,
+    required this.foreground,
+    required this.accent,
+  });
+
+  /// Chip/badge background color.
+  final Color background;
+
+  /// Text/icon color on [background] — WCAG AA compliant.
+  final Color foreground;
+
+  /// Border or icon accent color.
+  final Color accent;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is SubjectColors &&
+        other.background == background &&
+        other.foreground == foreground &&
+        other.accent == accent;
+  }
+
+  @override
+  int get hashCode => Object.hash(background, foreground, accent);
+}
+
+/// Indexed subject color palette.
+///
+/// Contains an ordered list of [SubjectColors] slots. The API provides a
+/// `colorIndex` per subject; use [atIndex] to resolve the color. The index
+/// wraps modularly so it never throws regardless of the number of subjects.
+@immutable
+class DesignSubjectPalette {
+  const DesignSubjectPalette(this._palettes);
+
+  final List<SubjectColors> _palettes;
+
+  /// Returns the [SubjectColors] at [i % palette.length].
+  /// Always safe — wraps around for any non-negative integer.
+  SubjectColors atIndex(int i) => _palettes[i % _palettes.length];
+
+  /// Number of distinct color slots in this palette.
+  int get length => _palettes.length;
+
+  /// Light-mode palette — 8 visually distinct, WCAG AA-compliant color slots.
+  factory DesignSubjectPalette.light() {
+    return const DesignSubjectPalette([
+      // 0 — indigo
+      SubjectColors(
+        background: Color(0xFFEEF2FF),
+        foreground: Color(0xFF3730A3),
+        accent: Color(0xFF6366F1),
+      ),
+      // 1 — orange
+      SubjectColors(
+        background: Color(0xFFFFF7ED),
+        foreground: Color(0xFF9A3412),
+        accent: Color(0xFFF97316),
+      ),
+      // 2 — emerald
+      SubjectColors(
+        background: Color(0xFFF0FDF4),
+        foreground: Color(0xFF166534),
+        accent: Color(0xFF22C55E),
+      ),
+      // 3 — violet
+      SubjectColors(
+        background: Color(0xFFF5F3FF),
+        foreground: Color(0xFF5B21B6),
+        accent: Color(0xFF7C3AED),
+      ),
+      // 4 — rose
+      SubjectColors(
+        background: Color(0xFFFFF1F2),
+        foreground: Color(0xFF9F1239),
+        accent: Color(0xFFF43F5E),
+      ),
+      // 5 — sky
+      SubjectColors(
+        background: Color(0xFFF0F9FF),
+        foreground: Color(0xFF0369A1),
+        accent: Color(0xFF0EA5E9),
+      ),
+      // 6 — amber
+      SubjectColors(
+        background: Color(0xFFFFFBEB),
+        foreground: Color(0xFF92400E),
+        accent: Color(0xFFF59E0B),
+      ),
+      // 7 — teal
+      SubjectColors(
+        background: Color(0xFFF0FDFA),
+        foreground: Color(0xFF134E4A),
+        accent: Color(0xFF14B8A6),
+      ),
+    ]);
+  }
+
+  /// Dark-mode palette — muted/adjusted equivalents for dark surfaces.
+  factory DesignSubjectPalette.dark() {
+    return const DesignSubjectPalette([
+      // 0 — indigo
+      SubjectColors(
+        background: Color(0xFF1E1B4B),
+        foreground: Color(0xFFC7D2FE),
+        accent: Color(0xFF818CF8),
+      ),
+      // 1 — orange
+      SubjectColors(
+        background: Color(0xFF431407),
+        foreground: Color(0xFFFED7AA),
+        accent: Color(0xFFFB923C),
+      ),
+      // 2 — emerald
+      SubjectColors(
+        background: Color(0xFF052E16),
+        foreground: Color(0xFFBBF7D0),
+        accent: Color(0xFF4ADE80),
+      ),
+      // 3 — violet
+      SubjectColors(
+        background: Color(0xFF2E1065),
+        foreground: Color(0xFFDDD6FE),
+        accent: Color(0xFFA78BFA),
+      ),
+      // 4 — rose
+      SubjectColors(
+        background: Color(0xFF4C0519),
+        foreground: Color(0xFFFFCDD5),
+        accent: Color(0xFFFB7185),
+      ),
+      // 5 — sky
+      SubjectColors(
+        background: Color(0xFF082F49),
+        foreground: Color(0xFFBAE6FD),
+        accent: Color(0xFF38BDF8),
+      ),
+      // 6 — amber
+      SubjectColors(
+        background: Color(0xFF451A03),
+        foreground: Color(0xFFFDE68A),
+        accent: Color(0xFFFBBF24),
+      ),
+      // 7 — teal
+      SubjectColors(
+        background: Color(0xFF042F2E),
+        foreground: Color(0xFF99F6E4),
+        accent: Color(0xFF2DD4BF),
+      ),
+    ]);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! DesignSubjectPalette) return false;
+    if (_palettes.length != other._palettes.length) return false;
+    for (int i = 0; i < _palettes.length; i++) {
+      if (_palettes[i] != other._palettes[i]) return false;
+    }
+    return true;
+  }
+
+  @override
+  int get hashCode => Object.hashAll(_palettes);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Status Colors
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// A color pair for a single content-status state.
+@immutable
+class StatusColors {
+  const StatusColors({required this.background, required this.foreground});
+
+  /// Badge/chip background color.
+  final Color background;
+
+  /// Text/icon color on [background] — WCAG AA compliant (≥ 4.5:1).
+  final Color foreground;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is StatusColors &&
+        other.background == background &&
+        other.foreground == foreground;
+  }
+
+  @override
+  int get hashCode => Object.hash(background, foreground);
+}
+
+/// Content-status color token group.
+///
+/// Covers the four states used by LMS content items and badges.
+/// These are product-model states (not API-driven), so named fields are correct.
+@immutable
+class DesignStatusColors {
+  const DesignStatusColors({
+    required this.live,
+    required this.completed,
+    required this.locked,
+    required this.upcoming,
+  });
+
+  /// Active/live session — vivid, attention-drawing.
+  final StatusColors live;
+
+  /// Successfully finished content.
+  final StatusColors completed;
+
+  /// Locked/inaccessible content — visually subdued.
+  final StatusColors locked;
+
+  /// Scheduled but not yet available.
+  final StatusColors upcoming;
+
+  factory DesignStatusColors.light() {
+    return const DesignStatusColors(
+      live: StatusColors(
+        background: Color(0xFFFEE2E2),
+        foreground: Color(0xFF991B1B),
+      ),
+      completed: StatusColors(
+        background: Color(0xFFD1FAE5),
+        foreground: Color(0xFF065F46),
+      ),
+      locked: StatusColors(
+        background: Color(0xFFF3F4F6),
+        foreground: Color(0xFF6B7280),
+      ),
+      upcoming: StatusColors(
+        background: Color(0xFFDBEAFE),
+        foreground: Color(0xFF1E40AF),
+      ),
+    );
+  }
+
+  factory DesignStatusColors.dark() {
+    return const DesignStatusColors(
+      live: StatusColors(
+        background: Color(0xFF450A0A),
+        foreground: Color(0xFFFCA5A5),
+      ),
+      completed: StatusColors(
+        background: Color(0xFF052E16),
+        foreground: Color(0xFF6EE7B7),
+      ),
+      locked: StatusColors(
+        background: Color(0xFF1F2937),
+        foreground: Color(0xFF9CA3AF),
+      ),
+      upcoming: StatusColors(
+        background: Color(0xFF1E3A5F),
+        foreground: Color(0xFF93C5FD),
+      ),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is DesignStatusColors &&
+        other.live == live &&
+        other.completed == completed &&
+        other.locked == locked &&
+        other.upcoming == upcoming;
+  }
+
+  @override
+  int get hashCode => Object.hash(live, completed, locked, upcoming);
 }
 
 /// Spacing token group.
