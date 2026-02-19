@@ -32,7 +32,7 @@ void main() {
       );
 
       // Default is light
-      expect(capturedConfig.colors.surface, const Color(0xFFFFFFFF));
+      expect(capturedConfig.colors.surface, const Color(0xFFF9FAFB));
 
       // Simulate dark mode
       tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;

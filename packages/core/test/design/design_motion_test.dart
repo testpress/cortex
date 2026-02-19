@@ -8,7 +8,7 @@ void main() {
       tester,
     ) async {
       final noAnimationConfig = DesignConfig(
-        colors: DesignColors.defaults(),
+        colors: DesignColors.light(),
         spacing: DesignSpacing.defaults(),
         typography: DesignTypography.defaults(),
         motion: const DesignMotion(
@@ -24,6 +24,8 @@ void main() {
           spring: Curves.easeOutCubic,
         ),
         radius: DesignRadius.defaults(),
+        subjectPalette: DesignSubjectPalette.light(),
+        statusColors: DesignStatusColors.light(),
       );
 
       bool? shouldAnimate;
@@ -53,7 +55,7 @@ void main() {
       tester,
     ) async {
       final animationConfig = DesignConfig(
-        colors: DesignColors.defaults(),
+        colors: DesignColors.light(),
         spacing: DesignSpacing.defaults(),
         typography: DesignTypography.defaults(),
         motion: const DesignMotion(
@@ -69,6 +71,8 @@ void main() {
           spring: Curves.easeOutCubic,
         ),
         radius: DesignRadius.defaults(),
+        subjectPalette: DesignSubjectPalette.light(),
+        statusColors: DesignStatusColors.light(),
       );
 
       bool? shouldAnimate;

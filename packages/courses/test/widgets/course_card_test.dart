@@ -31,7 +31,7 @@ void main() {
     final testCourse = CourseDto(
       id: '1',
       title: 'Flutter Basics',
-      subjectColor: '#4F46E5',
+      colorIndex: 0,
       chapterCount: 5,
       totalDuration: '10h',
       progress: 65,
@@ -91,7 +91,7 @@ void main() {
       final notStartedCourse = CourseDto(
         id: '2',
         title: 'Advanced Flutter',
-        subjectColor: '#4F46E5',
+        colorIndex: 0,
         chapterCount: 3,
         totalDuration: '6h',
         progress: 0,

@@ -12,10 +12,12 @@ void main() {
           onPrimary: Color(0xFFFFFFFF),
           primaryContainer: Color(0xFFE0E7FF),
           onPrimaryContainer: Color(0xFF1E1B4B),
-          surface: Color(0xFFFFFFFF),
+          surface: Color(0xFFF9FAFB),
           onSurface: Color(0xFF1F2937),
-          surfaceVariant: Color(0xFFF9FAFB),
+          surfaceVariant: Color(0xFFF3F4F6),
           onSurfaceVariant: Color(0xFF6B7280),
+          card: Color(0xFFFFFFFF),
+          onCard: Color(0xFF111827),
           border: Color(0xFFE5E7EB),
           divider: Color(0xFFF3F4F6),
           success: Color(0xFF10B981),
@@ -36,6 +38,8 @@ void main() {
         typography: DesignTypography.defaults(),
         motion: DesignMotion.defaults(),
         radius: DesignRadius.defaults(),
+        subjectPalette: DesignSubjectPalette.light(),
+        statusColors: DesignStatusColors.light(),
       );
 
       late DesignConfig capturedConfig;
@@ -78,10 +82,12 @@ void main() {
           onPrimary: Color(0xFFFFFFFF),
           primaryContainer: Color(0xFFE0E7FF),
           onPrimaryContainer: Color(0xFF1E1B4B),
-          surface: Color(0xFFFFFFFF),
+          surface: Color(0xFFF9FAFB),
           onSurface: Color(0xFF1F2937),
-          surfaceVariant: Color(0xFFF9FAFB),
+          surfaceVariant: Color(0xFFF3F4F6),
           onSurfaceVariant: Color(0xFF6B7280),
+          card: Color(0xFFFFFFFF),
+          onCard: Color(0xFF111827),
           border: Color(0xFFE5E7EB),
           divider: Color(0xFFF3F4F6),
           success: Color(0xFF10B981),
@@ -102,6 +108,8 @@ void main() {
         typography: DesignTypography.defaults(),
         motion: DesignMotion.defaults(),
         radius: DesignRadius.defaults(),
+        subjectPalette: DesignSubjectPalette.light(),
+        statusColors: DesignStatusColors.light(),
       );
 
       late DesignConfig capturedConfig;
