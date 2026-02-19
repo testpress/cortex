@@ -14,42 +14,77 @@ class CourseCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
+    final subjectColors = design.subjectPalette.atIndex(course.colorIndex);
 
     return AppCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Title
-          AppText.title(course.title, color: design.colors.textPrimary),
-          SizedBox(height: design.spacing.sm),
+      padding: EdgeInsets
+          .zero, // Remove default padding to allow accent bar to touch edges
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Vertical Subject Accent Bar
+            Container(
+              width: 4,
+              decoration: BoxDecoration(
+                color: subjectColors.accent,
+                borderRadius: BorderRadius.only(
+                  topLeft: design.radius.card.topLeft,
+                  bottomLeft: design.radius.card.bottomLeft,
+                ),
+              ),
+            ),
 
-          // Chapter count & duration metadata
-          AppText.bodySmall(
-            '${course.chapterCount} chapters · ${course.totalDuration}',
-            color: design.colors.textSecondary,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          SizedBox(height: design.spacing.md),
+            // Main Content
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(design.spacing.md),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Title
+                    AppText.title(
+                      course.title,
+                      color: design.colors.textPrimary,
+                    ),
+                    SizedBox(height: design.spacing.xs),
 
-          // Progress indicator
-          _ProgressIndicator(
-            progress: course.progress / 100.0,
-            completedLessons: course.completedLessons,
-            totalLessons: course.totalLessons,
-            l10n: l10n,
-          ),
-          SizedBox(height: design.spacing.md),
+                    // Chapter count & duration metadata
+                    AppText.bodySmall(
+                      '${course.chapterCount} chapters · ${course.totalDuration}',
+                      color: design.colors.textSecondary,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: design.spacing.md),
 
-          // Action button
-          AppButton.primary(
-            label: course.progress > 0 ? l10n.labelContinue : l10n.labelStart,
-            onPressed: () {
-              // TODO: Navigate to course detail screen
-            },
-            fullWidth: true,
-          ),
-        ],
+                    // Progress indicator (Themed)
+                    _ProgressIndicator(
+                      progress: course.progress / 100.0,
+                      completedLessons: course.completedLessons,
+                      totalLessons: course.totalLessons,
+                      l10n: l10n,
+                      accentColor: subjectColors.accent,
+                      backgroundColor: subjectColors.background,
+                    ),
+                    SizedBox(height: design.spacing.md),
+
+                    // Action button
+                    AppButton.primary(
+                      label: course.progress > 0
+                          ? l10n.labelContinue
+                          : l10n.labelStart,
+                      onPressed: () {
+                        // TODO: Navigate to course detail screen
+                      },
+                      fullWidth: true,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -62,12 +97,16 @@ class _ProgressIndicator extends StatelessWidget {
     required this.completedLessons,
     required this.totalLessons,
     required this.l10n,
+    required this.accentColor,
+    required this.backgroundColor,
   });
 
   final double progress; // 0.0 to 1.0
   final int completedLessons;
   final int totalLessons;
   final AppLocalizations l10n;
+  final Color accentColor;
+  final Color backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +134,7 @@ class _ProgressIndicator extends StatelessWidget {
           Container(
             height: 6,
             decoration: BoxDecoration(
-              color: design.colors.progressBackground,
+              color: backgroundColor,
               borderRadius: BorderRadius.circular(design.radius.full),
             ),
             child: FractionallySizedBox(
@@ -103,7 +142,7 @@ class _ProgressIndicator extends StatelessWidget {
               widthFactor: progress.clamp(0.0, 1.0),
               child: Container(
                 decoration: BoxDecoration(
-                  color: design.colors.progressForeground,
+                  color: accentColor,
                   borderRadius: BorderRadius.circular(design.radius.full),
                 ),
               ),
