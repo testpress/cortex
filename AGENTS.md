@@ -24,3 +24,8 @@ Guardrails:
 - Do NOT move existing files.
 - Do NOT redesign architecture during onboarding.
 - Use existing ADRs and markdown as context.
+
+Implementation rules and UI constraints are defined in:
+packages/core/docs/ai_context.md
+
+Agents MUST respect those rules during implementation phases.
