@@ -16,7 +16,10 @@ class CourseListScreen extends StatelessWidget {
     return AppShell(
       child: Column(
         children: [
-          const AppHeader(title: 'Cortex', subtitle: 'Course Library'),
+          AppHeader(
+            title: L10n.of(context).courseLibraryTitle,
+            subtitle: L10n.of(context).courseLibrarySubtitle,
+          ),
           Expanded(
             child: AppScroll(
               children: [

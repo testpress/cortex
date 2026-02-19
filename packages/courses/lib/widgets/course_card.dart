@@ -13,17 +13,23 @@ class CourseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
+
+    // Dynamic localization lookup based on ID
+    final title = _getLocalizedTitle(l10n, course.id);
+    final description = _getLocalizedDescription(l10n, course.id);
+
     return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Title
-          AppText.title(course.title, color: design.colors.textPrimary),
+          AppText.title(title, color: design.colors.textPrimary),
           SizedBox(height: design.spacing.sm),
 
           // Description
           AppText.bodySmall(
-            course.description,
+            description,
             color: design.colors.textSecondary,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -36,7 +42,7 @@ class CourseCard extends StatelessWidget {
 
           // Action button
           AppButton.primary(
-            label: course.isStarted ? 'Continue' : 'Start',
+            label: course.isStarted ? l10n.labelContinue : l10n.labelStart,
             onPressed: () {
               // TODO: Navigate to course detail (Screen not yet implemented)
             },
@@ -45,6 +51,44 @@ class CourseCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _getLocalizedTitle(AppLocalizations l10n, String id) {
+    switch (id) {
+      case '1':
+        return l10n.course_1_title;
+      case '2':
+        return l10n.course_2_title;
+      case '3':
+        return l10n.course_3_title;
+      case '4':
+        return l10n.course_4_title;
+      case '5':
+        return l10n.course_5_title;
+      case '6':
+        return l10n.course_6_title;
+      default:
+        return course.title;
+    }
+  }
+
+  String _getLocalizedDescription(AppLocalizations l10n, String id) {
+    switch (id) {
+      case '1':
+        return l10n.course_1_description;
+      case '2':
+        return l10n.course_2_description;
+      case '3':
+        return l10n.course_3_description;
+      case '4':
+        return l10n.course_4_description;
+      case '5':
+        return l10n.course_5_description;
+      case '6':
+        return l10n.course_6_description;
+      default:
+        return course.description;
+    }
   }
 }
 
@@ -57,16 +101,20 @@ class _ProgressIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     return AppSemantics.progressValue(
       value: progress,
-      label: 'Course progress',
+      label: l10n.labelCourseProgress,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              AppText.caption('Progress', color: design.colors.textSecondary),
+              AppText.caption(
+                l10n.labelProgress,
+                color: design.colors.textSecondary,
+              ),
               AppText.caption(
                 '${(progress * 100).toInt()}%',
                 color: design.colors.textSecondary,

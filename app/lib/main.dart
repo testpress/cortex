@@ -47,7 +47,6 @@ class CortexApp extends StatelessWidget {
     final design = Design.of(context);
     final localization = LocalizationProvider.of(context);
     final locale = localization.locale;
-    final isArabic = locale.languageCode == 'ar';
 
     return MaterialApp(
       title: 'Cortex',
@@ -70,11 +69,10 @@ class CortexApp extends StatelessWidget {
                   subtitle: l10n.welcomeMessage,
                   actions: [
                     AppButton.secondary(
-                      label: isArabic ? 'English' : 'Arabic',
+                      label: _getLanguageLabel(locale.languageCode),
                       onPressed: () {
-                        localization.setLocale(
-                          isArabic ? const Locale('en') : const Locale('ar'),
-                        );
+                        final nextLocale = _getNextLocale(locale.languageCode);
+                        localization.setLocale(nextLocale);
                       },
                     ),
                   ],
@@ -86,5 +84,27 @@ class CortexApp extends StatelessWidget {
         },
       ),
     );
+  }
+
+  String _getLanguageLabel(String code) {
+    switch (code) {
+      case 'ar':
+        return 'മലയാളം';
+      case 'ml':
+        return 'English';
+      default:
+        return 'العربية';
+    }
+  }
+
+  Locale _getNextLocale(String code) {
+    switch (code) {
+      case 'ar':
+        return const Locale('ml');
+      case 'ml':
+        return const Locale('en');
+      default:
+        return const Locale('ar');
+    }
   }
 }

@@ -7,6 +7,7 @@ import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_ar.dart';
 import 'app_localizations_en.dart';
+import 'app_localizations_ml.dart';
 
 // ignore_for_file: type=lint
 
@@ -96,6 +97,7 @@ abstract class AppLocalizations {
   static const List<Locale> supportedLocales = <Locale>[
     Locale('ar'),
     Locale('en'),
+    Locale('ml'),
   ];
 
   /// The title of the application
@@ -115,6 +117,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Welcome to Cortex'**
   String get welcomeMessage;
+
+  /// No description provided for @courseLibraryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cortex'**
+  String get courseLibraryTitle;
+
+  /// No description provided for @courseLibrarySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Course Library'**
+  String get courseLibrarySubtitle;
+
+  /// No description provided for @course_1_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Flutter Fundamentals'**
+  String get course_1_title;
+
+  /// No description provided for @course_1_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Master the basics of Flutter development with hands-on projects and real-world examples.'**
+  String get course_1_description;
+
+  /// No description provided for @course_2_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced State Management'**
+  String get course_2_title;
+
+  /// No description provided for @course_2_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Deep dive into state management patterns including Provider, Riverpod, and Bloc.'**
+  String get course_2_description;
+
+  /// No description provided for @course_3_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Animations'**
+  String get course_3_title;
+
+  /// No description provided for @course_3_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Create stunning animations and transitions using Flutter\'s animation framework.'**
+  String get course_3_description;
+
+  /// No description provided for @course_4_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Firebase Integration'**
+  String get course_4_title;
+
+  /// No description provided for @course_4_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Build production-ready apps with Firebase authentication, Firestore, and cloud functions.'**
+  String get course_4_description;
+
+  /// No description provided for @course_5_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Testing Strategies'**
+  String get course_5_title;
+
+  /// No description provided for @course_5_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Write comprehensive unit, widget, and integration tests for bulletproof Flutter apps.'**
+  String get course_5_description;
+
+  /// No description provided for @course_6_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Performance Optimization'**
+  String get course_6_title;
+
+  /// No description provided for @course_6_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Optimize your Flutter apps for smooth 60fps performance on all devices.'**
+  String get course_6_description;
+
+  /// No description provided for @labelStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get labelStart;
+
+  /// No description provided for @labelContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get labelContinue;
+
+  /// No description provided for @labelProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get labelProgress;
+
+  /// No description provided for @labelCourseProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Course progress'**
+  String get labelCourseProgress;
 }
 
 class _AppLocalizationsDelegate
@@ -128,7 +238,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['ar', 'en'].contains(locale.languageCode);
+      <String>['ar', 'en', 'ml'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -141,6 +251,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsAr();
     case 'en':
       return AppLocalizationsEn();
+    case 'ml':
+      return AppLocalizationsMl();
   }
 
   throw FlutterError(

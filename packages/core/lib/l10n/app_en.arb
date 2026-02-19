@@ -11,5 +11,23 @@
   "welcomeMessage": "Welcome to Cortex",
   "@welcomeMessage": {
     "description": "A welcome message for the user"
-  }
+  },
+  "courseLibraryTitle": "Cortex",
+  "courseLibrarySubtitle": "Course Library",
+  "course_1_title": "Flutter Fundamentals",
+  "course_1_description": "Master the basics of Flutter development with hands-on projects and real-world examples.",
+  "course_2_title": "Advanced State Management",
+  "course_2_description": "Deep dive into state management patterns including Provider, Riverpod, and Bloc.",
+  "course_3_title": "Custom Animations",
+  "course_3_description": "Create stunning animations and transitions using Flutter's animation framework.",
+  "course_4_title": "Firebase Integration",
+  "course_4_description": "Build production-ready apps with Firebase authentication, Firestore, and cloud functions.",
+  "course_5_title": "Testing Strategies",
+  "course_5_description": "Write comprehensive unit, widget, and integration tests for bulletproof Flutter apps.",
+  "course_6_title": "Performance Optimization",
+  "course_6_description": "Optimize your Flutter apps for smooth 60fps performance on all devices.",
+  "labelStart": "Start",
+  "labelContinue": "Continue",
+  "labelProgress": "Progress",
+  "labelCourseProgress": "Course progress"
 }

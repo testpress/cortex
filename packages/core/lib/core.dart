@@ -36,3 +36,4 @@ export 'motion/accessibility_motion.dart';
 // Localization
 export 'localization/localization_provider.dart';
 export 'localization/l10n_helper.dart';
+export 'generated/l10n/app_localizations.dart';
