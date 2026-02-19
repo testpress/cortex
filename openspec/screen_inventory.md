@@ -1,5 +1,6 @@
 # Flutter Screen Inventory: LMS Coaching App
-## Source: Figma Make React Design → Cortex Flutter SDK
+## Reference Implementation Source (Local ReactJS): `/Users/bharath/Downloads/project`
+## Mapping: React (Figma Make) → Cortex Flutter SDK
 
 This is a **JEE/NEET coaching institute LMS** with three user states and 5 nav tabs.
 Each screen will be one OpenSpec change, implemented one at a time.
