@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/widgets.dart';
 import 'design_config.dart';
 import 'design_context.dart';
@@ -6,53 +7,80 @@ import 'design_context.dart';
 ///
 /// Wraps the application root to inject DesignConfig into the widget tree.
 /// All widgets can access design tokens via Design.of(context).
-///
-/// Usage:
-/// ```dart
-/// void main() {
-///   runApp(
-///     DesignProvider(
-///       config: DesignConfig.defaults(),
-///       child: MyApp(),
-///     ),
-///   );
-/// }
-/// ```
-///
-/// Why this exists:
-/// Provides a single source of truth for design decisions that can be
-/// customized at runtime. Future-proof for white-label branding and
-/// AI-adaptive UX without breaking SDK contracts.
-class DesignProvider extends StatelessWidget {
-  const DesignProvider({super.key, required this.config, required this.child});
+class DesignProvider extends StatefulWidget {
+  const DesignProvider({
+    super.key,
+    required this.config,
+    this.darkConfig,
+    this.mode = DesignMode.system,
+    required this.child,
+  });
 
+  /// Primary (Light) design configuration.
   final DesignConfig config;
+
+  /// Optional Dark design configuration.
+  /// If null, falls back to [config].
+  final DesignConfig? darkConfig;
+
+  /// Theme governance mode.
+  final DesignMode mode;
+
   final Widget child;
 
   @override
+  State<DesignProvider> createState() => _DesignProviderState();
+}
+
+class _DesignProviderState extends State<DesignProvider>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    if (widget.mode == DesignMode.system) {
+      setState(() {
+        // Trigger rebuild to pick up new PlatformDispatcher brightness
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return DesignContext(config: config, child: child);
+    // 💡 Hybrid reactivity:
+    // 1. Listen to MediaQuery if available (standard Flutter way)
+    // 2. Fallback to PlatformDispatcher (for root-level above MaterialApp)
+    final platformBrightness =
+        MediaQuery.maybePlatformBrightnessOf(context) ??
+        PlatformDispatcher.instance.platformBrightness;
+
+    final effectiveConfig = switch (widget.mode) {
+      DesignMode.light => widget.config,
+      DesignMode.dark => widget.darkConfig ?? widget.config,
+      DesignMode.system =>
+        platformBrightness == Brightness.dark
+            ? (widget.darkConfig ?? widget.config)
+            : widget.config,
+    };
+
+    return DesignContext(config: effectiveConfig, child: widget.child);
   }
 }
 
 /// Convenience accessor for design configuration.
-///
-/// Usage:
-/// ```dart
-/// final design = Design.of(context);
-/// Container(
-///   color: design.colors.primary,
-///   padding: EdgeInsets.all(design.spacing.md),
-///   child: Text('Hello', style: design.typography.body),
-/// )
-/// ```
 class Design {
   Design._();
 
-  /// Access the current DesignConfig from context.
-  ///
-  /// Throws assertion error if no DesignProvider is found in the widget tree.
-  /// Always wrap your app root with DesignProvider.
   static DesignConfig of(BuildContext context) {
     return DesignContext.of(context);
   }

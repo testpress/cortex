@@ -22,22 +22,17 @@ class CortexAppRoot extends StatefulWidget {
 class _CortexAppRootState extends State<CortexAppRoot> {
   @override
   Widget build(BuildContext context) {
-    // 🎨 HOT RELOAD TEST: Change this color and save to see live updates
-    // The text color will automatically adjust for contrast!
-    final customConfig = DesignConfig(
-      colors: DesignColors.smart(
-        primary: const Color(
-          0xFF6366F1,
-        ), // 👈 Try: 0xFFFF0000, 0xFF00FF00, 0xFFFFFF00
-        // onPrimary is automatically calculated for WCAG AA contrast!
-      ),
-      spacing: DesignSpacing.defaults(),
-      typography: DesignTypography.defaults(),
-      motion: DesignMotion.defaults(),
-      radius: DesignRadius.defaults(),
-    );
+    // 🎨 DARK MODE SUPPORT: Both configs are now passed to DesignProvider.
+    // It will automatically switch based on system brightness!
+    final lightConfig = DesignConfig.light();
+    final darkConfig = DesignConfig.dark();
 
-    return DesignProvider(config: customConfig, child: const CortexApp());
+    return DesignProvider(
+      config: lightConfig,
+      darkConfig: darkConfig,
+      mode: DesignMode.system, // This is the default
+      child: const CortexApp(),
+    );
   }
 }
 

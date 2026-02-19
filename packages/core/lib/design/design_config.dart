@@ -1,6 +1,18 @@
 import 'dart:math';
 import 'package:flutter/widgets.dart';
 
+/// Theme governance mode.
+enum DesignMode {
+  /// Respect system-level brightness preference.
+  system,
+
+  /// Force light theme.
+  light,
+
+  /// Force dark theme.
+  dark,
+}
+
 /// Runtime design configuration.
 ///
 /// Immutable configuration object holding all design tokens. This becomes
@@ -33,8 +45,24 @@ class DesignConfig {
   /// This factory ensures zero visual changes during migration.
   /// Future work can introduce custom configs for branding.
   factory DesignConfig.defaults({BuildContext? context}) {
+    return DesignConfig.light(context: context);
+  }
+
+  /// Light mode configuration.
+  factory DesignConfig.light({BuildContext? context}) {
     return DesignConfig(
-      colors: DesignColors.defaults(),
+      colors: DesignColors.light(),
+      spacing: DesignSpacing.defaults(),
+      typography: DesignTypography.defaults(),
+      motion: DesignMotion.defaults(context: context),
+      radius: DesignRadius.defaults(),
+    );
+  }
+
+  /// Dark mode configuration.
+  factory DesignConfig.dark({BuildContext? context}) {
+    return DesignConfig(
+      colors: DesignColors.dark(),
       spacing: DesignSpacing.defaults(),
       typography: DesignTypography.defaults(),
       motion: DesignMotion.defaults(context: context),
@@ -141,7 +169,7 @@ class DesignColors {
   final Color progressForeground;
   final Color focus;
 
-  factory DesignColors.defaults() {
+  factory DesignColors.light() {
     return const DesignColors(
       primary: Color(0xFF6366F1),
       onPrimary: Color(0xFFFFFFFF),
@@ -165,9 +193,40 @@ class DesignColors {
       textInverse: Color(0xFFFFFFFF),
       progressBackground: Color(0xFFE5E7EB),
       progressForeground: Color(0xFF6366F1),
-      focus: Color(0x666366F1), // Translucent primary
+      focus: Color(0x666366F1),
     );
   }
+
+  factory DesignColors.dark() {
+    return const DesignColors(
+      primary: Color(0xFF818CF8), // Slightly lighter indigo for dark mode
+      onPrimary: Color(0xFFFFFFFF),
+      primaryContainer: Color(0xFF312E81),
+      onPrimaryContainer: Color(0xFFE0E7FF),
+      surface: Color(0xFF0F172A), // Slate 900
+      onSurface: Color(0xFFF8FAFC),
+      surfaceVariant: Color(0xFF1E293B), // Slate 800
+      onSurfaceVariant: Color(0xFF94A3B8),
+      border: Color(0xFF334155),
+      divider: Color(0xFF1E293B),
+      success: Color(0xFF34D399),
+      onSuccess: Color(0xFF064E3B),
+      error: Color(0xFFF87171),
+      onError: Color(0xFF450A0A),
+      warning: Color(0xFFFBBF24),
+      onWarning: Color(0xFF451A03),
+      textPrimary: Color(0xFFF8FAFC),
+      textSecondary: Color(0xFF94A3B8),
+      textTertiary: Color(0xFF64748B),
+      textInverse: Color(0xFF111827),
+      progressBackground: Color(0xFF334155),
+      progressForeground: Color(0xFF818CF8),
+      focus: Color(0x99818CF8),
+    );
+  }
+
+  @Deprecated('Use DesignColors.light() instead')
+  factory DesignColors.defaults() => DesignColors.light();
 
   /// Smart factory that automatically calculates contrasting text colors.
   ///
