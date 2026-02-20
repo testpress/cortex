@@ -39,15 +39,6 @@ class AppSubjectChip extends StatelessWidget {
             color: isActive ? subjectColors.accent : design.colors.border,
             width: 1,
           ),
-          boxShadow: isActive
-              ? [
-                  BoxShadow(
-                    color: subjectColors.accent.withValues(alpha: 0.2),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ]
-              : null,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
