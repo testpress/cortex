@@ -10,6 +10,9 @@ export 'design/design_config.dart';
 export 'design/design_context.dart';
 export 'design/design_provider.dart';
 
+// Icons
+export 'package:lucide_icons/lucide_icons.dart';
+
 // Tokens (legacy tokens removed - use Design.of(context))
 
 // Widgets
@@ -18,6 +21,10 @@ export 'widgets/app_button.dart';
 export 'widgets/app_card.dart';
 export 'widgets/app_header.dart';
 export 'widgets/app_scroll.dart';
+export 'widgets/app_badge.dart';
+export 'widgets/app_search_bar.dart';
+export 'widgets/app_tab_bar.dart';
+export 'widgets/app_subject_chip.dart';
 
 // Shell
 export 'shell/app_shell.dart';

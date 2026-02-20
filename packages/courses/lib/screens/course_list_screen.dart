@@ -23,6 +23,68 @@ class CourseListScreen extends ConsumerWidget {
             title: L10n.of(context).courseLibraryTitle,
             subtitle: L10n.of(context).courseLibrarySubtitle,
           ),
+
+          // --- PRIMITIVES PLAYGROUND ---
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppSearchBar(hintText: 'Search courses...'),
+                SizedBox(height: design.spacing.md),
+                Row(
+                  children: [
+                    AppBadge(
+                      label: "Live",
+                      semanticStatus: design.statusColors.live,
+                    ),
+                    SizedBox(width: design.spacing.sm),
+                    const AppBadge(
+                      label: "New",
+                      backgroundColor: Color(0xFF10B981), // Emerald
+                      foregroundColor: Color(0xFFFFFFFF),
+                      isPill: true,
+                    ),
+                    SizedBox(width: design.spacing.sm),
+                    const AppBadge(
+                      label: "Monthly Champ",
+                      icon: IconData(
+                        0xe5fa,
+                        fontFamily: 'MaterialIcons',
+                      ), // Icons.star
+                      backgroundColor: Color(0xFFFEF3C7), // Amber 50
+                      foregroundColor: Color(0xFFB45309), // Amber 700
+                      isPill: true,
+                    ),
+                  ],
+                ),
+                SizedBox(height: design.spacing.md),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      AppSubjectChip(
+                        label: 'Mathematics',
+                        subjectPaletteIndex: 0,
+                        isActive: true,
+                        onTap: () {},
+                      ),
+                      SizedBox(width: design.spacing.sm),
+                      AppSubjectChip(
+                        label: 'Physics',
+                        subjectPaletteIndex: 1,
+                        isActive: false,
+                        onTap: () {},
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: design.spacing.md),
+              ],
+            ),
+          ),
+
+          // -----------------------------
           Expanded(
             child: coursesAsync.when(
               loading: () => const Center(child: _LoadingState()),
@@ -42,6 +104,30 @@ class CourseListScreen extends ConsumerWidget {
                       ],
                     ),
             ),
+          ),
+
+          // --- TAB BAR ---
+          AppTabBar(
+            activeItemId: 'study',
+            items: const [
+              AppTabItem(id: 'home', label: 'Home', icon: LucideIcons.home),
+              AppTabItem(
+                id: 'study',
+                label: 'Study',
+                icon: LucideIcons.bookOpen,
+              ),
+              AppTabItem(
+                id: 'explore',
+                label: 'Explore',
+                icon: LucideIcons.compass,
+              ),
+              AppTabItem(
+                id: 'profile',
+                label: 'Profile',
+                icon: LucideIcons.user,
+              ),
+            ],
+            onTabChange: (id) {},
           ),
         ],
       ),
