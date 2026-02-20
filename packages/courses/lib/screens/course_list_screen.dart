@@ -48,10 +48,7 @@ class CourseListScreen extends ConsumerWidget {
                     SizedBox(width: design.spacing.sm),
                     const AppBadge(
                       label: "Monthly Champ",
-                      icon: IconData(
-                        0xe5fa,
-                        fontFamily: 'MaterialIcons',
-                      ), // Icons.star
+                      icon: LucideIcons.star,
                       backgroundColor: Color(0xFFFEF3C7), // Amber 50
                       foregroundColor: Color(0xFFB45309), // Amber 700
                       isPill: true,

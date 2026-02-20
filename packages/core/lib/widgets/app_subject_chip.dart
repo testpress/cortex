@@ -34,7 +34,7 @@ class AppSubjectChip extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: isActive ? subjectColors.background : design.colors.surface,
-          borderRadius: BorderRadius.circular(design.radius.pill.topLeft.x),
+          borderRadius: design.radius.pill,
           border: Border.all(
             color: isActive ? subjectColors.accent : design.colors.border,
             width: 1,

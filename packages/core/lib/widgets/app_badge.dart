@@ -38,9 +38,9 @@ class AppBadge extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(
-          isPill ? design.radius.pill.topLeft.x : design.radius.sm,
-        ),
+        borderRadius: isPill
+            ? design.radius.pill
+            : BorderRadius.circular(design.radius.sm),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
