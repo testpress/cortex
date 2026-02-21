@@ -27,7 +27,7 @@ class AppShell extends StatelessWidget {
           Expanded(
             child: SafeArea(bottom: bottomNavigationBar == null, child: child),
           ),
-          if (bottomNavigationBar != null) bottomNavigationBar!,
+          ?bottomNavigationBar,
         ],
       ),
     );

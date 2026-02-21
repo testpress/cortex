@@ -115,7 +115,8 @@ Each screen = one OpenSpec change. Priority is based on user journey criticality
 ### Phase 2 — Core Paid Active User Flow
 | # | Change Name | Screen(s) | Notes | Status |
 |---|---|---|---|---|
-| 5 | `lms-home-paid-active` | PaidActiveHome | Dashboard with TodaySnapshot, StudyMomentum, QuickAccess | ⏳ Pending |
+| 5 | `lms-home-paid-active` | PaidActiveHome | Dashboard with TodaySnapshot, StudyMomentum, QuickAccess | ✅ Done |
+| 5.1 | `lms-home-drawer` | MenuDrawer | Home sidebar navigation menu | ⏳ Pending |
 | 6 | `lms-study-course-list` | StudyPage (course list) | Search bar + content filter chips + course cards | ⏳ Pending |
 | 7 | `lms-study-chapters-list` | ChaptersListPage | Chapter accordion, progress per chapter | ⏳ Pending |
 | 8 | `lms-study-chapter-detail` | ChapterDetailPage | Lesson items (video/pdf/assessment/test) | ⏳ Pending |
