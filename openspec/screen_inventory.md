@@ -39,11 +39,11 @@ Each screen will be one OpenSpec change, implemented one at a time.
 
 | Component | Description |
 |---|---|
-| `AppBadge` | Status badge (Completed, Pending, Locked, Live) |
+| `✅ AppBadge` | Status badge (Completed, Pending, Locked, Live) |
 | `AppProgressBar` | Standalone progress bar with label |
-| `AppSearchBar` | Styled search input field |
-| `AppTabBar` | Bottom navigation bar (5 tabs) |
-| `AppSubjectChip` | Subject-colored filter chip |
+| `✅ AppSearchBar` | Styled search input field |
+| `✅ AppTabBar` | Bottom navigation bar (5 tabs) |
+| `✅ AppSubjectChip` | Subject-colored filter chip |
 | `AppAvatarImage` | Circular user avatar with fallback |
 | `AppBannerCarousel` | Auto-scrolling image banner |
 
@@ -108,7 +108,7 @@ Each screen = one OpenSpec change. Priority is based on user journey criticality
 | # | Change Name | Screens | New Tokens/Primitives | Status |
 |---|---|---|---|---|
 | 1 | `lms-design-tokens` | — | `card`, `border`, `SubjectColors`, `BadgeColors` tokens in `DesignConfig` | ✅ Done |
-| 2 | `lms-primitives` | — | `AppBadge`, `AppSearchBar`, `AppTabBar`, `AppSubjectChip` | ⏳ Pending |
+| 2 | `lms-primitives` | — | `AppBadge`, `AppSearchBar`, `AppTabBar`, `AppSubjectChip` | ✅ Done |
 | 3 | `lms-navigation-shell` | App shell + BottomTabBar | Route management in `app/` | ⏳ Pending |
 
 ### Phase 2 — Core Paid Active User Flow
