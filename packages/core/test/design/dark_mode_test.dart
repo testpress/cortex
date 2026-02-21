@@ -16,7 +16,7 @@ void main() {
         WidgetsApp(
           color: const Color(0xFF000000),
           onGenerateRoute: (settings) => PageRouteBuilder(
-            pageBuilder: (context, _, __) => DesignProvider(
+            pageBuilder: (context, _, _) => DesignProvider(
               config: lightConfig,
               darkConfig: darkConfig,
               mode: DesignMode.system,

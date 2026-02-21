@@ -6,10 +6,6 @@ import '../accessibility/app_focusable.dart';
 import 'app_text.dart';
 
 /// Platform-neutral button widget with semantic variants.
-///
-/// Replaces Material's ElevatedButton/TextButton and Cupertino's
-/// CupertinoButton with a custom implementation that looks identical
-/// on all platforms.
 class AppButton extends StatelessWidget {
   const AppButton({
     super.key,
@@ -18,6 +14,10 @@ class AppButton extends StatelessWidget {
     this.onNavigate,
     this.variant = AppButtonVariant.primary,
     this.fullWidth = false,
+    this.backgroundColor,
+    this.foregroundColor,
+    this.height = 48.0,
+    this.padding,
   });
 
   final String label;
@@ -25,6 +25,10 @@ class AppButton extends StatelessWidget {
   final Widget? onNavigate; // If provided, navigates to this widget
   final AppButtonVariant variant;
   final bool fullWidth;
+  final Color? backgroundColor;
+  final Color? foregroundColor;
+  final double height;
+  final EdgeInsetsGeometry? padding;
 
   // Semantic constructors
   const AppButton.primary({
@@ -33,6 +37,10 @@ class AppButton extends StatelessWidget {
     this.onPressed,
     this.onNavigate,
     this.fullWidth = false,
+    this.backgroundColor,
+    this.foregroundColor,
+    this.height = 48.0,
+    this.padding,
   }) : variant = AppButtonVariant.primary;
 
   const AppButton.secondary({
@@ -41,6 +49,10 @@ class AppButton extends StatelessWidget {
     this.onPressed,
     this.onNavigate,
     this.fullWidth = false,
+    this.backgroundColor,
+    this.foregroundColor,
+    this.height = 48.0,
+    this.padding,
   }) : variant = AppButtonVariant.secondary;
 
   @override
@@ -48,13 +60,19 @@ class AppButton extends StatelessWidget {
     final design = Design.of(context);
     final isDisabled = onPressed == null && onNavigate == null;
 
-    final backgroundColor = variant == AppButtonVariant.primary
-        ? (isDisabled ? design.colors.border : design.colors.primary)
-        : design.colors.surface;
+    final effectiveBackgroundColor =
+        backgroundColor ??
+        (variant == AppButtonVariant.primary
+            ? (isDisabled ? design.colors.border : design.colors.primary)
+            : design.colors.surface);
 
-    final foregroundColor = variant == AppButtonVariant.primary
-        ? design.colors.onPrimary
-        : (isDisabled ? design.colors.textTertiary : design.colors.primary);
+    final effectiveForegroundColor =
+        foregroundColor ??
+        (variant == AppButtonVariant.primary
+            ? design.colors.onPrimary
+            : (isDisabled
+                  ? design.colors.textTertiary
+                  : design.colors.primary));
 
     final borderColor = variant == AppButtonVariant.secondary
         ? (isDisabled ? design.colors.border : design.colors.primary)
@@ -76,17 +94,17 @@ class AppButton extends StatelessWidget {
         onTap: isDisabled ? null : handleTap,
         borderRadius: design.radius.button,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            minHeight: 48.0, // WCAG 2.5.5 + Android/iOS accessibility standard
-          ),
+          constraints: BoxConstraints(minHeight: height),
           child: Container(
             width: fullWidth ? double.infinity : null,
-            padding: EdgeInsetsDirectional.symmetric(
-              horizontal: design.spacing.lg,
-              vertical: design.spacing.md,
-            ),
+            padding:
+                padding ??
+                EdgeInsetsDirectional.symmetric(
+                  horizontal: design.spacing.lg,
+                  vertical: design.spacing.md,
+                ),
             decoration: BoxDecoration(
-              color: backgroundColor,
+              color: effectiveBackgroundColor,
               borderRadius: design.radius.button,
               border: Border.all(
                 color: borderColor,
@@ -97,7 +115,7 @@ class AppButton extends StatelessWidget {
               child: AppText(
                 label,
                 style: design.typography.label,
-                color: foregroundColor,
+                color: effectiveForegroundColor,
               ),
             ),
           ),

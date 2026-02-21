@@ -35,6 +35,7 @@ class DesignConfig {
     required this.radius,
     required this.subjectPalette,
     required this.statusColors,
+    this.isDark = false,
   });
 
   final DesignColors colors;
@@ -45,6 +46,7 @@ class DesignConfig {
   final DesignRadius radius;
   final DesignSubjectPalette subjectPalette;
   final DesignStatusColors statusColors;
+  final bool isDark;
 
   /// Default configuration matching current static tokens.
   ///
@@ -67,6 +69,7 @@ class DesignConfig {
       radius: DesignRadius.defaults(),
       subjectPalette: DesignSubjectPalette.light(),
       statusColors: DesignStatusColors.light(),
+      isDark: false,
     );
   }
 
@@ -83,6 +86,7 @@ class DesignConfig {
       radius: DesignRadius.defaults(),
       subjectPalette: DesignSubjectPalette.dark(),
       statusColors: DesignStatusColors.dark(),
+      isDark: true,
     );
   }
 
@@ -95,6 +99,7 @@ class DesignConfig {
     DesignRadius? radius,
     DesignSubjectPalette? subjectPalette,
     DesignStatusColors? statusColors,
+    bool? isDark,
   }) {
     return DesignConfig(
       colors: colors ?? this.colors,
@@ -105,6 +110,7 @@ class DesignConfig {
       radius: radius ?? this.radius,
       subjectPalette: subjectPalette ?? this.subjectPalette,
       statusColors: statusColors ?? this.statusColors,
+      isDark: isDark ?? this.isDark,
     );
   }
 
