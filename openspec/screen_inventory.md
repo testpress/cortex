@@ -108,59 +108,60 @@ Each screen = one OpenSpec change. Priority is based on user journey criticality
 | # | Change Name | Screens | New Tokens/Primitives | Status |
 |---|---|---|---|---|
 | 1 | `lms-design-tokens` | — | `card`, `border`, `SubjectColors`, `BadgeColors` tokens in `DesignConfig` | ✅ Done |
-| 2 | `lms-primitives` | — | `AppBadge`, `AppSearchBar`, `AppTabBar`, `AppSubjectChip` | ✅ Done |
-| 3 | `lms-navigation-shell` | App shell + BottomTabBar | Route management in `app/` | ⏳ Pending |
+| 2 | `lms-data-layer` | — | Drift DB, Repositories, Riverpod providers | ✅ Done |
+| 3 | `lms-primitives` | — | `AppBadge`, `AppSearchBar`, `AppTabBar`, `AppSubjectChip` | ✅ Done |
+| 4 | `lms-navigation-shell` | App shell + BottomTabBar | Route management in `app/` | ⏳ Pending |
 
 ### Phase 2 — Core Paid Active User Flow
 | # | Change Name | Screen(s) | Notes | Status |
 |---|---|---|---|---|
-| 4 | `lms-home-paid-active` | PaidActiveHome | Dashboard with TodaySnapshot, StudyMomentum, QuickAccess | ⏳ Pending |
-| 5 | `lms-study-course-list` | StudyPage (course list) | Search bar + content filter chips + course cards | ⏳ Pending |
-| 6 | `lms-study-chapters-list` | ChaptersListPage | Chapter accordion, progress per chapter | ⏳ Pending |
-| 7 | `lms-study-chapter-detail` | ChapterDetailPage | Lesson items (video/pdf/assessment/test) | ⏳ Pending |
-| 8 | `lms-lesson-detail` | LessonDetailScreen | Text/PDF lesson reader + doubt chat trigger | ⏳ Pending |
-| 9 | `lms-video-lesson` | VideoLessonDetailScreen | Video player + bookmarks + notes | ⏳ Pending |
+| 5 | `lms-home-paid-active` | PaidActiveHome | Dashboard with TodaySnapshot, StudyMomentum, QuickAccess | ⏳ Pending |
+| 6 | `lms-study-course-list` | StudyPage (course list) | Search bar + content filter chips + course cards | ⏳ Pending |
+| 7 | `lms-study-chapters-list` | ChaptersListPage | Chapter accordion, progress per chapter | ⏳ Pending |
+| 8 | `lms-study-chapter-detail` | ChapterDetailPage | Lesson items (video/pdf/assessment/test) | ⏳ Pending |
+| 9 | `lms-lesson-detail` | LessonDetailScreen | Text/PDF lesson reader + doubt chat trigger | ⏳ Pending |
+| 10 | `lms-video-lesson` | VideoLessonDetailScreen | Video player + bookmarks + notes | ⏳ Pending |
 
 ### Phase 3 — Assessment & Testing
 | # | Change Name | Screen(s) | Notes | Status |
 |---|---|---|---|---|
-| 10 | `lms-test-detail` | TestDetailScreen | Test overview, rules, start button | ⏳ Pending |
-| 11 | `lms-assessment-detail` | AssessmentDetailScreen | MCQ test flow with timer | ⏳ Pending |
-| 12 | `lms-exam-review` | ExamReviewScreen | Post-test score summary | ⏳ Pending |
-| 13 | `lms-review-analytics` | ReviewAnalyticsScreen | Charts: subject-wise, time-spent | ⏳ Pending |
-| 14 | `lms-review-answer-detail` | ReviewAnswerDetailScreen | Per-question review with explanation | ⏳ Pending |
+| 11 | `lms-test-detail` | TestDetailScreen | Test overview, rules, start button | ⏳ Pending |
+| 12 | `lms-assessment-detail` | AssessmentDetailScreen | MCQ test flow with timer | ⏳ Pending |
+| 13 | `lms-exam-review` | ExamReviewScreen | Post-test score summary | ⏳ Pending |
+| 14 | `lms-review-analytics` | ReviewAnalyticsScreen | Charts: subject-wise, time-spent | ⏳ Pending |
+| 15 | `lms-review-answer-detail` | ReviewAnswerDetailScreen | Per-question review with explanation | ⏳ Pending |
 
 ### Phase 4 — Live Classes
 | # | Change Name | Screen(s) | Notes | Status |
 |---|---|---|---|---|
-| 15 | `lms-live-class-lobby` | LiveClassLobby | Pre-class countdown + participant count | ⏳ Pending |
-| 16 | `lms-live-class` | LiveClassScreen | Full interactive live class screen | ⏳ Pending |
+| 16 | `lms-live-class-lobby` | LiveClassLobby | Pre-class countdown + participant count | ⏳ Pending |
+| 17 | `lms-live-class` | LiveClassScreen | Full interactive live class screen | ⏳ Pending |
 
 ### Phase 5 — Community & Forum
 | # | Change Name | Screen(s) | Notes | Status |
 |---|---|---|---|---|
-| 17 | `lms-forum-main` | ForumCourseSelection + ForumMainPage | Course selector + question list | ⏳ Pending |
-| 18 | `lms-forum-thread` | DiscussionForumDetailScreen | Thread with replies + reply input | ⏳ Pending |
-| 19 | `lms-forum-create` | CreateQuestionPage | Question composer | ⏳ Pending |
+| 18 | `lms-forum-main` | ForumCourseSelection + ForumMainPage | Course selector + question list | ⏳ Pending |
+| 19 | `lms-forum-thread` | DiscussionForumDetailScreen | Thread with replies + reply input | ⏳ Pending |
+| 20 | `lms-forum-create` | CreateQuestionPage | Question composer | ⏳ Pending |
 
 ### Phase 6 — Profile, Analytics & Settings
 | # | Change Name | Screen(s) | Notes | Status |
 |---|---|---|---|---|
-| 20 | `lms-profile-paid-active` | ProfilePage | Full profile with stats, badges, courses | ⏳ Pending |
-| 21 | `lms-insights` | InsightsScreen + OverallPerformance + SubjectWise | Analytics screens | ⏳ Pending |
-| 22 | `lms-certificates` | CertificatesScreen + CertificatePreview | Certificate PDFs | ⏳ Pending |
-| 23 | `lms-notifications` | NotificationsScreen | Alert list | ⏳ Pending |
-| 24 | `lms-settings` | AppSettingsScreen + EditProfileScreen | Settings, edit profile | ⏳ Pending |
-| 25 | `lms-study-tips` | StudyTipsDetailScreen | Article-style study tip reader | ⏳ Pending |
+| 21 | `lms-profile-paid-active` | ProfilePage | Full profile with stats, badges, courses | ⏳ Pending |
+| 22 | `lms-insights` | InsightsScreen + OverallPerformance + SubjectWise | Analytics screens | ⏳ Pending |
+| 23 | `lms-certificates` | CertificatesScreen + CertificatePreview | Certificate PDFs | ⏳ Pending |
+| 24 | `lms-notifications` | NotificationsScreen | Alert list | ⏳ Pending |
+| 25 | `lms-settings` | AppSettingsScreen + EditProfileScreen | Settings, edit profile | ⏳ Pending |
+| 26 | `lms-study-tips` | StudyTipsDetailScreen | Article-style study tip reader | ⏳ Pending |
 
 ### Phase 7 — Upsell & Onboarding Variants
 | # | Change Name | Screen(s) | Notes | Status |
 |---|---|---|---|---|
-| 26 | `lms-home-non-paid` | NonPaidHome | Upsell hero, benefits, limited access | ⏳ Pending |
-| 27 | `lms-home-paid-new` | PaidNewHome | Onboarding hero + first lesson CTA | ⏳ Pending |
-| 28 | `lms-explore-paid` | ExplorePage | Full explore with study tips & top learners | ⏳ Pending |
-| 29 | `lms-explore-non-paid` | NonPaidExplorePage | Preview with upgrade prompts | ⏳ Pending |
-| 30 | `lms-profile-variants` | NonPaidProfile + PaidNewProfile | Onboarding variants | ⏳ Pending |
+| 27 | `lms-home-non-paid` | NonPaidHome | Upsell hero, benefits, limited access | ⏳ Pending |
+| 28 | `lms-home-paid-new` | PaidNewHome | Onboarding hero + first lesson CTA | ⏳ Pending |
+| 29 | `lms-explore-paid` | ExplorePage | Full explore with study tips & top learners | ⏳ Pending |
+| 30 | `lms-explore-non-paid` | NonPaidExplorePage | Preview with upgrade prompts | ⏳ Pending |
+| 31 | `lms-profile-variants` | NonPaidProfile + PaidNewProfile | Onboarding variants | ⏳ Pending |
 
 ---
 
