@@ -127,43 +127,16 @@ final GoRouter appRouter = GoRouter(
   ],
 );
 
-String _getCurrentTabId(int index) {
-  switch (index) {
-    case 0:
-      return '/home';
-    case 1:
-      return '/study';
-    case 2:
-      return '/explore';
-    case 3:
-      return '/profile';
-    default:
-      return '/study';
-  }
-}
+const _tabPaths = ['/home', '/study', '/explore', '/profile'];
+
+String _getCurrentTabId(int index) => _tabPaths[index];
 
 void _onTabItemTapped(StatefulNavigationShell navigationShell, String id) {
-  int index;
-  switch (id) {
-    case '/home':
-      index = 0;
-      break;
-    case '/study':
-      index = 1;
-      break;
-    case '/explore':
-      index = 2;
-      break;
-    case '/profile':
-      index = 3;
-      break;
-    default:
-      index = 1;
-  }
+  final index = _tabPaths.indexOf(id);
 
   // Navigate to the chosen branch, safely preserving state
   navigationShell.goBranch(
-    index,
+    index != -1 ? index : 1, // Fallback to 'study' branch as default
     // Provide true if you want clicking an active tab to reset its stack to root
     initialLocation: index == navigationShell.currentIndex,
   );

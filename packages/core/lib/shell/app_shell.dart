@@ -22,13 +22,13 @@ class AppShell extends StatelessWidget {
     final design = Design.of(context);
     return Container(
       color: backgroundColor ?? design.colors.surface,
-      child: SafeArea(
-        child: Column(
-          children: [
-            Expanded(child: child),
-            if (bottomNavigationBar != null) bottomNavigationBar!,
-          ],
-        ),
+      child: Column(
+        children: [
+          Expanded(
+            child: SafeArea(bottom: bottomNavigationBar == null, child: child),
+          ),
+          if (bottomNavigationBar != null) bottomNavigationBar!,
+        ],
       ),
     );
   }
