@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  go_router: ^17.1.0
   intl: any
   lucide_icons: ^0.257.0
 

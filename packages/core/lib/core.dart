@@ -31,6 +31,7 @@ export 'shell/app_shell.dart';
 
 // Navigation
 export 'navigation/app_route.dart';
+export 'package:go_router/go_router.dart';
 
 // Accessibility
 export 'accessibility/app_semantics.dart';
