@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:testpress/course_list.dart';
-import 'package:core/core.dart';
+import 'package:testpress/testpress.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,63 +49,22 @@ class CortexApp extends StatelessWidget {
     final localization = LocalizationProvider.of(context);
     final locale = localization.locale;
 
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Cortex',
       debugShowCheckedModeBanner: false,
       locale: locale,
       localizationsDelegates: LocalizationProvider.delegates,
       supportedLocales: LocalizationProvider.supportedLocales,
-      home: Builder(
-        builder: (context) {
-          final l10n = L10n.of(context);
-          return DefaultTextStyle(
-            style: design.typography.body.copyWith(
-              color: design.colors.textPrimary,
-              decoration: TextDecoration.none,
-            ),
-            child: Column(
-              children: [
-                AppHeader(
-                  title: l10n.appTitle,
-                  subtitle: l10n.welcomeMessage,
-                  actions: [
-                    AppButton.secondary(
-                      label: _getLanguageLabel(locale.languageCode),
-                      onPressed: () {
-                        final nextLocale = _getNextLocale(locale.languageCode);
-                        localization.setLocale(nextLocale);
-                      },
-                    ),
-                  ],
-                ),
-                const Expanded(child: CourseListScreen()),
-              ],
-            ),
-          );
-        },
-      ),
+      routerConfig: appRouter,
+      builder: (context, child) {
+        return DefaultTextStyle(
+          style: design.typography.body.copyWith(
+            color: design.colors.textPrimary,
+            decoration: TextDecoration.none,
+          ),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     );
-  }
-
-  String _getLanguageLabel(String code) {
-    switch (code) {
-      case 'ar':
-        return 'മലയാളം';
-      case 'ml':
-        return 'English';
-      default:
-        return 'العربية';
-    }
-  }
-
-  Locale _getNextLocale(String code) {
-    switch (code) {
-      case 'ar':
-        return const Locale('ml');
-      case 'ml':
-        return const Locale('en');
-      default:
-        return const Locale('ar');
-    }
   }
 }

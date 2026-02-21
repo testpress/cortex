@@ -6,3 +6,6 @@ export 'package:courses/courses.dart';
 
 // Re-export exams module
 export 'package:exams/exams.dart';
+
+// Re-export navigation
+export 'navigation/app_router.dart';
