@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import 'package:courses/screens/course_list_screen.dart';
+import 'package:courses/courses.dart';
 
 // Placeholder empty screens for the routes that don't exist yet
 class ExplorePlaceholderScreen extends StatelessWidget {
@@ -33,7 +33,7 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 /// of each bottom navigation tab independently.
 final GoRouter appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: '/study',
+  initialLocation: '/home',
   routes: [
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
@@ -72,7 +72,7 @@ final GoRouter appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/home',
-              builder: (context, state) => const HomePlaceholderScreen(),
+              builder: (context, state) => const PaidActiveHomeScreen(),
             ),
           ],
         ),
@@ -136,7 +136,7 @@ void _onTabItemTapped(StatefulNavigationShell navigationShell, String id) {
 
   // Navigate to the chosen branch, safely preserving state
   navigationShell.goBranch(
-    index != -1 ? index : 1, // Fallback to 'study' branch as default
+    index != -1 ? index : 0, // Fallback to 'home' branch as default
     // Provide true if you want clicking an active tab to reset its stack to root
     initialLocation: index == navigationShell.currentIndex,
   );
