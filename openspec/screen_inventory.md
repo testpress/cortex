@@ -110,7 +110,7 @@ Each screen = one OpenSpec change. Priority is based on user journey criticality
 | 1 | `lms-design-tokens` | — | `card`, `border`, `SubjectColors`, `BadgeColors` tokens in `DesignConfig` | ✅ Done |
 | 2 | `lms-data-layer` | — | Drift DB, Repositories, Riverpod providers | ✅ Done |
 | 3 | `lms-primitives` | — | `AppBadge`, `AppSearchBar`, `AppTabBar`, `AppSubjectChip` | ✅ Done |
-| 4 | `lms-navigation-shell` | App shell + BottomTabBar | Route management in `app/` | ⏳ Pending |
+| 4 | `lms-navigation-shell` | App shell + BottomTabBar | Route management in `app/` | ✅ Done |
 
 ### Phase 2 — Core Paid Active User Flow
 | # | Change Name | Screen(s) | Notes | Status |
