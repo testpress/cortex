@@ -29,9 +29,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     final momentum = ref.watch(studyMomentumProvider);
 
     return Scaffold(
-      backgroundColor: design.isDark
-          ? design.colors.surface
-          : const Color(0xFFF8FAFC),
+      backgroundColor: design.colors.canvas,
       body: Column(
         children: [
           const DashboardHeader(title: 'BrightMinds Academy'),

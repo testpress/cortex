@@ -11,6 +11,9 @@ class AppCarousel extends StatefulWidget {
     this.viewportFraction = 0.85,
     this.showDots = true,
     this.onPageChanged,
+    this.height = 120.0,
+    this.itemPadding,
+    this.padEnds = true,
   });
 
   final int itemCount;
@@ -18,6 +21,9 @@ class AppCarousel extends StatefulWidget {
   final double viewportFraction;
   final bool showDots;
   final ValueChanged<int>? onPageChanged;
+  final double height;
+  final EdgeInsets? itemPadding;
+  final bool padEnds;
 
   @override
   State<AppCarousel> createState() => _AppCarouselState();
@@ -47,17 +53,20 @@ class _AppCarouselState extends State<AppCarousel> {
       mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(
-          height: 120, // Default height, adjustment might be needed
+          height: widget.height,
           child: PageView.builder(
             controller: _pageController,
             itemCount: widget.itemCount,
+            padEnds: widget.padEnds,
             onPageChanged: (index) {
               setState(() => _currentPage = index);
               widget.onPageChanged?.call(index);
             },
             itemBuilder: (context, index) {
               return Padding(
-                padding: EdgeInsets.symmetric(horizontal: design.spacing.xs),
+                padding:
+                    widget.itemPadding ??
+                    EdgeInsets.symmetric(horizontal: design.spacing.xs),
                 child: widget.itemBuilder(context, index),
               );
             },

@@ -43,12 +43,7 @@ class StudyMomentumGrid extends StatelessWidget {
                         const SizedBox(height: 24),
                         _buildLatestActivity(context),
                         const SizedBox(height: 12),
-                        Container(
-                          height: 1,
-                          color: design.isDark
-                              ? const Color(0xFF1F2937)
-                              : const Color(0xFFE2E8F0),
-                        ),
+                        Container(height: 1, color: design.colors.divider),
                         const SizedBox(height: 12),
                       ] else
                         const SizedBox(height: 24),
@@ -61,9 +56,7 @@ class StudyMomentumGrid extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           child: Container(
                             height: 1,
-                            color: design.isDark
-                                ? const Color(0xFF1F2937)
-                                : const Color(0xFFE2E8F0),
+                            color: design.colors.divider,
                           ),
                         ),
                         _buildSubjectCards(context),
@@ -159,27 +152,28 @@ class StudyMomentumGrid extends StatelessWidget {
   }
 
   Widget _buildStatsGrid(BuildContext context) {
+    final design = Design.of(context);
     return Row(
       children: [
         _buildStatItem(
           context,
           momentum.lessonsFinished,
           'Lessons\nfinished',
-          const Color(0xFF2563EB),
+          design.colors.primary,
         ),
         _buildDivider(context),
         _buildStatItem(
           context,
           momentum.testsAttempted,
           'Tests\nattempted',
-          const Color(0xFFEA580C),
+          design.colors.warning,
         ),
         _buildDivider(context),
         _buildStatItem(
           context,
           momentum.assessmentsDone,
           'Assessments\ndone',
-          const Color(0xFF059669),
+          design.colors.success,
         ),
       ],
     );
@@ -191,6 +185,7 @@ class StudyMomentumGrid extends StatelessWidget {
     String label,
     Color color,
   ) {
+    final design = Design.of(context);
     return Expanded(
       child: Column(
         children: [
@@ -203,7 +198,7 @@ class StudyMomentumGrid extends StatelessWidget {
           AppText.caption(
             label,
             textAlign: TextAlign.center,
-            color: const Color(0xFF475569),
+            color: design.colors.textSecondary,
             style: const TextStyle(fontWeight: FontWeight.w500),
           ),
         ],
@@ -213,11 +208,7 @@ class StudyMomentumGrid extends StatelessWidget {
 
   Widget _buildDivider(BuildContext context) {
     final design = Design.of(context);
-    return Container(
-      width: 1,
-      height: 48,
-      color: design.isDark ? const Color(0xFF1F2937) : const Color(0xFFE2E8F0),
-    );
+    return Container(width: 1, height: 48, color: design.colors.divider);
   }
 
   Widget _buildSubjectCards(BuildContext context) {
@@ -280,7 +271,7 @@ class StudyMomentumGrid extends StatelessWidget {
 
     final factor = level / 3.0;
     return Color.lerp(
-      design.colors.primary.withValues(alpha: 0.3),
+      design.colors.primary.withOpacity(0.3),
       design.colors.primary,
       factor,
     )!;

@@ -48,7 +48,7 @@ class PromotionalBanners extends StatelessWidget {
                     letterSpacing: 0.5,
                     fontWeight: FontWeight.w600,
                   ),
-                  color: design.colors.textPrimary.withValues(alpha: 0.7),
+                  color: design.colors.textPrimary.withOpacity(0.7),
                 ),
                 AppText.bodySmall(
                   'View all',
@@ -73,22 +73,16 @@ class PromotionalBanners extends StatelessWidget {
 
   Widget _buildCarousel(BuildContext context) {
     final design = Design.of(context);
-    return SizedBox(
+    return AppCarousel(
       height: 110,
-      child: PageView.builder(
-        controller: PageController(viewportFraction: 0.88),
-        itemCount: banners.length,
-        padEnds: false,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.only(
-              left: design.spacing.md,
-              right: index == banners.length - 1 ? design.spacing.md : 0,
-            ),
-            child: _BannerCard(banner: banners[index]),
-          );
-        },
-      ),
+      showDots: false,
+      viewportFraction: 0.88,
+      padEnds: false,
+      itemCount: banners.length,
+      itemPadding: EdgeInsets.only(left: design.spacing.md),
+      itemBuilder: (context, index) {
+        return _BannerCard(banner: banners[index]);
+      },
     );
   }
 }
@@ -132,7 +126,7 @@ class _BannerCard extends StatelessWidget {
                 const SizedBox(height: 2),
                 AppText.bodySmall(
                   banner.description,
-                  color: banner.textColor.withValues(alpha: 0.8),
+                  color: banner.textColor.withOpacity(0.8),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -143,7 +137,7 @@ class _BannerCard extends StatelessWidget {
           Icon(
             LucideIcons.chevronRight,
             size: 20,
-            color: banner.textColor.withValues(alpha: 0.6),
+            color: banner.textColor.withOpacity(0.6),
           ),
         ],
       ),

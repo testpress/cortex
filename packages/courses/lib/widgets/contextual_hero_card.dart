@@ -82,12 +82,12 @@ class _ContextualHeroCardState extends State<ContextualHeroCard>
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.04),
+            color: Colors.black.withOpacity(isDark ? 0.3 : 0.04),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.06),
+            color: Colors.black.withOpacity(isDark ? 0.4 : 0.06),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -163,12 +163,12 @@ class _ContextualHeroCardState extends State<ContextualHeroCard>
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.08),
+                color: Colors.black.withOpacity(0.08),
                 offset: const Offset(0, 1),
                 blurRadius: 2,
               ),
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.12),
+                color: Colors.black.withOpacity(0.12),
                 offset: const Offset(0, 2),
                 blurRadius: 4,
               ),
@@ -193,7 +193,7 @@ class _ContextualHeroCardState extends State<ContextualHeroCard>
                 width: 12,
                 height: 12,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFDC2626), // red-600
+                  color: design.colors.error,
                   shape: BoxShape.circle,
                   border: Border.all(color: design.colors.card, width: 2.0),
                 ),
@@ -313,27 +313,40 @@ class _ContextualHeroCardState extends State<ContextualHeroCard>
 
   Widget _buildActionButton(BuildContext context) {
     final design = Design.of(context);
+    final backgroundColor = _getAccentColor();
+
+    // Mapping background to the appropriate contrasting foreground token
+    final Color foregroundColor;
+    if (backgroundColor == design.colors.success) {
+      foregroundColor = design.colors.onSuccess;
+    } else if (backgroundColor == design.colors.warning) {
+      foregroundColor = design.colors.onWarning;
+    } else {
+      foregroundColor = design.colors.onPrimary;
+    }
+
     return AppButton(
       label: _getButtonText(),
       fullWidth: true,
       onPressed: widget.onActionClick,
-      backgroundColor: _getAccentColor(),
-      foregroundColor: design.colors.onPrimary,
+      backgroundColor: backgroundColor,
+      foregroundColor: foregroundColor,
       height: 44.0,
       padding: const EdgeInsets.symmetric(vertical: 8),
     );
   }
 
   Color _getAccentColor() {
+    final design = Design.of(context);
     return switch (widget.action.type) {
-      HeroActionType.joinClass => const Color(0xFF16A34A), // Tailwind green-600
-      HeroActionType.watchRecording => const Color(0xFF4F46E5),
-      HeroActionType.takeTest => const Color(0xFF059669),
-      HeroActionType.continueStudy => const Color(0xFF2563EB),
-      HeroActionType.prepareTest => const Color(0xFF7C3AED),
-      HeroActionType.exploreCourses => const Color(0xFFD97706),
-      HeroActionType.startTrial => const Color(0xFFDB2777),
-      HeroActionType.upgradePrompt => const Color(0xFF9333EA),
+      HeroActionType.joinClass => design.colors.success,
+      HeroActionType.watchRecording => design.colors.primary,
+      HeroActionType.takeTest => design.colors.success,
+      HeroActionType.continueStudy => design.colors.primary,
+      HeroActionType.prepareTest => design.colors.primary,
+      HeroActionType.exploreCourses => design.colors.warning,
+      HeroActionType.startTrial => design.colors.primary,
+      HeroActionType.upgradePrompt => design.colors.primary,
     };
   }
 

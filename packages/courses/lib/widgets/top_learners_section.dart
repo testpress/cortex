@@ -67,7 +67,7 @@ class TopLearnersSection extends StatelessWidget {
                     letterSpacing: 0.5,
                     fontWeight: FontWeight.w600,
                   ),
-                  color: design.colors.textPrimary.withValues(alpha: 0.7),
+                  color: design.colors.textPrimary.withOpacity(0.7),
                 ),
                 AppText.bodySmall(
                   'View all',
@@ -120,7 +120,7 @@ class TopLearnersSection extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: design.colors.border.withValues(alpha: 0.1),
+              color: design.colors.border.withOpacity(0.1),
               blurRadius: 12,
               offset: const Offset(0, 2),
             ),
@@ -156,7 +156,7 @@ class _LearnerCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: design.colors.border.withValues(alpha: 0.1),
+            color: design.colors.border.withOpacity(0.1),
             blurRadius: 12,
             offset: const Offset(0, 2),
           ),
@@ -205,12 +205,12 @@ class _LearnerCard extends StatelessWidget {
                       width: 24,
                       height: 24,
                       decoration: BoxDecoration(
-                        color: _getRankColor(learner.rank),
+                        color: _getRankColor(context, learner.rank),
                         shape: BoxShape.circle,
                         border: Border.all(color: design.colors.card, width: 2),
                         boxShadow: [
                           BoxShadow(
-                            color: design.colors.border.withValues(alpha: 0.1),
+                            color: design.colors.border.withOpacity(0.1),
                             blurRadius: 4,
                             offset: const Offset(0, 2),
                           ),
@@ -219,7 +219,7 @@ class _LearnerCard extends StatelessWidget {
                       child: Center(
                         child: AppText.caption(
                           learner.rank.toString(),
-                          color: const Color(0xFFFFFFFF),
+                          color: design.colors.textInverse,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 11,
@@ -232,10 +232,10 @@ class _LearnerCard extends StatelessWidget {
               ),
               Row(
                 children: [
-                  const Icon(
+                  Icon(
                     LucideIcons.award,
                     size: 16,
-                    color: Color(0xFF4F46E5),
+                    color: design.colors.primary,
                   ),
                   const SizedBox(width: 4),
                   AppText(
@@ -261,10 +261,10 @@ class _LearnerCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Icon(
+                  Icon(
                     LucideIcons.checkCircle2,
                     size: 14,
-                    color: Color(0xFF059669),
+                    color: design.colors.success,
                   ),
                   const SizedBox(width: 4),
                   AppText.caption(
@@ -277,10 +277,10 @@ class _LearnerCard extends StatelessWidget {
               const SizedBox(width: 12),
               Row(
                 children: [
-                  const Icon(
+                  Icon(
                     LucideIcons.flame,
                     size: 14,
-                    color: Color(0xFFF97316),
+                    color: design.colors.warning,
                   ),
                   const SizedBox(width: 4),
                   AppText.caption(
@@ -336,7 +336,7 @@ class _LearnerCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: badge.color.withValues(alpha: 0.1),
+        color: badge.color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -354,12 +354,13 @@ class _LearnerCard extends StatelessWidget {
     );
   }
 
-  Color _getRankColor(int rank) {
+  Color _getRankColor(BuildContext context, int rank) {
+    final design = Design.of(context);
     return switch (rank) {
-      1 => const Color(0xFFFBBF24), // amber-400
-      2 => const Color(0xFFCBD5E1), // slate-300
-      3 => const Color(0xFFFB923C), // orange-400
-      _ => const Color(0xFF94A3B8), // slate-400
+      1 => design.colors.rank1,
+      2 => design.colors.rank2,
+      3 => design.colors.rank3,
+      _ => design.colors.rankDefault,
     };
   }
 }
@@ -430,10 +431,10 @@ class _LeaderboardItem extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           LucideIcons.checkCircle2,
                           size: 12,
-                          color: Color(0xFF059669),
+                          color: design.colors.success,
                         ),
                         const SizedBox(width: 4),
                         AppText.caption(
@@ -449,10 +450,10 @@ class _LeaderboardItem extends StatelessWidget {
                     const SizedBox(width: 10),
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           LucideIcons.flame,
                           size: 12,
-                          color: Color(0xFFF97316),
+                          color: design.colors.warning,
                         ),
                         const SizedBox(width: 4),
                         AppText.caption(
@@ -473,7 +474,7 @@ class _LeaderboardItem extends StatelessWidget {
           const SizedBox(width: 8),
           Row(
             children: [
-              const Icon(LucideIcons.award, size: 14, color: Color(0xFF4F46E5)),
+              Icon(LucideIcons.award, size: 14, color: design.colors.primary),
               const SizedBox(width: 6),
               AppText(
                 learner.points.toString(),

@@ -17,7 +17,7 @@ class ClassCard extends StatelessWidget {
 
     return AppCard(
       onTap: onTap,
-      padding: EdgeInsets.all(design.spacing.md),
+      padding: const EdgeInsets.all(12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -26,7 +26,7 @@ class ClassCard extends StatelessWidget {
             height: 40,
             decoration: BoxDecoration(
               color: isLive
-                  ? design.colors.primary.withValues(alpha: 0.1)
+                  ? design.colors.primary.withOpacity(0.1)
                   : design.colors.surface,
               shape: BoxShape.circle,
             ),
@@ -62,13 +62,13 @@ class ClassCard extends StatelessWidget {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFDC2626), // red-600
+                          color: design.colors.error,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const AppText.label(
+                        child: AppText.label(
                           "LIVE",
-                          color: Color(0xFFFFFFFF),
-                          style: TextStyle(fontSize: 10),
+                          color: design.colors.textInverse,
+                          style: const TextStyle(fontSize: 10),
                         ),
                       ),
                   ],
@@ -127,7 +127,7 @@ class AssignmentCard extends StatelessWidget {
 
     return AppCard(
       onTap: onTap,
-      padding: EdgeInsets.all(design.spacing.md),
+      padding: const EdgeInsets.all(12),
       child: Column(
         children: [
           Row(
@@ -138,7 +138,7 @@ class AssignmentCard extends StatelessWidget {
                 height: 40,
                 decoration: BoxDecoration(
                   color: isOverdue
-                      ? const Color(0xFFFEE2E2)
+                      ? design.colors.error.withOpacity(0.1)
                       : design.colors.surface,
                   shape: BoxShape.circle,
                 ),
@@ -147,7 +147,7 @@ class AssignmentCard extends StatelessWidget {
                     isOverdue ? LucideIcons.alertCircle : LucideIcons.fileText,
                     size: 20,
                     color: isOverdue
-                        ? const Color(0xFFDC2626)
+                        ? design.colors.error
                         : design.colors.textSecondary,
                   ),
                 ),
@@ -220,8 +220,8 @@ class AssignmentCard extends StatelessWidget {
                     _SegmentedProgressBar(
                       progress: assignment.progress,
                       color: isOverdue
-                          ? const Color(0xFFDC2626)
-                          : const Color(0xFFD97706), // red-600 or amber-600
+                          ? design.colors.error
+                          : design.colors.warning,
                     ),
                     const SizedBox(width: 4),
                     AppText.bodySmall(
@@ -257,7 +257,7 @@ class _SegmentedProgressBar extends StatelessWidget {
           height: 4,
           margin: const EdgeInsets.symmetric(horizontal: 1),
           decoration: BoxDecoration(
-            color: isFilled ? color : design.colors.border.withValues(alpha: 0.5),
+            color: isFilled ? color : design.colors.border.withOpacity(0.5),
             borderRadius: BorderRadius.circular(2),
           ),
         );
@@ -278,7 +278,7 @@ class TestCard extends StatelessWidget {
 
     return AppCard(
       onTap: onTap,
-      padding: EdgeInsets.all(design.spacing.md),
+      padding: const EdgeInsets.all(12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -319,13 +319,13 @@ class TestCard extends StatelessWidget {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFDC2626), // red-600
+                          color: design.colors.error,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const AppText.label(
+                        child: AppText.label(
                           "IMPORTANT",
-                          color: Color(0xFFFFFFFF),
-                          style: TextStyle(fontSize: 10),
+                          color: design.colors.textInverse,
+                          style: const TextStyle(fontSize: 10),
                         ),
                       ),
                   ],

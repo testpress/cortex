@@ -31,6 +31,17 @@ void main() {
         progressBackground: Color(0xFFE5E7EB),
         progressForeground: Color(0xFF6366F1),
         focus: Color(0x666366F1),
+        canvas: Color(0xFFF9FAFB),
+        accent1: Color(0xFF9333EA),
+        accent2: Color(0xFF2563EB),
+        accent3: Color(0xFFF59E0B),
+        accent4: Color(0xFF10B981),
+        accent5: Color(0xFFEF4444),
+        accent6: Color(0xFF06B6D4),
+        rank1: Color(0xFFFBBF24),
+        rank2: Color(0xFFCBD5E1),
+        rank3: Color(0xFFFB923C),
+        rankDefault: Color(0xFF94A3B8),
       );
 
       final customConfig = DesignConfig(
@@ -101,6 +112,17 @@ void main() {
         progressBackground: Color(0xFFE5E7EB),
         progressForeground: Color(0xFF6366F1),
         focus: Color(0x666366F1),
+        canvas: Color(0xFFF9FAFB),
+        accent1: Color(0xFF9333EA),
+        accent2: Color(0xFF2563EB),
+        accent3: Color(0xFFF59E0B),
+        accent4: Color(0xFF10B981),
+        accent5: Color(0xFFEF4444),
+        accent6: Color(0xFF06B6D4),
+        rank1: Color(0xFFFBBF24),
+        rank2: Color(0xFFCBD5E1),
+        rank3: Color(0xFFFB923C),
+        rankDefault: Color(0xFF94A3B8),
       );
 
       final customConfig = DesignConfig(

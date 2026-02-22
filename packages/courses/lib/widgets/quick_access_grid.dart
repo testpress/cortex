@@ -125,15 +125,16 @@ class _ShortcutItem extends StatelessWidget {
   }
 
   ({Color bg, Color text}) _getColors(BuildContext context) {
+    final design = Design.of(context);
     final baseColor = switch (shortcut.icon) {
-      ShortcutIcon.video => const Color(0xFF9333EA), // Purple-600
-      ShortcutIcon.notes => const Color(0xFF2563EB), // Blue-600
-      ShortcutIcon.tests => const Color(0xFFEA580C), // Orange-600
-      ShortcutIcon.practice => const Color(0xFF16A34A), // Green-600
-      ShortcutIcon.doubts => const Color(0xFFE11D48), // Rose-600
-      ShortcutIcon.schedule => const Color(0xFF0891B2), // Cyan-600
+      ShortcutIcon.video => design.colors.accent1,
+      ShortcutIcon.notes => design.colors.accent2,
+      ShortcutIcon.tests => design.colors.accent3,
+      ShortcutIcon.practice => design.colors.accent4,
+      ShortcutIcon.doubts => design.colors.accent5,
+      ShortcutIcon.schedule => design.colors.accent6,
     };
 
-    return (bg: baseColor.withValues(alpha: 0.1), text: baseColor);
+    return (bg: baseColor.withOpacity(0.1), text: baseColor);
   }
 }

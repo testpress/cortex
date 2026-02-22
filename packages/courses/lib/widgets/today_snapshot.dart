@@ -201,7 +201,7 @@ class TodaySnapshot extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: design.colors.success.withValues(alpha: 0.1),
+                  color: design.colors.success.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -249,49 +249,26 @@ class _SnapshotSection extends StatelessWidget {
               letterSpacing: 0.5,
               fontWeight: FontWeight.w600,
             ),
-            color: design.colors.textPrimary.withValues(alpha: 0.7),
+            color: design.colors.textPrimary.withOpacity(0.7),
           ),
         ),
         const SizedBox(height: 12),
         if (items.length > 1)
-          _PeekCarousel(items: items, design: design)
+          AppCarousel(
+            height: 92, // Much tighter fit for dash cards
+            showDots: false,
+            viewportFraction: 0.88,
+            padEnds: false,
+            itemCount: items.length,
+            itemPadding: EdgeInsets.only(left: design.spacing.md),
+            itemBuilder: (context, index) => items[index],
+          )
         else
           Padding(
             padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
             child: items.first,
           ),
       ],
-    );
-  }
-}
-
-class _PeekCarousel extends StatelessWidget {
-  const _PeekCarousel({required this.items, required this.design});
-  final List<Widget> items;
-  final DesignConfig design;
-
-  @override
-  Widget build(BuildContext context) {
-    // 88% width mimics the PageView viewportFraction
-    final itemWidth = MediaQuery.of(context).size.width * 0.88;
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: List.generate(items.length, (index) {
-            final isLast = index == items.length - 1;
-            return Container(
-              // Subtract the padding to maintain exact proportional sizing
-              width: itemWidth - design.spacing.md,
-              padding: EdgeInsets.only(right: isLast ? 0 : 8.0),
-              child: items[index],
-            );
-          }),
-        ),
-      ),
     );
   }
 }
@@ -307,7 +284,7 @@ class _ClassCard extends StatelessWidget {
 
     return AppCard(
       showShadow: true,
-      padding: EdgeInsets.all(design.spacing.md),
+      padding: const EdgeInsets.all(12),
       child: Opacity(
         opacity: isCompleted ? 0.6 : 1.0,
         child: Row(
@@ -337,15 +314,12 @@ class _ClassCard extends StatelessWidget {
                       ),
                       if (item.status == ClassStatus.live) ...[
                         const SizedBox(width: 8),
-                        _PillBadge(
-                          label: 'LIVE',
-                          color: const Color(0xFF16A34A),
-                        ),
+                        _PillBadge(label: 'LIVE', color: design.colors.success),
                       ],
                     ],
                   ),
                   if (item.topic != null) ...[
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 1),
                     AppText(
                       item.subject,
                       color: design.colors.textSecondary,
@@ -371,7 +345,7 @@ class _ClassCard extends StatelessWidget {
               Icons.chevron_right_rounded,
               size: 20,
               color: isCompleted
-                  ? design.colors.textTertiary.withValues(alpha: 0.5)
+                  ? design.colors.textTertiary.withOpacity(0.5)
                   : design.colors.textTertiary,
             ),
           ],
@@ -389,10 +363,8 @@ class _AssignmentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final isOverdue = item.status == AssignmentStatus.overdue;
-    final filledColor = isOverdue
-        ? const Color(0xFFDC2626)
-        : const Color(0xFFD97706);
-    const emptyColor = Color(0xFFCBD5E1);
+    final filledColor = isOverdue ? design.colors.error : design.colors.warning;
+    final emptyColor = design.colors.divider; // Neutral base for progress bar
 
     return AppCard(
       showShadow: true,
@@ -565,21 +537,22 @@ class _ContentIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final design = Design.of(context);
     return switch (status) {
-      ClassStatus.live => const Icon(
+      ClassStatus.live => Icon(
         LucideIcons.video,
         size: 20,
-        color: Color(0xFFDC2626),
+        color: design.colors.error,
       ),
-      ClassStatus.completed => const Icon(
+      ClassStatus.completed => Icon(
         LucideIcons.checkCircle2,
         size: 20,
-        color: Color(0xFF16A34A),
+        color: design.colors.success,
       ),
-      ClassStatus.upcoming => const Icon(
+      ClassStatus.upcoming => Icon(
         LucideIcons.clock,
         size: 20,
-        color: Color(0xFFEA580C),
+        color: design.colors.warning,
       ),
     };
   }
@@ -591,21 +564,22 @@ class _AssignmentIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final design = Design.of(context);
     return switch (status) {
-      AssignmentStatus.overdue => const Icon(
+      AssignmentStatus.overdue => Icon(
         LucideIcons.alertCircle,
         size: 20,
-        color: Color(0xFFDC2626),
+        color: design.colors.error,
       ),
-      AssignmentStatus.submitted => const Icon(
+      AssignmentStatus.submitted => Icon(
         LucideIcons.checkCircle2,
         size: 20,
-        color: Color(0xFF16A34A),
+        color: design.colors.success,
       ),
-      AssignmentStatus.pending => const Icon(
+      AssignmentStatus.pending => Icon(
         LucideIcons.clock,
         size: 20,
-        color: Color(0xFFEA580C),
+        color: design.colors.warning,
       ),
     };
   }
@@ -616,10 +590,11 @@ class _TestIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Icon(
+    final design = Design.of(context);
+    return Icon(
       LucideIcons.shieldCheck,
       size: 20,
-      color: Color(0xFFEA580C),
+      color: design.colors.warning,
     );
   }
 }
@@ -641,8 +616,8 @@ class _PillBadge extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: const TextStyle(
-          color: Color(0xFFFFFFFF),
+        style: TextStyle(
+          color: design.colors.textInverse,
           fontSize: 11,
           fontWeight: FontWeight.w600,
           height: 1.4,
