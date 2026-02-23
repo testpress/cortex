@@ -19,17 +19,24 @@ class AnnouncementBanner {
   });
 }
 
-/// A section for updates and announcements banners.
-class PromotionalBanners extends StatelessWidget {
-  const PromotionalBanners({super.key, required this.banners});
+/// A section for updates and announcements on the dashboard.
+class UpdatesAnnouncementsSection extends StatelessWidget {
+  const UpdatesAnnouncementsSection({
+    super.key,
+    required this.banners,
+    this.onViewAll,
+  });
 
   final List<AnnouncementBanner> banners;
+  final VoidCallback? onViewAll;
 
   @override
   Widget build(BuildContext context) {
     if (banners.isEmpty) return const SizedBox.shrink();
 
     final design = Design.of(context);
+
+    final l10n = L10n.of(context);
 
     return Padding(
       padding: const EdgeInsets.only(top: 32),
@@ -42,7 +49,7 @@ class PromotionalBanners extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 AppText(
-                  'UPDATES & ANNOUNCEMENTS',
+                  l10n.updatesAnnouncementsTitle,
                   style: const TextStyle(
                     fontSize: 12,
                     letterSpacing: 0.5,
@@ -50,25 +57,45 @@ class PromotionalBanners extends StatelessWidget {
                   ),
                   color: design.colors.textPrimary.withOpacity(0.7),
                 ),
-                AppText.bodySmall(
-                  'View all',
-                  color: design.colors.primary,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+                GestureDetector(
+                  onTap: onViewAll,
+                  child: AppText.bodySmall(
+                    l10n.viewAllAction,
+                    color: design.colors.primary,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 12),
-          if (banners.length > 1)
-            _buildCarousel(context)
-          else
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-              child: _BannerCard(banner: banners.first),
-            ),
+          PromotionalBanners(banners: banners),
         ],
       ),
     );
+  }
+}
+
+/// A generic horizontal list/carousel of announcement banners.
+class PromotionalBanners extends StatelessWidget {
+  const PromotionalBanners({super.key, required this.banners});
+
+  final List<AnnouncementBanner> banners;
+
+  @override
+  Widget build(BuildContext context) {
+    if (banners.isEmpty) return const SizedBox.shrink();
+
+    final design = Design.of(context);
+
+    if (banners.length > 1) {
+      return _buildCarousel(context);
+    } else {
+      return Padding(
+        padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+        child: _BannerCard(banner: banners.first),
+      );
+    }
   }
 
   Widget _buildCarousel(BuildContext context) {
@@ -100,11 +127,11 @@ class _BannerCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: banner.bgColor,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: Color(0x0F000000),
+            color: design.colors.border.withOpacity(0.06),
             blurRadius: 10,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),

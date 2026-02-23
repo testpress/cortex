@@ -333,6 +333,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Schedule'**
   String get shortcutSchedule;
+
+  /// No description provided for @learningPerformanceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning Performance'**
+  String get learningPerformanceTitle;
+
+  /// No description provided for @latestActivityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest Activity'**
+  String get latestActivityLabel;
+
+  /// No description provided for @streakMomentumLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{days}-day momentum'**
+  String streakMomentumLabel(int days);
+
+  /// No description provided for @weeklyHoursLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours}h this week'**
+  String weeklyHoursLabel(String hours);
+
+  /// No description provided for @lessonsFinishedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Lessons finished'**
+  String get lessonsFinishedLabel;
+
+  /// No description provided for @testsAttemptedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tests attempted'**
+  String get testsAttemptedLabel;
+
+  /// No description provided for @assessmentsDoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Assessments done'**
+  String get assessmentsDoneLabel;
+
+  /// No description provided for @strongestSubjectLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'YOU\'RE STRONGEST IN'**
+  String get strongestSubjectLabel;
+
+  /// No description provided for @weakSubjectLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'NEED FOCUS HERE'**
+  String get weakSubjectLabel;
+
+  /// No description provided for @noActivityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No study activity yet'**
+  String get noActivityTitle;
+
+  /// No description provided for @noActivitySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with a session to build momentum'**
+  String get noActivitySubtitle;
+
+  /// No description provided for @allCaughtUpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'All Caught Up!'**
+  String get allCaughtUpTitle;
+
+  /// No description provided for @noScheduledActivitiesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No scheduled activities right now'**
+  String get noScheduledActivitiesSubtitle;
+
+  /// No description provided for @liveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'LIVE'**
+  String get liveLabel;
+
+  /// No description provided for @importantLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'IMPORTANT'**
+  String get importantLabel;
+
+  /// No description provided for @testTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{type} TEST'**
+  String testTypeLabel(String type);
+
+  /// No description provided for @coursesCompletedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} courses'**
+  String coursesCompletedLabel(int count);
+
+  /// No description provided for @streakDaysLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days'**
+  String streakDaysLabel(int count);
+
+  /// No description provided for @achievementsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Achievements'**
+  String get achievementsLabel;
+
+  /// No description provided for @moreBadgesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'+{count} more'**
+  String moreBadgesLabel(int count);
 }
 
 class _AppLocalizationsDelegate

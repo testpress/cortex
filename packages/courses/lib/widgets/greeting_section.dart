@@ -23,7 +23,7 @@ class HomeGreetingSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppText(
-            '${_getGreeting()}, $userName',
+            '${_getGreeting(context)}, $userName',
             style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w600,
@@ -41,11 +41,12 @@ class HomeGreetingSection extends StatelessWidget {
     );
   }
 
-  String _getGreeting() {
+  String _getGreeting(BuildContext context) {
+    final l10n = L10n.of(context);
     final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good morning';
-    if (hour < 17) return 'Good afternoon';
-    return 'Good evening';
+    if (hour < 12) return l10n.greetingMorning;
+    if (hour < 17) return l10n.greetingAfternoon;
+    return l10n.greetingEvening;
   }
 
   String _getTodayDate() {

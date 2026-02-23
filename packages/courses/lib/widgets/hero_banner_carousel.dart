@@ -148,8 +148,8 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
                         width: isActive ? 24 : 6,
                         decoration: BoxDecoration(
                           color: isActive
-                              ? const Color(0xFFFFFFFF)
-                              : const Color(0x99FFFFFF),
+                              ? design.colors.onPrimary
+                              : design.colors.onPrimary.withOpacity(0.6),
                           borderRadius: BorderRadius.circular(3),
                         ),
                       );

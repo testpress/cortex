@@ -80,6 +80,7 @@ class TodaySnapshot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     final liveClasses = classes
         .where((c) => c.status == ClassStatus.live)
@@ -122,7 +123,7 @@ class TodaySnapshot extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 AppText(
-                  "Today's Schedule",
+                  l10n.todayScheduleTitle,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -131,7 +132,7 @@ class TodaySnapshot extends StatelessWidget {
                   color: design.colors.textPrimary,
                 ),
                 AppText.bodySmall(
-                  'View all',
+                  l10n.viewAllAction,
                   color: design.colors.primary,
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
@@ -142,7 +143,7 @@ class TodaySnapshot extends StatelessWidget {
 
           if (hasNowAndNext) ...[
             _SnapshotSection(
-              title: 'NOW & NEXT',
+              title: l10n.nowAndNextSection,
               items: [
                 ...liveClasses.map((c) => _ClassCard(item: c)),
                 if (nextClass != null) _ClassCard(item: nextClass),
@@ -154,7 +155,7 @@ class TodaySnapshot extends StatelessWidget {
           if (hasDeadlines) ...[
             const SizedBox(height: 24),
             _SnapshotSection(
-              title: 'DEADLINES',
+              title: l10n.deadlinesSection,
               items: deadlineItems
                   .map((a) => _AssignmentCard(item: a))
                   .toList(),
@@ -165,7 +166,7 @@ class TodaySnapshot extends StatelessWidget {
           if (hasTests) ...[
             const SizedBox(height: 24),
             _SnapshotSection(
-              title: 'UPCOMING TESTS',
+              title: l10n.upcomingTestsSection,
               items: tests.map((t) => _TestCard(item: t)).toList(),
               design: design,
             ),
@@ -174,7 +175,7 @@ class TodaySnapshot extends StatelessWidget {
           if (hasLaterToday) ...[
             const SizedBox(height: 24),
             _SnapshotSection(
-              title: 'LATER TODAY',
+              title: l10n.laterTodaySection,
               items: [
                 ...laterClasses.map((c) => _ClassCard(item: c)),
                 ...completedClasses.map((c) => _ClassCard(item: c)),
@@ -191,6 +192,7 @@ class TodaySnapshot extends StatelessWidget {
   }
 
   Widget _buildEmptyState(BuildContext context, DesignConfig design) {
+    final l10n = L10n.of(context);
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
       child: AppCard(
@@ -211,9 +213,12 @@ class TodaySnapshot extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-              AppText.title('All Caught Up!', color: design.colors.textPrimary),
+              AppText.title(
+                l10n.allCaughtUpTitle,
+                color: design.colors.textPrimary,
+              ),
               AppText.bodySmall(
-                'No scheduled activities right now',
+                l10n.noScheduledActivitiesSubtitle,
                 color: design.colors.textSecondary,
               ),
             ],
@@ -314,7 +319,10 @@ class _ClassCard extends StatelessWidget {
                       ),
                       if (item.status == ClassStatus.live) ...[
                         const SizedBox(width: 8),
-                        _PillBadge(label: 'LIVE', color: design.colors.success),
+                        _PillBadge(
+                          label: L10n.of(context).liveLabel,
+                          color: design.colors.success,
+                        ),
                       ],
                     ],
                   ),
@@ -464,6 +472,7 @@ class _TestCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     return AppCard(
       showShadow: true,
@@ -495,7 +504,7 @@ class _TestCard extends StatelessWidget {
                     if (item.isImportant) ...[
                       const SizedBox(width: 8),
                       _PillBadge(
-                        label: 'IMPORTANT',
+                        label: l10n.importantLabel,
                         color: design.colors.error,
                       ),
                     ],
@@ -504,7 +513,7 @@ class _TestCard extends StatelessWidget {
                 if (item.type != null) ...[
                   const SizedBox(height: 4),
                   AppText.caption(
-                    '${item.type!.name.toUpperCase()} TEST',
+                    l10n.testTypeLabel(item.type!.name.toUpperCase()),
                     color: design.colors.textSecondary,
                     style: const TextStyle(letterSpacing: 0.5),
                   ),

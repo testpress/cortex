@@ -35,6 +35,7 @@ class DesignConfig {
     required this.radius,
     required this.subjectPalette,
     required this.statusColors,
+    required this.shortcutPalette,
     this.isDark = false,
   });
 
@@ -46,6 +47,7 @@ class DesignConfig {
   final DesignRadius radius;
   final DesignSubjectPalette subjectPalette;
   final DesignStatusColors statusColors;
+  final DesignShortcutPalette shortcutPalette;
   final bool isDark;
 
   /// Default configuration matching current static tokens.
@@ -69,6 +71,7 @@ class DesignConfig {
       radius: DesignRadius.defaults(),
       subjectPalette: DesignSubjectPalette.light(),
       statusColors: DesignStatusColors.light(),
+      shortcutPalette: DesignShortcutPalette.light(),
       isDark: false,
     );
   }
@@ -86,6 +89,7 @@ class DesignConfig {
       radius: DesignRadius.defaults(),
       subjectPalette: DesignSubjectPalette.dark(),
       statusColors: DesignStatusColors.dark(),
+      shortcutPalette: DesignShortcutPalette.dark(),
       isDark: true,
     );
   }
@@ -99,6 +103,7 @@ class DesignConfig {
     DesignRadius? radius,
     DesignSubjectPalette? subjectPalette,
     DesignStatusColors? statusColors,
+    DesignShortcutPalette? shortcutPalette,
     bool? isDark,
   }) {
     return DesignConfig(
@@ -110,6 +115,7 @@ class DesignConfig {
       radius: radius ?? this.radius,
       subjectPalette: subjectPalette ?? this.subjectPalette,
       statusColors: statusColors ?? this.statusColors,
+      shortcutPalette: shortcutPalette ?? this.shortcutPalette,
       isDark: isDark ?? this.isDark,
     );
   }
@@ -125,7 +131,9 @@ class DesignConfig {
         other.motion == motion &&
         other.radius == radius &&
         other.subjectPalette == subjectPalette &&
-        other.statusColors == statusColors;
+        other.statusColors == statusColors &&
+        other.shortcutPalette == shortcutPalette &&
+        other.isDark == isDark;
   }
 
   @override
@@ -137,7 +145,10 @@ class DesignConfig {
       typographyScale,
       motion,
       radius,
-      Object.hash(subjectPalette, statusColors),
+      subjectPalette,
+      statusColors,
+      shortcutPalette,
+      isDark,
     );
   }
 }
@@ -478,7 +489,19 @@ class DesignColors {
         other.textTertiary == textTertiary &&
         other.textInverse == textInverse &&
         other.progressBackground == progressBackground &&
-        other.progressForeground == progressForeground;
+        other.progressForeground == progressForeground &&
+        other.focus == focus &&
+        other.canvas == canvas &&
+        other.accent1 == accent1 &&
+        other.accent2 == accent2 &&
+        other.accent3 == accent3 &&
+        other.accent4 == accent4 &&
+        other.accent5 == accent5 &&
+        other.accent6 == accent6 &&
+        other.rank1 == rank1 &&
+        other.rank2 == rank2 &&
+        other.rank3 == rank3 &&
+        other.rankDefault == rankDefault;
   }
 
   @override
@@ -508,6 +531,18 @@ class DesignColors {
       textInverse,
       progressBackground,
       progressForeground,
+      focus,
+      canvas,
+      accent1,
+      accent2,
+      accent3,
+      accent4,
+      accent5,
+      accent6,
+      rank1,
+      rank2,
+      rank3,
+      rankDefault,
     ]);
   }
 }
@@ -798,6 +833,131 @@ class DesignStatusColors {
 
   @override
   int get hashCode => Object.hash(live, completed, locked, upcoming);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Shortcut Palette
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// A color pair for a shortcut (quick access) item.
+@immutable
+class ShortcutColors {
+  const ShortcutColors({required this.background, required this.foreground});
+
+  /// Icon container background color.
+  final Color background;
+
+  /// Icon color on [background].
+  final Color foreground;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is ShortcutColors &&
+        other.background == background &&
+        other.foreground == foreground;
+  }
+
+  @override
+  int get hashCode => Object.hash(background, foreground);
+}
+
+/// Indexed shortcut color palette.
+@immutable
+class DesignShortcutPalette {
+  const DesignShortcutPalette(this._palettes);
+
+  final List<ShortcutColors> _palettes;
+
+  /// Returns the [ShortcutColors] at [i % _palettes.length].
+  ShortcutColors atIndex(int i) => _palettes[i % _palettes.length];
+
+  /// Number of distinct color slots in this palette.
+  int get length => _palettes.length;
+
+  factory DesignShortcutPalette.light() {
+    return const DesignShortcutPalette([
+      // 0 — Purple (accent1)
+      ShortcutColors(
+        background: Color(0xFFF3E8FF),
+        foreground: Color(0xFF9333EA),
+      ),
+      // 1 — Blue (accent2)
+      ShortcutColors(
+        background: Color(0xFFEFF6FF),
+        foreground: Color(0xFF2563EB),
+      ),
+      // 2 — Orange (accent3)
+      ShortcutColors(
+        background: Color(0xFFFFF7ED),
+        foreground: Color(0xFFEA580C),
+      ),
+      // 3 — Green (accent4)
+      ShortcutColors(
+        background: Color(0xFFF0FDF4),
+        foreground: Color(0xFF16A34A),
+      ),
+      // 4 — Rose (accent5)
+      ShortcutColors(
+        background: Color(0xFFFFF1F2),
+        foreground: Color(0xFFE11D48),
+      ),
+      // 5 — Cyan (accent6)
+      ShortcutColors(
+        background: Color(0xFFECFEFF),
+        foreground: Color(0xFF0891B2),
+      ),
+    ]);
+  }
+
+  factory DesignShortcutPalette.dark() {
+    return const DesignShortcutPalette([
+      // 0 — Purple
+      ShortcutColors(
+        background: Color(0xFF2E1065),
+        foreground: Color(0xFFA855F7),
+      ),
+      // 1 — Blue
+      ShortcutColors(
+        background: Color(0xFF1E3A8A),
+        foreground: Color(0xFF3B82F6),
+      ),
+      // 2 — Orange
+      ShortcutColors(
+        background: Color(0xFF431407),
+        foreground: Color(0xFFFB923C),
+      ),
+      // 3 — Green
+      ShortcutColors(
+        background: Color(0xFF052E16),
+        foreground: Color(0xFF22C55E),
+      ),
+      // 4 — Rose
+      ShortcutColors(
+        background: Color(0xFF4C0519),
+        foreground: Color(0xFFFB7185),
+      ),
+      // 5 — Cyan
+      ShortcutColors(
+        background: Color(0xFF083344),
+        foreground: Color(0xFF22D3EE),
+      ),
+    ]);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! DesignShortcutPalette) return false;
+    if (_palettes.length != other._palettes.length) return false;
+    for (int i = 0; i < _palettes.length; i++) {
+      if (_palettes[i] != other._palettes[i]) return false;
+    }
+    return true;
+  }
+
+  @override
+  int get hashCode => Object.hashAll(_palettes);
 }
 
 /// Spacing token group.

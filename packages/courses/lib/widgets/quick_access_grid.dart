@@ -56,14 +56,15 @@ class QuickAccessGrid extends StatelessWidget {
             mainAxisSpacing: 12,
             crossAxisSpacing: 12,
             childAspectRatio: 0.9,
-            children: shortcuts
-                .map(
-                  (shortcut) => _ShortcutItem(
-                    shortcut: shortcut,
-                    onTap: () => onShortcutTap?.call(shortcut),
-                  ),
-                )
-                .toList(),
+            children: shortcuts.asMap().entries.map((entry) {
+              final index = entry.key;
+              final shortcut = entry.value;
+              return _ShortcutItem(
+                shortcut: shortcut,
+                index: index,
+                onTap: () => onShortcutTap?.call(shortcut),
+              );
+            }).toList(),
           ),
         ],
       ),
@@ -72,14 +73,19 @@ class QuickAccessGrid extends StatelessWidget {
 }
 
 class _ShortcutItem extends StatelessWidget {
-  const _ShortcutItem({required this.shortcut, this.onTap});
+  const _ShortcutItem({
+    required this.shortcut,
+    required this.index,
+    this.onTap,
+  });
   final Shortcut shortcut;
+  final int index;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final colors = _getColors(context);
+    final shortcutColors = design.shortcutPalette.atIndex(index);
 
     return GestureDetector(
       onTap: onTap,
@@ -92,10 +98,10 @@ class _ShortcutItem extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: colors.bg,
+                color: shortcutColors.background,
                 shape: BoxShape.circle,
               ),
-              child: Center(child: _buildIcon(colors.text)),
+              child: Center(child: _buildIcon(shortcutColors.foreground)),
             ),
             const SizedBox(height: 8),
             AppText.caption(
@@ -122,19 +128,5 @@ class _ShortcutItem extends StatelessWidget {
     };
 
     return Icon(iconData, size: 20, color: color);
-  }
-
-  ({Color bg, Color text}) _getColors(BuildContext context) {
-    final design = Design.of(context);
-    final baseColor = switch (shortcut.icon) {
-      ShortcutIcon.video => design.colors.accent1,
-      ShortcutIcon.notes => design.colors.accent2,
-      ShortcutIcon.tests => design.colors.accent3,
-      ShortcutIcon.practice => design.colors.accent4,
-      ShortcutIcon.doubts => design.colors.accent5,
-      ShortcutIcon.schedule => design.colors.accent6,
-    };
-
-    return (bg: baseColor.withOpacity(0.1), text: baseColor);
   }
 }

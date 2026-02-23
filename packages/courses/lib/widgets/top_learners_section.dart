@@ -49,6 +49,7 @@ class TopLearnersSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -61,7 +62,7 @@ class TopLearnersSection extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 AppText(
-                  'TOP LEARNERS THIS WEEK',
+                  l10n.topLearnersTitle,
                   style: const TextStyle(
                     fontSize: 12,
                     letterSpacing: 0.5,
@@ -70,7 +71,7 @@ class TopLearnersSection extends StatelessWidget {
                   color: design.colors.textPrimary.withOpacity(0.7),
                 ),
                 AppText.bodySmall(
-                  'View all',
+                  l10n.viewAllAction,
                   color: design.colors.primary,
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
@@ -148,6 +149,7 @@ class _LearnerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     return Container(
       padding: EdgeInsets.all(design.spacing.md),
@@ -268,7 +270,7 @@ class _LearnerCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   AppText.caption(
-                    '${learner.coursesCompleted} courses',
+                    l10n.coursesCompletedLabel(learner.coursesCompleted),
                     color: design.colors.textSecondary,
                     style: const TextStyle(fontSize: 13),
                   ),
@@ -284,7 +286,7 @@ class _LearnerCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   AppText.caption(
-                    '${learner.streakDays} days',
+                    l10n.streakDaysLabel(learner.streakDays),
                     color: design.colors.textSecondary,
                     style: const TextStyle(fontSize: 13),
                   ),
@@ -294,7 +296,7 @@ class _LearnerCard extends StatelessWidget {
           ),
           const Spacer(),
           AppText.caption(
-            'Achievements',
+            l10n.achievementsLabel,
             color: design.colors.textSecondary,
             style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
           ),
@@ -306,7 +308,7 @@ class _LearnerCard extends StatelessWidget {
               if (learner.badges.length > 1) ...[
                 const SizedBox(width: 8),
                 AppText.caption(
-                  '+${learner.badges.length - 1} more',
+                  l10n.moreBadgesLabel(learner.badges.length - 1),
                   color: design.colors.textSecondary,
                   style: const TextStyle(
                     fontSize: 11,
@@ -372,6 +374,7 @@ class _LeaderboardItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
@@ -438,7 +441,7 @@ class _LeaderboardItem extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         AppText.caption(
-                          '${learner.coursesCompleted} courses',
+                          l10n.coursesCompletedLabel(learner.coursesCompleted),
                           color: design.colors.textSecondary,
                           style: const TextStyle(
                             fontSize: 12,
@@ -457,7 +460,7 @@ class _LeaderboardItem extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         AppText.caption(
-                          '${learner.streakDays} days',
+                          l10n.streakDaysLabel(learner.streakDays),
                           color: design.colors.textSecondary,
                           style: const TextStyle(
                             fontSize: 12,

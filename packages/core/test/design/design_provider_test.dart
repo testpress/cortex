@@ -54,6 +54,7 @@ void main() {
         radius: DesignRadius.defaults(),
         subjectPalette: DesignSubjectPalette.light(),
         statusColors: DesignStatusColors.light(),
+        shortcutPalette: DesignShortcutPalette.light(),
       );
 
       late DesignConfig capturedConfig;
@@ -139,6 +140,7 @@ void main() {
         radius: DesignRadius.defaults(),
         subjectPalette: DesignSubjectPalette.light(),
         statusColors: DesignStatusColors.light(),
+        shortcutPalette: DesignShortcutPalette.light(),
       );
 
       late DesignConfig capturedConfig;

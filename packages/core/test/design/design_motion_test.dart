@@ -27,6 +27,7 @@ void main() {
         radius: DesignRadius.defaults(),
         subjectPalette: DesignSubjectPalette.light(),
         statusColors: DesignStatusColors.light(),
+        shortcutPalette: DesignShortcutPalette.light(),
       );
 
       bool? shouldAnimate;
@@ -75,6 +76,7 @@ void main() {
         radius: DesignRadius.defaults(),
         subjectPalette: DesignSubjectPalette.light(),
         statusColors: DesignStatusColors.light(),
+        shortcutPalette: DesignShortcutPalette.light(),
       );
 
       bool? shouldAnimate;

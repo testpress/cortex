@@ -33,15 +33,18 @@ The system SHALL provide a visual summary of the user's weekly study activity.
 
 #### Scenario: Intensity-based color mapping
 - **WHEN** a day in the 7-day strip is rendered
-- **THEN** its color MUST reflect the minutes studied:
-    - 0 mins: Neutral Grey (Light: `slate-100`, Dark: `slate-800`)
-    - < 60 mins: Light Blue
-    - 60-120 mins: Medium Blue
-    - > 120 mins: High-intensity Blue
+- **THEN** its color MUST reflect the minutes studied using a linear interpolation of the `primary` color
+- **AND** 0 mins MUST use the `surfaceVariant` color token
 
 #### Scenario: Streak reinforcement
 - **WHEN** the user has a study streak of 2 days or more
 - **THEN** the system MUST display the "Flame" icon and streak count in the `StudyMomentum` card
+- **AND** the label MUST be localized using `streakMomentumLabel(count)`
+
+#### Scenario: Semantic subject insights
+- **WHEN** strongest or weak subject cards are rendered
+- **THEN** they MUST use `SubjectColors` from `design.subjectPalette`
+- **AND** "Strongest" MUST use Emerald (Index 2) and "Need Focus" MUST use Amber (Index 6)
 
 ---
 
@@ -51,6 +54,10 @@ The system SHALL provide a `ContextualHeroCard` and `QuickAccess` grid for frict
 #### Scenario: Contextual action for live class
 - **WHEN** a class is currently `live`
 - **THEN** the `ContextualHeroCard` MUST display "Join Live Class" as its primary CTA
+
+#### Scenario: Adaptive shortcut colors
+- **WHEN** items in the `QuickAccessGrid` are rendered
+- **THEN** background and icon colors MUST be resolved from `design.shortcutPalette.atIndex(index)`
 
 ---
 
@@ -71,9 +78,13 @@ The system SHALL organize data models and UI state following an offline-first re
 - **WHEN** the `TodaySnapshot` and `StudyMomentum` components render
 - **THEN** they MUST strictly read data from Riverpod mock providers (`todayClassesProvider`, `studyMomentumProvider`) to prepare the UI for the future Drift DB offline-first data layer (completed in `lms-data-layer`).
 
-#### Scenario: Temporary Hardcoded Assets
+#### Scenario: Localization implementation
+- **WHEN** rendering dynamic text components (headers, captions, badges)
+- **THEN** they MUST use `L10n.of(context)` for all user-facing strings to support internationalization.
+
+#### Scenario: Temporary Hardcoded Data Models
 - **WHEN** reading `PromotionalBanners`, `TopLearnersSection`, `HeroBannerCarousel`, and `QuickAccessGrid`
-- **THEN** these components rely entirely on static UI scaffolding text arrays temporarily until their respective dynamic domains are brought online via the database.
+- **THEN** these components rely on mock data objects but use dynamic UI rendering logic, awaiting the full database integration.
 
 ---
 

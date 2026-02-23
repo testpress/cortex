@@ -130,8 +130,11 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                 ),
 
                 promotionBanners.when(
-                  data: (data) => PromotionalBanners(
+                  data: (data) => UpdatesAnnouncementsSection(
                     banners: data.map(_mapPromotionBanner).toList(),
+                    onViewAll: () {
+                      // Handle view all navigation
+                    },
                   ),
                   loading: () => const SizedBox(height: 100),
                   error: (_, __) => const SizedBox.shrink(),

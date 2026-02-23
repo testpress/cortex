@@ -11,6 +11,7 @@ class StudyMomentumGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     final hasActivity = momentum.weekDays.any((d) => d.hasActivity);
 
     return Padding(
@@ -23,7 +24,7 @@ class StudyMomentumGrid extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppText(
-            'Learning Performance',
+            l10n.learningPerformanceTitle,
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -96,10 +97,14 @@ class StudyMomentumGrid extends StatelessWidget {
 
   Widget _buildLatestActivity(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppText.caption('Latest Activity', color: design.colors.textSecondary),
+        AppText.caption(
+          l10n.latestActivityLabel,
+          color: design.colors.textSecondary,
+        ),
         const SizedBox(height: 4),
         Text.rich(
           TextSpan(
@@ -129,6 +134,7 @@ class StudyMomentumGrid extends StatelessWidget {
 
   Widget _buildStreakAndHours(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -138,13 +144,13 @@ class StudyMomentumGrid extends StatelessWidget {
               Icon(LucideIcons.flame, size: 18, color: design.colors.primary),
               const SizedBox(width: 8),
               AppText.label(
-                '${momentum.currentStreak}-day momentum',
+                l10n.streakMomentumLabel(momentum.currentStreak),
                 color: design.colors.textPrimary,
               ),
             ],
           ),
         AppText.caption(
-          '${momentum.weeklyHours}h this week',
+          l10n.weeklyHoursLabel(momentum.weeklyHours.toString()),
           color: design.colors.textSecondary,
         ),
       ],
@@ -153,26 +159,27 @@ class StudyMomentumGrid extends StatelessWidget {
 
   Widget _buildStatsGrid(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     return Row(
       children: [
         _buildStatItem(
           context,
           momentum.lessonsFinished,
-          'Lessons\nfinished',
+          l10n.lessonsFinishedLabel,
           design.colors.primary,
         ),
         _buildDivider(context),
         _buildStatItem(
           context,
           momentum.testsAttempted,
-          'Tests\nattempted',
+          l10n.testsAttemptedLabel,
           design.colors.warning,
         ),
         _buildDivider(context),
         _buildStatItem(
           context,
           momentum.assessmentsDone,
-          'Assessments\ndone',
+          l10n.assessmentsDoneLabel,
           design.colors.success,
         ),
       ],
@@ -212,16 +219,23 @@ class StudyMomentumGrid extends StatelessWidget {
   }
 
   Widget _buildSubjectCards(BuildContext context) {
+    final l10n = L10n.of(context);
+    final design = Design.of(context);
+
+    // Using DesignSubjectPalette indices:
+    // 2: Emerald (Green) for strongest
+    // 6: Amber (Orange) for focus
+    final strongestColors = design.subjectPalette.atIndex(2);
+    final weakColors = design.subjectPalette.atIndex(6);
+
     return Row(
       children: [
         if (momentum.strongestSubject != null)
           Expanded(
             child: _SubjectInsightCard(
-              label: "YOU'RE STRONGEST IN",
+              label: l10n.strongestSubjectLabel,
               subject: momentum.strongestSubject!,
-              backgroundColor: const Color(0xFFECFDF5),
-              textColor: const Color(0xFF047857),
-              subjectColor: const Color(0xFF064E3B),
+              colors: strongestColors,
             ),
           ),
         if (momentum.strongestSubject != null && momentum.weakSubject != null)
@@ -229,11 +243,9 @@ class StudyMomentumGrid extends StatelessWidget {
         if (momentum.weakSubject != null)
           Expanded(
             child: _SubjectInsightCard(
-              label: "NEED FOCUS HERE",
+              label: l10n.weakSubjectLabel,
               subject: momentum.weakSubject!,
-              backgroundColor: const Color(0xFFFFFBEB),
-              textColor: const Color(0xFFB45309),
-              subjectColor: const Color(0xFF78350F),
+              colors: weakColors,
             ),
           ),
       ],
@@ -242,15 +254,13 @@ class StudyMomentumGrid extends StatelessWidget {
 
   Widget _buildEmptyState(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     return Center(
       child: Column(
         children: [
-          AppText.title(
-            'No study activity yet',
-            color: design.colors.textPrimary,
-          ),
+          AppText.title(l10n.noActivityTitle, color: design.colors.textPrimary),
           AppText.bodySmall(
-            'Start with a session to build momentum',
+            l10n.noActivitySubtitle,
             color: design.colors.textSecondary,
           ),
         ],
@@ -282,41 +292,19 @@ class _SubjectInsightCard extends StatelessWidget {
   const _SubjectInsightCard({
     required this.label,
     required this.subject,
-    required this.backgroundColor,
-    required this.textColor,
-    required this.subjectColor,
+    required this.colors,
   });
 
   final String label;
   final String subject;
-  final Color backgroundColor;
-  final Color textColor;
-  final Color subjectColor;
+  final SubjectColors colors;
 
   @override
   Widget build(BuildContext context) {
-    final design = Design.of(context);
-
-    final bgColor = design.isDark
-        ? (label.contains("STRONGEST")
-              ? const Color(0xFF1B3227)
-              : const Color(0xFF422A1B))
-        : backgroundColor;
-    final txtColor = design.isDark
-        ? (label.contains("STRONGEST")
-              ? const Color(0xFF6EE7B7)
-              : const Color(0xFFFCD34D))
-        : textColor;
-    final subjColor = design.isDark
-        ? (label.contains("STRONGEST")
-              ? const Color(0xFFD1FAE5)
-              : const Color(0xFFFEF3C7))
-        : subjectColor;
-
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: bgColor,
+        color: colors.background,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -324,7 +312,7 @@ class _SubjectInsightCard extends StatelessWidget {
         children: [
           AppText.caption(
             label,
-            color: txtColor,
+            color: colors.foreground,
             style: const TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w500,
@@ -335,7 +323,7 @@ class _SubjectInsightCard extends StatelessWidget {
           const SizedBox(height: 8),
           AppText.label(
             subject,
-            color: subjColor,
+            color: colors.accent,
             style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
           ),
         ],

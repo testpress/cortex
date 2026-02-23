@@ -53,6 +53,7 @@ void main() {
         radius: DesignRadius.defaults(),
         subjectPalette: DesignSubjectPalette.light(),
         statusColors: DesignStatusColors.light(),
+        shortcutPalette: DesignShortcutPalette.light(),
       );
 
       await tester.pumpWidget(
@@ -134,6 +135,7 @@ void main() {
         radius: DesignRadius.defaults(),
         subjectPalette: DesignSubjectPalette.light(),
         statusColors: DesignStatusColors.light(),
+        shortcutPalette: DesignShortcutPalette.light(),
       );
 
       await tester.pumpWidget(

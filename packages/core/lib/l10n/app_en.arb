@@ -29,5 +29,85 @@
   "labelStart": "Start",
   "labelContinue": "Continue",
   "labelProgress": "Progress",
-  "labelCourseProgress": "Course progress"
+  "labelCourseProgress": "Course progress",
+  "homeHeaderTitle": "BrightMinds Academy",
+  "todayScheduleTitle": "Today's Schedule",
+  "viewAllAction": "View all",
+  "nowAndNextSection": "NOW & NEXT",
+  "deadlinesSection": "DEADLINES",
+  "upcomingTestsSection": "UPCOMING TESTS",
+  "laterTodaySection": "LATER TODAY",
+  "topLearnersTitle": "TOP LEARNERS THIS WEEK",
+  "updatesAnnouncementsTitle": "UPDATES & ANNOUNCEMENTS",
+  "greetingMorning": "Good morning",
+  "greetingAfternoon": "Good afternoon",
+  "greetingEvening": "Good evening",
+  "shortcutRecordings": "Recordings",
+  "shortcutPractice": "Practice",
+  "shortcutTests": "Tests",
+  "shortcutNotes": "Notes",
+  "shortcutAskDoubt": "Ask Doubt",
+  "shortcutSchedule": "Schedule",
+  "learningPerformanceTitle": "Learning Performance",
+  "latestActivityLabel": "Latest Activity",
+  "streakMomentumLabel": "{days}-day momentum",
+  "@streakMomentumLabel": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "weeklyHoursLabel": "{hours}h this week",
+  "@weeklyHoursLabel": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "lessonsFinishedLabel": "Lessons finished",
+  "testsAttemptedLabel": "Tests attempted",
+  "assessmentsDoneLabel": "Assessments done",
+  "strongestSubjectLabel": "YOU'RE STRONGEST IN",
+  "weakSubjectLabel": "NEED FOCUS HERE",
+  "noActivityTitle": "No study activity yet",
+  "noActivitySubtitle": "Start with a session to build momentum",
+  "allCaughtUpTitle": "All Caught Up!",
+  "noScheduledActivitiesSubtitle": "No scheduled activities right now",
+  "liveLabel": "LIVE",
+  "importantLabel": "IMPORTANT",
+  "testTypeLabel": "{type} TEST",
+  "@testTypeLabel": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "coursesCompletedLabel": "{count} courses",
+  "@coursesCompletedLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "streakDaysLabel": "{count} days",
+  "@streakDaysLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "achievementsLabel": "Achievements",
+  "moreBadgesLabel": "+{count} more",
+  "@moreBadgesLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

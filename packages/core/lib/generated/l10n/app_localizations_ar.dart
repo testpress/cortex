@@ -130,4 +130,77 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get shortcutSchedule => 'Schedule';
+
+  @override
+  String get learningPerformanceTitle => 'Learning Performance';
+
+  @override
+  String get latestActivityLabel => 'Latest Activity';
+
+  @override
+  String streakMomentumLabel(int days) {
+    return '$days-day momentum';
+  }
+
+  @override
+  String weeklyHoursLabel(String hours) {
+    return '${hours}h this week';
+  }
+
+  @override
+  String get lessonsFinishedLabel => 'Lessons finished';
+
+  @override
+  String get testsAttemptedLabel => 'Tests attempted';
+
+  @override
+  String get assessmentsDoneLabel => 'Assessments done';
+
+  @override
+  String get strongestSubjectLabel => 'YOU\'RE STRONGEST IN';
+
+  @override
+  String get weakSubjectLabel => 'NEED FOCUS HERE';
+
+  @override
+  String get noActivityTitle => 'No study activity yet';
+
+  @override
+  String get noActivitySubtitle => 'Start with a session to build momentum';
+
+  @override
+  String get allCaughtUpTitle => 'All Caught Up!';
+
+  @override
+  String get noScheduledActivitiesSubtitle =>
+      'No scheduled activities right now';
+
+  @override
+  String get liveLabel => 'LIVE';
+
+  @override
+  String get importantLabel => 'IMPORTANT';
+
+  @override
+  String testTypeLabel(String type) {
+    return '$type TEST';
+  }
+
+  @override
+  String coursesCompletedLabel(int count) {
+    return '$count courses';
+  }
+
+  @override
+  String streakDaysLabel(int count) {
+    return '$count days';
+  }
+
+  @override
+  String get achievementsLabel => 'Achievements';
+
+  @override
+  String moreBadgesLabel(int count) {
+    return '+$count more';
+  }
 }

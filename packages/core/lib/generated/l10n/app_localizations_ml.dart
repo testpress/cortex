@@ -78,56 +78,129 @@ class AppLocalizationsMl extends AppLocalizations {
   String get labelCourseProgress => 'കോഴ്സിന്റെ പുരോഗതി';
 
   @override
-  String get homeHeaderTitle => 'ബ്രൈറ്റ്മൈൻഡ്സ് അക്കാദമി';
+  String get homeHeaderTitle => 'BrightMinds Academy';
 
   @override
-  String get todayScheduleTitle => 'ഇന്നത്തെ ഷെഡ്യൂൾ';
+  String get todayScheduleTitle => 'Today\'s Schedule';
 
   @override
-  String get viewAllAction => 'എല്ലാം കാണുക';
+  String get viewAllAction => 'View all';
 
   @override
-  String get nowAndNextSection => 'ഇപ്പോൾ & അടുത്തത്';
+  String get nowAndNextSection => 'NOW & NEXT';
 
   @override
-  String get deadlinesSection => 'സമയപരിധികൾ';
+  String get deadlinesSection => 'DEADLINES';
 
   @override
-  String get upcomingTestsSection => 'വരുന്ന പരീക്ഷകൾ';
+  String get upcomingTestsSection => 'UPCOMING TESTS';
 
   @override
-  String get laterTodaySection => 'ഇന്ന് പിന്നീട്';
+  String get laterTodaySection => 'LATER TODAY';
 
   @override
-  String get topLearnersTitle => 'ഈ ആഴ്ചയിലെ മികച്ച പഠിതാക്കൾ';
+  String get topLearnersTitle => 'TOP LEARNERS THIS WEEK';
 
   @override
-  String get updatesAnnouncementsTitle => 'അപ്ഡേറ്റുകളും അറിയിപ്പുകളും';
+  String get updatesAnnouncementsTitle => 'UPDATES & ANNOUNCEMENTS';
 
   @override
-  String get greetingMorning => 'സുപ്രഭാതം';
+  String get greetingMorning => 'Good morning';
 
   @override
-  String get greetingAfternoon => 'ശുഭമധ്യാഹ്നം';
+  String get greetingAfternoon => 'Good afternoon';
 
   @override
-  String get greetingEvening => 'ശുഭസന്ധ്യ';
+  String get greetingEvening => 'Good evening';
 
   @override
-  String get shortcutRecordings => 'റെക്കോർഡിംഗുകൾ';
+  String get shortcutRecordings => 'Recordings';
 
   @override
-  String get shortcutPractice => 'പരിശീലനം';
+  String get shortcutPractice => 'Practice';
 
   @override
-  String get shortcutTests => 'പരീക്ഷകൾ';
+  String get shortcutTests => 'Tests';
 
   @override
-  String get shortcutNotes => 'നോട്ടുകൾ';
+  String get shortcutNotes => 'Notes';
 
   @override
-  String get shortcutAskDoubt => 'സംശയങ്ങൾ ചോദിക്കുക';
+  String get shortcutAskDoubt => 'Ask Doubt';
 
   @override
-  String get shortcutSchedule => 'ഷെഡ്യൂൾ';
+  String get shortcutSchedule => 'Schedule';
+
+  @override
+  String get learningPerformanceTitle => 'Learning Performance';
+
+  @override
+  String get latestActivityLabel => 'Latest Activity';
+
+  @override
+  String streakMomentumLabel(int days) {
+    return '$days-day momentum';
+  }
+
+  @override
+  String weeklyHoursLabel(String hours) {
+    return '${hours}h this week';
+  }
+
+  @override
+  String get lessonsFinishedLabel => 'Lessons finished';
+
+  @override
+  String get testsAttemptedLabel => 'Tests attempted';
+
+  @override
+  String get assessmentsDoneLabel => 'Assessments done';
+
+  @override
+  String get strongestSubjectLabel => 'YOU\'RE STRONGEST IN';
+
+  @override
+  String get weakSubjectLabel => 'NEED FOCUS HERE';
+
+  @override
+  String get noActivityTitle => 'No study activity yet';
+
+  @override
+  String get noActivitySubtitle => 'Start with a session to build momentum';
+
+  @override
+  String get allCaughtUpTitle => 'All Caught Up!';
+
+  @override
+  String get noScheduledActivitiesSubtitle =>
+      'No scheduled activities right now';
+
+  @override
+  String get liveLabel => 'LIVE';
+
+  @override
+  String get importantLabel => 'IMPORTANT';
+
+  @override
+  String testTypeLabel(String type) {
+    return '$type TEST';
+  }
+
+  @override
+  String coursesCompletedLabel(int count) {
+    return '$count courses';
+  }
+
+  @override
+  String streakDaysLabel(int count) {
+    return '$count days';
+  }
+
+  @override
+  String get achievementsLabel => 'Achievements';
+
+  @override
+  String moreBadgesLabel(int count) {
+    return '+$count more';
+  }
 }
