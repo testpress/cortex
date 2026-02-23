@@ -2,9 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart' show Scaffold;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
-import 'package:data/models/live_class_dto.dart' as dto;
-import 'package:data/models/assignment_dto.dart' as dto;
-import 'package:data/models/test_dto.dart' as dto;
+import 'package:data/data.dart' as dto;
 import '../providers/dashboard_providers.dart';
 import '../widgets/greeting_section.dart';
 import '../widgets/contextual_hero_card.dart';
@@ -27,6 +25,12 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     final pendingAssignments = ref.watch(pendingAssignmentsProvider);
     final upcomingTests = ref.watch(upcomingTestsProvider);
     final momentum = ref.watch(studyMomentumProvider);
+    final user = ref.watch(currentUserProvider);
+    final heroBanners = ref.watch(heroBannersProvider);
+    final promotionBanners = ref.watch(promotionBannersProvider);
+    final topLearners = ref.watch(topLearnersProvider);
+    final otherLearners = ref.watch(otherLearnersProvider);
+    final shortcuts = ref.watch(quickShortcutsProvider);
 
     return Scaffold(
       backgroundColor: design.colors.canvas,
@@ -37,48 +41,51 @@ class PaidActiveHomeScreen extends ConsumerWidget {
             child: AppScroll(
               padding: EdgeInsets.symmetric(vertical: design.spacing.md),
               children: [
-                const HomeGreetingSection(userName: 'Arjun Sharma'),
+                user.when(
+                  data: (data) => HomeGreetingSection(userName: data.name),
+                  loading: () => const SizedBox(height: 50),
+                  error: (_, __) => const SizedBox.shrink(),
+                ),
 
-                const HeroBannerCarousel(
-                  banners: [
-                    HeroBanner(
-                      id: "1",
-                      imageUrl:
-                          "https://images.unsplash.com/photo-1762438135827-428acc0e8941?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHVkZW50JTIwYWNoaWV2ZW1lbnQlMjBzdWNjZXNzJTIwY2VsZWJyYXRpb258ZW58MXx8fHwxNzY3OTU5MjY3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-                      title: "JEE 2025 Results: 95% Selection Rate",
-                      link: "#",
-                    ),
-                    HeroBanner(
-                      id: "2",
-                      imageUrl:
-                          "https://images.unsplash.com/photo-1584792264192-dd873d389386?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlZHVjYXRpb24lMjBhbm5vdW5jZW1lbnQlMjBiYW5uZXJ8ZW58MXx8fHwxNzY3OTU5MjY3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-                      title: "New Batch Starting: JEE 2027 Foundation",
-                      link: "#",
-                    ),
-                    HeroBanner(
-                      id: "3",
-                      imageUrl:
-                          "https://images.unsplash.com/photo-1660795864432-6e63a88bfb40?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxleGFtJTIwcmVzdWx0cyUyMGNlbGVicmF0aW9uJTIwc3R1ZGVudHN8ZW58MXx8fHwxNzY3OTU5MjY3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-                      title: "Special Merit Scholarship Program",
-                      link: "#",
-                    ),
-                  ],
+                heroBanners.when(
+                  data: (data) => HeroBannerCarousel(
+                    banners: data.map(_mapHeroBanner).toList(),
+                  ),
+                  loading: () => const SizedBox(height: 180),
+                  error: (_, __) => const SizedBox.shrink(),
                 ),
 
                 const SizedBox(height: 16),
 
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-                  child: ContextualHeroCard(
-                    action: const HeroAction(
-                      type: HeroActionType.joinClass,
-                      title: "Organic Chemistry - Reaction Mechanisms",
-                      subject: "Chemistry",
-                      metadata: "Dr. Rajesh Kumar",
-                      timeInfo: "3:00 PM - 5:00 PM",
-                    ),
-                    onActionClick: () {},
-                  ),
+                todayClasses.when(
+                  data: (classes) {
+                    final liveOrUpcoming = classes.firstWhere(
+                      (c) =>
+                          c.status == dto.LiveClassStatus.live ||
+                          c.status == dto.LiveClassStatus.upcoming,
+                      orElse: () => classes.first,
+                    );
+                    return Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: design.spacing.md,
+                      ),
+                      child: ContextualHeroCard(
+                        action: HeroAction(
+                          type:
+                              liveOrUpcoming.status == dto.LiveClassStatus.live
+                              ? HeroActionType.joinClass
+                              : HeroActionType.prepareTest,
+                          title: liveOrUpcoming.topic,
+                          subject: liveOrUpcoming.subject,
+                          metadata: liveOrUpcoming.faculty,
+                          timeInfo: liveOrUpcoming.time,
+                        ),
+                        onActionClick: () {},
+                      ),
+                    );
+                  },
+                  loading: () => const SizedBox(height: 120),
+                  error: (_, __) => const SizedBox.shrink(),
                 ),
 
                 const SizedBox(height: 24),
@@ -109,239 +116,94 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                   error: (err, stack) => const SizedBox.shrink(),
                 ),
 
-                const TopLearnersSection(
-                  topLearners: [
-                    Learner(
-                      id: '1',
-                      rank: 1,
-                      name: 'AlexR_21',
-                      avatar:
-                          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
-                      points: 1520,
-                      coursesCompleted: 12,
-                      streakDays: 15,
-                      badges: [
-                        LearnerBadge(
-                          icon: 'crown',
-                          label: 'Monthly Cham',
-                          color: Color(0xFFFBBF24),
-                        ),
-                        LearnerBadge(
-                          icon: 'brain',
-                          label: 'Quiz Master',
-                          color: Color(0xFFEC4899),
-                        ),
-                        LearnerBadge(
-                          icon: 'rocket',
-                          label: 'Fast Learner',
-                          color: Color(0xFF3B82F6),
-                        ),
-                        LearnerBadge(
-                          icon: 'fire',
-                          label: 'Streak King',
-                          color: Color(0xFFF97316),
-                        ),
-                      ],
+                topLearners.when(
+                  data: (top) => otherLearners.when(
+                    data: (others) => TopLearnersSection(
+                      topLearners: top.map(_mapLearner).toList(),
+                      otherLearners: others.map(_mapLearner).toList(),
                     ),
-                    Learner(
-                      id: '2',
-                      rank: 2,
-                      name: 'LearnWithMira',
-                      avatar:
-                          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200',
-                      points: 1340,
-                      coursesCompleted: 9,
-                      streakDays: 18,
-                      badges: [
-                        LearnerBadge(
-                          icon: 'rocket',
-                          label: 'Top Designer',
-                          color: Color(0xFFF97316),
-                        ),
-                        LearnerBadge(
-                          icon: 'brain',
-                          label: 'Quiz Master',
-                          color: Color(0xFFEC4899),
-                        ),
-                        LearnerBadge(
-                          icon: 'fire',
-                          label: 'Streak Star',
-                          color: Color(0xFFF97316),
-                        ),
-                      ],
-                    ),
-                    Learner(
-                      id: '3',
-                      rank: 3,
-                      name: 'CodeNinja_47',
-                      avatar:
-                          'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200',
-                      points: 1180,
-                      coursesCompleted: 8,
-                      streakDays: 12,
-                      badges: [
-                        LearnerBadge(
-                          icon: 'rocket',
-                          label: 'Code Master',
-                          color: Color(0xFF3B82F6),
-                        ),
-                        LearnerBadge(
-                          icon: 'brain',
-                          label: 'Quiz Pro',
-                          color: Color(0xFFEC4899),
-                        ),
-                      ],
-                    ),
-                  ],
-                  otherLearners: [
-                    Learner(
-                      id: '4',
-                      rank: 4,
-                      name: 'DesignGuru',
-                      avatar:
-                          'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200',
-                      points: 980,
-                      coursesCompleted: 8,
-                      streakDays: 8,
-                      badges: [],
-                    ),
-                    Learner(
-                      id: '5',
-                      rank: 5,
-                      name: 'MathMaster',
-                      avatar:
-                          'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200',
-                      points: 890,
-                      coursesCompleted: 7,
-                      streakDays: 7,
-                      badges: [],
-                    ),
-                    Learner(
-                      id: '6',
-                      rank: 6,
-                      name: 'GrowthHacker',
-                      avatar:
-                          'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200',
-                      points: 832,
-                      coursesCompleted: 6,
-                      streakDays: 7,
-                      badges: [],
-                    ),
-                    Learner(
-                      id: '7',
-                      rank: 7,
-                      name: 'DevWizard',
-                      avatar:
-                          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
-                      points: 791,
-                      coursesCompleted: 5,
-                      streakDays: 7,
-                      badges: [],
-                    ),
-                    Learner(
-                      id: '8',
-                      rank: 8,
-                      name: 'You',
-                      avatar:
-                          'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200',
-                      points: 790,
-                      coursesCompleted: 4,
-                      streakDays: 4,
-                      badges: [],
-                    ),
-                    Learner(
-                      id: '9',
-                      rank: 9,
-                      name: 'UIUXExplorer',
-                      avatar:
-                          'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200',
-                      points: 788,
-                      coursesCompleted: 4,
-                      streakDays: 6,
-                      badges: [],
-                    ),
-                    Learner(
-                      id: '10',
-                      rank: 10,
-                      name: 'DataDriven',
-                      avatar:
-                          'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200',
-                      points: 765,
-                      coursesCompleted: 5,
-                      streakDays: 5,
-                      badges: [],
-                    ),
-                  ],
+                    loading: () => const SizedBox.shrink(),
+                    error: (_, __) => const SizedBox.shrink(),
+                  ),
+                  loading: () => const SizedBox(height: 200),
+                  error: (_, __) => const SizedBox.shrink(),
                 ),
 
-                const PromotionalBanners(
-                  banners: [
-                    AnnouncementBanner(
-                      id: '1',
-                      title: '📚 Study Smart, Not Hard',
-                      description:
-                          'Master complex topics with our structured learning paths - Physics, Chemistry & Math all in one place',
-                      bgColor: Color(0xFFEFF6FF),
-                      textColor: Color(0xFF1E40AF),
-                    ),
-                    AnnouncementBanner(
-                      id: '2',
-                      title: '🎯 Your Daily Study Companion',
-                      description:
-                          'Track progress across 45+ chapters with video lessons, practice sets, and chapter tests designed by experts',
-                      bgColor: Color(0xFFECFDF5),
-                      textColor: Color(0xFF065F46),
-                    ),
-                    AnnouncementBanner(
-                      id: '3',
-                      title: '⚡ Learn at Your Pace',
-                      description:
-                          '180+ hours of content available 24/7 - watch recordings, download notes, and practice anytime',
-                      bgColor: Color(0xFFFAF5FF),
-                      textColor: Color(0xFF6B21A8),
-                    ),
-                  ],
+                promotionBanners.when(
+                  data: (data) => PromotionalBanners(
+                    banners: data.map(_mapPromotionBanner).toList(),
+                  ),
+                  loading: () => const SizedBox(height: 100),
+                  error: (_, __) => const SizedBox.shrink(),
                 ),
 
-                QuickAccessGrid(
-                  shortcuts: [
-                    const Shortcut(
-                      id: '1',
-                      icon: ShortcutIcon.video,
-                      label: 'Recordings',
-                    ),
-                    const Shortcut(
-                      id: '2',
-                      icon: ShortcutIcon.practice,
-                      label: 'Practice',
-                    ),
-                    const Shortcut(
-                      id: '3',
-                      icon: ShortcutIcon.tests,
-                      label: 'Tests',
-                    ),
-                    const Shortcut(
-                      id: '4',
-                      icon: ShortcutIcon.notes,
-                      label: 'Notes',
-                    ),
-                    const Shortcut(
-                      id: '5',
-                      icon: ShortcutIcon.doubts,
-                      label: 'Ask Doubt',
-                    ),
-                    const Shortcut(
-                      id: '6',
-                      icon: ShortcutIcon.schedule,
-                      label: 'Schedule',
-                    ),
-                  ],
+                shortcuts.when(
+                  data: (data) => QuickAccessGrid(
+                    shortcuts: data.map(_mapShortcut).toList(),
+                  ),
+                  loading: () => const SizedBox(height: 150),
+                  error: (_, __) => const SizedBox.shrink(),
                 ),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  HeroBanner _mapHeroBanner(dto.DashboardBannerDto d) {
+    return HeroBanner(
+      id: d.id,
+      imageUrl: d.imageUrl,
+      title: d.title,
+      link: d.link ?? '#',
+    );
+  }
+
+  AnnouncementBanner _mapPromotionBanner(dto.DashboardBannerDto d) {
+    return AnnouncementBanner(
+      id: d.id,
+      title: d.title,
+      description: d.description ?? '',
+      bgColor: Color(d.bgColor ?? 0xFFFFFFFF),
+      textColor: Color(d.textColor ?? 0xFF000000),
+    );
+  }
+
+  Learner _mapLearner(dto.LearnerDto d) {
+    return Learner(
+      id: d.id,
+      rank: d.rank,
+      name: d.name,
+      avatar: d.avatar,
+      points: d.points,
+      coursesCompleted: d.coursesCompleted,
+      streakDays: d.streakDays,
+      badges: d.badges
+          .map(
+            (b) => LearnerBadge(
+              icon: b.icon,
+              label: b.label,
+              color: Color(b.color),
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  Shortcut _mapShortcut(dto.QuickShortcutDto d) {
+    return Shortcut(
+      id: d.id,
+      label: d.label,
+      icon: switch (d.iconType) {
+        dto.ShortcutIconType.video => ShortcutIcon.video,
+        dto.ShortcutIconType.practice => ShortcutIcon.practice,
+        dto.ShortcutIconType.tests => ShortcutIcon.tests,
+        dto.ShortcutIconType.notes => ShortcutIcon.notes,
+        dto.ShortcutIconType.doubts => ShortcutIcon.doubts,
+        dto.ShortcutIconType.schedule => ShortcutIcon.schedule,
+      },
     );
   }
 

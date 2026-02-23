@@ -6,8 +6,10 @@ The "Home" screen for paid active users is the most critical surface in the app.
 ## Goals / Non-Goals
 
 **Goals:**
-- Replicate the high-fidelity Figma design dashboard experience in Flutter.
+- Implement `HeroBannerCarousel` and `ContextualHeroCard` for high-impact CTAs.
 - Implement `TodaySnapshot` with its multi-carousel grouping logic.
+- Implement `TopLearnersSection` with weekly leaderboard visualizations.
+- Implement `PromotionalBanners` for platform updates and announcements.
 - Implement `StudyMomentum` with intensity-based activity visualization.
 - Ensure pixel-perfect alignment with the design system (colors, spacing, typography).
 - Support smooth transitions between user types (if applicable in future).
@@ -20,7 +22,7 @@ The "Home" screen for paid active users is the most critical surface in the app.
 ## Decisions
 
 ### 1. High-Density Widget Composition
-The `PaidActiveHomeScreen` will be a `CustomScrollView` to allow for a flexible, scrollable layout. Individual sections (`Greeting`, `Banners`, `Snapshot`, `Momentum`) will be implemented as modular widgets within the `packages/courses` library.
+The `PaidActiveHomeScreen` will be a `CustomScrollView` to allow for a flexible, scrollable layout. Individual sections (`Greeting`, `HeroBanners`, `Snapshot`, `Learners`, `PromotionalBanners`, `Momentum`) will be implemented as modular widgets within the `packages/courses` library.
 
 ### 2. Snapshot Grouping Logic
 Following the Figma design implementation, `TodaySnapshot` will perform "smart grouping":

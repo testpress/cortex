@@ -13,8 +13,8 @@ class DashboardHeader extends StatelessWidget {
 
     return Container(
       padding: EdgeInsets.only(
-        top: MediaQuery.of(context).padding.top + design.spacing.sm,
-        bottom: design.spacing.sm,
+        top: MediaQuery.of(context).padding.top + design.spacing.md,
+        bottom: design.spacing.md,
         left: design.spacing.md,
         right: design.spacing.md,
       ),

@@ -16,6 +16,9 @@ This change introduces the `PaidActiveHome` screen and its associated sub-compon
     - **7-Day Activity Strip**: Visual representation of study intensity.
     - **Learning Stats**: Lessons finished, tests attempted, assessments completed.
     - **Subject Insights**: Visual cues for strongest and "need focus" subjects.
+- **HeroBannerCarousel**: A high-impact carousel for primary top-page promotions and calls-to-action.
+- **TopLearnersSection**: A leaderboard widget showcasing the most active students of the week with points and badges.
+- **PromotionalBanners**: A secondary carousel for updates and announcements.
 - **QuickAccess**: A grid of shortcuts for common activities (Doubts, Schedule, Practice, etc.).
 - **GreetingSection**: Personalized user welcome with time-of-day awareness.
 - **ContextualHeroCard**: A prominent card highlighting the single most important action (e.g., "Join Live Class Now").
