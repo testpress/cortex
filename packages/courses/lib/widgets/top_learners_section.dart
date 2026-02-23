@@ -121,7 +121,7 @@ class TopLearnersSection extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: design.colors.border.withOpacity(0.1),
+              color: design.colors.border.withValues(alpha: 0.1),
               blurRadius: 12,
               offset: const Offset(0, 2),
             ),
@@ -158,7 +158,7 @@ class _LearnerCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: design.colors.border.withOpacity(0.1),
+            color: design.colors.border.withValues(alpha: 0.1),
             blurRadius: 12,
             offset: const Offset(0, 2),
           ),
@@ -212,7 +212,7 @@ class _LearnerCard extends StatelessWidget {
                         border: Border.all(color: design.colors.card, width: 2),
                         boxShadow: [
                           BoxShadow(
-                            color: design.colors.border.withOpacity(0.1),
+                            color: design.colors.border.withValues(alpha: 0.1),
                             blurRadius: 4,
                             offset: const Offset(0, 2),
                           ),
@@ -338,7 +338,7 @@ class _LearnerCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: badge.color.withOpacity(0.1),
+        color: badge.color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(

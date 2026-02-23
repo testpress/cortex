@@ -44,7 +44,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                 user.when(
                   data: (data) => HomeGreetingSection(userName: data.name),
                   loading: () => const SizedBox(height: 50),
-                  error: (_, __) => const SizedBox.shrink(),
+                  error: (error, stack) => const SizedBox.shrink(),
                 ),
 
                 heroBanners.when(
@@ -52,7 +52,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                     banners: data.map(_mapHeroBanner).toList(),
                   ),
                   loading: () => const SizedBox(height: 180),
-                  error: (_, __) => const SizedBox.shrink(),
+                  error: (error, stack) => const SizedBox.shrink(),
                 ),
 
                 const SizedBox(height: 16),
@@ -85,7 +85,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                     );
                   },
                   loading: () => const SizedBox(height: 120),
-                  error: (_, __) => const SizedBox.shrink(),
+                  error: (error, stack) => const SizedBox.shrink(),
                 ),
 
                 const SizedBox(height: 24),
@@ -123,10 +123,10 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                       otherLearners: others.map(_mapLearner).toList(),
                     ),
                     loading: () => const SizedBox.shrink(),
-                    error: (_, __) => const SizedBox.shrink(),
+                    error: (error, stack) => const SizedBox.shrink(),
                   ),
                   loading: () => const SizedBox(height: 200),
-                  error: (_, __) => const SizedBox.shrink(),
+                  error: (error, stack) => const SizedBox.shrink(),
                 ),
 
                 promotionBanners.when(
@@ -137,7 +137,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                     },
                   ),
                   loading: () => const SizedBox(height: 100),
-                  error: (_, __) => const SizedBox.shrink(),
+                  error: (error, stack) => const SizedBox.shrink(),
                 ),
 
                 shortcuts.when(
@@ -145,7 +145,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                     shortcuts: data.map(_mapShortcut).toList(),
                   ),
                   loading: () => const SizedBox(height: 150),
-                  error: (_, __) => const SizedBox.shrink(),
+                  error: (error, stack) => const SizedBox.shrink(),
                 ),
               ],
             ),

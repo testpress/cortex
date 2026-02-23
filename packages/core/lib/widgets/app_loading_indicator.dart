@@ -66,7 +66,7 @@ class _LoadingIndicatorPainter extends CustomPainter {
 
     // Draw the faded part (bottom and right) - the rest
     final fadedPaint = Paint()
-      ..color = color.withOpacity(0.1)
+      ..color = color.withValues(alpha: 0.1)
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;

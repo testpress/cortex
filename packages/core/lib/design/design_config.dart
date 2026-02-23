@@ -415,7 +415,7 @@ class DesignColors {
       textInverse: const Color(0xFFFFFFFF),
       progressBackground: border,
       progressForeground: progressForeground ?? primary,
-      focus: focus ?? primary.withOpacity(0.4),
+      focus: focus ?? primary.withValues(alpha: 0.4),
       canvas: canvas,
       accent1: accent1,
       accent2: accent2,

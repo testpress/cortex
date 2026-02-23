@@ -281,7 +281,7 @@ class StudyMomentumGrid extends StatelessWidget {
 
     final factor = level / 3.0;
     return Color.lerp(
-      design.colors.primary.withOpacity(0.3),
+      design.colors.primary.withValues(alpha: 0.3),
       design.colors.primary,
       factor,
     )!;

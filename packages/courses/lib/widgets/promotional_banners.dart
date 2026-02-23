@@ -129,7 +129,7 @@ class _BannerCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: design.colors.border.withOpacity(0.06),
+            color: design.colors.border.withValues(alpha: 0.06),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -153,7 +153,7 @@ class _BannerCard extends StatelessWidget {
                 const SizedBox(height: 2),
                 AppText.bodySmall(
                   banner.description,
-                  color: banner.textColor.withOpacity(0.8),
+                  color: banner.textColor.withValues(alpha: 0.8),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -164,7 +164,7 @@ class _BannerCard extends StatelessWidget {
           Icon(
             LucideIcons.chevronRight,
             size: 20,
-            color: banner.textColor.withOpacity(0.6),
+            color: banner.textColor.withValues(alpha: 0.6),
           ),
         ],
       ),

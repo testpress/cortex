@@ -26,7 +26,7 @@ class ClassCard extends StatelessWidget {
             height: 40,
             decoration: BoxDecoration(
               color: isLive
-                  ? design.colors.primary.withOpacity(0.1)
+                  ? design.colors.primary.withValues(alpha: 0.1)
                   : design.colors.surface,
               shape: BoxShape.circle,
             ),
@@ -138,7 +138,7 @@ class AssignmentCard extends StatelessWidget {
                 height: 40,
                 decoration: BoxDecoration(
                   color: isOverdue
-                      ? design.colors.error.withOpacity(0.1)
+                      ? design.colors.error.withValues(alpha: 0.1)
                       : design.colors.surface,
                   shape: BoxShape.circle,
                 ),
@@ -257,7 +257,9 @@ class _SegmentedProgressBar extends StatelessWidget {
           height: 4,
           margin: const EdgeInsets.symmetric(horizontal: 1),
           decoration: BoxDecoration(
-            color: isFilled ? color : design.colors.border.withOpacity(0.5),
+            color: isFilled
+                ? color
+                : design.colors.border.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(2),
           ),
         );

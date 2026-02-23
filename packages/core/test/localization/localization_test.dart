@@ -48,11 +48,7 @@ void main() {
       // We need to pump until no more frames are scheduled
       await tester.pumpAndSettle();
 
-      // Debug: find all Text widgets and print their content
       final textWidgets = tester.widgetList<Text>(find.byType(Text));
-      for (final text in textWidgets) {
-        print('DEBUG: Found Text widget with: ${text.data}');
-      }
 
       // Should be Arabic (RTL)
       // Check for the Arabic text directly in the widget list if find.text continues to fail

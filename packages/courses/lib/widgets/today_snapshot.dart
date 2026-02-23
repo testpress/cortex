@@ -203,7 +203,7 @@ class TodaySnapshot extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: design.colors.success.withOpacity(0.1),
+                  color: design.colors.success.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -254,7 +254,7 @@ class _SnapshotSection extends StatelessWidget {
               letterSpacing: 0.5,
               fontWeight: FontWeight.w600,
             ),
-            color: design.colors.textPrimary.withOpacity(0.7),
+            color: design.colors.textPrimary.withValues(alpha: 0.7),
           ),
         ),
         const SizedBox(height: 12),
@@ -353,7 +353,7 @@ class _ClassCard extends StatelessWidget {
               Icons.chevron_right_rounded,
               size: 20,
               color: isCompleted
-                  ? design.colors.textTertiary.withOpacity(0.5)
+                  ? design.colors.textTertiary.withValues(alpha: 0.5)
                   : design.colors.textTertiary,
             ),
           ],
