@@ -271,14 +271,20 @@ abstract class AppLocalizations {
   /// No description provided for @topLearnersTitle.
   ///
   /// In en, this message translates to:
-  /// **'TOP LEARNERS THIS WEEK'**
+  /// **'Top Learners This Week'**
   String get topLearnersTitle;
 
   /// No description provided for @updatesAnnouncementsTitle.
   ///
   /// In en, this message translates to:
-  /// **'UPDATES & ANNOUNCEMENTS'**
+  /// **'Updates & Announcements'**
   String get updatesAnnouncementsTitle;
+
+  /// No description provided for @quickAccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Access'**
+  String get quickAccessTitle;
 
   /// No description provided for @greetingMorning.
   ///

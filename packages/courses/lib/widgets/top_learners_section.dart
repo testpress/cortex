@@ -64,11 +64,11 @@ class TopLearnersSection extends StatelessWidget {
                 AppText(
                   l10n.topLearnersTitle,
                   style: const TextStyle(
-                    fontSize: 12,
-                    letterSpacing: 0.5,
+                    fontSize: 18,
                     fontWeight: FontWeight.w600,
+                    height: 1.4,
                   ),
-                  color: design.colors.textPrimary.withOpacity(0.7),
+                  color: design.colors.textPrimary,
                 ),
                 AppText.bodySmall(
                   l10n.viewAllAction,

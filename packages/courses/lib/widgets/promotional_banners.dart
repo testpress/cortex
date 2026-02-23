@@ -51,11 +51,11 @@ class UpdatesAnnouncementsSection extends StatelessWidget {
                 AppText(
                   l10n.updatesAnnouncementsTitle,
                   style: const TextStyle(
-                    fontSize: 12,
-                    letterSpacing: 0.5,
+                    fontSize: 18,
                     fontWeight: FontWeight.w600,
+                    height: 1.4,
                   ),
-                  color: design.colors.textPrimary.withOpacity(0.7),
+                  color: design.colors.textPrimary,
                 ),
                 GestureDetector(
                   onTap: onViewAll,

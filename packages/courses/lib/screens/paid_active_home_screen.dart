@@ -36,7 +36,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
       backgroundColor: design.colors.canvas,
       body: Column(
         children: [
-          const DashboardHeader(title: 'BrightMinds Academy'),
+          DashboardHeader(title: L10n.of(context).homeHeaderTitle),
           Expanded(
             child: AppScroll(
               padding: EdgeInsets.symmetric(vertical: design.spacing.md),

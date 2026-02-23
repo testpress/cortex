@@ -40,7 +40,7 @@ class QuickAccessGrid extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppText(
-            'Quick Access',
+            L10n.of(context).quickAccessTitle,
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,

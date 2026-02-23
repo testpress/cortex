@@ -99,10 +99,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get laterTodaySection => 'LATER TODAY';
 
   @override
-  String get topLearnersTitle => 'TOP LEARNERS THIS WEEK';
+  String get topLearnersTitle => 'Top Learners This Week';
 
   @override
-  String get updatesAnnouncementsTitle => 'UPDATES & ANNOUNCEMENTS';
+  String get updatesAnnouncementsTitle => 'Updates & Announcements';
+
+  @override
+  String get quickAccessTitle => 'Quick Access';
 
   @override
   String get greetingMorning => 'Good morning';
