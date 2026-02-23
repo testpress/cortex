@@ -11,6 +11,7 @@ void main() {
         colors: DesignColors.light(),
         spacing: DesignSpacing.defaults(),
         typography: DesignTypography.defaults(),
+        typographyScale: DesignTypographyScale.defaults(),
         motion: const DesignMotion(
           shouldAnimate: false, // Override to disable animations
           fast: Duration(milliseconds: 150),
@@ -58,6 +59,7 @@ void main() {
         colors: DesignColors.light(),
         spacing: DesignSpacing.defaults(),
         typography: DesignTypography.defaults(),
+        typographyScale: DesignTypographyScale.defaults(),
         motion: const DesignMotion(
           shouldAnimate: true, // Animations enabled
           fast: Duration(milliseconds: 150),
