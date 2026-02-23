@@ -13,8 +13,19 @@ class ExplorePlaceholderScreen extends StatelessWidget {
 class ProfilePlaceholderScreen extends StatelessWidget {
   const ProfilePlaceholderScreen({super.key});
   @override
-  Widget build(BuildContext context) =>
-      const Center(child: Text('Profile Tab Content'));
+  Widget build(BuildContext context) => Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text('Profile Tab Content'),
+        const SizedBox(height: 16),
+        AppButton.secondary(
+          label: 'View Typography Gallery',
+          onPressed: () => context.push('/typography-gallery'),
+        ),
+      ],
+    ),
+  );
 }
 
 class HomePlaceholderScreen extends StatelessWidget {
@@ -123,6 +134,11 @@ final GoRouter appRouter = GoRouter(
         final id = state.pathParameters['id'];
         return Center(child: Text('Video Full-Screen View for ID: $id'));
       },
+    ),
+    GoRoute(
+      path: '/typography-gallery',
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (context, state) => const TypographyGalleryScreen(),
     ),
   ],
 );

@@ -30,6 +30,7 @@ class DesignConfig {
     required this.colors,
     required this.spacing,
     required this.typography,
+    required this.typographyScale,
     required this.motion,
     required this.radius,
     required this.subjectPalette,
@@ -39,6 +40,7 @@ class DesignConfig {
   final DesignColors colors;
   final DesignSpacing spacing;
   final DesignTypography typography;
+  final DesignTypographyScale typographyScale;
   final DesignMotion motion;
   final DesignRadius radius;
   final DesignSubjectPalette subjectPalette;
@@ -54,10 +56,13 @@ class DesignConfig {
 
   /// Light mode configuration.
   factory DesignConfig.light({BuildContext? context}) {
+    final colors = DesignColors.light();
+    final scale = DesignTypographyScale.defaults();
     return DesignConfig(
-      colors: DesignColors.light(),
+      colors: colors,
       spacing: DesignSpacing.defaults(),
-      typography: DesignTypography.defaults(),
+      typography: DesignTypography.defaults(scale: scale, colors: colors),
+      typographyScale: scale,
       motion: DesignMotion.defaults(context: context),
       radius: DesignRadius.defaults(),
       subjectPalette: DesignSubjectPalette.light(),
@@ -67,10 +72,13 @@ class DesignConfig {
 
   /// Dark mode configuration.
   factory DesignConfig.dark({BuildContext? context}) {
+    final colors = DesignColors.dark();
+    final scale = DesignTypographyScale.defaults();
     return DesignConfig(
-      colors: DesignColors.dark(),
+      colors: colors,
       spacing: DesignSpacing.defaults(),
-      typography: DesignTypography.defaults(),
+      typography: DesignTypography.defaults(scale: scale, colors: colors),
+      typographyScale: scale,
       motion: DesignMotion.defaults(context: context),
       radius: DesignRadius.defaults(),
       subjectPalette: DesignSubjectPalette.dark(),
@@ -82,6 +90,7 @@ class DesignConfig {
     DesignColors? colors,
     DesignSpacing? spacing,
     DesignTypography? typography,
+    DesignTypographyScale? typographyScale,
     DesignMotion? motion,
     DesignRadius? radius,
     DesignSubjectPalette? subjectPalette,
@@ -91,6 +100,7 @@ class DesignConfig {
       colors: colors ?? this.colors,
       spacing: spacing ?? this.spacing,
       typography: typography ?? this.typography,
+      typographyScale: typographyScale ?? this.typographyScale,
       motion: motion ?? this.motion,
       radius: radius ?? this.radius,
       subjectPalette: subjectPalette ?? this.subjectPalette,
@@ -105,6 +115,7 @@ class DesignConfig {
         other.colors == colors &&
         other.spacing == spacing &&
         other.typography == typography &&
+        other.typographyScale == typographyScale &&
         other.motion == motion &&
         other.radius == radius &&
         other.subjectPalette == subjectPalette &&
@@ -117,10 +128,10 @@ class DesignConfig {
       colors,
       spacing,
       typography,
+      typographyScale,
       motion,
       radius,
-      subjectPalette,
-      statusColors,
+      Object.hash(subjectPalette, statusColors),
     );
   }
 }
@@ -794,6 +805,66 @@ class DesignSpacing {
   }
 }
 
+/// Typography atomic scale tokens.
+@immutable
+class DesignTypographyScale {
+  const DesignTypographyScale({
+    required this.xs,
+    required this.sm,
+    required this.base,
+    required this.lg,
+    required this.xl,
+    required this.xl2,
+    required this.xl3,
+    required this.xl4,
+    required this.xl5,
+  });
+
+  final TextStyle xs;
+  final TextStyle sm;
+  final TextStyle base;
+  final TextStyle lg;
+  final TextStyle xl;
+  final TextStyle xl2;
+  final TextStyle xl3;
+  final TextStyle xl4;
+  final TextStyle xl5;
+
+  factory DesignTypographyScale.defaults() {
+    return const DesignTypographyScale(
+      xs: TextStyle(fontSize: 12, height: 1.3),
+      sm: TextStyle(fontSize: 14, height: 1.5),
+      base: TextStyle(fontSize: 16, height: 1.5),
+      lg: TextStyle(fontSize: 18, height: 1.4),
+      xl: TextStyle(fontSize: 20, height: 1.4),
+      xl2: TextStyle(fontSize: 24, height: 1.3),
+      xl3: TextStyle(fontSize: 30, height: 1.2),
+      xl4: TextStyle(fontSize: 36, height: 1.1),
+      xl5: TextStyle(fontSize: 48, height: 1.0),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is DesignTypographyScale &&
+        other.xs == xs &&
+        other.sm == sm &&
+        other.base == base &&
+        other.lg == lg &&
+        other.xl == xl &&
+        other.xl2 == xl2 &&
+        other.xl3 == xl3 &&
+        other.xl4 == xl4 &&
+        other.xl5 == xl5;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(xs, sm, base, lg, xl, xl2, xl3, xl4, xl5);
+  }
+}
+
 /// Typography token group.
 ///
 /// Mirrors AppTypography structure for seamless migration.
@@ -821,42 +892,43 @@ class DesignTypography {
   final TextStyle labelSmall;
   final TextStyle caption;
 
-  factory DesignTypography.defaults() {
-    return const DesignTypography(
-      display: TextStyle(
-        fontSize: 32,
+  factory DesignTypography.defaults({
+    DesignTypographyScale? scale,
+    DesignColors? colors,
+  }) {
+    final s = scale ?? DesignTypographyScale.defaults();
+    final c = colors ?? DesignColors.light();
+
+    return DesignTypography(
+      display: s.xl3.copyWith(
         fontWeight: FontWeight.w700,
-        height: 1.2,
+        color: c.textPrimary,
         letterSpacing: -0.5,
       ),
-      headline: TextStyle(
-        fontSize: 24,
+      headline: s.xl2.copyWith(
         fontWeight: FontWeight.w600,
-        height: 1.3,
+        color: c.textPrimary,
         letterSpacing: -0.25,
       ),
-      title: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, height: 1.4),
-      subtitle: TextStyle(
-        fontSize: 16,
+      title: s.xl.copyWith(fontWeight: FontWeight.w600, color: c.textPrimary),
+      subtitle: s.lg.copyWith(
         fontWeight: FontWeight.w500,
-        height: 1.5,
+        color: c.textPrimary,
       ),
-      body: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, height: 1.5),
-      bodySmall: TextStyle(
-        fontSize: 14,
+      body: s.base.copyWith(fontWeight: FontWeight.w400, color: c.textPrimary),
+      bodySmall: s.sm.copyWith(
         fontWeight: FontWeight.w400,
-        height: 1.5,
+        color: c.textPrimary,
       ),
-      label: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, height: 1.4),
-      labelSmall: TextStyle(
-        fontSize: 12,
+      label: s.sm.copyWith(fontWeight: FontWeight.w500, color: c.textPrimary),
+      labelSmall: s.xs.copyWith(
         fontWeight: FontWeight.w500,
-        height: 1.3,
+        color: c.textSecondary,
       ),
-      caption: TextStyle(
-        fontSize: 12,
+      caption: s.xs.copyWith(
         fontWeight: FontWeight.w400,
-        height: 1.3,
+        color: c.textSecondary,
+        letterSpacing: 0.2,
       ),
     );
   }

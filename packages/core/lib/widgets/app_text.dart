@@ -105,6 +105,96 @@ class AppText extends StatelessWidget {
     this.style,
   }) : _variant = _AppTextVariant.caption;
 
+  const AppText.xs(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.style,
+  }) : _variant = _AppTextVariant.xs;
+
+  const AppText.sm(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.style,
+  }) : _variant = _AppTextVariant.sm;
+
+  const AppText.base(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.style,
+  }) : _variant = _AppTextVariant.base;
+
+  const AppText.lg(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.style,
+  }) : _variant = _AppTextVariant.lg;
+
+  const AppText.xl(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.style,
+  }) : _variant = _AppTextVariant.xl;
+
+  const AppText.xl2(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.style,
+  }) : _variant = _AppTextVariant.xl2;
+
+  const AppText.xl3(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.style,
+  }) : _variant = _AppTextVariant.xl3;
+
+  const AppText.xl4(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.style,
+  }) : _variant = _AppTextVariant.xl4;
+
+  const AppText.xl5(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.style,
+  }) : _variant = _AppTextVariant.xl5;
+
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
@@ -123,6 +213,16 @@ class AppText extends StatelessWidget {
         _AppTextVariant.bodySmall => design.typography.bodySmall,
         _AppTextVariant.label => design.typography.label,
         _AppTextVariant.caption => design.typography.caption,
+        // Scale roles
+        _AppTextVariant.xs => design.typographyScale.xs,
+        _AppTextVariant.sm => design.typographyScale.sm,
+        _AppTextVariant.base => design.typographyScale.base,
+        _AppTextVariant.lg => design.typographyScale.lg,
+        _AppTextVariant.xl => design.typographyScale.xl,
+        _AppTextVariant.xl2 => design.typographyScale.xl2,
+        _AppTextVariant.xl3 => design.typographyScale.xl3,
+        _AppTextVariant.xl4 => design.typographyScale.xl4,
+        _AppTextVariant.xl5 => design.typographyScale.xl5,
       };
     } else {
       effectiveStyle = design.typography.body;
@@ -130,7 +230,7 @@ class AppText extends StatelessWidget {
 
     return Text(
       text,
-      style: effectiveStyle.copyWith(color: color ?? design.colors.textPrimary),
+      style: effectiveStyle.copyWith(color: color),
       textAlign: textAlign,
       maxLines: maxLines,
       overflow: overflow,
@@ -149,4 +249,13 @@ enum _AppTextVariant {
   bodySmall,
   label,
   caption,
+  xs,
+  sm,
+  base,
+  lg,
+  xl,
+  xl2,
+  xl3,
+  xl4,
+  xl5,
 }

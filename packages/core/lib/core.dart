@@ -25,6 +25,7 @@ export 'widgets/app_badge.dart';
 export 'widgets/app_search_bar.dart';
 export 'widgets/app_tab_bar.dart';
 export 'widgets/app_subject_chip.dart';
+export 'widgets/typography_gallery_screen.dart';
 
 // Shell
 export 'shell/app_shell.dart';

@@ -12,54 +12,65 @@ class AppHeader extends StatelessWidget {
     super.key,
     required this.title,
     this.subtitle,
+    this.leading,
     this.actions,
   });
 
   final String title;
   final String? subtitle;
+  final Widget? leading;
   final List<Widget>? actions;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     return Container(
-      padding: EdgeInsetsDirectional.fromSTEB(
-        design.spacing.screenPadding,
-        design.spacing.xl,
-        design.spacing.screenPadding,
-        design.spacing.md,
-      ),
       decoration: BoxDecoration(
         color: design.colors.surface,
         border: Border(
           bottom: BorderSide(color: design.colors.divider, width: 1),
         ),
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AppSemantics.header(
-                  label: title,
-                  child: AppText.headline(
-                    title,
-                    color: design.colors.textPrimary,
-                  ),
-                ),
-                if (subtitle != null) ...[
-                  SizedBox(height: design.spacing.xs),
-                  AppText.bodySmall(
-                    subtitle!,
-                    color: design.colors.textSecondary,
-                  ),
-                ],
-              ],
-            ),
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(
+            design.spacing.screenPadding,
+            design.spacing.md,
+            design.spacing.screenPadding,
+            design.spacing.md,
           ),
-          if (actions != null) ...actions!,
-        ],
+          child: Row(
+            children: [
+              if (leading != null) ...[
+                leading!,
+                SizedBox(width: design.spacing.md),
+              ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AppSemantics.header(
+                      label: title,
+                      child: AppText.headline(
+                        title,
+                        color: design.colors.textPrimary,
+                      ),
+                    ),
+                    if (subtitle != null) ...[
+                      SizedBox(height: design.spacing.xs),
+                      AppText.bodySmall(
+                        subtitle!,
+                        color: design.colors.textSecondary,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              if (actions != null) ...actions!,
+            ],
+          ),
+        ),
       ),
     );
   }

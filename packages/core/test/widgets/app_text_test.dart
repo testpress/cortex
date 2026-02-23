@@ -3,9 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:core/core.dart';
 
 void main() {
-  Widget wrap(Widget child, {double textScale = 1.0}) {
+  Widget wrap(Widget child, {double textScale = 1.0, DesignConfig? config}) {
     return DesignProvider(
-      config: DesignConfig.defaults(),
+      config: config ?? DesignConfig.defaults(),
       child: MediaQuery(
         data: MediaQueryData(textScaler: TextScaler.linear(textScale)),
         child: Directionality(textDirection: TextDirection.ltr, child: child),
@@ -67,6 +67,54 @@ void main() {
 
       // Should not throw overflow error
       expect(tester.takeException(), isNull);
+    });
+  });
+
+  group('AppText Scale Constructors', () {
+    testWidgets('AppText.lg uses lg scale token', (tester) async {
+      await tester.pumpWidget(wrap(const AppText.lg('Large Text')));
+
+      final text = tester.widget<Text>(find.byType(Text));
+      expect(text.style?.fontSize, 18);
+    });
+
+    testWidgets('AppText.xl2 uses xl2 scale token', (tester) async {
+      await tester.pumpWidget(wrap(const AppText.xl2('XL2 Text')));
+
+      final text = tester.widget<Text>(find.byType(Text));
+      expect(text.style?.fontSize, 24);
+    });
+
+    testWidgets('AppText.xs uses xs scale token', (tester) async {
+      await tester.pumpWidget(wrap(const AppText.xs('Extra Small')));
+
+      final text = tester.widget<Text>(find.byType(Text));
+      expect(text.style?.fontSize, 12);
+    });
+  });
+
+  group('AppText Molecule Colors', () {
+    testWidgets('respects molecule-defined colors (e.g. caption)', (
+      tester,
+    ) async {
+      final config = DesignConfig.defaults();
+      await tester.pumpWidget(
+        wrap(const AppText.caption('Caption'), config: config),
+      );
+
+      final text = tester.widget<Text>(find.byType(Text));
+      // Caption should be textSecondary by default in DesignTypography.defaults
+      expect(text.style?.color, config.colors.textSecondary);
+    });
+
+    testWidgets('allows explicit color override', (tester) async {
+      const customColor = Color(0xFFFF0000);
+      await tester.pumpWidget(
+        wrap(const AppText.body('Red Body', color: customColor)),
+      );
+
+      final text = tester.widget<Text>(find.byType(Text));
+      expect(text.style?.color, customColor);
     });
   });
 }
