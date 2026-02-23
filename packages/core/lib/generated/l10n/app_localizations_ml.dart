@@ -76,4 +76,58 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get labelCourseProgress => 'കോഴ്സിന്റെ പുരോഗതി';
+
+  @override
+  String get homeHeaderTitle => 'ബ്രൈറ്റ്മൈൻഡ്സ് അക്കാദമി';
+
+  @override
+  String get todayScheduleTitle => 'ഇന്നത്തെ ഷെഡ്യൂൾ';
+
+  @override
+  String get viewAllAction => 'എല്ലാം കാണുക';
+
+  @override
+  String get nowAndNextSection => 'ഇപ്പോൾ & അടുത്തത്';
+
+  @override
+  String get deadlinesSection => 'സമയപരിധികൾ';
+
+  @override
+  String get upcomingTestsSection => 'വരുന്ന പരീക്ഷകൾ';
+
+  @override
+  String get laterTodaySection => 'ഇന്ന് പിന്നീട്';
+
+  @override
+  String get topLearnersTitle => 'ഈ ആഴ്ചയിലെ മികച്ച പഠിതാക്കൾ';
+
+  @override
+  String get updatesAnnouncementsTitle => 'അപ്ഡേറ്റുകളും അറിയിപ്പുകളും';
+
+  @override
+  String get greetingMorning => 'സുപ്രഭാതം';
+
+  @override
+  String get greetingAfternoon => 'ശുഭമധ്യാഹ്നം';
+
+  @override
+  String get greetingEvening => 'ശുഭസന്ധ്യ';
+
+  @override
+  String get shortcutRecordings => 'റെക്കോർഡിംഗുകൾ';
+
+  @override
+  String get shortcutPractice => 'പരിശീലനം';
+
+  @override
+  String get shortcutTests => 'പരീക്ഷകൾ';
+
+  @override
+  String get shortcutNotes => 'നോട്ടുകൾ';
+
+  @override
+  String get shortcutAskDoubt => 'സംശയങ്ങൾ ചോദിക്കുക';
+
+  @override
+  String get shortcutSchedule => 'ഷെഡ്യൂൾ';
 }

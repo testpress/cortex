@@ -225,6 +225,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Course progress'**
   String get labelCourseProgress;
+
+  /// No description provided for @homeHeaderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'BrightMinds Academy'**
+  String get homeHeaderTitle;
+
+  /// No description provided for @todayScheduleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Schedule'**
+  String get todayScheduleTitle;
+
+  /// No description provided for @viewAllAction.
+  ///
+  /// In en, this message translates to:
+  /// **'View all'**
+  String get viewAllAction;
+
+  /// No description provided for @nowAndNextSection.
+  ///
+  /// In en, this message translates to:
+  /// **'NOW & NEXT'**
+  String get nowAndNextSection;
+
+  /// No description provided for @deadlinesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'DEADLINES'**
+  String get deadlinesSection;
+
+  /// No description provided for @upcomingTestsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'UPCOMING TESTS'**
+  String get upcomingTestsSection;
+
+  /// No description provided for @laterTodaySection.
+  ///
+  /// In en, this message translates to:
+  /// **'LATER TODAY'**
+  String get laterTodaySection;
+
+  /// No description provided for @topLearnersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'TOP LEARNERS THIS WEEK'**
+  String get topLearnersTitle;
+
+  /// No description provided for @updatesAnnouncementsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'UPDATES & ANNOUNCEMENTS'**
+  String get updatesAnnouncementsTitle;
+
+  /// No description provided for @greetingMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning'**
+  String get greetingMorning;
+
+  /// No description provided for @greetingAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon'**
+  String get greetingAfternoon;
+
+  /// No description provided for @greetingEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening'**
+  String get greetingEvening;
+
+  /// No description provided for @shortcutRecordings.
+  ///
+  /// In en, this message translates to:
+  /// **'Recordings'**
+  String get shortcutRecordings;
+
+  /// No description provided for @shortcutPractice.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice'**
+  String get shortcutPractice;
+
+  /// No description provided for @shortcutTests.
+  ///
+  /// In en, this message translates to:
+  /// **'Tests'**
+  String get shortcutTests;
+
+  /// No description provided for @shortcutNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get shortcutNotes;
+
+  /// No description provided for @shortcutAskDoubt.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask Doubt'**
+  String get shortcutAskDoubt;
+
+  /// No description provided for @shortcutSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule'**
+  String get shortcutSchedule;
 }
 
 class _AppLocalizationsDelegate

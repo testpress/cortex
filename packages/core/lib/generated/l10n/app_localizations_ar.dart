@@ -76,4 +76,58 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get labelCourseProgress => 'تقدم الدورة';
+
+  @override
+  String get homeHeaderTitle => 'BrightMinds Academy';
+
+  @override
+  String get todayScheduleTitle => 'Today\'s Schedule';
+
+  @override
+  String get viewAllAction => 'View all';
+
+  @override
+  String get nowAndNextSection => 'NOW & NEXT';
+
+  @override
+  String get deadlinesSection => 'DEADLINES';
+
+  @override
+  String get upcomingTestsSection => 'UPCOMING TESTS';
+
+  @override
+  String get laterTodaySection => 'LATER TODAY';
+
+  @override
+  String get topLearnersTitle => 'TOP LEARNERS THIS WEEK';
+
+  @override
+  String get updatesAnnouncementsTitle => 'UPDATES & ANNOUNCEMENTS';
+
+  @override
+  String get greetingMorning => 'Good morning';
+
+  @override
+  String get greetingAfternoon => 'Good afternoon';
+
+  @override
+  String get greetingEvening => 'Good evening';
+
+  @override
+  String get shortcutRecordings => 'Recordings';
+
+  @override
+  String get shortcutPractice => 'Practice';
+
+  @override
+  String get shortcutTests => 'Tests';
+
+  @override
+  String get shortcutNotes => 'Notes';
+
+  @override
+  String get shortcutAskDoubt => 'Ask Doubt';
+
+  @override
+  String get shortcutSchedule => 'Schedule';
 }
