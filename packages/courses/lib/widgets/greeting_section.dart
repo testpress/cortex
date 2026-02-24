@@ -22,13 +22,8 @@ class HomeGreetingSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppText(
+          AppText.headline(
             '${_getGreeting(context)}, $userName',
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w600,
-              height: 1.3,
-            ),
             color: design.colors.textPrimary,
           ),
           const SizedBox(height: 4),

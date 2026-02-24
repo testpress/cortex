@@ -61,16 +61,11 @@ class TopLearnersSection extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AppText(
+                AppText.title(
                   l10n.topLearnersTitle,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    height: 1.4,
-                  ),
                   color: design.colors.textPrimary,
                 ),
-                AppText.bodySmall(
+                AppText.label(
                   l10n.viewAllAction,
                   color: design.colors.primary,
                   style: const TextStyle(fontWeight: FontWeight.w600),
@@ -190,7 +185,7 @@ class _LearnerCard extends StatelessWidget {
                     clipBehavior: Clip.antiAlias,
                     child: learner.avatar.isEmpty
                         ? Center(
-                            child: AppText(
+                            child: AppText.label(
                               learner.name[0],
                               color: design.colors.textSecondary,
                               style: const TextStyle(
@@ -219,7 +214,7 @@ class _LearnerCard extends StatelessWidget {
                         ],
                       ),
                       child: Center(
-                        child: AppText.caption(
+                        child: AppText.labelSmall(
                           learner.rank.toString(),
                           color: design.colors.textInverse,
                           style: const TextStyle(
@@ -240,23 +235,20 @@ class _LearnerCard extends StatelessWidget {
                     color: design.colors.primary,
                   ),
                   const SizedBox(width: 4),
-                  AppText(
+                  AppText.body(
                     learner.points.toString(),
                     color: design.colors.textPrimary,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ],
               ),
             ],
           ),
           const SizedBox(height: 12),
-          AppText(
+          AppText.subtitle(
             learner.name,
             color: design.colors.textPrimary,
-            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+            style: const TextStyle(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 8),
           Row(
@@ -419,13 +411,10 @@ class _LeaderboardItem extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppText(
+                AppText.label(
                   learner.name,
                   color: design.colors.textPrimary,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: const TextStyle(fontWeight: FontWeight.w600),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -479,13 +468,10 @@ class _LeaderboardItem extends StatelessWidget {
             children: [
               Icon(LucideIcons.award, size: 14, color: design.colors.primary),
               const SizedBox(width: 6),
-              AppText(
+              AppText.label(
                 learner.points.toString(),
                 color: design.colors.textPrimary,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: const TextStyle(fontWeight: FontWeight.w600),
               ),
             ],
           ),

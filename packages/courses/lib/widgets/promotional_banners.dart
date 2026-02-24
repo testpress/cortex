@@ -48,18 +48,13 @@ class UpdatesAnnouncementsSection extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AppText(
+                AppText.title(
                   l10n.updatesAnnouncementsTitle,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    height: 1.4,
-                  ),
                   color: design.colors.textPrimary,
                 ),
                 GestureDetector(
                   onTap: onViewAll,
-                  child: AppText.bodySmall(
+                  child: AppText.label(
                     l10n.viewAllAction,
                     color: design.colors.primary,
                     style: const TextStyle(fontWeight: FontWeight.w600),
@@ -142,13 +137,10 @@ class _BannerCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                AppText(
+                AppText.body(
                   banner.title,
                   color: banner.textColor,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 2),
                 AppText.bodySmall(

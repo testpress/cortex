@@ -1143,7 +1143,7 @@ class DesignTypography {
       headline: s.xl2.copyWith(
         fontWeight: FontWeight.w600,
         color: c.textPrimary,
-        letterSpacing: -0.25,
+        letterSpacing: -1,
       ),
       title: s.xl.copyWith(fontWeight: FontWeight.w600, color: c.textPrimary),
       subtitle: s.lg.copyWith(
@@ -1154,6 +1154,7 @@ class DesignTypography {
       bodySmall: s.sm.copyWith(
         fontWeight: FontWeight.w400,
         color: c.textPrimary,
+        letterSpacing: -0.25,
       ),
       label: s.sm.copyWith(fontWeight: FontWeight.w500, color: c.textPrimary),
       labelSmall: s.xs.copyWith(

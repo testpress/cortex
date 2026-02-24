@@ -122,16 +122,11 @@ class TodaySnapshot extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AppText(
+                AppText.title(
                   l10n.todayScheduleTitle,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    height: 1.4,
-                  ),
                   color: design.colors.textPrimary,
                 ),
-                AppText.bodySmall(
+                AppText.label(
                   l10n.viewAllAction,
                   color: design.colors.primary,
                   style: const TextStyle(fontWeight: FontWeight.w600),
@@ -247,10 +242,9 @@ class _SnapshotSection extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-          child: AppText(
+          child: AppText.labelSmall(
             title.toUpperCase(),
             style: const TextStyle(
-              fontSize: 12,
               letterSpacing: 0.5,
               fontWeight: FontWeight.w600,
             ),
@@ -305,16 +299,12 @@ class _ClassCard extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: AppText(
+                        child: AppText.body(
                           item.topic ?? item.subject,
                           color: design.colors.textPrimary,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            height: 1.25,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
                       ),
                       if (item.status == ClassStatus.live) ...[
@@ -328,22 +318,20 @@ class _ClassCard extends StatelessWidget {
                   ),
                   if (item.topic != null) ...[
                     const SizedBox(height: 1),
-                    AppText(
+                    AppText.bodySmall(
                       item.subject,
                       color: design.colors.textSecondary,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 13, height: 1.4),
                     ),
                     const SizedBox(height: 8),
                   ] else
                     const SizedBox(height: 4),
-                  AppText(
+                  AppText.caption(
                     '${item.faculty} · ${item.time}',
                     color: design.colors.textTertiary,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 12, height: 1.4),
                   ),
                 ],
               ),
@@ -390,23 +378,18 @@ class _AssignmentCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppText(
+                    AppText.bodySmall(
                       item.title,
                       color: design.colors.textPrimary,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        height: 1.25,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
                     if (item.description != null)
-                      AppText(
+                      AppText.caption(
                         item.description!,
                         color: design.colors.textSecondary,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontSize: 13),
                       ),
                   ],
                 ),
@@ -425,11 +408,10 @@ class _AssignmentCard extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: AppText(
+                  child: AppText.caption(
                     '${item.subject} · Due ${item.dueTime}',
                     color: design.colors.textTertiary,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 12),
                   ),
                 ),
                 if (item.progress != null && item.progress! > 0) ...[
@@ -490,15 +472,11 @@ class _TestCard extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: AppText(
+                      child: AppText.bodySmall(
                         item.title,
                         color: design.colors.textPrimary,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          height: 1.25,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                     ),
                     if (item.isImportant) ...[

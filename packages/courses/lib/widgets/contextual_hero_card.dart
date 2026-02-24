@@ -100,14 +100,9 @@ class _ContextualHeroCardState extends State<ContextualHeroCard>
             children: [
               _buildIconContainer(context),
               const SizedBox(width: 8),
-              AppText(
+              AppText.labelSmall(
                 _getStatusLabel().toUpperCase(),
                 color: design.colors.textSecondary,
-                style: const TextStyle(
-                  fontSize: 12,
-                  letterSpacing: 0.5,
-                  fontWeight: FontWeight.w500,
-                ),
               ),
               if (widget.action.isLocked) ...[
                 const Spacer(),

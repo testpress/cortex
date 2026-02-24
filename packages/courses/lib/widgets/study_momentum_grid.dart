@@ -23,13 +23,8 @@ class StudyMomentumGrid extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppText(
+          AppText.title(
             l10n.learningPerformanceTitle,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              height: 1.4,
-            ),
             color: design.colors.textPrimary,
           ),
           const SizedBox(height: 16),
@@ -109,21 +104,12 @@ class StudyMomentumGrid extends StatelessWidget {
         Text.rich(
           TextSpan(
             text: momentum.latestActivityTitle,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: design.colors.textPrimary,
-              height: 1.5,
-            ),
+            style: design.typography.body.copyWith(fontWeight: FontWeight.w500),
             children: [
               const TextSpan(text: '  '),
               TextSpan(
                 text: '• ${momentum.latestActivityTimeAgo}',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  color: design.colors.textSecondary,
-                ),
+                style: design.typography.caption,
               ),
             ],
           ),
@@ -196,17 +182,16 @@ class StudyMomentumGrid extends StatelessWidget {
     return Expanded(
       child: Column(
         children: [
-          AppText.headline(
+          AppText.xl3(
             value.toString(),
             color: color,
-            style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
+            style: const TextStyle(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 4),
-          AppText.caption(
+          AppText.labelSmall(
             label,
             textAlign: TextAlign.center,
             color: design.colors.textSecondary,
-            style: const TextStyle(fontWeight: FontWeight.w500),
           ),
         ],
       ),
@@ -310,12 +295,11 @@ class _SubjectInsightCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppText.caption(
+          AppText.labelSmall(
             label,
             color: colors.foreground,
             style: const TextStyle(
               fontSize: 10,
-              fontWeight: FontWeight.w500,
               letterSpacing: 0.5,
               height: 1.2,
             ),

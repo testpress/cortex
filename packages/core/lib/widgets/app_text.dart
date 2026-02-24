@@ -95,6 +95,16 @@ class AppText extends StatelessWidget {
     this.style,
   }) : _variant = _AppTextVariant.label;
 
+  const AppText.labelSmall(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.style,
+  }) : _variant = _AppTextVariant.labelSmall;
+
   const AppText.caption(
     this.text, {
     super.key,
@@ -212,6 +222,7 @@ class AppText extends StatelessWidget {
         _AppTextVariant.body => design.typography.body,
         _AppTextVariant.bodySmall => design.typography.bodySmall,
         _AppTextVariant.label => design.typography.label,
+        _AppTextVariant.labelSmall => design.typography.labelSmall,
         _AppTextVariant.caption => design.typography.caption,
         // Scale roles
         _AppTextVariant.xs => design.typographyScale.xs,
@@ -248,6 +259,7 @@ enum _AppTextVariant {
   body,
   bodySmall,
   label,
+  labelSmall,
   caption,
   xs,
   sm,
