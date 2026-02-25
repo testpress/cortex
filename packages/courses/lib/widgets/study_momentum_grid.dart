@@ -301,6 +301,7 @@ class _SubjectInsightCard extends StatelessWidget {
             style: const TextStyle(
               fontSize: 10,
               letterSpacing: 0.5,
+              fontWeight: FontWeight.w500,
               height: 1.2,
             ),
           ),

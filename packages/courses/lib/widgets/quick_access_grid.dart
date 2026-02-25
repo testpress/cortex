@@ -39,15 +39,7 @@ class QuickAccessGrid extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppText(
-            L10n.of(context).quickAccessTitle,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              height: 1.4,
-            ),
-            color: design.colors.textPrimary,
-          ),
+          AppText.title(L10n.of(context).quickAccessTitle),
           const SizedBox(height: 16),
           GridView.count(
             crossAxisCount: 3,

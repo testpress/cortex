@@ -144,14 +144,10 @@ class SnapshotCard extends StatelessWidget {
                       Row(
                         children: [
                           Expanded(
-                            child: AppText.bodySmall(
+                            child: AppText.label(
                               title,
-                              color: design.colors.textPrimary,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                              ),
                             ),
                           ),
                           if (titleSuffix != null) ...[
@@ -164,7 +160,6 @@ class SnapshotCard extends StatelessWidget {
                         const SizedBox(height: 2),
                         AppText.caption(
                           sub,
-                          color: design.colors.textSecondary,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),

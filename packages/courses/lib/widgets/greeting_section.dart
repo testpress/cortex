@@ -26,7 +26,6 @@ class HomeGreetingSection extends StatelessWidget {
             '${_getGreeting(context)}, $userName',
             color: design.colors.textPrimary,
           ),
-          const SizedBox(height: 4),
           AppText.bodySmall(
             _getTodayDate(),
             color: design.colors.textSecondary,

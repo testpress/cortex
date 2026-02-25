@@ -1136,26 +1136,30 @@ class DesignTypography {
 
     return DesignTypography(
       display: s.xl3.copyWith(
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.w500,
         color: c.textPrimary,
         letterSpacing: -0.5,
       ),
-      headline: s.xl2.copyWith(
-        fontWeight: FontWeight.w600,
+      headline: s.xl.copyWith(
+        fontWeight: FontWeight.w500,
         color: c.textPrimary,
         letterSpacing: -0.5,
       ),
-      title: s.xl.copyWith(
-        fontWeight: FontWeight.w600,
-        color: c.textPrimary,
-        letterSpacing: -0.25,
-      ),
-      subtitle: s.lg.copyWith(
+      title: s.lg.copyWith(
         fontWeight: FontWeight.w500,
         color: c.textPrimary,
         letterSpacing: -0.25,
       ),
-      body: s.base.copyWith(fontWeight: FontWeight.w400, color: c.textPrimary),
+      subtitle: s.sm.copyWith(
+        fontWeight: FontWeight.w400,
+        color: c.textSecondary,
+        letterSpacing: -0.25,
+      ),
+      body: s.base.copyWith(
+        fontWeight: FontWeight.w400,
+        color: c.textPrimary,
+        height: 1.5,
+      ),
       bodySmall: s.sm.copyWith(
         fontWeight: FontWeight.w400,
         color: c.textPrimary,

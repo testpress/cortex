@@ -32,7 +32,7 @@
   "labelCourseProgress": "Course progress",
   "homeHeaderTitle": "BrightMinds Academy",
   "todayScheduleTitle": "Today's Schedule",
-  "viewAllAction": "View all",
+  "viewAllAction": "View all >",
   "nowAndNextSection": "NOW & NEXT",
   "deadlinesSection": "DEADLINES",
   "upcomingTestsSection": "UPCOMING TESTS",
@@ -67,9 +67,9 @@
       }
     }
   },
-  "lessonsFinishedLabel": "Lessons finished",
-  "testsAttemptedLabel": "Tests attempted",
-  "assessmentsDoneLabel": "Assessments done",
+  "lessonsFinishedLabel": "Lessons",
+  "testsAttemptedLabel": "Tests",
+  "assessmentsDoneLabel": "Assessments",
   "strongestSubjectLabel": "YOU'RE STRONGEST IN",
   "weakSubjectLabel": "NEED FOCUS HERE",
   "noActivityTitle": "No study activity yet",

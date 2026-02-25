@@ -20,12 +20,8 @@ class SnapshotSection extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-          child: AppText(
+          child: AppText.labelSmall(
             title.toUpperCase(),
-            style: const TextStyle(
-              letterSpacing: 0.5,
-              fontWeight: FontWeight.w600,
-            ),
             color: design.colors.textPrimary.withValues(alpha: 0.7),
           ),
         ),

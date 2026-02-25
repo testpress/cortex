@@ -114,13 +114,9 @@ class _ContextualHeroCardState extends State<ContextualHeroCard>
               ],
             ],
           ),
-          const SizedBox(height: 16),
-          AppText.title(widget.action.title, color: design.colors.textPrimary),
-          const SizedBox(height: 4),
-          AppText.body(
-            widget.action.subject,
-            color: design.colors.textSecondary,
-          ),
+          const SizedBox(height: 8),
+          AppText.title(widget.action.title),
+          AppText.subtitle(widget.action.subject),
           const SizedBox(height: 16),
           _buildMetadataRow(context),
           if (widget.action.progress != null) ...[

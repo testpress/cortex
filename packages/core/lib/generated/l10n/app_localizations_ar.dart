@@ -84,7 +84,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get todayScheduleTitle => 'Today\'s Schedule';
 
   @override
-  String get viewAllAction => 'View all';
+  String get viewAllAction => 'View all >';
 
   @override
   String get nowAndNextSection => 'NOW & NEXT';
@@ -151,13 +151,13 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get lessonsFinishedLabel => 'Lessons finished';
+  String get lessonsFinishedLabel => 'Lessons';
 
   @override
-  String get testsAttemptedLabel => 'Tests attempted';
+  String get testsAttemptedLabel => 'Tests';
 
   @override
-  String get assessmentsDoneLabel => 'Assessments done';
+  String get assessmentsDoneLabel => 'Assessments';
 
   @override
   String get strongestSubjectLabel => 'YOU\'RE STRONGEST IN';

@@ -54,10 +54,9 @@ class UpdatesAnnouncementsSection extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: onViewAll,
-                  child: AppText.label(
+                  child: AppText.labelSmall(
                     l10n.viewAllAction,
                     color: design.colors.primary,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ),
               ],

@@ -65,10 +65,9 @@ class TopLearnersSection extends StatelessWidget {
                   l10n.topLearnersTitle,
                   color: design.colors.textPrimary,
                 ),
-                AppText.label(
+                AppText.labelSmall(
                   l10n.viewAllAction,
                   color: design.colors.primary,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
               ],
             ),
@@ -87,7 +86,7 @@ class TopLearnersSection extends StatelessWidget {
   Widget _buildCarousel(BuildContext context) {
     final design = Design.of(context);
     return SizedBox(
-      height: 220,
+      height: 200,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.only(
@@ -250,7 +249,7 @@ class _LearnerCard extends StatelessWidget {
             color: design.colors.textPrimary,
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 2),
           Row(
             children: [
               Row(
@@ -287,12 +286,6 @@ class _LearnerCard extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          AppText.caption(
-            l10n.achievementsLabel,
-            color: design.colors.textSecondary,
-            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
-          ),
-          const SizedBox(height: 6),
           Row(
             children: [
               if (learner.badges.isNotEmpty)
@@ -413,8 +406,6 @@ class _LeaderboardItem extends StatelessWidget {
               children: [
                 AppText.label(
                   learner.name,
-                  color: design.colors.textPrimary,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -468,11 +459,7 @@ class _LeaderboardItem extends StatelessWidget {
             children: [
               Icon(LucideIcons.award, size: 14, color: design.colors.primary),
               const SizedBox(width: 6),
-              AppText.label(
-                learner.points.toString(),
-                color: design.colors.textPrimary,
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
+              AppText.label(learner.points.toString()),
             ],
           ),
         ],

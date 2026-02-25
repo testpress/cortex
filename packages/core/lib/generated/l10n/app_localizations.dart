@@ -241,7 +241,7 @@ abstract class AppLocalizations {
   /// No description provided for @viewAllAction.
   ///
   /// In en, this message translates to:
-  /// **'View all'**
+  /// **'View all >'**
   String get viewAllAction;
 
   /// No description provided for @nowAndNextSection.
@@ -367,19 +367,19 @@ abstract class AppLocalizations {
   /// No description provided for @lessonsFinishedLabel.
   ///
   /// In en, this message translates to:
-  /// **'Lessons finished'**
+  /// **'Lessons'**
   String get lessonsFinishedLabel;
 
   /// No description provided for @testsAttemptedLabel.
   ///
   /// In en, this message translates to:
-  /// **'Tests attempted'**
+  /// **'Tests'**
   String get testsAttemptedLabel;
 
   /// No description provided for @assessmentsDoneLabel.
   ///
   /// In en, this message translates to:
-  /// **'Assessments done'**
+  /// **'Assessments'**
   String get assessmentsDoneLabel;
 
   /// No description provided for @strongestSubjectLabel.
