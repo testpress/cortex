@@ -116,3 +116,23 @@ demonstrate palette variety. No `subjectColor` string field SHALL remain in `Cou
 #### Scenario: CourseCard renders subject color by index
 - **WHEN** a `CourseDto` with `colorIndex: 3` is displayed in a `CourseCard`
 - **THEN** the card badge or accent uses `design.subjectPalette.atIndex(3).background`
+
+---
+
+### Requirement: Indexed shortcut color palette
+`DesignConfig` SHALL expose a `shortcutPalette` field of type `DesignShortcutPalette`.
+`DesignShortcutPalette` SHALL contain an ordered list of `ShortcutColors` pairs.
+Each `ShortcutColors` entry SHALL contain `background` and `foreground` colors.
+The palette SHALL ensure that `foreground` on `background` meets WCAG AA contrast standards.
+`DesignShortcutPalette` SHALL expose an `atIndex(int i)` method that returns
+`ShortcutColors` at position `i % palette.length`.
+
+#### Scenario: QuickAccess items resolve color from position
+- **WHEN** the 0th item in a grid is rendered
+- **THEN** it uses `design.shortcutPalette.atIndex(0).background` for its icon circle
+- **AND** `design.shortcutPalette.atIndex(0).foreground` for the icon itself
+
+#### Scenario: Shortcut palette adapts to theme
+- **WHEN** switching from light to dark mode
+- **THEN** `DesignShortcutPalette.dark()` provides subdued backgrounds and vibrant foregrounds
+- **AND** `DesignShortcutPalette.light()` provides light tinted backgrounds and saturated foregrounds

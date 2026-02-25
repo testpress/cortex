@@ -35,6 +35,8 @@ class DesignConfig {
     required this.radius,
     required this.subjectPalette,
     required this.statusColors,
+    required this.shortcutPalette,
+    this.isDark = false,
   });
 
   final DesignColors colors;
@@ -45,6 +47,8 @@ class DesignConfig {
   final DesignRadius radius;
   final DesignSubjectPalette subjectPalette;
   final DesignStatusColors statusColors;
+  final DesignShortcutPalette shortcutPalette;
+  final bool isDark;
 
   /// Default configuration matching current static tokens.
   ///
@@ -67,6 +71,8 @@ class DesignConfig {
       radius: DesignRadius.defaults(),
       subjectPalette: DesignSubjectPalette.light(),
       statusColors: DesignStatusColors.light(),
+      shortcutPalette: DesignShortcutPalette.light(),
+      isDark: false,
     );
   }
 
@@ -83,6 +89,8 @@ class DesignConfig {
       radius: DesignRadius.defaults(),
       subjectPalette: DesignSubjectPalette.dark(),
       statusColors: DesignStatusColors.dark(),
+      shortcutPalette: DesignShortcutPalette.dark(),
+      isDark: true,
     );
   }
 
@@ -95,6 +103,8 @@ class DesignConfig {
     DesignRadius? radius,
     DesignSubjectPalette? subjectPalette,
     DesignStatusColors? statusColors,
+    DesignShortcutPalette? shortcutPalette,
+    bool? isDark,
   }) {
     return DesignConfig(
       colors: colors ?? this.colors,
@@ -105,6 +115,8 @@ class DesignConfig {
       radius: radius ?? this.radius,
       subjectPalette: subjectPalette ?? this.subjectPalette,
       statusColors: statusColors ?? this.statusColors,
+      shortcutPalette: shortcutPalette ?? this.shortcutPalette,
+      isDark: isDark ?? this.isDark,
     );
   }
 
@@ -119,7 +131,9 @@ class DesignConfig {
         other.motion == motion &&
         other.radius == radius &&
         other.subjectPalette == subjectPalette &&
-        other.statusColors == statusColors;
+        other.statusColors == statusColors &&
+        other.shortcutPalette == shortcutPalette &&
+        other.isDark == isDark;
   }
 
   @override
@@ -131,7 +145,10 @@ class DesignConfig {
       typographyScale,
       motion,
       radius,
-      Object.hash(subjectPalette, statusColors),
+      subjectPalette,
+      statusColors,
+      shortcutPalette,
+      isDark,
     );
   }
 }
@@ -167,6 +184,17 @@ class DesignColors {
     required this.progressBackground,
     required this.progressForeground,
     required this.focus,
+    required this.canvas,
+    required this.accent1,
+    required this.accent2,
+    required this.accent3,
+    required this.accent4,
+    required this.accent5,
+    required this.accent6,
+    required this.rank1,
+    required this.rank2,
+    required this.rank3,
+    required this.rankDefault,
   });
 
   // Primary brand colors
@@ -208,6 +236,20 @@ class DesignColors {
   final Color progressForeground;
   final Color focus;
 
+  // New tokens
+  final Color canvas;
+  final Color accent1; // Purple
+  final Color accent2; // Blue
+  final Color accent3; // Orange
+  final Color accent4; // Green
+  final Color accent5; // Rose
+  final Color accent6; // Cyan
+
+  final Color rank1;
+  final Color rank2;
+  final Color rank3;
+  final Color rankDefault;
+
   factory DesignColors.light() {
     return const DesignColors(
       primary: Color(0xFF6366F1),
@@ -220,13 +262,13 @@ class DesignColors {
       onSurfaceVariant: Color(0xFF6B7280),
       card: Color(0xFFFFFFFF),
       onCard: Color(0xFF111827),
-      border: Color(0xFFE5E7EB),
-      divider: Color(0xFFF3F4F6),
-      success: Color(0xFF10B981),
+      border: Color(0xFFE2E8F0), // Slate-200
+      divider: Color(0xFFE2E8F0), // Matching border as suggested
+      success: Color(0xFF16A34A),
       onSuccess: Color(0xFFFFFFFF),
       error: Color(0xFFEF4444),
       onError: Color(0xFFFFFFFF),
-      warning: Color(0xFFF59E0B),
+      warning: Color(0xFFEA580C),
       onWarning: Color(0xFFFFFFFF),
       textPrimary: Color(0xFF111827),
       textSecondary: Color(0xFF6B7280),
@@ -235,6 +277,17 @@ class DesignColors {
       progressBackground: Color(0xFFE5E7EB),
       progressForeground: Color(0xFF6366F1),
       focus: Color(0x666366F1),
+      canvas: Color(0xFFF8FAFC),
+      accent1: Color(0xFF9333EA),
+      accent2: Color(0xFF2563EB),
+      accent3: Color(0xFFEA580C),
+      accent4: Color(0xFF16A34A),
+      accent5: Color(0xFFE11D48),
+      accent6: Color(0xFF0891B2),
+      rank1: Color(0xFFFBBF24),
+      rank2: Color(0xFFCBD5E1),
+      rank3: Color(0xFFFB923C),
+      rankDefault: Color(0xFF94A3B8),
     );
   }
 
@@ -250,14 +303,14 @@ class DesignColors {
       onSurfaceVariant: Color(0xFF94A3B8),
       card: Color(0xFF1E293B), // Slate 800 — card sits above slate-900 surface
       onCard: Color(0xFFF8FAFC),
-      border: Color(0xFF334155),
-      divider: Color(0xFF1E293B),
-      success: Color(0xFF34D399),
-      onSuccess: Color(0xFF064E3B),
+      border: Color(0xFF334155), // Slate-700
+      divider: Color(0xFF1F2937), // Slate-800 as requested
+      success: Color(0xFF22C55E),
+      onSuccess: Color(0xFFFFFFFF),
       error: Color(0xFFF87171),
       onError: Color(0xFF450A0A),
-      warning: Color(0xFFFBBF24),
-      onWarning: Color(0xFF451A03),
+      warning: Color(0xFFF59E0B),
+      onWarning: Color(0xFF78350F),
       textPrimary: Color(0xFFF8FAFC),
       textSecondary: Color(0xFF94A3B8),
       textTertiary: Color(0xFF64748B),
@@ -265,6 +318,17 @@ class DesignColors {
       progressBackground: Color(0xFF334155),
       progressForeground: Color(0xFF818CF8),
       focus: Color(0x99818CF8),
+      canvas: Color(0xFF0F172A),
+      accent1: Color(0xFFA855F7),
+      accent2: Color(0xFF3B82F6),
+      accent3: Color(0xFFFB923C),
+      accent4: Color(0xFF22C55E),
+      accent5: Color(0xFFFB7185),
+      accent6: Color(0xFF22D3EE),
+      rank1: Color(0xFFFCD34D),
+      rank2: Color(0xFF94A3B8),
+      rank3: Color(0xFFFDBA74),
+      rankDefault: Color(0xFF64748B),
     );
   }
 
@@ -299,6 +363,17 @@ class DesignColors {
     Color textTertiary = const Color(0xFF9CA3AF),
     Color? progressForeground,
     Color? focus,
+    Color canvas = const Color(0xFFF8FAFC),
+    Color accent1 = const Color(0xFF9333EA),
+    Color accent2 = const Color(0xFF2563EB),
+    Color accent3 = const Color(0xFFEA580C),
+    Color accent4 = const Color(0xFF16A34A),
+    Color accent5 = const Color(0xFFE11D48),
+    Color accent6 = const Color(0xFF0891B2),
+    Color rank1 = const Color(0xFFFBBF24),
+    Color rank2 = const Color(0xFFCBD5E1),
+    Color rank3 = const Color(0xFFFB923C),
+    Color rankDefault = const Color(0xFF94A3B8),
   }) {
     // Auto-calculate contrasting text colors
     final onPrimary = _contrastingColor(primary);
@@ -341,6 +416,17 @@ class DesignColors {
       progressBackground: border,
       progressForeground: progressForeground ?? primary,
       focus: focus ?? primary.withValues(alpha: 0.4),
+      canvas: canvas,
+      accent1: accent1,
+      accent2: accent2,
+      accent3: accent3,
+      accent4: accent4,
+      accent5: accent5,
+      accent6: accent6,
+      rank1: rank1,
+      rank2: rank2,
+      rank3: rank3,
+      rankDefault: rankDefault,
     );
   }
 
@@ -403,7 +489,19 @@ class DesignColors {
         other.textTertiary == textTertiary &&
         other.textInverse == textInverse &&
         other.progressBackground == progressBackground &&
-        other.progressForeground == progressForeground;
+        other.progressForeground == progressForeground &&
+        other.focus == focus &&
+        other.canvas == canvas &&
+        other.accent1 == accent1 &&
+        other.accent2 == accent2 &&
+        other.accent3 == accent3 &&
+        other.accent4 == accent4 &&
+        other.accent5 == accent5 &&
+        other.accent6 == accent6 &&
+        other.rank1 == rank1 &&
+        other.rank2 == rank2 &&
+        other.rank3 == rank3 &&
+        other.rankDefault == rankDefault;
   }
 
   @override
@@ -433,6 +531,18 @@ class DesignColors {
       textInverse,
       progressBackground,
       progressForeground,
+      focus,
+      canvas,
+      accent1,
+      accent2,
+      accent3,
+      accent4,
+      accent5,
+      accent6,
+      rank1,
+      rank2,
+      rank3,
+      rankDefault,
     ]);
   }
 }
@@ -725,6 +835,131 @@ class DesignStatusColors {
   int get hashCode => Object.hash(live, completed, locked, upcoming);
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Shortcut Palette
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// A color pair for a shortcut (quick access) item.
+@immutable
+class ShortcutColors {
+  const ShortcutColors({required this.background, required this.foreground});
+
+  /// Icon container background color.
+  final Color background;
+
+  /// Icon color on [background].
+  final Color foreground;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is ShortcutColors &&
+        other.background == background &&
+        other.foreground == foreground;
+  }
+
+  @override
+  int get hashCode => Object.hash(background, foreground);
+}
+
+/// Indexed shortcut color palette.
+@immutable
+class DesignShortcutPalette {
+  const DesignShortcutPalette(this._palettes);
+
+  final List<ShortcutColors> _palettes;
+
+  /// Returns the [ShortcutColors] at [i % _palettes.length].
+  ShortcutColors atIndex(int i) => _palettes[i % _palettes.length];
+
+  /// Number of distinct color slots in this palette.
+  int get length => _palettes.length;
+
+  factory DesignShortcutPalette.light() {
+    return const DesignShortcutPalette([
+      // 0 — Purple (accent1)
+      ShortcutColors(
+        background: Color(0xFFF3E8FF),
+        foreground: Color(0xFF9333EA),
+      ),
+      // 1 — Blue (accent2)
+      ShortcutColors(
+        background: Color(0xFFEFF6FF),
+        foreground: Color(0xFF2563EB),
+      ),
+      // 2 — Orange (accent3)
+      ShortcutColors(
+        background: Color(0xFFFFF7ED),
+        foreground: Color(0xFFEA580C),
+      ),
+      // 3 — Green (accent4)
+      ShortcutColors(
+        background: Color(0xFFF0FDF4),
+        foreground: Color(0xFF16A34A),
+      ),
+      // 4 — Rose (accent5)
+      ShortcutColors(
+        background: Color(0xFFFFF1F2),
+        foreground: Color(0xFFE11D48),
+      ),
+      // 5 — Cyan (accent6)
+      ShortcutColors(
+        background: Color(0xFFECFEFF),
+        foreground: Color(0xFF0891B2),
+      ),
+    ]);
+  }
+
+  factory DesignShortcutPalette.dark() {
+    return const DesignShortcutPalette([
+      // 0 — Purple
+      ShortcutColors(
+        background: Color(0xFF2E1065),
+        foreground: Color(0xFFA855F7),
+      ),
+      // 1 — Blue
+      ShortcutColors(
+        background: Color(0xFF1E3A8A),
+        foreground: Color(0xFF3B82F6),
+      ),
+      // 2 — Orange
+      ShortcutColors(
+        background: Color(0xFF431407),
+        foreground: Color(0xFFFB923C),
+      ),
+      // 3 — Green
+      ShortcutColors(
+        background: Color(0xFF052E16),
+        foreground: Color(0xFF22C55E),
+      ),
+      // 4 — Rose
+      ShortcutColors(
+        background: Color(0xFF4C0519),
+        foreground: Color(0xFFFB7185),
+      ),
+      // 5 — Cyan
+      ShortcutColors(
+        background: Color(0xFF083344),
+        foreground: Color(0xFF22D3EE),
+      ),
+    ]);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! DesignShortcutPalette) return false;
+    if (_palettes.length != other._palettes.length) return false;
+    for (int i = 0; i < _palettes.length; i++) {
+      if (_palettes[i] != other._palettes[i]) return false;
+    }
+    return true;
+  }
+
+  @override
+  int get hashCode => Object.hashAll(_palettes);
+}
+
 /// Spacing token group.
 ///
 /// Mirrors AppSpacing structure for seamless migration.
@@ -834,7 +1069,7 @@ class DesignTypographyScale {
     return const DesignTypographyScale(
       xs: TextStyle(fontSize: 12, height: 1.3),
       sm: TextStyle(fontSize: 14, height: 1.5),
-      base: TextStyle(fontSize: 16, height: 1.5),
+      base: TextStyle(fontSize: 16, height: 1.0),
       lg: TextStyle(fontSize: 18, height: 1.4),
       xl: TextStyle(fontSize: 20, height: 1.4),
       xl2: TextStyle(fontSize: 24, height: 1.3),
@@ -908,12 +1143,17 @@ class DesignTypography {
       headline: s.xl2.copyWith(
         fontWeight: FontWeight.w600,
         color: c.textPrimary,
+        letterSpacing: -0.5,
+      ),
+      title: s.xl.copyWith(
+        fontWeight: FontWeight.w600,
+        color: c.textPrimary,
         letterSpacing: -0.25,
       ),
-      title: s.xl.copyWith(fontWeight: FontWeight.w600, color: c.textPrimary),
       subtitle: s.lg.copyWith(
         fontWeight: FontWeight.w500,
         color: c.textPrimary,
+        letterSpacing: -0.25,
       ),
       body: s.base.copyWith(fontWeight: FontWeight.w400, color: c.textPrimary),
       bodySmall: s.sm.copyWith(

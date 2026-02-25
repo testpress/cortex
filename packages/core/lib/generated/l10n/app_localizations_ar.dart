@@ -76,4 +76,134 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get labelCourseProgress => 'تقدم الدورة';
+
+  @override
+  String get homeHeaderTitle => 'BrightMinds Academy';
+
+  @override
+  String get todayScheduleTitle => 'Today\'s Schedule';
+
+  @override
+  String get viewAllAction => 'View all';
+
+  @override
+  String get nowAndNextSection => 'NOW & NEXT';
+
+  @override
+  String get deadlinesSection => 'DEADLINES';
+
+  @override
+  String get upcomingTestsSection => 'UPCOMING TESTS';
+
+  @override
+  String get laterTodaySection => 'LATER TODAY';
+
+  @override
+  String get topLearnersTitle => 'Top Learners This Week';
+
+  @override
+  String get updatesAnnouncementsTitle => 'Updates & Announcements';
+
+  @override
+  String get quickAccessTitle => 'Quick Access';
+
+  @override
+  String get greetingMorning => 'Good morning';
+
+  @override
+  String get greetingAfternoon => 'Good afternoon';
+
+  @override
+  String get greetingEvening => 'Good evening';
+
+  @override
+  String get shortcutRecordings => 'Recordings';
+
+  @override
+  String get shortcutPractice => 'Practice';
+
+  @override
+  String get shortcutTests => 'Tests';
+
+  @override
+  String get shortcutNotes => 'Notes';
+
+  @override
+  String get shortcutAskDoubt => 'Ask Doubt';
+
+  @override
+  String get shortcutSchedule => 'Schedule';
+
+  @override
+  String get learningPerformanceTitle => 'Learning Performance';
+
+  @override
+  String get latestActivityLabel => 'Latest Activity';
+
+  @override
+  String streakMomentumLabel(int days) {
+    return '$days-day momentum';
+  }
+
+  @override
+  String weeklyHoursLabel(String hours) {
+    return '${hours}h this week';
+  }
+
+  @override
+  String get lessonsFinishedLabel => 'Lessons finished';
+
+  @override
+  String get testsAttemptedLabel => 'Tests attempted';
+
+  @override
+  String get assessmentsDoneLabel => 'Assessments done';
+
+  @override
+  String get strongestSubjectLabel => 'YOU\'RE STRONGEST IN';
+
+  @override
+  String get weakSubjectLabel => 'NEED FOCUS HERE';
+
+  @override
+  String get noActivityTitle => 'No study activity yet';
+
+  @override
+  String get noActivitySubtitle => 'Start with a session to build momentum';
+
+  @override
+  String get allCaughtUpTitle => 'All Caught Up!';
+
+  @override
+  String get noScheduledActivitiesSubtitle =>
+      'No scheduled activities right now';
+
+  @override
+  String get liveLabel => 'LIVE';
+
+  @override
+  String get importantLabel => 'IMPORTANT';
+
+  @override
+  String testTypeLabel(String type) {
+    return '$type TEST';
+  }
+
+  @override
+  String coursesCompletedLabel(int count) {
+    return '$count courses';
+  }
+
+  @override
+  String streakDaysLabel(int count) {
+    return '$count days';
+  }
+
+  @override
+  String get achievementsLabel => 'Achievements';
+
+  @override
+  String moreBadgesLabel(int count) {
+    return '+$count more';
+  }
 }

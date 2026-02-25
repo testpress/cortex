@@ -1,4 +1,14 @@
 export 'models/course.dart';
 export 'data/mock_courses.dart';
 export 'screens/course_list_screen.dart';
+export 'screens/paid_active_home_screen.dart';
 export 'widgets/course_card.dart';
+export 'widgets/dashboard_header.dart';
+export 'widgets/greeting_section.dart';
+export 'widgets/hero_banner_carousel.dart';
+export 'widgets/quick_access_grid.dart';
+export 'widgets/study_momentum_grid.dart';
+export 'widgets/today_snapshot.dart';
+export 'widgets/top_learners_section.dart';
+export 'widgets/promotional_banners.dart';
+export 'widgets/contextual_hero_card.dart';

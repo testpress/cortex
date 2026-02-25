@@ -9,8 +9,15 @@ export 'models/course_dto.dart';
 export 'models/chapter_dto.dart';
 export 'models/lesson_dto.dart';
 export 'models/live_class_dto.dart';
+export 'models/assignment_dto.dart';
+export 'models/test_dto.dart';
+export 'models/study_momentum_dto.dart';
 export 'models/forum_thread_dto.dart';
 export 'models/user_progress_dto.dart';
+export 'models/user_dto.dart';
+export 'models/dashboard_banner_dto.dart';
+export 'models/learner_dto.dart';
+export 'models/quick_shortcut_dto.dart';
 
 // Database
 export 'db/app_database.dart';

@@ -225,6 +225,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Course progress'**
   String get labelCourseProgress;
+
+  /// No description provided for @homeHeaderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'BrightMinds Academy'**
+  String get homeHeaderTitle;
+
+  /// No description provided for @todayScheduleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Schedule'**
+  String get todayScheduleTitle;
+
+  /// No description provided for @viewAllAction.
+  ///
+  /// In en, this message translates to:
+  /// **'View all'**
+  String get viewAllAction;
+
+  /// No description provided for @nowAndNextSection.
+  ///
+  /// In en, this message translates to:
+  /// **'NOW & NEXT'**
+  String get nowAndNextSection;
+
+  /// No description provided for @deadlinesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'DEADLINES'**
+  String get deadlinesSection;
+
+  /// No description provided for @upcomingTestsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'UPCOMING TESTS'**
+  String get upcomingTestsSection;
+
+  /// No description provided for @laterTodaySection.
+  ///
+  /// In en, this message translates to:
+  /// **'LATER TODAY'**
+  String get laterTodaySection;
+
+  /// No description provided for @topLearnersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Learners This Week'**
+  String get topLearnersTitle;
+
+  /// No description provided for @updatesAnnouncementsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Updates & Announcements'**
+  String get updatesAnnouncementsTitle;
+
+  /// No description provided for @quickAccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Access'**
+  String get quickAccessTitle;
+
+  /// No description provided for @greetingMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning'**
+  String get greetingMorning;
+
+  /// No description provided for @greetingAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon'**
+  String get greetingAfternoon;
+
+  /// No description provided for @greetingEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening'**
+  String get greetingEvening;
+
+  /// No description provided for @shortcutRecordings.
+  ///
+  /// In en, this message translates to:
+  /// **'Recordings'**
+  String get shortcutRecordings;
+
+  /// No description provided for @shortcutPractice.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice'**
+  String get shortcutPractice;
+
+  /// No description provided for @shortcutTests.
+  ///
+  /// In en, this message translates to:
+  /// **'Tests'**
+  String get shortcutTests;
+
+  /// No description provided for @shortcutNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get shortcutNotes;
+
+  /// No description provided for @shortcutAskDoubt.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask Doubt'**
+  String get shortcutAskDoubt;
+
+  /// No description provided for @shortcutSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule'**
+  String get shortcutSchedule;
+
+  /// No description provided for @learningPerformanceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning Performance'**
+  String get learningPerformanceTitle;
+
+  /// No description provided for @latestActivityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest Activity'**
+  String get latestActivityLabel;
+
+  /// No description provided for @streakMomentumLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{days}-day momentum'**
+  String streakMomentumLabel(int days);
+
+  /// No description provided for @weeklyHoursLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours}h this week'**
+  String weeklyHoursLabel(String hours);
+
+  /// No description provided for @lessonsFinishedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Lessons finished'**
+  String get lessonsFinishedLabel;
+
+  /// No description provided for @testsAttemptedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tests attempted'**
+  String get testsAttemptedLabel;
+
+  /// No description provided for @assessmentsDoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Assessments done'**
+  String get assessmentsDoneLabel;
+
+  /// No description provided for @strongestSubjectLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'YOU\'RE STRONGEST IN'**
+  String get strongestSubjectLabel;
+
+  /// No description provided for @weakSubjectLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'NEED FOCUS HERE'**
+  String get weakSubjectLabel;
+
+  /// No description provided for @noActivityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No study activity yet'**
+  String get noActivityTitle;
+
+  /// No description provided for @noActivitySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with a session to build momentum'**
+  String get noActivitySubtitle;
+
+  /// No description provided for @allCaughtUpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'All Caught Up!'**
+  String get allCaughtUpTitle;
+
+  /// No description provided for @noScheduledActivitiesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No scheduled activities right now'**
+  String get noScheduledActivitiesSubtitle;
+
+  /// No description provided for @liveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'LIVE'**
+  String get liveLabel;
+
+  /// No description provided for @importantLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'IMPORTANT'**
+  String get importantLabel;
+
+  /// No description provided for @testTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{type} TEST'**
+  String testTypeLabel(String type);
+
+  /// No description provided for @coursesCompletedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} courses'**
+  String coursesCompletedLabel(int count);
+
+  /// No description provided for @streakDaysLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days'**
+  String streakDaysLabel(int count);
+
+  /// No description provided for @achievementsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Achievements'**
+  String get achievementsLabel;
+
+  /// No description provided for @moreBadgesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'+{count} more'**
+  String moreBadgesLabel(int count);
 }
 
 class _AppLocalizationsDelegate
