@@ -115,20 +115,11 @@ class _ContextualHeroCardState extends State<ContextualHeroCard>
             ],
           ),
           const SizedBox(height: 16),
-          AppText(
-            widget.action.title,
-            color: design.colors.textPrimary,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              height: 1.3,
-            ),
-          ),
+          AppText.title(widget.action.title, color: design.colors.textPrimary),
           const SizedBox(height: 4),
-          AppText(
+          AppText.body(
             widget.action.subject,
             color: design.colors.textSecondary,
-            style: const TextStyle(fontSize: 16),
           ),
           const SizedBox(height: 16),
           _buildMetadataRow(context),
@@ -205,32 +196,19 @@ class _ContextualHeroCardState extends State<ContextualHeroCard>
 
     final List<Widget> items = [];
 
-    items.add(
-      AppText(
-        widget.action.metadata,
-        color: metaColor,
-        style: const TextStyle(fontSize: 14),
-      ),
-    );
+    items.add(AppText.bodySmall(widget.action.metadata, color: metaColor));
 
     if (widget.action.timeInfo != null) {
       items.add(_buildDot(context));
-      items.add(
-        AppText(
-          widget.action.timeInfo!,
-          color: metaColor,
-          style: const TextStyle(fontSize: 14),
-        ),
-      );
+      items.add(AppText.bodySmall(widget.action.timeInfo!, color: metaColor));
     }
 
     if (widget.action.countdown != null) {
       items.add(_buildDot(context));
       items.add(
-        AppText(
+        AppText.label(
           widget.action.countdown!,
           color: design.colors.textPrimary,
-          style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
         ),
       );
     }
@@ -238,11 +216,7 @@ class _ContextualHeroCardState extends State<ContextualHeroCard>
     if (widget.action.testDuration != null) {
       items.add(_buildDot(context));
       items.add(
-        AppText(
-          widget.action.testDuration!,
-          color: metaColor,
-          style: const TextStyle(fontSize: 14),
-        ),
+        AppText.bodySmall(widget.action.testDuration!, color: metaColor),
       );
     }
 

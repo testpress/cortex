@@ -13,10 +13,10 @@ class DashboardHeader extends StatelessWidget {
 
     return Container(
       padding: EdgeInsets.only(
-        top: MediaQuery.of(context).padding.top + design.spacing.sm,
-        bottom: design.spacing.sm,
-        left: design.spacing.sm,
-        right: design.spacing.sm,
+        top: MediaQuery.of(context).padding.top + design.spacing.md,
+        bottom: design.spacing.md,
+        left: design.spacing.md,
+        right: design.spacing.md,
       ),
       decoration: BoxDecoration(
         color: design.isDark ? design.colors.surface : design.colors.card,
@@ -29,7 +29,7 @@ class DashboardHeader extends StatelessWidget {
           const Icon(Icons.menu_rounded, size: 28),
           const SizedBox(width: 12),
           Expanded(
-            child: AppText.body(title, color: design.colors.textPrimary),
+            child: AppText.subtitle(title, color: design.colors.textPrimary),
           ),
         ],
       ),

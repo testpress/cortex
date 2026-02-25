@@ -1069,7 +1069,7 @@ class DesignTypographyScale {
     return const DesignTypographyScale(
       xs: TextStyle(fontSize: 12, height: 1.3),
       sm: TextStyle(fontSize: 14, height: 1.5),
-      base: TextStyle(fontSize: 16, height: 1.5),
+      base: TextStyle(fontSize: 16, height: 1.0),
       lg: TextStyle(fontSize: 18, height: 1.4),
       xl: TextStyle(fontSize: 20, height: 1.4),
       xl2: TextStyle(fontSize: 24, height: 1.3),
@@ -1143,18 +1143,22 @@ class DesignTypography {
       headline: s.xl2.copyWith(
         fontWeight: FontWeight.w600,
         color: c.textPrimary,
-        letterSpacing: -1,
+        letterSpacing: -0.5,
       ),
-      title: s.xl.copyWith(fontWeight: FontWeight.w600, color: c.textPrimary),
+      title: s.xl.copyWith(
+        fontWeight: FontWeight.w600,
+        color: c.textPrimary,
+        letterSpacing: -0.25,
+      ),
       subtitle: s.lg.copyWith(
         fontWeight: FontWeight.w500,
         color: c.textPrimary,
+        letterSpacing: -0.25,
       ),
       body: s.base.copyWith(fontWeight: FontWeight.w400, color: c.textPrimary),
       bodySmall: s.sm.copyWith(
         fontWeight: FontWeight.w400,
         color: c.textPrimary,
-        letterSpacing: -0.25,
       ),
       label: s.sm.copyWith(fontWeight: FontWeight.w500, color: c.textPrimary),
       labelSmall: s.xs.copyWith(

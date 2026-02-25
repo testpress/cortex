@@ -126,10 +126,9 @@ class TodaySnapshot extends StatelessWidget {
                   l10n.todayScheduleTitle,
                   color: design.colors.textPrimary,
                 ),
-                AppText.label(
+                AppText.labelSmall(
                   l10n.viewAllAction,
                   color: design.colors.primary,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
               ],
             ),
@@ -242,7 +241,7 @@ class _SnapshotSection extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-          child: AppText.labelSmall(
+          child: AppText(
             title.toUpperCase(),
             style: const TextStyle(
               letterSpacing: 0.5,
@@ -318,7 +317,7 @@ class _ClassCard extends StatelessWidget {
                   ),
                   if (item.topic != null) ...[
                     const SizedBox(height: 1),
-                    AppText.bodySmall(
+                    AppText.caption(
                       item.subject,
                       color: design.colors.textSecondary,
                       maxLines: 1,
@@ -493,7 +492,8 @@ class _TestCard extends StatelessWidget {
                   AppText.caption(
                     l10n.testTypeLabel(item.type!.name.toUpperCase()),
                     color: design.colors.textSecondary,
-                    style: const TextStyle(letterSpacing: 0.5),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
                 const SizedBox(height: 4),

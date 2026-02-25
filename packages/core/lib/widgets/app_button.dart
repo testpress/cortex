@@ -112,11 +112,7 @@ class AppButton extends StatelessWidget {
               ),
             ),
             child: Center(
-              child: AppText(
-                label,
-                style: design.typography.label,
-                color: effectiveForegroundColor,
-              ),
+              child: AppText.label(label, color: effectiveForegroundColor),
             ),
           ),
         ),
