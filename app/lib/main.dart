@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:testpress/testpress.dart';
+import 'package:courses/providers/dashboard_providers.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,26 +14,22 @@ void main() async {
 /// 1. Change the primary color below
 /// 2. Save the file (hot reload)
 /// 3. See the UI update immediately
-class CortexAppRoot extends StatefulWidget {
+class CortexAppRoot extends ConsumerWidget {
   const CortexAppRoot({super.key});
 
   @override
-  State<CortexAppRoot> createState() => _CortexAppRootState();
-}
-
-class _CortexAppRootState extends State<CortexAppRoot> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // 🎨 DARK MODE SUPPORT: Both configs are now passed to DesignProvider.
     final lightConfig = DesignConfig.light();
     final darkConfig = DesignConfig.dark();
+    final mode = ref.watch(designModeProvider);
 
     // 🌍 LOCALIZATION SUPPORT: Wrapping the root with LocalizationProvider.
     return LocalizationProvider(
       child: DesignProvider(
         config: lightConfig,
         darkConfig: darkConfig,
-        mode: DesignMode.system,
+        mode: mode,
         child: const CortexApp(),
       ),
     );

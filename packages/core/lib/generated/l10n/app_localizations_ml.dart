@@ -206,4 +206,54 @@ class AppLocalizationsMl extends AppLocalizations {
   String moreBadgesLabel(int count) {
     return '+$count more';
   }
+
+  @override
+  String get drawerMenuTitle => 'Menu';
+
+  @override
+  String get drawerBookmark => 'Bookmark';
+
+  @override
+  String get drawerPosts => 'Posts';
+
+  @override
+  String get drawerAnalytics => 'Analytics';
+
+  @override
+  String get drawerForum => 'Forum';
+
+  @override
+  String get drawerDoubts => 'Doubts';
+
+  @override
+  String get drawerCustomExam => 'Custom Exam';
+
+  @override
+  String get drawerReports => 'Your Report';
+
+  @override
+  String get drawerProfile => 'Profile';
+
+  @override
+  String get drawerSettings => 'App Settings';
+
+  @override
+  String get drawerLoginActivity => 'Login Activity';
+
+  @override
+  String get drawerLogout => 'Logout';
+
+  @override
+  String get drawerPrivacy => 'Privacy Policy';
+
+  @override
+  String get drawerThemeLight => 'Light Mode';
+
+  @override
+  String get drawerThemeDark => 'Dark Mode';
+
+  @override
+  String drawerVersion(String version) {
+    return 'Version - $version';
+  }
 }

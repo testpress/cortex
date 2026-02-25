@@ -74,6 +74,7 @@ final GoRouter appRouter = GoRouter(
             activeItemId: _getCurrentTabId(navigationShell.currentIndex),
             onTabChange: (id) => _onTabItemTapped(navigationShell, id),
           ),
+          drawer: const DashboardDrawer(),
           child: navigationShell,
         );
       },

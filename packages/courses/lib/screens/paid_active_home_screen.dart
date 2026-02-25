@@ -36,7 +36,12 @@ class PaidActiveHomeScreen extends ConsumerWidget {
       backgroundColor: design.colors.canvas,
       body: Column(
         children: [
-          DashboardHeader(title: L10n.of(context).homeHeaderTitle),
+          DashboardHeader(
+            title: L10n.of(context).homeHeaderTitle,
+            onMenuPressed: () {
+              ref.read(isHomeDrawerOpenProvider.notifier).state = true;
+            },
+          ),
           Expanded(
             child: AppScroll(
               padding: EdgeInsets.symmetric(vertical: design.spacing.md),
@@ -65,6 +70,14 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                           c.status == dto.LiveClassStatus.upcoming,
                       orElse: () => classes.first,
                     );
+                    final (
+                      displayTitle,
+                      displaySubject,
+                    ) = _formatSubjectAndTopic(
+                      liveOrUpcoming.subject,
+                      liveOrUpcoming.topic,
+                    );
+
                     return Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: design.spacing.md,
@@ -75,8 +88,8 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                               liveOrUpcoming.status == dto.LiveClassStatus.live
                               ? HeroActionType.joinClass
                               : HeroActionType.prepareTest,
-                          title: liveOrUpcoming.topic,
-                          subject: liveOrUpcoming.subject,
+                          title: displayTitle,
+                          subject: displaySubject,
                           metadata: liveOrUpcoming.faculty,
                           timeInfo: liveOrUpcoming.time,
                         ),
@@ -211,9 +224,14 @@ class PaidActiveHomeScreen extends ConsumerWidget {
   }
 
   ClassItem _mapClass(dto.LiveClassDto d) {
+    final (displayTitle, displaySubject) = _formatSubjectAndTopic(
+      d.subject,
+      d.topic,
+    );
+
     return ClassItem(
       id: d.id,
-      subject: d.subject,
+      subject: displaySubject,
       time: d.time,
       faculty: d.faculty,
       status: switch (d.status) {
@@ -221,8 +239,20 @@ class PaidActiveHomeScreen extends ConsumerWidget {
         dto.LiveClassStatus.upcoming => ClassStatus.upcoming,
         dto.LiveClassStatus.completed => ClassStatus.completed,
       },
-      topic: d.topic,
+      topic: displayTitle,
     );
+  }
+
+  (String, String) _formatSubjectAndTopic(String subject, String topic) {
+    if (subject.contains(' - ')) {
+      final parts = subject.split(' - ');
+      if (parts.length >= 2) {
+        final mainSubject = parts[0].trim();
+        final subSubject = parts[1].trim();
+        return ('$subSubject - $topic', mainSubject);
+      }
+    }
+    return (topic, subject);
   }
 
   Assignment _mapAssignment(dto.AssignmentDto d) {

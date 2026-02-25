@@ -12,3 +12,4 @@ export 'widgets/today_snapshot.dart';
 export 'widgets/top_learners_section.dart';
 export 'widgets/promotional_banners.dart';
 export 'widgets/contextual_hero_card.dart';
+export 'widgets/dashboard_drawer.dart';
