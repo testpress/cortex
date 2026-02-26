@@ -1407,17 +1407,20 @@ class DesignLayout {
     required this.drawerWidth,
     required this.maxDrawerWidth,
     required this.railWidth,
+    required this.tabletBreakpoint,
   });
 
   final double drawerWidth;
   final double maxDrawerWidth;
   final double railWidth;
+  final double tabletBreakpoint;
 
   factory DesignLayout.defaults() {
     return const DesignLayout(
       drawerWidth: 280.0,
       maxDrawerWidth: 400.0,
       railWidth: 80.0,
+      tabletBreakpoint: 600.0,
     );
   }
 
@@ -1427,9 +1430,11 @@ class DesignLayout {
     return other is DesignLayout &&
         other.drawerWidth == drawerWidth &&
         other.maxDrawerWidth == maxDrawerWidth &&
-        other.railWidth == railWidth;
+        other.railWidth == railWidth &&
+        other.tabletBreakpoint == tabletBreakpoint;
   }
 
   @override
-  int get hashCode => Object.hash(drawerWidth, maxDrawerWidth, railWidth);
+  int get hashCode =>
+      Object.hash(drawerWidth, maxDrawerWidth, railWidth, tabletBreakpoint);
 }

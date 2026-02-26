@@ -85,6 +85,16 @@ class _AppDrawerState extends State<AppDrawer>
         _controller.reverse();
       }
     }
+
+    if (widget.slideFromRight != oldWidget.slideFromRight) {
+      _slideAnimation =
+          Tween<Offset>(
+            begin: Offset(widget.slideFromRight ? 1.0 : -1.0, 0.0),
+            end: Offset.zero,
+          ).animate(
+            CurvedAnimation(parent: _controller, curve: Curves.easeInOutCubic),
+          );
+    }
   }
 
   @override

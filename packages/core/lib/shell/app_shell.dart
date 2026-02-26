@@ -30,7 +30,7 @@ class AppShell extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isTablet = constraints.maxWidth >= 600;
+        final isTablet = constraints.maxWidth >= design.layout.tabletBreakpoint;
 
         return Stack(
           children: [
@@ -39,10 +39,7 @@ class AppShell extends StatelessWidget {
               child: isTablet
                   ? Row(
                       children: [
-                        if (navigationRail != null)
-                          navigationRail
-                        else if (bottomNavigationBar != null)
-                          _buildRail(context, bottomNavigationBar),
+                        ?navigationRail,
                         Expanded(
                           child: SafeArea(
                             left:
@@ -73,13 +70,5 @@ class AppShell extends StatelessWidget {
         );
       },
     );
-  }
-
-  Widget _buildRail(BuildContext context, Widget nav) {
-    // If nav is AppTabBar, we could transform it, but for now we expect
-    // the user to pass the right widget or we handle it in the shell.
-    // However, AppShell is generic. Let's assume for now the user passes
-    // a widget that can be used in both or we provide a way to pass both.
-    return nav;
   }
 }

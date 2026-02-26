@@ -22,3 +22,8 @@
 - [x] Synchronize drawer slide direction with trigger location (Right-to-Left in landscape).
 - [x] Integrate `PopScope` for drawer dismissal via back gestures/buttons.
 - [x] Replace close icon with "Back Arrow" navigation in full-page mode.
+
+## 5. Code Review Refinements
+- [x] Centralize `tabletBreakpoint` layout token in `DesignLayout`.
+- [x] Fix `AppDrawer` animation logic to handle orientation changes (`didUpdateWidget`).
+- [x] Remove dead `_buildRail` logic and fallback from `AppShell`.

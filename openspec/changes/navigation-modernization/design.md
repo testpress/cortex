@@ -5,7 +5,7 @@ The application shell adapts its navigation structure based on the viewport widt
 
 ### Breakpoints
 - **Compact (Mobile)**: Default layout.
-- **Medium (Tablet/Landscape)**: Triggers at width **600.0**.
+- **Medium (Tablet/Landscape)**: Triggers at `design.layout.tabletBreakpoint` (default: **600.0**).
 
 ### Mobile Layout
 - **Navigation**: `AppTabBar` docked at the bottom.

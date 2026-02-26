@@ -32,7 +32,8 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     final otherLearners = ref.watch(otherLearnersProvider);
     final shortcuts = ref.watch(quickShortcutsProvider);
 
-    final isTablet = MediaQuery.of(context).size.width >= 600;
+    final isTablet =
+        MediaQuery.of(context).size.width >= design.layout.tabletBreakpoint;
 
     return Scaffold(
       backgroundColor: design.colors.canvas,
