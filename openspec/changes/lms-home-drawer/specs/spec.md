@@ -7,7 +7,7 @@ The system SHALL provide a custom-built navigation drawer that avoids default pl
 
 #### Scenario: Visual Parity
 - **WHEN** the drawer is opened
-- **THEN** it MUST cover exactly 280px of the screen width
+- **THEN** it MUST use `design.layout.drawerWidth` for its width
 - **AND** it MUST use `design.colors.card` for its background and `design.colors.border` for section separators.
 
 ---

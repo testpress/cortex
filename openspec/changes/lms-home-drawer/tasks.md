@@ -6,6 +6,9 @@
 - [x] 1.2 Implement `AppDrawerItem` for individual list items with hover/press states and custom coloring for errors.
 - [x] 1.3 Implement `AppDrawerDivider` using `design.colors.border`.
 - [x] 1.4 Add Theme Toggle logic within the drawer to interact with `DesignProvider`.
+- [x] 1.5 Implement `DesignLayout` tokens in `DesignConfig`.
+- [x] 1.6 Refactor `AppDrawer` to use `design.layout.drawerWidth`.
+
 
 ## 2. Integration & Dashboard Updates (`packages/courses`)
 

@@ -14,6 +14,7 @@ Implement a high-fidelity `AppDrawer` component in `packages/core` and integrate
 - **Custom Visuals**: Custom backdrop and drawer slide transitions to avoid default platform-specific behaviors.
 - **Theme Support**: Full integration with the Design System for light/dark mode variants.
 - **Semantic Typography**: Usage of `AppText` roles for labels and headers.
+- **Design Governance**: Integration of layout tokens (drawer width) into the `DesignConfig` to avoid hardcoded dimensions and support future responsiveness.
 
 ## Impact
 - **Packages**: `core` (new widget), `courses` (integration).

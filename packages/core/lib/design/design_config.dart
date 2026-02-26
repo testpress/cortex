@@ -33,6 +33,7 @@ class DesignConfig {
     required this.typographyScale,
     required this.motion,
     required this.radius,
+    required this.layout,
     required this.subjectPalette,
     required this.statusColors,
     required this.shortcutPalette,
@@ -45,6 +46,7 @@ class DesignConfig {
   final DesignTypographyScale typographyScale;
   final DesignMotion motion;
   final DesignRadius radius;
+  final DesignLayout layout;
   final DesignSubjectPalette subjectPalette;
   final DesignStatusColors statusColors;
   final DesignShortcutPalette shortcutPalette;
@@ -69,6 +71,7 @@ class DesignConfig {
       typographyScale: scale,
       motion: DesignMotion.defaults(context: context),
       radius: DesignRadius.defaults(),
+      layout: DesignLayout.defaults(),
       subjectPalette: DesignSubjectPalette.light(),
       statusColors: DesignStatusColors.light(),
       shortcutPalette: DesignShortcutPalette.light(),
@@ -87,6 +90,7 @@ class DesignConfig {
       typographyScale: scale,
       motion: DesignMotion.defaults(context: context),
       radius: DesignRadius.defaults(),
+      layout: DesignLayout.defaults(),
       subjectPalette: DesignSubjectPalette.dark(),
       statusColors: DesignStatusColors.dark(),
       shortcutPalette: DesignShortcutPalette.dark(),
@@ -101,6 +105,7 @@ class DesignConfig {
     DesignTypographyScale? typographyScale,
     DesignMotion? motion,
     DesignRadius? radius,
+    DesignLayout? layout,
     DesignSubjectPalette? subjectPalette,
     DesignStatusColors? statusColors,
     DesignShortcutPalette? shortcutPalette,
@@ -113,6 +118,7 @@ class DesignConfig {
       typographyScale: typographyScale ?? this.typographyScale,
       motion: motion ?? this.motion,
       radius: radius ?? this.radius,
+      layout: layout ?? this.layout,
       subjectPalette: subjectPalette ?? this.subjectPalette,
       statusColors: statusColors ?? this.statusColors,
       shortcutPalette: shortcutPalette ?? this.shortcutPalette,
@@ -130,6 +136,7 @@ class DesignConfig {
         other.typographyScale == typographyScale &&
         other.motion == motion &&
         other.radius == radius &&
+        other.layout == layout &&
         other.subjectPalette == subjectPalette &&
         other.statusColors == statusColors &&
         other.shortcutPalette == shortcutPalette &&
@@ -145,6 +152,7 @@ class DesignConfig {
       typographyScale,
       motion,
       radius,
+      layout,
       subjectPalette,
       statusColors,
       shortcutPalette,
@@ -1386,4 +1394,28 @@ class DesignRadius {
       Object.hash(full, button, card, dialog, pill),
     );
   }
+}
+
+/// Layout token group.
+@immutable
+class DesignLayout {
+  const DesignLayout({required this.drawerWidth, required this.maxDrawerWidth});
+
+  final double drawerWidth;
+  final double maxDrawerWidth;
+
+  factory DesignLayout.defaults() {
+    return const DesignLayout(drawerWidth: 280.0, maxDrawerWidth: 400.0);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is DesignLayout &&
+        other.drawerWidth == drawerWidth &&
+        other.maxDrawerWidth == maxDrawerWidth;
+  }
+
+  @override
+  int get hashCode => Object.hash(drawerWidth, maxDrawerWidth);
 }

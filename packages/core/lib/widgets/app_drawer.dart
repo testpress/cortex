@@ -111,7 +111,7 @@ class _AppDrawerState extends State<AppDrawer>
             SlideTransition(
               position: _slideAnimation,
               child: Container(
-                width: 280,
+                width: design.layout.drawerWidth,
                 decoration: BoxDecoration(
                   color: design.colors.card,
                   boxShadow: [

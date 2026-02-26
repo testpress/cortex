@@ -8,7 +8,7 @@ The `AppDrawer` is a custom-built side navigation component. Unlike the standard
 ### Layering & Layout
 - **Backdrop**: A full-screen overlay with a semi-transparent black color (`Colors.black54` or equivalent from tokens).
 - **Drawer Container**:
-  - **Width**: `280px` (fixed).
+  - **Width**: `design.layout.drawerWidth` (default: `280px`).
   - **Height**: Full screen height (must overlay bottom navigation).
   - **Background**: `design.colors.surface` or `design.colors.card` (consistent with dashboard headers).
   - **Shadow**: `BoxShadow` with large blur radius and high spread to separate it from the content layer.
@@ -31,7 +31,13 @@ The drawer is divided into three distinct vertical sections separated by a thin 
 - **Colors**:
   - Labels: `design.colors.textPrimary`.
   - Icons: `design.colors.textSecondary`.
-  - Red Items (Logout): `design.colors.error`.
+  - Colors (Logout): `design.colors.error`.
+
+## Design Layout Tokens
+| Token | Value | Description |
+|-------|-------|-------------|
+| `drawerWidth` | `280.0` | Base width of the home navigation drawer. |
+| `maxDrawerWidth` | `400.0` | Maximum width allowed when using responsive sizing. |
 
 ## Interaction & State
 - **Trigger**: Tapping the hamburger icon in `DashboardHeader`.
