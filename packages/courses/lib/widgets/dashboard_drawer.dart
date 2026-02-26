@@ -13,9 +13,13 @@ class DashboardDrawer extends ConsumerWidget {
 
     final l10n = L10n.of(context);
     final version = ref.watch(appVersionProvider).value ?? '...';
+    final isTablet =
+        MediaQuery.of(context).size.width >= design.layout.tabletBreakpoint;
 
     return AppDrawer(
       isOpen: isOpen,
+      fullPage: true,
+      slideFromRight: isTablet,
       title: l10n.drawerMenuTitle,
       onClose: () {
         ref.read(isHomeDrawerOpenProvider.notifier).state = false;

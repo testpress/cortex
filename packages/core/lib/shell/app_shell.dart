@@ -11,35 +11,64 @@ class AppShell extends StatelessWidget {
     required this.child,
     this.backgroundColor,
     this.bottomNavigationBar,
+    this.navigationRail,
     this.drawer,
   });
 
   final Widget child;
   final Color? backgroundColor;
   final Widget? bottomNavigationBar;
+  final Widget? navigationRail;
   final Widget? drawer;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    return Stack(
-      children: [
-        Container(
-          color: backgroundColor ?? design.colors.surface,
-          child: Column(
-            children: [
-              Expanded(
-                child: SafeArea(
-                  bottom: bottomNavigationBar == null,
-                  child: child,
-                ),
-              ),
-              if (bottomNavigationBar != null) bottomNavigationBar!,
-            ],
-          ),
-        ),
-        if (drawer != null) drawer!,
-      ],
+    final bottomNavigationBar = this.bottomNavigationBar;
+    final navigationRail = this.navigationRail;
+    final drawer = this.drawer;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isTablet = constraints.maxWidth >= design.layout.tabletBreakpoint;
+
+        return Stack(
+          children: [
+            Container(
+              color: backgroundColor ?? design.colors.surface,
+              child: isTablet
+                  ? Row(
+                      children: [
+                        ?navigationRail,
+                        Expanded(
+                          child: SafeArea(
+                            left:
+                                navigationRail == null &&
+                                bottomNavigationBar == null,
+                            right: false,
+                            child: child,
+                          ),
+                        ),
+                      ],
+                    )
+                  : Column(
+                      children: [
+                        Expanded(
+                          child: SafeArea(
+                            left: false,
+                            right: false,
+                            bottom: bottomNavigationBar == null,
+                            child: child,
+                          ),
+                        ),
+                        ?bottomNavigationBar,
+                      ],
+                    ),
+            ),
+            ?drawer,
+          ],
+        );
+      },
     );
   }
 }
