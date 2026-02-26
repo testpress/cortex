@@ -1,0 +1,331 @@
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:core/core.dart';
+import 'package:data/data.dart';
+import '../widgets/course_card.dart';
+import '../widgets/content_type_filter_chip.dart';
+import '../widgets/study_resume_card.dart';
+
+/// The main Study screen for paid active users.
+///
+/// Provides course listing, content type filtering, and search.
+class StudyScreen extends ConsumerStatefulWidget {
+  const StudyScreen({super.key});
+
+  @override
+  ConsumerState<StudyScreen> createState() => _StudyScreenState();
+}
+
+class _StudyScreenState extends ConsumerState<StudyScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  final Set<LessonType> _selectedTypes = {};
+  String _searchQuery = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _toggleType(LessonType type) {
+    setState(() {
+      if (_selectedTypes.contains(type)) {
+        _selectedTypes.remove(type);
+      } else {
+        _selectedTypes.add(type);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
+
+    final enrollmentAsync = ref.watch(enrollmentProvider);
+    final resumeAsync = ref.watch(recentActivityProvider);
+
+    return Stack(
+      children: [
+        enrollmentAsync.when(
+          data: (courses) {
+            final filteredCourses = _filterCourses(courses);
+            final filteredLessons = _filterLessons(courses);
+
+            return AppScroll(
+              padding: EdgeInsets.zero,
+              children: [
+                // Top Header Section (White Background)
+                Container(
+                  color: design.colors.card, // Pure white in light mode
+                  padding: EdgeInsets.fromLTRB(
+                    design.spacing.md,
+                    design.spacing.md,
+                    design.spacing.md,
+                    design.spacing.sm + design.spacing.xs, // 8 + 4 = 12px
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppText.headline(
+                        l10n.studyTabTitle,
+                        color: design.colors.textPrimary,
+                      ),
+                      SizedBox(height: design.spacing.md),
+
+                      // Search Bar
+                      AppSearchBar(
+                        controller: _searchController,
+                        hintText: l10n.studySearchHint,
+                        onChanged: (val) => setState(() => _searchQuery = val),
+                        backgroundColor: design.colors.canvas,
+                      ),
+                      SizedBox(height: design.spacing.md),
+
+                      // Filter Chips
+                      GridView.count(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisCount: 2,
+                        mainAxisSpacing: design.spacing.sm,
+                        crossAxisSpacing: design.spacing.sm,
+                        childAspectRatio: 5,
+                        padding: EdgeInsets.zero, // Remove grid padding
+                        children: [
+                          ContentTypeFilterChip(
+                            label: l10n.filterVideo,
+                            icon: LucideIcons.playCircle,
+                            isSelected: _selectedTypes.contains(
+                              LessonType.video,
+                            ),
+                            onTap: () => _toggleType(LessonType.video),
+                            baseColor: design.shortcutPalette
+                                .atIndex(0)
+                                .background,
+                            accentColor: design.shortcutPalette
+                                .atIndex(0)
+                                .foreground,
+                            darkAccentColor: design.shortcutPalette
+                                .atIndex(0)
+                                .foreground,
+                          ),
+                          ContentTypeFilterChip(
+                            label: l10n.filterLesson,
+                            icon: LucideIcons.fileText,
+                            isSelected: _selectedTypes.contains(LessonType.pdf),
+                            onTap: () => _toggleType(LessonType.pdf),
+                            baseColor: design.shortcutPalette
+                                .atIndex(1)
+                                .background,
+                            accentColor: design.shortcutPalette
+                                .atIndex(1)
+                                .foreground,
+                            darkAccentColor: design.shortcutPalette
+                                .atIndex(1)
+                                .foreground,
+                          ),
+                          ContentTypeFilterChip(
+                            label: l10n.filterAssessment,
+                            icon: LucideIcons.clipboardCheck,
+                            isSelected: _selectedTypes.contains(
+                              LessonType.assessment,
+                            ),
+                            onTap: () => _toggleType(LessonType.assessment),
+                            baseColor: design.shortcutPalette
+                                .atIndex(3)
+                                .background,
+                            accentColor: design.shortcutPalette
+                                .atIndex(3)
+                                .foreground,
+                            darkAccentColor: design.shortcutPalette
+                                .atIndex(3)
+                                .foreground,
+                          ),
+                          ContentTypeFilterChip(
+                            label: l10n.filterTest,
+                            icon: LucideIcons.shieldCheck,
+                            isSelected: _selectedTypes.contains(
+                              LessonType.test,
+                            ),
+                            onTap: () => _toggleType(LessonType.test),
+                            baseColor: design.shortcutPalette
+                                .atIndex(2)
+                                .background,
+                            accentColor: design.shortcutPalette
+                                .atIndex(2)
+                                .foreground,
+                            darkAccentColor: design.shortcutPalette
+                                .atIndex(2)
+                                .foreground,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Separator touching edges
+                Container(height: 1, color: design.colors.divider),
+
+                // Content Section (Canvas Background)
+                Container(
+                  color: design.colors.canvas,
+                  padding: EdgeInsets.fromLTRB(
+                    design.spacing.md,
+                    design.spacing.sm + design.spacing.xs, // 8 + 4 = 12px
+                    design.spacing.md,
+                    design.spacing.md,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (_selectedTypes.isEmpty) ...[
+                        AppText.title(
+                          l10n.studyYourCoursesTitle,
+                          color: design.colors.textPrimary,
+                        ),
+                        SizedBox(height: design.spacing.md),
+                        ...filteredCourses.map(
+                          (c) => Padding(
+                            padding: EdgeInsets.only(bottom: design.spacing.md),
+                            child: CourseCard(course: c),
+                          ),
+                        ),
+                      ] else ...[
+                        AppText.title(
+                          l10n.studyLessonsTitle,
+                          color: design.colors.textPrimary,
+                        ),
+                        SizedBox(height: design.spacing.md),
+                        ...filteredLessons.map(
+                          (l) => _LessonListItem(lesson: l),
+                        ),
+                      ],
+                      // Bottom padding for resume card
+                      const SizedBox(height: 80),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+          loading: () => const Center(child: AppLoadingIndicator()),
+          error: (e, __) => Center(child: AppText.body('Error: $e')),
+        ),
+
+        // Resume Card (Sticky bottom)
+        resumeAsync.when(
+          data: (activity) => activity != null
+              ? Positioned(
+                  bottom: design.spacing.md,
+                  left: design.spacing.md,
+                  right: design.spacing.md,
+                  child: StudyResumeCard(
+                    activity: activity,
+                    onDismiss: () {},
+                    onResume: () {},
+                  ),
+                )
+              : const SizedBox.shrink(),
+          loading: () => const SizedBox.shrink(),
+          error: (_, __) => const SizedBox.shrink(),
+        ),
+      ],
+    );
+  }
+
+  List<CourseDto> _filterCourses(List<CourseDto> courses) {
+    if (_searchQuery.isEmpty) return courses;
+    return courses
+        .where(
+          (c) => c.title.toLowerCase().contains(_searchQuery.toLowerCase()),
+        )
+        .toList();
+  }
+
+  List<LessonDto> _filterLessons(List<CourseDto> courses) {
+    if (_selectedTypes.isEmpty) return [];
+
+    final List<LessonDto> allLessons = [];
+    for (var course in courses) {
+      for (var chapter in course.chapters) {
+        for (var lesson in chapter.lessons) {
+          if (_selectedTypes.contains(lesson.type)) {
+            if (_searchQuery.isEmpty ||
+                lesson.title.toLowerCase().contains(
+                  _searchQuery.toLowerCase(),
+                )) {
+              allLessons.add(lesson);
+            }
+          }
+        }
+      }
+    }
+    return allLessons;
+  }
+}
+
+class _LessonListItem extends StatelessWidget {
+  const _LessonListItem({required this.lesson});
+  final LessonDto lesson;
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+
+    IconData icon;
+    Color color;
+    switch (lesson.type) {
+      case LessonType.video:
+        icon = LucideIcons.playCircle;
+        color = const Color(0xFF9333EA);
+        break;
+      case LessonType.pdf:
+        icon = LucideIcons.fileText;
+        color = const Color(0xFF2563EB);
+        break;
+      case LessonType.assessment:
+        icon = LucideIcons.clipboardCheck;
+        color = const Color(0xFF059669);
+        break;
+      case LessonType.test:
+        icon = LucideIcons.shieldCheck;
+        color = const Color(0xFFEA580C);
+        break;
+    }
+
+    return AppCard(
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(design.radius.md),
+            ),
+            child: Icon(icon, color: color, size: 20),
+          ),
+          SizedBox(width: design.spacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppText.label(lesson.title, color: design.colors.textPrimary),
+                AppText.caption(
+                  '${lesson.type.name.toUpperCase()} · ${lesson.duration}',
+                  color: design.colors.textSecondary,
+                ),
+              ],
+            ),
+          ),
+          Icon(
+            LucideIcons.chevronRight,
+            color: design.colors.textSecondary,
+            size: 20,
+          ),
+        ],
+      ),
+    );
+  }
+}

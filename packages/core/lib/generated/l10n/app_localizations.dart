@@ -220,6 +220,12 @@ abstract class AppLocalizations {
   /// **'Progress'**
   String get labelProgress;
 
+  /// Label for the resume button on cards
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get labelResume;
+
   /// No description provided for @labelCourseProgress.
   ///
   /// In en, this message translates to:
@@ -555,6 +561,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Version - {version}'**
   String drawerVersion(String version);
+
+  /// No description provided for @studyTabTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Study'**
+  String get studyTabTitle;
+
+  /// No description provided for @studySearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search courses, chapters, lessons'**
+  String get studySearchHint;
+
+  /// No description provided for @studyYourCoursesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Courses'**
+  String get studyYourCoursesTitle;
+
+  /// No description provided for @studyLessonsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Lessons'**
+  String get studyLessonsTitle;
+
+  /// No description provided for @filterVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Video'**
+  String get filterVideo;
+
+  /// No description provided for @filterLesson.
+  ///
+  /// In en, this message translates to:
+  /// **'Lesson'**
+  String get filterLesson;
+
+  /// No description provided for @filterAssessment.
+  ///
+  /// In en, this message translates to:
+  /// **'Assessment'**
+  String get filterAssessment;
+
+  /// No description provided for @filterTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Test'**
+  String get filterTest;
+
+  /// No description provided for @resumeStudyHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume Study'**
+  String get resumeStudyHeader;
+
+  /// No description provided for @labelCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'completed'**
+  String get labelCompleted;
+
+  /// No description provided for @labelLessonsPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'lessons'**
+  String get labelLessonsPlural;
 }
 
 class _AppLocalizationsDelegate

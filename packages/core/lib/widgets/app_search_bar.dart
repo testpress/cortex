@@ -10,11 +10,13 @@ class AppSearchBar extends StatelessWidget {
     required this.hintText,
     this.onChanged,
     this.controller,
+    this.backgroundColor,
   });
 
   final String hintText;
   final ValueChanged<String>? onChanged;
   final TextEditingController? controller;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +24,9 @@ class AppSearchBar extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: design.colors.surface,
-        borderRadius: BorderRadius.circular(design.radius.md),
-        border: Border.all(color: design.colors.border),
+        color: backgroundColor ?? design.colors.surface,
+        borderRadius: BorderRadius.circular(design.radius.lg),
+        border: Border.all(color: design.colors.border.withValues(alpha: 0.5)),
       ),
       padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
       child: Row(
@@ -48,7 +50,7 @@ class AppSearchBar extends StatelessWidget {
                   border: InputBorder.none,
                   isDense: true,
                   contentPadding: EdgeInsets.symmetric(
-                    vertical: design.spacing.md,
+                    vertical: design.spacing.sm,
                   ),
                 ),
               ),

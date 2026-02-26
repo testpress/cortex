@@ -4,7 +4,7 @@ import 'package:data/data.dart';
 
 /// Course card widget displaying course information and progress.
 ///
-/// Accepts a [CourseDto] from the data layer (repository/Riverpod).
+/// Refined to match the reference design with icon box and side-by-side progress.
 class CourseCard extends StatelessWidget {
   const CourseCard({super.key, required this.course});
 
@@ -13,142 +13,135 @@ class CourseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final l10n = L10n.of(context);
-    final subjectColors = design.subjectPalette.atIndex(course.colorIndex);
 
     return AppCard(
-      padding: EdgeInsets
-          .zero, // Remove default padding to allow accent bar to touch edges
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Vertical Subject Accent Bar
-            Container(
-              width: 4,
-              decoration: BoxDecoration(
-                color: subjectColors.accent,
-                borderRadius: BorderRadius.only(
-                  topLeft: design.radius.card.topLeft,
-                  bottomLeft: design.radius.card.bottomLeft,
-                ),
-              ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Left Icon Box
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: design.shortcutPalette.atIndex(1).background,
+              borderRadius: BorderRadius.circular(design.radius.md),
             ),
+            child: Icon(
+              LucideIcons.bookOpen,
+              color: design.shortcutPalette.atIndex(1).foreground,
+              size: 24,
+            ),
+          ),
+          SizedBox(width: design.spacing.md),
 
-            // Main Content
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(design.spacing.md),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          // Main Content
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    // Title
-                    AppText.title(
-                      course.title,
-                      color: design.colors.textPrimary,
+                    Expanded(
+                      child: AppText.label(
+                        course.title,
+                        color: design.colors.textPrimary,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
                     ),
-                    SizedBox(height: design.spacing.xs),
-
-                    // Chapter count & duration metadata
-                    AppText.bodySmall(
-                      '${course.chapterCount} chapters · ${course.totalDuration}',
-                      color: design.colors.textSecondary,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: design.spacing.md),
-
-                    // Progress indicator (Themed)
-                    _ProgressIndicator(
-                      progress: course.progress / 100.0,
-                      completedLessons: course.completedLessons,
-                      totalLessons: course.totalLessons,
-                      l10n: l10n,
-                      accentColor: subjectColors.accent,
-                      backgroundColor: subjectColors.background,
-                    ),
-                    SizedBox(height: design.spacing.md),
-
-                    // Action button
-                    AppButton.primary(
-                      label: course.progress > 0
-                          ? l10n.labelContinue
-                          : l10n.labelStart,
-                      onPressed: () {
-                        // TODO: Navigate to course detail screen
-                      },
-                      fullWidth: true,
+                    Icon(
+                      LucideIcons.chevronRight,
+                      color: design.colors.textSecondary.withValues(alpha: 0.3),
+                      size: 20,
                     ),
                   ],
                 ),
-              ),
+                const SizedBox(height: 2),
+
+                // Metadata
+                AppText.caption(
+                  '${course.chapterCount} chapters · ${course.totalDuration}',
+                  color: design.colors.textSecondary,
+                ),
+                SizedBox(height: design.spacing.md),
+
+                // Progress Info Row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _ProgressStat(
+                      value:
+                          '${course.completedLessons}/${course.totalLessons}',
+                      label: L10n.of(context).labelLessonsPlural,
+                    ),
+                    _ProgressStat(
+                      value: '${course.progress}%',
+                      label: L10n.of(context).labelCompleted,
+                    ),
+                  ],
+                ),
+                SizedBox(height: design.spacing.sm),
+
+                // Progress Bar (Thin)
+                _ProgressBar(
+                  progress: course.progress / 100.0,
+                  color: design.colors.success,
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
-/// Custom progress indicator widget.
-class _ProgressIndicator extends StatelessWidget {
-  const _ProgressIndicator({
-    required this.progress,
-    required this.completedLessons,
-    required this.totalLessons,
-    required this.l10n,
-    required this.accentColor,
-    required this.backgroundColor,
-  });
-
-  final double progress; // 0.0 to 1.0
-  final int completedLessons;
-  final int totalLessons;
-  final AppLocalizations l10n;
-  final Color accentColor;
-  final Color backgroundColor;
+class _ProgressStat extends StatelessWidget {
+  const _ProgressStat({required this.value, required this.label});
+  final String value;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    return AppSemantics.progressValue(
-      value: progress,
-      label: l10n.labelCourseProgress,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              AppText.caption(
-                l10n.labelProgress,
-                color: design.colors.textSecondary,
-              ),
-              AppText.caption(
-                '$completedLessons / $totalLessons lessons',
-                color: design.colors.textSecondary,
-              ),
-            ],
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic,
+      children: [
+        AppText.label(value, color: design.colors.textPrimary),
+        SizedBox(width: design.spacing.xs),
+        AppText.caption(label, color: design.colors.textSecondary),
+      ],
+    );
+  }
+}
+
+class _ProgressBar extends StatelessWidget {
+  const _ProgressBar({required this.progress, required this.color});
+  final double progress;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    return Container(
+      height: 4,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: design.colors.border.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(design.radius.full),
+      ),
+      child: FractionallySizedBox(
+        alignment: Alignment.centerLeft,
+        widthFactor: progress.clamp(0.0, 1.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(design.radius.full),
           ),
-          SizedBox(height: design.spacing.xs),
-          Container(
-            height: 6,
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              borderRadius: BorderRadius.circular(design.radius.full),
-            ),
-            child: FractionallySizedBox(
-              alignment: Alignment.centerLeft,
-              widthFactor: progress.clamp(0.0, 1.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: accentColor,
-                  borderRadius: BorderRadius.circular(design.radius.full),
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

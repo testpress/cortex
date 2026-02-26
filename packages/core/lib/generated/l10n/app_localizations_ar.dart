@@ -75,6 +75,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get labelProgress => 'تقدم';
 
   @override
+  String get labelResume => 'Resume';
+
+  @override
   String get labelCourseProgress => 'تقدم الدورة';
 
   @override
@@ -256,4 +259,37 @@ class AppLocalizationsAr extends AppLocalizations {
   String drawerVersion(String version) {
     return 'الإصدار - $version';
   }
+
+  @override
+  String get studyTabTitle => 'Study';
+
+  @override
+  String get studySearchHint => 'Search courses, chapters, lessons';
+
+  @override
+  String get studyYourCoursesTitle => 'Your Courses';
+
+  @override
+  String get studyLessonsTitle => 'Lessons';
+
+  @override
+  String get filterVideo => 'Video';
+
+  @override
+  String get filterLesson => 'Lesson';
+
+  @override
+  String get filterAssessment => 'Assessment';
+
+  @override
+  String get filterTest => 'Test';
+
+  @override
+  String get resumeStudyHeader => 'Resume Study';
+
+  @override
+  String get labelCompleted => 'completed';
+
+  @override
+  String get labelLessonsPlural => 'lessons';
 }

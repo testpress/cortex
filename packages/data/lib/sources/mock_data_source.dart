@@ -48,6 +48,26 @@ class MockDataSource implements DataSource {
           completedLessons: 3,
           totalLessons: 60,
         ),
+        const CourseDto(
+          id: 'biology-neet-2026',
+          title: 'NEET Biology Mastery',
+          colorIndex: 2, // emerald
+          chapterCount: 15,
+          totalDuration: '200 hrs',
+          progress: 45,
+          completedLessons: 45,
+          totalLessons: 100,
+        ),
+        const CourseDto(
+          id: 'english-core-2026',
+          title: 'CBSE English Core',
+          colorIndex: 5, // pink
+          chapterCount: 6,
+          totalDuration: '40 hrs',
+          progress: 10,
+          completedLessons: 2,
+          totalLessons: 20,
+        ),
       ];
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -63,6 +83,10 @@ class MockDataSource implements DataSource {
         return _neetChapters();
       case 'jee-advanced-2026':
         return _jeeAdvancedChapters();
+      case 'biology-neet-2026':
+        return _biologyChapters();
+      case 'english-core-2026':
+        return _englishChapters();
       default:
         return [];
     }
@@ -194,6 +218,44 @@ class MockDataSource implements DataSource {
           lessonCount: 5,
           assessmentCount: 1,
           orderIndex: 4,
+        ),
+      ];
+
+  List<ChapterDto> _biologyChapters() => [
+        const ChapterDto(
+          id: 'bio-ch-1',
+          courseId: 'biology-neet-2026',
+          title: 'Plant Kingdom',
+          lessonCount: 8,
+          assessmentCount: 2,
+          orderIndex: 0,
+        ),
+        const ChapterDto(
+          id: 'bio-ch-2',
+          courseId: 'biology-neet-2026',
+          title: 'Animal Kingdom',
+          lessonCount: 10,
+          assessmentCount: 2,
+          orderIndex: 1,
+        ),
+      ];
+
+  List<ChapterDto> _englishChapters() => [
+        const ChapterDto(
+          id: 'eng-ch-1',
+          courseId: 'english-core-2026',
+          title: 'Reading Comprehension',
+          lessonCount: 5,
+          assessmentCount: 1,
+          orderIndex: 0,
+        ),
+        const ChapterDto(
+          id: 'eng-ch-2',
+          courseId: 'english-core-2026',
+          title: 'Creative Writing Skills',
+          lessonCount: 7,
+          assessmentCount: 2,
+          orderIndex: 1,
         ),
       ];
 
@@ -669,7 +731,7 @@ class MockDataSource implements DataSource {
           lessonId: 'thermo-2',
           courseId: 'jee-main-2026',
           percentComplete: 67,
-          lastAccessedAt: DateTime.now().subtract(const Duration(hours: 1)),
+          lastAccessedAt: DateTime.now().subtract(const Duration(minutes: 5)),
         ),
         UserProgressDto(
           userId: userId,

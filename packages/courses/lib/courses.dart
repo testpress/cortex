@@ -1,6 +1,7 @@
 export 'models/course.dart';
 export 'data/mock_courses.dart';
 export 'screens/course_list_screen.dart';
+export 'screens/study_screen.dart';
 export 'screens/paid_active_home_screen.dart';
 export 'widgets/course_card.dart';
 export 'widgets/dashboard_header.dart';
