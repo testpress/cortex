@@ -208,52 +208,52 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
-  String get drawerMenuTitle => 'Menu';
+  String get drawerMenuTitle => 'മെനു';
 
   @override
-  String get drawerBookmark => 'Bookmark';
+  String get drawerBookmark => 'ബുക്ക്മാർക്ക്';
 
   @override
-  String get drawerPosts => 'Posts';
+  String get drawerPosts => 'പോസ്റ്റുകൾ';
 
   @override
-  String get drawerAnalytics => 'Analytics';
+  String get drawerAnalytics => 'അനലിറ്റിക്സ്';
 
   @override
-  String get drawerForum => 'Forum';
+  String get drawerForum => 'ഫോറം';
 
   @override
-  String get drawerDoubts => 'Doubts';
+  String get drawerDoubts => 'സംശയങ്ങൾ';
 
   @override
-  String get drawerCustomExam => 'Custom Exam';
+  String get drawerCustomExam => 'കസ്റ്റം എക്സാം';
 
   @override
-  String get drawerReports => 'Your Report';
+  String get drawerReports => 'നിങ്ങളുടെ റിപ്പോർട്ട്';
 
   @override
-  String get drawerProfile => 'Profile';
+  String get drawerProfile => 'പ്രൊഫൈൽ';
 
   @override
-  String get drawerSettings => 'App Settings';
+  String get drawerSettings => 'ആപ്പ് ക്രമീകരണങ്ങൾ';
 
   @override
-  String get drawerLoginActivity => 'Login Activity';
+  String get drawerLoginActivity => 'ലോഗിൻ ആക്റ്റിവിറ്റി';
 
   @override
-  String get drawerLogout => 'Logout';
+  String get drawerLogout => 'ലോഗൗട്ട്';
 
   @override
-  String get drawerPrivacy => 'Privacy Policy';
+  String get drawerPrivacy => 'സ്വകാര്യതാ നയം';
 
   @override
-  String get drawerThemeLight => 'Light Mode';
+  String get drawerThemeLight => 'ലൈറ്റ് മോഡ്';
 
   @override
-  String get drawerThemeDark => 'Dark Mode';
+  String get drawerThemeDark => 'ഡാർക്ക് മോഡ്';
 
   @override
   String drawerVersion(String version) {
-    return 'Version - $version';
+    return 'വേർഷൻ - $version';
   }
 }

@@ -505,7 +505,7 @@ abstract class AppLocalizations {
   /// No description provided for @drawerReports.
   ///
   /// In en, this message translates to:
-  /// **'Your Report'**
+  /// **'Reports'**
   String get drawerReports;
 
   /// No description provided for @drawerProfile.

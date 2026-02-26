@@ -229,7 +229,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawerCustomExam => 'Custom Exam';
 
   @override
-  String get drawerReports => 'Your Report';
+  String get drawerReports => 'Reports';
 
   @override
   String get drawerProfile => 'Profile';

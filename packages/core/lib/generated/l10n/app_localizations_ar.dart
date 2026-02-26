@@ -208,52 +208,52 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get drawerMenuTitle => 'Menu';
+  String get drawerMenuTitle => 'القائمة';
 
   @override
-  String get drawerBookmark => 'Bookmark';
+  String get drawerBookmark => 'الإشارات المرجعية';
 
   @override
-  String get drawerPosts => 'Posts';
+  String get drawerPosts => 'المنشورات';
 
   @override
-  String get drawerAnalytics => 'Analytics';
+  String get drawerAnalytics => 'التحليلات';
 
   @override
-  String get drawerForum => 'Forum';
+  String get drawerForum => 'المنتدى';
 
   @override
-  String get drawerDoubts => 'Doubts';
+  String get drawerDoubts => 'الأسئلة';
 
   @override
-  String get drawerCustomExam => 'Custom Exam';
+  String get drawerCustomExam => 'نموذج امتحان';
 
   @override
-  String get drawerReports => 'Your Report';
+  String get drawerReports => 'التقارير الخاصة بك';
 
   @override
-  String get drawerProfile => 'Profile';
+  String get drawerProfile => 'الملف الشخصي';
 
   @override
-  String get drawerSettings => 'App Settings';
+  String get drawerSettings => 'إعدادات التطبيق';
 
   @override
-  String get drawerLoginActivity => 'Login Activity';
+  String get drawerLoginActivity => 'نشاط تسجيل الدخول';
 
   @override
-  String get drawerLogout => 'Logout';
+  String get drawerLogout => 'تسجيل الخروج';
 
   @override
-  String get drawerPrivacy => 'Privacy Policy';
+  String get drawerPrivacy => 'سياسة الخصوصية';
 
   @override
-  String get drawerThemeLight => 'Light Mode';
+  String get drawerThemeLight => 'الوضع الفاتح';
 
   @override
-  String get drawerThemeDark => 'Dark Mode';
+  String get drawerThemeDark => 'الوضع الداكن';
 
   @override
   String drawerVersion(String version) {
-    return 'Version - $version';
+    return 'الإصدار - $version';
   }
 }
