@@ -68,10 +68,17 @@ final GoRouter appRouter = GoRouter(
           ),
         ];
 
+        final activeTabId = _getCurrentTabId(navigationShell.currentIndex);
+
         return AppShell(
           bottomNavigationBar: AppTabBar(
             items: items,
-            activeItemId: _getCurrentTabId(navigationShell.currentIndex),
+            activeItemId: activeTabId,
+            onTabChange: (id) => _onTabItemTapped(navigationShell, id),
+          ),
+          navigationRail: AppNavigationRail(
+            items: items,
+            activeItemId: activeTabId,
             onTabChange: (id) => _onTabItemTapped(navigationShell, id),
           ),
           drawer: const DashboardDrawer(),

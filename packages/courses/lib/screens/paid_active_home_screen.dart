@@ -32,12 +32,15 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     final otherLearners = ref.watch(otherLearnersProvider);
     final shortcuts = ref.watch(quickShortcutsProvider);
 
+    final isTablet = MediaQuery.of(context).size.width >= 600;
+
     return Scaffold(
       backgroundColor: design.colors.canvas,
       body: Column(
         children: [
           DashboardHeader(
             title: L10n.of(context).homeHeaderTitle,
+            isTablet: isTablet,
             onMenuPressed: () {
               ref.read(isHomeDrawerOpenProvider.notifier).state = true;
             },
