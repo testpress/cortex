@@ -20,5 +20,21 @@
   "labelStart": "തുടങ്ങുക",
   "labelContinue": "തുടരുക",
   "labelProgress": "പുരോഗതി",
-  "labelCourseProgress": "കോഴ്സിന്റെ പുരോഗതി"
+  "labelCourseProgress": "കോഴ്സിന്റെ പുരോഗതി",
+  "drawerMenuTitle": "മെനു",
+  "drawerBookmark": "ബുക്ക്മാർക്ക്",
+  "drawerPosts": "പോസ്റ്റുകൾ",
+  "drawerAnalytics": "അനലിറ്റിക്സ്",
+  "drawerForum": "ഫോറം",
+  "drawerDoubts": "സംശയങ്ങൾ",
+  "drawerCustomExam": "കസ്റ്റം എക്സാം",
+  "drawerReports": "നിങ്ങളുടെ റിപ്പോർട്ട്",
+  "drawerProfile": "പ്രൊഫൈൽ",
+  "drawerSettings": "ആപ്പ് ക്രമീകരണങ്ങൾ",
+  "drawerLoginActivity": "ലോഗിൻ ആക്റ്റിവിറ്റി",
+  "drawerLogout": "ലോഗൗട്ട്",
+  "drawerPrivacy": "സ്വകാര്യതാ നയം",
+  "drawerThemeLight": "ലൈറ്റ് മോഡ്",
+  "drawerThemeDark": "ഡാർക്ക് മോഡ്",
+  "drawerVersion": "വേർഷൻ - {version}"
 }

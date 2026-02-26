@@ -206,4 +206,54 @@ class AppLocalizationsAr extends AppLocalizations {
   String moreBadgesLabel(int count) {
     return '+$count more';
   }
+
+  @override
+  String get drawerMenuTitle => 'القائمة';
+
+  @override
+  String get drawerBookmark => 'الإشارات المرجعية';
+
+  @override
+  String get drawerPosts => 'المنشورات';
+
+  @override
+  String get drawerAnalytics => 'التحليلات';
+
+  @override
+  String get drawerForum => 'المنتدى';
+
+  @override
+  String get drawerDoubts => 'الأسئلة';
+
+  @override
+  String get drawerCustomExam => 'نموذج امتحان';
+
+  @override
+  String get drawerReports => 'التقارير الخاصة بك';
+
+  @override
+  String get drawerProfile => 'الملف الشخصي';
+
+  @override
+  String get drawerSettings => 'إعدادات التطبيق';
+
+  @override
+  String get drawerLoginActivity => 'نشاط تسجيل الدخول';
+
+  @override
+  String get drawerLogout => 'تسجيل الخروج';
+
+  @override
+  String get drawerPrivacy => 'سياسة الخصوصية';
+
+  @override
+  String get drawerThemeLight => 'الوضع الفاتح';
+
+  @override
+  String get drawerThemeDark => 'الوضع الداكن';
+
+  @override
+  String drawerVersion(String version) {
+    return 'الإصدار - $version';
+  }
 }

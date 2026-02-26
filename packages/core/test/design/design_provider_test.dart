@@ -43,6 +43,8 @@ void main() {
         rank2: Color(0xFFCBD5E1),
         rank3: Color(0xFFFB923C),
         rankDefault: Color(0xFF94A3B8),
+        overlay: Color(0x8A000000),
+        shadow: Color(0x33000000),
       );
 
       final customConfig = DesignConfig(
@@ -52,6 +54,7 @@ void main() {
         typographyScale: DesignTypographyScale.defaults(),
         motion: DesignMotion.defaults(),
         radius: DesignRadius.defaults(),
+        layout: DesignLayout.defaults(),
         subjectPalette: DesignSubjectPalette.light(),
         statusColors: DesignStatusColors.light(),
         shortcutPalette: DesignShortcutPalette.light(),
@@ -129,6 +132,8 @@ void main() {
         rank2: Color(0xFFCBD5E1),
         rank3: Color(0xFFFB923C),
         rankDefault: Color(0xFF94A3B8),
+        overlay: Color(0x8A000000),
+        shadow: Color(0x33000000),
       );
 
       final config2 = DesignConfig(
@@ -138,6 +143,7 @@ void main() {
         typographyScale: DesignTypographyScale.defaults(),
         motion: DesignMotion.defaults(),
         radius: DesignRadius.defaults(),
+        layout: DesignLayout.defaults(),
         subjectPalette: DesignSubjectPalette.light(),
         statusColors: DesignStatusColors.light(),
         shortcutPalette: DesignShortcutPalette.light(),

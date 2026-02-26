@@ -1,9 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:core/core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:data/data.dart';
 import '../data/mock_data.dart';
 
 part 'dashboard_providers.g.dart';
+
+@riverpod
+Future<String> appVersion(Ref ref) async {
+  final packageInfo = await PackageInfo.fromPlatform();
+  return packageInfo.version;
+}
 
 @riverpod
 Future<List<LiveClassDto>> todayClasses(Ref ref) async {
@@ -70,3 +77,8 @@ Future<List<QuickShortcutDto>> quickShortcuts(Ref ref) async {
   await Future.delayed(const Duration(milliseconds: 450));
   return mockQuickShortcuts;
 }
+
+final isHomeDrawerOpenProvider = StateProvider<bool>((ref) => false);
+final designModeProvider = StateProvider<DesignMode>(
+  (ref) => DesignMode.system,
+);

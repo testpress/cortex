@@ -36,7 +36,12 @@ class PaidActiveHomeScreen extends ConsumerWidget {
       backgroundColor: design.colors.canvas,
       body: Column(
         children: [
-          DashboardHeader(title: L10n.of(context).homeHeaderTitle),
+          DashboardHeader(
+            title: L10n.of(context).homeHeaderTitle,
+            onMenuPressed: () {
+              ref.read(isHomeDrawerOpenProvider.notifier).state = true;
+            },
+          ),
           Expanded(
             child: AppScroll(
               padding: EdgeInsets.symmetric(vertical: design.spacing.md),
@@ -65,6 +70,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                           c.status == dto.LiveClassStatus.upcoming,
                       orElse: () => classes.first,
                     );
+
                     return Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: design.spacing.md,

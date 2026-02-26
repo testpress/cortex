@@ -11,25 +11,35 @@ class AppShell extends StatelessWidget {
     required this.child,
     this.backgroundColor,
     this.bottomNavigationBar,
+    this.drawer,
   });
 
   final Widget child;
   final Color? backgroundColor;
   final Widget? bottomNavigationBar;
+  final Widget? drawer;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    return Container(
-      color: backgroundColor ?? design.colors.surface,
-      child: Column(
-        children: [
-          Expanded(
-            child: SafeArea(bottom: bottomNavigationBar == null, child: child),
+    return Stack(
+      children: [
+        Container(
+          color: backgroundColor ?? design.colors.surface,
+          child: Column(
+            children: [
+              Expanded(
+                child: SafeArea(
+                  bottom: bottomNavigationBar == null,
+                  child: child,
+                ),
+              ),
+              if (bottomNavigationBar != null) bottomNavigationBar!,
+            ],
           ),
-          ?bottomNavigationBar,
-        ],
-      ),
+        ),
+        if (drawer != null) drawer!,
+      ],
     );
   }
 }

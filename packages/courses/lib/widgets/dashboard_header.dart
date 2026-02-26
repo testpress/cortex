@@ -3,9 +3,10 @@ import 'package:flutter/material.dart' show Icons;
 import 'package:core/core.dart';
 
 class DashboardHeader extends StatelessWidget {
-  const DashboardHeader({super.key, required this.title});
+  const DashboardHeader({super.key, required this.title, this.onMenuPressed});
 
   final String title;
+  final VoidCallback? onMenuPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,10 @@ class DashboardHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.menu_rounded, size: 28),
+          GestureDetector(
+            onTap: onMenuPressed,
+            child: const Icon(Icons.menu_rounded, size: 28),
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: AppText.subtitle(title, color: design.colors.textPrimary),

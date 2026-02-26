@@ -459,6 +459,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'+{count} more'**
   String moreBadgesLabel(int count);
+
+  /// No description provided for @drawerMenuTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu'**
+  String get drawerMenuTitle;
+
+  /// No description provided for @drawerBookmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark'**
+  String get drawerBookmark;
+
+  /// No description provided for @drawerPosts.
+  ///
+  /// In en, this message translates to:
+  /// **'Posts'**
+  String get drawerPosts;
+
+  /// No description provided for @drawerAnalytics.
+  ///
+  /// In en, this message translates to:
+  /// **'Analytics'**
+  String get drawerAnalytics;
+
+  /// No description provided for @drawerForum.
+  ///
+  /// In en, this message translates to:
+  /// **'Forum'**
+  String get drawerForum;
+
+  /// No description provided for @drawerDoubts.
+  ///
+  /// In en, this message translates to:
+  /// **'Doubts'**
+  String get drawerDoubts;
+
+  /// No description provided for @drawerCustomExam.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Exam'**
+  String get drawerCustomExam;
+
+  /// No description provided for @drawerReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports'**
+  String get drawerReports;
+
+  /// No description provided for @drawerProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get drawerProfile;
+
+  /// No description provided for @drawerSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'App Settings'**
+  String get drawerSettings;
+
+  /// No description provided for @drawerLoginActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Login Activity'**
+  String get drawerLoginActivity;
+
+  /// No description provided for @drawerLogout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get drawerLogout;
+
+  /// No description provided for @drawerPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get drawerPrivacy;
+
+  /// No description provided for @drawerThemeLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Mode'**
+  String get drawerThemeLight;
+
+  /// No description provided for @drawerThemeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Mode'**
+  String get drawerThemeDark;
+
+  /// No description provided for @drawerVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version - {version}'**
+  String drawerVersion(String version);
 }
 
 class _AppLocalizationsDelegate
