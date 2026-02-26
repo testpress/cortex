@@ -70,13 +70,6 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                           c.status == dto.LiveClassStatus.upcoming,
                       orElse: () => classes.first,
                     );
-                    final (
-                      displayTitle,
-                      displaySubject,
-                    ) = _formatSubjectAndTopic(
-                      liveOrUpcoming.subject,
-                      liveOrUpcoming.topic,
-                    );
 
                     return Padding(
                       padding: EdgeInsets.symmetric(
@@ -88,8 +81,8 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                               liveOrUpcoming.status == dto.LiveClassStatus.live
                               ? HeroActionType.joinClass
                               : HeroActionType.prepareTest,
-                          title: displayTitle,
-                          subject: displaySubject,
+                          title: liveOrUpcoming.topic,
+                          subject: liveOrUpcoming.subject,
                           metadata: liveOrUpcoming.faculty,
                           timeInfo: liveOrUpcoming.time,
                         ),
@@ -224,14 +217,9 @@ class PaidActiveHomeScreen extends ConsumerWidget {
   }
 
   ClassItem _mapClass(dto.LiveClassDto d) {
-    final (displayTitle, displaySubject) = _formatSubjectAndTopic(
-      d.subject,
-      d.topic,
-    );
-
     return ClassItem(
       id: d.id,
-      subject: displaySubject,
+      subject: d.subject,
       time: d.time,
       faculty: d.faculty,
       status: switch (d.status) {
@@ -239,20 +227,8 @@ class PaidActiveHomeScreen extends ConsumerWidget {
         dto.LiveClassStatus.upcoming => ClassStatus.upcoming,
         dto.LiveClassStatus.completed => ClassStatus.completed,
       },
-      topic: displayTitle,
+      topic: d.topic,
     );
-  }
-
-  (String, String) _formatSubjectAndTopic(String subject, String topic) {
-    if (subject.contains(' - ')) {
-      final parts = subject.split(' - ');
-      if (parts.length >= 2) {
-        final mainSubject = parts[0].trim();
-        final subSubject = parts[1].trim();
-        return ('$subSubject - $topic', mainSubject);
-      }
-    }
-    return (topic, subject);
   }
 
   Assignment _mapAssignment(dto.AssignmentDto d) {

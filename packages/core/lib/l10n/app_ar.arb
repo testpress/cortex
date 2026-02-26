@@ -20,5 +20,21 @@
   "labelStart": "ابدأ",
   "labelContinue": "استمر",
   "labelProgress": "تقدم",
-  "labelCourseProgress": "تقدم الدورة"
+  "labelCourseProgress": "تقدم الدورة",
+  "drawerMenuTitle": "Menu",
+  "drawerBookmark": "Bookmark",
+  "drawerPosts": "Posts",
+  "drawerAnalytics": "Analytics",
+  "drawerForum": "Forum",
+  "drawerDoubts": "Doubts",
+  "drawerCustomExam": "Custom Exam",
+  "drawerReports": "Your Report",
+  "drawerProfile": "Profile",
+  "drawerSettings": "App Settings",
+  "drawerLoginActivity": "Login Activity",
+  "drawerLogout": "Logout",
+  "drawerPrivacy": "Privacy Policy",
+  "drawerThemeLight": "Light Mode",
+  "drawerThemeDark": "Dark Mode",
+  "drawerVersion": "Version - {version}"
 }

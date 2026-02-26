@@ -104,9 +104,7 @@ class _AppDrawerState extends State<AppDrawer>
               onTap: widget.onClose,
               child: FadeTransition(
                 opacity: _fadeAnimation,
-                child: Container(
-                  color: const Color(0x7F000000), // 50% black
-                ),
+                child: Container(color: design.colors.overlay),
               ),
             ),
             // Drawer Container
@@ -118,7 +116,7 @@ class _AppDrawerState extends State<AppDrawer>
                   color: design.colors.card,
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0x33000000),
+                      color: design.colors.shadow,
                       blurRadius: 16,
                       offset: const Offset(8, 0),
                     ),
@@ -232,16 +230,7 @@ class _AppDrawerState extends State<AppDrawer>
             children: [
               Icon(item.icon, size: 20, color: iconColor),
               const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  item.label,
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: textColor,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
+              Expanded(child: AppText.body(item.label, color: textColor)),
             ],
           ),
         ),

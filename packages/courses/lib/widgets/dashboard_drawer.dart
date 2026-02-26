@@ -12,6 +12,7 @@ class DashboardDrawer extends ConsumerWidget {
     final isOpen = ref.watch(isHomeDrawerOpenProvider);
 
     final l10n = L10n.of(context);
+    final version = ref.watch(appVersionProvider).value ?? '...';
 
     return AppDrawer(
       isOpen: isOpen,
@@ -107,7 +108,7 @@ class DashboardDrawer extends ConsumerWidget {
             ),
             AppDrawerItem(
               icon: LucideIcons.info,
-              label: l10n.drawerVersion('1.1.7'),
+              label: l10n.drawerVersion(version),
               action: _dummyAction,
               disabled: true,
             ),

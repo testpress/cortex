@@ -7,6 +7,12 @@ import '../data/mock_data.dart';
 part 'dashboard_providers.g.dart';
 
 @riverpod
+Future<String> appVersion(Ref ref) async {
+  final packageInfo = await PackageInfo.fromPlatform();
+  return packageInfo.version;
+}
+
+@riverpod
 Future<List<LiveClassDto>> todayClasses(Ref ref) async {
   // Simulate API delay
   await Future.delayed(const Duration(milliseconds: 500));

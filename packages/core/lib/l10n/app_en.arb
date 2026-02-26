@@ -110,5 +110,28 @@
         "type": "int"
       }
     }
+  },
+  "drawerMenuTitle": "Menu",
+  "drawerBookmark": "Bookmark",
+  "drawerPosts": "Posts",
+  "drawerAnalytics": "Analytics",
+  "drawerForum": "Forum",
+  "drawerDoubts": "Doubts",
+  "drawerCustomExam": "Custom Exam",
+  "drawerReports": "Reports",
+  "drawerProfile": "Profile",
+  "drawerSettings": "App Settings",
+  "drawerLoginActivity": "Login Activity",
+  "drawerLogout": "Logout",
+  "drawerPrivacy": "Privacy Policy",
+  "drawerThemeLight": "Light Mode",
+  "drawerThemeDark": "Dark Mode",
+  "drawerVersion": "Version - {version}",
+  "@drawerVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
   }
 }

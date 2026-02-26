@@ -42,6 +42,8 @@ void main() {
         rank2: Color(0xFFCBD5E1),
         rank3: Color(0xFFFB923C),
         rankDefault: Color(0xFF94A3B8),
+        overlay: Color(0x8A000000),
+        shadow: Color(0x33000000),
       );
 
       final customConfig = DesignConfig(
@@ -124,6 +126,8 @@ void main() {
         rank2: Color(0xFFCBD5E1),
         rank3: Color(0xFFFB923C),
         rankDefault: Color(0xFF94A3B8),
+        overlay: Color(0x8A000000),
+        shadow: Color(0x33000000),
       );
 
       final customConfig = DesignConfig(

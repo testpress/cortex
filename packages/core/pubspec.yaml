@@ -15,6 +15,7 @@ dependencies:
   go_router: ^17.1.0
   intl: any
   lucide_icons: ^0.257.0
+  package_info_plus: ^8.2.1
 
 dev_dependencies:
   flutter_test:

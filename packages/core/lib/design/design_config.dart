@@ -195,6 +195,8 @@ class DesignColors {
     required this.rank2,
     required this.rank3,
     required this.rankDefault,
+    required this.overlay,
+    required this.shadow,
   });
 
   // Primary brand colors
@@ -250,6 +252,12 @@ class DesignColors {
   final Color rank3;
   final Color rankDefault;
 
+  // Overlay / Backdrop
+  final Color overlay;
+
+  // Elevation / Shadows
+  final Color shadow;
+
   factory DesignColors.light() {
     return const DesignColors(
       primary: Color(0xFF6366F1),
@@ -288,6 +296,8 @@ class DesignColors {
       rank2: Color(0xFFCBD5E1),
       rank3: Color(0xFFFB923C),
       rankDefault: Color(0xFF94A3B8),
+      overlay: Color(0x8A000000), // black54
+      shadow: Color(0x33000000), // 20% black
     );
   }
 
@@ -329,6 +339,8 @@ class DesignColors {
       rank2: Color(0xFF94A3B8),
       rank3: Color(0xFFFDBA74),
       rankDefault: Color(0xFF64748B),
+      overlay: Color(0x8A000000), // black54
+      shadow: Color(0x66000000), // 40% black
     );
   }
 
@@ -374,6 +386,8 @@ class DesignColors {
     Color rank2 = const Color(0xFFCBD5E1),
     Color rank3 = const Color(0xFFFB923C),
     Color rankDefault = const Color(0xFF94A3B8),
+    Color overlay = const Color(0x8A000000),
+    Color shadow = const Color(0x33000000),
   }) {
     // Auto-calculate contrasting text colors
     final onPrimary = _contrastingColor(primary);
@@ -427,6 +441,8 @@ class DesignColors {
       rank2: rank2,
       rank3: rank3,
       rankDefault: rankDefault,
+      overlay: overlay,
+      shadow: shadow,
     );
   }
 
@@ -501,7 +517,9 @@ class DesignColors {
         other.rank1 == rank1 &&
         other.rank2 == rank2 &&
         other.rank3 == rank3 &&
-        other.rankDefault == rankDefault;
+        other.rankDefault == rankDefault &&
+        other.overlay == overlay &&
+        other.shadow == shadow;
   }
 
   @override
@@ -543,6 +561,8 @@ class DesignColors {
       rank2,
       rank3,
       rankDefault,
+      overlay,
+      shadow,
     ]);
   }
 }
