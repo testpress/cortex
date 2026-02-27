@@ -30,6 +30,7 @@ void main() {
         subjectPalette: DesignSubjectPalette.light(),
         statusColors: DesignStatusColors.light(),
         shortcutPalette: DesignShortcutPalette.light(),
+        study: DesignStudyTheme.light(),
       );
 
       bool? shouldAnimate;
@@ -81,6 +82,7 @@ void main() {
         subjectPalette: DesignSubjectPalette.light(),
         statusColors: DesignStatusColors.light(),
         shortcutPalette: DesignShortcutPalette.light(),
+        study: DesignStudyTheme.light(),
       );
 
       bool? shouldAnimate;

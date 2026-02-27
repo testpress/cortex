@@ -59,6 +59,23 @@ class CourseRepository {
     await _db.upsertLessons(companions);
   }
 
+  /// Efficiently fetches lesson and parent titles by lesson ID.
+  Future<({String lessonTitle, String chapterTitle, String courseTitle})?>
+      getLessonDetails(String lessonId) async {
+    final result = await _db.getLessonDetails(lessonId);
+    if (result == null) return null;
+
+    final lesson = result.readTable(_db.lessonsTable);
+    final chapter = result.readTable(_db.chaptersTable);
+    final course = result.readTable(_db.coursesTable);
+
+    return (
+      lessonTitle: lesson.title,
+      chapterTitle: chapter.title,
+      courseTitle: course.title,
+    );
+  }
+
   // ─────────────────────────────────────────────────────────────────────────
   // Mapping helpers
   // ─────────────────────────────────────────────────────────────────────────

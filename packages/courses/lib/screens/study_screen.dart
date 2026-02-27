@@ -99,30 +99,18 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                               LessonType.video,
                             ),
                             onTap: () => _toggleType(LessonType.video),
-                            baseColor: design.shortcutPalette
-                                .atIndex(0)
-                                .background,
-                            accentColor: design.shortcutPalette
-                                .atIndex(0)
-                                .foreground,
-                            darkAccentColor: design.shortcutPalette
-                                .atIndex(0)
-                                .foreground,
+                            baseColor: design.study.video.background,
+                            accentColor: design.study.video.foreground,
+                            darkAccentColor: design.study.video.foreground,
                           ),
                           ContentTypeFilterChip(
                             label: l10n.filterLesson,
                             icon: LucideIcons.fileText,
                             isSelected: _selectedTypes.contains(LessonType.pdf),
                             onTap: () => _toggleType(LessonType.pdf),
-                            baseColor: design.shortcutPalette
-                                .atIndex(1)
-                                .background,
-                            accentColor: design.shortcutPalette
-                                .atIndex(1)
-                                .foreground,
-                            darkAccentColor: design.shortcutPalette
-                                .atIndex(1)
-                                .foreground,
+                            baseColor: design.study.pdf.background,
+                            accentColor: design.study.pdf.foreground,
+                            darkAccentColor: design.study.pdf.foreground,
                           ),
                           ContentTypeFilterChip(
                             label: l10n.filterAssessment,
@@ -131,15 +119,9 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                               LessonType.assessment,
                             ),
                             onTap: () => _toggleType(LessonType.assessment),
-                            baseColor: design.shortcutPalette
-                                .atIndex(3)
-                                .background,
-                            accentColor: design.shortcutPalette
-                                .atIndex(3)
-                                .foreground,
-                            darkAccentColor: design.shortcutPalette
-                                .atIndex(3)
-                                .foreground,
+                            baseColor: design.study.assessment.background,
+                            accentColor: design.study.assessment.foreground,
+                            darkAccentColor: design.study.assessment.foreground,
                           ),
                           ContentTypeFilterChip(
                             label: l10n.filterTest,
@@ -148,15 +130,9 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                               LessonType.test,
                             ),
                             onTap: () => _toggleType(LessonType.test),
-                            baseColor: design.shortcutPalette
-                                .atIndex(2)
-                                .background,
-                            accentColor: design.shortcutPalette
-                                .atIndex(2)
-                                .foreground,
-                            darkAccentColor: design.shortcutPalette
-                                .atIndex(2)
-                                .foreground,
+                            baseColor: design.study.test.background,
+                            accentColor: design.study.test.foreground,
+                            darkAccentColor: design.study.test.foreground,
                           ),
                         ],
                       ),
@@ -185,11 +161,20 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                           color: design.colors.textPrimary,
                         ),
                         SizedBox(height: design.spacing.md),
-                        ...filteredCourses.map(
-                          (c) => Padding(
-                            padding: EdgeInsets.only(bottom: design.spacing.md),
-                            child: CourseCard(course: c),
-                          ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: filteredCourses.length,
+                          padding: EdgeInsets.zero,
+                          itemBuilder: (context, index) {
+                            final c = filteredCourses[index];
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                bottom: design.spacing.md,
+                              ),
+                              child: CourseCard(course: c),
+                            );
+                          },
                         ),
                       ] else ...[
                         AppText.title(
@@ -197,8 +182,15 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                           color: design.colors.textPrimary,
                         ),
                         SizedBox(height: design.spacing.md),
-                        ...filteredLessons.map(
-                          (l) => _LessonListItem(lesson: l),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: filteredLessons.length,
+                          padding: EdgeInsets.zero,
+                          itemBuilder: (context, index) {
+                            final l = filteredLessons[index];
+                            return _LessonListItem(lesson: l);
+                          },
                         ),
                       ],
                       // Bottom padding for resume card
@@ -220,11 +212,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                   bottom: design.spacing.md,
                   left: design.spacing.md,
                   right: design.spacing.md,
-                  child: StudyResumeCard(
-                    activity: activity,
-                    onDismiss: () {},
-                    onResume: () {},
-                  ),
+                  child: StudyResumeCard(activity: activity, onResume: () {}),
                 )
               : const SizedBox.shrink(),
           loading: () => const SizedBox.shrink(),
@@ -274,25 +262,28 @@ class _LessonListItem extends StatelessWidget {
     final design = Design.of(context);
 
     IconData icon;
-    Color color;
+    ShortcutColors typeTheme;
     switch (lesson.type) {
       case LessonType.video:
         icon = LucideIcons.playCircle;
-        color = const Color(0xFF9333EA);
+        typeTheme = design.study.video;
         break;
       case LessonType.pdf:
         icon = LucideIcons.fileText;
-        color = const Color(0xFF2563EB);
+        typeTheme = design.study.pdf;
         break;
       case LessonType.assessment:
         icon = LucideIcons.clipboardCheck;
-        color = const Color(0xFF059669);
+        typeTheme = design.study.assessment;
         break;
       case LessonType.test:
         icon = LucideIcons.shieldCheck;
-        color = const Color(0xFFEA580C);
+        typeTheme = design.study.test;
         break;
     }
+
+    final color = typeTheme.foreground;
+    final backgroundColor = typeTheme.background;
 
     return AppCard(
       child: Row(
@@ -301,7 +292,7 @@ class _LessonListItem extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
+              color: backgroundColor,
               borderRadius: BorderRadius.circular(design.radius.md),
             ),
             child: Icon(icon, color: color, size: 20),

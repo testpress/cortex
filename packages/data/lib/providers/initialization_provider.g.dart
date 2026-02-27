@@ -1,30 +1,30 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'recent_activity_provider.dart';
+part of 'initialization_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$recentActivityHash() => r'a07d62021414035d098cfc4ad9c0b1adaeb99247';
+String _$appInitializationHash() => r'4ae965380ee20890f85b758719c5c5f9e4848a8c';
 
-/// Provider for the most recently accessed lesson (for the Resume card).
+/// Provider that handles app-wide data initialization and refresh logic.
+/// This prevents side effects within UI-driven data providers.
 ///
-/// Copied from [recentActivity].
-@ProviderFor(recentActivity)
-final recentActivityProvider =
-    AutoDisposeStreamProvider<RecentActivityVo?>.internal(
-  recentActivity,
-  name: r'recentActivityProvider',
+/// Copied from [appInitialization].
+@ProviderFor(appInitialization)
+final appInitializationProvider = AutoDisposeFutureProvider<void>.internal(
+  appInitialization,
+  name: r'appInitializationProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$recentActivityHash,
+      : _$appInitializationHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef RecentActivityRef = AutoDisposeStreamProviderRef<RecentActivityVo?>;
+typedef AppInitializationRef = AutoDisposeFutureProviderRef<void>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

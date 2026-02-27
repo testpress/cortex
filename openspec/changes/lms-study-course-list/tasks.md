@@ -23,3 +23,10 @@
 - [x] 4.1 Update the `app` navigation shell to point the "Study" tab to the new `StudyPage`.
 - [x] 4.2 Verify Dark Mode transition for all 64 unique color instances identified in audit.
 - [x] 4.3 Ensure all interactive elements (chips, cards) meet 48dp minimum touch targets.
+
+## 5. Technical Refinement & Optimization
+- [x] 5.1 Optimize `recentActivityProvider` with complex SQL joins for O(1) metadata lookup.
+- [x] 5.2 Implement list virtualization (`ListView.builder`) for curriculum and lesson views.
+- [x] 5.3 Centralize content type colors into `DesignStudyTheme` design tokens.
+- [x] 5.4 Refactor data layer to use `authProvider` and side-effect-free initialization logic.
+- [x] 5.5 Standardize floating resume card with `AppButton` and metadata metadata breadcrumbs.

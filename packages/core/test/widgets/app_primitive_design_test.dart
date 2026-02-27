@@ -58,6 +58,7 @@ void main() {
         subjectPalette: DesignSubjectPalette.light(),
         statusColors: DesignStatusColors.light(),
         shortcutPalette: DesignShortcutPalette.light(),
+        study: DesignStudyTheme.light(),
       );
 
       await tester.pumpWidget(
@@ -144,6 +145,7 @@ void main() {
         subjectPalette: DesignSubjectPalette.light(),
         statusColors: DesignStatusColors.light(),
         shortcutPalette: DesignShortcutPalette.light(),
+        study: DesignStudyTheme.light(),
       );
 
       await tester.pumpWidget(

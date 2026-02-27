@@ -40,3 +40,5 @@ export 'providers/repository_providers.dart';
 export 'providers/course_list_provider.dart';
 export 'providers/enrollment_provider.dart';
 export 'providers/recent_activity_provider.dart';
+export 'providers/auth_provider.dart';
+export 'providers/initialization_provider.dart';

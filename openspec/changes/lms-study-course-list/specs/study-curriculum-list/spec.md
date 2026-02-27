@@ -27,3 +27,15 @@ The system SHALL display a floating resume card at the bottom of the Study page 
 #### Scenario: Resume card is visible
 - **WHEN** the user opens the Study page and has a "Video" lesson at 40% progress
 - **THEN** a card appears above the navigation bar showing the lesson title and a "Resume" button
+
+### Requirement: Performance & Scalability
+The system SHALL use virtualized lists (e.g., `ListView.builder`) for curriculum rendering to ensure smooth scrolling (60fps) even with hundreds of courses or lessons.
+
+### Requirement: Theme Governance
+The system SHALL centralize all study-specific colors (e.g., content type accent colors) into a `DesignStudyTheme` extension to ensure consistent branding and seamless dark mode transitions.
+
+### Requirement: Data Identity & Lifecycle
+The system SHALL use a centralized identity source (`authProvider`) to determine the current user session. This ensures that data providers (Curriculum, Progress) are reactive to user switches and free of session-related hardcoding.
+
+### Requirement: side-effect-free Data Seeding
+The system SHALL move all data synchronization and seeding logic (refreshing courses/progress) into a dedicated application-launch routine. Data providers SHALL remain side-effect-free, acting only as reactive streams of the underlying database state.

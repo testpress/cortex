@@ -7,12 +7,10 @@ class StudyResumeCard extends StatelessWidget {
   const StudyResumeCard({
     super.key,
     required this.activity,
-    required this.onDismiss,
     required this.onResume,
   });
 
   final RecentActivityVo activity;
-  final VoidCallback onDismiss;
   final VoidCallback onResume;
 
   @override
@@ -49,18 +47,18 @@ class StudyResumeCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppText.label(
+                AppText.body(
                   activity.lessonTitle.isNotEmpty
                       ? activity.lessonTitle
                       : l10n.resumeStudyHeader,
                   color: design.colors.textPrimary,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+                  style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 2),
                 AppText.caption(
-                  activity.courseTitle,
+                  '${activity.courseTitle}${activity.chapterTitle.isNotEmpty ? ' • ${activity.chapterTitle}' : ''}',
                   color: design.colors.textSecondary,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -69,22 +67,13 @@ class StudyResumeCard extends StatelessWidget {
             ),
           ),
           SizedBox(width: design.spacing.md),
-          GestureDetector(
-            onTap: onResume,
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: design.spacing.sm + 2,
-                vertical: design.spacing.xs,
-              ),
-              decoration: BoxDecoration(
-                color: design.colors.onPrimaryContainer,
-                borderRadius: design.radius.button,
-              ),
-              child: AppText.label(
-                l10n.labelResume,
-                color: design.colors.textInverse,
-              ),
-            ),
+          AppButton.primary(
+            label: l10n.labelResume,
+            onPressed: onResume,
+            height: 32,
+            backgroundColor: design.colors.textPrimary,
+            foregroundColor: design.colors.textInverse,
+            padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
           ),
         ],
       ),

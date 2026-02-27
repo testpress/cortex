@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../models/user_progress_dto.dart';
 import 'repository_providers.dart';
+import 'auth_provider.dart';
 
 part 'recent_activity_provider.g.dart';
 
@@ -26,20 +27,12 @@ class RecentActivityVo {
 
 /// Provider for the most recently accessed lesson (for the Resume card).
 @riverpod
-Stream<RecentActivityVo?> recentActivity(Ref ref) async* {
+Stream<RecentActivityVo?> recentActivity(RecentActivityRef ref) async* {
   final userRepo = await ref.watch(userRepositoryProvider.future);
   final courseRepo = await ref.watch(courseRepositoryProvider.future);
+  final user = ref.watch(authProvider);
 
-  // Hardcoded current user ID for MVP
-  const userId = 'current_user';
-
-  // Ensure mock data is loaded into DB
-  try {
-    await courseRepo.refreshCourses();
-    await userRepo.refreshProgress(userId);
-  } catch (_) {}
-
-  yield* userRepo.watchProgress(userId).asyncMap((list) async {
+  yield* userRepo.watchProgress(user.id).asyncMap((list) async {
     if (list.isEmpty) return null;
 
     // Sort by lastAccessedAt descending
@@ -48,35 +41,13 @@ Stream<RecentActivityVo?> recentActivity(Ref ref) async* {
 
     final mostRecent = sorted.first;
 
-    // Fetch details
-    final courses = await courseRepo.watchCourses().first;
-    final course = courses.firstWhere((c) => c.id == mostRecent.courseId);
-
-    // In a real app, we'd fetch the specific lesson.
-    // For mock, nested chapters might be missing in coarse list fetching.
-    String lessonTitle = '';
-    String chapterTitle = '';
-
-    // Attempt rescue by finding the course again with chapters if needed
-    // or just find the lesson across all lessons if possible.
-    for (var c in courses) {
-      if (c.chapters.isNotEmpty) {
-        for (var chapter in c.chapters) {
-          for (var lesson in chapter.lessons) {
-            if (lesson.id == mostRecent.lessonId) {
-              lessonTitle = lesson.title;
-              chapterTitle = chapter.title;
-              break;
-            }
-          }
-        }
-      }
-    }
+    // Efficiently fetch details from DB using join
+    final details = await courseRepo.getLessonDetails(mostRecent.lessonId);
 
     return RecentActivityVo(
-      lessonTitle: lessonTitle,
-      courseTitle: course.title,
-      chapterTitle: chapterTitle,
+      lessonTitle: details?.lessonTitle ?? '',
+      courseTitle: details?.courseTitle ?? '',
+      chapterTitle: details?.chapterTitle ?? '',
       progress: mostRecent.percentComplete,
       lessonId: mostRecent.lessonId,
       courseId: mostRecent.courseId,
