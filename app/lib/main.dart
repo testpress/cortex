@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:testpress/testpress.dart';
 import 'package:courses/providers/dashboard_providers.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,6 +54,9 @@ class CortexApp extends StatelessWidget {
       localizationsDelegates: LocalizationProvider.delegates,
       supportedLocales: LocalizationProvider.supportedLocales,
       routerConfig: appRouter,
+      // Set Plus Jakarta Sans on the Material theme so widgets that still
+      // use Material's text theme (Scaffold, SnackBar, etc.) also use it.
+      theme: ThemeData(fontFamily: GoogleFonts.notoSans().fontFamily),
       builder: (context, child) {
         return DefaultTextStyle(
           style: design.typography.body.copyWith(

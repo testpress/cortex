@@ -16,6 +16,7 @@ dependencies:
   intl: any
   lucide_icons: ^0.257.0
   package_info_plus: ^8.2.1
+  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:

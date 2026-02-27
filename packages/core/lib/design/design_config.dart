@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/widgets.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// Theme governance mode.
 enum DesignMode {
@@ -1094,16 +1095,30 @@ class DesignTypographyScale {
   final TextStyle xl5;
 
   factory DesignTypographyScale.defaults() {
-    return const DesignTypographyScale(
-      xs: TextStyle(fontSize: 12, height: 1.3),
-      sm: TextStyle(fontSize: 14, height: 1.5),
-      base: TextStyle(fontSize: 16, height: 1.0),
-      lg: TextStyle(fontSize: 18, height: 1.4),
-      xl: TextStyle(fontSize: 20, height: 1.4),
-      xl2: TextStyle(fontSize: 24, height: 1.3),
-      xl3: TextStyle(fontSize: 30, height: 1.2),
-      xl4: TextStyle(fontSize: 36, height: 1.1),
-      xl5: TextStyle(fontSize: 48, height: 1.0),
+    // Plus Jakarta Sans: geometric humanist typeface designed for UI.
+    // Excellent weight differentiation at w400/w600/w700, tight and clean
+    // at small sizes, and highly legible inside dense LMS content cards.
+    //
+    // GoogleFonts.plusJakartaSans() registers the font family on the TextStyle.
+    // Each atom then copyWith()s the size/height so the family is inherited
+    // by every semantic role (display, headline, body, etc.) automatically.
+    final f = GoogleFonts.plusJakartaSans;
+    return DesignTypographyScale(
+      // xs/sm carry body-adjacent height for readability in dense rows.
+      xs: f(fontSize: 12, height: 1.2),
+      sm: f(fontSize: 14, height: 1.4),
+      // base atom is height-neutral so the body semantic role can
+      // set 1.5 explicitly without the atom fighting it.
+      base: f(fontSize: 16),
+      // Heading atoms: no height baked in. Single-line headlines get
+      // their visual rhythm from surrounding layout spacing, not from
+      // TextStyle.height, which would add a phantom gap below each heading.
+      lg: f(fontSize: 18),
+      xl: f(fontSize: 20),
+      xl2: f(fontSize: 24),
+      xl3: f(fontSize: 30),
+      xl4: f(fontSize: 36),
+      xl5: f(fontSize: 48),
     );
   }
 
@@ -1163,44 +1178,72 @@ class DesignTypography {
     final c = colors ?? DesignColors.light();
 
     return DesignTypography(
+      // display — commands the page. w700 establishes the top of the
+      // weight hierarchy. Negative tracking is valid at 30px (tight
+      // glyphs gain visual cohesion at large sizes). No forced height:
+      // single-line display text should use layout spacing for rhythm.
       display: s.xl3.copyWith(
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w700,
         color: c.textPrimary,
         letterSpacing: -0.5,
       ),
+      // headline — section marker. w600 sits clearly below display.
+      // Tracking halved: -0.25px at 20px is optically mild but still
+      // adds subtle cohesion for section headings. No forced height.
       headline: s.xl.copyWith(
-        fontWeight: FontWeight.w500,
-        color: c.textPrimary,
-        letterSpacing: -0.5,
-      ),
-      title: s.lg.copyWith(
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
         color: c.textPrimary,
         letterSpacing: -0.25,
       ),
+      // title — card/drawer heading. w600 matches headline weight but
+      // smaller size creates natural differentiation. Negative tracking
+      // removed: -0.25px at 18px compresses glyphs without benefit.
+      title: s.lg.copyWith(fontWeight: FontWeight.w600, color: c.textPrimary),
+      // subtitle — secondary/contextual label, NOT a heading. w400 and
+      // no tracking. Negative tracking at 14px caused visible glyph
+      // compression, especially in non-Latin scripts.
       subtitle: s.sm.copyWith(
         fontWeight: FontWeight.w400,
         color: c.textSecondary,
-        letterSpacing: -0.25,
+        height: 1.4,
       ),
+      // body — primary reading text. height: 1.5 gives a 24px line box
+      // at 16px — the typographic gold standard for comfortable reading.
       body: s.base.copyWith(
         fontWeight: FontWeight.w400,
         color: c.textPrimary,
         height: 1.5,
       ),
+      // bodySmall — dense info rows (metadata, table cells). height
+      // explicitly set to decouple from future sm scale changes.
       bodySmall: s.sm.copyWith(
         fontWeight: FontWeight.w400,
         color: c.textPrimary,
+        height: 1.4,
       ),
-      label: s.sm.copyWith(fontWeight: FontWeight.w500, color: c.textPrimary),
-      labelSmall: s.xs.copyWith(
+      // label — UI chrome: buttons, tags, nav items. height: 1.2
+      // tightens the line box so labels align cleanly next to icons
+      // without the extra leading that 1.4 would add.
+      label: s.sm.copyWith(
         fontWeight: FontWeight.w500,
-        color: c.textSecondary,
+        color: c.textPrimary,
+        height: 1.2,
       ),
+      // labelSmall — ALL-CAPS section dividers, badge labels, micro UI.
+      // w600 compensates for small size. height: 1.1 keeps rows tight.
+      labelSmall: s.xs.copyWith(
+        fontWeight: FontWeight.w600,
+        color: c.textSecondary,
+        height: 1.1,
+      ),
+      // caption — timestamps, metadata, attribution. Positive tracking
+      // at 0.4px is perceptible at 12px and slightly improves legibility
+      // for dense lowercase text. height: 1.2 keeps caption rows compact.
       caption: s.xs.copyWith(
         fontWeight: FontWeight.w400,
         color: c.textSecondary,
-        letterSpacing: 0.2,
+        letterSpacing: 0.4,
+        height: 1.2,
       ),
     );
   }
