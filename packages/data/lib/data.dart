@@ -42,3 +42,4 @@ export 'providers/enrollment_provider.dart';
 export 'providers/recent_activity_provider.dart';
 export 'providers/auth_provider.dart';
 export 'providers/initialization_provider.dart';
+export 'providers/lesson_providers.dart';

@@ -43,6 +43,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     final l10n = L10n.of(context);
 
     final enrollmentAsync = ref.watch(enrollmentProvider);
+    final allLessons = ref.watch(allLessonsProvider);
     final resumeAsync = ref.watch(recentActivityProvider);
 
     return Stack(
@@ -50,7 +51,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
         enrollmentAsync.when(
           data: (courses) {
             final filteredCourses = _filterCourses(courses);
-            final filteredLessons = _filterLessons(courses);
+            final filteredLessons = _filterLessons(allLessons);
 
             return AppScroll(
               padding: EdgeInsets.zero,
@@ -231,25 +232,14 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
         .toList();
   }
 
-  List<LessonDto> _filterLessons(List<CourseDto> courses) {
+  List<LessonDto> _filterLessons(List<LessonDto> lessons) {
     if (_selectedTypes.isEmpty) return [];
 
-    final List<LessonDto> allLessons = [];
-    for (var course in courses) {
-      for (var chapter in course.chapters) {
-        for (var lesson in chapter.lessons) {
-          if (_selectedTypes.contains(lesson.type)) {
-            if (_searchQuery.isEmpty ||
-                lesson.title.toLowerCase().contains(
-                  _searchQuery.toLowerCase(),
-                )) {
-              allLessons.add(lesson);
-            }
-          }
-        }
-      }
-    }
-    return allLessons;
+    return lessons.where((lesson) {
+      if (!_selectedTypes.contains(lesson.type)) return false;
+      if (_searchQuery.isEmpty) return true;
+      return lesson.title.toLowerCase().contains(_searchQuery.toLowerCase());
+    }).toList();
   }
 }
 
