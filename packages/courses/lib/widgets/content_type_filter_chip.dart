@@ -46,25 +46,28 @@ class ContentTypeFilterChip extends StatelessWidget {
     return AppSemantics.button(
       label: 'Filter by $label',
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        curve: design.motion.easeOut,
-        padding: EdgeInsets.symmetric(
-          horizontal: design.spacing.md,
-          vertical: design.spacing.sm,
-        ),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: design.radius.button,
-          border: Border.all(color: borderColor, width: 1.5),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 18, color: textColor),
-            SizedBox(width: design.spacing.sm),
-            AppText.label(label, color: textColor),
-          ],
+      child: AppFocusable(
+        onTap: onTap,
+        borderRadius: design.radius.button,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: design.motion.easeOut,
+          width: double.infinity,
+          height: double.infinity,
+          padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: design.radius.button,
+            border: Border.all(color: borderColor, width: 1.5),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Icon(icon, size: 18, color: textColor),
+              SizedBox(width: design.spacing.md),
+              AppText.label(label, color: textColor),
+            ],
+          ),
         ),
       ),
     );

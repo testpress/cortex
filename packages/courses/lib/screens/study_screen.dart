@@ -48,162 +48,168 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
 
     return Stack(
       children: [
-        enrollmentAsync.when(
-          data: (courses) {
-            final filteredCourses = _filterCourses(courses);
-            final filteredLessons = _filterLessons(allLessons);
+        Positioned.fill(
+          child: enrollmentAsync.when(
+            data: (courses) {
+              final filteredCourses = _filterCourses(courses);
+              final filteredLessons = _filterLessons(allLessons);
 
-            return AppScroll(
-              padding: EdgeInsets.zero,
-              children: [
-                // Top Header Section (White Background)
-                Container(
-                  color: design.colors.card, // Pure white in light mode
-                  padding: EdgeInsets.fromLTRB(
-                    design.spacing.md,
-                    design.spacing.md,
-                    design.spacing.md,
-                    design.spacing.sm + design.spacing.xs, // 8 + 4 = 12px
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AppText.headline(
-                        l10n.studyTabTitle,
-                        color: design.colors.textPrimary,
-                      ),
-                      SizedBox(height: design.spacing.md),
-
-                      // Search Bar
-                      AppSearchBar(
-                        controller: _searchController,
-                        hintText: l10n.studySearchHint,
-                        onChanged: (val) => setState(() => _searchQuery = val),
-                        backgroundColor: design.colors.canvas,
-                      ),
-                      SizedBox(height: design.spacing.md),
-
-                      // Filter Chips
-                      GridView.count(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        crossAxisCount: 2,
-                        mainAxisSpacing: design.spacing.sm,
-                        crossAxisSpacing: design.spacing.sm,
-                        childAspectRatio: 5,
-                        padding: EdgeInsets.zero, // Remove grid padding
-                        children: [
-                          ContentTypeFilterChip(
-                            label: l10n.filterVideo,
-                            icon: LucideIcons.playCircle,
-                            isSelected: _selectedTypes.contains(
-                              LessonType.video,
-                            ),
-                            onTap: () => _toggleType(LessonType.video),
-                            baseColor: design.study.video.background,
-                            accentColor: design.study.video.foreground,
-                            darkAccentColor: design.study.video.foreground,
-                          ),
-                          ContentTypeFilterChip(
-                            label: l10n.filterLesson,
-                            icon: LucideIcons.fileText,
-                            isSelected: _selectedTypes.contains(LessonType.pdf),
-                            onTap: () => _toggleType(LessonType.pdf),
-                            baseColor: design.study.pdf.background,
-                            accentColor: design.study.pdf.foreground,
-                            darkAccentColor: design.study.pdf.foreground,
-                          ),
-                          ContentTypeFilterChip(
-                            label: l10n.filterAssessment,
-                            icon: LucideIcons.clipboardCheck,
-                            isSelected: _selectedTypes.contains(
-                              LessonType.assessment,
-                            ),
-                            onTap: () => _toggleType(LessonType.assessment),
-                            baseColor: design.study.assessment.background,
-                            accentColor: design.study.assessment.foreground,
-                            darkAccentColor: design.study.assessment.foreground,
-                          ),
-                          ContentTypeFilterChip(
-                            label: l10n.filterTest,
-                            icon: LucideIcons.shieldCheck,
-                            isSelected: _selectedTypes.contains(
-                              LessonType.test,
-                            ),
-                            onTap: () => _toggleType(LessonType.test),
-                            baseColor: design.study.test.background,
-                            accentColor: design.study.test.foreground,
-                            darkAccentColor: design.study.test.foreground,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Separator touching edges
-                Container(height: 1, color: design.colors.divider),
-
-                // Content Section (Canvas Background)
-                Container(
-                  color: design.colors.canvas,
-                  padding: EdgeInsets.fromLTRB(
-                    design.spacing.md,
-                    design.spacing.sm + design.spacing.xs, // 8 + 4 = 12px
-                    design.spacing.md,
-                    design.spacing.md,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (_selectedTypes.isEmpty) ...[
-                        AppText.title(
-                          l10n.studyYourCoursesTitle,
+              return AppScroll(
+                padding: EdgeInsets.zero,
+                children: [
+                  // Top Header Section (White Background)
+                  Container(
+                    color: design.colors.card, // Pure white in light mode
+                    padding: EdgeInsets.fromLTRB(
+                      design.spacing.md,
+                      design.spacing.md,
+                      design.spacing.md,
+                      design.spacing.sm + design.spacing.xs, // 8 + 4 = 12px
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AppText.headline(
+                          l10n.studyTabTitle,
                           color: design.colors.textPrimary,
                         ),
                         SizedBox(height: design.spacing.md),
-                        ListView.builder(
+
+                        // Search Bar
+                        AppSearchBar(
+                          controller: _searchController,
+                          hintText: l10n.studySearchHint,
+                          onChanged: (val) =>
+                              setState(() => _searchQuery = val),
+                          backgroundColor: design.colors.canvas,
+                        ),
+                        SizedBox(height: design.spacing.md),
+
+                        // Filter Chips
+                        GridView.count(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: filteredCourses.length,
-                          padding: EdgeInsets.zero,
-                          itemBuilder: (context, index) {
-                            final c = filteredCourses[index];
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                bottom: design.spacing.md,
+                          crossAxisCount: 2,
+                          mainAxisSpacing: design.spacing.sm,
+                          crossAxisSpacing: design.spacing.sm,
+                          childAspectRatio: 4.5,
+                          padding: EdgeInsets.zero, // Remove grid padding
+                          children: [
+                            ContentTypeFilterChip(
+                              label: l10n.filterVideo,
+                              icon: LucideIcons.playCircle,
+                              isSelected: _selectedTypes.contains(
+                                LessonType.video,
                               ),
-                              child: CourseCard(course: c),
-                            );
-                          },
-                        ),
-                      ] else ...[
-                        AppText.title(
-                          l10n.studyLessonsTitle,
-                          color: design.colors.textPrimary,
-                        ),
-                        SizedBox(height: design.spacing.md),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: filteredLessons.length,
-                          padding: EdgeInsets.zero,
-                          itemBuilder: (context, index) {
-                            final l = filteredLessons[index];
-                            return _LessonListItem(lesson: l);
-                          },
+                              onTap: () => _toggleType(LessonType.video),
+                              baseColor: design.study.video.background,
+                              accentColor: design.study.video.foreground,
+                              darkAccentColor: design.study.video.foreground,
+                            ),
+                            ContentTypeFilterChip(
+                              label: l10n.filterLesson,
+                              icon: LucideIcons.fileText,
+                              isSelected: _selectedTypes.contains(
+                                LessonType.pdf,
+                              ),
+                              onTap: () => _toggleType(LessonType.pdf),
+                              baseColor: design.study.pdf.background,
+                              accentColor: design.study.pdf.foreground,
+                              darkAccentColor: design.study.pdf.foreground,
+                            ),
+                            ContentTypeFilterChip(
+                              label: l10n.filterAssessment,
+                              icon: LucideIcons.clipboardCheck,
+                              isSelected: _selectedTypes.contains(
+                                LessonType.assessment,
+                              ),
+                              onTap: () => _toggleType(LessonType.assessment),
+                              baseColor: design.study.assessment.background,
+                              accentColor: design.study.assessment.foreground,
+                              darkAccentColor:
+                                  design.study.assessment.foreground,
+                            ),
+                            ContentTypeFilterChip(
+                              label: l10n.filterTest,
+                              icon: LucideIcons.shieldCheck,
+                              isSelected: _selectedTypes.contains(
+                                LessonType.test,
+                              ),
+                              onTap: () => _toggleType(LessonType.test),
+                              baseColor: design.study.test.background,
+                              accentColor: design.study.test.foreground,
+                              darkAccentColor: design.study.test.foreground,
+                            ),
+                          ],
                         ),
                       ],
-                      // Bottom padding for resume card
-                      const SizedBox(height: 80),
-                    ],
+                    ),
                   ),
-                ),
-              ],
-            );
-          },
-          loading: () => const Center(child: AppLoadingIndicator()),
-          error: (e, __) => Center(child: AppText.body('Error: $e')),
+
+                  // Separator touching edges
+                  Container(height: 1, color: design.colors.divider),
+
+                  // Content Section (Canvas Background)
+                  Container(
+                    color: design.colors.canvas,
+                    padding: EdgeInsets.fromLTRB(
+                      design.spacing.md,
+                      design.spacing.sm + design.spacing.xs, // 8 + 4 = 12px
+                      design.spacing.md,
+                      design.spacing.md,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (_selectedTypes.isEmpty) ...[
+                          AppText.title(
+                            l10n.studyYourCoursesTitle,
+                            color: design.colors.textPrimary,
+                          ),
+                          SizedBox(height: design.spacing.md),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: filteredCourses.length,
+                            padding: EdgeInsets.zero,
+                            itemBuilder: (context, index) {
+                              final c = filteredCourses[index];
+                              return Padding(
+                                padding: EdgeInsets.only(
+                                  bottom: design.spacing.md,
+                                ),
+                                child: CourseCard(course: c),
+                              );
+                            },
+                          ),
+                        ] else ...[
+                          AppText.title(
+                            l10n.studyYourCoursesTitle,
+                            color: design.colors.textPrimary,
+                          ),
+                          SizedBox(height: design.spacing.md),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: filteredLessons.length,
+                            padding: EdgeInsets.zero,
+                            itemBuilder: (context, index) {
+                              final l = filteredLessons[index];
+                              return _LessonListItem(lesson: l);
+                            },
+                          ),
+                        ],
+                        // Bottom padding for resume card
+                        const SizedBox(height: 80),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+            loading: () => const Center(child: AppLoadingIndicator()),
+            error: (e, __) => Center(child: AppText.body('Error: $e')),
+          ),
         ),
 
         // Resume Card (Sticky bottom)

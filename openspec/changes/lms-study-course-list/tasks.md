@@ -29,4 +29,7 @@
 - [x] 5.2 Implement list virtualization (`ListView.builder`) for curriculum and lesson views.
 - [x] 5.3 Centralize content type colors into `DesignStudyTheme` design tokens.
 - [x] 5.4 Refactor data layer to use `authProvider` and side-effect-free initialization logic.
-- [x] 5.5 Standardize floating resume card with `AppButton` and metadata metadata breadcrumbs.
+- [x] 5.5 Standardize floating resume card with `AppButton` and metadata breadcrumbs.
+- [x] 5.6 Optimize filtering logic using a flattened `allLessonsProvider` for O(N) traversal.
+- [x] 5.7 Integrate `AppFocusable` into filter chips for consistent focus visuals and full-cell tap capture.
+- [x] 5.8 Refine chip layout with left-aligned icons and standardized horizontal gutters.
