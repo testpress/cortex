@@ -25,10 +25,11 @@ class CourseRepository {
   }
 
   /// Fetch courses from [DataSource] and persist to local DB.
-  Future<void> refreshCourses() async {
+  Future<List<CourseDto>> refreshCourses() async {
     final courses = await _source.getCourses();
     final companions = courses.map(_courseDtoToCompanion).toList();
     await _db.upsertCourses(companions);
+    return courses;
   }
 
   // ── Chapters ─────────────────────────────────────────────────────────────
@@ -39,10 +40,11 @@ class CourseRepository {
         .map((rows) => rows.map(_rowToChapterDto).toList());
   }
 
-  Future<void> refreshChapters(String courseId) async {
+  Future<List<ChapterDto>> refreshChapters(String courseId) async {
     final chapters = await _source.getChapters(courseId);
     final companions = chapters.map(_chapterDtoToCompanion).toList();
     await _db.upsertChapters(companions);
+    return chapters;
   }
 
   // ── Lessons ───────────────────────────────────────────────────────────────
@@ -53,10 +55,11 @@ class CourseRepository {
         .map((rows) => rows.map(_rowToLessonDto).toList());
   }
 
-  Future<void> refreshLessons(String chapterId) async {
+  Future<List<LessonDto>> refreshLessons(String chapterId) async {
     final lessons = await _source.getLessons(chapterId);
     final companions = lessons.map(_lessonDtoToCompanion).toList();
     await _db.upsertLessons(companions);
+    return lessons;
   }
 
   /// Efficiently fetches lesson and parent titles by lesson ID.

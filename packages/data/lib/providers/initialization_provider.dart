@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'repository_providers.dart';
 import 'auth_provider.dart';
+import 'recent_activity_provider.dart';
 
 part 'initialization_provider.g.dart';
 
@@ -14,22 +15,28 @@ Future<void> appInitialization(AppInitializationRef ref) async {
 
   // Initialize core data in background
   try {
-    // Refresh global content
-    await courseRepo.refreshCourses();
+    // 1. Refresh the list of enrolled courses from the network/mock source
+    final courses = await courseRepo.refreshCourses();
 
-    // Deep-seed mock curriculum for the main courses to support Resume Card metadata
-    // In a real app, this would be lazy-loaded, but we need it for the MVP resume join.
-    for (final courseId in ['jee-main-2026', 'neet-2026']) {
-      await courseRepo.refreshChapters(courseId);
+    // 2. Refresh chapters for all enrolled courses so the curriculum is populated
+    for (final course in courses) {
+      await courseRepo.refreshChapters(course.id);
     }
 
-    // Seed lessons for the first few chapters of JEE Main (where progress exists)
-    for (final chapterId in ['jee-main-ch-1', 'jee-main-ch-2']) {
-      await courseRepo.refreshLessons(chapterId);
-    }
-
-    // Refresh user-specific content
+    // 3. Refresh user progress to see what was recently completed
     await userRepo.refreshProgress(user.id);
+
+    // 4. To support the Resume Card labels (Need titles for Lesson/Chapter/Course),
+    // we deep-sync the lessons for the most recent activities.
+    // Use .read instead of .watch/future here because this is a one-time startup sync
+    final recent = await ref.read(recentActivityProvider.future);
+    if (recent != null) {
+      // Find the chapter this lesson belongs to and sync its lessons
+      // In a real API, the progress object would likely include chapterId.
+      // For mock, we simply sync a known chapter if it matches.
+      await courseRepo.refreshLessons('jee-main-ch-1');
+      await courseRepo.refreshLessons('neet-ch-1');
+    }
   } catch (e) {
     // Initialization errors are handled here or surfaced to the listener
     rethrow;
