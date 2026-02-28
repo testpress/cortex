@@ -57,7 +57,9 @@ class AppNavigationRail extends StatelessWidget {
                             behavior: HitTestBehavior.opaque,
                             onTap: () => onTabChange(item.id),
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              padding: EdgeInsets.symmetric(
+                                vertical: design.spacing.md,
+                              ),
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -68,7 +70,7 @@ class AppNavigationRail extends StatelessWidget {
                                     size: 24,
                                     color: fgColor,
                                   ),
-                                  const SizedBox(height: 4),
+                                  SizedBox(height: design.spacing.xs),
                                   Text(
                                     item.label,
                                     style: design.typography.caption.copyWith(

@@ -62,7 +62,7 @@ class AppTabBar extends StatelessWidget {
                         size: 20, // Match w-5 h-5 in React
                         color: fgColor,
                       ),
-                      SizedBox(height: 4),
+                      SizedBox(height: design.spacing.xs),
                       Text(
                         item.label,
                         style: design.typography.caption.copyWith(

@@ -53,6 +53,7 @@ void main() {
         typographyScale: DesignTypographyScale.defaults(),
         motion: DesignMotion.defaults(),
         radius: DesignRadius.defaults(),
+        shadows: DesignShadows.light(),
         layout: DesignLayout.defaults(),
         subjectPalette: DesignSubjectPalette.light(),
         statusColors: DesignStatusColors.light(),
@@ -138,6 +139,7 @@ void main() {
         typographyScale: DesignTypographyScale.defaults(),
         motion: DesignMotion.defaults(),
         radius: DesignRadius.defaults(),
+        shadows: DesignShadows.light(),
         layout: DesignLayout.defaults(),
         subjectPalette: DesignSubjectPalette.light(),
         statusColors: DesignStatusColors.light(),
@@ -156,7 +158,53 @@ void main() {
 
       final text = tester.widget<Text>(find.byType(Text));
       expect(text.style?.color, const Color(0xFFFF0000)); // Custom red
-      expect(text.style?.fontSize, 24); // headline size
+      expect(text.style?.fontSize, 20); // headline uses xl (20)
+    });
+  });
+
+  group('Design Token Constraints', () {
+    test('textPrimary luminance is <= 0.15', () {
+      final design = DesignConfig.light();
+      expect(
+        design.colors.textPrimary.computeLuminance(),
+        lessThanOrEqualTo(0.15),
+      );
+    });
+
+    test(
+      'textSecondary is at least 20% closer to surface than textPrimary',
+      () {
+        final design = DesignConfig.light();
+        final pLum = design.colors.textPrimary.computeLuminance();
+        final sLum = design.colors.textSecondary.computeLuminance();
+        final surfLum = design.colors.surface.computeLuminance();
+
+        final pDist = (surfLum - pLum).abs();
+        final sDist = (surfLum - sLum).abs();
+
+        // Secondary must be at least 20% closer: sDist <= pDist * 0.8
+        expect(sDist, lessThanOrEqualTo(pDist * 0.8));
+      },
+    );
+
+    test('card radius is exactly 2x baseRadius (8.0)', () {
+      final design = DesignConfig.light();
+      // Radius.card is a BorderRadius, we need to check the corner radius
+      final radius = design.radius.card.topLeft.x;
+      expect(radius, 16.0);
+    });
+
+    test('spacing tokens belong to the allowed atomic set', () {
+      final design = DesignConfig.light();
+      final allowedSet = {4.0, 8.0, 12.0, 16.0, 24.0, 32.0, 40.0, 48.0, 64.0};
+
+      expect(allowedSet.contains(design.spacing.xs), isTrue);
+      expect(allowedSet.contains(design.spacing.sm), isTrue);
+      expect(allowedSet.contains(design.spacing.md), isTrue);
+      expect(allowedSet.contains(design.spacing.lg), isTrue);
+      expect(allowedSet.contains(design.spacing.xl), isTrue);
+      expect(allowedSet.contains(design.spacing.cardPadding), isTrue);
+      expect(allowedSet.contains(design.spacing.sectionGap), isTrue);
     });
   });
 }

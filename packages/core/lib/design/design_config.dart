@@ -34,6 +34,7 @@ class DesignConfig {
     required this.typographyScale,
     required this.motion,
     required this.radius,
+    required this.shadows,
     required this.layout,
     required this.subjectPalette,
     required this.statusColors,
@@ -47,6 +48,7 @@ class DesignConfig {
   final DesignTypographyScale typographyScale;
   final DesignMotion motion;
   final DesignRadius radius;
+  final DesignShadows shadows;
   final DesignLayout layout;
   final DesignSubjectPalette subjectPalette;
   final DesignStatusColors statusColors;
@@ -72,6 +74,7 @@ class DesignConfig {
       typographyScale: scale,
       motion: DesignMotion.defaults(context: context),
       radius: DesignRadius.defaults(),
+      shadows: DesignShadows.light(),
       layout: DesignLayout.defaults(),
       subjectPalette: DesignSubjectPalette.light(),
       statusColors: DesignStatusColors.light(),
@@ -91,6 +94,7 @@ class DesignConfig {
       typographyScale: scale,
       motion: DesignMotion.defaults(context: context),
       radius: DesignRadius.defaults(),
+      shadows: DesignShadows.dark(),
       layout: DesignLayout.defaults(),
       subjectPalette: DesignSubjectPalette.dark(),
       statusColors: DesignStatusColors.dark(),
@@ -106,6 +110,7 @@ class DesignConfig {
     DesignTypographyScale? typographyScale,
     DesignMotion? motion,
     DesignRadius? radius,
+    DesignShadows? shadows,
     DesignLayout? layout,
     DesignSubjectPalette? subjectPalette,
     DesignStatusColors? statusColors,
@@ -119,6 +124,7 @@ class DesignConfig {
       typographyScale: typographyScale ?? this.typographyScale,
       motion: motion ?? this.motion,
       radius: radius ?? this.radius,
+      shadows: shadows ?? this.shadows,
       layout: layout ?? this.layout,
       subjectPalette: subjectPalette ?? this.subjectPalette,
       statusColors: statusColors ?? this.statusColors,
@@ -137,6 +143,7 @@ class DesignConfig {
         other.typographyScale == typographyScale &&
         other.motion == motion &&
         other.radius == radius &&
+        other.shadows == shadows &&
         other.layout == layout &&
         other.subjectPalette == subjectPalette &&
         other.statusColors == statusColors &&
@@ -153,6 +160,7 @@ class DesignConfig {
       typographyScale,
       motion,
       radius,
+      shadows,
       layout,
       subjectPalette,
       statusColors,
@@ -273,28 +281,32 @@ class DesignColors {
       onPrimary: Color(0xFFFFFFFF),
       primaryContainer: Color(0xFFE0E7FF),
       onPrimaryContainer: Color(0xFF1E1B4B),
-      surface: Color(0xFFF9FAFB),
-      onSurface: Color(0xFF1F2937),
-      surfaceVariant: Color(0xFFF3F4F6),
-      onSurfaceVariant: Color(0xFF6B7280),
+      surface: Color(
+        0xFFE9EEF4,
+      ), // Slate-150 (L~0.93) - mid-ground for restrained separation
+      onSurface: Color(0xFF334155),
+      surfaceVariant: Color(0xFFDEE5ED), // Slate-250 (approx)
+      onSurfaceVariant: Color(0xFF475569),
       card: Color(0xFFFFFFFF),
-      onCard: Color(0xFF111827),
-      border: Color(0xFFE2E8F0), // Slate-200
-      divider: Color(0xFFE2E8F0), // Matching border as suggested
+      onCard: Color(0xFF0F172A),
+      border: Color(0xFFDEE5ED),
+      divider: Color(0xFFDEE5ED),
       success: Color(0xFF16A34A),
       onSuccess: Color(0xFFFFFFFF),
       error: Color(0xFFEF4444),
       onError: Color(0xFFFFFFFF),
       warning: Color(0xFFEA580C),
       onWarning: Color(0xFFFFFFFF),
-      textPrimary: Color(0xFF111827),
-      textSecondary: Color(0xFF6B7280),
-      textTertiary: Color(0xFF9CA3AF),
+      textPrimary: Color(0xFF0F172A), // Slate-950 (L < 0.15)
+      textSecondary: Color(
+        0xFF94A3B8,
+      ), // Slate-400 (Satisfies distance invariant for Slate-150)
+      textTertiary: Color(0xFFCBD5E1), // Slate-300
       textInverse: Color(0xFFFFFFFF),
-      progressBackground: Color(0xFFE5E7EB),
+      progressBackground: Color(0xFFDEE5ED),
       progressForeground: Color(0xFF6366F1),
       focus: Color(0x666366F1),
-      canvas: Color(0xFFF8FAFC),
+      canvas: Color(0xFFE9EEF4),
       accent1: Color(0xFF9333EA),
       accent2: Color(0xFF2563EB),
       accent3: Color(0xFFEA580C),
@@ -305,39 +317,41 @@ class DesignColors {
       rank2: Color(0xFFCBD5E1),
       rank3: Color(0xFFFB923C),
       rankDefault: Color(0xFF94A3B8),
-      overlay: Color(0x8A000000), // black54
-      shadow: Color(0x33000000), // 20% black
+      overlay: Color(0x8A000000),
+      shadow: Color(0x33000000),
     );
   }
 
   factory DesignColors.dark() {
     return const DesignColors(
-      primary: Color(0xFF818CF8), // Slightly lighter indigo for dark mode
+      primary: Color(0xFF818CF8),
       onPrimary: Color(0xFFFFFFFF),
-      primaryContainer: Color(0xFF312E81),
+      primaryContainer: Color(0xFF1E1B4B), // Very dark indigo
       onPrimaryContainer: Color(0xFFE0E7FF),
-      surface: Color(0xFF0F172A), // Slate 900
-      onSurface: Color(0xFFF8FAFC),
-      surfaceVariant: Color(0xFF1E293B), // Slate 800
-      onSurfaceVariant: Color(0xFF94A3B8),
-      card: Color(0xFF1E293B), // Slate 800 — card sits above slate-900 surface
-      onCard: Color(0xFFF8FAFC),
-      border: Color(0xFF334155), // Slate-700
-      divider: Color(0xFF1F2937), // Slate-800 as requested
+      surface: Color(0xFF18181B), // Zinc-900 (Main UI Surface)
+      onSurface: Color(0xFFFAFAFA),
+      surfaceVariant: Color(0xFF27272A), // Zinc-800
+      onSurfaceVariant: Color(0xFFA1A1AA), // Zinc-400
+      card: Color(
+        0xFF27272A,
+      ), // Zinc-800 (Satisfies 1.15:1 ratio with Zinc-900 surface)
+      onCard: Color(0xFFF4F4F5), // Zinc-100
+      border: Color(0xFF3F3F46), // Zinc-700 for subtle definition
+      divider: Color(0xFF27272A),
       success: Color(0xFF22C55E),
       onSuccess: Color(0xFFFFFFFF),
       error: Color(0xFFF87171),
       onError: Color(0xFF450A0A),
       warning: Color(0xFFF59E0B),
       onWarning: Color(0xFF78350F),
-      textPrimary: Color(0xFFF8FAFC),
-      textSecondary: Color(0xFF94A3B8),
-      textTertiary: Color(0xFF64748B),
-      textInverse: Color(0xFF111827),
-      progressBackground: Color(0xFF334155),
+      textPrimary: Color(0xFFFAFAFA), // Zinc-50
+      textSecondary: Color(0xFFD4D4D8), // Zinc-300
+      textTertiary: Color(0xFFA1A1AA), // Zinc-400
+      textInverse: Color(0xFF09090B),
+      progressBackground: Color(0xFF27272A),
       progressForeground: Color(0xFF818CF8),
       focus: Color(0x99818CF8),
-      canvas: Color(0xFF0F172A),
+      canvas: Color(0xFF09090B), // Zinc-950 (Vantablack void)
       accent1: Color(0xFFA855F7),
       accent2: Color(0xFF3B82F6),
       accent3: Color(0xFFFB923C),
@@ -345,11 +359,11 @@ class DesignColors {
       accent5: Color(0xFFFB7185),
       accent6: Color(0xFF22D3EE),
       rank1: Color(0xFFFCD34D),
-      rank2: Color(0xFF94A3B8),
+      rank2: Color(0xFFA1A1AA),
       rank3: Color(0xFFFDBA74),
-      rankDefault: Color(0xFF64748B),
-      overlay: Color(0x8A000000), // black54
-      shadow: Color(0x66000000), // 40% black
+      rankDefault: Color(0xFF71717A),
+      overlay: Color(0x8A000000),
+      shadow: Color(0x66000000),
     );
   }
 
@@ -1031,9 +1045,9 @@ class DesignSpacing {
       xl: 32.0,
       xxl: 48.0,
       xxxl: 64.0,
-      cardPadding: 16.0,
+      cardPadding: 24.0, // Aligned to 8pt set
       screenPadding: 24.0,
-      sectionGap: 32.0,
+      sectionGap: 40.0, // Aligned to 8pt set (5x8)
       itemGap: 16.0,
     );
   }
@@ -1405,9 +1419,9 @@ class DesignRadius {
       xl: 16.0,
       xxl: 24.0,
       full: 9999.0,
-      button: BorderRadius.all(Radius.circular(8.0)),
-      card: BorderRadius.all(Radius.circular(12.0)),
-      dialog: BorderRadius.all(Radius.circular(16.0)),
+      button: BorderRadius.all(Radius.circular(12.0)), // baseRadius(8) * 1.5
+      card: BorderRadius.all(Radius.circular(16.0)), // baseRadius(8) * 2
+      dialog: BorderRadius.all(Radius.circular(12.0)), // baseRadius(8) * 1.5
       pill: BorderRadius.all(Radius.circular(9999.0)),
     );
   }
@@ -1441,6 +1455,56 @@ class DesignRadius {
       Object.hash(full, button, card, dialog, pill),
     );
   }
+}
+
+/// Shadow token group.
+@immutable
+class DesignShadows {
+  const DesignShadows({required this.surfaceSoft, required this.none});
+
+  /// Barely perceptible elevation shadow for cards and surfaces.
+  /// Felt, not seen.
+  final BoxShadow? surfaceSoft;
+
+  /// No shadow.
+  final BoxShadow? none;
+
+  factory DesignShadows.light() {
+    return DesignShadows(
+      surfaceSoft: BoxShadow(
+        color: const Color(
+          0xFF000000,
+        ).withValues(alpha: 0.04), // 4% opacity invariant
+        blurRadius: 40, // blur >= 40 invariant
+        offset: const Offset(0, 8), // vertical-only offset invariant
+      ),
+      none: null,
+    );
+  }
+
+  factory DesignShadows.dark() {
+    return DesignShadows(
+      surfaceSoft: BoxShadow(
+        color: const Color(
+          0xFF000000,
+        ).withValues(alpha: 0.04), // Invariant opacity across themes
+        blurRadius: 40,
+        offset: const Offset(0, 8),
+      ),
+      none: null,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is DesignShadows &&
+        other.surfaceSoft == surfaceSoft &&
+        other.none == none;
+  }
+
+  @override
+  int get hashCode => Object.hash(surfaceSoft, none);
 }
 
 /// Layout token group.
