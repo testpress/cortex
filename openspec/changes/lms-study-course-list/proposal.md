@@ -8,7 +8,7 @@ The current app lacks a dedicated Study tab where paid users can browse their en
 - **Search & Filtering**: Adds a search bar for curriculum-wide search and a "Content Type" filter grid to toggle specific categories of material.
 - **Enhanced Course Cards**: Displays course progress, lesson counts, and duration using optimized spacing and design tokens.
 - **Floating Resume Card**: Adds a sticky "Mini Player" style card to quickly pick up where the user left off in their most recent lesson.
-- **Dark Mode Support**: Full implementation of the dark mode mapping strategy identified in the design audit (e.g., `#0B1220` app background, `#1A2332` card backgrounds).
+- **Dark Mode Support**: Full implementation of the dark mode mapping strategy identified in the Premium Calibration spec (e.g., pure black/Zinc-950 canvas, Zinc-900 UI surfaces).
 
 ## Capabilities
 

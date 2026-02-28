@@ -25,16 +25,16 @@ The `StudyPage` is the secondary hub (after Home) where users spend their time. 
 **Rationale**: Allows the resume card to show up on both Home and Study tabs consistently without dual-implementation of fetch logic.
 
 ### 3. Visual Separation & Spacing
-**Decision**: Use a Pure White (`#FFFFFF`) header for search/filters, a grey canvas background (`design.colors.canvas`) for the content list, and a full-width divider line with 12px vertical spacing.
-**Rationale**: Enhances contrast and makes the search/filter area feel fixed and professional.
+**Decision**: Use a Pure White (`#FFFFFF`) header for search/filters on a Slate-150 canvas background (`design.colors.canvas`).
+**Rationale**: Adheres to the Premium Calibration contrast contract, providing a refined ~1.08:1 separation while maintaining the signature neutral aesthetic.
 
 ### 4. Floating Action & Search Refinements
 **Decision**: 
-- **Search Bar**: Flattened (no shadow), slim (8px vertical padding), using canvas background with a 0.5 alpha border.
-- **Filter Chips**: Compressed height using a `childAspectRatio` of 5.0.
-- **Resume Card**: Increased height (12px vertical padding), reduced corner radius (`radius.lg`), and used dual-layer `BoxShadow` for depth.
+- **Search Bar**: Flattened (no shadow), slim (8px vertical padding), using canvas background.
+- **Filter Chips**: Compressed height using a `childAspectRatio` of 4.5.
+- **Resume Card**: Refactored to use `AppCard` with `surfaceSoft` shadow and no border. Corner radius strictly follows the 16.0 invariant (`radius.card`).
 - **Course Card**: Green progress bar (`success`) with percentage label aligned to the far right.
-**Rationale**: Achieves a high-fidelity, premium mobile aesthetic following user feedback.
+**Rationale**: Aligns with the Anti-Regression Rules (Border + Shadow stacking prohibited) and the Shadow Governance invariant established in Premium Calibration.
 
 ## Risks / Trade-offs
 

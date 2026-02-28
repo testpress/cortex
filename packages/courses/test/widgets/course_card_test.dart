@@ -62,32 +62,26 @@ void main() {
       expect(semanticsFinder, findsOneWidget);
     });
 
-    testWidgets('action button is accessible', (tester) async {
+    testWidgets('navigation icon is accessible', (tester) async {
       await tester.pumpWidget(wrap(CourseCard(course: testCourse)));
       await tester.pumpAndSettle();
 
-      // Find the button with correct label
-      final buttonFinder = find.byWidgetPredicate(
-        (widget) =>
-            widget is Semantics &&
-            widget.properties.button == true &&
-            widget.properties.label == 'Continue',
-      );
-
-      expect(buttonFinder, findsOneWidget);
+      // Find the chevron right icon
+      expect(find.byIcon(LucideIcons.chevronRight), findsOneWidget);
     });
 
     testWidgets('card composes primitives correctly', (tester) async {
       await tester.pumpWidget(wrap(CourseCard(course: testCourse)));
       await tester.pumpAndSettle();
 
-      // Verify composition: AppCard contains AppText and AppButton
+      // Verify composition: AppCard contains AppText
       expect(find.byType(AppCard), findsOneWidget);
-      expect(find.byType(AppButton), findsOneWidget);
       expect(find.byType(AppText), findsWidgets); // Multiple AppText instances
     });
 
-    testWidgets('not started course shows Start button', (tester) async {
+    testWidgets('not started course shows navigation indicator', (
+      tester,
+    ) async {
       final notStartedCourse = CourseDto(
         id: '2',
         title: 'Advanced Flutter',
@@ -102,15 +96,9 @@ void main() {
       await tester.pumpWidget(wrap(CourseCard(course: notStartedCourse)));
       await tester.pumpAndSettle();
 
-      // Find the button with "Start" label
-      final buttonFinder = find.byWidgetPredicate(
-        (widget) =>
-            widget is Semantics &&
-            widget.properties.button == true &&
-            widget.properties.label == 'Start',
-      );
-
-      expect(buttonFinder, findsOneWidget);
+      // Verify title and navigation icon
+      expect(find.text('Advanced Flutter'), findsOneWidget);
+      expect(find.byIcon(LucideIcons.chevronRight), findsOneWidget);
     });
   });
 }

@@ -64,7 +64,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                       design.spacing.md,
                       design.spacing.md,
                       design.spacing.md,
-                      design.spacing.sm + design.spacing.xs, // 8 + 4 = 12px
+                      design.spacing.md,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,7 +81,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                           hintText: l10n.studySearchHint,
                           onChanged: (val) =>
                               setState(() => _searchQuery = val),
-                          backgroundColor: design.colors.canvas,
+                          backgroundColor: design.colors.surfaceVariant,
                         ),
                         SizedBox(height: design.spacing.md),
 
@@ -154,7 +154,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                     color: design.colors.canvas,
                     padding: EdgeInsets.fromLTRB(
                       design.spacing.md,
-                      design.spacing.sm + design.spacing.xs, // 8 + 4 = 12px
+                      design.spacing.md,
                       design.spacing.md,
                       design.spacing.md,
                     ),

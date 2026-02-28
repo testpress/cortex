@@ -1539,37 +1539,76 @@ class DesignRadius {
 /// Shadow token group.
 @immutable
 class DesignShadows {
-  const DesignShadows({required this.surfaceSoft, required this.none});
+  const DesignShadows({
+    required this.surfaceSoft,
+    required this.floating,
+    required this.none,
+  });
 
   /// Barely perceptible elevation shadow for cards and surfaces.
   /// Felt, not seen.
-  final BoxShadow? surfaceSoft;
+  final List<BoxShadow>? surfaceSoft;
+
+  /// Prominent elevation shadow for floating components (mini-players, sheets).
+  final List<BoxShadow>? floating;
 
   /// No shadow.
-  final BoxShadow? none;
+  final List<BoxShadow>? none;
 
   factory DesignShadows.light() {
     return DesignShadows(
-      surfaceSoft: BoxShadow(
-        color: const Color(
-          0xFF000000,
-        ).withValues(alpha: 0.04), // 4% opacity invariant
-        blurRadius: 40, // blur >= 40 invariant
-        offset: const Offset(0, 8), // vertical-only offset invariant
-      ),
+      surfaceSoft: [
+        BoxShadow(
+          color: const Color(
+            0xFF000000,
+          ).withValues(alpha: 0.04), // 4% opacity invariant
+          blurRadius: 40, // blur >= 40 invariant
+          offset: const Offset(0, 8), // vertical-only offset invariant
+        ),
+      ],
+      floating: [
+        // Layer 1: Tight/Contact Area (Grounded Depth)
+        BoxShadow(
+          color: const Color(0xFF000000).withValues(alpha: 0.08),
+          blurRadius: 12,
+          offset: const Offset(0, 4),
+        ),
+        // Layer 2: Softer Ambient Area (Diffusion/Lift)
+        BoxShadow(
+          color: const Color(0xFF000000).withValues(alpha: 0.08),
+          blurRadius: 40,
+          offset: const Offset(0, 12),
+        ),
+      ],
       none: null,
     );
   }
 
   factory DesignShadows.dark() {
     return DesignShadows(
-      surfaceSoft: BoxShadow(
-        color: const Color(
-          0xFF000000,
-        ).withValues(alpha: 0.04), // Invariant opacity across themes
-        blurRadius: 40,
-        offset: const Offset(0, 8),
-      ),
+      surfaceSoft: [
+        BoxShadow(
+          color: const Color(
+            0xFF000000,
+          ).withValues(alpha: 0.04), // Invariant opacity across themes
+          blurRadius: 40,
+          offset: const Offset(0, 8),
+        ),
+      ],
+      floating: [
+        // Layer 1: Tight/Contact Area (Grounded Depth)
+        BoxShadow(
+          color: const Color(0xFF000000).withValues(alpha: 0.08),
+          blurRadius: 12,
+          offset: const Offset(0, 4),
+        ),
+        // Layer 2: Softer Ambient Area (Diffusion/Lift)
+        BoxShadow(
+          color: const Color(0xFF000000).withValues(alpha: 0.08),
+          blurRadius: 40,
+          offset: const Offset(0, 12),
+        ),
+      ],
       none: null,
     );
   }
@@ -1578,12 +1617,27 @@ class DesignShadows {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     return other is DesignShadows &&
-        other.surfaceSoft == surfaceSoft &&
+        _listEquals(other.surfaceSoft, surfaceSoft) &&
+        _listEquals(other.floating, floating) &&
         other.none == none;
   }
 
+  static bool _listEquals<T>(List<T>? a, List<T>? b) {
+    if (a == b) return true;
+    if (a == null || b == null) return false;
+    if (a.length != b.length) return false;
+    for (int i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
+
   @override
-  int get hashCode => Object.hash(surfaceSoft, none);
+  int get hashCode => Object.hash(
+    Object.hashAll(surfaceSoft ?? []),
+    Object.hashAll(floating ?? []),
+    none,
+  );
 }
 
 /// Layout token group.

@@ -33,3 +33,4 @@
 - [x] 5.6 Optimize filtering logic using a flattened `allLessonsProvider` for O(N) traversal.
 - [x] 5.7 Integrate `AppFocusable` into filter chips for consistent focus visuals and full-cell tap capture.
 - [x] 5.8 Refine chip layout with left-aligned icons and standardized horizontal gutters.
+- [x] 5.9 Align `StudyScreen` and Cards to Premium Calibration invariants (Polish Only: Spacing, Shadows, Tokens).

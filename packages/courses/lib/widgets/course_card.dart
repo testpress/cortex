@@ -15,6 +15,8 @@ class CourseCard extends StatelessWidget {
     final design = Design.of(context);
 
     return AppCard(
+      showShadow: true,
+      padding: EdgeInsets.all(design.spacing.md),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -47,7 +49,6 @@ class CourseCard extends StatelessWidget {
                         color: design.colors.textPrimary,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                     ),
                     Icon(
@@ -57,7 +58,7 @@ class CourseCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 2),
+                SizedBox(height: design.spacing.xs),
 
                 // Metadata
                 AppText.caption(
@@ -84,9 +85,13 @@ class CourseCard extends StatelessWidget {
                 SizedBox(height: design.spacing.sm),
 
                 // Progress Bar (Thin)
-                _ProgressBar(
-                  progress: course.progress / 100.0,
-                  color: design.colors.success,
+                Semantics(
+                  label: 'Course progress',
+                  value: '${course.progress}%',
+                  child: _ProgressBar(
+                    progress: course.progress / 100.0,
+                    color: design.colors.success,
+                  ),
                 ),
               ],
             ),

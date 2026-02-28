@@ -18,24 +18,8 @@ class StudyResumeCard extends StatelessWidget {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: design.colors.card,
-        borderRadius: BorderRadius.circular(design.radius.lg),
-        border: Border.all(color: design.colors.border),
-        boxShadow: [
-          BoxShadow(
-            color: design.colors.shadow.withValues(alpha: 0.15),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-          ),
-          BoxShadow(
-            color: design.colors.shadow.withValues(alpha: 0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+    return AppCard(
+      showFloatingShadow: true,
       padding: EdgeInsets.symmetric(
         horizontal: design.spacing.md,
         vertical: design.spacing.sm + design.spacing.xs, // 12px
@@ -56,7 +40,7 @@ class StudyResumeCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
-                const SizedBox(height: 2),
+                SizedBox(height: design.spacing.xs),
                 AppText.caption(
                   '${activity.courseTitle}${activity.chapterTitle.isNotEmpty ? ' • ${activity.chapterTitle}' : ''}',
                   color: design.colors.textSecondary,
