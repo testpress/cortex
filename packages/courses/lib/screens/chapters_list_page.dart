@@ -32,76 +32,98 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
 
     // Watch course detail with nested chapters
     final courseAsync = ref.watch(courseDetailProvider(widget.courseId));
-
-    if (courseAsync == null) {
-      return const Center(child: AppLoadingIndicator());
-    }
-
-    final chapters = courseAsync.chapters;
-    final allLessons = ref.watch(allCourseLessonsProvider(widget.courseId));
-    final filteredLessons = _filterLessons(allLessons, _activeFilter);
+    final allLessonsAsync = ref.watch(
+      allCourseLessonsProvider(widget.courseId),
+    );
 
     return AppShell(
       backgroundColor: design.colors.canvas,
-      child: Column(
-        children: [
-          // Sticky Header including Tabs (Matches reference div structure)
-          Container(
-            decoration: BoxDecoration(
-              color: design.colors.card,
-              border: Border(
-                bottom: BorderSide(color: design.colors.border, width: 1),
-              ),
-            ),
-            child: Column(
-              children: [
-                CurriculumHeader(
-                  courseTitle: courseAsync.title,
-                  chapterCount: courseAsync.chapterCount,
-                  onBack: widget.onBack,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: ChaptersFilterTabBar(
-                    activeFilter: _activeFilter,
-                    onFilterChanged: _onFilterChanged,
+      child: courseAsync.when(
+        data: (course) {
+          if (course == null) {
+            return const Center(child: Text('Course not found'));
+          }
+
+          final chapters = course.chapters;
+          final filteredLessons = allLessonsAsync.maybeWhen(
+            data: (lessons) => _filterLessons(lessons, _activeFilter),
+            orElse: () => <LessonDto>[],
+          );
+
+          return Column(
+            children: [
+              // Sticky Header including Tabs
+              Container(
+                decoration: BoxDecoration(
+                  color: design.colors.card,
+                  border: Border(
+                    bottom: BorderSide(color: design.colors.border, width: 1),
                   ),
                 ),
-              ],
-            ),
-          ),
+                child: Column(
+                  children: [
+                    CurriculumHeader(
+                      courseTitle: course.title,
+                      chapterCount: course.chapterCount,
+                      onBack: widget.onBack,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: ChaptersFilterTabBar(
+                        activeFilter: _activeFilter,
+                        onFilterChanged: _onFilterChanged,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
 
-          Expanded(
-            child: AppScroll(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              children: [
-                // Chapters or Lessons List
-                if (_activeFilter == CurriculumFilter.all)
-                  ...chapters.asMap().entries.map((entry) {
-                    return ChapterCurriculumItem(
-                      chapter: entry.value,
-                      index: entry.key,
-                      onTap: () {
-                        // Navigate to Chapter Detail
-                      },
-                    );
-                  }).toList()
-                else
-                  ...filteredLessons.map((lesson) {
-                    return LessonListItem(
-                      lesson: lesson,
-                      onTap: () {
-                        // Navigate to Lesson Detail
-                      },
-                    );
-                  }).toList(),
+              Expanded(
+                child: AppScroll(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
+                  children: [
+                    // Chapters or Lessons List
+                    if (_activeFilter == CurriculumFilter.all)
+                      ...chapters.asMap().entries.map((entry) {
+                        final chapter = entry.value;
+                        return ChapterCurriculumItem(
+                          chapter: chapter,
+                          index: entry.key,
+                          onTap: () => context.push(
+                            '/study/course/${widget.courseId}/chapters/${chapter.id}',
+                          ),
+                        );
+                      })
+                    else
+                      ...filteredLessons.map((lesson) {
+                        return LessonListItem(
+                          lesson: lesson,
+                          onTap: () {
+                            final route = switch (lesson.type) {
+                              LessonType.video => '/video/${lesson.id}',
+                              LessonType.pdf => '/lesson/${lesson.id}',
+                              LessonType.assessment =>
+                                '/assessment/${lesson.id}',
+                              LessonType.test => '/test/${lesson.id}',
+                            };
+                            context.push(route);
+                          },
+                        );
+                      }),
 
-                // Bottom Spacing
-                const SizedBox(height: 80),
-              ],
-            ),
-          ),
-        ],
+                    // Bottom Spacing
+                    const SizedBox(height: 80),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+        loading: () => const Center(child: AppLoadingIndicator()),
+        error: (error, _) => Center(child: Text(error.toString())),
       ),
     );
   }
@@ -117,7 +139,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
       CurriculumFilter.pdf => LessonType.pdf,
       CurriculumFilter.assessment => LessonType.assessment,
       CurriculumFilter.test => LessonType.test,
-      _ => LessonType.video,
+      _ => throw UnimplementedError('Filter type $filter is not supported.'),
     };
 
     return lessons.where((l) => l.type == targetType).toList();

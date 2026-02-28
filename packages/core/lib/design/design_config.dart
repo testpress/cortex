@@ -1019,12 +1019,14 @@ class DesignStudyTheme {
     required this.pdf,
     required this.assessment,
     required this.test,
+    required this.chapter,
   });
 
   final ShortcutColors video;
   final ShortcutColors pdf;
   final ShortcutColors assessment;
   final ShortcutColors test;
+  final ShortcutColors chapter;
 
   factory DesignStudyTheme.light() {
     return const DesignStudyTheme(
@@ -1043,6 +1045,10 @@ class DesignStudyTheme {
       test: ShortcutColors(
         background: Color(0xFFFFF7ED),
         foreground: Color(0xFFEA580C),
+      ),
+      chapter: ShortcutColors(
+        background: Color(0xFFEFF6FF),
+        foreground: Color(0xFF2563EB),
       ),
     );
   }
@@ -1065,6 +1071,10 @@ class DesignStudyTheme {
         background: Color(0xFF431407),
         foreground: Color(0xFFFB923C),
       ),
+      chapter: ShortcutColors(
+        background: Color(0xFF1E3A8A),
+        foreground: Color(0xFF3B82F6),
+      ),
     );
   }
 
@@ -1075,11 +1085,12 @@ class DesignStudyTheme {
         other.video == video &&
         other.pdf == pdf &&
         other.assessment == assessment &&
-        other.test == test;
+        other.test == test &&
+        other.chapter == chapter;
   }
 
   @override
-  int get hashCode => Object.hash(video, pdf, assessment, test);
+  int get hashCode => Object.hash(video, pdf, assessment, test, chapter);
 }
 
 /// Spacing token group.

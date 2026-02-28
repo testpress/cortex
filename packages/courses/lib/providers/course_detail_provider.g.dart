@@ -6,7 +6,7 @@ part of 'course_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$courseDetailHash() => r'4a8d3653cf240e28b0cb20cdc0945f89925fcee3';
+String _$courseDetailHash() => r'efaccc3ef8321cc774541333cd60a71e4c247874';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -44,7 +44,7 @@ const courseDetailProvider = CourseDetailFamily();
 /// to build a complete [CourseDto] hierarchy.
 ///
 /// Copied from [courseDetail].
-class CourseDetailFamily extends Family<CourseDto?> {
+class CourseDetailFamily extends Family<AsyncValue<CourseDto?>> {
   /// Provider that fetches a specific course with its full curriculum (chapters and lessons).
   ///
   /// This provider composes lower-level data providers from the `data` package
@@ -91,7 +91,7 @@ class CourseDetailFamily extends Family<CourseDto?> {
 /// to build a complete [CourseDto] hierarchy.
 ///
 /// Copied from [courseDetail].
-class CourseDetailProvider extends AutoDisposeProvider<CourseDto?> {
+class CourseDetailProvider extends AutoDisposeFutureProvider<CourseDto?> {
   /// Provider that fetches a specific course with its full curriculum (chapters and lessons).
   ///
   /// This provider composes lower-level data providers from the `data` package
@@ -125,7 +125,9 @@ class CourseDetailProvider extends AutoDisposeProvider<CourseDto?> {
   final String courseId;
 
   @override
-  Override overrideWith(CourseDto? Function(CourseDetailRef provider) create) {
+  Override overrideWith(
+    FutureOr<CourseDto?> Function(CourseDetailRef provider) create,
+  ) {
     return ProviderOverride(
       origin: this,
       override: CourseDetailProvider._internal(
@@ -141,7 +143,7 @@ class CourseDetailProvider extends AutoDisposeProvider<CourseDto?> {
   }
 
   @override
-  AutoDisposeProviderElement<CourseDto?> createElement() {
+  AutoDisposeFutureProviderElement<CourseDto?> createElement() {
     return _CourseDetailProviderElement(this);
   }
 
@@ -161,13 +163,13 @@ class CourseDetailProvider extends AutoDisposeProvider<CourseDto?> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin CourseDetailRef on AutoDisposeProviderRef<CourseDto?> {
+mixin CourseDetailRef on AutoDisposeFutureProviderRef<CourseDto?> {
   /// The parameter `courseId` of this provider.
   String get courseId;
 }
 
 class _CourseDetailProviderElement
-    extends AutoDisposeProviderElement<CourseDto?>
+    extends AutoDisposeFutureProviderElement<CourseDto?>
     with CourseDetailRef {
   _CourseDetailProviderElement(super.provider);
 
@@ -175,7 +177,7 @@ class _CourseDetailProviderElement
   String get courseId => (origin as CourseDetailProvider).courseId;
 }
 
-String _$allCourseLessonsHash() => r'0a1d2f854ad439d32b2212f6deecb0bc6c19dd47';
+String _$allCourseLessonsHash() => r'3746368636296b244a8128a159dfa96f3fa69684';
 
 /// A provider that flattens all lessons for a specific course into a single list.
 /// Used for filtering lessons by type across the entire course.
@@ -188,7 +190,7 @@ const allCourseLessonsProvider = AllCourseLessonsFamily();
 /// Used for filtering lessons by type across the entire course.
 ///
 /// Copied from [allCourseLessons].
-class AllCourseLessonsFamily extends Family<List<LessonDto>> {
+class AllCourseLessonsFamily extends Family<AsyncValue<List<LessonDto>>> {
   /// A provider that flattens all lessons for a specific course into a single list.
   /// Used for filtering lessons by type across the entire course.
   ///
@@ -229,7 +231,8 @@ class AllCourseLessonsFamily extends Family<List<LessonDto>> {
 /// Used for filtering lessons by type across the entire course.
 ///
 /// Copied from [allCourseLessons].
-class AllCourseLessonsProvider extends AutoDisposeProvider<List<LessonDto>> {
+class AllCourseLessonsProvider
+    extends AutoDisposeFutureProvider<List<LessonDto>> {
   /// A provider that flattens all lessons for a specific course into a single list.
   /// Used for filtering lessons by type across the entire course.
   ///
@@ -262,7 +265,7 @@ class AllCourseLessonsProvider extends AutoDisposeProvider<List<LessonDto>> {
 
   @override
   Override overrideWith(
-    List<LessonDto> Function(AllCourseLessonsRef provider) create,
+    FutureOr<List<LessonDto>> Function(AllCourseLessonsRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -279,7 +282,7 @@ class AllCourseLessonsProvider extends AutoDisposeProvider<List<LessonDto>> {
   }
 
   @override
-  AutoDisposeProviderElement<List<LessonDto>> createElement() {
+  AutoDisposeFutureProviderElement<List<LessonDto>> createElement() {
     return _AllCourseLessonsProviderElement(this);
   }
 
@@ -299,13 +302,13 @@ class AllCourseLessonsProvider extends AutoDisposeProvider<List<LessonDto>> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin AllCourseLessonsRef on AutoDisposeProviderRef<List<LessonDto>> {
+mixin AllCourseLessonsRef on AutoDisposeFutureProviderRef<List<LessonDto>> {
   /// The parameter `courseId` of this provider.
   String get courseId;
 }
 
 class _AllCourseLessonsProviderElement
-    extends AutoDisposeProviderElement<List<LessonDto>>
+    extends AutoDisposeFutureProviderElement<List<LessonDto>>
     with AllCourseLessonsRef {
   _AllCourseLessonsProviderElement(super.provider);
 

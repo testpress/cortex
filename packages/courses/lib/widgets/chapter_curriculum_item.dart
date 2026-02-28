@@ -23,7 +23,7 @@ class ChapterCurriculumItem extends StatelessWidget {
     final l10n = L10n.of(context);
 
     // Consistent blue for course/chapter icons as per reference
-    final iconTheme = design.study.pdf; // Blue theme (EFF6FF / 2563EB)
+    final iconTheme = design.study.chapter;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),

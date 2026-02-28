@@ -7,14 +7,9 @@ import 'package:flutter/widgets.dart';
 /// Maps [LessonProgressStatus] to systematic [DesignStatusColors] tokens.
 /// Re-designed as per user request to remove "locked" visuals for paid users.
 class LessonStatusBadge extends StatelessWidget {
-  const LessonStatusBadge({
-    super.key,
-    required this.status,
-    this.isLocked = false,
-  });
+  const LessonStatusBadge({super.key, required this.status});
 
   final LessonProgressStatus status;
-  final bool isLocked;
 
   @override
   Widget build(BuildContext context) {

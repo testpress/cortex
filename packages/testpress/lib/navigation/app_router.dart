@@ -111,6 +111,17 @@ final GoRouter appRouter = GoRouter(
                       onBack: () => context.pop(),
                     );
                   },
+                  routes: [
+                    GoRoute(
+                      path: ':chapterId',
+                      builder: (context, state) {
+                        final chapterId = state.pathParameters['chapterId']!;
+                        return Center(
+                          child: Text('Chapter Detail Page (ID: $chapterId)'),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -153,6 +164,22 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) {
         final id = state.pathParameters['id'];
         return Center(child: Text('Video Full-Screen View for ID: $id'));
+      },
+    ),
+    GoRoute(
+      path: '/assessment/:id',
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (context, state) {
+        final id = state.pathParameters['id'];
+        return Center(child: Text('Assessment Detail Page for ID: $id'));
+      },
+    ),
+    GoRoute(
+      path: '/test/:id',
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (context, state) {
+        final id = state.pathParameters['id'];
+        return Center(child: Text('Test Detail Page for ID: $id'));
       },
     ),
     GoRoute(

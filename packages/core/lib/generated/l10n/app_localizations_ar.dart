@@ -293,30 +293,30 @@ class AppLocalizationsAr extends AppLocalizations {
   String get labelLessonsPlural => 'دروس';
 
   @override
-  String get curriculumBackButton => 'Back';
+  String get curriculumBackButton => 'عودة';
 
   @override
   String curriculumChaptersCount(int count) {
-    return '$count Chapters';
+    return '$count فصول';
   }
 
   @override
-  String get filterAll => 'All';
+  String get filterAll => 'الكل';
 
   @override
-  String get curriculumLessonsLabel => 'Lessons';
+  String get curriculumLessonsLabel => 'دروس';
 
   @override
-  String get curriculumAssessmentsLabel => 'Assessments';
+  String get curriculumAssessmentsLabel => 'تقييمات';
 
   @override
   String curriculumTestsCompletedLabel(Object count) {
-    return '$count tests completed';
+    return 'تم الانتهاء من $count اختبارات';
   }
 
   @override
   String chapterIndexLabel(int index, String title) {
-    return 'Chapter $index: $title';
+    return 'الفصل $index: $title';
   }
 
   @override
@@ -330,11 +330,11 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get statusLocked => 'Locked';
+  String get statusLocked => 'مقفل';
 
   @override
-  String get statusInProgress => 'In Progress';
+  String get statusInProgress => 'في التقدم';
 
   @override
-  String get statusCompleted => 'Completed';
+  String get statusCompleted => 'مكتمل';
 }

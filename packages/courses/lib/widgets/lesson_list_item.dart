@@ -93,21 +93,16 @@ class LessonListItem extends StatelessWidget {
 
                       Row(
                         children: [
-                          if (lesson.duration != null) ...[
-                            Text(
-                              lesson.duration,
-                              style: design.typography.caption.copyWith(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: design.colors.textSecondary,
-                              ),
+                          Text(
+                            lesson.duration,
+                            style: design.typography.caption.copyWith(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: design.colors.textSecondary,
                             ),
-                            const SizedBox(width: 8),
-                          ],
-                          LessonStatusBadge(
-                            status: lesson.progressStatus,
-                            isLocked: false,
                           ),
+                          const SizedBox(width: 8),
+                          LessonStatusBadge(status: lesson.progressStatus),
                         ],
                       ),
                     ],

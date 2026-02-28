@@ -87,5 +87,16 @@
   "filterTest": "اختبار",
   "resumeStudyHeader": "استئناف الدراسة",
   "labelCompleted": "مكتمل",
-  "labelLessonsPlural": "دروس"
+  "labelLessonsPlural": "دروس",
+  "curriculumBackButton": "عودة",
+  "curriculumChaptersCount": "{count} فصول",
+  "filterAll": "الكل",
+  "curriculumLessonsLabel": "دروس",
+  "curriculumAssessmentsLabel": "تقييمات",
+  "curriculumTestsCompletedLabel": "تم الانتهاء من {count} اختبارات",
+  "chapterIndexLabel": "الفصل {index}: {title}",
+  "chapterMetadata": "{lessons} {lessonsLabel} · {assessments} {assessmentsLabel}",
+  "statusLocked": "مقفل",
+  "statusInProgress": "في التقدم",
+  "statusCompleted": "مكتمل"
 }

@@ -295,30 +295,30 @@ class AppLocalizationsMl extends AppLocalizations {
   String get labelLessonsPlural => 'പാഠങ്ങൾ';
 
   @override
-  String get curriculumBackButton => 'Back';
+  String get curriculumBackButton => 'പിന്നിലേക്ക്';
 
   @override
   String curriculumChaptersCount(int count) {
-    return '$count Chapters';
+    return '$count അധ്യായങ്ങൾ';
   }
 
   @override
-  String get filterAll => 'All';
+  String get filterAll => 'എല്ലാം';
 
   @override
-  String get curriculumLessonsLabel => 'Lessons';
+  String get curriculumLessonsLabel => 'പാഠങ്ങൾ';
 
   @override
-  String get curriculumAssessmentsLabel => 'Assessments';
+  String get curriculumAssessmentsLabel => 'അസസ്‌മെന്റുകൾ';
 
   @override
   String curriculumTestsCompletedLabel(Object count) {
-    return '$count tests completed';
+    return '$count ടെസ്റ്റുകൾ പൂർത്തിയായി';
   }
 
   @override
   String chapterIndexLabel(int index, String title) {
-    return 'Chapter $index: $title';
+    return 'അധ്യായം $index: $title';
   }
 
   @override
@@ -332,11 +332,11 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
-  String get statusLocked => 'Locked';
+  String get statusLocked => 'ലോക്ക് ചെയ്തു';
 
   @override
-  String get statusInProgress => 'In Progress';
+  String get statusInProgress => 'നടന്നുകൊണ്ടിരിക്കുന്നു';
 
   @override
-  String get statusCompleted => 'Completed';
+  String get statusCompleted => 'പൂർത്തിയായി';
 }

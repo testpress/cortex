@@ -8,27 +8,27 @@ part 'course_detail_provider.g.dart';
 /// This provider composes lower-level data providers from the `data` package
 /// to build a complete [CourseDto] hierarchy.
 @riverpod
-CourseDto? courseDetail(CourseDetailRef ref, String courseId) {
-  final enrollment = ref.watch(enrollmentProvider).valueOrNull;
-  if (enrollment == null) return null;
-
+Future<CourseDto?> courseDetail(CourseDetailRef ref, String courseId) async {
+  final enrollment = await ref.watch(enrollmentProvider.future);
   final course = enrollment.where((c) => c.id == courseId).firstOrNull;
   if (course == null) return null;
 
   // Watch chapters for this course
-  final chapters =
-      ref.watch(courseChaptersProvider(courseId)).valueOrNull ?? [];
+  final chapters = await ref.watch(courseChaptersProvider(courseId).future);
 
   // Watch lessons for each chapter and combine them
-  final chaptersWithLessons = chapters.map((chapter) {
-    final lessons =
-        ref.watch(chapterLessonsProvider(chapter.id)).valueOrNull ?? [];
-    return chapter.copyWith(
-      lessons: lessons
-          .map((l) => l.copyWith(chapterTitle: chapter.title))
-          .toList(),
-    );
-  }).toList();
+  final chaptersWithLessons = await Future.wait(
+    chapters.map((chapter) async {
+      final lessons = await ref.watch(
+        chapterLessonsProvider(chapter.id).future,
+      );
+      return chapter.copyWith(
+        lessons: lessons
+            .map((l) => l.copyWith(chapterTitle: chapter.title))
+            .toList(),
+      );
+    }),
+  );
 
   return course.copyWith(chapters: chaptersWithLessons);
 }
@@ -36,8 +36,11 @@ CourseDto? courseDetail(CourseDetailRef ref, String courseId) {
 /// A provider that flattens all lessons for a specific course into a single list.
 /// Used for filtering lessons by type across the entire course.
 @riverpod
-List<LessonDto> allCourseLessons(AllCourseLessonsRef ref, String courseId) {
-  final course = ref.watch(courseDetailProvider(courseId));
+Future<List<LessonDto>> allCourseLessons(
+  AllCourseLessonsRef ref,
+  String courseId,
+) async {
+  final course = await ref.watch(courseDetailProvider(courseId).future);
   if (course == null) return [];
 
   return course.chapters.expand((chapter) => chapter.lessons).toList();
