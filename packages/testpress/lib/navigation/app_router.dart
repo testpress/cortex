@@ -100,7 +100,7 @@ final GoRouter appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/study',
-              builder: (context, state) => const CourseListScreen(),
+              builder: (context, state) => const StudyScreen(),
             ),
           ],
         ),

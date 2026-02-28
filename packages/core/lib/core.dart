@@ -42,6 +42,7 @@ export 'package:go_router/go_router.dart';
 // Accessibility
 export 'accessibility/app_semantics.dart';
 export 'accessibility/app_focus.dart';
+export 'accessibility/app_focusable.dart';
 export 'accessibility/accessibility_guard.dart';
 
 // Motion

@@ -13,6 +13,7 @@ class AppCard extends StatelessWidget {
     this.onTap,
     this.showBorder = true,
     this.showShadow = false,
+    this.showFloatingShadow = false,
   });
 
   final Widget child;
@@ -20,13 +21,15 @@ class AppCard extends StatelessWidget {
   final VoidCallback? onTap;
   final bool showBorder;
   final bool showShadow;
+  final bool showFloatingShadow;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     // Singular separation logic: premium design avoids border + shadow stacking.
     // If shadow is requested, we suppress the border unless explicitly forced.
-    final effectiveShowBorder = showBorder && !showShadow;
+    final effectiveShowBorder =
+        showBorder && !showShadow && !showFloatingShadow;
 
     final cardContent = Container(
       padding: padding ?? EdgeInsets.all(design.spacing.cardPadding),
@@ -36,11 +39,10 @@ class AppCard extends StatelessWidget {
         border: effectiveShowBorder
             ? Border.all(color: design.colors.border, width: 1)
             : null,
-        boxShadow: showShadow
-            ? [
-                if (design.shadows.surfaceSoft != null)
-                  design.shadows.surfaceSoft!,
-              ]
+        boxShadow: showFloatingShadow
+            ? design.shadows.floating
+            : showShadow
+            ? design.shadows.surfaceSoft
             : null,
       ),
       child: child,

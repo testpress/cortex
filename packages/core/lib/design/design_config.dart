@@ -39,6 +39,7 @@ class DesignConfig {
     required this.subjectPalette,
     required this.statusColors,
     required this.shortcutPalette,
+    required this.study,
     this.isDark = false,
   });
 
@@ -53,6 +54,7 @@ class DesignConfig {
   final DesignSubjectPalette subjectPalette;
   final DesignStatusColors statusColors;
   final DesignShortcutPalette shortcutPalette;
+  final DesignStudyTheme study;
   final bool isDark;
 
   /// Default configuration matching current static tokens.
@@ -79,6 +81,7 @@ class DesignConfig {
       subjectPalette: DesignSubjectPalette.light(),
       statusColors: DesignStatusColors.light(),
       shortcutPalette: DesignShortcutPalette.light(),
+      study: DesignStudyTheme.light(),
       isDark: false,
     );
   }
@@ -99,6 +102,7 @@ class DesignConfig {
       subjectPalette: DesignSubjectPalette.dark(),
       statusColors: DesignStatusColors.dark(),
       shortcutPalette: DesignShortcutPalette.dark(),
+      study: DesignStudyTheme.dark(),
       isDark: true,
     );
   }
@@ -115,6 +119,7 @@ class DesignConfig {
     DesignSubjectPalette? subjectPalette,
     DesignStatusColors? statusColors,
     DesignShortcutPalette? shortcutPalette,
+    DesignStudyTheme? study,
     bool? isDark,
   }) {
     return DesignConfig(
@@ -129,6 +134,7 @@ class DesignConfig {
       subjectPalette: subjectPalette ?? this.subjectPalette,
       statusColors: statusColors ?? this.statusColors,
       shortcutPalette: shortcutPalette ?? this.shortcutPalette,
+      study: study ?? this.study,
       isDark: isDark ?? this.isDark,
     );
   }
@@ -148,6 +154,7 @@ class DesignConfig {
         other.subjectPalette == subjectPalette &&
         other.statusColors == statusColors &&
         other.shortcutPalette == shortcutPalette &&
+        other.study == study &&
         other.isDark == isDark;
   }
 
@@ -165,6 +172,7 @@ class DesignConfig {
       subjectPalette,
       statusColors,
       shortcutPalette,
+      study,
       isDark,
     );
   }
@@ -1003,6 +1011,77 @@ class DesignShortcutPalette {
   int get hashCode => Object.hashAll(_palettes);
 }
 
+/// Study-specific color tokens for different lesson types.
+@immutable
+class DesignStudyTheme {
+  const DesignStudyTheme({
+    required this.video,
+    required this.pdf,
+    required this.assessment,
+    required this.test,
+  });
+
+  final ShortcutColors video;
+  final ShortcutColors pdf;
+  final ShortcutColors assessment;
+  final ShortcutColors test;
+
+  factory DesignStudyTheme.light() {
+    return const DesignStudyTheme(
+      video: ShortcutColors(
+        background: Color(0xFFF3E8FF),
+        foreground: Color(0xFF9333EA),
+      ),
+      pdf: ShortcutColors(
+        background: Color(0xFFEFF6FF),
+        foreground: Color(0xFF2563EB),
+      ),
+      assessment: ShortcutColors(
+        background: Color(0xFFF0FDF4),
+        foreground: Color(0xFF16A34A),
+      ),
+      test: ShortcutColors(
+        background: Color(0xFFFFF7ED),
+        foreground: Color(0xFFEA580C),
+      ),
+    );
+  }
+
+  factory DesignStudyTheme.dark() {
+    return const DesignStudyTheme(
+      video: ShortcutColors(
+        background: Color(0xFF2E1065),
+        foreground: Color(0xFFA855F7),
+      ),
+      pdf: ShortcutColors(
+        background: Color(0xFF1E3A8A),
+        foreground: Color(0xFF3B82F6),
+      ),
+      assessment: ShortcutColors(
+        background: Color(0xFF052E16),
+        foreground: Color(0xFF22C55E),
+      ),
+      test: ShortcutColors(
+        background: Color(0xFF431407),
+        foreground: Color(0xFFFB923C),
+      ),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is DesignStudyTheme &&
+        other.video == video &&
+        other.pdf == pdf &&
+        other.assessment == assessment &&
+        other.test == test;
+  }
+
+  @override
+  int get hashCode => Object.hash(video, pdf, assessment, test);
+}
+
 /// Spacing token group.
 ///
 /// Mirrors AppSpacing structure for seamless migration.
@@ -1460,37 +1539,76 @@ class DesignRadius {
 /// Shadow token group.
 @immutable
 class DesignShadows {
-  const DesignShadows({required this.surfaceSoft, required this.none});
+  const DesignShadows({
+    required this.surfaceSoft,
+    required this.floating,
+    required this.none,
+  });
 
   /// Barely perceptible elevation shadow for cards and surfaces.
   /// Felt, not seen.
-  final BoxShadow? surfaceSoft;
+  final List<BoxShadow>? surfaceSoft;
+
+  /// Prominent elevation shadow for floating components (mini-players, sheets).
+  final List<BoxShadow>? floating;
 
   /// No shadow.
-  final BoxShadow? none;
+  final List<BoxShadow>? none;
 
   factory DesignShadows.light() {
     return DesignShadows(
-      surfaceSoft: BoxShadow(
-        color: const Color(
-          0xFF000000,
-        ).withValues(alpha: 0.04), // 4% opacity invariant
-        blurRadius: 40, // blur >= 40 invariant
-        offset: const Offset(0, 8), // vertical-only offset invariant
-      ),
+      surfaceSoft: [
+        BoxShadow(
+          color: const Color(
+            0xFF000000,
+          ).withValues(alpha: 0.04), // 4% opacity invariant
+          blurRadius: 40, // blur >= 40 invariant
+          offset: const Offset(0, 8), // vertical-only offset invariant
+        ),
+      ],
+      floating: [
+        // Layer 1: Tight/Contact Area (Grounded Depth)
+        BoxShadow(
+          color: const Color(0xFF000000).withValues(alpha: 0.08),
+          blurRadius: 12,
+          offset: const Offset(0, 4),
+        ),
+        // Layer 2: Softer Ambient Area (Diffusion/Lift)
+        BoxShadow(
+          color: const Color(0xFF000000).withValues(alpha: 0.08),
+          blurRadius: 40,
+          offset: const Offset(0, 12),
+        ),
+      ],
       none: null,
     );
   }
 
   factory DesignShadows.dark() {
     return DesignShadows(
-      surfaceSoft: BoxShadow(
-        color: const Color(
-          0xFF000000,
-        ).withValues(alpha: 0.04), // Invariant opacity across themes
-        blurRadius: 40,
-        offset: const Offset(0, 8),
-      ),
+      surfaceSoft: [
+        BoxShadow(
+          color: const Color(
+            0xFF000000,
+          ).withValues(alpha: 0.04), // Invariant opacity across themes
+          blurRadius: 40,
+          offset: const Offset(0, 8),
+        ),
+      ],
+      floating: [
+        // Layer 1: Tight/Contact Area (Grounded Depth)
+        BoxShadow(
+          color: const Color(0xFF000000).withValues(alpha: 0.08),
+          blurRadius: 12,
+          offset: const Offset(0, 4),
+        ),
+        // Layer 2: Softer Ambient Area (Diffusion/Lift)
+        BoxShadow(
+          color: const Color(0xFF000000).withValues(alpha: 0.08),
+          blurRadius: 40,
+          offset: const Offset(0, 12),
+        ),
+      ],
       none: null,
     );
   }
@@ -1499,12 +1617,27 @@ class DesignShadows {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     return other is DesignShadows &&
-        other.surfaceSoft == surfaceSoft &&
+        _listEquals(other.surfaceSoft, surfaceSoft) &&
+        _listEquals(other.floating, floating) &&
         other.none == none;
   }
 
+  static bool _listEquals<T>(List<T>? a, List<T>? b) {
+    if (a == b) return true;
+    if (a == null || b == null) return false;
+    if (a.length != b.length) return false;
+    for (int i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
+
   @override
-  int get hashCode => Object.hash(surfaceSoft, none);
+  int get hashCode => Object.hash(
+    Object.hashAll(surfaceSoft ?? []),
+    Object.hashAll(floating ?? []),
+    none,
+  );
 }
 
 /// Layout token group.

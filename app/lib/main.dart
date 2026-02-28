@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:testpress/testpress.dart';
+import 'package:data/data.dart';
 import 'package:courses/providers/dashboard_providers.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -20,6 +21,9 @@ class CortexAppRoot extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // 🚀 BOOTSTRAP: Kick off app initialization (data seeding, etc.)
+    ref.watch(appInitializationProvider);
+
     // 🎨 DARK MODE SUPPORT: Both configs are now passed to DesignProvider.
     final lightConfig = DesignConfig.light();
     final darkConfig = DesignConfig.dark();

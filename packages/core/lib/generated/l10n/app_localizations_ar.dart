@@ -75,136 +75,138 @@ class AppLocalizationsAr extends AppLocalizations {
   String get labelProgress => 'تقدم';
 
   @override
+  String get labelResume => 'استئناف';
+
+  @override
   String get labelCourseProgress => 'تقدم الدورة';
 
   @override
-  String get homeHeaderTitle => 'BrightMinds Academy';
+  String get homeHeaderTitle => 'أكاديمية برايت ماينز';
 
   @override
-  String get todayScheduleTitle => 'Today\'s Schedule';
+  String get todayScheduleTitle => 'جدول اليوم';
 
   @override
-  String get viewAllAction => 'View all >';
+  String get viewAllAction => 'عرض الكل >';
 
   @override
-  String get nowAndNextSection => 'NOW & NEXT';
+  String get nowAndNextSection => 'الآن وبعد قليل';
 
   @override
-  String get deadlinesSection => 'DEADLINES';
+  String get deadlinesSection => 'المواعيد النهائية';
 
   @override
-  String get upcomingTestsSection => 'UPCOMING TESTS';
+  String get upcomingTestsSection => 'الاختبارات القادمة';
 
   @override
-  String get laterTodaySection => 'LATER TODAY';
+  String get laterTodaySection => 'في وقت لاحق اليوم';
 
   @override
-  String get topLearnersTitle => 'Top Learners This Week';
+  String get topLearnersTitle => 'أفضل المتعلمين هذا الأسبوع';
 
   @override
-  String get updatesAnnouncementsTitle => 'Updates & Announcements';
+  String get updatesAnnouncementsTitle => 'التحديثات والإعلانات';
 
   @override
-  String get quickAccessTitle => 'Quick Access';
+  String get quickAccessTitle => 'الوصول السريع';
 
   @override
-  String get greetingMorning => 'Good morning';
+  String get greetingMorning => 'صباح الخير';
 
   @override
-  String get greetingAfternoon => 'Good afternoon';
+  String get greetingAfternoon => 'مساء الخير';
 
   @override
-  String get greetingEvening => 'Good evening';
+  String get greetingEvening => 'مساء الخير';
 
   @override
-  String get shortcutRecordings => 'Recordings';
+  String get shortcutRecordings => 'التسجيلات';
 
   @override
-  String get shortcutPractice => 'Practice';
+  String get shortcutPractice => 'الممارسة';
 
   @override
-  String get shortcutTests => 'Tests';
+  String get shortcutTests => 'الاختبارات';
 
   @override
-  String get shortcutNotes => 'Notes';
+  String get shortcutNotes => 'الملاحظات';
 
   @override
-  String get shortcutAskDoubt => 'Ask Doubt';
+  String get shortcutAskDoubt => 'اسأل شكوك';
 
   @override
-  String get shortcutSchedule => 'Schedule';
+  String get shortcutSchedule => 'الجدول';
 
   @override
-  String get learningPerformanceTitle => 'Learning Performance';
+  String get learningPerformanceTitle => 'أداء التعلم';
 
   @override
-  String get latestActivityLabel => 'Latest Activity';
+  String get latestActivityLabel => 'آخر نشاط';
 
   @override
   String streakMomentumLabel(int days) {
-    return '$days-day momentum';
+    return '$days أيام من الزخم';
   }
 
   @override
   String weeklyHoursLabel(String hours) {
-    return '${hours}h this week';
+    return '$hours ساعة هذا الأسبوع';
   }
 
   @override
-  String get lessonsFinishedLabel => 'Lessons';
+  String get lessonsFinishedLabel => 'دروس';
 
   @override
-  String get testsAttemptedLabel => 'Tests';
+  String get testsAttemptedLabel => 'اختبارات';
 
   @override
-  String get assessmentsDoneLabel => 'Assessments';
+  String get assessmentsDoneLabel => 'تقييمات';
 
   @override
-  String get strongestSubjectLabel => 'YOU\'RE STRONGEST IN';
+  String get strongestSubjectLabel => 'أنت الأقوى في';
 
   @override
-  String get weakSubjectLabel => 'NEED FOCUS HERE';
+  String get weakSubjectLabel => 'تحتاج للتركيز هنا';
 
   @override
-  String get noActivityTitle => 'No study activity yet';
+  String get noActivityTitle => 'لا يوجد نشاط دراسي بعد';
 
   @override
-  String get noActivitySubtitle => 'Start with a session to build momentum';
+  String get noActivitySubtitle => 'ابدأ بجلسة لبناء الزخم';
 
   @override
-  String get allCaughtUpTitle => 'All Caught Up!';
+  String get allCaughtUpTitle => 'كل شيء محدث!';
 
   @override
-  String get noScheduledActivitiesSubtitle =>
-      'No scheduled activities right now';
+  String get noScheduledActivitiesSubtitle => 'لا توجد أنشطة مجدولة الآن';
 
   @override
-  String get liveLabel => 'LIVE';
+  String get liveLabel => 'مباشر';
 
   @override
-  String get importantLabel => 'IMPORTANT';
+  String get importantLabel => 'مهم';
 
   @override
   String testTypeLabel(String type) {
-    return '$type TEST';
+    return 'اختبار $type';
   }
 
   @override
   String coursesCompletedLabel(int count) {
-    return '$count courses';
+    return '$count كورسات';
   }
 
   @override
   String streakDaysLabel(int count) {
-    return '$count days';
+    return '$count أيام';
   }
 
   @override
-  String get achievementsLabel => 'Achievements';
+  String get achievementsLabel => 'الإنجازات';
 
   @override
   String moreBadgesLabel(int count) {
-    return '+$count more';
+    return '+$count أكثر';
   }
 
   @override
@@ -256,4 +258,37 @@ class AppLocalizationsAr extends AppLocalizations {
   String drawerVersion(String version) {
     return 'الإصدار - $version';
   }
+
+  @override
+  String get studyTabTitle => 'دراسة';
+
+  @override
+  String get studySearchHint => 'البحث في الكورسات، الفصول، الدروس';
+
+  @override
+  String get studyYourCoursesTitle => 'كورساتك';
+
+  @override
+  String get studyLessonsTitle => 'الدروس';
+
+  @override
+  String get filterVideo => 'فيديو';
+
+  @override
+  String get filterLesson => 'درس';
+
+  @override
+  String get filterAssessment => 'تقييم';
+
+  @override
+  String get filterTest => 'اختبار';
+
+  @override
+  String get resumeStudyHeader => 'استئناف الدراسة';
+
+  @override
+  String get labelCompleted => 'مكتمل';
+
+  @override
+  String get labelLessonsPlural => 'دروس';
 }

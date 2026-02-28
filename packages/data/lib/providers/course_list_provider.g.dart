@@ -6,7 +6,7 @@ part of 'course_list_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$courseListHash() => r'1fe2c93c58f635aaf386d66c6b1905e58d9179a5';
+String _$courseListHash() => r'e09726800afe30e7af81d8346fc28e7ad237069a';
 
 /// Stream provider for the full course list.
 /// On first watch: triggers a refresh from DataSource → Drift.

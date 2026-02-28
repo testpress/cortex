@@ -104,6 +104,25 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> upsertProgress(List<UserProgressTableCompanion> rows) =>
       batch((b) => b.insertAllOnConflictUpdate(userProgressTable, rows));
+
+  // ── Combined Lookups ──────────────────────────────────────────────────────
+
+  /// Efficiently fetches lesson, chapter, and course data for a single lesson.
+  Future<TypedResult?> getLessonDetails(String lessonId) {
+    final query = select(lessonsTable).join([
+      innerJoin(
+        chaptersTable,
+        chaptersTable.id.equalsExp(lessonsTable.chapterId),
+      ),
+      innerJoin(
+        coursesTable,
+        coursesTable.id.equalsExp(chaptersTable.courseId),
+      ),
+    ])
+      ..where(lessonsTable.id.equals(lessonId));
+
+    return query.getSingleOrNull();
+  }
 }
 
 /// Opens the SQLite database from the app documents directory.

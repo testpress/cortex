@@ -47,7 +47,7 @@ class DashboardHeader extends StatelessWidget {
             const SizedBox(width: 12),
           ],
           Expanded(
-            child: AppText.subtitle(title, color: design.colors.textPrimary),
+            child: AppText.headline(title, color: design.colors.textPrimary),
           ),
           if (isTablet)
             GestureDetector(

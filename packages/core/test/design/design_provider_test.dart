@@ -59,6 +59,7 @@ void main() {
         subjectPalette: DesignSubjectPalette.light(),
         statusColors: DesignStatusColors.light(),
         shortcutPalette: DesignShortcutPalette.light(),
+        study: DesignStudyTheme.light(),
       );
 
       late DesignConfig capturedConfig;
@@ -149,6 +150,7 @@ void main() {
         subjectPalette: DesignSubjectPalette.light(),
         statusColors: DesignStatusColors.light(),
         shortcutPalette: DesignShortcutPalette.light(),
+        study: DesignStudyTheme.light(),
       );
 
       late DesignConfig capturedConfig;
