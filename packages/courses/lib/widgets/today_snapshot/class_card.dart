@@ -23,7 +23,7 @@ class ClassCard extends StatelessWidget {
           : null,
       subtitles: [if (item.topic != null) item.subject],
       chevronSize: 20,
-      bottomAction: AppText.caption(
+      bottomAction: AppText.cardCaption(
         '${item.faculty} · ${item.time}',
         color: design.colors.textTertiary,
         maxLines: 1,

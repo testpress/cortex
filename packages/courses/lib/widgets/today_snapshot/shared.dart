@@ -85,15 +85,7 @@ class PillBadge extends StatelessWidget {
         color: color,
         borderRadius: BorderRadius.circular(design.radius.full),
       ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: design.colors.textInverse,
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-          height: 1.4,
-        ),
-      ),
+      child: AppText.labelSmall(label, color: design.colors.textInverse),
     );
   }
 }
@@ -144,7 +136,7 @@ class SnapshotCard extends StatelessWidget {
                       Row(
                         children: [
                           Expanded(
-                            child: AppText.label(
+                            child: AppText.cardTitle(
                               title,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -158,7 +150,7 @@ class SnapshotCard extends StatelessWidget {
                       ),
                       for (final sub in subtitles) ...[
                         const SizedBox(height: 2),
-                        AppText.caption(
+                        AppText.cardSubtitle(
                           sub,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
