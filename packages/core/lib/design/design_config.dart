@@ -307,9 +307,9 @@ class DesignColors {
       onWarning: Color(0xFFFFFFFF),
       textPrimary: Color(0xFF0F172A), // Slate-950 (L < 0.15)
       textSecondary: Color(
-        0xFF94A3B8,
-      ), // Slate-400 (Satisfies distance invariant for Slate-150)
-      textTertiary: Color(0xFFCBD5E1), // Slate-300
+        0xFF64748B,
+      ), // Slate-500 (Satisfies distance invariant for Slate-150)
+      textTertiary: Color(0xFF94A3B8), // Slate-400
       textInverse: Color(0xFFFFFFFF),
       progressBackground: Color(0xFFDEE5ED),
       progressForeground: Color(0xFF6366F1),
@@ -1251,6 +1251,9 @@ class DesignTypography {
     required this.label,
     required this.labelSmall,
     required this.caption,
+    required this.cardTitle,
+    required this.cardSubtitle,
+    required this.cardCaption,
   });
 
   final TextStyle display;
@@ -1262,6 +1265,9 @@ class DesignTypography {
   final TextStyle label;
   final TextStyle labelSmall;
   final TextStyle caption;
+  final TextStyle cardTitle;
+  final TextStyle cardSubtitle;
+  final TextStyle cardCaption;
 
   factory DesignTypography.defaults({
     DesignTypographyScale? scale,
@@ -1338,6 +1344,25 @@ class DesignTypography {
         letterSpacing: 0.4,
         height: 1.2,
       ),
+      // cardTitle — Standard title for cards (Course, Resume, etc).
+      // base (16px) size balances visibility without dominating the card.
+      cardTitle: s.sm.copyWith(
+        fontWeight: FontWeight.w600,
+        color: c.textPrimary,
+        height: 1.2,
+      ),
+      // cardSubtitle — Secondary info for cards (chapters, duration).
+      cardSubtitle: s.sm.copyWith(
+        fontWeight: FontWeight.w400,
+        color: c.textSecondary,
+        height: 1.1,
+      ),
+      // cardCaption — Micro info inside cards (ratio labels).
+      cardCaption: s.xs.copyWith(
+        fontWeight: FontWeight.w400,
+        color: c.textTertiary,
+        height: 1.0,
+      ),
     );
   }
 
@@ -1353,7 +1378,10 @@ class DesignTypography {
         other.bodySmall == bodySmall &&
         other.label == label &&
         other.labelSmall == labelSmall &&
-        other.caption == caption;
+        other.caption == caption &&
+        other.cardTitle == cardTitle &&
+        other.cardSubtitle == cardSubtitle &&
+        other.cardCaption == cardCaption;
   }
 
   @override
@@ -1366,6 +1394,7 @@ class DesignTypography {
       body,
       bodySmall,
       Object.hash(label, labelSmall, caption),
+      Object.hash(cardTitle, cardSubtitle, cardCaption),
     );
   }
 }

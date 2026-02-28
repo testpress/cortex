@@ -23,7 +23,7 @@ class TestCard extends StatelessWidget {
           l10n.testTypeLabel(item.type!.name.toUpperCase()),
       ],
       chevronSize: 16,
-      bottomAction: AppText.caption(
+      bottomAction: AppText.cardCaption(
         '${item.time} · ${item.duration}',
         color: design.colors.textTertiary,
         maxLines: 1,

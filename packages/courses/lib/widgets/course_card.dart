@@ -44,7 +44,7 @@ class CourseCard extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: AppText.label(
+                      child: AppText.cardTitle(
                         course.title,
                         color: design.colors.textPrimary,
                         maxLines: 1,
@@ -61,7 +61,7 @@ class CourseCard extends StatelessWidget {
                 SizedBox(height: design.spacing.xs),
 
                 // Metadata
-                AppText.caption(
+                AppText.cardSubtitle(
                   '${course.chapterCount} chapters · ${course.totalDuration}',
                   color: design.colors.textSecondary,
                 ),
@@ -115,9 +115,9 @@ class _ProgressStat extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.baseline,
       textBaseline: TextBaseline.alphabetic,
       children: [
-        AppText.label(value, color: design.colors.textPrimary),
+        AppText.cardTitle(value, color: design.colors.textPrimary),
         SizedBox(width: design.spacing.xs),
-        AppText.caption(label, color: design.colors.textSecondary),
+        AppText.cardCaption(label, color: design.colors.textSecondary),
       ],
     );
   }

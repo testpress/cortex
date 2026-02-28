@@ -22,7 +22,7 @@ class AssignmentCard extends StatelessWidget {
       bottomAction: Row(
         children: [
           Expanded(
-            child: AppText.caption(
+            child: AppText.cardCaption(
               '${item.subject} · Due ${item.dueTime}',
               color: design.colors.textTertiary,
               overflow: TextOverflow.ellipsis,
@@ -45,7 +45,7 @@ class AssignmentCard extends StatelessWidget {
                   );
                 }),
                 const SizedBox(width: 4),
-                AppText.caption(
+                AppText.cardCaption(
                   '${(item.progress! * 100).toInt()}%',
                   color: design.colors.textSecondary,
                 ),

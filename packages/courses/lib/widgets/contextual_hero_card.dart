@@ -192,17 +192,19 @@ class _ContextualHeroCardState extends State<ContextualHeroCard>
 
     final List<Widget> items = [];
 
-    items.add(AppText.bodySmall(widget.action.metadata, color: metaColor));
+    items.add(AppText.cardSubtitle(widget.action.metadata, color: metaColor));
 
     if (widget.action.timeInfo != null) {
       items.add(_buildDot(context));
-      items.add(AppText.bodySmall(widget.action.timeInfo!, color: metaColor));
+      items.add(
+        AppText.cardSubtitle(widget.action.timeInfo!, color: metaColor),
+      );
     }
 
     if (widget.action.countdown != null) {
       items.add(_buildDot(context));
       items.add(
-        AppText.label(
+        AppText.cardTitle(
           widget.action.countdown!,
           color: design.colors.textPrimary,
         ),
@@ -212,7 +214,7 @@ class _ContextualHeroCardState extends State<ContextualHeroCard>
     if (widget.action.testDuration != null) {
       items.add(_buildDot(context));
       items.add(
-        AppText.bodySmall(widget.action.testDuration!, color: metaColor),
+        AppText.cardSubtitle(widget.action.testDuration!, color: metaColor),
       );
     }
 
@@ -245,8 +247,8 @@ class _ContextualHeroCardState extends State<ContextualHeroCard>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            AppText.caption('Progress', color: design.colors.textSecondary),
-            AppText.caption(
+            AppText.cardCaption('Progress', color: design.colors.textSecondary),
+            AppText.cardCaption(
               '${widget.action.progress!.toInt()}% Complete',
               color: design.colors.textSecondary,
             ),

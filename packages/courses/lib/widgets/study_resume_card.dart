@@ -31,17 +31,16 @@ class StudyResumeCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppText.body(
+                AppText.cardTitle(
                   activity.lessonTitle.isNotEmpty
                       ? activity.lessonTitle
                       : l10n.resumeStudyHeader,
                   color: design.colors.textPrimary,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
                 SizedBox(height: design.spacing.xs),
-                AppText.caption(
+                AppText.cardSubtitle(
                   '${activity.courseTitle}${activity.chapterTitle.isNotEmpty ? ' • ${activity.chapterTitle}' : ''}',
                   color: design.colors.textSecondary,
                   maxLines: 1,
