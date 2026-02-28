@@ -101,6 +101,18 @@ final GoRouter appRouter = GoRouter(
             GoRoute(
               path: '/study',
               builder: (context, state) => const StudyScreen(),
+              routes: [
+                GoRoute(
+                  path: 'course/:courseId/chapters',
+                  builder: (context, state) {
+                    final courseId = state.pathParameters['courseId']!;
+                    return ChaptersListPage(
+                      courseId: courseId,
+                      onBack: () => context.pop(),
+                    );
+                  },
+                ),
+              ],
             ),
           ],
         ),

@@ -142,11 +142,55 @@
   "studySearchHint": "Search courses, chapters, lessons",
   "studyYourCoursesTitle": "Your Courses",
   "studyLessonsTitle": "Lessons",
-  "filterVideo": "Video",
-  "filterLesson": "Lesson",
-  "filterAssessment": "Assessment",
-  "filterTest": "Test",
+  "filterVideo": "Videos",
+  "filterLesson": "Lessons",
+  "filterAssessment": "Assessments",
+  "filterTest": "Tests",
   "resumeStudyHeader": "Resume Study",
   "labelCompleted": "completed",
-  "labelLessonsPlural": "lessons"
+  "labelLessonsPlural": "lessons",
+  "curriculumBackButton": "Back",
+  "curriculumChaptersCount": "{count} Chapters",
+  "@curriculumChaptersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "filterAll": "All",
+  "curriculumLessonsLabel": "Lessons",
+  "curriculumAssessmentsLabel": "Assessments",
+  "curriculumTestsCompletedLabel": "{count} tests completed",
+  "chapterIndexLabel": "Chapter {index}: {title}",
+  "@chapterIndexLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "chapterMetadata": "{lessons} {lessonsLabel} · {assessments} {assessmentsLabel}",
+  "@chapterMetadata": {
+    "placeholders": {
+      "lessons": {
+        "type": "int"
+      },
+      "lessonsLabel": {
+        "type": "String"
+      },
+      "assessments": {
+        "type": "int"
+      },
+      "assessmentsLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "statusLocked": "Locked",
+  "statusInProgress": "In Progress",
+  "statusCompleted": "Completed"
 }

@@ -20,6 +20,26 @@ class ChapterDto {
     this.lessons = const [],
   });
 
+  ChapterDto copyWith({
+    String? id,
+    String? courseId,
+    String? title,
+    int? lessonCount,
+    int? assessmentCount,
+    int? orderIndex,
+    List<LessonDto>? lessons,
+  }) {
+    return ChapterDto(
+      id: id ?? this.id,
+      courseId: courseId ?? this.courseId,
+      title: title ?? this.title,
+      lessonCount: lessonCount ?? this.lessonCount,
+      assessmentCount: assessmentCount ?? this.assessmentCount,
+      orderIndex: orderIndex ?? this.orderIndex,
+      lessons: lessons ?? this.lessons,
+    );
+  }
+
   factory ChapterDto.fromJson(Map<String, dynamic> json) {
     return ChapterDto(
       id: json['id'] as String,

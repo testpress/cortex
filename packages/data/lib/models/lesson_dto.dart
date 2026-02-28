@@ -14,6 +14,7 @@ class LessonDto {
   final LessonProgressStatus progressStatus;
   final bool isLocked;
   final int orderIndex;
+  final String? chapterTitle;
 
   const LessonDto({
     required this.id,
@@ -24,7 +25,32 @@ class LessonDto {
     required this.progressStatus,
     required this.isLocked,
     required this.orderIndex,
+    this.chapterTitle,
   });
+
+  LessonDto copyWith({
+    String? id,
+    String? chapterId,
+    String? title,
+    LessonType? type,
+    String? duration,
+    LessonProgressStatus? progressStatus,
+    bool? isLocked,
+    int? orderIndex,
+    String? chapterTitle,
+  }) {
+    return LessonDto(
+      id: id ?? this.id,
+      chapterId: chapterId ?? this.chapterId,
+      title: title ?? this.title,
+      type: type ?? this.type,
+      duration: duration ?? this.duration,
+      progressStatus: progressStatus ?? this.progressStatus,
+      isLocked: isLocked ?? this.isLocked,
+      orderIndex: orderIndex ?? this.orderIndex,
+      chapterTitle: chapterTitle ?? this.chapterTitle,
+    );
+  }
 
   factory LessonDto.fromJson(Map<String, dynamic> json) {
     return LessonDto(
@@ -37,6 +63,7 @@ class LessonDto {
           .firstWhere((e) => e.name == json['progressStatus']),
       isLocked: json['isLocked'] as bool,
       orderIndex: json['orderIndex'] as int,
+      chapterTitle: json['chapterTitle'] as String?,
     );
   }
 
@@ -50,6 +77,7 @@ class LessonDto {
       'progressStatus': progressStatus.name,
       'isLocked': isLocked,
       'orderIndex': orderIndex,
+      'chapterTitle': chapterTitle,
     };
   }
 }

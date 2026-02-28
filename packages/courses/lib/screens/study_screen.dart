@@ -178,7 +178,12 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                                 padding: EdgeInsets.only(
                                   bottom: design.spacing.md,
                                 ),
-                                child: CourseCard(course: c),
+                                child: CourseCard(
+                                  course: c,
+                                  onTap: () => context.push(
+                                    '/study/course/${c.id}/chapters',
+                                  ),
+                                ),
                               );
                             },
                           ),
