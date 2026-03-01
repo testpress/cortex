@@ -208,7 +208,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
               );
             },
             loading: () => const Center(child: AppLoadingIndicator()),
-            error: (e, __) => Center(child: AppText.body('Error: $e')),
+            error: (e, _) => Center(child: AppText.body('Error: $e')),
           ),
         ),
 
@@ -223,7 +223,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                 )
               : const SizedBox.shrink(),
           loading: () => const SizedBox.shrink(),
-          error: (_, __) => const SizedBox.shrink(),
+          error: (_, _) => const SizedBox.shrink(),
         ),
       ],
     );
