@@ -1,6 +1,6 @@
-import 'package:data/data.dart' show LessonType;
+import 'package:data/data.dart' show LessonType, LessonProgressStatus;
 
-export 'package:data/data.dart' show LessonType;
+export 'package:data/data.dart' show LessonType, LessonProgressStatus;
 
 /// Domain model for a specific content item within a chapter.
 class Lesson {
@@ -8,7 +8,7 @@ class Lesson {
     required this.id,
     required this.title,
     required this.type,
-    required this.secondaryLabel,
+    required this.progressStatus,
     this.duration,
     this.isLocked = false,
   });
@@ -16,7 +16,7 @@ class Lesson {
   final String id;
   final String title;
   final LessonType type;
-  final String secondaryLabel;
+  final LessonProgressStatus progressStatus;
   final String? duration;
   final bool isLocked;
 }

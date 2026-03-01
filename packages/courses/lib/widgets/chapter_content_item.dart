@@ -1,8 +1,6 @@
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
-
-/// Enum representing the status of content within a chapter.
-enum ChapterStatus { running, upcoming, history }
+import '../models/course_content.dart';
 
 /// Component to display individual lesson or assessment items in the chapter detail.
 class ChapterContentItem extends StatelessWidget {
@@ -12,7 +10,7 @@ class ChapterContentItem extends StatelessWidget {
     required this.onTap,
   });
 
-  final dynamic lesson; // Using dynamic for now to support domain models
+  final Lesson lesson;
   final VoidCallback onTap;
 
   @override
@@ -78,54 +76,44 @@ class ChapterContentItem extends StatelessWidget {
     );
   }
 
-  IconData _getIconForType(dynamic type) {
-    // We expect LessonType here
-    final typeName = type.toString().split('.').last;
-    switch (typeName) {
-      case 'video':
+  IconData _getIconForType(LessonType type) {
+    switch (type) {
+      case LessonType.video:
         return LucideIcons.playCircle;
-      case 'pdf':
+      case LessonType.pdf:
         return LucideIcons.fileText;
-      case 'assessment':
+      case LessonType.assessment:
         return LucideIcons.clipboardCheck;
-      case 'test':
+      case LessonType.test:
         return LucideIcons.award;
-      default:
-        return LucideIcons.fileText;
     }
   }
 
-  Color _getColorForType(BuildContext context, dynamic type) {
+  Color _getColorForType(BuildContext context, LessonType type) {
     final design = Design.of(context);
-    final typeName = type.toString().split('.').last;
-    switch (typeName) {
-      case 'video':
+    switch (type) {
+      case LessonType.video:
         return design.colors.accent1; // Purple
-      case 'pdf':
+      case LessonType.pdf:
         return design.colors.accent2; // Blue
-      case 'assessment':
+      case LessonType.assessment:
         return design.colors.accent4; // Green
-      case 'test':
+      case LessonType.test:
         return design.colors.accent3; // Orange
-      default:
-        return design.colors.textSecondary;
     }
   }
 
-  String _getLabelForType(BuildContext context, dynamic type) {
+  String _getLabelForType(BuildContext context, LessonType type) {
     final l10n = L10n.of(context);
-    final typeName = type.toString().split('.').last;
-    switch (typeName) {
-      case 'video':
+    switch (type) {
+      case LessonType.video:
         return l10n.chapterTypeVideo;
-      case 'pdf':
+      case LessonType.pdf:
         return l10n.chapterTypePdf;
-      case 'assessment':
+      case LessonType.assessment:
         return l10n.chapterTypeAssessment;
-      case 'test':
+      case LessonType.test:
         return l10n.chapterTypeTest;
-      default:
-        return l10n.filterLesson;
     }
   }
 }

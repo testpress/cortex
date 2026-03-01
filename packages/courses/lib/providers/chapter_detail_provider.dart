@@ -1,4 +1,3 @@
-import 'package:data/data.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../models/course_content.dart';
 import 'course_detail_provider.dart';
@@ -33,22 +32,11 @@ Future<Chapter?> chapterDetail(
             id: l.id,
             title: l.title,
             type: l.type,
-            secondaryLabel: _mapProgress(l.progressStatus),
+            progressStatus: l.progressStatus,
             duration: l.duration,
             isLocked: l.isLocked,
           ),
         )
         .toList(),
   );
-}
-
-String _mapProgress(LessonProgressStatus status) {
-  switch (status) {
-    case LessonProgressStatus.completed:
-      return 'Completed';
-    case LessonProgressStatus.inProgress:
-      return 'In Progress';
-    case LessonProgressStatus.notStarted:
-      return 'Not Started';
-  }
 }

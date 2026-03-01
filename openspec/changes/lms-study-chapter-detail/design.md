@@ -16,7 +16,7 @@ The `ChapterDetailPage` is a core screen in the Study tab of the LMS Coaching Ap
 ## Decisions
 
 ### 1. Component Location
-- **Decision:** Place `ChapterDetailPage` in `packages/courses/lib/ui/chapter_detail/`.
+- **Decision:** Place `ChapterDetailPage` in `packages/courses/lib/screens/chapter_detail_page.dart`.
 - **Rationale:** This screen is specific to the course hierarchy and should reside in the `courses` package.
 
 ### 2. State Management
