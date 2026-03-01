@@ -60,7 +60,16 @@ class CortexApp extends StatelessWidget {
       routerConfig: appRouter,
       // Set Plus Jakarta Sans on the Material theme so widgets that still
       // use Material's text theme (Scaffold, SnackBar, etc.) also use it.
-      theme: ThemeData(fontFamily: GoogleFonts.notoSans().fontFamily),
+      theme: ThemeData(
+        fontFamily: GoogleFonts.notoSans().fontFamily,
+        scaffoldBackgroundColor: design.colors.canvas,
+        canvasColor: design.colors.canvas,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: design.colors.primary,
+          surface: design.colors.surface,
+          brightness: design.isDark ? Brightness.dark : Brightness.light,
+        ),
+      ),
       builder: (context, child) {
         return DefaultTextStyle(
           style: design.typography.body.copyWith(

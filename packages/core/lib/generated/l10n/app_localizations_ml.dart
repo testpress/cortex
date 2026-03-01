@@ -339,4 +339,31 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get statusCompleted => 'പൂർത്തിയായി';
+
+  @override
+  String get chapterStatusRunning => 'നടന്നുകൊണ്ടിരിക്കുന്നത്';
+
+  @override
+  String get chapterStatusUpcoming => 'വരാനിരിക്കുന്നത്';
+
+  @override
+  String get chapterStatusHistory => 'കഴിഞ്ഞവ';
+
+  @override
+  String get chapterTypeVideo => 'വീഡിയോ പാഠം';
+
+  @override
+  String get chapterTypePdf => 'PDF കുറിപ്പുകൾ';
+
+  @override
+  String get chapterTypeAssessment => 'പ്രാക്ടീസ് അസസ്‌മെന്റ്';
+
+  @override
+  String get chapterTypeTest => 'ടെസ്റ്റ്';
+
+  @override
+  String get chapterNoContent => 'ഉള്ളടക്കം ലഭ്യമല്ല';
+
+  @override
+  String get chapterNotFound => 'ചാപ്റ്റർ ലഭ്യമല്ല';
 }

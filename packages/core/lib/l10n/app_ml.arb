@@ -98,5 +98,14 @@
   "chapterMetadata": "{lessons} {lessonsLabel} · {assessments} {assessmentsLabel}",
   "statusLocked": "ലോക്ക് ചെയ്തു",
   "statusInProgress": "നടന്നുകൊണ്ടിരിക്കുന്നു",
-  "statusCompleted": "പൂർത്തിയായി"
+  "statusCompleted": "പൂർത്തിയായി",
+  "chapterStatusRunning": "നടന്നുകൊണ്ടിരിക്കുന്നത്",
+  "chapterStatusUpcoming": "വരാനിരിക്കുന്നത്",
+  "chapterStatusHistory": "കഴിഞ്ഞവ",
+  "chapterTypeVideo": "വീഡിയോ പാഠം",
+  "chapterTypePdf": "PDF കുറിപ്പുകൾ",
+  "chapterTypeAssessment": "പ്രാക്ടീസ് അസസ്‌മെന്റ്",
+  "chapterTypeTest": "ടെസ്റ്റ്",
+  "chapterNoContent": "ഉള്ളടക്കം ലഭ്യമല്ല",
+  "chapterNotFound": "ചാപ്റ്റർ ലഭ്യമല്ല"
 }

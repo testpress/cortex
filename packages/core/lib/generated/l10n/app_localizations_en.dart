@@ -338,4 +338,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statusCompleted => 'Completed';
+
+  @override
+  String get chapterStatusRunning => 'Running';
+
+  @override
+  String get chapterStatusUpcoming => 'Upcoming';
+
+  @override
+  String get chapterStatusHistory => 'History';
+
+  @override
+  String get chapterTypeVideo => 'Video Lesson';
+
+  @override
+  String get chapterTypePdf => 'PDF Notes';
+
+  @override
+  String get chapterTypeAssessment => 'Practice Assessment';
+
+  @override
+  String get chapterTypeTest => 'Test';
+
+  @override
+  String get chapterNoContent => 'No content available';
+
+  @override
+  String get chapterNotFound => 'Chapter not found';
 }

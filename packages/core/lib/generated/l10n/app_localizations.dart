@@ -698,6 +698,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Completed'**
   String get statusCompleted;
+
+  /// No description provided for @chapterStatusRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Running'**
+  String get chapterStatusRunning;
+
+  /// No description provided for @chapterStatusUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming'**
+  String get chapterStatusUpcoming;
+
+  /// No description provided for @chapterStatusHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get chapterStatusHistory;
+
+  /// No description provided for @chapterTypeVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Video Lesson'**
+  String get chapterTypeVideo;
+
+  /// No description provided for @chapterTypePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF Notes'**
+  String get chapterTypePdf;
+
+  /// No description provided for @chapterTypeAssessment.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice Assessment'**
+  String get chapterTypeAssessment;
+
+  /// No description provided for @chapterTypeTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Test'**
+  String get chapterTypeTest;
+
+  /// No description provided for @chapterNoContent.
+  ///
+  /// In en, this message translates to:
+  /// **'No content available'**
+  String get chapterNoContent;
+
+  /// No description provided for @chapterNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Chapter not found'**
+  String get chapterNotFound;
 }
 
 class _AppLocalizationsDelegate
