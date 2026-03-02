@@ -11,6 +11,7 @@ import 'tables/lessons_table.dart';
 import 'tables/live_classes_table.dart';
 import 'tables/forum_threads_table.dart';
 import 'tables/user_progress_table.dart';
+import '../models/lesson_dto.dart' show LessonProgressStatus;
 
 part 'app_database.g.dart';
 
@@ -28,20 +29,27 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (m, from, to) async {
           if (from < 2) {
-            // Simplified for development: drop and recreate the table to handle renamed column
+            // Courses table migration (simplified for development, but ideally non-destructive)
             await m.deleteTable(coursesTable.actualTableName);
             await m.createTable(coursesTable);
           }
           if (from < 3) {
-            // Recreate lessons table to handle new Phase-2 metadata columns
-            await m.deleteTable(lessonsTable.actualTableName);
-            await m.createTable(lessonsTable);
+            // Phase-2: Add new columns to lessonsTable without deleting existing data
+            await m.addColumn(lessonsTable, lessonsTable.contentJson);
+            await m.addColumn(lessonsTable, lessonsTable.subtitle);
+            await m.addColumn(lessonsTable, lessonsTable.subjectName);
+            await m.addColumn(lessonsTable, lessonsTable.subjectIndex);
+            await m.addColumn(lessonsTable, lessonsTable.lessonNumber);
+            await m.addColumn(lessonsTable, lessonsTable.totalLessons);
+          }
+          if (from < 4) {
+            await m.addColumn(lessonsTable, lessonsTable.isBookmarked);
           }
         },
       );
@@ -76,6 +84,35 @@ class AppDatabase extends _$AppDatabase {
             ..where((t) => t.chapterId.equals(chapterId))
             ..orderBy([(t) => OrderingTerm.asc(t.orderIndex)]))
           .watch();
+
+  /// Fetch a single lesson by its primary ID.
+  Future<LessonsTableData?> getLessonById(String id) =>
+      (select(lessonsTable)..where((t) => t.id.equals(id))).getSingleOrNull();
+
+  /// Watch a single lesson's data.
+  Stream<LessonsTableData?> watchLesson(String id) =>
+      (select(lessonsTable)..where((t) => t.id.equals(id))).watchSingleOrNull();
+
+  /// Toggles the bookmark status of a lesson.
+  Future<void> toggleLessonBookmark(String id) async {
+    final lesson = await getLessonById(id);
+    if (lesson == null) return;
+    await (update(lessonsTable)..where((t) => t.id.equals(id))).write(
+      LessonsTableCompanion(
+        isBookmarked: Value(!lesson.isBookmarked),
+      ),
+    );
+  }
+
+  /// Updates the progress status of a lesson.
+  Future<void> updateLessonProgress(
+      String id, LessonProgressStatus status) async {
+    await (update(lessonsTable)..where((t) => t.id.equals(id))).write(
+      LessonsTableCompanion(
+        progressStatus: Value(status.name),
+      ),
+    );
+  }
 
   Future<void> upsertLessons(List<LessonsTableCompanion> rows) =>
       batch((b) => b.insertAllOnConflictUpdate(lessonsTable, rows));

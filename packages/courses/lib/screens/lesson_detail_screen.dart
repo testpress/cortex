@@ -1,13 +1,13 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter/material.dart'
-    show Divider; // Use Divider from Material for convenience
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
+import 'package:data/data.dart';
 import '../models/course_content.dart';
 import '../widgets/lesson_detail/lesson_detail_header.dart';
 import '../widgets/lesson_detail/lesson_reading_progress_bar.dart';
 import '../widgets/lesson_detail/lesson_navigation_footer.dart';
 import '../widgets/lesson_detail/content_widgets.dart';
+import '../providers/lesson_detail_provider.dart';
 
 /// Fullscreen reader for text-based lessons.
 ///
@@ -36,7 +36,7 @@ class LessonDetailScreen extends ConsumerStatefulWidget {
 class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
   final ScrollController _scrollController = ScrollController();
   double _readingProgress = 0.0;
-  bool _isBookmarked = false;
+  bool _showDownloadFeedback = false;
 
   @override
   void initState() {
@@ -62,6 +62,9 @@ class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
     if (maxScroll <= 0) {
       if (_readingProgress != 1.0) {
         setState(() => _readingProgress = 1.0);
+        if (widget.lesson.progressStatus != LessonProgressStatus.completed) {
+          _markAsCompleted();
+        }
       }
       return;
     }
@@ -71,7 +74,21 @@ class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
       setState(() {
         _readingProgress = newProgress;
       });
+
+      // Mark as completed if scroll exceeds 99%
+      if (newProgress >= 0.99 &&
+          widget.lesson.progressStatus != LessonProgressStatus.completed) {
+        _markAsCompleted();
+      }
     }
+  }
+
+  Future<void> _markAsCompleted() async {
+    final repository = await ref.read(courseRepositoryProvider.future);
+    await repository.updateLessonProgress(
+      widget.lesson.id,
+      LessonProgressStatus.completed,
+    );
   }
 
   @override
@@ -81,69 +98,96 @@ class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
         ? design.subjectPalette.atIndex(widget.lesson.subjectIndex!)
         : null;
 
+    final isBookmarked =
+        ref.watch(lessonBookmarkProvider(widget.lesson.id)).valueOrNull ??
+        false;
+
     return Container(
       color: design.colors.surface,
-      child: Column(
+      child: Stack(
         children: [
-          // Sticky Top Navigation
-          LessonDetailHeader(
-            onBack: () => Navigator.of(context).pop(),
-            isBookmarked: _isBookmarked,
-            onBookmarkToggle: () =>
-                setState(() => _isBookmarked = !_isBookmarked),
-            onDownload: () {
-              // Action handled by consumer or future sync logic
-            },
-          ),
-          // Scroll-linked progress bar
-          LessonReadingProgressBar(
-            progress: _readingProgress,
-            foregroundColor: subjectColors?.accent,
-          ),
-          // Main Content Area
-          Expanded(
-            child: CustomScrollView(
-              controller: _scrollController,
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                SliverPadding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacing.screenPadding,
-                    vertical: design.spacing.xl,
-                  ),
-                  sliver: SliverList(
-                    delegate: SliverChildListDelegate([
-                      // Lesson Title & Badges
-                      _LessonMetaSection(lesson: widget.lesson),
-                      SizedBox(height: design.spacing.lg),
-
-                      // Rich Content Blocks
-                      ...widget.lesson.content.map(_renderContentItem),
-
-                      SizedBox(height: design.spacing.xxl),
-
-                      // Sequential Navigation
-                      LessonNavigationFooter(
-                        onPrevious: widget.onPrevious,
-                        onNext: widget.onNext,
-                        hasPrevious: widget.onPrevious != null,
-                        hasNext: widget.onNext != null,
+          Column(
+            children: [
+              // Sticky Top Navigation
+              LessonDetailHeader(
+                onBack: () => Navigator.of(context).pop(),
+                isBookmarked: isBookmarked,
+                onBookmarkToggle: () async {
+                  final repository = await ref.read(
+                    courseRepositoryProvider.future,
+                  );
+                  await repository.toggleLessonBookmark(widget.lesson.id);
+                },
+                onDownload: () {
+                  setState(() => _showDownloadFeedback = true);
+                  Future.delayed(const Duration(seconds: 2), () {
+                    if (mounted) {
+                      setState(() => _showDownloadFeedback = false);
+                    }
+                  });
+                },
+              ),
+              // Scroll-linked progress bar
+              LessonReadingProgressBar(
+                progress: _readingProgress,
+                foregroundColor: subjectColors?.accent,
+              ),
+              // Main Content Area
+              Expanded(
+                child: CustomScrollView(
+                  controller: _scrollController,
+                  physics: const BouncingScrollPhysics(),
+                  slivers: [
+                    SliverPadding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: design.spacing.screenPadding,
+                        vertical: design.spacing.xl,
                       ),
+                      sliver: SliverList(
+                        delegate: SliverChildListDelegate([
+                          // Lesson Title & Badges
+                          _LessonMetaSection(lesson: widget.lesson),
+                          SizedBox(height: design.spacing.lg),
 
-                      SizedBox(height: design.spacing.xxl),
-                    ]),
-                  ),
+                          // Rich Content Blocks
+                          ...widget.lesson.content.map(
+                            (item) =>
+                                _renderContentItem(item, subjectColors?.accent),
+                          ),
+
+                          SizedBox(height: design.spacing.xxl),
+
+                          // Sequential Navigation
+                          LessonNavigationFooter(
+                            onPrevious: widget.onPrevious,
+                            onNext: widget.onNext,
+                            hasPrevious: widget.onPrevious != null,
+                            hasNext: widget.onNext != null,
+                          ),
+
+                          SizedBox(height: design.spacing.xxl),
+                        ]),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
+          if (_showDownloadFeedback)
+            Positioned(
+              bottom: design.spacing.xl,
+              left: design.spacing.md,
+              right: design.spacing.md,
+              child: _CustomToast(message: L10n.of(context).lessonDownload),
+            ),
         ],
       ),
     );
   }
 
   /// Maps content domain models to their respective rendering widgets.
-  Widget _renderContentItem(LessonContentItem item) {
+  Widget _renderContentItem(LessonContentItem item, Color? bulletColor) {
     return switch (item) {
       HeadingContent() => LessonHeading(text: item.text, level: item.level),
       ParagraphContent() => LessonParagraph(text: item.text),
@@ -151,14 +195,7 @@ class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
         imageUrl: item.imageUrl,
         altText: item.altText,
       ),
-      ListContent() => LessonList(
-        items: item.items,
-        bulletColor: widget.lesson.subjectIndex != null
-            ? Design.of(
-                context,
-              ).subjectPalette.atIndex(widget.lesson.subjectIndex!).accent
-            : null,
-      ),
+      ListContent() => LessonList(items: item.items, bulletColor: bulletColor),
       CalloutContent() => LessonCallout(text: item.text, type: item.type),
     };
   }
@@ -211,8 +248,40 @@ class _LessonMetaSection extends StatelessWidget {
           AppText.body(lesson.subtitle!, color: design.colors.textSecondary),
         ],
         SizedBox(height: design.spacing.lg),
-        Divider(color: design.colors.divider, height: 1),
+        Container(color: design.colors.divider, height: 1),
       ],
+    );
+  }
+}
+
+class _CustomToast extends StatelessWidget {
+  const _CustomToast({required this.message});
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: design.spacing.md,
+        vertical: design.spacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: design.colors.textPrimary,
+        borderRadius: BorderRadius.circular(design.radius.md),
+        boxShadow: [
+          BoxShadow(
+            color: design.colors.shadow,
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: AppText.label(
+        message,
+        color: design.colors.textInverse,
+        textAlign: TextAlign.center,
+      ),
     );
   }
 }

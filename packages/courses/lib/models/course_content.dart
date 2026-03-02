@@ -18,6 +18,7 @@ class Lesson {
     this.subjectIndex,
     this.lessonNumber,
     this.totalLessons,
+    this.isBookmarked = false,
     this.content = const [],
   });
 
@@ -27,6 +28,7 @@ class Lesson {
   final LessonProgressStatus progressStatus;
   final String? duration;
   final bool isLocked;
+  final bool isBookmarked;
 
   // New fields for LessonDetailScreen (Phase-2)
   final String? subtitle;

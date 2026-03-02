@@ -10,41 +10,31 @@ part 'lesson_detail_provider.g.dart';
 /// to find the matching [LessonDto] and maps it to the domain [Lesson].
 @riverpod
 Future<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async {
-  final enrollment = await ref.watch(enrollmentProvider.future);
+  final repository = await ref.watch(courseRepositoryProvider.future);
+  final lessonDto = await repository.getLesson(lessonId);
 
-  for (final course in enrollment) {
-    // 1. Fetch chapters for the course
-    final chapters = await ref.watch(courseChaptersProvider(course.id).future);
+  if (lessonDto == null) return null;
 
-    for (final chapter in chapters) {
-      // 2. Fetch lessons for the chapter
-      final lessons = await ref.watch(
-        chapterLessonsProvider(chapter.id).future,
-      );
+  return Lesson(
+    id: lessonDto.id,
+    title: lessonDto.title,
+    type: lessonDto.type,
+    progressStatus: lessonDto.progressStatus,
+    duration: lessonDto.duration,
+    isLocked: lessonDto.isLocked,
+    isBookmarked: lessonDto.isBookmarked,
+    subtitle: lessonDto.subtitle,
+    subjectName: lessonDto.subjectName,
+    subjectIndex: lessonDto.subjectIndex,
+    lessonNumber: lessonDto.lessonNumber,
+    totalLessons: lessonDto.totalLessons,
+    content: lessonDto.content.map(LessonContentItem.fromDto).toList(),
+  );
+}
 
-      // 3. Find matching lesson ID
-      final lessonDto = lessons.where((l) => l.id == lessonId).firstOrNull;
-
-      if (lessonDto != null) {
-        // 4. Map to domain model with rich content
-        return Lesson(
-          id: lessonDto.id,
-          title: lessonDto.title,
-          type: lessonDto.type,
-          progressStatus: lessonDto.progressStatus,
-          duration: lessonDto.duration,
-          isLocked: lessonDto.isLocked,
-          subtitle: lessonDto.subtitle,
-          subjectName: lessonDto.subjectName,
-          subjectIndex: lessonDto.subjectIndex,
-          lessonNumber: lessonDto.lessonNumber,
-          totalLessons: lessonDto.totalLessons,
-          content: lessonDto.content.map(LessonContentItem.fromDto).toList(),
-        );
-      }
-    }
-  }
-
-  // Not found in current enrollment
-  return null;
+/// Provider that watches and manages the bookmark status of a specific lesson.
+@riverpod
+Stream<bool> lessonBookmark(LessonBookmarkRef ref, String lessonId) async* {
+  final repository = await ref.watch(courseRepositoryProvider.future);
+  yield* repository.watchLesson(lessonId).map((l) => l?.isBookmarked ?? false);
 }

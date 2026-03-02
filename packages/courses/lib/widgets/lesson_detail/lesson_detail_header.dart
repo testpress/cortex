@@ -75,8 +75,7 @@ class LessonDetailHeader extends StatelessWidget {
               ),
               const Spacer(),
               _HeaderActionButton(
-                icon: LucideIcons.bookmark,
-                isFilled: isBookmarked,
+                icon: isBookmarked ? Icons.bookmark : Icons.bookmark_border,
                 onTap: onBookmarkToggle,
                 ariaLabel: isBookmarked
                     ? l10n.lessonBookmarkRemove
@@ -99,13 +98,11 @@ class LessonDetailHeader extends StatelessWidget {
 class _HeaderActionButton extends StatelessWidget {
   const _HeaderActionButton({
     required this.icon,
-    this.isFilled = false,
     required this.onTap,
     required this.ariaLabel,
   });
 
   final IconData icon;
-  final bool isFilled;
   final VoidCallback onTap;
   final String ariaLabel;
 
@@ -126,11 +123,7 @@ class _HeaderActionButton extends StatelessWidget {
             shape: BoxShape.circle,
           ),
           child: Center(
-            child: Icon(
-              isFilled ? Icons.bookmark : icon,
-              size: 16,
-              color: design.colors.textPrimary,
-            ),
+            child: Icon(icon, size: 16, color: design.colors.textPrimary),
           ),
         ),
       ),

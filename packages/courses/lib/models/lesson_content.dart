@@ -27,7 +27,8 @@ sealed class LessonContentItem {
           ),
         );
       default:
-        return ParagraphContent(text: dto.content.toString());
+        // log.warning('Unknown lesson content type: ${dto.type}');
+        return const ParagraphContent(text: '');
     }
   }
 }

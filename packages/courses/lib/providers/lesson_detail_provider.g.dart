@@ -6,7 +6,7 @@ part of 'lesson_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$lessonDetailHash() => r'42b3924defadc4bfebcbf317ed0bb0109d40bdf7';
+String _$lessonDetailHash() => r'4f41621c5b316fc7521879411c28a00138935d77';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -175,6 +175,138 @@ class _LessonDetailProviderElement
 
   @override
   String get lessonId => (origin as LessonDetailProvider).lessonId;
+}
+
+String _$lessonBookmarkHash() => r'5a2993eba7aeac8e300bbf1f51eaf2bfb54a813b';
+
+/// Provider that watches and manages the bookmark status of a specific lesson.
+///
+/// Copied from [lessonBookmark].
+@ProviderFor(lessonBookmark)
+const lessonBookmarkProvider = LessonBookmarkFamily();
+
+/// Provider that watches and manages the bookmark status of a specific lesson.
+///
+/// Copied from [lessonBookmark].
+class LessonBookmarkFamily extends Family<AsyncValue<bool>> {
+  /// Provider that watches and manages the bookmark status of a specific lesson.
+  ///
+  /// Copied from [lessonBookmark].
+  const LessonBookmarkFamily();
+
+  /// Provider that watches and manages the bookmark status of a specific lesson.
+  ///
+  /// Copied from [lessonBookmark].
+  LessonBookmarkProvider call(String lessonId) {
+    return LessonBookmarkProvider(lessonId);
+  }
+
+  @override
+  LessonBookmarkProvider getProviderOverride(
+    covariant LessonBookmarkProvider provider,
+  ) {
+    return call(provider.lessonId);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'lessonBookmarkProvider';
+}
+
+/// Provider that watches and manages the bookmark status of a specific lesson.
+///
+/// Copied from [lessonBookmark].
+class LessonBookmarkProvider extends AutoDisposeStreamProvider<bool> {
+  /// Provider that watches and manages the bookmark status of a specific lesson.
+  ///
+  /// Copied from [lessonBookmark].
+  LessonBookmarkProvider(String lessonId)
+    : this._internal(
+        (ref) => lessonBookmark(ref as LessonBookmarkRef, lessonId),
+        from: lessonBookmarkProvider,
+        name: r'lessonBookmarkProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$lessonBookmarkHash,
+        dependencies: LessonBookmarkFamily._dependencies,
+        allTransitiveDependencies:
+            LessonBookmarkFamily._allTransitiveDependencies,
+        lessonId: lessonId,
+      );
+
+  LessonBookmarkProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.lessonId,
+  }) : super.internal();
+
+  final String lessonId;
+
+  @override
+  Override overrideWith(
+    Stream<bool> Function(LessonBookmarkRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: LessonBookmarkProvider._internal(
+        (ref) => create(ref as LessonBookmarkRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        lessonId: lessonId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<bool> createElement() {
+    return _LessonBookmarkProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is LessonBookmarkProvider && other.lessonId == lessonId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, lessonId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin LessonBookmarkRef on AutoDisposeStreamProviderRef<bool> {
+  /// The parameter `lessonId` of this provider.
+  String get lessonId;
+}
+
+class _LessonBookmarkProviderElement
+    extends AutoDisposeStreamProviderElement<bool>
+    with LessonBookmarkRef {
+  _LessonBookmarkProviderElement(super.provider);
+
+  @override
+  String get lessonId => (origin as LessonBookmarkProvider).lessonId;
 }
 
 // ignore_for_file: type=lint

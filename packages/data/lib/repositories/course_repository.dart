@@ -63,6 +63,30 @@ class CourseRepository {
     return lessons;
   }
 
+  /// Direct fetch of a lesson by ID.
+  Future<LessonDto?> getLesson(String id) async {
+    final row = await _db.getLessonById(id);
+    return row != null ? _rowToLessonDto(row) : null;
+  }
+
+  /// Watch a single lesson by its ID.
+  Stream<LessonDto?> watchLesson(String id) {
+    return _db
+        .watchLesson(id)
+        .map((row) => row != null ? _rowToLessonDto(row) : null);
+  }
+
+  /// Toggles the bookmark status locally.
+  Future<void> toggleLessonBookmark(String id) async {
+    await _db.toggleLessonBookmark(id);
+  }
+
+  /// Updates lesson progress locally.
+  Future<void> updateLessonProgress(
+      String id, LessonProgressStatus status) async {
+    await _db.updateLessonProgress(id, status);
+  }
+
   /// Efficiently fetches lesson and parent titles by lesson ID.
   Future<({String lessonTitle, String chapterTitle, String courseTitle})?>
       getLessonDetails(String lessonId) async {
@@ -136,17 +160,13 @@ class CourseRepository {
         isLocked: row.isLocked,
         orderIndex: row.orderIndex,
         chapterTitle: row.chapterTitle,
-        content: row.contentJson != null
-            ? (jsonDecode(row.contentJson!) as List<dynamic>)
-                .map((e) =>
-                    LessonContentItemDto.fromJson(e as Map<String, dynamic>))
-                .toList()
-            : const [],
+        content: _parseContentJson(row.contentJson),
         subtitle: row.subtitle,
         subjectName: row.subjectName,
         subjectIndex: row.subjectIndex,
         lessonNumber: row.lessonNumber,
         totalLessons: row.totalLessons,
+        isBookmarked: row.isBookmarked,
       );
 
   LessonsTableCompanion _lessonDtoToCompanion(LessonDto dto) =>
@@ -170,6 +190,7 @@ class CourseRepository {
         subjectIndex: Value(dto.subjectIndex),
         lessonNumber: Value(dto.lessonNumber),
         totalLessons: Value(dto.totalLessons),
+        isBookmarked: Value(dto.isBookmarked),
       );
 
   LessonType _parseType(String s) => LessonType.values.firstWhere(
@@ -182,4 +203,17 @@ class CourseRepository {
         (e) => e.name == s,
         orElse: () => LessonProgressStatus.notStarted,
       );
+
+  List<LessonContentItemDto> _parseContentJson(String? json) {
+    if (json == null) return const [];
+    try {
+      final decoded = jsonDecode(json) as List<dynamic>;
+      return decoded
+          .map((e) => LessonContentItemDto.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      // Log or handle error: malformed JSON in local DB
+      return const [];
+    }
+  }
 }

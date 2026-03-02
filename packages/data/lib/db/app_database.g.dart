@@ -905,6 +905,16 @@ class $LessonsTableTable extends LessonsTable
   late final GeneratedColumn<int> totalLessons = GeneratedColumn<int>(
       'total_lessons', aliasedName, true,
       type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _isBookmarkedMeta =
+      const VerificationMeta('isBookmarked');
+  @override
+  late final GeneratedColumn<bool> isBookmarked = GeneratedColumn<bool>(
+      'is_bookmarked', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("is_bookmarked" IN (0, 1))'),
+      defaultValue: const Constant(false));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -921,7 +931,8 @@ class $LessonsTableTable extends LessonsTable
         subjectName,
         subjectIndex,
         lessonNumber,
-        totalLessons
+        totalLessons,
+        isBookmarked
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1020,6 +1031,12 @@ class $LessonsTableTable extends LessonsTable
           totalLessons.isAcceptableOrUnknown(
               data['total_lessons']!, _totalLessonsMeta));
     }
+    if (data.containsKey('is_bookmarked')) {
+      context.handle(
+          _isBookmarkedMeta,
+          isBookmarked.isAcceptableOrUnknown(
+              data['is_bookmarked']!, _isBookmarkedMeta));
+    }
     return context;
   }
 
@@ -1059,6 +1076,8 @@ class $LessonsTableTable extends LessonsTable
           .read(DriftSqlType.int, data['${effectivePrefix}lesson_number']),
       totalLessons: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}total_lessons']),
+      isBookmarked: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_bookmarked'])!,
     );
   }
 
@@ -1089,6 +1108,7 @@ class LessonsTableData extends DataClass
   final int? subjectIndex;
   final int? lessonNumber;
   final int? totalLessons;
+  final bool isBookmarked;
   const LessonsTableData(
       {required this.id,
       required this.chapterId,
@@ -1104,7 +1124,8 @@ class LessonsTableData extends DataClass
       this.subjectName,
       this.subjectIndex,
       this.lessonNumber,
-      this.totalLessons});
+      this.totalLessons,
+      required this.isBookmarked});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1137,6 +1158,7 @@ class LessonsTableData extends DataClass
     if (!nullToAbsent || totalLessons != null) {
       map['total_lessons'] = Variable<int>(totalLessons);
     }
+    map['is_bookmarked'] = Variable<bool>(isBookmarked);
     return map;
   }
 
@@ -1171,6 +1193,7 @@ class LessonsTableData extends DataClass
       totalLessons: totalLessons == null && nullToAbsent
           ? const Value.absent()
           : Value(totalLessons),
+      isBookmarked: Value(isBookmarked),
     );
   }
 
@@ -1193,6 +1216,7 @@ class LessonsTableData extends DataClass
       subjectIndex: serializer.fromJson<int?>(json['subjectIndex']),
       lessonNumber: serializer.fromJson<int?>(json['lessonNumber']),
       totalLessons: serializer.fromJson<int?>(json['totalLessons']),
+      isBookmarked: serializer.fromJson<bool>(json['isBookmarked']),
     );
   }
   @override
@@ -1214,6 +1238,7 @@ class LessonsTableData extends DataClass
       'subjectIndex': serializer.toJson<int?>(subjectIndex),
       'lessonNumber': serializer.toJson<int?>(lessonNumber),
       'totalLessons': serializer.toJson<int?>(totalLessons),
+      'isBookmarked': serializer.toJson<bool>(isBookmarked),
     };
   }
 
@@ -1232,7 +1257,8 @@ class LessonsTableData extends DataClass
           Value<String?> subjectName = const Value.absent(),
           Value<int?> subjectIndex = const Value.absent(),
           Value<int?> lessonNumber = const Value.absent(),
-          Value<int?> totalLessons = const Value.absent()}) =>
+          Value<int?> totalLessons = const Value.absent(),
+          bool? isBookmarked}) =>
       LessonsTableData(
         id: id ?? this.id,
         chapterId: chapterId ?? this.chapterId,
@@ -1253,6 +1279,7 @@ class LessonsTableData extends DataClass
             lessonNumber.present ? lessonNumber.value : this.lessonNumber,
         totalLessons:
             totalLessons.present ? totalLessons.value : this.totalLessons,
+        isBookmarked: isBookmarked ?? this.isBookmarked,
       );
   LessonsTableData copyWithCompanion(LessonsTableCompanion data) {
     return LessonsTableData(
@@ -1284,6 +1311,9 @@ class LessonsTableData extends DataClass
       totalLessons: data.totalLessons.present
           ? data.totalLessons.value
           : this.totalLessons,
+      isBookmarked: data.isBookmarked.present
+          ? data.isBookmarked.value
+          : this.isBookmarked,
     );
   }
 
@@ -1304,7 +1334,8 @@ class LessonsTableData extends DataClass
           ..write('subjectName: $subjectName, ')
           ..write('subjectIndex: $subjectIndex, ')
           ..write('lessonNumber: $lessonNumber, ')
-          ..write('totalLessons: $totalLessons')
+          ..write('totalLessons: $totalLessons, ')
+          ..write('isBookmarked: $isBookmarked')
           ..write(')'))
         .toString();
   }
@@ -1325,7 +1356,8 @@ class LessonsTableData extends DataClass
       subjectName,
       subjectIndex,
       lessonNumber,
-      totalLessons);
+      totalLessons,
+      isBookmarked);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1344,7 +1376,8 @@ class LessonsTableData extends DataClass
           other.subjectName == this.subjectName &&
           other.subjectIndex == this.subjectIndex &&
           other.lessonNumber == this.lessonNumber &&
-          other.totalLessons == this.totalLessons);
+          other.totalLessons == this.totalLessons &&
+          other.isBookmarked == this.isBookmarked);
 }
 
 class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
@@ -1363,6 +1396,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   final Value<int?> subjectIndex;
   final Value<int?> lessonNumber;
   final Value<int?> totalLessons;
+  final Value<bool> isBookmarked;
   final Value<int> rowid;
   const LessonsTableCompanion({
     this.id = const Value.absent(),
@@ -1380,6 +1414,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.subjectIndex = const Value.absent(),
     this.lessonNumber = const Value.absent(),
     this.totalLessons = const Value.absent(),
+    this.isBookmarked = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   LessonsTableCompanion.insert({
@@ -1398,6 +1433,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.subjectIndex = const Value.absent(),
     this.lessonNumber = const Value.absent(),
     this.totalLessons = const Value.absent(),
+    this.isBookmarked = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         chapterId = Value(chapterId),
@@ -1421,6 +1457,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Expression<int>? subjectIndex,
     Expression<int>? lessonNumber,
     Expression<int>? totalLessons,
+    Expression<bool>? isBookmarked,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1439,6 +1476,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       if (subjectIndex != null) 'subject_index': subjectIndex,
       if (lessonNumber != null) 'lesson_number': lessonNumber,
       if (totalLessons != null) 'total_lessons': totalLessons,
+      if (isBookmarked != null) 'is_bookmarked': isBookmarked,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1459,6 +1497,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       Value<int?>? subjectIndex,
       Value<int?>? lessonNumber,
       Value<int?>? totalLessons,
+      Value<bool>? isBookmarked,
       Value<int>? rowid}) {
     return LessonsTableCompanion(
       id: id ?? this.id,
@@ -1476,6 +1515,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       subjectIndex: subjectIndex ?? this.subjectIndex,
       lessonNumber: lessonNumber ?? this.lessonNumber,
       totalLessons: totalLessons ?? this.totalLessons,
+      isBookmarked: isBookmarked ?? this.isBookmarked,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1528,6 +1568,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     if (totalLessons.present) {
       map['total_lessons'] = Variable<int>(totalLessons.value);
     }
+    if (isBookmarked.present) {
+      map['is_bookmarked'] = Variable<bool>(isBookmarked.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1552,6 +1595,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
           ..write('subjectIndex: $subjectIndex, ')
           ..write('lessonNumber: $lessonNumber, ')
           ..write('totalLessons: $totalLessons, ')
+          ..write('isBookmarked: $isBookmarked, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3122,6 +3166,7 @@ typedef $$LessonsTableTableCreateCompanionBuilder = LessonsTableCompanion
   Value<int?> subjectIndex,
   Value<int?> lessonNumber,
   Value<int?> totalLessons,
+  Value<bool> isBookmarked,
   Value<int> rowid,
 });
 typedef $$LessonsTableTableUpdateCompanionBuilder = LessonsTableCompanion
@@ -3141,6 +3186,7 @@ typedef $$LessonsTableTableUpdateCompanionBuilder = LessonsTableCompanion
   Value<int?> subjectIndex,
   Value<int?> lessonNumber,
   Value<int?> totalLessons,
+  Value<bool> isBookmarked,
   Value<int> rowid,
 });
 
@@ -3198,6 +3244,9 @@ class $$LessonsTableTableFilterComposer
 
   ColumnFilters<int> get totalLessons => $composableBuilder(
       column: $table.totalLessons, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isBookmarked => $composableBuilder(
+      column: $table.isBookmarked, builder: (column) => ColumnFilters(column));
 }
 
 class $$LessonsTableTableOrderingComposer
@@ -3258,6 +3307,10 @@ class $$LessonsTableTableOrderingComposer
   ColumnOrderings<int> get totalLessons => $composableBuilder(
       column: $table.totalLessons,
       builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isBookmarked => $composableBuilder(
+      column: $table.isBookmarked,
+      builder: (column) => ColumnOrderings(column));
 }
 
 class $$LessonsTableTableAnnotationComposer
@@ -3313,6 +3366,9 @@ class $$LessonsTableTableAnnotationComposer
 
   GeneratedColumn<int> get totalLessons => $composableBuilder(
       column: $table.totalLessons, builder: (column) => column);
+
+  GeneratedColumn<bool> get isBookmarked => $composableBuilder(
+      column: $table.isBookmarked, builder: (column) => column);
 }
 
 class $$LessonsTableTableTableManager extends RootTableManager<
@@ -3356,6 +3412,7 @@ class $$LessonsTableTableTableManager extends RootTableManager<
             Value<int?> subjectIndex = const Value.absent(),
             Value<int?> lessonNumber = const Value.absent(),
             Value<int?> totalLessons = const Value.absent(),
+            Value<bool> isBookmarked = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               LessonsTableCompanion(
@@ -3374,6 +3431,7 @@ class $$LessonsTableTableTableManager extends RootTableManager<
             subjectIndex: subjectIndex,
             lessonNumber: lessonNumber,
             totalLessons: totalLessons,
+            isBookmarked: isBookmarked,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -3392,6 +3450,7 @@ class $$LessonsTableTableTableManager extends RootTableManager<
             Value<int?> subjectIndex = const Value.absent(),
             Value<int?> lessonNumber = const Value.absent(),
             Value<int?> totalLessons = const Value.absent(),
+            Value<bool> isBookmarked = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               LessonsTableCompanion.insert(
@@ -3410,6 +3469,7 @@ class $$LessonsTableTableTableManager extends RootTableManager<
             subjectIndex: subjectIndex,
             lessonNumber: lessonNumber,
             totalLessons: totalLessons,
+            isBookmarked: isBookmarked,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0

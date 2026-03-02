@@ -160,7 +160,7 @@ class LessonImage extends StatelessWidget {
           ),
           child: Image.network(
             imageUrl,
-            fit: BoxFit.cover,
+            fit: BoxFit.fitWidth,
             semanticLabel: altText,
             loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress == null) return child;
@@ -219,10 +219,10 @@ class LessonList extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(
-                    top: 8.0,
-                    left: 4.0,
-                    right: 12.0,
+                  padding: EdgeInsets.only(
+                    top: design.spacing.sm,
+                    left: design.spacing.xs,
+                    right: design.spacing.sm + design.spacing.xs,
                   ),
                   child: Container(
                     width: 6,

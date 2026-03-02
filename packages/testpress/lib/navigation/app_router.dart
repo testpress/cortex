@@ -131,7 +131,7 @@ final GoRouter appRouter = GoRouter(
                                 '/study/assessment/${lesson.id}',
                               LessonType.test => '/study/test/${lesson.id}',
                             };
-                            context.push(path);
+                            context.push(path, extra: lesson);
                           },
                         );
                       },
@@ -142,6 +142,11 @@ final GoRouter appRouter = GoRouter(
                 GoRoute(
                   path: 'lesson/:id',
                   builder: (context, state) {
+                    final lessonArg = state.extra as Lesson?;
+                    if (lessonArg != null) {
+                      return LessonDetailScreen(lesson: lessonArg);
+                    }
+
                     final id = state.pathParameters['id']!;
                     return Consumer(
                       builder: (context, ref, child) {
