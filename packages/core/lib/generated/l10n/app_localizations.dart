@@ -752,6 +752,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Chapter not found'**
   String get chapterNotFound;
+
+  /// No description provided for @lessonXofY.
+  ///
+  /// In en, this message translates to:
+  /// **'Lesson {index} of {total}'**
+  String lessonXofY(int index, int total);
+
+  /// No description provided for @lessonBookmarkAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark lesson'**
+  String get lessonBookmarkAdd;
+
+  /// No description provided for @lessonBookmarkRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove bookmark'**
+  String get lessonBookmarkRemove;
+
+  /// No description provided for @lessonDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download lesson'**
+  String get lessonDownload;
+
+  /// No description provided for @navigationPrevious.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get navigationPrevious;
+
+  /// No description provided for @navigationNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next Lesson'**
+  String get navigationNext;
+
+  /// No description provided for @openDetailedLesson.
+  ///
+  /// In en, this message translates to:
+  /// **'Open lesson: {title}'**
+  String openDetailedLesson(String title);
 }
 
 class _AppLocalizationsDelegate

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:drift/drift.dart';
 
 import '../db/app_database.dart';
@@ -134,6 +135,18 @@ class CourseRepository {
         progressStatus: _parseStatus(row.progressStatus),
         isLocked: row.isLocked,
         orderIndex: row.orderIndex,
+        chapterTitle: row.chapterTitle,
+        content: row.contentJson != null
+            ? (jsonDecode(row.contentJson!) as List<dynamic>)
+                .map((e) =>
+                    LessonContentItemDto.fromJson(e as Map<String, dynamic>))
+                .toList()
+            : const [],
+        subtitle: row.subtitle,
+        subjectName: row.subjectName,
+        subjectIndex: row.subjectIndex,
+        lessonNumber: row.lessonNumber,
+        totalLessons: row.totalLessons,
       );
 
   LessonsTableCompanion _lessonDtoToCompanion(LessonDto dto) =>
@@ -146,6 +159,17 @@ class CourseRepository {
         progressStatus: Value(dto.progressStatus.name),
         isLocked: Value(dto.isLocked),
         orderIndex: dto.orderIndex,
+        chapterTitle: Value(dto.chapterTitle),
+        contentJson: Value(
+          dto.content.isNotEmpty
+              ? jsonEncode(dto.content.map((e) => e.toJson()).toList())
+              : null,
+        ),
+        subtitle: Value(dto.subtitle),
+        subjectName: Value(dto.subjectName),
+        subjectIndex: Value(dto.subjectIndex),
+        lessonNumber: Value(dto.lessonNumber),
+        totalLessons: Value(dto.totalLessons),
       );
 
   LessonType _parseType(String s) => LessonType.values.firstWhere(

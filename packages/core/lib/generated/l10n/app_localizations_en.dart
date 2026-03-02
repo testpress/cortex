@@ -365,4 +365,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chapterNotFound => 'Chapter not found';
+
+  @override
+  String lessonXofY(int index, int total) {
+    return 'Lesson $index of $total';
+  }
+
+  @override
+  String get lessonBookmarkAdd => 'Bookmark lesson';
+
+  @override
+  String get lessonBookmarkRemove => 'Remove bookmark';
+
+  @override
+  String get lessonDownload => 'Download lesson';
+
+  @override
+  String get navigationPrevious => 'Previous';
+
+  @override
+  String get navigationNext => 'Next Lesson';
+
+  @override
+  String openDetailedLesson(String title) {
+    return 'Open lesson: $title';
+  }
 }

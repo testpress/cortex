@@ -18,6 +18,8 @@ class AppButton extends StatelessWidget {
     this.foregroundColor,
     this.height = 48.0,
     this.padding,
+    this.leading,
+    this.trailing,
   });
 
   final String label;
@@ -29,6 +31,8 @@ class AppButton extends StatelessWidget {
   final Color? foregroundColor;
   final double height;
   final EdgeInsetsGeometry? padding;
+  final Widget? leading;
+  final Widget? trailing;
 
   // Semantic constructors
   const AppButton.primary({
@@ -41,6 +45,8 @@ class AppButton extends StatelessWidget {
     this.foregroundColor,
     this.height = 48.0,
     this.padding,
+    this.leading,
+    this.trailing,
   }) : variant = AppButtonVariant.primary;
 
   const AppButton.secondary({
@@ -53,6 +59,8 @@ class AppButton extends StatelessWidget {
     this.foregroundColor,
     this.height = 48.0,
     this.padding,
+    this.leading,
+    this.trailing,
   }) : variant = AppButtonVariant.secondary;
 
   @override
@@ -112,7 +120,20 @@ class AppButton extends StatelessWidget {
               ),
             ),
             child: Center(
-              child: AppText.label(label, color: effectiveForegroundColor),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (leading != null) ...[
+                    leading!,
+                    SizedBox(width: design.spacing.sm),
+                  ],
+                  AppText.label(label, color: effectiveForegroundColor),
+                  if (trailing != null) ...[
+                    SizedBox(width: design.spacing.sm),
+                    trailing!,
+                  ],
+                ],
+              ),
             ),
           ),
         ),

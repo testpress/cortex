@@ -28,7 +28,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -37,6 +37,11 @@ class AppDatabase extends _$AppDatabase {
             // Simplified for development: drop and recreate the table to handle renamed column
             await m.deleteTable(coursesTable.actualTableName);
             await m.createTable(coursesTable);
+          }
+          if (from < 3) {
+            // Recreate lessons table to handle new Phase-2 metadata columns
+            await m.deleteTable(lessonsTable.actualTableName);
+            await m.createTable(lessonsTable);
           }
         },
       );

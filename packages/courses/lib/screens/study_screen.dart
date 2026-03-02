@@ -261,6 +261,7 @@ class _LessonListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     IconData icon;
     ShortcutColors typeTheme;
@@ -287,23 +288,23 @@ class _LessonListItem extends StatelessWidget {
     final backgroundColor = typeTheme.background;
 
     return AppSemantics.button(
-      label: 'Open lesson: ${lesson.title}',
+      label: l10n.openDetailedLesson(lesson.title),
       onTap: () {
         final route = switch (lesson.type) {
-          LessonType.video => '/video/${lesson.id}',
-          LessonType.pdf => '/lesson/${lesson.id}',
-          LessonType.assessment => '/assessment/${lesson.id}',
-          LessonType.test => '/test/${lesson.id}',
+          LessonType.video => '/study/video/${lesson.id}',
+          LessonType.pdf => '/study/lesson/${lesson.id}',
+          LessonType.assessment => '/study/assessment/${lesson.id}',
+          LessonType.test => '/study/test/${lesson.id}',
         };
         context.push(route);
       },
       child: AppFocusable(
         onTap: () {
           final route = switch (lesson.type) {
-            LessonType.video => '/video/${lesson.id}',
-            LessonType.pdf => '/lesson/${lesson.id}',
-            LessonType.assessment => '/assessment/${lesson.id}',
-            LessonType.test => '/test/${lesson.id}',
+            LessonType.video => '/study/video/${lesson.id}',
+            LessonType.pdf => '/study/lesson/${lesson.id}',
+            LessonType.assessment => '/study/assessment/${lesson.id}',
+            LessonType.test => '/study/test/${lesson.id}',
           };
           context.push(route);
         },

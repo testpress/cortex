@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:courses/courses.dart';
+import 'package:data/data.dart';
 
 // Placeholder empty screens for the routes that don't exist yet
 class ExplorePlaceholderScreen extends StatelessWidget {
@@ -121,14 +123,122 @@ final GoRouter appRouter = GoRouter(
                           courseId: courseId,
                           chapterId: chapterId,
                           onBack: () => context.pop(),
-                          onLessonClick: (lessonId) {
-                            // Navigation disabled as lesson readers are not yet implemented
-                            // context.push('/lesson/$lessonId');
+                          onLessonClick: (lesson) {
+                            final path = switch (lesson.type) {
+                              LessonType.video => '/study/video/${lesson.id}',
+                              LessonType.pdf => '/study/lesson/${lesson.id}',
+                              LessonType.assessment =>
+                                '/study/assessment/${lesson.id}',
+                              LessonType.test => '/study/test/${lesson.id}',
+                            };
+                            context.push(path);
                           },
                         );
                       },
                     ),
                   ],
+                ),
+                // Lesson and Placeholder routes inside Chapter branch to stay within the shell
+                GoRoute(
+                  path: 'lesson/:id',
+                  builder: (context, state) {
+                    final id = state.pathParameters['id']!;
+                    return Consumer(
+                      builder: (context, ref, child) {
+                        final lessonAsync = ref.watch(lessonDetailProvider(id));
+                        return lessonAsync.when(
+                          data: (lesson) {
+                            if (lesson == null) {
+                              return const Center(
+                                child: Text('Lesson not found'),
+                              );
+                            }
+                            return LessonDetailScreen(lesson: lesson);
+                          },
+                          loading: () => Container(
+                            color: const Color(0xFFFFFFFF),
+                            child: const Center(child: AppLoadingIndicator()),
+                          ),
+                          error: (e, __) => Center(child: Text('Error: $e')),
+                        );
+                      },
+                    );
+                  },
+                ),
+                GoRoute(
+                  path: 'video/:id',
+                  builder: (context, state) {
+                    final id = state.pathParameters['id'];
+                    return AppShell(
+                      backgroundColor: const Color(0xFFFFFFFF),
+                      child: Column(
+                        children: [
+                          AppHeader(
+                            title: 'Video Lesson',
+                            leading: AppFocusable(
+                              onTap: () => context.pop(),
+                              child: const Icon(LucideIcons.chevronLeft),
+                            ),
+                          ),
+                          Expanded(
+                            child: Center(
+                              child: Text('Video Full-Screen View for ID: $id'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                GoRoute(
+                  path: 'assessment/:id',
+                  builder: (context, state) {
+                    final id = state.pathParameters['id'];
+                    return AppShell(
+                      backgroundColor: const Color(0xFFFFFFFF),
+                      child: Column(
+                        children: [
+                          AppHeader(
+                            title: 'Assessment',
+                            leading: AppFocusable(
+                              onTap: () => context.pop(),
+                              child: const Icon(LucideIcons.chevronLeft),
+                            ),
+                          ),
+                          Expanded(
+                            child: Center(
+                              child: Text('Assessment Detail Page for ID: $id'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                GoRoute(
+                  path: 'test/:id',
+                  builder: (context, state) {
+                    final id = state.pathParameters['id'];
+                    return AppShell(
+                      backgroundColor: const Color(0xFFFFFFFF),
+                      child: Column(
+                        children: [
+                          AppHeader(
+                            title: 'Test',
+                            leading: AppFocusable(
+                              onTap: () => context.pop(),
+                              child: const Icon(LucideIcons.chevronLeft),
+                            ),
+                          ),
+                          Expanded(
+                            child: Center(
+                              child: Text('Test Detail Page for ID: $id'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -157,38 +267,6 @@ final GoRouter appRouter = GoRouter(
 
     // Add immersive full screen routes here outside of the StatefulShellRoute
     // They will navigate over the entire AppShell and hide the bottom bar
-    GoRoute(
-      path: '/lesson/:id',
-      parentNavigatorKey: _rootNavigatorKey, // ensures full screen
-      builder: (context, state) {
-        final id = state.pathParameters['id'];
-        return Center(child: Text('Lesson Full-Screen View for ID: $id'));
-      },
-    ),
-    GoRoute(
-      path: '/video/:id',
-      parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) {
-        final id = state.pathParameters['id'];
-        return Center(child: Text('Video Full-Screen View for ID: $id'));
-      },
-    ),
-    GoRoute(
-      path: '/assessment/:id',
-      parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) {
-        final id = state.pathParameters['id'];
-        return Center(child: Text('Assessment Detail Page for ID: $id'));
-      },
-    ),
-    GoRoute(
-      path: '/test/:id',
-      parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) {
-        final id = state.pathParameters['id'];
-        return Center(child: Text('Test Detail Page for ID: $id'));
-      },
-    ),
     GoRoute(
       path: '/typography-gallery',
       parentNavigatorKey: _rootNavigatorKey,

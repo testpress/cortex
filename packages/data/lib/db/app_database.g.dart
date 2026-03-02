@@ -863,6 +863,48 @@ class $LessonsTableTable extends LessonsTable
   late final GeneratedColumn<int> orderIndex = GeneratedColumn<int>(
       'order_index', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _chapterTitleMeta =
+      const VerificationMeta('chapterTitle');
+  @override
+  late final GeneratedColumn<String> chapterTitle = GeneratedColumn<String>(
+      'chapter_title', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _contentJsonMeta =
+      const VerificationMeta('contentJson');
+  @override
+  late final GeneratedColumn<String> contentJson = GeneratedColumn<String>(
+      'content_json', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _subtitleMeta =
+      const VerificationMeta('subtitle');
+  @override
+  late final GeneratedColumn<String> subtitle = GeneratedColumn<String>(
+      'subtitle', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _subjectNameMeta =
+      const VerificationMeta('subjectName');
+  @override
+  late final GeneratedColumn<String> subjectName = GeneratedColumn<String>(
+      'subject_name', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _subjectIndexMeta =
+      const VerificationMeta('subjectIndex');
+  @override
+  late final GeneratedColumn<int> subjectIndex = GeneratedColumn<int>(
+      'subject_index', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _lessonNumberMeta =
+      const VerificationMeta('lessonNumber');
+  @override
+  late final GeneratedColumn<int> lessonNumber = GeneratedColumn<int>(
+      'lesson_number', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _totalLessonsMeta =
+      const VerificationMeta('totalLessons');
+  @override
+  late final GeneratedColumn<int> totalLessons = GeneratedColumn<int>(
+      'total_lessons', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -872,7 +914,14 @@ class $LessonsTableTable extends LessonsTable
         duration,
         progressStatus,
         isLocked,
-        orderIndex
+        orderIndex,
+        chapterTitle,
+        contentJson,
+        subtitle,
+        subjectName,
+        subjectIndex,
+        lessonNumber,
+        totalLessons
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -931,6 +980,46 @@ class $LessonsTableTable extends LessonsTable
     } else if (isInserting) {
       context.missing(_orderIndexMeta);
     }
+    if (data.containsKey('chapter_title')) {
+      context.handle(
+          _chapterTitleMeta,
+          chapterTitle.isAcceptableOrUnknown(
+              data['chapter_title']!, _chapterTitleMeta));
+    }
+    if (data.containsKey('content_json')) {
+      context.handle(
+          _contentJsonMeta,
+          contentJson.isAcceptableOrUnknown(
+              data['content_json']!, _contentJsonMeta));
+    }
+    if (data.containsKey('subtitle')) {
+      context.handle(_subtitleMeta,
+          subtitle.isAcceptableOrUnknown(data['subtitle']!, _subtitleMeta));
+    }
+    if (data.containsKey('subject_name')) {
+      context.handle(
+          _subjectNameMeta,
+          subjectName.isAcceptableOrUnknown(
+              data['subject_name']!, _subjectNameMeta));
+    }
+    if (data.containsKey('subject_index')) {
+      context.handle(
+          _subjectIndexMeta,
+          subjectIndex.isAcceptableOrUnknown(
+              data['subject_index']!, _subjectIndexMeta));
+    }
+    if (data.containsKey('lesson_number')) {
+      context.handle(
+          _lessonNumberMeta,
+          lessonNumber.isAcceptableOrUnknown(
+              data['lesson_number']!, _lessonNumberMeta));
+    }
+    if (data.containsKey('total_lessons')) {
+      context.handle(
+          _totalLessonsMeta,
+          totalLessons.isAcceptableOrUnknown(
+              data['total_lessons']!, _totalLessonsMeta));
+    }
     return context;
   }
 
@@ -956,6 +1045,20 @@ class $LessonsTableTable extends LessonsTable
           .read(DriftSqlType.bool, data['${effectivePrefix}is_locked'])!,
       orderIndex: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}order_index'])!,
+      chapterTitle: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}chapter_title']),
+      contentJson: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}content_json']),
+      subtitle: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}subtitle']),
+      subjectName: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}subject_name']),
+      subjectIndex: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}subject_index']),
+      lessonNumber: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}lesson_number']),
+      totalLessons: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}total_lessons']),
     );
   }
 
@@ -979,6 +1082,13 @@ class LessonsTableData extends DataClass
   final String progressStatus;
   final bool isLocked;
   final int orderIndex;
+  final String? chapterTitle;
+  final String? contentJson;
+  final String? subtitle;
+  final String? subjectName;
+  final int? subjectIndex;
+  final int? lessonNumber;
+  final int? totalLessons;
   const LessonsTableData(
       {required this.id,
       required this.chapterId,
@@ -987,7 +1097,14 @@ class LessonsTableData extends DataClass
       required this.duration,
       required this.progressStatus,
       required this.isLocked,
-      required this.orderIndex});
+      required this.orderIndex,
+      this.chapterTitle,
+      this.contentJson,
+      this.subtitle,
+      this.subjectName,
+      this.subjectIndex,
+      this.lessonNumber,
+      this.totalLessons});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -999,6 +1116,27 @@ class LessonsTableData extends DataClass
     map['progress_status'] = Variable<String>(progressStatus);
     map['is_locked'] = Variable<bool>(isLocked);
     map['order_index'] = Variable<int>(orderIndex);
+    if (!nullToAbsent || chapterTitle != null) {
+      map['chapter_title'] = Variable<String>(chapterTitle);
+    }
+    if (!nullToAbsent || contentJson != null) {
+      map['content_json'] = Variable<String>(contentJson);
+    }
+    if (!nullToAbsent || subtitle != null) {
+      map['subtitle'] = Variable<String>(subtitle);
+    }
+    if (!nullToAbsent || subjectName != null) {
+      map['subject_name'] = Variable<String>(subjectName);
+    }
+    if (!nullToAbsent || subjectIndex != null) {
+      map['subject_index'] = Variable<int>(subjectIndex);
+    }
+    if (!nullToAbsent || lessonNumber != null) {
+      map['lesson_number'] = Variable<int>(lessonNumber);
+    }
+    if (!nullToAbsent || totalLessons != null) {
+      map['total_lessons'] = Variable<int>(totalLessons);
+    }
     return map;
   }
 
@@ -1012,6 +1150,27 @@ class LessonsTableData extends DataClass
       progressStatus: Value(progressStatus),
       isLocked: Value(isLocked),
       orderIndex: Value(orderIndex),
+      chapterTitle: chapterTitle == null && nullToAbsent
+          ? const Value.absent()
+          : Value(chapterTitle),
+      contentJson: contentJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(contentJson),
+      subtitle: subtitle == null && nullToAbsent
+          ? const Value.absent()
+          : Value(subtitle),
+      subjectName: subjectName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(subjectName),
+      subjectIndex: subjectIndex == null && nullToAbsent
+          ? const Value.absent()
+          : Value(subjectIndex),
+      lessonNumber: lessonNumber == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lessonNumber),
+      totalLessons: totalLessons == null && nullToAbsent
+          ? const Value.absent()
+          : Value(totalLessons),
     );
   }
 
@@ -1027,6 +1186,13 @@ class LessonsTableData extends DataClass
       progressStatus: serializer.fromJson<String>(json['progressStatus']),
       isLocked: serializer.fromJson<bool>(json['isLocked']),
       orderIndex: serializer.fromJson<int>(json['orderIndex']),
+      chapterTitle: serializer.fromJson<String?>(json['chapterTitle']),
+      contentJson: serializer.fromJson<String?>(json['contentJson']),
+      subtitle: serializer.fromJson<String?>(json['subtitle']),
+      subjectName: serializer.fromJson<String?>(json['subjectName']),
+      subjectIndex: serializer.fromJson<int?>(json['subjectIndex']),
+      lessonNumber: serializer.fromJson<int?>(json['lessonNumber']),
+      totalLessons: serializer.fromJson<int?>(json['totalLessons']),
     );
   }
   @override
@@ -1041,6 +1207,13 @@ class LessonsTableData extends DataClass
       'progressStatus': serializer.toJson<String>(progressStatus),
       'isLocked': serializer.toJson<bool>(isLocked),
       'orderIndex': serializer.toJson<int>(orderIndex),
+      'chapterTitle': serializer.toJson<String?>(chapterTitle),
+      'contentJson': serializer.toJson<String?>(contentJson),
+      'subtitle': serializer.toJson<String?>(subtitle),
+      'subjectName': serializer.toJson<String?>(subjectName),
+      'subjectIndex': serializer.toJson<int?>(subjectIndex),
+      'lessonNumber': serializer.toJson<int?>(lessonNumber),
+      'totalLessons': serializer.toJson<int?>(totalLessons),
     };
   }
 
@@ -1052,7 +1225,14 @@ class LessonsTableData extends DataClass
           String? duration,
           String? progressStatus,
           bool? isLocked,
-          int? orderIndex}) =>
+          int? orderIndex,
+          Value<String?> chapterTitle = const Value.absent(),
+          Value<String?> contentJson = const Value.absent(),
+          Value<String?> subtitle = const Value.absent(),
+          Value<String?> subjectName = const Value.absent(),
+          Value<int?> subjectIndex = const Value.absent(),
+          Value<int?> lessonNumber = const Value.absent(),
+          Value<int?> totalLessons = const Value.absent()}) =>
       LessonsTableData(
         id: id ?? this.id,
         chapterId: chapterId ?? this.chapterId,
@@ -1062,6 +1242,17 @@ class LessonsTableData extends DataClass
         progressStatus: progressStatus ?? this.progressStatus,
         isLocked: isLocked ?? this.isLocked,
         orderIndex: orderIndex ?? this.orderIndex,
+        chapterTitle:
+            chapterTitle.present ? chapterTitle.value : this.chapterTitle,
+        contentJson: contentJson.present ? contentJson.value : this.contentJson,
+        subtitle: subtitle.present ? subtitle.value : this.subtitle,
+        subjectName: subjectName.present ? subjectName.value : this.subjectName,
+        subjectIndex:
+            subjectIndex.present ? subjectIndex.value : this.subjectIndex,
+        lessonNumber:
+            lessonNumber.present ? lessonNumber.value : this.lessonNumber,
+        totalLessons:
+            totalLessons.present ? totalLessons.value : this.totalLessons,
       );
   LessonsTableData copyWithCompanion(LessonsTableCompanion data) {
     return LessonsTableData(
@@ -1076,6 +1267,23 @@ class LessonsTableData extends DataClass
       isLocked: data.isLocked.present ? data.isLocked.value : this.isLocked,
       orderIndex:
           data.orderIndex.present ? data.orderIndex.value : this.orderIndex,
+      chapterTitle: data.chapterTitle.present
+          ? data.chapterTitle.value
+          : this.chapterTitle,
+      contentJson:
+          data.contentJson.present ? data.contentJson.value : this.contentJson,
+      subtitle: data.subtitle.present ? data.subtitle.value : this.subtitle,
+      subjectName:
+          data.subjectName.present ? data.subjectName.value : this.subjectName,
+      subjectIndex: data.subjectIndex.present
+          ? data.subjectIndex.value
+          : this.subjectIndex,
+      lessonNumber: data.lessonNumber.present
+          ? data.lessonNumber.value
+          : this.lessonNumber,
+      totalLessons: data.totalLessons.present
+          ? data.totalLessons.value
+          : this.totalLessons,
     );
   }
 
@@ -1089,14 +1297,35 @@ class LessonsTableData extends DataClass
           ..write('duration: $duration, ')
           ..write('progressStatus: $progressStatus, ')
           ..write('isLocked: $isLocked, ')
-          ..write('orderIndex: $orderIndex')
+          ..write('orderIndex: $orderIndex, ')
+          ..write('chapterTitle: $chapterTitle, ')
+          ..write('contentJson: $contentJson, ')
+          ..write('subtitle: $subtitle, ')
+          ..write('subjectName: $subjectName, ')
+          ..write('subjectIndex: $subjectIndex, ')
+          ..write('lessonNumber: $lessonNumber, ')
+          ..write('totalLessons: $totalLessons')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, chapterId, title, type, duration,
-      progressStatus, isLocked, orderIndex);
+  int get hashCode => Object.hash(
+      id,
+      chapterId,
+      title,
+      type,
+      duration,
+      progressStatus,
+      isLocked,
+      orderIndex,
+      chapterTitle,
+      contentJson,
+      subtitle,
+      subjectName,
+      subjectIndex,
+      lessonNumber,
+      totalLessons);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1108,7 +1337,14 @@ class LessonsTableData extends DataClass
           other.duration == this.duration &&
           other.progressStatus == this.progressStatus &&
           other.isLocked == this.isLocked &&
-          other.orderIndex == this.orderIndex);
+          other.orderIndex == this.orderIndex &&
+          other.chapterTitle == this.chapterTitle &&
+          other.contentJson == this.contentJson &&
+          other.subtitle == this.subtitle &&
+          other.subjectName == this.subjectName &&
+          other.subjectIndex == this.subjectIndex &&
+          other.lessonNumber == this.lessonNumber &&
+          other.totalLessons == this.totalLessons);
 }
 
 class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
@@ -1120,6 +1356,13 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   final Value<String> progressStatus;
   final Value<bool> isLocked;
   final Value<int> orderIndex;
+  final Value<String?> chapterTitle;
+  final Value<String?> contentJson;
+  final Value<String?> subtitle;
+  final Value<String?> subjectName;
+  final Value<int?> subjectIndex;
+  final Value<int?> lessonNumber;
+  final Value<int?> totalLessons;
   final Value<int> rowid;
   const LessonsTableCompanion({
     this.id = const Value.absent(),
@@ -1130,6 +1373,13 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.progressStatus = const Value.absent(),
     this.isLocked = const Value.absent(),
     this.orderIndex = const Value.absent(),
+    this.chapterTitle = const Value.absent(),
+    this.contentJson = const Value.absent(),
+    this.subtitle = const Value.absent(),
+    this.subjectName = const Value.absent(),
+    this.subjectIndex = const Value.absent(),
+    this.lessonNumber = const Value.absent(),
+    this.totalLessons = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   LessonsTableCompanion.insert({
@@ -1141,6 +1391,13 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.progressStatus = const Value.absent(),
     this.isLocked = const Value.absent(),
     required int orderIndex,
+    this.chapterTitle = const Value.absent(),
+    this.contentJson = const Value.absent(),
+    this.subtitle = const Value.absent(),
+    this.subjectName = const Value.absent(),
+    this.subjectIndex = const Value.absent(),
+    this.lessonNumber = const Value.absent(),
+    this.totalLessons = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         chapterId = Value(chapterId),
@@ -1157,6 +1414,13 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Expression<String>? progressStatus,
     Expression<bool>? isLocked,
     Expression<int>? orderIndex,
+    Expression<String>? chapterTitle,
+    Expression<String>? contentJson,
+    Expression<String>? subtitle,
+    Expression<String>? subjectName,
+    Expression<int>? subjectIndex,
+    Expression<int>? lessonNumber,
+    Expression<int>? totalLessons,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1168,6 +1432,13 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       if (progressStatus != null) 'progress_status': progressStatus,
       if (isLocked != null) 'is_locked': isLocked,
       if (orderIndex != null) 'order_index': orderIndex,
+      if (chapterTitle != null) 'chapter_title': chapterTitle,
+      if (contentJson != null) 'content_json': contentJson,
+      if (subtitle != null) 'subtitle': subtitle,
+      if (subjectName != null) 'subject_name': subjectName,
+      if (subjectIndex != null) 'subject_index': subjectIndex,
+      if (lessonNumber != null) 'lesson_number': lessonNumber,
+      if (totalLessons != null) 'total_lessons': totalLessons,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1181,6 +1452,13 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       Value<String>? progressStatus,
       Value<bool>? isLocked,
       Value<int>? orderIndex,
+      Value<String?>? chapterTitle,
+      Value<String?>? contentJson,
+      Value<String?>? subtitle,
+      Value<String?>? subjectName,
+      Value<int?>? subjectIndex,
+      Value<int?>? lessonNumber,
+      Value<int?>? totalLessons,
       Value<int>? rowid}) {
     return LessonsTableCompanion(
       id: id ?? this.id,
@@ -1191,6 +1469,13 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       progressStatus: progressStatus ?? this.progressStatus,
       isLocked: isLocked ?? this.isLocked,
       orderIndex: orderIndex ?? this.orderIndex,
+      chapterTitle: chapterTitle ?? this.chapterTitle,
+      contentJson: contentJson ?? this.contentJson,
+      subtitle: subtitle ?? this.subtitle,
+      subjectName: subjectName ?? this.subjectName,
+      subjectIndex: subjectIndex ?? this.subjectIndex,
+      lessonNumber: lessonNumber ?? this.lessonNumber,
+      totalLessons: totalLessons ?? this.totalLessons,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1222,6 +1507,27 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     if (orderIndex.present) {
       map['order_index'] = Variable<int>(orderIndex.value);
     }
+    if (chapterTitle.present) {
+      map['chapter_title'] = Variable<String>(chapterTitle.value);
+    }
+    if (contentJson.present) {
+      map['content_json'] = Variable<String>(contentJson.value);
+    }
+    if (subtitle.present) {
+      map['subtitle'] = Variable<String>(subtitle.value);
+    }
+    if (subjectName.present) {
+      map['subject_name'] = Variable<String>(subjectName.value);
+    }
+    if (subjectIndex.present) {
+      map['subject_index'] = Variable<int>(subjectIndex.value);
+    }
+    if (lessonNumber.present) {
+      map['lesson_number'] = Variable<int>(lessonNumber.value);
+    }
+    if (totalLessons.present) {
+      map['total_lessons'] = Variable<int>(totalLessons.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1239,6 +1545,13 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
           ..write('progressStatus: $progressStatus, ')
           ..write('isLocked: $isLocked, ')
           ..write('orderIndex: $orderIndex, ')
+          ..write('chapterTitle: $chapterTitle, ')
+          ..write('contentJson: $contentJson, ')
+          ..write('subtitle: $subtitle, ')
+          ..write('subjectName: $subjectName, ')
+          ..write('subjectIndex: $subjectIndex, ')
+          ..write('lessonNumber: $lessonNumber, ')
+          ..write('totalLessons: $totalLessons, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2802,6 +3115,13 @@ typedef $$LessonsTableTableCreateCompanionBuilder = LessonsTableCompanion
   Value<String> progressStatus,
   Value<bool> isLocked,
   required int orderIndex,
+  Value<String?> chapterTitle,
+  Value<String?> contentJson,
+  Value<String?> subtitle,
+  Value<String?> subjectName,
+  Value<int?> subjectIndex,
+  Value<int?> lessonNumber,
+  Value<int?> totalLessons,
   Value<int> rowid,
 });
 typedef $$LessonsTableTableUpdateCompanionBuilder = LessonsTableCompanion
@@ -2814,6 +3134,13 @@ typedef $$LessonsTableTableUpdateCompanionBuilder = LessonsTableCompanion
   Value<String> progressStatus,
   Value<bool> isLocked,
   Value<int> orderIndex,
+  Value<String?> chapterTitle,
+  Value<String?> contentJson,
+  Value<String?> subtitle,
+  Value<String?> subjectName,
+  Value<int?> subjectIndex,
+  Value<int?> lessonNumber,
+  Value<int?> totalLessons,
   Value<int> rowid,
 });
 
@@ -2850,6 +3177,27 @@ class $$LessonsTableTableFilterComposer
 
   ColumnFilters<int> get orderIndex => $composableBuilder(
       column: $table.orderIndex, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get chapterTitle => $composableBuilder(
+      column: $table.chapterTitle, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get contentJson => $composableBuilder(
+      column: $table.contentJson, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get subtitle => $composableBuilder(
+      column: $table.subtitle, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get subjectName => $composableBuilder(
+      column: $table.subjectName, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get subjectIndex => $composableBuilder(
+      column: $table.subjectIndex, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get lessonNumber => $composableBuilder(
+      column: $table.lessonNumber, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get totalLessons => $composableBuilder(
+      column: $table.totalLessons, builder: (column) => ColumnFilters(column));
 }
 
 class $$LessonsTableTableOrderingComposer
@@ -2885,6 +3233,31 @@ class $$LessonsTableTableOrderingComposer
 
   ColumnOrderings<int> get orderIndex => $composableBuilder(
       column: $table.orderIndex, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get chapterTitle => $composableBuilder(
+      column: $table.chapterTitle,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get contentJson => $composableBuilder(
+      column: $table.contentJson, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get subtitle => $composableBuilder(
+      column: $table.subtitle, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get subjectName => $composableBuilder(
+      column: $table.subjectName, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get subjectIndex => $composableBuilder(
+      column: $table.subjectIndex,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get lessonNumber => $composableBuilder(
+      column: $table.lessonNumber,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get totalLessons => $composableBuilder(
+      column: $table.totalLessons,
+      builder: (column) => ColumnOrderings(column));
 }
 
 class $$LessonsTableTableAnnotationComposer
@@ -2919,6 +3292,27 @@ class $$LessonsTableTableAnnotationComposer
 
   GeneratedColumn<int> get orderIndex => $composableBuilder(
       column: $table.orderIndex, builder: (column) => column);
+
+  GeneratedColumn<String> get chapterTitle => $composableBuilder(
+      column: $table.chapterTitle, builder: (column) => column);
+
+  GeneratedColumn<String> get contentJson => $composableBuilder(
+      column: $table.contentJson, builder: (column) => column);
+
+  GeneratedColumn<String> get subtitle =>
+      $composableBuilder(column: $table.subtitle, builder: (column) => column);
+
+  GeneratedColumn<String> get subjectName => $composableBuilder(
+      column: $table.subjectName, builder: (column) => column);
+
+  GeneratedColumn<int> get subjectIndex => $composableBuilder(
+      column: $table.subjectIndex, builder: (column) => column);
+
+  GeneratedColumn<int> get lessonNumber => $composableBuilder(
+      column: $table.lessonNumber, builder: (column) => column);
+
+  GeneratedColumn<int> get totalLessons => $composableBuilder(
+      column: $table.totalLessons, builder: (column) => column);
 }
 
 class $$LessonsTableTableTableManager extends RootTableManager<
@@ -2955,6 +3349,13 @@ class $$LessonsTableTableTableManager extends RootTableManager<
             Value<String> progressStatus = const Value.absent(),
             Value<bool> isLocked = const Value.absent(),
             Value<int> orderIndex = const Value.absent(),
+            Value<String?> chapterTitle = const Value.absent(),
+            Value<String?> contentJson = const Value.absent(),
+            Value<String?> subtitle = const Value.absent(),
+            Value<String?> subjectName = const Value.absent(),
+            Value<int?> subjectIndex = const Value.absent(),
+            Value<int?> lessonNumber = const Value.absent(),
+            Value<int?> totalLessons = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               LessonsTableCompanion(
@@ -2966,6 +3367,13 @@ class $$LessonsTableTableTableManager extends RootTableManager<
             progressStatus: progressStatus,
             isLocked: isLocked,
             orderIndex: orderIndex,
+            chapterTitle: chapterTitle,
+            contentJson: contentJson,
+            subtitle: subtitle,
+            subjectName: subjectName,
+            subjectIndex: subjectIndex,
+            lessonNumber: lessonNumber,
+            totalLessons: totalLessons,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -2977,6 +3385,13 @@ class $$LessonsTableTableTableManager extends RootTableManager<
             Value<String> progressStatus = const Value.absent(),
             Value<bool> isLocked = const Value.absent(),
             required int orderIndex,
+            Value<String?> chapterTitle = const Value.absent(),
+            Value<String?> contentJson = const Value.absent(),
+            Value<String?> subtitle = const Value.absent(),
+            Value<String?> subjectName = const Value.absent(),
+            Value<int?> subjectIndex = const Value.absent(),
+            Value<int?> lessonNumber = const Value.absent(),
+            Value<int?> totalLessons = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               LessonsTableCompanion.insert(
@@ -2988,6 +3403,13 @@ class $$LessonsTableTableTableManager extends RootTableManager<
             progressStatus: progressStatus,
             isLocked: isLocked,
             orderIndex: orderIndex,
+            chapterTitle: chapterTitle,
+            contentJson: contentJson,
+            subtitle: subtitle,
+            subjectName: subjectName,
+            subjectIndex: subjectIndex,
+            lessonNumber: lessonNumber,
+            totalLessons: totalLessons,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0

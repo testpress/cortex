@@ -1,6 +1,8 @@
 import 'package:data/data.dart' show LessonType, LessonProgressStatus;
+import 'lesson_content.dart';
 
 export 'package:data/data.dart' show LessonType, LessonProgressStatus;
+export 'lesson_content.dart';
 
 /// Domain model for a specific content item within a chapter.
 class Lesson {
@@ -11,6 +13,12 @@ class Lesson {
     required this.progressStatus,
     this.duration,
     this.isLocked = false,
+    this.subtitle,
+    this.subjectName,
+    this.subjectIndex,
+    this.lessonNumber,
+    this.totalLessons,
+    this.content = const [],
   });
 
   final String id;
@@ -19,6 +27,14 @@ class Lesson {
   final LessonProgressStatus progressStatus;
   final String? duration;
   final bool isLocked;
+
+  // New fields for LessonDetailScreen (Phase-2)
+  final String? subtitle;
+  final String? subjectName;
+  final int? subjectIndex;
+  final int? lessonNumber;
+  final int? totalLessons;
+  final List<LessonContentItem> content;
 }
 
 /// Domain model for a chapter within a course.
