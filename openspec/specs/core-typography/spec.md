@@ -14,15 +14,15 @@ The system SHALL provide a standardized, scale-based typography system to replac
 
 | Token | Font Size (px) | Default Line Height | Weight Mapping |
 | --- | --- | --- | --- |
-| `xs` | 12px | 1.3 | Caption |
-| `sm` | 14px | 1.5 | BodySmall |
-| `base` | 16px | 1.5 | Body |
-| `lg` | 18px | 1.4 | Subtitle |
-| `xl` | 20px | 1.4 | Title |
-| `xl2` | 24px | 1.3 | Headline |
-| `xl3` | 30px | 1.2 | Display |
-| `xl4` | 36px | 1.1 | — |
-| `xl5` | 48px | 1.0 | — |
+| `xs` | 12px | 1.2 | Caption |
+| `sm` | 14px | 1.4 | BodySmall |
+| `base` | 16px | 1.5 (Role-based) | Body |
+| `lg` | 18px | — | Subtitle |
+| `xl` | 20px | — | Title |
+| `xl2` | 24px | — | Headline |
+| `xl3` | 30px | — | Display |
+| `xl4` | 36px | — | — |
+| `xl5` | 48px | — | — |
 
 ### Requirement: Integrated Typography Attributes
 The system SHALL treat a "Typography Molecule" as a cohesive unit of at least five attributes: Size, Weight, Line Height, Letter Spacing, and **Semantic Color**.
@@ -32,7 +32,7 @@ The system SHALL treat a "Typography Molecule" as a cohesive unit of at least fi
 - **THEN** it SHALL resolve to:
   - **Size**: 30px (`xl3` atom)
   - **Weight**: `FontWeight.w700`
-  - **Height**: 1.2
+  - **Height**: None (Default)
   - **Letter Spacing**: -0.5
   - **Color**: `design.colors.textPrimary`
 
@@ -44,6 +44,30 @@ The system SHALL treat a "Typography Molecule" as a cohesive unit of at least fi
   - **Height**: 1.3
   - **Letter Spacing**: 0.2
   - **Color**: `design.colors.textSecondary` (Defaulting to muted for captions)
+
+#### Scenario: Card Title Molecule
+- **WHEN** the `AppText.cardTitle()` role is used
+- **THEN** it SHALL resolve to:
+  - **Size**: 14px (`sm` atom)
+  - **Weight**: `FontWeight.w600`
+  - **Height**: 1.2
+  - **Color**: `design.colors.textPrimary`
+
+#### Scenario: Card Subtitle Molecule
+- **WHEN** the `AppText.cardSubtitle()` role is used
+- **THEN** it SHALL resolve to:
+  - **Size**: 12px (`xs` atom)
+  - **Weight**: `FontWeight.w600`
+  - **Height**: 1.2
+  - **Color**: `design.colors.textSecondary`
+
+#### Scenario: Card Caption Molecule
+- **WHEN** the `AppText.cardCaption()` role is used
+- **THEN** it SHALL resolve to:
+  - **Size**: 12px (`xs` atom)
+  - **Weight**: `FontWeight.w400`
+  - **Height**: 1.0
+  - **Color**: `design.colors.textSecondary`
 
 ### Requirement: Optical Tracking Logic
 The system SHALL provide "Optical Tracking" where letter spacing is automatically tightened as the scale increases, ensuring visual tension in headings and clarity in body text.
@@ -77,7 +101,9 @@ The system SHALL resolve widget text styles primarily through semantic `AppText`
 
 #### Scenario: Card-Level Hierarchy
 - **WHEN** card-based components (Snapshot Cards, Course Cards) are rendered
-- **THEN** they MUST use `AppText.subtitle()` for secondary titles and `AppText.bodySmall()` for metadata
+- **THEN** they MUST use `AppText.cardTitle()` for primary headings
+- **AND** they MUST use `AppText.cardSubtitle()` for secondary info (12px/w600)
+- **AND** they MUST use `AppText.cardCaption()` for micro-metadata (12px/w400)
 - **AND** they MUST NOT specify manual pixel sizes.
 
 #### Scenario: Display-Level Greeting

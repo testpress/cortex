@@ -1356,7 +1356,7 @@ class DesignTypography {
         height: 1.2,
       ),
       // cardTitle — Standard title for cards (Course, Resume, etc).
-      // base (16px) size balances visibility without dominating the card.
+      // base (14px) size balances visibility without dominating the card.
       cardTitle: s.sm.copyWith(
         fontWeight: FontWeight.w600,
         color: c.textPrimary,

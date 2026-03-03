@@ -75,7 +75,7 @@ class LessonListItem extends StatelessWidget {
 
                       // text-[14px] leading-[20px] font-medium (Chapter Title)
                       AppText.cardSubtitle(lesson.chapterTitle ?? ''),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 16),
 
                       Row(
                         children: [

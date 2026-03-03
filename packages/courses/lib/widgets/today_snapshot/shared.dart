@@ -80,7 +80,7 @@ class PillBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(design.radius.full),
@@ -170,7 +170,7 @@ class SnapshotCard extends StatelessWidget {
               ],
             ),
             if (bottomAction != null) ...[
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               Padding(
                 padding: const EdgeInsets.only(left: 32),
                 child: bottomAction!,
