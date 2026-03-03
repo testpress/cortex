@@ -72,7 +72,7 @@ class _FilterPill extends StatelessWidget {
         : design.colors.surfaceVariant;
     final fgColor = isSelected
         ? design.colors.textInverse
-        : design.colors.textSecondary;
+        : design.colors.textPrimary;
 
     return AppSemantics.button(
       label: 'Filter by $label',
@@ -91,13 +91,7 @@ class _FilterPill extends StatelessWidget {
             color: bgColor,
             borderRadius: design.radius.pill,
           ),
-          child: AppText.bodySmall(
-            label,
-            color: fgColor,
-            style: design.typography.bodySmall.copyWith(
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-            ),
-          ),
+          child: AppText.label(label, color: fgColor),
         ),
       ),
     );
