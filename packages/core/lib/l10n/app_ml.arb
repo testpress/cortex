@@ -87,5 +87,16 @@
   "filterTest": "ടെസ്റ്റ്",
   "resumeStudyHeader": "പഠനം തുടരുക",
   "labelCompleted": "പൂർത്തിയായി",
-  "labelLessonsPlural": "പാഠങ്ങൾ"
+  "labelLessonsPlural": "പാഠങ്ങൾ",
+  "curriculumBackButton": "പിന്നിലേക്ക്",
+  "curriculumChaptersCount": "{count} അധ്യായങ്ങൾ",
+  "filterAll": "എല്ലാം",
+  "curriculumLessonsLabel": "പാഠങ്ങൾ",
+  "curriculumAssessmentsLabel": "അസസ്‌മെന്റുകൾ",
+  "curriculumTestsCompletedLabel": "{count} ടെസ്റ്റുകൾ പൂർത്തിയായി",
+  "chapterIndexLabel": "അധ്യായം {index}: {title}",
+  "chapterMetadata": "{lessons} {lessonsLabel} · {assessments} {assessmentsLabel}",
+  "statusLocked": "ലോക്ക് ചെയ്തു",
+  "statusInProgress": "നടന്നുകൊണ്ടിരിക്കുന്നു",
+  "statusCompleted": "പൂർത്തിയായി"
 }

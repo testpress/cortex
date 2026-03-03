@@ -26,5 +26,313 @@ final courseListProvider = AutoDisposeStreamProvider<List<CourseDto>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CourseListRef = AutoDisposeStreamProviderRef<List<CourseDto>>;
+String _$courseChaptersHash() => r'0209694cd811fd004339910f9895f84971f0e5c9';
+
+/// Copied from Dart SDK
+class _SystemHash {
+  _SystemHash._();
+
+  static int combine(int hash, int value) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + value);
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
+    return hash ^ (hash >> 6);
+  }
+
+  static int finish(int hash) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
+    // ignore: parameter_assignments
+    hash = hash ^ (hash >> 11);
+    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
+  }
+}
+
+/// Provider for a specific course's chapters.
+///
+/// Copied from [courseChapters].
+@ProviderFor(courseChapters)
+const courseChaptersProvider = CourseChaptersFamily();
+
+/// Provider for a specific course's chapters.
+///
+/// Copied from [courseChapters].
+class CourseChaptersFamily extends Family<AsyncValue<List<ChapterDto>>> {
+  /// Provider for a specific course's chapters.
+  ///
+  /// Copied from [courseChapters].
+  const CourseChaptersFamily();
+
+  /// Provider for a specific course's chapters.
+  ///
+  /// Copied from [courseChapters].
+  CourseChaptersProvider call(
+    String courseId,
+  ) {
+    return CourseChaptersProvider(
+      courseId,
+    );
+  }
+
+  @override
+  CourseChaptersProvider getProviderOverride(
+    covariant CourseChaptersProvider provider,
+  ) {
+    return call(
+      provider.courseId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'courseChaptersProvider';
+}
+
+/// Provider for a specific course's chapters.
+///
+/// Copied from [courseChapters].
+class CourseChaptersProvider
+    extends AutoDisposeStreamProvider<List<ChapterDto>> {
+  /// Provider for a specific course's chapters.
+  ///
+  /// Copied from [courseChapters].
+  CourseChaptersProvider(
+    String courseId,
+  ) : this._internal(
+          (ref) => courseChapters(
+            ref as CourseChaptersRef,
+            courseId,
+          ),
+          from: courseChaptersProvider,
+          name: r'courseChaptersProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$courseChaptersHash,
+          dependencies: CourseChaptersFamily._dependencies,
+          allTransitiveDependencies:
+              CourseChaptersFamily._allTransitiveDependencies,
+          courseId: courseId,
+        );
+
+  CourseChaptersProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.courseId,
+  }) : super.internal();
+
+  final String courseId;
+
+  @override
+  Override overrideWith(
+    Stream<List<ChapterDto>> Function(CourseChaptersRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: CourseChaptersProvider._internal(
+        (ref) => create(ref as CourseChaptersRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        courseId: courseId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<List<ChapterDto>> createElement() {
+    return _CourseChaptersProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is CourseChaptersProvider && other.courseId == courseId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, courseId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin CourseChaptersRef on AutoDisposeStreamProviderRef<List<ChapterDto>> {
+  /// The parameter `courseId` of this provider.
+  String get courseId;
+}
+
+class _CourseChaptersProviderElement
+    extends AutoDisposeStreamProviderElement<List<ChapterDto>>
+    with CourseChaptersRef {
+  _CourseChaptersProviderElement(super.provider);
+
+  @override
+  String get courseId => (origin as CourseChaptersProvider).courseId;
+}
+
+String _$chapterLessonsHash() => r'ebc358051bfc9dec93d19ae70774d72609a16e3d';
+
+/// Provider for a specific chapter's lessons.
+///
+/// Copied from [chapterLessons].
+@ProviderFor(chapterLessons)
+const chapterLessonsProvider = ChapterLessonsFamily();
+
+/// Provider for a specific chapter's lessons.
+///
+/// Copied from [chapterLessons].
+class ChapterLessonsFamily extends Family<AsyncValue<List<LessonDto>>> {
+  /// Provider for a specific chapter's lessons.
+  ///
+  /// Copied from [chapterLessons].
+  const ChapterLessonsFamily();
+
+  /// Provider for a specific chapter's lessons.
+  ///
+  /// Copied from [chapterLessons].
+  ChapterLessonsProvider call(
+    String chapterId,
+  ) {
+    return ChapterLessonsProvider(
+      chapterId,
+    );
+  }
+
+  @override
+  ChapterLessonsProvider getProviderOverride(
+    covariant ChapterLessonsProvider provider,
+  ) {
+    return call(
+      provider.chapterId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'chapterLessonsProvider';
+}
+
+/// Provider for a specific chapter's lessons.
+///
+/// Copied from [chapterLessons].
+class ChapterLessonsProvider
+    extends AutoDisposeStreamProvider<List<LessonDto>> {
+  /// Provider for a specific chapter's lessons.
+  ///
+  /// Copied from [chapterLessons].
+  ChapterLessonsProvider(
+    String chapterId,
+  ) : this._internal(
+          (ref) => chapterLessons(
+            ref as ChapterLessonsRef,
+            chapterId,
+          ),
+          from: chapterLessonsProvider,
+          name: r'chapterLessonsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$chapterLessonsHash,
+          dependencies: ChapterLessonsFamily._dependencies,
+          allTransitiveDependencies:
+              ChapterLessonsFamily._allTransitiveDependencies,
+          chapterId: chapterId,
+        );
+
+  ChapterLessonsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.chapterId,
+  }) : super.internal();
+
+  final String chapterId;
+
+  @override
+  Override overrideWith(
+    Stream<List<LessonDto>> Function(ChapterLessonsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ChapterLessonsProvider._internal(
+        (ref) => create(ref as ChapterLessonsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        chapterId: chapterId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<List<LessonDto>> createElement() {
+    return _ChapterLessonsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ChapterLessonsProvider && other.chapterId == chapterId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, chapterId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin ChapterLessonsRef on AutoDisposeStreamProviderRef<List<LessonDto>> {
+  /// The parameter `chapterId` of this provider.
+  String get chapterId;
+}
+
+class _ChapterLessonsProviderElement
+    extends AutoDisposeStreamProviderElement<List<LessonDto>>
+    with ChapterLessonsRef {
+  _ChapterLessonsProviderElement(super.provider);
+
+  @override
+  String get chapterId => (origin as ChapterLessonsProvider).chapterId;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

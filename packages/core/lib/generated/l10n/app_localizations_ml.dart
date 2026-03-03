@@ -293,4 +293,50 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get labelLessonsPlural => 'പാഠങ്ങൾ';
+
+  @override
+  String get curriculumBackButton => 'പിന്നിലേക്ക്';
+
+  @override
+  String curriculumChaptersCount(int count) {
+    return '$count അധ്യായങ്ങൾ';
+  }
+
+  @override
+  String get filterAll => 'എല്ലാം';
+
+  @override
+  String get curriculumLessonsLabel => 'പാഠങ്ങൾ';
+
+  @override
+  String get curriculumAssessmentsLabel => 'അസസ്‌മെന്റുകൾ';
+
+  @override
+  String curriculumTestsCompletedLabel(Object count) {
+    return '$count ടെസ്റ്റുകൾ പൂർത്തിയായി';
+  }
+
+  @override
+  String chapterIndexLabel(int index, String title) {
+    return 'അധ്യായം $index: $title';
+  }
+
+  @override
+  String chapterMetadata(
+    int lessons,
+    String lessonsLabel,
+    int assessments,
+    String assessmentsLabel,
+  ) {
+    return '$lessons $lessonsLabel · $assessments $assessmentsLabel';
+  }
+
+  @override
+  String get statusLocked => 'ലോക്ക് ചെയ്തു';
+
+  @override
+  String get statusInProgress => 'നടന്നുകൊണ്ടിരിക്കുന്നു';
+
+  @override
+  String get statusCompleted => 'പൂർത്തിയായി';
 }

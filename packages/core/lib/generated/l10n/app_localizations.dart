@@ -589,25 +589,25 @@ abstract class AppLocalizations {
   /// No description provided for @filterVideo.
   ///
   /// In en, this message translates to:
-  /// **'Video'**
+  /// **'Videos'**
   String get filterVideo;
 
   /// No description provided for @filterLesson.
   ///
   /// In en, this message translates to:
-  /// **'Lesson'**
+  /// **'Lessons'**
   String get filterLesson;
 
   /// No description provided for @filterAssessment.
   ///
   /// In en, this message translates to:
-  /// **'Assessment'**
+  /// **'Assessments'**
   String get filterAssessment;
 
   /// No description provided for @filterTest.
   ///
   /// In en, this message translates to:
-  /// **'Test'**
+  /// **'Tests'**
   String get filterTest;
 
   /// No description provided for @resumeStudyHeader.
@@ -627,6 +627,77 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'lessons'**
   String get labelLessonsPlural;
+
+  /// No description provided for @curriculumBackButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get curriculumBackButton;
+
+  /// No description provided for @curriculumChaptersCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Chapters'**
+  String curriculumChaptersCount(int count);
+
+  /// No description provided for @filterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get filterAll;
+
+  /// No description provided for @curriculumLessonsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Lessons'**
+  String get curriculumLessonsLabel;
+
+  /// No description provided for @curriculumAssessmentsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Assessments'**
+  String get curriculumAssessmentsLabel;
+
+  /// No description provided for @curriculumTestsCompletedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} tests completed'**
+  String curriculumTestsCompletedLabel(Object count);
+
+  /// No description provided for @chapterIndexLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Chapter {index}: {title}'**
+  String chapterIndexLabel(int index, String title);
+
+  /// No description provided for @chapterMetadata.
+  ///
+  /// In en, this message translates to:
+  /// **'{lessons} {lessonsLabel} · {assessments} {assessmentsLabel}'**
+  String chapterMetadata(
+    int lessons,
+    String lessonsLabel,
+    int assessments,
+    String assessmentsLabel,
+  );
+
+  /// No description provided for @statusLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get statusLocked;
+
+  /// No description provided for @statusInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In Progress'**
+  String get statusInProgress;
+
+  /// No description provided for @statusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get statusCompleted;
 }
 
 class _AppLocalizationsDelegate

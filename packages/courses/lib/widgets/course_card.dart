@@ -6,97 +6,108 @@ import 'package:data/data.dart';
 ///
 /// Refined to match the reference design with icon box and side-by-side progress.
 class CourseCard extends StatelessWidget {
-  const CourseCard({super.key, required this.course});
+  const CourseCard({super.key, required this.course, this.onTap});
 
   final CourseDto course;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    return AppCard(
-      showShadow: true,
-      padding: EdgeInsets.all(design.spacing.md),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Left Icon Box
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: design.shortcutPalette.atIndex(1).background,
-              borderRadius: BorderRadius.circular(design.radius.md),
-            ),
-            child: Icon(
-              LucideIcons.bookOpen,
-              color: design.shortcutPalette.atIndex(1).foreground,
-              size: 24,
-            ),
-          ),
-          SizedBox(width: design.spacing.md),
+    return AppSemantics.button(
+      label: 'Open course: ${course.title}',
+      onTap: onTap ?? () {},
+      child: AppFocusable(
+        onTap: onTap,
+        borderRadius: design.radius.card,
+        child: AppCard(
+          showShadow: true,
+          padding: EdgeInsets.all(design.spacing.md),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Left Icon Box
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: design.shortcutPalette.atIndex(1).background,
+                  borderRadius: BorderRadius.circular(design.radius.md),
+                ),
+                child: Icon(
+                  LucideIcons.bookOpen,
+                  color: design.shortcutPalette.atIndex(1).foreground,
+                  size: 24,
+                ),
+              ),
+              SizedBox(width: design.spacing.md),
 
-          // Main Content
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+              // Main Content
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: AppText.cardTitle(
-                        course.title,
-                        color: design.colors.textPrimary,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: AppText.label(
+                            course.title,
+                            color: design.colors.textPrimary,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Icon(
+                          LucideIcons.chevronRight,
+                          color: design.colors.textSecondary.withValues(
+                            alpha: 0.3,
+                          ),
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: design.spacing.xs),
+
+                    // Metadata
+                    AppText.caption(
+                      '${course.chapterCount} chapters · ${course.totalDuration}',
+                      color: design.colors.textSecondary,
+                    ),
+                    SizedBox(height: design.spacing.md),
+
+                    // Progress Info Row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _ProgressStat(
+                          value:
+                              '${course.completedLessons}/${course.totalLessons}',
+                          label: L10n.of(context).labelLessonsPlural,
+                        ),
+                        _ProgressStat(
+                          value: '${course.progress}%',
+                          label: L10n.of(context).labelCompleted,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: design.spacing.sm),
+
+                    // Progress Bar (Thin)
+                    Semantics(
+                      label: 'Course progress',
+                      value: '${course.progress}%',
+                      child: _ProgressBar(
+                        progress: course.progress / 100.0,
+                        color: design.colors.success,
                       ),
                     ),
-                    Icon(
-                      LucideIcons.chevronRight,
-                      color: design.colors.textSecondary.withValues(alpha: 0.3),
-                      size: 20,
-                    ),
                   ],
                 ),
-                SizedBox(height: design.spacing.xs),
-
-                // Metadata
-                AppText.cardSubtitle(
-                  '${course.chapterCount} chapters · ${course.totalDuration}',
-                  color: design.colors.textSecondary,
-                ),
-                SizedBox(height: design.spacing.md),
-
-                // Progress Info Row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _ProgressStat(
-                      value:
-                          '${course.completedLessons}/${course.totalLessons}',
-                      label: L10n.of(context).labelLessonsPlural,
-                    ),
-                    _ProgressStat(
-                      value: '${course.progress}%',
-                      label: L10n.of(context).labelCompleted,
-                    ),
-                  ],
-                ),
-                SizedBox(height: design.spacing.sm),
-
-                // Progress Bar (Thin)
-                Semantics(
-                  label: 'Course progress',
-                  value: '${course.progress}%',
-                  child: _ProgressBar(
-                    progress: course.progress / 100.0,
-                    color: design.colors.success,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

@@ -178,7 +178,12 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                                 padding: EdgeInsets.only(
                                   bottom: design.spacing.md,
                                 ),
-                                child: CourseCard(course: c),
+                                child: CourseCard(
+                                  course: c,
+                                  onTap: () => context.push(
+                                    '/study/course/${c.id}/chapters',
+                                  ),
+                                ),
                               );
                             },
                           ),
@@ -281,37 +286,64 @@ class _LessonListItem extends StatelessWidget {
     final color = typeTheme.foreground;
     final backgroundColor = typeTheme.background;
 
-    return AppCard(
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              borderRadius: BorderRadius.circular(design.radius.md),
-            ),
-            child: Icon(icon, color: color, size: 20),
-          ),
-          SizedBox(width: design.spacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AppText.label(lesson.title, color: design.colors.textPrimary),
-                AppText.caption(
-                  '${lesson.type.name.toUpperCase()} · ${lesson.duration}',
-                  color: design.colors.textSecondary,
+    return AppSemantics.button(
+      label: 'Open lesson: ${lesson.title}',
+      onTap: () {
+        final route = switch (lesson.type) {
+          LessonType.video => '/video/${lesson.id}',
+          LessonType.pdf => '/lesson/${lesson.id}',
+          LessonType.assessment => '/assessment/${lesson.id}',
+          LessonType.test => '/test/${lesson.id}',
+        };
+        context.push(route);
+      },
+      child: AppFocusable(
+        onTap: () {
+          final route = switch (lesson.type) {
+            LessonType.video => '/video/${lesson.id}',
+            LessonType.pdf => '/lesson/${lesson.id}',
+            LessonType.assessment => '/assessment/${lesson.id}',
+            LessonType.test => '/test/${lesson.id}',
+          };
+          context.push(route);
+        },
+        borderRadius: design.radius.card,
+        child: AppCard(
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: backgroundColor,
+                  borderRadius: BorderRadius.circular(design.radius.md),
                 ),
-              ],
-            ),
+                child: Icon(icon, color: color, size: 20),
+              ),
+              SizedBox(width: design.spacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AppText.label(
+                      lesson.title,
+                      color: design.colors.textPrimary,
+                    ),
+                    AppText.caption(
+                      '${lesson.type.name.toUpperCase()} · ${lesson.duration}',
+                      color: design.colors.textSecondary,
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                LucideIcons.chevronRight,
+                color: design.colors.textSecondary,
+                size: 20,
+              ),
+            ],
           ),
-          Icon(
-            LucideIcons.chevronRight,
-            color: design.colors.textSecondary,
-            size: 20,
-          ),
-        ],
+        ),
       ),
     );
   }

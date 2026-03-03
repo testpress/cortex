@@ -273,16 +273,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get studyLessonsTitle => 'Lessons';
 
   @override
-  String get filterVideo => 'Video';
+  String get filterVideo => 'Videos';
 
   @override
-  String get filterLesson => 'Lesson';
+  String get filterLesson => 'Lessons';
 
   @override
-  String get filterAssessment => 'Assessment';
+  String get filterAssessment => 'Assessments';
 
   @override
-  String get filterTest => 'Test';
+  String get filterTest => 'Tests';
 
   @override
   String get resumeStudyHeader => 'Resume Study';
@@ -292,4 +292,50 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get labelLessonsPlural => 'lessons';
+
+  @override
+  String get curriculumBackButton => 'Back';
+
+  @override
+  String curriculumChaptersCount(int count) {
+    return '$count Chapters';
+  }
+
+  @override
+  String get filterAll => 'All';
+
+  @override
+  String get curriculumLessonsLabel => 'Lessons';
+
+  @override
+  String get curriculumAssessmentsLabel => 'Assessments';
+
+  @override
+  String curriculumTestsCompletedLabel(Object count) {
+    return '$count tests completed';
+  }
+
+  @override
+  String chapterIndexLabel(int index, String title) {
+    return 'Chapter $index: $title';
+  }
+
+  @override
+  String chapterMetadata(
+    int lessons,
+    String lessonsLabel,
+    int assessments,
+    String assessmentsLabel,
+  ) {
+    return '$lessons $lessonsLabel · $assessments $assessmentsLabel';
+  }
+
+  @override
+  String get statusLocked => 'Locked';
+
+  @override
+  String get statusInProgress => 'In Progress';
+
+  @override
+  String get statusCompleted => 'Completed';
 }
