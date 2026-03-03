@@ -118,13 +118,7 @@ class LessonCallout extends StatelessWidget {
         children: [
           Icon(icon, size: 20, color: textColor),
           SizedBox(width: design.spacing.md),
-          Expanded(
-            child: AppText.bodySmall(
-              text,
-              // Darken text slightly for better accessibility on light backgrounds
-              color: textColor.withValues(alpha: 0.8),
-            ),
-          ),
+          Expanded(child: AppText.bodySmall(text, color: textColor)),
         ],
       ),
     );

@@ -155,7 +155,7 @@ class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
                                 _renderContentItem(item, subjectColors?.accent),
                           ),
 
-                          SizedBox(height: design.spacing.xxl),
+                          SizedBox(height: design.spacing.md),
 
                           // Sequential Navigation
                           LessonNavigationFooter(
@@ -165,7 +165,7 @@ class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
                             hasNext: widget.onNext != null,
                           ),
 
-                          SizedBox(height: design.spacing.xxl),
+                          SizedBox(height: design.spacing.md),
                         ]),
                       ),
                     ),
