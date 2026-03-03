@@ -26,5 +26,6 @@ export 'screens/chapter_detail_page.dart';
 export 'widgets/chapter_status_filter_bar.dart';
 export 'widgets/chapter_content_item.dart';
 export 'screens/lesson_detail_screen.dart';
+export 'screens/video_lesson_detail_page.dart';
 export 'providers/lesson_detail_provider.dart';
 export 'models/lesson_content.dart';

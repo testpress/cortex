@@ -225,5 +225,36 @@
         "type": "String"
       }
     }
-  }
+  },
+  "videoLessonTabNotes": "Notes",
+  "videoLessonTabTranscript": "Transcript",
+  "videoLessonTabAskDoubt": "Ask Doubt",
+  "videoLessonTabAiSupport": "AI Support",
+  "videoLessonLectureNotes": "Lecture Notes",
+  "videoLessonDownloadPdf": "Download PDF",
+  "videoLessonKeyFormula": "Key Formula",
+  "videoLessonTranscript": "Video Transcript",
+  "videoLessonContinueNext": "Continue to Next Lesson",
+  "videoLessonAskYourDoubt": "Ask Your Doubt",
+  "videoLessonDoubtDescription": "Have a question about this lecture? Our expert instructors will answer within 24 hours.",
+  "videoLessonRecentDoubts": "Recent Doubts",
+  "videoLessonPostYourDoubt": "Post Your Doubt",
+  "videoLessonDoubtHint": "Type your question here... Be specific about what you're confused about.",
+  "videoLessonCharacterCount": "{current}/{max} characters",
+  "@videoLessonCharacterCount": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "videoLessonSubmitDoubt": "Submit Doubt",
+  "videoLessonPending": "Pending",
+  "videoLessonAiAssistant": "AI Study Assistant",
+  "videoLessonAiHelp": "Get instant help with your questions",
+  "videoLessonAiHint": "Ask AI anything about this lecture...",
+  "videoLessonAiDisclaimer": "AI responses are generated instantly and based on lecture content"
 }

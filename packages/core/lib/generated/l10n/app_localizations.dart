@@ -794,6 +794,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open lesson: {title}'**
   String openDetailedLesson(String title);
+
+  /// No description provided for @videoLessonTabNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get videoLessonTabNotes;
+
+  /// No description provided for @videoLessonTabTranscript.
+  ///
+  /// In en, this message translates to:
+  /// **'Transcript'**
+  String get videoLessonTabTranscript;
+
+  /// No description provided for @videoLessonTabAskDoubt.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask Doubt'**
+  String get videoLessonTabAskDoubt;
+
+  /// No description provided for @videoLessonTabAiSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Support'**
+  String get videoLessonTabAiSupport;
+
+  /// No description provided for @videoLessonLectureNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Lecture Notes'**
+  String get videoLessonLectureNotes;
+
+  /// No description provided for @videoLessonDownloadPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Download PDF'**
+  String get videoLessonDownloadPdf;
+
+  /// No description provided for @videoLessonKeyFormula.
+  ///
+  /// In en, this message translates to:
+  /// **'Key Formula'**
+  String get videoLessonKeyFormula;
+
+  /// No description provided for @videoLessonTranscript.
+  ///
+  /// In en, this message translates to:
+  /// **'Video Transcript'**
+  String get videoLessonTranscript;
+
+  /// No description provided for @videoLessonContinueNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue to Next Lesson'**
+  String get videoLessonContinueNext;
+
+  /// No description provided for @videoLessonAskYourDoubt.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask Your Doubt'**
+  String get videoLessonAskYourDoubt;
+
+  /// No description provided for @videoLessonDoubtDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Have a question about this lecture? Our expert instructors will answer within 24 hours.'**
+  String get videoLessonDoubtDescription;
+
+  /// No description provided for @videoLessonRecentDoubts.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Doubts'**
+  String get videoLessonRecentDoubts;
+
+  /// No description provided for @videoLessonPostYourDoubt.
+  ///
+  /// In en, this message translates to:
+  /// **'Post Your Doubt'**
+  String get videoLessonPostYourDoubt;
+
+  /// No description provided for @videoLessonDoubtHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type your question here... Be specific about what you\'re confused about.'**
+  String get videoLessonDoubtHint;
+
+  /// No description provided for @videoLessonCharacterCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{current}/{max} characters'**
+  String videoLessonCharacterCount(int current, int max);
+
+  /// No description provided for @videoLessonSubmitDoubt.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Doubt'**
+  String get videoLessonSubmitDoubt;
+
+  /// No description provided for @videoLessonPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get videoLessonPending;
+
+  /// No description provided for @videoLessonAiAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Study Assistant'**
+  String get videoLessonAiAssistant;
+
+  /// No description provided for @videoLessonAiHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Get instant help with your questions'**
+  String get videoLessonAiHelp;
+
+  /// No description provided for @videoLessonAiHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask AI anything about this lecture...'**
+  String get videoLessonAiHint;
+
+  /// No description provided for @videoLessonAiDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'AI responses are generated instantly and based on lecture content'**
+  String get videoLessonAiDisclaimer;
 }
 
 class _AppLocalizationsDelegate

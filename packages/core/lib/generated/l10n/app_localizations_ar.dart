@@ -389,4 +389,73 @@ class AppLocalizationsAr extends AppLocalizations {
   String openDetailedLesson(String title) {
     return 'افتح الدرس: $title';
   }
+
+  @override
+  String get videoLessonTabNotes => 'ملاحظات';
+
+  @override
+  String get videoLessonTabTranscript => 'النص';
+
+  @override
+  String get videoLessonTabAskDoubt => 'اسأل سؤال';
+
+  @override
+  String get videoLessonTabAiSupport => 'دعم AI';
+
+  @override
+  String get videoLessonLectureNotes => 'ملاحظات المحاضرة';
+
+  @override
+  String get videoLessonDownloadPdf => 'تحميل PDF';
+
+  @override
+  String get videoLessonKeyFormula => 'المعادلة الرئيسية';
+
+  @override
+  String get videoLessonTranscript => 'نص الفيديو';
+
+  @override
+  String get videoLessonContinueNext => 'تابع إلى الدرس التالي';
+
+  @override
+  String get videoLessonAskYourDoubt => 'اسأل سؤالك';
+
+  @override
+  String get videoLessonDoubtDescription =>
+      'هل لديك سؤال حول هذه المحاضرة؟ سيجيب مدرسونا الخبراء خلال 24 ساعة.';
+
+  @override
+  String get videoLessonRecentDoubts => 'الأسئلة الأخيرة';
+
+  @override
+  String get videoLessonPostYourDoubt => 'انشر سؤالك';
+
+  @override
+  String get videoLessonDoubtHint =>
+      'اكتب سؤالك هنا... كن محددًا فيما تشعر بالحيرة حوله.';
+
+  @override
+  String videoLessonCharacterCount(int current, int max) {
+    return '$current/$max حرف';
+  }
+
+  @override
+  String get videoLessonSubmitDoubt => 'إرسال السؤال';
+
+  @override
+  String get videoLessonPending => 'قيد الانتظار';
+
+  @override
+  String get videoLessonAiAssistant => 'مساعد الدراسة بالذكاء الاصطناعي';
+
+  @override
+  String get videoLessonAiHelp => 'احصل على مساعدة فورية لأسئلتك';
+
+  @override
+  String get videoLessonAiHint =>
+      'اسأل الذكاء الاصطناعي أي شيء عن هذه المحاضرة...';
+
+  @override
+  String get videoLessonAiDisclaimer =>
+      'يتم إنشاء ردود الذكاء الاصطناعي فوريًا بناءً على محتوى المحاضرة';
 }
