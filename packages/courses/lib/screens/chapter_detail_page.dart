@@ -39,7 +39,7 @@ class ChapterDetailPage extends ConsumerWidget {
       child: chapterAsync.when(
         data: (chapter) {
           if (chapter == null) {
-            return Center(child: Text(l10n.chapterNotFound));
+            return Center(child: AppText.body(l10n.chapterNotFound));
           }
 
           final filteredLessons = chapter.lessons.where((l) {
@@ -82,7 +82,9 @@ class ChapterDetailPage extends ConsumerWidget {
                     if (filteredLessons.isEmpty)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 40),
-                        child: Center(child: Text(l10n.chapterNoContent)),
+                        child: Center(
+                          child: AppText.body(l10n.chapterNoContent),
+                        ),
                       )
                     else
                       ...filteredLessons.map(
@@ -104,7 +106,7 @@ class ChapterDetailPage extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: AppLoadingIndicator()),
-        error: (error, _) => Center(child: Text(error.toString())),
+        error: (error, _) => Center(child: AppText.body(error.toString())),
       ),
     );
   }
@@ -145,44 +147,28 @@ class ChapterDetailPage extends ConsumerWidget {
                   color: design.colors.textPrimary, // Matching list header
                 ),
                 const SizedBox(width: 8),
-                Text(
+                AppText.label(
                   l10n.curriculumBackButton,
-                  style: design.typography.label.copyWith(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: design.colors.textPrimary,
-                  ),
+                  style: const TextStyle(fontSize: 16),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 12),
           // Chapter Title (Prominent as in reference)
-          Text(
+          AppText.headline(
             displayTitle,
-            style: design.typography.headline.copyWith(
-              fontWeight: FontWeight.w600,
-              fontSize: 20,
-              height: 1.4,
-              color: design.colors.textPrimary,
-            ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 4),
           // Chapter Stats
-          Text(
+          AppText.cardCaption(
             l10n.chapterMetadata(
               chapter.lessonCount,
               l10n.curriculumLessonsLabel,
               chapter.assessmentCount,
               l10n.curriculumAssessmentsLabel,
-            ),
-            style: design.typography.caption.copyWith(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              height: 1.33,
-              color: design.colors.textSecondary,
             ),
           ),
         ],

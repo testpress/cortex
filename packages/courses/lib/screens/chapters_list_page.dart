@@ -41,7 +41,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
       child: courseAsync.when(
         data: (course) {
           if (course == null) {
-            return const Center(child: Text('Course not found'));
+            return const Center(child: AppText.body('Course not found'));
           }
 
           final chapters = course.chapters;
@@ -123,7 +123,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
           );
         },
         loading: () => const Center(child: AppLoadingIndicator()),
-        error: (error, _) => Center(child: Text(error.toString())),
+        error: (error, _) => Center(child: AppText.body(error.toString())),
       ),
     );
   }

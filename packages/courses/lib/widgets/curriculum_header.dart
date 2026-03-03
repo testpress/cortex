@@ -51,13 +51,9 @@ class CurriculumHeader extends StatelessWidget {
                     color: design.colors.textPrimary,
                   ),
                   const SizedBox(width: 8),
-                  Text(
+                  AppText.label(
                     l10n.curriculumBackButton,
-                    style: design.typography.label.copyWith(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: design.colors.textPrimary,
-                    ),
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ],
               ),
@@ -66,29 +62,15 @@ class CurriculumHeader extends StatelessWidget {
           const SizedBox(height: 12),
 
           // Course Title
-          Text(
+          AppText.headline(
             courseTitle,
-            style: design.typography.headline.copyWith(
-              fontWeight: FontWeight.w600,
-              fontSize: 20,
-              height: 1.4,
-              color: design.colors.textPrimary,
-            ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 4),
 
           // Metadata
-          Text(
-            l10n.curriculumChaptersCount(chapterCount),
-            style: design.typography.caption.copyWith(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              height: 1.33,
-              color: design.colors.textSecondary,
-            ),
-          ),
+          AppText.cardCaption(l10n.curriculumChaptersCount(chapterCount)),
         ],
       ),
     );
