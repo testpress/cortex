@@ -16,6 +16,15 @@ class LessonDto {
   final int orderIndex;
   final String? chapterTitle;
 
+  // Rich content for LessonDetailScreen
+  final List<LessonContentItemDto> content;
+  final String? subtitle;
+  final String? subjectName;
+  final int? subjectIndex;
+  final int? lessonNumber;
+  final int? totalLessons;
+  final bool isBookmarked;
+
   const LessonDto({
     required this.id,
     required this.chapterId,
@@ -26,6 +35,13 @@ class LessonDto {
     required this.isLocked,
     required this.orderIndex,
     this.chapterTitle,
+    this.content = const [],
+    this.subtitle,
+    this.subjectName,
+    this.subjectIndex,
+    this.lessonNumber,
+    this.totalLessons,
+    this.isBookmarked = false,
   });
 
   LessonDto copyWith({
@@ -38,6 +54,13 @@ class LessonDto {
     bool? isLocked,
     int? orderIndex,
     String? chapterTitle,
+    List<LessonContentItemDto>? content,
+    String? subtitle,
+    String? subjectName,
+    int? subjectIndex,
+    int? lessonNumber,
+    int? totalLessons,
+    bool? isBookmarked,
   }) {
     return LessonDto(
       id: id ?? this.id,
@@ -49,6 +72,13 @@ class LessonDto {
       isLocked: isLocked ?? this.isLocked,
       orderIndex: orderIndex ?? this.orderIndex,
       chapterTitle: chapterTitle ?? this.chapterTitle,
+      content: content ?? this.content,
+      subtitle: subtitle ?? this.subtitle,
+      subjectName: subjectName ?? this.subjectName,
+      subjectIndex: subjectIndex ?? this.subjectIndex,
+      lessonNumber: lessonNumber ?? this.lessonNumber,
+      totalLessons: totalLessons ?? this.totalLessons,
+      isBookmarked: isBookmarked ?? this.isBookmarked,
     );
   }
 
@@ -64,6 +94,17 @@ class LessonDto {
       isLocked: json['isLocked'] as bool,
       orderIndex: json['orderIndex'] as int,
       chapterTitle: json['chapterTitle'] as String?,
+      content: (json['content'] as List<dynamic>?)
+              ?.map((e) =>
+                  LessonContentItemDto.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      subtitle: json['subtitle'] as String?,
+      subjectName: json['subjectName'] as String?,
+      subjectIndex: json['subjectIndex'] as int?,
+      lessonNumber: json['lessonNumber'] as int?,
+      totalLessons: json['totalLessons'] as int?,
+      isBookmarked: json['isBookmarked'] as bool? ?? false,
     );
   }
 
@@ -78,6 +119,50 @@ class LessonDto {
       'isLocked': isLocked,
       'orderIndex': orderIndex,
       'chapterTitle': chapterTitle,
+      'content': content.map((e) => e.toJson()).toList(),
+      'subtitle': subtitle,
+      'subjectName': subjectName,
+      'subjectIndex': subjectIndex,
+      'lessonNumber': lessonNumber,
+      'totalLessons': totalLessons,
+      'isBookmarked': isBookmarked,
+    };
+  }
+}
+
+/// DTO for a single atom of content within a lesson.
+class LessonContentItemDto {
+  final String type;
+  final dynamic content; // String or List<String>
+  final int? level;
+  final String? alt;
+  final String? calloutType;
+
+  const LessonContentItemDto({
+    required this.type,
+    required this.content,
+    this.level,
+    this.alt,
+    this.calloutType,
+  });
+
+  factory LessonContentItemDto.fromJson(Map<String, dynamic> json) {
+    return LessonContentItemDto(
+      type: json['type'] as String,
+      content: json['content'],
+      level: json['level'] as int?,
+      alt: json['alt'] as String?,
+      calloutType: json['calloutType'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type,
+      'content': content,
+      if (level != null) 'level': level,
+      if (alt != null) 'alt': alt,
+      if (calloutType != null) 'calloutType': calloutType,
     };
   }
 }

@@ -1,4 +1,5 @@
 export 'models/course.dart';
+export 'models/course_content.dart';
 export 'data/mock_courses.dart';
 export 'screens/course_list_screen.dart';
 export 'screens/study_screen.dart';
@@ -24,3 +25,6 @@ export 'providers/course_detail_provider.dart';
 export 'screens/chapter_detail_page.dart';
 export 'widgets/chapter_status_filter_bar.dart';
 export 'widgets/chapter_content_item.dart';
+export 'screens/lesson_detail_screen.dart';
+export 'providers/lesson_detail_provider.dart';
+export 'models/lesson_content.dart';

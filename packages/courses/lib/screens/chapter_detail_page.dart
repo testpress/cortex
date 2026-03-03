@@ -21,7 +21,7 @@ class ChapterDetailPage extends ConsumerWidget {
   final String courseId;
   final String chapterId;
   final VoidCallback? onBack;
-  final ValueChanged<String>? onLessonClick;
+  final ValueChanged<Lesson>? onLessonClick;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -92,7 +92,7 @@ class ChapterDetailPage extends ConsumerWidget {
                           lesson: lesson,
                           onTap: () {
                             if (onLessonClick != null) {
-                              onLessonClick!(lesson.id);
+                              onLessonClick!(lesson);
                             }
                           },
                         ),

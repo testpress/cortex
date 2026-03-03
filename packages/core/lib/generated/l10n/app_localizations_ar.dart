@@ -364,4 +364,29 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get chapterNotFound => 'الفصل غير موجود';
+
+  @override
+  String lessonXofY(int index, int total) {
+    return 'درس $index من $total';
+  }
+
+  @override
+  String get lessonBookmarkAdd => 'إضافة إشارة مرجعية';
+
+  @override
+  String get lessonBookmarkRemove => 'إزالة الإشارة المرجعية';
+
+  @override
+  String get lessonDownload => 'تحميل الدرس';
+
+  @override
+  String get navigationPrevious => 'السابق';
+
+  @override
+  String get navigationNext => 'الدرس التالي';
+
+  @override
+  String openDetailedLesson(String title) {
+    return 'افتح الدرس: $title';
+  }
 }

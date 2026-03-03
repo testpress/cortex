@@ -107,5 +107,12 @@
   "chapterTypeAssessment": "പ്രാക്ടീസ് അസസ്‌മെന്റ്",
   "chapterTypeTest": "ടെസ്റ്റ്",
   "chapterNoContent": "ഉള്ളടക്കം ലഭ്യമല്ല",
-  "chapterNotFound": "ചാപ്റ്റർ ലഭ്യമല്ല"
+  "chapterNotFound": "ചാപ്റ്റർ ലഭ്യമല്ല",
+  "lessonXofY": "പാഠം {index} / {total}",
+  "lessonBookmarkAdd": "ബുക്ക്മാർക്ക് ചെയ്യുക",
+  "lessonBookmarkRemove": "ബുക്ക്മാർക്ക് മാറ്റുക",
+  "lessonDownload": "ഡൗൺലോഡ് ചെയ്യുക",
+  "navigationPrevious": "മുൻപത്തെ",
+  "navigationNext": "അടുത്ത പാഠം",
+  "openDetailedLesson": "പാഠം തുറക്കുക: {title}"
 }

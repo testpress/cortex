@@ -366,4 +366,29 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get chapterNotFound => 'ചാപ്റ്റർ ലഭ്യമല്ല';
+
+  @override
+  String lessonXofY(int index, int total) {
+    return 'പാഠം $index / $total';
+  }
+
+  @override
+  String get lessonBookmarkAdd => 'ബുക്ക്മാർക്ക് ചെയ്യുക';
+
+  @override
+  String get lessonBookmarkRemove => 'ബുക്ക്മാർക്ക് മാറ്റുക';
+
+  @override
+  String get lessonDownload => 'ഡൗൺലോഡ് ചെയ്യുക';
+
+  @override
+  String get navigationPrevious => 'മുൻപത്തെ';
+
+  @override
+  String get navigationNext => 'അടുത്ത പാഠം';
+
+  @override
+  String openDetailedLesson(String title) {
+    return 'പാഠം തുറക്കുക: $title';
+  }
 }

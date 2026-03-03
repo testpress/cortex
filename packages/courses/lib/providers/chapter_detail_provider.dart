@@ -35,6 +35,12 @@ Future<Chapter?> chapterDetail(
             progressStatus: l.progressStatus,
             duration: l.duration,
             isLocked: l.isLocked,
+            subtitle: l.subtitle,
+            subjectName: l.subjectName,
+            subjectIndex: l.subjectIndex,
+            lessonNumber: l.lessonNumber,
+            totalLessons: l.totalLessons,
+            content: l.content.map(LessonContentItem.fromDto).toList(),
           ),
         )
         .toList(),

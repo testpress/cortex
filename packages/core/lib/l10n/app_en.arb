@@ -201,5 +201,29 @@
   "chapterTypeAssessment": "Practice Assessment",
   "chapterTypeTest": "Test",
   "chapterNoContent": "No content available",
-  "chapterNotFound": "Chapter not found"
+  "chapterNotFound": "Chapter not found",
+  "lessonXofY": "Lesson {index} of {total}",
+  "@lessonXofY": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "lessonBookmarkAdd": "Bookmark lesson",
+  "lessonBookmarkRemove": "Remove bookmark",
+  "lessonDownload": "Download lesson",
+  "navigationPrevious": "Previous",
+  "navigationNext": "Next Lesson",
+  "openDetailedLesson": "Open lesson: {title}",
+  "@openDetailedLesson": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  }
 }

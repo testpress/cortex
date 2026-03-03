@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:drift/drift.dart';
 
 import '../db/app_database.dart';
@@ -60,6 +61,30 @@ class CourseRepository {
     final companions = lessons.map(_lessonDtoToCompanion).toList();
     await _db.upsertLessons(companions);
     return lessons;
+  }
+
+  /// Direct fetch of a lesson by ID.
+  Future<LessonDto?> getLesson(String id) async {
+    final row = await _db.getLessonById(id);
+    return row != null ? _rowToLessonDto(row) : null;
+  }
+
+  /// Watch a single lesson by its ID.
+  Stream<LessonDto?> watchLesson(String id) {
+    return _db
+        .watchLesson(id)
+        .map((row) => row != null ? _rowToLessonDto(row) : null);
+  }
+
+  /// Toggles the bookmark status locally.
+  Future<void> toggleLessonBookmark(String id) async {
+    await _db.toggleLessonBookmark(id);
+  }
+
+  /// Updates lesson progress locally.
+  Future<void> updateLessonProgress(
+      String id, LessonProgressStatus status) async {
+    await _db.updateLessonProgress(id, status);
   }
 
   /// Efficiently fetches lesson and parent titles by lesson ID.
@@ -134,6 +159,14 @@ class CourseRepository {
         progressStatus: _parseStatus(row.progressStatus),
         isLocked: row.isLocked,
         orderIndex: row.orderIndex,
+        chapterTitle: row.chapterTitle,
+        content: _parseContentJson(row.contentJson),
+        subtitle: row.subtitle,
+        subjectName: row.subjectName,
+        subjectIndex: row.subjectIndex,
+        lessonNumber: row.lessonNumber,
+        totalLessons: row.totalLessons,
+        isBookmarked: row.isBookmarked,
       );
 
   LessonsTableCompanion _lessonDtoToCompanion(LessonDto dto) =>
@@ -146,6 +179,18 @@ class CourseRepository {
         progressStatus: Value(dto.progressStatus.name),
         isLocked: Value(dto.isLocked),
         orderIndex: dto.orderIndex,
+        chapterTitle: Value(dto.chapterTitle),
+        contentJson: Value(
+          dto.content.isNotEmpty
+              ? jsonEncode(dto.content.map((e) => e.toJson()).toList())
+              : null,
+        ),
+        subtitle: Value(dto.subtitle),
+        subjectName: Value(dto.subjectName),
+        subjectIndex: Value(dto.subjectIndex),
+        lessonNumber: Value(dto.lessonNumber),
+        totalLessons: Value(dto.totalLessons),
+        isBookmarked: Value(dto.isBookmarked),
       );
 
   LessonType _parseType(String s) => LessonType.values.firstWhere(
@@ -158,4 +203,17 @@ class CourseRepository {
         (e) => e.name == s,
         orElse: () => LessonProgressStatus.notStarted,
       );
+
+  List<LessonContentItemDto> _parseContentJson(String? json) {
+    if (json == null) return const [];
+    try {
+      final decoded = jsonDecode(json) as List<dynamic>;
+      return decoded
+          .map((e) => LessonContentItemDto.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      // Log or handle error: malformed JSON in local DB
+      return const [];
+    }
+  }
 }

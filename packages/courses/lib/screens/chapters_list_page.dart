@@ -103,11 +103,11 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                           lesson: lesson,
                           onTap: () {
                             final route = switch (lesson.type) {
-                              LessonType.video => '/video/${lesson.id}',
-                              LessonType.pdf => '/lesson/${lesson.id}',
+                              LessonType.video => '/study/video/${lesson.id}',
+                              LessonType.pdf => '/study/lesson/${lesson.id}',
                               LessonType.assessment =>
-                                '/assessment/${lesson.id}',
-                              LessonType.test => '/test/${lesson.id}',
+                                '/study/assessment/${lesson.id}',
+                              LessonType.test => '/study/test/${lesson.id}',
                             };
                             context.push(route);
                           },

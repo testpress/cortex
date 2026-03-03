@@ -1327,7 +1327,7 @@ class DesignTypography {
       // bodySmall — dense info rows (metadata, table cells). height
       // explicitly set to decouple from future sm scale changes.
       bodySmall: s.sm.copyWith(
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w500,
         color: c.textPrimary,
         height: 1.4,
       ),

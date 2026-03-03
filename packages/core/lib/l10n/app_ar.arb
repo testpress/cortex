@@ -107,5 +107,12 @@
   "chapterTypeAssessment": "تقييم تدريبي",
   "chapterTypeTest": "اختبار",
   "chapterNoContent": "لا يوجد محتوى متاح",
-  "chapterNotFound": "الفصل غير موجود"
+  "chapterNotFound": "الفصل غير موجود",
+  "lessonXofY": "درس {index} من {total}",
+  "lessonBookmarkAdd": "إضافة إشارة مرجعية",
+  "lessonBookmarkRemove": "إزالة الإشارة المرجعية",
+  "lessonDownload": "تحميل الدرس",
+  "navigationPrevious": "السابق",
+  "navigationNext": "الدرس التالي",
+  "openDetailedLesson": "افتح الدرس: {title}"
 }
