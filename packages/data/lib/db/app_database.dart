@@ -39,17 +39,30 @@ class AppDatabase extends _$AppDatabase {
             await m.deleteTable(coursesTable.actualTableName);
             await m.createTable(coursesTable);
           }
+
+          // Helper to add columns only if they don't already exist.
+          // This prevents crashes like "duplicate column name" during development migrations.
+          Future<void> addColumnSafely(GeneratedColumn col) async {
+            final res = await customSelect(
+              'PRAGMA table_info(${lessonsTable.actualTableName})',
+            ).get();
+            final existingColumns = res.map((r) => r.read<String>('name'));
+            if (!existingColumns.contains(col.name)) {
+              await m.addColumn(lessonsTable, col);
+            }
+          }
+
           if (from < 3) {
             // Phase-2: Add new columns to lessonsTable without deleting existing data
-            await m.addColumn(lessonsTable, lessonsTable.contentJson);
-            await m.addColumn(lessonsTable, lessonsTable.subtitle);
-            await m.addColumn(lessonsTable, lessonsTable.subjectName);
-            await m.addColumn(lessonsTable, lessonsTable.subjectIndex);
-            await m.addColumn(lessonsTable, lessonsTable.lessonNumber);
-            await m.addColumn(lessonsTable, lessonsTable.totalLessons);
+            await addColumnSafely(lessonsTable.contentJson);
+            await addColumnSafely(lessonsTable.subtitle);
+            await addColumnSafely(lessonsTable.subjectName);
+            await addColumnSafely(lessonsTable.subjectIndex);
+            await addColumnSafely(lessonsTable.lessonNumber);
+            await addColumnSafely(lessonsTable.totalLessons);
           }
           if (from < 4) {
-            await m.addColumn(lessonsTable, lessonsTable.isBookmarked);
+            await addColumnSafely(lessonsTable.isBookmarked);
           }
         },
       );

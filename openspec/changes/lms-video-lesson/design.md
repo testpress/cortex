@@ -32,6 +32,14 @@ Currently, the LMS uses a generic lesson detail screen (`LessonDetailScreen`) wh
 3. **Video Player UI**:
    - *Decision*: We will wrap the existing DRM player in a container that supports the "First Lesson Hint" overlays and custom badges, as defined in `VideoLessonDetailScreen.tsx` reference.
 
+4. **Idempotent Database Migrations**:
+   - *Decision*: Use a helper function to verify column existence (via `PRAGMA table_info`) before executing `ALTER TABLE` statements.
+   - *Rationale*: Prevents common SQLite exceptions during development when migrations might be partially applied or schema desyncs occur.
+
+5. **Real-time Input Feedback**:
+   - *Decision*: Implement character counters (using `ValueListenableBuilder`) in tabs with text inputs.
+   - *Rationale*: Improves user experience by providing immediate feedback on input limits without requiring a full rebuild of the tab.
+
 ## Risks / Trade-offs
 
 - **Performance Risk**: Running a video player alongside a potentially heavy AI chat or doubt forum list might cause UI stutters.

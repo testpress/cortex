@@ -21,6 +21,12 @@ class _DoubtTabState extends State<DoubtTab>
   bool get wantKeepAlive => true;
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     final design = Design.of(context);
@@ -112,9 +118,14 @@ class _DoubtTabState extends State<DoubtTab>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            AppText.caption(
-              l10n.videoLessonCharacterCount(0, 500),
-              color: design.colors.textTertiary,
+            ValueListenableBuilder<TextEditingValue>(
+              valueListenable: _controller,
+              builder: (context, value, _) {
+                return AppText.caption(
+                  l10n.videoLessonCharacterCount(value.text.length, 500),
+                  color: design.colors.textTertiary,
+                );
+              },
             ),
             ValueListenableBuilder<TextEditingValue>(
               valueListenable: _controller,

@@ -42,3 +42,30 @@ The system SHALL allow continuous learning through lesson progression.
 #### Scenario: Continuing to next lesson
 - **WHEN** the user taps the "Continue to Next Lesson" button at the bottom
 - **THEN** the system SHALL navigate to the next sequence item within the same chapter
+
+### Requirement: Dynamic Lesson Metadata
+The system SHALL display current lesson progress and optional metadata dynamically from the lesson model.
+
+#### Scenario: Displaying lesson progress
+- **WHEN** the user views a video lesson
+- **THEN** the system SHALL display "Lesson X of Y" based on the lesson's sequence data
+- **AND** it SHALL show "?" if the data is missing
+
+#### Scenario: Conditional subtitle rendering
+- **WHEN** a lesson has a subtitle defined
+- **THEN** the system SHALL display it below the title
+- **ELSE** it SHALL hide the subtitle area to maximize screen space
+
+### Requirement: Interactive Input Feedback
+The system SHALL provide real-time feedback for user text input in learning support tabs.
+
+#### Scenario: Real-time character counting
+- **WHEN** the user types in the "Ask Doubt" text area
+- **THEN** the system SHALL update the character count display (e.g., "12/500") instantly
+
+### Requirement: Resilient Data Migrations (Technical)
+The system SHALL ensure database stability during upgrades by using idempotent migration strategies.
+
+#### Scenario: Safe column addition
+- **WHEN** a database migration attempts to add a column that already exists
+- **THEN** the system SHALL skip the addition gracefully instead of failing with an exception

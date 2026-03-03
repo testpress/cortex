@@ -20,6 +20,12 @@ class _AITabState extends State<AITab> with AutomaticKeepAliveClientMixin {
   bool get wantKeepAlive => true;
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     final design = Design.of(context);

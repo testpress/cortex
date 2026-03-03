@@ -48,8 +48,12 @@ class _VideoLessonDetailScreenState
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    // Mock video URL if not present. In a real app, this should come from lesson model.
+    // Extract video URL from lesson content
+    final videoContent = widget.lesson.content
+        .whereType<VideoContent>()
+        .firstOrNull;
     final videoUrl =
+        videoContent?.url ??
         'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4';
 
     final nextCallback = widget.onNext ?? () {};
@@ -123,7 +127,7 @@ class _VideoLessonDetailScreenState
                     borderRadius: BorderRadius.circular(design.radius.sm),
                   ),
                   child: AppText.caption(
-                    'Lesson ${widget.lesson.lessonNumber ?? 3} of ${widget.lesson.totalLessons ?? 8}',
+                    'Lesson ${widget.lesson.lessonNumber ?? '?'} of ${widget.lesson.totalLessons ?? '?'}',
                     color: design.colors.textInverse,
                     style: const TextStyle(fontWeight: FontWeight.w500),
                   ),
@@ -149,13 +153,14 @@ class _VideoLessonDetailScreenState
               letterSpacing: -0.5,
             ),
           ),
-          SizedBox(height: design.spacing.xs),
-          AppText.body(
-            widget.lesson.subtitle ??
-                "Understanding the fundamental principles of the first law of thermodynamics, internal energy, and their applications in various systems.",
-            color: design.colors.textSecondary,
-            style: const TextStyle(fontSize: 14, height: 1.4),
-          ),
+          if (widget.lesson.subtitle?.isNotEmpty ?? false) ...[
+            SizedBox(height: design.spacing.xs),
+            AppText.body(
+              widget.lesson.subtitle!,
+              color: design.colors.textSecondary,
+              style: const TextStyle(fontSize: 14, height: 1.4),
+            ),
+          ],
         ],
       ),
     );
@@ -258,5 +263,6 @@ class _StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  bool shouldRebuild(_StickyTabBarDelegate oldDelegate) => true;
+  bool shouldRebuild(_StickyTabBarDelegate oldDelegate) =>
+      oldDelegate.child != child;
 }
