@@ -337,4 +337,31 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get statusCompleted => 'مكتمل';
+
+  @override
+  String get chapterStatusRunning => 'جارٍ';
+
+  @override
+  String get chapterStatusUpcoming => 'قادمة';
+
+  @override
+  String get chapterStatusHistory => 'السجلات';
+
+  @override
+  String get chapterTypeVideo => 'درس فيديو';
+
+  @override
+  String get chapterTypePdf => 'ملاحظات PDF';
+
+  @override
+  String get chapterTypeAssessment => 'تقييم تدريبي';
+
+  @override
+  String get chapterTypeTest => 'اختبار';
+
+  @override
+  String get chapterNoContent => 'لا يوجد محتوى متاح';
+
+  @override
+  String get chapterNotFound => 'الفصل غير موجود';
 }

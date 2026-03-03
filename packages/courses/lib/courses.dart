@@ -21,3 +21,6 @@ export 'widgets/curriculum_header.dart';
 export 'widgets/lesson_status_badge.dart';
 export 'widgets/lesson_list_item.dart';
 export 'providers/course_detail_provider.dart';
+export 'screens/chapter_detail_page.dart';
+export 'widgets/chapter_status_filter_bar.dart';
+export 'widgets/chapter_content_item.dart';

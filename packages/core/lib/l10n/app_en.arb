@@ -192,5 +192,14 @@
   },
   "statusLocked": "Locked",
   "statusInProgress": "In Progress",
-  "statusCompleted": "Completed"
+  "statusCompleted": "Completed",
+  "chapterStatusRunning": "Running",
+  "chapterStatusUpcoming": "Upcoming",
+  "chapterStatusHistory": "History",
+  "chapterTypeVideo": "Video Lesson",
+  "chapterTypePdf": "PDF Notes",
+  "chapterTypeAssessment": "Practice Assessment",
+  "chapterTypeTest": "Test",
+  "chapterNoContent": "No content available",
+  "chapterNotFound": "Chapter not found"
 }

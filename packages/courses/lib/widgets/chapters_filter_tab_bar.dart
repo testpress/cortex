@@ -119,13 +119,7 @@ class _FilterTab extends StatelessWidget {
                 Icon(icon, size: 16, color: fgColor),
                 SizedBox(width: design.spacing.xs),
               ],
-              Text(
-                label,
-                style: design.typography.label.copyWith(
-                  color: fgColor,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+              AppText.label(label, color: fgColor),
             ],
           ),
         ),

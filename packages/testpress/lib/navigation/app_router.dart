@@ -115,9 +115,16 @@ final GoRouter appRouter = GoRouter(
                     GoRoute(
                       path: ':chapterId',
                       builder: (context, state) {
+                        final courseId = state.pathParameters['courseId']!;
                         final chapterId = state.pathParameters['chapterId']!;
-                        return Center(
-                          child: Text('Chapter Detail Page (ID: $chapterId)'),
+                        return ChapterDetailPage(
+                          courseId: courseId,
+                          chapterId: chapterId,
+                          onBack: () => context.pop(),
+                          onLessonClick: (lessonId) {
+                            // Navigation disabled as lesson readers are not yet implemented
+                            // context.push('/lesson/$lessonId');
+                          },
                         );
                       },
                     ),

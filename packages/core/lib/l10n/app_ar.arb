@@ -98,5 +98,14 @@
   "chapterMetadata": "{lessons} {lessonsLabel} · {assessments} {assessmentsLabel}",
   "statusLocked": "مقفل",
   "statusInProgress": "في التقدم",
-  "statusCompleted": "مكتمل"
+  "statusCompleted": "مكتمل",
+  "chapterStatusRunning": "جارٍ",
+  "chapterStatusUpcoming": "قادمة",
+  "chapterStatusHistory": "السجلات",
+  "chapterTypeVideo": "درس فيديو",
+  "chapterTypePdf": "ملاحظات PDF",
+  "chapterTypeAssessment": "تقييم تدريبي",
+  "chapterTypeTest": "اختبار",
+  "chapterNoContent": "لا يوجد محتوى متاح",
+  "chapterNotFound": "الفصل غير موجود"
 }
