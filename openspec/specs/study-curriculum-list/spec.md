@@ -36,20 +36,48 @@ The system SHALL display a floating resume card at the bottom of the Study page 
 ### Requirement: Performance & Scalability
 The system SHALL use virtualized lists (e.g., `ListView.builder`) for curriculum rendering to ensure smooth scrolling (60fps) even with hundreds of courses or lessons.
 
+#### Scenario: Smooth scrolling with large data
+- **WHEN** the curriculum list contains 100+ items
+- **THEN** the list renders smoothly without frame drops
+
 ### Requirement: Theme Governance
 The system SHALL centralize all study-specific colors (e.g., content type accent colors) into a `DesignStudyTheme` extension to ensure consistent branding and seamless dark mode transitions.
+
+#### Scenario: Consistent theme across modes
+- **WHEN** the application switches to dark mode
+- **THEN** study-specific colors adapt according to the DesignStudyTheme definition
 
 ### Requirement: Data Identity & Lifecycle
 The system SHALL use a centralized identity source (`authProvider`) to determine the current user session. This ensures that data providers (Curriculum, Progress) are reactive to user switches and free of session-related hardcoding.
 
+#### Scenario: User switch refreshes data
+- **WHEN** the authenticated user changes
+- **THEN** curriculum and progress providers automatically invalidate and rebuild for the new user
+
 ### Requirement: Side-Effect-Free Data Seeding
 The system SHALL move all data synchronization and seeding logic (refreshing courses/progress) into a dedicated application-launch routine. Data providers SHALL remain side-effect-free, acting only as reactive streams of the underlying database state.
+
+#### Scenario: Reactive data updates
+- **WHEN** the underlying database is updated
+- **THEN** the data providers emit new values without manual refresh triggers
 
 ### Requirement: O(N) Curriculum Search
 The system SHALL pre-flatten the nested course/chapter hierarchy into a single synchronous provider (`allLessonsProvider`). This ensures that search and content-type filtering operations execute in O(N) time without nested iterations, preventing UI jank during rapid typing or filter toggling.
 
+#### Scenario: Rapid search execution
+- **WHEN** the user rapidly searches for specific content
+- **THEN** the result list updates instantaneously using the flattened provider structure
+
 ### Requirement: Full-Cell Interactive Targets
 The system SHALL ensure that interactive elements like filter chips utilize the full width of their grid containers as tap targets (`AppFocusable`). Text and icons within these chips SHALL be left-aligned with consistent gutter padding to prioritize readability and tap accuracy.
 
+#### Scenario: Accessible filter targets
+- **WHEN** a user taps anywhere within the container of a filter chip
+- **THEN** the filter is toggled as expected
+
 ### Requirement: Consistent Content Context
 The system SHALL maintain the main section header as "Your Courses" even when a search or content filter is active. This ensures the user maintains a stable sense of place within the Study tab while the underlying list content dynamically updates.
+
+#### Scenario: Stable header context
+- **WHEN** any filter or search is applied
+- **THEN** the main section header remains "Your Courses"
