@@ -66,41 +66,20 @@ class LessonListItem extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      AppText.cardTitle(
                         lesson.title,
-                        style: design.typography.label.copyWith(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          height: 1.5,
-                          color: design.colors.textPrimary,
-                        ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 4),
 
                       // text-[14px] leading-[20px] font-medium (Chapter Title)
-                      Text(
-                        lesson.chapterTitle ?? '',
-                        style: design.typography.bodySmall.copyWith(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          height: 1.42,
-                          color: design.colors.textSecondary,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
+                      AppText.cardSubtitle(lesson.chapterTitle ?? ''),
+                      const SizedBox(height: 15),
 
                       Row(
                         children: [
-                          Text(
-                            lesson.duration,
-                            style: design.typography.caption.copyWith(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: design.colors.textSecondary,
-                            ),
-                          ),
+                          AppText.cardCaption(lesson.duration),
                           const SizedBox(width: 8),
                           LessonStatusBadge(status: lesson.progressStatus),
                         ],

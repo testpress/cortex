@@ -63,31 +63,19 @@ class ChapterCurriculumItem extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      AppText.cardTitle(
                         l10n.chapterIndexLabel(index + 1, chapter.title),
-                        style: design.typography.label.copyWith(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          height: 1.5,
-                          color: design.colors.textPrimary,
-                        ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 2),
 
-                      AppText.bodySmall(
+                      AppText.cardSubtitle(
                         l10n.chapterMetadata(
                           chapter.lessonCount,
                           l10n.curriculumLessonsLabel,
                           chapter.assessmentCount,
                           l10n.curriculumAssessmentsLabel,
-                        ),
-                        color: design.colors.textSecondary,
-                        style: design.typography.bodySmall.copyWith(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          height: 1.42,
                         ),
                       ),
                     ],

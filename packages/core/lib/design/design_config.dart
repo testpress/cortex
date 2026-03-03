@@ -1363,15 +1363,15 @@ class DesignTypography {
         height: 1.2,
       ),
       // cardSubtitle — Secondary info for cards (chapters, duration).
-      cardSubtitle: s.sm.copyWith(
-        fontWeight: FontWeight.w400,
+      cardSubtitle: s.xs.copyWith(
+        fontWeight: FontWeight.w600,
         color: c.textSecondary,
-        height: 1.1,
+        height: 1.2,
       ),
       // cardCaption — Micro info inside cards (ratio labels).
       cardCaption: s.xs.copyWith(
         fontWeight: FontWeight.w400,
-        color: c.textTertiary,
+        color: c.textSecondary,
         height: 1.0,
       ),
     );

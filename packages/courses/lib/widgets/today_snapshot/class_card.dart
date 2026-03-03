@@ -25,7 +25,6 @@ class ClassCard extends StatelessWidget {
       chevronSize: 20,
       bottomAction: AppText.cardCaption(
         '${item.faculty} · ${item.time}',
-        color: design.colors.textTertiary,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
