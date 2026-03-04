@@ -68,6 +68,7 @@ class _VideoLessonDetailScreenState
             width: 1,
           ),
         ),
+        boxShadow: design.shadows.surfaceSoft,
       ),
       child: SafeArea(
         bottom: false,
@@ -182,7 +183,6 @@ class _VideoLessonDetailScreenState
       labelPadding: EdgeInsets.zero,
       indicatorSize: TabBarIndicatorSize.tab,
       indicator: BoxDecoration(
-        color: design.colors.accent2.withValues(alpha: 0.08),
         border: Border(
           bottom: BorderSide(color: design.colors.accent2, width: 2.5),
         ),
@@ -203,7 +203,7 @@ class _VideoLessonDetailScreenState
             SliverToBoxAdapter(child: header),
             SliverToBoxAdapter(
               child: Container(
-                color: design.colors.surface, // Gray middle section
+                color: design.colors.card, // Gray middle section
                 child: Column(children: [videoSection, titleSection]),
               ),
             ),
@@ -219,6 +219,7 @@ class _VideoLessonDetailScreenState
                         width: 1,
                       ),
                     ),
+                    boxShadow: design.shadows.surfaceSoft,
                   ),
                   child: tabBar,
                 ),
