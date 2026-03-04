@@ -120,7 +120,7 @@ Each screen = one OpenSpec change. Priority is based on user journey criticality
 | 6 | `lms-study-course-list` | StudyPage (course list) | Search bar + content filter chips + course cards | ✅ Done |
 | 7 | `lms-study-chapters-list` | ChaptersListPage | Chapter accordion, progress per chapter | ✅ Done |
 | 8 | `lms-study-chapter-detail` | ChapterDetailPage | Lesson items (video/pdf/assessment/test) | ✅ Done |
-| 9 | `lms-lesson-detail` | LessonDetailScreen | Text/PDF lesson reader + doubt chat trigger | ⏳ Pending |
+| 9 | `lms-lesson-detail` | LessonDetailScreen | Text/PDF lesson reader + doubt chat trigger | ✅ Done |
 | 10 | `lms-video-lesson` | VideoLessonDetailScreen | Video player + bookmarks + notes | ⏳ Pending |
 
 ### Phase 3 — Assessment & Testing
