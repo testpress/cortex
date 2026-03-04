@@ -45,9 +45,7 @@ class OptionCard extends StatelessWidget {
             Expanded(
               child: AppText.body(
                 option.text,
-                color: design.colors.textPrimary,
                 style: TextStyle(
-                  fontSize: 15,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                 ),
               ),

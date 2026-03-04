@@ -31,15 +31,7 @@ class TestQuestionCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppText.body(
-            question.text,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              height: 1.5,
-              color: design.colors.textPrimary,
-            ),
-          ),
+          AppText.title(question.text),
           if (question.type == QuestionType.multipleSelect)
             Padding(
               padding: EdgeInsets.only(top: design.spacing.sm),
