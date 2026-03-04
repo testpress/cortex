@@ -514,7 +514,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String testScoreSummary(Object correct, Object total) {
-    return '$total من $correct صحيحة';
+    return '$correct من $total صحيحة';
   }
 
   @override
@@ -536,4 +536,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get testStatusAnsweredMarked => 'تمت الإجابة والمراجعة';
+
+  @override
+  String testAttemptXofY(int index, int total) {
+    return 'المحاولة $index من $total';
+  }
+
+  @override
+  String get testSelectAllApply => 'اختر كل ما ينطبق';
 }

@@ -37,6 +37,7 @@ We are implementing the **Test Detail Screen**, which provides a formal examinat
   - `_answers`: A map of question IDs to `TestAttemptAnswer` models.
   - `_timeRemaining`: Countdown logic.
   - `_showPalette`: UI toggle for the navigation overlay.
+  - `_questionsMap`: Optimized **O(1)** lookup map to prevent O(n²) performance issues during scoring and UI updates.
 
 ### 4. Palette Status Mapping
 - To provide a quick "at-a-glance" status for the student:
@@ -47,7 +48,12 @@ We are implementing the **Test Detail Screen**, which provides a formal examinat
 
 ### 5. Mock Data Strategy
 - All test content is decoupled from the UI and resides in `MockTestFactory` to simulate a clean API integration transition.
+### 6. Security and Integrity (REMEDIATION)
+- **Problem**: Client-side scoring is vulnerable to local memory manipulation.
+- **Production Requirement**: For formal tests, the `TestDetailScreen` SHALL only submit raw answer ID's to the server. Correct answers SHALL NOT exist in the client-side data model.
+- **Server-side Validation**: The final score and result summary SHOULD be retrieved via a GET/POST call to the backend after submission to guarantee result integrity.
 
 ## Risks / Trade-offs
 - **State Complexity**: Managing marking vs. answering across a large map requires careful `setState` scoping.
 - **Timer Lifecycle**: Ensure the `periodic` timer is cancelled in `dispose` to prevent memory leaks during rapid navigation.
+- **Performance**: We mitigated lookup performance by using a `Map` in `initState` to store questions by ID, which is essential for scoring and status updates.

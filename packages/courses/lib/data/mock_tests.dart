@@ -27,9 +27,6 @@ class MockTestFactory {
             QuestionOption(id: 'c', text: '3 atm'),
             QuestionOption(id: 'd', text: '2 atm'),
           ],
-          correctAnswers: ['a'],
-          explanation:
-              "Using Gay-Lussac's Law (P₁/T₁ = P₂/T₂), we convert temperatures to Kelvin: T₁ = 300K, T₂ = 400K. Therefore, P₂ = P₁ × (T₂/T₁) = 2 × (400/300) = 2.67 atm.",
         );
       } else {
         return TestQuestion(
@@ -44,10 +41,17 @@ class MockTestFactory {
             QuestionOption(id: 'c', text: 'Option C'),
             QuestionOption(id: 'd', text: 'Option D'),
           ],
-          correctAnswers: ['a'],
-          explanation: 'Standard concept explanation.',
         );
       }
     });
+  }
+
+  /// This simulates a server-side scoring key that is NEVER sent to the client
+  /// during the active test phase.
+  static Map<String, List<String>> createScoringKey() {
+    return {
+      'q-1': ['a'],
+      for (int i = 1; i < 30; i++) 'q-${i + 1}': ['a'],
+    };
   }
 }

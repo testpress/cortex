@@ -42,12 +42,16 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
   // Data
   late final Test _test;
   late final List<TestQuestion> _questions;
+  late final Map<String, TestQuestion> _questionsMap;
+  late final Map<String, List<String>> _scoringKey;
 
   @override
   void initState() {
     super.initState();
     _test = MockTestFactory.createMockTest();
     _questions = MockTestFactory.createMockQuestions();
+    _questionsMap = {for (var q in _questions) q.id: q};
+    _scoringKey = MockTestFactory.createScoringKey();
     _timeRemaining = _test.timeLimitMinutes * 60;
     _startTimer();
   }
@@ -91,7 +95,19 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
   }
 
   void _handleFinishTest() {
-    setState(() => _testCompleted = true);
+    _savedTimer?.cancel();
+    setState(() {
+      _isSavedVisible = false;
+      _testCompleted = true;
+    });
+  }
+
+  void _navigateToQuestion(int index) {
+    _savedTimer?.cancel();
+    setState(() {
+      _isSavedVisible = false;
+      _currentQuestionIndex = index;
+    });
   }
 
   @override
@@ -145,10 +161,10 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                             _currentQuestionIndex == _questions.length - 1,
                         onToggleMark: _handleToggleMark,
                         onPrevious: () =>
-                            setState(() => _currentQuestionIndex--),
+                            _navigateToQuestion(_currentQuestionIndex - 1),
                         onNext: () {
                           if (_currentQuestionIndex < _questions.length - 1) {
-                            setState(() => _currentQuestionIndex++);
+                            _navigateToQuestion(_currentQuestionIndex + 1);
                           } else {
                             _handleFinishTest();
                           }
@@ -173,10 +189,10 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
               answers: _answers,
               currentIndex: _currentQuestionIndex,
               onClose: () => setState(() => _showPalette = false),
-              onQuestionSelected: (index) => setState(() {
-                _currentQuestionIndex = index;
-                _showPalette = false;
-              }),
+              onQuestionSelected: (index) {
+                _navigateToQuestion(index);
+                setState(() => _showPalette = false);
+              },
             ),
         ],
       ),
@@ -188,11 +204,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     setState(() {
       final currentAnswer =
           _answers[question.id] ??
-          TestAttemptAnswer(
-            questionId: question.id,
-            selectedOptions: [],
-            isCorrect: false,
-          );
+          TestAttemptAnswer(questionId: question.id, selectedOptions: []);
 
       List<String> newSelections;
       if (question.type == QuestionType.multipleSelect) {
@@ -218,11 +230,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     setState(() {
       final currentAnswer =
           _answers[question.id] ??
-          TestAttemptAnswer(
-            questionId: question.id,
-            selectedOptions: [],
-            isCorrect: false,
-          );
+          TestAttemptAnswer(questionId: question.id, selectedOptions: []);
       _answers[question.id] = currentAnswer.copyWith(
         isMarked: !currentAnswer.isMarked,
       );
@@ -232,9 +240,12 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
   int _calculateCorrectAnswers() {
     int count = 0;
     _answers.forEach((qId, answer) {
-      final q = _questions.firstWhere((q) => q.id == qId);
+      final q = _questionsMap[qId];
+      if (q == null) return;
+
       final userAnswers = List<String>.from(answer.selectedOptions)..sort();
-      final correctAnswers = List<String>.from(q.correctAnswers)..sort();
+      final correctAnswers = List<String>.from(_scoringKey[qId] ?? [])..sort();
+
       if (listEquals(userAnswers, correctAnswers)) {
         count++;
       }

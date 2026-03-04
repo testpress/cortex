@@ -44,7 +44,7 @@ class TestQuestionCard extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(top: design.spacing.sm),
               child: AppText.caption(
-                'Select all that apply',
+                L10n.of(context).testSelectAllApply,
                 color: design.colors.textSecondary,
                 style: const TextStyle(fontStyle: FontStyle.italic),
               ),

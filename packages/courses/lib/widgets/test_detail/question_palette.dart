@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import 'package:flutter/material.dart' show Colors, FontWeight;
+import 'package:flutter/material.dart' show FontWeight;
 import '../../models/test_model.dart';
 import './palette_shapes.dart';
 
@@ -33,7 +33,9 @@ class QuestionPalette extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: onClose,
-            child: Container(color: Colors.black.withValues(alpha: 0.5)),
+            child: Container(
+              color: design.colors.shadow.withValues(alpha: 0.5),
+            ),
           ),
           Align(
             alignment: Alignment.bottomCenter,
@@ -178,7 +180,7 @@ class QuestionPalette extends StatelessWidget {
             children: [
               _buildLegendItem(
                 design,
-                CircleShape(borderColor: design.colors.border, size: 18),
+                SquareShape(borderColor: design.colors.border, size: 18),
                 l10n.testStatusNotVisited,
               ),
               SizedBox(width: design.spacing.md),

@@ -151,11 +151,13 @@
   "testRetake": "إعادة الاختبار",
   "testBackToChapter": "العودة إلى الفصل",
   "testScorePercentage": "{percentage}%",
-  "testScoreSummary": "{total} من {correct} صحيحة",
+  "testScoreSummary": "{correct} من {total} صحيحة",
   "testPaletteTitle": "أهلاً! راجع إجاباتك",
   "testPaletteAnsweredCount": "تمت الإجابة على {answered} من أصل {total}",
   "testStatusNotVisited": "لم تتم زيارتها",
   "testStatusAnswered": "تمت الإجابة",
   "testStatusMarked": "تم وضع علامة",
-  "testStatusAnsweredMarked": "تمت الإجابة والمراجعة"
+  "testStatusAnsweredMarked": "تمت الإجابة والمراجعة",
+  "testAttemptXofY": "المحاولة {index} من {total}",
+  "testSelectAllApply": "اختر كل ما ينطبق"
 }

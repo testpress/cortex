@@ -537,4 +537,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get testStatusAnsweredMarked => 'Answered & Reviewed';
+
+  @override
+  String testAttemptXofY(int index, int total) {
+    return 'Attempt $index of $total';
+  }
+
+  @override
+  String get testSelectAllApply => 'Select all that apply';
 }

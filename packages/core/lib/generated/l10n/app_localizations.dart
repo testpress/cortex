@@ -1052,6 +1052,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Answered & Reviewed'**
   String get testStatusAnsweredMarked;
+
+  /// No description provided for @testAttemptXofY.
+  ///
+  /// In en, this message translates to:
+  /// **'Attempt {index} of {total}'**
+  String testAttemptXofY(int index, int total);
+
+  /// No description provided for @testSelectAllApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all that apply'**
+  String get testSelectAllApply;
 }
 
 class _AppLocalizationsDelegate

@@ -278,5 +278,17 @@
   "testStatusNotVisited": "Not visited",
   "testStatusAnswered": "Answered",
   "testStatusMarked": "Marked",
-  "testStatusAnsweredMarked": "Answered & Reviewed"
+  "testStatusAnsweredMarked": "Answered & Reviewed",
+  "testAttemptXofY": "Attempt {index} of {total}",
+  "@testAttemptXofY": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "testSelectAllApply": "Select all that apply"
 }

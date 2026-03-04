@@ -20,7 +20,9 @@ class TestResultView extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final scorePercentage = (correctCount / totalCount * 100).round();
+    final scorePercentage = totalCount > 0
+        ? (correctCount / totalCount * 100).round()
+        : 0;
 
     return Container(
       color: design.colors.surface,

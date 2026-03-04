@@ -13,7 +13,7 @@
 ## 3. Question Area & Navigation
 - [x] 3.1 Implement a `PageView` based question area using custom layouts (no default Material Scaffolding logic).
 - [x] 3.2 Build the `OptionCard` with custom inkwell/hover effects and design-token colors.
-- [x] 3.3 Logic: Handle selection, submission, and "Check Answer" feedback.
+- [x] 3.3 Logic: Handle selection, persistence, and sequential navigation flow.
 
 ## 4. Question Palette
 - [x] 4.1 Implement desktop sidebar and mobile bottom drawer (custom styled).

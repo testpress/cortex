@@ -538,4 +538,12 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get testStatusAnsweredMarked => 'ഉത്തരം നൽകി & റിവ്യൂ ചെയ്തു';
+
+  @override
+  String testAttemptXofY(int index, int total) {
+    return 'ശ്രമം $index / $total';
+  }
+
+  @override
+  String get testSelectAllApply => 'ബാധകമായവയെല്ലാം തിരഞ്ഞെടുക്കുക';
 }

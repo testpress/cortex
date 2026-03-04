@@ -73,7 +73,11 @@ class OptionCard extends StatelessWidget {
           ),
         ),
         child: isSelected
-            ? const Icon(LucideIcons.check, color: Colors.white, size: 12)
+            ? Icon(
+                LucideIcons.check,
+                color: design.colors.textInverse,
+                size: 12,
+              )
             : null,
       );
     } else {

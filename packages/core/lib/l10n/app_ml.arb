@@ -157,5 +157,7 @@
   "testStatusNotVisited": "സന്ദർശിച്ചിട്ടില്ല",
   "testStatusAnswered": "ഉത്തരം നൽകി",
   "testStatusMarked": "മാർക്ക് ചെയ്തു",
-  "testStatusAnsweredMarked": "ഉത്തരം നൽകി & റിവ്യൂ ചെയ്തു"
+  "testStatusAnsweredMarked": "ഉത്തരം നൽകി & റിവ്യൂ ചെയ്തു",
+  "testAttemptXofY": "ശ്രമം {index} / {total}",
+  "testSelectAllApply": "ബാധകമായവയെല്ലാം തിരഞ്ഞെടുക്കുക"
 }

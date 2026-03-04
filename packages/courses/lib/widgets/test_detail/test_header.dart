@@ -115,7 +115,7 @@ class TestHeader extends StatelessWidget {
                 ),
               ),
               AppText.caption(
-                'Attempt 1 of 2',
+                l10n.testAttemptXofY(1, 2),
                 color: design.colors.textSecondary,
               ),
             ],

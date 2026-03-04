@@ -38,7 +38,7 @@ The system SHALL provide a "Question Palette" for global navigation across all q
 - **WHEN** the user views the palette
 - **THEN** the system SHALL distinguish question states using the following shapes:
   - **Not Answered**: Empty Square Border.
-  - **Answered**: Sold Green Circle.
+  - **Answered**: Solid Green Circle.
   - **Marked for Review**: Solid Orange Diamond.
   - **Answered & Marked**: Solid Green Hexagon.
 
