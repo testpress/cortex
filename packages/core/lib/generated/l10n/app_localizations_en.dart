@@ -458,4 +458,91 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get videoLessonAiDisclaimer =>
       'AI responses are generated instantly and based on lecture content';
+
+  @override
+  String get testExit => 'Exit Test';
+
+  @override
+  String testTimeLeft(Object time) {
+    return '$time left';
+  }
+
+  @override
+  String testQuestionXofY(Object index, Object total) {
+    return 'Question $index of $total';
+  }
+
+  @override
+  String get testSaved => 'Saved';
+
+  @override
+  String get testMarked => 'Marked';
+
+  @override
+  String get testMarkForReview => 'Mark for Review';
+
+  @override
+  String get testPrevious => 'Previous';
+
+  @override
+  String get testNext => 'Next';
+
+  @override
+  String get testFinish => 'Finish';
+
+  @override
+  String testViewAllQuestions(Object answered, Object total) {
+    return 'View All Questions ($answered/$total answered)';
+  }
+
+  @override
+  String get testCompleteTitle => 'Test Complete!';
+
+  @override
+  String get testCompleteSubtitle =>
+      'Great job! You\'ve completed the practice test.';
+
+  @override
+  String get testRetake => 'Retake Test';
+
+  @override
+  String get testBackToChapter => 'Back to Chapter';
+
+  @override
+  String testScorePercentage(Object percentage) {
+    return '$percentage%';
+  }
+
+  @override
+  String testScoreSummary(Object correct, Object total) {
+    return '$correct out of $total correct';
+  }
+
+  @override
+  String get testPaletteTitle => 'Hey! Review Your Answers';
+
+  @override
+  String testPaletteAnsweredCount(Object answered, Object total) {
+    return '$answered of $total answered';
+  }
+
+  @override
+  String get testStatusNotVisited => 'Not visited';
+
+  @override
+  String get testStatusAnswered => 'Answered';
+
+  @override
+  String get testStatusMarked => 'Marked';
+
+  @override
+  String get testStatusAnsweredMarked => 'Answered & Reviewed';
+
+  @override
+  String testAttemptXofY(int index, int total) {
+    return 'Attempt $index of $total';
+  }
+
+  @override
+  String get testSelectAllApply => 'Select all that apply';
 }

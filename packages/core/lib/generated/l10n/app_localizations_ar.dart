@@ -458,4 +458,90 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get videoLessonAiDisclaimer =>
       'يتم إنشاء ردود الذكاء الاصطناعي فوريًا بناءً على محتوى المحاضرة';
+
+  @override
+  String get testExit => 'خروج من الاختبار';
+
+  @override
+  String testTimeLeft(Object time) {
+    return 'متبقي $time';
+  }
+
+  @override
+  String testQuestionXofY(Object index, Object total) {
+    return 'السؤال $index من $total';
+  }
+
+  @override
+  String get testSaved => 'تم الحفظ';
+
+  @override
+  String get testMarked => 'تم وضع علامة';
+
+  @override
+  String get testMarkForReview => 'وضع علامة للمراجعة';
+
+  @override
+  String get testPrevious => 'السابق';
+
+  @override
+  String get testNext => 'التالي';
+
+  @override
+  String get testFinish => 'إنهاء';
+
+  @override
+  String testViewAllQuestions(Object answered, Object total) {
+    return 'عرض جميع الأسئلة ($answered/$total تمت الإجابة عليها)';
+  }
+
+  @override
+  String get testCompleteTitle => 'اكتمل الاختبار!';
+
+  @override
+  String get testCompleteSubtitle => 'عمل رائع! لقد أكملت الاختبار التدريبي.';
+
+  @override
+  String get testRetake => 'إعادة الاختبار';
+
+  @override
+  String get testBackToChapter => 'العودة إلى الفصل';
+
+  @override
+  String testScorePercentage(Object percentage) {
+    return '$percentage%';
+  }
+
+  @override
+  String testScoreSummary(Object correct, Object total) {
+    return '$correct من $total صحيحة';
+  }
+
+  @override
+  String get testPaletteTitle => 'أهلاً! راجع إجاباتك';
+
+  @override
+  String testPaletteAnsweredCount(Object answered, Object total) {
+    return 'تمت الإجابة على $answered من أصل $total';
+  }
+
+  @override
+  String get testStatusNotVisited => 'لم تتم زيارتها';
+
+  @override
+  String get testStatusAnswered => 'تمت الإجابة';
+
+  @override
+  String get testStatusMarked => 'تم وضع علامة';
+
+  @override
+  String get testStatusAnsweredMarked => 'تمت الإجابة والمراجعة';
+
+  @override
+  String testAttemptXofY(int index, int total) {
+    return 'المحاولة $index من $total';
+  }
+
+  @override
+  String get testSelectAllApply => 'اختر كل ما ينطبق';
 }

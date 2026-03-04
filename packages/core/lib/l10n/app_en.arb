@@ -256,5 +256,39 @@
   "videoLessonAiAssistant": "AI Study Assistant",
   "videoLessonAiHelp": "Get instant help with your questions",
   "videoLessonAiHint": "Ask AI anything about this lecture...",
-  "videoLessonAiDisclaimer": "AI responses are generated instantly and based on lecture content"
+  "videoLessonAiDisclaimer": "AI responses are generated instantly and based on lecture content",
+  "testExit": "Exit Test",
+  "testTimeLeft": "{time} left",
+  "testQuestionXofY": "Question {index} of {total}",
+  "testSaved": "Saved",
+  "testMarked": "Marked",
+  "testMarkForReview": "Mark for Review",
+  "testPrevious": "Previous",
+  "testNext": "Next",
+  "testFinish": "Finish",
+  "testViewAllQuestions": "View All Questions ({answered}/{total} answered)",
+  "testCompleteTitle": "Test Complete!",
+  "testCompleteSubtitle": "Great job! You've completed the practice test.",
+  "testRetake": "Retake Test",
+  "testBackToChapter": "Back to Chapter",
+  "testScorePercentage": "{percentage}%",
+  "testScoreSummary": "{correct} out of {total} correct",
+  "testPaletteTitle": "Hey! Review Your Answers",
+  "testPaletteAnsweredCount": "{answered} of {total} answered",
+  "testStatusNotVisited": "Not visited",
+  "testStatusAnswered": "Answered",
+  "testStatusMarked": "Marked",
+  "testStatusAnsweredMarked": "Answered & Reviewed",
+  "testAttemptXofY": "Attempt {index} of {total}",
+  "@testAttemptXofY": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "testSelectAllApply": "Select all that apply"
 }
