@@ -116,10 +116,10 @@ Each screen = one OpenSpec change. Priority is based on user journey criticality
 | # | Change Name | Screen(s) | Notes | Status |
 |---|---|---|---|---|
 | 5 | `lms-home-paid-active` | PaidActiveHome | Dashboard with TodaySnapshot, StudyMomentum, QuickAccess | ✅ Done |
-| 5.1 | `lms-home-drawer` | MenuDrawer | Home sidebar navigation menu | ⏳ Pending |
-| 6 | `lms-study-course-list` | StudyPage (course list) | Search bar + content filter chips + course cards | ⏳ Pending |
-| 7 | `lms-study-chapters-list` | ChaptersListPage | Chapter accordion, progress per chapter | ⏳ Pending |
-| 8 | `lms-study-chapter-detail` | ChapterDetailPage | Lesson items (video/pdf/assessment/test) | ⏳ Pending |
+| 5.1 | `lms-home-drawer` | MenuDrawer | Home sidebar navigation menu | ✅ Done |
+| 6 | `lms-study-course-list` | StudyPage (course list) | Search bar + content filter chips + course cards | ✅ Done |
+| 7 | `lms-study-chapters-list` | ChaptersListPage | Chapter accordion, progress per chapter | ✅ Done |
+| 8 | `lms-study-chapter-detail` | ChapterDetailPage | Lesson items (video/pdf/assessment/test) | ✅ Done |
 | 9 | `lms-lesson-detail` | LessonDetailScreen | Text/PDF lesson reader + doubt chat trigger | ⏳ Pending |
 | 10 | `lms-video-lesson` | VideoLessonDetailScreen | Video player + bookmarks + notes | ⏳ Pending |
 
