@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 import '../../models/lesson_content.dart';
 
 /// Renders a hierarchical heading within a lesson.

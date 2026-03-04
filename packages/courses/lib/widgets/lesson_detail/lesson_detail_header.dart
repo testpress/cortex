@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart' show Icons;
 import 'package:core/core.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 
 /// Minimalist header for the lesson detail screen.
 ///

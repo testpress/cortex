@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 
 /// Navigation footer for the lesson detail screen.
 ///
