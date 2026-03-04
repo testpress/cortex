@@ -204,50 +204,20 @@ final GoRouter appRouter = GoRouter(
                 GoRoute(
                   path: 'assessment/:id',
                   builder: (context, state) {
-                    final id = state.pathParameters['id'];
-                    return AppShell(
-                      backgroundColor: const Color(0xFFFFFFFF),
-                      child: Column(
-                        children: [
-                          AppHeader(
-                            title: 'Assessment',
-                            leading: AppFocusable(
-                              onTap: () => context.pop(),
-                              child: const Icon(LucideIcons.chevronLeft),
-                            ),
-                          ),
-                          Expanded(
-                            child: Center(
-                              child: Text('Assessment Detail Page for ID: $id'),
-                            ),
-                          ),
-                        ],
-                      ),
+                    final id = state.pathParameters['id']!;
+                    return TestDetailScreen(
+                      testId: id,
+                      onClose: () => context.pop(),
                     );
                   },
                 ),
                 GoRoute(
                   path: 'test/:id',
                   builder: (context, state) {
-                    final id = state.pathParameters['id'];
-                    return AppShell(
-                      backgroundColor: const Color(0xFFFFFFFF),
-                      child: Column(
-                        children: [
-                          AppHeader(
-                            title: 'Test',
-                            leading: AppFocusable(
-                              onTap: () => context.pop(),
-                              child: const Icon(LucideIcons.chevronLeft),
-                            ),
-                          ),
-                          Expanded(
-                            child: Center(
-                              child: Text('Test Detail Page for ID: $id'),
-                            ),
-                          ),
-                        ],
-                      ),
+                    final id = state.pathParameters['id']!;
+                    return TestDetailScreen(
+                      testId: id,
+                      onClose: () => context.pop(),
                     );
                   },
                 ),

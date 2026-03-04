@@ -459,4 +459,83 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get videoLessonAiDisclaimer =>
       'AI ഉത്തരങ്ങൾ തൽക്ഷണം ജനറേറ്റ് ചെയ്യുന്നു, ലെക്ചർ ഉള്ളടക്കത്തെ അടിസ്ഥാനമാക്കിയുള്ളതാണ്';
+
+  @override
+  String get testExit => 'ടെസ്റ്റ് പുറത്തുകടക്കുക';
+
+  @override
+  String testTimeLeft(Object time) {
+    return '$time ബാക്കി';
+  }
+
+  @override
+  String testQuestionXofY(Object index, Object total) {
+    return 'ചോദ്യം $index / $total';
+  }
+
+  @override
+  String get testSaved => 'സേവ് ചെയ്തു';
+
+  @override
+  String get testMarked => 'മാർക്ക് ചെയ്തു';
+
+  @override
+  String get testMarkForReview => 'റിവ്യൂവിനായി മാർക്ക് ചെയ്യുക';
+
+  @override
+  String get testPrevious => 'മുൻപത്തെ';
+
+  @override
+  String get testNext => 'അടുത്തത്';
+
+  @override
+  String get testFinish => 'പൂർത്തിയാക്കുക';
+
+  @override
+  String testViewAllQuestions(Object answered, Object total) {
+    return 'എല്ലാ ചോദ്യങ്ങളും കാണുക ($answered/$total ഉത്തരങ്ങൾ നൽകി)';
+  }
+
+  @override
+  String get testCompleteTitle => 'ടെസ്റ്റ് പൂർത്തിയായി!';
+
+  @override
+  String get testCompleteSubtitle =>
+      'നന്നായി ചെയ്തു! നിങ്ങൾ പ്രാക്ടീസ് ടെസ്റ്റ് പൂർത്തിയാക്കി.';
+
+  @override
+  String get testRetake => 'വീണ്ടും ടെസ്റ്റ് എടുക്കുക';
+
+  @override
+  String get testBackToChapter => 'അധ്യായത്തിലേക്ക് മടങ്ങുക';
+
+  @override
+  String testScorePercentage(Object percentage) {
+    return '$percentage%';
+  }
+
+  @override
+  String testScoreSummary(Object correct, Object total) {
+    return '$total-ൽ $correct എണ്ണം ശരിയാണ്';
+  }
+
+  @override
+  String get testPaletteTitle => 'ഹലോ! നിങ്ങളുടെ ഉത്തരങ്ങൾ പരിശോധിക്കുക';
+
+  @override
+  String testPaletteAnsweredCount(Object answered, Object total) {
+    return '$total-ൽ $answered ഉത്തരങ്ങൾ നൽകി';
+  }
+
+  @override
+  String get testStatusNotVisited => 'സന്ദർശിച്ചിട്ടില്ല';
+
+  @override
+  String get testStatusAnswered => 'ഉത്തരം നൽകി';
+
+  @override
+  String get testStatusMarked => 'മാർക്ക് ചെയ്തു';
+
+  @override
+  String get testStatusAnsweredMarked => 'ഉത്തരം നൽകി & റിവ്യൂ ചെയ്തു';
 }

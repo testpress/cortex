@@ -29,3 +29,4 @@ export 'screens/lesson_detail_screen.dart';
 export 'screens/video_lesson_detail_page.dart';
 export 'providers/lesson_detail_provider.dart';
 export 'models/lesson_content.dart';
+export 'screens/test_detail_screen.dart';

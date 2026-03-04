@@ -920,6 +920,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'AI responses are generated instantly and based on lecture content'**
   String get videoLessonAiDisclaimer;
+
+  /// No description provided for @testExit.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit Test'**
+  String get testExit;
+
+  /// No description provided for @testTimeLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{time} left'**
+  String testTimeLeft(Object time);
+
+  /// No description provided for @testQuestionXofY.
+  ///
+  /// In en, this message translates to:
+  /// **'Question {index} of {total}'**
+  String testQuestionXofY(Object index, Object total);
+
+  /// No description provided for @testSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get testSaved;
+
+  /// No description provided for @testMarked.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked'**
+  String get testMarked;
+
+  /// No description provided for @testMarkForReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark for Review'**
+  String get testMarkForReview;
+
+  /// No description provided for @testPrevious.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get testPrevious;
+
+  /// No description provided for @testNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get testNext;
+
+  /// No description provided for @testFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get testFinish;
+
+  /// No description provided for @testViewAllQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'View All Questions ({answered}/{total} answered)'**
+  String testViewAllQuestions(Object answered, Object total);
+
+  /// No description provided for @testCompleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Complete!'**
+  String get testCompleteTitle;
+
+  /// No description provided for @testCompleteSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Great job! You\'ve completed the practice test.'**
+  String get testCompleteSubtitle;
+
+  /// No description provided for @testRetake.
+  ///
+  /// In en, this message translates to:
+  /// **'Retake Test'**
+  String get testRetake;
+
+  /// No description provided for @testBackToChapter.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Chapter'**
+  String get testBackToChapter;
+
+  /// No description provided for @testScorePercentage.
+  ///
+  /// In en, this message translates to:
+  /// **'{percentage}%'**
+  String testScorePercentage(Object percentage);
+
+  /// No description provided for @testScoreSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{correct} out of {total} correct'**
+  String testScoreSummary(Object correct, Object total);
+
+  /// No description provided for @testPaletteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hey! Review Your Answers'**
+  String get testPaletteTitle;
+
+  /// No description provided for @testPaletteAnsweredCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{answered} of {total} answered'**
+  String testPaletteAnsweredCount(Object answered, Object total);
+
+  /// No description provided for @testStatusNotVisited.
+  ///
+  /// In en, this message translates to:
+  /// **'Not visited'**
+  String get testStatusNotVisited;
+
+  /// No description provided for @testStatusAnswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Answered'**
+  String get testStatusAnswered;
+
+  /// No description provided for @testStatusMarked.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked'**
+  String get testStatusMarked;
+
+  /// No description provided for @testStatusAnsweredMarked.
+  ///
+  /// In en, this message translates to:
+  /// **'Answered & Reviewed'**
+  String get testStatusAnsweredMarked;
 }
 
 class _AppLocalizationsDelegate
