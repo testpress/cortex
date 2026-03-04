@@ -240,11 +240,10 @@ class AppText extends StatelessWidget {
     final design = Design.of(context);
 
     // Determine effective style based on variant or explicit style
-    final TextStyle effectiveStyle;
-    if (style != null) {
-      effectiveStyle = style!;
-    } else if (_variant != null) {
-      effectiveStyle = switch (_variant) {
+    // Determine base style from variant or default to body
+    final TextStyle baseStyle;
+    if (_variant != null) {
+      baseStyle = switch (_variant) {
         _AppTextVariant.display => design.typography.display,
         _AppTextVariant.headline => design.typography.headline,
         _AppTextVariant.title => design.typography.title,
@@ -269,12 +268,15 @@ class AppText extends StatelessWidget {
         _AppTextVariant.xl5 => design.typographyScale.xl5,
       };
     } else {
-      effectiveStyle = design.typography.body;
+      baseStyle = design.typography.body;
     }
+
+    // Merge the provided style and color onto the base theme style
+    final effectiveStyle = baseStyle.merge(style).copyWith(color: color);
 
     return Text(
       text,
-      style: effectiveStyle.copyWith(color: color),
+      style: effectiveStyle,
       textAlign: textAlign,
       maxLines: maxLines,
       overflow: overflow,
