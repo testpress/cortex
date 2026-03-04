@@ -390,4 +390,72 @@ class AppLocalizationsEn extends AppLocalizations {
   String openDetailedLesson(String title) {
     return 'Open lesson: $title';
   }
+
+  @override
+  String get videoLessonTabNotes => 'Notes';
+
+  @override
+  String get videoLessonTabTranscript => 'Transcript';
+
+  @override
+  String get videoLessonTabAskDoubt => 'Ask Doubt';
+
+  @override
+  String get videoLessonTabAiSupport => 'AI Support';
+
+  @override
+  String get videoLessonLectureNotes => 'Lecture Notes';
+
+  @override
+  String get videoLessonDownloadPdf => 'Download PDF';
+
+  @override
+  String get videoLessonKeyFormula => 'Key Formula';
+
+  @override
+  String get videoLessonTranscript => 'Video Transcript';
+
+  @override
+  String get videoLessonContinueNext => 'Continue to Next Lesson';
+
+  @override
+  String get videoLessonAskYourDoubt => 'Ask Your Doubt';
+
+  @override
+  String get videoLessonDoubtDescription =>
+      'Have a question about this lecture? Our expert instructors will answer within 24 hours.';
+
+  @override
+  String get videoLessonRecentDoubts => 'Recent Doubts';
+
+  @override
+  String get videoLessonPostYourDoubt => 'Post Your Doubt';
+
+  @override
+  String get videoLessonDoubtHint =>
+      'Type your question here... Be specific about what you\'re confused about.';
+
+  @override
+  String videoLessonCharacterCount(int current, int max) {
+    return '$current/$max characters';
+  }
+
+  @override
+  String get videoLessonSubmitDoubt => 'Submit Doubt';
+
+  @override
+  String get videoLessonPending => 'Pending';
+
+  @override
+  String get videoLessonAiAssistant => 'AI Study Assistant';
+
+  @override
+  String get videoLessonAiHelp => 'Get instant help with your questions';
+
+  @override
+  String get videoLessonAiHint => 'Ask AI anything about this lecture...';
+
+  @override
+  String get videoLessonAiDisclaimer =>
+      'AI responses are generated instantly and based on lecture content';
 }

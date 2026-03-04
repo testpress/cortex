@@ -173,25 +173,31 @@ final GoRouter appRouter = GoRouter(
                 GoRoute(
                   path: 'video/:id',
                   builder: (context, state) {
-                    final id = state.pathParameters['id'];
-                    return AppShell(
-                      backgroundColor: const Color(0xFFFFFFFF),
-                      child: Column(
-                        children: [
-                          AppHeader(
-                            title: 'Video Lesson',
-                            leading: AppFocusable(
-                              onTap: () => context.pop(),
-                              child: const Icon(LucideIcons.chevronLeft),
-                            ),
+                    final lessonArg = state.extra as Lesson?;
+                    if (lessonArg != null) {
+                      return VideoLessonDetailScreen(lesson: lessonArg);
+                    }
+
+                    final id = state.pathParameters['id']!;
+                    return Consumer(
+                      builder: (context, ref, child) {
+                        final lessonAsync = ref.watch(lessonDetailProvider(id));
+                        return lessonAsync.when(
+                          data: (lesson) {
+                            if (lesson == null) {
+                              return const Center(
+                                child: Text('Lesson not found'),
+                              );
+                            }
+                            return VideoLessonDetailScreen(lesson: lesson);
+                          },
+                          loading: () => Container(
+                            color: const Color(0xFFFFFFFF),
+                            child: const Center(child: AppLoadingIndicator()),
                           ),
-                          Expanded(
-                            child: Center(
-                              child: Text('Video Full-Screen View for ID: $id'),
-                            ),
-                          ),
-                        ],
-                      ),
+                          error: (e, __) => Center(child: Text('Error: $e')),
+                        );
+                      },
                     );
                   },
                 ),

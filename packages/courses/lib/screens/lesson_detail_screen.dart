@@ -197,6 +197,7 @@ class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
       ),
       ListContent() => LessonList(items: item.items, bulletColor: bulletColor),
       CalloutContent() => LessonCallout(text: item.text, type: item.type),
+      VideoContent() => const SizedBox.shrink(),
     };
   }
 }

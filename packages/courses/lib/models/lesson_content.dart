@@ -26,6 +26,8 @@ sealed class LessonContentItem {
             orElse: () => CalloutType.note,
           ),
         );
+      case 'video':
+        return VideoContent(url: dto.content as String);
       default:
         // log.warning('Unknown lesson content type: ${dto.type}');
         return const ParagraphContent(text: '');
@@ -83,4 +85,12 @@ class CalloutContent extends LessonContentItem {
 
   /// The semantic type of warning/info.
   final CalloutType type;
+}
+
+/// A video content item.
+class VideoContent extends LessonContentItem {
+  const VideoContent({required this.url});
+
+  /// The URL of the video.
+  final String url;
 }

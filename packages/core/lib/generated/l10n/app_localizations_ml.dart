@@ -391,4 +391,72 @@ class AppLocalizationsMl extends AppLocalizations {
   String openDetailedLesson(String title) {
     return 'പാഠം തുറക്കുക: $title';
   }
+
+  @override
+  String get videoLessonTabNotes => 'കുറിപ്പുകൾ';
+
+  @override
+  String get videoLessonTabTranscript => 'ട്രാൻസ്ക്രിപ്റ്റ്';
+
+  @override
+  String get videoLessonTabAskDoubt => 'സംശയം ചോദിക്കുക';
+
+  @override
+  String get videoLessonTabAiSupport => 'AI സഹായം';
+
+  @override
+  String get videoLessonLectureNotes => 'ലെക്ചർ കുറിപ്പുകൾ';
+
+  @override
+  String get videoLessonDownloadPdf => 'PDF ഡൗൺലോഡ്';
+
+  @override
+  String get videoLessonKeyFormula => 'പ്രധാന സൂത്രവാക്യം';
+
+  @override
+  String get videoLessonTranscript => 'വീഡിയോ ട്രാൻസ്ക്രിപ്റ്റ്';
+
+  @override
+  String get videoLessonContinueNext => 'അടുത്ത പാഠത്തിലേക്ക് തുടരുക';
+
+  @override
+  String get videoLessonAskYourDoubt => 'നിങ്ങളുടെ സംശയം ചോദിക്കുക';
+
+  @override
+  String get videoLessonDoubtDescription =>
+      'ഈ ലെക്ചറിനെക്കുറിച്ച് എന്തെങ്കിലും ചോദ്യമുണ്ടോ? ഞങ്ങളുടെ വിദഗ്ധ അധ്യാപകർ 24 മണിക്കൂറിനകം ഉത്തരം നൽകും.';
+
+  @override
+  String get videoLessonRecentDoubts => 'സമീപകാല സംശയങ്ങൾ';
+
+  @override
+  String get videoLessonPostYourDoubt => 'നിങ്ങളുടെ സംശയം പോസ്റ്റ് ചെയ്യുക';
+
+  @override
+  String get videoLessonDoubtHint => 'നിങ്ങളുടെ ചോദ്യം ഇവിടെ ടൈപ്പ് ചെയ്യുക...';
+
+  @override
+  String videoLessonCharacterCount(int current, int max) {
+    return '$current/$max അക്ഷരങ്ങൾ';
+  }
+
+  @override
+  String get videoLessonSubmitDoubt => 'സംശയം സമർപ്പിക്കുക';
+
+  @override
+  String get videoLessonPending => 'കാത്തിരിക്കുന്നു';
+
+  @override
+  String get videoLessonAiAssistant => 'AI പഠന സഹായി';
+
+  @override
+  String get videoLessonAiHelp => 'നിങ്ങളുടെ ചോദ്യങ്ങൾക്ക് തൽക്ഷണ സഹായം നേടുക';
+
+  @override
+  String get videoLessonAiHint =>
+      'ഈ ലെക്ചറിനെക്കുറിച്ച് AI-യോട് എന്തും ചോദിക്കുക...';
+
+  @override
+  String get videoLessonAiDisclaimer =>
+      'AI ഉത്തരങ്ങൾ തൽക്ഷണം ജനറേറ്റ് ചെയ്യുന്നു, ലെക്ചർ ഉള്ളടക്കത്തെ അടിസ്ഥാനമാക്കിയുള്ളതാണ്';
 }
