@@ -8,7 +8,7 @@ class MockTestFactory {
       subject: 'Physics',
       description: 'Test your understanding of thermodynamics concepts',
       totalQuestions: 30,
-      timeLimitMinutes: 40,
+      timeLimitMinutes: 1,
     );
   }
 

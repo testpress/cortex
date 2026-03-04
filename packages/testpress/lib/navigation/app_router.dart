@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
@@ -124,14 +125,26 @@ final GoRouter appRouter = GoRouter(
                           chapterId: chapterId,
                           onBack: () => context.pop(),
                           onLessonClick: (lesson) {
+                            if (lesson.type == LessonType.assessment) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Assessment feature is coming soon!',
+                                  ),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                              return;
+                            }
                             final path = switch (lesson.type) {
                               LessonType.video => '/study/video/${lesson.id}',
                               LessonType.pdf => '/study/lesson/${lesson.id}',
-                              LessonType.assessment =>
-                                '/study/assessment/${lesson.id}',
                               LessonType.test => '/study/test/${lesson.id}',
+                              _ => null,
                             };
-                            context.push(path, extra: lesson);
+                            if (path != null) {
+                              context.push(path, extra: lesson);
+                            }
                           },
                         );
                       },
@@ -198,16 +211,6 @@ final GoRouter appRouter = GoRouter(
                           error: (e, __) => Center(child: Text('Error: $e')),
                         );
                       },
-                    );
-                  },
-                ),
-                GoRoute(
-                  path: 'assessment/:id',
-                  builder: (context, state) {
-                    final id = state.pathParameters['id']!;
-                    return TestDetailScreen(
-                      testId: id,
-                      onClose: () => context.pop(),
                     );
                   },
                 ),
