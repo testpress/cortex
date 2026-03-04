@@ -7,21 +7,21 @@ Implement LMS Test Detail Screen
 draft
 
 ## Context
-The goal is to implement a comprehensive test-taking interface for the LMS app, following the design reference. This includes question navigation, an interactive question palette, instant feedback (if configured), and a summary result screen.
+The goal is to implement a formal test-taking interface for the LMS app. This includes question navigation, an interactive question palette for status tracking, and a comprehensive summary result screen upon completion.
 
 ## What Changes
 - Create `TestDetailScreen` in `packages/courses/lib/screens/`.
-- Implement a real-time countdown timer in the header.
-- Implement question-by-question navigation using a custom UI (avoiding standard Material widgets).
-- Add an interactive "Question Palette" (sidebar on desktop, bottom drawer on mobile).
-- Implement a "Check Answer" flow with instant feedback and explanations.
+- Implement a real-time countdown timer in the header with auto-submit logic.
+- Implement sequential question navigation using a custom localized UI.
+- Add an interactive "Question Palette" overlay for rapid navigation and status overview.
 - Build a "Test Completed" result view with scoring and "Retake" capability.
+- Ensure zero hardcoded colors using the design system tokens.
 - Ensure the UI matches the premium design tokens and aesthetics of the reference design.
 
 ## Capabilities
 
 ### New Capabilities
-- `lms-test-detail`: Interactive test-taking experience with navigation, palette, feedback, and scoring.
+- `lms-test-detail`: A formal test-taking experience with navigation, status tracking palette, and final scoring.
 
 ### Modified Capabilities
 - None.
