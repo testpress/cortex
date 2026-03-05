@@ -159,5 +159,31 @@
   "testStatusMarked": "മാർക്ക് ചെയ്തു",
   "testStatusAnsweredMarked": "ഉത്തരം നൽകി & റിവ്യൂ ചെയ്തു",
   "testAttemptXofY": "ശ്രമം {index} / {total}",
-  "testSelectAllApply": "ബാധകമായവയെല്ലാം തിരഞ്ഞെടുക്കുക"
+  "testSelectAllApply": "ബാധകമായവയെല്ലാം തിരഞ്ഞെടുക്കുക",
+  "testSubmitConfirmationTitle": "ടെസ്റ്റ് സമർപ്പിക്കണോ?",
+  "testSubmitConfirmationBody": "{total}-ൽ {answered} ചോദ്യങ്ങൾക്ക് നിങ്ങൾ ഉത്തരം നൽകി.",
+  "@testSubmitConfirmationBody": {
+    "placeholders": {
+      "answered": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "testSubmitConfirmationUnanswered": "{count, plural, =0{എല്ലാ ചോദ്യങ്ങൾക്കും ഉത്തരം നൽകി} =1{1 ചോദ്യത്തിന് ഉത്തരം നൽകാനുണ്ട്} other{{count} ചോദ്യങ്ങൾക്ക് ഉത്തരം നൽകാനുണ്ട്}}",
+  "@testSubmitConfirmationUnanswered": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "labelCancel": "റദ്ദാക്കുക",
+  "labelSubmitNow": "ഇപ്പോൾ സമർപ്പിക്കുക",
+  "testSubmittedTitle": "ടെസ്റ്റ് സമർപ്പിച്ചു!",
+  "testSubmittedBody": "നിങ്ങളുടെ ടെസ്റ്റ് വിജയകരമായി സമർപ്പിച്ചു. നിങ്ങളുടെ ഉത്തരങ്ങൾ പരിശോധിക്കുക അല്ലെങ്കിൽ വിശദമായ അനലിറ്റിക്സ് കാണുക.",
+  "testReviewAnswers": "ഉത്തരങ്ങൾ പരിശോധിക്കുക",
+  "testViewAnalytics": "അനലിറ്റിക്സ് കാണുക"
 }

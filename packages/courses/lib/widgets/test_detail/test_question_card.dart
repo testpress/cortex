@@ -22,7 +22,7 @@ class TestQuestionCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       margin: EdgeInsets.all(design.spacing.md),
-      padding: EdgeInsets.all(design.spacing.lg),
+      padding: EdgeInsets.all(design.spacing.md),
       decoration: BoxDecoration(
         color: design.colors.card,
         borderRadius: BorderRadius.circular(design.radius.md),

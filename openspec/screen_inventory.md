@@ -126,7 +126,8 @@ Each screen = one OpenSpec change. Priority is based on user journey criticality
 ### Phase 3 — Assessment & Testing
 | # | Change Name | Screen(s) | Notes | Status |
 |---|---|---|---|---|
-| 11 | `lms-test-detail` | TestDetailScreen | Test overview, rules, start button | ⏳ Pending |
+| 11 | `lms-test-detail` | TestDetailScreen | Test overview, rules, start button | ✅ Done |
+| 11.1 | `lms-test-detail-refinement` | — | Refine submission flow (dialogs/overlays) and UI density | ⏳ Pending |
 | 12 | `lms-assessment-detail` | AssessmentDetailScreen | MCQ test flow with timer | ⏳ Pending |
 | 13 | `lms-exam-review` | ExamReviewScreen | Post-test score summary | ⏳ Pending |
 | 14 | `lms-review-analytics` | ReviewAnalyticsScreen | Charts: subject-wise, time-spent | ⏳ Pending |

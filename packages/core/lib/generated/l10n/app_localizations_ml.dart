@@ -546,4 +546,43 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get testSelectAllApply => 'ബാധകമായവയെല്ലാം തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get testSubmitConfirmationTitle => 'ടെസ്റ്റ് സമർപ്പിക്കണോ?';
+
+  @override
+  String testSubmitConfirmationBody(int answered, int total) {
+    return '$total-ൽ $answered ചോദ്യങ്ങൾക്ക് നിങ്ങൾ ഉത്തരം നൽകി.';
+  }
+
+  @override
+  String testSubmitConfirmationUnanswered(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ചോദ്യങ്ങൾക്ക് ഉത്തരം നൽകാനുണ്ട്',
+      one: '1 ചോദ്യത്തിന് ഉത്തരം നൽകാനുണ്ട്',
+      zero: 'എല്ലാ ചോദ്യങ്ങൾക്കും ഉത്തരം നൽകി',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get labelCancel => 'റദ്ദാക്കുക';
+
+  @override
+  String get labelSubmitNow => 'ഇപ്പോൾ സമർപ്പിക്കുക';
+
+  @override
+  String get testSubmittedTitle => 'ടെസ്റ്റ് സമർപ്പിച്ചു!';
+
+  @override
+  String get testSubmittedBody =>
+      'നിങ്ങളുടെ ടെസ്റ്റ് വിജയകരമായി സമർപ്പിച്ചു. നിങ്ങളുടെ ഉത്തരങ്ങൾ പരിശോധിക്കുക അല്ലെങ്കിൽ വിശദമായ അനലിറ്റിക്സ് കാണുക.';
+
+  @override
+  String get testReviewAnswers => 'ഉത്തരങ്ങൾ പരിശോധിക്കുക';
+
+  @override
+  String get testViewAnalytics => 'അനലിറ്റിക്സ് കാണുക';
 }
