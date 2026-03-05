@@ -385,7 +385,7 @@ abstract class AppLocalizations {
   /// No description provided for @assessmentsDoneLabel.
   ///
   /// In en, this message translates to:
-  /// **'Tests'**
+  /// **'Practice'**
   String get assessmentsDoneLabel;
 
   /// No description provided for @strongestSubjectLabel.
@@ -601,7 +601,7 @@ abstract class AppLocalizations {
   /// No description provided for @filterAssessment.
   ///
   /// In en, this message translates to:
-  /// **'Tests'**
+  /// **'Practice'**
   String get filterAssessment;
 
   /// No description provided for @filterTest.
@@ -655,7 +655,7 @@ abstract class AppLocalizations {
   /// No description provided for @curriculumAssessmentsLabel.
   ///
   /// In en, this message translates to:
-  /// **'Tests'**
+  /// **'Practice'**
   String get curriculumAssessmentsLabel;
 
   /// No description provided for @curriculumTestsCompletedLabel.
@@ -732,7 +732,7 @@ abstract class AppLocalizations {
   /// No description provided for @chapterTypeAssessment.
   ///
   /// In en, this message translates to:
-  /// **'Test'**
+  /// **'Practice'**
   String get chapterTypeAssessment;
 
   /// No description provided for @chapterTypeTest.
@@ -990,7 +990,7 @@ abstract class AppLocalizations {
   /// No description provided for @testCompleteSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Great job! You\'ve completed the test.'**
+  /// **'Great job! You\'ve completed the practice test.'**
   String get testCompleteSubtitle;
 
   /// No description provided for @testRetake.
