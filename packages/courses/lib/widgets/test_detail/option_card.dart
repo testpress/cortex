@@ -63,7 +63,7 @@ class OptionCard extends StatelessWidget {
         width: 20,
         height: 20,
         decoration: BoxDecoration(
-          color: isSelected ? selectionColor : Colors.transparent,
+          color: isSelected ? selectionColor : const Color(0x00000000),
           borderRadius: BorderRadius.circular(design.radius.sm),
           border: Border.all(
             color: isSelected ? selectionColor : design.colors.border,

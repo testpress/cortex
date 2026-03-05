@@ -160,7 +160,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get testsAttemptedLabel => 'Tests';
 
   @override
-  String get assessmentsDoneLabel => 'Practice';
+  String get assessmentsDoneLabel => 'Assessments';
 
   @override
   String get strongestSubjectLabel => 'YOU\'RE STRONGEST IN';
@@ -279,7 +279,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filterLesson => 'Lessons';
 
   @override
-  String get filterAssessment => 'Practice';
+  String get filterAssessment => 'Assessments';
 
   @override
   String get filterTest => 'Tests';
@@ -308,7 +308,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get curriculumLessonsLabel => 'Lessons';
 
   @override
-  String get curriculumAssessmentsLabel => 'Practice';
+  String get curriculumAssessmentsLabel => 'Assessments';
 
   @override
   String curriculumTestsCompletedLabel(Object count) {
@@ -355,7 +355,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chapterTypePdf => 'PDF Notes';
 
   @override
-  String get chapterTypeAssessment => 'Practice';
+  String get chapterTypeAssessment => 'Practice Assessment';
 
   @override
   String get chapterTypeTest => 'Test';
