@@ -8,6 +8,9 @@ class OptionCard extends StatelessWidget {
   final bool isSelected;
   final QuestionType type;
   final VoidCallback? onTap;
+  final bool showFeedback;
+  final bool isCorrect;
+  final bool isIncorrect;
 
   const OptionCard({
     super.key,
@@ -15,15 +18,29 @@ class OptionCard extends StatelessWidget {
     required this.isSelected,
     required this.type,
     this.onTap,
+    this.showFeedback = false,
+    this.isCorrect = false,
+    this.isIncorrect = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    final Color selectionColor = design.colors.textPrimary;
-    Color borderColor = isSelected ? selectionColor : design.colors.border;
-    Color bgColor = design.colors.card;
+    // Finalized styling logic for assessment feedback
+    final Color selectionColor = isCorrect
+        ? design.colors.success
+        : (isIncorrect ? design.colors.error : design.colors.textPrimary);
+
+    Color borderColor = (isSelected || isCorrect || isIncorrect)
+        ? selectionColor
+        : design.colors.border;
+
+    Color bgColor = isCorrect
+        ? design.colors.success.withValues(alpha: 0.05)
+        : (isIncorrect
+              ? design.colors.error.withValues(alpha: 0.05)
+              : design.colors.card);
 
     return GestureDetector(
       onTap: onTap,
@@ -36,28 +53,42 @@ class OptionCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: bgColor,
           borderRadius: BorderRadius.circular(design.radius.md),
-          border: Border.all(color: borderColor, width: 1.0),
+          border: Border.all(color: borderColor, width: 1.5),
         ),
         child: Row(
           children: [
-            _buildOptionIndicator(design),
+            _buildOptionIndicator(design, selectionColor),
             SizedBox(width: design.spacing.md),
             Expanded(
               child: AppText.body(
                 option.text,
                 style: TextStyle(
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                  fontWeight: (isSelected || isCorrect || isIncorrect)
+                      ? FontWeight.w600
+                      : FontWeight.w400,
+                  color: isCorrect
+                      ? design.colors.success
+                      : (isIncorrect
+                            ? design.colors.error
+                            : design.colors.textPrimary),
                 ),
               ),
             ),
+            if (showFeedback && (isCorrect || isIncorrect))
+              Icon(
+                isCorrect ? LucideIcons.check : LucideIcons.x,
+                color: selectionColor,
+                size: 18,
+              ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildOptionIndicator(DesignConfig design) {
-    final selectionColor = design.colors.textPrimary;
+  Widget _buildOptionIndicator(DesignConfig design, Color selectionColor) {
+    final bool active = isSelected || isCorrect || isIncorrect;
+
     if (type == QuestionType.multipleSelect) {
       return Container(
         width: 20,
@@ -66,13 +97,13 @@ class OptionCard extends StatelessWidget {
           color: isSelected ? selectionColor : const Color(0x00000000),
           borderRadius: BorderRadius.circular(design.radius.sm),
           border: Border.all(
-            color: isSelected ? selectionColor : design.colors.border,
-            width: 2,
+            color: active ? selectionColor : design.colors.border,
+            width: 2.0,
           ),
         ),
-        child: isSelected
+        child: active
             ? Icon(
-                LucideIcons.check,
+                isIncorrect ? LucideIcons.x : LucideIcons.check,
                 color: design.colors.textInverse,
                 size: 12,
               )
@@ -85,11 +116,11 @@ class OptionCard extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
-            color: isSelected ? selectionColor : design.colors.border,
+            color: active ? selectionColor : design.colors.border,
             width: 2,
           ),
         ),
-        child: isSelected
+        child: active
             ? Center(
                 child: Container(
                   width: 10,

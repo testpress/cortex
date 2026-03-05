@@ -185,5 +185,13 @@
   "testSubmittedTitle": "تم تسليم الاختبار!",
   "testSubmittedBody": "لقد تم تسليم اختبارك بنجاح. راجع إجاباتك أو اعرض التحليلات التفصيلية.",
   "testReviewAnswers": "مراجعة الإجابات",
-  "testViewAnalytics": "عرض التحليلات"
+  "testViewAnalytics": "عرض التحليلات",
+  "assessmentCheckAnswer": "تحقق من الإجابة",
+  "assessmentCorrect": "صحيح!",
+  "assessmentIncorrect": "ليس صحيحاً تماماً",
+  "assessmentTryAgain": "حاول مرة أخرى",
+  "assessmentNext": "التالي",
+  "assessmentExplanation": "الشرح",
+  "assessmentPracticeComplete": "اكتمل تقييم التدريب!",
+  "assessmentExit": "الخروج من التقييم"
 }

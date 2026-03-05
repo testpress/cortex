@@ -185,5 +185,13 @@
   "testSubmittedTitle": "ടെസ്റ്റ് സമർപ്പിച്ചു!",
   "testSubmittedBody": "നിങ്ങളുടെ ടെസ്റ്റ് വിജയകരമായി സമർപ്പിച്ചു. നിങ്ങളുടെ ഉത്തരങ്ങൾ പരിശോധിക്കുക അല്ലെങ്കിൽ വിശദമായ അനലിറ്റിക്സ് കാണുക.",
   "testReviewAnswers": "ഉത്തരങ്ങൾ പരിശോധിക്കുക",
-  "testViewAnalytics": "അനലിറ്റിക്സ് കാണുക"
+  "testViewAnalytics": "അനലിറ്റിക്സ് കാണുക",
+  "assessmentCheckAnswer": "ഉത്തരം പരിശോധിക്കുക",
+  "assessmentCorrect": "ശരിയാണ്!",
+  "assessmentIncorrect": "തീർത്തും ശരിയല്ല",
+  "assessmentTryAgain": "വീണ്ടും ശ്രമിക്കുക",
+  "assessmentNext": "അടുത്തത്",
+  "assessmentExplanation": "വിശദീകരണം",
+  "assessmentPracticeComplete": "പ്രാക്ടീസ് അസസ്സ്മെന്റ് പൂർത്തിയായി!",
+  "assessmentExit": "അസസ്സ്മെന്റിൽ നിന്ന് പുറത്തുകടക്കുക"
 }

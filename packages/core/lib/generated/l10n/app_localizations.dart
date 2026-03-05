@@ -937,7 +937,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Question {index} of {total}'**
-  String testQuestionXofY(Object index, Object total);
+  String testQuestionXofY(int index, int total);
 
   /// No description provided for @testSaved.
   ///
@@ -1118,6 +1118,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View Analytics'**
   String get testViewAnalytics;
+
+  /// No description provided for @assessmentCheckAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Check Answer'**
+  String get assessmentCheckAnswer;
+
+  /// No description provided for @assessmentCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct!'**
+  String get assessmentCorrect;
+
+  /// No description provided for @assessmentIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Not quite right'**
+  String get assessmentIncorrect;
+
+  /// No description provided for @assessmentTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
+  String get assessmentTryAgain;
+
+  /// No description provided for @assessmentNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get assessmentNext;
+
+  /// No description provided for @assessmentExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Explanation'**
+  String get assessmentExplanation;
+
+  /// No description provided for @assessmentPracticeComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice Assessment Complete!'**
+  String get assessmentPracticeComplete;
+
+  /// No description provided for @assessmentExit.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit Assessment'**
+  String get assessmentExit;
+
+  /// No description provided for @assessmentPaletteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Question Palette'**
+  String get assessmentPaletteTitle;
+
+  /// No description provided for @assessmentUnanswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Unanswered'**
+  String get assessmentUnanswered;
 }
 
 class _AppLocalizationsDelegate
