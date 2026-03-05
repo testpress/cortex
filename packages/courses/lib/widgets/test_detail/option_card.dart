@@ -31,7 +31,7 @@ class OptionCard extends StatelessWidget {
         margin: EdgeInsets.only(bottom: design.spacing.md),
         padding: EdgeInsets.symmetric(
           horizontal: design.spacing.md,
-          vertical: design.spacing.md,
+          vertical: design.spacing.sm,
         ),
         decoration: BoxDecoration(
           color: bgColor,
@@ -47,7 +47,7 @@ class OptionCard extends StatelessWidget {
                 option.text,
                 color: design.colors.textPrimary,
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 14,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                 ),
               ),

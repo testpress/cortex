@@ -14,9 +14,9 @@ The goal is to implement a formal test-taking interface for the LMS app. This in
 - Implement a real-time countdown timer in the header with auto-submit logic.
 - Implement sequential question navigation using a custom localized UI.
 - Add an interactive "Question Palette" overlay for rapid navigation and status overview.
-- Build a "Test Completed" result view with scoring and "Retake" capability.
-- Ensure zero hardcoded colors using the design system tokens.
-- Ensure the UI matches the premium design tokens and aesthetics of the reference design.
+- Implement a "Submit Test?" confirmation overlay to prevent accidental submissions.
+- Build a "Test Submitted!" overlay view (dimmed background) with "Review Answers" and "View Analytics" actions.
+- Ensure the UI matches the premium design tokens and aesthetics of the reference design, avoiding default Material components and styling.
 
 ## Capabilities
 

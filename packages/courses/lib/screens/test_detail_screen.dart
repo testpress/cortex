@@ -12,6 +12,7 @@ import '../widgets/test_detail/test_progress_section.dart';
 import '../widgets/test_detail/test_question_card.dart';
 import '../widgets/test_detail/test_navigation_actions.dart';
 import '../widgets/test_detail/test_palette_trigger.dart';
+import '../widgets/test_detail/submit_confirmation_dialog.dart';
 
 class TestDetailScreen extends ConsumerStatefulWidget {
   final String testId;
@@ -31,6 +32,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
   int _currentQuestionIndex = 0;
   final Map<String, TestAttemptAnswer> _answers = {};
   bool _showPalette = false;
+  bool _showSubmitConfirmation = false;
   bool _testCompleted = false;
   late int _timeRemaining;
   Timer? _timer;
@@ -42,16 +44,12 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
   // Data
   late final Test _test;
   late final List<TestQuestion> _questions;
-  late final Map<String, TestQuestion> _questionsMap;
-  late final Map<String, List<String>> _scoringKey;
 
   @override
   void initState() {
     super.initState();
     _test = MockTestFactory.createMockTest();
     _questions = MockTestFactory.createMockQuestions();
-    _questionsMap = {for (var q in _questions) q.id: q};
-    _scoringKey = MockTestFactory.createScoringKey();
     _timeRemaining = _test.timeLimitMinutes * 60;
     _startTimer();
   }
@@ -94,6 +92,12 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     return '$mins:$secs';
   }
 
+  void _confirmFinishTest() {
+    setState(() {
+      _showSubmitConfirmation = true;
+    });
+  }
+
   void _handleFinishTest() {
     _savedTimer?.cancel();
     setState(() {
@@ -113,15 +117,6 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-
-    if (_testCompleted) {
-      return TestResultView(
-        correctCount: _calculateCorrectAnswers(),
-        totalCount: _questions.length,
-        onRetake: _handleRetakeTest,
-        onClose: widget.onClose,
-      );
-    }
 
     final question = _questions[_currentQuestionIndex];
     final answer = _answers[question.id];
@@ -166,7 +161,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                           if (_currentQuestionIndex < _questions.length - 1) {
                             _navigateToQuestion(_currentQuestionIndex + 1);
                           } else {
-                            _handleFinishTest();
+                            _confirmFinishTest();
                           }
                         },
                       ),
@@ -193,6 +188,28 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                 _navigateToQuestion(index);
                 setState(() => _showPalette = false);
               },
+            ),
+          if (_showSubmitConfirmation)
+            SubmitConfirmationDialog(
+              answeredCount: answeredCount,
+              totalCount: _questions.length,
+              onCancel: () => setState(() => _showSubmitConfirmation = false),
+              onSubmit: () {
+                setState(() => _showSubmitConfirmation = false);
+                _handleFinishTest();
+              },
+            ),
+          if (_testCompleted)
+            TestResultView(
+              onReviewAnswers: () {
+                // Future integration for Review Answers
+                widget.onClose();
+              },
+              onViewAnalytics: () {
+                // Future integration for Analytics
+                widget.onClose();
+              },
+              onClose: widget.onClose,
             ),
         ],
       ),
@@ -234,32 +251,6 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
       _answers[question.id] = currentAnswer.copyWith(
         isMarked: !currentAnswer.isMarked,
       );
-    });
-  }
-
-  int _calculateCorrectAnswers() {
-    int count = 0;
-    _answers.forEach((qId, answer) {
-      final q = _questionsMap[qId];
-      if (q == null) return;
-
-      final userAnswers = List<String>.from(answer.selectedOptions)..sort();
-      final correctAnswers = List<String>.from(_scoringKey[qId] ?? [])..sort();
-
-      if (listEquals(userAnswers, correctAnswers)) {
-        count++;
-      }
-    });
-    return count;
-  }
-
-  void _handleRetakeTest() {
-    setState(() {
-      _answers.clear();
-      _currentQuestionIndex = 0;
-      _testCompleted = false;
-      _timeRemaining = _test.timeLimitMinutes * 60;
-      _startTimer();
     });
   }
 }

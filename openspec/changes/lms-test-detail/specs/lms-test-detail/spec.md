@@ -54,8 +54,15 @@ The system SHALL allow selecting options without revealing the correct answer du
 - **THEN** the user SHALL be able to select multiple options concurrently.
 
 ### Requirement: Final Submission & Summary
-The system SHALL calculate the final results ONLY after the test is completed.
+The system SHALL provide a confirmation step and a successful submission summary.
 
 #### Scenario: Finishing the test
-- **WHEN** the user clicks "Finish"
-- **THEN** the system SHALL stop the timer, calculate the percentage score, and display the "Test Completed" view with the correct answer count.
+- **WHEN** the user hits "Finish"
+- **THEN** the system SHALL show a "Submit Test?" confirmation overlay.
+- **AND** it SHALL display the count of answered vs unanswered questions.
+
+#### Scenario: Confirming submission
+- **WHEN** the user confirms the submission from the dialog
+- **THEN** the system SHALL stop the timer and display a "Test Submitted!" overlay.
+- **AND** it SHALL provide options to "Review Answers" and "View Analytics".
+- **AND** the background test UI SHALL remain visible but dimmed (overlay behavior).

@@ -20,5 +20,7 @@
 - [x] 4.2 Wire up jump-to-question logic and status indicators.
 
 ## 5. Result View & Polish
-- [x] 5.1 Build the "Test Completed" summary screen.
-- [x] 5.2 Final polish: Ensure zero "Material-ish" defaults remain; every margin, corner radius, and color must match the reference.
+- [x] 5.1 Implement `SubmitConfirmationDialog` to summarize progress before finishing.
+- [x] 5.2 Build the "Test Submitted!" success overlay with Review/Analytics actions.
+- [x] 5.3 Ensure the test screen remains visible (dimmed) behind all active overlays.
+- [x] 5.4 Final polish: Ensure zero "Material-ish" defaults remain; every margin, corner radius, and color must match the reference.

@@ -22,7 +22,7 @@ class TestQuestionCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       margin: EdgeInsets.all(design.spacing.md),
-      padding: EdgeInsets.all(design.spacing.lg),
+      padding: EdgeInsets.all(design.spacing.md),
       decoration: BoxDecoration(
         color: design.colors.card,
         borderRadius: BorderRadius.circular(design.radius.md),
@@ -34,7 +34,7 @@ class TestQuestionCard extends StatelessWidget {
           AppText.body(
             question.text,
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 16,
               fontWeight: FontWeight.w600,
               height: 1.5,
               color: design.colors.textPrimary,
