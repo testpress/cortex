@@ -55,6 +55,7 @@ class NotificationsScreen extends ConsumerWidget {
                     children: [
                       _NotificationRow(
                         key: const ValueKey('notifications-row-live'),
+                        type: NotificationPreferenceType.liveClassReminders,
                         label: l10n.notificationsLiveClassReminders,
                         description: l10n.notificationsLiveClassRemindersDesc,
                         icon: LucideIcons.calendar,
@@ -70,6 +71,7 @@ class NotificationsScreen extends ConsumerWidget {
                       _RowDivider(),
                       _NotificationRow(
                         key: const ValueKey('notifications-row-test'),
+                        type: NotificationPreferenceType.testAssessmentAlerts,
                         label: l10n.notificationsTestAssessmentAlerts,
                         description: l10n.notificationsTestAssessmentAlertsDesc,
                         icon: LucideIcons.bell,
@@ -85,6 +87,7 @@ class NotificationsScreen extends ConsumerWidget {
                       _RowDivider(),
                       _NotificationRow(
                         key: const ValueKey('notifications-row-announcements'),
+                        type: NotificationPreferenceType.announcementsUpdates,
                         label: l10n.notificationsAnnouncementsUpdates,
                         description: l10n.notificationsAnnouncementsUpdatesDesc,
                         icon: LucideIcons.megaphone,
@@ -100,6 +103,7 @@ class NotificationsScreen extends ConsumerWidget {
                       _RowDivider(),
                       _NotificationRow(
                         key: const ValueKey('notifications-row-achievements'),
+                        type: NotificationPreferenceType.achievementsBadges,
                         label: l10n.notificationsAchievementsBadges,
                         description: l10n.notificationsAchievementsBadgesDesc,
                         icon: LucideIcons.trophy,
@@ -187,6 +191,7 @@ class _NotificationsHeader extends StatelessWidget {
 class _NotificationRow extends StatelessWidget {
   const _NotificationRow({
     super.key,
+    required this.type,
     required this.label,
     required this.description,
     required this.icon,
@@ -196,6 +201,7 @@ class _NotificationRow extends StatelessWidget {
     required this.onToggle,
   });
 
+  final NotificationPreferenceType type;
   final String label;
   final String description;
   final IconData icon;
@@ -251,7 +257,7 @@ class _NotificationRow extends StatelessWidget {
               ),
               SizedBox(width: design.spacing.sm),
               _ToggleControl(
-                key: ValueKey('notifications-toggle-${label.toLowerCase()}'),
+                key: ValueKey('notifications-toggle-${type.name}'),
                 enabled: enabled,
               ),
             ],
