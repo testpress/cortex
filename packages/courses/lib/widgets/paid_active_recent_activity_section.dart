@@ -71,11 +71,10 @@ class _RecentActivityCard extends StatelessWidget {
             ),
             const Spacer(),
             // Middle: Title
-            AppText.label(
+            AppText.cardTitle(
               activity.title,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: design.spacing.sm),
             // Bottom: Context
@@ -143,10 +142,9 @@ class _RecentActivityCard extends StatelessWidget {
         color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(design.radius.full),
       ),
-      child: AppText.xs(
+      child: AppText.labelSmall(
         isCompleted ? 'Completed' : 'In progress',
         color: color,
-        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
     );
   }

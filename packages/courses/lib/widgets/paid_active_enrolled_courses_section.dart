@@ -75,8 +75,8 @@ class _ActiveCourseCard extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  width: 48, // Sizing from Study Tab
-                  height: 48,
+                  width: design.spacing.xxl, // 48
+                  height: design.spacing.xxl,
                   decoration: BoxDecoration(
                     color: colors.background,
                     borderRadius: BorderRadius.circular(design.radius.md),
@@ -110,9 +110,8 @@ class _ActiveCourseCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      AppText.caption(
+                      AppText.cardCaption(
                         '${course.chapterCount} chapters · ${course.totalDuration}',
-                        color: design.colors.textSecondary,
                       ),
                     ],
                   ),
@@ -129,9 +128,8 @@ class _ActiveCourseCard extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: design.spacing.md),
-                AppText.caption(
+                AppText.label(
                   '${course.progress}%',
-                  style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
               ],
             ),

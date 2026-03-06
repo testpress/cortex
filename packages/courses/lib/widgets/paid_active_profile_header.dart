@@ -56,9 +56,8 @@ class ProfileHeader extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: design.spacing.lg),
-                  AppText.xl(
+                  AppText.headline(
                     name,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: design.spacing.xs),

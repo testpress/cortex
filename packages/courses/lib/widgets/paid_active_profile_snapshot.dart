@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter/material.dart' show Divider;
+
 import 'package:core/core.dart';
 
 class ProfileLearningSnapshot extends StatelessWidget {
@@ -68,9 +68,8 @@ class ProfileLearningSnapshot extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: design.spacing.lg),
-                Divider(
+                Container(
                   height: 1,
-                  thickness: 1,
                   color: design.colors.divider.withValues(alpha: 0.5),
                 ),
                 SizedBox(height: design.spacing.lg),
@@ -172,21 +171,14 @@ class _InsightCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppText.labelSmall(
+          AppText.caption(
             title,
             color: colors.foreground,
-            style: const TextStyle(
-              fontSize: 10,
-              letterSpacing: 0.5,
-              fontWeight: FontWeight.w500,
-              height: 1.2,
-            ),
           ),
           SizedBox(height: design.spacing.sm),
           AppText.label(
             value,
             color: colors.accent,
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
           ),
         ],
       ),
