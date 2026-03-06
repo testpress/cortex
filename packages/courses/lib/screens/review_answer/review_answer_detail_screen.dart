@@ -115,7 +115,7 @@ class _ReviewAnswerDetailScreenState extends State<ReviewAnswerDetailScreen>
                     unanswered: countFor(ReviewFilter.unanswered),
                     total: widget.questions.length,
                   ),
-                  ReviewDetailedAnalytics(l10n: l10n),
+
                   SizedBox(height: design.spacing.xl),
                 ],
               ),
@@ -177,7 +177,7 @@ class _ReviewAnswerDetailScreenState extends State<ReviewAnswerDetailScreen>
         title: l10n.reviewAddCommentTitle,
         design: design,
         submitLabel: l10n.reviewPostComment,
-        submitColor: design.colors.textPrimary,
+        submitColor: design.colors.primary,
         onCancel: () => Navigator.pop(context),
         onSubmit: (val) => Navigator.pop(context),
         content: Column(

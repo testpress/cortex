@@ -751,28 +751,6 @@ class AppLocalizationsMl extends AppLocalizations {
   String get labelOverallSummary => 'Overall Summary';
 
   @override
-  String get labelDetailedAnalytics => 'Detailed Analytics';
-
-  @override
-  String get labelSubjectWiseAnalytics => 'Subject-wise Analytics';
-
-  @override
-  String get labelOverallPerformance => 'Overall Performance';
-
-  @override
-  String get labelInsights => 'Insights';
-
-  @override
-  String get labelViewPerformanceBySubject => 'View performance by subject';
-
-  @override
-  String get labelSeeDetailedMetrics => 'See detailed metrics';
-
-  @override
-  String get labelGetPersonalizedRecommendations =>
-      'Get personalized recommendations';
-
-  @override
   String get labelAccuracy => 'Accuracy';
 
   @override

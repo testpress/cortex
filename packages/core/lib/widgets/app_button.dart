@@ -20,6 +20,7 @@ class AppButton extends StatelessWidget {
     this.padding,
     this.leading,
     this.trailing,
+    this.borderColor,
   });
 
   final String label;
@@ -29,6 +30,7 @@ class AppButton extends StatelessWidget {
   final bool fullWidth;
   final Color? backgroundColor;
   final Color? foregroundColor;
+  final Color? borderColor;
   final double height;
   final EdgeInsetsGeometry? padding;
   final Widget? leading;
@@ -47,6 +49,7 @@ class AppButton extends StatelessWidget {
     this.padding,
     this.leading,
     this.trailing,
+    this.borderColor,
   }) : variant = AppButtonVariant.primary;
 
   const AppButton.secondary({
@@ -61,6 +64,7 @@ class AppButton extends StatelessWidget {
     this.padding,
     this.leading,
     this.trailing,
+    this.borderColor,
   }) : variant = AppButtonVariant.secondary;
 
   @override
@@ -82,9 +86,11 @@ class AppButton extends StatelessWidget {
                   ? design.colors.textTertiary
                   : design.colors.primary));
 
-    final borderColor = variant == AppButtonVariant.secondary
-        ? (isDisabled ? design.colors.border : design.colors.primary)
-        : const Color(0x00000000); // Transparent
+    final effectiveBorderColor =
+        borderColor ??
+        (variant == AppButtonVariant.secondary
+            ? (isDisabled ? design.colors.border : design.colors.primary)
+            : const Color(0x00000000)); // Transparent
 
     void handleTap() {
       if (onNavigate != null) {
@@ -115,7 +121,7 @@ class AppButton extends StatelessWidget {
               color: effectiveBackgroundColor,
               borderRadius: design.radius.button,
               border: Border.all(
-                color: borderColor,
+                color: effectiveBorderColor,
                 width: variant == AppButtonVariant.secondary ? 1.5 : 0,
               ),
             ),

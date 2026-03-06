@@ -1419,48 +1419,6 @@ abstract class AppLocalizations {
   /// **'Overall Summary'**
   String get labelOverallSummary;
 
-  /// No description provided for @labelDetailedAnalytics.
-  ///
-  /// In en, this message translates to:
-  /// **'Detailed Analytics'**
-  String get labelDetailedAnalytics;
-
-  /// No description provided for @labelSubjectWiseAnalytics.
-  ///
-  /// In en, this message translates to:
-  /// **'Subject-wise Analytics'**
-  String get labelSubjectWiseAnalytics;
-
-  /// No description provided for @labelOverallPerformance.
-  ///
-  /// In en, this message translates to:
-  /// **'Overall Performance'**
-  String get labelOverallPerformance;
-
-  /// No description provided for @labelInsights.
-  ///
-  /// In en, this message translates to:
-  /// **'Insights'**
-  String get labelInsights;
-
-  /// No description provided for @labelViewPerformanceBySubject.
-  ///
-  /// In en, this message translates to:
-  /// **'View performance by subject'**
-  String get labelViewPerformanceBySubject;
-
-  /// No description provided for @labelSeeDetailedMetrics.
-  ///
-  /// In en, this message translates to:
-  /// **'See detailed metrics'**
-  String get labelSeeDetailedMetrics;
-
-  /// No description provided for @labelGetPersonalizedRecommendations.
-  ///
-  /// In en, this message translates to:
-  /// **'Get personalized recommendations'**
-  String get labelGetPersonalizedRecommendations;
-
   /// No description provided for @labelAccuracy.
   ///
   /// In en, this message translates to:
