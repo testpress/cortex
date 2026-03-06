@@ -69,7 +69,7 @@ class DashboardDrawer extends ConsumerWidget {
             AppDrawerItem(
               icon: LucideIcons.user,
               label: l10n.drawerProfile,
-              action: () {},
+              action: () => context.go('/profile'),
             ),
             AppDrawerItem(
               icon: LucideIcons.settings,

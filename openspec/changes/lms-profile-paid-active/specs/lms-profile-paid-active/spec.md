@@ -7,10 +7,10 @@ The system SHALL display a centered profile header that provides a clear identit
 
 #### Scenario: Displaying profile identity
 - **WHEN** the `ProfilePage` is rendered
-- **THEN** it MUST show a centered circular avatar (80×80, with border)
+- **THEN** it MUST show a centered circular avatar (80×80)
 - **AND** the user's name MUST be displayed in bold (20px semibold) below the avatar
 - **AND** a membership subtext MUST be visible (e.g., "Learning with us since August 2025")
-- **AND** a neutral edit icon button MUST appear in the top-right corner of the card (bg-surfaceVariant, textSecondary icon)
+- **AND** a neutral edit affordance MUST appear in the top-right corner of the card, matching the Figma visual treatment for this screen
 
 ---
 
@@ -42,7 +42,7 @@ The system SHALL display the user's recent learning history in a horizontal scro
 #### Scenario: Displaying recent activity
 - **WHEN** the user has recent activity
 - **THEN** the system MUST display a section titled "Your recent learning"
-- **AND** it MUST show up to 5 activity cards scrollable horizontally, each showing: activity type icon, status pill (Completed / In progress), title, and context (score or progress % + time ago)
+- **AND** it MUST show activity cards scrollable horizontally, each showing: activity type icon, status pill (Completed / In progress), title, and context (score or progress % + time ago)
 - **AND** activity types (video, test, lesson, assessment, notes) MUST each have a distinct tinted icon container
 
 ---
@@ -56,3 +56,16 @@ The system SHALL provide quick access to account management actions.
 - **AND** it MUST show the following items in a card list: Edit Profile, Notifications, Your certificates, App Settings, Logout
 - **AND** each item MUST have a tinted icon, label, and a chevron-right arrow
 - **AND** Logout MUST have a red tint and label
+
+---
+
+### Requirement: Profile Navigation Entry Points
+The system SHALL allow users to reach the paid active profile screen from all expected navigation entry points.
+
+#### Scenario: Opening profile from app navigation
+- **WHEN** the user selects the Profile bottom tab
+- **THEN** the system MUST navigate to `ProfilePage`
+
+#### Scenario: Opening profile from Home drawer
+- **WHEN** the user is on Home and taps the "Profile" item in the hamburger drawer
+- **THEN** the system MUST navigate to `ProfilePage`

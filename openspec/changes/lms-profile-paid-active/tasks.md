@@ -25,3 +25,4 @@
 - [x] 4.1 Export `ProfilePage` and wire it into the router for the Profile tab.
 - [x] 4.2 Replace all hardcoded colours and sizes with design tokens throughout all profile widgets.
 - [x] 4.3 Final visual check against the Figma reference for spacing, sizing, and typography.
+- [x] 4.4 Wire the Home drawer "Profile" menu item to navigate to `ProfilePage`.
