@@ -20,6 +20,7 @@ class MockTestFactory {
           number: 1,
           text:
               'A gas in a closed container is heated from 27°C to 127°C. If the initial pressure was 2 atm, what will be the final pressure? (Assume constant volume)',
+          subject: 'Physics',
           type: QuestionType.mcq,
           options: [
             QuestionOption(id: 'a', text: '2.67 atm'),
@@ -27,6 +28,9 @@ class MockTestFactory {
             QuestionOption(id: 'c', text: '3 atm'),
             QuestionOption(id: 'd', text: '2 atm'),
           ],
+          correctOptionIds: ['a'],
+          explanation:
+              'According to Gay-Lussac\'s Law, P1/T1 = P2/T2. Given P1 = 2 atm, T1 = 27°C = 300K, T2 = 127°C = 400K. \nP2 = P1 * (T2/T1) = 2 * (400/300) = 2.67 atm.',
         );
       } else {
         return TestQuestion(
@@ -34,6 +38,7 @@ class MockTestFactory {
           number: i + 1,
           text:
               'Practice question ${i + 1} for Thermodynamics. This question helps evaluate core concepts of energy and heat transfer.',
+          subject: 'Thermodynamics',
           type: QuestionType.mcq,
           options: const [
             QuestionOption(id: 'a', text: 'Option A'),
@@ -41,6 +46,9 @@ class MockTestFactory {
             QuestionOption(id: 'c', text: 'Option C'),
             QuestionOption(id: 'd', text: 'Option D'),
           ],
+          correctOptionIds: const ['a'],
+          explanation:
+              'This is a sample explanation for practice question ${i + 1}. Energy is conserved in an isolated system.',
         );
       }
     });

@@ -716,4 +716,175 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get assessmentBackToChapter => 'അധ്യായത്തിലേക്ക് മടങ്ങുക';
+
+  @override
+  String get examReviewTitle => 'Exam Review';
+
+  @override
+  String get examReviewFilterWrong => 'Wrong';
+
+  @override
+  String get examReviewFilterCorrect => 'Correct';
+
+  @override
+  String get examReviewFilterUnanswered => 'Unanswered';
+
+  @override
+  String get examReviewCorrectAnswerLabel => 'Correct Answer:';
+
+  @override
+  String get examReviewYourAnswerLabel => 'Your Answer:';
+
+  @override
+  String get examReviewFilterAnswered => 'Answered';
+
+  @override
+  String get labelAskDoubt => 'Ask Doubt';
+
+  @override
+  String get labelComment => 'Comment';
+
+  @override
+  String get labelReport => 'Report';
+
+  @override
+  String get labelOverallSummary => 'Overall Summary';
+
+  @override
+  String get labelDetailedAnalytics => 'Detailed Analytics';
+
+  @override
+  String get labelSubjectWiseAnalytics => 'Subject-wise Analytics';
+
+  @override
+  String get labelOverallPerformance => 'Overall Performance';
+
+  @override
+  String get labelInsights => 'Insights';
+
+  @override
+  String get labelViewPerformanceBySubject => 'View performance by subject';
+
+  @override
+  String get labelSeeDetailedMetrics => 'See detailed metrics';
+
+  @override
+  String get labelGetPersonalizedRecommendations =>
+      'Get personalized recommendations';
+
+  @override
+  String get labelAccuracy => 'Accuracy';
+
+  @override
+  String get labelScore => 'Score';
+
+  @override
+  String get labelTimeTaken => 'Time Taken';
+
+  @override
+  String get labelPercentile => 'Percentile';
+
+  @override
+  String get labelRank => 'Rank';
+
+  @override
+  String get labelPerformance => 'Performance';
+
+  @override
+  String get labelSubject => 'Subject';
+
+  @override
+  String get labelAttempted => 'Attempted';
+
+  @override
+  String get labelTotalQuestions => 'Total Questions';
+
+  @override
+  String get performanceExcellent => 'Excellent';
+
+  @override
+  String get performanceGood => 'Good';
+
+  @override
+  String get performanceAverage => 'Average';
+
+  @override
+  String get performancePoor => 'Poor';
+
+  @override
+  String get recommendationHigh => 'High';
+
+  @override
+  String get recommendationMedium => 'Medium';
+
+  @override
+  String get recommendationLow => 'Low';
+
+  @override
+  String get reviewAskDoubtTitle => 'Ask a Doubt';
+
+  @override
+  String get reviewSubmitDoubt => 'Submit Doubt';
+
+  @override
+  String get reviewAddCommentTitle => 'Add Comment';
+
+  @override
+  String get reviewPostComment => 'Post Comment';
+
+  @override
+  String get reviewReportIssueTitle => 'Report Issue';
+
+  @override
+  String get reviewSubmitReport => 'Submit Report';
+
+  @override
+  String reviewReportIssueWithQuestion(int number) {
+    return 'Report an issue with Question $number';
+  }
+
+  @override
+  String get reviewDescribeDoubtHint => 'Describe your doubt here...';
+
+  @override
+  String get reviewWriteCommentHint => 'Write your comment...';
+
+  @override
+  String get reviewReportOptionIncorrect =>
+      'Incorrect answer marked as correct';
+
+  @override
+  String get reviewReportOptionUnclear => 'Question is unclear';
+
+  @override
+  String get reviewReportOptionWrongExplanation => 'Explanation is wrong';
+
+  @override
+  String get reviewReportOptionOther => 'Other issue';
+
+  @override
+  String get reviewReportDetailsHint => 'Additional details (optional)...';
+
+  @override
+  String reviewShareThoughtsOnQuestion(int number) {
+    return 'Share your thoughts on Question $number';
+  }
+
+  @override
+  String reviewQuestionLabel(String number) {
+    return 'Question $number';
+  }
+
+  @override
+  String get reviewEmptyStateMessage => 'No questions found for this filter.';
+
+  @override
+  String reviewAnswersTitle(String title) {
+    return 'Review Answers - $title';
+  }
+
+  @override
+  String reviewQuestionCount(int current, int total) {
+    return '$current of $total';
+  }
 }

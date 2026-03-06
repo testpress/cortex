@@ -1352,6 +1352,324 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back to Chapter'**
   String get assessmentBackToChapter;
+
+  /// No description provided for @examReviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam Review'**
+  String get examReviewTitle;
+
+  /// No description provided for @examReviewFilterWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong'**
+  String get examReviewFilterWrong;
+
+  /// No description provided for @examReviewFilterCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct'**
+  String get examReviewFilterCorrect;
+
+  /// No description provided for @examReviewFilterUnanswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Unanswered'**
+  String get examReviewFilterUnanswered;
+
+  /// No description provided for @examReviewCorrectAnswerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct Answer:'**
+  String get examReviewCorrectAnswerLabel;
+
+  /// No description provided for @examReviewYourAnswerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Answer:'**
+  String get examReviewYourAnswerLabel;
+
+  /// No description provided for @examReviewFilterAnswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Answered'**
+  String get examReviewFilterAnswered;
+
+  /// No description provided for @labelAskDoubt.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask Doubt'**
+  String get labelAskDoubt;
+
+  /// No description provided for @labelComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Comment'**
+  String get labelComment;
+
+  /// No description provided for @labelReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get labelReport;
+
+  /// No description provided for @labelOverallSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Overall Summary'**
+  String get labelOverallSummary;
+
+  /// No description provided for @labelDetailedAnalytics.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed Analytics'**
+  String get labelDetailedAnalytics;
+
+  /// No description provided for @labelSubjectWiseAnalytics.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject-wise Analytics'**
+  String get labelSubjectWiseAnalytics;
+
+  /// No description provided for @labelOverallPerformance.
+  ///
+  /// In en, this message translates to:
+  /// **'Overall Performance'**
+  String get labelOverallPerformance;
+
+  /// No description provided for @labelInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights'**
+  String get labelInsights;
+
+  /// No description provided for @labelViewPerformanceBySubject.
+  ///
+  /// In en, this message translates to:
+  /// **'View performance by subject'**
+  String get labelViewPerformanceBySubject;
+
+  /// No description provided for @labelSeeDetailedMetrics.
+  ///
+  /// In en, this message translates to:
+  /// **'See detailed metrics'**
+  String get labelSeeDetailedMetrics;
+
+  /// No description provided for @labelGetPersonalizedRecommendations.
+  ///
+  /// In en, this message translates to:
+  /// **'Get personalized recommendations'**
+  String get labelGetPersonalizedRecommendations;
+
+  /// No description provided for @labelAccuracy.
+  ///
+  /// In en, this message translates to:
+  /// **'Accuracy'**
+  String get labelAccuracy;
+
+  /// No description provided for @labelScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Score'**
+  String get labelScore;
+
+  /// No description provided for @labelTimeTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Time Taken'**
+  String get labelTimeTaken;
+
+  /// No description provided for @labelPercentile.
+  ///
+  /// In en, this message translates to:
+  /// **'Percentile'**
+  String get labelPercentile;
+
+  /// No description provided for @labelRank.
+  ///
+  /// In en, this message translates to:
+  /// **'Rank'**
+  String get labelRank;
+
+  /// No description provided for @labelPerformance.
+  ///
+  /// In en, this message translates to:
+  /// **'Performance'**
+  String get labelPerformance;
+
+  /// No description provided for @labelSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject'**
+  String get labelSubject;
+
+  /// No description provided for @labelAttempted.
+  ///
+  /// In en, this message translates to:
+  /// **'Attempted'**
+  String get labelAttempted;
+
+  /// No description provided for @labelTotalQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Questions'**
+  String get labelTotalQuestions;
+
+  /// No description provided for @performanceExcellent.
+  ///
+  /// In en, this message translates to:
+  /// **'Excellent'**
+  String get performanceExcellent;
+
+  /// No description provided for @performanceGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
+  String get performanceGood;
+
+  /// No description provided for @performanceAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'Average'**
+  String get performanceAverage;
+
+  /// No description provided for @performancePoor.
+  ///
+  /// In en, this message translates to:
+  /// **'Poor'**
+  String get performancePoor;
+
+  /// No description provided for @recommendationHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get recommendationHigh;
+
+  /// No description provided for @recommendationMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get recommendationMedium;
+
+  /// No description provided for @recommendationLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get recommendationLow;
+
+  /// No description provided for @reviewAskDoubtTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask a Doubt'**
+  String get reviewAskDoubtTitle;
+
+  /// No description provided for @reviewSubmitDoubt.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Doubt'**
+  String get reviewSubmitDoubt;
+
+  /// No description provided for @reviewAddCommentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Comment'**
+  String get reviewAddCommentTitle;
+
+  /// No description provided for @reviewPostComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Post Comment'**
+  String get reviewPostComment;
+
+  /// No description provided for @reviewReportIssueTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Report Issue'**
+  String get reviewReportIssueTitle;
+
+  /// No description provided for @reviewSubmitReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Report'**
+  String get reviewSubmitReport;
+
+  /// No description provided for @reviewReportIssueWithQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Report an issue with Question {number}'**
+  String reviewReportIssueWithQuestion(int number);
+
+  /// No description provided for @reviewDescribeDoubtHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe your doubt here...'**
+  String get reviewDescribeDoubtHint;
+
+  /// No description provided for @reviewWriteCommentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write your comment...'**
+  String get reviewWriteCommentHint;
+
+  /// No description provided for @reviewReportOptionIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect answer marked as correct'**
+  String get reviewReportOptionIncorrect;
+
+  /// No description provided for @reviewReportOptionUnclear.
+  ///
+  /// In en, this message translates to:
+  /// **'Question is unclear'**
+  String get reviewReportOptionUnclear;
+
+  /// No description provided for @reviewReportOptionWrongExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Explanation is wrong'**
+  String get reviewReportOptionWrongExplanation;
+
+  /// No description provided for @reviewReportOptionOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other issue'**
+  String get reviewReportOptionOther;
+
+  /// No description provided for @reviewReportDetailsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional details (optional)...'**
+  String get reviewReportDetailsHint;
+
+  /// No description provided for @reviewShareThoughtsOnQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your thoughts on Question {number}'**
+  String reviewShareThoughtsOnQuestion(int number);
+
+  /// No description provided for @reviewQuestionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Question {number}'**
+  String reviewQuestionLabel(String number);
+
+  /// No description provided for @reviewEmptyStateMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No questions found for this filter.'**
+  String get reviewEmptyStateMessage;
+
+  /// No description provided for @reviewAnswersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review Answers - {title}'**
+  String reviewAnswersTitle(String title);
+
+  /// No description provided for @reviewQuestionCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} of {total}'**
+  String reviewQuestionCount(int current, int total);
 }
 
 class _AppLocalizationsDelegate

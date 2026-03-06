@@ -13,15 +13,21 @@ class TestQuestion {
   final String id;
   final int number;
   final String text;
+  final String subject;
   final QuestionType type;
   final List<QuestionOption> options;
+  final List<String> correctOptionIds;
+  final String? explanation;
 
   const TestQuestion({
     required this.id,
     required this.number,
     required this.text,
+    required this.subject,
     required this.type,
     required this.options,
+    this.correctOptionIds = const [],
+    this.explanation,
   });
 }
 
