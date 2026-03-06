@@ -141,6 +141,21 @@ class AppLocalizationsMl extends AppLocalizations {
   String get learningPerformanceTitle => 'പഠന മികവ്';
 
   @override
+  String get profileLearningSnapshotTitle => 'നിങ്ങളുടെ പഠനം ഒറ്റനോട്ടത്തിൽ';
+
+  @override
+  String get profileActiveCoursesTitle => 'നിങ്ങളുടെ നിലവിലെ കോഴ്സുകൾ';
+
+  @override
+  String get profileRecentLearningTitle => 'നിങ്ങളുടെ സമീപകാല പഠനം';
+
+  @override
+  String get profileAccountSettingsTitle => 'അക്കൗണ്ടും ക്രമീകരണങ്ങളും';
+
+  @override
+  String get profileTabTitle => 'പ്രൊഫൈൽ';
+
+  @override
   String get latestActivityLabel => 'അവസാന പ്രവർത്തനം';
 
   @override

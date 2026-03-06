@@ -247,7 +247,7 @@ abstract class AppLocalizations {
   /// No description provided for @viewAllAction.
   ///
   /// In en, this message translates to:
-  /// **'View all >'**
+  /// **'View all'**
   String get viewAllAction;
 
   /// No description provided for @nowAndNextSection.
@@ -351,6 +351,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Learning Performance'**
   String get learningPerformanceTitle;
+
+  /// No description provided for @profileLearningSnapshotTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your learning at a glance'**
+  String get profileLearningSnapshotTitle;
+
+  /// No description provided for @profileActiveCoursesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your active courses'**
+  String get profileActiveCoursesTitle;
+
+  /// No description provided for @profileRecentLearningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your recent learning'**
+  String get profileRecentLearningTitle;
+
+  /// No description provided for @profileAccountSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account & preferences'**
+  String get profileAccountSettingsTitle;
+
+  /// No description provided for @profileTabTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profileTabTitle;
 
   /// No description provided for @latestActivityLabel.
   ///

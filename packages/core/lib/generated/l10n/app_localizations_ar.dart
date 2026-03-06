@@ -141,6 +141,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get learningPerformanceTitle => 'أداء التعلم';
 
   @override
+  String get profileLearningSnapshotTitle => 'لمحة عن تعلمك';
+
+  @override
+  String get profileActiveCoursesTitle => 'كورساتك النشطة';
+
+  @override
+  String get profileRecentLearningTitle => 'تعلمك الأخير';
+
+  @override
+  String get profileAccountSettingsTitle => 'الحساب والتفضيلات';
+
+  @override
+  String get profileTabTitle => 'الملف الشخصي';
+
+  @override
   String get latestActivityLabel => 'آخر نشاط';
 
   @override

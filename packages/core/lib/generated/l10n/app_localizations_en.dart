@@ -87,7 +87,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todayScheduleTitle => 'Today\'s Schedule';
 
   @override
-  String get viewAllAction => 'View all >';
+  String get viewAllAction => 'View all';
 
   @override
   String get nowAndNextSection => 'NOW & NEXT';
@@ -139,6 +139,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get learningPerformanceTitle => 'Learning Performance';
+
+  @override
+  String get profileLearningSnapshotTitle => 'Your learning at a glance';
+
+  @override
+  String get profileActiveCoursesTitle => 'Your active courses';
+
+  @override
+  String get profileRecentLearningTitle => 'Your recent learning';
+
+  @override
+  String get profileAccountSettingsTitle => 'Account & preferences';
+
+  @override
+  String get profileTabTitle => 'Profile';
 
   @override
   String get latestActivityLabel => 'Latest Activity';

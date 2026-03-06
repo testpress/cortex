@@ -1,9 +1,11 @@
 import 'package:data/data.dart';
+import '../models/recent_activity_dto.dart';
 
 /// Mock current user
 const mockCurrentUser = UserDto(
   id: 'user_1',
   name: 'Arjun Sharma',
+  avatar: 'https://images.unsplash.com/photo-1529068755536-a5ade0dcb4e8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHVkZW50JTIwcG9ydHJhaXR8ZW58MXx8fHwxNzY3ODY0MjA2fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
   isPro: true,
 );
 
@@ -373,3 +375,46 @@ final mockStudyMomentum = StudyMomentumDto(
   strongestSubject: 'Mathematics',
   weakSubject: 'Organic Chemistry',
 );
+
+/// Mock recent activity items for the profile screen.
+const mockRecentActivity = [
+  RecentActivityDto(
+    id: '1',
+    type: ActivityType.video,
+    title: "Newton's Laws of Motion - Advanced Problems",
+    timeAgo: '2h ago',
+    status: ActivityStatus.inProgress,
+    progress: 60,
+  ),
+  RecentActivityDto(
+    id: '2',
+    type: ActivityType.test,
+    title: 'Organic Chemistry: Reaction Mechanisms Test',
+    timeAgo: 'Yesterday',
+    status: ActivityStatus.completed,
+    score: 85,
+  ),
+  RecentActivityDto(
+    id: '3',
+    type: ActivityType.lesson,
+    title: 'Calculus: Derivatives and Applications',
+    timeAgo: '2 days ago',
+    status: ActivityStatus.completed,
+  ),
+  RecentActivityDto(
+    id: '4',
+    type: ActivityType.video,
+    title: 'Thermodynamics: Heat Transfer Processes',
+    timeAgo: '3 days ago',
+    status: ActivityStatus.inProgress,
+    progress: 35,
+  ),
+  RecentActivityDto(
+    id: '5',
+    type: ActivityType.assessment,
+    title: 'Weekly Physics Assessment - Wave Motion',
+    timeAgo: '4 days ago',
+    status: ActivityStatus.completed,
+    score: 92,
+  ),
+];

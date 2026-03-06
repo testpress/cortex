@@ -242,7 +242,7 @@ final GoRouter appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/profile',
-              builder: (context, state) => const ProfilePlaceholderScreen(),
+              builder: (context, state) => const ProfilePage(),
             ),
           ],
         ),

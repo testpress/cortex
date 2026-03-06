@@ -39,7 +39,7 @@ class DashboardHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-          if (!isTablet) ...[
+          if (!isTablet && onMenuPressed != null) ...[
             GestureDetector(
               onTap: onMenuPressed,
               child: const Icon(Icons.menu_rounded, size: 28),

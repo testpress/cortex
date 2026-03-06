@@ -34,6 +34,7 @@ class DesignConfig {
     required this.typographyScale,
     required this.motion,
     required this.radius,
+    required this.iconSize,
     required this.shadows,
     required this.layout,
     required this.subjectPalette,
@@ -49,6 +50,7 @@ class DesignConfig {
   final DesignTypographyScale typographyScale;
   final DesignMotion motion;
   final DesignRadius radius;
+  final DesignIconSize iconSize;
   final DesignShadows shadows;
   final DesignLayout layout;
   final DesignSubjectPalette subjectPalette;
@@ -76,6 +78,7 @@ class DesignConfig {
       typographyScale: scale,
       motion: DesignMotion.defaults(context: context),
       radius: DesignRadius.defaults(),
+      iconSize: DesignIconSize.defaults(),
       shadows: DesignShadows.light(),
       layout: DesignLayout.defaults(),
       subjectPalette: DesignSubjectPalette.light(),
@@ -97,6 +100,7 @@ class DesignConfig {
       typographyScale: scale,
       motion: DesignMotion.defaults(context: context),
       radius: DesignRadius.defaults(),
+      iconSize: DesignIconSize.defaults(),
       shadows: DesignShadows.dark(),
       layout: DesignLayout.defaults(),
       subjectPalette: DesignSubjectPalette.dark(),
@@ -114,6 +118,7 @@ class DesignConfig {
     DesignTypographyScale? typographyScale,
     DesignMotion? motion,
     DesignRadius? radius,
+    DesignIconSize? iconSize,
     DesignShadows? shadows,
     DesignLayout? layout,
     DesignSubjectPalette? subjectPalette,
@@ -129,6 +134,7 @@ class DesignConfig {
       typographyScale: typographyScale ?? this.typographyScale,
       motion: motion ?? this.motion,
       radius: radius ?? this.radius,
+      iconSize: iconSize ?? this.iconSize,
       shadows: shadows ?? this.shadows,
       layout: layout ?? this.layout,
       subjectPalette: subjectPalette ?? this.subjectPalette,
@@ -149,6 +155,7 @@ class DesignConfig {
         other.typographyScale == typographyScale &&
         other.motion == motion &&
         other.radius == radius &&
+        other.iconSize == iconSize &&
         other.shadows == shadows &&
         other.layout == layout &&
         other.subjectPalette == subjectPalette &&
@@ -167,6 +174,7 @@ class DesignConfig {
       typographyScale,
       motion,
       radius,
+      iconSize,
       shadows,
       layout,
       subjectPalette,
@@ -1574,6 +1582,59 @@ class DesignRadius {
       Object.hash(full, button, card, dialog, pill),
     );
   }
+}
+
+/// Icon sizing token group.
+@immutable
+class DesignIconSize {
+  const DesignIconSize({
+    required this.xs,
+    required this.sm,
+    required this.md,
+    required this.lg,
+    required this.xl,
+    required this.action,
+    required this.display,
+    required this.nav,
+  });
+
+  final double xs; // 12.0
+  final double sm; // 16.0 - small labels/buttons
+  final double md; // 20.0 - standard list icons
+  final double lg; // 24.0 - major display icons
+  final double xl; // 32.0 - hero icons
+
+  // Semantic aliases
+  final double action;
+  final double display;
+  final double nav;
+
+  factory DesignIconSize.defaults() {
+    return const DesignIconSize(
+      xs: 12.0,
+      sm: 16.0,
+      md: 20.0,
+      lg: 24.0,
+      xl: 32.0,
+      action: 20.0,
+      display: 24.0,
+      nav: 24.0,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is DesignIconSize &&
+        other.xs == xs &&
+        other.sm == sm &&
+        other.md == md &&
+        other.lg == lg &&
+        other.xl == xl;
+  }
+
+  @override
+  int get hashCode => Object.hash(xs, sm, md, lg, xl);
 }
 
 /// Shadow token group.
