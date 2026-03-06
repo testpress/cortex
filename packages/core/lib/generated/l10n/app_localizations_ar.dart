@@ -72,6 +72,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get labelContinue => 'استمر';
 
   @override
+  String get labelRetry => 'إعادة المحاولة';
+
+  @override
+  String get labelLoading => 'جاري التحميل...';
+
+  @override
   String get labelProgress => 'تقدم';
 
   @override
@@ -153,7 +159,37 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profileAccountSettingsTitle => 'الحساب والتفضيلات';
 
   @override
+  String get profileEditProfile => 'تعديل الملف الشخصي';
+
+  @override
+  String get profileNotifications => 'التنبيهات';
+
+  @override
+  String get profileCertificates => 'شهاداتك';
+
+  @override
+  String get profileLogout => 'تسجيل الخروج';
+
+  @override
+  String get activityStatusStarted => 'بدأت';
+
+  @override
+  String activityScoreLabel(int score) {
+    return 'الدرجة: $score%';
+  }
+
+  @override
+  String activityProgressLabel(int progress) {
+    return 'تمت مشاهدة $progress% حتى الآن';
+  }
+
+  @override
   String get profileTabTitle => 'الملف الشخصي';
+
+  @override
+  String profileMembershipLabel(String date) {
+    return 'تتعلم معنا منذ $date';
+  }
 
   @override
   String get latestActivityLabel => 'آخر نشاط';
@@ -303,6 +339,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get labelCompleted => 'مكتمل';
+
+  @override
+  String get errorGenericTitle => 'حدث خطأ ما';
+
+  @override
+  String get errorGenericMessage =>
+      'فشل تحميل البيانات. يرجى التحقق من الاتصال والمحاولة مرة أخرى.';
 
   @override
   String get labelLessonsPlural => 'دروس';

@@ -1,17 +1,19 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 
+import 'package:intl/intl.dart';
+
 class ProfileHeader extends StatelessWidget {
   const ProfileHeader({
     super.key,
     required this.name,
     this.avatarUrl,
-    this.membershipText = 'Learning with us since August 2025',
+    this.joinedDate,
   });
 
   final String name;
   final String? avatarUrl;
-  final String membershipText;
+  final DateTime? joinedDate;
 
   @override
   Widget build(BuildContext context) {
@@ -60,12 +62,16 @@ class ProfileHeader extends StatelessWidget {
                     name,
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: design.spacing.xs),
-                  AppText.caption(
-                    membershipText,
-                    color: design.colors.textSecondary,
-                    textAlign: TextAlign.center,
-                  ),
+                  if (joinedDate != null) ...[
+                    SizedBox(height: design.spacing.xs),
+                    AppText.caption(
+                      L10n.of(context).profileMembershipLabel(
+                        DateFormat.yMMMM().format(joinedDate!),
+                      ),
+                      color: design.colors.textSecondary,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ],
               ),
             ),

@@ -57,6 +57,7 @@ class _RecentActivityCard extends StatelessWidget {
     return SizedBox(
       width: 220,
       child: AppCard(
+        showShadow: true,
         padding: EdgeInsets.all(design.spacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,9 +128,9 @@ class _RecentActivityCard extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildStatusPill(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     final isCompleted = activity.status == ActivityStatus.completed;
     final color = isCompleted ? design.colors.success : design.colors.accent2;
 
@@ -143,7 +144,7 @@ class _RecentActivityCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(design.radius.full),
       ),
       child: AppText.labelSmall(
-        isCompleted ? 'Completed' : 'In progress',
+        isCompleted ? l10n.statusCompleted : l10n.statusInProgress,
         color: color,
       ),
     );
@@ -151,19 +152,20 @@ class _RecentActivityCard extends StatelessWidget {
 
   Widget _buildContext(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     String mainText = '';
-    
+
     if (activity.status == ActivityStatus.completed) {
       if (activity.score != null) {
-        mainText = 'Score: ${activity.score}%';
+        mainText = l10n.activityScoreLabel(activity.score!);
       } else {
-        mainText = 'Completed';
+        mainText = l10n.statusCompleted;
       }
     } else {
       if (activity.progress != null) {
-        mainText = '${activity.progress}% watched so far';
+        mainText = l10n.activityProgressLabel(activity.progress!);
       } else {
-        mainText = 'Started';
+        mainText = l10n.activityStatusStarted;
       }
     }
 

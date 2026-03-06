@@ -8,15 +8,15 @@ class ProfileLearningSnapshot extends StatelessWidget {
     required this.lessonsFinished,
     required this.testsAttempted,
     required this.assessmentsDone,
-    this.strongestIn = 'Mathematics',
-    this.focusNeededIn = 'Chemistry',
+    required this.strongestIn,
+    required this.focusNeededIn,
   });
 
   final int lessonsFinished;
   final int testsAttempted;
   final int assessmentsDone;
-  final String strongestIn;
-  final String focusNeededIn;
+  final String? strongestIn;
+  final String? focusNeededIn;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +37,7 @@ class ProfileLearningSnapshot extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
           child: AppCard(
+            showShadow: true,
             padding: EdgeInsets.all(design.spacing.lg),
             child: Column(
               children: [
@@ -72,29 +73,33 @@ class ProfileLearningSnapshot extends StatelessWidget {
                   height: 1,
                   color: design.colors.divider.withValues(alpha: 0.5),
                 ),
-                SizedBox(height: design.spacing.lg),
-                IntrinsicHeight(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Expanded(
-                        child: _InsightCard(
-                          title: l10n.strongestSubjectLabel,
-                          value: strongestIn,
-                          colors: design.subjectPalette.atIndex(2), // Green
-                        ),
-                      ),
-                      SizedBox(width: design.spacing.md),
-                      Expanded(
-                        child: _InsightCard(
-                          title: l10n.weakSubjectLabel,
-                          value: focusNeededIn,
-                          colors: design.subjectPalette.atIndex(6), // Orange
-                        ),
-                      ),
-                    ],
+                if (strongestIn != null || focusNeededIn != null)
+                  Padding(
+                    padding: EdgeInsets.only(top: design.spacing.lg),
+                    child: Row(
+                      children: [
+                        if (strongestIn != null)
+                          Expanded(
+                            child: _InsightCard(
+                              title: l10n.strongestSubjectLabel,
+                              value: strongestIn!,
+                              colors: design.subjectPalette.atIndex(2), // Green
+                            ),
+                          ),
+                        if (strongestIn != null && focusNeededIn != null)
+                          SizedBox(width: design.spacing.md),
+                        if (focusNeededIn != null)
+                          Expanded(
+                            child: _InsightCard(
+                              title: l10n.weakSubjectLabel,
+                              value: focusNeededIn!,
+                              colors:
+                                  design.subjectPalette.atIndex(6), // Orange
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
-                ),
               ],
             ),
           ),

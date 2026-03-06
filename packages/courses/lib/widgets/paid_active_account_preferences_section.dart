@@ -23,40 +23,41 @@ class AccountPreferencesSection extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
           child: AppCard(
+            showShadow: true,
             padding: EdgeInsets.zero,
             child: Column(
               children: [
                 _PreferenceItem(
                   icon: LucideIcons.user,
-                  label: 'Edit Profile',
+                  label: l10n.profileEditProfile,
                   iconColor: design.colors.accent2,
                   onTap: () {},
                 ),
                 _Divider(),
                 _PreferenceItem(
                   icon: LucideIcons.bell,
-                  label: 'Notifications',
+                  label: l10n.profileNotifications,
                   iconColor: design.colors.rank1,
                   onTap: () {},
                 ),
                 _Divider(),
                 _PreferenceItem(
                   icon: LucideIcons.download,
-                  label: 'Your certificates',
+                  label: l10n.profileCertificates,
                   iconColor: design.colors.success,
                   onTap: () {},
                 ),
                 _Divider(),
                 _PreferenceItem(
                   icon: LucideIcons.settings,
-                  label: 'App Settings',
+                  label: l10n.drawerSettings,
                   iconColor: design.colors.accent1,
                   onTap: () {},
                 ),
                 _Divider(),
                 _PreferenceItem(
                   icon: LucideIcons.logOut,
-                  label: 'Logout',
+                  label: l10n.profileLogout,
                   iconColor: design.colors.error,
                   labelColor: design.colors.error,
                   onTap: () {},

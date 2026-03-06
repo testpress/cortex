@@ -140,27 +140,6 @@ class _ActiveCourseCard extends StatelessWidget {
   }
 }
 
-class _ProgressStat extends StatelessWidget {
-  const _ProgressStat({required this.value, required this.label});
-  final String value;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.baseline,
-      textBaseline: TextBaseline.alphabetic,
-      children: [
-        AppText.cardTitle(value, color: design.colors.textPrimary),
-        SizedBox(width: design.spacing.xs),
-        AppText.cardCaption(label, color: design.colors.textSecondary),
-      ],
-    );
-  }
-}
-
 class _ProgressBar extends StatelessWidget {
   const _ProgressBar({required this.progress, required this.color});
   final double progress;

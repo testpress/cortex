@@ -1630,11 +1630,14 @@ class DesignIconSize {
         other.sm == sm &&
         other.md == md &&
         other.lg == lg &&
-        other.xl == xl;
+        other.xl == xl &&
+        other.action == action &&
+        other.display == display &&
+        other.nav == nav;
   }
 
   @override
-  int get hashCode => Object.hash(xs, sm, md, lg, xl);
+  int get hashCode => Object.hash(xs, sm, md, lg, xl, action, display, nav);
 }
 
 /// Shadow token group.

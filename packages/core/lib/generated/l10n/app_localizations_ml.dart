@@ -72,6 +72,12 @@ class AppLocalizationsMl extends AppLocalizations {
   String get labelContinue => 'തുടരുക';
 
   @override
+  String get labelRetry => 'വീണ്ടും ശ്രമിക്കുക';
+
+  @override
+  String get labelLoading => 'ലോഡ് ചെയ്യുന്നു...';
+
+  @override
   String get labelProgress => 'പുരോഗതി';
 
   @override
@@ -153,7 +159,37 @@ class AppLocalizationsMl extends AppLocalizations {
   String get profileAccountSettingsTitle => 'അക്കൗണ്ടും ക്രമീകരണങ്ങളും';
 
   @override
+  String get profileEditProfile => 'പ്രൊഫൈൽ എഡിറ്റ് ചെയ്യുക';
+
+  @override
+  String get profileNotifications => 'നോട്ടിഫിക്കേഷനുകൾ';
+
+  @override
+  String get profileCertificates => 'നിങ്ങളുടെ സർട്ടിഫിക്കറ്റുകൾ';
+
+  @override
+  String get profileLogout => 'ലോഗൗട്ട്';
+
+  @override
+  String get activityStatusStarted => 'തുടങ്ങി';
+
+  @override
+  String activityScoreLabel(int score) {
+    return 'സ്കോർ: $score%';
+  }
+
+  @override
+  String activityProgressLabel(int progress) {
+    return '$progress% ഇതുവരെ കണ്ടു';
+  }
+
+  @override
   String get profileTabTitle => 'പ്രൊഫൈൽ';
+
+  @override
+  String profileMembershipLabel(String date) {
+    return '$date മുതൽ ഞങ്ങൾക്കൊപ്പം പഠിക്കുന്നു';
+  }
 
   @override
   String get latestActivityLabel => 'അവസാന പ്രവർത്തനം';
@@ -305,6 +341,13 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get labelCompleted => 'പൂർത്തിയായി';
+
+  @override
+  String get errorGenericTitle => 'എന്തോ തകരാർ സംഭവിച്ചു';
+
+  @override
+  String get errorGenericMessage =>
+      'ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി കണക്ഷൻ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക.';
 
   @override
   String get labelLessonsPlural => 'പാഠങ്ങൾ';

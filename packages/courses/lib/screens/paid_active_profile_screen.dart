@@ -42,9 +42,13 @@ class ProfilePage extends ConsumerWidget {
             data: (user) => ProfileHeader(
               name: user.name,
               avatarUrl: user.avatar,
+              joinedDate: user.joinedDate,
             ),
             loading: () => const SizedBox(height: 200),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (err, __) => AppErrorView(
+              message: err.toString(),
+              onRetry: () => ref.refresh(currentUserProvider),
+            ),
           ),
 
           SizedBox(height: design.spacing.xl),
@@ -55,9 +59,14 @@ class ProfilePage extends ConsumerWidget {
               lessonsFinished: stats.lessonsFinished,
               testsAttempted: stats.testsAttempted,
               assessmentsDone: stats.assessmentsDone,
+              strongestIn: stats.strongestSubject,
+              focusNeededIn: stats.weakSubject,
             ),
             loading: () => const SizedBox(height: 200),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (err, __) => AppErrorView(
+              message: err.toString(),
+              onRetry: () => ref.refresh(currentUserStatsProvider),
+            ),
           ),
 
           SizedBox(height: design.spacing.xl),
@@ -66,7 +75,10 @@ class ProfilePage extends ConsumerWidget {
           enrolledCoursesAsync.when(
             data: (courses) => EnrolledCoursesSection(courses: courses),
             loading: () => const SizedBox(height: 150),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (err, __) => AppErrorView(
+              message: err.toString(),
+              onRetry: () => ref.refresh(enrolledCoursesProvider),
+            ),
           ),
 
           SizedBox(height: design.spacing.xl),
@@ -75,7 +87,10 @@ class ProfilePage extends ConsumerWidget {
           recentActivityAsync.when(
             data: (activities) => RecentActivitySection(activities: activities),
             loading: () => const SizedBox(height: 160),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (err, __) => AppErrorView(
+              message: err.toString(),
+              onRetry: () => ref.refresh(recentActivityProvider),
+            ),
           ),
 
           SizedBox(height: design.spacing.xl),
