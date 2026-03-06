@@ -400,6 +400,7 @@
   "labelComment": "Comment",
   "labelReport": "Report",
   "labelOverallSummary": "Overall Summary",
+  "labelFilter": "Filter:",
 
   "labelAccuracy": "Accuracy",
   "labelScore": "Score",

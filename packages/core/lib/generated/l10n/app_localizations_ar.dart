@@ -715,151 +715,153 @@ class AppLocalizationsAr extends AppLocalizations {
   String get assessmentBackToChapter => 'العودة إلى الفصل';
 
   @override
-  String get examReviewTitle => 'Exam Review';
+  String get examReviewTitle => 'مراجعة الامتحان';
 
   @override
-  String get examReviewFilterWrong => 'Wrong';
+  String get examReviewFilterWrong => 'خطأ';
 
   @override
-  String get examReviewFilterCorrect => 'Correct';
+  String get examReviewFilterCorrect => 'صحيح';
 
   @override
-  String get examReviewFilterUnanswered => 'Unanswered';
+  String get examReviewFilterUnanswered => 'غير مجاب عليه';
 
   @override
-  String get examReviewCorrectAnswerLabel => 'Correct Answer:';
+  String get examReviewCorrectAnswerLabel => 'الإجابة الصحيحة:';
 
   @override
-  String get examReviewYourAnswerLabel => 'Your Answer:';
+  String get examReviewYourAnswerLabel => 'إجابتك:';
 
   @override
-  String get examReviewFilterAnswered => 'Answered';
+  String get examReviewFilterAnswered => 'تمت الإجابة عليه';
 
   @override
-  String get labelAskDoubt => 'Ask Doubt';
+  String get labelAskDoubt => 'اسأل سؤال';
 
   @override
-  String get labelComment => 'Comment';
+  String get labelComment => 'تعليق';
 
   @override
-  String get labelReport => 'Report';
+  String get labelReport => 'إبلاغ';
 
   @override
-  String get labelOverallSummary => 'Overall Summary';
+  String get labelOverallSummary => 'الملخص العام';
 
   @override
-  String get labelAccuracy => 'Accuracy';
+  String get labelFilter => 'تصفية:';
 
   @override
-  String get labelScore => 'Score';
+  String get labelAccuracy => 'الدقة';
 
   @override
-  String get labelTimeTaken => 'Time Taken';
+  String get labelScore => 'النتيجة';
 
   @override
-  String get labelPercentile => 'Percentile';
+  String get labelTimeTaken => 'الوقت المستغرق';
 
   @override
-  String get labelRank => 'Rank';
+  String get labelPercentile => 'المئوية';
 
   @override
-  String get labelPerformance => 'Performance';
+  String get labelRank => 'الترتيب';
 
   @override
-  String get labelSubject => 'Subject';
+  String get labelPerformance => 'الأداء';
 
   @override
-  String get labelAttempted => 'Attempted';
+  String get labelSubject => 'المادة';
 
   @override
-  String get labelTotalQuestions => 'Total Questions';
+  String get labelAttempted => 'تمت المحاولة';
 
   @override
-  String get performanceExcellent => 'Excellent';
+  String get labelTotalQuestions => 'إجمالي الأسئلة';
 
   @override
-  String get performanceGood => 'Good';
+  String get performanceExcellent => 'ممتاز';
 
   @override
-  String get performanceAverage => 'Average';
+  String get performanceGood => 'جيد';
 
   @override
-  String get performancePoor => 'Poor';
+  String get performanceAverage => 'متوسط';
 
   @override
-  String get recommendationHigh => 'High';
+  String get performancePoor => 'ضعيف';
 
   @override
-  String get recommendationMedium => 'Medium';
+  String get recommendationHigh => 'عالٍ';
 
   @override
-  String get recommendationLow => 'Low';
+  String get recommendationMedium => 'متوسط';
 
   @override
-  String get reviewAskDoubtTitle => 'Ask a Doubt';
+  String get recommendationLow => 'منخفض';
 
   @override
-  String get reviewSubmitDoubt => 'Submit Doubt';
+  String get reviewAskDoubtTitle => 'اسأل سؤالاً';
 
   @override
-  String get reviewAddCommentTitle => 'Add Comment';
+  String get reviewSubmitDoubt => 'إرسال السؤال';
 
   @override
-  String get reviewPostComment => 'Post Comment';
+  String get reviewAddCommentTitle => 'إضافة تعليق';
 
   @override
-  String get reviewReportIssueTitle => 'Report Issue';
+  String get reviewPostComment => 'نشر التعليق';
 
   @override
-  String get reviewSubmitReport => 'Submit Report';
+  String get reviewReportIssueTitle => 'الإبلاغ عن مشكلة';
+
+  @override
+  String get reviewSubmitReport => 'إرسال البلاغ';
 
   @override
   String reviewReportIssueWithQuestion(int number) {
-    return 'Report an issue with Question $number';
+    return 'الإبلاغ عن مشكلة في السؤال $number';
   }
 
   @override
-  String get reviewDescribeDoubtHint => 'Describe your doubt here...';
+  String get reviewDescribeDoubtHint => 'صف سؤالك هنا...';
 
   @override
-  String get reviewWriteCommentHint => 'Write your comment...';
+  String get reviewWriteCommentHint => 'اكتب تعليقك...';
 
   @override
-  String get reviewReportOptionIncorrect =>
-      'Incorrect answer marked as correct';
+  String get reviewReportOptionIncorrect => 'الإجابة غير الصحيحة محددة كصحيحة';
 
   @override
-  String get reviewReportOptionUnclear => 'Question is unclear';
+  String get reviewReportOptionUnclear => 'السؤال غير واضح';
 
   @override
-  String get reviewReportOptionWrongExplanation => 'Explanation is wrong';
+  String get reviewReportOptionWrongExplanation => 'الشرح خاطئ';
 
   @override
-  String get reviewReportOptionOther => 'Other issue';
+  String get reviewReportOptionOther => 'مشكلة أخرى';
 
   @override
-  String get reviewReportDetailsHint => 'Additional details (optional)...';
+  String get reviewReportDetailsHint => 'تفاصيل إضافية (اختياري)...';
 
   @override
   String reviewShareThoughtsOnQuestion(int number) {
-    return 'Share your thoughts on Question $number';
+    return 'شارك أفكارك حول السؤال $number';
   }
 
   @override
   String reviewQuestionLabel(String number) {
-    return 'Question $number';
+    return 'سؤال $number';
   }
 
   @override
-  String get reviewEmptyStateMessage => 'No questions found for this filter.';
+  String get reviewEmptyStateMessage => 'لم يتم العثور على أسئلة لهذا الفلتر.';
 
   @override
   String reviewAnswersTitle(String title) {
-    return 'Review Answers - $title';
+    return 'مراجعة الإجابات - $title';
   }
 
   @override
   String reviewQuestionCount(int current, int total) {
-    return '$current of $total';
+    return '$current من $total';
   }
 }

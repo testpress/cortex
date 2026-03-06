@@ -146,17 +146,21 @@ class _ReviewAnswerDetailScreenState extends State<ReviewAnswerDetailScreen>
         submitColor: design.colors.accent2,
         onCancel: () => Navigator.pop(context),
         onSubmit: (val) => Navigator.pop(context),
-        content: Column(
+        contentBuilder: (controller) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             AppText.body(
-              "Question ${question.id}: $truncatedText",
+              "${l10n.reviewQuestionLabel(question.number.toString())}: $truncatedText",
               color: design.colors.textSecondary,
               maxLines: 2,
             ),
             SizedBox(height: design.spacing.md),
-            ReviewTextField(hint: l10n.reviewDescribeDoubtHint, design: design),
+            ReviewTextField(
+              hint: l10n.reviewDescribeDoubtHint,
+              design: design,
+              controller: controller,
+            ),
           ],
         ),
       ),
@@ -180,18 +184,20 @@ class _ReviewAnswerDetailScreenState extends State<ReviewAnswerDetailScreen>
         submitColor: design.colors.primary,
         onCancel: () => Navigator.pop(context),
         onSubmit: (val) => Navigator.pop(context),
-        content: Column(
+        contentBuilder: (controller) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             AppText.body(
-              l10n.reviewShareThoughtsOnQuestion(
-                int.tryParse(question.id) ?? 1,
-              ),
+              l10n.reviewShareThoughtsOnQuestion(question.number),
               color: design.colors.textSecondary,
             ),
             SizedBox(height: design.spacing.md),
-            ReviewTextField(hint: l10n.reviewWriteCommentHint, design: design),
+            ReviewTextField(
+              hint: l10n.reviewWriteCommentHint,
+              design: design,
+              controller: controller,
+            ),
           ],
         ),
       ),
@@ -209,9 +215,10 @@ class _ReviewAnswerDetailScreenState extends State<ReviewAnswerDetailScreen>
       barrierLabel: l10n.reviewReportIssueTitle,
       barrierColor: design.colors.shadow.withValues(alpha: 0.6),
       pageBuilder: (context, anim1, anim2) => ReportReviewDialog(
-        questionNumber: int.tryParse(question.id) ?? 1,
+        questionNumber: question.number,
         design: design,
         l10n: l10n,
+        onSubmit: (index, text) => Navigator.pop(context),
       ),
     );
   }

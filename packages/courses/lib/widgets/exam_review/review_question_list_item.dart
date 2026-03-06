@@ -1,18 +1,21 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import '../../models/test_model.dart';
-import 'package:flutter/foundation.dart'; // for listEquals
 
 class ReviewQuestionListItem extends StatefulWidget {
   final int index;
   final TestQuestion question;
   final TestAttemptAnswer? attemptState;
+  final bool isCorrect;
+  final bool isUnanswered;
   final bool isInitiallyExpanded;
 
   const ReviewQuestionListItem({
     super.key,
     required this.index,
     required this.question,
+    required this.isCorrect,
+    required this.isUnanswered,
     this.attemptState,
     this.isInitiallyExpanded = false,
   });
@@ -30,27 +33,10 @@ class _ReviewQuestionListItemState extends State<ReviewQuestionListItem> {
     _isExpanded = widget.isInitiallyExpanded;
   }
 
-  bool _isCorrect() {
-    if (widget.attemptState == null ||
-        widget.attemptState!.selectedOptions.isEmpty) {
-      return false;
-    }
-    final selected = List<String>.from(widget.attemptState!.selectedOptions)
-      ..sort();
-    final correct = List<String>.from(widget.question.correctOptionIds)..sort();
-    return listEquals(selected, correct);
-  }
-
-  bool _isUnanswered() =>
-      widget.attemptState == null ||
-      widget.attemptState!.selectedOptions.isEmpty;
-
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final isCorrect = _isCorrect();
-    final isUnanswered = _isUnanswered();
 
     return Container(
       margin: EdgeInsets.symmetric(
@@ -64,8 +50,9 @@ class _ReviewQuestionListItemState extends State<ReviewQuestionListItem> {
       ),
       child: Column(
         children: [
-          _buildHeader(design, l10n, isCorrect, isUnanswered),
-          if (_isExpanded) _buildContent(design, l10n, isCorrect, isUnanswered),
+          _buildHeader(design, l10n, widget.isCorrect, widget.isUnanswered),
+          if (_isExpanded)
+            _buildContent(design, l10n, widget.isCorrect, widget.isUnanswered),
         ],
       ),
     );
@@ -92,24 +79,15 @@ class _ReviewQuestionListItemState extends State<ReviewQuestionListItem> {
     } else if (isCorrect) {
       statusIcon = LucideIcons.checkCircle2;
       statusColor = design.colors.success;
-      statusLabel = l10n.assessmentCorrect; // "Correct!"
+      statusLabel = l10n.examReviewFilterCorrect;
       badgeBg = design.colors.success.withValues(alpha: 0.1);
       badgeText = design.colors.success;
     } else {
       statusIcon = LucideIcons.xCircle;
       statusColor = design.colors.error;
-      statusLabel = l10n.assessmentIncorrect;
-      statusLabel = isCorrect
-          ? "Correct"
-          : (isUnanswered ? "Unanswered" : "Incorrect");
-      badgeBg = isCorrect
-          ? design.colors.success.withValues(alpha: 0.1)
-          : (isUnanswered
-                ? design.colors.surface
-                : design.colors.error.withValues(alpha: 0.1));
-      badgeText = isCorrect
-          ? design.colors.success
-          : (isUnanswered ? design.colors.textSecondary : design.colors.error);
+      statusLabel = l10n.examReviewFilterWrong;
+      badgeBg = design.colors.error.withValues(alpha: 0.1);
+      badgeText = design.colors.error;
     }
 
     return GestureDetector(
@@ -133,7 +111,7 @@ class _ReviewQuestionListItemState extends State<ReviewQuestionListItem> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       AppText.body(
-                        "Question ${widget.index}",
+                        l10n.reviewQuestionLabel(widget.index.toString()),
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -211,7 +189,7 @@ class _ReviewQuestionListItemState extends State<ReviewQuestionListItem> {
           SizedBox(height: design.spacing.xs),
           _buildAnswerText(
             isUnanswered
-                ? "Not answered"
+                ? l10n.assessmentUnanswered
                 : widget.question.options
                       .where(
                         (o) =>

@@ -90,11 +90,11 @@ class _ExamReviewScreenState extends State<ExamReviewScreen> {
                     itemCount: filtered.length,
                     itemBuilder: (context, index) {
                       final q = filtered[index];
-                      // Find actual index from original list
-                      final originalIndex = widget.questions.indexOf(q) + 1;
                       return ReviewQuestionListItem(
-                        index: originalIndex,
+                        index: q.number,
                         question: q,
+                        isCorrect: _isAnswerCorrect(q),
+                        isUnanswered: _isUnanswered(q),
                         attemptState: widget.attemptStates[q.id],
                       );
                     },
@@ -167,7 +167,7 @@ class _ExamReviewScreenState extends State<ExamReviewScreen> {
         child: Row(
           children: [
             AppText.body(
-              "Filter:",
+              l10n.labelFilter,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 color: design.colors.textSecondary,
@@ -244,7 +244,7 @@ class _ExamReviewScreenState extends State<ExamReviewScreen> {
           ),
           SizedBox(height: design.spacing.md),
           AppText.body(
-            "No questions found for this filter.",
+            l10n.reviewEmptyStateMessage,
             color: design.colors.textSecondary,
           ),
         ],

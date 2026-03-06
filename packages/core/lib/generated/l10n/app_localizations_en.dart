@@ -749,6 +749,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get labelOverallSummary => 'Overall Summary';
 
   @override
+  String get labelFilter => 'Filter:';
+
+  @override
   String get labelAccuracy => 'Accuracy';
 
   @override

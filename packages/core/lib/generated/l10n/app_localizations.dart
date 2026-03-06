@@ -1419,6 +1419,12 @@ abstract class AppLocalizations {
   /// **'Overall Summary'**
   String get labelOverallSummary;
 
+  /// No description provided for @labelFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter:'**
+  String get labelFilter;
+
   /// No description provided for @labelAccuracy.
   ///
   /// In en, this message translates to:

@@ -224,5 +224,82 @@
   "assessmentExit": "الخروج من التقييم",
   "assessmentPaletteTitle": "لوحة الأسئلة",
   "assessmentUnanswered": "غير مجاب عليه",
-  "assessmentBackToChapter": "العودة إلى الفصل"
+  "assessmentBackToChapter": "العودة إلى الفصل",
+  "examReviewTitle": "مراجعة الامتحان",
+  "examReviewFilterWrong": "خطأ",
+  "examReviewFilterCorrect": "صحيح",
+  "examReviewFilterUnanswered": "غير مجاب عليه",
+  "examReviewCorrectAnswerLabel": "الإجابة الصحيحة:",
+  "examReviewYourAnswerLabel": "إجابتك:",
+  "examReviewFilterAnswered": "تمت الإجابة عليه",
+  "labelAskDoubt": "اسأل سؤال",
+  "labelComment": "تعليق",
+  "labelReport": "إبلاغ",
+  "labelOverallSummary": "الملخص العام",
+  "labelFilter": "تصفية:",
+  "labelAccuracy": "الدقة",
+  "labelScore": "النتيجة",
+  "labelTimeTaken": "الوقت المستغرق",
+  "labelPercentile": "المئوية",
+  "labelRank": "الترتيب",
+  "labelPerformance": "الأداء",
+  "labelSubject": "المادة",
+  "labelAttempted": "تمت المحاولة",
+  "labelTotalQuestions": "إجمالي الأسئلة",
+  "performanceExcellent": "ممتاز",
+  "performanceGood": "جيد",
+  "performanceAverage": "متوسط",
+  "performancePoor": "ضعيف",
+  "recommendationHigh": "عالٍ",
+  "recommendationMedium": "متوسط",
+  "recommendationLow": "منخفض",
+  "reviewAskDoubtTitle": "اسأل سؤالاً",
+  "reviewSubmitDoubt": "إرسال السؤال",
+  "reviewAddCommentTitle": "إضافة تعليق",
+  "reviewPostComment": "نشر التعليق",
+  "reviewReportIssueTitle": "الإبلاغ عن مشكلة",
+  "reviewSubmitReport": "إرسال البلاغ",
+  "reviewReportIssueWithQuestion": "الإبلاغ عن مشكلة في السؤال {number}",
+  "@reviewReportIssueWithQuestion": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewDescribeDoubtHint": "صف سؤالك هنا...",
+  "reviewWriteCommentHint": "اكتب تعليقك...",
+  "reviewReportOptionIncorrect": "الإجابة غير الصحيحة محددة كصحيحة",
+  "reviewReportOptionUnclear": "السؤال غير واضح",
+  "reviewReportOptionWrongExplanation": "الشرح خاطئ",
+  "reviewReportOptionOther": "مشكلة أخرى",
+  "reviewReportDetailsHint": "تفاصيل إضافية (اختياري)...",
+  "reviewShareThoughtsOnQuestion": "شارك أفكارك حول السؤال {number}",
+  "@reviewShareThoughtsOnQuestion": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewQuestionLabel": "سؤال {number}",
+  "@reviewQuestionLabel": {
+    "placeholders": {
+      "number": { "type": "String" }
+    }
+  },
+  "reviewEmptyStateMessage": "لم يتم العثور على أسئلة لهذا الفلتر.",
+  "reviewAnswersTitle": "مراجعة الإجابات - {title}",
+  "@reviewAnswersTitle": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "reviewQuestionCount": "{current} من {total}",
+  "@reviewQuestionCount": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  }
 }
