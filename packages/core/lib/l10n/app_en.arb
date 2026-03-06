@@ -336,5 +336,6 @@
   "assessmentPracticeComplete": "Practice Assessment Complete!",
   "assessmentExit": "Exit Assessment",
   "assessmentPaletteTitle": "Question Palette",
-  "assessmentUnanswered": "Unanswered"
+  "assessmentUnanswered": "Unanswered",
+  "assessmentBackToChapter": "Back to Chapter"
 }

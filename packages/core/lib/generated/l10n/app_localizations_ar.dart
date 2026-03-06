@@ -610,8 +610,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get assessmentExit => 'الخروج من التقييم';
 
   @override
-  String get assessmentPaletteTitle => 'Question Palette';
+  String get assessmentPaletteTitle => 'لوحة الأسئلة';
 
   @override
-  String get assessmentUnanswered => 'Unanswered';
+  String get assessmentUnanswered => 'غير مجاب عليه';
+
+  @override
+  String get assessmentBackToChapter => 'العودة إلى الفصل';
 }

@@ -193,5 +193,8 @@
   "assessmentNext": "التالي",
   "assessmentExplanation": "الشرح",
   "assessmentPracticeComplete": "اكتمل تقييم التدريب!",
-  "assessmentExit": "الخروج من التقييم"
+  "assessmentExit": "الخروج من التقييم",
+  "assessmentPaletteTitle": "لوحة الأسئلة",
+  "assessmentUnanswered": "غير مجاب عليه",
+  "assessmentBackToChapter": "العودة إلى الفصل"
 }

@@ -612,8 +612,11 @@ class AppLocalizationsMl extends AppLocalizations {
   String get assessmentExit => 'അസസ്സ്മെന്റിൽ നിന്ന് പുറത്തുകടക്കുക';
 
   @override
-  String get assessmentPaletteTitle => 'Question Palette';
+  String get assessmentPaletteTitle => 'ചോദ്യ പാലറ്റ്';
 
   @override
-  String get assessmentUnanswered => 'Unanswered';
+  String get assessmentUnanswered => 'ഉത്തരം നൽകിയിട്ടില്ല';
+
+  @override
+  String get assessmentBackToChapter => 'അധ്യായത്തിലേക്ക് മടങ്ങുക';
 }

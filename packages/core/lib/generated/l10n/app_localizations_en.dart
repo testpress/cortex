@@ -614,4 +614,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get assessmentUnanswered => 'Unanswered';
+
+  @override
+  String get assessmentBackToChapter => 'Back to Chapter';
 }

@@ -1178,6 +1178,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unanswered'**
   String get assessmentUnanswered;
+
+  /// No description provided for @assessmentBackToChapter.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Chapter'**
+  String get assessmentBackToChapter;
 }
 
 class _AppLocalizationsDelegate

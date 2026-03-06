@@ -6,6 +6,7 @@ import '../models/assessment_model.dart';
 import '../data/mock_assessments.dart';
 import '../widgets/assessment_detail/assessment_header.dart';
 import '../widgets/assessment_detail/assessment_palette.dart';
+import '../widgets/test_detail/nav_button.dart';
 import '../widgets/test_detail/option_card.dart';
 import '../widgets/test_detail/test_palette_trigger.dart';
 import '../models/test_model.dart' show QuestionOption, QuestionType;
@@ -456,75 +457,22 @@ class _AssessmentDetailScreenState
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildNavBtn(
-                  design,
-                  l10n.testPrevious,
-                  LucideIcons.chevronLeft,
-                  canGoPrev ? _handlePrevious : null,
+                NavButton(
+                  label: l10n.testPrevious,
+                  icon: LucideIcons.chevronLeft,
+                  onTap: canGoPrev ? _handlePrevious : null,
                   isBack: true,
                 ),
-                _buildNavBtn(
-                  design,
-                  isLast ? l10n.testFinish : l10n.assessmentNext,
-                  isLast ? LucideIcons.checkCircle2 : LucideIcons.chevronRight,
-                  _handleNext,
+                NavButton(
+                  label: isLast ? l10n.testFinish : l10n.assessmentNext,
+                  icon: isLast
+                      ? LucideIcons.checkCircle2
+                      : LucideIcons.chevronRight,
+                  onTap: _handleNext,
                 ),
               ],
             ),
         ],
-      ),
-    );
-  }
-
-  /// Verbatim copy of TestNavigationActions._buildNavButton
-  Widget _buildNavBtn(
-    DesignConfig design,
-    String label,
-    IconData icon,
-    VoidCallback? onTap, {
-    bool isBack = false,
-  }) {
-    final bool isDisabled = onTap == null;
-    final Color bgColor = isBack || isDisabled
-        ? design.colors.card
-        : design.colors.textPrimary;
-    final Color textColor = isDisabled
-        ? design.colors.border
-        : (isBack ? design.colors.textPrimary : design.colors.textInverse);
-    final Color borderColor = isDisabled
-        ? design.colors.border.withValues(alpha: 0.5)
-        : (isBack ? design.colors.textSecondary : design.colors.textPrimary);
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: design.spacing.md,
-          vertical: design.spacing.sm,
-        ),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(design.radius.md),
-          border: Border.all(color: borderColor, width: 1.0),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (isBack) ...[
-              Icon(icon, color: textColor, size: 18),
-              const SizedBox(width: 8),
-            ],
-            AppText.body(
-              label,
-              color: textColor,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-            ),
-            if (!isBack) ...[
-              const SizedBox(width: 8),
-              Icon(icon, color: textColor, size: 18),
-            ],
-          ],
-        ),
       ),
     );
   }
@@ -650,7 +598,7 @@ class _AssessmentDetailScreenState
                     ),
                     child: Center(
                       child: AppText.headline(
-                        l10n.testBackToChapter, // Assuming this was the intended text
+                        l10n.assessmentBackToChapter,
                         style: TextStyle(
                           fontSize: design.typographyScale.xl.fontSize,
                           fontWeight: FontWeight.bold,

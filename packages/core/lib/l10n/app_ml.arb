@@ -193,5 +193,8 @@
   "assessmentNext": "അടുത്തത്",
   "assessmentExplanation": "വിശദീകരണം",
   "assessmentPracticeComplete": "പ്രാക്ടീസ് അസസ്സ്മെന്റ് പൂർത്തിയായി!",
-  "assessmentExit": "അസസ്സ്മെന്റിൽ നിന്ന് പുറത്തുകടക്കുക"
+  "assessmentExit": "അസസ്സ്മെന്റിൽ നിന്ന് പുറത്തുകടക്കുക",
+  "assessmentPaletteTitle": "ചോദ്യ പാലറ്റ്",
+  "assessmentUnanswered": "ഉത്തരം നൽകിയിട്ടില്ല",
+  "assessmentBackToChapter": "അധ്യായത്തിലേക്ക് മടങ്ങുക"
 }
