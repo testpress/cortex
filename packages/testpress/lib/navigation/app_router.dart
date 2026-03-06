@@ -241,6 +241,15 @@ final GoRouter appRouter = GoRouter(
             GoRoute(
               path: '/profile',
               builder: (context, state) => const ProfilePage(),
+              routes: [
+                GoRoute(
+                  name: 'profile-notifications',
+                  path: 'notifications',
+                  builder: (context, state) {
+                    return NotificationsScreen(onBack: () => context.pop());
+                  },
+                ),
+              ],
             ),
           ],
         ),

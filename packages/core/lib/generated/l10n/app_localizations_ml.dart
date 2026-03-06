@@ -165,6 +165,45 @@ class AppLocalizationsMl extends AppLocalizations {
   String get profileNotifications => 'നോട്ടിഫിക്കേഷനുകൾ';
 
   @override
+  String get notificationsManagePreferences =>
+      'നിങ്ങളുടെ നോട്ടിഫിക്കേഷൻ മുൻഗണനകൾ നിയന്ത്രിക്കുക';
+
+  @override
+  String get notificationsLiveClassReminders => 'ലൈവ് ക്ലാസ് റിമൈൻഡറുകൾ';
+
+  @override
+  String get notificationsLiveClassRemindersDesc =>
+      'ലൈവ് ക്ലാസുകൾ തുടങ്ങുന്നതിന് മുമ്പ് അറിയിപ്പുകൾ നേടുക';
+
+  @override
+  String get notificationsTestAssessmentAlerts =>
+      'ടെസ്റ്റ്, അസെസ്മെന്റ് അലർട്ടുകൾ';
+
+  @override
+  String get notificationsTestAssessmentAlertsDesc =>
+      'വരാനിരിക്കുന്ന ടെസ്റ്റുകൾക്കും അവസാന തീയതികൾക്കും ഓർമ്മപ്പെടുത്തലുകൾ';
+
+  @override
+  String get notificationsAnnouncementsUpdates => 'പ്രഖ്യാപനങ്ങളും അപ്ഡേറ്റുകളും';
+
+  @override
+  String get notificationsAnnouncementsUpdatesDesc =>
+      'പ്രധാന വാർത്തകളും പ്ലാറ്റ്ഫോം അപ്ഡേറ്റുകളും';
+
+  @override
+  String get notificationsAchievementsBadges => 'നേട്ടങ്ങളും ബാഡ്ജുകളും';
+
+  @override
+  String get notificationsAchievementsBadgesDesc =>
+      'പുതിയ നേട്ടം നേടിയാൽ ആഘോഷിക്കുക';
+
+  @override
+  String get notificationsStateOn => 'ഓൺ';
+
+  @override
+  String get notificationsStateOff => 'ഓഫ്';
+
+  @override
   String get profileCertificates => 'നിങ്ങളുടെ സർട്ടിഫിക്കറ്റുകൾ';
 
   @override

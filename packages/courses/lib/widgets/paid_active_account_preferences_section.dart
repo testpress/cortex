@@ -2,7 +2,9 @@ import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 
 class AccountPreferencesSection extends StatelessWidget {
-  const AccountPreferencesSection({super.key});
+  const AccountPreferencesSection({super.key, this.onNotificationsTap});
+
+  final VoidCallback? onNotificationsTap;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class AccountPreferencesSection extends StatelessWidget {
                   icon: LucideIcons.bell,
                   label: l10n.profileNotifications,
                   iconColor: design.colors.rank1,
-                  onTap: () {},
+                  onTap: onNotificationsTap ?? () {},
                 ),
                 _Divider(),
                 _PreferenceItem(

@@ -165,6 +165,44 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profileNotifications => 'التنبيهات';
 
   @override
+  String get notificationsManagePreferences =>
+      'إدارة تفضيلات التنبيهات الخاصة بك';
+
+  @override
+  String get notificationsLiveClassReminders => 'تذكيرات الحصص المباشرة';
+
+  @override
+  String get notificationsLiveClassRemindersDesc =>
+      'تلقي تنبيه قبل بدء الحصص المباشرة';
+
+  @override
+  String get notificationsTestAssessmentAlerts => 'تنبيهات الاختبارات والتقييمات';
+
+  @override
+  String get notificationsTestAssessmentAlertsDesc =>
+      'تذكيرات بالاختبارات والمواعيد القادمة';
+
+  @override
+  String get notificationsAnnouncementsUpdates => 'الإعلانات والتحديثات';
+
+  @override
+  String get notificationsAnnouncementsUpdatesDesc =>
+      'أخبار مهمة وتحديثات المنصة';
+
+  @override
+  String get notificationsAchievementsBadges => 'الإنجازات والشارات';
+
+  @override
+  String get notificationsAchievementsBadgesDesc =>
+      'احتفل عند حصولك على إنجاز جديد';
+
+  @override
+  String get notificationsStateOn => 'مفعل';
+
+  @override
+  String get notificationsStateOff => 'غير مفعل';
+
+  @override
   String get profileCertificates => 'شهاداتك';
 
   @override

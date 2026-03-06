@@ -165,6 +165,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileNotifications => 'Notifications';
 
   @override
+  String get notificationsManagePreferences =>
+      'Manage your notification preferences';
+
+  @override
+  String get notificationsLiveClassReminders => 'Live class reminders';
+
+  @override
+  String get notificationsLiveClassRemindersDesc =>
+      'Get notified before your live classes start';
+
+  @override
+  String get notificationsTestAssessmentAlerts =>
+      'Test and assessment alerts';
+
+  @override
+  String get notificationsTestAssessmentAlertsDesc =>
+      'Reminders for upcoming tests and deadlines';
+
+  @override
+  String get notificationsAnnouncementsUpdates => 'Announcements and updates';
+
+  @override
+  String get notificationsAnnouncementsUpdatesDesc =>
+      'Important news and platform updates';
+
+  @override
+  String get notificationsAchievementsBadges => 'Achievements and badges';
+
+  @override
+  String get notificationsAchievementsBadgesDesc =>
+      'Celebrate when you earn achievements';
+
+  @override
+  String get notificationsStateOn => 'On';
+
+  @override
+  String get notificationsStateOff => 'Off';
+
+  @override
   String get profileCertificates => 'Your certificates';
 
   @override
