@@ -20,12 +20,11 @@ class TestCard extends StatelessWidget {
           : null,
       subtitles: [
         if (item.type != null)
-          l10n.testTypeLabel(item.type!.name.toUpperCase()),
+          l10n.testTypeLabel(item.type!.name.toTitleCase()),
       ],
       chevronSize: 16,
       bottomAction: AppText.cardCaption(
         '${item.time} · ${item.duration}',
-        color: design.colors.textTertiary,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),

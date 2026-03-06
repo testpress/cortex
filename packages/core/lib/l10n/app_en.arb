@@ -82,7 +82,7 @@
   "noScheduledActivitiesSubtitle": "No scheduled activities right now",
   "liveLabel": "LIVE",
   "importantLabel": "IMPORTANT",
-  "testTypeLabel": "{type} TEST",
+  "testTypeLabel": "{type} Test",
   "@testTypeLabel": {
     "placeholders": {
       "type": {

@@ -365,7 +365,7 @@ final mockStudyMomentum = StudyMomentumDto(
   ],
   weeklyHours: 14.5,
   currentStreak: 12,
-  latestActivityTitle: 'Completed Calculus Mock Test',
+  latestActivityTitle: 'Calculus Mock Test',
   latestActivityTimeAgo: '1h ago',
   lessonsFinished: 45,
   testsAttempted: 18,

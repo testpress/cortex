@@ -1313,7 +1313,7 @@ class DesignTypography {
       // no tracking. Negative tracking at 14px caused visible glyph
       // compression, especially in non-Latin scripts.
       subtitle: s.sm.copyWith(
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w600,
         color: c.textSecondary,
         height: 1.4,
       ),
@@ -1352,8 +1352,7 @@ class DesignTypography {
       caption: s.xs.copyWith(
         fontWeight: FontWeight.w400,
         color: c.textSecondary,
-        letterSpacing: 0.4,
-        height: 1.2,
+        height: 1.4,
       ),
       // cardTitle — Standard title for cards (Course, Resume, etc).
       // base (14px) size balances visibility without dominating the card.
@@ -1366,7 +1365,7 @@ class DesignTypography {
       cardSubtitle: s.xs.copyWith(
         fontWeight: FontWeight.w600,
         color: c.textSecondary,
-        height: 1.2,
+        height: 1.4,
       ),
       // cardCaption — Micro info inside cards (ratio labels).
       cardCaption: s.xs.copyWith(

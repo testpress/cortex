@@ -91,28 +91,18 @@ class StudyMomentumGrid extends StatelessWidget {
   }
 
   Widget _buildLatestActivity(BuildContext context) {
-    final design = Design.of(context);
     final l10n = L10n.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppText.caption(
-          l10n.latestActivityLabel,
-          color: design.colors.textSecondary,
-        ),
+        AppText.caption(l10n.latestActivityLabel),
         const SizedBox(height: 4),
-        Text.rich(
-          TextSpan(
-            text: momentum.latestActivityTitle,
-            style: design.typography.body.copyWith(fontWeight: FontWeight.w500),
-            children: [
-              const TextSpan(text: '  '),
-              TextSpan(
-                text: '• ${momentum.latestActivityTimeAgo}',
-                style: design.typography.caption,
-              ),
-            ],
-          ),
+        Row(
+          children: [
+            AppText.cardTitle(momentum.latestActivityTitle!),
+            const SizedBox(width: 8),
+            AppText.cardCaption('· ${momentum.latestActivityTimeAgo}'),
+          ],
         ),
       ],
     );
@@ -129,16 +119,10 @@ class StudyMomentumGrid extends StatelessWidget {
             children: [
               Icon(LucideIcons.flame, size: 18, color: design.colors.primary),
               const SizedBox(width: 8),
-              AppText.label(
-                l10n.streakMomentumLabel(momentum.currentStreak),
-                color: design.colors.textPrimary,
-              ),
+              AppText.label(l10n.streakMomentumLabel(momentum.currentStreak)),
             ],
           ),
-        AppText.caption(
-          l10n.weeklyHoursLabel(momentum.weeklyHours.toString()),
-          color: design.colors.textSecondary,
-        ),
+        AppText.caption(l10n.weeklyHoursLabel(momentum.weeklyHours.toString())),
       ],
     );
   }
