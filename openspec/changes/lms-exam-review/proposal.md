@@ -9,12 +9,13 @@ Following the completion of an assessment or test, students need a consolidated 
     - **Header**: Shows question number, subject, correctness status badge, and the question snippet.
     - **Expanded Content**: Shows the full question text, the user's selected answer, the correct answer, and the detailed explanation.
 - **Filtering**: Add filter chips at the top of the list to filter by "All", "Correct", "Incorrect", and "Unanswered".
-- **Navigation Integration**: Add a "Review Answers" button to the `AssessmentDetailScreen` result view (Phase 1 completion view) that navigates to this list.
+- **Navigation Integration**: Add a "Review Answers" button to the `TestDetailScreen` result view (Phase 1 completion view) that navigates to this list.
 
 ## Capabilities
 
 ### New Capabilities
-- `lms-exam-review`: Handles the post-test list-based review experience, including filtering and question-level feedback.
+- `lms-exam-review`: Handles the post-test list-based review experience, including filtering and status summaries.
+- `lms-review-answer-detail`: Manages the single-question focused review experience with interactive action dialogs (Ask Doubt, Comment, Report).
 
 ### Modified Capabilities
 - `lms-test-detail`: Update the "Final Submission & Summary" requirement to include a navigation path to the detailed exam review.

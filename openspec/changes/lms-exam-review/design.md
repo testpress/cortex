@@ -1,6 +1,6 @@
 ## Context
 
-Currently, the `AssessmentDetailScreen` provides a score and option to retake or exit. There is no way for students to review which specific questions they got wrong without retaking the entire test. This change introduces the `ExamReviewScreen`, a list-based overview for studying results.
+Currently, the `TestDetailScreen` provides a score and option to retake or exit. There is no way for students to review which specific questions they got wrong without retaking the entire test. This change introduces the `ExamReviewScreen`, a list-based overview for studying results.
 
 ## Goals / Non-Goals
 
@@ -19,9 +19,9 @@ Currently, the `AssessmentDetailScreen` provides a score and option to retake or
 
 - **New Screen Component**: Create `ExamReviewScreen` in `packages/courses/lib/screens/exam_review_screen.dart`.
 - **Question Accordion Widget**: Create `ReviewQuestionListItem` as a custom stateful widget rather than using `ExpansionTile` to ensure pixel-perfect alignment with the design's header icons and spacing.
-- **Filter State Management**: Use a simple local `StateProvider` or `useState` for filter selection.
-- **Result Navigation**: In `AssessmentDetailScreen`, the `_buildResultView` will be updated to include a "Review Answers" button that pushes the `ExamReviewScreen`.
-- **Palette Synergy**: Re-use `AssessmentAttemptState` data to determine correctness in the review list.
+- **Filter State Management**: Use standard `setState` within the `ExamReviewScreen` for filter selection and UI updates.
+- **Result Navigation**: In `TestDetailScreen`, the `_buildResultView` will be updated to include a "Review Answers" button that pushes the `ExamReviewScreen`.
+- **Palette Synergy**: Re-use `TestAttemptAnswer` data map from the test session to determine correctness and user selection in the review list.
 
 ## Risks / Trade-offs
 

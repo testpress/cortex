@@ -17,5 +17,5 @@
 
 ## 4. Assessment Integration
 
-- [x] 4.1 Update `AssessmentDetailScreen._buildResultView` to include the "Review Answers" button.
+- [x] 4.1 Update `TestDetailScreen._buildResultView` to include the "Review Answers" button.
 - [x] 4.2 Integrate navigation to push `ExamReviewScreen` with the final results data.
