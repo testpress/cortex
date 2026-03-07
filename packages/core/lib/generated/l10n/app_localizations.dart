@@ -964,6 +964,12 @@ abstract class AppLocalizations {
   /// **'Back'**
   String get curriculumBackButton;
 
+  /// No description provided for @commonCloseButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get commonCloseButton;
+
   /// No description provided for @curriculumChaptersCount.
   ///
   /// In en, this message translates to:

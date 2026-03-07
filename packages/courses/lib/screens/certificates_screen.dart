@@ -153,7 +153,9 @@ class _CertificateCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final unlockedHeaderStart = design.subjectPalette.atIndex(2).accent;
+    final unlockedHeaderStart = design.subjectPalette
+        .atIndex(certificate.course.colorIndex)
+        .accent;
     final unlockedHeaderEnd = design.colors.accent4;
 
     return AppCard(

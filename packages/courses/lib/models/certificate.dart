@@ -11,6 +11,12 @@ class CourseCertificate {
     this.certificateId,
     this.progress = 0,
     required this.isLocked,
+    this.signerOneName,
+    this.signerOneRole,
+    this.signerTwoName,
+    this.signerTwoRole,
+    this.instituteName,
+    this.instituteTagline,
   });
 
   final String id;
@@ -20,4 +26,10 @@ class CourseCertificate {
   final String? certificateId;
   final int progress;
   final bool isLocked;
+  final String? signerOneName;
+  final String? signerOneRole;
+  final String? signerTwoName;
+  final String? signerTwoRole;
+  final String? instituteName;
+  final String? instituteTagline;
 }

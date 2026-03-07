@@ -25,6 +25,12 @@ final List<CourseCertificate> _paidActiveCertificates = <CourseCertificate>[
     certificateId: 'CERT-2025-PHY-1234',
     progress: 100,
     isLocked: false,
+    signerOneName: 'Dr. Rajesh Kumar',
+    signerOneRole: 'Academic Director',
+    signerTwoName: 'Prof. Priya Sharma',
+    signerTwoRole: 'Course Instructor',
+    instituteName: 'Excellence Academy',
+    instituteTagline: 'Empowering students to achieve their dreams',
   ),
   CourseCertificate(
     id: 'cert-chem-2025',

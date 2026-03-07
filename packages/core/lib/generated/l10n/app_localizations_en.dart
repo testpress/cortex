@@ -483,6 +483,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get curriculumBackButton => 'Back';
 
   @override
+  String get commonCloseButton => 'Close';
+
+  @override
   String curriculumChaptersCount(int count) {
     return '$count Chapters';
   }

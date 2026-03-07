@@ -489,6 +489,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get curriculumBackButton => 'പിന്നിലേക്ക്';
 
   @override
+  String get commonCloseButton => 'അടയ്‌ക്കുക';
+
+  @override
   String curriculumChaptersCount(int count) {
     return '$count അധ്യായങ്ങൾ';
   }
