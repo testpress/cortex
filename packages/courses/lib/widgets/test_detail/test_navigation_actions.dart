@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import 'package:flutter/material.dart' show FontWeight;
+import 'nav_button.dart';
 
 class TestNavigationActions extends StatelessWidget {
   final bool isMarked;
@@ -34,18 +34,16 @@ class TestNavigationActions extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildNavButton(
-                design,
-                l10n.testPrevious,
-                LucideIcons.chevronLeft,
-                canGoPrevious ? onPrevious : null,
+              NavButton(
+                label: l10n.testPrevious,
+                icon: LucideIcons.chevronLeft,
+                onTap: canGoPrevious ? onPrevious : null,
                 isBack: true,
               ),
-              _buildNavButton(
-                design,
-                isLastQuestion ? l10n.testFinish : l10n.testNext,
-                LucideIcons.chevronRight,
-                onNext,
+              NavButton(
+                label: isLastQuestion ? l10n.testFinish : l10n.testNext,
+                icon: LucideIcons.chevronRight,
+                onTap: onNext,
               ),
             ],
           ),
@@ -91,58 +89,6 @@ class TestNavigationActions extends StatelessWidget {
               color: isMarked ? markColor : design.colors.textPrimary,
               style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavButton(
-    DesignConfig design,
-    String label,
-    IconData icon,
-    VoidCallback? onTap, {
-    bool isBack = false,
-  }) {
-    final bool isDisabled = onTap == null;
-    final Color bgColor = isBack || isDisabled
-        ? design.colors.card
-        : design.colors.textPrimary;
-    final Color textColor = isDisabled
-        ? design.colors.border
-        : (isBack ? design.colors.textPrimary : design.colors.textInverse);
-    final Color borderColor = isDisabled
-        ? design.colors.border.withValues(alpha: 0.5)
-        : (isBack ? design.colors.textSecondary : design.colors.textPrimary);
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: design.spacing.md,
-          vertical: design.spacing.sm,
-        ),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(design.radius.md),
-          border: Border.all(color: borderColor, width: 1.0),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (isBack) ...[
-              Icon(icon, color: textColor, size: 18),
-              const SizedBox(width: 8),
-            ],
-            AppText.body(
-              label,
-              color: textColor,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-            ),
-            if (!isBack) ...[
-              const SizedBox(width: 8),
-              Icon(icon, color: textColor, size: 18),
-            ],
           ],
         ),
       ),

@@ -468,7 +468,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String testQuestionXofY(Object index, Object total) {
+  String testQuestionXofY(int index, int total) {
     return 'السؤال $index من $total';
   }
 
@@ -584,4 +584,37 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get testViewAnalytics => 'عرض التحليلات';
+
+  @override
+  String get assessmentCheckAnswer => 'تحقق من الإجابة';
+
+  @override
+  String get assessmentCorrect => 'صحيح!';
+
+  @override
+  String get assessmentIncorrect => 'ليس صحيحاً تماماً';
+
+  @override
+  String get assessmentTryAgain => 'حاول مرة أخرى';
+
+  @override
+  String get assessmentNext => 'التالي';
+
+  @override
+  String get assessmentExplanation => 'الشرح';
+
+  @override
+  String get assessmentPracticeComplete => 'اكتمل تقييم التدريب!';
+
+  @override
+  String get assessmentExit => 'الخروج من التقييم';
+
+  @override
+  String get assessmentPaletteTitle => 'لوحة الأسئلة';
+
+  @override
+  String get assessmentUnanswered => 'غير مجاب عليه';
+
+  @override
+  String get assessmentBackToChapter => 'العودة إلى الفصل';
 }

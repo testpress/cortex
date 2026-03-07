@@ -260,6 +260,16 @@
   "testExit": "Exit Test",
   "testTimeLeft": "{time} left",
   "testQuestionXofY": "Question {index} of {total}",
+  "@testQuestionXofY": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "testSaved": "Saved",
   "testMarked": "Marked",
   "testMarkForReview": "Mark for Review",
@@ -316,5 +326,16 @@
   "testSubmittedTitle": "Test Submitted!",
   "testSubmittedBody": "Your test has been successfully submitted. Review your answers or view detailed analytics.",
   "testReviewAnswers": "Review Answers",
-  "testViewAnalytics": "View Analytics"
+  "testViewAnalytics": "View Analytics",
+  "assessmentCheckAnswer": "Check Answer",
+  "assessmentCorrect": "Correct!",
+  "assessmentIncorrect": "Not quite right",
+  "assessmentTryAgain": "Try Again",
+  "assessmentNext": "Next",
+  "assessmentExplanation": "Explanation",
+  "assessmentPracticeComplete": "Practice Assessment Complete!",
+  "assessmentExit": "Exit Assessment",
+  "assessmentPaletteTitle": "Question Palette",
+  "assessmentUnanswered": "Unanswered",
+  "assessmentBackToChapter": "Back to Chapter"
 }

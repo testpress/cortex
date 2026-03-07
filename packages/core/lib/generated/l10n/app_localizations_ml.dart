@@ -469,7 +469,7 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
-  String testQuestionXofY(Object index, Object total) {
+  String testQuestionXofY(int index, int total) {
     return 'ചോദ്യം $index / $total';
   }
 
@@ -585,4 +585,38 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get testViewAnalytics => 'അനലിറ്റിക്സ് കാണുക';
+
+  @override
+  String get assessmentCheckAnswer => 'ഉത്തരം പരിശോധിക്കുക';
+
+  @override
+  String get assessmentCorrect => 'ശരിയാണ്!';
+
+  @override
+  String get assessmentIncorrect => 'തീർത്തും ശരിയല്ല';
+
+  @override
+  String get assessmentTryAgain => 'വീണ്ടും ശ്രമിക്കുക';
+
+  @override
+  String get assessmentNext => 'അടുത്തത്';
+
+  @override
+  String get assessmentExplanation => 'വിശദീകരണം';
+
+  @override
+  String get assessmentPracticeComplete =>
+      'പ്രാക്ടീസ് അസസ്സ്മെന്റ് പൂർത്തിയായി!';
+
+  @override
+  String get assessmentExit => 'അസസ്സ്മെന്റിൽ നിന്ന് പുറത്തുകടക്കുക';
+
+  @override
+  String get assessmentPaletteTitle => 'ചോദ്യ പാലറ്റ്';
+
+  @override
+  String get assessmentUnanswered => 'ഉത്തരം നൽകിയിട്ടില്ല';
+
+  @override
+  String get assessmentBackToChapter => 'അധ്യായത്തിലേക്ക് മടങ്ങുക';
 }

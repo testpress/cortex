@@ -468,7 +468,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String testQuestionXofY(Object index, Object total) {
+  String testQuestionXofY(int index, int total) {
     return 'Question $index of $total';
   }
 
@@ -584,4 +584,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get testViewAnalytics => 'View Analytics';
+
+  @override
+  String get assessmentCheckAnswer => 'Check Answer';
+
+  @override
+  String get assessmentCorrect => 'Correct!';
+
+  @override
+  String get assessmentIncorrect => 'Not quite right';
+
+  @override
+  String get assessmentTryAgain => 'Try Again';
+
+  @override
+  String get assessmentNext => 'Next';
+
+  @override
+  String get assessmentExplanation => 'Explanation';
+
+  @override
+  String get assessmentPracticeComplete => 'Practice Assessment Complete!';
+
+  @override
+  String get assessmentExit => 'Exit Assessment';
+
+  @override
+  String get assessmentPaletteTitle => 'Question Palette';
+
+  @override
+  String get assessmentUnanswered => 'Unanswered';
+
+  @override
+  String get assessmentBackToChapter => 'Back to Chapter';
 }
