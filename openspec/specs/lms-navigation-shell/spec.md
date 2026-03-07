@@ -58,3 +58,13 @@ Each primary tab SHALL support its own stack of push/pop navigation without affe
 - **THEN** the system SHALL navigate to the route `/study/course/123/chapters` within the Study tab
 - **AND** the navigation shell MUST remain visible
 
+#### Scenario: Navigating from Profile to Notifications
+- **WHEN** the user selects "Notifications" from the Profile settings actions
+- **THEN** the system SHALL navigate to the Notifications settings route from within the Profile tab flow
+- **AND** the system MUST preserve the active shell/tab context while the Notifications screen is open
+
+#### Scenario: Returning from Notifications to Profile
+- **WHEN** the user triggers back navigation from the Notifications settings screen
+- **THEN** the system SHALL return to the previous Profile screen state
+- **AND** the system MUST NOT reset other tab navigation stacks
+
