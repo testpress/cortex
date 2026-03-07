@@ -28,6 +28,8 @@
   "course_6_description": "Optimize your Flutter apps for smooth 60fps performance on all devices.",
   "labelStart": "Start",
   "labelContinue": "Continue",
+  "labelRetry": "Retry",
+  "labelLoading": "Loading...",
   "labelProgress": "Progress",
   "labelResume": "Resume",
   "@labelResume": {
@@ -36,7 +38,7 @@
   "labelCourseProgress": "Course progress",
   "homeHeaderTitle": "BrightMinds Academy",
   "todayScheduleTitle": "Today's Schedule",
-  "viewAllAction": "View all >",
+  "viewAllAction": "View all",
   "nowAndNextSection": "NOW & NEXT",
   "deadlinesSection": "DEADLINES",
   "upcomingTestsSection": "UPCOMING TESTS",
@@ -54,6 +56,42 @@
   "shortcutAskDoubt": "Ask Doubt",
   "shortcutSchedule": "Schedule",
   "learningPerformanceTitle": "Learning Performance",
+  "profileLearningSnapshotTitle": "Your learning at a glance",
+  "profileActiveCoursesTitle": "Your active courses",
+  "profileRecentLearningTitle": "Your recent learning",
+  "profileAccountSettingsTitle": "Account & preferences",
+  "profileEditProfile": "Edit Profile",
+  "profileNotifications": "Notifications",
+  "profileCertificates": "Your certificates",
+  "profileLogout": "Logout",
+  "activityStatusStarted": "Started",
+  "activityScoreLabel": "Score: {score}%",
+  "@activityScoreLabel": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "activityProgressLabel": "{progress}% watched so far",
+  "@activityProgressLabel": {
+    "placeholders": {
+      "progress": {
+        "type": "int"
+      }
+    }
+  },
+  "profileTabTitle": "Profile",
+  "profileMembershipLabel": "Learning with us since {date}",
+  "@profileMembershipLabel": {
+    "description": "Label showing when the user joined",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "August 2025"
+      }
+    }
+  },
   "latestActivityLabel": "Latest Activity",
   "streakMomentumLabel": "{days}-day momentum",
   "@streakMomentumLabel": {
@@ -148,6 +186,8 @@
   "filterTest": "Tests",
   "resumeStudyHeader": "Resume Study",
   "labelCompleted": "completed",
+  "errorGenericTitle": "Something went wrong",
+  "errorGenericMessage": "Failed to load data. Please check your connection and try again.",
   "labelLessonsPlural": "lessons",
   "curriculumBackButton": "Back",
   "curriculumChaptersCount": "{count} Chapters",

@@ -214,6 +214,18 @@ abstract class AppLocalizations {
   /// **'Continue'**
   String get labelContinue;
 
+  /// No description provided for @labelRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get labelRetry;
+
+  /// No description provided for @labelLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get labelLoading;
+
   /// No description provided for @labelProgress.
   ///
   /// In en, this message translates to:
@@ -247,7 +259,7 @@ abstract class AppLocalizations {
   /// No description provided for @viewAllAction.
   ///
   /// In en, this message translates to:
-  /// **'View all >'**
+  /// **'View all'**
   String get viewAllAction;
 
   /// No description provided for @nowAndNextSection.
@@ -351,6 +363,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Learning Performance'**
   String get learningPerformanceTitle;
+
+  /// No description provided for @profileLearningSnapshotTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your learning at a glance'**
+  String get profileLearningSnapshotTitle;
+
+  /// No description provided for @profileActiveCoursesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your active courses'**
+  String get profileActiveCoursesTitle;
+
+  /// No description provided for @profileRecentLearningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your recent learning'**
+  String get profileRecentLearningTitle;
+
+  /// No description provided for @profileAccountSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account & preferences'**
+  String get profileAccountSettingsTitle;
+
+  /// No description provided for @profileEditProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get profileEditProfile;
+
+  /// No description provided for @profileNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get profileNotifications;
+
+  /// No description provided for @profileCertificates.
+  ///
+  /// In en, this message translates to:
+  /// **'Your certificates'**
+  String get profileCertificates;
+
+  /// No description provided for @profileLogout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get profileLogout;
+
+  /// No description provided for @activityStatusStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Started'**
+  String get activityStatusStarted;
+
+  /// No description provided for @activityScoreLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Score: {score}%'**
+  String activityScoreLabel(int score);
+
+  /// No description provided for @activityProgressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{progress}% watched so far'**
+  String activityProgressLabel(int progress);
+
+  /// No description provided for @profileTabTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profileTabTitle;
+
+  /// Label showing when the user joined
+  ///
+  /// In en, this message translates to:
+  /// **'Learning with us since {date}'**
+  String profileMembershipLabel(String date);
 
   /// No description provided for @latestActivityLabel.
   ///
@@ -621,6 +711,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'completed'**
   String get labelCompleted;
+
+  /// No description provided for @errorGenericTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong'**
+  String get errorGenericTitle;
+
+  /// No description provided for @errorGenericMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load data. Please check your connection and try again.'**
+  String get errorGenericMessage;
 
   /// No description provided for @labelLessonsPlural.
   ///

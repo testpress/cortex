@@ -205,5 +205,79 @@ final quickShortcutsProvider =
 // ignore: unused_element
 typedef QuickShortcutsRef =
     AutoDisposeFutureProviderRef<List<QuickShortcutDto>>;
+String _$currentUserStatsHash() => r'adefd0f9d5e4b121c21d481b40dc09aab3bccd2f';
+
+/// See also [currentUserStats].
+@ProviderFor(currentUserStats)
+final currentUserStatsProvider =
+    AutoDisposeFutureProvider<StudyMomentumDto>.internal(
+      currentUserStats,
+      name: r'currentUserStatsProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$currentUserStatsHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef CurrentUserStatsRef = AutoDisposeFutureProviderRef<StudyMomentumDto>;
+String _$enrolledCoursesHash() => r'c73eb88af68241fadaaba196679a23df037cb2c7';
+
+/// See also [enrolledCourses].
+@ProviderFor(enrolledCourses)
+final enrolledCoursesProvider =
+    AutoDisposeFutureProvider<List<CourseDto>>.internal(
+      enrolledCourses,
+      name: r'enrolledCoursesProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$enrolledCoursesHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef EnrolledCoursesRef = AutoDisposeFutureProviderRef<List<CourseDto>>;
+String _$currentUserLearnerProfileHash() =>
+    r'32a79e6d7c7e4a157ed59aa0688e03954573c017';
+
+/// See also [currentUserLearnerProfile].
+@ProviderFor(currentUserLearnerProfile)
+final currentUserLearnerProfileProvider =
+    AutoDisposeFutureProvider<LearnerDto>.internal(
+      currentUserLearnerProfile,
+      name: r'currentUserLearnerProfileProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$currentUserLearnerProfileHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef CurrentUserLearnerProfileRef = AutoDisposeFutureProviderRef<LearnerDto>;
+String _$recentActivityHash() => r'1400704d0c7af6ba1986d2023bcb806b65c541b8';
+
+/// See also [recentActivity].
+@ProviderFor(recentActivity)
+final recentActivityProvider =
+    AutoDisposeFutureProvider<List<RecentActivityDto>>.internal(
+      recentActivity,
+      name: r'recentActivityProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$recentActivityHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef RecentActivityRef =
+    AutoDisposeFutureProviderRef<List<RecentActivityDto>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

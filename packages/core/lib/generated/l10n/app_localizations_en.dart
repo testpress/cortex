@@ -72,6 +72,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get labelContinue => 'Continue';
 
   @override
+  String get labelRetry => 'Retry';
+
+  @override
+  String get labelLoading => 'Loading...';
+
+  @override
   String get labelProgress => 'Progress';
 
   @override
@@ -87,7 +93,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todayScheduleTitle => 'Today\'s Schedule';
 
   @override
-  String get viewAllAction => 'View all >';
+  String get viewAllAction => 'View all';
 
   @override
   String get nowAndNextSection => 'NOW & NEXT';
@@ -139,6 +145,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get learningPerformanceTitle => 'Learning Performance';
+
+  @override
+  String get profileLearningSnapshotTitle => 'Your learning at a glance';
+
+  @override
+  String get profileActiveCoursesTitle => 'Your active courses';
+
+  @override
+  String get profileRecentLearningTitle => 'Your recent learning';
+
+  @override
+  String get profileAccountSettingsTitle => 'Account & preferences';
+
+  @override
+  String get profileEditProfile => 'Edit Profile';
+
+  @override
+  String get profileNotifications => 'Notifications';
+
+  @override
+  String get profileCertificates => 'Your certificates';
+
+  @override
+  String get profileLogout => 'Logout';
+
+  @override
+  String get activityStatusStarted => 'Started';
+
+  @override
+  String activityScoreLabel(int score) {
+    return 'Score: $score%';
+  }
+
+  @override
+  String activityProgressLabel(int progress) {
+    return '$progress% watched so far';
+  }
+
+  @override
+  String get profileTabTitle => 'Profile';
+
+  @override
+  String profileMembershipLabel(String date) {
+    return 'Learning with us since $date';
+  }
 
   @override
   String get latestActivityLabel => 'Latest Activity';
@@ -289,6 +340,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get labelCompleted => 'completed';
+
+  @override
+  String get errorGenericTitle => 'Something went wrong';
+
+  @override
+  String get errorGenericMessage =>
+      'Failed to load data. Please check your connection and try again.';
 
   @override
   String get labelLessonsPlural => 'lessons';
