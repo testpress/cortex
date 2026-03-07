@@ -210,6 +210,94 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profileLogout => 'تسجيل الخروج';
 
   @override
+  String get certificatesSubtitleAvailable =>
+      'اعرض وحمّل شهادات إكمال الدورات الخاصة بك';
+
+  @override
+  String get certificatesEmptyPaidNewDesc => 'لا توجد شهادات متاحة بعد';
+
+  @override
+  String get certificatesLockedBadge => 'أكمل الدورة لفتح الشهادة';
+
+  @override
+  String get certificatesUnlockedBadge => 'شهادة إكمال';
+
+  @override
+  String get certificatesCourseProgress => 'تقدم الدورة';
+
+  @override
+  String get certificatesKeepGoing => 'واصل التقدم لفتح شهادتك';
+
+  @override
+  String get certificatesContinueCourse => 'متابعة الدورة';
+
+  @override
+  String certificatesCompletedOn(String date) {
+    return 'اكتملت في $date';
+  }
+
+  @override
+  String get certificatesCertificateId => 'معرّف الشهادة';
+
+  @override
+  String get certificatesViewCertificate => 'عرض الشهادة';
+
+  @override
+  String get certificatesDownload => 'تنزيل';
+
+  @override
+  String get certificatesPreviewTitle => 'معاينة الشهادة';
+
+  @override
+  String get certificatesShareAchievementTitle => 'شارك إنجازك';
+
+  @override
+  String get certificatesShareAchievementDescription =>
+      'قم بتنزيل هذه الشهادة أو مشاركتها لإبراز إنجازك';
+
+  @override
+  String get certificatesShare => 'مشاركة';
+
+  @override
+  String get certificatesHelpText =>
+      'هذه الشهادة موقعة رقميًا ويمكن التحقق منها باستخدام معرّف الشهادة';
+
+  @override
+  String get certificatesCertificateOfCompletion => 'شهادة إكمال';
+
+  @override
+  String get certificatesCertifyLine => 'نشهد بأن';
+
+  @override
+  String get certificatesCompletedCourseLine => 'قد أكمل بنجاح الدورة';
+
+  @override
+  String certificatesAwardedOn(String date) {
+    return 'مُنحت في $date';
+  }
+
+  @override
+  String get certificatesVerified => 'موثّقة';
+
+  @override
+  String get certificatesSignerOneName => 'د. راجيش كومار';
+
+  @override
+  String get certificatesSignerOneRole => 'المدير الأكاديمي';
+
+  @override
+  String get certificatesSignerTwoName => 'أ. بريا شارما';
+
+  @override
+  String get certificatesSignerTwoRole => 'مدرّسة المقرر';
+
+  @override
+  String get certificatesInstituteName => 'أكاديمية التميّز';
+
+  @override
+  String get certificatesInstituteTagline => 'نُمكّن الطلاب من تحقيق أحلامهم';
+
+  @override
   String get activityStatusStarted => 'بدأت';
 
   @override

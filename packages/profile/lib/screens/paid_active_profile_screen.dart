@@ -11,9 +11,14 @@ import '../widgets/paid_active_recent_activity_section.dart';
 import '../widgets/paid_active_account_preferences_section.dart';
 
 class ProfilePage extends ConsumerWidget {
-  const ProfilePage({super.key, this.onOpenNotifications});
+  const ProfilePage({
+    super.key,
+    this.onOpenNotifications,
+    this.onOpenCertificates,
+  });
 
   final VoidCallback? onOpenNotifications;
+  final VoidCallback? onOpenCertificates;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -94,6 +99,9 @@ class ProfilePage extends ConsumerWidget {
                   onNotificationsTap:
                       onOpenNotifications ??
                       () => context.pushNamed('profile-notifications'),
+                  onCertificatesTap:
+                      onOpenCertificates ??
+                      () => context.pushNamed('profile-certificates'),
                 ),
 
                 SizedBox(height: design.spacing.xxl),

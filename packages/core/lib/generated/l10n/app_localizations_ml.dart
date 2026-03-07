@@ -211,6 +211,99 @@ class AppLocalizationsMl extends AppLocalizations {
   String get profileLogout => 'ലോഗൗട്ട്';
 
   @override
+  String get certificatesSubtitleAvailable =>
+      'നിങ്ങളുടെ കോഴ്‌സ് പൂർത്തീകരണ സർട്ടിഫിക്കറ്റുകൾ കാണുകയും ഡൗൺലോഡ് ചെയ്യുകയും ചെയ്യുക';
+
+  @override
+  String get certificatesEmptyPaidNewDesc =>
+      'ഇപ്പോൾ സർട്ടിഫിക്കറ്റുകൾ ഒന്നുമില്ല';
+
+  @override
+  String get certificatesLockedBadge =>
+      'അൺലോക്ക് ചെയ്യാൻ കോഴ്‌സ് പൂർത്തിയാക്കുക';
+
+  @override
+  String get certificatesUnlockedBadge => 'പൂർത്തീകരണ സർട്ടിഫിക്കറ്റ്';
+
+  @override
+  String get certificatesCourseProgress => 'കോഴ്‌സ് പുരോഗതി';
+
+  @override
+  String get certificatesKeepGoing => 'സർട്ടിഫിക്കറ്റ് അൺലോക്ക് ചെയ്യാൻ തുടരുക';
+
+  @override
+  String get certificatesContinueCourse => 'കോഴ്‌സ് തുടരുക';
+
+  @override
+  String certificatesCompletedOn(String date) {
+    return '$date ന് പൂർത്തിയായി';
+  }
+
+  @override
+  String get certificatesCertificateId => 'സർട്ടിഫിക്കറ്റ് ഐഡി';
+
+  @override
+  String get certificatesViewCertificate => 'സർട്ടിഫിക്കറ്റ് കാണുക';
+
+  @override
+  String get certificatesDownload => 'ഡൗൺലോഡ്';
+
+  @override
+  String get certificatesPreviewTitle => 'സർട്ടിഫിക്കറ്റ് പ്രിവ്യൂ';
+
+  @override
+  String get certificatesShareAchievementTitle => 'നിങ്ങളുടെ നേട്ടം പങ്കിടുക';
+
+  @override
+  String get certificatesShareAchievementDescription =>
+      'നിങ്ങളുടെ നേട്ടം കാണിക്കാൻ ഈ സർട്ടിഫിക്കറ്റ് ഡൗൺലോഡ് ചെയ്യുകയോ പങ്കിടുകയോ ചെയ്യുക';
+
+  @override
+  String get certificatesShare => 'പങ്കിടുക';
+
+  @override
+  String get certificatesHelpText =>
+      'ഈ സർട്ടിഫിക്കറ്റ് ഡിജിറ്റലായി ഒപ്പിട്ടതാണ്; സർട്ടിഫിക്കറ്റ് ഐഡി ഉപയോഗിച്ച് പരിശോധിക്കാം';
+
+  @override
+  String get certificatesCertificateOfCompletion =>
+      'പൂർത്തീകരണ സർട്ടിഫിക്കറ്റ്';
+
+  @override
+  String get certificatesCertifyLine => 'ഇതിലൂടെ സാക്ഷ്യപ്പെടുത്തുന്നത്';
+
+  @override
+  String get certificatesCompletedCourseLine =>
+      'ഈ കോഴ്‌സ് വിജയകരമായി പൂർത്തിയാക്കിയിരിക്കുന്നു';
+
+  @override
+  String certificatesAwardedOn(String date) {
+    return '$date ന് നൽകി';
+  }
+
+  @override
+  String get certificatesVerified => 'സ്ഥിരീകരിച്ചത്';
+
+  @override
+  String get certificatesSignerOneName => 'ഡോ. രാജേഷ് കുമാർ';
+
+  @override
+  String get certificatesSignerOneRole => 'അക്കാദമിക് ഡയറക്ടർ';
+
+  @override
+  String get certificatesSignerTwoName => 'പ്രൊഫ്. പ്രിയ ശർമ്മ';
+
+  @override
+  String get certificatesSignerTwoRole => 'കോഴ്‌സ് ഇൻസ്ട്രക്ടർ';
+
+  @override
+  String get certificatesInstituteName => 'എക്സലൻസ് അക്കാദമി';
+
+  @override
+  String get certificatesInstituteTagline =>
+      'വിദ്യാർത്ഥികൾക്ക് അവരുടെ സ്വപ്നങ്ങൾ കൈവരിക്കാൻ ശക്തി നൽകുന്നു';
+
+  @override
   String get activityStatusStarted => 'തുടങ്ങി';
 
   @override

@@ -209,6 +209,96 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileLogout => 'Logout';
 
   @override
+  String get certificatesSubtitleAvailable =>
+      'View and download your course completion certificates';
+
+  @override
+  String get certificatesEmptyPaidNewDesc => 'No certificates available yet';
+
+  @override
+  String get certificatesLockedBadge => 'COMPLETE COURSE TO UNLOCK';
+
+  @override
+  String get certificatesUnlockedBadge => 'CERTIFICATE OF COMPLETION';
+
+  @override
+  String get certificatesCourseProgress => 'Course progress';
+
+  @override
+  String get certificatesKeepGoing => 'Keep going to unlock your certificate';
+
+  @override
+  String get certificatesContinueCourse => 'Continue Course';
+
+  @override
+  String certificatesCompletedOn(String date) {
+    return 'Completed on $date';
+  }
+
+  @override
+  String get certificatesCertificateId => 'Certificate ID';
+
+  @override
+  String get certificatesViewCertificate => 'View Certificate';
+
+  @override
+  String get certificatesDownload => 'Download';
+
+  @override
+  String get certificatesPreviewTitle => 'Certificate Preview';
+
+  @override
+  String get certificatesShareAchievementTitle => 'Share your achievement';
+
+  @override
+  String get certificatesShareAchievementDescription =>
+      'Download or share this certificate to showcase your accomplishment';
+
+  @override
+  String get certificatesShare => 'Share';
+
+  @override
+  String get certificatesHelpText =>
+      'This certificate is digitally signed and can be verified using the certificate ID';
+
+  @override
+  String get certificatesCertificateOfCompletion => 'Certificate of Completion';
+
+  @override
+  String get certificatesCertifyLine => 'This is to certify that';
+
+  @override
+  String get certificatesCompletedCourseLine =>
+      'has successfully completed the course';
+
+  @override
+  String certificatesAwardedOn(String date) {
+    return 'Awarded on $date';
+  }
+
+  @override
+  String get certificatesVerified => 'Verified';
+
+  @override
+  String get certificatesSignerOneName => 'Dr. Rajesh Kumar';
+
+  @override
+  String get certificatesSignerOneRole => 'Academic Director';
+
+  @override
+  String get certificatesSignerTwoName => 'Prof. Priya Sharma';
+
+  @override
+  String get certificatesSignerTwoRole => 'Course Instructor';
+
+  @override
+  String get certificatesInstituteName => 'Excellence Academy';
+
+  @override
+  String get certificatesInstituteTagline =>
+      'Empowering students to achieve their dreams';
+
+  @override
   String get activityStatusStarted => 'Started';
 
   @override
