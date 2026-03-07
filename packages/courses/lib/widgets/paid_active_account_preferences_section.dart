@@ -2,9 +2,14 @@ import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 
 class AccountPreferencesSection extends StatelessWidget {
-  const AccountPreferencesSection({super.key, this.onNotificationsTap});
+  const AccountPreferencesSection({
+    super.key,
+    this.onNotificationsTap,
+    this.onCertificatesTap,
+  });
 
   final VoidCallback? onNotificationsTap;
+  final VoidCallback? onCertificatesTap;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +52,7 @@ class AccountPreferencesSection extends StatelessWidget {
                   icon: LucideIcons.download,
                   label: l10n.profileCertificates,
                   iconColor: design.colors.success,
-                  onTap: () {},
+                  onTap: onCertificatesTap ?? () {},
                 ),
                 _Divider(),
                 _PreferenceItem(

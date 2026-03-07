@@ -249,6 +249,45 @@ final GoRouter appRouter = GoRouter(
                     return NotificationsScreen(onBack: () => context.pop());
                   },
                 ),
+                GoRoute(
+                  name: 'profile-certificates',
+                  path: 'certificates',
+                  builder: (context, state) {
+                    return CertificatesScreen(
+                      onBack: () => context.pop(),
+                      onOpenPreview: (certificate) {
+                        context.pushNamed(
+                          'profile-certificate-preview',
+                          extra: certificate,
+                        );
+                      },
+                    );
+                  },
+                  routes: [
+                    GoRoute(
+                      name: 'profile-certificate-preview',
+                      path: 'preview',
+                      builder: (context, state) {
+                        final certificate = state.extra as CourseCertificate?;
+                        if (certificate == null) {
+                          return CertificatesScreen(
+                            onBack: () => context.pop(),
+                            onOpenPreview: (certificate) {
+                              context.pushNamed(
+                                'profile-certificate-preview',
+                                extra: certificate,
+                              );
+                            },
+                          );
+                        }
+                        return CertificatePreviewScreen(
+                          certificate: certificate,
+                          onClose: () => context.pop(),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ],
             ),
           ],
