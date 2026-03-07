@@ -53,29 +53,24 @@ class QuestionPalette extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.all(design.spacing.lg),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            AppText.headline(
-                              l10n.testPaletteTitle,
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              AppText.headline(l10n.testPaletteTitle),
+                              SizedBox(height: design.spacing.xs),
+                              AppText.caption(
+                                l10n.testPaletteAnsweredCount(
+                                  answeredCount,
+                                  questions.length,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: design.spacing.xs),
-                            AppText.caption(
-                              l10n.testPaletteAnsweredCount(
-                                answeredCount,
-                                questions.length,
-                              ),
-                              color: design.colors.textSecondary,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
+                        SizedBox(width: design.spacing.md),
                         GestureDetector(
                           onTap: onClose,
                           child: Icon(
@@ -126,19 +121,19 @@ class QuestionPalette extends StatelessWidget {
     Widget shape;
 
     if (isSelected && isMarked) {
-      shape = HexagonShape(
+      shape = SquareShape(
         size: baseSize,
-        color: design.colors.success,
+        color: design.colors.accent1,
         child: _buildNumber(index, design.colors.textInverse),
       );
     } else if (isMarked) {
-      shape = DiamondShape(
-        size: baseSize / 1.414,
+      shape = SquareShape(
+        size: baseSize,
         color: design.colors.accent3,
         child: _buildNumber(index, design.colors.textInverse),
       );
     } else if (isSelected) {
-      shape = CircleShape(
+      shape = SquareShape(
         size: baseSize,
         color: design.colors.success,
         child: _buildNumber(index, design.colors.textInverse),
@@ -186,7 +181,7 @@ class QuestionPalette extends StatelessWidget {
               SizedBox(width: design.spacing.md),
               _buildLegendItem(
                 design,
-                CircleShape(color: design.colors.success, size: 18),
+                SquareShape(color: design.colors.success, size: 18),
                 l10n.testStatusAnswered,
               ),
             ],
@@ -196,13 +191,13 @@ class QuestionPalette extends StatelessWidget {
             children: [
               _buildLegendItem(
                 design,
-                DiamondShape(color: design.colors.accent3, size: 18),
+                SquareShape(color: design.colors.accent3, size: 18),
                 l10n.testStatusMarked,
               ),
               SizedBox(width: design.spacing.md),
               _buildLegendItem(
                 design,
-                HexagonShape(color: design.colors.success, size: 18),
+                SquareShape(color: design.colors.accent1, size: 18),
                 l10n.testStatusAnsweredMarked,
               ),
             ],
@@ -218,10 +213,14 @@ class QuestionPalette extends StatelessWidget {
         children: [
           SizedBox(width: 24, height: 24, child: Center(child: shape)),
           const SizedBox(width: 8),
-          AppText.caption(
-            label,
-            color: design.colors.textSecondary,
-            style: const TextStyle(fontSize: 12),
+          Expanded(
+            child: AppText.caption(
+              label,
+              color: design.colors.textSecondary,
+              style: const TextStyle(fontSize: 12),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ],
       ),

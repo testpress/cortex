@@ -159,5 +159,31 @@
   "testStatusMarked": "تم وضع علامة",
   "testStatusAnsweredMarked": "تمت الإجابة والمراجعة",
   "testAttemptXofY": "المحاولة {index} من {total}",
-  "testSelectAllApply": "اختر كل ما ينطبق"
+  "testSelectAllApply": "اختر كل ما ينطبق",
+  "testSubmitConfirmationTitle": "هل تريد تسليم الاختبار؟",
+  "testSubmitConfirmationBody": "لقد أجبت على {answered} من أصل {total} سؤالاً.",
+  "@testSubmitConfirmationBody": {
+    "placeholders": {
+      "answered": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "testSubmitConfirmationUnanswered": "{count, plural, =0{تمت الإجابة على جميع الأسئلة} =1{بقي سؤال واحد بدون إجابة} =2{بقي سؤالان بدون إجابة} other{بقي {count} أسئلة بدون إجابة}}",
+  "@testSubmitConfirmationUnanswered": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "labelCancel": "إلغاء",
+  "labelSubmitNow": "تسليم الآن",
+  "testSubmittedTitle": "تم تسليم الاختبار!",
+  "testSubmittedBody": "لقد تم تسليم اختبارك بنجاح. راجع إجاباتك أو اعرض التحليلات التفصيلية.",
+  "testReviewAnswers": "مراجعة الإجابات",
+  "testViewAnalytics": "عرض التحليلات"
 }

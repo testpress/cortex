@@ -545,4 +545,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get testSelectAllApply => 'Select all that apply';
+
+  @override
+  String get testSubmitConfirmationTitle => 'Submit Test?';
+
+  @override
+  String testSubmitConfirmationBody(int answered, int total) {
+    return 'You have answered $answered out of $total questions.';
+  }
+
+  @override
+  String testSubmitConfirmationUnanswered(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count questions remain unanswered',
+      one: '1 question remains unanswered',
+      zero: 'All questions answered',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get labelCancel => 'Cancel';
+
+  @override
+  String get labelSubmitNow => 'Submit Now';
+
+  @override
+  String get testSubmittedTitle => 'Test Submitted!';
+
+  @override
+  String get testSubmittedBody =>
+      'Your test has been successfully submitted. Review your answers or view detailed analytics.';
+
+  @override
+  String get testReviewAnswers => 'Review Answers';
+
+  @override
+  String get testViewAnalytics => 'View Analytics';
 }

@@ -544,4 +544,44 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get testSelectAllApply => 'اختر كل ما ينطبق';
+
+  @override
+  String get testSubmitConfirmationTitle => 'هل تريد تسليم الاختبار؟';
+
+  @override
+  String testSubmitConfirmationBody(int answered, int total) {
+    return 'لقد أجبت على $answered من أصل $total سؤالاً.';
+  }
+
+  @override
+  String testSubmitConfirmationUnanswered(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'بقي $count أسئلة بدون إجابة',
+      two: 'بقي سؤالان بدون إجابة',
+      one: 'بقي سؤال واحد بدون إجابة',
+      zero: 'تمت الإجابة على جميع الأسئلة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get labelCancel => 'إلغاء';
+
+  @override
+  String get labelSubmitNow => 'تسليم الآن';
+
+  @override
+  String get testSubmittedTitle => 'تم تسليم الاختبار!';
+
+  @override
+  String get testSubmittedBody =>
+      'لقد تم تسليم اختبارك بنجاح. راجع إجاباتك أو اعرض التحليلات التفصيلية.';
+
+  @override
+  String get testReviewAnswers => 'مراجعة الإجابات';
+
+  @override
+  String get testViewAnalytics => 'عرض التحليلات';
 }

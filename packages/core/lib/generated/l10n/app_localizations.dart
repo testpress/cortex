@@ -1064,6 +1064,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select all that apply'**
   String get testSelectAllApply;
+
+  /// No description provided for @testSubmitConfirmationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Test?'**
+  String get testSubmitConfirmationTitle;
+
+  /// No description provided for @testSubmitConfirmationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You have answered {answered} out of {total} questions.'**
+  String testSubmitConfirmationBody(int answered, int total);
+
+  /// No description provided for @testSubmitConfirmationUnanswered.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{All questions answered} =1{1 question remains unanswered} other{{count} questions remain unanswered}}'**
+  String testSubmitConfirmationUnanswered(int count);
+
+  /// No description provided for @labelCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get labelCancel;
+
+  /// No description provided for @labelSubmitNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Now'**
+  String get labelSubmitNow;
+
+  /// No description provided for @testSubmittedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Submitted!'**
+  String get testSubmittedTitle;
+
+  /// No description provided for @testSubmittedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your test has been successfully submitted. Review your answers or view detailed analytics.'**
+  String get testSubmittedBody;
+
+  /// No description provided for @testReviewAnswers.
+  ///
+  /// In en, this message translates to:
+  /// **'Review Answers'**
+  String get testReviewAnswers;
+
+  /// No description provided for @testViewAnalytics.
+  ///
+  /// In en, this message translates to:
+  /// **'View Analytics'**
+  String get testViewAnalytics;
 }
 
 class _AppLocalizationsDelegate

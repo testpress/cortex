@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import 'package:flutter/material.dart' show FontWeight, Colors;
+import 'package:flutter/material.dart' show FontWeight;
 import '../../models/test_model.dart';
 
 class OptionCard extends StatelessWidget {
@@ -31,7 +31,7 @@ class OptionCard extends StatelessWidget {
         margin: EdgeInsets.only(bottom: design.spacing.md),
         padding: EdgeInsets.symmetric(
           horizontal: design.spacing.md,
-          vertical: design.spacing.md,
+          vertical: design.spacing.sm,
         ),
         decoration: BoxDecoration(
           color: bgColor,
@@ -63,8 +63,8 @@ class OptionCard extends StatelessWidget {
         width: 20,
         height: 20,
         decoration: BoxDecoration(
-          color: isSelected ? selectionColor : Colors.transparent,
-          borderRadius: BorderRadius.circular(4),
+          color: isSelected ? selectionColor : const Color(0x00000000),
+          borderRadius: BorderRadius.circular(design.radius.sm),
           border: Border.all(
             color: isSelected ? selectionColor : design.colors.border,
             width: 2,

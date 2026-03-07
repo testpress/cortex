@@ -33,11 +33,18 @@ class CircleShape extends StatelessWidget {
 }
 
 class SquareShape extends StatelessWidget {
+  final Color? color;
   final Color? borderColor;
   final Widget? child;
   final double? size;
 
-  const SquareShape({super.key, this.borderColor, this.child, this.size});
+  const SquareShape({
+    super.key,
+    this.color,
+    this.borderColor,
+    this.child,
+    this.size,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +52,7 @@ class SquareShape extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: null,
+        color: color,
         borderRadius: BorderRadius.circular(8),
         border: borderColor != null
             ? Border.all(color: borderColor!, width: 1.5)
