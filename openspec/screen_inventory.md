@@ -127,9 +127,9 @@ Each screen = one OpenSpec change. Priority is based on user journey criticality
 | # | Change Name | Screen(s) | Notes | Status |
 |---|---|---|---|---|
 | 11 | `lms-test-detail` | TestDetailScreen | Test overview, rules, start button | ✅ Done |
-| 11.1 | `lms-test-detail-refinement` | — | Refine submission flow (dialogs/overlays) and UI density | ⏳ Pending |
-| 12 | `lms-assessment-detail` | AssessmentDetailScreen | MCQ test flow with timer | ⏳ Pending |
-| 13 | `lms-exam-review` | ExamReviewScreen | Post-test score summary | ⏳ Pending |
+| 11.1 | `lms-test-detail-refinement` | — | Refine submission flow (dialogs/overlays) and UI density | ✅ Done |
+| 12 | `lms-assessment-detail` | AssessmentDetailScreen | MCQ test flow with timer | ✅ Done |
+| 13 | `lms-exam-review` | ExamReviewScreen | Post-test score summary | ✅ Done |
 | 14 | `lms-review-analytics` | ReviewAnalyticsScreen | Charts: subject-wise, time-spent | ⏳ Pending |
 | 15 | `lms-review-answer-detail` | ReviewAnswerDetailScreen | Per-question review with explanation | ⏳ Pending |
 
@@ -149,10 +149,10 @@ Each screen = one OpenSpec change. Priority is based on user journey criticality
 ### Phase 6 — Profile, Analytics & Settings
 | # | Change Name | Screen(s) | Notes | Status |
 |---|---|---|---|---|
-| 21 | `lms-profile-paid-active` | ProfilePage | Full profile with stats, badges, courses | ⏳ Pending |
+| 21 | `lms-profile-paid-active` | ProfilePage | Full profile with stats, badges, courses | ✅ Done |
 | 22 | `lms-insights` | InsightsScreen + OverallPerformance + SubjectWise | Analytics screens | ⏳ Pending |
 | 23 | `lms-certificates` | CertificatesScreen + CertificatePreview | Certificate PDFs | ⏳ Pending |
-| 24 | `lms-notifications` | NotificationsScreen | Alert list | ⏳ Pending |
+| 24 | `lms-notifications` | NotificationsScreen | Alert list | ✅ Done |
 | 25 | `lms-settings` | AppSettingsScreen + EditProfileScreen | Settings, edit profile | ⏳ Pending |
 | 26 | `lms-study-tips` | StudyTipsDetailScreen | Article-style study tip reader | ⏳ Pending |
 
