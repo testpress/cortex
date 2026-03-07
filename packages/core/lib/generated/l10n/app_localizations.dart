@@ -478,6 +478,132 @@ abstract class AppLocalizations {
   /// **'Logout'**
   String get profileLogout;
 
+  /// No description provided for @certificatesSubtitleAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'View and download your course completion certificates'**
+  String get certificatesSubtitleAvailable;
+
+  /// No description provided for @certificatesEmptyPaidNewDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'No certificates available yet'**
+  String get certificatesEmptyPaidNewDesc;
+
+  /// No description provided for @certificatesLockedBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'COMPLETE COURSE TO UNLOCK'**
+  String get certificatesLockedBadge;
+
+  /// No description provided for @certificatesUnlockedBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'CERTIFICATE OF COMPLETION'**
+  String get certificatesUnlockedBadge;
+
+  /// No description provided for @certificatesCourseProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Course progress'**
+  String get certificatesCourseProgress;
+
+  /// No description provided for @certificatesKeepGoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep going to unlock your certificate'**
+  String get certificatesKeepGoing;
+
+  /// No description provided for @certificatesContinueCourse.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue Course'**
+  String get certificatesContinueCourse;
+
+  /// No description provided for @certificatesCompletedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed on {date}'**
+  String certificatesCompletedOn(String date);
+
+  /// No description provided for @certificatesCertificateId.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate ID'**
+  String get certificatesCertificateId;
+
+  /// No description provided for @certificatesViewCertificate.
+  ///
+  /// In en, this message translates to:
+  /// **'View Certificate'**
+  String get certificatesViewCertificate;
+
+  /// No description provided for @certificatesDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get certificatesDownload;
+
+  /// No description provided for @certificatesPreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate Preview'**
+  String get certificatesPreviewTitle;
+
+  /// No description provided for @certificatesShareAchievementTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your achievement'**
+  String get certificatesShareAchievementTitle;
+
+  /// No description provided for @certificatesShareAchievementDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Download or share this certificate to showcase your accomplishment'**
+  String get certificatesShareAchievementDescription;
+
+  /// No description provided for @certificatesShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get certificatesShare;
+
+  /// No description provided for @certificatesHelpText.
+  ///
+  /// In en, this message translates to:
+  /// **'This certificate is digitally signed and can be verified using the certificate ID'**
+  String get certificatesHelpText;
+
+  /// No description provided for @certificatesCertificateOfCompletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate of Completion'**
+  String get certificatesCertificateOfCompletion;
+
+  /// No description provided for @certificatesCertifyLine.
+  ///
+  /// In en, this message translates to:
+  /// **'This is to certify that'**
+  String get certificatesCertifyLine;
+
+  /// No description provided for @certificatesCompletedCourseLine.
+  ///
+  /// In en, this message translates to:
+  /// **'has successfully completed the course'**
+  String get certificatesCompletedCourseLine;
+
+  /// No description provided for @certificatesAwardedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Awarded on {date}'**
+  String certificatesAwardedOn(String date);
+
+  /// No description provided for @certificatesVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified'**
+  String get certificatesVerified;
+
   /// No description provided for @activityStatusStarted.
   ///
   /// In en, this message translates to:
@@ -595,7 +721,7 @@ abstract class AppLocalizations {
   /// No description provided for @testTypeLabel.
   ///
   /// In en, this message translates to:
-  /// **'{type} TEST'**
+  /// **'{type} Test'**
   String testTypeLabel(String type);
 
   /// No description provided for @coursesCompletedLabel.
@@ -801,6 +927,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back'**
   String get curriculumBackButton;
+
+  /// No description provided for @commonCloseButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get commonCloseButton;
 
   /// No description provided for @curriculumChaptersCount.
   ///

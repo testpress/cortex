@@ -75,6 +75,41 @@
   "notificationsStateOff": "Off",
   "profileCertificates": "Your certificates",
   "profileLogout": "Logout",
+  "certificatesSubtitleAvailable": "View and download your course completion certificates",
+  "certificatesEmptyPaidNewDesc": "No certificates available yet",
+  "certificatesLockedBadge": "COMPLETE COURSE TO UNLOCK",
+  "certificatesUnlockedBadge": "CERTIFICATE OF COMPLETION",
+  "certificatesCourseProgress": "Course progress",
+  "certificatesKeepGoing": "Keep going to unlock your certificate",
+  "certificatesContinueCourse": "Continue Course",
+  "certificatesCompletedOn": "Completed on {date}",
+  "@certificatesCompletedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "certificatesCertificateId": "Certificate ID",
+  "certificatesViewCertificate": "View Certificate",
+  "certificatesDownload": "Download",
+  "certificatesPreviewTitle": "Certificate Preview",
+  "certificatesShareAchievementTitle": "Share your achievement",
+  "certificatesShareAchievementDescription": "Download or share this certificate to showcase your accomplishment",
+  "certificatesShare": "Share",
+  "certificatesHelpText": "This certificate is digitally signed and can be verified using the certificate ID",
+  "certificatesCertificateOfCompletion": "Certificate of Completion",
+  "certificatesCertifyLine": "This is to certify that",
+  "certificatesCompletedCourseLine": "has successfully completed the course",
+  "certificatesAwardedOn": "Awarded on {date}",
+  "@certificatesAwardedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "certificatesVerified": "Verified",
   "activityStatusStarted": "Started",
   "activityScoreLabel": "Score: {score}%",
   "@activityScoreLabel": {
@@ -201,6 +236,7 @@
   "errorGenericMessage": "Failed to load data. Please check your connection and try again.",
   "labelLessonsPlural": "lessons",
   "curriculumBackButton": "Back",
+  "commonCloseButton": "Close",
   "curriculumChaptersCount": "{count} Chapters",
   "@curriculumChaptersCount": {
     "placeholders": {
