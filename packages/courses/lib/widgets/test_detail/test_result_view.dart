@@ -82,13 +82,17 @@ class TestResultView extends StatelessWidget {
                     padding: EdgeInsets.symmetric(vertical: design.spacing.sm),
                     decoration: BoxDecoration(
                       color: design.colors.primary,
+                      border: Border.all(color: design.colors.primary),
                       borderRadius: BorderRadius.circular(design.radius.md),
                     ),
                     child: Center(
                       child: AppText.body(
                         l10n.testReviewAnswers,
                         color: design.colors.onPrimary,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          height: 1.0,
+                        ),
                       ),
                     ),
                   ),
@@ -108,7 +112,10 @@ class TestResultView extends StatelessWidget {
                       child: AppText.body(
                         l10n.testViewAnalytics,
                         color: design.colors.textPrimary,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          height: 1.0,
+                        ),
                       ),
                     ),
                   ),
