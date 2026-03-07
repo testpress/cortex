@@ -713,4 +713,155 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get assessmentBackToChapter => 'العودة إلى الفصل';
+
+  @override
+  String get examReviewTitle => 'مراجعة الامتحان';
+
+  @override
+  String get examReviewFilterWrong => 'خطأ';
+
+  @override
+  String get examReviewFilterCorrect => 'صحيح';
+
+  @override
+  String get examReviewFilterUnanswered => 'غير مجاب عليه';
+
+  @override
+  String get examReviewCorrectAnswerLabel => 'الإجابة الصحيحة:';
+
+  @override
+  String get examReviewYourAnswerLabel => 'إجابتك:';
+
+  @override
+  String get examReviewFilterAnswered => 'تمت الإجابة عليه';
+
+  @override
+  String get labelAskDoubt => 'اسأل سؤال';
+
+  @override
+  String get labelComment => 'تعليق';
+
+  @override
+  String get labelReport => 'إبلاغ';
+
+  @override
+  String get labelOverallSummary => 'الملخص العام';
+
+  @override
+  String get labelFilter => 'تصفية:';
+
+  @override
+  String get labelAccuracy => 'الدقة';
+
+  @override
+  String get labelScore => 'النتيجة';
+
+  @override
+  String get labelTimeTaken => 'الوقت المستغرق';
+
+  @override
+  String get labelPercentile => 'المئوية';
+
+  @override
+  String get labelRank => 'الترتيب';
+
+  @override
+  String get labelPerformance => 'الأداء';
+
+  @override
+  String get labelSubject => 'المادة';
+
+  @override
+  String get labelAttempted => 'تمت المحاولة';
+
+  @override
+  String get labelTotalQuestions => 'إجمالي الأسئلة';
+
+  @override
+  String get performanceExcellent => 'ممتاز';
+
+  @override
+  String get performanceGood => 'جيد';
+
+  @override
+  String get performanceAverage => 'متوسط';
+
+  @override
+  String get performancePoor => 'ضعيف';
+
+  @override
+  String get recommendationHigh => 'عالٍ';
+
+  @override
+  String get recommendationMedium => 'متوسط';
+
+  @override
+  String get recommendationLow => 'منخفض';
+
+  @override
+  String get reviewAskDoubtTitle => 'اسأل سؤالاً';
+
+  @override
+  String get reviewSubmitDoubt => 'إرسال السؤال';
+
+  @override
+  String get reviewAddCommentTitle => 'إضافة تعليق';
+
+  @override
+  String get reviewPostComment => 'نشر التعليق';
+
+  @override
+  String get reviewReportIssueTitle => 'الإبلاغ عن مشكلة';
+
+  @override
+  String get reviewSubmitReport => 'إرسال البلاغ';
+
+  @override
+  String reviewReportIssueWithQuestion(int number) {
+    return 'الإبلاغ عن مشكلة في السؤال $number';
+  }
+
+  @override
+  String get reviewDescribeDoubtHint => 'صف سؤالك هنا...';
+
+  @override
+  String get reviewWriteCommentHint => 'اكتب تعليقك...';
+
+  @override
+  String get reviewReportOptionIncorrect => 'الإجابة غير الصحيحة محددة كصحيحة';
+
+  @override
+  String get reviewReportOptionUnclear => 'السؤال غير واضح';
+
+  @override
+  String get reviewReportOptionWrongExplanation => 'الشرح خاطئ';
+
+  @override
+  String get reviewReportOptionOther => 'مشكلة أخرى';
+
+  @override
+  String get reviewReportDetailsHint => 'تفاصيل إضافية (اختياري)...';
+
+  @override
+  String reviewShareThoughtsOnQuestion(int number) {
+    return 'شارك أفكارك حول السؤال $number';
+  }
+
+  @override
+  String reviewQuestionLabel(String number) {
+    return 'سؤال $number';
+  }
+
+  @override
+  String get reviewEmptyStateMessage => 'لم يتم العثور على أسئلة لهذا الفلتر.';
+
+  @override
+  String reviewAnswersTitle(String title) {
+    return 'مراجعة الإجابات - $title';
+  }
+
+  @override
+  String reviewQuestionCount(int current, int total) {
+    return '$current من $total';
+  }
 }

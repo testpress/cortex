@@ -388,5 +388,83 @@
   "assessmentExit": "Exit Assessment",
   "assessmentPaletteTitle": "Question Palette",
   "assessmentUnanswered": "Unanswered",
-  "assessmentBackToChapter": "Back to Chapter"
+  "assessmentBackToChapter": "Back to Chapter",
+  "examReviewTitle": "Exam Review",
+  "examReviewFilterWrong": "Wrong",
+  "examReviewFilterCorrect": "Correct",
+  "examReviewFilterUnanswered": "Unanswered",
+  "examReviewCorrectAnswerLabel": "Correct Answer:",
+  "examReviewYourAnswerLabel": "Your Answer:",
+  "examReviewFilterAnswered": "Answered",
+  "labelAskDoubt": "Ask Doubt",
+  "labelComment": "Comment",
+  "labelReport": "Report",
+  "labelOverallSummary": "Overall Summary",
+  "labelFilter": "Filter:",
+
+  "labelAccuracy": "Accuracy",
+  "labelScore": "Score",
+  "labelTimeTaken": "Time Taken",
+  "labelPercentile": "Percentile",
+  "labelRank": "Rank",
+  "labelPerformance": "Performance",
+  "labelSubject": "Subject",
+  "labelAttempted": "Attempted",
+  "labelTotalQuestions": "Total Questions",
+  "performanceExcellent": "Excellent",
+  "performanceGood": "Good",
+  "performanceAverage": "Average",
+  "performancePoor": "Poor",
+  "recommendationHigh": "High",
+  "recommendationMedium": "Medium",
+  "recommendationLow": "Low",
+  "reviewAskDoubtTitle": "Ask a Doubt",
+  "reviewSubmitDoubt": "Submit Doubt",
+  "reviewAddCommentTitle": "Add Comment",
+  "reviewPostComment": "Post Comment",
+  "reviewReportIssueTitle": "Report Issue",
+  "reviewSubmitReport": "Submit Report",
+  "reviewReportIssueWithQuestion": "Report an issue with Question {number}",
+  "@reviewReportIssueWithQuestion": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewDescribeDoubtHint": "Describe your doubt here...",
+  "reviewWriteCommentHint": "Write your comment...",
+  "reviewReportOptionIncorrect": "Incorrect answer marked as correct",
+  "reviewReportOptionUnclear": "Question is unclear",
+  "reviewReportOptionWrongExplanation": "Explanation is wrong",
+  "reviewReportOptionOther": "Other issue",
+  "reviewReportDetailsHint": "Additional details (optional)...",
+  "reviewShareThoughtsOnQuestion": "Share your thoughts on Question {number}",
+  "@reviewShareThoughtsOnQuestion": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewQuestionLabel": "Question {number}",
+  "@reviewQuestionLabel": {
+    "placeholders": {
+      "number": { "type": "String" }
+    }
+  },
+  "reviewEmptyStateMessage": "No questions found for this filter.",
+  "reviewAnswersTitle": "Review Answers - {title}",
+  "@reviewAnswersTitle": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "reviewQuestionCount": "{current} of {total}",
+  "@reviewQuestionCount": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  }
 }

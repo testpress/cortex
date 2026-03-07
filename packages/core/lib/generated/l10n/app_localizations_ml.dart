@@ -716,4 +716,156 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get assessmentBackToChapter => 'അധ്യായത്തിലേക്ക് മടങ്ങുക';
+
+  @override
+  String get examReviewTitle => 'പരീക്ഷാ അവലോകനം';
+
+  @override
+  String get examReviewFilterWrong => 'തെറ്റായവ';
+
+  @override
+  String get examReviewFilterCorrect => 'ശരിയായവ';
+
+  @override
+  String get examReviewFilterUnanswered => 'ഉത്തരം നൽകിയിട്ടില്ലാത്തവ';
+
+  @override
+  String get examReviewCorrectAnswerLabel => 'ശരിയായ ഉത്തരം:';
+
+  @override
+  String get examReviewYourAnswerLabel => 'നിങ്ങളുടെ ഉത്തരം:';
+
+  @override
+  String get examReviewFilterAnswered => 'ഉത്തരം നൽകിയവ';
+
+  @override
+  String get labelAskDoubt => 'സംശയം ചോദിക്കുക';
+
+  @override
+  String get labelComment => 'അഭിപ്രായം';
+
+  @override
+  String get labelReport => 'റിപ്പോർട്ട്';
+
+  @override
+  String get labelOverallSummary => 'മൊത്തത്തിലുള്ള സംഗ്രഹം';
+
+  @override
+  String get labelFilter => 'ഫിൽട്ടർ:';
+
+  @override
+  String get labelAccuracy => 'കൃത്യത';
+
+  @override
+  String get labelScore => 'സ്കോർ';
+
+  @override
+  String get labelTimeTaken => 'എടുത്ത സമയം';
+
+  @override
+  String get labelPercentile => 'പെർസന്റൈൽ';
+
+  @override
+  String get labelRank => 'റാങ്ക്';
+
+  @override
+  String get labelPerformance => 'പ്രകടനം';
+
+  @override
+  String get labelSubject => 'വിഷയം';
+
+  @override
+  String get labelAttempted => 'ഉത്തരം നൽകിയവ';
+
+  @override
+  String get labelTotalQuestions => 'ആകെ ചോദ്യങ്ങൾ';
+
+  @override
+  String get performanceExcellent => 'മികച്ചത്';
+
+  @override
+  String get performanceGood => 'നല്ലത്';
+
+  @override
+  String get performanceAverage => 'ശരാശരി';
+
+  @override
+  String get performancePoor => 'മോശം';
+
+  @override
+  String get recommendationHigh => 'ഉയർന്നത്';
+
+  @override
+  String get recommendationMedium => 'ഇടത്തരം';
+
+  @override
+  String get recommendationLow => 'കുറഞ്ഞത്';
+
+  @override
+  String get reviewAskDoubtTitle => 'ഒരു സംശയം ചോദിക്കുക';
+
+  @override
+  String get reviewSubmitDoubt => 'സംശയം സമർപ്പിക്കുക';
+
+  @override
+  String get reviewAddCommentTitle => 'അഭിപ്രായം ചേർക്കുക';
+
+  @override
+  String get reviewPostComment => 'അഭിപ്രായം പോസ്റ്റ് ചെയ്യുക';
+
+  @override
+  String get reviewReportIssueTitle => 'പ്രശ്നം റിപ്പോർട്ട് ചെയ്യുക';
+
+  @override
+  String get reviewSubmitReport => 'റിപ്പോർട്ട് സമർപ്പിക്കുക';
+
+  @override
+  String reviewReportIssueWithQuestion(int number) {
+    return 'ചോദ്യം $number-ലെ പ്രശ്നം റിപ്പോർട്ട് ചെയ്യുക';
+  }
+
+  @override
+  String get reviewDescribeDoubtHint => 'നിങ്ങളുടെ സംശയം ഇവിടെ വിവരിക്കുക...';
+
+  @override
+  String get reviewWriteCommentHint => 'നിങ്ങളുടെ അഭിപ്രായം എഴുതുക...';
+
+  @override
+  String get reviewReportOptionIncorrect =>
+      'തെറ്റായ ഉത്തരം ശരിയായി രേഖപ്പെടുത്തി';
+
+  @override
+  String get reviewReportOptionUnclear => 'ചോദ്യം വ്യക്തമല്ല';
+
+  @override
+  String get reviewReportOptionWrongExplanation => 'വിശദീകരണം തെറ്റാണ്';
+
+  @override
+  String get reviewReportOptionOther => 'മറ്റ് പ്രശ്നങ്ങൾ';
+
+  @override
+  String get reviewReportDetailsHint => 'കൂടുതൽ വിവരങ്ങൾ (ഓപ്ഷണൽ)...';
+
+  @override
+  String reviewShareThoughtsOnQuestion(int number) {
+    return 'ചോദ്യം $number-നെ കുറിച്ചുള്ള അഭിപ്രായം പങ്കുവെക്കുക';
+  }
+
+  @override
+  String reviewQuestionLabel(String number) {
+    return 'ചോദ്യം $number';
+  }
+
+  @override
+  String get reviewEmptyStateMessage => 'ഈ ഫിൽട്ടറിൽ ചോദ്യങ്ങളൊന്നും ലഭ്യമല്ല.';
+
+  @override
+  String reviewAnswersTitle(String title) {
+    return 'ഉത്തരങ്ങൾ പരിശോധിക്കുക - $title';
+  }
+
+  @override
+  String reviewQuestionCount(int current, int total) {
+    return '$total-ൽ $current';
+  }
 }

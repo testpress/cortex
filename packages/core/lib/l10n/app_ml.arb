@@ -224,5 +224,82 @@
   "assessmentExit": "അസസ്സ്മെന്റിൽ നിന്ന് പുറത്തുകടക്കുക",
   "assessmentPaletteTitle": "ചോദ്യ പാലറ്റ്",
   "assessmentUnanswered": "ഉത്തരം നൽകിയിട്ടില്ല",
-  "assessmentBackToChapter": "അധ്യായത്തിലേക്ക് മടങ്ങുക"
+  "assessmentBackToChapter": "അധ്യായത്തിലേക്ക് മടങ്ങുക",
+  "examReviewTitle": "പരീക്ഷാ അവലോകനം",
+  "examReviewFilterWrong": "തെറ്റായവ",
+  "examReviewFilterCorrect": "ശരിയായവ",
+  "examReviewFilterUnanswered": "ഉത്തരം നൽകിയിട്ടില്ലാത്തവ",
+  "examReviewCorrectAnswerLabel": "ശരിയായ ഉത്തരം:",
+  "examReviewYourAnswerLabel": "നിങ്ങളുടെ ഉത്തരം:",
+  "examReviewFilterAnswered": "ഉത്തരം നൽകിയവ",
+  "labelAskDoubt": "സംശയം ചോദിക്കുക",
+  "labelComment": "അഭിപ്രായം",
+  "labelReport": "റിപ്പോർട്ട്",
+  "labelOverallSummary": "മൊത്തത്തിലുള്ള സംഗ്രഹം",
+  "labelFilter": "ഫിൽട്ടർ:",
+  "labelAccuracy": "കൃത്യത",
+  "labelScore": "സ്കോർ",
+  "labelTimeTaken": "എടുത്ത സമയം",
+  "labelPercentile": "പെർസന്റൈൽ",
+  "labelRank": "റാങ്ക്",
+  "labelPerformance": "പ്രകടനം",
+  "labelSubject": "വിഷയം",
+  "labelAttempted": "ഉത്തരം നൽകിയവ",
+  "labelTotalQuestions": "ആകെ ചോദ്യങ്ങൾ",
+  "performanceExcellent": "മികച്ചത്",
+  "performanceGood": "നല്ലത്",
+  "performanceAverage": "ശരാശരി",
+  "performancePoor": "മോശം",
+  "recommendationHigh": "ഉയർന്നത്",
+  "recommendationMedium": "ഇടത്തരം",
+  "recommendationLow": "കുറഞ്ഞത്",
+  "reviewAskDoubtTitle": "ഒരു സംശയം ചോദിക്കുക",
+  "reviewSubmitDoubt": "സംശയം സമർപ്പിക്കുക",
+  "reviewAddCommentTitle": "അഭിപ്രായം ചേർക്കുക",
+  "reviewPostComment": "അഭിപ്രായം പോസ്റ്റ് ചെയ്യുക",
+  "reviewReportIssueTitle": "പ്രശ്നം റിപ്പോർട്ട് ചെയ്യുക",
+  "reviewSubmitReport": "റിപ്പോർട്ട് സമർപ്പിക്കുക",
+  "reviewReportIssueWithQuestion": "ചോദ്യം {number}-ലെ പ്രശ്നം റിപ്പോർട്ട് ചെയ്യുക",
+  "@reviewReportIssueWithQuestion": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewDescribeDoubtHint": "നിങ്ങളുടെ സംശയം ഇവിടെ വിവരിക്കുക...",
+  "reviewWriteCommentHint": "നിങ്ങളുടെ അഭിപ്രായം എഴുതുക...",
+  "reviewReportOptionIncorrect": "തെറ്റായ ഉത്തരം ശരിയായി രേഖപ്പെടുത്തി",
+  "reviewReportOptionUnclear": "ചോദ്യം വ്യക്തമല്ല",
+  "reviewReportOptionWrongExplanation": "വിശദീകരണം തെറ്റാണ്",
+  "reviewReportOptionOther": "മറ്റ് പ്രശ്നങ്ങൾ",
+  "reviewReportDetailsHint": "കൂടുതൽ വിവരങ്ങൾ (ഓപ്ഷണൽ)...",
+  "reviewShareThoughtsOnQuestion": "ചോദ്യം {number}-നെ കുറിച്ചുള്ള അഭിപ്രായം പങ്കുവെക്കുക",
+  "@reviewShareThoughtsOnQuestion": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewQuestionLabel": "ചോദ്യം {number}",
+  "@reviewQuestionLabel": {
+    "placeholders": {
+      "number": { "type": "String" }
+    }
+  },
+  "reviewEmptyStateMessage": "ഈ ഫിൽട്ടറിൽ ചോദ്യങ്ങളൊന്നും ലഭ്യമല്ല.",
+  "reviewAnswersTitle": "ഉത്തരങ്ങൾ പരിശോധിക്കുക - {title}",
+  "@reviewAnswersTitle": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "reviewQuestionCount": "{total}-ൽ {current}",
+  "@reviewQuestionCount": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  }
 }
