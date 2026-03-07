@@ -184,7 +184,8 @@ class AppLocalizationsMl extends AppLocalizations {
       'വരാനിരിക്കുന്ന ടെസ്റ്റുകൾക്കും അവസാന തീയതികൾക്കും ഓർമ്മപ്പെടുത്തലുകൾ';
 
   @override
-  String get notificationsAnnouncementsUpdates => 'പ്രഖ്യാപനങ്ങളും അപ്ഡേറ്റുകളും';
+  String get notificationsAnnouncementsUpdates =>
+      'പ്രഖ്യാപനങ്ങളും അപ്ഡേറ്റുകളും';
 
   @override
   String get notificationsAnnouncementsUpdatesDesc =>
@@ -282,25 +283,6 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get certificatesVerified => 'സ്ഥിരീകരിച്ചത്';
-
-  @override
-  String get certificatesSignerOneName => 'ഡോ. രാജേഷ് കുമാർ';
-
-  @override
-  String get certificatesSignerOneRole => 'അക്കാദമിക് ഡയറക്ടർ';
-
-  @override
-  String get certificatesSignerTwoName => 'പ്രൊഫ്. പ്രിയ ശർമ്മ';
-
-  @override
-  String get certificatesSignerTwoRole => 'കോഴ്‌സ് ഇൻസ്ട്രക്ടർ';
-
-  @override
-  String get certificatesInstituteName => 'എക്സലൻസ് അക്കാദമി';
-
-  @override
-  String get certificatesInstituteTagline =>
-      'വിദ്യാർത്ഥികൾക്ക് അവരുടെ സ്വപ്നങ്ങൾ കൈവരിക്കാൻ ശക്തി നൽകുന്നു';
 
   @override
   String get activityStatusStarted => 'തുടങ്ങി';

@@ -354,23 +354,15 @@ class _CertificatePreviewCard extends StatelessWidget {
                       children: [
                         Expanded(
                           child: _SignatureBlock(
-                            name:
-                                certificate.signerOneName ??
-                                l10n.certificatesSignerOneName,
-                            role:
-                                certificate.signerOneRole ??
-                                l10n.certificatesSignerOneRole,
+                            name: certificate.signerOneName ?? '',
+                            role: certificate.signerOneRole ?? '',
                           ),
                         ),
                         SizedBox(width: design.spacing.md),
                         Expanded(
                           child: _SignatureBlock(
-                            name:
-                                certificate.signerTwoName ??
-                                l10n.certificatesSignerTwoName,
-                            role:
-                                certificate.signerTwoRole ??
-                                l10n.certificatesSignerTwoRole,
+                            name: certificate.signerTwoName ?? '',
+                            role: certificate.signerTwoRole ?? '',
                           ),
                         ),
                       ],
@@ -459,8 +451,7 @@ class _CertificatePreviewCard extends StatelessWidget {
                             ),
                             SizedBox(width: design.spacing.xs),
                             AppText.label(
-                              certificate.instituteName ??
-                                  l10n.certificatesInstituteName,
+                              certificate.instituteName ?? '',
                               style: const TextStyle(
                                 fontWeight: FontWeight.w700,
                               ),
@@ -469,8 +460,7 @@ class _CertificatePreviewCard extends StatelessWidget {
                         ),
                         SizedBox(height: design.spacing.xs / 2),
                         AppText.caption(
-                          certificate.instituteTagline ??
-                              l10n.certificatesInstituteTagline,
+                          certificate.instituteTagline ?? '',
                           color: design.colors.textSecondary,
                           textAlign: TextAlign.center,
                         ),

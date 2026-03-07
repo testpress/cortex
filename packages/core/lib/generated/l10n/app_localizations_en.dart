@@ -176,8 +176,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Get notified before your live classes start';
 
   @override
-  String get notificationsTestAssessmentAlerts =>
-      'Test and assessment alerts';
+  String get notificationsTestAssessmentAlerts => 'Test and assessment alerts';
 
   @override
   String get notificationsTestAssessmentAlertsDesc =>
@@ -281,25 +280,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get certificatesVerified => 'Verified';
 
   @override
-  String get certificatesSignerOneName => 'Dr. Rajesh Kumar';
-
-  @override
-  String get certificatesSignerOneRole => 'Academic Director';
-
-  @override
-  String get certificatesSignerTwoName => 'Prof. Priya Sharma';
-
-  @override
-  String get certificatesSignerTwoRole => 'Course Instructor';
-
-  @override
-  String get certificatesInstituteName => 'Excellence Academy';
-
-  @override
-  String get certificatesInstituteTagline =>
-      'Empowering students to achieve their dreams';
-
-  @override
   String get activityStatusStarted => 'Started';
 
   @override
@@ -369,7 +349,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String testTypeLabel(String type) {
-    return '$type TEST';
+    return '$type Test';
   }
 
   @override
