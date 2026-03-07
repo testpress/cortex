@@ -47,7 +47,7 @@ class Assignment {
 }
 
 @immutable
-class Test {
+class ScheduledTest {
   final String id;
   final String title;
   final String time;
@@ -55,7 +55,7 @@ class Test {
   final TestType? type;
   final bool isImportant;
 
-  const Test({
+  const ScheduledTest({
     required this.id,
     required this.title,
     required this.time,

@@ -5,7 +5,7 @@ import 'shared.dart';
 
 class TestCard extends StatelessWidget {
   const TestCard({super.key, required this.item});
-  final Test item;
+  final ScheduledTest item;
 
   @override
   Widget build(BuildContext context) {

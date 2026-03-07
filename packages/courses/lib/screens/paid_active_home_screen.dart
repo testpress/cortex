@@ -251,8 +251,8 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     );
   }
 
-  Test _mapTest(dto.TestDto d) {
-    return Test(
+  ScheduledTest _mapTest(dto.TestDto d) {
+    return ScheduledTest(
       id: d.id,
       title: d.title,
       time: d.time,
