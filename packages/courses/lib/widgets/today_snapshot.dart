@@ -20,7 +20,7 @@ class TodaySnapshot extends StatelessWidget {
 
   final List<ClassItem> classes;
   final List<Assignment> assignments;
-  final List<Test> tests;
+  final List<ScheduledTest> tests;
 
   @override
   Widget build(BuildContext context) {
