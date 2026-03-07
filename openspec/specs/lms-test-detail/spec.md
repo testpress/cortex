@@ -40,9 +40,9 @@ The system SHALL provide a "Question Palette" for global navigation across all q
 - **WHEN** the user views the palette
 - **THEN** the system SHALL distinguish question states using the following shapes:
   - **Not Answered**: Empty Square Border.
-  - **Answered**: Solid Green Circle.
-  - **Marked for Review**: Solid Orange Diamond.
-  - **Answered & Marked**: Solid Green Hexagon.
+  - **Answered**: Solid Green Square.
+  - **Marked for Review**: Solid Orange Square.
+  - **Answered & Marked**: Solid Purple Square.
 
 ### Requirement: Answer Selection
 The system SHALL allow selecting options without revealing the correct answer during the test.
@@ -55,9 +55,43 @@ The system SHALL allow selecting options without revealing the correct answer du
 - **WHEN** the question type is 'multiple-select'
 - **THEN** the user SHALL be able to select multiple options concurrently.
 
+### Requirement: Test Submission Confirmation
+The system SHALL provide a confirmation step before a test is finalized.
+
+#### Scenario: Finish Request
+- **WHEN** the user selects "Finish" on the test screen
+- **THEN** the system SHALL display the `SubmitConfirmationDialog` as an overlay.
+- **AND** it SHALL show the total count of answered and unanswered questions.
+
+#### Scenario: Cancellation
+- **WHEN** the user cancels the confirmation dialog
+- **THEN** the system SHALL return the user to the active test question without submitting.
+
+### Requirement: Success Overlay
+The system SHALL display a submission success message using an overlay pattern.
+
+#### Scenario: Successful Submission
+- **WHEN** the user confirms the submission
+- **THEN** the system SHALL display the `TestResultView` as an overlay.
+- **AND** the background test UI SHALL remain visible but dimmed to preserve context.
+- **AND** the system SHALL provide actions for "Review Answers" and "View Analytics".
+
+### Requirement: UI Density & Sizing
+The test interface components SHALL adhere to a refined, high-density layout.
+
+#### Scenario: Overlay Scaling
+- **WHEN** viewing submission overlays
+- **THEN** they SHALL have a maximum width of 400px.
+- **AND** they SHALL use scaled-down icons (24px) and headlines (20px) to maximize screen space.
+
+#### Scenario: Content Sizing
+- **WHEN** viewing questions and options
+- **THEN** `OptionCard` SHALL use a 14px font size for text to improve readability in long lists.
+- **AND** vertical padding SHALL be prioritized at `spacing.sm` for action elements.
+
 ### Requirement: Final Submission & Summary
 The system SHALL calculate the final results ONLY after the test is completed.
 
 #### Scenario: Finishing the test
-- **WHEN** the user clicks "Finish"
-- **THEN** the system SHALL stop the timer, calculate the percentage score, and display the "Test Completed" view with the correct answer count.
+- **WHEN** the user clicks "Finish" and confirms
+- **THEN** the system SHALL stop the timer, calculate the percentage score, and display the "Success Overlay" with the results.
