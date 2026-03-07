@@ -144,6 +144,7 @@
   "errorGenericMessage": "فشل تحميل البيانات. يرجى التحقق من الاتصال والمحاولة مرة أخرى.",
   "labelLessonsPlural": "دروس",
   "curriculumBackButton": "عودة",
+  "commonCloseButton": "إغلاق",
   "curriculumChaptersCount": "{count} فصول",
   "filterAll": "الكل",
   "curriculumLessonsLabel": "دروس",

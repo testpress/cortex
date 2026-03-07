@@ -480,6 +480,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get curriculumBackButton => 'عودة';
 
   @override
+  String get commonCloseButton => 'إغلاق';
+
+  @override
   String curriculumChaptersCount(int count) {
     return '$count فصول';
   }

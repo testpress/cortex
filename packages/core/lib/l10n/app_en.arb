@@ -242,6 +242,7 @@
   "errorGenericMessage": "Failed to load data. Please check your connection and try again.",
   "labelLessonsPlural": "lessons",
   "curriculumBackButton": "Back",
+  "commonCloseButton": "Close",
   "curriculumChaptersCount": "{count} Chapters",
   "@curriculumChaptersCount": {
     "placeholders": {

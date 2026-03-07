@@ -165,7 +165,7 @@ class _PreviewHeader extends StatelessWidget {
       child: Row(
         children: [
           AppSemantics.button(
-            label: l10n.curriculumBackButton,
+            label: l10n.commonCloseButton,
             onTap: onClose,
             child: AppFocusable(
               onTap: onClose,
@@ -249,7 +249,9 @@ class _CertificatePreviewCard extends StatelessWidget {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          design.subjectPalette.atIndex(2).accent,
+                          design.subjectPalette
+                              .atIndex(certificate.course.colorIndex)
+                              .accent,
                           design.colors.accent4,
                         ],
                       ),
@@ -352,15 +354,23 @@ class _CertificatePreviewCard extends StatelessWidget {
                       children: [
                         Expanded(
                           child: _SignatureBlock(
-                            name: l10n.certificatesSignerOneName,
-                            role: l10n.certificatesSignerOneRole,
+                            name:
+                                certificate.signerOneName ??
+                                l10n.certificatesSignerOneName,
+                            role:
+                                certificate.signerOneRole ??
+                                l10n.certificatesSignerOneRole,
                           ),
                         ),
                         SizedBox(width: design.spacing.md),
                         Expanded(
                           child: _SignatureBlock(
-                            name: l10n.certificatesSignerTwoName,
-                            role: l10n.certificatesSignerTwoRole,
+                            name:
+                                certificate.signerTwoName ??
+                                l10n.certificatesSignerTwoName,
+                            role:
+                                certificate.signerTwoRole ??
+                                l10n.certificatesSignerTwoRole,
                           ),
                         ),
                       ],
@@ -449,7 +459,8 @@ class _CertificatePreviewCard extends StatelessWidget {
                             ),
                             SizedBox(width: design.spacing.xs),
                             AppText.label(
-                              l10n.certificatesInstituteName,
+                              certificate.instituteName ??
+                                  l10n.certificatesInstituteName,
                               style: const TextStyle(
                                 fontWeight: FontWeight.w700,
                               ),
@@ -458,7 +469,8 @@ class _CertificatePreviewCard extends StatelessWidget {
                         ),
                         SizedBox(height: design.spacing.xs / 2),
                         AppText.caption(
-                          l10n.certificatesInstituteTagline,
+                          certificate.instituteTagline ??
+                              l10n.certificatesInstituteTagline,
                           color: design.colors.textSecondary,
                           textAlign: TextAlign.center,
                         ),
