@@ -110,12 +110,6 @@
     }
   },
   "certificatesVerified": "Verified",
-  "certificatesSignerOneName": "Dr. Rajesh Kumar",
-  "certificatesSignerOneRole": "Academic Director",
-  "certificatesSignerTwoName": "Prof. Priya Sharma",
-  "certificatesSignerTwoRole": "Course Instructor",
-  "certificatesInstituteName": "Excellence Academy",
-  "certificatesInstituteTagline": "Empowering students to achieve their dreams",
   "activityStatusStarted": "Started",
   "activityScoreLabel": "Score: {score}%",
   "@activityScoreLabel": {

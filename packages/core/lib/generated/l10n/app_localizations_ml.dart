@@ -285,25 +285,6 @@ class AppLocalizationsMl extends AppLocalizations {
   String get certificatesVerified => 'സ്ഥിരീകരിച്ചത്';
 
   @override
-  String get certificatesSignerOneName => 'ഡോ. രാജേഷ് കുമാർ';
-
-  @override
-  String get certificatesSignerOneRole => 'അക്കാദമിക് ഡയറക്ടർ';
-
-  @override
-  String get certificatesSignerTwoName => 'പ്രൊഫ്. പ്രിയ ശർമ്മ';
-
-  @override
-  String get certificatesSignerTwoRole => 'കോഴ്‌സ് ഇൻസ്ട്രക്ടർ';
-
-  @override
-  String get certificatesInstituteName => 'എക്സലൻസ് അക്കാദമി';
-
-  @override
-  String get certificatesInstituteTagline =>
-      'വിദ്യാർത്ഥികൾക്ക് അവരുടെ സ്വപ്നങ്ങൾ കൈവരിക്കാൻ ശക്തി നൽകുന്നു';
-
-  @override
   String get activityStatusStarted => 'തുടങ്ങി';
 
   @override

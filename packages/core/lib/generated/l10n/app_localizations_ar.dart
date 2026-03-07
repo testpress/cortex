@@ -280,24 +280,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get certificatesVerified => 'موثّقة';
 
   @override
-  String get certificatesSignerOneName => 'د. راجيش كومار';
-
-  @override
-  String get certificatesSignerOneRole => 'المدير الأكاديمي';
-
-  @override
-  String get certificatesSignerTwoName => 'أ. بريا شارما';
-
-  @override
-  String get certificatesSignerTwoRole => 'مدرّسة المقرر';
-
-  @override
-  String get certificatesInstituteName => 'أكاديمية التميّز';
-
-  @override
-  String get certificatesInstituteTagline => 'نُمكّن الطلاب من تحقيق أحلامهم';
-
-  @override
   String get activityStatusStarted => 'بدأت';
 
   @override

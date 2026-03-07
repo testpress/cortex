@@ -280,25 +280,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get certificatesVerified => 'Verified';
 
   @override
-  String get certificatesSignerOneName => 'Dr. Rajesh Kumar';
-
-  @override
-  String get certificatesSignerOneRole => 'Academic Director';
-
-  @override
-  String get certificatesSignerTwoName => 'Prof. Priya Sharma';
-
-  @override
-  String get certificatesSignerTwoRole => 'Course Instructor';
-
-  @override
-  String get certificatesInstituteName => 'Excellence Academy';
-
-  @override
-  String get certificatesInstituteTagline =>
-      'Empowering students to achieve their dreams';
-
-  @override
   String get activityStatusStarted => 'Started';
 
   @override

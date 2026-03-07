@@ -604,42 +604,6 @@ abstract class AppLocalizations {
   /// **'Verified'**
   String get certificatesVerified;
 
-  /// No description provided for @certificatesSignerOneName.
-  ///
-  /// In en, this message translates to:
-  /// **'Dr. Rajesh Kumar'**
-  String get certificatesSignerOneName;
-
-  /// No description provided for @certificatesSignerOneRole.
-  ///
-  /// In en, this message translates to:
-  /// **'Academic Director'**
-  String get certificatesSignerOneRole;
-
-  /// No description provided for @certificatesSignerTwoName.
-  ///
-  /// In en, this message translates to:
-  /// **'Prof. Priya Sharma'**
-  String get certificatesSignerTwoName;
-
-  /// No description provided for @certificatesSignerTwoRole.
-  ///
-  /// In en, this message translates to:
-  /// **'Course Instructor'**
-  String get certificatesSignerTwoRole;
-
-  /// No description provided for @certificatesInstituteName.
-  ///
-  /// In en, this message translates to:
-  /// **'Excellence Academy'**
-  String get certificatesInstituteName;
-
-  /// No description provided for @certificatesInstituteTagline.
-  ///
-  /// In en, this message translates to:
-  /// **'Empowering students to achieve their dreams'**
-  String get certificatesInstituteTagline;
-
   /// No description provided for @activityStatusStarted.
   ///
   /// In en, this message translates to:
