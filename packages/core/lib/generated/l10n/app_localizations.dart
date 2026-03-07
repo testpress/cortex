@@ -400,6 +400,72 @@ abstract class AppLocalizations {
   /// **'Notifications'**
   String get profileNotifications;
 
+  /// No description provided for @notificationsManagePreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your notification preferences'**
+  String get notificationsManagePreferences;
+
+  /// No description provided for @notificationsLiveClassReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Live class reminders'**
+  String get notificationsLiveClassReminders;
+
+  /// No description provided for @notificationsLiveClassRemindersDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Get notified before your live classes start'**
+  String get notificationsLiveClassRemindersDesc;
+
+  /// No description provided for @notificationsTestAssessmentAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Test and assessment alerts'**
+  String get notificationsTestAssessmentAlerts;
+
+  /// No description provided for @notificationsTestAssessmentAlertsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders for upcoming tests and deadlines'**
+  String get notificationsTestAssessmentAlertsDesc;
+
+  /// No description provided for @notificationsAnnouncementsUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Announcements and updates'**
+  String get notificationsAnnouncementsUpdates;
+
+  /// No description provided for @notificationsAnnouncementsUpdatesDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Important news and platform updates'**
+  String get notificationsAnnouncementsUpdatesDesc;
+
+  /// No description provided for @notificationsAchievementsBadges.
+  ///
+  /// In en, this message translates to:
+  /// **'Achievements and badges'**
+  String get notificationsAchievementsBadges;
+
+  /// No description provided for @notificationsAchievementsBadgesDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Celebrate when you earn achievements'**
+  String get notificationsAchievementsBadgesDesc;
+
+  /// No description provided for @notificationsStateOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get notificationsStateOn;
+
+  /// No description provided for @notificationsStateOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get notificationsStateOff;
+
   /// No description provided for @profileCertificates.
   ///
   /// In en, this message translates to:
