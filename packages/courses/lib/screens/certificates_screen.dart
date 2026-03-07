@@ -153,9 +153,7 @@ class _CertificateCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final unlockedHeaderStart = design.subjectPalette
-        .atIndex(certificate.course.colorIndex)
-        .accent;
+    final unlockedHeaderStart = design.colors.accent4.withValues(alpha: 0.8);
     final unlockedHeaderEnd = design.colors.accent4;
 
     return AppCard(
@@ -225,7 +223,12 @@ class _CertificateCard extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(design.spacing.md),
+              padding: EdgeInsets.fromLTRB(
+                design.spacing.md,
+                design.spacing.sm,
+                design.spacing.md,
+                design.spacing.md,
+              ),
               child: certificate.isLocked
                   ? _LockedCertificateDetails(
                       certificate: certificate,
@@ -349,25 +352,34 @@ class _UnlockedCertificateDetails extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: design.spacing.md),
+        SizedBox(height: design.spacing.sm),
         Container(
           width: double.infinity,
-          padding: EdgeInsets.all(design.spacing.sm),
+          padding: EdgeInsets.symmetric(
+            horizontal: design.spacing.md,
+            vertical: design.spacing.sm,
+          ),
           decoration: BoxDecoration(
-            color: design.colors.surfaceVariant,
+            color: design.colors.surface,
+            border: Border.all(color: design.colors.border),
             borderRadius: BorderRadius.circular(design.radius.md),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AppText.caption(
-                l10n.certificatesCertificateId,
+                l10n.certificatesCertificateId.toUpperCase(),
                 color: design.colors.textSecondary,
+                style: TextStyle(
+                  letterSpacing: design.spacing.xs / 2,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               SizedBox(height: design.spacing.xs / 2),
-              AppText.body(
+              AppText.subtitle(
                 certificate.certificateId ?? '-',
-                style: const TextStyle(fontWeight: FontWeight.w600),
+                color: design.colors.textPrimary,
+                style: const TextStyle(fontWeight: FontWeight.w700),
               ),
             ],
           ),
@@ -378,6 +390,7 @@ class _UnlockedCertificateDetails extends StatelessWidget {
             Expanded(
               child: AppButton.primary(
                 label: l10n.certificatesViewCertificate,
+                height: 44.0,
                 backgroundColor: design.colors.accent2,
                 onPressed: () => onOpenPreview(certificate),
               ),
@@ -390,16 +403,17 @@ class _UnlockedCertificateDetails extends StatelessWidget {
                 onTap: () => onDownloadCertificate?.call(certificate),
                 borderRadius: design.radius.button,
                 child: Container(
-                  width: design.spacing.xxl,
-                  height: design.spacing.xxl,
+                  width: 44.0,
+                  height: 44.0,
                   decoration: BoxDecoration(
-                    color: design.colors.surfaceVariant,
+                    color: design.colors.surface,
+                    border: Border.all(color: design.colors.border),
                     borderRadius: design.radius.button,
                   ),
                   alignment: Alignment.center,
                   child: Icon(
                     LucideIcons.download,
-                    size: design.iconSize.md,
+                    size: design.iconSize.sm,
                     color: design.colors.textSecondary,
                   ),
                 ),
