@@ -333,7 +333,7 @@ class TestCard extends StatelessWidget {
                   ],
                 ),
                 AppText.bodySmall(
-                  "${test.type.name.toUpperCase()} TEST",
+                  "${test.type.name.toUpperCase()} Test",
                   color: design.colors.textSecondary,
                 ),
                 SizedBox(height: design.spacing.sm),

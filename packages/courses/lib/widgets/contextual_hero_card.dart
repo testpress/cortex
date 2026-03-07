@@ -192,13 +192,11 @@ class _ContextualHeroCardState extends State<ContextualHeroCard>
 
     final List<Widget> items = [];
 
-    items.add(AppText.cardSubtitle(widget.action.metadata, color: metaColor));
+    items.add(AppText.caption(widget.action.metadata));
 
     if (widget.action.timeInfo != null) {
       items.add(_buildDot(context));
-      items.add(
-        AppText.cardSubtitle(widget.action.timeInfo!, color: metaColor),
-      );
+      items.add(AppText.caption(widget.action.timeInfo!));
     }
 
     if (widget.action.countdown != null) {

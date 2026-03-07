@@ -31,3 +31,4 @@ export 'providers/lesson_detail_provider.dart';
 export 'models/lesson_content.dart';
 export 'screens/test_detail_screen.dart';
 export 'screens/paid_active_profile_screen.dart';
+export 'screens/assessment_detail_screen.dart';

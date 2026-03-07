@@ -24,7 +24,6 @@ class AssignmentCard extends StatelessWidget {
           Expanded(
             child: AppText.cardCaption(
               '${item.subject} · Due ${item.dueTime}',
-              color: design.colors.textTertiary,
               overflow: TextOverflow.ellipsis,
             ),
           ),

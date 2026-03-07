@@ -2,6 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:core/core.dart';
 import '../../models/today_schedule.dart';
 
+extension StringExtension on String {
+  String toTitleCase() {
+    if (isEmpty) return this;
+    return split(' ')
+        .map((word) {
+          if (word.isEmpty) return word;
+          return '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}';
+        })
+        .join(' ');
+  }
+}
+
 class ContentIcon extends StatelessWidget {
   const ContentIcon({super.key, required this.status});
   final ClassStatus status;

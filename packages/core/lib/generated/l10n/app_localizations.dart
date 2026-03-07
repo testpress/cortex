@@ -1039,7 +1039,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Question {index} of {total}'**
-  String testQuestionXofY(Object index, Object total);
+  String testQuestionXofY(int index, int total);
 
   /// No description provided for @testSaved.
   ///
@@ -1166,6 +1166,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select all that apply'**
   String get testSelectAllApply;
+
+  /// No description provided for @testSubmitConfirmationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Test?'**
+  String get testSubmitConfirmationTitle;
+
+  /// No description provided for @testSubmitConfirmationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You have answered {answered} out of {total} questions.'**
+  String testSubmitConfirmationBody(int answered, int total);
+
+  /// No description provided for @testSubmitConfirmationUnanswered.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{All questions answered} =1{1 question remains unanswered} other{{count} questions remain unanswered}}'**
+  String testSubmitConfirmationUnanswered(int count);
+
+  /// No description provided for @labelCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get labelCancel;
+
+  /// No description provided for @labelSubmitNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Now'**
+  String get labelSubmitNow;
+
+  /// No description provided for @testSubmittedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Submitted!'**
+  String get testSubmittedTitle;
+
+  /// No description provided for @testSubmittedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your test has been successfully submitted. Review your answers or view detailed analytics.'**
+  String get testSubmittedBody;
+
+  /// No description provided for @testReviewAnswers.
+  ///
+  /// In en, this message translates to:
+  /// **'Review Answers'**
+  String get testReviewAnswers;
+
+  /// No description provided for @testViewAnalytics.
+  ///
+  /// In en, this message translates to:
+  /// **'View Analytics'**
+  String get testViewAnalytics;
+
+  /// No description provided for @assessmentCheckAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Check Answer'**
+  String get assessmentCheckAnswer;
+
+  /// No description provided for @assessmentCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct!'**
+  String get assessmentCorrect;
+
+  /// No description provided for @assessmentIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Not quite right'**
+  String get assessmentIncorrect;
+
+  /// No description provided for @assessmentTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
+  String get assessmentTryAgain;
+
+  /// No description provided for @assessmentNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get assessmentNext;
+
+  /// No description provided for @assessmentExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Explanation'**
+  String get assessmentExplanation;
+
+  /// No description provided for @assessmentPracticeComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice Assessment Complete!'**
+  String get assessmentPracticeComplete;
+
+  /// No description provided for @assessmentExit.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit Assessment'**
+  String get assessmentExit;
+
+  /// No description provided for @assessmentPaletteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Question Palette'**
+  String get assessmentPaletteTitle;
+
+  /// No description provided for @assessmentUnanswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Unanswered'**
+  String get assessmentUnanswered;
+
+  /// No description provided for @assessmentBackToChapter.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Chapter'**
+  String get assessmentBackToChapter;
 }
 
 class _AppLocalizationsDelegate
