@@ -100,7 +100,7 @@ class CertificatePreviewScreen extends StatelessWidget {
                     Expanded(
                       child: AppButton.primary(
                         label: l10n.certificatesDownload,
-                        height: design.spacing.xl + design.spacing.lg,
+                        height: 48.0,
                         backgroundColor: design.colors.accent2,
                         leading: Icon(
                           LucideIcons.download,
@@ -114,7 +114,7 @@ class CertificatePreviewScreen extends StatelessWidget {
                     Expanded(
                       child: AppButton.secondary(
                         label: l10n.certificatesShare,
-                        height: design.spacing.xl + design.spacing.lg,
+                        height: 48.0,
                         leading: Icon(
                           LucideIcons.share2,
                           size: design.iconSize.sm,
@@ -249,9 +249,7 @@ class _CertificatePreviewCard extends StatelessWidget {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          design.subjectPalette
-                              .atIndex(certificate.course.colorIndex)
-                              .accent,
+                          design.colors.accent4.withValues(alpha: 0.8),
                           design.colors.accent4,
                         ],
                       ),
@@ -328,12 +326,12 @@ class _CertificatePreviewCard extends StatelessWidget {
                     _awardedTextSpan(
                       awardedText: awardedText,
                       dateText: dateText,
-                      baseStyle: design.typography.body.copyWith(
+                      baseStyle: design.typography.subtitle.copyWith(
                         color: design.colors.textSecondary,
                       ),
-                      boldStyle: design.typography.body.copyWith(
+                      boldStyle: design.typography.subtitle.copyWith(
                         color: design.colors.textPrimary,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                     textAlign: TextAlign.center,
@@ -384,10 +382,11 @@ class _CertificatePreviewCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               AppText.caption(
-                                l10n.certificatesCertificateId,
+                                l10n.certificatesCertificateId.toUpperCase(),
                                 color: design.colors.textSecondary,
                                 style: TextStyle(
-                                  letterSpacing: design.spacing.xs / 4,
+                                  letterSpacing: design.spacing.xs / 2,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                               SizedBox(height: design.spacing.xs / 2),
@@ -407,8 +406,8 @@ class _CertificatePreviewCard extends StatelessWidget {
                           child: Row(
                             children: [
                               Container(
-                                width: design.spacing.xs,
-                                height: design.spacing.xs,
+                                width: design.spacing.sm,
+                                height: design.spacing.sm,
                                 decoration: BoxDecoration(
                                   color: design.colors.success,
                                   borderRadius: BorderRadius.circular(
@@ -535,9 +534,10 @@ class _SignatureBlock extends StatelessWidget {
           ),
         ),
         SizedBox(height: design.spacing.sm + design.spacing.xs / 2),
-        AppText.cardCaption(
+        AppText.subtitle(
           name,
-          style: const TextStyle(fontWeight: FontWeight.w600),
+          color: design.colors.textPrimary,
+          style: const TextStyle(fontWeight: FontWeight.w700),
           textAlign: TextAlign.center,
         ),
         SizedBox(height: design.spacing.xs),

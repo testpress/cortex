@@ -13,7 +13,7 @@ final List<CourseCertificate> _paidActiveCertificates = <CourseCertificate>[
     course: CourseDto(
       id: 'course-physics',
       title: 'JEE Main Physics - Complete Course',
-      colorIndex: 0,
+      colorIndex: 3,
       chapterCount: 24,
       totalDuration: '48h',
       progress: 100,
