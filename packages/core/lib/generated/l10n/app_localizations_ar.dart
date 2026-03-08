@@ -176,7 +176,8 @@ class AppLocalizationsAr extends AppLocalizations {
       'تلقي تنبيه قبل بدء الحصص المباشرة';
 
   @override
-  String get notificationsTestAssessmentAlerts => 'تنبيهات الاختبارات والتقييمات';
+  String get notificationsTestAssessmentAlerts =>
+      'تنبيهات الاختبارات والتقييمات';
 
   @override
   String get notificationsTestAssessmentAlertsDesc =>

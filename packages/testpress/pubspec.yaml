@@ -18,6 +18,8 @@ dependencies:
     path: ../courses
   exams:
     path: ../exams
+  profile:
+    path: ../profile
 
 dev_dependencies:
   flutter_test:

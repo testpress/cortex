@@ -32,6 +32,7 @@ export 'widgets/app_carousel.dart';
 export 'widgets/app_loading_indicator.dart';
 export 'widgets/app_drawer.dart';
 export 'widgets/app_error_view.dart';
+export 'widgets/dashboard_header.dart';
 
 // Shell
 export 'shell/app_shell.dart';

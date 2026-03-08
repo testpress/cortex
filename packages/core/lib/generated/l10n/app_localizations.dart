@@ -595,7 +595,7 @@ abstract class AppLocalizations {
   /// No description provided for @testTypeLabel.
   ///
   /// In en, this message translates to:
-  /// **'{type} TEST'**
+  /// **'{type} Test'**
   String testTypeLabel(String type);
 
   /// No description provided for @coursesCompletedLabel.

@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:core/core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:core/core.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:data/data.dart';
 import '../models/course.dart';
-import '../models/recent_activity_dto.dart';
 import '../data/mock_data.dart';
 import '../data/mock_courses.dart';
 
@@ -17,14 +17,12 @@ Future<String> appVersion(Ref ref) async {
 
 @riverpod
 Future<List<LiveClassDto>> todayClasses(Ref ref) async {
-  // Simulate API delay
   await Future.delayed(const Duration(milliseconds: 500));
   return mockTodayClasses;
 }
 
 @riverpod
 Future<List<AssignmentDto>> pendingAssignments(Ref ref) async {
-  // Simulate API delay
   await Future.delayed(const Duration(milliseconds: 600));
   return mockAssignments
       .where((a) => a.status != AssignmentStatus.submitted)
@@ -33,22 +31,8 @@ Future<List<AssignmentDto>> pendingAssignments(Ref ref) async {
 
 @riverpod
 Future<List<TestDto>> upcomingTests(Ref ref) async {
-  // Simulate API delay
   await Future.delayed(const Duration(milliseconds: 700));
   return mockTests;
-}
-
-@riverpod
-Future<StudyMomentumDto> studyMomentum(Ref ref) async {
-  // Simulate API delay
-  await Future.delayed(const Duration(milliseconds: 800));
-  return mockStudyMomentum;
-}
-
-@riverpod
-Future<UserDto> currentUser(Ref ref) async {
-  await Future.delayed(const Duration(milliseconds: 300));
-  return mockCurrentUser;
 }
 
 @riverpod
@@ -81,28 +65,5 @@ Future<List<QuickShortcutDto>> quickShortcuts(Ref ref) async {
   return mockQuickShortcuts;
 }
 
-@riverpod
-Future<StudyMomentumDto> currentUserStats(Ref ref) async {
-  return ref.watch(studyMomentumProvider.future);
-}
-
-@riverpod
-Future<List<CourseDto>> enrolledCourses(Ref ref) async {
-  return ref.watch(enrollmentProvider.future);
-}
-
-@riverpod
-Future<LearnerDto> currentUserLearnerProfile(Ref ref) async {
-  return mockOtherLearners.firstWhere((l) => l.name == 'You');
-}
-
-@riverpod
-Future<List<RecentActivityDto>> recentActivity(Ref ref) async {
-  await Future.delayed(const Duration(milliseconds: 400));
-  return mockRecentActivity;
-}
-
 final isHomeDrawerOpenProvider = StateProvider<bool>((ref) => false);
-final designModeProvider = StateProvider<DesignMode>(
-  (ref) => DesignMode.system,
-);
+

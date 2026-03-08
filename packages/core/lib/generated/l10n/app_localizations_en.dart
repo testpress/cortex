@@ -176,8 +176,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Get notified before your live classes start';
 
   @override
-  String get notificationsTestAssessmentAlerts =>
-      'Test and assessment alerts';
+  String get notificationsTestAssessmentAlerts => 'Test and assessment alerts';
 
   @override
   String get notificationsTestAssessmentAlertsDesc =>
@@ -279,7 +278,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String testTypeLabel(String type) {
-    return '$type TEST';
+    return '$type Test';
   }
 
   @override

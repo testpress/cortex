@@ -2,13 +2,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart' show Scaffold;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
-import '../providers/dashboard_providers.dart';
+import 'package:data/data.dart';
+import '../providers/profile_providers.dart';
 import '../widgets/paid_active_profile_header.dart';
 import '../widgets/paid_active_profile_snapshot.dart';
 import '../widgets/paid_active_enrolled_courses_section.dart';
 import '../widgets/paid_active_recent_activity_section.dart';
 import '../widgets/paid_active_account_preferences_section.dart';
-import '../widgets/dashboard_header.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key, this.onOpenNotifications});
@@ -19,10 +19,10 @@ class ProfilePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
 
-    final userAsync = ref.watch(currentUserProvider);
-    final statsAsync = ref.watch(currentUserStatsProvider);
-    final enrolledCoursesAsync = ref.watch(enrolledCoursesProvider);
-    final recentActivityAsync = ref.watch(recentActivityProvider);
+    final user = ref.watch(authProvider);
+    final statsAsync = ref.watch(studyMomentumProvider);
+    final enrolledCoursesAsync = ref.watch(enrollmentProvider);
+    final recentActivityAsync = ref.watch(profileRecentActivityProvider);
 
     final l10n = L10n.of(context);
 
@@ -38,17 +38,10 @@ class ProfilePage extends ConsumerWidget {
                 SizedBox(height: design.spacing.md),
 
                 // Profile Header Area
-                userAsync.when(
-                  data: (user) => ProfileHeader(
-                    name: user.name,
-                    avatarUrl: user.avatar,
-                    joinedDate: user.joinedDate,
-                  ),
-                  loading: () => const SizedBox(height: 200),
-                  error: (err, __) => AppErrorView(
-                    message: err.toString(),
-                    onRetry: () => ref.refresh(currentUserProvider),
-                  ),
+                ProfileHeader(
+                  name: user.name,
+                  avatarUrl: user.avatar,
+                  joinedDate: user.joinedDate,
                 ),
 
                 SizedBox(height: design.spacing.xl),
@@ -65,7 +58,7 @@ class ProfilePage extends ConsumerWidget {
                   loading: () => const SizedBox(height: 200),
                   error: (err, __) => AppErrorView(
                     message: err.toString(),
-                    onRetry: () => ref.refresh(currentUserStatsProvider),
+                    onRetry: () => ref.refresh(studyMomentumProvider),
                   ),
                 ),
 
@@ -77,7 +70,7 @@ class ProfilePage extends ConsumerWidget {
                   loading: () => const SizedBox(height: 150),
                   error: (err, __) => AppErrorView(
                     message: err.toString(),
-                    onRetry: () => ref.refresh(enrolledCoursesProvider),
+                    onRetry: () => ref.refresh(enrollmentProvider),
                   ),
                 ),
 
@@ -90,7 +83,7 @@ class ProfilePage extends ConsumerWidget {
                   loading: () => const SizedBox(height: 160),
                   error: (err, __) => AppErrorView(
                     message: err.toString(),
-                    onRetry: () => ref.refresh(recentActivityProvider),
+                    onRetry: () => ref.refresh(profileRecentActivityProvider),
                   ),
                 ),
 

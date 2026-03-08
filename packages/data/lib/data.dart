@@ -18,6 +18,7 @@ export 'models/user_dto.dart';
 export 'models/dashboard_banner_dto.dart';
 export 'models/learner_dto.dart';
 export 'models/quick_shortcut_dto.dart';
+export 'models/recent_activity_dto.dart';
 
 // Database
 export 'db/app_database.dart';
@@ -40,6 +41,8 @@ export 'providers/repository_providers.dart';
 export 'providers/course_list_provider.dart';
 export 'providers/enrollment_provider.dart';
 export 'providers/recent_activity_provider.dart';
+export 'providers/study_momentum_provider.dart';
 export 'providers/auth_provider.dart';
 export 'providers/initialization_provider.dart';
 export 'providers/lesson_providers.dart';
+export 'providers/design_mode_provider.dart';

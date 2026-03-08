@@ -184,7 +184,8 @@ class AppLocalizationsMl extends AppLocalizations {
       'വരാനിരിക്കുന്ന ടെസ്റ്റുകൾക്കും അവസാന തീയതികൾക്കും ഓർമ്മപ്പെടുത്തലുകൾ';
 
   @override
-  String get notificationsAnnouncementsUpdates => 'പ്രഖ്യാപനങ്ങളും അപ്ഡേറ്റുകളും';
+  String get notificationsAnnouncementsUpdates =>
+      'പ്രഖ്യാപനങ്ങളും അപ്ഡേറ്റുകളും';
 
   @override
   String get notificationsAnnouncementsUpdatesDesc =>

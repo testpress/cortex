@@ -6,6 +6,14 @@ enum ActivityStatus { inProgress, completed }
 
 @immutable
 class RecentActivityDto {
+  final String id;
+  final ActivityType type;
+  final String title;
+  final String timeAgo;
+  final ActivityStatus status;
+  final int? progress;
+  final int? score;
+
   const RecentActivityDto({
     required this.id,
     required this.type,
@@ -15,16 +23,6 @@ class RecentActivityDto {
     this.progress,
     this.score,
   });
-
-  final String id;
-  final ActivityType type;
-  final String title;
-  final String timeAgo;
-  final ActivityStatus status;
-
-  final int? progress;
-
-  final int? score;
 
   @override
   bool operator ==(Object other) {

@@ -1,0 +1,29 @@
+name: profile
+description: "A standalone profile and account management package."
+publish_to: 'none'
+version: 0.0.1
+
+environment:
+  sdk: ^3.10.8
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  core:
+    path: ../core
+  data:
+    path: ../data
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+  intl: ^0.20.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  riverpod_generator: ^2.4.0
+  build_runner: ^2.4.8
+
+flutter:
+  uses-material-design: true
