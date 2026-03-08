@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import '../models/recent_activity_dto.dart';
+import 'package:data/data.dart';
 
 class RecentActivitySection extends StatelessWidget {
   const RecentActivitySection({

@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../models/user_dto.dart';
+import '../sources/mock_data.dart';
 
 part 'auth_provider.g.dart';
 
@@ -9,13 +10,7 @@ part 'auth_provider.g.dart';
 class Auth extends _$Auth {
   @override
   UserDto build() {
-    // Current mock user matching the 'current_user' ID used in repositories.
-    return const UserDto(
-      id: 'current_user',
-      name: 'Aditya Vardhan',
-      email: 'aditya.v@example.com',
-      isPro: true,
-    );
+    return mockCurrentUser;
   }
 
   void logout() {

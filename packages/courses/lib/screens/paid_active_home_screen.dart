@@ -12,7 +12,6 @@ import '../widgets/quick_access_grid.dart';
 import '../widgets/hero_banner_carousel.dart';
 import '../widgets/top_learners_section.dart';
 import '../widgets/promotional_banners.dart';
-import '../widgets/dashboard_header.dart';
 
 class PaidActiveHomeScreen extends ConsumerWidget {
   const PaidActiveHomeScreen({super.key});
@@ -24,8 +23,8 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     final todayClasses = ref.watch(todayClassesProvider);
     final pendingAssignments = ref.watch(pendingAssignmentsProvider);
     final upcomingTests = ref.watch(upcomingTestsProvider);
-    final momentum = ref.watch(studyMomentumProvider);
-    final user = ref.watch(currentUserProvider);
+    final momentum = ref.watch(dto.studyMomentumProvider);
+    final user = ref.watch(dto.authProvider);
     final heroBanners = ref.watch(heroBannersProvider);
     final promotionBanners = ref.watch(promotionBannersProvider);
     final topLearners = ref.watch(topLearnersProvider);
@@ -50,11 +49,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
             child: AppScroll(
               padding: EdgeInsets.symmetric(vertical: design.spacing.md),
               children: [
-                user.when(
-                  data: (data) => HomeGreetingSection(userName: data.name),
-                  loading: () => const SizedBox(height: 50),
-                  error: (error, stack) => const SizedBox.shrink(),
-                ),
+                HomeGreetingSection(userName: user.name),
 
                 heroBanners.when(
                   data: (data) => HeroBannerCarousel(

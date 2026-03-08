@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:courses/courses.dart';
+import 'package:profile/profile.dart';
 import 'package:data/data.dart';
 import 'package:exams/exams.dart';
 
