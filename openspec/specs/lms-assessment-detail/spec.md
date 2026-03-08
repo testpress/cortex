@@ -2,9 +2,7 @@
 
 ## Purpose
 The LMS Assessment Detail capability defines the practice-driven assessment experience, where users receive immediate feedback on their answers and can attempt questions multiple times within a single session.
-
 ## Requirements
-
 ### Requirement: 3-State Navigation Bar
 The Assessment screen SHALL transition between three navigation states based on user interaction to guide the "Check and Learn" flow.
 
@@ -34,3 +32,11 @@ The question palette in Assessment mode SHALL provide clear visual confirmation 
 - **THEN** it SHALL show "Correct" (green check), "Incorrect" (red X), and "Unanswered" (gray outline).
 - **AND** grid items representing questions SHALL be rendered as rounded squares.
 - **AND** the currently viewed question SHALL be highlighted with a green success ring.
+
+### Requirement: Package Boundary
+The assessment detail component MUST be implemented within the `exams` package to ensure proper code modularity.
+
+#### Scenario: Implementation location
+- **WHEN** the application is compiled
+- **THEN** the assessment detail screen and related components are sourced from `package:exams` instead of `package:courses`
+

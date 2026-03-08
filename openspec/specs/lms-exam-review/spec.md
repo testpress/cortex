@@ -2,9 +2,7 @@
 
 ## Purpose
 The LMS Exam Review capability defines the post-test review experience, allowing students to navigate through test questions, identify mistakes, study explanations, and interact with the content.
-
 ## Requirements
-
 ### Requirement: Paged Question Review
 The system SHALL display a paged view of all questions from a completed test.
 
@@ -64,3 +62,11 @@ The system SHALL provide interactive dialogs for "Ask Doubt", "Comment", and "Re
   * Explanation is wrong
   * Other issue
 - **AND** an optional text area SHALL be provided for additional details.
+
+### Requirement: Package Boundary
+The exam review and answer detail components MUST be implemented within the `exams` package to ensure proper code modularity.
+
+#### Scenario: Implementation location
+- **WHEN** the application is compiled
+- **THEN** the exam review screen and related components are sourced from `package:exams` instead of `package:courses`
+

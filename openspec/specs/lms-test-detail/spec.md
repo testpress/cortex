@@ -2,7 +2,6 @@
 
 ## Purpose
 The LMS Test Detail capability defines the test-taking experience, including timing, question navigation, answer selection, and final submission behavior.
-
 ## Requirements
 ### Requirement: Test Timer
 The system SHALL display a real-time countdown timer in the screen header.
@@ -96,3 +95,11 @@ The system SHALL calculate the final results ONLY after the test is completed.
 - **WHEN** the user clicks "Finish"
 - **THEN** the system SHALL stop the timer, calculate the percentage score, and display the "Test Completed" view with the correct answer count.
 - **AND** the summary view SHALL provide a navigation path to the detailed "Exam Review" list.
+
+### Requirement: Package Boundary
+The test detail component MUST be implemented within the `exams` package to ensure proper code modularity.
+
+#### Scenario: Implementation location
+- **WHEN** the application is compiled
+- **THEN** the test detail screen and related components are sourced from `package:exams` instead of `package:courses`
+
