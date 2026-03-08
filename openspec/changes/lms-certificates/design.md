@@ -18,11 +18,11 @@ The paid-active profile has a certificates entry point but no destination screen
 
 ## Decisions
 
-### 1. Screen ownership in `packages/courses`
-- **Decision**: Implement certificates list/preview UI and supporting state in `packages/courses`.
-- **Why**: Certificates are a domain feature launched from profile domain flows.
-- **Alternative**: Build in `packages/core`.
-- **Why not**: Core remains primitives/tokens, not domain screens.
+### 1. Screen ownership in `packages/profile`
+- **Decision**: Implement certificates list/preview UI and supporting state in `packages/profile`.
+- **Why**: Certificates are an account/identity property. Moving them to the `profile` package ensures the `courses` package remains focused on curriculum while allowing the profile to be a standalone, reusable package.
+- **Alternative**: Build in `packages/courses`.
+- **Why not**: Creates unnecessary coupling between curriculum and account features.
 
 ### 2. Local/mock data for paid-active v1 behavior
 - **Decision**: Use local/mock certificate data for paid-active card state, progress, and preview details.
