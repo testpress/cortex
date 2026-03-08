@@ -58,11 +58,11 @@ class CertificatePreviewScreen extends StatelessWidget {
                   ),
                   padding: EdgeInsets.all(design.spacing.md),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        width: design.spacing.xl,
-                        height: design.spacing.xl,
+                        width: design.spacing.xl + design.spacing.xs,
+                        height: design.spacing.xl + design.spacing.xs,
                         decoration: BoxDecoration(
                           color: design.colors.accent2,
                           borderRadius: BorderRadius.circular(design.radius.md),
@@ -70,23 +70,24 @@ class CertificatePreviewScreen extends StatelessWidget {
                         alignment: Alignment.center,
                         child: Icon(
                           LucideIcons.award,
-                          size: design.iconSize.sm,
+                          size: design.iconSize.md,
                           color: design.colors.onPrimary,
                         ),
                       ),
-                      SizedBox(width: design.spacing.sm),
+                      SizedBox(width: design.spacing.md),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            AppText.label(
+                            AppText.body(
                               l10n.certificatesShareAchievementTitle,
-                              color: design.colors.accent2,
+                              color: design.colors.textPrimary,
+                              style: const TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            SizedBox(height: design.spacing.xs / 2),
+                            const SizedBox(height: 2),
                             AppText.caption(
                               l10n.certificatesShareAchievementDescription,
-                              color: design.colors.accent2,
+                              color: design.colors.textSecondary,
                             ),
                           ],
                         ),
@@ -162,34 +163,34 @@ class _PreviewHeader extends StatelessWidget {
         color: design.isDark ? design.colors.surface : design.colors.card,
         border: Border(bottom: BorderSide(color: design.colors.border)),
       ),
-      child: Row(
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-          AppSemantics.button(
-            label: l10n.commonCloseButton,
-            onTap: onClose,
-            child: AppFocusable(
+          Align(
+            alignment: Alignment.centerLeft,
+            child: AppSemantics.button(
+              label: l10n.commonCloseButton,
               onTap: onClose,
-              borderRadius: design.radius.button,
-              child: Container(
-                width: design.spacing.xxl,
-                height: design.spacing.xxl,
-                alignment: Alignment.center,
-                child: Icon(
-                  LucideIcons.x,
-                  size: design.iconSize.md,
-                  color: design.colors.textPrimary,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: onClose,
+                child: Container(
+                  width: design.iconSize.md + design.spacing.xs,
+                  height: design.iconSize.lg + design.spacing.xs,
+                  alignment: Alignment.center,
+                  child: Icon(
+                    LucideIcons.x,
+                    size: design.iconSize.md,
+                    color: design.colors.textPrimary,
+                  ),
                 ),
               ),
             ),
           ),
-          Expanded(
-            child: AppText.label(
-              l10n.certificatesPreviewTitle,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
+          AppText.headline(
+            l10n.certificatesPreviewTitle,
+            textAlign: TextAlign.center,
           ),
-          SizedBox(width: design.spacing.xxl),
         ],
       ),
     );
@@ -376,6 +377,7 @@ class _CertificatePreviewCard extends StatelessWidget {
                       border: Border.all(color: design.colors.border),
                     ),
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Expanded(
                           child: Column(
@@ -399,15 +401,14 @@ class _CertificatePreviewCard extends StatelessWidget {
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                            bottom: design.spacing.xs / 2,
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: design.spacing.sm,
-                                height: design.spacing.sm,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 1.5),
+                              child: Container(
+                                width: 6.0,
+                                height: 6.0,
                                 decoration: BoxDecoration(
                                   color: design.colors.success,
                                   borderRadius: BorderRadius.circular(
@@ -415,16 +416,16 @@ class _CertificatePreviewCard extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              SizedBox(width: design.spacing.xs),
-                              AppText.caption(
-                                l10n.certificatesVerified,
-                                color: design.colors.success,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                ),
+                            ),
+                            SizedBox(width: design.spacing.xs),
+                            AppText.caption(
+                              l10n.certificatesVerified,
+                              color: design.colors.success,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

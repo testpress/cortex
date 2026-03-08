@@ -107,13 +107,14 @@ class _CertificatesHeader extends StatelessWidget {
         child: AppSemantics.button(
           label: l10n.curriculumBackButton,
           onTap: onBack,
-          child: AppFocusable(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
             onTap: onBack,
-            borderRadius: design.radius.button,
             child: SizedBox(
               height: design.iconSize.lg + design.spacing.xs,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Icon(
                     LucideIcons.chevronLeft,
@@ -123,7 +124,6 @@ class _CertificatesHeader extends StatelessWidget {
                   SizedBox(width: design.spacing.sm),
                   AppText.subtitle(
                     l10n.curriculumBackButton,
-                    color: design.colors.textPrimary,
                     style: const TextStyle(fontWeight: FontWeight.w500),
                   ),
                 ],
