@@ -6,24 +6,6 @@ part of 'profile_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$profileStatsHash() => r'7d6a042240c550a9a5cc7c3543599d2f918f798d';
-
-/// See also [profileStats].
-@ProviderFor(profileStats)
-final profileStatsProvider =
-    AutoDisposeFutureProvider<StudyMomentumDto>.internal(
-      profileStats,
-      name: r'profileStatsProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$profileStatsHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ProfileStatsRef = AutoDisposeFutureProviderRef<StudyMomentumDto>;
 String _$profileRecentActivityHash() =>
     r'e70b9a9072f04f1b120c0a1eb7c80ee239b04cc8';
 

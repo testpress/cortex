@@ -45,3 +45,4 @@ export 'providers/study_momentum_provider.dart';
 export 'providers/auth_provider.dart';
 export 'providers/initialization_provider.dart';
 export 'providers/lesson_providers.dart';
+export 'providers/design_mode_provider.dart';

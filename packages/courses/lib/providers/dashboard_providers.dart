@@ -67,7 +67,3 @@ Future<List<QuickShortcutDto>> quickShortcuts(Ref ref) async {
 
 final isHomeDrawerOpenProvider = StateProvider<bool>((ref) => false);
 
-// Theme state remains in courses for now, propagated by shell
-final designModeProvider = StateProvider<DesignMode>(
-  (ref) => DesignMode.system,
-);

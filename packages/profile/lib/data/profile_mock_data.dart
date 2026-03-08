@@ -44,13 +44,3 @@ const mockRecentActivity = [
   ),
 ];
 
-const mockStudyMomentum = StudyMomentumDto(
-  currentStreak: 12,
-  weeklyHours: 18.5,
-  lessonsFinished: 45,
-  testsAttempted: 8,
-  assessmentsDone: 15,
-  strongestSubject: 'Physics',
-  weakSubject: 'Organic Chemistry',
-  weekDays: [],
-);

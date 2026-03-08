@@ -20,7 +20,7 @@ class ProfilePage extends ConsumerWidget {
     final design = Design.of(context);
 
     final user = ref.watch(authProvider);
-    final statsAsync = ref.watch(profileStatsProvider);
+    final statsAsync = ref.watch(studyMomentumProvider);
     final enrolledCoursesAsync = ref.watch(enrollmentProvider);
     final recentActivityAsync = ref.watch(profileRecentActivityProvider);
 
@@ -58,7 +58,7 @@ class ProfilePage extends ConsumerWidget {
                   loading: () => const SizedBox(height: 200),
                   error: (err, __) => AppErrorView(
                     message: err.toString(),
-                    onRetry: () => ref.refresh(profileStatsProvider),
+                    onRetry: () => ref.refresh(studyMomentumProvider),
                   ),
                 ),
 

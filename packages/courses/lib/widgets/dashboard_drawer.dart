@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
+import 'package:data/data.dart';
 import '../providers/dashboard_providers.dart';
 
 class DashboardDrawer extends ConsumerWidget {
