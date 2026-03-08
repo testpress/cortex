@@ -1,35 +1,45 @@
 import 'package:core/core.dart';
-import 'package:courses/courses.dart';
-import 'package:courses/providers/dashboard_providers.dart' as dashboard;
+import 'package:profile/profile.dart';
 import 'package:data/data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+class MockAuth extends Auth {
+  @override
+  UserDto build() {
+    return UserDto(
+      id: 'u1',
+      name: 'Alex',
+      avatar: '',
+      joinedDate: DateTime(2023, 1, 1),
+    );
+  }
+}
+
 void main() {
   ProviderScope _buildScope({required Widget child}) {
     return ProviderScope(
       overrides: [
-        dashboard.currentUserProvider.overrideWith(
-          (ref) async => const UserDto(
-            id: 'u1',
-            name: 'Alex',
-            avatar: '',
-            joinedDate: null,
-          ),
-        ),
-        dashboard.currentUserStatsProvider.overrideWith(
+        authProvider.overrideWith(MockAuth.new),
+        studyMomentumProvider.overrideWith(
           (ref) async => const StudyMomentumDto(
             weekDays: [],
             weeklyHours: 0,
             currentStreak: 0,
+            lessonsFinished: 0,
+            testsAttempted: 0,
+            assessmentsDone: 0,
+            strongestSubject: '',
+            weakSubject: '',
           ),
         ),
-        dashboard.enrolledCoursesProvider.overrideWith(
-          (ref) async => const <CourseDto>[],
+        enrollmentProvider.overrideWith(
+          (ref) => Stream.value(<CourseDto>[]),
         ),
-        dashboard.recentActivityProvider.overrideWith((ref) async => const []),
+        profileRecentActivityProvider.overrideWith((ref) async => const []),
+        // Certificates provider can stay as is if it uses local mock data
       ],
       child: child,
     );
