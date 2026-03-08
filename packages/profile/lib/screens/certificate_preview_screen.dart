@@ -493,20 +493,20 @@ class _CertificatePreviewCard extends StatelessWidget {
     required TextStyle baseStyle,
     required TextStyle boldStyle,
   }) {
-    const placeholder = '___DATE___';
+    if (dateText.isEmpty) {
+      return TextSpan(text: l10n.certificatesAwardedOn(''), style: baseStyle);
+    }
+
+    const placeholder = '__DATE_PLACEHOLDER__';
     final template = l10n.certificatesAwardedOn(placeholder);
     final parts = template.split(placeholder);
 
-    if (parts.length < 2) {
-      return TextSpan(text: template, style: baseStyle);
-    }
-
     return TextSpan(
       style: baseStyle,
-      children: [
-        TextSpan(text: parts[0]),
+      children: <TextSpan>[
+        TextSpan(text: parts.first),
         TextSpan(text: dateText, style: boldStyle),
-        TextSpan(text: parts[1]),
+        if (parts.length > 1) TextSpan(text: parts.last),
       ],
     );
   }
