@@ -211,7 +211,6 @@ class _CertificatePreviewCard extends StatelessWidget {
     final dateText = completionDate == null
         ? ''
         : DateFormat.yMMMMd(locale).format(completionDate);
-    final awardedText = l10n.certificatesAwardedOn(dateText);
 
     return AppCard(
       showShadow: true,
@@ -325,7 +324,7 @@ class _CertificatePreviewCard extends StatelessWidget {
                   SizedBox(height: design.spacing.lg),
                   Text.rich(
                     _awardedTextSpan(
-                      awardedText: awardedText,
+                      l10n: l10n,
                       dateText: dateText,
                       baseStyle: design.typography.subtitle.copyWith(
                         color: design.colors.textSecondary,
@@ -489,27 +488,27 @@ class _CertificatePreviewCard extends StatelessWidget {
   }
 
   TextSpan _awardedTextSpan({
-    required String awardedText,
+    required AppLocalizations l10n,
     required String dateText,
     required TextStyle baseStyle,
     required TextStyle boldStyle,
   }) {
-    if (dateText.isNotEmpty) {
-      final start = awardedText.indexOf(dateText);
-      if (start >= 0) {
-        final end = start + dateText.length;
-        return TextSpan(
-          style: baseStyle,
-          children: [
-            TextSpan(text: awardedText.substring(0, start)),
-            TextSpan(text: dateText, style: boldStyle),
-            TextSpan(text: awardedText.substring(end)),
-          ],
-        );
-      }
+    const placeholder = '___DATE___';
+    final template = l10n.certificatesAwardedOn(placeholder);
+    final parts = template.split(placeholder);
+
+    if (parts.length < 2) {
+      return TextSpan(text: template, style: baseStyle);
     }
 
-    return TextSpan(text: awardedText, style: baseStyle);
+    return TextSpan(
+      style: baseStyle,
+      children: [
+        TextSpan(text: parts[0]),
+        TextSpan(text: dateText, style: boldStyle),
+        TextSpan(text: parts[1]),
+      ],
+    );
   }
 }
 

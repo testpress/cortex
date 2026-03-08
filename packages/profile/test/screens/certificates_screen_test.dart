@@ -135,17 +135,19 @@ void main() {
           GoRoute(
             path: '/profile',
             builder: (context, state) => ProfilePage(
-              onOpenCertificates: () => context.push('/profile/certificates'),
+              onOpenCertificates: () =>
+                  context.pushNamed('profile-certificates'),
             ),
             routes: [
               GoRoute(
+                name: 'profile-certificates',
                 path: 'certificates',
                 builder: (context, state) {
                   return CertificatesScreen(
                     onBack: () => context.pop(),
                     onOpenPreview: (certificate) {
-                      context.push(
-                        '/profile/certificates/preview',
+                      context.pushNamed(
+                        'profile-certificate-preview',
                         extra: certificate,
                       );
                     },
@@ -153,6 +155,7 @@ void main() {
                 },
                 routes: [
                   GoRoute(
+                    name: 'profile-certificate-preview',
                     path: 'preview',
                     builder: (context, state) {
                       return CertificatePreviewScreen(
