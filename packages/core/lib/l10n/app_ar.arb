@@ -341,5 +341,19 @@
   "settingsRecommended": "موصى به",
   "settingsDefault": "افتراضي",
   "settingsAutoPlaySubtitle": "بدء الدرس التالي تلقائيًا",
-  "settingsHighContrastSubtitle": "زيادة التباين البصري"
+  "settingsHighContrastSubtitle": "زيادة التباين البصري",
+  "editProfileTitle": "تعديل الملف الشخصي",
+  "editProfileNameLabel": "الاسم الكامل",
+  "editProfileNameHint": "أدخل اسمك الكامل",
+  "editProfileEmailLabel": "البريد الإلكتروني",
+  "editProfileEmailHint": "أدخل بريدك الإلكتروني",
+  "editProfileEmailHelper": "لا يمكن تغيير البريد الإلكتروني",
+  "editProfilePhoneLabel": "رقم الهاتف",
+  "editProfilePhoneHint": "أدخل رقم هاتفك",
+  "editProfileSave": "حفظ",
+  "editProfileSuccess": "تم تحديث الملف الشخصي بنجاح",
+  "editProfileErrorNameEmpty": "الاسم لا يمكن أن يكون فارغًا",
+  "editProfilePhotoLabel": "صورة الملف الشخصي",
+  "editProfileChangePhoto": "تغيير الصورة",
+  "editProfileBack": "عودة"
 }

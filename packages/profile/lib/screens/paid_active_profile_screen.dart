@@ -13,11 +13,13 @@ import '../widgets/paid_active_account_preferences_section.dart';
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({
     super.key,
+    this.onEditProfile,
     this.onOpenNotifications,
     this.onOpenCertificates,
     this.onOpenSettings,
   });
 
+  final VoidCallback? onEditProfile;
   final VoidCallback? onOpenNotifications;
   final VoidCallback? onOpenCertificates;
   final VoidCallback? onOpenSettings;
@@ -49,6 +51,8 @@ class ProfilePage extends ConsumerWidget {
                   name: user.name,
                   avatarUrl: user.avatar,
                   joinedDate: user.joinedDate,
+                  onEditProfileTap:
+                      onEditProfile ?? () => context.pushNamed('profile-edit'),
                 ),
 
                 SizedBox(height: design.spacing.xl),
@@ -98,6 +102,8 @@ class ProfilePage extends ConsumerWidget {
 
                 // Account & Preferences
                 AccountPreferencesSection(
+                  onEditProfileTap:
+                      onEditProfile ?? () => context.pushNamed('profile-edit'),
                   onNotificationsTap:
                       onOpenNotifications ??
                       () => context.pushNamed('profile-notifications'),

@@ -341,5 +341,19 @@
   "settingsRecommended": "ശുപാർശ ചെയ്യുന്നത്",
   "settingsDefault": "ഡിഫോൾട്ട്",
   "settingsAutoPlaySubtitle": "അടുത്ത പാഠം തനിയെ ആരംഭിക്കുക",
-  "settingsHighContrastSubtitle": "കാഴ്ചയിലെ വൈരുദ്ധ്യം വർദ്ധിപ്പിക്കുക"
+  "settingsHighContrastSubtitle": "കാഴ്ചയിലെ വൈരുദ്ധ്യം വർദ്ധിപ്പിക്കുക",
+  "editProfileTitle": "പ്രൊഫൈൽ എഡിറ്റ് ചെയ്യുക",
+  "editProfileNameLabel": "മുഴുവൻ പേര്",
+  "editProfileNameHint": "നിങ്ങളുടെ മുഴുവൻ പേര് നൽകുക",
+  "editProfileEmailLabel": "ഇമെയിൽ",
+  "editProfileEmailHint": "നിങ്ങളുടെ ഇമെയിൽ വിലാസം നൽകുക",
+  "editProfileEmailHelper": "ഇമെയിൽ മാറ്റാൻ കഴിയില്ല",
+  "editProfilePhoneLabel": "ഫോൺ നമ്പർ",
+  "editProfilePhoneHint": "നിങ്ങളുടെ ഫോൺ നമ്പർ നൽകുക",
+  "editProfileSave": "സേവ് ചെയ്യുക",
+  "editProfileSuccess": "പ്രൊഫൈൽ വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു",
+  "editProfileErrorNameEmpty": "പേര് ശൂന്യമായിരിക്കരുത്",
+  "editProfilePhotoLabel": "പ്രൊഫൈൽ ഫോട്ടോ",
+  "editProfileChangePhoto": "ഫോട്ടോ മാറ്റുക",
+  "editProfileBack": "പിന്നിലേക്ക്"
 }

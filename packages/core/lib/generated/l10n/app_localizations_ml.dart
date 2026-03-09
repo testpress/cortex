@@ -1003,4 +1003,46 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get settingsHighContrastSubtitle =>
       'കാഴ്ചയിലെ വൈരുദ്ധ്യം വർദ്ധിപ്പിക്കുക';
+
+  @override
+  String get editProfileTitle => 'പ്രൊഫൈൽ എഡിറ്റ് ചെയ്യുക';
+
+  @override
+  String get editProfileNameLabel => 'മുഴുവൻ പേര്';
+
+  @override
+  String get editProfileNameHint => 'നിങ്ങളുടെ മുഴുവൻ പേര് നൽകുക';
+
+  @override
+  String get editProfileEmailLabel => 'ഇമെയിൽ';
+
+  @override
+  String get editProfileEmailHint => 'നിങ്ങളുടെ ഇമെയിൽ വിലാസം നൽകുക';
+
+  @override
+  String get editProfileEmailHelper => 'ഇമെയിൽ മാറ്റാൻ കഴിയില്ല';
+
+  @override
+  String get editProfilePhoneLabel => 'ഫോൺ നമ്പർ';
+
+  @override
+  String get editProfilePhoneHint => 'നിങ്ങളുടെ ഫോൺ നമ്പർ നൽകുക';
+
+  @override
+  String get editProfileSave => 'സേവ് ചെയ്യുക';
+
+  @override
+  String get editProfileSuccess => 'പ്രൊഫൈൽ വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു';
+
+  @override
+  String get editProfileErrorNameEmpty => 'പേര് ശൂന്യമായിരിക്കരുത്';
+
+  @override
+  String get editProfilePhotoLabel => 'പ്രൊഫൈൽ ഫോട്ടോ';
+
+  @override
+  String get editProfileChangePhoto => 'ഫോട്ടോ മാറ്റുക';
+
+  @override
+  String get editProfileBack => 'പിന്നിലേക്ക്';
 }

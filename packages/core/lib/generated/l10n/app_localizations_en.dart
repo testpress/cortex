@@ -994,4 +994,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsHighContrastSubtitle => 'Increase visual contrast';
+
+  @override
+  String get editProfileTitle => 'Edit Profile';
+
+  @override
+  String get editProfileNameLabel => 'Full Name';
+
+  @override
+  String get editProfileNameHint => 'Enter your full name';
+
+  @override
+  String get editProfileEmailLabel => 'Email';
+
+  @override
+  String get editProfileEmailHint => 'Enter your email address';
+
+  @override
+  String get editProfileEmailHelper => 'Email cannot be changed';
+
+  @override
+  String get editProfilePhoneLabel => 'Phone Number';
+
+  @override
+  String get editProfilePhoneHint => 'Enter your phone number';
+
+  @override
+  String get editProfileSave => 'Save';
+
+  @override
+  String get editProfileSuccess => 'Profile updated successfully';
+
+  @override
+  String get editProfileErrorNameEmpty => 'Name cannot be empty';
+
+  @override
+  String get editProfilePhotoLabel => 'Profile Photo';
+
+  @override
+  String get editProfileChangePhoto => 'Change photo';
+
+  @override
+  String get editProfileBack => 'Back';
 }

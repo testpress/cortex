@@ -283,6 +283,13 @@ final GoRouter appRouter = GoRouter(
                   },
                 ),
                 GoRoute(
+                  name: 'profile-edit',
+                  path: 'edit',
+                  builder: (context, state) {
+                    return const EditProfileScreen();
+                  },
+                ),
+                GoRoute(
                   name: 'profile-settings',
                   path: 'settings',
                   builder: (context, state) {

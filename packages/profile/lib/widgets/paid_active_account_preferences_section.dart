@@ -4,11 +4,13 @@ import 'package:core/core.dart';
 class AccountPreferencesSection extends StatelessWidget {
   const AccountPreferencesSection({
     super.key,
+    this.onEditProfileTap,
     this.onNotificationsTap,
     this.onCertificatesTap,
     this.onSettingsTap,
   });
 
+  final VoidCallback? onEditProfileTap;
   final VoidCallback? onNotificationsTap;
   final VoidCallback? onCertificatesTap;
   final VoidCallback? onSettingsTap;
@@ -40,7 +42,7 @@ class AccountPreferencesSection extends StatelessWidget {
                   icon: LucideIcons.user,
                   label: l10n.profileEditProfile,
                   iconColor: design.colors.accent2,
-                  onTap: () {},
+                  onTap: onEditProfileTap ?? () {},
                 ),
                 _Divider(),
                 _PreferenceItem(

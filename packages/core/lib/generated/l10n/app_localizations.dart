@@ -1874,6 +1874,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Increase visual contrast'**
   String get settingsHighContrastSubtitle;
+
+  /// No description provided for @editProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get editProfileTitle;
+
+  /// No description provided for @editProfileNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get editProfileNameLabel;
+
+  /// No description provided for @editProfileNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your full name'**
+  String get editProfileNameHint;
+
+  /// No description provided for @editProfileEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get editProfileEmailLabel;
+
+  /// No description provided for @editProfileEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email address'**
+  String get editProfileEmailHint;
+
+  /// No description provided for @editProfileEmailHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Email cannot be changed'**
+  String get editProfileEmailHelper;
+
+  /// No description provided for @editProfilePhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get editProfilePhoneLabel;
+
+  /// No description provided for @editProfilePhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your phone number'**
+  String get editProfilePhoneHint;
+
+  /// No description provided for @editProfileSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get editProfileSave;
+
+  /// No description provided for @editProfileSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully'**
+  String get editProfileSuccess;
+
+  /// No description provided for @editProfileErrorNameEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Name cannot be empty'**
+  String get editProfileErrorNameEmpty;
+
+  /// No description provided for @editProfilePhotoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Photo'**
+  String get editProfilePhotoLabel;
+
+  /// No description provided for @editProfileChangePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Change photo'**
+  String get editProfileChangePhoto;
+
+  /// No description provided for @editProfileBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get editProfileBack;
 }
 
 class _AppLocalizationsDelegate

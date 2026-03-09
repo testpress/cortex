@@ -17,4 +17,8 @@ class Auth extends _$Auth {
     // Placeholder for logout logic
     state = const UserDto(id: 'guest', name: 'Guest');
   }
+
+  void updateProfile(UserDto newUser) {
+    state = newUser;
+  }
 }
