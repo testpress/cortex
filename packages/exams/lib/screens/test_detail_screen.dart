@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import '../models/test_model.dart';
+import '../models/review_route_payload.dart';
 import '../data/mock_tests.dart';
 import '../widgets/test_detail/test_header.dart';
 import '../widgets/test_detail/question_palette.dart';
@@ -13,7 +13,6 @@ import '../widgets/test_detail/test_question_card.dart';
 import '../widgets/test_detail/test_navigation_actions.dart';
 import '../widgets/test_detail/test_palette_trigger.dart';
 import '../widgets/test_detail/submit_confirmation_dialog.dart';
-import 'review_answer/review_answer_detail_screen.dart';
 
 class TestDetailScreen extends ConsumerStatefulWidget {
   final String testId;
@@ -35,7 +34,6 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
   bool _showPalette = false;
   bool _showSubmitConfirmation = false;
   bool _testCompleted = false;
-  bool _showReview = false;
   late int _timeRemaining;
   Timer? _timer;
 
@@ -120,15 +118,6 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    if (_showReview) {
-      return ReviewAnswerDetailScreen(
-        assessmentTitle: _test.title,
-        questions: _questions,
-        attemptStates: _answers,
-        onBack: () => setState(() => _showReview = false),
-      );
-    }
-
     final question = _questions[_currentQuestionIndex];
     final answer = _answers[question.id];
     final answeredCount = _answers.values
@@ -212,13 +201,8 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
             ),
           if (_testCompleted)
             TestResultView(
-              onReviewAnswers: () {
-                setState(() => _showReview = true);
-              },
-              onViewAnalytics: () {
-                // Future integration for Analytics
-                widget.onClose();
-              },
+              onReviewAnswers: _openReviewAnswers,
+              onViewAnalytics: _openAnalytics,
               onClose: widget.onClose,
             ),
         ],
@@ -262,5 +246,27 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
         isMarked: !currentAnswer.isMarked,
       );
     });
+  }
+
+  void _openReviewAnswers() {
+    context.push(
+      '/study/test/${widget.testId}/review-answers',
+      extra: ReviewRoutePayload(
+        assessmentTitle: _test.title,
+        questions: _questions,
+        attemptStates: _answers,
+      ),
+    );
+  }
+
+  void _openAnalytics() {
+    context.push(
+      '/study/test/${widget.testId}/review-analytics',
+      extra: ReviewRoutePayload(
+        assessmentTitle: _test.title,
+        questions: _questions,
+        attemptStates: _answers,
+      ),
+    );
   }
 }
