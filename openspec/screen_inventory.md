@@ -151,7 +151,7 @@ Each screen = one OpenSpec change. Priority is based on user journey criticality
 | 21 | `lms-insights` | InsightsScreen + OverallPerformance + SubjectWise | Analytics screens | ⏳ Pending |
 | 22 | `lms-certificates` | CertificatesScreen + CertificatePreview | Certificate PDFs | ⏳ Pending |
 | 23 | `lms-notifications` | NotificationsScreen | Alert list | ✅ Done |
-| 24 | `lms-settings` | AppSettingsScreen + EditProfileScreen | Settings, edit profile | ⏳ Pending |
+| 24 | `lms-settings` | AppSettingsScreen + EditProfileScreen | Settings, edit profile | ✅ Done |
 | 25 | `lms-study-tips` | StudyTipsDetailScreen | Article-style study tip reader | ⏳ Pending |
 
 ### Phase 7 — Upsell & Onboarding Variants
