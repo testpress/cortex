@@ -74,40 +74,42 @@ class _SettingsHeader extends StatelessWidget {
     final padding = MediaQuery.of(context).padding;
 
     return Container(
-      padding: EdgeInsets.only(
-        top: padding.top + design.spacing.md,
-        bottom: design.spacing.md,
-        left: design.spacing.md,
-        right: design.spacing.md,
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(
+        16, // px-4
+        padding.top + 12, // py-3
+        16,
+        12,
       ),
       decoration: BoxDecoration(
-        color: design.isDark ? design.colors.surface : design.colors.card,
+        color: design.colors.card,
         border: Border(
           bottom: BorderSide(
             color: design.colors.border,
-            width: 1 / MediaQuery.of(context).devicePixelRatio,
+            width: 1,
           ),
         ),
       ),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: GestureDetector(
+        child: AppSemantics.button(
+          label: l10n.curriculumBackButton,
           onTap: onBack,
-          behavior: HitTestBehavior.opaque,
-          child: SizedBox(
-            height: design.iconSize.lg + design.spacing.xs,
+          child: AppFocusable(
+            onTap: onBack,
+            borderRadius: design.radius.button,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
                   LucideIcons.chevronLeft,
-                  size: design.iconSize.md,
+                  size: 20,
                   color: design.colors.textPrimary,
                 ),
-                SizedBox(width: design.spacing.sm),
-                AppText.subtitle(
+                const SizedBox(width: 8),
+                AppText.label(
                   l10n.curriculumBackButton,
-                  style: const TextStyle(fontWeight: FontWeight.w500),
+                  style: const TextStyle(fontSize: 16),
                 ),
               ],
             ),
@@ -265,8 +267,8 @@ class _PlaybackSection extends ConsumerWidget {
               ],
             ),
           ),
-          loading: () => const SizedBox.shrink(),
-          error: (_, __) => const SizedBox.shrink(),
+          loading: () => const Center(child: AppLoadingIndicator()),
+          error: (_, __) => const AppErrorView(),
         ),
       ],
     );
@@ -399,8 +401,8 @@ class _AccessibilitySection extends ConsumerWidget {
               ],
             ),
           ),
-          loading: () => const SizedBox.shrink(),
-          error: (_, __) => const SizedBox.shrink(),
+          loading: () => const Center(child: AppLoadingIndicator()),
+          error: (_, __) => const AppErrorView(),
         ),
       ],
     );

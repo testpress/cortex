@@ -77,12 +77,14 @@ class AppDatabase extends _$AppDatabase {
 
   /// Fetch the singleton settings row.
   Future<AppSettingsTableData> getAppSettings() async {
-    final entry = await select(appSettingsTable).getSingleOrNull();
-    if (entry == null) {
-      await into(appSettingsTable).insert(const AppSettingsTableCompanion());
-      return (await select(appSettingsTable).getSingle());
-    }
-    return entry;
+    // Atomically ensure the row exists with ID 1.
+    // InsertMode.insertOrIgnore prevents race conditions where multiple notifiers
+    // try to create the initial row simultaneously.
+    await into(appSettingsTable).insert(
+      const AppSettingsTableCompanion(id: Value(1)),
+      mode: InsertMode.insertOrIgnore,
+    );
+    return await select(appSettingsTable).getSingle();
   }
 
   /// Watch settings for live updates.
