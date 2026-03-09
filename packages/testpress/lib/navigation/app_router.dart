@@ -212,6 +212,37 @@ final GoRouter appRouter = GoRouter(
                       onClose: () => context.pop(),
                     );
                   },
+                  routes: [
+                    GoRoute(
+                      path: 'review-analytics',
+                      builder: (context, state) {
+                        final id = state.pathParameters['id']!;
+                        final payload = state.extra as ReviewRoutePayload?;
+                        return ReviewAnalyticsScreen(
+                          testId: id,
+                          assessmentTitle:
+                              payload?.assessmentTitle ?? 'Assessment $id',
+                          questions: payload?.questions ?? const [],
+                          attemptStates: payload?.attemptStates ?? const {},
+                          onBack: () => context.pop(),
+                        );
+                      },
+                    ),
+                    GoRoute(
+                      path: 'review-answers',
+                      builder: (context, state) {
+                        final id = state.pathParameters['id']!;
+                        final payload = state.extra as ReviewRoutePayload?;
+                        return ReviewAnswerDetailScreen(
+                          assessmentTitle:
+                              payload?.assessmentTitle ?? 'Assessment $id',
+                          questions: payload?.questions ?? const [],
+                          attemptStates: payload?.attemptStates ?? const {},
+                          onBack: () => context.pop(),
+                        );
+                      },
+                    ),
+                  ],
                 ),
                 GoRoute(
                   path: 'assessment/:id',
