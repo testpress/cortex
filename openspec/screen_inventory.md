@@ -129,7 +129,7 @@ Each screen = one OpenSpec change. Priority is based on user journey criticality
 | 11.1 | `lms-test-detail-refinement` | — | Refine submission flow (dialogs/overlays) and UI density | ✅ Done |
 | 12 | `lms-assessment-detail` | AssessmentDetailScreen | MCQ test flow with timer | ✅ Done |
 | 13 | `lms-exam-review` | ReviewAnswerDetailScreen | Post-test summary + Per-question review | ✅ Done |
-| 14 | `lms-review-analytics` | ReviewAnalyticsScreen | Charts: subject-wise, time-spent | ⏳ Pending |
+| 14 | `lms-review-analytics` | ReviewAnalyticsScreen | Charts: subject-wise, time-spent | ✅ Done |
 
 ### Phase 4 — Live Classes
 | # | Change Name | Screen(s) | Notes | Status |
