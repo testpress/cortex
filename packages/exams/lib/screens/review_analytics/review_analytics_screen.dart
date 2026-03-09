@@ -5,6 +5,7 @@ import '../../data/mock_review_analytics.dart';
 import '../../models/review_route_payload.dart';
 import '../../models/test_model.dart';
 import 'widgets/analytics_header.dart';
+import 'widgets/donut_legend.dart';
 import 'widgets/explore_details_card.dart';
 import 'widgets/hero_donut_card.dart';
 import 'widgets/metrics_grid.dart';

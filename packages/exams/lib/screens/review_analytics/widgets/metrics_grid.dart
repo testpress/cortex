@@ -23,10 +23,12 @@ class MetricsGrid extends StatelessWidget {
       _MetricData(
         label: 'Percentile',
         value: '${overview.percentile.toStringAsFixed(1)}%',
+        showInfoIcon: true,
       ),
       _MetricData(
         label: 'Accuracy',
         value: '${overview.accuracy.toStringAsFixed(1)}%',
+        showInfoIcon: true,
       ),
       _MetricData(
         label: 'Time Taken',
@@ -59,11 +61,17 @@ class MetricsGrid extends StatelessWidget {
 }
 
 class _MetricData {
-  const _MetricData({required this.label, required this.value, this.subValue});
+  const _MetricData({
+    required this.label,
+    required this.value,
+    this.subValue,
+    this.showInfoIcon = false,
+  });
 
   final String label;
   final String value;
   final String? subValue;
+  final bool showInfoIcon;
 }
 
 class _MetricCard extends StatelessWidget {
@@ -92,7 +100,7 @@ class _MetricCard extends StatelessWidget {
                 color: design.colors.textSecondary,
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
-              if (metric.label == 'Percentile' || metric.label == 'Accuracy')
+              if (metric.showInfoIcon)
                 Padding(
                   padding: EdgeInsets.only(left: design.spacing.xs),
                   child: Icon(

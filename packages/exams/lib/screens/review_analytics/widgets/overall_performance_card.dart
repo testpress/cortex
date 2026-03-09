@@ -32,14 +32,14 @@ class OverallPerformanceCard extends StatelessWidget {
               Builder(
                 builder: (context) {
                   final level = overview.performanceLevel.toLowerCase();
-                  Color levelColor = design.colors.success;
-                  if (level == 'bad') {
-                    levelColor = design.colors.error;
-                  } else if (level == 'average') {
-                    levelColor = design.colors.warning;
-                  } else if (level == 'good') {
-                    levelColor = design.colors.primary;
-                  }
+                  final levelColors = {
+                    'bad': design.colors.error,
+                    'average': design.colors.warning,
+                    'good': design.colors.primary,
+                    'excellent': design.colors.success,
+                  };
+                  final levelColor =
+                      levelColors[level] ?? design.colors.success;
 
                   return Container(
                     padding: EdgeInsets.symmetric(

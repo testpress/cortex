@@ -35,7 +35,7 @@ class _SectionTableState extends State<SectionTable> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final tableContentWidth = 880.0 + (design.spacing.md * 2);
+    final tableContentWidth = 840.0 + (design.spacing.md * 2);
     return Container(
       decoration: BoxDecoration(
         color: design.colors.card,

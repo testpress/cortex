@@ -15,6 +15,11 @@ class ReviewAnalyticsDataset {
 }
 
 class MockReviewAnalyticsFactory {
+  static const int _marksPerCorrectAnswer = 4;
+  static const int _excellentThreshold = 80;
+  static const int _goodThreshold = 65;
+  static const int _averageThreshold = 45;
+
   static ReviewAnalyticsDataset createDataset({
     required List<TestQuestion> questions,
     required Map<String, TestAttemptAnswer> attemptStates,
@@ -70,7 +75,7 @@ class MockReviewAnalyticsFactory {
           totalQuestions: subjectQuestions.length,
           correct: subjectCorrect,
           incorrect: subjectIncorrect,
-          score: (subjectCorrect * 4) - subjectIncorrect,
+          score: (subjectCorrect * _marksPerCorrectAnswer) - subjectIncorrect,
           accuracy: subjectAttempted == 0
               ? 0.0
               : (subjectCorrect / subjectAttempted * 100),
@@ -84,11 +89,12 @@ class MockReviewAnalyticsFactory {
 
     final totalQuestions = questions.length;
     final totalUnanswered = totalQuestions - totalAttempted;
-    final totalScore = ((totalCorrect * 4) - totalIncorrect).clamp(
-      0,
-      totalQuestions * 4,
-    );
-    final maxScore = totalQuestions * 4;
+    final totalScore =
+        ((totalCorrect * _marksPerCorrectAnswer) - totalIncorrect).clamp(
+          0,
+          totalQuestions * _marksPerCorrectAnswer,
+        );
+    final maxScore = totalQuestions * _marksPerCorrectAnswer;
 
     final sectionTotals = SectionPerformanceOverview(
       name: 'Overall',
@@ -130,9 +136,9 @@ class MockReviewAnalyticsFactory {
   static String _performanceLevel(int totalScore, int maxScore) {
     if (maxScore == 0) return 'Bad';
     final percent = totalScore / maxScore * 100;
-    if (percent >= 80) return 'Excellent';
-    if (percent >= 65) return 'Good';
-    if (percent >= 45) return 'Average';
+    if (percent >= _excellentThreshold) return 'Excellent';
+    if (percent >= _goodThreshold) return 'Good';
+    if (percent >= _averageThreshold) return 'Average';
     return 'Bad';
   }
 }
