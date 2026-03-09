@@ -87,14 +87,11 @@ App Root
     ├── DiscussionForumDetail (Q&A thread)
     ├── CreateQuestion (forum question composer)
     ├── NotificationsScreen
-    ├── InsightsScreen (learning analytics)
-    ├── OverallPerformanceScreen
-    ├── SubjectWisePerformanceScreen
     ├── CertificatesScreen (certificate list)
     ├── CertificatePreview (certificate viewer)
     ├── EditProfileScreen
     ├── AppSettingsScreen
-    └── StudyTipsDetailScreen
+    └── LogoutDialog (logout confirmation)
 ```
 
 ---
@@ -144,15 +141,15 @@ Each screen = one OpenSpec change. Priority is based on user journey criticality
 | 18 | `lms-forum-thread` | DiscussionForumDetailScreen | Thread with replies + reply input | ⏳ Pending |
 | 19 | `lms-forum-create` | CreateQuestionPage | Question composer | ⏳ Pending |
 
-### Phase 6 — Profile, Analytics & Settings
+### Phase 6 — Profile, Settings & Account
 | # | Change Name | Screen(s) | Notes | Status |
 |---|---|---|---|---|
 | 20 | `lms-profile-paid-active` | ProfilePage | Full profile with stats, badges, courses | ✅ Done |
-| 21 | `lms-insights` | InsightsScreen + OverallPerformance + SubjectWise | Analytics screens | ⏳ Pending |
+| 21 | `lms-edit-profile` | EditProfileScreen | User profile editing (name, phone, etc) | ⏳ Pending |
 | 22 | `lms-certificates` | CertificatesScreen + CertificatePreview | Certificate PDFs | ✅ Done |
 | 23 | `lms-notifications` | NotificationsScreen | Alert list | ✅ Done |
-| 24 | `lms-settings` | AppSettingsScreen + EditProfileScreen | Settings, edit profile | ✅ Done |
-| 25 | `lms-study-tips` | StudyTipsDetailScreen | Article-style study tip reader | ⏳ Pending |
+| 24 | `lms-settings` | AppSettingsScreen | App settings, playback, and theme settings | ✅ Done |
+| 25 | `lms-logout` | LogoutDialog | Generic logout confirmation dialog | ⏳ Pending |
 
 ### Phase 7 — Upsell & Onboarding Variants
 | # | Change Name | Screen(s) | Notes | Status |
