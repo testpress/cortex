@@ -13,6 +13,7 @@ import 'tables/forum_threads_table.dart';
 import 'tables/user_progress_table.dart';
 import 'tables/app_settings_table.dart';
 import '../models/lesson_dto.dart' show LessonProgressStatus;
+import '../models/settings_models.dart';
 
 part 'app_database.g.dart';
 
@@ -67,9 +68,6 @@ class AppDatabase extends _$AppDatabase {
             await addColumnSafely(lessonsTable.isBookmarked);
           }
           if (from < 5) {
-            // Replaced by 6 due to singleton restructure
-          }
-          if (from < 6) {
             await m.createTable(appSettingsTable);
           }
         },
@@ -95,11 +93,11 @@ class AppDatabase extends _$AppDatabase {
         // Returning a default until the watchdog picks up the new row.
         return const AppSettingsTableData(
             id: 1,
-            appearanceMode: 'system',
-            videoQuality: 'auto',
-            autoPlayNext: true,
-            textSize: 'large',
-            highContrast: false);
+            appearanceMode: AppSettingsDefaults.appearanceMode,
+            videoQuality: AppSettingsDefaults.videoQuality,
+            autoPlayNext: AppSettingsDefaults.autoPlayNext,
+            textSize: AppSettingsDefaults.textSize,
+            highContrast: AppSettingsDefaults.highContrast);
       }
       return entry;
     });

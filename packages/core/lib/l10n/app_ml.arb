@@ -323,5 +323,23 @@
       "current": { "type": "int" },
       "total": { "type": "int" }
     }
-  }
+  },
+  "settingsAppearanceTitle": "രൂപഭാവം",
+  "settingsPlaybackTitle": "പഠനവും പ്ലേബാക്കും",
+  "settingsAccessibilityTitle": "ആക്സസിബിലിറ്റി",
+  "settingsVideoQuality": "വീഡിയോ ഗുണമേന്മ",
+  "settingsVideoQualityCaption": "നിങ്ങളുടെ പ്രിയപ്പെട്ട ഡിഫോൾട്ട് ഗുണമേന്മ സജ്ജമാക്കുക",
+  "settingsAutoPlay": "അടുത്ത പാഠം തനിയെ പ്ലേ ചെയ്യുക",
+  "settingsTextSize": "അക്ഷരത്തിന്റെ വലുപ്പം",
+  "settingsHighContrast": "ഹൈ കോൺട്രാസ്റ്റ്",
+  "settingsDescription": "നിങ്ങളുടെ പഠനാനുഭവം ഇഷ്ടാനുസൃതമാക്കുക",
+  "settingsThemeLightMode": "ലൈറ്റ് മോഡ്",
+  "settingsThemeDarkMode": "ഡാർക്ക് മോഡ്",
+  "settingsThemeSystemDefault": "സിസ്റ്റം ഡിഫോൾട്ട്",
+  "settingsPlaybackDescription": "പ്ലേബാക്ക് ഗുണമേന്മ തിരഞ്ഞെടുക്കുക",
+  "settingsTextSizeDescription": "വായനാ സുഖം ക്രമീകരിക്കുക",
+  "settingsRecommended": "ശുപാർശ ചെയ്യുന്നത്",
+  "settingsDefault": "ഡിഫോൾട്ട്",
+  "settingsAutoPlaySubtitle": "അടുത്ത പാഠം തനിയെ ആരംഭിക്കുക",
+  "settingsHighContrastSubtitle": "കാഴ്ചയിലെ വൈരുദ്ധ്യം വർദ്ധിപ്പിക്കുക"
 }

@@ -37,3 +37,11 @@ class AccessibilitySettings {
     );
   }
 }
+
+class AppSettingsDefaults {
+  static const appearanceMode = 'system';
+  static const videoQuality = 'auto';
+  static const autoPlayNext = true;
+  static const textSize = 'large';
+  static const highContrast = false;
+}

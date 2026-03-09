@@ -48,5 +48,4 @@ graph TD
 | **Race conditions** | Use Drift's `insertOnConflictUpdate` and atomic writes for settings. |
 | **Initialization delay** | Provide immediate UI defaults (system theme) while the database row is loading. |
 | **Complexity** | Keep settings decoupled from feature business logic; features only "read" the state. |
-- **[Risk]** Inconsistent UX when changing video quality mid-playback.  
-  **Mitigation**: The settings will update the global preference provider, but active players will decide how to apply the change (e.g., waiting for the next segment to avoid buffering).
+| **Inconsistent UX (mid-playback)** | The settings will update the global preference provider, but active players will decide how to apply the change (e.g., waiting for the next segment to avoid buffering). |
