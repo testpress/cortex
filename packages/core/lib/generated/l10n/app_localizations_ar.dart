@@ -938,4 +938,59 @@ class AppLocalizationsAr extends AppLocalizations {
   String reviewQuestionCount(int current, int total) {
     return '$current من $total';
   }
+
+  @override
+  String get settingsAppearanceTitle => 'المظهر';
+
+  @override
+  String get settingsPlaybackTitle => 'التعلم والتشغيل';
+
+  @override
+  String get settingsAccessibilityTitle => 'إمكانية الوصول';
+
+  @override
+  String get settingsVideoQuality => 'جودة الفيديو';
+
+  @override
+  String get settingsVideoQualityCaption =>
+      'قم بتعيين الجودة الافتراضية المفضلة لديك';
+
+  @override
+  String get settingsAutoPlay => 'تشغيل الدرس التالي تلقائيًا';
+
+  @override
+  String get settingsTextSize => 'حجم النص';
+
+  @override
+  String get settingsHighContrast => 'تباين عالٍ';
+
+  @override
+  String get settingsDescription => 'تخصيص تجربة التعلم الخاصة بك';
+
+  @override
+  String get settingsThemeLightMode => 'الوضع الفاتح';
+
+  @override
+  String get settingsThemeDarkMode => 'الوضع الداكن';
+
+  @override
+  String get settingsThemeSystemDefault => 'افتراضي النظام';
+
+  @override
+  String get settingsPlaybackDescription => 'اختر جودة التشغيل';
+
+  @override
+  String get settingsTextSizeDescription => 'ضبط راحة القراءة';
+
+  @override
+  String get settingsRecommended => 'موصى به';
+
+  @override
+  String get settingsDefault => 'افتراضي';
+
+  @override
+  String get settingsAutoPlaySubtitle => 'بدء الدرس التالي تلقائيًا';
+
+  @override
+  String get settingsHighContrastSubtitle => 'زيادة التباين البصري';
 }

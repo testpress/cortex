@@ -11,7 +11,9 @@ import 'tables/lessons_table.dart';
 import 'tables/live_classes_table.dart';
 import 'tables/forum_threads_table.dart';
 import 'tables/user_progress_table.dart';
+import 'tables/app_settings_table.dart';
 import '../models/lesson_dto.dart' show LessonProgressStatus;
+import '../models/settings_models.dart';
 
 part 'app_database.g.dart';
 
@@ -23,13 +25,14 @@ part 'app_database.g.dart';
     LiveClassesTable,
     ForumThreadsTable,
     UserProgressTable,
+    AppSettingsTable,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -64,8 +67,49 @@ class AppDatabase extends _$AppDatabase {
           if (from < 4) {
             await addColumnSafely(lessonsTable.isBookmarked);
           }
+          if (from < 5) {
+            await m.createTable(appSettingsTable);
+          }
         },
       );
+
+  // ── App Settings ─────────────────────────────────────────────────────────
+
+  /// Fetch the singleton settings row.
+  Future<AppSettingsTableData> getAppSettings() async {
+    // Atomically ensure the row exists with ID 1.
+    // InsertMode.insertOrIgnore prevents race conditions where multiple notifiers
+    // try to create the initial row simultaneously.
+    await into(appSettingsTable).insert(
+      const AppSettingsTableCompanion(id: Value(1)),
+      mode: InsertMode.insertOrIgnore,
+    );
+    return await select(appSettingsTable).getSingle();
+  }
+
+  /// Watch settings for live updates.
+  Stream<AppSettingsTableData> watchAppSettings() {
+    return select(appSettingsTable).watchSingleOrNull().map((entry) {
+      if (entry == null) {
+        // Initial insert happens out-of-band to establish the row.
+        // Returning a default until the watchdog picks up the new row.
+        return const AppSettingsTableData(
+            id: 1,
+            appearanceMode: AppSettingsDefaults.appearanceMode,
+            videoQuality: AppSettingsDefaults.videoQuality,
+            autoPlayNext: AppSettingsDefaults.autoPlayNext,
+            textSize: AppSettingsDefaults.textSize,
+            highContrast: AppSettingsDefaults.highContrast);
+      }
+      return entry;
+    });
+  }
+
+  /// Update app settings.
+  Future<void> updateSettings(AppSettingsTableCompanion companion) {
+    return (update(appSettingsTable)..where((t) => t.id.equals(1)))
+        .write(companion);
+  }
 
   // ── Courses ──────────────────────────────────────────────────────────────
 

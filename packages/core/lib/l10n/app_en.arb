@@ -502,5 +502,23 @@
       "current": { "type": "int" },
       "total": { "type": "int" }
     }
-  }
+  },
+  "settingsAppearanceTitle": "Appearance",
+  "settingsPlaybackTitle": "Learning & Playback",
+  "settingsAccessibilityTitle": "Accessibility",
+  "settingsVideoQuality": "Video quality",
+  "settingsVideoQualityCaption": "Set your preferred default quality",
+  "settingsAutoPlay": "Auto-play next lesson",
+  "settingsTextSize": "Text size",
+  "settingsHighContrast": "High Contrast",
+  "settingsDescription": "Customize your learning experience",
+  "settingsThemeLightMode": "Light mode",
+  "settingsThemeDarkMode": "Dark mode",
+  "settingsThemeSystemDefault": "System default",
+  "settingsPlaybackDescription": "Choose playback quality",
+  "settingsTextSizeDescription": "Adjust reading comfort",
+  "settingsRecommended": "Recommended",
+  "settingsDefault": "Default",
+  "settingsAutoPlaySubtitle": "Automatically start the next lesson",
+  "settingsHighContrastSubtitle": "Increase visual contrast"
 }

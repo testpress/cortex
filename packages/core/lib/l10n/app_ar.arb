@@ -323,5 +323,23 @@
       "current": { "type": "int" },
       "total": { "type": "int" }
     }
-  }
+  },
+  "settingsAppearanceTitle": "المظهر",
+  "settingsPlaybackTitle": "التعلم والتشغيل",
+  "settingsAccessibilityTitle": "إمكانية الوصول",
+  "settingsVideoQuality": "جودة الفيديو",
+  "settingsVideoQualityCaption": "قم بتعيين الجودة الافتراضية المفضلة لديك",
+  "settingsAutoPlay": "تشغيل الدرس التالي تلقائيًا",
+  "settingsTextSize": "حجم النص",
+  "settingsHighContrast": "تباين عالٍ",
+  "settingsDescription": "تخصيص تجربة التعلم الخاصة بك",
+  "settingsThemeLightMode": "الوضع الفاتح",
+  "settingsThemeDarkMode": "الوضع الداكن",
+  "settingsThemeSystemDefault": "افتراضي النظام",
+  "settingsPlaybackDescription": "اختر جودة التشغيل",
+  "settingsTextSizeDescription": "ضبط راحة القراءة",
+  "settingsRecommended": "موصى به",
+  "settingsDefault": "افتراضي",
+  "settingsAutoPlaySubtitle": "بدء الدرس التالي تلقائيًا",
+  "settingsHighContrastSubtitle": "زيادة التباين البصري"
 }

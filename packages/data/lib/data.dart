@@ -19,6 +19,7 @@ export 'models/dashboard_banner_dto.dart';
 export 'models/learner_dto.dart';
 export 'models/quick_shortcut_dto.dart';
 export 'models/recent_activity_dto.dart';
+export 'models/settings_models.dart';
 
 // Database
 export 'db/app_database.dart';
@@ -33,6 +34,7 @@ export 'repositories/course_repository.dart';
 export 'repositories/user_repository.dart';
 export 'repositories/forum_repository.dart';
 export 'repositories/exam_repository.dart';
+export 'repositories/settings_repository.dart';
 
 // Providers
 export 'providers/database_provider.dart';
@@ -46,3 +48,4 @@ export 'providers/auth_provider.dart';
 export 'providers/initialization_provider.dart';
 export 'providers/lesson_providers.dart';
 export 'providers/design_mode_provider.dart';
+export 'providers/settings_providers.dart';

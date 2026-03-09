@@ -1766,6 +1766,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{current} of {total}'**
   String reviewQuestionCount(int current, int total);
+
+  /// No description provided for @settingsAppearanceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get settingsAppearanceTitle;
+
+  /// No description provided for @settingsPlaybackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning & Playback'**
+  String get settingsPlaybackTitle;
+
+  /// No description provided for @settingsAccessibilityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Accessibility'**
+  String get settingsAccessibilityTitle;
+
+  /// No description provided for @settingsVideoQuality.
+  ///
+  /// In en, this message translates to:
+  /// **'Video quality'**
+  String get settingsVideoQuality;
+
+  /// No description provided for @settingsVideoQualityCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your preferred default quality'**
+  String get settingsVideoQualityCaption;
+
+  /// No description provided for @settingsAutoPlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-play next lesson'**
+  String get settingsAutoPlay;
+
+  /// No description provided for @settingsTextSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Text size'**
+  String get settingsTextSize;
+
+  /// No description provided for @settingsHighContrast.
+  ///
+  /// In en, this message translates to:
+  /// **'High Contrast'**
+  String get settingsHighContrast;
+
+  /// No description provided for @settingsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize your learning experience'**
+  String get settingsDescription;
+
+  /// No description provided for @settingsThemeLightMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Light mode'**
+  String get settingsThemeLightMode;
+
+  /// No description provided for @settingsThemeDarkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark mode'**
+  String get settingsThemeDarkMode;
+
+  /// No description provided for @settingsThemeSystemDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'System default'**
+  String get settingsThemeSystemDefault;
+
+  /// No description provided for @settingsPlaybackDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose playback quality'**
+  String get settingsPlaybackDescription;
+
+  /// No description provided for @settingsTextSizeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust reading comfort'**
+  String get settingsTextSizeDescription;
+
+  /// No description provided for @settingsRecommended.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended'**
+  String get settingsRecommended;
+
+  /// No description provided for @settingsDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get settingsDefault;
+
+  /// No description provided for @settingsAutoPlaySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatically start the next lesson'**
+  String get settingsAutoPlaySubtitle;
+
+  /// No description provided for @settingsHighContrastSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Increase visual contrast'**
+  String get settingsHighContrastSubtitle;
 }
 
 class _AppLocalizationsDelegate
