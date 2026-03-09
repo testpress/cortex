@@ -5,6 +5,7 @@ import '../repositories/course_repository.dart';
 import '../repositories/user_repository.dart';
 import '../repositories/forum_repository.dart';
 import '../repositories/exam_repository.dart';
+import '../repositories/settings_repository.dart';
 import 'database_provider.dart';
 import 'data_source_provider.dart';
 
@@ -38,4 +39,11 @@ Future<ForumRepository> forumRepository(Ref ref) async {
 @Riverpod(keepAlive: true)
 ExamRepository examRepository(Ref ref) {
   return const ExamRepository();
+}
+
+/// Provides the [SettingsRepository].
+@Riverpod(keepAlive: true)
+Future<SettingsRepository> settingsRepository(Ref ref) async {
+  final db = await ref.watch(appDatabaseProvider.future);
+  return SettingsRepository(db);
 }

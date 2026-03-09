@@ -283,6 +283,13 @@ final GoRouter appRouter = GoRouter(
                   },
                 ),
                 GoRoute(
+                  name: 'profile-settings',
+                  path: 'settings',
+                  builder: (context, state) {
+                    return AppSettingsScreen(onBack: () => context.pop());
+                  },
+                ),
+                GoRoute(
                   name: 'profile-certificates',
                   path: 'certificates',
                   builder: (context, state) {

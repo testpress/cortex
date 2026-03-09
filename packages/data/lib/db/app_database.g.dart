@@ -2710,6 +2710,361 @@ class UserProgressTableCompanion
   }
 }
 
+class $AppSettingsTableTable extends AppSettingsTable
+    with TableInfo<$AppSettingsTableTable, AppSettingsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AppSettingsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _appearanceModeMeta =
+      const VerificationMeta('appearanceMode');
+  @override
+  late final GeneratedColumn<String> appearanceMode = GeneratedColumn<String>(
+      'appearance_mode', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('system'));
+  static const VerificationMeta _videoQualityMeta =
+      const VerificationMeta('videoQuality');
+  @override
+  late final GeneratedColumn<String> videoQuality = GeneratedColumn<String>(
+      'video_quality', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('auto'));
+  static const VerificationMeta _autoPlayNextMeta =
+      const VerificationMeta('autoPlayNext');
+  @override
+  late final GeneratedColumn<bool> autoPlayNext = GeneratedColumn<bool>(
+      'auto_play_next', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("auto_play_next" IN (0, 1))'),
+      defaultValue: const Constant(true));
+  static const VerificationMeta _textSizeMeta =
+      const VerificationMeta('textSize');
+  @override
+  late final GeneratedColumn<String> textSize = GeneratedColumn<String>(
+      'text_size', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('large'));
+  static const VerificationMeta _highContrastMeta =
+      const VerificationMeta('highContrast');
+  @override
+  late final GeneratedColumn<bool> highContrast = GeneratedColumn<bool>(
+      'high_contrast', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("high_contrast" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, appearanceMode, videoQuality, autoPlayNext, textSize, highContrast];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'app_settings_table';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<AppSettingsTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('appearance_mode')) {
+      context.handle(
+          _appearanceModeMeta,
+          appearanceMode.isAcceptableOrUnknown(
+              data['appearance_mode']!, _appearanceModeMeta));
+    }
+    if (data.containsKey('video_quality')) {
+      context.handle(
+          _videoQualityMeta,
+          videoQuality.isAcceptableOrUnknown(
+              data['video_quality']!, _videoQualityMeta));
+    }
+    if (data.containsKey('auto_play_next')) {
+      context.handle(
+          _autoPlayNextMeta,
+          autoPlayNext.isAcceptableOrUnknown(
+              data['auto_play_next']!, _autoPlayNextMeta));
+    }
+    if (data.containsKey('text_size')) {
+      context.handle(_textSizeMeta,
+          textSize.isAcceptableOrUnknown(data['text_size']!, _textSizeMeta));
+    }
+    if (data.containsKey('high_contrast')) {
+      context.handle(
+          _highContrastMeta,
+          highContrast.isAcceptableOrUnknown(
+              data['high_contrast']!, _highContrastMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AppSettingsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AppSettingsTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      appearanceMode: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}appearance_mode'])!,
+      videoQuality: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}video_quality'])!,
+      autoPlayNext: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}auto_play_next'])!,
+      textSize: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}text_size'])!,
+      highContrast: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}high_contrast'])!,
+    );
+  }
+
+  @override
+  $AppSettingsTableTable createAlias(String alias) {
+    return $AppSettingsTableTable(attachedDatabase, alias);
+  }
+}
+
+class AppSettingsTableData extends DataClass
+    implements Insertable<AppSettingsTableData> {
+  final int id;
+  final String appearanceMode;
+  final String videoQuality;
+  final bool autoPlayNext;
+  final String textSize;
+  final bool highContrast;
+  const AppSettingsTableData(
+      {required this.id,
+      required this.appearanceMode,
+      required this.videoQuality,
+      required this.autoPlayNext,
+      required this.textSize,
+      required this.highContrast});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['appearance_mode'] = Variable<String>(appearanceMode);
+    map['video_quality'] = Variable<String>(videoQuality);
+    map['auto_play_next'] = Variable<bool>(autoPlayNext);
+    map['text_size'] = Variable<String>(textSize);
+    map['high_contrast'] = Variable<bool>(highContrast);
+    return map;
+  }
+
+  AppSettingsTableCompanion toCompanion(bool nullToAbsent) {
+    return AppSettingsTableCompanion(
+      id: Value(id),
+      appearanceMode: Value(appearanceMode),
+      videoQuality: Value(videoQuality),
+      autoPlayNext: Value(autoPlayNext),
+      textSize: Value(textSize),
+      highContrast: Value(highContrast),
+    );
+  }
+
+  factory AppSettingsTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AppSettingsTableData(
+      id: serializer.fromJson<int>(json['id']),
+      appearanceMode: serializer.fromJson<String>(json['appearanceMode']),
+      videoQuality: serializer.fromJson<String>(json['videoQuality']),
+      autoPlayNext: serializer.fromJson<bool>(json['autoPlayNext']),
+      textSize: serializer.fromJson<String>(json['textSize']),
+      highContrast: serializer.fromJson<bool>(json['highContrast']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'appearanceMode': serializer.toJson<String>(appearanceMode),
+      'videoQuality': serializer.toJson<String>(videoQuality),
+      'autoPlayNext': serializer.toJson<bool>(autoPlayNext),
+      'textSize': serializer.toJson<String>(textSize),
+      'highContrast': serializer.toJson<bool>(highContrast),
+    };
+  }
+
+  AppSettingsTableData copyWith(
+          {int? id,
+          String? appearanceMode,
+          String? videoQuality,
+          bool? autoPlayNext,
+          String? textSize,
+          bool? highContrast}) =>
+      AppSettingsTableData(
+        id: id ?? this.id,
+        appearanceMode: appearanceMode ?? this.appearanceMode,
+        videoQuality: videoQuality ?? this.videoQuality,
+        autoPlayNext: autoPlayNext ?? this.autoPlayNext,
+        textSize: textSize ?? this.textSize,
+        highContrast: highContrast ?? this.highContrast,
+      );
+  AppSettingsTableData copyWithCompanion(AppSettingsTableCompanion data) {
+    return AppSettingsTableData(
+      id: data.id.present ? data.id.value : this.id,
+      appearanceMode: data.appearanceMode.present
+          ? data.appearanceMode.value
+          : this.appearanceMode,
+      videoQuality: data.videoQuality.present
+          ? data.videoQuality.value
+          : this.videoQuality,
+      autoPlayNext: data.autoPlayNext.present
+          ? data.autoPlayNext.value
+          : this.autoPlayNext,
+      textSize: data.textSize.present ? data.textSize.value : this.textSize,
+      highContrast: data.highContrast.present
+          ? data.highContrast.value
+          : this.highContrast,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AppSettingsTableData(')
+          ..write('id: $id, ')
+          ..write('appearanceMode: $appearanceMode, ')
+          ..write('videoQuality: $videoQuality, ')
+          ..write('autoPlayNext: $autoPlayNext, ')
+          ..write('textSize: $textSize, ')
+          ..write('highContrast: $highContrast')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id, appearanceMode, videoQuality, autoPlayNext, textSize, highContrast);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AppSettingsTableData &&
+          other.id == this.id &&
+          other.appearanceMode == this.appearanceMode &&
+          other.videoQuality == this.videoQuality &&
+          other.autoPlayNext == this.autoPlayNext &&
+          other.textSize == this.textSize &&
+          other.highContrast == this.highContrast);
+}
+
+class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
+  final Value<int> id;
+  final Value<String> appearanceMode;
+  final Value<String> videoQuality;
+  final Value<bool> autoPlayNext;
+  final Value<String> textSize;
+  final Value<bool> highContrast;
+  const AppSettingsTableCompanion({
+    this.id = const Value.absent(),
+    this.appearanceMode = const Value.absent(),
+    this.videoQuality = const Value.absent(),
+    this.autoPlayNext = const Value.absent(),
+    this.textSize = const Value.absent(),
+    this.highContrast = const Value.absent(),
+  });
+  AppSettingsTableCompanion.insert({
+    this.id = const Value.absent(),
+    this.appearanceMode = const Value.absent(),
+    this.videoQuality = const Value.absent(),
+    this.autoPlayNext = const Value.absent(),
+    this.textSize = const Value.absent(),
+    this.highContrast = const Value.absent(),
+  });
+  static Insertable<AppSettingsTableData> custom({
+    Expression<int>? id,
+    Expression<String>? appearanceMode,
+    Expression<String>? videoQuality,
+    Expression<bool>? autoPlayNext,
+    Expression<String>? textSize,
+    Expression<bool>? highContrast,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (appearanceMode != null) 'appearance_mode': appearanceMode,
+      if (videoQuality != null) 'video_quality': videoQuality,
+      if (autoPlayNext != null) 'auto_play_next': autoPlayNext,
+      if (textSize != null) 'text_size': textSize,
+      if (highContrast != null) 'high_contrast': highContrast,
+    });
+  }
+
+  AppSettingsTableCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? appearanceMode,
+      Value<String>? videoQuality,
+      Value<bool>? autoPlayNext,
+      Value<String>? textSize,
+      Value<bool>? highContrast}) {
+    return AppSettingsTableCompanion(
+      id: id ?? this.id,
+      appearanceMode: appearanceMode ?? this.appearanceMode,
+      videoQuality: videoQuality ?? this.videoQuality,
+      autoPlayNext: autoPlayNext ?? this.autoPlayNext,
+      textSize: textSize ?? this.textSize,
+      highContrast: highContrast ?? this.highContrast,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (appearanceMode.present) {
+      map['appearance_mode'] = Variable<String>(appearanceMode.value);
+    }
+    if (videoQuality.present) {
+      map['video_quality'] = Variable<String>(videoQuality.value);
+    }
+    if (autoPlayNext.present) {
+      map['auto_play_next'] = Variable<bool>(autoPlayNext.value);
+    }
+    if (textSize.present) {
+      map['text_size'] = Variable<String>(textSize.value);
+    }
+    if (highContrast.present) {
+      map['high_contrast'] = Variable<bool>(highContrast.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AppSettingsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('appearanceMode: $appearanceMode, ')
+          ..write('videoQuality: $videoQuality, ')
+          ..write('autoPlayNext: $autoPlayNext, ')
+          ..write('textSize: $textSize, ')
+          ..write('highContrast: $highContrast')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2722,6 +3077,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $ForumThreadsTableTable(this);
   late final $UserProgressTableTable userProgressTable =
       $UserProgressTableTable(this);
+  late final $AppSettingsTableTable appSettingsTable =
+      $AppSettingsTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2732,7 +3089,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         lessonsTable,
         liveClassesTable,
         forumThreadsTable,
-        userProgressTable
+        userProgressTable,
+        appSettingsTable
       ];
 }
 
@@ -4088,6 +4446,196 @@ typedef $$UserProgressTableTableProcessedTableManager = ProcessedTableManager<
     ),
     UserProgressTableData,
     PrefetchHooks Function()>;
+typedef $$AppSettingsTableTableCreateCompanionBuilder
+    = AppSettingsTableCompanion Function({
+  Value<int> id,
+  Value<String> appearanceMode,
+  Value<String> videoQuality,
+  Value<bool> autoPlayNext,
+  Value<String> textSize,
+  Value<bool> highContrast,
+});
+typedef $$AppSettingsTableTableUpdateCompanionBuilder
+    = AppSettingsTableCompanion Function({
+  Value<int> id,
+  Value<String> appearanceMode,
+  Value<String> videoQuality,
+  Value<bool> autoPlayNext,
+  Value<String> textSize,
+  Value<bool> highContrast,
+});
+
+class $$AppSettingsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $AppSettingsTableTable> {
+  $$AppSettingsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get appearanceMode => $composableBuilder(
+      column: $table.appearanceMode,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get videoQuality => $composableBuilder(
+      column: $table.videoQuality, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get autoPlayNext => $composableBuilder(
+      column: $table.autoPlayNext, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get textSize => $composableBuilder(
+      column: $table.textSize, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get highContrast => $composableBuilder(
+      column: $table.highContrast, builder: (column) => ColumnFilters(column));
+}
+
+class $$AppSettingsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $AppSettingsTableTable> {
+  $$AppSettingsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get appearanceMode => $composableBuilder(
+      column: $table.appearanceMode,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get videoQuality => $composableBuilder(
+      column: $table.videoQuality,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get autoPlayNext => $composableBuilder(
+      column: $table.autoPlayNext,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get textSize => $composableBuilder(
+      column: $table.textSize, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get highContrast => $composableBuilder(
+      column: $table.highContrast,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$AppSettingsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AppSettingsTableTable> {
+  $$AppSettingsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get appearanceMode => $composableBuilder(
+      column: $table.appearanceMode, builder: (column) => column);
+
+  GeneratedColumn<String> get videoQuality => $composableBuilder(
+      column: $table.videoQuality, builder: (column) => column);
+
+  GeneratedColumn<bool> get autoPlayNext => $composableBuilder(
+      column: $table.autoPlayNext, builder: (column) => column);
+
+  GeneratedColumn<String> get textSize =>
+      $composableBuilder(column: $table.textSize, builder: (column) => column);
+
+  GeneratedColumn<bool> get highContrast => $composableBuilder(
+      column: $table.highContrast, builder: (column) => column);
+}
+
+class $$AppSettingsTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $AppSettingsTableTable,
+    AppSettingsTableData,
+    $$AppSettingsTableTableFilterComposer,
+    $$AppSettingsTableTableOrderingComposer,
+    $$AppSettingsTableTableAnnotationComposer,
+    $$AppSettingsTableTableCreateCompanionBuilder,
+    $$AppSettingsTableTableUpdateCompanionBuilder,
+    (
+      AppSettingsTableData,
+      BaseReferences<_$AppDatabase, $AppSettingsTableTable,
+          AppSettingsTableData>
+    ),
+    AppSettingsTableData,
+    PrefetchHooks Function()> {
+  $$AppSettingsTableTableTableManager(
+      _$AppDatabase db, $AppSettingsTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AppSettingsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AppSettingsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AppSettingsTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> appearanceMode = const Value.absent(),
+            Value<String> videoQuality = const Value.absent(),
+            Value<bool> autoPlayNext = const Value.absent(),
+            Value<String> textSize = const Value.absent(),
+            Value<bool> highContrast = const Value.absent(),
+          }) =>
+              AppSettingsTableCompanion(
+            id: id,
+            appearanceMode: appearanceMode,
+            videoQuality: videoQuality,
+            autoPlayNext: autoPlayNext,
+            textSize: textSize,
+            highContrast: highContrast,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> appearanceMode = const Value.absent(),
+            Value<String> videoQuality = const Value.absent(),
+            Value<bool> autoPlayNext = const Value.absent(),
+            Value<String> textSize = const Value.absent(),
+            Value<bool> highContrast = const Value.absent(),
+          }) =>
+              AppSettingsTableCompanion.insert(
+            id: id,
+            appearanceMode: appearanceMode,
+            videoQuality: videoQuality,
+            autoPlayNext: autoPlayNext,
+            textSize: textSize,
+            highContrast: highContrast,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$AppSettingsTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $AppSettingsTableTable,
+    AppSettingsTableData,
+    $$AppSettingsTableTableFilterComposer,
+    $$AppSettingsTableTableOrderingComposer,
+    $$AppSettingsTableTableAnnotationComposer,
+    $$AppSettingsTableTableCreateCompanionBuilder,
+    $$AppSettingsTableTableUpdateCompanionBuilder,
+    (
+      AppSettingsTableData,
+      BaseReferences<_$AppDatabase, $AppSettingsTableTable,
+          AppSettingsTableData>
+    ),
+    AppSettingsTableData,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -4104,4 +4652,6 @@ class $AppDatabaseManager {
       $$ForumThreadsTableTableTableManager(_db, _db.forumThreadsTable);
   $$UserProgressTableTableTableManager get userProgressTable =>
       $$UserProgressTableTableTableManager(_db, _db.userProgressTable);
+  $$AppSettingsTableTableTableManager get appSettingsTable =>
+      $$AppSettingsTableTableTableManager(_db, _db.appSettingsTable);
 }

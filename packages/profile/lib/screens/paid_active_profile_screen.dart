@@ -15,10 +15,12 @@ class ProfilePage extends ConsumerWidget {
     super.key,
     this.onOpenNotifications,
     this.onOpenCertificates,
+    this.onOpenSettings,
   });
 
   final VoidCallback? onOpenNotifications;
   final VoidCallback? onOpenCertificates;
+  final VoidCallback? onOpenSettings;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -102,6 +104,9 @@ class ProfilePage extends ConsumerWidget {
                   onCertificatesTap:
                       onOpenCertificates ??
                       () => context.pushNamed('profile-certificates'),
+                  onSettingsTap:
+                      onOpenSettings ??
+                      () => context.pushNamed('profile-settings'),
                 ),
 
                 SizedBox(height: design.spacing.xxl),

@@ -6,10 +6,12 @@ class AccountPreferencesSection extends StatelessWidget {
     super.key,
     this.onNotificationsTap,
     this.onCertificatesTap,
+    this.onSettingsTap,
   });
 
   final VoidCallback? onNotificationsTap;
   final VoidCallback? onCertificatesTap;
+  final VoidCallback? onSettingsTap;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +61,7 @@ class AccountPreferencesSection extends StatelessWidget {
                   icon: LucideIcons.settings,
                   label: l10n.drawerSettings,
                   iconColor: design.colors.accent1,
-                  onTap: () {},
+                  onTap: onSettingsTap ?? () {},
                 ),
                 _Divider(),
                 _PreferenceItem(

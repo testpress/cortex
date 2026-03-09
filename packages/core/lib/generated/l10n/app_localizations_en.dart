@@ -939,4 +939,59 @@ class AppLocalizationsEn extends AppLocalizations {
   String reviewQuestionCount(int current, int total) {
     return '$current of $total';
   }
+
+  @override
+  String get settingsAppearanceTitle => 'Appearance';
+
+  @override
+  String get settingsPlaybackTitle => 'Learning & Playback';
+
+  @override
+  String get settingsAccessibilityTitle => 'Accessibility';
+
+  @override
+  String get settingsVideoQuality => 'Video Quality';
+
+  @override
+  String get settingsVideoQualityCaption =>
+      'Set your preferred default quality';
+
+  @override
+  String get settingsAutoPlay => 'Auto-play next lesson';
+
+  @override
+  String get settingsTextSize => 'Text Size';
+
+  @override
+  String get settingsHighContrast => 'High Contrast';
+
+  @override
+  String get settingsDescription => 'Customize your learning experience';
+
+  @override
+  String get settingsThemeLightMode => 'Light mode';
+
+  @override
+  String get settingsThemeDarkMode => 'Dark mode';
+
+  @override
+  String get settingsThemeSystemDefault => 'System default';
+
+  @override
+  String get settingsPlaybackDescription => 'Choose playback quality';
+
+  @override
+  String get settingsTextSizeDescription => 'Adjust reading comfort';
+
+  @override
+  String get settingsRecommended => 'Recommended';
+
+  @override
+  String get settingsDefault => 'Default';
+
+  @override
+  String get settingsAutoPlaySubtitle => 'Automatically start the next lesson';
+
+  @override
+  String get settingsHighContrastSubtitle => 'Increase visual contrast';
 }

@@ -107,7 +107,9 @@ class DashboardDrawer extends ConsumerWidget {
                 final newMode = currentMode == DesignMode.dark
                     ? DesignMode.light
                     : DesignMode.dark;
-                ref.read(designModeProvider.notifier).state = newMode;
+                ref
+                    .read(appearanceSettingsNotifierProvider.notifier)
+                    .updateMode(newMode);
               },
               keepMenuOpen: true,
             ),
