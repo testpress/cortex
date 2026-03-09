@@ -11,7 +11,7 @@ class AppearanceSettingsNotifier extends _$AppearanceSettingsNotifier {
   Future<AppearanceSettings> build() async {
     final repository = await ref.watch(settingsRepositoryProvider.future);
     final settings = await repository.getSettings();
-    
+
     final mode = DesignMode.values.firstWhere(
       (e) => e.name == settings.appearanceMode,
       orElse: () => DesignMode.system,
@@ -39,7 +39,7 @@ class PlaybackSettingsNotifier extends _$PlaybackSettingsNotifier {
     );
 
     return PlaybackSettings(
-      quality: quality, 
+      quality: quality,
       autoPlayNext: settings.autoPlayNext,
     );
   }
@@ -47,7 +47,7 @@ class PlaybackSettingsNotifier extends _$PlaybackSettingsNotifier {
   Future<void> updateQuality(VideoQuality quality) async {
     final repository = await ref.read(settingsRepositoryProvider.future);
     await repository.updateSettings(videoQuality: quality.name);
-    
+
     final current = await future;
     state = AsyncValue.data(current.copyWith(quality: quality));
   }
@@ -55,7 +55,7 @@ class PlaybackSettingsNotifier extends _$PlaybackSettingsNotifier {
   Future<void> updateAutoPlay(bool enabled) async {
     final repository = await ref.read(settingsRepositoryProvider.future);
     await repository.updateSettings(autoPlayNext: enabled);
-    
+
     final current = await future;
     state = AsyncValue.data(current.copyWith(autoPlayNext: enabled));
   }
@@ -74,7 +74,7 @@ class AccessibilitySettingsNotifier extends _$AccessibilitySettingsNotifier {
     );
 
     return AccessibilitySettings(
-      textScale: textScale, 
+      textScale: textScale,
       highContrast: settings.highContrast,
     );
   }
@@ -82,7 +82,7 @@ class AccessibilitySettingsNotifier extends _$AccessibilitySettingsNotifier {
   Future<void> updateTextScale(TextScaleSize size) async {
     final repository = await ref.read(settingsRepositoryProvider.future);
     await repository.updateSettings(textSize: size.name);
-    
+
     final current = await future;
     state = AsyncValue.data(current.copyWith(textScale: size));
   }
@@ -90,7 +90,7 @@ class AccessibilitySettingsNotifier extends _$AccessibilitySettingsNotifier {
   Future<void> updateHighContrast(bool enabled) async {
     final repository = await ref.read(settingsRepositoryProvider.future);
     await repository.updateSettings(highContrast: enabled);
-    
+
     final current = await future;
     state = AsyncValue.data(current.copyWith(highContrast: enabled));
   }

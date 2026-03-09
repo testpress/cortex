@@ -116,11 +116,7 @@ class _PreferenceItem extends StatelessWidget {
                 color: iconColor.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(design.radius.md),
               ),
-              child: Icon(
-                icon,
-                color: iconColor,
-                size: design.iconSize.md,
-              ),
+              child: Icon(icon, color: iconColor, size: design.iconSize.md),
             ),
             SizedBox(width: design.spacing.md),
             Expanded(
@@ -145,9 +141,6 @@ class _Divider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    return Container(
-      height: 1,
-      color: design.colors.divider,
-    );
+    return Container(height: 1, color: design.colors.divider);
   }
 }

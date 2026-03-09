@@ -12,9 +12,7 @@ class UserRepository {
   UserRepository(this._db, this._source);
 
   Stream<List<UserProgressDto>> watchProgress(String userId) {
-    return _db
-        .watchProgressForUser(userId)
-        .map(
+    return _db.watchProgressForUser(userId).map(
           (rows) => rows
               .map(
                 (r) => UserProgressDto(

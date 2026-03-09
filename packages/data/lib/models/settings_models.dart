@@ -1,6 +1,7 @@
 import 'package:core/core.dart';
 
 enum VideoQuality { auto, high, medium, low }
+
 enum TextScaleSize { small, medium, large }
 
 class AppearanceSettings {
@@ -30,7 +31,8 @@ class AccessibilitySettings {
   final bool highContrast;
   AccessibilitySettings({required this.textScale, required this.highContrast});
 
-  AccessibilitySettings copyWith({TextScaleSize? textScale, bool? highContrast}) {
+  AccessibilitySettings copyWith(
+      {TextScaleSize? textScale, bool? highContrast}) {
     return AccessibilitySettings(
       textScale: textScale ?? this.textScale,
       highContrast: highContrast ?? this.highContrast,

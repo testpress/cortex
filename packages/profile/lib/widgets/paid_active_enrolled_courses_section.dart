@@ -3,10 +3,7 @@ import 'package:core/core.dart';
 import 'package:data/data.dart';
 
 class EnrolledCoursesSection extends StatelessWidget {
-  const EnrolledCoursesSection({
-    super.key,
-    required this.courses,
-  });
+  const EnrolledCoursesSection({super.key, required this.courses});
 
   final List<CourseDto> courses;
 
@@ -25,35 +22,36 @@ class EnrolledCoursesSection extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-                AppText.title(
-                  l10n.profileActiveCoursesTitle,
-                  color: design.colors.textPrimary,
-                ),
-                AppText.labelSmall(
-                  l10n.viewAllAction,
-                  color: design.colors.primary,
-                ),
-              ],
-            ),
+              AppText.title(
+                l10n.profileActiveCoursesTitle,
+                color: design.colors.textPrimary,
+              ),
+              AppText.labelSmall(
+                l10n.viewAllAction,
+                color: design.colors.primary,
+              ),
+            ],
           ),
-          SizedBox(height: design.spacing.md),
-          SizedBox(
-            height: 120, // Calculated height based on Study tab's padding and typography
-            child: ListView.separated(
-              padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-              scrollDirection: Axis.horizontal,
-              itemCount: courses.length,
-              separatorBuilder: (context, index) =>
-                  SizedBox(width: design.spacing.md),
-              itemBuilder: (context, index) {
-                return _ActiveCourseCard(course: courses[index]);
-              },
-            ),
+        ),
+        SizedBox(height: design.spacing.md),
+        SizedBox(
+          height:
+              120, // Calculated height based on Study tab's padding and typography
+          child: ListView.separated(
+            padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+            scrollDirection: Axis.horizontal,
+            itemCount: courses.length,
+            separatorBuilder: (context, index) =>
+                SizedBox(width: design.spacing.md),
+            itemBuilder: (context, index) {
+              return _ActiveCourseCard(course: courses[index]);
+            },
           ),
-        ],
-      );
-    }
+        ),
+      ],
+    );
   }
+}
 
 class _ActiveCourseCard extends StatelessWidget {
   const _ActiveCourseCard({required this.course});
@@ -128,9 +126,7 @@ class _ActiveCourseCard extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: design.spacing.md),
-                AppText.label(
-                  '${course.progress}%',
-                ),
+                AppText.label('${course.progress}%'),
               ],
             ),
           ],

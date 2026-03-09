@@ -93,8 +93,9 @@ class ProfileLearningSnapshot extends StatelessWidget {
                             child: _InsightCard(
                               title: l10n.weakSubjectLabel,
                               value: focusNeededIn!,
-                              colors:
-                                  design.subjectPalette.atIndex(6), // Orange
+                              colors: design.subjectPalette.atIndex(
+                                6,
+                              ), // Orange
                             ),
                           ),
                       ],
@@ -176,15 +177,9 @@ class _InsightCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppText.caption(
-            title,
-            color: colors.foreground,
-          ),
+          AppText.caption(title, color: colors.foreground),
           SizedBox(height: design.spacing.sm),
-          AppText.label(
-            value,
-            color: colors.accent,
-          ),
+          AppText.label(value, color: colors.accent),
         ],
       ),
     );

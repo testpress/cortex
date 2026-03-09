@@ -148,41 +148,41 @@ class _NotificationsHeader extends StatelessWidget {
           left: design.spacing.md,
           right: design.spacing.md,
         ),
-      decoration: BoxDecoration(
-        color: design.isDark ? design.colors.surface : design.colors.card,
-        border: Border(bottom: BorderSide(color: design.colors.border)),
-      ),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: AppSemantics.button(
-          label: l10n.curriculumBackButton,
-          onTap: onBack,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
+        decoration: BoxDecoration(
+          color: design.isDark ? design.colors.surface : design.colors.card,
+          border: Border(bottom: BorderSide(color: design.colors.border)),
+        ),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: AppSemantics.button(
+            label: l10n.curriculumBackButton,
             onTap: onBack,
-            child: SizedBox(
-              height: design.iconSize.lg + design.spacing.xs,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(
-                    LucideIcons.chevronLeft,
-                    size: design.iconSize.md,
-                    color: design.colors.textPrimary,
-                  ),
-                  SizedBox(width: design.spacing.sm),
-                  AppText.subtitle(
-                    l10n.curriculumBackButton,
-                    color: design.colors.textPrimary,
-                    style: const TextStyle(fontWeight: FontWeight.w500),
-                  ),
-                ],
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: onBack,
+              child: SizedBox(
+                height: design.iconSize.lg + design.spacing.xs,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      LucideIcons.chevronLeft,
+                      size: design.iconSize.md,
+                      color: design.colors.textPrimary,
+                    ),
+                    SizedBox(width: design.spacing.sm),
+                    AppText.subtitle(
+                      l10n.curriculumBackButton,
+                      color: design.colors.textPrimary,
+                      style: const TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
       ),
     );
   }
@@ -216,7 +216,8 @@ class _NotificationRow extends StatelessWidget {
     final l10n = L10n.of(context);
 
     return AppSemantics.button(
-      label: '$label, ${enabled ? l10n.notificationsStateOn : l10n.notificationsStateOff}',
+      label:
+          '$label, ${enabled ? l10n.notificationsStateOn : l10n.notificationsStateOff}',
       onTap: onToggle,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,

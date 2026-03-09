@@ -6,10 +6,8 @@ import '../data/profile_mock_data.dart';
 
 part 'profile_providers.g.dart';
 
-
 @riverpod
 Future<List<RecentActivityDto>> profileRecentActivity(Ref ref) async {
   await Future.delayed(const Duration(milliseconds: 400));
   return mockRecentActivity;
 }
-

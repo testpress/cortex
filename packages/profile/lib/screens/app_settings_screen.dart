@@ -4,10 +4,7 @@ import 'package:core/core.dart';
 import 'package:data/data.dart';
 
 class AppSettingsScreen extends ConsumerWidget {
-  const AppSettingsScreen({
-    super.key,
-    required this.onBack,
-  });
+  const AppSettingsScreen({super.key, required this.onBack});
 
   final VoidCallback onBack;
 
@@ -84,10 +81,7 @@ class _SettingsHeader extends StatelessWidget {
       decoration: BoxDecoration(
         color: design.colors.card,
         border: Border(
-          bottom: BorderSide(
-            color: design.colors.border,
-            width: 1,
-          ),
+          bottom: BorderSide(color: design.colors.border, width: 1),
         ),
       ),
       child: Align(
@@ -275,7 +269,10 @@ class _PlaybackSection extends ConsumerWidget {
   }
 
   Widget _buildVideoQualityGroup(
-      BuildContext context, WidgetRef ref, PlaybackSettings settings) {
+    BuildContext context,
+    WidgetRef ref,
+    PlaybackSettings settings,
+  ) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
@@ -303,9 +300,7 @@ class _PlaybackSection extends ConsumerWidget {
                   style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
                 SizedBox(height: design.spacing.xs / 2),
-                AppText.labelSmall(
-                  l10n.settingsPlaybackDescription,
-                ),
+                AppText.labelSmall(l10n.settingsPlaybackDescription),
                 SizedBox(height: design.spacing.md),
                 ...VideoQuality.values.expand((v) {
                   final isSelected = settings.quality == v;
@@ -317,7 +312,9 @@ class _PlaybackSection extends ConsumerWidget {
                           .updateQuality(v),
                       behavior: HitTestBehavior.opaque,
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: design.spacing.sm),
+                        padding: EdgeInsets.symmetric(
+                          vertical: design.spacing.sm,
+                        ),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -326,23 +323,30 @@ class _PlaybackSection extends ConsumerWidget {
                                 TextSpan(
                                   children: [
                                     TextSpan(
-                                      text: '${v.name[0].toUpperCase()}${v.name.substring(1)}',
-                                      style: design.typography.bodySmall.copyWith(
-                                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                                        color: design.colors.textPrimary,
-                                      ),
+                                      text:
+                                          '${v.name[0].toUpperCase()}${v.name.substring(1)}',
+                                      style: design.typography.bodySmall
+                                          .copyWith(
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.w500,
+                                            color: design.colors.textPrimary,
+                                          ),
                                     ),
                                     if (v == VideoQuality.auto) ...[
                                       const TextSpan(text: ' '),
                                       WidgetSpan(
-                                        alignment: PlaceholderAlignment.baseline,
+                                        alignment:
+                                            PlaceholderAlignment.baseline,
                                         baseline: TextBaseline.alphabetic,
                                         child: Text(
                                           '(${l10n.settingsRecommended})',
-                                          style: design.typography.labelSmall.copyWith(
-                                            color: design.colors.textSecondary,
-                                            fontWeight: FontWeight.w400,
-                                          ),
+                                          style: design.typography.labelSmall
+                                              .copyWith(
+                                                color:
+                                                    design.colors.textSecondary,
+                                                fontWeight: FontWeight.w400,
+                                              ),
                                         ),
                                       ),
                                     ],
@@ -350,7 +354,10 @@ class _PlaybackSection extends ConsumerWidget {
                                 ),
                               ),
                             ),
-                            _RadioIndicator(isSelected: isSelected, small: true),
+                            _RadioIndicator(
+                              isSelected: isSelected,
+                              small: true,
+                            ),
                           ],
                         ),
                       ),
@@ -409,7 +416,10 @@ class _AccessibilitySection extends ConsumerWidget {
   }
 
   Widget _buildTextScaleGroup(
-      BuildContext context, WidgetRef ref, AccessibilitySettings settings) {
+    BuildContext context,
+    WidgetRef ref,
+    AccessibilitySettings settings,
+  ) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
@@ -437,9 +447,7 @@ class _AccessibilitySection extends ConsumerWidget {
                   style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
                 SizedBox(height: design.spacing.xs / 2),
-                AppText.labelSmall(
-                  l10n.settingsTextSizeDescription,
-                ),
+                AppText.labelSmall(l10n.settingsTextSizeDescription),
                 SizedBox(height: design.spacing.md),
                 ...TextScaleSize.values.expand((v) {
                   final isSelected = settings.textScale == v;
@@ -451,7 +459,9 @@ class _AccessibilitySection extends ConsumerWidget {
                           .updateTextScale(v),
                       behavior: HitTestBehavior.opaque,
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: design.spacing.sm),
+                        padding: EdgeInsets.symmetric(
+                          vertical: design.spacing.sm,
+                        ),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -460,23 +470,30 @@ class _AccessibilitySection extends ConsumerWidget {
                                 TextSpan(
                                   children: [
                                     TextSpan(
-                                      text: '${v.name[0].toUpperCase()}${v.name.substring(1)}',
-                                      style: design.typography.bodySmall.copyWith(
-                                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                                        color: design.colors.textPrimary,
-                                      ),
+                                      text:
+                                          '${v.name[0].toUpperCase()}${v.name.substring(1)}',
+                                      style: design.typography.bodySmall
+                                          .copyWith(
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.w500,
+                                            color: design.colors.textPrimary,
+                                          ),
                                     ),
                                     if (v == TextScaleSize.medium) ...[
                                       const TextSpan(text: ' '),
                                       WidgetSpan(
-                                        alignment: PlaceholderAlignment.baseline,
+                                        alignment:
+                                            PlaceholderAlignment.baseline,
                                         baseline: TextBaseline.alphabetic,
                                         child: Text(
                                           '(${l10n.settingsDefault})',
-                                          style: design.typography.labelSmall.copyWith(
-                                            color: design.colors.textSecondary,
-                                            fontWeight: FontWeight.w400,
-                                          ),
+                                          style: design.typography.labelSmall
+                                              .copyWith(
+                                                color:
+                                                    design.colors.textSecondary,
+                                                fontWeight: FontWeight.w400,
+                                              ),
                                         ),
                                       ),
                                     ],
@@ -484,7 +501,10 @@ class _AccessibilitySection extends ConsumerWidget {
                                 ),
                               ),
                             ),
-                            _RadioIndicator(isSelected: isSelected, small: true),
+                            _RadioIndicator(
+                              isSelected: isSelected,
+                              small: true,
+                            ),
                           ],
                         ),
                       ),
@@ -510,9 +530,7 @@ class _SectionHeader extends StatelessWidget {
     final design = Design.of(context);
     return Padding(
       padding: EdgeInsets.only(left: design.spacing.xs),
-      child: AppText.title(
-        title,
-      ),
+      child: AppText.title(title),
     );
   }
 }
@@ -647,22 +665,23 @@ Widget _buildToggleOption({
   final design = Design.of(context);
   final l10n = L10n.of(context);
   return AppSemantics.button(
-    label: '$title, ${value ? l10n.notificationsStateOn : l10n.notificationsStateOff}',
+    label:
+        '$title, ${value ? l10n.notificationsStateOn : l10n.notificationsStateOff}',
     onTap: () => onChanged(!value),
     child: GestureDetector(
       onTap: () => onChanged(!value),
       behavior: HitTestBehavior.opaque,
       child: Padding(
-      padding: EdgeInsets.only(
-        left: design.spacing.md,
-        right: design.spacing.xl,
-        top: design.spacing.md,
-        bottom: design.spacing.md,
-      ),
-      child: Row(
-        children: [
-          _IconContainer(icon: icon, color: iconColor),
-          SizedBox(width: (design.spacing.md + design.spacing.sm) / 2),
+        padding: EdgeInsets.only(
+          left: design.spacing.md,
+          right: design.spacing.xl,
+          top: design.spacing.md,
+          bottom: design.spacing.md,
+        ),
+        child: Row(
+          children: [
+            _IconContainer(icon: icon, color: iconColor),
+            SizedBox(width: (design.spacing.md + design.spacing.sm) / 2),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -672,9 +691,7 @@ Widget _buildToggleOption({
                     style: const TextStyle(fontWeight: FontWeight.w500),
                   ),
                   SizedBox(height: design.spacing.xs / 2),
-                  AppText.labelSmall(
-                    subtitle,
-                  ),
+                  AppText.labelSmall(subtitle),
                 ],
               ),
             ),

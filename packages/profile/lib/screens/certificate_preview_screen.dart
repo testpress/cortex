@@ -82,7 +82,9 @@ class CertificatePreviewScreen extends StatelessWidget {
                             AppText.body(
                               l10n.certificatesShareAchievementTitle,
                               color: design.colors.textPrimary,
-                              style: const TextStyle(fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             const SizedBox(height: 2),
                             AppText.caption(
@@ -275,7 +277,9 @@ class _CertificatePreviewCard extends StatelessWidget {
                   Container(
                     height: design.spacing.xs / 4,
                     width: double.infinity,
-                    margin: EdgeInsets.symmetric(horizontal: design.spacing.xxl),
+                    margin: EdgeInsets.symmetric(
+                      horizontal: design.spacing.xxl,
+                    ),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
@@ -301,7 +305,9 @@ class _CertificatePreviewCard extends StatelessWidget {
                   Container(
                     height: design.spacing.xs / 4,
                     width: double.infinity,
-                    margin: EdgeInsets.symmetric(horizontal: design.spacing.xxl),
+                    margin: EdgeInsets.symmetric(
+                      horizontal: design.spacing.xxl,
+                    ),
                     color: design.colors.border,
                   ),
                   SizedBox(height: design.spacing.lg),
@@ -313,7 +319,9 @@ class _CertificatePreviewCard extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: design.spacing.md,
+                      ),
                       child: AppText.title(
                         certificate.course.title.trim(),
                         textAlign: TextAlign.center,

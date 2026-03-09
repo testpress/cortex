@@ -53,10 +53,7 @@ class AppErrorView extends StatelessWidget {
             ),
             if (onRetry != null) ...[
               SizedBox(height: design.spacing.lg),
-              AppButton.secondary(
-                label: l10n.labelRetry,
-                onPressed: onRetry!,
-              ),
+              AppButton.secondary(label: l10n.labelRetry, onPressed: onRetry!),
             ],
           ],
         ),

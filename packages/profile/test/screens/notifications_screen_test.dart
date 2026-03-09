@@ -35,9 +35,7 @@ void main() {
             weakSubject: '',
           ),
         ),
-        enrollmentProvider.overrideWith(
-          (ref) => Stream.value(<CourseDto>[]),
-        ),
+        enrollmentProvider.overrideWith((ref) => Stream.value(<CourseDto>[])),
         profileRecentActivityProvider.overrideWith((ref) async => const []),
       ],
       child: child,
@@ -93,7 +91,9 @@ void main() {
     testWidgets('renders header, subtitle and four preference rows', (
       tester,
     ) async {
-      await tester.pumpWidget(_wrap(const NotificationsScreen(onBack: _dummyBack)));
+      await tester.pumpWidget(
+        _wrap(const NotificationsScreen(onBack: _dummyBack)),
+      );
       await tester.pumpAndSettle();
 
       final l10n = L10n.of(tester.element(find.byType(NotificationsScreen)));
@@ -109,7 +109,9 @@ void main() {
     testWidgets(
       'uses expected default toggle states and updates independently',
       (tester) async {
-        await tester.pumpWidget(_wrap(const NotificationsScreen(onBack: _dummyBack)));
+        await tester.pumpWidget(
+          _wrap(const NotificationsScreen(onBack: _dummyBack)),
+        );
         await tester.pumpAndSettle();
 
         final container = ProviderScope.containerOf(
@@ -173,7 +175,10 @@ void main() {
       await tester.pumpAndSettle();
 
       final profileL10n = L10n.of(tester.element(find.byType(ProfilePage)));
-      expect(find.text(profileL10n.profileAccountSettingsTitle), findsOneWidget);
+      expect(
+        find.text(profileL10n.profileAccountSettingsTitle),
+        findsOneWidget,
+      );
 
       final notificationsEntry = find.text(profileL10n.profileNotifications);
       await tester.ensureVisible(notificationsEntry);
@@ -190,7 +195,10 @@ void main() {
 
       await tester.tap(find.text(notificationsL10n.curriculumBackButton));
       await tester.pumpAndSettle();
-      expect(find.text(profileL10n.profileAccountSettingsTitle), findsOneWidget);
+      expect(
+        find.text(profileL10n.profileAccountSettingsTitle),
+        findsOneWidget,
+      );
     });
   });
 }

@@ -3,10 +3,7 @@ import 'package:core/core.dart';
 import 'package:data/data.dart';
 
 class RecentActivitySection extends StatelessWidget {
-  const RecentActivitySection({
-    super.key,
-    required this.activities,
-  });
+  const RecentActivitySection({super.key, required this.activities});
 
   final List<RecentActivityDto> activities;
 
@@ -65,10 +62,7 @@ class _RecentActivityCard extends StatelessWidget {
             // Top Row: Icon + Status Pill
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildTypeIcon(context),
-                _buildStatusPill(context),
-              ],
+              children: [_buildTypeIcon(context), _buildStatusPill(context)],
             ),
             const Spacer(),
             // Middle: Title
@@ -121,13 +115,10 @@ class _RecentActivityCard extends StatelessWidget {
         color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(design.radius.lg),
       ),
-      child: Icon(
-        icon,
-        color: color,
-        size: design.iconSize.md,
-      ),
+      child: Icon(icon, color: color, size: design.iconSize.md),
     );
   }
+
   Widget _buildStatusPill(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);

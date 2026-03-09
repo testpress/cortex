@@ -43,4 +43,3 @@ const mockRecentActivity = [
     score: 92,
   ),
 ];
-

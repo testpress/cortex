@@ -58,10 +58,7 @@ class ProfileHeader extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: design.spacing.lg),
-                  AppText.headline(
-                    name,
-                    textAlign: TextAlign.center,
-                  ),
+                  AppText.headline(name, textAlign: TextAlign.center),
                   if (joinedDate != null) ...[
                     SizedBox(height: design.spacing.xs),
                     AppText.caption(

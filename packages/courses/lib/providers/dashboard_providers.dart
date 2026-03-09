@@ -66,4 +66,3 @@ Future<List<QuickShortcutDto>> quickShortcuts(Ref ref) async {
 }
 
 final isHomeDrawerOpenProvider = StateProvider<bool>((ref) => false);
-

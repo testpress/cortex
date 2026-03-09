@@ -21,11 +21,15 @@ class SettingsRepository {
     bool? highContrast,
   }) {
     return _db.updateSettings(AppSettingsTableCompanion(
-      appearanceMode: appearanceMode != null ? Value(appearanceMode) : const Value.absent(),
-      videoQuality: videoQuality != null ? Value(videoQuality) : const Value.absent(),
-      autoPlayNext: autoPlayNext != null ? Value(autoPlayNext) : const Value.absent(),
+      appearanceMode:
+          appearanceMode != null ? Value(appearanceMode) : const Value.absent(),
+      videoQuality:
+          videoQuality != null ? Value(videoQuality) : const Value.absent(),
+      autoPlayNext:
+          autoPlayNext != null ? Value(autoPlayNext) : const Value.absent(),
       textSize: textSize != null ? Value(textSize) : const Value.absent(),
-      highContrast: highContrast != null ? Value(highContrast) : const Value.absent(),
+      highContrast:
+          highContrast != null ? Value(highContrast) : const Value.absent(),
     ));
   }
 }

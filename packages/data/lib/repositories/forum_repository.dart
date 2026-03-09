@@ -24,17 +24,17 @@ class ForumRepository {
   }
 
   ForumThreadDto _rowToDto(ForumThreadsTableData row) => ForumThreadDto(
-    id: row.id,
-    courseId: row.courseId,
-    title: row.title,
-    description: row.description,
-    studentName: row.studentName,
-    timeAgo: row.timeAgo,
-    replyCount: row.replyCount,
-    status: row.status == 'answered'
-        ? ForumThreadStatus.answered
-        : ForumThreadStatus.unanswered,
-  );
+        id: row.id,
+        courseId: row.courseId,
+        title: row.title,
+        description: row.description,
+        studentName: row.studentName,
+        timeAgo: row.timeAgo,
+        replyCount: row.replyCount,
+        status: row.status == 'answered'
+            ? ForumThreadStatus.answered
+            : ForumThreadStatus.unanswered,
+      );
 
   ForumThreadsTableCompanion _dtoToCompanion(ForumThreadDto dto) =>
       ForumThreadsTableCompanion.insert(
