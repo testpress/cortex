@@ -940,57 +940,57 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get settingsAppearanceTitle => 'Appearance';
+  String get settingsAppearanceTitle => 'المظهر';
 
   @override
-  String get settingsPlaybackTitle => 'Learning & Playback';
+  String get settingsPlaybackTitle => 'التعلم والتشغيل';
 
   @override
-  String get settingsAccessibilityTitle => 'Accessibility';
+  String get settingsAccessibilityTitle => 'إمكانية الوصول';
 
   @override
-  String get settingsVideoQuality => 'Video Quality';
+  String get settingsVideoQuality => 'جودة الفيديو';
 
   @override
   String get settingsVideoQualityCaption =>
-      'Set your preferred default quality';
+      'قم بتعيين الجودة الافتراضية المفضلة لديك';
 
   @override
-  String get settingsAutoPlay => 'Auto-play next lesson';
+  String get settingsAutoPlay => 'تشغيل الدرس التالي تلقائيًا';
 
   @override
-  String get settingsTextSize => 'Text Size';
+  String get settingsTextSize => 'حجم النص';
 
   @override
-  String get settingsHighContrast => 'High Contrast';
+  String get settingsHighContrast => 'تباين عالٍ';
 
   @override
-  String get settingsDescription => 'Customize your learning experience';
+  String get settingsDescription => 'تخصيص تجربة التعلم الخاصة بك';
 
   @override
-  String get settingsThemeLightMode => 'Light mode';
+  String get settingsThemeLightMode => 'الوضع الفاتح';
 
   @override
-  String get settingsThemeDarkMode => 'Dark mode';
+  String get settingsThemeDarkMode => 'الوضع الداكن';
 
   @override
-  String get settingsThemeSystemDefault => 'System default';
+  String get settingsThemeSystemDefault => 'افتراضي النظام';
 
   @override
-  String get settingsPlaybackDescription => 'Choose playback quality';
+  String get settingsPlaybackDescription => 'اختر جودة التشغيل';
 
   @override
-  String get settingsTextSizeDescription => 'Adjust reading comfort';
+  String get settingsTextSizeDescription => 'ضبط راحة القراءة';
 
   @override
-  String get settingsRecommended => 'Recommended';
+  String get settingsRecommended => 'موصى به';
 
   @override
-  String get settingsDefault => 'Default';
+  String get settingsDefault => 'افتراضي';
 
   @override
-  String get settingsAutoPlaySubtitle => 'Automatically start the next lesson';
+  String get settingsAutoPlaySubtitle => 'بدء الدرس التالي تلقائيًا';
 
   @override
-  String get settingsHighContrastSubtitle => 'Increase visual contrast';
+  String get settingsHighContrastSubtitle => 'زيادة التباين البصري';
 }

@@ -1788,7 +1788,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsVideoQuality.
   ///
   /// In en, this message translates to:
-  /// **'Video Quality'**
+  /// **'Video quality'**
   String get settingsVideoQuality;
 
   /// No description provided for @settingsVideoQualityCaption.
@@ -1806,7 +1806,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsTextSize.
   ///
   /// In en, this message translates to:
-  /// **'Text Size'**
+  /// **'Text size'**
   String get settingsTextSize;
 
   /// No description provided for @settingsHighContrast.

@@ -950,7 +950,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsAccessibilityTitle => 'Accessibility';
 
   @override
-  String get settingsVideoQuality => 'Video Quality';
+  String get settingsVideoQuality => 'Video quality';
 
   @override
   String get settingsVideoQualityCaption =>
@@ -960,7 +960,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsAutoPlay => 'Auto-play next lesson';
 
   @override
-  String get settingsTextSize => 'Text Size';
+  String get settingsTextSize => 'Text size';
 
   @override
   String get settingsHighContrast => 'High Contrast';

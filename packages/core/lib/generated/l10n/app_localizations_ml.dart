@@ -948,57 +948,59 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
-  String get settingsAppearanceTitle => 'Appearance';
+  String get settingsAppearanceTitle => 'രൂപഭാവം';
 
   @override
-  String get settingsPlaybackTitle => 'Learning & Playback';
+  String get settingsPlaybackTitle => 'പഠനവും പ്ലേബാക്കും';
 
   @override
-  String get settingsAccessibilityTitle => 'Accessibility';
+  String get settingsAccessibilityTitle => 'ആക്സസിബിലിറ്റി';
 
   @override
-  String get settingsVideoQuality => 'Video Quality';
+  String get settingsVideoQuality => 'വീഡിയോ ഗുണമേന്മ';
 
   @override
   String get settingsVideoQualityCaption =>
-      'Set your preferred default quality';
+      'നിങ്ങളുടെ പ്രിയപ്പെട്ട ഡിഫോൾട്ട് ഗുണമേന്മ സജ്ജമാക്കുക';
 
   @override
-  String get settingsAutoPlay => 'Auto-play next lesson';
+  String get settingsAutoPlay => 'അടുത്ത പാഠം തനിയെ പ്ലേ ചെയ്യുക';
 
   @override
-  String get settingsTextSize => 'Text Size';
+  String get settingsTextSize => 'അക്ഷരത്തിന്റെ വലുപ്പം';
 
   @override
-  String get settingsHighContrast => 'High Contrast';
+  String get settingsHighContrast => 'ഹൈ കോൺട്രാസ്റ്റ്';
 
   @override
-  String get settingsDescription => 'Customize your learning experience';
+  String get settingsDescription => 'നിങ്ങളുടെ പഠനാനുഭവം ഇഷ്ടാനുസൃതമാക്കുക';
 
   @override
-  String get settingsThemeLightMode => 'Light mode';
+  String get settingsThemeLightMode => 'ലൈറ്റ് മോഡ്';
 
   @override
-  String get settingsThemeDarkMode => 'Dark mode';
+  String get settingsThemeDarkMode => 'ഡാർക്ക് മോഡ്';
 
   @override
-  String get settingsThemeSystemDefault => 'System default';
+  String get settingsThemeSystemDefault => 'സിസ്റ്റം ഡിഫോൾട്ട്';
 
   @override
-  String get settingsPlaybackDescription => 'Choose playback quality';
+  String get settingsPlaybackDescription =>
+      'പ്ലേബാക്ക് ഗുണമേന്മ തിരഞ്ഞെടുക്കുക';
 
   @override
-  String get settingsTextSizeDescription => 'Adjust reading comfort';
+  String get settingsTextSizeDescription => 'വായനാ സുഖം ക്രമീകരിക്കുക';
 
   @override
-  String get settingsRecommended => 'Recommended';
+  String get settingsRecommended => 'ശുപാർശ ചെയ്യുന്നത്';
 
   @override
-  String get settingsDefault => 'Default';
+  String get settingsDefault => 'ഡിഫോൾട്ട്';
 
   @override
-  String get settingsAutoPlaySubtitle => 'Automatically start the next lesson';
+  String get settingsAutoPlaySubtitle => 'അടുത്ത പാഠം തനിയെ ആരംഭിക്കുക';
 
   @override
-  String get settingsHighContrastSubtitle => 'Increase visual contrast';
+  String get settingsHighContrastSubtitle =>
+      'കാഴ്ചയിലെ വൈരുദ്ധ്യം വർദ്ധിപ്പിക്കുക';
 }
