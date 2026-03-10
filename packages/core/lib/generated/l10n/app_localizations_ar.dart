@@ -993,4 +993,46 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsHighContrastSubtitle => 'زيادة التباين البصري';
+
+  @override
+  String get editProfileTitle => 'تعديل الملف الشخصي';
+
+  @override
+  String get editProfileNameLabel => 'الاسم الكامل';
+
+  @override
+  String get editProfileNameHint => 'أدخل اسمك الكامل';
+
+  @override
+  String get editProfileEmailLabel => 'البريد الإلكتروني';
+
+  @override
+  String get editProfileEmailHint => 'أدخل بريدك الإلكتروني';
+
+  @override
+  String get editProfileEmailHelper => 'لا يمكن تغيير البريد الإلكتروني';
+
+  @override
+  String get editProfilePhoneLabel => 'رقم الهاتف';
+
+  @override
+  String get editProfilePhoneHint => 'أدخل رقم هاتفك';
+
+  @override
+  String get editProfileSave => 'حفظ';
+
+  @override
+  String get editProfileSuccess => 'تم تحديث الملف الشخصي بنجاح';
+
+  @override
+  String get editProfileErrorNameEmpty => 'الاسم لا يمكن أن يكون فارغًا';
+
+  @override
+  String get editProfilePhotoLabel => 'صورة الملف الشخصي';
+
+  @override
+  String get editProfileChangePhoto => 'تغيير الصورة';
+
+  @override
+  String get editProfileBack => 'عودة';
 }

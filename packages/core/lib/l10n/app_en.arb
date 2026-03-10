@@ -520,5 +520,19 @@
   "settingsRecommended": "Recommended",
   "settingsDefault": "Default",
   "settingsAutoPlaySubtitle": "Automatically start the next lesson",
-  "settingsHighContrastSubtitle": "Increase visual contrast"
+  "settingsHighContrastSubtitle": "Increase visual contrast",
+  "editProfileTitle": "Edit Profile",
+  "editProfileNameLabel": "Full Name",
+  "editProfileNameHint": "Enter your full name",
+  "editProfileEmailLabel": "Email",
+  "editProfileEmailHint": "Enter your email address",
+  "editProfileEmailHelper": "Email cannot be changed",
+  "editProfilePhoneLabel": "Phone Number",
+  "editProfilePhoneHint": "Enter your phone number",
+  "editProfileSave": "Save",
+  "editProfileSuccess": "Profile updated successfully",
+  "editProfileErrorNameEmpty": "Name cannot be empty",
+  "editProfilePhotoLabel": "Profile Photo",
+  "editProfileChangePhoto": "Change photo",
+  "editProfileBack": "Back"
 }

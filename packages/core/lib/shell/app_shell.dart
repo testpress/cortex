@@ -39,7 +39,7 @@ class AppShell extends StatelessWidget {
               child: isTablet
                   ? Row(
                       children: [
-                        ?navigationRail,
+                        if (navigationRail != null) navigationRail,
                         Expanded(
                           child: SafeArea(
                             left:
@@ -61,11 +61,11 @@ class AppShell extends StatelessWidget {
                             child: child,
                           ),
                         ),
-                        ?bottomNavigationBar,
+                        if (bottomNavigationBar != null) bottomNavigationBar,
                       ],
                     ),
             ),
-            ?drawer,
+            if (drawer != null) drawer,
           ],
         );
       },

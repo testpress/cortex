@@ -5,6 +5,7 @@ class UserDto {
   final String id;
   final String name;
   final String? email;
+  final String? phone;
   final String? avatar;
   final bool isPro;
   final DateTime? joinedDate;
@@ -13,6 +14,7 @@ class UserDto {
     required this.id,
     required this.name,
     this.email,
+    this.phone,
     this.avatar,
     this.isPro = false,
     this.joinedDate,
@@ -25,6 +27,7 @@ class UserDto {
         other.id == id &&
         other.name == name &&
         other.email == email &&
+        other.phone == phone &&
         other.avatar == avatar &&
         other.isPro == isPro &&
         other.joinedDate == joinedDate;
@@ -35,6 +38,7 @@ class UserDto {
         id,
         name,
         email,
+        phone,
         avatar,
         isPro,
         joinedDate,

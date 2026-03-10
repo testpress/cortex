@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter/material.dart' show Scaffold;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:data/data.dart';
@@ -13,11 +12,13 @@ import '../widgets/paid_active_account_preferences_section.dart';
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({
     super.key,
+    this.onEditProfile,
     this.onOpenNotifications,
     this.onOpenCertificates,
     this.onOpenSettings,
   });
 
+  final VoidCallback? onEditProfile;
   final VoidCallback? onOpenNotifications;
   final VoidCallback? onOpenCertificates;
   final VoidCallback? onOpenSettings;
@@ -33,9 +34,9 @@ class ProfilePage extends ConsumerWidget {
 
     final l10n = L10n.of(context);
 
-    return Scaffold(
+    return AppShell(
       backgroundColor: design.colors.canvas,
-      body: Column(
+      child: Column(
         children: [
           DashboardHeader(title: l10n.profileTabTitle),
           Expanded(
@@ -49,6 +50,8 @@ class ProfilePage extends ConsumerWidget {
                   name: user.name,
                   avatarUrl: user.avatar,
                   joinedDate: user.joinedDate,
+                  onEditProfileTap:
+                      onEditProfile ?? () => context.pushNamed('profile-edit'),
                 ),
 
                 SizedBox(height: design.spacing.xl),
@@ -65,19 +68,21 @@ class ProfilePage extends ConsumerWidget {
                   loading: () => const SizedBox(height: 200),
                   error: (err, __) => AppErrorView(
                     message: err.toString(),
-                    onRetry: () => ref.refresh(studyMomentumProvider),
+                    onRetry: () => ref.invalidate(studyMomentumProvider),
                   ),
                 ),
 
                 SizedBox(height: design.spacing.xl),
 
-                // Courses Carousel
+                // Enrolled Courses
                 enrolledCoursesAsync.when(
-                  data: (courses) => EnrolledCoursesSection(courses: courses),
+                  data: (courses) => EnrolledCoursesSection(
+                    courses: courses,
+                  ),
                   loading: () => const SizedBox(height: 150),
                   error: (err, __) => AppErrorView(
                     message: err.toString(),
-                    onRetry: () => ref.refresh(enrollmentProvider),
+                    onRetry: () => ref.invalidate(enrollmentProvider),
                   ),
                 ),
 
@@ -85,12 +90,13 @@ class ProfilePage extends ConsumerWidget {
 
                 // Recent Activity
                 recentActivityAsync.when(
-                  data: (activities) =>
-                      RecentActivitySection(activities: activities),
-                  loading: () => const SizedBox(height: 160),
+                  data: (activities) => RecentActivitySection(
+                    activities: activities,
+                  ),
+                  loading: () => const SizedBox(height: 120),
                   error: (err, __) => AppErrorView(
                     message: err.toString(),
-                    onRetry: () => ref.refresh(profileRecentActivityProvider),
+                    onRetry: () => ref.invalidate(profileRecentActivityProvider),
                   ),
                 ),
 
@@ -98,6 +104,8 @@ class ProfilePage extends ConsumerWidget {
 
                 // Account & Preferences
                 AccountPreferencesSection(
+                  onEditProfileTap:
+                      onEditProfile ?? () => context.pushNamed('profile-edit'),
                   onNotificationsTap:
                       onOpenNotifications ??
                       () => context.pushNamed('profile-notifications'),

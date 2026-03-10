@@ -24,7 +24,7 @@ class AppSemantics {
   /// ```
   static Widget button({
     required String label,
-    required VoidCallback? onTap,
+    VoidCallback? onTap,
     required Widget child,
     bool enabled = true,
   }) {

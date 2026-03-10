@@ -24,6 +24,7 @@ export 'widgets/app_header.dart';
 export 'widgets/app_scroll.dart';
 export 'widgets/app_badge.dart';
 export 'widgets/app_search_bar.dart';
+export 'widgets/app_text_field.dart';
 export 'widgets/app_tab_bar.dart';
 export 'widgets/app_navigation_rail.dart';
 export 'widgets/app_subject_chip.dart';
