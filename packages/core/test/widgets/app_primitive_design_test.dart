@@ -46,20 +46,9 @@ void main() {
         shadow: Color(0x33000000),
       );
 
-      final customConfig = DesignConfig(
+      final customConfig = DesignConfig.light().copyWith(
         colors: colors,
-        spacing: DesignSpacing.defaults(),
         typography: DesignTypography.defaults(colors: colors),
-        typographyScale: DesignTypographyScale.defaults(),
-        motion: DesignMotion.defaults(),
-        radius: DesignRadius.defaults(),
-        iconSize: DesignIconSize.defaults(),
-        shadows: DesignShadows.light(),
-        layout: DesignLayout.defaults(),
-        subjectPalette: DesignSubjectPalette.light(),
-        statusColors: DesignStatusColors.light(),
-        shortcutPalette: DesignShortcutPalette.light(),
-        study: DesignStudyTheme.light(),
       );
 
       await tester.pumpWidget(
@@ -134,20 +123,9 @@ void main() {
         shadow: Color(0x33000000),
       );
 
-      final customConfig = DesignConfig(
+      final customConfig = DesignConfig.light().copyWith(
         colors: colors,
-        spacing: DesignSpacing.defaults(),
         typography: DesignTypography.defaults(colors: colors),
-        typographyScale: DesignTypographyScale.defaults(),
-        motion: DesignMotion.defaults(),
-        radius: DesignRadius.defaults(),
-        iconSize: DesignIconSize.defaults(),
-        shadows: DesignShadows.light(),
-        layout: DesignLayout.defaults(),
-        subjectPalette: DesignSubjectPalette.light(),
-        statusColors: DesignStatusColors.light(),
-        shortcutPalette: DesignShortcutPalette.light(),
-        study: DesignStudyTheme.light(),
       );
 
       await tester.pumpWidget(

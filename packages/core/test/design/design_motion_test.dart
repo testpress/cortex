@@ -7,11 +7,7 @@ void main() {
     testWidgets('MotionPreferences reflects Design context override', (
       tester,
     ) async {
-      final noAnimationConfig = DesignConfig(
-        colors: DesignColors.light(),
-        spacing: DesignSpacing.defaults(),
-        typography: DesignTypography.defaults(),
-        typographyScale: DesignTypographyScale.defaults(),
+      final noAnimationConfig = DesignConfig.light().copyWith(
         motion: const DesignMotion(
           shouldAnimate: false, // Override to disable animations
           fast: Duration(milliseconds: 150),
@@ -24,14 +20,6 @@ void main() {
           emphasized: Curves.easeInOutCubic,
           spring: Curves.easeOutCubic,
         ),
-        radius: DesignRadius.defaults(),
-        iconSize: DesignIconSize.defaults(),
-        shadows: DesignShadows.light(),
-        layout: DesignLayout.defaults(),
-        subjectPalette: DesignSubjectPalette.light(),
-        statusColors: DesignStatusColors.light(),
-        shortcutPalette: DesignShortcutPalette.light(),
-        study: DesignStudyTheme.light(),
       );
 
       bool? shouldAnimate;
@@ -60,11 +48,7 @@ void main() {
     testWidgets('MotionPreferences respects enabled animations', (
       tester,
     ) async {
-      final animationConfig = DesignConfig(
-        colors: DesignColors.light(),
-        spacing: DesignSpacing.defaults(),
-        typography: DesignTypography.defaults(),
-        typographyScale: DesignTypographyScale.defaults(),
+      final animationConfig = DesignConfig.light().copyWith(
         motion: const DesignMotion(
           shouldAnimate: true, // Animations enabled
           fast: Duration(milliseconds: 150),
@@ -77,14 +61,6 @@ void main() {
           emphasized: Curves.easeInOutCubic,
           spring: Curves.easeOutCubic,
         ),
-        radius: DesignRadius.defaults(),
-        iconSize: DesignIconSize.defaults(),
-        shadows: DesignShadows.light(),
-        layout: DesignLayout.defaults(),
-        subjectPalette: DesignSubjectPalette.light(),
-        statusColors: DesignStatusColors.light(),
-        shortcutPalette: DesignShortcutPalette.light(),
-        study: DesignStudyTheme.light(),
       );
 
       bool? shouldAnimate;
