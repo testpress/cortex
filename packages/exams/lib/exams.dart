@@ -10,3 +10,5 @@ export 'models/section_performance_overview.dart';
 export 'models/review_route_payload.dart';
 export 'data/mock_review_analytics.dart';
 export 'screens/review_analytics/review_analytics_screen.dart';
+export 'repositories/exam_repository.dart';
+export 'providers/exam_providers.dart';

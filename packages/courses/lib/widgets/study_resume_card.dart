@@ -1,6 +1,6 @@
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
-import 'package:data/data.dart';
+import '../providers/recent_activity_provider.dart';
 
 /// Floating resume card at the bottom of the Study screen.
 class StudyResumeCard extends StatelessWidget {

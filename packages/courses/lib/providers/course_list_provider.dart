@@ -1,11 +1,18 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../models/course_dto.dart';
-import '../models/chapter_dto.dart';
-import '../models/lesson_dto.dart';
-import 'repository_providers.dart';
+import 'package:data/data.dart';
+import 'package:data/providers/database_provider.dart';
+import 'package:data/providers/data_source_provider.dart';
+import '../repositories/course_repository.dart';
 
 part 'course_list_provider.g.dart';
+
+@Riverpod(keepAlive: true)
+Future<CourseRepository> courseRepository(Ref ref) async {
+  final db = await ref.watch(appDatabaseProvider.future);
+  final source = ref.watch(dataSourceProvider);
+  return CourseRepository(db, source);
+}
 
 /// Stream provider for the full course list.
 /// On first watch: triggers a refresh from DataSource → Drift.

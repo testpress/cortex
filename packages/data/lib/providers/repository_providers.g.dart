@@ -6,25 +6,6 @@ part of 'repository_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$courseRepositoryHash() => r'62b30446b43101d61052e9c469030f2209080475';
-
-/// Provides the [CourseRepository].
-///
-/// Copied from [courseRepository].
-@ProviderFor(courseRepository)
-final courseRepositoryProvider = FutureProvider<CourseRepository>.internal(
-  courseRepository,
-  name: r'courseRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$courseRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef CourseRepositoryRef = FutureProviderRef<CourseRepository>;
 String _$userRepositoryHash() => r'9af46bc5bae2f75b3745cb12c2fe3d66c4677ff3';
 
 /// Provides the [UserRepository].
@@ -63,44 +44,5 @@ final forumRepositoryProvider = FutureProvider<ForumRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ForumRepositoryRef = FutureProviderRef<ForumRepository>;
-String _$examRepositoryHash() => r'7fb3559a54712fd7a26a8fee6004b0a477770b48';
-
-/// Provides the [ExamRepository].
-///
-/// Copied from [examRepository].
-@ProviderFor(examRepository)
-final examRepositoryProvider = Provider<ExamRepository>.internal(
-  examRepository,
-  name: r'examRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$examRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ExamRepositoryRef = ProviderRef<ExamRepository>;
-String _$settingsRepositoryHash() =>
-    r'f43a1a22bccb05514e60ef1938f274e17d6f9a4b';
-
-/// Provides the [SettingsRepository].
-///
-/// Copied from [settingsRepository].
-@ProviderFor(settingsRepository)
-final settingsRepositoryProvider = FutureProvider<SettingsRepository>.internal(
-  settingsRepository,
-  name: r'settingsRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$settingsRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SettingsRepositoryRef = FutureProviderRef<SettingsRepository>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

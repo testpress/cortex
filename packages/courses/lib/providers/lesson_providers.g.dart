@@ -16,8 +16,9 @@ String _$allLessonsHash() => r'0f0d5e4507484e7bd07c2d474a40b4e190d492ba';
 final allLessonsProvider = AutoDisposeProvider<List<LessonDto>>.internal(
   allLessons,
   name: r'allLessonsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$allLessonsHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$allLessonsHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );

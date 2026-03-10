@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../models/course_dto.dart';
-import 'repository_providers.dart';
+import 'package:data/data.dart';
+import 'course_list_provider.dart';
 
 part 'enrollment_provider.g.dart';
 

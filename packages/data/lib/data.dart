@@ -28,24 +28,16 @@ export 'db/app_database.dart';
 export 'sources/data_source.dart';
 export 'sources/mock_data_source.dart';
 export 'sources/http_data_source.dart';
+export 'sources/mock_data.dart';
 
 // Repositories
-export 'repositories/course_repository.dart';
 export 'repositories/user_repository.dart';
 export 'repositories/forum_repository.dart';
-export 'repositories/exam_repository.dart';
-export 'repositories/settings_repository.dart';
 
 // Providers
 export 'providers/database_provider.dart';
 export 'providers/data_source_provider.dart';
 export 'providers/repository_providers.dart';
-export 'providers/course_list_provider.dart';
-export 'providers/enrollment_provider.dart';
-export 'providers/recent_activity_provider.dart';
-export 'providers/study_momentum_provider.dart';
 export 'providers/auth_provider.dart';
-export 'providers/initialization_provider.dart';
-export 'providers/lesson_providers.dart';
-export 'providers/design_mode_provider.dart';
-export 'providers/settings_providers.dart';
+
+

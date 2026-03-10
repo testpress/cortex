@@ -15,8 +15,9 @@ String _$enrollmentHash() => r'693ae1fcbe2ffe3fda36c1e380b223095a327abd';
 final enrollmentProvider = AutoDisposeStreamProvider<List<CourseDto>>.internal(
   enrollment,
   name: r'enrollmentProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$enrollmentHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$enrollmentHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );

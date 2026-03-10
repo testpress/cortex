@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import '../db/app_database.dart';
+import 'package:data/data.dart';
 
 class SettingsRepository {
   final AppDatabase _db;

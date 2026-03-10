@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
-import 'package:data/data.dart';
-import '../providers/dashboard_providers.dart';
+import 'package:profile/profile.dart';
+import 'package:courses/courses.dart';
 
 class DashboardDrawer extends ConsumerWidget {
   const DashboardDrawer({super.key});

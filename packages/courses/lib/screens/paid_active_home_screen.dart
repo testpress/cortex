@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:data/data.dart' as dto;
 import '../providers/dashboard_providers.dart';
+import '../providers/study_momentum_provider.dart';
 import '../widgets/greeting_section.dart';
 import '../widgets/contextual_hero_card.dart';
 import '../widgets/today_snapshot.dart';
@@ -23,7 +24,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     final todayClasses = ref.watch(todayClassesProvider);
     final pendingAssignments = ref.watch(pendingAssignmentsProvider);
     final upcomingTests = ref.watch(upcomingTestsProvider);
-    final momentum = ref.watch(dto.studyMomentumProvider);
+    final momentum = ref.watch(studyMomentumProvider);
     final user = ref.watch(dto.authProvider);
     final heroBanners = ref.watch(heroBannersProvider);
     final promotionBanners = ref.watch(promotionBannersProvider);

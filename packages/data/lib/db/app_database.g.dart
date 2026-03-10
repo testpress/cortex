@@ -2720,11 +2720,7 @@ class $AppSettingsTableTable extends AppSettingsTable
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+      type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _appearanceModeMeta =
       const VerificationMeta('appearanceMode');
   @override
@@ -2732,7 +2728,7 @@ class $AppSettingsTableTable extends AppSettingsTable
       'appearance_mode', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultValue: const Constant('system'));
+      defaultValue: const Constant(AppSettingsDefaults.appearanceMode));
   static const VerificationMeta _videoQualityMeta =
       const VerificationMeta('videoQuality');
   @override
@@ -2740,7 +2736,7 @@ class $AppSettingsTableTable extends AppSettingsTable
       'video_quality', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultValue: const Constant('auto'));
+      defaultValue: const Constant(AppSettingsDefaults.videoQuality));
   static const VerificationMeta _autoPlayNextMeta =
       const VerificationMeta('autoPlayNext');
   @override
@@ -2750,7 +2746,7 @@ class $AppSettingsTableTable extends AppSettingsTable
       requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("auto_play_next" IN (0, 1))'),
-      defaultValue: const Constant(true));
+      defaultValue: const Constant(AppSettingsDefaults.autoPlayNext));
   static const VerificationMeta _textSizeMeta =
       const VerificationMeta('textSize');
   @override
@@ -2758,7 +2754,7 @@ class $AppSettingsTableTable extends AppSettingsTable
       'text_size', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultValue: const Constant('large'));
+      defaultValue: const Constant(AppSettingsDefaults.textSize));
   static const VerificationMeta _highContrastMeta =
       const VerificationMeta('highContrast');
   @override
@@ -2768,7 +2764,7 @@ class $AppSettingsTableTable extends AppSettingsTable
       requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("high_contrast" IN (0, 1))'),
-      defaultValue: const Constant(false));
+      defaultValue: const Constant(AppSettingsDefaults.highContrast));
   @override
   List<GeneratedColumn> get $columns =>
       [id, appearanceMode, videoQuality, autoPlayNext, textSize, highContrast];
@@ -2785,6 +2781,8 @@ class $AppSettingsTableTable extends AppSettingsTable
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
     }
     if (data.containsKey('appearance_mode')) {
       context.handle(
@@ -2818,7 +2816,7 @@ class $AppSettingsTableTable extends AppSettingsTable
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => const {};
   @override
   AppSettingsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -2976,6 +2974,7 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
   final Value<bool> autoPlayNext;
   final Value<String> textSize;
   final Value<bool> highContrast;
+  final Value<int> rowid;
   const AppSettingsTableCompanion({
     this.id = const Value.absent(),
     this.appearanceMode = const Value.absent(),
@@ -2983,15 +2982,17 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
     this.autoPlayNext = const Value.absent(),
     this.textSize = const Value.absent(),
     this.highContrast = const Value.absent(),
+    this.rowid = const Value.absent(),
   });
   AppSettingsTableCompanion.insert({
-    this.id = const Value.absent(),
+    required int id,
     this.appearanceMode = const Value.absent(),
     this.videoQuality = const Value.absent(),
     this.autoPlayNext = const Value.absent(),
     this.textSize = const Value.absent(),
     this.highContrast = const Value.absent(),
-  });
+    this.rowid = const Value.absent(),
+  }) : id = Value(id);
   static Insertable<AppSettingsTableData> custom({
     Expression<int>? id,
     Expression<String>? appearanceMode,
@@ -2999,6 +3000,7 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
     Expression<bool>? autoPlayNext,
     Expression<String>? textSize,
     Expression<bool>? highContrast,
+    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -3007,6 +3009,7 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
       if (autoPlayNext != null) 'auto_play_next': autoPlayNext,
       if (textSize != null) 'text_size': textSize,
       if (highContrast != null) 'high_contrast': highContrast,
+      if (rowid != null) 'rowid': rowid,
     });
   }
 
@@ -3016,7 +3019,8 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
       Value<String>? videoQuality,
       Value<bool>? autoPlayNext,
       Value<String>? textSize,
-      Value<bool>? highContrast}) {
+      Value<bool>? highContrast,
+      Value<int>? rowid}) {
     return AppSettingsTableCompanion(
       id: id ?? this.id,
       appearanceMode: appearanceMode ?? this.appearanceMode,
@@ -3024,6 +3028,7 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
       autoPlayNext: autoPlayNext ?? this.autoPlayNext,
       textSize: textSize ?? this.textSize,
       highContrast: highContrast ?? this.highContrast,
+      rowid: rowid ?? this.rowid,
     );
   }
 
@@ -3048,6 +3053,9 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
     if (highContrast.present) {
       map['high_contrast'] = Variable<bool>(highContrast.value);
     }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
     return map;
   }
 
@@ -3059,7 +3067,8 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
           ..write('videoQuality: $videoQuality, ')
           ..write('autoPlayNext: $autoPlayNext, ')
           ..write('textSize: $textSize, ')
-          ..write('highContrast: $highContrast')
+          ..write('highContrast: $highContrast, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -4448,12 +4457,13 @@ typedef $$UserProgressTableTableProcessedTableManager = ProcessedTableManager<
     PrefetchHooks Function()>;
 typedef $$AppSettingsTableTableCreateCompanionBuilder
     = AppSettingsTableCompanion Function({
-  Value<int> id,
+  required int id,
   Value<String> appearanceMode,
   Value<String> videoQuality,
   Value<bool> autoPlayNext,
   Value<String> textSize,
   Value<bool> highContrast,
+  Value<int> rowid,
 });
 typedef $$AppSettingsTableTableUpdateCompanionBuilder
     = AppSettingsTableCompanion Function({
@@ -4463,6 +4473,7 @@ typedef $$AppSettingsTableTableUpdateCompanionBuilder
   Value<bool> autoPlayNext,
   Value<String> textSize,
   Value<bool> highContrast,
+  Value<int> rowid,
 });
 
 class $$AppSettingsTableTableFilterComposer
@@ -4588,6 +4599,7 @@ class $$AppSettingsTableTableTableManager extends RootTableManager<
             Value<bool> autoPlayNext = const Value.absent(),
             Value<String> textSize = const Value.absent(),
             Value<bool> highContrast = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
           }) =>
               AppSettingsTableCompanion(
             id: id,
@@ -4596,14 +4608,16 @@ class $$AppSettingsTableTableTableManager extends RootTableManager<
             autoPlayNext: autoPlayNext,
             textSize: textSize,
             highContrast: highContrast,
+            rowid: rowid,
           ),
           createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
+            required int id,
             Value<String> appearanceMode = const Value.absent(),
             Value<String> videoQuality = const Value.absent(),
             Value<bool> autoPlayNext = const Value.absent(),
             Value<String> textSize = const Value.absent(),
             Value<bool> highContrast = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
           }) =>
               AppSettingsTableCompanion.insert(
             id: id,
@@ -4612,6 +4626,7 @@ class $$AppSettingsTableTableTableManager extends RootTableManager<
             autoPlayNext: autoPlayNext,
             textSize: textSize,
             highContrast: highContrast,
+            rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

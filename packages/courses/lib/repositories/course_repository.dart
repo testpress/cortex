@@ -1,11 +1,7 @@
 import 'dart:convert';
 import 'package:drift/drift.dart';
 
-import '../db/app_database.dart';
-import '../models/course_dto.dart';
-import '../models/chapter_dto.dart';
-import '../models/lesson_dto.dart';
-import '../sources/data_source.dart';
+import 'package:data/data.dart';
 
 /// Repository for all course-related operations.
 /// Owns the bridge between [DataSource] (network/mock) and [AppDatabase] (local cache).

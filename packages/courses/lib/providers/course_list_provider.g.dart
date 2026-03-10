@@ -6,6 +6,23 @@ part of 'course_list_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+String _$courseRepositoryHash() => r'62b30446b43101d61052e9c469030f2209080475';
+
+/// See also [courseRepository].
+@ProviderFor(courseRepository)
+final courseRepositoryProvider = FutureProvider<CourseRepository>.internal(
+  courseRepository,
+  name: r'courseRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$courseRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef CourseRepositoryRef = FutureProviderRef<CourseRepository>;
 String _$courseListHash() => r'e09726800afe30e7af81d8346fc28e7ad237069a';
 
 /// Stream provider for the full course list.
@@ -17,8 +34,9 @@ String _$courseListHash() => r'e09726800afe30e7af81d8346fc28e7ad237069a';
 final courseListProvider = AutoDisposeStreamProvider<List<CourseDto>>.internal(
   courseList,
   name: r'courseListProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$courseListHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$courseListHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -67,21 +85,15 @@ class CourseChaptersFamily extends Family<AsyncValue<List<ChapterDto>>> {
   /// Provider for a specific course's chapters.
   ///
   /// Copied from [courseChapters].
-  CourseChaptersProvider call(
-    String courseId,
-  ) {
-    return CourseChaptersProvider(
-      courseId,
-    );
+  CourseChaptersProvider call(String courseId) {
+    return CourseChaptersProvider(courseId);
   }
 
   @override
   CourseChaptersProvider getProviderOverride(
     covariant CourseChaptersProvider provider,
   ) {
-    return call(
-      provider.courseId,
-    );
+    return call(provider.courseId);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -107,24 +119,19 @@ class CourseChaptersProvider
   /// Provider for a specific course's chapters.
   ///
   /// Copied from [courseChapters].
-  CourseChaptersProvider(
-    String courseId,
-  ) : this._internal(
-          (ref) => courseChapters(
-            ref as CourseChaptersRef,
-            courseId,
-          ),
-          from: courseChaptersProvider,
-          name: r'courseChaptersProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$courseChaptersHash,
-          dependencies: CourseChaptersFamily._dependencies,
-          allTransitiveDependencies:
-              CourseChaptersFamily._allTransitiveDependencies,
-          courseId: courseId,
-        );
+  CourseChaptersProvider(String courseId)
+    : this._internal(
+        (ref) => courseChapters(ref as CourseChaptersRef, courseId),
+        from: courseChaptersProvider,
+        name: r'courseChaptersProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$courseChaptersHash,
+        dependencies: CourseChaptersFamily._dependencies,
+        allTransitiveDependencies:
+            CourseChaptersFamily._allTransitiveDependencies,
+        courseId: courseId,
+      );
 
   CourseChaptersProvider._internal(
     super._createNotifier, {
@@ -211,21 +218,15 @@ class ChapterLessonsFamily extends Family<AsyncValue<List<LessonDto>>> {
   /// Provider for a specific chapter's lessons.
   ///
   /// Copied from [chapterLessons].
-  ChapterLessonsProvider call(
-    String chapterId,
-  ) {
-    return ChapterLessonsProvider(
-      chapterId,
-    );
+  ChapterLessonsProvider call(String chapterId) {
+    return ChapterLessonsProvider(chapterId);
   }
 
   @override
   ChapterLessonsProvider getProviderOverride(
     covariant ChapterLessonsProvider provider,
   ) {
-    return call(
-      provider.chapterId,
-    );
+    return call(provider.chapterId);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -251,24 +252,19 @@ class ChapterLessonsProvider
   /// Provider for a specific chapter's lessons.
   ///
   /// Copied from [chapterLessons].
-  ChapterLessonsProvider(
-    String chapterId,
-  ) : this._internal(
-          (ref) => chapterLessons(
-            ref as ChapterLessonsRef,
-            chapterId,
-          ),
-          from: chapterLessonsProvider,
-          name: r'chapterLessonsProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$chapterLessonsHash,
-          dependencies: ChapterLessonsFamily._dependencies,
-          allTransitiveDependencies:
-              ChapterLessonsFamily._allTransitiveDependencies,
-          chapterId: chapterId,
-        );
+  ChapterLessonsProvider(String chapterId)
+    : this._internal(
+        (ref) => chapterLessons(ref as ChapterLessonsRef, chapterId),
+        from: chapterLessonsProvider,
+        name: r'chapterLessonsProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$chapterLessonsHash,
+        dependencies: ChapterLessonsFamily._dependencies,
+        allTransitiveDependencies:
+            ChapterLessonsFamily._allTransitiveDependencies,
+        chapterId: chapterId,
+      );
 
   ChapterLessonsProvider._internal(
     super._createNotifier, {
@@ -334,5 +330,6 @@ class _ChapterLessonsProviderElement
   @override
   String get chapterId => (origin as ChapterLessonsProvider).chapterId;
 }
+
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

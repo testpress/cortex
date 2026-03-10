@@ -14,14 +14,14 @@ String _$recentActivityHash() => r'a07d62021414035d098cfc4ad9c0b1adaeb99247';
 @ProviderFor(recentActivity)
 final recentActivityProvider =
     AutoDisposeStreamProvider<RecentActivityVo?>.internal(
-  recentActivity,
-  name: r'recentActivityProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$recentActivityHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      recentActivity,
+      name: r'recentActivityProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$recentActivityHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element

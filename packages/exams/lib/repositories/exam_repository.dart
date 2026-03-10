@@ -1,4 +1,4 @@
-import '../models/course_dto.dart';
+import 'package:data/data.dart';
 
 /// ExamRepository stub — to be fully implemented in the `lms-assessment-detail` change.
 /// Returns empty data for all methods to allow other repositories and screens to compile.

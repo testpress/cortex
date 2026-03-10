@@ -1,6 +1,8 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'repository_providers.dart';
-import 'auth_provider.dart';
+import 'package:data/data.dart';
+import 'package:data/providers/repository_providers.dart';
+import 'package:data/providers/auth_provider.dart';
+import 'package:courses/courses.dart';
 
 part 'initialization_provider.g.dart';
 

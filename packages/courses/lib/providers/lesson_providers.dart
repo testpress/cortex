@@ -1,5 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../models/lesson_dto.dart';
+import 'package:data/data.dart';
 import 'enrollment_provider.dart';
 
 part 'lesson_providers.g.dart';

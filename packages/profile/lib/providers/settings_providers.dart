@@ -1,9 +1,16 @@
 import 'package:core/core.dart';
+import 'package:data/data.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../models/settings_models.dart';
-import 'repository_providers.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../repositories/settings_repository.dart';
 
 part 'settings_providers.g.dart';
+
+@Riverpod(keepAlive: true)
+Future<SettingsRepository> settingsRepository(Ref ref) async {
+  final db = await ref.watch(appDatabaseProvider.future);
+  return SettingsRepository(db);
+}
 
 @Riverpod(keepAlive: true)
 class AppearanceSettingsNotifier extends _$AppearanceSettingsNotifier {

@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:data/data.dart';
+import 'package:courses/courses.dart';
 import '../providers/profile_providers.dart';
 import '../widgets/paid_active_profile_header.dart';
 import '../widgets/paid_active_profile_snapshot.dart';

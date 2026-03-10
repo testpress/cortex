@@ -6,7 +6,7 @@ part of 'auth_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$authHash() => r'0a8d8c7d581a4d625c0546f1ffc2b3f104c44671';
+String _$authHash() => r'2fdc7c1db09b22d2f0a106253163c859b8322ce8';
 
 /// Provider for the currently authenticated user.
 /// In a real app, this would be managed by an AuthService/SessionManager.

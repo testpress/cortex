@@ -14,6 +14,8 @@ dependencies:
     path: ../core
   data:
     path: ../data
+  courses:
+    path: ../courses
   flutter_riverpod: ^2.5.1
   riverpod_annotation: ^2.3.5
   intl: ^0.20.2
