@@ -98,7 +98,7 @@ class LogoutConfirmationSheet extends StatelessWidget {
                       backgroundColor: design.colors.error,
                       leading: const Icon(LucideIcons.logOut),
                       onPressed: onConfirm,
-                      labelStyle: const TextStyle(fontWeight: FontWeight.w700),
+                      labelStyle: design.typography.labelBold,
                     ),
                     SizedBox(height: design.spacing.sm),
                     AppButton.secondary(
@@ -110,7 +110,7 @@ class LogoutConfirmationSheet extends StatelessWidget {
                       foregroundColor: design.colors.textPrimary,
                       borderColor: const Color(0x00000000),
                       onPressed: onCancel,
-                      labelStyle: const TextStyle(fontWeight: FontWeight.w700),
+                      labelStyle: design.typography.labelBold,
                     ),
                   ],
                 ),

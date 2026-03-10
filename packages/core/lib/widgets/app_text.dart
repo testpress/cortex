@@ -95,6 +95,16 @@ class AppText extends StatelessWidget {
     this.style,
   }) : _variant = _AppTextVariant.label;
 
+  const AppText.labelBold(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.style,
+  }) : _variant = _AppTextVariant.labelBold;
+
   const AppText.labelSmall(
     this.text, {
     super.key,
@@ -251,6 +261,7 @@ class AppText extends StatelessWidget {
         _AppTextVariant.body => design.typography.body,
         _AppTextVariant.bodySmall => design.typography.bodySmall,
         _AppTextVariant.label => design.typography.label,
+        _AppTextVariant.labelBold => design.typography.labelBold,
         _AppTextVariant.labelSmall => design.typography.labelSmall,
         _AppTextVariant.caption => design.typography.caption,
         _AppTextVariant.cardTitle => design.typography.cardTitle,
@@ -294,6 +305,7 @@ enum _AppTextVariant {
   body,
   bodySmall,
   label,
+  labelBold,
   labelSmall,
   caption,
   cardTitle,
