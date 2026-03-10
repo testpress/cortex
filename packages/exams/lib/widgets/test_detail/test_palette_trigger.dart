@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import 'package:flutter/material.dart' show FontWeight;
 
 class TestPaletteTrigger extends StatelessWidget {
   final int answeredCount;

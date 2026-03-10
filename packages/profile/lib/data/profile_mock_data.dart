@@ -1,4 +1,3 @@
-import 'package:core/core.dart';
 import 'package:data/data.dart';
 
 /// Mock recent activity items for the profile screen.

@@ -1,8 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import '../../models/test_model.dart';
-import 'dart:ui' show FontFeature;
-import 'package:flutter/material.dart' show FontWeight;
 
 class TestHeader extends StatelessWidget {
   final Test test;

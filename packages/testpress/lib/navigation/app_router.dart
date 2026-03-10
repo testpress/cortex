@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:courses/courses.dart';
 import 'package:profile/profile.dart';
-import 'package:data/data.dart';
 import 'package:exams/exams.dart';
 
 // Placeholder empty screens for the routes that don't exist yet
@@ -167,7 +166,7 @@ final GoRouter appRouter = GoRouter(
                             color: const Color(0xFFFFFFFF),
                             child: const Center(child: AppLoadingIndicator()),
                           ),
-                          error: (e, __) => Center(child: Text('Error: $e')),
+                          error: (e, _) => Center(child: Text('Error: $e')),
                         );
                       },
                     );
@@ -198,7 +197,7 @@ final GoRouter appRouter = GoRouter(
                             color: const Color(0xFFFFFFFF),
                             child: const Center(child: AppLoadingIndicator()),
                           ),
-                          error: (e, __) => Center(child: Text('Error: $e')),
+                          error: (e, _) => Center(child: Text('Error: $e')),
                         );
                       },
                     );
