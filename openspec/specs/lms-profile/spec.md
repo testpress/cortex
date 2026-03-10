@@ -12,6 +12,7 @@ The system SHALL display a centered profile header providing a clear identity ov
 - **AND** the user's name MUST be displayed in bold (20px semibold) below the avatar
 - **AND** a membership subtext SHALL be visible.
 - **AND** a neutral edit affordance SHALL appear in the top-right corner of the identity card.
+- **AND** tapping the edit affordance MUST navigate to the `EditProfileScreen`.
 
 ### Requirement: Learning Snapshot Card
 The system SHALL provide a consolidated card summarising key performance metrics across different content types.
@@ -45,6 +46,7 @@ The system SHALL provide access to account settings and application preferences 
 - **WHEN** viewing the `ProfilePage` in the `profile` package
 - **THEN** the system MUST display a list card containing: Edit Profile, Notifications, Certificates, App Settings, and Logout.
 - **AND** each item MUST have its specific icon, label, and a chevron-right transition indicator.
+- **AND** tapping "Edit Profile" MUST navigate to the `EditProfileScreen`.
 
 ### Requirement: Profile Navigation Entry Points
 The system SHALL expose the profile from the primary navigation shell.

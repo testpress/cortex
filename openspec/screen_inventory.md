@@ -145,7 +145,7 @@ Each screen = one OpenSpec change. Priority is based on user journey criticality
 | # | Change Name | Screen(s) | Notes | Status |
 |---|---|---|---|---|
 | 20 | `lms-profile-paid-active` | ProfilePage | Full profile with stats, badges, courses | ✅ Done |
-| 21 | `lms-edit-profile` | EditProfileScreen | User profile editing (name, phone, etc) | ⏳ Pending |
+| 21 | `lms-edit-profile` | EditProfileScreen | User profile editing (name, phone, etc) | ✅ Done |
 | 22 | `lms-certificates` | CertificatesScreen + CertificatePreview | Certificate PDFs | ✅ Done |
 | 23 | `lms-notifications` | NotificationsScreen | Alert list | ✅ Done |
 | 24 | `lms-settings` | AppSettingsScreen | App settings, playback, and theme settings | ✅ Done |
