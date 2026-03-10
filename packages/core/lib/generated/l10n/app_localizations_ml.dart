@@ -211,6 +211,16 @@ class AppLocalizationsMl extends AppLocalizations {
   String get profileLogout => 'ലോഗൗട്ട്';
 
   @override
+  String get logoutConfirmationTitle => 'ലോഗൗട്ട് ചെയ്യണോ?';
+
+  @override
+  String get logoutConfirmationMessage =>
+      'നിങ്ങളുടെ അക്കൗണ്ട് ആക്സസ് ചെയ്യാൻ വീണ്ടും ലോഗിൻ ചെയ്യേണ്ടതുണ്ട്';
+
+  @override
+  String get logoutButtonLabel => 'ലോഗൗട്ട്';
+
+  @override
   String get certificatesSubtitleAvailable =>
       'നിങ്ങളുടെ കോഴ്‌സ് പൂർത്തീകരണ സർട്ടിഫിക്കറ്റുകൾ കാണുകയും ഡൗൺലോഡ് ചെയ്യുകയും ചെയ്യുക';
 

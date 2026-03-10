@@ -5,6 +5,7 @@ import 'package:core/core.dart';
 import 'package:courses/courses.dart';
 import 'package:profile/profile.dart';
 import 'package:exams/exams.dart';
+import 'package:data/data.dart';
 
 // Placeholder empty screens for the routes that don't exist yet
 class ExplorePlaceholderScreen extends StatelessWidget {
@@ -72,21 +73,42 @@ final GoRouter appRouter = GoRouter(
           ),
         ];
 
-        final activeTabId = _getCurrentTabId(navigationShell.currentIndex);
+        return Consumer(
+          builder: (context, ref, _) {
+            final isLogoutSheetOpen = ref.watch(isLogoutSheetOpenProvider);
+            final activeTabId = _getCurrentTabId(navigationShell.currentIndex);
 
-        return AppShell(
-          bottomNavigationBar: AppTabBar(
-            items: items,
-            activeItemId: activeTabId,
-            onTabChange: (id) => _onTabItemTapped(navigationShell, id),
-          ),
-          navigationRail: AppNavigationRail(
-            items: items,
-            activeItemId: activeTabId,
-            onTabChange: (id) => _onTabItemTapped(navigationShell, id),
-          ),
-          drawer: const DashboardDrawer(),
-          child: navigationShell,
+            void closeSheet() {
+              ref.read(isLogoutSheetOpenProvider.notifier).state = false;
+            }
+
+            return AppShell(
+              bottomNavigationBar: AppTabBar(
+                items: items,
+                activeItemId: activeTabId,
+                onTabChange: (id) => _onTabItemTapped(navigationShell, id),
+              ),
+              navigationRail: AppNavigationRail(
+                items: items,
+                activeItemId: activeTabId,
+                onTabChange: (id) => _onTabItemTapped(navigationShell, id),
+              ),
+              drawer: const DashboardDrawer(),
+              bottomSheet: AppBottomSheet(
+                isOpen: isLogoutSheetOpen,
+                onClose: closeSheet,
+                child: LogoutConfirmationSheet(
+                  onConfirm: () {
+                    closeSheet();
+                    ref.read(authProvider.notifier).logout();
+                    _rootNavigatorKey.currentContext?.go('/home');
+                  },
+                  onCancel: closeSheet,
+                ),
+              ),
+              child: navigationShell,
+            );
+          },
         );
       },
       branches: [

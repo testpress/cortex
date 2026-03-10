@@ -8,12 +8,14 @@ class AccountPreferencesSection extends StatelessWidget {
     this.onNotificationsTap,
     this.onCertificatesTap,
     this.onSettingsTap,
+    this.onLogoutTap,
   });
 
   final VoidCallback? onEditProfileTap;
   final VoidCallback? onNotificationsTap;
   final VoidCallback? onCertificatesTap;
   final VoidCallback? onSettingsTap;
+  final VoidCallback? onLogoutTap;
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +73,7 @@ class AccountPreferencesSection extends StatelessWidget {
                   label: l10n.profileLogout,
                   iconColor: design.colors.error,
                   labelColor: design.colors.error,
-                  onTap: () {},
+                  onTap: onLogoutTap ?? () {},
                 ),
               ],
             ),

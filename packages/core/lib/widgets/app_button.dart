@@ -21,6 +21,7 @@ class AppButton extends StatelessWidget {
     this.leading,
     this.trailing,
     this.borderColor,
+    this.labelStyle,
   });
 
   final String label;
@@ -35,6 +36,7 @@ class AppButton extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final Widget? leading;
   final Widget? trailing;
+  final TextStyle? labelStyle;
 
   // Semantic constructors
   const AppButton.primary({
@@ -50,6 +52,7 @@ class AppButton extends StatelessWidget {
     this.leading,
     this.trailing,
     this.borderColor,
+    this.labelStyle,
   }) : variant = AppButtonVariant.primary;
 
   const AppButton.secondary({
@@ -65,6 +68,7 @@ class AppButton extends StatelessWidget {
     this.leading,
     this.trailing,
     this.borderColor,
+    this.labelStyle,
   }) : variant = AppButtonVariant.secondary;
 
   @override
@@ -126,19 +130,29 @@ class AppButton extends StatelessWidget {
               ),
             ),
             child: Center(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (leading != null) ...[
-                    leading!,
-                    SizedBox(width: design.spacing.sm),
+              child: IconTheme(
+                data: IconThemeData(
+                  color: effectiveForegroundColor,
+                  size: design.iconSize.md,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (leading != null) ...[
+                      leading!,
+                      SizedBox(width: design.spacing.sm),
+                    ],
+                    AppText.label(
+                      label,
+                      color: effectiveForegroundColor,
+                      style: labelStyle,
+                    ),
+                    if (trailing != null) ...[
+                      SizedBox(width: design.spacing.sm),
+                      trailing!,
+                    ],
                   ],
-                  AppText.label(label, color: effectiveForegroundColor),
-                  if (trailing != null) ...[
-                    SizedBox(width: design.spacing.sm),
-                    trailing!,
-                  ],
-                ],
+                ),
               ),
             ),
           ),

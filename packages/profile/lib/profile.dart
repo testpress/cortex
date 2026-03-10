@@ -10,3 +10,4 @@ export 'providers/profile_providers.dart';
 export 'providers/notification_preferences_provider.dart';
 export 'providers/certificates_provider.dart';
 export 'models/certificate.dart';
+export 'widgets/logout_confirmation_sheet.dart';

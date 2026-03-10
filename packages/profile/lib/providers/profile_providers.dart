@@ -10,3 +10,5 @@ Future<List<RecentActivityDto>> profileRecentActivity(Ref ref) async {
   await Future.delayed(const Duration(milliseconds: 400));
   return mockRecentActivity;
 }
+
+final isLogoutSheetOpenProvider = StateProvider<bool>((ref) => false);

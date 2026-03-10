@@ -1269,6 +1269,7 @@ class DesignTypography {
     required this.bodySmall,
     required this.label,
     required this.labelSmall,
+    required this.labelBold,
     required this.caption,
     required this.cardTitle,
     required this.cardSubtitle,
@@ -1283,6 +1284,7 @@ class DesignTypography {
   final TextStyle bodySmall;
   final TextStyle label;
   final TextStyle labelSmall;
+  final TextStyle labelBold;
   final TextStyle caption;
   final TextStyle cardTitle;
   final TextStyle cardSubtitle;
@@ -1347,6 +1349,12 @@ class DesignTypography {
         color: c.textPrimary,
         height: 1.2,
       ),
+      // labelBold - A bolder variant of the UI chrome label.
+      labelBold: s.sm.copyWith(
+        fontWeight: FontWeight.w700,
+        color: c.textPrimary,
+        height: 1.2,
+      ),
       // labelSmall — ALL-CAPS section dividers, badge labels, micro UI.
       // w600 compensates for small size. height: 1.1 keeps rows tight.
       labelSmall: s.xs.copyWith(
@@ -1396,6 +1404,7 @@ class DesignTypography {
         other.bodySmall == bodySmall &&
         other.label == label &&
         other.labelSmall == labelSmall &&
+        other.labelBold == labelBold &&
         other.caption == caption &&
         other.cardTitle == cardTitle &&
         other.cardSubtitle == cardSubtitle &&
@@ -1411,7 +1420,7 @@ class DesignTypography {
       subtitle,
       body,
       bodySmall,
-      Object.hash(label, labelSmall, caption),
+      Object.hash(label, labelSmall, labelBold, caption),
       Object.hash(cardTitle, cardSubtitle, cardCaption),
     );
   }

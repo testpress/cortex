@@ -478,6 +478,24 @@ abstract class AppLocalizations {
   /// **'Logout'**
   String get profileLogout;
 
+  /// No description provided for @logoutConfirmationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out?'**
+  String get logoutConfirmationTitle;
+
+  /// No description provided for @logoutConfirmationMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll need to log in again to access your account'**
+  String get logoutConfirmationMessage;
+
+  /// No description provided for @logoutButtonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out'**
+  String get logoutButtonLabel;
+
   /// No description provided for @certificatesSubtitleAvailable.
   ///
   /// In en, this message translates to:
