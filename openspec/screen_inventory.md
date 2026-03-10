@@ -149,7 +149,7 @@ Each screen = one OpenSpec change. Priority is based on user journey criticality
 | 22 | `lms-certificates` | CertificatesScreen + CertificatePreview | Certificate PDFs | ✅ Done |
 | 23 | `lms-notifications` | NotificationsScreen | Alert list | ✅ Done |
 | 24 | `lms-settings` | AppSettingsScreen | App settings, playback, and theme settings | ✅ Done |
-| 25 | `lms-logout` | LogoutDialog | Generic logout confirmation dialog | ⏳ Pending |
+| 25 | `lms-logout` | LogoutDialog | Generic logout confirmation dialog | ✅ Done |
 
 ### Phase 7 — Upsell & Onboarding Variants
 | # | Change Name | Screen(s) | Notes | Status |
