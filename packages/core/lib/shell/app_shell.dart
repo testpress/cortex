@@ -13,6 +13,7 @@ class AppShell extends StatelessWidget {
     this.bottomNavigationBar,
     this.navigationRail,
     this.drawer,
+    this.bottomSheet,
   });
 
   final Widget child;
@@ -20,6 +21,7 @@ class AppShell extends StatelessWidget {
   final Widget? bottomNavigationBar;
   final Widget? navigationRail;
   final Widget? drawer;
+  final Widget? bottomSheet;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,7 @@ class AppShell extends StatelessWidget {
     final bottomNavigationBar = this.bottomNavigationBar;
     final navigationRail = this.navigationRail;
     final drawer = this.drawer;
+    final bottomSheet = this.bottomSheet;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -66,6 +69,7 @@ class AppShell extends StatelessWidget {
                     ),
             ),
             if (drawer != null) drawer,
+            if (bottomSheet != null) bottomSheet,
           ],
         );
       },

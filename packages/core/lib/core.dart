@@ -32,6 +32,7 @@ export 'widgets/typography_gallery_screen.dart';
 export 'widgets/app_carousel.dart';
 export 'widgets/app_loading_indicator.dart';
 export 'widgets/app_drawer.dart';
+export 'widgets/app_bottom_sheet.dart';
 export 'widgets/app_error_view.dart';
 export 'widgets/dashboard_header.dart';
 

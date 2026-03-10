@@ -210,6 +210,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profileLogout => 'تسجيل الخروج';
 
   @override
+  String get logoutConfirmationTitle => 'هل تريد تسجيل الخروج؟';
+
+  @override
+  String get logoutConfirmationMessage =>
+      'ستحتاج إلى تسجيل الدخول مرة أخرى للوصول إلى حسابك';
+
+  @override
+  String get logoutButtonLabel => 'تسجيل الخروج';
+
+  @override
   String get certificatesSubtitleAvailable =>
       'اعرض وحمّل شهادات إكمال الدورات الخاصة بك';
 

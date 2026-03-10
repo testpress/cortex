@@ -115,6 +115,9 @@ class ProfilePage extends ConsumerWidget {
                   onSettingsTap:
                       onOpenSettings ??
                       () => context.pushNamed('profile-settings'),
+                  onLogoutTap: () {
+                    ref.read(isLogoutSheetOpenProvider.notifier).state = true;
+                  },
                 ),
 
                 SizedBox(height: design.spacing.xxl),
