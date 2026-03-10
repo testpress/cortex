@@ -85,7 +85,11 @@ class ProfileHeader extends StatelessWidget {
                     color: design.colors.primaryContainer,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(LucideIcons.pencil, size: design.iconSize.sm),
+                  child: Icon(
+                    LucideIcons.pencil,
+                    size: design.iconSize.sm,
+                    color: design.colors.onPrimaryContainer,
+                  ),
                 ),
               ),
             ],

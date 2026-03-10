@@ -12,7 +12,6 @@ class AppTextField extends StatelessWidget {
     this.controller,
     this.onChanged,
     this.keyboardType,
-    this.validator,
     this.errorText,
     this.readOnly = false,
     this.helperText,
@@ -23,7 +22,6 @@ class AppTextField extends StatelessWidget {
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
   final TextInputType? keyboardType;
-  final String? Function(String?)? validator;
   final String? errorText;
   final bool readOnly;
   final String? helperText;

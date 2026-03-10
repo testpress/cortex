@@ -54,40 +54,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       );
 
       ref.read(authProvider.notifier).updateProfile(updatedUser);
-
-      // Show success message inside the context
-      final overlay = Overlay.of(context);
-      final overlayEntry = OverlayEntry(
-        builder: (context) {
-          final design = Design.of(context);
-          return Positioned(
-            bottom: design.spacing.xxl,
-            left: design.spacing.lg,
-            right: design.spacing.lg,
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: design.spacing.md,
-                vertical: design.spacing.sm,
-              ),
-              decoration: BoxDecoration(
-                color: design.colors.success.withValues(alpha: 0.9),
-                borderRadius: BorderRadius.circular(design.radius.md),
-              ),
-              child: AppText.body(
-                l10n.editProfileSuccess,
-                color: design.colors.onPrimary,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          );
-        },
-      );
-      overlay.insert(overlayEntry);
-      Future.delayed(const Duration(seconds: 2), () {
-        overlayEntry.remove();
-      });
-
-      context.pop();
+      context.pop(true);
     }
   }
 
@@ -175,7 +142,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               // Back Button - Standardized with Study Page
               AppSemantics.button(
                 label: l10n.editProfileBack,
-                onTap: () => context.pop(),
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () => context.pop(),

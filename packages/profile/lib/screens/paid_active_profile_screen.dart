@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter/material.dart' show Scaffold;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:data/data.dart';
@@ -35,9 +34,9 @@ class ProfilePage extends ConsumerWidget {
 
     final l10n = L10n.of(context);
 
-    return Scaffold(
+    return AppShell(
       backgroundColor: design.colors.canvas,
-      body: Column(
+      child: Column(
         children: [
           DashboardHeader(title: l10n.profileTabTitle),
           Expanded(
@@ -69,19 +68,21 @@ class ProfilePage extends ConsumerWidget {
                   loading: () => const SizedBox(height: 200),
                   error: (err, __) => AppErrorView(
                     message: err.toString(),
-                    onRetry: () => ref.refresh(studyMomentumProvider),
+                    onRetry: () => ref.invalidate(studyMomentumProvider),
                   ),
                 ),
 
                 SizedBox(height: design.spacing.xl),
 
-                // Courses Carousel
+                // Enrolled Courses
                 enrolledCoursesAsync.when(
-                  data: (courses) => EnrolledCoursesSection(courses: courses),
+                  data: (courses) => EnrolledCoursesSection(
+                    courses: courses,
+                  ),
                   loading: () => const SizedBox(height: 150),
                   error: (err, __) => AppErrorView(
                     message: err.toString(),
-                    onRetry: () => ref.refresh(enrollmentProvider),
+                    onRetry: () => ref.invalidate(enrollmentProvider),
                   ),
                 ),
 
@@ -89,12 +90,13 @@ class ProfilePage extends ConsumerWidget {
 
                 // Recent Activity
                 recentActivityAsync.when(
-                  data: (activities) =>
-                      RecentActivitySection(activities: activities),
-                  loading: () => const SizedBox(height: 160),
+                  data: (activities) => RecentActivitySection(
+                    activities: activities,
+                  ),
+                  loading: () => const SizedBox(height: 120),
                   error: (err, __) => AppErrorView(
                     message: err.toString(),
-                    onRetry: () => ref.refresh(profileRecentActivityProvider),
+                    onRetry: () => ref.invalidate(profileRecentActivityProvider),
                   ),
                 ),
 
