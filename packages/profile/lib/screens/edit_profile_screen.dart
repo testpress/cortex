@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:data/data.dart';
 
+const double _kHeaderContentHeight = 60.0;
+
 class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
 
@@ -123,8 +125,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     
     return Container(
       width: double.infinity,
-      // Total height = status bar + 60px content bar (standard for headers)
-      height: statusBarHeight + 60,
+      // Total height = status bar + content bar height
+      height: statusBarHeight + _kHeaderContentHeight,
       decoration: BoxDecoration(
         color: design.colors.card,
         border: Border(
