@@ -47,19 +47,9 @@ void main() {
         shadow: Color(0x33000000),
       );
 
-      final customConfig = DesignConfig(
+      final customConfig = DesignConfig.light().copyWith(
         colors: colors,
-        spacing: DesignSpacing.defaults(),
         typography: DesignTypography.defaults(colors: colors),
-        typographyScale: DesignTypographyScale.defaults(),
-        motion: DesignMotion.defaults(),
-        radius: DesignRadius.defaults(),
-        shadows: DesignShadows.light(),
-        layout: DesignLayout.defaults(),
-        subjectPalette: DesignSubjectPalette.light(),
-        statusColors: DesignStatusColors.light(),
-        shortcutPalette: DesignShortcutPalette.light(),
-        study: DesignStudyTheme.light(),
       );
 
       late DesignConfig capturedConfig;
@@ -138,19 +128,9 @@ void main() {
         shadow: Color(0x33000000),
       );
 
-      final config2 = DesignConfig(
+      final config2 = DesignConfig.light().copyWith(
         colors: colors2,
-        spacing: DesignSpacing.defaults(),
         typography: DesignTypography.defaults(colors: colors2),
-        typographyScale: DesignTypographyScale.defaults(),
-        motion: DesignMotion.defaults(),
-        radius: DesignRadius.defaults(),
-        shadows: DesignShadows.light(),
-        layout: DesignLayout.defaults(),
-        subjectPalette: DesignSubjectPalette.light(),
-        statusColors: DesignStatusColors.light(),
-        shortcutPalette: DesignShortcutPalette.light(),
-        study: DesignStudyTheme.light(),
       );
 
       late DesignConfig capturedConfig;

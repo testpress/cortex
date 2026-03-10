@@ -20,6 +20,9 @@ dependencies:
     path: ../exams
   profile:
     path: ../profile
+  data:
+    path: ../data
+  flutter_riverpod: ^2.5.1
 
 dev_dependencies:
   flutter_test:
