@@ -78,6 +78,10 @@ final GoRouter appRouter = GoRouter(
             final isLogoutSheetOpen = ref.watch(isLogoutSheetOpenProvider);
             final activeTabId = _getCurrentTabId(navigationShell.currentIndex);
 
+            void closeSheet() {
+              ref.read(isLogoutSheetOpenProvider.notifier).state = false;
+            }
+
             return AppShell(
               bottomNavigationBar: AppTabBar(
                 items: items,
@@ -92,17 +96,14 @@ final GoRouter appRouter = GoRouter(
               drawer: const DashboardDrawer(),
               bottomSheet: AppBottomSheet(
                 isOpen: isLogoutSheetOpen,
-                onClose: () =>
-                    ref.read(isLogoutSheetOpenProvider.notifier).state = false,
+                onClose: closeSheet,
                 child: LogoutConfirmationSheet(
                   onConfirm: () {
-                    ref.read(isLogoutSheetOpenProvider.notifier).state = false;
+                    closeSheet();
                     ref.read(authProvider.notifier).logout();
                     _rootNavigatorKey.currentContext?.go('/home');
                   },
-                  onCancel: () =>
-                      ref.read(isLogoutSheetOpenProvider.notifier).state =
-                          false,
+                  onCancel: closeSheet,
                 ),
               ),
               child: navigationShell,

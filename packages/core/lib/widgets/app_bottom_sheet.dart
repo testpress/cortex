@@ -10,13 +10,11 @@ class AppBottomSheet extends StatefulWidget {
     required this.isOpen,
     required this.onClose,
     required this.child,
-    this.backgroundColor,
   });
 
   final bool isOpen;
   final VoidCallback onClose;
   final Widget child;
-  final Color? backgroundColor;
 
   @override
   State<AppBottomSheet> createState() => _AppBottomSheetState();

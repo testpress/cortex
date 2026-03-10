@@ -12,17 +12,6 @@ class LogoutConfirmationSheet extends StatelessWidget {
   final VoidCallback onConfirm;
   final VoidCallback onCancel;
 
-  /// Utility method to show the logout confirmation sheet.
-  static void show(
-    BuildContext context, {
-    required VoidCallback onConfirm,
-    required VoidCallback onCancel,
-  }) {
-    // We use a custom overlay-based approach since core doesn't have a showModalBottomSheet wrapper yet.
-    // For now, we'll use a standard local approach or simply define the widget.
-    // Since this is a "design and implementation" task, I will provide the widget structure.
-  }
-
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
@@ -67,8 +56,8 @@ class LogoutConfirmationSheet extends StatelessWidget {
 
                 // Icon
                 Container(
-                  width: design.spacing.xxxl * 0.8,
-                  height: design.spacing.xxxl * 0.8,
+                  width: 56,
+                  height: 56,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: design.colors.error.withValues(alpha: 0.12),
@@ -85,7 +74,7 @@ class LogoutConfirmationSheet extends StatelessWidget {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    AppText.title(
+                    AppText.body(
                       l10n.logoutConfirmationTitle,
                       textAlign: TextAlign.center,
                     ),
