@@ -1,6 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
-import '../infra/mock_data.dart';
 
 part 'auth_provider.g.dart';
 

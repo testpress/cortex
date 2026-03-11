@@ -35,4 +35,4 @@ export 'repositories/forum_repository.dart';
 export 'repositories/repository_providers.dart';
 
 // Infra & Mocks
-export 'infra/mock_data.dart';
+export 'sources/mock_data.dart';
