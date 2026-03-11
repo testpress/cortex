@@ -13,3 +13,4 @@ export 'providers/settings_providers.dart';
 export 'providers/design_mode_provider.dart';
 export 'models/certificate.dart';
 export 'widgets/logout_confirmation_sheet.dart';
+export 'models/recent_activity_dto.dart';

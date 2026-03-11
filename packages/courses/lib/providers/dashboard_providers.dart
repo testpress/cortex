@@ -3,8 +3,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/core.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:core/data/data.dart';
-import 'package:exams/exams.dart';
 import '../courses.dart';
+import '../data/mock_upcoming_tests.dart';
 
 part 'dashboard_providers.g.dart';
 
@@ -29,8 +29,9 @@ Future<List<AssignmentDto>> pendingAssignments(Ref ref) async {
 }
 
 @riverpod
-Future<List<TestDto>> upcomingTests(Ref ref) async {
-  return ref.watch(examRepositoryProvider).getUpcomingTests();
+Future<List<ScheduledTest>> upcomingTests(Ref ref) async {
+  await Future.delayed(const Duration(milliseconds: 400));
+  return mockUpcomingTests;
 }
 
 @riverpod

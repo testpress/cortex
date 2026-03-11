@@ -19,11 +19,15 @@ This architectural shift solves several growing pains in the project:
 - **Feature Autonomy**: All feature-specific state providers and repositories move to their respective feature packages.
 - **Foundation Consolidation**: Centric components (Shared Models/DTOs like `UserDto`, Database, and Auth infrastructure) move from `packages/data` into `packages/core/data/`.
 - **Feature DTO Ownership**: Feature-specific DTOs and mocked entities move from the central layer into their respective domain packages (e.g., `AssignmentDto` to `courses`).
+- **Domain Isolation**: Courses and profile now rely solely on their own DTOs/providers (no imports from `exams` or `courses`, respectively), while future cross-feature data flows go through `core` or local mocks.
+- **Exam Mock Coverage**: The exams package ships a rich, 30-question Thermodynamics practice test so shell experiences keep the same depth as before.
 - **Package Elimination**: The `packages/data` package is completely removed.
 - **Dependency Realignment**: All feature packages and the testpress shell switch their dependencies from `data` to `core`.
 
 ## Impact
 - **`packages/core`**: Becomes the "Universal Foundation," housing the Design System and the Shared Data Layer.
 - **`packages/data`**: **Removed**.
-- **`packages/courses`**, **`packages/exams`**, **`packages/profile`**: Become self-sufficient domains depending only on `core`.
+- **`packages/courses`**: Owns the home dashboard surface, upcoming test DTOs, and mock data without reaching into `exams`.
+- **`packages/profile`**: Hosts the recent activity DTOs it uses directly, avoiding any dependency on `courses`.
+- **`packages/exams`**: Provides the Thermodynamics exam mock with 30 curated questions spanning laws, engines, entropy, and phases.
 - **Project Structure**: Reduced package overhead and a clearer separation between "Feature Logic" and "Platform Foundation."

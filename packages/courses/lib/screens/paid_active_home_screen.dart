@@ -3,7 +3,6 @@ import 'package:flutter/material.dart' show Scaffold;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart' as dto;
-import 'package:exams/exams.dart' as exam_dto;
 import '../courses.dart';
 
 class PaidActiveHomeScreen extends ConsumerWidget {
@@ -106,7 +105,6 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                           .toList()
                           .cast<Assignment>(),
                       tests: (upcomingTests.value ?? [])
-                          .map(_mapTest)
                           .toList()
                           .cast<ScheduledTest>(),
                     );
@@ -249,18 +247,4 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     );
   }
 
-  ScheduledTest _mapTest(exam_dto.TestDto d) {
-    return ScheduledTest(
-      id: d.id,
-      title: d.title,
-      time: d.time,
-      duration: d.duration,
-      isImportant: d.isImportant,
-      type: switch (d.type) {
-        exam_dto.TestType.mock => TestType.mock,
-        exam_dto.TestType.chapter => TestType.chapter,
-        exam_dto.TestType.practice => TestType.practice,
-      },
-    );
-  }
 }

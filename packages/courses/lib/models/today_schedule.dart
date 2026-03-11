@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'assignment_dto.dart';
-import 'package:exams/exams.dart' show TestType;
-export 'package:exams/exams.dart' show TestType;
+
+enum DashboardTestType { mock, chapter, practice }
 
 enum ClassStatus { upcoming, live, completed }
 
@@ -51,7 +51,7 @@ class ScheduledTest {
   final String title;
   final String time;
   final String duration;
-  final TestType? type;
+  final DashboardTestType? type;
   final bool isImportant;
 
   const ScheduledTest({

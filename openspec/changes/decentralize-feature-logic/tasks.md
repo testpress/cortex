@@ -22,3 +22,13 @@
 - [x] 4.4 Update `core/data.dart` exports and all project-wide imports
 - [x] 4.5 Verify `core` has zero imports from feature packages
 - [x] 4.6 Final build verification (`flutter pub get`, `dart analyze`)
+
+## 5. Enforce Domain Isolation
+- [x] 5.1 Relocate `RecentActivityDto` and its mock data from `courses` to `profile` so profile no longer imports `package:courses` for domain models.
+- [x] 5.2 Replace the `courses` `upcomingTests` provider so it no longer imports `package:exams`—serve its dashboard tests from course-owned DTOs or mocks instead.
+- [x] 5.3 Verify `packages/courses` has zero `package:exams` imports and `packages/profile` no longer imports `package:courses`.
+
+## 6. Restore Exam Mock Depth
+- [x] 6.1 Expand the thermodynamics mock questions so the dataset includes at least 30 curated entries across MCQ, multiple-select, and true/false types.
+- [x] 6.2 Update the thermodynamics mock test metadata (question IDs, totalQuestions) to match the expanded list.
+- [x] 6.3 Rerun `flutter analyze` (workspace) and confirm no new errors were introduced while touching the exams package.

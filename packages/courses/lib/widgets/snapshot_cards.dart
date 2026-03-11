@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../models/assignment_dto.dart';
-import 'package:exams/exams.dart' show TestDto;
+import '../models/today_schedule.dart';
 
 class ClassCard extends StatelessWidget {
   const ClassCard({super.key, required this.classItem, this.onTap});
@@ -271,7 +271,7 @@ class _SegmentedProgressBar extends StatelessWidget {
 class TestCard extends StatelessWidget {
   const TestCard({super.key, required this.test, this.onTap});
 
-  final TestDto test;
+  final ScheduledTest test;
   final VoidCallback? onTap;
 
   @override
@@ -333,7 +333,7 @@ class TestCard extends StatelessWidget {
                   ],
                 ),
                 AppText.bodySmall(
-                  "${test.type.name.toUpperCase()} Test",
+                  "${test.type?.name.toUpperCase() ?? 'TEST'} Test",
                   color: design.colors.textSecondary,
                 ),
                 SizedBox(height: design.spacing.sm),
