@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 
 import '../db/app_database.dart';
-import '../models/user_progress_dto.dart';
+import 'package:core/data/data.dart';
 import '../sources/data_source.dart';
 
 /// Repository for user progress tracking.

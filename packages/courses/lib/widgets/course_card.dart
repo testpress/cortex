@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import 'package:data/data.dart';
+import 'package:core/data/data.dart';
 
 /// Course card widget displaying course information and progress.
 ///

@@ -1,32 +1,29 @@
 # Proposal: decentralize-feature-logic
 
 ## Goal
-The goal of this refactor is to transition the Cortex project from a "God Data Package" architecture to a **Feature-Autonomous architecture**. Currently, the `packages/data` package acts as a central hub for all business logic (Repositories, APIs, and Riverpod State Providers), which creates tight coupling and bloat. This change will redistribute that logic into the respective feature packages (`courses`, `exams`, `profile`), leaving `packages/data` as a lightweight, shared "Schema" layer containing only Data Transfer Objects (DTOs) and shared infrastructure.
+The goal of this refactor is to transition the Cortex project from a "God Data Package" architecture to a **Unified Core Architecture**. We are eliminating the central `packages/data` package by:
+1. Redistributing feature-specific business logic (Repositories, Providers) into their respective domain packages (`courses`, `exams`, `profile`).
+2. Consolidating shared infrastructure (Database, Auth, and common DTOs like UserDto) into `packages/core/data`.
+3. Ensuring feature packages (`courses`, `exams`, `profile`) own their own domain-specific DTOs/Models and Mock data.
+
+This simplifies the dependency graph by making `core` the single foundation for every feature in the app.
 
 ## Motivation
 This architectural shift solves several growing pains in the project:
-- **Build Performance**: In large Riverpod projects, `build_runner` becomes a bottleneck. Decentralizing logic ensures that a change in `courses` logic only triggers a build for that package, rather than the entire monolithic `data` package.
-- **Architectural Health**: It eliminates circular dependencies by clearly separating shared schemas (DTOs) from feature-specific logic. 
-- **Domain Ownership**: Each feature (Courses, Exams, Profile) becomes a self-sufficient domain. This allows teams to work independently and makes simple tasks like deleting or replacing a feature safe and isolated.
-- **Maintenance**: Future developers can find logic where they expect it (with the UI the logic serves) rather than searching through a massive, opaque central package.
-
+- **Simplified Dependency Graph**: Feature packages now only depend on `core`. This removes the complexity of managing a separate `data` package and prevents circular dependencies.
+- **Build Performance**: Decentralizing logic ensures that a change in `courses` only triggers a `build_runner` cycle for that package, rather than a project-wide cycle in a monolithic `data` package.
+- **Domain Ownership**: Each feature becomes a self-sufficient domain. This allows for isolated development, testing, and even deletion of features without impacting the rest of the app.
+- **Maintenance**: Developers can find logic where they expect it (with the UI it serves). Shared foundation code is centralized in `core`, where the Platform SDK already lives.
 
 ## What Changes
-- **Logic Redistribution**: Feature-specific state providers and data fetching logic currently residing in `packages/data/lib/providers/` will be moved to the `lib/providers/` or `lib/data/` directories of their respective feature packages.
-- **Data Package Thinning**: The `packages/data` package will be refactored to focus exclusively on shared models (DTOs) that need to be visible across multiple modules to prevent circular dependencies.
-- **Import Realignment**: All internal imports within the feature packages and the `testpress` aggregator will be updated to point to the new decentralized locations of the state providers and logic.
-- **Public API Cleanup**: Barrel files (`lib/*.dart`) in each feature package will be updated to export their newly acquired logic/providers.
-
-## Capabilities
-
-### New Capabilities
-- `decentralized-logic`: Implementation of the architectural shift where each domain module (courses, exams, profile) owns its own data fetching and state management logic.
-
-### Modified Capabilities
-- None (This is an architectural refactor; functional requirements remain unchanged).
+- **Feature Autonomy**: All feature-specific state providers and repositories move to their respective feature packages.
+- **Foundation Consolidation**: Centric components (Shared Models/DTOs like `UserDto`, Database, and Auth infrastructure) move from `packages/data` into `packages/core/data/`.
+- **Feature DTO Ownership**: Feature-specific DTOs and mocked entities move from the central layer into their respective domain packages (e.g., `AssignmentDto` to `courses`).
+- **Package Elimination**: The `packages/data` package is completely removed.
+- **Dependency Realignment**: All feature packages and the testpress shell switch their dependencies from `data` to `core`.
 
 ## Impact
-- **`packages/data`**: Significant reduction in code volume. It will become a "Models-only" basement.
-- **`packages/courses`**, **`packages/exams`**, **`packages/profile`**: These packages will become self-sufficient, containing both their UI and their business logic.
-- **`packages/testpress`**: Updates to the `appRouter` and aggregator to import providers from feature packages instead of the central data package.
-- **Build Performance**: Reduced recompilation surface area when making changes to specific feature logic.
+- **`packages/core`**: Becomes the "Universal Foundation," housing the Design System and the Shared Data Layer.
+- **`packages/data`**: **Removed**.
+- **`packages/courses`**, **`packages/exams`**, **`packages/profile`**: Become self-sufficient domains depending only on `core`.
+- **Project Structure**: Reduced package overhead and a clearer separation between "Feature Logic" and "Platform Foundation."

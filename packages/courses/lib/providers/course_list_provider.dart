@@ -1,8 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:data/data.dart';
-import 'package:data/providers/database_provider.dart';
-import 'package:data/providers/data_source_provider.dart';
+import 'package:core/data/data.dart';
 import '../repositories/course_repository.dart';
 
 part 'course_list_provider.g.dart';

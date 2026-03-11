@@ -1,8 +1,12 @@
-import 'package:data/data.dart';
+import 'package:core/data/data.dart';
+import '../models/assignment_dto.dart';
+import '../models/learner_dto.dart';
+import '../models/dashboard_banner_dto.dart';
+import '../models/quick_shortcut_dto.dart';
+import '../models/study_momentum_dto.dart';
 
 // SHARED MOCK DATA (mockCurrentUser, mockStudyMomentum) now lives in the 'data' package.
 
-/// Mock hero banners
 const mockHeroBanners = [
   DashboardBannerDto(
     id: "1",
@@ -286,28 +290,60 @@ const mockAssignments = [
   ),
 ];
 
-/// Mock tests.
-const mockTests = [
-  TestDto(
-    id: '1',
-    title: 'Weekly Mock Test - Physics',
-    time: 'Tomorrow, 9:00 AM',
-    duration: '3 hours',
-    type: TestType.mock,
-    isImportant: true,
-  ),
-  TestDto(
-    id: '2',
-    title: 'Chapter Test - Organic Chemistry',
-    time: 'Jan 5, 2:00 PM',
-    duration: '1.5 hours',
-    type: TestType.chapter,
-  ),
-  TestDto(
-    id: '3',
-    title: 'Calculus Practice Test',
-    time: 'Jan 6, 10:00 AM',
-    duration: '2 hours',
-    type: TestType.practice,
-  ),
-];
+
+/// Mock study momentum.
+final mockStudyMomentum = StudyMomentumDto(
+  weekDays: [
+    DayActivityDto(
+      date: DateTime.now().subtract(const Duration(days: 6)),
+      dayLabel: 'M',
+      hasActivity: true,
+      minutes: 120,
+    ),
+    DayActivityDto(
+      date: DateTime.now().subtract(const Duration(days: 5)),
+      dayLabel: 'T',
+      hasActivity: true,
+      minutes: 90,
+    ),
+    DayActivityDto(
+      date: DateTime.now().subtract(const Duration(days: 4)),
+      dayLabel: 'W',
+      hasActivity: true,
+      minutes: 150,
+    ),
+    DayActivityDto(
+      date: DateTime.now().subtract(const Duration(days: 3)),
+      dayLabel: 'T',
+      hasActivity: true,
+      minutes: 60,
+    ),
+    DayActivityDto(
+      date: DateTime.now().subtract(const Duration(days: 2)),
+      dayLabel: 'F',
+      hasActivity: true,
+      minutes: 210,
+    ),
+    DayActivityDto(
+      date: DateTime.now().subtract(const Duration(days: 1)),
+      dayLabel: 'S',
+      hasActivity: true,
+      minutes: 45,
+    ),
+    DayActivityDto(
+      date: DateTime.now(),
+      dayLabel: 'S',
+      hasActivity: true,
+      minutes: 180,
+    ),
+  ],
+  weeklyHours: 14.5,
+  currentStreak: 12,
+  latestActivityTitle: 'Calculus Mock Test',
+  latestActivityTimeAgo: '1h ago',
+  lessonsFinished: 45,
+  testsAttempted: 18,
+  assessmentsDone: 32,
+  strongestSubject: 'Mathematics',
+  weakSubject: 'Organic Chemistry',
+);

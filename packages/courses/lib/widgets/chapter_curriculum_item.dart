@@ -1,5 +1,5 @@
 import 'package:core/core.dart';
-import 'package:data/data.dart';
+import 'package:core/data/data.dart';
 import 'package:flutter/widgets.dart';
 
 /// A card representing a chapter in the curriculum list.

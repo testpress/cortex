@@ -1,10 +1,9 @@
 import 'package:flutter/foundation.dart';
+import 'assignment_dto.dart';
+import 'package:exams/exams.dart' show TestType;
+export 'package:exams/exams.dart' show TestType;
 
 enum ClassStatus { upcoming, live, completed }
-
-enum AssignmentStatus { pending, submitted, overdue }
-
-enum TestType { mock, chapter, practice }
 
 @immutable
 class ClassItem {

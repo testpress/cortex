@@ -77,12 +77,12 @@ class _BaseReviewDialogState extends State<BaseReviewDialog> {
                     color: widget.design.colors.textPrimary,
                   ),
                   GestureDetector(
+                    onTap: widget.onCancel,
                     child: Icon(
                       LucideIcons.x,
                       color: widget.design.colors.textSecondary,
                       size: 20,
                     ),
-                    onTap: widget.onCancel,
                   ),
                 ],
               ),

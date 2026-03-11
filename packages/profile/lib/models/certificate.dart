@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:data/data.dart';
+import 'package:core/data/data.dart';
 
 @immutable
 class CourseCertificate {

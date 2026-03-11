@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import 'package:data/data.dart';
+import 'package:courses/courses.dart';
 
 class RecentActivitySection extends StatelessWidget {
   const RecentActivitySection({super.key, required this.activities});

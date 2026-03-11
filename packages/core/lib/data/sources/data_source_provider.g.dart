@@ -16,8 +16,9 @@ String _$dataSourceHash() => r'a2598f99a41663a124db4e3da9fc59b49aafc8ca';
 final dataSourceProvider = Provider<DataSource>.internal(
   dataSource,
   name: r'dataSourceProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$dataSourceHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$dataSourceHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );

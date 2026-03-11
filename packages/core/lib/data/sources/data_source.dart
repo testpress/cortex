@@ -1,9 +1,4 @@
-import '../models/course_dto.dart';
-import '../models/chapter_dto.dart';
-import '../models/lesson_dto.dart';
-import '../models/live_class_dto.dart';
-import '../models/forum_thread_dto.dart';
-import '../models/user_progress_dto.dart';
+import 'package:core/data/data.dart';
 
 /// Abstract data source — implemented by [MockDataSource] and [HttpDataSource].
 /// Repositories call these methods to populate the local Drift DB.

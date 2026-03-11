@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 
 import '../db/app_database.dart';
-import '../models/forum_thread_dto.dart';
+import 'package:core/data/data.dart';
 import '../sources/data_source.dart';
 
 /// Repository for forum thread data.

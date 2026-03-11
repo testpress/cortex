@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
-import 'package:data/data.dart';
+import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
 import '../providers/profile_providers.dart';
 import '../widgets/paid_active_profile_header.dart';
@@ -59,7 +59,7 @@ class ProfilePage extends ConsumerWidget {
 
                 // Stats Snapshot
                 statsAsync.when(
-                  data: (stats) => ProfileLearningSnapshot(
+                  data: (StudyMomentumDto stats) => ProfileLearningSnapshot(
                     lessonsFinished: stats.lessonsFinished,
                     testsAttempted: stats.testsAttempted,
                     assessmentsDone: stats.assessmentsDone,

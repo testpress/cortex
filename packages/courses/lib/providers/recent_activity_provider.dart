@@ -1,8 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import 'package:data/data.dart';
-import 'package:data/providers/repository_providers.dart';
-import 'package:data/providers/auth_provider.dart';
+import 'package:core/data/data.dart';
 import 'course_list_provider.dart';
 
 part 'recent_activity_provider.g.dart';

@@ -1,5 +1,5 @@
 import 'package:core/core.dart';
-import 'package:data/data.dart';
+import 'package:core/data/data.dart';
 import 'package:flutter/widgets.dart';
 
 /// A badge that displays the progress status of a lesson.

@@ -1,5 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:data/data.dart';
+import 'package:core/data/data.dart';
+import '../models/study_momentum_dto.dart';
+import '../data/mock_data.dart';
 
 part 'study_momentum_provider.g.dart';
 

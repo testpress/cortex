@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import '../../models/settings_models.dart';
+import 'package:core/data/data.dart';
 
 /// Structured table for application-wide persistent settings.
 /// This table works as a singleton, holding all app-state in a single row.

@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import 'package:data/models/live_class_dto.dart';
-import 'package:data/models/assignment_dto.dart';
-import 'package:data/models/test_dto.dart';
+import 'package:core/data/data.dart';
+import '../models/assignment_dto.dart';
+import 'package:exams/exams.dart' show TestDto;
 
 class ClassCard extends StatelessWidget {
   const ClassCard({super.key, required this.classItem, this.onTap});

@@ -1,7 +1,7 @@
-import 'package:data/data.dart' show LessonType, LessonProgressStatus;
+import 'package:core/data/data.dart' show LessonType, LessonProgressStatus;
 import 'lesson_content.dart';
 
-export 'package:data/data.dart' show LessonType, LessonProgressStatus;
+export 'package:core/data/data.dart' show LessonType, LessonProgressStatus;
 export 'lesson_content.dart';
 
 /// Domain model for a specific content item within a chapter.

@@ -1,6 +1,13 @@
 export 'models/course.dart';
 export 'models/course_content.dart';
+export 'models/assignment_dto.dart';
+export 'models/learner_dto.dart';
+export 'models/study_momentum_dto.dart';
+export 'models/quick_shortcut_dto.dart';
+export 'models/dashboard_banner_dto.dart';
+export 'models/recent_activity_dto.dart';
 export 'data/mock_courses.dart';
+export 'data/mock_data.dart';
 export 'screens/course_list_screen.dart';
 export 'screens/study_screen.dart';
 export 'screens/paid_active_home_screen.dart';

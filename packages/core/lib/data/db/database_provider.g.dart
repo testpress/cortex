@@ -16,8 +16,9 @@ String _$appDatabaseHash() => r'c8870c9f157be42405249bb893b6d28906286f89';
 final appDatabaseProvider = FutureProvider<AppDatabase>.internal(
   appDatabase,
   name: r'appDatabaseProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$appDatabaseHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$appDatabaseHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );

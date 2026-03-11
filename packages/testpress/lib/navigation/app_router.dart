@@ -5,7 +5,7 @@ import 'package:core/core.dart';
 import 'package:courses/courses.dart';
 import 'package:profile/profile.dart';
 import 'package:exams/exams.dart';
-import 'package:data/data.dart';
+import 'package:core/data/data.dart';
 import '../widgets/dashboard_drawer.dart';
 
 // Placeholder empty screens for the routes that don't exist yet

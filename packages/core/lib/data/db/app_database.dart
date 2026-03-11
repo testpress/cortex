@@ -12,8 +12,7 @@ import 'tables/live_classes_table.dart';
 import 'tables/forum_threads_table.dart';
 import 'tables/user_progress_table.dart';
 import 'tables/app_settings_table.dart';
-import '../models/lesson_dto.dart' show LessonProgressStatus;
-import '../models/settings_models.dart';
+import 'package:core/data/data.dart';
 
 part 'app_database.g.dart';
 

@@ -1,4 +1,4 @@
-import 'package:data/data.dart';
+import 'package:courses/courses.dart';
 
 /// Mock recent activity items for the profile screen.
 const mockRecentActivity = [

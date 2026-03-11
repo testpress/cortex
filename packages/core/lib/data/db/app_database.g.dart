@@ -12,72 +12,110 @@ class $CoursesTableTable extends CoursesTable
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
-      'id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
-      'title', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _colorIndexMeta =
-      const VerificationMeta('colorIndex');
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _colorIndexMeta = const VerificationMeta(
+    'colorIndex',
+  );
   @override
   late final GeneratedColumn<int> colorIndex = GeneratedColumn<int>(
-      'color_index', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _chapterCountMeta =
-      const VerificationMeta('chapterCount');
+    'color_index',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _chapterCountMeta = const VerificationMeta(
+    'chapterCount',
+  );
   @override
   late final GeneratedColumn<int> chapterCount = GeneratedColumn<int>(
-      'chapter_count', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _totalDurationMeta =
-      const VerificationMeta('totalDuration');
+    'chapter_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _totalDurationMeta = const VerificationMeta(
+    'totalDuration',
+  );
   @override
   late final GeneratedColumn<String> totalDuration = GeneratedColumn<String>(
-      'total_duration', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _progressMeta =
-      const VerificationMeta('progress');
+    'total_duration',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _progressMeta = const VerificationMeta(
+    'progress',
+  );
   @override
   late final GeneratedColumn<int> progress = GeneratedColumn<int>(
-      'progress', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(0));
-  static const VerificationMeta _completedLessonsMeta =
-      const VerificationMeta('completedLessons');
+    'progress',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _completedLessonsMeta = const VerificationMeta(
+    'completedLessons',
+  );
   @override
   late final GeneratedColumn<int> completedLessons = GeneratedColumn<int>(
-      'completed_lessons', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(0));
-  static const VerificationMeta _totalLessonsMeta =
-      const VerificationMeta('totalLessons');
+    'completed_lessons',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _totalLessonsMeta = const VerificationMeta(
+    'totalLessons',
+  );
   @override
   late final GeneratedColumn<int> totalLessons = GeneratedColumn<int>(
-      'total_lessons', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+    'total_lessons',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
   @override
   List<GeneratedColumn> get $columns => [
-        id,
-        title,
-        colorIndex,
-        chapterCount,
-        totalDuration,
-        progress,
-        completedLessons,
-        totalLessons
-      ];
+    id,
+    title,
+    colorIndex,
+    chapterCount,
+    totalDuration,
+    progress,
+    completedLessons,
+    totalLessons,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'courses_table';
   @override
-  VerificationContext validateIntegrity(Insertable<CoursesTableData> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<CoursesTableData> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -87,49 +125,65 @@ class $CoursesTableTable extends CoursesTable
     }
     if (data.containsKey('title')) {
       context.handle(
-          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
     } else if (isInserting) {
       context.missing(_titleMeta);
     }
     if (data.containsKey('color_index')) {
       context.handle(
-          _colorIndexMeta,
-          colorIndex.isAcceptableOrUnknown(
-              data['color_index']!, _colorIndexMeta));
+        _colorIndexMeta,
+        colorIndex.isAcceptableOrUnknown(data['color_index']!, _colorIndexMeta),
+      );
     } else if (isInserting) {
       context.missing(_colorIndexMeta);
     }
     if (data.containsKey('chapter_count')) {
       context.handle(
+        _chapterCountMeta,
+        chapterCount.isAcceptableOrUnknown(
+          data['chapter_count']!,
           _chapterCountMeta,
-          chapterCount.isAcceptableOrUnknown(
-              data['chapter_count']!, _chapterCountMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_chapterCountMeta);
     }
     if (data.containsKey('total_duration')) {
       context.handle(
+        _totalDurationMeta,
+        totalDuration.isAcceptableOrUnknown(
+          data['total_duration']!,
           _totalDurationMeta,
-          totalDuration.isAcceptableOrUnknown(
-              data['total_duration']!, _totalDurationMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_totalDurationMeta);
     }
     if (data.containsKey('progress')) {
-      context.handle(_progressMeta,
-          progress.isAcceptableOrUnknown(data['progress']!, _progressMeta));
+      context.handle(
+        _progressMeta,
+        progress.isAcceptableOrUnknown(data['progress']!, _progressMeta),
+      );
     }
     if (data.containsKey('completed_lessons')) {
       context.handle(
+        _completedLessonsMeta,
+        completedLessons.isAcceptableOrUnknown(
+          data['completed_lessons']!,
           _completedLessonsMeta,
-          completedLessons.isAcceptableOrUnknown(
-              data['completed_lessons']!, _completedLessonsMeta));
+        ),
+      );
     }
     if (data.containsKey('total_lessons')) {
       context.handle(
+        _totalLessonsMeta,
+        totalLessons.isAcceptableOrUnknown(
+          data['total_lessons']!,
           _totalLessonsMeta,
-          totalLessons.isAcceptableOrUnknown(
-              data['total_lessons']!, _totalLessonsMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_totalLessonsMeta);
     }
@@ -142,22 +196,38 @@ class $CoursesTableTable extends CoursesTable
   CoursesTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return CoursesTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      title: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
-      colorIndex: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}color_index'])!,
-      chapterCount: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}chapter_count'])!,
-      totalDuration: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}total_duration'])!,
-      progress: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}progress'])!,
-      completedLessons: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}completed_lessons'])!,
-      totalLessons: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}total_lessons'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      colorIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}color_index'],
+      )!,
+      chapterCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}chapter_count'],
+      )!,
+      totalDuration: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}total_duration'],
+      )!,
+      progress: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}progress'],
+      )!,
+      completedLessons: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}completed_lessons'],
+      )!,
+      totalLessons: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total_lessons'],
+      )!,
     );
   }
 
@@ -177,15 +247,16 @@ class CoursesTableData extends DataClass
   final int progress;
   final int completedLessons;
   final int totalLessons;
-  const CoursesTableData(
-      {required this.id,
-      required this.title,
-      required this.colorIndex,
-      required this.chapterCount,
-      required this.totalDuration,
-      required this.progress,
-      required this.completedLessons,
-      required this.totalLessons});
+  const CoursesTableData({
+    required this.id,
+    required this.title,
+    required this.colorIndex,
+    required this.chapterCount,
+    required this.totalDuration,
+    required this.progress,
+    required this.completedLessons,
+    required this.totalLessons,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -213,8 +284,10 @@ class CoursesTableData extends DataClass
     );
   }
 
-  factory CoursesTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory CoursesTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return CoursesTableData(
       id: serializer.fromJson<String>(json['id']),
@@ -242,31 +315,32 @@ class CoursesTableData extends DataClass
     };
   }
 
-  CoursesTableData copyWith(
-          {String? id,
-          String? title,
-          int? colorIndex,
-          int? chapterCount,
-          String? totalDuration,
-          int? progress,
-          int? completedLessons,
-          int? totalLessons}) =>
-      CoursesTableData(
-        id: id ?? this.id,
-        title: title ?? this.title,
-        colorIndex: colorIndex ?? this.colorIndex,
-        chapterCount: chapterCount ?? this.chapterCount,
-        totalDuration: totalDuration ?? this.totalDuration,
-        progress: progress ?? this.progress,
-        completedLessons: completedLessons ?? this.completedLessons,
-        totalLessons: totalLessons ?? this.totalLessons,
-      );
+  CoursesTableData copyWith({
+    String? id,
+    String? title,
+    int? colorIndex,
+    int? chapterCount,
+    String? totalDuration,
+    int? progress,
+    int? completedLessons,
+    int? totalLessons,
+  }) => CoursesTableData(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    colorIndex: colorIndex ?? this.colorIndex,
+    chapterCount: chapterCount ?? this.chapterCount,
+    totalDuration: totalDuration ?? this.totalDuration,
+    progress: progress ?? this.progress,
+    completedLessons: completedLessons ?? this.completedLessons,
+    totalLessons: totalLessons ?? this.totalLessons,
+  );
   CoursesTableData copyWithCompanion(CoursesTableCompanion data) {
     return CoursesTableData(
       id: data.id.present ? data.id.value : this.id,
       title: data.title.present ? data.title.value : this.title,
-      colorIndex:
-          data.colorIndex.present ? data.colorIndex.value : this.colorIndex,
+      colorIndex: data.colorIndex.present
+          ? data.colorIndex.value
+          : this.colorIndex,
       chapterCount: data.chapterCount.present
           ? data.chapterCount.value
           : this.chapterCount,
@@ -299,8 +373,16 @@ class CoursesTableData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(id, title, colorIndex, chapterCount,
-      totalDuration, progress, completedLessons, totalLessons);
+  int get hashCode => Object.hash(
+    id,
+    title,
+    colorIndex,
+    chapterCount,
+    totalDuration,
+    progress,
+    completedLessons,
+    totalLessons,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -346,12 +428,12 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     this.completedLessons = const Value.absent(),
     required int totalLessons,
     this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        title = Value(title),
-        colorIndex = Value(colorIndex),
-        chapterCount = Value(chapterCount),
-        totalDuration = Value(totalDuration),
-        totalLessons = Value(totalLessons);
+  }) : id = Value(id),
+       title = Value(title),
+       colorIndex = Value(colorIndex),
+       chapterCount = Value(chapterCount),
+       totalDuration = Value(totalDuration),
+       totalLessons = Value(totalLessons);
   static Insertable<CoursesTableData> custom({
     Expression<String>? id,
     Expression<String>? title,
@@ -376,16 +458,17 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     });
   }
 
-  CoursesTableCompanion copyWith(
-      {Value<String>? id,
-      Value<String>? title,
-      Value<int>? colorIndex,
-      Value<int>? chapterCount,
-      Value<String>? totalDuration,
-      Value<int>? progress,
-      Value<int>? completedLessons,
-      Value<int>? totalLessons,
-      Value<int>? rowid}) {
+  CoursesTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? title,
+    Value<int>? colorIndex,
+    Value<int>? chapterCount,
+    Value<String>? totalDuration,
+    Value<int>? progress,
+    Value<int>? completedLessons,
+    Value<int>? totalLessons,
+    Value<int>? rowid,
+  }) {
     return CoursesTableCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
@@ -458,48 +541,84 @@ class $ChaptersTableTable extends ChaptersTable
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
-      'id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _courseIdMeta =
-      const VerificationMeta('courseId');
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _courseIdMeta = const VerificationMeta(
+    'courseId',
+  );
   @override
   late final GeneratedColumn<String> courseId = GeneratedColumn<String>(
-      'course_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'course_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
-      'title', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _lessonCountMeta =
-      const VerificationMeta('lessonCount');
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lessonCountMeta = const VerificationMeta(
+    'lessonCount',
+  );
   @override
   late final GeneratedColumn<int> lessonCount = GeneratedColumn<int>(
-      'lesson_count', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _assessmentCountMeta =
-      const VerificationMeta('assessmentCount');
+    'lesson_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _assessmentCountMeta = const VerificationMeta(
+    'assessmentCount',
+  );
   @override
   late final GeneratedColumn<int> assessmentCount = GeneratedColumn<int>(
-      'assessment_count', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _orderIndexMeta =
-      const VerificationMeta('orderIndex');
+    'assessment_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _orderIndexMeta = const VerificationMeta(
+    'orderIndex',
+  );
   @override
   late final GeneratedColumn<int> orderIndex = GeneratedColumn<int>(
-      'order_index', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+    'order_index',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, courseId, title, lessonCount, assessmentCount, orderIndex];
+  List<GeneratedColumn> get $columns => [
+    id,
+    courseId,
+    title,
+    lessonCount,
+    assessmentCount,
+    orderIndex,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'chapters_table';
   @override
-  VerificationContext validateIntegrity(Insertable<ChaptersTableData> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<ChaptersTableData> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -508,38 +627,48 @@ class $ChaptersTableTable extends ChaptersTable
       context.missing(_idMeta);
     }
     if (data.containsKey('course_id')) {
-      context.handle(_courseIdMeta,
-          courseId.isAcceptableOrUnknown(data['course_id']!, _courseIdMeta));
+      context.handle(
+        _courseIdMeta,
+        courseId.isAcceptableOrUnknown(data['course_id']!, _courseIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_courseIdMeta);
     }
     if (data.containsKey('title')) {
       context.handle(
-          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
     } else if (isInserting) {
       context.missing(_titleMeta);
     }
     if (data.containsKey('lesson_count')) {
       context.handle(
+        _lessonCountMeta,
+        lessonCount.isAcceptableOrUnknown(
+          data['lesson_count']!,
           _lessonCountMeta,
-          lessonCount.isAcceptableOrUnknown(
-              data['lesson_count']!, _lessonCountMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_lessonCountMeta);
     }
     if (data.containsKey('assessment_count')) {
       context.handle(
+        _assessmentCountMeta,
+        assessmentCount.isAcceptableOrUnknown(
+          data['assessment_count']!,
           _assessmentCountMeta,
-          assessmentCount.isAcceptableOrUnknown(
-              data['assessment_count']!, _assessmentCountMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_assessmentCountMeta);
     }
     if (data.containsKey('order_index')) {
       context.handle(
-          _orderIndexMeta,
-          orderIndex.isAcceptableOrUnknown(
-              data['order_index']!, _orderIndexMeta));
+        _orderIndexMeta,
+        orderIndex.isAcceptableOrUnknown(data['order_index']!, _orderIndexMeta),
+      );
     } else if (isInserting) {
       context.missing(_orderIndexMeta);
     }
@@ -552,18 +681,30 @@ class $ChaptersTableTable extends ChaptersTable
   ChaptersTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return ChaptersTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      courseId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}course_id'])!,
-      title: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
-      lessonCount: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}lesson_count'])!,
-      assessmentCount: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}assessment_count'])!,
-      orderIndex: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}order_index'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      courseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}course_id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      lessonCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}lesson_count'],
+      )!,
+      assessmentCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}assessment_count'],
+      )!,
+      orderIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}order_index'],
+      )!,
     );
   }
 
@@ -581,13 +722,14 @@ class ChaptersTableData extends DataClass
   final int lessonCount;
   final int assessmentCount;
   final int orderIndex;
-  const ChaptersTableData(
-      {required this.id,
-      required this.courseId,
-      required this.title,
-      required this.lessonCount,
-      required this.assessmentCount,
-      required this.orderIndex});
+  const ChaptersTableData({
+    required this.id,
+    required this.courseId,
+    required this.title,
+    required this.lessonCount,
+    required this.assessmentCount,
+    required this.orderIndex,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -611,8 +753,10 @@ class ChaptersTableData extends DataClass
     );
   }
 
-  factory ChaptersTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory ChaptersTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return ChaptersTableData(
       id: serializer.fromJson<String>(json['id']),
@@ -636,33 +780,35 @@ class ChaptersTableData extends DataClass
     };
   }
 
-  ChaptersTableData copyWith(
-          {String? id,
-          String? courseId,
-          String? title,
-          int? lessonCount,
-          int? assessmentCount,
-          int? orderIndex}) =>
-      ChaptersTableData(
-        id: id ?? this.id,
-        courseId: courseId ?? this.courseId,
-        title: title ?? this.title,
-        lessonCount: lessonCount ?? this.lessonCount,
-        assessmentCount: assessmentCount ?? this.assessmentCount,
-        orderIndex: orderIndex ?? this.orderIndex,
-      );
+  ChaptersTableData copyWith({
+    String? id,
+    String? courseId,
+    String? title,
+    int? lessonCount,
+    int? assessmentCount,
+    int? orderIndex,
+  }) => ChaptersTableData(
+    id: id ?? this.id,
+    courseId: courseId ?? this.courseId,
+    title: title ?? this.title,
+    lessonCount: lessonCount ?? this.lessonCount,
+    assessmentCount: assessmentCount ?? this.assessmentCount,
+    orderIndex: orderIndex ?? this.orderIndex,
+  );
   ChaptersTableData copyWithCompanion(ChaptersTableCompanion data) {
     return ChaptersTableData(
       id: data.id.present ? data.id.value : this.id,
       courseId: data.courseId.present ? data.courseId.value : this.courseId,
       title: data.title.present ? data.title.value : this.title,
-      lessonCount:
-          data.lessonCount.present ? data.lessonCount.value : this.lessonCount,
+      lessonCount: data.lessonCount.present
+          ? data.lessonCount.value
+          : this.lessonCount,
       assessmentCount: data.assessmentCount.present
           ? data.assessmentCount.value
           : this.assessmentCount,
-      orderIndex:
-          data.orderIndex.present ? data.orderIndex.value : this.orderIndex,
+      orderIndex: data.orderIndex.present
+          ? data.orderIndex.value
+          : this.orderIndex,
     );
   }
 
@@ -681,7 +827,13 @@ class ChaptersTableData extends DataClass
 
   @override
   int get hashCode => Object.hash(
-      id, courseId, title, lessonCount, assessmentCount, orderIndex);
+    id,
+    courseId,
+    title,
+    lessonCount,
+    assessmentCount,
+    orderIndex,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -719,12 +871,12 @@ class ChaptersTableCompanion extends UpdateCompanion<ChaptersTableData> {
     required int assessmentCount,
     required int orderIndex,
     this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        courseId = Value(courseId),
-        title = Value(title),
-        lessonCount = Value(lessonCount),
-        assessmentCount = Value(assessmentCount),
-        orderIndex = Value(orderIndex);
+  }) : id = Value(id),
+       courseId = Value(courseId),
+       title = Value(title),
+       lessonCount = Value(lessonCount),
+       assessmentCount = Value(assessmentCount),
+       orderIndex = Value(orderIndex);
   static Insertable<ChaptersTableData> custom({
     Expression<String>? id,
     Expression<String>? courseId,
@@ -745,14 +897,15 @@ class ChaptersTableCompanion extends UpdateCompanion<ChaptersTableData> {
     });
   }
 
-  ChaptersTableCompanion copyWith(
-      {Value<String>? id,
-      Value<String>? courseId,
-      Value<String>? title,
-      Value<int>? lessonCount,
-      Value<int>? assessmentCount,
-      Value<int>? orderIndex,
-      Value<int>? rowid}) {
+  ChaptersTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? courseId,
+    Value<String>? title,
+    Value<int>? lessonCount,
+    Value<int>? assessmentCount,
+    Value<int>? orderIndex,
+    Value<int>? rowid,
+  }) {
     return ChaptersTableCompanion(
       id: id ?? this.id,
       courseId: courseId ?? this.courseId,
@@ -815,133 +968,211 @@ class $LessonsTableTable extends LessonsTable
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
-      'id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _chapterIdMeta =
-      const VerificationMeta('chapterId');
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _chapterIdMeta = const VerificationMeta(
+    'chapterId',
+  );
   @override
   late final GeneratedColumn<String> chapterId = GeneratedColumn<String>(
-      'chapter_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'chapter_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
-      'title', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
   late final GeneratedColumn<String> type = GeneratedColumn<String>(
-      'type', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _durationMeta =
-      const VerificationMeta('duration');
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _durationMeta = const VerificationMeta(
+    'duration',
+  );
   @override
   late final GeneratedColumn<String> duration = GeneratedColumn<String>(
-      'duration', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _progressStatusMeta =
-      const VerificationMeta('progressStatus');
+    'duration',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _progressStatusMeta = const VerificationMeta(
+    'progressStatus',
+  );
   @override
   late final GeneratedColumn<String> progressStatus = GeneratedColumn<String>(
-      'progress_status', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant('notStarted'));
-  static const VerificationMeta _isLockedMeta =
-      const VerificationMeta('isLocked');
+    'progress_status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('notStarted'),
+  );
+  static const VerificationMeta _isLockedMeta = const VerificationMeta(
+    'isLocked',
+  );
   @override
   late final GeneratedColumn<bool> isLocked = GeneratedColumn<bool>(
-      'is_locked', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("is_locked" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _orderIndexMeta =
-      const VerificationMeta('orderIndex');
+    'is_locked',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_locked" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _orderIndexMeta = const VerificationMeta(
+    'orderIndex',
+  );
   @override
   late final GeneratedColumn<int> orderIndex = GeneratedColumn<int>(
-      'order_index', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _chapterTitleMeta =
-      const VerificationMeta('chapterTitle');
+    'order_index',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _chapterTitleMeta = const VerificationMeta(
+    'chapterTitle',
+  );
   @override
   late final GeneratedColumn<String> chapterTitle = GeneratedColumn<String>(
-      'chapter_title', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _contentJsonMeta =
-      const VerificationMeta('contentJson');
+    'chapter_title',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _contentJsonMeta = const VerificationMeta(
+    'contentJson',
+  );
   @override
   late final GeneratedColumn<String> contentJson = GeneratedColumn<String>(
-      'content_json', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _subtitleMeta =
-      const VerificationMeta('subtitle');
+    'content_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _subtitleMeta = const VerificationMeta(
+    'subtitle',
+  );
   @override
   late final GeneratedColumn<String> subtitle = GeneratedColumn<String>(
-      'subtitle', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _subjectNameMeta =
-      const VerificationMeta('subjectName');
+    'subtitle',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _subjectNameMeta = const VerificationMeta(
+    'subjectName',
+  );
   @override
   late final GeneratedColumn<String> subjectName = GeneratedColumn<String>(
-      'subject_name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _subjectIndexMeta =
-      const VerificationMeta('subjectIndex');
+    'subject_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _subjectIndexMeta = const VerificationMeta(
+    'subjectIndex',
+  );
   @override
   late final GeneratedColumn<int> subjectIndex = GeneratedColumn<int>(
-      'subject_index', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
-  static const VerificationMeta _lessonNumberMeta =
-      const VerificationMeta('lessonNumber');
+    'subject_index',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lessonNumberMeta = const VerificationMeta(
+    'lessonNumber',
+  );
   @override
   late final GeneratedColumn<int> lessonNumber = GeneratedColumn<int>(
-      'lesson_number', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
-  static const VerificationMeta _totalLessonsMeta =
-      const VerificationMeta('totalLessons');
+    'lesson_number',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _totalLessonsMeta = const VerificationMeta(
+    'totalLessons',
+  );
   @override
   late final GeneratedColumn<int> totalLessons = GeneratedColumn<int>(
-      'total_lessons', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
-  static const VerificationMeta _isBookmarkedMeta =
-      const VerificationMeta('isBookmarked');
+    'total_lessons',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isBookmarkedMeta = const VerificationMeta(
+    'isBookmarked',
+  );
   @override
   late final GeneratedColumn<bool> isBookmarked = GeneratedColumn<bool>(
-      'is_bookmarked', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("is_bookmarked" IN (0, 1))'),
-      defaultValue: const Constant(false));
+    'is_bookmarked',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_bookmarked" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   List<GeneratedColumn> get $columns => [
-        id,
-        chapterId,
-        title,
-        type,
-        duration,
-        progressStatus,
-        isLocked,
-        orderIndex,
-        chapterTitle,
-        contentJson,
-        subtitle,
-        subjectName,
-        subjectIndex,
-        lessonNumber,
-        totalLessons,
-        isBookmarked
-      ];
+    id,
+    chapterId,
+    title,
+    type,
+    duration,
+    progressStatus,
+    isLocked,
+    orderIndex,
+    chapterTitle,
+    contentJson,
+    subtitle,
+    subjectName,
+    subjectIndex,
+    lessonNumber,
+    totalLessons,
+    isBookmarked,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'lessons_table';
   @override
-  VerificationContext validateIntegrity(Insertable<LessonsTableData> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<LessonsTableData> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -950,92 +1181,128 @@ class $LessonsTableTable extends LessonsTable
       context.missing(_idMeta);
     }
     if (data.containsKey('chapter_id')) {
-      context.handle(_chapterIdMeta,
-          chapterId.isAcceptableOrUnknown(data['chapter_id']!, _chapterIdMeta));
+      context.handle(
+        _chapterIdMeta,
+        chapterId.isAcceptableOrUnknown(data['chapter_id']!, _chapterIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_chapterIdMeta);
     }
     if (data.containsKey('title')) {
       context.handle(
-          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
     } else if (isInserting) {
       context.missing(_titleMeta);
     }
     if (data.containsKey('type')) {
       context.handle(
-          _typeMeta, type.isAcceptableOrUnknown(data['type']!, _typeMeta));
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
     } else if (isInserting) {
       context.missing(_typeMeta);
     }
     if (data.containsKey('duration')) {
-      context.handle(_durationMeta,
-          duration.isAcceptableOrUnknown(data['duration']!, _durationMeta));
+      context.handle(
+        _durationMeta,
+        duration.isAcceptableOrUnknown(data['duration']!, _durationMeta),
+      );
     } else if (isInserting) {
       context.missing(_durationMeta);
     }
     if (data.containsKey('progress_status')) {
       context.handle(
+        _progressStatusMeta,
+        progressStatus.isAcceptableOrUnknown(
+          data['progress_status']!,
           _progressStatusMeta,
-          progressStatus.isAcceptableOrUnknown(
-              data['progress_status']!, _progressStatusMeta));
+        ),
+      );
     }
     if (data.containsKey('is_locked')) {
-      context.handle(_isLockedMeta,
-          isLocked.isAcceptableOrUnknown(data['is_locked']!, _isLockedMeta));
+      context.handle(
+        _isLockedMeta,
+        isLocked.isAcceptableOrUnknown(data['is_locked']!, _isLockedMeta),
+      );
     }
     if (data.containsKey('order_index')) {
       context.handle(
-          _orderIndexMeta,
-          orderIndex.isAcceptableOrUnknown(
-              data['order_index']!, _orderIndexMeta));
+        _orderIndexMeta,
+        orderIndex.isAcceptableOrUnknown(data['order_index']!, _orderIndexMeta),
+      );
     } else if (isInserting) {
       context.missing(_orderIndexMeta);
     }
     if (data.containsKey('chapter_title')) {
       context.handle(
+        _chapterTitleMeta,
+        chapterTitle.isAcceptableOrUnknown(
+          data['chapter_title']!,
           _chapterTitleMeta,
-          chapterTitle.isAcceptableOrUnknown(
-              data['chapter_title']!, _chapterTitleMeta));
+        ),
+      );
     }
     if (data.containsKey('content_json')) {
       context.handle(
+        _contentJsonMeta,
+        contentJson.isAcceptableOrUnknown(
+          data['content_json']!,
           _contentJsonMeta,
-          contentJson.isAcceptableOrUnknown(
-              data['content_json']!, _contentJsonMeta));
+        ),
+      );
     }
     if (data.containsKey('subtitle')) {
-      context.handle(_subtitleMeta,
-          subtitle.isAcceptableOrUnknown(data['subtitle']!, _subtitleMeta));
+      context.handle(
+        _subtitleMeta,
+        subtitle.isAcceptableOrUnknown(data['subtitle']!, _subtitleMeta),
+      );
     }
     if (data.containsKey('subject_name')) {
       context.handle(
+        _subjectNameMeta,
+        subjectName.isAcceptableOrUnknown(
+          data['subject_name']!,
           _subjectNameMeta,
-          subjectName.isAcceptableOrUnknown(
-              data['subject_name']!, _subjectNameMeta));
+        ),
+      );
     }
     if (data.containsKey('subject_index')) {
       context.handle(
+        _subjectIndexMeta,
+        subjectIndex.isAcceptableOrUnknown(
+          data['subject_index']!,
           _subjectIndexMeta,
-          subjectIndex.isAcceptableOrUnknown(
-              data['subject_index']!, _subjectIndexMeta));
+        ),
+      );
     }
     if (data.containsKey('lesson_number')) {
       context.handle(
+        _lessonNumberMeta,
+        lessonNumber.isAcceptableOrUnknown(
+          data['lesson_number']!,
           _lessonNumberMeta,
-          lessonNumber.isAcceptableOrUnknown(
-              data['lesson_number']!, _lessonNumberMeta));
+        ),
+      );
     }
     if (data.containsKey('total_lessons')) {
       context.handle(
+        _totalLessonsMeta,
+        totalLessons.isAcceptableOrUnknown(
+          data['total_lessons']!,
           _totalLessonsMeta,
-          totalLessons.isAcceptableOrUnknown(
-              data['total_lessons']!, _totalLessonsMeta));
+        ),
+      );
     }
     if (data.containsKey('is_bookmarked')) {
       context.handle(
+        _isBookmarkedMeta,
+        isBookmarked.isAcceptableOrUnknown(
+          data['is_bookmarked']!,
           _isBookmarkedMeta,
-          isBookmarked.isAcceptableOrUnknown(
-              data['is_bookmarked']!, _isBookmarkedMeta));
+        ),
+      );
     }
     return context;
   }
@@ -1046,38 +1313,70 @@ class $LessonsTableTable extends LessonsTable
   LessonsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return LessonsTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      chapterId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}chapter_id'])!,
-      title: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
-      type: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}type'])!,
-      duration: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}duration'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      chapterId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}chapter_id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      duration: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}duration'],
+      )!,
       progressStatus: attachedDatabase.typeMapping.read(
-          DriftSqlType.string, data['${effectivePrefix}progress_status'])!,
-      isLocked: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}is_locked'])!,
-      orderIndex: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}order_index'])!,
-      chapterTitle: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}chapter_title']),
-      contentJson: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}content_json']),
-      subtitle: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}subtitle']),
-      subjectName: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}subject_name']),
-      subjectIndex: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}subject_index']),
-      lessonNumber: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}lesson_number']),
-      totalLessons: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}total_lessons']),
-      isBookmarked: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}is_bookmarked'])!,
+        DriftSqlType.string,
+        data['${effectivePrefix}progress_status'],
+      )!,
+      isLocked: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_locked'],
+      )!,
+      orderIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}order_index'],
+      )!,
+      chapterTitle: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}chapter_title'],
+      ),
+      contentJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content_json'],
+      ),
+      subtitle: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}subtitle'],
+      ),
+      subjectName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}subject_name'],
+      ),
+      subjectIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}subject_index'],
+      ),
+      lessonNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}lesson_number'],
+      ),
+      totalLessons: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total_lessons'],
+      ),
+      isBookmarked: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_bookmarked'],
+      )!,
     );
   }
 
@@ -1109,23 +1408,24 @@ class LessonsTableData extends DataClass
   final int? lessonNumber;
   final int? totalLessons;
   final bool isBookmarked;
-  const LessonsTableData(
-      {required this.id,
-      required this.chapterId,
-      required this.title,
-      required this.type,
-      required this.duration,
-      required this.progressStatus,
-      required this.isLocked,
-      required this.orderIndex,
-      this.chapterTitle,
-      this.contentJson,
-      this.subtitle,
-      this.subjectName,
-      this.subjectIndex,
-      this.lessonNumber,
-      this.totalLessons,
-      required this.isBookmarked});
+  const LessonsTableData({
+    required this.id,
+    required this.chapterId,
+    required this.title,
+    required this.type,
+    required this.duration,
+    required this.progressStatus,
+    required this.isLocked,
+    required this.orderIndex,
+    this.chapterTitle,
+    this.contentJson,
+    this.subtitle,
+    this.subjectName,
+    this.subjectIndex,
+    this.lessonNumber,
+    this.totalLessons,
+    required this.isBookmarked,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1197,8 +1497,10 @@ class LessonsTableData extends DataClass
     );
   }
 
-  factory LessonsTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory LessonsTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return LessonsTableData(
       id: serializer.fromJson<String>(json['id']),
@@ -1242,45 +1544,41 @@ class LessonsTableData extends DataClass
     };
   }
 
-  LessonsTableData copyWith(
-          {String? id,
-          String? chapterId,
-          String? title,
-          String? type,
-          String? duration,
-          String? progressStatus,
-          bool? isLocked,
-          int? orderIndex,
-          Value<String?> chapterTitle = const Value.absent(),
-          Value<String?> contentJson = const Value.absent(),
-          Value<String?> subtitle = const Value.absent(),
-          Value<String?> subjectName = const Value.absent(),
-          Value<int?> subjectIndex = const Value.absent(),
-          Value<int?> lessonNumber = const Value.absent(),
-          Value<int?> totalLessons = const Value.absent(),
-          bool? isBookmarked}) =>
-      LessonsTableData(
-        id: id ?? this.id,
-        chapterId: chapterId ?? this.chapterId,
-        title: title ?? this.title,
-        type: type ?? this.type,
-        duration: duration ?? this.duration,
-        progressStatus: progressStatus ?? this.progressStatus,
-        isLocked: isLocked ?? this.isLocked,
-        orderIndex: orderIndex ?? this.orderIndex,
-        chapterTitle:
-            chapterTitle.present ? chapterTitle.value : this.chapterTitle,
-        contentJson: contentJson.present ? contentJson.value : this.contentJson,
-        subtitle: subtitle.present ? subtitle.value : this.subtitle,
-        subjectName: subjectName.present ? subjectName.value : this.subjectName,
-        subjectIndex:
-            subjectIndex.present ? subjectIndex.value : this.subjectIndex,
-        lessonNumber:
-            lessonNumber.present ? lessonNumber.value : this.lessonNumber,
-        totalLessons:
-            totalLessons.present ? totalLessons.value : this.totalLessons,
-        isBookmarked: isBookmarked ?? this.isBookmarked,
-      );
+  LessonsTableData copyWith({
+    String? id,
+    String? chapterId,
+    String? title,
+    String? type,
+    String? duration,
+    String? progressStatus,
+    bool? isLocked,
+    int? orderIndex,
+    Value<String?> chapterTitle = const Value.absent(),
+    Value<String?> contentJson = const Value.absent(),
+    Value<String?> subtitle = const Value.absent(),
+    Value<String?> subjectName = const Value.absent(),
+    Value<int?> subjectIndex = const Value.absent(),
+    Value<int?> lessonNumber = const Value.absent(),
+    Value<int?> totalLessons = const Value.absent(),
+    bool? isBookmarked,
+  }) => LessonsTableData(
+    id: id ?? this.id,
+    chapterId: chapterId ?? this.chapterId,
+    title: title ?? this.title,
+    type: type ?? this.type,
+    duration: duration ?? this.duration,
+    progressStatus: progressStatus ?? this.progressStatus,
+    isLocked: isLocked ?? this.isLocked,
+    orderIndex: orderIndex ?? this.orderIndex,
+    chapterTitle: chapterTitle.present ? chapterTitle.value : this.chapterTitle,
+    contentJson: contentJson.present ? contentJson.value : this.contentJson,
+    subtitle: subtitle.present ? subtitle.value : this.subtitle,
+    subjectName: subjectName.present ? subjectName.value : this.subjectName,
+    subjectIndex: subjectIndex.present ? subjectIndex.value : this.subjectIndex,
+    lessonNumber: lessonNumber.present ? lessonNumber.value : this.lessonNumber,
+    totalLessons: totalLessons.present ? totalLessons.value : this.totalLessons,
+    isBookmarked: isBookmarked ?? this.isBookmarked,
+  );
   LessonsTableData copyWithCompanion(LessonsTableCompanion data) {
     return LessonsTableData(
       id: data.id.present ? data.id.value : this.id,
@@ -1292,16 +1590,19 @@ class LessonsTableData extends DataClass
           ? data.progressStatus.value
           : this.progressStatus,
       isLocked: data.isLocked.present ? data.isLocked.value : this.isLocked,
-      orderIndex:
-          data.orderIndex.present ? data.orderIndex.value : this.orderIndex,
+      orderIndex: data.orderIndex.present
+          ? data.orderIndex.value
+          : this.orderIndex,
       chapterTitle: data.chapterTitle.present
           ? data.chapterTitle.value
           : this.chapterTitle,
-      contentJson:
-          data.contentJson.present ? data.contentJson.value : this.contentJson,
+      contentJson: data.contentJson.present
+          ? data.contentJson.value
+          : this.contentJson,
       subtitle: data.subtitle.present ? data.subtitle.value : this.subtitle,
-      subjectName:
-          data.subjectName.present ? data.subjectName.value : this.subjectName,
+      subjectName: data.subjectName.present
+          ? data.subjectName.value
+          : this.subjectName,
       subjectIndex: data.subjectIndex.present
           ? data.subjectIndex.value
           : this.subjectIndex,
@@ -1342,22 +1643,23 @@ class LessonsTableData extends DataClass
 
   @override
   int get hashCode => Object.hash(
-      id,
-      chapterId,
-      title,
-      type,
-      duration,
-      progressStatus,
-      isLocked,
-      orderIndex,
-      chapterTitle,
-      contentJson,
-      subtitle,
-      subjectName,
-      subjectIndex,
-      lessonNumber,
-      totalLessons,
-      isBookmarked);
+    id,
+    chapterId,
+    title,
+    type,
+    duration,
+    progressStatus,
+    isLocked,
+    orderIndex,
+    chapterTitle,
+    contentJson,
+    subtitle,
+    subjectName,
+    subjectIndex,
+    lessonNumber,
+    totalLessons,
+    isBookmarked,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1435,12 +1737,12 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.totalLessons = const Value.absent(),
     this.isBookmarked = const Value.absent(),
     this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        chapterId = Value(chapterId),
-        title = Value(title),
-        type = Value(type),
-        duration = Value(duration),
-        orderIndex = Value(orderIndex);
+  }) : id = Value(id),
+       chapterId = Value(chapterId),
+       title = Value(title),
+       type = Value(type),
+       duration = Value(duration),
+       orderIndex = Value(orderIndex);
   static Insertable<LessonsTableData> custom({
     Expression<String>? id,
     Expression<String>? chapterId,
@@ -1481,24 +1783,25 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     });
   }
 
-  LessonsTableCompanion copyWith(
-      {Value<String>? id,
-      Value<String>? chapterId,
-      Value<String>? title,
-      Value<String>? type,
-      Value<String>? duration,
-      Value<String>? progressStatus,
-      Value<bool>? isLocked,
-      Value<int>? orderIndex,
-      Value<String?>? chapterTitle,
-      Value<String?>? contentJson,
-      Value<String?>? subtitle,
-      Value<String?>? subjectName,
-      Value<int?>? subjectIndex,
-      Value<int?>? lessonNumber,
-      Value<int?>? totalLessons,
-      Value<bool>? isBookmarked,
-      Value<int>? rowid}) {
+  LessonsTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? chapterId,
+    Value<String>? title,
+    Value<String>? type,
+    Value<String>? duration,
+    Value<String>? progressStatus,
+    Value<bool>? isLocked,
+    Value<int>? orderIndex,
+    Value<String?>? chapterTitle,
+    Value<String?>? contentJson,
+    Value<String?>? subtitle,
+    Value<String?>? subjectName,
+    Value<int?>? subjectIndex,
+    Value<int?>? lessonNumber,
+    Value<int?>? totalLessons,
+    Value<bool>? isBookmarked,
+    Value<int>? rowid,
+  }) {
     return LessonsTableCompanion(
       id: id ?? this.id,
       chapterId: chapterId ?? this.chapterId,
@@ -1611,38 +1914,70 @@ class $LiveClassesTableTable extends LiveClassesTable
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
-      'id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _subjectMeta =
-      const VerificationMeta('subject');
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _subjectMeta = const VerificationMeta(
+    'subject',
+  );
   @override
   late final GeneratedColumn<String> subject = GeneratedColumn<String>(
-      'subject', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'subject',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _topicMeta = const VerificationMeta('topic');
   @override
   late final GeneratedColumn<String> topic = GeneratedColumn<String>(
-      'topic', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'topic',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _timeMeta = const VerificationMeta('time');
   @override
   late final GeneratedColumn<String> time = GeneratedColumn<String>(
-      'time', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _facultyMeta =
-      const VerificationMeta('faculty');
+    'time',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _facultyMeta = const VerificationMeta(
+    'faculty',
+  );
   @override
   late final GeneratedColumn<String> faculty = GeneratedColumn<String>(
-      'faculty', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'faculty',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
   late final GeneratedColumn<String> status = GeneratedColumn<String>(
-      'status', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, subject, topic, time, faculty, status];
+  List<GeneratedColumn> get $columns => [
+    id,
+    subject,
+    topic,
+    time,
+    faculty,
+    status,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1650,8 +1985,9 @@ class $LiveClassesTableTable extends LiveClassesTable
   static const String $name = 'live_classes_table';
   @override
   VerificationContext validateIntegrity(
-      Insertable<LiveClassesTableData> instance,
-      {bool isInserting = false}) {
+    Insertable<LiveClassesTableData> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -1660,32 +1996,42 @@ class $LiveClassesTableTable extends LiveClassesTable
       context.missing(_idMeta);
     }
     if (data.containsKey('subject')) {
-      context.handle(_subjectMeta,
-          subject.isAcceptableOrUnknown(data['subject']!, _subjectMeta));
+      context.handle(
+        _subjectMeta,
+        subject.isAcceptableOrUnknown(data['subject']!, _subjectMeta),
+      );
     } else if (isInserting) {
       context.missing(_subjectMeta);
     }
     if (data.containsKey('topic')) {
       context.handle(
-          _topicMeta, topic.isAcceptableOrUnknown(data['topic']!, _topicMeta));
+        _topicMeta,
+        topic.isAcceptableOrUnknown(data['topic']!, _topicMeta),
+      );
     } else if (isInserting) {
       context.missing(_topicMeta);
     }
     if (data.containsKey('time')) {
       context.handle(
-          _timeMeta, time.isAcceptableOrUnknown(data['time']!, _timeMeta));
+        _timeMeta,
+        time.isAcceptableOrUnknown(data['time']!, _timeMeta),
+      );
     } else if (isInserting) {
       context.missing(_timeMeta);
     }
     if (data.containsKey('faculty')) {
-      context.handle(_facultyMeta,
-          faculty.isAcceptableOrUnknown(data['faculty']!, _facultyMeta));
+      context.handle(
+        _facultyMeta,
+        faculty.isAcceptableOrUnknown(data['faculty']!, _facultyMeta),
+      );
     } else if (isInserting) {
       context.missing(_facultyMeta);
     }
     if (data.containsKey('status')) {
-      context.handle(_statusMeta,
-          status.isAcceptableOrUnknown(data['status']!, _statusMeta));
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
     } else if (isInserting) {
       context.missing(_statusMeta);
     }
@@ -1698,18 +2044,30 @@ class $LiveClassesTableTable extends LiveClassesTable
   LiveClassesTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return LiveClassesTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      subject: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}subject'])!,
-      topic: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}topic'])!,
-      time: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}time'])!,
-      faculty: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}faculty'])!,
-      status: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}status'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      subject: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}subject'],
+      )!,
+      topic: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}topic'],
+      )!,
+      time: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}time'],
+      )!,
+      faculty: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}faculty'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
     );
   }
 
@@ -1729,13 +2087,14 @@ class LiveClassesTableData extends DataClass
 
   /// Stored as string: 'completed' | 'live' | 'upcoming'
   final String status;
-  const LiveClassesTableData(
-      {required this.id,
-      required this.subject,
-      required this.topic,
-      required this.time,
-      required this.faculty,
-      required this.status});
+  const LiveClassesTableData({
+    required this.id,
+    required this.subject,
+    required this.topic,
+    required this.time,
+    required this.faculty,
+    required this.status,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1759,8 +2118,10 @@ class LiveClassesTableData extends DataClass
     );
   }
 
-  factory LiveClassesTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory LiveClassesTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return LiveClassesTableData(
       id: serializer.fromJson<String>(json['id']),
@@ -1784,21 +2145,21 @@ class LiveClassesTableData extends DataClass
     };
   }
 
-  LiveClassesTableData copyWith(
-          {String? id,
-          String? subject,
-          String? topic,
-          String? time,
-          String? faculty,
-          String? status}) =>
-      LiveClassesTableData(
-        id: id ?? this.id,
-        subject: subject ?? this.subject,
-        topic: topic ?? this.topic,
-        time: time ?? this.time,
-        faculty: faculty ?? this.faculty,
-        status: status ?? this.status,
-      );
+  LiveClassesTableData copyWith({
+    String? id,
+    String? subject,
+    String? topic,
+    String? time,
+    String? faculty,
+    String? status,
+  }) => LiveClassesTableData(
+    id: id ?? this.id,
+    subject: subject ?? this.subject,
+    topic: topic ?? this.topic,
+    time: time ?? this.time,
+    faculty: faculty ?? this.faculty,
+    status: status ?? this.status,
+  );
   LiveClassesTableData copyWithCompanion(LiveClassesTableCompanion data) {
     return LiveClassesTableData(
       id: data.id.present ? data.id.value : this.id,
@@ -1862,12 +2223,12 @@ class LiveClassesTableCompanion extends UpdateCompanion<LiveClassesTableData> {
     required String faculty,
     required String status,
     this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        subject = Value(subject),
-        topic = Value(topic),
-        time = Value(time),
-        faculty = Value(faculty),
-        status = Value(status);
+  }) : id = Value(id),
+       subject = Value(subject),
+       topic = Value(topic),
+       time = Value(time),
+       faculty = Value(faculty),
+       status = Value(status);
   static Insertable<LiveClassesTableData> custom({
     Expression<String>? id,
     Expression<String>? subject,
@@ -1888,14 +2249,15 @@ class LiveClassesTableCompanion extends UpdateCompanion<LiveClassesTableData> {
     });
   }
 
-  LiveClassesTableCompanion copyWith(
-      {Value<String>? id,
-      Value<String>? subject,
-      Value<String>? topic,
-      Value<String>? time,
-      Value<String>? faculty,
-      Value<String>? status,
-      Value<int>? rowid}) {
+  LiveClassesTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? subject,
+    Value<String>? topic,
+    Value<String>? time,
+    Value<String>? faculty,
+    Value<String>? status,
+    Value<int>? rowid,
+  }) {
     return LiveClassesTableCompanion(
       id: id ?? this.id,
       subject: subject ?? this.subject,
@@ -1958,61 +2320,97 @@ class $ForumThreadsTableTable extends ForumThreadsTable
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
-      'id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _courseIdMeta =
-      const VerificationMeta('courseId');
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _courseIdMeta = const VerificationMeta(
+    'courseId',
+  );
   @override
   late final GeneratedColumn<String> courseId = GeneratedColumn<String>(
-      'course_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'course_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
-      'title', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _descriptionMeta =
-      const VerificationMeta('description');
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
   @override
   late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'description', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _studentNameMeta =
-      const VerificationMeta('studentName');
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _studentNameMeta = const VerificationMeta(
+    'studentName',
+  );
   @override
   late final GeneratedColumn<String> studentName = GeneratedColumn<String>(
-      'student_name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _timeAgoMeta =
-      const VerificationMeta('timeAgo');
+    'student_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _timeAgoMeta = const VerificationMeta(
+    'timeAgo',
+  );
   @override
   late final GeneratedColumn<String> timeAgo = GeneratedColumn<String>(
-      'time_ago', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _replyCountMeta =
-      const VerificationMeta('replyCount');
+    'time_ago',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _replyCountMeta = const VerificationMeta(
+    'replyCount',
+  );
   @override
   late final GeneratedColumn<int> replyCount = GeneratedColumn<int>(
-      'reply_count', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(0));
+    'reply_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
   late final GeneratedColumn<String> status = GeneratedColumn<String>(
-      'status', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   @override
   List<GeneratedColumn> get $columns => [
-        id,
-        courseId,
-        title,
-        description,
-        studentName,
-        timeAgo,
-        replyCount,
-        status
-      ];
+    id,
+    courseId,
+    title,
+    description,
+    studentName,
+    timeAgo,
+    replyCount,
+    status,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2020,8 +2418,9 @@ class $ForumThreadsTableTable extends ForumThreadsTable
   static const String $name = 'forum_threads_table';
   @override
   VerificationContext validateIntegrity(
-      Insertable<ForumThreadsTableData> instance,
-      {bool isInserting = false}) {
+    Insertable<ForumThreadsTableData> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -2030,48 +2429,62 @@ class $ForumThreadsTableTable extends ForumThreadsTable
       context.missing(_idMeta);
     }
     if (data.containsKey('course_id')) {
-      context.handle(_courseIdMeta,
-          courseId.isAcceptableOrUnknown(data['course_id']!, _courseIdMeta));
+      context.handle(
+        _courseIdMeta,
+        courseId.isAcceptableOrUnknown(data['course_id']!, _courseIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_courseIdMeta);
     }
     if (data.containsKey('title')) {
       context.handle(
-          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
     } else if (isInserting) {
       context.missing(_titleMeta);
     }
     if (data.containsKey('description')) {
       context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
           _descriptionMeta,
-          description.isAcceptableOrUnknown(
-              data['description']!, _descriptionMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_descriptionMeta);
     }
     if (data.containsKey('student_name')) {
       context.handle(
+        _studentNameMeta,
+        studentName.isAcceptableOrUnknown(
+          data['student_name']!,
           _studentNameMeta,
-          studentName.isAcceptableOrUnknown(
-              data['student_name']!, _studentNameMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_studentNameMeta);
     }
     if (data.containsKey('time_ago')) {
-      context.handle(_timeAgoMeta,
-          timeAgo.isAcceptableOrUnknown(data['time_ago']!, _timeAgoMeta));
+      context.handle(
+        _timeAgoMeta,
+        timeAgo.isAcceptableOrUnknown(data['time_ago']!, _timeAgoMeta),
+      );
     } else if (isInserting) {
       context.missing(_timeAgoMeta);
     }
     if (data.containsKey('reply_count')) {
       context.handle(
-          _replyCountMeta,
-          replyCount.isAcceptableOrUnknown(
-              data['reply_count']!, _replyCountMeta));
+        _replyCountMeta,
+        replyCount.isAcceptableOrUnknown(data['reply_count']!, _replyCountMeta),
+      );
     }
     if (data.containsKey('status')) {
-      context.handle(_statusMeta,
-          status.isAcceptableOrUnknown(data['status']!, _statusMeta));
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
     } else if (isInserting) {
       context.missing(_statusMeta);
     }
@@ -2084,22 +2497,38 @@ class $ForumThreadsTableTable extends ForumThreadsTable
   ForumThreadsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return ForumThreadsTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      courseId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}course_id'])!,
-      title: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
-      description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
-      studentName: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}student_name'])!,
-      timeAgo: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}time_ago'])!,
-      replyCount: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}reply_count'])!,
-      status: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}status'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      courseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}course_id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      studentName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}student_name'],
+      )!,
+      timeAgo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}time_ago'],
+      )!,
+      replyCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}reply_count'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
     );
   }
 
@@ -2121,15 +2550,16 @@ class ForumThreadsTableData extends DataClass
 
   /// Stored as string: 'answered' | 'unanswered'
   final String status;
-  const ForumThreadsTableData(
-      {required this.id,
-      required this.courseId,
-      required this.title,
-      required this.description,
-      required this.studentName,
-      required this.timeAgo,
-      required this.replyCount,
-      required this.status});
+  const ForumThreadsTableData({
+    required this.id,
+    required this.courseId,
+    required this.title,
+    required this.description,
+    required this.studentName,
+    required this.timeAgo,
+    required this.replyCount,
+    required this.status,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2157,8 +2587,10 @@ class ForumThreadsTableData extends DataClass
     );
   }
 
-  factory ForumThreadsTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory ForumThreadsTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return ForumThreadsTableData(
       id: serializer.fromJson<String>(json['id']),
@@ -2186,37 +2618,40 @@ class ForumThreadsTableData extends DataClass
     };
   }
 
-  ForumThreadsTableData copyWith(
-          {String? id,
-          String? courseId,
-          String? title,
-          String? description,
-          String? studentName,
-          String? timeAgo,
-          int? replyCount,
-          String? status}) =>
-      ForumThreadsTableData(
-        id: id ?? this.id,
-        courseId: courseId ?? this.courseId,
-        title: title ?? this.title,
-        description: description ?? this.description,
-        studentName: studentName ?? this.studentName,
-        timeAgo: timeAgo ?? this.timeAgo,
-        replyCount: replyCount ?? this.replyCount,
-        status: status ?? this.status,
-      );
+  ForumThreadsTableData copyWith({
+    String? id,
+    String? courseId,
+    String? title,
+    String? description,
+    String? studentName,
+    String? timeAgo,
+    int? replyCount,
+    String? status,
+  }) => ForumThreadsTableData(
+    id: id ?? this.id,
+    courseId: courseId ?? this.courseId,
+    title: title ?? this.title,
+    description: description ?? this.description,
+    studentName: studentName ?? this.studentName,
+    timeAgo: timeAgo ?? this.timeAgo,
+    replyCount: replyCount ?? this.replyCount,
+    status: status ?? this.status,
+  );
   ForumThreadsTableData copyWithCompanion(ForumThreadsTableCompanion data) {
     return ForumThreadsTableData(
       id: data.id.present ? data.id.value : this.id,
       courseId: data.courseId.present ? data.courseId.value : this.courseId,
       title: data.title.present ? data.title.value : this.title,
-      description:
-          data.description.present ? data.description.value : this.description,
-      studentName:
-          data.studentName.present ? data.studentName.value : this.studentName,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      studentName: data.studentName.present
+          ? data.studentName.value
+          : this.studentName,
       timeAgo: data.timeAgo.present ? data.timeAgo.value : this.timeAgo,
-      replyCount:
-          data.replyCount.present ? data.replyCount.value : this.replyCount,
+      replyCount: data.replyCount.present
+          ? data.replyCount.value
+          : this.replyCount,
       status: data.status.present ? data.status.value : this.status,
     );
   }
@@ -2237,8 +2672,16 @@ class ForumThreadsTableData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(id, courseId, title, description, studentName,
-      timeAgo, replyCount, status);
+  int get hashCode => Object.hash(
+    id,
+    courseId,
+    title,
+    description,
+    studentName,
+    timeAgo,
+    replyCount,
+    status,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2285,13 +2728,13 @@ class ForumThreadsTableCompanion
     this.replyCount = const Value.absent(),
     required String status,
     this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        courseId = Value(courseId),
-        title = Value(title),
-        description = Value(description),
-        studentName = Value(studentName),
-        timeAgo = Value(timeAgo),
-        status = Value(status);
+  }) : id = Value(id),
+       courseId = Value(courseId),
+       title = Value(title),
+       description = Value(description),
+       studentName = Value(studentName),
+       timeAgo = Value(timeAgo),
+       status = Value(status);
   static Insertable<ForumThreadsTableData> custom({
     Expression<String>? id,
     Expression<String>? courseId,
@@ -2316,16 +2759,17 @@ class ForumThreadsTableCompanion
     });
   }
 
-  ForumThreadsTableCompanion copyWith(
-      {Value<String>? id,
-      Value<String>? courseId,
-      Value<String>? title,
-      Value<String>? description,
-      Value<String>? studentName,
-      Value<String>? timeAgo,
-      Value<int>? replyCount,
-      Value<String>? status,
-      Value<int>? rowid}) {
+  ForumThreadsTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? courseId,
+    Value<String>? title,
+    Value<String>? description,
+    Value<String>? studentName,
+    Value<String>? timeAgo,
+    Value<int>? replyCount,
+    Value<String>? status,
+    Value<int>? rowid,
+  }) {
     return ForumThreadsTableCompanion(
       id: id ?? this.id,
       courseId: courseId ?? this.courseId,
@@ -2398,37 +2842,66 @@ class $UserProgressTableTable extends UserProgressTable
   static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
   @override
   late final GeneratedColumn<String> userId = GeneratedColumn<String>(
-      'user_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _lessonIdMeta =
-      const VerificationMeta('lessonId');
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lessonIdMeta = const VerificationMeta(
+    'lessonId',
+  );
   @override
   late final GeneratedColumn<String> lessonId = GeneratedColumn<String>(
-      'lesson_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _courseIdMeta =
-      const VerificationMeta('courseId');
+    'lesson_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _courseIdMeta = const VerificationMeta(
+    'courseId',
+  );
   @override
   late final GeneratedColumn<String> courseId = GeneratedColumn<String>(
-      'course_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _percentCompleteMeta =
-      const VerificationMeta('percentComplete');
+    'course_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _percentCompleteMeta = const VerificationMeta(
+    'percentComplete',
+  );
   @override
   late final GeneratedColumn<int> percentComplete = GeneratedColumn<int>(
-      'percent_complete', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(0));
-  static const VerificationMeta _lastAccessedAtMeta =
-      const VerificationMeta('lastAccessedAt');
+    'percent_complete',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lastAccessedAtMeta = const VerificationMeta(
+    'lastAccessedAt',
+  );
   @override
   late final GeneratedColumn<DateTime> lastAccessedAt =
-      GeneratedColumn<DateTime>('last_accessed_at', aliasedName, false,
-          type: DriftSqlType.dateTime, requiredDuringInsert: true);
+      GeneratedColumn<DateTime>(
+        'last_accessed_at',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
   @override
-  List<GeneratedColumn> get $columns =>
-      [userId, lessonId, courseId, percentComplete, lastAccessedAt];
+  List<GeneratedColumn> get $columns => [
+    userId,
+    lessonId,
+    courseId,
+    percentComplete,
+    lastAccessedAt,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2436,39 +2909,52 @@ class $UserProgressTableTable extends UserProgressTable
   static const String $name = 'user_progress_table';
   @override
   VerificationContext validateIntegrity(
-      Insertable<UserProgressTableData> instance,
-      {bool isInserting = false}) {
+    Insertable<UserProgressTableData> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('user_id')) {
-      context.handle(_userIdMeta,
-          userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta));
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_userIdMeta);
     }
     if (data.containsKey('lesson_id')) {
-      context.handle(_lessonIdMeta,
-          lessonId.isAcceptableOrUnknown(data['lesson_id']!, _lessonIdMeta));
+      context.handle(
+        _lessonIdMeta,
+        lessonId.isAcceptableOrUnknown(data['lesson_id']!, _lessonIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_lessonIdMeta);
     }
     if (data.containsKey('course_id')) {
-      context.handle(_courseIdMeta,
-          courseId.isAcceptableOrUnknown(data['course_id']!, _courseIdMeta));
+      context.handle(
+        _courseIdMeta,
+        courseId.isAcceptableOrUnknown(data['course_id']!, _courseIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_courseIdMeta);
     }
     if (data.containsKey('percent_complete')) {
       context.handle(
+        _percentCompleteMeta,
+        percentComplete.isAcceptableOrUnknown(
+          data['percent_complete']!,
           _percentCompleteMeta,
-          percentComplete.isAcceptableOrUnknown(
-              data['percent_complete']!, _percentCompleteMeta));
+        ),
+      );
     }
     if (data.containsKey('last_accessed_at')) {
       context.handle(
+        _lastAccessedAtMeta,
+        lastAccessedAt.isAcceptableOrUnknown(
+          data['last_accessed_at']!,
           _lastAccessedAtMeta,
-          lastAccessedAt.isAcceptableOrUnknown(
-              data['last_accessed_at']!, _lastAccessedAtMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_lastAccessedAtMeta);
     }
@@ -2481,16 +2967,26 @@ class $UserProgressTableTable extends UserProgressTable
   UserProgressTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return UserProgressTableData(
-      userId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}user_id'])!,
-      lessonId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}lesson_id'])!,
-      courseId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}course_id'])!,
-      percentComplete: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}percent_complete'])!,
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      )!,
+      lessonId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}lesson_id'],
+      )!,
+      courseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}course_id'],
+      )!,
+      percentComplete: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}percent_complete'],
+      )!,
       lastAccessedAt: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_accessed_at'])!,
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_accessed_at'],
+      )!,
     );
   }
 
@@ -2507,12 +3003,13 @@ class UserProgressTableData extends DataClass
   final String courseId;
   final int percentComplete;
   final DateTime lastAccessedAt;
-  const UserProgressTableData(
-      {required this.userId,
-      required this.lessonId,
-      required this.courseId,
-      required this.percentComplete,
-      required this.lastAccessedAt});
+  const UserProgressTableData({
+    required this.userId,
+    required this.lessonId,
+    required this.courseId,
+    required this.percentComplete,
+    required this.lastAccessedAt,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2534,8 +3031,10 @@ class UserProgressTableData extends DataClass
     );
   }
 
-  factory UserProgressTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory UserProgressTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return UserProgressTableData(
       userId: serializer.fromJson<String>(json['userId']),
@@ -2557,19 +3056,19 @@ class UserProgressTableData extends DataClass
     };
   }
 
-  UserProgressTableData copyWith(
-          {String? userId,
-          String? lessonId,
-          String? courseId,
-          int? percentComplete,
-          DateTime? lastAccessedAt}) =>
-      UserProgressTableData(
-        userId: userId ?? this.userId,
-        lessonId: lessonId ?? this.lessonId,
-        courseId: courseId ?? this.courseId,
-        percentComplete: percentComplete ?? this.percentComplete,
-        lastAccessedAt: lastAccessedAt ?? this.lastAccessedAt,
-      );
+  UserProgressTableData copyWith({
+    String? userId,
+    String? lessonId,
+    String? courseId,
+    int? percentComplete,
+    DateTime? lastAccessedAt,
+  }) => UserProgressTableData(
+    userId: userId ?? this.userId,
+    lessonId: lessonId ?? this.lessonId,
+    courseId: courseId ?? this.courseId,
+    percentComplete: percentComplete ?? this.percentComplete,
+    lastAccessedAt: lastAccessedAt ?? this.lastAccessedAt,
+  );
   UserProgressTableData copyWithCompanion(UserProgressTableCompanion data) {
     return UserProgressTableData(
       userId: data.userId.present ? data.userId.value : this.userId,
@@ -2633,10 +3132,10 @@ class UserProgressTableCompanion
     this.percentComplete = const Value.absent(),
     required DateTime lastAccessedAt,
     this.rowid = const Value.absent(),
-  })  : userId = Value(userId),
-        lessonId = Value(lessonId),
-        courseId = Value(courseId),
-        lastAccessedAt = Value(lastAccessedAt);
+  }) : userId = Value(userId),
+       lessonId = Value(lessonId),
+       courseId = Value(courseId),
+       lastAccessedAt = Value(lastAccessedAt);
   static Insertable<UserProgressTableData> custom({
     Expression<String>? userId,
     Expression<String>? lessonId,
@@ -2655,13 +3154,14 @@ class UserProgressTableCompanion
     });
   }
 
-  UserProgressTableCompanion copyWith(
-      {Value<String>? userId,
-      Value<String>? lessonId,
-      Value<String>? courseId,
-      Value<int>? percentComplete,
-      Value<DateTime>? lastAccessedAt,
-      Value<int>? rowid}) {
+  UserProgressTableCompanion copyWith({
+    Value<String>? userId,
+    Value<String>? lessonId,
+    Value<String>? courseId,
+    Value<int>? percentComplete,
+    Value<DateTime>? lastAccessedAt,
+    Value<int>? rowid,
+  }) {
     return UserProgressTableCompanion(
       userId: userId ?? this.userId,
       lessonId: lessonId ?? this.lessonId,
@@ -2719,55 +3219,87 @@ class $AppSettingsTableTable extends AppSettingsTable
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _appearanceModeMeta =
-      const VerificationMeta('appearanceMode');
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _appearanceModeMeta = const VerificationMeta(
+    'appearanceMode',
+  );
   @override
   late final GeneratedColumn<String> appearanceMode = GeneratedColumn<String>(
-      'appearance_mode', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(AppSettingsDefaults.appearanceMode));
-  static const VerificationMeta _videoQualityMeta =
-      const VerificationMeta('videoQuality');
+    'appearance_mode',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(AppSettingsDefaults.appearanceMode),
+  );
+  static const VerificationMeta _videoQualityMeta = const VerificationMeta(
+    'videoQuality',
+  );
   @override
   late final GeneratedColumn<String> videoQuality = GeneratedColumn<String>(
-      'video_quality', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(AppSettingsDefaults.videoQuality));
-  static const VerificationMeta _autoPlayNextMeta =
-      const VerificationMeta('autoPlayNext');
+    'video_quality',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(AppSettingsDefaults.videoQuality),
+  );
+  static const VerificationMeta _autoPlayNextMeta = const VerificationMeta(
+    'autoPlayNext',
+  );
   @override
   late final GeneratedColumn<bool> autoPlayNext = GeneratedColumn<bool>(
-      'auto_play_next', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("auto_play_next" IN (0, 1))'),
-      defaultValue: const Constant(AppSettingsDefaults.autoPlayNext));
-  static const VerificationMeta _textSizeMeta =
-      const VerificationMeta('textSize');
+    'auto_play_next',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("auto_play_next" IN (0, 1))',
+    ),
+    defaultValue: const Constant(AppSettingsDefaults.autoPlayNext),
+  );
+  static const VerificationMeta _textSizeMeta = const VerificationMeta(
+    'textSize',
+  );
   @override
   late final GeneratedColumn<String> textSize = GeneratedColumn<String>(
-      'text_size', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(AppSettingsDefaults.textSize));
-  static const VerificationMeta _highContrastMeta =
-      const VerificationMeta('highContrast');
+    'text_size',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(AppSettingsDefaults.textSize),
+  );
+  static const VerificationMeta _highContrastMeta = const VerificationMeta(
+    'highContrast',
+  );
   @override
   late final GeneratedColumn<bool> highContrast = GeneratedColumn<bool>(
-      'high_contrast', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("high_contrast" IN (0, 1))'),
-      defaultValue: const Constant(AppSettingsDefaults.highContrast));
+    'high_contrast',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("high_contrast" IN (0, 1))',
+    ),
+    defaultValue: const Constant(AppSettingsDefaults.highContrast),
+  );
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, appearanceMode, videoQuality, autoPlayNext, textSize, highContrast];
+  List<GeneratedColumn> get $columns => [
+    id,
+    appearanceMode,
+    videoQuality,
+    autoPlayNext,
+    textSize,
+    highContrast,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2775,8 +3307,9 @@ class $AppSettingsTableTable extends AppSettingsTable
   static const String $name = 'app_settings_table';
   @override
   VerificationContext validateIntegrity(
-      Insertable<AppSettingsTableData> instance,
-      {bool isInserting = false}) {
+    Insertable<AppSettingsTableData> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -2786,31 +3319,45 @@ class $AppSettingsTableTable extends AppSettingsTable
     }
     if (data.containsKey('appearance_mode')) {
       context.handle(
+        _appearanceModeMeta,
+        appearanceMode.isAcceptableOrUnknown(
+          data['appearance_mode']!,
           _appearanceModeMeta,
-          appearanceMode.isAcceptableOrUnknown(
-              data['appearance_mode']!, _appearanceModeMeta));
+        ),
+      );
     }
     if (data.containsKey('video_quality')) {
       context.handle(
+        _videoQualityMeta,
+        videoQuality.isAcceptableOrUnknown(
+          data['video_quality']!,
           _videoQualityMeta,
-          videoQuality.isAcceptableOrUnknown(
-              data['video_quality']!, _videoQualityMeta));
+        ),
+      );
     }
     if (data.containsKey('auto_play_next')) {
       context.handle(
+        _autoPlayNextMeta,
+        autoPlayNext.isAcceptableOrUnknown(
+          data['auto_play_next']!,
           _autoPlayNextMeta,
-          autoPlayNext.isAcceptableOrUnknown(
-              data['auto_play_next']!, _autoPlayNextMeta));
+        ),
+      );
     }
     if (data.containsKey('text_size')) {
-      context.handle(_textSizeMeta,
-          textSize.isAcceptableOrUnknown(data['text_size']!, _textSizeMeta));
+      context.handle(
+        _textSizeMeta,
+        textSize.isAcceptableOrUnknown(data['text_size']!, _textSizeMeta),
+      );
     }
     if (data.containsKey('high_contrast')) {
       context.handle(
+        _highContrastMeta,
+        highContrast.isAcceptableOrUnknown(
+          data['high_contrast']!,
           _highContrastMeta,
-          highContrast.isAcceptableOrUnknown(
-              data['high_contrast']!, _highContrastMeta));
+        ),
+      );
     }
     return context;
   }
@@ -2821,18 +3368,30 @@ class $AppSettingsTableTable extends AppSettingsTable
   AppSettingsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return AppSettingsTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
       appearanceMode: attachedDatabase.typeMapping.read(
-          DriftSqlType.string, data['${effectivePrefix}appearance_mode'])!,
-      videoQuality: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}video_quality'])!,
-      autoPlayNext: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}auto_play_next'])!,
-      textSize: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}text_size'])!,
-      highContrast: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}high_contrast'])!,
+        DriftSqlType.string,
+        data['${effectivePrefix}appearance_mode'],
+      )!,
+      videoQuality: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}video_quality'],
+      )!,
+      autoPlayNext: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}auto_play_next'],
+      )!,
+      textSize: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}text_size'],
+      )!,
+      highContrast: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}high_contrast'],
+      )!,
     );
   }
 
@@ -2850,13 +3409,14 @@ class AppSettingsTableData extends DataClass
   final bool autoPlayNext;
   final String textSize;
   final bool highContrast;
-  const AppSettingsTableData(
-      {required this.id,
-      required this.appearanceMode,
-      required this.videoQuality,
-      required this.autoPlayNext,
-      required this.textSize,
-      required this.highContrast});
+  const AppSettingsTableData({
+    required this.id,
+    required this.appearanceMode,
+    required this.videoQuality,
+    required this.autoPlayNext,
+    required this.textSize,
+    required this.highContrast,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2880,8 +3440,10 @@ class AppSettingsTableData extends DataClass
     );
   }
 
-  factory AppSettingsTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory AppSettingsTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return AppSettingsTableData(
       id: serializer.fromJson<int>(json['id']),
@@ -2905,21 +3467,21 @@ class AppSettingsTableData extends DataClass
     };
   }
 
-  AppSettingsTableData copyWith(
-          {int? id,
-          String? appearanceMode,
-          String? videoQuality,
-          bool? autoPlayNext,
-          String? textSize,
-          bool? highContrast}) =>
-      AppSettingsTableData(
-        id: id ?? this.id,
-        appearanceMode: appearanceMode ?? this.appearanceMode,
-        videoQuality: videoQuality ?? this.videoQuality,
-        autoPlayNext: autoPlayNext ?? this.autoPlayNext,
-        textSize: textSize ?? this.textSize,
-        highContrast: highContrast ?? this.highContrast,
-      );
+  AppSettingsTableData copyWith({
+    int? id,
+    String? appearanceMode,
+    String? videoQuality,
+    bool? autoPlayNext,
+    String? textSize,
+    bool? highContrast,
+  }) => AppSettingsTableData(
+    id: id ?? this.id,
+    appearanceMode: appearanceMode ?? this.appearanceMode,
+    videoQuality: videoQuality ?? this.videoQuality,
+    autoPlayNext: autoPlayNext ?? this.autoPlayNext,
+    textSize: textSize ?? this.textSize,
+    highContrast: highContrast ?? this.highContrast,
+  );
   AppSettingsTableData copyWithCompanion(AppSettingsTableCompanion data) {
     return AppSettingsTableData(
       id: data.id.present ? data.id.value : this.id,
@@ -2954,7 +3516,13 @@ class AppSettingsTableData extends DataClass
 
   @override
   int get hashCode => Object.hash(
-      id, appearanceMode, videoQuality, autoPlayNext, textSize, highContrast);
+    id,
+    appearanceMode,
+    videoQuality,
+    autoPlayNext,
+    textSize,
+    highContrast,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3013,14 +3581,15 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
     });
   }
 
-  AppSettingsTableCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? appearanceMode,
-      Value<String>? videoQuality,
-      Value<bool>? autoPlayNext,
-      Value<String>? textSize,
-      Value<bool>? highContrast,
-      Value<int>? rowid}) {
+  AppSettingsTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? appearanceMode,
+    Value<String>? videoQuality,
+    Value<bool>? autoPlayNext,
+    Value<String>? textSize,
+    Value<bool>? highContrast,
+    Value<int>? rowid,
+  }) {
     return AppSettingsTableCompanion(
       id: id ?? this.id,
       appearanceMode: appearanceMode ?? this.appearanceMode,
@@ -3080,53 +3649,55 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $CoursesTableTable coursesTable = $CoursesTableTable(this);
   late final $ChaptersTableTable chaptersTable = $ChaptersTableTable(this);
   late final $LessonsTableTable lessonsTable = $LessonsTableTable(this);
-  late final $LiveClassesTableTable liveClassesTable =
-      $LiveClassesTableTable(this);
+  late final $LiveClassesTableTable liveClassesTable = $LiveClassesTableTable(
+    this,
+  );
   late final $ForumThreadsTableTable forumThreadsTable =
       $ForumThreadsTableTable(this);
   late final $UserProgressTableTable userProgressTable =
       $UserProgressTableTable(this);
-  late final $AppSettingsTableTable appSettingsTable =
-      $AppSettingsTableTable(this);
+  late final $AppSettingsTableTable appSettingsTable = $AppSettingsTableTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
-        coursesTable,
-        chaptersTable,
-        lessonsTable,
-        liveClassesTable,
-        forumThreadsTable,
-        userProgressTable,
-        appSettingsTable
-      ];
+    coursesTable,
+    chaptersTable,
+    lessonsTable,
+    liveClassesTable,
+    forumThreadsTable,
+    userProgressTable,
+    appSettingsTable,
+  ];
 }
 
-typedef $$CoursesTableTableCreateCompanionBuilder = CoursesTableCompanion
-    Function({
-  required String id,
-  required String title,
-  required int colorIndex,
-  required int chapterCount,
-  required String totalDuration,
-  Value<int> progress,
-  Value<int> completedLessons,
-  required int totalLessons,
-  Value<int> rowid,
-});
-typedef $$CoursesTableTableUpdateCompanionBuilder = CoursesTableCompanion
-    Function({
-  Value<String> id,
-  Value<String> title,
-  Value<int> colorIndex,
-  Value<int> chapterCount,
-  Value<String> totalDuration,
-  Value<int> progress,
-  Value<int> completedLessons,
-  Value<int> totalLessons,
-  Value<int> rowid,
-});
+typedef $$CoursesTableTableCreateCompanionBuilder =
+    CoursesTableCompanion Function({
+      required String id,
+      required String title,
+      required int colorIndex,
+      required int chapterCount,
+      required String totalDuration,
+      Value<int> progress,
+      Value<int> completedLessons,
+      required int totalLessons,
+      Value<int> rowid,
+    });
+typedef $$CoursesTableTableUpdateCompanionBuilder =
+    CoursesTableCompanion Function({
+      Value<String> id,
+      Value<String> title,
+      Value<int> colorIndex,
+      Value<int> chapterCount,
+      Value<String> totalDuration,
+      Value<int> progress,
+      Value<int> completedLessons,
+      Value<int> totalLessons,
+      Value<int> rowid,
+    });
 
 class $$CoursesTableTableFilterComposer
     extends Composer<_$AppDatabase, $CoursesTableTable> {
@@ -3138,29 +3709,44 @@ class $$CoursesTableTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get title => $composableBuilder(
-      column: $table.title, builder: (column) => ColumnFilters(column));
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get colorIndex => $composableBuilder(
-      column: $table.colorIndex, builder: (column) => ColumnFilters(column));
+    column: $table.colorIndex,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get chapterCount => $composableBuilder(
-      column: $table.chapterCount, builder: (column) => ColumnFilters(column));
+    column: $table.chapterCount,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get totalDuration => $composableBuilder(
-      column: $table.totalDuration, builder: (column) => ColumnFilters(column));
+    column: $table.totalDuration,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get progress => $composableBuilder(
-      column: $table.progress, builder: (column) => ColumnFilters(column));
+    column: $table.progress,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get completedLessons => $composableBuilder(
-      column: $table.completedLessons,
-      builder: (column) => ColumnFilters(column));
+    column: $table.completedLessons,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get totalLessons => $composableBuilder(
-      column: $table.totalLessons, builder: (column) => ColumnFilters(column));
+    column: $table.totalLessons,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$CoursesTableTableOrderingComposer
@@ -3173,32 +3759,44 @@ class $$CoursesTableTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get title => $composableBuilder(
-      column: $table.title, builder: (column) => ColumnOrderings(column));
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get colorIndex => $composableBuilder(
-      column: $table.colorIndex, builder: (column) => ColumnOrderings(column));
+    column: $table.colorIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get chapterCount => $composableBuilder(
-      column: $table.chapterCount,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.chapterCount,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get totalDuration => $composableBuilder(
-      column: $table.totalDuration,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.totalDuration,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get progress => $composableBuilder(
-      column: $table.progress, builder: (column) => ColumnOrderings(column));
+    column: $table.progress,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get completedLessons => $composableBuilder(
-      column: $table.completedLessons,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.completedLessons,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get totalLessons => $composableBuilder(
-      column: $table.totalLessons,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.totalLessons,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$CoursesTableTableAnnotationComposer
@@ -3217,41 +3815,55 @@ class $$CoursesTableTableAnnotationComposer
       $composableBuilder(column: $table.title, builder: (column) => column);
 
   GeneratedColumn<int> get colorIndex => $composableBuilder(
-      column: $table.colorIndex, builder: (column) => column);
+    column: $table.colorIndex,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get chapterCount => $composableBuilder(
-      column: $table.chapterCount, builder: (column) => column);
+    column: $table.chapterCount,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get totalDuration => $composableBuilder(
-      column: $table.totalDuration, builder: (column) => column);
+    column: $table.totalDuration,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get progress =>
       $composableBuilder(column: $table.progress, builder: (column) => column);
 
   GeneratedColumn<int> get completedLessons => $composableBuilder(
-      column: $table.completedLessons, builder: (column) => column);
+    column: $table.completedLessons,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get totalLessons => $composableBuilder(
-      column: $table.totalLessons, builder: (column) => column);
+    column: $table.totalLessons,
+    builder: (column) => column,
+  );
 }
 
-class $$CoursesTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $CoursesTableTable,
-    CoursesTableData,
-    $$CoursesTableTableFilterComposer,
-    $$CoursesTableTableOrderingComposer,
-    $$CoursesTableTableAnnotationComposer,
-    $$CoursesTableTableCreateCompanionBuilder,
-    $$CoursesTableTableUpdateCompanionBuilder,
-    (
-      CoursesTableData,
-      BaseReferences<_$AppDatabase, $CoursesTableTable, CoursesTableData>
-    ),
-    CoursesTableData,
-    PrefetchHooks Function()> {
+class $$CoursesTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CoursesTableTable,
+          CoursesTableData,
+          $$CoursesTableTableFilterComposer,
+          $$CoursesTableTableOrderingComposer,
+          $$CoursesTableTableAnnotationComposer,
+          $$CoursesTableTableCreateCompanionBuilder,
+          $$CoursesTableTableUpdateCompanionBuilder,
+          (
+            CoursesTableData,
+            BaseReferences<_$AppDatabase, $CoursesTableTable, CoursesTableData>,
+          ),
+          CoursesTableData,
+          PrefetchHooks Function()
+        > {
   $$CoursesTableTableTableManager(_$AppDatabase db, $CoursesTableTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -3260,92 +3872,95 @@ class $$CoursesTableTableTableManager extends RootTableManager<
               $$CoursesTableTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$CoursesTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<String> title = const Value.absent(),
-            Value<int> colorIndex = const Value.absent(),
-            Value<int> chapterCount = const Value.absent(),
-            Value<String> totalDuration = const Value.absent(),
-            Value<int> progress = const Value.absent(),
-            Value<int> completedLessons = const Value.absent(),
-            Value<int> totalLessons = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              CoursesTableCompanion(
-            id: id,
-            title: title,
-            colorIndex: colorIndex,
-            chapterCount: chapterCount,
-            totalDuration: totalDuration,
-            progress: progress,
-            completedLessons: completedLessons,
-            totalLessons: totalLessons,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required String title,
-            required int colorIndex,
-            required int chapterCount,
-            required String totalDuration,
-            Value<int> progress = const Value.absent(),
-            Value<int> completedLessons = const Value.absent(),
-            required int totalLessons,
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              CoursesTableCompanion.insert(
-            id: id,
-            title: title,
-            colorIndex: colorIndex,
-            chapterCount: chapterCount,
-            totalDuration: totalDuration,
-            progress: progress,
-            completedLessons: completedLessons,
-            totalLessons: totalLessons,
-            rowid: rowid,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<int> colorIndex = const Value.absent(),
+                Value<int> chapterCount = const Value.absent(),
+                Value<String> totalDuration = const Value.absent(),
+                Value<int> progress = const Value.absent(),
+                Value<int> completedLessons = const Value.absent(),
+                Value<int> totalLessons = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CoursesTableCompanion(
+                id: id,
+                title: title,
+                colorIndex: colorIndex,
+                chapterCount: chapterCount,
+                totalDuration: totalDuration,
+                progress: progress,
+                completedLessons: completedLessons,
+                totalLessons: totalLessons,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String title,
+                required int colorIndex,
+                required int chapterCount,
+                required String totalDuration,
+                Value<int> progress = const Value.absent(),
+                Value<int> completedLessons = const Value.absent(),
+                required int totalLessons,
+                Value<int> rowid = const Value.absent(),
+              }) => CoursesTableCompanion.insert(
+                id: id,
+                title: title,
+                colorIndex: colorIndex,
+                chapterCount: chapterCount,
+                totalDuration: totalDuration,
+                progress: progress,
+                completedLessons: completedLessons,
+                totalLessons: totalLessons,
+                rowid: rowid,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$CoursesTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $CoursesTableTable,
-    CoursesTableData,
-    $$CoursesTableTableFilterComposer,
-    $$CoursesTableTableOrderingComposer,
-    $$CoursesTableTableAnnotationComposer,
-    $$CoursesTableTableCreateCompanionBuilder,
-    $$CoursesTableTableUpdateCompanionBuilder,
-    (
+typedef $$CoursesTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CoursesTableTable,
       CoursesTableData,
-      BaseReferences<_$AppDatabase, $CoursesTableTable, CoursesTableData>
-    ),
-    CoursesTableData,
-    PrefetchHooks Function()>;
-typedef $$ChaptersTableTableCreateCompanionBuilder = ChaptersTableCompanion
-    Function({
-  required String id,
-  required String courseId,
-  required String title,
-  required int lessonCount,
-  required int assessmentCount,
-  required int orderIndex,
-  Value<int> rowid,
-});
-typedef $$ChaptersTableTableUpdateCompanionBuilder = ChaptersTableCompanion
-    Function({
-  Value<String> id,
-  Value<String> courseId,
-  Value<String> title,
-  Value<int> lessonCount,
-  Value<int> assessmentCount,
-  Value<int> orderIndex,
-  Value<int> rowid,
-});
+      $$CoursesTableTableFilterComposer,
+      $$CoursesTableTableOrderingComposer,
+      $$CoursesTableTableAnnotationComposer,
+      $$CoursesTableTableCreateCompanionBuilder,
+      $$CoursesTableTableUpdateCompanionBuilder,
+      (
+        CoursesTableData,
+        BaseReferences<_$AppDatabase, $CoursesTableTable, CoursesTableData>,
+      ),
+      CoursesTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$ChaptersTableTableCreateCompanionBuilder =
+    ChaptersTableCompanion Function({
+      required String id,
+      required String courseId,
+      required String title,
+      required int lessonCount,
+      required int assessmentCount,
+      required int orderIndex,
+      Value<int> rowid,
+    });
+typedef $$ChaptersTableTableUpdateCompanionBuilder =
+    ChaptersTableCompanion Function({
+      Value<String> id,
+      Value<String> courseId,
+      Value<String> title,
+      Value<int> lessonCount,
+      Value<int> assessmentCount,
+      Value<int> orderIndex,
+      Value<int> rowid,
+    });
 
 class $$ChaptersTableTableFilterComposer
     extends Composer<_$AppDatabase, $ChaptersTableTable> {
@@ -3357,23 +3972,34 @@ class $$ChaptersTableTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get courseId => $composableBuilder(
-      column: $table.courseId, builder: (column) => ColumnFilters(column));
+    column: $table.courseId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get title => $composableBuilder(
-      column: $table.title, builder: (column) => ColumnFilters(column));
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get lessonCount => $composableBuilder(
-      column: $table.lessonCount, builder: (column) => ColumnFilters(column));
+    column: $table.lessonCount,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get assessmentCount => $composableBuilder(
-      column: $table.assessmentCount,
-      builder: (column) => ColumnFilters(column));
+    column: $table.assessmentCount,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get orderIndex => $composableBuilder(
-      column: $table.orderIndex, builder: (column) => ColumnFilters(column));
+    column: $table.orderIndex,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$ChaptersTableTableOrderingComposer
@@ -3386,23 +4012,34 @@ class $$ChaptersTableTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get courseId => $composableBuilder(
-      column: $table.courseId, builder: (column) => ColumnOrderings(column));
+    column: $table.courseId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get title => $composableBuilder(
-      column: $table.title, builder: (column) => ColumnOrderings(column));
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get lessonCount => $composableBuilder(
-      column: $table.lessonCount, builder: (column) => ColumnOrderings(column));
+    column: $table.lessonCount,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get assessmentCount => $composableBuilder(
-      column: $table.assessmentCount,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.assessmentCount,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get orderIndex => $composableBuilder(
-      column: $table.orderIndex, builder: (column) => ColumnOrderings(column));
+    column: $table.orderIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$ChaptersTableTableAnnotationComposer
@@ -3424,32 +4061,46 @@ class $$ChaptersTableTableAnnotationComposer
       $composableBuilder(column: $table.title, builder: (column) => column);
 
   GeneratedColumn<int> get lessonCount => $composableBuilder(
-      column: $table.lessonCount, builder: (column) => column);
+    column: $table.lessonCount,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get assessmentCount => $composableBuilder(
-      column: $table.assessmentCount, builder: (column) => column);
+    column: $table.assessmentCount,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get orderIndex => $composableBuilder(
-      column: $table.orderIndex, builder: (column) => column);
+    column: $table.orderIndex,
+    builder: (column) => column,
+  );
 }
 
-class $$ChaptersTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $ChaptersTableTable,
-    ChaptersTableData,
-    $$ChaptersTableTableFilterComposer,
-    $$ChaptersTableTableOrderingComposer,
-    $$ChaptersTableTableAnnotationComposer,
-    $$ChaptersTableTableCreateCompanionBuilder,
-    $$ChaptersTableTableUpdateCompanionBuilder,
-    (
-      ChaptersTableData,
-      BaseReferences<_$AppDatabase, $ChaptersTableTable, ChaptersTableData>
-    ),
-    ChaptersTableData,
-    PrefetchHooks Function()> {
+class $$ChaptersTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ChaptersTableTable,
+          ChaptersTableData,
+          $$ChaptersTableTableFilterComposer,
+          $$ChaptersTableTableOrderingComposer,
+          $$ChaptersTableTableAnnotationComposer,
+          $$ChaptersTableTableCreateCompanionBuilder,
+          $$ChaptersTableTableUpdateCompanionBuilder,
+          (
+            ChaptersTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $ChaptersTableTable,
+              ChaptersTableData
+            >,
+          ),
+          ChaptersTableData,
+          PrefetchHooks Function()
+        > {
   $$ChaptersTableTableTableManager(_$AppDatabase db, $ChaptersTableTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -3458,104 +4109,107 @@ class $$ChaptersTableTableTableManager extends RootTableManager<
               $$ChaptersTableTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$ChaptersTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<String> courseId = const Value.absent(),
-            Value<String> title = const Value.absent(),
-            Value<int> lessonCount = const Value.absent(),
-            Value<int> assessmentCount = const Value.absent(),
-            Value<int> orderIndex = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              ChaptersTableCompanion(
-            id: id,
-            courseId: courseId,
-            title: title,
-            lessonCount: lessonCount,
-            assessmentCount: assessmentCount,
-            orderIndex: orderIndex,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required String courseId,
-            required String title,
-            required int lessonCount,
-            required int assessmentCount,
-            required int orderIndex,
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              ChaptersTableCompanion.insert(
-            id: id,
-            courseId: courseId,
-            title: title,
-            lessonCount: lessonCount,
-            assessmentCount: assessmentCount,
-            orderIndex: orderIndex,
-            rowid: rowid,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> courseId = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<int> lessonCount = const Value.absent(),
+                Value<int> assessmentCount = const Value.absent(),
+                Value<int> orderIndex = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ChaptersTableCompanion(
+                id: id,
+                courseId: courseId,
+                title: title,
+                lessonCount: lessonCount,
+                assessmentCount: assessmentCount,
+                orderIndex: orderIndex,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String courseId,
+                required String title,
+                required int lessonCount,
+                required int assessmentCount,
+                required int orderIndex,
+                Value<int> rowid = const Value.absent(),
+              }) => ChaptersTableCompanion.insert(
+                id: id,
+                courseId: courseId,
+                title: title,
+                lessonCount: lessonCount,
+                assessmentCount: assessmentCount,
+                orderIndex: orderIndex,
+                rowid: rowid,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$ChaptersTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $ChaptersTableTable,
-    ChaptersTableData,
-    $$ChaptersTableTableFilterComposer,
-    $$ChaptersTableTableOrderingComposer,
-    $$ChaptersTableTableAnnotationComposer,
-    $$ChaptersTableTableCreateCompanionBuilder,
-    $$ChaptersTableTableUpdateCompanionBuilder,
-    (
+typedef $$ChaptersTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ChaptersTableTable,
       ChaptersTableData,
-      BaseReferences<_$AppDatabase, $ChaptersTableTable, ChaptersTableData>
-    ),
-    ChaptersTableData,
-    PrefetchHooks Function()>;
-typedef $$LessonsTableTableCreateCompanionBuilder = LessonsTableCompanion
-    Function({
-  required String id,
-  required String chapterId,
-  required String title,
-  required String type,
-  required String duration,
-  Value<String> progressStatus,
-  Value<bool> isLocked,
-  required int orderIndex,
-  Value<String?> chapterTitle,
-  Value<String?> contentJson,
-  Value<String?> subtitle,
-  Value<String?> subjectName,
-  Value<int?> subjectIndex,
-  Value<int?> lessonNumber,
-  Value<int?> totalLessons,
-  Value<bool> isBookmarked,
-  Value<int> rowid,
-});
-typedef $$LessonsTableTableUpdateCompanionBuilder = LessonsTableCompanion
-    Function({
-  Value<String> id,
-  Value<String> chapterId,
-  Value<String> title,
-  Value<String> type,
-  Value<String> duration,
-  Value<String> progressStatus,
-  Value<bool> isLocked,
-  Value<int> orderIndex,
-  Value<String?> chapterTitle,
-  Value<String?> contentJson,
-  Value<String?> subtitle,
-  Value<String?> subjectName,
-  Value<int?> subjectIndex,
-  Value<int?> lessonNumber,
-  Value<int?> totalLessons,
-  Value<bool> isBookmarked,
-  Value<int> rowid,
-});
+      $$ChaptersTableTableFilterComposer,
+      $$ChaptersTableTableOrderingComposer,
+      $$ChaptersTableTableAnnotationComposer,
+      $$ChaptersTableTableCreateCompanionBuilder,
+      $$ChaptersTableTableUpdateCompanionBuilder,
+      (
+        ChaptersTableData,
+        BaseReferences<_$AppDatabase, $ChaptersTableTable, ChaptersTableData>,
+      ),
+      ChaptersTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$LessonsTableTableCreateCompanionBuilder =
+    LessonsTableCompanion Function({
+      required String id,
+      required String chapterId,
+      required String title,
+      required String type,
+      required String duration,
+      Value<String> progressStatus,
+      Value<bool> isLocked,
+      required int orderIndex,
+      Value<String?> chapterTitle,
+      Value<String?> contentJson,
+      Value<String?> subtitle,
+      Value<String?> subjectName,
+      Value<int?> subjectIndex,
+      Value<int?> lessonNumber,
+      Value<int?> totalLessons,
+      Value<bool> isBookmarked,
+      Value<int> rowid,
+    });
+typedef $$LessonsTableTableUpdateCompanionBuilder =
+    LessonsTableCompanion Function({
+      Value<String> id,
+      Value<String> chapterId,
+      Value<String> title,
+      Value<String> type,
+      Value<String> duration,
+      Value<String> progressStatus,
+      Value<bool> isLocked,
+      Value<int> orderIndex,
+      Value<String?> chapterTitle,
+      Value<String?> contentJson,
+      Value<String?> subtitle,
+      Value<String?> subjectName,
+      Value<int?> subjectIndex,
+      Value<int?> lessonNumber,
+      Value<int?> totalLessons,
+      Value<bool> isBookmarked,
+      Value<int> rowid,
+    });
 
 class $$LessonsTableTableFilterComposer
     extends Composer<_$AppDatabase, $LessonsTableTable> {
@@ -3567,53 +4221,84 @@ class $$LessonsTableTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get chapterId => $composableBuilder(
-      column: $table.chapterId, builder: (column) => ColumnFilters(column));
+    column: $table.chapterId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get title => $composableBuilder(
-      column: $table.title, builder: (column) => ColumnFilters(column));
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get type => $composableBuilder(
-      column: $table.type, builder: (column) => ColumnFilters(column));
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get duration => $composableBuilder(
-      column: $table.duration, builder: (column) => ColumnFilters(column));
+    column: $table.duration,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get progressStatus => $composableBuilder(
-      column: $table.progressStatus,
-      builder: (column) => ColumnFilters(column));
+    column: $table.progressStatus,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get isLocked => $composableBuilder(
-      column: $table.isLocked, builder: (column) => ColumnFilters(column));
+    column: $table.isLocked,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get orderIndex => $composableBuilder(
-      column: $table.orderIndex, builder: (column) => ColumnFilters(column));
+    column: $table.orderIndex,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get chapterTitle => $composableBuilder(
-      column: $table.chapterTitle, builder: (column) => ColumnFilters(column));
+    column: $table.chapterTitle,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get contentJson => $composableBuilder(
-      column: $table.contentJson, builder: (column) => ColumnFilters(column));
+    column: $table.contentJson,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get subtitle => $composableBuilder(
-      column: $table.subtitle, builder: (column) => ColumnFilters(column));
+    column: $table.subtitle,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get subjectName => $composableBuilder(
-      column: $table.subjectName, builder: (column) => ColumnFilters(column));
+    column: $table.subjectName,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get subjectIndex => $composableBuilder(
-      column: $table.subjectIndex, builder: (column) => ColumnFilters(column));
+    column: $table.subjectIndex,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get lessonNumber => $composableBuilder(
-      column: $table.lessonNumber, builder: (column) => ColumnFilters(column));
+    column: $table.lessonNumber,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get totalLessons => $composableBuilder(
-      column: $table.totalLessons, builder: (column) => ColumnFilters(column));
+    column: $table.totalLessons,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get isBookmarked => $composableBuilder(
-      column: $table.isBookmarked, builder: (column) => ColumnFilters(column));
+    column: $table.isBookmarked,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$LessonsTableTableOrderingComposer
@@ -3626,58 +4311,84 @@ class $$LessonsTableTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get chapterId => $composableBuilder(
-      column: $table.chapterId, builder: (column) => ColumnOrderings(column));
+    column: $table.chapterId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get title => $composableBuilder(
-      column: $table.title, builder: (column) => ColumnOrderings(column));
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get type => $composableBuilder(
-      column: $table.type, builder: (column) => ColumnOrderings(column));
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get duration => $composableBuilder(
-      column: $table.duration, builder: (column) => ColumnOrderings(column));
+    column: $table.duration,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get progressStatus => $composableBuilder(
-      column: $table.progressStatus,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.progressStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get isLocked => $composableBuilder(
-      column: $table.isLocked, builder: (column) => ColumnOrderings(column));
+    column: $table.isLocked,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get orderIndex => $composableBuilder(
-      column: $table.orderIndex, builder: (column) => ColumnOrderings(column));
+    column: $table.orderIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get chapterTitle => $composableBuilder(
-      column: $table.chapterTitle,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.chapterTitle,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get contentJson => $composableBuilder(
-      column: $table.contentJson, builder: (column) => ColumnOrderings(column));
+    column: $table.contentJson,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get subtitle => $composableBuilder(
-      column: $table.subtitle, builder: (column) => ColumnOrderings(column));
+    column: $table.subtitle,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get subjectName => $composableBuilder(
-      column: $table.subjectName, builder: (column) => ColumnOrderings(column));
+    column: $table.subjectName,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get subjectIndex => $composableBuilder(
-      column: $table.subjectIndex,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.subjectIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get lessonNumber => $composableBuilder(
-      column: $table.lessonNumber,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.lessonNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get totalLessons => $composableBuilder(
-      column: $table.totalLessons,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.totalLessons,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get isBookmarked => $composableBuilder(
-      column: $table.isBookmarked,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.isBookmarked,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$LessonsTableTableAnnotationComposer
@@ -3705,56 +4416,78 @@ class $$LessonsTableTableAnnotationComposer
       $composableBuilder(column: $table.duration, builder: (column) => column);
 
   GeneratedColumn<String> get progressStatus => $composableBuilder(
-      column: $table.progressStatus, builder: (column) => column);
+    column: $table.progressStatus,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get isLocked =>
       $composableBuilder(column: $table.isLocked, builder: (column) => column);
 
   GeneratedColumn<int> get orderIndex => $composableBuilder(
-      column: $table.orderIndex, builder: (column) => column);
+    column: $table.orderIndex,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get chapterTitle => $composableBuilder(
-      column: $table.chapterTitle, builder: (column) => column);
+    column: $table.chapterTitle,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get contentJson => $composableBuilder(
-      column: $table.contentJson, builder: (column) => column);
+    column: $table.contentJson,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get subtitle =>
       $composableBuilder(column: $table.subtitle, builder: (column) => column);
 
   GeneratedColumn<String> get subjectName => $composableBuilder(
-      column: $table.subjectName, builder: (column) => column);
+    column: $table.subjectName,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get subjectIndex => $composableBuilder(
-      column: $table.subjectIndex, builder: (column) => column);
+    column: $table.subjectIndex,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get lessonNumber => $composableBuilder(
-      column: $table.lessonNumber, builder: (column) => column);
+    column: $table.lessonNumber,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get totalLessons => $composableBuilder(
-      column: $table.totalLessons, builder: (column) => column);
+    column: $table.totalLessons,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get isBookmarked => $composableBuilder(
-      column: $table.isBookmarked, builder: (column) => column);
+    column: $table.isBookmarked,
+    builder: (column) => column,
+  );
 }
 
-class $$LessonsTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $LessonsTableTable,
-    LessonsTableData,
-    $$LessonsTableTableFilterComposer,
-    $$LessonsTableTableOrderingComposer,
-    $$LessonsTableTableAnnotationComposer,
-    $$LessonsTableTableCreateCompanionBuilder,
-    $$LessonsTableTableUpdateCompanionBuilder,
-    (
-      LessonsTableData,
-      BaseReferences<_$AppDatabase, $LessonsTableTable, LessonsTableData>
-    ),
-    LessonsTableData,
-    PrefetchHooks Function()> {
+class $$LessonsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LessonsTableTable,
+          LessonsTableData,
+          $$LessonsTableTableFilterComposer,
+          $$LessonsTableTableOrderingComposer,
+          $$LessonsTableTableAnnotationComposer,
+          $$LessonsTableTableCreateCompanionBuilder,
+          $$LessonsTableTableUpdateCompanionBuilder,
+          (
+            LessonsTableData,
+            BaseReferences<_$AppDatabase, $LessonsTableTable, LessonsTableData>,
+          ),
+          LessonsTableData,
+          PrefetchHooks Function()
+        > {
   $$LessonsTableTableTableManager(_$AppDatabase db, $LessonsTableTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -3763,124 +4496,127 @@ class $$LessonsTableTableTableManager extends RootTableManager<
               $$LessonsTableTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$LessonsTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<String> chapterId = const Value.absent(),
-            Value<String> title = const Value.absent(),
-            Value<String> type = const Value.absent(),
-            Value<String> duration = const Value.absent(),
-            Value<String> progressStatus = const Value.absent(),
-            Value<bool> isLocked = const Value.absent(),
-            Value<int> orderIndex = const Value.absent(),
-            Value<String?> chapterTitle = const Value.absent(),
-            Value<String?> contentJson = const Value.absent(),
-            Value<String?> subtitle = const Value.absent(),
-            Value<String?> subjectName = const Value.absent(),
-            Value<int?> subjectIndex = const Value.absent(),
-            Value<int?> lessonNumber = const Value.absent(),
-            Value<int?> totalLessons = const Value.absent(),
-            Value<bool> isBookmarked = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              LessonsTableCompanion(
-            id: id,
-            chapterId: chapterId,
-            title: title,
-            type: type,
-            duration: duration,
-            progressStatus: progressStatus,
-            isLocked: isLocked,
-            orderIndex: orderIndex,
-            chapterTitle: chapterTitle,
-            contentJson: contentJson,
-            subtitle: subtitle,
-            subjectName: subjectName,
-            subjectIndex: subjectIndex,
-            lessonNumber: lessonNumber,
-            totalLessons: totalLessons,
-            isBookmarked: isBookmarked,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required String chapterId,
-            required String title,
-            required String type,
-            required String duration,
-            Value<String> progressStatus = const Value.absent(),
-            Value<bool> isLocked = const Value.absent(),
-            required int orderIndex,
-            Value<String?> chapterTitle = const Value.absent(),
-            Value<String?> contentJson = const Value.absent(),
-            Value<String?> subtitle = const Value.absent(),
-            Value<String?> subjectName = const Value.absent(),
-            Value<int?> subjectIndex = const Value.absent(),
-            Value<int?> lessonNumber = const Value.absent(),
-            Value<int?> totalLessons = const Value.absent(),
-            Value<bool> isBookmarked = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              LessonsTableCompanion.insert(
-            id: id,
-            chapterId: chapterId,
-            title: title,
-            type: type,
-            duration: duration,
-            progressStatus: progressStatus,
-            isLocked: isLocked,
-            orderIndex: orderIndex,
-            chapterTitle: chapterTitle,
-            contentJson: contentJson,
-            subtitle: subtitle,
-            subjectName: subjectName,
-            subjectIndex: subjectIndex,
-            lessonNumber: lessonNumber,
-            totalLessons: totalLessons,
-            isBookmarked: isBookmarked,
-            rowid: rowid,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> chapterId = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<String> duration = const Value.absent(),
+                Value<String> progressStatus = const Value.absent(),
+                Value<bool> isLocked = const Value.absent(),
+                Value<int> orderIndex = const Value.absent(),
+                Value<String?> chapterTitle = const Value.absent(),
+                Value<String?> contentJson = const Value.absent(),
+                Value<String?> subtitle = const Value.absent(),
+                Value<String?> subjectName = const Value.absent(),
+                Value<int?> subjectIndex = const Value.absent(),
+                Value<int?> lessonNumber = const Value.absent(),
+                Value<int?> totalLessons = const Value.absent(),
+                Value<bool> isBookmarked = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LessonsTableCompanion(
+                id: id,
+                chapterId: chapterId,
+                title: title,
+                type: type,
+                duration: duration,
+                progressStatus: progressStatus,
+                isLocked: isLocked,
+                orderIndex: orderIndex,
+                chapterTitle: chapterTitle,
+                contentJson: contentJson,
+                subtitle: subtitle,
+                subjectName: subjectName,
+                subjectIndex: subjectIndex,
+                lessonNumber: lessonNumber,
+                totalLessons: totalLessons,
+                isBookmarked: isBookmarked,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String chapterId,
+                required String title,
+                required String type,
+                required String duration,
+                Value<String> progressStatus = const Value.absent(),
+                Value<bool> isLocked = const Value.absent(),
+                required int orderIndex,
+                Value<String?> chapterTitle = const Value.absent(),
+                Value<String?> contentJson = const Value.absent(),
+                Value<String?> subtitle = const Value.absent(),
+                Value<String?> subjectName = const Value.absent(),
+                Value<int?> subjectIndex = const Value.absent(),
+                Value<int?> lessonNumber = const Value.absent(),
+                Value<int?> totalLessons = const Value.absent(),
+                Value<bool> isBookmarked = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LessonsTableCompanion.insert(
+                id: id,
+                chapterId: chapterId,
+                title: title,
+                type: type,
+                duration: duration,
+                progressStatus: progressStatus,
+                isLocked: isLocked,
+                orderIndex: orderIndex,
+                chapterTitle: chapterTitle,
+                contentJson: contentJson,
+                subtitle: subtitle,
+                subjectName: subjectName,
+                subjectIndex: subjectIndex,
+                lessonNumber: lessonNumber,
+                totalLessons: totalLessons,
+                isBookmarked: isBookmarked,
+                rowid: rowid,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$LessonsTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $LessonsTableTable,
-    LessonsTableData,
-    $$LessonsTableTableFilterComposer,
-    $$LessonsTableTableOrderingComposer,
-    $$LessonsTableTableAnnotationComposer,
-    $$LessonsTableTableCreateCompanionBuilder,
-    $$LessonsTableTableUpdateCompanionBuilder,
-    (
+typedef $$LessonsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LessonsTableTable,
       LessonsTableData,
-      BaseReferences<_$AppDatabase, $LessonsTableTable, LessonsTableData>
-    ),
-    LessonsTableData,
-    PrefetchHooks Function()>;
-typedef $$LiveClassesTableTableCreateCompanionBuilder
-    = LiveClassesTableCompanion Function({
-  required String id,
-  required String subject,
-  required String topic,
-  required String time,
-  required String faculty,
-  required String status,
-  Value<int> rowid,
-});
-typedef $$LiveClassesTableTableUpdateCompanionBuilder
-    = LiveClassesTableCompanion Function({
-  Value<String> id,
-  Value<String> subject,
-  Value<String> topic,
-  Value<String> time,
-  Value<String> faculty,
-  Value<String> status,
-  Value<int> rowid,
-});
+      $$LessonsTableTableFilterComposer,
+      $$LessonsTableTableOrderingComposer,
+      $$LessonsTableTableAnnotationComposer,
+      $$LessonsTableTableCreateCompanionBuilder,
+      $$LessonsTableTableUpdateCompanionBuilder,
+      (
+        LessonsTableData,
+        BaseReferences<_$AppDatabase, $LessonsTableTable, LessonsTableData>,
+      ),
+      LessonsTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$LiveClassesTableTableCreateCompanionBuilder =
+    LiveClassesTableCompanion Function({
+      required String id,
+      required String subject,
+      required String topic,
+      required String time,
+      required String faculty,
+      required String status,
+      Value<int> rowid,
+    });
+typedef $$LiveClassesTableTableUpdateCompanionBuilder =
+    LiveClassesTableCompanion Function({
+      Value<String> id,
+      Value<String> subject,
+      Value<String> topic,
+      Value<String> time,
+      Value<String> faculty,
+      Value<String> status,
+      Value<int> rowid,
+    });
 
 class $$LiveClassesTableTableFilterComposer
     extends Composer<_$AppDatabase, $LiveClassesTableTable> {
@@ -3892,22 +4628,34 @@ class $$LiveClassesTableTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get subject => $composableBuilder(
-      column: $table.subject, builder: (column) => ColumnFilters(column));
+    column: $table.subject,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get topic => $composableBuilder(
-      column: $table.topic, builder: (column) => ColumnFilters(column));
+    column: $table.topic,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get time => $composableBuilder(
-      column: $table.time, builder: (column) => ColumnFilters(column));
+    column: $table.time,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get faculty => $composableBuilder(
-      column: $table.faculty, builder: (column) => ColumnFilters(column));
+    column: $table.faculty,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get status => $composableBuilder(
-      column: $table.status, builder: (column) => ColumnFilters(column));
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$LiveClassesTableTableOrderingComposer
@@ -3920,22 +4668,34 @@ class $$LiveClassesTableTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get subject => $composableBuilder(
-      column: $table.subject, builder: (column) => ColumnOrderings(column));
+    column: $table.subject,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get topic => $composableBuilder(
-      column: $table.topic, builder: (column) => ColumnOrderings(column));
+    column: $table.topic,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get time => $composableBuilder(
-      column: $table.time, builder: (column) => ColumnOrderings(column));
+    column: $table.time,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get faculty => $composableBuilder(
-      column: $table.faculty, builder: (column) => ColumnOrderings(column));
+    column: $table.faculty,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get status => $composableBuilder(
-      column: $table.status, builder: (column) => ColumnOrderings(column));
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$LiveClassesTableTableAnnotationComposer
@@ -3966,25 +4726,33 @@ class $$LiveClassesTableTableAnnotationComposer
       $composableBuilder(column: $table.status, builder: (column) => column);
 }
 
-class $$LiveClassesTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $LiveClassesTableTable,
-    LiveClassesTableData,
-    $$LiveClassesTableTableFilterComposer,
-    $$LiveClassesTableTableOrderingComposer,
-    $$LiveClassesTableTableAnnotationComposer,
-    $$LiveClassesTableTableCreateCompanionBuilder,
-    $$LiveClassesTableTableUpdateCompanionBuilder,
-    (
-      LiveClassesTableData,
-      BaseReferences<_$AppDatabase, $LiveClassesTableTable,
-          LiveClassesTableData>
-    ),
-    LiveClassesTableData,
-    PrefetchHooks Function()> {
+class $$LiveClassesTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LiveClassesTableTable,
+          LiveClassesTableData,
+          $$LiveClassesTableTableFilterComposer,
+          $$LiveClassesTableTableOrderingComposer,
+          $$LiveClassesTableTableAnnotationComposer,
+          $$LiveClassesTableTableCreateCompanionBuilder,
+          $$LiveClassesTableTableUpdateCompanionBuilder,
+          (
+            LiveClassesTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $LiveClassesTableTable,
+              LiveClassesTableData
+            >,
+          ),
+          LiveClassesTableData,
+          PrefetchHooks Function()
+        > {
   $$LiveClassesTableTableTableManager(
-      _$AppDatabase db, $LiveClassesTableTable table)
-      : super(TableManagerState(
+    _$AppDatabase db,
+    $LiveClassesTableTable table,
+  ) : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -3993,89 +4761,95 @@ class $$LiveClassesTableTableTableManager extends RootTableManager<
               $$LiveClassesTableTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$LiveClassesTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<String> subject = const Value.absent(),
-            Value<String> topic = const Value.absent(),
-            Value<String> time = const Value.absent(),
-            Value<String> faculty = const Value.absent(),
-            Value<String> status = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              LiveClassesTableCompanion(
-            id: id,
-            subject: subject,
-            topic: topic,
-            time: time,
-            faculty: faculty,
-            status: status,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required String subject,
-            required String topic,
-            required String time,
-            required String faculty,
-            required String status,
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              LiveClassesTableCompanion.insert(
-            id: id,
-            subject: subject,
-            topic: topic,
-            time: time,
-            faculty: faculty,
-            status: status,
-            rowid: rowid,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> subject = const Value.absent(),
+                Value<String> topic = const Value.absent(),
+                Value<String> time = const Value.absent(),
+                Value<String> faculty = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LiveClassesTableCompanion(
+                id: id,
+                subject: subject,
+                topic: topic,
+                time: time,
+                faculty: faculty,
+                status: status,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String subject,
+                required String topic,
+                required String time,
+                required String faculty,
+                required String status,
+                Value<int> rowid = const Value.absent(),
+              }) => LiveClassesTableCompanion.insert(
+                id: id,
+                subject: subject,
+                topic: topic,
+                time: time,
+                faculty: faculty,
+                status: status,
+                rowid: rowid,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$LiveClassesTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $LiveClassesTableTable,
-    LiveClassesTableData,
-    $$LiveClassesTableTableFilterComposer,
-    $$LiveClassesTableTableOrderingComposer,
-    $$LiveClassesTableTableAnnotationComposer,
-    $$LiveClassesTableTableCreateCompanionBuilder,
-    $$LiveClassesTableTableUpdateCompanionBuilder,
-    (
+typedef $$LiveClassesTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LiveClassesTableTable,
       LiveClassesTableData,
-      BaseReferences<_$AppDatabase, $LiveClassesTableTable,
-          LiveClassesTableData>
-    ),
-    LiveClassesTableData,
-    PrefetchHooks Function()>;
-typedef $$ForumThreadsTableTableCreateCompanionBuilder
-    = ForumThreadsTableCompanion Function({
-  required String id,
-  required String courseId,
-  required String title,
-  required String description,
-  required String studentName,
-  required String timeAgo,
-  Value<int> replyCount,
-  required String status,
-  Value<int> rowid,
-});
-typedef $$ForumThreadsTableTableUpdateCompanionBuilder
-    = ForumThreadsTableCompanion Function({
-  Value<String> id,
-  Value<String> courseId,
-  Value<String> title,
-  Value<String> description,
-  Value<String> studentName,
-  Value<String> timeAgo,
-  Value<int> replyCount,
-  Value<String> status,
-  Value<int> rowid,
-});
+      $$LiveClassesTableTableFilterComposer,
+      $$LiveClassesTableTableOrderingComposer,
+      $$LiveClassesTableTableAnnotationComposer,
+      $$LiveClassesTableTableCreateCompanionBuilder,
+      $$LiveClassesTableTableUpdateCompanionBuilder,
+      (
+        LiveClassesTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $LiveClassesTableTable,
+          LiveClassesTableData
+        >,
+      ),
+      LiveClassesTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$ForumThreadsTableTableCreateCompanionBuilder =
+    ForumThreadsTableCompanion Function({
+      required String id,
+      required String courseId,
+      required String title,
+      required String description,
+      required String studentName,
+      required String timeAgo,
+      Value<int> replyCount,
+      required String status,
+      Value<int> rowid,
+    });
+typedef $$ForumThreadsTableTableUpdateCompanionBuilder =
+    ForumThreadsTableCompanion Function({
+      Value<String> id,
+      Value<String> courseId,
+      Value<String> title,
+      Value<String> description,
+      Value<String> studentName,
+      Value<String> timeAgo,
+      Value<int> replyCount,
+      Value<String> status,
+      Value<int> rowid,
+    });
 
 class $$ForumThreadsTableTableFilterComposer
     extends Composer<_$AppDatabase, $ForumThreadsTableTable> {
@@ -4087,28 +4861,44 @@ class $$ForumThreadsTableTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get courseId => $composableBuilder(
-      column: $table.courseId, builder: (column) => ColumnFilters(column));
+    column: $table.courseId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get title => $composableBuilder(
-      column: $table.title, builder: (column) => ColumnFilters(column));
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnFilters(column));
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get studentName => $composableBuilder(
-      column: $table.studentName, builder: (column) => ColumnFilters(column));
+    column: $table.studentName,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get timeAgo => $composableBuilder(
-      column: $table.timeAgo, builder: (column) => ColumnFilters(column));
+    column: $table.timeAgo,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get replyCount => $composableBuilder(
-      column: $table.replyCount, builder: (column) => ColumnFilters(column));
+    column: $table.replyCount,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get status => $composableBuilder(
-      column: $table.status, builder: (column) => ColumnFilters(column));
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$ForumThreadsTableTableOrderingComposer
@@ -4121,28 +4911,44 @@ class $$ForumThreadsTableTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get courseId => $composableBuilder(
-      column: $table.courseId, builder: (column) => ColumnOrderings(column));
+    column: $table.courseId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get title => $composableBuilder(
-      column: $table.title, builder: (column) => ColumnOrderings(column));
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnOrderings(column));
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get studentName => $composableBuilder(
-      column: $table.studentName, builder: (column) => ColumnOrderings(column));
+    column: $table.studentName,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get timeAgo => $composableBuilder(
-      column: $table.timeAgo, builder: (column) => ColumnOrderings(column));
+    column: $table.timeAgo,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get replyCount => $composableBuilder(
-      column: $table.replyCount, builder: (column) => ColumnOrderings(column));
+    column: $table.replyCount,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get status => $composableBuilder(
-      column: $table.status, builder: (column) => ColumnOrderings(column));
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$ForumThreadsTableTableAnnotationComposer
@@ -4164,40 +4970,54 @@ class $$ForumThreadsTableTableAnnotationComposer
       $composableBuilder(column: $table.title, builder: (column) => column);
 
   GeneratedColumn<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => column);
+    column: $table.description,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get studentName => $composableBuilder(
-      column: $table.studentName, builder: (column) => column);
+    column: $table.studentName,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get timeAgo =>
       $composableBuilder(column: $table.timeAgo, builder: (column) => column);
 
   GeneratedColumn<int> get replyCount => $composableBuilder(
-      column: $table.replyCount, builder: (column) => column);
+    column: $table.replyCount,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
 }
 
-class $$ForumThreadsTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $ForumThreadsTableTable,
-    ForumThreadsTableData,
-    $$ForumThreadsTableTableFilterComposer,
-    $$ForumThreadsTableTableOrderingComposer,
-    $$ForumThreadsTableTableAnnotationComposer,
-    $$ForumThreadsTableTableCreateCompanionBuilder,
-    $$ForumThreadsTableTableUpdateCompanionBuilder,
-    (
-      ForumThreadsTableData,
-      BaseReferences<_$AppDatabase, $ForumThreadsTableTable,
-          ForumThreadsTableData>
-    ),
-    ForumThreadsTableData,
-    PrefetchHooks Function()> {
+class $$ForumThreadsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ForumThreadsTableTable,
+          ForumThreadsTableData,
+          $$ForumThreadsTableTableFilterComposer,
+          $$ForumThreadsTableTableOrderingComposer,
+          $$ForumThreadsTableTableAnnotationComposer,
+          $$ForumThreadsTableTableCreateCompanionBuilder,
+          $$ForumThreadsTableTableUpdateCompanionBuilder,
+          (
+            ForumThreadsTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $ForumThreadsTableTable,
+              ForumThreadsTableData
+            >,
+          ),
+          ForumThreadsTableData,
+          PrefetchHooks Function()
+        > {
   $$ForumThreadsTableTableTableManager(
-      _$AppDatabase db, $ForumThreadsTableTable table)
-      : super(TableManagerState(
+    _$AppDatabase db,
+    $ForumThreadsTableTable table,
+  ) : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -4206,92 +5026,100 @@ class $$ForumThreadsTableTableTableManager extends RootTableManager<
               $$ForumThreadsTableTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$ForumThreadsTableTableAnnotationComposer(
-                  $db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<String> courseId = const Value.absent(),
-            Value<String> title = const Value.absent(),
-            Value<String> description = const Value.absent(),
-            Value<String> studentName = const Value.absent(),
-            Value<String> timeAgo = const Value.absent(),
-            Value<int> replyCount = const Value.absent(),
-            Value<String> status = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              ForumThreadsTableCompanion(
-            id: id,
-            courseId: courseId,
-            title: title,
-            description: description,
-            studentName: studentName,
-            timeAgo: timeAgo,
-            replyCount: replyCount,
-            status: status,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required String courseId,
-            required String title,
-            required String description,
-            required String studentName,
-            required String timeAgo,
-            Value<int> replyCount = const Value.absent(),
-            required String status,
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              ForumThreadsTableCompanion.insert(
-            id: id,
-            courseId: courseId,
-            title: title,
-            description: description,
-            studentName: studentName,
-            timeAgo: timeAgo,
-            replyCount: replyCount,
-            status: status,
-            rowid: rowid,
-          ),
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> courseId = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String> studentName = const Value.absent(),
+                Value<String> timeAgo = const Value.absent(),
+                Value<int> replyCount = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ForumThreadsTableCompanion(
+                id: id,
+                courseId: courseId,
+                title: title,
+                description: description,
+                studentName: studentName,
+                timeAgo: timeAgo,
+                replyCount: replyCount,
+                status: status,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String courseId,
+                required String title,
+                required String description,
+                required String studentName,
+                required String timeAgo,
+                Value<int> replyCount = const Value.absent(),
+                required String status,
+                Value<int> rowid = const Value.absent(),
+              }) => ForumThreadsTableCompanion.insert(
+                id: id,
+                courseId: courseId,
+                title: title,
+                description: description,
+                studentName: studentName,
+                timeAgo: timeAgo,
+                replyCount: replyCount,
+                status: status,
+                rowid: rowid,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$ForumThreadsTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $ForumThreadsTableTable,
-    ForumThreadsTableData,
-    $$ForumThreadsTableTableFilterComposer,
-    $$ForumThreadsTableTableOrderingComposer,
-    $$ForumThreadsTableTableAnnotationComposer,
-    $$ForumThreadsTableTableCreateCompanionBuilder,
-    $$ForumThreadsTableTableUpdateCompanionBuilder,
-    (
+typedef $$ForumThreadsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ForumThreadsTableTable,
       ForumThreadsTableData,
-      BaseReferences<_$AppDatabase, $ForumThreadsTableTable,
-          ForumThreadsTableData>
-    ),
-    ForumThreadsTableData,
-    PrefetchHooks Function()>;
-typedef $$UserProgressTableTableCreateCompanionBuilder
-    = UserProgressTableCompanion Function({
-  required String userId,
-  required String lessonId,
-  required String courseId,
-  Value<int> percentComplete,
-  required DateTime lastAccessedAt,
-  Value<int> rowid,
-});
-typedef $$UserProgressTableTableUpdateCompanionBuilder
-    = UserProgressTableCompanion Function({
-  Value<String> userId,
-  Value<String> lessonId,
-  Value<String> courseId,
-  Value<int> percentComplete,
-  Value<DateTime> lastAccessedAt,
-  Value<int> rowid,
-});
+      $$ForumThreadsTableTableFilterComposer,
+      $$ForumThreadsTableTableOrderingComposer,
+      $$ForumThreadsTableTableAnnotationComposer,
+      $$ForumThreadsTableTableCreateCompanionBuilder,
+      $$ForumThreadsTableTableUpdateCompanionBuilder,
+      (
+        ForumThreadsTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $ForumThreadsTableTable,
+          ForumThreadsTableData
+        >,
+      ),
+      ForumThreadsTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$UserProgressTableTableCreateCompanionBuilder =
+    UserProgressTableCompanion Function({
+      required String userId,
+      required String lessonId,
+      required String courseId,
+      Value<int> percentComplete,
+      required DateTime lastAccessedAt,
+      Value<int> rowid,
+    });
+typedef $$UserProgressTableTableUpdateCompanionBuilder =
+    UserProgressTableCompanion Function({
+      Value<String> userId,
+      Value<String> lessonId,
+      Value<String> courseId,
+      Value<int> percentComplete,
+      Value<DateTime> lastAccessedAt,
+      Value<int> rowid,
+    });
 
 class $$UserProgressTableTableFilterComposer
     extends Composer<_$AppDatabase, $UserProgressTableTable> {
@@ -4303,21 +5131,29 @@ class $$UserProgressTableTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<String> get userId => $composableBuilder(
-      column: $table.userId, builder: (column) => ColumnFilters(column));
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get lessonId => $composableBuilder(
-      column: $table.lessonId, builder: (column) => ColumnFilters(column));
+    column: $table.lessonId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get courseId => $composableBuilder(
-      column: $table.courseId, builder: (column) => ColumnFilters(column));
+    column: $table.courseId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get percentComplete => $composableBuilder(
-      column: $table.percentComplete,
-      builder: (column) => ColumnFilters(column));
+    column: $table.percentComplete,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<DateTime> get lastAccessedAt => $composableBuilder(
-      column: $table.lastAccessedAt,
-      builder: (column) => ColumnFilters(column));
+    column: $table.lastAccessedAt,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$UserProgressTableTableOrderingComposer
@@ -4330,21 +5166,29 @@ class $$UserProgressTableTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<String> get userId => $composableBuilder(
-      column: $table.userId, builder: (column) => ColumnOrderings(column));
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get lessonId => $composableBuilder(
-      column: $table.lessonId, builder: (column) => ColumnOrderings(column));
+    column: $table.lessonId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get courseId => $composableBuilder(
-      column: $table.courseId, builder: (column) => ColumnOrderings(column));
+    column: $table.courseId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get percentComplete => $composableBuilder(
-      column: $table.percentComplete,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.percentComplete,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get lastAccessedAt => $composableBuilder(
-      column: $table.lastAccessedAt,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.lastAccessedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$UserProgressTableTableAnnotationComposer
@@ -4366,31 +5210,43 @@ class $$UserProgressTableTableAnnotationComposer
       $composableBuilder(column: $table.courseId, builder: (column) => column);
 
   GeneratedColumn<int> get percentComplete => $composableBuilder(
-      column: $table.percentComplete, builder: (column) => column);
+    column: $table.percentComplete,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get lastAccessedAt => $composableBuilder(
-      column: $table.lastAccessedAt, builder: (column) => column);
+    column: $table.lastAccessedAt,
+    builder: (column) => column,
+  );
 }
 
-class $$UserProgressTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $UserProgressTableTable,
-    UserProgressTableData,
-    $$UserProgressTableTableFilterComposer,
-    $$UserProgressTableTableOrderingComposer,
-    $$UserProgressTableTableAnnotationComposer,
-    $$UserProgressTableTableCreateCompanionBuilder,
-    $$UserProgressTableTableUpdateCompanionBuilder,
-    (
-      UserProgressTableData,
-      BaseReferences<_$AppDatabase, $UserProgressTableTable,
-          UserProgressTableData>
-    ),
-    UserProgressTableData,
-    PrefetchHooks Function()> {
+class $$UserProgressTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $UserProgressTableTable,
+          UserProgressTableData,
+          $$UserProgressTableTableFilterComposer,
+          $$UserProgressTableTableOrderingComposer,
+          $$UserProgressTableTableAnnotationComposer,
+          $$UserProgressTableTableCreateCompanionBuilder,
+          $$UserProgressTableTableUpdateCompanionBuilder,
+          (
+            UserProgressTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $UserProgressTableTable,
+              UserProgressTableData
+            >,
+          ),
+          UserProgressTableData,
+          PrefetchHooks Function()
+        > {
   $$UserProgressTableTableTableManager(
-      _$AppDatabase db, $UserProgressTableTable table)
-      : super(TableManagerState(
+    _$AppDatabase db,
+    $UserProgressTableTable table,
+  ) : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -4399,82 +5255,90 @@ class $$UserProgressTableTableTableManager extends RootTableManager<
               $$UserProgressTableTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$UserProgressTableTableAnnotationComposer(
-                  $db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> userId = const Value.absent(),
-            Value<String> lessonId = const Value.absent(),
-            Value<String> courseId = const Value.absent(),
-            Value<int> percentComplete = const Value.absent(),
-            Value<DateTime> lastAccessedAt = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              UserProgressTableCompanion(
-            userId: userId,
-            lessonId: lessonId,
-            courseId: courseId,
-            percentComplete: percentComplete,
-            lastAccessedAt: lastAccessedAt,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String userId,
-            required String lessonId,
-            required String courseId,
-            Value<int> percentComplete = const Value.absent(),
-            required DateTime lastAccessedAt,
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              UserProgressTableCompanion.insert(
-            userId: userId,
-            lessonId: lessonId,
-            courseId: courseId,
-            percentComplete: percentComplete,
-            lastAccessedAt: lastAccessedAt,
-            rowid: rowid,
-          ),
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> userId = const Value.absent(),
+                Value<String> lessonId = const Value.absent(),
+                Value<String> courseId = const Value.absent(),
+                Value<int> percentComplete = const Value.absent(),
+                Value<DateTime> lastAccessedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => UserProgressTableCompanion(
+                userId: userId,
+                lessonId: lessonId,
+                courseId: courseId,
+                percentComplete: percentComplete,
+                lastAccessedAt: lastAccessedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String userId,
+                required String lessonId,
+                required String courseId,
+                Value<int> percentComplete = const Value.absent(),
+                required DateTime lastAccessedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => UserProgressTableCompanion.insert(
+                userId: userId,
+                lessonId: lessonId,
+                courseId: courseId,
+                percentComplete: percentComplete,
+                lastAccessedAt: lastAccessedAt,
+                rowid: rowid,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$UserProgressTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $UserProgressTableTable,
-    UserProgressTableData,
-    $$UserProgressTableTableFilterComposer,
-    $$UserProgressTableTableOrderingComposer,
-    $$UserProgressTableTableAnnotationComposer,
-    $$UserProgressTableTableCreateCompanionBuilder,
-    $$UserProgressTableTableUpdateCompanionBuilder,
-    (
+typedef $$UserProgressTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $UserProgressTableTable,
       UserProgressTableData,
-      BaseReferences<_$AppDatabase, $UserProgressTableTable,
-          UserProgressTableData>
-    ),
-    UserProgressTableData,
-    PrefetchHooks Function()>;
-typedef $$AppSettingsTableTableCreateCompanionBuilder
-    = AppSettingsTableCompanion Function({
-  required int id,
-  Value<String> appearanceMode,
-  Value<String> videoQuality,
-  Value<bool> autoPlayNext,
-  Value<String> textSize,
-  Value<bool> highContrast,
-  Value<int> rowid,
-});
-typedef $$AppSettingsTableTableUpdateCompanionBuilder
-    = AppSettingsTableCompanion Function({
-  Value<int> id,
-  Value<String> appearanceMode,
-  Value<String> videoQuality,
-  Value<bool> autoPlayNext,
-  Value<String> textSize,
-  Value<bool> highContrast,
-  Value<int> rowid,
-});
+      $$UserProgressTableTableFilterComposer,
+      $$UserProgressTableTableOrderingComposer,
+      $$UserProgressTableTableAnnotationComposer,
+      $$UserProgressTableTableCreateCompanionBuilder,
+      $$UserProgressTableTableUpdateCompanionBuilder,
+      (
+        UserProgressTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $UserProgressTableTable,
+          UserProgressTableData
+        >,
+      ),
+      UserProgressTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$AppSettingsTableTableCreateCompanionBuilder =
+    AppSettingsTableCompanion Function({
+      required int id,
+      Value<String> appearanceMode,
+      Value<String> videoQuality,
+      Value<bool> autoPlayNext,
+      Value<String> textSize,
+      Value<bool> highContrast,
+      Value<int> rowid,
+    });
+typedef $$AppSettingsTableTableUpdateCompanionBuilder =
+    AppSettingsTableCompanion Function({
+      Value<int> id,
+      Value<String> appearanceMode,
+      Value<String> videoQuality,
+      Value<bool> autoPlayNext,
+      Value<String> textSize,
+      Value<bool> highContrast,
+      Value<int> rowid,
+    });
 
 class $$AppSettingsTableTableFilterComposer
     extends Composer<_$AppDatabase, $AppSettingsTableTable> {
@@ -4486,23 +5350,34 @@ class $$AppSettingsTableTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get appearanceMode => $composableBuilder(
-      column: $table.appearanceMode,
-      builder: (column) => ColumnFilters(column));
+    column: $table.appearanceMode,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get videoQuality => $composableBuilder(
-      column: $table.videoQuality, builder: (column) => ColumnFilters(column));
+    column: $table.videoQuality,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get autoPlayNext => $composableBuilder(
-      column: $table.autoPlayNext, builder: (column) => ColumnFilters(column));
+    column: $table.autoPlayNext,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get textSize => $composableBuilder(
-      column: $table.textSize, builder: (column) => ColumnFilters(column));
+    column: $table.textSize,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get highContrast => $composableBuilder(
-      column: $table.highContrast, builder: (column) => ColumnFilters(column));
+    column: $table.highContrast,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$AppSettingsTableTableOrderingComposer
@@ -4515,26 +5390,34 @@ class $$AppSettingsTableTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get appearanceMode => $composableBuilder(
-      column: $table.appearanceMode,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.appearanceMode,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get videoQuality => $composableBuilder(
-      column: $table.videoQuality,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.videoQuality,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get autoPlayNext => $composableBuilder(
-      column: $table.autoPlayNext,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.autoPlayNext,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get textSize => $composableBuilder(
-      column: $table.textSize, builder: (column) => ColumnOrderings(column));
+    column: $table.textSize,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get highContrast => $composableBuilder(
-      column: $table.highContrast,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.highContrast,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$AppSettingsTableTableAnnotationComposer
@@ -4550,40 +5433,56 @@ class $$AppSettingsTableTableAnnotationComposer
       $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumn<String> get appearanceMode => $composableBuilder(
-      column: $table.appearanceMode, builder: (column) => column);
+    column: $table.appearanceMode,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get videoQuality => $composableBuilder(
-      column: $table.videoQuality, builder: (column) => column);
+    column: $table.videoQuality,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get autoPlayNext => $composableBuilder(
-      column: $table.autoPlayNext, builder: (column) => column);
+    column: $table.autoPlayNext,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get textSize =>
       $composableBuilder(column: $table.textSize, builder: (column) => column);
 
   GeneratedColumn<bool> get highContrast => $composableBuilder(
-      column: $table.highContrast, builder: (column) => column);
+    column: $table.highContrast,
+    builder: (column) => column,
+  );
 }
 
-class $$AppSettingsTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $AppSettingsTableTable,
-    AppSettingsTableData,
-    $$AppSettingsTableTableFilterComposer,
-    $$AppSettingsTableTableOrderingComposer,
-    $$AppSettingsTableTableAnnotationComposer,
-    $$AppSettingsTableTableCreateCompanionBuilder,
-    $$AppSettingsTableTableUpdateCompanionBuilder,
-    (
-      AppSettingsTableData,
-      BaseReferences<_$AppDatabase, $AppSettingsTableTable,
-          AppSettingsTableData>
-    ),
-    AppSettingsTableData,
-    PrefetchHooks Function()> {
+class $$AppSettingsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AppSettingsTableTable,
+          AppSettingsTableData,
+          $$AppSettingsTableTableFilterComposer,
+          $$AppSettingsTableTableOrderingComposer,
+          $$AppSettingsTableTableAnnotationComposer,
+          $$AppSettingsTableTableCreateCompanionBuilder,
+          $$AppSettingsTableTableUpdateCompanionBuilder,
+          (
+            AppSettingsTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $AppSettingsTableTable,
+              AppSettingsTableData
+            >,
+          ),
+          AppSettingsTableData,
+          PrefetchHooks Function()
+        > {
   $$AppSettingsTableTableTableManager(
-      _$AppDatabase db, $AppSettingsTableTable table)
-      : super(TableManagerState(
+    _$AppDatabase db,
+    $AppSettingsTableTable table,
+  ) : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -4592,65 +5491,71 @@ class $$AppSettingsTableTableTableManager extends RootTableManager<
               $$AppSettingsTableTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$AppSettingsTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> appearanceMode = const Value.absent(),
-            Value<String> videoQuality = const Value.absent(),
-            Value<bool> autoPlayNext = const Value.absent(),
-            Value<String> textSize = const Value.absent(),
-            Value<bool> highContrast = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              AppSettingsTableCompanion(
-            id: id,
-            appearanceMode: appearanceMode,
-            videoQuality: videoQuality,
-            autoPlayNext: autoPlayNext,
-            textSize: textSize,
-            highContrast: highContrast,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required int id,
-            Value<String> appearanceMode = const Value.absent(),
-            Value<String> videoQuality = const Value.absent(),
-            Value<bool> autoPlayNext = const Value.absent(),
-            Value<String> textSize = const Value.absent(),
-            Value<bool> highContrast = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              AppSettingsTableCompanion.insert(
-            id: id,
-            appearanceMode: appearanceMode,
-            videoQuality: videoQuality,
-            autoPlayNext: autoPlayNext,
-            textSize: textSize,
-            highContrast: highContrast,
-            rowid: rowid,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> appearanceMode = const Value.absent(),
+                Value<String> videoQuality = const Value.absent(),
+                Value<bool> autoPlayNext = const Value.absent(),
+                Value<String> textSize = const Value.absent(),
+                Value<bool> highContrast = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AppSettingsTableCompanion(
+                id: id,
+                appearanceMode: appearanceMode,
+                videoQuality: videoQuality,
+                autoPlayNext: autoPlayNext,
+                textSize: textSize,
+                highContrast: highContrast,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int id,
+                Value<String> appearanceMode = const Value.absent(),
+                Value<String> videoQuality = const Value.absent(),
+                Value<bool> autoPlayNext = const Value.absent(),
+                Value<String> textSize = const Value.absent(),
+                Value<bool> highContrast = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AppSettingsTableCompanion.insert(
+                id: id,
+                appearanceMode: appearanceMode,
+                videoQuality: videoQuality,
+                autoPlayNext: autoPlayNext,
+                textSize: textSize,
+                highContrast: highContrast,
+                rowid: rowid,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$AppSettingsTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $AppSettingsTableTable,
-    AppSettingsTableData,
-    $$AppSettingsTableTableFilterComposer,
-    $$AppSettingsTableTableOrderingComposer,
-    $$AppSettingsTableTableAnnotationComposer,
-    $$AppSettingsTableTableCreateCompanionBuilder,
-    $$AppSettingsTableTableUpdateCompanionBuilder,
-    (
+typedef $$AppSettingsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AppSettingsTableTable,
       AppSettingsTableData,
-      BaseReferences<_$AppDatabase, $AppSettingsTableTable,
-          AppSettingsTableData>
-    ),
-    AppSettingsTableData,
-    PrefetchHooks Function()>;
+      $$AppSettingsTableTableFilterComposer,
+      $$AppSettingsTableTableOrderingComposer,
+      $$AppSettingsTableTableAnnotationComposer,
+      $$AppSettingsTableTableCreateCompanionBuilder,
+      $$AppSettingsTableTableUpdateCompanionBuilder,
+      (
+        AppSettingsTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $AppSettingsTableTable,
+          AppSettingsTableData
+        >,
+      ),
+      AppSettingsTableData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;

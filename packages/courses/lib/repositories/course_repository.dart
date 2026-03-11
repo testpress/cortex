@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:drift/drift.dart';
 
-import 'package:data/data.dart';
+import 'package:core/data/data.dart';
 
 /// Repository for all course-related operations.
 /// Owns the bridge between [DataSource] (network/mock) and [AppDatabase] (local cache).
