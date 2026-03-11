@@ -8,7 +8,7 @@ The goal of this refactor is to transition the Cortex project from a "God Data P
 
 This simplifies the dependency graph by making `core` the single foundation for every feature in the app.
 
-## Motivation
+## Why
 This architectural shift solves several growing pains in the project:
 - **Simplified Dependency Graph**: Feature packages now only depend on `core`. This removes the complexity of managing a separate `data` package and prevents circular dependencies.
 - **Build Performance**: Decentralizing logic ensures that a change in `courses` only triggers a `build_runner` cycle for that package, rather than a project-wide cycle in a monolithic `data` package.
