@@ -18,10 +18,9 @@
 ## 4. Decentralize DTOs and Mocks from Core
 - [x] 4.1 Move feature-specific DTOs (`Assignment`, `Learner`, `Momentum`, `Shortcut`, `Banner`, `RecentActivity`) to `courses`
 - [x] 4.2 Move `TestDto` to `exams`
-- [x] 4.3 Relocate feature mock data from `core/infra/mock_data.dart` to feature packages
-- [x] 4.4 Update `core/data.dart` exports and all project-wide imports
-- [x] 4.5 Verify `core` has zero imports from feature packages
-- [x] 4.6 Final build verification (`flutter pub get`, `dart analyze`)
+- [x] 4.3 Update `core/data.dart` exports and all project-wide imports
+- [x] 4.4 Verify `core` has zero imports from feature packages
+- [x] 4.5 Final build verification (`flutter pub get`, `dart analyze`)
 
 ## 5. Enforce Domain Isolation
 - [x] 5.1 Relocate `RecentActivityDto` and its mock data from `courses` to `profile` so profile no longer imports `package:courses` for domain models.
