@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import '../models/today_schedule.dart';
+import '../models/assignment_dto.dart';
 import 'today_snapshot/class_card.dart';
 import 'today_snapshot/assignment_card.dart';
 import 'today_snapshot/test_card.dart';
@@ -8,6 +9,7 @@ import 'today_snapshot/snapshot_section.dart';
 import 'today_snapshot/empty_state.dart';
 
 export '../models/today_schedule.dart';
+export '../models/assignment_dto.dart';
 
 /// A chronological schedule view for the home dashboard.
 class TodaySnapshot extends StatelessWidget {

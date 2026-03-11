@@ -1,5 +1,5 @@
 import 'package:core/core.dart';
-import 'package:data/data.dart';
+import 'package:core/data/data.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/course_detail_provider.dart';

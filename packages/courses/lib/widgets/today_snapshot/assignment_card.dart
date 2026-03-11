@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:core/core.dart';
 import '../../models/today_schedule.dart';
+import '../../models/assignment_dto.dart';
 import 'shared.dart';
 
 class AssignmentCard extends StatelessWidget {

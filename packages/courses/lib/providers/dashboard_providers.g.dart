@@ -61,23 +61,24 @@ final pendingAssignmentsProvider =
 // ignore: unused_element
 typedef PendingAssignmentsRef =
     AutoDisposeFutureProviderRef<List<AssignmentDto>>;
-String _$upcomingTestsHash() => r'3700720db73b0659fbc3e4a486447d17ea7e6738';
+String _$upcomingTestsHash() => r'8f7727e7bc108c68a4613fd37d4b294afe246f60';
 
 /// See also [upcomingTests].
 @ProviderFor(upcomingTests)
-final upcomingTestsProvider = AutoDisposeFutureProvider<List<TestDto>>.internal(
-  upcomingTests,
-  name: r'upcomingTestsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$upcomingTestsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+final upcomingTestsProvider =
+    AutoDisposeFutureProvider<List<ScheduledTest>>.internal(
+      upcomingTests,
+      name: r'upcomingTestsProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$upcomingTestsHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef UpcomingTestsRef = AutoDisposeFutureProviderRef<List<TestDto>>;
+typedef UpcomingTestsRef = AutoDisposeFutureProviderRef<List<ScheduledTest>>;
 String _$heroBannersHash() => r'db7893ee83c876d6c3380a1b7991fe9128a597be';
 
 /// See also [heroBanners].

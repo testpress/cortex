@@ -26,5 +26,25 @@ final profileRecentActivityProvider =
 // ignore: unused_element
 typedef ProfileRecentActivityRef =
     AutoDisposeFutureProviderRef<List<RecentActivityDto>>;
+String _$profileEnrollmentHash() => r'00cb75b8678351229a31fa1ef477d50ea492b104';
+
+/// Provides enrolled courses directly from the DB layer to avoid depending on the `courses` package.
+///
+/// Copied from [profileEnrollment].
+@ProviderFor(profileEnrollment)
+final profileEnrollmentProvider =
+    AutoDisposeStreamProvider<List<CourseDto>>.internal(
+      profileEnrollment,
+      name: r'profileEnrollmentProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$profileEnrollmentHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ProfileEnrollmentRef = AutoDisposeStreamProviderRef<List<CourseDto>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

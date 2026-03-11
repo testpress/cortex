@@ -24,8 +24,9 @@ mixin ReviewStateLogic {
     if (f == ReviewFilter.all) return allQuestions.length;
     return allQuestions.where((q) {
       if (f == ReviewFilter.correct) return isAnswerCorrect(q);
-      if (f == ReviewFilter.incorrect)
+      if (f == ReviewFilter.incorrect) {
         return !isAnswerCorrect(q) && !isUnanswered(q);
+      }
       if (f == ReviewFilter.unanswered) return isUnanswered(q);
       return false;
     }).length;

@@ -1,4 +1,4 @@
-import 'package:data/data.dart';
+import '../models/recent_activity_dto.dart';
 
 /// Mock recent activity items for the profile screen.
 const mockRecentActivity = [

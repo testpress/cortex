@@ -2,16 +2,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart' show Scaffold;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
-import 'package:data/data.dart' as dto;
-import '../providers/dashboard_providers.dart';
-import '../widgets/greeting_section.dart';
-import '../widgets/contextual_hero_card.dart';
-import '../widgets/today_snapshot.dart';
-import '../widgets/study_momentum_grid.dart';
-import '../widgets/quick_access_grid.dart';
-import '../widgets/hero_banner_carousel.dart';
-import '../widgets/top_learners_section.dart';
-import '../widgets/promotional_banners.dart';
+import 'package:core/data/data.dart' as dto;
+import '../courses.dart';
 
 class PaidActiveHomeScreen extends ConsumerWidget {
   const PaidActiveHomeScreen({super.key});
@@ -110,7 +102,8 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                       assignments: (pendingAssignments.value ?? [])
                           .map(_mapAssignment)
                           .toList(),
-                      tests: (upcomingTests.value ?? []).map(_mapTest).toList(),
+                      tests: (upcomingTests.value ?? [])
+                          .toList(),
                     );
                   },
                 ),
@@ -125,7 +118,8 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                   data: (top) => otherLearners.when(
                     data: (others) => TopLearnersSection(
                       topLearners: top.map(_mapLearner).toList(),
-                      otherLearners: others.map(_mapLearner).toList(),
+                      otherLearners:
+                          others.map(_mapLearner).toList(),
                     ),
                     loading: () => const SizedBox.shrink(),
                     error: (error, stack) => const SizedBox.shrink(),
@@ -136,7 +130,9 @@ class PaidActiveHomeScreen extends ConsumerWidget {
 
                 promotionBanners.when(
                   data: (data) => UpdatesAnnouncementsSection(
-                    banners: data.map(_mapPromotionBanner).toList(),
+                    banners: data
+                        .map(_mapPromotionBanner)
+                        .toList(),
                     onViewAll: () {
                       // Handle view all navigation
                     },
@@ -147,7 +143,8 @@ class PaidActiveHomeScreen extends ConsumerWidget {
 
                 shortcuts.when(
                   data: (data) => QuickAccessGrid(
-                    shortcuts: data.map(_mapShortcut).toList(),
+                    shortcuts:
+                        data.map(_mapShortcut).toList(),
                   ),
                   loading: () => const SizedBox(height: 150),
                   error: (error, stack) => const SizedBox.shrink(),
@@ -160,7 +157,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     );
   }
 
-  HeroBanner _mapHeroBanner(dto.DashboardBannerDto d) {
+  HeroBanner _mapHeroBanner(DashboardBannerDto d) {
     return HeroBanner(
       id: d.id,
       imageUrl: d.imageUrl,
@@ -169,7 +166,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     );
   }
 
-  AnnouncementBanner _mapPromotionBanner(dto.DashboardBannerDto d) {
+  AnnouncementBanner _mapPromotionBanner(DashboardBannerDto d) {
     return AnnouncementBanner(
       id: d.id,
       title: d.title,
@@ -179,7 +176,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     );
   }
 
-  Learner _mapLearner(dto.LearnerDto d) {
+  Learner _mapLearner(LearnerDto d) {
     return Learner(
       id: d.id,
       rank: d.rank,
@@ -200,17 +197,17 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     );
   }
 
-  Shortcut _mapShortcut(dto.QuickShortcutDto d) {
+  Shortcut _mapShortcut(QuickShortcutDto d) {
     return Shortcut(
       id: d.id,
       label: d.label,
       icon: switch (d.iconType) {
-        dto.ShortcutIconType.video => ShortcutIcon.video,
-        dto.ShortcutIconType.practice => ShortcutIcon.practice,
-        dto.ShortcutIconType.tests => ShortcutIcon.tests,
-        dto.ShortcutIconType.notes => ShortcutIcon.notes,
-        dto.ShortcutIconType.doubts => ShortcutIcon.doubts,
-        dto.ShortcutIconType.schedule => ShortcutIcon.schedule,
+        ShortcutIconType.video => ShortcutIcon.video,
+        ShortcutIconType.practice => ShortcutIcon.practice,
+        ShortcutIconType.tests => ShortcutIcon.tests,
+        ShortcutIconType.notes => ShortcutIcon.notes,
+        ShortcutIconType.doubts => ShortcutIcon.doubts,
+        ShortcutIconType.schedule => ShortcutIcon.schedule,
       },
     );
   }
@@ -230,34 +227,20 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     );
   }
 
-  Assignment _mapAssignment(dto.AssignmentDto d) {
+  Assignment _mapAssignment(AssignmentDto d) {
     return Assignment(
       id: d.id,
       title: d.title,
       subject: d.subject,
       dueTime: d.dueTime,
       status: switch (d.status) {
-        dto.AssignmentStatus.pending => AssignmentStatus.pending,
-        dto.AssignmentStatus.submitted => AssignmentStatus.submitted,
-        dto.AssignmentStatus.overdue => AssignmentStatus.overdue,
+        AssignmentStatus.pending => AssignmentStatus.pending,
+        AssignmentStatus.submitted => AssignmentStatus.submitted,
+        AssignmentStatus.overdue => AssignmentStatus.overdue,
       },
       progress: d.progress / 100.0,
       description: d.description,
     );
   }
 
-  ScheduledTest _mapTest(dto.TestDto d) {
-    return ScheduledTest(
-      id: d.id,
-      title: d.title,
-      time: d.time,
-      duration: d.duration,
-      isImportant: d.isImportant,
-      type: switch (d.type) {
-        dto.TestType.mock => TestType.mock,
-        dto.TestType.chapter => TestType.chapter,
-        dto.TestType.practice => TestType.practice,
-      },
-    );
-  }
 }

@@ -1,5 +1,7 @@
-import 'package:data/data.dart';
+import 'package:core/data/data.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'enrollment_provider.dart';
+import 'course_list_provider.dart';
 
 part 'course_detail_provider.g.dart';
 

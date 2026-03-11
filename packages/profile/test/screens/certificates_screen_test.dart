@@ -1,6 +1,6 @@
 import 'package:core/core.dart';
 import 'package:profile/profile.dart';
-import 'package:data/data.dart';
+import 'package:core/data/data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -34,7 +34,7 @@ void main() {
             weakSubject: '',
           ),
         ),
-        enrollmentProvider.overrideWith((ref) => Stream.value(<CourseDto>[])),
+        profileEnrollmentProvider.overrideWith((ref) => Stream.value(<CourseDto>[])),
         profileRecentActivityProvider.overrideWith((ref) async => const []),
         // Certificates provider can stay as is if it uses local mock data
       ],

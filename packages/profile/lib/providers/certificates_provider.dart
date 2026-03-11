@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:data/data.dart';
+import 'package:core/data/data.dart';
 
 import '../models/certificate.dart';
 

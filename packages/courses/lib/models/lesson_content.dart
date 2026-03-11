@@ -1,4 +1,4 @@
-import 'package:data/data.dart' show LessonContentItemDto;
+import 'package:core/data/data.dart' show LessonContentItemDto;
 
 /// Represents a single atom of content within a text-based lesson.
 sealed class LessonContentItem {

@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
-import 'package:data/data.dart';
+import 'package:core/data/data.dart';
 import '../providers/profile_providers.dart';
 import '../widgets/paid_active_profile_header.dart';
 import '../widgets/paid_active_profile_snapshot.dart';
@@ -29,7 +29,7 @@ class ProfilePage extends ConsumerWidget {
 
     final user = ref.watch(authProvider);
     final statsAsync = ref.watch(studyMomentumProvider);
-    final enrolledCoursesAsync = ref.watch(enrollmentProvider);
+    final enrolledCoursesAsync = ref.watch(profileEnrollmentProvider);
     final recentActivityAsync = ref.watch(profileRecentActivityProvider);
 
     final l10n = L10n.of(context);
@@ -58,7 +58,7 @@ class ProfilePage extends ConsumerWidget {
 
                 // Stats Snapshot
                 statsAsync.when(
-                  data: (stats) => ProfileLearningSnapshot(
+                  data: (StudyMomentumDto stats) => ProfileLearningSnapshot(
                     lessonsFinished: stats.lessonsFinished,
                     testsAttempted: stats.testsAttempted,
                     assessmentsDone: stats.assessmentsDone,
@@ -82,7 +82,7 @@ class ProfilePage extends ConsumerWidget {
                   loading: () => const SizedBox(height: 150),
                   error: (err, __) => AppErrorView(
                     message: err.toString(),
-                    onRetry: () => ref.invalidate(enrollmentProvider),
+                    onRetry: () => ref.invalidate(profileEnrollmentProvider),
                   ),
                 ),
 

@@ -1,8 +1,11 @@
-import 'package:data/data.dart';
+import 'package:core/data/data.dart';
+import '../models/assignment_dto.dart';
+import '../models/learner_dto.dart';
+import '../models/dashboard_banner_dto.dart';
+import '../models/quick_shortcut_dto.dart';
 
 // SHARED MOCK DATA (mockCurrentUser, mockStudyMomentum) now lives in the 'data' package.
 
-/// Mock hero banners
 const mockHeroBanners = [
   DashboardBannerDto(
     id: "1",
@@ -286,28 +289,3 @@ const mockAssignments = [
   ),
 ];
 
-/// Mock tests.
-const mockTests = [
-  TestDto(
-    id: '1',
-    title: 'Weekly Mock Test - Physics',
-    time: 'Tomorrow, 9:00 AM',
-    duration: '3 hours',
-    type: TestType.mock,
-    isImportant: true,
-  ),
-  TestDto(
-    id: '2',
-    title: 'Chapter Test - Organic Chemistry',
-    time: 'Jan 5, 2:00 PM',
-    duration: '1.5 hours',
-    type: TestType.chapter,
-  ),
-  TestDto(
-    id: '3',
-    title: 'Calculus Practice Test',
-    time: 'Jan 6, 10:00 AM',
-    duration: '2 hours',
-    type: TestType.practice,
-  ),
-];

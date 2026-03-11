@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
-import 'package:data/data.dart';
+import '../providers/course_list_provider.dart';
 import '../widgets/course_card.dart';
 
 /// Course library screen displaying available courses.

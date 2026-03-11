@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import 'package:data/data.dart';
+import 'package:core/data/data.dart';
 
 class EnrolledCoursesSection extends StatelessWidget {
   const EnrolledCoursesSection({super.key, required this.courses});
