@@ -3,6 +3,14 @@
 ## Goal
 The goal of this refactor is to transition the Cortex project from a "God Data Package" architecture to a **Feature-Autonomous architecture**. Currently, the `packages/data` package acts as a central hub for all business logic (Repositories, APIs, and Riverpod State Providers), which creates tight coupling and bloat. This change will redistribute that logic into the respective feature packages (`courses`, `exams`, `profile`), leaving `packages/data` as a lightweight, shared "Schema" layer containing only Data Transfer Objects (DTOs) and shared infrastructure.
 
+## Motivation
+This architectural shift solves several growing pains in the project:
+- **Build Performance**: In large Riverpod projects, `build_runner` becomes a bottleneck. Decentralizing logic ensures that a change in `courses` logic only triggers a build for that package, rather than the entire monolithic `data` package.
+- **Architectural Health**: It eliminates circular dependencies by clearly separating shared schemas (DTOs) from feature-specific logic. 
+- **Domain Ownership**: Each feature (Courses, Exams, Profile) becomes a self-sufficient domain. This allows teams to work independently and makes simple tasks like deleting or replacing a feature safe and isolated.
+- **Maintenance**: Future developers can find logic where they expect it (with the UI the logic serves) rather than searching through a massive, opaque central package.
+
+
 ## What Changes
 - **Logic Redistribution**: Feature-specific state providers and data fetching logic currently residing in `packages/data/lib/providers/` will be moved to the `lib/providers/` or `lib/data/` directories of their respective feature packages.
 - **Data Package Thinning**: The `packages/data` package will be refactored to focus exclusively on shared models (DTOs) that need to be visible across multiple modules to prevent circular dependencies.
