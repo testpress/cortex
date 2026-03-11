@@ -9,12 +9,11 @@ part 'auth_provider.g.dart';
 class Auth extends _$Auth {
   @override
   UserDto build() {
-    return mockCurrentUser;
+    return const UserDto(id: '', name: '');
   }
 
   void logout() {
-    // Placeholder for logout logic
-    state = const UserDto(id: 'guest', name: 'Guest');
+    state = const UserDto(id: '', name: '');
   }
 
   void updateProfile(UserDto newUser) {

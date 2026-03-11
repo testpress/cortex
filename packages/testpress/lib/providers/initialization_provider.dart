@@ -8,12 +8,19 @@ part 'initialization_provider.g.dart';
 /// This prevents side effects within UI-driven data providers.
 @riverpod
 Future<void> appInitialization(AppInitializationRef ref) async {
+  if (!SessionStorage.instance.hasSession) {
+    return;
+  }
+
+  final authClient = AuthClient();
   final userRepo = await ref.watch(userRepositoryProvider.future);
   final courseRepo = await ref.watch(courseRepositoryProvider.future);
-  final user = ref.watch(authProvider);
 
   // Initialize core data in background
   try {
+    final resolvedUser = await authClient.resolveCurrentUser();
+    ref.read(authProvider.notifier).updateProfile(resolvedUser);
+
     // 1. Refresh the list of enrolled courses from the network/mock source
     final courses = await courseRepo.refreshCourses();
 
@@ -29,7 +36,10 @@ Future<void> appInitialization(AppInitializationRef ref) async {
 
     // 3. Refresh user progress to see what was recently completed
     // This allows the Resume Card to find the most recent lesson in the fully-populated DB.
-    await userRepo.refreshProgress(user.id);
+    final userId = resolvedUser.id;
+    if (userId.isNotEmpty) {
+      await userRepo.refreshProgress(userId);
+    }
   } catch (e) {
     // Initialization errors are handled here or surfaced to the listener
     rethrow;

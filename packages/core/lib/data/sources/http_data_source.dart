@@ -6,12 +6,17 @@ import 'data_source.dart';
 ///
 /// Activate via: flutter run --dart-define=USE_MOCK=false
 class HttpDataSource implements DataSource {
-  const HttpDataSource();
+  HttpDataSource({NetworkClient? networkClient})
+    : _networkClient = networkClient ?? NetworkClient();
+
+  final NetworkClient _networkClient;
+
+  NetworkClient get networkClient => _networkClient;
 
   @override
   Future<List<CourseDto>> getCourses() => throw UnimplementedError(
-        'HttpDataSource.getCourses is not yet implemented. Use MockDataSource.',
-      );
+    'HttpDataSource.getCourses is not yet implemented. Use MockDataSource.',
+  );
 
   @override
   Future<List<ChapterDto>> getChapters(String courseId) =>
@@ -27,8 +32,8 @@ class HttpDataSource implements DataSource {
 
   @override
   Future<List<LiveClassDto>> getLiveClasses() => throw UnimplementedError(
-        'HttpDataSource.getLiveClasses is not yet implemented.',
-      );
+    'HttpDataSource.getLiveClasses is not yet implemented.',
+  );
 
   @override
   Future<List<ForumThreadDto>> getForumThreads(String courseId) =>

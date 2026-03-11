@@ -15,3 +15,6 @@ export 'providers/initialization_provider.dart';
 
 // Re-export navigation
 export 'navigation/app_router.dart';
+
+// Startup
+export 'startup/testpress_startup.dart';

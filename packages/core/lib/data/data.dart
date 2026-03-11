@@ -16,6 +16,7 @@ export 'models/user_progress_dto.dart';
 export 'models/user_dto.dart';
 export 'models/settings_models.dart';
 export 'models/study_momentum_dto.dart';
+export 'models/login_response_dto.dart';
 
 // Database
 export 'db/app_database.dart';
@@ -38,3 +39,6 @@ export 'repositories/repository_providers.dart';
 
 // Infra & Mocks
 export 'sources/mock_data.dart';
+export 'infra/auth_client.dart';
+export 'infra/network_client.dart';
+export 'infra/session/session_storage.dart';

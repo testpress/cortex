@@ -15,6 +15,114 @@ class AppLocalizationsMl extends AppLocalizations {
   String get loginButton => 'ലോഗിൻ';
 
   @override
+  String get loginWelcomeBack => 'വീണ്ടും സ്വാഗതം';
+
+  @override
+  String get loginPasswordSubtitle =>
+      'യൂസർനേമും പാസ്‌വേഡും ഉപയോഗിച്ച് ലോഗിൻ ചെയ്യുക';
+
+  @override
+  String get loginOtpSubtitle => 'ഒടിപി പരിശോധന ഉപയോഗിച്ച് ലോഗിൻ ചെയ്യുക';
+
+  @override
+  String get loginModePassword => 'പാസ്‌വേഡ്';
+
+  @override
+  String get loginModeOtp => 'ഒടിപി';
+
+  @override
+  String get loginUsernameLabel => 'യൂസർനേം അല്ലെങ്കിൽ ഇമെയിൽ';
+
+  @override
+  String get loginUsernameHint => 'യൂസർനേം അല്ലെങ്കിൽ ഇമെയിൽ നൽകുക';
+
+  @override
+  String get loginPasswordLabel => 'പാസ്‌വേഡ്';
+
+  @override
+  String get loginPasswordHint => 'പാസ്‌വേഡ് നൽകുക';
+
+  @override
+  String get loginSigningIn => 'ലോഗിൻ ചെയ്യുന്നു...';
+
+  @override
+  String get loginCountryCodeLabel => 'രാജ്യ കോഡ്';
+
+  @override
+  String get loginCountryCodeHint => '+91';
+
+  @override
+  String get loginPhoneNumberLabel => 'ഫോൺ നമ്പർ';
+
+  @override
+  String get loginPhoneNumberHint => '9876543210';
+
+  @override
+  String get loginEmailOptionalLabel => 'ഇമെയിൽ (ഐച്ഛികം)';
+
+  @override
+  String get loginEmailHint => 'student@example.com';
+
+  @override
+  String get loginGenerateOtp => 'ഒടിപി അയയ്ക്കുക';
+
+  @override
+  String get loginSendingOtp => 'ഒടിപി അയയ്ക്കുന്നു...';
+
+  @override
+  String get loginOtpCodeLabel => 'ഒടിപി';
+
+  @override
+  String get loginOtpCodeHint => '1234';
+
+  @override
+  String get loginVerifyOtp => 'ഒടിപി സ്ഥിരീകരിക്കുക';
+
+  @override
+  String get loginVerifyingOtp => 'സ്ഥിരീകരിക്കുന്നു...';
+
+  @override
+  String get loginOtpSentInfo => 'ഒടിപി അയച്ചു. തുടരാൻ കോഡ് നൽകുക.';
+
+  @override
+  String get loginErrorUsernamePasswordRequired =>
+      'യൂസർനേവും പാസ്‌വേഡും ആവശ്യമാണ്.';
+
+  @override
+  String get loginErrorOtpIdentityRequired =>
+      'ഒടിപിക്കായി രാജ്യ കോഡും ഫോൺ നമ്പറും ആവശ്യമാണ്.';
+
+  @override
+  String get loginErrorPhoneOtpRequired => 'ഫോൺ നമ്പറും ഒടിപിയും ആവശ്യമാണ്.';
+
+  @override
+  String get loginErrorGenericRequest =>
+      'അഭ്യർത്ഥന പൂർത്തിയാക്കാനായില്ല. വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get loginErrorInvalidCredentials =>
+      'യൂസർനേം അല്ലെങ്കിൽ പാസ്‌വേഡ് തെറ്റാണ്.';
+
+  @override
+  String get loginErrorValidation => 'നൽകിയ വിവരങ്ങൾ പരിശോധിച്ച് ശരിയാക്കുക.';
+
+  @override
+  String get loginErrorThrottled =>
+      'അധിക ശ്രമങ്ങൾ. വീണ്ടും ശ്രമിക്കുന്നതിന് മുമ്പ് കുറച്ച് കാത്തിരിക്കുക.';
+
+  @override
+  String get loginErrorLockout =>
+      'ഈ അക്കൗണ്ട് ലോക്ക് ചെയ്തിരിക്കുന്നു. അഡ്മിനുമായി ബന്ധപ്പെടുക.';
+
+  @override
+  String get loginErrorNetwork =>
+      'നെറ്റ്വർക്ക് പിശക്. ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക.';
+
+  @override
+  String get loginErrorServer =>
+      'സെർവർ പിശക്. കുറച്ച് കഴിഞ്ഞ് വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
   String get welcomeMessage => 'കോട്ടെക്സിലേക്ക് സ്വാഗതം';
 
   @override

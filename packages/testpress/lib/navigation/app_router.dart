@@ -6,6 +6,7 @@ import 'package:courses/courses.dart';
 import 'package:profile/profile.dart';
 import 'package:exams/exams.dart';
 import 'package:core/data/data.dart';
+import '../screens/login_screen.dart';
 import '../widgets/dashboard_drawer.dart';
 
 // Placeholder empty screens for the routes that don't exist yet
@@ -51,7 +52,19 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 final GoRouter appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
   initialLocation: '/home',
+  redirect: (_, state) {
+    final tokenAvailable = SessionStorage.instance.hasSession;
+    final loggingIn = state.uri.path == '/login';
+    if (!tokenAvailable && !loggingIn) return '/login';
+    if (tokenAvailable && loggingIn) return '/home';
+    return null;
+  },
   routes: [
+    GoRoute(
+      path: '/login',
+      pageBuilder: (context, state) =>
+          const NoTransitionPage(child: LoginScreen()),
+    ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         // AppTabBar items matching the routes exactly
@@ -100,9 +113,9 @@ final GoRouter appRouter = GoRouter(
                 onClose: closeSheet,
                 child: LogoutConfirmationSheet(
                   onConfirm: () {
-                    closeSheet();
+                    SessionStorage.instance.clear();
+                    _rootNavigatorKey.currentContext?.go('/login');
                     ref.read(authProvider.notifier).logout();
-                    _rootNavigatorKey.currentContext?.go('/home');
                   },
                   onCancel: closeSheet,
                 ),

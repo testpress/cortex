@@ -15,5 +15,5 @@ DataSource dataSource(Ref ref) {
   if (AppConfig.useMockData) {
     return const MockDataSource();
   }
-  return const HttpDataSource();
+  return HttpDataSource();
 }

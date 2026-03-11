@@ -54,3 +54,5 @@ coverage/
 
 # FVM
 .fvm/
+
+.env
