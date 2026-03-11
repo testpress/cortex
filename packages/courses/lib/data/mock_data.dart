@@ -3,7 +3,6 @@ import '../models/assignment_dto.dart';
 import '../models/learner_dto.dart';
 import '../models/dashboard_banner_dto.dart';
 import '../models/quick_shortcut_dto.dart';
-import '../models/study_momentum_dto.dart';
 
 // SHARED MOCK DATA (mockCurrentUser, mockStudyMomentum) now lives in the 'data' package.
 
@@ -290,62 +289,3 @@ const mockAssignments = [
   ),
 ];
 
-
-DateTime mockStudyMomentumReferenceDate = DateTime(2026, 3, 11);
-
-/// Mock study momentum.
-final mockStudyMomentum = StudyMomentumDto(
-  weekDays: [
-    DayActivityDto(
-      date: mockStudyMomentumReferenceDate.subtract(const Duration(days: 6)),
-      dayLabel: 'M',
-      hasActivity: true,
-      minutes: 120,
-    ),
-    DayActivityDto(
-      date: mockStudyMomentumReferenceDate.subtract(const Duration(days: 5)),
-      dayLabel: 'T',
-      hasActivity: true,
-      minutes: 90,
-    ),
-    DayActivityDto(
-      date: mockStudyMomentumReferenceDate.subtract(const Duration(days: 4)),
-      dayLabel: 'W',
-      hasActivity: true,
-      minutes: 150,
-    ),
-    DayActivityDto(
-      date: mockStudyMomentumReferenceDate.subtract(const Duration(days: 3)),
-      dayLabel: 'T',
-      hasActivity: true,
-      minutes: 60,
-    ),
-    DayActivityDto(
-      date: mockStudyMomentumReferenceDate.subtract(const Duration(days: 2)),
-      dayLabel: 'F',
-      hasActivity: true,
-      minutes: 210,
-    ),
-    DayActivityDto(
-      date: mockStudyMomentumReferenceDate.subtract(const Duration(days: 1)),
-      dayLabel: 'S',
-      hasActivity: true,
-      minutes: 45,
-    ),
-    DayActivityDto(
-      date: mockStudyMomentumReferenceDate,
-      dayLabel: 'S',
-      hasActivity: true,
-      minutes: 180,
-    ),
-  ],
-  weeklyHours: 14.5,
-  currentStreak: 12,
-  latestActivityTitle: 'Calculus Mock Test',
-  latestActivityTimeAgo: '1h ago',
-  lessonsFinished: 45,
-  testsAttempted: 18,
-  assessmentsDone: 32,
-  strongestSubject: 'Mathematics',
-  weakSubject: 'Organic Chemistry',
-);

@@ -12,3 +12,61 @@ final mockCurrentUser = UserDto(
   joinedDate: DateTime(2023, 8, 15),
 );
 
+DateTime mockStudyMomentumReferenceDate = DateTime(2026, 3, 11);
+
+/// Mock study momentum.
+final mockStudyMomentum = StudyMomentumDto(
+  weekDays: [
+    DayActivityDto(
+      date: mockStudyMomentumReferenceDate.subtract(const Duration(days: 6)),
+      dayLabel: 'M',
+      hasActivity: true,
+      minutes: 120,
+    ),
+    DayActivityDto(
+      date: mockStudyMomentumReferenceDate.subtract(const Duration(days: 5)),
+      dayLabel: 'T',
+      hasActivity: true,
+      minutes: 90,
+    ),
+    DayActivityDto(
+      date: mockStudyMomentumReferenceDate.subtract(const Duration(days: 4)),
+      dayLabel: 'W',
+      hasActivity: true,
+      minutes: 150,
+    ),
+    DayActivityDto(
+      date: mockStudyMomentumReferenceDate.subtract(const Duration(days: 3)),
+      dayLabel: 'T',
+      hasActivity: true,
+      minutes: 60,
+    ),
+    DayActivityDto(
+      date: mockStudyMomentumReferenceDate.subtract(const Duration(days: 2)),
+      dayLabel: 'F',
+      hasActivity: true,
+      minutes: 210,
+    ),
+    DayActivityDto(
+      date: mockStudyMomentumReferenceDate.subtract(const Duration(days: 1)),
+      dayLabel: 'S',
+      hasActivity: true,
+      minutes: 45,
+    ),
+    DayActivityDto(
+      date: mockStudyMomentumReferenceDate,
+      dayLabel: 'S',
+      hasActivity: true,
+      minutes: 180,
+    ),
+  ],
+  weeklyHours: 14.5,
+  currentStreak: 12,
+  latestActivityTitle: 'Calculus Mock Test',
+  latestActivityTimeAgo: '1h ago',
+  lessonsFinished: 45,
+  testsAttempted: 18,
+  assessmentsDone: 32,
+  strongestSubject: 'Mathematics',
+  weakSubject: 'Organic Chemistry',
+);

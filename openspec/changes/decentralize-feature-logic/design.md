@@ -19,4 +19,4 @@ The current `packages/data` package is a "God Package" containing DTOs, Reposito
 2. **Foundation Migration**: Batch move remaining centric code from `data` to `core`.
 3. **Consolidation**: Update all cross-package imports to point to `core/data` or local feature providers.
 4. **Feature Locality Enforcement**: Keep DTOs and mocks inside their owning feature—home/dashboard data comes from course-owned sources, and profile’s recent activity models live in the profile package.
-4. **Final Cleanup**: Delete the `packages/data` directory.
+5. **Final Cleanup**: Delete the `packages/data` directory.

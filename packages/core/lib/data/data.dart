@@ -15,6 +15,7 @@ export 'models/forum_thread_dto.dart';
 export 'models/user_progress_dto.dart';
 export 'models/user_dto.dart';
 export 'models/settings_models.dart';
+export 'models/study_momentum_dto.dart';
 
 // Database
 export 'db/app_database.dart';
@@ -28,6 +29,7 @@ export 'sources/data_source.dart';
 export 'sources/mock_data_source.dart';
 export 'sources/http_data_source.dart';
 export 'sources/data_source_provider.dart';
+export 'sources/study_momentum_provider.dart';
 
 // Repositories
 export 'repositories/user_repository.dart';

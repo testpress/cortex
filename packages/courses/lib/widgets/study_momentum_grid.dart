@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import '../models/study_momentum_dto.dart';
-
+import 'package:core/data/data.dart';
 /// A heatmap and performance dashboard for study activity.
 class StudyMomentumGrid extends StatelessWidget {
   const StudyMomentumGrid({super.key, required this.momentum});
