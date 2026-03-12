@@ -15,6 +15,112 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loginButton => 'تسجيل الدخول';
 
   @override
+  String get loginWelcomeBack => 'مرحبًا بعودتك';
+
+  @override
+  String get loginPasswordSubtitle =>
+      'سجّل الدخول باستخدام اسم المستخدم وكلمة المرور';
+
+  @override
+  String get loginOtpSubtitle => 'سجّل الدخول باستخدام رمز التحقق';
+
+  @override
+  String get loginModePassword => 'كلمة المرور';
+
+  @override
+  String get loginModeOtp => 'رمز التحقق';
+
+  @override
+  String get loginUsernameLabel => 'اسم المستخدم أو البريد الإلكتروني';
+
+  @override
+  String get loginUsernameHint => 'أدخل اسم المستخدم أو البريد الإلكتروني';
+
+  @override
+  String get loginPasswordLabel => 'كلمة المرور';
+
+  @override
+  String get loginPasswordHint => 'أدخل كلمة المرور';
+
+  @override
+  String get loginSigningIn => 'جارٍ تسجيل الدخول...';
+
+  @override
+  String get loginCountryCodeLabel => 'رمز الدولة';
+
+  @override
+  String get loginCountryCodeHint => '+91';
+
+  @override
+  String get loginPhoneNumberLabel => 'رقم الهاتف';
+
+  @override
+  String get loginPhoneNumberHint => '9876543210';
+
+  @override
+  String get loginEmailOptionalLabel => 'البريد الإلكتروني (اختياري)';
+
+  @override
+  String get loginEmailHint => 'student@example.com';
+
+  @override
+  String get loginGenerateOtp => 'إرسال رمز التحقق';
+
+  @override
+  String get loginSendingOtp => 'جارٍ إرسال رمز التحقق...';
+
+  @override
+  String get loginOtpCodeLabel => 'رمز التحقق';
+
+  @override
+  String get loginOtpCodeHint => '1234';
+
+  @override
+  String get loginVerifyOtp => 'تأكيد الرمز';
+
+  @override
+  String get loginVerifyingOtp => 'جارٍ التحقق...';
+
+  @override
+  String get loginOtpSentInfo => 'تم إرسال الرمز. أدخل الرمز للمتابعة.';
+
+  @override
+  String get loginErrorUsernamePasswordRequired =>
+      'اسم المستخدم وكلمة المرور مطلوبان.';
+
+  @override
+  String get loginErrorOtpIdentityRequired =>
+      'رمز الدولة ورقم الهاتف مطلوبان لرمز التحقق.';
+
+  @override
+  String get loginErrorPhoneOtpRequired => 'رقم الهاتف ورمز التحقق مطلوبان.';
+
+  @override
+  String get loginErrorGenericRequest =>
+      'تعذر إكمال الطلب. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get loginErrorInvalidCredentials =>
+      'اسم المستخدم أو كلمة المرور غير صحيحة.';
+
+  @override
+  String get loginErrorValidation => 'يرجى مراجعة الحقول المدخلة وتصحيحها.';
+
+  @override
+  String get loginErrorThrottled =>
+      'محاولات كثيرة جدًا. يرجى الانتظار قبل إعادة المحاولة.';
+
+  @override
+  String get loginErrorLockout => 'تم قفل هذا الحساب. يرجى التواصل مع المسؤول.';
+
+  @override
+  String get loginErrorNetwork =>
+      'خطأ في الشبكة. يرجى التحقق من اتصال الإنترنت.';
+
+  @override
+  String get loginErrorServer => 'خطأ في الخادم. يرجى المحاولة بعد قليل.';
+
+  @override
   String get welcomeMessage => 'مرحبًا بك في كورتيكس';
 
   @override
