@@ -4,20 +4,31 @@
 The LMS Navigation Shell provides a consistent and adaptive application framework that manages top-level navigation, tab state persistence, and immersive full-screen transitions. It ensures a seamless experience across mobile and tablet viewports while protecting the user's progress within individual tabs.
 ## Requirements
 ### Requirement: Persistent Navigation Shell
-The system SHALL provide a persistent application shell that adapts its navigation interface based on the viewport width using `design.layout.tabletBreakpoint` (default: 600.0).
+The system SHALL provide a persistent application shell that adapts its navigation interface based on device orientation rather than fixed width breakpoints for handheld devices.
 
-#### Scenario: Compact Mode (Mobile)
-- **GIVEN** a viewport width less than the tablet breakpoint
-- **THEN** the shell MUST display the `AppTabBar` at the bottom.
+#### Scenario: Vertical Mode (Portrait)
+- **GIVEN** the device is in portrait orientation (height > width)
+- **THEN** the shell MUST display the `AppTabBar` at the bottom, regardless of screen size (mobile or tablet).
 
-#### Scenario: Medium/Expanded Mode (Tablet)
-- **GIVEN** a viewport width greater than or equal to the tablet breakpoint
+#### Scenario: Horizontal Mode (Landscape)
+- **GIVEN** the device is in landscape orientation (width > height)
 - **THEN** the shell MUST display the `AppNavigationRail` on the left.
 - **AND** the rail MUST support vertical scrolling for content overflow.
 
 #### Scenario: Switching between tabs
 - **WHEN** the user is on the "Home" tab and clicks the "Study" icon in the tab bar
 - **THEN** the system navigates to the Study screen while maintaining the shell visibility
+
+### Requirement: Layout Spacing Robustness
+The navigation shell SHALL ensure that content remains accessible and "uncongested" across varying screen sizes and orientations.
+
+#### Scenario: Large Tablet Portrait
+- **GIVEN** a large tablet (e.g., iPad Pro) in portrait mode
+- **THEN** the bottom navigation bar MUST be centered or appropriately padded to avoid excessive stretching.
+
+#### Scenario: Small Mobile Landscape
+- **GIVEN** a compact mobile device in landscape mode
+- **THEN** the navigation rail MUST NOT overlap with critical UI elements or cause horizontal layout breakage.
 
 ### Requirement: Stateful Tab Preservation
 The system MUST preserve the state of each tab independently to avoid re-initializing screens upon switching back.

@@ -38,45 +38,53 @@ class AppTabBar extends StatelessWidget {
       ),
       child: SafeArea(
         top: false,
-        child: SizedBox(
-          height: 64, // Same as h-16 in React
-          child: Row(
-            children: items.map((item) {
-              final isActive = item.id == activeItemId;
-              // The React token mappings: textInverse maps to text-slate-800 mostly
-              // but let's just use textPrimary for standard matching text slate-800
-              // and textSecondary for muted state text slate-500
-              final fgColor = isActive
-                  ? design.colors.textPrimary
-                  : design.colors.textSecondary;
+        child: Center(
+          child: ConstrainedBox(
+            constraints:
+                BoxConstraints(maxWidth: design.layout.tabletBreakpoint),
+            child: SizedBox(
+              height: 64, // Same as h-16 in React
+              child: Row(
+                children: items.map((item) {
+                  final isActive = item.id == activeItemId;
+                  // The React token mappings: textInverse maps to text-slate-800 mostly
+                  // but let's just use textPrimary for standard matching text slate-800
+                  // and textSecondary for muted state text slate-500
+                  final fgColor = isActive
+                      ? design.colors.textPrimary
+                      : design.colors.textSecondary;
 
-              return Expanded(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () => onTabChange(item.id),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        isActive ? (item.activeIcon ?? item.icon) : item.icon,
-                        size: 20, // Match w-5 h-5 in React
-                        color: fgColor,
+                  return Expanded(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => onTabChange(item.id),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            isActive
+                                ? (item.activeIcon ?? item.icon)
+                                : item.icon,
+                            size: 20, // Match w-5 h-5 in React
+                            color: fgColor,
+                          ),
+                          SizedBox(height: design.spacing.xs),
+                          Text(
+                            item.label,
+                            style: design.typography.caption.copyWith(
+                              color: fgColor,
+                              fontWeight: isActive
+                                  ? FontWeight.w500
+                                  : FontWeight.w400,
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: design.spacing.xs),
-                      Text(
-                        item.label,
-                        style: design.typography.caption.copyWith(
-                          color: fgColor,
-                          fontWeight: isActive
-                              ? FontWeight.w500
-                              : FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }).toList(),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
           ),
         ),
       ),

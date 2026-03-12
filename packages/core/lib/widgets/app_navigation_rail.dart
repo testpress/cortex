@@ -24,8 +24,11 @@ class AppNavigationRail extends StatelessWidget {
     final header = this.header;
     final footer = this.footer;
 
+    final padding = MediaQuery.of(context).padding;
+    final railWidth = design.layout.railWidth + padding.left;
+
     return Container(
-      width: design.layout.railWidth,
+      width: railWidth,
       decoration: BoxDecoration(
         color: design.colors.surface,
         border: Border(
