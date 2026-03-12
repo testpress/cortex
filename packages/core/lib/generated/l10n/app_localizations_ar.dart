@@ -1047,47 +1047,47 @@ class AppLocalizationsAr extends AppLocalizations {
   String get editProfileBack => 'عودة';
 
   @override
-  String get exploreTabTitle => 'Explore';
+  String get exploreTabTitle => 'استكشاف';
 
   @override
-  String get exploreSearchHint => 'Search courses, lessons, topics...';
+  String get exploreSearchHint => 'ابحث عن الدورات، الدروس، المواضيع...';
 
   @override
-  String get exploreSearchResultsTitle => 'Search Results';
+  String get exploreSearchResultsTitle => 'نتائج البحث';
 
   @override
-  String get exploreTrendingTitle => 'Trending Now';
+  String get exploreTrendingTitle => 'الرائج الآن';
 
   @override
-  String get exploreRecommendedTitle => 'Recommended For You';
+  String get exploreRecommendedTitle => 'موصى به لك';
 
   @override
-  String get exploreShortLessonsTitle => 'Most Viewed Videos';
+  String get exploreShortLessonsTitle => 'الفيديوهات الأكثر مشاهدة';
 
   @override
-  String get explorePopularTestsTitle => 'Popular Tests';
+  String get explorePopularTestsTitle => 'الاختبارات الشائعة';
 
   @override
-  String get exploreStudyTipsTitle => 'Study Tips & Updates';
+  String get exploreStudyTipsTitle => 'نصائح الدراسة والتحديثات';
 
   @override
-  String get exploreFilterTrending => 'Trending';
+  String get exploreFilterTrending => 'رائج';
 
   @override
-  String get exploreFilterRecommended => 'Recommended';
+  String get exploreFilterRecommended => 'موصى به';
 
   @override
-  String get exploreFilterShortLessons => 'Short Lessons';
+  String get exploreFilterShortLessons => 'دروس قصيرة';
 
   @override
-  String get exploreFilterPopular => 'Popular';
+  String get exploreFilterPopular => 'شائع';
 
   @override
-  String get exploreFilterStudyTips => 'Study Tips';
+  String get exploreFilterStudyTips => 'نصائح الدراسة';
 
   @override
-  String get labelMock => 'Mock';
+  String get labelMock => 'تجريبي';
 
   @override
-  String get labelPractice => 'Practice';
+  String get labelPractice => 'ممارسة';
 }

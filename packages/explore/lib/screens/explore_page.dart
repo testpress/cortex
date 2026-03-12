@@ -20,11 +20,41 @@ class ExplorePage extends ConsumerStatefulWidget {
 class _ExplorePageState extends ConsumerState<ExplorePage> {
   final TextEditingController _searchController = TextEditingController();
   String? _selectedFilter;
+  final GlobalKey _trendingKey = GlobalKey();
+  final GlobalKey _recommendedKey = GlobalKey();
+  final GlobalKey _shortLessonsKey = GlobalKey();
+  final GlobalKey _popularKey = GlobalKey();
+  final GlobalKey _studyTipsKey = GlobalKey();
 
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _scrollToSection(String filter) {
+    final l10n = L10n.of(context);
+    GlobalKey? targetKey;
+
+    if (filter == l10n.exploreFilterTrending) {
+      targetKey = _trendingKey;
+    } else if (filter == l10n.exploreFilterRecommended) {
+      targetKey = _recommendedKey;
+    } else if (filter == l10n.exploreFilterShortLessons) {
+      targetKey = _shortLessonsKey;
+    } else if (filter == l10n.exploreFilterPopular) {
+      targetKey = _popularKey;
+    } else if (filter == l10n.exploreFilterStudyTips) {
+      targetKey = _studyTipsKey;
+    }
+
+    if (targetKey?.currentContext != null) {
+      Scrollable.ensureVisible(
+        targetKey!.currentContext!,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   @override
@@ -90,6 +120,7 @@ class _ExplorePageState extends ConsumerState<ExplorePage> {
                 selectedFilter: _selectedFilter!,
                 onFilterSelected: (filter) {
                   setState(() => _selectedFilter = filter);
+                  _scrollToSection(filter);
                 },
               ),
             ],
@@ -138,13 +169,15 @@ class _ExplorePageState extends ConsumerState<ExplorePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CourseDiscoveryList(
+                            key: _trendingKey,
                             title: l10n.exploreTrendingTitle,
-                            courses: courses.take(2).toList(),
+                            courses: courses.where((c) => c.isTrending).toList(),
                           ),
                           SizedBox(height: design.spacing.xl),
                           CourseDiscoveryList(
+                            key: _recommendedKey,
                             title: l10n.exploreRecommendedTitle,
-                            courses: courses.skip(2).toList(),
+                            courses: courses.where((c) => c.isRecommended).toList(),
                           ),
                         ],
                       );
@@ -159,7 +192,10 @@ class _ExplorePageState extends ConsumerState<ExplorePage> {
                 // 3. Short Lessons
                 SliverToBoxAdapter(
                   child: shortLessonsAsync.when(
-                    data: (lessons) => ShortLessonsSection(lessons: lessons),
+                    data: (lessons) => ShortLessonsSection(
+                      key: _shortLessonsKey,
+                      lessons: lessons,
+                    ),
                     loading: () => const SizedBox.shrink(),
                     error: (_, __) => const SizedBox.shrink(),
                   ),
@@ -170,7 +206,10 @@ class _ExplorePageState extends ConsumerState<ExplorePage> {
                 // 4. Popular Tests
                 SliverToBoxAdapter(
                   child: popularTestsAsync.when(
-                    data: (tests) => PopularTestsSection(tests: tests),
+                    data: (tests) => PopularTestsSection(
+                      key: _popularKey,
+                      tests: tests,
+                    ),
                     loading: () => const SizedBox.shrink(),
                     error: (_, __) => const SizedBox.shrink(),
                   ),
@@ -181,7 +220,10 @@ class _ExplorePageState extends ConsumerState<ExplorePage> {
                 // 5. Study Tips Feed
                 SliverToBoxAdapter(
                   child: studyTipsAsync.when(
-                    data: (tips) => StudyTipsList(tips: tips),
+                    data: (tips) => StudyTipsList(
+                      key: _studyTipsKey,
+                      tips: tips,
+                    ),
                     loading: () => const SizedBox.shrink(),
                     error: (_, __) => const SizedBox.shrink(),
                   ),

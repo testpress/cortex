@@ -130,6 +130,8 @@ class DiscoveryCourseDto {
   final String learnerCount;
   final String price;
   final String? badge;
+  final bool isTrending;
+  final bool isRecommended;
 
   const DiscoveryCourseDto({
     required this.id,
@@ -139,6 +141,8 @@ class DiscoveryCourseDto {
     required this.learnerCount,
     required this.price,
     this.badge,
+    this.isTrending = false,
+    this.isRecommended = false,
   });
 
   factory DiscoveryCourseDto.fromJson(Map<String, dynamic> json) {
@@ -150,6 +154,8 @@ class DiscoveryCourseDto {
       learnerCount: json['learnerCount'] as String,
       price: json['price'] as String,
       badge: json['badge'] as String?,
+      isTrending: json['isTrending'] as bool? ?? false,
+      isRecommended: json['isRecommended'] as bool? ?? false,
     );
   }
 
@@ -162,6 +168,8 @@ class DiscoveryCourseDto {
       'learnerCount': learnerCount,
       'price': price,
       'badge': badge,
+      'isTrending': isTrending,
+      'isRecommended': isRecommended,
     };
   }
 }

@@ -185,6 +185,7 @@ final mockDiscoveryCourses = [
     learnerCount: '2.5k learners',
     price: '₹99',
     badge: 'Best Seller',
+    isTrending: true,
   ),
   const DiscoveryCourseDto(
     id: 'exp_2',
@@ -194,6 +195,7 @@ final mockDiscoveryCourses = [
     duration: '16-week course',
     learnerCount: '3.2k learners',
     price: 'Free',
+    isTrending: true,
   ),
   const DiscoveryCourseDto(
     id: 'exp_3',
@@ -204,6 +206,7 @@ final mockDiscoveryCourses = [
     learnerCount: '2.1k learners',
     price: '₹129',
     badge: 'New',
+    isRecommended: true,
   ),
   const DiscoveryCourseDto(
     id: 'exp_4',
@@ -213,5 +216,6 @@ final mockDiscoveryCourses = [
     duration: '6 weeks',
     learnerCount: '1.5k learners',
     price: '₹79',
+    isRecommended: true,
   ),
 ];

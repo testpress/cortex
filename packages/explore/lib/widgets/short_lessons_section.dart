@@ -30,7 +30,9 @@ class ShortLessonsSection extends StatelessWidget {
                 ),
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  // TODO: Implement navigation to the full list of short lessons.
+                },
                 child: AppText.labelBold(
                   l10n.viewAllAction,
                   color: design.colors.textPrimary,
@@ -109,18 +111,23 @@ class _ShortLessonCard extends StatelessWidget {
 
                     // Play Button Overlay
                     Center(
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: design.colors.textInverse.withValues(
-                            alpha: 0.9,
+                      child: GestureDetector(
+                        onTap: () {
+                          // TODO: Implement navigation to the video player.
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: design.colors.textInverse.withValues(
+                              alpha: 0.9,
+                            ),
+                            shape: BoxShape.circle,
                           ),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          LucideIcons.play,
-                          size: 20,
-                          color: design.colors.textPrimary,
+                          child: Icon(
+                            LucideIcons.play,
+                            size: 20,
+                            color: design.colors.textPrimary,
+                          ),
                         ),
                       ),
                     ),
