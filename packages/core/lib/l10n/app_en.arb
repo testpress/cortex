@@ -537,5 +537,20 @@
   "editProfileErrorNameEmpty": "Name cannot be empty",
   "editProfilePhotoLabel": "Profile Photo",
   "editProfileChangePhoto": "Change photo",
-  "editProfileBack": "Back"
+  "editProfileBack": "Back",
+  "exploreTabTitle": "Explore",
+  "exploreSearchHint": "Search courses, lessons, topics...",
+  "exploreSearchResultsTitle": "Search Results",
+  "exploreTrendingTitle": "Trending Now",
+  "exploreRecommendedTitle": "Recommended For You",
+  "exploreShortLessonsTitle": "Most Viewed Videos",
+  "explorePopularTestsTitle": "Popular Tests",
+  "exploreStudyTipsTitle": "Study Tips & Updates",
+  "exploreFilterTrending": "Trending",
+  "exploreFilterRecommended": "Recommended",
+  "exploreFilterShortLessons": "Short Lessons",
+  "exploreFilterPopular": "Popular",
+  "exploreFilterStudyTips": "Study Tips",
+  "labelMock": "Mock",
+  "labelPractice": "Practice"
 }
