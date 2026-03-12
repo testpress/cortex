@@ -27,6 +27,38 @@ const mockTests = [
   ),
 ];
 
+/// Mock popular tests for Explore.
+const mockPopularTests = [
+  TestDto(
+    id: 'test-1',
+    title: 'JEE Main 2026 Mock Test 1',
+    time: '10:00 AM',
+    duration: '3h 0m',
+    type: TestType.mock,
+    isImportant: true,
+    thumbnail:
+        'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800',
+  ),
+  TestDto(
+    id: 'test-2',
+    title: 'Physics Chapter 1 Practice',
+    time: 'Anytime',
+    duration: '45m',
+    type: TestType.practice,
+    thumbnail:
+        'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800',
+  ),
+  TestDto(
+    id: 'test-3',
+    title: 'Chemistry Revision Test',
+    time: 'Anytime',
+    duration: '1h 30m',
+    type: TestType.mock,
+    thumbnail:
+        'https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?w=800',
+  ),
+];
+
 class MockTestFactory {
   static Test createMockTest() {
     return const Test(

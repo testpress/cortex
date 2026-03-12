@@ -1046,4 +1046,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get editProfileBack => 'Back';
+
+  @override
+  String get exploreTabTitle => 'Explore';
+
+  @override
+  String get exploreSearchHint => 'Search courses, lessons, topics...';
+
+  @override
+  String get exploreSearchResultsTitle => 'Search Results';
+
+  @override
+  String get exploreTrendingTitle => 'Trending Now';
+
+  @override
+  String get exploreRecommendedTitle => 'Recommended For You';
+
+  @override
+  String get exploreShortLessonsTitle => 'Most Viewed Videos';
+
+  @override
+  String get explorePopularTestsTitle => 'Popular Tests';
+
+  @override
+  String get exploreStudyTipsTitle => 'Study Tips & Updates';
+
+  @override
+  String get exploreFilterTrending => 'Trending';
+
+  @override
+  String get exploreFilterRecommended => 'Recommended';
+
+  @override
+  String get exploreFilterShortLessons => 'Short Lessons';
+
+  @override
+  String get exploreFilterPopular => 'Popular';
+
+  @override
+  String get exploreFilterStudyTips => 'Study Tips';
+
+  @override
+  String get labelMock => 'Mock';
+
+  @override
+  String get labelPractice => 'Practice';
 }

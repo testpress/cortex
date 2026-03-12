@@ -10,6 +10,9 @@ export 'package:exams/exams.dart';
 // Re-export profile module
 export 'package:profile/profile.dart';
 
+// Re-export explore module
+export 'package:explore/explore.dart';
+
 // Re-export providers
 export 'providers/initialization_provider.dart';
 

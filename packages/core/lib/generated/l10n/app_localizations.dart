@@ -1976,6 +1976,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back'**
   String get editProfileBack;
+
+  /// No description provided for @exploreTabTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore'**
+  String get exploreTabTitle;
+
+  /// No description provided for @exploreSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search courses, lessons, topics...'**
+  String get exploreSearchHint;
+
+  /// No description provided for @exploreSearchResultsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Search Results'**
+  String get exploreSearchResultsTitle;
+
+  /// No description provided for @exploreTrendingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trending Now'**
+  String get exploreTrendingTitle;
+
+  /// No description provided for @exploreRecommendedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended For You'**
+  String get exploreRecommendedTitle;
+
+  /// No description provided for @exploreShortLessonsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Most Viewed Videos'**
+  String get exploreShortLessonsTitle;
+
+  /// No description provided for @explorePopularTestsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Popular Tests'**
+  String get explorePopularTestsTitle;
+
+  /// No description provided for @exploreStudyTipsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Study Tips & Updates'**
+  String get exploreStudyTipsTitle;
+
+  /// No description provided for @exploreFilterTrending.
+  ///
+  /// In en, this message translates to:
+  /// **'Trending'**
+  String get exploreFilterTrending;
+
+  /// No description provided for @exploreFilterRecommended.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended'**
+  String get exploreFilterRecommended;
+
+  /// No description provided for @exploreFilterShortLessons.
+  ///
+  /// In en, this message translates to:
+  /// **'Short Lessons'**
+  String get exploreFilterShortLessons;
+
+  /// No description provided for @exploreFilterPopular.
+  ///
+  /// In en, this message translates to:
+  /// **'Popular'**
+  String get exploreFilterPopular;
+
+  /// No description provided for @exploreFilterStudyTips.
+  ///
+  /// In en, this message translates to:
+  /// **'Study Tips'**
+  String get exploreFilterStudyTips;
+
+  /// No description provided for @labelMock.
+  ///
+  /// In en, this message translates to:
+  /// **'Mock'**
+  String get labelMock;
+
+  /// No description provided for @labelPractice.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice'**
+  String get labelPractice;
 }
 
 class _AppLocalizationsDelegate
