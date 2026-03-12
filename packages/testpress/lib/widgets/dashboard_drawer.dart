@@ -5,7 +5,12 @@ import 'package:profile/profile.dart';
 import 'package:courses/courses.dart';
 
 class DashboardDrawer extends ConsumerWidget {
-  const DashboardDrawer({super.key});
+  const DashboardDrawer({
+    super.key,
+    this.isLandscape = false,
+  });
+
+  final bool isLandscape;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -14,7 +19,6 @@ class DashboardDrawer extends ConsumerWidget {
 
     final l10n = L10n.of(context);
     final version = ref.watch(appVersionProvider).value ?? '...';
-    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
 
     return AppDrawer(
       isOpen: isOpen,

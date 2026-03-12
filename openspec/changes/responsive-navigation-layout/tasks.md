@@ -18,3 +18,10 @@
 
 - [x] 4.1 Verify layout transitions correctly on mobile device simulation (Portrait/Landscape).
 - [x] 4.2 Verify layout correctly displays bottom bar on tablet simulation in portrait mode.
+
+## 5. Refinements
+
+- [x] 5.1 Update `DashboardHeader` to accept `isLandscape` via constructor and remove `isTablet` property.
+- [x] 5.2 Update `DashboardDrawer` to accept `isLandscape` via constructor and remove internal `MediaQuery` lookup.
+- [x] 5.3 Update `AppShell` and other consumer sites to pass the `isLandscape` flag to these widgets.
+- [x] 5.4 Remove all `MediaQuery.of(context).orientation` lookups from these widgets to align with the `LayoutBuilder` design decision.

@@ -7,20 +7,18 @@ class DashboardHeader extends StatelessWidget {
     super.key,
     required this.title,
     this.onMenuPressed,
-    this.isTablet = false,
+    this.isLandscape = false,
   });
 
   final String title;
   final VoidCallback? onMenuPressed;
-  final bool isTablet;
+  final bool isLandscape;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
     final padding = MediaQuery.of(context).padding;
-
-    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
 
     return Container(
       padding: EdgeInsets.only(

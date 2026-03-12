@@ -16,11 +16,14 @@ The current `AppShell` implementation relies on a fixed width breakpoint (`600.0
 ## Decisions
 
 ### 1. Orientation Detection via LayoutBuilder
-Instead of relying on `MediaQuery.of(context).orientation`, we will continue using `LayoutBuilder` which is already wrapping the `AppShell` build logic. This allows the layout to respond to his parent's constraints, which is more robust for split-screen or multi-window modes.
+Instead of relying on `MediaQuery.of(context).orientation`, we will continue using `LayoutBuilder` which is already wrapping the `AppShell` build logic. This allows the layout to respond to its parent's constraints, which is more robust for split-screen or multi-window modes. 
+
+**Refinement:** The `isLandscape` (or equivalent) flag MUST be passed down from the `AppShell` (the constraints provider) to children like `DashboardHeader` and `DashboardDrawer`. These children should remove dependency on `MediaQuery.of(context).orientation` and legacy `isTablet` flags.
 
 **Rationale:**
 - `constraints.maxWidth > constraints.maxHeight` effectively identifies landscape mode.
 - It avoids unnecessary `MediaQuery` lookups if the parent provides the constraints.
+- Centralizing layout logic in the shell ensures consistency across all sub-components.
 
 ### 2. Layout Structure Refresh
 The `AppShell` will be updated to:
