@@ -112,9 +112,9 @@ final GoRouter appRouter = GoRouter(
                 onClose: closeSheet,
                 child: LogoutConfirmationSheet(
                   onConfirm: () {
-                    SessionStorage.instance.clear();
-                    _rootNavigatorKey.currentContext?.go('/login');
+                    closeSheet();
                     ref.read(authProvider.notifier).logout();
+                    _rootNavigatorKey.currentContext?.go('/login');
                   },
                   onCancel: closeSheet,
                 ),

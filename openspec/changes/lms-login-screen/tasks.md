@@ -16,4 +16,4 @@
 ## 3. Route Verification
 
 - [x] 3.1 Verify that `/login` navigates to the new implementation in `packages/profile`.
-- [x] 3.2 Ensure redirect logic correctly sends unauthenticated users to the new login screen. when unauthorized.
+- [x] 3.2 Ensure redirect logic correctly sends unauthenticated users to the new login screen.
