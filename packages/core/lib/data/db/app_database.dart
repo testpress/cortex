@@ -31,7 +31,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -69,6 +69,11 @@ class AppDatabase extends _$AppDatabase {
           if (from < 5) {
             await m.createTable(appSettingsTable);
           }
+          if (from < 6) {
+            // Recreate appSettingsTable to enforce primary key
+            await m.deleteTable(appSettingsTable.actualTableName);
+            await m.createTable(appSettingsTable);
+          }
         },
       );
 
@@ -76,14 +81,13 @@ class AppDatabase extends _$AppDatabase {
 
   /// Fetch the singleton settings row.
   Future<AppSettingsTableData> getAppSettings() async {
-    // Atomically ensure the row exists with ID 1.
-    // InsertMode.insertOrIgnore prevents race conditions where multiple notifiers
-    // try to create the initial row simultaneously.
-    await into(appSettingsTable).insert(
-      const AppSettingsTableCompanion(id: Value(1)),
-      mode: InsertMode.insertOrIgnore,
-    );
-    return await select(appSettingsTable).getSingle();
+    return transaction(() async {
+      await into(appSettingsTable).insert(
+        const AppSettingsTableCompanion(id: Value(1)),
+        mode: InsertMode.insertOrIgnore,
+      );
+      return await select(appSettingsTable).getSingle();
+    });
   }
 
   /// Watch settings for live updates.
