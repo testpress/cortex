@@ -4,25 +4,22 @@
 The `AppSettingsTable` must be a hard singleton.
 
 ### Primary Key
-The `id` field will be defined as:
+The `id` field must be defined as an explicit Primary Key to prevent row multiplicity. While Drift's `integer().autoIncrement()` is a common shortcut for primary keys, since we manage the `id` manually (fixed at `1`), we use an explicit override:
+
 ```dart
 IntColumn get id => integer()();
-@override
-Set<Column> get primaryKey => {id};
-```
-*Correction*: In Drift, `integer()()` is enough for an auto-increment or primary key if specified, but to be explicit and ensure single-row behavior:
-```dart
-IntColumn get id => integer()();
+
 @override
 Set<Column> get primaryKey => {id};
 ```
 
 ## Migration Path (v5 -> v6)
-To avoid data loss while fixing the constraint:
-1.  Check for existing duplicate `id=1` rows.
-2.  Clean up duplicates leaving only the first one.
-3.  Recreate the table structure if Drift's `alterTable` isn't enough for primary key addition.
-*Simplified approach for dev*: Drop and recreate the table as it only holds user preferences.
+To ensure zero data loss during the schema upgrade:
+1.  **Backup**: Read existing settings from the old table using `customSelect`.
+2.  **Schema Update**: Drop and recreate the `app_settings_table` to apply the Primary Key constraint.
+3.  **Restore**: Re-insert the backed-up settings into the newly created table.
+
+This non-destructive approach preserves user preferences across the mandatory upgrade.
 
 ## Atomic Get
 The `getAppSettings` method will handle the missing row case:
