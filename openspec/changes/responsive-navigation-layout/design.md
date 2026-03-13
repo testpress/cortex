@@ -46,6 +46,6 @@ To avoid "congestion", we will:
 Content pages managed by the router (via `navigationShell`) should not contain their own `AppShell` instance. This prevents "double-shelling" where multiple layers of padding and safe areas are applied recursively, causing layout offsets (e.g., the large gap in landscape mode).
 
 **Rationale:**
-- The global router-level `AppShell` already manages top-level layout concerns (Side Rail, Bottom Bar, Safarea).
+- The global router-level `AppShell` already manages top-level layout concerns (Side Rail, Bottom Bar, Safearea).
 - Content pages should use standard `Container` or `Column` layouts to avoid redundant safe area calculations.
 - Ensures consistent alignment with the navigation rail across all domain packages (Courses, Explore, etc.).
