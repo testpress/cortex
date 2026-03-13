@@ -124,7 +124,7 @@ class _PreferenceItem extends StatelessWidget {
             ),
             SizedBox(width: design.spacing.md),
             Expanded(
-              child: AppText.label(
+              child: AppText.labelBold(
                 label,
                 color: labelColor ?? design.colors.textPrimary,
               ),
