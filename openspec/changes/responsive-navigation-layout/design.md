@@ -41,3 +41,11 @@ To avoid "congestion", we will:
   - *Mitigation*: The user explicitly asked for bottom bar in vertical mode, so we follow that preference.
 - **[Risk] Very Small Landscape Screens** → On very small phones in landscape, the side rail might take up too much horizontal space.
   - *Mitigation*: We will review the `railWidth` and ensure the content area remains usable.
+
+### 4. Avoiding Nested Shells for Content Pages
+Content pages managed by the router (via `navigationShell`) should not contain their own `AppShell` instance. This prevents "double-shelling" where multiple layers of padding and safe areas are applied recursively, causing layout offsets (e.g., the large gap in landscape mode).
+
+**Rationale:**
+- The global router-level `AppShell` already manages top-level layout concerns (Side Rail, Bottom Bar, Safarea).
+- Content pages should use standard `Container` or `Column` layouts to avoid redundant safe area calculations.
+- Ensures consistent alignment with the navigation rail across all domain packages (Courses, Explore, etc.).
