@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
+
 /// A heatmap and performance dashboard for study activity.
 class StudyMomentumGrid extends StatelessWidget {
   const StudyMomentumGrid({super.key, required this.momentum});
@@ -94,7 +95,7 @@ class StudyMomentumGrid extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppText.caption(l10n.latestActivityLabel),
+        AppText.labelSmall(l10n.latestActivityLabel),
         const SizedBox(height: 4),
         Row(
           children: [
@@ -281,19 +282,10 @@ class _SubjectInsightCard extends StatelessWidget {
           AppText.labelSmall(
             label,
             color: colors.foreground,
-            style: const TextStyle(
-              fontSize: 10,
-              letterSpacing: 0.5,
-              fontWeight: FontWeight.w500,
-              height: 1.2,
-            ),
+            style: const TextStyle(fontSize: 10),
           ),
           const SizedBox(height: 8),
-          AppText.label(
-            subject,
-            color: colors.accent,
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-          ),
+          AppText.cardTitle(subject, color: colors.accent),
         ],
       ),
     );

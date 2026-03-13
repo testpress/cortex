@@ -177,9 +177,13 @@ class _InsightCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppText.caption(title, color: colors.foreground),
+          AppText.labelSmall(
+            title,
+            color: colors.foreground,
+            style: const TextStyle(fontSize: 10),
+          ),
           SizedBox(height: design.spacing.sm),
-          AppText.label(value, color: colors.accent),
+          AppText.labelBold(value, color: colors.accent),
         ],
       ),
     );
