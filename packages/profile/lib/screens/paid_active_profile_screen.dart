@@ -34,8 +34,8 @@ class ProfilePage extends ConsumerWidget {
 
     final l10n = L10n.of(context);
 
-    return AppShell(
-      backgroundColor: design.colors.canvas,
+    return Container(
+      color: design.colors.canvas,
       child: LayoutBuilder(
         builder: (context, constraints) {
           final isLandscape = constraints.maxWidth > constraints.maxHeight;
@@ -46,95 +46,98 @@ class ProfilePage extends ConsumerWidget {
                 title: l10n.profileTabTitle,
                 isLandscape: isLandscape,
               ),
-          Expanded(
-            child: AppScroll(
-              padding: EdgeInsets.zero,
-              children: [
-                SizedBox(height: design.spacing.md),
+              Expanded(
+                child: AppScroll(
+                  padding: EdgeInsets.zero,
+                  children: [
+                    SizedBox(height: design.spacing.md),
 
-                // Profile Header Area
-                ProfileHeader(
-                  name: user.name,
-                  avatarUrl: user.avatar,
-                  joinedDate: user.joinedDate,
-                  onEditProfileTap:
-                      onEditProfile ?? () => context.pushNamed('profile-edit'),
+                    // Profile Header Area
+                    ProfileHeader(
+                      name: user.name,
+                      avatarUrl: user.avatar,
+                      joinedDate: user.joinedDate,
+                      onEditProfileTap:
+                          onEditProfile ??
+                          () => context.pushNamed('profile-edit'),
+                    ),
+
+                    SizedBox(height: design.spacing.xl),
+
+                    // Stats Snapshot
+                    statsAsync.when(
+                      data: (StudyMomentumDto stats) => ProfileLearningSnapshot(
+                        lessonsFinished: stats.lessonsFinished,
+                        testsAttempted: stats.testsAttempted,
+                        assessmentsDone: stats.assessmentsDone,
+                        strongestIn: stats.strongestSubject,
+                        focusNeededIn: stats.weakSubject,
+                      ),
+                      loading: () => const SizedBox(height: 200),
+                      error: (err, __) => AppErrorView(
+                        message: err.toString(),
+                        onRetry: () => ref.invalidate(studyMomentumProvider),
+                      ),
+                    ),
+
+                    SizedBox(height: design.spacing.xl),
+
+                    // Enrolled Courses
+                    enrolledCoursesAsync.when(
+                      data: (courses) =>
+                          EnrolledCoursesSection(courses: courses),
+                      loading: () => const SizedBox(height: 150),
+                      error: (err, __) => AppErrorView(
+                        message: err.toString(),
+                        onRetry: () =>
+                            ref.invalidate(profileEnrollmentProvider),
+                      ),
+                    ),
+
+                    SizedBox(height: design.spacing.xl),
+
+                    // Recent Activity
+                    recentActivityAsync.when(
+                      data: (activities) =>
+                          RecentActivitySection(activities: activities),
+                      loading: () => const SizedBox(height: 120),
+                      error: (err, __) => AppErrorView(
+                        message: err.toString(),
+                        onRetry: () =>
+                            ref.invalidate(profileRecentActivityProvider),
+                      ),
+                    ),
+
+                    SizedBox(height: design.spacing.xl),
+
+                    // Account & Preferences
+                    AccountPreferencesSection(
+                      onEditProfileTap:
+                          onEditProfile ??
+                          () => context.pushNamed('profile-edit'),
+                      onNotificationsTap:
+                          onOpenNotifications ??
+                          () => context.pushNamed('profile-notifications'),
+                      onCertificatesTap:
+                          onOpenCertificates ??
+                          () => context.pushNamed('profile-certificates'),
+                      onSettingsTap:
+                          onOpenSettings ??
+                          () => context.pushNamed('profile-settings'),
+                      onLogoutTap: () {
+                        ref.read(isLogoutSheetOpenProvider.notifier).state =
+                            true;
+                      },
+                    ),
+
+                    SizedBox(height: design.spacing.xxl),
+                  ],
                 ),
-
-                SizedBox(height: design.spacing.xl),
-
-                // Stats Snapshot
-                statsAsync.when(
-                  data: (StudyMomentumDto stats) => ProfileLearningSnapshot(
-                    lessonsFinished: stats.lessonsFinished,
-                    testsAttempted: stats.testsAttempted,
-                    assessmentsDone: stats.assessmentsDone,
-                    strongestIn: stats.strongestSubject,
-                    focusNeededIn: stats.weakSubject,
-                  ),
-                  loading: () => const SizedBox(height: 200),
-                  error: (err, __) => AppErrorView(
-                    message: err.toString(),
-                    onRetry: () => ref.invalidate(studyMomentumProvider),
-                  ),
-                ),
-
-                SizedBox(height: design.spacing.xl),
-
-                // Enrolled Courses
-                enrolledCoursesAsync.when(
-                  data: (courses) => EnrolledCoursesSection(
-                    courses: courses,
-                  ),
-                  loading: () => const SizedBox(height: 150),
-                  error: (err, __) => AppErrorView(
-                    message: err.toString(),
-                    onRetry: () => ref.invalidate(profileEnrollmentProvider),
-                  ),
-                ),
-
-                SizedBox(height: design.spacing.xl),
-
-                // Recent Activity
-                recentActivityAsync.when(
-                  data: (activities) => RecentActivitySection(
-                    activities: activities,
-                  ),
-                  loading: () => const SizedBox(height: 120),
-                  error: (err, __) => AppErrorView(
-                    message: err.toString(),
-                    onRetry: () => ref.invalidate(profileRecentActivityProvider),
-                  ),
-                ),
-
-                SizedBox(height: design.spacing.xl),
-
-                // Account & Preferences
-                AccountPreferencesSection(
-                  onEditProfileTap:
-                      onEditProfile ?? () => context.pushNamed('profile-edit'),
-                  onNotificationsTap:
-                      onOpenNotifications ??
-                      () => context.pushNamed('profile-notifications'),
-                  onCertificatesTap:
-                      onOpenCertificates ??
-                      () => context.pushNamed('profile-certificates'),
-                  onSettingsTap:
-                      onOpenSettings ??
-                      () => context.pushNamed('profile-settings'),
-                  onLogoutTap: () {
-                    ref.read(isLogoutSheetOpenProvider.notifier).state = true;
-                  },
-                ),
-
-                SizedBox(height: design.spacing.xxl),
-              ],
-            ),
-          ),
-        ],
-      );
-    },
-  ),
-);
-}
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
 }
