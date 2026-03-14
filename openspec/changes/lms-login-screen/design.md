@@ -1,24 +1,29 @@
 ## Context
-The application requires a primary authentication entry point. This design details the initial implementation of the Login Screen in `packages/profile`, leveraging shared primitives from `packages/core` to ensure brand consistency and accessibility from the start.
+The application requires a comprehensive authentication flow. This design details the implementation of full auth flows (Onboarding, Sign In, Sign Up, Forgot Password, OTP) in `packages/profile`, leveraging shared primitives from `packages/core`.
 
 ## Goals / Non-Goals
 
 **Goals:**
-- Implement a responsive, brand-aligned login layout with support for both credential and OTP entry.
+- Implement an **Onboarding** screen flow.
+- Implement a **Sign In** screen.
+- Implement a **Sign Up** screen.
+- Implement a **Forgot Password** screen.
+- Implement an **OTP** screen derived from the visual language of the aforementioned screens.
+- Ensure all screens use our existing `packages/core` brand colors and typography tokens to provide a unified look-and-feel.
 - Ensure all visual states (idle, busy, error, success) are correctly modeled.
-- Register the `/login` route in the application router.
 
 **Non-Goals:**
 - Implementing production API calls (these will be stubbed or handled in a separate change).
-- Redesigning the core design system.
+- Redesigning the core design system's primitive components.
 
 ## Decisions
 
-- **Layering**: The Screen will reside in `packages/profile/lib/screens/login_screen.dart`.
-- **Primitives**: Use `AppText`, `AppTextField`, and `AppButton` from `packages/core`.
-- **State Management**: Use `ConsumerStatefulWidget` (Riverpod) for local UI states like `isOtpMode` and `isBusy`.
+- **Layering**: Screens will reside in `packages/profile/lib/screens/` (e.g., `onboarding_screen.dart`, `login_screen.dart`, `signup_screen.dart`, `forgot_password_screen.dart`, `otp_screen.dart`).
+- **Primitives**: Use `AppText`, `AppTextField`, and `AppButton` from `packages/core`. Incorporate our core theme colors (e.g., `design.colors.primary`, `design.colors.surface`) for all layout elements.
+- **State Management**: Use `ConsumerStatefulWidget` (Riverpod) for local UI states.
+- **Routing**: Utilize deep links/named routes for each auth step instead of a single embedded `PageView` to allow clean linking and state restoration.
 - **Localization**: All copy must come from `AppLocalizations`.
 
 ## Risks / Trade-offs
 
-- [Risk] UI might need changes once real API constraints are known. -> Mitigation: Follow the existing design patterns and keep the form structure flexible.
+- [Risk] Layouts might require adjustment across different device form factors. -> Mitigation: Ensure adequate use of SafeArea, flexible padding, and responsive constraints instead of hardcoded dimensions.

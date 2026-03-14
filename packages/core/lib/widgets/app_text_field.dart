@@ -16,6 +16,7 @@ class AppTextField extends StatelessWidget {
     this.readOnly = false,
     this.helperText,
     this.obscureText = false,
+    this.autofocus = false,
   });
 
   final String label;
@@ -27,6 +28,7 @@ class AppTextField extends StatelessWidget {
   final bool readOnly;
   final String? helperText;
   final bool obscureText;
+  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +58,7 @@ class AppTextField extends StatelessWidget {
               keyboardType: keyboardType,
               readOnly: readOnly,
               obscureText: obscureText,
+              autofocus: autofocus,
               style: design.typography.body.copyWith(
                 color: readOnly
                     ? design.colors.textSecondary

@@ -13,7 +13,7 @@ class Auth extends _$Auth {
   }
 
   void logout() {
-    // Placeholder for logout logic
+    SessionStorage.instance.clear();
     state = const UserDto(id: 'guest', name: 'Guest');
   }
 
