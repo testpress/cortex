@@ -36,8 +36,8 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
       allCourseLessonsProvider(widget.courseId),
     );
 
-    return AppShell(
-      backgroundColor: design.colors.canvas,
+    return Container(
+      color: design.colors.canvas,
       child: courseAsync.when(
         data: (course) {
           if (course == null) {
@@ -61,6 +61,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                   ),
                 ),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CurriculumHeader(
                       courseTitle: course.title,
@@ -80,9 +81,9 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
 
               Expanded(
                 child: AppScroll(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 16,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: design.spacing.md,
+                    vertical: design.spacing.md,
                   ),
                   children: [
                     // Chapters or Lessons List

@@ -25,3 +25,4 @@
 - [x] 5.2 Update `DashboardDrawer` to accept `isLandscape` via constructor and remove internal `MediaQuery` lookup.
 - [x] 5.3 Update `AppShell` and other consumer sites to pass the `isLandscape` flag to these widgets.
 - [x] 5.4 Remove all `MediaQuery.of(context).orientation` lookups from these widgets to align with the `LayoutBuilder` design decision.
+- [x] 5.5 Remove nested `AppShell` from `ChaptersListPage` and simplify horizontal padding to resolve double-notch offset in landscape.
