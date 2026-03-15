@@ -9,7 +9,6 @@ import 'package:explore/explore.dart';
 import 'package:core/data/data.dart';
 import '../widgets/dashboard_drawer.dart';
 
-// Placeholder empty screens for the routes that don't exist yet
 class ExplorePlaceholderScreen extends StatelessWidget {
   const ExplorePlaceholderScreen({super.key});
   @override
@@ -52,7 +51,53 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 final GoRouter appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
   initialLocation: '/home',
+  redirect: (_, state) {
+    final tokenAvailable = SessionStorage.instance.hasSession;
+    final path = state.uri.path;
+    final isAuthRoute = path == '/login' || 
+                        path == '/password-login' ||
+                        path == '/mobile-login' ||
+                        path == '/signup' || 
+                        path == '/forgot-password' || 
+                        path == '/otp' || 
+                        path == '/onboarding';
+
+    if (!tokenAvailable && !isAuthRoute) return '/onboarding';
+    if (tokenAvailable && isAuthRoute) return '/home';
+    return null;
+  },
   routes: [
+    GoRoute(
+      path: '/onboarding',
+      builder: (context, state) => const OnboardingScreen(),
+    ),
+    GoRoute(
+      path: '/login',
+      builder: (context, state) => const LoginScreen(),
+    ),
+    GoRoute(
+      path: '/password-login',
+      builder: (context, state) => const PasswordLoginScreen(),
+    ),
+    GoRoute(
+      path: '/mobile-login',
+      builder: (context, state) => const MobileLoginScreen(),
+    ),
+    GoRoute(
+      path: '/signup',
+      builder: (context, state) => const SignupScreen(),
+    ),
+    GoRoute(
+      path: '/forgot-password',
+      builder: (context, state) => const ForgotPasswordScreen(),
+    ),
+    GoRoute(
+      path: '/otp',
+      builder: (context, state) {
+        final phoneNumber = state.extra as String? ?? '';
+        return OtpScreen(phoneNumber: phoneNumber);
+      },
+    ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         // AppTabBar items matching the routes exactly

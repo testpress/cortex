@@ -112,6 +112,204 @@ abstract class AppLocalizations {
   /// **'Login'**
   String get loginButton;
 
+  /// No description provided for @loginWelcomeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back'**
+  String get loginWelcomeBack;
+
+  /// No description provided for @loginPasswordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in using your username and password'**
+  String get loginPasswordSubtitle;
+
+  /// No description provided for @loginOtpSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in using OTP verification'**
+  String get loginOtpSubtitle;
+
+  /// No description provided for @loginModePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get loginModePassword;
+
+  /// No description provided for @loginModeOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP'**
+  String get loginModeOtp;
+
+  /// No description provided for @loginUsernameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Username or email'**
+  String get loginUsernameLabel;
+
+  /// No description provided for @loginUsernameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter username or email'**
+  String get loginUsernameHint;
+
+  /// No description provided for @loginPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get loginPasswordLabel;
+
+  /// No description provided for @loginPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter password'**
+  String get loginPasswordHint;
+
+  /// No description provided for @loginSigningIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Signing in...'**
+  String get loginSigningIn;
+
+  /// No description provided for @loginCountryCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Country code'**
+  String get loginCountryCodeLabel;
+
+  /// No description provided for @loginCountryCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'+91'**
+  String get loginCountryCodeHint;
+
+  /// No description provided for @loginPhoneNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number'**
+  String get loginPhoneNumberLabel;
+
+  /// No description provided for @loginPhoneNumberHint.
+  ///
+  /// In en, this message translates to:
+  /// **'9876543210'**
+  String get loginPhoneNumberHint;
+
+  /// No description provided for @loginEmailOptionalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email (optional)'**
+  String get loginEmailOptionalLabel;
+
+  /// No description provided for @loginEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'student@example.com'**
+  String get loginEmailHint;
+
+  /// No description provided for @loginGenerateOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate OTP'**
+  String get loginGenerateOtp;
+
+  /// No description provided for @loginSendingOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending OTP...'**
+  String get loginSendingOtp;
+
+  /// No description provided for @loginOtpCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP'**
+  String get loginOtpCodeLabel;
+
+  /// No description provided for @loginOtpCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'1234'**
+  String get loginOtpCodeHint;
+
+  /// No description provided for @loginVerifyOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify OTP'**
+  String get loginVerifyOtp;
+
+  /// No description provided for @loginVerifyingOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Verifying...'**
+  String get loginVerifyingOtp;
+
+  /// No description provided for @loginOtpSentInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP sent. Enter the code to continue.'**
+  String get loginOtpSentInfo;
+
+  /// No description provided for @loginErrorUsernamePasswordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Username and password are required.'**
+  String get loginErrorUsernamePasswordRequired;
+
+  /// No description provided for @loginErrorOtpIdentityRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Country code and phone number are required for OTP.'**
+  String get loginErrorOtpIdentityRequired;
+
+  /// No description provided for @loginErrorPhoneOtpRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number and OTP are required.'**
+  String get loginErrorPhoneOtpRequired;
+
+  /// No description provided for @loginErrorGenericRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to complete request. Please try again.'**
+  String get loginErrorGenericRequest;
+
+  /// No description provided for @loginErrorInvalidCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect username or password.'**
+  String get loginErrorInvalidCredentials;
+
+  /// No description provided for @loginErrorValidation.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check and correct the entered fields.'**
+  String get loginErrorValidation;
+
+  /// No description provided for @loginErrorThrottled.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Please wait before retrying.'**
+  String get loginErrorThrottled;
+
+  /// No description provided for @loginErrorLockout.
+  ///
+  /// In en, this message translates to:
+  /// **'This account is locked. Contact your administrator.'**
+  String get loginErrorLockout;
+
+  /// No description provided for @loginErrorNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Network error. Check your internet connection.'**
+  String get loginErrorNetwork;
+
+  /// No description provided for @loginErrorServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Server error. Please try again shortly.'**
+  String get loginErrorServer;
+
   /// A welcome message for the user
   ///
   /// In en, this message translates to:

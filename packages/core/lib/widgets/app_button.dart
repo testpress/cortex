@@ -142,7 +142,7 @@ class AppButton extends StatelessWidget {
                     leading!,
                     SizedBox(width: design.spacing.sm),
                   ],
-                  AppText.label(
+                  AppText.labelBold(
                     label,
                     color: effectiveForegroundColor,
                     style: labelStyle,
