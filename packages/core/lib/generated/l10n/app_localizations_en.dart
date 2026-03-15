@@ -15,6 +15,113 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginButton => 'Login';
 
   @override
+  String get loginWelcomeBack => 'Welcome back';
+
+  @override
+  String get loginPasswordSubtitle =>
+      'Sign in using your username and password';
+
+  @override
+  String get loginOtpSubtitle => 'Sign in using OTP verification';
+
+  @override
+  String get loginModePassword => 'Password';
+
+  @override
+  String get loginModeOtp => 'OTP';
+
+  @override
+  String get loginUsernameLabel => 'Username or email';
+
+  @override
+  String get loginUsernameHint => 'Enter username or email';
+
+  @override
+  String get loginPasswordLabel => 'Password';
+
+  @override
+  String get loginPasswordHint => 'Enter password';
+
+  @override
+  String get loginSigningIn => 'Signing in...';
+
+  @override
+  String get loginCountryCodeLabel => 'Country code';
+
+  @override
+  String get loginCountryCodeHint => '+91';
+
+  @override
+  String get loginPhoneNumberLabel => 'Phone number';
+
+  @override
+  String get loginPhoneNumberHint => '9876543210';
+
+  @override
+  String get loginEmailOptionalLabel => 'Email (optional)';
+
+  @override
+  String get loginEmailHint => 'student@example.com';
+
+  @override
+  String get loginGenerateOtp => 'Generate OTP';
+
+  @override
+  String get loginSendingOtp => 'Sending OTP...';
+
+  @override
+  String get loginOtpCodeLabel => 'OTP';
+
+  @override
+  String get loginOtpCodeHint => '1234';
+
+  @override
+  String get loginVerifyOtp => 'Verify OTP';
+
+  @override
+  String get loginVerifyingOtp => 'Verifying...';
+
+  @override
+  String get loginOtpSentInfo => 'OTP sent. Enter the code to continue.';
+
+  @override
+  String get loginErrorUsernamePasswordRequired =>
+      'Username and password are required.';
+
+  @override
+  String get loginErrorOtpIdentityRequired =>
+      'Country code and phone number are required for OTP.';
+
+  @override
+  String get loginErrorPhoneOtpRequired => 'Phone number and OTP are required.';
+
+  @override
+  String get loginErrorGenericRequest =>
+      'Unable to complete request. Please try again.';
+
+  @override
+  String get loginErrorInvalidCredentials => 'Incorrect username or password.';
+
+  @override
+  String get loginErrorValidation =>
+      'Please check and correct the entered fields.';
+
+  @override
+  String get loginErrorThrottled =>
+      'Too many attempts. Please wait before retrying.';
+
+  @override
+  String get loginErrorLockout =>
+      'This account is locked. Contact your administrator.';
+
+  @override
+  String get loginErrorNetwork =>
+      'Network error. Check your internet connection.';
+
+  @override
+  String get loginErrorServer => 'Server error. Please try again shortly.';
+
+  @override
   String get welcomeMessage => 'Welcome to Cortex';
 
   @override

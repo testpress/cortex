@@ -88,7 +88,10 @@ class DashboardDrawer extends ConsumerWidget {
             AppDrawerItem(
               icon: LucideIcons.logOut,
               label: l10n.drawerLogout,
-              action: () {},
+              action: () {
+                ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                ref.read(isLogoutSheetOpenProvider.notifier).state = true;
+              },
               isRed: true,
             ),
           ],
