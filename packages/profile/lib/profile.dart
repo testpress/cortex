@@ -1,5 +1,12 @@
 library profile;
 
+export 'screens/login_screen.dart';
+export 'screens/password_login_screen.dart';
+export 'screens/mobile_login_screen.dart';
+export 'screens/onboarding_screen.dart';
+export 'screens/signup_screen.dart';
+export 'screens/forgot_password_screen.dart';
+export 'screens/otp_screen.dart';
 export 'screens/paid_active_profile_screen.dart';
 export 'screens/notifications_screen.dart';
 export 'screens/certificates_screen.dart';
