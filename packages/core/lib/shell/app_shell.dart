@@ -33,22 +33,21 @@ class AppShell extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isTablet = constraints.maxWidth >= design.layout.tabletBreakpoint;
+        final isLandscape = constraints.maxWidth > constraints.maxHeight;
 
         return Stack(
           children: [
             Container(
               color: backgroundColor ?? design.colors.surface,
-              child: isTablet
+              child: isLandscape
                   ? Row(
                       children: [
                         if (navigationRail != null) navigationRail,
                         Expanded(
                           child: SafeArea(
-                            left:
-                                navigationRail == null &&
-                                bottomNavigationBar == null,
-                            right: false,
+                            left: navigationRail == null,
+                            top: false,
+                            bottom: false,
                             child: child,
                           ),
                         ),

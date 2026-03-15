@@ -36,9 +36,16 @@ class ProfilePage extends ConsumerWidget {
 
     return AppShell(
       backgroundColor: design.colors.canvas,
-      child: Column(
-        children: [
-          DashboardHeader(title: l10n.profileTabTitle),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isLandscape = constraints.maxWidth > constraints.maxHeight;
+
+          return Column(
+            children: [
+              DashboardHeader(
+                title: l10n.profileTabTitle,
+                isLandscape: isLandscape,
+              ),
           Expanded(
             child: AppScroll(
               padding: EdgeInsets.zero,
@@ -125,7 +132,9 @@ class ProfilePage extends ConsumerWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
+      );
+    },
+  ),
+);
+}
 }

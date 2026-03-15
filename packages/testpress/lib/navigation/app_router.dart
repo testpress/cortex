@@ -129,31 +129,38 @@ final GoRouter appRouter = GoRouter(
               ref.read(isLogoutSheetOpenProvider.notifier).state = false;
             }
 
-            return AppShell(
-              bottomNavigationBar: AppTabBar(
-                items: items,
-                activeItemId: activeTabId,
-                onTabChange: (id) => _onTabItemTapped(navigationShell, id),
-              ),
-              navigationRail: AppNavigationRail(
-                items: items,
-                activeItemId: activeTabId,
-                onTabChange: (id) => _onTabItemTapped(navigationShell, id),
-              ),
-              drawer: const DashboardDrawer(),
-              bottomSheet: AppBottomSheet(
-                isOpen: isLogoutSheetOpen,
-                onClose: closeSheet,
-                child: LogoutConfirmationSheet(
-                  onConfirm: () {
-                    closeSheet();
-                    ref.read(authProvider.notifier).logout();
-                    _rootNavigatorKey.currentContext?.go('/login');
-                  },
-                  onCancel: closeSheet,
-                ),
-              ),
-              child: navigationShell,
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                final isLandscape =
+                    constraints.maxWidth > constraints.maxHeight;
+
+                return AppShell(
+                  bottomNavigationBar: AppTabBar(
+                    items: items,
+                    activeItemId: activeTabId,
+                    onTabChange: (id) => _onTabItemTapped(navigationShell, id),
+                  ),
+                  navigationRail: AppNavigationRail(
+                    items: items,
+                    activeItemId: activeTabId,
+                    onTabChange: (id) => _onTabItemTapped(navigationShell, id),
+                  ),
+                  drawer: DashboardDrawer(isLandscape: isLandscape),
+                  bottomSheet: AppBottomSheet(
+                    isOpen: isLogoutSheetOpen,
+                    onClose: closeSheet,
+                    child: LogoutConfirmationSheet(
+                      onConfirm: () {
+                        closeSheet();
+                        ref.read(authProvider.notifier).logout();
+                        _rootNavigatorKey.currentContext?.go('/home');
+                      },
+                      onCancel: closeSheet,
+                    ),
+                  ),
+                  child: navigationShell,
+                );
+              },
             );
           },
         );

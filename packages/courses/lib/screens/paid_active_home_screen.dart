@@ -23,25 +23,26 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     final otherLearners = ref.watch(otherLearnersProvider);
     final shortcuts = ref.watch(quickShortcutsProvider);
 
-    final isTablet =
-        MediaQuery.of(context).size.width >= design.layout.tabletBreakpoint;
-
     return Scaffold(
       backgroundColor: design.colors.canvas,
-      body: Column(
-        children: [
-          DashboardHeader(
-            title: L10n.of(context).homeHeaderTitle,
-            isTablet: isTablet,
-            onMenuPressed: () {
-              ref.read(isHomeDrawerOpenProvider.notifier).state = true;
-            },
-          ),
-          Expanded(
-            child: AppScroll(
-              padding: EdgeInsets.symmetric(vertical: design.spacing.md),
-              children: [
-                HomeGreetingSection(userName: user.name),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isLandscape = constraints.maxWidth > constraints.maxHeight;
+
+          return Column(
+            children: [
+              DashboardHeader(
+                title: L10n.of(context).homeHeaderTitle,
+                isLandscape: isLandscape,
+                onMenuPressed: () {
+                  ref.read(isHomeDrawerOpenProvider.notifier).state = true;
+                },
+              ),
+              Expanded(
+                child: AppScroll(
+                  padding: EdgeInsets.symmetric(vertical: design.spacing.md),
+                  children: [
+                    HomeGreetingSection(userName: user.name),
 
                 heroBanners.when(
                   data: (data) => HeroBannerCarousel(
@@ -153,9 +154,11 @@ class PaidActiveHomeScreen extends ConsumerWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
+      );
+    },
+  ),
+);
+}
 
   HeroBanner _mapHeroBanner(DashboardBannerDto d) {
     return HeroBanner(
