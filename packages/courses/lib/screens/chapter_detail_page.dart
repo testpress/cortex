@@ -34,8 +34,8 @@ class ChapterDetailPage extends ConsumerWidget {
     // Check status filter state
     final activeStatusFilter = ref.watch(chapterStatusFilterProvider);
 
-    return AppShell(
-      backgroundColor: design.colors.canvas,
+    return Container(
+      color: design.colors.canvas,
       child: chapterAsync.when(
         data: (chapter) {
           if (chapter == null) {

@@ -57,8 +57,8 @@ class _ReviewAnswerDetailScreenState extends State<ReviewAnswerDetailScreen>
         ? filtered[_currentQuestionIndex]
         : null;
 
-    return AppShell(
-      backgroundColor: design.colors.surface,
+    return Container(
+      color: design.colors.surface,
       child: Column(
         children: [
           ReviewHeader(
