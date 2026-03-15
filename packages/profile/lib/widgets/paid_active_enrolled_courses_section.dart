@@ -93,7 +93,7 @@ class _ActiveCourseCard extends StatelessWidget {
                       Row(
                         children: [
                           Expanded(
-                            child: AppText.label(
+                            child: AppText.cardTitle(
                               course.title,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,

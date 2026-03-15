@@ -404,7 +404,7 @@ class _LeaderboardItem extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppText.label(
+                AppText.labelBold(
                   learner.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
