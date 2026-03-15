@@ -8,6 +8,7 @@ class TestDto {
   final String time;
   final String duration;
   final TestType type;
+  final String? thumbnail;
   final bool isImportant;
 
   const TestDto({
@@ -16,6 +17,7 @@ class TestDto {
     required this.time,
     required this.duration,
     required this.type,
+    this.thumbnail,
     this.isImportant = false,
   });
 }

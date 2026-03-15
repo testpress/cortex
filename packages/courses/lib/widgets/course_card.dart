@@ -51,9 +51,8 @@ class CourseCard extends StatelessWidget {
                     Row(
                       children: [
                         Expanded(
-                          child: AppText.label(
+                          child: AppText.cardTitle(
                             course.title,
-                            color: design.colors.textPrimary,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),

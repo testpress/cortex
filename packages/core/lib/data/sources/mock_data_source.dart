@@ -1,5 +1,6 @@
 import 'package:core/data/data.dart';
 import 'data_source.dart';
+import 'mock_data.dart';
 
 /// In-process mock data source with hardcoded JEE/NEET coaching institute data.
 /// Implements [DataSource]; no network calls are made.
@@ -835,4 +836,22 @@ class MockDataSource implements DataSource {
           lastAccessedAt: DateTime.now().subtract(const Duration(days: 1)),
         ),
       ];
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Explore
+  // ─────────────────────────────────────────────────────────────────────────
+
+  @override
+  Future<List<ExploreBannerDto>> getExploreBanners() async =>
+      mockExploreBanners;
+
+  @override
+  Future<List<StudyTipDto>> getStudyTips() async => mockStudyTips;
+
+  @override
+  Future<List<ShortLessonDto>> getShortLessons() async => mockShortLessons;
+
+  @override
+  Future<List<DiscoveryCourseDto>> getDiscoveryCourses() async =>
+      mockDiscoveryCourses;
 }

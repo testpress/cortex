@@ -20,6 +20,9 @@ dependencies:
     path: ../exams
   profile:
     path: ../profile
+  explore:
+    path: ../explore
+
   flutter_riverpod: ^2.5.1
   riverpod_annotation: ^2.3.5
 

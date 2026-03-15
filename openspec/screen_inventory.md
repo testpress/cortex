@@ -156,7 +156,7 @@ Each screen = one OpenSpec change. Priority is based on user journey criticality
 |---|---|---|---|---|
 | 26 | `lms-home-non-paid` | NonPaidHome | Upsell hero, benefits, limited access | ⏳ Pending |
 | 27 | `lms-home-paid-new` | PaidNewHome | Onboarding hero + first lesson CTA | ⏳ Pending |
-| 28 | `lms-explore-paid` | ExplorePage | Full explore with study tips & top learners | ⏳ Pending |
+| 28 | `lms-explore-paid` | ExplorePage | Full explore with study tips & top learners | ✅ Done |
 | 29 | `lms-explore-non-paid` | NonPaidExplorePage | Preview with upgrade prompts | ⏳ Pending |
 | 30 | `lms-profile-variants` | NonPaidProfile + PaidNewProfile | Onboarding variants | ⏳ Pending |
 

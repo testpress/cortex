@@ -1163,4 +1163,49 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get editProfileBack => 'പിന്നിലേക്ക്';
+
+  @override
+  String get exploreTabTitle => 'എക്സ്പ്ലോർ';
+
+  @override
+  String get exploreSearchHint => 'കോഴ്സുകൾ, പാഠങ്ങൾ മുതൽ തിരയുക...';
+
+  @override
+  String get exploreSearchResultsTitle => 'തിരയൽ ഫലങ്ങൾ';
+
+  @override
+  String get exploreTrendingTitle => 'ഇപ്പോൾ ട്രെൻഡിംഗിലുള്ളവ';
+
+  @override
+  String get exploreRecommendedTitle => 'നിങ്ങൾക്കായി ശുപാർശ ചെയ്യുന്നവ';
+
+  @override
+  String get exploreShortLessonsTitle => 'ഏറ്റവും കൂടുതൽ കണ്ട വീഡിയോകൾ';
+
+  @override
+  String get explorePopularTestsTitle => 'ജനപ്രിയ പരീക്ഷകൾ';
+
+  @override
+  String get exploreStudyTipsTitle => 'പഠന നുറുങ്ങുകളും അപ്‌ഡേറ്റുകളും';
+
+  @override
+  String get exploreFilterTrending => 'ട്രെൻഡിംഗ്';
+
+  @override
+  String get exploreFilterRecommended => 'ശുപാർശ ചെയ്തവ';
+
+  @override
+  String get exploreFilterShortLessons => 'ചെറിയ പാഠങ്ങൾ';
+
+  @override
+  String get exploreFilterPopular => 'ജനപ്രിയം';
+
+  @override
+  String get exploreFilterStudyTips => 'പഠന നുറുങ്ങുകൾ';
+
+  @override
+  String get labelMock => 'മോക്ക്';
+
+  @override
+  String get labelPractice => 'പ്രാക്ടീസ്';
 }

@@ -17,4 +17,9 @@ class ExamRepository {
     await Future.delayed(const Duration(milliseconds: 500));
     return mockTests;
   }
+
+  Future<List<TestDto>> getPopularTests() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    return mockPopularTests;
+  }
 }

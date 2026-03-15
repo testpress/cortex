@@ -73,7 +73,7 @@ class _AppCarouselState extends State<AppCarousel> {
           ),
         ),
         if (widget.showDots && widget.itemCount > 1) ...[
-          SizedBox(height: design.spacing.md),
+          SizedBox(height: design.spacing.sm),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
@@ -101,7 +101,9 @@ class _DotIndicator extends StatelessWidget {
       width: isActive ? 24 : 6,
       height: 6,
       decoration: BoxDecoration(
-        color: isActive ? design.colors.textSecondary : design.colors.border,
+        color: isActive
+            ? design.colors.textPrimary
+            : design.colors.border.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(3),
       ),
     );

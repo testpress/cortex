@@ -391,5 +391,20 @@
   "editProfileErrorNameEmpty": "الاسم لا يمكن أن يكون فارغًا",
   "editProfilePhotoLabel": "صورة الملف الشخصي",
   "editProfileChangePhoto": "تغيير الصورة",
-  "editProfileBack": "عودة"
+  "editProfileBack": "عودة",
+  "exploreTabTitle": "استكشاف",
+  "exploreSearchHint": "ابحث عن الدورات، الدروس، المواضيع...",
+  "exploreSearchResultsTitle": "نتائج البحث",
+  "exploreTrendingTitle": "الرائج الآن",
+  "exploreRecommendedTitle": "موصى به لك",
+  "exploreShortLessonsTitle": "الفيديوهات الأكثر مشاهدة",
+  "explorePopularTestsTitle": "الاختبارات الشائعة",
+  "exploreStudyTipsTitle": "نصائح الدراسة والتحديثات",
+  "exploreFilterTrending": "رائج",
+  "exploreFilterRecommended": "موصى به",
+  "exploreFilterShortLessons": "دروس قصيرة",
+  "exploreFilterPopular": "شائع",
+  "exploreFilterStudyTips": "نصائح الدراسة",
+  "labelMock": "تجريبي",
+  "labelPractice": "ممارسة"
 }

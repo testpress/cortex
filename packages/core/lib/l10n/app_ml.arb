@@ -391,5 +391,20 @@
   "editProfileErrorNameEmpty": "പേര് ശൂന്യമായിരിക്കരുത്",
   "editProfilePhotoLabel": "പ്രൊഫൈൽ ഫോട്ടോ",
   "editProfileChangePhoto": "ഫോട്ടോ മാറ്റുക",
-  "editProfileBack": "പിന്നിലേക്ക്"
+  "editProfileBack": "പിന്നിലേക്ക്",
+  "exploreTabTitle": "എക്സ്പ്ലോർ",
+  "exploreSearchHint": "കോഴ്സുകൾ, പാഠങ്ങൾ മുതൽ തിരയുക...",
+  "exploreSearchResultsTitle": "തിരയൽ ഫലങ്ങൾ",
+  "exploreTrendingTitle": "ഇപ്പോൾ ട്രെൻഡിംഗിലുള്ളവ",
+  "exploreRecommendedTitle": "നിങ്ങൾക്കായി ശുപാർശ ചെയ്യുന്നവ",
+  "exploreShortLessonsTitle": "ഏറ്റവും കൂടുതൽ കണ്ട വീഡിയോകൾ",
+  "explorePopularTestsTitle": "ജനപ്രിയ പരീക്ഷകൾ",
+  "exploreStudyTipsTitle": "പഠന നുറുങ്ങുകളും അപ്‌ഡേറ്റുകളും",
+  "exploreFilterTrending": "ട്രെൻഡിംഗ്",
+  "exploreFilterRecommended": "ശുപാർശ ചെയ്തവ",
+  "exploreFilterShortLessons": "ചെറിയ പാഠങ്ങൾ",
+  "exploreFilterPopular": "ജനപ്രിയം",
+  "exploreFilterStudyTips": "പഠന നുറുങ്ങുകൾ",
+  "labelMock": "മോക്ക്",
+  "labelPractice": "പ്രാക്ടീസ്"
 }

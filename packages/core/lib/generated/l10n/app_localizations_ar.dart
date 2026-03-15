@@ -1151,4 +1151,49 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get editProfileBack => 'عودة';
+
+  @override
+  String get exploreTabTitle => 'استكشاف';
+
+  @override
+  String get exploreSearchHint => 'ابحث عن الدورات، الدروس، المواضيع...';
+
+  @override
+  String get exploreSearchResultsTitle => 'نتائج البحث';
+
+  @override
+  String get exploreTrendingTitle => 'الرائج الآن';
+
+  @override
+  String get exploreRecommendedTitle => 'موصى به لك';
+
+  @override
+  String get exploreShortLessonsTitle => 'الفيديوهات الأكثر مشاهدة';
+
+  @override
+  String get explorePopularTestsTitle => 'الاختبارات الشائعة';
+
+  @override
+  String get exploreStudyTipsTitle => 'نصائح الدراسة والتحديثات';
+
+  @override
+  String get exploreFilterTrending => 'رائج';
+
+  @override
+  String get exploreFilterRecommended => 'موصى به';
+
+  @override
+  String get exploreFilterShortLessons => 'دروس قصيرة';
+
+  @override
+  String get exploreFilterPopular => 'شائع';
+
+  @override
+  String get exploreFilterStudyTips => 'نصائح الدراسة';
+
+  @override
+  String get labelMock => 'تجريبي';
+
+  @override
+  String get labelPractice => 'ممارسة';
 }

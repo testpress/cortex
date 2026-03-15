@@ -129,30 +129,29 @@ class AppButton extends StatelessWidget {
                 width: variant == AppButtonVariant.secondary ? 1.5 : 0,
               ),
             ),
-            child: Center(
-              child: IconTheme(
-                data: IconThemeData(
-                  color: effectiveForegroundColor,
-                  size: design.iconSize.md,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (leading != null) ...[
-                      leading!,
-                      SizedBox(width: design.spacing.sm),
-                    ],
-                    AppText.label(
-                      label,
-                      color: effectiveForegroundColor,
-                      style: labelStyle,
-                    ),
-                    if (trailing != null) ...[
-                      SizedBox(width: design.spacing.sm),
-                      trailing!,
-                    ],
+            child: IconTheme(
+              data: IconThemeData(
+                color: effectiveForegroundColor,
+                size: design.iconSize.md,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (leading != null) ...[
+                    leading!,
+                    SizedBox(width: design.spacing.sm),
                   ],
-                ),
+                  AppText.labelBold(
+                    label,
+                    color: effectiveForegroundColor,
+                    style: labelStyle,
+                  ),
+                  if (trailing != null) ...[
+                    SizedBox(width: design.spacing.sm),
+                    trailing!,
+                  ],
+                ],
               ),
             ),
           ),

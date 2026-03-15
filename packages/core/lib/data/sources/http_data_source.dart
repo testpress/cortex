@@ -41,4 +41,26 @@ class HttpDataSource implements DataSource {
       throw UnimplementedError(
         'HttpDataSource.getUserProgress is not yet implemented.',
       );
+
+  @override
+  Future<List<ExploreBannerDto>> getExploreBanners() =>
+      throw UnimplementedError(
+        'HttpDataSource.getExploreBanners is not yet implemented.',
+      );
+
+  @override
+  Future<List<StudyTipDto>> getStudyTips() => throw UnimplementedError(
+        'HttpDataSource.getStudyTips is not yet implemented.',
+      );
+
+  @override
+  Future<List<ShortLessonDto>> getShortLessons() => throw UnimplementedError(
+        'HttpDataSource.getShortLessons is not yet implemented.',
+      );
+
+  @override
+  Future<List<DiscoveryCourseDto>> getDiscoveryCourses() =>
+      throw UnimplementedError(
+        'HttpDataSource.getDiscoveryCourses is not yet implemented.',
+      );
 }

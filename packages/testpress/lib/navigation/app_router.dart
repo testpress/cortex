@@ -5,6 +5,7 @@ import 'package:core/core.dart';
 import 'package:courses/courses.dart';
 import 'package:profile/profile.dart';
 import 'package:exams/exams.dart';
+import 'package:explore/explore.dart';
 import 'package:core/data/data.dart';
 import '../widgets/dashboard_drawer.dart';
 
@@ -331,7 +332,7 @@ final GoRouter appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/explore',
-              builder: (context, state) => const ExplorePlaceholderScreen(),
+              builder: (context, state) => const ExplorePage(),
             ),
           ],
         ),

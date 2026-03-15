@@ -16,6 +16,7 @@ export 'models/user_progress_dto.dart';
 export 'models/user_dto.dart';
 export 'models/settings_models.dart';
 export 'models/study_momentum_dto.dart';
+export 'models/explore_models.dart';
 
 // Database
 export 'db/app_database.dart';
