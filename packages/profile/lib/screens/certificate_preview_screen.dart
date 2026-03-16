@@ -105,6 +105,7 @@ class CertificatePreviewScreen extends StatelessWidget {
                         label: l10n.certificatesDownload,
                         height: 48.0,
                         backgroundColor: design.colors.accent2,
+                        fullWidth: true,
                         leading: Icon(
                           LucideIcons.download,
                           size: design.iconSize.sm,
@@ -118,6 +119,7 @@ class CertificatePreviewScreen extends StatelessWidget {
                       child: AppButton.secondary(
                         label: l10n.certificatesShare,
                         height: 48.0,
+                        fullWidth: true,
                         leading: Icon(
                           LucideIcons.share2,
                           size: design.iconSize.sm,

@@ -36,6 +36,7 @@ class LessonNavigationFooter extends StatelessWidget {
           child: AppButton.secondary(
             label: l10n.navigationPrevious,
             onPressed: hasPrevious ? onPrevious : null,
+            fullWidth: true,
             leading: Icon(
               LucideIcons.chevronLeft,
               size: 16,
@@ -50,6 +51,7 @@ class LessonNavigationFooter extends StatelessWidget {
           child: AppButton.primary(
             label: l10n.navigationNext,
             onPressed: hasNext ? onNext : null,
+            fullWidth: true,
             trailing: Icon(
               LucideIcons.chevronRight,
               size: 16,
