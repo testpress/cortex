@@ -391,6 +391,7 @@ class _UnlockedCertificateDetails extends StatelessWidget {
               child: AppButton.primary(
                 label: l10n.certificatesViewCertificate,
                 height: 44.0,
+                fullWidth: true,
                 backgroundColor: design.colors.accent2,
                 onPressed: () => onOpenPreview(certificate),
               ),
