@@ -40,3 +40,10 @@ The system SHALL navigate to the appropriate full-screen viewer or reader when a
 - **WHEN** the user taps a "Video" lesson item
 - **THEN** the system pushes the Video Lesson Detail screen onto the navigation stack
 
+### Requirement: Lesson Navigation Footer
+The system SHALL provide a navigation footer in the lesson detail view to allow users to move between sequential lessons.
+
+#### Scenario: Full-width button alignment in navigation footer
+- **WHEN** the lesson navigation footer is rendered
+- **THEN** the "Previous" and "Next" action buttons MUST occupy the full available width of their respective containers to ensure proper edge-to-edge alignment.
+
