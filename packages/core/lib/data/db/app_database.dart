@@ -31,7 +31,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -69,6 +69,29 @@ class AppDatabase extends _$AppDatabase {
           if (from < 5) {
             await m.createTable(appSettingsTable);
           }
+          if (from < 6) {
+            // Non-destructive migration to preserve user settings.
+            // We read the existing row (if any) using raw SQL since the generated mapping might expect the new schema.
+            final existing = await customSelect('SELECT * FROM app_settings_table LIMIT 1').getSingleOrNull();
+
+            // Recreate the table to apply the new primary key constraint.
+            await m.deleteTable(appSettingsTable.actualTableName);
+            await m.createTable(appSettingsTable);
+
+            if (existing != null) {
+              // Restore the previously saved settings into the new table structure.
+              await into(appSettingsTable).insert(
+                AppSettingsTableCompanion(
+                  id: const Value(1),
+                  appearanceMode: Value(existing.read<String>('appearance_mode')),
+                  videoQuality: Value(existing.read<String>('video_quality')),
+                  autoPlayNext: Value(existing.read<bool>('auto_play_next')),
+                  textSize: Value(existing.read<String>('text_size')),
+                  highContrast: Value(existing.read<bool>('high_contrast')),
+                ),
+              );
+            }
+          }
         },
       );
 
@@ -76,14 +99,13 @@ class AppDatabase extends _$AppDatabase {
 
   /// Fetch the singleton settings row.
   Future<AppSettingsTableData> getAppSettings() async {
-    // Atomically ensure the row exists with ID 1.
-    // InsertMode.insertOrIgnore prevents race conditions where multiple notifiers
-    // try to create the initial row simultaneously.
-    await into(appSettingsTable).insert(
-      const AppSettingsTableCompanion(id: Value(1)),
-      mode: InsertMode.insertOrIgnore,
-    );
-    return await select(appSettingsTable).getSingle();
+    return transaction(() async {
+      await into(appSettingsTable).insert(
+        const AppSettingsTableCompanion(id: Value(1)),
+        mode: InsertMode.insertOrIgnore,
+      );
+      return await select(appSettingsTable).getSingle();
+    });
   }
 
   /// Watch settings for live updates.
