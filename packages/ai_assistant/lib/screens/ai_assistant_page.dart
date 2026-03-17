@@ -105,10 +105,9 @@ class AIAssistantPage extends StatelessWidget {
   }
 
   Widget _buildSectionTitle(DesignConfig design, String title) {
-    return AppText.xs(
+    return AppText.sectionHeader(
       title.toUpperCase(),
       color: design.colors.textSecondary.withValues(alpha: 0.85),
-      style: const TextStyle(letterSpacing: 1.2, fontWeight: FontWeight.w700),
     );
   }
 

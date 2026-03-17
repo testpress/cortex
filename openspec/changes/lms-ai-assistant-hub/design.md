@@ -36,6 +36,7 @@ Implementing the `AIAssistantPage` dashboard for the Cortex Flutter SDK. This pa
 - **Greeting icon balance**: The leading sparkles icon should be slightly smaller than the largest icon token so it supports the greeting without dominating the header row.
 - **Greeting trust line**: The header should include a small explanatory line clarifying that AI suggestions are powered by the learner's progress and exam performance.
 - **Secondary text legibility**: Supporting copy, metadata rows, and section labels should prefer `textSecondary` or only lightly reduced alpha so they remain readable against the light dashboard background.
+- **Section headers**: AI Support section labels such as "Quick Actions" and "Recent Help" should use a semantic typography token from `DesignTypography`, not file-local `TextStyle` overrides.
 - **Section affordances**: "More Topics to Practice" and "Recent Help" should expose compact trailing "View All" actions, while individual secondary recommendation rows should expose a chevron to signal drill-in navigation.
 - **Colors**: 
     - Use `design.colors.accent1` (Purple) for AI-related highlights.
