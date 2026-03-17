@@ -409,6 +409,9 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get homeTabTitle => 'الرئيسية';
+
+  @override
   String get profileTabTitle => 'الملف الشخصي';
 
   @override
@@ -1196,4 +1199,68 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get labelPractice => 'ممارسة';
+
+  @override
+  String get aiAssistantTabTitle => 'دعم AI';
+
+  @override
+  String aiAssistantGreeting(String userName) {
+    return 'مرحباً $userName 👋';
+  }
+
+  @override
+  String aiAssistantStudyInsight(String insight) {
+    return '$insight';
+  }
+
+  @override
+  String get aiAssistantQuickActions => 'إجراءات سريعة';
+
+  @override
+  String get aiAssistantAskDoubtTitle => 'اسأل سؤالاً';
+
+  @override
+  String get aiAssistantAskDoubtDesc => 'التقط صورة، ارفع ملفاً أو اكتب سؤالك';
+
+  @override
+  String get aiAssistantPracticeExamTitle => 'امتحان تدريبي';
+
+  @override
+  String get aiAssistantPracticeExamDesc =>
+      'أنشئ امتحانات تدريبية بالذكاء الاصطناعي بناءً على المواضيع الضعيفة';
+
+  @override
+  String get aiAssistantRecommendedTitle => 'موصى به لك';
+
+  @override
+  String get aiAssistantImproveTopicsTitle => 'حسن المواضيع الضعيفة اليوم';
+
+  @override
+  String get aiAssistantStruggledTopicDesc =>
+      'لقد واجهت صعوبة في هذا الموضوع مؤخراً';
+
+  @override
+  String get aiAssistantPracticeNow => 'تدرب الآن';
+
+  @override
+  String get aiAssistantMoreTopicsTitle => 'مزيد من المواضيع للتدريب';
+
+  @override
+  String get aiAssistantRecentHelpTitle => 'المساعدة الأخيرة';
+
+  @override
+  String get aiAssistantViewAll => 'عرض الكل';
+
+  @override
+  String get aiAssistantStatusAnswered => 'تمت الإجابة';
+
+  @override
+  String get aiAssistantStatusProcessing => 'جاري المعالجة';
+
+  @override
+  String get aiAssistantStatusRevisit => 'إعادة زيارة';
+
+  @override
+  String get aiAssistantPoweredBy =>
+      'الذكاء الاصطناعي مدعوم بتقدمك في التعلم وأدائك في الامتحان';
 }

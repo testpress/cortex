@@ -410,6 +410,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get homeTabTitle => 'Home';
+
+  @override
   String get profileTabTitle => 'Profile';
 
   @override
@@ -1198,4 +1201,68 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get labelPractice => 'Practice';
+
+  @override
+  String get aiAssistantTabTitle => 'AI Support';
+
+  @override
+  String aiAssistantGreeting(String userName) {
+    return 'Hi $userName 👋';
+  }
+
+  @override
+  String aiAssistantStudyInsight(String insight) {
+    return '$insight';
+  }
+
+  @override
+  String get aiAssistantQuickActions => 'QUICK ACTIONS';
+
+  @override
+  String get aiAssistantAskDoubtTitle => 'Ask a Doubt';
+
+  @override
+  String get aiAssistantAskDoubtDesc => 'Snap, upload or type your question';
+
+  @override
+  String get aiAssistantPracticeExamTitle => 'Practice Exam';
+
+  @override
+  String get aiAssistantPracticeExamDesc =>
+      'Create AI practice exams based on weak topics or chapters';
+
+  @override
+  String get aiAssistantRecommendedTitle => 'RECOMMENDED FOR YOU';
+
+  @override
+  String get aiAssistantImproveTopicsTitle => 'Improve Weak Topics Today';
+
+  @override
+  String get aiAssistantStruggledTopicDesc =>
+      'You struggled in this topic recently';
+
+  @override
+  String get aiAssistantPracticeNow => 'Practice Now';
+
+  @override
+  String get aiAssistantMoreTopicsTitle => 'MORE TOPICS TO PRACTICE';
+
+  @override
+  String get aiAssistantRecentHelpTitle => 'RECENT HELP';
+
+  @override
+  String get aiAssistantViewAll => 'View All';
+
+  @override
+  String get aiAssistantStatusAnswered => 'Answered';
+
+  @override
+  String get aiAssistantStatusProcessing => 'Processing';
+
+  @override
+  String get aiAssistantStatusRevisit => 'Revisit';
+
+  @override
+  String get aiAssistantPoweredBy =>
+      'AI powered by your learning progress and exam performance';
 }

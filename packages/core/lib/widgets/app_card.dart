@@ -28,8 +28,7 @@ class AppCard extends StatelessWidget {
     final design = Design.of(context);
     // Singular separation logic: premium design avoids border + shadow stacking.
     // If shadow is requested, we suppress the border unless explicitly forced.
-    final effectiveShowBorder =
-        showBorder && !showShadow && !showFloatingShadow;
+    final effectiveShowBorder = showBorder;
 
     final cardContent = Container(
       padding: padding ?? EdgeInsets.all(design.spacing.cardPadding),

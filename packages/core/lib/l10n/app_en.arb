@@ -163,6 +163,7 @@
       }
     }
   },
+  "homeTabTitle": "Home",
   "profileTabTitle": "Profile",
   "profileMembershipLabel": "Learning with us since {date}",
   "@profileMembershipLabel": {
@@ -585,5 +586,38 @@
   "exploreFilterPopular": "Popular",
   "exploreFilterStudyTips": "Study Tips",
   "labelMock": "Mock",
-  "labelPractice": "Practice"
+  "labelPractice": "Practice",
+  "aiAssistantTabTitle": "AI Support",
+  "aiAssistantGreeting": "Hi {userName} 👋",
+  "@aiAssistantGreeting": {
+    "placeholders": {
+      "userName": {
+        "type": "String"
+      }
+    }
+  },
+  "aiAssistantStudyInsight": "{insight}",
+  "@aiAssistantStudyInsight": {
+    "placeholders": {
+      "insight": {
+        "type": "String"
+      }
+    }
+  },
+  "aiAssistantQuickActions": "QUICK ACTIONS",
+  "aiAssistantAskDoubtTitle": "Ask a Doubt",
+  "aiAssistantAskDoubtDesc": "Snap, upload or type your question",
+  "aiAssistantPracticeExamTitle": "Practice Exam",
+  "aiAssistantPracticeExamDesc": "Create AI practice exams based on weak topics or chapters",
+  "aiAssistantRecommendedTitle": "RECOMMENDED FOR YOU",
+  "aiAssistantImproveTopicsTitle": "Improve Weak Topics Today",
+  "aiAssistantStruggledTopicDesc": "You struggled in this topic recently",
+  "aiAssistantPracticeNow": "Practice Now",
+  "aiAssistantMoreTopicsTitle": "MORE TOPICS TO PRACTICE",
+  "aiAssistantRecentHelpTitle": "RECENT HELP",
+  "aiAssistantViewAll": "View All",
+  "aiAssistantStatusAnswered": "Answered",
+  "aiAssistantStatusProcessing": "Processing",
+  "aiAssistantStatusRevisit": "Revisit",
+  "aiAssistantPoweredBy": "AI powered by your learning progress and exam performance"
 }
