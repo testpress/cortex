@@ -22,16 +22,9 @@ class AIRecommendationCard extends StatelessWidget {
     final highlightColor = design.colors.recommendationAccent;
     final highlightBackground = highlightColor.withValues(alpha: 0.12);
 
-    return Container(
+    return AppCard(
+      onTap: onPracticeTap,
       padding: EdgeInsets.all(design.spacing.lg),
-      decoration: BoxDecoration(
-        color: design.colors.card,
-        borderRadius: BorderRadius.circular(24), // Increased radius
-        border: Border.all(
-          color: highlightColor.withValues(alpha: 0.4),
-          width: 2,
-        ),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -39,8 +32,8 @@ class AIRecommendationCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 44, // Slightly larger
-                height: 44,
+                width: 40,
+                height: 40,
                 decoration: BoxDecoration(
                   color: highlightBackground,
                   borderRadius: BorderRadius.circular(design.radius.md),
@@ -49,7 +42,7 @@ class AIRecommendationCard extends StatelessWidget {
                   child: Icon(
                     LucideIcons.brain,
                     color: highlightColor,
-                    size: 22,
+                    size: 20,
                   ),
                 ),
               ),
@@ -62,11 +55,11 @@ class AIRecommendationCard extends StatelessWidget {
                       l10n.aiAssistantImproveTopicsTitle,
                       color: design.colors.textPrimary,
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 15,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(height: 4), // Added space
+                    const SizedBox(height: 2),
                     AppText.caption(
                       l10n.aiAssistantStruggledTopicDesc,
                       color: design.colors.textSecondary,
@@ -74,14 +67,19 @@ class AIRecommendationCard extends StatelessWidget {
                   ],
                 ),
               ),
+              Icon(
+                LucideIcons.chevronRight,
+                color: design.colors.textTertiary,
+                size: 20,
+              ),
             ],
           ),
-          SizedBox(height: design.spacing.lg),
+          SizedBox(height: design.spacing.md),
           Container(
             padding: EdgeInsets.all(design.spacing.md),
             decoration: BoxDecoration(
               color: design.colors.surface,
-              borderRadius: BorderRadius.circular(16), // Softer radius
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
               children: [
@@ -89,7 +87,7 @@ class AIRecommendationCard extends StatelessWidget {
                   children: [
                     Icon(
                       LucideIcons.trendingDown,
-                      size: 16,
+                      size: 14,
                       color: subjectColors.accent,
                     ),
                     SizedBox(width: design.spacing.xs),
@@ -109,15 +107,15 @@ class AIRecommendationCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: design.spacing.md), // Slightly more gap
+                SizedBox(height: design.spacing.sm),
                 Row(
                   children: [
                     Expanded(
                       child: Container(
-                        height: 8,
+                        height: 6,
                         decoration: BoxDecoration(
                           color: design.colors.border,
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(3),
                         ),
                         child: FractionallySizedBox(
                           alignment: Alignment.centerLeft,
@@ -125,7 +123,7 @@ class AIRecommendationCard extends StatelessWidget {
                           child: Container(
                             decoration: BoxDecoration(
                               color: highlightColor,
-                              borderRadius: BorderRadius.circular(4),
+                              borderRadius: BorderRadius.circular(3),
                             ),
                           ),
                         ),
@@ -134,35 +132,15 @@ class AIRecommendationCard extends StatelessWidget {
                     SizedBox(width: design.spacing.md),
                     AppText.caption(
                       '${topic.accuracy.toInt()}% ↓',
-                      color: highlightColor,
+                      color: highlightColor.withValues(alpha: 0.8),
                       style: const TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12,
                       ),
                     ),
                   ],
                 ),
               ],
-            ),
-          ),
-          SizedBox(height: design.spacing.lg),
-          GestureDetector(
-            onTap: onPracticeTap,
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: 14), // Taller button
-              decoration: BoxDecoration(
-                color: highlightColor,
-                borderRadius: BorderRadius.circular(
-                  16,
-                ), // Match inner container
-              ),
-              child: AppText.labelBold(
-                l10n.aiAssistantPracticeNow,
-                textAlign: TextAlign.center,
-                color: design.colors.onPrimary,
-                style: const TextStyle(fontSize: 15),
-              ),
             ),
           ),
         ],

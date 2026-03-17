@@ -11,12 +11,13 @@ The `AIAssistantPage` SHALL display a scrollable dashboard containing a personal
 
 #### Scenario: Quick Action Section
 - **WHEN** the dashboard loads
-- **THEN** it MUST show two primary cards: "Ask a Doubt" (blue themed) and "Practice Exam" (purple themed) using a low-elevation, softly shadowed surface treatment consistent with the approved design.
+- **THEN** it MUST show a high-weight Hero card for "Ask a Doubt" (using the primary assistant accent `#2563EB`) as the focal entry point.
+- **AND** it MUST show a secondary action card for "Practice Exam" (purple themed) using a low-elevation, softly shadowed surface treatment.
 
 #### Scenario: Personalized Recommendations
 - **WHEN** the user has performance data available
-- **THEN** the "Recommended For You" section displays a "Improve Weak Topics Today" card featuring a specific subject, topic name, and a progress bar representing accuracy.
-- **AND** its CTA and progress highlight MUST use the semantic recommendation accent token, whose current value is `#FE9A00`.
+- **THEN** the "Recommended For You" section displays a "Improve Weak Topics Today" card featuring a specific subject, topic name, and a progress bar representing accuracy, with a visually toned-down styling (e.g. no thick borders or large CTA buttons).
+- **AND** its progress highlight MUST use the semantic recommendation accent token, whose current value is `#FE9A00`.
 - **AND** the "More Topics to Practice" progress bars and accuracy labels MUST use the same semantic recommendation accent token.
 - **AND** the "More Topics to Practice" section MUST expose a trailing "View All" affordance and row-level chevrons for each secondary weak-topic card.
 

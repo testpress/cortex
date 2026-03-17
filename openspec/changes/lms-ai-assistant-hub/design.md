@@ -6,10 +6,10 @@ Implementing the `AIAssistantPage` dashboard for the Cortex Flutter SDK. This pa
 
 **Goals:**
 - Implement the dashboard layout with personalized greeting and study insights.
-- Provide primary "Ask a Doubt" and "Practice Exam" action cards.
-- Display a "Recommended for You" section highlighting weak topics.
+- Provide primary "Ask a Doubt" as a Hero CTA and secondary "Practice Exam" action cards.
+- Display a "Recommended for You" section highlighting weak topics, with a toned-down visual weight.
 - Include "More Topics to Practice" and "Recent Help" section headers with trailing "View All" affordances.
-- Show "Recent Help" activity log with status indicators (Answered, Processing, Revisit).
+- Include "Recent Help" activity log with status indicators (Answered, Processing, Revisit).
 - Ensure visual consistency with the existing `DesignConfig` and `AppCard` primitives.
 
 **Non-Goals:**
@@ -24,15 +24,18 @@ Implementing the `AIAssistantPage` dashboard for the Cortex Flutter SDK. This pa
 - **Main Widget**: `AIAssistantPage` (Stateless, composed from local mock data and reusable widgets).
 - **Sub-widgets**: 
     - `AIGreetingHeader`: Custom header with `Sparkles` icon and user stats.
-    - `AIQuickActionCard`: Reusable wrapper around `AppCard` for primary actions.
-    - `AIRecommendationCard`: Highlight card for the top weak topic with a CTA.
+    - `AIQuickActionCard`: Reusable wrapper around `AppCard` for secondary actions.
+    - `AIHeroActionCard`: New Hero card variant for the primary "Ask a Doubt" CTA.
+    - `AIRecommendationCard`: Compact highlight card for the top weak topic.
     - `AIActivityItem`: Card row for recent AI interactions and their status.
     - Secondary weak-topic cards inside `AIAssistantPage`: compact recommendation rows with a trailing chevron, inline progress bar, and percentage label.
 
 ### 2. Design Tokens & Primitives
 - **Cards**: Use `AppCard` with `showBorder: true` for the standard dashboard look.
-- **Quick action elevation**: The "Ask a Doubt" and "Practice Exam" cards should use the subtle surface shadow (`design.shadows.surfaceSoft`) rather than the stronger floating shadow so they read as grounded list cards from the approved design.
-- **Greeting hierarchy**: The personalized greeting should remain prominent, but the user-name line should sit slightly below hero scale so it does not overpower the quick actions section.
+- **Hero action card**: The "Ask a Doubt" card should be a Hero card using the primary accent color (`design.colors.accent2`) for its background and a larger icon to distinguish it as the main entry point.
+- **Quick action elevation**: The secondary cards should use the subtle surface shadow (`design.shadows.surfaceSoft`) rather than the stronger floating shadow so they read as grounded list cards.
+- **Tone down Recommendations**: Remove the thick borders and large CTA buttons from the `AIRecommendationCard`. Instead, use a subtitle or compact trailing chevron.
+- **Greeting hierarchy**: The personalized greeting should remain prominent, but the user-name line should sit slightly below hero scale so it does not overpower the primary action.
 - **Greeting icon balance**: The leading sparkles icon should be slightly smaller than the largest icon token so it supports the greeting without dominating the header row.
 - **Greeting trust line**: The header should include a small explanatory line clarifying that AI suggestions are powered by the learner's progress and exam performance.
 - **Secondary text legibility**: Supporting copy, metadata rows, and section labels should prefer `textSecondary` or only lightly reduced alpha so they remain readable against the light dashboard background.
