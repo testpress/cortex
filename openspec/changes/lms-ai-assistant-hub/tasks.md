@@ -13,10 +13,12 @@
 - [x] 2.10 Apply the exact `#FE9A00` accent to the "More Topics to Practice" progress bars and percentage labels.
 - [x] 2.11 Move the recommendation accent `#FE9A00` into the design context and replace hardcoded widget color literals with that token.
 - [x] 2.12 Reflect the greeting trust line, "View All" section actions, row chevrons, and activity time metadata in the AI Support documentation so implementation guidance matches the approved design.
+- [x] 2.13 Move AI Support section-header styling into a semantic typography token and remove stale `AppCard` implementation comments that no longer match behavior.
 - [x] 2.2 Create `AIQuickActionCard` using existing `AppCard` primitive in `packages/ai_assistant/lib/widgets/ai_quick_action_card.dart`.
 - [x] 2.5 Adjust `AIQuickActionCard` to use the standard surface shadow instead of the floating shadow so the quick actions match the approved low-elevation design.
 - [x] 2.3 Create `AIRecommendationCard` with subject-specific progress bars in `packages/ai_assistant/lib/widgets/ai_recommendation_card.dart`.
 - [x] 2.4 Create `AIActivityItem` with status badges in `packages/ai_assistant/lib/widgets/ai_activity_item.dart`.
+- [x] 2.13 Refactor AI activity item colors to use semantic `conceptAccent` and `conceptBackground` tokens instead of brittle hardcoded palette indices.
 
 ## 3. Page Assembly
 

@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import '../design/design_config.dart';
 import '../design/design_provider.dart';
 
 /// Platform-neutral text widget with semantic variants.
@@ -104,6 +105,16 @@ class AppText extends StatelessWidget {
     this.overflow,
     this.style,
   }) : _variant = _AppTextVariant.labelBold;
+
+  const AppText.sectionHeader(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.style,
+  }) : _variant = _AppTextVariant.sectionHeader;
 
   const AppText.labelSmall(
     this.text, {
@@ -262,6 +273,7 @@ class AppText extends StatelessWidget {
         _AppTextVariant.bodySmall => design.typography.bodySmall,
         _AppTextVariant.label => design.typography.label,
         _AppTextVariant.labelBold => design.typography.labelBold,
+        _AppTextVariant.sectionHeader => design.typography.sectionHeader,
         _AppTextVariant.labelSmall => design.typography.labelSmall,
         _AppTextVariant.caption => design.typography.caption,
         _AppTextVariant.cardTitle => design.typography.cardTitle,
@@ -306,6 +318,7 @@ enum _AppTextVariant {
   bodySmall,
   label,
   labelBold,
+  sectionHeader,
   labelSmall,
   caption,
   cardTitle,

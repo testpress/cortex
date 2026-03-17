@@ -64,7 +64,7 @@ class _AIActivityItemState extends State<AIActivityItem>
       case AIActivityType.exam:
         return design.colors.accent1; // Purple
       case AIActivityType.concept:
-        return design.subjectPalette.atIndex(6).accent; // Amber
+        return design.colors.conceptAccent;
     }
   }
 
@@ -75,7 +75,7 @@ class _AIActivityItemState extends State<AIActivityItem>
       case AIActivityType.exam:
         return design.colors.accent1.withValues(alpha: 0.1);
       case AIActivityType.concept:
-        return design.subjectPalette.atIndex(6).background; // Amber bg
+        return design.colors.conceptBackground;
     }
   }
 
@@ -109,9 +109,8 @@ class _AIActivityItemState extends State<AIActivityItem>
 
     if (widget.activity.type == AIActivityType.concept &&
         widget.activity.status == AIActivityStatus.revisit) {
-      final amber = design.subjectPalette.atIndex(6);
-      bgColor = amber.background;
-      textColor = amber.accent;
+      bgColor = design.colors.conceptBackground;
+      textColor = design.colors.conceptAccent;
     } else {
       bgColor = statusStyle.background;
       textColor = statusStyle.foreground;
