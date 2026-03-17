@@ -62,7 +62,7 @@ class AIAssistantPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildSectionTitle(design, l10n.aiAssistantMoreTopicsTitle),
-                    AppText.labelBold(
+                    AppText.labelSmall(
                       l10n.aiAssistantViewAll,
                       color: design.colors.primary,
                     ),
@@ -83,7 +83,7 @@ class AIAssistantPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildSectionTitle(design, l10n.aiAssistantRecentHelpTitle),
-                  AppText.labelBold(
+                  AppText.labelSmall(
                     l10n.aiAssistantViewAll,
                     color: design.colors.primary,
                   ),
