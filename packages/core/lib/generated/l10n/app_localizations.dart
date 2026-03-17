@@ -838,6 +838,12 @@ abstract class AppLocalizations {
   /// **'{progress}% watched so far'**
   String activityProgressLabel(int progress);
 
+  /// No description provided for @homeTabTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get homeTabTitle;
+
   /// No description provided for @profileTabTitle.
   ///
   /// In en, this message translates to:
@@ -2300,6 +2306,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Practice'**
   String get labelPractice;
+
+  /// No description provided for @aiAssistantTabTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Support'**
+  String get aiAssistantTabTitle;
+
+  /// No description provided for @aiAssistantGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hi {userName} 👋'**
+  String aiAssistantGreeting(String userName);
+
+  /// No description provided for @aiAssistantStudyInsight.
+  ///
+  /// In en, this message translates to:
+  /// **'{insight}'**
+  String aiAssistantStudyInsight(String insight);
+
+  /// No description provided for @aiAssistantQuickActions.
+  ///
+  /// In en, this message translates to:
+  /// **'QUICK ACTIONS'**
+  String get aiAssistantQuickActions;
+
+  /// No description provided for @aiAssistantAskDoubtTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask a Doubt'**
+  String get aiAssistantAskDoubtTitle;
+
+  /// No description provided for @aiAssistantAskDoubtDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Snap, upload or type your question'**
+  String get aiAssistantAskDoubtDesc;
+
+  /// No description provided for @aiAssistantPracticeExamTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice Exam'**
+  String get aiAssistantPracticeExamTitle;
+
+  /// No description provided for @aiAssistantPracticeExamDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Create AI practice exams based on weak topics or chapters'**
+  String get aiAssistantPracticeExamDesc;
+
+  /// No description provided for @aiAssistantRecommendedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'RECOMMENDED FOR YOU'**
+  String get aiAssistantRecommendedTitle;
+
+  /// No description provided for @aiAssistantImproveTopicsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Improve Weak Topics Today'**
+  String get aiAssistantImproveTopicsTitle;
+
+  /// No description provided for @aiAssistantStruggledTopicDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'You struggled in this topic recently'**
+  String get aiAssistantStruggledTopicDesc;
+
+  /// No description provided for @aiAssistantPracticeNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice Now'**
+  String get aiAssistantPracticeNow;
+
+  /// No description provided for @aiAssistantMoreTopicsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'MORE TOPICS TO PRACTICE'**
+  String get aiAssistantMoreTopicsTitle;
+
+  /// No description provided for @aiAssistantRecentHelpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'RECENT HELP'**
+  String get aiAssistantRecentHelpTitle;
+
+  /// No description provided for @aiAssistantViewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
+  String get aiAssistantViewAll;
+
+  /// No description provided for @aiAssistantStatusAnswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Answered'**
+  String get aiAssistantStatusAnswered;
+
+  /// No description provided for @aiAssistantStatusProcessing.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing'**
+  String get aiAssistantStatusProcessing;
+
+  /// No description provided for @aiAssistantStatusRevisit.
+  ///
+  /// In en, this message translates to:
+  /// **'Revisit'**
+  String get aiAssistantStatusRevisit;
+
+  /// No description provided for @aiAssistantPoweredBy.
+  ///
+  /// In en, this message translates to:
+  /// **'AI powered by your learning progress and exam performance'**
+  String get aiAssistantPoweredBy;
 }
 
 class _AppLocalizationsDelegate

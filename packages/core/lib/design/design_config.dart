@@ -224,6 +224,7 @@ class DesignColors {
     required this.accent4,
     required this.accent5,
     required this.accent6,
+    required this.recommendationAccent,
     required this.rank1,
     required this.rank2,
     required this.rank3,
@@ -280,6 +281,7 @@ class DesignColors {
   final Color accent4; // Green
   final Color accent5; // Rose
   final Color accent6; // Cyan
+  final Color recommendationAccent; // Recommendation CTA/progress
 
   final Color rank1;
   final Color rank2;
@@ -333,6 +335,7 @@ class DesignColors {
       accent4: Color(0xFF16A34A),
       accent5: Color(0xFFE11D48),
       accent6: Color(0xFF0891B2),
+      recommendationAccent: Color(0xFFFE9A00),
       rank1: Color(0xFFFBBF24),
       rank2: Color(0xFFCBD5E1),
       rank3: Color(0xFFFB923C),
@@ -379,6 +382,7 @@ class DesignColors {
       accent4: Color(0xFF22C55E),
       accent5: Color(0xFFFB7185),
       accent6: Color(0xFF22D3EE),
+      recommendationAccent: Color(0xFFFE9A00),
       rank1: Color(0xFFFCD34D),
       rank2: Color(0xFFA1A1AA),
       rank3: Color(0xFFFDBA74),
@@ -427,6 +431,7 @@ class DesignColors {
     Color accent4 = const Color(0xFF16A34A),
     Color accent5 = const Color(0xFFE11D48),
     Color accent6 = const Color(0xFF0891B2),
+    Color recommendationAccent = const Color(0xFFFE9A00),
     Color rank1 = const Color(0xFFFBBF24),
     Color rank2 = const Color(0xFFCBD5E1),
     Color rank3 = const Color(0xFFFB923C),
@@ -483,6 +488,7 @@ class DesignColors {
       accent4: accent4,
       accent5: accent5,
       accent6: accent6,
+      recommendationAccent: recommendationAccent,
       rank1: rank1,
       rank2: rank2,
       rank3: rank3,
@@ -561,6 +567,7 @@ class DesignColors {
         other.accent4 == accent4 &&
         other.accent5 == accent5 &&
         other.accent6 == accent6 &&
+        other.recommendationAccent == recommendationAccent &&
         other.rank1 == rank1 &&
         other.rank2 == rank2 &&
         other.rank3 == rank3 &&
@@ -604,6 +611,7 @@ class DesignColors {
       accent4,
       accent5,
       accent6,
+      recommendationAccent,
       rank1,
       rank2,
       rank3,

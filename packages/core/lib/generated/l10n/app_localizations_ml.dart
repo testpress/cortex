@@ -416,6 +416,9 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
+  String get homeTabTitle => 'ഹോം';
+
+  @override
   String get profileTabTitle => 'പ്രൊഫൈൽ';
 
   @override
@@ -1240,4 +1243,70 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get labelPractice => 'പ്രാക്ടീസ്';
+
+  @override
+  String get aiAssistantTabTitle => 'AI സഹായം';
+
+  @override
+  String aiAssistantGreeting(String userName) {
+    return 'ഹലോ $userName 👋';
+  }
+
+  @override
+  String aiAssistantStudyInsight(String insight) {
+    return '$insight';
+  }
+
+  @override
+  String get aiAssistantQuickActions => 'ദ്രുത പ്രവർത്തനങ്ങൾ';
+
+  @override
+  String get aiAssistantAskDoubtTitle => 'സംശയം ചോദിക്കുക';
+
+  @override
+  String get aiAssistantAskDoubtDesc =>
+      'ചിത്രം എടുക്കുക, അപ്‌ലോഡ് ചെയ്യുക അല്ലെങ്കിൽ ടൈപ്പ് ചെയ്യുക';
+
+  @override
+  String get aiAssistantPracticeExamTitle => 'പ്രാക്ടീസ് പരീക്ഷ';
+
+  @override
+  String get aiAssistantPracticeExamDesc =>
+      'AI ഉപയോഗിച്ച് പ്രാക്ടീസ് പരീക്ഷകൾ സൃഷ്ടിക്കുക';
+
+  @override
+  String get aiAssistantRecommendedTitle => 'നിങ്ങൾക്കായി ശുപാർശ ചെയ്യുന്നവ';
+
+  @override
+  String get aiAssistantImproveTopicsTitle =>
+      'ദുർബലമായ ഭാഗങ്ങൾ മെച്ചപ്പെടുത്തുക';
+
+  @override
+  String get aiAssistantStruggledTopicDesc =>
+      'ഈ ഭാഗത്ത് നിങ്ങൾ പ്രകടനം മെച്ചപ്പെടുത്തേണ്ടതുണ്ട്';
+
+  @override
+  String get aiAssistantPracticeNow => 'ഇപ്പോൾ പ്രാക്ടീസ് ചെയ്യുക';
+
+  @override
+  String get aiAssistantMoreTopicsTitle => 'കൂടുതൽ ഭാഗങ്ങൾ';
+
+  @override
+  String get aiAssistantRecentHelpTitle => 'സമീപകാല സഹായം';
+
+  @override
+  String get aiAssistantViewAll => 'എല്ലാം കാണുക';
+
+  @override
+  String get aiAssistantStatusAnswered => 'മറുപടി നൽകി';
+
+  @override
+  String get aiAssistantStatusProcessing => 'നടന്നുകൊണ്ടിരിക്കുന്നു';
+
+  @override
+  String get aiAssistantStatusRevisit => 'വീണ്ടും സന്ദർശിക്കുക';
+
+  @override
+  String get aiAssistantPoweredBy =>
+      'നിങ്ങളുടെ പഠന പുരോഗതിയെയും പരീക്ഷാ പ്രകടനത്തെയും അടിസ്ഥാനമാക്കി പ്രവർത്തിക്കുന്ന AI';
 }

@@ -7,12 +7,14 @@ class AppTabItem {
     required this.label,
     required this.icon,
     this.activeIcon,
+    this.disabled = false,
   });
 
   final String id;
   final String label;
   final IconData icon;
   final IconData? activeIcon;
+  final bool disabled;
 }
 
 class AppTabBar extends StatelessWidget {

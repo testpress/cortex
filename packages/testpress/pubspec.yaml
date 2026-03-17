@@ -22,6 +22,8 @@ dependencies:
     path: ../profile
   explore:
     path: ../explore
+  ai_assistant:
+    path: ../ai_assistant
 
   flutter_riverpod: ^2.5.1
   riverpod_annotation: ^2.3.5
