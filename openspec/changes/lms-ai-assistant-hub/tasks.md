@@ -34,3 +34,9 @@
 
 - [x] 5.1 Verify UI layout against the approved Figma design direction (personalized greeting, cards, activity list).
 - [x] 5.2 Test dark mode transitions for AI dashboard components.
+## 6. Refinement: Toning Down & Prioritization
+
+- [x] 6.1 Create `AIHeroActionCard` for the primary "Ask a Doubt" feature with a more prominent hero style.
+- [x] 6.2 Update `AIAssistantPage` to move "Ask a Doubt" into the Hero card and make it the focal point.
+- [x] 6.3 Tone down `AIRecommendationCard` by removing its thick border and big CTA button.
+- [x] 6.4 Ensure "Practice Exam" quick action is secondary to "Ask a Doubt" hero.

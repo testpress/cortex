@@ -1,11 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import '../models/ai_models.dart';
 import '../data/ai_mock_data.dart';
-import '../widgets/ai_greeting_header.dart';
 import '../widgets/ai_quick_action_card.dart';
+import '../widgets/ai_doubt_hero.dart';
 import '../widgets/ai_recommendation_card.dart';
 import '../widgets/ai_activity_item.dart';
+import '../models/ai_models.dart';
 
 class AIAssistantPage extends StatelessWidget {
   const AIAssistantPage({super.key});
@@ -16,31 +16,22 @@ class AIAssistantPage extends StatelessWidget {
     final l10n = L10n.of(context);
 
     final userName = AIMockData.userName;
-    final studyInsight = AIMockData.studyInsight;
     final weakTopics = AIMockData.weakTopics;
     final recentActivities = AIMockData.recentActivities;
 
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
       children: [
-        AIGreetingHeader(userName: userName, studyInsight: studyInsight),
+        AIDoubtHero(
+          userName: userName,
+          onAskDoubtTap: () {},
+          onSearchSolutionTap: () {},
+        ),
         Padding(
           padding: EdgeInsets.all(design.spacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildSectionTitle(design, l10n.aiAssistantQuickActions),
-              SizedBox(height: design.spacing.md),
-              AIQuickActionCard(
-                icon: LucideIcons.helpCircle,
-                title: l10n.aiAssistantAskDoubtTitle,
-                description: l10n.aiAssistantAskDoubtDesc,
-                iconColor: design.colors.accent2,
-                iconBackgroundColor: design.colors.accent2.withValues(
-                  alpha: 0.1,
-                ),
-                onTap: () {},
-              ),
               SizedBox(height: design.spacing.md),
               AIQuickActionCard(
                 icon: LucideIcons.fileText,
