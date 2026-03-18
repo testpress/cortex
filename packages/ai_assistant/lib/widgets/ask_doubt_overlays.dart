@@ -12,6 +12,7 @@ class AskDoubtOverlays extends StatelessWidget {
     required this.renamingSessionId,
     required this.sessionState,
     required this.renameController,
+    required this.renameFocusNode,
     required this.onDismissMenu,
     required this.onDismissRename,
     required this.onTogglePin,
@@ -25,6 +26,7 @@ class AskDoubtOverlays extends StatelessWidget {
   final String? renamingSessionId;
   final DoubtSessionState sessionState;
   final TextEditingController renameController;
+  final FocusNode renameFocusNode;
   final VoidCallback onDismissMenu;
   final VoidCallback onDismissRename;
   final ValueChanged<String> onTogglePin;
@@ -134,7 +136,7 @@ class AskDoubtOverlays extends StatelessWidget {
                     ),
                     child: EditableText(
                       controller: renameController,
-                      focusNode: FocusNode()..requestFocus(),
+                      focusNode: renameFocusNode,
                       cursorColor: design.colors.primary,
                       backgroundCursorColor: design.colors.textPrimary,
                       style: design.typography.body.copyWith(

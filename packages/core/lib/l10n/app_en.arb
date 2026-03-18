@@ -622,6 +622,8 @@
   "aiAssistantPoweredBy": "AI powered by your learning progress and exam performance",
   "aiDoubtPlaceholder": "Ask anything",
   "aiDoubtAttachAction": "Attach",
+  "aiDoubtCameraAction": "Take Photo",
+  "aiDoubtGalleryAction": "Choose from Gallery",
   "aiDoubtVoiceAction": "Voice",
   "aiDoubtSendAction": "Send",
   "aiDoubtNewChat": "New Chat",

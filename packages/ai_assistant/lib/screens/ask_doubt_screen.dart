@@ -25,6 +25,7 @@ class _AskDoubtScreenState extends ConsumerState<AskDoubtScreen> {
   final TextEditingController _textController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _renameController = TextEditingController();
+  final FocusNode _renameFocusNode = FocusNode();
 
   bool _isDrawerOpen = false;
   String? _menuSessionId;
@@ -37,6 +38,7 @@ class _AskDoubtScreenState extends ConsumerState<AskDoubtScreen> {
     _textController.dispose();
     _scrollController.dispose();
     _renameController.dispose();
+    _renameFocusNode.dispose();
     super.dispose();
   }
 
@@ -219,6 +221,7 @@ class _AskDoubtScreenState extends ConsumerState<AskDoubtScreen> {
                 renamingSessionId: _renamingSessionId,
                 sessionState: sessionState,
                 renameController: _renameController,
+                renameFocusNode: _renameFocusNode,
                 onDismissMenu: () => setState(() => _menuSessionId = null),
                 onDismissRename: () => setState(() => _renamingSessionId = null),
                 onTogglePin: (sessionId) {
@@ -237,6 +240,7 @@ class _AskDoubtScreenState extends ConsumerState<AskDoubtScreen> {
                     _renamingSessionId = sessionId;
                     _menuSessionId = null;
                   });
+                  _renameFocusNode.requestFocus();
                 },
                 onSubmitRename: (sessionId, title) {
                   if (title.isNotEmpty) {

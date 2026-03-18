@@ -78,9 +78,27 @@ The Ask Doubt implementation SHALL use shared localization resources and Cortex 
 - **THEN** the primary pin action SHALL read as `Unpin`
 - **AND** pinned sessions SHALL remain above unpinned sessions in the history list even after new chats are created
 
-### Requirement: Maintainable Ask Doubt Composition
-The Ask Doubt implementation SHALL keep feature-specific files focused and composable.
+### Requirement: State Consistency & Race Condition Prevention
+The system SHALL ensure that asynchronous AI responses are appended to the most recent session state.
 
-#### Scenario: Growing Ask Doubt UI surface area
-- **WHEN** Ask Doubt presentation expands beyond a lightweight screen orchestrator
-- **THEN** drawer, menu, empty state, and other major UI concerns SHALL be split into dedicated widgets instead of accumulating in one large screen file
+#### Scenario: User clears chat during AI thinking
+- **WHEN** the AI is in "Thinking" mode following a user message
+- **AND** the user clears the chat session (or modifies the message history) before the AI response is received
+- **THEN** the subsequent AI response SHALL NOT revert the chat to the stale state captured before the delay
+- **AND** the AI response SHALL be appended to the current state of the session if it still exists
+### Requirement: Proper Resource Management
+The Ask Doubt implementation SHALL manage lifecycle-dependent resources correctly to prevent memory leaks.
+
+#### Scenario: Using FocusNodes in interactive overlays
+- **WHEN** an interactive field like the rename session dialog requires focus
+- **THEN** the system SHALL manage the `FocusNode` lifecycle within a `StatefulWidget` or equivalent controller
+- **AND** the `FocusNode` SHALL be explicitly disposed of when the parent widget is removed from the tree
+- **AND** focus SHALL be requested programmatically when the overlay appears, rather than instantiating new nodes during build
+
+### Requirement: Robust Resource Identifiers
+The system SHALL use sufficiently unique identifiers for all internal resources to prevent collisions.
+
+#### Scenario: Generating IDs for sessions and messages
+- **WHEN** a new session or message (user/AI/image) is created
+- **THEN** its `id` SHALL be generated with sufficient entropy to avoid collisions even when multiple items are created in rapid succession
+- **AND** the generation logic SHALL incorporate microsecond-level precision combined with current state metadata (e.g., list length) to ensure uniqueness

@@ -45,3 +45,6 @@
 - [x] 4.21 Remove the surrounding bubble surface from AI responses while keeping user messages styled as bubbles
 - [x] 4.22 Make the history menu reflect pinned state and keep pinned chats above newly created unpinned chats
 - [x] 4.23 Soften the student message bubble from near-black to a neutral grey surface
+- [x] 4.24 Fix race condition in `DoubtSessionNotifier` during `sendMessage` and `addImageMessage` by using the latest state in async callbacks
+- [x] 4.25 Fix memory leak in `AskDoubtOverlays` by moving `FocusNode` management to `_AskDoubtScreenState` and implementing proper disposal
+- [x] 4.26 Implement more robust unique ID generation for sessions and messages using microsecond precision and session metadata

@@ -64,7 +64,7 @@ class DoubtSessionNotifier extends StateNotifier<DoubtSessionState> {
     }
 
     final newSession = AIChatSession(
-      id: 'chat_${DateTime.now().millisecondsSinceEpoch}',
+      id: 'chat_${DateTime.now().microsecondsSinceEpoch}_${state.history.length}',
       title: newChatTitle,
       messages: const [],
       createdAt: DateTime.now(),
@@ -95,7 +95,7 @@ class DoubtSessionNotifier extends StateNotifier<DoubtSessionState> {
     if (activeSession == null) return;
 
     final userMessage = AIMessage(
-      id: 'msg_u_${DateTime.now().millisecondsSinceEpoch}',
+      id: 'msg_u_${DateTime.now().microsecondsSinceEpoch}_${activeSession.messages.length}',
       content: content,
       role: AIMessageRole.user,
       timestamp: DateTime.now(),
@@ -125,23 +125,20 @@ class DoubtSessionNotifier extends StateNotifier<DoubtSessionState> {
 
     Future.delayed(const Duration(seconds: 2), () {
       final aiMessage = AIMessage(
-        id: 'msg_a_${DateTime.now().millisecondsSinceEpoch}',
+        id: 'msg_a_${DateTime.now().microsecondsSinceEpoch}',
         content: assistantResponse ?? defaultResponse,
         role: AIMessageRole.assistant,
         timestamp: DateTime.now(),
       );
 
-      final sessionAfterResponse = updatedSession.copyWith(
-        messages: [...updatedMessages, aiMessage],
-      );
-
       state = state.copyWith(
         history: _sortHistory(
-          state.history
-              .map(
-                (s) => s.id == sessionAfterResponse.id ? sessionAfterResponse : s,
-              )
-              .toList(),
+          state.history.map((s) {
+            if (s.id == updatedSession.id) {
+              return s.copyWith(messages: [...s.messages, aiMessage]);
+            }
+            return s;
+          }).toList(),
         ),
         isThinking: false,
       );
@@ -162,7 +159,7 @@ class DoubtSessionNotifier extends StateNotifier<DoubtSessionState> {
     if (activeSession == null) return;
 
     final userMessage = AIMessage(
-      id: 'msg_img_${DateTime.now().millisecondsSinceEpoch}',
+      id: 'msg_img_${DateTime.now().microsecondsSinceEpoch}_${activeSession.messages.length}',
       content: content,
       role: AIMessageRole.user,
       timestamp: DateTime.now(),
@@ -189,21 +186,20 @@ class DoubtSessionNotifier extends StateNotifier<DoubtSessionState> {
 
     Future.delayed(const Duration(seconds: 2), () {
       final aiMessage = AIMessage(
-        id: 'msg_a_img_${DateTime.now().millisecondsSinceEpoch}',
+        id: 'msg_a_img_${DateTime.now().microsecondsSinceEpoch}',
         content: imageResponse,
         role: AIMessageRole.assistant,
         timestamp: DateTime.now(),
       );
 
-      final sessionAfterAI = updatedSession.copyWith(
-        messages: [...updatedSession.messages, aiMessage],
-      );
-
       state = state.copyWith(
         history: _sortHistory(
-          state.history
-              .map((s) => s.id == sessionAfterAI.id ? sessionAfterAI : s)
-              .toList(),
+          state.history.map((s) {
+            if (s.id == updatedSession.id) {
+              return s.copyWith(messages: [...s.messages, aiMessage]);
+            }
+            return s;
+          }).toList(),
         ),
         isThinking: false,
       );

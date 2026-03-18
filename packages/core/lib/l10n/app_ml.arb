@@ -429,6 +429,8 @@
   "aiAssistantPoweredBy": "നിങ്ങളുടെ പഠന പുരോഗതിയെയും പരീക്ഷാ പ്രകടനത്തെയും അടിസ്ഥാനമാക്കി പ്രവർത്തിക്കുന്ന AI",
   "aiDoubtPlaceholder": "എന്തും ചോദിക്കൂ",
   "aiDoubtAttachAction": "അറ്റാച്ച് ചെയ്യുക",
+  "aiDoubtCameraAction": "ഫോട്ടോ എടുക്കുക",
+  "aiDoubtGalleryAction": "ഗാലറിയിൽ നിന്ന് തിരഞ്ഞെടുക്കുക",
   "aiDoubtVoiceAction": "വോയ്സ്",
   "aiDoubtSendAction": "അയയ്ക്കുക",
   "aiDoubtNewChat": "പുതിയ ചാറ്റ്",
