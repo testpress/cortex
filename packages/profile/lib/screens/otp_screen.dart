@@ -15,7 +15,6 @@ class OtpScreen extends ConsumerStatefulWidget {
 
 class _OtpScreenState extends ConsumerState<OtpScreen> {
   final _otpController = TextEditingController();
-  final _authClient = MockAuthClient();
   bool _isBusy = false;
   String? _errorMessage;
 
@@ -116,12 +115,10 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
     });
 
     try {
-      await _authClient.verifyOtp(
+      await ref.read(authProvider.notifier).verifyOtp(
         otp: otp,
         phoneNumber: widget.phoneNumber,
       );
-      final user = await _authClient.resolveCurrentUser(forceRefresh: true);
-      ref.read(authProvider.notifier).updateProfile(user);
       if (mounted) context.go('/home');
     } on AuthException catch (error) {
       if (mounted) setState(() => _errorMessage = error.message);

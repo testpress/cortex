@@ -14,8 +14,6 @@ class PasswordLoginScreen extends ConsumerStatefulWidget {
 class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-
-  final _authClient = MockAuthClient();
   bool _isBusy = false;
   String? _errorMessage;
 
@@ -121,9 +119,7 @@ class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
     });
 
     try {
-      await _authClient.login(username: username, password: password);
-      final user = await _authClient.resolveCurrentUser(forceRefresh: true);
-      ref.read(authProvider.notifier).updateProfile(user);
+      await ref.read(authProvider.notifier).login(username, password);
       if (mounted) context.go('/home');
     } on AuthException catch (error) {
       if (mounted) setState(() => _errorMessage = error.message);

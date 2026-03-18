@@ -1,10 +1,12 @@
 import 'package:core/data/data.dart';
+import 'data_source.dart';
 
-/// HTTP data source implementation that uses [AuthClient] for auth/profile calls.
+/// HTTP data source stub — to be implemented when a real backend is available.
+/// All methods throw [UnimplementedError] to surface accidental usage in tests.
+///
+/// Activate via: flutter run --dart-define=USE_MOCK=false
 class HttpDataSource implements DataSource {
-  final AuthClient _authClient;
-
-  const HttpDataSource(this._authClient);
+  const HttpDataSource();
 
   @override
   Future<List<CourseDto>> getCourses() => throw UnimplementedError(
@@ -35,9 +37,9 @@ class HttpDataSource implements DataSource {
       );
 
   @override
-  Future<UserDto> getUserProfile() async {
-    return await _authClient.fetchProfile();
-  }
+  Future<UserDto> getUserProfile() => throw UnimplementedError(
+        'HttpDataSource.getUserProfile is not yet implemented.',
+      );
 
   @override
   Future<List<UserProgressDto>> getUserProgress(String userId) =>

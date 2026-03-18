@@ -18,3 +18,11 @@
 - [x] 3.2 Update `app_router.dart` to use the real `SessionStorage` for session-based redirection.
 - [x] 3.3 Refactor `LoginScreen` in `packages/profile` to replace mock methods with real `AuthClient` and `authProvider` updates.
 - [x] 3.4 Ensure the initialization provider in `packages/testpress` correctly hydrates the auth state on app startup.
+
+## Enhancements (Post v1)
+
+- [x] E1 Split auth orchestration from `Auth` provider into a dedicated `AuthService`.
+- [x] E2 Extract hydration and profile refresh TTL logic into `SessionManager`.
+- [x] E3 Replace `Map<String, dynamic>` auth responses with typed response models in `AuthClient`.
+- [x] E4 Move token persistence to `flutter_secure_storage` while retaining non-sensitive metadata in `shared_preferences`.
+- [x] E5 Update login and OTP screens to use `authProvider` actions instead of direct `MockAuthClient` usage.

@@ -22,7 +22,11 @@ export 'db/app_database.dart';
 export 'db/database_provider.dart';
 
 // Auth
+export 'auth/auth_exception.dart';
 export 'auth/auth_provider.dart';
+export 'auth/auth_service.dart';
+export 'auth/models/auth_token_response.dart';
+export 'auth/session/session_manager.dart';
 
 // Sources
 export 'sources/data_source.dart';

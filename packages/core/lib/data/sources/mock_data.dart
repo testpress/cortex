@@ -71,11 +71,6 @@ final mockStudyMomentum = StudyMomentumDto(
   weakSubject: 'Organic Chemistry',
 );
 
-/// Mock exception for Auth flows during UI development.
-class AuthException implements Exception {
-  final String message;
-  AuthException(this.message);
-}
 
 /// Mock Auth Client that reuses [mockCurrentUser] and updates [SessionStorage].
 class MockAuthClient {

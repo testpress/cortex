@@ -24,3 +24,19 @@ The current authentication flow relies on UI-only mocks and transient session st
 - **`packages/core`**: Introduction of `dio` and `shared_preferences` dependencies.
 - **`packages/testpress`**: Updates to the `initialization_provider` to hydrate session state on startup.
 - **`packages/profile`**: Refactoring `LoginScreen` to utilize the real `AuthClient`.
+
+## Enhancements (Post v1)
+
+The original plan and delivery remain unchanged above. The following items are
+iterative enhancements to improve long-term maintainability and security.
+
+- **Auth flow ownership split**: Keep `Auth` provider state-focused by moving
+  login/otp/logout orchestration into a dedicated `AuthService`, and session
+  hydration/TTL logic into `SessionManager`.
+- **Typed auth responses**: Replace `Map<String, dynamic>` auth responses with
+  a typed token response model to improve compile-time safety and refactorability.
+- **Secure token persistence**: Move auth token and refresh token persistence
+  from `shared_preferences` to `flutter_secure_storage` while keeping
+  non-sensitive metadata in preferences.
+- **Unified auth entrypoint for UI**: Update login/OTP screens to call
+  `authProvider` actions instead of directly instantiating `MockAuthClient`.

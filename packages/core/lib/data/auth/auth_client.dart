@@ -18,7 +18,7 @@ class AuthClient {
 
   /// Performs a password-based login.
   /// POST /api/v2.5/auth-token/
-  Future<Map<String, dynamic>> login({
+  Future<AuthTokenResponse> login({
     required String username,
     required String password,
   }) async {
@@ -27,7 +27,8 @@ class AuthClient {
         ApiEndpoints.studentLogin,
         data: {'username': username, 'password': password},
       );
-      return response.data as Map<String, dynamic>;
+      final data = response.data as Map<String, dynamic>;
+      return AuthTokenResponse.fromJson(data);
     } on DioException catch (e) {
       throw _handleError(e);
     }
@@ -42,8 +43,8 @@ class AuthClient {
   }) async {
     try {
       final payload = <String, dynamic>{
-        'phoneNumber': phoneNumber,
-        'countryCode': countryCode,
+        'phone_number': phoneNumber,
+        'country_code': countryCode,
       };
       if (email != null) {
         payload['email'] = email;
@@ -57,19 +58,20 @@ class AuthClient {
 
   /// Verifies the OTP and returns authentication tokens.
   /// POST /api/v2.5/auth/otp-login/
-  Future<Map<String, dynamic>> verifyOtp({
+  Future<AuthTokenResponse> verifyOtp({
     required String otp,
     required String phoneNumber,
     String? email,
   }) async {
     try {
-      final payload = <String, dynamic>{'otp': otp, 'phoneNumber': phoneNumber};
+      final payload = <String, dynamic>{'otp': otp, 'phone_number': phoneNumber};
       if (email != null) {
         payload['email'] = email;
       }
 
       final response = await _dio.post(ApiEndpoints.verifyOtp, data: payload);
-      return response.data as Map<String, dynamic>;
+      final data = response.data as Map<String, dynamic>;
+      return AuthTokenResponse.fromJson(data);
     } on DioException catch (e) {
       throw _handleError(e);
     }
@@ -137,7 +139,7 @@ class AuthClient {
       if (responseData is Map && responseData.containsKey('detail')) {
         return AuthException(responseData['detail'].toString());
       }
-      return AuthException('OTP verification failed or request malformed.');
+      return AuthException('OTP verification failed.');
     }
 
     return AuthException('An unexpected error occurred. Please try again.');

@@ -25,3 +25,13 @@ Session management is the SDK's persistence layer, responsible for keeping the u
 ### R4: Session Termination (Logout)
 - **Action**: Must clear both `SessionStorage` (tokens) and `AppDatabase` (user profile).
 - **Scope**: Must correctly reset the `authProvider` to an unauthenticated state.
+
+## Enhancements (Post v1)
+
+### R5: Secure Secret Storage
+- Auth tokens MUST be stored in `flutter_secure_storage`.
+- Non-sensitive session metadata MAY remain in `shared_preferences`.
+
+### R6: Session Manager
+- Session hydration and profile refresh TTL logic SHOULD live in a dedicated `SessionManager`.
+- `authProvider` SHOULD consume hydration results from `SessionManager` rather than own hydration internals directly.

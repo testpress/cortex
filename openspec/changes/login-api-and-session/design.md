@@ -53,3 +53,25 @@ void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
 
 *   **`authProvider`**: A simple `StateNotifier` that watches for changes.
 *   **Initialization**: On app start, the `initializationProvider` checks `SessionStorage`. If a token exists, it fetches the user from `AppDatabase` and sets the `authProvider` state immediately.
+
+## Enhancements (Post v1)
+
+### Auth Ownership Refinement
+
+- **`AuthService`**: Owns login, OTP generation, OTP verification, and logout orchestration.
+- **`SessionManager`**: Owns session hydration, profile refresh TTL checks, and token lifecycle coordination.
+- **`authProvider`**: Owns reactive auth state only, delegating workflow logic to the service layer.
+
+### Typed Auth Transport
+
+- Replace raw map responses in `AuthClient` for login and OTP verification with a typed token response object.
+- Continue fetching full `UserDto` separately via profile endpoint to match backend payload boundaries.
+
+### Secure Storage Partitioning
+
+- Persist secrets (`authToken`, `refreshToken`) in `flutter_secure_storage`.
+- Keep non-sensitive metadata (`profile_synced_at`) in `shared_preferences`.
+
+### UI Integration Consistency
+
+- Login and OTP screens should invoke `authProvider` actions, not direct mock client instances.

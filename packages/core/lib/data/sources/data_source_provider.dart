@@ -12,6 +12,5 @@ DataSource dataSource(Ref ref) {
   if (AppConfig.useMockData) {
     return const MockDataSource();
   }
-  final authClient = ref.read(authClientProvider);
-  return HttpDataSource(authClient);
+  return const HttpDataSource();
 }

@@ -15,9 +15,8 @@ class UserRepository {
     return _mapToDto(cached);
   }
 
-  /// Refetches the current user profile from the API/Mock source and updates the local DB.
-  Future<UserDto> refreshProfile() async {
-    final profile = await _source.getUserProfile();
+  /// Persists the provided profile to local storage.
+  Future<void> saveProfile(UserDto profile) async {
     await _db.upsertUser(
       UsersTableCompanion.insert(
         id: profile.id,
@@ -29,6 +28,12 @@ class UserRepository {
         joinedDate: Value(profile.joinedDate),
       ),
     );
+  }
+
+  /// Refetches the current user profile from the API/Mock source and updates the local DB.
+  Future<UserDto> refreshProfile() async {
+    final profile = await _source.getUserProfile();
+    await saveProfile(profile);
     return profile;
   }
 
