@@ -84,7 +84,7 @@ class MockAuthClient {
     if (username == 'error') {
       throw AuthException('Incorrect username or password.');
     }
-    SessionStorage.instance.persistSession();
+    SessionStorage.instance.persistSession(authToken: 'mock_token');
   }
 
   Future<void> generateOtp({
@@ -101,7 +101,7 @@ class MockAuthClient {
     String? email,
   }) async {
     await Future.delayed(const Duration(seconds: 2));
-    SessionStorage.instance.persistSession();
+    SessionStorage.instance.persistSession(authToken: 'mock_token');
   }
 
   Future<UserDto> resolveCurrentUser({bool forceRefresh = false}) async {

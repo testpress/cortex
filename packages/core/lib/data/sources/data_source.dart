@@ -18,6 +18,11 @@ abstract class DataSource {
   /// Fetch discussion forum threads for a course.
   Future<List<ForumThreadDto>> getForumThreads(String courseId);
 
+  // ── Identity ────────────────────────────────────────────────────────────
+
+  /// Fetches the profile for the current authenticated user.
+  Future<UserDto> getUserProfile();
+
   /// Fetch per-lesson progress for a user.
   Future<List<UserProgressDto>> getUserProgress(String userId);
 

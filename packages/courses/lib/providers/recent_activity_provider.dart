@@ -28,9 +28,15 @@ class RecentActivityVo {
 Stream<RecentActivityVo?> recentActivity(RecentActivityRef ref) async* {
   final userRepo = await ref.watch(userRepositoryProvider.future);
   final courseRepo = await ref.watch(courseRepositoryProvider.future);
-  final user = ref.watch(authProvider);
+  final authState = ref.watch(authProvider);
+  final userId = authState.user?.id;
 
-  yield* userRepo.watchProgress(user.id).asyncMap((list) async {
+  if (userId == null || userId.isEmpty) {
+    yield null;
+    return;
+  }
+
+  yield* userRepo.watchProgress(userId).asyncMap((list) async {
     if (list.isEmpty) return null;
 
     // Sort by lastAccessedAt descending

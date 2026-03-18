@@ -21,7 +21,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    final user = ref.read(authProvider);
+    final user = ref.read(authProvider).effectiveUser;
     _nameController = TextEditingController(text: user.name);
     _emailController = TextEditingController(text: user.email ?? '');
     _phoneController = TextEditingController(text: user.phone ?? '');
@@ -44,7 +44,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     });
 
     if (_nameError == null) {
-      final user = ref.read(authProvider);
+      final user = ref.read(authProvider).effectiveUser;
       final updatedUser = UserDto(
         id: user.id,
         name: _nameController.text.trim(),
@@ -122,7 +122,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   Widget _buildHeader(BuildContext context, DesignConfig design, dynamic l10n) {
     final statusBarHeight = MediaQuery.of(context).padding.top;
-    
+
     return Container(
       width: double.infinity,
       // Total height = status bar + content bar height
@@ -167,16 +167,16 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   ),
                 ),
               ),
-              
+
               // Save Button - Explicitly constrained height
               SizedBox(
                 height: 36,
                 child: AppButton(
-                   label: l10n.editProfileSave,
-                   onPressed: _validateAndSave,
-                   padding: EdgeInsets.symmetric(horizontal: design.spacing.lg),
-                   backgroundColor: design.colors.accent2,
-                   foregroundColor: design.colors.onPrimary,
+                  label: l10n.editProfileSave,
+                  onPressed: _validateAndSave,
+                  padding: EdgeInsets.symmetric(horizontal: design.spacing.lg),
+                  backgroundColor: design.colors.accent2,
+                  foregroundColor: design.colors.onPrimary,
                 ),
               ),
             ],
@@ -187,7 +187,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget _buildAvatarSection(DesignConfig design, dynamic l10n) {
-    final user = ref.read(authProvider);
+    final user = ref.read(authProvider).effectiveUser;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,7 +210,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       ? Image.network(
                           user.avatar!,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => _buildInitialsAvatar(user.name, design),
+                          errorBuilder: (context, error, stackTrace) =>
+                              _buildInitialsAvatar(user.name, design),
                         )
                       : _buildInitialsAvatar(user.name, design),
                 ),
@@ -259,14 +260,15 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget _buildInitialsAvatar(String name, DesignConfig design) {
-     final initials = name.isNotEmpty
-         ? name.split(' ').take(2).map((e) => e.isNotEmpty ? e[0].toUpperCase() : '').join()
-         : '?';
-     return Center(
-       child: AppText.headline(
-          initials,
-          color: design.colors.onPrimary,
-       ),
-     );
+    final initials = name.isNotEmpty
+        ? name
+              .split(' ')
+              .take(2)
+              .map((e) => e.isNotEmpty ? e[0].toUpperCase() : '')
+              .join()
+        : '?';
+    return Center(
+      child: AppText.headline(initials, color: design.colors.onPrimary),
+    );
   }
 }

@@ -1,17 +1,15 @@
 import 'package:core/data/data.dart';
-import 'data_source.dart';
 
-/// HTTP data source stub — to be implemented when a real backend is available.
-/// All methods throw [UnimplementedError] to surface accidental usage in tests.
-///
-/// Activate via: flutter run --dart-define=USE_MOCK=false
+/// HTTP data source implementation that uses [AuthClient] for auth/profile calls.
 class HttpDataSource implements DataSource {
-  const HttpDataSource();
+  final AuthClient _authClient;
+
+  const HttpDataSource(this._authClient);
 
   @override
   Future<List<CourseDto>> getCourses() => throw UnimplementedError(
-        'HttpDataSource.getCourses is not yet implemented. Use MockDataSource.',
-      );
+    'HttpDataSource.getCourses is not yet implemented. Use MockDataSource.',
+  );
 
   @override
   Future<List<ChapterDto>> getChapters(String courseId) =>
@@ -27,14 +25,19 @@ class HttpDataSource implements DataSource {
 
   @override
   Future<List<LiveClassDto>> getLiveClasses() => throw UnimplementedError(
-        'HttpDataSource.getLiveClasses is not yet implemented.',
-      );
+    'HttpDataSource.getLiveClasses is not yet implemented.',
+  );
 
   @override
   Future<List<ForumThreadDto>> getForumThreads(String courseId) =>
       throw UnimplementedError(
         'HttpDataSource.getForumThreads is not yet implemented.',
       );
+
+  @override
+  Future<UserDto> getUserProfile() async {
+    return await _authClient.fetchProfile();
+  }
 
   @override
   Future<List<UserProgressDto>> getUserProgress(String userId) =>

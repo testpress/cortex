@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:testpress/testpress.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:core/data/data.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await AppConfig.initialize();
+  await SessionStorage.instance.initialize();
   runApp(const ProviderScope(child: CortexAppRoot()));
 }
 

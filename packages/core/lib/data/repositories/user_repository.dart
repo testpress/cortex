@@ -1,18 +1,55 @@
 import 'package:drift/drift.dart';
-
-import '../db/app_database.dart';
 import 'package:core/data/data.dart';
-import '../sources/data_source.dart';
 
-/// Repository for user progress tracking.
+/// Repository for managing both user identity and progress.
 class UserRepository {
   final AppDatabase _db;
   final DataSource _source;
 
   UserRepository(this._db, this._source);
 
+  /// Returns cached user profile when available.
+  Future<UserDto?> getCachedProfile() async {
+    final cached = await _db.getAnyUser();
+    if (cached == null) return null;
+    return _mapToDto(cached);
+  }
+
+  /// Refetches the current user profile from the API/Mock source and updates the local DB.
+  Future<UserDto> refreshProfile() async {
+    final profile = await _source.getUserProfile();
+    await _db.upsertUser(
+      UsersTableCompanion.insert(
+        id: profile.id,
+        name: profile.name,
+        email: Value(profile.email),
+        phone: Value(profile.phone),
+        avatar: Value(profile.avatar),
+        isPro: Value(profile.isPro),
+        joinedDate: Value(profile.joinedDate),
+      ),
+    );
+    return profile;
+  }
+
+  UserDto _mapToDto(UsersTableData r) {
+    return UserDto(
+      id: r.id,
+      name: r.name,
+      email: r.email,
+      phone: r.phone,
+      avatar: r.avatar,
+      isPro: r.isPro,
+      joinedDate: r.joinedDate,
+    );
+  }
+
+  // ── User Progress ──────────────────────────────────────────────────────
+
   Stream<List<UserProgressDto>> watchProgress(String userId) {
-    return _db.watchProgressForUser(userId).map(
+    return _db
+        .watchProgressForUser(userId)
+        .map(
           (rows) => rows
               .map(
                 (r) => UserProgressDto(
