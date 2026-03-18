@@ -150,10 +150,12 @@ final GoRouter appRouter = GoRouter(
                     isOpen: isLogoutSheetOpen,
                     onClose: closeSheet,
                     child: LogoutConfirmationSheet(
-                      onConfirm: () {
-                        closeSheet();
-                        ref.read(authProvider.notifier).logout();
-                        _rootNavigatorKey.currentContext?.go('/home');
+                      onConfirm: () async {
+                        await ref.read(authProvider.notifier).logout();
+                        final navContext = _rootNavigatorKey.currentContext;
+                        if (navContext != null && navContext.mounted) {
+                          navContext.go('/login');
+                        }
                       },
                       onCancel: closeSheet,
                     ),
