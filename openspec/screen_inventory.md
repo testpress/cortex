@@ -15,8 +15,10 @@ Each screen will be one OpenSpec change, implemented one at a time.
 | **App Type** | Mobile-first LMS (Learning Management System) |
 | **Target** | JEE/NEET coaching institute students |
 | **User States** | Non-Paid, Paid New User, Paid Active User |
-| **Nav Tabs** | Home, Study, Explore, Profile + fullscreen sub-screens |
+| **Nav Tabs (Default)** | Home, Study, Explore, Profile |
+| **Nav Tabs (Paid Active)**| Home, Study, AI Support, Profile |
 | **Subjects** | Physics, Chemistry, Mathematics, Biology, English |
+| **UI Control** | Feature flags determine tab labels and visibility (e.g., `isAiEnabled`) |
 
 ---
 
@@ -53,7 +55,7 @@ Each screen will be one OpenSpec change, implemented one at a time.
 
 ```
 App Root
-├── BottomNavBar (Home / Study / Explore / Profile)
+├── BottomNavBar (Home / Study / [Explore | AI Support] / Profile)
 │
 ├── [Home Tab] - 3 variants
 │   ├── NonPaidHome → Free trial CTAs + hero
@@ -65,12 +67,17 @@ App Root
 │   ├── ChaptersList → chapter accordion list
 │   └── ChapterDetail → individual lesson items
 │
-├── [Explore Tab] - 2 variants
+├── [AI Support Tab] - (Replaces Explore for Paid Active)
+│   ├── AIAssistantPage → Sticky personalized greeting, quick actions, featured recommendation, more-topics list, recent-help history
+│   ├── AskDoubtScreen → Contextual question composer (snap/type)
+│   └── CreatePracticeExam → AI-driven custom test generator
+│
+├── [Explore Tab] - (Non-Paid / New Users)
 │   ├── NonPaidExplore → locked content preview
 │   └── PaidExplore → full content + study tips
 │
 ├── [Profile Tab] - 3 variants
-│   ├── NonPaidProfile → sign-up prompt + free preview
+│   ├── NonPaidProfile → sign-up prompt
 │   ├── PaidNewProfile → onboarding checklist
 │   └── PaidActiveProfile → stats, courses, badges, certificate
 │
@@ -128,20 +135,28 @@ Each screen = one OpenSpec change. Priority is based on user journey criticality
 | 13 | `lms-exam-review` | ReviewAnswerDetailScreen | Post-test summary + Per-question review | ✅ Done |
 | 14 | `lms-review-analytics` | ReviewAnalyticsScreen | Charts: subject-wise, time-spent | ✅ Done |
 
-### Phase 4 — Live Classes
+### Phase 4 — AI Intelligence & Support
+| # | Change Name | Screen(s) | Notes | Status |
+|---|---|---|---|---|
+| 31 | `lms-ai-assistant-hub` | AIAssistantPage | Sticky greeting header, quick actions, recommendation card, more-topics list, recent help | ⏳ Pending |
+| 32 | `lms-ask-doubt` | AskDoubtScreen | "Snap/Type/Upload" doubt flow | ⏳ Pending |
+| 33 | `lms-ai-custom-exam` | CreatePracticeExam | AI-driven custom test generation | ⏳ Pending |
+| 34 | `lms-global-ai-chat` | FloatingAIChat | Persistent AI access overlay | ⏳ Pending |
+
+### Phase 5 — Live Classes
 | # | Change Name | Screen(s) | Notes | Status |
 |---|---|---|---|---|
 | 15 | `lms-live-class-lobby` | LiveClassLobby | Pre-class countdown + participant count | ⏳ Pending |
 | 16 | `lms-live-class` | LiveClassScreen | Full interactive live class screen | ⏳ Pending |
 
-### Phase 5 — Community & Forum
+### Phase 6 — Community & Forum
 | # | Change Name | Screen(s) | Notes | Status |
 |---|---|---|---|---|
 | 17 | `lms-forum-main` | ForumCourseSelection + ForumMainPage | Course selector + question list | ⏳ Pending |
 | 18 | `lms-forum-thread` | DiscussionForumDetailScreen | Thread with replies + reply input | ⏳ Pending |
 | 19 | `lms-forum-create` | CreateQuestionPage | Question composer | ⏳ Pending |
 
-### Phase 6 — Profile, Settings & Account
+### Phase 7 — Profile, Settings & Account
 | # | Change Name | Screen(s) | Notes | Status |
 |---|---|---|---|---|
 | 20 | `lms-profile-paid-active` | ProfilePage | Full profile with stats, badges, courses | ✅ Done |
@@ -151,7 +166,7 @@ Each screen = one OpenSpec change. Priority is based on user journey criticality
 | 24 | `lms-settings` | AppSettingsScreen | App settings, playback, and theme settings | ✅ Done |
 | 25 | `lms-logout` | LogoutDialog | Generic logout confirmation dialog | ✅ Done |
 
-### Phase 7 — Upsell & Onboarding Variants
+### Phase 8 — Upsell & Onboarding Variants
 | # | Change Name | Screen(s) | Notes | Status |
 |---|---|---|---|---|
 | 26 | `lms-home-non-paid` | NonPaidHome | Upsell hero, benefits, limited access | ⏳ Pending |
@@ -170,7 +185,16 @@ The React app has rich hardcoded data in `App.tsx`. Key data shapes to model in 
 // Course hierarchy
 Course → Subject → Chapter → Lesson(video|pdf|assessment|test)
 
-// Key models
+// AI & Analytics Extensions
+class AIRecommendation { id, type, title, description, reason }
+class WeakTopic { id, subject, topic, accuracy, subjectColor }
+class AIInsight { reason, count, percentage, color }
+
+// Exam Extensions
+class QuestionPaper { id, year, month, session, totalQuestions, duration }
+class ExamChapterDistribution { subject, chapterName, questionCount, topics[] }
+
+// Base models
 class Course { id, title, subjects[], progress, completedLessons, totalLessons }
 class Chapter { id, title, lessonCount, assessmentCount, lessons[] }
 class Lesson  { id, title, type, duration, progress, isLocked }

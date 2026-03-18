@@ -5,8 +5,7 @@ import 'package:core/core.dart';
 import 'package:courses/courses.dart';
 import 'package:profile/profile.dart';
 import 'package:exams/exams.dart';
-import 'package:explore/explore.dart';
-import 'package:core/data/data.dart';
+import 'package:ai_assistant/ai_assistant.dart';
 import '../widgets/dashboard_drawer.dart';
 
 class ExplorePlaceholderScreen extends StatelessWidget {
@@ -100,25 +99,37 @@ final GoRouter appRouter = GoRouter(
     ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
-        // AppTabBar items matching the routes exactly
+        final l10n = L10n.of(context);
         final items = [
-          const AppTabItem(id: '/home', label: 'Home', icon: LucideIcons.home),
-          const AppTabItem(
+          AppTabItem(
+            id: '/home',
+            label: l10n.homeTabTitle,
+            icon: LucideIcons.home,
+          ),
+          AppTabItem(
             id: '/study',
-            label: 'Study',
+            label: l10n.studyTabTitle,
             icon: LucideIcons.bookOpen,
           ),
-          const AppTabItem(
+          AppTabItem(
             id: '/explore',
-            label: 'Explore',
+            label: l10n.exploreTabTitle,
             icon: LucideIcons.compass,
+            disabled: true,
           ),
-          const AppTabItem(
+          AppTabItem(
+            id: '/ai-assistant',
+            label: l10n.aiAssistantTabTitle,
+            icon: LucideIcons.sparkles,
+          ),
+          AppTabItem(
             id: '/profile',
-            label: 'Profile',
+            label: l10n.profileTabTitle,
             icon: LucideIcons.user,
           ),
         ];
+
+        final visibleItems = items.where((item) => !item.disabled).toList();
 
         return Consumer(
           builder: (context, ref, _) {
@@ -136,12 +147,12 @@ final GoRouter appRouter = GoRouter(
 
                 return AppShell(
                   bottomNavigationBar: AppTabBar(
-                    items: items,
+                    items: visibleItems,
                     activeItemId: activeTabId,
                     onTabChange: (id) => _onTabItemTapped(navigationShell, id),
                   ),
                   navigationRail: AppNavigationRail(
-                    items: items,
+                    items: visibleItems,
                     activeItemId: activeTabId,
                     onTabChange: (id) => _onTabItemTapped(navigationShell, id),
                   ),
@@ -339,7 +350,16 @@ final GoRouter appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/explore',
-              builder: (context, state) => const ExplorePage(),
+              builder: (context, state) => const ExplorePlaceholderScreen(),
+            ),
+          ],
+        ),
+        // AI Assistant Branch
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/ai-assistant',
+              builder: (context, state) => const AIAssistantPage(),
             ),
           ],
         ),
@@ -422,7 +442,13 @@ final GoRouter appRouter = GoRouter(
   ],
 );
 
-const _tabPaths = ['/home', '/study', '/explore', '/profile'];
+const _tabPaths = [
+  '/home',
+  '/study',
+  '/explore',
+  '/ai-assistant',
+  '/profile'
+];
 
 String _getCurrentTabId(int index) => _tabPaths[index];
 

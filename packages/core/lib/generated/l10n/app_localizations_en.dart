@@ -410,6 +410,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get homeTabTitle => 'Home';
+
+  @override
   String get profileTabTitle => 'Profile';
 
   @override
@@ -1198,4 +1201,124 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get labelPractice => 'Practice';
+
+  @override
+  String get aiAssistantTabTitle => 'AI Support';
+
+  @override
+  String aiAssistantGreeting(String userName) {
+    return 'Hi $userName 👋';
+  }
+
+  @override
+  String aiAssistantStudyInsight(String insight) {
+    return '$insight';
+  }
+
+  @override
+  String get aiAssistantQuickActions => 'QUICK ACTIONS';
+
+  @override
+  String get aiAssistantAskDoubtTitle => 'Ask a Doubt';
+
+  @override
+  String get aiAssistantAskDoubtDesc => 'Snap, upload or type your question';
+
+  @override
+  String get aiAssistantPracticeExamTitle => 'Practice Exam';
+
+  @override
+  String get aiAssistantPracticeExamDesc =>
+      'Create AI practice exams based on weak topics or chapters';
+
+  @override
+  String get aiAssistantRecommendedTitle => 'RECOMMENDED FOR YOU';
+
+  @override
+  String get aiAssistantImproveTopicsTitle => 'Improve Weak Topics Today';
+
+  @override
+  String get aiAssistantStruggledTopicDesc =>
+      'You struggled in this topic recently';
+
+  @override
+  String get aiAssistantPracticeNow => 'Practice Now';
+
+  @override
+  String get aiAssistantMoreTopicsTitle => 'MORE TOPICS TO PRACTICE';
+
+  @override
+  String get aiAssistantRecentHelpTitle => 'RECENT HELP';
+
+  @override
+  String get aiAssistantViewAll => 'View All';
+
+  @override
+  String aiDoubtHeroGreeting1(String timeGreeting, String userName) {
+    return '$timeGreeting, $userName.\nHow can I help you today?';
+  }
+
+  @override
+  String aiDoubtHeroGreeting2(String userName) {
+    return 'What would you like to \nlearn today, $userName?';
+  }
+
+  @override
+  String aiDoubtHeroGreeting3(String userName) {
+    return 'Where should we focus \nour study, $userName?';
+  }
+
+  @override
+  String aiDoubtHeroGreeting4(String userName) {
+    return 'Hey $userName, I\'m ready \nfor your questions.';
+  }
+
+  @override
+  String get aiDoubtHeroSubtitle1 => 'Simplify your concepts';
+
+  @override
+  String get aiDoubtHeroSubtitle2 => 'Understand with real life examples';
+
+  @override
+  String get aiDoubtHeroSubtitle3 => 'Clear your doubts instantly';
+
+  @override
+  String get aiDoubtHeroSubtitle4 => 'Prepare like a pro';
+
+  @override
+  String get aiDoubtHeroSubtitle5 => 'AI-driven study insights';
+
+  @override
+  String get aiDoubtHeroSearchHint => 'Type your doubt here...';
+
+  @override
+  String get aiDoubtHeroSuggestion1 => 'Explain Quantum Physics like I\'m 5';
+
+  @override
+  String get aiDoubtHeroSuggestion2 => 'How to solve quadratic equations?';
+
+  @override
+  String get aiDoubtHeroSuggestion3 => 'Tips for JEE Chemistry';
+
+  @override
+  String get aiDoubtHeroSuggestion4 => 'Summarize my last lesson';
+
+  @override
+  String get aiDoubtHeroSearchModuleSolutions => 'Search Module Solutions';
+
+  @override
+  String get commonOr => 'OR';
+
+  @override
+  String get aiAssistantStatusAnswered => 'Answered';
+
+  @override
+  String get aiAssistantStatusProcessing => 'Processing';
+
+  @override
+  String get aiAssistantStatusRevisit => 'Revisit';
+
+  @override
+  String get aiAssistantPoweredBy =>
+      'AI powered by your learning progress and exam performance';
 }
