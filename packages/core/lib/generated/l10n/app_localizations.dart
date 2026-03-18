@@ -2361,6 +2361,102 @@ abstract class AppLocalizations {
   /// **'View All'**
   String get aiAssistantViewAll;
 
+  /// No description provided for @aiDoubtHeroGreeting1.
+  ///
+  /// In en, this message translates to:
+  /// **'{timeGreeting}, {userName}.\nHow can I help you today?'**
+  String aiDoubtHeroGreeting1(String timeGreeting, String userName);
+
+  /// No description provided for @aiDoubtHeroGreeting2.
+  ///
+  /// In en, this message translates to:
+  /// **'What would you like to \nlearn today, {userName}?'**
+  String aiDoubtHeroGreeting2(String userName);
+
+  /// No description provided for @aiDoubtHeroGreeting3.
+  ///
+  /// In en, this message translates to:
+  /// **'Where should we focus \nour study, {userName}?'**
+  String aiDoubtHeroGreeting3(String userName);
+
+  /// No description provided for @aiDoubtHeroGreeting4.
+  ///
+  /// In en, this message translates to:
+  /// **'Hey {userName}, I\'m ready \nfor your questions.'**
+  String aiDoubtHeroGreeting4(String userName);
+
+  /// No description provided for @aiDoubtHeroSubtitle1.
+  ///
+  /// In en, this message translates to:
+  /// **'Simplify your concepts'**
+  String get aiDoubtHeroSubtitle1;
+
+  /// No description provided for @aiDoubtHeroSubtitle2.
+  ///
+  /// In en, this message translates to:
+  /// **'Understand with real life examples'**
+  String get aiDoubtHeroSubtitle2;
+
+  /// No description provided for @aiDoubtHeroSubtitle3.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear your doubts instantly'**
+  String get aiDoubtHeroSubtitle3;
+
+  /// No description provided for @aiDoubtHeroSubtitle4.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare like a pro'**
+  String get aiDoubtHeroSubtitle4;
+
+  /// No description provided for @aiDoubtHeroSubtitle5.
+  ///
+  /// In en, this message translates to:
+  /// **'AI-driven study insights'**
+  String get aiDoubtHeroSubtitle5;
+
+  /// No description provided for @aiDoubtHeroSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type your doubt here...'**
+  String get aiDoubtHeroSearchHint;
+
+  /// No description provided for @aiDoubtHeroSuggestion1.
+  ///
+  /// In en, this message translates to:
+  /// **'Explain Quantum Physics like I\'m 5'**
+  String get aiDoubtHeroSuggestion1;
+
+  /// No description provided for @aiDoubtHeroSuggestion2.
+  ///
+  /// In en, this message translates to:
+  /// **'How to solve quadratic equations?'**
+  String get aiDoubtHeroSuggestion2;
+
+  /// No description provided for @aiDoubtHeroSuggestion3.
+  ///
+  /// In en, this message translates to:
+  /// **'Tips for JEE Chemistry'**
+  String get aiDoubtHeroSuggestion3;
+
+  /// No description provided for @aiDoubtHeroSuggestion4.
+  ///
+  /// In en, this message translates to:
+  /// **'Summarize my last lesson'**
+  String get aiDoubtHeroSuggestion4;
+
+  /// No description provided for @aiDoubtHeroSearchModuleSolutions.
+  ///
+  /// In en, this message translates to:
+  /// **'Search Module Solutions'**
+  String get aiDoubtHeroSearchModuleSolutions;
+
+  /// No description provided for @commonOr.
+  ///
+  /// In en, this message translates to:
+  /// **'OR'**
+  String get commonOr;
+
   /// No description provided for @aiAssistantStatusAnswered.
   ///
   /// In en, this message translates to:

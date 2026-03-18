@@ -616,6 +616,43 @@
   "aiAssistantMoreTopicsTitle": "MORE TOPICS TO PRACTICE",
   "aiAssistantRecentHelpTitle": "RECENT HELP",
   "aiAssistantViewAll": "View All",
+  "aiDoubtHeroGreeting1": "{timeGreeting}, {userName}.\nHow can I help you today?",
+  "@aiDoubtHeroGreeting1": {
+    "placeholders": {
+      "timeGreeting": { "type": "String" },
+      "userName": { "type": "String" }
+    }
+  },
+  "aiDoubtHeroGreeting2": "What would you like to \nlearn today, {userName}?",
+  "@aiDoubtHeroGreeting2": {
+    "placeholders": {
+      "userName": { "type": "String" }
+    }
+  },
+  "aiDoubtHeroGreeting3": "Where should we focus \nour study, {userName}?",
+  "@aiDoubtHeroGreeting3": {
+    "placeholders": {
+      "userName": { "type": "String" }
+    }
+  },
+  "aiDoubtHeroGreeting4": "Hey {userName}, I'm ready \nfor your questions.",
+  "@aiDoubtHeroGreeting4": {
+    "placeholders": {
+      "userName": { "type": "String" }
+    }
+  },
+  "aiDoubtHeroSubtitle1": "Simplify your concepts",
+  "aiDoubtHeroSubtitle2": "Understand with real life examples",
+  "aiDoubtHeroSubtitle3": "Clear your doubts instantly",
+  "aiDoubtHeroSubtitle4": "Prepare like a pro",
+  "aiDoubtHeroSubtitle5": "AI-driven study insights",
+  "aiDoubtHeroSearchHint": "Type your doubt here...",
+  "aiDoubtHeroSuggestion1": "Explain Quantum Physics like I'm 5",
+  "aiDoubtHeroSuggestion2": "How to solve quadratic equations?",
+  "aiDoubtHeroSuggestion3": "Tips for JEE Chemistry",
+  "aiDoubtHeroSuggestion4": "Summarize my last lesson",
+  "aiDoubtHeroSearchModuleSolutions": "Search Module Solutions",
+  "commonOr": "OR",
   "aiAssistantStatusAnswered": "Answered",
   "aiAssistantStatusProcessing": "Processing",
   "aiAssistantStatusRevisit": "Revisit",

@@ -55,19 +55,19 @@ class _HeroGreeting extends StatelessWidget {
 
   const _HeroGreeting({required this.userName});
 
-  String _getCreativeGreeting() {
+  String _getCreativeGreeting(AppLocalizations l10n) {
     final hour = DateTime.now().hour;
     final timeGreeting = hour < 12
-        ? "Good morning"
+        ? l10n.greetingMorning
         : hour < 17
-        ? "Good afternoon"
-        : "Good evening";
+        ? l10n.greetingAfternoon
+        : l10n.greetingEvening;
 
     final greetings = [
-      "$timeGreeting, $userName.\nHow can I help you today?",
-      "What would you like to \nlearn today, $userName?",
-      "Where should we focus \nour study, $userName?",
-      "Hey $userName, I'm ready \nfor your questions.",
+      l10n.aiDoubtHeroGreeting1(timeGreeting, userName),
+      l10n.aiDoubtHeroGreeting2(userName),
+      l10n.aiDoubtHeroGreeting3(userName),
+      l10n.aiDoubtHeroGreeting4(userName),
     ];
 
     return greetings[DateTime.now().minute % greetings.length];
@@ -76,9 +76,10 @@ class _HeroGreeting extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: design.spacing.xl),
-      child: AppText.headline(_getCreativeGreeting()),
+      child: AppText.headline(_getCreativeGreeting(l10n)),
     );
   }
 }
@@ -94,12 +95,12 @@ class _SubtitleTickerState extends State<_SubtitleTicker> {
   late PageController _pageController;
   Timer? _timer;
 
-  final List<String> _subtitles = [
-    "Simplify your concepts",
-    "Understand with real life examples",
-    "Clear your doubts instantly",
-    "Prepare like a pro",
-    "AI-driven study insights",
+  List<String> _getSubtitles(AppLocalizations l10n) => [
+    l10n.aiDoubtHeroSubtitle1,
+    l10n.aiDoubtHeroSubtitle2,
+    l10n.aiDoubtHeroSubtitle3,
+    l10n.aiDoubtHeroSubtitle4,
+    l10n.aiDoubtHeroSubtitle5,
   ];
 
   @override
@@ -126,12 +127,14 @@ class _SubtitleTickerState extends State<_SubtitleTicker> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
+    final subtitles = _getSubtitles(l10n);
 
     return PageView.builder(
       controller: _pageController,
       scrollDirection: Axis.vertical,
       itemBuilder: (context, index) {
-        final realIndex = index % _subtitles.length;
+        final realIndex = index % subtitles.length;
         return AnimatedBuilder(
           animation: _pageController,
           builder: (context, child) {
@@ -147,7 +150,7 @@ class _SubtitleTickerState extends State<_SubtitleTicker> {
                 child: Transform.scale(
                   scale: 0.8 + (value * 0.2),
                   child: AppText.sm(
-                    _subtitles[realIndex],
+                    subtitles[realIndex],
                     textAlign: TextAlign.center,
                     color: design.colors.textSecondary,
                     style: TextStyle(
@@ -174,6 +177,7 @@ class _HeroSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: design.spacing.lg),
       child: GestureDetector(
@@ -203,7 +207,7 @@ class _HeroSearchBar extends StatelessWidget {
               SizedBox(width: design.spacing.md),
               Expanded(
                 child: AppText.body(
-                  "Type your doubt here...",
+                  l10n.aiDoubtHeroSearchHint,
                   color: design.colors.textTertiary,
                 ),
               ),
@@ -219,20 +223,22 @@ class _HeroSearchBar extends StatelessWidget {
 class _SuggestionPills extends StatelessWidget {
   const _SuggestionPills();
 
-  static const List<String> _suggestions = [
-    "Explain Quantum Physics like I'm 5",
-    "How to solve quadratic equations?",
-    "Tips for JEE Chemistry",
-    "Summarize my last lesson",
+  List<String> _getSuggestions(AppLocalizations l10n) => [
+    l10n.aiDoubtHeroSuggestion1,
+    l10n.aiDoubtHeroSuggestion2,
+    l10n.aiDoubtHeroSuggestion3,
+    l10n.aiDoubtHeroSuggestion4,
   ];
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
+    final suggestions = _getSuggestions(l10n);
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.symmetric(horizontal: design.spacing.lg),
-      child: Row(children: _suggestions.map((s) => _Pill(text: s)).toList()),
+      child: Row(children: suggestions.map((s) => _Pill(text: s)).toList()),
     );
   }
 }
@@ -267,10 +273,11 @@ class _Separator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
     return Column(
       children: [
         SizedBox(height: design.spacing.lg),
-        AppText.xs("OR", color: design.colors.textTertiary),
+        AppText.xs(l10n.commonOr, color: design.colors.textTertiary),
       ],
     );
   }
@@ -284,6 +291,7 @@ class _ModuleSolutionsButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -304,7 +312,7 @@ class _ModuleSolutionsButton extends StatelessWidget {
             Icon(LucideIcons.search, size: 18, color: design.colors.accent2),
             SizedBox(width: design.spacing.sm),
             AppText.labelBold(
-              "Search Module Solutions",
+              l10n.aiDoubtHeroSearchModuleSolutions,
               color: design.colors.accent2,
             ),
           ],

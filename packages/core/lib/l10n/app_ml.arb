@@ -426,5 +426,21 @@
   "aiAssistantStatusAnswered": "മറുപടി നൽകി",
   "aiAssistantStatusProcessing": "നടന്നുകൊണ്ടിരിക്കുന്നു",
   "aiAssistantStatusRevisit": "വീണ്ടും സന്ദർശിക്കുക",
-  "aiAssistantPoweredBy": "നിങ്ങളുടെ പഠന പുരോഗതിയെയും പരീക്ഷാ പ്രകടനത്തെയും അടിസ്ഥാനമാക്കി പ്രവർത്തിക്കുന്ന AI"
+  "aiAssistantPoweredBy": "നിങ്ങളുടെ പഠന പുരോഗതിയെയും പരീക്ഷാ പ്രകടനത്തെയും അടിസ്ഥാനമാക്കി പ്രവർത്തിക്കുന്ന AI",
+  "aiDoubtHeroGreeting1": "{timeGreeting}, {userName}.\nHow can I help you today?",
+  "aiDoubtHeroGreeting2": "What would you like to \nlearn today, {userName}?",
+  "aiDoubtHeroGreeting3": "Where should we focus \nour study, {userName}?",
+  "aiDoubtHeroGreeting4": "Hey {userName}, I'm ready \nfor your questions.",
+  "aiDoubtHeroSubtitle1": "Simplify your concepts",
+  "aiDoubtHeroSubtitle2": "Understand with real life examples",
+  "aiDoubtHeroSubtitle3": "Clear your doubts instantly",
+  "aiDoubtHeroSubtitle4": "Prepare like a pro",
+  "aiDoubtHeroSubtitle5": "AI-driven study insights",
+  "aiDoubtHeroSearchHint": "Type your doubt here...",
+  "aiDoubtHeroSuggestion1": "Explain Quantum Physics like I'm 5",
+  "aiDoubtHeroSuggestion2": "How to solve quadratic equations?",
+  "aiDoubtHeroSuggestion3": "Tips for JEE Chemistry",
+  "aiDoubtHeroSuggestion4": "Summarize my last lesson",
+  "aiDoubtHeroSearchModuleSolutions": "Search Module Solutions",
+  "commonOr": "OR"
 }

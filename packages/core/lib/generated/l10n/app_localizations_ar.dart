@@ -1252,6 +1252,62 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aiAssistantViewAll => 'عرض الكل';
 
   @override
+  String aiDoubtHeroGreeting1(String timeGreeting, String userName) {
+    return '$timeGreeting, $userName.\nHow can I help you today?';
+  }
+
+  @override
+  String aiDoubtHeroGreeting2(String userName) {
+    return 'What would you like to \nlearn today, $userName?';
+  }
+
+  @override
+  String aiDoubtHeroGreeting3(String userName) {
+    return 'Where should we focus \nour study, $userName?';
+  }
+
+  @override
+  String aiDoubtHeroGreeting4(String userName) {
+    return 'Hey $userName, I\'m ready \nfor your questions.';
+  }
+
+  @override
+  String get aiDoubtHeroSubtitle1 => 'Simplify your concepts';
+
+  @override
+  String get aiDoubtHeroSubtitle2 => 'Understand with real life examples';
+
+  @override
+  String get aiDoubtHeroSubtitle3 => 'Clear your doubts instantly';
+
+  @override
+  String get aiDoubtHeroSubtitle4 => 'Prepare like a pro';
+
+  @override
+  String get aiDoubtHeroSubtitle5 => 'AI-driven study insights';
+
+  @override
+  String get aiDoubtHeroSearchHint => 'Type your doubt here...';
+
+  @override
+  String get aiDoubtHeroSuggestion1 => 'Explain Quantum Physics like I\'m 5';
+
+  @override
+  String get aiDoubtHeroSuggestion2 => 'How to solve quadratic equations?';
+
+  @override
+  String get aiDoubtHeroSuggestion3 => 'Tips for JEE Chemistry';
+
+  @override
+  String get aiDoubtHeroSuggestion4 => 'Summarize my last lesson';
+
+  @override
+  String get aiDoubtHeroSearchModuleSolutions => 'Search Module Solutions';
+
+  @override
+  String get commonOr => 'OR';
+
+  @override
   String get aiAssistantStatusAnswered => 'تمت الإجابة';
 
   @override
