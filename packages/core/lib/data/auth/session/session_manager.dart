@@ -18,12 +18,8 @@ class SessionManager {
 
   Future<void> persistSession({
     required String authToken,
-    String? refreshToken,
   }) {
-    return _storage.persistSession(
-      authToken: authToken,
-      refreshToken: refreshToken,
-    );
+    return _storage.persistSession(authToken: authToken);
   }
 
   Future<void> markProfileSyncedNow() => _storage.markProfileSyncedNow();

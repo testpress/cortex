@@ -32,7 +32,6 @@ class AuthService {
     final result = await _client.login(username: username, password: password);
     await _sessionManager.persistSession(
       authToken: result.token,
-      refreshToken: result.refreshToken,
     );
 
     final profile = await _fetchAndCacheProfile();
@@ -65,7 +64,6 @@ class AuthService {
 
     await _sessionManager.persistSession(
       authToken: result.token,
-      refreshToken: result.refreshToken,
     );
 
     final profile = await _fetchAndCacheProfile();

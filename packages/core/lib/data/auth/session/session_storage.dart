@@ -9,12 +9,10 @@ class SessionStorage {
   static const _secureStorage = FlutterSecureStorage();
 
   static const String _tokenKey = 'auth_token';
-  static const String _refreshTokenKey = 'auth_refresh_token';
   static const String _profileSyncedAtKey = 'profile_synced_at';
 
   SharedPreferences? _prefs;
   String? _authToken;
-  String? _refreshToken;
   bool _secureValuesLoaded = false;
 
   /// Initialize the persistent storage. Must be called during app bootstrap.
@@ -22,7 +20,6 @@ class SessionStorage {
     _prefs ??= await SharedPreferences.getInstance();
     if (_secureValuesLoaded) return;
     _authToken = await _secureStorage.read(key: _tokenKey);
-    _refreshToken = await _secureStorage.read(key: _refreshTokenKey);
     _secureValuesLoaded = true;
   }
 
@@ -31,9 +28,6 @@ class SessionStorage {
 
   /// The primary JWT token for API authorization.
   String? get authToken => _authToken;
-
-  /// The token used to refresh an expired auth token.
-  String? get refreshToken => _refreshToken;
 
   /// Last time profile data was synced from backend.
   DateTime? get lastProfileSyncedAt {
@@ -45,24 +39,17 @@ class SessionStorage {
   /// Persists authentication tokens to disk.
   Future<void> persistSession({
     required String authToken,
-    String? refreshToken,
   }) async {
     await initialize();
     _authToken = authToken;
     await _secureStorage.write(key: _tokenKey, value: authToken);
-    if (refreshToken != null) {
-      _refreshToken = refreshToken;
-      await _secureStorage.write(key: _refreshTokenKey, value: refreshToken);
-    }
   }
 
   /// Clears all stored auth data to terminate the session.
   Future<void> clear() async {
     final prefs = await _requirePrefs();
     _authToken = null;
-    _refreshToken = null;
     await _secureStorage.delete(key: _tokenKey);
-    await _secureStorage.delete(key: _refreshTokenKey);
     await prefs.remove(_profileSyncedAtKey);
   }
 
