@@ -20,7 +20,6 @@ final dioProvider = Provider<Dio>((ref) {
   // Attach global interceptors
   dio.interceptors.addAll([
     AuthInterceptor(),
-    LoggingInterceptor(),
   ]);
 
   return dio;

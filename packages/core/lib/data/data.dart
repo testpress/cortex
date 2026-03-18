@@ -45,6 +45,5 @@ export 'sources/mock_data.dart';
 export 'auth/session/session_storage.dart';
 export 'auth/auth_client.dart';
 export 'network/interceptors/auth_interceptor.dart';
-export 'network/interceptors/logging_interceptor.dart';
 export 'network/dio_provider.dart';
 export 'network/api_endpoints.dart';
