@@ -6,6 +6,7 @@ import '../widgets/ai_doubt_hero.dart';
 import '../widgets/ai_recommendation_card.dart';
 import '../widgets/ai_activity_item.dart';
 import '../models/ai_models.dart';
+import 'ask_doubt_screen.dart';
 
 class AIAssistantPage extends StatelessWidget {
   const AIAssistantPage({super.key});
@@ -32,6 +33,20 @@ class AIAssistantPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              _buildSectionTitle(design, l10n.aiAssistantQuickActions),
+              SizedBox(height: design.spacing.md),
+              AIQuickActionCard(
+                icon: LucideIcons.helpCircle,
+                title: l10n.aiAssistantAskDoubtTitle,
+                description: l10n.aiAssistantAskDoubtDesc,
+                iconColor: design.colors.accent2,
+                iconBackgroundColor: design.colors.accent2.withValues(
+                  alpha: 0.1,
+                ),
+                onTap: () => Navigator.of(
+                  context,
+                ).push(AppRoute(page: const AskDoubtScreen())),
+              ),
               SizedBox(height: design.spacing.md),
               AIQuickActionCard(
                 icon: LucideIcons.fileText,

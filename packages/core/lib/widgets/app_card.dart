@@ -14,6 +14,7 @@ class AppCard extends StatelessWidget {
     this.showBorder = true,
     this.showShadow = false,
     this.showFloatingShadow = false,
+    this.color,
   });
 
   final Widget child;
@@ -22,18 +23,17 @@ class AppCard extends StatelessWidget {
   final bool showBorder;
   final bool showShadow;
   final bool showFloatingShadow;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    // Singular separation logic: premium design avoids border + shadow stacking.
-    // If shadow is requested, we suppress the border unless explicitly forced.
     final effectiveShowBorder = showBorder;
 
     final cardContent = Container(
       padding: padding ?? EdgeInsets.all(design.spacing.cardPadding),
       decoration: BoxDecoration(
-        color: design.colors.card,
+        color: color ?? design.colors.card,
         borderRadius: design.radius.card,
         border: effectiveShowBorder
             ? Border.all(color: design.colors.border, width: 1)

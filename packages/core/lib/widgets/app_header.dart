@@ -14,12 +14,20 @@ class AppHeader extends StatelessWidget {
     this.subtitle,
     this.leading,
     this.actions,
+    this.horizontalPadding,
+    this.leftSafeArea = true,
+    this.rightSafeArea = true,
+    this.topSafeArea = true,
   });
 
   final String title;
   final String? subtitle;
   final Widget? leading;
   final List<Widget>? actions;
+  final double? horizontalPadding;
+  final bool leftSafeArea;
+  final bool rightSafeArea;
+  final bool topSafeArea;
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +40,15 @@ class AppHeader extends StatelessWidget {
         ),
       ),
       child: SafeArea(
+        top: topSafeArea,
+        left: leftSafeArea,
+        right: rightSafeArea,
         bottom: false,
         child: Padding(
           padding: EdgeInsetsDirectional.fromSTEB(
-            design.spacing.screenPadding,
+            horizontalPadding ?? design.spacing.screenPadding,
             design.spacing.md,
-            design.spacing.screenPadding,
+            horizontalPadding ?? design.spacing.screenPadding,
             design.spacing.md,
           ),
           child: Row(

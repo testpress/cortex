@@ -2384,6 +2384,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'AI powered by your learning progress and exam performance'**
   String get aiAssistantPoweredBy;
+
+  /// No description provided for @aiDoubtPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask anything'**
+  String get aiDoubtPlaceholder;
+
+  /// No description provided for @aiDoubtAttachAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach'**
+  String get aiDoubtAttachAction;
+
+  /// No description provided for @aiDoubtCameraAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Take Photo'**
+  String get aiDoubtCameraAction;
+
+  /// No description provided for @aiDoubtGalleryAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from Gallery'**
+  String get aiDoubtGalleryAction;
+
+  /// No description provided for @aiDoubtVoiceAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice'**
+  String get aiDoubtVoiceAction;
+
+  /// No description provided for @aiDoubtSendAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get aiDoubtSendAction;
+
+  /// No description provided for @aiDoubtNewChat.
+  ///
+  /// In en, this message translates to:
+  /// **'New Chat'**
+  String get aiDoubtNewChat;
+
+  /// No description provided for @aiDoubtPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin'**
+  String get aiDoubtPin;
+
+  /// No description provided for @aiDoubtUnpin.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpin'**
+  String get aiDoubtUnpin;
+
+  /// No description provided for @aiDoubtRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get aiDoubtRename;
+
+  /// No description provided for @aiDoubtDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get aiDoubtDelete;
+
+  /// No description provided for @aiDoubtRenameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename Chat'**
+  String get aiDoubtRenameTitle;
+
+  /// No description provided for @aiDoubtEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What can I help with?'**
+  String get aiDoubtEmptyTitle;
+
+  /// No description provided for @aiDoubtSuggestionExplainLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Explain concept'**
+  String get aiDoubtSuggestionExplainLabel;
+
+  /// No description provided for @aiDoubtSuggestionExplainPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Explain this concept step by step'**
+  String get aiDoubtSuggestionExplainPrompt;
+
+  /// No description provided for @aiDoubtSuggestionSolveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Solve problem'**
+  String get aiDoubtSuggestionSolveLabel;
+
+  /// No description provided for @aiDoubtSuggestionSolvePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Solve this problem step by step'**
+  String get aiDoubtSuggestionSolvePrompt;
+
+  /// No description provided for @aiDoubtSuggestionPracticeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice questions'**
+  String get aiDoubtSuggestionPracticeLabel;
+
+  /// No description provided for @aiDoubtSuggestionPracticePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Show me similar practice questions'**
+  String get aiDoubtSuggestionPracticePrompt;
+
+  /// No description provided for @aiDoubtSuggestionTipsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Study tips'**
+  String get aiDoubtSuggestionTipsLabel;
+
+  /// No description provided for @aiDoubtSuggestionTipsPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Give me tips to understand this better'**
+  String get aiDoubtSuggestionTipsPrompt;
+
+  /// No description provided for @aiDoubtThinking.
+  ///
+  /// In en, this message translates to:
+  /// **'AI is thinking...'**
+  String get aiDoubtThinking;
+
+  /// No description provided for @aiDoubtImagePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze this picture and explain it:'**
+  String get aiDoubtImagePrompt;
+
+  /// No description provided for @aiDoubtImageResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'I see the image you uploaded. Based on the problem shown, here is the solution...'**
+  String get aiDoubtImageResponse;
+
+  /// No description provided for @aiDoubtMockResponseConcept.
+  ///
+  /// In en, this message translates to:
+  /// **'Sure! This concept refers to the fundamental principle where...'**
+  String get aiDoubtMockResponseConcept;
+
+  /// No description provided for @aiDoubtMockResponseSolve.
+  ///
+  /// In en, this message translates to:
+  /// **'To solve this, first identify the variables. Step 1: ...'**
+  String get aiDoubtMockResponseSolve;
+
+  /// No description provided for @aiDoubtMockResponsePractice.
+  ///
+  /// In en, this message translates to:
+  /// **'Here are a few similar practice questions you can try next...'**
+  String get aiDoubtMockResponsePractice;
+
+  /// No description provided for @aiDoubtMockResponseTips.
+  ///
+  /// In en, this message translates to:
+  /// **'Try breaking this into smaller steps and revising the core idea first...'**
+  String get aiDoubtMockResponseTips;
+
+  /// No description provided for @aiDoubtMockResponseDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'That is a great question. Let me help you with that...'**
+  String get aiDoubtMockResponseDefault;
 }
 
 class _AppLocalizationsDelegate
