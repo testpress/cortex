@@ -1265,4 +1265,100 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get aiAssistantPoweredBy =>
       'AI powered by your learning progress and exam performance';
+
+  @override
+  String get aiDoubtPlaceholder => 'Ask anything';
+
+  @override
+  String get aiDoubtAttachAction => 'Attach';
+
+  @override
+  String get aiDoubtCameraAction => 'Take Photo';
+
+  @override
+  String get aiDoubtGalleryAction => 'Choose from Gallery';
+
+  @override
+  String get aiDoubtVoiceAction => 'Voice';
+
+  @override
+  String get aiDoubtSendAction => 'Send';
+
+  @override
+  String get aiDoubtNewChat => 'New Chat';
+
+  @override
+  String get aiDoubtPin => 'Pin';
+
+  @override
+  String get aiDoubtUnpin => 'Unpin';
+
+  @override
+  String get aiDoubtRename => 'Rename';
+
+  @override
+  String get aiDoubtDelete => 'Delete';
+
+  @override
+  String get aiDoubtRenameTitle => 'Rename Chat';
+
+  @override
+  String get aiDoubtEmptyTitle => 'What can I help with?';
+
+  @override
+  String get aiDoubtSuggestionExplainLabel => 'Explain concept';
+
+  @override
+  String get aiDoubtSuggestionExplainPrompt =>
+      'Explain this concept step by step';
+
+  @override
+  String get aiDoubtSuggestionSolveLabel => 'Solve problem';
+
+  @override
+  String get aiDoubtSuggestionSolvePrompt => 'Solve this problem step by step';
+
+  @override
+  String get aiDoubtSuggestionPracticeLabel => 'Practice questions';
+
+  @override
+  String get aiDoubtSuggestionPracticePrompt =>
+      'Show me similar practice questions';
+
+  @override
+  String get aiDoubtSuggestionTipsLabel => 'Study tips';
+
+  @override
+  String get aiDoubtSuggestionTipsPrompt =>
+      'Give me tips to understand this better';
+
+  @override
+  String get aiDoubtThinking => 'AI is thinking...';
+
+  @override
+  String get aiDoubtImagePrompt => 'Analyze this picture and explain it:';
+
+  @override
+  String get aiDoubtImageResponse =>
+      'I see the image you uploaded. Based on the problem shown, here is the solution...';
+
+  @override
+  String get aiDoubtMockResponseConcept =>
+      'Sure! This concept refers to the fundamental principle where...';
+
+  @override
+  String get aiDoubtMockResponseSolve =>
+      'To solve this, first identify the variables. Step 1: ...';
+
+  @override
+  String get aiDoubtMockResponsePractice =>
+      'Here are a few similar practice questions you can try next...';
+
+  @override
+  String get aiDoubtMockResponseTips =>
+      'Try breaking this into smaller steps and revising the core idea first...';
+
+  @override
+  String get aiDoubtMockResponseDefault =>
+      'That is a great question. Let me help you with that...';
 }

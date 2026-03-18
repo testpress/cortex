@@ -1277,4 +1277,101 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get aiAssistantPoweredBy =>
       'നിങ്ങളുടെ പഠന പുരോഗതിയെയും പരീക്ഷാ പ്രകടനത്തെയും അടിസ്ഥാനമാക്കി പ്രവർത്തിക്കുന്ന AI';
+
+  @override
+  String get aiDoubtPlaceholder => 'എന്തും ചോദിക്കൂ';
+
+  @override
+  String get aiDoubtAttachAction => 'അറ്റാച്ച് ചെയ്യുക';
+
+  @override
+  String get aiDoubtCameraAction => 'Take Photo';
+
+  @override
+  String get aiDoubtGalleryAction => 'Choose from Gallery';
+
+  @override
+  String get aiDoubtVoiceAction => 'വോയ്സ്';
+
+  @override
+  String get aiDoubtSendAction => 'അയയ്ക്കുക';
+
+  @override
+  String get aiDoubtNewChat => 'പുതിയ ചാറ്റ്';
+
+  @override
+  String get aiDoubtPin => 'പിൻ ചെയ്യുക';
+
+  @override
+  String get aiDoubtUnpin => 'അൺപിൻ ചെയ്യുക';
+
+  @override
+  String get aiDoubtRename => 'പേരുമാറ്റുക';
+
+  @override
+  String get aiDoubtDelete => 'ഡിലീറ്റ് ചെയ്യുക';
+
+  @override
+  String get aiDoubtRenameTitle => 'ചാറ്റിന് പേരുമാറ്റുക';
+
+  @override
+  String get aiDoubtEmptyTitle => 'എനിക്ക് എന്ത് സഹായിക്കാം?';
+
+  @override
+  String get aiDoubtSuggestionExplainLabel => 'കോൺസെപ്റ്റ് വിശദീകരിക്കുക';
+
+  @override
+  String get aiDoubtSuggestionExplainPrompt =>
+      'ഈ കോൺസെപ്റ്റ് ഘട്ടംഘട്ടമായി വിശദീകരിക്കുക';
+
+  @override
+  String get aiDoubtSuggestionSolveLabel => 'പ്രശ്നം പരിഹരിക്കുക';
+
+  @override
+  String get aiDoubtSuggestionSolvePrompt =>
+      'ഈ പ്രശ്നം ഘട്ടംഘട്ടമായി പരിഹരിക്കുക';
+
+  @override
+  String get aiDoubtSuggestionPracticeLabel => 'പ്രാക്ടീസ് ചോദ്യങ്ങൾ';
+
+  @override
+  String get aiDoubtSuggestionPracticePrompt =>
+      'ഇതിന് സമാനമായ പ്രാക്ടീസ് ചോദ്യങ്ങൾ കാണിക്കുക';
+
+  @override
+  String get aiDoubtSuggestionTipsLabel => 'പഠന നിർദ്ദേശങ്ങൾ';
+
+  @override
+  String get aiDoubtSuggestionTipsPrompt =>
+      'ഇത് നന്നായി മനസ്സിലാക്കാൻ ചില നിർദ്ദേശങ്ങൾ തരൂ';
+
+  @override
+  String get aiDoubtThinking => 'AI ആലോചിക്കുന്നു...';
+
+  @override
+  String get aiDoubtImagePrompt => 'ഈ ചിത്രം വിശകലനം ചെയ്ത് വിശദീകരിക്കുക:';
+
+  @override
+  String get aiDoubtImageResponse =>
+      'നിങ്ങൾ അപ്‌ലോഡ് ചെയ്ത ചിത്രം ഞാൻ കണ്ടു. കാണിച്ചിരിക്കുന്ന പ്രശ്നത്തെ അടിസ്ഥാനമാക്കി, ഇതാ പരിഹാരം...';
+
+  @override
+  String get aiDoubtMockResponseConcept =>
+      'ശരി! ഈ കോൺസെപ്റ്റ് സൂചിപ്പിക്കുന്നത് അടിസ്ഥാന തത്വത്തെയാണ്, അതിൽ...';
+
+  @override
+  String get aiDoubtMockResponseSolve =>
+      'ഇത് പരിഹരിക്കാൻ ആദ്യം വേരിയബിളുകൾ കണ്ടെത്തുക. ഘട്ടം 1: ...';
+
+  @override
+  String get aiDoubtMockResponsePractice =>
+      'അടുത്തതായി നിങ്ങൾ പരീക്ഷിക്കാനാകുന്ന ചില സമാന പ്രാക്ടീസ് ചോദ്യങ്ങൾ ഇതാ...';
+
+  @override
+  String get aiDoubtMockResponseTips =>
+      'ഇത് ചെറിയ ഘട്ടങ്ങളാക്കി തിരിച്ച് അടിസ്ഥാന ആശയം ആദ്യം ആവർത്തിച്ച് നോക്കൂ...';
+
+  @override
+  String get aiDoubtMockResponseDefault =>
+      'ഇത് വളരെ നല്ലൊരു ചോദ്യം ആണ്. അതിൽ ഞാൻ നിങ്ങളെ സഹായിക്കാം...';
 }

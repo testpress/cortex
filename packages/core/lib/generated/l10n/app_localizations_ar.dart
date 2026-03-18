@@ -1263,4 +1263,97 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get aiAssistantPoweredBy =>
       'الذكاء الاصطناعي مدعوم بتقدمك في التعلم وأدائك في الامتحان';
+
+  @override
+  String get aiDoubtPlaceholder => 'اسأل أي شيء';
+
+  @override
+  String get aiDoubtAttachAction => 'إرفاق';
+
+  @override
+  String get aiDoubtCameraAction => 'التقاط صورة';
+
+  @override
+  String get aiDoubtGalleryAction => 'اختيار من المعرض';
+
+  @override
+  String get aiDoubtVoiceAction => 'صوت';
+
+  @override
+  String get aiDoubtSendAction => 'إرسال';
+
+  @override
+  String get aiDoubtNewChat => 'محادثة جديدة';
+
+  @override
+  String get aiDoubtPin => 'تثبيت';
+
+  @override
+  String get aiDoubtUnpin => 'إلغاء التثبيت';
+
+  @override
+  String get aiDoubtRename => 'إعادة التسمية';
+
+  @override
+  String get aiDoubtDelete => 'حذف';
+
+  @override
+  String get aiDoubtRenameTitle => 'إعادة تسمية المحادثة';
+
+  @override
+  String get aiDoubtEmptyTitle => 'كيف يمكنني مساعدتك؟';
+
+  @override
+  String get aiDoubtSuggestionExplainLabel => 'اشرح المفهوم';
+
+  @override
+  String get aiDoubtSuggestionExplainPrompt => 'اشرح هذا المفهوم خطوة بخطوة';
+
+  @override
+  String get aiDoubtSuggestionSolveLabel => 'حل المسألة';
+
+  @override
+  String get aiDoubtSuggestionSolvePrompt => 'حل هذه المسألة خطوة بخطوة';
+
+  @override
+  String get aiDoubtSuggestionPracticeLabel => 'أسئلة تدريبية';
+
+  @override
+  String get aiDoubtSuggestionPracticePrompt => 'أرني أسئلة تدريبية مشابهة';
+
+  @override
+  String get aiDoubtSuggestionTipsLabel => 'نصائح للدراسة';
+
+  @override
+  String get aiDoubtSuggestionTipsPrompt => 'أعطني نصائح لفهم هذا بشكل أفضل';
+
+  @override
+  String get aiDoubtThinking => 'يفكر الذكاء الاصطناعي...';
+
+  @override
+  String get aiDoubtImagePrompt => 'حلّل هذه الصورة واشرحها:';
+
+  @override
+  String get aiDoubtImageResponse =>
+      'أرى الصورة التي رفعتها. بناءً على المسألة الظاهرة، إليك الحل...';
+
+  @override
+  String get aiDoubtMockResponseConcept =>
+      'بالتأكيد! يشير هذا المفهوم إلى المبدأ الأساسي الذي ينص على...';
+
+  @override
+  String get aiDoubtMockResponseSolve =>
+      'لحل هذا، حدّد المتغيرات أولًا. الخطوة 1: ...';
+
+  @override
+  String get aiDoubtMockResponsePractice =>
+      'إليك بعض الأسئلة التدريبية المشابهة التي يمكنك تجربتها بعد ذلك...';
+
+  @override
+  String get aiDoubtMockResponseTips =>
+      'حاول تقسيم هذا إلى خطوات أصغر وراجع الفكرة الأساسية أولًا...';
+
+  @override
+  String get aiDoubtMockResponseDefault =>
+      'هذا سؤال ممتاز. دعني أساعدك في ذلك...';
 }
