@@ -127,6 +127,10 @@ class AuthClient {
 
     final statusCode = e.response?.statusCode;
     if (statusCode == 401) {
+      final backendMessage = _getApiErrorMessage(e.response?.data);
+      if (backendMessage != null) {
+        return AuthException(backendMessage);
+      }
       return AuthException('Invalid or expired credentials.');
     }
     if (statusCode == 403) {
@@ -134,14 +138,52 @@ class AuthClient {
         'You do not have permission to perform this action.',
       );
     }
-    if (statusCode == 400) {
-      final responseData = e.response?.data;
-      if (responseData is Map && responseData.containsKey('detail')) {
-        return AuthException(responseData['detail'].toString());
+    if (statusCode == 400 || statusCode == 422) {
+      final backendMessage = _getApiErrorMessage(e.response?.data);
+      if (backendMessage != null) {
+        return AuthException(backendMessage);
       }
-      return AuthException('OTP verification failed.');
+      return AuthException('Request validation failed.');
     }
 
     return AuthException('An unexpected error occurred. Please try again.');
+  }
+
+  String? _getApiErrorMessage(dynamic responseData) {
+    if (responseData == null) return null;
+    if (responseData is String && responseData.trim().isNotEmpty) {
+      return responseData.trim();
+    }
+    if (responseData is! Map) return null;
+
+    final map = responseData.cast<dynamic, dynamic>();
+
+    final detail = map['detail']?.toString().trim();
+    if (detail != null && detail.isNotEmpty) return detail;
+
+    final message = map['message']?.toString().trim();
+    if (message != null && message.isNotEmpty) return message;
+
+    final error = map['error']?.toString().trim();
+    if (error != null && error.isNotEmpty) return error;
+
+    final nonFieldErrors = map['non_field_errors'];
+    if (nonFieldErrors is List && nonFieldErrors.isNotEmpty) {
+      final first = nonFieldErrors.first?.toString().trim();
+      if (first != null && first.isNotEmpty) return first;
+    }
+
+    for (final entry in map.entries) {
+      final value = entry.value;
+      if (value is List && value.isNotEmpty) {
+        final first = value.first?.toString().trim();
+        if (first != null && first.isNotEmpty) return first;
+      }
+      if (value is String && value.trim().isNotEmpty) {
+        return value.trim();
+      }
+    }
+
+    return null;
   }
 }
