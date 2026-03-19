@@ -22,9 +22,10 @@ export 'db/app_database.dart';
 export 'db/database_provider.dart';
 
 // Auth
-export 'auth/auth_exception.dart';
+export 'auth/types/auth_exception.dart';
 export 'auth/auth_provider.dart';
-export 'auth/auth_service.dart';
+export 'auth/auth_repository.dart';
+export 'auth/contracts/auth_profile_sync_contract.dart';
 export 'auth/models/auth_token_response.dart';
 export 'auth/session/session_manager.dart';
 
@@ -36,14 +37,14 @@ export 'sources/data_source_provider.dart';
 export 'sources/study_momentum_provider.dart';
 
 // Repositories
-export 'repositories/user_repository.dart';
+export 'repositories/user_progress_repository.dart';
 export 'repositories/forum_repository.dart';
 export 'repositories/repository_providers.dart';
 
 // Infra & Mocks
 export 'sources/mock_data.dart';
 export 'auth/session/session_storage.dart';
-export 'auth/auth_client.dart';
+export 'auth/auth_api_service.dart';
 export 'network/interceptors/auth_interceptor.dart';
 export 'network/dio_provider.dart';
 export 'network/api_endpoints.dart';

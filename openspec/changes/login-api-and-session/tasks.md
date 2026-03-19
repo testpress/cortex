@@ -26,3 +26,18 @@
 - [x] E3 Replace `Map<String, dynamic>` auth responses with typed response models in `AuthClient`.
 - [x] E4 Move token persistence to `flutter_secure_storage` while retaining non-sensitive metadata in `shared_preferences`.
 - [x] E5 Update login and OTP screens to use `authProvider` actions instead of direct `MockAuthClient` usage.
+
+## Enhancements (Post v2)
+
+- [x] V2.1 Rename `AuthClient` to `AuthApiService` and align provider names/usages.
+- [x] V2.2 Introduce/standardize `AuthRepository` as the single auth workflow coordinator.
+- [x] V2.3 Refactor `authProvider` to remain state-only and call repository APIs.
+- [x] V2.4 Remove auth profile-refresh dependency on generic `DataSource` in auth path.
+- [x] V2.5 Keep auth profile sync routed through repository contracts (no auth use of generic `DataSource`).
+- [x] V2.6 Update app routing/auth gate checks to rely on provider-backed auth state as source of truth.
+- [x] V2.7 Move user profile resource ownership (`UserRepository`) into `packages/profile`.
+- [x] V2.8 Add profile repository method `getCurrentUser()` for cache-first user reads.
+- [x] V2.9 Wire `AuthRepository` in `core` to trigger current-user sync through the profile contract after login/otp.
+- [x] V2.10 Centralize auth error typing and backend-message extraction in `AuthException`.
+- [x] V2.11 Add backend logout API invocation before local session clear.
+- [x] V2.12 Clear secure storage on fresh install to avoid iOS keychain session carry-over.

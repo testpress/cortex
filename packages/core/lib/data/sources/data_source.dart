@@ -20,9 +20,6 @@ abstract class DataSource {
 
   // ── Identity ────────────────────────────────────────────────────────────
 
-  /// Fetches the profile for the current authenticated user.
-  Future<UserDto> getUserProfile();
-
   /// Fetch per-lesson progress for a user.
   Future<List<UserProgressDto>> getUserProgress(String userId);
 

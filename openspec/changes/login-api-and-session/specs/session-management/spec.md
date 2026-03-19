@@ -35,3 +35,27 @@ Session management is the SDK's persistence layer, responsible for keeping the u
 ### R6: Session Manager
 - Session hydration and profile refresh TTL logic SHOULD live in a dedicated `SessionManager`.
 - `authProvider` SHOULD consume hydration results from `SessionManager` rather than own hydration internals directly.
+
+## Enhancements (v2)
+
+### R7: Repository-Orchestrated Session Lifecycle
+- Session hydration and logout flows MUST be triggered through `AuthRepository`.
+- Session decisions exposed to UI routing SHOULD come from provider-backed auth state.
+
+### R8: Local Profile Persistence Boundary
+- Profile cache read/write for auth lifecycle MUST be coordinated by profile repository implementations using local persistence.
+- Auth session management MUST NOT depend on generic cross-domain `DataSource` contracts.
+
+### R9: Current User Read Semantics
+- Profile-side repositories SHOULD expose a `getCurrentUser()` style API that:
+  - returns cached user immediately when available, and
+  - refreshes profile from API asynchronously to keep cache up to date.
+
+### R10: Cross-Package Contract
+- Auth flow in `packages/core` SHOULD depend on a minimal profile-facing
+  contract (current-user sync/read abstraction), not on concrete profile
+  implementation details.
+
+### R11: Fresh Install Session Reset
+- On first launch after a fresh install, secure token storage MUST be cleared before hydration checks.
+- This behavior MUST prevent stale iOS keychain tokens from auto-restoring logged-in state after uninstall/reinstall.

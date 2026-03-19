@@ -75,3 +75,45 @@ void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
 ### UI Integration Consistency
 
 - Login and OTP screens should invoke `authProvider` actions, not direct mock client instances.
+
+## Enhancements (Post v2)
+
+### Target Flow (Simplified)
+
+`UI -> AuthProvider -> AuthRepository`
+
+Inside `AuthRepository`:
+- `AuthApiService` (network calls via Dio)
+- `Profile identity contract` (implemented in `packages/profile`)
+- `SessionStore` (`SessionStorage` + `SessionManager`)
+
+### Responsibility Split
+
+- **AuthProvider**
+  - Owns reactive `AuthState` only.
+  - Delegates workflows to repository.
+- **AuthRepository**
+  - Owns login, OTP generation, OTP verification, hydration, logout.
+  - Coordinates API calls, session persistence, and current-user sync trigger.
+- **AuthApiService**
+  - Owns HTTP concerns only (endpoint paths, payloads, response parsing, error mapping).
+- **Profile package (`packages/profile`)**
+  - Owns `UserRepository`, `UserApiService`, and user profile cache/read/write.
+  - Exposes `getCurrentUser()` semantics: return cached user when available and
+    refresh from API asynchronously.
+- **SessionStore**
+  - Owns token lifecycle and session metadata.
+
+### Architecture Corrections from Current State
+
+- Remove direct auth orchestration leakage across multiple layers.
+- Remove auth/profile-refresh dependence on generic `DataSource`.
+- Keep mock switching as a domain-level decision; auth real API integration should
+  use dedicated auth service + repository flow.
+- Enforce package boundaries: `Auth*` in `core`, `User/Profile*` in `profile`.
+- Route profile synchronization through an explicit contract abstraction to keep
+  auth orchestration decoupled from profile implementation details.
+- Keep error categorization and API-message extraction in `AuthException` so the
+  API service remains transport-focused.
+- On fresh install, clear secure storage before hydration to avoid stale iOS
+  keychain auth restoration.

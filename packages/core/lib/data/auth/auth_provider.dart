@@ -24,7 +24,7 @@ class AuthState {
 }
 
 /// Provider for the currently authenticated user.
-/// Manages session persistence via [SessionStorage] and profile sync via [UserRepository].
+/// Manages session persistence via [SessionStorage] and profile sync via [AuthRepository].
 @Riverpod(keepAlive: true)
 class Auth extends _$Auth {
   static const Duration _profileRefreshTtl = Duration(minutes: 5);
@@ -54,8 +54,8 @@ class Auth extends _$Auth {
   }
 
   Future<UserDto?> _runHydration() async {
-    final service = await ref.read(authServiceProvider.future);
-    final profile = await service.refreshFromSession(
+    final repository = await ref.read(authRepositoryProvider.future);
+    final profile = await repository.hydrateSession(
       profileRefreshTtl: _profileRefreshTtl,
       onCachedProfile: (cached) {
         state = AuthState.hydrating(cached);
@@ -70,8 +70,11 @@ class Auth extends _$Auth {
   Future<UserDto?> refreshFromSession() => _hydrateFromSession();
 
   Future<void> login(String username, String password) async {
-    final service = await ref.read(authServiceProvider.future);
-    final profile = await service.login(username: username, password: password);
+    final repository = await ref.read(authRepositoryProvider.future);
+    final profile = await repository.login(
+      username: username,
+      password: password,
+    );
     state = AuthState.authenticated(profile);
   }
 
@@ -80,8 +83,8 @@ class Auth extends _$Auth {
     required String countryCode,
     String? email,
   }) async {
-    final service = await ref.read(authServiceProvider.future);
-    await service.generateOtp(
+    final repository = await ref.read(authRepositoryProvider.future);
+    await repository.generateOtp(
       phoneNumber: phoneNumber,
       countryCode: countryCode,
       email: email,
@@ -93,8 +96,8 @@ class Auth extends _$Auth {
     required String phoneNumber,
     String? email,
   }) async {
-    final service = await ref.read(authServiceProvider.future);
-    final profile = await service.verifyOtp(
+    final repository = await ref.read(authRepositoryProvider.future);
+    final profile = await repository.verifyOtp(
       otp: otp,
       phoneNumber: phoneNumber,
       email: email,
@@ -103,8 +106,8 @@ class Auth extends _$Auth {
   }
 
   Future<void> logout() async {
-    final service = await ref.read(authServiceProvider.future);
-    await service.logout();
+    final repository = await ref.read(authRepositoryProvider.future);
+    await repository.logout();
     final sessionManager = ref.read(sessionManagerProvider);
     sessionManager.resetHydrationState();
     _hydrationFuture = null;

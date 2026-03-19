@@ -10,6 +10,7 @@ class SessionStorage {
 
   static const String _tokenKey = 'auth_token';
   static const String _profileSyncedAtKey = 'profile_synced_at';
+  static const String _installMarkerKey = 'install_marker_v1';
 
   SharedPreferences? _prefs;
   String? _authToken;
@@ -18,6 +19,7 @@ class SessionStorage {
   /// Initialize the persistent storage. Must be called during app bootstrap.
   Future<void> initialize() async {
     _prefs ??= await SharedPreferences.getInstance();
+    await _resetSecureStorageOnFreshInstall();
     if (_secureValuesLoaded) return;
     _authToken = await _secureStorage.read(key: _tokenKey);
     _secureValuesLoaded = true;
@@ -65,5 +67,14 @@ class SessionStorage {
   Future<SharedPreferences> _requirePrefs() async {
     await initialize();
     return _prefs!;
+  }
+
+  Future<void> _resetSecureStorageOnFreshInstall() async {
+    final prefs = _prefs!;
+    final hasInstallMarker = prefs.getBool(_installMarkerKey) ?? false;
+    if (hasInstallMarker) return;
+
+    await _secureStorage.deleteAll();
+    await prefs.setBool(_installMarkerKey, true);
   }
 }

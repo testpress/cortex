@@ -51,8 +51,13 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 final GoRouter appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
   initialLocation: '/home',
-  redirect: (_, state) {
-    final tokenAvailable = SessionStorage.instance.hasSession;
+  redirect: (context, state) {
+    final container = ProviderScope.containerOf(context, listen: false);
+    final authState = container.read(authProvider);
+    final tokenAvailable =
+        authState.isAuthenticated ||
+        authState.phase == AuthStatus.hydrating ||
+        SessionStorage.instance.hasSession;
     final path = state.uri.path;
     final isAuthRoute = path == '/login' || 
                         path == '/password-login' ||

@@ -10,7 +10,16 @@ final startupInitializationProvider = FutureProvider<void>((ref) async {
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const ProviderScope(child: CortexAppRoot()));
+  runApp(
+    ProviderScope(
+      overrides: [
+        authProfileSyncContractProvider.overrideWith(
+          (ref) => ref.watch(profileAuthProfileSyncProvider.future),
+        ),
+      ],
+      child: const CortexAppRoot(),
+    ),
+  );
 }
 
 /// Root widget with mutable DesignConfig for hot reload testing.

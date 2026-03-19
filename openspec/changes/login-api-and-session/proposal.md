@@ -40,3 +40,33 @@ iterative enhancements to improve long-term maintainability and security.
   non-sensitive metadata in preferences.
 - **Unified auth entrypoint for UI**: Update login/OTP screens to call
   `authProvider` actions instead of directly instantiating `MockAuthClient`.
+
+## Enhancements (Post v2)
+
+V2 focuses on simplifying auth architecture to reduce overlapping layers and
+align with a single responsibility path:
+
+`UI -> AuthProvider -> AuthRepository(AuthApiService + ProfileSyncContract + SessionStore)`
+
+- **Repository-centric orchestration**: Move login/OTP/logout/hydration
+  orchestration into `AuthRepository`.
+- **Service naming consistency**: Replace `AuthClient` naming with
+  `AuthApiService` for network-only responsibilities.
+- **Remove auth dependency on generic DataSource**: Auth/profile refresh should
+  not depend on broad `DataSource` contracts used by other domains.
+- **Thin provider policy**: Keep `authProvider` state-oriented; it should only
+  call repository methods and publish `AuthState`.
+- **Single auth source for navigation**: Prefer provider-backed auth state for
+  routing decisions to avoid mixed session checks.
+- **Package boundary clarity**:
+  - Keep `Auth*` infrastructure in `packages/core`.
+  - Move `User*` profile resource ownership (`UserRepository`, `UserApiService`)
+    into `packages/profile`.
+  - Integrate via a minimal contract so auth can trigger current-user sync after
+    login/otp without owning profile internals.
+- **Typed auth errors**: Centralize error type + user-message mapping in
+  `AuthException`, while preserving backend-provided error details where possible.
+- **Backend logout parity**: Invoke logout API before local session clear, with
+  safe fallback for deployments that do not expose logout endpoint.
+- **Fresh-install session safety**: Clear secure storage on first app launch
+  after reinstall to avoid iOS keychain token carry-over.

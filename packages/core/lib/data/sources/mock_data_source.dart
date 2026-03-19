@@ -806,9 +806,6 @@ class MockDataSource implements DataSource {
   // ─────────────────────────────────────────────────────────────────────────
 
   @override
-  Future<UserDto> getUserProfile() async => mockCurrentUser;
-
-  @override
   Future<List<UserProgressDto>> getUserProgress(String userId) async => [
         UserProgressDto(
           userId: userId,

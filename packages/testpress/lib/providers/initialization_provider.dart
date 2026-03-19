@@ -14,7 +14,7 @@ Future<void> appInitialization(AppInitializationRef ref) async {
   if (_didRunAppInitialization) return;
   _didRunAppInitialization = true;
 
-  final userRepo = await ref.read(userRepositoryProvider.future);
+  final userRepo = await ref.read(userProgressRepositoryProvider.future);
   final courseRepo = await ref.read(courseRepositoryProvider.future);
   final authState = ref.read(authProvider);
   var effectiveUserId = authState.user?.id ?? '';
