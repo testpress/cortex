@@ -1,10 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../config/app_config.dart';
-import 'data_source.dart';
-import 'mock_data_source.dart';
-import 'http_data_source.dart';
+import '../data.dart';
 
 part 'data_source_provider.g.dart';
 

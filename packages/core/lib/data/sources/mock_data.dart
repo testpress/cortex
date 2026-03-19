@@ -71,11 +71,6 @@ final mockStudyMomentum = StudyMomentumDto(
   weakSubject: 'Organic Chemistry',
 );
 
-/// Mock exception for Auth flows during UI development.
-class AuthException implements Exception {
-  final String message;
-  AuthException(this.message);
-}
 
 /// Mock Auth Client that reuses [mockCurrentUser] and updates [SessionStorage].
 class MockAuthClient {
@@ -84,7 +79,7 @@ class MockAuthClient {
     if (username == 'error') {
       throw AuthException('Incorrect username or password.');
     }
-    SessionStorage.instance.persistSession();
+    SessionStorage.instance.persistSession(authToken: 'mock_token');
   }
 
   Future<void> generateOtp({
@@ -101,7 +96,7 @@ class MockAuthClient {
     String? email,
   }) async {
     await Future.delayed(const Duration(seconds: 2));
-    SessionStorage.instance.persistSession();
+    SessionStorage.instance.persistSession(authToken: 'mock_token');
   }
 
   Future<UserDto> resolveCurrentUser({bool forceRefresh = false}) async {

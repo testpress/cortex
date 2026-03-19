@@ -12,6 +12,7 @@ import 'tables/live_classes_table.dart';
 import 'tables/forum_threads_table.dart';
 import 'tables/user_progress_table.dart';
 import 'tables/app_settings_table.dart';
+import 'tables/users_table.dart';
 import 'package:core/data/data.dart';
 
 part 'app_database.g.dart';
@@ -25,6 +26,7 @@ part 'app_database.g.dart';
     ForumThreadsTable,
     UserProgressTable,
     AppSettingsTable,
+    UsersTable,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -35,65 +37,68 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onUpgrade: (m, from, to) async {
-          if (from < 2) {
-            // Courses table migration (simplified for development, but ideally non-destructive)
-            await m.deleteTable(coursesTable.actualTableName);
-            await m.createTable(coursesTable);
-          }
+    onUpgrade: (m, from, to) async {
+      if (from < 2) {
+        // Courses table migration (simplified for development, but ideally non-destructive)
+        await m.deleteTable(coursesTable.actualTableName);
+        await m.createTable(coursesTable);
+      }
 
-          // Helper to add columns only if they don't already exist.
-          // This prevents crashes like "duplicate column name" during development migrations.
-          Future<void> addColumnSafely(GeneratedColumn col) async {
-            final res = await customSelect(
-              'PRAGMA table_info(${lessonsTable.actualTableName})',
-            ).get();
-            final existingColumns = res.map((r) => r.read<String>('name'));
-            if (!existingColumns.contains(col.name)) {
-              await m.addColumn(lessonsTable, col);
-            }
-          }
+      // Helper to add columns only if they don't already exist.
+      // This prevents crashes like "duplicate column name" during development migrations.
+      Future<void> addColumnSafely(GeneratedColumn col) async {
+        final res = await customSelect(
+          'PRAGMA table_info(${lessonsTable.actualTableName})',
+        ).get();
+        final existingColumns = res.map((r) => r.read<String>('name'));
+        if (!existingColumns.contains(col.name)) {
+          await m.addColumn(lessonsTable, col);
+        }
+      }
 
-          if (from < 3) {
-            // Phase-2: Add new columns to lessonsTable without deleting existing data
-            await addColumnSafely(lessonsTable.contentJson);
-            await addColumnSafely(lessonsTable.subtitle);
-            await addColumnSafely(lessonsTable.subjectName);
-            await addColumnSafely(lessonsTable.subjectIndex);
-            await addColumnSafely(lessonsTable.lessonNumber);
-            await addColumnSafely(lessonsTable.totalLessons);
-          }
-          if (from < 4) {
-            await addColumnSafely(lessonsTable.isBookmarked);
-          }
-          if (from < 5) {
-            await m.createTable(appSettingsTable);
-          }
-          if (from < 6) {
-            // Non-destructive migration to preserve user settings.
-            // We read the existing row (if any) using raw SQL since the generated mapping might expect the new schema.
-            final existing = await customSelect('SELECT * FROM app_settings_table LIMIT 1').getSingleOrNull();
+      if (from < 3) {
+        // Phase-2: Add new columns to lessonsTable without deleting existing data
+        await addColumnSafely(lessonsTable.contentJson);
+        await addColumnSafely(lessonsTable.subtitle);
+        await addColumnSafely(lessonsTable.subjectName);
+        await addColumnSafely(lessonsTable.subjectIndex);
+        await addColumnSafely(lessonsTable.lessonNumber);
+        await addColumnSafely(lessonsTable.totalLessons);
+      }
+      if (from < 4) {
+        await addColumnSafely(lessonsTable.isBookmarked);
+      }
+      if (from < 5) {
+        await m.createTable(appSettingsTable);
+      }
+      if (from < 6) {
+        // Non-destructive migration to preserve user settings.
+        // We read the existing row (if any) using raw SQL since the generated mapping might expect the new schema.
+        final existing = await customSelect('SELECT * FROM app_settings_table LIMIT 1').getSingleOrNull();
 
-            // Recreate the table to apply the new primary key constraint.
-            await m.deleteTable(appSettingsTable.actualTableName);
-            await m.createTable(appSettingsTable);
+        // Recreate the table to apply the new primary key constraint.
+        await m.deleteTable(appSettingsTable.actualTableName);
+        await m.createTable(appSettingsTable);
 
-            if (existing != null) {
-              // Restore the previously saved settings into the new table structure.
-              await into(appSettingsTable).insert(
-                AppSettingsTableCompanion(
-                  id: const Value(1),
-                  appearanceMode: Value(existing.read<String>('appearance_mode')),
-                  videoQuality: Value(existing.read<String>('video_quality')),
-                  autoPlayNext: Value(existing.read<bool>('auto_play_next')),
-                  textSize: Value(existing.read<String>('text_size')),
-                  highContrast: Value(existing.read<bool>('high_contrast')),
-                ),
-              );
-            }
-          }
-        },
-      );
+        if (existing != null) {
+          // Restore the previously saved settings into the new table structure.
+          await into(appSettingsTable).insert(
+            AppSettingsTableCompanion(
+              id: const Value(1),
+              appearanceMode: Value(existing.read<String>('appearance_mode')),
+              videoQuality: Value(existing.read<String>('video_quality')),
+              autoPlayNext: Value(existing.read<bool>('auto_play_next')),
+              textSize: Value(existing.read<String>('text_size')),
+              highContrast: Value(existing.read<bool>('high_contrast')),
+            ),
+          );
+        }
+
+        // Also create the users table from the auth session integration
+        await m.createTable(usersTable);
+      }
+    },
+  );
 
   // ── App Settings ─────────────────────────────────────────────────────────
 
@@ -115,12 +120,13 @@ class AppDatabase extends _$AppDatabase {
         // Initial insert happens out-of-band to establish the row.
         // Returning a default until the watchdog picks up the new row.
         return const AppSettingsTableData(
-            id: 1,
-            appearanceMode: AppSettingsDefaults.appearanceMode,
-            videoQuality: AppSettingsDefaults.videoQuality,
-            autoPlayNext: AppSettingsDefaults.autoPlayNext,
-            textSize: AppSettingsDefaults.textSize,
-            highContrast: AppSettingsDefaults.highContrast);
+          id: 1,
+          appearanceMode: AppSettingsDefaults.appearanceMode,
+          videoQuality: AppSettingsDefaults.videoQuality,
+          autoPlayNext: AppSettingsDefaults.autoPlayNext,
+          textSize: AppSettingsDefaults.textSize,
+          highContrast: AppSettingsDefaults.highContrast,
+        );
       }
       return entry;
     });
@@ -128,8 +134,9 @@ class AppDatabase extends _$AppDatabase {
 
   /// Update app settings.
   Future<void> updateSettings(AppSettingsTableCompanion companion) {
-    return (update(appSettingsTable)..where((t) => t.id.equals(1)))
-        .write(companion);
+    return (update(
+      appSettingsTable,
+    )..where((t) => t.id.equals(1))).write(companion);
   }
 
   // ── Courses ──────────────────────────────────────────────────────────────
@@ -176,19 +183,17 @@ class AppDatabase extends _$AppDatabase {
     final lesson = await getLessonById(id);
     if (lesson == null) return;
     await (update(lessonsTable)..where((t) => t.id.equals(id))).write(
-      LessonsTableCompanion(
-        isBookmarked: Value(!lesson.isBookmarked),
-      ),
+      LessonsTableCompanion(isBookmarked: Value(!lesson.isBookmarked)),
     );
   }
 
   /// Updates the progress status of a lesson.
   Future<void> updateLessonProgress(
-      String id, LessonProgressStatus status) async {
+    String id,
+    LessonProgressStatus status,
+  ) async {
     await (update(lessonsTable)..where((t) => t.id.equals(id))).write(
-      LessonsTableCompanion(
-        progressStatus: Value(status.name),
-      ),
+      LessonsTableCompanion(progressStatus: Value(status.name)),
     );
   }
 
@@ -208,8 +213,7 @@ class AppDatabase extends _$AppDatabase {
   Stream<List<ForumThreadsTableData>> watchThreadsForCourse(String courseId) =>
       (select(
         forumThreadsTable,
-      )..where((t) => t.courseId.equals(courseId)))
-          .watch();
+      )..where((t) => t.courseId.equals(courseId))).watch();
 
   Future<void> upsertForumThreads(List<ForumThreadsTableCompanion> rows) =>
       batch((b) => b.insertAllOnConflictUpdate(forumThreadsTable, rows));
@@ -219,11 +223,29 @@ class AppDatabase extends _$AppDatabase {
   Stream<List<UserProgressTableData>> watchProgressForUser(String userId) =>
       (select(
         userProgressTable,
-      )..where((t) => t.userId.equals(userId)))
-          .watch();
+      )..where((t) => t.userId.equals(userId))).watch();
 
   Future<void> upsertProgress(List<UserProgressTableCompanion> rows) =>
       batch((b) => b.insertAllOnConflictUpdate(userProgressTable, rows));
+
+  // ── User Identity ────────────────────────────────────────────────────────
+
+  /// Fetches a single user by ID and watches for changes.
+  Stream<UsersTableData?> watchUser(String id) {
+    return (select(
+      usersTable,
+    )..where((t) => t.id.equals(id))).watchSingleOrNull();
+  }
+
+  /// Upserts a user profile into the local database (used during login/sync).
+  Future<void> upsertUser(UsersTableCompanion entry) async {
+    await into(usersTable).insertOnConflictUpdate(entry);
+  }
+
+  /// Fetches any cached user profile (single-user app assumption).
+  Future<UsersTableData?> getAnyUser() {
+    return (select(usersTable)..limit(1)).getSingleOrNull();
+  }
 
   // ── Combined Lookups ──────────────────────────────────────────────────────
 
@@ -238,8 +260,7 @@ class AppDatabase extends _$AppDatabase {
         coursesTable,
         coursesTable.id.equalsExp(chaptersTable.courseId),
       ),
-    ])
-      ..where(lessonsTable.id.equals(lessonId));
+    ])..where(lessonsTable.id.equals(lessonId));
 
     return query.getSingleOrNull();
   }

@@ -1,37 +1,67 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
+import 'package:flutter/foundation.dart';
 
 part 'initialization_provider.g.dart';
 
+Future<void>? _appInitializationFuture;
+
 /// Provider that handles app-wide data initialization and refresh logic.
 /// This prevents side effects within UI-driven data providers.
-@riverpod
-Future<void> appInitialization(AppInitializationRef ref) async {
-  final userRepo = await ref.watch(userRepositoryProvider.future);
-  final courseRepo = await ref.watch(courseRepositoryProvider.future);
-  final user = ref.watch(authProvider);
+@Riverpod(keepAlive: true)
+Future<void> appInitialization(AppInitializationRef ref) {
+  final existing = _appInitializationFuture;
+  if (existing != null) return existing;
+
+  final future = _runAppInitialization(ref);
+  _appInitializationFuture = future;
+
+  // Allow retry if initialization fails before completion.
+  future.catchError((_, stackTrace) {
+    if (identical(_appInitializationFuture, future)) {
+      _appInitializationFuture = null;
+    }
+  });
+
+  return future;
+}
+
+Future<void> _runAppInitialization(AppInitializationRef ref) async {
+  final userRepo = await ref.read(userProgressRepositoryProvider.future);
+  final courseRepo = await ref.read(courseRepositoryProvider.future);
+  final authState = ref.read(authProvider);
+  var effectiveUserId = authState.user?.id ?? '';
+
+  if (!authState.isAuthenticated && SessionStorage.instance.hasSession) {
+    final hydrated = await ref.read(authProvider.notifier).refreshFromSession();
+    effectiveUserId = hydrated?.id ?? effectiveUserId;
+  }
 
   // Initialize core data in background
   try {
-    // 1. Refresh the list of enrolled courses from the network/mock source
-    final courses = await courseRepo.refreshCourses();
+    // 1. Refresh courses only when data source supports it.
+    if (AppConfig.useMockData || AppConfig.enableHttpCourseSync) {
+      final courses = await courseRepo.refreshCourses();
 
-    // 2. Refresh chapters and lessons for every enrolled course
-    // This ensures the entire study curriculum is available offline/locally.
-    for (final course in courses) {
-      final chapters = await courseRepo.refreshChapters(course.id);
+      // 2. Refresh chapters and lessons for every enrolled course.
+      for (final course in courses) {
+        final chapters = await courseRepo.refreshChapters(course.id);
 
-      for (final chapter in chapters) {
-        await courseRepo.refreshLessons(chapter.id);
+        for (final chapter in chapters) {
+          await courseRepo.refreshLessons(chapter.id);
+        }
       }
     }
 
-    // 3. Refresh user progress to see what was recently completed
+    // 3. Refresh user progress to see what was recently completed.
     // This allows the Resume Card to find the most recent lesson in the fully-populated DB.
-    await userRepo.refreshProgress(user.id);
-  } catch (e) {
-    // Initialization errors are handled here or surfaced to the listener
-    rethrow;
+    if (effectiveUserId.isNotEmpty) {
+      await userRepo.refreshProgress(effectiveUserId);
+    }
+  } catch (e, stackTrace) {
+    // Keep app usable with cached data, but don't swallow diagnostics.
+    debugPrint('Initialization failed: $e');
+    debugPrintStack(stackTrace: stackTrace);
   }
 }

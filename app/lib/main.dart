@@ -3,9 +3,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:testpress/testpress.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-void main() async {
+final startupInitializationProvider = FutureProvider<void>((ref) async {
+  await AppConfig.initialize();
+  await SessionStorage.instance.initialize();
+});
+
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const ProviderScope(child: CortexAppRoot()));
+  runApp(
+    ProviderScope(
+      overrides: [
+        authProfileSyncContractProvider.overrideWith(
+          (ref) => ref.watch(profileAuthProfileSyncProvider.future),
+        ),
+      ],
+      child: const CortexAppRoot(),
+    ),
+  );
 }
 
 /// Root widget with mutable DesignConfig for hot reload testing.
@@ -19,6 +33,25 @@ class CortexAppRoot extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final startup = ref.watch(startupInitializationProvider);
+    if (startup.isLoading) {
+      return const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(body: Center(child: CircularProgressIndicator())),
+      );
+    }
+
+    if (startup.hasError) {
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          body: Center(
+            child: Text('Startup failed: ${startup.error}'),
+          ),
+        ),
+      );
+    }
+
     // 🚀 BOOTSTRAP: Kick off app initialization (data seeding, etc.)
     ref.watch(appInitializationProvider);
 

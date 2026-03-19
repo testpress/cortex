@@ -16,7 +16,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     final pendingAssignments = ref.watch(pendingAssignmentsProvider);
     final upcomingTests = ref.watch(upcomingTestsProvider);
     final momentum = ref.watch(dto.studyMomentumProvider);
-    final user = ref.watch(dto.authProvider);
+    final user = ref.watch(dto.authProvider).effectiveUser;
     final heroBanners = ref.watch(heroBannersProvider);
     final promotionBanners = ref.watch(promotionBannersProvider);
     final topLearners = ref.watch(topLearnersProvider);
@@ -103,8 +103,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                       assignments: (pendingAssignments.value ?? [])
                           .map(_mapAssignment)
                           .toList(),
-                      tests: (upcomingTests.value ?? [])
-                          .toList(),
+                      tests: (upcomingTests.value ?? []).toList(),
                     );
                   },
                 ),
@@ -119,8 +118,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                   data: (top) => otherLearners.when(
                     data: (others) => TopLearnersSection(
                       topLearners: top.map(_mapLearner).toList(),
-                      otherLearners:
-                          others.map(_mapLearner).toList(),
+                      otherLearners: others.map(_mapLearner).toList(),
                     ),
                     loading: () => const SizedBox.shrink(),
                     error: (error, stack) => const SizedBox.shrink(),
@@ -131,9 +129,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
 
                 promotionBanners.when(
                   data: (data) => UpdatesAnnouncementsSection(
-                    banners: data
-                        .map(_mapPromotionBanner)
-                        .toList(),
+                    banners: data.map(_mapPromotionBanner).toList(),
                     onViewAll: () {
                       // Handle view all navigation
                     },
@@ -144,8 +140,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
 
                 shortcuts.when(
                   data: (data) => QuickAccessGrid(
-                    shortcuts:
-                        data.map(_mapShortcut).toList(),
+                    shortcuts: data.map(_mapShortcut).toList(),
                   ),
                   loading: () => const SizedBox(height: 150),
                   error: (error, stack) => const SizedBox.shrink(),

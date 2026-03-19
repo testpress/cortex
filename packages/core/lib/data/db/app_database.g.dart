@@ -3630,6 +3630,460 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
   }
 }
 
+class $UsersTableTable extends UsersTable
+    with TableInfo<$UsersTableTable, UsersTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UsersTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _emailMeta = const VerificationMeta('email');
+  @override
+  late final GeneratedColumn<String> email = GeneratedColumn<String>(
+    'email',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _phoneMeta = const VerificationMeta('phone');
+  @override
+  late final GeneratedColumn<String> phone = GeneratedColumn<String>(
+    'phone',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _avatarMeta = const VerificationMeta('avatar');
+  @override
+  late final GeneratedColumn<String> avatar = GeneratedColumn<String>(
+    'avatar',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isProMeta = const VerificationMeta('isPro');
+  @override
+  late final GeneratedColumn<bool> isPro = GeneratedColumn<bool>(
+    'is_pro',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_pro" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _joinedDateMeta = const VerificationMeta(
+    'joinedDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> joinedDate = GeneratedColumn<DateTime>(
+    'joined_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    email,
+    phone,
+    avatar,
+    isPro,
+    joinedDate,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'users_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<UsersTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('email')) {
+      context.handle(
+        _emailMeta,
+        email.isAcceptableOrUnknown(data['email']!, _emailMeta),
+      );
+    }
+    if (data.containsKey('phone')) {
+      context.handle(
+        _phoneMeta,
+        phone.isAcceptableOrUnknown(data['phone']!, _phoneMeta),
+      );
+    }
+    if (data.containsKey('avatar')) {
+      context.handle(
+        _avatarMeta,
+        avatar.isAcceptableOrUnknown(data['avatar']!, _avatarMeta),
+      );
+    }
+    if (data.containsKey('is_pro')) {
+      context.handle(
+        _isProMeta,
+        isPro.isAcceptableOrUnknown(data['is_pro']!, _isProMeta),
+      );
+    }
+    if (data.containsKey('joined_date')) {
+      context.handle(
+        _joinedDateMeta,
+        joinedDate.isAcceptableOrUnknown(data['joined_date']!, _joinedDateMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  UsersTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UsersTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      email: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}email'],
+      ),
+      phone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}phone'],
+      ),
+      avatar: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}avatar'],
+      ),
+      isPro: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_pro'],
+      )!,
+      joinedDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}joined_date'],
+      ),
+    );
+  }
+
+  @override
+  $UsersTableTable createAlias(String alias) {
+    return $UsersTableTable(attachedDatabase, alias);
+  }
+}
+
+class UsersTableData extends DataClass implements Insertable<UsersTableData> {
+  final String id;
+  final String name;
+  final String? email;
+  final String? phone;
+  final String? avatar;
+  final bool isPro;
+  final DateTime? joinedDate;
+  const UsersTableData({
+    required this.id,
+    required this.name,
+    this.email,
+    this.phone,
+    this.avatar,
+    required this.isPro,
+    this.joinedDate,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || email != null) {
+      map['email'] = Variable<String>(email);
+    }
+    if (!nullToAbsent || phone != null) {
+      map['phone'] = Variable<String>(phone);
+    }
+    if (!nullToAbsent || avatar != null) {
+      map['avatar'] = Variable<String>(avatar);
+    }
+    map['is_pro'] = Variable<bool>(isPro);
+    if (!nullToAbsent || joinedDate != null) {
+      map['joined_date'] = Variable<DateTime>(joinedDate);
+    }
+    return map;
+  }
+
+  UsersTableCompanion toCompanion(bool nullToAbsent) {
+    return UsersTableCompanion(
+      id: Value(id),
+      name: Value(name),
+      email: email == null && nullToAbsent
+          ? const Value.absent()
+          : Value(email),
+      phone: phone == null && nullToAbsent
+          ? const Value.absent()
+          : Value(phone),
+      avatar: avatar == null && nullToAbsent
+          ? const Value.absent()
+          : Value(avatar),
+      isPro: Value(isPro),
+      joinedDate: joinedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(joinedDate),
+    );
+  }
+
+  factory UsersTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UsersTableData(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      email: serializer.fromJson<String?>(json['email']),
+      phone: serializer.fromJson<String?>(json['phone']),
+      avatar: serializer.fromJson<String?>(json['avatar']),
+      isPro: serializer.fromJson<bool>(json['isPro']),
+      joinedDate: serializer.fromJson<DateTime?>(json['joinedDate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'email': serializer.toJson<String?>(email),
+      'phone': serializer.toJson<String?>(phone),
+      'avatar': serializer.toJson<String?>(avatar),
+      'isPro': serializer.toJson<bool>(isPro),
+      'joinedDate': serializer.toJson<DateTime?>(joinedDate),
+    };
+  }
+
+  UsersTableData copyWith({
+    String? id,
+    String? name,
+    Value<String?> email = const Value.absent(),
+    Value<String?> phone = const Value.absent(),
+    Value<String?> avatar = const Value.absent(),
+    bool? isPro,
+    Value<DateTime?> joinedDate = const Value.absent(),
+  }) => UsersTableData(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    email: email.present ? email.value : this.email,
+    phone: phone.present ? phone.value : this.phone,
+    avatar: avatar.present ? avatar.value : this.avatar,
+    isPro: isPro ?? this.isPro,
+    joinedDate: joinedDate.present ? joinedDate.value : this.joinedDate,
+  );
+  UsersTableData copyWithCompanion(UsersTableCompanion data) {
+    return UsersTableData(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      email: data.email.present ? data.email.value : this.email,
+      phone: data.phone.present ? data.phone.value : this.phone,
+      avatar: data.avatar.present ? data.avatar.value : this.avatar,
+      isPro: data.isPro.present ? data.isPro.value : this.isPro,
+      joinedDate: data.joinedDate.present
+          ? data.joinedDate.value
+          : this.joinedDate,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UsersTableData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('email: $email, ')
+          ..write('phone: $phone, ')
+          ..write('avatar: $avatar, ')
+          ..write('isPro: $isPro, ')
+          ..write('joinedDate: $joinedDate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, name, email, phone, avatar, isPro, joinedDate);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UsersTableData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.email == this.email &&
+          other.phone == this.phone &&
+          other.avatar == this.avatar &&
+          other.isPro == this.isPro &&
+          other.joinedDate == this.joinedDate);
+}
+
+class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String?> email;
+  final Value<String?> phone;
+  final Value<String?> avatar;
+  final Value<bool> isPro;
+  final Value<DateTime?> joinedDate;
+  final Value<int> rowid;
+  const UsersTableCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.email = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.avatar = const Value.absent(),
+    this.isPro = const Value.absent(),
+    this.joinedDate = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  UsersTableCompanion.insert({
+    required String id,
+    required String name,
+    this.email = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.avatar = const Value.absent(),
+    this.isPro = const Value.absent(),
+    this.joinedDate = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name);
+  static Insertable<UsersTableData> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? email,
+    Expression<String>? phone,
+    Expression<String>? avatar,
+    Expression<bool>? isPro,
+    Expression<DateTime>? joinedDate,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (email != null) 'email': email,
+      if (phone != null) 'phone': phone,
+      if (avatar != null) 'avatar': avatar,
+      if (isPro != null) 'is_pro': isPro,
+      if (joinedDate != null) 'joined_date': joinedDate,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  UsersTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<String?>? email,
+    Value<String?>? phone,
+    Value<String?>? avatar,
+    Value<bool>? isPro,
+    Value<DateTime?>? joinedDate,
+    Value<int>? rowid,
+  }) {
+    return UsersTableCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      avatar: avatar ?? this.avatar,
+      isPro: isPro ?? this.isPro,
+      joinedDate: joinedDate ?? this.joinedDate,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (email.present) {
+      map['email'] = Variable<String>(email.value);
+    }
+    if (phone.present) {
+      map['phone'] = Variable<String>(phone.value);
+    }
+    if (avatar.present) {
+      map['avatar'] = Variable<String>(avatar.value);
+    }
+    if (isPro.present) {
+      map['is_pro'] = Variable<bool>(isPro.value);
+    }
+    if (joinedDate.present) {
+      map['joined_date'] = Variable<DateTime>(joinedDate.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UsersTableCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('email: $email, ')
+          ..write('phone: $phone, ')
+          ..write('avatar: $avatar, ')
+          ..write('isPro: $isPro, ')
+          ..write('joinedDate: $joinedDate, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3646,6 +4100,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $AppSettingsTableTable appSettingsTable = $AppSettingsTableTable(
     this,
   );
+  late final $UsersTableTable usersTable = $UsersTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3658,6 +4113,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     forumThreadsTable,
     userProgressTable,
     appSettingsTable,
+    usersTable,
   ];
 }
 
@@ -5537,6 +5993,246 @@ typedef $$AppSettingsTableTableProcessedTableManager =
       AppSettingsTableData,
       PrefetchHooks Function()
     >;
+typedef $$UsersTableTableCreateCompanionBuilder =
+    UsersTableCompanion Function({
+      required String id,
+      required String name,
+      Value<String?> email,
+      Value<String?> phone,
+      Value<String?> avatar,
+      Value<bool> isPro,
+      Value<DateTime?> joinedDate,
+      Value<int> rowid,
+    });
+typedef $$UsersTableTableUpdateCompanionBuilder =
+    UsersTableCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<String?> email,
+      Value<String?> phone,
+      Value<String?> avatar,
+      Value<bool> isPro,
+      Value<DateTime?> joinedDate,
+      Value<int> rowid,
+    });
+
+class $$UsersTableTableFilterComposer
+    extends Composer<_$AppDatabase, $UsersTableTable> {
+  $$UsersTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get email => $composableBuilder(
+    column: $table.email,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get avatar => $composableBuilder(
+    column: $table.avatar,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isPro => $composableBuilder(
+    column: $table.isPro,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get joinedDate => $composableBuilder(
+    column: $table.joinedDate,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$UsersTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $UsersTableTable> {
+  $$UsersTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get email => $composableBuilder(
+    column: $table.email,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get avatar => $composableBuilder(
+    column: $table.avatar,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isPro => $composableBuilder(
+    column: $table.isPro,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get joinedDate => $composableBuilder(
+    column: $table.joinedDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$UsersTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $UsersTableTable> {
+  $$UsersTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get email =>
+      $composableBuilder(column: $table.email, builder: (column) => column);
+
+  GeneratedColumn<String> get phone =>
+      $composableBuilder(column: $table.phone, builder: (column) => column);
+
+  GeneratedColumn<String> get avatar =>
+      $composableBuilder(column: $table.avatar, builder: (column) => column);
+
+  GeneratedColumn<bool> get isPro =>
+      $composableBuilder(column: $table.isPro, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get joinedDate => $composableBuilder(
+    column: $table.joinedDate,
+    builder: (column) => column,
+  );
+}
+
+class $$UsersTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $UsersTableTable,
+          UsersTableData,
+          $$UsersTableTableFilterComposer,
+          $$UsersTableTableOrderingComposer,
+          $$UsersTableTableAnnotationComposer,
+          $$UsersTableTableCreateCompanionBuilder,
+          $$UsersTableTableUpdateCompanionBuilder,
+          (
+            UsersTableData,
+            BaseReferences<_$AppDatabase, $UsersTableTable, UsersTableData>,
+          ),
+          UsersTableData,
+          PrefetchHooks Function()
+        > {
+  $$UsersTableTableTableManager(_$AppDatabase db, $UsersTableTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$UsersTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$UsersTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$UsersTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> email = const Value.absent(),
+                Value<String?> phone = const Value.absent(),
+                Value<String?> avatar = const Value.absent(),
+                Value<bool> isPro = const Value.absent(),
+                Value<DateTime?> joinedDate = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => UsersTableCompanion(
+                id: id,
+                name: name,
+                email: email,
+                phone: phone,
+                avatar: avatar,
+                isPro: isPro,
+                joinedDate: joinedDate,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                Value<String?> email = const Value.absent(),
+                Value<String?> phone = const Value.absent(),
+                Value<String?> avatar = const Value.absent(),
+                Value<bool> isPro = const Value.absent(),
+                Value<DateTime?> joinedDate = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => UsersTableCompanion.insert(
+                id: id,
+                name: name,
+                email: email,
+                phone: phone,
+                avatar: avatar,
+                isPro: isPro,
+                joinedDate: joinedDate,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$UsersTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $UsersTableTable,
+      UsersTableData,
+      $$UsersTableTableFilterComposer,
+      $$UsersTableTableOrderingComposer,
+      $$UsersTableTableAnnotationComposer,
+      $$UsersTableTableCreateCompanionBuilder,
+      $$UsersTableTableUpdateCompanionBuilder,
+      (
+        UsersTableData,
+        BaseReferences<_$AppDatabase, $UsersTableTable, UsersTableData>,
+      ),
+      UsersTableData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -5555,4 +6251,6 @@ class $AppDatabaseManager {
       $$UserProgressTableTableTableManager(_db, _db.userProgressTable);
   $$AppSettingsTableTableTableManager get appSettingsTable =>
       $$AppSettingsTableTableTableManager(_db, _db.appSettingsTable);
+  $$UsersTableTableTableManager get usersTable =>
+      $$UsersTableTableTableManager(_db, _db.usersTable);
 }
