@@ -5,15 +5,29 @@ import 'package:flutter/foundation.dart';
 
 part 'initialization_provider.g.dart';
 
-bool _didRunAppInitialization = false;
+Future<void>? _appInitializationFuture;
 
 /// Provider that handles app-wide data initialization and refresh logic.
 /// This prevents side effects within UI-driven data providers.
 @Riverpod(keepAlive: true)
-Future<void> appInitialization(AppInitializationRef ref) async {
-  if (_didRunAppInitialization) return;
-  _didRunAppInitialization = true;
+Future<void> appInitialization(AppInitializationRef ref) {
+  final existing = _appInitializationFuture;
+  if (existing != null) return existing;
 
+  final future = _runAppInitialization(ref);
+  _appInitializationFuture = future;
+
+  // Allow retry if initialization fails before completion.
+  future.catchError((_, stackTrace) {
+    if (identical(_appInitializationFuture, future)) {
+      _appInitializationFuture = null;
+    }
+  });
+
+  return future;
+}
+
+Future<void> _runAppInitialization(AppInitializationRef ref) async {
   final userRepo = await ref.read(userProgressRepositoryProvider.future);
   final courseRepo = await ref.read(courseRepositoryProvider.future);
   final authState = ref.read(authProvider);
