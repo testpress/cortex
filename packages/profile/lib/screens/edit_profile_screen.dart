@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
+import '../providers/profile_user_repository_provider.dart';
 
 const double _kHeaderContentHeight = 60.0;
 
@@ -17,6 +18,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   late TextEditingController _emailController;
   late TextEditingController _phoneController;
   String? _nameError;
+  String? _saveError;
+  bool _isSaving = false;
 
   @override
   void initState() {
@@ -35,28 +38,37 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     super.dispose();
   }
 
-  void _validateAndSave() {
+  Future<void> _validateAndSave() async {
     final l10n = L10n.of(context);
+    if (_isSaving) return;
+
     setState(() {
       _nameError = _nameController.text.trim().isEmpty
           ? l10n.editProfileErrorNameEmpty
           : null;
+      _saveError = null;
     });
 
-    if (_nameError == null) {
-      final user = ref.read(authProvider).effectiveUser;
-      final updatedUser = UserDto(
-        id: user.id,
+    if (_nameError != null) return;
+
+    setState(() => _isSaving = true);
+    try {
+      final repository = await ref.read(profileUserRepositoryProvider.future);
+      final updatedUser = await repository.updateCurrentUser(
         name: _nameController.text.trim(),
-        email: _emailController.text.trim(),
         phone: _phoneController.text.trim(),
-        avatar: user.avatar,
-        isPro: user.isPro,
-        joinedDate: user.joinedDate,
       );
 
       ref.read(authProvider.notifier).updateProfile(updatedUser);
-      context.pop(true);
+      if (mounted) context.pop(true);
+    } on AuthException catch (error) {
+      if (!mounted) return;
+      setState(() => _saveError = error.message);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _saveError = l10n.loginErrorGenericRequest);
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
     }
   }
 
@@ -112,6 +124,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
                 ),
+                if (_saveError != null) ...[
+                  SizedBox(height: design.spacing.sm),
+                  AppText.bodySmall(_saveError!, color: design.colors.error),
+                ],
               ],
             ),
           ),
@@ -173,7 +189,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 height: 36,
                 child: AppButton(
                   label: l10n.editProfileSave,
-                  onPressed: _validateAndSave,
+                  onPressed: _isSaving ? null : _validateAndSave,
                   padding: EdgeInsets.symmetric(horizontal: design.spacing.lg),
                   backgroundColor: design.colors.accent2,
                   foregroundColor: design.colors.onPrimary,
