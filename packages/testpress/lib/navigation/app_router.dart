@@ -44,54 +44,33 @@ class HomePlaceholderScreen extends StatelessWidget {
 /// The root navigator key for the whole app
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
-/// Provider container used by the router for auth state checks.
-/// This is the same container that the app uses (set via setAppStateContainer).
-ProviderContainer? _appContainer;
 
-/// Link to notify GoRouter to re-run its redirect logic when states change.
-final _refreshNotifier = ValueNotifier<int>(0);
+/// Provider that exposes the application router.
+final goRouterProvider = Provider<GoRouter>((ref) {
+  final authState = ref.watch(authProvider);
 
-/// Call this from main.dart to wire the router to the app's ProviderContainer.
-void setAppStateContainer(ProviderContainer container) {
-  _appContainer = container;
-  
-  // Re-run the router redirect logic whenever the auth state changes.
-  container.listen(
-    authProvider,
-    (_, __) => _refreshNotifier.value++,
-    fireImmediately: true,
-  );
-}
+  return GoRouter(
+    navigatorKey: _rootNavigatorKey,
+    initialLocation: '/home',
+    redirect: (context, state) {
+      // Handle initial loading state to prevent flicker
+      if (authState.isLoading) return null;
 
-/// Defines the global router for the application using GoRouter.
-///
-/// We use `StatefulShellRoute` to maintain the state (e.g. scroll position)
-/// of each bottom navigation tab independently.
-final GoRouter appRouter = GoRouter(
-  navigatorKey: _rootNavigatorKey,
-  initialLocation: '/home',
-  refreshListenable: _refreshNotifier,
-  redirect: (_, state) {
-    final userAsync = _appContainer?.read(authProvider);
-    // While the session is still recovering, don't redirect anywhere yet.
-    if (userAsync == null || userAsync.isLoading) return null;
+      final isLoggedIn = authState.valueOrNull != null;
+      final path = state.uri.path;
+      final isAuthRoute = path == '/login' || 
+                          path == '/password-login' ||
+                          path == '/mobile-login' ||
+                          path == '/signup' || 
+                          path == '/forgot-password' || 
+                          path == '/otp' || 
+                          path == '/onboarding';
 
-    final user = userAsync.valueOrNull;
-    final isLoggedIn = user != null;
-    final path = state.uri.path;
-    final isAuthRoute = path == '/login' || 
-                        path == '/password-login' ||
-                        path == '/mobile-login' ||
-                        path == '/signup' || 
-                        path == '/forgot-password' || 
-                        path == '/otp' || 
-                        path == '/onboarding';
-
-    if (!isLoggedIn && !isAuthRoute) return '/onboarding';
-    if (isLoggedIn && isAuthRoute) return '/home';
-    return null;
-  },
-  routes: [
+      if (!isLoggedIn && !isAuthRoute) return '/onboarding';
+      if (isLoggedIn && isAuthRoute) return '/home';
+      return null;
+    },
+    routes: [
     GoRoute(
       path: '/onboarding',
       builder: (context, state) => const OnboardingScreen(),
@@ -178,10 +157,10 @@ final GoRouter appRouter = GoRouter(
                     isOpen: isLogoutSheetOpen,
                     onClose: closeSheet,
                     child: LogoutConfirmationSheet(
-                      onConfirm: () async {
+                      onConfirm: () {
                         closeSheet();
-                        await ref.read(authProvider.notifier).logout();
-                        _rootNavigatorKey.currentContext?.go('/onboarding');
+                        ref.read(authProvider.notifier).logout();
+                        _rootNavigatorKey.currentContext?.go('/home');
                       },
                       onCancel: closeSheet,
                     ),
@@ -449,6 +428,7 @@ final GoRouter appRouter = GoRouter(
     ),
   ],
 );
+});
 
 const _tabPaths = ['/home', '/study', '/explore', '/profile'];
 
