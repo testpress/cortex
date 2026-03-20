@@ -126,14 +126,13 @@ class AuthApiService {
     return payload;
   }
 
-  dynamic _normalizePhone(String rawPhone) {
+  String? _normalizePhone(String rawPhone) {
     final digitsOnly = rawPhone.replaceAll(RegExp(r'\D'), '');
     if (digitsOnly.isEmpty) return null;
-    return int.tryParse(digitsOnly) ?? digitsOnly;
+    return digitsOnly;
   }
 
-  dynamic _parseOtp(String rawOtp) {
-    final trimmed = rawOtp.trim();
-    return int.tryParse(trimmed) ?? trimmed;
+  String _parseOtp(String rawOtp) {
+    return rawOtp.trim();
   }
 }

@@ -95,14 +95,6 @@ class AuthException implements Exception {
     return AuthException.unknown(statusCode: statusCode);
   }
 
-  static bool shouldIgnoreLogoutError(DioException error) {
-    final statusCode = error.response?.statusCode;
-    return statusCode == 401 ||
-        statusCode == 403 ||
-        statusCode == 404 ||
-        statusCode == 405;
-  }
-
   static bool _isNetworkError(DioException error) {
     return error.type == DioExceptionType.connectionTimeout ||
         error.type == DioExceptionType.sendTimeout ||

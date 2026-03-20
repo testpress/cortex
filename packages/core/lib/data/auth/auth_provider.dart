@@ -92,8 +92,7 @@ class Auth extends _$Auth {
     try {
       await _repository.logout();
       state = const AsyncData(null);
-    } catch (e, st) {
-      state = AsyncError(e, st);
+    } catch (e) {
       // We still clear state locally even if logout API fails
       state = const AsyncData(null);
       rethrow;
