@@ -48,9 +48,19 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 /// This is the same container that the app uses (set via setAppStateContainer).
 ProviderContainer? _appContainer;
 
+/// Link to notify GoRouter to re-run its redirect logic when states change.
+final _refreshNotifier = ValueNotifier<int>(0);
+
 /// Call this from main.dart to wire the router to the app's ProviderContainer.
 void setAppStateContainer(ProviderContainer container) {
   _appContainer = container;
+  
+  // Re-run the router redirect logic whenever the auth state changes.
+  container.listen(
+    authProvider,
+    (_, __) => _refreshNotifier.value++,
+    fireImmediately: true,
+  );
 }
 
 /// Defines the global router for the application using GoRouter.
@@ -60,6 +70,7 @@ void setAppStateContainer(ProviderContainer container) {
 final GoRouter appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
   initialLocation: '/home',
+  refreshListenable: _refreshNotifier,
   redirect: (_, state) {
     final userAsync = _appContainer?.read(authProvider);
     // While the session is still recovering, don't redirect anywhere yet.

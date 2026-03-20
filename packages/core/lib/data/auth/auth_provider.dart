@@ -29,8 +29,6 @@ class Auth extends _$Auth {
 
   @override
   FutureOr<UserDto?> build() async {
-    // This is called automatically when the provider is first read.
-    // It handles the cold-start session recovery.
     final isLoggedIn = await _repository.isUserLoggedIn();
     if (isLoggedIn) {
       // TODO: Replace with real user from /me API
@@ -44,14 +42,17 @@ class Auth extends _$Auth {
     required String password,
   }) async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
+    try {
       await _repository.loginWithPassword(
         username: username,
         password: password,
       );
       // TODO: Replace with real user from /me API
-      return mockCurrentUser;
-    });
+      state = AsyncData(mockCurrentUser);
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      rethrow; // Rethrow so UI can show error message
+    }
   }
 
   Future<void> generateOtp({
@@ -72,23 +73,31 @@ class Auth extends _$Auth {
     String? email,
   }) async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
+    try {
       await _repository.verifyOtp(
         otp: otp,
         phoneNumber: phoneNumber,
         email: email,
       );
       // TODO: Replace with real user from /me API
-      return mockCurrentUser;
-    });
+      state = AsyncData(mockCurrentUser);
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      rethrow; // Rethrow so UI can show error message
+    }
   }
 
   Future<void> logout() async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
+    try {
       await _repository.logout();
-      return null;
-    });
+      state = const AsyncData(null);
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      // We still clear state locally even if logout API fails
+      state = const AsyncData(null);
+      rethrow;
+    }
   }
 
   void updateProfile(UserDto newUser) {
