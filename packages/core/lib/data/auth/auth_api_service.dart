@@ -94,9 +94,7 @@ class AuthApiService {
   }
 
   AuthApiResult _parseSession(Map<String, dynamic> body) {
-    final authToken =
-        (body['token'] ?? body['access_token'] ?? body['authToken'] ?? '')
-            .toString();
+    final authToken = (body['token'] ?? '').toString();
 
     if (authToken.isEmpty) {
       throw const AuthException('Auth API response missing access token');

@@ -31,7 +31,7 @@ The app currently uses mock auth with in-memory session checks. To make authenti
 - Map `DioException` to `AuthException` with user-facing messages.
 
 4. Token policy
-- Store only `access_token` in secure storage.
+- Store only `auth_token` in secure storage.
 - Session restoration checks token presence; no refresh exchange in this change.
 
 5. Wire-up flow
