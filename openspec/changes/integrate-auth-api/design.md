@@ -46,7 +46,7 @@ The app currently uses mock auth with in-memory session checks. To make authenti
 | :--- | :--- |
 | **`AuthApiService`** | **Network Layer**: Pure Dio-based service for making HTTP requests (Login, OTP, Reset). Handles status code mapping to `AuthException`. |
 | **`AuthRepository`** | **Domain Logic**: Orchestrator that combines API calls with local storage. It doesn't hold state, but defines the "business actions" for authentication. |
-| **`AuthProvider`** | **State Management**: A Riverpod `AsyncNotifier` that holds the current `User?` object. It reacts to repository actions and triggers UI updates/router redirects. |
+| **`AuthProvider`** | **State Management**: A Riverpod `AsyncNotifier` that holds the current `User?` object. It reacts to repository actions and triggers UI updates. The router watches the *data* of this provider specifically. |
 | **`AuthLocalDataSource`** | **Persistence**: Wraps `flutter_secure_storage` to safely manage the JWT `auth_token`. |
 | **`UserAgentInterceptor`** | **Infrastructure**: Appends device-specific headers (e.g., `ios-app`) to every request for backend activity tracking. |
 | **`AuthException`** | **Error Handling**: A custom domain exception that maps Dio/Backend errors into user-friendly strings. |
@@ -55,7 +55,7 @@ The app currently uses mock auth with in-memory session checks. To make authenti
 
 - [Token presence without validity check] -> Mitigation: accept as current scope; add token introspection/refresh in a separate change.
 - [Backend contract mismatch] -> Mitigation: keep response parsing strict and fail with mapped errors.
-- [Auth-loading redirect flicker] -> Mitigation: router treats loading state as neutral until resolved.
+- [Auth-loading dependency] -> Strategy: The router is loading-agnostic. Initial app boot waiting is handled by the Root/Splash layer, ensuring the router only receives final auth states.
 
 ## Migration Plan
 
