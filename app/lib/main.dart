@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:testpress/testpress.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const ProviderScope(child: CortexAppRoot()));
+  await dotenv.load(fileName: '.env').catchError((_) {
+    // .env not found — fall back to --dart-define values
+  });
+  final container = ProviderContainer();
+  setAppStateContainer(container);
+  runApp(
+    UncontrolledProviderScope(
+      container: container,
+      child: const CortexAppRoot(),
+    ),
+  );
 }
 
 /// Root widget with mutable DesignConfig for hot reload testing.

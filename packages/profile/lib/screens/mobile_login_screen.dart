@@ -15,7 +15,6 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
   final _phoneController = TextEditingController();
   final _countryCodeController = TextEditingController(text: '+91');
 
-  final _authClient = MockAuthClient();
   bool _isBusy = false;
   String? _errorMessage;
 
@@ -118,7 +117,7 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
     });
 
     try {
-      await _authClient.generateOtp(
+      await ref.read(authProvider.notifier).generateOtp(
         phoneNumber: phoneNumber,
         countryCode: countryCode,
       );

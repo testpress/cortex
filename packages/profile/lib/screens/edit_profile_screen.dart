@@ -21,10 +21,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    final user = ref.read(authProvider);
-    _nameController = TextEditingController(text: user.name);
-    _emailController = TextEditingController(text: user.email ?? '');
-    _phoneController = TextEditingController(text: user.phone ?? '');
+    final user = ref.read(authProvider).valueOrNull;
+    _nameController = TextEditingController(text: user?.name ?? '');
+    _emailController = TextEditingController(text: user?.email ?? '');
+    _phoneController = TextEditingController(text: user?.phone ?? '');
   }
 
   @override
@@ -44,15 +44,15 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     });
 
     if (_nameError == null) {
-      final user = ref.read(authProvider);
+      final user = ref.read(authProvider).valueOrNull;
       final updatedUser = UserDto(
-        id: user.id,
+        id: user?.id ?? '',
         name: _nameController.text.trim(),
         email: _emailController.text.trim(),
         phone: _phoneController.text.trim(),
-        avatar: user.avatar,
-        isPro: user.isPro,
-        joinedDate: user.joinedDate,
+        avatar: user?.avatar,
+        isPro: user?.isPro ?? false,
+        joinedDate: user?.joinedDate,
       );
 
       ref.read(authProvider.notifier).updateProfile(updatedUser);
@@ -187,7 +187,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget _buildAvatarSection(DesignConfig design, dynamic l10n) {
-    final user = ref.read(authProvider);
+    final user = ref.read(authProvider).valueOrNull;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -206,13 +206,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     color: design.colors.accent2,
                   ),
                   clipBehavior: Clip.antiAlias,
-                  child: user.avatar != null && user.avatar!.isNotEmpty
+                  child: user?.avatar != null && user!.avatar!.isNotEmpty
                       ? Image.network(
                           user.avatar!,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) => _buildInitialsAvatar(user.name, design),
                         )
-                      : _buildInitialsAvatar(user.name, design),
+                      : _buildInitialsAvatar(user?.name ?? '', design),
                 ),
                 Positioned(
                   bottom: 0,

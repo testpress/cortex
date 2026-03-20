@@ -44,6 +44,15 @@ class HomePlaceholderScreen extends StatelessWidget {
 /// The root navigator key for the whole app
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
+/// Provider container used by the router for auth state checks.
+/// This is the same container that the app uses (set via setAppStateContainer).
+ProviderContainer? _appContainer;
+
+/// Call this from main.dart to wire the router to the app's ProviderContainer.
+void setAppStateContainer(ProviderContainer container) {
+  _appContainer = container;
+}
+
 /// Defines the global router for the application using GoRouter.
 ///
 /// We use `StatefulShellRoute` to maintain the state (e.g. scroll position)
@@ -52,7 +61,12 @@ final GoRouter appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
   initialLocation: '/home',
   redirect: (_, state) {
-    final tokenAvailable = SessionStorage.instance.hasSession;
+    final userAsync = _appContainer?.read(authProvider);
+    // While the session is still recovering, don't redirect anywhere yet.
+    if (userAsync == null || userAsync.isLoading) return null;
+
+    final user = userAsync.valueOrNull;
+    final isLoggedIn = user != null;
     final path = state.uri.path;
     final isAuthRoute = path == '/login' || 
                         path == '/password-login' ||
@@ -62,8 +76,8 @@ final GoRouter appRouter = GoRouter(
                         path == '/otp' || 
                         path == '/onboarding';
 
-    if (!tokenAvailable && !isAuthRoute) return '/onboarding';
-    if (tokenAvailable && isAuthRoute) return '/home';
+    if (!isLoggedIn && !isAuthRoute) return '/onboarding';
+    if (isLoggedIn && isAuthRoute) return '/home';
     return null;
   },
   routes: [
@@ -150,10 +164,10 @@ final GoRouter appRouter = GoRouter(
                     isOpen: isLogoutSheetOpen,
                     onClose: closeSheet,
                     child: LogoutConfirmationSheet(
-                      onConfirm: () {
+                      onConfirm: () async {
                         closeSheet();
-                        ref.read(authProvider.notifier).logout();
-                        _rootNavigatorKey.currentContext?.go('/home');
+                        await ref.read(authProvider.notifier).logout();
+                        _rootNavigatorKey.currentContext?.go('/onboarding');
                       },
                       onCancel: closeSheet,
                     ),

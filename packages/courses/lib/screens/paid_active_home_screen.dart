@@ -42,7 +42,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                 child: AppScroll(
                   padding: EdgeInsets.symmetric(vertical: design.spacing.md),
                   children: [
-                    HomeGreetingSection(userName: user.name),
+                    HomeGreetingSection(userName: user.valueOrNull?.name ?? ''),
 
                 heroBanners.when(
                   data: (data) => HeroBannerCarousel(
