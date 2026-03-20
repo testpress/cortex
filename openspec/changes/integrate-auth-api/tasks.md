@@ -21,3 +21,10 @@
 - [x] 4.1 Add tests for login success/failure and logout token cleanup.
 - [x] 4.2 Add tests for startup session restoration transitions.
 - [x] 4.3 Run analyze/tests for touched packages and verify manual auth navigation flows.
+
+## 5. Password Reset Flow
+
+- [x] 5.1 Add `/api/v2.3/password/reset/` to `ApiEndpoints`.
+- [x] 5.2 Implement `resetPassword` in `AuthApiService` and `AuthRepository`.
+- [x] 5.3 Wire up `ForgotPasswordScreen` to the new API with error/success feedback.
+- [x] 5.4 Update `/otp` route parameters and `OtpScreen` resend logic to include dynamic `countryCode`.

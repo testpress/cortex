@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:core/core.dart';
-import 'package:go_router/go_router.dart';
+import 'package:core/data/data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ForgotPasswordScreen extends ConsumerStatefulWidget {
@@ -14,6 +14,8 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   final _emailController = TextEditingController();
   bool _isBusy = false;
   bool _emailSent = false;
+
+  String? _errorMessage;
 
   @override
   void dispose() {
@@ -32,7 +34,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(LucideIcons.arrowLeft, color: design.colors.textPrimary),
-          onPressed: () => context.go('/login'),
+          onPressed: () => context.pop(),
         ),
       ),
       body: SafeArea(
@@ -63,6 +65,10 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                           keyboardType: TextInputType.emailAddress,
                           autofocus: true,
                         ),
+                        if (_errorMessage != null) ...[
+                          SizedBox(height: design.spacing.md),
+                          AppText.bodySmall(_errorMessage!, color: design.colors.error),
+                        ],
                         const Spacer(),
                         SizedBox(height: design.spacing.xxl),
                         if (_isBusy)
@@ -71,11 +77,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                           AppButton.primary(
                             label: 'Send Reset Link',
                             fullWidth: true,
-                            onPressed: () {
-                              setState(() {
-                                _emailSent = true;
-                              });
-                            },
+                            onPressed: _handleResetPassword,
                           ),
                       ] else ...[
                         const Spacer(),
@@ -94,5 +96,38 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _handleResetPassword() async {
+    final l10n = L10n.of(context);
+    final email = _emailController.text.trim();
+
+    if (email.isEmpty) {
+      setState(() => _errorMessage = 'Please enter your email address.');
+      return;
+    }
+
+    if (_isBusy) return;
+    setState(() {
+      _isBusy = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final repository = ref.read(authRepositoryProvider);
+      await repository.resetPassword(email: email);
+      
+      if (mounted) {
+        setState(() {
+          _emailSent = true;
+        });
+      }
+    } on AuthException catch (e) {
+      if (mounted) setState(() => _errorMessage = e.message);
+    } catch (_) {
+      if (mounted) setState(() => _errorMessage = l10n.loginErrorGenericRequest);
+    } finally {
+      if (mounted) setState(() => _isBusy = false);
+    }
   }
 }

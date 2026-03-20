@@ -24,7 +24,7 @@ The app currently uses mock auth with in-memory session checks. To make authenti
 
 2. Endpoint constants
 - Add `core/lib/network/api_endpoints.dart` for all auth endpoint strings.
-- Prevent ad-hoc hardcoded endpoint paths in services.
+- Support login, OTP generation/verification, logout, and password reset.
 
 3. Dio for network calls
 - Use `dio` for auth requests with base URL from `AppConfig.apiBaseUrl`.
@@ -37,7 +37,19 @@ The app currently uses mock auth with in-memory session checks. To make authenti
 5. Wire-up flow
 - `appInitializationProvider` triggers auth provider initialize.
 - Router reads auth provider state for redirects.
-- Password/mobile/otp screens call auth provider actions.
+- Password/mobile/otp/forgot-password screens call auth provider/repository actions.
+- OTP Resend flow uses dynamic `countryCode` passed via route parameters.
+
+## Component Responsibilities
+
+| Component | Responsibility |
+| :--- | :--- |
+| **`AuthApiService`** | **Network Layer**: Pure Dio-based service for making HTTP requests (Login, OTP, Reset). Handles status code mapping to `AuthException`. |
+| **`AuthRepository`** | **Domain Logic**: Orchestrator that combines API calls with local storage. It doesn't hold state, but defines the "business actions" for authentication. |
+| **`AuthProvider`** | **State Management**: A Riverpod `AsyncNotifier` that holds the current `User?` object. It reacts to repository actions and triggers UI updates/router redirects. |
+| **`AuthLocalDataSource`** | **Persistence**: Wraps `flutter_secure_storage` to safely manage the JWT `auth_token`. |
+| **`UserAgentInterceptor`** | **Infrastructure**: Appends device-specific headers (e.g., `ios-app`) to every request for backend activity tracking. |
+| **`AuthException`** | **Error Handling**: A custom domain exception that maps Dio/Backend errors into user-friendly strings. |
 
 ## Risks / Trade-offs
 

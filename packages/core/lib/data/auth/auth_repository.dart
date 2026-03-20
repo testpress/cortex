@@ -70,6 +70,10 @@ class AuthRepository {
     }
   }
 
+  Future<void> resetPassword({required String email}) {
+    return _apiService.resetPassword(email: email);
+  }
+
   Future<void> clearToken() async {
     await _localDataSource.clearToken();
   }

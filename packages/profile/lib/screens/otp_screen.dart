@@ -5,9 +5,14 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class OtpScreen extends ConsumerStatefulWidget {
-  const OtpScreen({super.key, required this.phoneNumber});
+  const OtpScreen({
+    super.key,
+    required this.phoneNumber,
+    required this.countryCode,
+  });
 
   final String phoneNumber;
+  final String countryCode;
 
   @override
   ConsumerState<OtpScreen> createState() => _OtpScreenState();
@@ -17,6 +22,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   final _otpController = TextEditingController();
   bool _isBusy = false;
   String? _errorMessage;
+  String? _successMessage;
 
   @override
   void dispose() {
@@ -67,6 +73,10 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                         SizedBox(height: design.spacing.md),
                         AppText.bodySmall(_errorMessage!, color: design.colors.error),
                       ],
+                      if (_successMessage != null) ...[
+                        SizedBox(height: design.spacing.md),
+                        AppText.bodySmall(_successMessage!, color: design.colors.success),
+                      ],
                       const Spacer(),
                       SizedBox(height: design.spacing.xxl),
                       if (_isBusy)
@@ -80,7 +90,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                       SizedBox(height: design.spacing.xl),
                       Center(
                         child: GestureDetector(
-                          onTap: () {},
+                          onTap: _handleResendOtp,
                           child: AppText.body(
                             'Resend Code',
                             color: design.colors.primary,
@@ -99,6 +109,30 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
     );
   }
 
+  Future<void> _handleResendOtp() async {
+    setState(() {
+      _errorMessage = null;
+      _successMessage = null;
+      _isBusy = true;
+    });
+
+    try {
+      await ref.read(authProvider.notifier).generateOtp(
+        phoneNumber: widget.phoneNumber,
+        countryCode: widget.countryCode,
+      );
+      if (mounted) {
+        setState(() => _successMessage = 'Code Resent Successfully!');
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() => _errorMessage = 'Failed to resend code. Please try again.');
+      }
+    } finally {
+      if (mounted) setState(() => _isBusy = false);
+    }
+  }
+
   Future<void> _handleVerifyOtp() async {
     final l10n = L10n.of(context);
     final otp = _otpController.text.trim();
@@ -112,6 +146,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
     setState(() {
       _isBusy = true;
       _errorMessage = null;
+      _successMessage = null;
     });
 
     try {

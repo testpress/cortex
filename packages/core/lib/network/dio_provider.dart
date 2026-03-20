@@ -1,12 +1,13 @@
 import 'package:dio/dio.dart';
 
 import '../data/config/app_config.dart';
+import 'user_agent_interceptor.dart';
 
 class NetworkProvider {
   NetworkProvider._();
 
   static Dio create({String? baseUrl, Map<String, Object?>? headers}) {
-    return Dio(
+    final dio = Dio(
       BaseOptions(
         baseUrl: baseUrl ?? AppConfig.apiBaseUrl,
         headers: {
@@ -16,5 +17,9 @@ class NetworkProvider {
         },
       ),
     );
+
+    dio.interceptors.add(UserAgentInterceptor());
+
+    return dio;
   }
 }

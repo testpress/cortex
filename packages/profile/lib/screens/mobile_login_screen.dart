@@ -59,7 +59,7 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
                             width: 80,
                             child: AppTextField(
                               label: 'Code',
-                              hintText: '+91',
+                              hintText: l10n.loginCountryCodeHint,
                               controller: _countryCodeController,
                             ),
                           ),
@@ -121,7 +121,15 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
         phoneNumber: phoneNumber,
         countryCode: countryCode,
       );
-      if (mounted) context.push('/otp', extra: phoneNumber);
+      if (mounted) {
+        context.push(
+          '/otp',
+          extra: {
+            'phoneNumber': phoneNumber,
+            'countryCode': countryCode.trim(),
+          },
+        );
+      }
     } on AuthException catch (error) {
       if (mounted) setState(() => _errorMessage = error.message);
     } catch (_) {

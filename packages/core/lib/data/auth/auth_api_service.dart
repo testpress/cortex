@@ -70,6 +70,10 @@ class AuthApiService {
     );
   }
 
+  Future<void> resetPassword({required String email}) {
+    return _post(ApiEndpoints.resetPassword, {'email': email});
+  }
+
   Future<Map<String, dynamic>> _post(
     String path,
     Map<String, dynamic> payload, {

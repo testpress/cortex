@@ -47,6 +47,7 @@ class Auth extends _$Auth {
         username: username,
         password: password,
       );
+      
       // TODO: Replace with real user from /me API
       state = AsyncData(mockCurrentUser);
     } catch (e, st) {
@@ -79,6 +80,7 @@ class Auth extends _$Auth {
         phoneNumber: phoneNumber,
         email: email,
       );
+
       // TODO: Replace with real user from /me API
       state = AsyncData(mockCurrentUser);
     } catch (e, st) {

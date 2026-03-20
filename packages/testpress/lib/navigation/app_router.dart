@@ -119,8 +119,11 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/otp',
       builder: (context, state) {
-        final phoneNumber = state.extra as String? ?? '';
-        return OtpScreen(phoneNumber: phoneNumber);
+        final extra = state.extra as Map<String, dynamic>? ?? {};
+        return OtpScreen(
+          phoneNumber: (extra['phoneNumber'] as String?) ?? '',
+          countryCode: (extra['countryCode'] as String?) ?? '',
+        );
       },
     ),
     StatefulShellRoute.indexedStack(
