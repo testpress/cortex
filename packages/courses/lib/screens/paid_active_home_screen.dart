@@ -16,7 +16,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     final pendingAssignments = ref.watch(pendingAssignmentsProvider);
     final upcomingTests = ref.watch(upcomingTestsProvider);
     final momentum = ref.watch(dto.studyMomentumProvider);
-    final user = ref.watch(dto.authProvider);
+    final user = ref.watch(dto.authProvider).requireValue!;
     final heroBanners = ref.watch(heroBannersProvider);
     final promotionBanners = ref.watch(promotionBannersProvider);
     final topLearners = ref.watch(topLearnersProvider);

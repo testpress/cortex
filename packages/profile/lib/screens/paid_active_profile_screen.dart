@@ -27,7 +27,7 @@ class ProfilePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
 
-    final user = ref.watch(authProvider);
+    final user = ref.watch(authProvider).requireValue!;
     final statsAsync = ref.watch(studyMomentumProvider);
     final enrolledCoursesAsync = ref.watch(profileEnrollmentProvider);
     final recentActivityAsync = ref.watch(profileRecentActivityProvider);

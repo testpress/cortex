@@ -40,11 +40,11 @@ class CortexAppRoot extends ConsumerWidget {
 }
 
 /// Cortex reference application.
-class CortexApp extends StatelessWidget {
+class CortexApp extends ConsumerWidget {
   const CortexApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
     final localization = LocalizationProvider.of(context);
     final locale = localization.locale;
@@ -55,7 +55,7 @@ class CortexApp extends StatelessWidget {
       locale: locale,
       localizationsDelegates: LocalizationProvider.delegates,
       supportedLocales: LocalizationProvider.supportedLocales,
-      routerConfig: appRouter,
+      routerConfig: ref.watch(goRouterProvider),
       // Set Plus Jakarta Sans on the Material theme so widgets that still
       // use Material's text theme (Scaffold, SnackBar, etc.) also use it.
       theme: ThemeData(

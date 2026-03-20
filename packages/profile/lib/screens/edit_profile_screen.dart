@@ -21,7 +21,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    final user = ref.read(authProvider);
+    final user = ref.read(authProvider).requireValue!;
     _nameController = TextEditingController(text: user.name);
     _emailController = TextEditingController(text: user.email ?? '');
     _phoneController = TextEditingController(text: user.phone ?? '');
@@ -44,7 +44,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     });
 
     if (_nameError == null) {
-      final user = ref.read(authProvider);
+      final user = ref.read(authProvider).requireValue!;
       final updatedUser = UserDto(
         id: user.id,
         name: _nameController.text.trim(),
@@ -187,7 +187,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget _buildAvatarSection(DesignConfig design, dynamic l10n) {
-    final user = ref.read(authProvider);
+    final user = ref.read(authProvider).requireValue!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
