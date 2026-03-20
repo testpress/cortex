@@ -71,35 +71,6 @@ final mockStudyMomentum = StudyMomentumDto(
   weakSubject: 'Organic Chemistry',
 );
 
-/// Mock Auth Client for UI development.
-class MockAuthClient {
-  Future<void> login({required String username, required String password}) async {
-    await Future.delayed(const Duration(seconds: 2));
-    if (username == 'error') {
-      throw const AuthException('Incorrect username or password.');
-    }
-  }
-
-  Future<void> generateOtp({
-    required String phoneNumber,
-    required String countryCode,
-    String? email,
-  }) async {
-    await Future.delayed(const Duration(seconds: 2));
-  }
-
-  Future<void> verifyOtp({
-    required String otp,
-    required String phoneNumber,
-    String? email,
-  }) async {
-    await Future.delayed(const Duration(seconds: 2));
-  }
-
-  Future<UserDto> resolveCurrentUser({bool forceRefresh = false}) async {
-    return mockCurrentUser;
-  }
-}
 /// Mock explore banners.
 final mockExploreBanners = [
   const ExploreBannerDto(

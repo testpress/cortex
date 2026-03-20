@@ -27,7 +27,7 @@ class ProfilePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
 
-    final user = ref.watch(authProvider).valueOrNull;
+    final user = ref.watch(authProvider).requireValue!;
     final statsAsync = ref.watch(studyMomentumProvider);
     final enrolledCoursesAsync = ref.watch(profileEnrollmentProvider);
     final recentActivityAsync = ref.watch(profileRecentActivityProvider);
@@ -54,9 +54,9 @@ class ProfilePage extends ConsumerWidget {
 
                     // Profile Header Area
                     ProfileHeader(
-                      name: user?.name ?? '',
-                      avatarUrl: user?.avatar,
-                      joinedDate: user?.joinedDate,
+                      name: user.name,
+                      avatarUrl: user.avatar,
+                      joinedDate: user.joinedDate,
                       onEditProfileTap:
                           onEditProfile ??
                           () => context.pushNamed('profile-edit'),
