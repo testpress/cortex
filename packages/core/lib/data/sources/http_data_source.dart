@@ -1,66 +1,61 @@
 import 'package:core/data/data.dart';
+import '../models/paginated_response_dto.dart';
+import '../network/api_client.dart';
 import 'data_source.dart';
+import 'remote/remote_course_dto.dart';
 
-/// HTTP data source stub — to be implemented when a real backend is available.
-/// All methods throw [UnimplementedError] to surface accidental usage in tests.
+/// Active HTTP data source for remote API communication.
+/// Uses [ApiClient] for centralized HTTP requests and error handling.
 ///
-/// Activate via: flutter run --dart-define=USE_MOCK=false
+/// Only methods backed by a real API endpoint are implemented here.
+/// Methods not yet integrated return empty results and are stubs until
+/// their respective API integrations are added.
 class HttpDataSource implements DataSource {
-  const HttpDataSource();
+  final ApiClient _apiClient;
+
+  HttpDataSource({required ApiClient apiClient}) : _apiClient = apiClient;
 
   @override
-  Future<List<CourseDto>> getCourses() => throw UnimplementedError(
-        'HttpDataSource.getCourses is not yet implemented. Use MockDataSource.',
-      );
+  Future<PaginatedResponseDto<CourseDto>> getCourses({
+    int page = 1,
+    int pageSize = 10,
+  }) async {
+    final response = await _apiClient.get(
+      '/api/v3/courses/',
+      queryParameters: {'page': page, 'page_size': pageSize},
+    );
+
+    return RemoteCourseDto.fromPaginatedJson(
+      response.data as Map<String, dynamic>,
+    );
+  }
+
+  // ── Not yet integrated — stubs return empty until real endpoints are added ──
 
   @override
-  Future<List<ChapterDto>> getChapters(String courseId) =>
-      throw UnimplementedError(
-        'HttpDataSource.getChapters is not yet implemented.',
-      );
+  Future<List<ChapterDto>> getChapters(String courseId) async => [];
 
   @override
-  Future<List<LessonDto>> getLessons(String chapterId) =>
-      throw UnimplementedError(
-        'HttpDataSource.getLessons is not yet implemented.',
-      );
+  Future<List<LessonDto>> getLessons(String chapterId) async => [];
 
   @override
-  Future<List<LiveClassDto>> getLiveClasses() => throw UnimplementedError(
-        'HttpDataSource.getLiveClasses is not yet implemented.',
-      );
+  Future<List<LiveClassDto>> getLiveClasses() async => [];
 
   @override
-  Future<List<ForumThreadDto>> getForumThreads(String courseId) =>
-      throw UnimplementedError(
-        'HttpDataSource.getForumThreads is not yet implemented.',
-      );
+  Future<List<ForumThreadDto>> getForumThreads(String courseId) async => [];
 
   @override
-  Future<List<UserProgressDto>> getUserProgress(String userId) =>
-      throw UnimplementedError(
-        'HttpDataSource.getUserProgress is not yet implemented.',
-      );
+  Future<List<UserProgressDto>> getUserProgress(String userId) async => [];
 
   @override
-  Future<List<ExploreBannerDto>> getExploreBanners() =>
-      throw UnimplementedError(
-        'HttpDataSource.getExploreBanners is not yet implemented.',
-      );
+  Future<List<ExploreBannerDto>> getExploreBanners() async => [];
 
   @override
-  Future<List<StudyTipDto>> getStudyTips() => throw UnimplementedError(
-        'HttpDataSource.getStudyTips is not yet implemented.',
-      );
+  Future<List<StudyTipDto>> getStudyTips() async => [];
 
   @override
-  Future<List<ShortLessonDto>> getShortLessons() => throw UnimplementedError(
-        'HttpDataSource.getShortLessons is not yet implemented.',
-      );
+  Future<List<ShortLessonDto>> getShortLessons() async => [];
 
   @override
-  Future<List<DiscoveryCourseDto>> getDiscoveryCourses() =>
-      throw UnimplementedError(
-        'HttpDataSource.getDiscoveryCourses is not yet implemented.',
-      );
+  Future<List<DiscoveryCourseDto>> getDiscoveryCourses() async => [];
 }

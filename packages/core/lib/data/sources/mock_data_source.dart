@@ -2,7 +2,7 @@ import 'package:core/data/data.dart';
 import 'data_source.dart';
 import 'mock_data.dart';
 
-/// In-process mock data source with hardcoded JEE/NEET coaching institute data.
+/// Static mock data source for development and testing.
 /// Implements [DataSource]; no network calls are made.
 /// Data is derived from the React reference design.
 class MockDataSource implements DataSource {
@@ -13,11 +13,29 @@ class MockDataSource implements DataSource {
   // ─────────────────────────────────────────────────────────────────────────
 
   @override
-  Future<List<CourseDto>> getCourses() async => [
+  Future<PaginatedResponseDto<CourseDto>> getCourses({
+    int page = 1,
+    int pageSize = 10,
+  }) async {
+    final results = page <= 3 ? _getMockCourses(page) : <CourseDto>[];
+    final next = page < 3
+        ? 'https://lmsdemo.testpress.in/api/v3/courses/?page=${page + 1}'
+        : null;
+
+    return PaginatedResponseDto(
+      results: results,
+      next: next,
+      count: 15, // Total simulated courses across 3 pages
+    );
+  }
+
+  List<CourseDto> _getMockCourses(int page) {
+    if (page == 1) {
+      return [
         const CourseDto(
           id: 'jee-main-2026',
           title: 'JEE Main 2026',
-          colorIndex: 0, // indigo
+          colorIndex: 0,
           chapterCount: 12,
           totalDuration: '180 hrs',
           progress: 34,
@@ -27,7 +45,7 @@ class MockDataSource implements DataSource {
         const CourseDto(
           id: 'neet-2026',
           title: 'NEET 2026',
-          colorIndex: 4, // rose
+          colorIndex: 4,
           chapterCount: 10,
           totalDuration: '160 hrs',
           progress: 18,
@@ -37,7 +55,7 @@ class MockDataSource implements DataSource {
         const CourseDto(
           id: 'jee-advanced-2026',
           title: 'JEE Advanced 2026',
-          colorIndex: 3, // violet
+          colorIndex: 3,
           chapterCount: 8,
           totalDuration: '120 hrs',
           progress: 5,
@@ -47,7 +65,7 @@ class MockDataSource implements DataSource {
         const CourseDto(
           id: 'biology-neet-2026',
           title: 'NEET Biology Mastery',
-          colorIndex: 2, // emerald
+          colorIndex: 2,
           chapterCount: 15,
           totalDuration: '200 hrs',
           progress: 45,
@@ -57,7 +75,7 @@ class MockDataSource implements DataSource {
         const CourseDto(
           id: 'english-core-2026',
           title: 'CBSE English Core',
-          colorIndex: 5, // pink
+          colorIndex: 5,
           chapterCount: 6,
           totalDuration: '40 hrs',
           progress: 10,
@@ -65,6 +83,45 @@ class MockDataSource implements DataSource {
           totalLessons: 20,
         ),
       ];
+    } else if (page == 2) {
+      return [
+        const CourseDto(
+          id: 'maths-foundation',
+          title: 'Maths Foundation 2025',
+          colorIndex: 1,
+          chapterCount: 15,
+          totalDuration: '100 hrs',
+          progress: 0,
+          completedLessons: 0,
+          totalLessons: 50,
+        ),
+        const CourseDto(
+          id: 'physics-mastery',
+          title: 'Physics Mastery 2025',
+          colorIndex: 6,
+          chapterCount: 20,
+          totalDuration: '150 hrs',
+          progress: 12,
+          completedLessons: 10,
+          totalLessons: 80,
+        ),
+      ];
+    } else if (page == 3) {
+      return [
+        const CourseDto(
+          id: 'chemistry-revision',
+          title: 'Chemistry Quick Revision',
+          colorIndex: 7,
+          chapterCount: 5,
+          totalDuration: '20 hrs',
+          progress: 100,
+          completedLessons: 20,
+          totalLessons: 20,
+        ),
+      ];
+    }
+    return [];
+  }
 
   // ─────────────────────────────────────────────────────────────────────────
   // Chapters

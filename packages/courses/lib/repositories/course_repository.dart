@@ -21,12 +21,22 @@ class CourseRepository {
         );
   }
 
-  /// Fetch courses from [DataSource] and persist to local DB.
-  Future<List<CourseDto>> refreshCourses() async {
-    final courses = await _source.getCourses();
-    final companions = courses.map(_courseDtoToCompanion).toList();
-    await _db.upsertCourses(companions);
-    return courses;
+  /// Fetch courses for a specific [page] from [DataSource] and persist to local DB.
+  ///
+  /// This method is stateless — it does not track pagination progress.
+  /// Tracking should be handled by the consumer (e.g., a Riverpod Notifier).
+  Future<PaginatedResponseDto<CourseDto>> fetchAndPersistCourses({
+    int page = 1,
+  }) async {
+    final response = await _source.getCourses(page: page);
+
+    if (response.results.isNotEmpty) {
+      final companions =
+          response.results.map(_courseDtoToCompanion).toList();
+      await _db.upsertCourses(companions);
+    }
+
+    return response;
   }
 
   // ── Chapters ─────────────────────────────────────────────────────────────
@@ -113,6 +123,7 @@ class CourseRepository {
         progress: row.progress,
         completedLessons: row.completedLessons,
         totalLessons: row.totalLessons,
+        image: row.image,
       );
 
   CoursesTableCompanion _courseDtoToCompanion(CourseDto dto) =>
@@ -125,6 +136,7 @@ class CourseRepository {
         progress: Value(dto.progress),
         completedLessons: Value(dto.completedLessons),
         totalLessons: dto.totalLessons,
+        image: Value(dto.image),
       );
 
   ChapterDto _rowToChapterDto(ChaptersTableData row) => ChapterDto(

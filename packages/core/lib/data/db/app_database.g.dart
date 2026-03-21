@@ -95,6 +95,15 @@ class $CoursesTableTable extends CoursesTable
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _imageMeta = const VerificationMeta('image');
+  @override
+  late final GeneratedColumn<String> image = GeneratedColumn<String>(
+    'image',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -105,6 +114,7 @@ class $CoursesTableTable extends CoursesTable
     progress,
     completedLessons,
     totalLessons,
+    image,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -187,6 +197,12 @@ class $CoursesTableTable extends CoursesTable
     } else if (isInserting) {
       context.missing(_totalLessonsMeta);
     }
+    if (data.containsKey('image')) {
+      context.handle(
+        _imageMeta,
+        image.isAcceptableOrUnknown(data['image']!, _imageMeta),
+      );
+    }
     return context;
   }
 
@@ -228,6 +244,10 @@ class $CoursesTableTable extends CoursesTable
         DriftSqlType.int,
         data['${effectivePrefix}total_lessons'],
       )!,
+      image: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}image'],
+      ),
     );
   }
 
@@ -247,6 +267,7 @@ class CoursesTableData extends DataClass
   final int progress;
   final int completedLessons;
   final int totalLessons;
+  final String? image;
   const CoursesTableData({
     required this.id,
     required this.title,
@@ -256,6 +277,7 @@ class CoursesTableData extends DataClass
     required this.progress,
     required this.completedLessons,
     required this.totalLessons,
+    this.image,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -268,6 +290,9 @@ class CoursesTableData extends DataClass
     map['progress'] = Variable<int>(progress);
     map['completed_lessons'] = Variable<int>(completedLessons);
     map['total_lessons'] = Variable<int>(totalLessons);
+    if (!nullToAbsent || image != null) {
+      map['image'] = Variable<String>(image);
+    }
     return map;
   }
 
@@ -281,6 +306,9 @@ class CoursesTableData extends DataClass
       progress: Value(progress),
       completedLessons: Value(completedLessons),
       totalLessons: Value(totalLessons),
+      image: image == null && nullToAbsent
+          ? const Value.absent()
+          : Value(image),
     );
   }
 
@@ -298,6 +326,7 @@ class CoursesTableData extends DataClass
       progress: serializer.fromJson<int>(json['progress']),
       completedLessons: serializer.fromJson<int>(json['completedLessons']),
       totalLessons: serializer.fromJson<int>(json['totalLessons']),
+      image: serializer.fromJson<String?>(json['image']),
     );
   }
   @override
@@ -312,6 +341,7 @@ class CoursesTableData extends DataClass
       'progress': serializer.toJson<int>(progress),
       'completedLessons': serializer.toJson<int>(completedLessons),
       'totalLessons': serializer.toJson<int>(totalLessons),
+      'image': serializer.toJson<String?>(image),
     };
   }
 
@@ -324,6 +354,7 @@ class CoursesTableData extends DataClass
     int? progress,
     int? completedLessons,
     int? totalLessons,
+    Value<String?> image = const Value.absent(),
   }) => CoursesTableData(
     id: id ?? this.id,
     title: title ?? this.title,
@@ -333,6 +364,7 @@ class CoursesTableData extends DataClass
     progress: progress ?? this.progress,
     completedLessons: completedLessons ?? this.completedLessons,
     totalLessons: totalLessons ?? this.totalLessons,
+    image: image.present ? image.value : this.image,
   );
   CoursesTableData copyWithCompanion(CoursesTableCompanion data) {
     return CoursesTableData(
@@ -354,6 +386,7 @@ class CoursesTableData extends DataClass
       totalLessons: data.totalLessons.present
           ? data.totalLessons.value
           : this.totalLessons,
+      image: data.image.present ? data.image.value : this.image,
     );
   }
 
@@ -367,7 +400,8 @@ class CoursesTableData extends DataClass
           ..write('totalDuration: $totalDuration, ')
           ..write('progress: $progress, ')
           ..write('completedLessons: $completedLessons, ')
-          ..write('totalLessons: $totalLessons')
+          ..write('totalLessons: $totalLessons, ')
+          ..write('image: $image')
           ..write(')'))
         .toString();
   }
@@ -382,6 +416,7 @@ class CoursesTableData extends DataClass
     progress,
     completedLessons,
     totalLessons,
+    image,
   );
   @override
   bool operator ==(Object other) =>
@@ -394,7 +429,8 @@ class CoursesTableData extends DataClass
           other.totalDuration == this.totalDuration &&
           other.progress == this.progress &&
           other.completedLessons == this.completedLessons &&
-          other.totalLessons == this.totalLessons);
+          other.totalLessons == this.totalLessons &&
+          other.image == this.image);
 }
 
 class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
@@ -406,6 +442,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
   final Value<int> progress;
   final Value<int> completedLessons;
   final Value<int> totalLessons;
+  final Value<String?> image;
   final Value<int> rowid;
   const CoursesTableCompanion({
     this.id = const Value.absent(),
@@ -416,6 +453,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     this.progress = const Value.absent(),
     this.completedLessons = const Value.absent(),
     this.totalLessons = const Value.absent(),
+    this.image = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   CoursesTableCompanion.insert({
@@ -427,6 +465,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     this.progress = const Value.absent(),
     this.completedLessons = const Value.absent(),
     required int totalLessons,
+    this.image = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        title = Value(title),
@@ -443,6 +482,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     Expression<int>? progress,
     Expression<int>? completedLessons,
     Expression<int>? totalLessons,
+    Expression<String>? image,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -454,6 +494,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
       if (progress != null) 'progress': progress,
       if (completedLessons != null) 'completed_lessons': completedLessons,
       if (totalLessons != null) 'total_lessons': totalLessons,
+      if (image != null) 'image': image,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -467,6 +508,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     Value<int>? progress,
     Value<int>? completedLessons,
     Value<int>? totalLessons,
+    Value<String?>? image,
     Value<int>? rowid,
   }) {
     return CoursesTableCompanion(
@@ -478,6 +520,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
       progress: progress ?? this.progress,
       completedLessons: completedLessons ?? this.completedLessons,
       totalLessons: totalLessons ?? this.totalLessons,
+      image: image ?? this.image,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -509,6 +552,9 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     if (totalLessons.present) {
       map['total_lessons'] = Variable<int>(totalLessons.value);
     }
+    if (image.present) {
+      map['image'] = Variable<String>(image.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -526,6 +572,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
           ..write('progress: $progress, ')
           ..write('completedLessons: $completedLessons, ')
           ..write('totalLessons: $totalLessons, ')
+          ..write('image: $image, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3671,6 +3718,7 @@ typedef $$CoursesTableTableCreateCompanionBuilder =
       Value<int> progress,
       Value<int> completedLessons,
       required int totalLessons,
+      Value<String?> image,
       Value<int> rowid,
     });
 typedef $$CoursesTableTableUpdateCompanionBuilder =
@@ -3683,6 +3731,7 @@ typedef $$CoursesTableTableUpdateCompanionBuilder =
       Value<int> progress,
       Value<int> completedLessons,
       Value<int> totalLessons,
+      Value<String?> image,
       Value<int> rowid,
     });
 
@@ -3732,6 +3781,11 @@ class $$CoursesTableTableFilterComposer
 
   ColumnFilters<int> get totalLessons => $composableBuilder(
     column: $table.totalLessons,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get image => $composableBuilder(
+    column: $table.image,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -3784,6 +3838,11 @@ class $$CoursesTableTableOrderingComposer
     column: $table.totalLessons,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get image => $composableBuilder(
+    column: $table.image,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$CoursesTableTableAnnotationComposer
@@ -3828,6 +3887,9 @@ class $$CoursesTableTableAnnotationComposer
     column: $table.totalLessons,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get image =>
+      $composableBuilder(column: $table.image, builder: (column) => column);
 }
 
 class $$CoursesTableTableTableManager
@@ -3869,6 +3931,7 @@ class $$CoursesTableTableTableManager
                 Value<int> progress = const Value.absent(),
                 Value<int> completedLessons = const Value.absent(),
                 Value<int> totalLessons = const Value.absent(),
+                Value<String?> image = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => CoursesTableCompanion(
                 id: id,
@@ -3879,6 +3942,7 @@ class $$CoursesTableTableTableManager
                 progress: progress,
                 completedLessons: completedLessons,
                 totalLessons: totalLessons,
+                image: image,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -3891,6 +3955,7 @@ class $$CoursesTableTableTableManager
                 Value<int> progress = const Value.absent(),
                 Value<int> completedLessons = const Value.absent(),
                 required int totalLessons,
+                Value<String?> image = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => CoursesTableCompanion.insert(
                 id: id,
@@ -3901,6 +3966,7 @@ class $$CoursesTableTableTableManager
                 progress: progress,
                 completedLessons: completedLessons,
                 totalLessons: totalLessons,
+                image: image,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
