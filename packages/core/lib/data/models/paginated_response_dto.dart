@@ -26,17 +26,7 @@ class PaginatedResponseDto<T> {
     Map<String, dynamic> json,
     T Function(Map<String, dynamic>) fromJsonT,
   ) {
-    // 1. Find the raw data (standard DRF or Testpress 'courses' key)
-    var rawData = json['results'] ?? json['courses'] ?? json;
-
-    // 2. Testpress Quirk: Sometimes 'results' is a Map that *contains* the list.
-    // If we found a Map, look one level deeper for a List.
-    if (rawData is Map<String, dynamic>) {
-      rawData = rawData['courses'] ?? rawData['results'] ?? rawData;
-    }
-
-    // 3. Ensure we actually have a List before trying to map it
-    final List<dynamic> rawList = rawData is List ? rawData : [];
+    final rawList = json['results'] as List<dynamic>? ?? [];
 
     return PaginatedResponseDto<T>(
       results: rawList

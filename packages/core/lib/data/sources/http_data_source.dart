@@ -25,9 +25,8 @@ class HttpDataSource implements DataSource {
       queryParameters: {'page': page, 'page_size': pageSize},
     );
 
-    return PaginatedResponseDto<CourseDto>.fromJson(
+    return RemoteCourseDto.fromPaginatedJson(
       response.data as Map<String, dynamic>,
-      (json) => RemoteCourseDto.fromJson(json).toDomain(),
     );
   }
 

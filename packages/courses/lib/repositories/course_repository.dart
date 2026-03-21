@@ -9,17 +9,8 @@ import 'package:core/data/data.dart';
 class CourseRepository {
   final AppDatabase _db;
   final DataSource _source;
-  final void Function(bool)? onSyncStateChanged;
-  
-  CourseRepository(this._db, this._source, {this.onSyncStateChanged});
 
-  // Pagination and sync state
-  int _nextPage = 1;
-  bool _hasMore = true;
-  Future<List<CourseDto>>? _activeRefresh;
-
-  bool get hasMore => _hasMore;
-  bool get isSyncing => _activeRefresh != null;
+  CourseRepository(this._db, this._source);
 
   // ── Courses ──────────────────────────────────────────────────────────────
 
@@ -30,59 +21,22 @@ class CourseRepository {
         );
   }
 
-  /// Fetch courses from [DataSource] and persist to local DB.
-  /// Supports incremental pagination.
+  /// Fetch courses for a specific [page] from [DataSource] and persist to local DB.
   ///
-  /// Deduplicates concurrent calls — if a refresh is already in progress,
-  /// returns the same future.
-  Future<List<CourseDto>> refreshCourses({bool reset = false}) async {
-    if (_activeRefresh != null) return _activeRefresh!;
+  /// This method is stateless — it does not track pagination progress.
+  /// Tracking should be handled by the consumer (e.g., a Riverpod Notifier).
+  Future<PaginatedResponseDto<CourseDto>> fetchAndPersistCourses({
+    int page = 1,
+  }) async {
+    final response = await _source.getCourses(page: page);
 
-    _activeRefresh = _performRefresh(reset: reset);
-    try {
-      return await _activeRefresh!;
-    } finally {
-      _activeRefresh = null;
+    if (response.results.isNotEmpty) {
+      final companions =
+          response.results.map(_courseDtoToCompanion).toList();
+      await _db.upsertCourses(companions);
     }
-  }
 
-  Future<List<CourseDto>> _performRefresh({required bool reset}) async {
-    if (reset) {
-      _nextPage = 1;
-      _hasMore = true;
-    }
-    if (!_hasMore) return [];
-
-    onSyncStateChanged?.call(true);
-    try {
-      final paginatedResponse = await _source.getCourses(page: _nextPage);
-
-      if (paginatedResponse.results.isEmpty) {
-        _hasMore = false;
-      } else {
-        final companions =
-            paginatedResponse.results.map(_courseDtoToCompanion).toList();
-        await _db.upsertCourses(companions);
-
-        // Extract the next page number from the API's 'next' URL.
-        // This ensures we follow the backend's pagination logic exactly.
-        final nextUrl = paginatedResponse.next;
-        _hasMore = nextUrl != null;
-        if (_hasMore) {
-          final extractedPage = _extractPageFromUrl(nextUrl!);
-          if (extractedPage != null) {
-            _nextPage = extractedPage;
-          } else {
-            // Fallback if URL parsing fails but next is not null
-            _nextPage++;
-          }
-        }
-      }
-
-      return paginatedResponse.results;
-    } finally {
-      onSyncStateChanged?.call(false);
-    }
+    return response;
   }
 
   // ── Chapters ─────────────────────────────────────────────────────────────
@@ -268,17 +222,6 @@ class CourseRepository {
     } catch (e) {
       // Log or handle error: malformed JSON in local DB
       return const [];
-    }
-  }
-
-  /// Helper to extract the 'page' parameter from a given URL.
-  int? _extractPageFromUrl(String url) {
-    try {
-      final uri = Uri.parse(url);
-      final pageValue = uri.queryParameters['page'];
-      return pageValue != null ? int.tryParse(pageValue) : null;
-    } catch (_) {
-      return null;
     }
   }
 }

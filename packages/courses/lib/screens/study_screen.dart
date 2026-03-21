@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' show ScaffoldMessenger, SnackBar, Colors;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
@@ -70,9 +71,21 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
 
     final enrollmentAsync = ref.watch(courseListProvider);
     final isInitialSyncing = ref.watch(isInitialSyncingProvider);
+    final isMoreSyncing = ref.watch(isMoreSyncingProvider);
     final allLessons = ref.watch(allLessonsProvider);
     final resumeAsync = ref.watch(recentActivityProvider);
-    final isSyncing = ref.watch(courseSyncingProvider);
+
+    // Show a small notification if a sync error occurs during scrolling
+    ref.listen(syncErrorProvider, (previous, next) {
+      if (next != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: AppText.body('Sync failed: $next', color: Colors.white),
+            backgroundColor: design.colors.error,
+          ),
+        );
+      }
+    });
 
     // Determines if we show the centered full-page spinner (only for truly empty state)
     final showInitialLoader =
@@ -188,7 +201,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                           ),
 
                         // Footer Loader
-                        if (isSyncing)
+                        if (isMoreSyncing)
                           SliverToBoxAdapter(
                             child: Padding(
                               padding: EdgeInsets.only(

@@ -16,7 +16,8 @@ Future<void> appInitialization(AppInitializationRef ref) async {
   // Initialize core data in background
   try {
     // 1. Refresh the list of enrolled courses from the network/mock source
-    final courses = await courseRepo.refreshCourses();
+    final response = await courseRepo.fetchAndPersistCourses(page: 1);
+    final courses = response.results;
 
     // 2. Refresh chapters and lessons for every enrolled course
     // This ensures the entire study curriculum is available offline/locally.

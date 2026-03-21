@@ -30,6 +30,27 @@ class RemoteCourseDto {
     this.image,
   });
 
+  /// The 'Messy Adapter': Handles Testpress-specific inconsistencies
+  /// in the paginated response before letting the core logic see it.
+  static PaginatedResponseDto<CourseDto> fromPaginatedJson(
+    Map<String, dynamic> json,
+  ) {
+    // 1. Testpress Quirk: Sometimes 'results' is a Map with a nested 'courses' List.
+    // We normalize it here so the generic PaginatedResponseDto stays clean.
+    final results = json['results'];
+    final normalizedJson = Map<String, dynamic>.from(json);
+
+    if (results is Map<String, dynamic> && results['courses'] is List) {
+      normalizedJson['results'] = results['courses'];
+    }
+
+    // 2. Pass the normalized (clean) JSON to the generic parser
+    return PaginatedResponseDto.fromJson(
+      normalizedJson,
+      (m) => RemoteCourseDto.fromJson(m).toDomain(),
+    );
+  }
+
   /// Parses a raw API course JSON object.
   ///
   /// Expected API response shape:
