@@ -29,6 +29,12 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+
+    // Explicitly trigger the initial sync when the screen is first loaded.
+    // This is better than a side-effect provider because it's easy to trace.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(courseListProvider.notifier).initialize();
+    });
   }
 
   @override
@@ -40,24 +46,11 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
   }
 
   void _onScroll() {
-    final repo = ref.read(courseRepositoryProvider).valueOrNull;
-    final isSyncing = ref.read(courseSyncingProvider);
-
-    if (repo == null || isSyncing || !repo.hasMore) return;
-
-    final metrics = _scrollController.position;
-    final thresholdReached = metrics.extentAfter < 500;
-
-    if (thresholdReached) {
-      _fetchMore();
+    // UI only detects the intent (scrolled near bottom)
+    if (_scrollController.position.extentAfter < 500) {
+      // Business logic is encapsulated in the notifier
+      ref.read(courseListProvider.notifier).loadMore();
     }
-  }
-
-  Future<void> _fetchMore() async {
-    final repo = await ref.read(courseRepositoryProvider.future);
-    if (!repo.hasMore || repo.isSyncing) return;
-
-    await repo.refreshCourses();
   }
 
   void _toggleType(LessonType type) {
@@ -76,14 +69,14 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     final l10n = L10n.of(context);
 
     final enrollmentAsync = ref.watch(courseListProvider);
-    final initialSync = ref.watch(courseInitialSyncProvider);
+    final isInitialSyncing = ref.watch(isInitialSyncingProvider);
     final allLessons = ref.watch(allLessonsProvider);
     final resumeAsync = ref.watch(recentActivityProvider);
     final isSyncing = ref.watch(courseSyncingProvider);
 
     // Determines if we show the centered full-page spinner (only for truly empty state)
-    final showInitialLoader = initialSync is AsyncLoading &&
-        enrollmentAsync.valueOrNull?.isEmpty == true;
+    final showInitialLoader =
+        isInitialSyncing && enrollmentAsync.valueOrNull?.isEmpty == true;
 
     return DecoratedBox(
       decoration: BoxDecoration(color: design.colors.canvas),

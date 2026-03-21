@@ -22,28 +22,49 @@ Future<CourseRepository> courseRepository(Ref ref) async {
 }
 
 /// Track if initial fetch has been done in the current session.
-final hasFetchedOnceProvider = StateProvider<bool>((ref) => false);
+final _hasFetchedOnce = StateProvider<bool>((ref) => false);
 
-/// Syncs the first page of courses if not already done.
-/// Auth-gated: only runs if user is logged in.
+/// State provider for initial sync status (first time loading courses).
+final isInitialSyncingProvider = StateProvider<bool>((ref) => false);
+
+/// Stream notifier for the full course list.
+///
+/// - `build()` streams courses from the local Drift DB.
+/// - `initialize()` ensures the first page is fetched from API one time.
+/// - `loadMore()` loads subsequent pages on user scroll.
 @Riverpod(keepAlive: true)
-Future<void> courseInitialSync(Ref ref) async {
-  final auth = ref.watch(authProvider).valueOrNull;
-  if (auth == null) return;
-  
-  if (ref.read(hasFetchedOnceProvider)) return;
+class CourseList extends _$CourseList {
+  @override
+  Stream<List<CourseDto>> build() async* {
+    final repo = await ref.watch(courseRepositoryProvider.future);
+    yield* repo.watchCourses();
+  }
 
-  final repo = await ref.watch(courseRepositoryProvider.future);
-  await repo.refreshCourses(reset: true);
-  ref.read(hasFetchedOnceProvider.notifier).state = true;
-}
+  /// Explicit initialization: ensures the first sync happens one time per session.
+  /// Call this when the Study tab is entered.
+  Future<void> initialize() async {
+    // Wait for auth state to be resolved (e.g. if still checking token storage)
+    final auth = await ref.read(authProvider.future);
+    if (auth == null) return; // Auth gate — explicit
 
-/// Stream provider for the full course list.
-/// Screens should watch [courseInitialSyncProvider] if they want to trigger/wait for the first sync.
-@riverpod
-Stream<List<CourseDto>> courseList(CourseListRef ref) async* {
-  final repo = await ref.watch(courseRepositoryProvider.future);
-  yield* repo.watchCourses();
+    if (ref.read(_hasFetchedOnce)) return;
+
+    ref.read(isInitialSyncingProvider.notifier).state = true;
+    try {
+      final repo = await ref.read(courseRepositoryProvider.future);
+      await repo.refreshCourses(reset: true);
+      ref.read(_hasFetchedOnce.notifier).state = true;
+    } finally {
+      ref.read(isInitialSyncingProvider.notifier).state = false;
+    }
+  }
+
+  /// Loads the next page from the API.
+  Future<void> loadMore() async {
+    final repo = await ref.read(courseRepositoryProvider.future);
+    if (!repo.hasMore || repo.isSyncing) return;
+    await repo.refreshCourses();
+  }
 }
 
 /// Provider for a specific course's chapters.

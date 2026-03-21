@@ -6,7 +6,7 @@ part of 'course_list_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$courseRepositoryHash() => r'62b30446b43101d61052e9c469030f2209080475';
+String _$courseRepositoryHash() => r'e1bdd96c7b7bed6af0671f20ac537712a3a6265d';
 
 /// See also [courseRepository].
 @ProviderFor(courseRepository)
@@ -23,46 +23,6 @@ final courseRepositoryProvider = FutureProvider<CourseRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CourseRepositoryRef = FutureProviderRef<CourseRepository>;
-String _$courseInitialSyncHash() => r'b9dbc53914cf9f69585d80dcd423bbb206b7b849';
-
-/// Syncs the first page of courses if not already done.
-/// Auth-gated: only runs if user is logged in.
-///
-/// Copied from [courseInitialSync].
-@ProviderFor(courseInitialSync)
-final courseInitialSyncProvider = AutoDisposeFutureProvider<void>.internal(
-  courseInitialSync,
-  name: r'courseInitialSyncProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$courseInitialSyncHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef CourseInitialSyncRef = AutoDisposeFutureProviderRef<void>;
-String _$courseListHash() => r'e09726800afe30e7af81d8346fc28e7ad237069a';
-
-/// Stream provider for the full course list.
-/// Screens should watch [courseInitialSyncProvider] if they want to trigger/wait for the first sync.
-///
-/// Copied from [courseList].
-@ProviderFor(courseList)
-final courseListProvider = AutoDisposeStreamProvider<List<CourseDto>>.internal(
-  courseList,
-  name: r'courseListProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$courseListHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef CourseListRef = AutoDisposeStreamProviderRef<List<CourseDto>>;
 String _$courseChaptersHash() => r'0209694cd811fd004339910f9895f84971f0e5c9';
 
 /// Copied from Dart SDK
@@ -350,5 +310,27 @@ class _ChapterLessonsProviderElement
   String get chapterId => (origin as ChapterLessonsProvider).chapterId;
 }
 
+String _$courseListHash() => r'00a58458218fa35c2a1402581558519673b3eb40';
+
+/// Stream notifier for the full course list.
+///
+/// - `build()` streams courses from the local Drift DB.
+/// - `initialize()` ensures the first page is fetched from API one time.
+/// - `loadMore()` loads subsequent pages on user scroll.
+///
+/// Copied from [CourseList].
+@ProviderFor(CourseList)
+final courseListProvider =
+    StreamNotifierProvider<CourseList, List<CourseDto>>.internal(
+      CourseList.new,
+      name: r'courseListProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$courseListHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$CourseList = StreamNotifier<List<CourseDto>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

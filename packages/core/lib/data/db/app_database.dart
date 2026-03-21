@@ -42,29 +42,17 @@ class AppDatabase extends _$AppDatabase {
             await m.createTable(coursesTable);
           }
 
-          // Helper to add columns only if they don't already exist.
-          // This prevents crashes like "duplicate column name" during development migrations.
-          Future<void> addColumnSafely(GeneratedColumn col, TableInfo table) async {
-            final res = await customSelect(
-              'PRAGMA table_info(${table.actualTableName})',
-            ).get();
-            final existingColumns = res.map((r) => r.read<String>('name'));
-            if (!existingColumns.contains(col.name)) {
-              await m.addColumn(table, col);
-            }
-          }
-
           if (from < 3) {
             // Phase-2: Add new columns to lessonsTable without deleting existing data
-            await addColumnSafely(lessonsTable.contentJson, lessonsTable);
-            await addColumnSafely(lessonsTable.subtitle, lessonsTable);
-            await addColumnSafely(lessonsTable.subjectName, lessonsTable);
-            await addColumnSafely(lessonsTable.subjectIndex, lessonsTable);
-            await addColumnSafely(lessonsTable.lessonNumber, lessonsTable);
-            await addColumnSafely(lessonsTable.totalLessons, lessonsTable);
+            await m.addColumn(lessonsTable, lessonsTable.contentJson);
+            await m.addColumn(lessonsTable, lessonsTable.subtitle);
+            await m.addColumn(lessonsTable, lessonsTable.subjectName);
+            await m.addColumn(lessonsTable, lessonsTable.subjectIndex);
+            await m.addColumn(lessonsTable, lessonsTable.lessonNumber);
+            await m.addColumn(lessonsTable, lessonsTable.totalLessons);
           }
           if (from < 4) {
-            await addColumnSafely(lessonsTable.isBookmarked, lessonsTable);
+            await m.addColumn(lessonsTable, lessonsTable.isBookmarked);
           }
           if (from < 5) {
             await m.createTable(appSettingsTable);
@@ -94,10 +82,7 @@ class AppDatabase extends _$AppDatabase {
           }
 
       if (from < 7) {
-        await addColumnSafely(
-          coursesTable.image as GeneratedColumn,
-          coursesTable,
-        );
+        await m.addColumn(coursesTable, coursesTable.image);
       }
     },
   );

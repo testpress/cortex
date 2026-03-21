@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import '../config/app_config.dart';
 import '../auth/auth_interceptor.dart';
@@ -25,13 +26,15 @@ class ApiClient {
     // Dynamic JWT injection from secure storage
     dio.interceptors.add(AuthInterceptor(localDataSource: authLocalDataSource));
 
-    // Log interceptor for debugging in dev mode
-    dio.interceptors.add(LogInterceptor(
-      requestHeader: true,
-      requestBody: true,
-      responseHeader: true,
-      responseBody: true,
-    ));
+    // Log interceptor only for debugging in dev mode
+    if (kDebugMode) {
+      dio.interceptors.add(LogInterceptor(
+        requestHeader: true,
+        requestBody: true,
+        responseHeader: true,
+        responseBody: true,
+      ));
+    }
 
     return dio;
   }

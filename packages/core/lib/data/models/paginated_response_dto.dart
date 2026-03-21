@@ -1,5 +1,14 @@
-/// DTO representing a paginated response from the Testpress API.
-/// It understands the common structure containing results, next pointers, and counts.
+/// DTO representing a standard DRF paginated response from the Testpress API.
+///
+/// The API always returns:
+/// ```json
+/// {
+///   "count": 42,
+///   "next": "https://.../?page=2",
+///   "previous": null,
+///   "results": [ ... ]
+/// }
+/// ```
 class PaginatedResponseDto<T> {
   final List<T> results;
   final String? next;
@@ -13,35 +22,29 @@ class PaginatedResponseDto<T> {
     this.count = 0,
   });
 
-  /// Factory to create a PaginatedResponseDto from JSON.
-  /// [fromJsonT] is a mapper to convert individual list items.
   factory PaginatedResponseDto.fromJson(
-    dynamic json,
+    Map<String, dynamic> json,
     T Function(Map<String, dynamic>) fromJsonT,
   ) {
-    // Determine where the list items are located (commonly under 'results')
-    final dynamic rawData = (json is Map) ? json['results'] : null;
-    List<dynamic> rawList = [];
+    // 1. Find the raw data (standard DRF or Testpress 'courses' key)
+    var rawData = json['results'] ?? json['courses'] ?? json;
 
-    if (rawData is List) {
-      rawList = rawData;
-    } else if (rawData is Map && rawData['courses'] is List) {
-      // Handle cases where 'results' contains a 'courses' key (common in some Testpress APIs)
-      rawList = rawData['courses'] as List<dynamic>;
-    } else if (json is Map && json['courses'] is List) {
-      // Handle cases where the list is directly under a specific key (fallout for older APIs)
-      rawList = json['courses'] as List<dynamic>;
-    } else if (json is List) {
-      // Handle cases where the response is a direct list
-      rawList = json;
+    // 2. Testpress Quirk: Sometimes 'results' is a Map that *contains* the list.
+    // If we found a Map, look one level deeper for a List.
+    if (rawData is Map<String, dynamic>) {
+      rawData = rawData['courses'] ?? rawData['results'] ?? rawData;
     }
 
+    // 3. Ensure we actually have a List before trying to map it
+    final List<dynamic> rawList = rawData is List ? rawData : [];
+
     return PaginatedResponseDto<T>(
-      results: rawList.map((e) => fromJsonT(e as Map<String, dynamic>)).toList(),
-      next: (json is Map) ? json['next'] as String? : null,
-      previous: (json is Map) ? json['previous'] as String? : null,
-      count:
-          (json is Map) ? (json['count'] ?? rawList.length) as int : rawList.length,
+      results: rawList
+          .map((e) => fromJsonT(e as Map<String, dynamic>))
+          .toList(),
+      next: json['next'] as String?,
+      previous: json['previous'] as String?,
+      count: (json['count'] as int?) ?? rawList.length,
     );
   }
 }

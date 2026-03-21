@@ -1,6 +1,9 @@
 import 'chapter_dto.dart';
 
 /// Course DTO — plain Dart object transferred from DataSource to Drift and back to UI.
+///
+/// Field mapping is based on the Testpress `/api/v3/courses/` response contract,
+/// which uses snake_case keys. If the API contract changes, update ONLY this file.
 class CourseDto {
   final String id;
   final String title;
@@ -57,17 +60,20 @@ class CourseDto {
     );
   }
 
+  /// Recreates a [CourseDto] from a JSON object.
+  /// This should only be used for internal purposes like storage or inter-module
+  /// communication. See [RemoteCourseDto] for parsing raw API data.
   factory CourseDto.fromJson(Map<String, dynamic> json) {
     return CourseDto(
-      id: (json['id'] ?? '').toString(),
-      title: (json['title'] ?? json['name'] ?? '').toString(),
-      colorIndex: (json['colorIndex'] ?? json['color_index'] ?? 0) as int,
-      chapterCount: (json['chapterCount'] ?? json['chapters_count'] ?? 0) as int,
-      totalDuration: (json['totalDuration'] ?? json['total_duration'] ?? '').toString(),
-      progress: (json['progress'] ?? 0) as int,
-      completedLessons: (json['completedLessons'] ?? json['completed_lessons_count'] ?? 0) as int,
-      totalLessons: (json['totalLessons'] ?? json['total_lessons_count'] ?? 0) as int,
-      image: (json['image'] ?? json['thumbnail'] ?? '').toString(),
+      id: json['id'] as String,
+      title: json['title'] as String,
+      colorIndex: json['colorIndex'] as int,
+      chapterCount: json['chapterCount'] as int,
+      totalDuration: json['totalDuration'] as String,
+      progress: json['progress'] as int,
+      completedLessons: json['completedLessons'] as int,
+      totalLessons: json['totalLessons'] as int,
+      image: json['image'] as String?,
       chapters: (json['chapters'] as List<dynamic>?)
               ?.map((e) => ChapterDto.fromJson(e as Map<String, dynamic>))
               .toList() ??
