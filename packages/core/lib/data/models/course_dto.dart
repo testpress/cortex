@@ -15,6 +15,7 @@ class CourseDto {
   final int progress; // 0–100
   final int completedLessons;
   final int totalLessons;
+  final String? image;
   final List<ChapterDto> chapters;
 
   const CourseDto({
@@ -26,6 +27,7 @@ class CourseDto {
     required this.progress,
     required this.completedLessons,
     required this.totalLessons,
+    this.image,
     this.chapters = const [],
   });
 
@@ -38,6 +40,7 @@ class CourseDto {
     int? progress,
     int? completedLessons,
     int? totalLessons,
+    String? image,
     List<ChapterDto>? chapters,
   }) {
     return CourseDto(
@@ -49,20 +52,22 @@ class CourseDto {
       progress: progress ?? this.progress,
       completedLessons: completedLessons ?? this.completedLessons,
       totalLessons: totalLessons ?? this.totalLessons,
+      image: image ?? this.image,
       chapters: chapters ?? this.chapters,
     );
   }
 
   factory CourseDto.fromJson(Map<String, dynamic> json) {
     return CourseDto(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      colorIndex: json['colorIndex'] as int,
-      chapterCount: json['chapterCount'] as int,
-      totalDuration: json['totalDuration'] as String,
-      progress: json['progress'] as int,
-      completedLessons: json['completedLessons'] as int,
-      totalLessons: json['totalLessons'] as int,
+      id: (json['id'] ?? '').toString(),
+      title: (json['title'] ?? json['name'] ?? '').toString(),
+      colorIndex: (json['colorIndex'] ?? json['color_index'] ?? 0) as int,
+      chapterCount: (json['chapterCount'] ?? json['chapters_count'] ?? 0) as int,
+      totalDuration: (json['totalDuration'] ?? json['total_duration'] ?? '').toString(),
+      progress: (json['progress'] ?? 0) as int,
+      completedLessons: (json['completedLessons'] ?? json['completed_lessons_count'] ?? 0) as int,
+      totalLessons: (json['totalLessons'] ?? json['total_lessons_count'] ?? 0) as int,
+      image: (json['image'] ?? json['thumbnail'] ?? '').toString(),
       chapters: (json['chapters'] as List<dynamic>?)
               ?.map((e) => ChapterDto.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -80,6 +85,7 @@ class CourseDto {
       'progress': progress,
       'completedLessons': completedLessons,
       'totalLessons': totalLessons,
+      'image': image,
       'chapters': chapters.map((e) => e.toJson()).toList(),
     };
   }

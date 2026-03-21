@@ -6,7 +6,26 @@ part of 'data_source_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$dataSourceHash() => r'a2598f99a41663a124db4e3da9fc59b49aafc8ca';
+String _$apiClientHash() => r'58987af45fbb76e948c3bcfad311fd0cce5cdb76';
+
+/// Provides a centralized API client.
+///
+/// Copied from [apiClient].
+@ProviderFor(apiClient)
+final apiClientProvider = Provider<ApiClient>.internal(
+  apiClient,
+  name: r'apiClientProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$apiClientHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ApiClientRef = ProviderRef<ApiClient>;
+String _$dataSourceHash() => r'b5b8bfa2861372945cde8d79748b89a2a8523dee';
 
 /// Provides the active [DataSource] based on [AppConfig.useMockData].
 /// Swap to real HTTP source by building with: --dart-define=USE_MOCK=false

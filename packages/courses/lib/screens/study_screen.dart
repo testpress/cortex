@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-import '../providers/enrollment_provider.dart';
+import '../providers/course_list_provider.dart';
 import '../providers/lesson_providers.dart';
 import '../providers/recent_activity_provider.dart';
 import '../widgets/course_card.dart';
@@ -21,13 +21,43 @@ class StudyScreen extends ConsumerStatefulWidget {
 
 class _StudyScreenState extends ConsumerState<StudyScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   final Set<LessonType> _selectedTypes = {};
   String _searchQuery = '';
 
   @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    final repo = ref.read(courseRepositoryProvider).valueOrNull;
+    final isSyncing = ref.read(courseSyncingProvider);
+
+    if (repo == null || isSyncing || !repo.hasMore) return;
+
+    final metrics = _scrollController.position;
+    final thresholdReached = metrics.extentAfter < 500;
+
+    if (thresholdReached) {
+      _fetchMore();
+    }
+  }
+
+  Future<void> _fetchMore() async {
+    final repo = await ref.read(courseRepositoryProvider.future);
+    if (!repo.hasMore || repo.isSyncing) return;
+
+    await repo.refreshCourses();
   }
 
   void _toggleType(LessonType type) {
@@ -45,30 +75,30 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
-    final enrollmentAsync = ref.watch(enrollmentProvider);
+    final enrollmentAsync = ref.watch(courseListProvider);
+    final initialSync = ref.watch(courseInitialSyncProvider);
     final allLessons = ref.watch(allLessonsProvider);
     final resumeAsync = ref.watch(recentActivityProvider);
+    final isSyncing = ref.watch(courseSyncingProvider);
 
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: enrollmentAsync.when(
-            data: (courses) {
-              final filteredCourses = _filterCourses(courses);
-              final filteredLessons = _filterLessons(allLessons);
+    // Determines if we show the centered full-page spinner (only for truly empty state)
+    final showInitialLoader = initialSync is AsyncLoading &&
+        enrollmentAsync.valueOrNull?.isEmpty == true;
 
-              return AppScroll(
-                padding: EdgeInsets.zero,
-                children: [
-                  // Top Header Section (White Background)
-                  Container(
-                    color: design.colors.card, // Pure white in light mode
-                    padding: EdgeInsets.fromLTRB(
-                      design.spacing.md,
-                      design.spacing.md,
-                      design.spacing.md,
-                      design.spacing.md,
-                    ),
+    return DecoratedBox(
+      decoration: BoxDecoration(color: design.colors.canvas),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: CustomScrollView(
+              controller: _scrollController,
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                // 1. Static Header Section (Always Visible)
+                SliverToBoxAdapter(
+                  child: Container(
+                    color: design.colors.card,
+                    padding: EdgeInsets.all(design.spacing.md),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -77,8 +107,6 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                           color: design.colors.textPrimary,
                         ),
                         SizedBox(height: design.spacing.md),
-
-                        // Search Bar
                         AppSearchBar(
                           controller: _searchController,
                           hintText: l10n.studySearchHint,
@@ -87,151 +115,183 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                           backgroundColor: design.colors.surfaceVariant,
                         ),
                         SizedBox(height: design.spacing.md),
-
-                        // Filter Chips
-                        GridView.count(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          crossAxisCount: 2,
-                          mainAxisSpacing: design.spacing.sm,
-                          crossAxisSpacing: design.spacing.sm,
-                          childAspectRatio: 4.5,
-                          padding: EdgeInsets.zero, // Remove grid padding
-                          children: [
-                            ContentTypeFilterChip(
-                              label: l10n.filterVideo,
-                              icon: LucideIcons.playCircle,
-                              isSelected: _selectedTypes.contains(
-                                LessonType.video,
-                              ),
-                              onTap: () => _toggleType(LessonType.video),
-                              baseColor: design.study.video.background,
-                              accentColor: design.study.video.foreground,
-                              darkAccentColor: design.study.video.foreground,
-                            ),
-                            ContentTypeFilterChip(
-                              label: l10n.filterLesson,
-                              icon: LucideIcons.fileText,
-                              isSelected: _selectedTypes.contains(
-                                LessonType.pdf,
-                              ),
-                              onTap: () => _toggleType(LessonType.pdf),
-                              baseColor: design.study.pdf.background,
-                              accentColor: design.study.pdf.foreground,
-                              darkAccentColor: design.study.pdf.foreground,
-                            ),
-                            ContentTypeFilterChip(
-                              label: l10n.filterAssessment,
-                              icon: LucideIcons.clipboardCheck,
-                              isSelected: _selectedTypes.contains(
-                                LessonType.assessment,
-                              ),
-                              onTap: () => _toggleType(LessonType.assessment),
-                              baseColor: design.study.assessment.background,
-                              accentColor: design.study.assessment.foreground,
-                              darkAccentColor:
-                                  design.study.assessment.foreground,
-                            ),
-                            ContentTypeFilterChip(
-                              label: l10n.filterTest,
-                              icon: LucideIcons.shieldCheck,
-                              isSelected: _selectedTypes.contains(
-                                LessonType.test,
-                              ),
-                              onTap: () => _toggleType(LessonType.test),
-                              baseColor: design.study.test.background,
-                              accentColor: design.study.test.foreground,
-                              darkAccentColor: design.study.test.foreground,
-                            ),
-                          ],
-                        ),
+                        _buildFilterChips(context, design, l10n),
                       ],
                     ),
                   ),
+                ),
 
-                  // Separator touching edges
-                  Container(height: 1, color: design.colors.divider),
+                // Separator
+                SliverToBoxAdapter(
+                  child: Container(
+                    height: 1,
+                    color: design.colors.divider,
+                  ),
+                ),
 
-                  // Content Section (Canvas Background)
-                  Container(
-                    color: design.colors.canvas,
-                    padding: EdgeInsets.fromLTRB(
-                      design.spacing.md,
-                      design.spacing.md,
-                      design.spacing.md,
-                      design.spacing.md,
+                // Content Title
+                SliverPadding(
+                  padding: EdgeInsets.all(design.spacing.md),
+                  sliver: SliverToBoxAdapter(
+                    child: AppText.title(
+                      l10n.studyYourCoursesTitle,
+                      color: design.colors.textPrimary,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (_selectedTypes.isEmpty) ...[
-                          AppText.title(
-                            l10n.studyYourCoursesTitle,
-                            color: design.colors.textPrimary,
-                          ),
-                          SizedBox(height: design.spacing.md),
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: filteredCourses.length,
-                            padding: EdgeInsets.zero,
-                            itemBuilder: (context, index) {
-                              final c = filteredCourses[index];
-                              return Padding(
-                                padding: EdgeInsets.only(
-                                  bottom: design.spacing.md,
-                                ),
-                                child: CourseCard(
-                                  course: c,
-                                  onTap: () => context.push(
-                                    '/study/course/${c.id}/chapters',
+                  ),
+                ),
+
+                // 2. Dynamic Content Section
+                if (showInitialLoader)
+                  const SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(child: AppLoadingIndicator()),
+                  )
+                else
+                  ...enrollmentAsync.when(
+                    data: (courses) {
+                      final filteredCourses = _filterCourses(courses);
+                      final filteredLessons = _filterLessons(allLessons);
+
+                      return [
+                        if (_selectedTypes.isEmpty)
+                          SliverPadding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: design.spacing.md,
+                            ),
+                            sliver: SliverList(
+                              delegate: SliverChildBuilderDelegate((
+                                context,
+                                index,
+                              ) {
+                                final c = filteredCourses[index];
+                                return Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: design.spacing.md,
                                   ),
-                                ),
-                              );
-                            },
+                                  child: CourseCard(
+                                    course: c,
+                                    onTap: () => context.push(
+                                      '/study/course/${c.id}/chapters',
+                                    ),
+                                  ),
+                                );
+                              }, childCount: filteredCourses.length),
+                            ),
+                          )
+                        else
+                          SliverPadding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: design.spacing.md,
+                            ),
+                            sliver: SliverList(
+                              delegate: SliverChildBuilderDelegate((
+                                context,
+                                index,
+                              ) {
+                                final l = filteredLessons[index];
+                                return _LessonListItem(lesson: l);
+                              }, childCount: filteredLessons.length),
+                            ),
                           ),
-                        ] else ...[
-                          AppText.title(
-                            l10n.studyYourCoursesTitle,
-                            color: design.colors.textPrimary,
-                          ),
-                          SizedBox(height: design.spacing.md),
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: filteredLessons.length,
-                            padding: EdgeInsets.zero,
-                            itemBuilder: (context, index) {
-                              final l = filteredLessons[index];
-                              return _LessonListItem(lesson: l);
-                            },
-                          ),
-                        ],
-                        // Bottom padding for resume card
-                        const SizedBox(height: 80),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            },
-            loading: () => const Center(child: AppLoadingIndicator()),
-            error: (e, _) => Center(child: AppText.body('Error: $e')),
-          ),
-        ),
 
-        // Resume Card (Sticky bottom)
-        resumeAsync.when(
-          data: (activity) => activity != null
-              ? Positioned(
-                  bottom: design.spacing.md,
-                  left: design.spacing.md,
-                  right: design.spacing.md,
-                  child: StudyResumeCard(activity: activity, onResume: () {}),
-                )
-              : const SizedBox.shrink(),
-          loading: () => const SizedBox.shrink(),
-          error: (_, _) => const SizedBox.shrink(),
+                        // Footer Loader
+                        if (isSyncing)
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                bottom: design.spacing.md,
+                              ),
+                              child: const Center(
+                                child: AppLoadingIndicator(),
+                              ),
+                            ),
+                          ),
+                      ];
+                    },
+                    loading: () => [
+                      const SliverToBoxAdapter(child: SizedBox.shrink()),
+                    ],
+                    error: (e, _) => [
+                      SliverToBoxAdapter(
+                        child: Center(child: AppText.body('Error: $e')),
+                      ),
+                    ],
+                  ),
+
+                // Bottom Safe Area Spacer
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: 120),
+                ),
+              ],
+            ),
+          ),
+          // Resume Card
+          resumeAsync.when(
+            data: (activity) => activity != null
+                ? Positioned(
+                    bottom: design.spacing.md,
+                    left: design.spacing.md,
+                    right: design.spacing.md,
+                    child: StudyResumeCard(activity: activity, onResume: () {}),
+                  )
+                : const SizedBox.shrink(),
+            loading: () => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterChips(
+    BuildContext context,
+    DesignConfig design,
+    AppLocalizations l10n,
+  ) {
+    return GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 2,
+      mainAxisSpacing: design.spacing.sm,
+      crossAxisSpacing: design.spacing.sm,
+      childAspectRatio: 4.5,
+      padding: EdgeInsets.zero,
+      children: [
+        ContentTypeFilterChip(
+          label: l10n.filterVideo,
+          icon: LucideIcons.playCircle,
+          isSelected: _selectedTypes.contains(LessonType.video),
+          onTap: () => _toggleType(LessonType.video),
+          baseColor: design.study.video.background,
+          accentColor: design.study.video.foreground,
+          darkAccentColor: design.study.video.foreground,
+        ),
+        ContentTypeFilterChip(
+          label: l10n.filterLesson,
+          icon: LucideIcons.fileText,
+          isSelected: _selectedTypes.contains(LessonType.pdf),
+          onTap: () => _toggleType(LessonType.pdf),
+          baseColor: design.study.pdf.background,
+          accentColor: design.study.pdf.foreground,
+          darkAccentColor: design.study.pdf.foreground,
+        ),
+        ContentTypeFilterChip(
+          label: l10n.filterAssessment,
+          icon: LucideIcons.clipboardCheck,
+          isSelected: _selectedTypes.contains(LessonType.assessment),
+          onTap: () => _toggleType(LessonType.assessment),
+          baseColor: design.study.assessment.background,
+          accentColor: design.study.assessment.foreground,
+          darkAccentColor: design.study.assessment.foreground,
+        ),
+        ContentTypeFilterChip(
+          label: l10n.filterTest,
+          icon: LucideIcons.shieldCheck,
+          isSelected: _selectedTypes.contains(LessonType.test),
+          onTap: () => _toggleType(LessonType.test),
+          baseColor: design.study.test.background,
+          accentColor: design.study.test.foreground,
+          darkAccentColor: design.study.test.foreground,
         ),
       ],
     );

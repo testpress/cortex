@@ -9,8 +9,17 @@ import 'package:core/data/data.dart';
 class CourseRepository {
   final AppDatabase _db;
   final DataSource _source;
+  final void Function(bool)? onSyncStateChanged;
+  
+  CourseRepository(this._db, this._source, {this.onSyncStateChanged});
 
-  CourseRepository(this._db, this._source);
+  // Pagination and sync state
+  int _nextPage = 1;
+  bool _hasMore = true;
+  bool _isSyncing = false;
+
+  bool get hasMore => _hasMore;
+  bool get isSyncing => _isSyncing;
 
   // ── Courses ──────────────────────────────────────────────────────────────
 
@@ -22,11 +31,37 @@ class CourseRepository {
   }
 
   /// Fetch courses from [DataSource] and persist to local DB.
-  Future<List<CourseDto>> refreshCourses() async {
-    final courses = await _source.getCourses();
-    final companions = courses.map(_courseDtoToCompanion).toList();
-    await _db.upsertCourses(companions);
-    return courses;
+  /// Supports incremental pagination.
+  Future<List<CourseDto>> refreshCourses({bool reset = false}) async {
+    if (_isSyncing) return [];
+    if (reset) {
+      _nextPage = 1;
+      _hasMore = true;
+    }
+    if (!_hasMore) return [];
+
+    _isSyncing = true;
+    onSyncStateChanged?.call(true);
+    try {
+      final paginatedResponse = await _source.getCourses(page: _nextPage);
+
+      if (paginatedResponse.results.isEmpty) {
+        _hasMore = false;
+      } else {
+        final companions =
+            paginatedResponse.results.map(_courseDtoToCompanion).toList();
+        await _db.upsertCourses(companions);
+        
+        // Use the 'next' field from API to determine if more pages exist
+        _hasMore = paginatedResponse.next != null;
+        _nextPage++;
+      }
+
+      return paginatedResponse.results;
+    } finally {
+      _isSyncing = false;
+      onSyncStateChanged?.call(false);
+    }
   }
 
   // ── Chapters ─────────────────────────────────────────────────────────────
@@ -113,6 +148,7 @@ class CourseRepository {
         progress: row.progress,
         completedLessons: row.completedLessons,
         totalLessons: row.totalLessons,
+        image: row.image,
       );
 
   CoursesTableCompanion _courseDtoToCompanion(CourseDto dto) =>
@@ -125,6 +161,7 @@ class CourseRepository {
         progress: Value(dto.progress),
         completedLessons: Value(dto.completedLessons),
         totalLessons: dto.totalLessons,
+        image: Value(dto.image),
       );
 
   ChapterDto _rowToChapterDto(ChaptersTableData row) => ChapterDto(

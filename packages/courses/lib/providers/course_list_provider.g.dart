@@ -23,11 +23,30 @@ final courseRepositoryProvider = FutureProvider<CourseRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CourseRepositoryRef = FutureProviderRef<CourseRepository>;
+String _$courseInitialSyncHash() => r'b9dbc53914cf9f69585d80dcd423bbb206b7b849';
+
+/// Syncs the first page of courses if not already done.
+/// Auth-gated: only runs if user is logged in.
+///
+/// Copied from [courseInitialSync].
+@ProviderFor(courseInitialSync)
+final courseInitialSyncProvider = AutoDisposeFutureProvider<void>.internal(
+  courseInitialSync,
+  name: r'courseInitialSyncProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$courseInitialSyncHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef CourseInitialSyncRef = AutoDisposeFutureProviderRef<void>;
 String _$courseListHash() => r'e09726800afe30e7af81d8346fc28e7ad237069a';
 
 /// Stream provider for the full course list.
-/// On first watch: triggers a refresh from DataSource → Drift.
-/// Thereafter: streams live updates from the Drift DB.
+/// Screens should watch [courseInitialSyncProvider] if they want to trigger/wait for the first sync.
 ///
 /// Copied from [courseList].
 @ProviderFor(courseList)

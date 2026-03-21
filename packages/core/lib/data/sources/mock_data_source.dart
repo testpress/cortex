@@ -2,7 +2,7 @@ import 'package:core/data/data.dart';
 import 'data_source.dart';
 import 'mock_data.dart';
 
-/// In-process mock data source with hardcoded JEE/NEET coaching institute data.
+/// Static mock data source for development and testing.
 /// Implements [DataSource]; no network calls are made.
 /// Data is derived from the React reference design.
 class MockDataSource implements DataSource {
@@ -13,58 +13,61 @@ class MockDataSource implements DataSource {
   // ─────────────────────────────────────────────────────────────────────────
 
   @override
-  Future<List<CourseDto>> getCourses() async => [
-        const CourseDto(
-          id: 'jee-main-2026',
-          title: 'JEE Main 2026',
-          colorIndex: 0, // indigo
-          chapterCount: 12,
-          totalDuration: '180 hrs',
-          progress: 34,
-          completedLessons: 28,
-          totalLessons: 84,
-        ),
-        const CourseDto(
-          id: 'neet-2026',
-          title: 'NEET 2026',
-          colorIndex: 4, // rose
-          chapterCount: 10,
-          totalDuration: '160 hrs',
-          progress: 18,
-          completedLessons: 14,
-          totalLessons: 76,
-        ),
-        const CourseDto(
-          id: 'jee-advanced-2026',
-          title: 'JEE Advanced 2026',
-          colorIndex: 3, // violet
-          chapterCount: 8,
-          totalDuration: '120 hrs',
-          progress: 5,
-          completedLessons: 3,
-          totalLessons: 60,
-        ),
-        const CourseDto(
-          id: 'biology-neet-2026',
-          title: 'NEET Biology Mastery',
-          colorIndex: 2, // emerald
-          chapterCount: 15,
-          totalDuration: '200 hrs',
-          progress: 45,
-          completedLessons: 45,
-          totalLessons: 100,
-        ),
-        const CourseDto(
-          id: 'english-core-2026',
-          title: 'CBSE English Core',
-          colorIndex: 5, // pink
-          chapterCount: 6,
-          totalDuration: '40 hrs',
-          progress: 10,
-          completedLessons: 2,
-          totalLessons: 20,
-        ),
-      ];
+  Future<PaginatedResponseDto<CourseDto>> getCourses(
+      {int page = 1, int pageSize = 10}) async {
+    return PaginatedResponseDto(results: [
+      const CourseDto(
+        id: 'jee-main-2026',
+        title: 'JEE Main 2026',
+        colorIndex: 0, // indigo
+        chapterCount: 12,
+        totalDuration: '180 hrs',
+        progress: 34,
+        completedLessons: 28,
+        totalLessons: 84,
+      ),
+      const CourseDto(
+        id: 'neet-2026',
+        title: 'NEET 2026',
+        colorIndex: 4, // rose
+        chapterCount: 10,
+        totalDuration: '160 hrs',
+        progress: 18,
+        completedLessons: 14,
+        totalLessons: 76,
+      ),
+      const CourseDto(
+        id: 'jee-advanced-2026',
+        title: 'JEE Advanced 2026',
+        colorIndex: 3, // violet
+        chapterCount: 8,
+        totalDuration: '120 hrs',
+        progress: 5,
+        completedLessons: 3,
+        totalLessons: 60,
+      ),
+      const CourseDto(
+        id: 'biology-neet-2026',
+        title: 'NEET Biology Mastery',
+        colorIndex: 2, // emerald
+        chapterCount: 15,
+        totalDuration: '200 hrs',
+        progress: 45,
+        completedLessons: 45,
+        totalLessons: 100,
+      ),
+      const CourseDto(
+        id: 'english-core-2026',
+        title: 'CBSE English Core',
+        colorIndex: 5, // pink
+        chapterCount: 6,
+        totalDuration: '40 hrs',
+        progress: 10,
+        completedLessons: 2,
+        totalLessons: 20,
+      ),
+    ]);
+  }
 
   // ─────────────────────────────────────────────────────────────────────────
   // Chapters
