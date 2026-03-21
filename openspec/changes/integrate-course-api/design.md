@@ -22,7 +22,7 @@ The Study tab previously showed static mock data. This change replaces it with l
 All HTTP communication goes through `ApiClient`, which wraps Dio and attaches the `Authorization` header on every request. Errors are normalized into `ApiException`.
 
 ### 2. Pagination Strategy
-`CourseRepository` tracks `_nextPage` (incrementing int) and `_hasMore` (derived from the API's `next` field). The UI triggers `refreshCourses()` when the scroll position is within 500px of the list bottom.
+The `CourseList` notifier manages session state (`nextPage`, `hasMore`) using a reusable **`PaginationService`**. The service extracts the next page number from the API's `next` field. The UI triggers `loadMore()` via the notifier when the scroll position is within 500px of the list bottom.
 
 ### 3. Caching and Loading Behavior
 - **First visit with empty cache**: Show `AppLoadingIndicator` while the first page loads.
@@ -33,8 +33,8 @@ All HTTP communication goes through `ApiClient`, which wraps Dio and attaches th
 `AuthProvider` accepts the credentials "222"/"222" for development access. The `ApiClient` includes the `Authorization` header for all requests, enabling authenticated API calls without requiring a full production login flow at this stage.
 
 ### 5. Repository Sync Flow
-`CourseRepository.refreshCourses()`:
-1. Guard against concurrent calls (`_isSyncing` flag).
-2. Call the paginated API endpoint.
-3. Upsert results into Drift.
-4. Update `_hasMore` from the API `next` field and increment `_nextPage`.
+The **`CourseList`** notifier handles the business logic for syncing:
+1. Guard against concurrent calls (internal `_activeSync` Future).
+2. Call the stateless `CourseRepository.fetchAndPersistCourses(page)`.
+3. Repository: Fetches from the API and upserts results into Drift.
+4. Notifier: Uses `PaginationService` to update its state (`nextPage`, `hasMore`) based on the API response.

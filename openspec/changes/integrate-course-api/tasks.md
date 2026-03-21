@@ -19,3 +19,10 @@
 - [x] 3.2 Display cached courses instantly on subsequent tab visits without any blocking loader.
 - [x] 3.3 Show pagination loader at the bottom of the course list while fetching the next page.
 - [x] 3.4 Trigger next-page fetch when user scrolls within 500px of the list bottom.
+
+## 4. Architectural Refinement (Session Decoupling)
+
+- [x] 4.1 Extract pagination logic from Repository into dedicated `PaginationService` in `packages/core`.
+- [x] 4.2 Decouple session state (`nextPage`, `hasMore`) from `CourseRepository` into `CourseList` notifier.
+- [x] 4.3 Isolate backend-specific quirks (Testpress nested lists) in `RemoteCourseDto`'s specialized parser.
+- [x] 4.4 Separate `isInitialSyncing` from `isMoreSyncing` and add background error reporting via `syncErrorProvider`.
