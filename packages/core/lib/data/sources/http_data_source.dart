@@ -1,5 +1,4 @@
 import 'package:core/data/data.dart';
-import 'mock_data_source.dart';
 import '../models/paginated_response_dto.dart';
 import '../network/api_client.dart';
 import 'data_source.dart';
@@ -49,15 +48,11 @@ class HttpDataSource implements DataSource {
   Future<List<UserProgressDto>> getUserProgress(String userId) async => [];
 
   @override
-  Future<List<ExploreBannerDto>> getExploreBanners() async =>
-      const MockDataSource().getExploreBanners();
+  Future<List<ExploreBannerDto>> getExploreBanners() async => [];
   @override
-  Future<List<StudyTipDto>> getStudyTips() async =>
-      const MockDataSource().getStudyTips();
+  Future<List<StudyTipDto>> getStudyTips() async => [];
   @override
-  Future<List<ShortLessonDto>> getShortLessons() async =>
-      const MockDataSource().getShortLessons();
+  Future<List<ShortLessonDto>> getShortLessons() async => [];
   @override
-  Future<List<DiscoveryCourseDto>> getDiscoveryCourses() async =>
-      const MockDataSource().getDiscoveryCourses();
+  Future<List<DiscoveryCourseDto>> getDiscoveryCourses() async => [];
 }

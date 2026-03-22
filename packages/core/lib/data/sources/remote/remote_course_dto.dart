@@ -73,16 +73,18 @@ class RemoteCourseDto {
     return RemoteCourseDto(
       id: (json['id'] as Object).toString(),
       title: json['title'] as String? ?? '',
-      colorIndex: json['color_index'] as int? ?? 0,
-      chaptersCount: json['chapters_count'] as int? ?? 0,
+      colorIndex: (json['color_index'] as num?)?.toInt() ?? 0,
+      chaptersCount: (json['chapters_count'] as num?)?.toInt() ?? 0,
       totalDuration: json['total_duration'] as String? ?? '',
-      totalContents: (json['contents_count'] ??
-              json['total_contents'] ??
-              json['total_lessons_count']) as int? ??
+      totalContents: ((json['contents_count'] ??
+                  json['total_contents'] ??
+                  json['total_lessons_count']) as num?)
+              ?.toInt() ??
           0,
-      progress: json['progress'] as int? ?? 0,
-      completedLessonsCount: json['completed_lessons_count'] as int? ?? 0,
-      totalLessonsCount: json['total_lessons_count'] as int? ?? 0,
+      progress: (json['progress'] as num?)?.toInt() ?? 0,
+      completedLessonsCount:
+          (json['completed_lessons_count'] as num?)?.toInt() ?? 0,
+      totalLessonsCount: (json['total_lessons_count'] as num?)?.toInt() ?? 0,
       image: json['image'] as String?,
     );
   }

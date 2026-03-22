@@ -85,7 +85,7 @@ class CourseCard extends StatelessWidget {
 
                     // Metadata
                     AppText.caption(
-                      '${L10n.of(context).curriculumChaptersCount(course.chapterCount)} · ${course.totalContents} ${L10n.of(context).labelContentsPlural}',
+                      '${L10n.of(context).curriculumChaptersCount(course.chapterCount)} · ${L10n.of(context).courseContentsCount(course.totalContents)}',
                       color: design.colors.textSecondary,
                     ),
                     SizedBox(height: design.spacing.md),
