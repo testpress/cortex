@@ -1138,6 +1138,12 @@ abstract class AppLocalizations {
   /// **'lessons'**
   String get labelLessonsPlural;
 
+  /// No description provided for @labelContentsPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'contents'**
+  String get labelContentsPlural;
+
   /// No description provided for @curriculumBackButton.
   ///
   /// In en, this message translates to:

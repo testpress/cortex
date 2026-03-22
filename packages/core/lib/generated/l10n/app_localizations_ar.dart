@@ -576,6 +576,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get labelLessonsPlural => 'دروس';
 
   @override
+  String get labelContentsPlural => 'محتويات';
+
+  @override
   String get curriculumBackButton => 'عودة';
 
   @override

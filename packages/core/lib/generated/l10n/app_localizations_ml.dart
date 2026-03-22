@@ -585,6 +585,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get labelLessonsPlural => 'പാഠങ്ങൾ';
 
   @override
+  String get labelContentsPlural => 'ഉള്ളടക്കങ്ങൾ';
+
+  @override
   String get curriculumBackButton => 'പിന്നിലേക്ക്';
 
   @override

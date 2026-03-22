@@ -271,6 +271,7 @@
   "errorGenericTitle": "Something went wrong",
   "errorGenericMessage": "Failed to load data. Please check your connection and try again.",
   "labelLessonsPlural": "lessons",
+  "labelContentsPlural": "contents",
   "curriculumBackButton": "Back",
   "commonCloseButton": "Close",
   "curriculumChaptersCount": "{count} Chapters",

@@ -13,6 +13,7 @@ class RemoteCourseDto {
   final int colorIndex;
   final int chaptersCount;
   final String totalDuration;
+  final int totalContents;
   final int progress;
   final int completedLessonsCount;
   final int totalLessonsCount;
@@ -24,6 +25,7 @@ class RemoteCourseDto {
     required this.colorIndex,
     required this.chaptersCount,
     required this.totalDuration,
+    required this.totalContents,
     required this.progress,
     required this.completedLessonsCount,
     required this.totalLessonsCount,
@@ -74,6 +76,10 @@ class RemoteCourseDto {
       colorIndex: json['color_index'] as int? ?? 0,
       chaptersCount: json['chapters_count'] as int? ?? 0,
       totalDuration: json['total_duration'] as String? ?? '',
+      totalContents: (json['contents_count'] ??
+              json['total_contents'] ??
+              json['total_lessons_count']) as int? ??
+          0,
       progress: json['progress'] as int? ?? 0,
       completedLessonsCount: json['completed_lessons_count'] as int? ?? 0,
       totalLessonsCount: json['total_lessons_count'] as int? ?? 0,
@@ -89,6 +95,7 @@ class RemoteCourseDto {
       colorIndex: colorIndex,
       chapterCount: chaptersCount,
       totalDuration: totalDuration,
+      totalContents: totalContents,
       progress: progress,
       completedLessons: completedLessonsCount,
       totalLessons: totalLessonsCount,
