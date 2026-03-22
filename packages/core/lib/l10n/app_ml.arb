@@ -173,6 +173,7 @@
   "errorGenericTitle": "എന്തോ തകരാർ സംഭവിച്ചു",
   "errorGenericMessage": "ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി കണക്ഷൻ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക.",
   "labelLessonsPlural": "പാഠങ്ങൾ",
+  "labelContentsPlural": "ഉള്ളടക്കങ്ങൾ",
   "curriculumBackButton": "പിന്നിലേക്ക്",
   "commonCloseButton": "അടയ്‌ക്കുക",
   "curriculumChaptersCount": "{count} അധ്യായങ്ങൾ",

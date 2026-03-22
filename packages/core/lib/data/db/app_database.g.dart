@@ -60,6 +60,18 @@ class $CoursesTableTable extends CoursesTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _totalContentsMeta = const VerificationMeta(
+    'totalContents',
+  );
+  @override
+  late final GeneratedColumn<int> totalContents = GeneratedColumn<int>(
+    'total_contents',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _progressMeta = const VerificationMeta(
     'progress',
   );
@@ -111,6 +123,7 @@ class $CoursesTableTable extends CoursesTable
     colorIndex,
     chapterCount,
     totalDuration,
+    totalContents,
     progress,
     completedLessons,
     totalLessons,
@@ -170,6 +183,15 @@ class $CoursesTableTable extends CoursesTable
       );
     } else if (isInserting) {
       context.missing(_totalDurationMeta);
+    }
+    if (data.containsKey('total_contents')) {
+      context.handle(
+        _totalContentsMeta,
+        totalContents.isAcceptableOrUnknown(
+          data['total_contents']!,
+          _totalContentsMeta,
+        ),
+      );
     }
     if (data.containsKey('progress')) {
       context.handle(
@@ -232,6 +254,10 @@ class $CoursesTableTable extends CoursesTable
         DriftSqlType.string,
         data['${effectivePrefix}total_duration'],
       )!,
+      totalContents: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total_contents'],
+      )!,
       progress: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}progress'],
@@ -264,6 +290,7 @@ class CoursesTableData extends DataClass
   final int colorIndex;
   final int chapterCount;
   final String totalDuration;
+  final int totalContents;
   final int progress;
   final int completedLessons;
   final int totalLessons;
@@ -274,6 +301,7 @@ class CoursesTableData extends DataClass
     required this.colorIndex,
     required this.chapterCount,
     required this.totalDuration,
+    required this.totalContents,
     required this.progress,
     required this.completedLessons,
     required this.totalLessons,
@@ -287,6 +315,7 @@ class CoursesTableData extends DataClass
     map['color_index'] = Variable<int>(colorIndex);
     map['chapter_count'] = Variable<int>(chapterCount);
     map['total_duration'] = Variable<String>(totalDuration);
+    map['total_contents'] = Variable<int>(totalContents);
     map['progress'] = Variable<int>(progress);
     map['completed_lessons'] = Variable<int>(completedLessons);
     map['total_lessons'] = Variable<int>(totalLessons);
@@ -303,6 +332,7 @@ class CoursesTableData extends DataClass
       colorIndex: Value(colorIndex),
       chapterCount: Value(chapterCount),
       totalDuration: Value(totalDuration),
+      totalContents: Value(totalContents),
       progress: Value(progress),
       completedLessons: Value(completedLessons),
       totalLessons: Value(totalLessons),
@@ -323,6 +353,7 @@ class CoursesTableData extends DataClass
       colorIndex: serializer.fromJson<int>(json['colorIndex']),
       chapterCount: serializer.fromJson<int>(json['chapterCount']),
       totalDuration: serializer.fromJson<String>(json['totalDuration']),
+      totalContents: serializer.fromJson<int>(json['totalContents']),
       progress: serializer.fromJson<int>(json['progress']),
       completedLessons: serializer.fromJson<int>(json['completedLessons']),
       totalLessons: serializer.fromJson<int>(json['totalLessons']),
@@ -338,6 +369,7 @@ class CoursesTableData extends DataClass
       'colorIndex': serializer.toJson<int>(colorIndex),
       'chapterCount': serializer.toJson<int>(chapterCount),
       'totalDuration': serializer.toJson<String>(totalDuration),
+      'totalContents': serializer.toJson<int>(totalContents),
       'progress': serializer.toJson<int>(progress),
       'completedLessons': serializer.toJson<int>(completedLessons),
       'totalLessons': serializer.toJson<int>(totalLessons),
@@ -351,6 +383,7 @@ class CoursesTableData extends DataClass
     int? colorIndex,
     int? chapterCount,
     String? totalDuration,
+    int? totalContents,
     int? progress,
     int? completedLessons,
     int? totalLessons,
@@ -361,6 +394,7 @@ class CoursesTableData extends DataClass
     colorIndex: colorIndex ?? this.colorIndex,
     chapterCount: chapterCount ?? this.chapterCount,
     totalDuration: totalDuration ?? this.totalDuration,
+    totalContents: totalContents ?? this.totalContents,
     progress: progress ?? this.progress,
     completedLessons: completedLessons ?? this.completedLessons,
     totalLessons: totalLessons ?? this.totalLessons,
@@ -379,6 +413,9 @@ class CoursesTableData extends DataClass
       totalDuration: data.totalDuration.present
           ? data.totalDuration.value
           : this.totalDuration,
+      totalContents: data.totalContents.present
+          ? data.totalContents.value
+          : this.totalContents,
       progress: data.progress.present ? data.progress.value : this.progress,
       completedLessons: data.completedLessons.present
           ? data.completedLessons.value
@@ -398,6 +435,7 @@ class CoursesTableData extends DataClass
           ..write('colorIndex: $colorIndex, ')
           ..write('chapterCount: $chapterCount, ')
           ..write('totalDuration: $totalDuration, ')
+          ..write('totalContents: $totalContents, ')
           ..write('progress: $progress, ')
           ..write('completedLessons: $completedLessons, ')
           ..write('totalLessons: $totalLessons, ')
@@ -413,6 +451,7 @@ class CoursesTableData extends DataClass
     colorIndex,
     chapterCount,
     totalDuration,
+    totalContents,
     progress,
     completedLessons,
     totalLessons,
@@ -427,6 +466,7 @@ class CoursesTableData extends DataClass
           other.colorIndex == this.colorIndex &&
           other.chapterCount == this.chapterCount &&
           other.totalDuration == this.totalDuration &&
+          other.totalContents == this.totalContents &&
           other.progress == this.progress &&
           other.completedLessons == this.completedLessons &&
           other.totalLessons == this.totalLessons &&
@@ -439,6 +479,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
   final Value<int> colorIndex;
   final Value<int> chapterCount;
   final Value<String> totalDuration;
+  final Value<int> totalContents;
   final Value<int> progress;
   final Value<int> completedLessons;
   final Value<int> totalLessons;
@@ -450,6 +491,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     this.colorIndex = const Value.absent(),
     this.chapterCount = const Value.absent(),
     this.totalDuration = const Value.absent(),
+    this.totalContents = const Value.absent(),
     this.progress = const Value.absent(),
     this.completedLessons = const Value.absent(),
     this.totalLessons = const Value.absent(),
@@ -462,6 +504,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     required int colorIndex,
     required int chapterCount,
     required String totalDuration,
+    this.totalContents = const Value.absent(),
     this.progress = const Value.absent(),
     this.completedLessons = const Value.absent(),
     required int totalLessons,
@@ -479,6 +522,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     Expression<int>? colorIndex,
     Expression<int>? chapterCount,
     Expression<String>? totalDuration,
+    Expression<int>? totalContents,
     Expression<int>? progress,
     Expression<int>? completedLessons,
     Expression<int>? totalLessons,
@@ -491,6 +535,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
       if (colorIndex != null) 'color_index': colorIndex,
       if (chapterCount != null) 'chapter_count': chapterCount,
       if (totalDuration != null) 'total_duration': totalDuration,
+      if (totalContents != null) 'total_contents': totalContents,
       if (progress != null) 'progress': progress,
       if (completedLessons != null) 'completed_lessons': completedLessons,
       if (totalLessons != null) 'total_lessons': totalLessons,
@@ -505,6 +550,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     Value<int>? colorIndex,
     Value<int>? chapterCount,
     Value<String>? totalDuration,
+    Value<int>? totalContents,
     Value<int>? progress,
     Value<int>? completedLessons,
     Value<int>? totalLessons,
@@ -517,6 +563,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
       colorIndex: colorIndex ?? this.colorIndex,
       chapterCount: chapterCount ?? this.chapterCount,
       totalDuration: totalDuration ?? this.totalDuration,
+      totalContents: totalContents ?? this.totalContents,
       progress: progress ?? this.progress,
       completedLessons: completedLessons ?? this.completedLessons,
       totalLessons: totalLessons ?? this.totalLessons,
@@ -542,6 +589,9 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     }
     if (totalDuration.present) {
       map['total_duration'] = Variable<String>(totalDuration.value);
+    }
+    if (totalContents.present) {
+      map['total_contents'] = Variable<int>(totalContents.value);
     }
     if (progress.present) {
       map['progress'] = Variable<int>(progress.value);
@@ -569,6 +619,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
           ..write('colorIndex: $colorIndex, ')
           ..write('chapterCount: $chapterCount, ')
           ..write('totalDuration: $totalDuration, ')
+          ..write('totalContents: $totalContents, ')
           ..write('progress: $progress, ')
           ..write('completedLessons: $completedLessons, ')
           ..write('totalLessons: $totalLessons, ')
@@ -4274,6 +4325,7 @@ typedef $$CoursesTableTableCreateCompanionBuilder =
       required int colorIndex,
       required int chapterCount,
       required String totalDuration,
+      Value<int> totalContents,
       Value<int> progress,
       Value<int> completedLessons,
       required int totalLessons,
@@ -4287,6 +4339,7 @@ typedef $$CoursesTableTableUpdateCompanionBuilder =
       Value<int> colorIndex,
       Value<int> chapterCount,
       Value<String> totalDuration,
+      Value<int> totalContents,
       Value<int> progress,
       Value<int> completedLessons,
       Value<int> totalLessons,
@@ -4325,6 +4378,11 @@ class $$CoursesTableTableFilterComposer
 
   ColumnFilters<String> get totalDuration => $composableBuilder(
     column: $table.totalDuration,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get totalContents => $composableBuilder(
+    column: $table.totalContents,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4383,6 +4441,11 @@ class $$CoursesTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get totalContents => $composableBuilder(
+    column: $table.totalContents,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get progress => $composableBuilder(
     column: $table.progress,
     builder: (column) => ColumnOrderings(column),
@@ -4431,6 +4494,11 @@ class $$CoursesTableTableAnnotationComposer
 
   GeneratedColumn<String> get totalDuration => $composableBuilder(
     column: $table.totalDuration,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get totalContents => $composableBuilder(
+    column: $table.totalContents,
     builder: (column) => column,
   );
 
@@ -4487,6 +4555,7 @@ class $$CoursesTableTableTableManager
                 Value<int> colorIndex = const Value.absent(),
                 Value<int> chapterCount = const Value.absent(),
                 Value<String> totalDuration = const Value.absent(),
+                Value<int> totalContents = const Value.absent(),
                 Value<int> progress = const Value.absent(),
                 Value<int> completedLessons = const Value.absent(),
                 Value<int> totalLessons = const Value.absent(),
@@ -4498,6 +4567,7 @@ class $$CoursesTableTableTableManager
                 colorIndex: colorIndex,
                 chapterCount: chapterCount,
                 totalDuration: totalDuration,
+                totalContents: totalContents,
                 progress: progress,
                 completedLessons: completedLessons,
                 totalLessons: totalLessons,
@@ -4511,6 +4581,7 @@ class $$CoursesTableTableTableManager
                 required int colorIndex,
                 required int chapterCount,
                 required String totalDuration,
+                Value<int> totalContents = const Value.absent(),
                 Value<int> progress = const Value.absent(),
                 Value<int> completedLessons = const Value.absent(),
                 required int totalLessons,
@@ -4522,6 +4593,7 @@ class $$CoursesTableTableTableManager
                 colorIndex: colorIndex,
                 chapterCount: chapterCount,
                 totalDuration: totalDuration,
+                totalContents: totalContents,
                 progress: progress,
                 completedLessons: completedLessons,
                 totalLessons: totalLessons,

@@ -173,6 +173,7 @@
   "errorGenericTitle": "حدث خطأ ما",
   "errorGenericMessage": "فشل تحميل البيانات. يرجى التحقق من الاتصال والمحاولة مرة أخرى.",
   "labelLessonsPlural": "دروس",
+  "labelContentsPlural": "محتويات",
   "curriculumBackButton": "عودة",
   "commonCloseButton": "إغلاق",
   "curriculumChaptersCount": "{count} فصول",

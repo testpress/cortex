@@ -578,6 +578,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get labelLessonsPlural => 'lessons';
 
   @override
+  String get labelContentsPlural => 'contents';
+
+  @override
   String get curriculumBackButton => 'Back';
 
   @override
