@@ -586,7 +586,24 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String curriculumChaptersCount(int count) {
-    return '$count فصول';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count فصول',
+      one: '1 فصل',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String courseContentsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count محتويات',
+      one: '1 المحتوى',
+    );
+    return '$_temp0';
   }
 
   @override

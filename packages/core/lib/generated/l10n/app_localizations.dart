@@ -1159,8 +1159,14 @@ abstract class AppLocalizations {
   /// No description provided for @curriculumChaptersCount.
   ///
   /// In en, this message translates to:
-  /// **'{count} Chapters'**
+  /// **'{count,plural, =1{1 Chapter} other{{count} Chapters}}'**
   String curriculumChaptersCount(int count);
+
+  /// No description provided for @courseContentsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count,plural, =1{1 content} other{{count} contents}}'**
+  String courseContentsCount(int count);
 
   /// No description provided for @filterAll.
   ///

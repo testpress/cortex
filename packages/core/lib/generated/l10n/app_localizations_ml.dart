@@ -595,7 +595,24 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String curriculumChaptersCount(int count) {
-    return '$count അധ്യായങ്ങൾ';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count അധ്യായങ്ങൾ',
+      one: '1 അധ്യായം',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String courseContentsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ഉള്ളടക്കങ്ങൾ',
+      one: '1 ഉള്ളടക്കം',
+    );
+    return '$_temp0';
   }
 
   @override
