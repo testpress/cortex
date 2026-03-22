@@ -49,13 +49,10 @@ class HttpDataSource implements DataSource {
 
   @override
   Future<List<ExploreBannerDto>> getExploreBanners() async => [];
-
   @override
   Future<List<StudyTipDto>> getStudyTips() async => [];
-
   @override
   Future<List<ShortLessonDto>> getShortLessons() async => [];
-
   @override
   Future<List<DiscoveryCourseDto>> getDiscoveryCourses() async => [];
 }

@@ -13,6 +13,7 @@ class RemoteCourseDto {
   final int colorIndex;
   final int chaptersCount;
   final String totalDuration;
+  final int totalContents;
   final int progress;
   final int completedLessonsCount;
   final int totalLessonsCount;
@@ -24,6 +25,7 @@ class RemoteCourseDto {
     required this.colorIndex,
     required this.chaptersCount,
     required this.totalDuration,
+    required this.totalContents,
     required this.progress,
     required this.completedLessonsCount,
     required this.totalLessonsCount,
@@ -71,12 +73,18 @@ class RemoteCourseDto {
     return RemoteCourseDto(
       id: (json['id'] as Object).toString(),
       title: json['title'] as String? ?? '',
-      colorIndex: json['color_index'] as int? ?? 0,
-      chaptersCount: json['chapters_count'] as int? ?? 0,
+      colorIndex: (json['color_index'] as num?)?.toInt() ?? 0,
+      chaptersCount: (json['chapters_count'] as num?)?.toInt() ?? 0,
       totalDuration: json['total_duration'] as String? ?? '',
-      progress: json['progress'] as int? ?? 0,
-      completedLessonsCount: json['completed_lessons_count'] as int? ?? 0,
-      totalLessonsCount: json['total_lessons_count'] as int? ?? 0,
+      totalContents: ((json['contents_count'] ??
+                  json['total_contents'] ??
+                  json['total_lessons_count']) as num?)
+              ?.toInt() ??
+          0,
+      progress: (json['progress'] as num?)?.toInt() ?? 0,
+      completedLessonsCount:
+          (json['completed_lessons_count'] as num?)?.toInt() ?? 0,
+      totalLessonsCount: (json['total_lessons_count'] as num?)?.toInt() ?? 0,
       image: json['image'] as String?,
     );
   }
@@ -89,6 +97,7 @@ class RemoteCourseDto {
       colorIndex: colorIndex,
       chapterCount: chaptersCount,
       totalDuration: totalDuration,
+      totalContents: totalContents,
       progress: progress,
       completedLessons: completedLessonsCount,
       totalLessons: totalLessonsCount,

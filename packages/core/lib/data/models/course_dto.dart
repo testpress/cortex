@@ -14,7 +14,9 @@ class CourseDto {
   final int colorIndex;
 
   final int chapterCount;
+  @Deprecated('Use totalContents instead')
   final String totalDuration;
+  final int totalContents;
   final int progress; // 0–100
   final int completedLessons;
   final int totalLessons;
@@ -27,6 +29,7 @@ class CourseDto {
     required this.colorIndex,
     required this.chapterCount,
     required this.totalDuration,
+    required this.totalContents,
     required this.progress,
     required this.completedLessons,
     required this.totalLessons,
@@ -40,6 +43,7 @@ class CourseDto {
     int? colorIndex,
     int? chapterCount,
     String? totalDuration,
+    int? totalContents,
     int? progress,
     int? completedLessons,
     int? totalLessons,
@@ -52,6 +56,7 @@ class CourseDto {
       colorIndex: colorIndex ?? this.colorIndex,
       chapterCount: chapterCount ?? this.chapterCount,
       totalDuration: totalDuration ?? this.totalDuration,
+      totalContents: totalContents ?? this.totalContents,
       progress: progress ?? this.progress,
       completedLessons: completedLessons ?? this.completedLessons,
       totalLessons: totalLessons ?? this.totalLessons,
@@ -70,6 +75,7 @@ class CourseDto {
       colorIndex: json['colorIndex'] as int,
       chapterCount: json['chapterCount'] as int,
       totalDuration: json['totalDuration'] as String,
+      totalContents: json['totalContents'] as int? ?? 0,
       progress: json['progress'] as int,
       completedLessons: json['completedLessons'] as int,
       totalLessons: json['totalLessons'] as int,
@@ -88,6 +94,7 @@ class CourseDto {
       'colorIndex': colorIndex,
       'chapterCount': chapterCount,
       'totalDuration': totalDuration,
+      'totalContents': totalContents,
       'progress': progress,
       'completedLessons': completedLessons,
       'totalLessons': totalLessons,

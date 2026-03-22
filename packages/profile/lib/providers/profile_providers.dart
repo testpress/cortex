@@ -22,6 +22,7 @@ Stream<List<CourseDto>> profileEnrollment(Ref ref) async* {
         colorIndex: row.colorIndex,
         chapterCount: row.chapterCount,
         totalDuration: row.totalDuration,
+        totalContents: row.totalContents,
         progress: row.progress,
         completedLessons: row.completedLessons,
         totalLessons: row.totalLessons,
