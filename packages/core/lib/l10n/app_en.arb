@@ -584,6 +584,10 @@
   "exploreFilterShortLessons": "Short Lessons",
   "exploreFilterPopular": "Popular",
   "exploreFilterStudyTips": "Study Tips",
+  "editProfileFirstNameLabel": "First Name",
+  "editProfileFirstNameHint": "Enter your first name",
+  "editProfileLastNameLabel": "Last Name",
+  "editProfileLastNameHint": "Enter your last name",
   "labelMock": "Mock",
   "labelPractice": "Practice"
 }

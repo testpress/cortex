@@ -854,4 +854,29 @@ class MockDataSource implements DataSource {
   @override
   Future<List<DiscoveryCourseDto>> getDiscoveryCourses() async =>
       mockDiscoveryCourses;
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // User Profile
+  // ─────────────────────────────────────────────────────────────────────────
+
+  @override
+  Future<UserDto> getProfile() async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return mockCurrentUser;
+  }
+
+  @override
+  Future<UserDto> updateProfile(
+    Map<String, dynamic> data,
+  ) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    final updated = mockCurrentUser.copyWith(
+      name: data['display_name'] as String? ?? mockCurrentUser.name,
+      firstName: data['first_name'] as String? ?? mockCurrentUser.firstName,
+      lastName: data['last_name'] as String? ?? mockCurrentUser.lastName,
+      phone: data['phone'] as String? ?? mockCurrentUser.phone,
+    );
+    mockCurrentUser = updated;
+    return updated;
+  }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../providers/profile_providers.dart';
+import '../providers/user_provider.dart';
 import '../widgets/paid_active_profile_header.dart';
 import '../widgets/paid_active_profile_snapshot.dart';
 import '../widgets/paid_active_enrolled_courses_section.dart';
@@ -30,7 +31,7 @@ class ProfilePage extends ConsumerWidget {
     final isLoggedIn = ref.watch(authProvider).asData?.value ?? false;
     if (!isLoggedIn) return const SizedBox.shrink();
 
-    final user = mockCurrentUser;
+    final userAsync = ref.watch(userProvider);
     final statsAsync = ref.watch(studyMomentumProvider);
     final enrolledCoursesAsync = ref.watch(profileEnrollmentProvider);
     final recentActivityAsync = ref.watch(profileRecentActivityProvider);
@@ -56,13 +57,17 @@ class ProfilePage extends ConsumerWidget {
                     SizedBox(height: design.spacing.md),
 
                     // Profile Header Area
-                    ProfileHeader(
-                      name: user.name,
-                      avatarUrl: user.avatar,
-                      joinedDate: user.joinedDate,
-                      onEditProfileTap:
-                          onEditProfile ??
-                          () => context.pushNamed('profile-edit'),
+                    userAsync.when(
+                      data: (user) => ProfileHeader(
+                        name: user?.name ?? '',
+                        avatarUrl: user?.avatar ?? '',
+                        joinedDate: user?.joinedDate,
+                        onEditProfileTap:
+                            onEditProfile ??
+                            () => context.pushNamed('profile-edit'),
+                      ),
+                      loading: () => const SizedBox(height: 100),
+                      error: (err, __) => const SizedBox(height: 100),
                     ),
 
                     SizedBox(height: design.spacing.xl),

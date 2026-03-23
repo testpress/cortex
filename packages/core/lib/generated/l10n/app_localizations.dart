@@ -2253,6 +2253,30 @@ abstract class AppLocalizations {
   /// **'Study Tips'**
   String get exploreFilterStudyTips;
 
+  /// No description provided for @editProfileFirstNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get editProfileFirstNameLabel;
+
+  /// No description provided for @editProfileFirstNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your first name'**
+  String get editProfileFirstNameHint;
+
+  /// No description provided for @editProfileLastNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get editProfileLastNameLabel;
+
+  /// No description provided for @editProfileLastNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your last name'**
+  String get editProfileLastNameHint;
+
   /// No description provided for @labelMock.
   ///
   /// In en, this message translates to:

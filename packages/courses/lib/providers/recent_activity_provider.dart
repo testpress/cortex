@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import 'package:core/data/data.dart';
+import 'package:profile/profile.dart';
 import 'course_list_provider.dart';
 
 part 'recent_activity_provider.g.dart';
@@ -28,13 +28,16 @@ class RecentActivityVo {
 Stream<RecentActivityVo?> recentActivity(RecentActivityRef ref) async* {
   final userRepo = await ref.watch(userRepositoryProvider.future);
   final courseRepo = await ref.watch(courseRepositoryProvider.future);
-  final isLoggedIn = ref.watch(authProvider).asData?.value ?? false;
-  if (!isLoggedIn) {
+  
+  final userStatus = ref.watch(userProvider);
+  final user = userStatus.value;
+  
+  if (user == null) {
     yield null;
     return;
   }
 
-  yield* userRepo.watchProgress(mockCurrentUser.id).asyncMap((list) async {
+  yield* userRepo.watchProgress(user.id).asyncMap((list) async {
     if (list.isEmpty) return null;
 
     // Sort by lastAccessedAt descending

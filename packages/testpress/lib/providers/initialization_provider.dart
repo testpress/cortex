@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
+import 'package:profile/profile.dart';
 
 part 'initialization_provider.g.dart';
 
@@ -28,10 +29,11 @@ Future<void> appInitialization(AppInitializationRef ref) async {
       }
     }
 
-    // 3. Refresh user progress to see what was recently completed
+    // 3. Refresh user profile and progress to see what was recently completed
     // This allows the Resume Card to find the most recent lesson in the fully-populated DB.
     if (isLoggedIn) {
-      await userRepo.refreshProgress(mockCurrentUser.id);
+      final user = await userRepo.refreshProfile();
+      await userRepo.refreshProgress(user.id);
     }
   } catch (e) {
     // Initialization errors are handled here or surfaced to the listener

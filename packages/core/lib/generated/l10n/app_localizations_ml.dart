@@ -1204,6 +1204,18 @@ class AppLocalizationsMl extends AppLocalizations {
   String get exploreFilterStudyTips => 'പഠന നുറുങ്ങുകൾ';
 
   @override
+  String get editProfileFirstNameLabel => 'First Name';
+
+  @override
+  String get editProfileFirstNameHint => 'Enter your first name';
+
+  @override
+  String get editProfileLastNameLabel => 'Last Name';
+
+  @override
+  String get editProfileLastNameHint => 'Enter your last name';
+
+  @override
   String get labelMock => 'മോക്ക്';
 
   @override
