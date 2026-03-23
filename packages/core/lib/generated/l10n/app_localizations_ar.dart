@@ -1192,16 +1192,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get exploreFilterStudyTips => 'نصائح الدراسة';
 
   @override
-  String get editProfileFirstNameLabel => 'First Name';
+  String get editProfileFirstNameLabel => 'الاسم الأول';
 
   @override
-  String get editProfileFirstNameHint => 'Enter your first name';
+  String get editProfileFirstNameHint => 'أدخل اسمك الأول';
 
   @override
-  String get editProfileLastNameLabel => 'Last Name';
+  String get editProfileLastNameLabel => 'اسم العائلة';
 
   @override
-  String get editProfileLastNameHint => 'Enter your last name';
+  String get editProfileLastNameHint => 'أدخل اسم عائلتك';
 
   @override
   String get labelMock => 'تجريبي';
