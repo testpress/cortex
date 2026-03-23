@@ -3,7 +3,7 @@ import 'package:flutter/material.dart' show Scaffold;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart' as dto;
-import '../courses.dart';
+import 'package:courses/courses.dart';
 
 class PaidActiveHomeScreen extends ConsumerWidget {
   const PaidActiveHomeScreen({super.key});
