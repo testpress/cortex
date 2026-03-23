@@ -50,7 +50,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                         userName: user?.name ?? '',
                       ),
                       loading: () => const HomeGreetingSection(userName: '...'),
-                      error: (_, __) => const HomeGreetingSection(userName: ''),
+                      error: (e, s) => const HomeGreetingSection(userName: ''),
                     ),
 
                 heroBanners.when(
