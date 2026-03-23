@@ -6,7 +6,7 @@ import 'package:courses/courses.dart';
 import 'package:profile/profile.dart';
 import 'package:exams/exams.dart';
 import 'package:explore/explore.dart';
-import 'package:core/data/data.dart';
+import '../screens/dashboard/paid_active_home_screen.dart';
 import '../widgets/dashboard_drawer.dart';
 
 class ExplorePlaceholderScreen extends StatelessWidget {
