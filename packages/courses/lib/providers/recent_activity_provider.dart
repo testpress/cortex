@@ -1,6 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
-import 'package:profile/profile.dart';
 import 'course_list_provider.dart';
 
 part 'recent_activity_provider.g.dart';
@@ -26,18 +25,18 @@ class RecentActivityVo {
 /// Provider for the most recently accessed lesson (for the Resume card).
 @riverpod
 Stream<RecentActivityVo?> recentActivity(RecentActivityRef ref) async* {
-  final userRepo = await ref.watch(userRepositoryProvider.future);
+  final userProgressRepo = await ref.watch(userProgressRepositoryProvider.future);
   final courseRepo = await ref.watch(courseRepositoryProvider.future);
   
-  final userStatus = ref.watch(userProvider);
-  final user = userStatus.value;
+  final userIdStream = ref.watch(userIdProvider);
+  final userId = userIdStream.value;
   
-  if (user == null) {
+  if (userId == null) {
     yield null;
     return;
   }
 
-  yield* userRepo.watchProgress(user.id).asyncMap((list) async {
+  yield* userProgressRepo.watchProgress(userId).asyncMap((list) async {
     if (list.isEmpty) return null;
 
     // Sort by lastAccessedAt descending

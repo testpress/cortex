@@ -10,6 +10,7 @@ part 'initialization_provider.g.dart';
 @riverpod
 Future<void> appInitialization(AppInitializationRef ref) async {
   final userRepo = await ref.watch(userRepositoryProvider.future);
+  final userProgressRepo = await ref.watch(userProgressRepositoryProvider.future);
   final courseRepo = await ref.watch(courseRepositoryProvider.future);
 
   final isLoggedIn = ref.watch(authProvider).asData?.value ?? false;
@@ -33,7 +34,7 @@ Future<void> appInitialization(AppInitializationRef ref) async {
     // This allows the Resume Card to find the most recent lesson in the fully-populated DB.
     if (isLoggedIn) {
       final user = await userRepo.refreshProfile();
-      await userRepo.refreshProgress(user.id);
+      await userProgressRepo.refreshProgress(user.id);
     }
   } catch (e) {
     // Initialization errors are handled here or surfaced to the listener

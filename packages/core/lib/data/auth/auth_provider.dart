@@ -83,3 +83,10 @@ class Auth extends _$Auth {
     }
   }
 }
+
+
+@Riverpod(keepAlive: true)
+Stream<String?> userId(UserIdRef ref) async* {
+  final db = await ref.watch(appDatabaseProvider.future);
+  yield* db.select(db.usersTable).watchSingleOrNull().map((user) => user?.id);
+}
