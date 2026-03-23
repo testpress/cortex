@@ -47,15 +47,14 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
 /// Provider that exposes the application router.
 final goRouterProvider = Provider<GoRouter>((ref) {
-  // Only watch the user data to prevent the router from rebuilding on every
-  // loading state change or refresh.
-  final user = ref.watch(authProvider.select((v) => v.valueOrNull));
+  // Only watch the boolean login status to prevent the router from rebuilding
+  // on every loading state change or refresh.
+  final isLoggedIn = ref.watch(authProvider).valueOrNull ?? false;
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/onboarding',
     redirect: (context, state) {
-      final isLoggedIn = user != null;
       final path = state.uri.path;
       final isAuthRoute = path == '/login' || 
                           path == '/password-login' ||

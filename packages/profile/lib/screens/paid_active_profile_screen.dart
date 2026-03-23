@@ -27,7 +27,10 @@ class ProfilePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
 
-    final user = ref.watch(authProvider).requireValue!;
+    final isLoggedIn = ref.watch(authProvider).asData?.value ?? false;
+    if (!isLoggedIn) return const SizedBox.shrink();
+
+    final user = mockCurrentUser;
     final statsAsync = ref.watch(studyMomentumProvider);
     final enrolledCoursesAsync = ref.watch(profileEnrollmentProvider);
     final recentActivityAsync = ref.watch(profileRecentActivityProvider);

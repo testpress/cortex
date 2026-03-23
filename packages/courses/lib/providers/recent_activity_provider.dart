@@ -28,13 +28,13 @@ class RecentActivityVo {
 Stream<RecentActivityVo?> recentActivity(RecentActivityRef ref) async* {
   final userRepo = await ref.watch(userRepositoryProvider.future);
   final courseRepo = await ref.watch(courseRepositoryProvider.future);
-  final user = ref.watch(authProvider).valueOrNull;
-  if (user == null) {
+  final isLoggedIn = ref.watch(authProvider).asData?.value ?? false;
+  if (!isLoggedIn) {
     yield null;
     return;
   }
 
-  yield* userRepo.watchProgress(user.id).asyncMap((list) async {
+  yield* userRepo.watchProgress(mockCurrentUser.id).asyncMap((list) async {
     if (list.isEmpty) return null;
 
     // Sort by lastAccessedAt descending

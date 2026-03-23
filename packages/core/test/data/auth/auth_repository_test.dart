@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:core/data/data.dart';
 import 'package:core/data/auth/auth_api_service.dart';
 import 'package:core/data/auth/auth_local_data_source.dart';
 import 'package:core/data/auth/auth_repository.dart';

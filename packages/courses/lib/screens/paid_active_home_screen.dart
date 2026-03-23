@@ -16,7 +16,8 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     final pendingAssignments = ref.watch(pendingAssignmentsProvider);
     final upcomingTests = ref.watch(upcomingTestsProvider);
     final momentum = ref.watch(dto.studyMomentumProvider);
-    final user = ref.watch(dto.authProvider).requireValue!;
+    // For now, we assume if we are on this screen, we are logged in.
+    final user = dto.mockCurrentUser;
     final heroBanners = ref.watch(heroBannersProvider);
     final promotionBanners = ref.watch(promotionBannersProvider);
     final topLearners = ref.watch(topLearnersProvider);

@@ -21,10 +21,17 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    final user = ref.read(authProvider).requireValue!;
-    _nameController = TextEditingController(text: user.name);
-    _emailController = TextEditingController(text: user.email ?? '');
-    _phoneController = TextEditingController(text: user.phone ?? '');
+    final isLoggedIn = ref.read(authProvider).asData?.value ?? false;
+    final user = isLoggedIn ? mockCurrentUser : null;
+    if (user != null) {
+      _nameController = TextEditingController(text: user.name);
+      _emailController = TextEditingController(text: user.email ?? '');
+      _phoneController = TextEditingController(text: user.phone ?? '');
+    } else {
+      _nameController = TextEditingController();
+      _emailController = TextEditingController();
+      _phoneController = TextEditingController();
+    }
   }
 
   @override
@@ -44,18 +51,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     });
 
     if (_nameError == null) {
-      final user = ref.read(authProvider).requireValue!;
-      final updatedUser = UserDto(
-        id: user.id,
-        name: _nameController.text.trim(),
-        email: _emailController.text.trim(),
-        phone: _phoneController.text.trim(),
-        avatar: user.avatar,
-        isPro: user.isPro,
-        joinedDate: user.joinedDate,
-      );
-
-      ref.read(authProvider.notifier).updateProfile(updatedUser);
+      final isLoggedIn = ref.read(authProvider).asData?.value ?? false;
+      if (!isLoggedIn) return;
+      
+      // Note: In an auth-only branch, we defer reactive updates to UserRepository.
+      // For now, we're simply popping back.
       context.pop(true);
     }
   }
@@ -187,7 +187,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget _buildAvatarSection(DesignConfig design, dynamic l10n) {
-    final user = ref.read(authProvider).requireValue!;
+    final isLoggedIn = ref.watch(authProvider).asData?.value ?? false;
+    if (!isLoggedIn) return const SizedBox.shrink();
+    final user = mockCurrentUser;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

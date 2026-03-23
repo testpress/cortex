@@ -10,8 +10,8 @@ part 'initialization_provider.g.dart';
 Future<void> appInitialization(AppInitializationRef ref) async {
   final userRepo = await ref.watch(userRepositoryProvider.future);
   final courseRepo = await ref.watch(courseRepositoryProvider.future);
-  // Session recovery happens automatically in the authProvider's build method.
-  final user = ref.watch(authProvider).valueOrNull;
+
+  final isLoggedIn = ref.watch(authProvider).asData?.value ?? false;
 
   // Initialize core data in background
   try {
@@ -30,8 +30,8 @@ Future<void> appInitialization(AppInitializationRef ref) async {
 
     // 3. Refresh user progress to see what was recently completed
     // This allows the Resume Card to find the most recent lesson in the fully-populated DB.
-    if (user != null) {
-      await userRepo.refreshProgress(user.id);
+    if (isLoggedIn) {
+      await userRepo.refreshProgress(mockCurrentUser.id);
     }
   } catch (e) {
     // Initialization errors are handled here or surfaced to the listener

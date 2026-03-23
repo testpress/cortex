@@ -103,6 +103,15 @@ class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
           as _i3.Future<void>);
 
   @override
+  _i3.Future<void> resetPassword({required String? email}) =>
+      (super.noSuchMethod(
+            Invocation.method(#resetPassword, [], {#email: email}),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
   _i3.Future<void> clearToken() =>
       (super.noSuchMethod(
             Invocation.method(#clearToken, []),

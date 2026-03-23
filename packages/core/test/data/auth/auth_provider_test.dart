@@ -23,7 +23,7 @@ void main() {
   });
 
   group('AuthProvider (Async)', () {
-    test('initial state should be AsyncData(mockCurrentUser) if repo says logged in', () async {
+    test('initial state should be AsyncData(true) if repo says logged in', () async {
       // Arrange
       when(mockRepository.isUserLoggedIn()).thenAnswer((_) async => true);
 
@@ -31,11 +31,11 @@ void main() {
       final state = await container.read(authProvider.future);
 
       // Assert
-      expect(state, equals(mockCurrentUser));
+      expect(state, isTrue);
       verify(mockRepository.isUserLoggedIn()).called(1);
     });
 
-    test('initial state should be AsyncData(null) if repo says NOT logged in', () async {
+    test('initial state should be AsyncData(false) if repo says NOT logged in', () async {
       // Arrange
       when(mockRepository.isUserLoggedIn()).thenAnswer((_) async => false);
 
@@ -43,7 +43,7 @@ void main() {
       final state = await container.read(authProvider.future);
 
       // Assert
-      expect(state, isNull);
+      expect(state, isFalse);
       verify(mockRepository.isUserLoggedIn()).called(1);
     });
 
@@ -63,21 +63,21 @@ void main() {
 
       // Assert
       final state = container.read(authProvider).value;
-      expect(state, equals(mockCurrentUser));
+      expect(state, isTrue);
       verify(mockRepository.loginWithPassword(username: 'user', password: 'pass')).called(1);
     });
 
-    test('logout should clear state to null', () async {
+    test('logout should clear state to false', () async {
       // Arrange
       when(mockRepository.isUserLoggedIn()).thenAnswer((_) async => true);
       await container.read(authProvider.future);
-      expect(container.read(authProvider).value, isNotNull);
+      expect(container.read(authProvider).value, isTrue);
 
       // Act
       await container.read(authProvider.notifier).logout();
 
       // Assert
-      expect(container.read(authProvider).value, isNull);
+      expect(container.read(authProvider).value, isFalse);
       verify(mockRepository.logout()).called(1);
     });
   });

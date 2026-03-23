@@ -28,32 +28,20 @@ class Auth extends _$Auth {
   AuthRepository get _repository => ref.read(authRepositoryProvider);
 
   @override
-  FutureOr<UserDto?> build() async {
-    final isLoggedIn = await _repository.isUserLoggedIn();
-    if (isLoggedIn) {
-      // TODO: Replace with real user from /me API
-      return mockCurrentUser;
-    }
-    return null;
+  FutureOr<bool> build() async {
+    return await _repository.isUserLoggedIn();
   }
 
   Future<void> loginWithPassword({
     required String username,
     required String password,
   }) async {
-    state = const AsyncLoading();
-    try {
-      await _repository.loginWithPassword(
-        username: username,
-        password: password,
-      );
-      
-      // TODO: Replace with real user from /me API
-      state = AsyncData(mockCurrentUser);
-    } catch (e, st) {
-      state = AsyncError(e, st);
-      rethrow; // Rethrow so UI can show error message
-    }
+    await _repository.loginWithPassword(
+      username: username,
+      password: password,
+    );
+    
+    state = const AsyncData(true);
   }
 
   Future<void> generateOtp({
@@ -73,35 +61,22 @@ class Auth extends _$Auth {
     required String phoneNumber,
     String? email,
   }) async {
-    state = const AsyncLoading();
-    try {
-      await _repository.verifyOtp(
-        otp: otp,
-        phoneNumber: phoneNumber,
-        email: email,
-      );
+    await _repository.verifyOtp(
+      otp: otp,
+      phoneNumber: phoneNumber,
+      email: email,
+    );
 
-      // TODO: Replace with real user from /me API
-      state = AsyncData(mockCurrentUser);
-    } catch (e, st) {
-      state = AsyncError(e, st);
-      rethrow; // Rethrow so UI can show error message
-    }
+    state = const AsyncData(true);
   }
 
   Future<void> logout() async {
-    state = const AsyncLoading();
     try {
       await _repository.logout();
-      state = const AsyncData(null);
+      state = const AsyncData(false);
     } catch (e) {
-      // We still clear state locally even if logout API fails
-      state = const AsyncData(null);
+      state = const AsyncData(false);
       rethrow;
     }
-  }
-
-  void updateProfile(UserDto newUser) {
-    state = AsyncData(newUser);
   }
 }
