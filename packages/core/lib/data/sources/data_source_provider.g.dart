@@ -6,7 +6,7 @@ part of 'data_source_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$dataSourceHash() => r'6df7bc7f10d2b15af8284f4ece75006d2fedb777';
+String _$dataSourceHash() => r'f13ddf742fb7cd4159d0b9fdeb67e8cbc934ca5c';
 
 /// Provides the active [DataSource] based on [AppConfig.useMockData].
 /// Swap to real HTTP source by building with: --dart-define=USE_MOCK=false

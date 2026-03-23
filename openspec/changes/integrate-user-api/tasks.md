@@ -11,6 +11,8 @@
 - [x] 2.1 Add `getProfile()` to `DataSource` interface and implement in `HttpDataSource`.
 - [x] 2.2 Implement `watchCurrentUser()` in `UserRepository` for ID-less Drift caching.
 - [x] 2.3 Implement `refreshProfile()` in `UserRepository` to sync DB with API.
+- [x] 2.4 Extract `UserProgressRepository` to `core` for domain-agnostic progress tracking.
+- [x] 2.5 Refactor `courses/recent_activity_provider.dart` to rely on `core` exclusively.
 
 ## 3. UserProvider Implementation (The Brain)
 
