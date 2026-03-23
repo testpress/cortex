@@ -12,6 +12,7 @@ import 'tables/live_classes_table.dart';
 import 'tables/forum_threads_table.dart';
 import 'tables/user_progress_table.dart';
 import 'tables/app_settings_table.dart';
+import 'tables/users_table.dart';
 import 'package:core/data/data.dart';
 
 part 'app_database.g.dart';
@@ -25,13 +26,14 @@ part 'app_database.g.dart';
     ForumThreadsTable,
     UserProgressTable,
     AppSettingsTable,
+    UsersTable,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -92,8 +94,28 @@ class AppDatabase extends _$AppDatabase {
               );
             }
           }
+          if (from < 7) {
+            await m.createTable(usersTable);
+          }
         },
       );
+
+  // ── User Profiling ───────────────────────────────────────────────────────
+
+  /// Fetch a user from the local cache.
+  Future<UsersTableData?> getUserById(String id) =>
+      (select(usersTable)..where((t) => t.id.equals(id))).getSingleOrNull();
+
+  /// Watch a user's metadata for live updates.
+  Stream<UsersTableData?> watchUserById(String id) =>
+      (select(usersTable)..where((t) => t.id.equals(id))).watchSingleOrNull();
+
+  /// Insert or replace user metadata.
+  Future<void> upsertUser(UsersTableCompanion companion) =>
+      into(usersTable).insertOnConflictUpdate(companion);
+
+
+  Future<void> clearUserData() => delete(usersTable).go();
 
   // ── App Settings ─────────────────────────────────────────────────────────
 

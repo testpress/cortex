@@ -1,10 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
+import '../repositories/user_repository.dart';
 import '../data/profile_mock_data.dart';
 import '../models/recent_activity_dto.dart';
 
 part 'profile_providers.g.dart';
+
+@riverpod
+Future<UserRepository> userRepository(Ref ref) async {
+  final db = await ref.watch(appDatabaseProvider.future);
+  final source = ref.watch(dataSourceProvider);
+  return UserRepository(db, source);
+}
 
 @riverpod
 Future<List<RecentActivityDto>> profileRecentActivity(Ref ref) async {

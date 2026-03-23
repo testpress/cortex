@@ -1,6 +1,5 @@
 import 'auth_api_service.dart';
 import 'auth_local_data_source.dart';
-import 'types/auth_exception.dart';
 
 class AuthRepository {
   final AuthApiService _apiService;
@@ -59,12 +58,11 @@ class AuthRepository {
   }
 
   Future<void> logout() async {
-    final token = await getToken();
-
+    final token = await _localDataSource.getToken();
     try {
       await _apiService.logout(authToken: token);
-    } on AuthException {
-      // Local cleanup still must happen.
+    } catch (_) {
+      // Still logout locally if API fails
     } finally {
       await clearToken();
     }

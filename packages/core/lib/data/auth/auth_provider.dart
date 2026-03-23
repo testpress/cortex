@@ -1,10 +1,9 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../models/user_dto.dart';
-import '../sources/mock_data.dart';
 import 'auth_api_service.dart';
 import 'auth_local_data_source.dart';
 import 'auth_repository.dart';
+import '../db/database_provider.dart';
 
 part 'auth_provider.g.dart';
 
@@ -73,6 +72,10 @@ class Auth extends _$Auth {
   Future<void> logout() async {
     try {
       await _repository.logout();
+      
+      final db = await ref.read(appDatabaseProvider.future);
+      await db.clearUserData();
+      
       state = const AsyncData(false);
     } catch (e) {
       state = const AsyncData(false);

@@ -33,4 +33,9 @@ abstract class DataSource {
   /// Fetch courses specifically formatted for the Discovery/Explore page.
   Future<List<DiscoveryCourseDto>> getDiscoveryCourses();
 
+  /// Fetch the authenticated user's profile.
+  Future<UserDto> getProfile();
+
+  /// Update the authenticated user's profile with the given fields (supports multipart image updates).
+  Future<UserDto> updateProfile(Map<String, dynamic> data);
 }

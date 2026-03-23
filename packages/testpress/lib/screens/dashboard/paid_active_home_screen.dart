@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' show Scaffold;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart' as dto;
+import 'package:profile/profile.dart';
 import 'package:courses/courses.dart';
 
 class PaidActiveHomeScreen extends ConsumerWidget {
@@ -16,8 +17,9 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     final pendingAssignments = ref.watch(pendingAssignmentsProvider);
     final upcomingTests = ref.watch(upcomingTestsProvider);
     final momentum = ref.watch(dto.studyMomentumProvider);
-    // For now, we assume if we are on this screen, we are logged in.
-    final user = dto.mockCurrentUser;
+    
+    final userAsync = ref.watch(userProvider);
+    
     final heroBanners = ref.watch(heroBannersProvider);
     final promotionBanners = ref.watch(promotionBannersProvider);
     final topLearners = ref.watch(topLearnersProvider);
@@ -43,7 +45,13 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                 child: AppScroll(
                   padding: EdgeInsets.symmetric(vertical: design.spacing.md),
                   children: [
-                    HomeGreetingSection(userName: user.name),
+                    userAsync.when(
+                      data: (user) => HomeGreetingSection(
+                        userName: user?.name ?? '',
+                      ),
+                      loading: () => const HomeGreetingSection(userName: '...'),
+                      error: (_, __) => const HomeGreetingSection(userName: ''),
+                    ),
 
                 heroBanners.when(
                   data: (data) => HeroBannerCarousel(
