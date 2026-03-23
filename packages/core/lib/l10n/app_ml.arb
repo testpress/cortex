@@ -405,6 +405,10 @@
   "exploreFilterShortLessons": "ചെറിയ പാഠങ്ങൾ",
   "exploreFilterPopular": "ജനപ്രിയം",
   "exploreFilterStudyTips": "പഠന നുറുങ്ങുകൾ",
+  "editProfileFirstNameLabel": "ആദ്യ പേര്",
+  "editProfileFirstNameHint": "നിങ്ങളുടെ ആദ്യ പേര് നൽകുക",
+  "editProfileLastNameLabel": "അവസാന പേര്",
+  "editProfileLastNameHint": "നിങ്ങളുടെ അവസാന പേര് നൽകുക",
   "labelMock": "മോക്ക്",
   "labelPractice": "പ്രാക്ടീസ്"
 }
