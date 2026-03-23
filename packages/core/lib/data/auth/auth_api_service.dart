@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 
 import '../../network/api_endpoints.dart';
-import '../../network/dio_provider.dart';
+import '../../network/network_provider.dart';
 import 'types/auth_exception.dart';
 
 class AuthApiResult {
