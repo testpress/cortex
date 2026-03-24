@@ -71,6 +71,8 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
                               controller: _phoneController,
                               keyboardType: TextInputType.phone,
                               autofocus: true,
+                              textInputAction: TextInputAction.next,
+                              onSubmitted: (_) => _handleContinueToOtp(),
                             ),
                           ),
                         ],

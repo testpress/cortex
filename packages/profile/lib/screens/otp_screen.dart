@@ -68,6 +68,8 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                         controller: _otpController,
                         keyboardType: TextInputType.number,
                         autofocus: true,
+                        textInputAction: TextInputAction.done,
+                        onSubmitted: (_) => _handleVerifyOtp(),
                       ),
                       if (_errorMessage != null) ...[
                         SizedBox(height: design.spacing.md),

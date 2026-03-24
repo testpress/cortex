@@ -58,6 +58,7 @@ class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
                         hintText: l10n.loginUsernameHint,
                         controller: _usernameController,
                         autofocus: true,
+                        textInputAction: TextInputAction.next,
                       ),
                       SizedBox(height: design.spacing.md),
                       AppTextField(
@@ -65,6 +66,8 @@ class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
                         hintText: l10n.loginPasswordHint,
                         controller: _passwordController,
                         obscureText: true,
+                        textInputAction: TextInputAction.done,
+                        onSubmitted: (_) => _handlePasswordLogin(),
                       ),
                       if (_errorMessage != null) ...[
                         SizedBox(height: design.spacing.md),
