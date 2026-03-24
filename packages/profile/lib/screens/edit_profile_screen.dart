@@ -25,6 +25,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   String? _lastNameError;
   String? _selectedAvatarPath;
   Uint8List? _selectedAvatarBytes;
+  bool _isSaving = false;
 
   @override
   void initState() {
@@ -74,6 +75,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       final isLoggedIn = ref.read(authProvider).asData?.value ?? false;
       if (!isLoggedIn) return;
 
+      if (_isSaving) return;
+      setState(() => _isSaving = true);
+
       try {
         await ref.read(userActionsControllerProvider.notifier).updateProfile(
               firstName: _firstNameController.text.trim(),
@@ -85,6 +89,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         if (mounted) context.pop(true);
       } catch (e) {
         // Error handling can be added here (e.g., showing a snackbar)
+      } finally {
+        if (mounted) setState(() => _isSaving = false);
       }
     }
   }
@@ -217,6 +223,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 child: AppButton(
                    label: l10n.editProfileSave,
                    onPressed: _validateAndSave,
+                   loading: _isSaving,
                    padding: EdgeInsets.symmetric(horizontal: design.spacing.lg),
                    backgroundColor: design.colors.accent2,
                    foregroundColor: design.colors.onPrimary,
