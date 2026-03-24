@@ -26,6 +26,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   String? _selectedAvatarPath;
   Uint8List? _selectedAvatarBytes;
   bool _isSaving = false;
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -88,7 +89,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         
         if (mounted) context.pop(true);
       } catch (e) {
-        // Error handling can be added here (e.g., showing a snackbar)
+        if (mounted) setState(() => _errorMessage = e.toString());
       } finally {
         if (mounted) setState(() => _isSaving = false);
       }
@@ -119,6 +120,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               ),
               children: [
                 AppText.headline(l10n.editProfileTitle),
+                if (_errorMessage != null) ...[
+                  SizedBox(height: design.spacing.md),
+                  AppText.bodySmall(_errorMessage!, color: design.colors.error),
+                ],
                 SizedBox(height: design.spacing.xl),
                 _buildAvatarSection(design, l10n),
                 SizedBox(height: design.spacing.xxl),
