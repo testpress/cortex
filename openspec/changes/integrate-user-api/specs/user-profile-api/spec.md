@@ -6,22 +6,25 @@ The system SHALL fetch the authenticated user's profile from `GET /api/v2.5/me/`
 #### Scenario: Successful profile fetch after login
 - **WHEN** the user successfully logs in (password or OTP)
 - **THEN** the system MUST call `GET /api/v2.5/me/` with the stored auth token
-- **AND** parse the response into a `UserDto` and set it as the `AuthProvider` state
+-   **AND** parse the response into a `UserDto` and persist it to the local database via `UserRepository`
+-   **AND** ensure the `userProvider` (Stream) emits the updated profile data
 
 #### Scenario: Successful profile fetch on app startup
-- **WHEN** the app starts and a stored auth token is found
-- **THEN** the system MUST call `GET /api/v2.5/me/` to restore the user session
-- **AND** the `AuthProvider` state MUST transition from `loading` → `data(UserDto)`
+-   **WHEN** the app starts and a stored auth token is found
+-   **THEN** the system MUST call `GET /api/v2.5/me/` to restore the user session
+-   **AND** the `authProvider` state MUST transition to `data(true)`
+-   **AND** the `userProvider` MUST emit the fetched `UserDto` (from cache or network)
 
 #### Scenario: Profile fetch fails with invalid token
-- **WHEN** the `GET /api/v2.5/me/` call returns 401
-- **THEN** the system MUST clear the stored token
-- **AND** the `AuthProvider` state MUST transition to `data(null)` (unauthenticated)
+-   **WHEN** the `GET /api/v2.5/me/` call returns 401
+-   **THEN** the system MUST clear the stored token
+-   **AND** the `authProvider` state MUST transition to `data(false)` (unauthenticated)
+-   **AND** the `userProvider` MUST emit `null`
 
 #### Scenario: Profile fetch fails with network error
-- **WHEN** the `GET /api/v2.5/me/` call fails due to a network error
-- **THEN** the system MUST set `AuthProvider` state to `error`
-- **AND** the app MUST show a retry option
+-   **WHEN** the `GET /api/v2.5/me/` call fails due to a network error
+-   **THEN** the system MUST set `authProvider` state to `error`
+-   **AND** the app MUST show a retry option
 
 ---
 
@@ -29,20 +32,21 @@ The system SHALL fetch the authenticated user's profile from `GET /api/v2.5/me/`
 The system SHALL persist profile edits to the backend via `PATCH /api/v2.5/me/`.
 
 #### Scenario: Successful profile update
-- **WHEN** the user submits valid edits on the Edit Profile screen
-- **THEN** the system MUST send a `PATCH /api/v2.5/me/` request with the changed fields
-- **AND** the `AuthProvider` state MUST be updated with the `UserDto` parsed from the server response
-- **AND** the system MUST navigate back to the Profile screen
+-   **WHEN** the user submits valid edits on the Edit Profile screen
+-   **THEN** the system MUST send a `PATCH /api/v2.5/me/` request with the changed fields
+-   **AND** the local database MUST be updated with the `UserDto` parsed from the server response
+-   **AND** the `userProvider` MUST automatically emit the new profile data
+-   **AND** the system MUST navigate back to the Profile screen
 
 #### Scenario: Profile update fails
-- **WHEN** the `PATCH /api/v2.5/me/` request fails
-- **THEN** the system MUST display the error message to the user on the Edit Profile screen
-- **AND** the form data MUST be preserved so the user can retry
+-   **WHEN** the `PATCH /api/v2.5/me/` request fails
+-   **THEN** the system MUST display the error message to the user on the Edit Profile screen
+-   **AND** the form data MUST be preserved so the user can retry
 
 #### Scenario: Loading state during save
-- **WHEN** the profile update request is in progress
-- **THEN** the Save button MUST show a loading indicator
-- **AND** form inputs MUST be disabled to prevent duplicate submissions
+-   **WHEN** the profile update request is in progress
+-   **THEN** the Save button MUST show a loading indicator
+-   **AND** form inputs MUST be disabled to prevent duplicate submissions
 
 ---
 
@@ -50,18 +54,17 @@ The system SHALL persist profile edits to the backend via `PATCH /api/v2.5/me/`.
 The system SHALL parse the `/me/` API response into a `UserDto` using only the fields the app needs.
 
 #### Scenario: Field mapping from API response
-- **WHEN** the `/me/` response JSON is received
-- **THEN** the system MUST map the following fields:
-  - `id` → `UserDto.id`
-  - `display_name` → `UserDto.displayName`
-  - `first_name` → `UserDto.firstName`
-  - `last_name` → `UserDto.lastName`
-  - `email` → `UserDto.email`
-  - `phone` → `UserDto.phone`
-  - `username` → `UserDto.username`
-  - `photo` → `UserDto.photo`
-  - `medium_image` → `UserDto.avatar`
-- **AND** all other fields from the API response MUST be ignored
+-   **WHEN** the `/me/` response JSON is received
+-   **THEN** the system MUST map the following fields:
+    -   `id` → `UserDto.id`
+    -   `display_name` → `UserDto.name`
+    -   `first_name` → `UserDto.firstName`
+    -   `last_name` → `UserDto.lastName`
+    -   `email` → `UserDto.email`
+    -   `phone` → `UserDto.phone`
+    -   `username` → `UserDto.username`
+    -   `medium_image` → `UserDto.avatar`
+-   **AND** all other fields from the API response MUST be ignored
 
 ---
 
