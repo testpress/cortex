@@ -16,11 +16,16 @@ class HttpDataSource implements DataSource {
   Future<PaginatedResponseDto<CourseDto>> getCourses({
     int page = 1,
     int pageSize = 10,
+    String? search,
   }) async {
     return performNetworkRequest(
       _dio.get(
         ApiEndpoints.courseList,
-        queryParameters: {'page': page, 'page_size': pageSize},
+        queryParameters: {
+          'page': page,
+          'page_size': pageSize,
+          if (search != null && search.isNotEmpty) 'q': search,
+        },
       ),
       fromJson: (json) => PaginatedResponseDto<CourseDto>.fromJson(
         json,
