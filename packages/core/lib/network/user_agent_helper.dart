@@ -17,17 +17,17 @@ class UserAgentHelper {
 
       if (Platform.isAndroid) {
         final androidInfo = await deviceInfo.androidInfo;
-        return '${androidInfo.model} (Android ${androidInfo.version.release}) v$appVersion';
+        return 'android-app/$appVersion (${androidInfo.model}; Android ${androidInfo.version.release})';
       }
-
+ 
       if (Platform.isIOS) {
         final iosInfo = await deviceInfo.iosInfo;
-        return 'ios-app ${iosInfo.utsname.machine} (iOS ${iosInfo.systemVersion}) v$appVersion';
+        return 'ios-app/$appVersion (${iosInfo.utsname.machine}; iOS ${iosInfo.systemVersion})';
       }
-
-      return 'ios-app ($Platform) v$appVersion';
+ 
+      return 'flutter-app/$appVersion ($Platform)';
     } catch (_) {
-      return 'ios-app/1.0.0';
+      return 'flutter-app/1.0.0';
     }
   }
 }

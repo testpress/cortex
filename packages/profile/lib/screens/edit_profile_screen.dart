@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart' show Uint8List;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -24,6 +24,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   String? _firstNameError;
   String? _lastNameError;
   String? _selectedAvatarPath;
+  Uint8List? _selectedAvatarBytes;
 
   @override
   void initState() {
@@ -41,8 +42,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     
     if (image != null) {
+      final bytes = await image.readAsBytes();
       setState(() {
         _selectedAvatarPath = image.path;
+        _selectedAvatarBytes = bytes;
       });
     }
   }
@@ -249,9 +252,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       color: design.colors.accent2,
                     ),
                     clipBehavior: Clip.antiAlias,
-                    child: _selectedAvatarPath != null
-                        ? Image.file(
-                            File(_selectedAvatarPath!),
+                    child: _selectedAvatarBytes != null
+                        ? Image.memory(
+                            _selectedAvatarBytes!,
                             fit: BoxFit.cover,
                           )
                         : (user.avatar != null && user.avatar!.isNotEmpty
