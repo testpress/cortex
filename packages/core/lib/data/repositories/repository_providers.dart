@@ -14,11 +14,3 @@ Future<ForumRepository> forumRepository(ForumRepositoryRef ref) async {
   final source = ref.watch(dataSourceProvider);
   return ForumRepository(db, source);
 }
-
-/// Provides the [UserProgressRepository].
-@Riverpod(keepAlive: true)
-Future<UserProgressRepository> userProgressRepository(UserProgressRepositoryRef ref) async {
-  final db = await ref.watch(appDatabaseProvider.future);
-  final source = ref.watch(dataSourceProvider);
-  return UserProgressRepository(db, source);
-}

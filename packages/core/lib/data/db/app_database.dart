@@ -10,7 +10,6 @@ import 'tables/chapters_table.dart';
 import 'tables/lessons_table.dart';
 import 'tables/live_classes_table.dart';
 import 'tables/forum_threads_table.dart';
-import 'tables/user_progress_table.dart';
 import 'tables/app_settings_table.dart';
 import 'tables/users_table.dart';
 import 'package:core/data/data.dart';
@@ -24,7 +23,6 @@ part 'app_database.g.dart';
     LessonsTable,
     LiveClassesTable,
     ForumThreadsTable,
-    UserProgressTable,
     AppSettingsTable,
     UsersTable,
   ],
@@ -46,13 +44,13 @@ class AppDatabase extends _$AppDatabase {
 
           // Helper to add columns only if they don't already exist.
           // This prevents crashes like "duplicate column name" during development migrations.
-          Future<void> addColumnSafely(GeneratedColumn col) async {
+          Future<void> addColumnSafely(dynamic col) async {
             final res = await customSelect(
               'PRAGMA table_info(${lessonsTable.actualTableName})',
             ).get();
             final existingColumns = res.map((r) => r.read<String>('name'));
             if (!existingColumns.contains(col.name)) {
-              await m.addColumn(lessonsTable, col);
+              await m.addColumn(lessonsTable, col as GeneratedColumn);
             }
           }
 
@@ -93,9 +91,6 @@ class AppDatabase extends _$AppDatabase {
                 ),
               );
             }
-          }
-          if (from < 7) {
-            await m.createTable(usersTable);
           }
         },
       );
@@ -193,6 +188,13 @@ class AppDatabase extends _$AppDatabase {
   Stream<LessonsTableData?> watchLesson(String id) =>
       (select(lessonsTable)..where((t) => t.id.equals(id))).watchSingleOrNull();
 
+  /// Watch the most recently accessed lesson from the entire DB.
+  Stream<LessonsTableData?> watchRecentLesson() => (select(lessonsTable)
+        ..where((t) => t.lastAccessedAt.isNotNull())
+        ..orderBy([(t) => OrderingTerm.desc(t.lastAccessedAt)])
+        ..limit(1))
+      .watchSingleOrNull();
+
   /// Toggles the bookmark status of a lesson.
   Future<void> toggleLessonBookmark(String id) async {
     final lesson = await getLessonById(id);
@@ -206,10 +208,15 @@ class AppDatabase extends _$AppDatabase {
 
   /// Updates the progress status of a lesson.
   Future<void> updateLessonProgress(
-      String id, LessonProgressStatus status) async {
+    String id,
+    LessonProgressStatus status, {
+    DateTime? lastAccessedAt,
+  }) async {
     await (update(lessonsTable)..where((t) => t.id.equals(id))).write(
       LessonsTableCompanion(
         progressStatus: Value(status.name),
+        lastAccessedAt:
+            lastAccessedAt != null ? Value(lastAccessedAt) : const Value.absent(),
       ),
     );
   }
@@ -235,17 +242,6 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> upsertForumThreads(List<ForumThreadsTableCompanion> rows) =>
       batch((b) => b.insertAllOnConflictUpdate(forumThreadsTable, rows));
-
-  // ── User Progress ─────────────────────────────────────────────────────────
-
-  Stream<List<UserProgressTableData>> watchProgressForUser(String userId) =>
-      (select(
-        userProgressTable,
-      )..where((t) => t.userId.equals(userId)))
-          .watch();
-
-  Future<void> upsertProgress(List<UserProgressTableCompanion> rows) =>
-      batch((b) => b.insertAllOnConflictUpdate(userProgressTable, rows));
 
   // ── Combined Lookups ──────────────────────────────────────────────────────
 

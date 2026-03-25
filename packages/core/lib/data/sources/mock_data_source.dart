@@ -293,7 +293,66 @@ class MockDataSource implements DataSource {
           subjectIndex: 3, // violet
           lessonNumber: 1,
           totalLessons: 8,
-          contentUrl: 'https://drive.google.com/uc?export=download&id=1QxJ4yF2LdlCVSll4NkTXj5bO-nL6Xzol',
+          lastAccessedAt: null, // Initial fetch usually has null if not accessed recently
+          content: [
+            LessonContentItemDto(
+              type: 'heading',
+              content: 'What is Thermodynamics?',
+              level: 1,
+            ),
+            LessonContentItemDto(
+              type: 'paragraph',
+              content:
+                  'Thermodynamics is the branch of physics that deals with the relationships between heat, work, temperature, and energy. The behavior of these quantities is governed by the four laws of thermodynamics, which apply to all systems regardless of their specific properties.',
+            ),
+            LessonContentItemDto(
+              type: 'paragraph',
+              content:
+                  'In this introductory lesson, we will explore what thermodynamics is, why it\'s important, and how it applies to everyday phenomena around us.',
+            ),
+            LessonContentItemDto(
+              type: 'callout',
+              content:
+                  'Thermodynamics is one of the most fundamental subjects in physics, with applications in engines, refrigerators, power plants, and even biological systems!',
+              calloutType: 'note',
+            ),
+            LessonContentItemDto(
+              type: 'heading',
+              content: 'Key Concepts in Thermodynamics',
+              level: 2,
+            ),
+            LessonContentItemDto(
+              type: 'list',
+              content: [
+                'System and Surroundings - Defining the boundaries of what we\'re studying',
+                'State Variables - Properties like temperature, pressure, volume that describe a system',
+                'Processes - How a system changes from one state to another',
+                'Equilibrium - When a system\'s properties remain constant over time',
+              ],
+            ),
+            LessonContentItemDto(
+              type: 'image',
+              content:
+                  'https://images.unsplash.com/photo-1675627452903-082d0a77bc6f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwaHlzaWNzJTIwdGhlcm1vZHluYW1pY3MlMjBkaWFncmFtfGVufDF8fHx8MTc2Nzk1MzQ2M3ww&ixlib=rb-4.1.0&q=80&w=1080',
+              alt: 'Thermodynamic system diagram',
+            ),
+            LessonContentItemDto(
+              type: 'heading',
+              content: 'Why Study Thermodynamics?',
+              level: 2,
+            ),
+            LessonContentItemDto(
+              type: 'paragraph',
+              content:
+                  'Thermodynamics helps us understand how energy flows and transforms in the universe. From the engines in cars to the metabolism in our bodies, thermodynamic principles govern countless processes.',
+            ),
+            LessonContentItemDto(
+              type: 'callout',
+              content:
+                  'For JEE preparation, thermodynamics is a high-weightage topic that appears in both Physics and Chemistry sections. Mastering it early gives you a strong foundation!',
+              calloutType: 'tip',
+            ),
+          ],
         ),
         const LessonDto(
           id: 'thermo-2',
@@ -747,41 +806,6 @@ class MockDataSource implements DataSource {
         ),
       ];
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // User Progress
-  // ─────────────────────────────────────────────────────────────────────────
-
-  @override
-  Future<List<UserProgressDto>> getUserProgress(String userId) async => [
-        UserProgressDto(
-          userId: userId,
-          lessonId: 'thermo-1',
-          courseId: 'jee-main-2026',
-          percentComplete: 100,
-          lastAccessedAt: DateTime.now().subtract(const Duration(hours: 2)),
-        ),
-        UserProgressDto(
-          userId: userId,
-          lessonId: 'thermo-2',
-          courseId: 'jee-main-2026',
-          percentComplete: 67,
-          lastAccessedAt: DateTime.now().subtract(const Duration(minutes: 5)),
-        ),
-        UserProgressDto(
-          userId: userId,
-          lessonId: 'mech-1',
-          courseId: 'jee-main-2026',
-          percentComplete: 100,
-          lastAccessedAt: DateTime.now().subtract(const Duration(days: 1)),
-        ),
-        UserProgressDto(
-          userId: userId,
-          lessonId: 'mech-2',
-          courseId: 'jee-main-2026',
-          percentComplete: 100,
-          lastAccessedAt: DateTime.now().subtract(const Duration(days: 1)),
-        ),
-      ];
 
   // ─────────────────────────────────────────────────────────────────────────
   // Explore

@@ -71,20 +71,37 @@ class CourseRepository {
         .map((row) => row != null ? _rowToLessonDto(row) : null);
   }
 
+  /// Watch the most recently accessed lesson from the entire DB.
+  Stream<LessonDto?> watchRecentLesson() {
+    return _db.watchRecentLesson().map(
+          (row) => row != null ? _rowToLessonDto(row) : null,
+        );
+  }
+
   /// Toggles the bookmark status locally.
   Future<void> toggleLessonBookmark(String id) async {
     await _db.toggleLessonBookmark(id);
   }
 
-  /// Updates lesson progress locally.
   Future<void> updateLessonProgress(
-      String id, LessonProgressStatus status) async {
-    await _db.updateLessonProgress(id, status);
+    String id,
+    LessonProgressStatus status,
+  ) async {
+    await _db.updateLessonProgress(
+      id,
+      status,
+      lastAccessedAt: DateTime.now(),
+    );
   }
 
   /// Efficiently fetches lesson and parent titles by lesson ID.
-  Future<({String lessonTitle, String chapterTitle, String courseTitle})?>
-      getLessonDetails(String lessonId) async {
+  Future<
+      ({
+        String lessonTitle,
+        String chapterTitle,
+        String courseTitle,
+        String courseId
+      })?> getLessonDetails(String lessonId) async {
     final result = await _db.getLessonDetails(lessonId);
     if (result == null) return null;
 
@@ -96,6 +113,7 @@ class CourseRepository {
       lessonTitle: lesson.title,
       chapterTitle: chapter.title,
       courseTitle: course.title,
+      courseId: course.id,
     );
   }
 
@@ -162,6 +180,7 @@ class CourseRepository {
         lessonNumber: row.lessonNumber,
         totalLessons: row.totalLessons,
         isBookmarked: row.isBookmarked,
+        lastAccessedAt: row.lastAccessedAt,
       );
 
   LessonsTableCompanion _lessonDtoToCompanion(LessonDto dto) =>
@@ -182,6 +201,7 @@ class CourseRepository {
         lessonNumber: Value(dto.lessonNumber),
         totalLessons: Value(dto.totalLessons),
         isBookmarked: Value(dto.isBookmarked),
+        lastAccessedAt: Value(dto.lastAccessedAt),
       );
 
   LessonType _parseType(String s) => LessonType.values.firstWhere(

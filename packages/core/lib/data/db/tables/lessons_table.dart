@@ -25,6 +25,7 @@ class LessonsTable extends Table {
   IntColumn get lessonNumber => integer().nullable()();
   IntColumn get totalLessons => integer().nullable()();
   BoolColumn get isBookmarked => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get lastAccessedAt => dateTime().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};

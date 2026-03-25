@@ -24,6 +24,7 @@ class LessonDto {
   final int? lessonNumber;
   final int? totalLessons;
   final bool isBookmarked;
+  final DateTime? lastAccessedAt;
 
   const LessonDto({
     required this.id,
@@ -42,6 +43,7 @@ class LessonDto {
     this.lessonNumber,
     this.totalLessons,
     this.isBookmarked = false,
+    this.lastAccessedAt,
   });
 
   LessonDto copyWith({
@@ -61,6 +63,7 @@ class LessonDto {
     int? lessonNumber,
     int? totalLessons,
     bool? isBookmarked,
+    DateTime? lastAccessedAt,
   }) {
     return LessonDto(
       id: id ?? this.id,
@@ -79,6 +82,7 @@ class LessonDto {
       lessonNumber: lessonNumber ?? this.lessonNumber,
       totalLessons: totalLessons ?? this.totalLessons,
       isBookmarked: isBookmarked ?? this.isBookmarked,
+      lastAccessedAt: lastAccessedAt ?? this.lastAccessedAt,
     );
   }
 
@@ -101,6 +105,9 @@ class LessonDto {
       lessonNumber: json['lessonNumber'] as int?,
       totalLessons: json['totalLessons'] as int?,
       isBookmarked: json['isBookmarked'] as bool? ?? false,
+      lastAccessedAt: json['lastAccessedAt'] != null
+          ? DateTime.parse(json['lastAccessedAt'] as String)
+          : null,
     );
   }
 
@@ -122,6 +129,7 @@ class LessonDto {
       'lessonNumber': lessonNumber,
       'totalLessons': totalLessons,
       'isBookmarked': isBookmarked,
+      'lastAccessedAt': lastAccessedAt?.toIso8601String(),
     };
   }
 }
