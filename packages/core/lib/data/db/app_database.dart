@@ -44,13 +44,13 @@ class AppDatabase extends _$AppDatabase {
 
           // Helper to add columns only if they don't already exist.
           // This prevents crashes like "duplicate column name" during development migrations.
-          Future<void> addColumnSafely(dynamic col) async {
+          Future<void> addColumnSafely(GeneratedColumn col) async {
             final res = await customSelect(
               'PRAGMA table_info(${lessonsTable.actualTableName})',
             ).get();
             final existingColumns = res.map((r) => r.read<String>('name'));
             if (!existingColumns.contains(col.name)) {
-              await m.addColumn(lessonsTable, col as GeneratedColumn);
+              await m.addColumn(lessonsTable, col);
             }
           }
 
