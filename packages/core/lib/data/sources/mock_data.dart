@@ -1,9 +1,11 @@
 import 'package:core/data/data.dart';
 
 /// Mock current user
-final mockCurrentUser = UserDto(
+var mockCurrentUser = UserDto(
   id: 'user_1',
   name: 'Arjun Sharma',
+  firstName: 'Arjun',
+  lastName: 'Sharma',
   email: 'arjun.sharma@example.com',
   phone: '+91 9876543210',
   avatar:

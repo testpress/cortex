@@ -6,7 +6,7 @@ part of 'recent_activity_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$recentActivityHash() => r'a07d62021414035d098cfc4ad9c0b1adaeb99247';
+String _$recentActivityHash() => r'dd30320375d550af00aa965be15aa01bb4a2fd26';
 
 /// Provider for the most recently accessed lesson (for the Resume card).
 ///

@@ -1192,6 +1192,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get exploreFilterStudyTips => 'نصائح الدراسة';
 
   @override
+  String get editProfileFirstNameLabel => 'الاسم الأول';
+
+  @override
+  String get editProfileFirstNameHint => 'أدخل اسمك الأول';
+
+  @override
+  String get editProfileLastNameLabel => 'اسم العائلة';
+
+  @override
+  String get editProfileLastNameHint => 'أدخل اسم عائلتك';
+
+  @override
   String get labelMock => 'تجريبي';
 
   @override

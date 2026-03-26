@@ -405,6 +405,10 @@
   "exploreFilterShortLessons": "دروس قصيرة",
   "exploreFilterPopular": "شائع",
   "exploreFilterStudyTips": "نصائح الدراسة",
+  "editProfileFirstNameLabel": "الاسم الأول",
+  "editProfileFirstNameHint": "أدخل اسمك الأول",
+  "editProfileLastNameLabel": "اسم العائلة",
+  "editProfileLastNameHint": "أدخل اسم عائلتك",
   "labelMock": "تجريبي",
   "labelPractice": "ممارسة"
 }

@@ -2,7 +2,9 @@ import 'package:flutter/widgets.dart';
 import '../design/design_provider.dart';
 
 class AppLoadingIndicator extends StatefulWidget {
-  const AppLoadingIndicator({super.key});
+  final Color? color;
+
+  const AppLoadingIndicator({super.key, this.color});
 
   @override
   State<AppLoadingIndicator> createState() => _AppLoadingIndicatorState();
@@ -38,7 +40,9 @@ class _AppLoadingIndicatorState extends State<AppLoadingIndicator>
           turns: _controller,
           child: CustomPaint(
             size: const Size(20, 20),
-            painter: _LoadingIndicatorPainter(color: design.colors.primary),
+            painter: _LoadingIndicatorPainter(
+              color: widget.color ?? design.colors.primary,
+            ),
           ),
         ),
       ),

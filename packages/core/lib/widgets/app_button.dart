@@ -4,6 +4,7 @@ import '../navigation/app_route.dart';
 import '../accessibility/app_semantics.dart';
 import '../accessibility/app_focusable.dart';
 import 'app_text.dart';
+import 'app_loading_indicator.dart';
 
 /// Platform-neutral button widget with semantic variants.
 class AppButton extends StatelessWidget {
@@ -22,6 +23,7 @@ class AppButton extends StatelessWidget {
     this.trailing,
     this.borderColor,
     this.labelStyle,
+    this.loading = false,
   });
 
   final String label;
@@ -37,6 +39,7 @@ class AppButton extends StatelessWidget {
   final Widget? leading;
   final Widget? trailing;
   final TextStyle? labelStyle;
+  final bool loading;
 
   // Semantic constructors
   const AppButton.primary({
@@ -53,6 +56,7 @@ class AppButton extends StatelessWidget {
     this.trailing,
     this.borderColor,
     this.labelStyle,
+    this.loading = false,
   }) : variant = AppButtonVariant.primary;
 
   const AppButton.secondary({
@@ -69,12 +73,13 @@ class AppButton extends StatelessWidget {
     this.trailing,
     this.borderColor,
     this.labelStyle,
+    this.loading = false,
   }) : variant = AppButtonVariant.secondary;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final isDisabled = onPressed == null && onNavigate == null;
+    final isDisabled = (onPressed == null && onNavigate == null) || loading;
 
     final effectiveBackgroundColor =
         backgroundColor ??
@@ -134,23 +139,42 @@ class AppButton extends StatelessWidget {
                 color: effectiveForegroundColor,
                 size: design.iconSize.md,
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
+              child: Stack(
+                alignment: Alignment.center,
                 children: [
-                  if (leading != null) ...[
-                    leading!,
-                    SizedBox(width: design.spacing.sm),
-                  ],
-                  AppText.labelBold(
-                    label,
-                    color: effectiveForegroundColor,
-                    style: labelStyle,
+                  // Original Content (Hidden but keeps size if not loading)
+                  Opacity(
+                    opacity: loading ? 0.0 : 1.0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (leading != null) ...[
+                          leading!,
+                          SizedBox(width: design.spacing.sm),
+                        ],
+                        AppText.labelBold(
+                          label,
+                          color: effectiveForegroundColor,
+                          style: labelStyle,
+                        ),
+                        if (trailing != null) ...[
+                          SizedBox(width: design.spacing.sm),
+                          trailing!,
+                        ],
+                      ],
+                    ),
                   ),
-                  if (trailing != null) ...[
-                    SizedBox(width: design.spacing.sm),
-                    trailing!,
-                  ],
+
+                  // Loading Indicator
+                  if (loading)
+                    SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: AppLoadingIndicator(
+                        color: effectiveForegroundColor,
+                      ),
+                    ),
                 ],
               ),
             ),

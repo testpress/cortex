@@ -1,7 +1,11 @@
+import 'package:flutter/foundation.dart' show Uint8List;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
+
+import '../providers/user_provider.dart';
 
 const double _kHeaderContentHeight = 60.0;
 
@@ -13,50 +17,82 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
-  late TextEditingController _nameController;
+  late TextEditingController _firstNameController;
+  late TextEditingController _lastNameController;
   late TextEditingController _emailController;
   late TextEditingController _phoneController;
-  String? _nameError;
+  String? _firstNameError;
+  String? _lastNameError;
+  String? _selectedAvatarPath;
+  Uint8List? _selectedAvatarBytes;
+  bool _isSaving = false;
+  String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
-    final isLoggedIn = ref.read(authProvider).asData?.value ?? false;
-    final user = isLoggedIn ? mockCurrentUser : null;
-    if (user != null) {
-      _nameController = TextEditingController(text: user.name);
-      _emailController = TextEditingController(text: user.email ?? '');
-      _phoneController = TextEditingController(text: user.phone ?? '');
-    } else {
-      _nameController = TextEditingController();
-      _emailController = TextEditingController();
-      _phoneController = TextEditingController();
+    final user = ref.read(userProvider).value;
+    
+    _firstNameController = TextEditingController(text: user?.firstName ?? '');
+    _lastNameController = TextEditingController(text: user?.lastName ?? '');
+    _emailController = TextEditingController(text: user?.email ?? '');
+    _phoneController = TextEditingController(text: user?.phone ?? '');
+  }
+
+  Future<void> _pickAndUploadImage() async {
+    final picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    
+    if (image != null) {
+      final bytes = await image.readAsBytes();
+      setState(() {
+        _selectedAvatarPath = image.path;
+        _selectedAvatarBytes = bytes;
+      });
     }
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
     super.dispose();
   }
 
-  void _validateAndSave() {
+  void _validateAndSave() async {
     final l10n = L10n.of(context);
     setState(() {
-      _nameError = _nameController.text.trim().isEmpty
+      _firstNameError = _firstNameController.text.trim().isEmpty
+          ? l10n.editProfileErrorNameEmpty
+          : null;
+      _lastNameError = _lastNameController.text.trim().isEmpty
           ? l10n.editProfileErrorNameEmpty
           : null;
     });
 
-    if (_nameError == null) {
+    if (_firstNameError == null && _lastNameError == null) {
       final isLoggedIn = ref.read(authProvider).asData?.value ?? false;
       if (!isLoggedIn) return;
-      
-      // Note: In an auth-only branch, we defer reactive updates to UserRepository.
-      // For now, we're simply popping back.
-      context.pop(true);
+
+      if (_isSaving) return;
+      setState(() => _isSaving = true);
+
+      try {
+        await ref.read(userActionsControllerProvider.notifier).updateProfile(
+              firstName: _firstNameController.text.trim(),
+              lastName: _lastNameController.text.trim(),
+              phone: _phoneController.text.trim(),
+              photo: _selectedAvatarPath,
+            );
+        
+        if (mounted) context.pop(true);
+      } catch (e) {
+        if (mounted) setState(() => _errorMessage = e.toString());
+      } finally {
+        if (mounted) setState(() => _isSaving = false);
+      }
     }
   }
 
@@ -84,16 +120,34 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               ),
               children: [
                 AppText.headline(l10n.editProfileTitle),
+                if (_errorMessage != null) ...[
+                  SizedBox(height: design.spacing.md),
+                  AppText.bodySmall(_errorMessage!, color: design.colors.error),
+                ],
                 SizedBox(height: design.spacing.xl),
                 _buildAvatarSection(design, l10n),
                 SizedBox(height: design.spacing.xxl),
                 AppTextField(
-                  label: l10n.editProfileNameLabel,
-                  hintText: l10n.editProfileNameHint,
-                  controller: _nameController,
-                  errorText: _nameError,
+                  label: l10n.editProfileFirstNameLabel,
+                  hintText: l10n.editProfileFirstNameHint,
+                  controller: _firstNameController,
+                  errorText: _firstNameError,
                   onChanged: (_) {
-                    if (_nameError != null) setState(() => _nameError = null);
+                    if (_firstNameError != null) {
+                      setState(() => _firstNameError = null);
+                    }
+                  },
+                ),
+                SizedBox(height: design.spacing.lg),
+                AppTextField(
+                  label: l10n.editProfileLastNameLabel,
+                  hintText: l10n.editProfileLastNameHint,
+                  controller: _lastNameController,
+                  errorText: _lastNameError,
+                  onChanged: (_) {
+                    if (_lastNameError != null) {
+                      setState(() => _lastNameError = null);
+                    }
                   },
                 ),
                 SizedBox(height: design.spacing.lg),
@@ -174,6 +228,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 child: AppButton(
                    label: l10n.editProfileSave,
                    onPressed: _validateAndSave,
+                   loading: _isSaving,
                    padding: EdgeInsets.symmetric(horizontal: design.spacing.lg),
                    backgroundColor: design.colors.accent2,
                    foregroundColor: design.colors.onPrimary,
@@ -187,9 +242,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget _buildAvatarSection(DesignConfig design, dynamic l10n) {
-    final isLoggedIn = ref.watch(authProvider).asData?.value ?? false;
-    if (!isLoggedIn) return const SizedBox.shrink();
-    final user = mockCurrentUser;
+    final user = ref.watch(userProvider).value;
+    if (user == null) return const SizedBox.shrink();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,57 +252,66 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         SizedBox(height: design.spacing.sm),
         Row(
           children: [
-            Stack(
-              children: [
-                Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: design.colors.accent2,
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: user.avatar != null && user.avatar!.isNotEmpty
-                      ? Image.network(
-                          user.avatar!,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => _buildInitialsAvatar(user.name, design),
-                        )
-                      : _buildInitialsAvatar(user.name, design),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    width: 28,
-                    height: 28,
+            GestureDetector(
+              onTap: _pickAndUploadImage,
+              child: Stack(
+                children: [
+                  Container(
+                    width: 80,
+                    height: 80,
                     decoration: BoxDecoration(
-                      color: design.colors.accent2,
                       shape: BoxShape.circle,
-                      border: Border.all(color: design.colors.card, width: 2),
-                      boxShadow: [
-                        BoxShadow(
-                          color: design.colors.shadow,
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
+                      color: design.colors.accent2,
                     ),
-                    child: Center(
-                      child: Icon(
-                        LucideIcons.camera,
-                        size: 14,
-                        color: design.colors.onPrimary,
+                    clipBehavior: Clip.antiAlias,
+                    child: _selectedAvatarBytes != null
+                        ? Image.memory(
+                            _selectedAvatarBytes!,
+                            fit: BoxFit.cover,
+                          )
+                        : (user.avatar != null && user.avatar!.isNotEmpty
+                            ? Image.network(
+                                user.avatar!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    _buildInitialsAvatar(user.name ?? '', design),
+                              )
+                            : _buildInitialsAvatar(user.name ?? '', design)),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        color: design.colors.accent2,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: design.colors.card, width: 2),
+                        boxShadow: [
+                          BoxShadow(
+                            color: design.colors.shadow,
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Icon(
+                          LucideIcons.camera,
+                          size: 14,
+                          color: design.colors.onPrimary,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             SizedBox(width: design.spacing.lg),
             AppButton(
               label: l10n.editProfileChangePhoto,
-              onPressed: () {},
+              onPressed: _pickAndUploadImage,
               backgroundColor: design.colors.surfaceVariant,
               foregroundColor: design.colors.textPrimary,
               height: 36,

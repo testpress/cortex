@@ -1,15 +1,15 @@
 import 'package:drift/drift.dart';
 
 import '../db/app_database.dart';
-import 'package:core/data/data.dart';
+import '../models/user_progress_dto.dart';
 import '../sources/data_source.dart';
 
 /// Repository for user progress tracking.
-class UserRepository {
+class UserProgressRepository {
   final AppDatabase _db;
   final DataSource _source;
 
-  UserRepository(this._db, this._source);
+  UserProgressRepository(this._db, this._source);
 
   Stream<List<UserProgressDto>> watchProgress(String userId) {
     return _db.watchProgressForUser(userId).map(
