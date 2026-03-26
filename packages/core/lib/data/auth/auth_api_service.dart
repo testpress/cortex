@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 
 import '../../network/api_endpoints.dart';
-import '../../network/network_provider.dart';
 import 'types/auth_exception.dart';
 
 class AuthApiResult {
@@ -13,7 +12,7 @@ class AuthApiResult {
 class AuthApiService {
   final Dio _dio;
 
-  AuthApiService({Dio? dio}) : _dio = dio ?? NetworkProvider.create();
+  AuthApiService({required Dio dio}) : _dio = dio;
 
   Future<AuthApiResult> loginWithPassword({
     required String username,

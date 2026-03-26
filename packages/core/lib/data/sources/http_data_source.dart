@@ -2,21 +2,15 @@ import 'package:dio/dio.dart';
 import 'package:core/data/data.dart';
 import '../../network/api_endpoints.dart';
 import '../../network/network_provider.dart';
-import '../../network/auth_interceptor.dart';
 
 /// HTTP data source stub — to be implemented when a real backend is available.
 /// All methods throw [UnimplementedError] to surface accidental usage in tests.
 ///
 /// Activate via: flutter run --dart-define=USE_MOCK=false
 class HttpDataSource implements DataSource {
-  final Future<String?> Function() getToken;
+  final Dio _dio;
 
-  HttpDataSource({required this.getToken});
-
-  late final Dio _dio = NetworkProvider.create()
-    ..interceptors.add(
-      AuthInterceptor(getToken),
-    );
+  HttpDataSource({required Dio dio}) : _dio = dio;
 
   @override
   Future<List<CourseDto>> getCourses() => throw UnimplementedError(
@@ -105,4 +99,3 @@ class HttpDataSource implements DataSource {
     );
   }
 }
-
