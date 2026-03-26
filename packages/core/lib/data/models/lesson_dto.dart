@@ -16,8 +16,8 @@ class LessonDto {
   final int orderIndex;
   final String? chapterTitle;
 
-  // Rich content for LessonDetailScreen
-  final List<LessonContentItemDto> content;
+  // Flattened media URL for LessonDetailScreen (PDF or Video)
+  final String? contentUrl;
   final String? subtitle;
   final String? subjectName;
   final int? subjectIndex;
@@ -35,7 +35,7 @@ class LessonDto {
     required this.isLocked,
     required this.orderIndex,
     this.chapterTitle,
-    this.content = const [],
+    this.contentUrl,
     this.subtitle,
     this.subjectName,
     this.subjectIndex,
@@ -54,7 +54,7 @@ class LessonDto {
     bool? isLocked,
     int? orderIndex,
     String? chapterTitle,
-    List<LessonContentItemDto>? content,
+    String? contentUrl,
     String? subtitle,
     String? subjectName,
     int? subjectIndex,
@@ -72,7 +72,7 @@ class LessonDto {
       isLocked: isLocked ?? this.isLocked,
       orderIndex: orderIndex ?? this.orderIndex,
       chapterTitle: chapterTitle ?? this.chapterTitle,
-      content: content ?? this.content,
+      contentUrl: contentUrl ?? this.contentUrl,
       subtitle: subtitle ?? this.subtitle,
       subjectName: subjectName ?? this.subjectName,
       subjectIndex: subjectIndex ?? this.subjectIndex,
@@ -94,11 +94,7 @@ class LessonDto {
       isLocked: json['isLocked'] as bool,
       orderIndex: json['orderIndex'] as int,
       chapterTitle: json['chapterTitle'] as String?,
-      content: (json['content'] as List<dynamic>?)
-              ?.map((e) =>
-                  LessonContentItemDto.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
+      contentUrl: json['contentUrl'] as String?,
       subtitle: json['subtitle'] as String?,
       subjectName: json['subjectName'] as String?,
       subjectIndex: json['subjectIndex'] as int?,
@@ -119,50 +115,13 @@ class LessonDto {
       'isLocked': isLocked,
       'orderIndex': orderIndex,
       'chapterTitle': chapterTitle,
-      'content': content.map((e) => e.toJson()).toList(),
+      'contentUrl': contentUrl,
       'subtitle': subtitle,
       'subjectName': subjectName,
       'subjectIndex': subjectIndex,
       'lessonNumber': lessonNumber,
       'totalLessons': totalLessons,
       'isBookmarked': isBookmarked,
-    };
-  }
-}
-
-/// DTO for a single atom of content within a lesson.
-class LessonContentItemDto {
-  final String type;
-  final dynamic content; // String or List<String>
-  final int? level;
-  final String? alt;
-  final String? calloutType;
-
-  const LessonContentItemDto({
-    required this.type,
-    required this.content,
-    this.level,
-    this.alt,
-    this.calloutType,
-  });
-
-  factory LessonContentItemDto.fromJson(Map<String, dynamic> json) {
-    return LessonContentItemDto(
-      type: json['type'] as String,
-      content: json['content'],
-      level: json['level'] as int?,
-      alt: json['alt'] as String?,
-      calloutType: json['calloutType'] as String?,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'type': type,
-      'content': content,
-      if (level != null) 'level': level,
-      if (alt != null) 'alt': alt,
-      if (calloutType != null) 'calloutType': calloutType,
     };
   }
 }

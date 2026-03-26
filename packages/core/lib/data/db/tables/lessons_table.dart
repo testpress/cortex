@@ -18,7 +18,7 @@ class LessonsTable extends Table {
   TextColumn get chapterTitle => text().nullable()();
 
   // New fields for LessonDetailScreen (Phase-2)
-  TextColumn get contentJson => text().nullable()();
+  TextColumn get contentUrl => text().nullable()();
   TextColumn get subtitle => text().nullable()();
   TextColumn get subjectName => text().nullable()();
   IntColumn get subjectIndex => integer().nullable()();

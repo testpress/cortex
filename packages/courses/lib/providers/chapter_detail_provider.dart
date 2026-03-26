@@ -40,7 +40,7 @@ Future<Chapter?> chapterDetail(
             subjectIndex: l.subjectIndex,
             lessonNumber: l.lessonNumber,
             totalLessons: l.totalLessons,
-            content: l.content.map(LessonContentItem.fromDto).toList(),
+            contentUrl: l.contentUrl,
           ),
         )
         .toList(),

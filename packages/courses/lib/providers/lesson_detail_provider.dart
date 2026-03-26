@@ -29,7 +29,7 @@ Future<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async {
     subjectIndex: lessonDto.subjectIndex,
     lessonNumber: lessonDto.lessonNumber,
     totalLessons: lessonDto.totalLessons,
-    content: lessonDto.content.map(LessonContentItem.fromDto).toList(),
+    contentUrl: lessonDto.contentUrl,
   );
 }
 

@@ -82,7 +82,7 @@ final discoveryCoursesProvider =
 // ignore: unused_element
 typedef DiscoveryCoursesRef =
     AutoDisposeFutureProviderRef<List<DiscoveryCourseDto>>;
-String _$popularTestsHash() => r'deb43c7b9ba87e3b3a2c5adf778df95b231f236b';
+String _$popularTestsHash() => r'efb47e36fe39f8734012c2cce0cb1e1ad74ef1e6';
 
 /// See also [popularTests].
 @ProviderFor(popularTests)
