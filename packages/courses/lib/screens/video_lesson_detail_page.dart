@@ -48,12 +48,8 @@ class _VideoLessonDetailScreenState
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    // Extract video URL from lesson content
-    final videoContent = widget.lesson.content
-        .whereType<VideoContent>()
-        .firstOrNull;
-    final videoUrl =
-        videoContent?.url ??
+    // Extract video URL from lesson contentUrl
+    final videoUrl = widget.lesson.contentUrl ??
         'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4';
 
     final nextCallback = widget.onNext ?? () {};

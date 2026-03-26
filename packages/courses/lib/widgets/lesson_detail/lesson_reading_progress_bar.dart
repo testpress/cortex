@@ -10,14 +10,17 @@ class LessonReadingProgressBar extends StatelessWidget {
     super.key,
     required this.progress,
     this.foregroundColor,
+    this.animationDuration = const Duration(milliseconds: 300),
   });
 
   /// The reading progress as a fraction between 0.0 and 1.0.
-  /// (e.g., 0.35 for 35%)
   final double progress;
 
-  /// Optional foreground color override (e.g., for subject-specific branding).
+  /// Optional foreground color override.
   final Color? foregroundColor;
+
+  /// Duration for the bar's expansion animation.
+  final Duration animationDuration;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +36,7 @@ class LessonReadingProgressBar extends StatelessWidget {
           LayoutBuilder(
             builder: (context, constraints) {
               return AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
+                duration: animationDuration,
                 curve: Curves.easeOut,
                 width: constraints.maxWidth * progress.clamp(0.0, 1.0),
                 height: double.infinity,

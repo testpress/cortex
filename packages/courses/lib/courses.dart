@@ -35,4 +35,3 @@ export 'providers/lesson_providers.dart';
 export 'providers/enrollment_provider.dart';
 export 'providers/recent_activity_provider.dart';
 export 'providers/dashboard_providers.dart';
-export 'models/lesson_content.dart';

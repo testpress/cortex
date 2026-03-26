@@ -1063,12 +1063,12 @@ class $LessonsTableTable extends LessonsTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _contentJsonMeta = const VerificationMeta(
-    'contentJson',
+  static const VerificationMeta _contentUrlMeta = const VerificationMeta(
+    'contentUrl',
   );
   @override
-  late final GeneratedColumn<String> contentJson = GeneratedColumn<String>(
-    'content_json',
+  late final GeneratedColumn<String> contentUrl = GeneratedColumn<String>(
+    'content_url',
     aliasedName,
     true,
     type: DriftSqlType.string,
@@ -1155,7 +1155,7 @@ class $LessonsTableTable extends LessonsTable
     isLocked,
     orderIndex,
     chapterTitle,
-    contentJson,
+    contentUrl,
     subtitle,
     subjectName,
     subjectIndex,
@@ -1244,13 +1244,10 @@ class $LessonsTableTable extends LessonsTable
         ),
       );
     }
-    if (data.containsKey('content_json')) {
+    if (data.containsKey('content_url')) {
       context.handle(
-        _contentJsonMeta,
-        contentJson.isAcceptableOrUnknown(
-          data['content_json']!,
-          _contentJsonMeta,
-        ),
+        _contentUrlMeta,
+        contentUrl.isAcceptableOrUnknown(data['content_url']!, _contentUrlMeta),
       );
     }
     if (data.containsKey('subtitle')) {
@@ -1349,9 +1346,9 @@ class $LessonsTableTable extends LessonsTable
         DriftSqlType.string,
         data['${effectivePrefix}chapter_title'],
       ),
-      contentJson: attachedDatabase.typeMapping.read(
+      contentUrl: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}content_json'],
+        data['${effectivePrefix}content_url'],
       ),
       subtitle: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -1401,7 +1398,7 @@ class LessonsTableData extends DataClass
   final bool isLocked;
   final int orderIndex;
   final String? chapterTitle;
-  final String? contentJson;
+  final String? contentUrl;
   final String? subtitle;
   final String? subjectName;
   final int? subjectIndex;
@@ -1418,7 +1415,7 @@ class LessonsTableData extends DataClass
     required this.isLocked,
     required this.orderIndex,
     this.chapterTitle,
-    this.contentJson,
+    this.contentUrl,
     this.subtitle,
     this.subjectName,
     this.subjectIndex,
@@ -1440,8 +1437,8 @@ class LessonsTableData extends DataClass
     if (!nullToAbsent || chapterTitle != null) {
       map['chapter_title'] = Variable<String>(chapterTitle);
     }
-    if (!nullToAbsent || contentJson != null) {
-      map['content_json'] = Variable<String>(contentJson);
+    if (!nullToAbsent || contentUrl != null) {
+      map['content_url'] = Variable<String>(contentUrl);
     }
     if (!nullToAbsent || subtitle != null) {
       map['subtitle'] = Variable<String>(subtitle);
@@ -1475,9 +1472,9 @@ class LessonsTableData extends DataClass
       chapterTitle: chapterTitle == null && nullToAbsent
           ? const Value.absent()
           : Value(chapterTitle),
-      contentJson: contentJson == null && nullToAbsent
+      contentUrl: contentUrl == null && nullToAbsent
           ? const Value.absent()
-          : Value(contentJson),
+          : Value(contentUrl),
       subtitle: subtitle == null && nullToAbsent
           ? const Value.absent()
           : Value(subtitle),
@@ -1512,7 +1509,7 @@ class LessonsTableData extends DataClass
       isLocked: serializer.fromJson<bool>(json['isLocked']),
       orderIndex: serializer.fromJson<int>(json['orderIndex']),
       chapterTitle: serializer.fromJson<String?>(json['chapterTitle']),
-      contentJson: serializer.fromJson<String?>(json['contentJson']),
+      contentUrl: serializer.fromJson<String?>(json['contentUrl']),
       subtitle: serializer.fromJson<String?>(json['subtitle']),
       subjectName: serializer.fromJson<String?>(json['subjectName']),
       subjectIndex: serializer.fromJson<int?>(json['subjectIndex']),
@@ -1534,7 +1531,7 @@ class LessonsTableData extends DataClass
       'isLocked': serializer.toJson<bool>(isLocked),
       'orderIndex': serializer.toJson<int>(orderIndex),
       'chapterTitle': serializer.toJson<String?>(chapterTitle),
-      'contentJson': serializer.toJson<String?>(contentJson),
+      'contentUrl': serializer.toJson<String?>(contentUrl),
       'subtitle': serializer.toJson<String?>(subtitle),
       'subjectName': serializer.toJson<String?>(subjectName),
       'subjectIndex': serializer.toJson<int?>(subjectIndex),
@@ -1554,7 +1551,7 @@ class LessonsTableData extends DataClass
     bool? isLocked,
     int? orderIndex,
     Value<String?> chapterTitle = const Value.absent(),
-    Value<String?> contentJson = const Value.absent(),
+    Value<String?> contentUrl = const Value.absent(),
     Value<String?> subtitle = const Value.absent(),
     Value<String?> subjectName = const Value.absent(),
     Value<int?> subjectIndex = const Value.absent(),
@@ -1571,7 +1568,7 @@ class LessonsTableData extends DataClass
     isLocked: isLocked ?? this.isLocked,
     orderIndex: orderIndex ?? this.orderIndex,
     chapterTitle: chapterTitle.present ? chapterTitle.value : this.chapterTitle,
-    contentJson: contentJson.present ? contentJson.value : this.contentJson,
+    contentUrl: contentUrl.present ? contentUrl.value : this.contentUrl,
     subtitle: subtitle.present ? subtitle.value : this.subtitle,
     subjectName: subjectName.present ? subjectName.value : this.subjectName,
     subjectIndex: subjectIndex.present ? subjectIndex.value : this.subjectIndex,
@@ -1596,9 +1593,9 @@ class LessonsTableData extends DataClass
       chapterTitle: data.chapterTitle.present
           ? data.chapterTitle.value
           : this.chapterTitle,
-      contentJson: data.contentJson.present
-          ? data.contentJson.value
-          : this.contentJson,
+      contentUrl: data.contentUrl.present
+          ? data.contentUrl.value
+          : this.contentUrl,
       subtitle: data.subtitle.present ? data.subtitle.value : this.subtitle,
       subjectName: data.subjectName.present
           ? data.subjectName.value
@@ -1630,7 +1627,7 @@ class LessonsTableData extends DataClass
           ..write('isLocked: $isLocked, ')
           ..write('orderIndex: $orderIndex, ')
           ..write('chapterTitle: $chapterTitle, ')
-          ..write('contentJson: $contentJson, ')
+          ..write('contentUrl: $contentUrl, ')
           ..write('subtitle: $subtitle, ')
           ..write('subjectName: $subjectName, ')
           ..write('subjectIndex: $subjectIndex, ')
@@ -1652,7 +1649,7 @@ class LessonsTableData extends DataClass
     isLocked,
     orderIndex,
     chapterTitle,
-    contentJson,
+    contentUrl,
     subtitle,
     subjectName,
     subjectIndex,
@@ -1673,7 +1670,7 @@ class LessonsTableData extends DataClass
           other.isLocked == this.isLocked &&
           other.orderIndex == this.orderIndex &&
           other.chapterTitle == this.chapterTitle &&
-          other.contentJson == this.contentJson &&
+          other.contentUrl == this.contentUrl &&
           other.subtitle == this.subtitle &&
           other.subjectName == this.subjectName &&
           other.subjectIndex == this.subjectIndex &&
@@ -1692,7 +1689,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   final Value<bool> isLocked;
   final Value<int> orderIndex;
   final Value<String?> chapterTitle;
-  final Value<String?> contentJson;
+  final Value<String?> contentUrl;
   final Value<String?> subtitle;
   final Value<String?> subjectName;
   final Value<int?> subjectIndex;
@@ -1710,7 +1707,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.isLocked = const Value.absent(),
     this.orderIndex = const Value.absent(),
     this.chapterTitle = const Value.absent(),
-    this.contentJson = const Value.absent(),
+    this.contentUrl = const Value.absent(),
     this.subtitle = const Value.absent(),
     this.subjectName = const Value.absent(),
     this.subjectIndex = const Value.absent(),
@@ -1729,7 +1726,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.isLocked = const Value.absent(),
     required int orderIndex,
     this.chapterTitle = const Value.absent(),
-    this.contentJson = const Value.absent(),
+    this.contentUrl = const Value.absent(),
     this.subtitle = const Value.absent(),
     this.subjectName = const Value.absent(),
     this.subjectIndex = const Value.absent(),
@@ -1753,7 +1750,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Expression<bool>? isLocked,
     Expression<int>? orderIndex,
     Expression<String>? chapterTitle,
-    Expression<String>? contentJson,
+    Expression<String>? contentUrl,
     Expression<String>? subtitle,
     Expression<String>? subjectName,
     Expression<int>? subjectIndex,
@@ -1772,7 +1769,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       if (isLocked != null) 'is_locked': isLocked,
       if (orderIndex != null) 'order_index': orderIndex,
       if (chapterTitle != null) 'chapter_title': chapterTitle,
-      if (contentJson != null) 'content_json': contentJson,
+      if (contentUrl != null) 'content_url': contentUrl,
       if (subtitle != null) 'subtitle': subtitle,
       if (subjectName != null) 'subject_name': subjectName,
       if (subjectIndex != null) 'subject_index': subjectIndex,
@@ -1793,7 +1790,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Value<bool>? isLocked,
     Value<int>? orderIndex,
     Value<String?>? chapterTitle,
-    Value<String?>? contentJson,
+    Value<String?>? contentUrl,
     Value<String?>? subtitle,
     Value<String?>? subjectName,
     Value<int?>? subjectIndex,
@@ -1812,7 +1809,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       isLocked: isLocked ?? this.isLocked,
       orderIndex: orderIndex ?? this.orderIndex,
       chapterTitle: chapterTitle ?? this.chapterTitle,
-      contentJson: contentJson ?? this.contentJson,
+      contentUrl: contentUrl ?? this.contentUrl,
       subtitle: subtitle ?? this.subtitle,
       subjectName: subjectName ?? this.subjectName,
       subjectIndex: subjectIndex ?? this.subjectIndex,
@@ -1853,8 +1850,8 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     if (chapterTitle.present) {
       map['chapter_title'] = Variable<String>(chapterTitle.value);
     }
-    if (contentJson.present) {
-      map['content_json'] = Variable<String>(contentJson.value);
+    if (contentUrl.present) {
+      map['content_url'] = Variable<String>(contentUrl.value);
     }
     if (subtitle.present) {
       map['subtitle'] = Variable<String>(subtitle.value);
@@ -1892,7 +1889,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
           ..write('isLocked: $isLocked, ')
           ..write('orderIndex: $orderIndex, ')
           ..write('chapterTitle: $chapterTitle, ')
-          ..write('contentJson: $contentJson, ')
+          ..write('contentUrl: $contentUrl, ')
           ..write('subtitle: $subtitle, ')
           ..write('subjectName: $subjectName, ')
           ..write('subjectIndex: $subjectIndex, ')
@@ -4730,7 +4727,7 @@ typedef $$LessonsTableTableCreateCompanionBuilder =
       Value<bool> isLocked,
       required int orderIndex,
       Value<String?> chapterTitle,
-      Value<String?> contentJson,
+      Value<String?> contentUrl,
       Value<String?> subtitle,
       Value<String?> subjectName,
       Value<int?> subjectIndex,
@@ -4750,7 +4747,7 @@ typedef $$LessonsTableTableUpdateCompanionBuilder =
       Value<bool> isLocked,
       Value<int> orderIndex,
       Value<String?> chapterTitle,
-      Value<String?> contentJson,
+      Value<String?> contentUrl,
       Value<String?> subtitle,
       Value<String?> subjectName,
       Value<int?> subjectIndex,
@@ -4814,8 +4811,8 @@ class $$LessonsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get contentJson => $composableBuilder(
-    column: $table.contentJson,
+  ColumnFilters<String> get contentUrl => $composableBuilder(
+    column: $table.contentUrl,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4904,8 +4901,8 @@ class $$LessonsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get contentJson => $composableBuilder(
-    column: $table.contentJson,
+  ColumnOrderings<String> get contentUrl => $composableBuilder(
+    column: $table.contentUrl,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -4982,8 +4979,8 @@ class $$LessonsTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get contentJson => $composableBuilder(
-    column: $table.contentJson,
+  GeneratedColumn<String> get contentUrl => $composableBuilder(
+    column: $table.contentUrl,
     builder: (column) => column,
   );
 
@@ -5056,7 +5053,7 @@ class $$LessonsTableTableTableManager
                 Value<bool> isLocked = const Value.absent(),
                 Value<int> orderIndex = const Value.absent(),
                 Value<String?> chapterTitle = const Value.absent(),
-                Value<String?> contentJson = const Value.absent(),
+                Value<String?> contentUrl = const Value.absent(),
                 Value<String?> subtitle = const Value.absent(),
                 Value<String?> subjectName = const Value.absent(),
                 Value<int?> subjectIndex = const Value.absent(),
@@ -5074,7 +5071,7 @@ class $$LessonsTableTableTableManager
                 isLocked: isLocked,
                 orderIndex: orderIndex,
                 chapterTitle: chapterTitle,
-                contentJson: contentJson,
+                contentUrl: contentUrl,
                 subtitle: subtitle,
                 subjectName: subjectName,
                 subjectIndex: subjectIndex,
@@ -5094,7 +5091,7 @@ class $$LessonsTableTableTableManager
                 Value<bool> isLocked = const Value.absent(),
                 required int orderIndex,
                 Value<String?> chapterTitle = const Value.absent(),
-                Value<String?> contentJson = const Value.absent(),
+                Value<String?> contentUrl = const Value.absent(),
                 Value<String?> subtitle = const Value.absent(),
                 Value<String?> subjectName = const Value.absent(),
                 Value<int?> subjectIndex = const Value.absent(),
@@ -5112,7 +5109,7 @@ class $$LessonsTableTableTableManager
                 isLocked: isLocked,
                 orderIndex: orderIndex,
                 chapterTitle: chapterTitle,
-                contentJson: contentJson,
+                contentUrl: contentUrl,
                 subtitle: subtitle,
                 subjectName: subjectName,
                 subjectIndex: subjectIndex,

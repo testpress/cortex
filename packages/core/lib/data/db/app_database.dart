@@ -58,7 +58,7 @@ class AppDatabase extends _$AppDatabase {
 
           if (from < 3) {
             // Phase-2: Add new columns to lessonsTable without deleting existing data
-            await addColumnSafely(lessonsTable.contentJson);
+            await addColumnSafely(lessonsTable.contentUrl);
             await addColumnSafely(lessonsTable.subtitle);
             await addColumnSafely(lessonsTable.subjectName);
             await addColumnSafely(lessonsTable.subjectIndex);

@@ -1,8 +1,6 @@
 import 'package:core/data/data.dart' show LessonType, LessonProgressStatus;
-import 'lesson_content.dart';
 
 export 'package:core/data/data.dart' show LessonType, LessonProgressStatus;
-export 'lesson_content.dart';
 
 /// Domain model for a specific content item within a chapter.
 class Lesson {
@@ -19,7 +17,7 @@ class Lesson {
     this.lessonNumber,
     this.totalLessons,
     this.isBookmarked = false,
-    this.content = const [],
+    this.contentUrl,
   });
 
   final String id;
@@ -36,7 +34,7 @@ class Lesson {
   final int? subjectIndex;
   final int? lessonNumber;
   final int? totalLessons;
-  final List<LessonContentItem> content;
+  final String? contentUrl;
 }
 
 /// Domain model for a chapter within a course.

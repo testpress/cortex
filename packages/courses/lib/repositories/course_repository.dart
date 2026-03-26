@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:drift/drift.dart';
 
 import 'package:core/data/data.dart';
@@ -156,7 +155,7 @@ class CourseRepository {
         isLocked: row.isLocked,
         orderIndex: row.orderIndex,
         chapterTitle: row.chapterTitle,
-        content: _parseContentJson(row.contentJson),
+        contentUrl: row.contentUrl,
         subtitle: row.subtitle,
         subjectName: row.subjectName,
         subjectIndex: row.subjectIndex,
@@ -176,11 +175,7 @@ class CourseRepository {
         isLocked: Value(dto.isLocked),
         orderIndex: dto.orderIndex,
         chapterTitle: Value(dto.chapterTitle),
-        contentJson: Value(
-          dto.content.isNotEmpty
-              ? jsonEncode(dto.content.map((e) => e.toJson()).toList())
-              : null,
-        ),
+        contentUrl: Value(dto.contentUrl),
         subtitle: Value(dto.subtitle),
         subjectName: Value(dto.subjectName),
         subjectIndex: Value(dto.subjectIndex),
@@ -199,17 +194,4 @@ class CourseRepository {
         (e) => e.name == s,
         orElse: () => LessonProgressStatus.notStarted,
       );
-
-  List<LessonContentItemDto> _parseContentJson(String? json) {
-    if (json == null) return const [];
-    try {
-      final decoded = jsonDecode(json) as List<dynamic>;
-      return decoded
-          .map((e) => LessonContentItemDto.fromJson(e as Map<String, dynamic>))
-          .toList();
-    } catch (e) {
-      // Log or handle error: malformed JSON in local DB
-      return const [];
-    }
-  }
 }

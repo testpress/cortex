@@ -6,7 +6,7 @@ import '../providers/course_list_provider.dart';
 import '../widgets/lesson_detail/lesson_detail_header.dart';
 import '../widgets/lesson_detail/lesson_reading_progress_bar.dart';
 import '../widgets/lesson_detail/lesson_navigation_footer.dart';
-import '../widgets/lesson_detail/content_widgets.dart';
+import '../widgets/lesson_detail/pdf_viewer.dart';
 import '../providers/lesson_detail_provider.dart';
 
 /// Fullscreen reader for text-based lessons.
@@ -37,6 +37,7 @@ class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
   final ScrollController _scrollController = ScrollController();
   double _readingProgress = 0.0;
   bool _showDownloadFeedback = false;
+  bool _alreadyMarkedComplete = false;
 
   @override
   void initState() {
@@ -77,7 +78,9 @@ class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
 
       // Mark as completed if scroll exceeds 99%
       if (newProgress >= 0.99 &&
+          !_alreadyMarkedComplete &&
           widget.lesson.progressStatus != LessonProgressStatus.completed) {
+        _alreadyMarkedComplete = true;
         _markAsCompleted();
       }
     }
@@ -131,46 +134,13 @@ class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
               LessonReadingProgressBar(
                 progress: _readingProgress,
                 foregroundColor: subjectColors?.accent,
+                animationDuration: widget.lesson.type == LessonType.pdf
+                    ? const Duration(milliseconds: 50)
+                    : const Duration(milliseconds: 300),
               ),
               // Main Content Area
               Expanded(
-                child: CustomScrollView(
-                  controller: _scrollController,
-                  physics: const BouncingScrollPhysics(),
-                  slivers: [
-                    SliverPadding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: design.spacing.screenPadding,
-                        vertical: design.spacing.xl,
-                      ),
-                      sliver: SliverList(
-                        delegate: SliverChildListDelegate([
-                          // Lesson Title & Badges
-                          _LessonMetaSection(lesson: widget.lesson),
-                          SizedBox(height: design.spacing.lg),
-
-                          // Rich Content Blocks
-                          ...widget.lesson.content.map(
-                            (item) =>
-                                _renderContentItem(item, subjectColors?.accent),
-                          ),
-
-                          SizedBox(height: design.spacing.md),
-
-                          // Sequential Navigation
-                          LessonNavigationFooter(
-                            onPrevious: widget.onPrevious,
-                            onNext: widget.onNext,
-                            hasPrevious: widget.onPrevious != null,
-                            hasNext: widget.onNext != null,
-                          ),
-
-                          SizedBox(height: design.spacing.md),
-                        ]),
-                      ),
-                    ),
-                  ],
-                ),
+                child: _buildMediaContent(context, design, subjectColors),
               ),
             ],
           ),
@@ -186,74 +156,63 @@ class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
     );
   }
 
-  /// Maps content domain models to their respective rendering widgets.
-  Widget _renderContentItem(LessonContentItem item, Color? bulletColor) {
-    return switch (item) {
-      HeadingContent() => LessonHeading(text: item.text, level: item.level),
-      ParagraphContent() => LessonParagraph(text: item.text),
-      ImageContent() => LessonImage(
-        imageUrl: item.imageUrl,
-        altText: item.altText,
-      ),
-      ListContent() => LessonList(items: item.items, bulletColor: bulletColor),
-      CalloutContent() => LessonCallout(text: item.text, type: item.type),
-      VideoContent() => const SizedBox.shrink(),
-    };
-  }
-}
+  Widget _buildMediaContent(
+    BuildContext context,
+    DesignConfig design,
+    dynamic subjectColors,
+  ) {
+    // PDF Lesson: Render the new premium PDF viewer
+    if (widget.lesson.type == LessonType.pdf &&
+        widget.lesson.contentUrl != null) {
+      return Column(
+        children: [
+          Expanded(
+            child: AppPdfViewer(
+              url: widget.lesson.contentUrl!,
+              onProgressChanged: (progress) {
+                setState(() => _readingProgress = progress);
 
-/// Renders the informational header below the sticky navigation.
-class _LessonMetaSection extends StatelessWidget {
-  const _LessonMetaSection({required this.lesson});
-  final Lesson lesson;
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-    final l10n = L10n.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            if (lesson.subjectName != null && lesson.subjectIndex != null) ...[
-              AppSubjectChip(
-                label: lesson.subjectName!,
-                subjectPaletteIndex: lesson.subjectIndex!,
-                isActive: true,
-                onTap: () {},
-              ),
-              SizedBox(width: design.spacing.sm),
-            ],
-            if (lesson.lessonNumber != null && lesson.totalLessons != null)
-              AppText.caption(
-                l10n.lessonXofY(lesson.lessonNumber!, lesson.totalLessons!),
-                color: design.colors.textSecondary,
-              ),
-            if (lesson.duration != null) ...[
-              SizedBox(width: design.spacing.xs),
-              AppText.caption('•', color: design.colors.textTertiary),
-              SizedBox(width: design.spacing.xs),
-              AppText.caption(
-                lesson.duration!,
-                color: design.colors.textSecondary,
-              ),
-            ],
-          ],
-        ),
-        SizedBox(height: design.spacing.md),
-        AppText.headline(lesson.title, color: design.colors.textPrimary),
-        if (lesson.subtitle != null) ...[
-          SizedBox(height: design.spacing.sm),
-          AppText.body(lesson.subtitle!, color: design.colors.textSecondary),
+                // Mark as completed if progress exceeds 99%
+                if (progress >= 0.99 &&
+                    !_alreadyMarkedComplete &&
+                    widget.lesson.progressStatus !=
+                        LessonProgressStatus.completed) {
+                  _alreadyMarkedComplete = true;
+                  _markAsCompleted();
+                }
+              },
+            ),
+          ),
+          _buildNavigationFooter(design),
         ],
-        SizedBox(height: design.spacing.lg),
-        Container(color: design.colors.divider, height: 1),
-      ],
+      );
+    }
+
+    // Video Lesson: For now, fallback or empty (will be consolidated later or handled by VideoDetailScreen)
+    if (widget.lesson.type == LessonType.video) {
+      return const Center(child: AppText.body('Video content coming soon...'));
+    }
+
+    // Fallback: Empty state or assessment placeholder
+    return Center(
+      child: AppText.body('No content available for this lesson type'),
+    );
+  }
+
+  Widget _buildNavigationFooter(DesignConfig design) {
+    return Padding(
+      padding: EdgeInsets.all(design.spacing.md),
+      child: LessonNavigationFooter(
+        onPrevious: widget.onPrevious,
+        onNext: widget.onNext,
+        hasPrevious: widget.onPrevious != null,
+        hasNext: widget.onNext != null,
+      ),
     );
   }
 }
+
+
 
 class _CustomToast extends StatelessWidget {
   const _CustomToast({required this.message});
