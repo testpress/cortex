@@ -10,9 +10,3 @@ The system SHALL navigate to the appropriate full-screen viewer or reader when a
 #### Scenario: Tapping a PDF lesson
 - **WHEN** the user taps a "PDF" lesson item
 - **THEN** the system pushes the PDF Lesson Detail screen (PDF Viewer) with the provided `contentUrl`
-
-## REMOVED Requirements
-
-### Requirement: Multi-part text rendering for lessons
-**Reason**: Replaced by dedicated viewers for common media types (PDF/Video).
-**Migration**: Use the individual playback widgets (`LessonPdfViewer`, `LessonVideoPlayer`) instead of the multi-atom rendering loop in `LessonDetailScreen`.

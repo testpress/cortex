@@ -2,9 +2,7 @@
 
 ## Purpose
 The Chapter Detail capability provides a focused view of a single chapter's content, allowing users to browse lessons, filter by progress status, and navigate to specific learning activities.
-
 ## Requirements
-
 ### Requirement: Navigation to Chapter Detail
 The system SHALL allow users to navigate from the course or chapter list to a full-screen detailed view of a chapter.
 
@@ -34,11 +32,15 @@ The system SHALL display specific icons for each content type: PlayCircle for Vi
 - **THEN** it shows the `PlayCircle` icon in the designated subject/type color
 
 ### Requirement: Navigation To Content
-The system SHALL navigate to the appropriate full-screen viewer or reader when a content item is tapped.
+The system SHALL navigate to the appropriate full-screen viewer or reader when a content item is tapped. For PDF lessons, the system SHALL navigate to a dedicated PDF viewer that renders the file from a remote URL.
 
 #### Scenario: Tapping a video lesson
 - **WHEN** the user taps a "Video" lesson item
 - **THEN** the system pushes the Video Lesson Detail screen onto the navigation stack
+
+#### Scenario: Tapping a PDF lesson
+- **WHEN** the user taps a "PDF" lesson item
+- **THEN** the system pushes the PDF Lesson Detail screen (PDF Viewer) with the provided `contentUrl`
 
 ### Requirement: Lesson Navigation Footer
 The system SHALL provide a navigation footer in the lesson detail view to allow users to move between sequential lessons.
