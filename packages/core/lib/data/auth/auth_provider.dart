@@ -3,12 +3,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'auth_api_service.dart';
 import 'auth_local_data_source.dart';
 import 'auth_repository.dart';
+import '../../network/network_provider.dart';
 import '../db/database_provider.dart';
 
 part 'auth_provider.g.dart';
 
-final authApiServiceProvider = Provider<AuthApiService>((ref) {
-  return AuthApiService();
+final authApiServiceProvider = Provider((ref) {
+  return AuthApiService(dio: ref.read(dioProvider));
 });
 
 final authLocalDataSourceProvider = Provider<AuthLocalDataSource>((ref) {

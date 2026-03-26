@@ -2,10 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../config/app_config.dart';
-import '../auth/auth_provider.dart';
 import 'data_source.dart';
 import 'mock_data_source.dart';
 import 'http_data_source.dart';
+import '../../network/network_provider.dart';
 
 part 'data_source_provider.g.dart';
 
@@ -17,5 +17,5 @@ DataSource dataSource(Ref ref) {
     return const MockDataSource();
   }
 
-  return HttpDataSource(getToken: () => ref.watch(authRepositoryProvider).getToken());
+  return HttpDataSource(dio: ref.watch(dioProvider));
 }
