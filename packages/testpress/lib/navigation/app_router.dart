@@ -44,29 +44,31 @@ class HomePlaceholderScreen extends StatelessWidget {
 /// The root navigator key for the whole app
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
-/// Defines the global router for the application using GoRouter.
-///
-/// We use `StatefulShellRoute` to maintain the state (e.g. scroll position)
-/// of each bottom navigation tab independently.
-final GoRouter appRouter = GoRouter(
-  navigatorKey: _rootNavigatorKey,
-  initialLocation: '/home',
-  redirect: (_, state) {
-    final tokenAvailable = SessionStorage.instance.hasSession;
-    final path = state.uri.path;
-    final isAuthRoute = path == '/login' || 
-                        path == '/password-login' ||
-                        path == '/mobile-login' ||
-                        path == '/signup' || 
-                        path == '/forgot-password' || 
-                        path == '/otp' || 
-                        path == '/onboarding';
 
-    if (!tokenAvailable && !isAuthRoute) return '/onboarding';
-    if (tokenAvailable && isAuthRoute) return '/home';
-    return null;
-  },
-  routes: [
+/// Provider that exposes the application router.
+final goRouterProvider = Provider<GoRouter>((ref) {
+  // Only watch the boolean login status to prevent the router from rebuilding
+  // on every loading state change or refresh.
+  final isLoggedIn = ref.watch(authProvider).valueOrNull ?? false;
+
+  return GoRouter(
+    navigatorKey: _rootNavigatorKey,
+    initialLocation: '/onboarding',
+    redirect: (context, state) {
+      final path = state.uri.path;
+      final isAuthRoute = path == '/login' || 
+                          path == '/password-login' ||
+                          path == '/mobile-login' ||
+                          path == '/signup' || 
+                          path == '/forgot-password' || 
+                          path == '/otp' || 
+                          path == '/onboarding';
+
+      if (!isLoggedIn && !isAuthRoute) return '/onboarding';
+      if (isLoggedIn && isAuthRoute) return '/home';
+      return null;
+    },
+    routes: [
     GoRoute(
       path: '/onboarding',
       builder: (context, state) => const OnboardingScreen(),
@@ -94,8 +96,11 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/otp',
       builder: (context, state) {
-        final phoneNumber = state.extra as String? ?? '';
-        return OtpScreen(phoneNumber: phoneNumber);
+        final extra = state.extra as Map<String, dynamic>? ?? {};
+        return OtpScreen(
+          phoneNumber: (extra['phoneNumber'] as String?) ?? '',
+          countryCode: (extra['countryCode'] as String?) ?? '',
+        );
       },
     ),
     StatefulShellRoute.indexedStack(
@@ -153,7 +158,6 @@ final GoRouter appRouter = GoRouter(
                       onConfirm: () {
                         closeSheet();
                         ref.read(authProvider.notifier).logout();
-                        _rootNavigatorKey.currentContext?.go('/home');
                       },
                       onCancel: closeSheet,
                     ),
@@ -421,6 +425,7 @@ final GoRouter appRouter = GoRouter(
     ),
   ],
 );
+});
 
 const _tabPaths = ['/home', '/study', '/explore', '/profile'];
 

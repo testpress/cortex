@@ -15,7 +15,6 @@ class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  final _authClient = MockAuthClient();
   bool _isBusy = false;
   String? _errorMessage;
 
@@ -59,6 +58,7 @@ class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
                         hintText: l10n.loginUsernameHint,
                         controller: _usernameController,
                         autofocus: true,
+                        textInputAction: TextInputAction.next,
                       ),
                       SizedBox(height: design.spacing.md),
                       AppTextField(
@@ -66,6 +66,8 @@ class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
                         hintText: l10n.loginPasswordHint,
                         controller: _passwordController,
                         obscureText: true,
+                        textInputAction: TextInputAction.done,
+                        onSubmitted: (_) => _handlePasswordLogin(),
                       ),
                       if (_errorMessage != null) ...[
                         SizedBox(height: design.spacing.md),
@@ -121,9 +123,10 @@ class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
     });
 
     try {
-      await _authClient.login(username: username, password: password);
-      final user = await _authClient.resolveCurrentUser(forceRefresh: true);
-      ref.read(authProvider.notifier).updateProfile(user);
+      await ref.read(authProvider.notifier).loginWithPassword(
+            username: username,
+            password: password,
+          );
       if (mounted) context.go('/home');
     } on AuthException catch (error) {
       if (mounted) setState(() => _errorMessage = error.message);

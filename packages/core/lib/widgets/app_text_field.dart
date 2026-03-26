@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart'
     show TextField, InputDecoration, InputBorder, Material, MaterialType;
 import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart' show TextInputAction;
 import '../design/design_provider.dart';
 import 'app_text.dart';
 
@@ -17,6 +18,8 @@ class AppTextField extends StatelessWidget {
     this.helperText,
     this.obscureText = false,
     this.autofocus = false,
+    this.textInputAction,
+    this.onSubmitted,
   });
 
   final String label;
@@ -29,6 +32,8 @@ class AppTextField extends StatelessWidget {
   final String? helperText;
   final bool obscureText;
   final bool autofocus;
+  final TextInputAction? textInputAction;
+  final ValueChanged<String>? onSubmitted;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +64,8 @@ class AppTextField extends StatelessWidget {
               readOnly: readOnly,
               obscureText: obscureText,
               autofocus: autofocus,
+              textInputAction: textInputAction,
+              onSubmitted: onSubmitted,
               style: design.typography.body.copyWith(
                 color: readOnly
                     ? design.colors.textSecondary

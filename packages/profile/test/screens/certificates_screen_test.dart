@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:core/core.dart';
 import 'package:profile/profile.dart';
 import 'package:core/data/data.dart';
@@ -7,13 +8,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 class MockAuth extends Auth {
   @override
-  UserDto build() {
-    return UserDto(
-      id: 'u1',
-      name: 'Alex',
-      avatar: '',
-      joinedDate: DateTime(2023, 1, 1),
-    );
+  FutureOr<bool> build() {
+    return true;
   }
 }
 
