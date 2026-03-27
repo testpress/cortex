@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'api_endpoints.dart';
 
 /// Attaches the JWT authentication token to the Authorization header.
 /// Fetches the token asynchronously from storage to ensure it's always fresh.
@@ -8,11 +9,11 @@ class AuthInterceptor extends Interceptor {
   final void Function()? onUnauthorized;
 
   /// Paths that should not have an Authorization header attached.
-  static const _loginPaths = [
-    '/auth-token/',
-    '/generate-otp/',
-    '/otp-login/',
-    '/password/reset/',
+  static const _authFlowPaths = [
+    ApiEndpoints.login,
+    ApiEndpoints.generateOtp,
+    ApiEndpoints.verifyOtp,
+    ApiEndpoints.resetPassword,
   ];
 
   const AuthInterceptor({
@@ -26,9 +27,9 @@ class AuthInterceptor extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     // Skip attaching token for login related paths
-    final isLoginPath = _loginPaths.any((path) => options.path.contains(path));
+    final isAuthFlowPath = _authFlowPaths.any((path) => options.path.contains(path));
     
-    if (!isLoginPath) {
+    if (!isAuthFlowPath) {
       final token = await getToken();
       if (token != null && token.isNotEmpty) {
         options.headers['Authorization'] = 'JWT $token';
@@ -41,8 +42,15 @@ class AuthInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (err.response?.statusCode == 401) {
-      // Trigger global logout logic if token is invalid/expired
-      onUnauthorized?.call();
+      final isAuthFlowPath = _authFlowPaths.any(
+        (path) => err.requestOptions.path.contains(path),
+      );
+      
+      final isLogoutRequest = err.requestOptions.path.contains(ApiEndpoints.logout);
+
+      if (!isAuthFlowPath && !isLogoutRequest) {
+        onUnauthorized?.call();
+      }
     }
     super.onError(err, handler);
   }

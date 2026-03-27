@@ -23,19 +23,25 @@ We will use a `Provider<Dio>` in `packages/core/lib/network/` to manage the life
 - **Rationale**: Riverpod handles the lazy-loading and caching (memoization) automatically, ensuring only one instance exists.
 - **Alternative**: A static singleton class (e.g., `NetworkProvider.instance`). Rejected because it makes testing and overriding in mock environments harder than Riverpod.
 
-### 2. Path-Exclusion in AuthInterceptor
-The interceptor will maintain a list of `publicPaths` (e.g., `['/auth/login', '/auth/otp']`).
-- **Rationale**: This is the cleanest way to allow the same `Dio` instance to perform "Public" auth requests without attempting to attach a (potentially expired or missing) JWT.
-- **Alternative**: Using multiple `Dio` instances (current approach). Rejected due to fragmentation.
+### 2. Selective Auth Path Handling
+The interceptor differentiates between unauthenticated "AuthFlow" endpoints and regular data endpoints:
+- **`_authFlowPaths`**: Endpoints (Login, OTP, Password Reset) that skip automatic JWT token injection to avoid sending headers to public endpoints.
+- **Recursion Prevention & Error Filtering**: In the error hook, the interceptor skips the global logout trigger for any 401 on an `_authFlowPath` (preventing errors on failed login credentials from wiping the session) and specifically for the **Logout endpoint** itself (to prevent infinite recursion if a token is already invalidated on the backend).
+- **Rationale**: This strategy ensures that the network layer only triggers state-wide session invalidation for valid authenticated requests that have been rejected by the backend.
 
 ### 3. Circularity Break via Agnostic Callbacks
 The `AuthInterceptor` will not depend on any specific Repository or Data Source. Instead, it will accept a `Future<String?> Function() getToken` callback.
 - **Rationale**: This enforces a strict architectural boundary. The interceptor is a "Pure utility" that doesn't care about your Domain or Data layer logic.
 - **Implementation**: The `dioProvider` will resolve this callback by reading from `authRepositoryProvider`. Since the resolution happens inside the callback (lazy execution), it safely breaks the circular dependency loop.
 
-### 4. Global 401 Hook
-The `AuthInterceptor` will override `onError` to detect `401` status codes.
-- **Rationale**: Centralizing this in the network layer ensures that any "Unauthorized" response anywhere in the app triggers a consistent "Session Expired" flow.
+### 4. Global Session Invalidation & Unified Cleanup
+The `AuthInterceptor` monitors for `401 Unauthorized` responses and triggers a global logout flow via the `onUnauthorized` callback.
+
+- **Responsibility Shift**: Previously, the database purge was performed within the `Auth` notifier. This has been moved into the **`AuthRepository`** to follow clean architecture principles.
+- **Unified Purge Logic**: The `AuthRepository.logout()` method now serves as the single source of truth for both:
+    1.  Clearing the **JWT Auth Token** from secure storage.
+    2.  Wiping all local tables via **`AppDatabase.purgeAllData()`**.
+- **Rationale**: The provider layer should only manage UI/App state, while the repository orchestrates the actual data cleanup. This avoids leaking database dependencies into the state management layer.
 
 ### 5. Consolidated User-Agent Infrastructure
 The `UserAgentHelper` logic will be moved into a private method within `UserAgentInterceptor`.
@@ -43,5 +49,5 @@ The `UserAgentHelper` logic will be moved into a private method within `UserAgen
 
 ## Risks / Trade-offs
 
-- **[Risk]** Forgetting to add a new public route to the exclusion list → **[Mitigation]** The interceptor will log a warning if it tries to fetch a token for a request that fails with a 401.
+- **[Risk]** Forgetting to add a new public route to the exclusion list → **[Mitigation]** Standardizing on `ApiEndpoints` ensures all auth flows are consistently identified. Any unintentional 401 on an authenticated route correctly triggers the global logout security measure.
 - **[Risk]** Overhead of `ref.read` inside every request → **[Mitigation]** Negligible. A Riverpod lookup takes < 0.01ms, whereas a typical disk read for a token or a network request takes 100ms+. The delay is physically invisible.

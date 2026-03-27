@@ -13,9 +13,10 @@ The global interceptor SHALL selectively attach a Bearer (JWT) token to requests
 - **THEN** the system SHALL attach the `Authorization: JWT <token>` header to the request
 
 ### Requirement: Global session invalidation
-The global interceptor SHALL handle `401 Unauthorized` responses and trigger an app-wide session invalidation.
+The global interceptor SHALL trigger a complete session invalidation whenever the backend rejects an authenticated request with a `401 Unauthorized` status.
 
-#### Scenario: Session Expired Redirect
-- **WHEN** a network request (other than login) returns a `401` status code
-- **THEN** the system SHALL clear the locally stored access token
-- **AND** it SHALL transition the app's overall authentication state to `unauthenticated`, triggering a navigation to the login screen
+#### Scenario: Backend token invalidation
+- **THEN** the system SHALL invoke the `AuthRepository.logout()` method.
+- **AND** the repository SHALL clear all tokens from secure storage.
+- **AND** the repository SHALL wipe all user-related data (via `AppDatabase.purgeAllData()`).
+- **AND** the system SHALL transition to an `unauthenticated` state, forcing a redirect to the login screen.

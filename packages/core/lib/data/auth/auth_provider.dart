@@ -20,6 +20,7 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
   return AuthRepository(
     apiService: ref.read(authApiServiceProvider),
     localDataSource: ref.read(authLocalDataSourceProvider),
+    database: ref.read(appDatabaseProvider.future),
   );
 });
 
@@ -73,9 +74,6 @@ class Auth extends _$Auth {
   Future<void> logout() async {
     try {
       await _repository.logout();
-      
-      final db = await ref.read(appDatabaseProvider.future);
-      await db.clearUserData();
       
       state = const AsyncData(false);
     } catch (e) {

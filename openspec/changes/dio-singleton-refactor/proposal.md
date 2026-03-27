@@ -13,11 +13,11 @@ The current network layer is fragmented, with `AuthApiService` and `HttpDataSour
 
 ### New Capabilities
 - `network-unified-provider`: A single, shared `Dio` provider for all repository and data source network requests.
-- `global-session-guardian`: Global interceptor logic for token injection and session invalidation.
+- `global-session-guardian`: A smart Interceptor to manage token injection and automatic session invalidation on backend token failure.
 - `user-agent-streamlining`: Consolidated User-Agent generation logic within a single Interceptor.
 
 ### Modified Capabilities
-- `auth-api-session`: Extend requirements to include global session invalidation on 401 response status code.
+- `auth-api-session`: Extend requirements to include global session invalidation whenever the backend rejects an authenticated request with a `401` status.
 
 ## Impact
 

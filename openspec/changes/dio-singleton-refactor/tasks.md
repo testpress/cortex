@@ -24,3 +24,10 @@
 - [x] 4.2 Verify that login requests do NOT have an Authorization header attached by the interceptor.
 - [x] 4.3 Verify that general data requests (e.g., profile) still include the Authorization header.
 - [x] 4.4 Simulate a 401 error and verify it triggers a global logout and redirect to the login screen.
+ 
+## 5. Architectural Cleanup & Data Purge Strategy
+ 
+- [x] 5.1 Move local data purging logic (`purgeAllData`) from `AuthProvider` to `AuthRepository`.
+- [x] 5.2 Inject `AppDatabase` (via future) into `AuthRepository` constructor.
+- [x] 5.3 Update `authRepositoryProvider` in `auth_provider.dart` to resolve the database dependency.
+- [x] 5.4 Update `AuthProvider.logout()` to be a high-level orchestration call only.
