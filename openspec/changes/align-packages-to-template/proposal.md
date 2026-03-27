@@ -27,7 +27,7 @@ The `profile` and `explore` packages in the monorepo were not initialized using 
 - Folder structure of `packages/explore/lib/`.
 - No functional changes will be made to screens, providers, or existing UI logic.
 
-# Impact
+# Review Scope
 
 - ALL files in `packages/profile` and `packages/explore` will be reviewed.
 - `packages/core` (for Neutral primitives).

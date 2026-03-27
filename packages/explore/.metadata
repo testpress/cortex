@@ -5,6 +5,6 @@
 
 version:
   revision: "582a0e7c5581dc0ca5f7bfd8662bb8db6f59d536"
-  channel: "[user-branch]"
+  channel: "stable"
 
 project_type: package
