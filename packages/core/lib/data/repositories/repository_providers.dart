@@ -1,7 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'forum_repository.dart';
-import 'user_progress_repository.dart';
 import '../db/database_provider.dart';
 import '../sources/data_source_provider.dart';
 

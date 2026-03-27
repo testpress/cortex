@@ -33,7 +33,6 @@ export 'sources/study_momentum_provider.dart';
 
 // Repositories
 export 'repositories/forum_repository.dart';
-export 'repositories/user_progress_repository.dart';
 export 'repositories/repository_providers.dart';
 
 // Infra & Mocks
