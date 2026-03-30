@@ -6,6 +6,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 /// Attaches the Testpress-compatible User-Agent to every request.
 /// Since it needs async calls (platform version), it caches the string after the first fetch.
 class UserAgentInterceptor extends Interceptor {
+  static const _userAgentPrefix = 'flutter-app';
   String? _userAgent;
 
   @override
@@ -25,17 +26,17 @@ class UserAgentInterceptor extends Interceptor {
 
       if (Platform.isAndroid) {
         final androidInfo = await deviceInfo.androidInfo;
-        return 'android-app/$appVersion (${androidInfo.model}; Android ${androidInfo.version.release})';
+        return '$_userAgentPrefix/$appVersion (${androidInfo.model}; Android ${androidInfo.version.release})';
       }
  
       if (Platform.isIOS) {
         final iosInfo = await deviceInfo.iosInfo;
-        return 'ios-app/$appVersion (${iosInfo.utsname.machine}; iOS ${iosInfo.systemVersion})';
+        return '$_userAgentPrefix/$appVersion (${iosInfo.utsname.machine}; iOS ${iosInfo.systemVersion})';
       }
- 
-      return 'flutter-app/$appVersion ($Platform)';
+
+      return '$_userAgentPrefix/$appVersion (${Platform.operatingSystem}; ${Platform.operatingSystemVersion})';
     } catch (_) {
-      return 'flutter-app/1.0.0';
+      return '$_userAgentPrefix/1.0.0';
     }
   }
 }

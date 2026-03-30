@@ -7,7 +7,7 @@ The current network layer is fragmented, with `AuthApiService` and `HttpDataSour
 - **Centralize Dio Lifecycle**: Move the initialization of `Dio` out of individual services and into a single, lazy-loaded Riverpod provider.
 - **Smart AuthInterceptor**: Refactor the `AuthInterceptor` to be path-aware (skipping authentication endpoints to avoid circular dependencies) and error-aware (handling 401 Unauthorized globally).
 - **Dependency Injection**: Update all network services to accept a shared `Dio` instance in their constructors rather than creating their own.
-- **Streamline UserAgent**: Merge `UserAgentHelper` logic directly into `UserAgentInterceptor` to reduce boilerplate files.
+- **Streamline & Unify UserAgent**: Merge `UserAgentHelper` logic directly into `UserAgentInterceptor` and unify the prefix to `flutter-app` across all platforms.
 
 ## Capabilities
 

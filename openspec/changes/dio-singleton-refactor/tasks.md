@@ -3,6 +3,7 @@
 - [x] 1.1 Create `dioProvider` in `packages/core/lib/network/network_provider.dart` using Riverpod.
 - [x] 1.2 Merge `UserAgentHelper.generate()` logic into `UserAgentInterceptor` and delete the helper file.
 - [x] 1.3 Move default interceptor initialization (UserAgentInterceptor) into the `dioProvider`.
+- [x] 1.4 Unify the User-Agent prefix to `flutter-app` across all platforms.
  
 ## 2. Smart Auth Interceptor
  
