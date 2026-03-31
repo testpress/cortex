@@ -1,6 +1,6 @@
 ## 1. Network Layer & UserAgent Refactor
  
-- [x] 1.1 Create `dioProvider` in `packages/core/lib/network/network_provider.dart` using Riverpod.
+- [x] 1.1 Create `dioProvider` in `packages/core/lib/network/dio_provider.dart` using Riverpod.
 - [x] 1.2 Merge `UserAgentHelper.generate()` logic into `UserAgentInterceptor` and delete the helper file.
 - [x] 1.3 Move default interceptor initialization (UserAgentInterceptor) into the `dioProvider`.
 - [x] 1.4 Unify the User-Agent prefix to `flutter-app` across all platforms.
@@ -32,3 +32,4 @@
 - [x] 5.2 Inject `AppDatabase` (via future) into `AuthRepository` constructor.
 - [x] 5.3 Update `authRepositoryProvider` in `auth_provider.dart` to resolve the database dependency.
 - [x] 5.4 Update `AuthProvider.logout()` to be a high-level orchestration call only.
+- [x] 5.5 Delete `NetworkProvider` class and move its logic to `dio_provider.dart` as top-level functions.

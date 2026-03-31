@@ -5,7 +5,7 @@ import '../config/app_config.dart';
 import 'data_source.dart';
 import 'mock_data_source.dart';
 import 'http_data_source.dart';
-import '../../network/network_provider.dart';
+import '../../network/dio_provider.dart';
 
 part 'data_source_provider.g.dart';
 

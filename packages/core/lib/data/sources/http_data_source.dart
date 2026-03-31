@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:core/data/data.dart';
 import '../../network/api_endpoints.dart';
-import '../../network/network_provider.dart';
+import '../../network/dio_provider.dart';
 
 /// HTTP data source stub — to be implemented when a real backend is available.
 /// All methods throw [UnimplementedError] to surface accidental usage in tests.
@@ -70,7 +70,7 @@ class HttpDataSource implements DataSource {
 
   @override
   Future<UserDto> getProfile() async {
-    return NetworkProvider.perform(
+    return performNetworkRequest(
       _dio.get(ApiEndpoints.userProfile),
       fromJson: UserDto.fromJson,
     );
@@ -93,7 +93,7 @@ class HttpDataSource implements DataSource {
       body = data;
     }
 
-    return NetworkProvider.perform(
+    return performNetworkRequest(
       _dio.patch(ApiEndpoints.userProfile, data: body),
       fromJson: UserDto.fromJson,
     );

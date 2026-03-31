@@ -18,9 +18,10 @@ The current architecture in `packages/core` separates network concerns by creati
 
 ## Decisions
 
-### 1. Riverpod Managed Singleton
-We will use a `Provider<Dio>` in `packages/core/lib/network/` to manage the lifecycle.
+### 1. Riverpod Managed Singleton (`dio_provider.dart`)
+We will use a `Provider<Dio>` in `packages/core/lib/network/dio_provider.dart` to manage the lifecycle as the single source of truth for all network requests.
 - **Rationale**: Riverpod handles the lazy-loading and caching (memoization) automatically, ensuring only one instance exists.
+- **Architecture**: The redundant `NetworkProvider` class is replaced by a top-level `dioProvider` and `performNetworkRequest` utility function to eliminate unnecessary boilerplate.
 - **Alternative**: A static singleton class (e.g., `NetworkProvider.instance`). Rejected because it makes testing and overriding in mock environments harder than Riverpod.
 
 ### 2. Selective Auth Path Handling
