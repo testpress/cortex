@@ -9,7 +9,7 @@ import '../db/database_provider.dart';
 part 'auth_provider.g.dart';
 
 final authApiServiceProvider = Provider((ref) {
-  return AuthApiService(dio: ref.read(dioProvider));
+  return AuthApiService(dio: ref.watch(dioProvider));
 });
 
 final authLocalDataSourceProvider = Provider<AuthLocalDataSource>((ref) {
@@ -18,9 +18,9 @@ final authLocalDataSourceProvider = Provider<AuthLocalDataSource>((ref) {
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   return AuthRepository(
-    apiService: ref.read(authApiServiceProvider),
-    localDataSource: ref.read(authLocalDataSourceProvider),
-    database: ref.read(appDatabaseProvider.future),
+    apiService: ref.watch(authApiServiceProvider),
+    localDataSource: ref.watch(authLocalDataSourceProvider),
+    database: ref.watch(appDatabaseProvider.future),
   );
 });
 
