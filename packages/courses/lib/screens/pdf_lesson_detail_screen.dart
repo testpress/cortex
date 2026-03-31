@@ -92,20 +92,27 @@ class _PdfLessonDetailScreenState extends ConsumerState<PdfLessonDetailScreen> {
                 child: Column(
                   children: [
                     Expanded(
-                      child: AppPdfViewer(
-                        url: widget.lesson.contentUrl ?? '',
-                        onProgressChanged: (progress) {
-                          setState(() => _readingProgress = progress);
+                      child: widget.lesson.contentUrl != null
+                          ? AppPdfViewer(
+                              url: widget.lesson.contentUrl!,
+                              onProgressChanged: (progress) {
+                                setState(() => _readingProgress = progress);
 
-                          if (progress >= 0.99 &&
-                              !_alreadyMarkedComplete &&
-                              widget.lesson.progressStatus !=
-                                  LessonProgressStatus.completed) {
-                            _alreadyMarkedComplete = true;
-                            _markAsCompleted();
-                          }
-                        },
-                      ),
+                                if (progress >= 0.99 &&
+                                    !_alreadyMarkedComplete &&
+                                    widget.lesson.progressStatus !=
+                                        LessonProgressStatus.completed) {
+                                  _alreadyMarkedComplete = true;
+                                  _markAsCompleted();
+                                }
+                              },
+                            )
+                          : Center(
+                              child: AppText.body(
+                                L10n.of(context).chapterNoContent,
+                                color: design.colors.textSecondary,
+                              ),
+                            ),
                     ),
                     _buildNavigationFooter(design),
                   ],
