@@ -6,7 +6,7 @@ part of 'course_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$courseDetailHash() => r'717e7a0eaa53c6e03157f7695d69f4c6d92a614b';
+String _$courseDetailHash() => r'6621ae9d8760f88e33dde40dfb6b3825bf095dd6';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -76,7 +76,7 @@ class CourseDetailFamily extends Family<AsyncValue<CourseDto?>> {
 /// Fetches a single course by its ID.
 ///
 /// Copied from [courseDetail].
-class CourseDetailProvider extends AutoDisposeFutureProvider<CourseDto?> {
+class CourseDetailProvider extends AutoDisposeStreamProvider<CourseDto?> {
   /// Fetches a single course by its ID.
   ///
   /// Copied from [courseDetail].
@@ -108,7 +108,7 @@ class CourseDetailProvider extends AutoDisposeFutureProvider<CourseDto?> {
 
   @override
   Override overrideWith(
-    FutureOr<CourseDto?> Function(CourseDetailRef provider) create,
+    Stream<CourseDto?> Function(CourseDetailRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -125,7 +125,7 @@ class CourseDetailProvider extends AutoDisposeFutureProvider<CourseDto?> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<CourseDto?> createElement() {
+  AutoDisposeStreamProviderElement<CourseDto?> createElement() {
     return _CourseDetailProviderElement(this);
   }
 
@@ -145,13 +145,13 @@ class CourseDetailProvider extends AutoDisposeFutureProvider<CourseDto?> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin CourseDetailRef on AutoDisposeFutureProviderRef<CourseDto?> {
+mixin CourseDetailRef on AutoDisposeStreamProviderRef<CourseDto?> {
   /// The parameter `courseId` of this provider.
   String get courseId;
 }
 
 class _CourseDetailProviderElement
-    extends AutoDisposeFutureProviderElement<CourseDto?>
+    extends AutoDisposeStreamProviderElement<CourseDto?>
     with CourseDetailRef {
   _CourseDetailProviderElement(super.provider);
 
@@ -159,7 +159,7 @@ class _CourseDetailProviderElement
   String get courseId => (origin as CourseDetailProvider).courseId;
 }
 
-String _$allCourseLessonsHash() => r'50533a249938b15f630a603ef40aa76641c90ca1';
+String _$allCourseLessonsHash() => r'4dc7030e7770d8eda9985b414e91c70f1da989c5';
 
 /// A provider that flattens all lessons for a specific course into a single list.
 /// Used for filtering lessons by type across the entire course.
@@ -214,7 +214,7 @@ class AllCourseLessonsFamily extends Family<AsyncValue<List<LessonDto>>> {
 ///
 /// Copied from [allCourseLessons].
 class AllCourseLessonsProvider
-    extends AutoDisposeFutureProvider<List<LessonDto>> {
+    extends AutoDisposeStreamProvider<List<LessonDto>> {
   /// A provider that flattens all lessons for a specific course into a single list.
   /// Used for filtering lessons by type across the entire course.
   ///
@@ -247,7 +247,7 @@ class AllCourseLessonsProvider
 
   @override
   Override overrideWith(
-    FutureOr<List<LessonDto>> Function(AllCourseLessonsRef provider) create,
+    Stream<List<LessonDto>> Function(AllCourseLessonsRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -264,7 +264,7 @@ class AllCourseLessonsProvider
   }
 
   @override
-  AutoDisposeFutureProviderElement<List<LessonDto>> createElement() {
+  AutoDisposeStreamProviderElement<List<LessonDto>> createElement() {
     return _AllCourseLessonsProviderElement(this);
   }
 
@@ -284,13 +284,13 @@ class AllCourseLessonsProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin AllCourseLessonsRef on AutoDisposeFutureProviderRef<List<LessonDto>> {
+mixin AllCourseLessonsRef on AutoDisposeStreamProviderRef<List<LessonDto>> {
   /// The parameter `courseId` of this provider.
   String get courseId;
 }
 
 class _AllCourseLessonsProviderElement
-    extends AutoDisposeFutureProviderElement<List<LessonDto>>
+    extends AutoDisposeStreamProviderElement<List<LessonDto>>
     with AllCourseLessonsRef {
   _AllCourseLessonsProviderElement(super.provider);
 

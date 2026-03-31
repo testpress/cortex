@@ -6,7 +6,7 @@ part of 'chapter_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$chapterDetailHash() => r'd91b4c4b073a8fdc22882e400cbd2246c4d49df6';
+String _$chapterDetailHash() => r'4acdf57fb550b68e4e91830b25c740bad52db918';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -76,7 +76,7 @@ class ChapterDetailFamily extends Family<AsyncValue<ChapterDto?>> {
 /// Fetches a specific chapter by ID within a course context.
 ///
 /// Copied from [chapterDetail].
-class ChapterDetailProvider extends AutoDisposeFutureProvider<ChapterDto?> {
+class ChapterDetailProvider extends AutoDisposeStreamProvider<ChapterDto?> {
   /// Fetches a specific chapter by ID within a course context.
   ///
   /// Copied from [chapterDetail].
@@ -111,7 +111,7 @@ class ChapterDetailProvider extends AutoDisposeFutureProvider<ChapterDto?> {
 
   @override
   Override overrideWith(
-    FutureOr<ChapterDto?> Function(ChapterDetailRef provider) create,
+    Stream<ChapterDto?> Function(ChapterDetailRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -129,7 +129,7 @@ class ChapterDetailProvider extends AutoDisposeFutureProvider<ChapterDto?> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<ChapterDto?> createElement() {
+  AutoDisposeStreamProviderElement<ChapterDto?> createElement() {
     return _ChapterDetailProviderElement(this);
   }
 
@@ -152,7 +152,7 @@ class ChapterDetailProvider extends AutoDisposeFutureProvider<ChapterDto?> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin ChapterDetailRef on AutoDisposeFutureProviderRef<ChapterDto?> {
+mixin ChapterDetailRef on AutoDisposeStreamProviderRef<ChapterDto?> {
   /// The parameter `courseId` of this provider.
   String get courseId;
 
@@ -161,7 +161,7 @@ mixin ChapterDetailRef on AutoDisposeFutureProviderRef<ChapterDto?> {
 }
 
 class _ChapterDetailProviderElement
-    extends AutoDisposeFutureProviderElement<ChapterDto?>
+    extends AutoDisposeStreamProviderElement<ChapterDto?>
     with ChapterDetailRef {
   _ChapterDetailProviderElement(super.provider);
 

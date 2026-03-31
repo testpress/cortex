@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/data/data.dart';
 import '../providers/course_list_provider.dart';
 import '../providers/chapter_detail_provider.dart';
+import '../providers/course_detail_provider.dart';
 import '../models/course_content.dart';
 import '../widgets/chapter_status_filter_bar.dart';
 import '../widgets/chapter_content_item.dart';
@@ -33,6 +34,7 @@ class ChapterDetailPage extends ConsumerWidget {
     // Watch the chapter detail data and its lessons separately
     final chapterAsync = ref.watch(chapterDetailProvider(courseId, chapterId));
     final lessonsAsync = ref.watch(chapterLessonsProvider(chapterId));
+    final courseAsync = ref.watch(courseDetailProvider(courseId));
 
     // Check status filter state
     final activeStatusFilter = ref.watch(chapterStatusFilterProvider);
@@ -45,8 +47,11 @@ class ChapterDetailPage extends ConsumerWidget {
             return Center(child: AppText.body(l10n.chapterNotFound));
           }
 
-          final allLessons = lessonsAsync.valueOrNull ?? [];
-          final filteredLessons = allLessons.where((l) {
+          final allLessons = lessonsAsync.valueOrNull;
+          if (allLessons == null && lessonsAsync.isLoading) {
+            return const Center(child: AppLoadingIndicator());
+          }
+          final filteredLessons = (allLessons ?? []).where((l) {
             switch (activeStatusFilter) {
               case ChapterStatusFilter.running:
                 return l.progressStatus != LessonProgressStatus.notStarted;
@@ -85,7 +90,12 @@ class ChapterDetailPage extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildHeaderContents(context, design, chapter),
+                    _buildHeaderContents(
+                      context,
+                      design,
+                      chapter,
+                      courseAsync.valueOrNull?.title,
+                    ),
                     const ChapterStatusFilterBar(),
                   ],
                 ),
@@ -134,9 +144,12 @@ class ChapterDetailPage extends ConsumerWidget {
     BuildContext context,
     DesignConfig design,
     ChapterDto chapter,
+    String? courseTitle,
   ) {
     final l10n = L10n.of(context);
-    final displayTitle = chapter.title;
+    final displayTitle = courseTitle != null
+        ? '$courseTitle - ${chapter.title}'
+        : chapter.title;
 
     final safeArea = MediaQuery.of(context).padding;
 

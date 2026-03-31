@@ -228,6 +228,22 @@ class AppDatabase extends _$AppDatabase {
   /// Watch all lessons in the database.
   Stream<List<LessonsTableData>> watchAllLessons() => select(lessonsTable).watch();
 
+  /// Watch all lessons belonging to a specific course.
+  Stream<List<LessonsTableData>> watchLessonsForCourse(String courseId) {
+    final query = select(lessonsTable).join([
+      innerJoin(
+        chaptersTable,
+        chaptersTable.id.equalsExp(lessonsTable.chapterId),
+      ),
+    ])
+      ..where(chaptersTable.courseId.equals(courseId))
+      ..orderBy([OrderingTerm.asc(lessonsTable.orderIndex)]);
+
+    return query.watch().map((rows) {
+      return rows.map((row) => row.readTable(lessonsTable)).toList();
+    });
+  }
+
   // ── Live Classes ──────────────────────────────────────────────────────────
 
   Stream<List<LiveClassesTableData>> watchAllLiveClasses() =>

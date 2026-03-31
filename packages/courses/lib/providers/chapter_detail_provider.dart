@@ -6,12 +6,13 @@ part 'chapter_detail_provider.g.dart';
 
 /// Fetches a specific chapter by ID within a course context.
 @riverpod
-Future<ChapterDto?> chapterDetail(
+Stream<ChapterDto?> chapterDetail(
   ChapterDetailRef ref,
   String courseId,
   String chapterId,
-) async {
+) async* {
   final repo = await ref.watch(courseRepositoryProvider.future);
-  final chapters = await repo.watchChapters(courseId).first;
-  return chapters.where((c) => c.id == chapterId).firstOrNull;
+  yield* repo.watchChapters(courseId).map(
+        (chapters) => chapters.where((c) => c.id == chapterId).firstOrNull,
+      );
 }
