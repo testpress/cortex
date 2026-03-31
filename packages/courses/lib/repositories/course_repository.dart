@@ -45,6 +45,13 @@ class CourseRepository {
 
   // ── Lessons ───────────────────────────────────────────────────────────────
 
+  /// Watch all lessons in the database.
+  Stream<List<LessonDto>> watchAllLessons() {
+    return _db.watchAllLessons().map(
+          (rows) => rows.map(_rowToLessonDto).toList(),
+        );
+  }
+  
   Stream<List<LessonDto>> watchLessons(String chapterId) {
     return _db
         .watchLessonsForChapter(chapterId)

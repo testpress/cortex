@@ -225,6 +225,9 @@ class AppDatabase extends _$AppDatabase {
   Future<void> upsertLessons(List<LessonsTableCompanion> rows) =>
       batch((b) => b.insertAllOnConflictUpdate(lessonsTable, rows));
 
+  /// Watch all lessons in the database.
+  Stream<List<LessonsTableData>> watchAllLessons() => select(lessonsTable).watch();
+
   // ── Live Classes ──────────────────────────────────────────────────────────
 
   Stream<List<LiveClassesTableData>> watchAllLiveClasses() =>

@@ -6,7 +6,7 @@ part of 'chapter_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$chapterDetailHash() => r'489780e50683a7269b2a5049c66d9e34a2e92a9e';
+String _$chapterDetailHash() => r'd91b4c4b073a8fdc22882e400cbd2246c4d49df6';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,26 +29,22 @@ class _SystemHash {
   }
 }
 
-/// Provider that fetches a specific chapter with its lessons.
-/// This provider maps the underlying DTOs to the [Chapter] domain model.
+/// Fetches a specific chapter by ID within a course context.
 ///
 /// Copied from [chapterDetail].
 @ProviderFor(chapterDetail)
 const chapterDetailProvider = ChapterDetailFamily();
 
-/// Provider that fetches a specific chapter with its lessons.
-/// This provider maps the underlying DTOs to the [Chapter] domain model.
+/// Fetches a specific chapter by ID within a course context.
 ///
 /// Copied from [chapterDetail].
-class ChapterDetailFamily extends Family<AsyncValue<Chapter?>> {
-  /// Provider that fetches a specific chapter with its lessons.
-  /// This provider maps the underlying DTOs to the [Chapter] domain model.
+class ChapterDetailFamily extends Family<AsyncValue<ChapterDto?>> {
+  /// Fetches a specific chapter by ID within a course context.
   ///
   /// Copied from [chapterDetail].
   const ChapterDetailFamily();
 
-  /// Provider that fetches a specific chapter with its lessons.
-  /// This provider maps the underlying DTOs to the [Chapter] domain model.
+  /// Fetches a specific chapter by ID within a course context.
   ///
   /// Copied from [chapterDetail].
   ChapterDetailProvider call(String courseId, String chapterId) {
@@ -77,13 +73,11 @@ class ChapterDetailFamily extends Family<AsyncValue<Chapter?>> {
   String? get name => r'chapterDetailProvider';
 }
 
-/// Provider that fetches a specific chapter with its lessons.
-/// This provider maps the underlying DTOs to the [Chapter] domain model.
+/// Fetches a specific chapter by ID within a course context.
 ///
 /// Copied from [chapterDetail].
-class ChapterDetailProvider extends AutoDisposeFutureProvider<Chapter?> {
-  /// Provider that fetches a specific chapter with its lessons.
-  /// This provider maps the underlying DTOs to the [Chapter] domain model.
+class ChapterDetailProvider extends AutoDisposeFutureProvider<ChapterDto?> {
+  /// Fetches a specific chapter by ID within a course context.
   ///
   /// Copied from [chapterDetail].
   ChapterDetailProvider(String courseId, String chapterId)
@@ -117,7 +111,7 @@ class ChapterDetailProvider extends AutoDisposeFutureProvider<Chapter?> {
 
   @override
   Override overrideWith(
-    FutureOr<Chapter?> Function(ChapterDetailRef provider) create,
+    FutureOr<ChapterDto?> Function(ChapterDetailRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -135,7 +129,7 @@ class ChapterDetailProvider extends AutoDisposeFutureProvider<Chapter?> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<Chapter?> createElement() {
+  AutoDisposeFutureProviderElement<ChapterDto?> createElement() {
     return _ChapterDetailProviderElement(this);
   }
 
@@ -158,7 +152,7 @@ class ChapterDetailProvider extends AutoDisposeFutureProvider<Chapter?> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin ChapterDetailRef on AutoDisposeFutureProviderRef<Chapter?> {
+mixin ChapterDetailRef on AutoDisposeFutureProviderRef<ChapterDto?> {
   /// The parameter `courseId` of this provider.
   String get courseId;
 
@@ -167,7 +161,7 @@ mixin ChapterDetailRef on AutoDisposeFutureProviderRef<Chapter?> {
 }
 
 class _ChapterDetailProviderElement
-    extends AutoDisposeFutureProviderElement<Chapter?>
+    extends AutoDisposeFutureProviderElement<ChapterDto?>
     with ChapterDetailRef {
   _ChapterDetailProviderElement(super.provider);
 

@@ -46,7 +46,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     final l10n = L10n.of(context);
 
     final enrollmentAsync = ref.watch(enrollmentProvider);
-    final allLessons = ref.watch(allLessonsProvider);
+    final allLessonsAsync = ref.watch(allLessonsProvider);
     final resumeAsync = ref.watch(recentActivityProvider);
 
     return Stack(
@@ -55,6 +55,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
           child: enrollmentAsync.when(
             data: (courses) {
               final filteredCourses = _filterCourses(courses);
+              final allLessons = allLessonsAsync.valueOrNull ?? [];
               final filteredLessons = _filterLessons(allLessons);
 
               return AppScroll(

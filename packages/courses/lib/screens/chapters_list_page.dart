@@ -2,6 +2,7 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/course_list_provider.dart';
 import '../providers/course_detail_provider.dart';
 import '../widgets/chapters_filter_tab_bar.dart';
 import '../widgets/chapter_curriculum_item.dart';
@@ -30,8 +31,9 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    // Watch course detail with nested chapters
+    // Watch course detail (flat) and chapters separately
     final courseAsync = ref.watch(courseDetailProvider(widget.courseId));
+    final chaptersAsync = ref.watch(courseChaptersProvider(widget.courseId));
     final allLessonsAsync = ref.watch(
       allCourseLessonsProvider(widget.courseId),
     );
@@ -44,7 +46,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
             return const Center(child: AppText.body('Course not found'));
           }
 
-          final chapters = course.chapters;
+          final chapters = chaptersAsync.valueOrNull ?? [];
           final filteredLessons = allLessonsAsync.maybeWhen(
             data: (lessons) => _filterLessons(lessons, _activeFilter),
             orElse: () => <LessonDto>[],

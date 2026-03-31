@@ -1,6 +1,8 @@
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:core/data/data.dart';
+import '../providers/course_list_provider.dart';
 import '../providers/chapter_detail_provider.dart';
 import '../models/course_content.dart';
 import '../widgets/chapter_status_filter_bar.dart';
@@ -28,8 +30,9 @@ class ChapterDetailPage extends ConsumerWidget {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
-    // Watch the chapter detail data
+    // Watch the chapter detail data and its lessons separately
     final chapterAsync = ref.watch(chapterDetailProvider(courseId, chapterId));
+    final lessonsAsync = ref.watch(chapterLessonsProvider(chapterId));
 
     // Check status filter state
     final activeStatusFilter = ref.watch(chapterStatusFilterProvider);
@@ -42,7 +45,8 @@ class ChapterDetailPage extends ConsumerWidget {
             return Center(child: AppText.body(l10n.chapterNotFound));
           }
 
-          final filteredLessons = chapter.lessons.where((l) {
+          final allLessons = lessonsAsync.valueOrNull ?? [];
+          final filteredLessons = allLessons.where((l) {
             switch (activeStatusFilter) {
               case ChapterStatusFilter.running:
                 return l.progressStatus != LessonProgressStatus.notStarted;
@@ -51,7 +55,21 @@ class ChapterDetailPage extends ConsumerWidget {
               case ChapterStatusFilter.history:
                 return l.progressStatus == LessonProgressStatus.completed;
             }
-          }).toList();
+          }).map((l) => Lesson(
+            id: l.id,
+            title: l.title,
+            type: l.type,
+            progressStatus: l.progressStatus,
+            duration: l.duration,
+            isLocked: l.isLocked,
+            isBookmarked: l.isBookmarked,
+            subtitle: l.subtitle,
+            subjectName: l.subjectName,
+            subjectIndex: l.subjectIndex,
+            lessonNumber: l.lessonNumber,
+            totalLessons: l.totalLessons,
+            contentUrl: l.contentUrl,
+          )).toList();
 
           return Column(
             children: [
@@ -115,12 +133,10 @@ class ChapterDetailPage extends ConsumerWidget {
   Widget _buildHeaderContents(
     BuildContext context,
     DesignConfig design,
-    Chapter chapter,
+    ChapterDto chapter,
   ) {
     final l10n = L10n.of(context);
-    final displayTitle = chapter.courseTitle != null
-        ? '${chapter.courseTitle} - ${chapter.title}'
-        : chapter.title;
+    final displayTitle = chapter.title;
 
     final safeArea = MediaQuery.of(context).padding;
 

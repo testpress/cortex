@@ -6,7 +6,7 @@ part of 'course_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$courseDetailHash() => r'efaccc3ef8321cc774541333cd60a71e4c247874';
+String _$courseDetailHash() => r'717e7a0eaa53c6e03157f7695d69f4c6d92a614b';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,34 +29,22 @@ class _SystemHash {
   }
 }
 
-/// Provider that fetches a specific course with its full curriculum (chapters and lessons).
-///
-/// This provider composes lower-level data providers from the `data` package
-/// to build a complete [CourseDto] hierarchy.
+/// Fetches a single course by its ID.
 ///
 /// Copied from [courseDetail].
 @ProviderFor(courseDetail)
 const courseDetailProvider = CourseDetailFamily();
 
-/// Provider that fetches a specific course with its full curriculum (chapters and lessons).
-///
-/// This provider composes lower-level data providers from the `data` package
-/// to build a complete [CourseDto] hierarchy.
+/// Fetches a single course by its ID.
 ///
 /// Copied from [courseDetail].
 class CourseDetailFamily extends Family<AsyncValue<CourseDto?>> {
-  /// Provider that fetches a specific course with its full curriculum (chapters and lessons).
-  ///
-  /// This provider composes lower-level data providers from the `data` package
-  /// to build a complete [CourseDto] hierarchy.
+  /// Fetches a single course by its ID.
   ///
   /// Copied from [courseDetail].
   const CourseDetailFamily();
 
-  /// Provider that fetches a specific course with its full curriculum (chapters and lessons).
-  ///
-  /// This provider composes lower-level data providers from the `data` package
-  /// to build a complete [CourseDto] hierarchy.
+  /// Fetches a single course by its ID.
   ///
   /// Copied from [courseDetail].
   CourseDetailProvider call(String courseId) {
@@ -85,17 +73,11 @@ class CourseDetailFamily extends Family<AsyncValue<CourseDto?>> {
   String? get name => r'courseDetailProvider';
 }
 
-/// Provider that fetches a specific course with its full curriculum (chapters and lessons).
-///
-/// This provider composes lower-level data providers from the `data` package
-/// to build a complete [CourseDto] hierarchy.
+/// Fetches a single course by its ID.
 ///
 /// Copied from [courseDetail].
 class CourseDetailProvider extends AutoDisposeFutureProvider<CourseDto?> {
-  /// Provider that fetches a specific course with its full curriculum (chapters and lessons).
-  ///
-  /// This provider composes lower-level data providers from the `data` package
-  /// to build a complete [CourseDto] hierarchy.
+  /// Fetches a single course by its ID.
   ///
   /// Copied from [courseDetail].
   CourseDetailProvider(String courseId)
@@ -177,7 +159,7 @@ class _CourseDetailProviderElement
   String get courseId => (origin as CourseDetailProvider).courseId;
 }
 
-String _$allCourseLessonsHash() => r'3746368636296b244a8128a159dfa96f3fa69684';
+String _$allCourseLessonsHash() => r'50533a249938b15f630a603ef40aa76641c90ca1';
 
 /// A provider that flattens all lessons for a specific course into a single list.
 /// Used for filtering lessons by type across the entire course.
