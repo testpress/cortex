@@ -37,39 +37,48 @@ class ApiException implements Exception {
   final String message;
   final ApiErrorType type;
   final int? statusCode;
+  final dynamic data;
+  final dynamic error;
 
   const ApiException(
     this.message, {
     this.type = ApiErrorType.unknown,
     this.statusCode,
+    this.data,
+    this.error,
   });
 
-  factory ApiException.fromDio(DioException error) {
+  factory ApiException.fromDioException(DioException error) {
     if (error.type == DioExceptionType.connectionError) {
-      return const ApiException(
+      return ApiException(
         'We couldn\'t connect. Please check your internet and try again.',
         type: ApiErrorType.noInternet,
+        error: error.error,
       );
     }
 
     if (error.type == DioExceptionType.connectionTimeout ||
         error.type == DioExceptionType.sendTimeout ||
         error.type == DioExceptionType.receiveTimeout) {
-      return const ApiException(
+      return ApiException(
         'The request timed out. Please try again.',
         type: ApiErrorType.timeout,
+        error: error.error,
       );
     }
 
     if (error.type == DioExceptionType.badResponse) {
        final statusCode = error.response?.statusCode;
-       final backendMessage = _extractApiMessage(error.response?.data);
+       final data = error.response?.data;
+       final backendMessage = _extractApiMessage(data);
 
        if (statusCode == 400 || statusCode == 422) {
          return ApiException(
            backendMessage ?? 'Something looks wrong with the info you provided.',
            type: ApiErrorType.badRequest,
            statusCode: statusCode,
+           data: data,
+           error: error.error,
          );
        }
 
@@ -78,6 +87,8 @@ class ApiException implements Exception {
            backendMessage ?? 'You are not authorized to perform this action.',
            type: ApiErrorType.unauthorized,
            statusCode: statusCode,
+           data: data,
+           error: error.error,
          );
        }
 
@@ -86,6 +97,8 @@ class ApiException implements Exception {
            backendMessage ?? 'It looks like you don\'t have access to this feature.',
            type: ApiErrorType.forbidden,
            statusCode: statusCode,
+           data: data,
+           error: error.error,
          );
        }
 
@@ -94,6 +107,8 @@ class ApiException implements Exception {
             backendMessage ?? 'The requested resource was not found.',
             type: ApiErrorType.notFound,
             statusCode: statusCode,
+            data: data,
+            error: error.error,
           );
        }
 
@@ -102,6 +117,8 @@ class ApiException implements Exception {
             'Please take a short break and try again in a moment.',
             type: ApiErrorType.rateLimited,
             statusCode: statusCode,
+            data: data,
+            error: error.error,
           );
        }
 
@@ -110,6 +127,8 @@ class ApiException implements Exception {
            'The server is having trouble. Please try again later.',
            type: ApiErrorType.serverError,
            statusCode: statusCode,
+           data: data,
+           error: error.error,
          );
        }
 
@@ -117,12 +136,15 @@ class ApiException implements Exception {
          backendMessage ?? 'Oops! Something went wrong. Please try again.',
          type: ApiErrorType.unknown,
          statusCode: statusCode,
+         data: data,
+         error: error.error,
        );
     }
 
     return ApiException(
       'Oops! Something went wrong on our end. Please try again in a moment.',
       type: ApiErrorType.unknown,
+      error: error.error,
     );
   }
 
@@ -165,5 +187,5 @@ class ApiException implements Exception {
   }
 
   @override
-  String toString() => message;
+  String toString() => 'ApiException: $message (Type: $type, Status: $statusCode)';
 }

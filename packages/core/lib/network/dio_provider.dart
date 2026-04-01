@@ -43,7 +43,7 @@ Future<T> performNetworkRequest<T>(
     final response = await request;
     return fromJson(response.data ?? {});
   } on DioException catch (error) {
-    throw ApiException.fromDio(error);
+    throw ApiException.fromDioException(error);
   } catch (e) {
     throw ApiException('An unexpected error occurred: $e');
   }

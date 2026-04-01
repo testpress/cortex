@@ -48,7 +48,7 @@ class AuthException extends ApiException {
 
   factory AuthException.fromDio(DioException error) {
     // Leverage the base ApiException parsing logic
-    final apiException = ApiException.fromDio(error);
+    final apiException = ApiException.fromDioException(error);
     
     // We can then customize behavior for specific Auth status codes if needed
     if (apiException.statusCode == 401) {
