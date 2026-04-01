@@ -69,7 +69,7 @@ class CourseDto {
       totalDuration: json['total_duration'] as String? ?? '',
       progress: json['progress'] as int? ?? 0,
       completedLessons: json['completed_lessons_count'] as int? ?? 0,
-      totalLessons: json['total_lessons_count'] as int? ?? 0,
+      totalLessons: json['contents_count'] as int? ?? 0,
       image: json['image'] as String?,
       chapters: (json['chapters'] as List<dynamic>?)
               ?.map((e) => ChapterDto.fromJson(e as Map<String, dynamic>))

@@ -6,7 +6,7 @@ part of 'course_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$courseDetailHash() => r'efaccc3ef8321cc774541333cd60a71e4c247874';
+String _$courseDetailHash() => r'927296910cefd5d09631d83082bcb74bd94b87be';
 
 /// Copied from Dart SDK
 class _SystemHash {

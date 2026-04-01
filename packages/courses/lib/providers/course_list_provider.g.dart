@@ -6,7 +6,7 @@ part of 'course_list_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$courseRepositoryHash() => r'e1bdd96c7b7bed6af0671f20ac537712a3a6265d';
+String _$courseRepositoryHash() => r'62b30446b43101d61052e9c469030f2209080475';
 
 /// See also [courseRepository].
 @ProviderFor(courseRepository)
@@ -23,7 +23,7 @@ final courseRepositoryProvider = FutureProvider<CourseRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CourseRepositoryRef = FutureProviderRef<CourseRepository>;
-String _$courseChaptersHash() => r'0209694cd811fd004339910f9895f84971f0e5c9';
+String _$courseChaptersHash() => r'a1cf6c296397d53753ee81c92c7318be1788b8a6';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -177,7 +177,7 @@ class _CourseChaptersProviderElement
   String get courseId => (origin as CourseChaptersProvider).courseId;
 }
 
-String _$chapterLessonsHash() => r'ebc358051bfc9dec93d19ae70774d72609a16e3d';
+String _$chapterLessonsHash() => r'ce0c119a5b40df61a52c1451589e19c174b7c00e';
 
 /// Provider for a specific chapter's lessons.
 ///
@@ -310,15 +310,9 @@ class _ChapterLessonsProviderElement
   String get chapterId => (origin as ChapterLessonsProvider).chapterId;
 }
 
-String _$courseListHash() => r'00a58458218fa35c2a1402581558519673b3eb40';
+String _$courseListHash() => r'90fdf39ff3628f22fb77c401187d23eeb54aee12';
 
-/// Stream notifier for the full course list.
-///
-/// - `build()` streams courses from the local Drift DB.
-/// - `initialize()` ensures the first page is fetched from API one time.
-/// - `loadMore()` loads subsequent pages on user scroll.
-///
-/// Copied from [CourseList].
+/// See also [CourseList].
 @ProviderFor(CourseList)
 final courseListProvider =
     StreamNotifierProvider<CourseList, List<CourseDto>>.internal(

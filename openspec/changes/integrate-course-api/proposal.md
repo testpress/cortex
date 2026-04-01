@@ -8,7 +8,7 @@ The Study tab was displaying static mock data. This change wires up the real Tes
 
 ## What Changes
 
-1. **Networking Alignment**: Align all network request orchestration via `NetworkProvider.perform`. Consistent error handling is ensured via `ApiException.fromDioException`.
+1. **Networking Alignment**: Align all network request orchestration via `performNetworkRequest`. Consistent error handling is ensured via `ApiException.fromDioException`.
 2. **UI Decomposition**: To maintain maintainability and stay below the 250-line file limit, the following new widgets were created:
    - `StudyFilterBar`: Specialized widget for complex, animated content type filters.
    - `StudyContentList`: Handles the switching between course and lesson lists, including search and pagination states.

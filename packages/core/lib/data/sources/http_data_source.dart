@@ -17,9 +17,9 @@ class HttpDataSource implements DataSource {
     int page = 1,
     int pageSize = 10,
   }) async {
-    return NetworkProvider.perform(
+    return performNetworkRequest(
       _dio.get(
-        ApiEndpoints.courses,
+        ApiEndpoints.courseList,
         queryParameters: {'page': page, 'page_size': pageSize},
       ),
       fromJson: (json) => PaginatedResponseDto<CourseDto>.fromJson(
@@ -43,8 +43,8 @@ class HttpDataSource implements DataSource {
 
   @override
   Future<List<LiveClassDto>> getLiveClasses() => throw UnimplementedError(
-        'HttpDataSource.getLiveClasses is not yet implemented.',
-      );
+    'HttpDataSource.getLiveClasses is not yet implemented.',
+  );
 
   @override
   Future<List<ForumThreadDto>> getForumThreads(String courseId) =>
@@ -66,13 +66,13 @@ class HttpDataSource implements DataSource {
 
   @override
   Future<List<StudyTipDto>> getStudyTips() => throw UnimplementedError(
-        'HttpDataSource.getStudyTips is not yet implemented.',
-      );
+    'HttpDataSource.getStudyTips is not yet implemented.',
+  );
 
   @override
   Future<List<ShortLessonDto>> getShortLessons() => throw UnimplementedError(
-        'HttpDataSource.getShortLessons is not yet implemented.',
-      );
+    'HttpDataSource.getShortLessons is not yet implemented.',
+  );
 
   @override
   Future<List<DiscoveryCourseDto>> getDiscoveryCourses() =>
@@ -89,9 +89,7 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<UserDto> updateProfile(
-    Map<String, dynamic> data,
-  ) async {
+  Future<UserDto> updateProfile(Map<String, dynamic> data) async {
     final dynamic body;
     // If the data contains a 'photo' key with a file path, we use FormData for multipart upload
     if (data.containsKey('photo') && data['photo'] is String) {
