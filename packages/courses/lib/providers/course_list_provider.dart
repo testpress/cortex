@@ -67,6 +67,12 @@ class CourseList extends _$CourseList {
 
   /// Redirects to appropriate loadMore based on mode
   Future<void> loadMore() async {
+    final search = ref.read(courseSearchProvider);
+    if (search.query.isNotEmpty) {
+      ref.read(courseSearchProvider.notifier).loadMore();
+      return;
+    }
+
     if (!_paginationTracker.hasMore || _pendingSyncRequest != null) return;
 
     _pendingSyncRequest = _performSync(isReset: false);
@@ -136,8 +142,10 @@ Stream<List<LessonDto>> chapterLessons(
         (rows) => rows.map((row) => repo.rowToLessonDto(row)).toList(),
       );
 }
-@riverpod
+@Riverpod(keepAlive: true)
 class CourseSearch extends _$CourseSearch {
+  Future<void>? _pendingRequest;
+
   @override
   CourseSearchState build() => CourseSearchState();
 
@@ -148,14 +156,49 @@ class CourseSearch extends _$CourseSearch {
       return;
     }
 
+    // Preserve existing results while loading new search to avoid flashing empty list
     state = state.copyWith(query: query, isLoading: true, error: null);
 
+    _pendingRequest = _performSearch(query: query, isReset: true);
+    await _pendingRequest;
+  }
+
+  Future<void> loadMore() async {
+    if (!state.pagination.hasMore || _pendingRequest != null) return;
+    
+    _pendingRequest = _performSearch(query: state.query, isReset: false);
+    await _pendingRequest;
+  }
+
+  Future<void> _performSearch({required String query, required bool isReset}) async {
     try {
       final repo = await ref.read(courseRepositoryProvider.future);
-      final response = await repo.searchCourses(query: query, page: 1);
-      state = state.copyWith(results: response.results, isLoading: false);
+      final page = isReset ? 1 : state.pagination.nextPage;
+      
+      final response = await repo.searchCourses(query: query, page: page);
+      
+      final results = isReset ? response.results : [...state.results, ...response.results];
+      
+      PaginationState newPagination;
+      if (response.results.isEmpty) {
+        newPagination = state.pagination.copyWith(hasMore: false);
+      } else {
+        const paginationService = PaginationService();
+        newPagination = paginationService.calculateNextState(
+          response: response,
+          currentPage: page,
+        );
+      }
+
+      state = state.copyWith(
+        results: results,
+        isLoading: false,
+        pagination: newPagination,
+      );
     } catch (e) {
       state = state.copyWith(error: e, isLoading: false);
+    } finally {
+      _pendingRequest = null;
     }
   }
 }
@@ -165,12 +208,14 @@ class CourseSearchState {
   final List<CourseDto> results;
   final bool isLoading;
   final Object? error;
+  final PaginationState pagination;
 
   CourseSearchState({
     this.query = '',
     this.results = const [],
     this.isLoading = false,
     this.error,
+    this.pagination = const PaginationState(),
   });
 
   CourseSearchState copyWith({
@@ -178,12 +223,14 @@ class CourseSearchState {
     List<CourseDto>? results,
     bool? isLoading,
     Object? error,
+    PaginationState? pagination,
   }) {
     return CourseSearchState(
       query: query ?? this.query,
       results: results ?? this.results,
       isLoading: isLoading ?? this.isLoading,
       error: error,
+      pagination: pagination ?? this.pagination,
     );
   }
 }
