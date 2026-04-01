@@ -7,4 +7,5 @@ class ApiEndpoints {
   static const String logout = '/api/v2.5/auth/logout/';
   static const String resetPassword = '/api/v2.3/password/reset/';
   static const String userProfile = '/api/v2.5/me/';
+  static const String courses = '/api/v3/courses/';
 }

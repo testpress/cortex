@@ -27,18 +27,33 @@ class CourseCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Left Icon Box
+              // Left Icon/Image Box
               Container(
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: design.shortcutPalette.atIndex(1).background,
+                  color: (course.image != null && course.image!.isNotEmpty)
+                      ? null
+                      : design.shortcutPalette.atIndex(1).background,
                   borderRadius: BorderRadius.circular(design.radius.md),
                 ),
-                child: Icon(
-                  LucideIcons.bookOpen,
-                  color: design.shortcutPalette.atIndex(1).foreground,
-                  size: 24,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(design.radius.md),
+                  child: (course.image != null && course.image!.isNotEmpty)
+                      ? Image.network(
+                          course.image!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Icon(
+                            LucideIcons.bookOpen,
+                            color: design.shortcutPalette.atIndex(1).foreground,
+                            size: 24,
+                          ),
+                        )
+                      : Icon(
+                          LucideIcons.bookOpen,
+                          color: design.shortcutPalette.atIndex(1).foreground,
+                          size: 24,
+                        ),
                 ),
               ),
               SizedBox(width: design.spacing.md),

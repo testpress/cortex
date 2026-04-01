@@ -32,6 +32,5 @@ export 'screens/video_lesson_detail_screen.dart';
 export 'providers/lesson_detail_provider.dart';
 export 'providers/course_list_provider.dart';
 export 'providers/lesson_providers.dart';
-export 'providers/enrollment_provider.dart';
 export 'providers/recent_activity_provider.dart';
 export 'providers/dashboard_providers.dart';

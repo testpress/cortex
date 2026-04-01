@@ -1,6 +1,5 @@
 import 'package:core/data/data.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'enrollment_provider.dart';
 import 'course_list_provider.dart';
 
 part 'course_detail_provider.g.dart';
@@ -11,8 +10,8 @@ part 'course_detail_provider.g.dart';
 /// to build a complete [CourseDto] hierarchy.
 @riverpod
 Future<CourseDto?> courseDetail(CourseDetailRef ref, String courseId) async {
-  final enrollment = await ref.watch(enrollmentProvider.future);
-  final course = enrollment.where((c) => c.id == courseId).firstOrNull;
+  final courses = await ref.watch(courseListProvider.future);
+  final course = courses.where((c) => c.id == courseId).firstOrNull;
   if (course == null) return null;
 
   // Watch chapters for this course

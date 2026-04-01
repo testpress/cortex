@@ -10,6 +10,7 @@ class CoursesTable extends Table {
   IntColumn get progress => integer().withDefault(const Constant(0))();
   IntColumn get completedLessons => integer().withDefault(const Constant(0))();
   IntColumn get totalLessons => integer()();
+  TextColumn get image => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};

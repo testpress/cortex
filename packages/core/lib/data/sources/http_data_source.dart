@@ -13,9 +13,21 @@ class HttpDataSource implements DataSource {
   HttpDataSource({required Dio dio}) : _dio = dio;
 
   @override
-  Future<List<CourseDto>> getCourses() => throw UnimplementedError(
-        'HttpDataSource.getCourses is not yet implemented. Use MockDataSource.',
-      );
+  Future<PaginatedResponseDto<CourseDto>> getCourses({
+    int page = 1,
+    int pageSize = 10,
+  }) async {
+    return NetworkProvider.perform(
+      _dio.get(
+        ApiEndpoints.courses,
+        queryParameters: {'page': page, 'page_size': pageSize},
+      ),
+      fromJson: (json) => PaginatedResponseDto<CourseDto>.fromJson(
+        json,
+        (item) => CourseDto.fromJson(item),
+      ),
+    );
+  }
 
   @override
   Future<List<ChapterDto>> getChapters(String courseId) =>
