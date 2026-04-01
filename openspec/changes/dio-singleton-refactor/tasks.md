@@ -9,7 +9,7 @@
  
 - [x] 2.1 Refactor `AuthInterceptor` in `packages/core/lib/network/auth_interceptor.dart` to include a `publicPaths` exclusion list.
 - [x] 2.2 Implement `onError` in `AuthInterceptor` to catch 401 status codes.
-- [x] 2.3 Ensure Interceptor's `getToken` callback remains agnostic of the repository/state-management.
+- [x] 2.3 Ensure Interceptor's `getToken` callback reads from `authLocalDataSourceProvider` (not repository) to break circularity.
 - [x] 2.4 Handle global logout by injecting a `onUnauthorized` callback into the Interceptor.
  
 ## 3. Dependency Injection Refactor

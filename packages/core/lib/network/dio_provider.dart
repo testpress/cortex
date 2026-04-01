@@ -25,7 +25,7 @@ final Provider<Dio> dioProvider = Provider<Dio>((ref) {
   dio.interceptors.add(UserAgentInterceptor());
   dio.interceptors.add(
     AuthInterceptor(
-      getToken: () => ref.read(authRepositoryProvider).getToken(),
+      getToken: () => ref.read(authLocalDataSourceProvider).getToken(),
       onUnauthorized: () => ref.read(authProvider.notifier).logout(),
     ),
   );

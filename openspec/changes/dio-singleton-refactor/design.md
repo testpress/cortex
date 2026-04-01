@@ -30,10 +30,10 @@ The interceptor differentiates between unauthenticated "AuthFlow" endpoints and 
 - **Recursion Prevention & Error Filtering**: In the error hook, the interceptor skips the global logout trigger for any 401 on an `_authFlowPath` (preventing errors on failed login credentials from wiping the session) and specifically for the **Logout endpoint** itself (to prevent infinite recursion if a token is already invalidated on the backend).
 - **Rationale**: This strategy ensures that the network layer only triggers state-wide session invalidation for valid authenticated requests that have been rejected by the backend.
 
-### 3. Circularity Break via Agnostic Callbacks
-The `AuthInterceptor` will not depend on any specific Repository or Data Source. Instead, it will accept a `Future<String?> Function() getToken` callback.
-- **Rationale**: This enforces a strict architectural boundary. The interceptor is a "Pure utility" that doesn't care about your Domain or Data layer logic.
-- **Implementation**: The `dioProvider` will resolve this callback by reading from `authRepositoryProvider`. Since the resolution happens inside the callback (lazy execution), it safely breaks the circular dependency loop.
+### 3. Circularity Break via Local Data Source
+To break the potential circular dependency chain (`Dio` -> `Repo` -> `ApiService` -> `Dio`), the `AuthInterceptor`'s `getToken` callback will be resolved using **`authLocalDataSourceProvider`** directly. 
+
+- **Rationale**: Reading the token from the Data Source instead of the Repository prevents recursive provider initialization. Since the Data Source is a simple synchronous provider with no dependencies, it safely terminates the dependency branch while keeping the network layer reactive and robust.
 
 ### 4. Global Session Invalidation & Unified Cleanup
 The `AuthInterceptor` monitors for `401 Unauthorized` responses and triggers a global logout flow via the `onUnauthorized` callback.
