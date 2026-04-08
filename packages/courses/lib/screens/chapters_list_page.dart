@@ -66,11 +66,10 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
           String headerTitle = course.title;
 
           if (widget.parentId != null) {
-            try {
-              final parent = allChapters.firstWhere((c) => c.id == widget.parentId);
+            final parent =
+                allChapters.where((c) => c.id == widget.parentId).firstOrNull;
+            if (parent != null) {
               headerTitle = parent.title;
-            } catch (_) {
-              // Fallback
             }
           }
 

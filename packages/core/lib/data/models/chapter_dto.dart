@@ -69,6 +69,10 @@ class ChapterDto {
       parentId: (json['parent_id'] ?? json['parentId'])?.toString(),
       isLeaf: json['leaf'] as bool? ?? json['isLeaf'] as bool? ?? true,
       image: json['image'] as String?,
+      lessons: (json['lessons'] as List<dynamic>?)
+              ?.map((e) => LessonDto.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
   }
 

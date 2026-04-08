@@ -25,8 +25,8 @@ class CourseRepository {
     // Combine course and chapter streams by reacting to both table changes
     final combinedWatcher = StreamGroup.merge([
       Stream.value(null), // Initial trigger
-      _db.coursesTable.select().watch(),
-      _db.chaptersTable.select().watch(),
+      (_db.select(_db.coursesTable)..where((t) => t.id.equals(courseId))).watch(),
+      (_db.select(_db.chaptersTable)..where((t) => t.courseId.equals(courseId))).watch(),
     ]);
 
     yield* combinedWatcher.asyncMap((_) async {

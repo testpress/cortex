@@ -47,12 +47,13 @@ class HttpDataSource implements DataSource {
     return performNetworkRequest(
       _dio.get(ApiEndpoints.courseChapters(courseId)),
       fromJson: (data) {
-        final results = data['results'] as Map<String, dynamic>;
-        final chaptersList = results['chapters'] as List<dynamic>;
+        final results = data['results'] as Map<String, dynamic>?;
+        final chaptersList = results?['chapters'] as List<dynamic>?;
 
         return chaptersList
-            .map((e) => ChapterDto.fromJson(e as Map<String, dynamic>))
-            .toList();
+                ?.map((e) => ChapterDto.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            [];
       },
     );
   }
