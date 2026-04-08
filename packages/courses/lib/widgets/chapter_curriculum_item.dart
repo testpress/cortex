@@ -33,7 +33,7 @@ class ChapterCurriculumItem extends StatelessWidget {
         boxShadow: design.shadows.surfaceSoft,
       ),
       child: AppSemantics.button(
-        label: l10n.chapterIndexLabel(index + 1, chapter.title),
+        label: chapter.title,
         onTap: onTap ?? () {},
         child: AppFocusable(
           onTap: onTap,
@@ -47,14 +47,12 @@ class ChapterCurriculumItem extends StatelessWidget {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: iconTheme.background,
+                    color: chapter.image?.isNotEmpty == true
+                        ? design.colors.transparent // Transparent when image is present
+                        : iconTheme.background,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(
-                    LucideIcons.bookOpen,
-                    color: iconTheme.foreground,
-                    size: 20,
-                  ),
+                  child: _buildIcon(chapter, iconTheme),
                 ),
                 const SizedBox(width: 12),
 
@@ -64,7 +62,7 @@ class ChapterCurriculumItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       AppText.cardTitle(
-                        l10n.chapterIndexLabel(index + 1, chapter.title),
+                        chapter.title,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -94,6 +92,35 @@ class ChapterCurriculumItem extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildIcon(ChapterDto chapter, ShortcutColors chapterTheme) {
+    final image = chapter.image;
+    if (image != null && image.isNotEmpty) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Image.network(
+          image,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => _DefaultIcon(theme: chapterTheme),
+        ),
+      );
+    }
+    return _DefaultIcon(theme: chapterTheme);
+  }
+}
+
+class _DefaultIcon extends StatelessWidget {
+  const _DefaultIcon({required this.theme});
+  final ShortcutColors theme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Icon(
+      LucideIcons.bookOpen,
+      color: theme.foreground,
+      size: 20,
     );
   }
 }

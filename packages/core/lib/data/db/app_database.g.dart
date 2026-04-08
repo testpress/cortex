@@ -698,6 +698,39 @@ class $ChaptersTableTable extends ChaptersTable
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _parentIdMeta = const VerificationMeta(
+    'parentId',
+  );
+  @override
+  late final GeneratedColumn<String> parentId = GeneratedColumn<String>(
+    'parent_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isLeafMeta = const VerificationMeta('isLeaf');
+  @override
+  late final GeneratedColumn<bool> isLeaf = GeneratedColumn<bool>(
+    'is_leaf',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_leaf" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _imageMeta = const VerificationMeta('image');
+  @override
+  late final GeneratedColumn<String> image = GeneratedColumn<String>(
+    'image',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -706,6 +739,9 @@ class $ChaptersTableTable extends ChaptersTable
     lessonCount,
     assessmentCount,
     orderIndex,
+    parentId,
+    isLeaf,
+    image,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -770,6 +806,24 @@ class $ChaptersTableTable extends ChaptersTable
     } else if (isInserting) {
       context.missing(_orderIndexMeta);
     }
+    if (data.containsKey('parent_id')) {
+      context.handle(
+        _parentIdMeta,
+        parentId.isAcceptableOrUnknown(data['parent_id']!, _parentIdMeta),
+      );
+    }
+    if (data.containsKey('is_leaf')) {
+      context.handle(
+        _isLeafMeta,
+        isLeaf.isAcceptableOrUnknown(data['is_leaf']!, _isLeafMeta),
+      );
+    }
+    if (data.containsKey('image')) {
+      context.handle(
+        _imageMeta,
+        image.isAcceptableOrUnknown(data['image']!, _imageMeta),
+      );
+    }
     return context;
   }
 
@@ -803,6 +857,18 @@ class $ChaptersTableTable extends ChaptersTable
         DriftSqlType.int,
         data['${effectivePrefix}order_index'],
       )!,
+      parentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}parent_id'],
+      ),
+      isLeaf: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_leaf'],
+      )!,
+      image: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}image'],
+      ),
     );
   }
 
@@ -820,6 +886,9 @@ class ChaptersTableData extends DataClass
   final int lessonCount;
   final int assessmentCount;
   final int orderIndex;
+  final String? parentId;
+  final bool isLeaf;
+  final String? image;
   const ChaptersTableData({
     required this.id,
     required this.courseId,
@@ -827,6 +896,9 @@ class ChaptersTableData extends DataClass
     required this.lessonCount,
     required this.assessmentCount,
     required this.orderIndex,
+    this.parentId,
+    required this.isLeaf,
+    this.image,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -837,6 +909,13 @@ class ChaptersTableData extends DataClass
     map['lesson_count'] = Variable<int>(lessonCount);
     map['assessment_count'] = Variable<int>(assessmentCount);
     map['order_index'] = Variable<int>(orderIndex);
+    if (!nullToAbsent || parentId != null) {
+      map['parent_id'] = Variable<String>(parentId);
+    }
+    map['is_leaf'] = Variable<bool>(isLeaf);
+    if (!nullToAbsent || image != null) {
+      map['image'] = Variable<String>(image);
+    }
     return map;
   }
 
@@ -848,6 +927,13 @@ class ChaptersTableData extends DataClass
       lessonCount: Value(lessonCount),
       assessmentCount: Value(assessmentCount),
       orderIndex: Value(orderIndex),
+      parentId: parentId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(parentId),
+      isLeaf: Value(isLeaf),
+      image: image == null && nullToAbsent
+          ? const Value.absent()
+          : Value(image),
     );
   }
 
@@ -863,6 +949,9 @@ class ChaptersTableData extends DataClass
       lessonCount: serializer.fromJson<int>(json['lessonCount']),
       assessmentCount: serializer.fromJson<int>(json['assessmentCount']),
       orderIndex: serializer.fromJson<int>(json['orderIndex']),
+      parentId: serializer.fromJson<String?>(json['parentId']),
+      isLeaf: serializer.fromJson<bool>(json['isLeaf']),
+      image: serializer.fromJson<String?>(json['image']),
     );
   }
   @override
@@ -875,6 +964,9 @@ class ChaptersTableData extends DataClass
       'lessonCount': serializer.toJson<int>(lessonCount),
       'assessmentCount': serializer.toJson<int>(assessmentCount),
       'orderIndex': serializer.toJson<int>(orderIndex),
+      'parentId': serializer.toJson<String?>(parentId),
+      'isLeaf': serializer.toJson<bool>(isLeaf),
+      'image': serializer.toJson<String?>(image),
     };
   }
 
@@ -885,6 +977,9 @@ class ChaptersTableData extends DataClass
     int? lessonCount,
     int? assessmentCount,
     int? orderIndex,
+    Value<String?> parentId = const Value.absent(),
+    bool? isLeaf,
+    Value<String?> image = const Value.absent(),
   }) => ChaptersTableData(
     id: id ?? this.id,
     courseId: courseId ?? this.courseId,
@@ -892,6 +987,9 @@ class ChaptersTableData extends DataClass
     lessonCount: lessonCount ?? this.lessonCount,
     assessmentCount: assessmentCount ?? this.assessmentCount,
     orderIndex: orderIndex ?? this.orderIndex,
+    parentId: parentId.present ? parentId.value : this.parentId,
+    isLeaf: isLeaf ?? this.isLeaf,
+    image: image.present ? image.value : this.image,
   );
   ChaptersTableData copyWithCompanion(ChaptersTableCompanion data) {
     return ChaptersTableData(
@@ -907,6 +1005,9 @@ class ChaptersTableData extends DataClass
       orderIndex: data.orderIndex.present
           ? data.orderIndex.value
           : this.orderIndex,
+      parentId: data.parentId.present ? data.parentId.value : this.parentId,
+      isLeaf: data.isLeaf.present ? data.isLeaf.value : this.isLeaf,
+      image: data.image.present ? data.image.value : this.image,
     );
   }
 
@@ -918,7 +1019,10 @@ class ChaptersTableData extends DataClass
           ..write('title: $title, ')
           ..write('lessonCount: $lessonCount, ')
           ..write('assessmentCount: $assessmentCount, ')
-          ..write('orderIndex: $orderIndex')
+          ..write('orderIndex: $orderIndex, ')
+          ..write('parentId: $parentId, ')
+          ..write('isLeaf: $isLeaf, ')
+          ..write('image: $image')
           ..write(')'))
         .toString();
   }
@@ -931,6 +1035,9 @@ class ChaptersTableData extends DataClass
     lessonCount,
     assessmentCount,
     orderIndex,
+    parentId,
+    isLeaf,
+    image,
   );
   @override
   bool operator ==(Object other) =>
@@ -941,7 +1048,10 @@ class ChaptersTableData extends DataClass
           other.title == this.title &&
           other.lessonCount == this.lessonCount &&
           other.assessmentCount == this.assessmentCount &&
-          other.orderIndex == this.orderIndex);
+          other.orderIndex == this.orderIndex &&
+          other.parentId == this.parentId &&
+          other.isLeaf == this.isLeaf &&
+          other.image == this.image);
 }
 
 class ChaptersTableCompanion extends UpdateCompanion<ChaptersTableData> {
@@ -951,6 +1061,9 @@ class ChaptersTableCompanion extends UpdateCompanion<ChaptersTableData> {
   final Value<int> lessonCount;
   final Value<int> assessmentCount;
   final Value<int> orderIndex;
+  final Value<String?> parentId;
+  final Value<bool> isLeaf;
+  final Value<String?> image;
   final Value<int> rowid;
   const ChaptersTableCompanion({
     this.id = const Value.absent(),
@@ -959,6 +1072,9 @@ class ChaptersTableCompanion extends UpdateCompanion<ChaptersTableData> {
     this.lessonCount = const Value.absent(),
     this.assessmentCount = const Value.absent(),
     this.orderIndex = const Value.absent(),
+    this.parentId = const Value.absent(),
+    this.isLeaf = const Value.absent(),
+    this.image = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ChaptersTableCompanion.insert({
@@ -968,6 +1084,9 @@ class ChaptersTableCompanion extends UpdateCompanion<ChaptersTableData> {
     required int lessonCount,
     required int assessmentCount,
     required int orderIndex,
+    this.parentId = const Value.absent(),
+    this.isLeaf = const Value.absent(),
+    this.image = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        courseId = Value(courseId),
@@ -982,6 +1101,9 @@ class ChaptersTableCompanion extends UpdateCompanion<ChaptersTableData> {
     Expression<int>? lessonCount,
     Expression<int>? assessmentCount,
     Expression<int>? orderIndex,
+    Expression<String>? parentId,
+    Expression<bool>? isLeaf,
+    Expression<String>? image,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -991,6 +1113,9 @@ class ChaptersTableCompanion extends UpdateCompanion<ChaptersTableData> {
       if (lessonCount != null) 'lesson_count': lessonCount,
       if (assessmentCount != null) 'assessment_count': assessmentCount,
       if (orderIndex != null) 'order_index': orderIndex,
+      if (parentId != null) 'parent_id': parentId,
+      if (isLeaf != null) 'is_leaf': isLeaf,
+      if (image != null) 'image': image,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1002,6 +1127,9 @@ class ChaptersTableCompanion extends UpdateCompanion<ChaptersTableData> {
     Value<int>? lessonCount,
     Value<int>? assessmentCount,
     Value<int>? orderIndex,
+    Value<String?>? parentId,
+    Value<bool>? isLeaf,
+    Value<String?>? image,
     Value<int>? rowid,
   }) {
     return ChaptersTableCompanion(
@@ -1011,6 +1139,9 @@ class ChaptersTableCompanion extends UpdateCompanion<ChaptersTableData> {
       lessonCount: lessonCount ?? this.lessonCount,
       assessmentCount: assessmentCount ?? this.assessmentCount,
       orderIndex: orderIndex ?? this.orderIndex,
+      parentId: parentId ?? this.parentId,
+      isLeaf: isLeaf ?? this.isLeaf,
+      image: image ?? this.image,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1036,6 +1167,15 @@ class ChaptersTableCompanion extends UpdateCompanion<ChaptersTableData> {
     if (orderIndex.present) {
       map['order_index'] = Variable<int>(orderIndex.value);
     }
+    if (parentId.present) {
+      map['parent_id'] = Variable<String>(parentId.value);
+    }
+    if (isLeaf.present) {
+      map['is_leaf'] = Variable<bool>(isLeaf.value);
+    }
+    if (image.present) {
+      map['image'] = Variable<String>(image.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1051,6 +1191,9 @@ class ChaptersTableCompanion extends UpdateCompanion<ChaptersTableData> {
           ..write('lessonCount: $lessonCount, ')
           ..write('assessmentCount: $assessmentCount, ')
           ..write('orderIndex: $orderIndex, ')
+          ..write('parentId: $parentId, ')
+          ..write('isLeaf: $isLeaf, ')
+          ..write('image: $image, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4633,6 +4776,9 @@ typedef $$ChaptersTableTableCreateCompanionBuilder =
       required int lessonCount,
       required int assessmentCount,
       required int orderIndex,
+      Value<String?> parentId,
+      Value<bool> isLeaf,
+      Value<String?> image,
       Value<int> rowid,
     });
 typedef $$ChaptersTableTableUpdateCompanionBuilder =
@@ -4643,6 +4789,9 @@ typedef $$ChaptersTableTableUpdateCompanionBuilder =
       Value<int> lessonCount,
       Value<int> assessmentCount,
       Value<int> orderIndex,
+      Value<String?> parentId,
+      Value<bool> isLeaf,
+      Value<String?> image,
       Value<int> rowid,
     });
 
@@ -4682,6 +4831,21 @@ class $$ChaptersTableTableFilterComposer
 
   ColumnFilters<int> get orderIndex => $composableBuilder(
     column: $table.orderIndex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get parentId => $composableBuilder(
+    column: $table.parentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isLeaf => $composableBuilder(
+    column: $table.isLeaf,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get image => $composableBuilder(
+    column: $table.image,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -4724,6 +4888,21 @@ class $$ChaptersTableTableOrderingComposer
     column: $table.orderIndex,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get parentId => $composableBuilder(
+    column: $table.parentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isLeaf => $composableBuilder(
+    column: $table.isLeaf,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get image => $composableBuilder(
+    column: $table.image,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$ChaptersTableTableAnnotationComposer
@@ -4758,6 +4937,15 @@ class $$ChaptersTableTableAnnotationComposer
     column: $table.orderIndex,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get parentId =>
+      $composableBuilder(column: $table.parentId, builder: (column) => column);
+
+  GeneratedColumn<bool> get isLeaf =>
+      $composableBuilder(column: $table.isLeaf, builder: (column) => column);
+
+  GeneratedColumn<String> get image =>
+      $composableBuilder(column: $table.image, builder: (column) => column);
 }
 
 class $$ChaptersTableTableTableManager
@@ -4801,6 +4989,9 @@ class $$ChaptersTableTableTableManager
                 Value<int> lessonCount = const Value.absent(),
                 Value<int> assessmentCount = const Value.absent(),
                 Value<int> orderIndex = const Value.absent(),
+                Value<String?> parentId = const Value.absent(),
+                Value<bool> isLeaf = const Value.absent(),
+                Value<String?> image = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ChaptersTableCompanion(
                 id: id,
@@ -4809,6 +5000,9 @@ class $$ChaptersTableTableTableManager
                 lessonCount: lessonCount,
                 assessmentCount: assessmentCount,
                 orderIndex: orderIndex,
+                parentId: parentId,
+                isLeaf: isLeaf,
+                image: image,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -4819,6 +5013,9 @@ class $$ChaptersTableTableTableManager
                 required int lessonCount,
                 required int assessmentCount,
                 required int orderIndex,
+                Value<String?> parentId = const Value.absent(),
+                Value<bool> isLeaf = const Value.absent(),
+                Value<String?> image = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ChaptersTableCompanion.insert(
                 id: id,
@@ -4827,6 +5024,9 @@ class $$ChaptersTableTableTableManager
                 lessonCount: lessonCount,
                 assessmentCount: assessmentCount,
                 orderIndex: orderIndex,
+                parentId: parentId,
+                isLeaf: isLeaf,
+                image: image,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

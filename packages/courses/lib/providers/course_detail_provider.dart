@@ -5,33 +5,14 @@ import 'course_list_provider.dart';
 part 'course_detail_provider.g.dart';
 
 /// Provider that fetches a specific course with its full curriculum (chapters and lessons).
-///
-/// This provider composes lower-level data providers from the `data` package
-/// to build a complete [CourseDto] hierarchy.
-@riverpod
-Future<CourseDto?> courseDetail(CourseDetailRef ref, String courseId) async {
-  final courses = await ref.watch(courseListProvider.future);
-  final course = courses.where((c) => c.id == courseId).firstOrNull;
-  if (course == null) return null;
+@Riverpod(keepAlive: true)
+Stream<CourseDto?> courseDetail(CourseDetailRef ref, String courseId) async* {
+  final repo = await ref.watch(courseRepositoryProvider.future);
+  
+  // Start the background refresh so the DB gets updated.
+  repo.refreshChapters(courseId).ignore();
 
-  // Watch chapters for this course
-  final chapters = await ref.watch(courseChaptersProvider(courseId).future);
-
-  // Watch lessons for each chapter and combine them
-  final chaptersWithLessons = await Future.wait(
-    chapters.map((chapter) async {
-      final lessons = await ref.watch(
-        chapterLessonsProvider(chapter.id).future,
-      );
-      return chapter.copyWith(
-        lessons: lessons
-            .map((l) => l.copyWith(chapterTitle: chapter.title))
-            .toList(),
-      );
-    }),
-  );
-
-  return course.copyWith(chapters: chaptersWithLessons);
+  yield* repo.watchCourse(courseId);
 }
 
 /// A provider that flattens all lessons for a specific course into a single list.

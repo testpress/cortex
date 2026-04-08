@@ -6,7 +6,7 @@ part of 'course_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$courseDetailHash() => r'927296910cefd5d09631d83082bcb74bd94b87be';
+String _$courseDetailHash() => r'9c049d25c4f9d200edb8a08030d492099c839004';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,32 +31,20 @@ class _SystemHash {
 
 /// Provider that fetches a specific course with its full curriculum (chapters and lessons).
 ///
-/// This provider composes lower-level data providers from the `data` package
-/// to build a complete [CourseDto] hierarchy.
-///
 /// Copied from [courseDetail].
 @ProviderFor(courseDetail)
 const courseDetailProvider = CourseDetailFamily();
 
 /// Provider that fetches a specific course with its full curriculum (chapters and lessons).
 ///
-/// This provider composes lower-level data providers from the `data` package
-/// to build a complete [CourseDto] hierarchy.
-///
 /// Copied from [courseDetail].
 class CourseDetailFamily extends Family<AsyncValue<CourseDto?>> {
   /// Provider that fetches a specific course with its full curriculum (chapters and lessons).
-  ///
-  /// This provider composes lower-level data providers from the `data` package
-  /// to build a complete [CourseDto] hierarchy.
   ///
   /// Copied from [courseDetail].
   const CourseDetailFamily();
 
   /// Provider that fetches a specific course with its full curriculum (chapters and lessons).
-  ///
-  /// This provider composes lower-level data providers from the `data` package
-  /// to build a complete [CourseDto] hierarchy.
   ///
   /// Copied from [courseDetail].
   CourseDetailProvider call(String courseId) {
@@ -87,15 +75,9 @@ class CourseDetailFamily extends Family<AsyncValue<CourseDto?>> {
 
 /// Provider that fetches a specific course with its full curriculum (chapters and lessons).
 ///
-/// This provider composes lower-level data providers from the `data` package
-/// to build a complete [CourseDto] hierarchy.
-///
 /// Copied from [courseDetail].
-class CourseDetailProvider extends AutoDisposeFutureProvider<CourseDto?> {
+class CourseDetailProvider extends StreamProvider<CourseDto?> {
   /// Provider that fetches a specific course with its full curriculum (chapters and lessons).
-  ///
-  /// This provider composes lower-level data providers from the `data` package
-  /// to build a complete [CourseDto] hierarchy.
   ///
   /// Copied from [courseDetail].
   CourseDetailProvider(String courseId)
@@ -126,7 +108,7 @@ class CourseDetailProvider extends AutoDisposeFutureProvider<CourseDto?> {
 
   @override
   Override overrideWith(
-    FutureOr<CourseDto?> Function(CourseDetailRef provider) create,
+    Stream<CourseDto?> Function(CourseDetailRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -143,7 +125,7 @@ class CourseDetailProvider extends AutoDisposeFutureProvider<CourseDto?> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<CourseDto?> createElement() {
+  StreamProviderElement<CourseDto?> createElement() {
     return _CourseDetailProviderElement(this);
   }
 
@@ -163,13 +145,12 @@ class CourseDetailProvider extends AutoDisposeFutureProvider<CourseDto?> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin CourseDetailRef on AutoDisposeFutureProviderRef<CourseDto?> {
+mixin CourseDetailRef on StreamProviderRef<CourseDto?> {
   /// The parameter `courseId` of this provider.
   String get courseId;
 }
 
-class _CourseDetailProviderElement
-    extends AutoDisposeFutureProviderElement<CourseDto?>
+class _CourseDetailProviderElement extends StreamProviderElement<CourseDto?>
     with CourseDetailRef {
   _CourseDetailProviderElement(super.provider);
 

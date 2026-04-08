@@ -8,6 +8,9 @@ class ChapterDto {
   final int lessonCount;
   final int assessmentCount;
   final int orderIndex;
+  final String? image;
+  final String? parentId;
+  final bool isLeaf;
   final List<LessonDto> lessons;
 
   const ChapterDto({
@@ -17,6 +20,9 @@ class ChapterDto {
     required this.lessonCount,
     required this.assessmentCount,
     required this.orderIndex,
+    this.parentId,
+    this.isLeaf = true,
+    this.image,
     this.lessons = const [],
   });
 
@@ -27,6 +33,9 @@ class ChapterDto {
     int? lessonCount,
     int? assessmentCount,
     int? orderIndex,
+    String? parentId,
+    bool? isLeaf,
+    String? image,
     List<LessonDto>? lessons,
   }) {
     return ChapterDto(
@@ -36,22 +45,30 @@ class ChapterDto {
       lessonCount: lessonCount ?? this.lessonCount,
       assessmentCount: assessmentCount ?? this.assessmentCount,
       orderIndex: orderIndex ?? this.orderIndex,
+      parentId: parentId ?? this.parentId,
+      isLeaf: isLeaf ?? this.isLeaf,
+      image: image ?? this.image,
       lessons: lessons ?? this.lessons,
     );
   }
 
+  /// Maps from the `/api/v3/courses/{id}/chapters/` response.
+  /// The API uses `name` (not `title`), numeric `id`/`course_id`, and
+  /// `contents_count` / `exams_count` + `quizzes_count` for counts.
   factory ChapterDto.fromJson(Map<String, dynamic> json) {
     return ChapterDto(
-      id: json['id'] as String,
-      courseId: json['courseId'] as String,
-      title: json['title'] as String,
-      lessonCount: json['lessonCount'] as int,
-      assessmentCount: json['assessmentCount'] as int,
-      orderIndex: json['orderIndex'] as int,
-      lessons: (json['lessons'] as List<dynamic>?)
-              ?.map((e) => LessonDto.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
+      id: (json['id'] ?? '').toString(),
+      courseId: (json['course_id'] ?? json['courseId'] ?? '').toString(),
+      title: json['title'] as String? ?? json['name'] as String? ?? '',
+      lessonCount: (json['contents_count'] as num?)?.toInt() ?? (json['lessonCount'] as num?)?.toInt() ?? 0,
+      assessmentCount:
+          ((json['exams_count'] as num?)?.toInt() ?? 0) +
+          ((json['quizzes_count'] as num?)?.toInt() ?? 0) +
+          ((json['assessmentCount'] as num?)?.toInt() ?? 0),
+      orderIndex: (json['order'] as num?)?.toInt() ?? (json['orderIndex'] as num?)?.toInt() ?? 0,
+      parentId: (json['parent_id'] ?? json['parentId'])?.toString(),
+      isLeaf: json['leaf'] as bool? ?? json['isLeaf'] as bool? ?? true,
+      image: json['image'] as String?,
     );
   }
 
@@ -63,6 +80,8 @@ class ChapterDto {
       'lessonCount': lessonCount,
       'assessmentCount': assessmentCount,
       'orderIndex': orderIndex,
+      'parentId': parentId,
+      'isLeaf': isLeaf,
       'lessons': lessons.map((e) => e.toJson()).toList(),
     };
   }

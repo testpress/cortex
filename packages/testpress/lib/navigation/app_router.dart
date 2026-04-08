@@ -190,8 +190,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   path: 'course/:courseId/chapters',
                   builder: (context, state) {
                     final courseId = state.pathParameters['courseId']!;
+                    final parentId = state.uri.queryParameters['parentId'];
                     return ChaptersListPage(
                       courseId: courseId,
+                      parentId: parentId,
                       onBack: () => context.pop(),
                     );
                   },

@@ -26,6 +26,7 @@ Future<Chapter?> chapterDetail(
     lessonCount: chapterDto.lessonCount,
     assessmentCount: chapterDto.assessmentCount,
     courseTitle: courseDto.title,
+    image: chapterDto.image,
     lessons: chapterDto.lessons
         .map(
           (l) => Lesson(

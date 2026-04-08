@@ -45,6 +45,7 @@ void main() {
         rankDefault: Color(0xFF94A3B8),
         overlay: Color(0x8A000000),
         shadow: Color(0x33000000),
+        transparent: Color(0x00000000),
       );
 
       final customConfig = DesignConfig.light().copyWith(
@@ -126,6 +127,7 @@ void main() {
         rankDefault: Color(0xFF94A3B8),
         overlay: Color(0x8A000000),
         shadow: Color(0x33000000),
+        transparent: Color(0x00000000),
       );
 
       final config2 = DesignConfig.light().copyWith(

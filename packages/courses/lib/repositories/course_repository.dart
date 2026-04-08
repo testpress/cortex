@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:async/async.dart';
 import 'package:drift/drift.dart';
 
 import 'package:core/data/data.dart';
@@ -16,6 +18,33 @@ class CourseRepository {
   /// Live stream of all courses from the local DB (single source of truth).
   Stream<List<CoursesTableData>> watchCourses() {
     return _db.watchAllCourses();
+  } 
+
+  /// Live stream of a specific course with its chapters.
+  Stream<CourseDto?> watchCourse(String courseId) async* {
+    // Combine course and chapter streams by reacting to both table changes
+    final combinedWatcher = StreamGroup.merge([
+      Stream.value(null), // Initial trigger
+      _db.coursesTable.select().watch(),
+      _db.chaptersTable.select().watch(),
+    ]);
+
+    yield* combinedWatcher.asyncMap((_) async {
+      final courseData = await (_db.select(_db.coursesTable)
+            ..where((t) => t.id.equals(courseId)))
+          .getSingleOrNull();
+
+      if (courseData == null) return null;
+
+      final chaptersData = await (_db.select(_db.chaptersTable)
+            ..where((t) => t.courseId.equals(courseId))
+            ..orderBy([(t) => OrderingTerm.asc(t.orderIndex)]))
+          .get();
+
+      return rowToCourseDto(courseData).copyWith(
+        chapters: chaptersData.map(rowToChapterDto).toList(),
+      );
+    });
   }
 
   /// Fetch courses for a specific [page] from [DataSource] and persist to local DB.
@@ -143,6 +172,9 @@ class CourseRepository {
         lessonCount: row.lessonCount,
         assessmentCount: row.assessmentCount,
         orderIndex: row.orderIndex,
+        parentId: row.parentId,
+        isLeaf: row.isLeaf,
+        image: row.image,
       );
 
   ChaptersTableCompanion _chapterDtoToCompanion(ChapterDto dto) =>
@@ -153,6 +185,9 @@ class CourseRepository {
         lessonCount: dto.lessonCount,
         assessmentCount: dto.assessmentCount,
         orderIndex: dto.orderIndex,
+        parentId: Value(dto.parentId),
+        isLeaf: Value(dto.isLeaf),
+        image: Value(dto.image),
       );
 
   LessonDto rowToLessonDto(LessonsTableData row) => LessonDto(

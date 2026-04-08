@@ -35,9 +35,32 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<List<ChapterDto>> getChapters(String courseId) =>
+  Future<CourseDto> getCourseDetail(String courseId) async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.courseDetail(courseId)),
+      fromJson: CourseDto.fromJson,
+    );
+  }
+
+  @override
+  Future<List<ChapterDto>> getChapters(String courseId) async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.courseChapters(courseId)),
+      fromJson: (data) {
+        final results = data['results'] as Map<String, dynamic>;
+        final chaptersList = results['chapters'] as List<dynamic>;
+
+        return chaptersList
+            .map((e) => ChapterDto.fromJson(e as Map<String, dynamic>))
+            .toList();
+      },
+    );
+  }
+
+  @override
+  Future<List<LessonDto>> getCourseContents(String courseId) =>
       throw UnimplementedError(
-        'HttpDataSource.getChapters is not yet implemented.',
+        'HttpDataSource.getCourseContents is not yet implemented.',
       );
 
   @override
