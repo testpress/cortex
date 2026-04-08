@@ -18,16 +18,18 @@ Future<void> appInitialization(AppInitializationRef ref) async {
   // Initialize core data in background
   try {
     // 1. Refresh the list of enrolled courses from the network/mock source
-    final response = await courseRepo.refreshCourses(page: 1);
-    final courses = response.results;
+    if (isLoggedIn) {
+      final response = await courseRepo.refreshCourses(page: 1);
+      final courses = response.results;
 
-    // 2. Refresh chapters and lessons for every enrolled course
-    // This ensures the entire study curriculum is available offline/locally.
-    for (final course in courses) {
-      final chapters = await courseRepo.refreshChapters(course.id);
+      // 2. Refresh chapters and lessons for every enrolled course
+      // This ensures the entire study curriculum is available offline/locally.
+      for (final course in courses) {
+        final chapters = await courseRepo.refreshChapters(course.id);
 
-      for (final chapter in chapters) {
-        await courseRepo.refreshLessons(chapter.id);
+        for (final chapter in chapters) {
+          await courseRepo.refreshLessons(chapter.id);
+        }
       }
     }
 
