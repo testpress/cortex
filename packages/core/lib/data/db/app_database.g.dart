@@ -1144,6 +1144,18 @@ class $LessonsTableTable extends LessonsTable
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _lastAccessedAtMeta = const VerificationMeta(
+    'lastAccessedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastAccessedAt =
+      GeneratedColumn<DateTime>(
+        'last_accessed_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1162,6 +1174,7 @@ class $LessonsTableTable extends LessonsTable
     lessonNumber,
     totalLessons,
     isBookmarked,
+    lastAccessedAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1301,6 +1314,15 @@ class $LessonsTableTable extends LessonsTable
         ),
       );
     }
+    if (data.containsKey('last_accessed_at')) {
+      context.handle(
+        _lastAccessedAtMeta,
+        lastAccessedAt.isAcceptableOrUnknown(
+          data['last_accessed_at']!,
+          _lastAccessedAtMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -1374,6 +1396,10 @@ class $LessonsTableTable extends LessonsTable
         DriftSqlType.bool,
         data['${effectivePrefix}is_bookmarked'],
       )!,
+      lastAccessedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_accessed_at'],
+      ),
     );
   }
 
@@ -1405,6 +1431,7 @@ class LessonsTableData extends DataClass
   final int? lessonNumber;
   final int? totalLessons;
   final bool isBookmarked;
+  final DateTime? lastAccessedAt;
   const LessonsTableData({
     required this.id,
     required this.chapterId,
@@ -1422,6 +1449,7 @@ class LessonsTableData extends DataClass
     this.lessonNumber,
     this.totalLessons,
     required this.isBookmarked,
+    this.lastAccessedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1456,6 +1484,9 @@ class LessonsTableData extends DataClass
       map['total_lessons'] = Variable<int>(totalLessons);
     }
     map['is_bookmarked'] = Variable<bool>(isBookmarked);
+    if (!nullToAbsent || lastAccessedAt != null) {
+      map['last_accessed_at'] = Variable<DateTime>(lastAccessedAt);
+    }
     return map;
   }
 
@@ -1491,6 +1522,9 @@ class LessonsTableData extends DataClass
           ? const Value.absent()
           : Value(totalLessons),
       isBookmarked: Value(isBookmarked),
+      lastAccessedAt: lastAccessedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastAccessedAt),
     );
   }
 
@@ -1516,6 +1550,7 @@ class LessonsTableData extends DataClass
       lessonNumber: serializer.fromJson<int?>(json['lessonNumber']),
       totalLessons: serializer.fromJson<int?>(json['totalLessons']),
       isBookmarked: serializer.fromJson<bool>(json['isBookmarked']),
+      lastAccessedAt: serializer.fromJson<DateTime?>(json['lastAccessedAt']),
     );
   }
   @override
@@ -1538,6 +1573,7 @@ class LessonsTableData extends DataClass
       'lessonNumber': serializer.toJson<int?>(lessonNumber),
       'totalLessons': serializer.toJson<int?>(totalLessons),
       'isBookmarked': serializer.toJson<bool>(isBookmarked),
+      'lastAccessedAt': serializer.toJson<DateTime?>(lastAccessedAt),
     };
   }
 
@@ -1558,6 +1594,7 @@ class LessonsTableData extends DataClass
     Value<int?> lessonNumber = const Value.absent(),
     Value<int?> totalLessons = const Value.absent(),
     bool? isBookmarked,
+    Value<DateTime?> lastAccessedAt = const Value.absent(),
   }) => LessonsTableData(
     id: id ?? this.id,
     chapterId: chapterId ?? this.chapterId,
@@ -1575,6 +1612,9 @@ class LessonsTableData extends DataClass
     lessonNumber: lessonNumber.present ? lessonNumber.value : this.lessonNumber,
     totalLessons: totalLessons.present ? totalLessons.value : this.totalLessons,
     isBookmarked: isBookmarked ?? this.isBookmarked,
+    lastAccessedAt: lastAccessedAt.present
+        ? lastAccessedAt.value
+        : this.lastAccessedAt,
   );
   LessonsTableData copyWithCompanion(LessonsTableCompanion data) {
     return LessonsTableData(
@@ -1612,6 +1652,9 @@ class LessonsTableData extends DataClass
       isBookmarked: data.isBookmarked.present
           ? data.isBookmarked.value
           : this.isBookmarked,
+      lastAccessedAt: data.lastAccessedAt.present
+          ? data.lastAccessedAt.value
+          : this.lastAccessedAt,
     );
   }
 
@@ -1633,7 +1676,8 @@ class LessonsTableData extends DataClass
           ..write('subjectIndex: $subjectIndex, ')
           ..write('lessonNumber: $lessonNumber, ')
           ..write('totalLessons: $totalLessons, ')
-          ..write('isBookmarked: $isBookmarked')
+          ..write('isBookmarked: $isBookmarked, ')
+          ..write('lastAccessedAt: $lastAccessedAt')
           ..write(')'))
         .toString();
   }
@@ -1656,6 +1700,7 @@ class LessonsTableData extends DataClass
     lessonNumber,
     totalLessons,
     isBookmarked,
+    lastAccessedAt,
   );
   @override
   bool operator ==(Object other) =>
@@ -1676,7 +1721,8 @@ class LessonsTableData extends DataClass
           other.subjectIndex == this.subjectIndex &&
           other.lessonNumber == this.lessonNumber &&
           other.totalLessons == this.totalLessons &&
-          other.isBookmarked == this.isBookmarked);
+          other.isBookmarked == this.isBookmarked &&
+          other.lastAccessedAt == this.lastAccessedAt);
 }
 
 class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
@@ -1696,6 +1742,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   final Value<int?> lessonNumber;
   final Value<int?> totalLessons;
   final Value<bool> isBookmarked;
+  final Value<DateTime?> lastAccessedAt;
   final Value<int> rowid;
   const LessonsTableCompanion({
     this.id = const Value.absent(),
@@ -1714,6 +1761,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.lessonNumber = const Value.absent(),
     this.totalLessons = const Value.absent(),
     this.isBookmarked = const Value.absent(),
+    this.lastAccessedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   LessonsTableCompanion.insert({
@@ -1733,6 +1781,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.lessonNumber = const Value.absent(),
     this.totalLessons = const Value.absent(),
     this.isBookmarked = const Value.absent(),
+    this.lastAccessedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        chapterId = Value(chapterId),
@@ -1757,6 +1806,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Expression<int>? lessonNumber,
     Expression<int>? totalLessons,
     Expression<bool>? isBookmarked,
+    Expression<DateTime>? lastAccessedAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1776,6 +1826,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       if (lessonNumber != null) 'lesson_number': lessonNumber,
       if (totalLessons != null) 'total_lessons': totalLessons,
       if (isBookmarked != null) 'is_bookmarked': isBookmarked,
+      if (lastAccessedAt != null) 'last_accessed_at': lastAccessedAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1797,6 +1848,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Value<int?>? lessonNumber,
     Value<int?>? totalLessons,
     Value<bool>? isBookmarked,
+    Value<DateTime?>? lastAccessedAt,
     Value<int>? rowid,
   }) {
     return LessonsTableCompanion(
@@ -1816,6 +1868,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       lessonNumber: lessonNumber ?? this.lessonNumber,
       totalLessons: totalLessons ?? this.totalLessons,
       isBookmarked: isBookmarked ?? this.isBookmarked,
+      lastAccessedAt: lastAccessedAt ?? this.lastAccessedAt,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1871,6 +1924,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     if (isBookmarked.present) {
       map['is_bookmarked'] = Variable<bool>(isBookmarked.value);
     }
+    if (lastAccessedAt.present) {
+      map['last_accessed_at'] = Variable<DateTime>(lastAccessedAt.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1896,6 +1952,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
           ..write('lessonNumber: $lessonNumber, ')
           ..write('totalLessons: $totalLessons, ')
           ..write('isBookmarked: $isBookmarked, ')
+          ..write('lastAccessedAt: $lastAccessedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2824,383 +2881,6 @@ class ForumThreadsTableCompanion
           ..write('timeAgo: $timeAgo, ')
           ..write('replyCount: $replyCount, ')
           ..write('status: $status, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $UserProgressTableTable extends UserProgressTable
-    with TableInfo<$UserProgressTableTable, UserProgressTableData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $UserProgressTableTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
-  @override
-  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
-    'user_id',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _lessonIdMeta = const VerificationMeta(
-    'lessonId',
-  );
-  @override
-  late final GeneratedColumn<String> lessonId = GeneratedColumn<String>(
-    'lesson_id',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _courseIdMeta = const VerificationMeta(
-    'courseId',
-  );
-  @override
-  late final GeneratedColumn<String> courseId = GeneratedColumn<String>(
-    'course_id',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _percentCompleteMeta = const VerificationMeta(
-    'percentComplete',
-  );
-  @override
-  late final GeneratedColumn<int> percentComplete = GeneratedColumn<int>(
-    'percent_complete',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(0),
-  );
-  static const VerificationMeta _lastAccessedAtMeta = const VerificationMeta(
-    'lastAccessedAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> lastAccessedAt =
-      GeneratedColumn<DateTime>(
-        'last_accessed_at',
-        aliasedName,
-        false,
-        type: DriftSqlType.dateTime,
-        requiredDuringInsert: true,
-      );
-  @override
-  List<GeneratedColumn> get $columns => [
-    userId,
-    lessonId,
-    courseId,
-    percentComplete,
-    lastAccessedAt,
-  ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'user_progress_table';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<UserProgressTableData> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('user_id')) {
-      context.handle(
-        _userIdMeta,
-        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_userIdMeta);
-    }
-    if (data.containsKey('lesson_id')) {
-      context.handle(
-        _lessonIdMeta,
-        lessonId.isAcceptableOrUnknown(data['lesson_id']!, _lessonIdMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_lessonIdMeta);
-    }
-    if (data.containsKey('course_id')) {
-      context.handle(
-        _courseIdMeta,
-        courseId.isAcceptableOrUnknown(data['course_id']!, _courseIdMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_courseIdMeta);
-    }
-    if (data.containsKey('percent_complete')) {
-      context.handle(
-        _percentCompleteMeta,
-        percentComplete.isAcceptableOrUnknown(
-          data['percent_complete']!,
-          _percentCompleteMeta,
-        ),
-      );
-    }
-    if (data.containsKey('last_accessed_at')) {
-      context.handle(
-        _lastAccessedAtMeta,
-        lastAccessedAt.isAcceptableOrUnknown(
-          data['last_accessed_at']!,
-          _lastAccessedAtMeta,
-        ),
-      );
-    } else if (isInserting) {
-      context.missing(_lastAccessedAtMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {userId, lessonId};
-  @override
-  UserProgressTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return UserProgressTableData(
-      userId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}user_id'],
-      )!,
-      lessonId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}lesson_id'],
-      )!,
-      courseId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}course_id'],
-      )!,
-      percentComplete: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}percent_complete'],
-      )!,
-      lastAccessedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}last_accessed_at'],
-      )!,
-    );
-  }
-
-  @override
-  $UserProgressTableTable createAlias(String alias) {
-    return $UserProgressTableTable(attachedDatabase, alias);
-  }
-}
-
-class UserProgressTableData extends DataClass
-    implements Insertable<UserProgressTableData> {
-  final String userId;
-  final String lessonId;
-  final String courseId;
-  final int percentComplete;
-  final DateTime lastAccessedAt;
-  const UserProgressTableData({
-    required this.userId,
-    required this.lessonId,
-    required this.courseId,
-    required this.percentComplete,
-    required this.lastAccessedAt,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['user_id'] = Variable<String>(userId);
-    map['lesson_id'] = Variable<String>(lessonId);
-    map['course_id'] = Variable<String>(courseId);
-    map['percent_complete'] = Variable<int>(percentComplete);
-    map['last_accessed_at'] = Variable<DateTime>(lastAccessedAt);
-    return map;
-  }
-
-  UserProgressTableCompanion toCompanion(bool nullToAbsent) {
-    return UserProgressTableCompanion(
-      userId: Value(userId),
-      lessonId: Value(lessonId),
-      courseId: Value(courseId),
-      percentComplete: Value(percentComplete),
-      lastAccessedAt: Value(lastAccessedAt),
-    );
-  }
-
-  factory UserProgressTableData.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return UserProgressTableData(
-      userId: serializer.fromJson<String>(json['userId']),
-      lessonId: serializer.fromJson<String>(json['lessonId']),
-      courseId: serializer.fromJson<String>(json['courseId']),
-      percentComplete: serializer.fromJson<int>(json['percentComplete']),
-      lastAccessedAt: serializer.fromJson<DateTime>(json['lastAccessedAt']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'userId': serializer.toJson<String>(userId),
-      'lessonId': serializer.toJson<String>(lessonId),
-      'courseId': serializer.toJson<String>(courseId),
-      'percentComplete': serializer.toJson<int>(percentComplete),
-      'lastAccessedAt': serializer.toJson<DateTime>(lastAccessedAt),
-    };
-  }
-
-  UserProgressTableData copyWith({
-    String? userId,
-    String? lessonId,
-    String? courseId,
-    int? percentComplete,
-    DateTime? lastAccessedAt,
-  }) => UserProgressTableData(
-    userId: userId ?? this.userId,
-    lessonId: lessonId ?? this.lessonId,
-    courseId: courseId ?? this.courseId,
-    percentComplete: percentComplete ?? this.percentComplete,
-    lastAccessedAt: lastAccessedAt ?? this.lastAccessedAt,
-  );
-  UserProgressTableData copyWithCompanion(UserProgressTableCompanion data) {
-    return UserProgressTableData(
-      userId: data.userId.present ? data.userId.value : this.userId,
-      lessonId: data.lessonId.present ? data.lessonId.value : this.lessonId,
-      courseId: data.courseId.present ? data.courseId.value : this.courseId,
-      percentComplete: data.percentComplete.present
-          ? data.percentComplete.value
-          : this.percentComplete,
-      lastAccessedAt: data.lastAccessedAt.present
-          ? data.lastAccessedAt.value
-          : this.lastAccessedAt,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('UserProgressTableData(')
-          ..write('userId: $userId, ')
-          ..write('lessonId: $lessonId, ')
-          ..write('courseId: $courseId, ')
-          ..write('percentComplete: $percentComplete, ')
-          ..write('lastAccessedAt: $lastAccessedAt')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(userId, lessonId, courseId, percentComplete, lastAccessedAt);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is UserProgressTableData &&
-          other.userId == this.userId &&
-          other.lessonId == this.lessonId &&
-          other.courseId == this.courseId &&
-          other.percentComplete == this.percentComplete &&
-          other.lastAccessedAt == this.lastAccessedAt);
-}
-
-class UserProgressTableCompanion
-    extends UpdateCompanion<UserProgressTableData> {
-  final Value<String> userId;
-  final Value<String> lessonId;
-  final Value<String> courseId;
-  final Value<int> percentComplete;
-  final Value<DateTime> lastAccessedAt;
-  final Value<int> rowid;
-  const UserProgressTableCompanion({
-    this.userId = const Value.absent(),
-    this.lessonId = const Value.absent(),
-    this.courseId = const Value.absent(),
-    this.percentComplete = const Value.absent(),
-    this.lastAccessedAt = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  UserProgressTableCompanion.insert({
-    required String userId,
-    required String lessonId,
-    required String courseId,
-    this.percentComplete = const Value.absent(),
-    required DateTime lastAccessedAt,
-    this.rowid = const Value.absent(),
-  }) : userId = Value(userId),
-       lessonId = Value(lessonId),
-       courseId = Value(courseId),
-       lastAccessedAt = Value(lastAccessedAt);
-  static Insertable<UserProgressTableData> custom({
-    Expression<String>? userId,
-    Expression<String>? lessonId,
-    Expression<String>? courseId,
-    Expression<int>? percentComplete,
-    Expression<DateTime>? lastAccessedAt,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (userId != null) 'user_id': userId,
-      if (lessonId != null) 'lesson_id': lessonId,
-      if (courseId != null) 'course_id': courseId,
-      if (percentComplete != null) 'percent_complete': percentComplete,
-      if (lastAccessedAt != null) 'last_accessed_at': lastAccessedAt,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  UserProgressTableCompanion copyWith({
-    Value<String>? userId,
-    Value<String>? lessonId,
-    Value<String>? courseId,
-    Value<int>? percentComplete,
-    Value<DateTime>? lastAccessedAt,
-    Value<int>? rowid,
-  }) {
-    return UserProgressTableCompanion(
-      userId: userId ?? this.userId,
-      lessonId: lessonId ?? this.lessonId,
-      courseId: courseId ?? this.courseId,
-      percentComplete: percentComplete ?? this.percentComplete,
-      lastAccessedAt: lastAccessedAt ?? this.lastAccessedAt,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (userId.present) {
-      map['user_id'] = Variable<String>(userId.value);
-    }
-    if (lessonId.present) {
-      map['lesson_id'] = Variable<String>(lessonId.value);
-    }
-    if (courseId.present) {
-      map['course_id'] = Variable<String>(courseId.value);
-    }
-    if (percentComplete.present) {
-      map['percent_complete'] = Variable<int>(percentComplete.value);
-    }
-    if (lastAccessedAt.present) {
-      map['last_accessed_at'] = Variable<DateTime>(lastAccessedAt.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('UserProgressTableCompanion(')
-          ..write('userId: $userId, ')
-          ..write('lessonId: $lessonId, ')
-          ..write('courseId: $courseId, ')
-          ..write('percentComplete: $percentComplete, ')
-          ..write('lastAccessedAt: $lastAccessedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4198,8 +3878,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final $ForumThreadsTableTable forumThreadsTable =
       $ForumThreadsTableTable(this);
-  late final $UserProgressTableTable userProgressTable =
-      $UserProgressTableTable(this);
   late final $AppSettingsTableTable appSettingsTable = $AppSettingsTableTable(
     this,
   );
@@ -4214,7 +3892,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     lessonsTable,
     liveClassesTable,
     forumThreadsTable,
-    userProgressTable,
     appSettingsTable,
     usersTable,
   ];
@@ -4734,6 +4411,7 @@ typedef $$LessonsTableTableCreateCompanionBuilder =
       Value<int?> lessonNumber,
       Value<int?> totalLessons,
       Value<bool> isBookmarked,
+      Value<DateTime?> lastAccessedAt,
       Value<int> rowid,
     });
 typedef $$LessonsTableTableUpdateCompanionBuilder =
@@ -4754,6 +4432,7 @@ typedef $$LessonsTableTableUpdateCompanionBuilder =
       Value<int?> lessonNumber,
       Value<int?> totalLessons,
       Value<bool> isBookmarked,
+      Value<DateTime?> lastAccessedAt,
       Value<int> rowid,
     });
 
@@ -4843,6 +4522,11 @@ class $$LessonsTableTableFilterComposer
 
   ColumnFilters<bool> get isBookmarked => $composableBuilder(
     column: $table.isBookmarked,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastAccessedAt => $composableBuilder(
+    column: $table.lastAccessedAt,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -4935,6 +4619,11 @@ class $$LessonsTableTableOrderingComposer
     column: $table.isBookmarked,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<DateTime> get lastAccessedAt => $composableBuilder(
+    column: $table.lastAccessedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$LessonsTableTableAnnotationComposer
@@ -5011,6 +4700,11 @@ class $$LessonsTableTableAnnotationComposer
     column: $table.isBookmarked,
     builder: (column) => column,
   );
+
+  GeneratedColumn<DateTime> get lastAccessedAt => $composableBuilder(
+    column: $table.lastAccessedAt,
+    builder: (column) => column,
+  );
 }
 
 class $$LessonsTableTableTableManager
@@ -5060,6 +4754,7 @@ class $$LessonsTableTableTableManager
                 Value<int?> lessonNumber = const Value.absent(),
                 Value<int?> totalLessons = const Value.absent(),
                 Value<bool> isBookmarked = const Value.absent(),
+                Value<DateTime?> lastAccessedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LessonsTableCompanion(
                 id: id,
@@ -5078,6 +4773,7 @@ class $$LessonsTableTableTableManager
                 lessonNumber: lessonNumber,
                 totalLessons: totalLessons,
                 isBookmarked: isBookmarked,
+                lastAccessedAt: lastAccessedAt,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -5098,6 +4794,7 @@ class $$LessonsTableTableTableManager
                 Value<int?> lessonNumber = const Value.absent(),
                 Value<int?> totalLessons = const Value.absent(),
                 Value<bool> isBookmarked = const Value.absent(),
+                Value<DateTime?> lastAccessedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LessonsTableCompanion.insert(
                 id: id,
@@ -5116,6 +4813,7 @@ class $$LessonsTableTableTableManager
                 lessonNumber: lessonNumber,
                 totalLessons: totalLessons,
                 isBookmarked: isBookmarked,
+                lastAccessedAt: lastAccessedAt,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -5648,223 +5346,6 @@ typedef $$ForumThreadsTableTableProcessedTableManager =
       ForumThreadsTableData,
       PrefetchHooks Function()
     >;
-typedef $$UserProgressTableTableCreateCompanionBuilder =
-    UserProgressTableCompanion Function({
-      required String userId,
-      required String lessonId,
-      required String courseId,
-      Value<int> percentComplete,
-      required DateTime lastAccessedAt,
-      Value<int> rowid,
-    });
-typedef $$UserProgressTableTableUpdateCompanionBuilder =
-    UserProgressTableCompanion Function({
-      Value<String> userId,
-      Value<String> lessonId,
-      Value<String> courseId,
-      Value<int> percentComplete,
-      Value<DateTime> lastAccessedAt,
-      Value<int> rowid,
-    });
-
-class $$UserProgressTableTableFilterComposer
-    extends Composer<_$AppDatabase, $UserProgressTableTable> {
-  $$UserProgressTableTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<String> get userId => $composableBuilder(
-    column: $table.userId,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get lessonId => $composableBuilder(
-    column: $table.lessonId,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get courseId => $composableBuilder(
-    column: $table.courseId,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get percentComplete => $composableBuilder(
-    column: $table.percentComplete,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get lastAccessedAt => $composableBuilder(
-    column: $table.lastAccessedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-}
-
-class $$UserProgressTableTableOrderingComposer
-    extends Composer<_$AppDatabase, $UserProgressTableTable> {
-  $$UserProgressTableTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<String> get userId => $composableBuilder(
-    column: $table.userId,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get lessonId => $composableBuilder(
-    column: $table.lessonId,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get courseId => $composableBuilder(
-    column: $table.courseId,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get percentComplete => $composableBuilder(
-    column: $table.percentComplete,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get lastAccessedAt => $composableBuilder(
-    column: $table.lastAccessedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-}
-
-class $$UserProgressTableTableAnnotationComposer
-    extends Composer<_$AppDatabase, $UserProgressTableTable> {
-  $$UserProgressTableTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<String> get userId =>
-      $composableBuilder(column: $table.userId, builder: (column) => column);
-
-  GeneratedColumn<String> get lessonId =>
-      $composableBuilder(column: $table.lessonId, builder: (column) => column);
-
-  GeneratedColumn<String> get courseId =>
-      $composableBuilder(column: $table.courseId, builder: (column) => column);
-
-  GeneratedColumn<int> get percentComplete => $composableBuilder(
-    column: $table.percentComplete,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<DateTime> get lastAccessedAt => $composableBuilder(
-    column: $table.lastAccessedAt,
-    builder: (column) => column,
-  );
-}
-
-class $$UserProgressTableTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $UserProgressTableTable,
-          UserProgressTableData,
-          $$UserProgressTableTableFilterComposer,
-          $$UserProgressTableTableOrderingComposer,
-          $$UserProgressTableTableAnnotationComposer,
-          $$UserProgressTableTableCreateCompanionBuilder,
-          $$UserProgressTableTableUpdateCompanionBuilder,
-          (
-            UserProgressTableData,
-            BaseReferences<
-              _$AppDatabase,
-              $UserProgressTableTable,
-              UserProgressTableData
-            >,
-          ),
-          UserProgressTableData,
-          PrefetchHooks Function()
-        > {
-  $$UserProgressTableTableTableManager(
-    _$AppDatabase db,
-    $UserProgressTableTable table,
-  ) : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$UserProgressTableTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$UserProgressTableTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$UserProgressTableTableAnnotationComposer(
-                $db: db,
-                $table: table,
-              ),
-          updateCompanionCallback:
-              ({
-                Value<String> userId = const Value.absent(),
-                Value<String> lessonId = const Value.absent(),
-                Value<String> courseId = const Value.absent(),
-                Value<int> percentComplete = const Value.absent(),
-                Value<DateTime> lastAccessedAt = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => UserProgressTableCompanion(
-                userId: userId,
-                lessonId: lessonId,
-                courseId: courseId,
-                percentComplete: percentComplete,
-                lastAccessedAt: lastAccessedAt,
-                rowid: rowid,
-              ),
-          createCompanionCallback:
-              ({
-                required String userId,
-                required String lessonId,
-                required String courseId,
-                Value<int> percentComplete = const Value.absent(),
-                required DateTime lastAccessedAt,
-                Value<int> rowid = const Value.absent(),
-              }) => UserProgressTableCompanion.insert(
-                userId: userId,
-                lessonId: lessonId,
-                courseId: courseId,
-                percentComplete: percentComplete,
-                lastAccessedAt: lastAccessedAt,
-                rowid: rowid,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ),
-      );
-}
-
-typedef $$UserProgressTableTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $UserProgressTableTable,
-      UserProgressTableData,
-      $$UserProgressTableTableFilterComposer,
-      $$UserProgressTableTableOrderingComposer,
-      $$UserProgressTableTableAnnotationComposer,
-      $$UserProgressTableTableCreateCompanionBuilder,
-      $$UserProgressTableTableUpdateCompanionBuilder,
-      (
-        UserProgressTableData,
-        BaseReferences<
-          _$AppDatabase,
-          $UserProgressTableTable,
-          UserProgressTableData
-        >,
-      ),
-      UserProgressTableData,
-      PrefetchHooks Function()
-    >;
 typedef $$AppSettingsTableTableCreateCompanionBuilder =
     AppSettingsTableCompanion Function({
       Value<int> id,
@@ -6388,8 +5869,6 @@ class $AppDatabaseManager {
       $$LiveClassesTableTableTableManager(_db, _db.liveClassesTable);
   $$ForumThreadsTableTableTableManager get forumThreadsTable =>
       $$ForumThreadsTableTableTableManager(_db, _db.forumThreadsTable);
-  $$UserProgressTableTableTableManager get userProgressTable =>
-      $$UserProgressTableTableTableManager(_db, _db.userProgressTable);
   $$AppSettingsTableTableTableManager get appSettingsTable =>
       $$AppSettingsTableTableTableManager(_db, _db.appSettingsTable);
   $$UsersTableTableTableManager get usersTable =>

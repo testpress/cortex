@@ -40,11 +40,6 @@ class HttpDataSource implements DataSource {
         'HttpDataSource.getForumThreads is not yet implemented.',
       );
 
-  @override
-  Future<List<UserProgressDto>> getUserProgress(String userId) =>
-      throw UnimplementedError(
-        'HttpDataSource.getUserProgress is not yet implemented.',
-      );
 
   @override
   Future<List<ExploreBannerDto>> getExploreBanners() =>

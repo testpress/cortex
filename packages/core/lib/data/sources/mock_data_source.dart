@@ -293,7 +293,8 @@ class MockDataSource implements DataSource {
           subjectIndex: 3, // violet
           lessonNumber: 1,
           totalLessons: 8,
-          contentUrl: 'https://drive.google.com/uc?export=download&id=1QxJ4yF2LdlCVSll4NkTXj5bO-nL6Xzol',
+          lastAccessedAt: null, // Initial fetch usually has null if not accessed recently
+          contentUrl: 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf',
         ),
         const LessonDto(
           id: 'thermo-2',
@@ -747,41 +748,6 @@ class MockDataSource implements DataSource {
         ),
       ];
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // User Progress
-  // ─────────────────────────────────────────────────────────────────────────
-
-  @override
-  Future<List<UserProgressDto>> getUserProgress(String userId) async => [
-        UserProgressDto(
-          userId: userId,
-          lessonId: 'thermo-1',
-          courseId: 'jee-main-2026',
-          percentComplete: 100,
-          lastAccessedAt: DateTime.now().subtract(const Duration(hours: 2)),
-        ),
-        UserProgressDto(
-          userId: userId,
-          lessonId: 'thermo-2',
-          courseId: 'jee-main-2026',
-          percentComplete: 67,
-          lastAccessedAt: DateTime.now().subtract(const Duration(minutes: 5)),
-        ),
-        UserProgressDto(
-          userId: userId,
-          lessonId: 'mech-1',
-          courseId: 'jee-main-2026',
-          percentComplete: 100,
-          lastAccessedAt: DateTime.now().subtract(const Duration(days: 1)),
-        ),
-        UserProgressDto(
-          userId: userId,
-          lessonId: 'mech-2',
-          courseId: 'jee-main-2026',
-          percentComplete: 100,
-          lastAccessedAt: DateTime.now().subtract(const Duration(days: 1)),
-        ),
-      ];
 
   // ─────────────────────────────────────────────────────────────────────────
   // Explore
