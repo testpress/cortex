@@ -1,22 +1,22 @@
+import '../db/app_database.dart';
 import 'auth_api_service.dart';
 import 'auth_local_data_source.dart';
 
 class AuthRepository {
   final AuthApiService _apiService;
   final AuthLocalDataSource _localDataSource;
+  final Future<AppDatabase> _database;
 
   AuthRepository({
     required AuthApiService apiService,
     required AuthLocalDataSource localDataSource,
+    required Future<AppDatabase> database,
   })  : _apiService = apiService,
-        _localDataSource = localDataSource;
+        _localDataSource = localDataSource,
+        _database = database;
 
   Future<bool> isUserLoggedIn() async {
     return _localDataSource.isUserLoggedIn();
-  }
-
-  Future<String?> getToken() async {
-    return _localDataSource.getToken();
   }
 
   Future<void> loginWithPassword({
@@ -64,7 +64,9 @@ class AuthRepository {
     } catch (_) {
       // Still logout locally if API fails
     } finally {
-      await clearToken();
+      await _clearToken();
+      final db = await _database;
+      await db.purgeAllData();
     }
   }
 
@@ -72,7 +74,7 @@ class AuthRepository {
     return _apiService.resetPassword(email: email);
   }
 
-  Future<void> clearToken() async {
+  Future<void> _clearToken() async {
     await _localDataSource.clearToken();
   }
 }

@@ -115,7 +115,15 @@ class AppDatabase extends _$AppDatabase {
       into(usersTable).insertOnConflictUpdate(companion);
 
 
-  Future<void> clearUserData() => delete(usersTable).go();
+  /// Wipe all data from all local tables.
+  /// Typically used during logout for a clean factory-reset state.
+  Future<void> purgeAllData() {
+    return transaction(() async {
+      for (final table in allTables) {
+        await delete(table).go();
+      }
+    });
+  }
 
   // ── App Settings ─────────────────────────────────────────────────────────
 

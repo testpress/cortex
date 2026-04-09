@@ -36,15 +36,6 @@ class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
           as _i3.Future<bool>);
 
   @override
-  _i3.Future<String?> getToken() =>
-      (super.noSuchMethod(
-            Invocation.method(#getToken, []),
-            returnValue: _i3.Future<String?>.value(),
-            returnValueForMissingStub: _i3.Future<String?>.value(),
-          )
-          as _i3.Future<String?>);
-
-  @override
   _i3.Future<void> loginWithPassword({
     required String? username,
     required String? password,
@@ -106,15 +97,6 @@ class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
   _i3.Future<void> resetPassword({required String? email}) =>
       (super.noSuchMethod(
             Invocation.method(#resetPassword, [], {#email: email}),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
-          )
-          as _i3.Future<void>);
-
-  @override
-  _i3.Future<void> clearToken() =>
-      (super.noSuchMethod(
-            Invocation.method(#clearToken, []),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),
           )

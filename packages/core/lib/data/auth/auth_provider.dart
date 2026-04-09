@@ -3,12 +3,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'auth_api_service.dart';
 import 'auth_local_data_source.dart';
 import 'auth_repository.dart';
+import '../../network/dio_provider.dart';
 import '../db/database_provider.dart';
 
 part 'auth_provider.g.dart';
 
-final authApiServiceProvider = Provider<AuthApiService>((ref) {
-  return AuthApiService();
+final authApiServiceProvider = Provider((ref) {
+  return AuthApiService(dio: ref.watch(dioProvider));
 });
 
 final authLocalDataSourceProvider = Provider<AuthLocalDataSource>((ref) {
@@ -17,8 +18,9 @@ final authLocalDataSourceProvider = Provider<AuthLocalDataSource>((ref) {
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   return AuthRepository(
-    apiService: ref.read(authApiServiceProvider),
-    localDataSource: ref.read(authLocalDataSourceProvider),
+    apiService: ref.watch(authApiServiceProvider),
+    localDataSource: ref.watch(authLocalDataSourceProvider),
+    database: ref.watch(appDatabaseProvider.future),
   );
 });
 
@@ -72,9 +74,6 @@ class Auth extends _$Auth {
   Future<void> logout() async {
     try {
       await _repository.logout();
-      
-      final db = await ref.read(appDatabaseProvider.future);
-      await db.clearUserData();
       
       state = const AsyncData(false);
     } catch (e) {

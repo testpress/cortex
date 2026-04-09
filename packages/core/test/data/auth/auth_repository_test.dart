@@ -5,11 +5,11 @@ import 'package:core/data/data.dart';
 import 'package:core/data/auth/auth_api_service.dart';
 import 'package:core/data/auth/auth_local_data_source.dart';
 import 'package:core/data/auth/auth_repository.dart';
-import 'package:core/data/auth/types/auth_exception.dart';
 
 @GenerateNiceMocks([
   MockSpec<AuthApiService>(),
   MockSpec<AuthLocalDataSource>(),
+  MockSpec<AppDatabase>(),
 ])
 import 'auth_repository_test.mocks.dart';
 
@@ -17,14 +17,21 @@ void main() {
   late AuthRepository repository;
   late MockAuthApiService mockApi;
   late MockAuthLocalDataSource mockLocal;
+  late MockAppDatabase mockDatabase;
 
   setUp(() {
     mockApi = MockAuthApiService();
     mockLocal = MockAuthLocalDataSource();
+    mockDatabase = MockAppDatabase();
+
     repository = AuthRepository(
       apiService: mockApi,
       localDataSource: mockLocal,
+      database: Future.value(mockDatabase),
     );
+
+    // Mock the database purge call
+    when(mockDatabase.purgeAllData()).thenAnswer((_) async => {});
   });
 
   group('AuthRepository', () {
@@ -73,6 +80,7 @@ void main() {
       verify(mockLocal.getToken()).called(1);
       verify(mockApi.logout(authToken: 'old_token')).called(1);
       verify(mockLocal.clearToken()).called(1);
+      verify(mockDatabase.purgeAllData()).called(1);
     });
 
     test('isUserLoggedIn should delegate to local data source', () async {

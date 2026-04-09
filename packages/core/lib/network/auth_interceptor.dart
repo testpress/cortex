@@ -1,21 +1,57 @@
 import 'package:dio/dio.dart';
+import 'api_endpoints.dart';
 
 /// Attaches the JWT authentication token to the Authorization header.
 /// Fetches the token asynchronously from storage to ensure it's always fresh.
+/// Also handles global 401 Unauthorized responses to trigger session invalidation.
 class AuthInterceptor extends Interceptor {
   final Future<String?> Function() getToken;
+  final void Function()? onUnauthorized;
 
-  const AuthInterceptor(this.getToken);
+  /// Paths that should not have an Authorization header attached.
+  static const _authFlowPaths = [
+    ApiEndpoints.login,
+    ApiEndpoints.generateOtp,
+    ApiEndpoints.verifyOtp,
+    ApiEndpoints.resetPassword,
+  ];
+
+  const AuthInterceptor({
+    required this.getToken,
+    this.onUnauthorized,
+  });
 
   @override
   void onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    final token = await getToken();
-    if (token != null && token.isNotEmpty) {
-      options.headers['Authorization'] = 'JWT $token';
+    // Skip attaching token for login related paths
+    final isAuthFlowPath = _authFlowPaths.any((path) => options.path.contains(path));
+    
+    if (!isAuthFlowPath) {
+      final token = await getToken();
+      if (token != null && token.isNotEmpty) {
+        options.headers['Authorization'] = 'JWT $token';
+      }
     }
+    
     handler.next(options);
+  }
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) {
+    if (err.response?.statusCode == 401) {
+      final isAuthFlowPath = _authFlowPaths.any(
+        (path) => err.requestOptions.path.contains(path),
+      );
+      
+      final isLogoutRequest = err.requestOptions.path.contains(ApiEndpoints.logout);
+
+      if (!isAuthFlowPath && !isLogoutRequest) {
+        onUnauthorized?.call();
+      }
+    }
+    super.onError(err, handler);
   }
 }

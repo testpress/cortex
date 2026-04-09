@@ -1,0 +1,35 @@
+## 1. Network Layer & UserAgent Refactor
+ 
+- [x] 1.1 Create `dioProvider` in `packages/core/lib/network/dio_provider.dart` using Riverpod.
+- [x] 1.2 Merge `UserAgentHelper.generate()` logic into `UserAgentInterceptor` and delete the helper file.
+- [x] 1.3 Move default interceptor initialization (UserAgentInterceptor) into the `dioProvider`.
+- [x] 1.4 Unify the User-Agent prefix to `flutter-app` across all platforms.
+ 
+## 2. Smart Auth Interceptor
+ 
+- [x] 2.1 Refactor `AuthInterceptor` in `packages/core/lib/network/auth_interceptor.dart` to include a `publicPaths` exclusion list.
+- [x] 2.2 Implement `onError` in `AuthInterceptor` to catch 401 status codes.
+- [x] 2.3 Ensure Interceptor's `getToken` callback reads from `authLocalDataSourceProvider` (not repository) to break circularity.
+- [x] 2.4 Handle global logout by injecting a `onUnauthorized` callback into the Interceptor.
+ 
+## 3. Dependency Injection Refactor
+ 
+- [x] 3.1 Update `AuthApiService` constructor in `packages/core/lib/data/auth/auth_api_service.dart` to require `Dio dio` and remove internal initialization.
+- [x] 3.2 Update `HttpDataSource` constructor in `packages/core/lib/data/sources/http_data_source.dart` to require `Dio dio` and remove internal initialization.
+- [x] 3.3 Update `authApiServiceProvider` in `packages/core/lib/data/auth/auth_provider.dart` to inject `ref.watch(dioProvider)`.
+- [x] 3.4 Create or update the provider for `HttpDataSource` to inject `ref.watch(dioProvider)`.
+ 
+## 4. Validation
+ 
+- [x] 4.1 Verify that the application still boots correctly and restores auth state.
+- [x] 4.2 Verify that login requests do NOT have an Authorization header attached by the interceptor.
+- [x] 4.3 Verify that general data requests (e.g., profile) still include the Authorization header.
+- [x] 4.4 Simulate a 401 error and verify it triggers a global logout and redirect to the login screen.
+ 
+## 5. Architectural Cleanup & Data Purge Strategy
+ 
+- [x] 5.1 Move local data purging logic (`purgeAllData`) from `AuthProvider` to `AuthRepository`.
+- [x] 5.2 Inject `AppDatabase` (via future) into `AuthRepository` constructor.
+- [x] 5.3 Update `authRepositoryProvider` in `auth_provider.dart` to resolve the database dependency.
+- [x] 5.4 Update `AuthProvider.logout()` to be a high-level orchestration call only.
+- [x] 5.5 Delete `NetworkProvider` class and move its logic to `dio_provider.dart` as top-level functions.
