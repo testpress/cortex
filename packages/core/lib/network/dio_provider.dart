@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/config/app_config.dart';
 import '../data/auth/auth_provider.dart';
-import '../data/exceptions/api_exception.dart';
 import 'user_agent_interceptor.dart';
 import 'auth_interceptor.dart';
 
@@ -32,19 +31,3 @@ final Provider<Dio> dioProvider = Provider<Dio>((ref) {
   return dio;
 });
 
-
-/// Orchestrates a network request with standardized error handling.
-/// Converts [DioException] into our semantic [ApiException].
-Future<T> performNetworkRequest<T>(
-  Future<Response<Map<String, dynamic>>> request, {
-  required T Function(Map<String, dynamic>) fromJson,
-}) async {
-  try {
-    final response = await request;
-    return fromJson(response.data ?? {});
-  } on DioException catch (error) {
-    throw ApiException.fromDioException(error);
-  } catch (e) {
-    throw ApiException('An unexpected error occurred: $e');
-  }
-}

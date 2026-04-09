@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:core/data/data.dart';
 import '../../network/api_endpoints.dart';
-import '../../network/dio_provider.dart';
+import '../../network/network_utils.dart';
 
 /// HTTP data source stub — to be implemented when a real backend is available.
 /// All methods throw [UnimplementedError] to surface accidental usage in tests.
