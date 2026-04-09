@@ -30,9 +30,7 @@ class PopularTestsSection extends StatelessWidget {
                 ),
               ),
               GestureDetector(
-                onTap: () {
-                  // TODO: Implement navigation to the full list of popular tests.
-                },
+                  onTap: () => context.go('/study'),
                 child: AppText.labelBold(
                   l10n.viewAllAction,
                   color: design.colors.textPrimary,

@@ -175,7 +175,7 @@ class _AppearanceSection extends ConsumerWidget {
             ),
           ),
           loading: () => const Center(child: AppLoadingIndicator()),
-          error: (_, __) => const AppErrorView(),
+          error: (_, _) => const AppErrorView(),
         ),
       ],
     );
@@ -263,7 +263,7 @@ class _PlaybackSection extends ConsumerWidget {
             ),
           ),
           loading: () => const Center(child: AppLoadingIndicator()),
-          error: (_, __) => const AppErrorView(),
+          error: (_, _) => const AppErrorView(),
         ),
       ],
     );
@@ -410,7 +410,7 @@ class _AccessibilitySection extends ConsumerWidget {
             ),
           ),
           loading: () => const Center(child: AppLoadingIndicator()),
-          error: (_, __) => const AppErrorView(),
+          error: (_, _) => const AppErrorView(),
         ),
       ],
     );

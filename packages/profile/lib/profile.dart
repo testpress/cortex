@@ -1,4 +1,4 @@
-library profile;
+library;
 
 export 'screens/login_screen.dart';
 export 'screens/password_login_screen.dart';

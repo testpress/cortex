@@ -9,6 +9,6 @@ final designModeProvider = Provider<DesignMode>((ref) {
   return settings.when(
     data: (s) => s.mode,
     loading: () => DesignMode.system,
-    error: (_, __) => DesignMode.system,
+    error: (_, _) => DesignMode.system,
   );
 });

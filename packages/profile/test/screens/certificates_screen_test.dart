@@ -14,7 +14,7 @@ class MockAuth extends Auth {
 }
 
 void main() {
-  ProviderScope _buildScope({required Widget child}) {
+  ProviderScope buildScope({required Widget child}) {
     return ProviderScope(
       overrides: [
         authProvider.overrideWith(MockAuth.new),
@@ -38,8 +38,8 @@ void main() {
     );
   }
 
-  Widget _wrap(Widget child) {
-    return _buildScope(
+  Widget wrap(Widget child) {
+    return buildScope(
       child: DesignProvider(
         config: DesignConfig.defaults(),
         child: LocalizationProvider(
@@ -61,8 +61,8 @@ void main() {
     );
   }
 
-  Widget _wrapRouter(GoRouter router) {
-    return _buildScope(
+  Widget wrapRouter(GoRouter router) {
+    return buildScope(
       child: DesignProvider(
         config: DesignConfig.defaults(),
         child: LocalizationProvider(
@@ -86,7 +86,7 @@ void main() {
   group('CertificatesScreen', () {
     testWidgets('renders paid-active certificates list', (tester) async {
       await tester.pumpWidget(
-        _wrap(CertificatesScreen(onBack: () {}, onOpenPreview: (_) {})),
+        wrap(CertificatesScreen(onBack: () {}, onOpenPreview: (_) {})),
       );
       await tester.pumpAndSettle();
 
@@ -102,7 +102,7 @@ void main() {
       CourseCertificate? opened;
 
       await tester.pumpWidget(
-        _wrap(
+        wrap(
           CertificatesScreen(
             onBack: () {},
             onOpenPreview: (certificate) => opened = certificate,
@@ -164,7 +164,7 @@ void main() {
         ],
       );
 
-      await tester.pumpWidget(_wrapRouter(router));
+      await tester.pumpWidget(wrapRouter(router));
       await tester.pumpAndSettle();
 
       final profileL10n = L10n.of(tester.element(find.byType(ProfilePage)));

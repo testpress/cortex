@@ -39,10 +39,10 @@ class UserActionsController extends _$UserActionsController {
     final userRepository = await ref.read(userRepositoryProvider.future);
     
     await userRepository.updateProfile({
-      if (firstName != null) 'first_name': firstName,
-      if (lastName != null) 'last_name': lastName,
-      if (phone != null) 'phone': phone,
-      if (photo != null) 'photo': photo,
+      'first_name': ?firstName,
+      'last_name': ?lastName,
+      'phone': ?phone,
+      'photo': ?photo,
     });
   }
 }

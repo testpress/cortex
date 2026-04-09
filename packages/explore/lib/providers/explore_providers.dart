@@ -1,5 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:core/data/data.dart';
+
 import 'package:exams/exams.dart';
 
 part 'explore_providers.g.dart';

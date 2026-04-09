@@ -67,7 +67,7 @@ class ProfilePage extends ConsumerWidget {
                             () => context.pushNamed('profile-edit'),
                       ),
                       loading: () => const SizedBox(height: 100),
-                      error: (err, __) => const SizedBox(height: 100),
+                      error: (err, _) => const SizedBox(height: 100),
                     ),
 
                     SizedBox(height: design.spacing.xl),
@@ -82,7 +82,7 @@ class ProfilePage extends ConsumerWidget {
                         focusNeededIn: stats.weakSubject,
                       ),
                       loading: () => const SizedBox(height: 200),
-                      error: (err, __) => AppErrorView(
+                      error: (err, _) => AppErrorView(
                         message: err.toString(),
                         onRetry: () => ref.invalidate(studyMomentumProvider),
                       ),
@@ -95,7 +95,7 @@ class ProfilePage extends ConsumerWidget {
                       data: (courses) =>
                           EnrolledCoursesSection(courses: courses),
                       loading: () => const SizedBox(height: 150),
-                      error: (err, __) => AppErrorView(
+                      error: (err, _) => AppErrorView(
                         message: err.toString(),
                         onRetry: () =>
                             ref.invalidate(profileEnrollmentProvider),
@@ -109,7 +109,7 @@ class ProfilePage extends ConsumerWidget {
                       data: (activities) =>
                           RecentActivitySection(activities: activities),
                       loading: () => const SizedBox(height: 120),
-                      error: (err, __) => AppErrorView(
+                      error: (err, _) => AppErrorView(
                         message: err.toString(),
                         onRetry: () =>
                             ref.invalidate(profileRecentActivityProvider),

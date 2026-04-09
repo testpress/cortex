@@ -1,6 +1,4 @@
 import 'package:core/data/data.dart';
-import 'data_source.dart';
-import 'mock_data.dart';
 
 /// In-process mock data source with hardcoded JEE/NEET coaching institute data.
 /// Implements [DataSource]; no network calls are made.

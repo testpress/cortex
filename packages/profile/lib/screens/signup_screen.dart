@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:core/core.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SignupScreen extends ConsumerStatefulWidget {
@@ -14,7 +13,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _isBusy = false;
+  final bool _isBusy = false;
 
   @override
   void dispose() {

@@ -1,6 +1,7 @@
 /// Unified Foundation for the Cortex App.
 /// This barrel file re-exports all shared models, database infrastructure,
 /// auth providers, and repositories.
+library;
 
 // Config
 export 'config/app_config.dart';

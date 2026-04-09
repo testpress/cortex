@@ -14,7 +14,7 @@ class MockAuth extends Auth {
 }
 
 void main() {
-  ProviderScope _buildScope({required Widget child}) {
+  ProviderScope buildScope({required Widget child}) {
     return ProviderScope(
       overrides: [
         authProvider.overrideWith(MockAuth.new),
@@ -37,8 +37,8 @@ void main() {
     );
   }
 
-  Widget _wrap(Widget child) {
-    return _buildScope(
+  Widget wrap(Widget child) {
+    return buildScope(
       child: DesignProvider(
         config: DesignConfig.defaults(),
         child: LocalizationProvider(
@@ -60,8 +60,8 @@ void main() {
     );
   }
 
-  Widget _wrapRouter(GoRouter router) {
-    return _buildScope(
+  Widget wrapRouter(GoRouter router) {
+    return buildScope(
       child: DesignProvider(
         config: DesignConfig.defaults(),
         child: LocalizationProvider(
@@ -87,7 +87,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        _wrap(const NotificationsScreen(onBack: _dummyBack)),
+        wrap(const NotificationsScreen(onBack: dummyBack)),
       );
       await tester.pumpAndSettle();
 
@@ -105,7 +105,7 @@ void main() {
       'uses expected default toggle states and updates independently',
       (tester) async {
         await tester.pumpWidget(
-          _wrap(const NotificationsScreen(onBack: _dummyBack)),
+          wrap(const NotificationsScreen(onBack: dummyBack)),
         );
         await tester.pumpAndSettle();
 
@@ -166,7 +166,7 @@ void main() {
         ],
       );
 
-      await tester.pumpWidget(_wrapRouter(router));
+      await tester.pumpWidget(wrapRouter(router));
       await tester.pumpAndSettle();
 
       final profileL10n = L10n.of(tester.element(find.byType(ProfilePage)));
@@ -198,4 +198,4 @@ void main() {
   });
 }
 
-void _dummyBack() {}
+void dummyBack() {}

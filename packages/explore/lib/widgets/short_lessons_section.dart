@@ -30,9 +30,7 @@ class ShortLessonsSection extends StatelessWidget {
                 ),
               ),
               GestureDetector(
-                onTap: () {
-                  // TODO: Implement navigation to the full list of short lessons.
-                },
+                onTap: () => context.go('/study'),
                 child: AppText.labelBold(
                   l10n.viewAllAction,
                   color: design.colors.textPrimary,
@@ -112,9 +110,7 @@ class _ShortLessonCard extends StatelessWidget {
                     // Play Button Overlay
                     Center(
                       child: GestureDetector(
-                        onTap: () {
-                          // TODO: Implement navigation to the video player.
-                        },
+                        onTap: () => context.push('/study/video/${lesson.id}'),
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
