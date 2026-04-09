@@ -226,7 +226,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   builder: (context, state) {
                     final lessonArg = state.extra as Lesson?;
                     if (lessonArg != null) {
-                      return LessonDetailScreen(lesson: lessonArg);
+                      return PdfLessonDetailScreen(lesson: lessonArg);
                     }
 
                     final id = state.pathParameters['id']!;
@@ -240,7 +240,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                                 child: Text('Lesson not found'),
                               );
                             }
-                            return LessonDetailScreen(lesson: lesson);
+                            return PdfLessonDetailScreen(lesson: lesson);
                           },
                           loading: () => Container(
                             color: const Color(0xFFFFFFFF),

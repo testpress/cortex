@@ -9,18 +9,16 @@ import '../widgets/lesson_detail/lesson_navigation_footer.dart';
 import '../widgets/lesson_detail/pdf_viewer.dart';
 import '../providers/lesson_detail_provider.dart';
 
-/// Fullscreen reader for text-based lessons.
-///
-/// Supports rich content rendering, reading progress tracking, and navigation.
-class LessonDetailScreen extends ConsumerStatefulWidget {
-  const LessonDetailScreen({
+/// Specialized reader for PDF-based lessons.
+class PdfLessonDetailScreen extends ConsumerStatefulWidget {
+  const PdfLessonDetailScreen({
     super.key,
     required this.lesson,
     this.onNext,
     this.onPrevious,
   });
 
-  /// The lesson domain model to render.
+  /// The PDF lesson to render.
   final Lesson lesson;
 
   /// Optional callback to navigate to the next lesson.
@@ -30,61 +28,14 @@ class LessonDetailScreen extends ConsumerStatefulWidget {
   final VoidCallback? onPrevious;
 
   @override
-  ConsumerState<LessonDetailScreen> createState() => _LessonDetailScreenState();
+  ConsumerState<PdfLessonDetailScreen> createState() =>
+      _PdfLessonDetailScreenState();
 }
 
-class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
-  final ScrollController _scrollController = ScrollController();
+class _PdfLessonDetailScreenState extends ConsumerState<PdfLessonDetailScreen> {
   double _readingProgress = 0.0;
   bool _showDownloadFeedback = false;
   bool _alreadyMarkedComplete = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
-
-  @override
-  void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  /// Calculates reading progress based on scroll position.
-  void _onScroll() {
-    if (!_scrollController.hasClients) return;
-
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.offset;
-
-    // Avoid division by zero if content is shorter than the viewport
-    if (maxScroll <= 0) {
-      if (_readingProgress != 1.0) {
-        setState(() => _readingProgress = 1.0);
-        if (widget.lesson.progressStatus != LessonProgressStatus.completed) {
-          _markAsCompleted();
-        }
-      }
-      return;
-    }
-
-    final newProgress = (currentScroll / maxScroll).clamp(0.0, 1.0);
-    if ((newProgress - _readingProgress).abs() > 0.01) {
-      setState(() {
-        _readingProgress = newProgress;
-      });
-
-      // Mark as completed if scroll exceeds 99%
-      if (newProgress >= 0.99 &&
-          !_alreadyMarkedComplete &&
-          widget.lesson.progressStatus != LessonProgressStatus.completed) {
-        _alreadyMarkedComplete = true;
-        _markAsCompleted();
-      }
-    }
-  }
 
   Future<void> _markAsCompleted() async {
     final repository = await ref.read(courseRepositoryProvider.future);
@@ -134,13 +85,38 @@ class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
               LessonReadingProgressBar(
                 progress: _readingProgress,
                 foregroundColor: subjectColors?.accent,
-                animationDuration: widget.lesson.type == LessonType.pdf
-                    ? const Duration(milliseconds: 50)
-                    : const Duration(milliseconds: 300),
+                animationDuration: const Duration(milliseconds: 50),
               ),
-              // Main Content Area
+              // Main PDF Content Area
               Expanded(
-                child: _buildMediaContent(context, design, subjectColors),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: widget.lesson.contentUrl != null
+                          ? AppPdfViewer(
+                              url: widget.lesson.contentUrl!,
+                              onProgressChanged: (progress) {
+                                setState(() => _readingProgress = progress);
+
+                                if (progress >= 0.99 &&
+                                    !_alreadyMarkedComplete &&
+                                    widget.lesson.progressStatus !=
+                                        LessonProgressStatus.completed) {
+                                  _alreadyMarkedComplete = true;
+                                  _markAsCompleted();
+                                }
+                              },
+                            )
+                          : Center(
+                              child: AppText.body(
+                                L10n.of(context).chapterNoContent,
+                                color: design.colors.textSecondary,
+                              ),
+                            ),
+                    ),
+                    _buildNavigationFooter(design),
+                  ],
+                ),
               ),
             ],
           ),
@@ -156,49 +132,6 @@ class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
     );
   }
 
-  Widget _buildMediaContent(
-    BuildContext context,
-    DesignConfig design,
-    dynamic subjectColors,
-  ) {
-    // PDF Lesson: Render the new premium PDF viewer
-    if (widget.lesson.type == LessonType.pdf &&
-        widget.lesson.contentUrl != null) {
-      return Column(
-        children: [
-          Expanded(
-            child: AppPdfViewer(
-              url: widget.lesson.contentUrl!,
-              onProgressChanged: (progress) {
-                setState(() => _readingProgress = progress);
-
-                // Mark as completed if progress exceeds 99%
-                if (progress >= 0.99 &&
-                    !_alreadyMarkedComplete &&
-                    widget.lesson.progressStatus !=
-                        LessonProgressStatus.completed) {
-                  _alreadyMarkedComplete = true;
-                  _markAsCompleted();
-                }
-              },
-            ),
-          ),
-          _buildNavigationFooter(design),
-        ],
-      );
-    }
-
-    // Video Lesson: For now, fallback or empty (will be consolidated later or handled by VideoDetailScreen)
-    if (widget.lesson.type == LessonType.video) {
-      return const Center(child: AppText.body('Video content coming soon...'));
-    }
-
-    // Fallback: Empty state or assessment placeholder
-    return Center(
-      child: AppText.body('No content available for this lesson type'),
-    );
-  }
-
   Widget _buildNavigationFooter(DesignConfig design) {
     return Padding(
       padding: EdgeInsets.all(design.spacing.md),
@@ -211,8 +144,6 @@ class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
     );
   }
 }
-
-
 
 class _CustomToast extends StatelessWidget {
   const _CustomToast({required this.message});
