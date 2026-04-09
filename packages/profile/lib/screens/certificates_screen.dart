@@ -79,7 +79,7 @@ class _CertificatesHeader extends StatelessWidget {
     );
   }
 
-  BoxDecoration _headerDecoration(Design design) => BoxDecoration(
+  BoxDecoration _headerDecoration(DesignConfig design) => BoxDecoration(
         color: design.isDark ? design.colors.surface : design.colors.card,
         border: Border(bottom: BorderSide(color: design.colors.border)),
       );
@@ -145,7 +145,6 @@ class _CertificatesBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final l10n = L10n.of(context);
 
     return AppScroll(
       padding: EdgeInsets.fromLTRB(
@@ -155,7 +154,7 @@ class _CertificatesBody extends StatelessWidget {
         design.spacing.xxl,
       ),
       children: [
-        _ScreenTitle(l10n: l10n, design: design),
+        const _ScreenTitle(),
         SizedBox(height: design.spacing.lg),
         _CertificateList(
           certificates: certificates,
@@ -169,13 +168,13 @@ class _CertificatesBody extends StatelessWidget {
 }
 
 class _ScreenTitle extends StatelessWidget {
-  const _ScreenTitle({required this.l10n, required this.design});
-
-  final L10n l10n;
-  final Design design;
+  const _ScreenTitle();
 
   @override
   Widget build(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -319,7 +318,7 @@ class _CardHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final l10n = L10n.of(context);
+
 
     return Container(
       padding: EdgeInsets.all(design.spacing.md),
@@ -329,14 +328,14 @@ class _CardHeader extends StatelessWidget {
           _StatusIcon(certificate: certificate),
           SizedBox(width: design.spacing.sm),
           Expanded(
-            child: _StatusLabel(certificate: certificate, l10n: l10n),
+            child: _StatusLabel(certificate: certificate),
           ),
         ],
       ),
     );
   }
 
-  LinearGradient _headerGradient(Design design) {
+  LinearGradient _headerGradient(DesignConfig design) {
     final lockedColors = [
       design.colors.textTertiary,
       design.colors.textSecondary,
@@ -381,14 +380,14 @@ class _StatusIcon extends StatelessWidget {
 }
 
 class _StatusLabel extends StatelessWidget {
-  const _StatusLabel({required this.certificate, required this.l10n});
+  const _StatusLabel({required this.certificate});
 
   final CourseCertificate certificate;
-  final L10n l10n;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     final badgeText = certificate.isLocked
         ? l10n.certificatesLockedBadge
         : l10n.certificatesUnlockedBadge;
@@ -488,31 +487,27 @@ class _ProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final l10n = L10n.of(context);
 
     return Column(
       children: [
-        _ProgressLabel(progress: progress, l10n: l10n, design: design),
+        _ProgressLabel(progress: progress),
         SizedBox(height: design.spacing.xs),
-        _ProgressTrack(progress: progress, design: design),
+        _ProgressTrack(progress: progress),
       ],
     );
   }
 }
 
 class _ProgressLabel extends StatelessWidget {
-  const _ProgressLabel({
-    required this.progress,
-    required this.l10n,
-    required this.design,
-  });
+  const _ProgressLabel({required this.progress});
 
   final int progress;
-  final L10n l10n;
-  final Design design;
 
   @override
   Widget build(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -530,13 +525,13 @@ class _ProgressLabel extends StatelessWidget {
 }
 
 class _ProgressTrack extends StatelessWidget {
-  const _ProgressTrack({required this.progress, required this.design});
+  const _ProgressTrack({required this.progress});
 
   final int progress;
-  final Design design;
 
   @override
   Widget build(BuildContext context) {
+    final design = Design.of(context);
     return Container(
       height: design.spacing.xs,
       decoration: BoxDecoration(
@@ -546,19 +541,18 @@ class _ProgressTrack extends StatelessWidget {
       child: FractionallySizedBox(
         widthFactor: progress / 100,
         alignment: Alignment.centerLeft,
-        child: _ProgressFill(design: design),
+        child: const _ProgressFill(),
       ),
     );
   }
 }
 
 class _ProgressFill extends StatelessWidget {
-  const _ProgressFill({required this.design});
-
-  final Design design;
+  const _ProgressFill();
 
   @override
   Widget build(BuildContext context) {
+    final design = Design.of(context);
     return Container(
       decoration: BoxDecoration(
         color: design.colors.accent2,
@@ -633,7 +627,7 @@ class _CompletionDate extends StatelessWidget {
     );
   }
 
-  String _formatCompletionDate(DateTime? date, L10n l10n) {
+  String _formatCompletionDate(DateTime? date, dynamic l10n) {
     if (date == null) return '';
     return DateFormat.yMMMMd(l10n.localeName).format(date);
   }
