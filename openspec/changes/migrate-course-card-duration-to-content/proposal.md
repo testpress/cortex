@@ -4,9 +4,9 @@ The current `CourseCard` displays `totalDuration` (e.g., "180 hrs"), which is of
 
 ## What Changes
 
-- **Core Data Model**: Update `CourseDto` to include a `totalContents` field.
-- **API Mapping**: Update `RemoteCourseDto` to parse `total_contents` from the Testpress API and map it to `CourseDto`.
-- **Local Persistence**: Add a `total_contents` column to `CoursesTable` in Drift and implement a non-destructive migration in `AppDatabase`.
+- **Core Data Model**: Update `CourseDto` to include a `totalContents` (int) field and deprecate `totalDuration`.
+- **API Mapping**: Update `CourseDto.fromJson()` to parse `contents_count` from the Testpress API response and map it to `totalContents`.
+- **Local Persistence**: Add a `totalContents` integer column to `CoursesTable` in Drift and increment the schema version in `AppDatabase`.
 - **Mock Data**: Update `MockDataSource` to provide realistic `totalContents` values for development.
 - **UI Components**: Update `CourseCard` in the `courses` package to display the content count (e.g., "120 contents") instead of the duration string.
 

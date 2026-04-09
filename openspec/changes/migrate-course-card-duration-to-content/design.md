@@ -18,7 +18,7 @@ The `CourseCard` currently displays `totalDuration` (e.g., "180 hrs") as part of
 
 ### 1. Data Model Update
 Add `totalContents` as an `int` to `CourseDto`.
-- Mapping: `total_contents` (API) -> `totalContents` (DTO).
+- Mapping: `contents_count` (API) -> `totalContents` (DTO). Parsed in `CourseDto.fromJson()`
 - Deprecation: Mark `totalDuration` as `@Deprecated` to signal its replacement.
 
 ### 2. Database Schema (v8)
@@ -27,8 +27,11 @@ Add an `IntColumn` for `totalContents` in `CoursesTable`.
 - Migration: Use `m.addColumn(coursesTable, coursesTable.totalContents)` in `AppDatabase.onUpgrade`.
 
 ### 3. Localization
-Add `labelContentsPlural` to `app_en.arb` (and other languages) to handle the "contents" suffix.
-- Value: `"contents"` (English).
+Add two localization entries to `app_en.arb`:
+- `labelContentsPlural`: `"contents"` — a plain label string.
+- `courseContentsCount`: a plural-aware method (e.g., `"{count,plural, =1{1 content} other{{count} contents}}"`) used by `CourseCard` to display the formatted count.
+
+`CourseCard` uses `L10n.of(context).courseContentsCount(course.totalContents)` to render the metadata text.
 
 ### 4. Mock Data
 Update `MockDataSource` to provide `totalContents` values. For existing mock data, we will use a base value (e.g., 100) or calculate it if feasible.
