@@ -19,10 +19,6 @@ class AuthRepository {
     return _localDataSource.isUserLoggedIn();
   }
 
-  Future<String?> getToken() async {
-    return _localDataSource.getToken();
-  }
-
   Future<void> loginWithPassword({
     required String username,
     required String password,
@@ -68,7 +64,7 @@ class AuthRepository {
     } catch (_) {
       // Still logout locally if API fails
     } finally {
-      await clearToken();
+      await _clearToken();
       final db = await _database;
       await db.purgeAllData();
     }
@@ -78,7 +74,7 @@ class AuthRepository {
     return _apiService.resetPassword(email: email);
   }
 
-  Future<void> clearToken() async {
+  Future<void> _clearToken() async {
     await _localDataSource.clearToken();
   }
 }
