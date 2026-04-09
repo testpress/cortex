@@ -6,7 +6,7 @@ part of 'lesson_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$allLessonsHash() => r'0f0d5e4507484e7bd07c2d474a40b4e190d492ba';
+String _$allLessonsHash() => r'2e3abd56f29f24bcccd2ec4671b99e843582e019';
 
 /// Flattens the course/chapter hierarchy into a single stream of all lessons.
 /// This allows for efficient O(N) filtering in the UI.

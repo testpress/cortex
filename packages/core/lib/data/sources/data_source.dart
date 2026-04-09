@@ -1,10 +1,12 @@
 import 'package:core/data/data.dart';
+import '../models/paginated_response_dto.dart';
 
 /// Abstract data source — implemented by [MockDataSource] and [HttpDataSource].
 /// Repositories call these methods to populate the local Drift DB.
 abstract class DataSource {
   /// Fetch all courses available to the current user.
-  Future<List<CourseDto>> getCourses();
+  Future<PaginatedResponseDto<CourseDto>> getCourses(
+      {int page = 1, int pageSize = 10});
 
   /// Fetch chapters for a specific course.
   Future<List<ChapterDto>> getChapters(String courseId);

@@ -1,6 +1,6 @@
 import 'package:core/data/data.dart';
 
-/// In-process mock data source with hardcoded JEE/NEET coaching institute data.
+/// Static mock data source for development and testing.
 /// Implements [DataSource]; no network calls are made.
 /// Data is derived from the React reference design.
 class MockDataSource implements DataSource {
@@ -11,7 +11,25 @@ class MockDataSource implements DataSource {
   // ─────────────────────────────────────────────────────────────────────────
 
   @override
-  Future<List<CourseDto>> getCourses() async => [
+  Future<PaginatedResponseDto<CourseDto>> getCourses({
+    int page = 1,
+    int pageSize = 10,
+  }) async {
+    final results = page <= 3 ? _getMockCourses(page) : <CourseDto>[];
+    final next = page < 3
+        ? 'https://lmsdemo.testpress.in/api/v3/courses/?page=${page + 1}'
+        : null;
+
+    return PaginatedResponseDto(
+      results: results,
+      next: next,
+      count: 15, // Total simulated courses across 3 pages
+    );
+  }
+
+  List<CourseDto> _getMockCourses(int page) {
+    if (page == 1) {
+      return [
         const CourseDto(
           id: 'jee-main-2026',
           title: 'JEE Main 2026',
@@ -63,6 +81,45 @@ class MockDataSource implements DataSource {
           totalLessons: 20,
         ),
       ];
+    } else if (page == 2) {
+      return [
+        const CourseDto(
+          id: 'maths-foundation',
+          title: 'Maths Foundation 2025',
+          colorIndex: 1,
+          chapterCount: 15,
+          totalDuration: '100 hrs',
+          progress: 0,
+          completedLessons: 0,
+          totalLessons: 50,
+        ),
+        const CourseDto(
+          id: 'physics-mastery',
+          title: 'Physics Mastery 2025',
+          colorIndex: 6,
+          chapterCount: 20,
+          totalDuration: '150 hrs',
+          progress: 12,
+          completedLessons: 10,
+          totalLessons: 80,
+        ),
+      ];
+    } else if (page == 3) {
+      return [
+        const CourseDto(
+          id: 'chemistry-revision',
+          title: 'Chemistry Quick Revision',
+          colorIndex: 7,
+          chapterCount: 5,
+          totalDuration: '20 hrs',
+          progress: 100,
+          completedLessons: 20,
+          totalLessons: 20,
+        ),
+      ];
+    }
+    return [];
+  }
 
   // ─────────────────────────────────────────────────────────────────────────
   // Chapters

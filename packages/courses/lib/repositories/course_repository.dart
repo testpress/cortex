@@ -14,26 +14,29 @@ class CourseRepository {
   // ── Courses ──────────────────────────────────────────────────────────────
 
   /// Live stream of all courses from the local DB (single source of truth).
-  Stream<List<CourseDto>> watchCourses() {
-    return _db.watchAllCourses().map(
-          (rows) => rows.map(_rowToCourseDto).toList(),
-        );
+  Stream<List<CoursesTableData>> watchCourses() {
+    return _db.watchAllCourses();
   }
 
-  /// Fetch courses from [DataSource] and persist to local DB.
-  Future<List<CourseDto>> refreshCourses() async {
-    final courses = await _source.getCourses();
-    final companions = courses.map(_courseDtoToCompanion).toList();
-    await _db.upsertCourses(companions);
-    return courses;
+  /// Fetch courses for a specific [page] from [DataSource] and persist to local DB.
+  Future<PaginatedResponseDto<CourseDto>> refreshCourses({
+    int page = 1,
+  }) async {
+    final response = await _source.getCourses(page: page);
+
+    if (response.results.isNotEmpty) {
+      final companions =
+          response.results.map(_courseDtoToCompanion).toList();
+      await _db.upsertCourses(companions);
+    }
+
+    return response;
   }
 
   // ── Chapters ─────────────────────────────────────────────────────────────
 
-  Stream<List<ChapterDto>> watchChapters(String courseId) {
-    return _db
-        .watchChaptersForCourse(courseId)
-        .map((rows) => rows.map(_rowToChapterDto).toList());
+  Stream<List<ChaptersTableData>> watchChapters(String courseId) {
+    return _db.watchChaptersForCourse(courseId);
   }
 
   Future<List<ChapterDto>> refreshChapters(String courseId) async {
@@ -45,10 +48,8 @@ class CourseRepository {
 
   // ── Lessons ───────────────────────────────────────────────────────────────
 
-  Stream<List<LessonDto>> watchLessons(String chapterId) {
-    return _db
-        .watchLessonsForChapter(chapterId)
-        .map((rows) => rows.map(_rowToLessonDto).toList());
+  Stream<List<LessonsTableData>> watchLessons(String chapterId) {
+    return _db.watchLessonsForChapter(chapterId);
   }
 
   Future<List<LessonDto>> refreshLessons(String chapterId) async {
@@ -61,14 +62,12 @@ class CourseRepository {
   /// Direct fetch of a lesson by ID.
   Future<LessonDto?> getLesson(String id) async {
     final row = await _db.getLessonById(id);
-    return row != null ? _rowToLessonDto(row) : null;
+    return row != null ? rowToLessonDto(row) : null;
   }
 
   /// Watch a single lesson by its ID.
-  Stream<LessonDto?> watchLesson(String id) {
-    return _db
-        .watchLesson(id)
-        .map((row) => row != null ? _rowToLessonDto(row) : null);
+  Stream<LessonsTableData?> watchLesson(String id) {
+    return _db.watchLesson(id);
   }
 
   /// Toggles the bookmark status locally.
@@ -103,7 +102,7 @@ class CourseRepository {
   // Mapping helpers
   // ─────────────────────────────────────────────────────────────────────────
 
-  CourseDto _rowToCourseDto(CoursesTableData row) => CourseDto(
+  CourseDto rowToCourseDto(CoursesTableData row) => CourseDto(
         id: row.id,
         title: row.title,
         colorIndex: row.colorIndex,
@@ -112,6 +111,7 @@ class CourseRepository {
         progress: row.progress,
         completedLessons: row.completedLessons,
         totalLessons: row.totalLessons,
+        image: row.image,
       );
 
   CoursesTableCompanion _courseDtoToCompanion(CourseDto dto) =>
@@ -124,9 +124,10 @@ class CourseRepository {
         progress: Value(dto.progress),
         completedLessons: Value(dto.completedLessons),
         totalLessons: dto.totalLessons,
+        image: Value(dto.image),
       );
 
-  ChapterDto _rowToChapterDto(ChaptersTableData row) => ChapterDto(
+  ChapterDto rowToChapterDto(ChaptersTableData row) => ChapterDto(
         id: row.id,
         courseId: row.courseId,
         title: row.title,
@@ -145,7 +146,7 @@ class CourseRepository {
         orderIndex: dto.orderIndex,
       );
 
-  LessonDto _rowToLessonDto(LessonsTableData row) => LessonDto(
+  LessonDto rowToLessonDto(LessonsTableData row) => LessonDto(
         id: row.id,
         chapterId: row.chapterId,
         title: row.title,
