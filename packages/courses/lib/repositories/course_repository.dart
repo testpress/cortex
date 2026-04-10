@@ -34,14 +34,25 @@ class CourseRepository {
             ..where((t) => t.id.equals(courseId)))
           .getSingleOrNull();
 
-      if (courseData == null) return null;
+      CourseDto course;
+      if (courseData != null) {
+        course = rowToCourseDto(courseData);
+      } else {
+        // Search result fallback: Fetch from network but DON'T persist
+        // to avoid cluttering the user's course list.
+        try {
+          course = await _source.getCourseDetail(courseId);
+        } catch (_) {
+          return null; // Both local and remote failed
+        }
+      }
 
       final chaptersData = await (_db.select(_db.chaptersTable)
             ..where((t) => t.courseId.equals(courseId))
             ..orderBy([(t) => OrderingTerm.asc(t.orderIndex)]))
           .get();
 
-      return rowToCourseDto(courseData).copyWith(
+      return course.copyWith(
         chapters: chaptersData.map(rowToChapterDto).toList(),
       );
     });
