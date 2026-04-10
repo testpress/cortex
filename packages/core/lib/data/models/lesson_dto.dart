@@ -24,6 +24,10 @@ class LessonDto {
   final int? lessonNumber;
   final int? totalLessons;
   final bool isBookmarked;
+  final bool isRunning;
+  final bool isUpcoming;
+  final bool hasAttempts;
+  final String? image;
 
   const LessonDto({
     required this.id,
@@ -42,6 +46,10 @@ class LessonDto {
     this.lessonNumber,
     this.totalLessons,
     this.isBookmarked = false,
+    this.isRunning = false,
+    this.isUpcoming = false,
+    this.hasAttempts = false,
+    this.image,
   });
 
   LessonDto copyWith({
@@ -61,6 +69,10 @@ class LessonDto {
     int? lessonNumber,
     int? totalLessons,
     bool? isBookmarked,
+    bool? isRunning,
+    bool? isUpcoming,
+    bool? hasAttempts,
+    String? image,
   }) {
     return LessonDto(
       id: id ?? this.id,
@@ -79,29 +91,61 @@ class LessonDto {
       lessonNumber: lessonNumber ?? this.lessonNumber,
       totalLessons: totalLessons ?? this.totalLessons,
       isBookmarked: isBookmarked ?? this.isBookmarked,
+      isRunning: isRunning ?? this.isRunning,
+      isUpcoming: isUpcoming ?? this.isUpcoming,
+      hasAttempts: hasAttempts ?? this.hasAttempts,
+      image: image ?? this.image,
     );
   }
 
   factory LessonDto.fromJson(Map<String, dynamic> json) {
+    // Utility for safely getting string from dynamic (handles int IDs from API)
+    String? getString(String key) => json[key]?.toString();
+
     return LessonDto(
-      id: json['id'] as String,
-      chapterId: json['chapterId'] as String,
-      title: json['title'] as String,
-      type: LessonType.values.firstWhere((e) => e.name == json['type']),
-      duration: json['duration'] as String,
-      progressStatus: LessonProgressStatus.values
-          .firstWhere((e) => e.name == json['progressStatus']),
-      isLocked: json['isLocked'] as bool,
-      orderIndex: json['orderIndex'] as int,
-      chapterTitle: json['chapterTitle'] as String?,
-      contentUrl: json['contentUrl'] as String?,
+      id: getString('id') ?? '',
+      chapterId: () {
+        final val = json['chapter_id'] ?? json['chapter'] ?? json['chapterId'];
+        if (val is Map) return val['id']?.toString() ?? '';
+        return val?.toString() ?? '';
+      }(),
+      title: json['title'] as String? ?? json['name'] as String? ?? '',
+      type: _parseType(json['content_type'] ?? json['type'] ?? json['kind']),
+      duration: json['duration'] as String? ?? '',
+      progressStatus: _parseStatus(json['state'] ?? json['progressStatus']),
+      isLocked: !(json['active'] as bool? ?? json['isLocked'] == false),
+      orderIndex: (json['order'] as num?)?.toInt() ?? (json['orderIndex'] as num?)?.toInt() ?? 0,
+      chapterTitle: json['chapter_title'] as String? ?? json['chapterTitle'] as String?,
+      contentUrl: json['content_url'] as String? ?? json['url'] as String? ?? json['contentUrl'] as String?,
       subtitle: json['subtitle'] as String?,
-      subjectName: json['subjectName'] as String?,
-      subjectIndex: json['subjectIndex'] as int?,
-      lessonNumber: json['lessonNumber'] as int?,
-      totalLessons: json['totalLessons'] as int?,
-      isBookmarked: json['isBookmarked'] as bool? ?? false,
+      subjectName: json['subject_name'] as String? ?? json['subjectName'] as String?,
+      subjectIndex: (json['subject_index'] as num?)?.toInt() ?? (json['subjectIndex'] as num?)?.toInt(),
+      lessonNumber: (json['lesson_number'] as num?)?.toInt() ?? (json['lessonNumber'] as num?)?.toInt(),
+      totalLessons: (json['total_lessons'] as num?)?.toInt() ?? (json['totalLessons'] as num?)?.toInt(),
+      isBookmarked: json['is_bookmarked'] as bool? ?? json['isBookmarked'] as bool? ?? false,
+      image: json['icon'] as String? ?? json['image'] as String?,
     );
+  }
+
+  static LessonType _parseType(dynamic value) {
+    final s = value?.toString().toLowerCase() ?? '';
+    if (s.contains('video') || s.contains('live') || s.contains('conference')) return LessonType.video;
+    if (s.contains('pdf') || s.contains('notes') || s.contains('attachment')) return LessonType.pdf;
+    
+    // Grouping: Exam and Test are same (Mapped to Test - Orange)
+    if (s.contains('exam') || s.contains('test')) return LessonType.test;
+    
+    // Grouping: Quiz and Assessment are same (Mapped to Assessment - Green)
+    if (s.contains('quiz') || s.contains('assessment')) return LessonType.assessment;
+    
+    return LessonType.video;
+  }
+
+  static LessonProgressStatus _parseStatus(dynamic value) {
+    final s = value?.toString().toLowerCase();
+    if (s == 'completed' || s == '1') return LessonProgressStatus.completed;
+    if (s == 'in_progress' || s == 'started' || s == '0') return LessonProgressStatus.inProgress;
+    return LessonProgressStatus.notStarted;
   }
 
   Map<String, dynamic> toJson() {
@@ -122,6 +166,9 @@ class LessonDto {
       'lessonNumber': lessonNumber,
       'totalLessons': totalLessons,
       'isBookmarked': isBookmarked,
+      'isRunning': isRunning,
+      'isUpcoming': isUpcoming,
+      'hasAttempts': hasAttempts,
     };
   }
 }

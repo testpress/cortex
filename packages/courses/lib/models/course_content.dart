@@ -17,7 +17,11 @@ class Lesson {
     this.lessonNumber,
     this.totalLessons,
     this.isBookmarked = false,
+    this.isRunning = false,
+    this.isUpcoming = false,
+    this.hasAttempts = false,
     this.contentUrl,
+    this.image,
   });
 
   final String id;
@@ -35,6 +39,10 @@ class Lesson {
   final int? lessonNumber;
   final int? totalLessons;
   final String? contentUrl;
+  final bool isRunning;
+  final bool isUpcoming;
+  final bool hasAttempts;
+  final String? image;
 }
 
 /// Domain model for a chapter within a course.

@@ -763,6 +763,18 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
           as _i6.Future<void>);
 
   @override
+  _i6.Stream<List<_i4.LessonsTableData>> watchLessonsForCourse(
+    String? courseId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchLessonsForCourse, [courseId]),
+            returnValue: _i6.Stream<List<_i4.LessonsTableData>>.empty(),
+            returnValueForMissingStub:
+                _i6.Stream<List<_i4.LessonsTableData>>.empty(),
+          )
+          as _i6.Stream<List<_i4.LessonsTableData>>);
+
+  @override
   _i6.Stream<List<_i4.LessonsTableData>> watchLessonsForChapter(
     String? chapterId,
   ) =>
@@ -819,6 +831,15 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
   _i6.Future<void> upsertLessons(List<_i4.LessonsTableCompanion>? rows) =>
       (super.noSuchMethod(
             Invocation.method(#upsertLessons, [rows]),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> deleteLessonsForChapter(String? chapterId) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteLessonsForChapter, [chapterId]),
             returnValue: _i6.Future<void>.value(),
             returnValueForMissingStub: _i6.Future<void>.value(),
           )

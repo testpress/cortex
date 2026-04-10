@@ -9,7 +9,11 @@ part 'course_detail_provider.g.dart';
 Stream<CourseDto?> courseDetail(CourseDetailRef ref, String courseId) async* {
   final repo = await ref.watch(courseRepositoryProvider.future);
   
-  // Note: chapters are now refreshed lazily via subChaptersProvider
+  // Note: chapters are now refreshed lazily via subChaptersProvider.
+  // However, we still trigger background refreshes for chapters and full curriculum 
+  // to ensure local data is available for specific screens (filters, leaf chapters).
+  repo.refreshChapters(courseId).ignore();
+  repo.refreshCourseContents(courseId).ignore();
   yield* repo.watchCourse(courseId);
 }
 
@@ -40,12 +44,10 @@ Stream<List<ChapterDto>> subChapters(
 /// A provider that flattens all lessons for a specific course into a single list.
 /// Used for filtering lessons by type across the entire course.
 @riverpod
-Future<List<LessonDto>> allCourseLessons(
+Stream<List<LessonDto>> allCourseLessons(
   AllCourseLessonsRef ref,
   String courseId,
-) async {
-  final course = await ref.watch(courseDetailProvider(courseId).future);
-  if (course == null) return [];
-
-  return course.chapters.expand((chapter) => chapter.lessons).toList();
+) async* {
+  final repo = await ref.watch(courseRepositoryProvider.future);
+  yield* repo.watchLessonsForCourse(courseId);
 }

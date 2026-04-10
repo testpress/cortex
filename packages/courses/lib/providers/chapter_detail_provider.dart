@@ -13,36 +13,34 @@ Future<Chapter?> chapterDetail(
   String chapterId,
 ) async {
   final repo = await ref.watch(courseRepositoryProvider.future);
-  
-  // 1. Get the chapter data
-  final chapterRow = await ref.watch(StreamProvider((_) => repo.watchChapter(chapterId)).future);
-  if (chapterRow == null) return null;
 
-  // 2. Fetch the course for title
-  final courseStream = repo.watchCourses().map((l) => l.where((c) => c.id == courseId).firstOrNull);
-  final courseRow = await ref.watch(StreamProvider((_) => courseStream).future);
+  // 1. Fetch the chapter directly from DB. 
+  // This ensures we find sub-chapters that aren't in the course's root list.
+  final chapterData = await repo.watchChapter(chapterId).first;
+  if (chapterData == null) return null;
 
-  // 3. Refresh lessons in background
-  repo.refreshLessons(chapterId).ignore();
+  // 2. Fetch lessons for this chapter
+  final lessonsData = await repo.watchLessons(chapterId).first;
 
-  // 4. Watch lessons
-  final lessonsStream = repo.watchLessons(chapterId);
-  final lessonsRow = await ref.watch(StreamProvider((_) => lessonsStream).future);
+  // 3. Get course title for display
+  final courses = await repo.watchCourses().first;
+  final course = courses.where((c) => c.id == courseId).firstOrNull;
 
   return Chapter(
-    id: chapterRow.id,
-    title: chapterRow.title,
-    lessonCount: chapterRow.lessonCount,
-    assessmentCount: chapterRow.assessmentCount,
-    courseTitle: courseRow?.title,
-    image: chapterRow.image,
-    lessons: lessonsRow
+    id: chapterData.id,
+    title: chapterData.title,
+    lessonCount: chapterData.lessonCount,
+    assessmentCount: chapterData.assessmentCount,
+    courseTitle: course?.title,
+    image: chapterData.image,
+    lessons: lessonsData
+        .map((l) => repo.rowToLessonDto(l))
         .map(
           (l) => Lesson(
             id: l.id,
             title: l.title,
-            type: repo.rowToLessonDto(l).type,
-            progressStatus: repo.rowToLessonDto(l).progressStatus,
+            type: l.type,
+            progressStatus: l.progressStatus,
             duration: l.duration,
             isLocked: l.isLocked,
             subtitle: l.subtitle,
@@ -50,7 +48,12 @@ Future<Chapter?> chapterDetail(
             subjectIndex: l.subjectIndex,
             lessonNumber: l.lessonNumber,
             totalLessons: l.totalLessons,
+            isBookmarked: l.isBookmarked,
+            isRunning: l.isRunning,
+            isUpcoming: l.isUpcoming,
+            hasAttempts: l.hasAttempts,
             contentUrl: l.contentUrl,
+            image: l.image,
           ),
         )
         .toList(),

@@ -58,7 +58,27 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
             data: (l) => l,
             orElse: () => <LessonDto>[],
           );
-          final filteredLessons = _filterLessons(lessons, _activeFilter);
+          
+          // Determine the set of valid chapter IDs for the current view.
+          // If we are in a subchapter, we only want lessons from this chapter or its subchapters.
+          final Set<String> validChapterIds = {};
+          if (widget.parentId != null) {
+            validChapterIds.add(widget.parentId!);
+            // Add all descendants of the current parent
+            void addDescendants(String pid) {
+              final allChapters = course?.chapters ?? [];
+              for (var c in allChapters.where((c) => c.parentId == pid)) {
+                validChapterIds.add(c.id);
+                addDescendants(c.id);
+              }
+            }
+            addDescendants(widget.parentId!);
+          }
+
+          final filteredLessons = _filterLessons(lessons, _activeFilter).where((l) {
+            if (widget.parentId == null) return true; // Show all for root level
+            return validChapterIds.contains(l.chapterId);
+          }).toList();
 
           // If we have a parent, use its title, otherwise use course title
           String headerTitle = course?.title ?? 'Curriculum';

@@ -196,6 +196,24 @@ class MockDataSource implements DataSource {
     return lessons;
   }
 
+  @override
+  Future<List<LessonDto>> getRunningContents(String courseId) async {
+    final all = await getCourseContents(courseId);
+    return all.where((l) => l.progressStatus == LessonProgressStatus.inProgress).toList();
+  }
+
+  @override
+  Future<List<LessonDto>> getUpcomingContents(String courseId) async {
+    final all = await getCourseContents(courseId);
+    return all.where((l) => l.progressStatus == LessonProgressStatus.notStarted).toList();
+  }
+
+  @override
+  Future<List<LessonDto>> getContentAttempts(String courseId) async {
+    final all = await getCourseContents(courseId);
+    return all.where((l) => l.progressStatus == LessonProgressStatus.completed).toList();
+  }
+
   List<ChapterDto> _jeeMainChapters() => [
         const ChapterDto(
           id: 'jee-main-ch-1',
