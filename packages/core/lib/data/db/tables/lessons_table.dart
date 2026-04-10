@@ -25,6 +25,12 @@ class LessonsTable extends Table {
   IntColumn get lessonNumber => integer().nullable()();
   IntColumn get totalLessons => integer().nullable()();
   BoolColumn get isBookmarked => boolean().withDefault(const Constant(false))();
+  
+  // Status flags for localized filtering
+  BoolColumn get isRunning => boolean().withDefault(const Constant(false))();
+  BoolColumn get isUpcoming => boolean().withDefault(const Constant(false))();
+  BoolColumn get hasAttempts => boolean().withDefault(const Constant(false))();
+  TextColumn get image => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};

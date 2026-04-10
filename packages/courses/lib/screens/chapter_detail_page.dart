@@ -45,11 +45,11 @@ class ChapterDetailPage extends ConsumerWidget {
           final filteredLessons = chapter.lessons.where((l) {
             switch (activeStatusFilter) {
               case ChapterStatusFilter.running:
-                return l.progressStatus != LessonProgressStatus.notStarted;
+                return l.isRunning; // Primary source of truth from Running Contents API
               case ChapterStatusFilter.upcoming:
-                return l.progressStatus == LessonProgressStatus.notStarted;
+                return l.isUpcoming; // Primary source of truth from Upcoming Contents API
               case ChapterStatusFilter.history:
-                return l.progressStatus == LessonProgressStatus.completed;
+                return l.hasAttempts; // Primary source of truth from Content Attempts API
             }
           }).toList();
 

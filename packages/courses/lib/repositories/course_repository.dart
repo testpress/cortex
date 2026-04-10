@@ -137,11 +137,111 @@ class CourseRepository {
     return _db.watchLessonsForChapter(chapterId);
   }
 
+  /// Watch all lessons belonging to any chapter within a course.
+  Stream<List<LessonDto>> watchLessonsForCourse(String courseId) {
+    return _db.watchLessonsForCourse(courseId).map(
+          (rows) => rows.map((row) => rowToLessonDto(row)).toList(),
+        );
+  }
+
   Future<List<LessonDto>> refreshLessons(String chapterId) async {
     final lessons = await _source.getLessons(chapterId);
     final companions = lessons.map(_lessonDtoToCompanion).toList();
+    
+    // Clear old data for this specific chapter to ensure we remove any corrupted entries
+    // (e.g. chapters previously parsed as lessons, or misaligned associations)
+    await _db.deleteLessonsForChapter(chapterId);
+    
     await _db.upsertLessons(companions);
     return lessons;
+  }
+
+  Future<void> refreshCourseContents(String courseId) async {
+    try {
+      final remote = await _fetchRemoteCourseData(courseId);
+      final harmonized = await _harmonizeLessons(courseId, remote);
+      final companions = _applyContentStatuses(harmonized, remote);
+
+      if (companions.isNotEmpty) {
+        await _db.upsertLessons(companions);
+      }
+    } catch (_) {}
+  }
+
+  Future<
+      ({
+        List<LessonDto> all,
+        List<LessonDto> running,
+        List<LessonDto> upcoming,
+        List<LessonDto> attempts
+      })> _fetchRemoteCourseData(String courseId) async {
+    final results = await Future.wait([
+      _source.getCourseContents(courseId),
+      _source.getRunningContents(courseId),
+      _source.getUpcomingContents(courseId),
+      _source.getContentAttempts(courseId),
+    ]);
+
+    return (
+      all: results[0],
+      running: results[1],
+      upcoming: results[2],
+      attempts: results[3],
+    );
+  }
+
+  Future<List<LessonDto>> _harmonizeLessons(
+    String courseId,
+    ({
+      List<LessonDto> all,
+      List<LessonDto> running,
+      List<LessonDto> upcoming,
+      List<LessonDto> attempts
+    }) remote,
+  ) async {
+    final Map<String, LessonDto> merged = {};
+
+    final local = await watchLessonsForCourse(courseId).first;
+    for (final l in local) {
+      merged[l.id] = l;
+    }
+
+    for (final l in remote.all) {
+      merged[l.id] = l;
+    }
+
+    for (final l in [...remote.running, ...remote.upcoming, ...remote.attempts]) {
+      final existing = merged[l.id];
+      if (existing == null) {
+        merged[l.id] = l;
+      } else if (existing.chapterId.isEmpty && l.chapterId.isNotEmpty) {
+        merged[l.id] = existing.copyWith(chapterId: l.chapterId);
+      }
+    }
+
+    return merged.values.toList();
+  }
+
+  List<LessonsTableCompanion> _applyContentStatuses(
+    List<LessonDto> lessons,
+    ({
+      List<LessonDto> all,
+      List<LessonDto> running,
+      List<LessonDto> upcoming,
+      List<LessonDto> attempts
+    }) remote,
+  ) {
+    final runningIds = remote.running.map((l) => l.id).toSet();
+    final upcomingIds = remote.upcoming.map((l) => l.id).toSet();
+    final historyIds = remote.attempts.map((l) => l.id).toSet();
+
+    return lessons.map((dto) {
+      return _lessonDtoToCompanion(dto).copyWith(
+        isRunning: Value(runningIds.contains(dto.id)),
+        isUpcoming: Value(upcomingIds.contains(dto.id)),
+        hasAttempts: Value(historyIds.contains(dto.id)),
+      );
+    }).toList();
   }
 
   /// Direct fetch of a lesson by ID.
@@ -265,6 +365,10 @@ class CourseRepository {
         lessonNumber: row.lessonNumber,
         totalLessons: row.totalLessons,
         isBookmarked: row.isBookmarked,
+        isRunning: row.isRunning,
+        isUpcoming: row.isUpcoming,
+        hasAttempts: row.hasAttempts,
+        image: row.image,
       );
 
   LessonsTableCompanion _lessonDtoToCompanion(LessonDto dto) =>
@@ -285,12 +389,27 @@ class CourseRepository {
         lessonNumber: Value(dto.lessonNumber),
         totalLessons: Value(dto.totalLessons),
         isBookmarked: Value(dto.isBookmarked),
+        isRunning: Value(dto.isRunning),
+        isUpcoming: Value(dto.isUpcoming),
+        hasAttempts: Value(dto.hasAttempts),
+        image: Value(dto.image),
       );
 
-  LessonType _parseType(String s) => LessonType.values.firstWhere(
-        (e) => e.name == s,
-        orElse: () => LessonType.video,
-      );
+  LessonType _parseType(String s) {
+    if (s.contains('video') || s.contains('live') || s.contains('conference')) {
+      return LessonType.video;
+    }
+    if (s.contains('pdf') || s.contains('notes') || s.contains('attachment')) {
+      return LessonType.pdf;
+    }
+    if (s.contains('test') || s.contains('quiz') || s.contains('exam')) {
+      return LessonType.test;
+    }
+    if (s.contains('assessment')) {
+      return LessonType.assessment;
+    }
+    return LessonType.video;
+  }
 
   LessonProgressStatus _parseStatus(String s) =>
       LessonProgressStatus.values.firstWhere(

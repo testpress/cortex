@@ -33,18 +33,33 @@ class ChapterContentItem extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: _getColorForType(
-                    context,
-                    lesson.type,
-                  ).withValues(alpha: 0.1),
+                  color: lesson.image != null
+                      ? null
+                      : _getColorForType(
+                          context,
+                          lesson.type,
+                        ).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(design.radius.md),
                 ),
                 child: Center(
-                  child: Icon(
-                    icon,
-                    size: 20,
-                    color: _getColorForType(context, lesson.type),
-                  ),
+                  child: lesson.image != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(design.radius.md),
+                          child: Image.network(
+                            lesson.image!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, _, _) => Icon(
+                              icon,
+                              size: 20,
+                              color: _getColorForType(context, lesson.type),
+                            ),
+                          ),
+                        )
+                      : Icon(
+                          icon,
+                          size: 20,
+                          color: _getColorForType(context, lesson.type),
+                        ),
                 ),
               ),
               SizedBox(width: design.spacing.md),
