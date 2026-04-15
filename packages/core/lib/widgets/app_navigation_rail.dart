@@ -66,13 +66,20 @@ class AppNavigationRail extends StatelessWidget {
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(
-                                    isActive
-                                        ? (item.activeIcon ?? item.icon)
-                                        : item.icon,
-                                    size: 24,
-                                    color: fgColor,
-                                  ),
+                                  item.iconBuilder != null
+                                      ? item.iconBuilder!(
+                                          context,
+                                          isActive,
+                                          fgColor,
+                                          24,
+                                        )
+                                      : Icon(
+                                          isActive
+                                              ? (item.activeIcon ?? item.icon)
+                                              : item.icon,
+                                          size: 24,
+                                          color: fgColor,
+                                        ),
                                   SizedBox(height: design.spacing.xs),
                                   Text(
                                     item.label,

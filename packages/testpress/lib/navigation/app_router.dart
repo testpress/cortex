@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:courses/courses.dart';
 import 'package:profile/profile.dart';
+import 'package:client_info/client_info.dart';
 import 'package:exams/exams.dart';
 
 import '../screens/dashboard/paid_active_home_screen.dart';
@@ -51,6 +52,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   // Only watch the boolean login status to prevent the router from rebuilding
   // on every loading state change or refresh.
   final isLoggedIn = ref.watch(authProvider).valueOrNull ?? false;
+  final isClientInfoEnabled = ref.watch(clientInfoPageEnabledProvider);
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
@@ -106,30 +108,17 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
-        // AppTabBar items matching the routes exactly
-        final items = [
-          const AppTabItem(id: '/home', label: 'Home', icon: LucideIcons.home),
-          const AppTabItem(
-            id: '/study',
-            label: 'Study',
-            icon: LucideIcons.bookOpen,
-          ),
-          const AppTabItem(
-            id: '/explore',
-            label: 'Explore',
-            icon: LucideIcons.compass,
-          ),
-          const AppTabItem(
-            id: '/profile',
-            label: 'Profile',
-            icon: LucideIcons.user,
-          ),
-        ];
+        final items = buildPrimaryNavigationItems(
+          isClientInfoEnabled: isClientInfoEnabled,
+        );
 
         return Consumer(
           builder: (context, ref, _) {
             final isLogoutSheetOpen = ref.watch(isLogoutSheetOpenProvider);
-            final activeTabId = _getCurrentTabId(navigationShell.currentIndex);
+            final activeTabId = _getCurrentTabId(
+              navigationShell.currentIndex,
+              isClientInfoEnabled,
+            );
 
             void closeSheet() {
               ref.read(isLogoutSheetOpenProvider.notifier).state = false;
@@ -144,12 +133,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   bottomNavigationBar: AppTabBar(
                     items: items,
                     activeItemId: activeTabId,
-                    onTabChange: (id) => _onTabItemTapped(navigationShell, id),
+                    onTabChange: (id) => 
+                        _onTabItemTapped(navigationShell, id, isClientInfoEnabled),
                   ),
                   navigationRail: AppNavigationRail(
                     items: items,
                     activeItemId: activeTabId,
-                    onTabChange: (id) => _onTabItemTapped(navigationShell, id),
+                    onTabChange: (id) => 
+                        _onTabItemTapped(navigationShell, id, isClientInfoEnabled),
                   ),
                   drawer: DashboardDrawer(isLandscape: isLandscape),
                   bottomSheet: AppBottomSheet(
@@ -379,6 +370,28 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             ),
           ],
         ),
+        // Info Branch (Optional 5th Tab)
+        if (isClientInfoEnabled)
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/info',
+                builder: (context, state) => const ClientInfoPage(),
+                routes: [
+                  GoRoute(
+                    path: 'course/:courseId',
+                    builder: (context, state) {
+                      final courseId = state.pathParameters['courseId']!;
+                      return ClientInfoCourseDetailScreen(
+                        courseId: courseId,
+                        onBack: () => context.pop(),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
         // Profile Branch
         StatefulShellBranch(
           routes: [
@@ -459,17 +472,46 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 );
 });
 
-const _tabPaths = ['/home', '/study', '/explore', '/profile'];
+const _baseTabPaths = ['/home', '/study', '/explore'];
 
-String _getCurrentTabId(int index) => _tabPaths[index];
+List<String> _tabPaths(bool isInfo) => [
+      ..._baseTabPaths,
+      if (isInfo) '/info',
+      '/profile',
+    ];
 
-void _onTabItemTapped(StatefulNavigationShell navigationShell, String id) {
-  final index = _tabPaths.indexOf(id);
+List<AppTabItem> buildPrimaryNavigationItems({
+  required bool isClientInfoEnabled,
+}) {
+  return [
+    const AppTabItem(id: '/home', label: 'Home', icon: LucideIcons.home),
+    const AppTabItem(id: '/study', label: 'Study', icon: LucideIcons.bookOpen),
+    const AppTabItem(
+      id: '/explore',
+      label: 'Explore',
+      icon: LucideIcons.compass,
+    ),
+    if (isClientInfoEnabled)
+      const AppTabItem(
+        id: '/info',
+        label: 'Info',
+        icon: LucideIcons.youtube,
+      ),
+    const AppTabItem(id: '/profile', label: 'Profile', icon: LucideIcons.user),
+  ];
+}
 
-  // Navigate to the chosen branch, safely preserving state
+String _getCurrentTabId(int index, bool isInfo) => _tabPaths(isInfo)[index];
+
+void _onTabItemTapped(
+  StatefulNavigationShell navigationShell,
+  String id,
+  bool isInfo,
+) {
+  final index = _tabPaths(isInfo).indexOf(id);
+
   navigationShell.goBranch(
-    index != -1 ? index : 0, // Fallback to 'home' branch as default
-    // Provide true if you want clicking an active tab to reset its stack to root
+    index != -1 ? index : 0,
     initialLocation: index == navigationShell.currentIndex,
   );
 }
