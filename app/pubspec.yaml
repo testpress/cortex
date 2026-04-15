@@ -17,6 +17,8 @@ dependencies:
     path: ../packages/courses
   explore:
     path: ../packages/explore
+  client_info:
+    path: ../packages/client_info
   flutter_riverpod: ^2.5.1
   google_fonts: ^6.2.1
 
