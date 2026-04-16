@@ -76,10 +76,18 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
           final Set<String> validChapterIds = {};
           if (widget.parentId != null) {
             validChapterIds.add(widget.parentId!);
+            
+            final allChapters = course?.chapters ?? [];
             // Add all descendants of the current parent
+            // O(N) optimization: Group chapters by parentId once
+            final parentMap = <String?, List<ChapterDto>>{};
+            for (var c in allChapters) {
+              parentMap.putIfAbsent(c.parentId, () => []).add(c);
+            }
+
             void addDescendants(String pid) {
-              final allChapters = course?.chapters ?? [];
-              for (var c in allChapters.where((c) => c.parentId == pid)) {
+              final children = parentMap[pid] ?? [];
+              for (var c in children) {
                 validChapterIds.add(c.id);
                 addDescendants(c.id);
               }

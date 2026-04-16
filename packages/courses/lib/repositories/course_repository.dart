@@ -168,12 +168,15 @@ class CourseRepository {
   Future<List<LessonDto>> refreshLessons(String chapterId) async {
     final lessons = await _source.getLessons(chapterId);
     final companions = lessons.map(_lessonDtoToCompanion).toList();
-    
-    // Clear old data for this specific chapter to ensure we remove any corrupted entries
-    // (e.g. chapters previously parsed as lessons, or misaligned associations)
-    await _db.deleteLessonsForChapter(chapterId);
-    
-    await _db.upsertLessons(companions);
+
+    // Wrap in transaction to ensure metadata and contents are updated atomically.
+    // This prevents "Empty Chapter" states if the app crashes between delete and upsert.
+    await _db.transaction(() async {
+      // Clear old data for this specific chapter to ensure we remove any corrupted entries
+      await _db.deleteLessonsForChapter(chapterId);
+      await _db.upsertLessons(companions);
+    });
+
     return lessons;
   }
 
@@ -186,7 +189,12 @@ class CourseRepository {
       if (companions.isNotEmpty) {
         await _db.upsertLessons(companions);
       }
-    } catch (_) {}
+    } catch (e, stack) {
+      // Log the error but don't rethrow, as this is a background sync.
+      // In a production app, this should be sent to a crash reporting service.
+      print('CourseRepository: Error refreshing course contents for $courseId: $e');
+      print(stack);
+    }
   }
 
   Future<
