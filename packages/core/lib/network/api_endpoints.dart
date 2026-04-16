@@ -14,5 +14,5 @@ class ApiEndpoints {
   static String runningContents(String id) => '/api/v2.5/courses/$id/running_contents/';
   static String upcomingContents(String id) => '/api/v2.5/courses/$id/upcoming_contents/';
   static String contentAttempts(String id) => '/api/v2.5/courses/$id/content_attempts/';
-  static String chapterContents(String id) => '/api/v3/chapters/$id/contents/';
+  static String chapterContents(String id) => '/api/v2.5/chapters/$id/contents/';
 }

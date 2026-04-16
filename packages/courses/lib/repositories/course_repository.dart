@@ -143,6 +143,27 @@ class CourseRepository {
           (rows) => rows.map((row) => rowToLessonDto(row)).toList(),
         );
   }
+  
+  /// Direct fetch of a course by ID from the database or network fallback.
+  Future<CourseDto?> getCourse(String courseId) async {
+    return watchCourse(courseId).first;
+  }
+
+  /// Synchronizes all data needed for a specific chapter view.
+  /// Handles the complexity of checking if it's a leaf and coordinating status refreshes.
+  Future<void> syncChapterContents(String courseId, String chapterId) async {
+    final course = await getCourse(courseId);
+    final chapter = course?.chapters.where((c) => c.id == chapterId).firstOrNull;
+
+    if (chapter != null && chapter.isLeaf) {
+      // Refresh both the chapter items AND the course-wide status tags
+      // so that Running/Upcoming/History filters work correctly.
+      await Future.wait([
+        refreshLessons(chapterId),
+        refreshCourseContents(courseId),
+      ]);
+    }
+  }
 
   Future<List<LessonDto>> refreshLessons(String chapterId) async {
     final lessons = await _source.getLessons(chapterId);
@@ -307,17 +328,17 @@ class CourseRepository {
       );
 
   CoursesTableCompanion _courseDtoToCompanion(CourseDto dto) =>
-      CoursesTableCompanion.insert(
-        id: dto.id,
-        title: dto.title,
-        colorIndex: dto.colorIndex,
-        chapterCount: dto.chapterCount,
-        totalDuration: dto.totalDuration,
+      CoursesTableCompanion(
+        id: Value(dto.id),
+        title: Value(dto.title),
+        colorIndex: Value(dto.colorIndex),
+        chapterCount: Value(dto.chapterCount),
+        totalDuration: Value(dto.totalDuration),
         totalContents: Value(dto.totalContents),
         progress: Value(dto.progress),
         completedLessons: Value(dto.completedLessons),
-        totalLessons: dto.totalLessons,
-        image: Value(dto.image),
+        totalLessons: Value(dto.totalLessons),
+        image: dto.image != null ? Value(dto.image) : const Value.absent(),
         isChaptersSynced: Value(dto.isChaptersSynced),
       );
 
@@ -335,17 +356,17 @@ class CourseRepository {
       );
 
   ChaptersTableCompanion _chapterDtoToCompanion(ChapterDto dto) =>
-      ChaptersTableCompanion.insert(
-        id: dto.id,
-        courseId: dto.courseId,
-        title: dto.title,
-        lessonCount: dto.lessonCount,
-        assessmentCount: dto.assessmentCount,
-        orderIndex: dto.orderIndex,
-        parentId: Value(dto.parentId),
+      ChaptersTableCompanion(
+        id: Value(dto.id),
+        courseId: Value(dto.courseId),
+        title: Value(dto.title),
+        lessonCount: Value(dto.lessonCount),
+        assessmentCount: Value(dto.assessmentCount),
+        orderIndex: Value(dto.orderIndex),
+        parentId: dto.parentId != null ? Value(dto.parentId) : const Value.absent(),
         isLeaf: Value(dto.isLeaf),
         isChaptersSynced: Value(dto.isChaptersSynced),
-        image: Value(dto.image),
+        image: dto.image != null ? Value(dto.image) : const Value.absent(),
       );
 
   LessonDto rowToLessonDto(LessonsTableData row) => LessonDto(
@@ -372,27 +393,27 @@ class CourseRepository {
       );
 
   LessonsTableCompanion _lessonDtoToCompanion(LessonDto dto) =>
-      LessonsTableCompanion.insert(
-        id: dto.id,
-        chapterId: dto.chapterId,
-        title: dto.title,
-        type: dto.type.name,
-        duration: dto.duration,
+      LessonsTableCompanion(
+        id: Value(dto.id),
+        chapterId: Value(dto.chapterId),
+        title: Value(dto.title),
+        type: Value(dto.type.name),
+        duration: Value(dto.duration),
         progressStatus: Value(dto.progressStatus.name),
         isLocked: Value(dto.isLocked),
-        orderIndex: dto.orderIndex,
-        chapterTitle: Value(dto.chapterTitle),
-        contentUrl: Value(dto.contentUrl),
-        subtitle: Value(dto.subtitle),
-        subjectName: Value(dto.subjectName),
-        subjectIndex: Value(dto.subjectIndex),
-        lessonNumber: Value(dto.lessonNumber),
-        totalLessons: Value(dto.totalLessons),
+        orderIndex: Value(dto.orderIndex),
+        chapterTitle: dto.chapterTitle != null ? Value(dto.chapterTitle) : const Value.absent(),
+        contentUrl: dto.contentUrl != null ? Value(dto.contentUrl) : const Value.absent(),
+        subtitle: dto.subtitle != null ? Value(dto.subtitle) : const Value.absent(),
+        subjectName: dto.subjectName != null ? Value(dto.subjectName) : const Value.absent(),
+        subjectIndex: dto.subjectIndex != null ? Value(dto.subjectIndex) : const Value.absent(),
+        lessonNumber: dto.lessonNumber != null ? Value(dto.lessonNumber) : const Value.absent(),
+        totalLessons: dto.totalLessons != null ? Value(dto.totalLessons) : const Value.absent(),
         isBookmarked: Value(dto.isBookmarked),
         isRunning: Value(dto.isRunning),
         isUpcoming: Value(dto.isUpcoming),
         hasAttempts: Value(dto.hasAttempts),
-        image: Value(dto.image),
+        image: dto.image != null ? Value(dto.image) : const Value.absent(),
       );
 
   LessonType _parseType(String s) {

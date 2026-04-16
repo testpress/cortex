@@ -3,6 +3,7 @@ import 'package:core/data/data.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/course_detail_provider.dart';
+import '../providers/course_list_provider.dart';
 import '../widgets/chapters_filter_tab_bar.dart';
 import '../widgets/chapter_curriculum_item.dart';
 import '../widgets/curriculum_header.dart';
@@ -27,6 +28,17 @@ class ChaptersListPage extends ConsumerStatefulWidget {
 
 class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
   CurriculumFilter _activeFilter = CurriculumFilter.all;
+
+  @override
+  void initState() {
+    super.initState();
+    // Refresh course curriculum when navigating to the chapters list.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final repo = await ref.read(courseRepositoryProvider.future);
+      repo.refreshChapters(widget.courseId).ignore();
+      repo.refreshCourseContents(widget.courseId).ignore();
+    });
+  }
 
   void _onFilterChanged(CurriculumFilter filter) {
     setState(() => _activeFilter = filter);
