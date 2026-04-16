@@ -3,11 +3,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Enum representing the possible status filters for a chapter.
-enum ChapterStatusFilter { running, upcoming, history }
+enum ChapterStatusFilter { all, running, upcoming, history }
 
 /// State provider for the active chapter status filter.
 final chapterStatusFilterProvider = StateProvider<ChapterStatusFilter>(
-  (ref) => ChapterStatusFilter.running,
+  (ref) => ChapterStatusFilter.all,
 );
 
 /// A horizontal bar of status filters (Running, Upcoming, History).
@@ -21,6 +21,7 @@ class ChapterStatusFilterBar extends ConsumerWidget {
     final activeFilter = ref.watch(chapterStatusFilterProvider);
 
     final filters = [
+      (filter: ChapterStatusFilter.all, label: 'All'),
       (filter: ChapterStatusFilter.running, label: l10n.chapterStatusRunning),
       (filter: ChapterStatusFilter.upcoming, label: l10n.chapterStatusUpcoming),
       (filter: ChapterStatusFilter.history, label: l10n.chapterStatusHistory),

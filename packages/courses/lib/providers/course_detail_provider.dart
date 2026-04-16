@@ -14,6 +14,7 @@ Stream<CourseDto?> courseDetail(CourseDetailRef ref, String courseId) async* {
   // to ensure local data is available for specific screens (filters, leaf chapters).
   repo.refreshChapters(courseId).ignore();
   repo.refreshCourseContents(courseId).ignore();
+
   yield* repo.watchCourse(courseId);
 }
 
