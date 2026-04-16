@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:core/data/data.dart';
 import '../../network/api_endpoints.dart';
 import '../../network/network_utils.dart';
+import 'curriculum_parser.dart';
 
 /// HTTP data source stub — to be implemented when a real backend is available.
 /// All methods throw [UnimplementedError] to surface accidental usage in tests.
@@ -67,7 +68,7 @@ class HttpDataSource implements DataSource {
   Future<List<LessonDto>> getCourseContents(String courseId) async {
     return performNetworkRequest(
       _dio.get(ApiEndpoints.courseContents(courseId)),
-      fromJson: (data) => _mapLessons(data),
+      fromJson: (data) => CurriculumParser.mapLessons(data),
     );
   }
 
@@ -75,7 +76,7 @@ class HttpDataSource implements DataSource {
   Future<List<LessonDto>> getRunningContents(String courseId) async {
     return performNetworkRequest(
       _dio.get(ApiEndpoints.runningContents(courseId)),
-      fromJson: (data) => _mapLessons(data),
+      fromJson: (data) => CurriculumParser.mapLessons(data),
     );
   }
 
@@ -83,7 +84,7 @@ class HttpDataSource implements DataSource {
   Future<List<LessonDto>> getUpcomingContents(String courseId) async {
     return performNetworkRequest(
       _dio.get(ApiEndpoints.upcomingContents(courseId)),
-      fromJson: (data) => _mapLessons(data),
+      fromJson: (data) => CurriculumParser.mapLessons(data),
     );
   }
 
@@ -91,71 +92,16 @@ class HttpDataSource implements DataSource {
   Future<List<LessonDto>> getContentAttempts(String courseId) async {
     return performNetworkRequest(
       _dio.get(ApiEndpoints.contentAttempts(courseId)),
-      fromJson: (data) => _mapLessons(data),
+      fromJson: (data) => CurriculumParser.mapLessons(data),
     );
   }
 
-  List<LessonDto> _mapLessons(dynamic data, {String? chapterId}) {
-    if (data is! Map) {
-      return [];
-    }
-    
-    final results = data['results'];
-    List<dynamic>? list;
-    Map<String, String> chapterNames = {};
-
-    if (results is Map) {
-      // Handle both V2.5 (chapter_contents) and V3 (contents) structures
-      // Also check for 'results' nested inside 'results' which happens in some V3 layouts
-      list = (results['contents'] ?? 
-              results['chapter_contents'] ?? 
-              results['results']) as List<dynamic>?;
-      
-      // Extract chapter metadata if available to enrich lessons
-      final chaptersList = results['chapters'] as List<dynamic>?;
-      if (chaptersList != null) {
-        for (var c in chaptersList) {
-          final id = c['id']?.toString();
-          final name = c['name'] as String?;
-          if (id != null && name != null) chapterNames[id] = name;
-        }
-      }
-    } else if (results is List) {
-      list = results;
-    }
-
-    final lessons = list?.map((e) {
-      final json = e as Map<String, dynamic>;
-      
-      // Filter out curriculum items that are actually chapters
-      final type = (json['content_type'] ?? json['type'] ?? json['kind'])?.toString().toLowerCase();
-      if (type == 'chapter') return null;
-
-      final dto = LessonDto.fromJson(json);
-      
-      // Enrich with chapter title if we found it in the metadata
-      if (dto.chapterTitle == null || dto.chapterTitle!.isEmpty) {
-        final name = chapterNames[dto.chapterId] ?? chapterNames[json['chapter']?.toString() ?? ''];
-        if (name != null) return dto.copyWith(chapterTitle: name);
-      }
-
-      // Enforce specific chapter ID if provided (useful when API doesn't return it for specific chapter fetch)
-      if (chapterId != null && (dto.chapterId.isEmpty || dto.chapterId == '0')) {
-        return dto.copyWith(chapterId: chapterId);
-      }
-
-
-      return dto;
-    }).whereType<LessonDto>().toList() ?? [];
-
-    return lessons;
-  }
 
   @override
   Future<List<LessonDto>> getLessons(String chapterId) async {
     return performNetworkRequest(
       _dio.get(ApiEndpoints.chapterContents(chapterId)), 
-      fromJson: (data) => _mapLessons(data, chapterId: chapterId),
+      fromJson: (data) => CurriculumParser.mapLessons(data, chapterId: chapterId),
     );
   }
 
