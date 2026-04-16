@@ -19,8 +19,8 @@ Future<Chapter?> chapterDetail(
   final chapterData = await repo.watchChapter(chapterId).first;
   if (chapterData == null) return null;
 
-  // 2. Fetch lessons for this chapter
-  final lessonsData = await repo.watchLessons(chapterId).first;
+  // 2. Fetch lessons for this chapter using the dedicated provider or direct fetch
+  final lessons = await ref.watch(chapterLessonsProvider(chapterId).future);
 
   // 3. Get course title for display
   final courses = await repo.watchCourses().first;
@@ -33,8 +33,7 @@ Future<Chapter?> chapterDetail(
     assessmentCount: chapterData.assessmentCount,
     courseTitle: course?.title,
     image: chapterData.image,
-    lessons: lessonsData
-        .map((l) => repo.rowToLessonDto(l))
+    lessons: lessons
         .map(
           (l) => Lesson(
             id: l.id,
@@ -48,11 +47,11 @@ Future<Chapter?> chapterDetail(
             subjectIndex: l.subjectIndex,
             lessonNumber: l.lessonNumber,
             totalLessons: l.totalLessons,
+            contentUrl: l.contentUrl,
             isBookmarked: l.isBookmarked,
             isRunning: l.isRunning,
             isUpcoming: l.isUpcoming,
             hasAttempts: l.hasAttempts,
-            contentUrl: l.contentUrl,
             image: l.image,
           ),
         )
