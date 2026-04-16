@@ -5,32 +5,33 @@ Currently, the app only fetches chapter metadata for courses. The detailed conte
 ## Goals / Non-Goals
 
 **Goals:**
-- Integrate the Testpress V3 "Contents" API for courses.
-- Populated the local database with all lessons for a specific course.
-- Enable curriculum-wide filtering by lesson type.
+- Integrate the Testpress V2.5 and V3 APIs for course contents.
+- Implement a decentralized (lazy) synchronization model to optimize app startup.
+- Ensure data integrity during partial updates (List vs Detail APIs).
+- Extract complex multi-version parsing logic into a dedicated utility.
 
 **Non-Goals:**
-- Schema migrations or major database refactoring.
-- Implementing playback/viewing logic for individual lessons.
+- Global synchronization of all course contents at app launch.
+- Changing the local database schema.
 
 ## Decisions
 
-### 1. Unified Content Synchronization
-- **Choice**: Add a `refreshCourseContents` method to `CourseRepository` that orchestrates multiple API calls.
-- **Rationale**: While `/api/v3/courses/{id}/contents/` provides the bulk of the curriculum, status-specific endpoints like `/running_contents/`, `/upcoming_contents/`, and `/content_attempts/` (History) are necessary to populate progress-related UI components and provide a comprehensive student view.
-- **APIs**:
-    - `Full Curriculum`: `/api/v3/courses/{id}/contents/`
-    - `Running`: `/api/v2.5/courses/{id}/running_contents/`
-    - `Upcoming`: `/api/v2.5/courses/{id}/upcoming_contents/`
-    - `History (Attempts)`: `/api/v2.5/courses/{id}/content_attempts/`
+### 1. Lazy Synchronization (Performance Optimization)
+- **Choice**: Move all network synchronization from the global `appInitializationProvider` to screen-level `initState` methods.
+- **Rationale**: Eager synchronization of the entire course catalog caused massive CPU/Network spikes and recursive API loops. Lazy loading ensures data is only fetched when a user views a specific course or chapter.
 
-### 2. Reactive Status Filtering on Leaf Chapters
-- **Choice**: Implement "Running", "Upcoming", and "History" filters specifically on the leaf chapter detail page.
-- **Rationale**: When a user selects a leaf chapter, they expect to see the curriculum items of that chapter organized by their current status.
-- **Logic**:
-    - The repository will maintain three set of content IDs (Running, Upcoming, History) synced from their respective APIs.
-    - When viewing a chapter, the app will filter the chapter's contents by checking if their IDs exist in the active status set.
+### 2. Specialized Curriculum Parsing
+- **Choice**: Extract lesson mapping into a static `CurriculumParser` class.
+- **Rationale**: Handling multiple API structures (V2.5, V3, nested results) and metadata enrichment (chapter names) in the `HttpDataSource` was violating SRP. A dedicated parser handles version detection and content filtering cleanly.
+
+### 3. Chapter Content Endpoint (V2.5)
+- **Choice**: Use `/api/v2.5/chapters/{id}/contents/` for direct chapter content lookup.
+- **Rationale**: The V3 course-level contents API is less reliable for specific leaf-chapter deep-linking; V2.5 provides more stable results for direct chapter content retrieval.
+
+### 4. Atomic Partial Updates
+- **Choice**: Use `Value.absent()` in repository mappers and wrap refresh logic in database transactions.
+- **Rationale**: Prevents "blind overwrites" where partial data from a list API would nullify existing detail data in the database. Transactions ensure local storage never enters a half-synced state.
 
 ## Risks / Trade-offs
 
-- **[Risk] Large Course Data** → [Mitigation] The contents API is paginated; the repository will handle initial pages to satisfy the immediate UI needs.
+- **[Risk] Sync Latency** → [Mitigation] Implement "Smooth Loading" in UI components (showing cached data while refreshing in background) to eliminate flickers.

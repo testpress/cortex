@@ -1,24 +1,21 @@
-## 1. API Integration
+## 1. Core Logic & Performance
+- [x] 1.1 Extract curriculum mapping logic into `CurriculumParser` to support V2.5/V3 structures.
+- [x] 1.2 Implement "Lazy Synchronization" by moving sync logic to `ChaptersListPage` and `ChapterDetailPage`.
+- [x] 1.3 Update `CourseRepository` to use `Value.absent()` for partial database updates.
+- [x] 1.4 Wrap repository delete/upsert logic in atomic database transactions.
+- [x] 1.5 Implement `syncChapterContents` in `CourseRepository` to encapsulate sync coordination.
 
-- [x] 1.1 Add `refreshCourseContents` method to `CourseRepository`.
-- [x] 1.2 Implement the `/api/v3/courses/{id}/contents/` network call in `CourseRepository`.
-- [x] 1.3 Implement network calls for `/running_contents/`, `/upcoming_contents/`, and `/content_attempts/`.
-- [x] 1.4 Add database upsert logic to store all fetched contents and their statuses into `lessonsTable`.
+## 2. API Integration
+- [x] 2.1 Update `chapterContents` endpoint to `/api/v2.5/chapters/{id}/contents/`.
+- [x] 2.2 Implement `/running_contents/`, `/upcoming_contents/`, and `/content_attempts/` synchronization.
+- [x] 2.3 Add error logging for background synchronization tasks.
 
-## 2. Filtering Logic
+## 3. UI/UX Refinement
+- [x] 3.1 Implement "Smooth Loading" in `ChapterDetailPage` to prevent flickers during background sync.
+- [x] 3.2 Add "All" (Curriculum) filter to `ChapterStatusFilter` and set as default.
+- [x] 3.3 Ensure filter selection reactively updates using the optimized $O(N)$ traversal logic.
 
-- [x] 2.1 Update `chapterDetailProvider` to fetch and intersect chapter contents with Running/Upcoming/History API data.
-- [x] 2.2 Update `ChapterDetailPage` to display the specific Running, Upcoming, and History status chips.
-- [x] 2.3 Ensure filter selection reactively updates the displayed contents for the current leaf chapter.
-
-## 3. Verification
-
-- [x] 3.1 Verify that clicking a leaf chapter shows the "Running", "Upcoming", and "History" filters.
-- [x] 3.2 Verify that the content list correctly reflects data from the `/running_contents/`, `/upcoming_contents/`, and `/content_attempts/` APIs.
-
-## 4. Bug Fixes (Cross-Chapter Leakage)
-
-- [x] 4.1 Update `LessonDto.fromJson` to handle nested `chapter` objects correctly.
-- [x] 4.2 Fix `HttpDataSource._mapLessons` to ignore curriculum items of type `chapter`.
-- [x] 4.3 Ensure `getLessons(chapterId)` enforces the chapter ID on returned lessons if missing.
-- [x] 4.4 Refactor `CourseRepository.refreshCourseContents` to prioritize existing chapter associations.
+## 4. Stability & Verification
+- [x] 4.1 Fix infinite lookup loops between providers and repository refreshes.
+- [x] 4.2 Verify content visibility across all status tabs (Running, Upcoming, History).
+- [x] 4.3 Regenerate Riverpod files for `Future`-based domain composition.
