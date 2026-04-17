@@ -32,18 +32,26 @@ class CourseList extends _$CourseList {
 
   @override
   Stream<List<CourseDto>> build() async* {
-    final repo = await ref.watch(courseRepositoryProvider.future);
-    yield* repo.watchCourses().map(
-          (rows) => rows.map((row) => repo.rowToCourseDto(row)).toList(),
-        );
+    final search = ref.watch(courseSearchProvider);
+
+    if (search.query.isEmpty) {
+      final repo = await ref.watch(courseRepositoryProvider.future);
+      yield* repo.watchCourses().map(
+            (rows) => rows.map((row) => repo.rowToCourseDto(row)).toList(),
+          );
+    } else {
+      yield search.results;
+    }
   }
 
-  /// Explicit initialization: ensures the first sync happens one time per session.
-  /// Call this when the Study tab is entered.
+  /// Entry point for search - redirects to search provider
+  Future<void> search(String query) =>
+      ref.read(courseSearchProvider.notifier).search(query);
+
+  /// Explicit initialization for browse mode
   Future<void> initialize() async {
-    // Wait for auth state to be resolved (e.g. if still checking token storage)
     final auth = await ref.read(authProvider.future);
-    if (auth == null) return; // Auth gate — explicit
+    if (!auth) return;
 
     if (ref.read(_wasInitialSyncDone)) return;
     if (_pendingSyncRequest != null) return _pendingSyncRequest;
@@ -57,8 +65,14 @@ class CourseList extends _$CourseList {
     }
   }
 
-  /// Loads the next page from the API.
+  /// Redirects to appropriate loadMore based on mode
   Future<void> loadMore() async {
+    final search = ref.read(courseSearchProvider);
+    if (search.query.isNotEmpty) {
+      ref.read(courseSearchProvider.notifier).loadMore();
+      return;
+    }
+
     if (!_paginationTracker.hasMore || _pendingSyncRequest != null) return;
 
     _pendingSyncRequest = _performSync(isReset: false);
@@ -127,4 +141,96 @@ Stream<List<LessonDto>> chapterLessons(
   yield* repo.watchLessons(chapterId).map(
         (rows) => rows.map((row) => repo.rowToLessonDto(row)).toList(),
       );
+}
+@Riverpod(keepAlive: true)
+class CourseSearch extends _$CourseSearch {
+  Future<void>? _pendingRequest;
+
+  @override
+  CourseSearchState build() => CourseSearchState();
+
+  Future<void> search(String query) async {
+    if (query == state.query) return;
+    if (query.isEmpty) {
+      state = CourseSearchState();
+      return;
+    }
+
+    // Preserve existing results while loading new search to avoid flashing empty list
+    state = state.copyWith(query: query, isLoading: true, error: null);
+
+    _pendingRequest = _performSearch(query: query, isReset: true);
+    await _pendingRequest;
+  }
+
+  Future<void> loadMore() async {
+    if (!state.pagination.hasMore || _pendingRequest != null) return;
+    
+    _pendingRequest = _performSearch(query: state.query, isReset: false);
+    await _pendingRequest;
+  }
+
+  Future<void> _performSearch({required String query, required bool isReset}) async {
+    try {
+      final repo = await ref.read(courseRepositoryProvider.future);
+      final page = isReset ? 1 : state.pagination.nextPage;
+      
+      final response = await repo.searchCourses(query: query, page: page);
+      
+      final results = isReset ? response.results : [...state.results, ...response.results];
+      
+      PaginationState newPagination;
+      if (response.results.isEmpty) {
+        newPagination = state.pagination.copyWith(hasMore: false);
+      } else {
+        const paginationService = PaginationService();
+        newPagination = paginationService.calculateNextState(
+          response: response,
+          currentPage: page,
+        );
+      }
+
+      state = state.copyWith(
+        results: results,
+        isLoading: false,
+        pagination: newPagination,
+      );
+    } catch (e) {
+      state = state.copyWith(error: e, isLoading: false);
+    } finally {
+      _pendingRequest = null;
+    }
+  }
+}
+
+class CourseSearchState {
+  final String query;
+  final List<CourseDto> results;
+  final bool isLoading;
+  final Object? error;
+  final PaginationState pagination;
+
+  CourseSearchState({
+    this.query = '',
+    this.results = const [],
+    this.isLoading = false,
+    this.error,
+    this.pagination = const PaginationState(),
+  });
+
+  CourseSearchState copyWith({
+    String? query,
+    List<CourseDto>? results,
+    bool? isLoading,
+    Object? error,
+    PaginationState? pagination,
+  }) {
+    return CourseSearchState(
+      query: query ?? this.query,
+      results: results ?? this.results,
+      isLoading: isLoading ?? this.isLoading,
+      error: error,
+      pagination: pagination ?? this.pagination,
+    );
+  }
 }

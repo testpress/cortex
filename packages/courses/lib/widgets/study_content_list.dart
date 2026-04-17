@@ -112,12 +112,7 @@ class StudyContentList extends ConsumerWidget {
   }
 
   List<CourseDto> _filterCourses(List<CourseDto> courses) {
-    if (searchQuery.isEmpty) return courses;
-    return courses
-        .where(
-          (course) => course.title.toLowerCase().contains(searchQuery.toLowerCase()),
-        )
-        .toList();
+    return courses;
   }
 
   List<LessonDto> _filterLessons(List<LessonDto> lessons) {

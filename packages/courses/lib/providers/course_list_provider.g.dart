@@ -310,7 +310,7 @@ class _ChapterLessonsProviderElement
   String get chapterId => (origin as ChapterLessonsProvider).chapterId;
 }
 
-String _$courseListHash() => r'90fdf39ff3628f22fb77c401187d23eeb54aee12';
+String _$courseListHash() => r'b86fbfec15af5dd98b0b841b88f6f462bc15fcf4';
 
 /// See also [CourseList].
 @ProviderFor(CourseList)
@@ -326,5 +326,21 @@ final courseListProvider =
     );
 
 typedef _$CourseList = StreamNotifier<List<CourseDto>>;
+String _$courseSearchHash() => r'770f25e1a505b2bf43f2399232dc309ea7ef55b7';
+
+/// See also [CourseSearch].
+@ProviderFor(CourseSearch)
+final courseSearchProvider =
+    NotifierProvider<CourseSearch, CourseSearchState>.internal(
+      CourseSearch.new,
+      name: r'courseSearchProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$courseSearchHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$CourseSearch = Notifier<CourseSearchState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

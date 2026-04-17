@@ -25,12 +25,19 @@ class CourseRepository {
     final response = await _source.getCourses(page: page);
 
     if (response.results.isNotEmpty) {
-      final companions =
-          response.results.map(_courseDtoToCompanion).toList();
+      final companions = response.results.map(_courseDtoToCompanion).toList();
       await _db.upsertCourses(companions);
     }
 
     return response;
+  }
+
+  /// Searches courses from the API without persisting them to the local DB.
+  Future<PaginatedResponseDto<CourseDto>> searchCourses({
+    required String query,
+    int page = 1,
+  }) async {
+    return await _source.getCourses(page: page, search: query);
   }
 
   // ── Chapters ─────────────────────────────────────────────────────────────

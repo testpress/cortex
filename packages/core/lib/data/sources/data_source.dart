@@ -6,7 +6,7 @@ import '../models/paginated_response_dto.dart';
 abstract class DataSource {
   /// Fetch all courses available to the current user.
   Future<PaginatedResponseDto<CourseDto>> getCourses(
-      {int page = 1, int pageSize = 10});
+      {int page = 1, int pageSize = 10, String? search});
 
   /// Fetch chapters for a specific course.
   Future<List<ChapterDto>> getChapters(String courseId);

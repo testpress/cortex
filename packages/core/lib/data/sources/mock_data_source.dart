@@ -14,8 +14,32 @@ class MockDataSource implements DataSource {
   Future<PaginatedResponseDto<CourseDto>> getCourses({
     int page = 1,
     int pageSize = 10,
+    String? search,
   }) async {
-    final results = page <= 3 ? _getMockCourses(page) : <CourseDto>[];
+    // Simulate API delay
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    var results = _getMockCourses(page);
+
+    if (search != null && search.isNotEmpty) {
+      final query = search.toLowerCase();
+      // Concatenate all mock pages for "global" search simulation in mock
+      final allCourses = <CourseDto>[
+        ..._getMockCourses(1),
+        ..._getMockCourses(2),
+        ..._getMockCourses(3),
+      ];
+      results = allCourses
+          .where((c) => c.title.toLowerCase().contains(query))
+          .toList();
+
+      return PaginatedResponseDto(
+        results: results,
+        next: null, // Simple mock search doesn't paginate
+        count: results.length,
+      );
+    }
+
     final next = page < 3
         ? 'https://lmsdemo.testpress.in/api/v3/courses/?page=${page + 1}'
         : null;
@@ -23,7 +47,7 @@ class MockDataSource implements DataSource {
     return PaginatedResponseDto(
       results: results,
       next: next,
-      count: 15, // Total simulated courses across 3 pages
+      count: 15,
     );
   }
 

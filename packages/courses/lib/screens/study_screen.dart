@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
@@ -24,6 +25,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
   final ScrollController _scrollController = ScrollController();
   final Set<LessonType> _activeTypeFilters = {};
   String _searchQuery = '';
+  Timer? _debounce;
 
   @override
   void initState() {
@@ -41,6 +43,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     _searchController.dispose();
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 
@@ -51,7 +54,22 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     }
   }
 
-  void _toggleTypeFilter(LessonType type) {
+  void _onSearchChanged(String value) {
+    // Update local state immediately for responsive client-side filtering of lessons.
+    setState(() {
+      _searchQuery = value;
+    });
+
+    // Debounce the server-side API call for course searching.
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        ref.read(courseListProvider.notifier).search(value);
+      }
+    });
+  }
+
+  void _toggleType(LessonType type) {
     setState(() {
       if (_activeTypeFilters.contains(type)) {
         _activeTypeFilters.remove(type);
@@ -99,14 +117,13 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                         AppSearchBar(
                           controller: _searchController,
                           hintText: l10n.studySearchHint,
-                          onChanged: (newQuery) =>
-                              setState(() => _searchQuery = newQuery),
+                          onChanged: _onSearchChanged,
                           backgroundColor: design.colors.surfaceVariant,
                         ),
                         SizedBox(height: design.spacing.md),
                         StudyFilterBar(
                           activeTypeFilters: _activeTypeFilters,
-                          onTypeToggled: _toggleTypeFilter,
+                          onTypeToggled: _toggleType,
                         ),
                         if (activeSyncError != null) ...[
                           SizedBox(height: design.spacing.md),
