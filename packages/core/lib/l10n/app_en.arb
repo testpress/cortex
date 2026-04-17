@@ -271,10 +271,19 @@
   "errorGenericTitle": "Something went wrong",
   "errorGenericMessage": "Failed to load data. Please check your connection and try again.",
   "labelLessonsPlural": "lessons",
+  "labelContentsPlural": "contents",
   "curriculumBackButton": "Back",
   "commonCloseButton": "Close",
-  "curriculumChaptersCount": "{count} Chapters",
+  "curriculumChaptersCount": "{count,plural, =1{1 Chapter} other{{count} Chapters}}",
   "@curriculumChaptersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "courseContentsCount": "{count,plural, =1{1 content} other{{count} contents}}",
+  "@courseContentsCount": {
     "placeholders": {
       "count": {
         "type": "int"

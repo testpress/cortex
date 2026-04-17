@@ -36,6 +36,7 @@ class MockDataSource implements DataSource {
           colorIndex: 0, // indigo
           chapterCount: 12,
           totalDuration: '180 hrs',
+          totalContents: 120,
           progress: 34,
           completedLessons: 28,
           totalLessons: 84,
@@ -46,6 +47,7 @@ class MockDataSource implements DataSource {
           colorIndex: 4, // rose
           chapterCount: 10,
           totalDuration: '160 hrs',
+          totalContents: 110,
           progress: 18,
           completedLessons: 14,
           totalLessons: 76,
@@ -56,6 +58,7 @@ class MockDataSource implements DataSource {
           colorIndex: 3, // violet
           chapterCount: 8,
           totalDuration: '120 hrs',
+          totalContents: 80,
           progress: 5,
           completedLessons: 3,
           totalLessons: 60,
@@ -66,6 +69,7 @@ class MockDataSource implements DataSource {
           colorIndex: 2, // emerald
           chapterCount: 15,
           totalDuration: '200 hrs',
+          totalContents: 150,
           progress: 45,
           completedLessons: 45,
           totalLessons: 100,
@@ -76,6 +80,7 @@ class MockDataSource implements DataSource {
           colorIndex: 5, // pink
           chapterCount: 6,
           totalDuration: '40 hrs',
+          totalContents: 40,
           progress: 10,
           completedLessons: 2,
           totalLessons: 20,
@@ -89,6 +94,7 @@ class MockDataSource implements DataSource {
           colorIndex: 1,
           chapterCount: 15,
           totalDuration: '100 hrs',
+          totalContents: 90,
           progress: 0,
           completedLessons: 0,
           totalLessons: 50,
@@ -99,6 +105,7 @@ class MockDataSource implements DataSource {
           colorIndex: 6,
           chapterCount: 20,
           totalDuration: '150 hrs',
+          totalContents: 130,
           progress: 12,
           completedLessons: 10,
           totalLessons: 80,
@@ -112,6 +119,7 @@ class MockDataSource implements DataSource {
           colorIndex: 7,
           chapterCount: 5,
           totalDuration: '20 hrs',
+          totalContents: 25,
           progress: 100,
           completedLessons: 20,
           totalLessons: 20,

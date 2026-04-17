@@ -1138,6 +1138,12 @@ abstract class AppLocalizations {
   /// **'lessons'**
   String get labelLessonsPlural;
 
+  /// No description provided for @labelContentsPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'contents'**
+  String get labelContentsPlural;
+
   /// No description provided for @curriculumBackButton.
   ///
   /// In en, this message translates to:
@@ -1153,8 +1159,14 @@ abstract class AppLocalizations {
   /// No description provided for @curriculumChaptersCount.
   ///
   /// In en, this message translates to:
-  /// **'{count} Chapters'**
+  /// **'{count,plural, =1{1 Chapter} other{{count} Chapters}}'**
   String curriculumChaptersCount(int count);
+
+  /// No description provided for @courseContentsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count,plural, =1{1 content} other{{count} contents}}'**
+  String courseContentsCount(int count);
 
   /// No description provided for @filterAll.
   ///
