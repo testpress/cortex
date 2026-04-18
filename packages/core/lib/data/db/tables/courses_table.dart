@@ -12,6 +12,7 @@ class CoursesTable extends Table {
   IntColumn get completedLessons => integer().withDefault(const Constant(0))();
   IntColumn get totalLessons => integer()();
   TextColumn get image => text().nullable()();
+  BoolColumn get isChaptersSynced => boolean().withDefault(const Constant(false))();
 
   @override
   Set<Column> get primaryKey => {id};

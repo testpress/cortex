@@ -8,10 +8,16 @@ abstract class DataSource {
   Future<PaginatedResponseDto<CourseDto>> getCourses(
       {int page = 1, int pageSize = 10, String? search});
 
-  /// Fetch chapters for a specific course.
-  Future<List<ChapterDto>> getChapters(String courseId);
+  /// Fetch full metadata for a single course from `/api/v3/courses/{id}/`.
+  Future<CourseDto> getCourseDetail(String courseId);
 
-  /// Fetch lessons for a specific chapter.
+  /// Fetch chapters for a specific course, optionally filtered by parentId.
+  Future<List<ChapterDto>> getChapters(String courseId, {String? parentId});
+
+  /// Fetch all course contents for a specific course (V3 flat list).
+  Future<List<LessonDto>> getCourseContents(String courseId);
+
+  /// Fetch lessons for a specific chapter (Legacy/Sub-fetch).
   Future<List<LessonDto>> getLessons(String chapterId);
 
   /// Fetch today's live class schedule.

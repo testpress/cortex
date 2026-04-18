@@ -23,7 +23,7 @@ final courseRepositoryProvider = FutureProvider<CourseRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CourseRepositoryRef = FutureProviderRef<CourseRepository>;
-String _$courseChaptersHash() => r'a1cf6c296397d53753ee81c92c7318be1788b8a6';
+String _$courseChaptersHash() => r'18443e3a7d1dff852a979b3a2ffca20e46b26592';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -93,8 +93,7 @@ class CourseChaptersFamily extends Family<AsyncValue<List<ChapterDto>>> {
 /// Provider for a specific course's chapters.
 ///
 /// Copied from [courseChapters].
-class CourseChaptersProvider
-    extends AutoDisposeStreamProvider<List<ChapterDto>> {
+class CourseChaptersProvider extends StreamProvider<List<ChapterDto>> {
   /// Provider for a specific course's chapters.
   ///
   /// Copied from [courseChapters].
@@ -143,7 +142,7 @@ class CourseChaptersProvider
   }
 
   @override
-  AutoDisposeStreamProviderElement<List<ChapterDto>> createElement() {
+  StreamProviderElement<List<ChapterDto>> createElement() {
     return _CourseChaptersProviderElement(this);
   }
 
@@ -163,13 +162,13 @@ class CourseChaptersProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin CourseChaptersRef on AutoDisposeStreamProviderRef<List<ChapterDto>> {
+mixin CourseChaptersRef on StreamProviderRef<List<ChapterDto>> {
   /// The parameter `courseId` of this provider.
   String get courseId;
 }
 
 class _CourseChaptersProviderElement
-    extends AutoDisposeStreamProviderElement<List<ChapterDto>>
+    extends StreamProviderElement<List<ChapterDto>>
     with CourseChaptersRef {
   _CourseChaptersProviderElement(super.provider);
 
@@ -177,7 +176,7 @@ class _CourseChaptersProviderElement
   String get courseId => (origin as CourseChaptersProvider).courseId;
 }
 
-String _$chapterLessonsHash() => r'ce0c119a5b40df61a52c1451589e19c174b7c00e';
+String _$chapterLessonsHash() => r'cf777f7871c4f857df0252b3a944df03938877bd';
 
 /// Provider for a specific chapter's lessons.
 ///
@@ -226,8 +225,7 @@ class ChapterLessonsFamily extends Family<AsyncValue<List<LessonDto>>> {
 /// Provider for a specific chapter's lessons.
 ///
 /// Copied from [chapterLessons].
-class ChapterLessonsProvider
-    extends AutoDisposeStreamProvider<List<LessonDto>> {
+class ChapterLessonsProvider extends StreamProvider<List<LessonDto>> {
   /// Provider for a specific chapter's lessons.
   ///
   /// Copied from [chapterLessons].
@@ -276,7 +274,7 @@ class ChapterLessonsProvider
   }
 
   @override
-  AutoDisposeStreamProviderElement<List<LessonDto>> createElement() {
+  StreamProviderElement<List<LessonDto>> createElement() {
     return _ChapterLessonsProviderElement(this);
   }
 
@@ -296,13 +294,13 @@ class ChapterLessonsProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin ChapterLessonsRef on AutoDisposeStreamProviderRef<List<LessonDto>> {
+mixin ChapterLessonsRef on StreamProviderRef<List<LessonDto>> {
   /// The parameter `chapterId` of this provider.
   String get chapterId;
 }
 
 class _ChapterLessonsProviderElement
-    extends AutoDisposeStreamProviderElement<List<LessonDto>>
+    extends StreamProviderElement<List<LessonDto>>
     with ChapterLessonsRef {
   _ChapterLessonsProviderElement(super.provider);
 

@@ -158,7 +158,17 @@ class MockDataSource implements DataSource {
   // ─────────────────────────────────────────────────────────────────────────
 
   @override
-  Future<List<ChapterDto>> getChapters(String courseId) async {
+  Future<CourseDto> getCourseDetail(String courseId) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    final all = [..._getMockCourses(1), ..._getMockCourses(2), ..._getMockCourses(3)];
+    return all.firstWhere(
+      (c) => c.id == courseId,
+      orElse: () => all.first,
+    );
+  }
+
+  @override
+  Future<List<ChapterDto>> getChapters(String courseId, {String? parentId}) async {
     switch (courseId) {
       case 'jee-main-2026':
         return _jeeMainChapters();
@@ -173,6 +183,17 @@ class MockDataSource implements DataSource {
       default:
         return [];
     }
+  }
+
+  @override
+  Future<List<LessonDto>> getCourseContents(String courseId) async {
+    // Return mock lessons aggregated for the course chapters
+    final chapters = await getChapters(courseId);
+    final lessons = <LessonDto>[];
+    for (var ch in chapters) {
+      lessons.addAll(await getLessons(ch.id));
+    }
+    return lessons;
   }
 
   List<ChapterDto> _jeeMainChapters() => [

@@ -10,9 +10,15 @@ import '../widgets/lesson_list_item.dart';
 
 /// Screen displaying the full curriculum (chapters and lessons) of a course.
 class ChaptersListPage extends ConsumerStatefulWidget {
-  const ChaptersListPage({super.key, required this.courseId, this.onBack});
+  const ChaptersListPage({
+    super.key,
+    required this.courseId,
+    this.parentId,
+    this.onBack,
+  });
 
   final String courseId;
+  final String? parentId;
   final VoidCallback? onBack;
 
   @override
@@ -30,7 +36,10 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    // Watch course detail with nested chapters
+    // Watch chapters for the current depth only (lazy loading)
+    final chaptersAsync = ref.watch(
+      subChaptersProvider(widget.courseId, widget.parentId),
+    );
     final courseAsync = ref.watch(courseDetailProvider(widget.courseId));
     final allLessonsAsync = ref.watch(
       allCourseLessonsProvider(widget.courseId),
@@ -38,17 +47,21 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
 
     return Container(
       color: design.colors.canvas,
-      child: courseAsync.when(
-        data: (course) {
-          if (course == null) {
-            return const Center(child: AppText.body('Course not found'));
-          }
+      child: chaptersAsync.when(
+        data: (chapters) {
+          final course = courseAsync.maybeWhen(
+            data: (c) => c,
+            orElse: () => null,
+          );
 
-          final chapters = course.chapters;
-          final filteredLessons = allLessonsAsync.maybeWhen(
-            data: (lessons) => _filterLessons(lessons, _activeFilter),
+          final lessons = allLessonsAsync.maybeWhen(
+            data: (l) => l,
             orElse: () => <LessonDto>[],
           );
+          final filteredLessons = _filterLessons(lessons, _activeFilter);
+
+          // If we have a parent, use its title, otherwise use course title
+          String headerTitle = course?.title ?? 'Curriculum';
 
           return Column(
             children: [
@@ -64,8 +77,8 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CurriculumHeader(
-                      courseTitle: course.title,
-                      chapterCount: course.chapterCount,
+                      courseTitle: headerTitle,
+                      chapterCount: chapters.length,
                       onBack: widget.onBack,
                     ),
                     Padding(
@@ -93,9 +106,19 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                         return ChapterCurriculumItem(
                           chapter: chapter,
                           index: entry.key,
-                          onTap: () => context.push(
-                            '/study/course/${widget.courseId}/chapters/${chapter.id}',
-                          ),
+                          onTap: () {
+                            if (!chapter.isLeaf) {
+                              // If parent, drill down (recursive navigation)
+                              context.push(
+                                '/study/course/${widget.courseId}/chapters?parentId=${chapter.id}',
+                              );
+                            } else {
+                              // If leaf, go to detail (lessons)
+                              context.push(
+                                '/study/course/${widget.courseId}/chapters/${chapter.id}',
+                              );
+                            }
+                          },
                         );
                       })
                     else

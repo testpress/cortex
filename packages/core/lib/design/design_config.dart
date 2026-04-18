@@ -230,6 +230,7 @@ class DesignColors {
     required this.rankDefault,
     required this.overlay,
     required this.shadow,
+    required this.transparent,
   });
 
   // Primary brand colors
@@ -291,6 +292,9 @@ class DesignColors {
   // Elevation / Shadows
   final Color shadow;
 
+  // Utilities
+  final Color transparent;
+
   factory DesignColors.light() {
     return const DesignColors(
       primary: Color(0xFF6366F1),
@@ -335,6 +339,7 @@ class DesignColors {
       rankDefault: Color(0xFF94A3B8),
       overlay: Color(0x8A000000),
       shadow: Color(0x33000000),
+      transparent: Color(0x00000000),
     );
   }
 
@@ -380,6 +385,7 @@ class DesignColors {
       rankDefault: Color(0xFF71717A),
       overlay: Color(0x8A000000),
       shadow: Color(0x66000000),
+      transparent: Color(0x00000000),
     );
   }
 
@@ -427,6 +433,7 @@ class DesignColors {
     Color rankDefault = const Color(0xFF94A3B8),
     Color overlay = const Color(0x8A000000),
     Color shadow = const Color(0x33000000),
+    Color transparent = const Color(0x00000000),
   }) {
     // Auto-calculate contrasting text colors
     final onPrimary = _contrastingColor(primary);
@@ -482,6 +489,7 @@ class DesignColors {
       rankDefault: rankDefault,
       overlay: overlay,
       shadow: shadow,
+      transparent: transparent,
     );
   }
 

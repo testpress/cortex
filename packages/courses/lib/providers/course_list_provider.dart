@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
@@ -124,17 +125,19 @@ class CourseList extends _$CourseList {
 }
 
 /// Provider for a specific course's chapters.
-@riverpod
+@Riverpod(keepAlive: true)
 Stream<List<ChapterDto>> courseChapters(
     CourseChaptersRef ref, String courseId) async* {
   final repo = await ref.watch(courseRepositoryProvider.future);
+  repo.refreshChapters(courseId).ignore();
+
   yield* repo.watchChapters(courseId).map(
         (rows) => rows.map((row) => repo.rowToChapterDto(row)).toList(),
       );
 }
 
 /// Provider for a specific chapter's lessons.
-@riverpod
+@Riverpod(keepAlive: true)
 Stream<List<LessonDto>> chapterLessons(
     ChapterLessonsRef ref, String chapterId) async* {
   final repo = await ref.watch(courseRepositoryProvider.future);

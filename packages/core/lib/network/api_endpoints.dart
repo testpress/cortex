@@ -8,4 +8,6 @@ class ApiEndpoints {
   static const String resetPassword = '/api/v2.3/password/reset/';
   static const String userProfile = '/api/v2.5/me/';
   static const String courseList = '/api/v3/courses/';
+  static String courseDetail(String id) => '/api/v3/courses/$id/';
+  static String courseChapters(String id) => '/api/v3/courses/$id/chapters/';
 }

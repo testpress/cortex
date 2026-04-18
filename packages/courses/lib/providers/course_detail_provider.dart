@@ -5,33 +5,36 @@ import 'course_list_provider.dart';
 part 'course_detail_provider.g.dart';
 
 /// Provider that fetches a specific course with its full curriculum (chapters and lessons).
-///
-/// This provider composes lower-level data providers from the `data` package
-/// to build a complete [CourseDto] hierarchy.
+@Riverpod(keepAlive: true)
+Stream<CourseDto?> courseDetail(CourseDetailRef ref, String courseId) async* {
+  final repo = await ref.watch(courseRepositoryProvider.future);
+  
+  // Note: chapters are now refreshed lazily via subChaptersProvider
+  yield* repo.watchCourse(courseId);
+}
+
+/// A provider that watches chapters for a specific parent (folder).
+/// Triggers a refresh if the folder has not been synced yet.
 @riverpod
-Future<CourseDto?> courseDetail(CourseDetailRef ref, String courseId) async {
-  final courses = await ref.watch(courseListProvider.future);
-  final course = courses.where((c) => c.id == courseId).firstOrNull;
-  if (course == null) return null;
+Stream<List<ChapterDto>> subChapters(
+  SubChaptersRef ref,
+  String courseId,
+  String? parentId,
+) async* {
+  final repo = await ref.watch(courseRepositoryProvider.future);
 
-  // Watch chapters for this course
-  final chapters = await ref.watch(courseChaptersProvider(courseId).future);
+  // Check if this level has already been synced using the unified method
+  final needsSync = !(await repo.isChaptersSynced(courseId, parentId: parentId));
 
-  // Watch lessons for each chapter and combine them
-  final chaptersWithLessons = await Future.wait(
-    chapters.map((chapter) async {
-      final lessons = await ref.watch(
-        chapterLessonsProvider(chapter.id).future,
+  if (needsSync) {
+    await repo.refreshChapters(courseId, parentId: parentId);
+  } else {
+    repo.refreshChapters(courseId, parentId: parentId).ignore();
+  }
+
+  yield* repo.watchChapters(courseId, parentId: parentId).map(
+        (rows) => rows.map((row) => repo.rowToChapterDto(row)).toList(),
       );
-      return chapter.copyWith(
-        lessons: lessons
-            .map((l) => l.copyWith(chapterTitle: chapter.title))
-            .toList(),
-      );
-    }),
-  );
-
-  return course.copyWith(chapters: chaptersWithLessons);
 }
 
 /// A provider that flattens all lessons for a specific course into a single list.

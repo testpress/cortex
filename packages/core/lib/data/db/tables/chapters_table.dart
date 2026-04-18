@@ -8,6 +8,10 @@ class ChaptersTable extends Table {
   IntColumn get lessonCount => integer()();
   IntColumn get assessmentCount => integer()();
   IntColumn get orderIndex => integer()();
+  TextColumn get parentId => text().nullable()();
+  BoolColumn get isLeaf => boolean().withDefault(const Constant(true))();
+  BoolColumn get isChaptersSynced => boolean().withDefault(const Constant(false))();
+  TextColumn get image => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};

@@ -45,6 +45,7 @@ class Chapter {
     required this.lessonCount,
     required this.assessmentCount,
     this.courseTitle,
+    this.image,
     this.lessons = const [],
   });
 
@@ -53,5 +54,6 @@ class Chapter {
   final int lessonCount;
   final int assessmentCount;
   final String? courseTitle;
+  final String? image;
   final List<Lesson> lessons;
 }
