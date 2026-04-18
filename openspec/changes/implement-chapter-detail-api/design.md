@@ -29,8 +29,12 @@ Currently, the app only fetches chapter metadata for courses. The detailed conte
 - **Rationale**: The V3 course-level contents API is less reliable for specific leaf-chapter deep-linking; V2.5 provides more stable results for direct chapter content retrieval.
 
 ### 4. Atomic Partial Updates
-- **Choice**: Use `Value.absent()` in repository mappers and wrap refresh logic in database transactions.
-- **Rationale**: Prevents "blind overwrites" where partial data from a list API would nullify existing detail data in the database. Transactions ensure local storage never enters a half-synced state.
+- **Choice**: Use `Value.absent()` in repository mappers and sequentially await database syncs.
+- **Rationale**: Prevents "blind overwrites" where partial data from a list API would nullify existing detail data in the database. Sequential syncs (global vs chapter) eradicate `Future.wait` race conditions. Transactions ensure local storage never enters a half-synced state.
+
+### 5. Network Throttling & Pruning (SWR Upgrades)
+- **Choice**: Implement a memory-based Time-To-Live (TTL) cache to throttle background syncs and natively prune orphaned local records during chapter refresh by comparing remote IDs.
+- **Rationale**: The Stale-While-Revalidate pattern triggered excessive API calls and blindly upserted stale rows. Throttling prevents Testpress API spam, and explicit orphaned-ID pruning during `refreshLessons` prevents ghost content without deleting pagination boundaries across the whole course.
 
 ## Risks / Trade-offs
 

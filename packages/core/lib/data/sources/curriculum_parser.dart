@@ -50,8 +50,7 @@ class CurriculumParser {
           ?.toString()
           .toLowerCase();
       if (type == 'chapter') return null;
-
-      final dto = LessonDto.fromJson(json);
+      final dto = parseLesson(json);
 
       // Enrich with chapter title if we found it in the metadata
       if (dto.chapterTitle == null || dto.chapterTitle!.isEmpty) {
@@ -67,5 +66,51 @@ class CurriculumParser {
 
       return dto;
     }).whereType<LessonDto>().toList() ?? [];
+  }
+
+  static LessonType parseType(dynamic value) {
+    final s = value?.toString().toLowerCase() ?? '';
+    if (s.contains('video') || s.contains('live') || s.contains('conference')) return LessonType.video;
+    if (s.contains('pdf') || s.contains('notes') || s.contains('attachment')) return LessonType.pdf;
+    if (s.contains('exam') || s.contains('test')) return LessonType.test;
+    if (s.contains('quiz') || s.contains('assessment')) return LessonType.assessment;
+    return LessonType.video;
+  }
+
+  static LessonProgressStatus parseStatus(dynamic value) {
+    final s = value?.toString().toLowerCase();
+    if (s == 'completed' || s == '1') return LessonProgressStatus.completed;
+    if (s == 'in_progress' || s == 'started' || s == '0') return LessonProgressStatus.inProgress;
+    return LessonProgressStatus.notStarted;
+  }
+
+  static LessonDto parseLesson(Map<String, dynamic> json) {
+    String? getString(String key) => json[key]?.toString();
+
+    final chapterId = () {
+      final val = json['chapter_id'] ?? json['chapter'] ?? json['chapterId'];
+      if (val is Map) return val['id']?.toString() ?? '';
+      return val?.toString() ?? '';
+    }();
+
+    return LessonDto(
+      id: getString('id') ?? '',
+      chapterId: chapterId,
+      title: json['title'] as String? ?? json['name'] as String? ?? '',
+      type: parseType(json['content_type'] ?? json['type'] ?? json['kind']),
+      duration: json['duration'] as String? ?? '',
+      progressStatus: parseStatus(json['state'] ?? json['progressStatus']),
+      isLocked: !(json['active'] as bool? ?? json['isLocked'] == false),
+      orderIndex: (json['order'] as num?)?.toInt() ?? (json['orderIndex'] as num?)?.toInt() ?? 0,
+      chapterTitle: json['chapter_title'] as String? ?? json['chapterTitle'] as String?,
+      contentUrl: json['content_url'] as String? ?? json['url'] as String? ?? json['contentUrl'] as String?,
+      subtitle: json['subtitle'] as String?,
+      subjectName: json['subject_name'] as String? ?? json['subjectName'] as String?,
+      subjectIndex: (json['subject_index'] as num?)?.toInt() ?? (json['subjectIndex'] as num?)?.toInt(),
+      lessonNumber: (json['lesson_number'] as num?)?.toInt() ?? (json['lessonNumber'] as num?)?.toInt(),
+      totalLessons: (json['total_lessons'] as num?)?.toInt() ?? (json['totalLessons'] as num?)?.toInt(),
+      isBookmarked: json['is_bookmarked'] as bool? ?? json['isBookmarked'] as bool? ?? false,
+      image: json['icon'] as String? ?? json['image'] as String?,
+    );
   }
 }

@@ -10,6 +10,7 @@ import 'package:core/data/data.dart';
 class CourseRepository {
   final AppDatabase _db;
   final DataSource _source;
+  final Map<String, DateTime> _lastSyncedCourseContents = {};
 
   CourseRepository(this._db, this._source);
 
@@ -165,12 +166,10 @@ class CourseRepository {
     final chapter = course?.chapters.where((c) => c.id == chapterId).firstOrNull;
 
     if (chapter != null && chapter.isLeaf) {
-      // Refresh both the chapter items AND the course-wide status tags
-      // so that Running/Upcoming/History filters work correctly.
-      await Future.wait([
-        refreshLessons(chapterId),
-        refreshCourseContents(courseId),
-      ]);
+      // Refresh the course-wide status tags first.
+      await refreshCourseContents(courseId);
+      // Then refresh the specific chapter lessons vertically to ensure data integrity.
+      await refreshLessons(chapterId);
     }
   }
 
@@ -178,15 +177,31 @@ class CourseRepository {
     final lessons = await _source.getLessons(chapterId);
     final companions = lessons.map(_lessonDtoToCompanion).toList();
 
-    // Use upsert only to avoid "Empty Chapter" flashes in the UI.
-    // In a future update, consider adding a post-sync cleanup for deleted items.
-    await _db.upsertLessons(companions);
+    final remoteIds = lessons.map((l) => l.id).toSet();
+
+    await _db.transaction(() async {
+      final localLessons = await getLessons(chapterId);
+      final localIds = localLessons.map((l) => l.id).toSet();
+      
+      final idsToDelete = localIds.difference(remoteIds);
+      if (idsToDelete.isNotEmpty) {
+        await _db.deleteLessonsByIds(idsToDelete);
+      }
+      
+      await _db.upsertLessons(companions);
+    });
 
     return lessons;
   }
 
   Future<void> refreshCourseContents(String courseId) async {
     try {
+      final now = DateTime.now();
+      final lastSync = _lastSyncedCourseContents[courseId];
+      if (lastSync != null && now.difference(lastSync).inSeconds < 60) {
+        return; // Throttled to avoid network spam
+      }
+
       final remote = await _fetchRemoteCourseData(courseId);
       final harmonized = await _harmonizeLessons(courseId, remote);
       final companions = _applyContentStatuses(harmonized, remote);
@@ -194,6 +209,8 @@ class CourseRepository {
       if (companions.isNotEmpty) {
         await _db.upsertLessons(companions);
       }
+
+      _lastSyncedCourseContents[courseId] = now;
     } catch (e, stack) {
       // Log the error but don't rethrow, as this is a background sync.
       // In a production app, this should be sent to a crash reporting service.
