@@ -56,6 +56,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
     final allLessonsAsync = ref.watch(
       allCourseLessonsProvider(widget.courseId),
     );
+    final allChaptersAsync = ref.watch(allChaptersProvider(widget.courseId));
 
     return Container(
       color: design.colors.canvas,
@@ -70,6 +71,11 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
             data: (l) => l,
             orElse: () => <LessonDto>[],
           );
+
+          final allChapters = allChaptersAsync.maybeWhen(
+            data: (c) => c,
+            orElse: () => <ChapterDto>[],
+          );
           
           // Determine the set of valid chapter IDs for the current view.
           // If we are in a subchapter, we only want lessons from this chapter or its subchapters.
@@ -77,7 +83,6 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
           if (widget.parentId != null) {
             validChapterIds.add(widget.parentId!);
             
-            final allChapters = course?.chapters ?? [];
             // Add all descendants of the current parent
             // O(N) optimization: Group chapters by parentId once
             final parentMap = <String?, List<ChapterDto>>{};

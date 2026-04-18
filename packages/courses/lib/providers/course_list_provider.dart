@@ -136,6 +136,16 @@ Stream<List<ChapterDto>> courseChapters(
       );
 }
 
+/// Provider for a specific course's chapters (all depths).
+@Riverpod(keepAlive: true)
+Stream<List<ChapterDto>> allChapters(
+    AllChaptersRef ref, String courseId) async* {
+  final repo = await ref.watch(courseRepositoryProvider.future);
+  yield* repo.watchAllChapters(courseId).map(
+        (rows) => rows.map((row) => repo.rowToChapterDto(row)).toList(),
+      );
+}
+
 /// Provider for a specific chapter's lessons.
 @Riverpod(keepAlive: true)
 Stream<List<LessonDto>> chapterLessons(

@@ -95,6 +95,15 @@ class CourseRepository {
     return query.watch();
   }
 
+  /// Live stream of ALL chapters for a course (regardless of depth).
+  /// Used for hierarchical filtering and breadcrumb calculations.
+  Stream<List<ChaptersTableData>> watchAllChapters(String courseId) {
+    return (_db.select(_db.chaptersTable)
+          ..where((t) => t.courseId.equals(courseId))
+          ..orderBy([(t) => OrderingTerm.asc(t.orderIndex)]))
+        .watch();
+  }
+
   /// Checks if chapters/subjects for a course or folder are already in the DB.
   Future<bool> isChaptersSynced(String courseId, {String? parentId}) async {
     final rowId = parentId ?? courseId;
@@ -169,13 +178,9 @@ class CourseRepository {
     final lessons = await _source.getLessons(chapterId);
     final companions = lessons.map(_lessonDtoToCompanion).toList();
 
-    // Wrap in transaction to ensure metadata and contents are updated atomically.
-    // This prevents "Empty Chapter" states if the app crashes between delete and upsert.
-    await _db.transaction(() async {
-      // Clear old data for this specific chapter to ensure we remove any corrupted entries
-      await _db.deleteLessonsForChapter(chapterId);
-      await _db.upsertLessons(companions);
-    });
+    // Use upsert only to avoid "Empty Chapter" flashes in the UI.
+    // In a future update, consider adding a post-sync cleanup for deleted items.
+    await _db.upsertLessons(companions);
 
     return lessons;
   }
@@ -287,6 +292,18 @@ class CourseRepository {
   /// Watch a single chapter by its ID.
   Stream<ChaptersTableData?> watchChapter(String id) {
     return (_db.select(_db.chaptersTable)..where((t) => t.id.equals(id))).watchSingleOrNull();
+  }
+
+  /// Direct fetch of a chapter by ID.
+  Future<ChaptersTableData?> getChapter(String id) async {
+    return (_db.select(_db.chaptersTable)..where((t) => t.id.equals(id)))
+        .getSingleOrNull();
+  }
+
+  /// Direct fetch of lessons for a chapter from DB.
+  Future<List<LessonsTableData>> getLessons(String chapterId) async {
+    return (_db.select(_db.lessonsTable)..where((t) => t.chapterId.equals(chapterId)))
+        .get();
   }
 
   /// Toggles the bookmark status locally.

@@ -6,7 +6,7 @@ part of 'course_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$courseDetailHash() => r'3ac000bde610ea984625c81f3916fba09b2acb25';
+String _$courseDetailHash() => r'3c0d657cd6505643d3b0ca6ce390b52c5c47ab6b';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -158,7 +158,156 @@ class _CourseDetailProviderElement extends StreamProviderElement<CourseDto?>
   String get courseId => (origin as CourseDetailProvider).courseId;
 }
 
-String _$allCourseLessonsHash() => r'4dc7030e7770d8eda9985b414e91c70f1da989c5';
+String _$subChaptersHash() => r'a6595e5103bbde7982939610147f44eaf182d0a9';
+
+/// A provider that watches chapters for a specific parent (folder).
+/// Triggers a refresh if the folder has not been synced yet.
+///
+/// Copied from [subChapters].
+@ProviderFor(subChapters)
+const subChaptersProvider = SubChaptersFamily();
+
+/// A provider that watches chapters for a specific parent (folder).
+/// Triggers a refresh if the folder has not been synced yet.
+///
+/// Copied from [subChapters].
+class SubChaptersFamily extends Family<AsyncValue<List<ChapterDto>>> {
+  /// A provider that watches chapters for a specific parent (folder).
+  /// Triggers a refresh if the folder has not been synced yet.
+  ///
+  /// Copied from [subChapters].
+  const SubChaptersFamily();
+
+  /// A provider that watches chapters for a specific parent (folder).
+  /// Triggers a refresh if the folder has not been synced yet.
+  ///
+  /// Copied from [subChapters].
+  SubChaptersProvider call(String courseId, String? parentId) {
+    return SubChaptersProvider(courseId, parentId);
+  }
+
+  @override
+  SubChaptersProvider getProviderOverride(
+    covariant SubChaptersProvider provider,
+  ) {
+    return call(provider.courseId, provider.parentId);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'subChaptersProvider';
+}
+
+/// A provider that watches chapters for a specific parent (folder).
+/// Triggers a refresh if the folder has not been synced yet.
+///
+/// Copied from [subChapters].
+class SubChaptersProvider extends StreamProvider<List<ChapterDto>> {
+  /// A provider that watches chapters for a specific parent (folder).
+  /// Triggers a refresh if the folder has not been synced yet.
+  ///
+  /// Copied from [subChapters].
+  SubChaptersProvider(String courseId, String? parentId)
+    : this._internal(
+        (ref) => subChapters(ref as SubChaptersRef, courseId, parentId),
+        from: subChaptersProvider,
+        name: r'subChaptersProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$subChaptersHash,
+        dependencies: SubChaptersFamily._dependencies,
+        allTransitiveDependencies: SubChaptersFamily._allTransitiveDependencies,
+        courseId: courseId,
+        parentId: parentId,
+      );
+
+  SubChaptersProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.courseId,
+    required this.parentId,
+  }) : super.internal();
+
+  final String courseId;
+  final String? parentId;
+
+  @override
+  Override overrideWith(
+    Stream<List<ChapterDto>> Function(SubChaptersRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: SubChaptersProvider._internal(
+        (ref) => create(ref as SubChaptersRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        courseId: courseId,
+        parentId: parentId,
+      ),
+    );
+  }
+
+  @override
+  StreamProviderElement<List<ChapterDto>> createElement() {
+    return _SubChaptersProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is SubChaptersProvider &&
+        other.courseId == courseId &&
+        other.parentId == parentId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, courseId.hashCode);
+    hash = _SystemHash.combine(hash, parentId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin SubChaptersRef on StreamProviderRef<List<ChapterDto>> {
+  /// The parameter `courseId` of this provider.
+  String get courseId;
+
+  /// The parameter `parentId` of this provider.
+  String? get parentId;
+}
+
+class _SubChaptersProviderElement
+    extends StreamProviderElement<List<ChapterDto>>
+    with SubChaptersRef {
+  _SubChaptersProviderElement(super.provider);
+
+  @override
+  String get courseId => (origin as SubChaptersProvider).courseId;
+  @override
+  String? get parentId => (origin as SubChaptersProvider).parentId;
+}
+
+String _$allCourseLessonsHash() => r'2da985aa83ca2c623b5c009903e958c7e2416bb2';
 
 /// A provider that flattens all lessons for a specific course into a single list.
 /// Used for filtering lessons by type across the entire course.
@@ -212,8 +361,7 @@ class AllCourseLessonsFamily extends Family<AsyncValue<List<LessonDto>>> {
 /// Used for filtering lessons by type across the entire course.
 ///
 /// Copied from [allCourseLessons].
-class AllCourseLessonsProvider
-    extends AutoDisposeStreamProvider<List<LessonDto>> {
+class AllCourseLessonsProvider extends StreamProvider<List<LessonDto>> {
   /// A provider that flattens all lessons for a specific course into a single list.
   /// Used for filtering lessons by type across the entire course.
   ///
@@ -263,7 +411,7 @@ class AllCourseLessonsProvider
   }
 
   @override
-  AutoDisposeStreamProviderElement<List<LessonDto>> createElement() {
+  StreamProviderElement<List<LessonDto>> createElement() {
     return _AllCourseLessonsProviderElement(this);
   }
 
@@ -283,13 +431,13 @@ class AllCourseLessonsProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin AllCourseLessonsRef on AutoDisposeStreamProviderRef<List<LessonDto>> {
+mixin AllCourseLessonsRef on StreamProviderRef<List<LessonDto>> {
   /// The parameter `courseId` of this provider.
   String get courseId;
 }
 
 class _AllCourseLessonsProviderElement
-    extends AutoDisposeStreamProviderElement<List<LessonDto>>
+    extends StreamProviderElement<List<LessonDto>>
     with AllCourseLessonsRef {
   _AllCourseLessonsProviderElement(super.provider);
 

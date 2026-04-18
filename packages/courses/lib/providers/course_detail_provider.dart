@@ -20,7 +20,7 @@ Stream<CourseDto?> courseDetail(CourseDetailRef ref, String courseId) async* {
 
 /// A provider that watches chapters for a specific parent (folder).
 /// Triggers a refresh if the folder has not been synced yet.
-@riverpod
+@Riverpod(keepAlive: true)
 Stream<List<ChapterDto>> subChapters(
   SubChaptersRef ref,
   String courseId,
@@ -28,12 +28,25 @@ Stream<List<ChapterDto>> subChapters(
 ) async* {
   final repo = await ref.watch(courseRepositoryProvider.future);
 
-  // Check if this level has already been synced using the unified method
-  final needsSync = !(await repo.isChaptersSynced(courseId, parentId: parentId));
+  // 1. Check for existing local data to avoid blocking the UI with a loader.
+  final localChapters = await repo.watchChapters(courseId, parentId: parentId).first;
 
-  if (needsSync) {
+  if (localChapters.isNotEmpty) {
+    // If we have contents, yield them instantly from DB and refresh in background.
+    repo.refreshChapters(courseId, parentId: parentId).ignore();
+    yield* repo.watchChapters(courseId, parentId: parentId).map(
+          (rows) => rows.map((row) => repo.rowToChapterDto(row)).toList(),
+        );
+    return;
+  }
+
+  // 2. If DB is empty, decide whether to block based on previous sync history.
+  final isSynced = await repo.isChaptersSynced(courseId, parentId: parentId);
+  if (!isSynced) {
+    // Await the sync ONLY if it's the first time and we have no data.
     await repo.refreshChapters(courseId, parentId: parentId);
   } else {
+    // It's genuinely empty or already synced; refresh quietly.
     repo.refreshChapters(courseId, parentId: parentId).ignore();
   }
 
@@ -44,7 +57,7 @@ Stream<List<ChapterDto>> subChapters(
 
 /// A provider that flattens all lessons for a specific course into a single list.
 /// Used for filtering lessons by type across the entire course.
-@riverpod
+@Riverpod(keepAlive: true)
 Stream<List<LessonDto>> allCourseLessons(
   AllCourseLessonsRef ref,
   String courseId,
