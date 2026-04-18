@@ -34,8 +34,11 @@ class CourseDto {
     required this.completedLessons,
     required this.totalLessons,
     this.image,
+    this.isChaptersSynced = false,
     this.chapters = const [],
   });
+
+  final bool isChaptersSynced;
 
   CourseDto copyWith({
     String? id,
@@ -48,6 +51,7 @@ class CourseDto {
     int? completedLessons,
     int? totalLessons,
     String? image,
+    bool? isChaptersSynced,
     List<ChapterDto>? chapters,
   }) {
     return CourseDto(
@@ -61,6 +65,7 @@ class CourseDto {
       completedLessons: completedLessons ?? this.completedLessons,
       totalLessons: totalLessons ?? this.totalLessons,
       image: image ?? this.image,
+      isChaptersSynced: isChaptersSynced ?? this.isChaptersSynced,
       chapters: chapters ?? this.chapters,
     );
   }
@@ -77,6 +82,7 @@ class CourseDto {
       completedLessons: json['completed_lessons_count'] as int? ?? 0,
       totalLessons: json['contents_count'] as int? ?? 0,
       image: json['image'] as String?,
+      isChaptersSynced: json['isChaptersSynced'] as bool? ?? false,
       chapters:
           (json['chapters'] as List<dynamic>?)
               ?.map((e) => ChapterDto.fromJson(e as Map<String, dynamic>))
@@ -97,6 +103,7 @@ class CourseDto {
       'completedLessons': completedLessons,
       'totalLessons': totalLessons,
       'image': image,
+      'isChaptersSynced': isChaptersSynced,
       'chapters': chapters.map((e) => e.toJson()).toList(),
     };
   }

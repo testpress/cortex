@@ -43,9 +43,14 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<List<ChapterDto>> getChapters(String courseId) async {
+  Future<List<ChapterDto>> getChapters(String courseId, {String? parentId}) async {
     return performNetworkRequest(
-      _dio.get(ApiEndpoints.courseChapters(courseId)),
+      _dio.get(
+        ApiEndpoints.courseChapters(courseId),
+        queryParameters: {
+          'parent_id': parentId ?? 'null',
+        },
+      ),
       fromJson: (data) {
         final results = data['results'] as Map<String, dynamic>?;
         final chaptersList = results?['chapters'] as List<dynamic>?;

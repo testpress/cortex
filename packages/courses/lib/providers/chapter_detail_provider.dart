@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../models/course_content.dart';
-import 'course_detail_provider.dart';
+import 'course_list_provider.dart';
 
 part 'chapter_detail_provider.g.dart';
 
@@ -12,28 +12,37 @@ Future<Chapter?> chapterDetail(
   String courseId,
   String chapterId,
 ) async {
-  final courseDto = await ref.watch(courseDetailProvider(courseId).future);
-  if (courseDto == null) return null;
+  final repo = await ref.watch(courseRepositoryProvider.future);
+  
+  // 1. Get the chapter data
+  final chapterRow = await ref.watch(StreamProvider((_) => repo.watchChapter(chapterId)).future);
+  if (chapterRow == null) return null;
 
-  final chapterDto = courseDto.chapters
-      .where((c) => c.id == chapterId)
-      .firstOrNull;
-  if (chapterDto == null) return null;
+  // 2. Fetch the course for title
+  final courseStream = repo.watchCourses().map((l) => l.where((c) => c.id == courseId).firstOrNull);
+  final courseRow = await ref.watch(StreamProvider((_) => courseStream).future);
+
+  // 3. Refresh lessons in background
+  repo.refreshLessons(chapterId).ignore();
+
+  // 4. Watch lessons
+  final lessonsStream = repo.watchLessons(chapterId);
+  final lessonsRow = await ref.watch(StreamProvider((_) => lessonsStream).future);
 
   return Chapter(
-    id: chapterDto.id,
-    title: chapterDto.title,
-    lessonCount: chapterDto.lessonCount,
-    assessmentCount: chapterDto.assessmentCount,
-    courseTitle: courseDto.title,
-    image: chapterDto.image,
-    lessons: chapterDto.lessons
+    id: chapterRow.id,
+    title: chapterRow.title,
+    lessonCount: chapterRow.lessonCount,
+    assessmentCount: chapterRow.assessmentCount,
+    courseTitle: courseRow?.title,
+    image: chapterRow.image,
+    lessons: lessonsRow
         .map(
           (l) => Lesson(
             id: l.id,
             title: l.title,
-            type: l.type,
-            progressStatus: l.progressStatus,
+            type: repo.rowToLessonDto(l).type,
+            progressStatus: repo.rowToLessonDto(l).progressStatus,
             duration: l.duration,
             isLocked: l.isLocked,
             subtitle: l.subtitle,

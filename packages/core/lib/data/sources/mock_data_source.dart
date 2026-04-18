@@ -168,7 +168,7 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<List<ChapterDto>> getChapters(String courseId) async {
+  Future<List<ChapterDto>> getChapters(String courseId, {String? parentId}) async {
     switch (courseId) {
       case 'jee-main-2026':
         return _jeeMainChapters();

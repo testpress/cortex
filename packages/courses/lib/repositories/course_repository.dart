@@ -48,7 +48,7 @@ class CourseRepository {
       }
 
       final chaptersData = await (_db.select(_db.chaptersTable)
-            ..where((t) => t.courseId.equals(courseId))
+            ..where((t) => t.courseId.equals(courseId) & t.parentId.isNull())
             ..orderBy([(t) => OrderingTerm.asc(t.orderIndex)]))
           .get();
 
@@ -82,15 +82,53 @@ class CourseRepository {
 
   // ── Chapters ─────────────────────────────────────────────────────────────
 
-  Stream<List<ChaptersTableData>> watchChapters(String courseId) {
-    return _db.watchChaptersForCourse(courseId);
+  Stream<List<ChaptersTableData>> watchChapters(String courseId, {String? parentId}) {
+    final query = _db.select(_db.chaptersTable)
+      ..orderBy([(t) => OrderingTerm.asc(t.orderIndex)]);
+
+    if (parentId == null) {
+      query.where((t) => t.courseId.equals(courseId) & t.parentId.isNull());
+    } else {
+      query.where((t) => t.parentId.equals(parentId));
+    }
+
+    return query.watch();
   }
 
-  Future<List<ChapterDto>> refreshChapters(String courseId) async {
-    final chapters = await _source.getChapters(courseId);
-    final companions = chapters.map(_chapterDtoToCompanion).toList();
-    await _db.upsertChapters(companions);
+  /// Checks if chapters/subjects for a course or folder are already in the DB.
+  Future<bool> isChaptersSynced(String courseId, {String? parentId}) async {
+    final rowId = parentId ?? courseId;
+    final isChapter = parentId != null;
+
+    if (isChapter) {
+      final chapter = await (_db.select(_db.chaptersTable)..where((t) => t.id.equals(rowId))).getSingleOrNull();
+      return chapter?.isChaptersSynced ?? false;
+    } else {
+      final course = await (_db.select(_db.coursesTable)..where((t) => t.id.equals(rowId))).getSingleOrNull();
+      return course?.isChaptersSynced ?? false;
+    }
+  }
+
+  /// Refreshes chapters for a course or folder and marks it as synced.
+  Future<List<ChapterDto>> refreshChapters(String courseId, {String? parentId}) async {
+    final chapters = await _source.getChapters(courseId, parentId: parentId);
+    
+    await _db.upsertChapters(chapters.map(_chapterDtoToCompanion).toList());
+    await _markAsSynced(courseId: courseId, folderId: parentId);
+
     return chapters;
+  }
+
+  // ── Internal Helpers ─────────────────────────────────────────────────────
+
+  Future<void> _markAsSynced({required String courseId, String? folderId}) async {
+    if (folderId != null) {
+      await (_db.update(_db.chaptersTable)..where((t) => t.id.equals(folderId)))
+          .write(const ChaptersTableCompanion(isChaptersSynced: Value(true)));
+    } else {
+      await (_db.update(_db.coursesTable)..where((t) => t.id.equals(courseId)))
+          .write(const CoursesTableCompanion(isChaptersSynced: Value(true)));
+    }
   }
 
   // ── Lessons ───────────────────────────────────────────────────────────────
@@ -115,6 +153,11 @@ class CourseRepository {
   /// Watch a single lesson by its ID.
   Stream<LessonsTableData?> watchLesson(String id) {
     return _db.watchLesson(id);
+  }
+
+  /// Watch a single chapter by its ID.
+  Stream<ChaptersTableData?> watchChapter(String id) {
+    return (_db.select(_db.chaptersTable)..where((t) => t.id.equals(id))).watchSingleOrNull();
   }
 
   /// Toggles the bookmark status locally.
@@ -160,6 +203,7 @@ class CourseRepository {
         completedLessons: row.completedLessons,
         totalLessons: row.totalLessons,
         image: row.image,
+        isChaptersSynced: row.isChaptersSynced,
       );
 
   CoursesTableCompanion _courseDtoToCompanion(CourseDto dto) =>
@@ -174,6 +218,7 @@ class CourseRepository {
         completedLessons: Value(dto.completedLessons),
         totalLessons: dto.totalLessons,
         image: Value(dto.image),
+        isChaptersSynced: Value(dto.isChaptersSynced),
       );
 
   ChapterDto rowToChapterDto(ChaptersTableData row) => ChapterDto(
@@ -185,6 +230,7 @@ class CourseRepository {
         orderIndex: row.orderIndex,
         parentId: row.parentId,
         isLeaf: row.isLeaf,
+        isChaptersSynced: row.isChaptersSynced,
         image: row.image,
       );
 
@@ -198,6 +244,7 @@ class CourseRepository {
         orderIndex: dto.orderIndex,
         parentId: Value(dto.parentId),
         isLeaf: Value(dto.isLeaf),
+        isChaptersSynced: Value(dto.isChaptersSynced),
         image: Value(dto.image),
       );
 

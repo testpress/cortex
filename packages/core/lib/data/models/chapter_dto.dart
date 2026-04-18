@@ -11,6 +11,7 @@ class ChapterDto {
   final String? image;
   final String? parentId;
   final bool isLeaf;
+  final bool isChaptersSynced;
   final List<LessonDto> lessons;
 
   const ChapterDto({
@@ -22,6 +23,7 @@ class ChapterDto {
     required this.orderIndex,
     this.parentId,
     this.isLeaf = true,
+    this.isChaptersSynced = false,
     this.image,
     this.lessons = const [],
   });
@@ -35,6 +37,7 @@ class ChapterDto {
     int? orderIndex,
     String? parentId,
     bool? isLeaf,
+    bool? isChaptersSynced,
     String? image,
     List<LessonDto>? lessons,
   }) {
@@ -47,6 +50,7 @@ class ChapterDto {
       orderIndex: orderIndex ?? this.orderIndex,
       parentId: parentId ?? this.parentId,
       isLeaf: isLeaf ?? this.isLeaf,
+      isChaptersSynced: isChaptersSynced ?? this.isChaptersSynced,
       image: image ?? this.image,
       lessons: lessons ?? this.lessons,
     );
@@ -68,6 +72,7 @@ class ChapterDto {
       orderIndex: (json['order'] as num?)?.toInt() ?? (json['orderIndex'] as num?)?.toInt() ?? 0,
       parentId: (json['parent_id'] ?? json['parentId'])?.toString(),
       isLeaf: json['leaf'] as bool? ?? json['isLeaf'] as bool? ?? true,
+      isChaptersSynced: json['isChaptersSynced'] as bool? ?? false,
       image: json['image'] as String?,
       lessons: (json['lessons'] as List<dynamic>?)
               ?.map((e) => LessonDto.fromJson(e as Map<String, dynamic>))

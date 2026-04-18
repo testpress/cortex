@@ -11,8 +11,8 @@ abstract class DataSource {
   /// Fetch full metadata for a single course from `/api/v3/courses/{id}/`.
   Future<CourseDto> getCourseDetail(String courseId);
 
-  /// Fetch chapters for a specific course.
-  Future<List<ChapterDto>> getChapters(String courseId);
+  /// Fetch chapters for a specific course, optionally filtered by parentId.
+  Future<List<ChapterDto>> getChapters(String courseId, {String? parentId});
 
   /// Fetch all course contents for a specific course (V3 flat list).
   Future<List<LessonDto>> getCourseContents(String courseId);

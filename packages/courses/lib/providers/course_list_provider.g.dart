@@ -23,7 +23,7 @@ final courseRepositoryProvider = FutureProvider<CourseRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CourseRepositoryRef = FutureProviderRef<CourseRepository>;
-String _$courseChaptersHash() => r'a80788749fb9b63b322c506c03a065d6210d1fbb';
+String _$courseChaptersHash() => r'18443e3a7d1dff852a979b3a2ffca20e46b26592';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -47,29 +47,21 @@ class _SystemHash {
 }
 
 /// Provider for a specific course's chapters.
-/// Fetches chapters from the network and writes them to the local DB,
-/// then streams live updates from the DB.
 ///
 /// Copied from [courseChapters].
 @ProviderFor(courseChapters)
 const courseChaptersProvider = CourseChaptersFamily();
 
 /// Provider for a specific course's chapters.
-/// Fetches chapters from the network and writes them to the local DB,
-/// then streams live updates from the DB.
 ///
 /// Copied from [courseChapters].
 class CourseChaptersFamily extends Family<AsyncValue<List<ChapterDto>>> {
   /// Provider for a specific course's chapters.
-  /// Fetches chapters from the network and writes them to the local DB,
-  /// then streams live updates from the DB.
   ///
   /// Copied from [courseChapters].
   const CourseChaptersFamily();
 
   /// Provider for a specific course's chapters.
-  /// Fetches chapters from the network and writes them to the local DB,
-  /// then streams live updates from the DB.
   ///
   /// Copied from [courseChapters].
   CourseChaptersProvider call(String courseId) {
@@ -99,14 +91,10 @@ class CourseChaptersFamily extends Family<AsyncValue<List<ChapterDto>>> {
 }
 
 /// Provider for a specific course's chapters.
-/// Fetches chapters from the network and writes them to the local DB,
-/// then streams live updates from the DB.
 ///
 /// Copied from [courseChapters].
 class CourseChaptersProvider extends StreamProvider<List<ChapterDto>> {
   /// Provider for a specific course's chapters.
-  /// Fetches chapters from the network and writes them to the local DB,
-  /// then streams live updates from the DB.
   ///
   /// Copied from [courseChapters].
   CourseChaptersProvider(String courseId)

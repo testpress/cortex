@@ -36,7 +36,10 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    // Watch course detail with nested chapters
+    // Watch chapters for the current depth only (lazy loading)
+    final chaptersAsync = ref.watch(
+      subChaptersProvider(widget.courseId, widget.parentId),
+    );
     final courseAsync = ref.watch(courseDetailProvider(widget.courseId));
     final allLessonsAsync = ref.watch(
       allCourseLessonsProvider(widget.courseId),
@@ -44,17 +47,12 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
 
     return Container(
       color: design.colors.canvas,
-      child: courseAsync.when(
-        data: (course) {
-          if (course == null) {
-            return const Center(child: AppText.body('Course not found'));
-          }
-
-          final allChapters = course.chapters;
-          // Filter chapters for the current depth
-          final chapters = allChapters
-              .where((c) => c.parentId == widget.parentId)
-              .toList();
+      child: chaptersAsync.when(
+        data: (chapters) {
+          final course = courseAsync.maybeWhen(
+            data: (c) => c,
+            orElse: () => null,
+          );
 
           final lessons = allLessonsAsync.maybeWhen(
             data: (l) => l,
@@ -63,15 +61,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
           final filteredLessons = _filterLessons(lessons, _activeFilter);
 
           // If we have a parent, use its title, otherwise use course title
-          String headerTitle = course.title;
-
-          if (widget.parentId != null) {
-            final parent =
-                allChapters.where((c) => c.id == widget.parentId).firstOrNull;
-            if (parent != null) {
-              headerTitle = parent.title;
-            }
-          }
+          String headerTitle = course?.title ?? 'Curriculum';
 
           return Column(
             children: [

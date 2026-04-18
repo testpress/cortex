@@ -116,6 +116,21 @@ class $CoursesTableTable extends CoursesTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _isChaptersSyncedMeta = const VerificationMeta(
+    'isChaptersSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isChaptersSynced = GeneratedColumn<bool>(
+    'is_chapters_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_chapters_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -128,6 +143,7 @@ class $CoursesTableTable extends CoursesTable
     completedLessons,
     totalLessons,
     image,
+    isChaptersSynced,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -225,6 +241,15 @@ class $CoursesTableTable extends CoursesTable
         image.isAcceptableOrUnknown(data['image']!, _imageMeta),
       );
     }
+    if (data.containsKey('is_chapters_synced')) {
+      context.handle(
+        _isChaptersSyncedMeta,
+        isChaptersSynced.isAcceptableOrUnknown(
+          data['is_chapters_synced']!,
+          _isChaptersSyncedMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -274,6 +299,10 @@ class $CoursesTableTable extends CoursesTable
         DriftSqlType.string,
         data['${effectivePrefix}image'],
       ),
+      isChaptersSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_chapters_synced'],
+      )!,
     );
   }
 
@@ -295,6 +324,7 @@ class CoursesTableData extends DataClass
   final int completedLessons;
   final int totalLessons;
   final String? image;
+  final bool isChaptersSynced;
   const CoursesTableData({
     required this.id,
     required this.title,
@@ -306,6 +336,7 @@ class CoursesTableData extends DataClass
     required this.completedLessons,
     required this.totalLessons,
     this.image,
+    required this.isChaptersSynced,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -322,6 +353,7 @@ class CoursesTableData extends DataClass
     if (!nullToAbsent || image != null) {
       map['image'] = Variable<String>(image);
     }
+    map['is_chapters_synced'] = Variable<bool>(isChaptersSynced);
     return map;
   }
 
@@ -339,6 +371,7 @@ class CoursesTableData extends DataClass
       image: image == null && nullToAbsent
           ? const Value.absent()
           : Value(image),
+      isChaptersSynced: Value(isChaptersSynced),
     );
   }
 
@@ -358,6 +391,7 @@ class CoursesTableData extends DataClass
       completedLessons: serializer.fromJson<int>(json['completedLessons']),
       totalLessons: serializer.fromJson<int>(json['totalLessons']),
       image: serializer.fromJson<String?>(json['image']),
+      isChaptersSynced: serializer.fromJson<bool>(json['isChaptersSynced']),
     );
   }
   @override
@@ -374,6 +408,7 @@ class CoursesTableData extends DataClass
       'completedLessons': serializer.toJson<int>(completedLessons),
       'totalLessons': serializer.toJson<int>(totalLessons),
       'image': serializer.toJson<String?>(image),
+      'isChaptersSynced': serializer.toJson<bool>(isChaptersSynced),
     };
   }
 
@@ -388,6 +423,7 @@ class CoursesTableData extends DataClass
     int? completedLessons,
     int? totalLessons,
     Value<String?> image = const Value.absent(),
+    bool? isChaptersSynced,
   }) => CoursesTableData(
     id: id ?? this.id,
     title: title ?? this.title,
@@ -399,6 +435,7 @@ class CoursesTableData extends DataClass
     completedLessons: completedLessons ?? this.completedLessons,
     totalLessons: totalLessons ?? this.totalLessons,
     image: image.present ? image.value : this.image,
+    isChaptersSynced: isChaptersSynced ?? this.isChaptersSynced,
   );
   CoursesTableData copyWithCompanion(CoursesTableCompanion data) {
     return CoursesTableData(
@@ -424,6 +461,9 @@ class CoursesTableData extends DataClass
           ? data.totalLessons.value
           : this.totalLessons,
       image: data.image.present ? data.image.value : this.image,
+      isChaptersSynced: data.isChaptersSynced.present
+          ? data.isChaptersSynced.value
+          : this.isChaptersSynced,
     );
   }
 
@@ -439,7 +479,8 @@ class CoursesTableData extends DataClass
           ..write('progress: $progress, ')
           ..write('completedLessons: $completedLessons, ')
           ..write('totalLessons: $totalLessons, ')
-          ..write('image: $image')
+          ..write('image: $image, ')
+          ..write('isChaptersSynced: $isChaptersSynced')
           ..write(')'))
         .toString();
   }
@@ -456,6 +497,7 @@ class CoursesTableData extends DataClass
     completedLessons,
     totalLessons,
     image,
+    isChaptersSynced,
   );
   @override
   bool operator ==(Object other) =>
@@ -470,7 +512,8 @@ class CoursesTableData extends DataClass
           other.progress == this.progress &&
           other.completedLessons == this.completedLessons &&
           other.totalLessons == this.totalLessons &&
-          other.image == this.image);
+          other.image == this.image &&
+          other.isChaptersSynced == this.isChaptersSynced);
 }
 
 class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
@@ -484,6 +527,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
   final Value<int> completedLessons;
   final Value<int> totalLessons;
   final Value<String?> image;
+  final Value<bool> isChaptersSynced;
   final Value<int> rowid;
   const CoursesTableCompanion({
     this.id = const Value.absent(),
@@ -496,6 +540,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     this.completedLessons = const Value.absent(),
     this.totalLessons = const Value.absent(),
     this.image = const Value.absent(),
+    this.isChaptersSynced = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   CoursesTableCompanion.insert({
@@ -509,6 +554,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     this.completedLessons = const Value.absent(),
     required int totalLessons,
     this.image = const Value.absent(),
+    this.isChaptersSynced = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        title = Value(title),
@@ -527,6 +573,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     Expression<int>? completedLessons,
     Expression<int>? totalLessons,
     Expression<String>? image,
+    Expression<bool>? isChaptersSynced,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -540,6 +587,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
       if (completedLessons != null) 'completed_lessons': completedLessons,
       if (totalLessons != null) 'total_lessons': totalLessons,
       if (image != null) 'image': image,
+      if (isChaptersSynced != null) 'is_chapters_synced': isChaptersSynced,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -555,6 +603,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     Value<int>? completedLessons,
     Value<int>? totalLessons,
     Value<String?>? image,
+    Value<bool>? isChaptersSynced,
     Value<int>? rowid,
   }) {
     return CoursesTableCompanion(
@@ -568,6 +617,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
       completedLessons: completedLessons ?? this.completedLessons,
       totalLessons: totalLessons ?? this.totalLessons,
       image: image ?? this.image,
+      isChaptersSynced: isChaptersSynced ?? this.isChaptersSynced,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -605,6 +655,9 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     if (image.present) {
       map['image'] = Variable<String>(image.value);
     }
+    if (isChaptersSynced.present) {
+      map['is_chapters_synced'] = Variable<bool>(isChaptersSynced.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -624,6 +677,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
           ..write('completedLessons: $completedLessons, ')
           ..write('totalLessons: $totalLessons, ')
           ..write('image: $image, ')
+          ..write('isChaptersSynced: $isChaptersSynced, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -722,6 +776,21 @@ class $ChaptersTableTable extends ChaptersTable
     ),
     defaultValue: const Constant(true),
   );
+  static const VerificationMeta _isChaptersSyncedMeta = const VerificationMeta(
+    'isChaptersSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isChaptersSynced = GeneratedColumn<bool>(
+    'is_chapters_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_chapters_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   static const VerificationMeta _imageMeta = const VerificationMeta('image');
   @override
   late final GeneratedColumn<String> image = GeneratedColumn<String>(
@@ -741,6 +810,7 @@ class $ChaptersTableTable extends ChaptersTable
     orderIndex,
     parentId,
     isLeaf,
+    isChaptersSynced,
     image,
   ];
   @override
@@ -818,6 +888,15 @@ class $ChaptersTableTable extends ChaptersTable
         isLeaf.isAcceptableOrUnknown(data['is_leaf']!, _isLeafMeta),
       );
     }
+    if (data.containsKey('is_chapters_synced')) {
+      context.handle(
+        _isChaptersSyncedMeta,
+        isChaptersSynced.isAcceptableOrUnknown(
+          data['is_chapters_synced']!,
+          _isChaptersSyncedMeta,
+        ),
+      );
+    }
     if (data.containsKey('image')) {
       context.handle(
         _imageMeta,
@@ -865,6 +944,10 @@ class $ChaptersTableTable extends ChaptersTable
         DriftSqlType.bool,
         data['${effectivePrefix}is_leaf'],
       )!,
+      isChaptersSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_chapters_synced'],
+      )!,
       image: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}image'],
@@ -888,6 +971,7 @@ class ChaptersTableData extends DataClass
   final int orderIndex;
   final String? parentId;
   final bool isLeaf;
+  final bool isChaptersSynced;
   final String? image;
   const ChaptersTableData({
     required this.id,
@@ -898,6 +982,7 @@ class ChaptersTableData extends DataClass
     required this.orderIndex,
     this.parentId,
     required this.isLeaf,
+    required this.isChaptersSynced,
     this.image,
   });
   @override
@@ -913,6 +998,7 @@ class ChaptersTableData extends DataClass
       map['parent_id'] = Variable<String>(parentId);
     }
     map['is_leaf'] = Variable<bool>(isLeaf);
+    map['is_chapters_synced'] = Variable<bool>(isChaptersSynced);
     if (!nullToAbsent || image != null) {
       map['image'] = Variable<String>(image);
     }
@@ -931,6 +1017,7 @@ class ChaptersTableData extends DataClass
           ? const Value.absent()
           : Value(parentId),
       isLeaf: Value(isLeaf),
+      isChaptersSynced: Value(isChaptersSynced),
       image: image == null && nullToAbsent
           ? const Value.absent()
           : Value(image),
@@ -951,6 +1038,7 @@ class ChaptersTableData extends DataClass
       orderIndex: serializer.fromJson<int>(json['orderIndex']),
       parentId: serializer.fromJson<String?>(json['parentId']),
       isLeaf: serializer.fromJson<bool>(json['isLeaf']),
+      isChaptersSynced: serializer.fromJson<bool>(json['isChaptersSynced']),
       image: serializer.fromJson<String?>(json['image']),
     );
   }
@@ -966,6 +1054,7 @@ class ChaptersTableData extends DataClass
       'orderIndex': serializer.toJson<int>(orderIndex),
       'parentId': serializer.toJson<String?>(parentId),
       'isLeaf': serializer.toJson<bool>(isLeaf),
+      'isChaptersSynced': serializer.toJson<bool>(isChaptersSynced),
       'image': serializer.toJson<String?>(image),
     };
   }
@@ -979,6 +1068,7 @@ class ChaptersTableData extends DataClass
     int? orderIndex,
     Value<String?> parentId = const Value.absent(),
     bool? isLeaf,
+    bool? isChaptersSynced,
     Value<String?> image = const Value.absent(),
   }) => ChaptersTableData(
     id: id ?? this.id,
@@ -989,6 +1079,7 @@ class ChaptersTableData extends DataClass
     orderIndex: orderIndex ?? this.orderIndex,
     parentId: parentId.present ? parentId.value : this.parentId,
     isLeaf: isLeaf ?? this.isLeaf,
+    isChaptersSynced: isChaptersSynced ?? this.isChaptersSynced,
     image: image.present ? image.value : this.image,
   );
   ChaptersTableData copyWithCompanion(ChaptersTableCompanion data) {
@@ -1007,6 +1098,9 @@ class ChaptersTableData extends DataClass
           : this.orderIndex,
       parentId: data.parentId.present ? data.parentId.value : this.parentId,
       isLeaf: data.isLeaf.present ? data.isLeaf.value : this.isLeaf,
+      isChaptersSynced: data.isChaptersSynced.present
+          ? data.isChaptersSynced.value
+          : this.isChaptersSynced,
       image: data.image.present ? data.image.value : this.image,
     );
   }
@@ -1022,6 +1116,7 @@ class ChaptersTableData extends DataClass
           ..write('orderIndex: $orderIndex, ')
           ..write('parentId: $parentId, ')
           ..write('isLeaf: $isLeaf, ')
+          ..write('isChaptersSynced: $isChaptersSynced, ')
           ..write('image: $image')
           ..write(')'))
         .toString();
@@ -1037,6 +1132,7 @@ class ChaptersTableData extends DataClass
     orderIndex,
     parentId,
     isLeaf,
+    isChaptersSynced,
     image,
   );
   @override
@@ -1051,6 +1147,7 @@ class ChaptersTableData extends DataClass
           other.orderIndex == this.orderIndex &&
           other.parentId == this.parentId &&
           other.isLeaf == this.isLeaf &&
+          other.isChaptersSynced == this.isChaptersSynced &&
           other.image == this.image);
 }
 
@@ -1063,6 +1160,7 @@ class ChaptersTableCompanion extends UpdateCompanion<ChaptersTableData> {
   final Value<int> orderIndex;
   final Value<String?> parentId;
   final Value<bool> isLeaf;
+  final Value<bool> isChaptersSynced;
   final Value<String?> image;
   final Value<int> rowid;
   const ChaptersTableCompanion({
@@ -1074,6 +1172,7 @@ class ChaptersTableCompanion extends UpdateCompanion<ChaptersTableData> {
     this.orderIndex = const Value.absent(),
     this.parentId = const Value.absent(),
     this.isLeaf = const Value.absent(),
+    this.isChaptersSynced = const Value.absent(),
     this.image = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -1086,6 +1185,7 @@ class ChaptersTableCompanion extends UpdateCompanion<ChaptersTableData> {
     required int orderIndex,
     this.parentId = const Value.absent(),
     this.isLeaf = const Value.absent(),
+    this.isChaptersSynced = const Value.absent(),
     this.image = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -1103,6 +1203,7 @@ class ChaptersTableCompanion extends UpdateCompanion<ChaptersTableData> {
     Expression<int>? orderIndex,
     Expression<String>? parentId,
     Expression<bool>? isLeaf,
+    Expression<bool>? isChaptersSynced,
     Expression<String>? image,
     Expression<int>? rowid,
   }) {
@@ -1115,6 +1216,7 @@ class ChaptersTableCompanion extends UpdateCompanion<ChaptersTableData> {
       if (orderIndex != null) 'order_index': orderIndex,
       if (parentId != null) 'parent_id': parentId,
       if (isLeaf != null) 'is_leaf': isLeaf,
+      if (isChaptersSynced != null) 'is_chapters_synced': isChaptersSynced,
       if (image != null) 'image': image,
       if (rowid != null) 'rowid': rowid,
     });
@@ -1129,6 +1231,7 @@ class ChaptersTableCompanion extends UpdateCompanion<ChaptersTableData> {
     Value<int>? orderIndex,
     Value<String?>? parentId,
     Value<bool>? isLeaf,
+    Value<bool>? isChaptersSynced,
     Value<String?>? image,
     Value<int>? rowid,
   }) {
@@ -1141,6 +1244,7 @@ class ChaptersTableCompanion extends UpdateCompanion<ChaptersTableData> {
       orderIndex: orderIndex ?? this.orderIndex,
       parentId: parentId ?? this.parentId,
       isLeaf: isLeaf ?? this.isLeaf,
+      isChaptersSynced: isChaptersSynced ?? this.isChaptersSynced,
       image: image ?? this.image,
       rowid: rowid ?? this.rowid,
     );
@@ -1173,6 +1277,9 @@ class ChaptersTableCompanion extends UpdateCompanion<ChaptersTableData> {
     if (isLeaf.present) {
       map['is_leaf'] = Variable<bool>(isLeaf.value);
     }
+    if (isChaptersSynced.present) {
+      map['is_chapters_synced'] = Variable<bool>(isChaptersSynced.value);
+    }
     if (image.present) {
       map['image'] = Variable<String>(image.value);
     }
@@ -1193,6 +1300,7 @@ class ChaptersTableCompanion extends UpdateCompanion<ChaptersTableData> {
           ..write('orderIndex: $orderIndex, ')
           ..write('parentId: $parentId, ')
           ..write('isLeaf: $isLeaf, ')
+          ..write('isChaptersSynced: $isChaptersSynced, ')
           ..write('image: $image, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -4473,6 +4581,7 @@ typedef $$CoursesTableTableCreateCompanionBuilder =
       Value<int> completedLessons,
       required int totalLessons,
       Value<String?> image,
+      Value<bool> isChaptersSynced,
       Value<int> rowid,
     });
 typedef $$CoursesTableTableUpdateCompanionBuilder =
@@ -4487,6 +4596,7 @@ typedef $$CoursesTableTableUpdateCompanionBuilder =
       Value<int> completedLessons,
       Value<int> totalLessons,
       Value<String?> image,
+      Value<bool> isChaptersSynced,
       Value<int> rowid,
     });
 
@@ -4546,6 +4656,11 @@ class $$CoursesTableTableFilterComposer
 
   ColumnFilters<String> get image => $composableBuilder(
     column: $table.image,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isChaptersSynced => $composableBuilder(
+    column: $table.isChaptersSynced,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -4608,6 +4723,11 @@ class $$CoursesTableTableOrderingComposer
     column: $table.image,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get isChaptersSynced => $composableBuilder(
+    column: $table.isChaptersSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$CoursesTableTableAnnotationComposer
@@ -4660,6 +4780,11 @@ class $$CoursesTableTableAnnotationComposer
 
   GeneratedColumn<String> get image =>
       $composableBuilder(column: $table.image, builder: (column) => column);
+
+  GeneratedColumn<bool> get isChaptersSynced => $composableBuilder(
+    column: $table.isChaptersSynced,
+    builder: (column) => column,
+  );
 }
 
 class $$CoursesTableTableTableManager
@@ -4703,6 +4828,7 @@ class $$CoursesTableTableTableManager
                 Value<int> completedLessons = const Value.absent(),
                 Value<int> totalLessons = const Value.absent(),
                 Value<String?> image = const Value.absent(),
+                Value<bool> isChaptersSynced = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => CoursesTableCompanion(
                 id: id,
@@ -4715,6 +4841,7 @@ class $$CoursesTableTableTableManager
                 completedLessons: completedLessons,
                 totalLessons: totalLessons,
                 image: image,
+                isChaptersSynced: isChaptersSynced,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -4729,6 +4856,7 @@ class $$CoursesTableTableTableManager
                 Value<int> completedLessons = const Value.absent(),
                 required int totalLessons,
                 Value<String?> image = const Value.absent(),
+                Value<bool> isChaptersSynced = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => CoursesTableCompanion.insert(
                 id: id,
@@ -4741,6 +4869,7 @@ class $$CoursesTableTableTableManager
                 completedLessons: completedLessons,
                 totalLessons: totalLessons,
                 image: image,
+                isChaptersSynced: isChaptersSynced,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -4778,6 +4907,7 @@ typedef $$ChaptersTableTableCreateCompanionBuilder =
       required int orderIndex,
       Value<String?> parentId,
       Value<bool> isLeaf,
+      Value<bool> isChaptersSynced,
       Value<String?> image,
       Value<int> rowid,
     });
@@ -4791,6 +4921,7 @@ typedef $$ChaptersTableTableUpdateCompanionBuilder =
       Value<int> orderIndex,
       Value<String?> parentId,
       Value<bool> isLeaf,
+      Value<bool> isChaptersSynced,
       Value<String?> image,
       Value<int> rowid,
     });
@@ -4841,6 +4972,11 @@ class $$ChaptersTableTableFilterComposer
 
   ColumnFilters<bool> get isLeaf => $composableBuilder(
     column: $table.isLeaf,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isChaptersSynced => $composableBuilder(
+    column: $table.isChaptersSynced,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4899,6 +5035,11 @@ class $$ChaptersTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get isChaptersSynced => $composableBuilder(
+    column: $table.isChaptersSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get image => $composableBuilder(
     column: $table.image,
     builder: (column) => ColumnOrderings(column),
@@ -4943,6 +5084,11 @@ class $$ChaptersTableTableAnnotationComposer
 
   GeneratedColumn<bool> get isLeaf =>
       $composableBuilder(column: $table.isLeaf, builder: (column) => column);
+
+  GeneratedColumn<bool> get isChaptersSynced => $composableBuilder(
+    column: $table.isChaptersSynced,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get image =>
       $composableBuilder(column: $table.image, builder: (column) => column);
@@ -4991,6 +5137,7 @@ class $$ChaptersTableTableTableManager
                 Value<int> orderIndex = const Value.absent(),
                 Value<String?> parentId = const Value.absent(),
                 Value<bool> isLeaf = const Value.absent(),
+                Value<bool> isChaptersSynced = const Value.absent(),
                 Value<String?> image = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ChaptersTableCompanion(
@@ -5002,6 +5149,7 @@ class $$ChaptersTableTableTableManager
                 orderIndex: orderIndex,
                 parentId: parentId,
                 isLeaf: isLeaf,
+                isChaptersSynced: isChaptersSynced,
                 image: image,
                 rowid: rowid,
               ),
@@ -5015,6 +5163,7 @@ class $$ChaptersTableTableTableManager
                 required int orderIndex,
                 Value<String?> parentId = const Value.absent(),
                 Value<bool> isLeaf = const Value.absent(),
+                Value<bool> isChaptersSynced = const Value.absent(),
                 Value<String?> image = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ChaptersTableCompanion.insert(
@@ -5026,6 +5175,7 @@ class $$ChaptersTableTableTableManager
                 orderIndex: orderIndex,
                 parentId: parentId,
                 isLeaf: isLeaf,
+                isChaptersSynced: isChaptersSynced,
                 image: image,
                 rowid: rowid,
               ),
