@@ -1,54 +1,43 @@
 # Design: Course Detail API Integration V3
 
 ## Context
-The current implementation uses a generic course list. To provide a rich learning experience, we need specific endpoints for course metadata, hierarchical chapters, and flat lesson lists. This design outlines how we will integrate these V3 endpoints into the networking and data layers.
+The current implementation uses a generic course list. To provide a rich and performant learning experience, we use a **Lazy-Loading** architecture that fetches hierarchical curriculum data on-demand. This design ensures instant page loads using local cache while maintaining data freshness via silent background refreshes.
 
 ## Goals / Non-Goals
 
 **Goals:**
-- Add V3 endpoints for course details, chapters, and contents to `ApiEndpoints`.
-- Implement `CourseDetailDto` to capture rich metadata (description, total lessons, etc.).
-- Map v3 API fields to specialized DTOs (CourseDto, ChapterDto, LessonDto).
-- Support **hierarchical chapters** via `parentId` and `isLeaf` properties.
-- Implement a **recursive UI navigation** pattern for drilling down into nested curriculum.
-- Ensure type-safe mapping from API responses to internal models.
-- Optimize data flow using **reactive repository watchers** and non-blocking background refreshes (`.ignore()` pattern).
+- Implement **Lazy Synchronization**: Fetch chapters only when entering a course or folder using `?parent_id={id}`.
+- Standardize on **isChaptersSynced** flags in `CoursesTable` and `ChaptersTable` for state persistence.
+- Implement **Leaf-Node Navigation**: Decoupled `chapterDetail` lookup that resolves any chapter by ID regardless of depth.
+- Support **Hierarchical UI**: Custom navigation for drilling down into nested curriculum without Material dependencies.
+- Optimize Data Flow: **Stale-While-Revalidate** pattern using Stream providers and `.ignore()` for background refreshes.
 
 **Non-Goals:**
-- Pagination of course contents (unless explicitly required by the API and user).
-- Offline storage for these specific details (to be handled in a separate task/change).
-- UI implementation (this change focuses on the API and data layer).
+- Bulk-loading the entire curriculum tree at startup.
+- Manual "Pull-to-Refresh" (replaced by automatic silent background sync).
+- Direct Material library dependencies in the core curriculum UI.
 
 ## Decisions
 
-### 1. Endpoint Structure
-We will add the following to `ApiEndpoints`:
-- `courseDetail(id)` -> `/api/v3/courses/{id}/`
-- `courseChapters(id)` -> `/api/v3/courses/{id}/chapters/`
-- `courseContents(id)` -> `/api/v3/courses/{id}/contents/`
+### 1. Lazy-Loading Strategy
+Instead of fetching the full curriculum tree, the system calls `/api/v3/courses/{id}/chapters/?parent_id={parentId}`.
+- If `parentId` is null, it fetches top-level subjects.
+- If `parentId` is provided, it fetches specific sub-folders.
+- The local database stores the `isChaptersSynced` flag at each node to prevent redundant initial loads.
 
-Wait, since `ApiEndpoints` currently uses static constants, I will use placeholders or static methods if needed, but the convention seems to be static strings where possible. However, IDs are dynamic.
-Looking at `api_endpoints.dart`:
-```dart
-static const String courseList = '/api/v3/courses/';
-```
-I'll suggest adding methods for dynamic paths if not already present, or just define the base paths.
+### 2. Silent Synchronization (SWR)
+- **First Load**: If `isChaptersSynced` is false, the system awaits the API call (User sees spinner).
+- **Subsequent Loads**: If `isChaptersSynced` is true, the system emits DB data immediately and triggers a background refresh via `.ignore()`. If changes are detected, the UI updates reactively.
 
-### 2. DTO Standardisation
-We will ensure `fromJson` mappings use snake_case keys as per the Testpress API, and `toJson` (if used for caching) maintains consistency.
-
-### 3. Separation of Concerns
-- `Network layer`: Handles the requests via `Dio`.
-- `Data layer`: Handles mapping to DTOs.
-- `Repository layer`: Consumes DTOs from the data layer and manages live `Stream` watchers for the UI. Refactored to use `StreamGroup.merge` for reactive cross-table updates.
-- `Design layer`: Added `transparent` color token to `DesignColors` to remove Material dependencies from the curriculum UI.
+### 3. Unified Repository Interface
+- `isChaptersSynced(courseId, {parentId})`: Unified check for both course and folder sync status.
+- `refreshChapters(courseId, {parentId})`: Standardized fetch-and-save routine.
+- `watchChapter(id)`: direct database watcher for individual chapters to support deep-linking.
 
 ## Risks / Trade-offs
 
-- **Data Redundancy**: Some fields might overlap between `CourseDto` (from list) and `CourseDetailDto`. We will prioritize `CourseDetailDto` for the detail view.
-- **Flat vs Hierarchical**: The API provides both nested chapters and flat content lists. We will prioritize the hierarchical model (`ChapterDto.parentId`) for navigation while using content totals for progress tracking.
-- **Performance**: Use `.ignore()` for background refreshes to ensure the UI remains fully responsive using cached database data while network syncs happen asynchronously.
+- **User Perceived Latency**: The very first time a folder is opened, there will be a brief API delay. This is an intentional trade-off to save massive bandwidth and startup time for large courses.
+- **Background Sync Noise**: Multiple background refreshes might fire if a user navigates rapidly. This is mitigated by the repository's debounce/concurrency handling in the future if needed.
 
 ## Open Questions
-- Does `/api/v3/courses/{id}/contents/` support filtering?
-- Should we reuse `CourseDto` for the detail endpoint or create a separate `CourseDetailDto`? (Given the metadata like "Description", a separate/extended DTO is likely better).
+- Should we implement a global cache expiry for `isChaptersSynced` (e.g., auto-expire after 24 hours)? Currently, it relies on silent re-validation on every visit.

@@ -33,7 +33,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -98,9 +98,8 @@ class AppDatabase extends _$AppDatabase {
             await m.createTable(usersTable);
           }
           if (from < 9) {
+            // Combined sync flag migration
             await addColumnSafely(chaptersTable, chaptersTable.isChaptersSynced);
-          }
-          if (from < 10) {
             await addColumnSafely(coursesTable, coursesTable.isChaptersSynced);
           }
         },
