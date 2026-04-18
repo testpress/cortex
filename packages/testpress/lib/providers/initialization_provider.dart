@@ -6,7 +6,7 @@ part 'initialization_provider.g.dart';
 
 /// Provider that handles app-wide data initialization and refresh logic.
 /// This prevents side effects within UI-driven data providers.
-@riverpod
+@Riverpod(keepAlive: true)
 Future<void> appInitialization(AppInitializationRef ref) async {
   final userRepo = await ref.watch(userRepositoryProvider.future);
   final userProgressRepo = await ref.watch(userProgressRepositoryProvider.future);

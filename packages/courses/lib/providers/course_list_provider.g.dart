@@ -176,6 +176,137 @@ class _CourseChaptersProviderElement
   String get courseId => (origin as CourseChaptersProvider).courseId;
 }
 
+String _$allChaptersHash() => r'6a346b9d21ffc0beffdff6921ae7774edb428ff5';
+
+/// Provider for a specific course's chapters (all depths).
+///
+/// Copied from [allChapters].
+@ProviderFor(allChapters)
+const allChaptersProvider = AllChaptersFamily();
+
+/// Provider for a specific course's chapters (all depths).
+///
+/// Copied from [allChapters].
+class AllChaptersFamily extends Family<AsyncValue<List<ChapterDto>>> {
+  /// Provider for a specific course's chapters (all depths).
+  ///
+  /// Copied from [allChapters].
+  const AllChaptersFamily();
+
+  /// Provider for a specific course's chapters (all depths).
+  ///
+  /// Copied from [allChapters].
+  AllChaptersProvider call(String courseId) {
+    return AllChaptersProvider(courseId);
+  }
+
+  @override
+  AllChaptersProvider getProviderOverride(
+    covariant AllChaptersProvider provider,
+  ) {
+    return call(provider.courseId);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'allChaptersProvider';
+}
+
+/// Provider for a specific course's chapters (all depths).
+///
+/// Copied from [allChapters].
+class AllChaptersProvider extends StreamProvider<List<ChapterDto>> {
+  /// Provider for a specific course's chapters (all depths).
+  ///
+  /// Copied from [allChapters].
+  AllChaptersProvider(String courseId)
+    : this._internal(
+        (ref) => allChapters(ref as AllChaptersRef, courseId),
+        from: allChaptersProvider,
+        name: r'allChaptersProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$allChaptersHash,
+        dependencies: AllChaptersFamily._dependencies,
+        allTransitiveDependencies: AllChaptersFamily._allTransitiveDependencies,
+        courseId: courseId,
+      );
+
+  AllChaptersProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.courseId,
+  }) : super.internal();
+
+  final String courseId;
+
+  @override
+  Override overrideWith(
+    Stream<List<ChapterDto>> Function(AllChaptersRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: AllChaptersProvider._internal(
+        (ref) => create(ref as AllChaptersRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        courseId: courseId,
+      ),
+    );
+  }
+
+  @override
+  StreamProviderElement<List<ChapterDto>> createElement() {
+    return _AllChaptersProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is AllChaptersProvider && other.courseId == courseId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, courseId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin AllChaptersRef on StreamProviderRef<List<ChapterDto>> {
+  /// The parameter `courseId` of this provider.
+  String get courseId;
+}
+
+class _AllChaptersProviderElement
+    extends StreamProviderElement<List<ChapterDto>>
+    with AllChaptersRef {
+  _AllChaptersProviderElement(super.provider);
+
+  @override
+  String get courseId => (origin as AllChaptersProvider).courseId;
+}
+
 String _$chapterLessonsHash() => r'cf777f7871c4f857df0252b3a944df03938877bd';
 
 /// Provider for a specific chapter's lessons.
