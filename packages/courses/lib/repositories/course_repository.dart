@@ -203,8 +203,8 @@ class CourseRepository {
       }
 
       final remote = await _fetchRemoteCourseData(courseId);
-      final harmonized = await _harmonizeLessons(courseId, remote);
-      final companions = _applyContentStatuses(harmonized, remote);
+      final mergedLessons = await _mergeLocalAndRemoteLessons(courseId, remote);
+      final companions = _applyContentStatuses(mergedLessons, remote);
 
       if (companions.isNotEmpty) {
         await _db.upsertLessons(companions);
@@ -241,7 +241,7 @@ class CourseRepository {
     );
   }
 
-  Future<List<LessonDto>> _harmonizeLessons(
+  Future<List<LessonDto>> _mergeLocalAndRemoteLessons(
     String courseId,
     ({
       List<LessonDto> all,
