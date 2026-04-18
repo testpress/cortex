@@ -99,53 +99,28 @@ class LessonDto {
   }
 
   factory LessonDto.fromJson(Map<String, dynamic> json) {
-    // Utility for safely getting string from dynamic (handles int IDs from API)
-    String? getString(String key) => json[key]?.toString();
-
     return LessonDto(
-      id: getString('id') ?? '',
-      chapterId: () {
-        final val = json['chapter_id'] ?? json['chapter'] ?? json['chapterId'];
-        if (val is Map) return val['id']?.toString() ?? '';
-        return val?.toString() ?? '';
-      }(),
-      title: json['title'] as String? ?? json['name'] as String? ?? '',
-      type: _parseType(json['content_type'] ?? json['type'] ?? json['kind']),
+      id: json['id'] as String,
+      chapterId: json['chapterId'] as String? ?? '',
+      title: json['title'] as String? ?? '',
+      type: LessonType.values.firstWhere((e) => e.name == json['type'], orElse: () => LessonType.video),
       duration: json['duration'] as String? ?? '',
-      progressStatus: _parseStatus(json['state'] ?? json['progressStatus']),
-      isLocked: !(json['active'] as bool? ?? json['isLocked'] == false),
-      orderIndex: (json['order'] as num?)?.toInt() ?? (json['orderIndex'] as num?)?.toInt() ?? 0,
-      chapterTitle: json['chapter_title'] as String? ?? json['chapterTitle'] as String?,
-      contentUrl: json['content_url'] as String? ?? json['url'] as String? ?? json['contentUrl'] as String?,
+      progressStatus: LessonProgressStatus.values.firstWhere((e) => e.name == json['progressStatus'], orElse: () => LessonProgressStatus.notStarted),
+      isLocked: json['isLocked'] as bool? ?? false,
+      orderIndex: json['orderIndex'] as int? ?? 0,
+      chapterTitle: json['chapterTitle'] as String?,
+      contentUrl: json['contentUrl'] as String?,
       subtitle: json['subtitle'] as String?,
-      subjectName: json['subject_name'] as String? ?? json['subjectName'] as String?,
-      subjectIndex: (json['subject_index'] as num?)?.toInt() ?? (json['subjectIndex'] as num?)?.toInt(),
-      lessonNumber: (json['lesson_number'] as num?)?.toInt() ?? (json['lessonNumber'] as num?)?.toInt(),
-      totalLessons: (json['total_lessons'] as num?)?.toInt() ?? (json['totalLessons'] as num?)?.toInt(),
-      isBookmarked: json['is_bookmarked'] as bool? ?? json['isBookmarked'] as bool? ?? false,
-      image: json['icon'] as String? ?? json['image'] as String?,
+      subjectName: json['subjectName'] as String?,
+      subjectIndex: json['subjectIndex'] as int?,
+      lessonNumber: json['lessonNumber'] as int?,
+      totalLessons: json['totalLessons'] as int?,
+      isBookmarked: json['isBookmarked'] as bool? ?? false,
+      isRunning: json['isRunning'] as bool? ?? false,
+      isUpcoming: json['isUpcoming'] as bool? ?? false,
+      hasAttempts: json['hasAttempts'] as bool? ?? false,
+      image: json['image'] as String?,
     );
-  }
-
-  static LessonType _parseType(dynamic value) {
-    final s = value?.toString().toLowerCase() ?? '';
-    if (s.contains('video') || s.contains('live') || s.contains('conference')) return LessonType.video;
-    if (s.contains('pdf') || s.contains('notes') || s.contains('attachment')) return LessonType.pdf;
-    
-    // Grouping: Exam and Test are same (Mapped to Test - Orange)
-    if (s.contains('exam') || s.contains('test')) return LessonType.test;
-    
-    // Grouping: Quiz and Assessment are same (Mapped to Assessment - Green)
-    if (s.contains('quiz') || s.contains('assessment')) return LessonType.assessment;
-    
-    return LessonType.video;
-  }
-
-  static LessonProgressStatus _parseStatus(dynamic value) {
-    final s = value?.toString().toLowerCase();
-    if (s == 'completed' || s == '1') return LessonProgressStatus.completed;
-    if (s == 'in_progress' || s == 'started' || s == '0') return LessonProgressStatus.inProgress;
-    return LessonProgressStatus.notStarted;
   }
 
   Map<String, dynamic> toJson() {

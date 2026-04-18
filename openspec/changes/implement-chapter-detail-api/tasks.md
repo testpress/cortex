@@ -4,6 +4,9 @@
 - [x] 1.3 Update `CourseRepository` to use `Value.absent()` for partial database updates.
 - [x] 1.4 Wrap repository delete/upsert logic in atomic database transactions.
 - [x] 1.5 Implement `syncChapterContents` in `CourseRepository` to encapsulate sync coordination.
+- [x] 1.6 Resolve repository `Future.wait` database race conditions by syncing globally then locally.
+- [x] 1.7 Implement 60-second in-memory network throttling for background syncs to prevent API spam.
+- [x] 1.8 Add orphaned record pruning logic specifically to `refreshLessons` using `deleteLessonsByIds`.
 
 ## 2. API Integration
 - [x] 2.1 Update `chapterContents` endpoint to `/api/v2.5/chapters/{id}/contents/`.

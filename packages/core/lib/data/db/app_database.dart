@@ -273,6 +273,11 @@ class AppDatabase extends _$AppDatabase {
   Future<void> deleteLessonsForChapter(String chapterId) =>
       (delete(lessonsTable)..where((t) => t.chapterId.equals(chapterId))).go();
 
+  /// Deletes lessons by their IDs.
+  /// Useful for pruning orphaned records.
+  Future<void> deleteLessonsByIds(Iterable<String> ids) =>
+      (delete(lessonsTable)..where((t) => t.id.isIn(ids))).go();
+
   // ── Live Classes ──────────────────────────────────────────────────────────
 
   Stream<List<LiveClassesTableData>> watchAllLiveClasses() =>
