@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:core/core.dart';
 import '../../models/course_content.dart';
-import 'continue_button.dart';
 
 class TranscriptsTab extends StatelessWidget {
   final Lesson lesson;
-  final VoidCallback onNext;
 
-  const TranscriptsTab({super.key, required this.lesson, required this.onNext});
+  const TranscriptsTab({super.key, required this.lesson});
 
   @override
   Widget build(BuildContext context) {
@@ -55,42 +53,45 @@ class TranscriptsTab extends StatelessWidget {
             ],
           ),
           SizedBox(height: design.spacing.md),
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                _buildTranscriptLine(
-                  '00:00',
-                  'Welcome to this lesson on the First Law of Thermodynamics.',
-                  design,
-                ),
-                _buildTranscriptLine(
-                  '00:15',
-                  'The first law states that energy cannot be created or destroyed, only transformed from one form to another.',
-                  design,
-                ),
-                _buildTranscriptLine(
-                  '00:32',
-                  'Let\'s begin by understanding what internal energy means in the context of thermodynamic systems. Internal energy is the sum of all microscopic forms of energy.',
-                  design,
-                ),
-                _buildTranscriptLine(
-                  '01:05',
-                  'When we add heat to a system, it can either increase the internal energy or do work on the surroundings.',
-                  design,
-                ),
-                ContinueButton(onTap: onNext),
-              ],
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildTranscriptLine(
+                '00:00',
+                'Welcome to this lesson on the First Law of Thermodynamics.',
+                design,
+              ),
+              _buildTranscriptLine(
+                '00:15',
+                'The first law states that energy cannot be created or destroyed, only transformed from one form to another.',
+                design,
+              ),
+              _buildTranscriptLine(
+                '00:32',
+                'Let\'s begin by understanding what internal energy means in the context of thermodynamic systems. Internal energy is the sum of all microscopic forms of energy.',
+                design,
+              ),
+              _buildTranscriptLine(
+                '01:05',
+                'When we add heat to a system, it can either increase the internal energy or do work on the surroundings.',
+                design,
+                isLast: true,
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTranscriptLine(String time, String text, DesignConfig design) {
+  Widget _buildTranscriptLine(
+    String time,
+    String text,
+    DesignConfig design, {
+    bool isLast = false,
+  }) {
     return Padding(
-      padding: EdgeInsets.only(bottom: design.spacing.lg),
+      padding: EdgeInsets.only(bottom: isLast ? 0 : design.spacing.lg),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

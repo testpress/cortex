@@ -64,15 +64,21 @@ class CourseChaptersFamily extends Family<AsyncValue<List<ChapterDto>>> {
   /// Provider for a specific course's chapters.
   ///
   /// Copied from [courseChapters].
-  CourseChaptersProvider call(String courseId) {
-    return CourseChaptersProvider(courseId);
+  CourseChaptersProvider call(
+    String courseId,
+  ) {
+    return CourseChaptersProvider(
+      courseId,
+    );
   }
 
   @override
   CourseChaptersProvider getProviderOverride(
     covariant CourseChaptersProvider provider,
   ) {
-    return call(provider.courseId);
+    return call(
+      provider.courseId,
+    );
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -97,19 +103,24 @@ class CourseChaptersProvider extends StreamProvider<List<ChapterDto>> {
   /// Provider for a specific course's chapters.
   ///
   /// Copied from [courseChapters].
-  CourseChaptersProvider(String courseId)
-    : this._internal(
-        (ref) => courseChapters(ref as CourseChaptersRef, courseId),
-        from: courseChaptersProvider,
-        name: r'courseChaptersProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$courseChaptersHash,
-        dependencies: CourseChaptersFamily._dependencies,
-        allTransitiveDependencies:
-            CourseChaptersFamily._allTransitiveDependencies,
-        courseId: courseId,
-      );
+  CourseChaptersProvider(
+    String courseId,
+  ) : this._internal(
+          (ref) => courseChapters(
+            ref as CourseChaptersRef,
+            courseId,
+          ),
+          from: courseChaptersProvider,
+          name: r'courseChaptersProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$courseChaptersHash,
+          dependencies: CourseChaptersFamily._dependencies,
+          allTransitiveDependencies:
+              CourseChaptersFamily._allTransitiveDependencies,
+          courseId: courseId,
+        );
 
   CourseChaptersProvider._internal(
     super._createNotifier, {
@@ -168,8 +179,7 @@ mixin CourseChaptersRef on StreamProviderRef<List<ChapterDto>> {
 }
 
 class _CourseChaptersProviderElement
-    extends StreamProviderElement<List<ChapterDto>>
-    with CourseChaptersRef {
+    extends StreamProviderElement<List<ChapterDto>> with CourseChaptersRef {
   _CourseChaptersProviderElement(super.provider);
 
   @override
@@ -196,15 +206,21 @@ class AllChaptersFamily extends Family<AsyncValue<List<ChapterDto>>> {
   /// Provider for a specific course's chapters (all depths).
   ///
   /// Copied from [allChapters].
-  AllChaptersProvider call(String courseId) {
-    return AllChaptersProvider(courseId);
+  AllChaptersProvider call(
+    String courseId,
+  ) {
+    return AllChaptersProvider(
+      courseId,
+    );
   }
 
   @override
   AllChaptersProvider getProviderOverride(
     covariant AllChaptersProvider provider,
   ) {
-    return call(provider.courseId);
+    return call(
+      provider.courseId,
+    );
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -229,18 +245,24 @@ class AllChaptersProvider extends StreamProvider<List<ChapterDto>> {
   /// Provider for a specific course's chapters (all depths).
   ///
   /// Copied from [allChapters].
-  AllChaptersProvider(String courseId)
-    : this._internal(
-        (ref) => allChapters(ref as AllChaptersRef, courseId),
-        from: allChaptersProvider,
-        name: r'allChaptersProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$allChaptersHash,
-        dependencies: AllChaptersFamily._dependencies,
-        allTransitiveDependencies: AllChaptersFamily._allTransitiveDependencies,
-        courseId: courseId,
-      );
+  AllChaptersProvider(
+    String courseId,
+  ) : this._internal(
+          (ref) => allChapters(
+            ref as AllChaptersRef,
+            courseId,
+          ),
+          from: allChaptersProvider,
+          name: r'allChaptersProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$allChaptersHash,
+          dependencies: AllChaptersFamily._dependencies,
+          allTransitiveDependencies:
+              AllChaptersFamily._allTransitiveDependencies,
+          courseId: courseId,
+        );
 
   AllChaptersProvider._internal(
     super._createNotifier, {
@@ -299,8 +321,7 @@ mixin AllChaptersRef on StreamProviderRef<List<ChapterDto>> {
 }
 
 class _AllChaptersProviderElement
-    extends StreamProviderElement<List<ChapterDto>>
-    with AllChaptersRef {
+    extends StreamProviderElement<List<ChapterDto>> with AllChaptersRef {
   _AllChaptersProviderElement(super.provider);
 
   @override
@@ -327,15 +348,21 @@ class ChapterLessonsFamily extends Family<AsyncValue<List<LessonDto>>> {
   /// Provider for a specific chapter's lessons.
   ///
   /// Copied from [chapterLessons].
-  ChapterLessonsProvider call(String chapterId) {
-    return ChapterLessonsProvider(chapterId);
+  ChapterLessonsProvider call(
+    String chapterId,
+  ) {
+    return ChapterLessonsProvider(
+      chapterId,
+    );
   }
 
   @override
   ChapterLessonsProvider getProviderOverride(
     covariant ChapterLessonsProvider provider,
   ) {
-    return call(provider.chapterId);
+    return call(
+      provider.chapterId,
+    );
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -360,19 +387,24 @@ class ChapterLessonsProvider extends StreamProvider<List<LessonDto>> {
   /// Provider for a specific chapter's lessons.
   ///
   /// Copied from [chapterLessons].
-  ChapterLessonsProvider(String chapterId)
-    : this._internal(
-        (ref) => chapterLessons(ref as ChapterLessonsRef, chapterId),
-        from: chapterLessonsProvider,
-        name: r'chapterLessonsProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$chapterLessonsHash,
-        dependencies: ChapterLessonsFamily._dependencies,
-        allTransitiveDependencies:
-            ChapterLessonsFamily._allTransitiveDependencies,
-        chapterId: chapterId,
-      );
+  ChapterLessonsProvider(
+    String chapterId,
+  ) : this._internal(
+          (ref) => chapterLessons(
+            ref as ChapterLessonsRef,
+            chapterId,
+          ),
+          from: chapterLessonsProvider,
+          name: r'chapterLessonsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$chapterLessonsHash,
+          dependencies: ChapterLessonsFamily._dependencies,
+          allTransitiveDependencies:
+              ChapterLessonsFamily._allTransitiveDependencies,
+          chapterId: chapterId,
+        );
 
   ChapterLessonsProvider._internal(
     super._createNotifier, {
@@ -431,8 +463,7 @@ mixin ChapterLessonsRef on StreamProviderRef<List<LessonDto>> {
 }
 
 class _ChapterLessonsProviderElement
-    extends StreamProviderElement<List<LessonDto>>
-    with ChapterLessonsRef {
+    extends StreamProviderElement<List<LessonDto>> with ChapterLessonsRef {
   _ChapterLessonsProviderElement(super.provider);
 
   @override
@@ -445,14 +476,13 @@ String _$courseListHash() => r'b86fbfec15af5dd98b0b841b88f6f462bc15fcf4';
 @ProviderFor(CourseList)
 final courseListProvider =
     StreamNotifierProvider<CourseList, List<CourseDto>>.internal(
-      CourseList.new,
-      name: r'courseListProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$courseListHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+  CourseList.new,
+  name: r'courseListProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$courseListHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
 typedef _$CourseList = StreamNotifier<List<CourseDto>>;
 String _$courseSearchHash() => r'770f25e1a505b2bf43f2399232dc309ea7ef55b7';
@@ -461,14 +491,13 @@ String _$courseSearchHash() => r'770f25e1a505b2bf43f2399232dc309ea7ef55b7';
 @ProviderFor(CourseSearch)
 final courseSearchProvider =
     NotifierProvider<CourseSearch, CourseSearchState>.internal(
-      CourseSearch.new,
-      name: r'courseSearchProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$courseSearchHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+  CourseSearch.new,
+  name: r'courseSearchProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$courseSearchHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
 typedef _$CourseSearch = Notifier<CourseSearchState>;
 // ignore_for_file: type=lint

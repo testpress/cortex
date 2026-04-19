@@ -846,6 +846,15 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
           as _i6.Future<void>);
 
   @override
+  _i6.Future<void> deleteLessonsByIds(Iterable<String>? ids) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteLessonsByIds, [ids]),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
   _i6.Stream<List<_i4.LiveClassesTableData>> watchAllLiveClasses() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllLiveClasses, []),

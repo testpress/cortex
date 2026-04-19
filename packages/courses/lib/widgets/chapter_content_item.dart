@@ -1,4 +1,5 @@
 import 'package:core/core.dart';
+import 'package:core/utils/time_formatter.dart';
 import 'package:flutter/widgets.dart';
 import '../models/course_content.dart';
 
@@ -73,7 +74,7 @@ class ChapterContentItem extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     AppText.cardSubtitle(
-                      '${_getLabelForType(context, lesson.type)}${lesson.duration != null ? ' · ${lesson.duration}' : ''}',
+                      _buildSubtitle(context),
                       color: design.colors.textSecondary,
                     ),
                   ],
@@ -91,24 +92,35 @@ class ChapterContentItem extends StatelessWidget {
     );
   }
 
+  String _buildSubtitle(BuildContext context) {
+    final typeLabel = _getLabelForType(context, lesson.type);
+    final duration = TimeFormatter.formatDuration(lesson.duration);
+
+    if (duration == null || duration.isEmpty) {
+      return typeLabel;
+    }
+
+    return '$typeLabel · $duration';
+  }
+
   IconData _getIconForType(LessonType type) {
     switch (type) {
       case LessonType.video:
         return LucideIcons.playCircle;
+      case LessonType.liveStream:
+        return LucideIcons.radio;
+      case LessonType.embedContent:
+        return LucideIcons.code;
+      case LessonType.notes:
+        return LucideIcons.bookOpen;
+      case LessonType.attachment:
+        return LucideIcons.paperclip;
       case LessonType.pdf:
         return LucideIcons.fileText;
       case LessonType.assessment:
         return LucideIcons.clipboardCheck;
       case LessonType.test:
         return LucideIcons.award;
-      case LessonType.liveStream:
-        return LucideIcons.radio;
-      case LessonType.notes:
-        return LucideIcons.bookOpen;
-      case LessonType.embedContent:
-        return LucideIcons.code;
-      case LessonType.attachment:
-        return LucideIcons.paperclip;
       case LessonType.unknown:
         return LucideIcons.helpCircle;
     }
@@ -117,18 +129,14 @@ class ChapterContentItem extends StatelessWidget {
   Color _getColorForType(BuildContext context, LessonType type) {
     final design = Design.of(context);
     switch (type) {
-      case LessonType.video:
+      case LessonType.video || LessonType.liveStream || LessonType.embedContent:
         return design.colors.accent1; // Purple
-      case LessonType.pdf:
+      case LessonType.pdf || LessonType.notes || LessonType.attachment:
         return design.colors.accent2; // Blue
       case LessonType.assessment:
         return design.colors.accent4; // Green
       case LessonType.test:
         return design.colors.accent3; // Orange
-      case LessonType.liveStream || LessonType.embedContent:
-        return design.colors.accent1;
-      case LessonType.notes || LessonType.attachment:
-        return design.colors.accent2;
       case LessonType.unknown:
         return design.colors.textSecondary;
     }
@@ -139,20 +147,20 @@ class ChapterContentItem extends StatelessWidget {
     switch (type) {
       case LessonType.video:
         return l10n.chapterTypeVideo;
+      case LessonType.liveStream:
+        return 'Live Stream';
+      case LessonType.embedContent:
+        return 'Embed Content';
+      case LessonType.notes:
+        return 'Notes';
+      case LessonType.attachment:
+        return 'Attachment';
       case LessonType.pdf:
         return l10n.chapterTypePdf;
       case LessonType.assessment:
         return l10n.chapterTypeAssessment;
       case LessonType.test:
         return l10n.chapterTypeTest;
-      case LessonType.liveStream:
-        return 'Live Stream';
-      case LessonType.notes:
-        return 'Notes';
-      case LessonType.embedContent:
-        return 'Embed Content';
-      case LessonType.attachment:
-        return 'Attachment';
       case LessonType.unknown:
         return 'Unknown';
     }

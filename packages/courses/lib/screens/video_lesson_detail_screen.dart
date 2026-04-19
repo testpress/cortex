@@ -48,12 +48,6 @@ class _VideoLessonDetailScreenState
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    // Extract video URL from lesson contentUrl
-    final videoUrl = widget.lesson.contentUrl ??
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4';
-
-    final nextCallback = widget.onNext ?? () {};
-
     final header = Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -110,7 +104,10 @@ class _VideoLessonDetailScreenState
           borderRadius: BorderRadius.circular(design.radius.lg),
           child: Stack(
             children: [
-              CustomVideoPlayer(key: _videoPlayerKey, assetId: videoUrl),
+              CustomVideoPlayer(
+                key: _videoPlayerKey,
+                assetId: widget.lesson.contentUrl,
+              ),
               Positioned(
                 top: design.spacing.md,
                 left: design.spacing.md,
@@ -229,10 +226,10 @@ class _VideoLessonDetailScreenState
             controller: _tabController,
             physics: const NeverScrollableScrollPhysics(),
             children: [
-              NotesTab(lesson: widget.lesson, onNext: nextCallback),
-              TranscriptsTab(lesson: widget.lesson, onNext: nextCallback),
-              DoubtTab(lesson: widget.lesson, onNext: nextCallback),
-              AITab(lesson: widget.lesson, onNext: nextCallback),
+              NotesTab(lesson: widget.lesson),
+              TranscriptsTab(lesson: widget.lesson),
+              DoubtTab(lesson: widget.lesson),
+              AITab(lesson: widget.lesson),
             ],
           ),
         ),

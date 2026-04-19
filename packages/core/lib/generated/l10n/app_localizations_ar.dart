@@ -1228,4 +1228,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get labelPractice => 'ممارسة';
+
+  @override
+  String attachmentSize(String size) {
+    return 'الحجم: $size';
+  }
+
+  @override
+  String get attachmentDownload => 'تحميل';
+
+  @override
+  String get attachmentDownloading => 'جاري التحميل...';
+
+  @override
+  String get attachmentViewFile => 'عرض الملف المحمل';
 }

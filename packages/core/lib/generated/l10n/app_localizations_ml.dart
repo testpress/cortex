@@ -1240,4 +1240,18 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get labelPractice => 'പ്രാക്ടീസ്';
+
+  @override
+  String attachmentSize(String size) {
+    return 'വലിപ്പം: $size';
+  }
+
+  @override
+  String get attachmentDownload => 'ഡൗൺലോഡ്';
+
+  @override
+  String get attachmentDownloading => 'ഡൗൺലോഡ് ചെയ്യുന്നു...';
+
+  @override
+  String get attachmentViewFile => 'ഫയൽ കാണുക';
 }

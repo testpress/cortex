@@ -598,5 +598,16 @@
   "editProfileLastNameLabel": "Last Name",
   "editProfileLastNameHint": "Enter your last name",
   "labelMock": "Mock",
-  "labelPractice": "Practice"
+  "labelPractice": "Practice",
+  "attachmentSize": "Size: {size}",
+  "@attachmentSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "attachmentDownload": "Download",
+  "attachmentDownloading": "Downloading...",
+  "attachmentViewFile": "View Downloaded File"
 }

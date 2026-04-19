@@ -412,5 +412,16 @@
   "editProfileLastNameLabel": "اسم العائلة",
   "editProfileLastNameHint": "أدخل اسم عائلتك",
   "labelMock": "تجريبي",
-  "labelPractice": "ممارسة"
+  "labelPractice": "ممارسة",
+  "attachmentSize": "الحجم: {size}",
+  "@attachmentSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "attachmentDownload": "تحميل",
+  "attachmentDownloading": "جاري التحميل...",
+  "attachmentViewFile": "عرض الملف المحمل"
 }

@@ -234,11 +234,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 GoRoute(
                   path: 'lesson/:id',
                   builder: (context, state) {
-                    final lessonArg = state.extra as Lesson?;
-                    if (lessonArg != null) {
-                      return PdfLessonDetailScreen(lesson: lessonArg);
-                    }
-
                     final id = state.pathParameters['id']!;
                     return Consumer(
                       builder: (context, ref, child) {
@@ -250,13 +245,55 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                                 child: Text('Lesson not found'),
                               );
                             }
-                            return PdfLessonDetailScreen(lesson: lesson);
+                            return LessonDetailOrchestrator(
+                              lesson: lesson,
+                              customBuilder: (context, lesson) {
+                                if (lesson.type == LessonType.test ||
+                                    lesson.type == LessonType.assessment) {
+                                  return TestDetailScreen(
+                                    testId: lesson.id,
+                                    onClose: () => context.pop(),
+                                  );
+                                }
+                                return const SizedBox.shrink();
+                              },
+                              onNext: lesson.nextContentId != null
+                                  ? () => context.pushReplacement('/study/lesson/${lesson.nextContentId}')
+                                  : null,
+                              onPrevious: lesson.previousContentId != null
+                                  ? () => context.pushReplacement('/study/lesson/${lesson.previousContentId}')
+                                  : null,
+                            );
                           },
                           loading: () => Container(
-                            color: const Color(0xFFFFFFFF),
+                            color: Design.of(context).colors.surface,
                             child: const Center(child: AppLoadingIndicator()),
                           ),
-                          error: (e, _) => Center(child: Text('Error: $e')),
+                          error: (e, _) => Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(32),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    LucideIcons.alertCircle,
+                                    size: 48,
+                                    color: Design.of(context).colors.error,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  AppText.body(
+                                    'Failed to load lesson. Please check your connection.',
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: 24),
+                                  AppButton(
+                                    label: 'Retry',
+                                    onPressed: () => ref.invalidate(lessonDetailProvider(id)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         );
                       },
                     );
@@ -264,34 +301,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 ),
                 GoRoute(
                   path: 'video/:id',
-                  builder: (context, state) {
-                    final lessonArg = state.extra as Lesson?;
-                    if (lessonArg != null) {
-                      return VideoLessonDetailScreen(lesson: lessonArg);
-                    }
-
-                    final id = state.pathParameters['id']!;
-                    return Consumer(
-                      builder: (context, ref, child) {
-                        final lessonAsync = ref.watch(lessonDetailProvider(id));
-                        return lessonAsync.when(
-                          data: (lesson) {
-                            if (lesson == null) {
-                              return const Center(
-                                child: Text('Lesson not found'),
-                              );
-                            }
-                            return VideoLessonDetailScreen(lesson: lesson);
-                          },
-                          loading: () => Container(
-                            color: const Color(0xFFFFFFFF),
-                            child: const Center(child: AppLoadingIndicator()),
-                          ),
-                          error: (e, _) => Center(child: Text('Error: $e')),
-                        );
-                      },
-                    );
-                  },
+                  redirect: (context, state) =>
+                      '/study/lesson/${state.pathParameters['id']}',
                 ),
                 GoRoute(
                   path: 'test/:id',
