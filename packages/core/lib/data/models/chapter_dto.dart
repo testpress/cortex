@@ -56,6 +56,14 @@ class ChapterDto {
     );
   }
 
+  /// Merges this DTO with another to preserve rich metadata.
+  ChapterDto mergeWith(ChapterDto? other) {
+    if (other == null) return this;
+    return copyWith(
+      image: (image?.isEmpty ?? true) ? other.image : image,
+    );
+  }
+
   /// Maps from the `/api/v3/courses/{id}/chapters/` response.
   /// The API uses `name` (not `title`), numeric `id`/`course_id`, and
   /// `contents_count` / `exams_count` + `quizzes_count` for counts.
