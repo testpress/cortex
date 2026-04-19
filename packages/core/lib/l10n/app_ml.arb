@@ -447,4 +447,16 @@
   "forumPostSelectCategoryTitle": "വിഭാഗം തിരഞ്ഞെടുക്കുക",
   "forumButtonSubmit": "സമർപ്പിക്കുക",
   "forumButtonCancel": "റദ്ദാക്കുക"
+  "labelPractice": "പ്രാക്ടീസ്",
+  "attachmentSize": "വലിപ്പം: {size}",
+  "@attachmentSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "attachmentDownload": "ഡൗൺലോഡ്",
+  "attachmentDownloading": "ഡൗൺലോഡ് ചെയ്യുന്നു...",
+  "attachmentViewFile": "ഫയൽ കാണുക"
 }

@@ -447,4 +447,16 @@
   "forumPostSelectCategoryTitle": "اختر الفئة",
   "forumButtonSubmit": "إرسال",
   "forumButtonCancel": "إلغاء"
+  "labelPractice": "ممارسة",
+  "attachmentSize": "الحجم: {size}",
+  "@attachmentSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "attachmentDownload": "تحميل",
+  "attachmentDownloading": "جاري التحميل...",
+  "attachmentViewFile": "عرض الملف المحمل"
 }

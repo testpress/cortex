@@ -633,4 +633,16 @@
   "forumPostSelectCategoryTitle": "Select Category",
   "forumButtonSubmit": "Submit",
   "forumButtonCancel": "Cancel"
+  "labelPractice": "Practice",
+  "attachmentSize": "Size: {size}",
+  "@attachmentSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "attachmentDownload": "Download",
+  "attachmentDownloading": "Downloading...",
+  "attachmentViewFile": "View Downloaded File"
 }

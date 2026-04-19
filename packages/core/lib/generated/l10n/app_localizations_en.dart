@@ -1294,4 +1294,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get forumButtonCancel => 'Cancel';
+
+  @override
+  String attachmentSize(String size) {
+    return 'Size: $size';
+  }
+
+  @override
+  String get attachmentDownload => 'Download';
+
+  @override
+  String get attachmentDownloading => 'Downloading...';
+
+  @override
+  String get attachmentViewFile => 'View Downloaded File';
 }

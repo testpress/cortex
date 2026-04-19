@@ -2420,6 +2420,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel'**
   String get forumButtonCancel;
+
+  /// No description provided for @attachmentSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Size: {size}'**
+  String attachmentSize(String size);
+
+  /// No description provided for @attachmentDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get attachmentDownload;
+
+  /// No description provided for @attachmentDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading...'**
+  String get attachmentDownloading;
+
+  /// No description provided for @attachmentViewFile.
+  ///
+  /// In en, this message translates to:
+  /// **'View Downloaded File'**
+  String get attachmentViewFile;
 }
 
 class _AppLocalizationsDelegate
