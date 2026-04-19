@@ -387,7 +387,7 @@ class CourseRepository {
       return _lessonDtoToCompanion(dto).copyWith(
         isRunning: Value(runningIds.contains(dto.id)),
         isUpcoming: Value(upcomingIds.contains(dto.id)),
-        hasAttempts: Value(historyIds.contains(dto.id)),
+        hasAttempts: Value(historyIds.contains(dto.id) || dto.progressStatus == LessonProgressStatus.completed),
       );
     }).toList();
   }
@@ -396,6 +396,19 @@ class CourseRepository {
   Future<LessonDto?> getLesson(String id) async {
     final row = await _db.getLessonById(id);
     return row != null ? rowToLessonDto(row) : null;
+  }
+
+  /// Refetches a single lesson's full metadata from the v2.4 API and persists it.
+  Future<LessonDto> refreshLesson(String id) async {
+    final dto = await _source.getLessonDetail(id);
+    final existing = await getLesson(id);
+    
+    // Explicitly mark as detail fetched
+    final updated = dto.copyWith(isDetailFetched: true);
+    final merged = updated.mergeWith(existing);
+    
+    await _db.upsertLessons([_lessonDtoToCompanion(merged)]);
+    return merged;
   }
 
   /// Watch a single lesson by its ID.
@@ -425,10 +438,21 @@ class CourseRepository {
     await _db.toggleLessonBookmark(id);
   }
 
-  /// Updates lesson progress locally.
+  /// Updates lesson progress locally and on the server if completed.
   Future<void> updateLessonProgress(
       String id, LessonProgressStatus status) async {
+    // 1. Update locally for immediate UI feedback
     await _db.updateLessonProgress(id, status);
+
+    // 2. Sync with server if marked as completed
+    if (status == LessonProgressStatus.completed) {
+      try {
+        await _source.markLessonCompleted(id);
+      } catch (e) {
+        // Log error but don't block local success
+        print('CourseRepository: Failed to sync completion to server: $e');
+      }
+    }
   }
 
   /// Efficiently fetches lesson and parent titles by lesson ID.
@@ -529,6 +553,10 @@ class CourseRepository {
         isUpcoming: row.isUpcoming,
         hasAttempts: row.hasAttempts,
         image: row.image,
+        nextContentId: row.nextContentId,
+        previousContentId: row.previousContentId,
+        htmlContent: row.htmlContent,
+        isDetailFetched: row.isDetailFetched,
       );
 
   LessonsTableCompanion _lessonDtoToCompanion(LessonDto dto) =>
@@ -553,15 +581,19 @@ class CourseRepository {
         isUpcoming: Value(dto.isUpcoming),
         hasAttempts: Value(dto.hasAttempts),
         image: dto.image != null ? Value(dto.image) : const Value.absent(),
+        nextContentId: dto.nextContentId != null ? Value(dto.nextContentId) : const Value.absent(),
+        previousContentId: dto.previousContentId != null ? Value(dto.previousContentId) : const Value.absent(),
+        htmlContent: dto.htmlContent != null ? Value(dto.htmlContent) : const Value.absent(),
+        isDetailFetched: Value(dto.isDetailFetched),
       );
 
   LessonType _parseType(String s) {
-    if (s.contains('video') || s.contains('live') || s.contains('conference')) {
-      return LessonType.video;
-    }
-    if (s.contains('pdf') || s.contains('notes') || s.contains('attachment')) {
-      return LessonType.pdf;
-    }
+    if (s.contains('live')) return LessonType.liveStream;
+    if (s.contains('notes')) return LessonType.notes;
+    if (s.contains('embed')) return LessonType.embedContent;
+    if (s.contains('attachment')) return LessonType.attachment;
+    if (s.contains('video')) return LessonType.video;
+    if (s.contains('pdf')) return LessonType.pdf;
     if (s.contains('test') || s.contains('quiz') || s.contains('exam')) {
       return LessonType.test;
     }

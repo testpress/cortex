@@ -133,6 +133,14 @@ class HttpDataSource implements DataSource {
   }
 
   @override
+  Future<LessonDto> getLessonDetail(String lessonId) async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.lessonDetail(lessonId)),
+      fromJson: LessonDto.fromJson,
+    );
+  }
+
+  @override
   Future<List<LiveClassDto>> getLiveClasses() => throw UnimplementedError(
     'HttpDataSource.getLiveClasses is not yet implemented.',
   );
@@ -197,6 +205,14 @@ class HttpDataSource implements DataSource {
     return performNetworkRequest(
       _dio.patch(ApiEndpoints.userProfile, data: body),
       fromJson: UserDto.fromJson,
+    );
+  }
+
+  @override
+  Future<void> markLessonCompleted(String lessonId) async {
+    await performNetworkRequest(
+      _dio.post(ApiEndpoints.markCompleted(lessonId)),
+      fromJson: (data) => null,
     );
   }
 }
