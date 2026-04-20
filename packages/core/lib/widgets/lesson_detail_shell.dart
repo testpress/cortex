@@ -6,6 +6,7 @@ import '../accessibility/app_semantics.dart';
 import 'app_header.dart';
 import 'app_button.dart';
 import 'app_text.dart';
+import '../localization/l10n_helper.dart';
 import '../accessibility/app_focusable.dart';
 
 /// A premium, unified scaffold for lesson-like detail screens.
@@ -109,7 +110,7 @@ class LessonDetailShell extends StatelessWidget {
                       letterSpacing: -0.5,
                     ),
                   ),
-                  if (subtitle != null) ...[
+                  if (subtitle != null && subtitle!.isNotEmpty) ...[
                     SizedBox(height: design.spacing.xs),
                     AppText.body(
                       subtitle!,
@@ -143,8 +144,8 @@ class LessonDetailShell extends StatelessWidget {
     VoidCallback? onPrevious,
   }) {
     if (onNext == null && onPrevious == null) return const SizedBox.shrink();
+    final l10n = L10n.of(context);
     final design = Design.of(context);
-
     return Container(
       padding: EdgeInsetsDirectional.fromSTEB(
         design.spacing.screenPadding,
@@ -162,14 +163,14 @@ class LessonDetailShell extends StatelessWidget {
         children: [
           if (onPrevious != null)
             AppButton.secondary(
-              label: 'Previous',
+              label: l10n.navigationPrevious,
               onPressed: onPrevious,
               leading: const Icon(LucideIcons.arrowLeft, size: 18),
             ),
           const Spacer(),
           if (onNext != null)
             AppButton.primary(
-              label: 'Next Lesson',
+              label: l10n.navigationNext,
               onPressed: onNext,
               trailing: const Icon(LucideIcons.arrowRight, size: 18),
             ),

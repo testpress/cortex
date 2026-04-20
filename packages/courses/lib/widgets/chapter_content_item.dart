@@ -148,13 +148,13 @@ class ChapterContentItem extends StatelessWidget {
       case LessonType.video:
         return l10n.chapterTypeVideo;
       case LessonType.liveStream:
-        return 'Live Stream';
+        return l10n.chapterTypeLiveStream;
       case LessonType.embedContent:
-        return 'Embed Content';
+        return l10n.chapterTypeEmbed;
       case LessonType.notes:
-        return 'Notes';
+        return l10n.chapterTypeNotes;
       case LessonType.attachment:
-        return 'Attachment';
+        return l10n.chapterTypeAttachment;
       case LessonType.pdf:
         return l10n.chapterTypePdf;
       case LessonType.assessment:
@@ -162,7 +162,7 @@ class ChapterContentItem extends StatelessWidget {
       case LessonType.test:
         return l10n.chapterTypeTest;
       case LessonType.unknown:
-        return 'Unknown';
+        return l10n.chapterTypeUnknown;
     }
   }
 }

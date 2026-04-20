@@ -1132,6 +1132,12 @@ abstract class AppLocalizations {
   /// **'Failed to load data. Please check your connection and try again.'**
   String get errorGenericMessage;
 
+  /// No description provided for @errorLessonLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load lesson. Please check your connection.'**
+  String get errorLessonLoad;
+
   /// No description provided for @labelLessonsPlural.
   ///
   /// In en, this message translates to:
@@ -1269,6 +1275,36 @@ abstract class AppLocalizations {
   /// **'Test'**
   String get chapterTypeTest;
 
+  /// No description provided for @chapterTypeLiveStream.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Stream'**
+  String get chapterTypeLiveStream;
+
+  /// No description provided for @chapterTypeEmbed.
+  ///
+  /// In en, this message translates to:
+  /// **'Embed Content'**
+  String get chapterTypeEmbed;
+
+  /// No description provided for @chapterTypeNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get chapterTypeNotes;
+
+  /// No description provided for @chapterTypeAttachment.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachment'**
+  String get chapterTypeAttachment;
+
+  /// No description provided for @chapterTypeUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get chapterTypeUnknown;
+
   /// No description provided for @chapterNoContent.
   ///
   /// In en, this message translates to:
@@ -1308,7 +1344,7 @@ abstract class AppLocalizations {
   /// No description provided for @navigationPrevious.
   ///
   /// In en, this message translates to:
-  /// **'Previous'**
+  /// **'Previous Lesson'**
   String get navigationPrevious;
 
   /// No description provided for @navigationNext.

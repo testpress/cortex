@@ -231,7 +231,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                           onBack: () => context.pop(),
                           onLessonClick: (lesson) {
                             final String? path = switch (lesson.type) {
-                              LessonType.video => '/study/video/${lesson.id}',
+                              LessonType.video ||
                               LessonType.pdf ||
                               LessonType.attachment ||
                               LessonType.notes ||
@@ -291,31 +291,38 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                             color: Design.of(context).colors.surface,
                             child: const Center(child: AppLoadingIndicator()),
                           ),
-                          error: (e, _) => Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(32),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    LucideIcons.alertCircle,
-                                    size: 48,
-                                    color: Design.of(context).colors.error,
-                                  ),
-                                  const SizedBox(height: 16),
-                                  AppText.body(
-                                    'Failed to load lesson. Please check your connection.',
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(height: 24),
-                                  AppButton(
-                                    label: 'Retry',
-                                    onPressed: () => ref.invalidate(lessonDetailProvider(id)),
-                                  ),
-                                ],
+                          error: (error, _) {
+                            final l10n = L10n.of(context);
+                            return Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(24.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      LucideIcons.alertCircle,
+                                      size: 48,
+                                      color: Color(0xFFEF4444), // Error red
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      l10n.errorLessonLoad,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Color(0xFF6B7280), // Text gray
+                                      ),
+                                    ),
+                                    const SizedBox(height: 24),
+                                    AppButton.primary(
+                                      label: l10n.labelRetry,
+                                      onPressed: () => ref.refresh(lessonDetailProvider(id)),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ),
+                            );
+                          },
                         );
                       },
                     );
