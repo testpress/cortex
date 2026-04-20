@@ -230,14 +230,22 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                           chapterId: chapterId,
                           onBack: () => context.pop(),
                           onLessonClick: (lesson) {
-                            final path = switch (lesson.type) {
+                            final String? path = switch (lesson.type) {
                               LessonType.video => '/study/video/${lesson.id}',
-                              LessonType.pdf => '/study/lesson/${lesson.id}',
+                              LessonType.pdf ||
+                              LessonType.attachment ||
+                              LessonType.notes ||
+                              LessonType.embedContent ||
+                              LessonType.liveStream =>
+                                '/study/lesson/${lesson.id}',
                               LessonType.test => '/study/test/${lesson.id}',
                               LessonType.assessment =>
                                 '/study/assessment/${lesson.id}',
+                              LessonType.unknown => null,
                             };
-                            context.push(path, extra: lesson);
+                            if (path != null) {
+                              context.push(path, extra: lesson);
+                            }
                           },
                         );
                       },
