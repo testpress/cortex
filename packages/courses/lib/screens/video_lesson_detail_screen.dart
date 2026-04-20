@@ -110,7 +110,7 @@ class _VideoLessonDetailScreenState
           borderRadius: BorderRadius.circular(design.radius.lg),
           child: Stack(
             children: [
-              CustomVideoPlayer(key: _videoPlayerKey, videoUrl: videoUrl),
+              CustomVideoPlayer(key: _videoPlayerKey, assetId: videoUrl),
               Positioned(
                 top: design.spacing.md,
                 left: design.spacing.md,

@@ -61,4 +61,12 @@ abstract class DataSource {
 
   /// Mark a lesson as completed on the server.
   Future<void> markLessonCompleted(String lessonId);
+  /// Directly downloads a file to the [savePath].
+  Future<void> downloadFile({
+    required String url,
+    required String savePath,
+    void Function(int count, int total)? onReceiveProgress,
+    dynamic cancelToken,
+    bool requireAuth = true,
+  });
 }
