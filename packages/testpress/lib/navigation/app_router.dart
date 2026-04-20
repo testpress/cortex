@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:courses/courses.dart';
+import 'package:courses/models/course_content.dart';
+import 'package:core/data/data.dart';
 import 'package:profile/profile.dart';
 import 'package:exams/exams.dart';
 import 'package:explore/explore.dart';
@@ -245,24 +247,19 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                                 child: Text('Lesson not found'),
                               );
                             }
-                            return LessonDetailOrchestrator(
+                            return _LessonRedirector(
                               lesson: lesson,
-                              customBuilder: (context, lesson) {
-                                if (lesson.type == LessonType.test ||
-                                    lesson.type == LessonType.assessment) {
-                                  return TestDetailScreen(
-                                    testId: lesson.id,
-                                    onClose: () => context.pop(),
-                                  );
-                                }
-                                return const SizedBox.shrink();
-                              },
-                              onNext: lesson.nextContentId != null
-                                  ? () => context.pushReplacement('/study/lesson/${lesson.nextContentId}')
-                                  : null,
-                              onPrevious: lesson.previousContentId != null
-                                  ? () => context.pushReplacement('/study/lesson/${lesson.previousContentId}')
-                                  : null,
+                              child: LessonDetailOrchestrator(
+                                lesson: lesson,
+                                onNext: lesson.nextContentId != null
+                                    ? () => context.pushReplacement(
+                                        '/study/lesson/${lesson.nextContentId}')
+                                    : null,
+                                onPrevious: lesson.previousContentId != null
+                                    ? () => context.pushReplacement(
+                                        '/study/lesson/${lesson.previousContentId}')
+                                    : null,
+                              ),
                             );
                           },
                           loading: () => Container(
@@ -466,6 +463,57 @@ void _onTabItemTapped(StatefulNavigationShell navigationShell, String id) {
   navigationShell.goBranch(
     index != -1 ? index : 0, // Fallback to 'home' branch as default
     // Provide true if you want clicking an active tab to reset its stack to root
-    initialLocation: index == navigationShell.currentIndex,
   );
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+class _LessonRedirector extends StatefulWidget {
+  final Lesson lesson;
+  final Widget child;
+
+  const _LessonRedirector({required this.lesson, required this.child});
+
+  @override
+  State<_LessonRedirector> createState() => _LessonRedirectorState();
+}
+
+class _LessonRedirectorState extends State<_LessonRedirector> {
+  @override
+  void initState() {
+    super.initState();
+    _checkRedirect();
+  }
+
+  @override
+  void didUpdateWidget(_LessonRedirector oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.lesson.id != oldWidget.lesson.id) {
+      _checkRedirect();
+    }
+  }
+
+  void _checkRedirect() {
+    if (widget.lesson.type == LessonType.test) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          context.go('/study/test/${widget.lesson.id}', extra: widget.lesson);
+        }
+      });
+    } else if (widget.lesson.type == LessonType.assessment) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          context.go('/study/assessment/${widget.lesson.id}',
+              extra: widget.lesson);
+        }
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // While redirecting, we show the child (orchestrator) but it will be immediately
+    // replaced by the new route after the first frame.
+    return widget.child;
+  }
 }
