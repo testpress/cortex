@@ -217,4 +217,23 @@ class HttpDataSource implements DataSource {
       fromJson: (data) => null,
     );
   }
+
+  @override
+  Future<void> downloadFile({
+    required String url,
+    required String savePath,
+    void Function(int count, int total)? onReceiveProgress,
+    dynamic cancelToken,
+    bool requireAuth = true,
+  }) async {
+    await _dio.download(
+      url,
+      savePath,
+      onReceiveProgress: onReceiveProgress,
+      cancelToken: cancelToken as CancelToken?,
+      options: Options(
+        extra: {'requireAuth': requireAuth},
+      ),
+    );
+  }
 }

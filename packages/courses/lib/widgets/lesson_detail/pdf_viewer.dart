@@ -5,11 +5,14 @@ import 'package:core/core.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:path_provider/path_provider.dart';
+
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../providers/course_list_provider.dart';
 
 /// A premium PDF viewer with perfectly synced, real-time scroll progress.
 /// Now features transparent local caching for instant sub-second viewing.
-class AppPdfViewer extends StatefulWidget {
+class AppPdfViewer extends ConsumerStatefulWidget {
   final String url;
   final ValueChanged<double>? onProgressChanged;
 
@@ -20,13 +23,14 @@ class AppPdfViewer extends StatefulWidget {
   });
 
   @override
-  State<AppPdfViewer> createState() => _AppPdfViewerState();
+  ConsumerState<AppPdfViewer> createState() => _AppPdfViewerState();
 }
 
-class _AppPdfViewerState extends State<AppPdfViewer>
+class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
     with SingleTickerProviderStateMixin {
   late final PdfViewerController _pdfViewerController = PdfViewerController();
   late final Ticker _ticker;
+  CancelToken? _cancelToken;
 
   // Caching state
   String? _localPath;
@@ -51,6 +55,7 @@ class _AppPdfViewerState extends State<AppPdfViewer>
   void dispose() {
     _ticker.dispose();
     _pdfViewerController.dispose();
+    _cancelToken?.cancel();
     super.dispose();
   }
 
@@ -77,14 +82,18 @@ class _AppPdfViewerState extends State<AppPdfViewer>
 
   Future<void> _downloadPdf(String savePath) async {
     try {
-      await Dio().download(
-        widget.url,
-        savePath,
+      _cancelToken = CancelToken();
+      final repository = await ref.read(courseRepositoryProvider.future);
+      await repository.downloadFile(
+        url: widget.url,
+        savePath: savePath,
+        cancelToken: _cancelToken,
         onReceiveProgress: (count, total) {
           if (total != -1 && mounted) {
             setState(() => _downloadProgress = count / total);
           }
         },
+        requireAuth: false, // Ensure no auth headers for signed cloud URLs
       );
       if (mounted) {
         setState(() {

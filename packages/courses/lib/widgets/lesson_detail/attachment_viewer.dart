@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:media_scanner/media_scanner.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:dio/dio.dart';
+import '../../providers/course_list_provider.dart';
 
 enum AttachmentDownloadState { idle, downloading, completed, error }
 
@@ -89,16 +90,17 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> with Widget
       final fileDir = await _getDownloadDirectory();
       final savePath = '${fileDir.path}/$fileName';
 
-      _cancelToken = CancelToken();
-      await Dio().download(
-        widget.url,
-        savePath,
+      final repository = await ref.read(courseRepositoryProvider.future);
+      await repository.downloadFile(
+        url: widget.url,
+        savePath: savePath,
         cancelToken: _cancelToken,
         onReceiveProgress: (count, total) {
           if (total != -1 && mounted) {
             setState(() => _downloadProgress = count / total);
           }
         },
+        requireAuth: false, // Ensure no auth headers for signed cloud URLs
       );
 
       if (mounted) {

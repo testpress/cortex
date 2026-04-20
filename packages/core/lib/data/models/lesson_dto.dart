@@ -1,5 +1,5 @@
 /// Lesson content type.
-enum LessonType { video, pdf, notes, embedContent, liveStream, attachment, test, assessment }
+enum LessonType { video, pdf, notes, embedContent, liveStream, attachment, test, assessment, unknown }
 
 /// Lesson progress status.
 enum LessonProgressStatus { notStarted, inProgress, completed }
@@ -199,6 +199,8 @@ class LessonDto {
       case LessonType.test:
       case LessonType.assessment:
         return _parseExamLesson(json, type);
+      case LessonType.unknown:
+        return _parseBase(json, type);
     }
   }
 
@@ -242,7 +244,7 @@ class LessonDto {
       return LessonType.assessment;
     }
 
-    return LessonType.video; // Fallback
+    return LessonType.unknown; // Fallback
   }
 
   static LessonDto _parseVideoLesson(Map<String, dynamic> json) {
