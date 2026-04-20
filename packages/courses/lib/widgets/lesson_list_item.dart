@@ -18,17 +18,23 @@ class LessonListItem extends StatelessWidget {
 
     // Exact colors from reference
     final typeTheme = switch (lesson.type) {
-      LessonType.video => design.study.video,
-      LessonType.pdf => design.study.pdf,
+      LessonType.video || LessonType.liveStream || LessonType.embedContent => design.study.video,
+      LessonType.pdf || LessonType.notes || LessonType.attachment => design.study.pdf,
       LessonType.assessment => design.study.assessment,
       LessonType.test => design.study.test,
+      LessonType.unknown => design.study.video,
     };
 
     final icon = switch (lesson.type) {
       LessonType.video => LucideIcons.playCircle,
+      LessonType.liveStream => LucideIcons.radio,
+      LessonType.embedContent => LucideIcons.code,
+      LessonType.notes => LucideIcons.bookOpen,
+      LessonType.attachment => LucideIcons.paperclip,
       LessonType.pdf => LucideIcons.fileText,
       LessonType.assessment => LucideIcons.clipboardCheck,
       LessonType.test => LucideIcons.award,
+      LessonType.unknown => LucideIcons.helpCircle,
     };
 
     return Container(
@@ -64,7 +70,7 @@ class LessonListItem extends StatelessWidget {
                             child: Image.network(
                               lesson.image!,
                               fit: BoxFit.cover,
-                              errorBuilder: (_, _, _) =>
+                              errorBuilder: (context, error, stackTrace) =>
                                   Icon(icon, size: 20, color: typeTheme.foreground),
                             ),
                           )

@@ -48,7 +48,7 @@ class ChapterContentItem extends StatelessWidget {
                           child: Image.network(
                             lesson.image!,
                             fit: BoxFit.cover,
-                            errorBuilder: (_, _, _) => Icon(
+                            errorBuilder: (context, error, stackTrace) => Icon(
                               icon,
                               size: 20,
                               color: _getColorForType(context, lesson.type),
@@ -101,6 +101,16 @@ class ChapterContentItem extends StatelessWidget {
         return LucideIcons.clipboardCheck;
       case LessonType.test:
         return LucideIcons.award;
+      case LessonType.liveStream:
+        return LucideIcons.radio;
+      case LessonType.notes:
+        return LucideIcons.bookOpen;
+      case LessonType.embedContent:
+        return LucideIcons.code;
+      case LessonType.attachment:
+        return LucideIcons.paperclip;
+      case LessonType.unknown:
+        return LucideIcons.helpCircle;
     }
   }
 
@@ -115,6 +125,12 @@ class ChapterContentItem extends StatelessWidget {
         return design.colors.accent4; // Green
       case LessonType.test:
         return design.colors.accent3; // Orange
+      case LessonType.liveStream || LessonType.embedContent:
+        return design.colors.accent1;
+      case LessonType.notes || LessonType.attachment:
+        return design.colors.accent2;
+      case LessonType.unknown:
+        return design.colors.textSecondary;
     }
   }
 
@@ -129,6 +145,16 @@ class ChapterContentItem extends StatelessWidget {
         return l10n.chapterTypeAssessment;
       case LessonType.test:
         return l10n.chapterTypeTest;
+      case LessonType.liveStream:
+        return 'Live Stream';
+      case LessonType.notes:
+        return 'Notes';
+      case LessonType.embedContent:
+        return 'Embed Content';
+      case LessonType.attachment:
+        return 'Attachment';
+      case LessonType.unknown:
+        return 'Unknown';
     }
   }
 }
