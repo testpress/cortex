@@ -2,7 +2,7 @@
 class TimeFormatter {
   /// Formats duration strings like "0.02:17" or "00:45:00" into "2min 17sec" or "45min".
   static String? formatDuration(String? duration) {
-    if (duration == null || duration.isEmpty || duration == '0' || duration == '00:00' || duration == '00:00:00') {
+    if (duration == null || duration.isEmpty || duration == '0' || duration == '00:00' || duration == '00:00:00' || duration == '0:00:00') {
       return null;
     }
 

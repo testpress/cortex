@@ -163,6 +163,8 @@ class _LessonDetailOrchestratorState
             color: design.colors.textSecondary,
           ),
         );
+      case LessonType.unknown:
+        break;
     }
 
     return Center(
