@@ -6,7 +6,7 @@ part 'initialization_provider.g.dart';
 
 /// Provider that handles app-wide data initialization and refresh logic.
 /// This prevents side effects within UI-driven data providers.
-@riverpod
+@Riverpod(keepAlive: true)
 Future<void> appInitialization(AppInitializationRef ref) async {
   final userRepo = await ref.watch(userRepositoryProvider.future);
   final userProgressRepo = await ref.watch(userProgressRepositoryProvider.future);
@@ -22,6 +22,6 @@ Future<void> appInitialization(AppInitializationRef ref) async {
     await userProgressRepo.refreshProgress(user.id);
   } catch (e) {
     // Initialization errors are handled here or surfaced to the listener
-    rethrow;
+    // We don't rethrow here to allow the app to start even if profile/progress refresh fails.
   }
 }

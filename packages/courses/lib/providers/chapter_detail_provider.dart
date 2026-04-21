@@ -1,58 +1,80 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../models/course_content.dart';
 import 'course_list_provider.dart';
+import '../repositories/course_repository.dart';
 
 part 'chapter_detail_provider.g.dart';
 
 /// Provider that fetches a specific chapter with its lessons.
 /// This provider maps the underlying DTOs to the [Chapter] domain model.
-@riverpod
-Future<Chapter?> chapterDetail(
+@Riverpod(keepAlive: true)
+Stream<Chapter?> chapterDetail(
   ChapterDetailRef ref,
   String courseId,
   String chapterId,
-) async {
+) async* {
   final repo = await ref.watch(courseRepositoryProvider.future);
-  
-  // 1. Get the chapter data
-  final chapterRow = await ref.watch(StreamProvider((_) => repo.watchChapter(chapterId)).future);
-  if (chapterRow == null) return null;
 
-  // 2. Fetch the course for title
-  final courseStream = repo.watchCourses().map((l) => l.where((c) => c.id == courseId).firstOrNull);
-  final courseRow = await ref.watch(StreamProvider((_) => courseStream).future);
+  // 1. Optimized Check: If we have both metadata and lessons locally,
+  // yield immediately to avoid the loader. Sync in background.
+  final chapterRow = await repo.getChapter(chapterId);
+  final localLessons = await repo.getLessons(chapterId);
 
-  // 3. Refresh lessons in background
-  repo.refreshLessons(chapterId).ignore();
+  if (chapterRow != null && localLessons.isNotEmpty) {
+    repo.syncChapterContents(courseId, chapterId).ignore();
+    yield* _watchChapter(repo, courseId, chapterId);
+    return;
+  }
 
-  // 4. Watch lessons
-  final lessonsStream = repo.watchLessons(chapterId);
-  final lessonsRow = await ref.watch(StreamProvider((_) => lessonsStream).future);
+  // 2. Fetch from network only if data is missing.
+  await repo.syncChapterContents(courseId, chapterId);
+  yield* _watchChapter(repo, courseId, chapterId);
+}
 
-  return Chapter(
-    id: chapterRow.id,
-    title: chapterRow.title,
-    lessonCount: chapterRow.lessonCount,
-    assessmentCount: chapterRow.assessmentCount,
-    courseTitle: courseRow?.title,
-    image: chapterRow.image,
-    lessons: lessonsRow
-        .map(
-          (l) => Lesson(
-            id: l.id,
-            title: l.title,
-            type: repo.rowToLessonDto(l).type,
-            progressStatus: repo.rowToLessonDto(l).progressStatus,
-            duration: l.duration,
-            isLocked: l.isLocked,
-            subtitle: l.subtitle,
-            subjectName: l.subjectName,
-            subjectIndex: l.subjectIndex,
-            lessonNumber: l.lessonNumber,
-            totalLessons: l.totalLessons,
-            contentUrl: l.contentUrl,
-          ),
-        )
-        .toList(),
-  );
+/// Helper stream that maps database rows to the Chapter domain model.
+Stream<Chapter?> _watchChapter(
+  CourseRepository repo,
+  String courseId,
+  String chapterId,
+) {
+  return repo.watchChapter(chapterId).asyncMap((chapterData) async {
+    if (chapterData == null) return null;
+
+    final lessonsData = await repo.watchLessons(chapterId).first;
+    final courses = await repo.watchCourses().first;
+    final course = courses.where((c) => c.id == courseId).firstOrNull;
+
+    return Chapter(
+      id: chapterData.id,
+      title: chapterData.title,
+      lessonCount: chapterData.lessonCount,
+      assessmentCount: chapterData.assessmentCount,
+      courseTitle: course?.title,
+      image: chapterData.image,
+      lessons: lessonsData
+          .map((l) => repo.rowToLessonDto(l))
+          .map(
+            (l) => Lesson(
+              id: l.id,
+              title: l.title,
+              type: l.type,
+              progressStatus: l.progressStatus,
+              duration: l.duration,
+              isLocked: l.isLocked,
+              subtitle: l.subtitle,
+              subjectName: l.subjectName,
+              subjectIndex: l.subjectIndex,
+              lessonNumber: l.lessonNumber,
+              totalLessons: l.totalLessons,
+              contentUrl: l.contentUrl,
+              isBookmarked: l.isBookmarked,
+              isRunning: l.isRunning,
+              isUpcoming: l.isUpcoming,
+              hasAttempts: l.hasAttempts,
+              image: l.image,
+            ),
+          )
+          .toList(),
+    );
+  });
 }

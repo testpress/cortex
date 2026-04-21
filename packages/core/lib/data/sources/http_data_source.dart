@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:core/data/data.dart';
 import '../../network/api_endpoints.dart';
 import '../../network/network_utils.dart';
+import 'curriculum_parser.dart';
 
 /// HTTP data source stub — to be implemented when a real backend is available.
 /// All methods throw [UnimplementedError] to surface accidental usage in tests.
@@ -64,16 +65,72 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<List<LessonDto>> getCourseContents(String courseId) =>
-      throw UnimplementedError(
-        'HttpDataSource.getCourseContents is not yet implemented.',
+  Future<CourseCurriculumDto> getCourseContents(String courseId) async {
+    final List<LessonDto> allLessons = [];
+    final List<ChapterDto> allChapters = [];
+    String? nextUrl = ApiEndpoints.courseContents(courseId);
+
+    // Follow pagination links to ensure a complete blueprint of the course.
+    // This prevents the "5 vs 2" lesson count inconsistency.
+    while (nextUrl != null) {
+      final responseData = await performNetworkRequest(
+        _dio.get(nextUrl),
+        fromJson: (data) => data,
       );
 
+      final curriculum = CurriculumParser.parseFullCurriculum(responseData);
+      allLessons.addAll(curriculum.lessons);
+      allChapters.addAll(curriculum.chapters);
+
+      // Extract next page URL, handling both absolute and relative paths.
+      final next = responseData['next'] as String?;
+      if (next != null && !next.startsWith('http')) {
+        nextUrl = '${AppConfig.apiBaseUrl}$next';
+      } else {
+        nextUrl = next;
+      }
+    }
+
+    print('DEBUG_SYNC: Final Course contents ($courseId) -> Total Lessons: ${allLessons.length}, Total Chapters: ${allChapters.length}');
+    
+    return CourseCurriculumDto(
+      lessons: allLessons,
+      chapters: allChapters,
+    );
+  }
+
   @override
-  Future<List<LessonDto>> getLessons(String chapterId) =>
-      throw UnimplementedError(
-        'HttpDataSource.getLessons is not yet implemented.',
-      );
+  Future<CourseCurriculumDto> getRunningContents(String courseId) async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.runningContents(courseId)),
+      fromJson: (data) => CurriculumParser.parseFullCurriculum(data),
+    );
+  }
+
+  @override
+  Future<CourseCurriculumDto> getUpcomingContents(String courseId) async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.upcomingContents(courseId)),
+      fromJson: (data) => CurriculumParser.parseFullCurriculum(data),
+    );
+  }
+
+  @override
+  Future<CourseCurriculumDto> getContentAttempts(String courseId) async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.contentAttempts(courseId)),
+      fromJson: (data) => CurriculumParser.parseFullCurriculum(data),
+    );
+  }
+
+
+  @override
+  Future<List<LessonDto>> getLessons(String chapterId) async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.chapterContents(chapterId)), 
+      fromJson: (data) => CurriculumParser.mapLessons(data, chapterId: chapterId),
+    );
+  }
 
   @override
   Future<List<LiveClassDto>> getLiveClasses() => throw UnimplementedError(

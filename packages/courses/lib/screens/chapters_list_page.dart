@@ -3,6 +3,7 @@ import 'package:core/data/data.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/course_detail_provider.dart';
+import '../providers/course_list_provider.dart';
 import '../widgets/chapters_filter_tab_bar.dart';
 import '../widgets/chapter_curriculum_item.dart';
 import '../widgets/curriculum_header.dart';
@@ -28,6 +29,24 @@ class ChaptersListPage extends ConsumerStatefulWidget {
 class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
   CurriculumFilter _activeFilter = CurriculumFilter.all;
 
+  @override
+  void initState() {
+    super.initState();
+    // Refresh course curriculum when navigating to the chapters list.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final repo = await ref.read(courseRepositoryProvider.future);
+      
+      // Always refresh the current view level (folders/chapters).
+      repo.refreshChapters(widget.courseId, parentId: widget.parentId).ignore();
+
+      // ONLY trigger the heavy full-course Master Sync if we are at the Root.
+      // Sub-pages should rely on the background update already in progress or completed.
+      if (widget.parentId == null) {
+        repo.refreshCourseContents(widget.courseId).ignore();
+      }
+    });
+  }
+
   void _onFilterChanged(CurriculumFilter filter) {
     setState(() => _activeFilter = filter);
   }
@@ -41,9 +60,10 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
       subChaptersProvider(widget.courseId, widget.parentId),
     );
     final courseAsync = ref.watch(courseDetailProvider(widget.courseId));
-    final allLessonsAsync = ref.watch(
+    final allCurriculumAsync = ref.watch(
       allCourseLessonsProvider(widget.courseId),
     );
+    final allKnownChaptersAsync = ref.watch(allChaptersProvider(widget.courseId));
 
     return Container(
       color: design.colors.canvas,
@@ -54,11 +74,47 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
             orElse: () => null,
           );
 
-          final lessons = allLessonsAsync.maybeWhen(
-            data: (l) => l,
-            orElse: () => <LessonDto>[],
+          final curriculum = allCurriculumAsync.maybeWhen(
+            data: (c) => c,
+            orElse: () => const CourseCurriculumDto(),
           );
-          final filteredLessons = _filterLessons(lessons, _activeFilter);
+
+          final lessons = curriculum.lessons;
+          
+          // Combine API snapshot chapters with all known chapters from the local vault.
+          // This fills in any structural folders that might be missing from the flat API metadata.
+          final allChapters = [
+            ...curriculum.chapters,
+            ...(allKnownChaptersAsync.value ?? []),
+          ];
+          
+          // Determine the set of valid chapter IDs for the current view.
+          // If we are in a subchapter, we only want lessons from this chapter or its subchapters.
+          final Set<String> validChapterIds = {};
+          if (widget.parentId != null) {
+            validChapterIds.add(widget.parentId!);
+            
+            // Add all descendants of the current parent
+            // O(N) optimization: Group chapters by parentId once
+            final parentMap = <String?, List<ChapterDto>>{};
+            for (var c in allChapters) {
+              parentMap.putIfAbsent(c.parentId, () => []).add(c);
+            }
+
+            void addDescendants(String pid) {
+              final children = parentMap[pid] ?? [];
+              for (var c in children) {
+                validChapterIds.add(c.id);
+                addDescendants(c.id);
+              }
+            }
+            addDescendants(widget.parentId!);
+          }
+
+          final filteredLessons = _filterLessons(lessons, _activeFilter).where((l) {
+            if (widget.parentId == null) return true; // Show all for root level
+            return validChapterIds.contains(l.chapterId);
+          }).toList();
 
           // If we have a parent, use its title, otherwise use course title
           String headerTitle = course?.title ?? 'Curriculum';

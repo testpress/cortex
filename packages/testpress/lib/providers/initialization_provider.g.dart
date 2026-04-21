@@ -6,14 +6,14 @@ part of 'initialization_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$appInitializationHash() => r'b5312051d0db163d19f9a708cb570bc180bf35a2';
+String _$appInitializationHash() => r'5924d3733cbb351c40c2190bf1dfdba117691422';
 
 /// Provider that handles app-wide data initialization and refresh logic.
 /// This prevents side effects within UI-driven data providers.
 ///
 /// Copied from [appInitialization].
 @ProviderFor(appInitialization)
-final appInitializationProvider = AutoDisposeFutureProvider<void>.internal(
+final appInitializationProvider = FutureProvider<void>.internal(
   appInitialization,
   name: r'appInitializationProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -25,6 +25,6 @@ final appInitializationProvider = AutoDisposeFutureProvider<void>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef AppInitializationRef = AutoDisposeFutureProviderRef<void>;
+typedef AppInitializationRef = FutureProviderRef<void>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

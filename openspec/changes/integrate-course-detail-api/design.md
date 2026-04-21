@@ -25,14 +25,16 @@ Instead of fetching the full curriculum tree, the system calls `/api/v3/courses/
 - If `parentId` is provided, it fetches specific sub-folders.
 - The local database stores the `isChaptersSynced` flag at each node to prevent redundant initial loads.
 
-### 2. Silent Synchronization (SWR)
-- **First Load**: If `isChaptersSynced` is false, the system awaits the API call (User sees spinner).
-- **Subsequent Loads**: If `isChaptersSynced` is true, the system emits DB data immediately and triggers a background refresh via `.ignore()`. If changes are detected, the UI updates reactively.
+### 2. Silent Synchronization (Instant Yield)
+- **Instant Data Access**: Providers like `subChapters` and `chapterDetail` now explicitly check for local DB populated records `localChapters.isNotEmpty` and `localLessons.isNotEmpty` before awaiting network queries. This ensures that even if status flags desync, data already present on the device loads instantly.
+- **Background Refresh (.ignore())**: If data exists, it is yielded instantly and a silent refresh runs as a side-effect. UI updates reactively via Riverpod Streams.
+- **Provider Caching (`keepAlive`)**: All structural providers are marked as `keepAlive: true` to prevent loading spinners / transient missing data when switching bottom navigation tabs or popping routes.
 
 ### 3. Unified Repository Interface
 - `isChaptersSynced(courseId, {parentId})`: Unified check for both course and folder sync status.
 - `refreshChapters(courseId, {parentId})`: Standardized fetch-and-save routine.
-- `watchChapter(id)`: direct database watcher for individual chapters to support deep-linking.
+- `getChapter`/`getLessons`: Direct Future lookups on DB instances, allowing providers to instantly check for cached records.
+- **Non-Destructive Upserts**: Sync logic specifically avoids destructive deletion patterns (`delete` before `insert`) during updates, using pure `upsertAllOnConflictUpdate` instead. This prevents brief "content flashing" while data is being refreshed in the background.
 
 ## Risks / Trade-offs
 

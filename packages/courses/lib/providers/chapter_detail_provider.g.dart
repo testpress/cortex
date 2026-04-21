@@ -6,7 +6,7 @@ part of 'chapter_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$chapterDetailHash() => r'4e934e12e1872b11055fd120b6a7504863096e51';
+String _$chapterDetailHash() => r'792664f641887b43f078839b7da81df08e30184b';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -81,7 +81,7 @@ class ChapterDetailFamily extends Family<AsyncValue<Chapter?>> {
 /// This provider maps the underlying DTOs to the [Chapter] domain model.
 ///
 /// Copied from [chapterDetail].
-class ChapterDetailProvider extends AutoDisposeFutureProvider<Chapter?> {
+class ChapterDetailProvider extends StreamProvider<Chapter?> {
   /// Provider that fetches a specific chapter with its lessons.
   /// This provider maps the underlying DTOs to the [Chapter] domain model.
   ///
@@ -117,7 +117,7 @@ class ChapterDetailProvider extends AutoDisposeFutureProvider<Chapter?> {
 
   @override
   Override overrideWith(
-    FutureOr<Chapter?> Function(ChapterDetailRef provider) create,
+    Stream<Chapter?> Function(ChapterDetailRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -135,7 +135,7 @@ class ChapterDetailProvider extends AutoDisposeFutureProvider<Chapter?> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<Chapter?> createElement() {
+  StreamProviderElement<Chapter?> createElement() {
     return _ChapterDetailProviderElement(this);
   }
 
@@ -158,7 +158,7 @@ class ChapterDetailProvider extends AutoDisposeFutureProvider<Chapter?> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin ChapterDetailRef on AutoDisposeFutureProviderRef<Chapter?> {
+mixin ChapterDetailRef on StreamProviderRef<Chapter?> {
   /// The parameter `courseId` of this provider.
   String get courseId;
 
@@ -166,8 +166,7 @@ mixin ChapterDetailRef on AutoDisposeFutureProviderRef<Chapter?> {
   String get chapterId;
 }
 
-class _ChapterDetailProviderElement
-    extends AutoDisposeFutureProviderElement<Chapter?>
+class _ChapterDetailProviderElement extends StreamProviderElement<Chapter?>
     with ChapterDetailRef {
   _ChapterDetailProviderElement(super.provider);
 
