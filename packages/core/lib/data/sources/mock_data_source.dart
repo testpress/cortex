@@ -873,7 +873,7 @@ class MockDataSource implements DataSource {
   @override
   Future<List<ForumCommentDto>> getForumComments(String threadId) async => [
         ForumCommentDto(
-          id: 'fc-1',
+          id: 'fc-1-$threadId',
           threadId: threadId,
           authorName: 'Dr. Anita Sharma',
           authorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Anita',
@@ -883,7 +883,7 @@ class MockDataSource implements DataSource {
           downvotes: 0,
         ),
         ForumCommentDto(
-          id: 'fc-2',
+          id: 'fc-2-$threadId',
           threadId: threadId,
           authorName: 'Rahul Singh',
           authorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Rahul',
