@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../../providers/course_list_provider.dart';
+import '../../providers/forum_providers.dart';
 import '../../widgets/forum/forum_header.dart';
 
 class ForumCourseSelectionScreen extends ConsumerStatefulWidget {
@@ -43,9 +44,15 @@ class _ForumBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final coursesAsync = ref.watch(courseListProvider);
+    final isSyncing = ref.watch(isSyncingInitialPage);
 
     return coursesAsync.when(
-      data: (courses) => _CourseSelectionList(courses: courses),
+      data: (courses) {
+        if (courses.isEmpty && isSyncing) {
+          return const Center(child: AppLoadingIndicator());
+        }
+        return _CourseSelectionList(courses: courses);
+      },
       loading: () => const Center(child: AppLoadingIndicator()),
       error: (error, _) => _ErrorMessage(message: error.toString()),
     );
@@ -123,15 +130,16 @@ class _CourseItem extends StatelessWidget {
   }
 }
 
-class _CourseInfo extends StatelessWidget {
+class _CourseInfo extends ConsumerWidget {
   final CourseDto course;
 
   const _CourseInfo({required this.course});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
+    final threadsAsync = ref.watch(courseForumThreadsProvider(course.id));
 
     return Expanded(
       child: Column(
@@ -143,9 +151,19 @@ class _CourseInfo extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 4),
-          AppText.caption(
-            l10n.forumThreadsCount(12),
-            color: design.colors.textSecondary,
+          threadsAsync.when(
+            data: (threads) => AppText.caption(
+              l10n.forumThreadsCount(threads.length),
+              color: design.colors.textSecondary,
+            ),
+            loading: () => AppText.caption(
+              '...',
+              color: design.colors.textSecondary.withValues(alpha: 0.5),
+            ),
+            error: (_, __) => AppText.caption(
+              '--',
+              color: design.colors.textSecondary.withValues(alpha: 0.5),
+            ),
           ),
         ],
       ),
