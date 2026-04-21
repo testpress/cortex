@@ -14,16 +14,16 @@ abstract class DataSource {
   Future<List<ChapterDto>> getChapters(String courseId, {String? parentId});
 
   /// Fetch all course contents for a specific course (V3 flat list).
-  Future<List<LessonDto>> getCourseContents(String courseId);
+  Future<CourseCurriculumDto> getCourseContents(String courseId);
   
   /// Fetch running contents for a specific course.
-  Future<List<LessonDto>> getRunningContents(String courseId);
+  Future<CourseCurriculumDto> getRunningContents(String courseId);
 
   /// Fetch upcoming contents for a specific course.
-  Future<List<LessonDto>> getUpcomingContents(String courseId);
+  Future<CourseCurriculumDto> getUpcomingContents(String courseId);
 
   /// Fetch content attempts (History) for a specific course.
-  Future<List<LessonDto>> getContentAttempts(String courseId);
+  Future<CourseCurriculumDto> getContentAttempts(String courseId);
 
   /// Fetch lessons for a specific chapter (Legacy/Sub-fetch).
   Future<List<LessonDto>> getLessons(String chapterId);

@@ -10,7 +10,11 @@ import 'package:core/data/data.dart';
 class CourseRepository {
   final AppDatabase _db;
   final DataSource _source;
-  final Map<String, DateTime> _lastSyncedCourseContents = {};
+  /// In-flight structural syncs to prevent duplicate network requests.
+  final Map<String, Future<CourseCurriculumDto>> _activeStructuralSyncs = {};
+  final Map<String, Future<List<ChapterDto>>> _activeChapterSyncs = {};
+  final Map<String, Future<CourseDto?>> _activeDetailSyncs = {};
+  final Map<String, Future<List<LessonDto>>> _activeContentSyncs = {};
 
   CourseRepository(this._db, this._source);
 
@@ -105,6 +109,28 @@ class CourseRepository {
         .watch();
   }
 
+  Future<CourseDto?> refreshCourseDetail(String courseId) async {
+    final lockKey = 'detail_$courseId';
+    if (_activeDetailSyncs.containsKey(lockKey)) {
+      return _activeDetailSyncs[lockKey]!;
+    }
+
+    final syncFuture = () async {
+      try {
+        final dto = await _source.getCourseDetail(courseId);
+        await _db.upsertCourses([_courseDtoToCompanion(dto)]);
+        return dto;
+      } finally {
+        _activeDetailSyncs.remove(lockKey);
+      }
+    }();
+
+    _activeDetailSyncs[lockKey] = syncFuture;
+    return syncFuture;
+  }
+
+
+
   /// Checks if chapters/subjects for a course or folder are already in the DB.
   Future<bool> isChaptersSynced(String courseId, {String? parentId}) async {
     final rowId = parentId ?? courseId;
@@ -121,12 +147,28 @@ class CourseRepository {
 
   /// Refreshes chapters for a course or folder and marks it as synced.
   Future<List<ChapterDto>> refreshChapters(String courseId, {String? parentId}) async {
-    final chapters = await _source.getChapters(courseId, parentId: parentId);
-    
-    await _db.upsertChapters(chapters.map(_chapterDtoToCompanion).toList());
-    await _markAsSynced(courseId: courseId, folderId: parentId);
+    final lockKey = 'chapters_${courseId}_${parentId ?? "root"}';
+    if (_activeChapterSyncs.containsKey(lockKey)) {
+      return _activeChapterSyncs[lockKey]!;
+    }
 
-    return chapters;
+    final syncFuture = () async {
+      try {
+        final chapters = await _source.getChapters(courseId, parentId: parentId);
+        final companions = chapters.map(_chapterDtoToCompanion).toList();
+        
+        if (companions.isNotEmpty) {
+          await _db.upsertChapters(companions);
+        }
+        await _markAsSynced(courseId: courseId, folderId: parentId);
+        return chapters;
+      } finally {
+        _activeChapterSyncs.remove(lockKey);
+      }
+    }();
+
+    _activeChapterSyncs[lockKey] = syncFuture;
+    return syncFuture;
   }
 
   // ── Internal Helpers ─────────────────────────────────────────────────────
@@ -148,10 +190,41 @@ class CourseRepository {
   }
 
   /// Watch all lessons belonging to any chapter within a course.
-  Stream<List<LessonDto>> watchLessonsForCourse(String courseId) {
-    return _db.watchLessonsForCourse(courseId).map(
-          (rows) => rows.map((row) => rowToLessonDto(row)).toList(),
-        );
+  /// Uses a projection layer to decouple relational truth from SQL.
+  Stream<CourseCurriculumDto> watchLessonsForCourse(String courseId) {
+    return watchCourseCurriculum(courseId);
+  }
+
+  /// Watches the curriculum for a course by combining the structure snapshot
+  /// with live database state. This does not depend on SQL joins.
+  Stream<CourseCurriculumDto> watchCourseCurriculum(String courseId) async* {
+    // 1. Get the authoritative structure snapshot for this course.
+    final CourseCurriculumDto hierarchy = await refreshCourseContents(courseId);
+    
+    // Immediate yield of the hierarchy to ensure instant UI responsiveness.
+    yield hierarchy;
+
+    if (hierarchy.isEmpty) return;
+
+    // 2. Build the lesson stream from the live Database vault.
+    // Instead of mapping the static API snapshot, we watch ALL lessons in the DB
+    // and filter them by the chapters that belong to this course.
+    yield* _db.watchAllLessons().map((dbRows) {
+      // Collect all chapter IDs that belong to this course hierarchy.
+      final courseChapterIds = {
+        for (var c in hierarchy.chapters) c.id,
+      };
+
+      final courseLessons = dbRows
+          .map(rowToLessonDto)
+          .where((l) => courseChapterIds.contains(l.chapterId))
+          .toList();
+      
+      // Enforce the API-provided sequence for consistent ordering.
+      courseLessons.sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+
+      return hierarchy.copyWith(lessons: courseLessons);
+    });
   }
   
   /// Direct fetch of a course by ID from the database or network fallback.
@@ -161,7 +234,7 @@ class CourseRepository {
 
   /// Synchronizes all data needed for a specific chapter view.
   /// Handles the complexity of checking if it's a leaf and coordinating status refreshes.
-  Future<void> syncChapterContents(String courseId, String chapterId) async {
+  Future<List<LessonDto>> syncChapterContents(String courseId, String chapterId) async {
     final course = await getCourse(courseId);
     final chapter = course?.chapters.where((c) => c.id == chapterId).firstOrNull;
 
@@ -169,122 +242,146 @@ class CourseRepository {
       // Refresh the course-wide status tags first.
       await refreshCourseContents(courseId);
       // Then refresh the specific chapter lessons vertically to ensure data integrity.
-      await refreshLessons(chapterId);
+      return await refreshLessons(chapterId);
     }
+    return [];
   }
 
   Future<List<LessonDto>> refreshLessons(String chapterId) async {
-    final lessons = await _source.getLessons(chapterId);
-    final companions = lessons.map(_lessonDtoToCompanion).toList();
-
-    final remoteIds = lessons.map((l) => l.id).toSet();
-
-    await _db.transaction(() async {
-      final localLessons = await getLessons(chapterId);
-      final localIds = localLessons.map((l) => l.id).toSet();
-      
-      final idsToDelete = localIds.difference(remoteIds);
-      if (idsToDelete.isNotEmpty) {
-        await _db.deleteLessonsByIds(idsToDelete);
-      }
-      
-      await _db.upsertLessons(companions);
-    });
-
-    return lessons;
-  }
-
-  Future<void> refreshCourseContents(String courseId) async {
-    try {
-      final now = DateTime.now();
-      final lastSync = _lastSyncedCourseContents[courseId];
-      if (lastSync != null && now.difference(lastSync).inSeconds < 60) {
-        return; // Throttled to avoid network spam
-      }
-
-      final remote = await _fetchRemoteCourseData(courseId);
-      final mergedLessons = await _mergeLocalAndRemoteLessons(courseId, remote);
-      final companions = _applyContentStatuses(mergedLessons, remote);
-
-      if (companions.isNotEmpty) {
-        await _db.upsertLessons(companions);
-      }
-
-      _lastSyncedCourseContents[courseId] = now;
-    } catch (e, stack) {
-      // Log the error but don't rethrow, as this is a background sync.
-      // In a production app, this should be sent to a crash reporting service.
-      print('CourseRepository: Error refreshing course contents for $courseId: $e');
-      print(stack);
+    if (_activeContentSyncs.containsKey(chapterId)) {
+      final rows = await getLessons(chapterId);
+      return rows.map(rowToLessonDto).toList();
     }
+
+    final syncFuture = () async {
+      try {
+        final lessons = await _source.getLessons(chapterId);
+        final companions = lessons.map(_lessonDtoToCompanion).toList();
+
+        final remoteIds = lessons.map((l) => l.id).toSet();
+
+        await _db.transaction(() async {
+          final localLessons = await getLessons(chapterId);
+          final localIds = localLessons.map((l) => l.id).toSet();
+          
+          final idsToDelete = localIds.difference(remoteIds).toList();
+          if (idsToDelete.isNotEmpty) {
+            await _db.deleteLessonsByIds(idsToDelete);
+          }
+          
+          await _db.upsertLessons(companions);
+        });
+
+        return lessons;
+      } finally {
+        _activeContentSyncs.remove(chapterId);
+      }
+    }();
+
+    _activeContentSyncs[chapterId] = syncFuture.then((_) async {
+       final rows = await getLessons(chapterId);
+       return rows.map(rowToLessonDto).toList();
+    });
+    
+    return syncFuture;
   }
 
-  Future<
-      ({
-        List<LessonDto> all,
-        List<LessonDto> running,
-        List<LessonDto> upcoming,
-        List<LessonDto> attempts
-      })> _fetchRemoteCourseData(String courseId) async {
-    final results = await Future.wait([
-      _source.getCourseContents(courseId),
-      _source.getRunningContents(courseId),
-      _source.getUpcomingContents(courseId),
-      _source.getContentAttempts(courseId),
-    ]);
+  Future<CourseCurriculumDto> refreshCourseContents(String courseId) async {
+    // Request Deduplication: Avoid duplicate pagination loops if sync is already in progress.
+    if (_activeStructuralSyncs.containsKey(courseId)) {
+      return _activeStructuralSyncs[courseId]!;
+    }
 
-    return (
-      all: results[0],
-      running: results[1],
-      upcoming: results[2],
-      attempts: results[3],
-    );
+    final syncFuture = () async {
+      try {
+        // Authoritative Structural Mapping: Hierarchy comes strictly from the paginated /contents/ API.
+        final remoteAll = await _source.getCourseContents(courseId);
+        
+        // Status Enrichment: Fetch progress/lifecycle flags in parallel.
+        // These are secondary and do NOT affect the curriculum structure.
+        final results = await Future.wait([
+          _source.getRunningContents(courseId),
+          _source.getUpcomingContents(courseId),
+          _source.getContentAttempts(courseId),
+        ]);
+
+        final remote = (
+          all: remoteAll,
+          running: results[0],
+          upcoming: results[1],
+          attempts: results[2],
+        );
+
+        final mergedCurriculum = await _mergeLocalAndRemoteCurriculum(courseId, remote.all);
+        
+        // Enrichment Phase: Distribute status flags to the authoritative entities.
+        final lessonCompanions = _applyContentStatuses(mergedCurriculum.lessons, remote);
+        final chapterCompanions = mergedCurriculum.chapters.map(_chapterDtoToCompanion).toList();
+
+        await _db.transaction(() async {
+          if (lessonCompanions.isNotEmpty) {
+            await _db.upsertLessons(lessonCompanions);
+          }
+          if (chapterCompanions.isNotEmpty) {
+            await _db.upsertChapters(chapterCompanions);
+          }
+        });
+
+        return mergedCurriculum;
+      } catch (e) {
+        rethrow;
+      } finally {
+        _activeStructuralSyncs.remove(courseId);
+      }
+    }();
+
+    _activeStructuralSyncs[courseId] = syncFuture;
+    return syncFuture;
   }
 
-  Future<List<LessonDto>> _mergeLocalAndRemoteLessons(
+
+  Future<CourseCurriculumDto> _mergeLocalAndRemoteCurriculum(
     String courseId,
-    ({
-      List<LessonDto> all,
-      List<LessonDto> running,
-      List<LessonDto> upcoming,
-      List<LessonDto> attempts
-    }) remote,
+    CourseCurriculumDto remoteAll,
   ) async {
     final Map<String, LessonDto> merged = {};
 
-    final local = await watchLessonsForCourse(courseId).first;
-    for (final l in local) {
+    // 1. Identify authoritative IDs from the API hierarchy
+    final remoteIds = remoteAll.lessons.map((l) => l.id).toSet();
+
+    // 2. Load existing persistent state from DB cache for ONLY these IDs.
+    // This avoids SQL JOINs and recursion with the projection layer.
+    final localRows = await (_db.select(_db.lessonsTable)
+          ..where((t) => t.id.isIn(remoteIds)))
+        .get();
+        
+    for (final row in localRows) {
+      merged[row.id] = rowToLessonDto(row);
+    }
+
+    // 3. Layer on the authoritative hierarchy/metadata from the API
+    for (final l in remoteAll.lessons) {
       merged[l.id] = l;
     }
 
-    for (final l in remote.all) {
-      merged[l.id] = l;
-    }
-
-    for (final l in [...remote.running, ...remote.upcoming, ...remote.attempts]) {
-      final existing = merged[l.id];
-      if (existing == null) {
-        merged[l.id] = l;
-      } else if (existing.chapterId.isEmpty && l.chapterId.isNotEmpty) {
-        merged[l.id] = existing.copyWith(chapterId: l.chapterId);
-      }
-    }
-
-    return merged.values.toList();
+    return CourseCurriculumDto(
+      lessons: merged.values.toList(),
+      chapters: remoteAll.chapters,
+    );
   }
 
   List<LessonsTableCompanion> _applyContentStatuses(
     List<LessonDto> lessons,
     ({
-      List<LessonDto> all,
-      List<LessonDto> running,
-      List<LessonDto> upcoming,
-      List<LessonDto> attempts
+      CourseCurriculumDto all,
+      CourseCurriculumDto running,
+      CourseCurriculumDto upcoming,
+      CourseCurriculumDto attempts
     }) remote,
   ) {
-    final runningIds = remote.running.map((l) => l.id).toSet();
-    final upcomingIds = remote.upcoming.map((l) => l.id).toSet();
-    final historyIds = remote.attempts.map((l) => l.id).toSet();
+    final runningIds = remote.running.lessons.map((l) => l.id).toSet();
+    final upcomingIds = remote.upcoming.lessons.map((l) => l.id).toSet();
+    final historyIds = remote.attempts.lessons.map((l) => l.id).toSet();
 
     return lessons.map((dto) {
       return _lessonDtoToCompanion(dto).copyWith(

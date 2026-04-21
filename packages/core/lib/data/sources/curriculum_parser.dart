@@ -1,8 +1,36 @@
+import '../../data/models/chapter_dto.dart';
+import '../../data/models/course_curriculum_dto.dart';
 import '../../data/models/lesson_dto.dart';
 
 /// Specialist class for parsing complex curriculum and lesson responses 
 /// from various Testpress API versions (V2.5, V3, etc.).
 class CurriculumParser {
+  /// Parses the full hierarchy (chapters and lessons) from a course contents response.
+  /// This provides the authoritative "blueprint" for the projection layer.
+  static CourseCurriculumDto parseFullCurriculum(dynamic data, {String? chapterId}) {
+    final lessons = mapLessons(data, chapterId: chapterId);
+    final List<ChapterDto> chapters = [];
+
+    if (data is Map) {
+      final results = data['results'] ?? data;
+      final chaptersListRaw = (results is Map) ? results['chapters'] : data['chapters'];
+      final chaptersList = chaptersListRaw as List<dynamic>?;
+
+      if (chaptersList != null) {
+        for (var c in chaptersList) {
+          if (c is Map<String, dynamic>) {
+            chapters.add(ChapterDto.fromJson(c));
+          }
+        }
+      }
+    }
+
+    return CourseCurriculumDto(
+      lessons: lessons,
+      chapters: chapters,
+    );
+  }
+
   /// Maps raw API data into a clean list of [LessonDto]s.
   /// Handles metadata enrichment (chapter names) and structure normalization.
   static List<LessonDto> mapLessons(dynamic data, {String? chapterId}) {

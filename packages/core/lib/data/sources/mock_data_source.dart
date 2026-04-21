@@ -186,39 +186,69 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<List<LessonDto>> getCourseContents(String courseId) async {
-    // Return mock lessons aggregated for the course chapters
-    final chapters = await getChapters(courseId);
+  Future<CourseCurriculumDto> getCourseContents(String courseId) async {
+    // Collect ALL chapters in the course to ensure a complete structural snapshot.
+    final allChapters = await _getAllChaptersRecursively(courseId);
+    
     final lessons = <LessonDto>[];
-    for (var ch in chapters) {
+    for (var ch in allChapters) {
       lessons.addAll(await getLessons(ch.id));
     }
-    return lessons;
+    return CourseCurriculumDto(chapters: allChapters, lessons: lessons);
+  }
+
+  Future<List<ChapterDto>> _getAllChaptersRecursively(String courseId, {String? parentId}) async {
+    final List<ChapterDto> result = [];
+    final chapters = await getChapters(courseId, parentId: parentId);
+    
+    for (final chapter in chapters) {
+      result.add(chapter);
+      if (!chapter.isLeaf) {
+        result.addAll(await _getAllChaptersRecursively(courseId, parentId: chapter.id));
+      }
+    }
+    return result;
   }
 
   @override
-  Future<List<LessonDto>> getRunningContents(String courseId) async {
+  Future<CourseCurriculumDto> getRunningContents(String courseId) async {
     final all = await getCourseContents(courseId);
-    return all.where((l) => l.progressStatus == LessonProgressStatus.inProgress).toList();
+    return all.copyWith(
+      lessons: all.lessons.where((l) => l.progressStatus == LessonProgressStatus.inProgress).toList(),
+    );
   }
 
   @override
-  Future<List<LessonDto>> getUpcomingContents(String courseId) async {
+  Future<CourseCurriculumDto> getUpcomingContents(String courseId) async {
     final all = await getCourseContents(courseId);
-    return all.where((l) => l.progressStatus == LessonProgressStatus.notStarted).toList();
+    return all.copyWith(
+      lessons: all.lessons.where((l) => l.progressStatus == LessonProgressStatus.notStarted).toList(),
+    );
   }
 
   @override
-  Future<List<LessonDto>> getContentAttempts(String courseId) async {
+  Future<CourseCurriculumDto> getContentAttempts(String courseId) async {
     final all = await getCourseContents(courseId);
-    return all.where((l) => l.progressStatus == LessonProgressStatus.completed).toList();
+    return all.copyWith(
+      lessons: all.lessons.where((l) => l.progressStatus == LessonProgressStatus.completed).toList(),
+    );
   }
 
   List<ChapterDto> _jeeMainChapters() => [
         const ChapterDto(
           id: 'jee-main-ch-1',
           courseId: 'jee-main-2026',
-          title: 'Thermodynamics',
+          title: 'Physics Foundations',
+          isLeaf: false,
+          lessonCount: 0,
+          assessmentCount: 0,
+          orderIndex: 0,
+        ),
+        const ChapterDto(
+          id: 'jee-main-ch-1-sub-1',
+          parentId: 'jee-main-ch-1',
+          courseId: 'jee-main-2026',
+          title: 'Thermodynamics & Heat',
           lessonCount: 6,
           assessmentCount: 1,
           orderIndex: 0,
@@ -238,22 +268,6 @@ class MockDataSource implements DataSource {
           lessonCount: 7,
           assessmentCount: 1,
           orderIndex: 2,
-        ),
-        const ChapterDto(
-          id: 'jee-main-ch-4',
-          courseId: 'jee-main-2026',
-          title: 'Organic Reactions — Mechanisms',
-          lessonCount: 8,
-          assessmentCount: 2,
-          orderIndex: 3,
-        ),
-        const ChapterDto(
-          id: 'jee-main-ch-5',
-          courseId: 'jee-main-2026',
-          title: 'Calculus II — Integration Techniques',
-          lessonCount: 6,
-          assessmentCount: 1,
-          orderIndex: 4,
         ),
       ];
 
@@ -388,14 +402,12 @@ class MockDataSource implements DataSource {
   @override
   Future<List<LessonDto>> getLessons(String chapterId) async {
     switch (chapterId) {
-      case 'jee-main-ch-1':
+      case 'jee-main-ch-1-sub-1':
         return _thermodynamicsLessons();
       case 'jee-main-ch-2':
         return _mechanicsLessons();
       case 'jee-main-ch-3':
         return _electrostaticsLessons();
-      case 'jee-main-ch-4':
-        return _organicChemLessons();
       case 'jee-main-ch-5':
         return _calculusLessons();
       default:

@@ -158,7 +158,7 @@ class _CourseDetailProviderElement extends StreamProviderElement<CourseDto?>
   String get courseId => (origin as CourseDetailProvider).courseId;
 }
 
-String _$subChaptersHash() => r'a6595e5103bbde7982939610147f44eaf182d0a9';
+String _$subChaptersHash() => r'949a56c0d03e94243093ee23a35450644e89021f';
 
 /// A provider that watches chapters for a specific parent (folder).
 /// Triggers a refresh if the folder has not been synced yet.
@@ -307,7 +307,7 @@ class _SubChaptersProviderElement
   String? get parentId => (origin as SubChaptersProvider).parentId;
 }
 
-String _$allCourseLessonsHash() => r'2da985aa83ca2c623b5c009903e958c7e2416bb2';
+String _$allCourseLessonsHash() => r'2ecd0b44f585efac78c9dfca6e2b363da075f917';
 
 /// A provider that flattens all lessons for a specific course into a single list.
 /// Used for filtering lessons by type across the entire course.
@@ -320,7 +320,7 @@ const allCourseLessonsProvider = AllCourseLessonsFamily();
 /// Used for filtering lessons by type across the entire course.
 ///
 /// Copied from [allCourseLessons].
-class AllCourseLessonsFamily extends Family<AsyncValue<List<LessonDto>>> {
+class AllCourseLessonsFamily extends Family<AsyncValue<CourseCurriculumDto>> {
   /// A provider that flattens all lessons for a specific course into a single list.
   /// Used for filtering lessons by type across the entire course.
   ///
@@ -361,7 +361,7 @@ class AllCourseLessonsFamily extends Family<AsyncValue<List<LessonDto>>> {
 /// Used for filtering lessons by type across the entire course.
 ///
 /// Copied from [allCourseLessons].
-class AllCourseLessonsProvider extends StreamProvider<List<LessonDto>> {
+class AllCourseLessonsProvider extends StreamProvider<CourseCurriculumDto> {
   /// A provider that flattens all lessons for a specific course into a single list.
   /// Used for filtering lessons by type across the entire course.
   ///
@@ -394,7 +394,7 @@ class AllCourseLessonsProvider extends StreamProvider<List<LessonDto>> {
 
   @override
   Override overrideWith(
-    Stream<List<LessonDto>> Function(AllCourseLessonsRef provider) create,
+    Stream<CourseCurriculumDto> Function(AllCourseLessonsRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -411,7 +411,7 @@ class AllCourseLessonsProvider extends StreamProvider<List<LessonDto>> {
   }
 
   @override
-  StreamProviderElement<List<LessonDto>> createElement() {
+  StreamProviderElement<CourseCurriculumDto> createElement() {
     return _AllCourseLessonsProviderElement(this);
   }
 
@@ -431,13 +431,13 @@ class AllCourseLessonsProvider extends StreamProvider<List<LessonDto>> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin AllCourseLessonsRef on StreamProviderRef<List<LessonDto>> {
+mixin AllCourseLessonsRef on StreamProviderRef<CourseCurriculumDto> {
   /// The parameter `courseId` of this provider.
   String get courseId;
 }
 
 class _AllCourseLessonsProviderElement
-    extends StreamProviderElement<List<LessonDto>>
+    extends StreamProviderElement<CourseCurriculumDto>
     with AllCourseLessonsRef {
   _AllCourseLessonsProviderElement(super.provider);
 

@@ -213,20 +213,15 @@ class AppDatabase extends _$AppDatabase {
 
   // ── Lessons ───────────────────────────────────────────────────────────────
 
-  /// Watch all lessons for a specific course by joining with chapters.
-  Stream<List<LessonsTableData>> watchLessonsForCourse(String courseId) {
-    final query = select(lessonsTable).join([
-      innerJoin(
-        chaptersTable,
-        chaptersTable.id.equalsExp(lessonsTable.chapterId),
-      ),
-    ])
-      ..where(chaptersTable.courseId.equals(courseId))
-      ..orderBy([OrderingTerm.asc(lessonsTable.orderIndex)]);
+  /// Watch all lessons in the database.
+  /// Used for mapping the overall course structure.
+  Stream<List<LessonsTableData>> watchAllLessons() =>
+      (select(lessonsTable)..orderBy([(t) => OrderingTerm.asc(t.orderIndex)]))
+          .watch();
 
-    return query.watch().map((rows) {
-      return rows.map((row) => row.readTable(lessonsTable)).toList();
-    });
+  /// Watch all lessons for a specific course.
+  Stream<List<LessonsTableData>> watchLessonsForCourse(String courseId) {
+    return watchAllLessons();
   }
 
   /// Watch lessons for a given chapter, ordered by index.
