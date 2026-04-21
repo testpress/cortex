@@ -500,7 +500,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawerAnalytics => 'Analytics';
 
   @override
-  String get drawerForum => 'Forum';
+  String get drawerForum => 'Discussions Forum';
 
   @override
   String get drawerDoubts => 'Doubts';
@@ -1230,4 +1230,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get labelPractice => 'Practice';
+
+  @override
+  String get forumTitle => 'Discussion Forum';
+
+  @override
+  String get forumSelectCourse => 'Select a course to view discussions';
+
+  @override
+  String forumThreadsCount(int count) {
+    return '$count Threads';
+  }
+
+  @override
+  String forumUnansweredCount(int count) {
+    return '$count Unanswered';
+  }
+
+  @override
+  String get forumLabelAnswered => 'Answered';
+
+  @override
+  String get forumLabelUnanswered => 'Unanswered';
+
+  @override
+  String get forumSearchDiscussions => 'Search discussions';
+
+  @override
+  String get forumCreatePost => 'Create New Post';
+
+  @override
+  String get forumNoDiscussions => 'No discussions found yet';
 }

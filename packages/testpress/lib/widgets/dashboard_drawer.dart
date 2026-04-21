@@ -49,7 +49,10 @@ class DashboardDrawer extends ConsumerWidget {
             AppDrawerItem(
               icon: LucideIcons.messageSquare,
               label: l10n.drawerForum,
-              action: () {},
+              action: () {
+                ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                context.go('/home/forum');
+              },
             ),
             AppDrawerItem(
               icon: LucideIcons.messageCircle,

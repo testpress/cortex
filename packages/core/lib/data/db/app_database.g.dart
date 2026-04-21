@@ -2703,16 +2703,27 @@ class $ForumThreadsTableTable extends ForumThreadsTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _studentNameMeta = const VerificationMeta(
-    'studentName',
+  static const VerificationMeta _authorNameMeta = const VerificationMeta(
+    'authorName',
   );
   @override
-  late final GeneratedColumn<String> studentName = GeneratedColumn<String>(
-    'student_name',
+  late final GeneratedColumn<String> authorName = GeneratedColumn<String>(
+    'author_name',
     aliasedName,
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
+  );
+  static const VerificationMeta _authorAvatarMeta = const VerificationMeta(
+    'authorAvatar',
+  );
+  @override
+  late final GeneratedColumn<String> authorAvatar = GeneratedColumn<String>(
+    'author_avatar',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _timeAgoMeta = const VerificationMeta(
     'timeAgo',
@@ -2737,6 +2748,30 @@ class $ForumThreadsTableTable extends ForumThreadsTable
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _upvotesMeta = const VerificationMeta(
+    'upvotes',
+  );
+  @override
+  late final GeneratedColumn<int> upvotes = GeneratedColumn<int>(
+    'upvotes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _downvotesMeta = const VerificationMeta(
+    'downvotes',
+  );
+  @override
+  late final GeneratedColumn<int> downvotes = GeneratedColumn<int>(
+    'downvotes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
   late final GeneratedColumn<String> status = GeneratedColumn<String>(
@@ -2752,9 +2787,12 @@ class $ForumThreadsTableTable extends ForumThreadsTable
     courseId,
     title,
     description,
-    studentName,
+    authorName,
+    authorAvatar,
     timeAgo,
     replyCount,
+    upvotes,
+    downvotes,
     status,
   ];
   @override
@@ -2801,16 +2839,22 @@ class $ForumThreadsTableTable extends ForumThreadsTable
     } else if (isInserting) {
       context.missing(_descriptionMeta);
     }
-    if (data.containsKey('student_name')) {
+    if (data.containsKey('author_name')) {
       context.handle(
-        _studentNameMeta,
-        studentName.isAcceptableOrUnknown(
-          data['student_name']!,
-          _studentNameMeta,
-        ),
+        _authorNameMeta,
+        authorName.isAcceptableOrUnknown(data['author_name']!, _authorNameMeta),
       );
     } else if (isInserting) {
-      context.missing(_studentNameMeta);
+      context.missing(_authorNameMeta);
+    }
+    if (data.containsKey('author_avatar')) {
+      context.handle(
+        _authorAvatarMeta,
+        authorAvatar.isAcceptableOrUnknown(
+          data['author_avatar']!,
+          _authorAvatarMeta,
+        ),
+      );
     }
     if (data.containsKey('time_ago')) {
       context.handle(
@@ -2824,6 +2868,18 @@ class $ForumThreadsTableTable extends ForumThreadsTable
       context.handle(
         _replyCountMeta,
         replyCount.isAcceptableOrUnknown(data['reply_count']!, _replyCountMeta),
+      );
+    }
+    if (data.containsKey('upvotes')) {
+      context.handle(
+        _upvotesMeta,
+        upvotes.isAcceptableOrUnknown(data['upvotes']!, _upvotesMeta),
+      );
+    }
+    if (data.containsKey('downvotes')) {
+      context.handle(
+        _downvotesMeta,
+        downvotes.isAcceptableOrUnknown(data['downvotes']!, _downvotesMeta),
       );
     }
     if (data.containsKey('status')) {
@@ -2859,10 +2915,14 @@ class $ForumThreadsTableTable extends ForumThreadsTable
         DriftSqlType.string,
         data['${effectivePrefix}description'],
       )!,
-      studentName: attachedDatabase.typeMapping.read(
+      authorName: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}student_name'],
+        data['${effectivePrefix}author_name'],
       )!,
+      authorAvatar: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}author_avatar'],
+      ),
       timeAgo: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}time_ago'],
@@ -2870,6 +2930,14 @@ class $ForumThreadsTableTable extends ForumThreadsTable
       replyCount: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}reply_count'],
+      )!,
+      upvotes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}upvotes'],
+      )!,
+      downvotes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}downvotes'],
       )!,
       status: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -2890,9 +2958,12 @@ class ForumThreadsTableData extends DataClass
   final String courseId;
   final String title;
   final String description;
-  final String studentName;
+  final String authorName;
+  final String? authorAvatar;
   final String timeAgo;
   final int replyCount;
+  final int upvotes;
+  final int downvotes;
 
   /// Stored as string: 'answered' | 'unanswered'
   final String status;
@@ -2901,9 +2972,12 @@ class ForumThreadsTableData extends DataClass
     required this.courseId,
     required this.title,
     required this.description,
-    required this.studentName,
+    required this.authorName,
+    this.authorAvatar,
     required this.timeAgo,
     required this.replyCount,
+    required this.upvotes,
+    required this.downvotes,
     required this.status,
   });
   @override
@@ -2913,9 +2987,14 @@ class ForumThreadsTableData extends DataClass
     map['course_id'] = Variable<String>(courseId);
     map['title'] = Variable<String>(title);
     map['description'] = Variable<String>(description);
-    map['student_name'] = Variable<String>(studentName);
+    map['author_name'] = Variable<String>(authorName);
+    if (!nullToAbsent || authorAvatar != null) {
+      map['author_avatar'] = Variable<String>(authorAvatar);
+    }
     map['time_ago'] = Variable<String>(timeAgo);
     map['reply_count'] = Variable<int>(replyCount);
+    map['upvotes'] = Variable<int>(upvotes);
+    map['downvotes'] = Variable<int>(downvotes);
     map['status'] = Variable<String>(status);
     return map;
   }
@@ -2926,9 +3005,14 @@ class ForumThreadsTableData extends DataClass
       courseId: Value(courseId),
       title: Value(title),
       description: Value(description),
-      studentName: Value(studentName),
+      authorName: Value(authorName),
+      authorAvatar: authorAvatar == null && nullToAbsent
+          ? const Value.absent()
+          : Value(authorAvatar),
       timeAgo: Value(timeAgo),
       replyCount: Value(replyCount),
+      upvotes: Value(upvotes),
+      downvotes: Value(downvotes),
       status: Value(status),
     );
   }
@@ -2943,9 +3027,12 @@ class ForumThreadsTableData extends DataClass
       courseId: serializer.fromJson<String>(json['courseId']),
       title: serializer.fromJson<String>(json['title']),
       description: serializer.fromJson<String>(json['description']),
-      studentName: serializer.fromJson<String>(json['studentName']),
+      authorName: serializer.fromJson<String>(json['authorName']),
+      authorAvatar: serializer.fromJson<String?>(json['authorAvatar']),
       timeAgo: serializer.fromJson<String>(json['timeAgo']),
       replyCount: serializer.fromJson<int>(json['replyCount']),
+      upvotes: serializer.fromJson<int>(json['upvotes']),
+      downvotes: serializer.fromJson<int>(json['downvotes']),
       status: serializer.fromJson<String>(json['status']),
     );
   }
@@ -2957,9 +3044,12 @@ class ForumThreadsTableData extends DataClass
       'courseId': serializer.toJson<String>(courseId),
       'title': serializer.toJson<String>(title),
       'description': serializer.toJson<String>(description),
-      'studentName': serializer.toJson<String>(studentName),
+      'authorName': serializer.toJson<String>(authorName),
+      'authorAvatar': serializer.toJson<String?>(authorAvatar),
       'timeAgo': serializer.toJson<String>(timeAgo),
       'replyCount': serializer.toJson<int>(replyCount),
+      'upvotes': serializer.toJson<int>(upvotes),
+      'downvotes': serializer.toJson<int>(downvotes),
       'status': serializer.toJson<String>(status),
     };
   }
@@ -2969,18 +3059,24 @@ class ForumThreadsTableData extends DataClass
     String? courseId,
     String? title,
     String? description,
-    String? studentName,
+    String? authorName,
+    Value<String?> authorAvatar = const Value.absent(),
     String? timeAgo,
     int? replyCount,
+    int? upvotes,
+    int? downvotes,
     String? status,
   }) => ForumThreadsTableData(
     id: id ?? this.id,
     courseId: courseId ?? this.courseId,
     title: title ?? this.title,
     description: description ?? this.description,
-    studentName: studentName ?? this.studentName,
+    authorName: authorName ?? this.authorName,
+    authorAvatar: authorAvatar.present ? authorAvatar.value : this.authorAvatar,
     timeAgo: timeAgo ?? this.timeAgo,
     replyCount: replyCount ?? this.replyCount,
+    upvotes: upvotes ?? this.upvotes,
+    downvotes: downvotes ?? this.downvotes,
     status: status ?? this.status,
   );
   ForumThreadsTableData copyWithCompanion(ForumThreadsTableCompanion data) {
@@ -2991,13 +3087,18 @@ class ForumThreadsTableData extends DataClass
       description: data.description.present
           ? data.description.value
           : this.description,
-      studentName: data.studentName.present
-          ? data.studentName.value
-          : this.studentName,
+      authorName: data.authorName.present
+          ? data.authorName.value
+          : this.authorName,
+      authorAvatar: data.authorAvatar.present
+          ? data.authorAvatar.value
+          : this.authorAvatar,
       timeAgo: data.timeAgo.present ? data.timeAgo.value : this.timeAgo,
       replyCount: data.replyCount.present
           ? data.replyCount.value
           : this.replyCount,
+      upvotes: data.upvotes.present ? data.upvotes.value : this.upvotes,
+      downvotes: data.downvotes.present ? data.downvotes.value : this.downvotes,
       status: data.status.present ? data.status.value : this.status,
     );
   }
@@ -3009,9 +3110,12 @@ class ForumThreadsTableData extends DataClass
           ..write('courseId: $courseId, ')
           ..write('title: $title, ')
           ..write('description: $description, ')
-          ..write('studentName: $studentName, ')
+          ..write('authorName: $authorName, ')
+          ..write('authorAvatar: $authorAvatar, ')
           ..write('timeAgo: $timeAgo, ')
           ..write('replyCount: $replyCount, ')
+          ..write('upvotes: $upvotes, ')
+          ..write('downvotes: $downvotes, ')
           ..write('status: $status')
           ..write(')'))
         .toString();
@@ -3023,9 +3127,12 @@ class ForumThreadsTableData extends DataClass
     courseId,
     title,
     description,
-    studentName,
+    authorName,
+    authorAvatar,
     timeAgo,
     replyCount,
+    upvotes,
+    downvotes,
     status,
   );
   @override
@@ -3036,9 +3143,12 @@ class ForumThreadsTableData extends DataClass
           other.courseId == this.courseId &&
           other.title == this.title &&
           other.description == this.description &&
-          other.studentName == this.studentName &&
+          other.authorName == this.authorName &&
+          other.authorAvatar == this.authorAvatar &&
           other.timeAgo == this.timeAgo &&
           other.replyCount == this.replyCount &&
+          other.upvotes == this.upvotes &&
+          other.downvotes == this.downvotes &&
           other.status == this.status);
 }
 
@@ -3048,9 +3158,12 @@ class ForumThreadsTableCompanion
   final Value<String> courseId;
   final Value<String> title;
   final Value<String> description;
-  final Value<String> studentName;
+  final Value<String> authorName;
+  final Value<String?> authorAvatar;
   final Value<String> timeAgo;
   final Value<int> replyCount;
+  final Value<int> upvotes;
+  final Value<int> downvotes;
   final Value<String> status;
   final Value<int> rowid;
   const ForumThreadsTableCompanion({
@@ -3058,9 +3171,12 @@ class ForumThreadsTableCompanion
     this.courseId = const Value.absent(),
     this.title = const Value.absent(),
     this.description = const Value.absent(),
-    this.studentName = const Value.absent(),
+    this.authorName = const Value.absent(),
+    this.authorAvatar = const Value.absent(),
     this.timeAgo = const Value.absent(),
     this.replyCount = const Value.absent(),
+    this.upvotes = const Value.absent(),
+    this.downvotes = const Value.absent(),
     this.status = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -3069,16 +3185,19 @@ class ForumThreadsTableCompanion
     required String courseId,
     required String title,
     required String description,
-    required String studentName,
+    required String authorName,
+    this.authorAvatar = const Value.absent(),
     required String timeAgo,
     this.replyCount = const Value.absent(),
+    this.upvotes = const Value.absent(),
+    this.downvotes = const Value.absent(),
     required String status,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        courseId = Value(courseId),
        title = Value(title),
        description = Value(description),
-       studentName = Value(studentName),
+       authorName = Value(authorName),
        timeAgo = Value(timeAgo),
        status = Value(status);
   static Insertable<ForumThreadsTableData> custom({
@@ -3086,9 +3205,12 @@ class ForumThreadsTableCompanion
     Expression<String>? courseId,
     Expression<String>? title,
     Expression<String>? description,
-    Expression<String>? studentName,
+    Expression<String>? authorName,
+    Expression<String>? authorAvatar,
     Expression<String>? timeAgo,
     Expression<int>? replyCount,
+    Expression<int>? upvotes,
+    Expression<int>? downvotes,
     Expression<String>? status,
     Expression<int>? rowid,
   }) {
@@ -3097,9 +3219,12 @@ class ForumThreadsTableCompanion
       if (courseId != null) 'course_id': courseId,
       if (title != null) 'title': title,
       if (description != null) 'description': description,
-      if (studentName != null) 'student_name': studentName,
+      if (authorName != null) 'author_name': authorName,
+      if (authorAvatar != null) 'author_avatar': authorAvatar,
       if (timeAgo != null) 'time_ago': timeAgo,
       if (replyCount != null) 'reply_count': replyCount,
+      if (upvotes != null) 'upvotes': upvotes,
+      if (downvotes != null) 'downvotes': downvotes,
       if (status != null) 'status': status,
       if (rowid != null) 'rowid': rowid,
     });
@@ -3110,9 +3235,12 @@ class ForumThreadsTableCompanion
     Value<String>? courseId,
     Value<String>? title,
     Value<String>? description,
-    Value<String>? studentName,
+    Value<String>? authorName,
+    Value<String?>? authorAvatar,
     Value<String>? timeAgo,
     Value<int>? replyCount,
+    Value<int>? upvotes,
+    Value<int>? downvotes,
     Value<String>? status,
     Value<int>? rowid,
   }) {
@@ -3121,9 +3249,12 @@ class ForumThreadsTableCompanion
       courseId: courseId ?? this.courseId,
       title: title ?? this.title,
       description: description ?? this.description,
-      studentName: studentName ?? this.studentName,
+      authorName: authorName ?? this.authorName,
+      authorAvatar: authorAvatar ?? this.authorAvatar,
       timeAgo: timeAgo ?? this.timeAgo,
       replyCount: replyCount ?? this.replyCount,
+      upvotes: upvotes ?? this.upvotes,
+      downvotes: downvotes ?? this.downvotes,
       status: status ?? this.status,
       rowid: rowid ?? this.rowid,
     );
@@ -3144,14 +3275,23 @@ class ForumThreadsTableCompanion
     if (description.present) {
       map['description'] = Variable<String>(description.value);
     }
-    if (studentName.present) {
-      map['student_name'] = Variable<String>(studentName.value);
+    if (authorName.present) {
+      map['author_name'] = Variable<String>(authorName.value);
+    }
+    if (authorAvatar.present) {
+      map['author_avatar'] = Variable<String>(authorAvatar.value);
     }
     if (timeAgo.present) {
       map['time_ago'] = Variable<String>(timeAgo.value);
     }
     if (replyCount.present) {
       map['reply_count'] = Variable<int>(replyCount.value);
+    }
+    if (upvotes.present) {
+      map['upvotes'] = Variable<int>(upvotes.value);
+    }
+    if (downvotes.present) {
+      map['downvotes'] = Variable<int>(downvotes.value);
     }
     if (status.present) {
       map['status'] = Variable<String>(status.value);
@@ -3169,10 +3309,531 @@ class ForumThreadsTableCompanion
           ..write('courseId: $courseId, ')
           ..write('title: $title, ')
           ..write('description: $description, ')
-          ..write('studentName: $studentName, ')
+          ..write('authorName: $authorName, ')
+          ..write('authorAvatar: $authorAvatar, ')
           ..write('timeAgo: $timeAgo, ')
           ..write('replyCount: $replyCount, ')
+          ..write('upvotes: $upvotes, ')
+          ..write('downvotes: $downvotes, ')
           ..write('status: $status, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ForumCommentsTableTable extends ForumCommentsTable
+    with TableInfo<$ForumCommentsTableTable, ForumCommentsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ForumCommentsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _threadIdMeta = const VerificationMeta(
+    'threadId',
+  );
+  @override
+  late final GeneratedColumn<String> threadId = GeneratedColumn<String>(
+    'thread_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _authorNameMeta = const VerificationMeta(
+    'authorName',
+  );
+  @override
+  late final GeneratedColumn<String> authorName = GeneratedColumn<String>(
+    'author_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _authorAvatarMeta = const VerificationMeta(
+    'authorAvatar',
+  );
+  @override
+  late final GeneratedColumn<String> authorAvatar = GeneratedColumn<String>(
+    'author_avatar',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _contentMeta = const VerificationMeta(
+    'content',
+  );
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+    'content',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _timeAgoMeta = const VerificationMeta(
+    'timeAgo',
+  );
+  @override
+  late final GeneratedColumn<String> timeAgo = GeneratedColumn<String>(
+    'time_ago',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _upvotesMeta = const VerificationMeta(
+    'upvotes',
+  );
+  @override
+  late final GeneratedColumn<int> upvotes = GeneratedColumn<int>(
+    'upvotes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _downvotesMeta = const VerificationMeta(
+    'downvotes',
+  );
+  @override
+  late final GeneratedColumn<int> downvotes = GeneratedColumn<int>(
+    'downvotes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    threadId,
+    authorName,
+    authorAvatar,
+    content,
+    timeAgo,
+    upvotes,
+    downvotes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'forum_comments_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ForumCommentsTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('thread_id')) {
+      context.handle(
+        _threadIdMeta,
+        threadId.isAcceptableOrUnknown(data['thread_id']!, _threadIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_threadIdMeta);
+    }
+    if (data.containsKey('author_name')) {
+      context.handle(
+        _authorNameMeta,
+        authorName.isAcceptableOrUnknown(data['author_name']!, _authorNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_authorNameMeta);
+    }
+    if (data.containsKey('author_avatar')) {
+      context.handle(
+        _authorAvatarMeta,
+        authorAvatar.isAcceptableOrUnknown(
+          data['author_avatar']!,
+          _authorAvatarMeta,
+        ),
+      );
+    }
+    if (data.containsKey('content')) {
+      context.handle(
+        _contentMeta,
+        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_contentMeta);
+    }
+    if (data.containsKey('time_ago')) {
+      context.handle(
+        _timeAgoMeta,
+        timeAgo.isAcceptableOrUnknown(data['time_ago']!, _timeAgoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_timeAgoMeta);
+    }
+    if (data.containsKey('upvotes')) {
+      context.handle(
+        _upvotesMeta,
+        upvotes.isAcceptableOrUnknown(data['upvotes']!, _upvotesMeta),
+      );
+    }
+    if (data.containsKey('downvotes')) {
+      context.handle(
+        _downvotesMeta,
+        downvotes.isAcceptableOrUnknown(data['downvotes']!, _downvotesMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ForumCommentsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ForumCommentsTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      threadId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}thread_id'],
+      )!,
+      authorName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}author_name'],
+      )!,
+      authorAvatar: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}author_avatar'],
+      ),
+      content: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content'],
+      )!,
+      timeAgo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}time_ago'],
+      )!,
+      upvotes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}upvotes'],
+      )!,
+      downvotes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}downvotes'],
+      )!,
+    );
+  }
+
+  @override
+  $ForumCommentsTableTable createAlias(String alias) {
+    return $ForumCommentsTableTable(attachedDatabase, alias);
+  }
+}
+
+class ForumCommentsTableData extends DataClass
+    implements Insertable<ForumCommentsTableData> {
+  final String id;
+  final String threadId;
+  final String authorName;
+  final String? authorAvatar;
+  final String content;
+  final String timeAgo;
+  final int upvotes;
+  final int downvotes;
+  const ForumCommentsTableData({
+    required this.id,
+    required this.threadId,
+    required this.authorName,
+    this.authorAvatar,
+    required this.content,
+    required this.timeAgo,
+    required this.upvotes,
+    required this.downvotes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['thread_id'] = Variable<String>(threadId);
+    map['author_name'] = Variable<String>(authorName);
+    if (!nullToAbsent || authorAvatar != null) {
+      map['author_avatar'] = Variable<String>(authorAvatar);
+    }
+    map['content'] = Variable<String>(content);
+    map['time_ago'] = Variable<String>(timeAgo);
+    map['upvotes'] = Variable<int>(upvotes);
+    map['downvotes'] = Variable<int>(downvotes);
+    return map;
+  }
+
+  ForumCommentsTableCompanion toCompanion(bool nullToAbsent) {
+    return ForumCommentsTableCompanion(
+      id: Value(id),
+      threadId: Value(threadId),
+      authorName: Value(authorName),
+      authorAvatar: authorAvatar == null && nullToAbsent
+          ? const Value.absent()
+          : Value(authorAvatar),
+      content: Value(content),
+      timeAgo: Value(timeAgo),
+      upvotes: Value(upvotes),
+      downvotes: Value(downvotes),
+    );
+  }
+
+  factory ForumCommentsTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ForumCommentsTableData(
+      id: serializer.fromJson<String>(json['id']),
+      threadId: serializer.fromJson<String>(json['threadId']),
+      authorName: serializer.fromJson<String>(json['authorName']),
+      authorAvatar: serializer.fromJson<String?>(json['authorAvatar']),
+      content: serializer.fromJson<String>(json['content']),
+      timeAgo: serializer.fromJson<String>(json['timeAgo']),
+      upvotes: serializer.fromJson<int>(json['upvotes']),
+      downvotes: serializer.fromJson<int>(json['downvotes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'threadId': serializer.toJson<String>(threadId),
+      'authorName': serializer.toJson<String>(authorName),
+      'authorAvatar': serializer.toJson<String?>(authorAvatar),
+      'content': serializer.toJson<String>(content),
+      'timeAgo': serializer.toJson<String>(timeAgo),
+      'upvotes': serializer.toJson<int>(upvotes),
+      'downvotes': serializer.toJson<int>(downvotes),
+    };
+  }
+
+  ForumCommentsTableData copyWith({
+    String? id,
+    String? threadId,
+    String? authorName,
+    Value<String?> authorAvatar = const Value.absent(),
+    String? content,
+    String? timeAgo,
+    int? upvotes,
+    int? downvotes,
+  }) => ForumCommentsTableData(
+    id: id ?? this.id,
+    threadId: threadId ?? this.threadId,
+    authorName: authorName ?? this.authorName,
+    authorAvatar: authorAvatar.present ? authorAvatar.value : this.authorAvatar,
+    content: content ?? this.content,
+    timeAgo: timeAgo ?? this.timeAgo,
+    upvotes: upvotes ?? this.upvotes,
+    downvotes: downvotes ?? this.downvotes,
+  );
+  ForumCommentsTableData copyWithCompanion(ForumCommentsTableCompanion data) {
+    return ForumCommentsTableData(
+      id: data.id.present ? data.id.value : this.id,
+      threadId: data.threadId.present ? data.threadId.value : this.threadId,
+      authorName: data.authorName.present
+          ? data.authorName.value
+          : this.authorName,
+      authorAvatar: data.authorAvatar.present
+          ? data.authorAvatar.value
+          : this.authorAvatar,
+      content: data.content.present ? data.content.value : this.content,
+      timeAgo: data.timeAgo.present ? data.timeAgo.value : this.timeAgo,
+      upvotes: data.upvotes.present ? data.upvotes.value : this.upvotes,
+      downvotes: data.downvotes.present ? data.downvotes.value : this.downvotes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ForumCommentsTableData(')
+          ..write('id: $id, ')
+          ..write('threadId: $threadId, ')
+          ..write('authorName: $authorName, ')
+          ..write('authorAvatar: $authorAvatar, ')
+          ..write('content: $content, ')
+          ..write('timeAgo: $timeAgo, ')
+          ..write('upvotes: $upvotes, ')
+          ..write('downvotes: $downvotes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    threadId,
+    authorName,
+    authorAvatar,
+    content,
+    timeAgo,
+    upvotes,
+    downvotes,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ForumCommentsTableData &&
+          other.id == this.id &&
+          other.threadId == this.threadId &&
+          other.authorName == this.authorName &&
+          other.authorAvatar == this.authorAvatar &&
+          other.content == this.content &&
+          other.timeAgo == this.timeAgo &&
+          other.upvotes == this.upvotes &&
+          other.downvotes == this.downvotes);
+}
+
+class ForumCommentsTableCompanion
+    extends UpdateCompanion<ForumCommentsTableData> {
+  final Value<String> id;
+  final Value<String> threadId;
+  final Value<String> authorName;
+  final Value<String?> authorAvatar;
+  final Value<String> content;
+  final Value<String> timeAgo;
+  final Value<int> upvotes;
+  final Value<int> downvotes;
+  final Value<int> rowid;
+  const ForumCommentsTableCompanion({
+    this.id = const Value.absent(),
+    this.threadId = const Value.absent(),
+    this.authorName = const Value.absent(),
+    this.authorAvatar = const Value.absent(),
+    this.content = const Value.absent(),
+    this.timeAgo = const Value.absent(),
+    this.upvotes = const Value.absent(),
+    this.downvotes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ForumCommentsTableCompanion.insert({
+    required String id,
+    required String threadId,
+    required String authorName,
+    this.authorAvatar = const Value.absent(),
+    required String content,
+    required String timeAgo,
+    this.upvotes = const Value.absent(),
+    this.downvotes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       threadId = Value(threadId),
+       authorName = Value(authorName),
+       content = Value(content),
+       timeAgo = Value(timeAgo);
+  static Insertable<ForumCommentsTableData> custom({
+    Expression<String>? id,
+    Expression<String>? threadId,
+    Expression<String>? authorName,
+    Expression<String>? authorAvatar,
+    Expression<String>? content,
+    Expression<String>? timeAgo,
+    Expression<int>? upvotes,
+    Expression<int>? downvotes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (threadId != null) 'thread_id': threadId,
+      if (authorName != null) 'author_name': authorName,
+      if (authorAvatar != null) 'author_avatar': authorAvatar,
+      if (content != null) 'content': content,
+      if (timeAgo != null) 'time_ago': timeAgo,
+      if (upvotes != null) 'upvotes': upvotes,
+      if (downvotes != null) 'downvotes': downvotes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ForumCommentsTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? threadId,
+    Value<String>? authorName,
+    Value<String?>? authorAvatar,
+    Value<String>? content,
+    Value<String>? timeAgo,
+    Value<int>? upvotes,
+    Value<int>? downvotes,
+    Value<int>? rowid,
+  }) {
+    return ForumCommentsTableCompanion(
+      id: id ?? this.id,
+      threadId: threadId ?? this.threadId,
+      authorName: authorName ?? this.authorName,
+      authorAvatar: authorAvatar ?? this.authorAvatar,
+      content: content ?? this.content,
+      timeAgo: timeAgo ?? this.timeAgo,
+      upvotes: upvotes ?? this.upvotes,
+      downvotes: downvotes ?? this.downvotes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (threadId.present) {
+      map['thread_id'] = Variable<String>(threadId.value);
+    }
+    if (authorName.present) {
+      map['author_name'] = Variable<String>(authorName.value);
+    }
+    if (authorAvatar.present) {
+      map['author_avatar'] = Variable<String>(authorAvatar.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (timeAgo.present) {
+      map['time_ago'] = Variable<String>(timeAgo.value);
+    }
+    if (upvotes.present) {
+      map['upvotes'] = Variable<int>(upvotes.value);
+    }
+    if (downvotes.present) {
+      map['downvotes'] = Variable<int>(downvotes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ForumCommentsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('threadId: $threadId, ')
+          ..write('authorName: $authorName, ')
+          ..write('authorAvatar: $authorAvatar, ')
+          ..write('content: $content, ')
+          ..write('timeAgo: $timeAgo, ')
+          ..write('upvotes: $upvotes, ')
+          ..write('downvotes: $downvotes, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4547,6 +5208,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final $ForumThreadsTableTable forumThreadsTable =
       $ForumThreadsTableTable(this);
+  late final $ForumCommentsTableTable forumCommentsTable =
+      $ForumCommentsTableTable(this);
   late final $UserProgressTableTable userProgressTable =
       $UserProgressTableTable(this);
   late final $AppSettingsTableTable appSettingsTable = $AppSettingsTableTable(
@@ -4563,6 +5226,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     lessonsTable,
     liveClassesTable,
     forumThreadsTable,
+    forumCommentsTable,
     userProgressTable,
     appSettingsTable,
     usersTable,
@@ -5866,9 +6530,12 @@ typedef $$ForumThreadsTableTableCreateCompanionBuilder =
       required String courseId,
       required String title,
       required String description,
-      required String studentName,
+      required String authorName,
+      Value<String?> authorAvatar,
       required String timeAgo,
       Value<int> replyCount,
+      Value<int> upvotes,
+      Value<int> downvotes,
       required String status,
       Value<int> rowid,
     });
@@ -5878,9 +6545,12 @@ typedef $$ForumThreadsTableTableUpdateCompanionBuilder =
       Value<String> courseId,
       Value<String> title,
       Value<String> description,
-      Value<String> studentName,
+      Value<String> authorName,
+      Value<String?> authorAvatar,
       Value<String> timeAgo,
       Value<int> replyCount,
+      Value<int> upvotes,
+      Value<int> downvotes,
       Value<String> status,
       Value<int> rowid,
     });
@@ -5914,8 +6584,13 @@ class $$ForumThreadsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get studentName => $composableBuilder(
-    column: $table.studentName,
+  ColumnFilters<String> get authorName => $composableBuilder(
+    column: $table.authorName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get authorAvatar => $composableBuilder(
+    column: $table.authorAvatar,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -5926,6 +6601,16 @@ class $$ForumThreadsTableTableFilterComposer
 
   ColumnFilters<int> get replyCount => $composableBuilder(
     column: $table.replyCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get upvotes => $composableBuilder(
+    column: $table.upvotes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get downvotes => $composableBuilder(
+    column: $table.downvotes,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -5964,8 +6649,13 @@ class $$ForumThreadsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get studentName => $composableBuilder(
-    column: $table.studentName,
+  ColumnOrderings<String> get authorName => $composableBuilder(
+    column: $table.authorName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get authorAvatar => $composableBuilder(
+    column: $table.authorAvatar,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -5976,6 +6666,16 @@ class $$ForumThreadsTableTableOrderingComposer
 
   ColumnOrderings<int> get replyCount => $composableBuilder(
     column: $table.replyCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get upvotes => $composableBuilder(
+    column: $table.upvotes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get downvotes => $composableBuilder(
+    column: $table.downvotes,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -6008,8 +6708,13 @@ class $$ForumThreadsTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get studentName => $composableBuilder(
-    column: $table.studentName,
+  GeneratedColumn<String> get authorName => $composableBuilder(
+    column: $table.authorName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get authorAvatar => $composableBuilder(
+    column: $table.authorAvatar,
     builder: (column) => column,
   );
 
@@ -6020,6 +6725,12 @@ class $$ForumThreadsTableTableAnnotationComposer
     column: $table.replyCount,
     builder: (column) => column,
   );
+
+  GeneratedColumn<int> get upvotes =>
+      $composableBuilder(column: $table.upvotes, builder: (column) => column);
+
+  GeneratedColumn<int> get downvotes =>
+      $composableBuilder(column: $table.downvotes, builder: (column) => column);
 
   GeneratedColumn<String> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
@@ -6069,9 +6780,12 @@ class $$ForumThreadsTableTableTableManager
                 Value<String> courseId = const Value.absent(),
                 Value<String> title = const Value.absent(),
                 Value<String> description = const Value.absent(),
-                Value<String> studentName = const Value.absent(),
+                Value<String> authorName = const Value.absent(),
+                Value<String?> authorAvatar = const Value.absent(),
                 Value<String> timeAgo = const Value.absent(),
                 Value<int> replyCount = const Value.absent(),
+                Value<int> upvotes = const Value.absent(),
+                Value<int> downvotes = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ForumThreadsTableCompanion(
@@ -6079,9 +6793,12 @@ class $$ForumThreadsTableTableTableManager
                 courseId: courseId,
                 title: title,
                 description: description,
-                studentName: studentName,
+                authorName: authorName,
+                authorAvatar: authorAvatar,
                 timeAgo: timeAgo,
                 replyCount: replyCount,
+                upvotes: upvotes,
+                downvotes: downvotes,
                 status: status,
                 rowid: rowid,
               ),
@@ -6091,9 +6808,12 @@ class $$ForumThreadsTableTableTableManager
                 required String courseId,
                 required String title,
                 required String description,
-                required String studentName,
+                required String authorName,
+                Value<String?> authorAvatar = const Value.absent(),
                 required String timeAgo,
                 Value<int> replyCount = const Value.absent(),
+                Value<int> upvotes = const Value.absent(),
+                Value<int> downvotes = const Value.absent(),
                 required String status,
                 Value<int> rowid = const Value.absent(),
               }) => ForumThreadsTableCompanion.insert(
@@ -6101,9 +6821,12 @@ class $$ForumThreadsTableTableTableManager
                 courseId: courseId,
                 title: title,
                 description: description,
-                studentName: studentName,
+                authorName: authorName,
+                authorAvatar: authorAvatar,
                 timeAgo: timeAgo,
                 replyCount: replyCount,
+                upvotes: upvotes,
+                downvotes: downvotes,
                 status: status,
                 rowid: rowid,
               ),
@@ -6134,6 +6857,280 @@ typedef $$ForumThreadsTableTableProcessedTableManager =
         >,
       ),
       ForumThreadsTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$ForumCommentsTableTableCreateCompanionBuilder =
+    ForumCommentsTableCompanion Function({
+      required String id,
+      required String threadId,
+      required String authorName,
+      Value<String?> authorAvatar,
+      required String content,
+      required String timeAgo,
+      Value<int> upvotes,
+      Value<int> downvotes,
+      Value<int> rowid,
+    });
+typedef $$ForumCommentsTableTableUpdateCompanionBuilder =
+    ForumCommentsTableCompanion Function({
+      Value<String> id,
+      Value<String> threadId,
+      Value<String> authorName,
+      Value<String?> authorAvatar,
+      Value<String> content,
+      Value<String> timeAgo,
+      Value<int> upvotes,
+      Value<int> downvotes,
+      Value<int> rowid,
+    });
+
+class $$ForumCommentsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $ForumCommentsTableTable> {
+  $$ForumCommentsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get threadId => $composableBuilder(
+    column: $table.threadId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get authorName => $composableBuilder(
+    column: $table.authorName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get authorAvatar => $composableBuilder(
+    column: $table.authorAvatar,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get timeAgo => $composableBuilder(
+    column: $table.timeAgo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get upvotes => $composableBuilder(
+    column: $table.upvotes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get downvotes => $composableBuilder(
+    column: $table.downvotes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ForumCommentsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $ForumCommentsTableTable> {
+  $$ForumCommentsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get threadId => $composableBuilder(
+    column: $table.threadId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get authorName => $composableBuilder(
+    column: $table.authorName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get authorAvatar => $composableBuilder(
+    column: $table.authorAvatar,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get timeAgo => $composableBuilder(
+    column: $table.timeAgo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get upvotes => $composableBuilder(
+    column: $table.upvotes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get downvotes => $composableBuilder(
+    column: $table.downvotes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ForumCommentsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ForumCommentsTableTable> {
+  $$ForumCommentsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get threadId =>
+      $composableBuilder(column: $table.threadId, builder: (column) => column);
+
+  GeneratedColumn<String> get authorName => $composableBuilder(
+    column: $table.authorName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get authorAvatar => $composableBuilder(
+    column: $table.authorAvatar,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<String> get timeAgo =>
+      $composableBuilder(column: $table.timeAgo, builder: (column) => column);
+
+  GeneratedColumn<int> get upvotes =>
+      $composableBuilder(column: $table.upvotes, builder: (column) => column);
+
+  GeneratedColumn<int> get downvotes =>
+      $composableBuilder(column: $table.downvotes, builder: (column) => column);
+}
+
+class $$ForumCommentsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ForumCommentsTableTable,
+          ForumCommentsTableData,
+          $$ForumCommentsTableTableFilterComposer,
+          $$ForumCommentsTableTableOrderingComposer,
+          $$ForumCommentsTableTableAnnotationComposer,
+          $$ForumCommentsTableTableCreateCompanionBuilder,
+          $$ForumCommentsTableTableUpdateCompanionBuilder,
+          (
+            ForumCommentsTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $ForumCommentsTableTable,
+              ForumCommentsTableData
+            >,
+          ),
+          ForumCommentsTableData,
+          PrefetchHooks Function()
+        > {
+  $$ForumCommentsTableTableTableManager(
+    _$AppDatabase db,
+    $ForumCommentsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ForumCommentsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ForumCommentsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ForumCommentsTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> threadId = const Value.absent(),
+                Value<String> authorName = const Value.absent(),
+                Value<String?> authorAvatar = const Value.absent(),
+                Value<String> content = const Value.absent(),
+                Value<String> timeAgo = const Value.absent(),
+                Value<int> upvotes = const Value.absent(),
+                Value<int> downvotes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ForumCommentsTableCompanion(
+                id: id,
+                threadId: threadId,
+                authorName: authorName,
+                authorAvatar: authorAvatar,
+                content: content,
+                timeAgo: timeAgo,
+                upvotes: upvotes,
+                downvotes: downvotes,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String threadId,
+                required String authorName,
+                Value<String?> authorAvatar = const Value.absent(),
+                required String content,
+                required String timeAgo,
+                Value<int> upvotes = const Value.absent(),
+                Value<int> downvotes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ForumCommentsTableCompanion.insert(
+                id: id,
+                threadId: threadId,
+                authorName: authorName,
+                authorAvatar: authorAvatar,
+                content: content,
+                timeAgo: timeAgo,
+                upvotes: upvotes,
+                downvotes: downvotes,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ForumCommentsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ForumCommentsTableTable,
+      ForumCommentsTableData,
+      $$ForumCommentsTableTableFilterComposer,
+      $$ForumCommentsTableTableOrderingComposer,
+      $$ForumCommentsTableTableAnnotationComposer,
+      $$ForumCommentsTableTableCreateCompanionBuilder,
+      $$ForumCommentsTableTableUpdateCompanionBuilder,
+      (
+        ForumCommentsTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $ForumCommentsTableTable,
+          ForumCommentsTableData
+        >,
+      ),
+      ForumCommentsTableData,
       PrefetchHooks Function()
     >;
 typedef $$UserProgressTableTableCreateCompanionBuilder =
@@ -6876,6 +7873,8 @@ class $AppDatabaseManager {
       $$LiveClassesTableTableTableManager(_db, _db.liveClassesTable);
   $$ForumThreadsTableTableTableManager get forumThreadsTable =>
       $$ForumThreadsTableTableTableManager(_db, _db.forumThreadsTable);
+  $$ForumCommentsTableTableTableManager get forumCommentsTable =>
+      $$ForumCommentsTableTableTableManager(_db, _db.forumCommentsTable);
   $$UserProgressTableTableTableManager get userProgressTable =>
       $$UserProgressTableTableTableManager(_db, _db.userProgressTable);
   $$AppSettingsTableTableTableManager get appSettingsTable =>
