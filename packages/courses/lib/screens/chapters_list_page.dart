@@ -35,8 +35,15 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
     // Refresh course curriculum when navigating to the chapters list.
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final repo = await ref.read(courseRepositoryProvider.future);
-      repo.refreshChapters(widget.courseId).ignore();
-      repo.refreshCourseContents(widget.courseId).ignore();
+      
+      // Always refresh the current view level (folders/chapters).
+      repo.refreshChapters(widget.courseId, parentId: widget.parentId).ignore();
+
+      // ONLY trigger the heavy full-course Master Sync if we are at the Root.
+      // Sub-pages should rely on the background update already in progress or completed.
+      if (widget.parentId == null) {
+        repo.refreshCourseContents(widget.courseId).ignore();
+      }
     });
   }
 
@@ -53,10 +60,10 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
       subChaptersProvider(widget.courseId, widget.parentId),
     );
     final courseAsync = ref.watch(courseDetailProvider(widget.courseId));
-    final allLessonsAsync = ref.watch(
+    final allCurriculumAsync = ref.watch(
       allCourseLessonsProvider(widget.courseId),
     );
-    final allChaptersAsync = ref.watch(allChaptersProvider(widget.courseId));
+    final allKnownChaptersAsync = ref.watch(allChaptersProvider(widget.courseId));
 
     return Container(
       color: design.colors.canvas,
@@ -67,15 +74,19 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
             orElse: () => null,
           );
 
-          final lessons = allLessonsAsync.maybeWhen(
-            data: (l) => l,
-            orElse: () => <LessonDto>[],
+          final curriculum = allCurriculumAsync.maybeWhen(
+            data: (c) => c,
+            orElse: () => const CourseCurriculumDto(),
           );
 
-          final allChapters = allChaptersAsync.maybeWhen(
-            data: (c) => c,
-            orElse: () => <ChapterDto>[],
-          );
+          final lessons = curriculum.lessons;
+          
+          // Combine API snapshot chapters with all known chapters from the local vault.
+          // This fills in any structural folders that might be missing from the flat API metadata.
+          final allChapters = [
+            ...curriculum.chapters,
+            ...(allKnownChaptersAsync.value ?? []),
+          ];
           
           // Determine the set of valid chapter IDs for the current view.
           // If we are in a subchapter, we only want lessons from this chapter or its subchapters.

@@ -58,7 +58,7 @@ Stream<List<ChapterDto>> subChapters(
 /// A provider that flattens all lessons for a specific course into a single list.
 /// Used for filtering lessons by type across the entire course.
 @Riverpod(keepAlive: true)
-Stream<List<LessonDto>> allCourseLessons(
+Stream<CourseCurriculumDto> allCourseLessons(
   AllCourseLessonsRef ref,
   String courseId,
 ) async* {

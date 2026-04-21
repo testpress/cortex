@@ -22,3 +22,9 @@
 - [x] 4.1 Fix infinite lookup loops between providers and repository refreshes.
 - [x] 4.2 Verify content visibility across all status tabs (Running, Upcoming, History).
 - [x] 4.3 Regenerate Riverpod files for `Future`-based domain composition.
+
+## 5. Projection Layer Refactor
+- [x] 5.1 Decouple relational logic from SQL by removing INNER JOIN from `watchLessonsForCourse`.
+- [x] 5.2 Implement `CourseCurriculumDto` to serve as a stateless hierarchy snapshot.
+- [x] 5.3 Implement rehydrated projection in `CourseRepository.watchCourseCurriculum` using Dart mapping.
+- [x] 5.4 Refactor `ChaptersListPage` to build `validChapterIds` from the snapshot instead of incomplete DB chapters.
