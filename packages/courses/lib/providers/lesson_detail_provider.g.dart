@@ -6,7 +6,7 @@ part of 'lesson_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$lessonDetailHash() => r'76e93d1058d48745fc50d4074bcbfb1214c90988';
+String _$lessonDetailHash() => r'05167afc5ca5b0b2b619978b053f7111f77f457d';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,43 +31,37 @@ class _SystemHash {
 
 /// Provider that fetches a specific lesson domain model by its ID.
 ///
-/// This provider searches through all chapters of all enrolled courses
-/// to find the matching [LessonDto] and maps it to the domain [Lesson].
-///
 /// Copied from [lessonDetail].
 @ProviderFor(lessonDetail)
 const lessonDetailProvider = LessonDetailFamily();
 
 /// Provider that fetches a specific lesson domain model by its ID.
 ///
-/// This provider searches through all chapters of all enrolled courses
-/// to find the matching [LessonDto] and maps it to the domain [Lesson].
-///
 /// Copied from [lessonDetail].
 class LessonDetailFamily extends Family<AsyncValue<Lesson?>> {
   /// Provider that fetches a specific lesson domain model by its ID.
-  ///
-  /// This provider searches through all chapters of all enrolled courses
-  /// to find the matching [LessonDto] and maps it to the domain [Lesson].
   ///
   /// Copied from [lessonDetail].
   const LessonDetailFamily();
 
   /// Provider that fetches a specific lesson domain model by its ID.
   ///
-  /// This provider searches through all chapters of all enrolled courses
-  /// to find the matching [LessonDto] and maps it to the domain [Lesson].
-  ///
   /// Copied from [lessonDetail].
-  LessonDetailProvider call(String lessonId) {
-    return LessonDetailProvider(lessonId);
+  LessonDetailProvider call(
+    String lessonId,
+  ) {
+    return LessonDetailProvider(
+      lessonId,
+    );
   }
 
   @override
   LessonDetailProvider getProviderOverride(
     covariant LessonDetailProvider provider,
   ) {
-    return call(provider.lessonId);
+    return call(
+      provider.lessonId,
+    );
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -87,30 +81,29 @@ class LessonDetailFamily extends Family<AsyncValue<Lesson?>> {
 
 /// Provider that fetches a specific lesson domain model by its ID.
 ///
-/// This provider searches through all chapters of all enrolled courses
-/// to find the matching [LessonDto] and maps it to the domain [Lesson].
-///
 /// Copied from [lessonDetail].
-class LessonDetailProvider extends AutoDisposeFutureProvider<Lesson?> {
+class LessonDetailProvider extends AutoDisposeStreamProvider<Lesson?> {
   /// Provider that fetches a specific lesson domain model by its ID.
   ///
-  /// This provider searches through all chapters of all enrolled courses
-  /// to find the matching [LessonDto] and maps it to the domain [Lesson].
-  ///
   /// Copied from [lessonDetail].
-  LessonDetailProvider(String lessonId)
-    : this._internal(
-        (ref) => lessonDetail(ref as LessonDetailRef, lessonId),
-        from: lessonDetailProvider,
-        name: r'lessonDetailProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$lessonDetailHash,
-        dependencies: LessonDetailFamily._dependencies,
-        allTransitiveDependencies:
-            LessonDetailFamily._allTransitiveDependencies,
-        lessonId: lessonId,
-      );
+  LessonDetailProvider(
+    String lessonId,
+  ) : this._internal(
+          (ref) => lessonDetail(
+            ref as LessonDetailRef,
+            lessonId,
+          ),
+          from: lessonDetailProvider,
+          name: r'lessonDetailProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$lessonDetailHash,
+          dependencies: LessonDetailFamily._dependencies,
+          allTransitiveDependencies:
+              LessonDetailFamily._allTransitiveDependencies,
+          lessonId: lessonId,
+        );
 
   LessonDetailProvider._internal(
     super._createNotifier, {
@@ -126,7 +119,7 @@ class LessonDetailProvider extends AutoDisposeFutureProvider<Lesson?> {
 
   @override
   Override overrideWith(
-    FutureOr<Lesson?> Function(LessonDetailRef provider) create,
+    Stream<Lesson?> Function(LessonDetailRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -143,7 +136,7 @@ class LessonDetailProvider extends AutoDisposeFutureProvider<Lesson?> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<Lesson?> createElement() {
+  AutoDisposeStreamProviderElement<Lesson?> createElement() {
     return _LessonDetailProviderElement(this);
   }
 
@@ -163,14 +156,13 @@ class LessonDetailProvider extends AutoDisposeFutureProvider<Lesson?> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin LessonDetailRef on AutoDisposeFutureProviderRef<Lesson?> {
+mixin LessonDetailRef on AutoDisposeStreamProviderRef<Lesson?> {
   /// The parameter `lessonId` of this provider.
   String get lessonId;
 }
 
 class _LessonDetailProviderElement
-    extends AutoDisposeFutureProviderElement<Lesson?>
-    with LessonDetailRef {
+    extends AutoDisposeStreamProviderElement<Lesson?> with LessonDetailRef {
   _LessonDetailProviderElement(super.provider);
 
   @override
@@ -197,15 +189,21 @@ class LessonBookmarkFamily extends Family<AsyncValue<bool>> {
   /// Provider that watches and manages the bookmark status of a specific lesson.
   ///
   /// Copied from [lessonBookmark].
-  LessonBookmarkProvider call(String lessonId) {
-    return LessonBookmarkProvider(lessonId);
+  LessonBookmarkProvider call(
+    String lessonId,
+  ) {
+    return LessonBookmarkProvider(
+      lessonId,
+    );
   }
 
   @override
   LessonBookmarkProvider getProviderOverride(
     covariant LessonBookmarkProvider provider,
   ) {
-    return call(provider.lessonId);
+    return call(
+      provider.lessonId,
+    );
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -230,19 +228,24 @@ class LessonBookmarkProvider extends AutoDisposeStreamProvider<bool> {
   /// Provider that watches and manages the bookmark status of a specific lesson.
   ///
   /// Copied from [lessonBookmark].
-  LessonBookmarkProvider(String lessonId)
-    : this._internal(
-        (ref) => lessonBookmark(ref as LessonBookmarkRef, lessonId),
-        from: lessonBookmarkProvider,
-        name: r'lessonBookmarkProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$lessonBookmarkHash,
-        dependencies: LessonBookmarkFamily._dependencies,
-        allTransitiveDependencies:
-            LessonBookmarkFamily._allTransitiveDependencies,
-        lessonId: lessonId,
-      );
+  LessonBookmarkProvider(
+    String lessonId,
+  ) : this._internal(
+          (ref) => lessonBookmark(
+            ref as LessonBookmarkRef,
+            lessonId,
+          ),
+          from: lessonBookmarkProvider,
+          name: r'lessonBookmarkProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$lessonBookmarkHash,
+          dependencies: LessonBookmarkFamily._dependencies,
+          allTransitiveDependencies:
+              LessonBookmarkFamily._allTransitiveDependencies,
+          lessonId: lessonId,
+        );
 
   LessonBookmarkProvider._internal(
     super._createNotifier, {
@@ -301,13 +304,11 @@ mixin LessonBookmarkRef on AutoDisposeStreamProviderRef<bool> {
 }
 
 class _LessonBookmarkProviderElement
-    extends AutoDisposeStreamProviderElement<bool>
-    with LessonBookmarkRef {
+    extends AutoDisposeStreamProviderElement<bool> with LessonBookmarkRef {
   _LessonBookmarkProviderElement(super.provider);
 
   @override
   String get lessonId => (origin as LessonBookmarkProvider).lessonId;
 }
-
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -5,6 +5,7 @@ library;
 
 // Config
 export 'config/app_config.dart';
+export 'config/sdk_initialization.dart';
 
 // DTOs
 export 'models/course_dto.dart';
