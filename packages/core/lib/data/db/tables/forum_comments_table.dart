@@ -10,6 +10,7 @@ class ForumCommentsTable extends Table {
   TextColumn get timeAgo => text()();
   IntColumn get upvotes => integer().withDefault(const Constant(0))();
   IntColumn get downvotes => integer().withDefault(const Constant(0))();
+  BoolColumn get isInstructor => boolean().withDefault(const Constant(false))();
 
   @override
   Set<Column> get primaryKey => {id};

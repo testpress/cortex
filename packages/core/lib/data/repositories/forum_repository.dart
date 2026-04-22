@@ -39,6 +39,7 @@ class ForumRepository {
         status: row.status == 'answered'
             ? ForumThreadStatus.answered
             : ForumThreadStatus.unanswered,
+        imageUrl: row.imageUrl,
       );
 
   ForumThreadsTableCompanion _dtoToCompanion(ForumThreadDto dto) =>
@@ -54,6 +55,7 @@ class ForumRepository {
         upvotes: Value(dto.upvotes),
         downvotes: Value(dto.downvotes),
         status: dto.status.name,
+        imageUrl: Value(dto.imageUrl),
       );
 
   // ── Comments ─────────────────────────────────────────────────────────────
@@ -79,6 +81,7 @@ class ForumRepository {
         timeAgo: row.timeAgo,
         upvotes: row.upvotes,
         downvotes: row.downvotes,
+        isInstructor: row.isInstructor,
       );
 
   ForumCommentsTableCompanion _commentDtoToCompanion(ForumCommentDto dto) =>
@@ -91,5 +94,6 @@ class ForumRepository {
         timeAgo: dto.timeAgo,
         upvotes: Value(dto.upvotes),
         downvotes: Value(dto.downvotes),
+        isInstructor: Value(dto.isInstructor),
       );
 }

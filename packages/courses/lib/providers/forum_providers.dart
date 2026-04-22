@@ -19,3 +19,25 @@ Stream<List<ForumThreadDto>> courseForumThreads(CourseForumThreadsRef ref, Strin
 
   yield* repo.watchThreads(courseId);
 }
+
+@Riverpod(keepAlive: true)
+Stream<ForumThreadDto?> forumThreadDetail(ForumThreadDetailRef ref, {required String courseId, required String threadId}) async* {
+  final repo = await ref.watch(forumRepositoryProvider.future);
+  
+  // Await the refresh to ensure the local DB has the latest mock data (new avatars/images)
+  await repo.refreshThreads(courseId);
+
+  yield* repo.watchThreads(courseId).map(
+    (threads) => threads.where((t) => t.id == threadId).firstOrNull,
+  );
+}
+
+@Riverpod(keepAlive: true)
+Stream<List<ForumCommentDto>> threadComments(ThreadCommentsRef ref, String threadId) async* {
+  final repo = await ref.watch(forumRepositoryProvider.future);
+  
+  // Refresh comments on load
+  repo.refreshComments(threadId).ignore();
+
+  yield* repo.watchComments(threadId);
+}
