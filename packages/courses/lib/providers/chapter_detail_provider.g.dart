@@ -51,15 +51,24 @@ class ChapterDetailFamily extends Family<AsyncValue<Chapter?>> {
   /// This provider maps the underlying DTOs to the [Chapter] domain model.
   ///
   /// Copied from [chapterDetail].
-  ChapterDetailProvider call(String courseId, String chapterId) {
-    return ChapterDetailProvider(courseId, chapterId);
+  ChapterDetailProvider call(
+    String courseId,
+    String chapterId,
+  ) {
+    return ChapterDetailProvider(
+      courseId,
+      chapterId,
+    );
   }
 
   @override
   ChapterDetailProvider getProviderOverride(
     covariant ChapterDetailProvider provider,
   ) {
-    return call(provider.courseId, provider.chapterId);
+    return call(
+      provider.courseId,
+      provider.chapterId,
+    );
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -86,20 +95,27 @@ class ChapterDetailProvider extends StreamProvider<Chapter?> {
   /// This provider maps the underlying DTOs to the [Chapter] domain model.
   ///
   /// Copied from [chapterDetail].
-  ChapterDetailProvider(String courseId, String chapterId)
-    : this._internal(
-        (ref) => chapterDetail(ref as ChapterDetailRef, courseId, chapterId),
-        from: chapterDetailProvider,
-        name: r'chapterDetailProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$chapterDetailHash,
-        dependencies: ChapterDetailFamily._dependencies,
-        allTransitiveDependencies:
-            ChapterDetailFamily._allTransitiveDependencies,
-        courseId: courseId,
-        chapterId: chapterId,
-      );
+  ChapterDetailProvider(
+    String courseId,
+    String chapterId,
+  ) : this._internal(
+          (ref) => chapterDetail(
+            ref as ChapterDetailRef,
+            courseId,
+            chapterId,
+          ),
+          from: chapterDetailProvider,
+          name: r'chapterDetailProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$chapterDetailHash,
+          dependencies: ChapterDetailFamily._dependencies,
+          allTransitiveDependencies:
+              ChapterDetailFamily._allTransitiveDependencies,
+          courseId: courseId,
+          chapterId: chapterId,
+        );
 
   ChapterDetailProvider._internal(
     super._createNotifier, {
@@ -175,6 +191,5 @@ class _ChapterDetailProviderElement extends StreamProviderElement<Chapter?>
   @override
   String get chapterId => (origin as ChapterDetailProvider).chapterId;
 }
-
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

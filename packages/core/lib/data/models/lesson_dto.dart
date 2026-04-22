@@ -1,3 +1,5 @@
+import '../../utils/time_formatter.dart';
+
 /// Lesson content type.
 enum LessonType { video, pdf, notes, embedContent, liveStream, attachment, test, assessment, unknown }
 
@@ -139,13 +141,8 @@ class LessonDto {
   LessonDto mergeWith(LessonDto? other) {
     if (other == null) return this;
     
-    // Check if rich content is present in 'other' but missing in 'this'
-    final hasRichInOther = (other.htmlContent?.isNotEmpty ?? false);
-                          
-    final isMissingRichInThis = (htmlContent?.isEmpty ?? true);
-
-    // Treat '00:00' or '00:00:00' as effectively empty for duration merging
-    bool isDurationEmpty(String? d) => d == null || d.isEmpty || d == '00:00' || d == '00:00:00';
+    // Treat '0', '00:00', or '00:00:00' as effectively empty for duration merging
+    bool isDurationEmpty(String? d) => d == null || d.isEmpty || d == '0' || d == '00:00' || d == '00:00:00' || d == '0:00:00';
 
     return copyWith(
       duration: (isDurationEmpty(duration) && !isDurationEmpty(other.duration)) ? other.duration : duration,
@@ -171,10 +168,19 @@ class LessonDto {
           : other.progressStatus,
       // Preserve specialized types (e.g. Attachment promoted to PDF, or Video promoted to Embed)
       type: (() {
+        // If they are different, prefer the more specific one if one is 'attachment' or 'video'
+        if (type == other.type) return type;
+        
+        // Promotion: Preference for PDF/Embed/Notes over generic Attachment/Video
         if (type == LessonType.attachment && other.type == LessonType.pdf) return LessonType.pdf;
-        if (type == LessonType.video && other.type == LessonType.embedContent && hasRichInOther && isMissingRichInThis) {
-          return LessonType.embedContent;
-        }
+        if (other.type == LessonType.attachment && type == LessonType.pdf) return LessonType.pdf;
+        
+        if (type == LessonType.video && other.type == LessonType.embedContent) return LessonType.embedContent;
+        if (other.type == LessonType.video && type == LessonType.embedContent) return LessonType.embedContent;
+
+        if (type == LessonType.video && other.type == LessonType.notes) return LessonType.notes;
+        if (other.type == LessonType.video && type == LessonType.notes) return LessonType.notes;
+
         return type;
       })(),
     );
@@ -319,7 +325,9 @@ class LessonDto {
       }(),
       title: json['title'] as String? ?? json['name'] as String? ?? '',
       type: type,
-      duration: json['duration'] as String? ?? video?['duration'] as String? ?? '',
+      duration: TimeFormatter.formatDuration(
+            json['duration'] as String? ?? video?['duration'] as String?) ??
+        '',
       progressStatus: (json['attempts_count'] as num? ?? 0) > 0
           ? LessonProgressStatus.completed
           : _parseStatus(json['state'] ?? json['progressStatus']),

@@ -35,6 +35,7 @@ export 'widgets/app_drawer.dart';
 export 'widgets/app_bottom_sheet.dart';
 export 'widgets/app_error_view.dart';
 export 'widgets/dashboard_header.dart';
+export 'widgets/lesson_detail_shell.dart';
 
 // Shell
 export 'shell/app_shell.dart';
@@ -51,6 +52,9 @@ export 'accessibility/accessibility_guard.dart';
 
 // Motion
 export 'motion/accessibility_motion.dart';
+
+// Network
+export 'network/dio_provider.dart';
 
 // Localization
 export 'localization/localization_provider.dart';

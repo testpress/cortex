@@ -579,7 +579,11 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get errorGenericMessage =>
-      'ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി കണക്ഷൻ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക.';
+      'വിവരങ്ങൾ ലഭിക്കുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി നിങ്ങളുടെ ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിച്ചു വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get errorLessonLoad =>
+      'പാഠം ലോഡുചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു. നിങ്ങളുടെ കണക്ഷൻ പരിശോധിക്കുക.';
 
   @override
   String get labelLessonsPlural => 'പാഠങ്ങൾ';
@@ -669,10 +673,25 @@ class AppLocalizationsMl extends AppLocalizations {
   String get chapterTypePdf => 'PDF കുറിപ്പുകൾ';
 
   @override
-  String get chapterTypeAssessment => 'പ്രാക്ടീസ് അസസ്‌മെന്റ്';
+  String get chapterTypeAssessment => 'പരിശീലന വിലയിരുത്തൽ';
 
   @override
-  String get chapterTypeTest => 'ടെസ്റ്റ്';
+  String get chapterTypeTest => 'പരീക്ഷ';
+
+  @override
+  String get chapterTypeLiveStream => 'ലൈവ് സ്ട്രീം';
+
+  @override
+  String get chapterTypeEmbed => 'എംബഡഡ് ഉള്ളടക്കം';
+
+  @override
+  String get chapterTypeNotes => 'കുറിപ്പുകൾ';
+
+  @override
+  String get chapterTypeAttachment => 'അറ്റാച്ച്‌മെന്റ്';
+
+  @override
+  String get chapterTypeUnknown => 'അജ്ഞാതം';
 
   @override
   String get chapterNoContent => 'ഉള്ളടക്കം ലഭ്യമല്ല';
@@ -695,7 +714,7 @@ class AppLocalizationsMl extends AppLocalizations {
   String get lessonDownload => 'ഡൗൺലോഡ് ചെയ്യുക';
 
   @override
-  String get navigationPrevious => 'മുൻപത്തെ';
+  String get navigationPrevious => 'മുൻപത്തെ പാഠം';
 
   @override
   String get navigationNext => 'അടുത്ത പാഠം';
@@ -1240,4 +1259,18 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get labelPractice => 'പ്രാക്ടീസ്';
+
+  @override
+  String attachmentSize(String size) {
+    return 'വലിപ്പം: $size';
+  }
+
+  @override
+  String get attachmentDownload => 'ഡൗൺലോഡ്';
+
+  @override
+  String get attachmentDownloading => 'ഡൗൺലോഡ് ചെയ്യുന്നു...';
+
+  @override
+  String get attachmentViewFile => 'ഫയൽ കാണുക';
 }

@@ -267,9 +267,11 @@
   "filterAssessment": "Assessments",
   "filterTest": "Tests",
   "resumeStudyHeader": "Resume Study",
+  "labelRetry": "Retry",
   "labelCompleted": "completed",
   "errorGenericTitle": "Something went wrong",
   "errorGenericMessage": "Failed to load data. Please check your connection and try again.",
+  "errorLessonLoad": "Failed to load lesson. Please check your connection.",
   "labelLessonsPlural": "lessons",
   "labelContentsPlural": "contents",
   "curriculumBackButton": "Back",
@@ -332,6 +334,11 @@
   "chapterTypePdf": "PDF Notes",
   "chapterTypeAssessment": "Practice Assessment",
   "chapterTypeTest": "Test",
+  "chapterTypeLiveStream": "Live Stream",
+  "chapterTypeEmbed": "Embed Content",
+  "chapterTypeNotes": "Notes",
+  "chapterTypeAttachment": "Attachment",
+  "chapterTypeUnknown": "Unknown",
   "chapterNoContent": "No content available",
   "chapterNotFound": "Chapter not found",
   "lessonXofY": "Lesson {index} of {total}",
@@ -348,7 +355,7 @@
   "lessonBookmarkAdd": "Bookmark lesson",
   "lessonBookmarkRemove": "Remove bookmark",
   "lessonDownload": "Download lesson",
-  "navigationPrevious": "Previous",
+  "navigationPrevious": "Previous Lesson",
   "navigationNext": "Next Lesson",
   "openDetailedLesson": "Open lesson: {title}",
   "@openDetailedLesson": {
@@ -598,5 +605,16 @@
   "editProfileLastNameLabel": "Last Name",
   "editProfileLastNameHint": "Enter your last name",
   "labelMock": "Mock",
-  "labelPractice": "Practice"
+  "labelPractice": "Practice",
+  "attachmentSize": "Size: {size}",
+  "@attachmentSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "attachmentDownload": "Download",
+  "attachmentDownloading": "Downloading...",
+  "attachmentViewFile": "View Downloaded File"
 }

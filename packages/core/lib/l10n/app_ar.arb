@@ -170,8 +170,10 @@
   "filterTest": "اختبار",
   "resumeStudyHeader": "استئناف الدراسة",
   "labelCompleted": "مكتمل",
+  "labelRetry": "إعادة المحاولة",
   "errorGenericTitle": "حدث خطأ ما",
   "errorGenericMessage": "فشل تحميل البيانات. يرجى التحقق من الاتصال والمحاولة مرة أخرى.",
+  "errorLessonLoad": "فشل تحميل الدرس. يرجى التحقق من اتصالك.",
   "labelLessonsPlural": "دروس",
   "labelContentsPlural": "محتويات",
   "curriculumBackButton": "عودة",
@@ -192,15 +194,20 @@
   "chapterStatusHistory": "السجلات",
   "chapterTypeVideo": "درس فيديو",
   "chapterTypePdf": "ملاحظات PDF",
-  "chapterTypeAssessment": "تقييم تدريبي",
+  "chapterTypeAssessment": "تقييم ممارس",
   "chapterTypeTest": "اختبار",
+  "chapterTypeLiveStream": "بث مباشر",
+  "chapterTypeEmbed": "محتوى مضمن",
+  "chapterTypeNotes": "ملاحظات",
+  "chapterTypeAttachment": "مرفق",
+  "chapterTypeUnknown": "غير معروف",
   "chapterNoContent": "لا يوجد محتوى متاح",
   "chapterNotFound": "الفصل غير موجود",
   "lessonXofY": "درس {index} من {total}",
   "lessonBookmarkAdd": "إضافة إشارة مرجعية",
   "lessonBookmarkRemove": "إزالة الإشارة المرجعية",
   "lessonDownload": "تحميل الدرس",
-  "navigationPrevious": "السابق",
+  "navigationPrevious": "الدرس السابق",
   "navigationNext": "الدرس التالي",
   "openDetailedLesson": "افتح الدرس: {title}",
   "videoLessonTabNotes": "ملاحظات",
@@ -412,5 +419,16 @@
   "editProfileLastNameLabel": "اسم العائلة",
   "editProfileLastNameHint": "أدخل اسم عائلتك",
   "labelMock": "تجريبي",
-  "labelPractice": "ممارسة"
+  "labelPractice": "ممارسة",
+  "attachmentSize": "الحجم: {size}",
+  "@attachmentSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "attachmentDownload": "تحميل",
+  "attachmentDownloading": "جاري التحميل...",
+  "attachmentViewFile": "عرض الملف المحمل"
 }
