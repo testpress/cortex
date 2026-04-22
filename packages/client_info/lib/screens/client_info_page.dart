@@ -66,7 +66,7 @@ class _CourseCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(design.radius.lg),
         child: Container(
           key: ValueKey('info-course-${course.id}'),
-          padding: EdgeInsets.all(design.spacing.md),
+          padding: const EdgeInsets.fromLTRB(8, 10, 12, 10),
           decoration: BoxDecoration(
             color: design.colors.card,
             borderRadius: BorderRadius.circular(design.radius.lg),
@@ -80,7 +80,7 @@ class _CourseCard extends StatelessWidget {
                 imageUrl: course.thumbnailUrl,
                 foregroundColor: colors.foreground,
               ),
-              SizedBox(width: design.spacing.md),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,23 +89,23 @@ class _CourseCard extends StatelessWidget {
                       course.title,
                       style: const TextStyle(
                         fontWeight: FontWeight.w800,
-                        fontSize: 16,
-                        height: 1.2,
+                        fontSize: 17,
+                        height: 1.25,
                       ),
                     ),
-                    SizedBox(height: design.spacing.sm),
+                    const SizedBox(height: 10),
                     AppText.cardCaption(
                       course.instructor,
                       color: design.colors.textSecondary,
                     ),
-                    SizedBox(height: design.spacing.sm),
+                    const SizedBox(height: 10),
                     Row(
                       children: [
                         _MetaText(
                           icon: LucideIcons.playCircle,
                           text: '${course.videoCount}',
                         ),
-                        SizedBox(width: design.spacing.md),
+                        SizedBox(width: design.spacing.sm),
                         _MetaText(
                           icon: LucideIcons.clock3,
                           text: course.totalDuration,
@@ -140,8 +140,8 @@ class InfoThumbnail extends StatelessWidget {
     final design = Design.of(context);
 
     return Container(
-      width: 78,
-      height: 78,
+      width: 92,
+      height: 92,
       decoration: BoxDecoration(
         color: design.colors.surfaceVariant,
         borderRadius: BorderRadius.circular(design.radius.lg),
@@ -159,25 +159,24 @@ class InfoThumbnail extends StatelessWidget {
             ),
           ),
           Align(
-            alignment: Alignment.topLeft,
+            alignment: Alignment.topRight,
             child: Container(
-              margin: EdgeInsets.all(design.spacing.xs),
-              constraints: const BoxConstraints(minWidth: 44, maxWidth: 68),
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+              margin: const EdgeInsets.all(4),
+              constraints: const BoxConstraints(maxWidth: 80),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
                 color: foregroundColor,
-                borderRadius: BorderRadius.circular(design.radius.md),
+                borderRadius: BorderRadius.circular(design.radius.sm),
               ),
               child: Text(
                 label,
-                maxLines: 2,
-                softWrap: true,
-                overflow: TextOverflow.clip,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: design.colors.textInverse,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
-                  height: 1.0,
+                  fontSize: 9,
+                  fontWeight: FontWeight.w800,
+                  height: 1.2,
                 ),
               ),
             ),
@@ -214,11 +213,27 @@ class _MetaText extends StatelessWidget {
   String subject,
 ) {
   final design = Design.of(context);
-  final index = subject.toLowerCase().hashCode.abs();
+  
+  // Explicit mapping based on design intent
+  final int index;
+  switch (subject.toLowerCase()) {
+    case 'physics':
+      index = 3; // Violet/Purple
+      break;
+    case 'chemistry':
+      index = 2; // Emerald/Green
+      break;
+    case 'mathematics':
+      index = 1; // Orange
+      break;
+    default:
+      index = subject.toLowerCase().hashCode.abs();
+  }
+
   final colors = design.subjectPalette.atIndex(index);
 
   return (
     background: colors.background,
-    foreground: colors.foreground,
+    foreground: colors.accent, // Using accent for vibrant tag backgrounds
   );
 }

@@ -38,6 +38,19 @@ To prevent the profile package from becoming a "utility drawer" and to ensure do
 - [Risk] Mock content can drift from eventual client-managed content needs. → Mitigation: define a small typed resource model now and keep the provider boundary separate from widget code.
 - [Risk] External URL launch failures can create a dead tap experience. → Mitigation: require explicit handling for launch errors and keep the user on the Info screen when a URL cannot be opened.
 
+## Technical Configuration
+
+The Info experience is toggled at compile-time using Flutter's tool-chain defines. This ensures zero code overhead in the production bundle for clients that do not use this feature.
+
+### 1. Enablement Flag
+To enable the Info tab and landing page, use the `ENABLE_INFO_PAGE` environment define:
+```bash
+flutter run --dart-define=ENABLE_INFO_PAGE=true
+```
+
+### 2. Source of Truth
+The flag is consumed in `packages/core/lib/data/config/app_config.dart` and exposed via the `clientInfoPageEnabledProvider` for use in navigation logic and routing.
+
 ## Migration Plan
 
 1. Introduce the client capability/config surface with a default value of disabled.
