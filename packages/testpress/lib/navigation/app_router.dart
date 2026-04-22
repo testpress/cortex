@@ -189,6 +189,19 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                         final courseId = state.pathParameters['courseId']!;
                         return ForumPostsListScreen(courseId: courseId);
                       },
+                      routes: [
+                        GoRoute(
+                          path: ':threadId',
+                          builder: (context, state) {
+                            final courseId = state.pathParameters['courseId']!;
+                            final threadId = state.pathParameters['threadId']!;
+                            return ForumPostDetailScreen(
+                              courseId: courseId,
+                              threadId: threadId,
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ],
                 ),

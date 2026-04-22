@@ -128,10 +128,12 @@ class AppDatabase extends _$AppDatabase {
             await addColumnSafely(forumThreadsTable, forumThreadsTable.authorAvatar);
             await addColumnSafely(forumThreadsTable, forumThreadsTable.upvotes);
             await addColumnSafely(forumThreadsTable, forumThreadsTable.downvotes);
+            await addColumnSafely(forumThreadsTable, forumThreadsTable.imageUrl);
             
             await addColumnSafely(forumCommentsTable, forumCommentsTable.authorAvatar);
             await addColumnSafely(forumCommentsTable, forumCommentsTable.upvotes);
             await addColumnSafely(forumCommentsTable, forumCommentsTable.downvotes);
+            await addColumnSafely(forumCommentsTable, forumCommentsTable.isInstructor);
           }
         },
       );

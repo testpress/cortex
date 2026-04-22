@@ -991,7 +991,7 @@ abstract class AppLocalizations {
   /// No description provided for @drawerForum.
   ///
   /// In en, this message translates to:
-  /// **'Forum'**
+  /// **'Discussions Forum'**
   String get drawerForum;
 
   /// No description provided for @drawerDoubts.
@@ -2340,7 +2340,7 @@ abstract class AppLocalizations {
   /// No description provided for @forumSearchDiscussions.
   ///
   /// In en, this message translates to:
-  /// **'Search discussions...'**
+  /// **'Search discussions'**
   String get forumSearchDiscussions;
 
   /// No description provided for @forumCreatePost.
