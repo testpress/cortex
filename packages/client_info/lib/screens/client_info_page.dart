@@ -66,7 +66,12 @@ class _CourseCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(design.radius.lg),
         child: Container(
           key: ValueKey('info-course-${course.id}'),
-          padding: const EdgeInsets.fromLTRB(8, 10, 12, 10),
+          padding: EdgeInsets.fromLTRB(
+            design.spacing.sm,
+            design.spacing.sm + 2, // 10.0 balance
+            design.spacing.sm + design.spacing.xs, // 12.0
+            design.spacing.sm + 2, // 10.0 balance
+          ),
           decoration: BoxDecoration(
             color: design.colors.card,
             borderRadius: BorderRadius.circular(design.radius.lg),
@@ -80,25 +85,25 @@ class _CourseCard extends StatelessWidget {
                 imageUrl: course.thumbnailUrl,
                 foregroundColor: colors.foreground,
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: design.spacing.sm + design.spacing.xs),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppText.body(
                       course.title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w800,
-                        fontSize: 17,
-                        height: 1.25,
+                        fontSize: design.typography.title.fontSize,
+                        height: design.typography.title.height,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: design.spacing.sm + 2),
                     AppText.cardCaption(
                       course.instructor,
                       color: design.colors.textSecondary,
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: design.spacing.sm + 2),
                     Row(
                       children: [
                         _MetaText(
