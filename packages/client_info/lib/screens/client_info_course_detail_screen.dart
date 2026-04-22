@@ -208,7 +208,12 @@ class _VideoRow extends StatelessWidget {
         borderRadius: BorderRadius.circular(design.radius.lg),
         child: Container(
           key: ValueKey('info-video-${video.id}'),
-          padding: const EdgeInsets.fromLTRB(8, 10, 12, 10),
+          padding: EdgeInsets.fromLTRB(
+            design.spacing.sm,
+            design.spacing.sm + 2,
+            design.spacing.sm + design.spacing.xs,
+            design.spacing.sm + 2,
+          ),
           decoration: BoxDecoration(
             color: design.colors.card,
             borderRadius: BorderRadius.circular(design.radius.lg),
@@ -221,34 +226,34 @@ class _VideoRow extends StatelessWidget {
                 imageUrl: course.thumbnailUrl,
                 duration: video.duration,
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: design.spacing.sm + design.spacing.xs),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppText.body(
                       video.title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w700,
-                        fontSize: 15,
-                        height: 1.3,
+                        fontSize: design.typography.body.fontSize,
+                        height: design.typography.body.height,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: design.spacing.sm + 2),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
                           LucideIcons.externalLink,
-                          size: 13,
+                          size: design.iconSize.xs + 1,
                           color: design.colors.primary,
                         ),
-                        const SizedBox(width: 6),
+                        SizedBox(width: design.spacing.xs + 2),
                         AppText.cardCaption(
                           video.duration,
                           color: design.colors.primary,
-                          style: const TextStyle(
-                            fontSize: 13,
+                          style: TextStyle(
+                            fontSize: design.typography.cardCaption.fontSize,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
