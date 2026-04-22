@@ -2354,6 +2354,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No discussions found yet'**
   String get forumNoDiscussions;
+
+  /// No description provided for @forumDiscussion.
+  ///
+  /// In en, this message translates to:
+  /// **'Discussion'**
+  String get forumDiscussion;
+
+  /// No description provided for @forumReplyPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Write your reply here...'**
+  String get forumReplyPlaceholder;
 }
 
 class _AppLocalizationsDelegate

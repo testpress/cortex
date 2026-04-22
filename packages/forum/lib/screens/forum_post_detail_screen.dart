@@ -60,7 +60,7 @@ class ForumPostDetailScreen extends ConsumerWidget {
           padding: EdgeInsets.only(bottom: bottomInset),
           child: Column(
             children: [
-              _buildHeader(design),
+              _buildHeader(design, l10n),
               _buildDivider(design),
               Expanded(child: _buildBody(context, ref, l10n, threadAsync)),
               _StickyReplyInput(threadId: threadId),
@@ -71,11 +71,24 @@ class ForumPostDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildHeader(DesignConfig design) {
+  Widget _buildHeader(DesignConfig design, AppLocalizations l10n) {
     return ForumHeader(
-      title: 'Discussion',
+      title: l10n.forumDiscussion,
       actions: [
-        Icon(LucideIcons.moreVertical, color: design.colors.textPrimary, size: 18),
+        AppFocusable(
+          onTap: () {
+            // TODO: Show options menu (Report, Share, etc.)
+          },
+          borderRadius: BorderRadius.circular(design.radius.full),
+          child: Padding(
+            padding: EdgeInsets.all(design.spacing.xs),
+            child: Icon(
+              LucideIcons.moreVertical,
+              color: design.colors.textPrimary,
+              size: 18,
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -87,7 +100,7 @@ class ForumPostDetailScreen extends ConsumerWidget {
   Widget _buildBody(
     BuildContext context,
     WidgetRef ref,
-    dynamic l10n,
+    AppLocalizations l10n,
     AsyncValue<ForumThreadDto?> threadAsync,
   ) {
     return threadAsync.when(
@@ -491,6 +504,7 @@ class _StickyReplyInputState extends State<_StickyReplyInput> {
             showToolbar: _showToolbar,
             onToggleToolbar: _toggleToolbar,
             onSend: _handleSend,
+            l10n: AppLocalizations.of(context)!,
           ),
         ],
       ),
@@ -586,12 +600,6 @@ class _ToolbarButtons extends StatelessWidget {
           ),
           const _ToolbarDivider(),
           _ToolbarButton(
-            icon: LucideIcons.link,
-            isActive: _isAttributeActive(style, quill.Attribute.link),
-            onTap: () {}, // TODO: open link dialog
-          ),
-          const _ToolbarDivider(),
-          _ToolbarButton(
             icon: LucideIcons.image,
             onTap: isImageLimitReached ? () {} : onImagePick,
             isDisabled: isImageLimitReached,
@@ -634,6 +642,7 @@ class _ReplyInputRow extends StatelessWidget {
   final bool showToolbar;
   final VoidCallback onToggleToolbar;
   final VoidCallback onSend;
+  final AppLocalizations l10n;
 
   const _ReplyInputRow({
     required this.controller,
@@ -642,6 +651,7 @@ class _ReplyInputRow extends StatelessWidget {
     required this.showToolbar,
     required this.onToggleToolbar,
     required this.onSend,
+    required this.l10n,
   });
 
   @override
@@ -670,6 +680,8 @@ class _ReplyInputRow extends StatelessWidget {
               controller: controller,
               scrollController: scrollController,
               focusNode: focusNode,
+              l10n: l10n,
+              showToolbar: showToolbar,
             ),
           ),
           SizedBox(width: design.spacing.sm),
@@ -693,11 +705,15 @@ class _EditorContainer extends StatelessWidget {
   final quill.QuillController controller;
   final ScrollController scrollController;
   final FocusNode focusNode;
+  final AppLocalizations l10n;
+  final bool showToolbar;
 
   const _EditorContainer({
     required this.controller,
     required this.scrollController,
     required this.focusNode,
+    required this.l10n,
+    required this.showToolbar,
   });
 
   @override
@@ -720,16 +736,11 @@ class _EditorContainer extends StatelessWidget {
           controller: controller,
           scrollController: scrollController,
           focusNode: focusNode,
-          showPlaceholder: _shouldShowPlaceholder(),
+          showPlaceholder: !showToolbar,
+          l10n: l10n,
         ),
       ),
     );
-  }
-
-  bool _shouldShowPlaceholder() {
-    final hasStyle = controller.getSelectionStyle().attributes.isNotEmpty;
-    final hasText = controller.document.length > 1;
-    return !hasStyle && !hasText;
   }
 }
 
@@ -738,12 +749,14 @@ class _EditorContent extends StatelessWidget {
   final ScrollController scrollController;
   final FocusNode focusNode;
   final bool showPlaceholder;
+  final AppLocalizations l10n;
 
   const _EditorContent({
     required this.controller,
     required this.scrollController,
     required this.focusNode,
     required this.showPlaceholder,
+    required this.l10n,
   });
 
   @override
@@ -775,7 +788,7 @@ class _EditorContent extends StatelessWidget {
         autoFocus: false,
         expands: false,
         padding: const EdgeInsets.only(right: 6),
-        placeholder: showPlaceholder ? 'Ask a follow-up question...' : '',
+        placeholder: showPlaceholder ? l10n.forumReplyPlaceholder : '',
         customStyles: _buildEditorStyles(design),
       ),
     );
@@ -1088,6 +1101,13 @@ class _AttachmentItem extends StatelessWidget {
           child: Image.file(
             File(imageUrl),
             fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => Center(
+              child: Icon(
+                LucideIcons.imageOff,
+                size: 20,
+                color: design.colors.textSecondary,
+              ),
+            ),
           ),
         ),
         Positioned(
