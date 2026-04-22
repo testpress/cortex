@@ -279,6 +279,10 @@ class AppDatabase extends _$AppDatabase {
       )..where((t) => t.courseId.equals(courseId)))
           .watch();
 
+  Stream<ForumThreadsTableData?> watchThreadById(String threadId) =>
+      (select(forumThreadsTable)..where((t) => t.id.equals(threadId)))
+          .watchSingleOrNull();
+
   Future<void> upsertForumThreads(List<ForumThreadsTableCompanion> rows) =>
       batch((b) => b.insertAllOnConflictUpdate(forumThreadsTable, rows));
 

@@ -24,12 +24,17 @@ Stream<List<ForumThreadDto>> courseForumThreads(CourseForumThreadsRef ref, Strin
 Stream<ForumThreadDto?> forumThreadDetail(ForumThreadDetailRef ref, {required String courseId, required String threadId}) async* {
   final repo = await ref.watch(forumRepositoryProvider.future);
   
-  // Await the refresh to ensure the local DB has the latest mock data (new avatars/images)
-  await repo.refreshThreads(courseId);
+  // Fetch existing count to decide if we need to block on initial load
+  final count = await repo.getThreadsCount(courseId);
+  final refreshFuture = repo.refreshThreads(courseId);
 
-  yield* repo.watchThreads(courseId).map(
-    (threads) => threads.where((t) => t.id == threadId).firstOrNull,
-  );
+  if (count == 0) {
+    await refreshFuture;
+  } else {
+    refreshFuture.ignore();
+  }
+
+  yield* repo.watchThread(threadId);
 }
 
 @Riverpod(keepAlive: true)

@@ -14,6 +14,12 @@ class ForumRepository {
         .map((rows) => rows.map(_rowToDto).toList());
   }
 
+  Stream<ForumThreadDto?> watchThread(String threadId) {
+    return _db
+        .watchThreadById(threadId)
+        .map((row) => row != null ? _rowToDto(row) : null);
+  }
+
   Future<int> getThreadsCount(String courseId) async {
     final results = await _db.watchThreadsForCourse(courseId).first;
     return results.length;
