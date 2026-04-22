@@ -42,3 +42,9 @@ The system SHALL open Info videos using an external destination rather than inli
 - **WHEN** the user selects a video from the course-detail view
 - **THEN** the system MUST launch the configured external video URL
 - **AND** the application MUST keep the Info navigation state available when the user returns
+
+---
+
+### Technical Note: Configuration
+The "client configuration" mentioned in these requirements is implemented via the `ENABLE_INFO_PAGE` environment define. 
+Use `--dart-define=ENABLE_INFO_PAGE=true` during `flutter run` or `flutter build` to satisfy the enablement criteria defined in these scenarios.

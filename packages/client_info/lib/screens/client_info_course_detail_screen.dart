@@ -208,7 +208,7 @@ class _VideoRow extends StatelessWidget {
         borderRadius: BorderRadius.circular(design.radius.lg),
         child: Container(
           key: ValueKey('info-video-${video.id}'),
-          padding: EdgeInsets.all(design.spacing.md),
+          padding: const EdgeInsets.fromLTRB(8, 10, 12, 10),
           decoration: BoxDecoration(
             color: design.colors.card,
             borderRadius: BorderRadius.circular(design.radius.lg),
@@ -221,7 +221,7 @@ class _VideoRow extends StatelessWidget {
                 imageUrl: course.thumbnailUrl,
                 duration: video.duration,
               ),
-              SizedBox(width: design.spacing.md),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -230,26 +230,26 @@ class _VideoRow extends StatelessWidget {
                       video.title,
                       style: const TextStyle(
                         fontWeight: FontWeight.w700,
-                        fontSize: 14,
-                        height: 1.25,
+                        fontSize: 15,
+                        height: 1.3,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 10),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
                           LucideIcons.externalLink,
-                          size: 12,
+                          size: 13,
                           color: design.colors.primary,
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: 6),
                         AppText.cardCaption(
                           video.duration,
                           color: design.colors.primary,
                           style: const TextStyle(
                             fontSize: 13,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ],
