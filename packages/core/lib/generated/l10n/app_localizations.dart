@@ -2382,7 +2382,7 @@ abstract class AppLocalizations {
   /// No description provided for @forumPostDescriptionHint.
   ///
   /// In en, this message translates to:
-  /// **'Add descriptive details about your question...'**
+  /// **'Describe your question in detail...'**
   String get forumPostDescriptionHint;
 
   /// No description provided for @forumPostSubjectLabel.

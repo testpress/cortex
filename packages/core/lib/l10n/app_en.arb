@@ -626,7 +626,7 @@
   "forumReplyPlaceholder": "Write your reply here...",
   "forumCreateNewPost": "Create New Post",
   "forumPostTitleHint": "Add a title...",
-  "forumPostDescriptionHint": "Add descriptive details about your question...",
+  "forumPostDescriptionHint": "Describe your question in detail...",
   "forumPostSubjectLabel": "Title",
   "forumPostDescriptionLabel": "Description",
   "forumPostCategoryLabel": "Category",
