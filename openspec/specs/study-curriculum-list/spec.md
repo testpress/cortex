@@ -2,9 +2,7 @@
 
 ## Purpose
 The Searchable Study Curriculum capability allows users to navigate large course catalogs through efficient search, filtering by content type, and persistent progress tracking. It is a core pillar of the LMS experience, prioritizing performance and vertical design rhythm.
-
 ## Requirements
-
 ### Requirement: Searchable Curriculum
 The system SHALL provide a search field in the Study tab that filters the displayed list of courses and chapters based on title matches.
 
@@ -81,3 +79,11 @@ The system SHALL maintain the main section header as "Your Courses" even when a 
 #### Scenario: Stable header context
 - **WHEN** any filter or search is applied
 - **THEN** the main section header remains "Your Courses"
+
+### Requirement: Course Content Count Visibility
+The system SHALL display the total number of contents (lessons, tests, etc.) for each course in the curriculum list. This metric replaces the total duration string to provide a more granular view of the course volume.
+
+#### Scenario: Displaying content count in CourseCard
+- **WHEN** a course has 120 total contents
+- **THEN** the course card shows "120 contents" in its metadata section instead of "X hrs"
+
