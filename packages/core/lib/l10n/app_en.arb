@@ -623,5 +623,14 @@
   "forumCreatePost": "Create New Post",
   "forumNoDiscussions": "No discussions found yet",
   "forumDiscussion": "Discussion",
-  "forumReplyPlaceholder": "Write your reply here..."
+  "forumReplyPlaceholder": "Write your reply here...",
+  "forumCreateNewPost": "Create New Post",
+  "forumPostTitleHint": "Add a title...",
+  "forumPostDescriptionHint": "Add descriptive details about your question...",
+  "forumPostSubjectLabel": "Title",
+  "forumPostDescriptionLabel": "Description",
+  "forumPostCategoryLabel": "Category",
+  "forumPostSelectCategoryTitle": "Select Category",
+  "forumButtonSubmit": "Submit",
+  "forumButtonCancel": "Cancel"
 }

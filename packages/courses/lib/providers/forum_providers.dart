@@ -3,6 +3,12 @@ import 'package:core/data/data.dart';
 
 part 'forum_providers.g.dart';
 
+final forumCategoriesProvider =
+    FutureProvider.family<List<ForumCategoryDto>, String>((ref, courseId) async {
+      final repo = await ref.watch(forumRepositoryProvider.future);
+      return repo.getCategories(courseId);
+    });
+
 @Riverpod(keepAlive: true)
 Stream<List<ForumThreadDto>> courseForumThreads(CourseForumThreadsRef ref, String courseId) async* {
   final repo = await ref.watch(forumRepositoryProvider.future);

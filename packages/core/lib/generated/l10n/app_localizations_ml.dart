@@ -1293,4 +1293,32 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get forumReplyPlaceholder => 'നിങ്ങളുടെ മറുപടി ഇവിടെ എഴുതുക...';
+
+  @override
+  String get forumCreateNewPost => 'പുതിയ പോസ്റ്റ് നിർമ്മിക്കുക';
+
+  @override
+  String get forumPostTitleHint => 'ഒരു തലക്കെട്ട് നൽകുക...';
+
+  @override
+  String get forumPostDescriptionHint =>
+      'നിങ്ങളുടെ ചോദ്യത്തെക്കുറിച്ചുള്ള വിവരങ്ങൾ ഇവിടെ നൽകുക...';
+
+  @override
+  String get forumPostSubjectLabel => 'തലക്കെട്ട്';
+
+  @override
+  String get forumPostDescriptionLabel => 'വിവരണം';
+
+  @override
+  String get forumPostCategoryLabel => 'വിഭാഗം';
+
+  @override
+  String get forumPostSelectCategoryTitle => 'വിഭാഗം തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get forumButtonSubmit => 'സമർപ്പിക്കുക';
+
+  @override
+  String get forumButtonCancel => 'റദ്ദാക്കുക';
 }
