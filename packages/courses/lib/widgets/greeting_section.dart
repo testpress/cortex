@@ -4,13 +4,21 @@ import 'package:core/core.dart';
 
 /// Personalized greeting and date section for the home dashboard.
 class HomeGreetingSection extends StatelessWidget {
-  const HomeGreetingSection({super.key, required this.userName});
+  const HomeGreetingSection({
+    super.key,
+    required this.userName,
+    this.showName = true,
+  });
 
   final String userName;
+  final bool showName;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+
+    final greeting = _getGreeting(context);
+    final displayGreeting = showName ? '$greeting, $userName' : greeting;
 
     return Container(
       padding: EdgeInsets.only(
@@ -23,7 +31,7 @@ class HomeGreetingSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppText.headline(
-            '${_getGreeting(context)}, $userName',
+            displayGreeting,
             color: design.colors.textPrimary,
           ),
           AppText.bodySmall(
