@@ -9,17 +9,24 @@ class ForumHeader extends StatelessWidget {
     super.key,
     required this.title,
     this.actions,
+    this.showDivider = true,
   });
 
   final String title;
   final List<Widget>? actions;
+  final bool showDivider;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
     return Container(
-      color: design.colors.card,
+      decoration: BoxDecoration(
+        color: design.colors.card,
+        border: showDivider
+            ? Border(bottom: BorderSide(color: design.colors.divider))
+            : null,
+      ),
       child: SafeArea(
         bottom: false,
         child: Padding(
@@ -35,10 +42,13 @@ class ForumHeader extends StatelessWidget {
               // Back chevron inline with title
               GestureDetector(
                 onTap: () => context.pop(),
-                child: Icon(
-                  LucideIcons.chevronLeft,
-                  color: design.colors.textPrimary,
-                  size: 22,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 2), // Optical alignment
+                  child: Icon(
+                    LucideIcons.chevronLeft,
+                    color: design.colors.textPrimary,
+                    size: 22,
+                  ),
                 ),
               ),
               SizedBox(width: design.spacing.sm),

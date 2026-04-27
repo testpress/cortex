@@ -150,7 +150,7 @@ class _CourseForumThreadsProviderElement
   String get courseId => (origin as CourseForumThreadsProvider).courseId;
 }
 
-String _$forumThreadDetailHash() => r'e1886c764a19fd2707c6380a46de76bbcd95abfd';
+String _$forumThreadDetailHash() => r'35a663ac2c423f4a02b845397f6ea8ccc4e6c055';
 
 /// See also [forumThreadDetail].
 @ProviderFor(forumThreadDetail)

@@ -872,6 +872,12 @@ class MockDataSource implements DataSource {
       ];
 
   @override
+  Future<List<ForumCategoryDto>> getForumCategories(String courseId) async {
+    await Future.delayed(const Duration(milliseconds: 150));
+    return mockForumCategories;
+  }
+
+  @override
   Future<List<ForumCommentDto>> getForumComments(String threadId) async {
     if (threadId.contains('ft-1')) {
       return [

@@ -1,29 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'dart:io';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
-import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../../providers/forum_providers.dart';
 import '../../widgets/forum/forum_header.dart';
-
-// ─────────────────────────────────────────────────────
-// Service Layer
-// ─────────────────────────────────────────────────────
-
-/// Converts a Quill Delta document to HTML for API submission.
-/// Pure, stateless — no Flutter dependencies.
-class _QuillEditorService {
-  const _QuillEditorService();
-
-  String toHtml(quill.Document document) {
-    final delta = document.toDelta();
-    final converter = QuillDeltaToHtmlConverter(delta.toJson());
-    return converter.convert();
-  }
-}
+import '../../widgets/forum/forum_composer.dart';
 
 // ─────────────────────────────────────────────────────
 // Screen Entry Point
@@ -74,6 +57,7 @@ class ForumPostDetailScreen extends ConsumerWidget {
   Widget _buildHeader(DesignConfig design, AppLocalizations l10n) {
     return ForumHeader(
       title: l10n.forumDiscussion,
+      showDivider: false,
       actions: [
         AppFocusable(
           onTap: () {
@@ -300,7 +284,6 @@ class _CommentList extends StatelessWidget {
       return _EmptyComments(l10n: l10n, design: design);
     }
 
-    // Uses Column inside the parent ListView — avoids nested scrollable with shrinkWrap.
     return Padding(
       padding: EdgeInsets.all(design.spacing.md),
       child: Column(
@@ -422,7 +405,7 @@ class _StickyReplyInput extends StatefulWidget {
 }
 
 class _StickyReplyInputState extends State<_StickyReplyInput> {
-  static const _editorService = _QuillEditorService();
+  static const _editorService = QuillEditorService();
 
   late final quill.QuillController _controller;
   final _scrollController = ScrollController();
@@ -487,12 +470,12 @@ class _StickyReplyInputState extends State<_StickyReplyInput> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (_attachments.isNotEmpty)
-            _AttachmentPreview(
+            ForumAttachmentPreview(
               imageUrls: _attachments,
               onRemove: _removeAttachment,
             ),
           if (_showToolbar)
-            _ForumToolbar(
+            ForumEditorToolbar(
               controller: _controller,
               onImagePick: _pickImages,
               isImageLimitReached: _attachments.length >= 3,
@@ -511,129 +494,6 @@ class _StickyReplyInputState extends State<_StickyReplyInput> {
     );
   }
 }
-
-// ─────────────────────────────────────────────────────
-// Forum Toolbar
-// ─────────────────────────────────────────────────────
-
-class _ForumToolbar extends StatelessWidget {
-  final quill.QuillController controller;
-  final VoidCallback onImagePick;
-  final bool isImageLimitReached;
-
-  const _ForumToolbar({
-    required this.controller,
-    required this.onImagePick,
-    required this.isImageLimitReached,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: design.spacing.xs),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: design.colors.divider.withValues(alpha: 0.5)),
-        ),
-      ),
-      child: ListenableBuilder(
-        listenable: controller,
-        builder: (context, _) => _ToolbarButtons(
-          controller: controller,
-          onImagePick: onImagePick,
-          isImageLimitReached: isImageLimitReached,
-        ),
-      ),
-    );
-  }
-}
-
-class _ToolbarButtons extends StatelessWidget {
-  final quill.QuillController controller;
-  final VoidCallback onImagePick;
-  final bool isImageLimitReached;
-
-  const _ToolbarButtons({
-    required this.controller,
-    required this.onImagePick,
-    required this.isImageLimitReached,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-    final style = controller.getSelectionStyle();
-
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: design.spacing.sm),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _ToolbarButton(
-            icon: LucideIcons.bold,
-            isActive: _isAttributeActive(style, quill.Attribute.bold),
-            onTap: () => _toggleAttribute(quill.Attribute.bold),
-          ),
-          _ToolbarButton(
-            icon: LucideIcons.italic,
-            isActive: _isAttributeActive(style, quill.Attribute.italic),
-            onTap: () => _toggleAttribute(quill.Attribute.italic),
-          ),
-          const _ToolbarDivider(),
-          _ToolbarButton(
-            icon: LucideIcons.code,
-            isActive: _isAttributeActive(style, quill.Attribute.codeBlock),
-            onTap: () => _toggleAttribute(quill.Attribute.codeBlock),
-          ),
-          const _ToolbarDivider(),
-          _ToolbarButton(
-            icon: LucideIcons.list,
-            isActive: _isListActive(style, quill.Attribute.ul),
-            onTap: () => _toggleAttribute(quill.Attribute.ul),
-          ),
-          _ToolbarButton(
-            icon: LucideIcons.listOrdered,
-            isActive: _isListActive(style, quill.Attribute.ol),
-            onTap: () => _toggleAttribute(quill.Attribute.ol),
-          ),
-          const _ToolbarDivider(),
-          _ToolbarButton(
-            icon: LucideIcons.image,
-            onTap: isImageLimitReached ? () {} : onImagePick,
-            isDisabled: isImageLimitReached,
-          ),
-        ],
-      ),
-    );
-  }
-
-  bool _isAttributeActive(quill.Style style, quill.Attribute attribute) {
-    final value = style.attributes[attribute.key];
-    if (value == null || value.value == null) return false;
-    if (attribute.value != null) return value.value == attribute.value;
-    return true;
-  }
-
-  bool _isListActive(quill.Style style, quill.Attribute attribute) {
-    final current = style.attributes[quill.Attribute.list.key];
-    return current?.value == attribute.value;
-  }
-
-  void _toggleAttribute(quill.Attribute attribute) {
-    final style = controller.getSelectionStyle();
-    final isApplied = _isAttributeActive(style, attribute) ||
-        _isListActive(style, attribute);
-    controller.formatSelection(
-      isApplied ? quill.Attribute.clone(attribute, null) : attribute,
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────
-// Reply Input Row
-// ─────────────────────────────────────────────────────
 
 class _ReplyInputRow extends StatelessWidget {
   final quill.QuillController controller;
@@ -669,26 +529,30 @@ class _ReplyInputRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           SizedBox(
-            height: 52, // Matches initial box height (36 min + 8*2 padding)
+            height: 44,
             child: Center(
-              child: _ToolbarToggle(isActive: showToolbar, onTap: onToggleToolbar),
+              child: ForumToolbarToggle(isActive: showToolbar, onTap: onToggleToolbar),
             ),
           ),
           SizedBox(width: design.spacing.sm),
           Expanded(
-            child: _EditorContainer(
+            child: ForumEditorField(
               controller: controller,
               scrollController: scrollController,
               focusNode: focusNode,
-              l10n: l10n,
-              showToolbar: showToolbar,
+              placeholder: l10n.forumReplyPlaceholder,
+              showPlaceholder: true,
+              minHeight: 24,
+              maxHeight: 80,
+              expands: false,
+              backgroundColor: design.colors.surfaceVariant.withValues(alpha: 0.5),
             ),
           ),
           SizedBox(width: design.spacing.sm),
           SizedBox(
-            height: 52,
+            height: 44,
             child: Center(
-              child: _SendButton(onTap: onSend),
+              child: ForumSendButton(onTap: onSend),
             ),
           ),
         ],
@@ -698,253 +562,8 @@ class _ReplyInputRow extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────
-// Editor Container
-// ─────────────────────────────────────────────────────
-
-class _EditorContainer extends StatelessWidget {
-  final quill.QuillController controller;
-  final ScrollController scrollController;
-  final FocusNode focusNode;
-  final AppLocalizations l10n;
-  final bool showToolbar;
-
-  const _EditorContainer({
-    required this.controller,
-    required this.scrollController,
-    required this.focusNode,
-    required this.l10n,
-    required this.showToolbar,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: design.colors.surfaceVariant.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(design.radius.xl),
-      ),
-      clipBehavior: Clip.hardEdge,
-      padding: EdgeInsets.symmetric(
-        horizontal: design.spacing.md,
-        vertical: design.spacing.sm,
-      ),
-      child: ListenableBuilder(
-        listenable: controller,
-        builder: (context, _) => _EditorContent(
-          controller: controller,
-          scrollController: scrollController,
-          focusNode: focusNode,
-          showPlaceholder: !showToolbar,
-          l10n: l10n,
-        ),
-      ),
-    );
-  }
-}
-
-class _EditorContent extends StatelessWidget {
-  final quill.QuillController controller;
-  final ScrollController scrollController;
-  final FocusNode focusNode;
-  final bool showPlaceholder;
-  final AppLocalizations l10n;
-
-  const _EditorContent({
-    required this.controller,
-    required this.scrollController,
-    required this.focusNode,
-    required this.showPlaceholder,
-    required this.l10n,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-
-    return ClipRect(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: 36, maxHeight: 120),
-        child: RawScrollbar(
-          controller: scrollController,
-          thumbColor: design.colors.textTertiary.withValues(alpha: 0.3),
-          radius: const Radius.circular(2),
-          thickness: 3,
-          thumbVisibility: true,
-          padding: EdgeInsets.zero,
-          child: _buildEditor(design),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEditor(DesignConfig design) {
-    return quill.QuillEditor.basic(
-      controller: controller,
-      focusNode: focusNode,
-      scrollController: scrollController,
-      config: quill.QuillEditorConfig(
-        autoFocus: false,
-        expands: false,
-        padding: const EdgeInsets.only(right: 6),
-        placeholder: showPlaceholder ? l10n.forumReplyPlaceholder : '',
-        customStyles: _buildEditorStyles(design),
-      ),
-    );
-  }
-
-  quill.DefaultStyles _buildEditorStyles(DesignConfig design) {
-    final baseStyle = design.typography.body.copyWith(
-      fontSize: 14,
-      height: 1.3,
-    );
-
-    return quill.DefaultStyles(
-      placeHolder: quill.DefaultTextBlockStyle(
-        baseStyle.copyWith(color: design.colors.textTertiary),
-        const quill.HorizontalSpacing(0, 0),
-        const quill.VerticalSpacing(0, 0),
-        const quill.VerticalSpacing(0, 0),
-        null,
-      ),
-      paragraph: quill.DefaultTextBlockStyle(
-        baseStyle.copyWith(color: design.colors.textPrimary),
-        const quill.HorizontalSpacing(0, 0),
-        const quill.VerticalSpacing(0, 0),
-        const quill.VerticalSpacing(0, 0),
-        null,
-      ),
-      lists: quill.DefaultListBlockStyle(
-        baseStyle.copyWith(color: design.colors.textPrimary),
-        const quill.HorizontalSpacing(0, 0),
-        const quill.VerticalSpacing(0, 0),
-        const quill.VerticalSpacing(0, 0),
-        null,
-        null,
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────
 // Shared Primitives
 // ─────────────────────────────────────────────────────
-
-class _ToolbarButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-  final bool isActive;
-  final bool isDisabled;
-
-  const _ToolbarButton({
-    required this.icon,
-    required this.onTap,
-    this.isActive = false,
-    this.isDisabled = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-
-    return GestureDetector(
-      onTap: isDisabled ? null : onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Opacity(
-        opacity: isDisabled ? 0.4 : 1.0,
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: design.spacing.xs),
-          padding: EdgeInsets.all(design.spacing.sm),
-          decoration: BoxDecoration(
-            color: isActive ? design.colors.accent2.withValues(alpha: 0.12) : null,
-            borderRadius: BorderRadius.circular(design.radius.sm),
-          ),
-          child: Icon(
-            icon,
-            size: 18,
-            color: isActive ? design.colors.accent2 : design.colors.textSecondary,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ToolbarDivider extends StatelessWidget {
-  const _ToolbarDivider();
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-
-    return SizedBox(
-      height: 18,
-      width: 1,
-      child: DecoratedBox(
-        decoration: BoxDecoration(color: design.colors.divider),
-      ),
-    );
-  }
-}
-
-class _ToolbarToggle extends StatelessWidget {
-  final bool isActive;
-  final VoidCallback onTap;
-
-  const _ToolbarToggle({required this.isActive, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(design.spacing.xs),
-        decoration: BoxDecoration(
-          color: isActive
-              ? design.colors.accent2.withValues(alpha: 0.1)
-              : design.colors.transparent,
-          borderRadius: BorderRadius.circular(design.radius.sm),
-        ),
-        child: Icon(
-          LucideIcons.type,
-          size: 18,
-          color: isActive ? design.colors.accent2 : design.colors.textSecondary,
-        ),
-      ),
-    );
-  }
-}
-
-class _SendButton extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _SendButton({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-
-    return AppFocusable(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(design.radius.full),
-      child: Container(
-        padding: EdgeInsets.all(design.spacing.sm),
-        decoration: BoxDecoration(
-          color: design.colors.accent2,
-          shape: BoxShape.circle,
-        ),
-        child: Icon(
-          LucideIcons.send,
-          color: design.colors.textInverse,
-          size: 18,
-        ),
-      ),
-    );
-  }
-}
 
 class _AuthorAvatar extends StatelessWidget {
   final String? avatarUrl;
@@ -1034,102 +653,6 @@ class _RoleBadge extends StatelessWidget {
         color: design.colors.accent2,
         style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w800, letterSpacing: 0.2),
       ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────
-// Attachment Preview
-// ─────────────────────────────────────────────────────
-
-class _AttachmentPreview extends StatelessWidget {
-  final List<String> imageUrls;
-  final Function(int) onRemove;
-
-  const _AttachmentPreview({
-    required this.imageUrls,
-    required this.onRemove,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.all(design.spacing.md),
-      child: Row(
-        children: [
-          for (int i = 0; i < imageUrls.length; i++) ...[
-            _AttachmentItem(
-              imageUrl: imageUrls[i],
-              onRemove: () => onRemove(i),
-            ),
-            if (i < imageUrls.length - 1) SizedBox(width: design.spacing.sm),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _AttachmentItem extends StatelessWidget {
-  final String imageUrl;
-  final VoidCallback onRemove;
-
-  const _AttachmentItem({
-    required this.imageUrl,
-    required this.onRemove,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-    const size = 64.0;
-
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(design.radius.md),
-            border: Border.all(color: design.colors.divider),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: Image.file(
-            File(imageUrl),
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => Center(
-              child: Icon(
-                LucideIcons.imageOff,
-                size: 20,
-                color: design.colors.textSecondary,
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          top: -6,
-          right: -6,
-          child: GestureDetector(
-            onTap: onRemove,
-            child: Container(
-              padding: const EdgeInsets.all(2),
-              decoration: BoxDecoration(
-                color: design.colors.textPrimary,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                LucideIcons.x,
-                size: 12,
-                color: design.colors.card,
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
