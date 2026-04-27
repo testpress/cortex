@@ -1,7 +1,7 @@
 # Proposal: Integrate Course Detail API V3
 
-## Goal
-Integrate the V3 Course Detail, Chapters, and Contents APIs into the LMS SDK using a **Lazy-Loading synchronization strategy** to support performant, hierarchical curriculum views.
+## Why
+Integrate the V3 Course Detail, Chapters, and Contents APIs into the LMS SDK using a **Lazy-Loading synchronization strategy** to support performant, hierarchical curriculum views. This migration is necessary to move away from the flat V2 curriculum structure which suffered from performance issues on courses with large content hierarchies.
 
 ## What Changes
 - Add `courseDetail`, `courseChapters`, and `courseContents` endpoints to `ApiEndpoints`.

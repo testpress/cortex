@@ -26,7 +26,7 @@
 - [x] 3.1 Added `getCourseDetail` and `getCourseContents` to `DataSource`.
 - [x] 3.2 Implemented real network calls in `HttpDataSource`.
 - [x] 3.3 Implemented stubs/aggregation in `MockDataSource`.
-- [ ] 3.4 Added `refreshCourseContents` to `CourseRepository`.
+- [x] 3.4 Added `refreshCourseContents` to `CourseRepository`.
 - [x] 3.5 Refactored `watchCourse` and `watchChapters` to use `async*` and `StreamGroup.merge` for simplified reactive logic.
 - [x] 3.6 Implemented non-blocking background refreshes using the `.ignore()` pattern in providers.
 - [x] 3.7 Fixed all exhaustive switch statements across UI widgets.
