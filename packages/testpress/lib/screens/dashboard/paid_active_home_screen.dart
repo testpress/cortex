@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart' show Scaffold;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart' as dto;
 import 'package:profile/profile.dart';
@@ -13,6 +14,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
 
+    final config = ref.watch(dto.clientConfigProvider);
     final todayClasses = ref.watch(todayClassesProvider);
     final pendingAssignments = ref.watch(pendingAssignmentsProvider);
     final upcomingTests = ref.watch(upcomingTestsProvider);
@@ -26,148 +28,175 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     final otherLearners = ref.watch(otherLearnersProvider);
     final shortcuts = ref.watch(quickShortcutsProvider);
 
+    final user = userAsync.valueOrNull;
+
+    final isBannerPresent = config.instituteLogoUrl != null;
+
+
+    final topCarousel = heroBanners.when(
+      data: (data) => HeroBannerCarousel(
+        banners: data.map(_mapHeroBanner).toList(),
+      ),
+      loading: () => const SizedBox(height: 180),
+      error: (error, stack) => const SizedBox.shrink(),
+    );
+
+    final studyMomentum = momentum.when(
+      data: (data) => StudyMomentumGrid(momentum: data),
+      loading: () => const Center(child: AppLoadingIndicator()),
+      error: (err, stack) => const SizedBox.shrink(),
+    );
+
+    final topLearnersSection = topLearners.when(
+      data: (top) => otherLearners.when(
+        data: (others) => TopLearnersSection(
+          topLearners: top.map(_mapLearner).toList(),
+          otherLearners: others.map(_mapLearner).toList(),
+        ),
+        loading: () => const SizedBox.shrink(),
+        error: (error, stack) => const SizedBox.shrink(),
+      ),
+      loading: () => const SizedBox(height: 200),
+      error: (error, stack) => const SizedBox.shrink(),
+    );
+
+    final updatesAnnouncements = promotionBanners.when(
+      data: (data) => UpdatesAnnouncementsSection(
+        banners: data.map(_mapPromotionBanner).toList(),
+        onViewAll: () {
+          // Handle view all navigation
+        },
+      ),
+      loading: () => const SizedBox(height: 100),
+      error: (error, stack) => const SizedBox.shrink(),
+    );
+
     return Scaffold(
       backgroundColor: design.colors.canvas,
       body: LayoutBuilder(
         builder: (context, constraints) {
           final isLandscape = constraints.maxWidth > constraints.maxHeight;
 
+          final header = DashboardHeader(
+            title: L10n.of(context).homeHeaderTitle,
+            isLandscape: isLandscape,
+            showTitle: !isBannerPresent,
+            greeting: isBannerPresent ? _getGreeting(context) : null,
+            greetingSubtitle: isBannerPresent ? _getTodayDate() : null,
+            backgroundColor: isBannerPresent ? design.colors.canvas : null,
+            showBottomBorder: !isBannerPresent,
+            useSafeArea: !isBannerPresent,
+            customTopPadding: isBannerPresent ? 8 : null,
+            onMenuPressed: () {
+              ref.read(isHomeDrawerOpenProvider.notifier).state = true;
+            },
+          );
+
           return Column(
             children: [
-              DashboardHeader(
-                title: L10n.of(context).homeHeaderTitle,
-                isLandscape: isLandscape,
-                onMenuPressed: () {
-                  ref.read(isHomeDrawerOpenProvider.notifier).state = true;
-                },
-              ),
+              if (isBannerPresent)
+                InstituteBanner(
+                  logoUrl: config.instituteLogoUrl!,
+                  isLocal: config.isLocalLogo,
+                  userName: user?.name ?? 'Student',
+                  enrollmentId: user?.id ?? '-',
+                ),
+              if (!isBannerPresent) header,
               Expanded(
                 child: AppScroll(
                   padding: EdgeInsets.symmetric(vertical: design.spacing.md),
                   children: [
-                    userAsync.when(
-                      data: (user) => HomeGreetingSection(
+                    if (isBannerPresent) header,
+                    if (!isBannerPresent)
+                      HomeGreetingSection(
                         userName: user?.name ?? '',
                       ),
-                      loading: () => const HomeGreetingSection(userName: '...'),
-                      error: (e, s) => const HomeGreetingSection(userName: ''),
-                    ),
+                    topCarousel,
+                    const SizedBox(height: 16),
+                    if (isBannerPresent) ...[
+                      // Brilliant specific order
+                      updatesAnnouncements,
+                      const SizedBox(height: 24),
+                      studyMomentum,
+                      const SizedBox(height: 24),
+                      topLearnersSection,
+                    ] else ...[
+                      // Standard order
+                      if (config.showContextualHero)
+                        todayClasses.when(
+                          data: (classes) {
+                            if (classes.isEmpty) return const SizedBox.shrink();
+                            final liveOrUpcoming = classes.firstWhere(
+                              (c) =>
+                                  c.status == dto.LiveClassStatus.live ||
+                                  c.status == dto.LiveClassStatus.upcoming,
+                              orElse: () => classes.first,
+                            );
 
-                heroBanners.when(
-                  data: (data) => HeroBannerCarousel(
-                    banners: data.map(_mapHeroBanner).toList(),
-                  ),
-                  loading: () => const SizedBox(height: 180),
-                  error: (error, stack) => const SizedBox.shrink(),
-                ),
-
-                const SizedBox(height: 16),
-
-                todayClasses.when(
-                  data: (classes) {
-                    final liveOrUpcoming = classes.firstWhere(
-                      (c) =>
-                          c.status == dto.LiveClassStatus.live ||
-                          c.status == dto.LiveClassStatus.upcoming,
-                      orElse: () => classes.first,
-                    );
-
-                    return Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: design.spacing.md,
-                      ),
-                      child: ContextualHeroCard(
-                        action: HeroAction(
-                          type:
-                              liveOrUpcoming.status == dto.LiveClassStatus.live
-                              ? HeroActionType.joinClass
-                              : HeroActionType.prepareTest,
-                          title: liveOrUpcoming.topic,
-                          subject: liveOrUpcoming.subject,
-                          metadata: liveOrUpcoming.faculty,
-                          timeInfo: liveOrUpcoming.time,
+                            return Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: design.spacing.md,
+                              ),
+                              child: ContextualHeroCard(
+                                action: HeroAction(
+                                  type: liveOrUpcoming.status ==
+                                          dto.LiveClassStatus.live
+                                      ? HeroActionType.joinClass
+                                      : HeroActionType.prepareTest,
+                                  title: liveOrUpcoming.topic,
+                                  subject: liveOrUpcoming.subject,
+                                  metadata: liveOrUpcoming.faculty,
+                                  timeInfo: liveOrUpcoming.time,
+                                ),
+                                onActionClick: () {},
+                              ),
+                            );
+                          },
+                          loading: () => const SizedBox(height: 120),
+                          error: (error, stack) => const SizedBox.shrink(),
                         ),
-                        onActionClick: () {},
-                      ),
-                    );
-                  },
-                  loading: () => const SizedBox(height: 120),
-                  error: (error, stack) => const SizedBox.shrink(),
+                      const SizedBox(height: 24),
+                      if (config.showTodaySchedule)
+                        Builder(
+                          builder: (context) {
+                            if (todayClasses.isLoading ||
+                                pendingAssignments.isLoading ||
+                                upcomingTests.isLoading) {
+                              return const Center(child: AppLoadingIndicator());
+                            }
+
+                            return TodaySnapshot(
+                              classes: (todayClasses.value ?? [])
+                                  .map(_mapClass)
+                                  .toList(),
+                              assignments: (pendingAssignments.value ?? [])
+                                  .map(_mapAssignment)
+                                  .toList(),
+                              tests: (upcomingTests.value ?? []).toList(),
+                            );
+                          },
+                        ),
+                      studyMomentum,
+                      topLearnersSection,
+                      updatesAnnouncements,
+                      if (config.showQuickAccess)
+                        shortcuts.when(
+                          data: (data) => QuickAccessGrid(
+                            shortcuts: data.map(_mapShortcut).toList(),
+                          ),
+                          loading: () => const SizedBox(height: 150),
+                          error: (error, stack) => const SizedBox.shrink(),
+                        ),
+                    ],
+                  ],
                 ),
-
-                const SizedBox(height: 24),
-
-                Builder(
-                  builder: (context) {
-                    if (todayClasses.isLoading ||
-                        pendingAssignments.isLoading ||
-                        upcomingTests.isLoading) {
-                      return const Center(child: AppLoadingIndicator());
-                    }
-
-                    return TodaySnapshot(
-                      classes: (todayClasses.value ?? [])
-                          .map(_mapClass)
-                          .toList(),
-                      assignments: (pendingAssignments.value ?? [])
-                          .map(_mapAssignment)
-                          .toList(),
-                      tests: (upcomingTests.value ?? [])
-                          .toList(),
-                    );
-                  },
-                ),
-
-                momentum.when(
-                  data: (data) => StudyMomentumGrid(momentum: data),
-                  loading: () => const Center(child: AppLoadingIndicator()),
-                  error: (err, stack) => const SizedBox.shrink(),
-                ),
-
-                topLearners.when(
-                  data: (top) => otherLearners.when(
-                    data: (others) => TopLearnersSection(
-                      topLearners: top.map(_mapLearner).toList(),
-                      otherLearners:
-                          others.map(_mapLearner).toList(),
-                    ),
-                    loading: () => const SizedBox.shrink(),
-                    error: (error, stack) => const SizedBox.shrink(),
-                  ),
-                  loading: () => const SizedBox(height: 200),
-                  error: (error, stack) => const SizedBox.shrink(),
-                ),
-
-                promotionBanners.when(
-                  data: (data) => UpdatesAnnouncementsSection(
-                    banners: data
-                        .map(_mapPromotionBanner)
-                        .toList(),
-                    onViewAll: () {
-                      // Handle view all navigation
-                    },
-                  ),
-                  loading: () => const SizedBox(height: 100),
-                  error: (error, stack) => const SizedBox.shrink(),
-                ),
-
-                shortcuts.when(
-                  data: (data) => QuickAccessGrid(
-                    shortcuts:
-                        data.map(_mapShortcut).toList(),
-                  ),
-                  loading: () => const SizedBox(height: 150),
-                  error: (error, stack) => const SizedBox.shrink(),
-                ),
-              ],
-            ),
-          ),
-        ],
-      );
-    },
-  ),
-);
-}
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
 
   HeroBanner _mapHeroBanner(DashboardBannerDto d) {
     return HeroBanner(
@@ -245,14 +274,21 @@ class PaidActiveHomeScreen extends ConsumerWidget {
       title: d.title,
       subject: d.subject,
       dueTime: d.dueTime,
-      status: switch (d.status) {
-        AssignmentStatus.pending => AssignmentStatus.pending,
-        AssignmentStatus.submitted => AssignmentStatus.submitted,
-        AssignmentStatus.overdue => AssignmentStatus.overdue,
-      },
-      progress: d.progress / 100.0,
+      status: d.status,
+      progress: d.progress / 100,
       description: d.description,
     );
   }
 
+  String _getGreeting(BuildContext context) {
+    final l10n = L10n.of(context);
+    final hour = DateTime.now().hour;
+    if (hour < 12) return l10n.greetingMorning;
+    if (hour < 17) return l10n.greetingAfternoon;
+    return l10n.greetingEvening;
+  }
+
+  String _getTodayDate() {
+    return DateFormat('EEEE · MMM d').format(DateTime.now());
+  }
 }
