@@ -7,9 +7,12 @@ class ForumThreadDto {
   final String courseId;
   final String title;
   final String description;
-  final String studentName;
+  final String authorName;
+  final String? authorAvatar;
   final String timeAgo;
   final int replyCount;
+  final int upvotes;
+  final int downvotes;
   final ForumThreadStatus status;
 
   const ForumThreadDto({
@@ -17,9 +20,14 @@ class ForumThreadDto {
     required this.courseId,
     required this.title,
     required this.description,
-    required this.studentName,
+    required this.authorName,
+    this.authorAvatar,
     required this.timeAgo,
     required this.replyCount,
+    this.upvotes = 0,
+    this.downvotes = 0,
     required this.status,
   });
+
+  int get score => upvotes - downvotes;
 }

@@ -176,6 +176,22 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             GoRoute(
               path: '/home',
               builder: (context, state) => const PaidActiveHomeScreen(),
+              routes: [
+                GoRoute(
+                  path: 'forum',
+                  builder: (context, state) =>
+                      const ForumCourseSelectionScreen(),
+                  routes: [
+                    GoRoute(
+                      path: 'posts/:courseId',
+                      builder: (context, state) {
+                        final courseId = state.pathParameters['courseId']!;
+                        return ForumPostsListScreen(courseId: courseId);
+                      },
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),

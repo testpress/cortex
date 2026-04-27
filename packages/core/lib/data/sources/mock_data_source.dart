@@ -799,59 +799,98 @@ class MockDataSource implements DataSource {
   @override
   Future<List<ForumThreadDto>> getForumThreads(String courseId) async => [
         ForumThreadDto(
-          id: 'ft-1',
+          id: 'ft-1-$courseId',
           courseId: courseId,
           title: 'How to solve integration using substitution method?',
           description:
               "I'm having trouble understanding when to use substitution method in integration. Can someone explain with an example? Specifically for problems involving trigonometric functions.",
-          studentName: 'Priya Sharma',
+          authorName: 'Priya Sharma',
+          authorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Priya',
           timeAgo: '2 hours ago',
           replyCount: 3,
+          upvotes: 24,
+          downvotes: 2,
           status: ForumThreadStatus.answered,
         ),
         ForumThreadDto(
-          id: 'ft-2',
+          id: 'ft-2-$courseId',
           courseId: courseId,
           title: "Understanding Newton's Third Law with examples",
           description:
               "Can someone help me understand the practical applications of Newton's Third Law? I'm confused about action-reaction pairs in different scenarios.",
-          studentName: 'Amit Patel',
+          authorName: 'Amit Patel',
+          authorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Amit',
           timeAgo: '5 hours ago',
           replyCount: 5,
+          upvotes: 12,
+          downvotes: 1,
           status: ForumThreadStatus.answered,
         ),
         ForumThreadDto(
-          id: 'ft-3',
+          id: 'ft-3-$courseId',
           courseId: courseId,
           title: 'Organic Chemistry — SN1 vs SN2 reactions',
           description:
               'What are the key differences between SN1 and SN2 reactions? How do I identify which mechanism will occur in a given reaction?',
-          studentName: 'Sneha Gupta',
+          authorName: 'Sneha Gupta',
+          authorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sneha',
           timeAgo: '1 day ago',
           replyCount: 0,
+          upvotes: 8,
+          downvotes: 0,
           status: ForumThreadStatus.unanswered,
         ),
         ForumThreadDto(
-          id: 'ft-4',
+          id: 'ft-4-$courseId',
           courseId: courseId,
           title: 'Complex numbers — geometric interpretation doubt',
           description:
               'I need help understanding the geometric interpretation of complex number multiplication. Can someone explain with diagrams?',
-          studentName: 'Rahul Singh',
+          authorName: 'Rahul Singh',
+          authorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Rahul',
           timeAgo: '1 day ago',
           replyCount: 4,
+          upvotes: 15,
+          downvotes: 3,
           status: ForumThreadStatus.answered,
         ),
         ForumThreadDto(
-          id: 'ft-5',
+          id: 'ft-5-$courseId',
           courseId: courseId,
           title: 'Thermodynamics — Entropy concept clarification',
           description:
               'Why does entropy always increase in an isolated system? Can someone provide a simple explanation without too much math?',
-          studentName: 'Kavya Reddy',
+          authorName: 'Kavya Reddy',
+          authorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Kavya',
           timeAgo: '2 days ago',
           replyCount: 0,
+          upvotes: 5,
+          downvotes: 0,
           status: ForumThreadStatus.unanswered,
+        ),
+      ];
+
+  @override
+  Future<List<ForumCommentDto>> getForumComments(String threadId) async => [
+        ForumCommentDto(
+          id: 'fc-1-$threadId',
+          threadId: threadId,
+          authorName: 'Dr. Anita Sharma',
+          authorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Anita',
+          content: 'The substitution method is generally best when you see a function and its derivative (or a multiple of it) within the integrand.',
+          timeAgo: '1 hour ago',
+          upvotes: 8,
+          downvotes: 0,
+        ),
+        ForumCommentDto(
+          id: 'fc-2-$threadId',
+          threadId: threadId,
+          authorName: 'Rahul Singh',
+          authorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Rahul',
+          content: 'Can you show an example with tan(x) and sec^2(x)?',
+          timeAgo: '45 mins ago',
+          upvotes: 2,
+          downvotes: 0,
         ),
       ];
 

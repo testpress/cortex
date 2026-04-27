@@ -10,6 +10,7 @@ import 'tables/chapters_table.dart';
 import 'tables/lessons_table.dart';
 import 'tables/live_classes_table.dart';
 import 'tables/forum_threads_table.dart';
+import 'tables/forum_comments_table.dart';
 import 'tables/user_progress_table.dart';
 import 'tables/app_settings_table.dart';
 import 'tables/users_table.dart';
@@ -24,6 +25,7 @@ part 'app_database.g.dart';
     LessonsTable,
     LiveClassesTable,
     ForumThreadsTable,
+    ForumCommentsTable,
     UserProgressTable,
     AppSettingsTable,
     UsersTable,
@@ -33,7 +35,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -53,6 +55,16 @@ class AppDatabase extends _$AppDatabase {
             final existingColumns = res.map((r) => r.read<String>('name'));
             if (!existingColumns.contains(col.name)) {
               await m.addColumn(table, col);
+            }
+          }
+
+          // Helper to create tables safely
+          Future<void> createTableSafely(TableInfo table) async {
+            final res = await customSelect(
+              "SELECT name FROM sqlite_master WHERE type='table' AND name='${table.actualTableName}'",
+            ).get();
+            if (res.isEmpty) {
+              await m.createTable(table);
             }
           }
 
@@ -97,10 +109,29 @@ class AppDatabase extends _$AppDatabase {
           if (from < 7) {
             await m.createTable(usersTable);
           }
+          if (from < 8) {
+            // Forum integration (Initial tables)
+            await createTableSafely(forumThreadsTable);
+            await createTableSafely(forumCommentsTable);
+          }
           if (from < 9) {
-            // Combined sync flag migration
+            // Sync flag migration from main branch
             await addColumnSafely(chaptersTable, chaptersTable.isChaptersSynced);
             await addColumnSafely(coursesTable, coursesTable.isChaptersSynced);
+          }
+          if (from < 10) {
+            // Version 10: Ensuring forum tables and new columns are present for all users
+            await createTableSafely(forumThreadsTable);
+            await createTableSafely(forumCommentsTable);
+            
+            await addColumnSafely(forumThreadsTable, forumThreadsTable.authorName);
+            await addColumnSafely(forumThreadsTable, forumThreadsTable.authorAvatar);
+            await addColumnSafely(forumThreadsTable, forumThreadsTable.upvotes);
+            await addColumnSafely(forumThreadsTable, forumThreadsTable.downvotes);
+            
+            await addColumnSafely(forumCommentsTable, forumCommentsTable.authorAvatar);
+            await addColumnSafely(forumCommentsTable, forumCommentsTable.upvotes);
+            await addColumnSafely(forumCommentsTable, forumCommentsTable.downvotes);
           }
         },
       );
@@ -248,6 +279,17 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> upsertForumThreads(List<ForumThreadsTableCompanion> rows) =>
       batch((b) => b.insertAllOnConflictUpdate(forumThreadsTable, rows));
+
+  // ── Forum Comments ─────────────────────────────────────────────────────────
+
+  Stream<List<ForumCommentsTableData>> watchCommentsForThread(String threadId) =>
+      (select(
+        forumCommentsTable,
+      )..where((t) => t.threadId.equals(threadId)))
+          .watch();
+
+  Future<void> upsertForumComments(List<ForumCommentsTableCompanion> rows) =>
+      batch((b) => b.insertAllOnConflictUpdate(forumCommentsTable, rows));
 
   // ── User Progress ─────────────────────────────────────────────────────────
 
