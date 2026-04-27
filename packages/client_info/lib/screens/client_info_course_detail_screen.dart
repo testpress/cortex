@@ -109,14 +109,21 @@ class _ClientInfoCourseDetailScreenState
       return;
     }
 
-    final didLaunch = await launcher(uri);
-    if (!mounted) return;
+    try {
+      final didLaunch = await launcher(uri);
+      if (!mounted) return;
 
-    setState(() {
-      errorMessage = didLaunch
-          ? null
-          : 'Unable to open this video right now. Please try again later.';
-    });
+      setState(() {
+        errorMessage = didLaunch
+            ? null
+            : 'Unable to open this video right now. Please try again later.';
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        errorMessage = 'An error occurred while trying to open the video.';
+      });
+    }
   }
 }
 
@@ -150,7 +157,6 @@ class _DetailHeader extends StatelessWidget {
         children: [
           AppSemantics.button(
             label: 'Back',
-            onTap: onBack,
             child: AppFocusable(
               onTap: onBack,
               borderRadius: design.radius.button,
@@ -202,7 +208,6 @@ class _VideoRow extends StatelessWidget {
 
     return AppSemantics.button(
       label: 'Open ${video.title} externally',
-      onTap: onTap,
       child: AppFocusable(
         onTap: onTap,
         borderRadius: BorderRadius.circular(design.radius.lg),
