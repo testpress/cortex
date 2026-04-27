@@ -7,6 +7,7 @@ import 'package:core/data/data.dart';
 import '../providers/forum_providers.dart';
 import '../widgets/forum_header.dart';
 import '../widgets/forum_composer.dart';
+import '../widgets/forum_category_sheet.dart';
 
 class ForumPostCreateScreen extends ConsumerStatefulWidget {
   final String courseId;
@@ -133,8 +134,10 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
                           hintText: l10n.forumPostTitleHint,
                           controller: _titleController,
                           autofocus: true,
+                          textStyle: design.typography.bodySmall,
                           contentPadding: EdgeInsets.symmetric(
                             vertical: design.spacing.sm,
+                            horizontal: 0,
                           ),
                         ),
                         SizedBox(height: design.spacing.lg),
@@ -173,7 +176,13 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
             ),
           ),
         ),
-        _buildCategoryBottomSheet(design, categoriesAsync, effectiveSelectedCategoryId),
+        ForumCategorySheet(
+          courseId: widget.courseId,
+          selectedCategoryId: _selectedCategoryId,
+          isOpen: _isCategorySheetOpen,
+          onClose: _toggleCategorySheet,
+          onCategorySelected: (id) => setState(() => _selectedCategoryId = id),
+        ),
       ],
     );
   }
@@ -184,14 +193,20 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
   ) {
     final l10n = L10n.of(context);
     final categories = categoriesAsync.valueOrNull ?? const <ForumCategoryDto>[];
-    final selectedCategory = _resolveSelectedCategory(categories);
+    
+    // Resolve selection
+    final selectedCategoryId = _selectedCategoryId ?? 
+        (categories.isNotEmpty ? categories.first.id : null);
+    final selectedCategory = categories.firstWhere(
+      (c) => c.id == selectedCategoryId,
+      orElse: () => categories.isNotEmpty ? categories.first : const ForumCategoryDto(id: '', name: ''),
+    );
+
     final hasCategories = categories.isNotEmpty;
 
-    final displayText = categoriesAsync.when(
-      data: (_) => selectedCategory?.name ?? l10n.labelLoading,
-      loading: () => l10n.labelLoading,
-      error: (error, stackTrace) => l10n.errorGenericTitle,
-    );
+    final displayText = categories.isNotEmpty 
+        ? selectedCategory.name 
+        : l10n.labelLoading;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -206,6 +221,7 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
               horizontal: design.spacing.md,
               vertical: design.spacing.sm,
             ),
+            constraints: const BoxConstraints(minHeight: 44),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(design.radius.lg),
               border: Border.all(color: design.colors.border),
@@ -226,80 +242,6 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
     );
   }
 
-  Widget _buildCategoryBottomSheet(
-    DesignConfig design,
-    AsyncValue<List<ForumCategoryDto>> categoriesAsync,
-    String? effectiveSelectedCategoryId,
-  ) {
-    final l10n = L10n.of(context);
-    final categories = categoriesAsync.valueOrNull ?? const <ForumCategoryDto>[];
-    return AppBottomSheet(
-      isOpen: _isCategorySheetOpen,
-      onClose: _toggleCategorySheet,
-      child: Container(
-        decoration: BoxDecoration(
-          color: design.colors.card,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(design.radius.xl)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: EdgeInsets.all(design.spacing.md),
-              child: AppText.title(l10n.forumPostSelectCategoryTitle),
-            ),
-            Container(height: 1, color: design.colors.divider),
-            ...categoriesAsync.when(
-              data: (_) => categories.map(
-                (category) => AppFocusable(
-                  onTap: () {
-                    setState(() => _selectedCategoryId = category.id);
-                    _toggleCategorySheet();
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: design.spacing.xl,
-                      vertical: design.spacing.md,
-                    ),
-                    child: AppText.body(
-                      category.name,
-                      color: category.id == effectiveSelectedCategoryId
-                          ? design.colors.accent2
-                          : design.colors.textPrimary,
-                    ),
-                  ),
-                ),
-              ),
-              loading: () => [
-                Padding(
-                  padding: EdgeInsets.all(design.spacing.lg),
-                  child: AppText.body(l10n.labelLoading),
-                ),
-              ],
-              error: (error, stackTrace) => [
-                Padding(
-                  padding: EdgeInsets.all(design.spacing.lg),
-                  child: AppText.body(l10n.errorGenericMessage),
-                ),
-              ],
-            ),
-            SizedBox(height: design.spacing.sm),
-          ],
-        ),
-      ),
-    );
-  }
-
-  ForumCategoryDto? _resolveSelectedCategory(List<ForumCategoryDto> categories) {
-    if (categories.isEmpty) return null;
-    if (_selectedCategoryId == null) return categories.first;
-    for (final category in categories) {
-      if (category.id == _selectedCategoryId) return category;
-    }
-    return categories.first;
-  }
-
   Widget _buildBottomActionBar(
     DesignConfig design,
     AppLocalizations l10n,
@@ -310,9 +252,9 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
     return Container(
       padding: EdgeInsets.fromLTRB(
         design.spacing.md,
-        design.spacing.xs,
+        design.spacing.sm,
         design.spacing.md,
-        MediaQuery.of(context).padding.bottom,
+        design.spacing.md,
       ),
       decoration: BoxDecoration(
         color: design.colors.card,

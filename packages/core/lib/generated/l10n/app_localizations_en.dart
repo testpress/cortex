@@ -1275,8 +1275,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forumPostTitleHint => 'Add a title...';
 
   @override
-  String get forumPostDescriptionHint =>
-      'Add descriptive details about your question...';
+  String get forumPostDescriptionHint => 'Describe your question in detail...';
 
   @override
   String get forumPostSubjectLabel => 'Title';

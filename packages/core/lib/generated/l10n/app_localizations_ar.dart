@@ -1289,7 +1289,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get forumPostTitleHint => 'أضف عنواناً...';
 
   @override
-  String get forumPostDescriptionHint => 'أضف تفاصيل وصفية حول سؤالك...';
+  String get forumPostDescriptionHint => 'صف سؤالك بالتفصيل...';
 
   @override
   String get forumPostSubjectLabel => 'العنوان';

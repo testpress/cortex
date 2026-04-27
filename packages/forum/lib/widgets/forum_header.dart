@@ -9,10 +9,12 @@ class ForumHeader extends StatelessWidget {
     super.key,
     required this.title,
     this.actions,
+    this.showDivider = true,
   });
 
   final String title;
   final List<Widget>? actions;
+  final bool showDivider;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,9 @@ class ForumHeader extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: design.colors.card,
-        border: Border(bottom: BorderSide(color: design.colors.divider)),
+        border: showDivider
+            ? Border(bottom: BorderSide(color: design.colors.divider))
+            : null,
       ),
       child: SafeArea(
         bottom: false,

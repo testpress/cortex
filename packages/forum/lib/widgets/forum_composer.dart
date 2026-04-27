@@ -132,10 +132,7 @@ class ForumEditorField extends StatelessWidget {
   }
 
   quill.DefaultStyles _buildEditorStyles(DesignConfig design) {
-    final baseStyle = design.typography.bodySmall.copyWith(
-      fontSize: 14,
-      height: 1.3,
-    );
+    final baseStyle = design.typography.bodySmall;
 
     return quill.DefaultStyles(
       placeHolder: quill.DefaultTextBlockStyle(
@@ -186,11 +183,14 @@ class ForumAttachmentPreview extends StatelessWidget {
       child: Row(
         children: [
           for (int i = 0; i < imageUrls.length; i++) ...[
-            _AttachmentItem(
-              imageUrl: imageUrls[i],
-              onRemove: () => onRemove(i),
+            Padding(
+              padding: const EdgeInsets.only(top: 10, right: 10),
+              child: _AttachmentItem(
+                imageUrl: imageUrls[i],
+                onRemove: () => onRemove(i),
+              ),
             ),
-            if (i < imageUrls.length - 1) SizedBox(width: design.spacing.sm),
+            if (i < imageUrls.length - 1) SizedBox(width: design.spacing.xs),
           ],
         ],
       ),

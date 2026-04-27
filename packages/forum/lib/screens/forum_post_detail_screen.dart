@@ -57,6 +57,7 @@ class ForumPostDetailScreen extends ConsumerWidget {
   Widget _buildHeader(DesignConfig design, AppLocalizations l10n) {
     return ForumHeader(
       title: l10n.forumDiscussion,
+      showDivider: false,
       actions: [
         AppFocusable(
           onTap: () {

@@ -1302,7 +1302,7 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get forumPostDescriptionHint =>
-      'നിങ്ങളുടെ ചോദ്യത്തെക്കുറിച്ചുള്ള വിവരങ്ങൾ ഇവിടെ നൽകുക...';
+      'നിങ്ങളുടെ ചോദ്യം വിശദമായി വിവരിക്കുക...';
 
   @override
   String get forumPostSubjectLabel => 'തലക്കെട്ട്';
