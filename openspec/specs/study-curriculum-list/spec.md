@@ -4,11 +4,11 @@
 The Searchable Study Curriculum capability allows users to navigate large course catalogs through efficient search, filtering by content type, and persistent progress tracking. It is a core pillar of the LMS experience, prioritizing performance and vertical design rhythm.
 ## Requirements
 ### Requirement: Searchable Curriculum
-The system SHALL provide a search field in the Study tab that filters the displayed list of courses and chapters based on title matches.
+The system SHALL provide a search field in the Study tab that filters the displayed list of courses and chapters based on title matches. **When a search query is active, the system SHALL switch to API-direct search mode to ensure complete results across the entire catalog.**
 
-#### Scenario: Search filters courses
+#### Scenario: Search filters courses via API
 - **WHEN** the user types "Physics" in the search bar
-- **THEN** only courses containing the word "Physics" in their title remain visible
+- **THEN** only courses matching "Physics" from the API remain visible, regardless of local cache status
 
 ### Requirement: Course Progress Visibility
 The system SHALL display a progress indicator for each course showing the percentage completed and the ratio of completed lessons to total lessons.
@@ -53,11 +53,11 @@ The system SHALL use a centralized identity source (`authProvider`) to determine
 - **THEN** curriculum and progress providers automatically invalidate and rebuild for the new user
 
 ### Requirement: Side-Effect-Free Data Seeding
-The system SHALL move all data synchronization and seeding logic (refreshing courses/progress) into a dedicated application-launch routine. Data providers SHALL remain side-effect-free, acting only as reactive streams of the underlying database state.
+The system SHALL move all data synchronization and seeding logic (refreshing courses/progress) into a dedicated application-launch routine. Data providers SHALL remain side-effect-free, acting only as reactive streams of the underlying database state. **When in search mode, the provider SHALL transition from a database stream to an ephemeral search result set to avoid polluting the persistent local data state.**
 
-#### Scenario: Reactive data updates
-- **WHEN** the underlying database is updated
-- **THEN** the data providers emit new values without manual refresh triggers
+#### Scenario: Search results bypass DB reactive stream
+- **WHEN** an active search query is detected
+- **THEN** the curriculum provider stops watching the local database and instead emits the API-fetched results directly
 
 ### Requirement: O(N) Curriculum Search
 The system SHALL pre-flatten the nested course/chapter hierarchy into a single synchronous provider (`allLessonsProvider`). This ensures that search and content-type filtering operations execute in O(N) time without nested iterations, preventing UI jank during rapid typing or filter toggling.

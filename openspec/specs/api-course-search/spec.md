@@ -1,10 +1,8 @@
-# Capability: API Course Search
+# api-course-search Specification
 
 ## Purpose
-The API Course Search capability provides a mechanism to find courses across the entire server database, bypassing local cache limitations. This ensures that users always receive complete search results, even for courses not yet loaded in their current session or local database.
-
+TBD - created by archiving change api-direct-course-search. Update Purpose after archive.
 ## Requirements
-
 ### Requirement: Server-Side Search
 The system SHALL use the backend API to search for courses when a query is provided by the user.
 
@@ -25,3 +23,4 @@ The system SHALL debounce search inputs to prevent excessive API calls during ty
 #### Scenario: Rapid typing
 - **WHEN** the user types "Swift" within 100ms
 - **THEN** only one search request for "Swift" is eventually sent after the pause
+
