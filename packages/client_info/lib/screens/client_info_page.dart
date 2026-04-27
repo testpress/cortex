@@ -60,7 +60,6 @@ class _CourseCard extends StatelessWidget {
     // Note: The route should ideally be independent of the profile slot
     return AppSemantics.button(
       label: 'Open ${course.title}',
-      onTap: () => context.push('/info/course/${course.id}'),
       child: AppFocusable(
         onTap: () => context.push('/info/course/${course.id}'),
         borderRadius: BorderRadius.circular(design.radius.lg),
@@ -235,7 +234,8 @@ class _MetaText extends StatelessWidget {
       index = subject.toLowerCase().hashCode.abs();
   }
 
-  final colors = design.subjectPalette.atIndex(index);
+  final colors =
+      design.subjectPalette.atIndex(index % design.subjectPalette.length);
 
   return (
     background: colors.background,

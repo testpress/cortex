@@ -20,3 +20,7 @@
 - [x] 4.1 Update tests to reflect the new package structure.
 - [x] 4.2 Verify that the `ENABLE_INFO_PAGE` flag still correctly toggles between Profile and Info across different configurations.
 - [x] 4.3 Smoke test the external video launch flow from the new package location.
+- [x] 4.4 Remove redundant `onTap` handlers from `AppSemantics` button containers to optimize accessibility and prevent double execution.
+- [x] 4.5 Update `app_router_test.dart` to match the 5-tab navigation implementation.
+- [x] 4.6 Add error handling (try-catch) to the external video launcher in `ClientInfoCourseDetailScreen` to prevent platform-specific crashes.
+- [x] 4.7 Implement safe bounds handling (modulo) for subject color palette access in `ClientInfoPage` to prevent out-of-bounds crashes with large hash values.

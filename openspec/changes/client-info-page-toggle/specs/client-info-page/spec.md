@@ -10,8 +10,8 @@ The system SHALL keep the Info experience disabled by default and expose it only
 
 #### Scenario: Feature enabled for an eligible client
 - **WHEN** the client configuration enables the Info experience
-- **THEN** the application MUST expose the client-specific Info page from the primary navigation flow
-- **AND** the Info experience MUST replace the standard profile destination only for that configured client variant
+- **THEN** the application MUST add the client-specific Info destination to the primary navigation flow
+- **AND** the navigation shell MUST support 5 destinations (Home, Study, Explore, Info, Profile) for that configured client variant
 
 ### Requirement: Info Resource Catalog
 The system SHALL provide an Info landing page that lists curated learning-resource courses for enabled clients.
@@ -42,6 +42,21 @@ The system SHALL open Info videos using an external destination rather than inli
 - **WHEN** the user selects a video from the course-detail view
 - **THEN** the system MUST launch the configured external video URL
 - **AND** the application MUST keep the Info navigation state available when the user returns
+
+#### Scenario: Accessible interaction handling
+- **WHEN** the user interacts with an interactive element (e.g., video row, back button)
+- **THEN** the system MUST avoid redundant interaction handlers between semantics containers and their children
+- **AND** interaction logic MUST be handled exclusively by the primary interactive widget to prevent double execution in accessibility modes
+
+#### Scenario: Fail-safe video launching
+- **WHEN** the external video launch fails due to a platform error or missing configuration
+- **THEN** the system MUST catch the exception and prevent an application crash
+- **AND** the system MUST display an appropriate error message to the user
+
+#### Scenario: Safe indexed palette access
+- **WHEN** a color is requested from a design palette using an arbitrary index (e.g., hash-based subject colors)
+- **THEN** the system MUST apply bounds-checking or a modulo operation to ensure the index fits within the available palette size
+- **AND** the system MUST avoid out-of-bounds exceptions regardless of the input index magnitude
 
 ---
 
