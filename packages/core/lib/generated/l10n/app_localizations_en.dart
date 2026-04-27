@@ -1261,4 +1261,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get forumNoDiscussions => 'No discussions found yet';
+
+  @override
+  String get forumDiscussion => 'Discussion';
+
+  @override
+  String get forumReplyPlaceholder => 'Write your reply here...';
 }

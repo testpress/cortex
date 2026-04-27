@@ -435,5 +435,7 @@
       }
     }
   },
-  "forumCreatePost": "പോസ്റ്റ് നിർമ്മിക്കുക"
+  "forumCreatePost": "പോസ്റ്റ് നിർമ്മിക്കുക",
+  "forumDiscussion": "ചർച്ച",
+  "forumReplyPlaceholder": "നിങ്ങളുടെ മറുപടി ഇവിടെ എഴുതുക..."
 }

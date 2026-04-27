@@ -15,6 +15,7 @@ class ForumThreadsTable extends Table {
 
   /// Stored as string: 'answered' | 'unanswered'
   TextColumn get status => text()();
+  TextColumn get imageUrl => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};

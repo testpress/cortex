@@ -14,6 +14,12 @@ class ForumRepository {
         .map((rows) => rows.map(_rowToDto).toList());
   }
 
+  Stream<ForumThreadDto?> watchThread(String threadId) {
+    return _db
+        .watchThreadById(threadId)
+        .map((row) => row != null ? _rowToDto(row) : null);
+  }
+
   Future<int> getThreadsCount(String courseId) async {
     final results = await _db.watchThreadsForCourse(courseId).first;
     return results.length;
@@ -39,6 +45,7 @@ class ForumRepository {
         status: row.status == 'answered'
             ? ForumThreadStatus.answered
             : ForumThreadStatus.unanswered,
+        imageUrl: row.imageUrl,
       );
 
   ForumThreadsTableCompanion _dtoToCompanion(ForumThreadDto dto) =>
@@ -54,6 +61,7 @@ class ForumRepository {
         upvotes: Value(dto.upvotes),
         downvotes: Value(dto.downvotes),
         status: dto.status.name,
+        imageUrl: Value(dto.imageUrl),
       );
 
   // ── Comments ─────────────────────────────────────────────────────────────
@@ -79,6 +87,7 @@ class ForumRepository {
         timeAgo: row.timeAgo,
         upvotes: row.upvotes,
         downvotes: row.downvotes,
+        isInstructor: row.isInstructor,
       );
 
   ForumCommentsTableCompanion _commentDtoToCompanion(ForumCommentDto dto) =>
@@ -91,5 +100,6 @@ class ForumRepository {
         timeAgo: dto.timeAgo,
         upvotes: Value(dto.upvotes),
         downvotes: Value(dto.downvotes),
+        isInstructor: Value(dto.isInstructor),
       );
 }

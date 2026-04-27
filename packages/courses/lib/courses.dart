@@ -36,3 +36,4 @@ export 'providers/recent_activity_provider.dart';
 export 'providers/dashboard_providers.dart';
 export 'screens/forum/forum_course_selection_screen.dart';
 export 'screens/forum/forum_posts_list_screen.dart';
+export 'screens/forum/forum_post_detail_screen.dart';

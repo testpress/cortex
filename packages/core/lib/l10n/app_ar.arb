@@ -435,5 +435,7 @@
       }
     }
   },
-  "forumCreatePost": "إنشاء منشور"
+  "forumCreatePost": "إنشاء منشور",
+  "forumDiscussion": "مناقشة",
+  "forumReplyPlaceholder": "اكتب ردك هنا..."
 }

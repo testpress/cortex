@@ -1287,4 +1287,10 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get forumNoDiscussions =>
       'ഈ കോഴ്സിലെ ചർച്ചകൾ ഇതുവരെ തുടങ്ങിയിട്ടില്ല.';
+
+  @override
+  String get forumDiscussion => 'ചർച്ച';
+
+  @override
+  String get forumReplyPlaceholder => 'നിങ്ങളുടെ മറുപടി ഇവിടെ എഴുതുക...';
 }

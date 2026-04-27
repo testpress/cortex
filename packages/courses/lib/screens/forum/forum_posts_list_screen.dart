@@ -126,9 +126,7 @@ class _ThreadItem extends StatelessWidget {
     final design = Design.of(context);
 
     return GestureDetector(
-      onTap: () {
-        // TODO: Navigate to details
-      },
+      onTap: () => context.push('/home/forum/posts/${thread.courseId}/${thread.id}'),
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: design.spacing.md,

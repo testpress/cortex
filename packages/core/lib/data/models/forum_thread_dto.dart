@@ -14,6 +14,7 @@ class ForumThreadDto {
   final int upvotes;
   final int downvotes;
   final ForumThreadStatus status;
+  final String? imageUrl;
 
   const ForumThreadDto({
     required this.id,
@@ -27,6 +28,7 @@ class ForumThreadDto {
     this.upvotes = 0,
     this.downvotes = 0,
     required this.status,
+    this.imageUrl,
   });
 
   int get score => upvotes - downvotes;

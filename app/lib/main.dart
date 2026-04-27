@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:testpress/testpress.dart';
+import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
@@ -53,7 +54,10 @@ class CortexApp extends ConsumerWidget {
       title: 'Cortex',
       debugShowCheckedModeBanner: false,
       locale: locale,
-      localizationsDelegates: LocalizationProvider.delegates,
+      localizationsDelegates: [
+        ...LocalizationProvider.delegates,
+        quill.FlutterQuillLocalizations.delegate,
+      ],
       supportedLocales: LocalizationProvider.supportedLocales,
       routerConfig: ref.watch(goRouterProvider),
       // Set Plus Jakarta Sans on the Material theme so widgets that still
