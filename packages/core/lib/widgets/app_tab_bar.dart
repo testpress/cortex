@@ -7,12 +7,20 @@ class AppTabItem {
     required this.label,
     required this.icon,
     this.activeIcon,
+    this.iconBuilder,
   });
 
   final String id;
   final String label;
   final IconData icon;
   final IconData? activeIcon;
+  final Widget Function(
+    BuildContext context,
+    bool isActive,
+    Color color,
+    double size,
+  )?
+  iconBuilder;
 }
 
 class AppTabBar extends StatelessWidget {
@@ -40,8 +48,9 @@ class AppTabBar extends StatelessWidget {
         top: false,
         child: Center(
           child: ConstrainedBox(
-            constraints:
-                BoxConstraints(maxWidth: design.layout.tabletBreakpoint),
+            constraints: BoxConstraints(
+              maxWidth: design.layout.tabletBreakpoint,
+            ),
             child: SizedBox(
               height: 64, // Same as h-16 in React
               child: Row(
@@ -61,13 +70,20 @@ class AppTabBar extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            isActive
-                                ? (item.activeIcon ?? item.icon)
-                                : item.icon,
-                            size: 20, // Match w-5 h-5 in React
-                            color: fgColor,
-                          ),
+                          item.iconBuilder != null
+                              ? item.iconBuilder!(
+                                  context,
+                                  isActive,
+                                  fgColor,
+                                  20,
+                                )
+                              : Icon(
+                                  isActive
+                                      ? (item.activeIcon ?? item.icon)
+                                      : item.icon,
+                                  size: 20, // Match w-5 h-5 in React
+                                  color: fgColor,
+                                ),
                           SizedBox(height: design.spacing.xs),
                           Text(
                             item.label,
