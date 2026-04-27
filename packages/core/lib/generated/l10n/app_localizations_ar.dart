@@ -1281,4 +1281,31 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get forumReplyPlaceholder => 'اكتب ردك هنا...';
+
+  @override
+  String get forumCreateNewPost => 'إنشاء منشور جديد';
+
+  @override
+  String get forumPostTitleHint => 'أضف عنواناً...';
+
+  @override
+  String get forumPostDescriptionHint => 'أضف تفاصيل وصفية حول سؤالك...';
+
+  @override
+  String get forumPostSubjectLabel => 'العنوان';
+
+  @override
+  String get forumPostDescriptionLabel => 'الوصف';
+
+  @override
+  String get forumPostCategoryLabel => 'الفئة';
+
+  @override
+  String get forumPostSelectCategoryTitle => 'اختر الفئة';
+
+  @override
+  String get forumButtonSubmit => 'إرسال';
+
+  @override
+  String get forumButtonCancel => 'إلغاء';
 }

@@ -87,6 +87,12 @@ class HttpDataSource implements DataSource {
       );
 
   @override
+  Future<List<ForumCategoryDto>> getForumCategories(String courseId) =>
+      throw UnimplementedError(
+        'HttpDataSource.getForumCategories is not yet implemented.',
+      );
+
+  @override
   Future<List<ForumCommentDto>> getForumComments(String threadId) =>
       throw UnimplementedError(
         'HttpDataSource.getForumComments is not yet implemented.',

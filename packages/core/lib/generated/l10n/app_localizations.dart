@@ -2366,6 +2366,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Write your reply here...'**
   String get forumReplyPlaceholder;
+
+  /// No description provided for @forumCreateNewPost.
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Post'**
+  String get forumCreateNewPost;
+
+  /// No description provided for @forumPostTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a title...'**
+  String get forumPostTitleHint;
+
+  /// No description provided for @forumPostDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add descriptive details about your question...'**
+  String get forumPostDescriptionHint;
+
+  /// No description provided for @forumPostSubjectLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get forumPostSubjectLabel;
+
+  /// No description provided for @forumPostDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get forumPostDescriptionLabel;
+
+  /// No description provided for @forumPostCategoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get forumPostCategoryLabel;
+
+  /// No description provided for @forumPostSelectCategoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Category'**
+  String get forumPostSelectCategoryTitle;
+
+  /// No description provided for @forumButtonSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get forumButtonSubmit;
+
+  /// No description provided for @forumButtonCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get forumButtonCancel;
 }
 
 class _AppLocalizationsDelegate

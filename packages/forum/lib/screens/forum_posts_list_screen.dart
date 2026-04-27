@@ -2,8 +2,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-import '../../providers/forum_providers.dart';
-import '../../widgets/forum_header.dart';
+import '../providers/forum_providers.dart';
+import '../widgets/forum_header.dart';
+import 'forum_post_create_screen.dart';
 
 class ForumPostsListScreen extends ConsumerWidget {
   final String courseId;
@@ -24,7 +25,7 @@ class ForumPostsListScreen extends ConsumerWidget {
         children: [
           ForumHeader(
             title: l10n.forumTitle,
-            actions: [_CreatePostButton()],
+            actions: [_CreatePostButton(courseId: courseId)],
           ),
           // Search bar — divider is AFTER the search bar
           Padding(
@@ -47,6 +48,10 @@ class ForumPostsListScreen extends ConsumerWidget {
 }
 
 class _CreatePostButton extends StatelessWidget {
+  final String courseId;
+
+  const _CreatePostButton({required this.courseId});
+
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
@@ -54,7 +59,9 @@ class _CreatePostButton extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        // TODO: Navigate to composer
+        Navigator.of(context).push(
+          AppRoute(page: ForumPostCreateScreen(courseId: courseId)),
+        );
       },
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: design.spacing.sm),

@@ -1,5 +1,4 @@
 import 'package:core/data/data.dart';
-import '../models/paginated_response_dto.dart';
 
 /// Abstract data source — implemented by [MockDataSource] and [HttpDataSource].
 /// Repositories call these methods to populate the local Drift DB.
@@ -25,6 +24,9 @@ abstract class DataSource {
 
   /// Fetch discussion forum threads for a course.
   Future<List<ForumThreadDto>> getForumThreads(String courseId);
+
+  /// Fetch forum categories available for a course.
+  Future<List<ForumCategoryDto>> getForumCategories(String courseId);
 
   /// Fetch comments for a specific thread.
   Future<List<ForumCommentDto>> getForumComments(String threadId);

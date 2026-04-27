@@ -4,6 +4,12 @@ import '../repositories/forum_repository.dart';
 
 part 'forum_providers.g.dart';
 
+final forumCategoriesProvider =
+    FutureProvider.family<List<ForumCategoryDto>, String>((ref, courseId) async {
+      final repo = await ref.watch(forumRepositoryProvider.future);
+      return repo.getCategories(courseId);
+    });
+
 @Riverpod(keepAlive: true)
 Future<ForumRepository> forumRepository(ForumRepositoryRef ref) async {
   final db = await ref.watch(appDatabaseProvider.future);

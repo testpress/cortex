@@ -20,6 +20,7 @@ class AppTextField extends StatelessWidget {
     this.autofocus = false,
     this.textInputAction,
     this.onSubmitted,
+    this.contentPadding,
   });
 
   final String label;
@@ -34,6 +35,7 @@ class AppTextField extends StatelessWidget {
   final bool autofocus;
   final TextInputAction? textInputAction;
   final ValueChanged<String>? onSubmitted;
+  final EdgeInsetsGeometry? contentPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +44,10 @@ class AppTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppText.label(label, color: design.colors.textPrimary),
-        SizedBox(height: design.spacing.xs),
+        if (label.isNotEmpty) ...[
+          AppText.label(label, color: design.colors.textPrimary),
+          SizedBox(height: design.spacing.xs),
+        ],
         Container(
           decoration: BoxDecoration(
             color: readOnly ? design.colors.surface : design.colors.card,
@@ -66,21 +70,22 @@ class AppTextField extends StatelessWidget {
               autofocus: autofocus,
               textInputAction: textInputAction,
               onSubmitted: onSubmitted,
-              style: design.typography.body.copyWith(
+              style: design.typography.bodySmall.copyWith(
                 color: readOnly
                     ? design.colors.textSecondary
                     : design.colors.textPrimary,
               ),
               decoration: InputDecoration(
                 hintText: hintText,
-                hintStyle: design.typography.body.copyWith(
+                hintStyle: design.typography.bodySmall.copyWith(
                   color: design.colors.textTertiary,
                 ),
                 border: InputBorder.none,
                 isDense: true,
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: design.spacing.md,
-                ),
+                contentPadding: contentPadding ??
+                    EdgeInsets.symmetric(
+                      vertical: design.spacing.md,
+                    ),
               ),
             ),
           ),

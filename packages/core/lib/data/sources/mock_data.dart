@@ -221,3 +221,35 @@ final mockDiscoveryCourses = [
     isRecommended: true,
   ),
 ];
+
+const mockForumCategories = [
+  ForumCategoryDto(
+    id: 'general_discussion',
+    name: 'General Discussion',
+  ),
+  ForumCategoryDto(
+    id: 'lecture_questions',
+    name: 'Lecture Questions',
+  ),
+  ForumCategoryDto(
+    id: 'assignment_help',
+    name: 'Assignment Help',
+  ),
+  ForumCategoryDto(
+    id: 'study_resources',
+    name: 'Study Resources',
+  ),
+  ForumCategoryDto(
+    id: 'exam_preparation',
+    name: 'Exam Preparation',
+  ),
+];
+
+ForumCategoryDto? findMockForumCategoryById(String categoryId) {
+  for (final category in mockForumCategories) {
+    if (category.id == categoryId) {
+      return category;
+    }
+  }
+  return null;
+}
