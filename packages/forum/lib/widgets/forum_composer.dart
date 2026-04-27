@@ -177,6 +177,7 @@ class ForumAttachmentPreview extends StatelessWidget {
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
+      clipBehavior: Clip.none,
       padding: EdgeInsets.only(
         bottom: design.spacing.sm,
       ),
@@ -184,7 +185,7 @@ class ForumAttachmentPreview extends StatelessWidget {
         children: [
           for (int i = 0; i < imageUrls.length; i++) ...[
             Padding(
-              padding: const EdgeInsets.only(top: 10, right: 10),
+              padding: const EdgeInsets.only(top: 12, right: 12),
               child: _AttachmentItem(
                 imageUrl: imageUrls[i],
                 onRemove: () => onRemove(i),
