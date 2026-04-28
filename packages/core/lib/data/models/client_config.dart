@@ -18,9 +18,9 @@ class ClientConfig {
     this.showQuickAccess = true,
     this.showContextualHero = true,
     this.showStudyCategoryButtons = true,
-    this.showResumeSection = true,
-    this.showWhatsNewSection = true,
-    this.showRecentlyCompletedSection = true,
+    this.showResumeSection = false,
+    this.showWhatsNewSection = false,
+    this.showRecentlyCompletedSection = false,
     this.instituteLogoUrl,
     this.isLocalLogo = false,
   });
@@ -87,6 +87,9 @@ class ClientConfig {
     showQuickAccess: false,
     showContextualHero: false,
     showStudyCategoryButtons: false,
+    showResumeSection: true,
+    showWhatsNewSection: true,
+    showRecentlyCompletedSection: true,
     instituteLogoUrl: 'assets/images/brilliant_pala_logo.png',
     isLocalLogo: true,
   );

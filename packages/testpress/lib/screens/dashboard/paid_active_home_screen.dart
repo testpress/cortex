@@ -258,9 +258,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                           loading: () => const SizedBox(height: 120),
                           error: (error, stack) => const SizedBox.shrink(),
                         ),
-                      const SizedBox(height: 24),
-                      lessonCardsSection,
-                      updatesAnnouncements,
+                      const SizedBox(height: 16),
                       if (config.showTodaySchedule)
                         Builder(
                           builder: (context) {
@@ -281,8 +279,11 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                             );
                           },
                         ),
+                      const SizedBox(height: 24),
+                      lessonCardsSection,
                       studyMomentum,
                       topLearnersSection,
+                      updatesAnnouncements,
                       if (config.showQuickAccess)
                         shortcuts.when(
                           data: (data) => QuickAccessGrid(
