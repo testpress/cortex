@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart' show Scaffold;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart' as dto;
 import 'package:profile/profile.dart';
@@ -81,8 +80,8 @@ class PaidActiveHomeScreen extends ConsumerWidget {
             title: L10n.of(context).homeHeaderTitle,
             isLandscape: isLandscape,
             showTitle: !isBannerPresent,
-            greeting: isBannerPresent ? _getGreeting(context) : null,
-            greetingSubtitle: isBannerPresent ? _getTodayDate() : null,
+            greeting: isBannerPresent ? L10n.of(context).getGreeting() : null,
+            greetingSubtitle: isBannerPresent ? L10n.of(context).getTodayDate() : null,
             backgroundColor: isBannerPresent ? design.colors.canvas : null,
             showBottomBorder: !isBannerPresent,
             useSafeArea: !isBannerPresent,
@@ -280,15 +279,4 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     );
   }
 
-  String _getGreeting(BuildContext context) {
-    final l10n = L10n.of(context);
-    final hour = DateTime.now().hour;
-    if (hour < 12) return l10n.greetingMorning;
-    if (hour < 17) return l10n.greetingAfternoon;
-    return l10n.greetingEvening;
-  }
-
-  String _getTodayDate() {
-    return DateFormat('EEEE · MMM d').format(DateTime.now());
-  }
 }

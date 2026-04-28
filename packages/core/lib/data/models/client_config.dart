@@ -25,6 +25,7 @@ class ClientConfig {
     bool? showContextualHero,
     bool? showStudyCategoryButtons,
     String? instituteLogoUrl,
+    bool? isLocalLogo,
   }) {
     return ClientConfig(
       showTodaySchedule: showTodaySchedule ?? this.showTodaySchedule,
@@ -33,6 +34,7 @@ class ClientConfig {
       showStudyCategoryButtons:
           showStudyCategoryButtons ?? this.showStudyCategoryButtons,
       instituteLogoUrl: instituteLogoUrl ?? this.instituteLogoUrl,
+      isLocalLogo: isLocalLogo ?? this.isLocalLogo,
     );
   }
 
@@ -43,6 +45,7 @@ class ClientConfig {
       showContextualHero: json['show_contextual_hero'] as bool? ?? true,
       showStudyCategoryButtons: json['show_study_category_buttons'] as bool? ?? true,
       instituteLogoUrl: json['institute_logo_url'] as String?,
+      isLocalLogo: json['is_local_logo'] as bool? ?? false,
     );
   }
 
@@ -53,6 +56,7 @@ class ClientConfig {
       'show_contextual_hero': showContextualHero,
       'show_study_category_buttons': showStudyCategoryButtons,
       'institute_logo_url': instituteLogoUrl,
+      'is_local_logo': isLocalLogo,
     };
   }
 

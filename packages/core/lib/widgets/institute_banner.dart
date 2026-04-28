@@ -22,60 +22,65 @@ class InstituteBanner extends StatelessWidget {
     final design = Design.of(context);
 
     return Container(
-      height: 64,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: design.isDark ? design.colors.surface : const Color(0xFFFFFFFF),
-        border: Border(
-          bottom: BorderSide(
-            color: design.colors.divider,
-            width: 1,
-          ),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // Institute Logo
-          if (isLocal)
-            Image.asset(
-              logoUrl,
-              package: 'core',
-              height: 40,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) =>
-                  const SizedBox.shrink(),
-            )
-          else
-            Image.network(
-              logoUrl,
-              height: 40,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) =>
-                  const SizedBox.shrink(),
-            ),
-          
-          // User Info
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              AppText.subtitle(
-                userName,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: design.colors.textPrimary,
-                ),
+      color: design.isDark ? design.colors.surface : const Color(0xFFFFFFFF),
+      child: SafeArea(
+        bottom: false,
+        child: Container(
+          height: 64,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: design.colors.divider,
+                width: 1,
               ),
-              AppText.caption(
-                enrollmentId,
-                style: TextStyle(
-                  color: design.colors.textSecondary,
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Institute Logo
+              if (isLocal)
+                Image.asset(
+                  logoUrl,
+                  package: 'core',
+                  height: 40,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) =>
+                      const SizedBox.shrink(),
+                )
+              else
+                Image.network(
+                  logoUrl,
+                  height: 40,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) =>
+                      const SizedBox.shrink(),
                 ),
+              
+              // User Info
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  AppText.subtitle(
+                    userName,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: design.colors.textPrimary,
+                    ),
+                  ),
+                  AppText.caption(
+                    enrollmentId,
+                    style: TextStyle(
+                      color: design.colors.textSecondary,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
