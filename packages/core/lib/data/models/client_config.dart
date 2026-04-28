@@ -7,6 +7,9 @@ class ClientConfig {
   final bool showQuickAccess;
   final bool showContextualHero;
   final bool showStudyCategoryButtons;
+  final bool showResumeSection;
+  final bool showWhatsNewSection;
+  final bool showRecentlyCompletedSection;
   final String? instituteLogoUrl;
   final bool isLocalLogo;
 
@@ -15,6 +18,9 @@ class ClientConfig {
     this.showQuickAccess = true,
     this.showContextualHero = true,
     this.showStudyCategoryButtons = true,
+    this.showResumeSection = true,
+    this.showWhatsNewSection = true,
+    this.showRecentlyCompletedSection = true,
     this.instituteLogoUrl,
     this.isLocalLogo = false,
   });
@@ -24,6 +30,9 @@ class ClientConfig {
     bool? showQuickAccess,
     bool? showContextualHero,
     bool? showStudyCategoryButtons,
+    bool? showResumeSection,
+    bool? showWhatsNewSection,
+    bool? showRecentlyCompletedSection,
     String? instituteLogoUrl,
     bool? isLocalLogo,
   }) {
@@ -33,6 +42,9 @@ class ClientConfig {
       showContextualHero: showContextualHero ?? this.showContextualHero,
       showStudyCategoryButtons:
           showStudyCategoryButtons ?? this.showStudyCategoryButtons,
+      showResumeSection: showResumeSection ?? this.showResumeSection,
+      showWhatsNewSection: showWhatsNewSection ?? this.showWhatsNewSection,
+      showRecentlyCompletedSection: showRecentlyCompletedSection ?? this.showRecentlyCompletedSection,
       instituteLogoUrl: instituteLogoUrl ?? this.instituteLogoUrl,
       isLocalLogo: isLocalLogo ?? this.isLocalLogo,
     );
@@ -44,6 +56,9 @@ class ClientConfig {
       showQuickAccess: json['show_quick_access'] as bool? ?? true,
       showContextualHero: json['show_contextual_hero'] as bool? ?? true,
       showStudyCategoryButtons: json['show_study_category_buttons'] as bool? ?? true,
+      showResumeSection: json['show_resume_section'] as bool? ?? true,
+      showWhatsNewSection: json['show_whats_new_section'] as bool? ?? true,
+      showRecentlyCompletedSection: json['show_recently_completed_section'] as bool? ?? true,
       instituteLogoUrl: json['institute_logo_url'] as String?,
       isLocalLogo: json['is_local_logo'] as bool? ?? false,
     );
@@ -55,6 +70,9 @@ class ClientConfig {
       'show_quick_access': showQuickAccess,
       'show_contextual_hero': showContextualHero,
       'show_study_category_buttons': showStudyCategoryButtons,
+      'show_resume_section': showResumeSection,
+      'show_whats_new_section': showWhatsNewSection,
+      'show_recently_completed_section': showRecentlyCompletedSection,
       'institute_logo_url': instituteLogoUrl,
       'is_local_logo': isLocalLogo,
     };

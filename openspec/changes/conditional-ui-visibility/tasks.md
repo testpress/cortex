@@ -28,3 +28,10 @@
 - [x] 5.1 Update `DashboardHeader` to support `customTopPadding` for domain-specific alignment.
 - [x] 5.2 Decouple `DashboardHeader` from safe area logic when rendered below a sticky banner.
 - [x] 5.3 Ensure vertical spacing is isolated between different subdomains.
+32: 
+33: ## 6. Lesson Sections Implementation
+34: 
+35: - [x] 6.1 Extend `ClientConfig` with lesson section flags (`showResumeSection`, `showWhatsNewSection`, `showRecentlyCompletedSection`).
+36: - [x] 6.2 Create `LessonCardWidget` and `LessonCardsSectionWidget` with reusable carousel layout.
+37: - [x] 6.3 Integrate lesson sections into `PaidActiveHomeScreen` with subdomain-specific reordering logic.
+38: - [x] 6.4 Refine lesson card design (aspect ratio, padding, dark mode surface colors) to match React prototype.

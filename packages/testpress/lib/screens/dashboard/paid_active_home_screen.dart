@@ -5,6 +5,7 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart' as dto;
 import 'package:profile/profile.dart';
 import 'package:courses/courses.dart';
+import 'widgets/lesson_cards_section.dart';
 
 class PaidActiveHomeScreen extends ConsumerWidget {
   const PaidActiveHomeScreen({super.key});
@@ -31,6 +32,101 @@ class PaidActiveHomeScreen extends ConsumerWidget {
 
     final isBannerPresent = config.instituteLogoUrl != null;
 
+    final dummyResumeLessons = [
+      const LessonCardModel(
+        id: '1',
+        title: 'Wave Optics',
+        chapterName: 'Physics Class 12',
+        subject: 'Physics',
+        progress: 45,
+        duration: '1h 30m',
+        instructor: 'Dr. Smith',
+        coverImage: 'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=500&q=80',
+      ),
+      const LessonCardModel(
+        id: '2',
+        title: 'Chemical Kinetics',
+        chapterName: 'Chemistry Class 12',
+        subject: 'Chemistry',
+        progress: 20,
+        duration: '45m',
+        instructor: 'Prof. Jones',
+        coverImage: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=500&q=80',
+      ),
+      const LessonCardModel(
+        id: '3',
+        title: 'Electromagnetic Waves',
+        chapterName: 'Physics Class 12',
+        subject: 'Physics',
+        progress: 10,
+        duration: '1h',
+        instructor: 'Dr. Smith',
+        coverImage: 'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=500&q=80',
+      ),
+    ];
+
+    final dummyWhatsNewLessons = [
+      const LessonCardModel(
+        id: '4',
+        title: 'Integral Calculus',
+        chapterName: 'Math Class 12',
+        subject: 'Mathematics',
+        duration: '2h',
+        instructor: 'Mr. White',
+        coverImage: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=500&q=80',
+      ),
+      const LessonCardModel(
+        id: '5',
+        title: 'Organic Chemistry',
+        chapterName: 'Chemistry Class 12',
+        subject: 'Chemistry',
+        duration: '1h 45m',
+        instructor: 'Prof. Jones',
+        coverImage: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=500&q=80',
+      ),
+      const LessonCardModel(
+        id: '9',
+        title: 'Probability',
+        chapterName: 'Math Class 12',
+        subject: 'Mathematics',
+        duration: '1h 10m',
+        instructor: 'Mr. White',
+        coverImage: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=500&q=80',
+      ),
+    ];
+
+    final dummyCompletedLessons = [
+      const LessonCardModel(
+        id: '6',
+        title: 'Cell Biology',
+        chapterName: 'Biology Class 11',
+        subject: 'Biology',
+        progress: 100,
+        duration: '1h',
+        instructor: 'Ms. Green',
+        coverImage: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
+      ),
+      const LessonCardModel(
+        id: '7',
+        title: 'Genetics',
+        chapterName: 'Biology Class 12',
+        subject: 'Biology',
+        progress: 100,
+        duration: '2h 15m',
+        instructor: 'Ms. Green',
+        coverImage: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
+      ),
+      const LessonCardModel(
+        id: '8',
+        title: 'Plant Physiology',
+        chapterName: 'Biology Class 11',
+        subject: 'Biology',
+        progress: 100,
+        duration: '1h 20m',
+        instructor: 'Ms. Green',
+        coverImage: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
+      ),
+    ];
 
     final topCarousel = heroBanners.when(
       data: (data) => HeroBannerCarousel(
@@ -68,6 +164,13 @@ class PaidActiveHomeScreen extends ConsumerWidget {
       ),
       loading: () => const SizedBox(height: 100),
       error: (error, stack) => const SizedBox.shrink(),
+    );
+
+    final lessonCardsSection = LessonCardsSectionWidget(
+      resumeLessons: dummyResumeLessons,
+      whatsNewLessons: dummyWhatsNewLessons,
+      recentlyCompletedLessons: dummyCompletedLessons,
+      config: config,
     );
 
     return Scaffold(
@@ -114,6 +217,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                     const SizedBox(height: 16),
                     if (isBannerPresent) ...[
                       // Brilliant specific order
+                      lessonCardsSection,
                       updatesAnnouncements,
                       const SizedBox(height: 24),
                       studyMomentum,
@@ -155,6 +259,8 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                           error: (error, stack) => const SizedBox.shrink(),
                         ),
                       const SizedBox(height: 24),
+                      lessonCardsSection,
+                      updatesAnnouncements,
                       if (config.showTodaySchedule)
                         Builder(
                           builder: (context) {
@@ -177,7 +283,6 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                         ),
                       studyMomentum,
                       topLearnersSection,
-                      updatesAnnouncements,
                       if (config.showQuickAccess)
                         shortcuts.when(
                           data: (data) => QuickAccessGrid(
