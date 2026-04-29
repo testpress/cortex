@@ -8,6 +8,9 @@ We are refactoring the Forum infrastructure and integrating new UI screens. This
 - The system SHALL migrate database tables for threads and comments to support social stats.
 - The system SHALL upgrade to Generic authorship (Name/Avatar strings) across DTOs and Repos.
 - The UI SHALL introduce immersive, non-Material views for selecting courses and viewing discussion lists.
+- The system SHALL implement course-scoped discussion threads with metadata and social statistics.
+- The system SHALL support status badges for answered and unanswered threads.
+- The system SHALL enable navigation between courses and their respective discussion lists.
 
 ## Capabilities
 
