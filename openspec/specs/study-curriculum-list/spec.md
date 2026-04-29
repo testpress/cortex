@@ -24,6 +24,12 @@ The system SHALL allow users to toggle filters for "Video", "Lesson", "Assessmen
 - **WHEN** the "Video" content type filter is active
 - **THEN** the UI switches from a course list to a flat list of all video lessons across all enrolled courses
 
+#### Scenario: Gated category shortcuts
+- **GIVEN** the client configuration has `showStudyCategoryButtons` set to `false`
+- **WHEN** the study screen search header is rendered
+- **THEN** the category shortcut buttons (Videos, Lessons, Assessments, Tests) MUST NOT be displayed
+- **AND** the search bar MUST occupy the appropriate layout space without the buttons below it
+
 ### Requirement: Sticky Mini-Player
 The system SHALL display a floating resume card at the bottom of the Study page if the user has an incomplete lesson.
 

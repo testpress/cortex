@@ -16,6 +16,12 @@ The system SHALL group the user's daily schedule into contextual sections within
 - **WHEN** there are multiple upcoming classes
 - **THEN** only the first one appears in "Now & Next", while the others appear in the "Later Today" section
 
+#### Scenario: Gated accessibility
+- **GIVEN** the client configuration has `showTodaySchedule` set to `false`
+- **WHEN** the `PaidActiveHomeScreen` is rendered
+- **THEN** the `TodaySnapshot` section MUST be hidden from the UI
+- **AND** any associated data fetching for this section SHOULD be bypassed
+
 ---
 
 ### Requirement: Visual Status Indicators
@@ -58,6 +64,16 @@ The system SHALL provide a `ContextualHeroCard` and `QuickAccess` grid for frict
 #### Scenario: Adaptive shortcut colors
 - **WHEN** items in the `QuickAccessGrid` are rendered
 - **THEN** background and icon colors MUST be resolved from `design.shortcutPalette.atIndex(index)`
+
+#### Scenario: Gated Quick Access
+- **GIVEN** the client configuration has `showQuickAccess` set to `false`
+- **WHEN** the `PaidActiveHomeScreen` is rendered
+- **THEN** the `QuickAccessGrid` MUST NOT be visible
+
+#### Scenario: Gated Contextual Hero
+- **GIVEN** the client configuration has `showContextualHero` set to `false`
+- **WHEN** the `PaidActiveHomeScreen` is rendered
+- **THEN** the `ContextualHeroCard` MUST NOT be displayed
 
 ---
 
@@ -117,4 +133,22 @@ The system SHALL match exact iconography and visual masking definitions.
 #### Scenario: Specific Divider Tones
 - **WHEN** rendering the horizontal dividers in the `StudyMomentumGrid` learning stats
 - **THEN** the dividers MUST use `#E2E8F0` (`slate-200`) in light mode and `#1F2937` (`slate-800`) in dark mode explicitly to enhance contrast visibility.
+
+---
+
+### Requirement: Domain-Specific Layout Behavior
+The system SHALL support specialized layout rules and section ordering based on client configuration.
+
+#### Scenario: Sticky branding for specialized institutes
+- **GIVEN** a client configuration with an active institute banner (e.g., Brilliant)
+- **WHEN** the user scrolls the home screen
+- **THEN** the `InstituteBanner` MUST remain fixed (sticky) at the top
+- **AND** the `DashboardHeader` MUST scroll with the content
+- **BUT** for standard clients without a banner, the `DashboardHeader` MUST remain fixed at the top
+
+#### Scenario: Custom section prioritization
+- **GIVEN** the "Brilliant" institute configuration
+- **WHEN** the dashboard sections are rendered
+- **THEN** they MUST follow the specific sequence: Top Carousel -> Updates & Announcements -> Learning Performance -> Top Learners
+- **AND** this sequence MUST NOT affect the default ordering of other subdomains
 
