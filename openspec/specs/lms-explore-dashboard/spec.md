@@ -25,4 +25,10 @@ The system SHALL provide a horizontal list of interactive "pills" (Trending, Rec
 
 #### Scenario: Tapping a filter pill
 - **WHEN** the user taps a specific pill in the filter bar (e.g., "Study Tips")
-- **THEN** the system SHALL automatically scroll the dashboard to the corresponding section header
+
+### Requirement: Popular Tests Data Fetching
+The system SHALL provide popular tests data for the Explore dashboard through the shared `DataSource` abstraction in `core`, ensuring zero runtime dependency on the `exams` package for discovery features.
+
+#### Scenario: Mock data source returns popular tests
+- **WHEN** `dataSourceProvider.getPopularTests()` is called in mock mode
+- **THEN** a list of `PopularTestDto` items is returned with complete metadata (title, time, duration, type).
