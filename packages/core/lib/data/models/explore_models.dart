@@ -203,7 +203,11 @@ class PopularTestDto {
       title: json['title'] as String,
       time: json['time'] as String,
       duration: json['duration'] as String,
-      type: PopularTestType.values.byName(json['type'] as String),
+      type: PopularTestType.values.firstWhere(
+        (e) => e.name == json['type'],
+        orElse: () => PopularTestType.practice,
+      ),
+
       thumbnail: json['thumbnail'] as String?,
       isImportant: json['isImportant'] as bool? ?? false,
     );
