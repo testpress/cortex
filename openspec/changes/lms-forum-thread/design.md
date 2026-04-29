@@ -18,20 +18,20 @@ The forum module currently has course selection and thread list screens. However
 
 ## Decisions
 
-- **Architecture**: The screen will live in `packages/courses/lib/screens/forum/`. 
+- **Architecture**: The screen lives in `packages/forum/lib/screens/`.
 - **State Management**:
-    - `threadDetailProvider(threadId)`: To fetch the thread metadata.
+    - `forumThreadDetailProvider(courseId, threadId)`: To fetch/watch thread metadata.
     - `threadCommentsProvider(threadId)`: To fetch/watch comments associated with the thread.
 - **UI Components**:
     - Use `ForumHeader` for consistency.
-    - `ThreadContentCard`: To display the original question at the top.
-    - `AttachmentPreviewRow`: A horizontal list of selected images with remove capabilities.
-    - `ReplyList`: Vertical list of comments (using Column inside ScrollView for performance).
+    - `ThreadContentHeader`: To display the original question at the top.
+    - `AttachmentPreview`: A horizontal list of selected images with remove capabilities.
+    - `CommentList`: Vertical list of comments rendered under the thread content.
     - `StickyReplyInput`: A rich-text editor based on `flutter_quill`.
 - **Rich Text Architecture**:
     - **Editor**: `quill.QuillEditor` for WYSIWYG editing.
-    - **Toolbar**: Custom built toolbar (Material-free) for Bold, Italic, Code, Lists, Links, and Images.
-    - **Conversion**: `_QuillEditorService` to convert internal Delta format to HTML for backend compatibility (Trix format).
+    - **Toolbar**: Custom built toolbar (Material-free) for Bold, Italic, Code, Lists, and Images.
+    - **Conversion**: `_QuillEditorService` converts internal Delta format to HTML for API payload compatibility.
 - **Design Tokens**: Strict adherence to `Design.of(context)` for colors, typography, and spacing to ensure a premium feel.
 
 ## Risks / Trade-offs

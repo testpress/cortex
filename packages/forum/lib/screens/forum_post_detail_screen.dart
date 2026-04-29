@@ -736,7 +736,6 @@ class _EditorContainer extends StatelessWidget {
           controller: controller,
           scrollController: scrollController,
           focusNode: focusNode,
-          showPlaceholder: !showToolbar,
           l10n: l10n,
         ),
       ),
@@ -748,14 +747,12 @@ class _EditorContent extends StatelessWidget {
   final quill.QuillController controller;
   final ScrollController scrollController;
   final FocusNode focusNode;
-  final bool showPlaceholder;
   final AppLocalizations l10n;
 
   const _EditorContent({
     required this.controller,
     required this.scrollController,
     required this.focusNode,
-    required this.showPlaceholder,
     required this.l10n,
   });
 
@@ -788,7 +785,7 @@ class _EditorContent extends StatelessWidget {
         autoFocus: false,
         expands: false,
         padding: const EdgeInsets.only(right: 6),
-        placeholder: showPlaceholder ? l10n.forumReplyPlaceholder : '',
+        placeholder: l10n.forumReplyPlaceholder,
         customStyles: _buildEditorStyles(design),
       ),
     );

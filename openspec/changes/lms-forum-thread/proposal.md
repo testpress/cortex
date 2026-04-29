@@ -23,6 +23,6 @@ This change introduces the `ForumPostDetailScreen` (Discussion Forum Details Pag
 
 ## Impact
 
-- **Packages**: `packages/courses` will host the new screen and providers.
-- **Data**: New providers for thread comments in `packages/courses/lib/providers/forum_providers.dart`.
+- **Packages**: `packages/forum` hosts the screen, providers, and forum repository integration.
+- **Data**: Thread detail/comments providers are implemented in `packages/forum/lib/providers/forum_providers.dart`.
 - **Navigation**: `ForumPostsListScreen` will be updated to navigate to the new detail screen.

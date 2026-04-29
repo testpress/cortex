@@ -6,25 +6,6 @@ part of 'repository_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$forumRepositoryHash() => r'085755f0b01a618f5faaf049e8ed0dfe66ae4989';
-
-/// Provides the [ForumRepository].
-///
-/// Copied from [forumRepository].
-@ProviderFor(forumRepository)
-final forumRepositoryProvider = FutureProvider<ForumRepository>.internal(
-  forumRepository,
-  name: r'forumRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$forumRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ForumRepositoryRef = FutureProviderRef<ForumRepository>;
 String _$userProgressRepositoryHash() =>
     r'd0097a2fea2156b62b890f7b0823fe893a865562';
 
