@@ -27,3 +27,30 @@ Stream<List<ForumThreadDto>> courseForumThreads(CourseForumThreadsRef ref, Strin
 
   yield* repo.watchThreads(courseId);
 }
+
+@Riverpod(keepAlive: true)
+Stream<ForumThreadDto?> forumThreadDetail(ForumThreadDetailRef ref, {required String courseId, required String threadId}) async* {
+  final repo = await ref.watch(forumRepositoryProvider.future);
+  
+  // Fetch existing count to decide if we need to block on initial load
+  final count = await repo.getThreadsCount(courseId);
+  final refreshFuture = repo.refreshThreads(courseId);
+
+  if (count == 0) {
+    await refreshFuture;
+  } else {
+    refreshFuture.ignore();
+  }
+
+  yield* repo.watchThread(threadId);
+}
+
+@Riverpod(keepAlive: true)
+Stream<List<ForumCommentDto>> threadComments(ThreadCommentsRef ref, String threadId) async* {
+  final repo = await ref.watch(forumRepositoryProvider.future);
+  
+  // Refresh comments on load
+  repo.refreshComments(threadId).ignore();
+
+  yield* repo.watchComments(threadId);
+}

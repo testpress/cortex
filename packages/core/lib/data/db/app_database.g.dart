@@ -2781,6 +2781,17 @@ class $ForumThreadsTableTable extends ForumThreadsTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _imageUrlMeta = const VerificationMeta(
+    'imageUrl',
+  );
+  @override
+  late final GeneratedColumn<String> imageUrl = GeneratedColumn<String>(
+    'image_url',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -2794,6 +2805,7 @@ class $ForumThreadsTableTable extends ForumThreadsTable
     upvotes,
     downvotes,
     status,
+    imageUrl,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2890,6 +2902,12 @@ class $ForumThreadsTableTable extends ForumThreadsTable
     } else if (isInserting) {
       context.missing(_statusMeta);
     }
+    if (data.containsKey('image_url')) {
+      context.handle(
+        _imageUrlMeta,
+        imageUrl.isAcceptableOrUnknown(data['image_url']!, _imageUrlMeta),
+      );
+    }
     return context;
   }
 
@@ -2943,6 +2961,10 @@ class $ForumThreadsTableTable extends ForumThreadsTable
         DriftSqlType.string,
         data['${effectivePrefix}status'],
       )!,
+      imageUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}image_url'],
+      ),
     );
   }
 
@@ -2967,6 +2989,7 @@ class ForumThreadsTableData extends DataClass
 
   /// Stored as string: 'answered' | 'unanswered'
   final String status;
+  final String? imageUrl;
   const ForumThreadsTableData({
     required this.id,
     required this.courseId,
@@ -2979,6 +3002,7 @@ class ForumThreadsTableData extends DataClass
     required this.upvotes,
     required this.downvotes,
     required this.status,
+    this.imageUrl,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2996,6 +3020,9 @@ class ForumThreadsTableData extends DataClass
     map['upvotes'] = Variable<int>(upvotes);
     map['downvotes'] = Variable<int>(downvotes);
     map['status'] = Variable<String>(status);
+    if (!nullToAbsent || imageUrl != null) {
+      map['image_url'] = Variable<String>(imageUrl);
+    }
     return map;
   }
 
@@ -3014,6 +3041,9 @@ class ForumThreadsTableData extends DataClass
       upvotes: Value(upvotes),
       downvotes: Value(downvotes),
       status: Value(status),
+      imageUrl: imageUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(imageUrl),
     );
   }
 
@@ -3034,6 +3064,7 @@ class ForumThreadsTableData extends DataClass
       upvotes: serializer.fromJson<int>(json['upvotes']),
       downvotes: serializer.fromJson<int>(json['downvotes']),
       status: serializer.fromJson<String>(json['status']),
+      imageUrl: serializer.fromJson<String?>(json['imageUrl']),
     );
   }
   @override
@@ -3051,6 +3082,7 @@ class ForumThreadsTableData extends DataClass
       'upvotes': serializer.toJson<int>(upvotes),
       'downvotes': serializer.toJson<int>(downvotes),
       'status': serializer.toJson<String>(status),
+      'imageUrl': serializer.toJson<String?>(imageUrl),
     };
   }
 
@@ -3066,6 +3098,7 @@ class ForumThreadsTableData extends DataClass
     int? upvotes,
     int? downvotes,
     String? status,
+    Value<String?> imageUrl = const Value.absent(),
   }) => ForumThreadsTableData(
     id: id ?? this.id,
     courseId: courseId ?? this.courseId,
@@ -3078,6 +3111,7 @@ class ForumThreadsTableData extends DataClass
     upvotes: upvotes ?? this.upvotes,
     downvotes: downvotes ?? this.downvotes,
     status: status ?? this.status,
+    imageUrl: imageUrl.present ? imageUrl.value : this.imageUrl,
   );
   ForumThreadsTableData copyWithCompanion(ForumThreadsTableCompanion data) {
     return ForumThreadsTableData(
@@ -3100,6 +3134,7 @@ class ForumThreadsTableData extends DataClass
       upvotes: data.upvotes.present ? data.upvotes.value : this.upvotes,
       downvotes: data.downvotes.present ? data.downvotes.value : this.downvotes,
       status: data.status.present ? data.status.value : this.status,
+      imageUrl: data.imageUrl.present ? data.imageUrl.value : this.imageUrl,
     );
   }
 
@@ -3116,7 +3151,8 @@ class ForumThreadsTableData extends DataClass
           ..write('replyCount: $replyCount, ')
           ..write('upvotes: $upvotes, ')
           ..write('downvotes: $downvotes, ')
-          ..write('status: $status')
+          ..write('status: $status, ')
+          ..write('imageUrl: $imageUrl')
           ..write(')'))
         .toString();
   }
@@ -3134,6 +3170,7 @@ class ForumThreadsTableData extends DataClass
     upvotes,
     downvotes,
     status,
+    imageUrl,
   );
   @override
   bool operator ==(Object other) =>
@@ -3149,7 +3186,8 @@ class ForumThreadsTableData extends DataClass
           other.replyCount == this.replyCount &&
           other.upvotes == this.upvotes &&
           other.downvotes == this.downvotes &&
-          other.status == this.status);
+          other.status == this.status &&
+          other.imageUrl == this.imageUrl);
 }
 
 class ForumThreadsTableCompanion
@@ -3165,6 +3203,7 @@ class ForumThreadsTableCompanion
   final Value<int> upvotes;
   final Value<int> downvotes;
   final Value<String> status;
+  final Value<String?> imageUrl;
   final Value<int> rowid;
   const ForumThreadsTableCompanion({
     this.id = const Value.absent(),
@@ -3178,6 +3217,7 @@ class ForumThreadsTableCompanion
     this.upvotes = const Value.absent(),
     this.downvotes = const Value.absent(),
     this.status = const Value.absent(),
+    this.imageUrl = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ForumThreadsTableCompanion.insert({
@@ -3192,6 +3232,7 @@ class ForumThreadsTableCompanion
     this.upvotes = const Value.absent(),
     this.downvotes = const Value.absent(),
     required String status,
+    this.imageUrl = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        courseId = Value(courseId),
@@ -3212,6 +3253,7 @@ class ForumThreadsTableCompanion
     Expression<int>? upvotes,
     Expression<int>? downvotes,
     Expression<String>? status,
+    Expression<String>? imageUrl,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -3226,6 +3268,7 @@ class ForumThreadsTableCompanion
       if (upvotes != null) 'upvotes': upvotes,
       if (downvotes != null) 'downvotes': downvotes,
       if (status != null) 'status': status,
+      if (imageUrl != null) 'image_url': imageUrl,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -3242,6 +3285,7 @@ class ForumThreadsTableCompanion
     Value<int>? upvotes,
     Value<int>? downvotes,
     Value<String>? status,
+    Value<String?>? imageUrl,
     Value<int>? rowid,
   }) {
     return ForumThreadsTableCompanion(
@@ -3256,6 +3300,7 @@ class ForumThreadsTableCompanion
       upvotes: upvotes ?? this.upvotes,
       downvotes: downvotes ?? this.downvotes,
       status: status ?? this.status,
+      imageUrl: imageUrl ?? this.imageUrl,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -3296,6 +3341,9 @@ class ForumThreadsTableCompanion
     if (status.present) {
       map['status'] = Variable<String>(status.value);
     }
+    if (imageUrl.present) {
+      map['image_url'] = Variable<String>(imageUrl.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -3316,6 +3364,7 @@ class ForumThreadsTableCompanion
           ..write('upvotes: $upvotes, ')
           ..write('downvotes: $downvotes, ')
           ..write('status: $status, ')
+          ..write('imageUrl: $imageUrl, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3416,6 +3465,21 @@ class $ForumCommentsTableTable extends ForumCommentsTable
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _isInstructorMeta = const VerificationMeta(
+    'isInstructor',
+  );
+  @override
+  late final GeneratedColumn<bool> isInstructor = GeneratedColumn<bool>(
+    'is_instructor',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_instructor" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -3426,6 +3490,7 @@ class $ForumCommentsTableTable extends ForumCommentsTable
     timeAgo,
     upvotes,
     downvotes,
+    isInstructor,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -3497,6 +3562,15 @@ class $ForumCommentsTableTable extends ForumCommentsTable
         downvotes.isAcceptableOrUnknown(data['downvotes']!, _downvotesMeta),
       );
     }
+    if (data.containsKey('is_instructor')) {
+      context.handle(
+        _isInstructorMeta,
+        isInstructor.isAcceptableOrUnknown(
+          data['is_instructor']!,
+          _isInstructorMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -3538,6 +3612,10 @@ class $ForumCommentsTableTable extends ForumCommentsTable
         DriftSqlType.int,
         data['${effectivePrefix}downvotes'],
       )!,
+      isInstructor: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_instructor'],
+      )!,
     );
   }
 
@@ -3557,6 +3635,7 @@ class ForumCommentsTableData extends DataClass
   final String timeAgo;
   final int upvotes;
   final int downvotes;
+  final bool isInstructor;
   const ForumCommentsTableData({
     required this.id,
     required this.threadId,
@@ -3566,6 +3645,7 @@ class ForumCommentsTableData extends DataClass
     required this.timeAgo,
     required this.upvotes,
     required this.downvotes,
+    required this.isInstructor,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -3580,6 +3660,7 @@ class ForumCommentsTableData extends DataClass
     map['time_ago'] = Variable<String>(timeAgo);
     map['upvotes'] = Variable<int>(upvotes);
     map['downvotes'] = Variable<int>(downvotes);
+    map['is_instructor'] = Variable<bool>(isInstructor);
     return map;
   }
 
@@ -3595,6 +3676,7 @@ class ForumCommentsTableData extends DataClass
       timeAgo: Value(timeAgo),
       upvotes: Value(upvotes),
       downvotes: Value(downvotes),
+      isInstructor: Value(isInstructor),
     );
   }
 
@@ -3612,6 +3694,7 @@ class ForumCommentsTableData extends DataClass
       timeAgo: serializer.fromJson<String>(json['timeAgo']),
       upvotes: serializer.fromJson<int>(json['upvotes']),
       downvotes: serializer.fromJson<int>(json['downvotes']),
+      isInstructor: serializer.fromJson<bool>(json['isInstructor']),
     );
   }
   @override
@@ -3626,6 +3709,7 @@ class ForumCommentsTableData extends DataClass
       'timeAgo': serializer.toJson<String>(timeAgo),
       'upvotes': serializer.toJson<int>(upvotes),
       'downvotes': serializer.toJson<int>(downvotes),
+      'isInstructor': serializer.toJson<bool>(isInstructor),
     };
   }
 
@@ -3638,6 +3722,7 @@ class ForumCommentsTableData extends DataClass
     String? timeAgo,
     int? upvotes,
     int? downvotes,
+    bool? isInstructor,
   }) => ForumCommentsTableData(
     id: id ?? this.id,
     threadId: threadId ?? this.threadId,
@@ -3647,6 +3732,7 @@ class ForumCommentsTableData extends DataClass
     timeAgo: timeAgo ?? this.timeAgo,
     upvotes: upvotes ?? this.upvotes,
     downvotes: downvotes ?? this.downvotes,
+    isInstructor: isInstructor ?? this.isInstructor,
   );
   ForumCommentsTableData copyWithCompanion(ForumCommentsTableCompanion data) {
     return ForumCommentsTableData(
@@ -3662,6 +3748,9 @@ class ForumCommentsTableData extends DataClass
       timeAgo: data.timeAgo.present ? data.timeAgo.value : this.timeAgo,
       upvotes: data.upvotes.present ? data.upvotes.value : this.upvotes,
       downvotes: data.downvotes.present ? data.downvotes.value : this.downvotes,
+      isInstructor: data.isInstructor.present
+          ? data.isInstructor.value
+          : this.isInstructor,
     );
   }
 
@@ -3675,7 +3764,8 @@ class ForumCommentsTableData extends DataClass
           ..write('content: $content, ')
           ..write('timeAgo: $timeAgo, ')
           ..write('upvotes: $upvotes, ')
-          ..write('downvotes: $downvotes')
+          ..write('downvotes: $downvotes, ')
+          ..write('isInstructor: $isInstructor')
           ..write(')'))
         .toString();
   }
@@ -3690,6 +3780,7 @@ class ForumCommentsTableData extends DataClass
     timeAgo,
     upvotes,
     downvotes,
+    isInstructor,
   );
   @override
   bool operator ==(Object other) =>
@@ -3702,7 +3793,8 @@ class ForumCommentsTableData extends DataClass
           other.content == this.content &&
           other.timeAgo == this.timeAgo &&
           other.upvotes == this.upvotes &&
-          other.downvotes == this.downvotes);
+          other.downvotes == this.downvotes &&
+          other.isInstructor == this.isInstructor);
 }
 
 class ForumCommentsTableCompanion
@@ -3715,6 +3807,7 @@ class ForumCommentsTableCompanion
   final Value<String> timeAgo;
   final Value<int> upvotes;
   final Value<int> downvotes;
+  final Value<bool> isInstructor;
   final Value<int> rowid;
   const ForumCommentsTableCompanion({
     this.id = const Value.absent(),
@@ -3725,6 +3818,7 @@ class ForumCommentsTableCompanion
     this.timeAgo = const Value.absent(),
     this.upvotes = const Value.absent(),
     this.downvotes = const Value.absent(),
+    this.isInstructor = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ForumCommentsTableCompanion.insert({
@@ -3736,6 +3830,7 @@ class ForumCommentsTableCompanion
     required String timeAgo,
     this.upvotes = const Value.absent(),
     this.downvotes = const Value.absent(),
+    this.isInstructor = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        threadId = Value(threadId),
@@ -3751,6 +3846,7 @@ class ForumCommentsTableCompanion
     Expression<String>? timeAgo,
     Expression<int>? upvotes,
     Expression<int>? downvotes,
+    Expression<bool>? isInstructor,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -3762,6 +3858,7 @@ class ForumCommentsTableCompanion
       if (timeAgo != null) 'time_ago': timeAgo,
       if (upvotes != null) 'upvotes': upvotes,
       if (downvotes != null) 'downvotes': downvotes,
+      if (isInstructor != null) 'is_instructor': isInstructor,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -3775,6 +3872,7 @@ class ForumCommentsTableCompanion
     Value<String>? timeAgo,
     Value<int>? upvotes,
     Value<int>? downvotes,
+    Value<bool>? isInstructor,
     Value<int>? rowid,
   }) {
     return ForumCommentsTableCompanion(
@@ -3786,6 +3884,7 @@ class ForumCommentsTableCompanion
       timeAgo: timeAgo ?? this.timeAgo,
       upvotes: upvotes ?? this.upvotes,
       downvotes: downvotes ?? this.downvotes,
+      isInstructor: isInstructor ?? this.isInstructor,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -3817,6 +3916,9 @@ class ForumCommentsTableCompanion
     if (downvotes.present) {
       map['downvotes'] = Variable<int>(downvotes.value);
     }
+    if (isInstructor.present) {
+      map['is_instructor'] = Variable<bool>(isInstructor.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -3834,6 +3936,7 @@ class ForumCommentsTableCompanion
           ..write('timeAgo: $timeAgo, ')
           ..write('upvotes: $upvotes, ')
           ..write('downvotes: $downvotes, ')
+          ..write('isInstructor: $isInstructor, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -6537,6 +6640,7 @@ typedef $$ForumThreadsTableTableCreateCompanionBuilder =
       Value<int> upvotes,
       Value<int> downvotes,
       required String status,
+      Value<String?> imageUrl,
       Value<int> rowid,
     });
 typedef $$ForumThreadsTableTableUpdateCompanionBuilder =
@@ -6552,6 +6656,7 @@ typedef $$ForumThreadsTableTableUpdateCompanionBuilder =
       Value<int> upvotes,
       Value<int> downvotes,
       Value<String> status,
+      Value<String?> imageUrl,
       Value<int> rowid,
     });
 
@@ -6616,6 +6721,11 @@ class $$ForumThreadsTableTableFilterComposer
 
   ColumnFilters<String> get status => $composableBuilder(
     column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get imageUrl => $composableBuilder(
+    column: $table.imageUrl,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -6683,6 +6793,11 @@ class $$ForumThreadsTableTableOrderingComposer
     column: $table.status,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get imageUrl => $composableBuilder(
+    column: $table.imageUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$ForumThreadsTableTableAnnotationComposer
@@ -6734,6 +6849,9 @@ class $$ForumThreadsTableTableAnnotationComposer
 
   GeneratedColumn<String> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get imageUrl =>
+      $composableBuilder(column: $table.imageUrl, builder: (column) => column);
 }
 
 class $$ForumThreadsTableTableTableManager
@@ -6787,6 +6905,7 @@ class $$ForumThreadsTableTableTableManager
                 Value<int> upvotes = const Value.absent(),
                 Value<int> downvotes = const Value.absent(),
                 Value<String> status = const Value.absent(),
+                Value<String?> imageUrl = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ForumThreadsTableCompanion(
                 id: id,
@@ -6800,6 +6919,7 @@ class $$ForumThreadsTableTableTableManager
                 upvotes: upvotes,
                 downvotes: downvotes,
                 status: status,
+                imageUrl: imageUrl,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -6815,6 +6935,7 @@ class $$ForumThreadsTableTableTableManager
                 Value<int> upvotes = const Value.absent(),
                 Value<int> downvotes = const Value.absent(),
                 required String status,
+                Value<String?> imageUrl = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ForumThreadsTableCompanion.insert(
                 id: id,
@@ -6828,6 +6949,7 @@ class $$ForumThreadsTableTableTableManager
                 upvotes: upvotes,
                 downvotes: downvotes,
                 status: status,
+                imageUrl: imageUrl,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -6869,6 +6991,7 @@ typedef $$ForumCommentsTableTableCreateCompanionBuilder =
       required String timeAgo,
       Value<int> upvotes,
       Value<int> downvotes,
+      Value<bool> isInstructor,
       Value<int> rowid,
     });
 typedef $$ForumCommentsTableTableUpdateCompanionBuilder =
@@ -6881,6 +7004,7 @@ typedef $$ForumCommentsTableTableUpdateCompanionBuilder =
       Value<String> timeAgo,
       Value<int> upvotes,
       Value<int> downvotes,
+      Value<bool> isInstructor,
       Value<int> rowid,
     });
 
@@ -6930,6 +7054,11 @@ class $$ForumCommentsTableTableFilterComposer
 
   ColumnFilters<int> get downvotes => $composableBuilder(
     column: $table.downvotes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isInstructor => $composableBuilder(
+    column: $table.isInstructor,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -6982,6 +7111,11 @@ class $$ForumCommentsTableTableOrderingComposer
     column: $table.downvotes,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get isInstructor => $composableBuilder(
+    column: $table.isInstructor,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$ForumCommentsTableTableAnnotationComposer
@@ -7020,6 +7154,11 @@ class $$ForumCommentsTableTableAnnotationComposer
 
   GeneratedColumn<int> get downvotes =>
       $composableBuilder(column: $table.downvotes, builder: (column) => column);
+
+  GeneratedColumn<bool> get isInstructor => $composableBuilder(
+    column: $table.isInstructor,
+    builder: (column) => column,
+  );
 }
 
 class $$ForumCommentsTableTableTableManager
@@ -7070,6 +7209,7 @@ class $$ForumCommentsTableTableTableManager
                 Value<String> timeAgo = const Value.absent(),
                 Value<int> upvotes = const Value.absent(),
                 Value<int> downvotes = const Value.absent(),
+                Value<bool> isInstructor = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ForumCommentsTableCompanion(
                 id: id,
@@ -7080,6 +7220,7 @@ class $$ForumCommentsTableTableTableManager
                 timeAgo: timeAgo,
                 upvotes: upvotes,
                 downvotes: downvotes,
+                isInstructor: isInstructor,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -7092,6 +7233,7 @@ class $$ForumCommentsTableTableTableManager
                 required String timeAgo,
                 Value<int> upvotes = const Value.absent(),
                 Value<int> downvotes = const Value.absent(),
+                Value<bool> isInstructor = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ForumCommentsTableCompanion.insert(
                 id: id,
@@ -7102,6 +7244,7 @@ class $$ForumCommentsTableTableTableManager
                 timeAgo: timeAgo,
                 upvotes: upvotes,
                 downvotes: downvotes,
+                isInstructor: isInstructor,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

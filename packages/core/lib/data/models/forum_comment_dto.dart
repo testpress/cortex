@@ -9,6 +9,7 @@ class ForumCommentDto {
   final String timeAgo;
   final int upvotes;
   final int downvotes;
+  final bool isInstructor;
 
   const ForumCommentDto({
     required this.id,
@@ -19,6 +20,7 @@ class ForumCommentDto {
     required this.timeAgo,
     this.upvotes = 0,
     this.downvotes = 0,
+    this.isInstructor = false,
   });
 
   int get score => upvotes - downvotes;

@@ -128,10 +128,12 @@ class AppDatabase extends _$AppDatabase {
             await addColumnSafely(forumThreadsTable, forumThreadsTable.authorAvatar);
             await addColumnSafely(forumThreadsTable, forumThreadsTable.upvotes);
             await addColumnSafely(forumThreadsTable, forumThreadsTable.downvotes);
+            await addColumnSafely(forumThreadsTable, forumThreadsTable.imageUrl);
             
             await addColumnSafely(forumCommentsTable, forumCommentsTable.authorAvatar);
             await addColumnSafely(forumCommentsTable, forumCommentsTable.upvotes);
             await addColumnSafely(forumCommentsTable, forumCommentsTable.downvotes);
+            await addColumnSafely(forumCommentsTable, forumCommentsTable.isInstructor);
           }
         },
       );
@@ -276,6 +278,10 @@ class AppDatabase extends _$AppDatabase {
         forumThreadsTable,
       )..where((t) => t.courseId.equals(courseId)))
           .watch();
+
+  Stream<ForumThreadsTableData?> watchThreadById(String threadId) =>
+      (select(forumThreadsTable)..where((t) => t.id.equals(threadId)))
+          .watchSingleOrNull();
 
   Future<void> upsertForumThreads(List<ForumThreadsTableCompanion> rows) =>
       batch((b) => b.insertAllOnConflictUpdate(forumThreadsTable, rows));

@@ -621,5 +621,7 @@
   "forumLabelUnanswered": "Unanswered",
   "forumSearchDiscussions": "Search discussions",
   "forumCreatePost": "Create New Post",
-  "forumNoDiscussions": "No discussions found yet"
+  "forumNoDiscussions": "No discussions found yet",
+  "forumDiscussion": "Discussion",
+  "forumReplyPlaceholder": "Write your reply here..."
 }

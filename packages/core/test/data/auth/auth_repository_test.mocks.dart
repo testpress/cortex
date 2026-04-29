@@ -879,6 +879,16 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
           as _i6.Stream<List<_i4.ForumThreadsTableData>>);
 
   @override
+  _i6.Stream<_i4.ForumThreadsTableData?> watchThreadById(String? threadId) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchThreadById, [threadId]),
+            returnValue: _i6.Stream<_i4.ForumThreadsTableData?>.empty(),
+            returnValueForMissingStub:
+                _i6.Stream<_i4.ForumThreadsTableData?>.empty(),
+          )
+          as _i6.Stream<_i4.ForumThreadsTableData?>);
+
+  @override
   _i6.Future<void> upsertForumThreads(
     List<_i4.ForumThreadsTableCompanion>? rows,
   ) =>

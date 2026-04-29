@@ -19,6 +19,7 @@ dependencies:
     path: ../packages/explore
   flutter_riverpod: ^2.5.1
   google_fonts: ^6.2.1
+  flutter_quill: ^11.5.0
 
 dev_dependencies:
   flutter_test:

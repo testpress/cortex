@@ -1275,4 +1275,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get forumNoDiscussions => 'لا توجد مناقشات متاحة لهذه الدورة بعد.';
+
+  @override
+  String get forumDiscussion => 'مناقشة';
+
+  @override
+  String get forumReplyPlaceholder => 'اكتب ردك هنا...';
 }
