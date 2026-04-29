@@ -15,7 +15,7 @@ Each screen will be one OpenSpec change, implemented one at a time.
 | **App Type** | Mobile-first LMS (Learning Management System) |
 | **Target** | JEE/NEET coaching institute students |
 | **User States** | Non-Paid, Paid New User, Paid Active User |
-| **Nav Tabs** | Home, Study, Explore, Profile + fullscreen sub-screens |
+| **Nav Tabs** | Home, Study, Explore, AI Support (Paid Active), Profile + fullscreen sub-screens |
 | **Subjects** | Physics, Chemistry, Mathematics, Biology, English |
 
 ---
@@ -53,7 +53,7 @@ Each screen will be one OpenSpec change, implemented one at a time.
 
 ```
 App Root
-├── BottomNavBar (Home / Study / Explore / Profile)
+├── BottomNavBar (Home / Study / Explore / AI Support / Profile)
 │
 ├── [Home Tab] - 3 variants
 │   ├── NonPaidHome → Free trial CTAs + hero
@@ -68,6 +68,12 @@ App Root
 ├── [Explore Tab] - 2 variants
 │   ├── NonPaidExplore → locked content preview
 │   └── PaidExplore → full content + study tips
+│
+├── [AI Support Tab] - Paid Active users only (Sparkles icon)
+│   ├── AIAssistantDetailPage → hub: Ask a Doubt, AI Exam, weak topics, recent help
+│   ├── AskDoubtScreen → AI chat interface
+│   ├── CreatePracticeExamScreen → configure AI practice exam
+│   └── Exam execution → TestDetailScreen / QuestionPaperScreen / TestModeExamScreen
 │
 ├── [Profile Tab] - 3 variants
 │   ├── NonPaidProfile → sign-up prompt + free preview
@@ -159,6 +165,23 @@ Each screen = one OpenSpec change. Priority is based on user journey criticality
 | 28 | `lms-explore-paid` | ExplorePage | Full explore with study tips & top learners | ✅ Done |
 | 29 | `lms-explore-non-paid` | NonPaidExplorePage | Preview with upgrade prompts | ⏳ Pending |
 | 30 | `lms-profile-variants` | NonPaidProfile + PaidNewProfile | Onboarding variants | ⏳ Pending |
+
+### Phase 8 — AI Support Tab (Paid Active only)
+| # | Change Name | Screen(s) | Notes | Status |
+|---|---|---|---|---|
+| 31 | `lms-ai-support-hub` | AIAssistantDetailPage | Hub: Ask a Doubt card (green), AI Exam card (orange), weak topics panel, recent help list | ⏳ Pending |
+| 32 | `lms-ai-chat` | AskDoubtScreen | AI chat: quick chips (Explain concept, Solve problem, Practice Q's, Study tips), chat history drawer, image upload | ⏳ Pending |
+| 33 | `lms-ai-create-exam` | CreatePracticeExamScreen | Configure AI exam: course, scope, chapters/lessons, question source, count, difficulty, attempt mode | ⏳ Pending |
+| 34 | `lms-ai-exam-execute` | TestDetailScreen / QuestionPaperScreen / TestModeExamScreen | AI-generated exam execution in Quiz or Test mode | ⏳ Pending |
+
+### Phase 9 — Ask Mentor
+| # | Change Name | Screen(s) | Notes | Status |
+|---|---|---|---|---|
+| 35 | `lms-doubts-list` | DoubtsListScreen | Landing screen — searchable list of doubts, Answered / Unanswered status badges, "Ask a Doubt" CTA | ⏳ Pending |
+| 36 | `lms-ask-doubt-form` | AskDoubtFormScreen | Compose doubt: title, rich-text editor (bold/italic/lists/code), category chips, image/PDF upload (max 5 files) | ⏳ Pending |
+| 37 | `lms-doubt-detail` | DoubtDetailScreen | Doubt thread: question card, tutor replies with Mentor badge, follow-up reply input | ⏳ Pending |
+
+
 
 ---
 
