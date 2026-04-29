@@ -20,5 +20,5 @@ Currently, the LMS Forum only supports viewing existing threads and replying to 
 
 ## Impact
 
-- **`packages/courses`**: A new `ForumPostCreateScreen` will be added. Shared editor components currently private to the detail screen will be refactored for cross-screen reuse.
+- **`packages/forum`**: `ForumPostCreateScreen` is added and shared editor components are refactored for cross-screen reuse.
 - **`L10n`**: New strings for labels, hints, and UI messages.

@@ -18,7 +18,7 @@ The Forum module currently lacks a way for users to create new discussion thread
 ## Decisions
 
 ### 1. Refactor Editor Logic into Shared Widgets
-We will extract `_QuillEditorService`, `_ForumToolbar`, and `_AttachmentPreview` from `ForumPostDetailScreen` into a new shared component file: `packages/courses/lib/widgets/forum/forum_composer.dart`.
+We will extract `_QuillEditorService`, toolbar controls, and attachment preview behavior from `ForumPostDetailScreen` into a shared component file: `packages/forum/lib/widgets/forum_composer.dart`.
 - **Rationale**: Both thread creation and replies require identical rich text formatting and attachment behavior. Centralizing this logic ensures consistency and reduces maintenance overhead.
 - **Alternatives Considered**: Duplicating the code in the new screen (rejected as it violates DRY principles and creates styling drift).
 

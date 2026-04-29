@@ -1,12 +1,12 @@
 ## 1. Component Refactoring & Setup
 
-- [x] 1.1 Extract shared editor components (`_QuillEditorService`, `_ForumToolbar`, `_AttachmentPreview`) from `forum_post_detail_screen.dart` into a new `packages/courses/lib/widgets/forum/forum_composer.dart` file.
+- [x] 1.1 Extract shared editor components (`_QuillEditorService`, toolbar controls, `_AttachmentPreview`) from `forum_post_detail_screen.dart` into `packages/forum/lib/widgets/forum_composer.dart`.
 - [x] 1.2 Refactor `_StickyReplyInput` to utilize the new shared composer components, ensuring no regression in reply functionality.
 - [x] 1.3 Add required localization keys for the creation screen (e.g., `forumCreateNewPost`, `forumPostTitleHint`, `forumPostDescriptionHint`, `forumButtonSubmit`, `forumButtonCancel`).
 
 ## 2. Implement Post Creation Screen
 
-- [x] 2.1 Create the `ForumPostCreateScreen` in `packages/courses/lib/screens/forum/forum_post_create_screen.dart`.
+- [x] 2.1 Create the `ForumPostCreateScreen` in `packages/forum/lib/screens/forum_post_create_screen.dart`.
 - [x] 2.2 Implement the screen header using `ForumHeader` with "Create New Post" title.
 - [x] 2.3 Add the Title/Subject input field using `AppTextField` with appropriate `design.radius.xl` styling.
 - [x] 2.4 Integrate the `ForumComposer` for the description field, including formatting toolbar support.
