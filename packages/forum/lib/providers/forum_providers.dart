@@ -4,6 +4,17 @@ import '../repositories/forum_repository.dart';
 
 part 'forum_providers.g.dart';
 
+final forumCategoriesProvider =
+    FutureProvider.family<List<ForumCategoryDto>, String>((ref, courseId) async {
+      try {
+        final repo = await ref.watch(forumRepositoryProvider.future);
+        return await repo.getCategories(courseId).timeout(const Duration(seconds: 3));
+      } catch (_) {
+        // Fallback to mock data if primary source fails, times out, or is unimplemented
+        return const MockDataSource().getForumCategories(courseId);
+      }
+    });
+
 @Riverpod(keepAlive: true)
 Future<ForumRepository> forumRepository(ForumRepositoryRef ref) async {
   final db = await ref.watch(appDatabaseProvider.future);

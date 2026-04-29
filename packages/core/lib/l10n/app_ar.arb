@@ -437,5 +437,14 @@
   },
   "forumCreatePost": "إنشاء منشور",
   "forumDiscussion": "مناقشة",
-  "forumReplyPlaceholder": "اكتب ردك هنا..."
+  "forumReplyPlaceholder": "اكتب ردك هنا...",
+  "forumCreateNewPost": "إنشاء منشور جديد",
+  "forumPostTitleHint": "أضف عنواناً...",
+  "forumPostDescriptionHint": "صف سؤالك بالتفصيل...",
+  "forumPostSubjectLabel": "العنوان",
+  "forumPostDescriptionLabel": "الوصف",
+  "forumPostCategoryLabel": "الفئة",
+  "forumPostSelectCategoryTitle": "اختر الفئة",
+  "forumButtonSubmit": "إرسال",
+  "forumButtonCancel": "إلغاء"
 }

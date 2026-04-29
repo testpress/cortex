@@ -437,5 +437,14 @@
   },
   "forumCreatePost": "പോസ്റ്റ് നിർമ്മിക്കുക",
   "forumDiscussion": "ചർച്ച",
-  "forumReplyPlaceholder": "നിങ്ങളുടെ മറുപടി ഇവിടെ എഴുതുക..."
+  "forumReplyPlaceholder": "നിങ്ങളുടെ മറുപടി ഇവിടെ എഴുതുക...",
+  "forumCreateNewPost": "പുതിയ പോസ്റ്റ് നിർമ്മിക്കുക",
+  "forumPostTitleHint": "ഒരു തലക്കെട്ട് നൽകുക...",
+  "forumPostDescriptionHint": "നിങ്ങളുടെ ചോദ്യം വിശദമായി വിവരിക്കുക...",
+  "forumPostSubjectLabel": "തലക്കെട്ട്",
+  "forumPostDescriptionLabel": "വിവരണം",
+  "forumPostCategoryLabel": "വിഭാഗം",
+  "forumPostSelectCategoryTitle": "വിഭാഗം തിരഞ്ഞെടുക്കുക",
+  "forumButtonSubmit": "സമർപ്പിക്കുക",
+  "forumButtonCancel": "റദ്ദാക്കുക"
 }

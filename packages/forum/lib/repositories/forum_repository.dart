@@ -31,6 +31,10 @@ class ForumRepository {
     await _db.upsertForumThreads(companions);
   }
 
+  Future<List<ForumCategoryDto>> getCategories(String courseId) {
+    return _source.getForumCategories(courseId);
+  }
+
   ForumThreadDto _rowToDto(ForumThreadsTableData row) => ForumThreadDto(
         id: row.id,
         courseId: row.courseId,

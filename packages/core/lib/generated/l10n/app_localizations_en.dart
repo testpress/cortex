@@ -1267,4 +1267,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get forumReplyPlaceholder => 'Write your reply here...';
+
+  @override
+  String get forumCreateNewPost => 'Create New Post';
+
+  @override
+  String get forumPostTitleHint => 'Add a title...';
+
+  @override
+  String get forumPostDescriptionHint => 'Describe your question in detail...';
+
+  @override
+  String get forumPostSubjectLabel => 'Title';
+
+  @override
+  String get forumPostDescriptionLabel => 'Description';
+
+  @override
+  String get forumPostCategoryLabel => 'Category';
+
+  @override
+  String get forumPostSelectCategoryTitle => 'Select Category';
+
+  @override
+  String get forumButtonSubmit => 'Submit';
+
+  @override
+  String get forumButtonCancel => 'Cancel';
 }

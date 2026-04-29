@@ -33,3 +33,14 @@ class ForumThreadDto {
 
   int get score => upvotes - downvotes;
 }
+
+/// Forum category DTO used by forum create/composer flows.
+class ForumCategoryDto {
+  final String id;
+  final String name;
+
+  const ForumCategoryDto({
+    required this.id,
+    required this.name,
+  });
+}
