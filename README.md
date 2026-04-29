@@ -8,9 +8,12 @@ A Flutter monorepo designed from first principles as a platform-neutral SDK with
 cortex/
 ├── app/                    # Reference implementation (Cortex app)
 └── packages/
-    ├── core/              # Design system primitives
-    ├── courses/           # Courses SDK module
+    ├── ai_assistant/      # AI-powered learning companion
+    ├── core/              # Design system primitives & cross-cutting configs
+    ├── courses/           # Courses SDK module (includes Explore & Info)
     ├── exams/             # Exams SDK module
+    ├── forum/             # Community & discussion module
+    ├── profile/           # User profile & identity module
     └── testpress/         # PUBLIC SDK aggregator
 ```
 
