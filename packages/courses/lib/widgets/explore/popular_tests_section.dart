@@ -1,12 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import 'package:exams/exams.dart';
-import '../explore_constants.dart';
+import 'package:core/data/data.dart';
+import '../../explore_constants.dart';
 
 class PopularTestsSection extends StatelessWidget {
   const PopularTestsSection({super.key, required this.tests});
 
-  final List<TestDto> tests;
+  final List<PopularTestDto> tests;
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +61,7 @@ class PopularTestsSection extends StatelessWidget {
 class _TestCard extends StatelessWidget {
   const _TestCard({required this.test});
 
-  final TestDto test;
+  final PopularTestDto test;
 
   @override
   Widget build(BuildContext context) {
@@ -127,18 +127,19 @@ class _TestCard extends StatelessWidget {
                   Row(
                     children: [
                       AppBadge(
-                        label: test.type == TestType.mock
+                        label: test.type == PopularTestType.mock
                             ? l10n.labelMock
                             : l10n.labelPractice,
                         backgroundColor:
-                            (test.type == TestType.mock
+                            (test.type == PopularTestType.mock
                                     ? design.colors.primary
                                     : design.colors.success)
                                 .withValues(alpha: 0.08),
-                        foregroundColor: test.type == TestType.mock
+                        foregroundColor: test.type == PopularTestType.mock
                             ? design.colors.primary
                             : design.colors.success,
                       ),
+
                       const Spacer(),
                       AppText.bodySmall(
                         test.duration,

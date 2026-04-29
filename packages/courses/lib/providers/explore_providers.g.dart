@@ -82,23 +82,24 @@ final discoveryCoursesProvider =
 // ignore: unused_element
 typedef DiscoveryCoursesRef =
     AutoDisposeFutureProviderRef<List<DiscoveryCourseDto>>;
-String _$popularTestsHash() => r'efb47e36fe39f8734012c2cce0cb1e1ad74ef1e6';
+String _$popularTestsHash() => r'69daf567f58b51d2944896e32b5cd24fb0f6b4dc';
 
 /// See also [popularTests].
 @ProviderFor(popularTests)
-final popularTestsProvider = AutoDisposeFutureProvider<List<TestDto>>.internal(
-  popularTests,
-  name: r'popularTestsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$popularTestsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+final popularTestsProvider =
+    AutoDisposeFutureProvider<List<PopularTestDto>>.internal(
+      popularTests,
+      name: r'popularTestsProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$popularTestsHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef PopularTestsRef = AutoDisposeFutureProviderRef<List<TestDto>>;
+typedef PopularTestsRef = AutoDisposeFutureProviderRef<List<PopularTestDto>>;
 String _$filteredDiscoveryCoursesHash() =>
     r'ba7dc49f1f10d1913430454e39144f4700fb9fb9';
 
@@ -140,12 +141,12 @@ final filteredShortLessonsProvider =
 typedef FilteredShortLessonsRef =
     AutoDisposeFutureProviderRef<List<ShortLessonDto>>;
 String _$filteredPopularTestsHash() =>
-    r'4a69de766be0b8dff406909dd506dd33591264bb';
+    r'07b56fc31dc0ae163983cb45caeef5b40038f4c7';
 
 /// See also [filteredPopularTests].
 @ProviderFor(filteredPopularTests)
 final filteredPopularTestsProvider =
-    AutoDisposeFutureProvider<List<TestDto>>.internal(
+    AutoDisposeFutureProvider<List<PopularTestDto>>.internal(
       filteredPopularTests,
       name: r'filteredPopularTestsProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -157,7 +158,8 @@ final filteredPopularTestsProvider =
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef FilteredPopularTestsRef = AutoDisposeFutureProviderRef<List<TestDto>>;
+typedef FilteredPopularTestsRef =
+    AutoDisposeFutureProviderRef<List<PopularTestDto>>;
 String _$filteredStudyTipsHash() => r'85e53082b9948e07fafcf94280caba963e8b7837';
 
 /// See also [filteredStudyTips].

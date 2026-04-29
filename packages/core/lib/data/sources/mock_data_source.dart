@@ -862,6 +862,10 @@ class MockDataSource implements DataSource {
   Future<List<DiscoveryCourseDto>> getDiscoveryCourses() async =>
       mockDiscoveryCourses;
 
+  @override
+  Future<List<PopularTestDto>> getPopularTests() async => mockPopularTests;
+
+
   // ─────────────────────────────────────────────────────────────────────────
   // User Profile
   // ─────────────────────────────────────────────────────────────────────────

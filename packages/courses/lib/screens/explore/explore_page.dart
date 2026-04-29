@@ -2,13 +2,15 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 
-import '../providers/explore_providers.dart';
-import '../widgets/featured_carousel.dart';
-import '../widgets/quick_access_filter.dart';
-import '../widgets/course_discovery_list.dart';
-import '../widgets/short_lessons_section.dart';
-import '../widgets/popular_tests_section.dart';
-import '../widgets/study_tips_list.dart';
+import '../../providers/explore_providers.dart';
+import '../../widgets/explore/featured_carousel.dart';
+import '../../widgets/explore/quick_access_filter.dart';
+import '../../widgets/explore/course_discovery_list.dart';
+import '../../widgets/explore/short_lessons_section.dart';
+import '../../widgets/explore/popular_tests_section.dart';
+import '../../widgets/explore/study_tips_list.dart';
+
+
 
 class ExplorePage extends ConsumerStatefulWidget {
   const ExplorePage({super.key});

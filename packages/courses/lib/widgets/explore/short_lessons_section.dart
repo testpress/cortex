@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-import '../explore_constants.dart';
+import '../../explore_constants.dart';
 
 class ShortLessonsSection extends StatelessWidget {
   const ShortLessonsSection({super.key, required this.lessons});

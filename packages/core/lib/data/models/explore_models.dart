@@ -173,3 +173,56 @@ class DiscoveryCourseDto {
     };
   }
 }
+
+/// Test type for discovery.
+enum PopularTestType { mock, chapter, practice }
+
+/// DTO for tests listed on the Explore page.
+class PopularTestDto {
+  final String id;
+  final String title;
+  final String time;
+  final String duration;
+  final PopularTestType type;
+  final String? thumbnail;
+  final bool isImportant;
+
+  const PopularTestDto({
+    required this.id,
+    required this.title,
+    required this.time,
+    required this.duration,
+    required this.type,
+    this.thumbnail,
+    this.isImportant = false,
+  });
+
+  factory PopularTestDto.fromJson(Map<String, dynamic> json) {
+    return PopularTestDto(
+      id: json['id'] as String,
+      title: json['title'] as String,
+      time: json['time'] as String,
+      duration: json['duration'] as String,
+      type: PopularTestType.values.firstWhere(
+        (e) => e.name == json['type'],
+        orElse: () => PopularTestType.practice,
+      ),
+
+      thumbnail: json['thumbnail'] as String?,
+      isImportant: json['isImportant'] as bool? ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'time': time,
+      'duration': duration,
+      'type': type.name,
+      'thumbnail': thumbnail,
+      'isImportant': isImportant,
+    };
+  }
+}
+

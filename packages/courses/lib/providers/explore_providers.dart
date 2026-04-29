@@ -1,6 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import 'package:exams/exams.dart';
+import 'package:core/data/data.dart';
 
 part 'explore_providers.g.dart';
 
@@ -33,11 +32,10 @@ Future<List<DiscoveryCourseDto>> discoveryCourses(DiscoveryCoursesRef ref) {
 }
 
 @riverpod
-Future<List<TestDto>> popularTests(PopularTestsRef ref) async {
-  // Use ExamRepository for popular tests
-  final repository = ref.watch(examRepositoryProvider);
-  return repository.getPopularTests();
+Future<List<PopularTestDto>> popularTests(PopularTestsRef ref) async {
+  return ref.watch(dataSourceProvider).getPopularTests();
 }
+
 
 // Filtered Providers
 
@@ -62,12 +60,13 @@ Future<List<ShortLessonDto>> filteredShortLessons(
 }
 
 @riverpod
-Future<List<TestDto>> filteredPopularTests(FilteredPopularTestsRef ref) async {
+Future<List<PopularTestDto>> filteredPopularTests(FilteredPopularTestsRef ref) async {
   final query = ref.watch(exploreSearchQueryProvider).toLowerCase();
   final tests = await ref.watch(popularTestsProvider.future);
   if (query.isEmpty) return tests;
   return tests.where((t) => t.title.toLowerCase().contains(query)).toList();
 }
+
 
 @riverpod
 Future<List<StudyTipDto>> filteredStudyTips(FilteredStudyTipsRef ref) async {
