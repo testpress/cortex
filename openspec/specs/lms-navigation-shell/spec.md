@@ -79,6 +79,18 @@ Each primary tab SHALL support its own stack of push/pop navigation without affe
 - **THEN** the system SHALL return to the previous Profile screen state
 - **AND** the system MUST NOT reset other tab navigation stacks
 
+
+#### Scenario: Client-specific profile slot
+- **WHEN** the client configuration does not enable the Info experience
+- **THEN** the shell MUST keep the standard primary destinations: Home, Study, Explore, Profile
+- **AND** the rest of the shell layout MUST remain unchanged
+
+#### Scenario: Info-enabled client navigation
+- **WHEN** the client configuration enables the Info experience
+- **THEN** the shell MUST add the `Info` destination to the primary navigation flow
+- **AND** the navigation shell MUST support 5 destinations: Home, Study, Explore, Info, Profile
+- **AND** selecting the `Info` destination MUST navigate to the curated Info landing page
+
 ### Requirement: Auth-state-based router redirect
 The router SHALL use auth provider state to decide redirects for auth routes and protected routes.
 
