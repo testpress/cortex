@@ -8,11 +8,13 @@ class DashboardHeader extends StatelessWidget {
     required this.title,
     this.onMenuPressed,
     this.isLandscape = false,
+    this.titleTextStyle,
   });
 
   final String title;
   final VoidCallback? onMenuPressed;
   final bool isLandscape;
+  final TextStyle? titleTextStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +51,11 @@ class DashboardHeader extends StatelessWidget {
             ],
           ],
           Expanded(
-            child: AppText.headline(title, color: design.colors.textPrimary),
+            child: AppText.headline(
+              title,
+              color: design.colors.textPrimary,
+              style: titleTextStyle,
+            ),
           ),
           if (isLandscape) ...[
             if (onMenuPressed != null) ...[
