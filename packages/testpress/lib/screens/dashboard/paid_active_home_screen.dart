@@ -5,6 +5,7 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart' as dto;
 import 'package:profile/profile.dart';
 import 'package:courses/courses.dart';
+import 'widgets/lesson_cards_section.dart';
 
 class PaidActiveHomeScreen extends ConsumerWidget {
   const PaidActiveHomeScreen({super.key});
@@ -13,6 +14,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
 
+    final config = ref.watch(dto.clientConfigProvider);
     final todayClasses = ref.watch(todayClassesProvider);
     final pendingAssignments = ref.watch(pendingAssignmentsProvider);
     final upcomingTests = ref.watch(upcomingTestsProvider);
@@ -26,148 +28,280 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     final otherLearners = ref.watch(otherLearnersProvider);
     final shortcuts = ref.watch(quickShortcutsProvider);
 
+    final user = userAsync.valueOrNull;
+
+    final isBannerPresent = config.instituteLogoUrl != null;
+
+    final dummyResumeLessons = [
+      const LessonCardModel(
+        id: '1',
+        title: 'Wave Optics',
+        chapterName: 'Physics Class 12',
+        subject: 'Physics',
+        progress: 45,
+        duration: '1h 30m',
+        instructor: 'Dr. Smith',
+        coverImage: 'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=500&q=80',
+      ),
+      const LessonCardModel(
+        id: '2',
+        title: 'Chemical Kinetics',
+        chapterName: 'Chemistry Class 12',
+        subject: 'Chemistry',
+        progress: 20,
+        duration: '45m',
+        instructor: 'Prof. Jones',
+        coverImage: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=500&q=80',
+      ),
+      const LessonCardModel(
+        id: '3',
+        title: 'Electromagnetic Waves',
+        chapterName: 'Physics Class 12',
+        subject: 'Physics',
+        progress: 10,
+        duration: '1h',
+        instructor: 'Dr. Smith',
+        coverImage: 'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=500&q=80',
+      ),
+    ];
+
+    final dummyWhatsNewLessons = [
+      const LessonCardModel(
+        id: '4',
+        title: 'Integral Calculus',
+        chapterName: 'Math Class 12',
+        subject: 'Mathematics',
+        duration: '2h',
+        instructor: 'Mr. White',
+        coverImage: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=500&q=80',
+      ),
+      const LessonCardModel(
+        id: '5',
+        title: 'Organic Chemistry',
+        chapterName: 'Chemistry Class 12',
+        subject: 'Chemistry',
+        duration: '1h 45m',
+        instructor: 'Prof. Jones',
+        coverImage: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=500&q=80',
+      ),
+      const LessonCardModel(
+        id: '9',
+        title: 'Probability',
+        chapterName: 'Math Class 12',
+        subject: 'Mathematics',
+        duration: '1h 10m',
+        instructor: 'Mr. White',
+        coverImage: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=500&q=80',
+      ),
+    ];
+
+    final dummyCompletedLessons = [
+      const LessonCardModel(
+        id: '6',
+        title: 'Cell Biology',
+        chapterName: 'Biology Class 11',
+        subject: 'Biology',
+        progress: 100,
+        duration: '1h',
+        instructor: 'Ms. Green',
+        coverImage: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
+      ),
+      const LessonCardModel(
+        id: '7',
+        title: 'Genetics',
+        chapterName: 'Biology Class 12',
+        subject: 'Biology',
+        progress: 100,
+        duration: '2h 15m',
+        instructor: 'Ms. Green',
+        coverImage: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
+      ),
+      const LessonCardModel(
+        id: '8',
+        title: 'Plant Physiology',
+        chapterName: 'Biology Class 11',
+        subject: 'Biology',
+        progress: 100,
+        duration: '1h 20m',
+        instructor: 'Ms. Green',
+        coverImage: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
+      ),
+    ];
+
+    final topCarousel = heroBanners.when(
+      data: (data) => HeroBannerCarousel(
+        banners: data.map(_mapHeroBanner).toList(),
+      ),
+      loading: () => const SizedBox(height: 180),
+      error: (error, stack) => const SizedBox.shrink(),
+    );
+
+    final studyMomentum = momentum.when(
+      data: (data) => StudyMomentumGrid(momentum: data),
+      loading: () => const Center(child: AppLoadingIndicator()),
+      error: (err, stack) => const SizedBox.shrink(),
+    );
+
+    final topLearnersSection = topLearners.when(
+      data: (top) => otherLearners.when(
+        data: (others) => TopLearnersSection(
+          topLearners: top.map(_mapLearner).toList(),
+          otherLearners: others.map(_mapLearner).toList(),
+        ),
+        loading: () => const SizedBox.shrink(),
+        error: (error, stack) => const SizedBox.shrink(),
+      ),
+      loading: () => const SizedBox(height: 200),
+      error: (error, stack) => const SizedBox.shrink(),
+    );
+
+    final updatesAnnouncements = promotionBanners.when(
+      data: (data) => UpdatesAnnouncementsSection(
+        banners: data.map(_mapPromotionBanner).toList(),
+        onViewAll: () {
+          // Handle view all navigation
+        },
+      ),
+      loading: () => const SizedBox(height: 100),
+      error: (error, stack) => const SizedBox.shrink(),
+    );
+
+    final lessonCardsSection = LessonCardsSectionWidget(
+      resumeLessons: dummyResumeLessons,
+      whatsNewLessons: dummyWhatsNewLessons,
+      recentlyCompletedLessons: dummyCompletedLessons,
+      config: config,
+    );
+
     return Scaffold(
       backgroundColor: design.colors.canvas,
       body: LayoutBuilder(
         builder: (context, constraints) {
           final isLandscape = constraints.maxWidth > constraints.maxHeight;
 
+          final header = DashboardHeader(
+            title: L10n.of(context).homeHeaderTitle,
+            isLandscape: isLandscape,
+            showTitle: !isBannerPresent,
+            greeting: isBannerPresent ? L10n.of(context).getGreeting() : null,
+            greetingSubtitle: isBannerPresent ? L10n.of(context).getTodayDate() : null,
+            backgroundColor: isBannerPresent ? design.colors.canvas : null,
+            showBottomBorder: !isBannerPresent,
+            useSafeArea: !isBannerPresent,
+            customTopPadding: isBannerPresent ? 8 : null,
+            onMenuPressed: () {
+              ref.read(isHomeDrawerOpenProvider.notifier).state = true;
+            },
+          );
+
           return Column(
             children: [
-              DashboardHeader(
-                title: L10n.of(context).homeHeaderTitle,
-                isLandscape: isLandscape,
-                onMenuPressed: () {
-                  ref.read(isHomeDrawerOpenProvider.notifier).state = true;
-                },
-              ),
+              if (isBannerPresent)
+                InstituteBanner(
+                  logoUrl: config.instituteLogoUrl!,
+                  isLocal: config.isLocalLogo,
+                  userName: user?.name ?? 'Student',
+                  enrollmentId: user?.id ?? '-',
+                ),
+              if (!isBannerPresent) header,
               Expanded(
                 child: AppScroll(
                   padding: EdgeInsets.symmetric(vertical: design.spacing.md),
                   children: [
-                    userAsync.when(
-                      data: (user) => HomeGreetingSection(
+                    if (isBannerPresent) header,
+                    if (!isBannerPresent)
+                      HomeGreetingSection(
                         userName: user?.name ?? '',
                       ),
-                      loading: () => const HomeGreetingSection(userName: '...'),
-                      error: (e, s) => const HomeGreetingSection(userName: ''),
-                    ),
+                    topCarousel,
+                    const SizedBox(height: 16),
+                    if (isBannerPresent) ...[
+                      // Brilliant specific order
+                      lessonCardsSection,
+                      updatesAnnouncements,
+                      const SizedBox(height: 24),
+                      studyMomentum,
+                      const SizedBox(height: 24),
+                      topLearnersSection,
+                    ] else ...[
+                      // Standard order
+                      if (config.showContextualHero)
+                        todayClasses.when(
+                          data: (classes) {
+                            if (classes.isEmpty) return const SizedBox.shrink();
+                            final liveOrUpcoming = classes.firstWhere(
+                              (c) =>
+                                  c.status == dto.LiveClassStatus.live ||
+                                  c.status == dto.LiveClassStatus.upcoming,
+                              orElse: () => classes.first,
+                            );
 
-                heroBanners.when(
-                  data: (data) => HeroBannerCarousel(
-                    banners: data.map(_mapHeroBanner).toList(),
-                  ),
-                  loading: () => const SizedBox(height: 180),
-                  error: (error, stack) => const SizedBox.shrink(),
-                ),
-
-                const SizedBox(height: 16),
-
-                todayClasses.when(
-                  data: (classes) {
-                    final liveOrUpcoming = classes.firstWhere(
-                      (c) =>
-                          c.status == dto.LiveClassStatus.live ||
-                          c.status == dto.LiveClassStatus.upcoming,
-                      orElse: () => classes.first,
-                    );
-
-                    return Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: design.spacing.md,
-                      ),
-                      child: ContextualHeroCard(
-                        action: HeroAction(
-                          type:
-                              liveOrUpcoming.status == dto.LiveClassStatus.live
-                              ? HeroActionType.joinClass
-                              : HeroActionType.prepareTest,
-                          title: liveOrUpcoming.topic,
-                          subject: liveOrUpcoming.subject,
-                          metadata: liveOrUpcoming.faculty,
-                          timeInfo: liveOrUpcoming.time,
+                            return Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: design.spacing.md,
+                              ),
+                              child: ContextualHeroCard(
+                                action: HeroAction(
+                                  type: liveOrUpcoming.status ==
+                                          dto.LiveClassStatus.live
+                                      ? HeroActionType.joinClass
+                                      : HeroActionType.prepareTest,
+                                  title: liveOrUpcoming.topic,
+                                  subject: liveOrUpcoming.subject,
+                                  metadata: liveOrUpcoming.faculty,
+                                  timeInfo: liveOrUpcoming.time,
+                                ),
+                                onActionClick: () {},
+                              ),
+                            );
+                          },
+                          loading: () => const SizedBox(height: 120),
+                          error: (error, stack) => const SizedBox.shrink(),
                         ),
-                        onActionClick: () {},
-                      ),
-                    );
-                  },
-                  loading: () => const SizedBox(height: 120),
-                  error: (error, stack) => const SizedBox.shrink(),
+                      const SizedBox(height: 16),
+                      if (config.showTodaySchedule)
+                        Builder(
+                          builder: (context) {
+                            if (todayClasses.isLoading ||
+                                pendingAssignments.isLoading ||
+                                upcomingTests.isLoading) {
+                              return const Center(child: AppLoadingIndicator());
+                            }
+
+                            return TodaySnapshot(
+                              classes: (todayClasses.value ?? [])
+                                  .map(_mapClass)
+                                  .toList(),
+                              assignments: (pendingAssignments.value ?? [])
+                                  .map(_mapAssignment)
+                                  .toList(),
+                              tests: (upcomingTests.value ?? []).toList(),
+                            );
+                          },
+                        ),
+                      const SizedBox(height: 24),
+                      lessonCardsSection,
+                      studyMomentum,
+                      topLearnersSection,
+                      updatesAnnouncements,
+                      if (config.showQuickAccess)
+                        shortcuts.when(
+                          data: (data) => QuickAccessGrid(
+                            shortcuts: data.map(_mapShortcut).toList(),
+                          ),
+                          loading: () => const SizedBox(height: 150),
+                          error: (error, stack) => const SizedBox.shrink(),
+                        ),
+                    ],
+                  ],
                 ),
-
-                const SizedBox(height: 24),
-
-                Builder(
-                  builder: (context) {
-                    if (todayClasses.isLoading ||
-                        pendingAssignments.isLoading ||
-                        upcomingTests.isLoading) {
-                      return const Center(child: AppLoadingIndicator());
-                    }
-
-                    return TodaySnapshot(
-                      classes: (todayClasses.value ?? [])
-                          .map(_mapClass)
-                          .toList(),
-                      assignments: (pendingAssignments.value ?? [])
-                          .map(_mapAssignment)
-                          .toList(),
-                      tests: (upcomingTests.value ?? [])
-                          .toList(),
-                    );
-                  },
-                ),
-
-                momentum.when(
-                  data: (data) => StudyMomentumGrid(momentum: data),
-                  loading: () => const Center(child: AppLoadingIndicator()),
-                  error: (err, stack) => const SizedBox.shrink(),
-                ),
-
-                topLearners.when(
-                  data: (top) => otherLearners.when(
-                    data: (others) => TopLearnersSection(
-                      topLearners: top.map(_mapLearner).toList(),
-                      otherLearners:
-                          others.map(_mapLearner).toList(),
-                    ),
-                    loading: () => const SizedBox.shrink(),
-                    error: (error, stack) => const SizedBox.shrink(),
-                  ),
-                  loading: () => const SizedBox(height: 200),
-                  error: (error, stack) => const SizedBox.shrink(),
-                ),
-
-                promotionBanners.when(
-                  data: (data) => UpdatesAnnouncementsSection(
-                    banners: data
-                        .map(_mapPromotionBanner)
-                        .toList(),
-                    onViewAll: () {
-                      // Handle view all navigation
-                    },
-                  ),
-                  loading: () => const SizedBox(height: 100),
-                  error: (error, stack) => const SizedBox.shrink(),
-                ),
-
-                shortcuts.when(
-                  data: (data) => QuickAccessGrid(
-                    shortcuts:
-                        data.map(_mapShortcut).toList(),
-                  ),
-                  loading: () => const SizedBox(height: 150),
-                  error: (error, stack) => const SizedBox.shrink(),
-                ),
-              ],
-            ),
-          ),
-        ],
-      );
-    },
-  ),
-);
-}
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
 
   HeroBanner _mapHeroBanner(DashboardBannerDto d) {
     return HeroBanner(
@@ -245,12 +379,8 @@ class PaidActiveHomeScreen extends ConsumerWidget {
       title: d.title,
       subject: d.subject,
       dueTime: d.dueTime,
-      status: switch (d.status) {
-        AssignmentStatus.pending => AssignmentStatus.pending,
-        AssignmentStatus.submitted => AssignmentStatus.submitted,
-        AssignmentStatus.overdue => AssignmentStatus.overdue,
-      },
-      progress: d.progress / 100.0,
+      status: d.status,
+      progress: d.progress / 100,
       description: d.description,
     );
   }

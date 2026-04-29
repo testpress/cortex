@@ -103,7 +103,7 @@ class _DotIndicator extends StatelessWidget {
       decoration: BoxDecoration(
         color: isActive
             ? design.colors.textPrimary
-            : design.colors.border.withValues(alpha: 0.5),
+            : design.colors.textPrimary.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(3),
       ),
     );

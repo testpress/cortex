@@ -35,6 +35,7 @@ export 'widgets/app_drawer.dart';
 export 'widgets/app_bottom_sheet.dart';
 export 'widgets/app_error_view.dart';
 export 'widgets/dashboard_header.dart';
+export 'widgets/institute_banner.dart';
 
 // Shell
 export 'shell/app_shell.dart';
