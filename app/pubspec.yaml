@@ -15,8 +15,7 @@ dependencies:
     path: ../packages/core
   courses:
     path: ../packages/courses
-  explore:
-    path: ../packages/explore
+
   flutter_riverpod: ^2.5.1
   google_fonts: ^6.2.1
   flutter_quill: ^11.5.0
