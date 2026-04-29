@@ -12,6 +12,7 @@ export 'models/chapter_dto.dart';
 export 'models/lesson_dto.dart';
 export 'models/live_class_dto.dart';
 export 'models/forum_thread_dto.dart';
+export 'models/forum_comment_dto.dart';
 export 'models/user_progress_dto.dart';
 export 'models/user_dto.dart';
 export 'models/settings_models.dart';
@@ -35,7 +36,6 @@ export 'sources/data_source_provider.dart';
 export 'sources/study_momentum_provider.dart';
 
 // Repositories
-export 'repositories/forum_repository.dart';
 export 'repositories/user_progress_repository.dart';
 export 'repositories/repository_providers.dart';
 

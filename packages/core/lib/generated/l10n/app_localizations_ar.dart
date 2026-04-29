@@ -498,7 +498,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get drawerAnalytics => 'التحليلات';
 
   @override
-  String get drawerForum => 'المنتدى';
+  String get drawerForum => 'منتدى المناقشات';
 
   @override
   String get drawerDoubts => 'الأسئلة';
@@ -1228,4 +1228,51 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get labelPractice => 'ممارسة';
+
+  @override
+  String get forumTitle => 'منتدى المناقشة';
+
+  @override
+  String get forumSelectCourse => 'اختر دورة لعرض المناقشات';
+
+  @override
+  String forumThreadsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مناقشات',
+      two: 'مناقشتان',
+      one: 'مناقشة واحدة',
+      zero: 'لا توجد مناقشات',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String forumUnansweredCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count أسئلة غير مجابة',
+      two: 'سؤالان غير مجابان',
+      one: 'سؤال واحد غير مجاب',
+      zero: 'لا توجد أسئلة غير مجابة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get forumLabelAnswered => 'تم الرد';
+
+  @override
+  String get forumLabelUnanswered => 'لم يتم الرد';
+
+  @override
+  String get forumSearchDiscussions => 'البحث في المناقشات';
+
+  @override
+  String get forumCreatePost => 'إنشاء منشور';
+
+  @override
+  String get forumNoDiscussions => 'لا توجد مناقشات متاحة لهذه الدورة بعد.';
 }
