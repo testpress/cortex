@@ -82,21 +82,15 @@ class HttpDataSource implements DataSource {
 
   @override
   Future<List<ForumThreadDto>> getForumThreads(String courseId) =>
-      throw UnimplementedError(
-        'HttpDataSource.getForumThreads is not yet implemented.',
-      );
+      Future.value(mockForumThreads(courseId));
 
   @override
   Future<List<ForumCategoryDto>> getForumCategories(String courseId) =>
-      throw UnimplementedError(
-        'HttpDataSource.getForumCategories is not yet implemented.',
-      );
+      Future.value(mockForumCategories);
 
   @override
   Future<List<ForumCommentDto>> getForumComments(String threadId) =>
-      throw UnimplementedError(
-        'HttpDataSource.getForumComments is not yet implemented.',
-      );
+      Future.value(mockForumComments(threadId));
 
   @override
   Future<List<UserProgressDto>> getUserProgress(String userId) =>
