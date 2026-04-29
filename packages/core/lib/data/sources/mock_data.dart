@@ -254,6 +254,39 @@ ForumCategoryDto? findMockForumCategoryById(String categoryId) {
   return null;
 }
 
+/// Mock popular tests for Explore.
+final mockPopularTests = [
+  const PopularTestDto(
+    id: 'test-1',
+    title: 'JEE Main 2026 Mock Test 1',
+    time: '10:00 AM',
+    duration: '3h 0m',
+    type: PopularTestType.mock,
+    isImportant: true,
+    thumbnail:
+        'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800',
+  ),
+  const PopularTestDto(
+    id: 'test-2',
+    title: 'Physics Chapter 1 Practice',
+    time: 'Anytime',
+    duration: '45m',
+    type: PopularTestType.practice,
+    thumbnail:
+        'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800',
+  ),
+  const PopularTestDto(
+    id: 'test-3',
+    title: 'Chemistry Revision Test',
+    time: 'Anytime',
+    duration: '1h 30m',
+    type: PopularTestType.mock,
+    thumbnail:
+        'https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?w=800',
+  ),
+];
+
+
 List<ForumThreadDto> mockForumThreads(String courseId) => [
       ForumThreadDto(
         id: 'ft-1-$courseId',

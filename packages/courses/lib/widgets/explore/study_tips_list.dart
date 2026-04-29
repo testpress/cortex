@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'study_tip_card.dart';
-import '../explore_constants.dart';
+import '../../explore_constants.dart';
 
 class StudyTipsList extends StatelessWidget {
   const StudyTipsList({super.key, required this.tips});

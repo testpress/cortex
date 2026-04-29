@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-import '../explore_constants.dart';
+import '../../explore_constants.dart';
 
 class DiscoveryCourseCard extends StatelessWidget {
   const DiscoveryCourseCard({super.key, required this.course});

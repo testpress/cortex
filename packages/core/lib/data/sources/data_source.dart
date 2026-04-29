@@ -46,6 +46,10 @@ abstract class DataSource {
   /// Fetch courses specifically formatted for the Discovery/Explore page.
   Future<List<DiscoveryCourseDto>> getDiscoveryCourses();
 
+  /// Fetch popular tests for the Explore page.
+  Future<List<PopularTestDto>> getPopularTests();
+
+
   /// Fetch the authenticated user's profile.
   Future<UserDto> getProfile();
 

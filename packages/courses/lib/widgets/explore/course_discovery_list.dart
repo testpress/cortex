@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'discovery_course_card.dart';
-import '../explore_constants.dart';
+import '../../explore_constants.dart';
 
 class CourseDiscoveryList extends StatelessWidget {
   const CourseDiscoveryList({
