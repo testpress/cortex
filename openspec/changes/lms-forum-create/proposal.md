@@ -4,11 +4,14 @@ Currently, the LMS Forum only supports viewing existing threads and replying to 
 
 ## What Changes
 
-- **Thread Creation Screen**: Implement a high-fidelity screen for composing new forum posts based on the design reference.
-- **Rich Text Support**: Integrate the custom Trix-aligned rich text editor for post descriptions.
-- **Image Attachments**: Support picking and UI-only attachment of up to 3 images per post.
-- **Mock Integration**: Ensure the screen handles "Post" action by showing a success state or popping the screen (without actual backend persistence for now).
-- **UI Integration**: Enable the "Create New Post" button in the Forum Main list page.
+- The system SHALL implement a high-fidelity screen for composing new forum posts based on the design reference.
+- The system SHALL integrate the custom Trix-aligned rich text editor for post descriptions.
+- The system SHALL support picking and UI-only attachment of up to 3 images per post.
+- The system SHALL handle the "Post" action by showing a success state or popping the screen.
+- The UI SHALL enable the "Create New Post" button in the Forum Main list page.
+- The system SHALL model and retrieve categories using generic payload identifiers.
+- The UI SHALL follow localized hints and labels for all input fields.
+- The composer SHALL support standard rich text formatting operations (Bold, List, Code).
 
 ## Capabilities
 

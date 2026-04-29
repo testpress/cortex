@@ -7,10 +7,14 @@ Currently, the forum module allows users to see a list of discussions but lacks 
 ## What Changes
 
 This change introduces the `ForumPostDetailScreen` (Discussion Forum Details Page).
-- Displays the original thread title and full body question at the top.
-- Lists all replies (comments) in chronological order.
-- Provides a persistent reply input field at the bottom of the screen.
-- Integrates with mock data for both threads and comments.
+- The system SHALL display the original thread title and full body question at the top.
+- The system SHALL list all replies (comments) in chronological order.
+- The system SHALL provide a persistent reply input field at the bottom of the screen.
+- The system SHALL integrate with mock data for both threads and comments.
+- The UI SHALL support interactive reply buttons and focus handling.
+- The system SHALL render localized strings for all labels and placeholders.
+- The repository SHALL fetch and cache thread details and comments locally.
+- The UI SHALL follow the design reference for typography and spacing.
 
 ## Capabilities
 
