@@ -334,7 +334,7 @@ class _SubChaptersProviderElement
   String? get parentId => (origin as SubChaptersProvider).parentId;
 }
 
-String _$allCourseLessonsHash() => r'2ecd0b44f585efac78c9dfca6e2b363da075f917';
+String _$allCourseLessonsHash() => r'05e106346a14cba79c3973f4ada79c2598e3cad9';
 
 /// A provider that flattens all lessons for a specific course into a single list.
 /// Used for filtering lessons by type across the entire course.

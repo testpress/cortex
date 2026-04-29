@@ -784,6 +784,16 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
           as _i6.Future<void>);
 
   @override
+  _i6.Stream<List<_i4.LessonsTableData>> watchAllLessons() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchAllLessons, []),
+            returnValue: _i6.Stream<List<_i4.LessonsTableData>>.empty(),
+            returnValueForMissingStub:
+                _i6.Stream<List<_i4.LessonsTableData>>.empty(),
+          )
+          as _i6.Stream<List<_i4.LessonsTableData>>);
+
+  @override
   _i6.Stream<List<_i4.LessonsTableData>> watchLessonsForCourse(
     String? courseId,
   ) =>
