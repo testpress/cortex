@@ -1,5 +1,5 @@
-class ClientInfoVideo {
-  const ClientInfoVideo({
+class InfoVideo {
+  const InfoVideo({
     required this.id,
     required this.title,
     required this.duration,
@@ -12,8 +12,8 @@ class ClientInfoVideo {
   final String url;
 }
 
-class ClientInfoCourse {
-  const ClientInfoCourse({
+class InfoCourse {
+  const InfoCourse({
     required this.id,
     required this.title,
     required this.instructor,
@@ -31,5 +31,6 @@ class ClientInfoCourse {
   final String thumbnailUrl;
   final int videoCount;
   final String totalDuration;
-  final List<ClientInfoVideo> videos;
+  final List<InfoVideo> videos;
 }
+

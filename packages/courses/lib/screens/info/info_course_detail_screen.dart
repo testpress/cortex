@@ -2,11 +2,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 
-import '../models/client_info_models.dart';
-import '../providers/client_info_providers.dart';
+import '../../models/info_models.dart';
+import '../../providers/info_providers.dart';
 
-class ClientInfoCourseDetailScreen extends ConsumerStatefulWidget {
-  const ClientInfoCourseDetailScreen({
+class InfoCourseDetailScreen extends ConsumerStatefulWidget {
+  const InfoCourseDetailScreen({
     super.key,
     required this.courseId,
     required this.onBack,
@@ -16,18 +16,18 @@ class ClientInfoCourseDetailScreen extends ConsumerStatefulWidget {
   final VoidCallback onBack;
 
   @override
-  ConsumerState<ClientInfoCourseDetailScreen> createState() =>
-      _ClientInfoCourseDetailScreenState();
+  ConsumerState<InfoCourseDetailScreen> createState() =>
+      _InfoCourseDetailScreenState();
 }
 
-class _ClientInfoCourseDetailScreenState
-    extends ConsumerState<ClientInfoCourseDetailScreen> {
+class _InfoCourseDetailScreenState
+    extends ConsumerState<InfoCourseDetailScreen> {
   String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final course = ref.watch(clientInfoCourseByIdProvider(widget.courseId));
+    final course = ref.watch(infoCourseByIdProvider(widget.courseId));
 
     if (course == null) {
       return AppErrorView(
@@ -98,8 +98,8 @@ class _ClientInfoCourseDetailScreenState
     );
   }
 
-  Future<void> _openVideo(ClientInfoVideo video) async {
-    final launcher = ref.read(clientInfoLauncherProvider);
+  Future<void> _openVideo(InfoVideo video) async {
+    final launcher = ref.read(infoLauncherProvider);
     final uri = Uri.tryParse(video.url);
 
     if (uri == null) {
@@ -198,8 +198,8 @@ class _VideoRow extends StatelessWidget {
     required this.onTap,
   });
 
-  final ClientInfoCourse course;
-  final ClientInfoVideo video;
+  final InfoCourse course;
+  final InfoVideo video;
   final VoidCallback onTap;
 
   @override
@@ -345,3 +345,4 @@ class _VideoThumbnail extends StatelessWidget {
     );
   }
 }
+

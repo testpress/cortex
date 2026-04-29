@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:courses/courses.dart';
 import 'package:profile/profile.dart';
-import 'package:client_info/client_info.dart';
 import 'package:exams/exams.dart';
 
 import '../screens/dashboard/paid_active_home_screen.dart';
@@ -52,7 +51,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   // Only watch the boolean login status to prevent the router from rebuilding
   // on every loading state change or refresh.
   final isLoggedIn = ref.watch(authProvider).valueOrNull ?? false;
-  final isClientInfoEnabled = ref.watch(clientInfoPageEnabledProvider);
+  final isInfoEnabled = ref.watch(infoPageEnabledProvider);
+
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
@@ -109,7 +109,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         final items = buildPrimaryNavigationItems(
-          isClientInfoEnabled: isClientInfoEnabled,
+          isInfoEnabled: isInfoEnabled,
         );
 
         return Consumer(
@@ -117,7 +117,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             final isLogoutSheetOpen = ref.watch(isLogoutSheetOpenProvider);
             final activeTabId = _getCurrentTabId(
               navigationShell.currentIndex,
-              isClientInfoEnabled,
+              isInfoEnabled,
             );
 
             void closeSheet() {
@@ -134,14 +134,15 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                     items: items,
                     activeItemId: activeTabId,
                     onTabChange: (id) => 
-                        _onTabItemTapped(navigationShell, id, isClientInfoEnabled),
+                        _onTabItemTapped(navigationShell, id, isInfoEnabled),
                   ),
                   navigationRail: AppNavigationRail(
                     items: items,
                     activeItemId: activeTabId,
                     onTabChange: (id) => 
-                        _onTabItemTapped(navigationShell, id, isClientInfoEnabled),
+                        _onTabItemTapped(navigationShell, id, isInfoEnabled),
                   ),
+
                   drawer: DashboardDrawer(isLandscape: isLandscape),
                   bottomSheet: AppBottomSheet(
                     isOpen: isLogoutSheetOpen,
@@ -371,18 +372,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           ],
         ),
         // Info Branch (Optional 5th Tab)
-        if (isClientInfoEnabled)
+        if (isInfoEnabled)
           StatefulShellBranch(
             routes: [
               GoRoute(
                 path: '/info',
-                builder: (context, state) => const ClientInfoPage(),
+                builder: (context, state) => const InfoPage(),
                 routes: [
                   GoRoute(
                     path: 'course/:courseId',
                     builder: (context, state) {
                       final courseId = state.pathParameters['courseId']!;
-                      return ClientInfoCourseDetailScreen(
+                      return InfoCourseDetailScreen(
                         courseId: courseId,
                         onBack: () => context.pop(),
                       );
@@ -392,6 +393,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
+
         // Profile Branch
         StatefulShellBranch(
           routes: [
@@ -481,7 +483,7 @@ List<String> _tabPaths(bool isInfo) => [
     ];
 
 List<AppTabItem> buildPrimaryNavigationItems({
-  required bool isClientInfoEnabled,
+  required bool isInfoEnabled,
 }) {
   return [
     const AppTabItem(id: '/home', label: 'Home', icon: LucideIcons.home),
@@ -491,7 +493,7 @@ List<AppTabItem> buildPrimaryNavigationItems({
       label: 'Explore',
       icon: LucideIcons.compass,
     ),
-    if (isClientInfoEnabled)
+    if (isInfoEnabled)
       const AppTabItem(
         id: '/info',
         label: 'Info',
@@ -500,6 +502,7 @@ List<AppTabItem> buildPrimaryNavigationItems({
     const AppTabItem(id: '/profile', label: 'Profile', icon: LucideIcons.user),
   ];
 }
+
 
 String _getCurrentTabId(int index, bool isInfo) => _tabPaths(isInfo)[index];
 

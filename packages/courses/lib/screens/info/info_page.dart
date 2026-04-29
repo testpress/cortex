@@ -2,16 +2,16 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 
-import '../models/client_info_models.dart';
-import '../providers/client_info_providers.dart';
+import '../../models/info_models.dart';
+import '../../providers/info_providers.dart';
 
-class ClientInfoPage extends ConsumerWidget {
-  const ClientInfoPage({super.key});
+class InfoPage extends ConsumerWidget {
+  const InfoPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
-    final courses = ref.watch(clientInfoCoursesProvider);
+    final courses = ref.watch(infoCoursesProvider);
 
     return ColoredBox(
       color: design.colors.canvas,
@@ -50,12 +50,12 @@ class ClientInfoPage extends ConsumerWidget {
 class _CourseCard extends StatelessWidget {
   const _CourseCard({required this.course});
 
-  final ClientInfoCourse course;
+  final InfoCourse course;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final colors = subjectPaletteForClientInfo(context, course.subject);
+    final colors = subjectPaletteForInfo(context, course.subject);
 
     // Note: The route should ideally be independent of the profile slot
     return AppSemantics.button(
@@ -212,7 +212,7 @@ class _MetaText extends StatelessWidget {
   }
 }
 
-({Color background, Color foreground}) subjectPaletteForClientInfo(
+({Color background, Color foreground}) subjectPaletteForInfo(
   BuildContext context,
   String subject,
 ) {
@@ -242,3 +242,4 @@ class _MetaText extends StatelessWidget {
     foreground: colors.accent, // Using accent for vibrant tag backgrounds
   );
 }
+

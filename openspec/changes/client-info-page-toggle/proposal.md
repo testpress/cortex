@@ -12,14 +12,15 @@ Some client builds need an Info experience instead of the standard Profile tab s
 ## Capabilities
 
 ### New Capabilities
-- `client-info-page`: Client-gated Info experience for browsing curated learning resources and opening linked external videos.
+- `info-page`: Client-gated Info experience for browsing curated learning resources and opening linked external videos.
 
 ### Modified Capabilities
 - `lms-navigation-shell`: The primary navigation shell needs a client-aware tab variant that keeps `Profile` as the default entry and swaps to `Info` only when the feature is enabled.
 
 ## Impact
 
-- **Packages**: Likely `packages/profile` and/or the navigation shell package that owns the profile tab destination.
+- **Packages**: `packages/courses` (consolidated domain for learning resources) and the navigation shell.
 - **Navigation**: Bottom-tab label, icon, and routing behavior become client-aware.
 - **Configuration**: A client-level switch or feature flag is required so the experience stays disabled by default.
-- **Data**: Initial implementation can use curated/mock learning-resource data until a client-managed source exists.
+- **Data**: Initial implementation uses curated/mock learning-resource data integrated within the courses domain.
+

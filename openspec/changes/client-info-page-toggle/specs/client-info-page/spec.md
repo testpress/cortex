@@ -1,20 +1,20 @@
 ## ADDED Requirements
 
-### Requirement: Client-Gated Info Experience
+### Requirement: Gated Info Experience
 The system SHALL keep the Info experience disabled by default and expose it only for clients whose configuration explicitly enables it.
 
 #### Scenario: Feature disabled for the default client experience
 - **WHEN** the client configuration does not enable the Info experience
 - **THEN** the application MUST continue to expose the standard `Profile` tab label, icon, and destination
-- **AND** the client-specific Info page MUST NOT be reachable from primary navigation
+- **AND** the Info page MUST NOT be reachable from primary navigation
 
 #### Scenario: Feature enabled for an eligible client
 - **WHEN** the client configuration enables the Info experience
-- **THEN** the application MUST add the client-specific Info destination to the primary navigation flow
+- **THEN** the application MUST add the Info destination to the primary navigation flow
 - **AND** the navigation shell MUST support 5 destinations (Home, Study, Explore, Info, Profile) for that configured client variant
 
 ### Requirement: Info Resource Catalog
-The system SHALL provide an Info landing page that lists curated learning-resource courses for enabled clients.
+The system SHALL provide an Info landing page that lists curated learning-resource courses within the `courses` domain.
 
 #### Scenario: Displaying the Info landing page
 - **WHEN** an enabled client opens the Info tab
@@ -61,5 +61,7 @@ The system SHALL open Info videos using an external destination rather than inli
 ---
 
 ### Technical Note: Configuration
-The "client configuration" mentioned in these requirements is implemented via the `ENABLE_INFO_PAGE` environment define. 
-Use `--dart-define=ENABLE_INFO_PAGE=true` during `flutter run` or `flutter build` to satisfy the enablement criteria defined in these scenarios.
+The configuration is implemented via the `ENABLE_INFO_PAGE` environment define. 
+- Use `--dart-define=ENABLE_INFO_PAGE=true` during `flutter run` or `flutter build` to satisfy the enablement criteria.
+- The state is exposed via the `infoPageEnabledProvider` in the core package.
+- Implementation resides in `packages/courses/lib/screens/info/`.

@@ -23,8 +23,6 @@ dependencies:
   forum:
     path: ../forum
 
-  client_info:
-    path: ../client_info
 
   flutter_riverpod: ^2.5.1
   riverpod_annotation: ^2.3.5

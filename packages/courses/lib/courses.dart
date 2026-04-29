@@ -39,3 +39,8 @@ export 'screens/explore/explore_page.dart';
 export 'explore_constants.dart';
 export 'providers/explore_providers.dart';
 
+export 'models/info_models.dart';
+export 'providers/info_providers.dart';
+export 'screens/info/info_page.dart';
+export 'screens/info/info_course_detail_screen.dart';
+

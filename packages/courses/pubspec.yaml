@@ -22,6 +22,8 @@ dependencies:
   package_info_plus: ^8.2.1
   syncfusion_flutter_pdfviewer: ^33.1.45
   syncfusion_flutter_core: ^33.1.45
+  url_launcher: ^6.3.1
+
 
 dev_dependencies:
   flutter_test:

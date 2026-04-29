@@ -1,7 +1,7 @@
-import '../models/client_info_models.dart';
+import '../models/info_models.dart';
 
-const mockClientInfoCourses = [
-  ClientInfoCourse(
+const mockInfoCourses = [
+  InfoCourse(
     id: 'jee-physics-main',
     title: 'JEE Main Physics - Complete Course 2026',
     instructor: 'Dr. Rajesh Kumar',
@@ -11,19 +11,19 @@ const mockClientInfoCourses = [
     videoCount: 156,
     totalDuration: '42h 30m',
     videos: [
-      ClientInfoVideo(
+      InfoVideo(
         id: 'v1',
         title: "Introduction to Laws of Motion - Newton's First Law",
         duration: '18:24',
         url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
       ),
-      ClientInfoVideo(
+      InfoVideo(
         id: 'v2',
         title: "Newton's Second Law - Force and Acceleration",
         duration: '22:15',
         url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
       ),
-      ClientInfoVideo(
+      InfoVideo(
         id: 'v3',
         title: "Newton's Third Law - Action and Reaction",
         duration: '16:42',
@@ -31,7 +31,7 @@ const mockClientInfoCourses = [
       ),
     ],
   ),
-  ClientInfoCourse(
+  InfoCourse(
     id: 'organic-chemistry',
     title: 'Organic Chemistry - JEE Advanced',
     instructor: 'Prof. Meera Sharma',
@@ -41,13 +41,13 @@ const mockClientInfoCourses = [
     videoCount: 128,
     totalDuration: '38h 15m',
     videos: [
-      ClientInfoVideo(
+      InfoVideo(
         id: 'v4',
         title: 'Introduction to Organic Chemistry',
         duration: '28:45',
         url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
       ),
-      ClientInfoVideo(
+      InfoVideo(
         id: 'v5',
         title: 'Nomenclature and Isomerism',
         duration: '32:10',
@@ -55,7 +55,7 @@ const mockClientInfoCourses = [
       ),
     ],
   ),
-  ClientInfoCourse(
+  InfoCourse(
     id: 'calculus-differential',
     title: 'Calculus & Differential Equations',
     instructor: 'Dr. Anil Verma',
@@ -65,13 +65,13 @@ const mockClientInfoCourses = [
     videoCount: 142,
     totalDuration: '45h 20m',
     videos: [
-      ClientInfoVideo(
+      InfoVideo(
         id: 'v6',
         title: 'Limits and Continuity',
         duration: '35:20',
         url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
       ),
-      ClientInfoVideo(
+      InfoVideo(
         id: 'v7',
         title: 'Differentiation Techniques',
         duration: '42:55',
@@ -79,7 +79,7 @@ const mockClientInfoCourses = [
       ),
     ],
   ),
-  ClientInfoCourse(
+  InfoCourse(
     id: 'modern-physics',
     title: 'Modern Physics & Electronics',
     instructor: 'Dr. Rajesh Kumar',
@@ -89,7 +89,7 @@ const mockClientInfoCourses = [
     videoCount: 98,
     totalDuration: '28h 45m',
     videos: [
-      ClientInfoVideo(
+      InfoVideo(
         id: 'v8',
         title: 'Quantum Mechanics Basics',
         duration: '38:30',
@@ -97,7 +97,7 @@ const mockClientInfoCourses = [
       ),
     ],
   ),
-  ClientInfoCourse(
+  InfoCourse(
     id: 'inorganic-chemistry',
     title: 'Inorganic Chemistry - Periodic Table',
     instructor: 'Prof. Meera Sharma',
@@ -107,7 +107,7 @@ const mockClientInfoCourses = [
     videoCount: 115,
     totalDuration: '34h 10m',
     videos: [
-      ClientInfoVideo(
+      InfoVideo(
         id: 'v9',
         title: 'Periodic Properties',
         duration: '31:45',
@@ -115,7 +115,7 @@ const mockClientInfoCourses = [
       ),
     ],
   ),
-  ClientInfoCourse(
+  InfoCourse(
     id: 'algebra-number',
     title: 'Algebra & Number Theory',
     instructor: 'Dr. Anil Verma',
@@ -125,7 +125,7 @@ const mockClientInfoCourses = [
     videoCount: 134,
     totalDuration: '40h 25m',
     videos: [
-      ClientInfoVideo(
+      InfoVideo(
         id: 'v10',
         title: 'Complex Numbers',
         duration: '36:15',
@@ -134,3 +134,4 @@ const mockClientInfoCourses = [
     ],
   ),
 ];
+

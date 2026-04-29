@@ -8,7 +8,7 @@ The repo already defines a generic `Profile` experience and a shared navigation 
 - Add a client-controlled switch that leaves the standard profile flow untouched by default.
 - Define an Info resource flow that matches the JSX design intent: course catalog, course drill-in, and external video launch.
 - Keep the implementation package-safe so the shell can decide between Profile and Info without hardcoding one-off behavior in `app/`.
-- Implement Info as a dedicated package (`packages/client_info`) to maintain domain isolation and navigation flexibility.
+- Implement Info as a curated experience within the `courses` domain (`packages/courses/lib/screens/info/`) to maintain domain consistency and reduce package overhead.
 
 **Non-Goals:**
 - Defining a backend-managed CMS or remote configuration pipeline for Info content.
@@ -28,13 +28,14 @@ The JSX file hardcodes a list of courses and videos. The first implementation sh
 
 ### 4. Launch videos externally instead of embedding playback
 The design clearly signals external YouTube-style destinations from the course-detail rows. Keeping that behavior in Flutter avoids new playback dependencies and keeps the client-specific page lightweight. The implementation should preserve shell state so returning from the external app or browser drops the user back into the same Info context.
-### 4. Implementation in a dedicated package
-To prevent the profile package from becoming a "utility drawer" and to ensure domain isolation, the Info feature will be implemented in `packages/client_info`. This allows the feature to be toggled at the shell level without coupling the "User Identity" domain with the "Learning Resource Catalog" domain.
+
+### 5. Consolidation within the Courses package
+Rather than introducing a separate `client_info` package, the feature is implemented as a specialized view within `packages/courses`. This reduces dependency complexity while grouping learning-resource-related logic under a single domain.
 
 ## Risks / Trade-offs
 
 - [Risk] Client gating could leak into unrelated code paths if checked ad hoc in multiple widgets. → Mitigation: centralize the enablement decision in a dedicated config/provider and have the shell consume a single source of truth.
-- [Risk] Putting the Info screen in the wrong package could violate SDK boundaries or create awkward imports. → Mitigation: use a dedicated `client_info` package to maintain clear domain boundaries and prevent pollution of the profile package.
+- [Risk] Putting the Info screen in the wrong package could violate SDK boundaries or create awkward imports. → Mitigation: use the `courses` package to maintain domain boundaries, as these resources are specialized course variants.
 - [Risk] Mock content can drift from eventual client-managed content needs. → Mitigation: define a small typed resource model now and keep the provider boundary separate from widget code.
 - [Risk] External URL launch failures can create a dead tap experience. → Mitigation: require explicit handling for launch errors and keep the user on the Info screen when a URL cannot be opened.
 
@@ -49,15 +50,15 @@ flutter run --dart-define=ENABLE_INFO_PAGE=true
 ```
 
 ### 2. Source of Truth
-The flag is consumed in `packages/core/lib/data/config/app_config.dart` and exposed via the `clientInfoPageEnabledProvider` for use in navigation logic and routing.
+The flag is consumed in `packages/core/lib/data/config/app_config.dart` and exposed via the `infoPageEnabledProvider` for use in navigation logic and routing.
 
 ## Migration Plan
 
 1. Introduce the client capability/config surface with a default value of disabled.
-2. Create the `packages/client_info` package.
-3. Implement Info landing page, models, and providers in the new package.
-4. Update the navigation shell so the fifth destination resolves to Profile or client_info's landing page based on config.
-5. Verify that default clients still see `Profile`, while enabled clients see `Info` and can open external videos.
+2. Implement Info landing page, models, and providers within `packages/courses`.
+3. Update the navigation shell so the fifth destination resolves to Profile or courses' info landing page based on config.
+4. Verify that default clients still see `Profile`, while enabled clients see `Info` and can open external videos.
+
 
 - Should the Info tab use a generic info icon or a client-branded icon if design assets differ from the JSX reference?
 - Will the resource content eventually move to a dynamic fetch from a client-specific API endpoint?
