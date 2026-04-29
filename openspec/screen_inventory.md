@@ -137,9 +137,9 @@ Each screen = one OpenSpec change. Priority is based on user journey criticality
 ### Phase 5 — Community & Forum
 | # | Change Name | Screen(s) | Notes | Status |
 |---|---|---|---|---|
-| 17 | `lms-forum-main` | ForumCourseSelection + ForumMainPage | Course selector + question list | ⏳ Pending |
-| 18 | `lms-forum-thread` | DiscussionForumDetailScreen | Thread with replies + reply input | ⏳ Pending |
-| 19 | `lms-forum-create` | CreateQuestionPage | Question composer | ⏳ Pending |
+| 17 | `lms-forum-main` | ForumCourseSelection + ForumMainPage | Course selector + question list | ✅ Done |
+| 18 | `lms-forum-thread` | DiscussionForumDetailScreen | Thread with replies + reply input | ✅ Done |
+| 19 | `lms-forum-create` | CreateQuestionPage | Question composer | ✅ Done |
 
 ### Phase 6 — Profile, Settings & Account
 | # | Change Name | Screen(s) | Notes | Status |
