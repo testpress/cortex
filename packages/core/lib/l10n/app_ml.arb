@@ -148,7 +148,7 @@
   "drawerBookmark": "ബുക്ക്മാർക്ക്",
   "drawerPosts": "പോസ്റ്റുകൾ",
   "drawerAnalytics": "അനലിറ്റിക്സ്",
-  "drawerForum": "ഫോറം",
+  "drawerForum": "ചർച്ചാ ഫോറം",
   "drawerDoubts": "സംശയങ്ങൾ",
   "drawerCustomExam": "കസ്റ്റം എക്സാം",
   "drawerReports": "നിങ്ങളുടെ റിപ്പോർട്ട്",
@@ -412,5 +412,28 @@
   "editProfileLastNameLabel": "അവസാന പേര്",
   "editProfileLastNameHint": "നിങ്ങളുടെ അവസാന പേര് നൽകുക",
   "labelMock": "മോക്ക്",
-  "labelPractice": "പ്രാക്ടീസ്"
+  "labelPractice": "പ്രാക്ടീസ്",
+  "forumTitle": "ചർച്ചാ ഫോറം",
+  "forumSelectCourse": "ചർച്ചകൾ കാണുന്നതിനായി ഒരു കോഴ്സ് തിരഞ്ഞെടുക്കുക",
+  "forumThreadsCount": "{count, plural, =0{ചർച്ചകൾ ഒന്നുമില്ല} =1{ഒരു ചർച്ച} other{{count} ചർച്ചകൾ}}",
+  "@forumThreadsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "forumNoDiscussions": "ഈ കോഴ്സിലെ ചർച്ചകൾ ഇതുവരെ തുടങ്ങിയിട്ടില്ല.",
+  "forumLabelAnswered": "മറുപടി നൽകി",
+  "forumLabelUnanswered": "മറുപടി നൽകിയിട്ടില്ല",
+  "forumSearchDiscussions": "ചർച്ചകൾ തിരയുക",
+  "forumUnansweredCount": "{count, plural, =0{മറുപടിയില്ലാത്ത ചോദ്യങ്ങൾ ഒന്നുമില്ല} =1{മറുപടി ലഭിക്കാത്ത ഒരു ചോദ്യം} other{{count} ചോദ്യങ്ങൾക്ക് മറുപടി നൽകാനുണ്ട്}}",
+  "@forumUnansweredCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "forumCreatePost": "പോസ്റ്റ് നിർമ്മിക്കുക"
 }

@@ -2300,6 +2300,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Practice'**
   String get labelPractice;
+
+  /// No description provided for @forumTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discussion Forum'**
+  String get forumTitle;
+
+  /// No description provided for @forumSelectCourse.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a course to view discussions'**
+  String get forumSelectCourse;
+
+  /// No description provided for @forumThreadsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Threads'**
+  String forumThreadsCount(int count);
+
+  /// No description provided for @forumUnansweredCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Unanswered'**
+  String forumUnansweredCount(int count);
+
+  /// No description provided for @forumLabelAnswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Answered'**
+  String get forumLabelAnswered;
+
+  /// No description provided for @forumLabelUnanswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Unanswered'**
+  String get forumLabelUnanswered;
+
+  /// No description provided for @forumSearchDiscussions.
+  ///
+  /// In en, this message translates to:
+  /// **'Search discussions...'**
+  String get forumSearchDiscussions;
+
+  /// No description provided for @forumCreatePost.
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Post'**
+  String get forumCreatePost;
+
+  /// No description provided for @forumNoDiscussions.
+  ///
+  /// In en, this message translates to:
+  /// **'No discussions found yet'**
+  String get forumNoDiscussions;
 }
 
 class _AppLocalizationsDelegate

@@ -239,7 +239,7 @@
   "drawerBookmark": "Bookmark",
   "drawerPosts": "Posts",
   "drawerAnalytics": "Analytics",
-  "drawerForum": "Forum",
+  "drawerForum": "Discussions Forum",
   "drawerDoubts": "Doubts",
   "drawerCustomExam": "Custom Exam",
   "drawerReports": "Reports",
@@ -598,5 +598,28 @@
   "editProfileLastNameLabel": "Last Name",
   "editProfileLastNameHint": "Enter your last name",
   "labelMock": "Mock",
-  "labelPractice": "Practice"
+  "labelPractice": "Practice",
+  "forumTitle": "Discussion Forum",
+  "forumSelectCourse": "Select a course to view discussions",
+  "forumThreadsCount": "{count} Threads",
+  "@forumThreadsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "forumUnansweredCount": "{count} Unanswered",
+  "@forumUnansweredCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "forumLabelAnswered": "Answered",
+  "forumLabelUnanswered": "Unanswered",
+  "forumSearchDiscussions": "Search discussions",
+  "forumCreatePost": "Create New Post",
+  "forumNoDiscussions": "No discussions found yet"
 }

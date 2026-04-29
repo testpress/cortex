@@ -506,7 +506,7 @@ class AppLocalizationsMl extends AppLocalizations {
   String get drawerAnalytics => 'അനലിറ്റിക്സ്';
 
   @override
-  String get drawerForum => 'ഫോറം';
+  String get drawerForum => 'ചർച്ചാ ഫോറം';
 
   @override
   String get drawerDoubts => 'സംശയങ്ങൾ';
@@ -1240,4 +1240,51 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get labelPractice => 'പ്രാക്ടീസ്';
+
+  @override
+  String get forumTitle => 'ചർച്ചാ ഫോറം';
+
+  @override
+  String get forumSelectCourse =>
+      'ചർച്ചകൾ കാണുന്നതിനായി ഒരു കോഴ്സ് തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String forumThreadsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ചർച്ചകൾ',
+      one: 'ഒരു ചർച്ച',
+      zero: 'ചർച്ചകൾ ഒന്നുമില്ല',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String forumUnansweredCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ചോദ്യങ്ങൾക്ക് മറുപടി നൽകാനുണ്ട്',
+      one: 'മറുപടി ലഭിക്കാത്ത ഒരു ചോദ്യം',
+      zero: 'മറുപടിയില്ലാത്ത ചോദ്യങ്ങൾ ഒന്നുമില്ല',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get forumLabelAnswered => 'മറുപടി നൽകി';
+
+  @override
+  String get forumLabelUnanswered => 'മറുപടി നൽകിയിട്ടില്ല';
+
+  @override
+  String get forumSearchDiscussions => 'ചർച്ചകൾ തിരയുക';
+
+  @override
+  String get forumCreatePost => 'പോസ്റ്റ് നിർമ്മിക്കുക';
+
+  @override
+  String get forumNoDiscussions =>
+      'ഈ കോഴ്സിലെ ചർച്ചകൾ ഇതുവരെ തുടങ്ങിയിട്ടില്ല.';
 }
