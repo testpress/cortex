@@ -10,6 +10,7 @@ export 'config/client_capabilities.dart';
 // DTOs
 export 'models/course_dto.dart';
 export 'models/chapter_dto.dart';
+export 'models/course_curriculum_dto.dart';
 export 'models/lesson_dto.dart';
 export 'models/live_class_dto.dart';
 export 'models/forum_thread_dto.dart';

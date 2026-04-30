@@ -24,6 +24,10 @@ class LessonDto {
   final int? lessonNumber;
   final int? totalLessons;
   final bool isBookmarked;
+  final bool isRunning;
+  final bool isUpcoming;
+  final bool hasAttempts;
+  final String? image;
 
   const LessonDto({
     required this.id,
@@ -42,6 +46,10 @@ class LessonDto {
     this.lessonNumber,
     this.totalLessons,
     this.isBookmarked = false,
+    this.isRunning = false,
+    this.isUpcoming = false,
+    this.hasAttempts = false,
+    this.image,
   });
 
   LessonDto copyWith({
@@ -61,6 +69,10 @@ class LessonDto {
     int? lessonNumber,
     int? totalLessons,
     bool? isBookmarked,
+    bool? isRunning,
+    bool? isUpcoming,
+    bool? hasAttempts,
+    String? image,
   }) {
     return LessonDto(
       id: id ?? this.id,
@@ -79,20 +91,23 @@ class LessonDto {
       lessonNumber: lessonNumber ?? this.lessonNumber,
       totalLessons: totalLessons ?? this.totalLessons,
       isBookmarked: isBookmarked ?? this.isBookmarked,
+      isRunning: isRunning ?? this.isRunning,
+      isUpcoming: isUpcoming ?? this.isUpcoming,
+      hasAttempts: hasAttempts ?? this.hasAttempts,
+      image: image ?? this.image,
     );
   }
 
   factory LessonDto.fromJson(Map<String, dynamic> json) {
     return LessonDto(
       id: json['id'] as String,
-      chapterId: json['chapterId'] as String,
-      title: json['title'] as String,
-      type: LessonType.values.firstWhere((e) => e.name == json['type']),
-      duration: json['duration'] as String,
-      progressStatus: LessonProgressStatus.values
-          .firstWhere((e) => e.name == json['progressStatus']),
-      isLocked: json['isLocked'] as bool,
-      orderIndex: json['orderIndex'] as int,
+      chapterId: json['chapterId'] as String? ?? '',
+      title: json['title'] as String? ?? '',
+      type: LessonType.values.firstWhere((e) => e.name == json['type'], orElse: () => LessonType.video),
+      duration: json['duration'] as String? ?? '',
+      progressStatus: LessonProgressStatus.values.firstWhere((e) => e.name == json['progressStatus'], orElse: () => LessonProgressStatus.notStarted),
+      isLocked: json['isLocked'] as bool? ?? false,
+      orderIndex: json['orderIndex'] as int? ?? 0,
       chapterTitle: json['chapterTitle'] as String?,
       contentUrl: json['contentUrl'] as String?,
       subtitle: json['subtitle'] as String?,
@@ -101,6 +116,10 @@ class LessonDto {
       lessonNumber: json['lessonNumber'] as int?,
       totalLessons: json['totalLessons'] as int?,
       isBookmarked: json['isBookmarked'] as bool? ?? false,
+      isRunning: json['isRunning'] as bool? ?? false,
+      isUpcoming: json['isUpcoming'] as bool? ?? false,
+      hasAttempts: json['hasAttempts'] as bool? ?? false,
+      image: json['image'] as String?,
     );
   }
 
@@ -122,6 +141,9 @@ class LessonDto {
       'lessonNumber': lessonNumber,
       'totalLessons': totalLessons,
       'isBookmarked': isBookmarked,
+      'isRunning': isRunning,
+      'isUpcoming': isUpcoming,
+      'hasAttempts': hasAttempts,
     };
   }
 }

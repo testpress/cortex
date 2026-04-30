@@ -48,7 +48,7 @@ class AppDatabase extends _$AppDatabase {
 
           // Helper to add columns only if they don't already exist.
           // This prevents crashes like "duplicate column name" during development migrations.
-          Future<void> addColumnSafely(TableInfo table, dynamic col) async {
+          Future<void> addColumnSafely(TableInfo table, GeneratedColumn col) async {
             final res = await customSelect(
               "PRAGMA table_info('${table.actualTableName}')",
             ).get();
@@ -115,25 +115,14 @@ class AppDatabase extends _$AppDatabase {
             await createTableSafely(forumCommentsTable);
           }
           if (from < 9) {
-            // Sync flag migration from main branch
+            // Version 9 includes:
+            // 1. Combined sync flags for courses and chapters.
+            // 2. Status filters for lessons (Running/Upcoming/History).
             await addColumnSafely(chaptersTable, chaptersTable.isChaptersSynced);
             await addColumnSafely(coursesTable, coursesTable.isChaptersSynced);
-          }
-          if (from < 10) {
-            // Version 10: Ensuring forum tables and new columns are present for all users
-            await createTableSafely(forumThreadsTable);
-            await createTableSafely(forumCommentsTable);
-            
-            await addColumnSafely(forumThreadsTable, forumThreadsTable.authorName);
-            await addColumnSafely(forumThreadsTable, forumThreadsTable.authorAvatar);
-            await addColumnSafely(forumThreadsTable, forumThreadsTable.upvotes);
-            await addColumnSafely(forumThreadsTable, forumThreadsTable.downvotes);
-            await addColumnSafely(forumThreadsTable, forumThreadsTable.imageUrl);
-            
-            await addColumnSafely(forumCommentsTable, forumCommentsTable.authorAvatar);
-            await addColumnSafely(forumCommentsTable, forumCommentsTable.upvotes);
-            await addColumnSafely(forumCommentsTable, forumCommentsTable.downvotes);
-            await addColumnSafely(forumCommentsTable, forumCommentsTable.isInstructor);
+            await addColumnSafely(lessonsTable, lessonsTable.isRunning);
+            await addColumnSafely(lessonsTable, lessonsTable.isUpcoming);
+            await addColumnSafely(lessonsTable, lessonsTable.hasAttempts);
           }
         },
       );
@@ -224,6 +213,17 @@ class AppDatabase extends _$AppDatabase {
 
   // ── Lessons ───────────────────────────────────────────────────────────────
 
+  /// Watch all lessons in the database.
+  /// Used for mapping the overall course structure.
+  Stream<List<LessonsTableData>> watchAllLessons() =>
+      (select(lessonsTable)..orderBy([(t) => OrderingTerm.asc(t.orderIndex)]))
+          .watch();
+
+  /// Watch all lessons for a specific course.
+  Stream<List<LessonsTableData>> watchLessonsForCourse(String courseId) {
+    return watchAllLessons();
+  }
+
   /// Watch lessons for a given chapter, ordered by index.
   Stream<List<LessonsTableData>> watchLessonsForChapter(String chapterId) =>
       (select(lessonsTable)
@@ -262,6 +262,16 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> upsertLessons(List<LessonsTableCompanion> rows) =>
       batch((b) => b.insertAllOnConflictUpdate(lessonsTable, rows));
+
+  /// Deletes all lessons for a specific chapter.
+  /// Useful during synchronization to clear out old or incorrectly associated data.
+  Future<void> deleteLessonsForChapter(String chapterId) =>
+      (delete(lessonsTable)..where((t) => t.chapterId.equals(chapterId))).go();
+
+  /// Deletes lessons by their IDs.
+  /// Useful for pruning orphaned records.
+  Future<void> deleteLessonsByIds(Iterable<String> ids) =>
+      (delete(lessonsTable)..where((t) => t.id.isIn(ids))).go();
 
   // ── Live Classes ──────────────────────────────────────────────────────────
 

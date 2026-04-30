@@ -6,7 +6,7 @@ part of 'course_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$courseDetailHash() => r'3ac000bde610ea984625c81f3916fba09b2acb25';
+String _$courseDetailHash() => r'3c0d657cd6505643d3b0ca6ce390b52c5c47ab6b';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -158,7 +158,7 @@ class _CourseDetailProviderElement extends StreamProviderElement<CourseDto?>
   String get courseId => (origin as CourseDetailProvider).courseId;
 }
 
-String _$subChaptersHash() => r'1fcdcc0a0935bddab8fe5718da9c3b93da24f2d1';
+String _$subChaptersHash() => r'949a56c0d03e94243093ee23a35450644e89021f';
 
 /// A provider that watches chapters for a specific parent (folder).
 /// Triggers a refresh if the folder has not been synced yet.
@@ -212,7 +212,7 @@ class SubChaptersFamily extends Family<AsyncValue<List<ChapterDto>>> {
 /// Triggers a refresh if the folder has not been synced yet.
 ///
 /// Copied from [subChapters].
-class SubChaptersProvider extends AutoDisposeStreamProvider<List<ChapterDto>> {
+class SubChaptersProvider extends StreamProvider<List<ChapterDto>> {
   /// A provider that watches chapters for a specific parent (folder).
   /// Triggers a refresh if the folder has not been synced yet.
   ///
@@ -265,7 +265,7 @@ class SubChaptersProvider extends AutoDisposeStreamProvider<List<ChapterDto>> {
   }
 
   @override
-  AutoDisposeStreamProviderElement<List<ChapterDto>> createElement() {
+  StreamProviderElement<List<ChapterDto>> createElement() {
     return _SubChaptersProviderElement(this);
   }
 
@@ -288,7 +288,7 @@ class SubChaptersProvider extends AutoDisposeStreamProvider<List<ChapterDto>> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin SubChaptersRef on AutoDisposeStreamProviderRef<List<ChapterDto>> {
+mixin SubChaptersRef on StreamProviderRef<List<ChapterDto>> {
   /// The parameter `courseId` of this provider.
   String get courseId;
 
@@ -297,7 +297,7 @@ mixin SubChaptersRef on AutoDisposeStreamProviderRef<List<ChapterDto>> {
 }
 
 class _SubChaptersProviderElement
-    extends AutoDisposeStreamProviderElement<List<ChapterDto>>
+    extends StreamProviderElement<List<ChapterDto>>
     with SubChaptersRef {
   _SubChaptersProviderElement(super.provider);
 
@@ -307,7 +307,7 @@ class _SubChaptersProviderElement
   String? get parentId => (origin as SubChaptersProvider).parentId;
 }
 
-String _$allCourseLessonsHash() => r'3746368636296b244a8128a159dfa96f3fa69684';
+String _$allCourseLessonsHash() => r'2ecd0b44f585efac78c9dfca6e2b363da075f917';
 
 /// A provider that flattens all lessons for a specific course into a single list.
 /// Used for filtering lessons by type across the entire course.
@@ -320,7 +320,7 @@ const allCourseLessonsProvider = AllCourseLessonsFamily();
 /// Used for filtering lessons by type across the entire course.
 ///
 /// Copied from [allCourseLessons].
-class AllCourseLessonsFamily extends Family<AsyncValue<List<LessonDto>>> {
+class AllCourseLessonsFamily extends Family<AsyncValue<CourseCurriculumDto>> {
   /// A provider that flattens all lessons for a specific course into a single list.
   /// Used for filtering lessons by type across the entire course.
   ///
@@ -361,8 +361,7 @@ class AllCourseLessonsFamily extends Family<AsyncValue<List<LessonDto>>> {
 /// Used for filtering lessons by type across the entire course.
 ///
 /// Copied from [allCourseLessons].
-class AllCourseLessonsProvider
-    extends AutoDisposeFutureProvider<List<LessonDto>> {
+class AllCourseLessonsProvider extends StreamProvider<CourseCurriculumDto> {
   /// A provider that flattens all lessons for a specific course into a single list.
   /// Used for filtering lessons by type across the entire course.
   ///
@@ -395,7 +394,7 @@ class AllCourseLessonsProvider
 
   @override
   Override overrideWith(
-    FutureOr<List<LessonDto>> Function(AllCourseLessonsRef provider) create,
+    Stream<CourseCurriculumDto> Function(AllCourseLessonsRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -412,7 +411,7 @@ class AllCourseLessonsProvider
   }
 
   @override
-  AutoDisposeFutureProviderElement<List<LessonDto>> createElement() {
+  StreamProviderElement<CourseCurriculumDto> createElement() {
     return _AllCourseLessonsProviderElement(this);
   }
 
@@ -432,13 +431,13 @@ class AllCourseLessonsProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin AllCourseLessonsRef on AutoDisposeFutureProviderRef<List<LessonDto>> {
+mixin AllCourseLessonsRef on StreamProviderRef<CourseCurriculumDto> {
   /// The parameter `courseId` of this provider.
   String get courseId;
 }
 
 class _AllCourseLessonsProviderElement
-    extends AutoDisposeFutureProviderElement<List<LessonDto>>
+    extends StreamProviderElement<CourseCurriculumDto>
     with AllCourseLessonsRef {
   _AllCourseLessonsProviderElement(super.provider);
 

@@ -2,6 +2,7 @@ import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/chapter_detail_provider.dart';
+import '../providers/course_list_provider.dart';
 import '../models/course_content.dart';
 import '../widgets/chapter_status_filter_bar.dart';
 import '../widgets/chapter_content_item.dart';
@@ -9,7 +10,7 @@ import '../widgets/chapter_content_item.dart';
 /// Screen displaying the detailed curriculum of a specific chapter.
 /// Users can filter content by status (Running, Upcoming, History)
 /// and navigate to specific lesson readers.
-class ChapterDetailPage extends ConsumerWidget {
+class ChapterDetailPage extends ConsumerStatefulWidget {
   const ChapterDetailPage({
     super.key,
     required this.courseId,
@@ -24,32 +25,52 @@ class ChapterDetailPage extends ConsumerWidget {
   final ValueChanged<Lesson>? onLessonClick;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ChapterDetailPage> createState() => _ChapterDetailPageState();
+}
+
+class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Trigger background sync only once when the screen is navigated to.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final repo = await ref.read(courseRepositoryProvider.future);
+      repo.syncChapterContents(widget.courseId, widget.chapterId).ignore();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
     // Watch the chapter detail data
-    final chapterAsync = ref.watch(chapterDetailProvider(courseId, chapterId));
+    final chapterAsync = ref.watch(chapterDetailProvider(widget.courseId, widget.chapterId));
 
     // Check status filter state
     final activeStatusFilter = ref.watch(chapterStatusFilterProvider);
 
     return Container(
       color: design.colors.canvas,
-      child: chapterAsync.when(
-        data: (chapter) {
+      child: () {
+        // If we have data (even if it's currently refreshing in the background),
+        // show the content immediately to avoid "loading flashes" between tabs.
+        if (chapterAsync.hasValue) {
+          final chapter = chapterAsync.value;
           if (chapter == null) {
             return Center(child: AppText.body(l10n.chapterNotFound));
           }
 
           final filteredLessons = chapter.lessons.where((l) {
             switch (activeStatusFilter) {
+              case ChapterStatusFilter.all:
+                return true;
               case ChapterStatusFilter.running:
-                return l.progressStatus != LessonProgressStatus.notStarted;
+                return l.isRunning;
               case ChapterStatusFilter.upcoming:
-                return l.progressStatus == LessonProgressStatus.notStarted;
+                return l.isUpcoming;
               case ChapterStatusFilter.history:
-                return l.progressStatus == LessonProgressStatus.completed;
+                return l.hasAttempts;
             }
           }).toList();
 
@@ -91,8 +112,8 @@ class ChapterDetailPage extends ConsumerWidget {
                         (lesson) => ChapterContentItem(
                           lesson: lesson,
                           onTap: () {
-                            if (onLessonClick != null) {
-                              onLessonClick!(lesson);
+                            if (widget.onLessonClick != null) {
+                              widget.onLessonClick!(lesson);
                             }
                           },
                         ),
@@ -104,10 +125,15 @@ class ChapterDetailPage extends ConsumerWidget {
               ),
             ],
           );
-        },
-        loading: () => const Center(child: AppLoadingIndicator()),
-        error: (error, _) => Center(child: AppText.body(error.toString())),
-      ),
+        }
+
+        // Only show the spinner if we have NO data yet (first load).
+        return chapterAsync.when(
+          data: (_) => const SizedBox.shrink(), // Handled above by hasValue
+          loading: () => const Center(child: AppLoadingIndicator()),
+          error: (error, _) => Center(child: AppText.body(error.toString())),
+        );
+      }(),
     );
   }
 
@@ -136,7 +162,7 @@ class ChapterDetailPage extends ConsumerWidget {
         children: [
           // Back Button
           AppFocusable(
-            onTap: onBack ?? () => context.pop(),
+            onTap: widget.onBack ?? () => context.pop(),
             borderRadius: BorderRadius.circular(design.radius.sm),
             child: Row(
               mainAxisSize: MainAxisSize.min,

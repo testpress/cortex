@@ -54,10 +54,22 @@ class LessonListItem extends StatelessWidget {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: typeTheme.background,
+                    color: lesson.image != null ? null : typeTheme.background,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(icon, size: 20, color: typeTheme.foreground),
+                  child: Center(
+                    child: lesson.image != null
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(
+                              lesson.image!,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, _, _) =>
+                                  Icon(icon, size: 20, color: typeTheme.foreground),
+                            ),
+                          )
+                        : Icon(icon, size: 20, color: typeTheme.foreground),
+                  ),
                 ),
                 const SizedBox(width: 12),
 

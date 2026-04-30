@@ -1493,6 +1493,60 @@ class $LessonsTableTable extends LessonsTable
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _isRunningMeta = const VerificationMeta(
+    'isRunning',
+  );
+  @override
+  late final GeneratedColumn<bool> isRunning = GeneratedColumn<bool>(
+    'is_running',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_running" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _isUpcomingMeta = const VerificationMeta(
+    'isUpcoming',
+  );
+  @override
+  late final GeneratedColumn<bool> isUpcoming = GeneratedColumn<bool>(
+    'is_upcoming',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_upcoming" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _hasAttemptsMeta = const VerificationMeta(
+    'hasAttempts',
+  );
+  @override
+  late final GeneratedColumn<bool> hasAttempts = GeneratedColumn<bool>(
+    'has_attempts',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("has_attempts" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _imageMeta = const VerificationMeta('image');
+  @override
+  late final GeneratedColumn<String> image = GeneratedColumn<String>(
+    'image',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1511,6 +1565,10 @@ class $LessonsTableTable extends LessonsTable
     lessonNumber,
     totalLessons,
     isBookmarked,
+    isRunning,
+    isUpcoming,
+    hasAttempts,
+    image,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1650,6 +1708,33 @@ class $LessonsTableTable extends LessonsTable
         ),
       );
     }
+    if (data.containsKey('is_running')) {
+      context.handle(
+        _isRunningMeta,
+        isRunning.isAcceptableOrUnknown(data['is_running']!, _isRunningMeta),
+      );
+    }
+    if (data.containsKey('is_upcoming')) {
+      context.handle(
+        _isUpcomingMeta,
+        isUpcoming.isAcceptableOrUnknown(data['is_upcoming']!, _isUpcomingMeta),
+      );
+    }
+    if (data.containsKey('has_attempts')) {
+      context.handle(
+        _hasAttemptsMeta,
+        hasAttempts.isAcceptableOrUnknown(
+          data['has_attempts']!,
+          _hasAttemptsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('image')) {
+      context.handle(
+        _imageMeta,
+        image.isAcceptableOrUnknown(data['image']!, _imageMeta),
+      );
+    }
     return context;
   }
 
@@ -1723,6 +1808,22 @@ class $LessonsTableTable extends LessonsTable
         DriftSqlType.bool,
         data['${effectivePrefix}is_bookmarked'],
       )!,
+      isRunning: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_running'],
+      )!,
+      isUpcoming: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_upcoming'],
+      )!,
+      hasAttempts: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}has_attempts'],
+      )!,
+      image: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}image'],
+      ),
     );
   }
 
@@ -1754,6 +1855,10 @@ class LessonsTableData extends DataClass
   final int? lessonNumber;
   final int? totalLessons;
   final bool isBookmarked;
+  final bool isRunning;
+  final bool isUpcoming;
+  final bool hasAttempts;
+  final String? image;
   const LessonsTableData({
     required this.id,
     required this.chapterId,
@@ -1771,6 +1876,10 @@ class LessonsTableData extends DataClass
     this.lessonNumber,
     this.totalLessons,
     required this.isBookmarked,
+    required this.isRunning,
+    required this.isUpcoming,
+    required this.hasAttempts,
+    this.image,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1805,6 +1914,12 @@ class LessonsTableData extends DataClass
       map['total_lessons'] = Variable<int>(totalLessons);
     }
     map['is_bookmarked'] = Variable<bool>(isBookmarked);
+    map['is_running'] = Variable<bool>(isRunning);
+    map['is_upcoming'] = Variable<bool>(isUpcoming);
+    map['has_attempts'] = Variable<bool>(hasAttempts);
+    if (!nullToAbsent || image != null) {
+      map['image'] = Variable<String>(image);
+    }
     return map;
   }
 
@@ -1840,6 +1955,12 @@ class LessonsTableData extends DataClass
           ? const Value.absent()
           : Value(totalLessons),
       isBookmarked: Value(isBookmarked),
+      isRunning: Value(isRunning),
+      isUpcoming: Value(isUpcoming),
+      hasAttempts: Value(hasAttempts),
+      image: image == null && nullToAbsent
+          ? const Value.absent()
+          : Value(image),
     );
   }
 
@@ -1865,6 +1986,10 @@ class LessonsTableData extends DataClass
       lessonNumber: serializer.fromJson<int?>(json['lessonNumber']),
       totalLessons: serializer.fromJson<int?>(json['totalLessons']),
       isBookmarked: serializer.fromJson<bool>(json['isBookmarked']),
+      isRunning: serializer.fromJson<bool>(json['isRunning']),
+      isUpcoming: serializer.fromJson<bool>(json['isUpcoming']),
+      hasAttempts: serializer.fromJson<bool>(json['hasAttempts']),
+      image: serializer.fromJson<String?>(json['image']),
     );
   }
   @override
@@ -1887,6 +2012,10 @@ class LessonsTableData extends DataClass
       'lessonNumber': serializer.toJson<int?>(lessonNumber),
       'totalLessons': serializer.toJson<int?>(totalLessons),
       'isBookmarked': serializer.toJson<bool>(isBookmarked),
+      'isRunning': serializer.toJson<bool>(isRunning),
+      'isUpcoming': serializer.toJson<bool>(isUpcoming),
+      'hasAttempts': serializer.toJson<bool>(hasAttempts),
+      'image': serializer.toJson<String?>(image),
     };
   }
 
@@ -1907,6 +2036,10 @@ class LessonsTableData extends DataClass
     Value<int?> lessonNumber = const Value.absent(),
     Value<int?> totalLessons = const Value.absent(),
     bool? isBookmarked,
+    bool? isRunning,
+    bool? isUpcoming,
+    bool? hasAttempts,
+    Value<String?> image = const Value.absent(),
   }) => LessonsTableData(
     id: id ?? this.id,
     chapterId: chapterId ?? this.chapterId,
@@ -1924,6 +2057,10 @@ class LessonsTableData extends DataClass
     lessonNumber: lessonNumber.present ? lessonNumber.value : this.lessonNumber,
     totalLessons: totalLessons.present ? totalLessons.value : this.totalLessons,
     isBookmarked: isBookmarked ?? this.isBookmarked,
+    isRunning: isRunning ?? this.isRunning,
+    isUpcoming: isUpcoming ?? this.isUpcoming,
+    hasAttempts: hasAttempts ?? this.hasAttempts,
+    image: image.present ? image.value : this.image,
   );
   LessonsTableData copyWithCompanion(LessonsTableCompanion data) {
     return LessonsTableData(
@@ -1961,6 +2098,14 @@ class LessonsTableData extends DataClass
       isBookmarked: data.isBookmarked.present
           ? data.isBookmarked.value
           : this.isBookmarked,
+      isRunning: data.isRunning.present ? data.isRunning.value : this.isRunning,
+      isUpcoming: data.isUpcoming.present
+          ? data.isUpcoming.value
+          : this.isUpcoming,
+      hasAttempts: data.hasAttempts.present
+          ? data.hasAttempts.value
+          : this.hasAttempts,
+      image: data.image.present ? data.image.value : this.image,
     );
   }
 
@@ -1982,7 +2127,11 @@ class LessonsTableData extends DataClass
           ..write('subjectIndex: $subjectIndex, ')
           ..write('lessonNumber: $lessonNumber, ')
           ..write('totalLessons: $totalLessons, ')
-          ..write('isBookmarked: $isBookmarked')
+          ..write('isBookmarked: $isBookmarked, ')
+          ..write('isRunning: $isRunning, ')
+          ..write('isUpcoming: $isUpcoming, ')
+          ..write('hasAttempts: $hasAttempts, ')
+          ..write('image: $image')
           ..write(')'))
         .toString();
   }
@@ -2005,6 +2154,10 @@ class LessonsTableData extends DataClass
     lessonNumber,
     totalLessons,
     isBookmarked,
+    isRunning,
+    isUpcoming,
+    hasAttempts,
+    image,
   );
   @override
   bool operator ==(Object other) =>
@@ -2025,7 +2178,11 @@ class LessonsTableData extends DataClass
           other.subjectIndex == this.subjectIndex &&
           other.lessonNumber == this.lessonNumber &&
           other.totalLessons == this.totalLessons &&
-          other.isBookmarked == this.isBookmarked);
+          other.isBookmarked == this.isBookmarked &&
+          other.isRunning == this.isRunning &&
+          other.isUpcoming == this.isUpcoming &&
+          other.hasAttempts == this.hasAttempts &&
+          other.image == this.image);
 }
 
 class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
@@ -2045,6 +2202,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   final Value<int?> lessonNumber;
   final Value<int?> totalLessons;
   final Value<bool> isBookmarked;
+  final Value<bool> isRunning;
+  final Value<bool> isUpcoming;
+  final Value<bool> hasAttempts;
+  final Value<String?> image;
   final Value<int> rowid;
   const LessonsTableCompanion({
     this.id = const Value.absent(),
@@ -2063,6 +2224,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.lessonNumber = const Value.absent(),
     this.totalLessons = const Value.absent(),
     this.isBookmarked = const Value.absent(),
+    this.isRunning = const Value.absent(),
+    this.isUpcoming = const Value.absent(),
+    this.hasAttempts = const Value.absent(),
+    this.image = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   LessonsTableCompanion.insert({
@@ -2082,6 +2247,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.lessonNumber = const Value.absent(),
     this.totalLessons = const Value.absent(),
     this.isBookmarked = const Value.absent(),
+    this.isRunning = const Value.absent(),
+    this.isUpcoming = const Value.absent(),
+    this.hasAttempts = const Value.absent(),
+    this.image = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        chapterId = Value(chapterId),
@@ -2106,6 +2275,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Expression<int>? lessonNumber,
     Expression<int>? totalLessons,
     Expression<bool>? isBookmarked,
+    Expression<bool>? isRunning,
+    Expression<bool>? isUpcoming,
+    Expression<bool>? hasAttempts,
+    Expression<String>? image,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -2125,6 +2298,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       if (lessonNumber != null) 'lesson_number': lessonNumber,
       if (totalLessons != null) 'total_lessons': totalLessons,
       if (isBookmarked != null) 'is_bookmarked': isBookmarked,
+      if (isRunning != null) 'is_running': isRunning,
+      if (isUpcoming != null) 'is_upcoming': isUpcoming,
+      if (hasAttempts != null) 'has_attempts': hasAttempts,
+      if (image != null) 'image': image,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2146,6 +2323,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Value<int?>? lessonNumber,
     Value<int?>? totalLessons,
     Value<bool>? isBookmarked,
+    Value<bool>? isRunning,
+    Value<bool>? isUpcoming,
+    Value<bool>? hasAttempts,
+    Value<String?>? image,
     Value<int>? rowid,
   }) {
     return LessonsTableCompanion(
@@ -2165,6 +2346,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       lessonNumber: lessonNumber ?? this.lessonNumber,
       totalLessons: totalLessons ?? this.totalLessons,
       isBookmarked: isBookmarked ?? this.isBookmarked,
+      isRunning: isRunning ?? this.isRunning,
+      isUpcoming: isUpcoming ?? this.isUpcoming,
+      hasAttempts: hasAttempts ?? this.hasAttempts,
+      image: image ?? this.image,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2220,6 +2405,18 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     if (isBookmarked.present) {
       map['is_bookmarked'] = Variable<bool>(isBookmarked.value);
     }
+    if (isRunning.present) {
+      map['is_running'] = Variable<bool>(isRunning.value);
+    }
+    if (isUpcoming.present) {
+      map['is_upcoming'] = Variable<bool>(isUpcoming.value);
+    }
+    if (hasAttempts.present) {
+      map['has_attempts'] = Variable<bool>(hasAttempts.value);
+    }
+    if (image.present) {
+      map['image'] = Variable<String>(image.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2245,6 +2442,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
           ..write('lessonNumber: $lessonNumber, ')
           ..write('totalLessons: $totalLessons, ')
           ..write('isBookmarked: $isBookmarked, ')
+          ..write('isRunning: $isRunning, ')
+          ..write('isUpcoming: $isUpcoming, ')
+          ..write('hasAttempts: $hasAttempts, ')
+          ..write('image: $image, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -5989,6 +6190,10 @@ typedef $$LessonsTableTableCreateCompanionBuilder =
       Value<int?> lessonNumber,
       Value<int?> totalLessons,
       Value<bool> isBookmarked,
+      Value<bool> isRunning,
+      Value<bool> isUpcoming,
+      Value<bool> hasAttempts,
+      Value<String?> image,
       Value<int> rowid,
     });
 typedef $$LessonsTableTableUpdateCompanionBuilder =
@@ -6009,6 +6214,10 @@ typedef $$LessonsTableTableUpdateCompanionBuilder =
       Value<int?> lessonNumber,
       Value<int?> totalLessons,
       Value<bool> isBookmarked,
+      Value<bool> isRunning,
+      Value<bool> isUpcoming,
+      Value<bool> hasAttempts,
+      Value<String?> image,
       Value<int> rowid,
     });
 
@@ -6098,6 +6307,26 @@ class $$LessonsTableTableFilterComposer
 
   ColumnFilters<bool> get isBookmarked => $composableBuilder(
     column: $table.isBookmarked,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isRunning => $composableBuilder(
+    column: $table.isRunning,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isUpcoming => $composableBuilder(
+    column: $table.isUpcoming,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get hasAttempts => $composableBuilder(
+    column: $table.hasAttempts,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get image => $composableBuilder(
+    column: $table.image,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -6190,6 +6419,26 @@ class $$LessonsTableTableOrderingComposer
     column: $table.isBookmarked,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get isRunning => $composableBuilder(
+    column: $table.isRunning,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isUpcoming => $composableBuilder(
+    column: $table.isUpcoming,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get hasAttempts => $composableBuilder(
+    column: $table.hasAttempts,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get image => $composableBuilder(
+    column: $table.image,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$LessonsTableTableAnnotationComposer
@@ -6266,6 +6515,22 @@ class $$LessonsTableTableAnnotationComposer
     column: $table.isBookmarked,
     builder: (column) => column,
   );
+
+  GeneratedColumn<bool> get isRunning =>
+      $composableBuilder(column: $table.isRunning, builder: (column) => column);
+
+  GeneratedColumn<bool> get isUpcoming => $composableBuilder(
+    column: $table.isUpcoming,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get hasAttempts => $composableBuilder(
+    column: $table.hasAttempts,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get image =>
+      $composableBuilder(column: $table.image, builder: (column) => column);
 }
 
 class $$LessonsTableTableTableManager
@@ -6315,6 +6580,10 @@ class $$LessonsTableTableTableManager
                 Value<int?> lessonNumber = const Value.absent(),
                 Value<int?> totalLessons = const Value.absent(),
                 Value<bool> isBookmarked = const Value.absent(),
+                Value<bool> isRunning = const Value.absent(),
+                Value<bool> isUpcoming = const Value.absent(),
+                Value<bool> hasAttempts = const Value.absent(),
+                Value<String?> image = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LessonsTableCompanion(
                 id: id,
@@ -6333,6 +6602,10 @@ class $$LessonsTableTableTableManager
                 lessonNumber: lessonNumber,
                 totalLessons: totalLessons,
                 isBookmarked: isBookmarked,
+                isRunning: isRunning,
+                isUpcoming: isUpcoming,
+                hasAttempts: hasAttempts,
+                image: image,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -6353,6 +6626,10 @@ class $$LessonsTableTableTableManager
                 Value<int?> lessonNumber = const Value.absent(),
                 Value<int?> totalLessons = const Value.absent(),
                 Value<bool> isBookmarked = const Value.absent(),
+                Value<bool> isRunning = const Value.absent(),
+                Value<bool> isUpcoming = const Value.absent(),
+                Value<bool> hasAttempts = const Value.absent(),
+                Value<String?> image = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LessonsTableCompanion.insert(
                 id: id,
@@ -6371,6 +6648,10 @@ class $$LessonsTableTableTableManager
                 lessonNumber: lessonNumber,
                 totalLessons: totalLessons,
                 isBookmarked: isBookmarked,
+                isRunning: isRunning,
+                isUpcoming: isUpcoming,
+                hasAttempts: hasAttempts,
+                image: image,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
