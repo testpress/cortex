@@ -1,70 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:video_player/video_player.dart';
-import 'package:chewie/chewie.dart';
+import 'package:tpstreams_player_sdk/tpstreams_player_sdk.dart';
 
 class CustomVideoPlayer extends StatefulWidget {
-  final String videoUrl;
+  final String? assetId;
+  final VoidCallback? onComplete;
 
-  const CustomVideoPlayer({super.key, required this.videoUrl});
+  const CustomVideoPlayer({
+    super.key,
+    this.assetId,
+    this.onComplete,
+  });
 
   @override
   State<CustomVideoPlayer> createState() => _CustomVideoPlayerState();
 }
 
 class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
-  late VideoPlayerController _videoPlayerController;
-  ChewieController? _chewieController;
-
-  @override
-  void initState() {
-    super.initState();
-    initializePlayer();
-  }
-
-  Future<void> initializePlayer() async {
-    _videoPlayerController = VideoPlayerController.networkUrl(
-      Uri.parse(widget.videoUrl),
-    );
-
-    await _videoPlayerController.initialize();
-
-    if (!mounted) return;
-
-    _chewieController = ChewieController(
-      videoPlayerController: _videoPlayerController,
-      autoPlay: false,
-      looping: false,
-      aspectRatio: _videoPlayerController.value.aspectRatio,
-      allowPlaybackSpeedChanging: true,
-      allowFullScreen: true,
-      deviceOrientationsAfterFullScreen: const [DeviceOrientation.portraitUp],
-    );
-
-    setState(() {});
-  }
-
-  @override
-  void dispose() {
-    _videoPlayerController.pause();
-    _chewieController?.dispose();
-    _videoPlayerController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (_chewieController != null &&
-        _chewieController!.videoPlayerController.value.isInitialized) {
+    if (widget.assetId != null && widget.assetId!.isNotEmpty) {
       return AspectRatio(
-        aspectRatio: _videoPlayerController.value.aspectRatio,
-        child: Chewie(controller: _chewieController!),
-      );
-    } else {
-      return const AspectRatio(
         aspectRatio: 16 / 9,
-        child: Center(child: CircularProgressIndicator()),
+        child: TestpressPlayer(
+          assetId: widget.assetId!,
+          autoPlay: true,
+          showDownloadOption: true,
+          onPlayerCreated: (TestpressPlayerController controller) {
+            controller.addListener(() {
+              // Mark as completed if the video reaches the end
+              if (controller.value.position >= controller.value.duration &&
+                  controller.value.duration != Duration.zero) {
+                widget.onComplete?.call();
+              }
+            });
+          },
+        ),
       );
     }
+    return const SizedBox.shrink();
   }
 }

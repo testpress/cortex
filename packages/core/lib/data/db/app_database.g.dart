@@ -1547,6 +1547,55 @@ class $LessonsTableTable extends LessonsTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _nextContentIdMeta = const VerificationMeta(
+    'nextContentId',
+  );
+  @override
+  late final GeneratedColumn<String> nextContentId = GeneratedColumn<String>(
+    'next_content_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _previousContentIdMeta = const VerificationMeta(
+    'previousContentId',
+  );
+  @override
+  late final GeneratedColumn<String> previousContentId =
+      GeneratedColumn<String>(
+        'previous_content_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _htmlContentMeta = const VerificationMeta(
+    'htmlContent',
+  );
+  @override
+  late final GeneratedColumn<String> htmlContent = GeneratedColumn<String>(
+    'html_content',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isDetailFetchedMeta = const VerificationMeta(
+    'isDetailFetched',
+  );
+  @override
+  late final GeneratedColumn<bool> isDetailFetched = GeneratedColumn<bool>(
+    'is_detail_fetched',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_detail_fetched" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1569,6 +1618,10 @@ class $LessonsTableTable extends LessonsTable
     isUpcoming,
     hasAttempts,
     image,
+    nextContentId,
+    previousContentId,
+    htmlContent,
+    isDetailFetched,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1735,6 +1788,42 @@ class $LessonsTableTable extends LessonsTable
         image.isAcceptableOrUnknown(data['image']!, _imageMeta),
       );
     }
+    if (data.containsKey('next_content_id')) {
+      context.handle(
+        _nextContentIdMeta,
+        nextContentId.isAcceptableOrUnknown(
+          data['next_content_id']!,
+          _nextContentIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('previous_content_id')) {
+      context.handle(
+        _previousContentIdMeta,
+        previousContentId.isAcceptableOrUnknown(
+          data['previous_content_id']!,
+          _previousContentIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('html_content')) {
+      context.handle(
+        _htmlContentMeta,
+        htmlContent.isAcceptableOrUnknown(
+          data['html_content']!,
+          _htmlContentMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_detail_fetched')) {
+      context.handle(
+        _isDetailFetchedMeta,
+        isDetailFetched.isAcceptableOrUnknown(
+          data['is_detail_fetched']!,
+          _isDetailFetchedMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -1824,6 +1913,22 @@ class $LessonsTableTable extends LessonsTable
         DriftSqlType.string,
         data['${effectivePrefix}image'],
       ),
+      nextContentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}next_content_id'],
+      ),
+      previousContentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}previous_content_id'],
+      ),
+      htmlContent: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}html_content'],
+      ),
+      isDetailFetched: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_detail_fetched'],
+      )!,
     );
   }
 
@@ -1859,6 +1964,10 @@ class LessonsTableData extends DataClass
   final bool isUpcoming;
   final bool hasAttempts;
   final String? image;
+  final String? nextContentId;
+  final String? previousContentId;
+  final String? htmlContent;
+  final bool isDetailFetched;
   const LessonsTableData({
     required this.id,
     required this.chapterId,
@@ -1880,6 +1989,10 @@ class LessonsTableData extends DataClass
     required this.isUpcoming,
     required this.hasAttempts,
     this.image,
+    this.nextContentId,
+    this.previousContentId,
+    this.htmlContent,
+    required this.isDetailFetched,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1920,6 +2033,16 @@ class LessonsTableData extends DataClass
     if (!nullToAbsent || image != null) {
       map['image'] = Variable<String>(image);
     }
+    if (!nullToAbsent || nextContentId != null) {
+      map['next_content_id'] = Variable<String>(nextContentId);
+    }
+    if (!nullToAbsent || previousContentId != null) {
+      map['previous_content_id'] = Variable<String>(previousContentId);
+    }
+    if (!nullToAbsent || htmlContent != null) {
+      map['html_content'] = Variable<String>(htmlContent);
+    }
+    map['is_detail_fetched'] = Variable<bool>(isDetailFetched);
     return map;
   }
 
@@ -1961,6 +2084,16 @@ class LessonsTableData extends DataClass
       image: image == null && nullToAbsent
           ? const Value.absent()
           : Value(image),
+      nextContentId: nextContentId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(nextContentId),
+      previousContentId: previousContentId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(previousContentId),
+      htmlContent: htmlContent == null && nullToAbsent
+          ? const Value.absent()
+          : Value(htmlContent),
+      isDetailFetched: Value(isDetailFetched),
     );
   }
 
@@ -1990,6 +2123,12 @@ class LessonsTableData extends DataClass
       isUpcoming: serializer.fromJson<bool>(json['isUpcoming']),
       hasAttempts: serializer.fromJson<bool>(json['hasAttempts']),
       image: serializer.fromJson<String?>(json['image']),
+      nextContentId: serializer.fromJson<String?>(json['nextContentId']),
+      previousContentId: serializer.fromJson<String?>(
+        json['previousContentId'],
+      ),
+      htmlContent: serializer.fromJson<String?>(json['htmlContent']),
+      isDetailFetched: serializer.fromJson<bool>(json['isDetailFetched']),
     );
   }
   @override
@@ -2016,6 +2155,10 @@ class LessonsTableData extends DataClass
       'isUpcoming': serializer.toJson<bool>(isUpcoming),
       'hasAttempts': serializer.toJson<bool>(hasAttempts),
       'image': serializer.toJson<String?>(image),
+      'nextContentId': serializer.toJson<String?>(nextContentId),
+      'previousContentId': serializer.toJson<String?>(previousContentId),
+      'htmlContent': serializer.toJson<String?>(htmlContent),
+      'isDetailFetched': serializer.toJson<bool>(isDetailFetched),
     };
   }
 
@@ -2040,6 +2183,10 @@ class LessonsTableData extends DataClass
     bool? isUpcoming,
     bool? hasAttempts,
     Value<String?> image = const Value.absent(),
+    Value<String?> nextContentId = const Value.absent(),
+    Value<String?> previousContentId = const Value.absent(),
+    Value<String?> htmlContent = const Value.absent(),
+    bool? isDetailFetched,
   }) => LessonsTableData(
     id: id ?? this.id,
     chapterId: chapterId ?? this.chapterId,
@@ -2061,6 +2208,14 @@ class LessonsTableData extends DataClass
     isUpcoming: isUpcoming ?? this.isUpcoming,
     hasAttempts: hasAttempts ?? this.hasAttempts,
     image: image.present ? image.value : this.image,
+    nextContentId: nextContentId.present
+        ? nextContentId.value
+        : this.nextContentId,
+    previousContentId: previousContentId.present
+        ? previousContentId.value
+        : this.previousContentId,
+    htmlContent: htmlContent.present ? htmlContent.value : this.htmlContent,
+    isDetailFetched: isDetailFetched ?? this.isDetailFetched,
   );
   LessonsTableData copyWithCompanion(LessonsTableCompanion data) {
     return LessonsTableData(
@@ -2106,6 +2261,18 @@ class LessonsTableData extends DataClass
           ? data.hasAttempts.value
           : this.hasAttempts,
       image: data.image.present ? data.image.value : this.image,
+      nextContentId: data.nextContentId.present
+          ? data.nextContentId.value
+          : this.nextContentId,
+      previousContentId: data.previousContentId.present
+          ? data.previousContentId.value
+          : this.previousContentId,
+      htmlContent: data.htmlContent.present
+          ? data.htmlContent.value
+          : this.htmlContent,
+      isDetailFetched: data.isDetailFetched.present
+          ? data.isDetailFetched.value
+          : this.isDetailFetched,
     );
   }
 
@@ -2131,13 +2298,17 @@ class LessonsTableData extends DataClass
           ..write('isRunning: $isRunning, ')
           ..write('isUpcoming: $isUpcoming, ')
           ..write('hasAttempts: $hasAttempts, ')
-          ..write('image: $image')
+          ..write('image: $image, ')
+          ..write('nextContentId: $nextContentId, ')
+          ..write('previousContentId: $previousContentId, ')
+          ..write('htmlContent: $htmlContent, ')
+          ..write('isDetailFetched: $isDetailFetched')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     id,
     chapterId,
     title,
@@ -2158,7 +2329,11 @@ class LessonsTableData extends DataClass
     isUpcoming,
     hasAttempts,
     image,
-  );
+    nextContentId,
+    previousContentId,
+    htmlContent,
+    isDetailFetched,
+  ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2182,7 +2357,11 @@ class LessonsTableData extends DataClass
           other.isRunning == this.isRunning &&
           other.isUpcoming == this.isUpcoming &&
           other.hasAttempts == this.hasAttempts &&
-          other.image == this.image);
+          other.image == this.image &&
+          other.nextContentId == this.nextContentId &&
+          other.previousContentId == this.previousContentId &&
+          other.htmlContent == this.htmlContent &&
+          other.isDetailFetched == this.isDetailFetched);
 }
 
 class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
@@ -2206,6 +2385,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   final Value<bool> isUpcoming;
   final Value<bool> hasAttempts;
   final Value<String?> image;
+  final Value<String?> nextContentId;
+  final Value<String?> previousContentId;
+  final Value<String?> htmlContent;
+  final Value<bool> isDetailFetched;
   final Value<int> rowid;
   const LessonsTableCompanion({
     this.id = const Value.absent(),
@@ -2228,6 +2411,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.isUpcoming = const Value.absent(),
     this.hasAttempts = const Value.absent(),
     this.image = const Value.absent(),
+    this.nextContentId = const Value.absent(),
+    this.previousContentId = const Value.absent(),
+    this.htmlContent = const Value.absent(),
+    this.isDetailFetched = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   LessonsTableCompanion.insert({
@@ -2251,6 +2438,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.isUpcoming = const Value.absent(),
     this.hasAttempts = const Value.absent(),
     this.image = const Value.absent(),
+    this.nextContentId = const Value.absent(),
+    this.previousContentId = const Value.absent(),
+    this.htmlContent = const Value.absent(),
+    this.isDetailFetched = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        chapterId = Value(chapterId),
@@ -2279,6 +2470,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Expression<bool>? isUpcoming,
     Expression<bool>? hasAttempts,
     Expression<String>? image,
+    Expression<String>? nextContentId,
+    Expression<String>? previousContentId,
+    Expression<String>? htmlContent,
+    Expression<bool>? isDetailFetched,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -2302,6 +2497,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       if (isUpcoming != null) 'is_upcoming': isUpcoming,
       if (hasAttempts != null) 'has_attempts': hasAttempts,
       if (image != null) 'image': image,
+      if (nextContentId != null) 'next_content_id': nextContentId,
+      if (previousContentId != null) 'previous_content_id': previousContentId,
+      if (htmlContent != null) 'html_content': htmlContent,
+      if (isDetailFetched != null) 'is_detail_fetched': isDetailFetched,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2327,6 +2526,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Value<bool>? isUpcoming,
     Value<bool>? hasAttempts,
     Value<String?>? image,
+    Value<String?>? nextContentId,
+    Value<String?>? previousContentId,
+    Value<String?>? htmlContent,
+    Value<bool>? isDetailFetched,
     Value<int>? rowid,
   }) {
     return LessonsTableCompanion(
@@ -2350,6 +2553,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       isUpcoming: isUpcoming ?? this.isUpcoming,
       hasAttempts: hasAttempts ?? this.hasAttempts,
       image: image ?? this.image,
+      nextContentId: nextContentId ?? this.nextContentId,
+      previousContentId: previousContentId ?? this.previousContentId,
+      htmlContent: htmlContent ?? this.htmlContent,
+      isDetailFetched: isDetailFetched ?? this.isDetailFetched,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2417,6 +2624,18 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     if (image.present) {
       map['image'] = Variable<String>(image.value);
     }
+    if (nextContentId.present) {
+      map['next_content_id'] = Variable<String>(nextContentId.value);
+    }
+    if (previousContentId.present) {
+      map['previous_content_id'] = Variable<String>(previousContentId.value);
+    }
+    if (htmlContent.present) {
+      map['html_content'] = Variable<String>(htmlContent.value);
+    }
+    if (isDetailFetched.present) {
+      map['is_detail_fetched'] = Variable<bool>(isDetailFetched.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2446,6 +2665,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
           ..write('isUpcoming: $isUpcoming, ')
           ..write('hasAttempts: $hasAttempts, ')
           ..write('image: $image, ')
+          ..write('nextContentId: $nextContentId, ')
+          ..write('previousContentId: $previousContentId, ')
+          ..write('htmlContent: $htmlContent, ')
+          ..write('isDetailFetched: $isDetailFetched, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -6194,6 +6417,10 @@ typedef $$LessonsTableTableCreateCompanionBuilder =
       Value<bool> isUpcoming,
       Value<bool> hasAttempts,
       Value<String?> image,
+      Value<String?> nextContentId,
+      Value<String?> previousContentId,
+      Value<String?> htmlContent,
+      Value<bool> isDetailFetched,
       Value<int> rowid,
     });
 typedef $$LessonsTableTableUpdateCompanionBuilder =
@@ -6218,6 +6445,10 @@ typedef $$LessonsTableTableUpdateCompanionBuilder =
       Value<bool> isUpcoming,
       Value<bool> hasAttempts,
       Value<String?> image,
+      Value<String?> nextContentId,
+      Value<String?> previousContentId,
+      Value<String?> htmlContent,
+      Value<bool> isDetailFetched,
       Value<int> rowid,
     });
 
@@ -6327,6 +6558,26 @@ class $$LessonsTableTableFilterComposer
 
   ColumnFilters<String> get image => $composableBuilder(
     column: $table.image,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nextContentId => $composableBuilder(
+    column: $table.nextContentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get previousContentId => $composableBuilder(
+    column: $table.previousContentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get htmlContent => $composableBuilder(
+    column: $table.htmlContent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isDetailFetched => $composableBuilder(
+    column: $table.isDetailFetched,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -6439,6 +6690,26 @@ class $$LessonsTableTableOrderingComposer
     column: $table.image,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get nextContentId => $composableBuilder(
+    column: $table.nextContentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get previousContentId => $composableBuilder(
+    column: $table.previousContentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get htmlContent => $composableBuilder(
+    column: $table.htmlContent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isDetailFetched => $composableBuilder(
+    column: $table.isDetailFetched,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$LessonsTableTableAnnotationComposer
@@ -6531,6 +6802,26 @@ class $$LessonsTableTableAnnotationComposer
 
   GeneratedColumn<String> get image =>
       $composableBuilder(column: $table.image, builder: (column) => column);
+
+  GeneratedColumn<String> get nextContentId => $composableBuilder(
+    column: $table.nextContentId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get previousContentId => $composableBuilder(
+    column: $table.previousContentId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get htmlContent => $composableBuilder(
+    column: $table.htmlContent,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isDetailFetched => $composableBuilder(
+    column: $table.isDetailFetched,
+    builder: (column) => column,
+  );
 }
 
 class $$LessonsTableTableTableManager
@@ -6584,6 +6875,10 @@ class $$LessonsTableTableTableManager
                 Value<bool> isUpcoming = const Value.absent(),
                 Value<bool> hasAttempts = const Value.absent(),
                 Value<String?> image = const Value.absent(),
+                Value<String?> nextContentId = const Value.absent(),
+                Value<String?> previousContentId = const Value.absent(),
+                Value<String?> htmlContent = const Value.absent(),
+                Value<bool> isDetailFetched = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LessonsTableCompanion(
                 id: id,
@@ -6606,6 +6901,10 @@ class $$LessonsTableTableTableManager
                 isUpcoming: isUpcoming,
                 hasAttempts: hasAttempts,
                 image: image,
+                nextContentId: nextContentId,
+                previousContentId: previousContentId,
+                htmlContent: htmlContent,
+                isDetailFetched: isDetailFetched,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -6630,6 +6929,10 @@ class $$LessonsTableTableTableManager
                 Value<bool> isUpcoming = const Value.absent(),
                 Value<bool> hasAttempts = const Value.absent(),
                 Value<String?> image = const Value.absent(),
+                Value<String?> nextContentId = const Value.absent(),
+                Value<String?> previousContentId = const Value.absent(),
+                Value<String?> htmlContent = const Value.absent(),
+                Value<bool> isDetailFetched = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LessonsTableCompanion.insert(
                 id: id,
@@ -6652,6 +6955,10 @@ class $$LessonsTableTableTableManager
                 isUpcoming: isUpcoming,
                 hasAttempts: hasAttempts,
                 image: image,
+                nextContentId: nextContentId,
+                previousContentId: previousContentId,
+                htmlContent: htmlContent,
+                isDetailFetched: isDetailFetched,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

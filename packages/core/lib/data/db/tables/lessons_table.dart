@@ -32,6 +32,13 @@ class LessonsTable extends Table {
   BoolColumn get hasAttempts => boolean().withDefault(const Constant(false))();
   TextColumn get image => text().nullable()();
 
+  // New fields for LessonDetailShell (v2.4+)
+  TextColumn get nextContentId => text().nullable()();
+  TextColumn get previousContentId => text().nullable()();
+  TextColumn get htmlContent => text().nullable()();
+  
+  BoolColumn get isDetailFetched => boolean().withDefault(const Constant(false))();
+
   @override
   Set<Column> get primaryKey => {id};
 }

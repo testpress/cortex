@@ -184,12 +184,20 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                           onTap: () {
                             final route = switch (lesson.type) {
                               LessonType.video => '/study/video/${lesson.id}',
-                              LessonType.pdf => '/study/lesson/${lesson.id}',
+                              LessonType.pdf ||
+                              LessonType.notes ||
+                              LessonType.embedContent ||
+                              LessonType.liveStream ||
+                              LessonType.attachment =>
+                                '/study/lesson/${lesson.id}',
                               LessonType.assessment =>
                                 '/study/assessment/${lesson.id}',
                               LessonType.test => '/study/test/${lesson.id}',
+                              LessonType.unknown => null,
                             };
-                            context.push(route);
+                            if (route != null) {
+                              context.push(route);
+                            }
                           },
                         );
                       }),

@@ -415,6 +415,15 @@ class MockDataSource implements DataSource {
     }
   }
 
+  @override
+  Future<LessonDto> getLessonDetail(String lessonId) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return _thermodynamicsLessons().firstWhere(
+      (l) => l.id == lessonId,
+      orElse: () => _thermodynamicsLessons().first.copyWith(id: lessonId),
+    );
+  }
+
   List<LessonDto> _thermodynamicsLessons() => [
         const LessonDto(
           id: 'thermo-1',
@@ -919,5 +928,22 @@ class MockDataSource implements DataSource {
     );
     mockCurrentUser = updated;
     return updated;
+  }
+
+  @override
+  Future<void> markLessonCompleted(String lessonId) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+  }
+
+  @override
+  Future<void> downloadFile({
+    required String url,
+    required String savePath,
+    void Function(int count, int total)? onReceiveProgress,
+    dynamic cancelToken,
+    bool requireAuth = true,
+  }) async {
+    // Mock implementation for testing
+    await Future.delayed(const Duration(seconds: 1));
   }
 }

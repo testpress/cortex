@@ -22,6 +22,10 @@ class Lesson {
     this.hasAttempts = false,
     this.contentUrl,
     this.image,
+    this.nextContentId,
+    this.previousContentId,
+    this.htmlContent,
+    this.isDetailFetched = false,
   });
 
   final String id;
@@ -31,6 +35,7 @@ class Lesson {
   final String? duration;
   final bool isLocked;
   final bool isBookmarked;
+  final bool isDetailFetched;
 
   // New fields for LessonDetailScreen (Phase-2)
   final String? subtitle;
@@ -43,6 +48,29 @@ class Lesson {
   final bool isUpcoming;
   final bool hasAttempts;
   final String? image;
+
+  // New fields for LessonDetailShell (v2.4+)
+  final String? nextContentId;
+  final String? previousContentId;
+  final String? htmlContent;
+ 
+  /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
+  bool get isComplete {
+    if (isDetailFetched) return true;
+ 
+    switch (type) {
+      case LessonType.video:
+        return contentUrl != null && contentUrl!.isNotEmpty;
+      case LessonType.notes:
+      case LessonType.embedContent:
+        return htmlContent != null && htmlContent!.isNotEmpty;
+      case LessonType.pdf:
+      case LessonType.attachment:
+        return contentUrl != null && contentUrl!.isNotEmpty;
+      default:
+        return true;
+    }
+  }
 }
 
 /// Domain model for a chapter within a course.

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:async/async.dart';
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:core/data/data.dart';
 
@@ -10,6 +11,7 @@ import 'package:core/data/data.dart';
 class CourseRepository {
   final AppDatabase _db;
   final DataSource _source;
+
   /// In-flight structural syncs to prevent duplicate network requests.
   final Map<String, Future<CourseCurriculumDto>> _activeStructuralSyncs = {};
   final Map<String, Future<List<ChapterDto>>> _activeChapterSyncs = {};
@@ -23,21 +25,25 @@ class CourseRepository {
   /// Live stream of all courses from the local DB (single source of truth).
   Stream<List<CoursesTableData>> watchCourses() {
     return _db.watchAllCourses();
-  } 
+  }
 
   /// Live stream of a specific course with its chapters.
   Stream<CourseDto?> watchCourse(String courseId) async* {
     // Combine course and chapter streams by reacting to both table changes
     final combinedWatcher = StreamGroup.merge([
       Stream.value(null), // Initial trigger
-      (_db.select(_db.coursesTable)..where((t) => t.id.equals(courseId))).watch(),
-      (_db.select(_db.chaptersTable)..where((t) => t.courseId.equals(courseId))).watch(),
+      (_db.select(
+        _db.coursesTable,
+      )..where((t) => t.id.equals(courseId))).watch(),
+      (_db.select(
+        _db.chaptersTable,
+      )..where((t) => t.courseId.equals(courseId))).watch(),
     ]);
 
     yield* combinedWatcher.asyncMap((_) async {
-      final courseData = await (_db.select(_db.coursesTable)
-            ..where((t) => t.id.equals(courseId)))
-          .getSingleOrNull();
+      final courseData = await (_db.select(
+        _db.coursesTable,
+      )..where((t) => t.id.equals(courseId))).getSingleOrNull();
 
       CourseDto course;
       if (courseData != null) {
@@ -52,10 +58,13 @@ class CourseRepository {
         }
       }
 
-      final chaptersData = await (_db.select(_db.chaptersTable)
-            ..where((t) => t.courseId.equals(courseId) & t.parentId.isNull())
-            ..orderBy([(t) => OrderingTerm.asc(t.orderIndex)]))
-          .get();
+      final chaptersData =
+          await (_db.select(_db.chaptersTable)
+                ..where(
+                  (t) => t.courseId.equals(courseId) & t.parentId.isNull(),
+                )
+                ..orderBy([(t) => OrderingTerm.asc(t.orderIndex)]))
+              .get();
 
       return course.copyWith(
         chapters: chaptersData.map(rowToChapterDto).toList(),
@@ -64,9 +73,7 @@ class CourseRepository {
   }
 
   /// Fetch courses for a specific [page] from [DataSource] and persist to local DB.
-  Future<PaginatedResponseDto<CourseDto>> refreshCourses({
-    int page = 1,
-  }) async {
+  Future<PaginatedResponseDto<CourseDto>> refreshCourses({int page = 1}) async {
     final response = await _source.getCourses(page: page);
 
     if (response.results.isNotEmpty) {
@@ -87,7 +94,10 @@ class CourseRepository {
 
   // ── Chapters ─────────────────────────────────────────────────────────────
 
-  Stream<List<ChaptersTableData>> watchChapters(String courseId, {String? parentId}) {
+  Stream<List<ChaptersTableData>> watchChapters(
+    String courseId, {
+    String? parentId,
+  }) {
     final query = _db.select(_db.chaptersTable)
       ..orderBy([(t) => OrderingTerm.asc(t.orderIndex)]);
 
@@ -129,24 +139,29 @@ class CourseRepository {
     return syncFuture;
   }
 
-
-
   /// Checks if chapters/subjects for a course or folder are already in the DB.
   Future<bool> isChaptersSynced(String courseId, {String? parentId}) async {
     final rowId = parentId ?? courseId;
     final isChapter = parentId != null;
 
     if (isChapter) {
-      final chapter = await (_db.select(_db.chaptersTable)..where((t) => t.id.equals(rowId))).getSingleOrNull();
+      final chapter = await (_db.select(
+        _db.chaptersTable,
+      )..where((t) => t.id.equals(rowId))).getSingleOrNull();
       return chapter?.isChaptersSynced ?? false;
     } else {
-      final course = await (_db.select(_db.coursesTable)..where((t) => t.id.equals(rowId))).getSingleOrNull();
+      final course = await (_db.select(
+        _db.coursesTable,
+      )..where((t) => t.id.equals(rowId))).getSingleOrNull();
       return course?.isChaptersSynced ?? false;
     }
   }
 
   /// Refreshes chapters for a course or folder and marks it as synced.
-  Future<List<ChapterDto>> refreshChapters(String courseId, {String? parentId}) async {
+  Future<List<ChapterDto>> refreshChapters(
+    String courseId, {
+    String? parentId,
+  }) async {
     final lockKey = 'chapters_${courseId}_${parentId ?? "root"}';
     if (_activeChapterSyncs.containsKey(lockKey)) {
       return _activeChapterSyncs[lockKey]!;
@@ -154,9 +169,12 @@ class CourseRepository {
 
     final syncFuture = () async {
       try {
-        final chapters = await _source.getChapters(courseId, parentId: parentId);
+        final chapters = await _source.getChapters(
+          courseId,
+          parentId: parentId,
+        );
         final companions = chapters.map(_chapterDtoToCompanion).toList();
-        
+
         if (companions.isNotEmpty) {
           await _db.upsertChapters(companions);
         }
@@ -173,7 +191,10 @@ class CourseRepository {
 
   // ── Internal Helpers ─────────────────────────────────────────────────────
 
-  Future<void> _markAsSynced({required String courseId, String? folderId}) async {
+  Future<void> _markAsSynced({
+    required String courseId,
+    String? folderId,
+  }) async {
     if (folderId != null) {
       await (_db.update(_db.chaptersTable)..where((t) => t.id.equals(folderId)))
           .write(const ChaptersTableCompanion(isChaptersSynced: Value(true)));
@@ -200,7 +221,7 @@ class CourseRepository {
   Stream<CourseCurriculumDto> watchCourseCurriculum(String courseId) async* {
     // 1. Get the authoritative structure snapshot for this course.
     final CourseCurriculumDto hierarchy = await refreshCourseContents(courseId);
-    
+
     // Immediate yield of the hierarchy to ensure instant UI responsiveness.
     yield hierarchy;
 
@@ -211,22 +232,20 @@ class CourseRepository {
     // and filter them by the chapters that belong to this course.
     yield* _db.watchAllLessons().map((dbRows) {
       // Collect all chapter IDs that belong to this course hierarchy.
-      final courseChapterIds = {
-        for (var c in hierarchy.chapters) c.id,
-      };
+      final courseChapterIds = {for (var c in hierarchy.chapters) c.id};
 
       final courseLessons = dbRows
           .map(rowToLessonDto)
           .where((l) => courseChapterIds.contains(l.chapterId))
           .toList();
-      
+
       // Enforce the API-provided sequence for consistent ordering.
       courseLessons.sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
 
       return hierarchy.copyWith(lessons: courseLessons);
     });
   }
-  
+
   /// Direct fetch of a course by ID from the database or network fallback.
   Future<CourseDto?> getCourse(String courseId) async {
     return watchCourse(courseId).first;
@@ -234,9 +253,14 @@ class CourseRepository {
 
   /// Synchronizes all data needed for a specific chapter view.
   /// Handles the complexity of checking if it's a leaf and coordinating status refreshes.
-  Future<List<LessonDto>> syncChapterContents(String courseId, String chapterId) async {
+  Future<List<LessonDto>> syncChapterContents(
+    String courseId,
+    String chapterId,
+  ) async {
     final course = await getCourse(courseId);
-    final chapter = course?.chapters.where((c) => c.id == chapterId).firstOrNull;
+    final chapter = course?.chapters
+        .where((c) => c.id == chapterId)
+        .firstOrNull;
 
     if (chapter != null && chapter.isLeaf) {
       // Refresh the course-wide status tags first.
@@ -263,12 +287,12 @@ class CourseRepository {
         await _db.transaction(() async {
           final localLessons = await getLessons(chapterId);
           final localIds = localLessons.map((l) => l.id).toSet();
-          
+
           final idsToDelete = localIds.difference(remoteIds).toList();
           if (idsToDelete.isNotEmpty) {
             await _db.deleteLessonsByIds(idsToDelete);
           }
-          
+
           await _db.upsertLessons(companions);
         });
 
@@ -279,10 +303,10 @@ class CourseRepository {
     }();
 
     _activeContentSyncs[chapterId] = syncFuture.then((_) async {
-       final rows = await getLessons(chapterId);
-       return rows.map(rowToLessonDto).toList();
+      final rows = await getLessons(chapterId);
+      return rows.map(rowToLessonDto).toList();
     });
-    
+
     return syncFuture;
   }
 
@@ -296,7 +320,7 @@ class CourseRepository {
       try {
         // Authoritative Structural Mapping: Hierarchy comes strictly from the paginated /contents/ API.
         final remoteAll = await _source.getCourseContents(courseId);
-        
+
         // Status Enrichment: Fetch progress/lifecycle flags in parallel.
         // These are secondary and do NOT affect the curriculum structure.
         final results = await Future.wait([
@@ -312,11 +336,19 @@ class CourseRepository {
           attempts: results[2],
         );
 
-        final mergedCurriculum = await _mergeLocalAndRemoteCurriculum(courseId, remote.all);
-        
+        final mergedCurriculum = await _mergeLocalAndRemoteCurriculum(
+          courseId,
+          remote.all,
+        );
+
         // Enrichment Phase: Distribute status flags to the authoritative entities.
-        final lessonCompanions = _applyContentStatuses(mergedCurriculum.lessons, remote);
-        final chapterCompanions = mergedCurriculum.chapters.map(_chapterDtoToCompanion).toList();
+        final lessonCompanions = _applyContentStatuses(
+          mergedCurriculum.lessons,
+          remote,
+        );
+        final chapterCompanions = mergedCurriculum.chapters
+            .map(_chapterDtoToCompanion)
+            .toList();
 
         await _db.transaction(() async {
           if (lessonCompanions.isNotEmpty) {
@@ -339,7 +371,6 @@ class CourseRepository {
     return syncFuture;
   }
 
-
   Future<CourseCurriculumDto> _mergeLocalAndRemoteCurriculum(
     String courseId,
     CourseCurriculumDto remoteAll,
@@ -351,10 +382,10 @@ class CourseRepository {
 
     // 2. Load existing persistent state from DB cache for ONLY these IDs.
     // This avoids SQL JOINs and recursion with the projection layer.
-    final localRows = await (_db.select(_db.lessonsTable)
-          ..where((t) => t.id.isIn(remoteIds)))
-        .get();
-        
+    final localRows = await (_db.select(
+      _db.lessonsTable,
+    )..where((t) => t.id.isIn(remoteIds))).get();
+
     for (final row in localRows) {
       merged[row.id] = rowToLessonDto(row);
     }
@@ -376,8 +407,9 @@ class CourseRepository {
       CourseCurriculumDto all,
       CourseCurriculumDto running,
       CourseCurriculumDto upcoming,
-      CourseCurriculumDto attempts
-    }) remote,
+      CourseCurriculumDto attempts,
+    })
+    remote,
   ) {
     final runningIds = remote.running.lessons.map((l) => l.id).toSet();
     final upcomingIds = remote.upcoming.lessons.map((l) => l.id).toSet();
@@ -387,7 +419,10 @@ class CourseRepository {
       return _lessonDtoToCompanion(dto).copyWith(
         isRunning: Value(runningIds.contains(dto.id)),
         isUpcoming: Value(upcomingIds.contains(dto.id)),
-        hasAttempts: Value(historyIds.contains(dto.id)),
+        hasAttempts: Value(
+          historyIds.contains(dto.id) ||
+              dto.progressStatus == LessonProgressStatus.completed,
+        ),
       );
     }).toList();
   }
@@ -398,6 +433,19 @@ class CourseRepository {
     return row != null ? rowToLessonDto(row) : null;
   }
 
+  /// Refetches a single lesson's full metadata from the v2.4 API and persists it.
+  Future<LessonDto> refreshLesson(String id) async {
+    final dto = await _source.getLessonDetail(id);
+    final existing = await getLesson(id);
+
+    // Explicitly mark as detail fetched
+    final updated = dto.copyWith(isDetailFetched: true);
+    final merged = updated.mergeWith(existing);
+
+    await _db.upsertLessons([_lessonDtoToCompanion(merged)]);
+    return merged;
+  }
+
   /// Watch a single lesson by its ID.
   Stream<LessonsTableData?> watchLesson(String id) {
     return _db.watchLesson(id);
@@ -405,19 +453,23 @@ class CourseRepository {
 
   /// Watch a single chapter by its ID.
   Stream<ChaptersTableData?> watchChapter(String id) {
-    return (_db.select(_db.chaptersTable)..where((t) => t.id.equals(id))).watchSingleOrNull();
+    return (_db.select(
+      _db.chaptersTable,
+    )..where((t) => t.id.equals(id))).watchSingleOrNull();
   }
 
   /// Direct fetch of a chapter by ID.
   Future<ChaptersTableData?> getChapter(String id) async {
-    return (_db.select(_db.chaptersTable)..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
+    return (_db.select(
+      _db.chaptersTable,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
   }
 
   /// Direct fetch of lessons for a chapter from DB.
   Future<List<LessonsTableData>> getLessons(String chapterId) async {
-    return (_db.select(_db.lessonsTable)..where((t) => t.chapterId.equals(chapterId)))
-        .get();
+    return (_db.select(
+      _db.lessonsTable,
+    )..where((t) => t.chapterId.equals(chapterId))).get();
   }
 
   /// Toggles the bookmark status locally.
@@ -425,15 +477,45 @@ class CourseRepository {
     await _db.toggleLessonBookmark(id);
   }
 
-  /// Updates lesson progress locally.
+  /// Updates lesson progress locally and on the server if completed.
   Future<void> updateLessonProgress(
-      String id, LessonProgressStatus status) async {
+    String id,
+    LessonProgressStatus status,
+  ) async {
+    // 1. Update locally for immediate UI feedback
     await _db.updateLessonProgress(id, status);
+
+    // 2. Sync with server if marked as completed
+    if (status == LessonProgressStatus.completed) {
+      try {
+        await _source.markLessonCompleted(id);
+      } catch (e) {
+        // Log error but don't block local success
+        debugPrint('CourseRepository: Failed to sync completion to server: $e');
+      }
+    }
+  }
+
+  /// Downloads a file via the data source.
+  Future<void> downloadFile({
+    required String url,
+    required String savePath,
+    void Function(int count, int total)? onReceiveProgress,
+    dynamic cancelToken,
+    bool requireAuth = true,
+  }) async {
+    await _source.downloadFile(
+      url: url,
+      savePath: savePath,
+      onReceiveProgress: onReceiveProgress,
+      cancelToken: cancelToken,
+      requireAuth: requireAuth,
+    );
   }
 
   /// Efficiently fetches lesson and parent titles by lesson ID.
   Future<({String lessonTitle, String chapterTitle, String courseTitle})?>
-      getLessonDetails(String lessonId) async {
+  getLessonDetails(String lessonId) async {
     final result = await _db.getLessonDetails(lessonId);
     if (result == null) return null;
 
@@ -453,18 +535,18 @@ class CourseRepository {
   // ─────────────────────────────────────────────────────────────────────────
 
   CourseDto rowToCourseDto(CoursesTableData row) => CourseDto(
-        id: row.id,
-        title: row.title,
-        colorIndex: row.colorIndex,
-        chapterCount: row.chapterCount,
-        totalDuration: row.totalDuration,
-        totalContents: row.totalContents,
-        progress: row.progress,
-        completedLessons: row.completedLessons,
-        totalLessons: row.totalLessons,
-        image: row.image,
-        isChaptersSynced: row.isChaptersSynced,
-      );
+    id: row.id,
+    title: row.title,
+    colorIndex: row.colorIndex,
+    chapterCount: row.chapterCount,
+    totalDuration: row.totalDuration,
+    totalContents: row.totalContents,
+    progress: row.progress,
+    completedLessons: row.completedLessons,
+    totalLessons: row.totalLessons,
+    image: row.image,
+    isChaptersSynced: row.isChaptersSynced,
+  );
 
   CoursesTableCompanion _courseDtoToCompanion(CourseDto dto) =>
       CoursesTableCompanion(
@@ -482,17 +564,17 @@ class CourseRepository {
       );
 
   ChapterDto rowToChapterDto(ChaptersTableData row) => ChapterDto(
-        id: row.id,
-        courseId: row.courseId,
-        title: row.title,
-        lessonCount: row.lessonCount,
-        assessmentCount: row.assessmentCount,
-        orderIndex: row.orderIndex,
-        parentId: row.parentId,
-        isLeaf: row.isLeaf,
-        isChaptersSynced: row.isChaptersSynced,
-        image: row.image,
-      );
+    id: row.id,
+    courseId: row.courseId,
+    title: row.title,
+    lessonCount: row.lessonCount,
+    assessmentCount: row.assessmentCount,
+    orderIndex: row.orderIndex,
+    parentId: row.parentId,
+    isLeaf: row.isLeaf,
+    isChaptersSynced: row.isChaptersSynced,
+    image: row.image,
+  );
 
   ChaptersTableCompanion _chapterDtoToCompanion(ChapterDto dto) =>
       ChaptersTableCompanion(
@@ -502,34 +584,40 @@ class CourseRepository {
         lessonCount: Value(dto.lessonCount),
         assessmentCount: Value(dto.assessmentCount),
         orderIndex: Value(dto.orderIndex),
-        parentId: dto.parentId != null ? Value(dto.parentId) : const Value.absent(),
+        parentId: dto.parentId != null
+            ? Value(dto.parentId)
+            : const Value.absent(),
         isLeaf: Value(dto.isLeaf),
         isChaptersSynced: Value(dto.isChaptersSynced),
         image: dto.image != null ? Value(dto.image) : const Value.absent(),
       );
 
   LessonDto rowToLessonDto(LessonsTableData row) => LessonDto(
-        id: row.id,
-        chapterId: row.chapterId,
-        title: row.title,
-        type: _parseType(row.type),
-        duration: row.duration,
-        progressStatus: _parseStatus(row.progressStatus),
-        isLocked: row.isLocked,
-        orderIndex: row.orderIndex,
-        chapterTitle: row.chapterTitle,
-        contentUrl: row.contentUrl,
-        subtitle: row.subtitle,
-        subjectName: row.subjectName,
-        subjectIndex: row.subjectIndex,
-        lessonNumber: row.lessonNumber,
-        totalLessons: row.totalLessons,
-        isBookmarked: row.isBookmarked,
-        isRunning: row.isRunning,
-        isUpcoming: row.isUpcoming,
-        hasAttempts: row.hasAttempts,
-        image: row.image,
-      );
+    id: row.id,
+    chapterId: row.chapterId,
+    title: row.title,
+    type: _parseType(row.type),
+    duration: row.duration,
+    progressStatus: _parseStatus(row.progressStatus),
+    isLocked: row.isLocked,
+    orderIndex: row.orderIndex,
+    chapterTitle: row.chapterTitle,
+    contentUrl: row.contentUrl,
+    subtitle: row.subtitle,
+    subjectName: row.subjectName,
+    subjectIndex: row.subjectIndex,
+    lessonNumber: row.lessonNumber,
+    totalLessons: row.totalLessons,
+    isBookmarked: row.isBookmarked,
+    isRunning: row.isRunning,
+    isUpcoming: row.isUpcoming,
+    hasAttempts: row.hasAttempts,
+    image: row.image,
+    nextContentId: row.nextContentId,
+    previousContentId: row.previousContentId,
+    htmlContent: row.htmlContent,
+    isDetailFetched: row.isDetailFetched,
+  );
 
   LessonsTableCompanion _lessonDtoToCompanion(LessonDto dto) =>
       LessonsTableCompanion(
@@ -541,39 +629,71 @@ class CourseRepository {
         progressStatus: Value(dto.progressStatus.name),
         isLocked: Value(dto.isLocked),
         orderIndex: Value(dto.orderIndex),
-        chapterTitle: dto.chapterTitle != null ? Value(dto.chapterTitle) : const Value.absent(),
-        contentUrl: dto.contentUrl != null ? Value(dto.contentUrl) : const Value.absent(),
-        subtitle: dto.subtitle != null ? Value(dto.subtitle) : const Value.absent(),
-        subjectName: dto.subjectName != null ? Value(dto.subjectName) : const Value.absent(),
-        subjectIndex: dto.subjectIndex != null ? Value(dto.subjectIndex) : const Value.absent(),
-        lessonNumber: dto.lessonNumber != null ? Value(dto.lessonNumber) : const Value.absent(),
-        totalLessons: dto.totalLessons != null ? Value(dto.totalLessons) : const Value.absent(),
+        chapterTitle: dto.chapterTitle != null
+            ? Value(dto.chapterTitle)
+            : const Value.absent(),
+        contentUrl: dto.contentUrl != null
+            ? Value(dto.contentUrl)
+            : const Value.absent(),
+        subtitle: dto.subtitle != null
+            ? Value(dto.subtitle)
+            : const Value.absent(),
+        subjectName: dto.subjectName != null
+            ? Value(dto.subjectName)
+            : const Value.absent(),
+        subjectIndex: dto.subjectIndex != null
+            ? Value(dto.subjectIndex)
+            : const Value.absent(),
+        lessonNumber: dto.lessonNumber != null
+            ? Value(dto.lessonNumber)
+            : const Value.absent(),
+        totalLessons: dto.totalLessons != null
+            ? Value(dto.totalLessons)
+            : const Value.absent(),
         isBookmarked: Value(dto.isBookmarked),
         isRunning: Value(dto.isRunning),
         isUpcoming: Value(dto.isUpcoming),
         hasAttempts: Value(dto.hasAttempts),
         image: dto.image != null ? Value(dto.image) : const Value.absent(),
+        nextContentId: dto.nextContentId != null
+            ? Value(dto.nextContentId)
+            : const Value.absent(),
+        previousContentId: dto.previousContentId != null
+            ? Value(dto.previousContentId)
+            : const Value.absent(),
+        htmlContent: dto.htmlContent != null
+            ? Value(dto.htmlContent)
+            : const Value.absent(),
+        isDetailFetched: Value(dto.isDetailFetched),
       );
 
   LessonType _parseType(String s) {
-    if (s.contains('video') || s.contains('live') || s.contains('conference')) {
-      return LessonType.video;
+    try {
+      return LessonType.values.byName(s);
+    } catch (_) {
+      // Compatibility with old DB strings or fuzzy inputs
+      if (s.contains('live')) return LessonType.liveStream;
+      if (s.contains('notes')) return LessonType.notes;
+      if (s.contains('embed')) return LessonType.embedContent;
+      if (s.contains('attachment')) return LessonType.attachment;
+      if (s.contains('video')) return LessonType.video;
+      if (s.contains('pdf')) return LessonType.pdf;
+      if (s.contains('test') || s.contains('quiz') || s.contains('exam')) {
+        return LessonType.test;
+      }
+      if (s.contains('assessment')) return LessonType.assessment;
+      return LessonType.unknown;
     }
-    if (s.contains('pdf') || s.contains('notes') || s.contains('attachment')) {
-      return LessonType.pdf;
-    }
-    if (s.contains('test') || s.contains('quiz') || s.contains('exam')) {
-      return LessonType.test;
-    }
-    if (s.contains('assessment')) {
-      return LessonType.assessment;
-    }
-    return LessonType.video;
   }
 
-  LessonProgressStatus _parseStatus(String s) =>
-      LessonProgressStatus.values.firstWhere(
-        (e) => e.name == s,
+  LessonProgressStatus _parseStatus(String s) {
+    try {
+      return LessonProgressStatus.values.byName(s);
+    } catch (_) {
+      return LessonProgressStatus.values.firstWhere(
+        (e) => e.name.toLowerCase() == s.toLowerCase(),
         orElse: () => LessonProgressStatus.notStarted,
       );
+    }
+  }
 }
