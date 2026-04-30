@@ -13,7 +13,7 @@
 ## 3. Attachment Download Safety
 
 - [x] 3.1 Replace unsafe download exception handling with type-guarded cancellation checks.
-- [ ] 3.2 Keep attachment viewer in explicit `error` state for non-cancel failures and verify no crash path.
+- [x] 3.2 Keep attachment viewer in explicit `error` state for non-cancel failures and verify no crash path.
 - [x] 3.3 Switch attachment persistence to app-scoped storage directories compatible with scoped storage.
 - [x] 3.4 Remove legacy permission-dependent code paths from attachment download logic.
 - [x] 3.5 Implement and validate external-open URI contract for app-scoped files (content-URI/FileProvider-compatible behavior).
