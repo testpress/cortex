@@ -44,7 +44,7 @@ final profileRecentActivityProvider =
 // ignore: unused_element
 typedef ProfileRecentActivityRef =
     AutoDisposeFutureProviderRef<List<RecentActivityDto>>;
-String _$profileEnrollmentHash() => r'00cb75b8678351229a31fa1ef477d50ea492b104';
+String _$profileEnrollmentHash() => r'2d0c71785bd69ea7867001d029c699fe9567e85c';
 
 /// Provides enrolled courses directly from the DB layer to avoid depending on the `courses` package.
 ///

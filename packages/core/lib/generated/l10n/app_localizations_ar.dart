@@ -573,6 +573,9 @@ class AppLocalizationsAr extends AppLocalizations {
       'فشل تحميل البيانات. يرجى التحقق من الاتصال والمحاولة مرة أخرى.';
 
   @override
+  String get errorLessonLoad => 'فشل تحميل الدرس. يرجى التحقق من اتصالك.';
+
+  @override
   String get labelLessonsPlural => 'دروس';
 
   @override
@@ -660,10 +663,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get chapterTypePdf => 'ملاحظات PDF';
 
   @override
-  String get chapterTypeAssessment => 'تقييم تدريبي';
+  String get chapterTypeAssessment => 'تقييم ممارس';
 
   @override
   String get chapterTypeTest => 'اختبار';
+
+  @override
+  String get chapterTypeLiveStream => 'بث مباشر';
+
+  @override
+  String get chapterTypeEmbed => 'محتوى مضمن';
+
+  @override
+  String get chapterTypeNotes => 'ملاحظات';
+
+  @override
+  String get chapterTypeAttachment => 'مرفق';
+
+  @override
+  String get chapterTypeUnknown => 'غير معروف';
 
   @override
   String get chapterNoContent => 'لا يوجد محتوى متاح';
@@ -686,7 +704,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get lessonDownload => 'تحميل الدرس';
 
   @override
-  String get navigationPrevious => 'السابق';
+  String get navigationPrevious => 'الدرس السابق';
 
   @override
   String get navigationNext => 'الدرس التالي';
@@ -1308,4 +1326,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get forumButtonCancel => 'إلغاء';
+
+  @override
+  String attachmentSize(String size) {
+    return 'الحجم: $size';
+  }
+
+  @override
+  String get attachmentDownload => 'تحميل';
+
+  @override
+  String get attachmentDownloading => 'جاري التحميل...';
+
+  @override
+  String get attachmentViewFile => 'عرض الملف المحمل';
 }

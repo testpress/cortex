@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:courses/courses.dart';
+import 'package:courses/models/course_content.dart';
+import 'package:core/data/data.dart';
 import 'package:profile/profile.dart';
 import 'package:exams/exams.dart';
 
@@ -231,7 +233,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                           onBack: () => context.pop(),
                           onLessonClick: (lesson) {
                             final String? path = switch (lesson.type) {
-                              LessonType.video => '/study/video/${lesson.id}',
+                              LessonType.video ||
                               LessonType.pdf ||
                               LessonType.attachment ||
                               LessonType.notes ||
@@ -256,11 +258,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 GoRoute(
                   path: 'lesson/:id',
                   builder: (context, state) {
-                    final lessonArg = state.extra as Lesson?;
-                    if (lessonArg != null) {
-                      return PdfLessonDetailScreen(lesson: lessonArg);
-                    }
-
                     final id = state.pathParameters['id']!;
                     return Consumer(
                       builder: (context, ref, child) {
@@ -272,13 +269,57 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                                 child: Text('Lesson not found'),
                               );
                             }
-                            return PdfLessonDetailScreen(lesson: lesson);
+                            return _LessonRedirector(
+                              lesson: lesson,
+                              child: LessonDetailOrchestrator(
+                                lesson: lesson,
+                                onNext: lesson.nextContentId != null
+                                    ? () => context.pushReplacement(
+                                        '/study/lesson/${lesson.nextContentId}')
+                                    : null,
+                                onPrevious: lesson.previousContentId != null
+                                    ? () => context.pushReplacement(
+                                        '/study/lesson/${lesson.previousContentId}')
+                                    : null,
+                              ),
+                            );
                           },
                           loading: () => Container(
-                            color: const Color(0xFFFFFFFF),
+                            color: Design.of(context).colors.surface,
                             child: const Center(child: AppLoadingIndicator()),
                           ),
-                          error: (e, _) => Center(child: Text('Error: $e')),
+                          error: (error, _) {
+                            final l10n = L10n.of(context);
+                            return Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(24.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      LucideIcons.alertCircle,
+                                      size: 48,
+                                      color: Color(0xFFEF4444), // Error red
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      l10n.errorLessonLoad,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Color(0xFF6B7280), // Text gray
+                                      ),
+                                    ),
+                                    const SizedBox(height: 24),
+                                    AppButton.primary(
+                                      label: l10n.labelRetry,
+                                      onPressed: () => ref.refresh(lessonDetailProvider(id)),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                         );
                       },
                     );
@@ -286,34 +327,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 ),
                 GoRoute(
                   path: 'video/:id',
-                  builder: (context, state) {
-                    final lessonArg = state.extra as Lesson?;
-                    if (lessonArg != null) {
-                      return VideoLessonDetailScreen(lesson: lessonArg);
-                    }
-
-                    final id = state.pathParameters['id']!;
-                    return Consumer(
-                      builder: (context, ref, child) {
-                        final lessonAsync = ref.watch(lessonDetailProvider(id));
-                        return lessonAsync.when(
-                          data: (lesson) {
-                            if (lesson == null) {
-                              return const Center(
-                                child: Text('Lesson not found'),
-                              );
-                            }
-                            return VideoLessonDetailScreen(lesson: lesson);
-                          },
-                          loading: () => Container(
-                            color: const Color(0xFFFFFFFF),
-                            child: const Center(child: AppLoadingIndicator()),
-                          ),
-                          error: (e, _) => Center(child: Text('Error: $e')),
-                        );
-                      },
-                    );
-                  },
+                  redirect: (context, state) =>
+                      '/study/lesson/${state.pathParameters['id']}',
                 ),
                 GoRoute(
                   path: 'test/:id',
@@ -523,6 +538,57 @@ void _onTabItemTapped(
 
   navigationShell.goBranch(
     index != -1 ? index : 0,
-    initialLocation: index == navigationShell.currentIndex,
   );
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+class _LessonRedirector extends StatefulWidget {
+  final Lesson lesson;
+  final Widget child;
+
+  const _LessonRedirector({required this.lesson, required this.child});
+
+  @override
+  State<_LessonRedirector> createState() => _LessonRedirectorState();
+}
+
+class _LessonRedirectorState extends State<_LessonRedirector> {
+  @override
+  void initState() {
+    super.initState();
+    _checkRedirect();
+  }
+
+  @override
+  void didUpdateWidget(_LessonRedirector oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.lesson.id != oldWidget.lesson.id) {
+      _checkRedirect();
+    }
+  }
+
+  void _checkRedirect() {
+    if (widget.lesson.type == LessonType.test) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          context.go('/study/test/${widget.lesson.id}', extra: widget.lesson);
+        }
+      });
+    } else if (widget.lesson.type == LessonType.assessment) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          context.go('/study/assessment/${widget.lesson.id}',
+              extra: widget.lesson);
+        }
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // While redirecting, we show the child (orchestrator) but it will be immediately
+    // replaced by the new route after the first frame.
+    return widget.child;
+  }
 }

@@ -77,7 +77,7 @@ class StudyContentList extends ConsumerWidget {
                         lesson: lesson,
                         onTap: () {
                           final route = switch (lesson.type) {
-                            LessonType.video => '/study/video/${lesson.id}',
+                            LessonType.video ||
                             LessonType.pdf ||
                             LessonType.notes ||
                             LessonType.embedContent ||

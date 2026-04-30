@@ -1,3 +1,4 @@
+import 'package:async/async.dart' show StreamGroup;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../models/course_content.dart';
 import 'course_list_provider.dart';
@@ -37,10 +38,15 @@ Stream<Chapter?> _watchChapter(
   String courseId,
   String chapterId,
 ) {
-  return repo.watchChapter(chapterId).asyncMap((chapterData) async {
+  final chapterStream = repo.watchChapter(chapterId);
+  final lessonsStream = repo.watchLessons(chapterId);
+
+  // Trigger update whenever either the chapter metadata OR the lessons list changes
+  return StreamGroup.merge([chapterStream, lessonsStream]).asyncMap((_) async {
+    final chapterData = await repo.getChapter(chapterId);
     if (chapterData == null) return null;
 
-    final lessonsData = await repo.watchLessons(chapterId).first;
+    final lessonsData = await repo.getLessons(chapterId);
     final courses = await repo.watchCourses().first;
     final course = courses.where((c) => c.id == courseId).firstOrNull;
 
@@ -72,6 +78,9 @@ Stream<Chapter?> _watchChapter(
               isUpcoming: l.isUpcoming,
               hasAttempts: l.hasAttempts,
               image: l.image,
+              nextContentId: l.nextContentId,
+              previousContentId: l.previousContentId,
+              htmlContent: l.htmlContent,
             ),
           )
           .toList(),

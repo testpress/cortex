@@ -47,15 +47,21 @@ class CourseDetailFamily extends Family<AsyncValue<CourseDto?>> {
   /// Provider that fetches a specific course with its full curriculum (chapters and lessons).
   ///
   /// Copied from [courseDetail].
-  CourseDetailProvider call(String courseId) {
-    return CourseDetailProvider(courseId);
+  CourseDetailProvider call(
+    String courseId,
+  ) {
+    return CourseDetailProvider(
+      courseId,
+    );
   }
 
   @override
   CourseDetailProvider getProviderOverride(
     covariant CourseDetailProvider provider,
   ) {
-    return call(provider.courseId);
+    return call(
+      provider.courseId,
+    );
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -80,19 +86,24 @@ class CourseDetailProvider extends StreamProvider<CourseDto?> {
   /// Provider that fetches a specific course with its full curriculum (chapters and lessons).
   ///
   /// Copied from [courseDetail].
-  CourseDetailProvider(String courseId)
-    : this._internal(
-        (ref) => courseDetail(ref as CourseDetailRef, courseId),
-        from: courseDetailProvider,
-        name: r'courseDetailProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$courseDetailHash,
-        dependencies: CourseDetailFamily._dependencies,
-        allTransitiveDependencies:
-            CourseDetailFamily._allTransitiveDependencies,
-        courseId: courseId,
-      );
+  CourseDetailProvider(
+    String courseId,
+  ) : this._internal(
+          (ref) => courseDetail(
+            ref as CourseDetailRef,
+            courseId,
+          ),
+          from: courseDetailProvider,
+          name: r'courseDetailProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$courseDetailHash,
+          dependencies: CourseDetailFamily._dependencies,
+          allTransitiveDependencies:
+              CourseDetailFamily._allTransitiveDependencies,
+          courseId: courseId,
+        );
 
   CourseDetailProvider._internal(
     super._createNotifier, {
@@ -182,15 +193,24 @@ class SubChaptersFamily extends Family<AsyncValue<List<ChapterDto>>> {
   /// Triggers a refresh if the folder has not been synced yet.
   ///
   /// Copied from [subChapters].
-  SubChaptersProvider call(String courseId, String? parentId) {
-    return SubChaptersProvider(courseId, parentId);
+  SubChaptersProvider call(
+    String courseId,
+    String? parentId,
+  ) {
+    return SubChaptersProvider(
+      courseId,
+      parentId,
+    );
   }
 
   @override
   SubChaptersProvider getProviderOverride(
     covariant SubChaptersProvider provider,
   ) {
-    return call(provider.courseId, provider.parentId);
+    return call(
+      provider.courseId,
+      provider.parentId,
+    );
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -217,19 +237,27 @@ class SubChaptersProvider extends StreamProvider<List<ChapterDto>> {
   /// Triggers a refresh if the folder has not been synced yet.
   ///
   /// Copied from [subChapters].
-  SubChaptersProvider(String courseId, String? parentId)
-    : this._internal(
-        (ref) => subChapters(ref as SubChaptersRef, courseId, parentId),
-        from: subChaptersProvider,
-        name: r'subChaptersProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$subChaptersHash,
-        dependencies: SubChaptersFamily._dependencies,
-        allTransitiveDependencies: SubChaptersFamily._allTransitiveDependencies,
-        courseId: courseId,
-        parentId: parentId,
-      );
+  SubChaptersProvider(
+    String courseId,
+    String? parentId,
+  ) : this._internal(
+          (ref) => subChapters(
+            ref as SubChaptersRef,
+            courseId,
+            parentId,
+          ),
+          from: subChaptersProvider,
+          name: r'subChaptersProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$subChaptersHash,
+          dependencies: SubChaptersFamily._dependencies,
+          allTransitiveDependencies:
+              SubChaptersFamily._allTransitiveDependencies,
+          courseId: courseId,
+          parentId: parentId,
+        );
 
   SubChaptersProvider._internal(
     super._createNotifier, {
@@ -297,8 +325,7 @@ mixin SubChaptersRef on StreamProviderRef<List<ChapterDto>> {
 }
 
 class _SubChaptersProviderElement
-    extends StreamProviderElement<List<ChapterDto>>
-    with SubChaptersRef {
+    extends StreamProviderElement<List<ChapterDto>> with SubChaptersRef {
   _SubChaptersProviderElement(super.provider);
 
   @override
@@ -307,7 +334,7 @@ class _SubChaptersProviderElement
   String? get parentId => (origin as SubChaptersProvider).parentId;
 }
 
-String _$allCourseLessonsHash() => r'2ecd0b44f585efac78c9dfca6e2b363da075f917';
+String _$allCourseLessonsHash() => r'05e106346a14cba79c3973f4ada79c2598e3cad9';
 
 /// A provider that flattens all lessons for a specific course into a single list.
 /// Used for filtering lessons by type across the entire course.
@@ -331,15 +358,21 @@ class AllCourseLessonsFamily extends Family<AsyncValue<CourseCurriculumDto>> {
   /// Used for filtering lessons by type across the entire course.
   ///
   /// Copied from [allCourseLessons].
-  AllCourseLessonsProvider call(String courseId) {
-    return AllCourseLessonsProvider(courseId);
+  AllCourseLessonsProvider call(
+    String courseId,
+  ) {
+    return AllCourseLessonsProvider(
+      courseId,
+    );
   }
 
   @override
   AllCourseLessonsProvider getProviderOverride(
     covariant AllCourseLessonsProvider provider,
   ) {
-    return call(provider.courseId);
+    return call(
+      provider.courseId,
+    );
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -366,19 +399,24 @@ class AllCourseLessonsProvider extends StreamProvider<CourseCurriculumDto> {
   /// Used for filtering lessons by type across the entire course.
   ///
   /// Copied from [allCourseLessons].
-  AllCourseLessonsProvider(String courseId)
-    : this._internal(
-        (ref) => allCourseLessons(ref as AllCourseLessonsRef, courseId),
-        from: allCourseLessonsProvider,
-        name: r'allCourseLessonsProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$allCourseLessonsHash,
-        dependencies: AllCourseLessonsFamily._dependencies,
-        allTransitiveDependencies:
-            AllCourseLessonsFamily._allTransitiveDependencies,
-        courseId: courseId,
-      );
+  AllCourseLessonsProvider(
+    String courseId,
+  ) : this._internal(
+          (ref) => allCourseLessons(
+            ref as AllCourseLessonsRef,
+            courseId,
+          ),
+          from: allCourseLessonsProvider,
+          name: r'allCourseLessonsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$allCourseLessonsHash,
+          dependencies: AllCourseLessonsFamily._dependencies,
+          allTransitiveDependencies:
+              AllCourseLessonsFamily._allTransitiveDependencies,
+          courseId: courseId,
+        );
 
   AllCourseLessonsProvider._internal(
     super._createNotifier, {
@@ -444,6 +482,5 @@ class _AllCourseLessonsProviderElement
   @override
   String get courseId => (origin as AllCourseLessonsProvider).courseId;
 }
-
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

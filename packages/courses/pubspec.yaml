@@ -18,14 +18,12 @@ dependencies:
   riverpod_annotation: ^2.3.5
   drift: ^2.21.0
   intl: ^0.20.2
-  tpstreams_player_sdk: 2.2.17-beta.2
+  tpstreams_player_sdk: 2.2.18
   package_info_plus: ^8.2.1
   syncfusion_flutter_pdfviewer: ^33.1.45
   syncfusion_flutter_core: ^33.1.45
-  url_launcher: ^6.3.1
-
   webview_flutter: ^4.10.0
-  url_launcher: ^6.3.1
+
   open_filex: ^4.5.0
   permission_handler: ^11.4.0
   device_info_plus: ^12.1.0

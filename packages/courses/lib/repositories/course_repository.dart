@@ -189,6 +189,7 @@ class CourseRepository {
     return syncFuture;
   }
 
+
   // ── Internal Helpers ─────────────────────────────────────────────────────
 
   Future<void> _markAsSynced({
@@ -678,9 +679,7 @@ class CourseRepository {
       if (s.contains('attachment')) return LessonType.attachment;
       if (s.contains('video')) return LessonType.video;
       if (s.contains('pdf')) return LessonType.pdf;
-      if (s.contains('test') || s.contains('quiz') || s.contains('exam')) {
-        return LessonType.test;
-      }
+      if (s.contains('test')) return LessonType.test;
       if (s.contains('assessment')) return LessonType.assessment;
       return LessonType.unknown;
     }

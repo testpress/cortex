@@ -151,7 +151,7 @@ class _ExplorePageState extends ConsumerState<ExplorePage> {
                         height: 200,
                         child: Center(child: AppLoadingIndicator()),
                       ),
-                      error: (_, _) => const SizedBox.shrink(),
+                      error: (error, stack) => const SizedBox.shrink(),
                     ),
                   ),
                 ],
@@ -185,7 +185,7 @@ class _ExplorePageState extends ConsumerState<ExplorePage> {
                       );
                     },
                     loading: () => const SizedBox.shrink(),
-                    error: (_, _) => const SizedBox.shrink(),
+                    error: (error, stack) => const SizedBox.shrink(),
                   ),
                 ),
 
@@ -199,7 +199,7 @@ class _ExplorePageState extends ConsumerState<ExplorePage> {
                       lessons: lessons,
                     ),
                     loading: () => const SizedBox.shrink(),
-                    error: (_, _) => const SizedBox.shrink(),
+                    error: (error, stack) => const SizedBox.shrink(),
                   ),
                 ),
 
@@ -213,7 +213,7 @@ class _ExplorePageState extends ConsumerState<ExplorePage> {
                       tests: tests,
                     ),
                     loading: () => const SizedBox.shrink(),
-                    error: (_, _) => const SizedBox.shrink(),
+                    error: (error, stack) => const SizedBox.shrink(),
                   ),
                 ),
 
@@ -227,7 +227,7 @@ class _ExplorePageState extends ConsumerState<ExplorePage> {
                       tips: tips,
                     ),
                     loading: () => const SizedBox.shrink(),
-                    error: (_, _) => const SizedBox.shrink(),
+                    error: (error, stack) => const SizedBox.shrink(),
                   ),
                 ),
 

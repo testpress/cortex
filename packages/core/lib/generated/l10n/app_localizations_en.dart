@@ -575,6 +575,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Failed to load data. Please check your connection and try again.';
 
   @override
+  String get errorLessonLoad =>
+      'Failed to load lesson. Please check your connection.';
+
+  @override
   String get labelLessonsPlural => 'lessons';
 
   @override
@@ -668,6 +672,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chapterTypeTest => 'Test';
 
   @override
+  String get chapterTypeLiveStream => 'Live Stream';
+
+  @override
+  String get chapterTypeEmbed => 'Embed Content';
+
+  @override
+  String get chapterTypeNotes => 'Notes';
+
+  @override
+  String get chapterTypeAttachment => 'Attachment';
+
+  @override
+  String get chapterTypeUnknown => 'Unknown';
+
+  @override
   String get chapterNoContent => 'No content available';
 
   @override
@@ -688,7 +707,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lessonDownload => 'Download lesson';
 
   @override
-  String get navigationPrevious => 'Previous';
+  String get navigationPrevious => 'Previous Lesson';
 
   @override
   String get navigationNext => 'Next Lesson';
@@ -1294,4 +1313,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get forumButtonCancel => 'Cancel';
+
+  @override
+  String attachmentSize(String size) {
+    return 'Size: $size';
+  }
+
+  @override
+  String get attachmentDownload => 'Download';
+
+  @override
+  String get attachmentDownloading => 'Downloading...';
+
+  @override
+  String get attachmentViewFile => 'View Downloaded File';
 }
