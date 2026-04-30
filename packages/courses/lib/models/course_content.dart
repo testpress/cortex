@@ -26,6 +26,11 @@ class Lesson {
     this.previousContentId,
     this.htmlContent,
     this.isDetailFetched = false,
+    this.chatEmbedUrl,
+    this.streamStatus,
+    this.showRecordedVideo = false,
+    this.isScheduled = false,
+    this.scheduledMessage,
   });
 
   final String id;
@@ -53,13 +58,22 @@ class Lesson {
   final String? nextContentId;
   final String? previousContentId;
   final String? htmlContent;
+
+  // Live Stream specific fields
+  final String? chatEmbedUrl;
+  final String? streamStatus;
+  final bool showRecordedVideo;
+  final bool isScheduled;
+  final String? scheduledMessage;
  
   /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
   bool get isComplete {
     if (isDetailFetched) return true;
+    if (isScheduled) return true;
  
     switch (type) {
       case LessonType.video:
+      case LessonType.liveStream:
         return contentUrl != null && contentUrl!.isNotEmpty;
       case LessonType.notes:
       case LessonType.embedContent:

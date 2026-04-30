@@ -98,8 +98,10 @@ class LessonListItem extends StatelessWidget {
                       Row(
                         children: [
                           AppText.cardCaption(lesson.duration),
-                          const SizedBox(width: 8),
-                          LessonStatusBadge(status: lesson.progressStatus),
+                          if (lesson.type != LessonType.liveStream) ...[
+                            const SizedBox(width: 8),
+                            LessonStatusBadge(status: lesson.progressStatus),
+                          ],
                         ],
                       ),
                     ],

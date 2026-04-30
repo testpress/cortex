@@ -5,10 +5,10 @@ import '../models/course_content.dart';
 import '../providers/course_list_provider.dart';
 import '../providers/lesson_detail_provider.dart';
 import '../widgets/lesson_detail/pdf_viewer.dart';
-import '../widgets/lesson_detail/custom_video_player.dart';
 import '../widgets/lesson_detail/lesson_web_view.dart';
 import '../widgets/lesson_detail/video_lesson_viewer.dart';
 import '../widgets/lesson_detail/attachment_viewer.dart';
+import '../widgets/lesson_detail/live_stream_viewer.dart';
 
 /// Orchestrator that decides which viewer to show for a given lesson.
 /// It wraps content in the unified [LessonDetailShell].
@@ -92,7 +92,8 @@ class _LessonDetailOrchestratorState
       onNext: widget.onNext,
       onPrevious: widget.onPrevious,
       stickyFooter:
-          lesson.type != LessonType.video, // Non-sticky for video as requested
+          lesson.type != LessonType.video && 
+          lesson.type != LessonType.liveStream,
       child: _buildLessonContent(context),
     );
   }
@@ -103,6 +104,45 @@ class _LessonDetailOrchestratorState
     final onPrevious = widget.onPrevious;
     final design = Design.of(context);
 
+    // Priority 0: Scheduled Content
+    if (lesson.isScheduled && lesson.type != LessonType.liveStream) {
+      return Container(
+        color: const Color(0xFF000000), // Pure black as requested
+        width: double.infinity,
+        height: double.infinity,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  LucideIcons.calendarClock,
+                  color: Color(0xFFFFFFFF),
+                  size: 64,
+                ),
+                const SizedBox(height: 24),
+                AppText.headline(
+                  'This content is scheduled!',
+                  color: const Color(0xFFFFFFFF),
+                  textAlign: TextAlign.center,
+                ),
+                if (lesson.scheduledMessage != null) ...[
+                  const SizedBox(height: 12),
+                  AppText.body(
+                    lesson.scheduledMessage!,
+                    color: const Color(0xFFFFFFFF).withValues(alpha: 0.7),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Priority 1: Custom Builder
     if (widget.customBuilder != null) {
       final customWidget = widget.customBuilder!(context, lesson);
       if (customWidget is! SizedBox) {
@@ -111,7 +151,7 @@ class _LessonDetailOrchestratorState
     }
 
     // New: Show loader if we have some data from the list but not enough to render the viewer yet
-    if (!lesson.isComplete) {
+    if (!lesson.isComplete && lesson.type != LessonType.liveStream) {
       return const Center(child: AppLoadingIndicator());
     }
 
@@ -144,8 +184,14 @@ class _LessonDetailOrchestratorState
         }
         break;
       case LessonType.liveStream:
-        return CustomVideoPlayer(
-          assetId: lesson.contentUrl,
+        return LiveStreamViewer(
+          lesson: lesson,
+          onComplete: _markAsCompleted,
+          footerBuilder: (context) => LessonDetailShell.buildStaticFooter(
+            context,
+            onNext: onNext,
+            onPrevious: onPrevious,
+          ),
         );
       case LessonType.attachment:
         if (lesson.contentUrl != null) {

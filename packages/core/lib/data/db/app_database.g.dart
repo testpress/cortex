@@ -1777,6 +1777,43 @@ class $LessonsTableTable extends LessonsTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _chatEmbedUrlMeta = const VerificationMeta(
+    'chatEmbedUrl',
+  );
+  @override
+  late final GeneratedColumn<String> chatEmbedUrl = GeneratedColumn<String>(
+    'chat_embed_url',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _streamStatusMeta = const VerificationMeta(
+    'streamStatus',
+  );
+  @override
+  late final GeneratedColumn<String> streamStatus = GeneratedColumn<String>(
+    'stream_status',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _showRecordedVideoMeta = const VerificationMeta(
+    'showRecordedVideo',
+  );
+  @override
+  late final GeneratedColumn<bool> showRecordedVideo = GeneratedColumn<bool>(
+    'show_recorded_video',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("show_recorded_video" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   static const VerificationMeta _isDetailFetchedMeta = const VerificationMeta(
     'isDetailFetched',
   );
@@ -1817,6 +1854,9 @@ class $LessonsTableTable extends LessonsTable
     nextContentId,
     previousContentId,
     htmlContent,
+    chatEmbedUrl,
+    streamStatus,
+    showRecordedVideo,
     isDetailFetched,
   ];
   @override
@@ -2011,6 +2051,33 @@ class $LessonsTableTable extends LessonsTable
         ),
       );
     }
+    if (data.containsKey('chat_embed_url')) {
+      context.handle(
+        _chatEmbedUrlMeta,
+        chatEmbedUrl.isAcceptableOrUnknown(
+          data['chat_embed_url']!,
+          _chatEmbedUrlMeta,
+        ),
+      );
+    }
+    if (data.containsKey('stream_status')) {
+      context.handle(
+        _streamStatusMeta,
+        streamStatus.isAcceptableOrUnknown(
+          data['stream_status']!,
+          _streamStatusMeta,
+        ),
+      );
+    }
+    if (data.containsKey('show_recorded_video')) {
+      context.handle(
+        _showRecordedVideoMeta,
+        showRecordedVideo.isAcceptableOrUnknown(
+          data['show_recorded_video']!,
+          _showRecordedVideoMeta,
+        ),
+      );
+    }
     if (data.containsKey('is_detail_fetched')) {
       context.handle(
         _isDetailFetchedMeta,
@@ -2121,6 +2188,18 @@ class $LessonsTableTable extends LessonsTable
         DriftSqlType.string,
         data['${effectivePrefix}html_content'],
       ),
+      chatEmbedUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}chat_embed_url'],
+      ),
+      streamStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}stream_status'],
+      ),
+      showRecordedVideo: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}show_recorded_video'],
+      )!,
       isDetailFetched: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_detail_fetched'],
@@ -2163,6 +2242,9 @@ class LessonsTableData extends DataClass
   final String? nextContentId;
   final String? previousContentId;
   final String? htmlContent;
+  final String? chatEmbedUrl;
+  final String? streamStatus;
+  final bool showRecordedVideo;
   final bool isDetailFetched;
   const LessonsTableData({
     required this.id,
@@ -2188,6 +2270,9 @@ class LessonsTableData extends DataClass
     this.nextContentId,
     this.previousContentId,
     this.htmlContent,
+    this.chatEmbedUrl,
+    this.streamStatus,
+    required this.showRecordedVideo,
     required this.isDetailFetched,
   });
   @override
@@ -2238,6 +2323,13 @@ class LessonsTableData extends DataClass
     if (!nullToAbsent || htmlContent != null) {
       map['html_content'] = Variable<String>(htmlContent);
     }
+    if (!nullToAbsent || chatEmbedUrl != null) {
+      map['chat_embed_url'] = Variable<String>(chatEmbedUrl);
+    }
+    if (!nullToAbsent || streamStatus != null) {
+      map['stream_status'] = Variable<String>(streamStatus);
+    }
+    map['show_recorded_video'] = Variable<bool>(showRecordedVideo);
     map['is_detail_fetched'] = Variable<bool>(isDetailFetched);
     return map;
   }
@@ -2289,6 +2381,13 @@ class LessonsTableData extends DataClass
       htmlContent: htmlContent == null && nullToAbsent
           ? const Value.absent()
           : Value(htmlContent),
+      chatEmbedUrl: chatEmbedUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(chatEmbedUrl),
+      streamStatus: streamStatus == null && nullToAbsent
+          ? const Value.absent()
+          : Value(streamStatus),
+      showRecordedVideo: Value(showRecordedVideo),
       isDetailFetched: Value(isDetailFetched),
     );
   }
@@ -2324,6 +2423,9 @@ class LessonsTableData extends DataClass
         json['previousContentId'],
       ),
       htmlContent: serializer.fromJson<String?>(json['htmlContent']),
+      chatEmbedUrl: serializer.fromJson<String?>(json['chatEmbedUrl']),
+      streamStatus: serializer.fromJson<String?>(json['streamStatus']),
+      showRecordedVideo: serializer.fromJson<bool>(json['showRecordedVideo']),
       isDetailFetched: serializer.fromJson<bool>(json['isDetailFetched']),
     );
   }
@@ -2354,6 +2456,9 @@ class LessonsTableData extends DataClass
       'nextContentId': serializer.toJson<String?>(nextContentId),
       'previousContentId': serializer.toJson<String?>(previousContentId),
       'htmlContent': serializer.toJson<String?>(htmlContent),
+      'chatEmbedUrl': serializer.toJson<String?>(chatEmbedUrl),
+      'streamStatus': serializer.toJson<String?>(streamStatus),
+      'showRecordedVideo': serializer.toJson<bool>(showRecordedVideo),
       'isDetailFetched': serializer.toJson<bool>(isDetailFetched),
     };
   }
@@ -2382,6 +2487,9 @@ class LessonsTableData extends DataClass
     Value<String?> nextContentId = const Value.absent(),
     Value<String?> previousContentId = const Value.absent(),
     Value<String?> htmlContent = const Value.absent(),
+    Value<String?> chatEmbedUrl = const Value.absent(),
+    Value<String?> streamStatus = const Value.absent(),
+    bool? showRecordedVideo,
     bool? isDetailFetched,
   }) => LessonsTableData(
     id: id ?? this.id,
@@ -2411,6 +2519,9 @@ class LessonsTableData extends DataClass
         ? previousContentId.value
         : this.previousContentId,
     htmlContent: htmlContent.present ? htmlContent.value : this.htmlContent,
+    chatEmbedUrl: chatEmbedUrl.present ? chatEmbedUrl.value : this.chatEmbedUrl,
+    streamStatus: streamStatus.present ? streamStatus.value : this.streamStatus,
+    showRecordedVideo: showRecordedVideo ?? this.showRecordedVideo,
     isDetailFetched: isDetailFetched ?? this.isDetailFetched,
   );
   LessonsTableData copyWithCompanion(LessonsTableCompanion data) {
@@ -2466,6 +2577,15 @@ class LessonsTableData extends DataClass
       htmlContent: data.htmlContent.present
           ? data.htmlContent.value
           : this.htmlContent,
+      chatEmbedUrl: data.chatEmbedUrl.present
+          ? data.chatEmbedUrl.value
+          : this.chatEmbedUrl,
+      streamStatus: data.streamStatus.present
+          ? data.streamStatus.value
+          : this.streamStatus,
+      showRecordedVideo: data.showRecordedVideo.present
+          ? data.showRecordedVideo.value
+          : this.showRecordedVideo,
       isDetailFetched: data.isDetailFetched.present
           ? data.isDetailFetched.value
           : this.isDetailFetched,
@@ -2498,6 +2618,9 @@ class LessonsTableData extends DataClass
           ..write('nextContentId: $nextContentId, ')
           ..write('previousContentId: $previousContentId, ')
           ..write('htmlContent: $htmlContent, ')
+          ..write('chatEmbedUrl: $chatEmbedUrl, ')
+          ..write('streamStatus: $streamStatus, ')
+          ..write('showRecordedVideo: $showRecordedVideo, ')
           ..write('isDetailFetched: $isDetailFetched')
           ..write(')'))
         .toString();
@@ -2528,6 +2651,9 @@ class LessonsTableData extends DataClass
     nextContentId,
     previousContentId,
     htmlContent,
+    chatEmbedUrl,
+    streamStatus,
+    showRecordedVideo,
     isDetailFetched,
   ]);
   @override
@@ -2557,6 +2683,9 @@ class LessonsTableData extends DataClass
           other.nextContentId == this.nextContentId &&
           other.previousContentId == this.previousContentId &&
           other.htmlContent == this.htmlContent &&
+          other.chatEmbedUrl == this.chatEmbedUrl &&
+          other.streamStatus == this.streamStatus &&
+          other.showRecordedVideo == this.showRecordedVideo &&
           other.isDetailFetched == this.isDetailFetched);
 }
 
@@ -2584,6 +2713,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   final Value<String?> nextContentId;
   final Value<String?> previousContentId;
   final Value<String?> htmlContent;
+  final Value<String?> chatEmbedUrl;
+  final Value<String?> streamStatus;
+  final Value<bool> showRecordedVideo;
   final Value<bool> isDetailFetched;
   final Value<int> rowid;
   const LessonsTableCompanion({
@@ -2610,6 +2742,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.nextContentId = const Value.absent(),
     this.previousContentId = const Value.absent(),
     this.htmlContent = const Value.absent(),
+    this.chatEmbedUrl = const Value.absent(),
+    this.streamStatus = const Value.absent(),
+    this.showRecordedVideo = const Value.absent(),
     this.isDetailFetched = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -2637,6 +2772,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.nextContentId = const Value.absent(),
     this.previousContentId = const Value.absent(),
     this.htmlContent = const Value.absent(),
+    this.chatEmbedUrl = const Value.absent(),
+    this.streamStatus = const Value.absent(),
+    this.showRecordedVideo = const Value.absent(),
     this.isDetailFetched = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -2669,6 +2807,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Expression<String>? nextContentId,
     Expression<String>? previousContentId,
     Expression<String>? htmlContent,
+    Expression<String>? chatEmbedUrl,
+    Expression<String>? streamStatus,
+    Expression<bool>? showRecordedVideo,
     Expression<bool>? isDetailFetched,
     Expression<int>? rowid,
   }) {
@@ -2696,6 +2837,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       if (nextContentId != null) 'next_content_id': nextContentId,
       if (previousContentId != null) 'previous_content_id': previousContentId,
       if (htmlContent != null) 'html_content': htmlContent,
+      if (chatEmbedUrl != null) 'chat_embed_url': chatEmbedUrl,
+      if (streamStatus != null) 'stream_status': streamStatus,
+      if (showRecordedVideo != null) 'show_recorded_video': showRecordedVideo,
       if (isDetailFetched != null) 'is_detail_fetched': isDetailFetched,
       if (rowid != null) 'rowid': rowid,
     });
@@ -2725,6 +2869,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Value<String?>? nextContentId,
     Value<String?>? previousContentId,
     Value<String?>? htmlContent,
+    Value<String?>? chatEmbedUrl,
+    Value<String?>? streamStatus,
+    Value<bool>? showRecordedVideo,
     Value<bool>? isDetailFetched,
     Value<int>? rowid,
   }) {
@@ -2752,6 +2899,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       nextContentId: nextContentId ?? this.nextContentId,
       previousContentId: previousContentId ?? this.previousContentId,
       htmlContent: htmlContent ?? this.htmlContent,
+      chatEmbedUrl: chatEmbedUrl ?? this.chatEmbedUrl,
+      streamStatus: streamStatus ?? this.streamStatus,
+      showRecordedVideo: showRecordedVideo ?? this.showRecordedVideo,
       isDetailFetched: isDetailFetched ?? this.isDetailFetched,
       rowid: rowid ?? this.rowid,
     );
@@ -2829,6 +2979,15 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     if (htmlContent.present) {
       map['html_content'] = Variable<String>(htmlContent.value);
     }
+    if (chatEmbedUrl.present) {
+      map['chat_embed_url'] = Variable<String>(chatEmbedUrl.value);
+    }
+    if (streamStatus.present) {
+      map['stream_status'] = Variable<String>(streamStatus.value);
+    }
+    if (showRecordedVideo.present) {
+      map['show_recorded_video'] = Variable<bool>(showRecordedVideo.value);
+    }
     if (isDetailFetched.present) {
       map['is_detail_fetched'] = Variable<bool>(isDetailFetched.value);
     }
@@ -2864,6 +3023,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
           ..write('nextContentId: $nextContentId, ')
           ..write('previousContentId: $previousContentId, ')
           ..write('htmlContent: $htmlContent, ')
+          ..write('chatEmbedUrl: $chatEmbedUrl, ')
+          ..write('streamStatus: $streamStatus, ')
+          ..write('showRecordedVideo: $showRecordedVideo, ')
           ..write('isDetailFetched: $isDetailFetched, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -6696,6 +6858,9 @@ typedef $$LessonsTableTableCreateCompanionBuilder =
       Value<String?> nextContentId,
       Value<String?> previousContentId,
       Value<String?> htmlContent,
+      Value<String?> chatEmbedUrl,
+      Value<String?> streamStatus,
+      Value<bool> showRecordedVideo,
       Value<bool> isDetailFetched,
       Value<int> rowid,
     });
@@ -6724,6 +6889,9 @@ typedef $$LessonsTableTableUpdateCompanionBuilder =
       Value<String?> nextContentId,
       Value<String?> previousContentId,
       Value<String?> htmlContent,
+      Value<String?> chatEmbedUrl,
+      Value<String?> streamStatus,
+      Value<bool> showRecordedVideo,
       Value<bool> isDetailFetched,
       Value<int> rowid,
     });
@@ -6849,6 +7017,21 @@ class $$LessonsTableTableFilterComposer
 
   ColumnFilters<String> get htmlContent => $composableBuilder(
     column: $table.htmlContent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get chatEmbedUrl => $composableBuilder(
+    column: $table.chatEmbedUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get streamStatus => $composableBuilder(
+    column: $table.streamStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get showRecordedVideo => $composableBuilder(
+    column: $table.showRecordedVideo,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6982,6 +7165,21 @@ class $$LessonsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get chatEmbedUrl => $composableBuilder(
+    column: $table.chatEmbedUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get streamStatus => $composableBuilder(
+    column: $table.streamStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get showRecordedVideo => $composableBuilder(
+    column: $table.showRecordedVideo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get isDetailFetched => $composableBuilder(
     column: $table.isDetailFetched,
     builder: (column) => ColumnOrderings(column),
@@ -7094,6 +7292,21 @@ class $$LessonsTableTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get chatEmbedUrl => $composableBuilder(
+    column: $table.chatEmbedUrl,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get streamStatus => $composableBuilder(
+    column: $table.streamStatus,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get showRecordedVideo => $composableBuilder(
+    column: $table.showRecordedVideo,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<bool> get isDetailFetched => $composableBuilder(
     column: $table.isDetailFetched,
     builder: (column) => column,
@@ -7154,6 +7367,9 @@ class $$LessonsTableTableTableManager
                 Value<String?> nextContentId = const Value.absent(),
                 Value<String?> previousContentId = const Value.absent(),
                 Value<String?> htmlContent = const Value.absent(),
+                Value<String?> chatEmbedUrl = const Value.absent(),
+                Value<String?> streamStatus = const Value.absent(),
+                Value<bool> showRecordedVideo = const Value.absent(),
                 Value<bool> isDetailFetched = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LessonsTableCompanion(
@@ -7180,6 +7396,9 @@ class $$LessonsTableTableTableManager
                 nextContentId: nextContentId,
                 previousContentId: previousContentId,
                 htmlContent: htmlContent,
+                chatEmbedUrl: chatEmbedUrl,
+                streamStatus: streamStatus,
+                showRecordedVideo: showRecordedVideo,
                 isDetailFetched: isDetailFetched,
                 rowid: rowid,
               ),
@@ -7208,6 +7427,9 @@ class $$LessonsTableTableTableManager
                 Value<String?> nextContentId = const Value.absent(),
                 Value<String?> previousContentId = const Value.absent(),
                 Value<String?> htmlContent = const Value.absent(),
+                Value<String?> chatEmbedUrl = const Value.absent(),
+                Value<String?> streamStatus = const Value.absent(),
+                Value<bool> showRecordedVideo = const Value.absent(),
                 Value<bool> isDetailFetched = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LessonsTableCompanion.insert(
@@ -7234,6 +7456,9 @@ class $$LessonsTableTableTableManager
                 nextContentId: nextContentId,
                 previousContentId: previousContentId,
                 htmlContent: htmlContent,
+                chatEmbedUrl: chatEmbedUrl,
+                streamStatus: streamStatus,
+                showRecordedVideo: showRecordedVideo,
                 isDetailFetched: isDetailFetched,
                 rowid: rowid,
               ),

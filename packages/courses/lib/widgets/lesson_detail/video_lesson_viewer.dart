@@ -47,44 +47,41 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
     final design = Design.of(context);
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Flexible(child: _buildVideoSection(design)),
         Container(
           color: design.colors.surface,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildVideoSection(design),
-              Padding(
-                padding: EdgeInsets.fromLTRB(
-                  design.spacing.md,
-                  design.spacing.xs,
-                  design.spacing.md,
-                  design.spacing.md,
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+              design.spacing.md,
+              design.spacing.sm,
+              design.spacing.md,
+              design.spacing.md,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppText.headline(
+                  widget.lesson.title,
+                  color: design.colors.textPrimary,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.5,
+                    height: 1.1,
+                  ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppText.headline(
-                      widget.lesson.title,
-                      color: design.colors.textPrimary,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.5,
-                      ),
-                    ),
-                    if (widget.lesson.subtitle?.isNotEmpty ?? false) ...[
-                      SizedBox(height: design.spacing.xs),
-                      AppText.body(
-                        widget.lesson.subtitle!,
-                        color: design.colors.textSecondary,
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ],
+                if (widget.lesson.subtitle?.isNotEmpty ?? false) ...[
+                  SizedBox(height: design.spacing.xs),
+                  AppText.body(
+                    widget.lesson.subtitle!,
+                    color: design.colors.textSecondary,
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ],
+              ],
+            ),
           ),
         ),
         Container(
@@ -131,18 +128,11 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
   }
 
   Widget _buildVideoSection(DesignConfig design) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(design.spacing.md),
-      child: AspectRatio(
-        aspectRatio: 16 / 9,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(design.radius.lg),
-          child: CustomVideoPlayer(
-            assetId: widget.lesson.contentUrl,
-            onComplete: widget.onComplete,
-          ),
-        ),
+    return AspectRatio(
+      aspectRatio: 16 / 9,
+      child: CustomVideoPlayer(
+        assetId: widget.lesson.contentUrl,
+        onComplete: widget.onComplete,
       ),
     );
   }

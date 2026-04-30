@@ -37,6 +37,11 @@ class LessonsTable extends Table {
   TextColumn get previousContentId => text().nullable()();
   TextColumn get htmlContent => text().nullable()();
   
+  // Live Stream specific fields
+  TextColumn get chatEmbedUrl => text().nullable()();
+  TextColumn get streamStatus => text().nullable()();
+  BoolColumn get showRecordedVideo => boolean().withDefault(const Constant(false))();
+  
   BoolColumn get isDetailFetched => boolean().withDefault(const Constant(false))();
 
   @override

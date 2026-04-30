@@ -148,9 +148,9 @@ class LessonDetailShell extends StatelessWidget {
     final design = Design.of(context);
     return Container(
       padding: EdgeInsetsDirectional.fromSTEB(
-        design.spacing.screenPadding,
+        design.spacing.sm, // Reduced from screenPadding
         design.spacing.md,
-        design.spacing.screenPadding,
+        design.spacing.sm, // Reduced from screenPadding
         design.spacing.md,
       ),
       decoration: BoxDecoration(
@@ -161,19 +161,27 @@ class LessonDetailShell extends StatelessWidget {
       ),
       child: Row(
         children: [
-          if (onPrevious != null)
-            AppButton.secondary(
-              label: l10n.navigationPrevious,
-              onPressed: onPrevious,
-              leading: const Icon(LucideIcons.arrowLeft, size: 18),
-            ),
-          const Spacer(),
-          if (onNext != null)
-            AppButton.primary(
-              label: l10n.navigationNext,
-              onPressed: onNext,
-              trailing: const Icon(LucideIcons.arrowRight, size: 18),
-            ),
+          Expanded(
+            child: onPrevious != null
+                ? AppButton.secondary(
+                    label: l10n.navigationPrevious,
+                    onPressed: onPrevious,
+                    fullWidth: true,
+                    leading: const Icon(LucideIcons.arrowLeft, size: 18),
+                  )
+                : const SizedBox.shrink(),
+          ),
+          SizedBox(width: design.spacing.md),
+          Expanded(
+            child: onNext != null
+                ? AppButton.primary(
+                    label: l10n.navigationNext,
+                    onPressed: onNext,
+                    fullWidth: true,
+                    trailing: const Icon(LucideIcons.arrowRight, size: 18),
+                  )
+                : const SizedBox.shrink(),
+          ),
         ],
       ),
     );
@@ -311,7 +319,7 @@ class _HeaderButton extends StatelessWidget {
       child: AppFocusable(
         onTap: onTap,
         borderRadius: BorderRadius.circular(design.radius.md),
-        child: Container(
+        child: SizedBox(
           width: 36,
           height: 36,
           child: Center(

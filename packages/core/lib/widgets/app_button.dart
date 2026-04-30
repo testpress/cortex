@@ -153,10 +153,14 @@ class AppButton extends StatelessWidget {
                           leading!,
                           SizedBox(width: design.spacing.sm),
                         ],
-                        AppText.labelBold(
-                          label,
-                          color: effectiveForegroundColor,
-                          style: labelStyle,
+                        Flexible(
+                          child: AppText.labelBold(
+                            label,
+                            color: effectiveForegroundColor,
+                            style: labelStyle,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
                         ),
                         if (trailing != null) ...[
                           SizedBox(width: design.spacing.sm),
