@@ -395,6 +395,59 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             GoRoute(
               path: '/exams',
               builder: (context, state) => const ExamsScreen(),
+              routes: [
+                GoRoute(
+                  path: 'course/:courseId/chapters',
+                  builder: (context, state) {
+                    final courseId = state.pathParameters['courseId']!;
+                    final parentId = state.uri.queryParameters['parentId'];
+                    return ChaptersListPage(
+                      courseId: courseId,
+                      parentId: parentId,
+                      onBack: () => context.pop(),
+                    );
+                  },
+                  routes: [
+                    GoRoute(
+                      path: ':chapterId',
+                      builder: (context, state) {
+                        final courseId = state.pathParameters['courseId']!;
+                        final chapterId = state.pathParameters['chapterId']!;
+                        return ChapterDetailPage(
+                          courseId: courseId,
+                          chapterId: chapterId,
+                          onBack: () => context.pop(),
+                          onLessonClick: (lesson) {
+                            // Navigation to actual test/assessment detail
+                            // will be implemented in the next phase.
+                            final String? path = switch (lesson.type) {
+                              LessonType.test => '/exams/test/${lesson.id}',
+                              LessonType.assessment => '/exams/assessment/${lesson.id}',
+                              _ => null,
+                            };
+                            if (path != null) {
+                              context.push(path, extra: lesson);
+                            }
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                // Placeholders for the next phase
+                GoRoute(
+                  path: 'test/:id',
+                  builder: (context, state) => Center(
+                    child: Text('Test Detail (Phase 2): ${state.pathParameters['id']}'),
+                  ),
+                ),
+                GoRoute(
+                  path: 'assessment/:id',
+                  builder: (context, state) => Center(
+                    child: Text('Assessment Detail (Phase 2): ${state.pathParameters['id']}'),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

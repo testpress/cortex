@@ -116,6 +116,47 @@ class $CoursesTableTable extends CoursesTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _tagsMeta = const VerificationMeta('tags');
+  @override
+  late final GeneratedColumn<String> tags = GeneratedColumn<String>(
+    'tags',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _allowedDevicesMeta = const VerificationMeta(
+    'allowedDevices',
+  );
+  @override
+  late final GeneratedColumn<String> allowedDevices = GeneratedColumn<String>(
+    'allowed_devices',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _tagIdsMeta = const VerificationMeta('tagIds');
+  @override
+  late final GeneratedColumn<String> tagIds = GeneratedColumn<String>(
+    'tag_ids',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _examsCountMeta = const VerificationMeta(
+    'examsCount',
+  );
+  @override
+  late final GeneratedColumn<int> examsCount = GeneratedColumn<int>(
+    'exams_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _isChaptersSyncedMeta = const VerificationMeta(
     'isChaptersSynced',
   );
@@ -143,6 +184,10 @@ class $CoursesTableTable extends CoursesTable
     completedLessons,
     totalLessons,
     image,
+    tags,
+    allowedDevices,
+    tagIds,
+    examsCount,
     isChaptersSynced,
   ];
   @override
@@ -241,6 +286,33 @@ class $CoursesTableTable extends CoursesTable
         image.isAcceptableOrUnknown(data['image']!, _imageMeta),
       );
     }
+    if (data.containsKey('tags')) {
+      context.handle(
+        _tagsMeta,
+        tags.isAcceptableOrUnknown(data['tags']!, _tagsMeta),
+      );
+    }
+    if (data.containsKey('allowed_devices')) {
+      context.handle(
+        _allowedDevicesMeta,
+        allowedDevices.isAcceptableOrUnknown(
+          data['allowed_devices']!,
+          _allowedDevicesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('tag_ids')) {
+      context.handle(
+        _tagIdsMeta,
+        tagIds.isAcceptableOrUnknown(data['tag_ids']!, _tagIdsMeta),
+      );
+    }
+    if (data.containsKey('exams_count')) {
+      context.handle(
+        _examsCountMeta,
+        examsCount.isAcceptableOrUnknown(data['exams_count']!, _examsCountMeta),
+      );
+    }
     if (data.containsKey('is_chapters_synced')) {
       context.handle(
         _isChaptersSyncedMeta,
@@ -299,6 +371,22 @@ class $CoursesTableTable extends CoursesTable
         DriftSqlType.string,
         data['${effectivePrefix}image'],
       ),
+      tags: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tags'],
+      ),
+      allowedDevices: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}allowed_devices'],
+      ),
+      tagIds: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tag_ids'],
+      ),
+      examsCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}exams_count'],
+      )!,
       isChaptersSynced: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_chapters_synced'],
@@ -324,6 +412,10 @@ class CoursesTableData extends DataClass
   final int completedLessons;
   final int totalLessons;
   final String? image;
+  final String? tags;
+  final String? allowedDevices;
+  final String? tagIds;
+  final int examsCount;
   final bool isChaptersSynced;
   const CoursesTableData({
     required this.id,
@@ -336,6 +428,10 @@ class CoursesTableData extends DataClass
     required this.completedLessons,
     required this.totalLessons,
     this.image,
+    this.tags,
+    this.allowedDevices,
+    this.tagIds,
+    required this.examsCount,
     required this.isChaptersSynced,
   });
   @override
@@ -353,6 +449,16 @@ class CoursesTableData extends DataClass
     if (!nullToAbsent || image != null) {
       map['image'] = Variable<String>(image);
     }
+    if (!nullToAbsent || tags != null) {
+      map['tags'] = Variable<String>(tags);
+    }
+    if (!nullToAbsent || allowedDevices != null) {
+      map['allowed_devices'] = Variable<String>(allowedDevices);
+    }
+    if (!nullToAbsent || tagIds != null) {
+      map['tag_ids'] = Variable<String>(tagIds);
+    }
+    map['exams_count'] = Variable<int>(examsCount);
     map['is_chapters_synced'] = Variable<bool>(isChaptersSynced);
     return map;
   }
@@ -371,6 +477,14 @@ class CoursesTableData extends DataClass
       image: image == null && nullToAbsent
           ? const Value.absent()
           : Value(image),
+      tags: tags == null && nullToAbsent ? const Value.absent() : Value(tags),
+      allowedDevices: allowedDevices == null && nullToAbsent
+          ? const Value.absent()
+          : Value(allowedDevices),
+      tagIds: tagIds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(tagIds),
+      examsCount: Value(examsCount),
       isChaptersSynced: Value(isChaptersSynced),
     );
   }
@@ -391,6 +505,10 @@ class CoursesTableData extends DataClass
       completedLessons: serializer.fromJson<int>(json['completedLessons']),
       totalLessons: serializer.fromJson<int>(json['totalLessons']),
       image: serializer.fromJson<String?>(json['image']),
+      tags: serializer.fromJson<String?>(json['tags']),
+      allowedDevices: serializer.fromJson<String?>(json['allowedDevices']),
+      tagIds: serializer.fromJson<String?>(json['tagIds']),
+      examsCount: serializer.fromJson<int>(json['examsCount']),
       isChaptersSynced: serializer.fromJson<bool>(json['isChaptersSynced']),
     );
   }
@@ -408,6 +526,10 @@ class CoursesTableData extends DataClass
       'completedLessons': serializer.toJson<int>(completedLessons),
       'totalLessons': serializer.toJson<int>(totalLessons),
       'image': serializer.toJson<String?>(image),
+      'tags': serializer.toJson<String?>(tags),
+      'allowedDevices': serializer.toJson<String?>(allowedDevices),
+      'tagIds': serializer.toJson<String?>(tagIds),
+      'examsCount': serializer.toJson<int>(examsCount),
       'isChaptersSynced': serializer.toJson<bool>(isChaptersSynced),
     };
   }
@@ -423,6 +545,10 @@ class CoursesTableData extends DataClass
     int? completedLessons,
     int? totalLessons,
     Value<String?> image = const Value.absent(),
+    Value<String?> tags = const Value.absent(),
+    Value<String?> allowedDevices = const Value.absent(),
+    Value<String?> tagIds = const Value.absent(),
+    int? examsCount,
     bool? isChaptersSynced,
   }) => CoursesTableData(
     id: id ?? this.id,
@@ -435,6 +561,12 @@ class CoursesTableData extends DataClass
     completedLessons: completedLessons ?? this.completedLessons,
     totalLessons: totalLessons ?? this.totalLessons,
     image: image.present ? image.value : this.image,
+    tags: tags.present ? tags.value : this.tags,
+    allowedDevices: allowedDevices.present
+        ? allowedDevices.value
+        : this.allowedDevices,
+    tagIds: tagIds.present ? tagIds.value : this.tagIds,
+    examsCount: examsCount ?? this.examsCount,
     isChaptersSynced: isChaptersSynced ?? this.isChaptersSynced,
   );
   CoursesTableData copyWithCompanion(CoursesTableCompanion data) {
@@ -461,6 +593,14 @@ class CoursesTableData extends DataClass
           ? data.totalLessons.value
           : this.totalLessons,
       image: data.image.present ? data.image.value : this.image,
+      tags: data.tags.present ? data.tags.value : this.tags,
+      allowedDevices: data.allowedDevices.present
+          ? data.allowedDevices.value
+          : this.allowedDevices,
+      tagIds: data.tagIds.present ? data.tagIds.value : this.tagIds,
+      examsCount: data.examsCount.present
+          ? data.examsCount.value
+          : this.examsCount,
       isChaptersSynced: data.isChaptersSynced.present
           ? data.isChaptersSynced.value
           : this.isChaptersSynced,
@@ -480,6 +620,10 @@ class CoursesTableData extends DataClass
           ..write('completedLessons: $completedLessons, ')
           ..write('totalLessons: $totalLessons, ')
           ..write('image: $image, ')
+          ..write('tags: $tags, ')
+          ..write('allowedDevices: $allowedDevices, ')
+          ..write('tagIds: $tagIds, ')
+          ..write('examsCount: $examsCount, ')
           ..write('isChaptersSynced: $isChaptersSynced')
           ..write(')'))
         .toString();
@@ -497,6 +641,10 @@ class CoursesTableData extends DataClass
     completedLessons,
     totalLessons,
     image,
+    tags,
+    allowedDevices,
+    tagIds,
+    examsCount,
     isChaptersSynced,
   );
   @override
@@ -513,6 +661,10 @@ class CoursesTableData extends DataClass
           other.completedLessons == this.completedLessons &&
           other.totalLessons == this.totalLessons &&
           other.image == this.image &&
+          other.tags == this.tags &&
+          other.allowedDevices == this.allowedDevices &&
+          other.tagIds == this.tagIds &&
+          other.examsCount == this.examsCount &&
           other.isChaptersSynced == this.isChaptersSynced);
 }
 
@@ -527,6 +679,10 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
   final Value<int> completedLessons;
   final Value<int> totalLessons;
   final Value<String?> image;
+  final Value<String?> tags;
+  final Value<String?> allowedDevices;
+  final Value<String?> tagIds;
+  final Value<int> examsCount;
   final Value<bool> isChaptersSynced;
   final Value<int> rowid;
   const CoursesTableCompanion({
@@ -540,6 +696,10 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     this.completedLessons = const Value.absent(),
     this.totalLessons = const Value.absent(),
     this.image = const Value.absent(),
+    this.tags = const Value.absent(),
+    this.allowedDevices = const Value.absent(),
+    this.tagIds = const Value.absent(),
+    this.examsCount = const Value.absent(),
     this.isChaptersSynced = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -554,6 +714,10 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     this.completedLessons = const Value.absent(),
     required int totalLessons,
     this.image = const Value.absent(),
+    this.tags = const Value.absent(),
+    this.allowedDevices = const Value.absent(),
+    this.tagIds = const Value.absent(),
+    this.examsCount = const Value.absent(),
     this.isChaptersSynced = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -573,6 +737,10 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     Expression<int>? completedLessons,
     Expression<int>? totalLessons,
     Expression<String>? image,
+    Expression<String>? tags,
+    Expression<String>? allowedDevices,
+    Expression<String>? tagIds,
+    Expression<int>? examsCount,
     Expression<bool>? isChaptersSynced,
     Expression<int>? rowid,
   }) {
@@ -587,6 +755,10 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
       if (completedLessons != null) 'completed_lessons': completedLessons,
       if (totalLessons != null) 'total_lessons': totalLessons,
       if (image != null) 'image': image,
+      if (tags != null) 'tags': tags,
+      if (allowedDevices != null) 'allowed_devices': allowedDevices,
+      if (tagIds != null) 'tag_ids': tagIds,
+      if (examsCount != null) 'exams_count': examsCount,
       if (isChaptersSynced != null) 'is_chapters_synced': isChaptersSynced,
       if (rowid != null) 'rowid': rowid,
     });
@@ -603,6 +775,10 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     Value<int>? completedLessons,
     Value<int>? totalLessons,
     Value<String?>? image,
+    Value<String?>? tags,
+    Value<String?>? allowedDevices,
+    Value<String?>? tagIds,
+    Value<int>? examsCount,
     Value<bool>? isChaptersSynced,
     Value<int>? rowid,
   }) {
@@ -617,6 +793,10 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
       completedLessons: completedLessons ?? this.completedLessons,
       totalLessons: totalLessons ?? this.totalLessons,
       image: image ?? this.image,
+      tags: tags ?? this.tags,
+      allowedDevices: allowedDevices ?? this.allowedDevices,
+      tagIds: tagIds ?? this.tagIds,
+      examsCount: examsCount ?? this.examsCount,
       isChaptersSynced: isChaptersSynced ?? this.isChaptersSynced,
       rowid: rowid ?? this.rowid,
     );
@@ -655,6 +835,18 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     if (image.present) {
       map['image'] = Variable<String>(image.value);
     }
+    if (tags.present) {
+      map['tags'] = Variable<String>(tags.value);
+    }
+    if (allowedDevices.present) {
+      map['allowed_devices'] = Variable<String>(allowedDevices.value);
+    }
+    if (tagIds.present) {
+      map['tag_ids'] = Variable<String>(tagIds.value);
+    }
+    if (examsCount.present) {
+      map['exams_count'] = Variable<int>(examsCount.value);
+    }
     if (isChaptersSynced.present) {
       map['is_chapters_synced'] = Variable<bool>(isChaptersSynced.value);
     }
@@ -677,6 +869,10 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
           ..write('completedLessons: $completedLessons, ')
           ..write('totalLessons: $totalLessons, ')
           ..write('image: $image, ')
+          ..write('tags: $tags, ')
+          ..write('allowedDevices: $allowedDevices, ')
+          ..write('tagIds: $tagIds, ')
+          ..write('examsCount: $examsCount, ')
           ..write('isChaptersSynced: $isChaptersSynced, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -5772,6 +5968,10 @@ typedef $$CoursesTableTableCreateCompanionBuilder =
       Value<int> completedLessons,
       required int totalLessons,
       Value<String?> image,
+      Value<String?> tags,
+      Value<String?> allowedDevices,
+      Value<String?> tagIds,
+      Value<int> examsCount,
       Value<bool> isChaptersSynced,
       Value<int> rowid,
     });
@@ -5787,6 +5987,10 @@ typedef $$CoursesTableTableUpdateCompanionBuilder =
       Value<int> completedLessons,
       Value<int> totalLessons,
       Value<String?> image,
+      Value<String?> tags,
+      Value<String?> allowedDevices,
+      Value<String?> tagIds,
+      Value<int> examsCount,
       Value<bool> isChaptersSynced,
       Value<int> rowid,
     });
@@ -5847,6 +6051,26 @@ class $$CoursesTableTableFilterComposer
 
   ColumnFilters<String> get image => $composableBuilder(
     column: $table.image,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tags => $composableBuilder(
+    column: $table.tags,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get allowedDevices => $composableBuilder(
+    column: $table.allowedDevices,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tagIds => $composableBuilder(
+    column: $table.tagIds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get examsCount => $composableBuilder(
+    column: $table.examsCount,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -5915,6 +6139,26 @@ class $$CoursesTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get tags => $composableBuilder(
+    column: $table.tags,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get allowedDevices => $composableBuilder(
+    column: $table.allowedDevices,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tagIds => $composableBuilder(
+    column: $table.tagIds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get examsCount => $composableBuilder(
+    column: $table.examsCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get isChaptersSynced => $composableBuilder(
     column: $table.isChaptersSynced,
     builder: (column) => ColumnOrderings(column),
@@ -5972,6 +6216,22 @@ class $$CoursesTableTableAnnotationComposer
   GeneratedColumn<String> get image =>
       $composableBuilder(column: $table.image, builder: (column) => column);
 
+  GeneratedColumn<String> get tags =>
+      $composableBuilder(column: $table.tags, builder: (column) => column);
+
+  GeneratedColumn<String> get allowedDevices => $composableBuilder(
+    column: $table.allowedDevices,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get tagIds =>
+      $composableBuilder(column: $table.tagIds, builder: (column) => column);
+
+  GeneratedColumn<int> get examsCount => $composableBuilder(
+    column: $table.examsCount,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<bool> get isChaptersSynced => $composableBuilder(
     column: $table.isChaptersSynced,
     builder: (column) => column,
@@ -6019,6 +6279,10 @@ class $$CoursesTableTableTableManager
                 Value<int> completedLessons = const Value.absent(),
                 Value<int> totalLessons = const Value.absent(),
                 Value<String?> image = const Value.absent(),
+                Value<String?> tags = const Value.absent(),
+                Value<String?> allowedDevices = const Value.absent(),
+                Value<String?> tagIds = const Value.absent(),
+                Value<int> examsCount = const Value.absent(),
                 Value<bool> isChaptersSynced = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => CoursesTableCompanion(
@@ -6032,6 +6296,10 @@ class $$CoursesTableTableTableManager
                 completedLessons: completedLessons,
                 totalLessons: totalLessons,
                 image: image,
+                tags: tags,
+                allowedDevices: allowedDevices,
+                tagIds: tagIds,
+                examsCount: examsCount,
                 isChaptersSynced: isChaptersSynced,
                 rowid: rowid,
               ),
@@ -6047,6 +6315,10 @@ class $$CoursesTableTableTableManager
                 Value<int> completedLessons = const Value.absent(),
                 required int totalLessons,
                 Value<String?> image = const Value.absent(),
+                Value<String?> tags = const Value.absent(),
+                Value<String?> allowedDevices = const Value.absent(),
+                Value<String?> tagIds = const Value.absent(),
+                Value<int> examsCount = const Value.absent(),
                 Value<bool> isChaptersSynced = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => CoursesTableCompanion.insert(
@@ -6060,6 +6332,10 @@ class $$CoursesTableTableTableManager
                 completedLessons: completedLessons,
                 totalLessons: totalLessons,
                 image: image,
+                tags: tags,
+                allowedDevices: allowedDevices,
+                tagIds: tagIds,
+                examsCount: examsCount,
                 isChaptersSynced: isChaptersSynced,
                 rowid: rowid,
               ),
