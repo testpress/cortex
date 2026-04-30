@@ -13,7 +13,13 @@ The system SHALL synchronize curriculum contents (lessons, assessments) and stat
 The system SHALL filter the contents of a leaf chapter based on the selected status ("Running", "Upcoming", or "History").
 - Navigating to a leaf chapter MUST trigger a targeted `refreshLessons(chapterId)` which clears old records for that chapter and replaces them with the latest authoritative list to prevent data corruption.
 
+#### Scenario: Navigating to leaf chapter refreshes content
+- **WHEN** the user navigates to a leaf chapter
+- **THEN** the system calls `refreshLessons(chapterId)` to sync and update the content list for that chapter.
+
 ### Requirement: Recursive Content Scoping
 The system SHALL ensure that curriculum filters (Videos, Lessons, etc.) in the hierarchical view are strictly scoped to the current chapter context.
-- **WHEN** a content filter is applied in a chapter list
-- **THEN** the system MUST display only those lessons that belong to the current chapter or any of its sub-chapters (recursive descendants).
+
+#### Scenario: Applying curriculum filters in hierarchical view
+- **WHEN** the user applies a curriculum filter (e.g., "Videos") in a chapter's content list
+- **THEN** the system displays only the lessons of that type belonging to the current chapter or its recursive sub-chapters.

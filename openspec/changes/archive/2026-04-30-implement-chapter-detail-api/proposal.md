@@ -4,10 +4,10 @@ The curriculum filters (Video, Lesson, etc.) in the Course Detail view are curre
 
 ## What Changes
 
-- **Content API Integration**: Implement the synchronization of course curriculum contents via the `/api/v3/courses/{id}/contents/` endpoint, as well as status-specific endpoints for Running, Upcoming, and History (Attempts).
-- **Status-Specific Sync**: Integrate `/running_contents/`, `/upcoming_contents/`, and `/content_attempts/` to provide a complete view of the student's progress and schedule.
-- **Filtering Logic**: Fix the `allCourseLessonsProvider` and `ChapterDetailProvider` to correctly consume the synchronized content from the local database, enabling the functional use of curriculum filters.
-- **Data Persistence**: Ensure that fetched course contents are stored in the existing local database structure to support offline-ready filtering.
+- **Content API Integration** - Implement the synchronization of course curriculum contents via the `/api/v3/courses/{id}/contents/` endpoint, as well as status-specific endpoints for Running, Upcoming, and History (Attempts).
+- **Status-Specific Sync** - Integrate `/running_contents/`, `/upcoming_contents/`, and `/content_attempts/` to provide a complete view of the student's progress and schedule.
+- **Filtering Logic** - Fix the `allCourseLessonsProvider` and `ChapterDetailProvider` to correctly consume the synchronized content from the local database, enabling the functional use of curriculum filters.
+- **Data Persistence** - Ensure that fetched course contents are stored in the existing local database structure to support offline-ready filtering.
 
 ## Capabilities
 
