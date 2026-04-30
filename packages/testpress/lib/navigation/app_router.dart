@@ -53,7 +53,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   // Only watch the boolean login status to prevent the router from rebuilding
   // on every loading state change or refresh.
   final isLoggedIn = ref.watch(authProvider).valueOrNull ?? false;
-  final isInfoEnabled = ref.watch(infoPageEnabledProvider);
+  final config = ref.watch(clientConfigProvider);
+  final isInfoEnabled = config.useRestrictedNavigation || 
+                        ref.watch(infoPageEnabledProvider);
 
 
   return GoRouter(
@@ -111,6 +113,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         final items = buildPrimaryNavigationItems(
+          config: config,
           isInfoEnabled: isInfoEnabled,
         );
 
@@ -119,7 +122,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             final isLogoutSheetOpen = ref.watch(isLogoutSheetOpenProvider);
             final activeTabId = _getCurrentTabId(
               navigationShell.currentIndex,
-              isInfoEnabled,
+              config: config,
+              isInfoEnabled: isInfoEnabled,
             );
 
             void closeSheet() {
@@ -136,13 +140,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                     items: items,
                     activeItemId: activeTabId,
                     onTabChange: (id) => 
-                        _onTabItemTapped(navigationShell, id, isInfoEnabled),
+                        _onTabItemTapped(navigationShell, id, config: config, isInfoEnabled: isInfoEnabled),
                   ),
                   navigationRail: AppNavigationRail(
                     items: items,
                     activeItemId: activeTabId,
                     onTabChange: (id) => 
-                        _onTabItemTapped(navigationShell, id, isInfoEnabled),
+                        _onTabItemTapped(navigationShell, id, config: config, isInfoEnabled: isInfoEnabled),
                   ),
 
                   drawer: DashboardDrawer(isLandscape: isLandscape),
@@ -385,6 +389,15 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             ),
           ],
         ),
+        // Exams Branch
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/exams',
+              builder: (context, state) => const ExamsScreen(),
+            ),
+          ],
+        ),
         // Explore Branch
         StatefulShellBranch(
           routes: [
@@ -497,20 +510,42 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 );
 });
 
-const _baseTabPaths = ['/home', '/study', '/explore'];
-
-List<String> _tabPaths(bool isInfo) => [
-      ..._baseTabPaths,
-      if (isInfo) '/info',
-      '/profile',
-    ];
-
-List<AppTabItem> buildPrimaryNavigationItems({
+List<String> _tabPaths({
+  required ClientConfig config,
   required bool isInfoEnabled,
 }) {
+  if (config.useRestrictedNavigation) {
+    return ['/home', '/study', '/exams', '/info'];
+  }
+
+  return [
+    '/home',
+    '/study',
+    if (config.showExamTab) '/exams',
+    '/explore',
+    if (isInfoEnabled) '/info',
+    '/profile',
+  ];
+}
+
+List<AppTabItem> buildPrimaryNavigationItems({
+  required ClientConfig config,
+  required bool isInfoEnabled,
+}) {
+  if (config.useRestrictedNavigation) {
+    return [
+      const AppTabItem(id: '/home', label: 'Home', icon: LucideIcons.home),
+      const AppTabItem(id: '/study', label: 'Study', icon: LucideIcons.bookOpen),
+      const AppTabItem(id: '/exams', label: 'Exam', icon: LucideIcons.fileText),
+      const AppTabItem(id: '/info', label: 'Info', icon: LucideIcons.youtube),
+    ];
+  }
+
   return [
     const AppTabItem(id: '/home', label: 'Home', icon: LucideIcons.home),
     const AppTabItem(id: '/study', label: 'Study', icon: LucideIcons.bookOpen),
+    if (config.showExamTab)
+      const AppTabItem(id: '/exams', label: 'Exam', icon: LucideIcons.fileText),
     const AppTabItem(
       id: '/explore',
       label: 'Explore',
@@ -526,15 +561,37 @@ List<AppTabItem> buildPrimaryNavigationItems({
   ];
 }
 
-
-String _getCurrentTabId(int index, bool isInfo) => _tabPaths(isInfo)[index];
+String _getCurrentTabId(
+  int index, {
+  required ClientConfig config,
+  required bool isInfoEnabled,
+}) {
+  final allBranchPaths = [
+    '/home',
+    '/study',
+    '/exams',
+    '/explore',
+    if (isInfoEnabled) '/info',
+    '/profile',
+  ];
+  return allBranchPaths[index];
+}
 
 void _onTabItemTapped(
   StatefulNavigationShell navigationShell,
-  String id,
-  bool isInfo,
-) {
-  final index = _tabPaths(isInfo).indexOf(id);
+  String id, {
+  required ClientConfig config,
+  required bool isInfoEnabled,
+}) {
+  final allBranchPaths = [
+    '/home',
+    '/study',
+    '/exams',
+    '/explore',
+    if (isInfoEnabled) '/info',
+    '/profile',
+  ];
+  final index = allBranchPaths.indexOf(id);
 
   navigationShell.goBranch(
     index != -1 ? index : 0,
