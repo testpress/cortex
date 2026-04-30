@@ -21,6 +21,10 @@ class CourseDto {
   final int completedLessons;
   final int totalLessons;
   final String? image;
+  final List<String> tags;
+  final List<String> allowedDevices;
+  final List<int> tagIds;
+  final int examsCount;
   final List<ChapterDto> chapters;
 
   const CourseDto({
@@ -33,6 +37,10 @@ class CourseDto {
     required this.progress,
     required this.completedLessons,
     required this.totalLessons,
+    this.tags = const [],
+    this.allowedDevices = const [],
+    this.tagIds = const [],
+    this.examsCount = 0,
     this.image,
     this.isChaptersSynced = false,
     this.chapters = const [],
@@ -51,6 +59,10 @@ class CourseDto {
     int? completedLessons,
     int? totalLessons,
     String? image,
+    List<String>? tags,
+    List<String>? allowedDevices,
+    List<int>? tagIds,
+    int? examsCount,
     bool? isChaptersSynced,
     List<ChapterDto>? chapters,
   }) {
@@ -65,14 +77,18 @@ class CourseDto {
       completedLessons: completedLessons ?? this.completedLessons,
       totalLessons: totalLessons ?? this.totalLessons,
       image: image ?? this.image,
+      tags: tags ?? this.tags,
+      allowedDevices: allowedDevices ?? this.allowedDevices,
+      tagIds: tagIds ?? this.tagIds,
+      examsCount: examsCount ?? this.examsCount,
       isChaptersSynced: isChaptersSynced ?? this.isChaptersSynced,
       chapters: chapters ?? this.chapters,
     );
   }
 
   factory CourseDto.fromJson(Map<String, dynamic> json) {
-    return CourseDto(
-      id: (json['id'] as Object).toString(),
+    final dto = CourseDto(
+      id: (json['id'] ?? '').toString(),
       title: json['title'] as String? ?? 'Untitled Course',
       colorIndex: json['color_index'] as int? ?? 0,
       chapterCount: json['chapters_count'] as int? ?? 0,
@@ -82,6 +98,10 @@ class CourseDto {
       completedLessons: json['completed_lessons_count'] as int? ?? 0,
       totalLessons: json['contents_count'] as int? ?? 0,
       image: json['image'] as String?,
+      tags: _parseList(json['tags']),
+      allowedDevices: _parseList(json['allowed_devices']),
+      tagIds: (json['tag_ids'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      examsCount: json['exams_count'] as int? ?? 0,
       isChaptersSynced: json['isChaptersSynced'] as bool? ?? false,
       chapters:
           (json['chapters'] as List<dynamic>?)
@@ -89,6 +109,18 @@ class CourseDto {
               .toList() ??
           const [],
     );
+    print('DEBUG_PARSE: Course ${dto.id} ("${dto.title}") tags: ${dto.tags}, tagIds: ${dto.tagIds}, examsCount: ${dto.examsCount}, allowedDevices: ${dto.allowedDevices}');
+    return dto;
+  }
+
+  static List<String> _parseList(dynamic value) {
+    if (value == null) return const [];
+    if (value is List) return value.map((e) => e.toString()).toList();
+    if (value is String) {
+      if (value.isEmpty) return const [];
+      return value.split(',').map((e) => e.trim()).toList();
+    }
+    return const [];
   }
 
   Map<String, dynamic> toJson() {
@@ -103,6 +135,8 @@ class CourseDto {
       'completedLessons': completedLessons,
       'totalLessons': totalLessons,
       'image': image,
+      'tags': tags,
+      'allowed_devices': allowedDevices,
       'isChaptersSynced': isChaptersSynced,
       'chapters': chapters.map((e) => e.toJson()).toList(),
     };

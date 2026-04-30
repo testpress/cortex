@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/config/app_config.dart';
@@ -28,6 +29,11 @@ final Provider<Dio> dioProvider = Provider<Dio>((ref) {
       onUnauthorized: () => ref.read(authProvider.notifier).logout(),
     ),
   );
+
+  if (kDebugMode) {
+    dio.interceptors.add(LogInterceptor(responseBody: true, requestBody: true));
+  }
+
   return dio;
 });
 

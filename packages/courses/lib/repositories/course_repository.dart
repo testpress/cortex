@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:async/async.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
@@ -25,6 +26,21 @@ class CourseRepository {
   /// Live stream of all courses from the local DB (single source of truth).
   Stream<List<CoursesTableData>> watchCourses() {
     return _db.watchAllCourses();
+  }
+
+  /// Live stream of courses filtered for the Exams tab.
+  Stream<List<CoursesTableData>> watchExamCourses() {
+    return _db.watchAllCourses().map((courses) {
+      return courses.where((course) {
+        final dto = rowToCourseDto(course);
+        final hasMobileAccess = dto.allowedDevices.any(
+          (d) => d.toLowerCase().contains('mobile'),
+        );
+        final isExamCourse = dto.tags.contains('exams') || (dto.tags.isEmpty && dto.examsCount > 0);
+        
+        return isExamCourse && hasMobileAccess;
+      }).toList();
+    });
   }
 
   /// Live stream of a specific course with its chapters.
@@ -546,8 +562,21 @@ class CourseRepository {
     completedLessons: row.completedLessons,
     totalLessons: row.totalLessons,
     image: row.image,
+    tags: _safeDecodeList<String>(row.tags),
+    allowedDevices: _safeDecodeList<String>(row.allowedDevices),
+    tagIds: _safeDecodeList<int>(row.tagIds),
+    examsCount: row.examsCount,
     isChaptersSynced: row.isChaptersSynced,
   );
+
+  static List<T> _safeDecodeList<T>(String? json) {
+    if (json == null || json.isEmpty) return const [];
+    try {
+      return List<T>.from(jsonDecode(json));
+    } catch (_) {
+      return const [];
+    }
+  }
 
   CoursesTableCompanion _courseDtoToCompanion(CourseDto dto) =>
       CoursesTableCompanion(
@@ -561,6 +590,12 @@ class CourseRepository {
         completedLessons: Value(dto.completedLessons),
         totalLessons: Value(dto.totalLessons),
         image: dto.image != null ? Value(dto.image) : const Value.absent(),
+        tags: dto.tags.isNotEmpty ? Value(jsonEncode(dto.tags)) : const Value.absent(),
+        allowedDevices: dto.allowedDevices.isNotEmpty
+            ? Value(jsonEncode(dto.allowedDevices))
+            : const Value.absent(),
+        tagIds: dto.tagIds.isNotEmpty ? Value(jsonEncode(dto.tagIds)) : const Value.absent(),
+        examsCount: Value(dto.examsCount),
         isChaptersSynced: Value(dto.isChaptersSynced),
       );
 

@@ -12,6 +12,10 @@ class CoursesTable extends Table {
   IntColumn get completedLessons => integer().withDefault(const Constant(0))();
   IntColumn get totalLessons => integer()();
   TextColumn get image => text().nullable()();
+  TextColumn get tags => text().nullable()();
+  TextColumn get allowedDevices => text().nullable()();
+  TextColumn get tagIds => text().nullable()();
+  IntColumn get examsCount => integer().withDefault(const Constant(0))();
   BoolColumn get isChaptersSynced => boolean().withDefault(const Constant(false))();
 
   @override
