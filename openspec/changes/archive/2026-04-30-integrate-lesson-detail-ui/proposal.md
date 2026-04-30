@@ -4,10 +4,10 @@ The user experience when navigating between diverse lesson types (Video, PDF, No
 
 ## What Changes
 
-- **Unified Routing**: Consolidation of all lesson entry points into a single `/study/lesson/:id` route.
-- **Orchestration Layer**: Introduction of a `LessonDetailOrchestrator` that dynamically switches between viewers based on the content type.
-- **Unified Shell**: Implementation of `LessonDetailShell` in `packages/core` to provide a consistent header and sticky navigation footer.
-- **Rich Media Viewer**: Creation of `LessonWebView` to handle HTML notes and video embeds with theme-aware styling.
+- **Unified Routing** - Consolidation of all lesson entry points into a single `/study/lesson/:id` route.
+- **Orchestration Layer** - Introduction of a `LessonDetailOrchestrator` that dynamically switches between viewers based on the content type.
+- **Unified Shell** - Implementation of `LessonDetailShell` in `packages/core` to provide a consistent header and sticky navigation footer.
+- **Rich Media Viewer** - Creation of `LessonWebView` to handle HTML notes and video embeds with theme-aware styling.
 
 ## Capabilities
 
