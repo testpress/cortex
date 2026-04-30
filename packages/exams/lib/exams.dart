@@ -2,6 +2,7 @@ export 'package:core/data/data.dart';
 
 export 'screens/assessment_detail_screen.dart';
 export 'screens/test_detail_screen.dart';
+export 'screens/exams_screen.dart';
 export 'screens/review_answer/review_answer_detail_screen.dart';
 
 export 'models/analytics_overview.dart';

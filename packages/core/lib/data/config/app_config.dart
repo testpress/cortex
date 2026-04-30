@@ -12,7 +12,7 @@ class AppConfig {
   /// Reads from a --dart-define=API_BASE_URL=... at build/run time.
   static const String apiBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'https://lmsdemo.testpress.in/',
+    defaultValue: 'https://brilliantpalalms.testpress.in/',
   );
 
   /// Client-specific feature flag to enable the Info experience.
