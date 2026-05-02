@@ -3,6 +3,7 @@ import 'package:core/data/data.dart';
 import '../../network/api_endpoints.dart';
 import '../../network/network_utils.dart';
 import 'curriculum_parser.dart';
+import '../exceptions/api_exception.dart';
 
 /// HTTP data source stub — to be implemented when a real backend is available.
 /// All methods throw [UnimplementedError] to surface accidental usage in tests.
@@ -134,10 +135,18 @@ class HttpDataSource implements DataSource {
 
   @override
   Future<LessonDto> getLessonDetail(String lessonId) async {
-    return performNetworkRequest(
-      _dio.get(ApiEndpoints.lessonDetail(lessonId)),
-      fromJson: LessonDto.fromJson,
-    );
+    try {
+      return await performNetworkRequest(
+        _dio.get(ApiEndpoints.lessonDetail(lessonId)),
+        fromJson: LessonDto.fromJson,
+      );
+    } on ApiException catch (e) {
+      final data = e.data;
+      if (data is Map<String, dynamic> && data['error_code'] == 'scheduled') {
+        return LessonDto.fromJson(data);
+      }
+      rethrow;
+    }
   }
 
   @override

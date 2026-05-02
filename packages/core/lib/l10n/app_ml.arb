@@ -453,7 +453,7 @@
   "forumPostCategoryLabel": "വിഭാഗം",
   "forumPostSelectCategoryTitle": "വിഭാഗം തിരഞ്ഞെടുക്കുക",
   "forumButtonSubmit": "സമർപ്പിക്കുക",
-  "forumButtonCancel": "റദ്ദാക്കുക"
+  "forumButtonCancel": "റദ്ദാക്കുക",
   "labelPractice": "പ്രാക്ടീസ്",
   "attachmentSize": "വലിപ്പം: {size}",
   "@attachmentSize": {

@@ -37,12 +37,22 @@ class LessonDto {
   final String? htmlContent;
   final bool isDetailFetched;
 
+  // Live Stream specific fields
+  final String? chatEmbedUrl;
+  final String? streamStatus;
+  final bool showRecordedVideo;
+
+  final bool isScheduled;
+  final String? scheduledMessage;
+
   /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
   bool get isComplete {
     if (isDetailFetched) return true;
+    if (isScheduled) return true; // Scheduled lessons have their message ready
 
     switch (type) {
       case LessonType.video:
+      case LessonType.liveStream:
         return contentUrl != null && contentUrl!.isNotEmpty;
       case LessonType.notes:
       case LessonType.embedContent:
@@ -80,9 +90,16 @@ class LessonDto {
     this.previousContentId,
     this.htmlContent,
     this.isDetailFetched = false,
+    this.chatEmbedUrl,
+    this.streamStatus,
+    this.showRecordedVideo = false,
+    this.isScheduled = false,
+    this.scheduledMessage,
   });
 
   LessonDto copyWith({
+    bool? isScheduled,
+    String? scheduledMessage,
     String? id,
     String? chapterId,
     String? title,
@@ -107,6 +124,9 @@ class LessonDto {
     String? previousContentId,
     String? htmlContent,
     bool? isDetailFetched,
+    String? chatEmbedUrl,
+    String? streamStatus,
+    bool? showRecordedVideo,
   }) {
     return LessonDto(
       id: id ?? this.id,
@@ -133,6 +153,11 @@ class LessonDto {
       previousContentId: previousContentId ?? this.previousContentId,
       htmlContent: htmlContent ?? this.htmlContent,
       isDetailFetched: isDetailFetched ?? this.isDetailFetched,
+      chatEmbedUrl: chatEmbedUrl ?? this.chatEmbedUrl,
+      streamStatus: streamStatus ?? this.streamStatus,
+      showRecordedVideo: showRecordedVideo ?? this.showRecordedVideo,
+      isScheduled: isScheduled ?? this.isScheduled,
+      scheduledMessage: scheduledMessage ?? this.scheduledMessage,
     );
   }
 
@@ -166,6 +191,11 @@ class LessonDto {
       progressStatus: progressStatus != LessonProgressStatus.notStarted
           ? progressStatus
           : other.progressStatus,
+      chatEmbedUrl: (chatEmbedUrl?.isEmpty ?? true) ? other.chatEmbedUrl : chatEmbedUrl,
+      streamStatus: (streamStatus?.isEmpty ?? true) ? other.streamStatus : streamStatus,
+      showRecordedVideo: showRecordedVideo || other.showRecordedVideo,
+      isScheduled: isScheduled || other.isScheduled,
+      scheduledMessage: (scheduledMessage?.isEmpty ?? true) ? other.scheduledMessage : scheduledMessage,
       // Preserve specialized types (e.g. Attachment promoted to PDF, or Video promoted to Embed)
       type: (() {
         // If they are different, prefer the more specific one if one is 'attachment' or 'video'
@@ -219,6 +249,10 @@ class LessonDto {
             ?.toString()
             .toLowerCase() ??
         '';
+
+    if (contentType.contains('live')) {
+      return LessonType.liveStream;
+    }
 
     // Video vs Embed
     if (contentType.contains('video')) {
@@ -303,8 +337,16 @@ class LessonDto {
 
   static LessonDto _parseLiveStreamLesson(Map<String, dynamic> json) {
     final base = _parseBase(json, LessonType.liveStream);
+    final liveStream = json['live_stream'] as Map<String, dynamic>?;
+
     return base.copyWith(
-      contentUrl: json['live_stream_url']?.toString() ?? json['url']?.toString(),
+      contentUrl: json['uuid']?.toString() ??
+          liveStream?['stream_url']?.toString() ??
+          json['live_stream_url']?.toString() ??
+          json['url']?.toString(),
+      chatEmbedUrl: liveStream?['chat_embed_url']?.toString(),
+      streamStatus: liveStream?['status']?.toString(),
+      showRecordedVideo: liveStream?['show_recorded_video'] as bool? ?? false,
     );
   }
 
@@ -315,9 +357,10 @@ class LessonDto {
   static LessonDto _parseBase(Map<String, dynamic> json, LessonType type) {
     String? getString(String key) => json[key]?.toString();
     final video = json['video'] as Map<String, dynamic>?;
+    final liveStream = json['live_stream'] as Map<String, dynamic>?;
 
     return LessonDto(
-      id: getString('id') ?? '',
+      id: getString('id') ?? getString('object_id') ?? '',
       chapterId: () {
         final val = json['chapter_id'] ?? json['chapter'] ?? json['chapterId'];
         if (val is Map) return val['id']?.toString() ?? '';
@@ -326,7 +369,9 @@ class LessonDto {
       title: json['title'] as String? ?? json['name'] as String? ?? '',
       type: type,
       duration: TimeFormatter.formatDuration(
-            json['duration'] as String? ?? video?['duration'] as String?) ??
+            json['duration'] as String? ?? 
+            video?['duration'] as String? ??
+            liveStream?['duration'] as String?) ??
         '',
       progressStatus: (json['attempts_count'] as num? ?? 0) > 0
           ? LessonProgressStatus.completed
@@ -341,12 +386,17 @@ class LessonDto {
       totalLessons: (json['total_lessons'] as num?)?.toInt() ?? (json['totalLessons'] as num?)?.toInt(),
       isBookmarked: json['is_bookmarked'] as bool? ?? json['isBookmarked'] as bool? ?? false,
       image: json['icon'] as String? ?? json['image'] as String?,
-      isRunning: json['is_running'] as bool? ?? false,
-      isUpcoming: json['is_upcoming'] as bool? ?? false,
+      isRunning: json['is_running'] as bool? ?? 
+          ['running', 'live'].contains(liveStream?['status']?.toString().toLowerCase()) ||
+          (json['has_started'] as bool? ?? false),
+      isUpcoming: json['is_upcoming'] as bool? ?? 
+          ['upcoming', 'scheduled'].contains(liveStream?['status']?.toString().toLowerCase()),
       hasAttempts: json['has_attempts'] as bool? ?? false,
       nextContentId: getString('next_content_id'),
       previousContentId: getString('previous_content_id'),
       isDetailFetched: json['is_detail_fetched'] as bool? ?? false,
+      isScheduled: json['error_code'] == 'scheduled',
+      scheduledMessage: json['message'] as String?,
     );
   }
 
@@ -381,6 +431,9 @@ class LessonDto {
       'nextContentId': nextContentId,
       'previousContentId': previousContentId,
       'htmlContent': htmlContent,
+      'chatEmbedUrl': chatEmbedUrl,
+      'streamStatus': streamStatus,
+      'showRecordedVideo': showRecordedVideo,
     };
   }
 }

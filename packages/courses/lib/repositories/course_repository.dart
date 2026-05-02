@@ -653,6 +653,11 @@ class CourseRepository {
     previousContentId: row.previousContentId,
     htmlContent: row.htmlContent,
     isDetailFetched: row.isDetailFetched,
+    chatEmbedUrl: row.chatEmbedUrl,
+    streamStatus: row.streamStatus,
+    showRecordedVideo: row.showRecordedVideo,
+    isScheduled: row.isScheduled,
+    scheduledMessage: row.scheduledMessage,
   );
 
   LessonsTableCompanion _lessonDtoToCompanion(LessonDto dto) =>
@@ -701,6 +706,17 @@ class CourseRepository {
             ? Value(dto.htmlContent)
             : const Value.absent(),
         isDetailFetched: Value(dto.isDetailFetched),
+        chatEmbedUrl: dto.chatEmbedUrl != null
+            ? Value(dto.chatEmbedUrl)
+            : const Value.absent(),
+        streamStatus: dto.streamStatus != null
+            ? Value(dto.streamStatus)
+            : const Value.absent(),
+        showRecordedVideo: Value(dto.showRecordedVideo),
+        isScheduled: Value(dto.isScheduled),
+        scheduledMessage: dto.scheduledMessage != null
+            ? Value(dto.scheduledMessage)
+            : const Value.absent(),
       );
 
   LessonType _parseType(String s) {

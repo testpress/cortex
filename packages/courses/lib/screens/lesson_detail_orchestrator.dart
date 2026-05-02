@@ -5,10 +5,10 @@ import '../models/course_content.dart';
 import '../providers/course_list_provider.dart';
 import '../providers/lesson_detail_provider.dart';
 import '../widgets/lesson_detail/pdf_viewer.dart';
-import '../widgets/lesson_detail/custom_video_player.dart';
 import '../widgets/lesson_detail/lesson_web_view.dart';
 import '../widgets/lesson_detail/video_lesson_viewer.dart';
 import '../widgets/lesson_detail/attachment_viewer.dart';
+import '../widgets/lesson_detail/live_stream_viewer.dart';
 
 /// Orchestrator that decides which viewer to show for a given lesson.
 /// It wraps content in the unified [LessonDetailShell].
@@ -92,7 +92,8 @@ class _LessonDetailOrchestratorState
       onNext: widget.onNext,
       onPrevious: widget.onPrevious,
       stickyFooter:
-          lesson.type != LessonType.video, // Non-sticky for video as requested
+          lesson.type != LessonType.video && 
+          lesson.type != LessonType.liveStream,
       child: _buildLessonContent(context),
     );
   }
@@ -144,8 +145,14 @@ class _LessonDetailOrchestratorState
         }
         break;
       case LessonType.liveStream:
-        return CustomVideoPlayer(
-          assetId: lesson.contentUrl,
+        return LiveStreamViewer(
+          lesson: lesson,
+          onComplete: _markAsCompleted,
+          footerBuilder: (context) => LessonDetailShell.buildStaticFooter(
+            context,
+            onNext: onNext,
+            onPrevious: onPrevious,
+          ),
         );
       case LessonType.attachment:
         if (lesson.contentUrl != null) {

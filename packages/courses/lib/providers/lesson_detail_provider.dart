@@ -39,6 +39,11 @@ Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
       previousContentId: lessonDto.previousContentId,
       htmlContent: lessonDto.htmlContent,
       isDetailFetched: lessonDto.isDetailFetched,
+      chatEmbedUrl: lessonDto.chatEmbedUrl,
+      streamStatus: lessonDto.streamStatus,
+      showRecordedVideo: lessonDto.showRecordedVideo,
+      isScheduled: lessonDto.isScheduled,
+      scheduledMessage: lessonDto.scheduledMessage,
     );
   });
  
