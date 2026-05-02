@@ -6712,6 +6712,459 @@ class DashboardBannersTableCompanion
   }
 }
 
+class $LearnersTableTable extends LearnersTable
+    with TableInfo<$LearnersTableTable, LearnersTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LearnersTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _avatarMeta = const VerificationMeta('avatar');
+  @override
+  late final GeneratedColumn<String> avatar = GeneratedColumn<String>(
+    'avatar',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _pointsMeta = const VerificationMeta('points');
+  @override
+  late final GeneratedColumn<double> points = GeneratedColumn<double>(
+    'points',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _rankMeta = const VerificationMeta('rank');
+  @override
+  late final GeneratedColumn<int> rank = GeneratedColumn<int>(
+    'rank',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _coursesCompletedMeta = const VerificationMeta(
+    'coursesCompleted',
+  );
+  @override
+  late final GeneratedColumn<int> coursesCompleted = GeneratedColumn<int>(
+    'courses_completed',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _streakDaysMeta = const VerificationMeta(
+    'streakDays',
+  );
+  @override
+  late final GeneratedColumn<int> streakDays = GeneratedColumn<int>(
+    'streak_days',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    avatar,
+    points,
+    rank,
+    coursesCompleted,
+    streakDays,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'learners_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LearnersTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('avatar')) {
+      context.handle(
+        _avatarMeta,
+        avatar.isAcceptableOrUnknown(data['avatar']!, _avatarMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_avatarMeta);
+    }
+    if (data.containsKey('points')) {
+      context.handle(
+        _pointsMeta,
+        points.isAcceptableOrUnknown(data['points']!, _pointsMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pointsMeta);
+    }
+    if (data.containsKey('rank')) {
+      context.handle(
+        _rankMeta,
+        rank.isAcceptableOrUnknown(data['rank']!, _rankMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_rankMeta);
+    }
+    if (data.containsKey('courses_completed')) {
+      context.handle(
+        _coursesCompletedMeta,
+        coursesCompleted.isAcceptableOrUnknown(
+          data['courses_completed']!,
+          _coursesCompletedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('streak_days')) {
+      context.handle(
+        _streakDaysMeta,
+        streakDays.isAcceptableOrUnknown(data['streak_days']!, _streakDaysMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  LearnersTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LearnersTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      avatar: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}avatar'],
+      )!,
+      points: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}points'],
+      )!,
+      rank: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rank'],
+      )!,
+      coursesCompleted: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}courses_completed'],
+      )!,
+      streakDays: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}streak_days'],
+      )!,
+    );
+  }
+
+  @override
+  $LearnersTableTable createAlias(String alias) {
+    return $LearnersTableTable(attachedDatabase, alias);
+  }
+}
+
+class LearnersTableData extends DataClass
+    implements Insertable<LearnersTableData> {
+  final String id;
+  final String name;
+  final String avatar;
+  final double points;
+  final int rank;
+  final int coursesCompleted;
+  final int streakDays;
+  const LearnersTableData({
+    required this.id,
+    required this.name,
+    required this.avatar,
+    required this.points,
+    required this.rank,
+    required this.coursesCompleted,
+    required this.streakDays,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['avatar'] = Variable<String>(avatar);
+    map['points'] = Variable<double>(points);
+    map['rank'] = Variable<int>(rank);
+    map['courses_completed'] = Variable<int>(coursesCompleted);
+    map['streak_days'] = Variable<int>(streakDays);
+    return map;
+  }
+
+  LearnersTableCompanion toCompanion(bool nullToAbsent) {
+    return LearnersTableCompanion(
+      id: Value(id),
+      name: Value(name),
+      avatar: Value(avatar),
+      points: Value(points),
+      rank: Value(rank),
+      coursesCompleted: Value(coursesCompleted),
+      streakDays: Value(streakDays),
+    );
+  }
+
+  factory LearnersTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LearnersTableData(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      avatar: serializer.fromJson<String>(json['avatar']),
+      points: serializer.fromJson<double>(json['points']),
+      rank: serializer.fromJson<int>(json['rank']),
+      coursesCompleted: serializer.fromJson<int>(json['coursesCompleted']),
+      streakDays: serializer.fromJson<int>(json['streakDays']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'avatar': serializer.toJson<String>(avatar),
+      'points': serializer.toJson<double>(points),
+      'rank': serializer.toJson<int>(rank),
+      'coursesCompleted': serializer.toJson<int>(coursesCompleted),
+      'streakDays': serializer.toJson<int>(streakDays),
+    };
+  }
+
+  LearnersTableData copyWith({
+    String? id,
+    String? name,
+    String? avatar,
+    double? points,
+    int? rank,
+    int? coursesCompleted,
+    int? streakDays,
+  }) => LearnersTableData(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    avatar: avatar ?? this.avatar,
+    points: points ?? this.points,
+    rank: rank ?? this.rank,
+    coursesCompleted: coursesCompleted ?? this.coursesCompleted,
+    streakDays: streakDays ?? this.streakDays,
+  );
+  LearnersTableData copyWithCompanion(LearnersTableCompanion data) {
+    return LearnersTableData(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      avatar: data.avatar.present ? data.avatar.value : this.avatar,
+      points: data.points.present ? data.points.value : this.points,
+      rank: data.rank.present ? data.rank.value : this.rank,
+      coursesCompleted: data.coursesCompleted.present
+          ? data.coursesCompleted.value
+          : this.coursesCompleted,
+      streakDays: data.streakDays.present
+          ? data.streakDays.value
+          : this.streakDays,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LearnersTableData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('avatar: $avatar, ')
+          ..write('points: $points, ')
+          ..write('rank: $rank, ')
+          ..write('coursesCompleted: $coursesCompleted, ')
+          ..write('streakDays: $streakDays')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, name, avatar, points, rank, coursesCompleted, streakDays);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LearnersTableData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.avatar == this.avatar &&
+          other.points == this.points &&
+          other.rank == this.rank &&
+          other.coursesCompleted == this.coursesCompleted &&
+          other.streakDays == this.streakDays);
+}
+
+class LearnersTableCompanion extends UpdateCompanion<LearnersTableData> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String> avatar;
+  final Value<double> points;
+  final Value<int> rank;
+  final Value<int> coursesCompleted;
+  final Value<int> streakDays;
+  final Value<int> rowid;
+  const LearnersTableCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.avatar = const Value.absent(),
+    this.points = const Value.absent(),
+    this.rank = const Value.absent(),
+    this.coursesCompleted = const Value.absent(),
+    this.streakDays = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LearnersTableCompanion.insert({
+    required String id,
+    required String name,
+    required String avatar,
+    required double points,
+    required int rank,
+    this.coursesCompleted = const Value.absent(),
+    this.streakDays = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       avatar = Value(avatar),
+       points = Value(points),
+       rank = Value(rank);
+  static Insertable<LearnersTableData> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? avatar,
+    Expression<double>? points,
+    Expression<int>? rank,
+    Expression<int>? coursesCompleted,
+    Expression<int>? streakDays,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (avatar != null) 'avatar': avatar,
+      if (points != null) 'points': points,
+      if (rank != null) 'rank': rank,
+      if (coursesCompleted != null) 'courses_completed': coursesCompleted,
+      if (streakDays != null) 'streak_days': streakDays,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LearnersTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<String>? avatar,
+    Value<double>? points,
+    Value<int>? rank,
+    Value<int>? coursesCompleted,
+    Value<int>? streakDays,
+    Value<int>? rowid,
+  }) {
+    return LearnersTableCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      avatar: avatar ?? this.avatar,
+      points: points ?? this.points,
+      rank: rank ?? this.rank,
+      coursesCompleted: coursesCompleted ?? this.coursesCompleted,
+      streakDays: streakDays ?? this.streakDays,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (avatar.present) {
+      map['avatar'] = Variable<String>(avatar.value);
+    }
+    if (points.present) {
+      map['points'] = Variable<double>(points.value);
+    }
+    if (rank.present) {
+      map['rank'] = Variable<int>(rank.value);
+    }
+    if (coursesCompleted.present) {
+      map['courses_completed'] = Variable<int>(coursesCompleted.value);
+    }
+    if (streakDays.present) {
+      map['streak_days'] = Variable<int>(streakDays.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LearnersTableCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('avatar: $avatar, ')
+          ..write('points: $points, ')
+          ..write('rank: $rank, ')
+          ..write('coursesCompleted: $coursesCompleted, ')
+          ..write('streakDays: $streakDays, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -6733,6 +7186,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $UsersTableTable usersTable = $UsersTableTable(this);
   late final $DashboardBannersTableTable dashboardBannersTable =
       $DashboardBannersTableTable(this);
+  late final $LearnersTableTable learnersTable = $LearnersTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -6748,6 +7202,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     appSettingsTable,
     usersTable,
     dashboardBannersTable,
+    learnersTable,
   ];
 }
 
@@ -10044,6 +10499,252 @@ typedef $$DashboardBannersTableTableProcessedTableManager =
       DashboardBannersTableData,
       PrefetchHooks Function()
     >;
+typedef $$LearnersTableTableCreateCompanionBuilder =
+    LearnersTableCompanion Function({
+      required String id,
+      required String name,
+      required String avatar,
+      required double points,
+      required int rank,
+      Value<int> coursesCompleted,
+      Value<int> streakDays,
+      Value<int> rowid,
+    });
+typedef $$LearnersTableTableUpdateCompanionBuilder =
+    LearnersTableCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<String> avatar,
+      Value<double> points,
+      Value<int> rank,
+      Value<int> coursesCompleted,
+      Value<int> streakDays,
+      Value<int> rowid,
+    });
+
+class $$LearnersTableTableFilterComposer
+    extends Composer<_$AppDatabase, $LearnersTableTable> {
+  $$LearnersTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get avatar => $composableBuilder(
+    column: $table.avatar,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get points => $composableBuilder(
+    column: $table.points,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get rank => $composableBuilder(
+    column: $table.rank,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get coursesCompleted => $composableBuilder(
+    column: $table.coursesCompleted,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get streakDays => $composableBuilder(
+    column: $table.streakDays,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$LearnersTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $LearnersTableTable> {
+  $$LearnersTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get avatar => $composableBuilder(
+    column: $table.avatar,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get points => $composableBuilder(
+    column: $table.points,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get rank => $composableBuilder(
+    column: $table.rank,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get coursesCompleted => $composableBuilder(
+    column: $table.coursesCompleted,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get streakDays => $composableBuilder(
+    column: $table.streakDays,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LearnersTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LearnersTableTable> {
+  $$LearnersTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get avatar =>
+      $composableBuilder(column: $table.avatar, builder: (column) => column);
+
+  GeneratedColumn<double> get points =>
+      $composableBuilder(column: $table.points, builder: (column) => column);
+
+  GeneratedColumn<int> get rank =>
+      $composableBuilder(column: $table.rank, builder: (column) => column);
+
+  GeneratedColumn<int> get coursesCompleted => $composableBuilder(
+    column: $table.coursesCompleted,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get streakDays => $composableBuilder(
+    column: $table.streakDays,
+    builder: (column) => column,
+  );
+}
+
+class $$LearnersTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LearnersTableTable,
+          LearnersTableData,
+          $$LearnersTableTableFilterComposer,
+          $$LearnersTableTableOrderingComposer,
+          $$LearnersTableTableAnnotationComposer,
+          $$LearnersTableTableCreateCompanionBuilder,
+          $$LearnersTableTableUpdateCompanionBuilder,
+          (
+            LearnersTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $LearnersTableTable,
+              LearnersTableData
+            >,
+          ),
+          LearnersTableData,
+          PrefetchHooks Function()
+        > {
+  $$LearnersTableTableTableManager(_$AppDatabase db, $LearnersTableTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LearnersTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LearnersTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LearnersTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> avatar = const Value.absent(),
+                Value<double> points = const Value.absent(),
+                Value<int> rank = const Value.absent(),
+                Value<int> coursesCompleted = const Value.absent(),
+                Value<int> streakDays = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LearnersTableCompanion(
+                id: id,
+                name: name,
+                avatar: avatar,
+                points: points,
+                rank: rank,
+                coursesCompleted: coursesCompleted,
+                streakDays: streakDays,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                required String avatar,
+                required double points,
+                required int rank,
+                Value<int> coursesCompleted = const Value.absent(),
+                Value<int> streakDays = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LearnersTableCompanion.insert(
+                id: id,
+                name: name,
+                avatar: avatar,
+                points: points,
+                rank: rank,
+                coursesCompleted: coursesCompleted,
+                streakDays: streakDays,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$LearnersTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LearnersTableTable,
+      LearnersTableData,
+      $$LearnersTableTableFilterComposer,
+      $$LearnersTableTableOrderingComposer,
+      $$LearnersTableTableAnnotationComposer,
+      $$LearnersTableTableCreateCompanionBuilder,
+      $$LearnersTableTableUpdateCompanionBuilder,
+      (
+        LearnersTableData,
+        BaseReferences<_$AppDatabase, $LearnersTableTable, LearnersTableData>,
+      ),
+      LearnersTableData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -10068,4 +10769,6 @@ class $AppDatabaseManager {
       $$UsersTableTableTableManager(_db, _db.usersTable);
   $$DashboardBannersTableTableTableManager get dashboardBannersTable =>
       $$DashboardBannersTableTableTableManager(_db, _db.dashboardBannersTable);
+  $$LearnersTableTableTableManager get learnersTable =>
+      $$LearnersTableTableTableManager(_db, _db.learnersTable);
 }

@@ -64,6 +64,8 @@ abstract class DataSource {
   /// Fetch hero banners for the dashboard from `/api/v3/dashboard/`.
   Future<List<DashboardBannerDto>> getDashboardBanners();
 
+  /// Fetch top learners from `/api/v2.3/leaderboard/`.
+  Future<List<LearnerDto>> getLearners();
 
   /// Fetch the authenticated user's profile.
   Future<UserDto> getProfile();

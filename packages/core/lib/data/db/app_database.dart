@@ -15,6 +15,7 @@ import 'tables/user_progress_table.dart';
 import 'tables/app_settings_table.dart';
 import 'tables/users_table.dart';
 import 'tables/banners_table.dart';
+import 'tables/learners_table.dart';
 import 'package:core/data/data.dart';
 
 part 'app_database.g.dart';
@@ -31,13 +32,14 @@ part 'app_database.g.dart';
     AppSettingsTable,
     UsersTable,
     DashboardBannersTable,
+    LearnersTable,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 12;
+  int get schemaVersion => 13;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -135,6 +137,10 @@ class AppDatabase extends _$AppDatabase {
           if (from < 12) {
             // Version 12 adds Dashboard Banners table for offline caching
             await createTableSafely(dashboardBannersTable);
+          }
+          if (from < 13) {
+            // Version 13 adds Learners table for top learners offline caching
+            await createTableSafely(learnersTable);
           }
         },
       );
@@ -337,6 +343,18 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> upsertDashboardBanners(List<DashboardBannersTableCompanion> rows) =>
       batch((b) => b.insertAllOnConflictUpdate(dashboardBannersTable, rows));
+
+  // ── Learners ──────────────────────────────────────────────────────────────
+
+  Stream<List<LearnersTableData>> watchLearners() =>
+      (select(learnersTable)..orderBy([(t) => OrderingTerm.asc(t.rank)])).watch();
+
+  Future<void> wipeAndInsertLearners(List<LearnersTableCompanion> rows) {
+    return transaction(() async {
+      await delete(learnersTable).go();
+      await batch((b) => b.insertAll(learnersTable, rows));
+    });
+  }
 
   // ── Combined Lookups ──────────────────────────────────────────────────────
 
