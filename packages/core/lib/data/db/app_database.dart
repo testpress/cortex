@@ -14,6 +14,7 @@ import 'tables/forum_comments_table.dart';
 import 'tables/user_progress_table.dart';
 import 'tables/app_settings_table.dart';
 import 'tables/users_table.dart';
+import 'tables/banners_table.dart';
 import 'package:core/data/data.dart';
 
 part 'app_database.g.dart';
@@ -29,13 +30,14 @@ part 'app_database.g.dart';
     UserProgressTable,
     AppSettingsTable,
     UsersTable,
+    DashboardBannersTable,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 11;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -124,11 +126,15 @@ class AppDatabase extends _$AppDatabase {
             await addColumnSafely(lessonsTable, lessonsTable.isUpcoming);
             await addColumnSafely(lessonsTable, lessonsTable.hasAttempts);
           }
-
           if (from < 11) {
             // Version 11 adds scheduled content fields to lessons
             await addColumnSafely(lessonsTable, lessonsTable.isScheduled);
             await addColumnSafely(lessonsTable, lessonsTable.scheduledMessage);
+          }
+
+          if (from < 12) {
+            // Version 12 adds Dashboard Banners table for offline caching
+            await createTableSafely(dashboardBannersTable);
           }
         },
       );
@@ -323,6 +329,14 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> upsertProgress(List<UserProgressTableCompanion> rows) =>
       batch((b) => b.insertAllOnConflictUpdate(userProgressTable, rows));
+
+  // ── Dashboard Banners ─────────────────────────────────────────────────────
+
+  Stream<List<DashboardBannersTableData>> watchDashboardBanners() =>
+      select(dashboardBannersTable).watch();
+
+  Future<void> upsertDashboardBanners(List<DashboardBannersTableCompanion> rows) =>
+      batch((b) => b.insertAllOnConflictUpdate(dashboardBannersTable, rows));
 
   // ── Combined Lookups ──────────────────────────────────────────────────────
 

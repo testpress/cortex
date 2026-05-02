@@ -61,6 +61,9 @@ abstract class DataSource {
   /// Fetch popular tests for the Explore page.
   Future<List<PopularTestDto>> getPopularTests();
 
+  /// Fetch hero banners for the dashboard from `/api/v3/dashboard/`.
+  Future<List<DashboardBannerDto>> getDashboardBanners();
+
 
   /// Fetch the authenticated user's profile.
   Future<UserDto> getProfile();

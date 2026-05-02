@@ -6192,6 +6192,526 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
   }
 }
 
+class $DashboardBannersTableTable extends DashboardBannersTable
+    with TableInfo<$DashboardBannersTableTable, DashboardBannersTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DashboardBannersTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _imageUrlMeta = const VerificationMeta(
+    'imageUrl',
+  );
+  @override
+  late final GeneratedColumn<String> imageUrl = GeneratedColumn<String>(
+    'image_url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _linkMeta = const VerificationMeta('link');
+  @override
+  late final GeneratedColumn<String> link = GeneratedColumn<String>(
+    'link',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bgColorMeta = const VerificationMeta(
+    'bgColor',
+  );
+  @override
+  late final GeneratedColumn<int> bgColor = GeneratedColumn<int>(
+    'bg_color',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _textColorMeta = const VerificationMeta(
+    'textColor',
+  );
+  @override
+  late final GeneratedColumn<int> textColor = GeneratedColumn<int>(
+    'text_color',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _tagMeta = const VerificationMeta('tag');
+  @override
+  late final GeneratedColumn<String> tag = GeneratedColumn<String>(
+    'tag',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    imageUrl,
+    title,
+    link,
+    description,
+    bgColor,
+    textColor,
+    tag,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'dashboard_banners_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DashboardBannersTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('image_url')) {
+      context.handle(
+        _imageUrlMeta,
+        imageUrl.isAcceptableOrUnknown(data['image_url']!, _imageUrlMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_imageUrlMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    }
+    if (data.containsKey('link')) {
+      context.handle(
+        _linkMeta,
+        link.isAcceptableOrUnknown(data['link']!, _linkMeta),
+      );
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('bg_color')) {
+      context.handle(
+        _bgColorMeta,
+        bgColor.isAcceptableOrUnknown(data['bg_color']!, _bgColorMeta),
+      );
+    }
+    if (data.containsKey('text_color')) {
+      context.handle(
+        _textColorMeta,
+        textColor.isAcceptableOrUnknown(data['text_color']!, _textColorMeta),
+      );
+    }
+    if (data.containsKey('tag')) {
+      context.handle(
+        _tagMeta,
+        tag.isAcceptableOrUnknown(data['tag']!, _tagMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DashboardBannersTableData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DashboardBannersTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      imageUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}image_url'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      ),
+      link: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}link'],
+      ),
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      ),
+      bgColor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}bg_color'],
+      ),
+      textColor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}text_color'],
+      ),
+      tag: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tag'],
+      ),
+    );
+  }
+
+  @override
+  $DashboardBannersTableTable createAlias(String alias) {
+    return $DashboardBannersTableTable(attachedDatabase, alias);
+  }
+}
+
+class DashboardBannersTableData extends DataClass
+    implements Insertable<DashboardBannersTableData> {
+  final String id;
+  final String imageUrl;
+  final String? title;
+  final String? link;
+  final String? description;
+  final int? bgColor;
+  final int? textColor;
+  final String? tag;
+  const DashboardBannersTableData({
+    required this.id,
+    required this.imageUrl,
+    this.title,
+    this.link,
+    this.description,
+    this.bgColor,
+    this.textColor,
+    this.tag,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['image_url'] = Variable<String>(imageUrl);
+    if (!nullToAbsent || title != null) {
+      map['title'] = Variable<String>(title);
+    }
+    if (!nullToAbsent || link != null) {
+      map['link'] = Variable<String>(link);
+    }
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    if (!nullToAbsent || bgColor != null) {
+      map['bg_color'] = Variable<int>(bgColor);
+    }
+    if (!nullToAbsent || textColor != null) {
+      map['text_color'] = Variable<int>(textColor);
+    }
+    if (!nullToAbsent || tag != null) {
+      map['tag'] = Variable<String>(tag);
+    }
+    return map;
+  }
+
+  DashboardBannersTableCompanion toCompanion(bool nullToAbsent) {
+    return DashboardBannersTableCompanion(
+      id: Value(id),
+      imageUrl: Value(imageUrl),
+      title: title == null && nullToAbsent
+          ? const Value.absent()
+          : Value(title),
+      link: link == null && nullToAbsent ? const Value.absent() : Value(link),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      bgColor: bgColor == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bgColor),
+      textColor: textColor == null && nullToAbsent
+          ? const Value.absent()
+          : Value(textColor),
+      tag: tag == null && nullToAbsent ? const Value.absent() : Value(tag),
+    );
+  }
+
+  factory DashboardBannersTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DashboardBannersTableData(
+      id: serializer.fromJson<String>(json['id']),
+      imageUrl: serializer.fromJson<String>(json['imageUrl']),
+      title: serializer.fromJson<String?>(json['title']),
+      link: serializer.fromJson<String?>(json['link']),
+      description: serializer.fromJson<String?>(json['description']),
+      bgColor: serializer.fromJson<int?>(json['bgColor']),
+      textColor: serializer.fromJson<int?>(json['textColor']),
+      tag: serializer.fromJson<String?>(json['tag']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'imageUrl': serializer.toJson<String>(imageUrl),
+      'title': serializer.toJson<String?>(title),
+      'link': serializer.toJson<String?>(link),
+      'description': serializer.toJson<String?>(description),
+      'bgColor': serializer.toJson<int?>(bgColor),
+      'textColor': serializer.toJson<int?>(textColor),
+      'tag': serializer.toJson<String?>(tag),
+    };
+  }
+
+  DashboardBannersTableData copyWith({
+    String? id,
+    String? imageUrl,
+    Value<String?> title = const Value.absent(),
+    Value<String?> link = const Value.absent(),
+    Value<String?> description = const Value.absent(),
+    Value<int?> bgColor = const Value.absent(),
+    Value<int?> textColor = const Value.absent(),
+    Value<String?> tag = const Value.absent(),
+  }) => DashboardBannersTableData(
+    id: id ?? this.id,
+    imageUrl: imageUrl ?? this.imageUrl,
+    title: title.present ? title.value : this.title,
+    link: link.present ? link.value : this.link,
+    description: description.present ? description.value : this.description,
+    bgColor: bgColor.present ? bgColor.value : this.bgColor,
+    textColor: textColor.present ? textColor.value : this.textColor,
+    tag: tag.present ? tag.value : this.tag,
+  );
+  DashboardBannersTableData copyWithCompanion(
+    DashboardBannersTableCompanion data,
+  ) {
+    return DashboardBannersTableData(
+      id: data.id.present ? data.id.value : this.id,
+      imageUrl: data.imageUrl.present ? data.imageUrl.value : this.imageUrl,
+      title: data.title.present ? data.title.value : this.title,
+      link: data.link.present ? data.link.value : this.link,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      bgColor: data.bgColor.present ? data.bgColor.value : this.bgColor,
+      textColor: data.textColor.present ? data.textColor.value : this.textColor,
+      tag: data.tag.present ? data.tag.value : this.tag,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DashboardBannersTableData(')
+          ..write('id: $id, ')
+          ..write('imageUrl: $imageUrl, ')
+          ..write('title: $title, ')
+          ..write('link: $link, ')
+          ..write('description: $description, ')
+          ..write('bgColor: $bgColor, ')
+          ..write('textColor: $textColor, ')
+          ..write('tag: $tag')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    imageUrl,
+    title,
+    link,
+    description,
+    bgColor,
+    textColor,
+    tag,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DashboardBannersTableData &&
+          other.id == this.id &&
+          other.imageUrl == this.imageUrl &&
+          other.title == this.title &&
+          other.link == this.link &&
+          other.description == this.description &&
+          other.bgColor == this.bgColor &&
+          other.textColor == this.textColor &&
+          other.tag == this.tag);
+}
+
+class DashboardBannersTableCompanion
+    extends UpdateCompanion<DashboardBannersTableData> {
+  final Value<String> id;
+  final Value<String> imageUrl;
+  final Value<String?> title;
+  final Value<String?> link;
+  final Value<String?> description;
+  final Value<int?> bgColor;
+  final Value<int?> textColor;
+  final Value<String?> tag;
+  final Value<int> rowid;
+  const DashboardBannersTableCompanion({
+    this.id = const Value.absent(),
+    this.imageUrl = const Value.absent(),
+    this.title = const Value.absent(),
+    this.link = const Value.absent(),
+    this.description = const Value.absent(),
+    this.bgColor = const Value.absent(),
+    this.textColor = const Value.absent(),
+    this.tag = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DashboardBannersTableCompanion.insert({
+    required String id,
+    required String imageUrl,
+    this.title = const Value.absent(),
+    this.link = const Value.absent(),
+    this.description = const Value.absent(),
+    this.bgColor = const Value.absent(),
+    this.textColor = const Value.absent(),
+    this.tag = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       imageUrl = Value(imageUrl);
+  static Insertable<DashboardBannersTableData> custom({
+    Expression<String>? id,
+    Expression<String>? imageUrl,
+    Expression<String>? title,
+    Expression<String>? link,
+    Expression<String>? description,
+    Expression<int>? bgColor,
+    Expression<int>? textColor,
+    Expression<String>? tag,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (imageUrl != null) 'image_url': imageUrl,
+      if (title != null) 'title': title,
+      if (link != null) 'link': link,
+      if (description != null) 'description': description,
+      if (bgColor != null) 'bg_color': bgColor,
+      if (textColor != null) 'text_color': textColor,
+      if (tag != null) 'tag': tag,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DashboardBannersTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? imageUrl,
+    Value<String?>? title,
+    Value<String?>? link,
+    Value<String?>? description,
+    Value<int?>? bgColor,
+    Value<int?>? textColor,
+    Value<String?>? tag,
+    Value<int>? rowid,
+  }) {
+    return DashboardBannersTableCompanion(
+      id: id ?? this.id,
+      imageUrl: imageUrl ?? this.imageUrl,
+      title: title ?? this.title,
+      link: link ?? this.link,
+      description: description ?? this.description,
+      bgColor: bgColor ?? this.bgColor,
+      textColor: textColor ?? this.textColor,
+      tag: tag ?? this.tag,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (imageUrl.present) {
+      map['image_url'] = Variable<String>(imageUrl.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (link.present) {
+      map['link'] = Variable<String>(link.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (bgColor.present) {
+      map['bg_color'] = Variable<int>(bgColor.value);
+    }
+    if (textColor.present) {
+      map['text_color'] = Variable<int>(textColor.value);
+    }
+    if (tag.present) {
+      map['tag'] = Variable<String>(tag.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DashboardBannersTableCompanion(')
+          ..write('id: $id, ')
+          ..write('imageUrl: $imageUrl, ')
+          ..write('title: $title, ')
+          ..write('link: $link, ')
+          ..write('description: $description, ')
+          ..write('bgColor: $bgColor, ')
+          ..write('textColor: $textColor, ')
+          ..write('tag: $tag, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -6211,6 +6731,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this,
   );
   late final $UsersTableTable usersTable = $UsersTableTable(this);
+  late final $DashboardBannersTableTable dashboardBannersTable =
+      $DashboardBannersTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -6225,6 +6747,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     userProgressTable,
     appSettingsTable,
     usersTable,
+    dashboardBannersTable,
   ];
 }
 
@@ -9243,6 +9766,284 @@ typedef $$UsersTableTableProcessedTableManager =
       UsersTableData,
       PrefetchHooks Function()
     >;
+typedef $$DashboardBannersTableTableCreateCompanionBuilder =
+    DashboardBannersTableCompanion Function({
+      required String id,
+      required String imageUrl,
+      Value<String?> title,
+      Value<String?> link,
+      Value<String?> description,
+      Value<int?> bgColor,
+      Value<int?> textColor,
+      Value<String?> tag,
+      Value<int> rowid,
+    });
+typedef $$DashboardBannersTableTableUpdateCompanionBuilder =
+    DashboardBannersTableCompanion Function({
+      Value<String> id,
+      Value<String> imageUrl,
+      Value<String?> title,
+      Value<String?> link,
+      Value<String?> description,
+      Value<int?> bgColor,
+      Value<int?> textColor,
+      Value<String?> tag,
+      Value<int> rowid,
+    });
+
+class $$DashboardBannersTableTableFilterComposer
+    extends Composer<_$AppDatabase, $DashboardBannersTableTable> {
+  $$DashboardBannersTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get imageUrl => $composableBuilder(
+    column: $table.imageUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get link => $composableBuilder(
+    column: $table.link,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get bgColor => $composableBuilder(
+    column: $table.bgColor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get textColor => $composableBuilder(
+    column: $table.textColor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tag => $composableBuilder(
+    column: $table.tag,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DashboardBannersTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $DashboardBannersTableTable> {
+  $$DashboardBannersTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get imageUrl => $composableBuilder(
+    column: $table.imageUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get link => $composableBuilder(
+    column: $table.link,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get bgColor => $composableBuilder(
+    column: $table.bgColor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get textColor => $composableBuilder(
+    column: $table.textColor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tag => $composableBuilder(
+    column: $table.tag,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DashboardBannersTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DashboardBannersTableTable> {
+  $$DashboardBannersTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get imageUrl =>
+      $composableBuilder(column: $table.imageUrl, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get link =>
+      $composableBuilder(column: $table.link, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get bgColor =>
+      $composableBuilder(column: $table.bgColor, builder: (column) => column);
+
+  GeneratedColumn<int> get textColor =>
+      $composableBuilder(column: $table.textColor, builder: (column) => column);
+
+  GeneratedColumn<String> get tag =>
+      $composableBuilder(column: $table.tag, builder: (column) => column);
+}
+
+class $$DashboardBannersTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DashboardBannersTableTable,
+          DashboardBannersTableData,
+          $$DashboardBannersTableTableFilterComposer,
+          $$DashboardBannersTableTableOrderingComposer,
+          $$DashboardBannersTableTableAnnotationComposer,
+          $$DashboardBannersTableTableCreateCompanionBuilder,
+          $$DashboardBannersTableTableUpdateCompanionBuilder,
+          (
+            DashboardBannersTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $DashboardBannersTableTable,
+              DashboardBannersTableData
+            >,
+          ),
+          DashboardBannersTableData,
+          PrefetchHooks Function()
+        > {
+  $$DashboardBannersTableTableTableManager(
+    _$AppDatabase db,
+    $DashboardBannersTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DashboardBannersTableTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$DashboardBannersTableTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$DashboardBannersTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> imageUrl = const Value.absent(),
+                Value<String?> title = const Value.absent(),
+                Value<String?> link = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<int?> bgColor = const Value.absent(),
+                Value<int?> textColor = const Value.absent(),
+                Value<String?> tag = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DashboardBannersTableCompanion(
+                id: id,
+                imageUrl: imageUrl,
+                title: title,
+                link: link,
+                description: description,
+                bgColor: bgColor,
+                textColor: textColor,
+                tag: tag,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String imageUrl,
+                Value<String?> title = const Value.absent(),
+                Value<String?> link = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<int?> bgColor = const Value.absent(),
+                Value<int?> textColor = const Value.absent(),
+                Value<String?> tag = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DashboardBannersTableCompanion.insert(
+                id: id,
+                imageUrl: imageUrl,
+                title: title,
+                link: link,
+                description: description,
+                bgColor: bgColor,
+                textColor: textColor,
+                tag: tag,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DashboardBannersTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DashboardBannersTableTable,
+      DashboardBannersTableData,
+      $$DashboardBannersTableTableFilterComposer,
+      $$DashboardBannersTableTableOrderingComposer,
+      $$DashboardBannersTableTableAnnotationComposer,
+      $$DashboardBannersTableTableCreateCompanionBuilder,
+      $$DashboardBannersTableTableUpdateCompanionBuilder,
+      (
+        DashboardBannersTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $DashboardBannersTableTable,
+          DashboardBannersTableData
+        >,
+      ),
+      DashboardBannersTableData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -9265,4 +10066,6 @@ class $AppDatabaseManager {
       $$AppSettingsTableTableTableManager(_db, _db.appSettingsTable);
   $$UsersTableTableTableManager get usersTable =>
       $$UsersTableTableTableManager(_db, _db.usersTable);
+  $$DashboardBannersTableTableTableManager get dashboardBannersTable =>
+      $$DashboardBannersTableTableTableManager(_db, _db.dashboardBannersTable);
 }

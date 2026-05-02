@@ -1,7 +1,6 @@
 import 'package:core/data/data.dart';
 import '../models/assignment_dto.dart';
 import '../models/learner_dto.dart';
-import '../models/dashboard_banner_dto.dart';
 import '../models/quick_shortcut_dto.dart';
 
 // SHARED MOCK DATA (mockCurrentUser, mockStudyMomentum) now lives in the 'data' package.

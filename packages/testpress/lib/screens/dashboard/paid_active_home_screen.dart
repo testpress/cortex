@@ -303,20 +303,21 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     );
   }
 
-  HeroBanner _mapHeroBanner(DashboardBannerDto d) {
+  HeroBanner _mapHeroBanner(dto.DashboardBannerDto d) {
     return HeroBanner(
       id: d.id,
       imageUrl: d.imageUrl,
-      title: d.title,
+      title: d.title ?? '',
       link: d.link ?? '#',
     );
   }
 
-  AnnouncementBanner _mapPromotionBanner(DashboardBannerDto d) {
+  AnnouncementBanner _mapPromotionBanner(dto.DashboardBannerDto d) {
     return AnnouncementBanner(
       id: d.id,
-      title: d.title,
+      title: d.title ?? '',
       description: d.description ?? '',
+      tag: d.tag,
       bgColor: Color(d.bgColor ?? 0xFFFFFFFF),
       textColor: Color(d.textColor ?? 0xFF000000),
     );

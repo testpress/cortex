@@ -188,6 +188,20 @@ class HttpDataSource implements DataSource {
   @override
   Future<List<PopularTestDto>> getPopularTests() async => mockPopularTests;
 
+  @override
+  Future<List<DashboardBannerDto>> getDashboardBanners() async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.bannerAds),
+      fromJson: (data) {
+        final results = data['results'] as List<dynamic>?;
+        return results
+                ?.map((e) => DashboardBannerDto.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            [];
+      },
+    );
+  }
+
 
 
   @override
