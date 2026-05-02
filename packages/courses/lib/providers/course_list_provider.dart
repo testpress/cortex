@@ -37,7 +37,7 @@ class CourseList extends _$CourseList {
 
     if (search.query.isEmpty) {
       final repo = await ref.watch(courseRepositoryProvider.future);
-      yield* repo.watchCourses().map(
+      yield* repo.watchStudyCourses().map(
             (rows) => rows.map((row) => repo.rowToCourseDto(row)).toList(),
           );
     } else {
@@ -99,6 +99,7 @@ class CourseList extends _$CourseList {
       final repo = await ref.read(courseRepositoryProvider.future);
       final response = await repo.refreshCourses(
         page: _paginationTracker.nextPage,
+        tags: 'classes',
       );
 
       // Explicit logic to mark completeness if no results
