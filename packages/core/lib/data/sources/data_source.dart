@@ -73,6 +73,28 @@ abstract class DataSource {
 
   /// Fetch the resume learning feed from `/api/v2.4/resume/`.
   Future<DashboardContentsDto> getResumeLearningFeed(DashboardSectionType sectionType);
+  // ── Exams ───────────────────────────────────────────────────────────────
+
+  /// Fetch full metadata for an exam from `/api/v3/exams/{slug}/`.
+  Future<ExamDto> getExam(String slug);
+
+  /// Create an exam attempt from `/api/v3/attempts/{id}/`.
+  Future<AttemptDto> createAttempt(String attemptsUrl);
+
+  /// Create a course-linked content attempt from `/api/v3/contents/{id}/attempts/`.
+  Future<AttemptDto> createContentAttempt(String contentAttemptsUrl);
+
+  /// Fetch questions for an attempt from `/api/v3/attempts/{id}/questions/`.
+  Future<List<QuestionDto>> getQuestions(String questionsUrl);
+
+  /// Send a heartbeat to maintain the attempt from `/api/v3/attempts/{id}/heartbeat/`.
+  Future<AttemptDto> sendHeartbeat(String heartbeatUrl);
+
+  /// Submit an answer for a question from `/api/v3/attempts/{id}/questions/{id}/answer/`.
+  Future<void> submitAnswer(String answerUrl, AnswerDto answer);
+
+  /// End the exam attempt from `/api/v3/attempts/{id}/end/`.
+  Future<AttemptDto> endExam(String endUrl);
 
   /// Fetch the recently completed feed from `/api/v2.4/completed/`.
   Future<DashboardContentsDto> getRecentlyCompletedFeed(DashboardSectionType sectionType);
