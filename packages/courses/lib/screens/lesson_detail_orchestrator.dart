@@ -104,7 +104,6 @@ class _LessonDetailOrchestratorState
     final onPrevious = widget.onPrevious;
     final design = Design.of(context);
 
-    // Priority 1: Custom Builder
     if (widget.customBuilder != null) {
       final customWidget = widget.customBuilder!(context, lesson);
       if (customWidget is! SizedBox) {
@@ -113,7 +112,7 @@ class _LessonDetailOrchestratorState
     }
 
     // New: Show loader if we have some data from the list but not enough to render the viewer yet
-    if (!lesson.isComplete && lesson.type != LessonType.liveStream) {
+    if (!lesson.isComplete) {
       return const Center(child: AppLoadingIndicator());
     }
 
