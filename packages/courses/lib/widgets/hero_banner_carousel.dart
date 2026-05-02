@@ -101,7 +101,7 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
                         banner.imageUrl.isNotEmpty
                             ? CachedNetworkImage(
                                 imageUrl: banner.imageUrl,
-                                fit: BoxFit.fitWidth,
+                                fit: BoxFit.cover,
                                 alignment: Alignment.topCenter,
                                 placeholder: (context, url) => Container(
                                   color: Color.lerp(

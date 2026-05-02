@@ -91,8 +91,6 @@ class HttpDataSource implements DataSource {
         nextUrl = next;
       }
     }
-
-    print('DEBUG_SYNC: Final Course contents ($courseId) -> Total Lessons: ${allLessons.length}, Total Chapters: ${allChapters.length}');
     
     return CourseCurriculumDto(
       lessons: allLessons,
@@ -196,6 +194,7 @@ class HttpDataSource implements DataSource {
         final results = data['results'] as List<dynamic>?;
         return results
                 ?.map((e) => DashboardBannerDto.fromJson(e as Map<String, dynamic>))
+                .whereType<DashboardBannerDto>()
                 .toList() ??
             [];
       },
