@@ -16,11 +16,15 @@ class ChaptersListPage extends ConsumerStatefulWidget {
     required this.courseId,
     this.parentId,
     this.onBack,
+    this.showFilters = true,
+    this.basePath = '/study',
   });
 
   final String courseId;
   final String? parentId;
   final VoidCallback? onBack;
+  final bool showFilters;
+  final String basePath;
 
   @override
   ConsumerState<ChaptersListPage> createState() => _ChaptersListPageState();
@@ -29,26 +33,57 @@ class ChaptersListPage extends ConsumerStatefulWidget {
 class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
   CurriculumFilter _activeFilter = CurriculumFilter.all;
 
+  void _onFilterChanged(CurriculumFilter filter) {
+    setState(() => _activeFilter = filter);
+
+    // If the user selects a specific content filter (not "All"), 
+    // trigger the Master Sync to ensure we have all lessons across the course.
+    if (filter != CurriculumFilter.all) {
+      ref.read(courseRepositoryProvider.future).then((repo) async {
+        repo.refreshCourseContents(widget.courseId).ignore();
+        
+        // Also trigger recursive sync for immediate sub-chapters to show nested content faster
+        final chapters = await repo.watchChapters(widget.courseId, parentId: widget.parentId).first;
+        for (var chapter in chapters) {
+          if (!chapter.isLeaf) {
+            repo.syncChapterContents(widget.courseId, chapter.id).ignore();
+          }
+        }
+      });
+    }
+  }
+
+  Future<void> _syncCurrentLevelRecursive() async {
+    final repo = await ref.read(courseRepositoryProvider.future);
+    
+    // 1. Sync current level chapters
+    await repo.refreshChapters(widget.courseId, parentId: widget.parentId);
+    
+    // 2. Sync lessons for this chapter
+    if (widget.parentId != null) {
+      repo.syncChapterContents(widget.courseId, widget.parentId!).ignore();
+    }
+
+    // 3. Sync lessons for all immediate sub-chapters (one level deep recursion)
+    // This makes nested videos visible immediately when filtering at the parent level.
+    final subChapters = await repo.watchChapters(widget.courseId, parentId: widget.parentId).first;
+    for (var chapter in subChapters) {
+      if (!chapter.isLeaf) {
+        repo.syncChapterContents(widget.courseId, chapter.id).ignore();
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    // Refresh course curriculum when navigating to the chapters list.
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final repo = await ref.read(courseRepositoryProvider.future);
+      _syncCurrentLevelRecursive();
       
-      // Always refresh the current view level (folders/chapters).
-      repo.refreshChapters(widget.courseId, parentId: widget.parentId).ignore();
-
-      // ONLY trigger the heavy full-course Master Sync if we are at the Root.
-      // Sub-pages should rely on the background update already in progress or completed.
       if (widget.parentId == null) {
-        repo.refreshCourseContents(widget.courseId).ignore();
+        // Master sync is deferred but we refresh root chapters
       }
     });
-  }
-
-  void _onFilterChanged(CurriculumFilter filter) {
-    setState(() => _activeFilter = filter);
   }
 
   @override
@@ -64,6 +99,8 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
       allCourseLessonsProvider(widget.courseId),
     );
     final allKnownChaptersAsync = ref.watch(allChaptersProvider(widget.courseId));
+    final isSyncingAsync = ref.watch(courseSyncStatusProvider(widget.courseId));
+    final isSyncing = isSyncingAsync.valueOrNull ?? false;
 
     return Container(
       color: design.colors.canvas,
@@ -137,13 +174,14 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                       chapterCount: chapters.length,
                       onBack: widget.onBack,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: ChaptersFilterTabBar(
-                        activeFilter: _activeFilter,
-                        onFilterChanged: _onFilterChanged,
+                    if (widget.showFilters)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: ChaptersFilterTabBar(
+                          activeFilter: _activeFilter,
+                          onFilterChanged: _onFilterChanged,
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),
@@ -166,17 +204,32 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                             if (!chapter.isLeaf) {
                               // If parent, drill down (recursive navigation)
                               context.push(
-                                '/study/course/${widget.courseId}/chapters?parentId=${chapter.id}',
+                                '${widget.basePath}/course/${widget.courseId}/chapters?parentId=${chapter.id}',
                               );
                             } else {
                               // If leaf, go to detail (lessons)
                               context.push(
-                                '/study/course/${widget.courseId}/chapters/${chapter.id}',
+                                '${widget.basePath}/course/${widget.courseId}/chapters/${chapter.id}',
                               );
                             }
                           },
                         );
                       })
+                    else if ((allCurriculumAsync.isLoading || isSyncing) && filteredLessons.isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 40),
+                        child: Center(child: AppLoadingIndicator()),
+                      )
+                    else if (filteredLessons.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 40),
+                        child: Center(
+                          child: AppText.body(
+                            'No ${widget.showFilters ? _activeFilter.name : "exam"}s found.',
+                            color: design.colors.textSecondary,
+                          ),
+                        ),
+                      )
                     else
                       ...filteredLessons.map((lesson) {
                         return LessonListItem(
@@ -189,10 +242,10 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                               LessonType.embedContent ||
                               LessonType.liveStream ||
                               LessonType.attachment =>
-                                '/study/lesson/${lesson.id}',
+                                '${widget.basePath}/lesson/${lesson.id}',
                               LessonType.assessment =>
-                                '/study/assessment/${lesson.id}',
-                              LessonType.test => '/study/test/${lesson.id}',
+                                '${widget.basePath}/assessment/${lesson.id}',
+                              LessonType.test => '${widget.basePath}/test/${lesson.id}',
                               LessonType.unknown => null,
                             };
                             if (route != null) {
@@ -222,9 +275,17 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
   ) {
     if (filter == CurriculumFilter.all) return lessons;
 
+    if (filter == CurriculumFilter.pdf) {
+      // "Lessons" filter: Show everything except specialized categories
+      return lessons.where((l) => 
+        l.type != LessonType.video && 
+        l.type != LessonType.assessment && 
+        l.type != LessonType.test
+      ).toList();
+    }
+
     final LessonType targetType = switch (filter) {
       CurriculumFilter.video => LessonType.video,
-      CurriculumFilter.pdf => LessonType.pdf,
       CurriculumFilter.assessment => LessonType.assessment,
       CurriculumFilter.test => LessonType.test,
       _ => throw UnimplementedError('Filter type $filter is not supported.'),

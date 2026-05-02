@@ -157,6 +157,18 @@ class $CoursesTableTable extends CoursesTable
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _orderIndexMeta = const VerificationMeta(
+    'orderIndex',
+  );
+  @override
+  late final GeneratedColumn<int> orderIndex = GeneratedColumn<int>(
+    'order_index',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _isChaptersSyncedMeta = const VerificationMeta(
     'isChaptersSynced',
   );
@@ -188,6 +200,7 @@ class $CoursesTableTable extends CoursesTable
     allowedDevices,
     tagIds,
     examsCount,
+    orderIndex,
     isChaptersSynced,
   ];
   @override
@@ -313,6 +326,12 @@ class $CoursesTableTable extends CoursesTable
         examsCount.isAcceptableOrUnknown(data['exams_count']!, _examsCountMeta),
       );
     }
+    if (data.containsKey('order_index')) {
+      context.handle(
+        _orderIndexMeta,
+        orderIndex.isAcceptableOrUnknown(data['order_index']!, _orderIndexMeta),
+      );
+    }
     if (data.containsKey('is_chapters_synced')) {
       context.handle(
         _isChaptersSyncedMeta,
@@ -387,6 +406,10 @@ class $CoursesTableTable extends CoursesTable
         DriftSqlType.int,
         data['${effectivePrefix}exams_count'],
       )!,
+      orderIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}order_index'],
+      )!,
       isChaptersSynced: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_chapters_synced'],
@@ -416,6 +439,7 @@ class CoursesTableData extends DataClass
   final String? allowedDevices;
   final String? tagIds;
   final int examsCount;
+  final int orderIndex;
   final bool isChaptersSynced;
   const CoursesTableData({
     required this.id,
@@ -432,6 +456,7 @@ class CoursesTableData extends DataClass
     this.allowedDevices,
     this.tagIds,
     required this.examsCount,
+    required this.orderIndex,
     required this.isChaptersSynced,
   });
   @override
@@ -459,6 +484,7 @@ class CoursesTableData extends DataClass
       map['tag_ids'] = Variable<String>(tagIds);
     }
     map['exams_count'] = Variable<int>(examsCount);
+    map['order_index'] = Variable<int>(orderIndex);
     map['is_chapters_synced'] = Variable<bool>(isChaptersSynced);
     return map;
   }
@@ -485,6 +511,7 @@ class CoursesTableData extends DataClass
           ? const Value.absent()
           : Value(tagIds),
       examsCount: Value(examsCount),
+      orderIndex: Value(orderIndex),
       isChaptersSynced: Value(isChaptersSynced),
     );
   }
@@ -509,6 +536,7 @@ class CoursesTableData extends DataClass
       allowedDevices: serializer.fromJson<String?>(json['allowedDevices']),
       tagIds: serializer.fromJson<String?>(json['tagIds']),
       examsCount: serializer.fromJson<int>(json['examsCount']),
+      orderIndex: serializer.fromJson<int>(json['orderIndex']),
       isChaptersSynced: serializer.fromJson<bool>(json['isChaptersSynced']),
     );
   }
@@ -530,6 +558,7 @@ class CoursesTableData extends DataClass
       'allowedDevices': serializer.toJson<String?>(allowedDevices),
       'tagIds': serializer.toJson<String?>(tagIds),
       'examsCount': serializer.toJson<int>(examsCount),
+      'orderIndex': serializer.toJson<int>(orderIndex),
       'isChaptersSynced': serializer.toJson<bool>(isChaptersSynced),
     };
   }
@@ -549,6 +578,7 @@ class CoursesTableData extends DataClass
     Value<String?> allowedDevices = const Value.absent(),
     Value<String?> tagIds = const Value.absent(),
     int? examsCount,
+    int? orderIndex,
     bool? isChaptersSynced,
   }) => CoursesTableData(
     id: id ?? this.id,
@@ -567,6 +597,7 @@ class CoursesTableData extends DataClass
         : this.allowedDevices,
     tagIds: tagIds.present ? tagIds.value : this.tagIds,
     examsCount: examsCount ?? this.examsCount,
+    orderIndex: orderIndex ?? this.orderIndex,
     isChaptersSynced: isChaptersSynced ?? this.isChaptersSynced,
   );
   CoursesTableData copyWithCompanion(CoursesTableCompanion data) {
@@ -601,6 +632,9 @@ class CoursesTableData extends DataClass
       examsCount: data.examsCount.present
           ? data.examsCount.value
           : this.examsCount,
+      orderIndex: data.orderIndex.present
+          ? data.orderIndex.value
+          : this.orderIndex,
       isChaptersSynced: data.isChaptersSynced.present
           ? data.isChaptersSynced.value
           : this.isChaptersSynced,
@@ -624,6 +658,7 @@ class CoursesTableData extends DataClass
           ..write('allowedDevices: $allowedDevices, ')
           ..write('tagIds: $tagIds, ')
           ..write('examsCount: $examsCount, ')
+          ..write('orderIndex: $orderIndex, ')
           ..write('isChaptersSynced: $isChaptersSynced')
           ..write(')'))
         .toString();
@@ -645,6 +680,7 @@ class CoursesTableData extends DataClass
     allowedDevices,
     tagIds,
     examsCount,
+    orderIndex,
     isChaptersSynced,
   );
   @override
@@ -665,6 +701,7 @@ class CoursesTableData extends DataClass
           other.allowedDevices == this.allowedDevices &&
           other.tagIds == this.tagIds &&
           other.examsCount == this.examsCount &&
+          other.orderIndex == this.orderIndex &&
           other.isChaptersSynced == this.isChaptersSynced);
 }
 
@@ -683,6 +720,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
   final Value<String?> allowedDevices;
   final Value<String?> tagIds;
   final Value<int> examsCount;
+  final Value<int> orderIndex;
   final Value<bool> isChaptersSynced;
   final Value<int> rowid;
   const CoursesTableCompanion({
@@ -700,6 +738,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     this.allowedDevices = const Value.absent(),
     this.tagIds = const Value.absent(),
     this.examsCount = const Value.absent(),
+    this.orderIndex = const Value.absent(),
     this.isChaptersSynced = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -718,6 +757,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     this.allowedDevices = const Value.absent(),
     this.tagIds = const Value.absent(),
     this.examsCount = const Value.absent(),
+    this.orderIndex = const Value.absent(),
     this.isChaptersSynced = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -741,6 +781,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     Expression<String>? allowedDevices,
     Expression<String>? tagIds,
     Expression<int>? examsCount,
+    Expression<int>? orderIndex,
     Expression<bool>? isChaptersSynced,
     Expression<int>? rowid,
   }) {
@@ -759,6 +800,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
       if (allowedDevices != null) 'allowed_devices': allowedDevices,
       if (tagIds != null) 'tag_ids': tagIds,
       if (examsCount != null) 'exams_count': examsCount,
+      if (orderIndex != null) 'order_index': orderIndex,
       if (isChaptersSynced != null) 'is_chapters_synced': isChaptersSynced,
       if (rowid != null) 'rowid': rowid,
     });
@@ -779,6 +821,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     Value<String?>? allowedDevices,
     Value<String?>? tagIds,
     Value<int>? examsCount,
+    Value<int>? orderIndex,
     Value<bool>? isChaptersSynced,
     Value<int>? rowid,
   }) {
@@ -797,6 +840,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
       allowedDevices: allowedDevices ?? this.allowedDevices,
       tagIds: tagIds ?? this.tagIds,
       examsCount: examsCount ?? this.examsCount,
+      orderIndex: orderIndex ?? this.orderIndex,
       isChaptersSynced: isChaptersSynced ?? this.isChaptersSynced,
       rowid: rowid ?? this.rowid,
     );
@@ -847,6 +891,9 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     if (examsCount.present) {
       map['exams_count'] = Variable<int>(examsCount.value);
     }
+    if (orderIndex.present) {
+      map['order_index'] = Variable<int>(orderIndex.value);
+    }
     if (isChaptersSynced.present) {
       map['is_chapters_synced'] = Variable<bool>(isChaptersSynced.value);
     }
@@ -873,6 +920,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
           ..write('allowedDevices: $allowedDevices, ')
           ..write('tagIds: $tagIds, ')
           ..write('examsCount: $examsCount, ')
+          ..write('orderIndex: $orderIndex, ')
           ..write('isChaptersSynced: $isChaptersSynced, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -6767,6 +6815,7 @@ typedef $$CoursesTableTableCreateCompanionBuilder =
       Value<String?> allowedDevices,
       Value<String?> tagIds,
       Value<int> examsCount,
+      Value<int> orderIndex,
       Value<bool> isChaptersSynced,
       Value<int> rowid,
     });
@@ -6786,6 +6835,7 @@ typedef $$CoursesTableTableUpdateCompanionBuilder =
       Value<String?> allowedDevices,
       Value<String?> tagIds,
       Value<int> examsCount,
+      Value<int> orderIndex,
       Value<bool> isChaptersSynced,
       Value<int> rowid,
     });
@@ -6866,6 +6916,11 @@ class $$CoursesTableTableFilterComposer
 
   ColumnFilters<int> get examsCount => $composableBuilder(
     column: $table.examsCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get orderIndex => $composableBuilder(
+    column: $table.orderIndex,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6954,6 +7009,11 @@ class $$CoursesTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get orderIndex => $composableBuilder(
+    column: $table.orderIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get isChaptersSynced => $composableBuilder(
     column: $table.isChaptersSynced,
     builder: (column) => ColumnOrderings(column),
@@ -7027,6 +7087,11 @@ class $$CoursesTableTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<int> get orderIndex => $composableBuilder(
+    column: $table.orderIndex,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<bool> get isChaptersSynced => $composableBuilder(
     column: $table.isChaptersSynced,
     builder: (column) => column,
@@ -7078,6 +7143,7 @@ class $$CoursesTableTableTableManager
                 Value<String?> allowedDevices = const Value.absent(),
                 Value<String?> tagIds = const Value.absent(),
                 Value<int> examsCount = const Value.absent(),
+                Value<int> orderIndex = const Value.absent(),
                 Value<bool> isChaptersSynced = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => CoursesTableCompanion(
@@ -7095,6 +7161,7 @@ class $$CoursesTableTableTableManager
                 allowedDevices: allowedDevices,
                 tagIds: tagIds,
                 examsCount: examsCount,
+                orderIndex: orderIndex,
                 isChaptersSynced: isChaptersSynced,
                 rowid: rowid,
               ),
@@ -7114,6 +7181,7 @@ class $$CoursesTableTableTableManager
                 Value<String?> allowedDevices = const Value.absent(),
                 Value<String?> tagIds = const Value.absent(),
                 Value<int> examsCount = const Value.absent(),
+                Value<int> orderIndex = const Value.absent(),
                 Value<bool> isChaptersSynced = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => CoursesTableCompanion.insert(
@@ -7131,6 +7199,7 @@ class $$CoursesTableTableTableManager
                 allowedDevices: allowedDevices,
                 tagIds: tagIds,
                 examsCount: examsCount,
+                orderIndex: orderIndex,
                 isChaptersSynced: isChaptersSynced,
                 rowid: rowid,
               ),

@@ -19,6 +19,7 @@ class HttpDataSource implements DataSource {
     int page = 1,
     int pageSize = 10,
     String? search,
+    dynamic tags,
   }) async {
     return performNetworkRequest(
       _dio.get(
@@ -27,6 +28,7 @@ class HttpDataSource implements DataSource {
           'page': page,
           'page_size': pageSize,
           if (search != null && search.isNotEmpty) 'q': search,
+          if (tags != null) 'tags': tags,
         },
       ),
       fromJson: (json) => PaginatedResponseDto<CourseDto>.fromJson(

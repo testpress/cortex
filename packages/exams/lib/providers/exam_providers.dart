@@ -2,8 +2,50 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
+import '../repositories/exam_repository.dart';
 
 part 'exam_providers.g.dart';
+
+/// Repository provider for exam-specific operations.
+@Riverpod(keepAlive: true)
+ExamRepository examRepository(Ref ref) {
+  final dataSource = ref.watch(dataSourceProvider);
+  return ExamRepository(dataSource: dataSource);
+}
+
+/// Fetches exam details by slug.
+@riverpod
+Future<ExamDto> examDetail(Ref ref, String slug) async {
+  final repo = ref.watch(examRepositoryProvider);
+  // Note: loadExam updates the internal state, but here we just return the DTO
+  // directly for the instructions screen.
+  final dataSource = ref.watch(dataSourceProvider);
+  return dataSource.getExam(slug);
+}
+
+/// Notifier that manages the active exam attempt lifecycle.
+@riverpod
+class ExamAttempt extends _$ExamAttempt {
+  @override
+  Stream<ExamAttemptState> build() {
+    final repo = ref.watch(examRepositoryProvider);
+    return repo.stateStream;
+  }
+
+  Future<void> loadExam(String slug) => ref.read(examRepositoryProvider).loadExam(slug);
+  
+  Future<void> startStandaloneExam(ExamDto exam) => 
+      ref.read(examRepositoryProvider).startStandaloneExam(exam);
+      
+  Future<void> startCourseLinkedExam(ExamDto exam, String contentAttemptsUrl) =>
+      ref.read(examRepositoryProvider).startCourseLinkedExam(exam, contentAttemptsUrl);
+
+  Future<void> submitAnswer(String answerUrl, AnswerDto answer) =>
+      ref.read(examRepositoryProvider).submitAnswer(answerUrl, answer);
+
+  Future<void> endExam(String endUrl) =>
+      ref.read(examRepositoryProvider).endExam(endUrl);
+}
 
 /// Notifier that manages the exam-specific course list and its independent sync state.
 @Riverpod(keepAlive: true)
@@ -36,7 +78,10 @@ class ExamList extends _$ExamList {
       bool hasMore = true;
       
       while (hasMore) {
-        final response = await repo.refreshCourses(page: currentPage);
+        final response = await repo.refreshCourses(
+          page: currentPage,
+          tags: ['exams', 'classes'],
+        );
         
         if (response.next == null) {
           hasMore = false;

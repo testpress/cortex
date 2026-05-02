@@ -5,7 +5,7 @@ import 'package:core/data/data.dart';
 abstract class DataSource {
   /// Fetch all courses available to the current user.
   Future<PaginatedResponseDto<CourseDto>> getCourses(
-      {int page = 1, int pageSize = 10, String? search});
+      {int page = 1, int pageSize = 10, String? search, dynamic tags});
 
   /// Fetch full metadata for a single course from `/api/v3/courses/{id}/`.
   Future<CourseDto> getCourseDetail(String courseId);

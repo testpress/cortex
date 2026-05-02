@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:async/async.dart';
+import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 
@@ -19,6 +19,25 @@ class CourseRepository {
   final Map<String, Future<CourseDto?>> _activeDetailSyncs = {};
   final Map<String, Future<List<LessonDto>>> _activeContentSyncs = {};
 
+  /// Stream controller for sync status updates
+  final _syncStatusController = StreamController<Set<String>>.broadcast();
+  Set<String> _activeSyncIds = {};
+
+  /// Stream of course IDs currently being synced.
+  Stream<Set<String>> get activeSyncsStream => _syncStatusController.stream;
+
+  /// Returns true if a specific course is currently syncing.
+  bool isSyncing(String courseId) => _activeSyncIds.contains(courseId);
+
+  void _updateSyncStatus(String courseId, bool isSyncing) {
+    if (isSyncing) {
+      _activeSyncIds.add(courseId);
+    } else {
+      _activeSyncIds.remove(courseId);
+    }
+    _syncStatusController.add(Set.unmodifiable(_activeSyncIds));
+  }
+
   CourseRepository(this._db, this._source);
 
   // ── Courses ──────────────────────────────────────────────────────────────
@@ -36,9 +55,27 @@ class CourseRepository {
         final hasMobileAccess = dto.allowedDevices.any(
           (d) => d.toLowerCase().contains('mobile'),
         );
+        // Official filter: check for 'exams' tag or fallback to examsCount
         final isExamCourse = dto.tags.contains('exams') || (dto.tags.isEmpty && dto.examsCount > 0);
         
         return isExamCourse && hasMobileAccess;
+      }).toList();
+    });
+  }
+
+  /// Live stream of courses filtered for the Study tab.
+  /// Excludes exams and info courses to maintain tab independence.
+  Stream<List<CoursesTableData>> watchStudyCourses() {
+    return _db.watchAllCourses().map((courses) {
+      return courses.where((course) {
+        final dto = rowToCourseDto(course);
+        
+        final isExamCourse = dto.tags.contains('exams') || (dto.tags.isEmpty && dto.examsCount > 0);
+        final isInfoCourse = dto.tags.contains('info');
+        
+        // A study course is anything that is NOT an exam or info course,
+        // and ideally has the 'classes' tag (or no tags for legacy support).
+        return !isExamCourse && !isInfoCourse;
       }).toList();
     });
   }
@@ -89,11 +126,17 @@ class CourseRepository {
   }
 
   /// Fetch courses for a specific [page] from [DataSource] and persist to local DB.
-  Future<PaginatedResponseDto<CourseDto>> refreshCourses({int page = 1}) async {
-    final response = await _source.getCourses(page: page);
+  /// Supports optional [tags] filter for server-side filtering.
+  Future<PaginatedResponseDto<CourseDto>> refreshCourses({
+    int page = 1,
+    dynamic tags,
+  }) async {
+    final response = await _source.getCourses(page: page, tags: tags);
 
     if (response.results.isNotEmpty) {
-      final companions = response.results.map(_courseDtoToCompanion).toList();
+      final companions = response.results
+          .map((dto) => _courseDtoToCompanion(dto, orderIndex: dto.order))
+          .toList();
       await _db.upsertCourses(companions);
     }
 
@@ -381,6 +424,7 @@ class CourseRepository {
         rethrow;
       } finally {
         _activeStructuralSyncs.remove(courseId);
+        _updateSyncStatus(courseId, false);
       }
     }();
 
@@ -578,7 +622,7 @@ class CourseRepository {
     }
   }
 
-  CoursesTableCompanion _courseDtoToCompanion(CourseDto dto) =>
+  CoursesTableCompanion _courseDtoToCompanion(CourseDto dto, {int? orderIndex}) =>
       CoursesTableCompanion(
         id: Value(dto.id),
         title: Value(dto.title),
@@ -596,6 +640,7 @@ class CourseRepository {
             : const Value.absent(),
         tagIds: dto.tagIds.isNotEmpty ? Value(jsonEncode(dto.tagIds)) : const Value.absent(),
         examsCount: Value(dto.examsCount),
+        orderIndex: orderIndex != null ? Value(orderIndex) : const Value.absent(),
         isChaptersSynced: Value(dto.isChaptersSynced),
       );
 

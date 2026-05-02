@@ -50,7 +50,7 @@ class AppDatabase extends _$AppDatabase {
 
           // Helper to add columns only if they don't already exist.
           // This prevents crashes like "duplicate column name" during development migrations.
-          Future<void> addColumnSafely(TableInfo table, GeneratedColumn col) async {
+          Future<void> addColumnSafely(TableInfo table, dynamic col) async {
             final res = await customSelect(
               "PRAGMA table_info('${table.actualTableName}')",
             ).get();
@@ -126,10 +126,35 @@ class AppDatabase extends _$AppDatabase {
             await addColumnSafely(lessonsTable, lessonsTable.isUpcoming);
             await addColumnSafely(lessonsTable, lessonsTable.hasAttempts);
           }
+
+          if (from < 10) {
+            // Version 10: Exams integration and rich content metadata
+            await addColumnSafely(coursesTable, coursesTable.examsCount);
+            await addColumnSafely(chaptersTable, chaptersTable.image);
+            await addColumnSafely(lessonsTable, lessonsTable.image);
+            await addColumnSafely(lessonsTable, lessonsTable.isDetailFetched);
+            await addColumnSafely(lessonsTable, lessonsTable.nextContentId);
+            await addColumnSafely(lessonsTable, lessonsTable.previousContentId);
+            await addColumnSafely(lessonsTable, lessonsTable.htmlContent);
+            await addColumnSafely(lessonsTable, lessonsTable.chatEmbedUrl);
+            await addColumnSafely(lessonsTable, lessonsTable.streamStatus);
+            await addColumnSafely(lessonsTable, lessonsTable.showRecordedVideo);
+          }
+
           if (from < 11) {
-            // Version 11 adds scheduled content fields to lessons
+            // Version 11 adds scheduled content fields to lessons and course ordering
             await addColumnSafely(lessonsTable, lessonsTable.isScheduled);
             await addColumnSafely(lessonsTable, lessonsTable.scheduledMessage);
+            await addColumnSafely(coursesTable, coursesTable.orderIndex);
+          }
+
+          if (from < 12) {
+            // Version 12: Dashboard banners
+            await createTableSafely(dashboardBannersTable);
+          }
+          if (from < 11) {
+            // Version 11: Deterministic course ordering
+            await addColumnSafely(coursesTable, coursesTable.orderIndex);
           }
 
           if (from < 12) {
@@ -205,7 +230,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// Watch all courses as a live stream.
   Stream<List<CoursesTableData>> watchAllCourses() =>
-      select(coursesTable).watch();
+      (select(coursesTable)..orderBy([(t) => OrderingTerm.asc(t.orderIndex)])).watch();
 
   /// Insert or replace a list of courses.
   Future<void> upsertCourses(List<CoursesTableCompanion> rows) =>
