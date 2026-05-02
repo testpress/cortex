@@ -453,7 +453,7 @@
   "forumPostCategoryLabel": "الفئة",
   "forumPostSelectCategoryTitle": "اختر الفئة",
   "forumButtonSubmit": "إرسال",
-  "forumButtonCancel": "إلغاء"
+  "forumButtonCancel": "إلغاء",
   "labelPractice": "ممارسة",
   "attachmentSize": "الحجم: {size}",
   "@attachmentSize": {

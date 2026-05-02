@@ -104,44 +104,6 @@ class _LessonDetailOrchestratorState
     final onPrevious = widget.onPrevious;
     final design = Design.of(context);
 
-    // Priority 0: Scheduled Content
-    if (lesson.isScheduled && lesson.type != LessonType.liveStream) {
-      return Container(
-        color: const Color(0xFF000000), // Pure black as requested
-        width: double.infinity,
-        height: double.infinity,
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  LucideIcons.calendarClock,
-                  color: Color(0xFFFFFFFF),
-                  size: 64,
-                ),
-                const SizedBox(height: 24),
-                AppText.headline(
-                  'This content is scheduled!',
-                  color: const Color(0xFFFFFFFF),
-                  textAlign: TextAlign.center,
-                ),
-                if (lesson.scheduledMessage != null) ...[
-                  const SizedBox(height: 12),
-                  AppText.body(
-                    lesson.scheduledMessage!,
-                    color: const Color(0xFFFFFFFF).withValues(alpha: 0.7),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ),
-      );
-    }
-
     // Priority 1: Custom Builder
     if (widget.customBuilder != null) {
       final customWidget = widget.customBuilder!(context, lesson);

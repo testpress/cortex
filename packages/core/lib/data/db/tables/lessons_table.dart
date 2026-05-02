@@ -44,6 +44,10 @@ class LessonsTable extends Table {
   
   BoolColumn get isDetailFetched => boolean().withDefault(const Constant(false))();
 
+  // Scheduled content fields
+  BoolColumn get isScheduled => boolean().withDefault(const Constant(false))();
+  TextColumn get scheduledMessage => text().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }

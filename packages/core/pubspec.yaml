@@ -29,7 +29,7 @@ dependencies:
   dio: ^5.9.2
   flutter_secure_storage: ^9.2.2
   dio_web_adapter: ^2.1.2
-  tpstreams_player_sdk: 2.2.18
+  tpstreams_player_sdk: 2.2.19
 
 dev_dependencies:
   flutter_test:

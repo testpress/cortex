@@ -656,6 +656,8 @@ class CourseRepository {
     chatEmbedUrl: row.chatEmbedUrl,
     streamStatus: row.streamStatus,
     showRecordedVideo: row.showRecordedVideo,
+    isScheduled: row.isScheduled,
+    scheduledMessage: row.scheduledMessage,
   );
 
   LessonsTableCompanion _lessonDtoToCompanion(LessonDto dto) =>
@@ -711,6 +713,10 @@ class CourseRepository {
             ? Value(dto.streamStatus)
             : const Value.absent(),
         showRecordedVideo: Value(dto.showRecordedVideo),
+        isScheduled: Value(dto.isScheduled),
+        scheduledMessage: dto.scheduledMessage != null
+            ? Value(dto.scheduledMessage)
+            : const Value.absent(),
       );
 
   LessonType _parseType(String s) {

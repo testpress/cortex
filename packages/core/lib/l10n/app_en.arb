@@ -639,7 +639,7 @@
   "forumPostCategoryLabel": "Category",
   "forumPostSelectCategoryTitle": "Select Category",
   "forumButtonSubmit": "Submit",
-  "forumButtonCancel": "Cancel"
+  "forumButtonCancel": "Cancel",
   "labelPractice": "Practice",
   "attachmentSize": "Size: {size}",
   "@attachmentSize": {

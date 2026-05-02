@@ -387,10 +387,10 @@ class LessonDto {
       isBookmarked: json['is_bookmarked'] as bool? ?? json['isBookmarked'] as bool? ?? false,
       image: json['icon'] as String? ?? json['image'] as String?,
       isRunning: json['is_running'] as bool? ?? 
-          (liveStream?['status']?.toString().toLowerCase() == 'running') ||
+          ['running', 'live'].contains(liveStream?['status']?.toString().toLowerCase()) ||
           (json['has_started'] as bool? ?? false),
       isUpcoming: json['is_upcoming'] as bool? ?? 
-          (liveStream?['status']?.toString().toLowerCase() == 'upcoming'),
+          ['upcoming', 'scheduled'].contains(liveStream?['status']?.toString().toLowerCase()),
       hasAttempts: json['has_attempts'] as bool? ?? false,
       nextContentId: getString('next_content_id'),
       previousContentId: getString('previous_content_id'),

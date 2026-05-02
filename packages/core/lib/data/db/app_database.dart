@@ -35,7 +35,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -123,6 +123,12 @@ class AppDatabase extends _$AppDatabase {
             await addColumnSafely(lessonsTable, lessonsTable.isRunning);
             await addColumnSafely(lessonsTable, lessonsTable.isUpcoming);
             await addColumnSafely(lessonsTable, lessonsTable.hasAttempts);
+          }
+
+          if (from < 11) {
+            // Version 11 adds scheduled content fields to lessons
+            await addColumnSafely(lessonsTable, lessonsTable.isScheduled);
+            await addColumnSafely(lessonsTable, lessonsTable.scheduledMessage);
           }
         },
       );
