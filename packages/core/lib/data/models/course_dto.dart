@@ -25,6 +25,7 @@ class CourseDto {
   final List<String> allowedDevices;
   final List<int> tagIds;
   final int examsCount;
+  final int order;
   final List<ChapterDto> chapters;
 
   const CourseDto({
@@ -41,6 +42,7 @@ class CourseDto {
     this.allowedDevices = const [],
     this.tagIds = const [],
     this.examsCount = 0,
+    this.order = 0,
     this.image,
     this.isChaptersSynced = false,
     this.chapters = const [],
@@ -63,6 +65,7 @@ class CourseDto {
     List<String>? allowedDevices,
     List<int>? tagIds,
     int? examsCount,
+    int? order,
     bool? isChaptersSynced,
     List<ChapterDto>? chapters,
   }) {
@@ -81,6 +84,7 @@ class CourseDto {
       allowedDevices: allowedDevices ?? this.allowedDevices,
       tagIds: tagIds ?? this.tagIds,
       examsCount: examsCount ?? this.examsCount,
+      order: order ?? this.order,
       isChaptersSynced: isChaptersSynced ?? this.isChaptersSynced,
       chapters: chapters ?? this.chapters,
     );
@@ -102,6 +106,7 @@ class CourseDto {
       allowedDevices: _parseList(json['allowed_devices']),
       tagIds: (json['tag_ids'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       examsCount: json['exams_count'] as int? ?? 0,
+      order: json['order'] as int? ?? 0,
       isChaptersSynced: json['isChaptersSynced'] as bool? ?? false,
       chapters:
           (json['chapters'] as List<dynamic>?)
@@ -109,7 +114,7 @@ class CourseDto {
               .toList() ??
           const [],
     );
-    print('DEBUG_PARSE: Course ${dto.id} ("${dto.title}") tags: ${dto.tags}, tagIds: ${dto.tagIds}, examsCount: ${dto.examsCount}, allowedDevices: ${dto.allowedDevices}');
+    print('DEBUG_PARSE: Course ${dto.id} ("${dto.title}") order: ${dto.order}, tags: ${dto.tags}, tagIds: ${dto.tagIds}, examsCount: ${dto.examsCount}, allowedDevices: ${dto.allowedDevices}');
     return dto;
   }
 
@@ -137,6 +142,7 @@ class CourseDto {
       'image': image,
       'tags': tags,
       'allowed_devices': allowedDevices,
+      'order': order,
       'isChaptersSynced': isChaptersSynced,
       'chapters': chapters.map((e) => e.toJson()).toList(),
     };

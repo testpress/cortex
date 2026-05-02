@@ -15,6 +15,7 @@ class MockDataSource implements DataSource {
     int page = 1,
     int pageSize = 10,
     String? search,
+    dynamic tags,
   }) async {
     // Simulate API delay
     await Future.delayed(const Duration(milliseconds: 500));
@@ -958,6 +959,86 @@ class MockDataSource implements DataSource {
   @override
   Future<void> markLessonCompleted(String lessonId) async {
     await Future.delayed(const Duration(milliseconds: 500));
+  }
+
+  // ── Exams ───────────────────────────────────────────────────────────────
+
+  @override
+  Future<ExamDto> getExam(String slug) async {
+    await Future.delayed(const Duration(milliseconds: 400));
+    return ExamDto(
+      id: 'mock-exam-1',
+      title: 'Mock Jee Main Test',
+      duration: '01:00:00',
+      questionCount: 10,
+      hasInstructions: true,
+      attemptsUrl: 'https://lmsdemo.testpress.in/api/v3/exams/mock-exam-1/attempts/',
+    );
+  }
+
+  @override
+  Future<AttemptDto> createAttempt(String attemptsUrl) async {
+    await Future.delayed(const Duration(milliseconds: 600));
+    return const AttemptDto(
+      id: 'attempt-101',
+      questionsUrl: 'https://lmsdemo.testpress.in/api/v3/attempts/attempt-101/questions/',
+      heartbeatUrl: 'https://lmsdemo.testpress.in/api/v3/attempts/attempt-101/heartbeat/',
+      endUrl: 'https://lmsdemo.testpress.in/api/v3/attempts/attempt-101/end/',
+      remainingTime: '01:00:00',
+    );
+  }
+
+  @override
+  Future<AttemptDto> createContentAttempt(String contentAttemptsUrl) async {
+    return createAttempt(contentAttemptsUrl);
+  }
+
+  @override
+  Future<List<QuestionDto>> getQuestions(String questionsUrl) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    return List.generate(10, (index) {
+      return QuestionDto(
+        id: 'q-${index + 1}',
+        text: 'This is mock question number ${index + 1}. What is the correct answer?',
+        type: 'singleSelect',
+        subject: index < 5 ? 'Physics' : 'Chemistry',
+        options: [
+          const QuestionOptionDto(id: 'opt-a', text: 'Option A'),
+          const QuestionOptionDto(id: 'opt-b', text: 'Option B'),
+          const QuestionOptionDto(id: 'opt-c', text: 'Option C'),
+          const QuestionOptionDto(id: 'opt-d', text: 'Option D'),
+        ],
+        answerUrl: 'https://lmsdemo.testpress.in/api/v3/attempts/attempt-101/questions/q-${index + 1}/answer/',
+        correctOptionIds: ['opt-a'],
+        explanation: 'Option A is correct because of mock reasoning.',
+      );
+    });
+  }
+
+  @override
+  Future<AttemptDto> sendHeartbeat(String heartbeatUrl) async {
+    return const AttemptDto(
+      id: 'attempt-101',
+      questionsUrl: '',
+      heartbeatUrl: '',
+      endUrl: '',
+    );
+  }
+
+  @override
+  Future<void> submitAnswer(String answerUrl, AnswerDto answer) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+  }
+
+  @override
+  Future<AttemptDto> endExam(String endUrl) async {
+    await Future.delayed(const Duration(milliseconds: 800));
+    return const AttemptDto(
+      id: 'attempt-101',
+      questionsUrl: '',
+      heartbeatUrl: '',
+      endUrl: '',
+    );
   }
 
   @override

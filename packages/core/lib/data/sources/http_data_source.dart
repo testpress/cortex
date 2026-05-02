@@ -19,6 +19,7 @@ class HttpDataSource implements DataSource {
     int page = 1,
     int pageSize = 10,
     String? search,
+    dynamic tags,
   }) async {
     return performNetworkRequest(
       _dio.get(
@@ -27,6 +28,7 @@ class HttpDataSource implements DataSource {
           'page': page,
           'page_size': pageSize,
           if (search != null && search.isNotEmpty) 'q': search,
+          if (tags != null) 'tags': tags,
         },
       ),
       fromJson: (json) => PaginatedResponseDto<CourseDto>.fromJson(
@@ -239,6 +241,29 @@ class HttpDataSource implements DataSource {
       fromJson: (data) => null,
     );
   }
+
+  // ── Exams ───────────────────────────────────────────────────────────────
+
+  @override
+  Future<ExamDto> getExam(String slug) => throw UnimplementedError();
+
+  @override
+  Future<AttemptDto> createAttempt(String attemptsUrl) => throw UnimplementedError();
+
+  @override
+  Future<AttemptDto> createContentAttempt(String contentAttemptsUrl) => throw UnimplementedError();
+
+  @override
+  Future<List<QuestionDto>> getQuestions(String questionsUrl) => throw UnimplementedError();
+
+  @override
+  Future<AttemptDto> sendHeartbeat(String heartbeatUrl) => throw UnimplementedError();
+
+  @override
+  Future<void> submitAnswer(String answerUrl, AnswerDto answer) => throw UnimplementedError();
+
+  @override
+  Future<AttemptDto> endExam(String endUrl) => throw UnimplementedError();
 
   @override
   Future<void> downloadFile({
