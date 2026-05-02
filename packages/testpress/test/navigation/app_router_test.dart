@@ -1,11 +1,15 @@
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:testpress/navigation/app_router.dart';
 
 void main() {
   group('buildPrimaryNavigationItems', () {
     test('keeps Profile as the default fifth destination', () {
-      final items = buildPrimaryNavigationItems(isInfoEnabled: false);
+      final items = buildPrimaryNavigationItems(
+        config: const ClientConfig(),
+        isInfoEnabled: false,
+      );
 
       expect(items.length, 4);
       expect(items.last.id, '/profile');
@@ -14,7 +18,10 @@ void main() {
     });
 
     test('adds Info as the fourth destination when enabled', () {
-      final items = buildPrimaryNavigationItems(isInfoEnabled: true);
+      final items = buildPrimaryNavigationItems(
+        config: const ClientConfig(),
+        isInfoEnabled: true,
+      );
 
 
       expect(items.length, 5);
