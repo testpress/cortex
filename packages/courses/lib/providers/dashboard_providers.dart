@@ -35,9 +35,9 @@ Future<List<ScheduledTest>> upcomingTests(Ref ref) async {
 }
 
 @riverpod
-Future<List<DashboardBannerDto>> heroBanners(Ref ref) async {
-  await Future.delayed(const Duration(milliseconds: 400));
-  return mockHeroBanners;
+Stream<List<DashboardBannerDto>> heroBanners(Ref ref) async* {
+  final repository = await ref.watch(dashboardRepositoryProvider.future);
+  yield* repository.watchHeroBanners();
 }
 
 @riverpod

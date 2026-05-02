@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:async';
 
 class HeroBanner {
@@ -77,7 +78,7 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
       child: AspectRatio(
-        aspectRatio: 16 / 7,
+        aspectRatio: 2.5,
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(design.radius.xl)),
           child: Stack(
@@ -98,17 +99,24 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
                       fit: StackFit.expand,
                       children: [
                         banner.imageUrl.isNotEmpty
-                            ? Image.network(
-                                banner.imageUrl,
+                            ? CachedNetworkImage(
+                                imageUrl: banner.imageUrl,
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    Container(
-                                      color: Color.lerp(
-                                        design.colors.primaryContainer,
-                                        design.colors.surfaceVariant,
-                                        0.5,
-                                      ),
-                                    ),
+                                alignment: Alignment.topCenter,
+                                placeholder: (context, url) => Container(
+                                  color: Color.lerp(
+                                    design.colors.primaryContainer,
+                                    design.colors.surfaceVariant,
+                                    0.5,
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) => Container(
+                                  color: Color.lerp(
+                                    design.colors.primaryContainer,
+                                    design.colors.surfaceVariant,
+                                    0.5,
+                                  ),
+                                ),
                               )
                             : Container(
                                 color: Color.lerp(

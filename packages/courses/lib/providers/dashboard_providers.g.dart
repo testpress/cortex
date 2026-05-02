@@ -77,12 +77,12 @@ final upcomingTestsProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef UpcomingTestsRef = AutoDisposeFutureProviderRef<List<ScheduledTest>>;
-String _$heroBannersHash() => r'db7893ee83c876d6c3380a1b7991fe9128a597be';
+String _$heroBannersHash() => r'a7e08b451e2c20c612423baae41b548201c434ec';
 
 /// See also [heroBanners].
 @ProviderFor(heroBanners)
 final heroBannersProvider =
-    AutoDisposeFutureProvider<List<DashboardBannerDto>>.internal(
+    AutoDisposeStreamProvider<List<DashboardBannerDto>>.internal(
   heroBanners,
   name: r'heroBannersProvider',
   debugGetCreateSourceHash:
@@ -93,7 +93,7 @@ final heroBannersProvider =
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef HeroBannersRef = AutoDisposeFutureProviderRef<List<DashboardBannerDto>>;
+typedef HeroBannersRef = AutoDisposeStreamProviderRef<List<DashboardBannerDto>>;
 String _$promotionBannersHash() => r'3099fb8dbd8de6979ab08ba1ec0abf007dac0c66';
 
 /// See also [promotionBanners].

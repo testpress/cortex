@@ -23,9 +23,11 @@ export 'models/study_momentum_dto.dart';
 export 'models/explore_models.dart';
 export 'models/paginated_response_dto.dart';
 export 'models/client_config.dart';
+export 'models/dashboard_banner_dto.dart';
 
 // Database
 export 'db/app_database.dart';
+export 'repositories/dashboard_repository.dart';
 export 'db/database_provider.dart';
 
 // Auth
