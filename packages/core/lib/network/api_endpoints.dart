@@ -18,4 +18,5 @@ class ApiEndpoints {
   static String lessonDetail(String id) => '/api/v2.4/contents/$id/';
   static String markCompleted(String id) => '/api/v2.5/chapter_contents/$id/attempts/';
   static const String bannerAds = '/api/v2.4/banner-ads/';
+  static const String leaderboard = '/api/v2.3/leaderboard/';
 }

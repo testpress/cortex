@@ -929,6 +929,11 @@ class MockDataSource implements DataSource {
     ];
   }
 
+  @override
+  Future<List<LearnerDto>> getLearners() async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return mockLearners;
+  }
 
   // ─────────────────────────────────────────────────────────────────────────
   // User Profile

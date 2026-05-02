@@ -1,6 +1,5 @@
 import 'package:core/data/data.dart';
 import '../models/assignment_dto.dart';
-import '../models/learner_dto.dart';
 import '../models/quick_shortcut_dto.dart';
 
 // SHARED MOCK DATA (mockCurrentUser, mockStudyMomentum) now lives in the 'data' package.
@@ -54,135 +53,6 @@ const mockPromotionBanners = [
         '180+ hours of content available 24/7 - watch recordings, download notes, and practice anytime',
     bgColor: 0xFFFAF5FF,
     textColor: 0xFF6B21A8,
-  ),
-];
-
-/// Mock top learners
-const mockTopLearners = [
-  LearnerDto(
-    id: '1',
-    rank: 1,
-    name: 'AlexR_21',
-    avatar:
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
-    points: 1520,
-    coursesCompleted: 12,
-    streakDays: 15,
-    badges: [
-      LearnerBadgeDto(icon: 'crown', label: 'Monthly Cham', color: 0xFFFBBF24),
-      LearnerBadgeDto(icon: 'brain', label: 'Quiz Master', color: 0xFFEC4899),
-      LearnerBadgeDto(icon: 'rocket', label: 'Fast Learner', color: 0xFF3B82F6),
-      LearnerBadgeDto(icon: 'fire', label: 'Streak King', color: 0xFFF97316),
-    ],
-  ),
-  LearnerDto(
-    id: '2',
-    rank: 2,
-    name: 'LearnWithMira',
-    avatar:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200',
-    points: 1340,
-    coursesCompleted: 9,
-    streakDays: 18,
-    badges: [
-      LearnerBadgeDto(icon: 'rocket', label: 'Top Designer', color: 0xFFF97316),
-      LearnerBadgeDto(icon: 'brain', label: 'Quiz Master', color: 0xFFEC4899),
-      LearnerBadgeDto(icon: 'fire', label: 'Streak Star', color: 0xFFF97316),
-    ],
-  ),
-  LearnerDto(
-    id: '3',
-    rank: 3,
-    name: 'CodeNinja_47',
-    avatar:
-        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200',
-    points: 1180,
-    coursesCompleted: 8,
-    streakDays: 12,
-    badges: [
-      LearnerBadgeDto(icon: 'rocket', label: 'Code Master', color: 0xFF3B82F6),
-      LearnerBadgeDto(icon: 'brain', label: 'Quiz Pro', color: 0xFFEC4899),
-    ],
-  ),
-];
-
-/// Mock other learners (leaderboard list)
-const mockOtherLearners = [
-  LearnerDto(
-    id: '4',
-    rank: 4,
-    name: 'DesignGuru',
-    avatar:
-        'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200',
-    points: 980,
-    coursesCompleted: 8,
-    streakDays: 8,
-    badges: [],
-  ),
-  LearnerDto(
-    id: '5',
-    rank: 5,
-    name: 'MathMaster',
-    avatar:
-        'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200',
-    points: 890,
-    coursesCompleted: 7,
-    streakDays: 7,
-    badges: [],
-  ),
-  LearnerDto(
-    id: '6',
-    rank: 6,
-    name: 'GrowthHacker',
-    avatar:
-        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200',
-    points: 832,
-    coursesCompleted: 6,
-    streakDays: 7,
-    badges: [],
-  ),
-  LearnerDto(
-    id: '7',
-    rank: 7,
-    name: 'DevWizard',
-    avatar:
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
-    points: 791,
-    coursesCompleted: 5,
-    streakDays: 7,
-    badges: [],
-  ),
-  LearnerDto(
-    id: '8',
-    rank: 8,
-    name: 'You',
-    avatar:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200',
-    points: 790,
-    coursesCompleted: 4,
-    streakDays: 4,
-    badges: [],
-  ),
-  LearnerDto(
-    id: '9',
-    rank: 9,
-    name: 'UIUXExplorer',
-    avatar:
-        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200',
-    points: 788,
-    coursesCompleted: 4,
-    streakDays: 6,
-    badges: [],
-  ),
-  LearnerDto(
-    id: '10',
-    rank: 10,
-    name: 'DataDriven',
-    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200',
-    points: 765,
-    coursesCompleted: 5,
-    streakDays: 5,
-    badges: [],
   ),
 ];
 
@@ -287,4 +157,3 @@ const mockAssignments = [
     description: 'Reading passages & analysis',
   ),
 ];
-

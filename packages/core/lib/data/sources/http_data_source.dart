@@ -201,7 +201,25 @@ class HttpDataSource implements DataSource {
     );
   }
 
-
+  @override
+  Future<List<LearnerDto>> getLearners() async {
+    return performNetworkRequest(
+      // Top 10 learners for this week
+      _dio.get(ApiEndpoints.leaderboard, queryParameters: {
+        'timeline': 'this_week',
+        'limit': 10,
+      }),
+      fromJson: (data) {
+        final results = data['results'] as List<dynamic>?;
+        if (results == null) return [];
+        final learners = <LearnerDto>[];
+        for (var i = 0; i < results.length; i++) {
+          learners.add(LearnerDto.fromJson(results[i] as Map<String, dynamic>, i + 1));
+        }
+        return learners;
+      },
+    );
+  }
 
   @override
   Future<UserDto> getProfile() async {

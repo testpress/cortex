@@ -47,15 +47,9 @@ Future<List<DashboardBannerDto>> promotionBanners(Ref ref) async {
 }
 
 @riverpod
-Future<List<LearnerDto>> topLearners(Ref ref) async {
-  await Future.delayed(const Duration(milliseconds: 600));
-  return mockTopLearners;
-}
-
-@riverpod
-Future<List<LearnerDto>> otherLearners(Ref ref) async {
-  await Future.delayed(const Duration(milliseconds: 650));
-  return mockOtherLearners;
+Stream<List<LearnerDto>> learners(Ref ref) async* {
+  final repository = await ref.watch(dashboardRepositoryProvider.future);
+  yield* repository.watchLearners();
 }
 
 @riverpod

@@ -24,8 +24,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     
     final heroBanners = ref.watch(heroBannersProvider);
     final promotionBanners = ref.watch(promotionBannersProvider);
-    final topLearners = ref.watch(topLearnersProvider);
-    final otherLearners = ref.watch(otherLearnersProvider);
+    final learnersState = ref.watch(learnersProvider);
     final shortcuts = ref.watch(quickShortcutsProvider);
 
     final user = userAsync.valueOrNull;
@@ -142,15 +141,20 @@ class PaidActiveHomeScreen extends ConsumerWidget {
       error: (err, stack) => const SizedBox.shrink(),
     );
 
-    final topLearnersSection = topLearners.when(
-      data: (top) => otherLearners.when(
-        data: (others) => TopLearnersSection(
-          topLearners: top.map(_mapLearner).toList(),
-          otherLearners: others.map(_mapLearner).toList(),
-        ),
-        loading: () => const SizedBox.shrink(),
-        error: (error, stack) => const SizedBox.shrink(),
-      ),
+    final topLearnersSection = learnersState.when(
+      data: (learners) {
+        if (learners.isEmpty) return const SizedBox.shrink();
+        
+        // Manual partitioning for podium (top 3) and list (rest)
+        final podiumCount = learners.length > 3 ? 3 : learners.length;
+        final top = learners.sublist(0, podiumCount);
+        final others = learners.sublist(podiumCount);
+
+        return TopLearnersSection(
+          topLearners: top,
+          otherLearners: others,
+        );
+      },
       loading: () => const SizedBox(height: 200),
       error: (error, stack) => const SizedBox.shrink(),
     );
@@ -320,27 +324,6 @@ class PaidActiveHomeScreen extends ConsumerWidget {
       tag: d.tag,
       bgColor: Color(d.bgColor ?? 0xFFFFFFFF),
       textColor: Color(d.textColor ?? 0xFF000000),
-    );
-  }
-
-  Learner _mapLearner(LearnerDto d) {
-    return Learner(
-      id: d.id,
-      rank: d.rank,
-      name: d.name,
-      avatar: d.avatar,
-      points: d.points,
-      coursesCompleted: d.coursesCompleted,
-      streakDays: d.streakDays,
-      badges: d.badges
-          .map(
-            (b) => LearnerBadge(
-              icon: b.icon,
-              label: b.label,
-              color: Color(b.color),
-            ),
-          )
-          .toList(),
     );
   }
 

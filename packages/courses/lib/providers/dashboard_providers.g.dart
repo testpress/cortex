@@ -113,41 +113,22 @@ final promotionBannersProvider =
 // ignore: unused_element
 typedef PromotionBannersRef
     = AutoDisposeFutureProviderRef<List<DashboardBannerDto>>;
-String _$topLearnersHash() => r'7397a0477218d709c08bbdfdcd27354cff4b4e50';
+String _$learnersHash() => r'8a404337f6c8195a3af2fa4d91deecd77b10c82d';
 
-/// See also [topLearners].
-@ProviderFor(topLearners)
-final topLearnersProvider =
-    AutoDisposeFutureProvider<List<LearnerDto>>.internal(
-  topLearners,
-  name: r'topLearnersProvider',
+/// See also [learners].
+@ProviderFor(learners)
+final learnersProvider = AutoDisposeStreamProvider<List<LearnerDto>>.internal(
+  learners,
+  name: r'learnersProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$topLearnersHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$learnersHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef TopLearnersRef = AutoDisposeFutureProviderRef<List<LearnerDto>>;
-String _$otherLearnersHash() => r'8afe13796c01e9feb9c2d9a658d818f834dedc24';
-
-/// See also [otherLearners].
-@ProviderFor(otherLearners)
-final otherLearnersProvider =
-    AutoDisposeFutureProvider<List<LearnerDto>>.internal(
-  otherLearners,
-  name: r'otherLearnersProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$otherLearnersHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef OtherLearnersRef = AutoDisposeFutureProviderRef<List<LearnerDto>>;
+typedef LearnersRef = AutoDisposeStreamProviderRef<List<LearnerDto>>;
 String _$quickShortcutsHash() => r'ba6b6c2b269ef7d8f60a4f782a9e8fbb1b2d24a6';
 
 /// See also [quickShortcuts].

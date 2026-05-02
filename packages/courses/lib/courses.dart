@@ -1,7 +1,6 @@
 export 'models/course.dart';
 export 'models/course_content.dart';
 export 'models/assignment_dto.dart';
-export 'models/learner_dto.dart';
 export 'models/quick_shortcut_dto.dart';
 // DashboardBannerDto is now exported from package:core/data/data.dart
 export 'data/mock_courses.dart';
