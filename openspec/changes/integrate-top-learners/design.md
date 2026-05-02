@@ -7,7 +7,7 @@ The Learners dashboard feature currently relies on hardcoded mock data and multi
 - Implement real-time learners fetching.
 - Cache learners data locally using a new `LearnersTable` in Drift.
 - Simplify state management by using a single `learnersProvider` that returns data sorted by points.
-- Formalize `LearnersDto` in `packages/core` for shared access and JSON serialization.
+- Formalize `LearnerDto` in `packages/core` for shared access and JSON serialization.
 
 **Non-Goals:**
 - Implementing "View All" or pagination for the full learners list.
@@ -21,7 +21,7 @@ The Learners dashboard feature currently relies on hardcoded mock data and multi
 **Rationale**: The API returns a single list of learners. Managing it as a single source of truth in Riverpod is cleaner. The UI component (`TopLearnersSection`) will be updated to take a single list and internally partition it (Top 3 for the podium, 4-10 for the standard list).
 
 ### 2. DTO Relocation and Renaming
-**Decision**: Move the existing `LearnerDto` from `packages/courses` to `packages/core/lib/data/models/`, rename it to `LearnersDto`, and add `fromJson` factories.
+**Decision**: Move the existing `LearnerDto` from `packages/courses` to `packages/core/lib/data/models/` and add `fromJson` factories.
 **Rationale**: The `DashboardRepository` lives in `core` and needs access to these models to manage persistence and state. 
 
 ### 3. Database Schema
@@ -36,4 +36,4 @@ The Learners dashboard feature currently relies on hardcoded mock data and multi
 ## Risks / Trade-offs
 
 - **[Risk] Missing Fields**: The current API does not provide `coursesCompleted` or `streakDays`.
-- **[Mitigation]**: We will keep these fields in the `LearnersDto` but mark them as optional (defaulting to 0) during JSON parsing to ensure the UI doesn't crash while gracefully hiding empty stats.
+- **[Mitigation]**: We will keep these fields in the `LearnerDto` but mark them as optional (defaulting to 0) during JSON parsing to ensure the UI doesn't crash while gracefully hiding empty stats.

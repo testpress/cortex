@@ -1,6 +1,6 @@
 ## 1. DTO and Database Setup
 
-- [x] 1.1 Move `LearnerDto` to `packages/core/lib/data/models/learners_dto.dart`, rename to `LearnersDto`, and add `fromJson` serialization. **Delete `LearnerBadgeDto` entirely** (remove from model and UI) as it is not supported by the backend.
+- [x] 1.1 Move `LearnerDto` to `packages/core/lib/data/models/learner_dto.dart` and add `fromJson` serialization. **Delete `LearnerBadgeDto` entirely** (remove from model and UI) as it is not supported by the backend.
 - [x] 1.2 Create `LearnersTable` definition in `packages/core/lib/data/db/tables/learners_table.dart` with `id`, `name`, `avatar`, `points`, `rank`.
 - [x] 1.3 Register `LearnersTable` in `AppDatabase` and add migration logic to schema versioning.
 

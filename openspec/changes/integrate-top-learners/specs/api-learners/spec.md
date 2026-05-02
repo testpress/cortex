@@ -14,5 +14,5 @@ The system SHALL expose a single stream of learners data for the UI to consume.
 
 #### Scenario: Provider Data Resolution
 - **WHEN** the UI watches `learnersProvider`
-- **THEN** it MUST yield a `List<LearnersDto>` sourced directly from `DashboardRepository.watchLearners()`
+- **THEN** it MUST yield a `List<LearnerDto>` sourced directly from `DashboardRepository.watchLearners()`
 - **AND** the list MUST be ordered by rank/points
