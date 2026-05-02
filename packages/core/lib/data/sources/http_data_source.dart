@@ -242,6 +242,29 @@ class HttpDataSource implements DataSource {
     );
   }
 
+  // ── Exams ───────────────────────────────────────────────────────────────
+
+  @override
+  Future<ExamDto> getExam(String slug) => throw UnimplementedError();
+
+  @override
+  Future<AttemptDto> createAttempt(String attemptsUrl) => throw UnimplementedError();
+
+  @override
+  Future<AttemptDto> createContentAttempt(String contentAttemptsUrl) => throw UnimplementedError();
+
+  @override
+  Future<List<QuestionDto>> getQuestions(String questionsUrl) => throw UnimplementedError();
+
+  @override
+  Future<AttemptDto> sendHeartbeat(String heartbeatUrl) => throw UnimplementedError();
+
+  @override
+  Future<void> submitAnswer(String answerUrl, AnswerDto answer) => throw UnimplementedError();
+
+  @override
+  Future<AttemptDto> endExam(String endUrl) => throw UnimplementedError();
+
   @override
   Future<void> downloadFile({
     required String url,
