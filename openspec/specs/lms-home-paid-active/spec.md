@@ -2,9 +2,7 @@
 
 ## Purpose
 This specification documents the requirements and specific design rules for the Paid Active User Home Screen (`PaidActiveHomeScreen`), which serves as the primary dashboard for enrolled students in the LMS.
-
 ## Requirements
-
 ### Requirement: Today's Schedule Smart Grouping
 The system SHALL group the user's daily schedule into contextual sections within the `TodaySnapshot` component.
 
@@ -99,10 +97,9 @@ The system SHALL organize data models and UI state following an offline-first re
 - **THEN** they MUST use `L10n.of(context)` for all user-facing strings to support internationalization.
 
 #### Scenario: Temporary Hardcoded Data Models
-- **WHEN** reading `PromotionalBanners`, `TopLearnersSection`, `HeroBannerCarousel`, and `QuickAccessGrid`
+- **WHEN** reading `PromotionalBanners`, `TopLearnersSection`, and `QuickAccessGrid`
 - **THEN** these components rely on mock data objects but use dynamic UI rendering logic, awaiting the full database integration.
-
----
+- **BUT** for `HeroBannerCarousel`, the system MUST now fetch live data from the backend as specified in the `api-dashboard-banners` capability.
 
 ### Requirement: Pixel-Perfect Component Spacing and Backgrounds
 The system SHALL replicate the exact padding, margin, and layer backgrounds defined in the Figma Design reference.
