@@ -420,7 +420,7 @@ const mockWhatsNewFeed = DashboardContentsDto(
       chapterTitle: 'Calculus Basics',
       contentType: DashboardContentType.video,
       sectionType: DashboardSectionType.whatsNew,
-      duration: '15:30',
+      totalDuration: '42 mins',
       coverImage: 'https://placeholder.com/video1.png',
     ),
     DashboardContentDto(
@@ -429,8 +429,36 @@ const mockWhatsNewFeed = DashboardContentsDto(
       chapterTitle: 'Calculus Basics',
       contentType: DashboardContentType.test,
       sectionType: DashboardSectionType.whatsNew,
-      duration: '45 mins',
+      totalDuration: '45 mins',
+      remainingDuration: '',
       coverImage: 'https://placeholder.com/test1.png',
+    ),
+  ],
+);
+
+const mockResumeLearningFeed = DashboardContentsDto(
+  items: [
+    DashboardContentDto(
+      id: '376154',
+      title: 'Rectilinear Motion : Part 01',
+      chapterTitle: 'Rectilinear Motion',
+      contentType: DashboardContentType.video,
+      sectionType: DashboardSectionType.resumeLearning,
+      totalDuration: '1h 36m',
+      remainingDuration: '45m',
+      coverImage: 'https://d1j3vi2u94ebt0.cloudfront.net/institute/brilliantpalalms/chapter_contents/192570/7f977cf2e71e4ecba9909788605737a7.png',
+      progress: 65.0,
+    ),
+    DashboardContentDto(
+      id: '363107',
+      title: 'IISER Previous Year Model - 2025',
+      chapterTitle: 'IISER PREVIOUS YEAR MODEL EXAM [ 2017-2025]',
+      contentType: DashboardContentType.test,
+      sectionType: DashboardSectionType.resumeLearning,
+      totalDuration: '3h',
+      remainingDuration: '2h 15m',
+      coverImage: 'https://d1j3vi2u94ebt0.cloudfront.net/institute/brilliantpalalms/chapter_contents/363107/047b484129f04324b36ceaf5ebadf348.png',
+      progress: 0.0,
     ),
   ],
 );

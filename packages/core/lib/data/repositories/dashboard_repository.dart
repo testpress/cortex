@@ -101,7 +101,6 @@ class DashboardRepository {
         chapterId: data.chapterId,
         chapterTitle: data.chapterTitle,
         contentType: data.lessonType,
-        duration: data.duration,
         coverImage: data.coverImage,
         progress: data.progress,
         sectionType: data.sectionType,
@@ -127,7 +126,6 @@ class DashboardRepository {
             displayOrder: index,
             chapterId: item.chapterId,
             chapterTitle: item.chapterTitle,
-            duration: item.duration,
             coverImage: item.coverImage,
             progress: item.progress,
           ).toCompanion(true);
@@ -135,6 +133,58 @@ class DashboardRepository {
       );
     } catch (e) {
       debugPrint('DEBUG: Failed to refresh WhatsNew feed: $e');
+    }
+  }
+
+  /// Watch the "Resume Learning" feed.
+  Stream<List<DashboardContentDto>> watchResumeLearningFeed() async* {
+    refreshResumeLearningFeed().catchError((e) {
+      debugPrint('DEBUG: Failed to refresh ResumeLearning feed: $e');
+    });
+
+    yield* _db.watchDashboardSection(DashboardSectionType.resumeLearning).map((rows) {
+      return rows.map((data) => DashboardContentDto(
+        id: data.lessonId,
+        title: data.title,
+        chapterId: data.chapterId,
+        chapterTitle: data.chapterTitle,
+        contentType: data.lessonType,
+        totalDuration: data.totalDuration,
+        remainingDuration: data.remainingDuration,
+        coverImage: data.coverImage,
+        progress: data.progress,
+        sectionType: data.sectionType,
+      )).toList();
+    });
+  }
+
+  /// Fetch the latest resume feed and refresh the database.
+  Future<void> refreshResumeLearningFeed() async {
+    try {
+      final dto = await _dataSource.getResumeLearningFeed(DashboardSectionType.resumeLearning);
+
+      await _db.wipeAndInsertDashboardSection(
+        DashboardSectionType.resumeLearning,
+        dto.items.asMap().entries.map((entry) {
+          final index = entry.key;
+          final item = entry.value;
+          return DashboardContentData(
+            lessonId: item.id,
+            sectionType: DashboardSectionType.resumeLearning,
+            lessonType: item.contentType,
+            title: item.title,
+            displayOrder: index,
+            chapterId: item.chapterId,
+            chapterTitle: item.chapterTitle,
+            totalDuration: item.totalDuration,
+            remainingDuration: item.remainingDuration,
+            coverImage: item.coverImage,
+            progress: item.progress,
+          ).toCompanion(true);
+        }).toList(),
+      );
+    } catch (e) {
+      debugPrint('DEBUG: Failed to refresh ResumeLearning feed: $e');
     }
   }
 }

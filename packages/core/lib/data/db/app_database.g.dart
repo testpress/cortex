@@ -7237,17 +7237,29 @@ class $DashboardContentsTableTable extends DashboardContentsTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _durationMeta = const VerificationMeta(
-    'duration',
+  static const VerificationMeta _totalDurationMeta = const VerificationMeta(
+    'totalDuration',
   );
   @override
-  late final GeneratedColumn<String> duration = GeneratedColumn<String>(
-    'duration',
+  late final GeneratedColumn<String> totalDuration = GeneratedColumn<String>(
+    'total_duration',
     aliasedName,
     true,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _remainingDurationMeta = const VerificationMeta(
+    'remainingDuration',
+  );
+  @override
+  late final GeneratedColumn<String> remainingDuration =
+      GeneratedColumn<String>(
+        'remaining_duration',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _coverImageMeta = const VerificationMeta(
     'coverImage',
   );
@@ -7289,7 +7301,8 @@ class $DashboardContentsTableTable extends DashboardContentsTable
     title,
     chapterId,
     chapterTitle,
-    duration,
+    totalDuration,
+    remainingDuration,
     coverImage,
     progress,
     displayOrder,
@@ -7337,10 +7350,22 @@ class $DashboardContentsTableTable extends DashboardContentsTable
         ),
       );
     }
-    if (data.containsKey('duration')) {
+    if (data.containsKey('total_duration')) {
       context.handle(
-        _durationMeta,
-        duration.isAcceptableOrUnknown(data['duration']!, _durationMeta),
+        _totalDurationMeta,
+        totalDuration.isAcceptableOrUnknown(
+          data['total_duration']!,
+          _totalDurationMeta,
+        ),
+      );
+    }
+    if (data.containsKey('remaining_duration')) {
+      context.handle(
+        _remainingDurationMeta,
+        remainingDuration.isAcceptableOrUnknown(
+          data['remaining_duration']!,
+          _remainingDurationMeta,
+        ),
       );
     }
     if (data.containsKey('cover_image')) {
@@ -7403,9 +7428,13 @@ class $DashboardContentsTableTable extends DashboardContentsTable
         DriftSqlType.string,
         data['${effectivePrefix}chapter_title'],
       ),
-      duration: attachedDatabase.typeMapping.read(
+      totalDuration: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}duration'],
+        data['${effectivePrefix}total_duration'],
+      ),
+      remainingDuration: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}remaining_duration'],
       ),
       coverImage: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -7445,7 +7474,8 @@ class DashboardContentData extends DataClass
   final String title;
   final String? chapterId;
   final String? chapterTitle;
-  final String? duration;
+  final String? totalDuration;
+  final String? remainingDuration;
   final String? coverImage;
   final double? progress;
   final int displayOrder;
@@ -7456,7 +7486,8 @@ class DashboardContentData extends DataClass
     required this.title,
     this.chapterId,
     this.chapterTitle,
-    this.duration,
+    this.totalDuration,
+    this.remainingDuration,
     this.coverImage,
     this.progress,
     required this.displayOrder,
@@ -7482,8 +7513,11 @@ class DashboardContentData extends DataClass
     if (!nullToAbsent || chapterTitle != null) {
       map['chapter_title'] = Variable<String>(chapterTitle);
     }
-    if (!nullToAbsent || duration != null) {
-      map['duration'] = Variable<String>(duration);
+    if (!nullToAbsent || totalDuration != null) {
+      map['total_duration'] = Variable<String>(totalDuration);
+    }
+    if (!nullToAbsent || remainingDuration != null) {
+      map['remaining_duration'] = Variable<String>(remainingDuration);
     }
     if (!nullToAbsent || coverImage != null) {
       map['cover_image'] = Variable<String>(coverImage);
@@ -7507,9 +7541,12 @@ class DashboardContentData extends DataClass
       chapterTitle: chapterTitle == null && nullToAbsent
           ? const Value.absent()
           : Value(chapterTitle),
-      duration: duration == null && nullToAbsent
+      totalDuration: totalDuration == null && nullToAbsent
           ? const Value.absent()
-          : Value(duration),
+          : Value(totalDuration),
+      remainingDuration: remainingDuration == null && nullToAbsent
+          ? const Value.absent()
+          : Value(remainingDuration),
       coverImage: coverImage == null && nullToAbsent
           ? const Value.absent()
           : Value(coverImage),
@@ -7536,7 +7573,10 @@ class DashboardContentData extends DataClass
       title: serializer.fromJson<String>(json['title']),
       chapterId: serializer.fromJson<String?>(json['chapterId']),
       chapterTitle: serializer.fromJson<String?>(json['chapterTitle']),
-      duration: serializer.fromJson<String?>(json['duration']),
+      totalDuration: serializer.fromJson<String?>(json['totalDuration']),
+      remainingDuration: serializer.fromJson<String?>(
+        json['remainingDuration'],
+      ),
       coverImage: serializer.fromJson<String?>(json['coverImage']),
       progress: serializer.fromJson<double?>(json['progress']),
       displayOrder: serializer.fromJson<int>(json['displayOrder']),
@@ -7556,7 +7596,8 @@ class DashboardContentData extends DataClass
       'title': serializer.toJson<String>(title),
       'chapterId': serializer.toJson<String?>(chapterId),
       'chapterTitle': serializer.toJson<String?>(chapterTitle),
-      'duration': serializer.toJson<String?>(duration),
+      'totalDuration': serializer.toJson<String?>(totalDuration),
+      'remainingDuration': serializer.toJson<String?>(remainingDuration),
       'coverImage': serializer.toJson<String?>(coverImage),
       'progress': serializer.toJson<double?>(progress),
       'displayOrder': serializer.toJson<int>(displayOrder),
@@ -7570,7 +7611,8 @@ class DashboardContentData extends DataClass
     String? title,
     Value<String?> chapterId = const Value.absent(),
     Value<String?> chapterTitle = const Value.absent(),
-    Value<String?> duration = const Value.absent(),
+    Value<String?> totalDuration = const Value.absent(),
+    Value<String?> remainingDuration = const Value.absent(),
     Value<String?> coverImage = const Value.absent(),
     Value<double?> progress = const Value.absent(),
     int? displayOrder,
@@ -7581,7 +7623,12 @@ class DashboardContentData extends DataClass
     title: title ?? this.title,
     chapterId: chapterId.present ? chapterId.value : this.chapterId,
     chapterTitle: chapterTitle.present ? chapterTitle.value : this.chapterTitle,
-    duration: duration.present ? duration.value : this.duration,
+    totalDuration: totalDuration.present
+        ? totalDuration.value
+        : this.totalDuration,
+    remainingDuration: remainingDuration.present
+        ? remainingDuration.value
+        : this.remainingDuration,
     coverImage: coverImage.present ? coverImage.value : this.coverImage,
     progress: progress.present ? progress.value : this.progress,
     displayOrder: displayOrder ?? this.displayOrder,
@@ -7600,7 +7647,12 @@ class DashboardContentData extends DataClass
       chapterTitle: data.chapterTitle.present
           ? data.chapterTitle.value
           : this.chapterTitle,
-      duration: data.duration.present ? data.duration.value : this.duration,
+      totalDuration: data.totalDuration.present
+          ? data.totalDuration.value
+          : this.totalDuration,
+      remainingDuration: data.remainingDuration.present
+          ? data.remainingDuration.value
+          : this.remainingDuration,
       coverImage: data.coverImage.present
           ? data.coverImage.value
           : this.coverImage,
@@ -7620,7 +7672,8 @@ class DashboardContentData extends DataClass
           ..write('title: $title, ')
           ..write('chapterId: $chapterId, ')
           ..write('chapterTitle: $chapterTitle, ')
-          ..write('duration: $duration, ')
+          ..write('totalDuration: $totalDuration, ')
+          ..write('remainingDuration: $remainingDuration, ')
           ..write('coverImage: $coverImage, ')
           ..write('progress: $progress, ')
           ..write('displayOrder: $displayOrder')
@@ -7636,7 +7689,8 @@ class DashboardContentData extends DataClass
     title,
     chapterId,
     chapterTitle,
-    duration,
+    totalDuration,
+    remainingDuration,
     coverImage,
     progress,
     displayOrder,
@@ -7651,7 +7705,8 @@ class DashboardContentData extends DataClass
           other.title == this.title &&
           other.chapterId == this.chapterId &&
           other.chapterTitle == this.chapterTitle &&
-          other.duration == this.duration &&
+          other.totalDuration == this.totalDuration &&
+          other.remainingDuration == this.remainingDuration &&
           other.coverImage == this.coverImage &&
           other.progress == this.progress &&
           other.displayOrder == this.displayOrder);
@@ -7665,7 +7720,8 @@ class DashboardContentsTableCompanion
   final Value<String> title;
   final Value<String?> chapterId;
   final Value<String?> chapterTitle;
-  final Value<String?> duration;
+  final Value<String?> totalDuration;
+  final Value<String?> remainingDuration;
   final Value<String?> coverImage;
   final Value<double?> progress;
   final Value<int> displayOrder;
@@ -7677,7 +7733,8 @@ class DashboardContentsTableCompanion
     this.title = const Value.absent(),
     this.chapterId = const Value.absent(),
     this.chapterTitle = const Value.absent(),
-    this.duration = const Value.absent(),
+    this.totalDuration = const Value.absent(),
+    this.remainingDuration = const Value.absent(),
     this.coverImage = const Value.absent(),
     this.progress = const Value.absent(),
     this.displayOrder = const Value.absent(),
@@ -7690,7 +7747,8 @@ class DashboardContentsTableCompanion
     required String title,
     this.chapterId = const Value.absent(),
     this.chapterTitle = const Value.absent(),
-    this.duration = const Value.absent(),
+    this.totalDuration = const Value.absent(),
+    this.remainingDuration = const Value.absent(),
     this.coverImage = const Value.absent(),
     this.progress = const Value.absent(),
     required int displayOrder,
@@ -7707,7 +7765,8 @@ class DashboardContentsTableCompanion
     Expression<String>? title,
     Expression<String>? chapterId,
     Expression<String>? chapterTitle,
-    Expression<String>? duration,
+    Expression<String>? totalDuration,
+    Expression<String>? remainingDuration,
     Expression<String>? coverImage,
     Expression<double>? progress,
     Expression<int>? displayOrder,
@@ -7720,7 +7779,8 @@ class DashboardContentsTableCompanion
       if (title != null) 'title': title,
       if (chapterId != null) 'chapter_id': chapterId,
       if (chapterTitle != null) 'chapter_title': chapterTitle,
-      if (duration != null) 'duration': duration,
+      if (totalDuration != null) 'total_duration': totalDuration,
+      if (remainingDuration != null) 'remaining_duration': remainingDuration,
       if (coverImage != null) 'cover_image': coverImage,
       if (progress != null) 'progress': progress,
       if (displayOrder != null) 'display_order': displayOrder,
@@ -7735,7 +7795,8 @@ class DashboardContentsTableCompanion
     Value<String>? title,
     Value<String?>? chapterId,
     Value<String?>? chapterTitle,
-    Value<String?>? duration,
+    Value<String?>? totalDuration,
+    Value<String?>? remainingDuration,
     Value<String?>? coverImage,
     Value<double?>? progress,
     Value<int>? displayOrder,
@@ -7748,7 +7809,8 @@ class DashboardContentsTableCompanion
       title: title ?? this.title,
       chapterId: chapterId ?? this.chapterId,
       chapterTitle: chapterTitle ?? this.chapterTitle,
-      duration: duration ?? this.duration,
+      totalDuration: totalDuration ?? this.totalDuration,
+      remainingDuration: remainingDuration ?? this.remainingDuration,
       coverImage: coverImage ?? this.coverImage,
       progress: progress ?? this.progress,
       displayOrder: displayOrder ?? this.displayOrder,
@@ -7785,8 +7847,11 @@ class DashboardContentsTableCompanion
     if (chapterTitle.present) {
       map['chapter_title'] = Variable<String>(chapterTitle.value);
     }
-    if (duration.present) {
-      map['duration'] = Variable<String>(duration.value);
+    if (totalDuration.present) {
+      map['total_duration'] = Variable<String>(totalDuration.value);
+    }
+    if (remainingDuration.present) {
+      map['remaining_duration'] = Variable<String>(remainingDuration.value);
     }
     if (coverImage.present) {
       map['cover_image'] = Variable<String>(coverImage.value);
@@ -7812,7 +7877,8 @@ class DashboardContentsTableCompanion
           ..write('title: $title, ')
           ..write('chapterId: $chapterId, ')
           ..write('chapterTitle: $chapterTitle, ')
-          ..write('duration: $duration, ')
+          ..write('totalDuration: $totalDuration, ')
+          ..write('remainingDuration: $remainingDuration, ')
           ..write('coverImage: $coverImage, ')
           ..write('progress: $progress, ')
           ..write('displayOrder: $displayOrder, ')
@@ -11413,7 +11479,8 @@ typedef $$DashboardContentsTableTableCreateCompanionBuilder =
       required String title,
       Value<String?> chapterId,
       Value<String?> chapterTitle,
-      Value<String?> duration,
+      Value<String?> totalDuration,
+      Value<String?> remainingDuration,
       Value<String?> coverImage,
       Value<double?> progress,
       required int displayOrder,
@@ -11427,7 +11494,8 @@ typedef $$DashboardContentsTableTableUpdateCompanionBuilder =
       Value<String> title,
       Value<String?> chapterId,
       Value<String?> chapterTitle,
-      Value<String?> duration,
+      Value<String?> totalDuration,
+      Value<String?> remainingDuration,
       Value<String?> coverImage,
       Value<double?> progress,
       Value<int> displayOrder,
@@ -11483,8 +11551,13 @@ class $$DashboardContentsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get duration => $composableBuilder(
-    column: $table.duration,
+  ColumnFilters<String> get totalDuration => $composableBuilder(
+    column: $table.totalDuration,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get remainingDuration => $composableBuilder(
+    column: $table.remainingDuration,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -11543,8 +11616,13 @@ class $$DashboardContentsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get duration => $composableBuilder(
-    column: $table.duration,
+  ColumnOrderings<String> get totalDuration => $composableBuilder(
+    column: $table.totalDuration,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get remainingDuration => $composableBuilder(
+    column: $table.remainingDuration,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -11599,8 +11677,15 @@ class $$DashboardContentsTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get duration =>
-      $composableBuilder(column: $table.duration, builder: (column) => column);
+  GeneratedColumn<String> get totalDuration => $composableBuilder(
+    column: $table.totalDuration,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get remainingDuration => $composableBuilder(
+    column: $table.remainingDuration,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get coverImage => $composableBuilder(
     column: $table.coverImage,
@@ -11668,7 +11753,8 @@ class $$DashboardContentsTableTableTableManager
                 Value<String> title = const Value.absent(),
                 Value<String?> chapterId = const Value.absent(),
                 Value<String?> chapterTitle = const Value.absent(),
-                Value<String?> duration = const Value.absent(),
+                Value<String?> totalDuration = const Value.absent(),
+                Value<String?> remainingDuration = const Value.absent(),
                 Value<String?> coverImage = const Value.absent(),
                 Value<double?> progress = const Value.absent(),
                 Value<int> displayOrder = const Value.absent(),
@@ -11680,7 +11766,8 @@ class $$DashboardContentsTableTableTableManager
                 title: title,
                 chapterId: chapterId,
                 chapterTitle: chapterTitle,
-                duration: duration,
+                totalDuration: totalDuration,
+                remainingDuration: remainingDuration,
                 coverImage: coverImage,
                 progress: progress,
                 displayOrder: displayOrder,
@@ -11694,7 +11781,8 @@ class $$DashboardContentsTableTableTableManager
                 required String title,
                 Value<String?> chapterId = const Value.absent(),
                 Value<String?> chapterTitle = const Value.absent(),
-                Value<String?> duration = const Value.absent(),
+                Value<String?> totalDuration = const Value.absent(),
+                Value<String?> remainingDuration = const Value.absent(),
                 Value<String?> coverImage = const Value.absent(),
                 Value<double?> progress = const Value.absent(),
                 required int displayOrder,
@@ -11706,7 +11794,8 @@ class $$DashboardContentsTableTableTableManager
                 title: title,
                 chapterId: chapterId,
                 chapterTitle: chapterTitle,
-                duration: duration,
+                totalDuration: totalDuration,
+                remainingDuration: remainingDuration,
                 coverImage: coverImage,
                 progress: progress,
                 displayOrder: displayOrder,

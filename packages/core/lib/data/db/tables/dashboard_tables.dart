@@ -22,7 +22,8 @@ class DashboardContentsTable extends Table {
   TextColumn get title => text()();
   TextColumn get chapterId => text().nullable()();
   TextColumn get chapterTitle => text().nullable()();
-  TextColumn get duration => text().nullable()();
+  TextColumn get totalDuration => text().nullable()();
+  TextColumn get remainingDuration => text().nullable()();
   TextColumn get coverImage => text().nullable()();
   RealColumn get progress => real().nullable()();
   IntColumn get displayOrder => integer()();

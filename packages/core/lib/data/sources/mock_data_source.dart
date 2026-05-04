@@ -941,6 +941,12 @@ class MockDataSource implements DataSource {
     return mockWhatsNewFeed;
   }
 
+  @override
+  Future<DashboardContentsDto> getResumeLearningFeed(DashboardSectionType sectionType) async {
+    await Future.delayed(const Duration(milliseconds: 400));
+    return mockResumeLearningFeed;
+  }
+
   // ─────────────────────────────────────────────────────────────────────────
   // User Profile
   // ─────────────────────────────────────────────────────────────────────────
