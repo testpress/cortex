@@ -435,6 +435,31 @@ const mockWhatsNewFeed = DashboardContentsDto(
   ],
 );
 
+const mockResumeLearningFeed = DashboardContentsDto(
+  items: [
+    DashboardContentDto(
+      id: '376154',
+      title: 'Rectilinear Motion : Part 01',
+      chapterTitle: 'Rectilinear Motion',
+      contentType: DashboardContentType.video,
+      sectionType: DashboardSectionType.resumeLearning,
+      duration: '5765',
+      coverImage: 'https://d1j3vi2u94ebt0.cloudfront.net/institute/brilliantpalalms/chapter_contents/192570/7f977cf2e71e4ecba9909788605737a7.png',
+      progress: 65.0,
+    ),
+    DashboardContentDto(
+      id: '363107',
+      title: 'IISER Previous Year Model - 2025',
+      chapterTitle: 'IISER PREVIOUS YEAR MODEL EXAM [ 2017-2025]',
+      contentType: DashboardContentType.test,
+      sectionType: DashboardSectionType.resumeLearning,
+      duration: '3:00:00',
+      coverImage: 'https://d1j3vi2u94ebt0.cloudfront.net/institute/brilliantpalalms/chapter_contents/363107/047b484129f04324b36ceaf5ebadf348.png',
+      progress: 0.0,
+    ),
+  ],
+);
+
 const mockLearners = [
   LearnerDto(
     id: '1',

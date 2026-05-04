@@ -78,7 +78,7 @@ class LessonCardWidget extends StatelessWidget {
                     ),
 
                   // Progress Badge
-                  if (lesson.progress != null && lesson.progress! > 0)
+                  if (lesson.progress != null)
                     Positioned(
                       top: 8,
                       right: 8,
@@ -163,7 +163,7 @@ class LessonCardWidget extends StatelessWidget {
                         ),
                       ),
                     // Progress Bar
-                    if (lesson.progress != null && lesson.progress! > 0) ...[
+                    if (lesson.progress != null) ...[
                       const SizedBox(height: 10),
                       Container(
                         height: 4,

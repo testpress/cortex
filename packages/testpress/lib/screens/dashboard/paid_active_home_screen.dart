@@ -28,44 +28,13 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     final shortcuts = ref.watch(quickShortcutsProvider);
 
     final whatsNewAsync = ref.watch(whatsNewFeedProvider);
+    final resumeLearningAsync = ref.watch(resumeLearningFeedProvider);
     final user = userAsync.valueOrNull;
 
     final isBannerPresent = config.instituteLogoUrl != null;
 
-    final dummyResumeLessons = [
-      const dto.DashboardContentDto(
-        id: '1',
-        title: 'Wave Optics',
-        chapterTitle: 'Physics Class 12',
-        progress: 45,
-        duration: '1h 30m',
-        coverImage: 'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=500&q=80',
-        contentType: dto.DashboardContentType.video,
-        sectionType: dto.DashboardSectionType.resumeLearning,
-      ),
-      const dto.DashboardContentDto(
-        id: '2',
-        title: 'Chemical Kinetics',
-        chapterTitle: 'Chemistry Class 12',
-        progress: 20,
-        duration: '45m',
-        coverImage: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=500&q=80',
-        contentType: dto.DashboardContentType.video,
-        sectionType: dto.DashboardSectionType.resumeLearning,
-      ),
-      const dto.DashboardContentDto(
-        id: '3',
-        title: 'Electromagnetic Waves',
-        chapterTitle: 'Physics Class 12',
-        progress: 10,
-        duration: '1h',
-        coverImage: 'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=500&q=80',
-        contentType: dto.DashboardContentType.video,
-        sectionType: dto.DashboardSectionType.resumeLearning,
-      ),
-    ];
-
     final whatsNewLessons = whatsNewAsync.valueOrNull ?? [];
+    final resumeLessons = resumeLearningAsync.valueOrNull ?? [];
 
     final dummyCompletedLessons = [
       const dto.DashboardContentDto(
@@ -144,7 +113,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     );
 
     final lessonCardsSection = LessonCardsSectionWidget(
-      resumeLessons: dummyResumeLessons,
+      resumeLessons: resumeLessons,
       whatsNewLessons: whatsNewLessons,
       recentlyCompletedLessons: dummyCompletedLessons,
       config: config,
