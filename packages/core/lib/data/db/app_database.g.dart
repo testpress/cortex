@@ -7165,6 +7165,663 @@ class LearnersTableCompanion extends UpdateCompanion<LearnersTableData> {
   }
 }
 
+class $DashboardContentsTableTable extends DashboardContentsTable
+    with TableInfo<$DashboardContentsTableTable, DashboardContentData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DashboardContentsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _lessonIdMeta = const VerificationMeta(
+    'lessonId',
+  );
+  @override
+  late final GeneratedColumn<String> lessonId = GeneratedColumn<String>(
+    'lesson_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<DashboardSectionType, int>
+  sectionType =
+      GeneratedColumn<int>(
+        'section_type',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: true,
+      ).withConverter<DashboardSectionType>(
+        $DashboardContentsTableTable.$convertersectionType,
+      );
+  @override
+  late final GeneratedColumnWithTypeConverter<DashboardContentType, int>
+  lessonType =
+      GeneratedColumn<int>(
+        'lesson_type',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: true,
+      ).withConverter<DashboardContentType>(
+        $DashboardContentsTableTable.$converterlessonType,
+      );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _chapterIdMeta = const VerificationMeta(
+    'chapterId',
+  );
+  @override
+  late final GeneratedColumn<String> chapterId = GeneratedColumn<String>(
+    'chapter_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _chapterTitleMeta = const VerificationMeta(
+    'chapterTitle',
+  );
+  @override
+  late final GeneratedColumn<String> chapterTitle = GeneratedColumn<String>(
+    'chapter_title',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _durationMeta = const VerificationMeta(
+    'duration',
+  );
+  @override
+  late final GeneratedColumn<String> duration = GeneratedColumn<String>(
+    'duration',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _coverImageMeta = const VerificationMeta(
+    'coverImage',
+  );
+  @override
+  late final GeneratedColumn<String> coverImage = GeneratedColumn<String>(
+    'cover_image',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _progressMeta = const VerificationMeta(
+    'progress',
+  );
+  @override
+  late final GeneratedColumn<double> progress = GeneratedColumn<double>(
+    'progress',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _displayOrderMeta = const VerificationMeta(
+    'displayOrder',
+  );
+  @override
+  late final GeneratedColumn<int> displayOrder = GeneratedColumn<int>(
+    'display_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    lessonId,
+    sectionType,
+    lessonType,
+    title,
+    chapterId,
+    chapterTitle,
+    duration,
+    coverImage,
+    progress,
+    displayOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'dashboard_contents_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DashboardContentData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('lesson_id')) {
+      context.handle(
+        _lessonIdMeta,
+        lessonId.isAcceptableOrUnknown(data['lesson_id']!, _lessonIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lessonIdMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('chapter_id')) {
+      context.handle(
+        _chapterIdMeta,
+        chapterId.isAcceptableOrUnknown(data['chapter_id']!, _chapterIdMeta),
+      );
+    }
+    if (data.containsKey('chapter_title')) {
+      context.handle(
+        _chapterTitleMeta,
+        chapterTitle.isAcceptableOrUnknown(
+          data['chapter_title']!,
+          _chapterTitleMeta,
+        ),
+      );
+    }
+    if (data.containsKey('duration')) {
+      context.handle(
+        _durationMeta,
+        duration.isAcceptableOrUnknown(data['duration']!, _durationMeta),
+      );
+    }
+    if (data.containsKey('cover_image')) {
+      context.handle(
+        _coverImageMeta,
+        coverImage.isAcceptableOrUnknown(data['cover_image']!, _coverImageMeta),
+      );
+    }
+    if (data.containsKey('progress')) {
+      context.handle(
+        _progressMeta,
+        progress.isAcceptableOrUnknown(data['progress']!, _progressMeta),
+      );
+    }
+    if (data.containsKey('display_order')) {
+      context.handle(
+        _displayOrderMeta,
+        displayOrder.isAcceptableOrUnknown(
+          data['display_order']!,
+          _displayOrderMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_displayOrderMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {lessonId, sectionType};
+  @override
+  DashboardContentData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DashboardContentData(
+      lessonId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}lesson_id'],
+      )!,
+      sectionType: $DashboardContentsTableTable.$convertersectionType.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}section_type'],
+        )!,
+      ),
+      lessonType: $DashboardContentsTableTable.$converterlessonType.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}lesson_type'],
+        )!,
+      ),
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      chapterId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}chapter_id'],
+      ),
+      chapterTitle: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}chapter_title'],
+      ),
+      duration: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}duration'],
+      ),
+      coverImage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cover_image'],
+      ),
+      progress: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}progress'],
+      ),
+      displayOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}display_order'],
+      )!,
+    );
+  }
+
+  @override
+  $DashboardContentsTableTable createAlias(String alias) {
+    return $DashboardContentsTableTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<DashboardSectionType, int, int>
+  $convertersectionType = const EnumIndexConverter<DashboardSectionType>(
+    DashboardSectionType.values,
+  );
+  static JsonTypeConverter2<DashboardContentType, int, int>
+  $converterlessonType = const EnumIndexConverter<DashboardContentType>(
+    DashboardContentType.values,
+  );
+}
+
+class DashboardContentData extends DataClass
+    implements Insertable<DashboardContentData> {
+  final String lessonId;
+  final DashboardSectionType sectionType;
+  final DashboardContentType lessonType;
+  final String title;
+  final String? chapterId;
+  final String? chapterTitle;
+  final String? duration;
+  final String? coverImage;
+  final double? progress;
+  final int displayOrder;
+  const DashboardContentData({
+    required this.lessonId,
+    required this.sectionType,
+    required this.lessonType,
+    required this.title,
+    this.chapterId,
+    this.chapterTitle,
+    this.duration,
+    this.coverImage,
+    this.progress,
+    required this.displayOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['lesson_id'] = Variable<String>(lessonId);
+    {
+      map['section_type'] = Variable<int>(
+        $DashboardContentsTableTable.$convertersectionType.toSql(sectionType),
+      );
+    }
+    {
+      map['lesson_type'] = Variable<int>(
+        $DashboardContentsTableTable.$converterlessonType.toSql(lessonType),
+      );
+    }
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || chapterId != null) {
+      map['chapter_id'] = Variable<String>(chapterId);
+    }
+    if (!nullToAbsent || chapterTitle != null) {
+      map['chapter_title'] = Variable<String>(chapterTitle);
+    }
+    if (!nullToAbsent || duration != null) {
+      map['duration'] = Variable<String>(duration);
+    }
+    if (!nullToAbsent || coverImage != null) {
+      map['cover_image'] = Variable<String>(coverImage);
+    }
+    if (!nullToAbsent || progress != null) {
+      map['progress'] = Variable<double>(progress);
+    }
+    map['display_order'] = Variable<int>(displayOrder);
+    return map;
+  }
+
+  DashboardContentsTableCompanion toCompanion(bool nullToAbsent) {
+    return DashboardContentsTableCompanion(
+      lessonId: Value(lessonId),
+      sectionType: Value(sectionType),
+      lessonType: Value(lessonType),
+      title: Value(title),
+      chapterId: chapterId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(chapterId),
+      chapterTitle: chapterTitle == null && nullToAbsent
+          ? const Value.absent()
+          : Value(chapterTitle),
+      duration: duration == null && nullToAbsent
+          ? const Value.absent()
+          : Value(duration),
+      coverImage: coverImage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(coverImage),
+      progress: progress == null && nullToAbsent
+          ? const Value.absent()
+          : Value(progress),
+      displayOrder: Value(displayOrder),
+    );
+  }
+
+  factory DashboardContentData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DashboardContentData(
+      lessonId: serializer.fromJson<String>(json['lessonId']),
+      sectionType: $DashboardContentsTableTable.$convertersectionType.fromJson(
+        serializer.fromJson<int>(json['sectionType']),
+      ),
+      lessonType: $DashboardContentsTableTable.$converterlessonType.fromJson(
+        serializer.fromJson<int>(json['lessonType']),
+      ),
+      title: serializer.fromJson<String>(json['title']),
+      chapterId: serializer.fromJson<String?>(json['chapterId']),
+      chapterTitle: serializer.fromJson<String?>(json['chapterTitle']),
+      duration: serializer.fromJson<String?>(json['duration']),
+      coverImage: serializer.fromJson<String?>(json['coverImage']),
+      progress: serializer.fromJson<double?>(json['progress']),
+      displayOrder: serializer.fromJson<int>(json['displayOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'lessonId': serializer.toJson<String>(lessonId),
+      'sectionType': serializer.toJson<int>(
+        $DashboardContentsTableTable.$convertersectionType.toJson(sectionType),
+      ),
+      'lessonType': serializer.toJson<int>(
+        $DashboardContentsTableTable.$converterlessonType.toJson(lessonType),
+      ),
+      'title': serializer.toJson<String>(title),
+      'chapterId': serializer.toJson<String?>(chapterId),
+      'chapterTitle': serializer.toJson<String?>(chapterTitle),
+      'duration': serializer.toJson<String?>(duration),
+      'coverImage': serializer.toJson<String?>(coverImage),
+      'progress': serializer.toJson<double?>(progress),
+      'displayOrder': serializer.toJson<int>(displayOrder),
+    };
+  }
+
+  DashboardContentData copyWith({
+    String? lessonId,
+    DashboardSectionType? sectionType,
+    DashboardContentType? lessonType,
+    String? title,
+    Value<String?> chapterId = const Value.absent(),
+    Value<String?> chapterTitle = const Value.absent(),
+    Value<String?> duration = const Value.absent(),
+    Value<String?> coverImage = const Value.absent(),
+    Value<double?> progress = const Value.absent(),
+    int? displayOrder,
+  }) => DashboardContentData(
+    lessonId: lessonId ?? this.lessonId,
+    sectionType: sectionType ?? this.sectionType,
+    lessonType: lessonType ?? this.lessonType,
+    title: title ?? this.title,
+    chapterId: chapterId.present ? chapterId.value : this.chapterId,
+    chapterTitle: chapterTitle.present ? chapterTitle.value : this.chapterTitle,
+    duration: duration.present ? duration.value : this.duration,
+    coverImage: coverImage.present ? coverImage.value : this.coverImage,
+    progress: progress.present ? progress.value : this.progress,
+    displayOrder: displayOrder ?? this.displayOrder,
+  );
+  DashboardContentData copyWithCompanion(DashboardContentsTableCompanion data) {
+    return DashboardContentData(
+      lessonId: data.lessonId.present ? data.lessonId.value : this.lessonId,
+      sectionType: data.sectionType.present
+          ? data.sectionType.value
+          : this.sectionType,
+      lessonType: data.lessonType.present
+          ? data.lessonType.value
+          : this.lessonType,
+      title: data.title.present ? data.title.value : this.title,
+      chapterId: data.chapterId.present ? data.chapterId.value : this.chapterId,
+      chapterTitle: data.chapterTitle.present
+          ? data.chapterTitle.value
+          : this.chapterTitle,
+      duration: data.duration.present ? data.duration.value : this.duration,
+      coverImage: data.coverImage.present
+          ? data.coverImage.value
+          : this.coverImage,
+      progress: data.progress.present ? data.progress.value : this.progress,
+      displayOrder: data.displayOrder.present
+          ? data.displayOrder.value
+          : this.displayOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DashboardContentData(')
+          ..write('lessonId: $lessonId, ')
+          ..write('sectionType: $sectionType, ')
+          ..write('lessonType: $lessonType, ')
+          ..write('title: $title, ')
+          ..write('chapterId: $chapterId, ')
+          ..write('chapterTitle: $chapterTitle, ')
+          ..write('duration: $duration, ')
+          ..write('coverImage: $coverImage, ')
+          ..write('progress: $progress, ')
+          ..write('displayOrder: $displayOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    lessonId,
+    sectionType,
+    lessonType,
+    title,
+    chapterId,
+    chapterTitle,
+    duration,
+    coverImage,
+    progress,
+    displayOrder,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DashboardContentData &&
+          other.lessonId == this.lessonId &&
+          other.sectionType == this.sectionType &&
+          other.lessonType == this.lessonType &&
+          other.title == this.title &&
+          other.chapterId == this.chapterId &&
+          other.chapterTitle == this.chapterTitle &&
+          other.duration == this.duration &&
+          other.coverImage == this.coverImage &&
+          other.progress == this.progress &&
+          other.displayOrder == this.displayOrder);
+}
+
+class DashboardContentsTableCompanion
+    extends UpdateCompanion<DashboardContentData> {
+  final Value<String> lessonId;
+  final Value<DashboardSectionType> sectionType;
+  final Value<DashboardContentType> lessonType;
+  final Value<String> title;
+  final Value<String?> chapterId;
+  final Value<String?> chapterTitle;
+  final Value<String?> duration;
+  final Value<String?> coverImage;
+  final Value<double?> progress;
+  final Value<int> displayOrder;
+  final Value<int> rowid;
+  const DashboardContentsTableCompanion({
+    this.lessonId = const Value.absent(),
+    this.sectionType = const Value.absent(),
+    this.lessonType = const Value.absent(),
+    this.title = const Value.absent(),
+    this.chapterId = const Value.absent(),
+    this.chapterTitle = const Value.absent(),
+    this.duration = const Value.absent(),
+    this.coverImage = const Value.absent(),
+    this.progress = const Value.absent(),
+    this.displayOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DashboardContentsTableCompanion.insert({
+    required String lessonId,
+    required DashboardSectionType sectionType,
+    required DashboardContentType lessonType,
+    required String title,
+    this.chapterId = const Value.absent(),
+    this.chapterTitle = const Value.absent(),
+    this.duration = const Value.absent(),
+    this.coverImage = const Value.absent(),
+    this.progress = const Value.absent(),
+    required int displayOrder,
+    this.rowid = const Value.absent(),
+  }) : lessonId = Value(lessonId),
+       sectionType = Value(sectionType),
+       lessonType = Value(lessonType),
+       title = Value(title),
+       displayOrder = Value(displayOrder);
+  static Insertable<DashboardContentData> custom({
+    Expression<String>? lessonId,
+    Expression<int>? sectionType,
+    Expression<int>? lessonType,
+    Expression<String>? title,
+    Expression<String>? chapterId,
+    Expression<String>? chapterTitle,
+    Expression<String>? duration,
+    Expression<String>? coverImage,
+    Expression<double>? progress,
+    Expression<int>? displayOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (lessonId != null) 'lesson_id': lessonId,
+      if (sectionType != null) 'section_type': sectionType,
+      if (lessonType != null) 'lesson_type': lessonType,
+      if (title != null) 'title': title,
+      if (chapterId != null) 'chapter_id': chapterId,
+      if (chapterTitle != null) 'chapter_title': chapterTitle,
+      if (duration != null) 'duration': duration,
+      if (coverImage != null) 'cover_image': coverImage,
+      if (progress != null) 'progress': progress,
+      if (displayOrder != null) 'display_order': displayOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DashboardContentsTableCompanion copyWith({
+    Value<String>? lessonId,
+    Value<DashboardSectionType>? sectionType,
+    Value<DashboardContentType>? lessonType,
+    Value<String>? title,
+    Value<String?>? chapterId,
+    Value<String?>? chapterTitle,
+    Value<String?>? duration,
+    Value<String?>? coverImage,
+    Value<double?>? progress,
+    Value<int>? displayOrder,
+    Value<int>? rowid,
+  }) {
+    return DashboardContentsTableCompanion(
+      lessonId: lessonId ?? this.lessonId,
+      sectionType: sectionType ?? this.sectionType,
+      lessonType: lessonType ?? this.lessonType,
+      title: title ?? this.title,
+      chapterId: chapterId ?? this.chapterId,
+      chapterTitle: chapterTitle ?? this.chapterTitle,
+      duration: duration ?? this.duration,
+      coverImage: coverImage ?? this.coverImage,
+      progress: progress ?? this.progress,
+      displayOrder: displayOrder ?? this.displayOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (lessonId.present) {
+      map['lesson_id'] = Variable<String>(lessonId.value);
+    }
+    if (sectionType.present) {
+      map['section_type'] = Variable<int>(
+        $DashboardContentsTableTable.$convertersectionType.toSql(
+          sectionType.value,
+        ),
+      );
+    }
+    if (lessonType.present) {
+      map['lesson_type'] = Variable<int>(
+        $DashboardContentsTableTable.$converterlessonType.toSql(
+          lessonType.value,
+        ),
+      );
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (chapterId.present) {
+      map['chapter_id'] = Variable<String>(chapterId.value);
+    }
+    if (chapterTitle.present) {
+      map['chapter_title'] = Variable<String>(chapterTitle.value);
+    }
+    if (duration.present) {
+      map['duration'] = Variable<String>(duration.value);
+    }
+    if (coverImage.present) {
+      map['cover_image'] = Variable<String>(coverImage.value);
+    }
+    if (progress.present) {
+      map['progress'] = Variable<double>(progress.value);
+    }
+    if (displayOrder.present) {
+      map['display_order'] = Variable<int>(displayOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DashboardContentsTableCompanion(')
+          ..write('lessonId: $lessonId, ')
+          ..write('sectionType: $sectionType, ')
+          ..write('lessonType: $lessonType, ')
+          ..write('title: $title, ')
+          ..write('chapterId: $chapterId, ')
+          ..write('chapterTitle: $chapterTitle, ')
+          ..write('duration: $duration, ')
+          ..write('coverImage: $coverImage, ')
+          ..write('progress: $progress, ')
+          ..write('displayOrder: $displayOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -7187,6 +7844,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $DashboardBannersTableTable dashboardBannersTable =
       $DashboardBannersTableTable(this);
   late final $LearnersTableTable learnersTable = $LearnersTableTable(this);
+  late final $DashboardContentsTableTable dashboardContentsTable =
+      $DashboardContentsTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -7203,6 +7862,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     usersTable,
     dashboardBannersTable,
     learnersTable,
+    dashboardContentsTable,
   ];
 }
 
@@ -10745,6 +11405,342 @@ typedef $$LearnersTableTableProcessedTableManager =
       LearnersTableData,
       PrefetchHooks Function()
     >;
+typedef $$DashboardContentsTableTableCreateCompanionBuilder =
+    DashboardContentsTableCompanion Function({
+      required String lessonId,
+      required DashboardSectionType sectionType,
+      required DashboardContentType lessonType,
+      required String title,
+      Value<String?> chapterId,
+      Value<String?> chapterTitle,
+      Value<String?> duration,
+      Value<String?> coverImage,
+      Value<double?> progress,
+      required int displayOrder,
+      Value<int> rowid,
+    });
+typedef $$DashboardContentsTableTableUpdateCompanionBuilder =
+    DashboardContentsTableCompanion Function({
+      Value<String> lessonId,
+      Value<DashboardSectionType> sectionType,
+      Value<DashboardContentType> lessonType,
+      Value<String> title,
+      Value<String?> chapterId,
+      Value<String?> chapterTitle,
+      Value<String?> duration,
+      Value<String?> coverImage,
+      Value<double?> progress,
+      Value<int> displayOrder,
+      Value<int> rowid,
+    });
+
+class $$DashboardContentsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $DashboardContentsTableTable> {
+  $$DashboardContentsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get lessonId => $composableBuilder(
+    column: $table.lessonId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<
+    DashboardSectionType,
+    DashboardSectionType,
+    int
+  >
+  get sectionType => $composableBuilder(
+    column: $table.sectionType,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<
+    DashboardContentType,
+    DashboardContentType,
+    int
+  >
+  get lessonType => $composableBuilder(
+    column: $table.lessonType,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get chapterId => $composableBuilder(
+    column: $table.chapterId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get chapterTitle => $composableBuilder(
+    column: $table.chapterTitle,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get duration => $composableBuilder(
+    column: $table.duration,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get coverImage => $composableBuilder(
+    column: $table.coverImage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get progress => $composableBuilder(
+    column: $table.progress,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DashboardContentsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $DashboardContentsTableTable> {
+  $$DashboardContentsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get lessonId => $composableBuilder(
+    column: $table.lessonId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sectionType => $composableBuilder(
+    column: $table.sectionType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get lessonType => $composableBuilder(
+    column: $table.lessonType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get chapterId => $composableBuilder(
+    column: $table.chapterId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get chapterTitle => $composableBuilder(
+    column: $table.chapterTitle,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get duration => $composableBuilder(
+    column: $table.duration,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get coverImage => $composableBuilder(
+    column: $table.coverImage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get progress => $composableBuilder(
+    column: $table.progress,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DashboardContentsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DashboardContentsTableTable> {
+  $$DashboardContentsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get lessonId =>
+      $composableBuilder(column: $table.lessonId, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<DashboardSectionType, int> get sectionType =>
+      $composableBuilder(
+        column: $table.sectionType,
+        builder: (column) => column,
+      );
+
+  GeneratedColumnWithTypeConverter<DashboardContentType, int> get lessonType =>
+      $composableBuilder(
+        column: $table.lessonType,
+        builder: (column) => column,
+      );
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get chapterId =>
+      $composableBuilder(column: $table.chapterId, builder: (column) => column);
+
+  GeneratedColumn<String> get chapterTitle => $composableBuilder(
+    column: $table.chapterTitle,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get duration =>
+      $composableBuilder(column: $table.duration, builder: (column) => column);
+
+  GeneratedColumn<String> get coverImage => $composableBuilder(
+    column: $table.coverImage,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get progress =>
+      $composableBuilder(column: $table.progress, builder: (column) => column);
+
+  GeneratedColumn<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => column,
+  );
+}
+
+class $$DashboardContentsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DashboardContentsTableTable,
+          DashboardContentData,
+          $$DashboardContentsTableTableFilterComposer,
+          $$DashboardContentsTableTableOrderingComposer,
+          $$DashboardContentsTableTableAnnotationComposer,
+          $$DashboardContentsTableTableCreateCompanionBuilder,
+          $$DashboardContentsTableTableUpdateCompanionBuilder,
+          (
+            DashboardContentData,
+            BaseReferences<
+              _$AppDatabase,
+              $DashboardContentsTableTable,
+              DashboardContentData
+            >,
+          ),
+          DashboardContentData,
+          PrefetchHooks Function()
+        > {
+  $$DashboardContentsTableTableTableManager(
+    _$AppDatabase db,
+    $DashboardContentsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DashboardContentsTableTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$DashboardContentsTableTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$DashboardContentsTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> lessonId = const Value.absent(),
+                Value<DashboardSectionType> sectionType = const Value.absent(),
+                Value<DashboardContentType> lessonType = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String?> chapterId = const Value.absent(),
+                Value<String?> chapterTitle = const Value.absent(),
+                Value<String?> duration = const Value.absent(),
+                Value<String?> coverImage = const Value.absent(),
+                Value<double?> progress = const Value.absent(),
+                Value<int> displayOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DashboardContentsTableCompanion(
+                lessonId: lessonId,
+                sectionType: sectionType,
+                lessonType: lessonType,
+                title: title,
+                chapterId: chapterId,
+                chapterTitle: chapterTitle,
+                duration: duration,
+                coverImage: coverImage,
+                progress: progress,
+                displayOrder: displayOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String lessonId,
+                required DashboardSectionType sectionType,
+                required DashboardContentType lessonType,
+                required String title,
+                Value<String?> chapterId = const Value.absent(),
+                Value<String?> chapterTitle = const Value.absent(),
+                Value<String?> duration = const Value.absent(),
+                Value<String?> coverImage = const Value.absent(),
+                Value<double?> progress = const Value.absent(),
+                required int displayOrder,
+                Value<int> rowid = const Value.absent(),
+              }) => DashboardContentsTableCompanion.insert(
+                lessonId: lessonId,
+                sectionType: sectionType,
+                lessonType: lessonType,
+                title: title,
+                chapterId: chapterId,
+                chapterTitle: chapterTitle,
+                duration: duration,
+                coverImage: coverImage,
+                progress: progress,
+                displayOrder: displayOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DashboardContentsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DashboardContentsTableTable,
+      DashboardContentData,
+      $$DashboardContentsTableTableFilterComposer,
+      $$DashboardContentsTableTableOrderingComposer,
+      $$DashboardContentsTableTableAnnotationComposer,
+      $$DashboardContentsTableTableCreateCompanionBuilder,
+      $$DashboardContentsTableTableUpdateCompanionBuilder,
+      (
+        DashboardContentData,
+        BaseReferences<
+          _$AppDatabase,
+          $DashboardContentsTableTable,
+          DashboardContentData
+        >,
+      ),
+      DashboardContentData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -10771,4 +11767,9 @@ class $AppDatabaseManager {
       $$DashboardBannersTableTableTableManager(_db, _db.dashboardBannersTable);
   $$LearnersTableTableTableManager get learnersTable =>
       $$LearnersTableTableTableManager(_db, _db.learnersTable);
+  $$DashboardContentsTableTableTableManager get dashboardContentsTable =>
+      $$DashboardContentsTableTableTableManager(
+        _db,
+        _db.dashboardContentsTable,
+      );
 }

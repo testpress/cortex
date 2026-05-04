@@ -465,5 +465,8 @@
   },
   "attachmentDownload": "تحميل",
   "attachmentDownloading": "جاري التحميل...",
-  "attachmentViewFile": "عرض الملف المحمل"
+  "attachmentViewFile": "عرض الملف المحمل",
+  "dashboardWhatsNewTitle": "ما هو الجديد",
+  "dashboardRecentlyCompletedTitle": "المكتملة مؤخرًا",
+  "dashboardResumeTitle": "استئناف التعلم"
 }

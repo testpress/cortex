@@ -31,6 +31,7 @@ dependencies:
   flutter_secure_storage: ^9.2.2
   dio_web_adapter: ^2.1.2
   tpstreams_player_sdk: 2.2.19
+  smooth_page_indicator: ^1.1.0
 
 dev_dependencies:
   flutter_test:

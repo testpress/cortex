@@ -181,24 +181,11 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                       ...filteredLessons.map((lesson) {
                         return LessonListItem(
                           lesson: lesson,
-                          onTap: () {
-                            final route = switch (lesson.type) {
-                              LessonType.video ||
-                              LessonType.pdf ||
-                              LessonType.notes ||
-                              LessonType.embedContent ||
-                              LessonType.liveStream ||
-                              LessonType.attachment =>
-                                '/study/lesson/${lesson.id}',
-                              LessonType.assessment =>
-                                '/study/assessment/${lesson.id}',
-                              LessonType.test => '/study/test/${lesson.id}',
-                              LessonType.unknown => null,
-                            };
-                            if (route != null) {
-                              context.push(route);
-                            }
-                          },
+                          onTap: () => LessonRouter.navigateToLesson(
+                            context,
+                            id: lesson.id,
+                            type: lesson.type,
+                          ),
                         );
                       }),
 

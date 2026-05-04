@@ -148,5 +148,23 @@ final quickShortcutsProvider =
 // ignore: unused_element
 typedef QuickShortcutsRef
     = AutoDisposeFutureProviderRef<List<QuickShortcutDto>>;
+String _$whatsNewFeedHash() => r'fa7da6a2eb5e51808e1244fbd391eec46195c20c';
+
+/// See also [whatsNewFeed].
+@ProviderFor(whatsNewFeed)
+final whatsNewFeedProvider =
+    AutoDisposeStreamProvider<List<DashboardContentDto>>.internal(
+  whatsNewFeed,
+  name: r'whatsNewFeedProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$whatsNewFeedHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef WhatsNewFeedRef
+    = AutoDisposeStreamProviderRef<List<DashboardContentDto>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

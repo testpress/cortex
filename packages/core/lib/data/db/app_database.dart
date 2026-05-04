@@ -14,8 +14,6 @@ import 'tables/forum_comments_table.dart';
 import 'tables/user_progress_table.dart';
 import 'tables/app_settings_table.dart';
 import 'tables/users_table.dart';
-import 'tables/banners_table.dart';
-import 'tables/learners_table.dart';
 import 'package:core/data/data.dart';
 
 part 'app_database.g.dart';
@@ -33,13 +31,14 @@ part 'app_database.g.dart';
     UsersTable,
     DashboardBannersTable,
     LearnersTable,
+    DashboardContentsTable,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 13;
+  int get schemaVersion => 14;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -141,6 +140,10 @@ class AppDatabase extends _$AppDatabase {
           if (from < 13) {
             // Version 13 adds Learners table for top learners offline caching
             await createTableSafely(learnersTable);
+          }
+          if (from < 14) {
+            // Version 14 adds Dashboard Contents table for generic section caching
+            await createTableSafely(dashboardContentsTable);
           }
         },
       );
@@ -353,6 +356,28 @@ class AppDatabase extends _$AppDatabase {
     return transaction(() async {
       await delete(learnersTable).go();
       await batch((b) => b.insertAll(learnersTable, rows));
+    });
+  }
+
+  // ── Dashboard Feed Management ─────────────────────────────────────────────
+
+  /// Watch a specific dashboard section.
+  Stream<List<DashboardContentData>> watchDashboardSection(DashboardSectionType sectionType) {
+    final query = select(dashboardContentsTable)
+      ..where((t) => t.sectionType.equalsValue(sectionType))
+      ..orderBy([(t) => OrderingTerm.asc(t.displayOrder)]);
+
+    return query.watch();
+  }
+
+  /// Wipe and refresh a specific dashboard section.
+  Future<void> wipeAndInsertDashboardSection(
+      DashboardSectionType sectionType, List<DashboardContentsTableCompanion> rows) {
+    return transaction(() async {
+      await (delete(dashboardContentsTable)
+            ..where((t) => t.sectionType.equalsValue(sectionType)))
+          .go();
+      await batch((b) => b.insertAll(dashboardContentsTable, rows));
     });
   }
 

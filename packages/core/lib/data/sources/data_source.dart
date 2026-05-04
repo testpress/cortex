@@ -22,6 +22,7 @@ abstract class DataSource {
   /// Fetch upcoming contents for a specific course.
   Future<CourseCurriculumDto> getUpcomingContents(String courseId);
 
+
   /// Fetch content attempts (History) for a specific course.
   Future<CourseCurriculumDto> getContentAttempts(String courseId);
 
@@ -66,6 +67,9 @@ abstract class DataSource {
 
   /// Fetch top learners from `/api/v2.3/leaderboard/`.
   Future<List<LearnerDto>> getLearners();
+
+  /// Fetch the latest content updates from `/api/v2.4/whats-new/`.
+  Future<DashboardContentsDto> getWhatsNewFeed(DashboardSectionType sectionType);
 
   /// Fetch the authenticated user's profile.
   Future<UserDto> getProfile();

@@ -43,6 +43,8 @@ export 'shell/app_shell.dart';
 
 // Navigation
 export 'navigation/app_route.dart';
+export 'navigation/route_names.dart';
+export 'navigation/lesson_router.dart';
 export 'package:go_router/go_router.dart';
 
 // Accessibility

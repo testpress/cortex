@@ -465,5 +465,8 @@
   },
   "attachmentDownload": "ഡൗൺലോഡ്",
   "attachmentDownloading": "ഡൗൺലോഡ് ചെയ്യുന്നു...",
-  "attachmentViewFile": "ഫയൽ കാണുക"
+  "attachmentViewFile": "ഫയൽ കാണുക",
+  "dashboardWhatsNewTitle": "പുതിയ കാര്യങ്ങൾ",
+  "dashboardRecentlyCompletedTitle": "അടുത്തിടെ പൂർത്തിയാക്കിയത്",
+  "dashboardResumeTitle": "പഠനം തുടരുക"
 }

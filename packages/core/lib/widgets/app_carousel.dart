@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../design/design_provider.dart';
 
 /// A generic horizontal carousel with dot indicators.
@@ -30,14 +31,9 @@ class AppCarousel extends StatefulWidget {
 }
 
 class _AppCarouselState extends State<AppCarousel> {
-  late PageController _pageController;
-  int _currentPage = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController(viewportFraction: widget.viewportFraction);
-  }
+  late final PageController _pageController = PageController(
+    viewportFraction: widget.viewportFraction,
+  );
 
   @override
   void dispose() {
@@ -58,10 +54,7 @@ class _AppCarouselState extends State<AppCarousel> {
             controller: _pageController,
             itemCount: widget.itemCount,
             padEnds: widget.padEnds,
-            onPageChanged: (index) {
-              setState(() => _currentPage = index);
-              widget.onPageChanged?.call(index);
-            },
+            onPageChanged: widget.onPageChanged,
             itemBuilder: (context, index) {
               return Padding(
                 padding:
@@ -74,38 +67,20 @@ class _AppCarouselState extends State<AppCarousel> {
         ),
         if (widget.showDots && widget.itemCount > 1) ...[
           SizedBox(height: design.spacing.sm),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              widget.itemCount,
-              (index) => _DotIndicator(isActive: index == _currentPage),
+          SmoothPageIndicator(
+            controller: _pageController,
+            count: widget.itemCount,
+            effect: ScrollingDotsEffect(
+              activeDotColor: design.colors.textPrimary,
+              dotColor: design.colors.textPrimary.withValues(alpha: 0.2),
+              dotHeight: 7,
+              dotWidth: 7,
+              activeDotScale: 1.0,
+              maxVisibleDots: 5,
             ),
           ),
         ],
       ],
-    );
-  }
-}
-
-class _DotIndicator extends StatelessWidget {
-  const _DotIndicator({required this.isActive});
-
-  final bool isActive;
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: design.spacing.xs / 2),
-      width: isActive ? 24 : 6,
-      height: 6,
-      decoration: BoxDecoration(
-        color: isActive
-            ? design.colors.textPrimary
-            : design.colors.textPrimary.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(3),
-      ),
     );
   }
 }
