@@ -222,6 +222,17 @@ class HttpDataSource implements DataSource {
   }
 
   @override
+  Future<DashboardContentsDto> getWhatsNewFeed(DashboardSectionType sectionType) async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.whatsNewFeed),
+      fromJson: (data) => DashboardContentsDto.fromJson(
+        data,
+        sectionType: sectionType,
+      ),
+    );
+  }
+
+  @override
   Future<UserDto> getProfile() async {
     return performNetworkRequest(
       _dio.get(ApiEndpoints.userProfile),

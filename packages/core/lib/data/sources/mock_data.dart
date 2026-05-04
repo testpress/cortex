@@ -412,6 +412,29 @@ List<ForumCommentDto> mockForumComments(String threadId) {
 }
 
 /// Mock learners for leaderboard
+const mockWhatsNewFeed = DashboardContentsDto(
+  items: [
+    DashboardContentDto(
+      id: '1',
+      title: 'Introduction to Calculus',
+      chapterTitle: 'Calculus Basics',
+      contentType: DashboardContentType.video,
+      sectionType: DashboardSectionType.whatsNew,
+      duration: '15:30',
+      coverImage: 'https://placeholder.com/video1.png',
+    ),
+    DashboardContentDto(
+      id: '2',
+      title: 'Practice Set 1',
+      chapterTitle: 'Calculus Basics',
+      contentType: DashboardContentType.test,
+      sectionType: DashboardSectionType.whatsNew,
+      duration: '45 mins',
+      coverImage: 'https://placeholder.com/test1.png',
+    ),
+  ],
+);
+
 const mockLearners = [
   LearnerDto(
     id: '1',

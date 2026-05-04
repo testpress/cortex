@@ -3,8 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:courses/courses.dart';
-import 'package:courses/models/course_content.dart';
-import 'package:core/data/data.dart';
 import 'package:profile/profile.dart';
 import 'package:exams/exams.dart';
 
@@ -173,6 +171,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         StatefulShellBranch(
           routes: [
             GoRoute(
+              name: AppRouteNames.home,
               path: '/home',
               builder: (context, state) => const PaidActiveHomeScreen(),
               routes: [
@@ -211,6 +210,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         StatefulShellBranch(
           routes: [
             GoRoute(
+              name: AppRouteNames.study,
               path: '/study',
               builder: (context, state) => const StudyScreen(),
               routes: [
@@ -235,24 +235,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                           courseId: courseId,
                           chapterId: chapterId,
                           onBack: () => context.pop(),
-                          onLessonClick: (lesson) {
-                            final String? path = switch (lesson.type) {
-                              LessonType.video ||
-                              LessonType.pdf ||
-                              LessonType.attachment ||
-                              LessonType.notes ||
-                              LessonType.embedContent ||
-                              LessonType.liveStream =>
-                                '/study/lesson/${lesson.id}',
-                              LessonType.test => '/study/test/${lesson.id}',
-                              LessonType.assessment =>
-                                '/study/assessment/${lesson.id}',
-                              LessonType.unknown => null,
-                            };
-                            if (path != null) {
-                              context.push(path, extra: lesson);
-                            }
-                          },
+                          onLessonClick: (lesson) => LessonRouter.navigateToLesson(
+                            context,
+                            id: lesson.id,
+                            type: lesson.type,
+                          ),
                         );
                       },
                     ),
@@ -260,6 +247,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 ),
                 // Lesson and Placeholder routes inside Chapter branch to stay within the shell
                 GoRoute(
+                  name: AppRouteNames.lessonDetail,
                   path: 'lesson/:id',
                   builder: (context, state) {
                     final id = state.pathParameters['id']!;
@@ -330,11 +318,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   },
                 ),
                 GoRoute(
+                  name: AppRouteNames.videoDetail,
                   path: 'video/:id',
                   redirect: (context, state) =>
                       '/study/lesson/${state.pathParameters['id']}',
                 ),
                 GoRoute(
+                  name: AppRouteNames.testDetail,
                   path: 'test/:id',
                   builder: (context, state) {
                     final id = state.pathParameters['id']!;
@@ -376,6 +366,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   ],
                 ),
                 GoRoute(
+                  name: AppRouteNames.assessmentDetail,
                   path: 'assessment/:id',
                   builder: (context, state) {
                     final id = state.pathParameters['id']!;

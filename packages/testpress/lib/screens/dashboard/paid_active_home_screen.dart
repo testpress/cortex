@@ -27,103 +27,76 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     final learnersState = ref.watch(learnersProvider);
     final shortcuts = ref.watch(quickShortcutsProvider);
 
+    final whatsNewAsync = ref.watch(whatsNewFeedProvider);
     final user = userAsync.valueOrNull;
 
     final isBannerPresent = config.instituteLogoUrl != null;
 
     final dummyResumeLessons = [
-      const LessonCardModel(
+      const dto.DashboardContentDto(
         id: '1',
         title: 'Wave Optics',
-        chapterName: 'Physics Class 12',
-        subject: 'Physics',
+        chapterTitle: 'Physics Class 12',
         progress: 45,
         duration: '1h 30m',
-        instructor: 'Dr. Smith',
         coverImage: 'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=500&q=80',
+        contentType: dto.DashboardContentType.video,
+        sectionType: dto.DashboardSectionType.resumeLearning,
       ),
-      const LessonCardModel(
+      const dto.DashboardContentDto(
         id: '2',
         title: 'Chemical Kinetics',
-        chapterName: 'Chemistry Class 12',
-        subject: 'Chemistry',
+        chapterTitle: 'Chemistry Class 12',
         progress: 20,
         duration: '45m',
-        instructor: 'Prof. Jones',
         coverImage: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=500&q=80',
+        contentType: dto.DashboardContentType.video,
+        sectionType: dto.DashboardSectionType.resumeLearning,
       ),
-      const LessonCardModel(
+      const dto.DashboardContentDto(
         id: '3',
         title: 'Electromagnetic Waves',
-        chapterName: 'Physics Class 12',
-        subject: 'Physics',
+        chapterTitle: 'Physics Class 12',
         progress: 10,
         duration: '1h',
-        instructor: 'Dr. Smith',
         coverImage: 'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=500&q=80',
+        contentType: dto.DashboardContentType.video,
+        sectionType: dto.DashboardSectionType.resumeLearning,
       ),
     ];
 
-    final dummyWhatsNewLessons = [
-      const LessonCardModel(
-        id: '4',
-        title: 'Integral Calculus',
-        chapterName: 'Math Class 12',
-        subject: 'Mathematics',
-        duration: '2h',
-        instructor: 'Mr. White',
-        coverImage: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=500&q=80',
-      ),
-      const LessonCardModel(
-        id: '5',
-        title: 'Organic Chemistry',
-        chapterName: 'Chemistry Class 12',
-        subject: 'Chemistry',
-        duration: '1h 45m',
-        instructor: 'Prof. Jones',
-        coverImage: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=500&q=80',
-      ),
-      const LessonCardModel(
-        id: '9',
-        title: 'Probability',
-        chapterName: 'Math Class 12',
-        subject: 'Mathematics',
-        duration: '1h 10m',
-        instructor: 'Mr. White',
-        coverImage: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=500&q=80',
-      ),
-    ];
+    final whatsNewLessons = whatsNewAsync.valueOrNull ?? [];
 
     final dummyCompletedLessons = [
-      const LessonCardModel(
+      const dto.DashboardContentDto(
         id: '6',
         title: 'Cell Biology',
-        chapterName: 'Biology Class 11',
-        subject: 'Biology',
+        chapterTitle: 'Biology Class 11',
         progress: 100,
         duration: '1h',
-        instructor: 'Ms. Green',
         coverImage: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
+        contentType: dto.DashboardContentType.video,
+        sectionType: dto.DashboardSectionType.recentlyCompleted,
       ),
-      const LessonCardModel(
+      const dto.DashboardContentDto(
         id: '7',
         title: 'Genetics',
-        chapterName: 'Biology Class 12',
-        subject: 'Biology',
+        chapterTitle: 'Biology Class 12',
         progress: 100,
         duration: '2h 15m',
-        instructor: 'Ms. Green',
         coverImage: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
+        contentType: dto.DashboardContentType.video,
+        sectionType: dto.DashboardSectionType.recentlyCompleted,
       ),
-      const LessonCardModel(
+      const dto.DashboardContentDto(
         id: '8',
         title: 'Plant Physiology',
-        chapterName: 'Biology Class 11',
-        subject: 'Biology',
+        chapterTitle: 'Biology Class 11',
         progress: 100,
         duration: '1h 20m',
-        instructor: 'Ms. Green',
         coverImage: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
+        contentType: dto.DashboardContentType.video,
+        sectionType: dto.DashboardSectionType.recentlyCompleted,
       ),
     ];
 
@@ -172,7 +145,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
 
     final lessonCardsSection = LessonCardsSectionWidget(
       resumeLessons: dummyResumeLessons,
-      whatsNewLessons: dummyWhatsNewLessons,
+      whatsNewLessons: whatsNewLessons,
       recentlyCompletedLessons: dummyCompletedLessons,
       config: config,
     );

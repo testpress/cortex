@@ -25,8 +25,10 @@ export 'models/paginated_response_dto.dart';
 export 'models/client_config.dart';
 export 'models/dashboard_banner_dto.dart';
 export 'models/learner_dto.dart';
+export 'models/dashboard_contents_dto.dart';
 
 // Database
+export 'db/tables/dashboard_tables.dart';
 export 'db/app_database.dart';
 export 'repositories/dashboard_repository.dart';
 export 'db/database_provider.dart';

@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:drift/drift.dart';
 import '../data.dart';
@@ -84,6 +83,58 @@ class DashboardRepository {
       )).toList());
     } catch (e) {
       debugPrint('DEBUG: Failed to fetch top learners: $e');
+    }
+  }
+
+  /// Watch the "What's New" feed.
+  Stream<List<DashboardContentDto>> watchWhatsNewFeed() async* {
+    // 1. Trigger background refresh
+    refreshWhatsNewFeed().catchError((e) {
+      debugPrint('DEBUG: Failed to refresh WhatsNew feed: $e');
+    });
+
+    // 2. Stream from database directly
+    yield* _db.watchDashboardSection(DashboardSectionType.whatsNew).map((rows) {
+      return rows.map((data) => DashboardContentDto(
+        id: data.lessonId,
+        title: data.title,
+        chapterId: data.chapterId,
+        chapterTitle: data.chapterTitle,
+        contentType: data.lessonType,
+        duration: data.duration,
+        coverImage: data.coverImage,
+        progress: data.progress,
+        sectionType: data.sectionType,
+      )).toList();
+    });
+  }
+
+  /// Fetch the latest feed and refresh the database mappings.
+  Future<void> refreshWhatsNewFeed() async {
+    try {
+      final dto = await _dataSource.getWhatsNewFeed(DashboardSectionType.whatsNew);
+      
+      await _db.wipeAndInsertDashboardSection(
+        DashboardSectionType.whatsNew,
+        dto.items.asMap().entries.map((entry) {
+          final index = entry.key;
+          final item = entry.value;
+          return DashboardContentData(
+            lessonId: item.id,
+            sectionType: DashboardSectionType.whatsNew,
+            lessonType: item.contentType,
+            title: item.title,
+            displayOrder: index,
+            chapterId: item.chapterId,
+            chapterTitle: item.chapterTitle,
+            duration: item.duration,
+            coverImage: item.coverImage,
+            progress: item.progress,
+          ).toCompanion(true);
+        }).toList(),
+      );
+    } catch (e) {
+      debugPrint('DEBUG: Failed to refresh WhatsNew feed: $e');
     }
   }
 }

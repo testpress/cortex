@@ -1,31 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:core/core.dart'; // Assumes Design, AppCarousel, etc.
+import 'package:core/core.dart'; 
 import 'package:core/data/data.dart';
 
-class LessonCardModel {
-  final String id;
-  final String title;
-  final String chapterName;
-  final String subject;
-  final double? progress; // 0 to 100
-  final String? duration;
-  final String? coverImage;
-  final String? instructor;
-
-  const LessonCardModel({
-    required this.id,
-    required this.title,
-    required this.chapterName,
-    required this.subject,
-    this.progress,
-    this.duration,
-    this.coverImage,
-    this.instructor,
-  });
-}
-
 class LessonCardWidget extends StatelessWidget {
-  final LessonCardModel lesson;
+  final DashboardContentDto lesson;
   final bool isCompleted;
 
   const LessonCardWidget({
@@ -33,23 +11,6 @@ class LessonCardWidget extends StatelessWidget {
     required this.lesson,
     this.isCompleted = false,
   });
-
-  Color _getSubjectColor(String subject) {
-    switch (subject) {
-      case 'Physics':
-        return Colors.purple;
-      case 'Chemistry':
-        return Colors.teal; // using teal for emerald
-      case 'Mathematics':
-        return Colors.orange;
-      case 'Biology':
-        return Colors.green;
-      case 'English':
-        return Colors.pink;
-      default:
-        return Colors.blue;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,8 +40,8 @@ class LessonCardWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Cover Image Area
-            SizedBox(
-              height: 92,
+            AspectRatio(
+              aspectRatio: 16 / 9,
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -104,48 +65,17 @@ class LessonCardWidget extends StatelessWidget {
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: _getSubjectColor(lesson.subject),
+                            color: design.colors.primary.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.menu_book,
-                            color: Colors.white,
+                            color: design.colors.primary,
                             size: 24,
                           ),
                         ),
                       ),
                     ),
-
-                  // Subject Badge
-                  Positioned(
-                    top: 8,
-                    left: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: _getSubjectColor(lesson.subject),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 2,
-                            offset: Offset(0, 1),
-                          ),
-                        ],
-                      ),
-                      child: Text(
-                        lesson.subject,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
 
                   // Progress Badge
                   if (lesson.progress != null && lesson.progress! > 0)
@@ -181,107 +111,84 @@ class LessonCardWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              lesson.title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 14,
-                                height: 20 / 14,
-                                fontWeight: FontWeight.w600,
-                                color: textPrimary,
-                              ),
-                            ),
-                            const SizedBox(height: 1),
-                            Text(
-                              lesson.chapterName,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 12,
-                                height: 16 / 12,
-                                color: textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Icon(
-                        Icons.chevron_right,
-                        size: 16,
-                        color: textMuted,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  // Metadata
-                  Row(
-                    children: [
-                      if (lesson.instructor != null) ...[
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         Expanded(
-                          child: Text(
-                            lesson.instructor!,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: textMuted,
-                            ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                lesson.title,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  height: 20 / 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: textPrimary,
+                                ),
+                              ),
+                              if (lesson.chapterTitle != null) ...[
+                                const SizedBox(height: 1),
+                                Text(
+                                  lesson.chapterTitle!,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    height: 16 / 12,
+                                    color: textSecondary,
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
                         ),
-                        if (lesson.duration != null)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
-                            child: Text(
-                              '•',
-                              style: TextStyle(fontSize: 11, color: textMuted),
-                            ),
-                          ),
+                        Icon(
+                          Icons.chevron_right,
+                          size: 16,
+                          color: textMuted,
+                        ),
                       ],
-                      if (lesson.duration != null)
-                        Text(
-                          lesson.duration!,
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: textMuted,
-                          ),
-                        ),
-                    ],
-                  ),
-                  // Progress Bar
-                  if (lesson.progress != null && lesson.progress! > 0) ...[
-                    const Spacer(),
-                    Container(
-                      height: 4,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: design.isDark
-                            ? const Color(0xFF334155)
-                            : const Color(0xFFE2E8F0),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                      alignment: Alignment.centerLeft,
-                      child: FractionallySizedBox(
-                        widthFactor: (lesson.progress! / 100).clamp(0.0, 1.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
-                      ),
                     ),
+                    const SizedBox(height: 6),
+                    // Metadata
+                    if (lesson.duration != null)
+                      Text(
+                        lesson.duration!,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: textMuted,
+                        ),
+                      ),
+                    // Progress Bar
+                    if (lesson.progress != null && lesson.progress! > 0) ...[
+                      const SizedBox(height: 10),
+                      Container(
+                        height: 4,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: design.isDark
+                              ? const Color(0xFF334155)
+                              : const Color(0xFFE2E8F0),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                        alignment: Alignment.centerLeft,
+                        child: FractionallySizedBox(
+                          widthFactor: (lesson.progress! / 100).clamp(0.0, 1.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: design.colors.primary,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
             ),
           ],
         ),
@@ -291,9 +198,9 @@ class LessonCardWidget extends StatelessWidget {
 }
 
 class LessonCardsSectionWidget extends StatelessWidget {
-  final List<LessonCardModel> resumeLessons;
-  final List<LessonCardModel> whatsNewLessons;
-  final List<LessonCardModel> recentlyCompletedLessons;
+  final List<DashboardContentDto> resumeLessons;
+  final List<DashboardContentDto> whatsNewLessons;
+  final List<DashboardContentDto> recentlyCompletedLessons;
   final ClientConfig config;
 
   const LessonCardsSectionWidget({
@@ -307,47 +214,64 @@ class LessonCardsSectionWidget extends StatelessWidget {
   Widget _buildCarouselSection(
     BuildContext context,
     String title,
-    List<LessonCardModel> lessons, {
+    List<DashboardContentDto> lessons, {
     bool isCompleted = false,
+    bool showMetadata = true,
   }) {
-    if (lessons.isEmpty) return const SizedBox.shrink();
-
     final design = Design.of(context);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: design.spacing.lg),
-          child: Text(
-            title,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: design.colors.textPrimary,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final itemWidth = constraints.maxWidth * 0.45; // viewportFraction is 0.45
+        
+        // Image height (16:9) + Content & Padding + Carousel margin (16px)
+        // Content with metadata is ~90px, without is ~65px
+        final calculatedHeight = (itemWidth / (16 / 9)) + (showMetadata ? 90 : 65) + 16;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: design.spacing.lg),
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: design.colors.textPrimary,
+                ),
+              ),
             ),
-          ),
-        ),
-        SizedBox(height: design.spacing.sm),
-        AppCarousel(
-          itemCount: lessons.length,
-          height: 204, // Increased height for better aspect ratio
-          viewportFraction: 0.45, // Slightly narrower cards for better balance
-          padEnds: false, // Align items to the left
-          itemPadding: EdgeInsets.only(left: design.spacing.md), // Reduced gap
-          itemBuilder: (context, index) {
-            final lesson = lessons[index];
-            return Container(
-               margin: const EdgeInsets.only(bottom: 16.0), // For Box Shadow
-               child: LessonCardWidget(
-                 lesson: lesson,
-                 isCompleted: isCompleted,
-               ),
-            );
-          },
-        ),
-        SizedBox(height: design.spacing.xs),
-      ],
+            SizedBox(height: design.spacing.sm),
+            AppCarousel(
+              itemCount: lessons.length,
+              height: calculatedHeight, 
+              viewportFraction: 0.45, 
+              padEnds: false, 
+              itemPadding: EdgeInsets.only(left: design.spacing.md), 
+              itemBuilder: (context, index) {
+                final lesson = lessons[index];
+                return Container(
+                   margin: const EdgeInsets.only(bottom: 16.0), 
+                   child: AppFocusable(
+                     onTap: () => LessonRouter.navigateToLesson(
+                       context,
+                       id: lesson.id,
+                       type: lesson.contentType,
+                     ),
+                     borderRadius: BorderRadius.circular(design.spacing.md),
+                     child: LessonCardWidget(
+                       lesson: lesson,
+                       isCompleted: isCompleted,
+                     ),
+                   ),
+                );
+              },
+            ),
+            SizedBox(height: design.spacing.xs),
+          ],
+        );
+      },
     );
   }
 
@@ -361,12 +285,14 @@ class LessonCardsSectionWidget extends StatelessWidget {
             context,
             'Resume',
             resumeLessons,
+            showMetadata: true,
           ),
         if (config.showWhatsNewSection)
           _buildCarouselSection(
             context,
             "What's New",
             whatsNewLessons,
+            showMetadata: false,
           ),
         if (config.showRecentlyCompletedSection)
           _buildCarouselSection(
@@ -374,6 +300,7 @@ class LessonCardsSectionWidget extends StatelessWidget {
             'Recently Completed',
             recentlyCompletedLessons,
             isCompleted: true,
+            showMetadata: true,
           ),
       ],
     );

@@ -58,4 +58,10 @@ Future<List<QuickShortcutDto>> quickShortcuts(Ref ref) async {
   return mockQuickShortcuts;
 }
 
+@riverpod
+Stream<List<DashboardContentDto>> whatsNewFeed(Ref ref) async* {
+  final repository = await ref.watch(dashboardRepositoryProvider.future);
+  yield* repository.watchWhatsNewFeed();
+}
+
 final isHomeDrawerOpenProvider = StateProvider<bool>((ref) => false);
