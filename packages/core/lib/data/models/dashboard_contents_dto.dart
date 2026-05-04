@@ -10,7 +10,8 @@ class DashboardContentDto {
   final String? chapterTitle;
   final DashboardContentType contentType;
   final DashboardSectionType? sectionType;
-  final String? duration;
+  final String? totalDuration;
+  final String? remainingDuration;
   final String? coverImage;
   final double? progress;
 
@@ -21,7 +22,8 @@ class DashboardContentDto {
     this.chapterTitle,
     required this.contentType,
     this.sectionType,
-    this.duration,
+    this.totalDuration,
+    this.remainingDuration,
     this.coverImage,
     this.progress,
   });
@@ -38,7 +40,8 @@ class DashboardContentDto {
       chapterId: chapterId,
       chapterTitle: chapterMap?[chapterId],
       contentType: _mapContentType((json['content_type'] ?? json['type'] ?? 'unknown').toString()),
-      duration: json['duration'],
+      totalDuration: json['total_duration'] ?? json['duration'],
+      remainingDuration: json['remaining_duration'],
       coverImage: json['cover_image'] ?? json['image'],
       progress: (json['progress'] as num?)?.toDouble(),
       sectionType: sectionType,
@@ -126,7 +129,8 @@ class DashboardContentsDto {
       
       if (total > 0) {
         final videoEntryId = v['id'].toString();
-        videoProgressMap[videoEntryId] = (effectiveProgress / total) * 100;
+        final calculatedProgress = (effectiveProgress / total) * 100;
+        videoProgressMap[videoEntryId] = calculatedProgress.clamp(0.0, 100.0);
         videoDurationMap[videoEntryId] = TimeFormatter.formatDuration(totalSeconds.toString()) ?? '';
       }
     }
@@ -148,22 +152,26 @@ class DashboardContentsDto {
 
       final type = (map['content_type'] ?? '').toString().toLowerCase();
       double? progress;
-      String? duration;
+      String? totalDuration;
+      String? remainingDuration;
 
       if (type == 'video') {
         final userVideoId = attempt['user_video_id']?.toString();
         if (userVideoId != null && videoProgressMap.containsKey(userVideoId)) {
           progress = videoProgressMap[userVideoId];
-          duration = videoDurationMap[userVideoId];
+          totalDuration = videoDurationMap[userVideoId];
         } else {
           continue;
         }
-      } else if (type == 'exam') {
+      } else if (type == 'exam' || type == 'test') {
         final assessmentId = attempt['assessment_id']?.toString();
         if (assessmentId != null && assessmentMap.containsKey(assessmentId)) {
-          progress = 0.0; // Indicate started/running state
-          final exam = assessmentMap[assessmentId]['exam'];
-          duration = TimeFormatter.formatDuration(exam?['duration']?.toString());
+          progress = 0.0;
+          final assessment = assessmentMap[assessmentId];
+          final exam = assessment?['exam'];
+          final remainingTime = assessment?['remaining_time']?.toString();
+          totalDuration = TimeFormatter.formatDuration(exam?['duration']?.toString());
+          remainingDuration = TimeFormatter.formatDuration(remainingTime);
         } else {
           continue;
         }
@@ -173,7 +181,8 @@ class DashboardContentsDto {
 
       seenContentIds.add(contentId);
       map['progress'] = progress;
-      if (duration != null) map['duration'] = duration;
+      if (totalDuration != null) map['total_duration'] = totalDuration;
+      if (remainingDuration != null) map['remaining_duration'] = remainingDuration;
 
       items.add(DashboardContentDto.fromJson(
         map,

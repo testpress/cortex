@@ -154,14 +154,15 @@ class LessonCardWidget extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     // Metadata
-                    if (lesson.duration != null)
+                    if (lesson.remainingDuration != null) ...[
                       Text(
-                        lesson.duration!,
+                        lesson.remainingDuration!,
                         style: TextStyle(
                           fontSize: 11,
                           color: textMuted,
                         ),
                       ),
+                    ],
                     // Progress Bar
                     if (lesson.progress != null) ...[
                       const SizedBox(height: 10),

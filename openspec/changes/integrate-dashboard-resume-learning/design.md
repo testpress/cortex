@@ -25,9 +25,9 @@ We will update `DashboardContentsDto.fromJson` to branch its logic based on the 
 
 ### 2. Join Logic for Progress
 We will use the following join keys:
-- **Videos**: `chapter_content.video_id` matches `user_video.video_content.id`.
-- **Exams**: `chapter_content.exam_id` matches `assessment.exam.id`.
-- **Order**: We will loop through `chapter_contents` first and filter based on progress presence (as per user preference), ensuring the server's provided content metadata remains the source of truth.
+- **Videos**: `attempt.user_video_id` matches `user_video.id`.
+- **Exams**: `attempt.assessment_id` matches `assessment.id`.
+- **Order**: We will loop through `chapter_content_attempts` to maintain chronological order as provided by the server, joining metadata from `chapter_contents` as needed.
 
 ### 3. Repository and Provider Pattern
 We will add `watchResumeLearningFeed()` to `DashboardRepository`.
@@ -37,4 +37,4 @@ We will add `watchResumeLearningFeed()` to `DashboardRepository`.
 
 - **[Risk]**: `video_id` or `exam_id` mismatch between lists.
 - **[Mitigation]**: Implement defensive parsing with `null` checks; if a match isn't found, the item will be excluded from the list to avoid showing cards without progress.
-- **[Trade-off]**: By ignoring the `attempts` list, we rely on the `chapter_contents` order. If the server doesn't sort `chapter_contents` by recency, the order might be different from the web platform.
+- **[Rationale]**: By using the `attempts` list as our primary source, we ensure the dashboard accurately reflects the user's most recent chronological activity.
