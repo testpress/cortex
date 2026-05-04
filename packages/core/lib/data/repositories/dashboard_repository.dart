@@ -187,6 +187,54 @@ class DashboardRepository {
       debugPrint('DEBUG: Failed to refresh ResumeLearning feed: $e');
     }
   }
+
+  /// Watch the "Recently Completed" feed.
+  Stream<List<DashboardContentDto>> watchRecentlyCompletedFeed() async* {
+    refreshRecentlyCompletedFeed().catchError((e) {
+      debugPrint('DEBUG: Failed to refresh RecentlyCompleted feed: $e');
+    });
+
+    yield* _db.watchDashboardSection(DashboardSectionType.recentlyCompleted).map((rows) {
+      return rows.map((data) => DashboardContentDto(
+        id: data.lessonId,
+        title: data.title,
+        chapterId: data.chapterId,
+        chapterTitle: data.chapterTitle,
+        contentType: data.lessonType,
+        coverImage: data.coverImage,
+        progress: data.progress,
+        sectionType: data.sectionType,
+      )).toList();
+    });
+  }
+
+  /// Fetch the latest completed feed and refresh the database.
+  Future<void> refreshRecentlyCompletedFeed() async {
+    try {
+      final dto = await _dataSource.getRecentlyCompletedFeed(DashboardSectionType.recentlyCompleted);
+
+      await _db.wipeAndInsertDashboardSection(
+        DashboardSectionType.recentlyCompleted,
+        dto.items.asMap().entries.map((entry) {
+          final index = entry.key;
+          final item = entry.value;
+          return DashboardContentData(
+            lessonId: item.id,
+            sectionType: DashboardSectionType.recentlyCompleted,
+            lessonType: item.contentType,
+            title: item.title,
+            displayOrder: index,
+            chapterId: item.chapterId,
+            chapterTitle: item.chapterTitle,
+            coverImage: item.coverImage,
+            progress: item.progress,
+          ).toCompanion(true);
+        }).toList(),
+      );
+    } catch (e) {
+      debugPrint('DEBUG: Failed to refresh RecentlyCompleted feed: $e');
+    }
+  }
 }
 
 @riverpod

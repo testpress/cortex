@@ -70,4 +70,10 @@ Stream<List<DashboardContentDto>> resumeLearningFeed(Ref ref) async* {
   yield* repository.watchResumeLearningFeed();
 }
 
+@riverpod
+Stream<List<DashboardContentDto>> recentlyCompletedFeed(Ref ref) async* {
+  final repository = await ref.watch(dashboardRepositoryProvider.future);
+  yield* repository.watchRecentlyCompletedFeed();
+}
+
 final isHomeDrawerOpenProvider = StateProvider<bool>((ref) => false);
