@@ -186,5 +186,25 @@ final resumeLearningFeedProvider =
 // ignore: unused_element
 typedef ResumeLearningFeedRef
     = AutoDisposeStreamProviderRef<List<DashboardContentDto>>;
+String _$recentlyCompletedFeedHash() =>
+    r'2bab52aaec17f480b8582ea82864c054ac934c09';
+
+/// See also [recentlyCompletedFeed].
+@ProviderFor(recentlyCompletedFeed)
+final recentlyCompletedFeedProvider =
+    AutoDisposeStreamProvider<List<DashboardContentDto>>.internal(
+  recentlyCompletedFeed,
+  name: r'recentlyCompletedFeedProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$recentlyCompletedFeedHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef RecentlyCompletedFeedRef
+    = AutoDisposeStreamProviderRef<List<DashboardContentDto>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -74,6 +74,9 @@ abstract class DataSource {
   /// Fetch the resume learning feed from `/api/v2.4/resume/`.
   Future<DashboardContentsDto> getResumeLearningFeed(DashboardSectionType sectionType);
 
+  /// Fetch the recently completed feed from `/api/v2.4/completed/`.
+  Future<DashboardContentsDto> getRecentlyCompletedFeed(DashboardSectionType sectionType);
+
   /// Fetch the authenticated user's profile.
   Future<UserDto> getProfile();
 

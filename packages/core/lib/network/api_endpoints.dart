@@ -21,4 +21,5 @@ class ApiEndpoints {
   static const String leaderboard = '/api/v2.3/leaderboard/';
   static const String whatsNewFeed = '/api/v2.4/whats-new/';
   static const String resumeLearning = '/api/v2.4/resume/';
+  static const String recentlyCompleted = '/api/v2.4/completed/';
 }

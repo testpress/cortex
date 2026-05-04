@@ -78,10 +78,33 @@ class DashboardContentsDto {
     switch (sectionType) {
       case DashboardSectionType.resumeLearning:
         return _parseResumeLearning(results);
+      case DashboardSectionType.recentlyCompleted:
+        return _parseRecentlyCompleted(results);
       case DashboardSectionType.whatsNew:
       default:
         return _parseWhatsNewFeed(results, sectionType);
     }
+  }
+
+  static DashboardContentsDto _parseRecentlyCompleted(Map<String, dynamic> results) {
+    final chaptersList = (results['chapters'] ?? []) as List;
+    final chapterMap = {
+      for (var chapter in chaptersList)
+        chapter['id'].toString(): chapter['name']?.toString() ?? ''
+    };
+
+    final contentsList = (results['chapter_contents'] ?? []) as List;
+    final items = contentsList.map((e) {
+      final map = Map<String, dynamic>.from(e as Map);
+      map['progress'] = 100.0; // Mark as completed
+      return DashboardContentDto.fromJson(
+        map,
+        chapterMap: chapterMap,
+        sectionType: DashboardSectionType.recentlyCompleted,
+      );
+    }).toList();
+
+    return DashboardContentsDto(items: items);
   }
 
   static DashboardContentsDto _parseWhatsNewFeed(
