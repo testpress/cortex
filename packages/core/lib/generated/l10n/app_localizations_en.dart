@@ -1327,4 +1327,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get attachmentViewFile => 'View Downloaded File';
+
+  @override
+  String get dashboardWhatsNewTitle => 'What\'s New';
+
+  @override
+  String get dashboardRecentlyCompletedTitle => 'Recently Completed';
+
+  @override
+  String get dashboardResumeTitle => 'Resume Learning';
 }

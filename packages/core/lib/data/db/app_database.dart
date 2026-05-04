@@ -364,7 +364,7 @@ class AppDatabase extends _$AppDatabase {
   /// Watch a specific dashboard section.
   Stream<List<DashboardContentData>> watchDashboardSection(DashboardSectionType sectionType) {
     final query = select(dashboardContentsTable)
-      ..where((t) => t.sectionType.equals(sectionType.index))
+      ..where((t) => t.sectionType.equalsValue(sectionType))
       ..orderBy([(t) => OrderingTerm.asc(t.displayOrder)]);
 
     return query.watch();
@@ -375,7 +375,7 @@ class AppDatabase extends _$AppDatabase {
       DashboardSectionType sectionType, List<DashboardContentsTableCompanion> rows) {
     return transaction(() async {
       await (delete(dashboardContentsTable)
-            ..where((t) => t.sectionType.equals(sectionType.index)))
+            ..where((t) => t.sectionType.equalsValue(sectionType)))
           .go();
       await batch((b) => b.insertAll(dashboardContentsTable, rows));
     });

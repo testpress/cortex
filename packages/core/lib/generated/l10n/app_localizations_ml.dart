@@ -1354,4 +1354,13 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get attachmentViewFile => 'ഫയൽ കാണുക';
+
+  @override
+  String get dashboardWhatsNewTitle => 'പുതിയ കാര്യങ്ങൾ';
+
+  @override
+  String get dashboardRecentlyCompletedTitle => 'അടുത്തിടെ പൂർത്തിയാക്കിയത്';
+
+  @override
+  String get dashboardResumeTitle => 'പഠനം തുടരുക';
 }

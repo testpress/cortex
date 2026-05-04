@@ -2480,6 +2480,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View Downloaded File'**
   String get attachmentViewFile;
+
+  /// No description provided for @dashboardWhatsNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s New'**
+  String get dashboardWhatsNewTitle;
+
+  /// No description provided for @dashboardRecentlyCompletedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently Completed'**
+  String get dashboardRecentlyCompletedTitle;
+
+  /// No description provided for @dashboardResumeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume Learning'**
+  String get dashboardResumeTitle;
 }
 
 class _AppLocalizationsDelegate

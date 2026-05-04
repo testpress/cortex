@@ -1340,4 +1340,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get attachmentViewFile => 'عرض الملف المحمل';
+
+  @override
+  String get dashboardWhatsNewTitle => 'ما هو الجديد';
+
+  @override
+  String get dashboardRecentlyCompletedTitle => 'المكتملة مؤخرًا';
+
+  @override
+  String get dashboardResumeTitle => 'استئناف التعلم';
 }

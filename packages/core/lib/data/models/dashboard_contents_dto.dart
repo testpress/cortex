@@ -44,17 +44,17 @@ class DashboardContentDto {
   }
 
   static DashboardContentType _mapContentType(String type) {
-    switch (type.toLowerCase()) {
-      case 'video': return DashboardContentType.video;
-      case 'pdf': return DashboardContentType.pdf;
-      case 'notes': return DashboardContentType.notes;
-      case 'test': return DashboardContentType.test;
-      case 'assessment': return DashboardContentType.assessment;
-      case 'livestream': return DashboardContentType.liveStream;
-      case 'attachment': return DashboardContentType.attachment;
-      case 'embedcontent': return DashboardContentType.embedContent;
-      default: return DashboardContentType.unknown;
-    }
+    final t = type.toLowerCase();
+    if (t.contains('video')) return DashboardContentType.video;
+    if (t.contains('pdf')) return DashboardContentType.pdf;
+    if (t.contains('notes') || t.contains('html')) return DashboardContentType.notes;
+    if (t.contains('test') || t.contains('exam')) return DashboardContentType.test;
+    if (t.contains('assessment') || t.contains('quiz')) return DashboardContentType.assessment;
+    if (t.contains('live')) return DashboardContentType.liveStream;
+    if (t.contains('attachment')) return DashboardContentType.attachment;
+    if (t.contains('embed')) return DashboardContentType.embedContent;
+    
+    return DashboardContentType.unknown;
   }
 }
 
@@ -74,7 +74,7 @@ class DashboardContentsDto {
     final chaptersList = (results['chapters'] ?? []) as List;
     final chapterMap = {
       for (var chapter in chaptersList)
-        (chapter['id'] as int).toString(): (chapter['name'] as String)
+        chapter['id'].toString(): chapter['name']?.toString() ?? ''
     };
 
     // 2. Map the contents (lessons) and resolve their chapter titles

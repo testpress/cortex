@@ -9,7 +9,7 @@ class LessonRouter {
   /// Supports [LessonDto], [DashboardContentDto], and other models
   /// that expose an ID and content type.
   static void navigateToLesson(BuildContext context, {required String id, required dynamic type}) {
-    final typeStr = type.toString().split('.').last.toLowerCase();
+    final typeStr = type is Enum ? type.name.toLowerCase() : type.toString().toLowerCase();
     
     final routeName = switch (typeStr) {
       'video' || 'pdf' || 'notes' || 'embedcontent' || 'livestream' || 'attachment' => 

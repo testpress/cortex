@@ -198,6 +198,10 @@ class LessonCardWidget extends StatelessWidget {
 }
 
 class LessonCardsSectionWidget extends StatelessWidget {
+  static const double _cardContentHeightWithMetadata = 90.0;
+  static const double _cardContentHeightCompact = 65.0;
+  static const double _carouselBottomMargin = 16.0;
+
   final List<DashboardContentDto> resumeLessons;
   final List<DashboardContentDto> whatsNewLessons;
   final List<DashboardContentDto> recentlyCompletedLessons;
@@ -218,15 +222,20 @@ class LessonCardsSectionWidget extends StatelessWidget {
     bool isCompleted = false,
     bool showMetadata = true,
   }) {
+    if (lessons.isEmpty) return const SizedBox.shrink();
+
     final design = Design.of(context);
 
     return LayoutBuilder(
       builder: (context, constraints) {
         final itemWidth = constraints.maxWidth * 0.45; // viewportFraction is 0.45
         
-        // Image height (16:9) + Content & Padding + Carousel margin (16px)
-        // Content with metadata is ~90px, without is ~65px
-        final calculatedHeight = (itemWidth / (16 / 9)) + (showMetadata ? 90 : 65) + 16;
+        // Image height (16:9) + Content & Padding + Carousel margin
+        final contentHeight = showMetadata 
+            ? _cardContentHeightWithMetadata 
+            : _cardContentHeightCompact;
+            
+        final calculatedHeight = (itemWidth / (16 / 9)) + contentHeight + _carouselBottomMargin;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -277,27 +286,29 @@ class LessonCardsSectionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (config.showResumeSection)
           _buildCarouselSection(
             context,
-            'Resume',
+            l10n.dashboardResumeTitle,
             resumeLessons,
             showMetadata: true,
           ),
         if (config.showWhatsNewSection)
           _buildCarouselSection(
             context,
-            "What's New",
+            l10n.dashboardWhatsNewTitle,
             whatsNewLessons,
             showMetadata: false,
           ),
         if (config.showRecentlyCompletedSection)
           _buildCarouselSection(
             context,
-            'Recently Completed',
+            l10n.dashboardRecentlyCompletedTitle,
             recentlyCompletedLessons,
             isCompleted: true,
             showMetadata: true,

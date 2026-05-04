@@ -8,7 +8,6 @@ import 'dart:async' as _i6;
 import 'package:core/data/auth/auth_api_service.dart' as _i2;
 import 'package:core/data/auth/auth_local_data_source.dart' as _i7;
 import 'package:core/data/data.dart' as _i4;
-import 'package:core/data/db/tables/dashboard_tables.dart' as _i9;
 import 'package:drift/drift.dart' as _i3;
 import 'package:drift/src/runtime/executor/stream_queries.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
@@ -1096,7 +1095,7 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
 
   @override
   _i6.Stream<List<_i4.DashboardContentData>> watchDashboardSection(
-    _i9.DashboardSectionType? sectionType,
+    _i4.DashboardSectionType? sectionType,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#watchDashboardSection, [sectionType]),
@@ -1108,7 +1107,7 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
 
   @override
   _i6.Future<void> wipeAndInsertDashboardSection(
-    _i9.DashboardSectionType? sectionType,
+    _i4.DashboardSectionType? sectionType,
     List<_i4.DashboardContentsTableCompanion>? rows,
   ) =>
       (super.noSuchMethod(

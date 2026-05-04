@@ -651,5 +651,8 @@
   },
   "attachmentDownload": "Download",
   "attachmentDownloading": "Downloading...",
-  "attachmentViewFile": "View Downloaded File"
+  "attachmentViewFile": "View Downloaded File",
+  "dashboardWhatsNewTitle": "What's New",
+  "dashboardRecentlyCompletedTitle": "Recently Completed",
+  "dashboardResumeTitle": "Resume Learning"
 }
