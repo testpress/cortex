@@ -1,5 +1,8 @@
-## NEW Requirements
+# centralized-navigation Specification
 
+## Purpose
+TBD - created by archiving change integrate-whats-new-section. Update Purpose after archive.
+## Requirements
 ### Requirement: Centralized Lesson Navigation
 The system SHALL provide a unified mechanism for navigating to lesson details that decouples UI components from specific URL path structures.
 
@@ -15,3 +18,4 @@ The system SHALL provide a unified mechanism for navigating to lesson details th
 #### Scenario: Elimination of Duplicate Logic
 - **WHEN** the centralized navigation system is implemented
 - **THEN** all manual `switch` blocks for lesson routing in `ChaptersListPage`, `LessonCardsSectionWidget`, and `AppRouter` MUST be removed in favor of the centralized call.
+
