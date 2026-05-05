@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/core.dart'; 
 import 'package:core/data/data.dart';
 
@@ -46,9 +47,10 @@ class LessonCardWidget extends StatelessWidget {
                 fit: StackFit.expand,
                 children: [
                   if (lesson.coverImage != null)
-                    Image.network(
-                      lesson.coverImage!,
+                    CachedNetworkImage(
+                      imageUrl: lesson.coverImage!,
                       fit: BoxFit.cover,
+                      errorWidget: (context, url, error) => Container(),
                     )
                   else
                     Container(
