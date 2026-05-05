@@ -4,14 +4,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:core/core.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
-import 'package:path_provider/path_provider.dart';
-
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../providers/course_list_provider.dart';
 
-/// A premium PDF viewer with perfectly synced, real-time scroll progress.
-/// Now features transparent local caching for instant sub-second viewing.
 class AppPdfViewer extends ConsumerStatefulWidget {
   final String url;
   final ValueChanged<double>? onProgressChanged;
@@ -27,184 +21,270 @@ class AppPdfViewer extends ConsumerStatefulWidget {
 }
 
 class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
-    with SingleTickerProviderStateMixin {
-  late final PdfViewerController _pdfViewerController = PdfViewerController();
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+
+  late PdfViewerController _controller;
   late final Ticker _ticker;
-  CancelToken? _cancelToken;
 
-  // Caching state
   String? _localPath;
+  String? _error;
   bool _isLoading = true;
-  double _downloadProgress = 0;
+  bool _isVisible = false;
 
-  double _estimatedTotalHeight = 0;
+  int _requestId = 0;
+
+  double _totalHeight = 0;
   double _viewportHeight = 0;
-  double _lastReportedProgress = -1;
+  double _viewportWidth = 0;
+  double _lastProgress = -1;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  // ---------------- INIT ----------------
 
   @override
   void initState() {
     super.initState();
-    _initPdf();
-    // Use a high-frequency ticker to poll scroll offset every frame (60fps)
-    // for perfectly smooth real-time progress updates.
-    _ticker = createTicker((_) => _tick());
-    _ticker.start();
+    _initController();
+    _initTicker();
+    _load();
+  }
+
+  void _initController() {
+    _controller = PdfViewerController();
+  }
+
+  void _initTicker() {
+    _ticker = createTicker((_) => _trackProgress())
+      ..muted = true
+      ..start();
+  }
+
+  @override
+  void didUpdateWidget(covariant AppPdfViewer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (!_isSameDocument(oldWidget.url, widget.url)) {
+      _resetViewer();
+      _load();
+    }
   }
 
   @override
   void dispose() {
     _ticker.dispose();
-    _pdfViewerController.dispose();
-    _cancelToken?.cancel();
+    _controller.dispose();
     super.dispose();
   }
 
-  Future<void> _initPdf() async {
-    try {
-      final fileName = widget.url.split('/').last.split('?').first;
-      final dir = await getApplicationDocumentsDirectory();
-      final file = File('${dir.path}/$fileName');
+  // ---------------- LOAD FLOW ----------------
 
-      if (await file.exists()) {
-        if (mounted) {
-          setState(() {
-            _localPath = file.path;
-            _isLoading = false;
-          });
-        }
-      } else {
-        await _downloadPdf(file.path);
-      }
-    } catch (_) {
-      if (mounted) setState(() => _isLoading = false);
+  Future<void> _load() async {
+    final id = ++_requestId;
+
+    _prepareState();
+
+    try {
+      final path = await _resolveSource();
+
+      if (!_isValidRequest(id)) return;
+
+      _handleSuccess(path);
+    } catch (e) {
+      if (!_isValidRequest(id)) return;
+
+      _handleError(e);
     }
   }
 
-  Future<void> _downloadPdf(String savePath) async {
+  void _prepareState() {
+    _muteTicker(true);
+
+    setState(() {
+      _isLoading = true;
+      _error = null;
+      _localPath = null;
+      _isVisible = false;
+      _totalHeight = 0;
+      _lastProgress = -1;
+    });
+  }
+
+  Future<String?> _resolveSource() async {
+    final downloader = ref.read(fileDownloaderProvider);
+
+    final path = await downloader.getLocalPath(
+      widget.url,
+      StorageType.internalCache,
+    );
+
+    final file = File(path);
+
+    final isCached = await file.exists() && (await file.length()) > 0;
+
+    if (isCached) return path;
+
+    _cacheInBackground(widget.url);
+    return null;
+  }
+
+  void _handleSuccess(String? path) {
+    setState(() {
+      _localPath = path;
+      _isLoading = false;
+    });
+  }
+
+  void _handleError(Object error) {
+    setState(() {
+      _error = error.toString();
+      _isLoading = false;
+    });
+  }
+
+  bool _isValidRequest(int id) {
+    return mounted && id == _requestId;
+  }
+
+  // ---------------- CACHE ----------------
+
+  Future<void> _cacheInBackground(String url) async {
     try {
-      _cancelToken = CancelToken();
-      final repository = await ref.read(courseRepositoryProvider.future);
-      await repository.downloadFile(
-        url: widget.url,
-        savePath: savePath,
-        cancelToken: _cancelToken,
-        onReceiveProgress: (count, total) {
-          if (total != -1 && mounted) {
-            setState(() => _downloadProgress = count / total);
-          }
-        },
-        requireAuth: false, // Ensure no auth headers for signed cloud URLs
+      final downloader = ref.read(fileDownloaderProvider);
+      await downloader.download(
+        url: url,
+        type: StorageType.internalCache,
+        requireAuth: false,
       );
-      if (mounted) {
-        setState(() {
-          _localPath = savePath;
-          _isLoading = false;
-        });
-      }
-    } catch (_) {
-      if (mounted) setState(() => _isLoading = false);
-    }
+    } catch (_) {}
   }
 
-  void _tick() {
-    if (_localPath == null) return;
-    if (_estimatedTotalHeight > 0 && _viewportHeight > 0) {
-      final currentOffset = _pdfViewerController.scrollOffset.dy;
-      final maxScroll = _estimatedTotalHeight - _viewportHeight;
+  // ---------------- VIEWER ----------------
 
-      double progress;
-      if (maxScroll > 0) {
-        progress = (currentOffset / maxScroll).clamp(0.0, 1.0);
-      } else {
-        // PDF fits entire screen, so it's already "read"
-        progress = 1.0;
+  Widget _buildViewer() {
+    final viewer = _localPath != null
+        ? SfPdfViewer.file(
+            File(_localPath!),
+            controller: _controller,
+            onDocumentLoaded: _onDocumentLoaded,
+          )
+        : SfPdfViewer.network(
+            widget.url,
+            controller: _controller,
+            onDocumentLoaded: _onDocumentLoaded,
+          );
+
+    return Stack(
+      children: [
+        AnimatedOpacity(
+          opacity: _isVisible ? 1 : 0,
+          duration: const Duration(milliseconds: 200),
+          child: viewer,
+        ),
+        if (!_isVisible)
+          const Center(child: AppLoadingIndicator()),
+      ],
+    );
+  }
+
+  Widget _buildLoading() => const Center(child: AppLoadingIndicator());
+
+  Widget _buildError() => Center(child: Text(_error!));
+
+  // ---------------- BUILD ----------------
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+
+    final design = Design.of(context);
+
+    if (_isLoading) return _buildLoading();
+    if (_error != null) return _buildError();
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        _viewportHeight = constraints.maxHeight;
+        _viewportWidth = constraints.maxWidth;
+
+        return SfPdfViewerTheme(
+          data: SfPdfViewerThemeData(
+            backgroundColor: design.colors.surface,
+          ),
+          child: _buildViewer(),
+        );
+      },
+    );
+  }
+
+  // ---------------- EVENTS ----------------
+
+  void _onDocumentLoaded(PdfDocumentLoadedDetails details) {
+    _totalHeight = _calculateTotalHeight(details);
+    _muteTicker(false);
+
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (mounted) {
+        setState(() => _isVisible = true);
       }
+    });
+  }
 
-      // Only notify if progress has actually changed to optimize performance
-      if (progress != _lastReportedProgress) {
-        _lastReportedProgress = progress;
+  double _calculateTotalHeight(PdfDocumentLoadedDetails details) {
+    if (_viewportWidth <= 0) return 0;
+
+    double height = 0;
+
+    for (int i = 0; i < details.document.pages.count; i++) {
+      final page = details.document.pages[i];
+      // Accurately scale height to match actual screen rendering (fit to width)
+      final scale = _viewportWidth / page.size.width;
+      height += (page.size.height * scale);
+    }
+
+    // Add standard page spacing (4px by default in SfPdfViewer)
+    height += (details.document.pages.count - 1) * 4.0;
+
+    return height;
+  }
+
+  void _trackProgress() {
+    if (_ticker.muted) return;
+
+    if (_totalHeight > 0 && _viewportHeight > 0) {
+      final offset = _controller.scrollOffset.dy;
+      final max = _totalHeight - _viewportHeight;
+
+      final progress = max > 0
+          ? (offset / max).clamp(0.0, 1.0)
+          : 1.0;
+
+      if ((progress - _lastProgress).abs() > 0.001) {
+        _lastProgress = progress;
         widget.onProgressChanged?.call(progress);
       }
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
+  // ---------------- HELPERS ----------------
 
-    if (_isLoading) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const AppLoadingIndicator(),
-            if (_downloadProgress > 0) ...[
-              const SizedBox(height: 16),
-              SizedBox(
-                width: 200,
-                child: LinearProgressIndicator(
-                  value: _downloadProgress,
-                  backgroundColor: design.colors.surfaceVariant,
-                  color: design.colors.primary,
-                ),
-              ),
-              const SizedBox(height: 8),
-              AppText.caption(
-                'Downloading PDF: ${(_downloadProgress * 100).toInt()}%',
-                color: design.colors.textSecondary,
-              ),
-            ],
-          ],
-        ),
-      );
+  void _muteTicker(bool value) {
+    if (_ticker.muted != value) {
+      _ticker.muted = value;
     }
+  }
 
-    if (_localPath == null) {
-      return Center(
-        child: AppText.body(
-          'Failed to load PDF content.',
-          color: design.colors.textSecondary,
-        ),
-      );
-    }
+  void _resetViewer() {
+    _controller.dispose();
+    _initController();
+  }
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        _viewportHeight = constraints.maxHeight;
-        return SfPdfViewerTheme(
-          data: SfPdfViewerThemeData(
-            backgroundColor: design.colors.surface,
-          ),
-          child: SfPdfViewer.file(
-            File(_localPath!),
-            controller: _pdfViewerController,
-            onDocumentLoaded: (PdfDocumentLoadedDetails details) {
-              setState(() {
-                final viewportWidth = constraints.maxWidth;
-                _estimatedTotalHeight = 0;
+  bool _isSameDocument(String a, String b) {
+    final uriA = Uri.parse(a);
+    final uriB = Uri.parse(b);
 
-                for (int i = 0; i < details.document.pages.count; i++) {
-                  final page = details.document.pages[i];
-                  // Accurately scale height to match actual screen rendering
-                  final scale = viewportWidth / page.size.width;
-                  _estimatedTotalHeight += (page.size.height * scale);
-                }
-
-                // Add standard page spacing (4px by default)
-                _estimatedTotalHeight +=
-                    (details.document.pages.count - 1) * 4.0;
-              });
-            },
-            onDocumentLoadFailed: (PdfDocumentLoadFailedDetails details) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                    content:
-                        Text('Failed to load PDF: ${details.description}')),
-              );
-            },
-          ),
-        );
-      },
-    );
+    return uriA.host == uriB.host &&
+          uriA.path == uriB.path;
   }
 }

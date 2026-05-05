@@ -2,11 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:media_scanner/media_scanner.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:dio/dio.dart';
-import '../../providers/course_list_provider.dart';
 
 enum AttachmentDownloadState { idle, downloading, completed, error }
 
@@ -55,9 +53,9 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> with Widget
 
   Future<void> _checkIfFileExists() async {
     try {
-      final fileName = widget.url.split('/').last.split('?').first;
-      final fileDir = await _getDownloadDirectory();
-      final file = File('${fileDir.path}/$fileName');
+      final downloader = ref.read(fileDownloaderProvider);
+      final path = await downloader.getLocalPath(widget.url, StorageType.publicDownload);
+      final file = File(path);
       
       final exists = await file.exists();
       if (mounted) {
@@ -74,10 +72,7 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> with Widget
     } catch (_) {}
   }
 
-  Future<Directory> _getDownloadDirectory() async {
-    final dir = await getExternalStorageDirectory();
-    return dir ?? await getApplicationDocumentsDirectory();
-  }
+
 
   Future<void> _startDownload() async {
     setState(() {
@@ -86,29 +81,34 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> with Widget
     });
 
     try {
-      final fileName = widget.url.split('/').last.split('?').first;
-      final fileDir = await _getDownloadDirectory();
-      final savePath = '${fileDir.path}/$fileName';
-
-      final repository = await ref.read(courseRepositoryProvider.future);
-      await repository.downloadFile(
+      _cancelToken = CancelToken();
+      final downloader = ref.read(fileDownloaderProvider);
+      final savePath = await downloader.download(
         url: widget.url,
-        savePath: savePath,
+        type: StorageType.publicDownload,
         cancelToken: _cancelToken,
         onReceiveProgress: (count, total) {
-          if (total != -1 && mounted) {
-            setState(() => _downloadProgress = count / total);
+          if (mounted) {
+            setState(() {
+              if (total != -1) {
+                _downloadProgress = count / total;
+              } else {
+                _downloadProgress = -1.0;
+              }
+            });
           }
         },
-        requireAuth: false, // Ensure no auth headers for signed cloud URLs
+        requireAuth: false, // Signed URLs often fail with Auth headers
       );
 
-      if (mounted) {
+      if (mounted && savePath != null) {
         setState(() {
           _localPath = savePath;
           _state = AttachmentDownloadState.completed;
         });
         await MediaScanner.loadMedia(path: savePath);
+      } else if (mounted && savePath == null) {
+        setState(() => _state = AttachmentDownloadState.idle);
       }
     } catch (e) {
       final isCancel = e is DioException && CancelToken.isCancel(e);
@@ -168,14 +168,14 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> with Widget
             SizedBox(
               width: 200,
               child: LinearProgressIndicator(
-                value: _downloadProgress,
+                value: _downloadProgress >= 0 ? _downloadProgress : null,
                 backgroundColor: design.colors.surfaceVariant,
                 color: design.colors.primary,
               ),
             ),
             const SizedBox(height: 16),
             Text(
-              '${(_downloadProgress * 100).toInt()}%',
+              _downloadProgress >= 0 ? '${(_downloadProgress * 100).toInt()}%' : 'Downloading...',
               style: design.typography.bodySmall,
             ),
           ] else
