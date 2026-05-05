@@ -58,6 +58,7 @@ export 'motion/accessibility_motion.dart';
 
 // Network
 export 'network/dio_provider.dart';
+export 'network/file_downloader.dart';
 
 // Localization
 export 'localization/localization_provider.dart';
