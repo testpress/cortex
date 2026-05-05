@@ -23,3 +23,9 @@
 - [x] 4.1 Fix missing `smooth_page_indicator` dependency in `packages/core`.
 - [x] 4.2 Resolve duplicated `onTap` argument in `ChaptersListPage`.
 - [x] 4.3 Synchronize dependencies for the `app` consumer shell.
+
+## 5. Tag-based Filtering & Tab Logic
+
+- [x] 5.1 Update `CourseList` to use tag ID `1` (Study) for API requests.
+- [x] 5.2 Update `ExamList` to use tag ID `2` (Tests) for API requests.
+- [x] 5.3 Refactor `CourseRepository` filtering to use tag IDs (`1`, `2`, `81`) instead of hardcoded strings.

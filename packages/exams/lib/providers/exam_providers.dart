@@ -78,9 +78,10 @@ class ExamList extends _$ExamList {
       bool hasMore = true;
       
       while (hasMore) {
+        final config = ref.read(clientConfigProvider);
         final response = await repo.refreshCourses(
           page: currentPage,
-          tags: ['exams', 'classes'],
+          tags: null,
         );
         
         if (response.next == null) {

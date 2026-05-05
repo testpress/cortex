@@ -11,7 +11,8 @@ part 'course_list_provider.g.dart';
 Future<CourseRepository> courseRepository(Ref ref) async {
   final db = await ref.watch(appDatabaseProvider.future);
   final source = ref.watch(dataSourceProvider);
-  return CourseRepository(db, source);
+  final config = ref.watch(clientConfigProvider);
+  return CourseRepository(db, source, config: config);
 }
 
 /// Tracks if the initial API sync for the course list was completed in this session.
@@ -96,10 +97,12 @@ class CourseList extends _$CourseList {
     }
 
     try {
+      final config = ref.read(clientConfigProvider);
       final repo = await ref.read(courseRepositoryProvider.future);
+      
       final response = await repo.refreshCourses(
         page: _paginationTracker.nextPage,
-        tags: 'classes',
+        tags: null,
       );
 
       // Explicit logic to mark completeness if no results

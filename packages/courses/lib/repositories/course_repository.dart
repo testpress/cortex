@@ -38,7 +38,9 @@ class CourseRepository {
     _syncStatusController.add(Set.unmodifiable(_activeSyncIds));
   }
 
-  CourseRepository(this._db, this._source);
+  final ClientConfig config;
+
+  CourseRepository(this._db, this._source, {this.config = const ClientConfig()});
 
   // ── Courses ──────────────────────────────────────────────────────────────
 
@@ -55,7 +57,8 @@ class CourseRepository {
         final hasMobileAccess = dto.allowedDevices.any(
           (d) => d.toLowerCase().contains('mobile'),
         );
-        // Official filter: check for 'exams' tag or fallback to examsCount
+        
+        // If showExamTab is enabled, identify exams by tag or fallback to examsCount.
         final isExamCourse = dto.tags.contains('exams') || (dto.tags.isEmpty && dto.examsCount > 0);
         
         return isExamCourse && hasMobileAccess;
@@ -70,12 +73,15 @@ class CourseRepository {
       return courses.where((course) {
         final dto = rowToCourseDto(course);
         
-        final isExamCourse = dto.tags.contains('exams') || (dto.tags.isEmpty && dto.examsCount > 0);
-        final isInfoCourse = dto.tags.contains('info');
-        
-        // A study course is anything that is NOT an exam or info course,
-        // and ideally has the 'classes' tag (or no tags for legacy support).
-        return !isExamCourse && !isInfoCourse;
+        if (config.showExamTab) {
+          // Brilliant Pala: Exclude only if explicitly tagged as 'exams' or 'info'
+          final isExplicitExam = dto.tags.contains('exams');
+          final isInfoCourse = dto.tags.contains('info');
+          return !isExplicitExam && !isInfoCourse;
+        } else {
+          // Default: Inclusive behavior
+          return true;
+        }
       }).toList();
     });
   }
