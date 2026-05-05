@@ -1,6 +1,6 @@
 ## MODIFIED Requirements
 
-### Requirement: Public Downloads Persistence
+### Requirement: Scoped-storage-compatible File Persistence
 Attachment files MUST be stored in the public Downloads directory of the device to ensure they are accessible to the user outside of the application.
 
 #### Scenario: Saving attachment to public Downloads
