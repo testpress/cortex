@@ -29,48 +29,14 @@ class PaidActiveHomeScreen extends ConsumerWidget {
 
     final whatsNewAsync = ref.watch(whatsNewFeedProvider);
     final resumeLearningAsync = ref.watch(resumeLearningFeedProvider);
+    final recentlyCompletedAsync = ref.watch(recentlyCompletedFeedProvider);
     final user = userAsync.valueOrNull;
 
     final isBannerPresent = config.instituteLogoUrl != null;
 
     final whatsNewLessons = whatsNewAsync.valueOrNull ?? [];
     final resumeLessons = resumeLearningAsync.valueOrNull ?? [];
-
-    final dummyCompletedLessons = [
-      const dto.DashboardContentDto(
-        id: '6',
-        title: 'Cell Biology',
-        chapterTitle: 'Biology Class 11',
-        progress: 100,
-        totalDuration: '1h',
-        remainingDuration: '0',
-        coverImage: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
-        contentType: dto.DashboardContentType.video,
-        sectionType: dto.DashboardSectionType.recentlyCompleted,
-      ),
-      const dto.DashboardContentDto(
-        id: '7',
-        title: 'Genetics',
-        chapterTitle: 'Biology Class 12',
-        progress: 100,
-        totalDuration: '2h 15m',
-        remainingDuration: '0',
-        coverImage: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
-        contentType: dto.DashboardContentType.video,
-        sectionType: dto.DashboardSectionType.recentlyCompleted,
-      ),
-      const dto.DashboardContentDto(
-        id: '8',
-        title: 'Plant Physiology',
-        chapterTitle: 'Biology Class 11',
-        progress: 100,
-        totalDuration: '1h 20m',
-        remainingDuration: '0',
-        coverImage: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
-        contentType: dto.DashboardContentType.video,
-        sectionType: dto.DashboardSectionType.recentlyCompleted,
-      ),
-    ];
+    final recentlyCompletedLessons = recentlyCompletedAsync.valueOrNull ?? [];
 
     final topCarousel = heroBanners.when(
       data: (data) => HeroBannerCarousel(
@@ -118,7 +84,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     final lessonCardsSection = LessonCardsSectionWidget(
       resumeLessons: resumeLessons,
       whatsNewLessons: whatsNewLessons,
-      recentlyCompletedLessons: dummyCompletedLessons,
+      recentlyCompletedLessons: recentlyCompletedLessons,
       config: config,
     );
 

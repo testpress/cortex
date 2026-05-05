@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/core.dart'; 
 import 'package:core/data/data.dart';
 
@@ -22,7 +23,7 @@ class LessonCardWidget extends StatelessWidget {
     final textMuted = design.colors.textSecondary.withValues(alpha: 0.7);
 
     return Opacity(
-      opacity: isCompleted ? 0.75 : 1.0,
+      opacity: isCompleted ? 0.6 : 1.0,
       child: Container(
         decoration: BoxDecoration(
           color: cardBgColor,
@@ -46,9 +47,10 @@ class LessonCardWidget extends StatelessWidget {
                 fit: StackFit.expand,
                 children: [
                   if (lesson.coverImage != null)
-                    Image.network(
-                      lesson.coverImage!,
+                    CachedNetworkImage(
+                      imageUrl: lesson.coverImage!,
                       fit: BoxFit.cover,
+                      errorWidget: (context, url, error) => Container(),
                     )
                   else
                     Container(
@@ -154,9 +156,11 @@ class LessonCardWidget extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     // Metadata
-                    if (lesson.remainingDuration != null) ...[
+                    if (lesson.remainingDuration != null || lesson.totalDuration != null) ...[
                       Text(
-                        lesson.remainingDuration!,
+                        (lesson.remainingDuration != null && !isCompleted)
+                            ? '${lesson.remainingDuration!} left'
+                            : (lesson.totalDuration ?? lesson.remainingDuration!),
                         style: TextStyle(
                           fontSize: 11,
                           color: textMuted,
@@ -164,7 +168,7 @@ class LessonCardWidget extends StatelessWidget {
                       ),
                     ],
                     // Progress Bar
-                    if (lesson.progress != null) ...[
+                    if (lesson.progress != null && !isCompleted) ...[
                       const SizedBox(height: 10),
                       Container(
                         height: 4,
@@ -312,7 +316,7 @@ class LessonCardsSectionWidget extends StatelessWidget {
             l10n.dashboardRecentlyCompletedTitle,
             recentlyCompletedLessons,
             isCompleted: true,
-            showMetadata: true,
+            showMetadata: false,
           ),
       ],
     );

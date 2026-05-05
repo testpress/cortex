@@ -463,6 +463,41 @@ const mockResumeLearningFeed = DashboardContentsDto(
   ],
 );
 
+const mockRecentlyCompletedFeed = DashboardContentsDto(
+  items: [
+    DashboardContentDto(
+      id: '6',
+      title: 'Cell Biology',
+      chapterTitle: 'Biology Class 11',
+      progress: 100,
+      totalDuration: '1h',
+      coverImage: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
+      contentType: DashboardContentType.video,
+      sectionType: DashboardSectionType.recentlyCompleted,
+    ),
+    DashboardContentDto(
+      id: '7',
+      title: 'Genetics',
+      chapterTitle: 'Biology Class 12',
+      progress: 100,
+      totalDuration: '2h 15m',
+      coverImage: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
+      contentType: DashboardContentType.video,
+      sectionType: DashboardSectionType.recentlyCompleted,
+    ),
+    DashboardContentDto(
+      id: '8',
+      title: 'Plant Physiology',
+      chapterTitle: 'Biology Class 11',
+      progress: 100,
+      totalDuration: '1h 20m',
+      coverImage: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
+      contentType: DashboardContentType.video,
+      sectionType: DashboardSectionType.recentlyCompleted,
+    ),
+  ],
+);
+
 const mockLearners = [
   LearnerDto(
     id: '1',
