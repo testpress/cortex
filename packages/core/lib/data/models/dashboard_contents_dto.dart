@@ -143,18 +143,22 @@ class DashboardContentsDto {
 
     final videoProgressMap = <String, double>{};
     final videoDurationMap = <String, String>{};
+    final videoRemainingDurationMap = <String, String>{};
     for (var v in (results['user_videos'] ?? [])) {
-      final totalSeconds = (v['video_content']?['duration'] as num?)?.toInt() ?? 0;
-      final total = totalSeconds.toDouble();
-      final lastPosition = double.tryParse(v['last_position']?.toString() ?? '0') ?? 0;
-      final watched = double.tryParse(v['watched_duration']?.toString() ?? '0') ?? 0;
+      final totalSeconds = (v['video_content']?['duration'] as num?)?.toDouble() ??
+                           (v['duration'] as num?)?.toDouble() ?? 0.0;
+      final lastPosition = double.tryParse(v['last_position']?.toString() ?? '0') ?? 0.0;
+      final watched = double.tryParse(v['watched_duration']?.toString() ?? '0') ?? 0.0;
       final effectiveProgress = math.max(lastPosition, watched);
       
-      if (total > 0) {
+      if (totalSeconds > 0) {
         final videoEntryId = v['id'].toString();
-        final calculatedProgress = (effectiveProgress / total) * 100;
+        final calculatedProgress = (effectiveProgress / totalSeconds) * 100;
         videoProgressMap[videoEntryId] = calculatedProgress.clamp(0.0, 100.0);
-        videoDurationMap[videoEntryId] = TimeFormatter.formatDuration(totalSeconds.toString()) ?? '';
+        videoDurationMap[videoEntryId] = TimeFormatter.formatDuration(totalSeconds.toInt().toString()) ?? '';
+        
+        final remainingSeconds = math.max(0, (totalSeconds - effectiveProgress).toInt());
+        videoRemainingDurationMap[videoEntryId] = TimeFormatter.formatDuration(remainingSeconds.toString()) ?? '';
       }
     }
 
@@ -183,6 +187,7 @@ class DashboardContentsDto {
         if (userVideoId != null && videoProgressMap.containsKey(userVideoId)) {
           progress = videoProgressMap[userVideoId];
           totalDuration = videoDurationMap[userVideoId];
+          remainingDuration = videoRemainingDurationMap[userVideoId];
         } else {
           continue;
         }
