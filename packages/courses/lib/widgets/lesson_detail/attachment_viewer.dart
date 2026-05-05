@@ -98,7 +98,7 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> with Widget
             });
           }
         },
-        requireAuth: true,
+        requireAuth: false, // Signed URLs often fail with Auth headers
       );
 
       if (mounted && savePath != null) {

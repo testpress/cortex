@@ -33,10 +33,24 @@ class FileDownloader {
     } else {
       Directory? dir;
       if (Platform.isAndroid) {
-        dir = Directory('/storage/emulated/0/Download');
+        // We attempt to use the standard public Downloads folder for user visibility.
+        // path_provider's getDownloadsDirectory() often returns app-scoped paths on Android.
+        final publicDownloadDir = Directory('/storage/emulated/0/Download');
+        if (await publicDownloadDir.exists()) {
+          dir = publicDownloadDir;
+        } else {
+          try {
+            await publicDownloadDir.create(recursive: true);
+            dir = publicDownloadDir;
+          } catch (_) {
+            // Fallback to path_provider if public directory is restricted
+            dir = await getDownloadsDirectory();
+          }
+        }
       } else {
         dir = await getDownloadsDirectory();
       }
+      
       final finalDir = dir ?? await getApplicationDocumentsDirectory();
       
       // Ensure directory exists

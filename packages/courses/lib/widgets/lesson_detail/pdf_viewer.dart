@@ -35,6 +35,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
   double _totalHeight = 0;
   double _viewportHeight = 0;
+  double _viewportWidth = 0;
   double _lastProgress = -1;
 
   @override
@@ -205,6 +206,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
     return LayoutBuilder(
       builder: (context, constraints) {
         _viewportHeight = constraints.maxHeight;
+        _viewportWidth = constraints.maxWidth;
 
         return SfPdfViewerTheme(
           data: SfPdfViewerThemeData(
@@ -230,11 +232,19 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   }
 
   double _calculateTotalHeight(PdfDocumentLoadedDetails details) {
+    if (_viewportWidth <= 0) return 0;
+
     double height = 0;
 
     for (int i = 0; i < details.document.pages.count; i++) {
-      height += details.document.pages[i].size.height;
+      final page = details.document.pages[i];
+      // Accurately scale height to match actual screen rendering (fit to width)
+      final scale = _viewportWidth / page.size.width;
+      height += (page.size.height * scale);
     }
+
+    // Add standard page spacing (4px by default in SfPdfViewer)
+    height += (details.document.pages.count - 1) * 4.0;
 
     return height;
   }
@@ -273,6 +283,8 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   bool _isSameDocument(String a, String b) {
     final uriA = Uri.parse(a);
     final uriB = Uri.parse(b);
-    return uriA.path == uriB.path;
+
+    return uriA.host == uriB.host &&
+          uriA.path == uriB.path;
   }
 }
