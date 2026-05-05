@@ -17,3 +17,9 @@
 - [x] 3.2 Implement smart loading indicators in `ChaptersListPage` that respect background sync states.
 - [x] 3.3 Link real `TestDetailScreen` and `AssessmentDetailScreen` in `AppRouter` for the Exams branch.
 - [x] 3.4 Refine "Lessons" filter logic to show all general content while excluding specialized categories.
+
+## 4. Maintenance & Bug Fixes
+
+- [x] 4.1 Fix missing `smooth_page_indicator` dependency in `packages/core`.
+- [x] 4.2 Resolve duplicated `onTap` argument in `ChaptersListPage`.
+- [x] 4.3 Synchronize dependencies for the `app` consumer shell.

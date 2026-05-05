@@ -234,11 +234,6 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                       ...filteredLessons.map((lesson) {
                         return LessonListItem(
                           lesson: lesson,
-                          onTap: () => LessonRouter.navigateToLesson(
-                            context,
-                            id: lesson.id,
-                            type: lesson.type,
-                          ),
                           onTap: () {
                             final route = switch (lesson.type) {
                               LessonType.video ||
