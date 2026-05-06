@@ -5,6 +5,7 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart' as dto;
 import 'package:profile/profile.dart';
 import 'package:courses/courses.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'widgets/lesson_cards_section.dart';
 
 class PaidActiveHomeScreen extends ConsumerWidget {
@@ -38,12 +39,21 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     final resumeLessons = resumeLearningAsync.valueOrNull ?? [];
     final recentlyCompletedLessons = recentlyCompletedAsync.valueOrNull ?? [];
 
-    final topCarousel = heroBanners.when(
-      data: (data) => HeroBannerCarousel(
-        banners: data.map(_mapHeroBanner).toList(),
-      ),
-      loading: () => const SizedBox(height: 180),
-      error: (error, stack) => const SizedBox.shrink(),
+    final bootstrapState = ref.watch(dashboardBootstrapProvider);
+    final hasDashboardCache = (heroBanners.valueOrNull?.isNotEmpty ?? false) ||
+        (learnersState.valueOrNull?.isNotEmpty ?? false) ||
+        whatsNewLessons.isNotEmpty ||
+        resumeLessons.isNotEmpty ||
+        recentlyCompletedLessons.isNotEmpty;
+    final isBootstrapping = bootstrapState.isLoading && !hasDashboardCache;
+
+    final showHeroSkeleton = isBootstrapping && (heroBanners.valueOrNull?.isEmpty ?? true);
+
+    final topCarousel = HeroBannerCarousel(
+      banners: showHeroSkeleton
+          ? []
+          : (heroBanners.valueOrNull ?? []).map(_mapHeroBanner).toList(),
+      isLoading: showHeroSkeleton,
     );
 
     final studyMomentum = momentum.when(
@@ -52,22 +62,11 @@ class PaidActiveHomeScreen extends ConsumerWidget {
       error: (err, stack) => const SizedBox.shrink(),
     );
 
-    final topLearnersSection = learnersState.when(
-      data: (learners) {
-        if (learners.isEmpty) return const SizedBox.shrink();
-        
-        // Manual partitioning for podium (top 3) and list (rest)
-        final podiumCount = learners.length > 3 ? 3 : learners.length;
-        final top = learners.sublist(0, podiumCount);
-        final others = learners.sublist(podiumCount);
-
-        return TopLearnersSection(
-          topLearners: top,
-          otherLearners: others,
-        );
-      },
-      loading: () => const SizedBox(height: 200),
-      error: (error, stack) => const SizedBox.shrink(),
+    final learners = learnersState.valueOrNull ?? const <dto.LearnerDto>[];
+    final topLearnersSection = TopLearnersSection(
+      topLearners: learners.take(3).toList(),
+      otherLearners: learners.skip(3).toList(),
+      isLoading: isBootstrapping,
     );
 
     final updatesAnnouncements = promotionBanners.when(
@@ -86,9 +85,19 @@ class PaidActiveHomeScreen extends ConsumerWidget {
       whatsNewLessons: whatsNewLessons,
       recentlyCompletedLessons: recentlyCompletedLessons,
       config: config,
+      isLoading: isBootstrapping,
     );
 
-    return Scaffold(
+    return SkeletonizerConfig(
+      data: SkeletonizerConfigData(
+        effect: ShimmerEffect(
+          baseColor: design.colors.skeleton,
+          highlightColor: design.colors.onSkeleton,
+          duration: MotionPreferences.duration(context, const Duration(milliseconds: 800)),
+        ),
+        ignoreContainers: false,
+      ),
+      child: Scaffold(
       backgroundColor: design.colors.canvas,
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -215,7 +224,8 @@ class PaidActiveHomeScreen extends ConsumerWidget {
           );
         },
       ),
-    );
+    ),
+   );
   }
 
   HeroBanner _mapHeroBanner(dto.DashboardBannerDto d) {

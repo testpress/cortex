@@ -230,6 +230,8 @@ class DesignColors {
     required this.rankDefault,
     required this.overlay,
     required this.shadow,
+    required this.skeleton,
+    required this.onSkeleton,
     required this.transparent,
   });
 
@@ -293,6 +295,8 @@ class DesignColors {
   final Color shadow;
 
   // Utilities
+  final Color skeleton;
+  final Color onSkeleton;
   final Color transparent;
 
   factory DesignColors.light() {
@@ -339,6 +343,8 @@ class DesignColors {
       rankDefault: Color(0xFF94A3B8),
       overlay: Color(0x8A000000),
       shadow: Color(0x33000000),
+      skeleton: Color(0xFFCBD5E1), // Gray-300
+      onSkeleton: Color(0xFFE2E8F0),
       transparent: Color(0x00000000),
     );
   }
@@ -385,6 +391,8 @@ class DesignColors {
       rankDefault: Color(0xFF71717A),
       overlay: Color(0x8A000000),
       shadow: Color(0x66000000),
+      skeleton: Color(0xFF3F3F46), // Zinc-700
+      onSkeleton: Color(0xFF52525B),
       transparent: Color(0x00000000),
     );
   }
@@ -433,6 +441,8 @@ class DesignColors {
     Color rankDefault = const Color(0xFF94A3B8),
     Color overlay = const Color(0x8A000000),
     Color shadow = const Color(0x33000000),
+    Color? skeleton,
+    Color? onSkeleton,
     Color transparent = const Color(0x00000000),
   }) {
     // Auto-calculate contrasting text colors
@@ -489,6 +499,8 @@ class DesignColors {
       rankDefault: rankDefault,
       overlay: overlay,
       shadow: shadow,
+      skeleton: skeleton ?? computedSurfaceVariant,
+      onSkeleton: onSkeleton ?? _lighten(skeleton ?? computedSurfaceVariant, 0.95),
       transparent: transparent,
     );
   }
@@ -566,7 +578,9 @@ class DesignColors {
         other.rank3 == rank3 &&
         other.rankDefault == rankDefault &&
         other.overlay == overlay &&
-        other.shadow == shadow;
+        other.shadow == shadow &&
+        other.skeleton == skeleton &&
+        other.onSkeleton == onSkeleton;
   }
 
   @override
@@ -610,6 +624,8 @@ class DesignColors {
       rankDefault,
       overlay,
       shadow,
+      skeleton,
+      onSkeleton,
     ]);
   }
 }

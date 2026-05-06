@@ -45,6 +45,8 @@ void main() {
         rankDefault: Color(0xFF94A3B8),
         overlay: Color(0x8A000000),
         shadow: Color(0x33000000),
+        skeleton: Color(0xFFCBD5E1),
+        onSkeleton: Color(0xFFE2E8F0),
         transparent: Color(0x00000000),
       );
 
@@ -127,6 +129,8 @@ void main() {
         rankDefault: Color(0xFF94A3B8),
         overlay: Color(0x8A000000),
         shadow: Color(0x33000000),
+        skeleton: Color(0xFFCBD5E1),
+        onSkeleton: Color(0xFFE2E8F0),
         transparent: Color(0x00000000),
       );
 

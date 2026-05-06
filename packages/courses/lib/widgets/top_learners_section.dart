@@ -1,33 +1,58 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 /// A section showing top-performing students on the dashboard.
+const _dummyLearner = LearnerDto(
+  id: 'skeleton',
+  rank: 1,
+  name: 'Student Name',
+  avatar: '',
+  points: 1200,
+  coursesCompleted: 12,
+  streakDays: 5,
+);
+
 class TopLearnersSection extends StatelessWidget {
   const TopLearnersSection({
     super.key,
     required this.topLearners,
     required this.otherLearners,
+    this.isLoading = false,
   });
 
   final List<LearnerDto> topLearners;
   final List<LearnerDto> otherLearners;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const _SectionHeader(),
-          const SizedBox(height: 12),
-          _LearnersCarousel(learners: topLearners),
-          if (otherLearners.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            _LeaderboardCard(learners: otherLearners),
+    final isSkeleton = isLoading && topLearners.isEmpty && otherLearners.isEmpty;
+    if (!isSkeleton && topLearners.isEmpty && otherLearners.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Skeletonizer(
+      enabled: isSkeleton,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const _SectionHeader(),
+            const SizedBox(height: 12),
+            _LearnersCarousel(
+              learners: isSkeleton ? List.filled(3, _dummyLearner) : topLearners,
+            ),
+            if (otherLearners.isNotEmpty || isSkeleton) ...[
+              const SizedBox(height: 16),
+              _LeaderboardCard(
+                learners: isSkeleton ? List.filled(5, _dummyLearner) : otherLearners,
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -68,19 +93,22 @@ class _LearnersCarousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+
     return SizedBox(
       height: 140,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
         itemCount: learners.length,
-        itemBuilder: (context, index) => Padding(
-          padding: const EdgeInsets.only(right: 12),
-          child: SizedBox(
-            width: 260,
-            child: _LearnerCard(learner: learners[index]),
-          ),
-        ),
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: SizedBox(
+              width: 260,
+              child: _LearnerCard(learner: learners[index]),
+            ),
+          );
+        },
       ),
     );
   }

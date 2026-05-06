@@ -16,11 +16,7 @@ class DashboardRepository {
         _db = db;
 
   Stream<List<DashboardBannerDto>> watchHeroBanners() async* {
-    // 1. Trigger background refresh from network
-    // We don't await this because we want to yield cached data immediately
-    _refreshBanners();
-
-    // 2. Emit data from DB (will update when _refreshBanners completes)
+    // Emit data from DB (updated by explicit sync calls)
     yield* _db.watchDashboardBanners().map((rows) {
       return rows.map((row) => DashboardBannerDto(
         id: row.id,
@@ -35,7 +31,7 @@ class DashboardRepository {
     });
   }
 
-  Future<void> _refreshBanners() async {
+  Future<void> refreshHeroBanners() async {
     try {
       final freshBanners = await _dataSource.getDashboardBanners();
       await _db.upsertDashboardBanners(freshBanners.map((dto) => DashboardBannersTableCompanion(
@@ -54,8 +50,6 @@ class DashboardRepository {
   }
 
   Stream<List<LearnerDto>> watchLearners() async* {
-    _refreshLearners();
-
     yield* _db.watchLearners().map((rows) {
       return rows.map((row) => LearnerDto(
         id: row.id,
@@ -69,7 +63,7 @@ class DashboardRepository {
     });
   }
 
-  Future<void> _refreshLearners() async {
+  Future<void> refreshLearners() async {
     try {
       final freshLearners = await _dataSource.getLearners();
       await _db.wipeAndInsertLearners(freshLearners.map((dto) => LearnersTableCompanion(
@@ -88,12 +82,7 @@ class DashboardRepository {
 
   /// Watch the "What's New" feed.
   Stream<List<DashboardContentDto>> watchWhatsNewFeed() async* {
-    // 1. Trigger background refresh
-    refreshWhatsNewFeed().catchError((e) {
-      debugPrint('DEBUG: Failed to refresh WhatsNew feed: $e');
-    });
-
-    // 2. Stream from database directly
+    // Stream from database directly
     yield* _db.watchDashboardSection(DashboardSectionType.whatsNew).map((rows) {
       return rows.map((data) => DashboardContentDto(
         id: data.lessonId,
@@ -142,10 +131,6 @@ class DashboardRepository {
 
   /// Watch the "Resume Learning" feed.
   Stream<List<DashboardContentDto>> watchResumeLearningFeed() async* {
-    refreshResumeLearningFeed().catchError((e) {
-      debugPrint('DEBUG: Failed to refresh ResumeLearning feed: $e');
-    });
-
     yield* _db.watchDashboardSection(DashboardSectionType.resumeLearning).map((rows) {
       return rows.map((data) => DashboardContentDto(
         id: data.lessonId,
@@ -194,10 +179,6 @@ class DashboardRepository {
 
   /// Watch the "Recently Completed" feed.
   Stream<List<DashboardContentDto>> watchRecentlyCompletedFeed() async* {
-    refreshRecentlyCompletedFeed().catchError((e) {
-      debugPrint('DEBUG: Failed to refresh RecentlyCompleted feed: $e');
-    });
-
     yield* _db.watchDashboardSection(DashboardSectionType.recentlyCompleted).map((rows) {
       return rows.map((data) => DashboardContentDto(
         id: data.lessonId,
