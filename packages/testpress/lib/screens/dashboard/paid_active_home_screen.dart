@@ -49,14 +49,12 @@ class PaidActiveHomeScreen extends ConsumerWidget {
 
     final showHeroSkeleton = isBootstrapping && (heroBanners.valueOrNull?.isEmpty ?? true);
 
-    final topCarousel = showHeroSkeleton
-        ? const HeroBannerCarousel(banners: [], isLoading: true)
-        : heroBanners.maybeWhen(
-            data: (data) => data.isEmpty 
-                ? const SizedBox.shrink() 
-                : HeroBannerCarousel(banners: data.map(_mapHeroBanner).toList()),
-            orElse: () => const SizedBox.shrink(),
-          );
+    final topCarousel = HeroBannerCarousel(
+      banners: showHeroSkeleton
+          ? []
+          : (heroBanners.valueOrNull ?? []).map(_mapHeroBanner).toList(),
+      isLoading: showHeroSkeleton,
+    );
 
     final studyMomentum = momentum.when(
       data: (data) => StudyMomentumGrid(momentum: data),
@@ -64,13 +62,10 @@ class PaidActiveHomeScreen extends ConsumerWidget {
       error: (err, stack) => const SizedBox.shrink(),
     );
 
+    final learners = learnersState.valueOrNull ?? const <dto.LearnerDto>[];
     final topLearnersSection = TopLearnersSection(
-      topLearners: learnersState.valueOrNull != null && learnersState.valueOrNull!.isNotEmpty 
-          ? learnersState.valueOrNull!.sublist(0, learnersState.valueOrNull!.length > 3 ? 3 : learnersState.valueOrNull!.length) 
-          : [],
-      otherLearners: learnersState.valueOrNull != null && learnersState.valueOrNull!.length > 3 
-          ? learnersState.valueOrNull!.sublist(3) 
-          : [],
+      topLearners: learners.take(3).toList(),
+      otherLearners: learners.skip(3).toList(),
       isLoading: isBootstrapping,
     );
 

@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 import 'package:core/core.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -16,6 +17,19 @@ class HeroBanner {
     required this.title,
     required this.link,
   });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is HeroBanner &&
+        other.id == id &&
+        other.imageUrl == imageUrl &&
+        other.title == title &&
+        other.link == link;
+  }
+
+  @override
+  int get hashCode => Object.hash(id, imageUrl, title, link);
 }
 
 /// Auto-scrolling image banner carousel for the home dashboard.
@@ -70,8 +84,11 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
   @override
   void didUpdateWidget(HeroBannerCarousel oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.banners.length != oldWidget.banners.length) {
+    if (!listEquals(widget.banners, oldWidget.banners)) {
       _timer?.cancel();
+      if (_currentIndex >= widget.banners.length) {
+        _currentIndex = 0;
+      }
       if (widget.banners.length > 1) {
         _startTimer();
       }
