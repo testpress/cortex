@@ -2,6 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/core.dart'; 
 import 'package:core/data/data.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+
+const _skeletonLesson = DashboardContentDto(
+  id: 'skeleton',
+  title: 'Loading lesson title placeholder...',
+  chapterTitle: 'Chapter title skeleton',
+  contentType: DashboardContentType.video,
+);
 
 class LessonCardWidget extends StatelessWidget {
   final DashboardContentDto lesson;
@@ -211,6 +219,7 @@ class LessonCardsSectionWidget extends StatelessWidget {
   final List<DashboardContentDto> whatsNewLessons;
   final List<DashboardContentDto> recentlyCompletedLessons;
   final ClientConfig config;
+  final bool isLoading;
 
   const LessonCardsSectionWidget({
     super.key,
@@ -218,6 +227,7 @@ class LessonCardsSectionWidget extends StatelessWidget {
     required this.whatsNewLessons,
     required this.recentlyCompletedLessons,
     required this.config,
+    this.isLoading = false,
   });
 
   Widget _buildCarouselSection(
@@ -227,65 +237,73 @@ class LessonCardsSectionWidget extends StatelessWidget {
     bool isCompleted = false,
     bool showMetadata = true,
   }) {
-    if (lessons.isEmpty) return const SizedBox.shrink();
+    final isSkeleton = isLoading && lessons.isEmpty;
+    if (lessons.isEmpty && !isSkeleton) return const SizedBox.shrink();
 
     final design = Design.of(context);
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final itemWidth = constraints.maxWidth * 0.45; // viewportFraction is 0.45
-        
-        // Image height (16:9) + Content & Padding + Carousel margin
-        final contentHeight = showMetadata 
-            ? _cardContentHeightWithMetadata 
-            : _cardContentHeightCompact;
-            
-        final calculatedHeight = (itemWidth / (16 / 9)) + contentHeight + _carouselBottomMargin;
+    return Skeletonizer(
+      enabled: isSkeleton,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final itemWidth = constraints.maxWidth * 0.45; // viewportFraction is 0.45
+          
+          // Image height (16:9) + Content & Padding + Carousel margin
+          final contentHeight = showMetadata 
+              ? _cardContentHeightWithMetadata 
+              : _cardContentHeightCompact;
+              
+          final calculatedHeight = (itemWidth / (16 / 9)) + contentHeight + _carouselBottomMargin;
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: design.spacing.lg),
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: design.colors.textPrimary,
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: design.spacing.lg),
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: design.colors.textPrimary,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: design.spacing.sm),
-            AppCarousel(
-              itemCount: lessons.length,
-              height: calculatedHeight, 
-              viewportFraction: 0.45, 
-              padEnds: false, 
-              itemPadding: EdgeInsets.only(left: design.spacing.md), 
-              itemBuilder: (context, index) {
-                final lesson = lessons[index];
-                return Container(
-                   margin: const EdgeInsets.only(bottom: 16.0), 
-                   child: AppFocusable(
-                     onTap: () => LessonRouter.navigateToLesson(
-                       context,
-                       id: lesson.id,
-                       type: lesson.contentType,
+              SizedBox(height: design.spacing.sm),
+              AppCarousel(
+                itemCount: isSkeleton ? 3 : lessons.length,
+                height: calculatedHeight, 
+                viewportFraction: 0.45, 
+                padEnds: false, 
+                itemPadding: EdgeInsets.only(left: design.spacing.md), 
+                itemBuilder: (context, index) {
+                  final lesson = isSkeleton ? _skeletonLesson : lessons[index];
+                  return Container(
+                     margin: const EdgeInsets.only(bottom: 16.0), 
+                     child: AppFocusable(
+                       onTap: () {
+                         if (!isSkeleton) {
+                           LessonRouter.navigateToLesson(
+                             context,
+                             id: lesson.id,
+                             type: lesson.contentType,
+                           );
+                         }
+                       },
+                       borderRadius: BorderRadius.circular(design.spacing.md),
+                       child: LessonCardWidget(
+                         lesson: lesson,
+                         isCompleted: isCompleted,
+                       ),
                      ),
-                     borderRadius: BorderRadius.circular(design.spacing.md),
-                     child: LessonCardWidget(
-                       lesson: lesson,
-                       isCompleted: isCompleted,
-                     ),
-                   ),
-                );
-              },
-            ),
-            SizedBox(height: design.spacing.xs),
-          ],
-        );
-      },
+                  );
+                },
+              ),
+              SizedBox(height: design.spacing.xs),
+            ],
+          );
+        },
+      ),
     );
   }
 

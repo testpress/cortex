@@ -6,6 +6,24 @@ part of 'dashboard_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+String _$dashboardBootstrapHash() =>
+    r'bcafc95b7140edd809903a317274e0ac052b77c4';
+
+/// See also [dashboardBootstrap].
+@ProviderFor(dashboardBootstrap)
+final dashboardBootstrapProvider = AutoDisposeFutureProvider<void>.internal(
+  dashboardBootstrap,
+  name: r'dashboardBootstrapProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$dashboardBootstrapHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef DashboardBootstrapRef = AutoDisposeFutureProviderRef<void>;
 String _$appVersionHash() => r'e8bdf0eb01e50b65eb7931eadc45c32b561fce64';
 
 /// See also [appVersion].

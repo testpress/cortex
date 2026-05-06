@@ -81,7 +81,6 @@ class DashboardContentsDto {
       case DashboardSectionType.recentlyCompleted:
         return _parseRecentlyCompleted(results);
       case DashboardSectionType.whatsNew:
-      default:
         return _parseWhatsNewFeed(results, sectionType);
     }
   }
