@@ -159,3 +159,11 @@ The system SHALL support specialized layout rules and section ordering based on 
 - **THEN** they MUST follow the specific sequence: Top Carousel -> Updates & Announcements -> Learning Performance -> Top Learners
 - **AND** this sequence MUST NOT affect the default ordering of other subdomains
 
+### Requirement: Smooth Loading Experience (Skeletonization)
+The home screen SHALL provide a smooth, flicker-free loading experience by utilizing structural skeletons while data is being fetched.
+
+#### Scenario: Home screen initial load with skeletons
+- **WHEN** the `PaidActiveHomeScreen` is first rendered and data providers are in a loading or empty state
+- **THEN** the screen MUST display `Skeletonizer` placeholders for the `HeroBannerCarousel`, `LessonCardsSection`, and `TopLearnersSection`
+- **AND** the screen MUST remain scrollable to allow users to explore the layout structure immediately
+
