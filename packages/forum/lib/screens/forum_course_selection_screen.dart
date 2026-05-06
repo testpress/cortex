@@ -160,7 +160,7 @@ class _CourseInfo extends ConsumerWidget {
               '...',
               color: design.colors.textSecondary.withValues(alpha: 0.5),
             ),
-            error: (_, __) => AppText.caption(
+            error: (_, _) => AppText.caption(
               '--',
               color: design.colors.textSecondary.withValues(alpha: 0.5),
             ),

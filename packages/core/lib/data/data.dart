@@ -23,9 +23,7 @@ export 'models/study_momentum_dto.dart';
 export 'models/explore_models.dart';
 export 'models/paginated_response_dto.dart';
 export 'models/client_config.dart';
-export 'models/dashboard_banner_dto.dart';
-export 'models/learner_dto.dart';
-export 'models/dashboard_contents_dto.dart';
+export 'models/dashboard_dto.dart';
 
 // Database
 export 'db/tables/dashboard_tables.dart';

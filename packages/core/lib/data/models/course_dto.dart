@@ -15,7 +15,7 @@ class CourseDto {
 
   final int chapterCount;
   @Deprecated('Use totalContents instead')
-  final String totalDuration;
+  final String? totalDuration;
   final int totalContents;
   final int progress; // 0–100
   final int completedLessons;
@@ -32,7 +32,7 @@ class CourseDto {
     required this.title,
     required this.colorIndex,
     required this.chapterCount,
-    required this.totalDuration,
+    this.totalDuration,
     required this.totalContents,
     required this.progress,
     required this.completedLessons,
@@ -92,7 +92,7 @@ class CourseDto {
       title: json['title'] as String? ?? 'Untitled Course',
       colorIndex: json['color_index'] as int? ?? 0,
       chapterCount: json['chapters_count'] as int? ?? 0,
-      totalDuration: json['total_duration'] as String? ?? '',
+      totalDuration: json['total_duration'] as String?,
       totalContents: json['contents_count'] as int? ?? 0,
       progress: json['progress'] as int? ?? 0,
       completedLessons: json['completed_lessons_count'] as int? ?? 0,
@@ -109,7 +109,6 @@ class CourseDto {
               .toList() ??
           const [],
     );
-    print('DEBUG_PARSE: Course ${dto.id} ("${dto.title}") tags: ${dto.tags}, tagIds: ${dto.tagIds}, examsCount: ${dto.examsCount}, allowedDevices: ${dto.allowedDevices}');
     return dto;
   }
 

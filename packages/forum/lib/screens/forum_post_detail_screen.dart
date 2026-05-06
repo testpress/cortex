@@ -61,7 +61,6 @@ class ForumPostDetailScreen extends ConsumerWidget {
       actions: [
         AppFocusable(
           onTap: () {
-            // TODO: Show options menu (Report, Share, etc.)
           },
           borderRadius: BorderRadius.circular(design.radius.full),
           child: Padding(

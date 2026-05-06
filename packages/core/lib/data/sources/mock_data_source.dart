@@ -620,58 +620,6 @@ class MockDataSource implements DataSource {
         ),
       ];
 
-  List<LessonDto> _organicChemLessons() => [
-        const LessonDto(
-          id: 'org-1',
-          chapterId: 'jee-main-ch-4',
-          title: 'Introduction to Reaction Mechanisms',
-          type: LessonType.video,
-          duration: '50 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: false,
-          orderIndex: 0,
-        ),
-        const LessonDto(
-          id: 'org-2',
-          chapterId: 'jee-main-ch-4',
-          title: 'SN1 & SN2 Reactions',
-          type: LessonType.video,
-          duration: '45 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: false,
-          orderIndex: 1,
-        ),
-        const LessonDto(
-          id: 'org-3',
-          chapterId: 'jee-main-ch-4',
-          title: 'Elimination Reactions',
-          type: LessonType.video,
-          duration: '38 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: true,
-          orderIndex: 2,
-        ),
-        const LessonDto(
-          id: 'org-4',
-          chapterId: 'jee-main-ch-4',
-          title: 'Organic Reactions Worksheet',
-          type: LessonType.pdf,
-          duration: '20 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: true,
-          orderIndex: 3,
-        ),
-        const LessonDto(
-          id: 'org-5',
-          chapterId: 'jee-main-ch-4',
-          title: 'Organic Chemistry Assessment',
-          type: LessonType.assessment,
-          duration: '30 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: true,
-          orderIndex: 4,
-        ),
-      ];
 
   List<LessonDto> _calculusLessons() => [
         const LessonDto(

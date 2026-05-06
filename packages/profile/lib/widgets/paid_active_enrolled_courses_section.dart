@@ -109,7 +109,7 @@ class _ActiveCourseCard extends StatelessWidget {
                         ],
                       ),
                       AppText.cardCaption(
-                        '${course.chapterCount} chapters · ${course.totalDuration}',
+                        '${course.chapterCount} chapters · ${course.totalContents} contents',
                       ),
                     ],
                   ),

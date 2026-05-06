@@ -554,23 +554,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 );
 });
 
-List<String> _tabPaths({
-  required ClientConfig config,
-  required bool isInfoEnabled,
-}) {
-  if (config.useRestrictedNavigation) {
-    return ['/home', '/study', '/exams', '/info'];
-  }
-
-  return [
-    '/home',
-    '/study',
-    if (config.showExamTab) '/exams',
-    '/explore',
-    if (isInfoEnabled) '/info',
-    '/profile',
-  ];
-}
 
 List<AppTabItem> buildPrimaryNavigationItems({
   required ClientConfig config,

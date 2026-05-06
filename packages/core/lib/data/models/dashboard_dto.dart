@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:flutter/foundation.dart';
 import '../../utils/time_formatter.dart';
 import '../db/tables/dashboard_tables.dart';
 
@@ -62,6 +63,7 @@ class DashboardContentDto {
     return DashboardContentType.unknown;
   }
 }
+
 
 /// Container for the dashboard contents list.
 class DashboardContentsDto {
@@ -219,5 +221,80 @@ class DashboardContentsDto {
     }
 
     return DashboardContentsDto(items: items);
+  }
+}
+
+
+class DashboardBannerDto {
+  final String id;
+  final String imageUrl;
+  final String? title;
+  final String? link;
+  final int? bgColor; // ARGB
+  final int? textColor; // ARGB
+  final String? description;
+  final String? tag;
+
+  const DashboardBannerDto({
+    required this.id,
+    required this.imageUrl,
+    this.title,
+    this.link,
+    this.bgColor,
+    this.textColor,
+    this.description,
+    this.tag,
+  });
+
+  static DashboardBannerDto? fromJson(Map<String, dynamic> json) {
+    final id = json['id']?.toString();
+    final imageUrl = json['image'] as String?;
+
+    if (id == null || imageUrl == null) return null;
+
+    return DashboardBannerDto(
+      id: id,
+      imageUrl: imageUrl,
+      title: json['title'] as String?,
+      link: json['url'] as String?,
+      description: json['description'] as String?,
+      bgColor: json['bgColor'] as int?,
+      textColor: json['textColor'] as int?,
+      tag: json['tag'] as String?,
+    );
+  }
+}
+
+
+@immutable
+class LearnerDto {
+  final String id;
+  final int rank;
+  final String name;
+  final String avatar;
+  final double points;
+  final int coursesCompleted;
+  final int streakDays;
+
+  const LearnerDto({
+    required this.id,
+    required this.rank,
+    required this.name,
+    required this.avatar,
+    required this.points,
+    required this.coursesCompleted,
+    required this.streakDays,
+  });
+
+  factory LearnerDto.fromJson(Map<String, dynamic> json, int rank) {
+    return LearnerDto(
+      id: json['id']?.toString() ?? '',
+      rank: rank,
+      name: json['user']?['display_name'] ?? '',
+      avatar: json['user']?['medium_image'] ?? '',
+      points: double.tryParse(json['trophies_count']?.toString() ?? '0') ?? 0.0,
+      coursesCompleted: json['courses_completed']?.toInt() ?? 0,
+      streakDays: json['streak_days']?.toInt() ?? 0,
+    );
   }
 }

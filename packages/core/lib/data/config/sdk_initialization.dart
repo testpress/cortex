@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tpstreams_player_sdk/tpstreams_player_sdk.dart';
 import '../auth/auth_provider.dart';
