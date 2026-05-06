@@ -56,9 +56,9 @@ class $CoursesTableTable extends CoursesTable
   late final GeneratedColumn<String> totalDuration = GeneratedColumn<String>(
     'total_duration',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _totalContentsMeta = const VerificationMeta(
     'totalContents',
@@ -242,8 +242,6 @@ class $CoursesTableTable extends CoursesTable
           _totalDurationMeta,
         ),
       );
-    } else if (isInserting) {
-      context.missing(_totalDurationMeta);
     }
     if (data.containsKey('total_contents')) {
       context.handle(
@@ -350,7 +348,7 @@ class $CoursesTableTable extends CoursesTable
       totalDuration: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}total_duration'],
-      )!,
+      ),
       totalContents: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}total_contents'],
@@ -406,7 +404,7 @@ class CoursesTableData extends DataClass
   final String title;
   final int colorIndex;
   final int chapterCount;
-  final String totalDuration;
+  final String? totalDuration;
   final int totalContents;
   final int progress;
   final int completedLessons;
@@ -422,7 +420,7 @@ class CoursesTableData extends DataClass
     required this.title,
     required this.colorIndex,
     required this.chapterCount,
-    required this.totalDuration,
+    this.totalDuration,
     required this.totalContents,
     required this.progress,
     required this.completedLessons,
@@ -441,7 +439,9 @@ class CoursesTableData extends DataClass
     map['title'] = Variable<String>(title);
     map['color_index'] = Variable<int>(colorIndex);
     map['chapter_count'] = Variable<int>(chapterCount);
-    map['total_duration'] = Variable<String>(totalDuration);
+    if (!nullToAbsent || totalDuration != null) {
+      map['total_duration'] = Variable<String>(totalDuration);
+    }
     map['total_contents'] = Variable<int>(totalContents);
     map['progress'] = Variable<int>(progress);
     map['completed_lessons'] = Variable<int>(completedLessons);
@@ -469,7 +469,9 @@ class CoursesTableData extends DataClass
       title: Value(title),
       colorIndex: Value(colorIndex),
       chapterCount: Value(chapterCount),
-      totalDuration: Value(totalDuration),
+      totalDuration: totalDuration == null && nullToAbsent
+          ? const Value.absent()
+          : Value(totalDuration),
       totalContents: Value(totalContents),
       progress: Value(progress),
       completedLessons: Value(completedLessons),
@@ -499,7 +501,7 @@ class CoursesTableData extends DataClass
       title: serializer.fromJson<String>(json['title']),
       colorIndex: serializer.fromJson<int>(json['colorIndex']),
       chapterCount: serializer.fromJson<int>(json['chapterCount']),
-      totalDuration: serializer.fromJson<String>(json['totalDuration']),
+      totalDuration: serializer.fromJson<String?>(json['totalDuration']),
       totalContents: serializer.fromJson<int>(json['totalContents']),
       progress: serializer.fromJson<int>(json['progress']),
       completedLessons: serializer.fromJson<int>(json['completedLessons']),
@@ -520,7 +522,7 @@ class CoursesTableData extends DataClass
       'title': serializer.toJson<String>(title),
       'colorIndex': serializer.toJson<int>(colorIndex),
       'chapterCount': serializer.toJson<int>(chapterCount),
-      'totalDuration': serializer.toJson<String>(totalDuration),
+      'totalDuration': serializer.toJson<String?>(totalDuration),
       'totalContents': serializer.toJson<int>(totalContents),
       'progress': serializer.toJson<int>(progress),
       'completedLessons': serializer.toJson<int>(completedLessons),
@@ -539,7 +541,7 @@ class CoursesTableData extends DataClass
     String? title,
     int? colorIndex,
     int? chapterCount,
-    String? totalDuration,
+    Value<String?> totalDuration = const Value.absent(),
     int? totalContents,
     int? progress,
     int? completedLessons,
@@ -555,7 +557,9 @@ class CoursesTableData extends DataClass
     title: title ?? this.title,
     colorIndex: colorIndex ?? this.colorIndex,
     chapterCount: chapterCount ?? this.chapterCount,
-    totalDuration: totalDuration ?? this.totalDuration,
+    totalDuration: totalDuration.present
+        ? totalDuration.value
+        : this.totalDuration,
     totalContents: totalContents ?? this.totalContents,
     progress: progress ?? this.progress,
     completedLessons: completedLessons ?? this.completedLessons,
@@ -673,7 +677,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
   final Value<String> title;
   final Value<int> colorIndex;
   final Value<int> chapterCount;
-  final Value<String> totalDuration;
+  final Value<String?> totalDuration;
   final Value<int> totalContents;
   final Value<int> progress;
   final Value<int> completedLessons;
@@ -708,7 +712,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     required String title,
     required int colorIndex,
     required int chapterCount,
-    required String totalDuration,
+    this.totalDuration = const Value.absent(),
     this.totalContents = const Value.absent(),
     this.progress = const Value.absent(),
     this.completedLessons = const Value.absent(),
@@ -724,7 +728,6 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
        title = Value(title),
        colorIndex = Value(colorIndex),
        chapterCount = Value(chapterCount),
-       totalDuration = Value(totalDuration),
        totalLessons = Value(totalLessons);
   static Insertable<CoursesTableData> custom({
     Expression<String>? id,
@@ -769,7 +772,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     Value<String>? title,
     Value<int>? colorIndex,
     Value<int>? chapterCount,
-    Value<String>? totalDuration,
+    Value<String?>? totalDuration,
     Value<int>? totalContents,
     Value<int>? progress,
     Value<int>? completedLessons,
@@ -7938,7 +7941,7 @@ typedef $$CoursesTableTableCreateCompanionBuilder =
       required String title,
       required int colorIndex,
       required int chapterCount,
-      required String totalDuration,
+      Value<String?> totalDuration,
       Value<int> totalContents,
       Value<int> progress,
       Value<int> completedLessons,
@@ -7957,7 +7960,7 @@ typedef $$CoursesTableTableUpdateCompanionBuilder =
       Value<String> title,
       Value<int> colorIndex,
       Value<int> chapterCount,
-      Value<String> totalDuration,
+      Value<String?> totalDuration,
       Value<int> totalContents,
       Value<int> progress,
       Value<int> completedLessons,
@@ -8249,7 +8252,7 @@ class $$CoursesTableTableTableManager
                 Value<String> title = const Value.absent(),
                 Value<int> colorIndex = const Value.absent(),
                 Value<int> chapterCount = const Value.absent(),
-                Value<String> totalDuration = const Value.absent(),
+                Value<String?> totalDuration = const Value.absent(),
                 Value<int> totalContents = const Value.absent(),
                 Value<int> progress = const Value.absent(),
                 Value<int> completedLessons = const Value.absent(),
@@ -8285,7 +8288,7 @@ class $$CoursesTableTableTableManager
                 required String title,
                 required int colorIndex,
                 required int chapterCount,
-                required String totalDuration,
+                Value<String?> totalDuration = const Value.absent(),
                 Value<int> totalContents = const Value.absent(),
                 Value<int> progress = const Value.absent(),
                 Value<int> completedLessons = const Value.absent(),
