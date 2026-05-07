@@ -51,7 +51,7 @@ class DashboardDrawer extends ConsumerWidget {
               label: l10n.drawerForum,
               action: () {
                 ref.read(isHomeDrawerOpenProvider.notifier).state = false;
-                context.go('/home/forum');
+                context.go('/home/discussions/forum');
               },
             ),
             AppDrawerItem(

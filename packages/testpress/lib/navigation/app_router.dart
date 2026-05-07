@@ -8,7 +8,7 @@ import 'package:exams/exams.dart';
 
 import '../screens/dashboard/paid_active_home_screen.dart';
 import '../widgets/dashboard_drawer.dart';
-import 'package:forum/forum.dart';
+import 'package:discussions/discussions.dart';
 
 class ExplorePlaceholderScreen extends StatelessWidget {
   const ExplorePlaceholderScreen({super.key});
@@ -176,7 +176,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               builder: (context, state) => const PaidActiveHomeScreen(),
               routes: [
                 GoRoute(
-                  path: 'forum',
+                  path: 'discussions/forum',
                   builder: (context, state) =>
                       const ForumCourseSelectionScreen(),
                   routes: [

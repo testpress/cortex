@@ -20,8 +20,8 @@ dependencies:
     path: ../exams
   profile:
     path: ../profile
-  forum:
-    path: ../forum
+  discussions:
+    path: ../discussions
 
 
   flutter_riverpod: ^2.5.1

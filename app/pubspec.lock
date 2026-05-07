@@ -183,6 +183,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  discussions:
+    dependency: transitive
+    description:
+      path: "../packages/discussions"
+      relative: true
+    source: path
+    version: "0.0.1"
   drift:
     dependency: transitive
     description:
@@ -426,13 +433,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  forum:
-    dependency: transitive
-    description:
-      path: "../packages/forum"
-      relative: true
-    source: path
-    version: "0.0.1"
   glob:
     dependency: transitive
     description:
