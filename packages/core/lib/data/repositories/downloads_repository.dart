@@ -21,7 +21,7 @@ class DownloadsRepository {
         title: row.title,
         course: row.course,
         chapter: row.chapter,
-        size: row.size,
+        sizeInBytes: row.sizeInBytes.toInt(),
         downloadedDate: row.downloadedDate,
         type: DownloadType.values[row.typeIndex],
         status: DownloadStatus.values[row.statusIndex],
@@ -36,9 +36,26 @@ class DownloadsRepository {
   /// Initial synchronization between SDKs and Database.
   Future<void> synchronize() async {
     final activeDownloads = await _service.getActiveDownloads();
-    for (final item in activeDownloads) {
-      await upsertDownload(item);
-    }
+
+    await _db.batch((batch) {
+      batch.insertAllOnConflictUpdate(
+        _db.downloadsTable,
+        activeDownloads.map((item) => DownloadsTableCompanion(
+              id: Value(item.id),
+              title: Value(item.title),
+              course: Value(item.course),
+              chapter: Value(item.chapter),
+              sizeInBytes: Value(BigInt.from(item.sizeInBytes)),
+              downloadedDate: Value(item.downloadedDate),
+              typeIndex: Value(item.type.index),
+              statusIndex: Value(item.status.index),
+              progress: Value(item.progress),
+              thumbnailUrl: Value(item.thumbnailUrl),
+              duration: Value(item.duration),
+              fileType: Value(item.fileType),
+            )),
+      );
+    });
   }
 
   /// Map and save a unified DownloadItem into the Database.
@@ -49,7 +66,7 @@ class DownloadsRepository {
         title: Value(item.title),
         course: Value(item.course),
         chapter: Value(item.chapter),
-        size: Value(item.size),
+        sizeInBytes: Value(BigInt.from(item.sizeInBytes)),
         downloadedDate: Value(item.downloadedDate),
         typeIndex: Value(item.type.index),
         statusIndex: Value(item.status.index),

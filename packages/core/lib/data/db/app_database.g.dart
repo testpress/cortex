@@ -7946,13 +7946,15 @@ class $DownloadsTableTable extends DownloadsTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _sizeMeta = const VerificationMeta('size');
+  static const VerificationMeta _sizeInBytesMeta = const VerificationMeta(
+    'sizeInBytes',
+  );
   @override
-  late final GeneratedColumn<String> size = GeneratedColumn<String>(
-    'size',
+  late final GeneratedColumn<BigInt> sizeInBytes = GeneratedColumn<BigInt>(
+    'size_in_bytes',
     aliasedName,
     false,
-    type: DriftSqlType.string,
+    type: DriftSqlType.bigInt,
     requiredDuringInsert: true,
   );
   static const VerificationMeta _downloadedDateMeta = const VerificationMeta(
@@ -8040,7 +8042,7 @@ class $DownloadsTableTable extends DownloadsTable
     course,
     chapter,
     filePath,
-    size,
+    sizeInBytes,
     downloadedDate,
     typeIndex,
     statusIndex,
@@ -8096,13 +8098,16 @@ class $DownloadsTableTable extends DownloadsTable
         filePath.isAcceptableOrUnknown(data['file_path']!, _filePathMeta),
       );
     }
-    if (data.containsKey('size')) {
+    if (data.containsKey('size_in_bytes')) {
       context.handle(
-        _sizeMeta,
-        size.isAcceptableOrUnknown(data['size']!, _sizeMeta),
+        _sizeInBytesMeta,
+        sizeInBytes.isAcceptableOrUnknown(
+          data['size_in_bytes']!,
+          _sizeInBytesMeta,
+        ),
       );
     } else if (isInserting) {
-      context.missing(_sizeMeta);
+      context.missing(_sizeInBytesMeta);
     }
     if (data.containsKey('downloaded_date')) {
       context.handle(
@@ -8190,9 +8195,9 @@ class $DownloadsTableTable extends DownloadsTable
         DriftSqlType.string,
         data['${effectivePrefix}file_path'],
       ),
-      size: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}size'],
+      sizeInBytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.bigInt,
+        data['${effectivePrefix}size_in_bytes'],
       )!,
       downloadedDate: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -8248,8 +8253,8 @@ class DownloadsTableData extends DataClass
   /// Local file path on the device.
   final String? filePath;
 
-  /// Total size of the file (e.g. "24.5 MB").
-  final String size;
+  /// Total size of the file in bytes.
+  final BigInt sizeInBytes;
 
   /// Date the download was initiated/completed.
   final String downloadedDate;
@@ -8279,7 +8284,7 @@ class DownloadsTableData extends DataClass
     required this.course,
     required this.chapter,
     this.filePath,
-    required this.size,
+    required this.sizeInBytes,
     required this.downloadedDate,
     required this.typeIndex,
     required this.statusIndex,
@@ -8298,7 +8303,7 @@ class DownloadsTableData extends DataClass
     if (!nullToAbsent || filePath != null) {
       map['file_path'] = Variable<String>(filePath);
     }
-    map['size'] = Variable<String>(size);
+    map['size_in_bytes'] = Variable<BigInt>(sizeInBytes);
     map['downloaded_date'] = Variable<String>(downloadedDate);
     map['type_index'] = Variable<int>(typeIndex);
     map['status_index'] = Variable<int>(statusIndex);
@@ -8324,7 +8329,7 @@ class DownloadsTableData extends DataClass
       filePath: filePath == null && nullToAbsent
           ? const Value.absent()
           : Value(filePath),
-      size: Value(size),
+      sizeInBytes: Value(sizeInBytes),
       downloadedDate: Value(downloadedDate),
       typeIndex: Value(typeIndex),
       statusIndex: Value(statusIndex),
@@ -8352,7 +8357,7 @@ class DownloadsTableData extends DataClass
       course: serializer.fromJson<String>(json['course']),
       chapter: serializer.fromJson<String>(json['chapter']),
       filePath: serializer.fromJson<String?>(json['filePath']),
-      size: serializer.fromJson<String>(json['size']),
+      sizeInBytes: serializer.fromJson<BigInt>(json['sizeInBytes']),
       downloadedDate: serializer.fromJson<String>(json['downloadedDate']),
       typeIndex: serializer.fromJson<int>(json['typeIndex']),
       statusIndex: serializer.fromJson<int>(json['statusIndex']),
@@ -8371,7 +8376,7 @@ class DownloadsTableData extends DataClass
       'course': serializer.toJson<String>(course),
       'chapter': serializer.toJson<String>(chapter),
       'filePath': serializer.toJson<String?>(filePath),
-      'size': serializer.toJson<String>(size),
+      'sizeInBytes': serializer.toJson<BigInt>(sizeInBytes),
       'downloadedDate': serializer.toJson<String>(downloadedDate),
       'typeIndex': serializer.toJson<int>(typeIndex),
       'statusIndex': serializer.toJson<int>(statusIndex),
@@ -8388,7 +8393,7 @@ class DownloadsTableData extends DataClass
     String? course,
     String? chapter,
     Value<String?> filePath = const Value.absent(),
-    String? size,
+    BigInt? sizeInBytes,
     String? downloadedDate,
     int? typeIndex,
     int? statusIndex,
@@ -8402,7 +8407,7 @@ class DownloadsTableData extends DataClass
     course: course ?? this.course,
     chapter: chapter ?? this.chapter,
     filePath: filePath.present ? filePath.value : this.filePath,
-    size: size ?? this.size,
+    sizeInBytes: sizeInBytes ?? this.sizeInBytes,
     downloadedDate: downloadedDate ?? this.downloadedDate,
     typeIndex: typeIndex ?? this.typeIndex,
     statusIndex: statusIndex ?? this.statusIndex,
@@ -8418,7 +8423,9 @@ class DownloadsTableData extends DataClass
       course: data.course.present ? data.course.value : this.course,
       chapter: data.chapter.present ? data.chapter.value : this.chapter,
       filePath: data.filePath.present ? data.filePath.value : this.filePath,
-      size: data.size.present ? data.size.value : this.size,
+      sizeInBytes: data.sizeInBytes.present
+          ? data.sizeInBytes.value
+          : this.sizeInBytes,
       downloadedDate: data.downloadedDate.present
           ? data.downloadedDate.value
           : this.downloadedDate,
@@ -8443,7 +8450,7 @@ class DownloadsTableData extends DataClass
           ..write('course: $course, ')
           ..write('chapter: $chapter, ')
           ..write('filePath: $filePath, ')
-          ..write('size: $size, ')
+          ..write('sizeInBytes: $sizeInBytes, ')
           ..write('downloadedDate: $downloadedDate, ')
           ..write('typeIndex: $typeIndex, ')
           ..write('statusIndex: $statusIndex, ')
@@ -8462,7 +8469,7 @@ class DownloadsTableData extends DataClass
     course,
     chapter,
     filePath,
-    size,
+    sizeInBytes,
     downloadedDate,
     typeIndex,
     statusIndex,
@@ -8480,7 +8487,7 @@ class DownloadsTableData extends DataClass
           other.course == this.course &&
           other.chapter == this.chapter &&
           other.filePath == this.filePath &&
-          other.size == this.size &&
+          other.sizeInBytes == this.sizeInBytes &&
           other.downloadedDate == this.downloadedDate &&
           other.typeIndex == this.typeIndex &&
           other.statusIndex == this.statusIndex &&
@@ -8496,7 +8503,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
   final Value<String> course;
   final Value<String> chapter;
   final Value<String?> filePath;
-  final Value<String> size;
+  final Value<BigInt> sizeInBytes;
   final Value<String> downloadedDate;
   final Value<int> typeIndex;
   final Value<int> statusIndex;
@@ -8511,7 +8518,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
     this.course = const Value.absent(),
     this.chapter = const Value.absent(),
     this.filePath = const Value.absent(),
-    this.size = const Value.absent(),
+    this.sizeInBytes = const Value.absent(),
     this.downloadedDate = const Value.absent(),
     this.typeIndex = const Value.absent(),
     this.statusIndex = const Value.absent(),
@@ -8527,7 +8534,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
     required String course,
     required String chapter,
     this.filePath = const Value.absent(),
-    required String size,
+    required BigInt sizeInBytes,
     required String downloadedDate,
     required int typeIndex,
     required int statusIndex,
@@ -8540,7 +8547,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
        title = Value(title),
        course = Value(course),
        chapter = Value(chapter),
-       size = Value(size),
+       sizeInBytes = Value(sizeInBytes),
        downloadedDate = Value(downloadedDate),
        typeIndex = Value(typeIndex),
        statusIndex = Value(statusIndex);
@@ -8550,7 +8557,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
     Expression<String>? course,
     Expression<String>? chapter,
     Expression<String>? filePath,
-    Expression<String>? size,
+    Expression<BigInt>? sizeInBytes,
     Expression<String>? downloadedDate,
     Expression<int>? typeIndex,
     Expression<int>? statusIndex,
@@ -8566,7 +8573,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
       if (course != null) 'course': course,
       if (chapter != null) 'chapter': chapter,
       if (filePath != null) 'file_path': filePath,
-      if (size != null) 'size': size,
+      if (sizeInBytes != null) 'size_in_bytes': sizeInBytes,
       if (downloadedDate != null) 'downloaded_date': downloadedDate,
       if (typeIndex != null) 'type_index': typeIndex,
       if (statusIndex != null) 'status_index': statusIndex,
@@ -8584,7 +8591,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
     Value<String>? course,
     Value<String>? chapter,
     Value<String?>? filePath,
-    Value<String>? size,
+    Value<BigInt>? sizeInBytes,
     Value<String>? downloadedDate,
     Value<int>? typeIndex,
     Value<int>? statusIndex,
@@ -8600,7 +8607,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
       course: course ?? this.course,
       chapter: chapter ?? this.chapter,
       filePath: filePath ?? this.filePath,
-      size: size ?? this.size,
+      sizeInBytes: sizeInBytes ?? this.sizeInBytes,
       downloadedDate: downloadedDate ?? this.downloadedDate,
       typeIndex: typeIndex ?? this.typeIndex,
       statusIndex: statusIndex ?? this.statusIndex,
@@ -8630,8 +8637,8 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
     if (filePath.present) {
       map['file_path'] = Variable<String>(filePath.value);
     }
-    if (size.present) {
-      map['size'] = Variable<String>(size.value);
+    if (sizeInBytes.present) {
+      map['size_in_bytes'] = Variable<BigInt>(sizeInBytes.value);
     }
     if (downloadedDate.present) {
       map['downloaded_date'] = Variable<String>(downloadedDate.value);
@@ -8668,7 +8675,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
           ..write('course: $course, ')
           ..write('chapter: $chapter, ')
           ..write('filePath: $filePath, ')
-          ..write('size: $size, ')
+          ..write('sizeInBytes: $sizeInBytes, ')
           ..write('downloadedDate: $downloadedDate, ')
           ..write('typeIndex: $typeIndex, ')
           ..write('statusIndex: $statusIndex, ')
@@ -12633,7 +12640,7 @@ typedef $$DownloadsTableTableCreateCompanionBuilder =
       required String course,
       required String chapter,
       Value<String?> filePath,
-      required String size,
+      required BigInt sizeInBytes,
       required String downloadedDate,
       required int typeIndex,
       required int statusIndex,
@@ -12650,7 +12657,7 @@ typedef $$DownloadsTableTableUpdateCompanionBuilder =
       Value<String> course,
       Value<String> chapter,
       Value<String?> filePath,
-      Value<String> size,
+      Value<BigInt> sizeInBytes,
       Value<String> downloadedDate,
       Value<int> typeIndex,
       Value<int> statusIndex,
@@ -12695,8 +12702,8 @@ class $$DownloadsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get size => $composableBuilder(
-    column: $table.size,
+  ColumnFilters<BigInt> get sizeInBytes => $composableBuilder(
+    column: $table.sizeInBytes,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -12770,8 +12777,8 @@ class $$DownloadsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get size => $composableBuilder(
-    column: $table.size,
+  ColumnOrderings<BigInt> get sizeInBytes => $composableBuilder(
+    column: $table.sizeInBytes,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -12835,8 +12842,10 @@ class $$DownloadsTableTableAnnotationComposer
   GeneratedColumn<String> get filePath =>
       $composableBuilder(column: $table.filePath, builder: (column) => column);
 
-  GeneratedColumn<String> get size =>
-      $composableBuilder(column: $table.size, builder: (column) => column);
+  GeneratedColumn<BigInt> get sizeInBytes => $composableBuilder(
+    column: $table.sizeInBytes,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get downloadedDate => $composableBuilder(
     column: $table.downloadedDate,
@@ -12908,7 +12917,7 @@ class $$DownloadsTableTableTableManager
                 Value<String> course = const Value.absent(),
                 Value<String> chapter = const Value.absent(),
                 Value<String?> filePath = const Value.absent(),
-                Value<String> size = const Value.absent(),
+                Value<BigInt> sizeInBytes = const Value.absent(),
                 Value<String> downloadedDate = const Value.absent(),
                 Value<int> typeIndex = const Value.absent(),
                 Value<int> statusIndex = const Value.absent(),
@@ -12923,7 +12932,7 @@ class $$DownloadsTableTableTableManager
                 course: course,
                 chapter: chapter,
                 filePath: filePath,
-                size: size,
+                sizeInBytes: sizeInBytes,
                 downloadedDate: downloadedDate,
                 typeIndex: typeIndex,
                 statusIndex: statusIndex,
@@ -12940,7 +12949,7 @@ class $$DownloadsTableTableTableManager
                 required String course,
                 required String chapter,
                 Value<String?> filePath = const Value.absent(),
-                required String size,
+                required BigInt sizeInBytes,
                 required String downloadedDate,
                 required int typeIndex,
                 required int statusIndex,
@@ -12955,7 +12964,7 @@ class $$DownloadsTableTableTableManager
                 course: course,
                 chapter: chapter,
                 filePath: filePath,
-                size: size,
+                sizeInBytes: sizeInBytes,
                 downloadedDate: downloadedDate,
                 typeIndex: typeIndex,
                 statusIndex: statusIndex,

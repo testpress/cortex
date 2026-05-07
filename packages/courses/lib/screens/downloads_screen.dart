@@ -13,7 +13,7 @@ const _dummyDownload = DownloadItem(
   title: 'Loading title placeholder text',
   course: 'Course name placeholder',
   chapter: 'Chapter name placeholder',
-  size: '128 MB',
+  sizeInBytes: 134217728, // 128 MB
   downloadedDate: '2 days ago',
   type: DownloadType.video,
   status: DownloadStatus.completed,
@@ -136,9 +136,11 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
     switch (item.status) {
       case DownloadStatus.downloading:
         ref.read(pauseDownloadProvider(item.id).future);
+        break;
 
       case DownloadStatus.paused:
         ref.read(resumeDownloadProvider(item.id).future);
+        break;
 
       case DownloadStatus.error:
         break;
@@ -714,36 +716,24 @@ extension DownloadItemsX on List<DownloadItem> {
   }
 
   String get totalSize {
-    double totalMb = 0;
-
-    for (final item in this) {
-      final parts = item.size.trim().split(' ');
-
-      if (parts.length < 2) {
-        continue;
-      }
-
-      final value = double.tryParse(parts[0]) ?? 0;
-      final unit = parts[1].toUpperCase();
-
-      totalMb += switch (unit) {
-        'KB' => value / 1024,
-        'MB' => value,
-        'GB' => value * 1024,
-        _ => 0,
-      };
-    }
-
-    if (totalMb >= 1024) {
-      return '${(totalMb / 1024).toStringAsFixed(1)} GB';
-    }
-
-    return '${totalMb.toStringAsFixed(1)} MB';
+    final bytes = fold<int>(0, (sum, item) => sum + item.sizeInBytes);
+    return _formatBytes(bytes);
   }
+}
+
+String _formatBytes(int bytes) {
+  if (bytes < 1024) return '$bytes B';
+  final kb = bytes / 1024;
+  if (kb < 1024) return '${kb.toStringAsFixed(1)} KB';
+  final mb = kb / 1024;
+  if (mb < 1024) return '${mb.toStringAsFixed(1)} MB';
+  final gb = mb / 1024;
+  return '${gb.toStringAsFixed(1)} GB';
 }
 
 extension DownloadItemX on DownloadItem {
   String get progressText {
+    final size = _formatBytes(sizeInBytes);
     if (status == DownloadStatus.downloading) {
       return '$progress% of $size';
     }

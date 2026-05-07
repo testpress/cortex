@@ -71,7 +71,7 @@ class DashboardDrawer extends ConsumerWidget {
             ),
             AppDrawerItem(
               icon: LucideIcons.download,
-              label: 'Downloads',
+              label: l10n.downloadsTitle,
               action: () {
                 ref.read(isHomeDrawerOpenProvider.notifier).state = false;
                 context.push('/downloads');

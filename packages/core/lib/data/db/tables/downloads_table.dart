@@ -17,8 +17,8 @@ class DownloadsTable extends Table {
   /// Local file path on the device.
   TextColumn get filePath => text().nullable()();
 
-  /// Total size of the file (e.g. "24.5 MB").
-  TextColumn get size => text()();
+  /// Total size of the file in bytes.
+  Int64Column get sizeInBytes => int64()();
 
   /// Date the download was initiated/completed.
   TextColumn get downloadedDate => text()();

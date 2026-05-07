@@ -8,7 +8,8 @@ part 'downloads_service.g.dart';
 class DownloadsService {
   /// Fetches all active downloads from the various SDKs.
   Future<List<DownloadItem>> getActiveDownloads() async {
-    await Future.delayed(const Duration(seconds: 30));
+    // Simulate a short network/IO delay to show the skeleton loader
+    await Future.delayed(const Duration(seconds: 2));
     // Return mock data directly from the service
     return [..._mockVideoDownloads, ..._mockAttachmentDownloads];
   }
@@ -41,7 +42,7 @@ class DownloadsService {
       title: "Introduction to Calculus",
       course: "Mathematics - Class 12",
       chapter: "Chapter 5: Continuity and Differentiability",
-      size: "124 MB",
+      sizeInBytes: 130023424,
       downloadedDate: "2 days ago",
       type: DownloadType.video,
       status: DownloadStatus.completed,
@@ -54,7 +55,7 @@ class DownloadsService {
       title: "Limits and Derivatives",
       course: "Mathematics - Class 11",
       chapter: "Chapter 13: Limits and Derivatives",
-      size: "85 MB",
+      sizeInBytes: 89128960,
       downloadedDate: "Downloading...",
       type: DownloadType.video,
       status: DownloadStatus.downloading,
@@ -70,7 +71,7 @@ class DownloadsService {
       title: "Formula Sheet - Calculus",
       course: "Mathematics - Class 12",
       chapter: "Chapter 5: Continuity and Differentiability",
-      size: "1.5 MB",
+      sizeInBytes: 1572864,
       downloadedDate: "3 days ago",
       type: DownloadType.attachment,
       fileType: "PDF",

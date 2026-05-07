@@ -15,7 +15,7 @@ class DownloadItem {
   final String title;
   final String course;
   final String chapter;
-  final String size;
+  final int sizeInBytes;
   final String downloadedDate;
   final DownloadType type;
   final DownloadStatus status;
@@ -29,7 +29,7 @@ class DownloadItem {
     required this.title,
     required this.course,
     required this.chapter,
-    required this.size,
+    required this.sizeInBytes,
     required this.downloadedDate,
     required this.type,
     required this.status,
