@@ -468,5 +468,16 @@
   "attachmentViewFile": "ഫയൽ കാണുക",
   "dashboardWhatsNewTitle": "പുതിയ കാര്യങ്ങൾ",
   "dashboardRecentlyCompletedTitle": "അടുത്തിടെ പൂർത്തിയാക്കിയത്",
-  "dashboardResumeTitle": "പഠനം തുടരുക"
+  "dashboardResumeTitle": "പഠനം തുടരുക",
+  "downloadsTitle": "ഡൗൺലോഡുകൾ",
+  "downloadsVideosTab": "വീഡിയോകൾ",
+  "downloadsAttachmentsTab": "അറ്റാച്ച്‌മെന്റുകൾ",
+  "downloadsVideosTabCount": "വീഡിയോകൾ ({count})",
+  "downloadsAttachmentsTabCount": "അറ്റാച്ച്‌മെന്റുകൾ ({count})",
+  "downloadsEmpty": "ഡൗൺലോഡുകൾ ഒന്നും കണ്ടെത്തിയില്ല",
+  "downloadsEmptyVideosSubtitle": "നിങ്ങളുടെ ഡൗൺലോഡ് ചെയ്ത വീഡിയോകൾ ഇവിടെ കാണാം",
+  "downloadsEmptyAttachmentsSubtitle": "നിങ്ങളുടെ ഡൗൺലോഡ് ചെയ്ത ഫയലുകൾ ഇവിടെ കാണാം",
+  "downloadsTotalVideos": "ആകെ വീഡിയോകൾ: {count}",
+  "downloadsTotalFiles": "ആകെ ഫയലുകൾ: {count}",
+  "downloadsStorageUsed": "{size} ഉപയോഗിച്ചു"
 }

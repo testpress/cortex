@@ -468,5 +468,16 @@
   "attachmentViewFile": "عرض الملف المحمل",
   "dashboardWhatsNewTitle": "ما هو الجديد",
   "dashboardRecentlyCompletedTitle": "المكتملة مؤخرًا",
-  "dashboardResumeTitle": "استئناف التعلم"
+  "dashboardResumeTitle": "استئناف التعلم",
+  "downloadsTitle": "التنزيلات",
+  "downloadsVideosTab": "فيديوهات",
+  "downloadsAttachmentsTab": "المرفقات",
+  "downloadsVideosTabCount": "فيديوهات ({count})",
+  "downloadsAttachmentsTabCount": "المرفقات ({count})",
+  "downloadsEmpty": "لم يتم العثور على تنزيلات",
+  "downloadsEmptyVideosSubtitle": "ستظهر مقاطع الفيديو التي تم تنزيلها هنا",
+  "downloadsEmptyAttachmentsSubtitle": "ستظهر الملفات التي تم تنزيلها هنا",
+  "downloadsTotalVideos": "إجمالي الفيديوهات: {count}",
+  "downloadsTotalFiles": "إجمالي الملفات: {count}",
+  "downloadsStorageUsed": "{size} مستخدم"
 }

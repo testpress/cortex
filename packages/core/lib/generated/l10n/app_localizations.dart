@@ -2498,6 +2498,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Resume Learning'**
   String get dashboardResumeTitle;
+
+  /// No description provided for @downloadsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloads'**
+  String get downloadsTitle;
+
+  /// No description provided for @downloadsVideosTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Videos'**
+  String get downloadsVideosTab;
+
+  /// No description provided for @downloadsAttachmentsTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachments'**
+  String get downloadsAttachmentsTab;
+
+  /// No description provided for @downloadsVideosTabCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Videos ({count})'**
+  String downloadsVideosTabCount(int count);
+
+  /// No description provided for @downloadsAttachmentsTabCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachments ({count})'**
+  String downloadsAttachmentsTabCount(int count);
+
+  /// No description provided for @downloadsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No downloads found'**
+  String get downloadsEmpty;
+
+  /// No description provided for @downloadsEmptyVideosSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your downloaded videos will appear here'**
+  String get downloadsEmptyVideosSubtitle;
+
+  /// No description provided for @downloadsEmptyAttachmentsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your downloaded files will appear here'**
+  String get downloadsEmptyAttachmentsSubtitle;
+
+  /// No description provided for @downloadsTotalVideos.
+  ///
+  /// In en, this message translates to:
+  /// **'Total videos: {count}'**
+  String downloadsTotalVideos(int count);
+
+  /// No description provided for @downloadsTotalFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Total files: {count}'**
+  String downloadsTotalFiles(int count);
+
+  /// No description provided for @downloadsStorageUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'{size} used'**
+  String downloadsStorageUsed(String size);
 }
 
 class _AppLocalizationsDelegate

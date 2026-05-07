@@ -1349,4 +1349,49 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dashboardResumeTitle => 'استئناف التعلم';
+
+  @override
+  String get downloadsTitle => 'التنزيلات';
+
+  @override
+  String get downloadsVideosTab => 'فيديوهات';
+
+  @override
+  String get downloadsAttachmentsTab => 'المرفقات';
+
+  @override
+  String downloadsVideosTabCount(int count) {
+    return 'فيديوهات ($count)';
+  }
+
+  @override
+  String downloadsAttachmentsTabCount(int count) {
+    return 'المرفقات ($count)';
+  }
+
+  @override
+  String get downloadsEmpty => 'لم يتم العثور على تنزيلات';
+
+  @override
+  String get downloadsEmptyVideosSubtitle =>
+      'ستظهر مقاطع الفيديو التي تم تنزيلها هنا';
+
+  @override
+  String get downloadsEmptyAttachmentsSubtitle =>
+      'ستظهر الملفات التي تم تنزيلها هنا';
+
+  @override
+  String downloadsTotalVideos(int count) {
+    return 'إجمالي الفيديوهات: $count';
+  }
+
+  @override
+  String downloadsTotalFiles(int count) {
+    return 'إجمالي الملفات: $count';
+  }
+
+  @override
+  String downloadsStorageUsed(String size) {
+    return '$size مستخدم';
+  }
 }
