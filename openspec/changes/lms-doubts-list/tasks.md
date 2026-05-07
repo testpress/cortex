@@ -10,6 +10,6 @@
 
 ## 3. UI Implementation
 - [x] 3.1 Create `DoubtsListScreen` using `core` primitives (`AppShell`, `AppHeader`, `AppCard`)
-- [x] 3.2 Implement Search Bar for filtering by title and subject using `AppTextField`
+- [x] 3.2 Implement Search Bar as a UI-only placeholder for visual parity with other modules
 - [x] 3.3 Implement "Unanswered" status badge for pending doubts using `AppBadge`
 - [x] 3.4 Update Navigation Drawer and App Router to link to `/home/discussions/doubts`

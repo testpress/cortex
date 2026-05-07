@@ -487,5 +487,6 @@
   "doubtsHeaderAskDoubt": "സംശയം ചോദിക്കുക",
   "doubtsSearchHint": "സംശയങ്ങൾ തിരയുക",
   "doubtsLabelUnanswered": "മറുപടി നൽകിയിട്ടില്ല",
-  "doubtsLabelAnswered": "മറുപടി നൽകി"
+  "doubtsLabelAnswered": "മറുപടി നൽകി",
+  "doubtsReplyCount": "{count,plural, =1{1 മറുപടി} other{{count} മറുപടികൾ}}"
 }

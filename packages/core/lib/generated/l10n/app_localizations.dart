@@ -2612,6 +2612,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Answered'**
   String get doubtsLabelAnswered;
+
+  /// No description provided for @doubtsReplyCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count,plural, =1{1 reply} other{{count} replies}}'**
+  String doubtsReplyCount(num count);
 }
 
 class _AppLocalizationsDelegate

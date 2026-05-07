@@ -1419,4 +1419,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get doubtsLabelAnswered => 'تم الرد';
+
+  @override
+  String doubtsReplyCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ردود',
+      one: 'رد واحد',
+    );
+    return '$_temp0';
+  }
 }

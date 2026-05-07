@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:core/data/data.dart';
 import 'package:drift/drift.dart';
 
@@ -46,12 +47,14 @@ class DoubtRepository {
       content: row.content,
       studentName: row.studentName,
       studentAvatar: row.studentAvatar,
-      timeAgo: row.timeAgo,
       replyCount: row.replyCount,
       status: DoubtStatus.values.firstWhere(
         (s) => s.name == row.status,
         orElse: () => DoubtStatus.pending,
       ),
+      attachmentUrls: row.attachments != null
+          ? List<String>.from(jsonDecode(row.attachments!))
+          : [],
       createdAt: row.createdAt,
     );
   }
@@ -66,9 +69,9 @@ class DoubtRepository {
       content: Value(dto.content),
       studentName: Value(dto.studentName),
       studentAvatar: Value(dto.studentAvatar),
-      timeAgo: Value(dto.timeAgo),
       replyCount: Value(dto.replyCount),
       status: Value(dto.status.name),
+      attachments: Value(jsonEncode(dto.attachmentUrls)),
       createdAt: Value(dto.createdAt),
     );
   }

@@ -487,5 +487,6 @@
   "doubtsHeaderAskDoubt": "اسأل سؤال",
   "doubtsSearchHint": "البحث في الأسئلة",
   "doubtsLabelUnanswered": "لم يتم الرد",
-  "doubtsLabelAnswered": "تم الرد"
+  "doubtsLabelAnswered": "تم الرد",
+  "doubtsReplyCount": "{count,plural, =1{رد واحد} other{{count} ردود}}"
 }

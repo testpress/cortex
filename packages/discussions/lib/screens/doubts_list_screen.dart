@@ -5,11 +5,27 @@ import 'package:core/data/data.dart';
 import '../providers/doubt_providers.dart';
 import '../widgets/forum_header.dart';
 
-class DoubtsListScreen extends ConsumerWidget {
+class DoubtsListScreen extends ConsumerStatefulWidget {
   const DoubtsListScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DoubtsListScreen> createState() => _DoubtsListScreenState();
+}
+
+class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Trigger background sync on load
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(doubtRepositoryProvider.future).then((repo) {
+        repo.syncDoubts();
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final doubtsAsync = ref.watch(doubtsListProvider);
     final design = Design.of(context);
     final l10n = L10n.of(context);
@@ -152,6 +168,7 @@ class _DoubtItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     return AppCard(
       onTap: () {
@@ -181,12 +198,12 @@ class _DoubtItem extends StatelessWidget {
               Icon(LucideIcons.messageCircle, size: 14, color: design.colors.textTertiary),
               SizedBox(width: design.spacing.xs),
               AppText.caption(
-                '${doubt.replyCount} replies',
+                l10n.doubtsReplyCount(doubt.replyCount),
                 color: design.colors.textTertiary,
               ),
               _buildDot(design),
               AppText.caption(
-                doubt.timeAgo,
+                DateFormatter.formatTimeAgo(doubt.createdAt),
                 color: design.colors.textTertiary,
               ),
             ],

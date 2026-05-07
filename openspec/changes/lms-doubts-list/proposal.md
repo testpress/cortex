@@ -6,7 +6,7 @@ Implement a dedicated space for students to engage in private 1-on-1 communicati
 ## What Changes
 1.  **Data Layer**: Implement normalized Drift tables for `doubts` and `doubt_replies` in `packages/core`.
 2.  **Domain Layer**: Create `DoubtRepository` inside `packages/discussions`.
-3.  **UI (Landing)**: Implement the `DoubtsListScreen` with global search (by subject/topic) and "Unanswered" status badges.
+3.  **UI (Landing)**: Implement the `DoubtsListScreen` with a UI-only search bar (for visual parity) and "Unanswered" status badges.
 
 ## Capabilities
 

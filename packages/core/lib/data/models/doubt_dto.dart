@@ -11,7 +11,6 @@ class DoubtDto {
   final String content; // Quill Delta JSON
   final String studentName;
   final String? studentAvatar;
-  final String timeAgo;
   final int replyCount;
   final DoubtStatus status;
   final List<String> attachmentUrls;
@@ -26,7 +25,6 @@ class DoubtDto {
     required this.content,
     required this.studentName,
     this.studentAvatar,
-    required this.timeAgo,
     required this.replyCount,
     required this.status,
     this.attachmentUrls = const [],
@@ -42,7 +40,6 @@ class DoubtReplyDto {
   final String authorName;
   final String? authorAvatar;
   final bool isMentor;
-  final String timeAgo;
   final DateTime createdAt;
   final List<String> attachmentUrls;
 
@@ -53,7 +50,6 @@ class DoubtReplyDto {
     required this.authorName,
     this.authorAvatar,
     required this.isMentor,
-    required this.timeAgo,
     required this.createdAt,
     this.attachmentUrls = const [],
   });

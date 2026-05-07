@@ -1406,4 +1406,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get doubtsLabelAnswered => 'Answered';
+
+  @override
+  String doubtsReplyCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count replies',
+      one: '1 reply',
+    );
+    return '$_temp0';
+  }
 }

@@ -10,10 +10,10 @@ class DoubtsTable extends Table {
   TextColumn get content => text()(); // Quill Delta JSON
   TextColumn get studentName => text()();
   TextColumn get studentAvatar => text().nullable()();
-  TextColumn get timeAgo => text()();
   IntColumn get replyCount => integer().withDefault(const Constant(0))();
   TextColumn get status => text()(); // pending, answered, resolved
   DateTimeColumn get createdAt => dateTime()();
+  TextColumn get attachments => text().nullable()(); // JSON-encoded list
 
   @override
   Set<Column> get primaryKey => {id};
@@ -27,8 +27,8 @@ class DoubtRepliesTable extends Table {
   TextColumn get authorName => text()();
   TextColumn get authorAvatar => text().nullable()();
   BoolColumn get isMentor => boolean().withDefault(const Constant(false))();
-  TextColumn get timeAgo => text()();
   DateTimeColumn get createdAt => dateTime()();
+  TextColumn get attachments => text().nullable()(); // JSON-encoded list
 
   @override
   Set<Column> get primaryKey => {id};

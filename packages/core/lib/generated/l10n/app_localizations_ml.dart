@@ -1433,4 +1433,15 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get doubtsLabelAnswered => 'മറുപടി നൽകി';
+
+  @override
+  String doubtsReplyCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count മറുപടികൾ',
+      one: '1 മറുപടി',
+    );
+    return '$_temp0';
+  }
 }

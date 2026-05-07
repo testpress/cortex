@@ -8926,17 +8926,6 @@ class $DoubtsTableTable extends DoubtsTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _timeAgoMeta = const VerificationMeta(
-    'timeAgo',
-  );
-  @override
-  late final GeneratedColumn<String> timeAgo = GeneratedColumn<String>(
-    'time_ago',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
   static const VerificationMeta _replyCountMeta = const VerificationMeta(
     'replyCount',
   );
@@ -8969,6 +8958,17 @@ class $DoubtsTableTable extends DoubtsTable
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _attachmentsMeta = const VerificationMeta(
+    'attachments',
+  );
+  @override
+  late final GeneratedColumn<String> attachments = GeneratedColumn<String>(
+    'attachments',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -8979,10 +8979,10 @@ class $DoubtsTableTable extends DoubtsTable
     content,
     studentName,
     studentAvatar,
-    timeAgo,
     replyCount,
     status,
     createdAt,
+    attachments,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -9055,14 +9055,6 @@ class $DoubtsTableTable extends DoubtsTable
         ),
       );
     }
-    if (data.containsKey('time_ago')) {
-      context.handle(
-        _timeAgoMeta,
-        timeAgo.isAcceptableOrUnknown(data['time_ago']!, _timeAgoMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_timeAgoMeta);
-    }
     if (data.containsKey('reply_count')) {
       context.handle(
         _replyCountMeta,
@@ -9084,6 +9076,15 @@ class $DoubtsTableTable extends DoubtsTable
       );
     } else if (isInserting) {
       context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('attachments')) {
+      context.handle(
+        _attachmentsMeta,
+        attachments.isAcceptableOrUnknown(
+          data['attachments']!,
+          _attachmentsMeta,
+        ),
+      );
     }
     return context;
   }
@@ -9126,10 +9127,6 @@ class $DoubtsTableTable extends DoubtsTable
         DriftSqlType.string,
         data['${effectivePrefix}student_avatar'],
       ),
-      timeAgo: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}time_ago'],
-      )!,
       replyCount: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}reply_count'],
@@ -9142,6 +9139,10 @@ class $DoubtsTableTable extends DoubtsTable
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
+      attachments: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}attachments'],
+      ),
     );
   }
 
@@ -9160,10 +9161,10 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
   final String content;
   final String studentName;
   final String? studentAvatar;
-  final String timeAgo;
   final int replyCount;
   final String status;
   final DateTime createdAt;
+  final String? attachments;
   const DoubtsTableData({
     required this.id,
     this.courseId,
@@ -9173,10 +9174,10 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
     required this.content,
     required this.studentName,
     this.studentAvatar,
-    required this.timeAgo,
     required this.replyCount,
     required this.status,
     required this.createdAt,
+    this.attachments,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -9197,10 +9198,12 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
     if (!nullToAbsent || studentAvatar != null) {
       map['student_avatar'] = Variable<String>(studentAvatar);
     }
-    map['time_ago'] = Variable<String>(timeAgo);
     map['reply_count'] = Variable<int>(replyCount);
     map['status'] = Variable<String>(status);
     map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || attachments != null) {
+      map['attachments'] = Variable<String>(attachments);
+    }
     return map;
   }
 
@@ -9222,10 +9225,12 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
       studentAvatar: studentAvatar == null && nullToAbsent
           ? const Value.absent()
           : Value(studentAvatar),
-      timeAgo: Value(timeAgo),
       replyCount: Value(replyCount),
       status: Value(status),
       createdAt: Value(createdAt),
+      attachments: attachments == null && nullToAbsent
+          ? const Value.absent()
+          : Value(attachments),
     );
   }
 
@@ -9243,10 +9248,10 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
       content: serializer.fromJson<String>(json['content']),
       studentName: serializer.fromJson<String>(json['studentName']),
       studentAvatar: serializer.fromJson<String?>(json['studentAvatar']),
-      timeAgo: serializer.fromJson<String>(json['timeAgo']),
       replyCount: serializer.fromJson<int>(json['replyCount']),
       status: serializer.fromJson<String>(json['status']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      attachments: serializer.fromJson<String?>(json['attachments']),
     );
   }
   @override
@@ -9261,10 +9266,10 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
       'content': serializer.toJson<String>(content),
       'studentName': serializer.toJson<String>(studentName),
       'studentAvatar': serializer.toJson<String?>(studentAvatar),
-      'timeAgo': serializer.toJson<String>(timeAgo),
       'replyCount': serializer.toJson<int>(replyCount),
       'status': serializer.toJson<String>(status),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'attachments': serializer.toJson<String?>(attachments),
     };
   }
 
@@ -9277,10 +9282,10 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
     String? content,
     String? studentName,
     Value<String?> studentAvatar = const Value.absent(),
-    String? timeAgo,
     int? replyCount,
     String? status,
     DateTime? createdAt,
+    Value<String?> attachments = const Value.absent(),
   }) => DoubtsTableData(
     id: id ?? this.id,
     courseId: courseId.present ? courseId.value : this.courseId,
@@ -9292,10 +9297,10 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
     studentAvatar: studentAvatar.present
         ? studentAvatar.value
         : this.studentAvatar,
-    timeAgo: timeAgo ?? this.timeAgo,
     replyCount: replyCount ?? this.replyCount,
     status: status ?? this.status,
     createdAt: createdAt ?? this.createdAt,
+    attachments: attachments.present ? attachments.value : this.attachments,
   );
   DoubtsTableData copyWithCompanion(DoubtsTableCompanion data) {
     return DoubtsTableData(
@@ -9313,12 +9318,14 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
       studentAvatar: data.studentAvatar.present
           ? data.studentAvatar.value
           : this.studentAvatar,
-      timeAgo: data.timeAgo.present ? data.timeAgo.value : this.timeAgo,
       replyCount: data.replyCount.present
           ? data.replyCount.value
           : this.replyCount,
       status: data.status.present ? data.status.value : this.status,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      attachments: data.attachments.present
+          ? data.attachments.value
+          : this.attachments,
     );
   }
 
@@ -9333,10 +9340,10 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
           ..write('content: $content, ')
           ..write('studentName: $studentName, ')
           ..write('studentAvatar: $studentAvatar, ')
-          ..write('timeAgo: $timeAgo, ')
           ..write('replyCount: $replyCount, ')
           ..write('status: $status, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('attachments: $attachments')
           ..write(')'))
         .toString();
   }
@@ -9351,10 +9358,10 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
     content,
     studentName,
     studentAvatar,
-    timeAgo,
     replyCount,
     status,
     createdAt,
+    attachments,
   );
   @override
   bool operator ==(Object other) =>
@@ -9368,10 +9375,10 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
           other.content == this.content &&
           other.studentName == this.studentName &&
           other.studentAvatar == this.studentAvatar &&
-          other.timeAgo == this.timeAgo &&
           other.replyCount == this.replyCount &&
           other.status == this.status &&
-          other.createdAt == this.createdAt);
+          other.createdAt == this.createdAt &&
+          other.attachments == this.attachments);
 }
 
 class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
@@ -9383,10 +9390,10 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
   final Value<String> content;
   final Value<String> studentName;
   final Value<String?> studentAvatar;
-  final Value<String> timeAgo;
   final Value<int> replyCount;
   final Value<String> status;
   final Value<DateTime> createdAt;
+  final Value<String?> attachments;
   final Value<int> rowid;
   const DoubtsTableCompanion({
     this.id = const Value.absent(),
@@ -9397,10 +9404,10 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
     this.content = const Value.absent(),
     this.studentName = const Value.absent(),
     this.studentAvatar = const Value.absent(),
-    this.timeAgo = const Value.absent(),
     this.replyCount = const Value.absent(),
     this.status = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.attachments = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   DoubtsTableCompanion.insert({
@@ -9412,16 +9419,15 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
     required String content,
     required String studentName,
     this.studentAvatar = const Value.absent(),
-    required String timeAgo,
     this.replyCount = const Value.absent(),
     required String status,
     required DateTime createdAt,
+    this.attachments = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        title = Value(title),
        content = Value(content),
        studentName = Value(studentName),
-       timeAgo = Value(timeAgo),
        status = Value(status),
        createdAt = Value(createdAt);
   static Insertable<DoubtsTableData> custom({
@@ -9433,10 +9439,10 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
     Expression<String>? content,
     Expression<String>? studentName,
     Expression<String>? studentAvatar,
-    Expression<String>? timeAgo,
     Expression<int>? replyCount,
     Expression<String>? status,
     Expression<DateTime>? createdAt,
+    Expression<String>? attachments,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -9448,10 +9454,10 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
       if (content != null) 'content': content,
       if (studentName != null) 'student_name': studentName,
       if (studentAvatar != null) 'student_avatar': studentAvatar,
-      if (timeAgo != null) 'time_ago': timeAgo,
       if (replyCount != null) 'reply_count': replyCount,
       if (status != null) 'status': status,
       if (createdAt != null) 'created_at': createdAt,
+      if (attachments != null) 'attachments': attachments,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -9465,10 +9471,10 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
     Value<String>? content,
     Value<String>? studentName,
     Value<String?>? studentAvatar,
-    Value<String>? timeAgo,
     Value<int>? replyCount,
     Value<String>? status,
     Value<DateTime>? createdAt,
+    Value<String?>? attachments,
     Value<int>? rowid,
   }) {
     return DoubtsTableCompanion(
@@ -9480,10 +9486,10 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
       content: content ?? this.content,
       studentName: studentName ?? this.studentName,
       studentAvatar: studentAvatar ?? this.studentAvatar,
-      timeAgo: timeAgo ?? this.timeAgo,
       replyCount: replyCount ?? this.replyCount,
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
+      attachments: attachments ?? this.attachments,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -9515,9 +9521,6 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
     if (studentAvatar.present) {
       map['student_avatar'] = Variable<String>(studentAvatar.value);
     }
-    if (timeAgo.present) {
-      map['time_ago'] = Variable<String>(timeAgo.value);
-    }
     if (replyCount.present) {
       map['reply_count'] = Variable<int>(replyCount.value);
     }
@@ -9526,6 +9529,9 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (attachments.present) {
+      map['attachments'] = Variable<String>(attachments.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -9544,10 +9550,10 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
           ..write('content: $content, ')
           ..write('studentName: $studentName, ')
           ..write('studentAvatar: $studentAvatar, ')
-          ..write('timeAgo: $timeAgo, ')
           ..write('replyCount: $replyCount, ')
           ..write('status: $status, ')
           ..write('createdAt: $createdAt, ')
+          ..write('attachments: $attachments, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -9628,17 +9634,6 @@ class $DoubtRepliesTableTable extends DoubtRepliesTable
     ),
     defaultValue: const Constant(false),
   );
-  static const VerificationMeta _timeAgoMeta = const VerificationMeta(
-    'timeAgo',
-  );
-  @override
-  late final GeneratedColumn<String> timeAgo = GeneratedColumn<String>(
-    'time_ago',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -9650,6 +9645,17 @@ class $DoubtRepliesTableTable extends DoubtRepliesTable
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _attachmentsMeta = const VerificationMeta(
+    'attachments',
+  );
+  @override
+  late final GeneratedColumn<String> attachments = GeneratedColumn<String>(
+    'attachments',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -9658,8 +9664,8 @@ class $DoubtRepliesTableTable extends DoubtRepliesTable
     authorName,
     authorAvatar,
     isMentor,
-    timeAgo,
     createdAt,
+    attachments,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -9717,14 +9723,6 @@ class $DoubtRepliesTableTable extends DoubtRepliesTable
         isMentor.isAcceptableOrUnknown(data['is_mentor']!, _isMentorMeta),
       );
     }
-    if (data.containsKey('time_ago')) {
-      context.handle(
-        _timeAgoMeta,
-        timeAgo.isAcceptableOrUnknown(data['time_ago']!, _timeAgoMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_timeAgoMeta);
-    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -9732,6 +9730,15 @@ class $DoubtRepliesTableTable extends DoubtRepliesTable
       );
     } else if (isInserting) {
       context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('attachments')) {
+      context.handle(
+        _attachmentsMeta,
+        attachments.isAcceptableOrUnknown(
+          data['attachments']!,
+          _attachmentsMeta,
+        ),
+      );
     }
     return context;
   }
@@ -9766,14 +9773,14 @@ class $DoubtRepliesTableTable extends DoubtRepliesTable
         DriftSqlType.bool,
         data['${effectivePrefix}is_mentor'],
       )!,
-      timeAgo: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}time_ago'],
-      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
+      attachments: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}attachments'],
+      ),
     );
   }
 
@@ -9791,8 +9798,8 @@ class DoubtRepliesTableData extends DataClass
   final String authorName;
   final String? authorAvatar;
   final bool isMentor;
-  final String timeAgo;
   final DateTime createdAt;
+  final String? attachments;
   const DoubtRepliesTableData({
     required this.id,
     required this.doubtId,
@@ -9800,8 +9807,8 @@ class DoubtRepliesTableData extends DataClass
     required this.authorName,
     this.authorAvatar,
     required this.isMentor,
-    required this.timeAgo,
     required this.createdAt,
+    this.attachments,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -9814,8 +9821,10 @@ class DoubtRepliesTableData extends DataClass
       map['author_avatar'] = Variable<String>(authorAvatar);
     }
     map['is_mentor'] = Variable<bool>(isMentor);
-    map['time_ago'] = Variable<String>(timeAgo);
     map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || attachments != null) {
+      map['attachments'] = Variable<String>(attachments);
+    }
     return map;
   }
 
@@ -9829,8 +9838,10 @@ class DoubtRepliesTableData extends DataClass
           ? const Value.absent()
           : Value(authorAvatar),
       isMentor: Value(isMentor),
-      timeAgo: Value(timeAgo),
       createdAt: Value(createdAt),
+      attachments: attachments == null && nullToAbsent
+          ? const Value.absent()
+          : Value(attachments),
     );
   }
 
@@ -9846,8 +9857,8 @@ class DoubtRepliesTableData extends DataClass
       authorName: serializer.fromJson<String>(json['authorName']),
       authorAvatar: serializer.fromJson<String?>(json['authorAvatar']),
       isMentor: serializer.fromJson<bool>(json['isMentor']),
-      timeAgo: serializer.fromJson<String>(json['timeAgo']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      attachments: serializer.fromJson<String?>(json['attachments']),
     );
   }
   @override
@@ -9860,8 +9871,8 @@ class DoubtRepliesTableData extends DataClass
       'authorName': serializer.toJson<String>(authorName),
       'authorAvatar': serializer.toJson<String?>(authorAvatar),
       'isMentor': serializer.toJson<bool>(isMentor),
-      'timeAgo': serializer.toJson<String>(timeAgo),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'attachments': serializer.toJson<String?>(attachments),
     };
   }
 
@@ -9872,8 +9883,8 @@ class DoubtRepliesTableData extends DataClass
     String? authorName,
     Value<String?> authorAvatar = const Value.absent(),
     bool? isMentor,
-    String? timeAgo,
     DateTime? createdAt,
+    Value<String?> attachments = const Value.absent(),
   }) => DoubtRepliesTableData(
     id: id ?? this.id,
     doubtId: doubtId ?? this.doubtId,
@@ -9881,8 +9892,8 @@ class DoubtRepliesTableData extends DataClass
     authorName: authorName ?? this.authorName,
     authorAvatar: authorAvatar.present ? authorAvatar.value : this.authorAvatar,
     isMentor: isMentor ?? this.isMentor,
-    timeAgo: timeAgo ?? this.timeAgo,
     createdAt: createdAt ?? this.createdAt,
+    attachments: attachments.present ? attachments.value : this.attachments,
   );
   DoubtRepliesTableData copyWithCompanion(DoubtRepliesTableCompanion data) {
     return DoubtRepliesTableData(
@@ -9896,8 +9907,10 @@ class DoubtRepliesTableData extends DataClass
           ? data.authorAvatar.value
           : this.authorAvatar,
       isMentor: data.isMentor.present ? data.isMentor.value : this.isMentor,
-      timeAgo: data.timeAgo.present ? data.timeAgo.value : this.timeAgo,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      attachments: data.attachments.present
+          ? data.attachments.value
+          : this.attachments,
     );
   }
 
@@ -9910,8 +9923,8 @@ class DoubtRepliesTableData extends DataClass
           ..write('authorName: $authorName, ')
           ..write('authorAvatar: $authorAvatar, ')
           ..write('isMentor: $isMentor, ')
-          ..write('timeAgo: $timeAgo, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('attachments: $attachments')
           ..write(')'))
         .toString();
   }
@@ -9924,8 +9937,8 @@ class DoubtRepliesTableData extends DataClass
     authorName,
     authorAvatar,
     isMentor,
-    timeAgo,
     createdAt,
+    attachments,
   );
   @override
   bool operator ==(Object other) =>
@@ -9937,8 +9950,8 @@ class DoubtRepliesTableData extends DataClass
           other.authorName == this.authorName &&
           other.authorAvatar == this.authorAvatar &&
           other.isMentor == this.isMentor &&
-          other.timeAgo == this.timeAgo &&
-          other.createdAt == this.createdAt);
+          other.createdAt == this.createdAt &&
+          other.attachments == this.attachments);
 }
 
 class DoubtRepliesTableCompanion
@@ -9949,8 +9962,8 @@ class DoubtRepliesTableCompanion
   final Value<String> authorName;
   final Value<String?> authorAvatar;
   final Value<bool> isMentor;
-  final Value<String> timeAgo;
   final Value<DateTime> createdAt;
+  final Value<String?> attachments;
   final Value<int> rowid;
   const DoubtRepliesTableCompanion({
     this.id = const Value.absent(),
@@ -9959,8 +9972,8 @@ class DoubtRepliesTableCompanion
     this.authorName = const Value.absent(),
     this.authorAvatar = const Value.absent(),
     this.isMentor = const Value.absent(),
-    this.timeAgo = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.attachments = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   DoubtRepliesTableCompanion.insert({
@@ -9970,14 +9983,13 @@ class DoubtRepliesTableCompanion
     required String authorName,
     this.authorAvatar = const Value.absent(),
     this.isMentor = const Value.absent(),
-    required String timeAgo,
     required DateTime createdAt,
+    this.attachments = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        doubtId = Value(doubtId),
        content = Value(content),
        authorName = Value(authorName),
-       timeAgo = Value(timeAgo),
        createdAt = Value(createdAt);
   static Insertable<DoubtRepliesTableData> custom({
     Expression<String>? id,
@@ -9986,8 +9998,8 @@ class DoubtRepliesTableCompanion
     Expression<String>? authorName,
     Expression<String>? authorAvatar,
     Expression<bool>? isMentor,
-    Expression<String>? timeAgo,
     Expression<DateTime>? createdAt,
+    Expression<String>? attachments,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -9997,8 +10009,8 @@ class DoubtRepliesTableCompanion
       if (authorName != null) 'author_name': authorName,
       if (authorAvatar != null) 'author_avatar': authorAvatar,
       if (isMentor != null) 'is_mentor': isMentor,
-      if (timeAgo != null) 'time_ago': timeAgo,
       if (createdAt != null) 'created_at': createdAt,
+      if (attachments != null) 'attachments': attachments,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -10010,8 +10022,8 @@ class DoubtRepliesTableCompanion
     Value<String>? authorName,
     Value<String?>? authorAvatar,
     Value<bool>? isMentor,
-    Value<String>? timeAgo,
     Value<DateTime>? createdAt,
+    Value<String?>? attachments,
     Value<int>? rowid,
   }) {
     return DoubtRepliesTableCompanion(
@@ -10021,8 +10033,8 @@ class DoubtRepliesTableCompanion
       authorName: authorName ?? this.authorName,
       authorAvatar: authorAvatar ?? this.authorAvatar,
       isMentor: isMentor ?? this.isMentor,
-      timeAgo: timeAgo ?? this.timeAgo,
       createdAt: createdAt ?? this.createdAt,
+      attachments: attachments ?? this.attachments,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -10048,11 +10060,11 @@ class DoubtRepliesTableCompanion
     if (isMentor.present) {
       map['is_mentor'] = Variable<bool>(isMentor.value);
     }
-    if (timeAgo.present) {
-      map['time_ago'] = Variable<String>(timeAgo.value);
-    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (attachments.present) {
+      map['attachments'] = Variable<String>(attachments.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -10069,8 +10081,8 @@ class DoubtRepliesTableCompanion
           ..write('authorName: $authorName, ')
           ..write('authorAvatar: $authorAvatar, ')
           ..write('isMentor: $isMentor, ')
-          ..write('timeAgo: $timeAgo, ')
           ..write('createdAt: $createdAt, ')
+          ..write('attachments: $attachments, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -14463,10 +14475,10 @@ typedef $$DoubtsTableTableCreateCompanionBuilder =
       required String content,
       required String studentName,
       Value<String?> studentAvatar,
-      required String timeAgo,
       Value<int> replyCount,
       required String status,
       required DateTime createdAt,
+      Value<String?> attachments,
       Value<int> rowid,
     });
 typedef $$DoubtsTableTableUpdateCompanionBuilder =
@@ -14479,10 +14491,10 @@ typedef $$DoubtsTableTableUpdateCompanionBuilder =
       Value<String> content,
       Value<String> studentName,
       Value<String?> studentAvatar,
-      Value<String> timeAgo,
       Value<int> replyCount,
       Value<String> status,
       Value<DateTime> createdAt,
+      Value<String?> attachments,
       Value<int> rowid,
     });
 
@@ -14535,11 +14547,6 @@ class $$DoubtsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get timeAgo => $composableBuilder(
-    column: $table.timeAgo,
-    builder: (column) => ColumnFilters(column),
-  );
-
   ColumnFilters<int> get replyCount => $composableBuilder(
     column: $table.replyCount,
     builder: (column) => ColumnFilters(column),
@@ -14552,6 +14559,11 @@ class $$DoubtsTableTableFilterComposer
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get attachments => $composableBuilder(
+    column: $table.attachments,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -14605,11 +14617,6 @@ class $$DoubtsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get timeAgo => $composableBuilder(
-    column: $table.timeAgo,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<int> get replyCount => $composableBuilder(
     column: $table.replyCount,
     builder: (column) => ColumnOrderings(column),
@@ -14622,6 +14629,11 @@ class $$DoubtsTableTableOrderingComposer
 
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get attachments => $composableBuilder(
+    column: $table.attachments,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -14665,9 +14677,6 @@ class $$DoubtsTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get timeAgo =>
-      $composableBuilder(column: $table.timeAgo, builder: (column) => column);
-
   GeneratedColumn<int> get replyCount => $composableBuilder(
     column: $table.replyCount,
     builder: (column) => column,
@@ -14678,6 +14687,11 @@ class $$DoubtsTableTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get attachments => $composableBuilder(
+    column: $table.attachments,
+    builder: (column) => column,
+  );
 }
 
 class $$DoubtsTableTableTableManager
@@ -14719,10 +14733,10 @@ class $$DoubtsTableTableTableManager
                 Value<String> content = const Value.absent(),
                 Value<String> studentName = const Value.absent(),
                 Value<String?> studentAvatar = const Value.absent(),
-                Value<String> timeAgo = const Value.absent(),
                 Value<int> replyCount = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> attachments = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DoubtsTableCompanion(
                 id: id,
@@ -14733,10 +14747,10 @@ class $$DoubtsTableTableTableManager
                 content: content,
                 studentName: studentName,
                 studentAvatar: studentAvatar,
-                timeAgo: timeAgo,
                 replyCount: replyCount,
                 status: status,
                 createdAt: createdAt,
+                attachments: attachments,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -14749,10 +14763,10 @@ class $$DoubtsTableTableTableManager
                 required String content,
                 required String studentName,
                 Value<String?> studentAvatar = const Value.absent(),
-                required String timeAgo,
                 Value<int> replyCount = const Value.absent(),
                 required String status,
                 required DateTime createdAt,
+                Value<String?> attachments = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DoubtsTableCompanion.insert(
                 id: id,
@@ -14763,10 +14777,10 @@ class $$DoubtsTableTableTableManager
                 content: content,
                 studentName: studentName,
                 studentAvatar: studentAvatar,
-                timeAgo: timeAgo,
                 replyCount: replyCount,
                 status: status,
                 createdAt: createdAt,
+                attachments: attachments,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -14802,8 +14816,8 @@ typedef $$DoubtRepliesTableTableCreateCompanionBuilder =
       required String authorName,
       Value<String?> authorAvatar,
       Value<bool> isMentor,
-      required String timeAgo,
       required DateTime createdAt,
+      Value<String?> attachments,
       Value<int> rowid,
     });
 typedef $$DoubtRepliesTableTableUpdateCompanionBuilder =
@@ -14814,8 +14828,8 @@ typedef $$DoubtRepliesTableTableUpdateCompanionBuilder =
       Value<String> authorName,
       Value<String?> authorAvatar,
       Value<bool> isMentor,
-      Value<String> timeAgo,
       Value<DateTime> createdAt,
+      Value<String?> attachments,
       Value<int> rowid,
     });
 
@@ -14858,13 +14872,13 @@ class $$DoubtRepliesTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get timeAgo => $composableBuilder(
-    column: $table.timeAgo,
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
+  ColumnFilters<String> get attachments => $composableBuilder(
+    column: $table.attachments,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -14908,13 +14922,13 @@ class $$DoubtRepliesTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get timeAgo => $composableBuilder(
-    column: $table.timeAgo,
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
+  ColumnOrderings<String> get attachments => $composableBuilder(
+    column: $table.attachments,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -14950,11 +14964,13 @@ class $$DoubtRepliesTableTableAnnotationComposer
   GeneratedColumn<bool> get isMentor =>
       $composableBuilder(column: $table.isMentor, builder: (column) => column);
 
-  GeneratedColumn<String> get timeAgo =>
-      $composableBuilder(column: $table.timeAgo, builder: (column) => column);
-
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get attachments => $composableBuilder(
+    column: $table.attachments,
+    builder: (column) => column,
+  );
 }
 
 class $$DoubtRepliesTableTableTableManager
@@ -15003,8 +15019,8 @@ class $$DoubtRepliesTableTableTableManager
                 Value<String> authorName = const Value.absent(),
                 Value<String?> authorAvatar = const Value.absent(),
                 Value<bool> isMentor = const Value.absent(),
-                Value<String> timeAgo = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> attachments = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DoubtRepliesTableCompanion(
                 id: id,
@@ -15013,8 +15029,8 @@ class $$DoubtRepliesTableTableTableManager
                 authorName: authorName,
                 authorAvatar: authorAvatar,
                 isMentor: isMentor,
-                timeAgo: timeAgo,
                 createdAt: createdAt,
+                attachments: attachments,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -15025,8 +15041,8 @@ class $$DoubtRepliesTableTableTableManager
                 required String authorName,
                 Value<String?> authorAvatar = const Value.absent(),
                 Value<bool> isMentor = const Value.absent(),
-                required String timeAgo,
                 required DateTime createdAt,
+                Value<String?> attachments = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DoubtRepliesTableCompanion.insert(
                 id: id,
@@ -15035,8 +15051,8 @@ class $$DoubtRepliesTableTableTableManager
                 authorName: authorName,
                 authorAvatar: authorAvatar,
                 isMentor: isMentor,
-                timeAgo: timeAgo,
                 createdAt: createdAt,
+                attachments: attachments,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
