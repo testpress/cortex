@@ -15,6 +15,7 @@ import 'tables/user_progress_table.dart';
 import 'tables/app_settings_table.dart';
 import 'tables/users_table.dart';
 import 'tables/downloads_table.dart';
+import 'tables/doubts_table.dart';
 
 import 'package:core/data/data.dart';
 
@@ -35,13 +36,15 @@ part 'app_database.g.dart';
     LearnersTable,
     DashboardContentsTable,
     DownloadsTable,
+    DoubtsTable,
+    DoubtRepliesTable,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 16;
+  int get schemaVersion => 17;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -176,6 +179,11 @@ class AppDatabase extends _$AppDatabase {
           if (from < 16) {
             // Version 16 adds Downloads table
             await createTableSafely(downloadsTable);
+          }
+          if (from < 17) {
+            // Version 17 adds Doubts and DoubtReplies tables
+            await createTableSafely(doubtsTable);
+            await createTableSafely(doubtRepliesTable);
           }
         },
       );

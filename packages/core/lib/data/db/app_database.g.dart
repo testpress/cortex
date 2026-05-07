@@ -8836,6 +8836,1247 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
   }
 }
 
+class $DoubtsTableTable extends DoubtsTable
+    with TableInfo<$DoubtsTableTable, DoubtsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DoubtsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _courseIdMeta = const VerificationMeta(
+    'courseId',
+  );
+  @override
+  late final GeneratedColumn<String> courseId = GeneratedColumn<String>(
+    'course_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _courseNameMeta = const VerificationMeta(
+    'courseName',
+  );
+  @override
+  late final GeneratedColumn<String> courseName = GeneratedColumn<String>(
+    'course_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lessonIdMeta = const VerificationMeta(
+    'lessonId',
+  );
+  @override
+  late final GeneratedColumn<String> lessonId = GeneratedColumn<String>(
+    'lesson_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentMeta = const VerificationMeta(
+    'content',
+  );
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+    'content',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _studentNameMeta = const VerificationMeta(
+    'studentName',
+  );
+  @override
+  late final GeneratedColumn<String> studentName = GeneratedColumn<String>(
+    'student_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _studentAvatarMeta = const VerificationMeta(
+    'studentAvatar',
+  );
+  @override
+  late final GeneratedColumn<String> studentAvatar = GeneratedColumn<String>(
+    'student_avatar',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _timeAgoMeta = const VerificationMeta(
+    'timeAgo',
+  );
+  @override
+  late final GeneratedColumn<String> timeAgo = GeneratedColumn<String>(
+    'time_ago',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _replyCountMeta = const VerificationMeta(
+    'replyCount',
+  );
+  @override
+  late final GeneratedColumn<int> replyCount = GeneratedColumn<int>(
+    'reply_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    courseId,
+    courseName,
+    lessonId,
+    title,
+    content,
+    studentName,
+    studentAvatar,
+    timeAgo,
+    replyCount,
+    status,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'doubts_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DoubtsTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('course_id')) {
+      context.handle(
+        _courseIdMeta,
+        courseId.isAcceptableOrUnknown(data['course_id']!, _courseIdMeta),
+      );
+    }
+    if (data.containsKey('course_name')) {
+      context.handle(
+        _courseNameMeta,
+        courseName.isAcceptableOrUnknown(data['course_name']!, _courseNameMeta),
+      );
+    }
+    if (data.containsKey('lesson_id')) {
+      context.handle(
+        _lessonIdMeta,
+        lessonId.isAcceptableOrUnknown(data['lesson_id']!, _lessonIdMeta),
+      );
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('content')) {
+      context.handle(
+        _contentMeta,
+        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_contentMeta);
+    }
+    if (data.containsKey('student_name')) {
+      context.handle(
+        _studentNameMeta,
+        studentName.isAcceptableOrUnknown(
+          data['student_name']!,
+          _studentNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_studentNameMeta);
+    }
+    if (data.containsKey('student_avatar')) {
+      context.handle(
+        _studentAvatarMeta,
+        studentAvatar.isAcceptableOrUnknown(
+          data['student_avatar']!,
+          _studentAvatarMeta,
+        ),
+      );
+    }
+    if (data.containsKey('time_ago')) {
+      context.handle(
+        _timeAgoMeta,
+        timeAgo.isAcceptableOrUnknown(data['time_ago']!, _timeAgoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_timeAgoMeta);
+    }
+    if (data.containsKey('reply_count')) {
+      context.handle(
+        _replyCountMeta,
+        replyCount.isAcceptableOrUnknown(data['reply_count']!, _replyCountMeta),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DoubtsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DoubtsTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      courseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}course_id'],
+      ),
+      courseName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}course_name'],
+      ),
+      lessonId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}lesson_id'],
+      ),
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      content: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content'],
+      )!,
+      studentName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}student_name'],
+      )!,
+      studentAvatar: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}student_avatar'],
+      ),
+      timeAgo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}time_ago'],
+      )!,
+      replyCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}reply_count'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $DoubtsTableTable createAlias(String alias) {
+    return $DoubtsTableTable(attachedDatabase, alias);
+  }
+}
+
+class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
+  final String id;
+  final String? courseId;
+  final String? courseName;
+  final String? lessonId;
+  final String title;
+  final String content;
+  final String studentName;
+  final String? studentAvatar;
+  final String timeAgo;
+  final int replyCount;
+  final String status;
+  final DateTime createdAt;
+  const DoubtsTableData({
+    required this.id,
+    this.courseId,
+    this.courseName,
+    this.lessonId,
+    required this.title,
+    required this.content,
+    required this.studentName,
+    this.studentAvatar,
+    required this.timeAgo,
+    required this.replyCount,
+    required this.status,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    if (!nullToAbsent || courseId != null) {
+      map['course_id'] = Variable<String>(courseId);
+    }
+    if (!nullToAbsent || courseName != null) {
+      map['course_name'] = Variable<String>(courseName);
+    }
+    if (!nullToAbsent || lessonId != null) {
+      map['lesson_id'] = Variable<String>(lessonId);
+    }
+    map['title'] = Variable<String>(title);
+    map['content'] = Variable<String>(content);
+    map['student_name'] = Variable<String>(studentName);
+    if (!nullToAbsent || studentAvatar != null) {
+      map['student_avatar'] = Variable<String>(studentAvatar);
+    }
+    map['time_ago'] = Variable<String>(timeAgo);
+    map['reply_count'] = Variable<int>(replyCount);
+    map['status'] = Variable<String>(status);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  DoubtsTableCompanion toCompanion(bool nullToAbsent) {
+    return DoubtsTableCompanion(
+      id: Value(id),
+      courseId: courseId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(courseId),
+      courseName: courseName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(courseName),
+      lessonId: lessonId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lessonId),
+      title: Value(title),
+      content: Value(content),
+      studentName: Value(studentName),
+      studentAvatar: studentAvatar == null && nullToAbsent
+          ? const Value.absent()
+          : Value(studentAvatar),
+      timeAgo: Value(timeAgo),
+      replyCount: Value(replyCount),
+      status: Value(status),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory DoubtsTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DoubtsTableData(
+      id: serializer.fromJson<String>(json['id']),
+      courseId: serializer.fromJson<String?>(json['courseId']),
+      courseName: serializer.fromJson<String?>(json['courseName']),
+      lessonId: serializer.fromJson<String?>(json['lessonId']),
+      title: serializer.fromJson<String>(json['title']),
+      content: serializer.fromJson<String>(json['content']),
+      studentName: serializer.fromJson<String>(json['studentName']),
+      studentAvatar: serializer.fromJson<String?>(json['studentAvatar']),
+      timeAgo: serializer.fromJson<String>(json['timeAgo']),
+      replyCount: serializer.fromJson<int>(json['replyCount']),
+      status: serializer.fromJson<String>(json['status']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'courseId': serializer.toJson<String?>(courseId),
+      'courseName': serializer.toJson<String?>(courseName),
+      'lessonId': serializer.toJson<String?>(lessonId),
+      'title': serializer.toJson<String>(title),
+      'content': serializer.toJson<String>(content),
+      'studentName': serializer.toJson<String>(studentName),
+      'studentAvatar': serializer.toJson<String?>(studentAvatar),
+      'timeAgo': serializer.toJson<String>(timeAgo),
+      'replyCount': serializer.toJson<int>(replyCount),
+      'status': serializer.toJson<String>(status),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  DoubtsTableData copyWith({
+    String? id,
+    Value<String?> courseId = const Value.absent(),
+    Value<String?> courseName = const Value.absent(),
+    Value<String?> lessonId = const Value.absent(),
+    String? title,
+    String? content,
+    String? studentName,
+    Value<String?> studentAvatar = const Value.absent(),
+    String? timeAgo,
+    int? replyCount,
+    String? status,
+    DateTime? createdAt,
+  }) => DoubtsTableData(
+    id: id ?? this.id,
+    courseId: courseId.present ? courseId.value : this.courseId,
+    courseName: courseName.present ? courseName.value : this.courseName,
+    lessonId: lessonId.present ? lessonId.value : this.lessonId,
+    title: title ?? this.title,
+    content: content ?? this.content,
+    studentName: studentName ?? this.studentName,
+    studentAvatar: studentAvatar.present
+        ? studentAvatar.value
+        : this.studentAvatar,
+    timeAgo: timeAgo ?? this.timeAgo,
+    replyCount: replyCount ?? this.replyCount,
+    status: status ?? this.status,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  DoubtsTableData copyWithCompanion(DoubtsTableCompanion data) {
+    return DoubtsTableData(
+      id: data.id.present ? data.id.value : this.id,
+      courseId: data.courseId.present ? data.courseId.value : this.courseId,
+      courseName: data.courseName.present
+          ? data.courseName.value
+          : this.courseName,
+      lessonId: data.lessonId.present ? data.lessonId.value : this.lessonId,
+      title: data.title.present ? data.title.value : this.title,
+      content: data.content.present ? data.content.value : this.content,
+      studentName: data.studentName.present
+          ? data.studentName.value
+          : this.studentName,
+      studentAvatar: data.studentAvatar.present
+          ? data.studentAvatar.value
+          : this.studentAvatar,
+      timeAgo: data.timeAgo.present ? data.timeAgo.value : this.timeAgo,
+      replyCount: data.replyCount.present
+          ? data.replyCount.value
+          : this.replyCount,
+      status: data.status.present ? data.status.value : this.status,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DoubtsTableData(')
+          ..write('id: $id, ')
+          ..write('courseId: $courseId, ')
+          ..write('courseName: $courseName, ')
+          ..write('lessonId: $lessonId, ')
+          ..write('title: $title, ')
+          ..write('content: $content, ')
+          ..write('studentName: $studentName, ')
+          ..write('studentAvatar: $studentAvatar, ')
+          ..write('timeAgo: $timeAgo, ')
+          ..write('replyCount: $replyCount, ')
+          ..write('status: $status, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    courseId,
+    courseName,
+    lessonId,
+    title,
+    content,
+    studentName,
+    studentAvatar,
+    timeAgo,
+    replyCount,
+    status,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DoubtsTableData &&
+          other.id == this.id &&
+          other.courseId == this.courseId &&
+          other.courseName == this.courseName &&
+          other.lessonId == this.lessonId &&
+          other.title == this.title &&
+          other.content == this.content &&
+          other.studentName == this.studentName &&
+          other.studentAvatar == this.studentAvatar &&
+          other.timeAgo == this.timeAgo &&
+          other.replyCount == this.replyCount &&
+          other.status == this.status &&
+          other.createdAt == this.createdAt);
+}
+
+class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
+  final Value<String> id;
+  final Value<String?> courseId;
+  final Value<String?> courseName;
+  final Value<String?> lessonId;
+  final Value<String> title;
+  final Value<String> content;
+  final Value<String> studentName;
+  final Value<String?> studentAvatar;
+  final Value<String> timeAgo;
+  final Value<int> replyCount;
+  final Value<String> status;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const DoubtsTableCompanion({
+    this.id = const Value.absent(),
+    this.courseId = const Value.absent(),
+    this.courseName = const Value.absent(),
+    this.lessonId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.content = const Value.absent(),
+    this.studentName = const Value.absent(),
+    this.studentAvatar = const Value.absent(),
+    this.timeAgo = const Value.absent(),
+    this.replyCount = const Value.absent(),
+    this.status = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DoubtsTableCompanion.insert({
+    required String id,
+    this.courseId = const Value.absent(),
+    this.courseName = const Value.absent(),
+    this.lessonId = const Value.absent(),
+    required String title,
+    required String content,
+    required String studentName,
+    this.studentAvatar = const Value.absent(),
+    required String timeAgo,
+    this.replyCount = const Value.absent(),
+    required String status,
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       title = Value(title),
+       content = Value(content),
+       studentName = Value(studentName),
+       timeAgo = Value(timeAgo),
+       status = Value(status),
+       createdAt = Value(createdAt);
+  static Insertable<DoubtsTableData> custom({
+    Expression<String>? id,
+    Expression<String>? courseId,
+    Expression<String>? courseName,
+    Expression<String>? lessonId,
+    Expression<String>? title,
+    Expression<String>? content,
+    Expression<String>? studentName,
+    Expression<String>? studentAvatar,
+    Expression<String>? timeAgo,
+    Expression<int>? replyCount,
+    Expression<String>? status,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (courseId != null) 'course_id': courseId,
+      if (courseName != null) 'course_name': courseName,
+      if (lessonId != null) 'lesson_id': lessonId,
+      if (title != null) 'title': title,
+      if (content != null) 'content': content,
+      if (studentName != null) 'student_name': studentName,
+      if (studentAvatar != null) 'student_avatar': studentAvatar,
+      if (timeAgo != null) 'time_ago': timeAgo,
+      if (replyCount != null) 'reply_count': replyCount,
+      if (status != null) 'status': status,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DoubtsTableCompanion copyWith({
+    Value<String>? id,
+    Value<String?>? courseId,
+    Value<String?>? courseName,
+    Value<String?>? lessonId,
+    Value<String>? title,
+    Value<String>? content,
+    Value<String>? studentName,
+    Value<String?>? studentAvatar,
+    Value<String>? timeAgo,
+    Value<int>? replyCount,
+    Value<String>? status,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return DoubtsTableCompanion(
+      id: id ?? this.id,
+      courseId: courseId ?? this.courseId,
+      courseName: courseName ?? this.courseName,
+      lessonId: lessonId ?? this.lessonId,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      studentName: studentName ?? this.studentName,
+      studentAvatar: studentAvatar ?? this.studentAvatar,
+      timeAgo: timeAgo ?? this.timeAgo,
+      replyCount: replyCount ?? this.replyCount,
+      status: status ?? this.status,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (courseId.present) {
+      map['course_id'] = Variable<String>(courseId.value);
+    }
+    if (courseName.present) {
+      map['course_name'] = Variable<String>(courseName.value);
+    }
+    if (lessonId.present) {
+      map['lesson_id'] = Variable<String>(lessonId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (studentName.present) {
+      map['student_name'] = Variable<String>(studentName.value);
+    }
+    if (studentAvatar.present) {
+      map['student_avatar'] = Variable<String>(studentAvatar.value);
+    }
+    if (timeAgo.present) {
+      map['time_ago'] = Variable<String>(timeAgo.value);
+    }
+    if (replyCount.present) {
+      map['reply_count'] = Variable<int>(replyCount.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DoubtsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('courseId: $courseId, ')
+          ..write('courseName: $courseName, ')
+          ..write('lessonId: $lessonId, ')
+          ..write('title: $title, ')
+          ..write('content: $content, ')
+          ..write('studentName: $studentName, ')
+          ..write('studentAvatar: $studentAvatar, ')
+          ..write('timeAgo: $timeAgo, ')
+          ..write('replyCount: $replyCount, ')
+          ..write('status: $status, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DoubtRepliesTableTable extends DoubtRepliesTable
+    with TableInfo<$DoubtRepliesTableTable, DoubtRepliesTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DoubtRepliesTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _doubtIdMeta = const VerificationMeta(
+    'doubtId',
+  );
+  @override
+  late final GeneratedColumn<String> doubtId = GeneratedColumn<String>(
+    'doubt_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentMeta = const VerificationMeta(
+    'content',
+  );
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+    'content',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _authorNameMeta = const VerificationMeta(
+    'authorName',
+  );
+  @override
+  late final GeneratedColumn<String> authorName = GeneratedColumn<String>(
+    'author_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _authorAvatarMeta = const VerificationMeta(
+    'authorAvatar',
+  );
+  @override
+  late final GeneratedColumn<String> authorAvatar = GeneratedColumn<String>(
+    'author_avatar',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isMentorMeta = const VerificationMeta(
+    'isMentor',
+  );
+  @override
+  late final GeneratedColumn<bool> isMentor = GeneratedColumn<bool>(
+    'is_mentor',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_mentor" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _timeAgoMeta = const VerificationMeta(
+    'timeAgo',
+  );
+  @override
+  late final GeneratedColumn<String> timeAgo = GeneratedColumn<String>(
+    'time_ago',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    doubtId,
+    content,
+    authorName,
+    authorAvatar,
+    isMentor,
+    timeAgo,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'doubt_replies_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DoubtRepliesTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('doubt_id')) {
+      context.handle(
+        _doubtIdMeta,
+        doubtId.isAcceptableOrUnknown(data['doubt_id']!, _doubtIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_doubtIdMeta);
+    }
+    if (data.containsKey('content')) {
+      context.handle(
+        _contentMeta,
+        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_contentMeta);
+    }
+    if (data.containsKey('author_name')) {
+      context.handle(
+        _authorNameMeta,
+        authorName.isAcceptableOrUnknown(data['author_name']!, _authorNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_authorNameMeta);
+    }
+    if (data.containsKey('author_avatar')) {
+      context.handle(
+        _authorAvatarMeta,
+        authorAvatar.isAcceptableOrUnknown(
+          data['author_avatar']!,
+          _authorAvatarMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_mentor')) {
+      context.handle(
+        _isMentorMeta,
+        isMentor.isAcceptableOrUnknown(data['is_mentor']!, _isMentorMeta),
+      );
+    }
+    if (data.containsKey('time_ago')) {
+      context.handle(
+        _timeAgoMeta,
+        timeAgo.isAcceptableOrUnknown(data['time_ago']!, _timeAgoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_timeAgoMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DoubtRepliesTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DoubtRepliesTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      doubtId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}doubt_id'],
+      )!,
+      content: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content'],
+      )!,
+      authorName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}author_name'],
+      )!,
+      authorAvatar: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}author_avatar'],
+      ),
+      isMentor: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_mentor'],
+      )!,
+      timeAgo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}time_ago'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $DoubtRepliesTableTable createAlias(String alias) {
+    return $DoubtRepliesTableTable(attachedDatabase, alias);
+  }
+}
+
+class DoubtRepliesTableData extends DataClass
+    implements Insertable<DoubtRepliesTableData> {
+  final String id;
+  final String doubtId;
+  final String content;
+  final String authorName;
+  final String? authorAvatar;
+  final bool isMentor;
+  final String timeAgo;
+  final DateTime createdAt;
+  const DoubtRepliesTableData({
+    required this.id,
+    required this.doubtId,
+    required this.content,
+    required this.authorName,
+    this.authorAvatar,
+    required this.isMentor,
+    required this.timeAgo,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['doubt_id'] = Variable<String>(doubtId);
+    map['content'] = Variable<String>(content);
+    map['author_name'] = Variable<String>(authorName);
+    if (!nullToAbsent || authorAvatar != null) {
+      map['author_avatar'] = Variable<String>(authorAvatar);
+    }
+    map['is_mentor'] = Variable<bool>(isMentor);
+    map['time_ago'] = Variable<String>(timeAgo);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  DoubtRepliesTableCompanion toCompanion(bool nullToAbsent) {
+    return DoubtRepliesTableCompanion(
+      id: Value(id),
+      doubtId: Value(doubtId),
+      content: Value(content),
+      authorName: Value(authorName),
+      authorAvatar: authorAvatar == null && nullToAbsent
+          ? const Value.absent()
+          : Value(authorAvatar),
+      isMentor: Value(isMentor),
+      timeAgo: Value(timeAgo),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory DoubtRepliesTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DoubtRepliesTableData(
+      id: serializer.fromJson<String>(json['id']),
+      doubtId: serializer.fromJson<String>(json['doubtId']),
+      content: serializer.fromJson<String>(json['content']),
+      authorName: serializer.fromJson<String>(json['authorName']),
+      authorAvatar: serializer.fromJson<String?>(json['authorAvatar']),
+      isMentor: serializer.fromJson<bool>(json['isMentor']),
+      timeAgo: serializer.fromJson<String>(json['timeAgo']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'doubtId': serializer.toJson<String>(doubtId),
+      'content': serializer.toJson<String>(content),
+      'authorName': serializer.toJson<String>(authorName),
+      'authorAvatar': serializer.toJson<String?>(authorAvatar),
+      'isMentor': serializer.toJson<bool>(isMentor),
+      'timeAgo': serializer.toJson<String>(timeAgo),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  DoubtRepliesTableData copyWith({
+    String? id,
+    String? doubtId,
+    String? content,
+    String? authorName,
+    Value<String?> authorAvatar = const Value.absent(),
+    bool? isMentor,
+    String? timeAgo,
+    DateTime? createdAt,
+  }) => DoubtRepliesTableData(
+    id: id ?? this.id,
+    doubtId: doubtId ?? this.doubtId,
+    content: content ?? this.content,
+    authorName: authorName ?? this.authorName,
+    authorAvatar: authorAvatar.present ? authorAvatar.value : this.authorAvatar,
+    isMentor: isMentor ?? this.isMentor,
+    timeAgo: timeAgo ?? this.timeAgo,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  DoubtRepliesTableData copyWithCompanion(DoubtRepliesTableCompanion data) {
+    return DoubtRepliesTableData(
+      id: data.id.present ? data.id.value : this.id,
+      doubtId: data.doubtId.present ? data.doubtId.value : this.doubtId,
+      content: data.content.present ? data.content.value : this.content,
+      authorName: data.authorName.present
+          ? data.authorName.value
+          : this.authorName,
+      authorAvatar: data.authorAvatar.present
+          ? data.authorAvatar.value
+          : this.authorAvatar,
+      isMentor: data.isMentor.present ? data.isMentor.value : this.isMentor,
+      timeAgo: data.timeAgo.present ? data.timeAgo.value : this.timeAgo,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DoubtRepliesTableData(')
+          ..write('id: $id, ')
+          ..write('doubtId: $doubtId, ')
+          ..write('content: $content, ')
+          ..write('authorName: $authorName, ')
+          ..write('authorAvatar: $authorAvatar, ')
+          ..write('isMentor: $isMentor, ')
+          ..write('timeAgo: $timeAgo, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    doubtId,
+    content,
+    authorName,
+    authorAvatar,
+    isMentor,
+    timeAgo,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DoubtRepliesTableData &&
+          other.id == this.id &&
+          other.doubtId == this.doubtId &&
+          other.content == this.content &&
+          other.authorName == this.authorName &&
+          other.authorAvatar == this.authorAvatar &&
+          other.isMentor == this.isMentor &&
+          other.timeAgo == this.timeAgo &&
+          other.createdAt == this.createdAt);
+}
+
+class DoubtRepliesTableCompanion
+    extends UpdateCompanion<DoubtRepliesTableData> {
+  final Value<String> id;
+  final Value<String> doubtId;
+  final Value<String> content;
+  final Value<String> authorName;
+  final Value<String?> authorAvatar;
+  final Value<bool> isMentor;
+  final Value<String> timeAgo;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const DoubtRepliesTableCompanion({
+    this.id = const Value.absent(),
+    this.doubtId = const Value.absent(),
+    this.content = const Value.absent(),
+    this.authorName = const Value.absent(),
+    this.authorAvatar = const Value.absent(),
+    this.isMentor = const Value.absent(),
+    this.timeAgo = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DoubtRepliesTableCompanion.insert({
+    required String id,
+    required String doubtId,
+    required String content,
+    required String authorName,
+    this.authorAvatar = const Value.absent(),
+    this.isMentor = const Value.absent(),
+    required String timeAgo,
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       doubtId = Value(doubtId),
+       content = Value(content),
+       authorName = Value(authorName),
+       timeAgo = Value(timeAgo),
+       createdAt = Value(createdAt);
+  static Insertable<DoubtRepliesTableData> custom({
+    Expression<String>? id,
+    Expression<String>? doubtId,
+    Expression<String>? content,
+    Expression<String>? authorName,
+    Expression<String>? authorAvatar,
+    Expression<bool>? isMentor,
+    Expression<String>? timeAgo,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (doubtId != null) 'doubt_id': doubtId,
+      if (content != null) 'content': content,
+      if (authorName != null) 'author_name': authorName,
+      if (authorAvatar != null) 'author_avatar': authorAvatar,
+      if (isMentor != null) 'is_mentor': isMentor,
+      if (timeAgo != null) 'time_ago': timeAgo,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DoubtRepliesTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? doubtId,
+    Value<String>? content,
+    Value<String>? authorName,
+    Value<String?>? authorAvatar,
+    Value<bool>? isMentor,
+    Value<String>? timeAgo,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return DoubtRepliesTableCompanion(
+      id: id ?? this.id,
+      doubtId: doubtId ?? this.doubtId,
+      content: content ?? this.content,
+      authorName: authorName ?? this.authorName,
+      authorAvatar: authorAvatar ?? this.authorAvatar,
+      isMentor: isMentor ?? this.isMentor,
+      timeAgo: timeAgo ?? this.timeAgo,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (doubtId.present) {
+      map['doubt_id'] = Variable<String>(doubtId.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (authorName.present) {
+      map['author_name'] = Variable<String>(authorName.value);
+    }
+    if (authorAvatar.present) {
+      map['author_avatar'] = Variable<String>(authorAvatar.value);
+    }
+    if (isMentor.present) {
+      map['is_mentor'] = Variable<bool>(isMentor.value);
+    }
+    if (timeAgo.present) {
+      map['time_ago'] = Variable<String>(timeAgo.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DoubtRepliesTableCompanion(')
+          ..write('id: $id, ')
+          ..write('doubtId: $doubtId, ')
+          ..write('content: $content, ')
+          ..write('authorName: $authorName, ')
+          ..write('authorAvatar: $authorAvatar, ')
+          ..write('isMentor: $isMentor, ')
+          ..write('timeAgo: $timeAgo, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -8861,6 +10102,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $DashboardContentsTableTable dashboardContentsTable =
       $DashboardContentsTableTable(this);
   late final $DownloadsTableTable downloadsTable = $DownloadsTableTable(this);
+  late final $DoubtsTableTable doubtsTable = $DoubtsTableTable(this);
+  late final $DoubtRepliesTableTable doubtRepliesTable =
+      $DoubtRepliesTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -8879,6 +10123,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     learnersTable,
     dashboardContentsTable,
     downloadsTable,
+    doubtsTable,
+    doubtRepliesTable,
   ];
 }
 
@@ -13207,6 +14453,621 @@ typedef $$DownloadsTableTableProcessedTableManager =
       DownloadsTableData,
       PrefetchHooks Function()
     >;
+typedef $$DoubtsTableTableCreateCompanionBuilder =
+    DoubtsTableCompanion Function({
+      required String id,
+      Value<String?> courseId,
+      Value<String?> courseName,
+      Value<String?> lessonId,
+      required String title,
+      required String content,
+      required String studentName,
+      Value<String?> studentAvatar,
+      required String timeAgo,
+      Value<int> replyCount,
+      required String status,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$DoubtsTableTableUpdateCompanionBuilder =
+    DoubtsTableCompanion Function({
+      Value<String> id,
+      Value<String?> courseId,
+      Value<String?> courseName,
+      Value<String?> lessonId,
+      Value<String> title,
+      Value<String> content,
+      Value<String> studentName,
+      Value<String?> studentAvatar,
+      Value<String> timeAgo,
+      Value<int> replyCount,
+      Value<String> status,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$DoubtsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $DoubtsTableTable> {
+  $$DoubtsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get courseId => $composableBuilder(
+    column: $table.courseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get courseName => $composableBuilder(
+    column: $table.courseName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lessonId => $composableBuilder(
+    column: $table.lessonId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get studentName => $composableBuilder(
+    column: $table.studentName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get studentAvatar => $composableBuilder(
+    column: $table.studentAvatar,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get timeAgo => $composableBuilder(
+    column: $table.timeAgo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get replyCount => $composableBuilder(
+    column: $table.replyCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DoubtsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $DoubtsTableTable> {
+  $$DoubtsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get courseId => $composableBuilder(
+    column: $table.courseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get courseName => $composableBuilder(
+    column: $table.courseName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lessonId => $composableBuilder(
+    column: $table.lessonId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get studentName => $composableBuilder(
+    column: $table.studentName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get studentAvatar => $composableBuilder(
+    column: $table.studentAvatar,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get timeAgo => $composableBuilder(
+    column: $table.timeAgo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get replyCount => $composableBuilder(
+    column: $table.replyCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DoubtsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DoubtsTableTable> {
+  $$DoubtsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get courseId =>
+      $composableBuilder(column: $table.courseId, builder: (column) => column);
+
+  GeneratedColumn<String> get courseName => $composableBuilder(
+    column: $table.courseName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get lessonId =>
+      $composableBuilder(column: $table.lessonId, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<String> get studentName => $composableBuilder(
+    column: $table.studentName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get studentAvatar => $composableBuilder(
+    column: $table.studentAvatar,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get timeAgo =>
+      $composableBuilder(column: $table.timeAgo, builder: (column) => column);
+
+  GeneratedColumn<int> get replyCount => $composableBuilder(
+    column: $table.replyCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$DoubtsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DoubtsTableTable,
+          DoubtsTableData,
+          $$DoubtsTableTableFilterComposer,
+          $$DoubtsTableTableOrderingComposer,
+          $$DoubtsTableTableAnnotationComposer,
+          $$DoubtsTableTableCreateCompanionBuilder,
+          $$DoubtsTableTableUpdateCompanionBuilder,
+          (
+            DoubtsTableData,
+            BaseReferences<_$AppDatabase, $DoubtsTableTable, DoubtsTableData>,
+          ),
+          DoubtsTableData,
+          PrefetchHooks Function()
+        > {
+  $$DoubtsTableTableTableManager(_$AppDatabase db, $DoubtsTableTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DoubtsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DoubtsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DoubtsTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String?> courseId = const Value.absent(),
+                Value<String?> courseName = const Value.absent(),
+                Value<String?> lessonId = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> content = const Value.absent(),
+                Value<String> studentName = const Value.absent(),
+                Value<String?> studentAvatar = const Value.absent(),
+                Value<String> timeAgo = const Value.absent(),
+                Value<int> replyCount = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DoubtsTableCompanion(
+                id: id,
+                courseId: courseId,
+                courseName: courseName,
+                lessonId: lessonId,
+                title: title,
+                content: content,
+                studentName: studentName,
+                studentAvatar: studentAvatar,
+                timeAgo: timeAgo,
+                replyCount: replyCount,
+                status: status,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                Value<String?> courseId = const Value.absent(),
+                Value<String?> courseName = const Value.absent(),
+                Value<String?> lessonId = const Value.absent(),
+                required String title,
+                required String content,
+                required String studentName,
+                Value<String?> studentAvatar = const Value.absent(),
+                required String timeAgo,
+                Value<int> replyCount = const Value.absent(),
+                required String status,
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => DoubtsTableCompanion.insert(
+                id: id,
+                courseId: courseId,
+                courseName: courseName,
+                lessonId: lessonId,
+                title: title,
+                content: content,
+                studentName: studentName,
+                studentAvatar: studentAvatar,
+                timeAgo: timeAgo,
+                replyCount: replyCount,
+                status: status,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DoubtsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DoubtsTableTable,
+      DoubtsTableData,
+      $$DoubtsTableTableFilterComposer,
+      $$DoubtsTableTableOrderingComposer,
+      $$DoubtsTableTableAnnotationComposer,
+      $$DoubtsTableTableCreateCompanionBuilder,
+      $$DoubtsTableTableUpdateCompanionBuilder,
+      (
+        DoubtsTableData,
+        BaseReferences<_$AppDatabase, $DoubtsTableTable, DoubtsTableData>,
+      ),
+      DoubtsTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$DoubtRepliesTableTableCreateCompanionBuilder =
+    DoubtRepliesTableCompanion Function({
+      required String id,
+      required String doubtId,
+      required String content,
+      required String authorName,
+      Value<String?> authorAvatar,
+      Value<bool> isMentor,
+      required String timeAgo,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$DoubtRepliesTableTableUpdateCompanionBuilder =
+    DoubtRepliesTableCompanion Function({
+      Value<String> id,
+      Value<String> doubtId,
+      Value<String> content,
+      Value<String> authorName,
+      Value<String?> authorAvatar,
+      Value<bool> isMentor,
+      Value<String> timeAgo,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$DoubtRepliesTableTableFilterComposer
+    extends Composer<_$AppDatabase, $DoubtRepliesTableTable> {
+  $$DoubtRepliesTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get doubtId => $composableBuilder(
+    column: $table.doubtId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get authorName => $composableBuilder(
+    column: $table.authorName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get authorAvatar => $composableBuilder(
+    column: $table.authorAvatar,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isMentor => $composableBuilder(
+    column: $table.isMentor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get timeAgo => $composableBuilder(
+    column: $table.timeAgo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DoubtRepliesTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $DoubtRepliesTableTable> {
+  $$DoubtRepliesTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get doubtId => $composableBuilder(
+    column: $table.doubtId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get authorName => $composableBuilder(
+    column: $table.authorName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get authorAvatar => $composableBuilder(
+    column: $table.authorAvatar,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isMentor => $composableBuilder(
+    column: $table.isMentor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get timeAgo => $composableBuilder(
+    column: $table.timeAgo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DoubtRepliesTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DoubtRepliesTableTable> {
+  $$DoubtRepliesTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get doubtId =>
+      $composableBuilder(column: $table.doubtId, builder: (column) => column);
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<String> get authorName => $composableBuilder(
+    column: $table.authorName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get authorAvatar => $composableBuilder(
+    column: $table.authorAvatar,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isMentor =>
+      $composableBuilder(column: $table.isMentor, builder: (column) => column);
+
+  GeneratedColumn<String> get timeAgo =>
+      $composableBuilder(column: $table.timeAgo, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$DoubtRepliesTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DoubtRepliesTableTable,
+          DoubtRepliesTableData,
+          $$DoubtRepliesTableTableFilterComposer,
+          $$DoubtRepliesTableTableOrderingComposer,
+          $$DoubtRepliesTableTableAnnotationComposer,
+          $$DoubtRepliesTableTableCreateCompanionBuilder,
+          $$DoubtRepliesTableTableUpdateCompanionBuilder,
+          (
+            DoubtRepliesTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $DoubtRepliesTableTable,
+              DoubtRepliesTableData
+            >,
+          ),
+          DoubtRepliesTableData,
+          PrefetchHooks Function()
+        > {
+  $$DoubtRepliesTableTableTableManager(
+    _$AppDatabase db,
+    $DoubtRepliesTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DoubtRepliesTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DoubtRepliesTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DoubtRepliesTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> doubtId = const Value.absent(),
+                Value<String> content = const Value.absent(),
+                Value<String> authorName = const Value.absent(),
+                Value<String?> authorAvatar = const Value.absent(),
+                Value<bool> isMentor = const Value.absent(),
+                Value<String> timeAgo = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DoubtRepliesTableCompanion(
+                id: id,
+                doubtId: doubtId,
+                content: content,
+                authorName: authorName,
+                authorAvatar: authorAvatar,
+                isMentor: isMentor,
+                timeAgo: timeAgo,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String doubtId,
+                required String content,
+                required String authorName,
+                Value<String?> authorAvatar = const Value.absent(),
+                Value<bool> isMentor = const Value.absent(),
+                required String timeAgo,
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => DoubtRepliesTableCompanion.insert(
+                id: id,
+                doubtId: doubtId,
+                content: content,
+                authorName: authorName,
+                authorAvatar: authorAvatar,
+                isMentor: isMentor,
+                timeAgo: timeAgo,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DoubtRepliesTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DoubtRepliesTableTable,
+      DoubtRepliesTableData,
+      $$DoubtRepliesTableTableFilterComposer,
+      $$DoubtRepliesTableTableOrderingComposer,
+      $$DoubtRepliesTableTableAnnotationComposer,
+      $$DoubtRepliesTableTableCreateCompanionBuilder,
+      $$DoubtRepliesTableTableUpdateCompanionBuilder,
+      (
+        DoubtRepliesTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $DoubtRepliesTableTable,
+          DoubtRepliesTableData
+        >,
+      ),
+      DoubtRepliesTableData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -13240,4 +15101,8 @@ class $AppDatabaseManager {
       );
   $$DownloadsTableTableTableManager get downloadsTable =>
       $$DownloadsTableTableTableManager(_db, _db.downloadsTable);
+  $$DoubtsTableTableTableManager get doubtsTable =>
+      $$DoubtsTableTableTableManager(_db, _db.doubtsTable);
+  $$DoubtRepliesTableTableTableManager get doubtRepliesTable =>
+      $$DoubtRepliesTableTableTableManager(_db, _db.doubtRepliesTable);
 }

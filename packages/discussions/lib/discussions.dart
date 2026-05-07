@@ -11,6 +11,7 @@ export 'screens/forum_course_selection_screen.dart';
 export 'screens/forum_posts_list_screen.dart';
 export 'screens/forum_post_detail_screen.dart';
 export 'screens/forum_post_create_screen.dart';
+export 'screens/doubts_list_screen.dart';
 
 // Widgets
 export 'widgets/forum_header.dart';

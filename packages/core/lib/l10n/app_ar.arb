@@ -149,7 +149,7 @@
   "drawerPosts": "المنشورات",
   "drawerAnalytics": "التحليلات",
   "drawerForum": "منتدى المناقشات",
-  "drawerDoubts": "الأسئلة",
+  "drawerDoubts": "اسأل المرشد",
   "drawerCustomExam": "نموذج امتحان",
   "drawerReports": "التقارير الخاصة بك",
   "drawerProfile": "الملف الشخصي",
@@ -479,5 +479,13 @@
   "downloadsEmptyAttachmentsSubtitle": "ستظهر الملفات التي تم تنزيلها هنا",
   "downloadsTotalVideos": "إجمالي الفيديوهات: {count}",
   "downloadsTotalFiles": "إجمالي الملفات: {count}",
-  "downloadsStorageUsed": "{size} مستخدم"
+  "downloadsStorageUsed": "{size} مستخدم",
+  "doubtsEmptyTitle": "لم يتم العثور على أسئلة",
+  "doubtsEmptySubtitle": "اطرح سؤالك الأول للحصول على مساعدة من المعلمين.",
+  "doubtsSearchNoResults": "لم يتم العثور على نتائج",
+  "doubtsSearchNoResultsSubtitle": "حاول تغيير نص البحث",
+  "doubtsHeaderAskDoubt": "اسأل سؤال",
+  "doubtsSearchHint": "البحث في الأسئلة",
+  "doubtsLabelUnanswered": "لم يتم الرد",
+  "doubtsLabelAnswered": "تم الرد"
 }

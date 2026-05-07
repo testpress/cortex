@@ -112,7 +112,7 @@ class _CourseItem extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: design.spacing.sm),
       child: AppCard(
-        onTap: () => context.push('/home/forum/posts/${course.id}'),
+        onTap: () => context.push('/home/discussions/forum/posts/${course.id}'),
         showShadow: true,
         padding: EdgeInsets.all(design.spacing.md),
         child: Row(

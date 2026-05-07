@@ -149,7 +149,7 @@
   "drawerPosts": "പോസ്റ്റുകൾ",
   "drawerAnalytics": "അനലിറ്റിക്സ്",
   "drawerForum": "ചർച്ചാ ഫോറം",
-  "drawerDoubts": "സംശയങ്ങൾ",
+  "drawerDoubts": "മെന്ററോട് ചോദിക്കുക",
   "drawerCustomExam": "കസ്റ്റം എക്സാം",
   "drawerReports": "നിങ്ങളുടെ റിപ്പോർട്ട്",
   "drawerProfile": "പ്രൊഫൈൽ",
@@ -479,5 +479,13 @@
   "downloadsEmptyAttachmentsSubtitle": "നിങ്ങളുടെ ഡൗൺലോഡ് ചെയ്ത ഫയലുകൾ ഇവിടെ കാണാം",
   "downloadsTotalVideos": "ആകെ വീഡിയോകൾ: {count}",
   "downloadsTotalFiles": "ആകെ ഫയലുകൾ: {count}",
-  "downloadsStorageUsed": "{size} ഉപയോഗിച്ചു"
+  "downloadsStorageUsed": "{size} ഉപയോഗിച്ചു",
+  "doubtsEmptyTitle": "സംശയങ്ങളൊന്നും കണ്ടെത്തിയില്ല",
+  "doubtsEmptySubtitle": "മെന്റർമാരിൽ നിന്ന് സഹായം ലഭിക്കുന്നതിന് നിങ്ങളുടെ ആദ്യ സംശയം ചോദിക്കുക.",
+  "doubtsSearchNoResults": "ഫലങ്ങളൊന്നും കണ്ടെത്തിയില്ല",
+  "doubtsSearchNoResultsSubtitle": "തിരയൽ വാചകം മാറ്റാൻ ശ്രമിക്കുക",
+  "doubtsHeaderAskDoubt": "സംശയം ചോദിക്കുക",
+  "doubtsSearchHint": "സംശയങ്ങൾ തിരയുക",
+  "doubtsLabelUnanswered": "മറുപടി നൽകിയിട്ടില്ല",
+  "doubtsLabelAnswered": "മറുപടി നൽകി"
 }

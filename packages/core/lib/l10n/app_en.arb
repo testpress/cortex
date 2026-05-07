@@ -240,7 +240,7 @@
   "drawerPosts": "Posts",
   "drawerAnalytics": "Analytics",
   "drawerForum": "Discussions Forum",
-  "drawerDoubts": "Doubts",
+  "drawerDoubts": "Ask Mentor",
   "drawerCustomExam": "Custom Exam",
   "drawerReports": "Reports",
   "drawerProfile": "Profile",
@@ -700,5 +700,13 @@
         "type": "String"
       }
     }
-  }
+  },
+  "doubtsEmptyTitle": "No doubts found",
+  "doubtsEmptySubtitle": "Ask your first doubt to get help from mentors.",
+  "doubtsSearchNoResults": "No matches found",
+  "doubtsSearchNoResultsSubtitle": "Try adjusting your search query",
+  "doubtsHeaderAskDoubt": "Ask a Doubt",
+  "doubtsSearchHint": "Search doubts",
+  "doubtsLabelUnanswered": "Unanswered",
+  "doubtsLabelAnswered": "Answered"
 }

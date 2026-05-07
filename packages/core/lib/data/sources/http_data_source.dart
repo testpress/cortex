@@ -286,6 +286,18 @@ class HttpDataSource implements DataSource {
   }
 
   @override
+  Future<List<DoubtDto>> getDoubts() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    return mockDoubts;
+  }
+
+  @override
+  Future<List<DoubtReplyDto>> getDoubtReplies(String doubtId) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return mockDoubtReplies.where((r) => r.doubtId == doubtId).toList();
+  }
+
+  @override
   Future<void> markLessonCompleted(String lessonId) async {
     await performNetworkRequest(
       _dio.post(ApiEndpoints.markCompleted(lessonId)),

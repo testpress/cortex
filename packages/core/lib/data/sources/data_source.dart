@@ -116,6 +116,12 @@ abstract class DataSource {
 
   /// Update the authenticated user's profile with the given fields (supports multipart image updates).
   Future<UserDto> updateProfile(Map<String, dynamic> data);
+  
+  /// Fetch personal doubts for the current user.
+  Future<List<DoubtDto>> getDoubts();
+
+  /// Fetch replies for a specific doubt.
+  Future<List<DoubtReplyDto>> getDoubtReplies(String doubtId);
 
   /// Mark a lesson as completed on the server.
   Future<void> markLessonCompleted(String lessonId);
