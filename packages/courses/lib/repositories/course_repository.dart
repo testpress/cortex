@@ -141,7 +141,7 @@ class CourseRepository {
 
     if (response.results.isNotEmpty) {
       final companions = response.results
-          .map((dto) => _courseDtoToCompanion(dto, orderIndex: dto.order))
+          .map(_courseDtoToCompanion)
           .toList();
       await _db.upsertCourses(companions);
     }
@@ -384,6 +384,7 @@ class CourseRepository {
 
     final syncFuture = () async {
       try {
+        _updateSyncStatus(courseId, true);
         // Authoritative Structural Mapping: Hierarchy comes strictly from the paginated /contents/ API.
         final remoteAll = await _source.getCourseContents(courseId);
 
@@ -627,7 +628,7 @@ class CourseRepository {
     }
   }
 
-  CoursesTableCompanion _courseDtoToCompanion(CourseDto dto, {int? orderIndex}) =>
+  CoursesTableCompanion _courseDtoToCompanion(CourseDto dto) =>
       CoursesTableCompanion(
         id: Value(dto.id),
         title: Value(dto.title),
@@ -644,7 +645,7 @@ class CourseRepository {
             : const Value.absent(),
         tagIds: dto.tagIds.isNotEmpty ? Value(jsonEncode(dto.tagIds)) : const Value.absent(),
         examsCount: Value(dto.examsCount),
-        orderIndex: orderIndex != null ? Value(orderIndex) : const Value.absent(),
+        orderIndex: Value(dto.order),
         isChaptersSynced: Value(dto.isChaptersSynced),
       );
 

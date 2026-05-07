@@ -2,7 +2,21 @@ import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 
 /// Filter options for the curriculum view.
-enum CurriculumFilter { all, video, pdf, assessment, test }
+enum CurriculumFilter { 
+  all, 
+  video, 
+  lesson, 
+  assessment, 
+  test;
+
+  String get displayName => switch (this) {
+        CurriculumFilter.all => 'items',
+        CurriculumFilter.video => 'videos',
+        CurriculumFilter.lesson => 'lessons',
+        CurriculumFilter.assessment => 'assessments',
+        CurriculumFilter.test => 'tests',
+      };
+}
 
 /// A horizontal scrollable tab bar for filtering content in the Chapters list.
 ///
@@ -25,7 +39,7 @@ class ChaptersFilterTabBar extends StatelessWidget {
     final tabs = [
       (filter: CurriculumFilter.all, label: l10n.filterAll, icon: null),
       (
-        filter: CurriculumFilter.pdf,
+        filter: CurriculumFilter.lesson,
         label: l10n.filterLesson,
         icon: LucideIcons.fileText,
       ),

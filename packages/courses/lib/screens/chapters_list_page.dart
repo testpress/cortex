@@ -225,7 +225,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                         padding: const EdgeInsets.symmetric(vertical: 40),
                         child: Center(
                           child: AppText.body(
-                            'No ${widget.showFilters ? _activeFilter.name : "exam"}s found.',
+                            'No ${widget.showFilters ? _activeFilter.displayName : "exams"} found.',
                             color: design.colors.textSecondary,
                           ),
                         ),
@@ -275,7 +275,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
   ) {
     if (filter == CurriculumFilter.all) return lessons;
 
-    if (filter == CurriculumFilter.pdf) {
+    if (filter == CurriculumFilter.lesson) {
       // "Lessons" filter: Show everything except specialized categories
       return lessons.where((l) => 
         l.type != LessonType.video && 
