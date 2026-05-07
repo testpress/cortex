@@ -103,6 +103,7 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
                       items: isInitialLoading
                           ? List.filled(4, _dummyDownload)
                           : activeItems,
+                      type: _activeTab,
                       isLoading: isInitialLoading,
                       onAction: _handleAction,
                     );
@@ -208,11 +209,13 @@ class _DownloadsTabBar extends StatelessWidget {
 
 class _DownloadsList extends ConsumerWidget {
   final List<DownloadItem> items;
+  final DownloadType type;
   final bool isLoading;
   final ValueChanged<DownloadItem> onAction;
 
   const _DownloadsList({
     required this.items,
+    required this.type,
     required this.isLoading,
     required this.onAction,
   });
@@ -222,7 +225,7 @@ class _DownloadsList extends ConsumerWidget {
     final design = Design.of(context);
 
     if (!isLoading && items.isEmpty) {
-      return const _DownloadsEmptyState();
+      return _DownloadsEmptyState(type: type);
     }
 
     return CustomScrollView(
@@ -616,7 +619,9 @@ class _DownloadsFooter extends StatelessWidget {
 }
 
 class _DownloadsEmptyState extends StatelessWidget {
-  const _DownloadsEmptyState();
+  final DownloadType type;
+
+  const _DownloadsEmptyState({required this.type});
 
   @override
   Widget build(BuildContext context) {
@@ -634,7 +639,9 @@ class _DownloadsEmptyState extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: Icon(
-              LucideIcons.video,
+              type == DownloadType.video
+                  ? LucideIcons.video
+                  : LucideIcons.fileText,
               size: 48,
               color: design.colors.textSecondary,
             ),
@@ -643,7 +650,9 @@ class _DownloadsEmptyState extends StatelessWidget {
           AppText.title(l10n.downloadsEmpty),
           SizedBox(height: design.spacing.xs),
           AppText.body(
-            l10n.downloadsEmptyVideosSubtitle,
+            type == DownloadType.video
+                ? l10n.downloadsEmptyVideosSubtitle
+                : l10n.downloadsEmptyAttachmentsSubtitle,
             color: design.colors.textSecondary,
           ),
         ],

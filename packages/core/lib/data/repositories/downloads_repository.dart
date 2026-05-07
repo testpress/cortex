@@ -36,8 +36,16 @@ class DownloadsRepository {
   /// Initial synchronization between SDKs and Database.
   Future<void> synchronize() async {
     final activeDownloads = await _service.getActiveDownloads();
+    final activeIds = activeDownloads.map((e) => e.id).toList();
 
     await _db.batch((batch) {
+      // 1. Remove stale records that are no longer in the SDK list.
+      batch.deleteWhere(
+        _db.downloadsTable,
+        (tbl) => tbl.id.isNotIn(activeIds),
+      );
+
+      // 2. Sync/Update active records.
       batch.insertAllOnConflictUpdate(
         _db.downloadsTable,
         activeDownloads.map((item) => DownloadsTableCompanion(
@@ -78,11 +86,26 @@ class DownloadsRepository {
     );
   }
 
-  // --- Actions (Delegated to Service) ---
+  // --- Actions (Delegated to Service & Persisted) ---
 
-  Future<void> pauseDownload(String id) => _service.pauseDownload(id);
-  Future<void> resumeDownload(String id) => _service.resumeDownload(id);
-  Future<void> deleteDownload(String id) => _service.deleteDownload(id);
+  Future<void> pauseDownload(String id) async {
+    await _service.pauseDownload(id);
+    await (_db.update(_db.downloadsTable)..where((tbl) => tbl.id.equals(id))).write(
+      DownloadsTableCompanion(statusIndex: Value(DownloadStatus.paused.index)),
+    );
+  }
+
+  Future<void> resumeDownload(String id) async {
+    await _service.resumeDownload(id);
+    await (_db.update(_db.downloadsTable)..where((tbl) => tbl.id.equals(id))).write(
+      DownloadsTableCompanion(statusIndex: Value(DownloadStatus.downloading.index)),
+    );
+  }
+
+  Future<void> deleteDownload(String id) async {
+    await _service.deleteDownload(id);
+    await (_db.delete(_db.downloadsTable)..where((tbl) => tbl.id.equals(id))).go();
+  }
 }
 
 @Riverpod(keepAlive: true)
