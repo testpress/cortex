@@ -176,7 +176,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               builder: (context, state) => const PaidActiveHomeScreen(),
               routes: [
                 GoRoute(
-                  path: 'forum',
+                  path: 'discussions/forum',
                   builder: (context, state) =>
                       const ForumCourseSelectionScreen(),
                   routes: [
