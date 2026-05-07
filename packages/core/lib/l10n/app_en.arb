@@ -654,5 +654,51 @@
   "attachmentViewFile": "View Downloaded File",
   "dashboardWhatsNewTitle": "What's New",
   "dashboardRecentlyCompletedTitle": "Recently Completed",
-  "dashboardResumeTitle": "Resume Learning"
+  "dashboardResumeTitle": "Resume Learning",
+  "downloadsTitle": "Downloads",
+  "downloadsVideosTab": "Videos",
+  "downloadsAttachmentsTab": "Attachments",
+  "downloadsVideosTabCount": "Videos ({count})",
+  "@downloadsVideosTabCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "downloadsAttachmentsTabCount": "Attachments ({count})",
+  "@downloadsAttachmentsTabCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "downloadsEmpty": "No downloads found",
+  "downloadsEmptyVideosSubtitle": "Your downloaded videos will appear here",
+  "downloadsEmptyAttachmentsSubtitle": "Your downloaded files will appear here",
+  "downloadsTotalVideos": "Total videos: {count}",
+  "@downloadsTotalVideos": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "downloadsTotalFiles": "Total files: {count}",
+  "@downloadsTotalFiles": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "downloadsStorageUsed": "{size} used",
+  "@downloadsStorageUsed": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  }
 }

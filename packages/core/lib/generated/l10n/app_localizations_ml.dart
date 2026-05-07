@@ -1363,4 +1363,49 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get dashboardResumeTitle => 'പഠനം തുടരുക';
+
+  @override
+  String get downloadsTitle => 'ഡൗൺലോഡുകൾ';
+
+  @override
+  String get downloadsVideosTab => 'വീഡിയോകൾ';
+
+  @override
+  String get downloadsAttachmentsTab => 'അറ്റാച്ച്‌മെന്റുകൾ';
+
+  @override
+  String downloadsVideosTabCount(int count) {
+    return 'വീഡിയോകൾ ($count)';
+  }
+
+  @override
+  String downloadsAttachmentsTabCount(int count) {
+    return 'അറ്റാച്ച്‌മെന്റുകൾ ($count)';
+  }
+
+  @override
+  String get downloadsEmpty => 'ഡൗൺലോഡുകൾ ഒന്നും കണ്ടെത്തിയില്ല';
+
+  @override
+  String get downloadsEmptyVideosSubtitle =>
+      'നിങ്ങളുടെ ഡൗൺലോഡ് ചെയ്ത വീഡിയോകൾ ഇവിടെ കാണാം';
+
+  @override
+  String get downloadsEmptyAttachmentsSubtitle =>
+      'നിങ്ങളുടെ ഡൗൺലോഡ് ചെയ്ത ഫയലുകൾ ഇവിടെ കാണാം';
+
+  @override
+  String downloadsTotalVideos(int count) {
+    return 'ആകെ വീഡിയോകൾ: $count';
+  }
+
+  @override
+  String downloadsTotalFiles(int count) {
+    return 'ആകെ ഫയലുകൾ: $count';
+  }
+
+  @override
+  String downloadsStorageUsed(String size) {
+    return '$size ഉപയോഗിച്ചു';
+  }
 }

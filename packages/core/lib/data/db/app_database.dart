@@ -14,6 +14,8 @@ import 'tables/forum_comments_table.dart';
 import 'tables/user_progress_table.dart';
 import 'tables/app_settings_table.dart';
 import 'tables/users_table.dart';
+import 'tables/downloads_table.dart';
+
 import 'package:core/data/data.dart';
 
 part 'app_database.g.dart';
@@ -32,13 +34,14 @@ part 'app_database.g.dart';
     DashboardBannersTable,
     LearnersTable,
     DashboardContentsTable,
+    DownloadsTable,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 15;
+  int get schemaVersion => 16;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -144,6 +147,10 @@ class AppDatabase extends _$AppDatabase {
           if (from < 14) {
             // Version 14 adds Dashboard Contents table for generic section caching
             await createTableSafely(dashboardContentsTable);
+          }
+          if (from < 16) {
+            // Version 16 adds Downloads table
+            await createTableSafely(downloadsTable);
           }
         },
       );

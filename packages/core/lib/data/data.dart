@@ -24,11 +24,13 @@ export 'models/explore_models.dart';
 export 'models/paginated_response_dto.dart';
 export 'models/client_config.dart';
 export 'models/dashboard_dto.dart';
+export 'models/download_item.dart';
 
 // Database
 export 'db/tables/dashboard_tables.dart';
 export 'db/app_database.dart';
 export 'repositories/dashboard_repository.dart';
+export 'repositories/downloads_repository.dart';
 export 'db/database_provider.dart';
 
 // Auth
@@ -46,6 +48,7 @@ export 'sources/client_config_provider.dart';
 // Repositories
 export 'repositories/user_progress_repository.dart';
 export 'repositories/repository_providers.dart';
+export 'services/downloads_service.dart';
 
 // Infra & Mocks
 export 'sources/mock_data.dart';

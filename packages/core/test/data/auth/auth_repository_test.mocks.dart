@@ -114,115 +114,121 @@ class _Fake$DashboardContentsTableTable_13 extends _i1.SmartFake
   ) : super(parent, parentInvocation);
 }
 
-class _Fake$AppDatabaseManager_14 extends _i1.SmartFake
+class _Fake$DownloadsTableTable_14 extends _i1.SmartFake
+    implements _i4.$DownloadsTableTable {
+  _Fake$DownloadsTableTable_14(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _Fake$AppDatabaseManager_15 extends _i1.SmartFake
     implements _i4.$AppDatabaseManager {
-  _Fake$AppDatabaseManager_14(Object parent, Invocation parentInvocation)
+  _Fake$AppDatabaseManager_15(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeGeneratedDatabase_15 extends _i1.SmartFake
+class _FakeGeneratedDatabase_16 extends _i1.SmartFake
     implements _i3.GeneratedDatabase {
-  _FakeGeneratedDatabase_15(Object parent, Invocation parentInvocation)
+  _FakeGeneratedDatabase_16(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeDriftDatabaseOptions_16 extends _i1.SmartFake
+class _FakeDriftDatabaseOptions_17 extends _i1.SmartFake
     implements _i3.DriftDatabaseOptions {
-  _FakeDriftDatabaseOptions_16(Object parent, Invocation parentInvocation)
+  _FakeDriftDatabaseOptions_17(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeStreamQueryUpdateRules_17 extends _i1.SmartFake
+class _FakeStreamQueryUpdateRules_18 extends _i1.SmartFake
     implements _i3.StreamQueryUpdateRules {
-  _FakeStreamQueryUpdateRules_17(Object parent, Invocation parentInvocation)
+  _FakeStreamQueryUpdateRules_18(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeDatabaseConnection_18 extends _i1.SmartFake
+class _FakeDatabaseConnection_19 extends _i1.SmartFake
     implements _i3.DatabaseConnection {
-  _FakeDatabaseConnection_18(Object parent, Invocation parentInvocation)
+  _FakeDatabaseConnection_19(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeQueryExecutor_19 extends _i1.SmartFake implements _i3.QueryExecutor {
-  _FakeQueryExecutor_19(Object parent, Invocation parentInvocation)
+class _FakeQueryExecutor_20 extends _i1.SmartFake implements _i3.QueryExecutor {
+  _FakeQueryExecutor_20(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeStreamQueryStore_20 extends _i1.SmartFake
+class _FakeStreamQueryStore_21 extends _i1.SmartFake
     implements _i5.StreamQueryStore {
-  _FakeStreamQueryStore_20(Object parent, Invocation parentInvocation)
+  _FakeStreamQueryStore_21(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeDatabaseConnectionUser_21 extends _i1.SmartFake
+class _FakeDatabaseConnectionUser_22 extends _i1.SmartFake
     implements _i3.DatabaseConnectionUser {
-  _FakeDatabaseConnectionUser_21(Object parent, Invocation parentInvocation)
+  _FakeDatabaseConnectionUser_22(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeAppSettingsTableData_22 extends _i1.SmartFake
+class _FakeAppSettingsTableData_23 extends _i1.SmartFake
     implements _i4.AppSettingsTableData {
-  _FakeAppSettingsTableData_22(Object parent, Invocation parentInvocation)
+  _FakeAppSettingsTableData_23(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeMigrator_23 extends _i1.SmartFake implements _i3.Migrator {
-  _FakeMigrator_23(Object parent, Invocation parentInvocation)
+class _FakeMigrator_24 extends _i1.SmartFake implements _i3.Migrator {
+  _FakeMigrator_24(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeFuture_24<T1> extends _i1.SmartFake implements _i6.Future<T1> {
-  _FakeFuture_24(Object parent, Invocation parentInvocation)
+class _FakeFuture_25<T1> extends _i1.SmartFake implements _i6.Future<T1> {
+  _FakeFuture_25(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeInsertStatement_25<T1 extends _i3.Table, D1> extends _i1.SmartFake
+class _FakeInsertStatement_26<T1 extends _i3.Table, D1> extends _i1.SmartFake
     implements _i3.InsertStatement<T1, D1> {
-  _FakeInsertStatement_25(Object parent, Invocation parentInvocation)
+  _FakeInsertStatement_26(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeUpdateStatement_26<T extends _i3.Table, D> extends _i1.SmartFake
+class _FakeUpdateStatement_27<T extends _i3.Table, D> extends _i1.SmartFake
     implements _i3.UpdateStatement<T, D> {
-  _FakeUpdateStatement_26(Object parent, Invocation parentInvocation)
+  _FakeUpdateStatement_27(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeSimpleSelectStatement_27<T1 extends _i3.HasResultSet, D>
+class _FakeSimpleSelectStatement_28<T1 extends _i3.HasResultSet, D>
     extends _i1.SmartFake
     implements _i3.SimpleSelectStatement<T1, D> {
-  _FakeSimpleSelectStatement_27(Object parent, Invocation parentInvocation)
+  _FakeSimpleSelectStatement_28(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeJoinedSelectStatement_28<FirstT extends _i3.HasResultSet, FirstD>
+class _FakeJoinedSelectStatement_29<FirstT extends _i3.HasResultSet, FirstD>
     extends _i1.SmartFake
     implements _i3.JoinedSelectStatement<FirstT, FirstD> {
-  _FakeJoinedSelectStatement_28(Object parent, Invocation parentInvocation)
+  _FakeJoinedSelectStatement_29(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeBaseSelectStatement_29<Row> extends _i1.SmartFake
+class _FakeBaseSelectStatement_30<Row> extends _i1.SmartFake
     implements _i3.BaseSelectStatement<Row> {
-  _FakeBaseSelectStatement_29(Object parent, Invocation parentInvocation)
+  _FakeBaseSelectStatement_30(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeDeleteStatement_30<T1 extends _i3.Table, D1> extends _i1.SmartFake
+class _FakeDeleteStatement_31<T1 extends _i3.Table, D1> extends _i1.SmartFake
     implements _i3.DeleteStatement<T1, D1> {
-  _FakeDeleteStatement_30(Object parent, Invocation parentInvocation)
+  _FakeDeleteStatement_31(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeSelectable_31<T> extends _i1.SmartFake implements _i3.Selectable<T> {
-  _FakeSelectable_31(Object parent, Invocation parentInvocation)
+class _FakeSelectable_32<T> extends _i1.SmartFake implements _i3.Selectable<T> {
+  _FakeSelectable_32(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeGenerationContext_32 extends _i1.SmartFake
+class _FakeGenerationContext_33 extends _i1.SmartFake
     implements _i3.GenerationContext {
-  _FakeGenerationContext_32(Object parent, Invocation parentInvocation)
+  _FakeGenerationContext_33(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
@@ -583,14 +589,29 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
           as _i4.$DashboardContentsTableTable);
 
   @override
+  _i4.$DownloadsTableTable get downloadsTable =>
+      (super.noSuchMethod(
+            Invocation.getter(#downloadsTable),
+            returnValue: _Fake$DownloadsTableTable_14(
+              this,
+              Invocation.getter(#downloadsTable),
+            ),
+            returnValueForMissingStub: _Fake$DownloadsTableTable_14(
+              this,
+              Invocation.getter(#downloadsTable),
+            ),
+          )
+          as _i4.$DownloadsTableTable);
+
+  @override
   _i4.$AppDatabaseManager get managers =>
       (super.noSuchMethod(
             Invocation.getter(#managers),
-            returnValue: _Fake$AppDatabaseManager_14(
+            returnValue: _Fake$AppDatabaseManager_15(
               this,
               Invocation.getter(#managers),
             ),
-            returnValueForMissingStub: _Fake$AppDatabaseManager_14(
+            returnValueForMissingStub: _Fake$AppDatabaseManager_15(
               this,
               Invocation.getter(#managers),
             ),
@@ -619,11 +640,11 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
   _i3.GeneratedDatabase get attachedDatabase =>
       (super.noSuchMethod(
             Invocation.getter(#attachedDatabase),
-            returnValue: _FakeGeneratedDatabase_15(
+            returnValue: _FakeGeneratedDatabase_16(
               this,
               Invocation.getter(#attachedDatabase),
             ),
-            returnValueForMissingStub: _FakeGeneratedDatabase_15(
+            returnValueForMissingStub: _FakeGeneratedDatabase_16(
               this,
               Invocation.getter(#attachedDatabase),
             ),
@@ -634,11 +655,11 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
   _i3.DriftDatabaseOptions get options =>
       (super.noSuchMethod(
             Invocation.getter(#options),
-            returnValue: _FakeDriftDatabaseOptions_16(
+            returnValue: _FakeDriftDatabaseOptions_17(
               this,
               Invocation.getter(#options),
             ),
-            returnValueForMissingStub: _FakeDriftDatabaseOptions_16(
+            returnValueForMissingStub: _FakeDriftDatabaseOptions_17(
               this,
               Invocation.getter(#options),
             ),
@@ -649,11 +670,11 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
   _i3.StreamQueryUpdateRules get streamUpdateRules =>
       (super.noSuchMethod(
             Invocation.getter(#streamUpdateRules),
-            returnValue: _FakeStreamQueryUpdateRules_17(
+            returnValue: _FakeStreamQueryUpdateRules_18(
               this,
               Invocation.getter(#streamUpdateRules),
             ),
-            returnValueForMissingStub: _FakeStreamQueryUpdateRules_17(
+            returnValueForMissingStub: _FakeStreamQueryUpdateRules_18(
               this,
               Invocation.getter(#streamUpdateRules),
             ),
@@ -664,11 +685,11 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
   _i3.DatabaseConnection get connection =>
       (super.noSuchMethod(
             Invocation.getter(#connection),
-            returnValue: _FakeDatabaseConnection_18(
+            returnValue: _FakeDatabaseConnection_19(
               this,
               Invocation.getter(#connection),
             ),
-            returnValueForMissingStub: _FakeDatabaseConnection_18(
+            returnValueForMissingStub: _FakeDatabaseConnection_19(
               this,
               Invocation.getter(#connection),
             ),
@@ -694,11 +715,11 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
   _i3.QueryExecutor get executor =>
       (super.noSuchMethod(
             Invocation.getter(#executor),
-            returnValue: _FakeQueryExecutor_19(
+            returnValue: _FakeQueryExecutor_20(
               this,
               Invocation.getter(#executor),
             ),
-            returnValueForMissingStub: _FakeQueryExecutor_19(
+            returnValueForMissingStub: _FakeQueryExecutor_20(
               this,
               Invocation.getter(#executor),
             ),
@@ -709,11 +730,11 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
   _i5.StreamQueryStore get streamQueries =>
       (super.noSuchMethod(
             Invocation.getter(#streamQueries),
-            returnValue: _FakeStreamQueryStore_20(
+            returnValue: _FakeStreamQueryStore_21(
               this,
               Invocation.getter(#streamQueries),
             ),
-            returnValueForMissingStub: _FakeStreamQueryStore_20(
+            returnValueForMissingStub: _FakeStreamQueryStore_21(
               this,
               Invocation.getter(#streamQueries),
             ),
@@ -724,11 +745,11 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
   _i3.DatabaseConnectionUser get resolvedEngine =>
       (super.noSuchMethod(
             Invocation.getter(#resolvedEngine),
-            returnValue: _FakeDatabaseConnectionUser_21(
+            returnValue: _FakeDatabaseConnectionUser_22(
               this,
               Invocation.getter(#resolvedEngine),
             ),
-            returnValueForMissingStub: _FakeDatabaseConnectionUser_21(
+            returnValueForMissingStub: _FakeDatabaseConnectionUser_22(
               this,
               Invocation.getter(#resolvedEngine),
             ),
@@ -776,14 +797,14 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
       (super.noSuchMethod(
             Invocation.method(#getAppSettings, []),
             returnValue: _i6.Future<_i4.AppSettingsTableData>.value(
-              _FakeAppSettingsTableData_22(
+              _FakeAppSettingsTableData_23(
                 this,
                 Invocation.method(#getAppSettings, []),
               ),
             ),
             returnValueForMissingStub:
                 _i6.Future<_i4.AppSettingsTableData>.value(
-                  _FakeAppSettingsTableData_22(
+                  _FakeAppSettingsTableData_23(
                     this,
                     Invocation.method(#getAppSettings, []),
                   ),
@@ -1133,11 +1154,11 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
   _i3.Migrator createMigrator() =>
       (super.noSuchMethod(
             Invocation.method(#createMigrator, []),
-            returnValue: _FakeMigrator_23(
+            returnValue: _FakeMigrator_24(
               this,
               Invocation.method(#createMigrator, []),
             ),
-            returnValueForMissingStub: _FakeMigrator_23(
+            returnValueForMissingStub: _FakeMigrator_24(
               this,
               Invocation.method(#createMigrator, []),
             ),
@@ -1229,7 +1250,7 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
                   ),
                   (T v) => _i6.Future<T>.value(v),
                 ) ??
-                _FakeFuture_24<T>(this, Invocation.method(#doWhenOpened, [fn])),
+                _FakeFuture_25<T>(this, Invocation.method(#doWhenOpened, [fn])),
             returnValueForMissingStub:
                 _i8.ifNotNull(
                   _i8.dummyValueOrNull<T>(
@@ -1238,7 +1259,7 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
                   ),
                   (T v) => _i6.Future<T>.value(v),
                 ) ??
-                _FakeFuture_24<T>(this, Invocation.method(#doWhenOpened, [fn])),
+                _FakeFuture_25<T>(this, Invocation.method(#doWhenOpened, [fn])),
           )
           as _i6.Future<T>);
 
@@ -1248,11 +1269,11 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
   ) =>
       (super.noSuchMethod(
             Invocation.method(#into, [table]),
-            returnValue: _FakeInsertStatement_25<T, D>(
+            returnValue: _FakeInsertStatement_26<T, D>(
               this,
               Invocation.method(#into, [table]),
             ),
-            returnValueForMissingStub: _FakeInsertStatement_25<T, D>(
+            returnValueForMissingStub: _FakeInsertStatement_26<T, D>(
               this,
               Invocation.method(#into, [table]),
             ),
@@ -1265,11 +1286,11 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
   ) =>
       (super.noSuchMethod(
             Invocation.method(#update, [table]),
-            returnValue: _FakeUpdateStatement_26<Tbl, R>(
+            returnValue: _FakeUpdateStatement_27<Tbl, R>(
               this,
               Invocation.method(#update, [table]),
             ),
-            returnValueForMissingStub: _FakeUpdateStatement_26<Tbl, R>(
+            returnValueForMissingStub: _FakeUpdateStatement_27<Tbl, R>(
               this,
               Invocation.method(#update, [table]),
             ),
@@ -1283,11 +1304,11 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
   }) =>
       (super.noSuchMethod(
             Invocation.method(#select, [table], {#distinct: distinct}),
-            returnValue: _FakeSimpleSelectStatement_27<T, R>(
+            returnValue: _FakeSimpleSelectStatement_28<T, R>(
               this,
               Invocation.method(#select, [table], {#distinct: distinct}),
             ),
-            returnValueForMissingStub: _FakeSimpleSelectStatement_27<T, R>(
+            returnValueForMissingStub: _FakeSimpleSelectStatement_28<T, R>(
               this,
               Invocation.method(#select, [table], {#distinct: distinct}),
             ),
@@ -1301,11 +1322,11 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
   }) =>
       (super.noSuchMethod(
             Invocation.method(#selectOnly, [table], {#distinct: distinct}),
-            returnValue: _FakeJoinedSelectStatement_28<T, R>(
+            returnValue: _FakeJoinedSelectStatement_29<T, R>(
               this,
               Invocation.method(#selectOnly, [table], {#distinct: distinct}),
             ),
-            returnValueForMissingStub: _FakeJoinedSelectStatement_28<T, R>(
+            returnValueForMissingStub: _FakeJoinedSelectStatement_29<T, R>(
               this,
               Invocation.method(#selectOnly, [table], {#distinct: distinct}),
             ),
@@ -1318,12 +1339,12 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
   ) =>
       (super.noSuchMethod(
             Invocation.method(#selectExpressions, [columns]),
-            returnValue: _FakeBaseSelectStatement_29<_i3.TypedResult>(
+            returnValue: _FakeBaseSelectStatement_30<_i3.TypedResult>(
               this,
               Invocation.method(#selectExpressions, [columns]),
             ),
             returnValueForMissingStub:
-                _FakeBaseSelectStatement_29<_i3.TypedResult>(
+                _FakeBaseSelectStatement_30<_i3.TypedResult>(
                   this,
                   Invocation.method(#selectExpressions, [columns]),
                 ),
@@ -1336,11 +1357,11 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
   ) =>
       (super.noSuchMethod(
             Invocation.method(#delete, [table]),
-            returnValue: _FakeDeleteStatement_30<T, D>(
+            returnValue: _FakeDeleteStatement_31<T, D>(
               this,
               Invocation.method(#delete, [table]),
             ),
-            returnValueForMissingStub: _FakeDeleteStatement_30<T, D>(
+            returnValueForMissingStub: _FakeDeleteStatement_31<T, D>(
               this,
               Invocation.method(#delete, [table]),
             ),
@@ -1422,7 +1443,7 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
               [query],
               {#variables: variables, #readsFrom: readsFrom},
             ),
-            returnValue: _FakeSelectable_31<_i3.QueryRow>(
+            returnValue: _FakeSelectable_32<_i3.QueryRow>(
               this,
               Invocation.method(
                 #customSelect,
@@ -1430,7 +1451,7 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
                 {#variables: variables, #readsFrom: readsFrom},
               ),
             ),
-            returnValueForMissingStub: _FakeSelectable_31<_i3.QueryRow>(
+            returnValueForMissingStub: _FakeSelectable_32<_i3.QueryRow>(
               this,
               Invocation.method(
                 #customSelect,
@@ -1453,7 +1474,7 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
               [query],
               {#variables: variables, #readsFrom: readsFrom},
             ),
-            returnValue: _FakeSelectable_31<_i3.QueryRow>(
+            returnValue: _FakeSelectable_32<_i3.QueryRow>(
               this,
               Invocation.method(
                 #customSelectQuery,
@@ -1461,7 +1482,7 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
                 {#variables: variables, #readsFrom: readsFrom},
               ),
             ),
-            returnValueForMissingStub: _FakeSelectable_31<_i3.QueryRow>(
+            returnValueForMissingStub: _FakeSelectable_32<_i3.QueryRow>(
               this,
               Invocation.method(
                 #customSelectQuery,
@@ -1504,7 +1525,7 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
                   ),
                   (T v) => _i6.Future<T>.value(v),
                 ) ??
-                _FakeFuture_24<T>(
+                _FakeFuture_25<T>(
                   this,
                   Invocation.method(
                     #transaction,
@@ -1524,7 +1545,7 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
                   ),
                   (T v) => _i6.Future<T>.value(v),
                 ) ??
-                _FakeFuture_24<T>(
+                _FakeFuture_25<T>(
                   this,
                   Invocation.method(
                     #transaction,
@@ -1547,7 +1568,7 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
                   ),
                   (T v) => _i6.Future<T>.value(v),
                 ) ??
-                _FakeFuture_24<T>(
+                _FakeFuture_25<T>(
                   this,
                   Invocation.method(#exclusively, [action]),
                 ),
@@ -1559,7 +1580,7 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
                   ),
                   (T v) => _i6.Future<T>.value(v),
                 ) ??
-                _FakeFuture_24<T>(
+                _FakeFuture_25<T>(
                   this,
                   Invocation.method(#exclusively, [action]),
                 ),
@@ -1598,7 +1619,7 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
                   ),
                   (T v) => _i6.Future<T>.value(v),
                 ) ??
-                _FakeFuture_24<T>(
+                _FakeFuture_25<T>(
                   this,
                   Invocation.method(
                     #runWithInterceptor,
@@ -1618,7 +1639,7 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
                   ),
                   (T v) => _i6.Future<T>.value(v),
                 ) ??
-                _FakeFuture_24<T>(
+                _FakeFuture_25<T>(
                   this,
                   Invocation.method(
                     #runWithInterceptor,
@@ -1641,7 +1662,7 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
               [component],
               {#hasMultipleTables: hasMultipleTables, #startIndex: startIndex},
             ),
-            returnValue: _FakeGenerationContext_32(
+            returnValue: _FakeGenerationContext_33(
               this,
               Invocation.method(
                 #$write,
@@ -1652,7 +1673,7 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
                 },
               ),
             ),
-            returnValueForMissingStub: _FakeGenerationContext_32(
+            returnValueForMissingStub: _FakeGenerationContext_33(
               this,
               Invocation.method(
                 #$write,
@@ -1678,7 +1699,7 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
               [table, insertable],
               {#startIndex: startIndex},
             ),
-            returnValue: _FakeGenerationContext_32(
+            returnValue: _FakeGenerationContext_33(
               this,
               Invocation.method(
                 #$writeInsertable,
@@ -1686,7 +1707,7 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
                 {#startIndex: startIndex},
               ),
             ),
-            returnValueForMissingStub: _FakeGenerationContext_32(
+            returnValueForMissingStub: _FakeGenerationContext_33(
               this,
               Invocation.method(
                 #$writeInsertable,

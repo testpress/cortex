@@ -550,6 +550,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) => const TypographyGalleryScreen(),
     ),
+    GoRoute(
+      path: '/downloads',
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (context, state) => const DownloadsScreen(),
+    ),
   ],
 );
 });

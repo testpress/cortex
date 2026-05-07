@@ -1336,4 +1336,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dashboardResumeTitle => 'Resume Learning';
+
+  @override
+  String get downloadsTitle => 'Downloads';
+
+  @override
+  String get downloadsVideosTab => 'Videos';
+
+  @override
+  String get downloadsAttachmentsTab => 'Attachments';
+
+  @override
+  String downloadsVideosTabCount(int count) {
+    return 'Videos ($count)';
+  }
+
+  @override
+  String downloadsAttachmentsTabCount(int count) {
+    return 'Attachments ($count)';
+  }
+
+  @override
+  String get downloadsEmpty => 'No downloads found';
+
+  @override
+  String get downloadsEmptyVideosSubtitle =>
+      'Your downloaded videos will appear here';
+
+  @override
+  String get downloadsEmptyAttachmentsSubtitle =>
+      'Your downloaded files will appear here';
+
+  @override
+  String downloadsTotalVideos(int count) {
+    return 'Total videos: $count';
+  }
+
+  @override
+  String downloadsTotalFiles(int count) {
+    return 'Total files: $count';
+  }
+
+  @override
+  String downloadsStorageUsed(String size) {
+    return '$size used';
+  }
 }

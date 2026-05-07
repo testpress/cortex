@@ -69,6 +69,14 @@ class DashboardDrawer extends ConsumerWidget {
               label: l10n.drawerReports,
               action: () {},
             ),
+            AppDrawerItem(
+              icon: LucideIcons.download,
+              label: l10n.downloadsTitle,
+              action: () {
+                ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                context.push('/downloads');
+              },
+            ),
           ],
         ),
         AppDrawerSection(

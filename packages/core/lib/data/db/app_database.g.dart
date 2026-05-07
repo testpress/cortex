@@ -7891,6 +7891,804 @@ class DashboardContentsTableCompanion
   }
 }
 
+class $DownloadsTableTable extends DownloadsTable
+    with TableInfo<$DownloadsTableTable, DownloadsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DownloadsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _courseMeta = const VerificationMeta('course');
+  @override
+  late final GeneratedColumn<String> course = GeneratedColumn<String>(
+    'course',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _chapterMeta = const VerificationMeta(
+    'chapter',
+  );
+  @override
+  late final GeneratedColumn<String> chapter = GeneratedColumn<String>(
+    'chapter',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _filePathMeta = const VerificationMeta(
+    'filePath',
+  );
+  @override
+  late final GeneratedColumn<String> filePath = GeneratedColumn<String>(
+    'file_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sizeInBytesMeta = const VerificationMeta(
+    'sizeInBytes',
+  );
+  @override
+  late final GeneratedColumn<BigInt> sizeInBytes = GeneratedColumn<BigInt>(
+    'size_in_bytes',
+    aliasedName,
+    false,
+    type: DriftSqlType.bigInt,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _downloadedDateMeta = const VerificationMeta(
+    'downloadedDate',
+  );
+  @override
+  late final GeneratedColumn<String> downloadedDate = GeneratedColumn<String>(
+    'downloaded_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _typeIndexMeta = const VerificationMeta(
+    'typeIndex',
+  );
+  @override
+  late final GeneratedColumn<int> typeIndex = GeneratedColumn<int>(
+    'type_index',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusIndexMeta = const VerificationMeta(
+    'statusIndex',
+  );
+  @override
+  late final GeneratedColumn<int> statusIndex = GeneratedColumn<int>(
+    'status_index',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _progressMeta = const VerificationMeta(
+    'progress',
+  );
+  @override
+  late final GeneratedColumn<int> progress = GeneratedColumn<int>(
+    'progress',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _thumbnailUrlMeta = const VerificationMeta(
+    'thumbnailUrl',
+  );
+  @override
+  late final GeneratedColumn<String> thumbnailUrl = GeneratedColumn<String>(
+    'thumbnail_url',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _durationMeta = const VerificationMeta(
+    'duration',
+  );
+  @override
+  late final GeneratedColumn<String> duration = GeneratedColumn<String>(
+    'duration',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _fileTypeMeta = const VerificationMeta(
+    'fileType',
+  );
+  @override
+  late final GeneratedColumn<String> fileType = GeneratedColumn<String>(
+    'file_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    title,
+    course,
+    chapter,
+    filePath,
+    sizeInBytes,
+    downloadedDate,
+    typeIndex,
+    statusIndex,
+    progress,
+    thumbnailUrl,
+    duration,
+    fileType,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'downloads_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DownloadsTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('course')) {
+      context.handle(
+        _courseMeta,
+        course.isAcceptableOrUnknown(data['course']!, _courseMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_courseMeta);
+    }
+    if (data.containsKey('chapter')) {
+      context.handle(
+        _chapterMeta,
+        chapter.isAcceptableOrUnknown(data['chapter']!, _chapterMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_chapterMeta);
+    }
+    if (data.containsKey('file_path')) {
+      context.handle(
+        _filePathMeta,
+        filePath.isAcceptableOrUnknown(data['file_path']!, _filePathMeta),
+      );
+    }
+    if (data.containsKey('size_in_bytes')) {
+      context.handle(
+        _sizeInBytesMeta,
+        sizeInBytes.isAcceptableOrUnknown(
+          data['size_in_bytes']!,
+          _sizeInBytesMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_sizeInBytesMeta);
+    }
+    if (data.containsKey('downloaded_date')) {
+      context.handle(
+        _downloadedDateMeta,
+        downloadedDate.isAcceptableOrUnknown(
+          data['downloaded_date']!,
+          _downloadedDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_downloadedDateMeta);
+    }
+    if (data.containsKey('type_index')) {
+      context.handle(
+        _typeIndexMeta,
+        typeIndex.isAcceptableOrUnknown(data['type_index']!, _typeIndexMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeIndexMeta);
+    }
+    if (data.containsKey('status_index')) {
+      context.handle(
+        _statusIndexMeta,
+        statusIndex.isAcceptableOrUnknown(
+          data['status_index']!,
+          _statusIndexMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_statusIndexMeta);
+    }
+    if (data.containsKey('progress')) {
+      context.handle(
+        _progressMeta,
+        progress.isAcceptableOrUnknown(data['progress']!, _progressMeta),
+      );
+    }
+    if (data.containsKey('thumbnail_url')) {
+      context.handle(
+        _thumbnailUrlMeta,
+        thumbnailUrl.isAcceptableOrUnknown(
+          data['thumbnail_url']!,
+          _thumbnailUrlMeta,
+        ),
+      );
+    }
+    if (data.containsKey('duration')) {
+      context.handle(
+        _durationMeta,
+        duration.isAcceptableOrUnknown(data['duration']!, _durationMeta),
+      );
+    }
+    if (data.containsKey('file_type')) {
+      context.handle(
+        _fileTypeMeta,
+        fileType.isAcceptableOrUnknown(data['file_type']!, _fileTypeMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DownloadsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DownloadsTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      course: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}course'],
+      )!,
+      chapter: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}chapter'],
+      )!,
+      filePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_path'],
+      ),
+      sizeInBytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.bigInt,
+        data['${effectivePrefix}size_in_bytes'],
+      )!,
+      downloadedDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}downloaded_date'],
+      )!,
+      typeIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}type_index'],
+      )!,
+      statusIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}status_index'],
+      )!,
+      progress: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}progress'],
+      )!,
+      thumbnailUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}thumbnail_url'],
+      ),
+      duration: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}duration'],
+      ),
+      fileType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_type'],
+      ),
+    );
+  }
+
+  @override
+  $DownloadsTableTable createAlias(String alias) {
+    return $DownloadsTableTable(attachedDatabase, alias);
+  }
+}
+
+class DownloadsTableData extends DataClass
+    implements Insertable<DownloadsTableData> {
+  /// Unique identifier for the download item (e.g. video_id or attachment_id).
+  final String id;
+
+  /// Title of the content.
+  final String title;
+
+  /// Course title this download belongs to.
+  final String course;
+
+  /// Chapter title this download belongs to.
+  final String chapter;
+
+  /// Local file path on the device.
+  final String? filePath;
+
+  /// Total size of the file in bytes.
+  final BigInt sizeInBytes;
+
+  /// Date the download was initiated/completed.
+  final String downloadedDate;
+
+  /// Type of download (e.g. video, attachment).
+  /// Stored as index of DownloadType enum.
+  final int typeIndex;
+
+  /// Current status (e.g. completed, downloading, paused, error).
+  /// Stored as index of DownloadStatus enum.
+  final int statusIndex;
+
+  /// Download progress (0-100).
+  final int progress;
+
+  /// Optional thumbnail URL for the content.
+  final String? thumbnailUrl;
+
+  /// Optional duration (for videos).
+  final String? duration;
+
+  /// Optional file extension (e.g. "PDF", "DOC").
+  final String? fileType;
+  const DownloadsTableData({
+    required this.id,
+    required this.title,
+    required this.course,
+    required this.chapter,
+    this.filePath,
+    required this.sizeInBytes,
+    required this.downloadedDate,
+    required this.typeIndex,
+    required this.statusIndex,
+    required this.progress,
+    this.thumbnailUrl,
+    this.duration,
+    this.fileType,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['title'] = Variable<String>(title);
+    map['course'] = Variable<String>(course);
+    map['chapter'] = Variable<String>(chapter);
+    if (!nullToAbsent || filePath != null) {
+      map['file_path'] = Variable<String>(filePath);
+    }
+    map['size_in_bytes'] = Variable<BigInt>(sizeInBytes);
+    map['downloaded_date'] = Variable<String>(downloadedDate);
+    map['type_index'] = Variable<int>(typeIndex);
+    map['status_index'] = Variable<int>(statusIndex);
+    map['progress'] = Variable<int>(progress);
+    if (!nullToAbsent || thumbnailUrl != null) {
+      map['thumbnail_url'] = Variable<String>(thumbnailUrl);
+    }
+    if (!nullToAbsent || duration != null) {
+      map['duration'] = Variable<String>(duration);
+    }
+    if (!nullToAbsent || fileType != null) {
+      map['file_type'] = Variable<String>(fileType);
+    }
+    return map;
+  }
+
+  DownloadsTableCompanion toCompanion(bool nullToAbsent) {
+    return DownloadsTableCompanion(
+      id: Value(id),
+      title: Value(title),
+      course: Value(course),
+      chapter: Value(chapter),
+      filePath: filePath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(filePath),
+      sizeInBytes: Value(sizeInBytes),
+      downloadedDate: Value(downloadedDate),
+      typeIndex: Value(typeIndex),
+      statusIndex: Value(statusIndex),
+      progress: Value(progress),
+      thumbnailUrl: thumbnailUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(thumbnailUrl),
+      duration: duration == null && nullToAbsent
+          ? const Value.absent()
+          : Value(duration),
+      fileType: fileType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fileType),
+    );
+  }
+
+  factory DownloadsTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DownloadsTableData(
+      id: serializer.fromJson<String>(json['id']),
+      title: serializer.fromJson<String>(json['title']),
+      course: serializer.fromJson<String>(json['course']),
+      chapter: serializer.fromJson<String>(json['chapter']),
+      filePath: serializer.fromJson<String?>(json['filePath']),
+      sizeInBytes: serializer.fromJson<BigInt>(json['sizeInBytes']),
+      downloadedDate: serializer.fromJson<String>(json['downloadedDate']),
+      typeIndex: serializer.fromJson<int>(json['typeIndex']),
+      statusIndex: serializer.fromJson<int>(json['statusIndex']),
+      progress: serializer.fromJson<int>(json['progress']),
+      thumbnailUrl: serializer.fromJson<String?>(json['thumbnailUrl']),
+      duration: serializer.fromJson<String?>(json['duration']),
+      fileType: serializer.fromJson<String?>(json['fileType']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'title': serializer.toJson<String>(title),
+      'course': serializer.toJson<String>(course),
+      'chapter': serializer.toJson<String>(chapter),
+      'filePath': serializer.toJson<String?>(filePath),
+      'sizeInBytes': serializer.toJson<BigInt>(sizeInBytes),
+      'downloadedDate': serializer.toJson<String>(downloadedDate),
+      'typeIndex': serializer.toJson<int>(typeIndex),
+      'statusIndex': serializer.toJson<int>(statusIndex),
+      'progress': serializer.toJson<int>(progress),
+      'thumbnailUrl': serializer.toJson<String?>(thumbnailUrl),
+      'duration': serializer.toJson<String?>(duration),
+      'fileType': serializer.toJson<String?>(fileType),
+    };
+  }
+
+  DownloadsTableData copyWith({
+    String? id,
+    String? title,
+    String? course,
+    String? chapter,
+    Value<String?> filePath = const Value.absent(),
+    BigInt? sizeInBytes,
+    String? downloadedDate,
+    int? typeIndex,
+    int? statusIndex,
+    int? progress,
+    Value<String?> thumbnailUrl = const Value.absent(),
+    Value<String?> duration = const Value.absent(),
+    Value<String?> fileType = const Value.absent(),
+  }) => DownloadsTableData(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    course: course ?? this.course,
+    chapter: chapter ?? this.chapter,
+    filePath: filePath.present ? filePath.value : this.filePath,
+    sizeInBytes: sizeInBytes ?? this.sizeInBytes,
+    downloadedDate: downloadedDate ?? this.downloadedDate,
+    typeIndex: typeIndex ?? this.typeIndex,
+    statusIndex: statusIndex ?? this.statusIndex,
+    progress: progress ?? this.progress,
+    thumbnailUrl: thumbnailUrl.present ? thumbnailUrl.value : this.thumbnailUrl,
+    duration: duration.present ? duration.value : this.duration,
+    fileType: fileType.present ? fileType.value : this.fileType,
+  );
+  DownloadsTableData copyWithCompanion(DownloadsTableCompanion data) {
+    return DownloadsTableData(
+      id: data.id.present ? data.id.value : this.id,
+      title: data.title.present ? data.title.value : this.title,
+      course: data.course.present ? data.course.value : this.course,
+      chapter: data.chapter.present ? data.chapter.value : this.chapter,
+      filePath: data.filePath.present ? data.filePath.value : this.filePath,
+      sizeInBytes: data.sizeInBytes.present
+          ? data.sizeInBytes.value
+          : this.sizeInBytes,
+      downloadedDate: data.downloadedDate.present
+          ? data.downloadedDate.value
+          : this.downloadedDate,
+      typeIndex: data.typeIndex.present ? data.typeIndex.value : this.typeIndex,
+      statusIndex: data.statusIndex.present
+          ? data.statusIndex.value
+          : this.statusIndex,
+      progress: data.progress.present ? data.progress.value : this.progress,
+      thumbnailUrl: data.thumbnailUrl.present
+          ? data.thumbnailUrl.value
+          : this.thumbnailUrl,
+      duration: data.duration.present ? data.duration.value : this.duration,
+      fileType: data.fileType.present ? data.fileType.value : this.fileType,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DownloadsTableData(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('course: $course, ')
+          ..write('chapter: $chapter, ')
+          ..write('filePath: $filePath, ')
+          ..write('sizeInBytes: $sizeInBytes, ')
+          ..write('downloadedDate: $downloadedDate, ')
+          ..write('typeIndex: $typeIndex, ')
+          ..write('statusIndex: $statusIndex, ')
+          ..write('progress: $progress, ')
+          ..write('thumbnailUrl: $thumbnailUrl, ')
+          ..write('duration: $duration, ')
+          ..write('fileType: $fileType')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    title,
+    course,
+    chapter,
+    filePath,
+    sizeInBytes,
+    downloadedDate,
+    typeIndex,
+    statusIndex,
+    progress,
+    thumbnailUrl,
+    duration,
+    fileType,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DownloadsTableData &&
+          other.id == this.id &&
+          other.title == this.title &&
+          other.course == this.course &&
+          other.chapter == this.chapter &&
+          other.filePath == this.filePath &&
+          other.sizeInBytes == this.sizeInBytes &&
+          other.downloadedDate == this.downloadedDate &&
+          other.typeIndex == this.typeIndex &&
+          other.statusIndex == this.statusIndex &&
+          other.progress == this.progress &&
+          other.thumbnailUrl == this.thumbnailUrl &&
+          other.duration == this.duration &&
+          other.fileType == this.fileType);
+}
+
+class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
+  final Value<String> id;
+  final Value<String> title;
+  final Value<String> course;
+  final Value<String> chapter;
+  final Value<String?> filePath;
+  final Value<BigInt> sizeInBytes;
+  final Value<String> downloadedDate;
+  final Value<int> typeIndex;
+  final Value<int> statusIndex;
+  final Value<int> progress;
+  final Value<String?> thumbnailUrl;
+  final Value<String?> duration;
+  final Value<String?> fileType;
+  final Value<int> rowid;
+  const DownloadsTableCompanion({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.course = const Value.absent(),
+    this.chapter = const Value.absent(),
+    this.filePath = const Value.absent(),
+    this.sizeInBytes = const Value.absent(),
+    this.downloadedDate = const Value.absent(),
+    this.typeIndex = const Value.absent(),
+    this.statusIndex = const Value.absent(),
+    this.progress = const Value.absent(),
+    this.thumbnailUrl = const Value.absent(),
+    this.duration = const Value.absent(),
+    this.fileType = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DownloadsTableCompanion.insert({
+    required String id,
+    required String title,
+    required String course,
+    required String chapter,
+    this.filePath = const Value.absent(),
+    required BigInt sizeInBytes,
+    required String downloadedDate,
+    required int typeIndex,
+    required int statusIndex,
+    this.progress = const Value.absent(),
+    this.thumbnailUrl = const Value.absent(),
+    this.duration = const Value.absent(),
+    this.fileType = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       title = Value(title),
+       course = Value(course),
+       chapter = Value(chapter),
+       sizeInBytes = Value(sizeInBytes),
+       downloadedDate = Value(downloadedDate),
+       typeIndex = Value(typeIndex),
+       statusIndex = Value(statusIndex);
+  static Insertable<DownloadsTableData> custom({
+    Expression<String>? id,
+    Expression<String>? title,
+    Expression<String>? course,
+    Expression<String>? chapter,
+    Expression<String>? filePath,
+    Expression<BigInt>? sizeInBytes,
+    Expression<String>? downloadedDate,
+    Expression<int>? typeIndex,
+    Expression<int>? statusIndex,
+    Expression<int>? progress,
+    Expression<String>? thumbnailUrl,
+    Expression<String>? duration,
+    Expression<String>? fileType,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (course != null) 'course': course,
+      if (chapter != null) 'chapter': chapter,
+      if (filePath != null) 'file_path': filePath,
+      if (sizeInBytes != null) 'size_in_bytes': sizeInBytes,
+      if (downloadedDate != null) 'downloaded_date': downloadedDate,
+      if (typeIndex != null) 'type_index': typeIndex,
+      if (statusIndex != null) 'status_index': statusIndex,
+      if (progress != null) 'progress': progress,
+      if (thumbnailUrl != null) 'thumbnail_url': thumbnailUrl,
+      if (duration != null) 'duration': duration,
+      if (fileType != null) 'file_type': fileType,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DownloadsTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? title,
+    Value<String>? course,
+    Value<String>? chapter,
+    Value<String?>? filePath,
+    Value<BigInt>? sizeInBytes,
+    Value<String>? downloadedDate,
+    Value<int>? typeIndex,
+    Value<int>? statusIndex,
+    Value<int>? progress,
+    Value<String?>? thumbnailUrl,
+    Value<String?>? duration,
+    Value<String?>? fileType,
+    Value<int>? rowid,
+  }) {
+    return DownloadsTableCompanion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      course: course ?? this.course,
+      chapter: chapter ?? this.chapter,
+      filePath: filePath ?? this.filePath,
+      sizeInBytes: sizeInBytes ?? this.sizeInBytes,
+      downloadedDate: downloadedDate ?? this.downloadedDate,
+      typeIndex: typeIndex ?? this.typeIndex,
+      statusIndex: statusIndex ?? this.statusIndex,
+      progress: progress ?? this.progress,
+      thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
+      duration: duration ?? this.duration,
+      fileType: fileType ?? this.fileType,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (course.present) {
+      map['course'] = Variable<String>(course.value);
+    }
+    if (chapter.present) {
+      map['chapter'] = Variable<String>(chapter.value);
+    }
+    if (filePath.present) {
+      map['file_path'] = Variable<String>(filePath.value);
+    }
+    if (sizeInBytes.present) {
+      map['size_in_bytes'] = Variable<BigInt>(sizeInBytes.value);
+    }
+    if (downloadedDate.present) {
+      map['downloaded_date'] = Variable<String>(downloadedDate.value);
+    }
+    if (typeIndex.present) {
+      map['type_index'] = Variable<int>(typeIndex.value);
+    }
+    if (statusIndex.present) {
+      map['status_index'] = Variable<int>(statusIndex.value);
+    }
+    if (progress.present) {
+      map['progress'] = Variable<int>(progress.value);
+    }
+    if (thumbnailUrl.present) {
+      map['thumbnail_url'] = Variable<String>(thumbnailUrl.value);
+    }
+    if (duration.present) {
+      map['duration'] = Variable<String>(duration.value);
+    }
+    if (fileType.present) {
+      map['file_type'] = Variable<String>(fileType.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DownloadsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('course: $course, ')
+          ..write('chapter: $chapter, ')
+          ..write('filePath: $filePath, ')
+          ..write('sizeInBytes: $sizeInBytes, ')
+          ..write('downloadedDate: $downloadedDate, ')
+          ..write('typeIndex: $typeIndex, ')
+          ..write('statusIndex: $statusIndex, ')
+          ..write('progress: $progress, ')
+          ..write('thumbnailUrl: $thumbnailUrl, ')
+          ..write('duration: $duration, ')
+          ..write('fileType: $fileType, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -7915,6 +8713,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $LearnersTableTable learnersTable = $LearnersTableTable(this);
   late final $DashboardContentsTableTable dashboardContentsTable =
       $DashboardContentsTableTable(this);
+  late final $DownloadsTableTable downloadsTable = $DownloadsTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -7932,6 +8731,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     dashboardBannersTable,
     learnersTable,
     dashboardContentsTable,
+    downloadsTable,
   ];
 }
 
@@ -11833,6 +12633,372 @@ typedef $$DashboardContentsTableTableProcessedTableManager =
       DashboardContentData,
       PrefetchHooks Function()
     >;
+typedef $$DownloadsTableTableCreateCompanionBuilder =
+    DownloadsTableCompanion Function({
+      required String id,
+      required String title,
+      required String course,
+      required String chapter,
+      Value<String?> filePath,
+      required BigInt sizeInBytes,
+      required String downloadedDate,
+      required int typeIndex,
+      required int statusIndex,
+      Value<int> progress,
+      Value<String?> thumbnailUrl,
+      Value<String?> duration,
+      Value<String?> fileType,
+      Value<int> rowid,
+    });
+typedef $$DownloadsTableTableUpdateCompanionBuilder =
+    DownloadsTableCompanion Function({
+      Value<String> id,
+      Value<String> title,
+      Value<String> course,
+      Value<String> chapter,
+      Value<String?> filePath,
+      Value<BigInt> sizeInBytes,
+      Value<String> downloadedDate,
+      Value<int> typeIndex,
+      Value<int> statusIndex,
+      Value<int> progress,
+      Value<String?> thumbnailUrl,
+      Value<String?> duration,
+      Value<String?> fileType,
+      Value<int> rowid,
+    });
+
+class $$DownloadsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $DownloadsTableTable> {
+  $$DownloadsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get course => $composableBuilder(
+    column: $table.course,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get chapter => $composableBuilder(
+    column: $table.chapter,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get filePath => $composableBuilder(
+    column: $table.filePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<BigInt> get sizeInBytes => $composableBuilder(
+    column: $table.sizeInBytes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get downloadedDate => $composableBuilder(
+    column: $table.downloadedDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get typeIndex => $composableBuilder(
+    column: $table.typeIndex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get statusIndex => $composableBuilder(
+    column: $table.statusIndex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get progress => $composableBuilder(
+    column: $table.progress,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get thumbnailUrl => $composableBuilder(
+    column: $table.thumbnailUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get duration => $composableBuilder(
+    column: $table.duration,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fileType => $composableBuilder(
+    column: $table.fileType,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DownloadsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $DownloadsTableTable> {
+  $$DownloadsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get course => $composableBuilder(
+    column: $table.course,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get chapter => $composableBuilder(
+    column: $table.chapter,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get filePath => $composableBuilder(
+    column: $table.filePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<BigInt> get sizeInBytes => $composableBuilder(
+    column: $table.sizeInBytes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get downloadedDate => $composableBuilder(
+    column: $table.downloadedDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get typeIndex => $composableBuilder(
+    column: $table.typeIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get statusIndex => $composableBuilder(
+    column: $table.statusIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get progress => $composableBuilder(
+    column: $table.progress,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get thumbnailUrl => $composableBuilder(
+    column: $table.thumbnailUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get duration => $composableBuilder(
+    column: $table.duration,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fileType => $composableBuilder(
+    column: $table.fileType,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DownloadsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DownloadsTableTable> {
+  $$DownloadsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get course =>
+      $composableBuilder(column: $table.course, builder: (column) => column);
+
+  GeneratedColumn<String> get chapter =>
+      $composableBuilder(column: $table.chapter, builder: (column) => column);
+
+  GeneratedColumn<String> get filePath =>
+      $composableBuilder(column: $table.filePath, builder: (column) => column);
+
+  GeneratedColumn<BigInt> get sizeInBytes => $composableBuilder(
+    column: $table.sizeInBytes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get downloadedDate => $composableBuilder(
+    column: $table.downloadedDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get typeIndex =>
+      $composableBuilder(column: $table.typeIndex, builder: (column) => column);
+
+  GeneratedColumn<int> get statusIndex => $composableBuilder(
+    column: $table.statusIndex,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get progress =>
+      $composableBuilder(column: $table.progress, builder: (column) => column);
+
+  GeneratedColumn<String> get thumbnailUrl => $composableBuilder(
+    column: $table.thumbnailUrl,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get duration =>
+      $composableBuilder(column: $table.duration, builder: (column) => column);
+
+  GeneratedColumn<String> get fileType =>
+      $composableBuilder(column: $table.fileType, builder: (column) => column);
+}
+
+class $$DownloadsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DownloadsTableTable,
+          DownloadsTableData,
+          $$DownloadsTableTableFilterComposer,
+          $$DownloadsTableTableOrderingComposer,
+          $$DownloadsTableTableAnnotationComposer,
+          $$DownloadsTableTableCreateCompanionBuilder,
+          $$DownloadsTableTableUpdateCompanionBuilder,
+          (
+            DownloadsTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $DownloadsTableTable,
+              DownloadsTableData
+            >,
+          ),
+          DownloadsTableData,
+          PrefetchHooks Function()
+        > {
+  $$DownloadsTableTableTableManager(
+    _$AppDatabase db,
+    $DownloadsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DownloadsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DownloadsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DownloadsTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> course = const Value.absent(),
+                Value<String> chapter = const Value.absent(),
+                Value<String?> filePath = const Value.absent(),
+                Value<BigInt> sizeInBytes = const Value.absent(),
+                Value<String> downloadedDate = const Value.absent(),
+                Value<int> typeIndex = const Value.absent(),
+                Value<int> statusIndex = const Value.absent(),
+                Value<int> progress = const Value.absent(),
+                Value<String?> thumbnailUrl = const Value.absent(),
+                Value<String?> duration = const Value.absent(),
+                Value<String?> fileType = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DownloadsTableCompanion(
+                id: id,
+                title: title,
+                course: course,
+                chapter: chapter,
+                filePath: filePath,
+                sizeInBytes: sizeInBytes,
+                downloadedDate: downloadedDate,
+                typeIndex: typeIndex,
+                statusIndex: statusIndex,
+                progress: progress,
+                thumbnailUrl: thumbnailUrl,
+                duration: duration,
+                fileType: fileType,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String title,
+                required String course,
+                required String chapter,
+                Value<String?> filePath = const Value.absent(),
+                required BigInt sizeInBytes,
+                required String downloadedDate,
+                required int typeIndex,
+                required int statusIndex,
+                Value<int> progress = const Value.absent(),
+                Value<String?> thumbnailUrl = const Value.absent(),
+                Value<String?> duration = const Value.absent(),
+                Value<String?> fileType = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DownloadsTableCompanion.insert(
+                id: id,
+                title: title,
+                course: course,
+                chapter: chapter,
+                filePath: filePath,
+                sizeInBytes: sizeInBytes,
+                downloadedDate: downloadedDate,
+                typeIndex: typeIndex,
+                statusIndex: statusIndex,
+                progress: progress,
+                thumbnailUrl: thumbnailUrl,
+                duration: duration,
+                fileType: fileType,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DownloadsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DownloadsTableTable,
+      DownloadsTableData,
+      $$DownloadsTableTableFilterComposer,
+      $$DownloadsTableTableOrderingComposer,
+      $$DownloadsTableTableAnnotationComposer,
+      $$DownloadsTableTableCreateCompanionBuilder,
+      $$DownloadsTableTableUpdateCompanionBuilder,
+      (
+        DownloadsTableData,
+        BaseReferences<_$AppDatabase, $DownloadsTableTable, DownloadsTableData>,
+      ),
+      DownloadsTableData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -11864,4 +13030,6 @@ class $AppDatabaseManager {
         _db,
         _db.dashboardContentsTable,
       );
+  $$DownloadsTableTableTableManager get downloadsTable =>
+      $$DownloadsTableTableTableManager(_db, _db.downloadsTable);
 }

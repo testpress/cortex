@@ -41,4 +41,6 @@ export 'models/info_models.dart';
 export 'providers/info_providers.dart';
 export 'screens/info/info_page.dart';
 export 'screens/info/info_course_detail_screen.dart';
+export 'screens/downloads_screen.dart';
+export 'providers/downloads_provider.dart';
 
