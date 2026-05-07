@@ -8,7 +8,7 @@ import 'package:exams/exams.dart';
 
 import '../screens/dashboard/paid_active_home_screen.dart';
 import '../widgets/dashboard_drawer.dart';
-import 'package:forum/forum.dart';
+import 'package:discussions/discussions.dart';
 
 class ExplorePlaceholderScreen extends StatelessWidget {
   const ExplorePlaceholderScreen({super.key});
