@@ -15,8 +15,8 @@ The `forum` package is being elevated to a `discussions` package to support the 
 - **Rationale**: Provides a broader semantic home for multiple discussion types.
 
 ### 2. URL Path Alignment
-- **Decision**: Update the router path from `forum` to `discussions`.
-- **Rationale**: Aligns user-facing URLs with the new branding. Deep-link compatibility is secondary to naming consistency in this phase.
+- **Decision**: Transition from `/home/forum` to a nested structure: `/home/discussions/forum`.
+- **Rationale**: Establishes `discussions` as a parent namespace for multiple features. This allows the app to grow (e.g., adding `/home/discussions/doubts` later) while keeping the URL structure logical and clean.
 
 ## Risks / Trade-offs
 - **[Risk]** Breaking dependencies in `app` and `testpress`.
