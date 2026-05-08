@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import '../models/test_model.dart';
 import '../models/review_route_payload.dart';
 import '../data/mock_tests.dart';
@@ -16,11 +17,13 @@ import '../widgets/test_detail/submit_confirmation_dialog.dart';
 
 class TestDetailScreen extends ConsumerStatefulWidget {
   final String testId;
+  final LessonDto? lesson;
   final VoidCallback onClose;
 
   const TestDetailScreen({
     super.key,
     required this.testId,
+    this.lesson,
     required this.onClose,
   });
 

@@ -194,6 +194,14 @@ class ExamRepository {
     return int.parse(parts[0]) * 3600 + int.parse(parts[1]) * 60 + int.parse(parts[2]);
   }
 
+  void reset() {
+    _emit(const ExamAttemptState());
+  }
+
+  Future<void> switchSection(int index) async {
+    // Will be fully implemented in active player state refactor (PR 5)
+  }
+
   void dispose() {
     stopHeartbeat();
     _stateController.close();

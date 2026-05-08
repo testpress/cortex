@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
@@ -16,23 +17,42 @@ ExamRepository examRepository(Ref ref) {
 /// Fetches exam details by slug.
 @riverpod
 Future<ExamDto> examDetail(Ref ref, String slug) async {
-  final repo = ref.watch(examRepositoryProvider);
-  // Note: loadExam updates the internal state, but here we just return the DTO
-  // directly for the instructions screen.
   final dataSource = ref.watch(dataSourceProvider);
   return dataSource.getExam(slug);
+}
+
+/// Fetches attempt history for an exam.
+@riverpod
+Future<List<AttemptDto>> examAttempts(Ref ref, String attemptsUrl) async {
+  final dataSource = ref.watch(dataSourceProvider);
+  return dataSource.getAttempts(attemptsUrl);
 }
 
 /// Notifier that manages the active exam attempt lifecycle.
 @riverpod
 class ExamAttempt extends _$ExamAttempt {
+  StreamSubscription<ExamAttemptState>? _subscription;
+
   @override
-  Stream<ExamAttemptState> build() {
+  ExamAttemptState build() {
     final repo = ref.watch(examRepositoryProvider);
-    return repo.stateStream;
+    
+    // Subscribe to repository updates
+    _subscription?.cancel();
+    _subscription = repo.stateStream.listen((newState) {
+      state = newState;
+    });
+
+    ref.onDispose(() {
+      _subscription?.cancel();
+    });
+
+    return repo.state;
   }
 
   Future<void> loadExam(String slug) => ref.read(examRepositoryProvider).loadExam(slug);
+  
+  void reset() => ref.read(examRepositoryProvider).reset();
   
   Future<void> startStandaloneExam(ExamDto exam) => 
       ref.read(examRepositoryProvider).startStandaloneExam(exam);
@@ -45,6 +65,9 @@ class ExamAttempt extends _$ExamAttempt {
 
   Future<void> endExam(String endUrl) =>
       ref.read(examRepositoryProvider).endExam(endUrl);
+
+  Future<void> switchSection(int index) =>
+      ref.read(examRepositoryProvider).switchSection(index);
 }
 
 /// Notifier that manages the exam-specific course list and its independent sync state.
@@ -78,7 +101,6 @@ class ExamList extends _$ExamList {
       bool hasMore = true;
       
       while (hasMore) {
-        final config = ref.read(clientConfigProvider);
         final response = await repo.refreshCourses(
           page: currentPage,
           tags: null,
