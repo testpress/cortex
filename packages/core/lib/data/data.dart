@@ -24,6 +24,10 @@ export 'models/explore_models.dart';
 export 'models/paginated_response_dto.dart';
 export 'models/client_config.dart';
 export 'models/dashboard_dto.dart';
+export 'models/exam_dto.dart';
+export 'models/attempt_dto.dart';
+export 'models/question_dto.dart';
+export 'models/answer_dto.dart';
 export 'models/download_item.dart';
 
 // Database

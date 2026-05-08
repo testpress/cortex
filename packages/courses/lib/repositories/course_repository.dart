@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:async/async.dart';
+import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 
@@ -19,7 +19,28 @@ class CourseRepository {
   final Map<String, Future<CourseDto?>> _activeDetailSyncs = {};
   final Map<String, Future<List<LessonDto>>> _activeContentSyncs = {};
 
-  CourseRepository(this._db, this._source);
+  /// Stream controller for sync status updates
+  final _syncStatusController = StreamController<Set<String>>.broadcast();
+  Set<String> _activeSyncIds = {};
+
+  /// Stream of course IDs currently being synced.
+  Stream<Set<String>> get activeSyncsStream => _syncStatusController.stream;
+
+  /// Returns true if a specific course is currently syncing.
+  bool isSyncing(String courseId) => _activeSyncIds.contains(courseId);
+
+  void _updateSyncStatus(String courseId, bool isSyncing) {
+    if (isSyncing) {
+      _activeSyncIds.add(courseId);
+    } else {
+      _activeSyncIds.remove(courseId);
+    }
+    _syncStatusController.add(Set.unmodifiable(_activeSyncIds));
+  }
+
+  final ClientConfig config;
+
+  CourseRepository(this._db, this._source, {this.config = const ClientConfig()});
 
   // ── Courses ──────────────────────────────────────────────────────────────
 
@@ -36,9 +57,31 @@ class CourseRepository {
         final hasMobileAccess = dto.allowedDevices.any(
           (d) => d.toLowerCase().contains('mobile'),
         );
+        
+        // If showExamTab is enabled, identify exams by tag or fallback to examsCount.
         final isExamCourse = dto.tags.contains('exams') || (dto.tags.isEmpty && dto.examsCount > 0);
         
         return isExamCourse && hasMobileAccess;
+      }).toList();
+    });
+  }
+
+  /// Live stream of courses filtered for the Study tab.
+  /// Excludes exams and info courses to maintain tab independence.
+  Stream<List<CoursesTableData>> watchStudyCourses() {
+    return _db.watchAllCourses().map((courses) {
+      return courses.where((course) {
+        final dto = rowToCourseDto(course);
+        
+        if (config.showExamTab) {
+          // Brilliant Pala: Exclude only if explicitly tagged as 'exams' or 'info'
+          final isExplicitExam = dto.tags.contains('exams');
+          final isInfoCourse = dto.tags.contains('info');
+          return !isExplicitExam && !isInfoCourse;
+        } else {
+          // Default: Inclusive behavior
+          return true;
+        }
       }).toList();
     });
   }
@@ -89,11 +132,17 @@ class CourseRepository {
   }
 
   /// Fetch courses for a specific [page] from [DataSource] and persist to local DB.
-  Future<PaginatedResponseDto<CourseDto>> refreshCourses({int page = 1}) async {
-    final response = await _source.getCourses(page: page);
+  /// Supports optional [tags] filter for server-side filtering.
+  Future<PaginatedResponseDto<CourseDto>> refreshCourses({
+    int page = 1,
+    dynamic tags,
+  }) async {
+    final response = await _source.getCourses(page: page, tags: tags);
 
     if (response.results.isNotEmpty) {
-      final companions = response.results.map(_courseDtoToCompanion).toList();
+      final companions = response.results
+          .map(_courseDtoToCompanion)
+          .toList();
       await _db.upsertCourses(companions);
     }
 
@@ -335,6 +384,7 @@ class CourseRepository {
 
     final syncFuture = () async {
       try {
+        _updateSyncStatus(courseId, true);
         // Authoritative Structural Mapping: Hierarchy comes strictly from the paginated /contents/ API.
         final remoteAll = await _source.getCourseContents(courseId);
 
@@ -381,6 +431,7 @@ class CourseRepository {
         rethrow;
       } finally {
         _activeStructuralSyncs.remove(courseId);
+        _updateSyncStatus(courseId, false);
       }
     }();
 
@@ -594,6 +645,7 @@ class CourseRepository {
             : const Value.absent(),
         tagIds: dto.tagIds.isNotEmpty ? Value(jsonEncode(dto.tagIds)) : const Value.absent(),
         examsCount: Value(dto.examsCount),
+        orderIndex: Value(dto.order),
         isChaptersSynced: Value(dto.isChaptersSynced),
       );
 

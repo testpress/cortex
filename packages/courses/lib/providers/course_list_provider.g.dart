@@ -6,7 +6,7 @@ part of 'course_list_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$courseRepositoryHash() => r'62b30446b43101d61052e9c469030f2209080475';
+String _$courseRepositoryHash() => r'69ea44f1c24c8074fd8c673dd145d91bf8cc0d11';
 
 /// See also [courseRepository].
 @ProviderFor(courseRepository)
@@ -470,7 +470,7 @@ class _ChapterLessonsProviderElement
   String get chapterId => (origin as ChapterLessonsProvider).chapterId;
 }
 
-String _$courseListHash() => r'b86fbfec15af5dd98b0b841b88f6f462bc15fcf4';
+String _$courseListHash() => r'1aa952a185b3cbbb84f8596342b0a541bc03b96d';
 
 /// See also [CourseList].
 @ProviderFor(CourseList)

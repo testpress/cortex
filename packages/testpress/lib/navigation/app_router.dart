@@ -396,6 +396,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                       courseId: courseId,
                       parentId: parentId,
                       onBack: () => context.pop(),
+                      showFilters: false,
+                      basePath: '/exams',
                     );
                   },
                   routes: [
@@ -408,6 +410,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                           courseId: courseId,
                           chapterId: chapterId,
                           onBack: () => context.pop(),
+                          showFilters: false,
                           onLessonClick: (lesson) {
                             // Navigation to actual test/assessment detail
                             // will be implemented in the next phase.
@@ -428,15 +431,23 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 // Placeholders for the next phase
                 GoRoute(
                   path: 'test/:id',
-                  builder: (context, state) => Center(
-                    child: Text('Test Detail (Phase 2): ${state.pathParameters['id']}'),
-                  ),
+                  builder: (context, state) {
+                    final id = state.pathParameters['id']!;
+                    return TestDetailScreen(
+                      testId: id,
+                      onClose: () => context.pop(),
+                    );
+                  },
                 ),
                 GoRoute(
                   path: 'assessment/:id',
-                  builder: (context, state) => Center(
-                    child: Text('Assessment Detail (Phase 2): ${state.pathParameters['id']}'),
-                  ),
+                  builder: (context, state) {
+                    final id = state.pathParameters['id']!;
+                    return AssessmentDetailScreen(
+                      assessmentId: id,
+                      onClose: () => context.pop(),
+                    );
+                  },
                 ),
               ],
             ),

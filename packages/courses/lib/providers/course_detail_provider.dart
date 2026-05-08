@@ -65,3 +65,11 @@ Stream<CourseCurriculumDto> allCourseLessons(
   final repo = await ref.watch(courseRepositoryProvider.future);
   yield* repo.watchLessonsForCourse(courseId);
 }
+
+/// Provider that tracks if a specific course is currently undergoing a structural sync.
+@Riverpod(keepAlive: true)
+Stream<bool> courseSyncStatus(CourseSyncStatusRef ref, String courseId) async* {
+  final repo = await ref.watch(courseRepositoryProvider.future);
+  yield repo.isSyncing(courseId);
+  yield* repo.activeSyncsStream.map((syncs) => syncs.contains(courseId)).distinct();
+}

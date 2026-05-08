@@ -17,12 +17,14 @@ class ChapterDetailPage extends ConsumerStatefulWidget {
     required this.chapterId,
     this.onBack,
     this.onLessonClick,
+    this.showFilters = true,
   });
 
   final String courseId;
   final String chapterId;
   final VoidCallback? onBack;
   final ValueChanged<Lesson>? onLessonClick;
+  final bool showFilters;
 
   @override
   ConsumerState<ChapterDetailPage> createState() => _ChapterDetailPageState();
@@ -89,7 +91,7 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildHeaderContents(context, design, chapter),
-                    const ChapterStatusFilterBar(),
+                    if (widget.showFilters) const ChapterStatusFilterBar(),
                   ],
                 ),
               ),
