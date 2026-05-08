@@ -328,12 +328,35 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   path: 'test/:id',
                   builder: (context, state) {
                     final id = state.pathParameters['id']!;
-                    return TestDetailScreen(
+                    final extra = state.extra;
+                    final lesson = extra is LessonDto
+                        ? extra
+                        : (extra is Lesson ? extra.toDto() : null);
+                    return ExamPrescreen(
                       testId: id,
+                      lesson: lesson,
                       onClose: () => context.pop(),
+                      onStartAttempt: () async {
+                        context.pushReplacement('/study/test/$id/player', extra: lesson);
+                      },
                     );
                   },
                   routes: [
+                    GoRoute(
+                      path: 'player',
+                      builder: (context, state) {
+                        final id = state.pathParameters['id']!;
+                        final extra = state.extra;
+                        final lesson = extra is LessonDto
+                            ? extra
+                            : (extra is Lesson ? extra.toDto() : null);
+                        return TestDetailScreen(
+                          testId: id,
+                          lesson: lesson,
+                          onClose: () => context.pop(),
+                        );
+                      },
+                    ),
                     GoRoute(
                       path: 'review-analytics',
                       builder: (context, state) {
@@ -370,8 +393,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   path: 'assessment/:id',
                   builder: (context, state) {
                     final id = state.pathParameters['id']!;
+                    final extra = state.extra;
+                    final lesson = extra is LessonDto
+                        ? extra
+                        : (extra is Lesson ? extra.toDto() : null);
                     return AssessmentDetailScreen(
                       assessmentId: id,
+                      lesson: lesson,
                       onClose: () => context.pop(),
                     );
                   },
@@ -428,23 +456,52 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                     ),
                   ],
                 ),
-                // Placeholders for the next phase
                 GoRoute(
                   path: 'test/:id',
                   builder: (context, state) {
                     final id = state.pathParameters['id']!;
-                    return TestDetailScreen(
+                    final extra = state.extra;
+                    final lesson = extra is LessonDto
+                        ? extra
+                        : (extra is Lesson ? extra.toDto() : null);
+                    return ExamPrescreen(
                       testId: id,
+                      lesson: lesson,
                       onClose: () => context.pop(),
+                      onStartAttempt: () async {
+                        context.pushReplacement('/exams/test/$id/player', extra: lesson);
+                      },
                     );
                   },
+                  routes: [
+                    GoRoute(
+                      path: 'player',
+                      builder: (context, state) {
+                        final id = state.pathParameters['id']!;
+                        final extra = state.extra;
+                        final lesson = extra is LessonDto
+                            ? extra
+                            : (extra is Lesson ? extra.toDto() : null);
+                        return TestDetailScreen(
+                          testId: id,
+                          lesson: lesson,
+                          onClose: () => context.pop(),
+                        );
+                      },
+                    ),
+                  ],
                 ),
                 GoRoute(
                   path: 'assessment/:id',
                   builder: (context, state) {
                     final id = state.pathParameters['id']!;
+                    final extra = state.extra;
+                    final lesson = extra is LessonDto
+                        ? extra
+                        : (extra is Lesson ? extra.toDto() : null);
                     return AssessmentDetailScreen(
                       assessmentId: id,
+                      lesson: lesson,
                       onClose: () => context.pop(),
                     );
                   },

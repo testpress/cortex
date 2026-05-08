@@ -25,7 +25,7 @@ final examRepositoryProvider = Provider<ExamRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ExamRepositoryRef = ProviderRef<ExamRepository>;
-String _$examDetailHash() => r'b399234225881306c8bc66191e7e3494fd840c9b';
+String _$examDetailHash() => r'a26751b686b0cef6f195bd5c34c9096d0d754069';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -177,14 +177,146 @@ class _ExamDetailProviderElement
   String get slug => (origin as ExamDetailProvider).slug;
 }
 
-String _$examAttemptHash() => r'b3d17c40eea31ad8e3560ba9da0a18049fffe0c1';
+String _$examAttemptsHash() => r'02cf0665e87034ed8a5e43e4a7104ddc85da2800';
+
+/// Fetches attempt history for an exam.
+///
+/// Copied from [examAttempts].
+@ProviderFor(examAttempts)
+const examAttemptsProvider = ExamAttemptsFamily();
+
+/// Fetches attempt history for an exam.
+///
+/// Copied from [examAttempts].
+class ExamAttemptsFamily extends Family<AsyncValue<List<AttemptDto>>> {
+  /// Fetches attempt history for an exam.
+  ///
+  /// Copied from [examAttempts].
+  const ExamAttemptsFamily();
+
+  /// Fetches attempt history for an exam.
+  ///
+  /// Copied from [examAttempts].
+  ExamAttemptsProvider call(String attemptsUrl) {
+    return ExamAttemptsProvider(attemptsUrl);
+  }
+
+  @override
+  ExamAttemptsProvider getProviderOverride(
+    covariant ExamAttemptsProvider provider,
+  ) {
+    return call(provider.attemptsUrl);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'examAttemptsProvider';
+}
+
+/// Fetches attempt history for an exam.
+///
+/// Copied from [examAttempts].
+class ExamAttemptsProvider extends AutoDisposeFutureProvider<List<AttemptDto>> {
+  /// Fetches attempt history for an exam.
+  ///
+  /// Copied from [examAttempts].
+  ExamAttemptsProvider(String attemptsUrl)
+    : this._internal(
+        (ref) => examAttempts(ref as ExamAttemptsRef, attemptsUrl),
+        from: examAttemptsProvider,
+        name: r'examAttemptsProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$examAttemptsHash,
+        dependencies: ExamAttemptsFamily._dependencies,
+        allTransitiveDependencies:
+            ExamAttemptsFamily._allTransitiveDependencies,
+        attemptsUrl: attemptsUrl,
+      );
+
+  ExamAttemptsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.attemptsUrl,
+  }) : super.internal();
+
+  final String attemptsUrl;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<AttemptDto>> Function(ExamAttemptsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ExamAttemptsProvider._internal(
+        (ref) => create(ref as ExamAttemptsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        attemptsUrl: attemptsUrl,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<AttemptDto>> createElement() {
+    return _ExamAttemptsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ExamAttemptsProvider && other.attemptsUrl == attemptsUrl;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, attemptsUrl.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin ExamAttemptsRef on AutoDisposeFutureProviderRef<List<AttemptDto>> {
+  /// The parameter `attemptsUrl` of this provider.
+  String get attemptsUrl;
+}
+
+class _ExamAttemptsProviderElement
+    extends AutoDisposeFutureProviderElement<List<AttemptDto>>
+    with ExamAttemptsRef {
+  _ExamAttemptsProviderElement(super.provider);
+
+  @override
+  String get attemptsUrl => (origin as ExamAttemptsProvider).attemptsUrl;
+}
+
+String _$examAttemptHash() => r'3ee751f3208d764d020b9ac9a7ba641073e91764';
 
 /// Notifier that manages the active exam attempt lifecycle.
 ///
 /// Copied from [ExamAttempt].
 @ProviderFor(ExamAttempt)
 final examAttemptProvider =
-    AutoDisposeStreamNotifierProvider<ExamAttempt, ExamAttemptState>.internal(
+    AutoDisposeNotifierProvider<ExamAttempt, ExamAttemptState>.internal(
       ExamAttempt.new,
       name: r'examAttemptProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -194,7 +326,7 @@ final examAttemptProvider =
       allTransitiveDependencies: null,
     );
 
-typedef _$ExamAttempt = AutoDisposeStreamNotifier<ExamAttemptState>;
+typedef _$ExamAttempt = AutoDisposeNotifier<ExamAttemptState>;
 String _$examListHash() => r'51c9fe3af8e5727c237ea1eb71d1945d45b31a10';
 
 /// Notifier that manages the exam-specific course list and its independent sync state.

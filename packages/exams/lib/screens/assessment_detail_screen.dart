@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import '../models/assessment_model.dart';
 import '../data/mock_assessments.dart';
 import '../widgets/assessment_detail/assessment_header.dart';
@@ -13,11 +14,13 @@ import '../models/test_model.dart' show QuestionOption, QuestionType;
 
 class AssessmentDetailScreen extends ConsumerStatefulWidget {
   final String assessmentId;
+  final LessonDto? lesson;
   final VoidCallback onClose;
 
   const AssessmentDetailScreen({
     super.key,
     required this.assessmentId,
+    this.lesson,
     required this.onClose,
   });
 

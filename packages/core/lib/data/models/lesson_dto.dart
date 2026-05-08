@@ -396,9 +396,7 @@ class LessonDto {
             video?['duration'] as String? ??
             liveStream?['duration'] as String?) ??
         '',
-      progressStatus: (json['attempts_count'] as num? ?? 0) > 0
-          ? LessonProgressStatus.completed
-          : _parseStatus(json['state'] ?? json['progressStatus']),
+      progressStatus: _parseStatus(json['state'] ?? json['progressStatus']),
       isLocked: !(json['active'] as bool? ?? json['isLocked'] == false),
       orderIndex: (json['order'] as num?)?.toInt() ?? (json['orderIndex'] as num?)?.toInt() ?? 0,
       chapterTitle: json['chapter_title'] as String? ?? json['chapterTitle'] as String?,
