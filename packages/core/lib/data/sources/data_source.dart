@@ -75,26 +75,38 @@ abstract class DataSource {
   Future<DashboardContentsDto> getResumeLearningFeed(DashboardSectionType sectionType);
   // ── Exams ───────────────────────────────────────────────────────────────
 
-  /// Fetch full metadata for an exam from `/api/v3/exams/{slug}/`.
+  /// Fetch full metadata for an exam from `/api/v2.2.1/exams/{slug}/`.
   Future<ExamDto> getExam(String slug);
 
-  /// Create an exam attempt from `/api/v3/attempts/{id}/`.
+  /// Fetch list of historical attempts.
+  Future<List<AttemptDto>> getAttempts(String attemptsUrl);
+
+  /// Create an exam attempt.
   Future<AttemptDto> createAttempt(String attemptsUrl);
 
-  /// Create a course-linked content attempt from `/api/v3/contents/{id}/attempts/`.
+  /// Create a course-linked content attempt.
   Future<AttemptDto> createContentAttempt(String contentAttemptsUrl);
 
-  /// Fetch questions for an attempt from `/api/v3/attempts/{id}/questions/`.
+  /// Resume or start an attempt via its start URL.
+  Future<AttemptDto> startAttempt(String startUrl);
+
+  /// Fetch all questions for an attempt.
   Future<List<QuestionDto>> getQuestions(String questionsUrl);
 
-  /// Send a heartbeat to maintain the attempt from `/api/v3/attempts/{id}/heartbeat/`.
-  Future<AttemptDto> sendHeartbeat(String heartbeatUrl);
-
-  /// Submit an answer for a question from `/api/v3/attempts/{id}/questions/{id}/answer/`.
+  /// Submit a single answer to the backend.
   Future<void> submitAnswer(String answerUrl, AnswerDto answer);
 
-  /// End the exam attempt from `/api/v3/attempts/{id}/end/`.
+  /// Send a heartbeat to maintain the attempt session.
+  Future<AttemptDto> sendHeartbeat(String heartbeatUrl);
+
+  /// End the exam attempt and finalize results.
   Future<AttemptDto> endExam(String endUrl);
+
+  /// Start an attempt section via its start URL.
+  Future<SectionDto> startSection(String startUrl);
+
+  /// End an attempt section via its end URL.
+  Future<SectionDto> endSection(String endUrl);
 
   /// Fetch the recently completed feed from `/api/v2.4/completed/`.
   Future<DashboardContentsDto> getRecentlyCompletedFeed(DashboardSectionType sectionType);

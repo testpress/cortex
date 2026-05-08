@@ -293,28 +293,143 @@ class HttpDataSource implements DataSource {
     );
   }
 
-  // ── Exams ───────────────────────────────────────────────────────────────
+  // --- Exam Attendance ---
 
   @override
-  Future<ExamDto> getExam(String slug) => throw UnimplementedError();
+  Future<ExamDto> getExam(String slug) async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.examDetail(slug)),
+      fromJson: ExamDto.fromJson,
+    );
+  }
 
   @override
-  Future<AttemptDto> createAttempt(String attemptsUrl) => throw UnimplementedError();
+  Future<List<AttemptDto>> getAttempts(String attemptsUrl) async {
+    return performNetworkRequest(
+      _dio.get(attemptsUrl),
+      fromJson: (json) => PaginatedResponseDto<AttemptDto>.fromJson(
+        json,
+        AttemptDto.fromJson,
+      ),
+    ).then((response) => response.results);
+  }
 
   @override
-  Future<AttemptDto> createContentAttempt(String contentAttemptsUrl) => throw UnimplementedError();
+  Future<AttemptDto> createAttempt(String attemptsUrl) async {
+    return performNetworkRequest(
+      _dio.post(attemptsUrl),
+      fromJson: AttemptDto.fromJson,
+    );
+  }
 
   @override
-  Future<List<QuestionDto>> getQuestions(String questionsUrl) => throw UnimplementedError();
+  Future<AttemptDto> createContentAttempt(String contentAttemptsUrl) async {
+    return performNetworkRequest(
+      _dio.post(contentAttemptsUrl),
+      fromJson: AttemptDto.fromJson,
+    );
+  }
 
   @override
-  Future<AttemptDto> sendHeartbeat(String heartbeatUrl) => throw UnimplementedError();
+  Future<AttemptDto> startAttempt(String startUrl) async {
+    return performNetworkRequest(
+      _dio.post(startUrl),
+      fromJson: AttemptDto.fromJson,
+    );
+  }
 
   @override
-  Future<void> submitAnswer(String answerUrl, AnswerDto answer) => throw UnimplementedError();
+  Future<List<QuestionDto>> getQuestions(String questionsUrl) async {
+    if (questionsUrl.isEmpty) return [];
+
+    final List<QuestionDto> allQuestions = [];
+    String? nextUrl = questionsUrl;
+    int pageSafetyBreak = 0;
+    String? lastUrl;
+
+    while (nextUrl != null && nextUrl.isNotEmpty && pageSafetyBreak < 50) {
+      if (nextUrl == lastUrl) break; // Prevent infinite loops on same URL
+      lastUrl = nextUrl;
+      pageSafetyBreak++;
+      
+      print('Fetching exam questions page $pageSafetyBreak: $nextUrl');
+
+      final dynamic data = await performDynamicNetworkRequest(
+        _dio.get(nextUrl),
+        fromJson: (json) => json,
+      );
+
+      final List<dynamic> list;
+      if (data is List) {
+        list = data;
+        nextUrl = null;
+      } else if (data is Map && data['results'] is List) {
+        list = data['results'] as List<dynamic>;
+        nextUrl = data['next'] as String?;
+      } else {
+        list = [];
+        nextUrl = null;
+      }
+
+      allQuestions.addAll(
+        list.map((e) => QuestionDto.fromJson(e as Map<String, dynamic>)),
+      );
+    }
+
+    return allQuestions;
+  }
 
   @override
-  Future<AttemptDto> endExam(String endUrl) => throw UnimplementedError();
+  Future<void> submitAnswer(String answerUrl, AnswerDto answer) async {
+    await performNetworkRequest(
+      _dio.put(answerUrl, data: answer.toJson()),
+      fromJson: (data) => null,
+    );
+  }
+
+  @override
+  Future<AttemptDto> sendHeartbeat(String heartbeatUrl) async {
+    return performNetworkRequest(
+      _dio.put(heartbeatUrl),
+      fromJson: AttemptDto.fromJson,
+    );
+  }
+
+  @override
+  Future<AttemptDto> endExam(String endUrl) async {
+    if (endUrl.isEmpty) {
+      throw Exception('Unable to end exam: End URL is missing.');
+    }
+
+    return performNetworkRequest(
+      _dio.put(endUrl),
+      fromJson: AttemptDto.fromJson,
+    );
+  }
+
+  @override
+  Future<SectionDto> startSection(String startUrl) async {
+    if (startUrl.isEmpty) {
+      throw Exception('Unable to start section: Start URL is missing.');
+    }
+
+    return performNetworkRequest(
+      _dio.put(startUrl),
+      fromJson: SectionDto.fromJson,
+    );
+  }
+
+  @override
+  Future<SectionDto> endSection(String endUrl) async {
+    if (endUrl.isEmpty) {
+      throw Exception('Unable to end section: End URL is missing.');
+    }
+
+    return performNetworkRequest(
+      _dio.put(endUrl),
+      fromJson: SectionDto.fromJson,
+    );
+  }
 
   @override
   Future<void> downloadFile({

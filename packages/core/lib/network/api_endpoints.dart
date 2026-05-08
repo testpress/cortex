@@ -22,4 +22,8 @@ class ApiEndpoints {
   static const String whatsNewFeed = '/api/v2.4/whats-new/';
   static const String resumeLearning = '/api/v2.4/resume/';
   static const String recentlyCompleted = '/api/v2.4/completed/';
+
+  // Exams
+  static String examDetail(String slug) => '/api/v2.2.1/exams/$slug/';
+  static String contentAttemptEnd(String id) => '/api/v2.2/content_attempts/$id/end/';
 }
