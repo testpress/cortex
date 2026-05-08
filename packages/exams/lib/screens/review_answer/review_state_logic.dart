@@ -1,21 +1,21 @@
 import 'package:flutter/foundation.dart';
-import '../../models/test_model.dart';
+import 'package:core/data/data.dart';
 
 enum ReviewFilter { all, correct, incorrect, unanswered }
 
 mixin ReviewStateLogic {
-  Map<String, TestAttemptAnswer> get attemptStates;
-  List<TestQuestion> get allQuestions;
+  Map<String, AnswerDto> get attemptStates;
+  List<QuestionDto> get allQuestions;
 
-  bool isAnswerCorrect(TestQuestion q) {
+  bool isAnswerCorrect(QuestionDto q) {
     final state = attemptStates[q.id];
     if (state == null || state.selectedOptions.isEmpty) return false;
-    final selected = List<String>.from(state.selectedOptions)..sort();
-    final correct = List<String>.from(q.correctOptionIds)..sort();
+    final selected = List<String>.from(state.selectedOptions.map((e) => e.toString()))..sort();
+    final correct = List<String>.from(q.correctOptionIds.map((e) => e.toString()))..sort();
     return listEquals(selected, correct);
   }
 
-  bool isUnanswered(TestQuestion q) {
+  bool isUnanswered(QuestionDto q) {
     final state = attemptStates[q.id];
     return state == null || state.selectedOptions.isEmpty;
   }
@@ -32,7 +32,7 @@ mixin ReviewStateLogic {
     }).length;
   }
 
-  List<TestQuestion> getFilteredQuestions(ReviewFilter activeFilter) {
+  List<QuestionDto> getFilteredQuestions(ReviewFilter activeFilter) {
     return allQuestions.where((q) {
       if (activeFilter == ReviewFilter.all) return true;
       if (activeFilter == ReviewFilter.correct) return isAnswerCorrect(q);

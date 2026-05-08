@@ -370,8 +370,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                           testId: id,
                           assessmentTitle:
                               payload?.assessmentTitle ?? 'Assessment $id',
-                          questions: payload?.questions ?? const [],
-                          attemptStates: payload?.attemptStates ?? const {},
+                          questions: payload?.questions ?? const <QuestionDto>[],
+                          attemptStates: payload?.attemptStates ?? const <String, AnswerDto>{},
                           onBack: () => context.pop(),
                         );
                       },
@@ -384,8 +384,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                         return ReviewAnswerDetailScreen(
                           assessmentTitle:
                               payload?.assessmentTitle ?? 'Assessment $id',
-                          questions: payload?.questions ?? const [],
-                          attemptStates: payload?.attemptStates ?? const {},
+                          questions: payload?.questions ?? const <QuestionDto>[],
+                          attemptStates: payload?.attemptStates ?? const <String, AnswerDto>{},
                           onBack: () => context.pop(),
                         );
                       },

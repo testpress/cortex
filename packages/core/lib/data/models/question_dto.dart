@@ -9,6 +9,8 @@ class QuestionDto {
   final String? markUrl;
   final List<String> correctOptionIds;
   final String? explanation;
+  final String? directionHtml;
+  final int order;
 
   const QuestionDto({
     required this.id,
@@ -20,6 +22,8 @@ class QuestionDto {
     this.markUrl,
     this.correctOptionIds = const [],
     this.explanation,
+    this.directionHtml,
+    this.order = 0,
   });
 
   factory QuestionDto.fromJson(Map<String, dynamic> json) {
@@ -30,10 +34,8 @@ class QuestionDto {
       id: (data['id'] ?? json['id'] ?? '').toString(),
       text: (data['text'] ?? data['question'] ?? data['question_html'] ?? json['text_html']) as String? ?? '',
       type: switch ((data['type'] ?? json['type']) as String?) {
-        'mcq' => 'singleSelect',
-        'mca' => 'multipleSelect',
-        'singleSelect' => 'singleSelect',
-        'multipleSelect' => 'multipleSelect',
+        'R' => 'singleSelect',   // MCQ, Single Correct (Testpress API)
+        'C' => 'multipleSelect', // MCQ, Multiple Correct (Testpress API)
         _ => 'singleSelect',
       },
       subject: (data['subject'] ?? data['subject_name'] ?? json['subject_name']) as String? ?? 'General',
@@ -51,6 +53,8 @@ class QuestionDto {
               .toList() ??
           const [],
       explanation: (data['explanation'] ?? data['explanation_html'] ?? json['explanation_html']) as String?,
+      directionHtml: (data['direction'] ?? data['direction_html'] ?? json['direction'] ?? json['direction_html']) as String?,
+      order: int.tryParse((json['order'] ?? json['question_index'] ?? '').toString()) ?? 0,
     );
   }
 
@@ -65,6 +69,8 @@ class QuestionDto {
       'mark_url': markUrl,
       'correct_option_ids': correctOptionIds,
       'explanation': explanation,
+      'directionHtml': directionHtml,
+      'order': order,
     };
   }
 }

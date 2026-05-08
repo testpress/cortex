@@ -10,7 +10,6 @@ import '../widgets/assessment_detail/assessment_palette.dart';
 import '../widgets/test_detail/nav_button.dart';
 import '../widgets/test_detail/option_card.dart';
 import '../widgets/test_detail/test_palette_trigger.dart';
-import '../models/test_model.dart' show QuestionOption, QuestionType;
 
 class AssessmentDetailScreen extends ConsumerStatefulWidget {
   final String assessmentId;
@@ -281,11 +280,11 @@ class _AssessmentDetailScreenState
             final isCorrect = _isOptionCorrect(q, option.id);
             final isIncorrect = state.isChecked && isSelected && !isCorrect;
             return OptionCard(
-              option: QuestionOption(id: option.id, text: option.text),
+              option: QuestionOptionDto(id: option.id, text: option.text),
               isSelected: isSelected || (state.isChecked && isCorrect),
               type: q.type == AssessmentQuestionType.multipleSelect
-                  ? QuestionType.multipleSelect
-                  : QuestionType.mcq,
+                  ? 'multipleSelect'
+                  : 'singleSelect',
               onTap: state.isChecked
                   ? null
                   : () => _handleOptionSelect(q, option.id),

@@ -2,12 +2,14 @@ import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 
 class TestResultView extends StatelessWidget {
+  final String? score;
   final VoidCallback onReviewAnswers;
   final VoidCallback onViewAnalytics;
   final VoidCallback onClose;
 
   const TestResultView({
     super.key,
+    this.score,
     required this.onReviewAnswers,
     required this.onViewAnalytics,
     required this.onClose,
@@ -69,7 +71,7 @@ class TestResultView extends StatelessWidget {
                 ),
                 SizedBox(height: design.spacing.md),
                 AppText.body(
-                  l10n.testSubmittedBody,
+                  score != null ? 'Your Score: $score' : l10n.testSubmittedBody,
                   color: design.colors.textSecondary,
                   textAlign: TextAlign.center,
                 ),

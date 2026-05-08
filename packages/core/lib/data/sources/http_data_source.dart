@@ -385,6 +385,9 @@ class HttpDataSource implements DataSource {
       );
     }
 
+    // Sort questions by their order field to match the exact sequence on web
+    allQuestions.sort((a, b) => a.order.compareTo(b.order));
+
     return allQuestions;
   }
 

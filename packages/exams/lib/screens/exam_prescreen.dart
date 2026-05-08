@@ -4,6 +4,7 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
 import '../providers/exam_providers.dart';
+import '../repositories/exam_repository.dart';
 
 class ExamPrescreen extends ConsumerStatefulWidget {
   final String testId;
@@ -27,8 +28,22 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
   @override
   void initState() {
     super.initState();
-    // Preload exam details
+    // If there is already an active in-progress attempt for this exam,
+    // skip the prescreen entirely and go straight to the player.
     Future.microtask(() {
+      if (!mounted) return;
+
+      final current = ref.read(examAttemptProvider);
+      final examId = current.exam?.id;
+      final isActiveAttempt = current.status == ExamAttemptStatus.inProgress ||
+          current.status == ExamAttemptStatus.submitting;
+
+      if (isActiveAttempt && examId == widget.testId) {
+        widget.onStartAttempt();
+        return;
+      }
+
+      // Preload exam details for the metadata display
       if (widget.lesson?.slug != null) {
         ref.read(examDetailProvider(widget.lesson!.slug!).future);
       }

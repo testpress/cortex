@@ -1,11 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import '../../models/test_model.dart';
+import 'package:core/data/data.dart';
 import './palette_shapes.dart';
 
 class QuestionPalette extends StatelessWidget {
-  final List<TestQuestion> questions;
-  final Map<String, TestAttemptAnswer> answers;
+  final List<QuestionDto> questions;
+  final Map<String, AnswerDto> answers;
   final int currentIndex;
   final Function(int) onQuestionSelected;
   final VoidCallback onClose;
@@ -112,7 +112,7 @@ class QuestionPalette extends StatelessWidget {
   Widget _buildPaletteItem(
     DesignConfig design,
     int index,
-    TestAttemptAnswer? answer,
+    AnswerDto? answer,
   ) {
     final isSelected = answer != null && answer.selectedOptions.isNotEmpty;
     final isMarked = answer?.isMarked ?? false;

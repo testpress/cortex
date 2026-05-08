@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import '../../../models/test_model.dart';
+import 'package:core/data/data.dart';
 import 'review_state_logic.dart';
 import 'widgets/review_header.dart';
 import 'widgets/review_filter_bar.dart';
@@ -13,8 +13,8 @@ import 'widgets/review_empty_state.dart';
 
 class ReviewAnswerDetailScreen extends StatefulWidget {
   final String assessmentTitle;
-  final List<TestQuestion> questions;
-  final Map<String, TestAttemptAnswer> attemptStates;
+  final List<QuestionDto> questions;
+  final Map<String, AnswerDto> attemptStates;
   final VoidCallback onBack;
   final int initialQuestionIndex;
 
@@ -38,9 +38,9 @@ class _ReviewAnswerDetailScreenState extends State<ReviewAnswerDetailScreen>
   ReviewFilter _activeFilter = ReviewFilter.all;
 
   @override
-  Map<String, TestAttemptAnswer> get attemptStates => widget.attemptStates;
+  Map<String, AnswerDto> get attemptStates => widget.attemptStates;
   @override
-  List<TestQuestion> get allQuestions => widget.questions;
+  List<QuestionDto> get allQuestions => widget.questions;
 
   @override
   void initState() {
@@ -127,10 +127,11 @@ class _ReviewAnswerDetailScreenState extends State<ReviewAnswerDetailScreen>
   }
 
   void _showAskDoubtDialog(
-    TestQuestion question,
+    QuestionDto question,
     DesignConfig design,
     AppLocalizations l10n,
   ) {
+    final questionIndex = widget.questions.indexOf(question) + 1;
     final truncatedText = question.text.length > 50
         ? "${question.text.substring(0, 50)}..."
         : question.text;
@@ -151,7 +152,7 @@ class _ReviewAnswerDetailScreenState extends State<ReviewAnswerDetailScreen>
           mainAxisSize: MainAxisSize.min,
           children: [
             AppText.body(
-              "${l10n.reviewQuestionLabel(question.number.toString())}: $truncatedText",
+              "${l10n.reviewQuestionLabel(questionIndex.toString())}: $truncatedText",
               color: design.colors.textSecondary,
               maxLines: 2,
             ),
@@ -168,7 +169,7 @@ class _ReviewAnswerDetailScreenState extends State<ReviewAnswerDetailScreen>
   }
 
   void _showCommentDialog(
-    TestQuestion question,
+    QuestionDto question,
     DesignConfig design,
     AppLocalizations l10n,
   ) {
@@ -189,7 +190,7 @@ class _ReviewAnswerDetailScreenState extends State<ReviewAnswerDetailScreen>
           mainAxisSize: MainAxisSize.min,
           children: [
             AppText.body(
-              l10n.reviewShareThoughtsOnQuestion(question.number),
+              l10n.reviewShareThoughtsOnQuestion(widget.questions.indexOf(question) + 1),
               color: design.colors.textSecondary,
             ),
             SizedBox(height: design.spacing.md),
@@ -205,7 +206,7 @@ class _ReviewAnswerDetailScreenState extends State<ReviewAnswerDetailScreen>
   }
 
   void _showReportDialog(
-    TestQuestion question,
+    QuestionDto question,
     DesignConfig design,
     AppLocalizations l10n,
   ) {
@@ -215,7 +216,7 @@ class _ReviewAnswerDetailScreenState extends State<ReviewAnswerDetailScreen>
       barrierLabel: l10n.reviewReportIssueTitle,
       barrierColor: design.colors.shadow.withValues(alpha: 0.6),
       pageBuilder: (context, anim1, anim2) => ReportReviewDialog(
-        questionNumber: question.number,
+        questionNumber: (widget.questions.indexOf(question) + 1),
         design: design,
         l10n: l10n,
         onSubmit: (index, text) => Navigator.pop(context),

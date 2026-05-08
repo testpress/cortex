@@ -1,4 +1,4 @@
-import '../models/test_model.dart';
+import 'package:core/data/data.dart';
 import '../models/analytics_overview.dart';
 import '../models/section_performance_overview.dart';
 
@@ -21,15 +21,15 @@ class MockReviewAnalyticsFactory {
   static const int _averageThreshold = 45;
 
   static ReviewAnalyticsDataset createDataset({
-    required List<TestQuestion> questions,
-    required Map<String, TestAttemptAnswer> attemptStates,
+    required List<QuestionDto> questions,
+    required Map<String, AnswerDto> attemptStates,
   }) {
     int totalCorrect = 0;
     int totalIncorrect = 0;
     int totalAttempted = 0;
 
     // Group questions by subject
-    final Map<String, List<TestQuestion>> subjectGroups = {};
+    final Map<String, List<QuestionDto>> subjectGroups = {};
     for (final q in questions) {
       if (q.subject.isEmpty) {
         subjectGroups.putIfAbsent('General', () => []).add(q);
@@ -55,7 +55,7 @@ class MockReviewAnalyticsFactory {
           final isCorrect =
               attempt.selectedOptions.length == q.correctOptionIds.length &&
               q.correctOptionIds.every(
-                (id) => attempt.selectedOptions.contains(id),
+                (id) => attempt.selectedOptions.any((optId) => optId.toString() == id.toString()),
               );
           if (isCorrect) {
             subjectCorrect++;

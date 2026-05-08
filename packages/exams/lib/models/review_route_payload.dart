@@ -1,4 +1,4 @@
-import 'test_model.dart';
+import 'package:core/data/data.dart';
 
 class ReviewRoutePayload {
   const ReviewRoutePayload({
@@ -8,6 +8,6 @@ class ReviewRoutePayload {
   });
 
   final String assessmentTitle;
-  final List<TestQuestion> questions;
-  final Map<String, TestAttemptAnswer> attemptStates;
+  final List<QuestionDto> questions;
+  final Map<String, AnswerDto> attemptStates;
 }

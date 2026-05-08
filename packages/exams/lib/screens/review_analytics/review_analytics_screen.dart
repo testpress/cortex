@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../data/mock_review_analytics.dart';
 import '../../models/review_route_payload.dart';
-import '../../models/test_model.dart';
+import 'package:core/data/data.dart';
 import 'widgets/analytics_header.dart';
 import 'widgets/donut_legend.dart';
 import 'widgets/explore_details_card.dart';
@@ -25,8 +25,8 @@ class ReviewAnalyticsScreen extends StatelessWidget {
 
   final String testId;
   final String assessmentTitle;
-  final List<TestQuestion> questions;
-  final Map<String, TestAttemptAnswer> attemptStates;
+  final List<QuestionDto> questions;
+  final Map<String, AnswerDto> attemptStates;
   final VoidCallback onBack;
 
   @override
