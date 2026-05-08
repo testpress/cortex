@@ -18,6 +18,7 @@ export 'package:package_info_plus/package_info_plus.dart';
 
 // Widgets
 export 'widgets/app_text.dart';
+export 'widgets/app_html.dart';
 export 'widgets/app_button.dart';
 export 'widgets/app_card.dart';
 export 'widgets/app_header.dart';
