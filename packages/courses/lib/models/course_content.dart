@@ -1,14 +1,16 @@
-import 'package:core/data/data.dart' show LessonType, LessonProgressStatus;
+import 'package:core/data/data.dart' show LessonType, LessonProgressStatus, LessonDto;
 
-export 'package:core/data/data.dart' show LessonType, LessonProgressStatus;
+export 'package:core/data/data.dart' show LessonType, LessonProgressStatus, LessonDto;
 
 /// Domain model for a specific content item within a chapter.
 class Lesson {
   const Lesson({
     required this.id,
+    required this.chapterId,
     required this.title,
     required this.type,
     required this.progressStatus,
+    required this.orderIndex,
     this.duration,
     this.isLocked = false,
     this.subtitle,
@@ -22,6 +24,8 @@ class Lesson {
     this.hasAttempts = false,
     this.contentUrl,
     this.image,
+    this.attemptsUrl,
+    this.slug,
     this.nextContentId,
     this.previousContentId,
     this.htmlContent,
@@ -34,9 +38,11 @@ class Lesson {
   });
 
   final String id;
+  final String chapterId;
   final String title;
   final LessonType type;
   final LessonProgressStatus progressStatus;
+  final int orderIndex;
   final String? duration;
   final bool isLocked;
   final bool isBookmarked;
@@ -53,6 +59,8 @@ class Lesson {
   final bool isUpcoming;
   final bool hasAttempts;
   final String? image;
+  final String? attemptsUrl;
+  final String? slug;
 
   // New fields for LessonDetailShell (v2.4+)
   final String? nextContentId;
@@ -84,6 +92,42 @@ class Lesson {
       default:
         return true;
     }
+  }
+
+  /// Converts this domain model to a [LessonDto] for cross-package use.
+  LessonDto toDto() {
+    return LessonDto(
+      id: id,
+      chapterId: chapterId,
+      title: title,
+      type: type,
+      progressStatus: progressStatus,
+      duration: duration ?? '',
+      isLocked: isLocked,
+      orderIndex: orderIndex,
+      subtitle: subtitle,
+      subjectName: subjectName,
+      subjectIndex: subjectIndex,
+      lessonNumber: lessonNumber,
+      totalLessons: totalLessons,
+      contentUrl: contentUrl,
+      isBookmarked: isBookmarked,
+      isRunning: isRunning,
+      isUpcoming: isUpcoming,
+      hasAttempts: hasAttempts,
+      image: image,
+      attemptsUrl: attemptsUrl,
+      slug: slug,
+      nextContentId: nextContentId,
+      previousContentId: previousContentId,
+      htmlContent: htmlContent,
+      isDetailFetched: isDetailFetched,
+      chatEmbedUrl: chatEmbedUrl,
+      streamStatus: streamStatus,
+      showRecordedVideo: showRecordedVideo,
+      isScheduled: isScheduled,
+      scheduledMessage: scheduledMessage,
+    );
   }
 }
 

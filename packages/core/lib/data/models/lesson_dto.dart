@@ -45,6 +45,10 @@ class LessonDto {
   final bool isScheduled;
   final String? scheduledMessage;
 
+  // Exam Attendance
+  final String? attemptsUrl;
+  final String? slug;
+
   /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
   bool get isComplete {
     if (isDetailFetched) return true;
@@ -95,6 +99,8 @@ class LessonDto {
     this.showRecordedVideo = false,
     this.isScheduled = false,
     this.scheduledMessage,
+    this.attemptsUrl,
+    this.slug,
   });
 
   LessonDto copyWith({
@@ -127,6 +133,8 @@ class LessonDto {
     String? chatEmbedUrl,
     String? streamStatus,
     bool? showRecordedVideo,
+    String? attemptsUrl,
+    String? slug,
   }) {
     return LessonDto(
       id: id ?? this.id,
@@ -158,6 +166,8 @@ class LessonDto {
       showRecordedVideo: showRecordedVideo ?? this.showRecordedVideo,
       isScheduled: isScheduled ?? this.isScheduled,
       scheduledMessage: scheduledMessage ?? this.scheduledMessage,
+      attemptsUrl: attemptsUrl ?? this.attemptsUrl,
+      slug: slug ?? this.slug,
     );
   }
 
@@ -182,6 +192,8 @@ class LessonDto {
       previousContentId: (previousContentId?.isEmpty ?? true) ? other.previousContentId : previousContentId,
       chapterTitle: (chapterTitle?.isEmpty ?? true) ? other.chapterTitle : chapterTitle,
       image: (image?.isEmpty ?? true) ? other.image : image,
+      attemptsUrl: (attemptsUrl?.isEmpty ?? true) ? other.attemptsUrl : attemptsUrl,
+      slug: (slug?.isEmpty ?? true) ? other.slug : slug,
       isDetailFetched: isDetailFetched || other.isDetailFetched,
       // Status flags: Prefer 'true' or more advanced progress
       isRunning: isRunning || other.isRunning,
@@ -351,7 +363,18 @@ class LessonDto {
   }
 
   static LessonDto _parseExamLesson(Map<String, dynamic> json, LessonType type) {
-    return _parseBase(json, type);
+    final base = _parseBase(json, type);
+    final exam = json['exam'] as Map<String, dynamic>?;
+
+    return base.copyWith(
+      attemptsUrl: json['attempts_url'] as String? ?? 
+                   exam?['attempts_url'] as String? ??
+                   json['start_url'] as String? ??
+                   exam?['start_url'] as String?,
+      slug: json['slug'] as String? ?? 
+            exam?['slug'] as String? ??
+            json['exam_slug'] as String?,
+    );
   }
 
   static LessonDto _parseBase(Map<String, dynamic> json, LessonType type) {

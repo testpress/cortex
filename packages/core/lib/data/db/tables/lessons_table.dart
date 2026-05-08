@@ -48,6 +48,10 @@ class LessonsTable extends Table {
   BoolColumn get isScheduled => boolean().withDefault(const Constant(false))();
   TextColumn get scheduledMessage => text().nullable()();
 
+  // Exam Attendance
+  TextColumn get attemptsUrl => text().nullable()();
+  TextColumn get slug => text().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
