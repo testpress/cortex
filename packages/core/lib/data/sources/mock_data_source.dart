@@ -933,30 +933,49 @@ class MockDataSource implements DataSource {
     await Future.delayed(const Duration(milliseconds: 500));
   }
 
-  // ── Exams ───────────────────────────────────────────────────────────────
+  // --- Exam Attendance ---
 
   @override
   Future<ExamDto> getExam(String slug) async {
-    await Future.delayed(const Duration(milliseconds: 400));
-    return ExamDto(
+    await Future.delayed(const Duration(milliseconds: 500));
+    return const ExamDto(
       id: 'mock-exam-1',
-      title: 'Mock Jee Main Test',
+      slug: 'mock-exam-slug',
+      title: 'JEE Main Physics Mock Test',
       duration: '01:00:00',
-      questionCount: 10,
+      questionCount: 30,
       hasInstructions: true,
-      attemptsUrl: 'https://lmsdemo.testpress.in/api/v3/exams/mock-exam-1/attempts/',
+      attemptsUrl: 'https://api.testpress.in/api/v2.2.1/exams/mock-exam-slug/attempts/',
+      state: 'Available',
     );
   }
 
   @override
+  Future<List<AttemptDto>> getAttempts(String attemptsUrl) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    return [
+      AttemptDto(
+        id: 'mock-attempt-1',
+        questionsUrl: 'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/questions/',
+        heartbeatUrl: 'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/heartbeat/',
+        endUrl: 'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/end/',
+        date: DateTime.now().subtract(const Duration(days: 2)).toIso8601String(),
+        score: '45.0',
+        correctCount: 15,
+        incorrectCount: 5,
+        totalQuestions: 30,
+      )
+    ];
+  }
+
+  @override
   Future<AttemptDto> createAttempt(String attemptsUrl) async {
-    await Future.delayed(const Duration(milliseconds: 600));
+    await Future.delayed(const Duration(milliseconds: 800));
     return const AttemptDto(
-      id: 'attempt-101',
-      questionsUrl: 'https://lmsdemo.testpress.in/api/v3/attempts/attempt-101/questions/',
-      heartbeatUrl: 'https://lmsdemo.testpress.in/api/v3/attempts/attempt-101/heartbeat/',
-      endUrl: 'https://lmsdemo.testpress.in/api/v3/attempts/attempt-101/end/',
-      remainingTime: '01:00:00',
+      id: 'mock-attempt-1',
+      questionsUrl: 'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/questions/',
+      heartbeatUrl: 'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/heartbeat/',
+      endUrl: 'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/end/',
     );
   }
 
@@ -966,35 +985,39 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<List<QuestionDto>> getQuestions(String questionsUrl) async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    return List.generate(10, (index) {
-      return QuestionDto(
-        id: 'q-${index + 1}',
-        text: 'This is mock question number ${index + 1}. What is the correct answer?',
-        type: 'singleSelect',
-        subject: index < 5 ? 'Physics' : 'Chemistry',
-        options: [
-          const QuestionOptionDto(id: 'opt-a', text: 'Option A'),
-          const QuestionOptionDto(id: 'opt-b', text: 'Option B'),
-          const QuestionOptionDto(id: 'opt-c', text: 'Option C'),
-          const QuestionOptionDto(id: 'opt-d', text: 'Option D'),
-        ],
-        answerUrl: 'https://lmsdemo.testpress.in/api/v3/attempts/attempt-101/questions/q-${index + 1}/answer/',
-        correctOptionIds: ['opt-a'],
-        explanation: 'Option A is correct because of mock reasoning.',
-      );
-    });
+  Future<AttemptDto> startAttempt(String startUrl) async {
+    return createAttempt(startUrl);
   }
 
   @override
-  Future<AttemptDto> sendHeartbeat(String heartbeatUrl) async {
-    return const AttemptDto(
-      id: 'attempt-101',
-      questionsUrl: '',
-      heartbeatUrl: '',
-      endUrl: '',
-    );
+  Future<List<QuestionDto>> getQuestions(String questionsUrl) async {
+    await Future.delayed(const Duration(milliseconds: 1000));
+    return const [
+      QuestionDto(
+        id: 'q1',
+        text: 'What is the SI unit of force?',
+        type: 'singleSelect',
+        answerUrl: 'https://api.testpress.in/api/v2.2.1/questions/q1/answer/',
+        options: [
+          QuestionOptionDto(id: 'o1', text: 'Newton'),
+          QuestionOptionDto(id: 'o2', text: 'Joule'),
+          QuestionOptionDto(id: 'o3', text: 'Watt'),
+          QuestionOptionDto(id: 'o4', text: 'Pascal'),
+        ],
+      ),
+      QuestionDto(
+        id: 'q2',
+        text: 'Which of the following are vector quantities?',
+        type: 'multipleSelect',
+        answerUrl: 'https://api.testpress.in/api/v2.2.1/questions/q2/answer/',
+        options: [
+          QuestionOptionDto(id: 'o21', text: 'Velocity'),
+          QuestionOptionDto(id: 'o22', text: 'Speed'),
+          QuestionOptionDto(id: 'o23', text: 'Acceleration'),
+          QuestionOptionDto(id: 'o24', text: 'Mass'),
+        ],
+      ),
+    ];
   }
 
   @override
@@ -1003,13 +1026,50 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<AttemptDto> endExam(String endUrl) async {
-    await Future.delayed(const Duration(milliseconds: 800));
+  Future<AttemptDto> sendHeartbeat(String heartbeatUrl) async {
+    await Future.delayed(const Duration(milliseconds: 200));
     return const AttemptDto(
-      id: 'attempt-101',
+      id: 'mock-attempt-1',
       questionsUrl: '',
       heartbeatUrl: '',
       endUrl: '',
+      remainingTime: '00:59:30',
+    );
+  }
+
+  @override
+  Future<AttemptDto> endExam(String endUrl) async {
+    await Future.delayed(const Duration(milliseconds: 800));
+    return const AttemptDto(
+      id: 'mock-attempt-1',
+      questionsUrl: '',
+      heartbeatUrl: '',
+      endUrl: '',
+      score: '45/100',
+    );
+  }
+
+  @override
+  Future<SectionDto> startSection(String startUrl) async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    return const SectionDto(
+      id: 'mock-section-1',
+      name: 'Physics',
+      state: 'Running',
+      questionsUrl: '',
+      order: 0,
+    );
+  }
+
+  @override
+  Future<SectionDto> endSection(String endUrl) async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    return const SectionDto(
+      id: 'mock-section-1',
+      name: 'Physics',
+      state: 'Completed',
+      questionsUrl: '',
+      order: 0,
     );
   }
 

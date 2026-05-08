@@ -1,20 +1,26 @@
-/// Answer DTO — plain object for submitting answers to the backend.
 class AnswerDto {
   final String questionId;
-  final List<String> selectedOptions;
-  final bool isMarked;
+  final List<int> selectedAnswers;
+  final bool review;
 
-  const AnswerDto({
+  bool get isMarked => review;
+  List<String> get selectedOptions => selectedAnswers.map((e) => e.toString()).toList();
+
+  AnswerDto({
     required this.questionId,
-    required this.selectedOptions,
-    this.isMarked = false,
-  });
+    required List<dynamic> selectedOptions,
+    bool? isMarked,
+    bool review = false,
+  }) : review = review || (isMarked ?? false),
+       selectedAnswers = selectedOptions
+            .map((e) => int.tryParse(e.toString()) ?? 0)
+            .where((id) => id != 0)
+            .toList();
 
   Map<String, dynamic> toJson() {
     return {
-      'question_id': questionId,
-      'selected_options': selectedOptions,
-      'is_marked': isMarked,
+      'selected_answers': selectedAnswers,
+      'review': review,
     };
   }
 }

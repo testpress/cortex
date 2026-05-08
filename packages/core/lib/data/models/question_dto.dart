@@ -23,22 +23,34 @@ class QuestionDto {
   });
 
   factory QuestionDto.fromJson(Map<String, dynamic> json) {
+    // Handle nested question object in some API versions
+    final Map<String, dynamic> data = json['question'] as Map<String, dynamic>? ?? json;
+
     return QuestionDto(
-      id: (json['id'] ?? '').toString(),
-      text: json['text'] as String? ?? '',
-      type: json['type'] as String? ?? 'singleSelect',
-      subject: json['subject'] as String? ?? 'General',
-      options: (json['options'] as List<dynamic>?)
+      id: (data['id'] ?? json['id'] ?? '').toString(),
+      text: (data['text'] ?? data['question'] ?? data['question_html'] ?? json['text_html']) as String? ?? '',
+      type: switch ((data['type'] ?? json['type']) as String?) {
+        'mcq' => 'singleSelect',
+        'mca' => 'multipleSelect',
+        'singleSelect' => 'singleSelect',
+        'multipleSelect' => 'multipleSelect',
+        _ => 'singleSelect',
+      },
+      subject: (data['subject'] ?? data['subject_name'] ?? json['subject_name']) as String? ?? 'General',
+      options: (data['options'] as List<dynamic>? ?? 
+                 data['answers'] as List<dynamic>? ?? 
+                 json['options'] as List<dynamic>? ?? 
+                 json['answers'] as List<dynamic>?)
               ?.map((e) => QuestionOptionDto.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
-      answerUrl: json['answer_url'] as String? ?? '',
-      markUrl: json['mark_url'] as String?,
-      correctOptionIds: (json['correct_option_ids'] as List<dynamic>?)
+      answerUrl: (data['answer_url'] ?? json['answer_url'] ?? data['url'] ?? json['url']) as String? ?? '',
+      markUrl: (data['mark_url'] ?? json['mark_url']) as String?,
+      correctOptionIds: (data['correct_option_ids'] as List<dynamic>? ?? json['correct_option_ids'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           const [],
-      explanation: json['explanation'] as String?,
+      explanation: (data['explanation'] ?? data['explanation_html'] ?? json['explanation_html']) as String?,
     );
   }
 
@@ -70,7 +82,7 @@ class QuestionOptionDto {
   factory QuestionOptionDto.fromJson(Map<String, dynamic> json) {
     return QuestionOptionDto(
       id: (json['id'] ?? '').toString(),
-      text: json['text'] as String? ?? '',
+      text: (json['text'] ?? json['text_html']) as String? ?? '',
     );
   }
 
