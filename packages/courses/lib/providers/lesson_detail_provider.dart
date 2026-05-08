@@ -13,15 +13,17 @@ Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
  
   final initial = await repository.getLesson(lessonId);
  
-  final dbStream = repository.watchLesson(lessonId).map((row) {
+  final Stream<Lesson?> dbStream = repository.watchLesson(lessonId).map((row) {
     if (row == null) return null;
  
     final lessonDto = repository.rowToLessonDto(row);
     return Lesson(
       id: lessonDto.id,
+      chapterId: lessonDto.chapterId,
       title: lessonDto.title,
       type: lessonDto.type,
       progressStatus: lessonDto.progressStatus,
+      orderIndex: lessonDto.orderIndex,
       duration: lessonDto.duration,
       isLocked: lessonDto.isLocked,
       isBookmarked: lessonDto.isBookmarked,
@@ -44,6 +46,8 @@ Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
       showRecordedVideo: lessonDto.showRecordedVideo,
       isScheduled: lessonDto.isScheduled,
       scheduledMessage: lessonDto.scheduledMessage,
+      attemptsUrl: lessonDto.attemptsUrl,
+      slug: lessonDto.slug,
     );
   });
  
@@ -58,7 +62,7 @@ Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
   } else if (!initial.isComplete) {
     // Background refresh: Combine DB updates with the refresh result
     // If refresh fails, the error propagates through the merged stream.
-    yield* StreamGroup.merge([
+    yield* StreamGroup.merge<Lesson?>([
       dbStream,
       repository.refreshLesson(lessonId).asStream().handleError((e) {
         throw e;

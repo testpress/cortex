@@ -62,9 +62,11 @@ Stream<Chapter?> _watchChapter(
           .map(
             (l) => Lesson(
               id: l.id,
+              chapterId: l.chapterId,
               title: l.title,
               type: l.type,
               progressStatus: l.progressStatus,
+              orderIndex: l.orderIndex,
               duration: l.duration,
               isLocked: l.isLocked,
               subtitle: l.subtitle,
@@ -81,6 +83,8 @@ Stream<Chapter?> _watchChapter(
               nextContentId: l.nextContentId,
               previousContentId: l.previousContentId,
               htmlContent: l.htmlContent,
+              attemptsUrl: l.attemptsUrl,
+              slug: l.slug,
             ),
           )
           .toList(),

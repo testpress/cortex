@@ -503,6 +503,7 @@ class MockDataSource implements DataSource {
           type: LessonType.test,
           duration: '60 min',
           progressStatus: LessonProgressStatus.notStarted,
+          attemptsUrl: 'https://demo.testpress.in/api/v3/exams/thermodynamics-chapter-test/attempts/',
           isLocked: true,
           orderIndex: 5,
         ),

@@ -708,6 +708,8 @@ class CourseRepository {
     showRecordedVideo: row.showRecordedVideo,
     isScheduled: row.isScheduled,
     scheduledMessage: row.scheduledMessage,
+    attemptsUrl: row.attemptsUrl,
+    slug: row.slug,
   );
 
   LessonsTableCompanion _lessonDtoToCompanion(LessonDto dto) =>
@@ -767,6 +769,10 @@ class CourseRepository {
         scheduledMessage: dto.scheduledMessage != null
             ? Value(dto.scheduledMessage)
             : const Value.absent(),
+        attemptsUrl: dto.attemptsUrl != null
+            ? Value(dto.attemptsUrl)
+            : const Value.absent(),
+        slug: dto.slug != null ? Value(dto.slug) : const Value.absent(),
       );
 
   LessonType _parseType(String s) {
