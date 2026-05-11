@@ -202,6 +202,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                     ),
                   ],
                 ),
+                GoRoute(
+                  path: 'discussions/doubts',
+                  builder: (context, state) => const DoubtsListScreen(),
+                ),
               ],
             ),
           ],

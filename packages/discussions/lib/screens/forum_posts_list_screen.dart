@@ -25,6 +25,7 @@ class ForumPostsListScreen extends ConsumerWidget {
         children: [
           ForumHeader(
             title: l10n.forumTitle,
+            showDivider: false,
             actions: [_CreatePostButton(courseId: courseId)],
           ),
           // Search bar — divider is AFTER the search bar
@@ -133,7 +134,7 @@ class _ThreadItem extends StatelessWidget {
     final design = Design.of(context);
 
     return GestureDetector(
-      onTap: () => context.push('/home/forum/posts/${thread.courseId}/${thread.id}'),
+      onTap: () => context.push('/home/discussions/forum/posts/${thread.courseId}/${thread.id}'),
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: design.spacing.md,

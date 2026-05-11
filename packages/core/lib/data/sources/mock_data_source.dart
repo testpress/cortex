@@ -1084,4 +1084,20 @@ class MockDataSource implements DataSource {
     // Mock implementation for testing
     await Future.delayed(const Duration(seconds: 1));
   }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Doubts
+  // ─────────────────────────────────────────────────────────────────────────
+
+  @override
+  Future<List<DoubtDto>> getDoubts() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    return mockDoubts;
+  }
+
+  @override
+  Future<List<DoubtReplyDto>> getDoubtReplies(String doubtId) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return mockDoubtReplies.where((r) => r.doubtId == doubtId).toList();
+  }
 }

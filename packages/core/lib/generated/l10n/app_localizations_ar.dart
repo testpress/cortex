@@ -501,7 +501,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get drawerForum => 'منتدى المناقشات';
 
   @override
-  String get drawerDoubts => 'الأسئلة';
+  String get drawerDoubts => 'اسأل المرشد';
 
   @override
   String get drawerCustomExam => 'نموذج امتحان';
@@ -1393,5 +1393,41 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String downloadsStorageUsed(String size) {
     return '$size مستخدم';
+  }
+
+  @override
+  String get doubtsEmptyTitle => 'لم يتم العثور على أسئلة';
+
+  @override
+  String get doubtsEmptySubtitle =>
+      'اطرح سؤالك الأول للحصول على مساعدة من المعلمين.';
+
+  @override
+  String get doubtsSearchNoResults => 'لم يتم العثور على نتائج';
+
+  @override
+  String get doubtsSearchNoResultsSubtitle => 'حاول تغيير نص البحث';
+
+  @override
+  String get doubtsHeaderAskDoubt => 'اسأل سؤال';
+
+  @override
+  String get doubtsSearchHint => 'البحث في الأسئلة';
+
+  @override
+  String get doubtsLabelUnanswered => 'لم يتم الرد';
+
+  @override
+  String get doubtsLabelAnswered => 'تم الرد';
+
+  @override
+  String doubtsReplyCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ردود',
+      one: 'رد واحد',
+    );
+    return '$_temp0';
   }
 }

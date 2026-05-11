@@ -61,6 +61,10 @@ export 'motion/accessibility_motion.dart';
 export 'network/dio_provider.dart';
 export 'network/file_downloader.dart';
 
+// Utils
+export 'utils/date_formatter.dart';
+export 'utils/time_formatter.dart';
+
 // Localization
 export 'localization/localization_provider.dart';
 export 'localization/l10n_helper.dart';

@@ -503,7 +503,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawerForum => 'Discussions Forum';
 
   @override
-  String get drawerDoubts => 'Doubts';
+  String get drawerDoubts => 'Ask Mentor';
 
   @override
   String get drawerCustomExam => 'Custom Exam';
@@ -1380,5 +1380,41 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String downloadsStorageUsed(String size) {
     return '$size used';
+  }
+
+  @override
+  String get doubtsEmptyTitle => 'No doubts found';
+
+  @override
+  String get doubtsEmptySubtitle =>
+      'Ask your first doubt to get help from mentors.';
+
+  @override
+  String get doubtsSearchNoResults => 'No matches found';
+
+  @override
+  String get doubtsSearchNoResultsSubtitle => 'Try adjusting your search query';
+
+  @override
+  String get doubtsHeaderAskDoubt => 'Ask a Doubt';
+
+  @override
+  String get doubtsSearchHint => 'Search doubts';
+
+  @override
+  String get doubtsLabelUnanswered => 'Unanswered';
+
+  @override
+  String get doubtsLabelAnswered => 'Answered';
+
+  @override
+  String doubtsReplyCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count replies',
+      one: '1 reply',
+    );
+    return '$_temp0';
   }
 }

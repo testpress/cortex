@@ -55,9 +55,12 @@ class DashboardDrawer extends ConsumerWidget {
               },
             ),
             AppDrawerItem(
-              icon: LucideIcons.messageCircle,
+              icon: LucideIcons.helpCircle,
               label: l10n.drawerDoubts,
-              action: () {},
+              action: () {
+                ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                context.go('/home/discussions/doubts');
+              },
             ),
             AppDrawerItem(
               icon: LucideIcons.fileCheck,

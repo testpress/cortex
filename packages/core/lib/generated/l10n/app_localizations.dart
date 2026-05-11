@@ -997,7 +997,7 @@ abstract class AppLocalizations {
   /// No description provided for @drawerDoubts.
   ///
   /// In en, this message translates to:
-  /// **'Doubts'**
+  /// **'Ask Mentor'**
   String get drawerDoubts;
 
   /// No description provided for @drawerCustomExam.
@@ -2564,6 +2564,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{size} used'**
   String downloadsStorageUsed(String size);
+
+  /// No description provided for @doubtsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No doubts found'**
+  String get doubtsEmptyTitle;
+
+  /// No description provided for @doubtsEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask your first doubt to get help from mentors.'**
+  String get doubtsEmptySubtitle;
+
+  /// No description provided for @doubtsSearchNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches found'**
+  String get doubtsSearchNoResults;
+
+  /// No description provided for @doubtsSearchNoResultsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Try adjusting your search query'**
+  String get doubtsSearchNoResultsSubtitle;
+
+  /// No description provided for @doubtsHeaderAskDoubt.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask a Doubt'**
+  String get doubtsHeaderAskDoubt;
+
+  /// No description provided for @doubtsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search doubts'**
+  String get doubtsSearchHint;
+
+  /// No description provided for @doubtsLabelUnanswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Unanswered'**
+  String get doubtsLabelUnanswered;
+
+  /// No description provided for @doubtsLabelAnswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Answered'**
+  String get doubtsLabelAnswered;
+
+  /// No description provided for @doubtsReplyCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count,plural, =1{1 reply} other{{count} replies}}'**
+  String doubtsReplyCount(num count);
 }
 
 class _AppLocalizationsDelegate

@@ -590,3 +590,82 @@ const mockLearners = [
     streakDays: 5,
   ),
 ];
+
+/// Mock personal doubts
+final List<DoubtDto> mockDoubts = [
+  DoubtDto(
+    id: 'doubt_1',
+    courseId: 'c1',
+    courseName: 'Accounts',
+    title: 'How to solve depreciation question in Accounts?',
+    content: '{"ops":[{"insert":"I am having trouble with the straight line method."}]}',
+    studentName: 'Arjun Sharma',
+    replyCount: 3,
+    status: DoubtStatus.answered,
+    createdAt: DateTime.now().subtract(const Duration(hours: 2)),
+  ),
+  DoubtDto(
+    id: 'doubt_2',
+    courseId: 'course_chem',
+    courseName: 'Chemistry',
+    title: 'What is the difference between ionic and covalent bonding?',
+    content: '{"ops":[{"insert":"Which one is stronger?"}]}',
+    studentName: 'Arjun Sharma',
+    replyCount: 5,
+    status: DoubtStatus.answered,
+    createdAt: DateTime.now().subtract(const Duration(hours: 4)),
+  ),
+  DoubtDto(
+    id: 'doubt_3',
+    courseId: 'course_math',
+    courseName: 'Mathematics',
+    title: 'Explain the concept of integration by parts with example',
+    content: '{"ops":[{"insert":"I don\'t understand the ILATE rule."}]}',
+    studentName: 'Arjun Sharma',
+    replyCount: 0,
+    status: DoubtStatus.pending,
+    createdAt: DateTime.now().subtract(const Duration(hours: 6)),
+  ),
+  DoubtDto(
+    id: 'doubt_4',
+    courseId: 'course_bio',
+    courseName: 'Biology',
+    title: 'How does photosynthesis work in C4 plants?',
+    content: '{"ops":[{"insert":"Is it different from C3 plants?"}]}',
+    studentName: 'Arjun Sharma',
+    replyCount: 2,
+    status: DoubtStatus.answered,
+    createdAt: DateTime.now().subtract(const Duration(hours: 8)),
+  ),
+  DoubtDto(
+    id: 'doubt_5',
+    courseId: 'course_physics',
+    courseName: 'Physics',
+    title: "What are Newton's Laws of Motion in simple terms?",
+    content: '{"ops":[{"insert":"Can you give real life examples?"}]}',
+    studentName: 'Arjun Sharma',
+    replyCount: 7,
+    status: DoubtStatus.answered,
+    createdAt: DateTime.now().subtract(const Duration(days: 1)),
+  ),
+];
+
+/// Mock replies for doubts
+final List<DoubtReplyDto> mockDoubtReplies = [
+  DoubtReplyDto(
+    id: 'reply_1',
+    doubtId: 'doubt_2',
+    content: '{"ops":[{"insert":"Yes, the nitronium ion acts as a strong electrophile."}]}',
+    authorName: 'Dr. Smith (Mentor)',
+    isMentor: true,
+    createdAt: DateTime.now().subtract(const Duration(hours: 12)),
+  ),
+  DoubtReplyDto(
+    id: 'reply_2',
+    doubtId: 'doubt_3',
+    content: '{"ops":[{"insert":"The normal force is perpendicular to the surface."}]}',
+    authorName: 'Prof. Ray (Mentor)',
+    isMentor: true,
+    createdAt: DateTime.now().subtract(const Duration(days: 2)),
+  ),
+];
