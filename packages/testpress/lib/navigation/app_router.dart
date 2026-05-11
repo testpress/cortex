@@ -1,46 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'routes.dart';
 import 'package:core/core.dart';
-import 'package:courses/courses.dart';
+import 'package:core/data/data.dart';
 import 'package:profile/profile.dart';
-import 'package:exams/exams.dart';
-
-import '../screens/dashboard/paid_active_home_screen.dart';
 import '../widgets/dashboard_drawer.dart';
-import 'package:discussions/discussions.dart';
 
-class ExplorePlaceholderScreen extends StatelessWidget {
-  const ExplorePlaceholderScreen({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const Center(child: Text('Explore Tab Content'));
-}
 
-class ProfilePlaceholderScreen extends StatelessWidget {
-  const ProfilePlaceholderScreen({super.key});
-  @override
-  Widget build(BuildContext context) => Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text('Profile Tab Content'),
-        const SizedBox(height: 16),
-        AppButton.secondary(
-          label: 'View Typography Gallery',
-          onPressed: () => context.push('/typography-gallery'),
-        ),
-      ],
-    ),
-  );
-}
-
-class HomePlaceholderScreen extends StatelessWidget {
-  const HomePlaceholderScreen({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const Center(child: Text('Home Tab Content'));
-}
 
 /// The root navigator key for the whole app
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -52,741 +19,136 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   // on every loading state change or refresh.
   final isLoggedIn = ref.watch(authProvider).valueOrNull ?? false;
   final config = ref.watch(clientConfigProvider);
-  final isInfoEnabled = config.useRestrictedNavigation || 
-                        ref.watch(infoPageEnabledProvider);
-
+  final activeTabs = NavTab.values.where((tab) {
+    if (tab == NavTab.exams) return config.showExamTab;
+    if (tab == NavTab.info) return config.showInfoTab;
+    return true;
+  }).toList();
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/onboarding',
-    redirect: (context, state) {
-      final path = state.uri.path;
-      final isAuthRoute = path == '/login' || 
-                          path == '/password-login' ||
-                          path == '/mobile-login' ||
-                          path == '/signup' || 
-                          path == '/forgot-password' || 
-                          path == '/otp' || 
-                          path == '/onboarding';
-
-      if (!isLoggedIn && !isAuthRoute) return '/onboarding';
-      if (isLoggedIn && isAuthRoute) return '/home';
-      return null;
-    },
+    redirect: (context, state) =>
+        AuthRoutes.redirect(context, state, isLoggedIn),
     routes: [
-    GoRoute(
-      path: '/onboarding',
-      builder: (context, state) => const OnboardingScreen(),
-    ),
-    GoRoute(
-      path: '/login',
-      builder: (context, state) => const LoginScreen(),
-    ),
-    GoRoute(
-      path: '/password-login',
-      builder: (context, state) => const PasswordLoginScreen(),
-    ),
-    GoRoute(
-      path: '/mobile-login',
-      builder: (context, state) => const MobileLoginScreen(),
-    ),
-    GoRoute(
-      path: '/signup',
-      builder: (context, state) => const SignupScreen(),
-    ),
-    GoRoute(
-      path: '/forgot-password',
-      builder: (context, state) => const ForgotPasswordScreen(),
-    ),
-    GoRoute(
-      path: '/otp',
-      builder: (context, state) {
-        final extra = state.extra as Map<String, dynamic>? ?? {};
-        return OtpScreen(
-          phoneNumber: (extra['phoneNumber'] as String?) ?? '',
-          countryCode: (extra['countryCode'] as String?) ?? '',
-        );
-      },
-    ),
-    StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) {
-        final items = buildPrimaryNavigationItems(
+      ...AuthRoutes.routes,
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) => _AppShellBuilder(
+          navigationShell: navigationShell,
           config: config,
-          isInfoEnabled: isInfoEnabled,
-        );
-
-        return Consumer(
-          builder: (context, ref, _) {
-            final isLogoutSheetOpen = ref.watch(isLogoutSheetOpenProvider);
-            final activeTabId = _getCurrentTabId(
-              navigationShell.currentIndex,
-              config: config,
-              isInfoEnabled: isInfoEnabled,
-            );
-
-            void closeSheet() {
-              ref.read(isLogoutSheetOpenProvider.notifier).state = false;
-            }
-
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                final isLandscape =
-                    constraints.maxWidth > constraints.maxHeight;
-
-                return AppShell(
-                  bottomNavigationBar: AppTabBar(
-                    items: items,
-                    activeItemId: activeTabId,
-                    onTabChange: (id) => 
-                        _onTabItemTapped(navigationShell, id, config: config, isInfoEnabled: isInfoEnabled),
-                  ),
-                  navigationRail: AppNavigationRail(
-                    items: items,
-                    activeItemId: activeTabId,
-                    onTabChange: (id) => 
-                        _onTabItemTapped(navigationShell, id, config: config, isInfoEnabled: isInfoEnabled),
-                  ),
-
-                  drawer: DashboardDrawer(isLandscape: isLandscape),
-                  bottomSheet: AppBottomSheet(
-                    isOpen: isLogoutSheetOpen,
-                    onClose: closeSheet,
-                    child: LogoutConfirmationSheet(
-                      onConfirm: () {
-                        closeSheet();
-                        ref.read(authProvider.notifier).logout();
-                      },
-                      onCancel: closeSheet,
-                    ),
-                  ),
-                  child: navigationShell,
-                );
-              },
-            );
-          },
-        );
-      },
-      branches: [
-        // Home Branch
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              name: AppRouteNames.home,
-              path: '/home',
-              builder: (context, state) => const PaidActiveHomeScreen(),
-              routes: [
-                GoRoute(
-                  path: 'discussions/forum',
-                  parentNavigatorKey: _rootNavigatorKey,
-                  builder: (context, state) =>
-                      const ForumCourseSelectionScreen(),
-                  routes: [
-                    GoRoute(
-                      path: 'posts/:courseId',
-                      parentNavigatorKey: _rootNavigatorKey,
-                      builder: (context, state) {
-                        final courseId = state.pathParameters['courseId']!;
-                        return ForumPostsListScreen(courseId: courseId);
-                      },
-                      routes: [
-                        GoRoute(
-                          path: ':threadId',
-                          parentNavigatorKey: _rootNavigatorKey,
-                          builder: (context, state) {
-                            final courseId = state.pathParameters['courseId']!;
-                            final threadId = state.pathParameters['threadId']!;
-                            return ForumPostDetailScreen(
-                              courseId: courseId,
-                              threadId: threadId,
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                GoRoute(
-                  path: 'discussions/doubts',
-                  parentNavigatorKey: _rootNavigatorKey,
-                  builder: (context, state) => const DoubtsListScreen(),
-                  routes: [
-                    GoRoute(
-                      path: 'ask',
-                      parentNavigatorKey: _rootNavigatorKey,
-                      builder: (context, state) => const AskDoubtFormScreen(),
-                    ),
-                    GoRoute(
-                      path: ':doubtId',
-                      parentNavigatorKey: _rootNavigatorKey,
-                      builder: (context, state) {
-                        final doubtId = state.pathParameters['doubtId']!;
-                        return DoubtDetailScreen(doubtId: doubtId);
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
+          activeTabs: activeTabs,
         ),
-        // Study Branch
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              name: AppRouteNames.study,
-              path: '/study',
-              builder: (context, state) => const StudyScreen(),
-              routes: [
-                GoRoute(
-                  path: 'course/:courseId/chapters',
-                  parentNavigatorKey: _rootNavigatorKey,
-                  builder: (context, state) {
-                    final courseId = state.pathParameters['courseId']!;
-                    final parentId = state.uri.queryParameters['parentId'];
-                    return ChaptersListPage(
-                      courseId: courseId,
-                      parentId: parentId,
-                      onBack: () => context.pop(),
-                    );
-                  },
-                  routes: [
-                    GoRoute(
-                      path: ':chapterId',
-                      parentNavigatorKey: _rootNavigatorKey,
-                      builder: (context, state) {
-                        final courseId = state.pathParameters['courseId']!;
-                        final chapterId = state.pathParameters['chapterId']!;
-                        return ChapterDetailPage(
-                          courseId: courseId,
-                          chapterId: chapterId,
-                          onBack: () => context.pop(),
-                          onLessonClick: (lesson) => LessonRouter.navigateToLesson(
-                            context,
-                            id: lesson.id,
-                            type: lesson.type,
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-                // Lesson and Placeholder routes inside Chapter branch to stay within the shell
-                GoRoute(
-                  name: AppRouteNames.lessonDetail,
-                  path: 'lesson/:id',
-                  parentNavigatorKey: _rootNavigatorKey,
-                  builder: (context, state) {
-                    final id = state.pathParameters['id']!;
-                    return Consumer(
-                      builder: (context, ref, child) {
-                        final lessonAsync = ref.watch(lessonDetailProvider(id));
-                        return lessonAsync.when(
-                          data: (lesson) {
-                            if (lesson == null) {
-                              return const Center(
-                                child: Text('Lesson not found'),
-                              );
-                            }
-                            return _LessonRedirector(
-                              lesson: lesson,
-                              child: LessonDetailOrchestrator(
-                                lesson: lesson,
-                                onNext: lesson.nextContentId != null
-                                    ? () => context.pushReplacement(
-                                        '/study/lesson/${lesson.nextContentId}')
-                                    : null,
-                                onPrevious: lesson.previousContentId != null
-                                    ? () => context.pushReplacement(
-                                        '/study/lesson/${lesson.previousContentId}')
-                                    : null,
-                              ),
-                            );
-                          },
-                          loading: () => Container(
-                            color: Design.of(context).colors.surface,
-                            child: const Center(child: AppLoadingIndicator()),
-                          ),
-                          error: (error, _) {
-                            final l10n = L10n.of(context);
-                            return Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(24.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(
-                                      LucideIcons.alertCircle,
-                                      size: 48,
-                                      color: Color(0xFFEF4444), // Error red
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Text(
-                                      l10n.errorLessonLoad,
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        color: Color(0xFF6B7280), // Text gray
-                                      ),
-                                    ),
-                                    const SizedBox(height: 24),
-                                    AppButton.primary(
-                                      label: l10n.labelRetry,
-                                      onPressed: () => ref.refresh(lessonDetailProvider(id)),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
-                ),
-                GoRoute(
-                  name: AppRouteNames.videoDetail,
-                  path: 'video/:id',
-                  redirect: (context, state) =>
-                      '/study/lesson/${state.pathParameters['id']}',
-                ),
-                GoRoute(
-                  name: AppRouteNames.testDetail,
-                  path: 'test/:id',
-                  parentNavigatorKey: _rootNavigatorKey,
-                  builder: (context, state) {
-                    final id = state.pathParameters['id']!;
-                    final extra = state.extra;
-                    final lesson = extra is LessonDto
-                        ? extra
-                        : (extra is Lesson ? extra.toDto() : null);
-                    return ExamPrescreen(
-                      testId: id,
-                      lesson: lesson,
-                      onClose: () => context.pop(),
-                      onStartAttempt: () async {
-                        context.pushReplacement('/study/test/$id/player', extra: lesson);
-                      },
-                    );
-                  },
-                  routes: [
-                    GoRoute(
-                      path: 'player',
-                      parentNavigatorKey: _rootNavigatorKey,
-                      builder: (context, state) {
-                        final id = state.pathParameters['id']!;
-                        final extra = state.extra;
-                        final lesson = extra is LessonDto
-                            ? extra
-                            : (extra is Lesson ? extra.toDto() : null);
-                        return TestDetailScreen(
-                          testId: id,
-                          lesson: lesson,
-                          onClose: () => context.pop(),
-                        );
-                      },
-                    ),
-                    GoRoute(
-                      path: 'review-analytics',
-                      parentNavigatorKey: _rootNavigatorKey,
-                      builder: (context, state) {
-                        final id = state.pathParameters['id']!;
-                        final payload = state.extra as ReviewRoutePayload?;
-                        return ReviewAnalyticsScreen(
-                          testId: id,
-                          assessmentTitle:
-                              payload?.assessmentTitle ?? 'Assessment $id',
-                          questions: payload?.questions ?? const <QuestionDto>[],
-                          attemptStates: payload?.attemptStates ?? const <String, AnswerDto>{},
-                          onBack: () => context.pop(),
-                        );
-                      },
-                    ),
-                    GoRoute(
-                      path: 'review-answers',
-                      parentNavigatorKey: _rootNavigatorKey,
-                      builder: (context, state) {
-                        final id = state.pathParameters['id']!;
-                        final payload = state.extra as ReviewRoutePayload?;
-                        return ReviewAnswerDetailScreen(
-                          assessmentTitle:
-                              payload?.assessmentTitle ?? 'Assessment $id',
-                          questions: payload?.questions ?? const <QuestionDto>[],
-                          attemptStates: payload?.attemptStates ?? const <String, AnswerDto>{},
-                          onBack: () => context.pop(),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-                GoRoute(
-                  name: AppRouteNames.assessmentDetail,
-                  path: 'assessment/:id',
-                  parentNavigatorKey: _rootNavigatorKey,
-                  builder: (context, state) {
-                    final id = state.pathParameters['id']!;
-                    final extra = state.extra;
-                    final lesson = extra is LessonDto
-                        ? extra
-                        : (extra is Lesson ? extra.toDto() : null);
-                    return AssessmentDetailScreen(
-                      assessmentId: id,
-                      lesson: lesson,
-                      onClose: () => context.pop(),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-        // Exams Branch
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/exams',
-              builder: (context, state) => const ExamsScreen(),
-              routes: [
-                GoRoute(
-                  path: 'course/:courseId/chapters',
-                  parentNavigatorKey: _rootNavigatorKey,
-                  builder: (context, state) {
-                    final courseId = state.pathParameters['courseId']!;
-                    final parentId = state.uri.queryParameters['parentId'];
-                    return ChaptersListPage(
-                      courseId: courseId,
-                      parentId: parentId,
-                      onBack: () => context.pop(),
-                      showFilters: false,
-                      basePath: '/exams',
-                    );
-                  },
-                  routes: [
-                    GoRoute(
-                      path: ':chapterId',
-                      parentNavigatorKey: _rootNavigatorKey,
-                      builder: (context, state) {
-                        final courseId = state.pathParameters['courseId']!;
-                        final chapterId = state.pathParameters['chapterId']!;
-                        return ChapterDetailPage(
-                          courseId: courseId,
-                          chapterId: chapterId,
-                          onBack: () => context.pop(),
-                          showFilters: false,
-                          onLessonClick: (lesson) {
-                            // Navigation to actual test/assessment detail
-                            // will be implemented in the next phase.
-                            final String? path = switch (lesson.type) {
-                              LessonType.test => '/exams/test/${lesson.id}',
-                              LessonType.assessment => '/exams/assessment/${lesson.id}',
-                              _ => null,
-                            };
-                            if (path != null) {
-                              context.push(path, extra: lesson);
-                            }
-                          },
-                        );
-                      },
-                    ),
-                  ],
-                ),
-                GoRoute(
-                  path: 'test/:id',
-                  parentNavigatorKey: _rootNavigatorKey,
-                  builder: (context, state) {
-                    final id = state.pathParameters['id']!;
-                    final extra = state.extra;
-                    final lesson = extra is LessonDto
-                        ? extra
-                        : (extra is Lesson ? extra.toDto() : null);
-                    return ExamPrescreen(
-                      testId: id,
-                      lesson: lesson,
-                      onClose: () => context.pop(),
-                      onStartAttempt: () async {
-                        context.pushReplacement('/exams/test/$id/player', extra: lesson);
-                      },
-                    );
-                  },
-                  routes: [
-                    GoRoute(
-                      path: 'player',
-                      parentNavigatorKey: _rootNavigatorKey,
-                      builder: (context, state) {
-                        final id = state.pathParameters['id']!;
-                        final extra = state.extra;
-                        final lesson = extra is LessonDto
-                            ? extra
-                            : (extra is Lesson ? extra.toDto() : null);
-                        return TestDetailScreen(
-                          testId: id,
-                          lesson: lesson,
-                          onClose: () => context.pop(),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-                GoRoute(
-                  path: 'assessment/:id',
-                  parentNavigatorKey: _rootNavigatorKey,
-                  builder: (context, state) {
-                    final id = state.pathParameters['id']!;
-                    final extra = state.extra;
-                    final lesson = extra is LessonDto
-                        ? extra
-                        : (extra is Lesson ? extra.toDto() : null);
-                    return AssessmentDetailScreen(
-                      assessmentId: id,
-                      lesson: lesson,
-                      onClose: () => context.pop(),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-        // Explore Branch
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/explore',
-              builder: (context, state) => const ExplorePage(),
-            ),
-          ],
-        ),
-        // Info Branch (Optional 5th Tab)
-        if (isInfoEnabled)
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/info',
-                builder: (context, state) => const InfoPage(),
-                routes: [
-                  GoRoute(
-                    path: 'course/:courseId',
-                    builder: (context, state) {
-                      final courseId = state.pathParameters['courseId']!;
-                      return InfoCourseDetailScreen(
-                        courseId: courseId,
-                        onBack: () => context.pop(),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-
-        // Profile Branch
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/profile',
-              builder: (context, state) => const ProfilePage(),
-              routes: [
-                GoRoute(
-                  name: 'profile-notifications',
-                  path: 'notifications',
-                  parentNavigatorKey: _rootNavigatorKey,
-                  builder: (context, state) {
-                    return NotificationsScreen(onBack: () => context.pop());
-                  },
-                ),
-                GoRoute(
-                  name: 'profile-edit',
-                  path: 'edit',
-                  parentNavigatorKey: _rootNavigatorKey,
-                  builder: (context, state) {
-                    return const EditProfileScreen();
-                  },
-                ),
-                GoRoute(
-                  name: 'profile-settings',
-                  path: 'settings',
-                  parentNavigatorKey: _rootNavigatorKey,
-                  builder: (context, state) {
-                    return AppSettingsScreen(onBack: () => context.pop());
-                  },
-                ),
-                GoRoute(
-                  name: 'profile-certificates',
-                  path: 'certificates',
-                  parentNavigatorKey: _rootNavigatorKey,
-                  builder: (context, state) {
-                    return CertificatesScreen(
-                      onBack: () => context.pop(),
-                      onOpenPreview: (certificate) {
-                        context.pushNamed(
-                          'profile-certificate-preview',
-                          extra: certificate,
-                        );
-                      },
-                    );
-                  },
-                  routes: [
-                    GoRoute(
-                      name: 'profile-certificate-preview',
-                      path: 'preview',
-                      redirect: (context, state) {
-                        if (state.extra is! CourseCertificate) {
-                          return state.namedLocation('profile-certificates');
-                        }
-                        return null;
-                      },
-                      builder: (context, state) {
-                        final certificate = state.extra as CourseCertificate;
-                        return CertificatePreviewScreen(
-                          certificate: certificate,
-                          onClose: () => context.pop(),
-                        );
-                      },
-                      parentNavigatorKey: _rootNavigatorKey,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
-      ],
-    ),
-
-    // Add immersive full screen routes here outside of the StatefulShellRoute
-    // They will navigate over the entire AppShell and hide the bottom bar
-    GoRoute(
-      path: '/typography-gallery',
-      parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) => const TypographyGalleryScreen(),
-    ),
-    GoRoute(
-      path: '/downloads',
-      parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) => const DownloadsScreen(),
-    ),
-  ],
-);
+        branches: activeTabs.map((tab) {
+          final routes = switch (tab) {
+            NavTab.home => HomeRoutes.routes(_rootNavigatorKey),
+            NavTab.study => StudyRoutes.routes(_rootNavigatorKey),
+            NavTab.exams => ExamsRoutes.routes(_rootNavigatorKey),
+            NavTab.explore => GlobalRoutes.exploreRoutes,
+            NavTab.info => GlobalRoutes.infoRoutes,
+            NavTab.profile => ProfileRoutes.routes(_rootNavigatorKey),
+          };
+          return StatefulShellBranch(routes: routes);
+        }).toList(),
+      ),
+      ...GlobalRoutes.immersiveRoutes(_rootNavigatorKey),
+    ],
+  );
 });
 
+enum NavTab {
+  home('/home', 'Home', LucideIcons.home),
+  study('/study', 'Study', LucideIcons.bookOpen),
+  exams('/exams', 'Exam', LucideIcons.fileText),
+  explore('/explore', 'Explore', LucideIcons.compass),
+  info('/info', 'Info', LucideIcons.youtube),
+  profile('/profile', 'Profile', LucideIcons.user);
+
+  final String id;
+  final String label;
+  final IconData icon;
+
+  const NavTab(this.id, this.label, this.icon);
+
+  AppTabItem toTabItem() => AppTabItem(id: id, label: label, icon: icon);
+}
 
 List<AppTabItem> buildPrimaryNavigationItems({
   required ClientConfig config,
-  required bool isInfoEnabled,
 }) {
-  if (config.useRestrictedNavigation) {
-    return [
-      const AppTabItem(id: '/home', label: 'Home', icon: LucideIcons.home),
-      const AppTabItem(id: '/study', label: 'Study', icon: LucideIcons.bookOpen),
-      const AppTabItem(id: '/exams', label: 'Exam', icon: LucideIcons.fileText),
-      const AppTabItem(id: '/info', label: 'Info', icon: LucideIcons.youtube),
-    ];
+  return NavTab.values.where((tab) {
+    if (tab == NavTab.exams) return config.showExamTab;
+    if (tab == NavTab.info) return config.showInfoTab;
+    return true;
+  }).map((tab) => tab.toTabItem()).toList();
+}
+
+
+
+
+
+class _AppShellBuilder extends ConsumerWidget {
+  final StatefulNavigationShell navigationShell;
+  final ClientConfig config;
+  final List<NavTab> activeTabs;
+
+  const _AppShellBuilder({
+    required this.navigationShell,
+    required this.config,
+    required this.activeTabs,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final items = activeTabs.map((tab) => tab.toTabItem()).toList();
+    final isLogoutSheetOpen = ref.watch(isLogoutSheetOpenProvider);
+    final activeTabId = activeTabs[navigationShell.currentIndex].id;
+
+    void closeSheet() =>
+        ref.read(isLogoutSheetOpenProvider.notifier).state = false;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isLandscape = constraints.maxWidth > constraints.maxHeight;
+
+        return AppShell(
+          bottomNavigationBar: AppTabBar(
+            items: items,
+            activeItemId: activeTabId,
+            onTabChange: (id) =>
+                _onTabItemTapped(navigationShell, id, activeTabs: activeTabs),
+          ),
+          navigationRail: AppNavigationRail(
+            items: items,
+            activeItemId: activeTabId,
+            onTabChange: (id) =>
+                _onTabItemTapped(navigationShell, id, activeTabs: activeTabs),
+          ),
+          drawer: DashboardDrawer(isLandscape: isLandscape),
+          bottomSheet: AppBottomSheet(
+            isOpen: isLogoutSheetOpen,
+            onClose: closeSheet,
+            child: LogoutConfirmationSheet(
+              onConfirm: () {
+                closeSheet();
+                ref.read(authProvider.notifier).logout();
+              },
+              onCancel: closeSheet,
+            ),
+          ),
+          child: navigationShell,
+        );
+      },
+    );
   }
-
-  return [
-    const AppTabItem(id: '/home', label: 'Home', icon: LucideIcons.home),
-    const AppTabItem(id: '/study', label: 'Study', icon: LucideIcons.bookOpen),
-    if (config.showExamTab)
-      const AppTabItem(id: '/exams', label: 'Exam', icon: LucideIcons.fileText),
-    const AppTabItem(
-      id: '/explore',
-      label: 'Explore',
-      icon: LucideIcons.compass,
-    ),
-    if (isInfoEnabled)
-      const AppTabItem(
-        id: '/info',
-        label: 'Info',
-        icon: LucideIcons.youtube,
-      ),
-    const AppTabItem(id: '/profile', label: 'Profile', icon: LucideIcons.user),
-  ];
 }
 
-String _getCurrentTabId(
-  int index, {
-  required ClientConfig config,
-  required bool isInfoEnabled,
-}) {
-  final allBranchPaths = [
-    '/home',
-    '/study',
-    '/exams',
-    '/explore',
-    if (isInfoEnabled) '/info',
-    '/profile',
-  ];
-  return allBranchPaths[index];
-}
 
 void _onTabItemTapped(
   StatefulNavigationShell navigationShell,
   String id, {
-  required ClientConfig config,
-  required bool isInfoEnabled,
+  required List<NavTab> activeTabs,
 }) {
-  final allBranchPaths = [
-    '/home',
-    '/study',
-    '/exams',
-    '/explore',
-    if (isInfoEnabled) '/info',
-    '/profile',
-  ];
-  final index = allBranchPaths.indexOf(id);
-
-  navigationShell.goBranch(
-    index != -1 ? index : 0,
-  );
+  final index = activeTabs.indexWhere((tab) => tab.id == id);
+  navigationShell.goBranch(index != -1 ? index : 0);
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-class _LessonRedirector extends StatefulWidget {
-  final Lesson lesson;
-  final Widget child;
-
-  const _LessonRedirector({required this.lesson, required this.child});
-
-  @override
-  State<_LessonRedirector> createState() => _LessonRedirectorState();
-}
-
-class _LessonRedirectorState extends State<_LessonRedirector> {
-  @override
-  void initState() {
-    super.initState();
-    _checkRedirect();
-  }
-
-  @override
-  void didUpdateWidget(_LessonRedirector oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.lesson.id != oldWidget.lesson.id) {
-      _checkRedirect();
-    }
-  }
-
-  void _checkRedirect() {
-    if (widget.lesson.type == LessonType.test) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          context.go('/study/test/${widget.lesson.id}', extra: widget.lesson);
-        }
-      });
-    } else if (widget.lesson.type == LessonType.assessment) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          context.go('/study/assessment/${widget.lesson.id}',
-              extra: widget.lesson);
-        }
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // While redirecting, we show the child (orchestrator) but it will be immediately
-    // replaced by the new route after the first frame.
-    return widget.child;
-  }
-}

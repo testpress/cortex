@@ -7,8 +7,7 @@ void main() {
   group('buildPrimaryNavigationItems', () {
     test('keeps Profile as the default fifth destination', () {
       final items = buildPrimaryNavigationItems(
-        config: const ClientConfig(),
-        isInfoEnabled: false,
+        config: const ClientConfig(showInfoTab: false),
       );
 
       expect(items.length, 4);
@@ -19,8 +18,7 @@ void main() {
 
     test('adds Info as the fourth destination when enabled', () {
       final items = buildPrimaryNavigationItems(
-        config: const ClientConfig(),
-        isInfoEnabled: true,
+        config: const ClientConfig(showInfoTab: true),
       );
 
 

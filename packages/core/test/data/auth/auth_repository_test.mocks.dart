@@ -1193,6 +1193,29 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
           as _i6.Future<_i3.TypedResult?>);
 
   @override
+  _i6.Stream<List<_i4.DoubtRepliesTableData>> watchRepliesForDoubt(
+    String? doubtId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchRepliesForDoubt, [doubtId]),
+            returnValue: _i6.Stream<List<_i4.DoubtRepliesTableData>>.empty(),
+            returnValueForMissingStub:
+                _i6.Stream<List<_i4.DoubtRepliesTableData>>.empty(),
+          )
+          as _i6.Stream<List<_i4.DoubtRepliesTableData>>);
+
+  @override
+  _i6.Future<void> upsertDoubtReplies(
+    List<_i4.DoubtRepliesTableCompanion>? rows,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#upsertDoubtReplies, [rows]),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
   _i3.Migrator createMigrator() =>
       (super.noSuchMethod(
             Invocation.method(#createMigrator, []),
