@@ -1430,4 +1430,26 @@ class AppLocalizationsAr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get doubtsFormTitleLabel => 'ما هو سؤالك؟';
+
+  @override
+  String get doubtsFormTitleHint => 'على سبيل المثال، لا أستطيع فهم هذا السؤال';
+
+  @override
+  String get doubtsFormDescriptionLabel => 'اشرح سؤالك بالتفصيل';
+
+  @override
+  String get doubtsFormCategoryLabel =>
+      'هل يمكنك اختيار الفئة التي ينتمي إليها سؤالك؟';
+
+  @override
+  String get doubtsFormAttachmentsLabel => 'المرفقات (اختياري)';
+
+  @override
+  String get doubtsFormUploadAction => 'تحميل صورة أو ملف PDF';
+
+  @override
+  String get doubtsFormSubmitAction => 'إرسال السؤال';
 }

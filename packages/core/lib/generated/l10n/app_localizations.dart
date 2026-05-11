@@ -2618,6 +2618,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count,plural, =1{1 reply} other{{count} replies}}'**
   String doubtsReplyCount(num count);
+
+  /// No description provided for @doubtsFormTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your doubt about?'**
+  String get doubtsFormTitleLabel;
+
+  /// No description provided for @doubtsFormTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g I\'m unable to understand this question'**
+  String get doubtsFormTitleHint;
+
+  /// No description provided for @doubtsFormDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Explain in detail about your doubt'**
+  String get doubtsFormDescriptionLabel;
+
+  /// No description provided for @doubtsFormCategoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Could you select the category which your question belongs to?'**
+  String get doubtsFormCategoryLabel;
+
+  /// No description provided for @doubtsFormAttachmentsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachments (Optional)'**
+  String get doubtsFormAttachmentsLabel;
+
+  /// No description provided for @doubtsFormUploadAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Image or PDF'**
+  String get doubtsFormUploadAction;
+
+  /// No description provided for @doubtsFormSubmitAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Doubt'**
+  String get doubtsFormSubmitAction;
 }
 
 class _AppLocalizationsDelegate

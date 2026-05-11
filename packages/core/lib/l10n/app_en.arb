@@ -709,5 +709,12 @@
   "doubtsSearchHint": "Search doubts",
   "doubtsLabelUnanswered": "Unanswered",
   "doubtsLabelAnswered": "Answered",
-  "doubtsReplyCount": "{count,plural, =1{1 reply} other{{count} replies}}"
+  "doubtsReplyCount": "{count,plural, =1{1 reply} other{{count} replies}}",
+  "doubtsFormTitleLabel": "What is your doubt about?",
+  "doubtsFormTitleHint": "e.g I'm unable to understand this question",
+  "doubtsFormDescriptionLabel": "Explain in detail about your doubt",
+  "doubtsFormCategoryLabel": "Could you select the category which your question belongs to?",
+  "doubtsFormAttachmentsLabel": "Attachments (Optional)",
+  "doubtsFormUploadAction": "Upload Image or PDF",
+  "doubtsFormSubmitAction": "Submit Doubt"
 }

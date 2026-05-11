@@ -5,6 +5,7 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../providers/doubt_providers.dart';
 import '../widgets/forum_header.dart';
+import 'ask_doubt_form_screen.dart';
 
 class DoubtsListScreen extends ConsumerWidget {
   const DoubtsListScreen({super.key});
@@ -41,7 +42,9 @@ class DoubtsListScreen extends ConsumerWidget {
                         actions: [
                           GestureDetector(
                             onTap: () {
-                              // TODO: Open Ask Doubt Form
+                              Navigator.of(context).push(
+                                AppRoute(page: const AskDoubtFormScreen()),
+                              );
                             },
                             child: Padding(
                               padding: EdgeInsets.symmetric(horizontal: design.spacing.sm),
@@ -127,7 +130,9 @@ class DoubtsListScreen extends ConsumerWidget {
             label: l10n.doubtsHeaderAskDoubt,
             leading: const Icon(LucideIcons.plus, size: 20, color: Color(0xFFFFFFFF)),
             onPressed: () {
-              // TODO: Navigate to Ask Doubt Form
+              Navigator.of(context).push(
+                AppRoute(page: const AskDoubtFormScreen()),
+              );
             },
           ),
         ],
