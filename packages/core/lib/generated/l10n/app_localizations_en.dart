@@ -1452,4 +1452,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nextSection => 'Next Section';
+
+  @override
+  String get doubtDetailTitle => 'Doubt';
+
+  @override
+  String get errorFailedToLoadReplies => 'Failed to load replies';
+
+  @override
+  String get errorFailedToLoadDoubtDetails => 'Failed to load doubt details';
+
+  @override
+  String get labelMentor => 'Mentor';
 }

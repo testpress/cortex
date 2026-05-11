@@ -598,7 +598,7 @@ final List<DoubtDto> mockDoubts = [
     courseId: 'c1',
     courseName: 'Accounts',
     title: 'How to solve depreciation question in Accounts?',
-    content: '{"ops":[{"insert":"I am having trouble with the straight line method."}]}',
+    content: "I'm having trouble understanding how to calculate depreciation using the reducing balance method. Can someone explain with a simple example?",
     studentName: 'Arjun Sharma',
     replyCount: 3,
     status: DoubtStatus.answered,
@@ -609,7 +609,7 @@ final List<DoubtDto> mockDoubts = [
     courseId: 'course_chem',
     courseName: 'Chemistry',
     title: 'What is the difference between ionic and covalent bonding?',
-    content: '{"ops":[{"insert":"Which one is stronger?"}]}',
+    content: 'Which one is stronger?',
     studentName: 'Arjun Sharma',
     replyCount: 5,
     status: DoubtStatus.answered,
@@ -620,7 +620,7 @@ final List<DoubtDto> mockDoubts = [
     courseId: 'course_math',
     courseName: 'Mathematics',
     title: 'Explain the concept of integration by parts with example',
-    content: '{"ops":[{"insert":"I don\'t understand the ILATE rule."}]}',
+    content: 'I don\'t understand the ILATE rule.',
     studentName: 'Arjun Sharma',
     replyCount: 0,
     status: DoubtStatus.pending,
@@ -631,7 +631,7 @@ final List<DoubtDto> mockDoubts = [
     courseId: 'course_bio',
     courseName: 'Biology',
     title: 'How does photosynthesis work in C4 plants?',
-    content: '{"ops":[{"insert":"Is it different from C3 plants?"}]}',
+    content: 'Is it different from C3 plants?',
     studentName: 'Arjun Sharma',
     replyCount: 2,
     status: DoubtStatus.answered,
@@ -642,7 +642,7 @@ final List<DoubtDto> mockDoubts = [
     courseId: 'course_physics',
     courseName: 'Physics',
     title: "What are Newton's Laws of Motion in simple terms?",
-    content: '{"ops":[{"insert":"Can you give real life examples?"}]}',
+    content: 'Can you give real life examples?',
     studentName: 'Arjun Sharma',
     replyCount: 7,
     status: DoubtStatus.answered,
@@ -650,22 +650,69 @@ final List<DoubtDto> mockDoubts = [
   ),
 ];
 
-/// Mock replies for doubts
-final List<DoubtReplyDto> mockDoubtReplies = [
-  DoubtReplyDto(
-    id: 'reply_1',
-    doubtId: 'doubt_2',
-    content: '{"ops":[{"insert":"Yes, the nitronium ion acts as a strong electrophile."}]}',
-    authorName: 'Dr. Smith (Mentor)',
-    isMentor: true,
-    createdAt: DateTime.now().subtract(const Duration(hours: 12)),
-  ),
-  DoubtReplyDto(
-    id: 'reply_2',
-    doubtId: 'doubt_3',
-    content: '{"ops":[{"insert":"The normal force is perpendicular to the surface."}]}',
-    authorName: 'Prof. Ray (Mentor)',
-    isMentor: true,
-    createdAt: DateTime.now().subtract(const Duration(days: 2)),
-  ),
-];
+List<DoubtReplyDto> getMockDoubtReplies(String doubtId) {
+  if (doubtId == 'doubt_1') {
+    return [
+      DoubtReplyDto(
+        id: 'reply_1_1',
+        doubtId: doubtId,
+        content: 'The straight line method is simple: Depreciation = (Cost - Salvage Value) / Useful Life. For example, if a machine costs ₹1,00,000 with a salvage value of ₹10,000 and a life of 10 years, annual depreciation is ₹9,000.',
+        authorName: 'Dr. Rajesh Kumar',
+        isMentor: true,
+        createdAt: DateTime.now().subtract(const Duration(hours: 1)),
+      ),
+      DoubtReplyDto(
+        id: 'reply_1_2',
+        doubtId: doubtId,
+        content: 'Got it! So the depreciation amount remains constant every year in this method, right?',
+        authorName: 'Arjun Sharma',
+        isMentor: false,
+        createdAt: DateTime.now().subtract(const Duration(minutes: 30)),
+      ),
+      DoubtReplyDto(
+        id: 'reply_1_3',
+        doubtId: doubtId,
+        content: 'Exactly! That is why it is called the straight line method.',
+        authorName: 'Dr. Rajesh Kumar',
+        isMentor: true,
+        createdAt: DateTime.now().subtract(const Duration(minutes: 15)),
+      ),
+    ];
+  }
+
+  if (doubtId == 'doubt_2') {
+    return [
+      DoubtReplyDto(
+        id: 'reply_2_1',
+        doubtId: doubtId,
+        content: 'Ionic bonding involves the complete transfer of electrons from one atom to another, whereas covalent bonding involves sharing of electron pairs between atoms.',
+        authorName: 'Prof. Anjali Sharma',
+        isMentor: true,
+        createdAt: DateTime.now().subtract(const Duration(hours: 3)),
+      ),
+      DoubtReplyDto(
+        id: 'reply_2_2',
+        doubtId: doubtId,
+        content: 'In general, ionic bonds are stronger than covalent bonds due to the strong electrostatic forces between oppositely charged ions.',
+        authorName: 'Prof. Anjali Sharma',
+        isMentor: true,
+        createdAt: DateTime.now().subtract(const Duration(hours: 2)),
+      ),
+    ];
+  }
+
+  if (doubtId == 'doubt_4') {
+    return [
+      DoubtReplyDto(
+        id: 'reply_4_1',
+        doubtId: doubtId,
+        content: 'Yes, it is very different! C4 plants have a special leaf anatomy called Kranz anatomy to minimize photorespiration, which C3 plants do not have.',
+        authorName: 'Dr. Priya Verma',
+        isMentor: true,
+        createdAt: DateTime.now().subtract(const Duration(hours: 5)),
+      ),
+    ];
+  }
+
+  return [];
+}

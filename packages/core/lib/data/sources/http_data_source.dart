@@ -293,7 +293,7 @@ class HttpDataSource implements DataSource {
   @override
   Future<List<DoubtReplyDto>> getDoubtReplies(String doubtId) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    return mockDoubtReplies.where((r) => r.doubtId == doubtId).toList();
+    return getMockDoubtReplies(doubtId);
   }
 
   @override

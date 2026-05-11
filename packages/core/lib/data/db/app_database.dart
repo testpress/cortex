@@ -439,6 +439,17 @@ class AppDatabase extends _$AppDatabase {
 
     return query.getSingleOrNull();
   }
+
+  // ── Doubts ────────────────────────────────────────────────────────────────
+
+  Stream<List<DoubtRepliesTableData>> watchRepliesForDoubt(String doubtId) =>
+      (select(doubtRepliesTable)
+            ..where((t) => t.doubtId.equals(doubtId))
+            ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]))
+          .watch();
+
+  Future<void> upsertDoubtReplies(List<DoubtRepliesTableCompanion> rows) =>
+      batch((b) => b.insertAllOnConflictUpdate(doubtRepliesTable, rows));
 }
 
 /// Opens the SQLite database from the app documents directory.

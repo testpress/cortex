@@ -720,5 +720,9 @@
   "examInstructions": "Exam Instructions",
   "startExam": "Start Exam",
   "nextSubject": "Next Subject",
-  "nextSection": "Next Section"
+  "nextSection": "Next Section",
+  "doubtDetailTitle": "Doubt",
+  "errorFailedToLoadReplies": "Failed to load replies",
+  "errorFailedToLoadDoubtDetails": "Failed to load doubt details",
+  "labelMentor": "Mentor"
 }

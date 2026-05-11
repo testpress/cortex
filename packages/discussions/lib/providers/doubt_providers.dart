@@ -34,3 +34,15 @@ List<String> doubtCategories(DoubtCategoriesRef ref) {
     'Cell Biology', 'Genetics', 'Ecology', 'Grammar', 'Literature'
   ];
 }
+
+@riverpod
+Future<DoubtDto> doubtDetail(DoubtDetailRef ref, String id) async {
+  final doubts = await ref.watch(doubtsListProvider.future);
+  return doubts.firstWhere((d) => d.id == id);
+}
+
+@riverpod
+Future<List<DoubtReplyDto>> doubtReplies(DoubtRepliesRef ref, String id) async {
+  final repo = await ref.watch(doubtRepositoryProvider.future);
+  return repo.getDoubtReplies(id);
+}

@@ -40,9 +40,65 @@ class DoubtRepository {
     await _db.into(_db.doubtsTable).insert(_mapToCompanion(doubt));
   }
 
+  /// Watch replies for a specific doubt thread.
+  Stream<List<DoubtReplyDto>> watchReplies(String doubtId) {
+    return _db.watchRepliesForDoubt(doubtId).map((rows) {
+      return rows.map((row) => _mapReplyToDto(row)).toList();
+    });
+  }
+
+  /// Sync replies for a specific doubt thread.
+  Future<void> syncReplies(String doubtId) async {
+    final results = await _dataSource.getDoubtReplies(doubtId);
+    await _db.upsertDoubtReplies(
+      results.map((dto) => _mapReplyToCompanion(dto)).toList(),
+    );
+  }
+
   /// Fetch replies for a specific doubt thread.
   Future<List<DoubtReplyDto>> getDoubtReplies(String doubtId) async {
-    return _dataSource.getDoubtReplies(doubtId);
+    // Return cached data if available, while syncing in the background
+    final cached = await (_db.select(_db.doubtRepliesTable)
+          ..where((t) => t.doubtId.equals(doubtId))
+          ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]))
+        .get();
+
+    if (cached.isNotEmpty) {
+      // Background sync
+      syncReplies(doubtId).ignore();
+      return cached.map((row) => _mapReplyToDto(row)).toList();
+    }
+
+    await syncReplies(doubtId);
+    return watchReplies(doubtId).first;
+  }
+
+  DoubtReplyDto _mapReplyToDto(DoubtRepliesTableData row) {
+    return DoubtReplyDto(
+      id: row.id,
+      doubtId: row.doubtId,
+      content: row.content,
+      authorName: row.authorName,
+      authorAvatar: row.authorAvatar,
+      isMentor: row.isMentor,
+      attachmentUrls: row.attachments != null
+          ? List<String>.from(jsonDecode(row.attachments!))
+          : [],
+      createdAt: row.createdAt,
+    );
+  }
+
+  DoubtRepliesTableCompanion _mapReplyToCompanion(DoubtReplyDto dto) {
+    return DoubtRepliesTableCompanion(
+      id: Value(dto.id),
+      doubtId: Value(dto.doubtId),
+      content: Value(dto.content),
+      authorName: Value(dto.authorName),
+      authorAvatar: Value(dto.authorAvatar),
+      isMentor: Value(dto.isMentor),
+      attachments: Value(jsonEncode(dto.attachmentUrls)),
+      createdAt: Value(dto.createdAt),
+    );
   }
 
   DoubtDto _mapToDto(DoubtsTableData row) {

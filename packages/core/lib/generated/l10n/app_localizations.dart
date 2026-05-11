@@ -2684,6 +2684,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Next Section'**
   String get nextSection;
+
+  /// No description provided for @doubtDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Doubt'**
+  String get doubtDetailTitle;
+
+  /// No description provided for @errorFailedToLoadReplies.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load replies'**
+  String get errorFailedToLoadReplies;
+
+  /// No description provided for @errorFailedToLoadDoubtDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load doubt details'**
+  String get errorFailedToLoadDoubtDetails;
+
+  /// No description provided for @labelMentor.
+  ///
+  /// In en, this message translates to:
+  /// **'Mentor'**
+  String get labelMentor;
 }
 
 class _AppLocalizationsDelegate
