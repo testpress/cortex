@@ -7,12 +7,12 @@ The system SHALL display the doubt's title and metadata (category, student name,
 - **WHEN** the student opens a doubt from the list
 - **THEN** the system shows the title, "Physics" category (or relevant), and "Asked 2h ago" metadata.
 
-### Requirement: Rich-Text Content Rendering
-The system SHALL render the original doubt content and all mentor replies using a rich-text editor (Quill) in read-only mode to preserve formatting (bold, lists, etc.).
+### Requirement: Plain-Text Content Rendering
+The system SHALL render the original doubt content and all mentor replies using a plain-text component (`AppText.bodySmall`) to simplify the view.
 
-#### Scenario: Viewing rich-text doubt body
-- **WHEN** the doubt contains formatted text (e.g., a bold term or a bulleted list)
-- **THEN** the system displays the text with the correct formatting applied.
+#### Scenario: Viewing plain-text doubt body
+- **WHEN** the doubt contains text content
+- **THEN** the system displays the text cleanly as plain text without complex formatting.
 
 ### Requirement: Chronological Reply Thread
 The system SHALL display all replies in chronological order, clearly distinguishing mentor replies with a "Mentor" badge and the mentor's avatar.

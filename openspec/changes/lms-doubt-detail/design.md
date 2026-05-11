@@ -25,9 +25,9 @@ The `discussions` package manages both public forum posts and private mentoring 
 - **Decision**: Use `ForumEditorField` and `ForumEditorToolbar` for the follow-up reply input.
 - **Rationale**: These components are already styled for the design system and handle rich-text state management. Reusing them ensures a consistent "writing" experience across the app.
 
-### 2. Rich-Text Rendering Strategy
-- **Decision**: Use `quill.QuillEditor.basic` in `readOnly: true` mode.
-- **Rationale**: Converting Delta to HTML or Markdown often loses precision in formatting (like code blocks or specific list styles). Rendering directly from Delta ensures 100% visual parity with what the user/mentor wrote.
+### 2. Plain-Text Rendering Strategy
+- **Decision**: Use `AppText.bodySmall` to render the content.
+- **Rationale**: Rendering plain text simplifies the implementation and avoids the performance overhead of QuillEditor for read-only viewing. We will use simple text strings instead of Delta format.
 
 ### 3. Attachment Handling
 - **Decision**: Reuse `ForumAttachmentPreview` (refactored for path/URL flexibility) for viewing attachments in the reply draft.
