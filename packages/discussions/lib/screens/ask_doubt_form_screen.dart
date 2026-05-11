@@ -1,7 +1,7 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
-import 'package:image_picker/image_picker.dart';
 import 'package:core/core.dart';
 import '../providers/doubt_providers.dart';
 import '../widgets/forum_header.dart';
@@ -20,7 +20,6 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
   final List<String> _attachments = [];
-  final ImagePicker _picker = ImagePicker();
   
   bool _isSubmitting = false;
   String? _selectedCategory;
@@ -76,7 +75,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                     const SizedBox(height: 8),
                     ForumEditorToolbar(
                       controller: _quillController,
-                      onImagePick: _pickImages,
+                      onImagePick: _pickAttachments,
                       isImageLimitReached: _attachments.length >= 5,
                     ),
                     const SizedBox(height: 4),
@@ -144,7 +143,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
   Widget _uploadButton(String label) {
     final design = Design.of(context);
     return AppFocusable(
-      onTap: _pickImages,
+      onTap: _pickAttachments,
       borderRadius: BorderRadius.circular(design.radius.lg),
       child: Container(
         padding: EdgeInsets.all(design.spacing.md),
@@ -193,12 +192,21 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
 
   // --- Logic ---
 
-  Future<void> _pickImages() async {
+  Future<void> _pickAttachments() async {
     if (_attachments.length >= 5) return;
-    final images = await _picker.pickMultiImage();
-    if (images.isNotEmpty) {
+    
+    final result = await FilePicker.pickFiles(
+      allowMultiple: true,
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
+    );
+
+    if (result != null && result.paths.isNotEmpty) {
       setState(() {
-        _attachments.addAll(images.take(5 - _attachments.length).map((i) => i.path));
+        final remaining = 5 - _attachments.length;
+        _attachments.addAll(
+          result.paths.take(remaining).whereType<String>(),
+        );
       });
     }
   }
