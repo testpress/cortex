@@ -11,6 +11,7 @@ class ClientConfig {
   final bool showWhatsNewSection;
   final bool showRecentlyCompletedSection;
   final bool showExamTab;
+  final bool showInfoTab;
   final bool useRestrictedNavigation;
   final String? instituteLogoUrl;
   final bool isLocalLogo;
@@ -24,6 +25,7 @@ class ClientConfig {
     this.showWhatsNewSection = false,
     this.showRecentlyCompletedSection = false,
     this.showExamTab = false,
+    this.showInfoTab = false,
     this.useRestrictedNavigation = false,
     this.instituteLogoUrl,
     this.isLocalLogo = false,
@@ -38,6 +40,7 @@ class ClientConfig {
     bool? showWhatsNewSection,
     bool? showRecentlyCompletedSection,
     bool? showExamTab,
+    bool? showInfoTab,
     bool? useRestrictedNavigation,
     String? instituteLogoUrl,
     bool? isLocalLogo,
@@ -53,6 +56,7 @@ class ClientConfig {
       showRecentlyCompletedSection:
           showRecentlyCompletedSection ?? this.showRecentlyCompletedSection,
       showExamTab: showExamTab ?? this.showExamTab,
+      showInfoTab: showInfoTab ?? this.showInfoTab,
       useRestrictedNavigation:
           useRestrictedNavigation ?? this.useRestrictedNavigation,
       instituteLogoUrl: instituteLogoUrl ?? this.instituteLogoUrl,
@@ -71,6 +75,7 @@ class ClientConfig {
       showRecentlyCompletedSection:
           json['show_recently_completed_section'] as bool? ?? true,
       showExamTab: json['show_exam_tab'] as bool? ?? false,
+      showInfoTab: json['show_info_tab'] as bool? ?? false,
       useRestrictedNavigation:
           json['use_restricted_navigation'] as bool? ?? false,
       instituteLogoUrl: json['institute_logo_url'] as String?,
@@ -88,6 +93,7 @@ class ClientConfig {
       'show_whats_new_section': showWhatsNewSection,
       'show_recently_completed_section': showRecentlyCompletedSection,
       'show_exam_tab': showExamTab,
+      'show_info_tab': showInfoTab,
       'use_restricted_navigation': useRestrictedNavigation,
       'institute_logo_url': instituteLogoUrl,
       'is_local_logo': isLocalLogo,
@@ -107,6 +113,7 @@ class ClientConfig {
     showWhatsNewSection: true,
     showRecentlyCompletedSection: true,
     showExamTab: true,
+    showInfoTab: true,
     useRestrictedNavigation: true,
     instituteLogoUrl: 'assets/images/brilliant_pala_logo.png',
     isLocalLogo: true,
