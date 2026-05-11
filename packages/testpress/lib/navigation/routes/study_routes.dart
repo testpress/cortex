@@ -216,7 +216,7 @@ class StudyRoutes {
       ];
 }
 
-/// A internal widget to handle redirects for specific lesson types.
+/// An internal widget to handle redirects for specific lesson types.
 class _LessonRedirector extends StatefulWidget {
   final Lesson lesson;
   final Widget child;

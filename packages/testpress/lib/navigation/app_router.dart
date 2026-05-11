@@ -19,11 +19,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   // on every loading state change or refresh.
   final isLoggedIn = ref.watch(authProvider).valueOrNull ?? false;
   final config = ref.watch(clientConfigProvider);
-  final activeTabs = NavTab.values.where((tab) {
-    if (tab == NavTab.exams) return config.showExamTab;
-    if (tab == NavTab.info) return config.showInfoTab;
-    return true;
-  }).toList();
+  final activeTabs = NavTab.active(config);
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
@@ -70,16 +66,20 @@ enum NavTab {
   const NavTab(this.id, this.label, this.icon);
 
   AppTabItem toTabItem() => AppTabItem(id: id, label: label, icon: icon);
+
+  static List<NavTab> active(ClientConfig config) {
+    return values.where((tab) {
+      if (tab == NavTab.exams) return config.showExamTab;
+      if (tab == NavTab.info) return config.showInfoTab;
+      return true;
+    }).toList();
+  }
 }
 
 List<AppTabItem> buildPrimaryNavigationItems({
   required ClientConfig config,
 }) {
-  return NavTab.values.where((tab) {
-    if (tab == NavTab.exams) return config.showExamTab;
-    if (tab == NavTab.info) return config.showInfoTab;
-    return true;
-  }).map((tab) => tab.toTabItem()).toList();
+  return NavTab.active(config).map((tab) => tab.toTabItem()).toList();
 }
 
 

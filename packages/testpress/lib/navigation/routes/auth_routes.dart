@@ -3,15 +3,19 @@ import 'package:core/core.dart';
 import 'package:profile/profile.dart';
 
 class AuthRoutes {
+  static const _authPaths = {
+    '/login',
+    '/password-login',
+    '/mobile-login',
+    '/signup',
+    '/forgot-password',
+    '/otp',
+    '/onboarding',
+  };
+
   static String? redirect(BuildContext context, GoRouterState state, bool isLoggedIn) {
     final path = state.uri.path;
-    final isAuthRoute = path == '/login' || 
-                        path == '/password-login' ||
-                        path == '/mobile-login' ||
-                        path == '/signup' || 
-                        path == '/forgot-password' || 
-                        path == '/otp' || 
-                        path == '/onboarding';
+    final isAuthRoute = _authPaths.contains(path);
 
     if (!isLoggedIn && !isAuthRoute) return '/onboarding';
     if (isLoggedIn && isAuthRoute) return '/home';

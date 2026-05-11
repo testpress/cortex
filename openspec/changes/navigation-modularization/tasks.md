@@ -15,6 +15,8 @@
 - [x] 2.3 Clean up imports and unused code in `app_router.dart`.
 - [x] 2.4 Consolidate Info Tab logic into `ClientConfig` and remove `infoPageEnabledProvider`.
 - [x] 2.5 Implement `NavTab` enum for unified branch and tab management.
+- [x] 2.6 Centralize tab filtering logic in `NavTab.active(config)`.
+- [x] 2.7 Optimize `AuthRoutes` path lookup with a static `Set`.
 
 ## 3. Verification
 
