@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../design/design_provider.dart';
-import '../design/design_config.dart';
 
 /// A premium HTML renderer for the Cortex SDK.
 /// 

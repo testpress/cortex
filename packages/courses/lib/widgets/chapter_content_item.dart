@@ -1,6 +1,5 @@
-import 'package:core/core.dart';
-import 'package:core/utils/time_formatter.dart';
 import 'package:flutter/widgets.dart';
+import 'package:core/core.dart';
 import '../models/course_content.dart';
 
 /// Component to display individual lesson or assessment items in the chapter detail.
