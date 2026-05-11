@@ -1444,4 +1444,28 @@ class AppLocalizationsMl extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get doubtsFormTitleLabel => 'നിങ്ങളുടെ സംശയം എന്താണ്?';
+
+  @override
+  String get doubtsFormTitleHint =>
+      'ഉദാഹരണത്തിന്, ഈ ചോദ്യം എനിക്ക് മനസ്സിലാകുന്നില്ല';
+
+  @override
+  String get doubtsFormDescriptionLabel =>
+      'നിങ്ങളുടെ സംശയത്തെക്കുറിച്ച് വിശദമായി വിവരിക്കുക';
+
+  @override
+  String get doubtsFormCategoryLabel =>
+      'നിങ്ങളുടെ ചോദ്യം ഏത് വിഭാഗത്തിൽപ്പെട്ടതാണെന്ന് തിരഞ്ഞെടുക്കാമോ?';
+
+  @override
+  String get doubtsFormAttachmentsLabel => 'അറ്റാച്ച്‌മെന്റുകൾ (നിർബന്ധമില്ല)';
+
+  @override
+  String get doubtsFormUploadAction => 'ചിത്രമോ PDF-ഓ അപ്‌ലോഡ് ചെയ്യുക';
+
+  @override
+  String get doubtsFormSubmitAction => 'സംശയം സമർപ്പിക്കുക';
 }

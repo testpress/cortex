@@ -488,5 +488,12 @@
   "doubtsSearchHint": "البحث في الأسئلة",
   "doubtsLabelUnanswered": "لم يتم الرد",
   "doubtsLabelAnswered": "تم الرد",
-  "doubtsReplyCount": "{count,plural, =1{رد واحد} other{{count} ردود}}"
+  "doubtsReplyCount": "{count,plural, =1{رد واحد} other{{count} ردود}}",
+  "doubtsFormTitleLabel": "ما هو سؤالك؟",
+  "doubtsFormTitleHint": "على سبيل المثال، لا أستطيع فهم هذا السؤال",
+  "doubtsFormDescriptionLabel": "اشرح سؤالك بالتفصيل",
+  "doubtsFormCategoryLabel": "هل يمكنك اختيار الفئة التي ينتمي إليها سؤالك؟",
+  "doubtsFormAttachmentsLabel": "المرفقات (اختياري)",
+  "doubtsFormUploadAction": "تحميل صورة أو ملف PDF",
+  "doubtsFormSubmitAction": "إرسال السؤال"
 }

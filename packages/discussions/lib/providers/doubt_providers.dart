@@ -24,3 +24,13 @@ Future<void> doubtsSync(DoubtsSyncRef ref) async {
   final repo = await ref.watch(doubtRepositoryProvider.future);
   return repo.syncDoubts();
 }
+
+@riverpod
+List<String> doubtCategories(DoubtCategoriesRef ref) {
+  return [
+    'Physics', 'Chemistry', 'Mathematics', 'Biology', 'English', 'Accounts',
+    'Anatomy', 'Discrete Maths', 'Algebra', 'Calculus', 'Organic Chemistry',
+    'Inorganic Chemistry', 'Mechanics', 'Thermodynamics', 'Optics',
+    'Cell Biology', 'Genetics', 'Ecology', 'Grammar', 'Literature'
+  ];
+}

@@ -32,6 +32,14 @@ class DoubtRepository {
     });
   }
 
+  /// Create a new doubt locally.
+  Future<void> createDoubt(DoubtDto doubt) async {
+    // Mock network delay
+    await Future.delayed(const Duration(seconds: 1));
+    
+    await _db.into(_db.doubtsTable).insert(_mapToCompanion(doubt));
+  }
+
   /// Fetch replies for a specific doubt thread.
   Future<List<DoubtReplyDto>> getDoubtReplies(String doubtId) async {
     return _dataSource.getDoubtReplies(doubtId);

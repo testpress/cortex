@@ -1417,4 +1417,27 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get doubtsFormTitleLabel => 'What is your doubt about?';
+
+  @override
+  String get doubtsFormTitleHint =>
+      'e.g I\'m unable to understand this question';
+
+  @override
+  String get doubtsFormDescriptionLabel => 'Explain in detail about your doubt';
+
+  @override
+  String get doubtsFormCategoryLabel =>
+      'Could you select the category which your question belongs to?';
+
+  @override
+  String get doubtsFormAttachmentsLabel => 'Attachments (Optional)';
+
+  @override
+  String get doubtsFormUploadAction => 'Upload Image or PDF';
+
+  @override
+  String get doubtsFormSubmitAction => 'Submit Doubt';
 }
