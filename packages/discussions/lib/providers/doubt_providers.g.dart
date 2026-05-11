@@ -74,7 +74,7 @@ final doubtCategoriesProvider = AutoDisposeProvider<List<String>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef DoubtCategoriesRef = AutoDisposeProviderRef<List<String>>;
-String _$doubtDetailHash() => r'5bd0f6afed1967e71977ece8b3c13e907f970d82';
+String _$doubtDetailHash() => r'a300245f15c35b44b5d9d1bcc64b573261e6dd38';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -214,7 +214,7 @@ class _DoubtDetailProviderElement
   String get id => (origin as DoubtDetailProvider).id;
 }
 
-String _$doubtRepliesHash() => r'857c4c511a96e35867eb6b0e5e77dc926a3d2139';
+String _$doubtRepliesHash() => r'd565d00f125cf2f1437b8014645f7bde263682fc';
 
 /// See also [doubtReplies].
 @ProviderFor(doubtReplies)
@@ -254,7 +254,7 @@ class DoubtRepliesFamily extends Family<AsyncValue<List<DoubtReplyDto>>> {
 
 /// See also [doubtReplies].
 class DoubtRepliesProvider
-    extends AutoDisposeFutureProvider<List<DoubtReplyDto>> {
+    extends AutoDisposeStreamProvider<List<DoubtReplyDto>> {
   /// See also [doubtReplies].
   DoubtRepliesProvider(String id)
     : this._internal(
@@ -284,7 +284,7 @@ class DoubtRepliesProvider
 
   @override
   Override overrideWith(
-    FutureOr<List<DoubtReplyDto>> Function(DoubtRepliesRef provider) create,
+    Stream<List<DoubtReplyDto>> Function(DoubtRepliesRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -301,7 +301,7 @@ class DoubtRepliesProvider
   }
 
   @override
-  AutoDisposeFutureProviderElement<List<DoubtReplyDto>> createElement() {
+  AutoDisposeStreamProviderElement<List<DoubtReplyDto>> createElement() {
     return _DoubtRepliesProviderElement(this);
   }
 
@@ -321,13 +321,13 @@ class DoubtRepliesProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin DoubtRepliesRef on AutoDisposeFutureProviderRef<List<DoubtReplyDto>> {
+mixin DoubtRepliesRef on AutoDisposeStreamProviderRef<List<DoubtReplyDto>> {
   /// The parameter `id` of this provider.
   String get id;
 }
 
 class _DoubtRepliesProviderElement
-    extends AutoDisposeFutureProviderElement<List<DoubtReplyDto>>
+    extends AutoDisposeStreamProviderElement<List<DoubtReplyDto>>
     with DoubtRepliesRef {
   _DoubtRepliesProviderElement(super.provider);
 
