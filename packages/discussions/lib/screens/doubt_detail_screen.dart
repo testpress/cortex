@@ -80,19 +80,17 @@ class _DoubtScrollBodyState extends State<_DoubtScrollBody> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return CustomScrollView(
       controller: _scrollController,
       physics: const ClampingScrollPhysics(),
-      padding: EdgeInsets.zero,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _DoubtHeaderCard(doubt: widget.doubt),
-          const SizedBox(height: 8),
-          _RepliesList(repliesAsync: widget.repliesAsync, doubtId: widget.doubtId),
-          const SizedBox(height: 100),
-        ],
-      ),
+      slivers: [
+        SliverToBoxAdapter(
+          child: _DoubtHeaderCard(doubt: widget.doubt),
+        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 8)),
+        _RepliesList(repliesAsync: widget.repliesAsync, doubtId: widget.doubtId),
+        const SliverToBoxAdapter(child: SizedBox(height: 100)),
+      ],
     );
   }
 }
@@ -112,15 +110,19 @@ class _RepliesList extends ConsumerWidget {
     final l10n = L10n.of(context);
 
     return repliesAsync.when(
-      data: (replies) => Column(
-        children: replies.map((r) => _ReplyCard(reply: r)).toList(),
+      data: (replies) => SliverList.builder(
+        itemCount: replies.length,
+        itemBuilder: (context, index) => _ReplyCard(reply: replies[index]),
       ),
-      loading: () => Column(
-        children: List.generate(2, (_) => _ReplyCard(reply: _dummyReply)),
+      loading: () => SliverList.builder(
+        itemCount: 2,
+        itemBuilder: (context, index) => _ReplyCard(reply: _dummyReply),
       ),
-      error: (_, _) => AppErrorView(
-        message: l10n.errorFailedToLoadReplies,
-        onRetry: () => ref.invalidate(doubtRepliesProvider(doubtId)),
+      error: (_, _) => SliverToBoxAdapter(
+        child: AppErrorView(
+          message: l10n.errorFailedToLoadReplies,
+          onRetry: () => ref.invalidate(doubtRepliesProvider(doubtId)),
+        ),
       ),
     );
   }
