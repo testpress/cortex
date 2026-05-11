@@ -18,3 +18,9 @@ Stream<List<DoubtDto>> doubtsList(DoubtsListRef ref) async* {
   final repository = await ref.watch(doubtRepositoryProvider.future);
   yield* repository.watchDoubts();
 }
+
+@riverpod
+Future<void> doubtsSync(DoubtsSyncRef ref) async {
+  final repo = await ref.watch(doubtRepositoryProvider.future);
+  return repo.syncDoubts();
+}

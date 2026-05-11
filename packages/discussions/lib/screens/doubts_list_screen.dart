@@ -1,3 +1,4 @@
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
@@ -5,41 +6,30 @@ import 'package:core/data/data.dart';
 import '../providers/doubt_providers.dart';
 import '../widgets/forum_header.dart';
 
-class DoubtsListScreen extends ConsumerStatefulWidget {
+class DoubtsListScreen extends ConsumerWidget {
   const DoubtsListScreen({super.key});
 
   @override
-  ConsumerState<DoubtsListScreen> createState() => _DoubtsListScreenState();
-}
-
-class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
-  @override
-  void initState() {
-    super.initState();
-    // Trigger background sync on load
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(doubtRepositoryProvider.future).then((repo) {
-        repo.syncDoubts();
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final doubtsAsync = ref.watch(doubtsListProvider);
+    final syncAsync = ref.watch(doubtsSyncProvider);
     final design = Design.of(context);
     final l10n = L10n.of(context);
+
     return AppShell(
       backgroundColor: design.colors.surface,
       child: doubtsAsync.when(
         data: (doubts) {
+          // Show skeleton only if initial sync is still loading AND database is empty
+          final isInitialLoading = syncAsync.isLoading && doubts.isEmpty;
+
           return Column(
             children: [
               Container(
                 color: design.colors.card,
                 child: Column(
                   children: [
-                    if (doubts.isEmpty)
+                    if (doubts.isEmpty && !isInitialLoading)
                       AppHeader(
                         title: l10n.drawerDoubts,
                         subtitle: l10n.doubtsEmptySubtitle,
@@ -80,9 +70,14 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
               ),
               Container(height: 1, color: design.colors.divider),
               Expanded(
-                child: doubts.isEmpty
-                    ? _buildEmptyState(context, design, ref)
-                    : _DoubtsBody(doubts: doubts),
+                child: Skeletonizer(
+                  enabled: isInitialLoading,
+                  child: doubts.isEmpty && !isInitialLoading
+                      ? _buildEmptyState(context, design, ref)
+                      : _DoubtsBody(
+                          doubts: isInitialLoading ? _dummyDoubts : doubts,
+                        ),
+                ),
               ),
             ],
           );
@@ -91,7 +86,10 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
         error: (err, stack) => Center(
           child: AppErrorView(
             message: 'Failed to load doubts',
-            onRetry: () => ref.invalidate(doubtsListProvider),
+            onRetry: () {
+              ref.invalidate(doubtsListProvider);
+              ref.invalidate(doubtsSyncProvider);
+            },
           ),
         ),
       ),
@@ -100,14 +98,14 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
 
   Widget _buildEmptyState(BuildContext context, DesignConfig design, WidgetRef ref) {
     final l10n = L10n.of(context);
-    
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            LucideIcons.messageSquare, 
-            size: 80, 
+            LucideIcons.messageSquare,
+            size: 80,
             color: design.colors.textTertiary.withValues(alpha: 0.2),
           ),
           SizedBox(height: design.spacing.lg),
@@ -138,6 +136,21 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
   }
 }
 
+final List<DoubtDto> _dummyDoubts = List.generate(
+  5,
+  (index) => DoubtDto(
+    id: 'dummy_$index',
+    title: 'Loading your doubts and queries',
+    content: 'Loading content description placeholder text',
+    studentName: 'Student Name',
+    replyCount: 0,
+    status: DoubtStatus.pending,
+    createdAt: DateTime.now(),
+    courseName: 'Course Name Placeholder',
+    courseId: 'course_$index',
+  ),
+);
+
 class _DoubtsBody extends StatelessWidget {
   final List<DoubtDto> doubts;
 
@@ -152,10 +165,12 @@ class _DoubtsBody extends StatelessWidget {
         horizontal: design.spacing.md,
         vertical: design.spacing.sm,
       ),
-      children: doubts.map((doubt) => Padding(
-        padding: EdgeInsets.only(bottom: design.spacing.xs),
-        child: _DoubtItem(doubt: doubt),
-      )).toList(),
+      children: doubts
+          .map((doubt) => Padding(
+                padding: EdgeInsets.only(bottom: design.spacing.xs),
+                child: _DoubtItem(doubt: doubt),
+              ))
+          .toList(),
     );
   }
 }
@@ -229,7 +244,7 @@ class _DoubtItem extends StatelessWidget {
     final l10n = L10n.of(context);
     // Orange palette (atIndex 1) is more vibrant
     final colors = design.subjectPalette.atIndex(1);
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
