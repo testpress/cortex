@@ -70,21 +70,25 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
 
     if (status == ExamAttemptStatus.idle || (status == ExamAttemptStatus.loading && state.exam == null)) {
       final lessonDetailAsync = ref.read(lessonDetailProvider(widget.testId));
-      final lesson = widget.lesson ?? lessonDetailAsync.valueOrNull?.toDto();
+      final fetchedLesson = lessonDetailAsync.valueOrNull?.toDto();
+      final lesson = widget.lesson ?? fetchedLesson;
+      
+      final attemptsUrl = widget.lesson?.attemptsUrl ?? fetchedLesson?.attemptsUrl;
+      final slug = widget.lesson?.slug ?? fetchedLesson?.slug;
 
-      if (lesson != null && lesson.attemptsUrl != null && lesson.attemptsUrl!.isNotEmpty) {
+      if (lesson != null && attemptsUrl != null && attemptsUrl.isNotEmpty) {
         ref.read(examAttemptProvider.notifier).startCourseLinkedExam(
               ExamDto(
                 id: lesson.id,
                 title: lesson.title,
                 duration: lesson.duration,
                 questionCount: 0,
-                attemptsUrl: lesson.attemptsUrl!,
+                attemptsUrl: attemptsUrl,
               ),
-              lesson.attemptsUrl!,
+              attemptsUrl,
             );
-      } else if (lesson != null && lesson.slug != null && lesson.slug!.isNotEmpty) {
-        ref.read(examAttemptProvider.notifier).loadExam(lesson.slug!);
+      } else if (slug != null && slug.isNotEmpty) {
+        ref.read(examAttemptProvider.notifier).loadExam(slug);
       } else if (widget.lesson == null && !lessonDetailAsync.isLoading && lessonDetailAsync.value == null) {
         ref.read(examAttemptProvider.notifier).loadExam(widget.testId);
       }

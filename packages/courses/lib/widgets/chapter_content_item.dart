@@ -95,7 +95,7 @@ class ChapterContentItem extends StatelessWidget {
     final typeLabel = _getLabelForType(context, lesson.type);
     final duration = TimeFormatter.formatDuration(lesson.duration);
 
-    if (duration == null || duration.isEmpty) {
+    if (duration == null || duration.isEmpty || lesson.type == LessonType.test) {
       return typeLabel;
     }
 

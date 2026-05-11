@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
 import '../providers/exam_providers.dart';
@@ -64,7 +65,8 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
       );
     }
 
-    final slug = lesson?.slug;
+    final fetchedLesson = lessonDetailAsync.valueOrNull;
+    final slug = lesson?.slug ?? fetchedLesson?.slug;
 
     AsyncValue<ExamDto>? examDetailAsync;
     if (slug != null) {
@@ -72,6 +74,11 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
     }
 
     final exam = examDetailAsync?.valueOrNull;
+    
+    // Metadata is loading if we don't have the exam data yet and no errors have occurred.
+    // This guarantees it shimmers immediately on frame 1 instead of showing an empty layout.
+    final bool hasError = (examDetailAsync?.hasError ?? false) || lessonDetailAsync.hasError;
+    final bool isMetadataLoading = exam == null && !hasError;
 
     // Parse duration format from e.g. "03:00:00" to "180 mins"
     String durationText = 'N/A';
@@ -162,43 +169,61 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                             ),
                           ),
                           SizedBox(height: design.spacing.sm),
-                          Row(
-                            children: [
-                              // Questions Count
-                              Icon(
-                                LucideIcons.fileText,
-                                size: 16,
-                                color: design.colors.textSecondary,
+                          SkeletonizerConfig(
+                            data: SkeletonizerConfigData(
+                              effect: ShimmerEffect(
+                                baseColor: design.colors.skeleton,
+                                highlightColor: design.colors.onSkeleton,
+                                duration: MotionPreferences.duration(context, const Duration(milliseconds: 800)),
                               ),
-                              SizedBox(width: design.spacing.xs),
-                              AppText.caption(
-                                '${exam?.questionCount ?? '--'} Questions',
-                                color: design.colors.textSecondary,
-                                style: const TextStyle(fontSize: 14),
-                              ),
-                              SizedBox(width: design.spacing.lg),
+                            ),
+                            child: Skeletonizer(
+                              enabled: isMetadataLoading,
+                              child: Row(
+                                children: [
+                                  if (isMetadataLoading || exam?.questionCount != null) ...[
+                                    // Questions Count
+                                    Icon(
+                                      LucideIcons.fileText,
+                                      size: 16,
+                                      color: design.colors.textSecondary,
+                                    ),
+                                    SizedBox(width: design.spacing.xs),
+                                    AppText.caption(
+                                      '${exam?.questionCount ?? '--'} Questions',
+                                      color: design.colors.textSecondary,
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                    SizedBox(width: design.spacing.lg),
+                                  ],
 
-                              // Duration
-                              Icon(
-                                LucideIcons.clock,
-                                size: 16,
-                                color: design.colors.textSecondary,
-                              ),
-                              SizedBox(width: design.spacing.xs),
-                              AppText.caption(
-                                durationText,
-                                color: design.colors.textSecondary,
-                                style: const TextStyle(fontSize: 14),
-                              ),
-                              SizedBox(width: design.spacing.lg),
+                                  if (isMetadataLoading || durationText != 'N/A') ...[
+                                    // Duration
+                                    Icon(
+                                      LucideIcons.clock,
+                                      size: 16,
+                                      color: design.colors.textSecondary,
+                                    ),
+                                    SizedBox(width: design.spacing.xs),
+                                    AppText.caption(
+                                      durationText,
+                                      color: design.colors.textSecondary,
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                    SizedBox(width: design.spacing.lg),
+                                  ],
 
-                              // Marks
-                              AppText.caption(
-                                totalMarksText, // Default total marks
-                                color: design.colors.textSecondary,
-                                style: const TextStyle(fontSize: 14),
+                                  if (isMetadataLoading || totalMarksText != 'Marks: --') ...[
+                                    // Marks
+                                    AppText.caption(
+                                      totalMarksText,
+                                      color: design.colors.textSecondary,
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                  ],
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ],
                       ),
@@ -249,61 +274,6 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                                       'Take the test in exam mode with timer',
                                       style: TextStyle(
                                         color: design.colors.onPrimary.withValues(alpha: 0.8),
-                                        fontSize: 13,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: design.spacing.md),
-
-                      GestureDetector(
-                        onTap: () {
-                          // PDF Download capability can be wired here or triggered as a custom callback
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(design.spacing.md),
-                          decoration: BoxDecoration(
-                            color: design.colors.card, // Premium adaptive card background
-                            borderRadius: BorderRadius.circular(design.radius.lg),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(design.spacing.sm),
-                                decoration: BoxDecoration(
-                                  color: design.isDark ? const Color(0x1AFFFFFF) : const Color(0xFFE2E8F0),
-                                  borderRadius: BorderRadius.circular(design.radius.md),
-                                ),
-                                child: Icon(
-                                  LucideIcons.download,
-                                  color: design.isDark ? design.colors.textPrimary : const Color(0xFF475569),
-                                  size: 24,
-                                ),
-                              ),
-                              SizedBox(width: design.spacing.md),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Download PDF',
-                                      style: TextStyle(
-                                        color: design.colors.textPrimary, // Adaptive primary text
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      'Save question paper for offline practice',
-                                      style: TextStyle(
-                                        color: design.colors.textSecondary, // Adaptive secondary text
                                         fontSize: 13,
                                       ),
                                     ),
