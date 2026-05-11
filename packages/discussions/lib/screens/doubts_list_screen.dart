@@ -43,9 +43,7 @@ class DoubtsListScreen extends ConsumerWidget {
                         actions: [
                           GestureDetector(
                             onTap: () {
-                              Navigator.of(context).push(
-                                AppRoute(page: const AskDoubtFormScreen()),
-                              );
+                              context.push('/home/discussions/doubts/ask');
                             },
                             child: Padding(
                               padding: EdgeInsets.symmetric(horizontal: design.spacing.sm),
@@ -131,9 +129,7 @@ class DoubtsListScreen extends ConsumerWidget {
             label: l10n.doubtsHeaderAskDoubt,
             leading: const Icon(LucideIcons.plus, size: 20, color: Color(0xFFFFFFFF)),
             onPressed: () {
-              Navigator.of(context).push(
-                AppRoute(page: const AskDoubtFormScreen()),
-              );
+              context.push('/home/discussions/doubts/ask');
             },
           ),
         ],
@@ -193,9 +189,7 @@ class _DoubtItem extends StatelessWidget {
 
     return AppCard(
       onTap: () {
-        Navigator.of(context).push(
-          AppRoute(page: DoubtDetailScreen(doubtId: doubt.id)),
-        );
+        context.push('/home/discussions/doubts/${doubt.id}');
       },
       padding: EdgeInsets.all(design.spacing.md),
       child: Column(
