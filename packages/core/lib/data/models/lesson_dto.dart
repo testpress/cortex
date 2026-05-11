@@ -257,6 +257,10 @@ class LessonDto {
       return LessonType.liveStream;
     }
 
+    if (json['exam'] != null) {
+      return LessonType.test;
+    }
+
     final String contentType = (json['content_type'] ?? json['type'] ?? json['kind'])
             ?.toString()
             .toLowerCase() ??
@@ -381,6 +385,7 @@ class LessonDto {
     String? getString(String key) => json[key]?.toString();
     final video = json['video'] as Map<String, dynamic>?;
     final liveStream = json['live_stream'] as Map<String, dynamic>?;
+    final exam = json['exam'] as Map<String, dynamic>?;
 
     return LessonDto(
       id: getString('id') ?? getString('object_id') ?? '',
@@ -394,7 +399,8 @@ class LessonDto {
       duration: TimeFormatter.formatDuration(
             json['duration'] as String? ?? 
             video?['duration'] as String? ??
-            liveStream?['duration'] as String?) ??
+            liveStream?['duration'] as String? ??
+            exam?['duration'] as String?) ??
         '',
       progressStatus: _parseStatus(json['state'] ?? json['progressStatus']),
       isLocked: !(json['active'] as bool? ?? json['isLocked'] == false),
