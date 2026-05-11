@@ -15,6 +15,8 @@ import '../widgets/test_detail/test_question_card.dart';
 import '../widgets/test_detail/test_navigation_actions.dart';
 import '../widgets/test_detail/test_palette_trigger.dart';
 import '../widgets/test_detail/submit_confirmation_dialog.dart';
+import '../widgets/test_detail/exam_instructions_view.dart';
+import '../widgets/test_detail/sections_tab_bar.dart';
 
 class TestDetailScreen extends ConsumerStatefulWidget {
   final String testId;
@@ -138,47 +140,12 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     }
 
     if (state.status == ExamAttemptStatus.instructions) {
-      return Container(
-        color: design.colors.surface,
-        child: Column(
-          children: [
-            AppHeader(
-              title: state.exam?.title ?? 'Instructions',
-              leading: GestureDetector(
-                onTap: widget.onClose,
-                child: const Icon(LucideIcons.x),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(design.spacing.lg),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    AppText.headline(l10n.examInstructions),
-                    SizedBox(height: design.spacing.md),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: AppText.body(
-                          'Please read the instructions carefully before starting the exam...',
-                        ),
-                      ),
-                    ),
-                    AppButton(
-                      onPressed: () {
-                        ref
-                            .read(examAttemptProvider.notifier)
-                            .startStandaloneExam(state.exam!);
-                      },
-                      label: l10n.startExam,
-                      fullWidth: true,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+      return ExamInstructionsView(
+        exam: state.exam,
+        onClose: widget.onClose,
+        onStartExam: () {
+          ref.read(examAttemptProvider.notifier).startStandaloneExam(state.exam!);
+        },
       );
     }
 
@@ -238,7 +205,23 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                 timeFormatted: _formatTime(state.remainingSeconds),
                 onExit: widget.onClose,
               ),
-              _buildSectionsTabBar(state),
+              SectionsTabBar(
+                state: state,
+                activeSubjectIndex: _activeSubjectIndex,
+                isExpanded: _isSectionsTabBarExpanded,
+                onExpandChanged: (val) => setState(() => _isSectionsTabBarExpanded = val),
+                onTabSelected: (index) {
+                  setState(() {
+                    _currentQuestionIndex = 0;
+                    if (state.sections.length <= 1) {
+                      _activeSubjectIndex = index;
+                    }
+                  });
+                  if (state.sections.length > 1) {
+                    ref.read(examAttemptProvider.notifier).switchSection(index);
+                  }
+                },
+              ),
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
@@ -410,154 +393,4 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     );
   }
 
-  Widget _buildSectionsTabBar(ExamAttemptState state) {
-    final List<String> tabNames = [];
-    final List<String> subjects = [];
-    
-    if (state.sections.length > 1) {
-      tabNames.addAll(state.sections.map((s) => s.name));
-    } else {
-      for (final q in state.questions) {
-        if (!subjects.contains(q.subject)) {
-          subjects.add(q.subject);
-        }
-      }
-      if (subjects.length > 1) {
-        tabNames.addAll(subjects);
-      }
-    }
-
-    if (tabNames.isEmpty) return const SizedBox.shrink();
-
-    final design = Design.of(context);
-    final activeIndex = state.sections.length > 1 
-        ? state.currentSectionIndex 
-        : _activeSubjectIndex;
-    final activeName = tabNames[activeIndex < tabNames.length ? activeIndex : 0];
-
-    if (!_isSectionsTabBarExpanded) {
-      return GestureDetector(
-        onTap: () => setState(() => _isSectionsTabBarExpanded = true),
-        child: Container(
-          height: 32,
-          padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-          decoration: BoxDecoration(
-            color: design.colors.card,
-            border: Border(
-              bottom: BorderSide(
-                color: design.colors.border,
-                width: 1,
-              ),
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AppText.caption(
-                '${state.sections.length > 1 ? "Section" : "Subject"}: ${activeName.isEmpty ? "General" : activeName}',
-                color: design.colors.textPrimary,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(width: design.spacing.xs),
-              Icon(
-                LucideIcons.chevronDown,
-                size: 16,
-                color: design.colors.textSecondary,
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    return Container(
-      height: 50,
-      decoration: BoxDecoration(
-        color: design.colors.surface,
-        border: Border(
-          bottom: BorderSide(
-            color: design.colors.border,
-            width: 1,
-          ),
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: ShaderMask(
-              shaderCallback: (Rect bounds) {
-                return const LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    Color(0xFFFFFFFF),
-                    Color(0x00FFFFFF),
-                  ],
-                  stops: [0.80, 1.0],
-                ).createShader(bounds);
-              },
-              blendMode: BlendMode.dstIn,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.symmetric(horizontal: design.spacing.md, vertical: design.spacing.xs),
-                itemCount: tabNames.length,
-                itemBuilder: (context, index) {
-                  final tabName = tabNames[index];
-                  final isActive = index == activeIndex;
-
-                  return GestureDetector(
-                    onTap: () {
-                      if (!isActive) {
-                        setState(() {
-                          _currentQuestionIndex = 0;
-                          if (state.sections.length <= 1) {
-                            _activeSubjectIndex = index;
-                          }
-                        });
-                        if (state.sections.length > 1) {
-                          ref.read(examAttemptProvider.notifier).switchSection(index);
-                        }
-                      }
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(right: design.spacing.sm),
-                      padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: isActive ? design.colors.primary : design.colors.card,
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(
-                          color: isActive ? design.colors.primary : design.colors.border,
-                        ),
-                      ),
-                      child: AppText.body(
-                        tabName.isEmpty ? 'General' : tabName,
-                        color: isActive ? design.colors.onPrimary : design.colors.textPrimary,
-                        style: TextStyle(
-                          fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () => setState(() => _isSectionsTabBarExpanded = false),
-            child: Container(
-              height: 50,
-              padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-              alignment: Alignment.center,
-              child: Icon(
-                LucideIcons.chevronUp,
-                size: 20,
-                color: design.colors.textSecondary,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
