@@ -34,3 +34,19 @@ List<String> doubtCategories(DoubtCategoriesRef ref) {
     'Cell Biology', 'Genetics', 'Ecology', 'Grammar', 'Literature'
   ];
 }
+
+@riverpod
+Future<DoubtDto> doubtDetail(DoubtDetailRef ref, String id) async {
+  final doubts = await ref.watch(doubtsListProvider.future);
+  return doubts.firstWhere(
+    (d) => d.id == id,
+    orElse: () => throw Exception('Doubt with ID $id not found.'),
+  );
+}
+
+@riverpod
+Stream<List<DoubtReplyDto>> doubtReplies(DoubtRepliesRef ref, String id) async* {
+  final repo = await ref.watch(doubtRepositoryProvider.future);
+  repo.syncReplies(id).ignore();
+  yield* repo.watchReplies(id);
+}

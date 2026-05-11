@@ -6,6 +6,7 @@ import 'package:core/data/data.dart';
 import '../providers/doubt_providers.dart';
 import '../widgets/forum_header.dart';
 import 'ask_doubt_form_screen.dart';
+import 'doubt_detail_screen.dart';
 
 class DoubtsListScreen extends ConsumerWidget {
   const DoubtsListScreen({super.key});
@@ -192,7 +193,9 @@ class _DoubtItem extends StatelessWidget {
 
     return AppCard(
       onTap: () {
-        // TODO: Navigate to Doubt Detail
+        Navigator.of(context).push(
+          AppRoute(page: DoubtDetailScreen(doubtId: doubt.id)),
+        );
       },
       padding: EdgeInsets.all(design.spacing.md),
       child: Column(

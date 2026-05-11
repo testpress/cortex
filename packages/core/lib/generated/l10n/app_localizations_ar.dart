@@ -1464,4 +1464,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get nextSection => 'Next Section';
+
+  @override
+  String get doubtDetailTitle => 'سؤال';
+
+  @override
+  String get errorFailedToLoadReplies => 'فشل تحميل الردود';
+
+  @override
+  String get errorFailedToLoadDoubtDetails => 'فشل تحميل تفاصيل السؤال';
+
+  @override
+  String get labelMentor => 'مرشد';
 }

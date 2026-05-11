@@ -1480,4 +1480,18 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get nextSection => 'Next Section';
+
+  @override
+  String get doubtDetailTitle => 'സംശയം';
+
+  @override
+  String get errorFailedToLoadReplies =>
+      'മറുപടികൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു';
+
+  @override
+  String get errorFailedToLoadDoubtDetails =>
+      'വിശദാംശങ്ങൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു';
+
+  @override
+  String get labelMentor => 'മെന്റർ';
 }

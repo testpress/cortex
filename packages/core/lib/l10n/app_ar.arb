@@ -495,5 +495,9 @@
   "doubtsFormCategoryLabel": "هل يمكنك اختيار الفئة التي ينتمي إليها سؤالك؟",
   "doubtsFormAttachmentsLabel": "المرفقات (اختياري)",
   "doubtsFormUploadAction": "تحميل صورة أو ملف PDF",
-  "doubtsFormSubmitAction": "إرسال السؤال"
+  "doubtsFormSubmitAction": "إرسال السؤال",
+  "doubtDetailTitle": "سؤال",
+  "errorFailedToLoadReplies": "فشل تحميل الردود",
+  "errorFailedToLoadDoubtDetails": "فشل تحميل تفاصيل السؤال",
+  "labelMentor": "مرشد"
 }

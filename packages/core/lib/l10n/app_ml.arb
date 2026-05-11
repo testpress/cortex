@@ -495,5 +495,9 @@
   "doubtsFormCategoryLabel": "നിങ്ങളുടെ ചോദ്യം ഏത് വിഭാഗത്തിൽപ്പെട്ടതാണെന്ന് തിരഞ്ഞെടുക്കാമോ?",
   "doubtsFormAttachmentsLabel": "അറ്റാച്ച്‌മെന്റുകൾ (നിർബന്ധമില്ല)",
   "doubtsFormUploadAction": "ചിത്രമോ PDF-ഓ അപ്‌ലോഡ് ചെയ്യുക",
-  "doubtsFormSubmitAction": "സംശയം സമർപ്പിക്കുക"
+  "doubtsFormSubmitAction": "സംശയം സമർപ്പിക്കുക",
+  "doubtDetailTitle": "സംശയം",
+  "errorFailedToLoadReplies": "മറുപടികൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു",
+  "errorFailedToLoadDoubtDetails": "വിശദാംശങ്ങൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു",
+  "labelMentor": "മെന്റർ"
 }
