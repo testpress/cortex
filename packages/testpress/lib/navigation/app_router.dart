@@ -209,6 +209,21 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   path: 'discussions/doubts',
                   parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) => const DoubtsListScreen(),
+                  routes: [
+                    GoRoute(
+                      path: ':doubtId',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      builder: (context, state) {
+                        final doubtId = state.pathParameters['doubtId']!;
+                        return DoubtDetailScreen(doubtId: doubtId);
+                      },
+                    ),
+                    GoRoute(
+                      path: 'ask',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      builder: (context, state) => const AskDoubtFormScreen(),
+                    ),
+                  ],
                 ),
               ],
             ),

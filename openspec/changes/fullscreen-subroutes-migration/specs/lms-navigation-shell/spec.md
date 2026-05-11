@@ -1,7 +1,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: Exclusive Full-screen Views
-The system SHALL mandate that all deep-dive learning and community activities (lessons, tests, assessments, chapters, forums, doubt details) occupy the entire screen, hiding the navigation shell to ensure immersive focus and proper native resource disposal.
+The system SHALL mandate that all focused learning, community activities, and secondary utilities (lessons, tests, assessments, chapters, forums, doubts, profile settings, and downloads) occupy the entire screen, hiding the navigation shell to ensure immersive focus and proper native resource disposal.
 
 #### Scenario: Opening a lesson
 - **WHEN** the user selects a lesson, test, or assessment
@@ -26,10 +26,10 @@ Each primary tab SHALL support its own stack of push/pop navigation without affe
 
 #### Scenario: Navigating from Profile to Notifications
 - **WHEN** the user selects "Notifications" from the Profile settings actions
-- **THEN** the system SHALL navigate to the Notifications settings route from within the Profile tab flow
-- **AND** the system MUST preserve the active shell/tab context while the Notifications screen is open
+- **THEN** the system SHALL navigate to the Notifications settings route via the root navigator
+- **AND** the navigation shell MUST NOT be visible during the interaction
 
 #### Scenario: Returning from Notifications to Profile
 - **WHEN** the user triggers back navigation from the Notifications settings screen
-- **THEN** the system SHALL return to the previous Profile screen state
-- **AND** the system MUST NOT reset other tab navigation stacks
+- **THEN** the system SHALL return to the previous Profile dashboard state
+- **AND** the navigation shell MUST become visible again
