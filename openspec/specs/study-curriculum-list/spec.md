@@ -73,11 +73,15 @@ The system SHALL pre-flatten the nested course/chapter hierarchy into a single s
 - **THEN** the result list updates instantaneously using the flattened provider structure
 
 ### Requirement: Full-Cell Interactive Targets
-The system SHALL ensure that interactive elements like filter chips utilize the full width of their grid containers as tap targets (`AppFocusable`). Text and icons within these chips SHALL be left-aligned with consistent gutter padding to prioritize readability and tap accuracy.
+The system SHALL ensure that interactive elements like filter chips and course cards utilize the full width and height of their bounding containers as tap targets (`AppFocusable`). Text and icons within these components SHALL prioritize tap accuracy by ensuring dead space also responds to interaction.
 
 #### Scenario: Accessible filter targets
 - **WHEN** a user taps anywhere within the container of a filter chip
 - **THEN** the filter is toggled as expected
+
+#### Scenario: Accessible course card targets
+- **WHEN** a user taps anywhere within the bounding box of a CourseCard
+- **THEN** the card triggers the `onTap` callback even when tapping transparent space
 
 ### Requirement: Consistent Content Context
 The system SHALL maintain the main section header as "Your Courses" even when a search or content filter is active. This ensures the user maintains a stable sense of place within the Study tab while the underlying list content dynamically updates.
