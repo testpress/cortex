@@ -1440,4 +1440,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get doubtsFormSubmitAction => 'Submit Doubt';
+
+  @override
+  String get examInstructions => 'Exam Instructions';
+
+  @override
+  String get startExam => 'Start Exam';
+
+  @override
+  String get nextSubject => 'Next Subject';
+
+  @override
+  String get nextSection => 'Next Section';
 }

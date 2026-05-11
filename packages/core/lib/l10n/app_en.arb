@@ -716,5 +716,9 @@
   "doubtsFormCategoryLabel": "Could you select the category which your question belongs to?",
   "doubtsFormAttachmentsLabel": "Attachments (Optional)",
   "doubtsFormUploadAction": "Upload Image or PDF",
-  "doubtsFormSubmitAction": "Submit Doubt"
+  "doubtsFormSubmitAction": "Submit Doubt",
+  "examInstructions": "Exam Instructions",
+  "startExam": "Start Exam",
+  "nextSubject": "Next Subject",
+  "nextSection": "Next Section"
 }

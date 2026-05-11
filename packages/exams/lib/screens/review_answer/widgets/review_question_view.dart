@@ -1,10 +1,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import '../../../models/test_model.dart';
+import 'package:core/data/data.dart';
 
 class ReviewQuestionCard extends StatelessWidget {
-  final TestQuestion question;
-  final TestAttemptAnswer? attemptState;
+  final QuestionDto question;
+  final AnswerDto? attemptState;
   final AppLocalizations l10n;
   final bool isCorrect;
   final bool isUnanswered;
@@ -48,12 +48,24 @@ class ReviewQuestionCard extends StatelessWidget {
             l10n: l10n,
           ),
           const SizedBox(height: 16),
-          AppText.headline(question.text, color: design.colors.textPrimary),
+          if (question.directionHtml != null && question.directionHtml!.isNotEmpty) ...[
+            AppHtml(
+              data: question.directionHtml!,
+              fontSize: 15,
+            ),
+            const SizedBox(height: 16),
+            Container(
+              height: 1,
+              color: design.colors.border,
+            ),
+            const SizedBox(height: 16),
+          ],
+          AppHtml(data: question.text, fontSize: 16),
           const SizedBox(height: 24),
           ...question.options.map((opt) {
-            final isCorrectOption = question.correctOptionIds.contains(opt.id);
+            final isCorrectOption = question.correctOptionIds.any((id) => id.toString() == opt.id.toString());
             final isUserSelected =
-                attemptState?.selectedOptions.contains(opt.id) ?? false;
+                attemptState?.selectedOptions.any((id) => id.toString() == opt.id.toString()) ?? false;
             return _OptionItem(
               option: opt,
               isCorrectOption: isCorrectOption,
@@ -139,7 +151,7 @@ class _QuestionHeader extends StatelessWidget {
 }
 
 class _OptionItem extends StatelessWidget {
-  final QuestionOption option;
+  final QuestionOptionDto option;
   final bool isCorrectOption;
   final bool isUserSelected;
 
@@ -187,16 +199,12 @@ class _OptionItem extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: AppText.body(
-              option.text,
-              color: (isCorrectOption || isUserSelected)
+            child: AppHtml(
+              data: option.text,
+              fontSize: 15,
+              textColor: (isCorrectOption || isUserSelected)
                   ? design.colors.textPrimary
                   : design.colors.textSecondary,
-              style: TextStyle(
-                fontWeight: (isCorrectOption || isUserSelected)
-                    ? FontWeight.w600
-                    : FontWeight.normal,
-              ),
             ),
           ),
           if (isCorrectOption)
@@ -299,7 +307,7 @@ class _ExplanationSection extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
-            AppText.body(explanation, color: secondaryTextColor),
+            AppHtml(data: explanation, fontSize: 14, textColor: secondaryTextColor),
           ],
         ),
       ),

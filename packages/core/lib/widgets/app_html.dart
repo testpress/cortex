@@ -125,6 +125,9 @@ class _AppHtmlState extends State<AppHtml> {
               line-height: 1.5;
               overflow: hidden;
             }
+            p, span, div, font, h1, h2, h3, h4, h5, h6 {
+              color: $txCss !important;
+            }
             #content {
               padding: 2px 0;
               display: inline-block;

@@ -1468,4 +1468,16 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get doubtsFormSubmitAction => 'സംശയം സമർപ്പിക്കുക';
+
+  @override
+  String get examInstructions => 'Exam Instructions';
+
+  @override
+  String get startExam => 'Start Exam';
+
+  @override
+  String get nextSubject => 'Next Subject';
+
+  @override
+  String get nextSection => 'Next Section';
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import '../../models/test_model.dart';
+import 'package:core/data/data.dart';
 import './option_card.dart';
 
 class TestQuestionCard extends StatelessWidget {
-  final TestQuestion question;
-  final TestAttemptAnswer? answer;
+  final QuestionDto question;
+  final AnswerDto? answer;
   final void Function(String) onOptionSelect;
 
   const TestQuestionCard({
@@ -30,8 +30,23 @@ class TestQuestionCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppText.title(question.text),
-          if (question.type == QuestionType.multipleSelect)
+          if (question.directionHtml != null && question.directionHtml!.isNotEmpty) ...[
+            AppHtml(
+              data: question.directionHtml!,
+              fontSize: 16,
+            ),
+            SizedBox(height: design.spacing.md),
+            Container(
+              height: 1,
+              color: design.colors.border,
+            ),
+            SizedBox(height: design.spacing.md),
+          ],
+          AppHtml(
+            data: question.text,
+            fontSize: 18,
+          ),
+          if (question.type == 'multipleSelect')
             Padding(
               padding: EdgeInsets.only(top: design.spacing.sm),
               child: AppText.caption(
@@ -40,11 +55,13 @@ class TestQuestionCard extends StatelessWidget {
                 style: const TextStyle(fontStyle: FontStyle.italic),
               ),
             ),
-          SizedBox(height: design.spacing.xl),
+          SizedBox(height: design.spacing.md),
           ...question.options.map((option) {
+            final isSelected = answer?.selectedOptions.any((id) => id.toString() == option.id.toString()) ?? false;
+            
             return OptionCard(
               option: option,
-              isSelected: answer?.selectedOptions.contains(option.id) ?? false,
+              isSelected: isSelected,
               type: question.type,
               onTap: () => onOptionSelect(option.id),
             );

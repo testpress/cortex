@@ -1,15 +1,15 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import '../../models/test_model.dart';
+import 'package:core/data/data.dart';
 
 class TestHeader extends StatelessWidget {
-  final Test test;
+  final ExamDto exam;
   final String timeFormatted;
   final VoidCallback onExit;
 
   const TestHeader({
     super.key,
-    required this.test,
+    required this.exam,
     required this.timeFormatted,
     required this.onExit,
   });
@@ -91,14 +91,14 @@ class TestHeader extends StatelessWidget {
           ),
           SizedBox(height: design.spacing.lg),
           AppText.headline(
-            '${l10n.filterTest}: ${test.title}',
+            '${l10n.filterTest}: ${exam.title}',
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: design.spacing.xs),
           Row(
             children: [
               AppText.caption(
-                '${test.totalQuestions} ${l10n.shortcutTests}',
+                '${exam.questionCount} ${l10n.shortcutTests}',
                 color: design.colors.textSecondary,
               ),
               Padding(

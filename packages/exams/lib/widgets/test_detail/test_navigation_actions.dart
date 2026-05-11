@@ -6,6 +6,7 @@ class TestNavigationActions extends StatelessWidget {
   final bool isMarked;
   final bool canGoPrevious;
   final bool isLastQuestion;
+  final String? finishLabel; // Override label when "Finish" means "Next Section"
   final VoidCallback onToggleMark;
   final VoidCallback onPrevious;
   final VoidCallback onNext;
@@ -15,6 +16,7 @@ class TestNavigationActions extends StatelessWidget {
     required this.isMarked,
     required this.canGoPrevious,
     required this.isLastQuestion,
+    this.finishLabel,
     required this.onToggleMark,
     required this.onPrevious,
     required this.onNext,
@@ -41,7 +43,7 @@ class TestNavigationActions extends StatelessWidget {
                 isBack: true,
               ),
               NavButton(
-                label: isLastQuestion ? l10n.testFinish : l10n.testNext,
+                label: finishLabel ?? (isLastQuestion ? l10n.testFinish : l10n.testNext),
                 icon: LucideIcons.chevronRight,
                 onTap: onNext,
               ),

@@ -1452,4 +1452,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get doubtsFormSubmitAction => 'إرسال السؤال';
+
+  @override
+  String get examInstructions => 'Exam Instructions';
+
+  @override
+  String get startExam => 'Start Exam';
+
+  @override
+  String get nextSubject => 'Next Subject';
+
+  @override
+  String get nextSection => 'Next Section';
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import '../../models/test_model.dart';
+import 'package:core/data/data.dart';
 
 class OptionCard extends StatelessWidget {
-  final QuestionOption option;
+  final QuestionOptionDto option;
   final bool isSelected;
-  final QuestionType type;
+  final String type; // 'singleSelect' | 'multipleSelect'
   final VoidCallback? onTap;
   final bool showFeedback;
   final bool isCorrect;
@@ -43,6 +43,7 @@ class OptionCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
+      behavior: HitTestBehavior.opaque,
       child: Container(
         margin: EdgeInsets.only(bottom: design.spacing.md),
         padding: EdgeInsets.symmetric(
@@ -59,13 +60,11 @@ class OptionCard extends StatelessWidget {
             _buildOptionIndicator(design, selectionColor),
             SizedBox(width: design.spacing.md),
             Expanded(
-              child: AppText.body(
-                option.text,
-                style: TextStyle(
-                  fontWeight: (isSelected || isCorrect || isIncorrect)
-                      ? FontWeight.w600
-                      : FontWeight.w400,
-                  color: isCorrect
+              child: AbsorbPointer(
+                child: AppHtml(
+                  data: option.text,
+                  fontSize: 15,
+                  textColor: isCorrect
                       ? design.colors.success
                       : (isIncorrect
                             ? design.colors.error
@@ -88,7 +87,7 @@ class OptionCard extends StatelessWidget {
   Widget _buildOptionIndicator(DesignConfig design, Color selectionColor) {
     final bool active = isSelected || isCorrect || isIncorrect;
 
-    if (type == QuestionType.multipleSelect) {
+    if (type == 'multipleSelect') {
       return Container(
         width: 20,
         height: 20,
