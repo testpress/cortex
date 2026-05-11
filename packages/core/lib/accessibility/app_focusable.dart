@@ -78,6 +78,7 @@ class _AppFocusableState extends State<AppFocusable> {
       },
       child: GestureDetector(
         onTap: widget.onTap,
+        behavior: HitTestBehavior.opaque,
         child: Stack(
           clipBehavior: Clip.none,
           children: [
