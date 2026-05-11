@@ -85,7 +85,7 @@ Each primary tab SHALL support its own stack of push/pop navigation without affe
 - **AND** the navigation shell MUST become visible again
 
 ### Requirement: Auth-state-based router redirect
-The router SHALL use auth provider state to decide redirects for auth routes and protected routes.
+The router SHALL use auth provider state to decide redirects for auth routes and protected routes. This logic SHALL be encapsulated within the `AuthRoutes` module for modularity.
 
 #### Scenario: Unauthenticated protected navigation
 - **WHEN** user is unauthenticated and requests a protected route
