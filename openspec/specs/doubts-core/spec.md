@@ -19,3 +19,13 @@ The system SHALL ensure that doubts are strictly private. A student SHALL only s
 - **WHEN** Student A fetches their doubts list
 - **THEN** only Student A's doubts SHALL be returned; Student B's doubts SHALL NOT be visible
 
+### Requirement: Local Doubt Creation
+The `DoubtRepository` SHALL support creating a new doubt record locally.
+- **Persistence**: Newly created doubts SHALL be inserted into the local `doubts` table immediately.
+- **Mock Integration**: The system SHALL simulate a successful server response for local testing when real API sync is disabled.
+
+#### Scenario: Creating a doubt locally
+- **GIVEN** a student has filled the doubt form
+- **WHEN** they submit the doubt
+- **THEN** a new record SHALL appear in the local database and the UI SHALL reflect the update reactively
+
