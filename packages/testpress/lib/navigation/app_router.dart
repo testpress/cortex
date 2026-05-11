@@ -211,17 +211,17 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   builder: (context, state) => const DoubtsListScreen(),
                   routes: [
                     GoRoute(
+                      path: 'ask',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      builder: (context, state) => const AskDoubtFormScreen(),
+                    ),
+                    GoRoute(
                       path: ':doubtId',
                       parentNavigatorKey: _rootNavigatorKey,
                       builder: (context, state) {
                         final doubtId = state.pathParameters['doubtId']!;
                         return DoubtDetailScreen(doubtId: doubtId);
                       },
-                    ),
-                    GoRoute(
-                      path: 'ask',
-                      parentNavigatorKey: _rootNavigatorKey,
-                      builder: (context, state) => const AskDoubtFormScreen(),
                     ),
                   ],
                 ),
