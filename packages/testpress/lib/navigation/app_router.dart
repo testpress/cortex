@@ -177,11 +177,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               routes: [
                 GoRoute(
                   path: 'discussions/forum',
+                  parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) =>
                       const ForumCourseSelectionScreen(),
                   routes: [
                     GoRoute(
                       path: 'posts/:courseId',
+                      parentNavigatorKey: _rootNavigatorKey,
                       builder: (context, state) {
                         final courseId = state.pathParameters['courseId']!;
                         return ForumPostsListScreen(courseId: courseId);
@@ -189,6 +191,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                       routes: [
                         GoRoute(
                           path: ':threadId',
+                          parentNavigatorKey: _rootNavigatorKey,
                           builder: (context, state) {
                             final courseId = state.pathParameters['courseId']!;
                             final threadId = state.pathParameters['threadId']!;
@@ -204,6 +207,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 ),
                 GoRoute(
                   path: 'discussions/doubts',
+                  parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) => const DoubtsListScreen(),
                 ),
               ],
@@ -220,6 +224,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               routes: [
                 GoRoute(
                   path: 'course/:courseId/chapters',
+                  parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) {
                     final courseId = state.pathParameters['courseId']!;
                     final parentId = state.uri.queryParameters['parentId'];
@@ -232,6 +237,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   routes: [
                     GoRoute(
                       path: ':chapterId',
+                      parentNavigatorKey: _rootNavigatorKey,
                       builder: (context, state) {
                         final courseId = state.pathParameters['courseId']!;
                         final chapterId = state.pathParameters['chapterId']!;
@@ -253,6 +259,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 GoRoute(
                   name: AppRouteNames.lessonDetail,
                   path: 'lesson/:id',
+                  parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) {
                     final id = state.pathParameters['id']!;
                     return Consumer(
@@ -330,6 +337,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 GoRoute(
                   name: AppRouteNames.testDetail,
                   path: 'test/:id',
+                  parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) {
                     final id = state.pathParameters['id']!;
                     final extra = state.extra;
@@ -348,6 +356,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   routes: [
                     GoRoute(
                       path: 'player',
+                      parentNavigatorKey: _rootNavigatorKey,
                       builder: (context, state) {
                         final id = state.pathParameters['id']!;
                         final extra = state.extra;
@@ -363,6 +372,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                     ),
                     GoRoute(
                       path: 'review-analytics',
+                      parentNavigatorKey: _rootNavigatorKey,
                       builder: (context, state) {
                         final id = state.pathParameters['id']!;
                         final payload = state.extra as ReviewRoutePayload?;
@@ -378,6 +388,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                     ),
                     GoRoute(
                       path: 'review-answers',
+                      parentNavigatorKey: _rootNavigatorKey,
                       builder: (context, state) {
                         final id = state.pathParameters['id']!;
                         final payload = state.extra as ReviewRoutePayload?;
@@ -395,6 +406,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 GoRoute(
                   name: AppRouteNames.assessmentDetail,
                   path: 'assessment/:id',
+                  parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) {
                     final id = state.pathParameters['id']!;
                     final extra = state.extra;
@@ -421,6 +433,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               routes: [
                 GoRoute(
                   path: 'course/:courseId/chapters',
+                  parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) {
                     final courseId = state.pathParameters['courseId']!;
                     final parentId = state.uri.queryParameters['parentId'];
@@ -435,6 +448,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   routes: [
                     GoRoute(
                       path: ':chapterId',
+                      parentNavigatorKey: _rootNavigatorKey,
                       builder: (context, state) {
                         final courseId = state.pathParameters['courseId']!;
                         final chapterId = state.pathParameters['chapterId']!;
@@ -462,6 +476,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 ),
                 GoRoute(
                   path: 'test/:id',
+                  parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) {
                     final id = state.pathParameters['id']!;
                     final extra = state.extra;
@@ -480,6 +495,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   routes: [
                     GoRoute(
                       path: 'player',
+                      parentNavigatorKey: _rootNavigatorKey,
                       builder: (context, state) {
                         final id = state.pathParameters['id']!;
                         final extra = state.extra;
@@ -497,6 +513,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 ),
                 GoRoute(
                   path: 'assessment/:id',
+                  parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) {
                     final id = state.pathParameters['id']!;
                     final extra = state.extra;
@@ -556,6 +573,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 GoRoute(
                   name: 'profile-notifications',
                   path: 'notifications',
+                  parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) {
                     return NotificationsScreen(onBack: () => context.pop());
                   },
@@ -563,6 +581,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 GoRoute(
                   name: 'profile-edit',
                   path: 'edit',
+                  parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) {
                     return const EditProfileScreen();
                   },
@@ -570,6 +589,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 GoRoute(
                   name: 'profile-settings',
                   path: 'settings',
+                  parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) {
                     return AppSettingsScreen(onBack: () => context.pop());
                   },
@@ -577,6 +597,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 GoRoute(
                   name: 'profile-certificates',
                   path: 'certificates',
+                  parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) {
                     return CertificatesScreen(
                       onBack: () => context.pop(),
@@ -605,6 +626,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                           onClose: () => context.pop(),
                         );
                       },
+                      parentNavigatorKey: _rootNavigatorKey,
                     ),
                   ],
                 ),
