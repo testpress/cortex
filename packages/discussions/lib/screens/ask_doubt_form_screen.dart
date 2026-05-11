@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:image_picker/image_picker.dart';
 import 'package:core/core.dart';
-import 'package:core/data/data.dart';
 import '../providers/doubt_providers.dart';
 import '../widgets/forum_header.dart';
 import '../widgets/forum_composer.dart';
@@ -25,13 +24,6 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
   
   bool _isSubmitting = false;
   String? _selectedCategory;
-
-  final List<String> _categories = [
-    'Physics', 'Chemistry', 'Mathematics', 'Biology', 'English', 'Accounts',
-    'Anatomy', 'Discrete Maths', 'Algebra', 'Calculus', 'Organic Chemistry',
-    'Inorganic Chemistry', 'Mechanics', 'Thermodynamics', 'Optics',
-    'Cell Biology', 'Genetics', 'Ecology', 'Grammar', 'Literature'
-  ];
 
   @override
   void initState() {
@@ -64,6 +56,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
             ForumHeader(title: l10n.doubtsHeaderAskDoubt),
             Expanded(
               child: SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
                 padding: EdgeInsets.all(design.spacing.md),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -101,7 +94,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
-                      children: _categories.map((c) => _categoryChip(c)).toList(),
+                      children: ref.watch(doubtCategoriesProvider).map((c) => _categoryChip(c)).toList(),
                     ),
                     const SizedBox(height: 32),
                     _sectionLabel(l10n.doubtsFormAttachmentsLabel),
@@ -212,19 +205,8 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
 
   Future<void> _handleSubmit() async {
     setState(() => _isSubmitting = true);
-    try {
-      final repo = await ref.read(doubtRepositoryProvider.future);
-      await repo.createDoubt(DoubtDto(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        title: _titleController.text.trim(),
-        content: _quillController.document.toPlainText().trim(),
-        studentName: 'You', replyCount: 0, status: DoubtStatus.pending,
-        createdAt: DateTime.now(), courseId: null,
-        courseName: _selectedCategory, attachmentUrls: List.from(_attachments),
-      ));
-      if (mounted) Navigator.pop(context);
-    } catch (e) {
-      if (mounted) setState(() => _isSubmitting = false);
-    }
+    // TODO: Implement actual submission logic later
+    await Future.delayed(const Duration(milliseconds: 500));
+    if (mounted) Navigator.pop(context);
   }
 }

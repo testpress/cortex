@@ -57,5 +57,22 @@ final doubtsSyncProvider = AutoDisposeFutureProvider<void>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef DoubtsSyncRef = AutoDisposeFutureProviderRef<void>;
+String _$doubtCategoriesHash() => r'57e7e0ac2bfed9f0fc06c447435de42543935686';
+
+/// See also [doubtCategories].
+@ProviderFor(doubtCategories)
+final doubtCategoriesProvider = AutoDisposeProvider<List<String>>.internal(
+  doubtCategories,
+  name: r'doubtCategoriesProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$doubtCategoriesHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef DoubtCategoriesRef = AutoDisposeProviderRef<List<String>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
