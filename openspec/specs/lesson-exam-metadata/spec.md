@@ -19,6 +19,11 @@ The `LessonDto` class SHALL contain nullable string fields for `attemptsUrl` and
 - **THEN** it correctly extracts `attemptsUrl` and `slug` from the `exam` map or top-level keys
 - **THEN** the `copyWith` and `merge` methods preserve these fields
 
+#### Scenario: Fallback type identification
+- **WHEN** explicit type identifiers (e.g. content_type) are missing from JSON root
+- **WHEN** the `exam` specific nested map key is present
+- **THEN** the system MUST identify the lesson as an Exam and parse accordingly
+
 ### Requirement: Lesson Domain Model Mapping
 The domain `Lesson` model in the courses package SHALL include `attemptsUrl` and `slug` fields, and SHALL provide a `toDto()` helper method to map it back to `LessonDto`.
 
