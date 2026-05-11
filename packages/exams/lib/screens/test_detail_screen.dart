@@ -113,6 +113,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     final state = ref.watch(examAttemptProvider);
     final lessonDetailAsync = ref.watch(lessonDetailProvider(widget.testId));
 
@@ -154,7 +155,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    AppText.headline('Exam Instructions'),
+                    AppText.headline(l10n.examInstructions),
                     SizedBox(height: design.spacing.md),
                     Expanded(
                       child: SingleChildScrollView(
@@ -169,7 +170,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                             .read(examAttemptProvider.notifier)
                             .startStandaloneExam(state.exam!);
                       },
-                      label: 'Start Exam',
+                      label: l10n.startExam,
                       fullWidth: true,
                     ),
                   ],
@@ -260,7 +261,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                         isLastQuestion: isLastQuestion,
                         // Relabel when there are more tabs to move through.
                         finishLabel: isLastQuestion && hasNextTab 
-                            ? (hasNextSubject ? 'Next Subject' : 'Next Section') 
+                            ? (hasNextSubject ? l10n.nextSubject : l10n.nextSection) 
                             : null,
                         onToggleMark: () => _handleToggleMark(state, question),
                         onPrevious: () {

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as dev;
 import 'package:core/data/data.dart';
 import '../models/test_dto.dart';
 import '../data/mock_tests.dart';
@@ -254,8 +255,8 @@ class ExamRepository {
             remainingSeconds: _parseDuration(attempt.remainingTime!),
           ));
         }
-      } catch (e) {
-        // Silently fail heartbeat or retry
+      } catch (e, stackTrace) {
+        dev.log('Heartbeat failure', name: 'ExamRepository', error: e, stackTrace: stackTrace);
       }
     });
   }
@@ -266,14 +267,17 @@ class ExamRepository {
   }
 
   Future<void> submitAnswer(String answerUrl, AnswerDto answer) async {
+    final previousAnswers = Map<String, AnswerDto>.from(_currentState.answers);
     try {
       final newAnswers = Map<String, AnswerDto>.from(_currentState.answers);
       newAnswers[answer.questionId] = answer;
       _emit(_currentState.copyWith(answers: newAnswers));
 
       await _dataSource.submitAnswer(answerUrl, answer);
-    } catch (e) {
-      print('DEBUG: Failed to submit answer: $e');
+    } catch (e, stackTrace) {
+      // Rollback on failure
+      _emit(_currentState.copyWith(answers: previousAnswers));
+      dev.log('Failed to submit answer', name: 'ExamRepository', error: e, stackTrace: stackTrace);
     }
   }
 

@@ -2660,6 +2660,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Submit Doubt'**
   String get doubtsFormSubmitAction;
+
+  /// No description provided for @examInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam Instructions'**
+  String get examInstructions;
+
+  /// No description provided for @startExam.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Exam'**
+  String get startExam;
+
+  /// No description provided for @nextSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Next Subject'**
+  String get nextSubject;
+
+  /// No description provided for @nextSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Next Section'**
+  String get nextSection;
 }
 
 class _AppLocalizationsDelegate
