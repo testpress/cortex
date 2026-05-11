@@ -12,7 +12,8 @@ class ClientConfig {
   final bool showRecentlyCompletedSection;
   final bool showExamTab;
   final bool showInfoTab;
-  final bool useRestrictedNavigation;
+  final bool showExploreTab;
+  final bool showProfileTab;
   final String? instituteLogoUrl;
   final bool isLocalLogo;
 
@@ -26,7 +27,8 @@ class ClientConfig {
     this.showRecentlyCompletedSection = false,
     this.showExamTab = false,
     this.showInfoTab = false,
-    this.useRestrictedNavigation = false,
+    this.showExploreTab = true,
+    this.showProfileTab = true,
     this.instituteLogoUrl,
     this.isLocalLogo = false,
   });
@@ -41,7 +43,8 @@ class ClientConfig {
     bool? showRecentlyCompletedSection,
     bool? showExamTab,
     bool? showInfoTab,
-    bool? useRestrictedNavigation,
+    bool? showExploreTab,
+    bool? showProfileTab,
     String? instituteLogoUrl,
     bool? isLocalLogo,
   }) {
@@ -57,8 +60,8 @@ class ClientConfig {
           showRecentlyCompletedSection ?? this.showRecentlyCompletedSection,
       showExamTab: showExamTab ?? this.showExamTab,
       showInfoTab: showInfoTab ?? this.showInfoTab,
-      useRestrictedNavigation:
-          useRestrictedNavigation ?? this.useRestrictedNavigation,
+      showExploreTab: showExploreTab ?? this.showExploreTab,
+      showProfileTab: showProfileTab ?? this.showProfileTab,
       instituteLogoUrl: instituteLogoUrl ?? this.instituteLogoUrl,
       isLocalLogo: isLocalLogo ?? this.isLocalLogo,
     );
@@ -76,8 +79,8 @@ class ClientConfig {
           json['show_recently_completed_section'] as bool? ?? true,
       showExamTab: json['show_exam_tab'] as bool? ?? false,
       showInfoTab: json['show_info_tab'] as bool? ?? false,
-      useRestrictedNavigation:
-          json['use_restricted_navigation'] as bool? ?? false,
+      showExploreTab: json['show_explore_tab'] as bool? ?? true,
+      showProfileTab: json['show_profile_tab'] as bool? ?? true,
       instituteLogoUrl: json['institute_logo_url'] as String?,
       isLocalLogo: json['is_local_logo'] as bool? ?? false,
     );
@@ -94,7 +97,8 @@ class ClientConfig {
       'show_recently_completed_section': showRecentlyCompletedSection,
       'show_exam_tab': showExamTab,
       'show_info_tab': showInfoTab,
-      'use_restricted_navigation': useRestrictedNavigation,
+      'show_explore_tab': showExploreTab,
+      'show_profile_tab': showProfileTab,
       'institute_logo_url': instituteLogoUrl,
       'is_local_logo': isLocalLogo,
     };
@@ -114,7 +118,8 @@ class ClientConfig {
     showRecentlyCompletedSection: true,
     showExamTab: true,
     showInfoTab: true,
-    useRestrictedNavigation: true,
+    showExploreTab: false,
+    showProfileTab: false,
     instituteLogoUrl: 'assets/images/brilliant_pala_logo.png',
     isLocalLogo: true,
   );

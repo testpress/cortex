@@ -69,9 +69,13 @@ enum NavTab {
 
   static List<NavTab> active(ClientConfig config) {
     return values.where((tab) {
-      if (tab == NavTab.exams) return config.showExamTab;
-      if (tab == NavTab.info) return config.showInfoTab;
-      return true;
+      return switch (tab) {
+        NavTab.exams => config.showExamTab,
+        NavTab.info => config.showInfoTab,
+        NavTab.explore => config.showExploreTab,
+        NavTab.profile => config.showProfileTab,
+        _ => true,
+      };
     }).toList();
   }
 }
