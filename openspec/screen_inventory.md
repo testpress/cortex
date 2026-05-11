@@ -179,7 +179,7 @@ Each screen = one OpenSpec change. Priority is based on user journey criticality
 |---|---|---|---|---|
 | 35 | `lms-doubts-list` | DoubtsListScreen | Landing screen — searchable list of doubts, Answered / Unanswered status badges, "Ask a Doubt" CTA | ✅ Done |
 | 36 | `lms-ask-doubt-form` | AskDoubtFormScreen | Compose doubt: title, rich-text editor (bold/italic/lists/code), category chips, image/PDF upload (max 5 files) | ✅ Done |
-| 37 | `lms-doubt-detail` | DoubtDetailScreen | Doubt thread: question card, tutor replies with Mentor badge, follow-up reply input | ⏳ Pending |
+| 37 | `lms-doubt-detail` | DoubtDetailScreen | Doubt thread: question card, tutor replies with Mentor badge, follow-up reply input | ✅ Done |
 
 
 
