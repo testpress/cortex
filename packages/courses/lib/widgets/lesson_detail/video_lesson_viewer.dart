@@ -45,11 +45,18 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildVideoSection(design),
+        // By keeping the tree structure identical (Column -> SizedBox -> Player),
+        // Flutter will NOT kill and recreate the video player state.
+        // We simply shrink its background height in landscape to prevent the 264px overflow.
+        SizedBox(
+          height: isLandscape ? 0 : null,
+          child: _buildVideoSection(design),
+        ),
         Container(
           decoration: BoxDecoration(
             color: design.colors.surface,
