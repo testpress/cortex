@@ -105,7 +105,7 @@ class _LessonWebViewState extends State<LessonWebView> {
       <html>
         <head>
           <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
           <style>
             body { 
               margin: 0; 
@@ -117,11 +117,15 @@ class _LessonWebViewState extends State<LessonWebView> {
               font-size: 15px;
               -webkit-user-select: none;
               -webkit-touch-callout: none;
+              overflow-x: hidden;
+              word-wrap: break-word;
+              overflow-wrap: break-word;
             }
             img, video { max-width: 100%; height: auto; }
             iframe { 
-              width: 100%; 
-              aspect-ratio: 16 / 9; 
+              width: 100% !important; 
+              height: auto !important;
+              aspect-ratio: 16 / 9 !important; 
               border: none; 
               border-radius: 8px;
             }
