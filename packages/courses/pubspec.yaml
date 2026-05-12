@@ -19,7 +19,7 @@ dependencies:
   drift: ^2.21.0
   intl: ^0.20.2
   cached_network_image: ^3.3.1
-  tpstreams_player_sdk: 2.2.19
+  tpstreams_player_sdk: 2.2.22
   package_info_plus: ^8.2.1
   syncfusion_flutter_pdfviewer: ^33.1.45
   syncfusion_flutter_core: ^33.1.45

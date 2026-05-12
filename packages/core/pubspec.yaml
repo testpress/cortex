@@ -30,7 +30,7 @@ dependencies:
   dio: ^5.9.2
   flutter_secure_storage: ^9.2.2
   dio_web_adapter: ^2.1.2
-  tpstreams_player_sdk: 2.2.19
+  tpstreams_player_sdk: 2.2.22
   smooth_page_indicator: ^1.1.0
   permission_handler: ^12.0.1
   skeletonizer: ^2.1.3

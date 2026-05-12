@@ -49,41 +49,7 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Flexible(child: _buildVideoSection(design)),
-        Container(
-          color: design.colors.surface,
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(
-              design.spacing.md,
-              design.spacing.sm,
-              design.spacing.md,
-              design.spacing.md,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AppText.headline(
-                  widget.lesson.title,
-                  color: design.colors.textPrimary,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.5,
-                    height: 1.1,
-                  ),
-                ),
-                if (widget.lesson.subtitle?.isNotEmpty ?? false) ...[
-                  SizedBox(height: design.spacing.xs),
-                  AppText.body(
-                    widget.lesson.subtitle!,
-                    color: design.colors.textSecondary,
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ),
+        _buildVideoSection(design),
         Container(
           decoration: BoxDecoration(
             color: design.colors.surface,
@@ -128,12 +94,9 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
   }
 
   Widget _buildVideoSection(DesignConfig design) {
-    return AspectRatio(
-      aspectRatio: 16 / 9,
-      child: CustomVideoPlayer(
-        assetId: widget.lesson.contentUrl,
-        onComplete: widget.onComplete,
-      ),
+    return CustomVideoPlayer(
+      assetId: widget.lesson.contentUrl,
+      onComplete: widget.onComplete,
     );
   }
 

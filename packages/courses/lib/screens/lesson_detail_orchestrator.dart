@@ -72,14 +72,9 @@ class _LessonDetailOrchestratorState
     final isCompleted = _alreadyMarkedComplete ||
         lesson.progressStatus == LessonProgressStatus.completed;
 
-    final showTitleInShell = ![
-      LessonType.video,
-      LessonType.liveStream,
-    ].contains(lesson.type);
-
     return LessonDetailShell(
-      title: showTitleInShell ? lesson.title : '',
-      subtitle: showTitleInShell ? lesson.subtitle : null,
+      title: lesson.title,
+      subtitle: lesson.subtitle,
       isBookmarked: isBookmarked,
       isCompleted: isCompleted,
       progress: lesson.type == LessonType.pdf ? _readingProgress : null,
