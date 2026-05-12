@@ -10,12 +10,16 @@ class LessonWebView extends StatefulWidget {
   const LessonWebView({
     super.key,
     this.htmlContent,
+    this.description,
     this.url,
     this.padding,
   }) : assert(htmlContent != null || url != null, 'Either htmlContent or url must be provided');
 
   /// The raw HTML content or embed code to render.
   final String? htmlContent;
+
+  /// Optional description to render below the content.
+  final String? description;
 
   /// A direct URL to load in the WebView.
   final String? url;
@@ -29,16 +33,9 @@ class LessonWebView extends StatefulWidget {
 
 class _LessonWebViewState extends State<LessonWebView> {
   late final WebViewController _controller;
-  bool _isLoading = true;
-  bool _showLoader = false;
 
-  static const List<String> _whitelistedUrlPatterns = [
-    'about:blank',
-    'testpress.in',
-    'youtube.com/embed/',
-    'player.vimeo.com/video/',
-    'data:',
-  ];
+
+
 
   @override
   void initState() {
@@ -47,43 +44,15 @@ class _LessonWebViewState extends State<LessonWebView> {
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(
         NavigationDelegate(
-          onPageStarted: (url) {
-            if (mounted) setState(() => _isLoading = true);
-            // Wait 250ms before showing the loader to avoid flickering on fast renders
-            Future.delayed(const Duration(milliseconds: 250), () {
-              if (mounted && _isLoading) {
-                setState(() => _showLoader = true);
-              }
-            });
-          },
+          onPageStarted: (url) {},
           onPageFinished: (url) {
-            if (mounted) {
-              setState(() {
-                _isLoading = false;
-                _showLoader = false;
-              });
-            }
             _applyInputFocusStabilityFix();
             _applyChatDomCompaction();
           },
           onWebResourceError: (error) {},
           onNavigationRequest: (request) {
-            // URL-mode is used for hosted embeds (like live chat) that may
-            // redirect across multiple allowed domains during load.
-            if (widget.url != null) {
-              return NavigationDecision.navigate;
-            }
-
-            final url = request.url;
-            
-            final isWhitelisted = _whitelistedUrlPatterns.any(
-              (pattern) => url.contains(pattern),
-            );
-
-            if (isWhitelisted) {
-              return NavigationDecision.navigate;
-            }
-            
+            // Block all subsequent navigations to ensure users stay 
+            // locked within the current lesson content.
             return NavigationDecision.prevent;
           },
         ),
@@ -135,6 +104,7 @@ class _LessonWebViewState extends State<LessonWebView> {
       <!DOCTYPE html>
       <html>
         <head>
+          <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <style>
             body { 
@@ -142,16 +112,28 @@ class _LessonWebViewState extends State<LessonWebView> {
               padding: 0; 
               background-color: $backgroundColor; 
               color: $textColor;
-              font-family: sans-serif;
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+              line-height: 1.6;
+              font-size: 15px;
+              -webkit-user-select: none;
+              -webkit-touch-callout: none;
             }
-            iframe, video, img { max-width: 100%; height: auto; }
+            img, video { max-width: 100%; height: auto; }
+            iframe { 
+              width: 100%; 
+              aspect-ratio: 16 / 9; 
+              border: none; 
+              border-radius: 8px;
+            }
             .content-wrapper { padding: 16px; }
-            a { color: ${_colorToHexString(design.colors.primary)}; }
+            p { margin-top: 0; margin-bottom: 12px; }
+            a { color: ${_colorToHexString(design.colors.primary)}; text-decoration: none; }
           </style>
         </head>
         <body>
           <div class="content-wrapper">
             ${widget.htmlContent ?? ''}
+            ${widget.description != null && widget.description!.isNotEmpty ? '<div style="margin-top: 16px;">${widget.description}</div>' : ''}
           </div>
         </body>
       </html>
@@ -260,17 +242,9 @@ class _LessonWebViewState extends State<LessonWebView> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Padding(
-          padding: widget.padding ?? EdgeInsets.zero,
-          child: WebViewWidget(controller: _controller),
-        ),
-        if (_showLoader)
-          const Center(
-            child: AppLoadingIndicator(),
-          ),
-      ],
+    return Padding(
+      padding: widget.padding ?? EdgeInsets.zero,
+      child: WebViewWidget(controller: _controller),
     );
   }
 }

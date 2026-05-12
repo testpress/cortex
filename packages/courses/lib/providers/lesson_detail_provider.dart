@@ -48,6 +48,7 @@ Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
       scheduledMessage: lessonDto.scheduledMessage,
       attemptsUrl: lessonDto.attemptsUrl,
       slug: lessonDto.slug,
+      description: lessonDto.description,
     );
   });
  

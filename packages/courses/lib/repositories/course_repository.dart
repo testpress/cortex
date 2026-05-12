@@ -710,6 +710,7 @@ class CourseRepository {
     scheduledMessage: row.scheduledMessage,
     attemptsUrl: row.attemptsUrl,
     slug: row.slug,
+    description: row.description,
   );
 
   LessonsTableCompanion _lessonDtoToCompanion(LessonDto dto) =>
@@ -773,6 +774,9 @@ class CourseRepository {
             ? Value(dto.attemptsUrl)
             : const Value.absent(),
         slug: dto.slug != null ? Value(dto.slug) : const Value.absent(),
+        description: dto.description != null 
+            ? Value(dto.description) 
+            : const Value.absent(),
       );
 
   LessonType _parseType(String s) {

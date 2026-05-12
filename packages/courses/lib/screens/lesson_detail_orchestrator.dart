@@ -141,7 +141,10 @@ class _LessonDetailOrchestratorState
       case LessonType.notes:
       case LessonType.embedContent:
         if (lesson.htmlContent != null) {
-          return LessonWebView(htmlContent: lesson.htmlContent!);
+          return LessonWebView(
+            htmlContent: lesson.htmlContent!,
+            description: lesson.description,
+          );
         }
         break;
       case LessonType.liveStream:

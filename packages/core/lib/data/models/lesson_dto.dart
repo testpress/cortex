@@ -48,6 +48,7 @@ class LessonDto {
   // Exam Attendance
   final String? attemptsUrl;
   final String? slug;
+  final String? description;
 
   /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
   bool get isComplete {
@@ -101,6 +102,7 @@ class LessonDto {
     this.scheduledMessage,
     this.attemptsUrl,
     this.slug,
+    this.description,
   });
 
   LessonDto copyWith({
@@ -126,6 +128,7 @@ class LessonDto {
     bool? isUpcoming,
     bool? hasAttempts,
     String? image,
+    String? description,
     String? nextContentId,
     String? previousContentId,
     String? htmlContent,
@@ -157,6 +160,7 @@ class LessonDto {
       isUpcoming: isUpcoming ?? this.isUpcoming,
       hasAttempts: hasAttempts ?? this.hasAttempts,
       image: image ?? this.image,
+      description: description ?? this.description,
       nextContentId: nextContentId ?? this.nextContentId,
       previousContentId: previousContentId ?? this.previousContentId,
       htmlContent: htmlContent ?? this.htmlContent,
@@ -192,6 +196,7 @@ class LessonDto {
       previousContentId: (previousContentId?.isEmpty ?? true) ? other.previousContentId : previousContentId,
       chapterTitle: (chapterTitle?.isEmpty ?? true) ? other.chapterTitle : chapterTitle,
       image: (image?.isEmpty ?? true) ? other.image : image,
+      description: (this.description?.isEmpty ?? true) ? other.description : this.description,
       attemptsUrl: (attemptsUrl?.isEmpty ?? true) ? other.attemptsUrl : attemptsUrl,
       slug: (slug?.isEmpty ?? true) ? other.slug : slug,
       isDetailFetched: isDetailFetched || other.isDetailFetched,
@@ -314,10 +319,11 @@ class LessonDto {
   static LessonDto _parseEmbedLesson(Map<String, dynamic> json) {
     final base = _parseBase(json, LessonType.embedContent);
     final video = json['video'] as Map<String, dynamic>?;
-
+    
     return base.copyWith(
       contentUrl: json['uuid']?.toString() ?? video?['url']?.toString() ?? json['url']?.toString(),
-      htmlContent: video?['embed_code']?.toString() ?? json['embed_code']?.toString(),
+      htmlContent: video?['embed_code']?.toString() ?? json['embed_code']?.toString() ?? '',
+      description: json['description']?.toString() ?? video?['description']?.toString() ?? base.description,
     );
   }
 
@@ -424,6 +430,7 @@ class LessonDto {
       isDetailFetched: json['is_detail_fetched'] as bool? ?? false,
       isScheduled: json['error_code'] == 'scheduled',
       scheduledMessage: json['message'] as String?,
+      description: getString('description'),
     );
   }
 
@@ -461,6 +468,7 @@ class LessonDto {
       'chatEmbedUrl': chatEmbedUrl,
       'streamStatus': streamStatus,
       'showRecordedVideo': showRecordedVideo,
+      'description': description,
     };
   }
 }

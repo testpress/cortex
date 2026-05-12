@@ -35,6 +35,7 @@ class Lesson {
     this.showRecordedVideo = false,
     this.isScheduled = false,
     this.scheduledMessage,
+    this.description,
   });
 
   final String id;
@@ -73,6 +74,7 @@ class Lesson {
   final bool showRecordedVideo;
   final bool isScheduled;
   final String? scheduledMessage;
+  final String? description;
  
   /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
   bool get isComplete {
@@ -127,6 +129,7 @@ class Lesson {
       showRecordedVideo: showRecordedVideo,
       isScheduled: isScheduled,
       scheduledMessage: scheduledMessage,
+      description: description,
     );
   }
 }

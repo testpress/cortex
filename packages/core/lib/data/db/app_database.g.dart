@@ -1926,6 +1926,17 @@ class $LessonsTableTable extends LessonsTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1959,6 +1970,7 @@ class $LessonsTableTable extends LessonsTable
     scheduledMessage,
     attemptsUrl,
     slug,
+    description,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2221,6 +2233,15 @@ class $LessonsTableTable extends LessonsTable
         slug.isAcceptableOrUnknown(data['slug']!, _slugMeta),
       );
     }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -2354,6 +2375,10 @@ class $LessonsTableTable extends LessonsTable
         DriftSqlType.string,
         data['${effectivePrefix}slug'],
       ),
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      ),
     );
   }
 
@@ -2400,6 +2425,7 @@ class LessonsTableData extends DataClass
   final String? scheduledMessage;
   final String? attemptsUrl;
   final String? slug;
+  final String? description;
   const LessonsTableData({
     required this.id,
     required this.chapterId,
@@ -2432,6 +2458,7 @@ class LessonsTableData extends DataClass
     this.scheduledMessage,
     this.attemptsUrl,
     this.slug,
+    this.description,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2499,6 +2526,9 @@ class LessonsTableData extends DataClass
     if (!nullToAbsent || slug != null) {
       map['slug'] = Variable<String>(slug);
     }
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
     return map;
   }
 
@@ -2565,6 +2595,9 @@ class LessonsTableData extends DataClass
           ? const Value.absent()
           : Value(attemptsUrl),
       slug: slug == null && nullToAbsent ? const Value.absent() : Value(slug),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
     );
   }
 
@@ -2607,6 +2640,7 @@ class LessonsTableData extends DataClass
       scheduledMessage: serializer.fromJson<String?>(json['scheduledMessage']),
       attemptsUrl: serializer.fromJson<String?>(json['attemptsUrl']),
       slug: serializer.fromJson<String?>(json['slug']),
+      description: serializer.fromJson<String?>(json['description']),
     );
   }
   @override
@@ -2644,6 +2678,7 @@ class LessonsTableData extends DataClass
       'scheduledMessage': serializer.toJson<String?>(scheduledMessage),
       'attemptsUrl': serializer.toJson<String?>(attemptsUrl),
       'slug': serializer.toJson<String?>(slug),
+      'description': serializer.toJson<String?>(description),
     };
   }
 
@@ -2679,6 +2714,7 @@ class LessonsTableData extends DataClass
     Value<String?> scheduledMessage = const Value.absent(),
     Value<String?> attemptsUrl = const Value.absent(),
     Value<String?> slug = const Value.absent(),
+    Value<String?> description = const Value.absent(),
   }) => LessonsTableData(
     id: id ?? this.id,
     chapterId: chapterId ?? this.chapterId,
@@ -2717,6 +2753,7 @@ class LessonsTableData extends DataClass
         : this.scheduledMessage,
     attemptsUrl: attemptsUrl.present ? attemptsUrl.value : this.attemptsUrl,
     slug: slug.present ? slug.value : this.slug,
+    description: description.present ? description.value : this.description,
   );
   LessonsTableData copyWithCompanion(LessonsTableCompanion data) {
     return LessonsTableData(
@@ -2793,6 +2830,9 @@ class LessonsTableData extends DataClass
           ? data.attemptsUrl.value
           : this.attemptsUrl,
       slug: data.slug.present ? data.slug.value : this.slug,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
     );
   }
 
@@ -2829,7 +2869,8 @@ class LessonsTableData extends DataClass
           ..write('isScheduled: $isScheduled, ')
           ..write('scheduledMessage: $scheduledMessage, ')
           ..write('attemptsUrl: $attemptsUrl, ')
-          ..write('slug: $slug')
+          ..write('slug: $slug, ')
+          ..write('description: $description')
           ..write(')'))
         .toString();
   }
@@ -2867,6 +2908,7 @@ class LessonsTableData extends DataClass
     scheduledMessage,
     attemptsUrl,
     slug,
+    description,
   ]);
   @override
   bool operator ==(Object other) =>
@@ -2902,7 +2944,8 @@ class LessonsTableData extends DataClass
           other.isScheduled == this.isScheduled &&
           other.scheduledMessage == this.scheduledMessage &&
           other.attemptsUrl == this.attemptsUrl &&
-          other.slug == this.slug);
+          other.slug == this.slug &&
+          other.description == this.description);
 }
 
 class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
@@ -2937,6 +2980,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   final Value<String?> scheduledMessage;
   final Value<String?> attemptsUrl;
   final Value<String?> slug;
+  final Value<String?> description;
   final Value<int> rowid;
   const LessonsTableCompanion({
     this.id = const Value.absent(),
@@ -2970,6 +3014,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.scheduledMessage = const Value.absent(),
     this.attemptsUrl = const Value.absent(),
     this.slug = const Value.absent(),
+    this.description = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   LessonsTableCompanion.insert({
@@ -3004,6 +3049,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.scheduledMessage = const Value.absent(),
     this.attemptsUrl = const Value.absent(),
     this.slug = const Value.absent(),
+    this.description = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        chapterId = Value(chapterId),
@@ -3043,6 +3089,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Expression<String>? scheduledMessage,
     Expression<String>? attemptsUrl,
     Expression<String>? slug,
+    Expression<String>? description,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -3077,6 +3124,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       if (scheduledMessage != null) 'scheduled_message': scheduledMessage,
       if (attemptsUrl != null) 'attempts_url': attemptsUrl,
       if (slug != null) 'slug': slug,
+      if (description != null) 'description': description,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -3113,6 +3161,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Value<String?>? scheduledMessage,
     Value<String?>? attemptsUrl,
     Value<String?>? slug,
+    Value<String?>? description,
     Value<int>? rowid,
   }) {
     return LessonsTableCompanion(
@@ -3147,6 +3196,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       scheduledMessage: scheduledMessage ?? this.scheduledMessage,
       attemptsUrl: attemptsUrl ?? this.attemptsUrl,
       slug: slug ?? this.slug,
+      description: description ?? this.description,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -3247,6 +3297,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     if (slug.present) {
       map['slug'] = Variable<String>(slug.value);
     }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -3287,6 +3340,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
           ..write('scheduledMessage: $scheduledMessage, ')
           ..write('attemptsUrl: $attemptsUrl, ')
           ..write('slug: $slug, ')
+          ..write('description: $description, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -10909,6 +10963,7 @@ typedef $$LessonsTableTableCreateCompanionBuilder =
       Value<String?> scheduledMessage,
       Value<String?> attemptsUrl,
       Value<String?> slug,
+      Value<String?> description,
       Value<int> rowid,
     });
 typedef $$LessonsTableTableUpdateCompanionBuilder =
@@ -10944,6 +10999,7 @@ typedef $$LessonsTableTableUpdateCompanionBuilder =
       Value<String?> scheduledMessage,
       Value<String?> attemptsUrl,
       Value<String?> slug,
+      Value<String?> description,
       Value<int> rowid,
     });
 
@@ -11108,6 +11164,11 @@ class $$LessonsTableTableFilterComposer
 
   ColumnFilters<String> get slug => $composableBuilder(
     column: $table.slug,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -11275,6 +11336,11 @@ class $$LessonsTableTableOrderingComposer
     column: $table.slug,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$LessonsTableTableAnnotationComposer
@@ -11420,6 +11486,11 @@ class $$LessonsTableTableAnnotationComposer
 
   GeneratedColumn<String> get slug =>
       $composableBuilder(column: $table.slug, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
 }
 
 class $$LessonsTableTableTableManager
@@ -11484,6 +11555,7 @@ class $$LessonsTableTableTableManager
                 Value<String?> scheduledMessage = const Value.absent(),
                 Value<String?> attemptsUrl = const Value.absent(),
                 Value<String?> slug = const Value.absent(),
+                Value<String?> description = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LessonsTableCompanion(
                 id: id,
@@ -11517,6 +11589,7 @@ class $$LessonsTableTableTableManager
                 scheduledMessage: scheduledMessage,
                 attemptsUrl: attemptsUrl,
                 slug: slug,
+                description: description,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -11552,6 +11625,7 @@ class $$LessonsTableTableTableManager
                 Value<String?> scheduledMessage = const Value.absent(),
                 Value<String?> attemptsUrl = const Value.absent(),
                 Value<String?> slug = const Value.absent(),
+                Value<String?> description = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LessonsTableCompanion.insert(
                 id: id,
@@ -11585,6 +11659,7 @@ class $$LessonsTableTableTableManager
                 scheduledMessage: scheduledMessage,
                 attemptsUrl: attemptsUrl,
                 slug: slug,
+                description: description,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

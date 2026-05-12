@@ -51,6 +51,7 @@ class LessonsTable extends Table {
   // Exam Attendance
   TextColumn get attemptsUrl => text().nullable()();
   TextColumn get slug => text().nullable()();
+  TextColumn get description => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};
