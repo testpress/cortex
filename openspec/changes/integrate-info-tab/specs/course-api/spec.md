@@ -10,7 +10,8 @@ The repository SHALL provide dedicated streams for Study, Exam, and Info courses
 
 #### Scenario: Correcting Study tab leakage
 - **WHEN** the `watchStudyCourses` stream is requested
-- **THEN** the system MUST **ALWAYS** exclude courses with the `info` tag, regardless of whether the Exam tab is enabled, ensuring Info resources do not appear in the Study tab.
+- **THEN** the system MUST exclude courses with the `info` tag when the Info tab is enabled.
+- **AND** exclude courses identified as Exam content when the Exam tab is enabled.
 
 ### Requirement: Tagged Course Synchronization
 The system SHALL support fetching and upserting courses filtered by tags.

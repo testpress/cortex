@@ -38,14 +38,13 @@ class InfoList extends _$InfoList {
       while (hasMore) {
         final response = await repo.refreshCourses(
           page: currentPage,
-          tags: 'info',
+          tags: null,
         );
         
         if (response.next == null) {
           hasMore = false;
         } else {
           currentPage++;
-          if (currentPage > 10) hasMore = false; // Safety cap
         }
       }
     } catch (e) {

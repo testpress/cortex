@@ -59,7 +59,9 @@ class CourseRepository {
         );
         
         // If showExamTab is enabled, identify exams by tag or fallback to examsCount.
-        final isExamCourse = dto.tags.contains('exams') || (dto.tags.isEmpty && dto.examsCount > 0);
+        final isExamCourse =
+            dto.tags.any((t) => t.toLowerCase() == 'exams') ||
+            (dto.tags.isEmpty && dto.examsCount > 0);
         
         return isExamCourse && hasMobileAccess;
       }).toList();
@@ -86,7 +88,9 @@ class CourseRepository {
       return courses.where((course) {
         final dto = rowToCourseDto(course);
 
-        final isExamCourse = dto.tags.contains('exams') || (dto.tags.isEmpty && dto.examsCount > 0);
+        final isExamCourse =
+            dto.tags.any((t) => t.toLowerCase() == 'exams') ||
+            (dto.tags.isEmpty && dto.examsCount > 0);
         final isInfoCourse = dto.tags.any((t) => t.toLowerCase() == 'info');
 
         if (config.showExamTab && isExamCourse) return false;

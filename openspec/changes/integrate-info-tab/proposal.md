@@ -5,7 +5,7 @@ The goal is to transition the Info tab from its initial mock implementation to a
 ## What Changes
 
 - **Real API Integration**: Transition the Info tab to fetch real data using the `tags=info` parameter.
-- **Correct Tab Filtering**: Fix `watchStudyCourses` logic to always exclude Info courses and properly handle Exam course visibility.
+- **Correct Tab Filtering**: Fix `watchStudyCourses` logic to conditionally exclude Info/Exam courses based on enabled tabs and preserve tab-specific visibility.
 - **Hierarchical Content Support**: Update the Info detail screen to display the standard Course -> Chapters -> Lessons hierarchy using existing curriculum widgets.
 - **Model Standardization**: Remove legacy `InfoCourse` and `InfoVideo` mock models in favor of standard `CourseDto`, `ChapterDto`, and `LessonDto`.
 

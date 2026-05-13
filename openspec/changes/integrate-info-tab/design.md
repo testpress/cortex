@@ -22,8 +22,8 @@ We will add a dedicated `watchInfoCourses()` stream.
 **Rationale**: Keeps the local database as the single source of truth while providing clean, tab-specific streams to the UI.
 
 ### 2. Fixing Study Tab "Leakage"
-We will update `watchStudyCourses()` to always exclude courses with the `info` tag.
-**Rationale**: Prevents Info resources from cluttering the Study tab when the Exam tab is disabled.
+We will update `watchStudyCourses()` to exclude Info courses when the Info tab is enabled, and exclude Exam courses when the Exam tab is enabled.
+**Rationale**: Keeps Study content aligned with active tab configuration and prevents cross-tab leakage for enabled tabs.
 
 ### 3. Curriculum UI Reuse
 We will refactor `InfoCourseDetailScreen` to leverage the existing `CourseDetail` logic instead of the custom, flat video list.
