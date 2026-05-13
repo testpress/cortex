@@ -50,10 +50,25 @@ class PaginatedResponseDto<T> {
         t['id'] as int: t['name'] as String
     };
 
-    final nestedList = results.values.firstWhere(
-      (v) => v is List && v != results['tags'],
-      orElse: () => <dynamic>[],
-    ) as List<dynamic>;
+    // Prefer the known Testpress payload key.
+    List<dynamic> nestedList;
+    final courses = results['courses'];
+    if (courses is List<dynamic>) {
+      nestedList = courses;
+    } else {
+      // Defensive fallback: pick a non-tags list that looks like a course list.
+      nestedList =
+          results.values
+              .whereType<List<dynamic>>()
+              .firstWhere((list) {
+                if (identical(list, tagsList) || list.isEmpty) return false;
+                final first = list.first;
+                if (first is! Map<String, dynamic>) return false;
+                return first.containsKey('id') &&
+                    first.containsKey('title') &&
+                    first.containsKey('tag_ids');
+              }, orElse: () => <dynamic>[]);
+    }
 
     if (tagMap.isNotEmpty) {
       for (final item in nestedList.whereType<Map<String, dynamic>>()) {
