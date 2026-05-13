@@ -23,7 +23,7 @@ class DashboardDrawer extends ConsumerWidget {
     return AppDrawer(
       isOpen: isOpen,
       fullPage: true,
-      slideFromRight: isLandscape,
+      slideFromRight: false,
       title: l10n.drawerMenuTitle,
       onClose: () {
         ref.read(isHomeDrawerOpenProvider.notifier).state = false;

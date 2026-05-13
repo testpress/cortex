@@ -113,9 +113,6 @@ class PaidActiveHomeScreen extends ConsumerWidget {
             showBottomBorder: !isBannerPresent,
             useSafeArea: !isBannerPresent,
             customTopPadding: isBannerPresent ? 8 : null,
-            onMenuPressed: () {
-              ref.read(isHomeDrawerOpenProvider.notifier).state = true;
-            },
           );
 
           return Column(
@@ -126,6 +123,9 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                   isLocal: config.isLocalLogo,
                   userName: user?.name ?? 'Student',
                   enrollmentId: user?.id ?? '-',
+                  onMenuPressed: () {
+                    ref.read(isHomeDrawerOpenProvider.notifier).state = true;
+                  },
                 ),
               if (!isBannerPresent) header,
               Expanded(

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' show Icons;
 import 'package:flutter/widgets.dart';
 import '../../core.dart';
 
@@ -8,6 +9,7 @@ class InstituteBanner extends StatelessWidget {
   final bool isLocal;
   final String userName;
   final String enrollmentId;
+  final VoidCallback? onMenuPressed;
 
   const InstituteBanner({
     super.key,
@@ -15,6 +17,7 @@ class InstituteBanner extends StatelessWidget {
     required this.userName,
     required this.enrollmentId,
     this.isLocal = false,
+    this.onMenuPressed,
   });
 
   @override
@@ -37,46 +40,64 @@ class InstituteBanner extends StatelessWidget {
             ),
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Institute Logo
-              if (isLocal)
-                Image.asset(
-                  logoUrl,
-                  package: 'core',
-                  height: 40,
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) =>
-                      const SizedBox.shrink(),
-                )
-              else
-                Image.network(
-                  logoUrl,
-                  height: 40,
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) =>
-                      const SizedBox.shrink(),
+              if (onMenuPressed != null) ...[
+                GestureDetector(
+                  onTap: onMenuPressed,
+                  behavior: HitTestBehavior.opaque,
+                  child: Icon(
+                    Icons.menu_rounded,
+                    size: 28,
+                    color: design.colors.textPrimary,
+                  ),
                 ),
-              
-              // User Info
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  AppText.subtitle(
-                    userName,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: design.colors.textPrimary,
+                const SizedBox(width: 12),
+              ],
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Institute Logo
+                    if (isLocal)
+                      Image.asset(
+                        logoUrl,
+                        package: 'core',
+                        height: 40,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const SizedBox.shrink(),
+                      )
+                    else
+                      Image.network(
+                        logoUrl,
+                        height: 40,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const SizedBox.shrink(),
+                      ),
+
+                    // User Info
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        AppText.subtitle(
+                          userName,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: design.colors.textPrimary,
+                          ),
+                        ),
+                        AppText.caption(
+                          enrollmentId,
+                          style: TextStyle(
+                            color: design.colors.textSecondary,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  AppText.caption(
-                    enrollmentId,
-                    style: TextStyle(
-                      color: design.colors.textSecondary,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),

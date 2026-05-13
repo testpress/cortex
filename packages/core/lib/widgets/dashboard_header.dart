@@ -1,12 +1,10 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter/material.dart' show Icons;
 import 'package:core/core.dart';
 
 class DashboardHeader extends StatelessWidget {
   const DashboardHeader({
     super.key,
     required this.title,
-    this.onMenuPressed,
     this.isLandscape = false,
     this.titleTextStyle,
     this.showTitle = true,
@@ -19,7 +17,6 @@ class DashboardHeader extends StatelessWidget {
   });
 
   final String title;
-  final VoidCallback? onMenuPressed;
   final bool isLandscape;
   final TextStyle? titleTextStyle;
   final bool showTitle;
@@ -63,15 +60,6 @@ class DashboardHeader extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (!isLandscape) ...[
-            if (onMenuPressed != null) ...[
-              GestureDetector(
-                onTap: onMenuPressed,
-                child: const Icon(Icons.menu_rounded, size: 28),
-              ),
-              const SizedBox(width: 12),
-            ],
-          ],
           Expanded(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -79,10 +67,10 @@ class DashboardHeader extends StatelessWidget {
               children: [
                 if (showTitle)
                   AppText.headline(
-              title,
-              color: design.colors.textPrimary,
-              style: titleTextStyle,
-            ),
+                    title,
+                    color: design.colors.textPrimary,
+                    style: titleTextStyle,
+                  ),
                 if (greeting != null)
                   AppText.headline(greeting!, color: design.colors.textPrimary),
                 if (greetingSubtitle != null)
@@ -93,15 +81,6 @@ class DashboardHeader extends StatelessWidget {
               ],
             ),
           ),
-          if (isLandscape) ...[
-            if (onMenuPressed != null) ...[
-              const SizedBox(width: 12),
-              GestureDetector(
-                onTap: onMenuPressed,
-                child: const Icon(Icons.menu_rounded, size: 28),
-              ),
-            ],
-          ],
         ],
       ),
     );
