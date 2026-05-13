@@ -1,16 +1,24 @@
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:flutter/widgets.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'lesson_status_badge.dart';
 
 /// A list item for a lesson or content type in the filtered view.
 ///
 /// Matches the reference implementation's shadow, padding, and typography.
 class LessonListItem extends StatelessWidget {
-  const LessonListItem({super.key, required this.lesson, this.onTap});
+  const LessonListItem({
+    super.key,
+    required this.lesson,
+    this.onTap,
+    this.isSkeleton = false,
+  });
 
   final LessonDto lesson;
   final VoidCallback? onTap;
+  final bool isSkeleton;
 
   @override
   Widget build(BuildContext context) {
@@ -50,74 +58,82 @@ class LessonListItem extends StatelessWidget {
         child: AppFocusable(
           onTap: onTap,
           borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Lesson Type Icon (md: 40x40)
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: lesson.image != null ? null : typeTheme.background,
-                    borderRadius: BorderRadius.circular(8),
+          child: Skeletonizer(
+            enabled: isSkeleton,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Lesson Type Icon (md: 40x40)
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: lesson.image != null ? null : typeTheme.background,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: lesson.image != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: CachedNetworkImage(
+                                imageUrl: lesson.image!,
+                                fit: BoxFit.cover,
+                                fadeInDuration: Duration.zero,
+                                fadeOutDuration: Duration.zero,
+                                placeholder: (context, url) => Container(
+                                  color: design.colors.skeleton,
+                                ),
+                                errorWidget: (context, url, error) =>
+                                    Icon(icon, size: 20, color: typeTheme.foreground),
+                              ),
+                            )
+                          : Icon(icon, size: 20, color: typeTheme.foreground),
+                    ),
                   ),
-                  child: Center(
-                    child: lesson.image != null
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              lesson.image!,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Icon(icon, size: 20, color: typeTheme.foreground),
-                            ),
-                          )
-                        : Icon(icon, size: 20, color: typeTheme.foreground),
-                  ),
-                ),
-                const SizedBox(width: 12),
+                  const SizedBox(width: 12),
 
-                // Title and Metadata
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AppText.cardTitle(
-                        lesson.title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 4),
+                  // Title and Metadata
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AppText.cardTitle(
+                          lesson.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 4),
 
-                      // text-[14px] leading-[20px] font-medium (Chapter Title)
-                      AppText.cardSubtitle(lesson.chapterTitle ?? ''),
-                      const SizedBox(height: 16),
+                        // text-[14px] leading-[20px] font-medium (Chapter Title)
+                        AppText.cardSubtitle(lesson.chapterTitle ?? ''),
+                        const SizedBox(height: 16),
 
-                      Row(
-                        children: [
-                          AppText.cardCaption(lesson.duration),
-                          if (lesson.type != LessonType.liveStream) ...[
-                            const SizedBox(width: 8),
-                            LessonStatusBadge(status: lesson.progressStatus),
+                        Row(
+                          children: [
+                            AppText.cardCaption(lesson.duration),
+                            if (lesson.type != LessonType.liveStream) ...[
+                              const SizedBox(width: 8),
+                              LessonStatusBadge(status: lesson.progressStatus),
+                            ],
                           ],
-                        ],
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
 
-                // Navigation Indicator
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Icon(
-                    LucideIcons.chevronRight,
-                    color: design.colors.textSecondary.withValues(alpha: 0.5),
-                    size: 20,
+                  // Navigation Indicator
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Icon(
+                      LucideIcons.chevronRight,
+                      color: design.colors.textSecondary.withValues(alpha: 0.5),
+                      size: 20,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

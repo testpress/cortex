@@ -96,7 +96,6 @@ class CourseList extends _$CourseList {
     }
 
     try {
-      final config = ref.read(clientConfigProvider);
       final repo = await ref.read(courseRepositoryProvider.future);
       
       final response = await repo.refreshCourses(

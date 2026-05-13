@@ -1,23 +1,43 @@
 import 'package:flutter/widgets.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+
+const _skeletonBanner = ExploreBannerDto(
+  id: 'skeleton',
+  title: 'Loading Banner Headline',
+  subtitle: 'Sub-headline for placeholder loading state',
+  thumbnail: '',
+  ctaText: 'Action',
+);
 
 class FeaturedCarousel extends StatelessWidget {
-  const FeaturedCarousel({super.key, required this.banners});
+  const FeaturedCarousel({
+    super.key,
+    required this.banners,
+    this.isLoading = false,
+  });
 
   final List<ExploreBannerDto> banners;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
-    if (banners.isEmpty) return const SizedBox.shrink();
+    final isSkeleton = isLoading && banners.isEmpty;
+    if (banners.isEmpty && !isSkeleton) return const SizedBox.shrink();
 
-    return AppCarousel(
-      height: 160, // Reduced height
-      itemCount: banners.length,
-      viewportFraction: 0.92, // Increased width
-      itemBuilder: (context, index) {
-        return BannerCard(banner: banners[index]);
-      },
+    return Skeletonizer(
+      enabled: isSkeleton,
+      child: AppCarousel(
+        height: 160, // Reduced height
+        itemCount: isSkeleton ? 3 : banners.length,
+        viewportFraction: 0.92, // Increased width
+        itemBuilder: (context, index) {
+          final banner = isSkeleton ? _skeletonBanner : banners[index];
+          return BannerCard(banner: banner);
+        },
+      ),
     );
   }
 }
@@ -39,10 +59,15 @@ class BannerCard extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             // Background Image
-            Image.network(
-              banner.thumbnail,
+            CachedNetworkImage(
+              imageUrl: banner.thumbnail,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
+              fadeInDuration: Duration.zero,
+              fadeOutDuration: Duration.zero,
+              placeholder: (context, url) => Container(
+                color: design.colors.skeleton,
+              ),
+              errorWidget: (context, url, error) => Container(
                 color: design.colors.surfaceVariant,
                 child: const Center(child: Icon(LucideIcons.image)),
               ),

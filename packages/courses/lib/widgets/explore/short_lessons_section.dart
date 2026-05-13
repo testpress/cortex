@@ -2,58 +2,82 @@ import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../../explore_constants.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+
+const _skeletonShortLesson = ShortLessonDto(
+  id: 'skeleton',
+  title: 'Sample Short Lesson Title',
+  duration: '5:20',
+  thumbnail: '',
+  author: 'Expert Instructor',
+  viewCount: '2k',
+);
 
 class ShortLessonsSection extends StatelessWidget {
-  const ShortLessonsSection({super.key, required this.lessons});
+  const ShortLessonsSection({
+    super.key,
+    required this.lessons,
+    this.isLoading = false,
+  });
 
   final List<ShortLessonDto> lessons;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
-    if (lessons.isEmpty) return const SizedBox.shrink();
+    final isSkeleton = isLoading && lessons.isEmpty;
+    if (lessons.isEmpty && !isSkeleton) return const SizedBox.shrink();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              AppText.labelBold(
-                l10n.exploreShortLessonsTitle.toUpperCase(),
-                style: const TextStyle(
-                  letterSpacing: ExploreConstants.sectionHeaderLetterSpacing,
+    final displayItems = isSkeleton
+        ? List.generate(3, (_) => _skeletonShortLesson)
+        : lessons;
+
+    return Skeletonizer(
+      enabled: isSkeleton,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                AppText.labelBold(
+                  l10n.exploreShortLessonsTitle.toUpperCase(),
+                  style: const TextStyle(
+                    letterSpacing: ExploreConstants.sectionHeaderLetterSpacing,
+                  ),
                 ),
-              ),
-              GestureDetector(
-                onTap: () => context.go('/study'),
-                child: AppText.labelBold(
-                  l10n.viewAllAction,
-                  color: design.colors.textPrimary,
-                ),
-              ),
-            ],
+                if (!isSkeleton)
+                  GestureDetector(
+                    onTap: () => context.go('/study'),
+                    child: AppText.labelBold(
+                      l10n.viewAllAction,
+                      color: design.colors.textPrimary,
+                    ),
+                  ),
+              ],
+            ),
           ),
-        ),
-        SizedBox(height: design.spacing.md),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-          child: Row(
-            children: [
-              for (final lesson in lessons)
-                Padding(
-                  padding: EdgeInsets.only(right: design.spacing.md),
-                  child: _ShortLessonCard(lesson: lesson),
-                ),
-            ],
+          SizedBox(height: design.spacing.md),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+            child: Row(
+              children: [
+                for (final lesson in displayItems)
+                  Padding(
+                    padding: EdgeInsets.only(right: design.spacing.md),
+                    child: _ShortLessonCard(lesson: lesson),
+                  ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

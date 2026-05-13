@@ -6,6 +6,49 @@ import '../repositories/course_repository.dart';
 
 part 'chapter_detail_provider.g.dart';
 
+/// Provider that watches local chapter metadata without blocking on network sync.
+/// Used to render the Header immediately.
+@Riverpod(keepAlive: true)
+Stream<Chapter?> chapterMetadata(
+  ChapterMetadataRef ref,
+  String courseId,
+  String chapterId,
+) async* {
+  final repo = await ref.watch(courseRepositoryProvider.future);
+
+  // 1. Yield current local state immediately to prevent title flicker
+  final initialData = await repo.getChapter(chapterId);
+  if (initialData != null) {
+    final courses = await repo.watchCourses().first;
+    final course = courses.where((c) => c.id == courseId).firstOrNull;
+    yield Chapter(
+      id: initialData.id,
+      title: initialData.title,
+      lessonCount: initialData.lessonCount,
+      assessmentCount: initialData.assessmentCount,
+      courseTitle: course?.title,
+      image: initialData.image,
+      lessons: const [],
+    );
+  }
+
+  // 2. Watch DB updates
+  yield* repo.watchChapter(chapterId).asyncMap((chapterData) async {
+    if (chapterData == null) return null;
+    final courses = await repo.watchCourses().first;
+    final course = courses.where((c) => c.id == courseId).firstOrNull;
+    return Chapter(
+      id: chapterData.id,
+      title: chapterData.title,
+      lessonCount: chapterData.lessonCount,
+      assessmentCount: chapterData.assessmentCount,
+      courseTitle: course?.title,
+      image: chapterData.image,
+      lessons: const [],
+    );
+  });
+}
+
 /// Provider that fetches a specific chapter with its lessons.
 /// This provider maps the underlying DTOs to the [Chapter] domain model.
 @Riverpod(keepAlive: true)

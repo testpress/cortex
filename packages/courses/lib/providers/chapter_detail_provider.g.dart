@@ -6,7 +6,7 @@ part of 'chapter_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$chapterDetailHash() => r'792664f641887b43f078839b7da81df08e30184b';
+String _$chapterMetadataHash() => r'f6bd5c6ba9c0cdce9f1138491beb38e1f613a4eb';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -28,6 +28,171 @@ class _SystemHash {
     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
 }
+
+/// Provider that watches local chapter metadata without blocking on network sync.
+/// Used to render the Header immediately.
+///
+/// Copied from [chapterMetadata].
+@ProviderFor(chapterMetadata)
+const chapterMetadataProvider = ChapterMetadataFamily();
+
+/// Provider that watches local chapter metadata without blocking on network sync.
+/// Used to render the Header immediately.
+///
+/// Copied from [chapterMetadata].
+class ChapterMetadataFamily extends Family<AsyncValue<Chapter?>> {
+  /// Provider that watches local chapter metadata without blocking on network sync.
+  /// Used to render the Header immediately.
+  ///
+  /// Copied from [chapterMetadata].
+  const ChapterMetadataFamily();
+
+  /// Provider that watches local chapter metadata without blocking on network sync.
+  /// Used to render the Header immediately.
+  ///
+  /// Copied from [chapterMetadata].
+  ChapterMetadataProvider call(
+    String courseId,
+    String chapterId,
+  ) {
+    return ChapterMetadataProvider(
+      courseId,
+      chapterId,
+    );
+  }
+
+  @override
+  ChapterMetadataProvider getProviderOverride(
+    covariant ChapterMetadataProvider provider,
+  ) {
+    return call(
+      provider.courseId,
+      provider.chapterId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'chapterMetadataProvider';
+}
+
+/// Provider that watches local chapter metadata without blocking on network sync.
+/// Used to render the Header immediately.
+///
+/// Copied from [chapterMetadata].
+class ChapterMetadataProvider extends StreamProvider<Chapter?> {
+  /// Provider that watches local chapter metadata without blocking on network sync.
+  /// Used to render the Header immediately.
+  ///
+  /// Copied from [chapterMetadata].
+  ChapterMetadataProvider(
+    String courseId,
+    String chapterId,
+  ) : this._internal(
+          (ref) => chapterMetadata(
+            ref as ChapterMetadataRef,
+            courseId,
+            chapterId,
+          ),
+          from: chapterMetadataProvider,
+          name: r'chapterMetadataProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$chapterMetadataHash,
+          dependencies: ChapterMetadataFamily._dependencies,
+          allTransitiveDependencies:
+              ChapterMetadataFamily._allTransitiveDependencies,
+          courseId: courseId,
+          chapterId: chapterId,
+        );
+
+  ChapterMetadataProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.courseId,
+    required this.chapterId,
+  }) : super.internal();
+
+  final String courseId;
+  final String chapterId;
+
+  @override
+  Override overrideWith(
+    Stream<Chapter?> Function(ChapterMetadataRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ChapterMetadataProvider._internal(
+        (ref) => create(ref as ChapterMetadataRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        courseId: courseId,
+        chapterId: chapterId,
+      ),
+    );
+  }
+
+  @override
+  StreamProviderElement<Chapter?> createElement() {
+    return _ChapterMetadataProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ChapterMetadataProvider &&
+        other.courseId == courseId &&
+        other.chapterId == chapterId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, courseId.hashCode);
+    hash = _SystemHash.combine(hash, chapterId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin ChapterMetadataRef on StreamProviderRef<Chapter?> {
+  /// The parameter `courseId` of this provider.
+  String get courseId;
+
+  /// The parameter `chapterId` of this provider.
+  String get chapterId;
+}
+
+class _ChapterMetadataProviderElement extends StreamProviderElement<Chapter?>
+    with ChapterMetadataRef {
+  _ChapterMetadataProviderElement(super.provider);
+
+  @override
+  String get courseId => (origin as ChapterMetadataProvider).courseId;
+  @override
+  String get chapterId => (origin as ChapterMetadataProvider).chapterId;
+}
+
+String _$chapterDetailHash() => r'792664f641887b43f078839b7da81df08e30184b';
 
 /// Provider that fetches a specific chapter with its lessons.
 /// This provider maps the underlying DTOs to the [Chapter] domain model.

@@ -1,11 +1,29 @@
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../providers/chapter_detail_provider.dart';
-import '../providers/course_list_provider.dart';
 import '../models/course_content.dart';
 import '../widgets/chapter_status_filter_bar.dart';
 import '../widgets/chapter_content_item.dart';
+
+const _skeletonLesson = Lesson(
+  id: 'skeleton',
+  chapterId: 'skeleton',
+  title: 'Loading Chapter Lesson Content Item Placeholder',
+  type: LessonType.video,
+  progressStatus: LessonProgressStatus.notStarted,
+  orderIndex: 0,
+  duration: '15:00',
+);
+
+const _skeletonChapter = Chapter(
+  id: 'skeleton',
+  title: 'Loading Chapter Detailed View',
+  lessonCount: 10,
+  assessmentCount: 2,
+  courseTitle: 'Loading Course Parent',
+);
 
 /// Screen displaying the detailed curriculum of a specific chapter.
 /// Users can filter content by status (Running, Upcoming, History)
@@ -34,11 +52,6 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
   @override
   void initState() {
     super.initState();
-    // Trigger background sync only once when the screen is navigated to.
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final repo = await ref.read(courseRepositoryProvider.future);
-      repo.syncChapterContents(widget.courseId, widget.chapterId).ignore();
-    });
   }
 
   @override
@@ -46,24 +59,41 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
-    // Watch the chapter detail data
+    // 1. Watch non-blocking DB metadata for the Header
+    final metadataAsync = ref.watch(chapterMetadataProvider(widget.courseId, widget.chapterId));
+
+    // 2. Watch standard blocking stream for real lessons
     final chapterAsync = ref.watch(chapterDetailProvider(widget.courseId, widget.chapterId));
 
     // Check status filter state
     final activeStatusFilter = ref.watch(chapterStatusFilterProvider);
 
-    return Container(
-      color: design.colors.canvas,
-      child: () {
-        // If we have data (even if it's currently refreshing in the background),
-        // show the content immediately to avoid "loading flashes" between tabs.
-        if (chapterAsync.hasValue) {
-          final chapter = chapterAsync.value;
-          if (chapter == null) {
-            return Center(child: AppText.body(l10n.chapterNotFound));
-          }
+    final chapter = chapterAsync.valueOrNull;
+    final isSkeleton = chapterAsync.isLoading && chapter == null;
 
-          final filteredLessons = chapter.lessons.where((l) {
+    if (chapterAsync.hasError && chapter == null) {
+      return Container(
+        color: design.colors.canvas,
+        child: Center(
+          child: AppText.body(chapterAsync.error.toString()),
+        ),
+      );
+    }
+
+    final activeChapter = isSkeleton ? _skeletonChapter : chapter;
+    final activeHeaderChapter = metadataAsync.valueOrNull ?? activeChapter;
+
+    // If it's NOT loading AND we literally found nothing, show empty error
+    if (!isSkeleton && activeChapter == null) {
+      return Container(
+        color: design.colors.canvas,
+        child: Center(child: AppText.body(l10n.chapterNotFound)),
+      );
+    }
+
+    final List<Lesson> filteredLessons = isSkeleton
+        ? List.generate(6, (_) => _skeletonLesson)
+        : activeChapter!.lessons.where((l) {
             switch (activeStatusFilter) {
               case ChapterStatusFilter.all:
                 return true;
@@ -76,48 +106,66 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
             }
           }).toList();
 
-          return Column(
-            children: [
-              // Unified Top Bar (Header + Filters)
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: design.colors.card,
-                  border: Border(
-                    bottom: BorderSide(color: design.colors.divider, width: 1),
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildHeaderContents(context, design, chapter),
-                    if (widget.showFilters) const ChapterStatusFilterBar(),
-                  ],
+    return SkeletonizerConfig(
+      data: SkeletonizerConfigData(
+        effect: ShimmerEffect(
+          baseColor: design.colors.skeleton,
+          highlightColor: design.colors.onSkeleton,
+          duration: MotionPreferences.duration(
+            context,
+            const Duration(milliseconds: 800),
+          ),
+        ),
+        containersColor: design.colors.transparent,
+        ignoreContainers: false,
+      ),
+      child: Container(
+        color: design.colors.canvas,
+        child: Column(
+          children: [
+            // Unified Top Bar (Header + Filters)
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: design.colors.card,
+                border: Border(
+                  bottom: BorderSide(color: design.colors.divider, width: 1),
                 ),
               ),
-              Expanded(
-                child: AppScroll(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 16,
-                  ),
-                  children: [
-                    if (filteredLessons.isEmpty)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 40),
-                        child: Center(
-                          child: AppText.body(l10n.chapterNoContent),
-                        ),
-                      )
-                    else
-                      ...filteredLessons.map(
-                        (lesson) => ChapterContentItem(
-                          lesson: lesson,
-                          onTap: () {
-                            if (widget.onLessonClick != null) {
-                              widget.onLessonClick!(lesson);
-                            }
-                          },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildHeaderContents(context, design, activeHeaderChapter!),
+                  if (widget.showFilters) const ChapterStatusFilterBar(),
+                ],
+              ),
+            ),
+            Expanded(
+              child: AppScroll(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
+                children: [
+                  if (!isSkeleton && filteredLessons.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 40),
+                      child: Center(
+                        child: AppText.body(l10n.chapterNoContent),
+                      ),
+                    )
+                  else
+                    ...filteredLessons.map(
+                      (lesson) => ChapterContentItem(
+                        lesson: lesson,
+                        isSkeleton: isSkeleton,
+                        onTap: isSkeleton
+                            ? () {}
+                            : () {
+                                  if (widget.onLessonClick != null) {
+                                    widget.onLessonClick!(lesson);
+                                  }
+                                },
                         ),
                       ),
                     // Extra spacing at bottom for visibility
@@ -126,17 +174,9 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
                 ),
               ),
             ],
-          );
-        }
-
-        // Only show the spinner if we have NO data yet (first load).
-        return chapterAsync.when(
-          data: (_) => const SizedBox.shrink(), // Handled above by hasValue
-          loading: () => const Center(child: AppLoadingIndicator()),
-          error: (error, _) => Center(child: AppText.body(error.toString())),
-        );
-      }(),
-    );
+          ),
+        ),
+      );
   }
 
   /// Builds the contents of the header (Back button, Title, Stats)
