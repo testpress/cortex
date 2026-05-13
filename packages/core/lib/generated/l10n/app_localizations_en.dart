@@ -1464,4 +1464,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get labelMentor => 'Mentor';
+
+  @override
+  String get infoPageTitle => 'Learning Resources';
+
+  @override
+  String get infoPageSubtitle => 'Select a resource to view details';
+
+  @override
+  String get infoPageEmptyState => 'No learning resources available yet.';
+
+  @override
+  String get infoPageLoadError => 'Failed to load resources. Please try again.';
+
+  @override
+  String infoPageOpenCourse(String title) {
+    return 'Open $title';
+  }
+
+  @override
+  String infoPageLessonsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Lessons',
+      one: '1 Lesson',
+    );
+    return '$_temp0';
+  }
 }

@@ -21,7 +21,7 @@ class CourseRepository {
 
   /// Stream controller for sync status updates
   final _syncStatusController = StreamController<Set<String>>.broadcast();
-  Set<String> _activeSyncIds = {};
+  final Set<String> _activeSyncIds = {};
 
   /// Stream of course IDs currently being synced.
   Stream<Set<String>> get activeSyncsStream => _syncStatusController.stream;
@@ -66,22 +66,32 @@ class CourseRepository {
     });
   }
 
+  /// Live stream of courses filtered for the Info (Learning Resources) tab.
+  Stream<List<CoursesTableData>> watchInfoCourses() {
+    return _db.watchAllCourses().map((courses) {
+      return courses.where((course) {
+        final dto = rowToCourseDto(course);
+        final hasMobileAccess = dto.allowedDevices.any(
+          (d) => d.toLowerCase().contains('mobile'),
+        );
+        return dto.tags.any((t) => t.toLowerCase() == 'info') && hasMobileAccess;
+      }).toList();
+    });
+  }
+
   /// Live stream of courses filtered for the Study tab.
   /// Excludes exams and info courses to maintain tab independence.
   Stream<List<CoursesTableData>> watchStudyCourses() {
     return _db.watchAllCourses().map((courses) {
       return courses.where((course) {
         final dto = rowToCourseDto(course);
-        
-        if (config.showExamTab) {
-          // Brilliant Pala: Exclude only if explicitly tagged as 'exams' or 'info'
-          final isExplicitExam = dto.tags.contains('exams');
-          final isInfoCourse = dto.tags.contains('info');
-          return !isExplicitExam && !isInfoCourse;
-        } else {
-          // Default: Inclusive behavior
-          return true;
-        }
+
+        final isExamCourse = dto.tags.contains('exams') || (dto.tags.isEmpty && dto.examsCount > 0);
+        final isInfoCourse = dto.tags.any((t) => t.toLowerCase() == 'info');
+
+        if (config.showExamTab && isExamCourse) return false;
+        if (config.showInfoTab && isInfoCourse) return false;
+        return true;
       }).toList();
     });
   }
@@ -614,7 +624,6 @@ class CourseRepository {
     image: row.image,
     tags: _safeDecodeList<String>(row.tags),
     allowedDevices: _safeDecodeList<String>(row.allowedDevices),
-    tagIds: _safeDecodeList<int>(row.tagIds),
     examsCount: row.examsCount,
     isChaptersSynced: row.isChaptersSynced,
   );
@@ -643,7 +652,6 @@ class CourseRepository {
         allowedDevices: dto.allowedDevices.isNotEmpty
             ? Value(jsonEncode(dto.allowedDevices))
             : const Value.absent(),
-        tagIds: dto.tagIds.isNotEmpty ? Value(jsonEncode(dto.tagIds)) : const Value.absent(),
         examsCount: Value(dto.examsCount),
         orderIndex: Value(dto.order),
         isChaptersSynced: Value(dto.isChaptersSynced),

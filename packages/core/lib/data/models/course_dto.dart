@@ -23,7 +23,6 @@ class CourseDto {
   final String? image;
   final List<String> tags;
   final List<String> allowedDevices;
-  final List<int> tagIds;
   final int examsCount;
   final int order;
   final List<ChapterDto> chapters;
@@ -40,7 +39,6 @@ class CourseDto {
     required this.totalLessons,
     this.tags = const [],
     this.allowedDevices = const [],
-    this.tagIds = const [],
     this.examsCount = 0,
     this.order = 0,
     this.image,
@@ -63,7 +61,6 @@ class CourseDto {
     String? image,
     List<String>? tags,
     List<String>? allowedDevices,
-    List<int>? tagIds,
     int? examsCount,
     int? order,
     bool? isChaptersSynced,
@@ -82,7 +79,6 @@ class CourseDto {
       image: image ?? this.image,
       tags: tags ?? this.tags,
       allowedDevices: allowedDevices ?? this.allowedDevices,
-      tagIds: tagIds ?? this.tagIds,
       examsCount: examsCount ?? this.examsCount,
       order: order ?? this.order,
       isChaptersSynced: isChaptersSynced ?? this.isChaptersSynced,
@@ -104,7 +100,6 @@ class CourseDto {
       image: json['image'] as String?,
       tags: _parseList(json['tags']),
       allowedDevices: _parseList(json['allowed_devices']),
-      tagIds: (json['tag_ids'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       examsCount: json['exams_count'] as int? ?? 0,
       order: json['order'] as int? ?? 0,
       isChaptersSynced: json['isChaptersSynced'] as bool? ?? false,

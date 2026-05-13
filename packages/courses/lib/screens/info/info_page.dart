@@ -1,45 +1,210 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 
-import '../../models/info_models.dart';
 import '../../providers/info_providers.dart';
 
-class InfoPage extends ConsumerWidget {
+/// The main entry point for the Info tab, displaying a list of curated learning resources.
+class InfoPage extends ConsumerStatefulWidget {
   const InfoPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final design = Design.of(context);
-    final courses = ref.watch(infoCoursesProvider);
+  ConsumerState<InfoPage> createState() => _InfoPageState();
+}
 
-    return ColoredBox(
-      color: design.colors.canvas,
-      child: Column(
-        children: [
-          const DashboardHeader(
-            title: 'Learning Resources',
-            titleTextStyle: TextStyle(
-              fontWeight: FontWeight.w800,
-              fontSize: 18,
-              height: 1.15,
-            ),
+class _InfoPageState extends ConsumerState<InfoPage> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    Future(() {
+      if (!mounted) return;
+      ref.read(infoListProvider.notifier).initialize();
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    final coursesAsync = ref.watch(infoListProvider);
+    final isSyncing = ref.watch(isSyncingInfoProvider);
+
+    return DecoratedBox(
+      decoration: BoxDecoration(color: design.colors.canvas),
+      child: CustomScrollView(
+        controller: _scrollController,
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          const _InfoPageHeader(),
+          _InfoPageSeparator(color: design.colors.divider),
+          _InfoCourseList(
+            coursesAsync: coursesAsync,
+            isSyncing: isSyncing,
           ),
-          Expanded(
-            child: AppScroll(
-              padding: EdgeInsets.fromLTRB(
-                design.spacing.md,
-                design.spacing.md,
-                design.spacing.md,
-                design.spacing.xxl,
-              ),
-              children: [
-                for (final course in courses) ...[
-                  _CourseCard(course: course),
-                  SizedBox(height: design.spacing.sm),
-                ],
-              ],
+          const SliverToBoxAdapter(child: SizedBox(height: 120)),
+        ],
+      ),
+    );
+  }
+}
+
+/// The sticky header for the Info page.
+class _InfoPageHeader extends StatelessWidget {
+  const _InfoPageHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
+    
+    return SliverToBoxAdapter(
+      child: Container(
+        color: design.colors.card,
+        padding: EdgeInsets.all(design.spacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppText.headline(
+              l10n.infoPageTitle,
+              color: design.colors.textPrimary,
             ),
+            SizedBox(height: design.spacing.xs),
+            AppText.body(
+              l10n.infoPageSubtitle,
+              color: design.colors.textSecondary,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A simple divider sliver.
+class _InfoPageSeparator extends StatelessWidget {
+  const _InfoPageSeparator({required this.color});
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Container(
+        height: 1,
+        color: color,
+      ),
+    );
+  }
+}
+
+/// Handles the different states (loading, loaded, error, empty) of the course list.
+class _InfoCourseList extends StatelessWidget {
+  const _InfoCourseList({
+    required this.coursesAsync,
+    required this.isSyncing,
+  });
+
+  final AsyncValue<List<CourseDto>> coursesAsync;
+  final bool isSyncing;
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+
+    return coursesAsync.when(
+      data: (courses) {
+        if (courses.isEmpty && !isSyncing) {
+          return const SliverFillRemaining(
+            hasScrollBody: false,
+            child: _InfoEmptyState(),
+          );
+        }
+
+        final isSkeleton = courses.isEmpty && isSyncing;
+        final displayCourses = isSkeleton ? _mockSkeletonCourses : courses;
+
+        return _CourseSliverList(
+          courses: displayCourses,
+          isSkeleton: isSkeleton,
+          design: design,
+        );
+      },
+      loading: () => _CourseSliverList(
+        courses: _mockSkeletonCourses,
+        isSkeleton: true,
+        design: design,
+      ),
+      error: (e, _) => SliverFillRemaining(
+        hasScrollBody: false,
+        child: _InfoErrorState(error: e),
+      ),
+    );
+  }
+}
+
+/// Renders the actual list of course cards (or their skeletons).
+class _CourseSliverList extends StatelessWidget {
+  const _CourseSliverList({
+    required this.courses,
+    required this.isSkeleton,
+    required this.design,
+  });
+
+  final List<CourseDto> courses;
+  final bool isSkeleton;
+  final DesignConfig design;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverPadding(
+      padding: EdgeInsets.all(design.spacing.md),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            final course = courses[index];
+            return Padding(
+              padding: EdgeInsets.only(bottom: design.spacing.md),
+              child: _InfoCourseCard(
+                course: course,
+                isSkeleton: isSkeleton,
+              ),
+            );
+          },
+          childCount: courses.length,
+        ),
+      ),
+    );
+  }
+}
+
+class _InfoEmptyState extends StatelessWidget {
+  const _InfoEmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            LucideIcons.helpCircle,
+            size: 48,
+            color: design.colors.textSecondary.withValues(alpha: 0.5),
+          ),
+          const SizedBox(height: 16),
+          AppText.body(
+            l10n.infoPageEmptyState,
+            color: design.colors.textSecondary,
           ),
         ],
       ),
@@ -47,79 +212,165 @@ class InfoPage extends ConsumerWidget {
   }
 }
 
-class _CourseCard extends StatelessWidget {
-  const _CourseCard({required this.course});
-
-  final InfoCourse course;
+class _InfoErrorState extends StatelessWidget {
+  const _InfoErrorState({required this.error});
+  final Object error;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final colors = subjectPaletteForInfo(context, course.subject);
+    final l10n = L10n.of(context);
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(LucideIcons.alertCircle, size: 48, color: design.colors.error),
+            const SizedBox(height: 16),
+            AppText.body(
+              l10n.infoPageLoadError,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
-    // Note: The route should ideally be independent of the profile slot
+class _InfoCourseCard extends StatelessWidget {
+  const _InfoCourseCard({
+    required this.course,
+    required this.isSkeleton,
+  });
+
+  final CourseDto course;
+  final bool isSkeleton;
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
+
     return AppSemantics.button(
-      label: 'Open ${course.title}',
+      label: l10n.infoPageOpenCourse(course.title),
       child: AppFocusable(
-        onTap: () => context.push('/info/course/${course.id}'),
-        borderRadius: BorderRadius.circular(design.radius.lg),
-        child: Container(
-          key: ValueKey('info-course-${course.id}'),
-          padding: EdgeInsets.fromLTRB(
-            design.spacing.sm,
-            design.spacing.sm + 2, // 10.0 balance
-            design.spacing.sm + design.spacing.xs, // 12.0
-            design.spacing.sm + 2, // 10.0 balance
-          ),
-          decoration: BoxDecoration(
-            color: design.colors.card,
-            borderRadius: BorderRadius.circular(design.radius.lg),
-            boxShadow: design.shadows.surfaceSoft,
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              InfoThumbnail(
-                label: course.subject,
-                imageUrl: course.thumbnailUrl,
-                foregroundColor: colors.foreground,
-              ),
-              SizedBox(width: design.spacing.sm + design.spacing.xs),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppText.body(
-                      course.title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: design.typography.title.fontSize,
-                        height: design.typography.title.height,
-                      ),
+        onTap: () => context.push('/info/course/${course.id}/chapters'),
+        borderRadius: design.radius.card,
+        child: AppCard(
+          showShadow: true,
+          padding: EdgeInsets.all(design.spacing.md),
+          child: Skeletonizer(
+            enabled: isSkeleton,
+            ignoreContainers: true,
+            effect: ShimmerEffect(
+              baseColor: design.colors.skeleton,
+              highlightColor: design.colors.onSkeleton,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Left Image Box
+                Skeleton.replace(
+                  width: 78,
+                  height: 80,
+                  replacement: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: design.colors.skeleton,
+                      borderRadius: BorderRadius.circular(design.radius.md),
                     ),
-                    SizedBox(height: design.spacing.sm + 2),
-                    AppText.cardCaption(
-                      course.instructor,
-                      color: design.colors.textSecondary,
+                  ),
+                  child: Container(
+                    width: 78,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: design.colors.surfaceVariant,
+                      borderRadius: BorderRadius.circular(design.radius.md),
                     ),
-                    SizedBox(height: design.spacing.sm + 2),
-                    Row(
-                      children: [
-                        _MetaText(
-                          icon: LucideIcons.playCircle,
-                          text: '${course.videoCount}',
-                        ),
-                        SizedBox(width: design.spacing.sm),
-                        _MetaText(
-                          icon: LucideIcons.clock3,
-                          text: course.totalDuration,
-                        ),
-                      ],
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(design.radius.md),
+                      child: course.image?.isNotEmpty == true
+                          ? Image.network(
+                              course.image!,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => Icon(
+                                LucideIcons.bookOpen,
+                                color: design.colors.textSecondary.withValues(alpha: 0.5),
+                                size: 32,
+                              ),
+                            )
+                          : Icon(
+                              LucideIcons.bookOpen,
+                              color: design.colors.textSecondary.withValues(alpha: 0.5),
+                              size: 32,
+                            ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+                SizedBox(width: design.spacing.md),
+
+                // Content
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: AppText.cardTitle(
+                              course.title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Icon(
+                            LucideIcons.chevronRight,
+                            color: design.colors.textSecondary.withValues(alpha: 0.3),
+                            size: 20,
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: design.spacing.xs),
+
+                      // Metadata: Chapters with icon
+                      Row(
+                        children: [
+                          Icon(
+                            LucideIcons.layers,
+                            size: 14,
+                            color: design.colors.textSecondary.withValues(alpha: 0.7),
+                          ),
+                          const SizedBox(width: 4),
+                          AppText.caption(
+                            L10n.of(context).curriculumChaptersCount(course.chapterCount),
+                            color: design.colors.textSecondary,
+                          ),
+                        ],
+                      ),
+                      
+                      SizedBox(height: design.spacing.sm),
+                      
+                      // Specific Info Metadata: Lessons
+                      Row(
+                        children: [
+                          Icon(
+                            LucideIcons.playCircle,
+                            size: 14,
+                            color: design.colors.textSecondary.withValues(alpha: 0.7),
+                          ),
+                          const SizedBox(width: 4),
+                          AppText.cardCaption(
+                            l10n.infoPageLessonsCount(course.totalLessons),
+                            color: design.colors.textSecondary,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -127,119 +378,21 @@ class _CourseCard extends StatelessWidget {
   }
 }
 
-class InfoThumbnail extends StatelessWidget {
-  const InfoThumbnail({
-    super.key,
-    required this.label,
-    required this.imageUrl,
-    required this.foregroundColor,
-  });
-
-  final String label;
-  final String imageUrl;
-  final Color foregroundColor;
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-
-    return Container(
-      width: 92,
-      height: 92,
-      decoration: BoxDecoration(
-        color: design.colors.surfaceVariant,
-        borderRadius: BorderRadius.circular(design.radius.lg),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.network(
-              imageUrl,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return ColoredBox(color: design.colors.surfaceVariant);
-              },
-            ),
-          ),
-          Align(
-            alignment: Alignment.topRight,
-            child: Container(
-              margin: const EdgeInsets.all(4),
-              constraints: const BoxConstraints(maxWidth: 80),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: BoxDecoration(
-                color: foregroundColor,
-                borderRadius: BorderRadius.circular(design.radius.sm),
-              ),
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: design.colors.textInverse,
-                  fontSize: 9,
-                  fontWeight: FontWeight.w800,
-                  height: 1.2,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MetaText extends StatelessWidget {
-  const _MetaText({required this.icon, required this.text});
-
-  final IconData icon;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 14, color: design.colors.textSecondary),
-        const SizedBox(width: 4),
-        AppText.cardCaption(text, color: design.colors.textSecondary),
-      ],
-    );
-  }
-}
-
-({Color background, Color foreground}) subjectPaletteForInfo(
-  BuildContext context,
-  String subject,
-) {
-  final design = Design.of(context);
-  
-  // Explicit mapping based on design intent
-  final int index;
-  switch (subject.toLowerCase()) {
-    case 'physics':
-      index = 3; // Violet/Purple
-      break;
-    case 'chemistry':
-      index = 2; // Emerald/Green
-      break;
-    case 'mathematics':
-      index = 1; // Orange
-      break;
-    default:
-      index = subject.toLowerCase().hashCode.abs();
-  }
-
-  final colors =
-      design.subjectPalette.atIndex(index % design.subjectPalette.length);
-
-  return (
-    background: colors.background,
-    foreground: colors.accent, // Using accent for vibrant tag backgrounds
-  );
-}
-
+// Mock data strictly used for skeleton states.
+// BoneMock provides realistic string lengths so Skeletonizer generates appropriately sized bones.
+final _mockSkeletonCourses = List.generate(
+  5,
+  (index) => CourseDto(
+    id: index.toString(),
+    title: 'Mock learning resource course title',
+    image: '',
+    colorIndex: index,
+    chapterCount: 3,
+    totalContents: 20,
+    progress: 0,
+    completedLessons: 0,
+    totalLessons: 12,
+    examsCount: 0,
+    tags: const ['Info'],
+  ),
+);

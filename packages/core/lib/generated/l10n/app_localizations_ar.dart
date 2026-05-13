@@ -1476,4 +1476,32 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get labelMentor => 'مرشد';
+
+  @override
+  String get infoPageTitle => 'موارد التعلم';
+
+  @override
+  String get infoPageSubtitle => 'اختر موردًا لعرض التفاصيل';
+
+  @override
+  String get infoPageEmptyState => 'لا توجد موارد تعلم متاحة حاليًا.';
+
+  @override
+  String get infoPageLoadError => 'تعذر تحميل الموارد. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String infoPageOpenCourse(String title) {
+    return 'افتح $title';
+  }
+
+  @override
+  String infoPageLessonsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count دروس',
+      one: 'درس واحد',
+    );
+    return '$_temp0';
+  }
 }

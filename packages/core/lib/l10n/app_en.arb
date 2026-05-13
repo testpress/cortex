@@ -724,5 +724,25 @@
   "doubtDetailTitle": "Doubt",
   "errorFailedToLoadReplies": "Failed to load replies",
   "errorFailedToLoadDoubtDetails": "Failed to load doubt details",
-  "labelMentor": "Mentor"
+  "labelMentor": "Mentor",
+  "infoPageTitle": "Learning Resources",
+  "infoPageSubtitle": "Select a resource to view details",
+  "infoPageEmptyState": "No learning resources available yet.",
+  "infoPageLoadError": "Failed to load resources. Please try again.",
+  "infoPageOpenCourse": "Open {title}",
+  "@infoPageOpenCourse": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "infoPageLessonsCount": "{count,plural, =1{1 Lesson} other{{count} Lessons}}",
+  "@infoPageLessonsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

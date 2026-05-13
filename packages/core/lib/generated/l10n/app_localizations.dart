@@ -2708,6 +2708,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Mentor'**
   String get labelMentor;
+
+  /// No description provided for @infoPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning Resources'**
+  String get infoPageTitle;
+
+  /// No description provided for @infoPageSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a resource to view details'**
+  String get infoPageSubtitle;
+
+  /// No description provided for @infoPageEmptyState.
+  ///
+  /// In en, this message translates to:
+  /// **'No learning resources available yet.'**
+  String get infoPageEmptyState;
+
+  /// No description provided for @infoPageLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load resources. Please try again.'**
+  String get infoPageLoadError;
+
+  /// No description provided for @infoPageOpenCourse.
+  ///
+  /// In en, this message translates to:
+  /// **'Open {title}'**
+  String infoPageOpenCourse(String title);
+
+  /// No description provided for @infoPageLessonsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count,plural, =1{1 Lesson} other{{count} Lessons}}'**
+  String infoPageLessonsCount(int count);
 }
 
 class _AppLocalizationsDelegate

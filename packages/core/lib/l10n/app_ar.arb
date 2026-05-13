@@ -499,5 +499,11 @@
   "doubtDetailTitle": "سؤال",
   "errorFailedToLoadReplies": "فشل تحميل الردود",
   "errorFailedToLoadDoubtDetails": "فشل تحميل تفاصيل السؤال",
-  "labelMentor": "مرشد"
+  "labelMentor": "مرشد",
+  "infoPageTitle": "موارد التعلم",
+  "infoPageSubtitle": "اختر موردًا لعرض التفاصيل",
+  "infoPageEmptyState": "لا توجد موارد تعلم متاحة حاليًا.",
+  "infoPageLoadError": "تعذر تحميل الموارد. يرجى المحاولة مرة أخرى.",
+  "infoPageOpenCourse": "افتح {title}",
+  "infoPageLessonsCount": "{count,plural, =1{درس واحد} other{{count} دروس}}"
 }
