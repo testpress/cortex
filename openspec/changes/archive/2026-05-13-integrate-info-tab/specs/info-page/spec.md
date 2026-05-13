@@ -1,13 +1,3 @@
-## ADDED Requirements
-
-### Requirement: Skeletonized Loading State
-The system SHALL display a skeletonized version of the course list while data is being fetched or synchronized.
-
-#### Scenario: Initial page loading
-- **WHEN** the Info tab is opened and no cached data is available
-- **THEN** the system MUST display a list of skeleton course cards using the `Skeletonizer` widget
-- **AND** the skeletons MUST match the general layout and structure of the real course cards.
-
 ## MODIFIED Requirements
 
 ### Requirement: Info Resource Catalog

@@ -2,9 +2,7 @@
 
 ## Purpose
 The Info Page provides a client-gated landing experience for curated learning resources, allowing users to browse specialized content and launch educational videos.
-
 ## Requirements
-
 ### Requirement: Gated Info Experience
 The system SHALL keep the Info experience disabled by default and expose it only for clients whose configuration explicitly enables it.
 
@@ -52,12 +50,3 @@ The system SHALL support inline playback of Info lessons within the app using th
 - **THEN** the system MUST open the lesson in the standard `LessonDetailOrchestrator`
 - **AND** support all standard lesson types (Video, PDF, HTML) with native playback.
 
-#### Scenario: Accessible interaction handling
-- **WHEN** the user interacts with an interactive element (e.g., video row, back button)
-- **THEN** the system MUST avoid redundant interaction handlers between semantics containers and their children
-- **AND** interaction logic MUST be handled exclusively by the primary interactive widget to prevent double execution in accessibility modes
-
-#### Scenario: Safe indexed palette access
-- **WHEN** a color is requested from a design palette using an arbitrary index (e.g., hash-based subject colors)
-- **THEN** the system MUST apply bounds-checking or a modulo operation to ensure the index fits within the available palette size
-- **AND** the system MUST avoid out-of-bounds exceptions regardless of the input index magnitude
