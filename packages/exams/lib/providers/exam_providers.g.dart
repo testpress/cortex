@@ -327,7 +327,7 @@ final examAttemptProvider =
     );
 
 typedef _$ExamAttempt = AutoDisposeNotifier<ExamAttemptState>;
-String _$examListHash() => r'51c9fe3af8e5727c237ea1eb71d1945d45b31a10';
+String _$examListHash() => r'1fcbb9ebe9053e236eaf5a63b62e568dce1a00bd';
 
 /// Notifier that manages the exam-specific course list and its independent sync state.
 ///

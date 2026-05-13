@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
-import 'package:core/data/services/pagination_service.dart';
 import '../repositories/course_repository.dart';
 
 part 'course_list_provider.g.dart';

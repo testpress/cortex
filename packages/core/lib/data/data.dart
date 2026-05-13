@@ -53,7 +53,10 @@ export 'sources/client_config_provider.dart';
 // Repositories
 export 'repositories/user_progress_repository.dart';
 export 'repositories/repository_providers.dart';
+
+//service
 export 'services/downloads_service.dart';
+export 'services/pagination_service.dart';
 
 // Infra & Mocks
 export 'sources/mock_data.dart';

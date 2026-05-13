@@ -6,7 +6,7 @@ part of 'info_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$infoListHash() => r'07e86c63d036a7ffc1ba3047e4d8052e51d7f995';
+String _$infoListHash() => r'c5d6a72befb8075b301b327169aa265a40fbef33';
 
 /// Notifier that manages the info-specific course list and its independent sync state.
 /// This perfectly matches the pattern used in ExamList.

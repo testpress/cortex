@@ -20,14 +20,24 @@ class _InfoPageState extends ConsumerState<InfoPage> {
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
     Future(() {
       if (!mounted) return;
       ref.read(infoListProvider.notifier).initialize();
     });
   }
 
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    final position = _scrollController.position;
+    if (position.pixels >= position.maxScrollExtent - 400) {
+      ref.read(infoListProvider.notifier).loadMore();
+    }
+  }
+
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
   }
@@ -37,6 +47,7 @@ class _InfoPageState extends ConsumerState<InfoPage> {
     final design = Design.of(context);
     final coursesAsync = ref.watch(infoListProvider);
     final isSyncing = ref.watch(isSyncingInfoProvider);
+    final isSyncingMore = ref.watch(isSyncingMoreInfoProvider);
 
     return DecoratedBox(
       decoration: BoxDecoration(color: design.colors.canvas),
@@ -49,6 +60,7 @@ class _InfoPageState extends ConsumerState<InfoPage> {
           _InfoCourseList(
             coursesAsync: coursesAsync,
             isSyncing: isSyncing,
+            isSyncingMore: isSyncingMore,
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 120)),
         ],
@@ -110,10 +122,12 @@ class _InfoCourseList extends StatelessWidget {
   const _InfoCourseList({
     required this.coursesAsync,
     required this.isSyncing,
+    required this.isSyncingMore,
   });
 
   final AsyncValue<List<CourseDto>> coursesAsync;
   final bool isSyncing;
+  final bool isSyncingMore;
 
   @override
   Widget build(BuildContext context) {
@@ -131,10 +145,21 @@ class _InfoCourseList extends StatelessWidget {
         final isSkeleton = courses.isEmpty && isSyncing;
         final displayCourses = isSkeleton ? _mockSkeletonCourses : courses;
 
-        return _CourseSliverList(
-          courses: displayCourses,
-          isSkeleton: isSkeleton,
-          design: design,
+        return SliverMainAxisGroup(
+          slivers: [
+            _CourseSliverList(
+              courses: displayCourses,
+              isSkeleton: isSkeleton,
+              design: design,
+            ),
+            if (isSyncingMore)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: design.spacing.md),
+                  child: const Center(child: AppLoadingIndicator()),
+                ),
+              ),
+          ],
         );
       },
       loading: () => _CourseSliverList(

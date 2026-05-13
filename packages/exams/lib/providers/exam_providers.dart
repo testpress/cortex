@@ -74,6 +74,8 @@ class ExamAttempt extends _$ExamAttempt {
 @Riverpod(keepAlive: true)
 class ExamList extends _$ExamList {
   bool _isInitialized = false;
+  PaginationState _paginationTracker = const PaginationState();
+  Future<void>? _pendingSyncRequest;
 
   @override
   Stream<List<CourseDto>> build() async* {
@@ -85,41 +87,79 @@ class ExamList extends _$ExamList {
         );
   }
 
-  /// Triggers an independent sync for the Exams tab by fetching all pages.
+  /// Triggers an independent sync for the Exams tab by fetching the first page.
   Future<void> initialize() async {
     if (_isInitialized) return;
     
+    if (_pendingSyncRequest != null) return _pendingSyncRequest;
     _isInitialized = true;
-    Future.microtask(() {
-      ref.read(isSyncingExamsProvider.notifier).state = true;
-    });
-    
+
+    _pendingSyncRequest = _performSync(isReset: true);
     try {
-      final repo = await ref.read(courseRepositoryProvider.future);
-      
-      int currentPage = 1;
-      bool hasMore = true;
-      
-      while (hasMore) {
-        final response = await repo.refreshCourses(
-          page: currentPage,
-          tags: null,
-        );
-        
-        if (response.next == null) {
-          hasMore = false;
-        } else {
-          currentPage++;
-          if (currentPage > 20) hasMore = false; 
-        }
-      }
-    } catch (e) {
+      await _pendingSyncRequest;
+    } catch (_) {
       _isInitialized = false; // Allow retry on error
     } finally {
-      ref.read(isSyncingExamsProvider.notifier).state = false;
+      _pendingSyncRequest = null;
+    }
+  }
+
+  Future<void> loadMore() async {
+    if (!_paginationTracker.hasMore || _pendingSyncRequest != null) return;
+
+    _pendingSyncRequest = _performSync(isReset: false);
+    try {
+      await _pendingSyncRequest;
+    } finally {
+      _pendingSyncRequest = null;
+    }
+  }
+
+  Future<void> _performSync({required bool isReset}) async {
+    if (isReset) {
+      _paginationTracker = const PaginationState();
+      
+      // Only show the initial loader if the local database is actually empty.
+      final hasData = state.valueOrNull?.isNotEmpty ?? false;
+      if (!hasData) {
+        Future.microtask(() {
+          ref.read(isSyncingExamsProvider.notifier).state = true;
+        });
+      }
+    } else {
+      ref.read(isSyncingMoreExamsProvider.notifier).state = true;
+    }
+
+    try {
+      final repo = await ref.read(courseRepositoryProvider.future);
+      final response = await repo.refreshCourses(
+        page: _paginationTracker.nextPage,
+        tags: 'exams',
+      );
+
+      if (response.results.isEmpty) {
+        _paginationTracker = _paginationTracker.copyWith(hasMore: false);
+      } else {
+        const pagination = PaginationService();
+        _paginationTracker = pagination.calculateNextState(
+          response: response,
+          currentPage: _paginationTracker.nextPage,
+        );
+      }
+    } finally {
+      if (isReset) {
+        Future.microtask(() {
+          ref.read(isSyncingExamsProvider.notifier).state = false;
+        });
+      } else {
+        Future.microtask(() {
+          ref.read(isSyncingMoreExamsProvider.notifier).state = false;
+        });
+      }
     }
   }
 }
 
 /// Simple provider to track the independent loading state of the Exams tab.
 final isSyncingExamsProvider = StateProvider<bool>((ref) => false);
+final isSyncingMoreExamsProvider = StateProvider<bool>((ref) => false);

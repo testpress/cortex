@@ -12,9 +12,12 @@ class ExamsScreen extends ConsumerStatefulWidget {
 }
 
 class _ExamsScreenState extends ConsumerState<ExamsScreen> {
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
     // Ensure courses are synced when entering the exams tab independently
     Future.microtask(() {
       if (mounted) {
@@ -23,16 +26,33 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
     });
   }
 
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    final position = _scrollController.position;
+    if (position.pixels >= position.maxScrollExtent - 400) {
+      ref.read(examListProvider.notifier).loadMore();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     
     final examCoursesState = ref.watch(examListProvider);
     final isSyncing = ref.watch(isSyncingExamsProvider);
+    final isSyncingMore = ref.watch(isSyncingMoreExamsProvider);
     
     return DecoratedBox(
       decoration: BoxDecoration(color: design.colors.canvas),
       child: CustomScrollView(
+        controller: _scrollController,
         slivers: [
           SliverToBoxAdapter(
             child: Container(
@@ -95,25 +115,36 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
                 );
               }
               
-              return SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final course = courses[index];
-                      return Padding(
-                        padding: EdgeInsets.only(bottom: design.spacing.md),
-                        child: CourseCard(
-                          course: course,
-                          onTap: () {
-                            context.push('/exams/course/${course.id}/chapters');
-                          },
-                        ),
-                      );
-                    },
-                    childCount: courses.length,
+              return SliverMainAxisGroup(
+                slivers: [
+                  SliverPadding(
+                    padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final course = courses[index];
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: design.spacing.md),
+                            child: CourseCard(
+                              course: course,
+                              onTap: () {
+                                context.push('/exams/course/${course.id}/chapters');
+                              },
+                            ),
+                          );
+                        },
+                        childCount: courses.length,
+                      ),
+                    ),
                   ),
-                ),
+                  if (isSyncingMore)
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: design.spacing.md),
+                        child: const Center(child: AppLoadingIndicator()),
+                      ),
+                    ),
+                ],
               );
             },
             loading: () => const SliverFillRemaining(

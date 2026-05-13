@@ -10,6 +10,8 @@ part 'info_providers.g.dart';
 /// This perfectly matches the pattern used in ExamList.
 @Riverpod(keepAlive: true)
 class InfoList extends _$InfoList {
+  PaginationState _paginationTracker = const PaginationState();
+  Future<void>? _pendingSyncRequest;
   bool _isInitialized = false;
 
   @override
@@ -25,41 +27,76 @@ class InfoList extends _$InfoList {
   /// Triggers an independent sync for the Info tab.
   Future<void> initialize() async {
     if (_isInitialized) return;
-    
+
+    if (_pendingSyncRequest != null) return _pendingSyncRequest;
     _isInitialized = true;
-    ref.read(isSyncingInfoProvider.notifier).state = true;
-    
+
+    _pendingSyncRequest = _performSync(isReset: true);
     try {
-      final repo = await ref.read(courseRepositoryProvider.future);
-      
-      int currentPage = 1;
-      bool hasMore = true;
-      
-      while (hasMore) {
-        final response = await repo.refreshCourses(
-          page: currentPage,
-          tags: null,
-        );
-        
-        if (response.next == null) {
-          hasMore = false;
-        } else {
-          currentPage++;
-        }
-      }
-    } catch (e) {
+      await _pendingSyncRequest;
+    } catch (_) {
       _isInitialized = false; // Allow retry on error
     } finally {
-      ref.read(isSyncingInfoProvider.notifier).state = false;
+      _pendingSyncRequest = null;
     }
   }
 
   Future<void> loadMore() async {
-    // Note: The simple loop in initialize already fetches all pages 
-    // to match the ExamList pattern. If you need explicit "Load More" 
-    // on scroll, we can implement paginated sync here.
+    if (!_paginationTracker.hasMore || _pendingSyncRequest != null) return;
+
+    _pendingSyncRequest = _performSync(isReset: false);
+    try {
+      await _pendingSyncRequest;
+    } finally {
+      _pendingSyncRequest = null;
+    }
+  }
+
+  Future<void> _performSync({required bool isReset}) async {
+    if (isReset) {
+      _paginationTracker = const PaginationState();
+      
+      // Only show the initial loader if the local database is actually empty.
+      final hasData = state.valueOrNull?.isNotEmpty ?? false;
+      if (!hasData) {
+        Future.microtask(() {
+          ref.read(isSyncingInfoProvider.notifier).state = true;
+        });
+      }
+    } else {
+      ref.read(isSyncingMoreInfoProvider.notifier).state = true;
+    }
+
+    try {
+      final repo = await ref.read(courseRepositoryProvider.future);
+      final response = await repo.refreshCourses(
+        page: _paginationTracker.nextPage,
+        tags: 'info',
+      );
+
+      if (response.results.isEmpty) {
+        _paginationTracker = _paginationTracker.copyWith(hasMore: false);
+      } else {
+        const pagination = PaginationService();
+        _paginationTracker = pagination.calculateNextState(
+          response: response,
+          currentPage: _paginationTracker.nextPage,
+        );
+      }
+    } finally {
+      if (isReset) {
+        Future.microtask(() {
+          ref.read(isSyncingInfoProvider.notifier).state = false;
+        });
+      } else {
+        Future.microtask(() {
+          ref.read(isSyncingMoreInfoProvider.notifier).state = false;
+        });
+      }
+    }
   }
 }
 
 /// Simple provider to track the independent loading state of the Info tab.
 final isSyncingInfoProvider = StateProvider<bool>((ref) => false);
+final isSyncingMoreInfoProvider = StateProvider<bool>((ref) => false);
