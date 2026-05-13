@@ -492,7 +492,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get drawerBookmark => 'الإشارات المرجعية';
 
   @override
-  String get drawerPosts => 'المنشورات';
+  String get drawerPosts => 'الإعلانات';
 
   @override
   String get drawerAnalytics => 'التحليلات';

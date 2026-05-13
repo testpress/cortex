@@ -494,7 +494,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawerBookmark => 'Bookmark';
 
   @override
-  String get drawerPosts => 'Posts';
+  String get drawerPosts => 'Announcements';
 
   @override
   String get drawerAnalytics => 'Analytics';

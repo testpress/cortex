@@ -7,14 +7,12 @@ class AccountPreferencesSection extends StatelessWidget {
     this.onEditProfileTap,
     this.onNotificationsTap,
     this.onCertificatesTap,
-    this.onSettingsTap,
     this.onLogoutTap,
   });
 
   final VoidCallback? onEditProfileTap;
   final VoidCallback? onNotificationsTap;
   final VoidCallback? onCertificatesTap;
-  final VoidCallback? onSettingsTap;
   final VoidCallback? onLogoutTap;
 
   @override
@@ -59,13 +57,6 @@ class AccountPreferencesSection extends StatelessWidget {
                   label: l10n.profileCertificates,
                   iconColor: design.colors.success,
                   onTap: onCertificatesTap ?? () {},
-                ),
-                _Divider(),
-                _PreferenceItem(
-                  icon: LucideIcons.settings,
-                  label: l10n.drawerSettings,
-                  iconColor: design.colors.accent1,
-                  onTap: onSettingsTap ?? () {},
                 ),
                 _Divider(),
                 _PreferenceItem(

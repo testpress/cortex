@@ -500,7 +500,7 @@ class AppLocalizationsMl extends AppLocalizations {
   String get drawerBookmark => 'ബുക്ക്മാർക്ക്';
 
   @override
-  String get drawerPosts => 'പോസ്റ്റുകൾ';
+  String get drawerPosts => 'അറിയിപ്പുകൾ';
 
   @override
   String get drawerAnalytics => 'അനലിറ്റിക്സ്';

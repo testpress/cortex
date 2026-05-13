@@ -979,7 +979,7 @@ abstract class AppLocalizations {
   /// No description provided for @drawerPosts.
   ///
   /// In en, this message translates to:
-  /// **'Posts'**
+  /// **'Announcements'**
   String get drawerPosts;
 
   /// No description provided for @drawerAnalytics.

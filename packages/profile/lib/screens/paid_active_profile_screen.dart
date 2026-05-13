@@ -16,13 +16,11 @@ class ProfilePage extends ConsumerWidget {
     this.onEditProfile,
     this.onOpenNotifications,
     this.onOpenCertificates,
-    this.onOpenSettings,
   });
 
   final VoidCallback? onEditProfile;
   final VoidCallback? onOpenNotifications;
   final VoidCallback? onOpenCertificates;
-  final VoidCallback? onOpenSettings;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -129,9 +127,6 @@ class ProfilePage extends ConsumerWidget {
                       onCertificatesTap:
                           onOpenCertificates ??
                           () => context.pushNamed('profile-certificates'),
-                      onSettingsTap:
-                          onOpenSettings ??
-                          () => context.pushNamed('profile-settings'),
                       onLogoutTap: () {
                         ref.read(isLogoutSheetOpenProvider.notifier).state =
                             true;

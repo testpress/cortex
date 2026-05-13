@@ -19,7 +19,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   // on every loading state change or refresh.
   final isLoggedIn = ref.watch(authProvider).valueOrNull ?? false;
   final config = ref.watch(clientConfigProvider);
-  final activeTabs = NavTab.active(config);
+  const allTabs = NavTab.values;
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
@@ -32,9 +32,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state, navigationShell) => _AppShellBuilder(
           navigationShell: navigationShell,
           config: config,
-          activeTabs: activeTabs,
+          allTabs: allTabs,
         ),
-        branches: activeTabs.map((tab) {
+        branches: allTabs.map((tab) {
           final routes = switch (tab) {
             NavTab.home => HomeRoutes.routes(_rootNavigatorKey),
             NavTab.study => StudyRoutes.routes(_rootNavigatorKey),
@@ -93,19 +93,20 @@ List<AppTabItem> buildPrimaryNavigationItems({
 class _AppShellBuilder extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
   final ClientConfig config;
-  final List<NavTab> activeTabs;
+  final List<NavTab> allTabs;
 
   const _AppShellBuilder({
     required this.navigationShell,
     required this.config,
-    required this.activeTabs,
+    required this.allTabs,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final activeTabs = NavTab.active(config);
     final items = activeTabs.map((tab) => tab.toTabItem()).toList();
     final isLogoutSheetOpen = ref.watch(isLogoutSheetOpenProvider);
-    final activeTabId = activeTabs[navigationShell.currentIndex].id;
+    final activeTabId = allTabs[navigationShell.currentIndex].id;
 
     void closeSheet() =>
         ref.read(isLogoutSheetOpenProvider.notifier).state = false;
@@ -119,13 +120,13 @@ class _AppShellBuilder extends ConsumerWidget {
             items: items,
             activeItemId: activeTabId,
             onTabChange: (id) =>
-                _onTabItemTapped(navigationShell, id, activeTabs: activeTabs),
+                _onTabItemTapped(navigationShell, id, allTabs: allTabs),
           ),
           navigationRail: AppNavigationRail(
             items: items,
             activeItemId: activeTabId,
             onTabChange: (id) =>
-                _onTabItemTapped(navigationShell, id, activeTabs: activeTabs),
+                _onTabItemTapped(navigationShell, id, allTabs: allTabs),
           ),
           drawer: DashboardDrawer(isLandscape: isLandscape),
           bottomSheet: AppBottomSheet(
@@ -150,9 +151,9 @@ class _AppShellBuilder extends ConsumerWidget {
 void _onTabItemTapped(
   StatefulNavigationShell navigationShell,
   String id, {
-  required List<NavTab> activeTabs,
+  required List<NavTab> allTabs,
 }) {
-  final index = activeTabs.indexWhere((tab) => tab.id == id);
+  final index = allTabs.indexWhere((tab) => tab.id == id);
   navigationShell.goBranch(index != -1 ? index : 0);
 }
 
