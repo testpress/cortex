@@ -1494,4 +1494,34 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get labelMentor => 'മെന്റർ';
+
+  @override
+  String get infoPageTitle => 'ലേണിംഗ് റിസോഴ്‌സുകൾ';
+
+  @override
+  String get infoPageSubtitle =>
+      'വിശദാംശങ്ങൾ കാണാൻ ഒരു റിസോഴ്‌സ് തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get infoPageEmptyState => 'ഇപ്പോൾ ലേണിംഗ് റിസോഴ്‌സുകൾ ലഭ്യമല്ല.';
+
+  @override
+  String get infoPageLoadError =>
+      'റിസോഴ്‌സുകൾ ലോഡ് ചെയ്യാനായില്ല. ദയവായി വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String infoPageOpenCourse(String title) {
+    return '$title തുറക്കുക';
+  }
+
+  @override
+  String infoPageLessonsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count പാഠങ്ങൾ',
+      one: '1 പാഠം',
+    );
+    return '$_temp0';
+  }
 }

@@ -28,13 +28,9 @@ class PaginatedResponseDto<T> {
   ) {
     var rawResults = json['results'];
 
-    // Testpress Quirk: Sometimes 'results' is a Map with a nested List (e.g. 'courses').
+    // Testpress Quirk: Sometimes 'results' is a Map with a nested List (e.g. 'courses') and a 'tags' list.
     if (rawResults is Map<String, dynamic>) {
-      final nestedList = rawResults.values.firstWhere(
-        (v) => v is List,
-        orElse: () => <dynamic>[],
-      );
-      rawResults = nestedList;
+      rawResults = _resolveTags(rawResults);
     }
 
     final rawList = rawResults as List<dynamic>? ?? [];
@@ -45,5 +41,41 @@ class PaginatedResponseDto<T> {
       previous: json['previous'] as String?,
       count: (json['count'] as int?) ?? rawList.length,
     );
+  }
+
+  static List<dynamic> _resolveTags(Map<String, dynamic> results) {
+    final tagsList = results['tags'] as List<dynamic>? ?? [];
+    final tagMap = {
+      for (var t in tagsList.whereType<Map<String, dynamic>>())
+        t['id'] as int: t['name'] as String
+    };
+
+    // Prefer the known Testpress payload key.
+    List<dynamic> nestedList;
+    final courses = results['courses'];
+    if (courses is List<dynamic>) {
+      nestedList = courses;
+    } else {
+      // Defensive fallback: pick a non-tags list that looks like a course list.
+      nestedList =
+          results.values
+              .whereType<List<dynamic>>()
+              .firstWhere((list) {
+                if (identical(list, tagsList) || list.isEmpty) return false;
+                final first = list.first;
+                if (first is! Map<String, dynamic>) return false;
+                return first.containsKey('id') &&
+                    first.containsKey('title') &&
+                    first.containsKey('tag_ids');
+              }, orElse: () => <dynamic>[]);
+    }
+
+    if (tagMap.isNotEmpty) {
+      for (final item in nestedList.whereType<Map<String, dynamic>>()) {
+        final tagIds = item['tag_ids'] as List<dynamic>? ?? [];
+        item['tags'] = tagIds.map((id) => tagMap[id]).whereType<String>().toList();
+      }
+    }
+    return nestedList;
   }
 }

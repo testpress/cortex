@@ -499,5 +499,11 @@
   "doubtDetailTitle": "സംശയം",
   "errorFailedToLoadReplies": "മറുപടികൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു",
   "errorFailedToLoadDoubtDetails": "വിശദാംശങ്ങൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു",
-  "labelMentor": "മെന്റർ"
+  "labelMentor": "മെന്റർ",
+  "infoPageTitle": "ലേണിംഗ് റിസോഴ്‌സുകൾ",
+  "infoPageSubtitle": "വിശദാംശങ്ങൾ കാണാൻ ഒരു റിസോഴ്‌സ് തിരഞ്ഞെടുക്കുക",
+  "infoPageEmptyState": "ഇപ്പോൾ ലേണിംഗ് റിസോഴ്‌സുകൾ ലഭ്യമല്ല.",
+  "infoPageLoadError": "റിസോഴ്‌സുകൾ ലോഡ് ചെയ്യാനായില്ല. ദയവായി വീണ്ടും ശ്രമിക്കുക.",
+  "infoPageOpenCourse": "{title} തുറക്കുക",
+  "infoPageLessonsCount": "{count,plural, =1{1 പാഠം} other{{count} പാഠങ്ങൾ}}"
 }

@@ -40,7 +40,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             NavTab.study => StudyRoutes.routes(_rootNavigatorKey),
             NavTab.exams => ExamsRoutes.routes(_rootNavigatorKey),
             NavTab.explore => GlobalRoutes.exploreRoutes,
-            NavTab.info => GlobalRoutes.infoRoutes,
+            NavTab.info => GlobalRoutes.infoRoutes(_rootNavigatorKey),
             NavTab.profile => ProfileRoutes.routes(_rootNavigatorKey),
           };
           return StatefulShellBranch(routes: routes);

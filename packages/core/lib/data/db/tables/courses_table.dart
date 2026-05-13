@@ -14,7 +14,6 @@ class CoursesTable extends Table {
   TextColumn get image => text().nullable()();
   TextColumn get tags => text().nullable()();
   TextColumn get allowedDevices => text().nullable()();
-  TextColumn get tagIds => text().nullable()();
   IntColumn get examsCount => integer().withDefault(const Constant(0))();
   IntColumn get orderIndex => integer().withDefault(const Constant(0))();
   BoolColumn get isChaptersSynced => boolean().withDefault(const Constant(false))();
