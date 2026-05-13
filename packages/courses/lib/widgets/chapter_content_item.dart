@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/core.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../models/course_content.dart';
 
 /// Component to display individual lesson or assessment items in the chapter detail.
@@ -8,10 +10,12 @@ class ChapterContentItem extends StatelessWidget {
     super.key,
     required this.lesson,
     required this.onTap,
+    this.isSkeleton = false,
   });
 
   final Lesson lesson;
   final VoidCallback onTap;
+  final bool isSkeleton;
 
   @override
   Widget build(BuildContext context) {
@@ -27,64 +31,72 @@ class ChapterContentItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(design.radius.md),
         child: AppCard(
           padding: EdgeInsets.all(design.spacing.md),
-          child: Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: lesson.image != null
-                      ? null
-                      : _getColorForType(
-                          context,
-                          lesson.type,
-                        ).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(design.radius.md),
-                ),
-                child: Center(
-                  child: lesson.image != null
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(design.radius.md),
-                          child: Image.network(
-                            lesson.image!,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) => Icon(
-                              icon,
-                              size: 20,
-                              color: _getColorForType(context, lesson.type),
+          child: Skeletonizer(
+            enabled: isSkeleton,
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: lesson.image != null
+                        ? null
+                        : _getColorForType(
+                            context,
+                            lesson.type,
+                          ).withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(design.radius.md),
+                  ),
+                  child: Center(
+                    child: lesson.image != null
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(design.radius.md),
+                            child: CachedNetworkImage(
+                              imageUrl: lesson.image!,
+                              fit: BoxFit.cover,
+                              fadeInDuration: Duration.zero,
+                              fadeOutDuration: Duration.zero,
+                              placeholder: (context, url) => Container(
+                                color: design.colors.skeleton,
+                              ),
+                              errorWidget: (context, url, error) => Icon(
+                                icon,
+                                size: 20,
+                                color: _getColorForType(context, lesson.type),
+                              ),
                             ),
+                          )
+                        : Icon(
+                            icon,
+                            size: 20,
+                            color: _getColorForType(context, lesson.type),
                           ),
-                        )
-                      : Icon(
-                          icon,
-                          size: 20,
-                          color: _getColorForType(context, lesson.type),
-                        ),
+                  ),
                 ),
-              ),
-              SizedBox(width: design.spacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppText.cardTitle(
-                      lesson.title,
-                      color: design.colors.textPrimary,
-                    ),
-                    const SizedBox(height: 2),
-                    AppText.cardSubtitle(
-                      _buildSubtitle(context),
-                      color: design.colors.textSecondary,
-                    ),
-                  ],
+                SizedBox(width: design.spacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppText.cardTitle(
+                        lesson.title,
+                        color: design.colors.textPrimary,
+                      ),
+                      const SizedBox(height: 2),
+                      AppText.cardSubtitle(
+                        _buildSubtitle(context),
+                        color: design.colors.textSecondary,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Icon(
-                LucideIcons.chevronRight,
-                size: 20,
-                color: design.colors.textSecondary.withValues(alpha: 0.5),
-              ),
-            ],
+                Icon(
+                  LucideIcons.chevronRight,
+                  size: 20,
+                  color: design.colors.textSecondary.withValues(alpha: 0.5),
+                ),
+              ],
+            ),
           ),
         ),
       ),

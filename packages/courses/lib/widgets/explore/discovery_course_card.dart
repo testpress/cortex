@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../../explore_constants.dart';
@@ -27,10 +28,15 @@ class DiscoveryCourseCard extends StatelessWidget {
                     topLeft: design.radius.card.topLeft,
                     topRight: design.radius.card.topRight,
                   ),
-                  child: Image.network(
-                    course.thumbnail,
+                  child: CachedNetworkImage(
+                    imageUrl: course.thumbnail,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
+                    fadeInDuration: Duration.zero,
+                    fadeOutDuration: Duration.zero,
+                    placeholder: (context, url) => Container(
+                      color: design.colors.skeleton,
+                    ),
+                    errorWidget: (context, url, error) => Container(
                       color: design.colors.surfaceVariant,
                       child: const Center(child: Icon(LucideIcons.imageOff)),
                     ),

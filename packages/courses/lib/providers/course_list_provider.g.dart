@@ -470,7 +470,7 @@ class _ChapterLessonsProviderElement
   String get chapterId => (origin as ChapterLessonsProvider).chapterId;
 }
 
-String _$courseListHash() => r'1aa952a185b3cbbb84f8596342b0a541bc03b96d';
+String _$courseListHash() => r'146010fe7ff8a71f716bb3932d0fda0bf0b80dcc';
 
 /// See also [CourseList].
 @ProviderFor(CourseList)

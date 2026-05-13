@@ -36,7 +36,7 @@ The system SHALL surface loading state appropriately without blocking the UI unn
 #### Scenario: First visit with empty cache
 - **WHEN** the user opens the Study tab AND no courses are in the local DB
 - **AND** the initial sync is in progress
-- **THEN** the UI shows a full-screen `AppLoadingIndicator`
+- **THEN** the UI shows structured skeleton course cards that preserve the list layout while data is fetched
 
 #### Scenario: Revisiting with cached data
 - **WHEN** the user navigates back to the Study tab
@@ -85,4 +85,3 @@ The system SHALL support fetching and upserting courses filtered by tags.
 - **WHEN** `refreshCourses(tags: 'info')` is called
 - **THEN** the system MUST fetch page 1 of the tagged API results
 - **AND** upsert them into the local database with their associated tags preserved.
-

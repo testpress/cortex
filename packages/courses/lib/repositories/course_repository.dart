@@ -337,10 +337,7 @@ class CourseRepository {
     String courseId,
     String chapterId,
   ) async {
-    final course = await getCourse(courseId);
-    final chapter = course?.chapters
-        .where((c) => c.id == chapterId)
-        .firstOrNull;
+    final chapter = await getChapter(chapterId);
 
     if (chapter != null && chapter.isLeaf) {
       // Refresh the course-wide status tags first.

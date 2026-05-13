@@ -152,16 +152,24 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                 ),
                 Container(height: 1, color: design.colors.border),
 
-                Padding(
-                  padding: EdgeInsets.all(design.spacing.lg),
-                  child: Column(
-                    children: [
-                      // Metadata Info (Clean text-only header layout)
-                      Column(
+                SkeletonizerConfig(
+                  data: SkeletonizerConfigData(
+                    effect: ShimmerEffect(
+                      baseColor: design.colors.skeleton,
+                      highlightColor: design.colors.onSkeleton,
+                      duration: MotionPreferences.duration(context, const Duration(milliseconds: 800)),
+                    ),
+                  ),
+                  child: Skeletonizer(
+                    enabled: isMetadataLoading,
+                    child: Padding(
+                      padding: EdgeInsets.all(design.spacing.lg),
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // Metadata Info (Clean text-only header layout)
                           AppText.headline(
-                            lesson?.title ?? exam?.title ?? 'Question Paper',
+                            lesson?.title ?? exam?.title ?? 'Question Paper Loading Display Example',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 19,
@@ -169,123 +177,112 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                             ),
                           ),
                           SizedBox(height: design.spacing.sm),
-                          SkeletonizerConfig(
-                            data: SkeletonizerConfigData(
-                              effect: ShimmerEffect(
-                                baseColor: design.colors.skeleton,
-                                highlightColor: design.colors.onSkeleton,
-                                duration: MotionPreferences.duration(context, const Duration(milliseconds: 800)),
+                          
+                          Row(
+                            children: [
+                              if (isMetadataLoading || exam?.questionCount != null) ...[
+                                // Questions Count
+                                Icon(
+                                  LucideIcons.fileText,
+                                  size: 16,
+                                  color: design.colors.textSecondary,
+                                ),
+                                SizedBox(width: design.spacing.xs),
+                                AppText.caption(
+                                  '${exam?.questionCount ?? '88'} Questions',
+                                  color: design.colors.textSecondary,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                                SizedBox(width: design.spacing.lg),
+                              ],
+
+                              if (isMetadataLoading || durationText != 'N/A') ...[
+                                // Duration
+                                Icon(
+                                  LucideIcons.clock,
+                                  size: 16,
+                                  color: design.colors.textSecondary,
+                                ),
+                                SizedBox(width: design.spacing.xs),
+                                AppText.caption(
+                                  durationText == 'N/A' ? '120 mins' : durationText,
+                                  color: design.colors.textSecondary,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                                SizedBox(width: design.spacing.lg),
+                              ],
+
+                              if (isMetadataLoading || totalMarksText != 'Marks: --') ...[
+                                // Marks
+                                AppText.caption(
+                                  totalMarksText == 'Marks: --' ? 'Marks: 100' : totalMarksText,
+                                  color: design.colors.textSecondary,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              ],
+                            ],
+                          ),
+                          SizedBox(height: design.spacing.lg),
+
+                          // Start Exam Online Option Button
+                          GestureDetector(
+                            onTap: isMetadataLoading ? null : () async {
+                              ref.read(examAttemptProvider.notifier).reset();
+                              await widget.onStartAttempt();
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.all(design.spacing.md),
+                              decoration: BoxDecoration(
+                                color: design.colors.primary, // Premium dynamic brand color
+                                borderRadius: BorderRadius.circular(design.radius.lg),
                               ),
-                            ),
-                            child: Skeletonizer(
-                              enabled: isMetadataLoading,
                               child: Row(
                                 children: [
-                                  if (isMetadataLoading || exam?.questionCount != null) ...[
-                                    // Questions Count
-                                    Icon(
-                                      LucideIcons.fileText,
-                                      size: 16,
-                                      color: design.colors.textSecondary,
+                                  Container(
+                                    padding: EdgeInsets.all(design.spacing.sm),
+                                    decoration: BoxDecoration(
+                                      color: design.colors.onPrimary.withValues(alpha: 0.15), // Light semi-transparent overlay
+                                      borderRadius: BorderRadius.circular(design.radius.md),
                                     ),
-                                    SizedBox(width: design.spacing.xs),
-                                    AppText.caption(
-                                      '${exam?.questionCount ?? '--'} Questions',
-                                      color: design.colors.textSecondary,
-                                      style: const TextStyle(fontSize: 14),
+                                    child: Icon(
+                                      LucideIcons.play,
+                                      color: design.colors.onPrimary,
+                                      size: 24,
                                     ),
-                                    SizedBox(width: design.spacing.lg),
-                                  ],
-
-                                  if (isMetadataLoading || durationText != 'N/A') ...[
-                                    // Duration
-                                    Icon(
-                                      LucideIcons.clock,
-                                      size: 16,
-                                      color: design.colors.textSecondary,
+                                  ),
+                                  SizedBox(width: design.spacing.md),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Start Exam Online',
+                                          style: TextStyle(
+                                            color: design.colors.onPrimary,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'Take the test in exam mode with timer',
+                                          style: TextStyle(
+                                            color: design.colors.onPrimary.withValues(alpha: 0.8),
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    SizedBox(width: design.spacing.xs),
-                                    AppText.caption(
-                                      durationText,
-                                      color: design.colors.textSecondary,
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                    SizedBox(width: design.spacing.lg),
-                                  ],
-
-                                  if (isMetadataLoading || totalMarksText != 'Marks: --') ...[
-                                    // Marks
-                                    AppText.caption(
-                                      totalMarksText,
-                                      color: design.colors.textSecondary,
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                  ],
+                                  ),
                                 ],
                               ),
                             ),
                           ),
+                          const SizedBox(height: 4),
                         ],
                       ),
-                      SizedBox(height: design.spacing.lg),
-
-                      // Start Exam Online Option Button
-                      GestureDetector(
-                        onTap: () async {
-                          ref.read(examAttemptProvider.notifier).reset();
-                          await widget.onStartAttempt();
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(design.spacing.md),
-                          decoration: BoxDecoration(
-                            color: design.colors.primary, // Premium dynamic brand color
-                            borderRadius: BorderRadius.circular(design.radius.lg),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(design.spacing.sm),
-                                decoration: BoxDecoration(
-                                  color: design.colors.onPrimary.withValues(alpha: 0.15), // Light semi-transparent overlay
-                                  borderRadius: BorderRadius.circular(design.radius.md),
-                                ),
-                                child: Icon(
-                                  LucideIcons.play,
-                                  color: design.colors.onPrimary,
-                                  size: 24,
-                                ),
-                              ),
-                              SizedBox(width: design.spacing.md),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Start Exam Online',
-                                      style: TextStyle(
-                                        color: design.colors.onPrimary,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      'Take the test in exam mode with timer',
-                                      style: TextStyle(
-                                        color: design.colors.onPrimary.withValues(alpha: 0.8),
-                                        fontSize: 13,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                    ],
+                    ),
                   ),
                 ),
               ],

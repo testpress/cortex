@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
@@ -93,120 +94,133 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     final config = ref.watch(clientConfigProvider);
 
 
-    return DecoratedBox(
-      decoration: BoxDecoration(color: design.colors.canvas),
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: CustomScrollView(
-              controller: _scrollController,
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                // 1. Static Header Section
-                SliverToBoxAdapter(
-                  child: Container(
-                    color: design.colors.card,
-                    padding: EdgeInsets.all(design.spacing.md),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AppText.headline(
-                          l10n.studyTabTitle,
-                          color: design.colors.textPrimary,
-                        ),
-                        SizedBox(height: design.spacing.md),
-                        AppSearchBar(
-                          controller: _searchController,
-                          hintText: l10n.studySearchHint,
-                          onChanged: _onSearchChanged,
-                          backgroundColor: design.colors.surfaceVariant,
-                        ),
-                        if (config.showStudyCategoryButtons) ...[
-                          SizedBox(height: design.spacing.md),
-                          StudyFilterBar(
-                            activeTypeFilters: _activeTypeFilters,
-                            onTypeToggled: _toggleType,
+    return SkeletonizerConfig(
+      data: SkeletonizerConfigData(
+        effect: ShimmerEffect(
+          baseColor: design.colors.skeleton,
+          highlightColor: design.colors.onSkeleton,
+          duration: MotionPreferences.duration(
+            context,
+            const Duration(milliseconds: 800),
+          ),
+        ),
+        ignoreContainers: false,
+      ),
+      child: DecoratedBox(
+        decoration: BoxDecoration(color: design.colors.canvas),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: CustomScrollView(
+                controller: _scrollController,
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  // 1. Static Header Section
+                  SliverToBoxAdapter(
+                    child: Container(
+                      color: design.colors.card,
+                      padding: EdgeInsets.all(design.spacing.md),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AppText.headline(
+                            l10n.studyTabTitle,
+                            color: design.colors.textPrimary,
                           ),
-                        ],
-                        if (activeSyncError != null) ...[
                           SizedBox(height: design.spacing.md),
-                          ClipRRect(
-                            borderRadius: design.radius.card,
-                            child: Container(
-                              color: design.colors.error,
-                              padding: EdgeInsets.all(design.spacing.sm),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    LucideIcons.alertCircle,
-                                    color: const Color(0xFFFFFFFF),
-                                    size: 16,
-                                  ),
-                                  SizedBox(width: design.spacing.sm),
-                                  Expanded(
-                                    child: AppText.body(
-                                      'Sync issues: $activeSyncError',
-                                      color: const Color(0xFFFFFFFF),
+                          AppSearchBar(
+                            controller: _searchController,
+                            hintText: l10n.studySearchHint,
+                            onChanged: _onSearchChanged,
+                            backgroundColor: design.colors.surfaceVariant,
+                          ),
+                          if (config.showStudyCategoryButtons) ...[
+                            SizedBox(height: design.spacing.md),
+                            StudyFilterBar(
+                              activeTypeFilters: _activeTypeFilters,
+                              onTypeToggled: _toggleType,
+                            ),
+                          ],
+                          if (activeSyncError != null) ...[
+                            SizedBox(height: design.spacing.md),
+                            ClipRRect(
+                              borderRadius: design.radius.card,
+                              child: Container(
+                                color: design.colors.error,
+                                padding: EdgeInsets.all(design.spacing.sm),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      LucideIcons.alertCircle,
+                                      color: design.colors.onError,
+                                      size: 16,
                                     ),
-                                  ),
-                                ],
+                                    SizedBox(width: design.spacing.sm),
+                                    Expanded(
+                                      child: AppText.body(
+                                        'Sync issues: $activeSyncError',
+                                        color: design.colors.onError,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
-                ),
 
-                // Separator
-                SliverToBoxAdapter(
-                  child: Container(
-                    height: 1,
-                    color: design.colors.divider,
-                  ),
-                ),
-
-                // Content Title
-                SliverPadding(
-                  padding: EdgeInsets.all(design.spacing.md),
-                  sliver: SliverToBoxAdapter(
-                    child: AppText.title(
-                      l10n.studyYourCoursesTitle,
-                      color: design.colors.textPrimary,
+                  // Separator
+                  SliverToBoxAdapter(
+                    child: Container(
+                      height: 1,
+                      color: design.colors.divider,
                     ),
                   ),
-                ),
 
-                // 2. Dynamic Content Section
-                StudyContentList(
-                  enrolledCoursesState: enrolledCoursesState,
-                  isSyncingInitial: isSyncingInitial,
-                  isSyncingMore: isSyncingMore,
-                  allLessons: allLessons,
-                  activeTypeFilters: _activeTypeFilters,
-                  searchQuery: _searchQuery,
-                ),
+                  // Content Title
+                  SliverPadding(
+                    padding: EdgeInsets.all(design.spacing.md),
+                    sliver: SliverToBoxAdapter(
+                      child: AppText.title(
+                        l10n.studyYourCoursesTitle,
+                        color: design.colors.textPrimary,
+                      ),
+                    ),
+                  ),
 
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: 120),
-                ),
-              ],
+                  // 2. Dynamic Content Section
+                  StudyContentList(
+                    enrolledCoursesState: enrolledCoursesState,
+                    isSyncingInitial: isSyncingInitial,
+                    isSyncingMore: isSyncingMore,
+                    allLessons: allLessons,
+                    activeTypeFilters: _activeTypeFilters,
+                    searchQuery: _searchQuery,
+                  ),
+
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 120),
+                  ),
+                ],
+              ),
             ),
-          ),
-          recentActivityState.when(
-            data: (activity) => activity != null
-                ? Positioned(
-                    bottom: design.spacing.md,
-                    left: design.spacing.md,
-                    right: design.spacing.md,
-                    child: StudyResumeCard(activity: activity, onResume: () {}),
-                  )
-                : const SizedBox.shrink(),
-            loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
-          ),
-        ],
+            recentActivityState.when(
+              data: (activity) => activity != null
+                  ? Positioned(
+                      bottom: design.spacing.md,
+                      left: design.spacing.md,
+                      right: design.spacing.md,
+                      child: StudyResumeCard(activity: activity, onResume: () {}),
+                    )
+                  : const SizedBox.shrink(),
+              loading: () => const SizedBox.shrink(),
+              error: (_, __) => const SizedBox.shrink(),
+            ),
+          ],
+        ),
       ),
     );
   }

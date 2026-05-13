@@ -1,59 +1,83 @@
 import 'package:flutter/widgets.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../../explore_constants.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+
+const _skeletonPopularTest = PopularTestDto(
+  id: 'skeleton',
+  title: 'Sample Popular Test Title',
+  time: '10:00 AM',
+  duration: '45 mins',
+  type: PopularTestType.practice,
+);
 
 class PopularTestsSection extends StatelessWidget {
-  const PopularTestsSection({super.key, required this.tests});
+  const PopularTestsSection({
+    super.key,
+    required this.tests,
+    this.isLoading = false,
+  });
 
   final List<PopularTestDto> tests;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
-    if (tests.isEmpty) return const SizedBox.shrink();
+    final isSkeleton = isLoading && tests.isEmpty;
+    if (tests.isEmpty && !isSkeleton) return const SizedBox.shrink();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              AppText.labelBold(
-                l10n.explorePopularTestsTitle.toUpperCase(),
-                style: const TextStyle(
-                  letterSpacing: ExploreConstants.sectionHeaderLetterSpacing,
+    final displayItems = isSkeleton
+        ? List.generate(3, (_) => _skeletonPopularTest)
+        : tests;
+
+    return Skeletonizer(
+      enabled: isSkeleton,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                AppText.labelBold(
+                  l10n.explorePopularTestsTitle.toUpperCase(),
+                  style: const TextStyle(
+                    letterSpacing: ExploreConstants.sectionHeaderLetterSpacing,
+                  ),
                 ),
-              ),
-              GestureDetector(
-                  onTap: () => context.go('/study'),
-                child: AppText.labelBold(
-                  l10n.viewAllAction,
-                  color: design.colors.textPrimary,
-                ),
-              ),
-            ],
+                if (!isSkeleton)
+                  GestureDetector(
+                    onTap: () => context.go('/study'),
+                    child: AppText.labelBold(
+                      l10n.viewAllAction,
+                      color: design.colors.textPrimary,
+                    ),
+                  ),
+              ],
+            ),
           ),
-        ),
-        SizedBox(height: design.spacing.md),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-          child: Row(
-            children: [
-              for (final test in tests)
-                Padding(
-                  padding: EdgeInsets.only(right: design.spacing.md),
-                  child: _TestCard(test: test),
-                ),
-            ],
+          SizedBox(height: design.spacing.md),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+            child: Row(
+              children: [
+                for (final test in displayItems)
+                  Padding(
+                    padding: EdgeInsets.only(right: design.spacing.md),
+                    child: _TestCard(test: test),
+                  ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -88,10 +112,15 @@ class _TestCard extends StatelessWidget {
                     fit: StackFit.expand,
                     children: [
                       if (test.thumbnail != null)
-                        Image.network(
-                          test.thumbnail!,
+                        CachedNetworkImage(
+                          imageUrl: test.thumbnail!,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => Center(
+                          fadeInDuration: Duration.zero,
+                          fadeOutDuration: Duration.zero,
+                          placeholder: (context, url) => Container(
+                            color: design.colors.skeleton,
+                          ),
+                          errorWidget: (context, url, error) => Center(
                             child: Icon(
                               LucideIcons.fileQuestion,
                               size: 32,
