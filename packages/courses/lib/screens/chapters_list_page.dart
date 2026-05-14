@@ -3,7 +3,6 @@ import 'package:core/data/data.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/course_detail_provider.dart';
-import '../providers/course_list_provider.dart';
 import '../widgets/chapters_filter_tab_bar.dart';
 import '../widgets/chapter_curriculum_item.dart';
 import '../widgets/curriculum_header.dart';
@@ -34,56 +33,8 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
   CurriculumFilter _activeFilter = CurriculumFilter.all;
 
   void _onFilterChanged(CurriculumFilter filter) {
+    // Master Sync is now handled lazily by the filtered curriculum provider.
     setState(() => _activeFilter = filter);
-
-    // If the user selects a specific content filter (not "All"), 
-    // trigger the Master Sync to ensure we have all lessons across the course.
-    if (filter != CurriculumFilter.all) {
-      ref.read(courseRepositoryProvider.future).then((repo) async {
-        repo.refreshCourseContents(widget.courseId).ignore();
-        
-        // Also trigger recursive sync for immediate sub-chapters to show nested content faster
-        final chapters = await repo.watchChapters(widget.courseId, parentId: widget.parentId).first;
-        for (var chapter in chapters) {
-          if (!chapter.isLeaf) {
-            repo.syncChapterContents(widget.courseId, chapter.id).ignore();
-          }
-        }
-      });
-    }
-  }
-
-  Future<void> _syncCurrentLevelRecursive() async {
-    final repo = await ref.read(courseRepositoryProvider.future);
-    
-    // 1. Sync current level chapters
-    await repo.refreshChapters(widget.courseId, parentId: widget.parentId);
-    
-    // 2. Sync lessons for this chapter
-    if (widget.parentId != null) {
-      repo.syncChapterContents(widget.courseId, widget.parentId!).ignore();
-    }
-
-    // 3. Sync lessons for all immediate sub-chapters (one level deep recursion)
-    // This makes nested videos visible immediately when filtering at the parent level.
-    final subChapters = await repo.watchChapters(widget.courseId, parentId: widget.parentId).first;
-    for (var chapter in subChapters) {
-      if (!chapter.isLeaf) {
-        repo.syncChapterContents(widget.courseId, chapter.id).ignore();
-      }
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _syncCurrentLevelRecursive();
-      
-      if (widget.parentId == null) {
-        // Master sync is deferred but we refresh root chapters
-      }
-    });
   }
 
   @override
@@ -95,12 +46,15 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
       subChaptersProvider(widget.courseId, widget.parentId),
     );
     final courseAsync = ref.watch(courseDetailProvider(widget.courseId));
-    final allCurriculumAsync = ref.watch(
-      allCourseLessonsProvider(widget.courseId),
-    );
-    final allKnownChaptersAsync = ref.watch(allChaptersProvider(widget.courseId));
+    // We only show lessons for the current chapter level (non-recursive).
+    // Filters are applied client-side to the already-cached items.
+    final lessonsAsync = widget.parentId != null
+      ? ref.watch(chapterLessonsProvider(widget.courseId, widget.parentId!))
+      : const AsyncValue<List<LessonDto>>.data([]);
+    
     final isSyncingAsync = ref.watch(courseSyncStatusProvider(widget.courseId));
     final isSyncing = isSyncingAsync.valueOrNull ?? false;
+
 
     return Container(
       color: design.colors.canvas,
@@ -111,47 +65,8 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
             orElse: () => null,
           );
 
-          final curriculum = allCurriculumAsync.maybeWhen(
-            data: (c) => c,
-            orElse: () => const CourseCurriculumDto(),
-          );
-
-          final lessons = curriculum.lessons;
-          
-          // Combine API snapshot chapters with all known chapters from the local vault.
-          // This fills in any structural folders that might be missing from the flat API metadata.
-          final allChapters = [
-            ...curriculum.chapters,
-            ...(allKnownChaptersAsync.value ?? []),
-          ];
-          
-          // Determine the set of valid chapter IDs for the current view.
-          // If we are in a subchapter, we only want lessons from this chapter or its subchapters.
-          final Set<String> validChapterIds = {};
-          if (widget.parentId != null) {
-            validChapterIds.add(widget.parentId!);
-            
-            // Add all descendants of the current parent
-            // O(N) optimization: Group chapters by parentId once
-            final parentMap = <String?, List<ChapterDto>>{};
-            for (var c in allChapters) {
-              parentMap.putIfAbsent(c.parentId, () => []).add(c);
-            }
-
-            void addDescendants(String pid) {
-              final children = parentMap[pid] ?? [];
-              for (var c in children) {
-                validChapterIds.add(c.id);
-                addDescendants(c.id);
-              }
-            }
-            addDescendants(widget.parentId!);
-          }
-
-          final filteredLessons = _filterLessons(lessons, _activeFilter).where((l) {
-            if (widget.parentId == null) return true; // Show all for root level
-            return validChapterIds.contains(l.chapterId);
-          }).toList();
+          final lessons = lessonsAsync.valueOrNull ?? [];
+          final filteredLessons = _filterLessons(lessons, _activeFilter);
 
           // If we have a parent, use its title, otherwise use course title
           String headerTitle = course?.title ?? 'Curriculum';
@@ -194,28 +109,29 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                   ),
                   children: [
                     // Chapters or Lessons List
-                    if (_activeFilter == CurriculumFilter.all)
+                    if (_activeFilter == CurriculumFilter.all && chapters.isNotEmpty)
                       ...chapters.asMap().entries.map((entry) {
                         final chapter = entry.value;
                         return ChapterCurriculumItem(
                           chapter: chapter,
                           index: entry.key,
                           onTap: () {
-                            if (!chapter.isLeaf) {
+                            if (chapter.isLeaf) {
+                              // If leaf, go to detail screen (lessons)
+                              context.push(
+                                '${widget.basePath}/course/${widget.courseId}/chapters/${chapter.id}',
+                              );
+                            } else {
                               // If parent, drill down (recursive navigation)
                               context.push(
                                 '${widget.basePath}/course/${widget.courseId}/chapters?parentId=${chapter.id}',
-                              );
-                            } else {
-                              // If leaf, go to detail (lessons)
-                              context.push(
-                                '${widget.basePath}/course/${widget.courseId}/chapters/${chapter.id}',
                               );
                             }
                           },
                         );
                       })
-                    else if ((allCurriculumAsync.isLoading || isSyncing) && filteredLessons.isEmpty)
+                    else if (_activeFilter != CurriculumFilter.all || chapters.isEmpty)
+                      if ((chaptersAsync.isLoading || lessonsAsync.isLoading || isSyncing) && filteredLessons.isEmpty)
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 40),
                         child: Center(child: AppLoadingIndicator()),

@@ -67,13 +67,15 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<CourseCurriculumDto> getCourseContents(String courseId) async {
-    final List<LessonDto> allLessons = [];
-    final List<ChapterDto> allChapters = [];
+  Stream<CourseCurriculumDto> getCourseContents(String courseId, {String? chapterId}) async* {
     String? nextUrl = ApiEndpoints.courseContents(courseId);
 
-    // Follow pagination links to ensure a complete blueprint of the course.
-    // This prevents the "5 vs 2" lesson count inconsistency.
+    if (chapterId != null) {
+      nextUrl = '$nextUrl?chapter=$chapterId';
+    }
+
+    // Follow pagination links and yield each page incrementally.
+    // This allows the Repository to persist data page-by-page.
     while (nextUrl != null) {
       final responseData = await performNetworkRequest(
         _dio.get(nextUrl),
@@ -81,8 +83,7 @@ class HttpDataSource implements DataSource {
       );
 
       final curriculum = CurriculumParser.parseFullCurriculum(responseData);
-      allLessons.addAll(curriculum.lessons);
-      allChapters.addAll(curriculum.chapters);
+      yield curriculum;
 
       // Extract next page URL, handling both absolute and relative paths.
       final next = responseData['next'] as String?;
@@ -92,35 +93,60 @@ class HttpDataSource implements DataSource {
         nextUrl = next;
       }
     }
-    
-    return CourseCurriculumDto(
-      lessons: allLessons,
-      chapters: allChapters,
+  }
+
+  @override
+  Future<CourseCurriculumDto> getRunningContents(String courseId, {String? chapterId}) async {
+    return _fetchFullCurriculum(
+      ApiEndpoints.runningContents(courseId),
+      queryParameters: {'chapter': chapterId},
     );
   }
 
   @override
-  Future<CourseCurriculumDto> getRunningContents(String courseId) async {
-    return performNetworkRequest(
-      _dio.get(ApiEndpoints.runningContents(courseId)),
-      fromJson: (data) => CurriculumParser.parseFullCurriculum(data),
+  Future<CourseCurriculumDto> getUpcomingContents(String courseId, {String? chapterId}) async {
+    return _fetchFullCurriculum(
+      ApiEndpoints.upcomingContents(courseId),
+      queryParameters: {'chapter': chapterId},
     );
   }
 
   @override
-  Future<CourseCurriculumDto> getUpcomingContents(String courseId) async {
-    return performNetworkRequest(
-      _dio.get(ApiEndpoints.upcomingContents(courseId)),
-      fromJson: (data) => CurriculumParser.parseFullCurriculum(data),
+  Future<CourseCurriculumDto> getContentAttempts(String courseId, {String? chapterId}) async {
+    return _fetchFullCurriculum(
+      ApiEndpoints.contentAttempts(courseId),
+      queryParameters: {'chapter': chapterId},
     );
   }
 
-  @override
-  Future<CourseCurriculumDto> getContentAttempts(String courseId) async {
-    return performNetworkRequest(
-      _dio.get(ApiEndpoints.contentAttempts(courseId)),
-      fromJson: (data) => CurriculumParser.parseFullCurriculum(data),
-    );
+  /// Helper to fetch and merge all pages of a curriculum endpoint into a single DTO.
+  Future<CourseCurriculumDto> _fetchFullCurriculum(
+    String url, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    final List<LessonDto> lessons = [];
+    final List<ChapterDto> chapters = [];
+    String? nextUrl = url;
+
+    while (nextUrl != null) {
+      final responseData = await performNetworkRequest(
+        _dio.get(nextUrl, queryParameters: nextUrl == url ? queryParameters : null),
+        fromJson: (data) => data,
+      );
+
+      final curriculum = CurriculumParser.parseFullCurriculum(responseData);
+      lessons.addAll(curriculum.lessons);
+      chapters.addAll(curriculum.chapters);
+
+      final next = responseData['next'] as String?;
+      if (next != null && !next.startsWith('http')) {
+        nextUrl = '${AppConfig.apiBaseUrl}$next';
+      } else {
+        nextUrl = next;
+      }
+    }
+
+    return CourseCurriculumDto(lessons: lessons, chapters: chapters);
   }
 
 

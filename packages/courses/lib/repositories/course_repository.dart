@@ -298,32 +298,50 @@ class CourseRepository {
 
   /// Watches the curriculum for a course by combining the structure snapshot
   /// with live database state. This does not depend on SQL joins.
+  /// Watches the curriculum for a specific course, yielding local cache first
+  /// then initiating a background refresh.
   Stream<CourseCurriculumDto> watchCourseCurriculum(String courseId) async* {
-    // 1. Get the authoritative structure snapshot for this course.
-    final CourseCurriculumDto hierarchy = await refreshCourseContents(courseId);
+    // 1. Immediate yield of the local database state (Cache-First).
+    final localSnapshot = await getLocalCourseCurriculum(courseId);
+    yield localSnapshot;
 
-    // Immediate yield of the hierarchy to ensure instant UI responsiveness.
-    yield hierarchy;
+    // 2. We no longer trigger an automatic full curriculum refresh here.
+    // Structural sync is handled lazily by refreshChapters.
+    // Content sync is handled on-demand in the UI (ChaptersListPage).
 
-    if (hierarchy.isEmpty) return;
-
-    // 2. Build the lesson stream from the live Database vault.
-    // Instead of mapping the static API snapshot, we watch ALL lessons in the DB
-    // and filter them by the chapters that belong to this course.
+    // 3. Listen to live database updates.
     yield* _db.watchAllLessons().map((dbRows) {
-      // Collect all chapter IDs that belong to this course hierarchy.
-      final courseChapterIds = {for (var c in hierarchy.chapters) c.id};
+      // Collect all chapter IDs that belong to this course.
+      // Note: In a production app, we would use a 'path' column or 'courseId' column 
+      // on lessons to avoid this filtering, but for now we filter by chapterId.
+      final courseChapterIds = {for (var c in localSnapshot.chapters) c.id};
 
       final courseLessons = dbRows
           .map(rowToLessonDto)
           .where((l) => courseChapterIds.contains(l.chapterId))
           .toList();
 
-      // Enforce the API-provided sequence for consistent ordering.
       courseLessons.sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
 
-      return hierarchy.copyWith(lessons: courseLessons);
+      return localSnapshot.copyWith(lessons: courseLessons);
     });
+  }
+
+  /// Builds a curriculum snapshot directly from the local database.
+  Future<CourseCurriculumDto> getLocalCourseCurriculum(String courseId) async {
+    final chaptersData = await (_db.select(_db.chaptersTable)
+          ..where((t) => t.courseId.equals(courseId)))
+        .get();
+
+    final chapterIds = chaptersData.map((c) => c.id).toSet();
+    final lessonsData = await (_db.select(_db.lessonsTable)
+          ..where((t) => t.chapterId.isIn(chapterIds)))
+        .get();
+
+    return CourseCurriculumDto(
+      chapters: chaptersData.map(rowToChapterDto).toList(),
+      lessons: lessonsData.map(rowToLessonDto).toList(),
+    );
   }
 
   /// Direct fetch of a course by ID from the database or network fallback.
@@ -337,18 +355,9 @@ class CourseRepository {
     String courseId,
     String chapterId,
   ) async {
-    final course = await getCourse(courseId);
-    final chapter = course?.chapters
-        .where((c) => c.id == chapterId)
-        .firstOrNull;
-
-    if (chapter != null && chapter.isLeaf) {
-      // Refresh the course-wide status tags first.
-      await refreshCourseContents(courseId);
-      // Then refresh the specific chapter lessons vertically to ensure data integrity.
-      return await refreshLessons(chapterId);
-    }
-    return [];
+    // Only refresh the specific chapter lessons to ensure lazy-loading performance.
+    // We no longer trigger a global course sync here.
+    return await refreshLessons(chapterId);
   }
 
   Future<List<LessonDto>> refreshLessons(String chapterId) async {
@@ -390,98 +399,114 @@ class CourseRepository {
     return syncFuture;
   }
 
-  Future<CourseCurriculumDto> refreshCourseContents(String courseId) async {
-    // Request Deduplication: Avoid duplicate pagination loops if sync is already in progress.
-    if (_activeStructuralSyncs.containsKey(courseId)) {
-      return _activeStructuralSyncs[courseId]!;
+  /// Synchronizes curriculum contents for a course or a specific chapter.
+  /// Uses a Stream to persist pages incrementally, enabling real-time UI population.
+  Future<CourseCurriculumDto> refreshCourseContents(
+    String courseId, {
+    String? chapterId,
+  }) async {
+    // Request Deduplication: Avoid duplicate pagination loops.
+    final syncKey = chapterId ?? courseId;
+    if (_activeStructuralSyncs.containsKey(syncKey)) {
+      return _activeStructuralSyncs[syncKey]!;
     }
 
     final syncFuture = () async {
       try {
         _updateSyncStatus(courseId, true);
-        // Authoritative Structural Mapping: Hierarchy comes strictly from the paginated /contents/ API.
-        final remoteAll = await _source.getCourseContents(courseId);
-
-        // Status Enrichment: Fetch progress/lifecycle flags in parallel.
-        // These are secondary and do NOT affect the curriculum structure.
-        final results = await Future.wait([
-          _source.getRunningContents(courseId),
-          _source.getUpcomingContents(courseId),
-          _source.getContentAttempts(courseId),
-        ]);
-
-        final remote = (
-          all: remoteAll,
-          running: results[0],
-          upcoming: results[1],
-          attempts: results[2],
+        
+        final curriculumStream = _source.getCourseContents(
+          courseId, 
+          chapterId: chapterId,
         );
 
-        final mergedCurriculum = await _mergeLocalAndRemoteCurriculum(
-          courseId,
-          remote.all,
-        );
+        CourseCurriculumDto finalSnapshot = const CourseCurriculumDto();
 
-        // Enrichment Phase: Distribute status flags to the authoritative entities.
-        final lessonCompanions = _applyContentStatuses(
-          mergedCurriculum.lessons,
-          remote,
-        );
-        final chapterCompanions = mergedCurriculum.chapters
-            .map(_chapterDtoToCompanion)
-            .toList();
+        // 1. Process and persist each page incrementally.
+        await for (final pageCurriculum in curriculumStream) {
+          await _persistCurriculumPage(courseId, pageCurriculum);
+          
+          // Collect for the final return value
+          finalSnapshot = finalSnapshot.copyWith(
+            chapters: [...finalSnapshot.chapters, ...pageCurriculum.chapters],
+            lessons: [...finalSnapshot.lessons, ...pageCurriculum.lessons],
+          );
+        }
 
-        await _db.transaction(() async {
-          if (lessonCompanions.isNotEmpty) {
-            await _db.upsertLessons(lessonCompanions);
-          }
-          if (chapterCompanions.isNotEmpty) {
-            await _db.upsertChapters(chapterCompanions);
-          }
-        });
+        // 2. Trigger secondary status refreshes ONLY during a full global sync.
+        // For chapter-scoped syncs, we keep it lightweight.
+        if (chapterId == null) {
+          refreshContentStatuses(courseId).ignore();
+        }
 
-        return mergedCurriculum;
+        return finalSnapshot;
       } catch (e) {
         rethrow;
       } finally {
-        _activeStructuralSyncs.remove(courseId);
+        _activeStructuralSyncs.remove(syncKey);
         _updateSyncStatus(courseId, false);
       }
     }();
 
-    _activeStructuralSyncs[courseId] = syncFuture;
+    _activeStructuralSyncs[syncKey] = syncFuture;
     return syncFuture;
   }
 
-  Future<CourseCurriculumDto> _mergeLocalAndRemoteCurriculum(
+  /// Persists a single page of curriculum data to the local database.
+  Future<void> _persistCurriculumPage(
     String courseId,
-    CourseCurriculumDto remoteAll,
+    CourseCurriculumDto curriculum,
   ) async {
-    final Map<String, LessonDto> merged = {};
+    final lessonCompanions = curriculum.lessons.map(_lessonDtoToCompanion).toList();
+    final chapterCompanions = curriculum.chapters.map(_chapterDtoToCompanion).toList();
 
-    // 1. Identify authoritative IDs from the API hierarchy
-    final remoteIds = remoteAll.lessons.map((l) => l.id).toSet();
-
-    // 2. Load existing persistent state from DB cache for ONLY these IDs.
-    // This avoids SQL JOINs and recursion with the projection layer.
-    final localRows = await (_db.select(
-      _db.lessonsTable,
-    )..where((t) => t.id.isIn(remoteIds))).get();
-
-    for (final row in localRows) {
-      merged[row.id] = rowToLessonDto(row);
-    }
-
-    // 3. Layer on the authoritative hierarchy/metadata from the API
-    for (final l in remoteAll.lessons) {
-      merged[l.id] = l;
-    }
-
-    return CourseCurriculumDto(
-      lessons: merged.values.toList(),
-      chapters: remoteAll.chapters,
-    );
+    await _db.transaction(() async {
+      if (lessonCompanions.isNotEmpty) {
+        await _db.upsertLessons(lessonCompanions);
+      }
+      if (chapterCompanions.isNotEmpty) {
+        await _db.upsertChapters(chapterCompanions);
+      }
+    });
   }
+
+  /// Background refresh for lesson progress/lifecycle statuses.
+  Future<void> refreshContentStatuses(String courseId, {String? chapterId}) async {
+    try {
+      final results = await Future.wait([
+        _source.getRunningContents(courseId, chapterId: chapterId),
+        _source.getUpcomingContents(courseId, chapterId: chapterId),
+        _source.getContentAttempts(courseId, chapterId: chapterId),
+      ]);
+
+      final remote = (
+        all: const CourseCurriculumDto(), // We only need the statuses here
+        running: results[0],
+        upcoming: results[1],
+        attempts: results[2],
+      );
+
+      // Scoped reload: Only get lessons that we actually need to update.
+      // If chapterId is null, we fall back to the full course curriculum.
+      final List<LessonDto> localLessons;
+      if (chapterId != null) {
+        final rows = await _db.watchLessonsForChapter(chapterId).first;
+        localLessons = rows.map(rowToLessonDto).toList();
+      } else {
+        final snapshot = await getLocalCourseCurriculum(courseId);
+        localLessons = snapshot.lessons;
+      }
+
+      final enrichedCompanions = _applyContentStatuses(localLessons, remote);
+
+      if (enrichedCompanions.isNotEmpty) {
+        await _db.upsertLessons(enrichedCompanions);
+      }
+    } catch (e) {
+      debugPrint('CourseRepository: Status refresh failed: $e');
+    }
+  }
+
 
   List<LessonsTableCompanion> _applyContentStatuses(
     List<LessonDto> lessons,

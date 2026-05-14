@@ -96,7 +96,6 @@ class CourseList extends _$CourseList {
     }
 
     try {
-      final config = ref.read(clientConfigProvider);
       final repo = await ref.read(courseRepositoryProvider.future);
       
       final response = await repo.refreshCourses(
@@ -149,15 +148,6 @@ Stream<List<ChapterDto>> allChapters(
       );
 }
 
-/// Provider for a specific chapter's lessons.
-@Riverpod(keepAlive: true)
-Stream<List<LessonDto>> chapterLessons(
-    ChapterLessonsRef ref, String chapterId) async* {
-  final repo = await ref.watch(courseRepositoryProvider.future);
-  yield* repo.watchLessons(chapterId).map(
-        (rows) => rows.map((row) => repo.rowToLessonDto(row)).toList(),
-      );
-}
 @Riverpod(keepAlive: true)
 class CourseSearch extends _$CourseSearch {
   Future<void>? _pendingRequest;
