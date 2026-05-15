@@ -6,7 +6,7 @@ part of 'course_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$courseDetailHash() => r'3c0d657cd6505643d3b0ca6ce390b52c5c47ab6b';
+String _$courseDetailHash() => r'3ac000bde610ea984625c81f3916fba09b2acb25';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -334,44 +334,35 @@ class _SubChaptersProviderElement
   String? get parentId => (origin as SubChaptersProvider).parentId;
 }
 
-String _$allCourseLessonsHash() => r'05e106346a14cba79c3973f4ada79c2598e3cad9';
+String _$chapterLessonsHash() => r'c7656894e1f906dc5c33f71e1a9712d091b2441f';
 
-/// A provider that flattens all lessons for a specific course into a single list.
-/// Used for filtering lessons by type across the entire course.
-///
-/// Copied from [allCourseLessons].
-@ProviderFor(allCourseLessons)
-const allCourseLessonsProvider = AllCourseLessonsFamily();
+/// See also [chapterLessons].
+@ProviderFor(chapterLessons)
+const chapterLessonsProvider = ChapterLessonsFamily();
 
-/// A provider that flattens all lessons for a specific course into a single list.
-/// Used for filtering lessons by type across the entire course.
-///
-/// Copied from [allCourseLessons].
-class AllCourseLessonsFamily extends Family<AsyncValue<CourseCurriculumDto>> {
-  /// A provider that flattens all lessons for a specific course into a single list.
-  /// Used for filtering lessons by type across the entire course.
-  ///
-  /// Copied from [allCourseLessons].
-  const AllCourseLessonsFamily();
+/// See also [chapterLessons].
+class ChapterLessonsFamily extends Family<AsyncValue<List<LessonDto>>> {
+  /// See also [chapterLessons].
+  const ChapterLessonsFamily();
 
-  /// A provider that flattens all lessons for a specific course into a single list.
-  /// Used for filtering lessons by type across the entire course.
-  ///
-  /// Copied from [allCourseLessons].
-  AllCourseLessonsProvider call(
+  /// See also [chapterLessons].
+  ChapterLessonsProvider call(
     String courseId,
+    String chapterId,
   ) {
-    return AllCourseLessonsProvider(
+    return ChapterLessonsProvider(
       courseId,
+      chapterId,
     );
   }
 
   @override
-  AllCourseLessonsProvider getProviderOverride(
-    covariant AllCourseLessonsProvider provider,
+  ChapterLessonsProvider getProviderOverride(
+    covariant ChapterLessonsProvider provider,
   ) {
     return call(
       provider.courseId,
+      provider.chapterId,
     );
   }
 
@@ -387,38 +378,35 @@ class AllCourseLessonsFamily extends Family<AsyncValue<CourseCurriculumDto>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'allCourseLessonsProvider';
+  String? get name => r'chapterLessonsProvider';
 }
 
-/// A provider that flattens all lessons for a specific course into a single list.
-/// Used for filtering lessons by type across the entire course.
-///
-/// Copied from [allCourseLessons].
-class AllCourseLessonsProvider extends StreamProvider<CourseCurriculumDto> {
-  /// A provider that flattens all lessons for a specific course into a single list.
-  /// Used for filtering lessons by type across the entire course.
-  ///
-  /// Copied from [allCourseLessons].
-  AllCourseLessonsProvider(
+/// See also [chapterLessons].
+class ChapterLessonsProvider extends StreamProvider<List<LessonDto>> {
+  /// See also [chapterLessons].
+  ChapterLessonsProvider(
     String courseId,
+    String chapterId,
   ) : this._internal(
-          (ref) => allCourseLessons(
-            ref as AllCourseLessonsRef,
+          (ref) => chapterLessons(
+            ref as ChapterLessonsRef,
             courseId,
+            chapterId,
           ),
-          from: allCourseLessonsProvider,
-          name: r'allCourseLessonsProvider',
+          from: chapterLessonsProvider,
+          name: r'chapterLessonsProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$allCourseLessonsHash,
-          dependencies: AllCourseLessonsFamily._dependencies,
+                  : _$chapterLessonsHash,
+          dependencies: ChapterLessonsFamily._dependencies,
           allTransitiveDependencies:
-              AllCourseLessonsFamily._allTransitiveDependencies,
+              ChapterLessonsFamily._allTransitiveDependencies,
           courseId: courseId,
+          chapterId: chapterId,
         );
 
-  AllCourseLessonsProvider._internal(
+  ChapterLessonsProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -426,42 +414,48 @@ class AllCourseLessonsProvider extends StreamProvider<CourseCurriculumDto> {
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.courseId,
+    required this.chapterId,
   }) : super.internal();
 
   final String courseId;
+  final String chapterId;
 
   @override
   Override overrideWith(
-    Stream<CourseCurriculumDto> Function(AllCourseLessonsRef provider) create,
+    Stream<List<LessonDto>> Function(ChapterLessonsRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: AllCourseLessonsProvider._internal(
-        (ref) => create(ref as AllCourseLessonsRef),
+      override: ChapterLessonsProvider._internal(
+        (ref) => create(ref as ChapterLessonsRef),
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         courseId: courseId,
+        chapterId: chapterId,
       ),
     );
   }
 
   @override
-  StreamProviderElement<CourseCurriculumDto> createElement() {
-    return _AllCourseLessonsProviderElement(this);
+  StreamProviderElement<List<LessonDto>> createElement() {
+    return _ChapterLessonsProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is AllCourseLessonsProvider && other.courseId == courseId;
+    return other is ChapterLessonsProvider &&
+        other.courseId == courseId &&
+        other.chapterId == chapterId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, courseId.hashCode);
+    hash = _SystemHash.combine(hash, chapterId.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -469,18 +463,22 @@ class AllCourseLessonsProvider extends StreamProvider<CourseCurriculumDto> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin AllCourseLessonsRef on StreamProviderRef<CourseCurriculumDto> {
+mixin ChapterLessonsRef on StreamProviderRef<List<LessonDto>> {
   /// The parameter `courseId` of this provider.
   String get courseId;
+
+  /// The parameter `chapterId` of this provider.
+  String get chapterId;
 }
 
-class _AllCourseLessonsProviderElement
-    extends StreamProviderElement<CourseCurriculumDto>
-    with AllCourseLessonsRef {
-  _AllCourseLessonsProviderElement(super.provider);
+class _ChapterLessonsProviderElement
+    extends StreamProviderElement<List<LessonDto>> with ChapterLessonsRef {
+  _ChapterLessonsProviderElement(super.provider);
 
   @override
-  String get courseId => (origin as AllCourseLessonsProvider).courseId;
+  String get courseId => (origin as ChapterLessonsProvider).courseId;
+  @override
+  String get chapterId => (origin as ChapterLessonsProvider).chapterId;
 }
 
 String _$courseSyncStatusHash() => r'4d2341bacc55705011f56b5cd001365dcbb262fb';

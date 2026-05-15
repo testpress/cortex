@@ -187,15 +187,16 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<CourseCurriculumDto> getCourseContents(String courseId) async {
-    // Collect ALL chapters in the course to ensure a complete structural snapshot.
-    final allChapters = await _getAllChaptersRecursively(courseId);
-    
+  Stream<CourseCurriculumDto> getCourseContents(String courseId, {String? chapterId}) async* {
+    // Collect chapters in the course/chapter branch.
+    // In mock, we simulate recursion starting from the parentId if provided.
+    final allChapters = await _getAllChaptersRecursively(courseId, parentId: chapterId);
+
     final lessons = <LessonDto>[];
     for (var ch in allChapters) {
       lessons.addAll(await getLessons(ch.id));
     }
-    return CourseCurriculumDto(chapters: allChapters, lessons: lessons);
+    yield CourseCurriculumDto(chapters: allChapters, lessons: lessons);
   }
 
   Future<List<ChapterDto>> _getAllChaptersRecursively(String courseId, {String? parentId}) async {
@@ -212,24 +213,24 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<CourseCurriculumDto> getRunningContents(String courseId) async {
-    final all = await getCourseContents(courseId);
+  Future<CourseCurriculumDto> getRunningContents(String courseId, {String? chapterId}) async {
+    final all = await getCourseContents(courseId).first;
     return all.copyWith(
       lessons: all.lessons.where((l) => l.progressStatus == LessonProgressStatus.inProgress).toList(),
     );
   }
 
   @override
-  Future<CourseCurriculumDto> getUpcomingContents(String courseId) async {
-    final all = await getCourseContents(courseId);
+  Future<CourseCurriculumDto> getUpcomingContents(String courseId, {String? chapterId}) async {
+    final all = await getCourseContents(courseId).first;
     return all.copyWith(
       lessons: all.lessons.where((l) => l.progressStatus == LessonProgressStatus.notStarted).toList(),
     );
   }
 
   @override
-  Future<CourseCurriculumDto> getContentAttempts(String courseId) async {
-    final all = await getCourseContents(courseId);
+  Future<CourseCurriculumDto> getContentAttempts(String courseId, {String? chapterId}) async {
+    final all = await getCourseContents(courseId).first;
     return all.copyWith(
       lessons: all.lessons.where((l) => l.progressStatus == LessonProgressStatus.completed).toList(),
     );

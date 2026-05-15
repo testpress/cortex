@@ -9,12 +9,9 @@ part 'course_detail_provider.g.dart';
 Stream<CourseDto?> courseDetail(CourseDetailRef ref, String courseId) async* {
   final repo = await ref.watch(courseRepositoryProvider.future);
   
-  // Note: chapters are now refreshed lazily via subChaptersProvider.
-  // However, we still trigger background refreshes for chapters and full curriculum 
-  // to ensure local data is available for specific screens (filters, leaf chapters).
-  repo.refreshChapters(courseId).ignore();
-  repo.refreshCourseContents(courseId).ignore();
-
+  // We no longer trigger greedy background refreshes here.
+  // Structural sync happens lazily via subChaptersProvider.
+  // Content sync happens on-demand when a filter is applied in ChaptersListPage.
   yield* repo.watchCourse(courseId);
 }
 
@@ -55,15 +52,17 @@ Stream<List<ChapterDto>> subChapters(
       );
 }
 
-/// A provider that flattens all lessons for a specific course into a single list.
-/// Used for filtering lessons by type across the entire course.
 @Riverpod(keepAlive: true)
-Stream<CourseCurriculumDto> allCourseLessons(
-  AllCourseLessonsRef ref,
+Stream<List<LessonDto>> chapterLessons(
+  ChapterLessonsRef ref,
   String courseId,
+  String chapterId,
 ) async* {
   final repo = await ref.watch(courseRepositoryProvider.future);
-  yield* repo.watchLessonsForCourse(courseId);
+
+  yield* repo.watchLessons(chapterId).map(
+        (rows) => rows.map(repo.rowToLessonDto).toList(),
+      );
 }
 
 /// Provider that tracks if a specific course is currently undergoing a structural sync.

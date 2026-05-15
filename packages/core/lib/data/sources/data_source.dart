@@ -14,17 +14,19 @@ abstract class DataSource {
   Future<List<ChapterDto>> getChapters(String courseId, {String? parentId});
 
   /// Fetch all course contents for a specific course (V3 flat list).
-  Future<CourseCurriculumDto> getCourseContents(String courseId);
+  /// [chapterId] is an optional filter to fetch only a specific branch.
+  /// Returns a Stream to support incremental/paginated updates.
+  Stream<CourseCurriculumDto> getCourseContents(String courseId, {String? chapterId});
   
   /// Fetch running contents for a specific course.
-  Future<CourseCurriculumDto> getRunningContents(String courseId);
+  Future<CourseCurriculumDto> getRunningContents(String courseId, {String? chapterId});
 
   /// Fetch upcoming contents for a specific course.
-  Future<CourseCurriculumDto> getUpcomingContents(String courseId);
+  Future<CourseCurriculumDto> getUpcomingContents(String courseId, {String? chapterId});
 
 
   /// Fetch content attempts (History) for a specific course.
-  Future<CourseCurriculumDto> getContentAttempts(String courseId);
+  Future<CourseCurriculumDto> getContentAttempts(String courseId, {String? chapterId});
 
   /// Fetch lessons for a specific chapter (Legacy/Sub-fetch).
   Future<List<LessonDto>> getLessons(String chapterId);

@@ -31,13 +31,21 @@ class ChapterDetailPage extends ConsumerStatefulWidget {
 }
 
 class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
+  // True while the initial background fetch is running.
+  // Prevents the "No Content" flash when filtering by status before the DB is populated.
+  bool _isSyncing = true;
+
   @override
   void initState() {
     super.initState();
-    // Trigger background sync only once when the screen is navigated to.
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final repo = await ref.read(courseRepositoryProvider.future);
-      repo.syncChapterContents(widget.courseId, widget.chapterId).ignore();
+      await Future.wait([
+        repo.syncChapterContents(widget.courseId, widget.chapterId),
+        repo.refreshContentStatuses(widget.courseId, chapterId: widget.chapterId),
+      ]);
+
+      if (mounted) setState(() => _isSyncing = false);
     });
   }
 
@@ -102,7 +110,12 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
                     vertical: 16,
                   ),
                   children: [
-                    if (filteredLessons.isEmpty)
+                    if (_isSyncing && filteredLessons.isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 40),
+                        child: Center(child: AppLoadingIndicator()),
+                      )
+                    else if (filteredLessons.isEmpty)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 40),
                         child: Center(
