@@ -68,17 +68,16 @@ class HttpDataSource implements DataSource {
 
   @override
   Stream<CourseCurriculumDto> getCourseContents(String courseId, {String? chapterId}) async* {
-    String? nextUrl = ApiEndpoints.courseContents(courseId);
+    final String initialUrl = ApiEndpoints.courseContents(courseId);
+    String? nextUrl = initialUrl;
+    final queryParameters = chapterId != null ? {'chapter': chapterId} : null;
 
-    if (chapterId != null) {
-      nextUrl = '$nextUrl?chapter=$chapterId';
-    }
-
-    // Follow pagination links and yield each page incrementally.
-    // This allows the Repository to persist data page-by-page.
     while (nextUrl != null) {
       final responseData = await performNetworkRequest(
-        _dio.get(nextUrl),
+        _dio.get(
+          nextUrl,
+          queryParameters: nextUrl == initialUrl ? queryParameters : null,
+        ),
         fromJson: (data) => data,
       );
 

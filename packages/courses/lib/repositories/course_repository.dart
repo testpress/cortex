@@ -301,30 +301,14 @@ class CourseRepository {
   /// Watches the curriculum for a specific course, yielding local cache first
   /// then initiating a background refresh.
   Stream<CourseCurriculumDto> watchCourseCurriculum(String courseId) async* {
-    // 1. Immediate yield of the local database state (Cache-First).
-    final localSnapshot = await getLocalCourseCurriculum(courseId);
-    yield localSnapshot;
+    final combinedWatcher = StreamGroup.merge([
+      Stream.value(null),
+      (_db.select(_db.chaptersTable)..where((t) => t.courseId.equals(courseId)))
+          .watch(),
+      _db.watchAllLessons(),
+    ]);
 
-    // 2. We no longer trigger an automatic full curriculum refresh here.
-    // Structural sync is handled lazily by refreshChapters.
-    // Content sync is handled on-demand in the UI (ChaptersListPage).
-
-    // 3. Listen to live database updates.
-    yield* _db.watchAllLessons().map((dbRows) {
-      // Collect all chapter IDs that belong to this course.
-      // Note: In a production app, we would use a 'path' column or 'courseId' column 
-      // on lessons to avoid this filtering, but for now we filter by chapterId.
-      final courseChapterIds = {for (var c in localSnapshot.chapters) c.id};
-
-      final courseLessons = dbRows
-          .map(rowToLessonDto)
-          .where((l) => courseChapterIds.contains(l.chapterId))
-          .toList();
-
-      courseLessons.sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
-
-      return localSnapshot.copyWith(lessons: courseLessons);
-    });
+    yield* combinedWatcher.asyncMap((_) => getLocalCourseCurriculum(courseId));
   }
 
   /// Builds a curriculum snapshot directly from the local database.
@@ -490,7 +474,7 @@ class CourseRepository {
       // If chapterId is null, we fall back to the full course curriculum.
       final List<LessonDto> localLessons;
       if (chapterId != null) {
-        final rows = await _db.watchLessonsForChapter(chapterId).first;
+        final rows = await getLessons(chapterId);
         localLessons = rows.map(rowToLessonDto).toList();
       } else {
         final snapshot = await getLocalCourseCurriculum(courseId);
