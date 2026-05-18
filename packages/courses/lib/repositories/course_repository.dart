@@ -560,7 +560,10 @@ class CourseRepository {
   Future<List<LessonsTableData>> getLessons(String chapterId) async {
     return (_db.select(
       _db.lessonsTable,
-    )..where((t) => t.chapterId.equals(chapterId))).get();
+    )
+      ..where((t) => t.chapterId.equals(chapterId))
+      ..orderBy([(t) => OrderingTerm.asc(t.orderIndex)]))
+        .get();
   }
 
   /// Toggles the bookmark status locally.

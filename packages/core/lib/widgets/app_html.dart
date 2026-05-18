@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../design/design_provider.dart';
+import 'app_loading_indicator.dart';
 
 /// A premium HTML renderer for the Cortex SDK.
 /// 
@@ -15,6 +17,7 @@ class AppHtml extends StatefulWidget {
     this.fontSize = 16,
     this.padding = EdgeInsets.zero,
     this.onHeightChanged,
+    this.onMessage,
   });
 
   /// The HTML content to render.
@@ -35,13 +38,17 @@ class AppHtml extends StatefulWidget {
   /// Optional callback when the height of the content changes.
   final void Function(double)? onHeightChanged;
 
+  /// Optional callback for receiving messages from JavaScript.
+  final void Function(String)? onMessage;
+
   @override
   State<AppHtml> createState() => _AppHtmlState();
 }
 
 class _AppHtmlState extends State<AppHtml> {
   late final WebViewController _controller;
-  double _height = 1.0;
+  double _height = 0.0;
+  bool _isReady = false;
 
   @override
   void initState() {
@@ -52,10 +59,35 @@ class _AppHtmlState extends State<AppHtml> {
       ..addJavaScriptChannel(
         'HeightChannel',
         onMessageReceived: (JavaScriptMessage message) {
-          final double? height = double.tryParse(message.message);
-          if (height != null && mounted) {
-            setState(() => _height = height);
-            widget.onHeightChanged?.call(height);
+          try {
+            final Map<String, dynamic> data = jsonDecode(message.message) as Map<String, dynamic>;
+            final double? height = double.tryParse(data['height']?.toString() ?? '');
+            final bool ready = data['ready'] == true || _isReady;
+
+            if (height != null && mounted) {
+              setState(() {
+                _height = height;
+                _isReady = ready;
+              });
+              widget.onHeightChanged?.call(height);
+            }
+          } catch (_) {
+            // Safe fallback for legacy or plain-string messages
+            final double? height = double.tryParse(message.message);
+            if (height != null && mounted) {
+              setState(() {
+                _height = height;
+              });
+              widget.onHeightChanged?.call(height);
+            }
+          }
+        },
+      )
+      ..addJavaScriptChannel(
+        'MessageChannel',
+        onMessageReceived: (JavaScriptMessage message) {
+          if (mounted) {
+            widget.onMessage?.call(message.message);
           }
         },
       )
@@ -77,6 +109,7 @@ class _AppHtmlState extends State<AppHtml> {
       if (height > 0 && mounted) {
         setState(() {
           _height = height;
+          _isReady = true;
         });
         widget.onHeightChanged?.call(height);
       }
@@ -114,6 +147,26 @@ class _AppHtmlState extends State<AppHtml> {
       <html>
         <head>
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+          <script>
+            function signalReady() {
+              if (window._isSignaled) return;
+              window._isSignaled = true;
+              if (window.HeightChannel) {
+                window.HeightChannel.postMessage("ready:" + document.getElementById('content').offsetHeight);
+              }
+            }
+
+            // Safety fallback: if MathJax takes too long or fails to load, signal ready anyway
+            setTimeout(signalReady, 1000);
+
+            window.MathJax = {
+              startup: {
+                pageReady: () => {
+                  return MathJax.startup.defaultPageReady().then(signalReady);
+                }
+              }
+            };
+          </script>
           <style>
             body {
               margin: 0;
@@ -129,7 +182,7 @@ class _AppHtmlState extends State<AppHtml> {
               color: $txCss !important;
             }
             #content {
-              padding: 2px 0;
+              padding: 4px 0;
               display: inline-block;
               width: 100%;
             }
@@ -160,24 +213,52 @@ class _AppHtmlState extends State<AppHtml> {
             ${widget.data.trim()}
           </div>
           <script>
-            function cleanTrailingEmptyNodes() {
-              const content = document.getElementById('content');
-              let last = content.lastElementChild;
-              while (last && last.textContent.trim() === '' && !last.querySelector('img') && !last.querySelector('iframe') && !last.querySelector('math')) {
+            function cleanTrailingEmptyNodes(container) {
+              if (!container) return;
+              let last = container.lastElementChild;
+              while (last && last.textContent.trim() === '' && !last.querySelector('img, iframe, math, svg')) {
                 last.remove();
-                last = content.lastElementChild;
+                last = container.lastElementChild;
               }
             }
+
+            function cleanAll() {
+              cleanTrailingEmptyNodes(document.getElementById('content'));
+              document.querySelectorAll('.option-text').forEach(cleanTrailingEmptyNodes);
+            }
+
+            function signalReady() {
+              if (window._isSignaled) return;
+              window._isSignaled = true;
+              cleanAll();
+              if (window.HeightChannel) {
+                window.HeightChannel.postMessage(JSON.stringify({
+                  ready: true,
+                  height: document.getElementById('content').offsetHeight
+                }));
+              }
+            }
+
+            // Safety fallback: if MathJax takes too long or fails to load, signal ready anyway
+            setTimeout(signalReady, 1000);
+
+            window.MathJax = {
+              startup: {
+                pageReady: () => {
+                  return MathJax.startup.defaultPageReady().then(signalReady);
+                }
+              }
+            };
 
             function sendHeight() {
               const height = document.getElementById('content').offsetHeight;
               if (window.HeightChannel) {
-                HeightChannel.postMessage(height.toString());
+                window.HeightChannel.postMessage(JSON.stringify({
+                  ready: false,
+                  height: height
+                }));
               }
             }
-
-            // Clean up any empty trailing <p> tags from the CMS before measuring
-            cleanTrailingEmptyNodes();
 
             // Observe content changes (like image loads) to update height
             const resizeObserver = new ResizeObserver(entries => {
@@ -185,13 +266,14 @@ class _AppHtmlState extends State<AppHtml> {
             });
             resizeObserver.observe(document.getElementById('content'));
 
+            // Initial height check
             window.onload = sendHeight;
           </script>
         </body>
       </html>
     ''';
 
-    _controller.loadHtmlString(html);
+    _controller.loadHtmlString(html, baseUrl: 'https://testpress.in/');
   }
 
   String _colorToRgba(Color color) {
@@ -200,12 +282,31 @@ class _AppHtmlState extends State<AppHtml> {
 
   @override
   Widget build(BuildContext context) {
-    // Start with a reasonable minimum height to prevent flickering
-    return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: 20),
-      child: SizedBox(
-        height: _height < 20 ? 20 : _height,
-        child: WebViewWidget(controller: _controller),
+    final design = Design.of(context);
+    final double h = _height == 0 ? 300 : _height;
+    
+    return SizedBox(
+      height: h,
+      child: Stack(
+        children: [
+          AnimatedOpacity(
+            opacity: _isReady ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 150),
+            curve: Curves.easeIn,
+            child: WebViewWidget(controller: _controller),
+          ),
+          if (!_isReady)
+            Positioned.fill(
+              child: Container(
+                color: design.colors.card,
+                child: Center(
+                  child: AppLoadingIndicator(
+                    color: design.colors.primary.withValues(alpha: 0.2),
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

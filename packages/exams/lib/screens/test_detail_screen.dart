@@ -35,6 +35,7 @@ class TestDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
+  final PageController _pageController = PageController();
   int _currentQuestionIndex = 0;
   int _activeSubjectIndex = 0;
   bool _isSectionsTabBarExpanded = true;
@@ -97,6 +98,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
 
   @override
   void dispose() {
+    _pageController.dispose();
     _savedTimer?.cancel();
     super.dispose();
   }
@@ -166,27 +168,25 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
       }
     }
 
-    final List<QuestionDto> activeQuestions;
-    if (subjects.length > 1) {
-      final activeSubject = subjects[_activeSubjectIndex < subjects.length ? _activeSubjectIndex : 0];
-      activeQuestions = state.questions.where((q) => q.subject == activeSubject).toList();
-    } else {
-      activeQuestions = state.questions;
-    }
-
-    if (activeQuestions.isEmpty) {
+    // Use all questions for the PageView to maintain KeepAlive state across the entire exam
+    final allQuestions = state.questions;
+    
+    if (allQuestions.isEmpty) {
       return Container(
           color: design.colors.surface,
           child: Center(child: AppText.body('No questions found.')));
     }
-    final safeIndex = _currentQuestionIndex < activeQuestions.length ? _currentQuestionIndex : 0;
-    final question = activeQuestions[safeIndex];
+
+    final safeIndex = _currentQuestionIndex < allQuestions.length ? _currentQuestionIndex : 0;
+    final question = allQuestions[safeIndex];
     final answer = state.answers[question.id];
-    // Only count answers for questions in the active section/view,
-    // so the palette trigger always shows "X/N answered" for THIS section.
-    final activeQuestionIds = activeQuestions.map((q) => q.id).toSet();
+    
+    // Map the current question to its subject for the UI
+    final currentSubject = question.subject;
+    final currentSubjectIndex = subjects.indexOf(currentSubject);
+
     final answeredCount = state.answers.entries
-        .where((e) => activeQuestionIds.contains(e.key) && e.value.selectedOptions.isNotEmpty)
+        .where((e) => e.value.selectedOptions.isNotEmpty)
         .length;
 
     // Determine whether there are more tabs to navigate to after this one.
@@ -194,9 +194,8 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     final hasNextSection = isMultiSection &&
         state.currentSectionIndex < state.sections.length - 1;
 
-    final hasNextSubject = _activeSubjectIndex < subjects.length - 1;
-    final hasNextTab = hasNextSubject || hasNextSection;
-    final isLastQuestion = safeIndex == activeQuestions.length - 1;
+    final isLastQuestion = safeIndex == allQuestions.length - 1;
+    final hasNextTab = !isLastQuestion || hasNextSection;
 
     return Container(
       color: design.colors.surface,
@@ -211,96 +210,100 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
               ),
               SectionsTabBar(
                 state: state,
-                activeSubjectIndex: _activeSubjectIndex,
+                activeSubjectIndex: currentSubjectIndex != -1 ? currentSubjectIndex : _activeSubjectIndex,
                 isExpanded: _isSectionsTabBarExpanded,
                 onExpandChanged: (val) => setState(() => _isSectionsTabBarExpanded = val),
                 onTabSelected: (index) {
-                  setState(() {
-                    _currentQuestionIndex = 0;
-                    if (state.sections.length <= 1) {
-                      _activeSubjectIndex = index;
-                    }
-                  });
                   if (state.sections.length > 1) {
                     ref.read(examAttemptProvider.notifier).switchSection(index);
+                  } else {
+                    // Jump to the first question of this subject
+                    final targetSubject = subjects[index];
+                    final targetIndex = allQuestions.indexWhere((q) => q.subject == targetSubject);
+                    if (targetIndex != -1) {
+                      _pageController.jumpToPage(targetIndex);
+                    }
                   }
                 },
               ),
               Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      TestProgressSection(
-                        currentQuestionIndex: safeIndex,
-                        totalQuestions: activeQuestions.length,
-                        isSavedVisible: _isSavedVisible,
-                      ),
-                      TestQuestionCard(
-                        question: question,
-                        answer: answer,
-                        onOptionSelect: (optionId) =>
-                            _handleOptionSelect(state, question, optionId),
-                      ),
-                      TestNavigationActions(
-                        isMarked: answer?.isMarked ?? false,
-                        canGoPrevious: safeIndex > 0 || _activeSubjectIndex > 0,
-                        // Show "Finish" only on the true last question of the last tab.
-                        isLastQuestion: isLastQuestion,
-                        // Relabel when there are more tabs to move through.
-                        finishLabel: isLastQuestion && hasNextTab 
-                            ? (hasNextSubject ? l10n.nextSubject : l10n.nextSection) 
-                            : null,
-                        onToggleMark: () => _handleToggleMark(state, question),
-                        onPrevious: () {
-                          if (safeIndex > 0) {
-                            setState(() => _currentQuestionIndex = safeIndex - 1);
-                          } else if (_activeSubjectIndex > 0) {
-                            setState(() {
-                              _activeSubjectIndex = _activeSubjectIndex - 1;
-                              final prevSubject = subjects[_activeSubjectIndex];
-                              final prevQuestionsCount = state.questions.where((q) => q.subject == prevSubject).length;
-                              _currentQuestionIndex = prevQuestionsCount - 1;
-                            });
-                          }
+                child: Column(
+                  children: [
+                    TestProgressSection(
+                      currentQuestionIndex: safeIndex,
+                      totalQuestions: allQuestions.length,
+                      isSavedVisible: _isSavedVisible,
+                    ),
+                    Expanded(
+                      child: PageView.builder(
+                        controller: _pageController,
+                        allowImplicitScrolling: true,
+                        onPageChanged: (index) {
+                          setState(() {
+                            _currentQuestionIndex = index;
+                            // Sync subject index if needed
+                            final q = allQuestions[index];
+                            final sIdx = subjects.indexOf(q.subject);
+                            if (sIdx != -1) _activeSubjectIndex = sIdx;
+                          });
                         },
-                        onNext: () {
-                          if (safeIndex < activeQuestions.length - 1) {
-                            setState(() => _currentQuestionIndex = safeIndex + 1);
-                          } else if (hasNextSubject) {
-                            setState(() {
-                              _currentQuestionIndex = 0;
-                              _activeSubjectIndex = _activeSubjectIndex + 1;
-                            });
-                          } else if (hasNextSection) {
-                            // Real API section switch
-                            setState(() {
-                              _currentQuestionIndex = 0;
-                              _activeSubjectIndex = 0;
-                            });
-                            ref
-                                .read(examAttemptProvider.notifier)
-                                .switchSection(state.currentSectionIndex + 1);
-                          } else {
-                            setState(() => _showSubmitConfirmation = true);
-                          }
+                        itemCount: allQuestions.length,
+                        itemBuilder: (context, index) {
+                          final q = allQuestions[index];
+                          final a = state.answers[q.id];
+                          final isLast = index == allQuestions.length - 1;
+                          
+                          return TestQuestionCard(
+                            key: ValueKey(q.id),
+                            question: q,
+                            answer: a,
+                            isMarked: a?.isMarked ?? false,
+                            canGoPrevious: index > 0,
+                            isLastQuestion: isLast,
+                            finishLabel: isLast && hasNextSection 
+                                ? l10n.nextSection
+                                : null,
+                            answeredCount: answeredCount,
+                            totalQuestions: allQuestions.length,
+                            onPaletteTap: () => setState(() => _showPalette = true),
+                            onToggleMark: () => _handleToggleMark(state, q),
+                            onPrevious: () {
+                              if (index > 0) {
+                                _pageController.previousPage(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                );
+                              }
+                            },
+                            onNext: () {
+                              if (index < allQuestions.length - 1) {
+                                _pageController.nextPage(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                );
+                              } else if (hasNextSection) {
+                                ref
+                                    .read(examAttemptProvider.notifier)
+                                    .switchSection(state.currentSectionIndex + 1);
+                              } else {
+                                setState(() => _showSubmitConfirmation = true);
+                              }
+                            },
+                            onOptionSelect: (optionId) =>
+                                _handleOptionSelect(state, q, optionId),
+                          );
                         },
                       ),
-                      SizedBox(height: design.spacing.md),
-                      TestPaletteTrigger(
-                        answeredCount: answeredCount,
-                        totalQuestions: activeQuestions.length,
-                        onTap: () => setState(() => _showPalette = true),
-                      ),
-                      SizedBox(height: design.spacing.xl),
-                    ],
-                  ),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).padding.bottom + design.spacing.md),
+                  ],
                 ),
               ),
             ],
           ),
           if (_showPalette)
             QuestionPalette(
-              questions: activeQuestions,
+              questions: allQuestions,
               answers: state.answers,
               currentIndex: safeIndex,
               onClose: () => setState(() => _showPalette = false),
@@ -309,12 +312,13 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                   _currentQuestionIndex = index;
                   _showPalette = false;
                 });
+                _pageController.jumpToPage(index);
               },
             ),
           if (_showSubmitConfirmation)
             SubmitConfirmationDialog(
               answeredCount: answeredCount,
-              totalCount: activeQuestions.length,
+              totalCount: allQuestions.length,
               onCancel: () =>
                   setState(() => _showSubmitConfirmation = false),
               onSubmit: () {

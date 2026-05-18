@@ -1,72 +1,126 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-import './option_card.dart';
+import 'test_navigation_actions.dart';
+import 'test_palette_trigger.dart';
+import 'test_question_html_builder.dart';
 
-class TestQuestionCard extends StatelessWidget {
+/// Card displayed for each question during an active exam session.
+///
+/// Renders the question text and all options in a single [AppHtml] widget
+/// (one WebView) so that MathJax initialises only once per question instead
+/// of once per option.  See [TestQuestionHtmlBuilder] for the HTML details.
+class TestQuestionCard extends StatefulWidget {
   final QuestionDto question;
   final AnswerDto? answer;
+  final bool isMarked;
+  final bool canGoPrevious;
+  final bool isLastQuestion;
+  final String? finishLabel;
+  final VoidCallback onToggleMark;
+  final VoidCallback onPrevious;
+  final VoidCallback onNext;
+  final int answeredCount;
+  final int totalQuestions;
+  final VoidCallback onPaletteTap;
   final void Function(String) onOptionSelect;
 
   const TestQuestionCard({
     super.key,
     required this.question,
     required this.answer,
+    required this.isMarked,
+    required this.canGoPrevious,
+    required this.isLastQuestion,
+    this.finishLabel,
+    required this.answeredCount,
+    required this.totalQuestions,
+    required this.onPaletteTap,
+    required this.onToggleMark,
+    required this.onPrevious,
+    required this.onNext,
     required this.onOptionSelect,
   });
 
   @override
+  State<TestQuestionCard> createState() => _TestQuestionCardState();
+}
+
+class _TestQuestionCardState extends State<TestQuestionCard> {
+  // Cache the HTML so that answer state updates (option taps) don't
+  // reload the WebView — the JS inside handles immediate visual toggling.
+  String _htmlData = '';
+  String? _lastQuestionId;
+  bool? _lastIsDark;
+
+  @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    return Container(
-      width: double.infinity,
-      margin: EdgeInsets.all(design.spacing.md),
-      padding: EdgeInsets.all(design.spacing.md),
-      decoration: BoxDecoration(
-        color: design.colors.card,
-        borderRadius: BorderRadius.circular(design.radius.md),
-        border: Border.all(color: design.colors.border, width: 1.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (question.directionHtml != null && question.directionHtml!.isNotEmpty) ...[
+    final isDark = design.isDark;
+
+    // Rebuild HTML only when the question or colour-scheme changes.
+    if (_htmlData.isEmpty ||
+        _lastQuestionId != widget.question.id ||
+        _lastIsDark != isDark) {
+      _htmlData = TestQuestionHtmlBuilder.build(
+        question: widget.question,
+        answer: widget.answer,
+        design: design,
+        context: context,
+      );
+      _lastQuestionId = widget.question.id;
+      _lastIsDark = isDark;
+    }
+
+    return SingleChildScrollView(
+      child: Container(
+        width: double.infinity,
+        constraints: const BoxConstraints(minHeight: 400),
+        margin: EdgeInsets.all(design.spacing.md),
+        padding: EdgeInsets.all(design.spacing.md),
+        decoration: BoxDecoration(
+          color: design.colors.card,
+          borderRadius: BorderRadius.circular(design.radius.md),
+          border: Border.all(color: design.colors.border),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Direction / passage shown above the question when present
+            if (widget.question.directionHtml != null &&
+                widget.question.directionHtml!.isNotEmpty) ...[
+              AppHtml(data: widget.question.directionHtml!, fontSize: 16),
+              SizedBox(height: design.spacing.md),
+              Container(height: 1, color: design.colors.border),
+              SizedBox(height: design.spacing.md),
+            ],
+
+            // Unified question + options WebView
             AppHtml(
-              data: question.directionHtml!,
+              data: _htmlData,
               fontSize: 16,
+              onMessage: widget.onOptionSelect,
+            ),
+
+            SizedBox(height: design.spacing.lg),
+            TestNavigationActions(
+              isMarked: widget.isMarked,
+              canGoPrevious: widget.canGoPrevious,
+              isLastQuestion: widget.isLastQuestion,
+              finishLabel: widget.finishLabel,
+              onToggleMark: widget.onToggleMark,
+              onPrevious: widget.onPrevious,
+              onNext: widget.onNext,
             ),
             SizedBox(height: design.spacing.md),
-            Container(
-              height: 1,
-              color: design.colors.border,
+            TestPaletteTrigger(
+              answeredCount: widget.answeredCount,
+              totalQuestions: widget.totalQuestions,
+              onTap: widget.onPaletteTap,
             ),
-            SizedBox(height: design.spacing.md),
           ],
-          AppHtml(
-            data: question.text,
-            fontSize: 18,
-          ),
-          if (question.type == 'multipleSelect')
-            Padding(
-              padding: EdgeInsets.only(top: design.spacing.sm),
-              child: AppText.caption(
-                L10n.of(context).testSelectAllApply,
-                color: design.colors.textSecondary,
-                style: const TextStyle(fontStyle: FontStyle.italic),
-              ),
-            ),
-          SizedBox(height: design.spacing.md),
-          ...question.options.map((option) {
-            final isSelected = answer?.selectedOptions.any((id) => id.toString() == option.id.toString()) ?? false;
-            
-            return OptionCard(
-              option: option,
-              isSelected: isSelected,
-              type: question.type,
-              onTap: () => onOptionSelect(option.id),
-            );
-          }),
-        ],
+        ),
       ),
     );
   }
