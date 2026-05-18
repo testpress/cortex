@@ -157,8 +157,30 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
 
     if (state.status == ExamAttemptStatus.error) {
       return Container(
-          color: design.colors.surface,
-          child: Center(child: AppText.body('Error: ${state.errorMessage}')));
+        color: design.colors.surface,
+        padding: EdgeInsets.all(design.spacing.xl),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(LucideIcons.alertCircle, size: 48, color: design.colors.accent5),
+              SizedBox(height: design.spacing.lg),
+              AppText.title('Oops! Cannot start exam', textAlign: TextAlign.center),
+              SizedBox(height: design.spacing.sm),
+              AppText.body(
+                state.errorMessage ?? 'An unknown error occurred.',
+                textAlign: TextAlign.center,
+                color: design.colors.textSecondary,
+              ),
+              SizedBox(height: design.spacing.xl),
+              AppButton(
+                label: 'Go Back',
+                onPressed: () => context.pop(),
+              ),
+            ],
+          ),
+        ),
+      );
     }
 
     final List<String> subjects = [];

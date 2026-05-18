@@ -3,6 +3,7 @@ import 'dart:developer' as dev;
 import 'package:core/data/data.dart';
 import '../models/test_dto.dart';
 import '../data/mock_tests.dart';
+import 'package:core/data/exceptions/api_exception.dart';
 
 enum ExamAttemptStatus {
   idle,
@@ -97,7 +98,8 @@ class ExamRepository {
         await startStandaloneExam(exam);
       }
     } catch (e) {
-      _emit(ExamAttemptState(status: ExamAttemptStatus.error, errorMessage: e.toString()));
+      final msg = e is ApiException ? e.message : e.toString();
+      _emit(ExamAttemptState(status: ExamAttemptStatus.error, errorMessage: msg));
     }
   }
 
@@ -107,7 +109,8 @@ class ExamRepository {
       final attempt = await _dataSource.createAttempt(exam.attemptsUrl);
       await _initializeAttempt(exam, attempt);
     } catch (e) {
-      _emit(ExamAttemptState(status: ExamAttemptStatus.error, exam: exam, errorMessage: e.toString()));
+      final msg = e is ApiException ? e.message : e.toString();
+      _emit(ExamAttemptState(status: ExamAttemptStatus.error, exam: exam, errorMessage: msg));
     }
   }
 
@@ -117,7 +120,8 @@ class ExamRepository {
       final attempt = await _dataSource.createContentAttempt(contentAttemptsUrl);
       await _initializeAttempt(exam, attempt);
     } catch (e) {
-      _emit(ExamAttemptState(status: ExamAttemptStatus.error, exam: exam, errorMessage: e.toString()));
+      final msg = e is ApiException ? e.message : e.toString();
+      _emit(ExamAttemptState(status: ExamAttemptStatus.error, exam: exam, errorMessage: msg));
     }
   }
 
