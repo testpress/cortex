@@ -12,8 +12,6 @@ import '../widgets/test_detail/question_palette.dart';
 import '../widgets/test_detail/test_result_view.dart';
 import '../widgets/test_detail/test_progress_section.dart';
 import '../widgets/test_detail/test_question_card.dart';
-import '../widgets/test_detail/test_navigation_actions.dart';
-import '../widgets/test_detail/test_palette_trigger.dart';
 import '../widgets/test_detail/submit_confirmation_dialog.dart';
 import '../widgets/test_detail/exam_instructions_view.dart';
 import '../widgets/test_detail/sections_tab_bar.dart';
@@ -201,7 +199,6 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
 
     final safeIndex = _currentQuestionIndex < allQuestions.length ? _currentQuestionIndex : 0;
     final question = allQuestions[safeIndex];
-    final answer = state.answers[question.id];
     
     // Map the current question to its subject for the UI
     final currentSubject = question.subject;
@@ -216,13 +213,17 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     final hasNextSection = isMultiSection &&
         state.currentSectionIndex < state.sections.length - 1;
 
-    final isLastQuestion = safeIndex == allQuestions.length - 1;
-    final hasNextTab = !isLastQuestion || hasNextSection;
-
-    return Container(
-      color: design.colors.surface,
-      child: Stack(
-        children: [
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          ref.read(examAttemptProvider.notifier).reset();
+        }
+      },
+      child: Container(
+        color: design.colors.surface,
+        child: Stack(
+          children: [
           Column(
             children: [
               TestHeader(
@@ -359,7 +360,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
             ),
         ],
       ),
-    );
+    ),);
   }
 
   void _handleOptionSelect(ExamAttemptState state, QuestionDto question, String optionId) {

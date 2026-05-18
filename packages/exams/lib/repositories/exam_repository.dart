@@ -73,6 +73,11 @@ class ExamRepository {
   final _stateController = StreamController<ExamAttemptState>.broadcast();
   ExamAttemptState _currentState = const ExamAttemptState();
 
+  final Map<String, Timer> _submitTimers = {};
+  final Map<String, AnswerDto> _pendingAnswers = {};
+  final Map<String, String> _pendingAnswerUrls = {};
+  final Map<String, List<QuestionDto>> _sectionQuestionsCache = {};
+
   ExamRepository({required DataSource dataSource}) : _dataSource = dataSource;
 
   Stream<ExamAttemptState> get stateStream => _stateController.stream;
@@ -82,7 +87,43 @@ class ExamRepository {
   }
   ExamAttemptState get state => _currentState;
 
+  Future<void> _flushPendingAnswers() async {
+    final futures = <Future<void>>[];
+    
+    final timers = Map<String, Timer>.from(_submitTimers);
+    final pending = Map<String, AnswerDto>.from(_pendingAnswers);
+    final urls = Map<String, String>.from(_pendingAnswerUrls);
+    
+    for (final timer in timers.values) {
+      timer.cancel();
+    }
+    _submitTimers.clear();
+    _pendingAnswers.clear();
+    _pendingAnswerUrls.clear();
+
+    for (final entry in pending.entries) {
+      final questionId = entry.key;
+      final answer = entry.value;
+      final url = urls[questionId];
+      if (url != null) {
+        futures.add(
+          _dataSource.submitAnswer(url, answer).catchError((e, stackTrace) {
+            dev.log('Failed to flush answer for $questionId', name: 'ExamRepository', error: e, stackTrace: stackTrace);
+          }),
+        );
+      }
+    }
+    
+    if (futures.isNotEmpty) {
+      await Future.wait(futures);
+    }
+  }
+
   void reset() {
+    _flushPendingAnswers().catchError((e) {});
+    stopHeartbeat();
+    stopCountdown();
+    _sectionQuestionsCache.clear();
     _emit(const ExamAttemptState());
   }
 
@@ -128,44 +169,91 @@ class ExamRepository {
   Timer? _countdownTimer;
 
   Future<void> _initializeAttempt(ExamDto exam, AttemptDto attempt) async {
+    // 1. Kick off background heartbeat query concurrently if remainingTime is null
+    final Future<AttemptDto?> heartbeatFuture = (attempt.remainingTime == null && attempt.heartbeatUrl.isNotEmpty)
+        ? _dataSource.sendHeartbeat(attempt.heartbeatUrl).then<AttemptDto?>((val) => val).catchError((e) {
+            dev.log('Failed to fetch initial heartbeat remaining time', name: 'ExamRepository', error: e);
+            return null;
+          })
+        : Future.value(null);
+
     final List<SectionDto> sections = attempt.sections ?? [];
-    List<QuestionDto> questions = [];
     int remainingSeconds = 0;
+    List<QuestionDto> questions = [];
 
     if (sections.isNotEmpty) {
       int activeIndex = sections.indexWhere((s) => s.state == 'Running');
       if (activeIndex == -1) activeIndex = 0;
       
       final activeSection = sections[activeIndex];
-      questions = await _dataSource.getQuestions(activeSection.questionsUrl);
       remainingSeconds = _parseDuration(activeSection.remainingTime ?? activeSection.duration ?? exam.duration);
       
+      final Future<List<QuestionDto>> questionsFuture = remainingSeconds > 0
+          ? (_sectionQuestionsCache.containsKey(activeSection.questionsUrl)
+              ? Future.value(_sectionQuestionsCache[activeSection.questionsUrl]!)
+              : _dataSource.getQuestions(activeSection.questionsUrl).then((q) {
+                  _sectionQuestionsCache[activeSection.questionsUrl] = q;
+                  return q;
+                }))
+          : Future.value(<QuestionDto>[]);
+
+      // Await both operations concurrently
+      final List<dynamic> results = await Future.wait([heartbeatFuture, questionsFuture]);
+      final AttemptDto updatedAttempt = results[0] as AttemptDto? ?? attempt;
+      questions = results[1] as List<QuestionDto>;
+
+      // Resolve the actual synchronized remainingSeconds from heartbeat
+      final updatedSections = updatedAttempt.sections ?? [];
+      final syncSection = updatedSections.isNotEmpty && activeIndex < updatedSections.length
+          ? updatedSections[activeIndex]
+          : activeSection;
+      remainingSeconds = _parseDuration(syncSection.remainingTime ?? syncSection.duration ?? exam.duration);
+
       final state = ExamAttemptState(
         status: ExamAttemptStatus.inProgress,
         exam: exam,
-        attempt: attempt,
-        sections: sections,
+        attempt: updatedAttempt,
+        sections: updatedSections.isNotEmpty ? updatedSections : sections,
         currentSectionIndex: activeIndex,
         questions: questions,
         remainingSeconds: remainingSeconds,
       );
       _emit(state);
     } else {
-      questions = await _dataSource.getQuestions(attempt.questionsUrl);
       remainingSeconds = _parseDuration(attempt.remainingTime ?? exam.duration);
       
+      final Future<List<QuestionDto>> questionsFuture = remainingSeconds > 0
+          ? (_sectionQuestionsCache.containsKey(attempt.questionsUrl)
+              ? Future.value(_sectionQuestionsCache[attempt.questionsUrl]!)
+              : _dataSource.getQuestions(attempt.questionsUrl).then((q) {
+                  _sectionQuestionsCache[attempt.questionsUrl] = q;
+                  return q;
+                }))
+          : Future.value(<QuestionDto>[]);
+
+      // Await both operations concurrently
+      final List<dynamic> results = await Future.wait([heartbeatFuture, questionsFuture]);
+      final AttemptDto updatedAttempt = results[0] as AttemptDto? ?? attempt;
+      questions = results[1] as List<QuestionDto>;
+
+      remainingSeconds = _parseDuration(updatedAttempt.remainingTime ?? exam.duration);
+
       final state = ExamAttemptState(
         status: ExamAttemptStatus.inProgress,
         exam: exam,
-        attempt: attempt,
+        attempt: updatedAttempt,
         questions: questions,
         remainingSeconds: remainingSeconds,
       );
       _emit(state);
     }
     
-    _startCountdown();
-    _startHeartbeat(attempt.heartbeatUrl);
+    if (remainingSeconds > 0) {
+      _startCountdown();
+      _startHeartbeat(attempt.heartbeatUrl);
+    } else {
+      _handleTimeOut();
+    }
   }
 
   void _startCountdown() {
@@ -201,16 +289,47 @@ class ExamRepository {
     _emit(_currentState.copyWith(status: ExamAttemptStatus.loading));
     try {
       final currentSection = _currentState.sections[_currentState.currentSectionIndex];
-      if (currentSection.state == 'Running' && currentSection.endUrl != null) {
-        await _dataSource.endSection(currentSection.endUrl!);
-      }
-
       final nextSection = _currentState.sections[index];
-      if (nextSection.state != 'Running' && nextSection.startUrl != null) {
-        await _dataSource.startSection(nextSection.startUrl!);
+
+      // Perform all section lifecycle transitions and question loading concurrently
+      final List<Future<dynamic>> futures = [];
+
+      if (currentSection.state == 'Running' && currentSection.endUrl != null) {
+        futures.add(
+          _dataSource.endSection(currentSection.endUrl!).catchError((e, stackTrace) {
+            dev.log('Failed to end section on server, proceeding anyway', name: 'ExamRepository', error: e, stackTrace: stackTrace);
+            return const SectionDto(id: '', name: '', state: '', questionsUrl: '', order: 0);
+          })
+        );
+      } else {
+        futures.add(Future.value(null));
       }
 
-      final questions = await _dataSource.getQuestions(nextSection.questionsUrl);
+      if (nextSection.state != 'Running' && nextSection.startUrl != null) {
+        futures.add(
+          _dataSource.startSection(nextSection.startUrl!).catchError((e, stackTrace) {
+            dev.log('Failed to start section on server, proceeding anyway', name: 'ExamRepository', error: e, stackTrace: stackTrace);
+            return const SectionDto(id: '', name: '', state: '', questionsUrl: '', order: 0);
+          })
+        );
+      } else {
+        futures.add(Future.value(null));
+      }
+
+      if (_sectionQuestionsCache.containsKey(nextSection.questionsUrl)) {
+        futures.add(Future.value(_sectionQuestionsCache[nextSection.questionsUrl]!));
+      } else {
+        futures.add(
+          _dataSource.getQuestions(nextSection.questionsUrl).then((q) {
+            _sectionQuestionsCache[nextSection.questionsUrl] = q;
+            return q;
+          })
+        );
+      }
+
+      final results = await Future.wait(futures);
+      final List<QuestionDto> questions = results[2] as List<QuestionDto>;
+
       final remainingSeconds = _parseDuration(nextSection.remainingTime ?? nextSection.duration ?? _currentState.exam!.duration);
       
       final updatedSections = _currentState.sections.map((s) {
@@ -271,23 +390,44 @@ class ExamRepository {
   }
 
   Future<void> submitAnswer(String answerUrl, AnswerDto answer) async {
+    final questionId = answer.questionId;
     final previousAnswers = Map<String, AnswerDto>.from(_currentState.answers);
-    try {
-      final newAnswers = Map<String, AnswerDto>.from(_currentState.answers);
-      newAnswers[answer.questionId] = answer;
-      _emit(_currentState.copyWith(answers: newAnswers));
 
-      await _dataSource.submitAnswer(answerUrl, answer);
-    } catch (e, stackTrace) {
-      // Rollback on failure
-      _emit(_currentState.copyWith(answers: previousAnswers));
-      dev.log('Failed to submit answer', name: 'ExamRepository', error: e, stackTrace: stackTrace);
-    }
+    // 1. Optimistic Update (Immediate)
+    final newAnswers = Map<String, AnswerDto>.from(_currentState.answers);
+    newAnswers[questionId] = answer;
+    _emit(_currentState.copyWith(answers: newAnswers));
+
+    // 2. Debounce Network Request
+    _submitTimers[questionId]?.cancel();
+    _pendingAnswers[questionId] = answer;
+    _pendingAnswerUrls[questionId] = answerUrl;
+
+    _submitTimers[questionId] = Timer(const Duration(seconds: 1), () async {
+      _submitTimers.remove(questionId);
+      final pendingAns = _pendingAnswers.remove(questionId);
+      final pendingUrl = _pendingAnswerUrls.remove(questionId);
+
+      if (pendingAns != null && pendingUrl != null) {
+        try {
+          await _dataSource.submitAnswer(pendingUrl, pendingAns);
+        } catch (e, stackTrace) {
+          // Rollback on failure
+          final currentAnswers = Map<String, AnswerDto>.from(_currentState.answers);
+          if (currentAnswers[questionId] == pendingAns) {
+            currentAnswers[questionId] = previousAnswers[questionId] ?? AnswerDto(questionId: questionId, selectedOptions: []);
+            _emit(_currentState.copyWith(answers: currentAnswers));
+          }
+          dev.log('Failed to submit answer', name: 'ExamRepository', error: e, stackTrace: stackTrace);
+        }
+      }
+    });
   }
 
   Future<void> endExam(String endUrl) async {
     _emit(_currentState.copyWith(status: ExamAttemptStatus.submitting));
     try {
+      await _flushPendingAnswers();
       final finalAttempt = await _dataSource.endExam(endUrl);
       stopHeartbeat();
       stopCountdown();
@@ -337,6 +477,7 @@ class ExamRepository {
   }
 
   void dispose() {
+    _flushPendingAnswers().catchError((e) {});
     stopHeartbeat();
     stopCountdown();
     _stateController.close();
