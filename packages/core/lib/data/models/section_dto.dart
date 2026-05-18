@@ -25,17 +25,21 @@ class SectionDto {
   });
 
   factory SectionDto.fromJson(Map<String, dynamic> json) {
+    final info = json['info'] as Map<String, dynamic>?;
+
     return SectionDto(
       id: (json['id'] ?? '').toString(),
-      name: (json['name'] ?? '').toString(),
+      name: (info?['name'] ?? json['name'] ?? '').toString(),
       state: (json['state'] ?? 'Not Started').toString(),
       questionsUrl: (json['questions_url'] ?? '').toString(),
       startUrl: json['start_url']?.toString(),
       endUrl: json['end_url']?.toString(),
       remainingTime: json['remaining_time']?.toString(),
-      duration: json['duration']?.toString(),
-      order: json['order'] != null ? int.tryParse(json['order'].toString()) ?? 0 : 0,
-      instructions: json['instructions']?.toString(),
+      duration: (info?['duration'] ?? json['duration'])?.toString(),
+      order: info?['order'] != null
+          ? int.tryParse(info!['order'].toString()) ?? 0
+          : (json['order'] != null ? int.tryParse(json['order'].toString()) ?? 0 : 0),
+      instructions: (info?['instructions'] ?? json['instructions'])?.toString(),
     );
   }
 
