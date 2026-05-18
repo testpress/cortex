@@ -6,7 +6,7 @@ class TestNavigationActions extends StatelessWidget {
   final bool isMarked;
   final bool canGoPrevious;
   final bool isLastQuestion;
-  final String? finishLabel; // Override label when "Finish" means "Next Section"
+  final String? finishLabel;
   final VoidCallback onToggleMark;
   final VoidCallback onPrevious;
   final VoidCallback onNext;
@@ -26,38 +26,33 @@ class TestNavigationActions extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildMarkButton(design, l10n),
-          SizedBox(height: design.spacing.md),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              NavButton(
-                label: l10n.testPrevious,
-                icon: LucideIcons.chevronLeft,
-                onTap: canGoPrevious ? onPrevious : null,
-                isBack: true,
-              ),
-              NavButton(
-                label: finishLabel ?? (isLastQuestion ? l10n.testFinish : l10n.testNext),
-                icon: LucideIcons.chevronRight,
-                onTap: onNext,
-              ),
-            ],
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildMarkButton(design, l10n),
+        SizedBox(height: design.spacing.md),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            NavButton(
+              label: l10n.testPrevious,
+              icon: LucideIcons.chevronLeft,
+              onTap: canGoPrevious ? onPrevious : null,
+              isBack: true,
+            ),
+            NavButton(
+              label: finishLabel ?? (isLastQuestion ? l10n.testFinish : l10n.testNext),
+              icon: LucideIcons.chevronRight,
+              onTap: onNext,
+            ),
+          ],
+        ),
+      ],
     );
   }
 
   Widget _buildMarkButton(DesignConfig design, AppLocalizations l10n) {
-    final markColor = design
-        .colors
-        .accent1; // Mark color is distinctive, typically stays purple
+    final markColor = design.colors.accent1;
     return GestureDetector(
       onTap: onToggleMark,
       child: Container(
@@ -68,8 +63,8 @@ class TestNavigationActions extends StatelessWidget {
         decoration: BoxDecoration(
           color: isMarked
               ? (design.isDark
-                    ? markColor.withValues(alpha: 0.15)
-                    : markColor.withValues(alpha: 0.05))
+                  ? markColor.withValues(alpha: 0.15)
+                  : markColor.withValues(alpha: 0.05))
               : design.colors.card,
           borderRadius: BorderRadius.circular(design.radius.md),
           border: Border.all(
@@ -96,4 +91,6 @@ class TestNavigationActions extends StatelessWidget {
       ),
     );
   }
+
+
 }

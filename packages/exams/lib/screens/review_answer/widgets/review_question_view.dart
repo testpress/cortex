@@ -1,7 +1,16 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
+import 'review_question_html_builder.dart';
 
+/// Card displayed for each question in the post-exam review screen.
+///
+/// Shows a colour-coded header (correct / incorrect / unanswered), an
+/// optional direction passage, and then the question with all options
+/// colour-coded to show what was correct and what was selected.
+///
+/// HTML generation is delegated to [ReviewQuestionHtmlBuilder] so this
+/// widget stays focused on layout only.
 class ReviewQuestionCard extends StatelessWidget {
   final QuestionDto question;
   final AnswerDto? attemptState;
@@ -21,64 +30,65 @@ class ReviewQuestionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: design.spacing.md),
-      padding: EdgeInsets.all(design.spacing.lg),
-      decoration: BoxDecoration(
-        color: design.colors.card,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: design.colors.border),
-        boxShadow: design.isDark
-            ? []
-            : [
-                BoxShadow(
-                  color: design.colors.shadow.withValues(alpha: 0.03),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _QuestionHeader(
-            questionId: question.id,
-            isCorrect: isCorrect,
-            isUnanswered: isUnanswered,
-            l10n: l10n,
-          ),
-          const SizedBox(height: 16),
-          if (question.directionHtml != null && question.directionHtml!.isNotEmpty) ...[
+
+    return SingleChildScrollView(
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: design.spacing.md),
+        padding: EdgeInsets.all(design.spacing.lg),
+        decoration: BoxDecoration(
+          color: design.colors.card,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: design.colors.border),
+          boxShadow: design.isDark
+              ? []
+              : [
+                  BoxShadow(
+                    color: design.colors.shadow.withValues(alpha: 0.03),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Correct / Incorrect / Unanswered badge row
+            _QuestionHeader(
+              questionId: question.id,
+              isCorrect: isCorrect,
+              isUnanswered: isUnanswered,
+              l10n: l10n,
+            ),
+            const SizedBox(height: 16),
+
+            // Direction / passage shown above the question when present
+            if (question.directionHtml != null &&
+                question.directionHtml!.isNotEmpty) ...[
+              AppHtml(data: question.directionHtml!, fontSize: 15),
+              const SizedBox(height: 16),
+              Container(height: 1, color: design.colors.border),
+              const SizedBox(height: 16),
+            ],
+
+            // Unified question + colour-coded options + explanation
             AppHtml(
-              data: question.directionHtml!,
-              fontSize: 15,
+              data: ReviewQuestionHtmlBuilder.build(
+                question: question,
+                attemptState: attemptState,
+                design: design,
+                l10n: l10n,
+              ),
+              fontSize: 16,
             ),
-            const SizedBox(height: 16),
-            Container(
-              height: 1,
-              color: design.colors.border,
-            ),
-            const SizedBox(height: 16),
           ],
-          AppHtml(data: question.text, fontSize: 16),
-          const SizedBox(height: 24),
-          ...question.options.map((opt) {
-            final isCorrectOption = question.correctOptionIds.any((id) => id.toString() == opt.id.toString());
-            final isUserSelected =
-                attemptState?.selectedOptions.any((id) => id.toString() == opt.id.toString()) ?? false;
-            return _OptionItem(
-              option: opt,
-              isCorrectOption: isCorrectOption,
-              isUserSelected: isUserSelected,
-            );
-          }),
-          if (question.explanation != null && question.explanation!.isNotEmpty)
-            _ExplanationSection(explanation: question.explanation!, l10n: l10n),
-        ],
+        ),
       ),
     );
   }
 }
+
+// ── Private sub-widget ────────────────────────────────────────────────────────
 
 class _QuestionHeader extends StatelessWidget {
   final String questionId;
@@ -96,26 +106,26 @@ class _QuestionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    Color bg;
-    Color text;
-    String label;
-    IconData icon;
+    final Color bg;
+    final Color text;
+    final String label;
+    final IconData icon;
 
     if (isUnanswered) {
-      bg = design.colors.accent3.withValues(alpha: design.isDark ? 0.2 : 0.1);
-      text = design.colors.accent3;
+      bg    = design.colors.accent3.withValues(alpha: design.isDark ? 0.2 : 0.1);
+      text  = design.colors.accent3;
       label = l10n.examReviewFilterUnanswered;
-      icon = LucideIcons.alertCircle;
+      icon  = LucideIcons.alertCircle;
     } else if (isCorrect) {
-      bg = design.colors.accent4.withValues(alpha: design.isDark ? 0.2 : 0.1);
-      text = design.colors.accent4;
+      bg    = design.colors.accent4.withValues(alpha: design.isDark ? 0.2 : 0.1);
+      text  = design.colors.accent4;
       label = l10n.examReviewFilterCorrect;
-      icon = LucideIcons.checkCircle2;
+      icon  = LucideIcons.checkCircle2;
     } else {
-      bg = design.colors.accent5.withValues(alpha: design.isDark ? 0.2 : 0.1);
-      text = design.colors.accent5;
+      bg    = design.colors.accent5.withValues(alpha: design.isDark ? 0.2 : 0.1);
+      text  = design.colors.accent5;
       label = l10n.assessmentIncorrect;
-      icon = LucideIcons.xCircle;
+      icon  = LucideIcons.xCircle;
     }
 
     return Container(
@@ -145,171 +155,6 @@ class _QuestionHeader extends StatelessWidget {
             child: AppText.caption(label, color: text),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _OptionItem extends StatelessWidget {
-  final QuestionOptionDto option;
-  final bool isCorrectOption;
-  final bool isUserSelected;
-
-  const _OptionItem({
-    required this.option,
-    required this.isCorrectOption,
-    required this.isUserSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-    Color borderColor = design.colors.border;
-    Color bgColor = design.colors.card;
-
-    if (isCorrectOption) {
-      borderColor = design.colors.accent4;
-      bgColor = design.colors.accent4.withValues(
-        alpha: design.isDark ? 0.15 : 0.08,
-      );
-    } else if (isUserSelected) {
-      borderColor = design.colors.accent5;
-      bgColor = design.colors.accent5.withValues(
-        alpha: design.isDark ? 0.15 : 0.08,
-      );
-    }
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: borderColor,
-          width: (isCorrectOption || isUserSelected) ? 1.5 : 1,
-        ),
-      ),
-      child: Row(
-        children: [
-          _OptionIndicator(
-            isCorrect: isCorrectOption,
-            isSelected: isUserSelected,
-            color: borderColor,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: AppHtml(
-              data: option.text,
-              fontSize: 15,
-              textColor: (isCorrectOption || isUserSelected)
-                  ? design.colors.textPrimary
-                  : design.colors.textSecondary,
-            ),
-          ),
-          if (isCorrectOption)
-            Icon(
-              LucideIcons.checkCircle2,
-              color: textCorrect(design),
-              size: 16,
-            ),
-          if (isUserSelected && !isCorrectOption)
-            Icon(LucideIcons.xCircle, color: textIncorrect(design), size: 16),
-        ],
-      ),
-    );
-  }
-
-  Color textCorrect(DesignConfig design) => design.colors.accent4;
-  Color textIncorrect(DesignConfig design) => design.colors.accent5;
-}
-
-class _OptionIndicator extends StatelessWidget {
-  final bool isCorrect;
-  final bool isSelected;
-  final Color color;
-
-  const _OptionIndicator({
-    required this.isCorrect,
-    required this.isSelected,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-    final isActive = isCorrect || isSelected;
-    final activeColor = isCorrect
-        ? design.colors.accent4
-        : design.colors.accent5;
-
-    return Container(
-      width: 24,
-      height: 24,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: isActive ? activeColor : design.colors.border,
-          width: 2,
-        ),
-        color: isActive ? activeColor : design.colors.card,
-      ),
-      child: isActive
-          ? Center(
-              child: Container(
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(
-                  color: design.colors.onPrimary,
-                  shape: BoxShape.circle,
-                ),
-              ),
-            )
-          : null,
-    );
-  }
-}
-
-class _ExplanationSection extends StatelessWidget {
-  final String explanation;
-  final AppLocalizations l10n;
-
-  const _ExplanationSection({required this.explanation, required this.l10n});
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-    final bgColor = design.colors.accent2.withValues(
-      alpha: design.isDark ? 0.18 : 0.12,
-    );
-    final borderColor = design.colors.accent2.withValues(
-      alpha: design.isDark ? 0.4 : 0.35,
-    );
-    final textColor = design.colors.accent2;
-    final secondaryTextColor = design.colors.textSecondary;
-
-    return Padding(
-      padding: const EdgeInsets.only(top: 16),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: borderColor),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AppText.body(
-              l10n.assessmentExplanation,
-              color: textColor,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 8),
-            AppHtml(data: explanation, fontSize: 14, textColor: secondaryTextColor),
-          ],
-        ),
       ),
     );
   }
