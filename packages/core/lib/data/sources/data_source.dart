@@ -104,6 +104,12 @@ abstract class DataSource {
   /// End the exam attempt and finalize results.
   Future<AttemptDto> endExam(String endUrl);
 
+  /// Fetch all review items / solution details for an attempt.
+  Future<List<ReviewItemDto>> getReviewItems(String reviewUrl);
+
+  /// Fetch subject-wise analytics for a specific attempt.
+  Future<List<SubjectAnalyticsDto>> getSubjectAnalytics(String analyticsUrl);
+
   /// Start an attempt section via its start URL.
   Future<SectionDto> startSection(String startUrl);
 

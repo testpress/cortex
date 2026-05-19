@@ -1075,6 +1075,80 @@ class MockDataSource implements DataSource {
   }
 
   @override
+  Future<List<ReviewItemDto>> getReviewItems(String reviewUrl) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return [
+      const ReviewItemDto(
+        id: 'ri1',
+        index: 1,
+        selectedAnswers: [1],
+        result: 'Correct',
+        marks: '4',
+        duration: '00:00:45',
+        correctPercentage: 72,
+        question: ReviewQuestionDto(
+          id: 1,
+          questionHtml: '<p>What is the SI unit of Force?</p>',
+          explanationHtml: '<p>The SI unit of Force is the Newton (N), named after Sir Isaac Newton.</p>',
+          type: 'R',
+          answers: [
+            ReviewAnswerDto(id: 1, textHtml: 'Newton', isCorrect: true),
+            ReviewAnswerDto(id: 2, textHtml: 'Joule', isCorrect: false),
+            ReviewAnswerDto(id: 3, textHtml: 'Watt', isCorrect: false),
+            ReviewAnswerDto(id: 4, textHtml: 'Pascal', isCorrect: false),
+          ],
+        ),
+      ),
+      const ReviewItemDto(
+        id: 'ri2',
+        index: 2,
+        selectedAnswers: [21, 23],
+        result: 'Correct',
+        marks: '4',
+        duration: '00:01:10',
+        correctPercentage: 48,
+        question: ReviewQuestionDto(
+          id: 2,
+          questionHtml: '<p>Which of the following are vector quantities?</p>',
+          explanationHtml: '<p>Velocity and Acceleration have both magnitude and direction, making them vectors.</p>',
+          type: 'C',
+          answers: [
+            ReviewAnswerDto(id: 21, textHtml: 'Velocity', isCorrect: true),
+            ReviewAnswerDto(id: 22, textHtml: 'Speed', isCorrect: false),
+            ReviewAnswerDto(id: 23, textHtml: 'Acceleration', isCorrect: true),
+            ReviewAnswerDto(id: 24, textHtml: 'Mass', isCorrect: false),
+          ],
+        ),
+      ),
+    ];
+  }
+
+  @override
+  Future<List<SubjectAnalyticsDto>> getSubjectAnalytics(String analyticsUrl) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return const [
+      SubjectAnalyticsDto(
+        id: 101,
+        name: 'Physics',
+        total: 10,
+        correct: 6,
+        incorrect: 3,
+        unanswered: 1,
+        correctPercentage: 60.0,
+      ),
+      SubjectAnalyticsDto(
+        id: 102,
+        name: 'Chemistry',
+        total: 10,
+        correct: 8,
+        incorrect: 1,
+        unanswered: 1,
+        correctPercentage: 80.0,
+      ),
+    ];
+  }
+
+  @override
   Future<void> downloadFile({
     required String url,
     required String savePath,

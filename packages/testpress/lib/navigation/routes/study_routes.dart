@@ -173,6 +173,7 @@ class StudyRoutes {
                       questions: payload?.questions ?? const <QuestionDto>[],
                       attemptStates:
                           payload?.attemptStates ?? const <String, AnswerDto>{},
+                      attempt: payload?.attempt,
                       onBack: () => context.pop(),
                     );
                   },
@@ -189,6 +190,7 @@ class StudyRoutes {
                       questions: payload?.questions ?? const <QuestionDto>[],
                       attemptStates:
                           payload?.attemptStates ?? const <String, AnswerDto>{},
+                      attempt: payload?.attempt,
                       onBack: () => context.pop(),
                     );
                   },

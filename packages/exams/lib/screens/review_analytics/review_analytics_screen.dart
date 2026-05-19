@@ -1,9 +1,10 @@
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../data/mock_review_analytics.dart';
-import '../../models/review_route_payload.dart';
 import 'package:core/data/data.dart';
+import '../../models/review_route_payload.dart';
+import 'review_analytics_controller.dart';
 import 'widgets/analytics_header.dart';
 import 'widgets/donut_legend.dart';
 import 'widgets/explore_details_card.dart';
@@ -13,13 +14,14 @@ import 'widgets/overall_performance_card.dart';
 import 'widgets/section_donut_list.dart';
 import 'widgets/section_table.dart';
 
-class ReviewAnalyticsScreen extends StatelessWidget {
+class ReviewAnalyticsScreen extends ConsumerWidget {
   const ReviewAnalyticsScreen({
     super.key,
     required this.testId,
     required this.assessmentTitle,
     required this.questions,
     required this.attemptStates,
+    this.attempt,
     required this.onBack,
   });
 
@@ -27,16 +29,33 @@ class ReviewAnalyticsScreen extends StatelessWidget {
   final String assessmentTitle;
   final List<QuestionDto> questions;
   final Map<String, AnswerDto> attemptStates;
+  final AttemptDto? attempt;
   final VoidCallback onBack;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
-    final dataset = MockReviewAnalyticsFactory.createDataset(
+
+    final param = ReviewAnalyticsParam(
+      attempt: attempt,
       questions: questions,
       attemptStates: attemptStates,
     );
-    final overview = dataset.overview;
+
+    final state = ref.watch(reviewAnalyticsControllerProvider(param));
+    final overview = state.overview;
+
+    if (overview == null) {
+      return ColoredBox(
+        color: design.colors.canvas,
+        child: Column(
+          children: [
+            AnalyticsHeader(title: assessmentTitle, onBack: onBack),
+            const Expanded(child: Center(child: AppLoadingIndicator())),
+          ],
+        ),
+      );
+    }
 
     return ColoredBox(
       color: design.colors.canvas,
@@ -80,14 +99,29 @@ class ReviewAnalyticsScreen extends StatelessWidget {
                   color: design.colors.textSecondary,
                 ),
                 SizedBox(height: design.spacing.md),
-                SectionDonutList(sections: dataset.sections),
-                SizedBox(height: design.spacing.md),
-                const DonutLegend(),
-                SizedBox(height: design.spacing.md),
-                SectionTable(
-                  sections: dataset.sections,
-                  overall: dataset.sectionTotals,
-                ),
+                if (state.isLoading)
+                  const Center(child: AppLoadingIndicator())
+                else if (state.errorMessage != null)
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: AppText.body(
+                        'Failed to load subject analytics: ${state.errorMessage}',
+                        color: design.colors.error,
+                      ),
+                    ),
+                  )
+                else ...[
+                  SectionDonutList(sections: state.sections),
+                  SizedBox(height: design.spacing.md),
+                  const DonutLegend(),
+                  SizedBox(height: design.spacing.md),
+                  if (state.sectionTotals != null)
+                    SectionTable(
+                      sections: state.sections,
+                      overall: state.sectionTotals!,
+                    ),
+                ],
                 SizedBox(height: design.spacing.xl),
                 ExploreDetailsCard(
                   onExamReviewTap: () {
@@ -97,6 +131,7 @@ class ReviewAnalyticsScreen extends StatelessWidget {
                         assessmentTitle: assessmentTitle,
                         questions: questions,
                         attemptStates: attemptStates,
+                        attempt: attempt,
                       ),
                     );
                   },

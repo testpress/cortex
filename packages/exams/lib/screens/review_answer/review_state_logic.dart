@@ -9,6 +9,10 @@ mixin ReviewStateLogic {
 
   bool isAnswerCorrect(QuestionDto q) {
     final state = attemptStates[q.id];
+    if (state != null && state.result != null) {
+      final res = state.result!.toLowerCase();
+      return res == 'correct' || res == '1';
+    }
     if (state == null || state.selectedOptions.isEmpty) return false;
     final selected = List<String>.from(state.selectedOptions.map((e) => e.toString()))..sort();
     final correct = List<String>.from(q.correctOptionIds.map((e) => e.toString()))..sort();
@@ -17,6 +21,10 @@ mixin ReviewStateLogic {
 
   bool isUnanswered(QuestionDto q) {
     final state = attemptStates[q.id];
+    if (state != null && state.result != null) {
+      final res = state.result!.toLowerCase();
+      return res == 'unanswered' || res == 'unvisited' || res == '0' || res == '3';
+    }
     return state == null || state.selectedOptions.isEmpty;
   }
 

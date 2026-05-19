@@ -209,6 +209,16 @@ class ExamRepository {
           : activeSection;
       remainingSeconds = _parseDuration(syncSection.remainingTime ?? syncSection.duration ?? exam.duration);
 
+      final initialAnswers = Map<String, AnswerDto>.from(_currentState.answers);
+      for (final q in questions) {
+        if (q.selectedOptionIds.isNotEmpty) {
+          initialAnswers[q.id] = AnswerDto(
+            questionId: q.id,
+            selectedOptions: q.selectedOptionIds,
+          );
+        }
+      }
+
       final state = ExamAttemptState(
         status: ExamAttemptStatus.inProgress,
         exam: exam,
@@ -216,6 +226,7 @@ class ExamRepository {
         sections: updatedSections.isNotEmpty ? updatedSections : sections,
         currentSectionIndex: activeIndex,
         questions: questions,
+        answers: initialAnswers,
         remainingSeconds: remainingSeconds,
       );
       _emit(state);
@@ -238,11 +249,22 @@ class ExamRepository {
 
       remainingSeconds = _parseDuration(updatedAttempt.remainingTime ?? exam.duration);
 
+      final initialAnswers = Map<String, AnswerDto>.from(_currentState.answers);
+      for (final q in questions) {
+        if (q.selectedOptionIds.isNotEmpty) {
+          initialAnswers[q.id] = AnswerDto(
+            questionId: q.id,
+            selectedOptions: q.selectedOptionIds,
+          );
+        }
+      }
+
       final state = ExamAttemptState(
         status: ExamAttemptStatus.inProgress,
         exam: exam,
         attempt: updatedAttempt,
         questions: questions,
+        answers: initialAnswers,
         remainingSeconds: remainingSeconds,
       );
       _emit(state);
@@ -338,16 +360,28 @@ class ExamRepository {
             id: s.id, name: s.name, state: 'Completed', questionsUrl: s.questionsUrl,
             startUrl: s.startUrl, endUrl: s.endUrl, remainingTime: s.remainingTime,
             duration: s.duration, order: s.order, instructions: s.instructions,
+            questionsCount: s.questionsCount,
           );
         } else if (s.id == nextSection.id) {
           return SectionDto(
             id: s.id, name: s.name, state: 'Running', questionsUrl: s.questionsUrl,
             startUrl: s.startUrl, endUrl: s.endUrl, remainingTime: s.remainingTime,
             duration: s.duration, order: s.order, instructions: s.instructions,
+            questionsCount: s.questionsCount,
           );
         }
         return s;
       }).toList();
+
+      final currentAnswers = Map<String, AnswerDto>.from(_currentState.answers);
+      for (final q in questions) {
+        if (q.selectedOptionIds.isNotEmpty) {
+          currentAnswers[q.id] = AnswerDto(
+            questionId: q.id,
+            selectedOptions: q.selectedOptionIds,
+          );
+        }
+      }
 
       _emit(_currentState.copyWith(
         status: ExamAttemptStatus.inProgress,
@@ -355,6 +389,7 @@ class ExamRepository {
         currentSectionIndex: index,
         questions: questions,
         currentQuestionIndex: 0,
+        answers: currentAnswers,
         remainingSeconds: remainingSeconds,
       ));
       
@@ -441,6 +476,16 @@ class ExamRepository {
         errorMessage: 'Failed to end exam: ${e.toString()}',
       ));
     }
+  }
+
+  // ─── Solutions & Analytics ──────────────────────────────────────────────────
+
+  Future<List<ReviewItemDto>> getReviewItems(String reviewUrl) async {
+    return _dataSource.getReviewItems(reviewUrl);
+  }
+
+  Future<List<SubjectAnalyticsDto>> getSubjectAnalytics(String analyticsUrl) async {
+    return _dataSource.getSubjectAnalytics(analyticsUrl);
   }
 
   // ─── Dashboard / Discovery Support ─────────────────────────────────────────

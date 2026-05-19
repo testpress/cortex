@@ -26,4 +26,6 @@ class ApiEndpoints {
   // Exams
   static String examDetail(String slug) => '/api/v2.2.1/exams/$slug/';
   static String contentAttemptEnd(String id) => '/api/v2.2/content_attempts/$id/end/';
+  static String subjectAnalytics(String attemptId) => '/api/v2.4/attempts/$attemptId/review/subjects/';
+  static String solutionsReview(String attemptId) => '/api/v2.2.1/attempts/$attemptId/review/';
 }

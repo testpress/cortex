@@ -15,6 +15,15 @@ class AttemptDto {
   final int? incorrectCount;
   final int? totalQuestions;
   final List<SectionDto>? sections;
+  final String? reviewUrl;
+  final int? accuracy;
+  final String? percentile;
+  final String? percentage;
+  final String? rank;
+  final String? maxRank;
+  final bool? rankEnabled;
+  final String? markPerQuestion;
+  final String? negativeMarks;
 
   const AttemptDto({
     required this.id,
@@ -29,6 +38,15 @@ class AttemptDto {
     this.incorrectCount,
     this.totalQuestions,
     this.sections,
+    this.reviewUrl,
+    this.accuracy,
+    this.percentile,
+    this.percentage,
+    this.rank,
+    this.maxRank,
+    this.rankEnabled,
+    this.markPerQuestion,
+    this.negativeMarks,
   });
 
   factory AttemptDto.fromJson(Map<String, dynamic> json) {
@@ -49,6 +67,10 @@ class AttemptDto {
 
     final List<dynamic>? sectionsList = data['sections'] as List<dynamic>? ?? json['sections'] as List<dynamic>?;
     final List<SectionDto>? parsedSections = sectionsList?.map((s) => SectionDto.fromJson(s as Map<String, dynamic>)).toList();
+
+    final String rawReviewUrl = (data['review_url'] ?? json['review_url'])?.toString() ?? 
+                                (cleanBase.isNotEmpty ? '${cleanBase}review/' : '');
+    final String finalReviewUrl = rawReviewUrl.replaceFirst('v2.3', 'v2.2.1');
 
     return AttemptDto(
       id: (data['id'] ?? json['id'] ?? '').toString(),
@@ -74,6 +96,15 @@ class AttemptDto {
           ? int.tryParse((data['total_questions'] ?? json['total_questions']).toString())
           : null,
       sections: parsedSections,
+      reviewUrl: finalReviewUrl.isNotEmpty ? finalReviewUrl : null,
+      accuracy: json['accuracy'] as int? ?? data['accuracy'] as int?,
+      percentile: (json['percentile'] ?? data['percentile'])?.toString(),
+      percentage: (json['percentage'] ?? data['percentage'])?.toString(),
+      rank: (json['rank'] ?? data['rank'])?.toString(),
+      maxRank: (json['max_rank'] ?? data['max_rank'] ?? json['maxRank'] ?? data['maxRank'])?.toString(),
+      rankEnabled: json['rank_enabled'] as bool? ?? data['rank_enabled'] as bool?,
+      markPerQuestion: (data['mark_per_question'] ?? json['mark_per_question'])?.toString(),
+      negativeMarks: (data['negative_marks'] ?? json['negative_marks'])?.toString(),
     );
   }
 
@@ -91,6 +122,15 @@ class AttemptDto {
       'incorrect_count': incorrectCount,
       'total_questions': totalQuestions,
       'sections': sections?.map((s) => s.toJson()).toList(),
+      'review_url': reviewUrl,
+      'accuracy': accuracy,
+      'percentile': percentile,
+      'percentage': percentage,
+      'rank': rank,
+      'max_rank': maxRank,
+      'rank_enabled': rankEnabled,
+      'mark_per_question': markPerQuestion,
+      'negative_marks': negativeMarks,
     };
   }
 }

@@ -378,7 +378,7 @@ class HttpDataSource implements DataSource {
   Future<List<QuestionDto>> getQuestions(String questionsUrl) async {
     if (questionsUrl.isEmpty) return [];
 
-    final dynamic firstPageData = await performDynamicNetworkRequest(
+    final dynamic firstPageData = await performNetworkRequest(
       _dio.get(questionsUrl),
       fromJson: (json) => json,
     );
@@ -415,7 +415,7 @@ class HttpDataSource implements DataSource {
           queryParams['page'] = page.toString();
           final pageUri = uri.replace(queryParameters: queryParams);
           futureRequests.add(
-            performDynamicNetworkRequest(
+            performNetworkRequest(
               _dio.get(pageUri.toString()),
               fromJson: (json) => json,
             ),
@@ -490,6 +490,135 @@ class HttpDataSource implements DataSource {
       _dio.put(endUrl),
       fromJson: SectionDto.fromJson,
     );
+  }
+
+  @override
+  Future<List<ReviewItemDto>> getReviewItems(String reviewUrl) async {
+    if (reviewUrl.isEmpty) return [];
+
+    final dynamic firstPageData = await performNetworkRequest(
+      _dio.get(reviewUrl),
+      fromJson: (json) => json,
+    );
+
+    final List<ReviewItemDto> allReviewItems = [];
+    final List<dynamic> firstPageList;
+    String? nextUrl;
+    int count = 0;
+    int perPage = 0;
+
+    if (firstPageData is List) {
+      firstPageList = firstPageData;
+    } else if (firstPageData is Map && firstPageData['results'] is List) {
+      firstPageList = firstPageData['results'] as List<dynamic>;
+      nextUrl = firstPageData['next'] as String?;
+      count = (firstPageData['count'] as int?) ?? 0;
+      perPage = (firstPageData['per_page'] as int?) ?? firstPageList.length;
+    } else {
+      firstPageList = [];
+    }
+
+    allReviewItems.addAll(
+      firstPageList.map((e) => ReviewItemDto.fromJson(e as Map<String, dynamic>)),
+    );
+
+    if (nextUrl != null && nextUrl.isNotEmpty && count > 0 && perPage > 0) {
+      final int totalPages = (count / perPage).ceil();
+      if (totalPages > 1) {
+        final uri = Uri.parse(reviewUrl);
+        final List<Future<dynamic>> futureRequests = [];
+
+        for (int page = 2; page <= totalPages; page++) {
+          final queryParams = Map<String, String>.from(uri.queryParameters);
+          queryParams['page'] = page.toString();
+          final pageUri = uri.replace(queryParameters: queryParams);
+          futureRequests.add(
+            performNetworkRequest(
+              _dio.get(pageUri.toString()),
+              fromJson: (json) => json,
+            ),
+          );
+        }
+
+        final List<dynamic> pagesData = await Future.wait(futureRequests);
+        for (final pageData in pagesData) {
+          if (pageData is Map && pageData['results'] is List) {
+            final list = pageData['results'] as List<dynamic>;
+            allReviewItems.addAll(
+              list.map((e) => ReviewItemDto.fromJson(e as Map<String, dynamic>)),
+            );
+          }
+        }
+      }
+    }
+
+    // Sort review items by index to preserve order
+    allReviewItems.sort((a, b) => a.index.compareTo(b.index));
+
+    return allReviewItems;
+  }
+
+  @override
+  Future<List<SubjectAnalyticsDto>> getSubjectAnalytics(String analyticsUrl) async {
+    if (analyticsUrl.isEmpty) return [];
+
+    final dynamic firstPageData = await performNetworkRequest(
+      _dio.get(analyticsUrl),
+      fromJson: (json) => json,
+    );
+
+    final List<SubjectAnalyticsDto> allSubjects = [];
+    final List<dynamic> firstPageList;
+    String? nextUrl;
+    int count = 0;
+    int perPage = 0;
+
+    if (firstPageData is List) {
+      firstPageList = firstPageData;
+    } else if (firstPageData is Map && firstPageData['results'] is List) {
+      firstPageList = firstPageData['results'] as List<dynamic>;
+      nextUrl = firstPageData['next'] as String?;
+      count = (firstPageData['count'] as int?) ?? 0;
+      perPage = (firstPageData['per_page'] as int?) ?? firstPageList.length;
+    } else {
+      firstPageList = [];
+    }
+
+    allSubjects.addAll(
+      firstPageList.map((e) => SubjectAnalyticsDto.fromJson(e as Map<String, dynamic>)),
+    );
+
+    if (nextUrl != null && nextUrl.isNotEmpty && count > 0 && perPage > 0) {
+      final int totalPages = (count / perPage).ceil();
+      if (totalPages > 1) {
+        final uri = Uri.parse(analyticsUrl);
+        final List<Future<dynamic>> futureRequests = [];
+
+        for (int page = 2; page <= totalPages; page++) {
+          final queryParams = Map<String, String>.from(uri.queryParameters);
+          queryParams['page'] = page.toString();
+          final pageUri = uri.replace(queryParameters: queryParams);
+          futureRequests.add(
+            performNetworkRequest(
+              _dio.get(pageUri.toString()),
+              fromJson: (json) => json,
+            ),
+          );
+        }
+
+        final List<dynamic> pagesData = await Future.wait(futureRequests);
+        for (final pageData in pagesData) {
+          if (pageData is Map && pageData['results'] is List) {
+            final list = pageData['results'] as List<dynamic>;
+            allSubjects.addAll(
+              list.map((e) => SubjectAnalyticsDto.fromJson(e as Map<String, dynamic>)),
+            );
+          }
+        }
+      }
+    }
+
+    return allSubjects;
   }
 
   @override
