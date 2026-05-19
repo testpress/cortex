@@ -1,7 +1,6 @@
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 import '../../../models/section_performance_overview.dart';
-import 'review_analytics_formatters.dart';
 
 class SectionTable extends StatefulWidget {
   const SectionTable({
@@ -35,7 +34,7 @@ class _SectionTableState extends State<SectionTable> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final tableContentWidth = 840.0 + (design.spacing.md * 2);
+    final tableContentWidth = 640.0 + (design.spacing.md * 2);
     return Container(
       decoration: BoxDecoration(
         color: design.colors.card,
@@ -75,9 +74,7 @@ class _SectionTableState extends State<SectionTable> {
                               'Correct',
                               'Incorrect',
                               'Unanswered',
-                              'Score',
                               'Accuracy',
-                              'Time Spent',
                             ],
                           ),
                           for (final section in widget.sections)
@@ -88,9 +85,7 @@ class _SectionTableState extends State<SectionTable> {
                                 '${section.correct}',
                                 '${section.incorrect}',
                                 '${section.unanswered}',
-                                '${section.score}',
                                 '${section.accuracy.toStringAsFixed(1)}%',
-                                '${formatDuration(section.timeSpent)} / ${formatDuration(section.totalTime)}',
                               ],
                             ),
                           _TableRow(
@@ -101,9 +96,7 @@ class _SectionTableState extends State<SectionTable> {
                               '${widget.overall.correct}',
                               '${widget.overall.incorrect}',
                               '${widget.overall.unanswered}',
-                              '${widget.overall.score}',
                               '${widget.overall.accuracy.toStringAsFixed(1)}%',
-                              '${formatDuration(widget.overall.timeSpent)} / ${formatDuration(widget.overall.totalTime)}',
                             ],
                           ),
                         ],

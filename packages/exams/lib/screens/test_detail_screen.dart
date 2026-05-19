@@ -131,6 +131,17 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
       });
     });
 
+    ref.listen<ExamAttemptState>(examAttemptProvider, (previous, next) {
+      if (previous != null && previous.currentSectionIndex != next.currentSectionIndex) {
+        setState(() {
+          _currentQuestionIndex = 0;
+        });
+        if (_pageController.hasClients) {
+          _pageController.jumpToPage(0);
+        }
+      }
+    });
+
     if (state.status == ExamAttemptStatus.idle ||
         state.status == ExamAttemptStatus.loading) {
       return lessonDetailAsync.when(
@@ -204,9 +215,28 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     final currentSubject = question.subject;
     final currentSubjectIndex = subjects.indexOf(currentSubject);
 
+    // Count answered questions overall (across all sections)
     final answeredCount = state.answers.entries
         .where((e) => e.value.selectedOptions.isNotEmpty)
         .length;
+
+    // Count answered questions for the current section only
+    final sectionAnsweredCount = allQuestions
+        .where((q) => state.answers[q.id]?.selectedOptions.isNotEmpty ?? false)
+        .length;
+
+    // Calculate global question position and total question count across all sections
+    int globalOffset = 0;
+    for (int i = 0; i < state.currentSectionIndex; i++) {
+      if (i < state.sections.length) {
+        globalOffset += state.sections[i].questionsCount ?? 0;
+      }
+    }
+    final globalCurrentIndex = globalOffset + safeIndex;
+
+    final globalTotalCount = state.attempt?.totalQuestions ?? 
+        state.sections.fold<int>(0, (sum, s) => sum + (s.questionsCount ?? 0));
+    final displayTotalCount = globalTotalCount > 0 ? globalTotalCount : allQuestions.length;
 
     // Determine whether there are more tabs to navigate to after this one.
     final isMultiSection = state.sections.length > 1;
@@ -253,9 +283,10 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                 child: Column(
                   children: [
                     TestProgressSection(
-                      currentQuestionIndex: safeIndex,
-                      totalQuestions: allQuestions.length,
+                      currentQuestionIndex: globalCurrentIndex,
+                      totalQuestions: displayTotalCount,
                       isSavedVisible: _isSavedVisible,
+                      answeredCount: answeredCount,
                     ),
                     Expanded(
                       child: PageView.builder(
@@ -286,7 +317,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                             finishLabel: isLast && hasNextSection 
                                 ? l10n.nextSection
                                 : null,
-                            answeredCount: answeredCount,
+                            answeredCount: sectionAnsweredCount,
                             totalQuestions: allQuestions.length,
                             onPaletteTap: () => setState(() => _showPalette = true),
                             onToggleMark: () => _handleToggleMark(state, q),
@@ -341,7 +372,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
           if (_showSubmitConfirmation)
             SubmitConfirmationDialog(
               answeredCount: answeredCount,
-              totalCount: allQuestions.length,
+              totalCount: displayTotalCount,
               onCancel: () =>
                   setState(() => _showSubmitConfirmation = false),
               onSubmit: () {
@@ -409,6 +440,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
         assessmentTitle: state.exam!.title,
         questions: state.questions,
         attemptStates: state.answers,
+        attempt: state.attempt,
       ),
     );
   }
@@ -420,6 +452,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
         assessmentTitle: state.exam!.title,
         questions: state.questions,
         attemptStates: state.answers,
+        attempt: state.attempt,
       ),
     );
   }

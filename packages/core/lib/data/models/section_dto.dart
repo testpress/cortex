@@ -10,6 +10,7 @@ class SectionDto {
   final String? duration;
   final int order;
   final String? instructions;
+  final int? questionsCount;
 
   const SectionDto({
     required this.id,
@@ -22,6 +23,7 @@ class SectionDto {
     this.duration,
     required this.order,
     this.instructions,
+    this.questionsCount,
   });
 
   factory SectionDto.fromJson(Map<String, dynamic> json) {
@@ -40,6 +42,9 @@ class SectionDto {
           ? int.tryParse(info!['order'].toString()) ?? 0
           : (json['order'] != null ? int.tryParse(json['order'].toString()) ?? 0 : 0),
       instructions: (info?['instructions'] ?? json['instructions'])?.toString(),
+      questionsCount: info?['questions_count'] != null
+          ? int.tryParse(info!['questions_count'].toString())
+          : (json['questions_count'] != null ? int.tryParse(json['questions_count'].toString()) : null),
     );
   }
 
@@ -55,6 +60,7 @@ class SectionDto {
       'duration': duration,
       'order': order,
       'instructions': instructions,
+      'questions_count': questionsCount,
     };
   }
 }

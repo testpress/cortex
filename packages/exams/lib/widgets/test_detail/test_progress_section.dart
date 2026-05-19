@@ -5,12 +5,14 @@ class TestProgressSection extends StatelessWidget {
   final int currentQuestionIndex;
   final int totalQuestions;
   final bool isSavedVisible;
+  final int? answeredCount;
 
   const TestProgressSection({
     super.key,
     required this.currentQuestionIndex,
     required this.totalQuestions,
     required this.isSavedVisible,
+    this.answeredCount,
   });
 
   @override
@@ -31,7 +33,9 @@ class TestProgressSection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               AppText.body(
-                l10n.testQuestionXofY(currentQuestionIndex + 1, totalQuestions),
+                answeredCount != null
+                    ? l10n.testPaletteAnsweredCount(answeredCount!, totalQuestions)
+                    : l10n.testQuestionXofY(currentQuestionIndex + 1, totalQuestions),
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 16,

@@ -17,6 +17,7 @@ class ReviewQuestionCard extends StatelessWidget {
   final AppLocalizations l10n;
   final bool isCorrect;
   final bool isUnanswered;
+  final String questionNumber;
 
   const ReviewQuestionCard({
     super.key,
@@ -25,6 +26,7 @@ class ReviewQuestionCard extends StatelessWidget {
     required this.l10n,
     required this.isCorrect,
     required this.isUnanswered,
+    required this.questionNumber,
   });
 
   @override
@@ -55,7 +57,7 @@ class ReviewQuestionCard extends StatelessWidget {
           children: [
             // Correct / Incorrect / Unanswered badge row
             _QuestionHeader(
-              questionId: question.id,
+              questionNumber: questionNumber,
               isCorrect: isCorrect,
               isUnanswered: isUnanswered,
               l10n: l10n,
@@ -91,13 +93,13 @@ class ReviewQuestionCard extends StatelessWidget {
 // ── Private sub-widget ────────────────────────────────────────────────────────
 
 class _QuestionHeader extends StatelessWidget {
-  final String questionId;
+  final String questionNumber;
   final bool isCorrect;
   final bool isUnanswered;
   final AppLocalizations l10n;
 
   const _QuestionHeader({
-    required this.questionId,
+    required this.questionNumber,
     required this.isCorrect,
     required this.isUnanswered,
     required this.l10n,
@@ -141,7 +143,7 @@ class _QuestionHeader extends StatelessWidget {
               Icon(icon, color: text, size: 20),
               const SizedBox(width: 8),
               AppText.title(
-                l10n.reviewQuestionLabel(questionId),
+                l10n.reviewQuestionLabel(questionNumber),
                 color: design.colors.textPrimary,
               ),
             ],

@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../design/design_provider.dart';
+import '../design/design_config.dart';
 import 'app_loading_indicator.dart';
 
 /// A premium HTML renderer for the Cortex SDK.
@@ -88,6 +90,14 @@ class _AppHtmlState extends State<AppHtml> {
         onMessageReceived: (JavaScriptMessage message) {
           if (mounted) {
             widget.onMessage?.call(message.message);
+          }
+        },
+      )
+      ..addJavaScriptChannel(
+        'ImageClickChannel',
+        onMessageReceived: (JavaScriptMessage message) {
+          if (mounted) {
+            _showZoomableImage(context, message.message);
           }
         },
       )
@@ -181,8 +191,13 @@ class _AppHtmlState extends State<AppHtml> {
             p, span, div, font, h1, h2, h3, h4, h5, h6 {
               color: $txCss !important;
             }
+            /* Reset MS Word default margins and paddings to prevent white spaces around */
+            p.MsoNormal, p.MsoListParagraph, p.MsoListParagraphCxSpFirst, p.MsoListParagraphCxSpMiddle, p.MsoListParagraphCxSpLast {
+              margin: 0 0 8px 0 !important;
+              padding: 0 !important;
+            }
             #content {
-              padding: 4px 0;
+              padding: 0;
               display: inline-block;
               width: 100%;
             }
@@ -213,6 +228,17 @@ class _AppHtmlState extends State<AppHtml> {
             ${widget.data.trim()}
           </div>
           <script>
+            function removeEmptyNodes(container) {
+              if (!container) return;
+              const elements = container.querySelectorAll('p, div, span');
+              elements.forEach(el => {
+                const text = el.textContent.replace(/\u00a0/g, ' ').trim();
+                if (text === '' && !el.querySelector('img, iframe, math, svg, table')) {
+                  el.remove();
+                }
+              });
+            }
+
             function cleanTrailingEmptyNodes(container) {
               if (!container) return;
               let last = container.lastElementChild;
@@ -222,9 +248,29 @@ class _AppHtmlState extends State<AppHtml> {
               }
             }
 
+            function setupImageClickHandlers() {
+              document.querySelectorAll('img').forEach(img => {
+                if (img.dataset.clickedSetup) return;
+                img.dataset.clickedSetup = "true";
+                img.style.cursor = 'pointer';
+                img.onclick = function(e) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (window.ImageClickChannel) {
+                    window.ImageClickChannel.postMessage(img.src);
+                  }
+                };
+              });
+            }
+
             function cleanAll() {
+              removeEmptyNodes(document.getElementById('content'));
               cleanTrailingEmptyNodes(document.getElementById('content'));
-              document.querySelectorAll('.option-text').forEach(cleanTrailingEmptyNodes);
+              document.querySelectorAll('.option-text').forEach(el => {
+                removeEmptyNodes(el);
+                cleanTrailingEmptyNodes(el);
+              });
+              setupImageClickHandlers();
             }
 
             function signalReady() {
@@ -251,6 +297,7 @@ class _AppHtmlState extends State<AppHtml> {
             };
 
             function sendHeight() {
+              setupImageClickHandlers();
               const height = document.getElementById('content').offsetHeight;
               if (window.HeightChannel) {
                 window.HeightChannel.postMessage(JSON.stringify({
@@ -307,6 +354,108 @@ class _AppHtmlState extends State<AppHtml> {
               ),
             ),
         ],
+      ),
+    );
+  }
+
+  void _showZoomableImage(BuildContext context, String imageUrl) {
+    final design = Design.of(context);
+    
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        opaque: false,
+        barrierDismissible: true,
+        barrierColor: design.colors.overlay.withValues(alpha: 0.8),
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return FadeTransition(
+            opacity: animation,
+            child: _ZoomableImageViewer(
+              imageUrl: imageUrl,
+              design: design,
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _ZoomableImageViewer extends StatelessWidget {
+  const _ZoomableImageViewer({
+    required this.imageUrl,
+    required this.design,
+  });
+
+  final String imageUrl;
+  final DesignConfig design;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.of(context).pop(),
+      child: Container(
+        color: design.colors.transparent, // Transparent to catch tap
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Positioned.fill(
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: InteractiveViewer(
+                    minScale: 0.8,
+                    maxScale: 5.0,
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.contain,
+                      loadingBuilder: (context, child, progress) {
+                        if (progress == null) return child;
+                        return Center(
+                          child: AppLoadingIndicator(
+                            color: design.colors.primary.withValues(alpha: 0.5),
+                          ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Center(
+                          child: Text(
+                            'Failed to load image',
+                            style: TextStyle(
+                              color: design.colors.textInverse,
+                              fontSize: 14,
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 24,
+              right: 24,
+              child: SafeArea(
+                child: GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: design.colors.onPrimary.withValues(alpha: 0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      LucideIcons.x,
+                      color: design.colors.onPrimary,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

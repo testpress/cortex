@@ -87,6 +87,41 @@ class ExamsRoutes {
                     );
                   },
                 ),
+                GoRoute(
+                  path: 'review-analytics',
+                  parentNavigatorKey: rootNavigatorKey,
+                  builder: (context, state) {
+                    final id = state.pathParameters['id']!;
+                    final payload = state.extra as ReviewRoutePayload?;
+                    return ReviewAnalyticsScreen(
+                      testId: id,
+                      assessmentTitle:
+                          payload?.assessmentTitle ?? 'Assessment $id',
+                      questions: payload?.questions ?? const <QuestionDto>[],
+                      attemptStates:
+                          payload?.attemptStates ?? const <String, AnswerDto>{},
+                      attempt: payload?.attempt,
+                      onBack: () => context.pop(),
+                    );
+                  },
+                ),
+                GoRoute(
+                  path: 'review-answers',
+                  parentNavigatorKey: rootNavigatorKey,
+                  builder: (context, state) {
+                    final id = state.pathParameters['id']!;
+                    final payload = state.extra as ReviewRoutePayload?;
+                    return ReviewAnswerDetailScreen(
+                      assessmentTitle:
+                          payload?.assessmentTitle ?? 'Assessment $id',
+                      questions: payload?.questions ?? const <QuestionDto>[],
+                      attemptStates:
+                          payload?.attemptStates ?? const <String, AnswerDto>{},
+                      attempt: payload?.attempt,
+                      onBack: () => context.pop(),
+                    );
+                  },
+                ),
               ],
             ),
             GoRoute(

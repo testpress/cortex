@@ -11,6 +11,7 @@ class QuestionDto {
   final String? explanation;
   final String? directionHtml;
   final int order;
+  final List<String> selectedOptionIds;
 
   const QuestionDto({
     required this.id,
@@ -24,6 +25,7 @@ class QuestionDto {
     this.explanation,
     this.directionHtml,
     this.order = 0,
+    this.selectedOptionIds = const [],
   });
 
   factory QuestionDto.fromJson(Map<String, dynamic> json) {
@@ -55,6 +57,10 @@ class QuestionDto {
       explanation: (data['explanation'] ?? data['explanation_html'] ?? json['explanation_html']) as String?,
       directionHtml: (data['direction'] ?? data['direction_html'] ?? json['direction'] ?? json['direction_html']) as String?,
       order: int.tryParse((json['order'] ?? json['question_index'] ?? '').toString()) ?? 0,
+      selectedOptionIds: (json['selected_options'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
     );
   }
 
@@ -71,6 +77,7 @@ class QuestionDto {
       'explanation': explanation,
       'directionHtml': directionHtml,
       'order': order,
+      'selected_options': selectedOptionIds,
     };
   }
 }
