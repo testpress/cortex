@@ -8,7 +8,7 @@ The system SHALL display a paged view of all questions from a completed test.
 
 #### Scenario: Paged navigation
 - **WHEN** the user opens the "Exam Review" screen
-- **THEN** the system SHALL display the first question that was part of the test in its original order.
+- **THEN** the system SHALL display the first question fetched from the real server review items.
 - **AND** the system SHALL provide "Previous" and "Next" buttons to navigate between question cards.
 
 ### Requirement: Question Card Display
@@ -28,10 +28,11 @@ The system SHALL display the detailed solution directly on the question card.
 #### Scenario: Reviewing for explanation
 - **WHEN** the user views a question card
 - **THEN** the card SHALL show:
-  * Full Question Text
+  * Full Question Text HTML rendered correctly
   * User's Selected Answer (highlighted in red if wrong, green if right)
   * Correct Answer (highlighted in green)
   * Detailed Explanation (using the standard blue explanation block)
+  * Percentage of users who answered correctly
 
 ### Requirement: Result Filtering Options
 The system SHALL provide filter options (e.g. chips) at the top or in a filter bar to filter questions by their correctness status.
