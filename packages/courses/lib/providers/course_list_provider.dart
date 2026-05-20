@@ -51,11 +51,16 @@ class CourseList extends _$CourseList {
 
   /// Explicit initialization for browse mode
   Future<void> initialize() async {
-    final auth = await ref.read(authProvider.future);
-    if (!auth) return;
-
     if (ref.read(_wasInitialSyncDone)) return;
     if (_pendingSyncRequest != null) return _pendingSyncRequest;
+
+    ref.read(isSyncingInitialPage.notifier).state = true;
+
+    final auth = await ref.read(authProvider.future);
+    if (!auth) {
+      ref.read(isSyncingInitialPage.notifier).state = false;
+      return;
+    }
 
     _pendingSyncRequest = _performSync(isReset: true);
     try {
@@ -97,7 +102,7 @@ class CourseList extends _$CourseList {
 
     try {
       final repo = await ref.read(courseRepositoryProvider.future);
-      
+
       final response = await repo.refreshCourses(
         page: _paginationTracker.nextPage,
         tags: null,
@@ -171,20 +176,22 @@ class CourseSearch extends _$CourseSearch {
 
   Future<void> loadMore() async {
     if (!state.pagination.hasMore || _pendingRequest != null) return;
-    
+
     _pendingRequest = _performSearch(query: state.query, isReset: false);
     await _pendingRequest;
   }
 
-  Future<void> _performSearch({required String query, required bool isReset}) async {
+  Future<void> _performSearch(
+      {required String query, required bool isReset}) async {
     try {
       final repo = await ref.read(courseRepositoryProvider.future);
       final page = isReset ? 1 : state.pagination.nextPage;
-      
+
       final response = await repo.searchCourses(query: query, page: page);
-      
-      final results = isReset ? response.results : [...state.results, ...response.results];
-      
+
+      final results =
+          isReset ? response.results : [...state.results, ...response.results];
+
       PaginationState newPagination;
       if (response.results.isEmpty) {
         newPagination = state.pagination.copyWith(hasMore: false);

@@ -5,6 +5,7 @@ import 'package:core/data/data.dart';
 import '../providers/course_list_provider.dart';
 import '../widgets/course_card.dart';
 import '../widgets/lesson_list_item.dart';
+import 'course_skeleton_slivers.dart';
 
 class StudyContentList extends ConsumerWidget {
   final AsyncValue<List<CourseDto>> enrolledCoursesState;
@@ -28,14 +29,10 @@ class StudyContentList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
 
-    final showInitialLoader =
-        isSyncingInitial && enrolledCoursesState.valueOrNull?.isEmpty == true;
+    final showInitialLoader = isSyncingInitial;
 
     if (showInitialLoader) {
-      return const SliverFillRemaining(
-        hasScrollBody: false,
-        child: Center(child: AppLoadingIndicator()),
-      );
+      return const CourseSkeletonList();
     }
 
     return enrolledCoursesState.when(
@@ -99,17 +96,11 @@ class StudyContentList extends ConsumerWidget {
                   ),
                 ),
               ),
-            if (isSyncingMore)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: design.spacing.md),
-                  child: const Center(child: AppLoadingIndicator()),
-                ),
-              ),
+            if (isSyncingMore) const CourseLoadMoreSkeleton(),
           ],
         );
       },
-      loading: () => const SliverToBoxAdapter(child: SizedBox.shrink()),
+      loading: () => const CourseSkeletonList(),
       error: (e, _) => SliverFillRemaining(
         hasScrollBody: false,
         child: AppErrorView(
