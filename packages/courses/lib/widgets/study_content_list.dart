@@ -28,20 +28,22 @@ class StudyContentList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
 
-    final showInitialLoader =
-        isSyncingInitial && enrolledCoursesState.valueOrNull?.isEmpty == true;
-
-    if (showInitialLoader) {
-      return const SliverFillRemaining(
-        hasScrollBody: false,
-        child: Center(child: AppLoadingIndicator()),
-      );
-    }
+    final showInitialLoader = isSyncingInitial &&
+        enrolledCoursesState.when(
+          data: (courses) => courses.isEmpty,
+          loading: () => true,
+          error: (_, __) => false,
+        );
 
     return enrolledCoursesState.when(
       data: (courses) {
         final filteredCourses = _filterCourses(courses);
         final filteredLessons = _filterLessons(allLessons);
+
+        final isSkeleton = showInitialLoader && filteredCourses.isEmpty;
+        final displayCourses = isSkeleton
+            ? _skeletonCourses
+            : filteredCourses;
 
         return SliverMainAxisGroup(
           slivers: [
@@ -51,18 +53,21 @@ class StudyContentList extends ConsumerWidget {
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      final course = filteredCourses[index];
+                      final course = displayCourses[index];
                       return Padding(
                         padding: EdgeInsets.only(bottom: design.spacing.md),
                         child: CourseCard(
                           course: course,
-                          onTap: () => context.push(
-                            '/study/course/${course.id}/chapters',
-                          ),
+                          isSkeleton: isSkeleton,
+                          onTap: isSkeleton
+                              ? null
+                              : () => context.push(
+                                    '/study/course/${course.id}/chapters',
+                                  ),
                         ),
                       );
                     },
-                    childCount: filteredCourses.length,
+                    childCount: displayCourses.length,
                   ),
                 ),
               )
@@ -100,16 +105,39 @@ class StudyContentList extends ConsumerWidget {
                 ),
               ),
             if (isSyncingMore)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: design.spacing.md),
-                  child: const Center(child: AppLoadingIndicator()),
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+                sliver: SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: design.spacing.md),
+                    child: CourseCard(
+                      course: _skeletonCourses.first,
+                      isSkeleton: isSyncingMore,
+                    ),
+                  ),
                 ),
               ),
           ],
         );
       },
-      loading: () => const SliverToBoxAdapter(child: SizedBox.shrink()),
+      // DB stream briefly loading — only show skeleton if there's nothing cached yet.
+      loading: () => isSyncingInitial
+          ? SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+              sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => Padding(
+                      padding: EdgeInsets.only(bottom: design.spacing.md),
+                      child: CourseCard(
+                        course: _skeletonCourses[index],
+                        isSkeleton: isSyncingInitial,
+                      ),
+                    ),
+                    childCount: _skeletonCourses.length,
+                  ),
+              ),
+            )
+          : const SliverToBoxAdapter(child: SizedBox.shrink()),
       error: (e, _) => SliverFillRemaining(
         hasScrollBody: false,
         child: AppErrorView(
@@ -134,3 +162,22 @@ class StudyContentList extends ConsumerWidget {
     }).toList();
   }
 }
+
+// Skeleton placeholder courses — used only during loading states.
+// Values are chosen to produce realistic-sized shimmer bones.
+final _skeletonCourses = List.generate(
+  6,
+  (index) => CourseDto(
+    id: 'skeleton-$index',
+    title: 'Loading course title text',
+    colorIndex: index % 6,
+    chapterCount: 12,
+    totalContents: 48,
+    progress: 0,
+    completedLessons: 0,
+    totalLessons: 48,
+    image: '',
+    examsCount: 0,
+    order: index,
+  ),
+);
