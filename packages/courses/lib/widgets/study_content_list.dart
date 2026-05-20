@@ -45,7 +45,13 @@ class StudyContentList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
 
-    final showInitialLoader = isSyncingInitial;
+    final showInitialLoader = isSyncingInitial &&
+        enrolledCoursesState.when(
+          data: (courses) => courses.isEmpty,
+          loading: () => true,
+          error: (_, __) => false,
+        );
+
 
     if (showInitialLoader) {
       return _buildInitialSkeletonList(design);
