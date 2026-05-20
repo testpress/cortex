@@ -4,6 +4,8 @@ import 'package:drift/drift.dart';
 class LessonsTable extends Table {
   TextColumn get id => text()();
   TextColumn get chapterId => text()();
+  TextColumn get courseId => text().nullable()();
+  TextColumn get ancestorChapterIds => text().nullable()();
   TextColumn get title => text()();
 
   /// Stored as string: 'video' | 'pdf' | 'assessment' | 'test'

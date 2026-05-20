@@ -67,10 +67,12 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Stream<CourseCurriculumDto> getCourseContents(String courseId, {String? chapterId}) async* {
+  Stream<CourseCurriculumDto> getCourseContents(String courseId, {String? chapterId, String? type}) async* {
     final String initialUrl = ApiEndpoints.courseContents(courseId);
     String? nextUrl = initialUrl;
-    final queryParameters = chapterId != null ? {'chapter': chapterId} : null;
+    final Map<String, dynamic> queryParameters = {};
+    if (chapterId != null) queryParameters['chapter'] = chapterId;
+    if (type != null) queryParameters['type'] = type;
 
     while (nextUrl != null) {
       final responseData = await performNetworkRequest(

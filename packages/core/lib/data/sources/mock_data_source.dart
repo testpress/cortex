@@ -187,7 +187,7 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Stream<CourseCurriculumDto> getCourseContents(String courseId, {String? chapterId}) async* {
+  Stream<CourseCurriculumDto> getCourseContents(String courseId, {String? chapterId, String? type}) async* {
     // Collect chapters in the course/chapter branch.
     // In mock, we simulate recursion starting from the parentId if provided.
     final allChapters = await _getAllChaptersRecursively(courseId, parentId: chapterId);

@@ -44,7 +44,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 18;
+  int get schemaVersion => 19;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -188,6 +188,11 @@ class AppDatabase extends _$AppDatabase {
           if (from < 18) {
             // Version 18: Add description column to lessons
             await addColumnSafely(lessonsTable, lessonsTable.description);
+          }
+          if (from < 19) {
+            // Version 19: Add lesson ancestry metadata fields
+            await addColumnSafely(lessonsTable, lessonsTable.courseId);
+            await addColumnSafely(lessonsTable, lessonsTable.ancestorChapterIds);
           }
         },
       );

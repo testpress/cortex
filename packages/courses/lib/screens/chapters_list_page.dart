@@ -3,6 +3,7 @@ import 'package:core/data/data.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/course_detail_provider.dart';
+import '../providers/filtered_lessons_provider.dart';
 import '../widgets/chapters_filter_tab_bar.dart';
 import '../widgets/chapter_curriculum_item.dart';
 import '../widgets/curriculum_header.dart';
@@ -31,31 +32,56 @@ class ChaptersListPage extends ConsumerStatefulWidget {
 
 class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
   CurriculumFilter _activeFilter = CurriculumFilter.all;
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()..addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollController.hasClients &&
+        _scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+      final type = _apiTypeForFilter(_activeFilter);
+      ref.read(filteredLessonsProvider(
+        widget.courseId,
+        chapterId: widget.parentId,
+        type: type,
+      ).notifier).fetchNextPage();
+    }
+  }
 
   void _onFilterChanged(CurriculumFilter filter) {
-    // Master Sync is now handled lazily by the filtered curriculum provider.
-    setState(() => _activeFilter = filter);
+    setState(() {
+      _activeFilter = filter;
+    });
+  }
+
+  String? _apiTypeForFilter(CurriculumFilter filter) {
+    return switch (filter) {
+      CurriculumFilter.all => null,
+      CurriculumFilter.lesson => null,
+      CurriculumFilter.video => 'video',
+      CurriculumFilter.assessment => 'assessment',
+      CurriculumFilter.test => 'test',
+    };
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    // Watch chapters for the current depth only (lazy loading)
     final chaptersAsync = ref.watch(
       subChaptersProvider(widget.courseId, widget.parentId),
     );
     final courseAsync = ref.watch(courseDetailProvider(widget.courseId));
-    // We only show lessons for the current chapter level (non-recursive).
-    // Filters are applied client-side to the already-cached items.
-    final lessonsAsync = widget.parentId != null
-      ? ref.watch(chapterLessonsProvider(widget.courseId, widget.parentId!))
-      : const AsyncValue<List<LessonDto>>.data([]);
-    
-    final isSyncingAsync = ref.watch(courseSyncStatusProvider(widget.courseId));
-    final isSyncing = isSyncingAsync.valueOrNull ?? false;
-
-
     return Container(
       color: design.colors.canvas,
       child: chaptersAsync.when(
@@ -65,15 +91,41 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
             orElse: () => null,
           );
 
-          final lessons = lessonsAsync.valueOrNull ?? [];
-          final filteredLessons = _filterLessons(lessons, _activeFilter);
+          final showLessons = _activeFilter != CurriculumFilter.all || chapters.isEmpty;
 
-          // If we have a parent, use its title, otherwise use course title
+          final lessons = <LessonDto>[];
+          bool isLoadingFilter = false;
+          bool isLoadingMore = false;
+
+          if (showLessons) {
+            final type = _apiTypeForFilter(_activeFilter);
+            final filterState = ref.watch(filteredLessonsProvider(
+              widget.courseId,
+              chapterId: widget.parentId,
+              type: type,
+            ));
+            lessons.addAll(filterState.lessons);
+            isLoadingFilter = filterState.isLoading;
+            isLoadingMore = filterState.isLoadingMore;
+          }
+
+          final filteredLessons = _activeFilter == CurriculumFilter.all || _activeFilter == CurriculumFilter.lesson
+              ? lessons
+              : lessons.where((l) {
+                  final targetType = switch (_activeFilter) {
+                    CurriculumFilter.video => LessonType.video,
+                    CurriculumFilter.assessment => LessonType.assessment,
+                    CurriculumFilter.test => LessonType.test,
+                    _ => throw UnimplementedError(),
+                  };
+                  return l.type == targetType;
+                }).toList();
+
+          final showChapters = _activeFilter == CurriculumFilter.all && chapters.isNotEmpty;
           String headerTitle = course?.title ?? 'Curriculum';
 
           return Column(
             children: [
-              // Sticky Header including Tabs
               Container(
                 decoration: BoxDecoration(
                   color: design.colors.card,
@@ -102,79 +154,79 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
               ),
 
               Expanded(
-                child: AppScroll(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacing.md,
-                    vertical: design.spacing.md,
-                  ),
-                  children: [
-                    // Chapters or Lessons List
-                    if (_activeFilter == CurriculumFilter.all && chapters.isNotEmpty)
-                      ...chapters.asMap().entries.map((entry) {
-                        final chapter = entry.value;
-                        return ChapterCurriculumItem(
-                          chapter: chapter,
-                          index: entry.key,
-                          onTap: () {
-                            if (chapter.isLeaf) {
-                              // If leaf, go to detail screen (lessons)
-                              context.push(
-                                '${widget.basePath}/course/${widget.courseId}/chapters/${chapter.id}',
-                              );
-                            } else {
-                              // If parent, drill down (recursive navigation)
-                              context.push(
-                                '${widget.basePath}/course/${widget.courseId}/chapters?parentId=${chapter.id}',
+                child: showChapters
+                  ? AppScroll(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: design.spacing.md,
+                        vertical: design.spacing.md,
+                      ),
+                      children: [
+                        ...chapters.asMap().entries.map((entry) {
+                          final chapter = entry.value;
+                          return ChapterCurriculumItem(
+                            chapter: chapter,
+                            index: entry.key,
+                            onTap: () {
+                              if (chapter.isLeaf) {
+                                context.push(
+                                  '${widget.basePath}/course/${widget.courseId}/chapters/${chapter.id}',
+                                );
+                              } else {
+                                context.push(
+                                  '${widget.basePath}/course/${widget.courseId}/chapters?parentId=${chapter.id}',
+                                );
+                              }
+                            },
+                          );
+                        }),
+                        const SizedBox(height: 80),
+                      ],
+                    )
+                  : (isLoadingFilter || isLoadingMore) && filteredLessons.isEmpty
+                      ? const Center(child: AppLoadingIndicator())
+                      : filteredLessons.isEmpty
+                          ? Center(
+                              child: AppText.body(
+                                'No ${widget.showFilters ? _activeFilter.displayName : "exams"} found.',
+                                color: design.colors.textSecondary,
+                              ),
+                            )
+                          : ListView.builder(
+                              controller: _scrollController,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: design.spacing.md,
+                                vertical: design.spacing.md,
+                              ),
+                              itemCount: filteredLessons.length + (isLoadingMore || isLoadingFilter ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (index < filteredLessons.length) {
+                              final lesson = filteredLessons[index];
+                              return LessonListItem(
+                                lesson: lesson,
+                                onTap: () {
+                                  final route = switch (lesson.type) {
+                                    LessonType.video ||
+                                    LessonType.pdf ||
+                                    LessonType.notes ||
+                                    LessonType.embedContent ||
+                                    LessonType.liveStream ||
+                                    LessonType.attachment =>
+                                      '${widget.basePath}/lesson/${lesson.id}',
+                                    LessonType.assessment =>
+                                      '${widget.basePath}/assessment/${lesson.id}',
+                                    LessonType.test => '${widget.basePath}/test/${lesson.id}',
+                                    LessonType.unknown => null,
+                                  };
+                                  if (route != null) context.push(route);
+                                },
                               );
                             }
+                            return const Padding(
+                              padding: EdgeInsets.all(24),
+                              child: Center(child: AppLoadingIndicator()),
+                            );
                           },
-                        );
-                      })
-                    else if (_activeFilter != CurriculumFilter.all || chapters.isEmpty)
-                      if ((chaptersAsync.isLoading || lessonsAsync.isLoading || isSyncing) && filteredLessons.isEmpty)
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 40),
-                        child: Center(child: AppLoadingIndicator()),
-                      )
-                    else if (filteredLessons.isEmpty)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 40),
-                        child: Center(
-                          child: AppText.body(
-                            'No ${widget.showFilters ? _activeFilter.displayName : "exams"} found.',
-                            color: design.colors.textSecondary,
-                          ),
                         ),
-                      )
-                    else
-                      ...filteredLessons.map((lesson) {
-                        return LessonListItem(
-                          lesson: lesson,
-                          onTap: () {
-                            final route = switch (lesson.type) {
-                              LessonType.video ||
-                              LessonType.pdf ||
-                              LessonType.notes ||
-                              LessonType.embedContent ||
-                              LessonType.liveStream ||
-                              LessonType.attachment =>
-                                '${widget.basePath}/lesson/${lesson.id}',
-                              LessonType.assessment =>
-                                '${widget.basePath}/assessment/${lesson.id}',
-                              LessonType.test => '${widget.basePath}/test/${lesson.id}',
-                              LessonType.unknown => null,
-                            };
-                            if (route != null) {
-                              context.push(route);
-                            }
-                          },
-                        );
-                      }),
-
-                    // Bottom Spacing
-                    const SizedBox(height: 80),
-                  ],
-                ),
               ),
             ],
           );
@@ -184,29 +236,5 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
       ),
     );
   }
-
-  List<LessonDto> _filterLessons(
-    List<LessonDto> lessons,
-    CurriculumFilter filter,
-  ) {
-    if (filter == CurriculumFilter.all) return lessons;
-
-    if (filter == CurriculumFilter.lesson) {
-      // "Lessons" filter: Show everything except specialized categories
-      return lessons.where((l) => 
-        l.type != LessonType.video && 
-        l.type != LessonType.assessment && 
-        l.type != LessonType.test
-      ).toList();
-    }
-
-    final LessonType targetType = switch (filter) {
-      CurriculumFilter.video => LessonType.video,
-      CurriculumFilter.assessment => LessonType.assessment,
-      CurriculumFilter.test => LessonType.test,
-      _ => throw UnimplementedError('Filter type $filter is not supported.'),
-    };
-
-    return lessons.where((l) => l.type == targetType).toList();
-  }
 }
+
