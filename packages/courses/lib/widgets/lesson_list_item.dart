@@ -90,16 +90,18 @@ class LessonListItem extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 4),
-
-                      // text-[14px] leading-[20px] font-medium (Chapter Title)
-                      AppText.cardSubtitle(lesson.chapterTitle ?? ''),
-                      const SizedBox(height: 16),
-
+                      AppText.cardSubtitle(
+                        lesson.chapterTitle ?? '',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 6),
                       Row(
                         children: [
-                          AppText.cardCaption(lesson.duration),
+                          if (lesson.duration.isNotEmpty)
+                            AppText.cardCaption(lesson.duration),
                           if (lesson.type != LessonType.liveStream) ...[
-                            const SizedBox(width: 8),
+                            if (lesson.duration.isNotEmpty) const SizedBox(width: 8),
                             LessonStatusBadge(status: lesson.progressStatus),
                           ],
                         ],

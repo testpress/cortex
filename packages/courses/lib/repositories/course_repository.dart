@@ -333,6 +333,100 @@ class CourseRepository {
     return watchCourse(courseId).first;
   }
 
+  /// Watches filtered lessons directly from the local database.
+  Stream<List<LessonDto>> watchFilteredLessonsLocal(String courseId, {String? chapterId, String? type}) {
+    final query = _db.select(_db.lessonsTable).join([
+      leftOuterJoin(_db.chaptersTable, _db.chaptersTable.id.equalsExp(_db.lessonsTable.chapterId)),
+    ]);
+
+    if (chapterId != null && chapterId.isNotEmpty) {
+      query.where(_db.lessonsTable.ancestorChapterIds.like('%,$chapterId,%'));
+    } else {
+      query.where(_db.lessonsTable.courseId.equals(courseId));
+    }
+
+    if (type != null && type.isNotEmpty) {
+      query.where(_db.lessonsTable.type.equals(type));
+    }
+
+    return query.watch().map((rows) {
+      return rows.map((row) {
+        final lessonRow = row.readTable(_db.lessonsTable);
+        final chapterRow = row.readTableOrNull(_db.chaptersTable);
+        
+        var dto = rowToLessonDto(lessonRow);
+        if ((dto.chapterTitle == null || dto.chapterTitle!.isEmpty) && chapterRow != null) {
+          dto = dto.copyWith(chapterTitle: chapterRow.title);
+        }
+        return dto;
+      }).toList();
+    });
+  }
+
+  String? _getApiComaptibleType(String? type) {
+    if (type == 'test') return 'exams';
+    if (type == 'assessment') return 'quiz';
+    return type;
+  }
+
+  /// Streams filtered content from the API and persists results to DB.
+  /// Used by filter tabs (Videos/Assessments/Tests) for direct API results.
+  /// Lessons are yielded incrementally as pages arrive.
+  Stream<List<LessonDto>> streamFilteredContents(String courseId, {String? chapterId, String? type}) {
+    String? mergeScopedAncestor(String? existing, String scopedChapterId) {
+      final token = ',$scopedChapterId,';
+      if (existing == null || existing.isEmpty) return token;
+      if (existing.contains(token)) return existing;
+      final trimmed = existing.replaceAll(RegExp(r'^,|,$'), '');
+      if (trimmed.isEmpty) return token;
+      return ',$trimmed,$scopedChapterId,';
+    }
+
+    return () async* {
+      final apiType = _getApiComaptibleType(type);
+      final stream =
+          _source.getCourseContents(courseId, chapterId: chapterId, type: apiType);
+      await for (final page in stream) {
+        final lessonIds = page.lessons.map((l) => l.id).toList();
+        final existingLessons = await (_db.select(_db.lessonsTable)
+              ..where((t) => t.id.isIn(lessonIds)))
+            .get();
+        
+        final existingById = {
+          for (final row in existingLessons) row.id: rowToLessonDto(row)
+        };
+
+        final enrichedLessons = page.lessons.map((lesson) {
+          final existingDbLesson = existingById[lesson.id];
+          final existingAncestry = existingDbLesson?.ancestorChapterIds ?? lesson.ancestorChapterIds;
+          
+          final seededAncestor = chapterId != null && chapterId.isNotEmpty
+              ? mergeScopedAncestor(existingAncestry, chapterId)
+              : existingAncestry;
+
+          // Merge with existing DB lesson to preserve local progress and bookmarks
+          var enriched = existingDbLesson != null 
+              ? lesson.mergeWith(existingDbLesson) 
+              : lesson;
+
+          // Apply the newly computed ancestry and courseId
+          return enriched.copyWith(
+            courseId: lesson.courseId ?? courseId,
+            ancestorChapterIds: seededAncestor,
+          );
+        }).toList();
+
+        final companions = enrichedLessons.map(_lessonDtoToCompanion).toList();
+
+        if (companions.isNotEmpty) {
+          await _db.upsertLessons(companions);
+        }
+
+        yield enrichedLessons;
+      }
+    }();
+  }
+
   /// Synchronizes all data needed for a specific chapter view.
   /// Handles the complexity of checking if it's a leaf and coordinating status refreshes.
   Future<List<LessonDto>> syncChapterContents(
@@ -341,10 +435,10 @@ class CourseRepository {
   ) async {
     // Only refresh the specific chapter lessons to ensure lazy-loading performance.
     // We no longer trigger a global course sync here.
-    return await refreshLessons(chapterId);
+    return await refreshLessons(courseId, chapterId);
   }
 
-  Future<List<LessonDto>> refreshLessons(String chapterId) async {
+  Future<List<LessonDto>> refreshLessons(String courseId, String chapterId) async {
     if (_activeContentSyncs.containsKey(chapterId)) {
       final rows = await getLessons(chapterId);
       return rows.map(rowToLessonDto).toList();
@@ -353,7 +447,36 @@ class CourseRepository {
     final syncFuture = () async {
       try {
         final lessons = await _source.getLessons(chapterId);
-        final companions = lessons.map(_lessonDtoToCompanion).toList();
+        final chapterRows = await (_db.select(_db.chaptersTable)
+              ..where((t) => t.courseId.equals(courseId)))
+            .get();
+        final chapterById = {for (final row in chapterRows) row.id: row};
+
+        String? buildAncestorChapterIds(String chapterId) {
+          if (chapterId.isEmpty) return null;
+          final chain = <String>[];
+          final visited = <String>{};
+          String? current = chapterId;
+          while (current != null && current.isNotEmpty && !visited.contains(current)) {
+            visited.add(current);
+            chain.insert(0, current);
+            current = chapterById[current]?.parentId;
+          }
+          if (chain.isEmpty) return ',$chapterId,';
+          return ',${chain.join(',')},';
+        }
+
+        final companions = lessons
+            .map(
+              (lesson) => _lessonDtoToCompanion(
+                lesson.copyWith(
+                  courseId: lesson.courseId ?? courseId,
+                  ancestorChapterIds:
+                      lesson.ancestorChapterIds ?? buildAncestorChapterIds(lesson.chapterId),
+                ),
+              ),
+            )
+            .toList();
 
         final remoteIds = lessons.map((l) => l.id).toSet();
 
@@ -441,7 +564,34 @@ class CourseRepository {
     String courseId,
     CourseCurriculumDto curriculum,
   ) async {
-    final lessonCompanions = curriculum.lessons.map(_lessonDtoToCompanion).toList();
+    final chapterRows = await (_db.select(_db.chaptersTable)
+          ..where((t) => t.courseId.equals(courseId)))
+        .get();
+    final chapterById = {for (final row in chapterRows) row.id: row};
+
+    String? buildAncestorChapterIds(String chapterId) {
+      if (chapterId.isEmpty) return null;
+      final chain = <String>[];
+      final visited = <String>{};
+      String? current = chapterId;
+      while (current != null && current.isNotEmpty && !visited.contains(current)) {
+        visited.add(current);
+        chain.insert(0, current);
+        current = chapterById[current]?.parentId;
+      }
+      if (chain.isEmpty) return null;
+      return ',${chain.join(',')},';
+    }
+
+    final lessonCompanions = curriculum.lessons.map((lesson) {
+      final ancestry = lesson.ancestorChapterIds ?? buildAncestorChapterIds(lesson.chapterId);
+      return _lessonDtoToCompanion(
+        lesson.copyWith(
+          courseId: lesson.courseId ?? courseId,
+          ancestorChapterIds: ancestry,
+        ),
+      );
+    }).toList();
     final chapterCompanions = curriculum.chapters.map(_chapterDtoToCompanion).toList();
 
     await _db.transaction(() async {
@@ -705,6 +855,8 @@ class CourseRepository {
   LessonDto rowToLessonDto(LessonsTableData row) => LessonDto(
     id: row.id,
     chapterId: row.chapterId,
+    courseId: row.courseId,
+    ancestorChapterIds: row.ancestorChapterIds,
     title: row.title,
     type: _parseType(row.type),
     duration: row.duration,
@@ -741,6 +893,10 @@ class CourseRepository {
       LessonsTableCompanion(
         id: Value(dto.id),
         chapterId: Value(dto.chapterId),
+        courseId: dto.courseId != null ? Value(dto.courseId) : const Value.absent(),
+        ancestorChapterIds: dto.ancestorChapterIds != null
+            ? Value(dto.ancestorChapterIds)
+            : const Value.absent(),
         title: Value(dto.title),
         type: Value(dto.type.name),
         duration: Value(dto.duration),

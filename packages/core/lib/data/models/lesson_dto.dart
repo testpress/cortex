@@ -10,6 +10,8 @@ enum LessonProgressStatus { notStarted, inProgress, completed }
 class LessonDto {
   final String id;
   final String chapterId;
+  final String? courseId;
+  final String? ancestorChapterIds;
   final String title;
   final LessonType type;
   final String duration; // e.g. "45 min"
@@ -73,6 +75,8 @@ class LessonDto {
   const LessonDto({
     required this.id,
     required this.chapterId,
+    this.courseId,
+    this.ancestorChapterIds,
     required this.title,
     required this.type,
     required this.duration,
@@ -110,6 +114,8 @@ class LessonDto {
     String? scheduledMessage,
     String? id,
     String? chapterId,
+    String? courseId,
+    String? ancestorChapterIds,
     String? title,
     LessonType? type,
     String? duration,
@@ -142,6 +148,8 @@ class LessonDto {
     return LessonDto(
       id: id ?? this.id,
       chapterId: chapterId ?? this.chapterId,
+      courseId: courseId ?? this.courseId,
+      ancestorChapterIds: ancestorChapterIds ?? this.ancestorChapterIds,
       title: title ?? this.title,
       type: type ?? this.type,
       duration: duration ?? this.duration,
@@ -195,8 +203,12 @@ class LessonDto {
       nextContentId: (nextContentId?.isEmpty ?? true) ? other.nextContentId : nextContentId,
       previousContentId: (previousContentId?.isEmpty ?? true) ? other.previousContentId : previousContentId,
       chapterTitle: (chapterTitle?.isEmpty ?? true) ? other.chapterTitle : chapterTitle,
+      courseId: (courseId?.isEmpty ?? true) ? other.courseId : courseId,
+      ancestorChapterIds: (ancestorChapterIds?.isEmpty ?? true)
+          ? other.ancestorChapterIds
+          : ancestorChapterIds,
       image: (image?.isEmpty ?? true) ? other.image : image,
-      description: (this.description?.isEmpty ?? true) ? other.description : this.description,
+      description: (description?.isEmpty ?? true) ? other.description : description,
       attemptsUrl: (attemptsUrl?.isEmpty ?? true) ? other.attemptsUrl : attemptsUrl,
       slug: (slug?.isEmpty ?? true) ? other.slug : slug,
       isDetailFetched: isDetailFetched || other.isDetailFetched,
@@ -400,6 +412,13 @@ class LessonDto {
         if (val is Map) return val['id']?.toString() ?? '';
         return val?.toString() ?? '';
       }(),
+      courseId: () {
+        final val = json['course_id'] ?? json['course'] ?? json['courseId'];
+        if (val is Map) return val['id']?.toString();
+        return val?.toString();
+      }(),
+      ancestorChapterIds: json['ancestor_chapter_ids']?.toString() ??
+          json['ancestorChapterIds']?.toString(),
       title: json['title'] as String? ?? json['name'] as String? ?? '',
       type: type,
       duration: TimeFormatter.formatDuration(
@@ -445,6 +464,8 @@ class LessonDto {
     return {
       'id': id,
       'chapterId': chapterId,
+      'courseId': courseId,
+      'ancestorChapterIds': ancestorChapterIds,
       'title': title,
       'type': type.name,
       'duration': duration,

@@ -1534,6 +1534,28 @@ class $LessonsTableTable extends LessonsTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _courseIdMeta = const VerificationMeta(
+    'courseId',
+  );
+  @override
+  late final GeneratedColumn<String> courseId = GeneratedColumn<String>(
+    'course_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _ancestorChapterIdsMeta =
+      const VerificationMeta('ancestorChapterIds');
+  @override
+  late final GeneratedColumn<String> ancestorChapterIds =
+      GeneratedColumn<String>(
+        'ancestor_chapter_ids',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
@@ -1894,6 +1916,8 @@ class $LessonsTableTable extends LessonsTable
   List<GeneratedColumn> get $columns => [
     id,
     chapterId,
+    courseId,
+    ancestorChapterIds,
     title,
     type,
     duration,
@@ -1949,6 +1973,21 @@ class $LessonsTableTable extends LessonsTable
       );
     } else if (isInserting) {
       context.missing(_chapterIdMeta);
+    }
+    if (data.containsKey('course_id')) {
+      context.handle(
+        _courseIdMeta,
+        courseId.isAcceptableOrUnknown(data['course_id']!, _courseIdMeta),
+      );
+    }
+    if (data.containsKey('ancestor_chapter_ids')) {
+      context.handle(
+        _ancestorChapterIdsMeta,
+        ancestorChapterIds.isAcceptableOrUnknown(
+          data['ancestor_chapter_ids']!,
+          _ancestorChapterIdsMeta,
+        ),
+      );
     }
     if (data.containsKey('title')) {
       context.handle(
@@ -2212,6 +2251,14 @@ class $LessonsTableTable extends LessonsTable
         DriftSqlType.string,
         data['${effectivePrefix}chapter_id'],
       )!,
+      courseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}course_id'],
+      ),
+      ancestorChapterIds: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}ancestor_chapter_ids'],
+      ),
       title: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}title'],
@@ -2345,6 +2392,8 @@ class LessonsTableData extends DataClass
     implements Insertable<LessonsTableData> {
   final String id;
   final String chapterId;
+  final String? courseId;
+  final String? ancestorChapterIds;
   final String title;
 
   /// Stored as string: 'video' | 'pdf' | 'assessment' | 'test'
@@ -2382,6 +2431,8 @@ class LessonsTableData extends DataClass
   const LessonsTableData({
     required this.id,
     required this.chapterId,
+    this.courseId,
+    this.ancestorChapterIds,
     required this.title,
     required this.type,
     required this.duration,
@@ -2418,6 +2469,12 @@ class LessonsTableData extends DataClass
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['chapter_id'] = Variable<String>(chapterId);
+    if (!nullToAbsent || courseId != null) {
+      map['course_id'] = Variable<String>(courseId);
+    }
+    if (!nullToAbsent || ancestorChapterIds != null) {
+      map['ancestor_chapter_ids'] = Variable<String>(ancestorChapterIds);
+    }
     map['title'] = Variable<String>(title);
     map['type'] = Variable<String>(type);
     map['duration'] = Variable<String>(duration);
@@ -2489,6 +2546,12 @@ class LessonsTableData extends DataClass
     return LessonsTableCompanion(
       id: Value(id),
       chapterId: Value(chapterId),
+      courseId: courseId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(courseId),
+      ancestorChapterIds: ancestorChapterIds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ancestorChapterIds),
       title: Value(title),
       type: Value(type),
       duration: Value(duration),
@@ -2562,6 +2625,10 @@ class LessonsTableData extends DataClass
     return LessonsTableData(
       id: serializer.fromJson<String>(json['id']),
       chapterId: serializer.fromJson<String>(json['chapterId']),
+      courseId: serializer.fromJson<String?>(json['courseId']),
+      ancestorChapterIds: serializer.fromJson<String?>(
+        json['ancestorChapterIds'],
+      ),
       title: serializer.fromJson<String>(json['title']),
       type: serializer.fromJson<String>(json['type']),
       duration: serializer.fromJson<String>(json['duration']),
@@ -2602,6 +2669,8 @@ class LessonsTableData extends DataClass
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'chapterId': serializer.toJson<String>(chapterId),
+      'courseId': serializer.toJson<String?>(courseId),
+      'ancestorChapterIds': serializer.toJson<String?>(ancestorChapterIds),
       'title': serializer.toJson<String>(title),
       'type': serializer.toJson<String>(type),
       'duration': serializer.toJson<String>(duration),
@@ -2638,6 +2707,8 @@ class LessonsTableData extends DataClass
   LessonsTableData copyWith({
     String? id,
     String? chapterId,
+    Value<String?> courseId = const Value.absent(),
+    Value<String?> ancestorChapterIds = const Value.absent(),
     String? title,
     String? type,
     String? duration,
@@ -2671,6 +2742,10 @@ class LessonsTableData extends DataClass
   }) => LessonsTableData(
     id: id ?? this.id,
     chapterId: chapterId ?? this.chapterId,
+    courseId: courseId.present ? courseId.value : this.courseId,
+    ancestorChapterIds: ancestorChapterIds.present
+        ? ancestorChapterIds.value
+        : this.ancestorChapterIds,
     title: title ?? this.title,
     type: type ?? this.type,
     duration: duration ?? this.duration,
@@ -2712,6 +2787,10 @@ class LessonsTableData extends DataClass
     return LessonsTableData(
       id: data.id.present ? data.id.value : this.id,
       chapterId: data.chapterId.present ? data.chapterId.value : this.chapterId,
+      courseId: data.courseId.present ? data.courseId.value : this.courseId,
+      ancestorChapterIds: data.ancestorChapterIds.present
+          ? data.ancestorChapterIds.value
+          : this.ancestorChapterIds,
       title: data.title.present ? data.title.value : this.title,
       type: data.type.present ? data.type.value : this.type,
       duration: data.duration.present ? data.duration.value : this.duration,
@@ -2794,6 +2873,8 @@ class LessonsTableData extends DataClass
     return (StringBuffer('LessonsTableData(')
           ..write('id: $id, ')
           ..write('chapterId: $chapterId, ')
+          ..write('courseId: $courseId, ')
+          ..write('ancestorChapterIds: $ancestorChapterIds, ')
           ..write('title: $title, ')
           ..write('type: $type, ')
           ..write('duration: $duration, ')
@@ -2832,6 +2913,8 @@ class LessonsTableData extends DataClass
   int get hashCode => Object.hashAll([
     id,
     chapterId,
+    courseId,
+    ancestorChapterIds,
     title,
     type,
     duration,
@@ -2869,6 +2952,8 @@ class LessonsTableData extends DataClass
       (other is LessonsTableData &&
           other.id == this.id &&
           other.chapterId == this.chapterId &&
+          other.courseId == this.courseId &&
+          other.ancestorChapterIds == this.ancestorChapterIds &&
           other.title == this.title &&
           other.type == this.type &&
           other.duration == this.duration &&
@@ -2904,6 +2989,8 @@ class LessonsTableData extends DataClass
 class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   final Value<String> id;
   final Value<String> chapterId;
+  final Value<String?> courseId;
+  final Value<String?> ancestorChapterIds;
   final Value<String> title;
   final Value<String> type;
   final Value<String> duration;
@@ -2938,6 +3025,8 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   const LessonsTableCompanion({
     this.id = const Value.absent(),
     this.chapterId = const Value.absent(),
+    this.courseId = const Value.absent(),
+    this.ancestorChapterIds = const Value.absent(),
     this.title = const Value.absent(),
     this.type = const Value.absent(),
     this.duration = const Value.absent(),
@@ -2973,6 +3062,8 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   LessonsTableCompanion.insert({
     required String id,
     required String chapterId,
+    this.courseId = const Value.absent(),
+    this.ancestorChapterIds = const Value.absent(),
     required String title,
     required String type,
     required String duration,
@@ -3013,6 +3104,8 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   static Insertable<LessonsTableData> custom({
     Expression<String>? id,
     Expression<String>? chapterId,
+    Expression<String>? courseId,
+    Expression<String>? ancestorChapterIds,
     Expression<String>? title,
     Expression<String>? type,
     Expression<String>? duration,
@@ -3048,6 +3141,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (chapterId != null) 'chapter_id': chapterId,
+      if (courseId != null) 'course_id': courseId,
+      if (ancestorChapterIds != null)
+        'ancestor_chapter_ids': ancestorChapterIds,
       if (title != null) 'title': title,
       if (type != null) 'type': type,
       if (duration != null) 'duration': duration,
@@ -3085,6 +3181,8 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   LessonsTableCompanion copyWith({
     Value<String>? id,
     Value<String>? chapterId,
+    Value<String?>? courseId,
+    Value<String?>? ancestorChapterIds,
     Value<String>? title,
     Value<String>? type,
     Value<String>? duration,
@@ -3120,6 +3218,8 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     return LessonsTableCompanion(
       id: id ?? this.id,
       chapterId: chapterId ?? this.chapterId,
+      courseId: courseId ?? this.courseId,
+      ancestorChapterIds: ancestorChapterIds ?? this.ancestorChapterIds,
       title: title ?? this.title,
       type: type ?? this.type,
       duration: duration ?? this.duration,
@@ -3162,6 +3262,12 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     }
     if (chapterId.present) {
       map['chapter_id'] = Variable<String>(chapterId.value);
+    }
+    if (courseId.present) {
+      map['course_id'] = Variable<String>(courseId.value);
+    }
+    if (ancestorChapterIds.present) {
+      map['ancestor_chapter_ids'] = Variable<String>(ancestorChapterIds.value);
     }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
@@ -3264,6 +3370,8 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     return (StringBuffer('LessonsTableCompanion(')
           ..write('id: $id, ')
           ..write('chapterId: $chapterId, ')
+          ..write('courseId: $courseId, ')
+          ..write('ancestorChapterIds: $ancestorChapterIds, ')
           ..write('title: $title, ')
           ..write('type: $type, ')
           ..write('duration: $duration, ')
@@ -10868,6 +10976,8 @@ typedef $$LessonsTableTableCreateCompanionBuilder =
     LessonsTableCompanion Function({
       required String id,
       required String chapterId,
+      Value<String?> courseId,
+      Value<String?> ancestorChapterIds,
       required String title,
       required String type,
       required String duration,
@@ -10904,6 +11014,8 @@ typedef $$LessonsTableTableUpdateCompanionBuilder =
     LessonsTableCompanion Function({
       Value<String> id,
       Value<String> chapterId,
+      Value<String?> courseId,
+      Value<String?> ancestorChapterIds,
       Value<String> title,
       Value<String> type,
       Value<String> duration,
@@ -10953,6 +11065,16 @@ class $$LessonsTableTableFilterComposer
 
   ColumnFilters<String> get chapterId => $composableBuilder(
     column: $table.chapterId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get courseId => $composableBuilder(
+    column: $table.courseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get ancestorChapterIds => $composableBuilder(
+    column: $table.ancestorChapterIds,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -11126,6 +11248,16 @@ class $$LessonsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get courseId => $composableBuilder(
+    column: $table.courseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get ancestorChapterIds => $composableBuilder(
+    column: $table.ancestorChapterIds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get title => $composableBuilder(
     column: $table.title,
     builder: (column) => ColumnOrderings(column),
@@ -11291,6 +11423,14 @@ class $$LessonsTableTableAnnotationComposer
 
   GeneratedColumn<String> get chapterId =>
       $composableBuilder(column: $table.chapterId, builder: (column) => column);
+
+  GeneratedColumn<String> get courseId =>
+      $composableBuilder(column: $table.courseId, builder: (column) => column);
+
+  GeneratedColumn<String> get ancestorChapterIds => $composableBuilder(
+    column: $table.ancestorChapterIds,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get title =>
       $composableBuilder(column: $table.title, builder: (column) => column);
@@ -11460,6 +11600,8 @@ class $$LessonsTableTableTableManager
               ({
                 Value<String> id = const Value.absent(),
                 Value<String> chapterId = const Value.absent(),
+                Value<String?> courseId = const Value.absent(),
+                Value<String?> ancestorChapterIds = const Value.absent(),
                 Value<String> title = const Value.absent(),
                 Value<String> type = const Value.absent(),
                 Value<String> duration = const Value.absent(),
@@ -11494,6 +11636,8 @@ class $$LessonsTableTableTableManager
               }) => LessonsTableCompanion(
                 id: id,
                 chapterId: chapterId,
+                courseId: courseId,
+                ancestorChapterIds: ancestorChapterIds,
                 title: title,
                 type: type,
                 duration: duration,
@@ -11530,6 +11674,8 @@ class $$LessonsTableTableTableManager
               ({
                 required String id,
                 required String chapterId,
+                Value<String?> courseId = const Value.absent(),
+                Value<String?> ancestorChapterIds = const Value.absent(),
                 required String title,
                 required String type,
                 required String duration,
@@ -11564,6 +11710,8 @@ class $$LessonsTableTableTableManager
               }) => LessonsTableCompanion.insert(
                 id: id,
                 chapterId: chapterId,
+                courseId: courseId,
+                ancestorChapterIds: ancestorChapterIds,
                 title: title,
                 type: type,
                 duration: duration,

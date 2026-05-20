@@ -15,8 +15,9 @@ abstract class DataSource {
 
   /// Fetch all course contents for a specific course (V3 flat list).
   /// [chapterId] is an optional filter to fetch only a specific branch.
+  /// [type] is an optional filter to scope results to a content type (video, assessment, test, etc).
   /// Returns a Stream to support incremental/paginated updates.
-  Stream<CourseCurriculumDto> getCourseContents(String courseId, {String? chapterId});
+  Stream<CourseCurriculumDto> getCourseContents(String courseId, {String? chapterId, String? type});
   
   /// Fetch running contents for a specific course.
   Future<CourseCurriculumDto> getRunningContents(String courseId, {String? chapterId});
