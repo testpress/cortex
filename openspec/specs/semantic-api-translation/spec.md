@@ -1,5 +1,8 @@
-## ADDED Requirements
+# semantic-api-translation Specification
 
+## Purpose
+TBD - created by archiving change scalable-hierarchical-filtering. Update Purpose after archive.
+## Requirements
 ### Requirement: Repository-Level API Type Translation
 The `CourseRepository` SHALL be the single point of responsibility for translating internal domain terminology to backend-specific API parameter values. No UI or infrastructure layer SHALL be aware of this mapping.
 
@@ -22,3 +25,9 @@ A dedicated private helper (`_getApiCompatibleType`) SHALL perform this translat
 
 ### Requirement: Transparent Data Source
 The `HttpDataSource` SHALL act as a transparent HTTP adapter. It SHALL pass the `type` parameter value directly to the backend without inspecting, transforming, or making decisions based on its content. All query parameter construction is the sole responsibility of the `CourseRepository`.
+
+#### Scenario: Network layer parameter passthrough
+- **WHEN** the `CourseRepository` provides a translated parameter (e.g. `"exams"`)
+- **THEN** the `HttpDataSource` SHALL append `?type=exams` to the request untouched
+- **AND** it SHALL NOT perform any internal domain logic or translation
+
