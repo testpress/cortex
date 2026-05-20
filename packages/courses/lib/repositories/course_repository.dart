@@ -386,6 +386,104 @@ class CourseRepository {
     return ',${chain.join(',')},';
   }
 
+  /// Returns a clean pagination controller that internally coordinates the
+  /// local database stream and the background paginated API stream.
+  LessonPaginationController getFilteredLessonsController(
+    String courseId, {
+    String? chapterId,
+    String? type,
+  }) {
+    final lessonsController = StreamController<List<LessonDto>>.broadcast();
+    final isLoadingMoreController = StreamController<bool>.broadcast();
+    final hasMoreController = StreamController<bool>.broadcast();
+
+    bool isApiSyncing = false;
+    bool hasMore = true;
+
+    // 1. Listen to reactive DB updates
+    final dbSub = watchFilteredLessonsLocal(
+      courseId,
+      chapterId: chapterId,
+      type: type,
+    ).listen((lessons) {
+      if (!lessonsController.isClosed) {
+        lessonsController.add(lessons);
+      }
+    });
+
+    StreamSubscription<List<LessonDto>>? apiSub;
+
+    void startApiSync() {
+      if (isApiSyncing) return;
+      isApiSyncing = true;
+      if (!isLoadingMoreController.isClosed) {
+        isLoadingMoreController.add(true);
+      }
+
+      final apiStream = streamFilteredContents(
+        courseId,
+        chapterId: chapterId,
+        type: type,
+      );
+
+      apiSub = apiStream.listen(
+        (_) {
+          apiSub?.pause();
+          isApiSyncing = false;
+          if (!isLoadingMoreController.isClosed) {
+            isLoadingMoreController.add(false);
+          }
+        },
+        onError: (e) {
+          isApiSyncing = false;
+          if (!isLoadingMoreController.isClosed) {
+            isLoadingMoreController.add(false);
+          }
+        },
+        onDone: () {
+          isApiSyncing = false;
+          hasMore = false;
+          if (!isLoadingMoreController.isClosed) {
+            isLoadingMoreController.add(false);
+          }
+          if (!hasMoreController.isClosed) {
+            hasMoreController.add(false);
+          }
+        },
+      );
+    }
+
+    // Start background sync on next loop tick
+    Future.microtask(() => startApiSync());
+
+    void fetchNextPage() {
+      if (!hasMore || isApiSyncing) return;
+      if (apiSub != null && apiSub!.isPaused) {
+        isApiSyncing = true;
+        if (!isLoadingMoreController.isClosed) {
+          isLoadingMoreController.add(true);
+        }
+        apiSub!.resume();
+      }
+    }
+
+    void dispose() {
+      dbSub.cancel();
+      apiSub?.cancel();
+      lessonsController.close();
+      isLoadingMoreController.close();
+      hasMoreController.close();
+    }
+
+    return LessonPaginationController(
+      lessonsStream: lessonsController.stream,
+      isLoadingMoreStream: isLoadingMoreController.stream,
+      hasMoreStream: hasMoreController.stream,
+      fetchNextPage: fetchNextPage,
+      dispose: dispose,
+    );
+  }
+
   /// Streams filtered content from the API and persists results to DB.
   /// Used by filter tabs (Videos/Assessments/Tests) for direct API results.
   /// Lessons are yielded incrementally as pages arrive.
@@ -975,4 +1073,21 @@ class CourseRepository {
       );
     }
   }
+}
+
+/// Controller returned by the repository to encapsulate paginated data fetching and DB watching.
+class LessonPaginationController {
+  final Stream<List<LessonDto>> lessonsStream;
+  final Stream<bool> isLoadingMoreStream;
+  final Stream<bool> hasMoreStream;
+  final VoidCallback fetchNextPage;
+  final VoidCallback dispose;
+
+  LessonPaginationController({
+    required this.lessonsStream,
+    required this.isLoadingMoreStream,
+    required this.hasMoreStream,
+    required this.fetchNextPage,
+    required this.dispose,
+  });
 }

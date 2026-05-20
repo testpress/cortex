@@ -182,20 +182,22 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                         const SizedBox(height: 80),
                       ],
                     )
-                  : filteredLessons.isEmpty && !isLoadingFilter
-                      ? Center(
-                          child: AppText.body(
-                            'No ${widget.showFilters ? _activeFilter.displayName : "exams"} found.',
-                            color: design.colors.textSecondary,
-                          ),
-                        )
-                      : ListView.builder(
-                          controller: _scrollController,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: design.spacing.md,
-                            vertical: design.spacing.md,
-                          ),
-                          itemCount: filteredLessons.length + (isLoadingMore || (isLoadingFilter && filteredLessons.isNotEmpty) ? 1 : 0),
+                  : (isLoadingFilter || isLoadingMore) && filteredLessons.isEmpty
+                      ? const Center(child: AppLoadingIndicator())
+                      : filteredLessons.isEmpty
+                          ? Center(
+                              child: AppText.body(
+                                'No ${widget.showFilters ? _activeFilter.displayName : "exams"} found.',
+                                color: design.colors.textSecondary,
+                              ),
+                            )
+                          : ListView.builder(
+                              controller: _scrollController,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: design.spacing.md,
+                                vertical: design.spacing.md,
+                              ),
+                              itemCount: filteredLessons.length + (isLoadingMore || isLoadingFilter ? 1 : 0),
                           itemBuilder: (context, index) {
                             if (index < filteredLessons.length) {
                               final lesson = filteredLessons[index];

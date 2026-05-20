@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:core/data/data.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../repositories/course_repository.dart';
@@ -34,12 +33,9 @@ class FilteredLessonsState {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class FilteredLessons extends _$FilteredLessons {
-  StreamSubscription<List<LessonDto>>? _dbSub;
-  StreamSubscription<List<LessonDto>>? _apiSub;
-  bool _isApiSyncing = false;
-  bool _isDisposed = false;
+  LessonPaginationController? _controller;
 
   @override
   FilteredLessonsState build(
@@ -54,88 +50,45 @@ class FilteredLessons extends _$FilteredLessons {
       return const FilteredLessonsState(
         lessons: [],
         isLoading: true,
-        isLoadingMore: false,
+        isLoadingMore: true,
         hasMore: true,
       );
     }
 
-    ref.onDispose(() {
-      _isDisposed = true;
-      _dbSub?.cancel();
-      _apiSub?.cancel();
-    });
-
-    // Schedule initialization for after the build method returns the initial state.
-    Future.microtask(() {
-      if (_isDisposed) return;
-
-      // 1. Watch local database for real-time updates.
-      _dbSub = repo
-          .watchFilteredLessonsLocal(
-        courseId,
-        chapterId: chapterId,
-        type: type,
-      )
-          .listen((lessons) {
-        state = state.copyWith(
-          lessons: lessons,
-          isLoading: false,
-        );
-      });
-
-      // 2. Start background sync
-      _startApiSync(repo);
-    });
-
-    return const FilteredLessonsState(
-      lessons: [],
-      isLoading: true,
-      isLoadingMore: false,
-      hasMore: true,
-    );
-  }
-
-  void _startApiSync(CourseRepository repo) {
-    if (_isApiSyncing) return;
-    _isApiSyncing = true;
-    state = state.copyWith(isLoadingMore: true);
-
-    final stream = repo.streamFilteredContents(
+    _controller = repo.getFilteredLessonsController(
       courseId,
       chapterId: chapterId,
       type: type,
     );
 
-    _apiSub = stream.listen(
-      (_) {
-        // Pause stream to prevent eager loading of the next page
-        _apiSub?.pause();
-        _isApiSyncing = false;
-        state = state.copyWith(isLoadingMore: false);
-      },
-      onError: (e) {
-        _isApiSyncing = false;
-        state = state.copyWith(
-          isLoading: false,
-          isLoadingMore: false,
-        );
-      },
-      onDone: () {
-        _isApiSyncing = false;
-        state = state.copyWith(
-          isLoadingMore: false,
-          hasMore: false,
-        );
-      },
+    ref.onDispose(() {
+      _controller?.dispose();
+    });
+
+    _controller!.lessonsStream.listen((lessons) {
+      state = state.copyWith(
+        lessons: lessons,
+        isLoading: false,
+      );
+    });
+
+    _controller!.isLoadingMoreStream.listen((isLoadingMore) {
+      state = state.copyWith(isLoadingMore: isLoadingMore);
+    });
+
+    _controller!.hasMoreStream.listen((hasMore) {
+      state = state.copyWith(hasMore: hasMore);
+    });
+
+    return const FilteredLessonsState(
+      lessons: [],
+      isLoading: true,
+      isLoadingMore: true,
+      hasMore: true,
     );
   }
 
   void fetchNextPage() {
-    if (!state.hasMore || _isApiSyncing) return;
-    if (_apiSub != null && _apiSub!.isPaused) {
-      _isApiSyncing = true;
-      state = state.copyWith(isLoadingMore: true);
-      _apiSub!.resume();
-    }
+    _controller?.fetchNextPage();
   }
 }
