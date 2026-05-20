@@ -12,6 +12,7 @@
 
 - [x] 3.1 Keep the Study tab course list skeletonized.
 - [x] 3.2 Keep other screens on their existing loading presentation.
+- [x] 3.3 Refactor StudyContentList to use the official Skeletonizer pattern wrapping the actual list widget with dynamic enabled binding.
 
 ## 4. Shells, Routes, and Verification
 

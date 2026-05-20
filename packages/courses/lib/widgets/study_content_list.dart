@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../providers/course_list_provider.dart';
 import '../widgets/course_card.dart';
 import '../widgets/lesson_list_item.dart';
@@ -13,23 +14,6 @@ class StudyContentList extends ConsumerWidget {
   final List<LessonDto> allLessons;
   final Set<LessonType> activeTypeFilters;
   final String searchQuery;
-
-  static final List<CourseDto> _loadingCourses = List.generate(
-    6,
-    (index) => CourseDto(
-      id: 'loading-course-${index + 1}',
-      title: 'Loading course title text',
-      colorIndex: index % 6,
-      chapterCount: 90 + index,
-      totalContents: 400 + (index * 3),
-      progress: 0,
-      completedLessons: 0,
-      totalLessons: 400 + (index * 3),
-      image: '',
-      examsCount: index % 4,
-      order: index,
-    ),
-  );
 
   const StudyContentList({
     super.key,
@@ -52,15 +36,15 @@ class StudyContentList extends ConsumerWidget {
           error: (_, __) => false,
         );
 
-
-    if (showInitialLoader) {
-      return _buildInitialSkeletonList(design);
-    }
-
     return enrolledCoursesState.when(
       data: (courses) {
         final filteredCourses = _filterCourses(courses);
         final filteredLessons = _filterLessons(allLessons);
+
+        final isSkeleton = showInitialLoader && filteredCourses.isEmpty;
+        final displayCourses = isSkeleton
+            ? _skeletonCourses
+            : filteredCourses;
 
         return SliverMainAxisGroup(
           slivers: [
@@ -70,18 +54,21 @@ class StudyContentList extends ConsumerWidget {
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      final course = filteredCourses[index];
+                      final course = displayCourses[index];
                       return Padding(
                         padding: EdgeInsets.only(bottom: design.spacing.md),
                         child: CourseCard(
                           course: course,
-                          onTap: () => context.push(
-                            '/study/course/${course.id}/chapters',
-                          ),
+                          isSkeleton: isSkeleton,
+                          onTap: isSkeleton
+                              ? null
+                              : () => context.push(
+                                    '/study/course/${course.id}/chapters',
+                                  ),
                         ),
                       );
                     },
-                    childCount: filteredCourses.length,
+                    childCount: displayCourses.length,
                   ),
                 ),
               )
@@ -118,11 +105,40 @@ class StudyContentList extends ConsumerWidget {
                   ),
                 ),
               ),
-            if (isSyncingMore) _buildLoadMoreSkeleton(design),
+            if (isSyncingMore)
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+                sliver: SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: design.spacing.md),
+                    child: CourseCard(
+                      course: _skeletonCourses.first,
+                      isSkeleton: isSyncingMore,
+                    ),
+                  ),
+                ),
+              ),
           ],
         );
       },
-      loading: () => _buildInitialSkeletonList(design),
+      // DB stream briefly loading — only show skeleton if there's nothing cached yet.
+      loading: () => isSyncingInitial
+          ? SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+              sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => Padding(
+                      padding: EdgeInsets.only(bottom: design.spacing.md),
+                      child: CourseCard(
+                        course: _skeletonCourses[index],
+                        isSkeleton: isSyncingInitial,
+                      ),
+                    ),
+                    childCount: _skeletonCourses.length,
+                  ),
+              ),
+            )
+          : const SliverToBoxAdapter(child: SizedBox.shrink()),
       error: (e, _) => SliverFillRemaining(
         hasScrollBody: false,
         child: AppErrorView(
@@ -146,37 +162,23 @@ class StudyContentList extends ConsumerWidget {
       return lesson.title.toLowerCase().contains(searchQuery.toLowerCase());
     }).toList();
   }
-
-  Widget _buildInitialSkeletonList(DesignConfig design) {
-    return SliverPadding(
-      padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-      sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) => Padding(
-            padding: EdgeInsets.only(bottom: design.spacing.md),
-            child: CourseCard(
-              course: _loadingCourses[index],
-              isSkeleton: true,
-            ),
-          ),
-          childCount: _loadingCourses.length,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLoadMoreSkeleton(DesignConfig design) {
-    return SliverPadding(
-      padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-      sliver: SliverToBoxAdapter(
-        child: Padding(
-          padding: EdgeInsets.only(bottom: design.spacing.md),
-          child: CourseCard(
-            course: _loadingCourses.first,
-            isSkeleton: true,
-          ),
-        ),
-      ),
-    );
-  }
 }
+
+// Skeleton placeholder courses — used only during loading states.
+// Values are chosen to produce realistic-sized shimmer bones.
+final _skeletonCourses = List.generate(
+  6,
+  (index) => CourseDto(
+    id: 'skeleton-$index',
+    title: 'Loading course title text',
+    colorIndex: index % 6,
+    chapterCount: 12,
+    totalContents: 48,
+    progress: 0,
+    completedLessons: 0,
+    totalLessons: 48,
+    image: '',
+    examsCount: 0,
+    order: index,
+  ),
+);

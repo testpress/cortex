@@ -7,7 +7,8 @@ The system SHALL support the Study tab course list structural loading state by s
 
 #### Scenario: Real layout skeletonization
 - **WHEN** the Study tab course list is in its loading state
-- **THEN** the system SHALL wrap the real course card list in `Skeletonizer`
+- **THEN** the system SHALL wrap the real course card list in a single `SliverSkeletonizer` (or `Skeletonizer`)
+- **AND** the `enabled` property of `SliverSkeletonizer` SHALL be dynamically bound to the loading state (e.g., `enabled: showInitialLoader`) following the official documentation pattern
 - **AND** the screen shell SHALL remain responsible only for choosing when to show the loading state
 - **AND** targeted annotations MAY be used where a specific shape must be preserved
 
