@@ -8,12 +8,12 @@ A dedicated private helper (`_getApiCompatibleType`) SHALL perform this translat
 #### Scenario: Fetching filtered test content
 - **WHEN** the filter type `"test"` is passed from the UI layer
 - **THEN** the `CourseRepository._getApiCompatibleType` SHALL translate it to `"exams"` before passing to the data source
-- **AND** the resulting API request SHALL use `?types=exams`
+- **AND** the resulting API request SHALL use `?type=exams`
 
 #### Scenario: Fetching filtered assessment content
 - **WHEN** the filter type `"assessment"` is passed from the UI layer
 - **THEN** the `CourseRepository._getApiCompatibleType` SHALL translate it to `"quiz"` before passing to the data source
-- **AND** the resulting API request SHALL use `?types=quiz`
+- **AND** the resulting API request SHALL use `?type=quiz`
 
 #### Scenario: Fetching other content types (video, etc.)
 - **WHEN** the filter type `"video"` (or any non-exam type) is passed from the UI layer

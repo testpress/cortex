@@ -334,7 +334,7 @@ class _SubChaptersProviderElement
   String? get parentId => (origin as SubChaptersProvider).parentId;
 }
 
-String _$chapterLessonsHash() => r'c7656894e1f906dc5c33f71e1a9712d091b2441f';
+String _$chapterLessonsHash() => r'9e5732ff9d1eb0f5200bdaffe50bebfed25bd4f1';
 
 /// See also [chapterLessons].
 @ProviderFor(chapterLessons)

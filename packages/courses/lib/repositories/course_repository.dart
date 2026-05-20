@@ -363,10 +363,27 @@ class CourseRepository {
     });
   }
 
-  String? _getApiComaptibleType(String? type) {
+  String? _getApiCompatibleType(String? type) {
     if (type == 'test') return 'exams';
     if (type == 'assessment') return 'quiz';
     return type;
+  }
+
+  String? _buildAncestorChapterIds(
+    String chapterId,
+    Map<String, ChaptersTableData> chapterById,
+  ) {
+    if (chapterId.isEmpty) return null;
+    final chain = <String>[];
+    final visited = <String>{};
+    String? current = chapterId;
+    while (current != null && current.isNotEmpty && !visited.contains(current)) {
+      visited.add(current);
+      chain.insert(0, current);
+      current = chapterById[current]?.parentId;
+    }
+    if (chain.isEmpty) return ',$chapterId,';
+    return ',${chain.join(',')},';
   }
 
   /// Streams filtered content from the API and persists results to DB.
@@ -383,7 +400,7 @@ class CourseRepository {
     }
 
     return () async* {
-      final apiType = _getApiComaptibleType(type);
+      final apiType = _getApiCompatibleType(type);
       final stream =
           _source.getCourseContents(courseId, chapterId: chapterId, type: apiType);
       await for (final page in stream) {
@@ -452,27 +469,13 @@ class CourseRepository {
             .get();
         final chapterById = {for (final row in chapterRows) row.id: row};
 
-        String? buildAncestorChapterIds(String chapterId) {
-          if (chapterId.isEmpty) return null;
-          final chain = <String>[];
-          final visited = <String>{};
-          String? current = chapterId;
-          while (current != null && current.isNotEmpty && !visited.contains(current)) {
-            visited.add(current);
-            chain.insert(0, current);
-            current = chapterById[current]?.parentId;
-          }
-          if (chain.isEmpty) return ',$chapterId,';
-          return ',${chain.join(',')},';
-        }
-
         final companions = lessons
             .map(
               (lesson) => _lessonDtoToCompanion(
                 lesson.copyWith(
                   courseId: lesson.courseId ?? courseId,
                   ancestorChapterIds:
-                      lesson.ancestorChapterIds ?? buildAncestorChapterIds(lesson.chapterId),
+                      lesson.ancestorChapterIds ?? _buildAncestorChapterIds(lesson.chapterId, chapterById),
                 ),
               ),
             )
@@ -569,22 +572,8 @@ class CourseRepository {
         .get();
     final chapterById = {for (final row in chapterRows) row.id: row};
 
-    String? buildAncestorChapterIds(String chapterId) {
-      if (chapterId.isEmpty) return null;
-      final chain = <String>[];
-      final visited = <String>{};
-      String? current = chapterId;
-      while (current != null && current.isNotEmpty && !visited.contains(current)) {
-        visited.add(current);
-        chain.insert(0, current);
-        current = chapterById[current]?.parentId;
-      }
-      if (chain.isEmpty) return null;
-      return ',${chain.join(',')},';
-    }
-
     final lessonCompanions = curriculum.lessons.map((lesson) {
-      final ancestry = lesson.ancestorChapterIds ?? buildAncestorChapterIds(lesson.chapterId);
+      final ancestry = lesson.ancestorChapterIds ?? _buildAncestorChapterIds(lesson.chapterId, chapterById);
       return _lessonDtoToCompanion(
         lesson.copyWith(
           courseId: lesson.courseId ?? courseId,

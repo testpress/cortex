@@ -1,10 +1,9 @@
-import 'dart:async';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/course_detail_provider.dart';
-import '../providers/course_list_provider.dart';
+import '../providers/filtered_lessons_provider.dart';
 import '../widgets/chapters_filter_tab_bar.dart';
 import '../widgets/chapter_curriculum_item.dart';
 import '../widgets/curriculum_header.dart';
@@ -33,10 +32,6 @@ class ChaptersListPage extends ConsumerStatefulWidget {
 
 class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
   CurriculumFilter _activeFilter = CurriculumFilter.all;
-  List<LessonDto> _apiResults = [];
-  bool _isLoadingFilter = false;
-  StreamSubscription<List<LessonDto>>? _filterSub;
-  StreamSubscription<List<LessonDto>>? _dbSub;
   late final ScrollController _scrollController;
 
   @override
@@ -48,64 +43,19 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
   void _onScroll() {
     if (_scrollController.hasClients &&
         _scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
-      if (_filterSub != null && _filterSub!.isPaused) {
-        setState(() => _isLoadingFilter = true);
-        _filterSub!.resume();
-      }
+      final type = _apiTypeForFilter(_activeFilter);
+      ref.read(filteredLessonsProvider(
+        widget.courseId,
+        chapterId: widget.parentId,
+        type: type,
+      ).notifier).fetchNextPage();
     }
   }
 
   void _onFilterChanged(CurriculumFilter filter) {
-    _filterSub?.cancel();
-    _dbSub?.cancel();
-    _apiResults = [];
     setState(() {
       _activeFilter = filter;
-      _isLoadingFilter = filter != CurriculumFilter.all;
     });
-    if (filter != CurriculumFilter.all) {
-      _loadFilteredContents(filter);
-    }
-  }
-
-  Future<void> _loadFilteredContents(CurriculumFilter filter) async {
-    try {
-      final repo = ref.read(courseRepositoryProvider).requireValue;
-      final type = _apiTypeForFilter(filter);
-      
-      // 1. Watch the local database for instant results
-      final dbStream = repo.watchFilteredLessonsLocal(
-        widget.courseId,
-        chapterId: widget.parentId,
-        type: type,
-      );
-      _dbSub = dbStream.listen((lessons) {
-        if (!mounted) return;
-        setState(() => _apiResults = lessons);
-      });
-
-      // 2. Run the API stream in the background for sync
-      final apiStream = repo.streamFilteredContents(
-        widget.courseId,
-        chapterId: widget.parentId,
-        type: type,
-      );
-      _filterSub = apiStream.listen((_) {
-        _filterSub?.pause();
-        if (mounted) {
-          setState(() => _isLoadingFilter = false);
-        }
-      }, onError: (e) {
-        if (!mounted) return;
-        setState(() => _isLoadingFilter = false);
-      }, onDone: () {
-        if (!mounted) return;
-        setState(() => _isLoadingFilter = false);
-      });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() => _isLoadingFilter = false);
-    }
   }
 
   String? _apiTypeForFilter(CurriculumFilter filter) {
@@ -118,23 +68,9 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
     };
   }
 
-  List<LessonDto> _filteredResults() {
-    if (_activeFilter == CurriculumFilter.all) return _apiResults;
-    if (_activeFilter == CurriculumFilter.lesson) return _apiResults;
-    final targetType = switch (_activeFilter) {
-      CurriculumFilter.video => LessonType.video,
-      CurriculumFilter.assessment => LessonType.assessment,
-      CurriculumFilter.test => LessonType.test,
-      _ => throw UnimplementedError(),
-    };
-    return _apiResults.where((l) => l.type == targetType).toList();
-  }
-
   @override
   void dispose() {
     _scrollController.dispose();
-    _filterSub?.cancel();
-    _dbSub?.cancel();
     super.dispose();
   }
 
@@ -155,8 +91,37 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
             orElse: () => null,
           );
 
-          final filteredLessons = _filteredResults();
-          final showChapters = _activeFilter == CurriculumFilter.all && chapters.isNotEmpty && _apiResults.isEmpty;
+          final showLessons = _activeFilter != CurriculumFilter.all || chapters.isEmpty;
+
+          final lessons = <LessonDto>[];
+          bool isLoadingFilter = false;
+          bool isLoadingMore = false;
+
+          if (showLessons) {
+            final type = _apiTypeForFilter(_activeFilter);
+            final filterState = ref.watch(filteredLessonsProvider(
+              widget.courseId,
+              chapterId: widget.parentId,
+              type: type,
+            ));
+            lessons.addAll(filterState.lessons);
+            isLoadingFilter = filterState.isLoading;
+            isLoadingMore = filterState.isLoadingMore;
+          }
+
+          final filteredLessons = _activeFilter == CurriculumFilter.all || _activeFilter == CurriculumFilter.lesson
+              ? lessons
+              : lessons.where((l) {
+                  final targetType = switch (_activeFilter) {
+                    CurriculumFilter.video => LessonType.video,
+                    CurriculumFilter.assessment => LessonType.assessment,
+                    CurriculumFilter.test => LessonType.test,
+                    _ => throw UnimplementedError(),
+                  };
+                  return l.type == targetType;
+                }).toList();
+
+          final showChapters = _activeFilter == CurriculumFilter.all && chapters.isNotEmpty;
           String headerTitle = course?.title ?? 'Curriculum';
 
           return Column(
@@ -217,7 +182,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                         const SizedBox(height: 80),
                       ],
                     )
-                  : filteredLessons.isEmpty && !_isLoadingFilter
+                  : filteredLessons.isEmpty && !isLoadingFilter
                       ? Center(
                           child: AppText.body(
                             'No ${widget.showFilters ? _activeFilter.displayName : "exams"} found.',
@@ -230,7 +195,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                             horizontal: design.spacing.md,
                             vertical: design.spacing.md,
                           ),
-                          itemCount: filteredLessons.length + (_isLoadingFilter ? 1 : 0),
+                          itemCount: filteredLessons.length + (isLoadingMore || (isLoadingFilter && filteredLessons.isNotEmpty) ? 1 : 0),
                           itemBuilder: (context, index) {
                             if (index < filteredLessons.length) {
                               final lesson = filteredLessons[index];
@@ -270,3 +235,4 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
     );
   }
 }
+
