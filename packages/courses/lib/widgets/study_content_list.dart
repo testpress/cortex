@@ -5,7 +5,6 @@ import 'package:core/data/data.dart';
 import '../providers/course_list_provider.dart';
 import '../widgets/course_card.dart';
 import '../widgets/lesson_list_item.dart';
-import 'course_skeleton_slivers.dart';
 
 class StudyContentList extends ConsumerWidget {
   final AsyncValue<List<CourseDto>> enrolledCoursesState;
@@ -14,6 +13,23 @@ class StudyContentList extends ConsumerWidget {
   final List<LessonDto> allLessons;
   final Set<LessonType> activeTypeFilters;
   final String searchQuery;
+
+  static final List<CourseDto> _loadingCourses = List.generate(
+    6,
+    (index) => CourseDto(
+      id: 'loading-course-${index + 1}',
+      title: 'Loading course title text',
+      colorIndex: index % 6,
+      chapterCount: 90 + index,
+      totalContents: 400 + (index * 3),
+      progress: 0,
+      completedLessons: 0,
+      totalLessons: 400 + (index * 3),
+      image: '',
+      examsCount: index % 4,
+      order: index,
+    ),
+  );
 
   const StudyContentList({
     super.key,
@@ -32,7 +48,7 @@ class StudyContentList extends ConsumerWidget {
     final showInitialLoader = isSyncingInitial;
 
     if (showInitialLoader) {
-      return const CourseSkeletonList();
+      return _buildInitialSkeletonList(design);
     }
 
     return enrolledCoursesState.when(
@@ -96,11 +112,11 @@ class StudyContentList extends ConsumerWidget {
                   ),
                 ),
               ),
-            if (isSyncingMore) const CourseLoadMoreSkeleton(),
+            if (isSyncingMore) _buildLoadMoreSkeleton(design),
           ],
         );
       },
-      loading: () => const CourseSkeletonList(),
+      loading: () => _buildInitialSkeletonList(design),
       error: (e, _) => SliverFillRemaining(
         hasScrollBody: false,
         child: AppErrorView(
@@ -123,5 +139,38 @@ class StudyContentList extends ConsumerWidget {
       if (searchQuery.isEmpty) return true;
       return lesson.title.toLowerCase().contains(searchQuery.toLowerCase());
     }).toList();
+  }
+
+  Widget _buildInitialSkeletonList(DesignConfig design) {
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) => Padding(
+            padding: EdgeInsets.only(bottom: design.spacing.md),
+            child: CourseCard(
+              course: _loadingCourses[index],
+              isSkeleton: true,
+            ),
+          ),
+          childCount: _loadingCourses.length,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoadMoreSkeleton(DesignConfig design) {
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+      sliver: SliverToBoxAdapter(
+        child: Padding(
+          padding: EdgeInsets.only(bottom: design.spacing.md),
+          child: CourseCard(
+            course: _loadingCourses.first,
+            isSkeleton: true,
+          ),
+        ),
+      ),
+    );
   }
 }

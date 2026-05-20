@@ -7,7 +7,7 @@ The Study tab course list is the clearest place where shimmer improves perceived
 - Keep the Study tab course list as the only shimmer-based loading state in this change.
 - Leave all other screens on their existing loading presentation.
 - Preserve accessibility, motion preferences, and existing design tokens while changing only the Study list loading presentation.
-- Split the Study loading implementation into reusable skeleton pieces instead of keeping the shimmer logic in one screen file.
+- Keep the Study loading implementation close to the real card layout and let Skeletonizer drive the skeleton presentation from that layout.
 
 ## Capabilities
 

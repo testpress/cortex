@@ -8,8 +8,6 @@ export 'data/mock_data.dart';
 export 'screens/course_list_screen.dart';
 export 'screens/study_screen.dart';
 export 'widgets/course_card.dart';
-export 'widgets/course_skeleton_card.dart';
-export 'widgets/course_skeleton_slivers.dart';
 export 'widgets/greeting_section.dart';
 export 'widgets/hero_banner_carousel.dart';
 export 'widgets/quick_access_grid.dart';
@@ -43,4 +41,3 @@ export 'providers/info_providers.dart';
 export 'screens/info/info_page.dart';
 export 'screens/downloads_screen.dart';
 export 'providers/downloads_provider.dart';
-

@@ -1,6 +1,6 @@
-import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
+import 'package:flutter/widgets.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 /// Course card widget displaying course information and progress.
@@ -11,12 +11,12 @@ class CourseCard extends StatelessWidget {
     super.key,
     required this.course,
     this.onTap,
-    this.loading = false,
+    this.isSkeleton = false,
   });
 
   final CourseDto course;
   final VoidCallback? onTap;
-  final bool loading;
+  final bool isSkeleton;
 
   @override
   Widget build(BuildContext context) {
@@ -25,40 +25,40 @@ class CourseCard extends StatelessWidget {
     final body = Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Left Icon/Image Box
-        loading
-            ? const Bone.circle(size: 48)
-            : Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: (course.image != null && course.image!.isNotEmpty)
-                      ? null
-                      : design.shortcutPalette.atIndex(1).background,
-                  borderRadius: BorderRadius.circular(design.radius.md),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(design.radius.md),
-                  child: (course.image != null && course.image!.isNotEmpty)
-                      ? Image.network(
-                          course.image!,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => Icon(
-                            LucideIcons.bookOpen,
-                            color: design.shortcutPalette.atIndex(1).foreground,
-                            size: 24,
-                          ),
-                        )
-                      : Icon(
-                          LucideIcons.bookOpen,
-                          color: design.shortcutPalette.atIndex(1).foreground,
-                          size: 24,
-                        ),
-                ),
-              ),
+        Skeleton.replace(
+          width: 48,
+          height: 48,
+          replacement: const Bone.circle(size: 48),
+          child: Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: (course.image != null && course.image!.isNotEmpty)
+                  ? null
+                  : design.shortcutPalette.atIndex(1).background,
+              borderRadius: BorderRadius.circular(design.radius.md),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(design.radius.md),
+              child: (course.image != null && course.image!.isNotEmpty)
+                  ? Image.network(
+                      course.image!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Icon(
+                        LucideIcons.bookOpen,
+                        color: design.shortcutPalette.atIndex(1).foreground,
+                        size: 24,
+                      ),
+                    )
+                  : Icon(
+                      LucideIcons.bookOpen,
+                      color: design.shortcutPalette.atIndex(1).foreground,
+                      size: 24,
+                    ),
+            ),
+          ),
+        ),
         SizedBox(width: design.spacing.md),
-
-        // Main Content
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,15 +82,11 @@ class CourseCard extends StatelessWidget {
                 ],
               ),
               SizedBox(height: design.spacing.xs),
-
-              // Metadata
               AppText.caption(
                 '${L10n.of(context).curriculumChaptersCount(course.chapterCount)} · ${L10n.of(context).courseContentsCount(course.totalContents)}',
                 color: design.colors.textSecondary,
               ),
               SizedBox(height: design.spacing.md),
-
-              // Progress Info Row
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -105,8 +101,6 @@ class CourseCard extends StatelessWidget {
                 ],
               ),
               SizedBox(height: design.spacing.sm),
-
-              // Progress Bar (Thin)
               Semantics(
                 label: 'Course progress',
                 value: '${course.progress}%',
@@ -124,16 +118,24 @@ class CourseCard extends StatelessWidget {
     final card = AppCard(
       showShadow: true,
       padding: EdgeInsets.all(design.spacing.md),
-      child: loading ? AppShimmer(child: body) : body,
+      child: Skeletonizer(
+        enabled: isSkeleton,
+        ignoreContainers: true,
+        effect: ShimmerEffect(
+          baseColor: design.colors.skeleton,
+          highlightColor: design.colors.onSkeleton,
+        ),
+        child: body,
+      ),
     );
 
-    if (loading) {
+    if (onTap == null) {
       return card;
     }
 
     return AppSemantics.button(
       label: 'Open course: ${course.title}',
-      onTap: onTap ?? () {},
+      onTap: onTap!,
       child: AppFocusable(
         onTap: onTap,
         borderRadius: design.radius.card,

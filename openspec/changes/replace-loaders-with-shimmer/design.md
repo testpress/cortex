@@ -39,12 +39,13 @@ The app currently mixes a custom indeterminate spinner (`AppLoadingIndicator`), 
    - Alternatives considered:
      - Push skeleton placeholder objects into providers: rejected because it couples UI shape to data sources.
 
-4. Split the Study loading presentation into reusable pieces.
-   - Use a shared shimmer wrapper for consistent animation treatment.
-   - Keep the course card skeleton and sliver layout as separate reusable widgets.
-   - Rationale: this keeps the screen file thin and makes future chapter/lesson skeletons easier to add without growing one monolithic loader file.
+4. Let Skeletonizer derive the Study loading state from the real course card layout.
+   - Use the real `CourseCard` structure as the loading source.
+   - Use sliver-level skeletonization for the list and pagination loading states.
+   - Use annotations like `Skeleton.replace` only where a specific shape needs guidance.
+   - Rationale: this stays closer to Skeletonizer's intended workflow and avoids maintaining a separate manual skeleton tree.
    - Alternatives considered:
-     - Keep all shimmer code inside one screen widget: quicker short term, but harder to maintain and reuse.
+     - Keep a manual skeleton widget layer: rejected because it duplicates the real layout and increases divergence.
 
 5. Keep motion and accessibility rules unchanged.
    - Skeletons must respect existing motion preferences where animations are involved.

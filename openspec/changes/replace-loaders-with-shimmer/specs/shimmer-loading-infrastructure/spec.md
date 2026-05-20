@@ -3,12 +3,13 @@
 ## MODIFIED Requirements
 
 ### Requirement: Study Course List Skeleton Support
-The system SHALL support the Study tab course list structural loading state using reusable skeleton components and a shared shimmer wrapper.
+The system SHALL support the Study tab course list structural loading state by skeletonizing the real course card layout.
 
-#### Scenario: Reusable skeleton composition
+#### Scenario: Real layout skeletonization
 - **WHEN** the Study tab course list is in its loading state
-- **THEN** the system SHALL compose the loading UI from a reusable course skeleton card and a sliver-based list wrapper
+- **THEN** the system SHALL wrap the real course card list in `Skeletonizer`
 - **AND** the screen shell SHALL remain responsible only for choosing when to show the loading state
+- **AND** targeted annotations MAY be used where a specific shape must be preserved
 
 #### Scenario: Study course list loading
 - **WHEN** the Study tab course list is fetching its initial data
