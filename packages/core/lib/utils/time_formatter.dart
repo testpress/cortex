@@ -65,29 +65,38 @@ class TimeFormatter {
   /// Parses a timestamp string like "1:23" or "01:23:45" into a [Duration].
   static Duration parseDuration(String timeStr) {
     if (timeStr.isEmpty) return Duration.zero;
-    
+
     try {
-      final normalized = timeStr.replaceAll('.', ':');
-      final parts = normalized.split(':');
-      
-      if (parts.length == 2) {
-        return Duration(
-          minutes: int.tryParse(parts[0]) ?? 0,
-          seconds: int.tryParse(parts[1]) ?? 0,
-        );
-      } else if (parts.length == 3) {
-        return Duration(
-          hours: int.tryParse(parts[0]) ?? 0,
-          minutes: int.tryParse(parts[1]) ?? 0,
-          seconds: int.tryParse(parts[2]) ?? 0,
-        );
-      } else if (parts.length == 1) {
-        return Duration(seconds: int.tryParse(parts[0]) ?? 0);
+      final parts = timeStr.split('.');
+      final timePart = parts[0];
+      final msPart = parts.length > 1 ? parts[1] : '0';
+
+      final timeUnits = timePart.split(':');
+      int hours = 0;
+      int minutes = 0;
+      int seconds = 0;
+
+      if (timeUnits.length == 3) {
+        hours = int.tryParse(timeUnits[0]) ?? 0;
+        minutes = int.tryParse(timeUnits[1]) ?? 0;
+        seconds = int.tryParse(timeUnits[2]) ?? 0;
+      } else if (timeUnits.length == 2) {
+        minutes = int.tryParse(timeUnits[0]) ?? 0;
+        seconds = int.tryParse(timeUnits[1]) ?? 0;
+      } else if (timeUnits.length == 1) {
+        seconds = int.tryParse(timeUnits[0]) ?? 0;
       }
+
+      final milliseconds = int.tryParse(msPart.padRight(3, '0').substring(0, 3)) ?? 0;
+
+      return Duration(
+        hours: hours,
+        minutes: minutes,
+        seconds: seconds,
+        milliseconds: milliseconds,
+      );
     } catch (_) {
-      // Fall through to return zero
+      return Duration.zero;
     }
-    
-    return Duration.zero;
   }
 }

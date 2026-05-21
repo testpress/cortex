@@ -37,9 +37,6 @@ class _NotesTabState extends ConsumerState<NotesTab>
       (match) => '[${match.group(1)}](timestamp:${match.group(1)})',
     );
 
-    // Convert tight lists to loose lists to add spacing between bullet points
-    processed = processed.replaceAll(RegExp(r'\n- '), '\n\n- ');
-
     return processed;
   }
 
