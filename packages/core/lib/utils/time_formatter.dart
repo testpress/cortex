@@ -61,4 +61,33 @@ class TimeFormatter {
       return null;
     }
   }
+
+  /// Parses a timestamp string like "1:23" or "01:23:45" into a [Duration].
+  static Duration parseDuration(String timeStr) {
+    if (timeStr.isEmpty) return Duration.zero;
+    
+    try {
+      final normalized = timeStr.replaceAll('.', ':');
+      final parts = normalized.split(':');
+      
+      if (parts.length == 2) {
+        return Duration(
+          minutes: int.tryParse(parts[0]) ?? 0,
+          seconds: int.tryParse(parts[1]) ?? 0,
+        );
+      } else if (parts.length == 3) {
+        return Duration(
+          hours: int.tryParse(parts[0]) ?? 0,
+          minutes: int.tryParse(parts[1]) ?? 0,
+          seconds: int.tryParse(parts[2]) ?? 0,
+        );
+      } else if (parts.length == 1) {
+        return Duration(seconds: int.tryParse(parts[0]) ?? 0);
+      }
+    } catch (_) {
+      // Fall through to return zero
+    }
+    
+    return Duration.zero;
+  }
 }

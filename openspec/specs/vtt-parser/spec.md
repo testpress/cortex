@@ -1,0 +1,14 @@
+# vtt-parser Specification
+
+## Purpose
+Specifies the behavior of WebVTT format parsing in the client.
+
+## Requirements
+
+### Requirement: VTT Parsing
+The system SHALL parse WebVTT format subtitle files (`.vtt`) into text blocks with timestamp intervals to display inside the Transcript tab.
+
+#### Scenario: Parse valid WebVTT file
+- **WHEN** a valid WebVTT string is parsed
+- **THEN** the system MUST extract the timestamp (start and end times) and text content for each cue
+- **AND** ignore the headers (e.g. `WEBVTT`) and empty lines

@@ -744,5 +744,12 @@
         "type": "int"
       }
     }
-  }
+  },
+  "videoLessonNoTranscriptAvailable": "No transcript available for this lesson.",
+  "videoLessonTranscriptionInProgress": "Transcription in progress",
+  "videoLessonTranscriptionInProgressDesc": "We are currently generating the transcript for this video. Please check back shortly.",
+  "videoLessonFailedToLoadTranscript": "Failed to load transcript.",
+  "videoLessonNoNotesAvailable": "No notes available for this lesson.",
+  "videoLessonNotesEmpty": "Notes are currently empty.",
+  "videoLessonFailedToLoadNotes": "Failed to load lecture notes."
 }

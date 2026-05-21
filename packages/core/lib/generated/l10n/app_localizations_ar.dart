@@ -1504,4 +1504,26 @@ class AppLocalizationsAr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get videoLessonNoTranscriptAvailable => 'لا يوجد نص متاح لهذا الدرس.';
+
+  @override
+  String get videoLessonTranscriptionInProgress => 'تفريغ النص قيد المعالجة';
+
+  @override
+  String get videoLessonTranscriptionInProgressDesc =>
+      'نحن نعمل حاليًا على توليد تفريغ النص لهذا الفيديو. يرجى التحقق مرة أخرى قريبًا.';
+
+  @override
+  String get videoLessonFailedToLoadTranscript => 'فشل تحميل تفريغ النص.';
+
+  @override
+  String get videoLessonNoNotesAvailable => 'لا توجد ملاحظات متاحة لهذا الدرس.';
+
+  @override
+  String get videoLessonNotesEmpty => 'الملاحظات فارغة حاليًا.';
+
+  @override
+  String get videoLessonFailedToLoadNotes => 'فشل تحميل ملاحظات المحاضرة.';
 }

@@ -2744,6 +2744,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count,plural, =1{1 Lesson} other{{count} Lessons}}'**
   String infoPageLessonsCount(int count);
+
+  /// No description provided for @videoLessonNoTranscriptAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No transcript available for this lesson.'**
+  String get videoLessonNoTranscriptAvailable;
+
+  /// No description provided for @videoLessonTranscriptionInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Transcription in progress'**
+  String get videoLessonTranscriptionInProgress;
+
+  /// No description provided for @videoLessonTranscriptionInProgressDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'We are currently generating the transcript for this video. Please check back shortly.'**
+  String get videoLessonTranscriptionInProgressDesc;
+
+  /// No description provided for @videoLessonFailedToLoadTranscript.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load transcript.'**
+  String get videoLessonFailedToLoadTranscript;
+
+  /// No description provided for @videoLessonNoNotesAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No notes available for this lesson.'**
+  String get videoLessonNoNotesAvailable;
+
+  /// No description provided for @videoLessonNotesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes are currently empty.'**
+  String get videoLessonNotesEmpty;
+
+  /// No description provided for @videoLessonFailedToLoadNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load lecture notes.'**
+  String get videoLessonFailedToLoadNotes;
 }
 
 class _AppLocalizationsDelegate

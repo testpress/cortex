@@ -1524,4 +1524,30 @@ class AppLocalizationsMl extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get videoLessonNoTranscriptAvailable =>
+      'ഈ പാഠത്തിന് ട്രാൻസ്ക്രിപ്റ്റ് ലഭ്യമല്ല.';
+
+  @override
+  String get videoLessonTranscriptionInProgress =>
+      'ട്രാൻസ്ക്രിപ്ഷൻ പുരോഗമിക്കുന്നു';
+
+  @override
+  String get videoLessonTranscriptionInProgressDesc =>
+      'ഈ വീഡിയോയ്ക്കായുള്ള ട്രാൻസ്ക്രിപ്റ്റ് ഞങ്ങൾ തയ്യാറാക്കുകയാണ്. ദയവായി അല്പം കഴിഞ്ഞ് പരിശോധിക്കുക.';
+
+  @override
+  String get videoLessonFailedToLoadTranscript =>
+      'ട്രാൻസ്ക്രിപ്റ്റ് ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.';
+
+  @override
+  String get videoLessonNoNotesAvailable => 'ഈ പാഠത്തിന് കുറിപ്പുകൾ ലഭ്യമല്ല.';
+
+  @override
+  String get videoLessonNotesEmpty => 'കുറിപ്പുകൾ ഇപ്പോൾ ശൂന്യമാണ്.';
+
+  @override
+  String get videoLessonFailedToLoadNotes =>
+      'ലെക്ചർ കുറിപ്പുകൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.';
 }

@@ -47,10 +47,14 @@ class LessonDto {
   final bool isScheduled;
   final String? scheduledMessage;
 
-  // Exam Attendance
   final String? attemptsUrl;
   final String? slug;
   final String? description;
+
+  final bool enableTranscript;
+  final String? videoSubtitleUrl;
+  final bool isAiEnabled;
+  final String? aiNotesUrl;
 
   /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
   bool get isComplete {
@@ -107,6 +111,10 @@ class LessonDto {
     this.attemptsUrl,
     this.slug,
     this.description,
+    this.enableTranscript = false,
+    this.videoSubtitleUrl,
+    this.isAiEnabled = false,
+    this.aiNotesUrl,
   });
 
   LessonDto copyWith({
@@ -144,6 +152,10 @@ class LessonDto {
     bool? showRecordedVideo,
     String? attemptsUrl,
     String? slug,
+    bool? enableTranscript,
+    String? videoSubtitleUrl,
+    bool? isAiEnabled,
+    String? aiNotesUrl,
   }) {
     return LessonDto(
       id: id ?? this.id,
@@ -180,6 +192,10 @@ class LessonDto {
       scheduledMessage: scheduledMessage ?? this.scheduledMessage,
       attemptsUrl: attemptsUrl ?? this.attemptsUrl,
       slug: slug ?? this.slug,
+      enableTranscript: enableTranscript ?? this.enableTranscript,
+      videoSubtitleUrl: videoSubtitleUrl ?? this.videoSubtitleUrl,
+      isAiEnabled: isAiEnabled ?? this.isAiEnabled,
+      aiNotesUrl: aiNotesUrl ?? this.aiNotesUrl,
     );
   }
 
@@ -211,6 +227,10 @@ class LessonDto {
       description: (description?.isEmpty ?? true) ? other.description : description,
       attemptsUrl: (attemptsUrl?.isEmpty ?? true) ? other.attemptsUrl : attemptsUrl,
       slug: (slug?.isEmpty ?? true) ? other.slug : slug,
+      enableTranscript: enableTranscript || other.enableTranscript,
+      videoSubtitleUrl: (videoSubtitleUrl?.isEmpty ?? true) ? other.videoSubtitleUrl : videoSubtitleUrl,
+      isAiEnabled: isAiEnabled || other.isAiEnabled,
+      aiNotesUrl: (aiNotesUrl?.isEmpty ?? true) ? other.aiNotesUrl : aiNotesUrl,
       isDetailFetched: isDetailFetched || other.isDetailFetched,
       // Status flags: Prefer 'true' or more advanced progress
       isRunning: isRunning || other.isRunning,
@@ -450,6 +470,20 @@ class LessonDto {
       isScheduled: json['error_code'] == 'scheduled',
       scheduledMessage: json['message'] as String?,
       description: getString('description'),
+      enableTranscript: json['enable_transcript'] as bool? ?? json['enableTranscript'] as bool? ?? false,
+      videoSubtitleUrl: () {
+        final vs = json['video_subtitle'] ?? json['videoSubtitle'];
+        if (vs is Map) {
+          final jobStatus = vs['job_status']?.toString();
+          if (jobStatus == 'COMPLETED') {
+            return vs['url']?.toString();
+          }
+          return null;
+        }
+        return vs?.toString();
+      }(),
+      isAiEnabled: json['is_ai_enabled'] as bool? ?? json['isAiEnabled'] as bool? ?? false,
+      aiNotesUrl: json['ai_notes_url']?.toString() ?? json['aiNotesUrl']?.toString(),
     );
   }
 
@@ -490,6 +524,10 @@ class LessonDto {
       'streamStatus': streamStatus,
       'showRecordedVideo': showRecordedVideo,
       'description': description,
+      'enableTranscript': enableTranscript,
+      'videoSubtitleUrl': videoSubtitleUrl,
+      'isAiEnabled': isAiEnabled,
+      'aiNotesUrl': aiNotesUrl,
     };
   }
 }

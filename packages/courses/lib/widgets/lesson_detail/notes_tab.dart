@@ -1,198 +1,180 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:core/core.dart';
 import '../../models/course_content.dart';
+import '../../providers/video_subtabs_provider.dart';
 
-class NotesTab extends StatelessWidget {
+class NotesTab extends ConsumerStatefulWidget {
   final Lesson lesson;
+  final bool isSliver;
+  final void Function(Duration)? onSeek;
 
-  const NotesTab({super.key, required this.lesson});
+  const NotesTab({
+    super.key,
+    required this.lesson,
+    this.isSliver = false,
+    this.onSeek,
+  });
+
+  @override
+  ConsumerState<NotesTab> createState() => _NotesTabState();
+}
+
+class _NotesTabState extends ConsumerState<NotesTab>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  String _processMarkdown(String raw) {
+    // Strip style tags
+    var processed =
+        raw.replaceAll(RegExp(r'<style>.*?</style>', dotAll: true), '');
+
+    // Convert timestamp spans to markdown links
+    processed = processed.replaceAllMapped(
+      RegExp(r'<span class="video-timestamp">(.*?)</span>'),
+      (match) => '[${match.group(1)}](timestamp:${match.group(1)})',
+    );
+
+    // Convert tight lists to loose lists to add spacing between bullet points
+    processed = processed.replaceAll(RegExp(r'\n- '), '\n\n- ');
+
+    return processed;
+  }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    return Padding(
-      padding: EdgeInsets.only(
-        left: design.spacing.md,
-        right: design.spacing.md,
-        top: design.spacing.md,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
+    final notesUrl = widget.lesson.aiNotesUrl;
+    final shimmerDuration = MotionPreferences.duration(
+      context,
+      const Duration(milliseconds: 400),
+    );
+
+    if (notesUrl == null || notesUrl.isEmpty) {
+      final child = Padding(
+        padding: EdgeInsets.all(design.spacing.md),
+        child: Center(
+          child: AppText.body(
+            l10n.videoLessonNoNotesAvailable,
+            color: design.colors.textSecondary,
+          ),
+        ),
+      );
+      return widget.isSliver ? SliverToBoxAdapter(child: child) : child;
+    }
+
+    final notesAsync = ref.watch(fetchNotesMarkdownProvider(notesUrl));
+
+    return notesAsync.when(
+      data: (markdownContent) {
+        if (markdownContent.trim().isEmpty) {
+          final emptyChild = Padding(
+            padding: EdgeInsets.symmetric(vertical: design.spacing.xl),
+            child: Center(
+              child: AppText.body(
+                l10n.videoLessonNotesEmpty,
+                color: design.colors.textSecondary,
+              ),
+            ),
+          );
+          return widget.isSliver
+              ? SliverToBoxAdapter(child: emptyChild)
+              : emptyChild;
+        }
+
+        final processedContent = _processMarkdown(markdownContent);
+
+        final markdownBody = AppMarkdown(
+          data: processedContent,
+          selectable: true,
+          onTapLink: (url) {
+            if (url.startsWith('timestamp:')) {
+              final timeStr = url.substring('timestamp:'.length);
+              final duration = TimeFormatter.parseDuration(timeStr);
+              widget.onSeek?.call(duration);
+            }
+          },
+        );
+
+        if (widget.isSliver) {
+          return SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.all(design.spacing.md),
+              child: markdownBody,
+            ),
+          );
+        }
+
+        return SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
+          padding: EdgeInsets.all(design.spacing.md),
+          child: markdownBody,
+        );
+      },
+      loading: () {
+        final skeletonChild = SkeletonizerConfig(
+          data: SkeletonizerConfigData(
+            effect: ShimmerEffect(
+              baseColor: design.colors.skeleton,
+              highlightColor: design.colors.onSkeleton,
+              duration: shimmerDuration,
+            ),
+          ),
+          child: Skeletonizer(
+            child: Padding(
+              padding: EdgeInsets.all(design.spacing.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    LucideIcons.fileText,
-                    color: design.colors.accent2,
-                    size: 20,
-                  ),
-                  SizedBox(width: design.spacing.sm),
-                  AppText.subtitle(
-                    l10n.videoLessonLectureNotes,
-                    color: design.colors.textPrimary,
-                    style: const TextStyle(fontWeight: FontWeight.w700),
-                  ),
+                  const Bone.text(words: 3, fontSize: 24),
+                  SizedBox(height: design.spacing.md),
+                  const Bone.multiText(lines: 4),
+                  SizedBox(height: design.spacing.lg),
+                  const Bone.text(words: 2, fontSize: 20),
+                  SizedBox(height: design.spacing.md),
+                  const Bone.multiText(lines: 6),
+                  SizedBox(height: design.spacing.lg),
+                  const Bone.multiText(lines: 3),
+                  SizedBox(height: design.spacing.lg),
+                  const Bone.multiText(lines: 5),
                 ],
               ),
-              AppButton.primary(
-                label: l10n.videoLessonDownloadPdf,
-                leading: Icon(
-                  LucideIcons.download,
-                  color: design.colors.onPrimary,
-                  size: 14,
-                ),
-                height: 32,
-                backgroundColor: design.colors.accent2,
-                onPressed: () {},
-                padding: EdgeInsets.symmetric(horizontal: design.spacing.sm),
-              ),
-            ],
-          ),
-          SizedBox(height: design.spacing.md),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppText.subtitle(
-                '1. First Law of Thermodynamics',
-                color: design.colors.textPrimary,
-                style: const TextStyle(fontWeight: FontWeight.w700),
-              ),
-              SizedBox(height: design.spacing.xs),
-              AppText.body(
-                'The first law of thermodynamics states that energy cannot be created or destroyed, only transformed from one form to another. This is also known as the law of conservation of energy.',
-                color: design.colors.textSecondary,
-                style: const TextStyle(fontSize: 14, height: 1.5),
-              ),
-              SizedBox(height: design.spacing.md),
-              AppText.subtitle(
-                '2. Internal Energy (U)',
-                color: design.colors.textPrimary,
-                style: const TextStyle(fontWeight: FontWeight.w700),
-              ),
-              SizedBox(height: design.spacing.xs),
-              AppText.body(
-                'Internal energy is the total energy contained within a thermodynamic system. It includes kinetic energy of molecules and potential energy from molecular interactions.',
-                color: design.colors.textSecondary,
-                style: const TextStyle(fontSize: 14, height: 1.5),
-              ),
-              SizedBox(height: design.spacing.md),
-              AppText.subtitle(
-                '3. Mathematical Expression',
-                color: design.colors.textPrimary,
-                style: const TextStyle(fontWeight: FontWeight.w700),
-              ),
-              SizedBox(height: design.spacing.xs),
-              AppText.body(
-                'The first law is expressed as: ΔU = Q - W',
-                color: design.colors.textSecondary,
-                style: const TextStyle(fontSize: 14, height: 1.5),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 12, top: 4),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildBulletPoint(
-                      'ΔU = Change in internal energy',
-                      design,
-                    ),
-                    _buildBulletPoint('Q = Heat added to the system', design),
-                    _buildBulletPoint('W = Work done by the system', design),
-                  ],
-                ),
-              ),
-              SizedBox(height: design.spacing.md),
-              Container(
-                padding: EdgeInsets.all(design.spacing.md),
-                decoration: BoxDecoration(
-                  color: design.colors.accent2.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(design.radius.md),
-                  border: Border.all(
-                    color: design.colors.accent2.withValues(alpha: 0.1),
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          LucideIcons.sparkles,
-                          color: design.colors.accent2,
-                          size: 18,
-                        ),
-                        SizedBox(width: design.spacing.xs),
-                        AppText.subtitle(
-                          l10n.videoLessonKeyFormula,
-                          color: design.colors.accent2,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    AppText.body(
-                      'ΔU = Q - W (First Law of Thermodynamics)',
-                      color: design.colors.textPrimary,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: design.spacing.lg),
-              AppText.subtitle(
-                '4. Applications',
-                color: design.colors.textPrimary,
-                style: const TextStyle(fontWeight: FontWeight.w700),
-              ),
-              SizedBox(height: design.spacing.xs),
-              _buildBulletPoint('Heat engines and refrigerators', design),
-              _buildBulletPoint('Calorimetry problems', design),
-              _buildBulletPoint('Phase transitions', design),
-              _buildBulletPoint('Adiabatic and isothermal processes', design),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBulletPoint(String text, DesignConfig design) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Container(
-              width: 5,
-              height: 5,
-              decoration: BoxDecoration(
-                color: design.colors.textTertiary,
-                shape: BoxShape.circle,
-              ),
             ),
           ),
-          SizedBox(width: design.spacing.sm),
-          Expanded(
-            child: AppText.body(
-              text,
-              color: design.colors.textSecondary,
-              style: const TextStyle(fontSize: 14),
+        );
+        return widget.isSliver
+            ? SliverToBoxAdapter(child: skeletonChild)
+            : skeletonChild;
+      },
+      error: (err, stack) {
+        final errorChild = Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: design.spacing.xl),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AppText.body(
+                  l10n.videoLessonFailedToLoadNotes,
+                  color: design.colors.error,
+                ),
+                const SizedBox(height: 8),
+                AppButton.secondary(
+                  label: l10n.labelRetry,
+                  onPressed: () =>
+                      ref.invalidate(fetchNotesMarkdownProvider(notesUrl)),
+                ),
+              ],
             ),
           ),
-        ],
-      ),
+        );
+        return widget.isSliver
+            ? SliverToBoxAdapter(child: errorChild)
+            : errorChild;
+      },
     );
   }
 }

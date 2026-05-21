@@ -36,6 +36,10 @@ class Lesson {
     this.isScheduled = false,
     this.scheduledMessage,
     this.description,
+    this.enableTranscript = false,
+    this.videoSubtitleUrl,
+    this.isAiEnabled = false,
+    this.aiNotesUrl,
   });
 
   final String id;
@@ -75,6 +79,10 @@ class Lesson {
   final bool isScheduled;
   final String? scheduledMessage;
   final String? description;
+  final bool enableTranscript;
+  final String? videoSubtitleUrl;
+  final bool isAiEnabled;
+  final String? aiNotesUrl;
  
   /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
   bool get isComplete {
@@ -83,6 +91,7 @@ class Lesson {
  
     switch (type) {
       case LessonType.video:
+        return false;
       case LessonType.liveStream:
         return contentUrl != null && contentUrl!.isNotEmpty;
       case LessonType.notes:
@@ -130,6 +139,10 @@ class Lesson {
       isScheduled: isScheduled,
       scheduledMessage: scheduledMessage,
       description: description,
+      enableTranscript: enableTranscript,
+      videoSubtitleUrl: videoSubtitleUrl,
+      isAiEnabled: isAiEnabled,
+      aiNotesUrl: aiNotesUrl,
     );
   }
 }
@@ -154,3 +167,5 @@ class Chapter {
   final String? image;
   final List<Lesson> lessons;
 }
+
+enum VideoLessonTab { notes, transcript, askDoubt, aiSupport }

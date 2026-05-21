@@ -55,6 +55,12 @@ class LessonsTable extends Table {
   TextColumn get slug => text().nullable()();
   TextColumn get description => text().nullable()();
 
+  // Video Subtabs Fields
+  BoolColumn get enableTranscript => boolean().withDefault(const Constant(false))();
+  TextColumn get videoSubtitleUrl => text().nullable()(); // Stores subtitle URL
+  BoolColumn get isAiEnabled => boolean().withDefault(const Constant(false))();
+  TextColumn get aiNotesUrl => text().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }

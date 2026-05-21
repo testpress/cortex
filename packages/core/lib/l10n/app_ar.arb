@@ -505,5 +505,12 @@
   "infoPageEmptyState": "لا توجد موارد تعلم متاحة حاليًا.",
   "infoPageLoadError": "تعذر تحميل الموارد. يرجى المحاولة مرة أخرى.",
   "infoPageOpenCourse": "افتح {title}",
-  "infoPageLessonsCount": "{count,plural, =1{درس واحد} other{{count} دروس}}"
+  "infoPageLessonsCount": "{count,plural, =1{درس واحد} other{{count} دروس}}",
+  "videoLessonNoTranscriptAvailable": "لا يوجد نص متاح لهذا الدرس.",
+  "videoLessonTranscriptionInProgress": "تفريغ النص قيد المعالجة",
+  "videoLessonTranscriptionInProgressDesc": "نحن نعمل حاليًا على توليد تفريغ النص لهذا الفيديو. يرجى التحقق مرة أخرى قريبًا.",
+  "videoLessonFailedToLoadTranscript": "فشل تحميل تفريغ النص.",
+  "videoLessonNoNotesAvailable": "لا توجد ملاحظات متاحة لهذا الدرس.",
+  "videoLessonNotesEmpty": "الملاحظات فارغة حاليًا.",
+  "videoLessonFailedToLoadNotes": "فشل تحميل ملاحظات المحاضرة."
 }
