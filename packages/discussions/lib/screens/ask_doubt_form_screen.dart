@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import '../providers/doubt_providers.dart';
 import '../widgets/forum_header.dart';
 import '../widgets/forum_composer.dart';
@@ -212,9 +214,39 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
   }
 
   Future<void> _handleSubmit() async {
+    final title = _titleController.text.trim();
+    final contentText = _quillController.document.toPlainText().trim();
+    if (title.isEmpty || contentText.isEmpty || _selectedCategory == null) return;
+
     setState(() => _isSubmitting = true);
-    // TODO: Implement actual submission logic later
-    await Future.delayed(const Duration(milliseconds: 500));
-    if (mounted) Navigator.pop(context);
+
+    try {
+      final db = await ref.read(appDatabaseProvider.future);
+      final user = await db.select(db.usersTable).getSingleOrNull();
+      final studentName = user?.name ?? 'Student';
+      final studentAvatar = user?.avatar;
+
+      final repo = await ref.read(doubtRepositoryProvider.future);
+      final doubt = DoubtDto(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        title: title,
+        content: jsonEncode(_quillController.document.toDelta().toJson()),
+        studentName: studentName,
+        studentAvatar: studentAvatar,
+        replyCount: 0,
+        status: DoubtStatus.pending,
+        createdAt: DateTime.now(),
+        attachmentUrls: _attachments,
+      );
+
+      await repo.createDoubt(doubt);
+    } catch (e) {
+      debugPrint('Error submitting doubt: $e');
+    } finally {
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+        Navigator.pop(context);
+      }
+    }
   }
 }

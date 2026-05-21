@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:core/data/data.dart';
-import '../../network/api_endpoints.dart';
 import '../../network/network_utils.dart';
 import 'curriculum_parser.dart';
 
@@ -27,7 +26,7 @@ class HttpDataSource implements DataSource {
           'page': page,
           'page_size': pageSize,
           if (search != null && search.isNotEmpty) 'q': search,
-          if (tags != null) 'tags': tags,
+          'tags': ?tags,
         },
       ),
       fromJson: (json) => PaginatedResponseDto<CourseDto>.fromJson(

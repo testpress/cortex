@@ -110,22 +110,6 @@ class _AppHtmlState extends State<AppHtml> {
       );
   }
 
-  Future<void> _updateHeight() async {
-    try {
-      final heightStr = await _controller.runJavaScriptReturningResult(
-        'document.documentElement.scrollHeight.toString()'
-      );
-      final height = double.tryParse(heightStr.toString().replaceAll('"', '')) ?? 0;
-      if (height > 0 && mounted) {
-        setState(() {
-          _height = height;
-          _isReady = true;
-        });
-        widget.onHeightChanged?.call(height);
-      }
-    } catch (_) {}
-  }
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -217,7 +201,7 @@ class _AppHtmlState extends State<AppHtml> {
               margin: 8px 0;
             }
             td, th {
-              border: 1px solid ${txCss};
+              border: 1px solid $txCss;
               padding: 6px;
             }
           </style>
