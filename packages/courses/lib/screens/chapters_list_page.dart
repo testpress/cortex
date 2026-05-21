@@ -183,7 +183,19 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                       ],
                     )
                   : (isLoadingFilter || isLoadingMore) && filteredLessons.isEmpty
-                      ? const Center(child: AppLoadingIndicator())
+                      ? ListView.builder(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: design.spacing.md,
+                            vertical: design.spacing.md,
+                          ),
+                          itemCount: _skeletonLessons.length,
+                          itemBuilder: (context, index) {
+                            return LessonListItem(
+                              lesson: _skeletonLessons[index],
+                              isSkeleton: isLoadingFilter || isLoadingMore,
+                            );
+                          },
+                        )
                       : filteredLessons.isEmpty
                           ? Center(
                               child: AppText.body(
@@ -198,43 +210,127 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                                 vertical: design.spacing.md,
                               ),
                               itemCount: filteredLessons.length + (isLoadingMore || isLoadingFilter ? 1 : 0),
-                          itemBuilder: (context, index) {
-                            if (index < filteredLessons.length) {
-                              final lesson = filteredLessons[index];
-                              return LessonListItem(
-                                lesson: lesson,
-                                onTap: () {
-                                  final route = switch (lesson.type) {
-                                    LessonType.video ||
-                                    LessonType.pdf ||
-                                    LessonType.notes ||
-                                    LessonType.embedContent ||
-                                    LessonType.liveStream ||
-                                    LessonType.attachment =>
-                                      '${widget.basePath}/lesson/${lesson.id}',
-                                    LessonType.assessment =>
-                                      '${widget.basePath}/assessment/${lesson.id}',
-                                    LessonType.test => '${widget.basePath}/test/${lesson.id}',
-                                    LessonType.unknown => null,
-                                  };
-                                  if (route != null) context.push(route);
-                                },
-                              );
-                            }
-                            return const Padding(
-                              padding: EdgeInsets.all(24),
-                              child: Center(child: AppLoadingIndicator()),
-                            );
-                          },
-                        ),
+                              itemBuilder: (context, index) {
+                                if (index < filteredLessons.length) {
+                                  final lesson = filteredLessons[index];
+                                  return LessonListItem(
+                                    lesson: lesson,
+                                    onTap: () {
+                                      final route = switch (lesson.type) {
+                                        LessonType.video ||
+                                        LessonType.pdf ||
+                                        LessonType.notes ||
+                                        LessonType.embedContent ||
+                                        LessonType.liveStream ||
+                                        LessonType.attachment =>
+                                          '${widget.basePath}/lesson/${lesson.id}',
+                                        LessonType.assessment =>
+                                          '${widget.basePath}/assessment/${lesson.id}',
+                                        LessonType.test => '${widget.basePath}/test/${lesson.id}',
+                                        LessonType.unknown => null,
+                                      };
+                                      if (route != null) context.push(route);
+                                    },
+                                  );
+                                }
+                                return Padding(
+                                  padding: EdgeInsets.only(bottom: design.spacing.md),
+                                  child: LessonListItem(
+                                    lesson: _skeletonLessons.first,
+                                    isSkeleton: isLoadingMore || isLoadingFilter,
+                                  ),
+                                );
+                              },
+                            ),
               ),
             ],
           );
         },
-        loading: () => const Center(child: AppLoadingIndicator()),
+        loading: () {
+          final course = courseAsync.maybeWhen(
+            data: (c) => c,
+            orElse: () => null,
+          );
+          final headerTitle = course?.title ?? 'Curriculum';
+
+          return Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: design.colors.card,
+                  border: Border(
+                    bottom: BorderSide(color: design.colors.border, width: 1),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CurriculumHeader(
+                      courseTitle: headerTitle,
+                      chapterCount: 0,
+                      onBack: widget.onBack,
+                    ),
+                    if (widget.showFilters)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: ChaptersFilterTabBar(
+                          activeFilter: _activeFilter,
+                          onFilterChanged: _onFilterChanged,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: AppScroll(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: design.spacing.md,
+                    vertical: design.spacing.md,
+                  ),
+                  children: [
+                    ..._skeletonChapters.asMap().entries.map((entry) {
+                      return ChapterCurriculumItem(
+                        chapter: entry.value,
+                        index: entry.key,
+                        isSkeleton: chaptersAsync.isLoading,
+                      );
+                    }),
+                    const SizedBox(height: 80),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
         error: (error, _) => Center(child: AppText.body(error.toString())),
       ),
     );
   }
 }
 
+final _skeletonChapters = List.generate(
+  5,
+  (index) => ChapterDto(
+    id: 'skeleton-chapter-$index',
+    courseId: 'skeleton-course-id',
+    title: 'Loading course chapter title text',
+    lessonCount: 4,
+    assessmentCount: 2,
+    orderIndex: index,
+    isLeaf: true,
+  ),
+);
+
+final _skeletonLessons = List.generate(
+  5,
+  (index) => LessonDto(
+    id: 'skeleton-lesson-$index',
+    chapterId: 'skeleton-chapter-0',
+    title: 'Loading lesson title text content',
+    type: LessonType.video,
+    progressStatus: LessonProgressStatus.notStarted,
+    isLocked: false,
+    duration: '15 mins',
+    orderIndex: index,
+  ),
+);

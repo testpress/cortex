@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../models/course_content.dart';
 
 /// Component to display individual lesson or assessment items in the chapter detail.
@@ -8,83 +9,106 @@ class ChapterContentItem extends StatelessWidget {
     super.key,
     required this.lesson,
     required this.onTap,
+    this.isSkeleton = false,
   });
 
   final Lesson lesson;
   final VoidCallback onTap;
+  final bool isSkeleton;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    const double iconSize = 40;
 
     // Get icon based on lesson type
     final icon = _getIconForType(lesson.type);
 
+    final activeOnTap = isSkeleton ? null : onTap;
+
     return Padding(
       padding: EdgeInsets.only(bottom: design.spacing.xs),
       child: AppFocusable(
-        onTap: onTap,
+        onTap: activeOnTap,
         borderRadius: BorderRadius.circular(design.radius.md),
         child: AppCard(
           padding: EdgeInsets.all(design.spacing.md),
-          child: Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: lesson.image != null
-                      ? null
-                      : _getColorForType(
-                          context,
-                          lesson.type,
-                        ).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(design.radius.md),
-                ),
-                child: Center(
-                  child: lesson.image != null
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(design.radius.md),
-                          child: Image.network(
-                            lesson.image!,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) => Icon(
+          child: Skeletonizer(
+            enabled: isSkeleton,
+            ignoreContainers: true,
+            effect: ShimmerEffect(
+              baseColor: design.colors.skeleton,
+              highlightColor: design.colors.onSkeleton,
+            ),
+            child: Row(
+              children: [
+                Skeleton.replace(
+                  width: iconSize,
+                  height: iconSize,
+                  replacement: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: design.colors.skeleton,
+                      borderRadius: BorderRadius.circular(design.radius.md),
+                    ),
+                  ),
+                  child: Container(
+                    width: iconSize,
+                    height: iconSize,
+                    decoration: BoxDecoration(
+                      color: lesson.image != null
+                          ? null
+                          : _getColorForType(
+                              context,
+                              lesson.type,
+                            ).withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(design.radius.md),
+                    ),
+                    child: Center(
+                      child: lesson.image != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(design.radius.md),
+                              child: Image.network(
+                                lesson.image!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) => Icon(
+                                  icon,
+                                  size: 20,
+                                  color: _getColorForType(context, lesson.type),
+                                ),
+                              ),
+                            )
+                          : Icon(
                               icon,
                               size: 20,
                               color: _getColorForType(context, lesson.type),
                             ),
-                          ),
-                        )
-                      : Icon(
-                          icon,
-                          size: 20,
-                          color: _getColorForType(context, lesson.type),
-                        ),
-                ),
-              ),
-              SizedBox(width: design.spacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppText.cardTitle(
-                      lesson.title,
-                      color: design.colors.textPrimary,
                     ),
-                    const SizedBox(height: 2),
-                    AppText.cardSubtitle(
-                      _buildSubtitle(context),
-                      color: design.colors.textSecondary,
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-              Icon(
-                LucideIcons.chevronRight,
-                size: 20,
-                color: design.colors.textSecondary.withValues(alpha: 0.5),
-              ),
-            ],
+                SizedBox(width: design.spacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppText.cardTitle(
+                        lesson.title,
+                        color: design.colors.textPrimary,
+                      ),
+                      const SizedBox(height: 2),
+                      AppText.cardSubtitle(
+                        _buildSubtitle(context),
+                        color: design.colors.textSecondary,
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  LucideIcons.chevronRight,
+                  size: 20,
+                  color: design.colors.textSecondary.withValues(alpha: 0.5),
+                ),
+              ],
+            ),
           ),
         ),
       ),

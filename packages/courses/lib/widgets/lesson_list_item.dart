@@ -1,20 +1,28 @@
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:flutter/widgets.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'lesson_status_badge.dart';
 
 /// A list item for a lesson or content type in the filtered view.
 ///
 /// Matches the reference implementation's shadow, padding, and typography.
 class LessonListItem extends StatelessWidget {
-  const LessonListItem({super.key, required this.lesson, this.onTap});
+  const LessonListItem({
+    super.key,
+    required this.lesson,
+    this.onTap,
+    this.isSkeleton = false,
+  });
 
   final LessonDto lesson;
   final VoidCallback? onTap;
+  final bool isSkeleton;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    const double iconSize = 40;
 
     // Exact colors from reference
     final typeTheme = switch (lesson.type) {
@@ -44,37 +52,53 @@ class LessonListItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: design.shadows.surfaceSoft,
       ),
-      child: AppSemantics.button(
-        label: 'Open lesson: ${lesson.title}',
-        onTap: onTap ?? () {},
-        child: AppFocusable(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
-          child: Padding(
+      child: Skeletonizer(
+        enabled: isSkeleton,
+        ignoreContainers: true,
+        effect: ShimmerEffect(
+          baseColor: design.colors.skeleton,
+          highlightColor: design.colors.onSkeleton,
+        ),
+        child: AppSemantics.button(
+          label: 'Open lesson: ${lesson.title}',
+          onTap: isSkeleton ? () {} : (onTap ?? () {}),
+          child: AppFocusable(
+            onTap: isSkeleton ? null : onTap,
+            borderRadius: BorderRadius.circular(12),
+            child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Lesson Type Icon (md: 40x40)
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: lesson.image != null ? null : typeTheme.background,
-                    borderRadius: BorderRadius.circular(8),
+                Skeleton.replace(
+                  width: iconSize,
+                  height: iconSize,
+                  replacement: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: design.colors.skeleton,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
-                  child: Center(
-                    child: lesson.image != null
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              lesson.image!,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Icon(icon, size: 20, color: typeTheme.foreground),
-                            ),
-                          )
-                        : Icon(icon, size: 20, color: typeTheme.foreground),
+                  child: Container(
+                    width: iconSize,
+                    height: iconSize,
+                    decoration: BoxDecoration(
+                      color: lesson.image != null ? null : typeTheme.background,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: lesson.image != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                lesson.image!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Icon(icon, size: 20, color: typeTheme.foreground),
+                              ),
+                            )
+                          : Icon(icon, size: 20, color: typeTheme.foreground),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -124,6 +148,7 @@ class LessonListItem extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }

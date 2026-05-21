@@ -1,6 +1,7 @@
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../providers/chapter_detail_provider.dart';
 import '../providers/course_list_provider.dart';
 import '../models/course_content.dart';
@@ -111,9 +112,12 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
                   ),
                   children: [
                     if (_isSyncing && filteredLessons.isEmpty)
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 40),
-                        child: Center(child: AppLoadingIndicator()),
+                      ..._skeletonLessons.map(
+                        (lesson) => ChapterContentItem(
+                          lesson: lesson,
+                          onTap: () {},
+                          isSkeleton: _isSyncing,
+                        ),
                       )
                     else if (filteredLessons.isEmpty)
                       Padding(
@@ -145,7 +149,52 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
         // Only show the spinner if we have NO data yet (first load).
         return chapterAsync.when(
           data: (_) => const SizedBox.shrink(), // Handled above by hasValue
-          loading: () => const Center(child: AppLoadingIndicator()),
+          loading: () => Column(
+            children: [
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: design.colors.card,
+                  border: Border(
+                    bottom: BorderSide(color: design.colors.divider, width: 1),
+                  ),
+                ),
+                child: Skeletonizer(
+                  enabled: chapterAsync.isLoading,
+                  ignoreContainers: true,
+                  effect: ShimmerEffect(
+                    baseColor: design.colors.skeleton,
+                    highlightColor: design.colors.onSkeleton,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildHeaderContents(context, design, _skeletonChapter),
+                      if (widget.showFilters) const ChapterStatusFilterBar(),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                child: AppScroll(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
+                  children: [
+                    ..._skeletonLessons.map(
+                      (lesson) => ChapterContentItem(
+                        lesson: lesson,
+                        onTap: () {},
+                        isSkeleton: chapterAsync.isLoading,
+                      ),
+                    ),
+                    const SizedBox(height: 80),
+                  ],
+                ),
+              ),
+            ],
+          ),
           error: (error, _) => Center(child: AppText.body(error.toString())),
         );
       }(),
@@ -205,15 +254,39 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
           const SizedBox(height: 4),
           // Chapter Stats
           AppText.cardCaption(
-            l10n.chapterMetadata(
-              chapter.lessonCount,
-              l10n.curriculumLessonsLabel,
-              chapter.assessmentCount,
-              l10n.curriculumAssessmentsLabel,
-            ),
+            chapter.assessmentCount > 0
+                ? l10n.chapterMetadata(
+                    chapter.lessonCount,
+                    l10n.curriculumLessonsLabel,
+                    chapter.assessmentCount,
+                    l10n.curriculumAssessmentsLabel,
+                  )
+                : '${chapter.lessonCount} ${l10n.curriculumLessonsLabel}',
           ),
         ],
       ),
     );
   }
 }
+
+final _skeletonLessons = List.generate(
+  5,
+  (index) => Lesson(
+    id: 'skeleton-lesson-$index',
+    chapterId: 'skeleton-chapter-0',
+    title: 'Loading lesson title text content',
+    type: LessonType.video,
+    progressStatus: LessonProgressStatus.notStarted,
+    orderIndex: index,
+    duration: '900', // 15 mins (in seconds)
+  ),
+);
+
+final _skeletonChapter = Chapter(
+  id: 'skeleton-chapter',
+  title: 'Loading course chapter title text',
+  lessonCount: 4,
+  assessmentCount: 2,
+  courseTitle: 'Loading course title',
+  lessons: _skeletonLessons,
+);
