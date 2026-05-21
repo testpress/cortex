@@ -25,23 +25,121 @@ class VideoLessonDetailScreen extends ConsumerStatefulWidget {
 class _VideoLessonDetailScreenState
     extends ConsumerState<VideoLessonDetailScreen>
     with TickerProviderStateMixin {
-  final _videoPlayerKey = GlobalKey();
-  late final TabController _tabController;
+  final _videoPlayerKey = GlobalKey<CustomVideoPlayerState>();
+  late TabController _tabController;
+  late List<VideoLessonTab> _activeTabs;
+  late ScrollController _scrollController;
 
-  @override
-  void initState() {
-    super.initState();
+  List<VideoLessonTab> _getTabsForLesson(Lesson lesson) {
+    final tabs = <VideoLessonTab>[];
+    if (lesson.isAiEnabled &&
+        lesson.aiNotesUrl != null &&
+        lesson.aiNotesUrl!.isNotEmpty) {
+      tabs.add(VideoLessonTab.notes);
+    }
+    if (lesson.enableTranscript) {
+      tabs.add(VideoLessonTab.transcript);
+    }
+    // Doubt is always enabled
+    tabs.add(VideoLessonTab.askDoubt);
+    if (lesson.isAiEnabled) {
+      tabs.add(VideoLessonTab.aiSupport);
+    }
+    return tabs;
+  }
+
+  void _initTabController() {
+    _activeTabs = _getTabsForLesson(widget.lesson);
     _tabController = TabController(
-      length: 4,
+      length: _activeTabs.length,
       vsync: this,
       animationDuration: Duration.zero,
     );
   }
 
   @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _initTabController();
+  }
+
+  @override
+  void didUpdateWidget(VideoLessonDetailScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final newTabs = _getTabsForLesson(widget.lesson);
+    final oldTabs = _getTabsForLesson(oldWidget.lesson);
+
+    bool tabsChanged = newTabs.length != oldTabs.length;
+    if (!tabsChanged) {
+      for (int i = 0; i < newTabs.length; i++) {
+        if (newTabs[i] != oldTabs[i]) {
+          tabsChanged = true;
+          break;
+        }
+      }
+    }
+
+    if (tabsChanged) {
+      _tabController.dispose();
+      _activeTabs = newTabs;
+      _tabController = TabController(
+        length: _activeTabs.length,
+        vsync: this,
+        animationDuration: Duration.zero,
+      );
+    }
+  }
+
+  @override
   void dispose() {
     _tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _handleSeek(Duration target) {
+    // Auto-scroll to top so the user can see the video
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        0.0,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    }
+    _videoPlayerKey.currentState?.seek(target);
+  }
+
+  Widget _buildTabWidget(VideoLessonTab tab) {
+    switch (tab) {
+      case VideoLessonTab.notes:
+        return NotesTab(lesson: widget.lesson, onSeek: _handleSeek);
+      case VideoLessonTab.transcript:
+        return TranscriptsTab(lesson: widget.lesson, onSeek: _handleSeek);
+      case VideoLessonTab.askDoubt:
+        return SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
+          child: DoubtTab(lesson: widget.lesson),
+        );
+      case VideoLessonTab.aiSupport:
+        return SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
+          child: AITab(lesson: widget.lesson),
+        );
+    }
+  }
+
+  Tab _buildTabHeader(BuildContext context, VideoLessonTab tab) {
+    switch (tab) {
+      case VideoLessonTab.notes:
+        return Tab(text: L10n.of(context).videoLessonTabNotes);
+      case VideoLessonTab.transcript:
+        return Tab(text: L10n.of(context).videoLessonTabTranscript);
+      case VideoLessonTab.askDoubt:
+        return Tab(text: L10n.of(context).videoLessonTabAskDoubt);
+      case VideoLessonTab.aiSupport:
+        return Tab(text: L10n.of(context).videoLessonTabAiSupport);
+    }
   }
 
   @override
@@ -180,24 +278,26 @@ class _VideoLessonDetailScreenState
           bottom: BorderSide(color: design.colors.accent2, width: 2.5),
         ),
       ),
-      tabs: [
-        Tab(text: L10n.of(context).videoLessonTabNotes),
-        Tab(text: L10n.of(context).videoLessonTabTranscript),
-        Tab(text: L10n.of(context).videoLessonTabAskDoubt),
-        Tab(text: L10n.of(context).videoLessonTabAiSupport),
-      ],
+      tabs: _activeTabs.map((tab) => _buildTabHeader(context, tab)).toList(),
     );
 
     return Scaffold(
       backgroundColor: design.colors.surface,
       body: NestedScrollView(
+        controller: _scrollController,
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
             SliverToBoxAdapter(child: header),
-            SliverToBoxAdapter(
-              child: Container(
-                color: design.colors.card, // Gray middle section
-                child: Column(children: [videoSection, titleSection]),
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  _KeepAliveWrapper(
+                    child: Container(
+                      color: design.colors.card, // Gray middle section
+                      child: Column(children: [videoSection, titleSection]),
+                    ),
+                  ),
+                ],
               ),
             ),
             SliverPersistentHeader(
@@ -225,12 +325,7 @@ class _VideoLessonDetailScreenState
           child: TabBarView(
             controller: _tabController,
             physics: const NeverScrollableScrollPhysics(),
-            children: [
-              NotesTab(lesson: widget.lesson),
-              TranscriptsTab(lesson: widget.lesson),
-              DoubtTab(lesson: widget.lesson),
-              AITab(lesson: widget.lesson),
-            ],
+            children: _activeTabs.map(_buildTabWidget).toList(),
           ),
         ),
       ),
@@ -259,4 +354,24 @@ class _StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(_StickyTabBarDelegate oldDelegate) =>
       oldDelegate.child != child;
+}
+
+class _KeepAliveWrapper extends StatefulWidget {
+  final Widget child;
+  const _KeepAliveWrapper({required this.child});
+
+  @override
+  State<_KeepAliveWrapper> createState() => _KeepAliveWrapperState();
+}
+
+class _KeepAliveWrapperState extends State<_KeepAliveWrapper>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
+  }
 }

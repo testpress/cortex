@@ -1492,4 +1492,28 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get videoLessonNoTranscriptAvailable =>
+      'No transcript available for this lesson.';
+
+  @override
+  String get videoLessonTranscriptionInProgress => 'Transcription in progress';
+
+  @override
+  String get videoLessonTranscriptionInProgressDesc =>
+      'We are currently generating the transcript for this video. Please check back shortly.';
+
+  @override
+  String get videoLessonFailedToLoadTranscript => 'Failed to load transcript.';
+
+  @override
+  String get videoLessonNoNotesAvailable =>
+      'No notes available for this lesson.';
+
+  @override
+  String get videoLessonNotesEmpty => 'Notes are currently empty.';
+
+  @override
+  String get videoLessonFailedToLoadNotes => 'Failed to load lecture notes.';
 }

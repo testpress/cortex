@@ -49,6 +49,10 @@ Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
       attemptsUrl: lessonDto.attemptsUrl,
       slug: lessonDto.slug,
       description: lessonDto.description,
+      enableTranscript: lessonDto.enableTranscript,
+      videoSubtitleUrl: lessonDto.videoSubtitleUrl,
+      isAiEnabled: lessonDto.isAiEnabled,
+      aiNotesUrl: lessonDto.aiNotesUrl,
     );
   });
  

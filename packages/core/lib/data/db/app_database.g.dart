@@ -1912,6 +1912,58 @@ class $LessonsTableTable extends LessonsTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _enableTranscriptMeta = const VerificationMeta(
+    'enableTranscript',
+  );
+  @override
+  late final GeneratedColumn<bool> enableTranscript = GeneratedColumn<bool>(
+    'enable_transcript',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("enable_transcript" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _videoSubtitleUrlMeta = const VerificationMeta(
+    'videoSubtitleUrl',
+  );
+  @override
+  late final GeneratedColumn<String> videoSubtitleUrl = GeneratedColumn<String>(
+    'video_subtitle_url',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isAiEnabledMeta = const VerificationMeta(
+    'isAiEnabled',
+  );
+  @override
+  late final GeneratedColumn<bool> isAiEnabled = GeneratedColumn<bool>(
+    'is_ai_enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_ai_enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _aiNotesUrlMeta = const VerificationMeta(
+    'aiNotesUrl',
+  );
+  @override
+  late final GeneratedColumn<String> aiNotesUrl = GeneratedColumn<String>(
+    'ai_notes_url',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1948,6 +2000,10 @@ class $LessonsTableTable extends LessonsTable
     attemptsUrl,
     slug,
     description,
+    enableTranscript,
+    videoSubtitleUrl,
+    isAiEnabled,
+    aiNotesUrl,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2234,6 +2290,42 @@ class $LessonsTableTable extends LessonsTable
         ),
       );
     }
+    if (data.containsKey('enable_transcript')) {
+      context.handle(
+        _enableTranscriptMeta,
+        enableTranscript.isAcceptableOrUnknown(
+          data['enable_transcript']!,
+          _enableTranscriptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('video_subtitle_url')) {
+      context.handle(
+        _videoSubtitleUrlMeta,
+        videoSubtitleUrl.isAcceptableOrUnknown(
+          data['video_subtitle_url']!,
+          _videoSubtitleUrlMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_ai_enabled')) {
+      context.handle(
+        _isAiEnabledMeta,
+        isAiEnabled.isAcceptableOrUnknown(
+          data['is_ai_enabled']!,
+          _isAiEnabledMeta,
+        ),
+      );
+    }
+    if (data.containsKey('ai_notes_url')) {
+      context.handle(
+        _aiNotesUrlMeta,
+        aiNotesUrl.isAcceptableOrUnknown(
+          data['ai_notes_url']!,
+          _aiNotesUrlMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -2379,6 +2471,22 @@ class $LessonsTableTable extends LessonsTable
         DriftSqlType.string,
         data['${effectivePrefix}description'],
       ),
+      enableTranscript: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}enable_transcript'],
+      )!,
+      videoSubtitleUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}video_subtitle_url'],
+      ),
+      isAiEnabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_ai_enabled'],
+      )!,
+      aiNotesUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}ai_notes_url'],
+      ),
     );
   }
 
@@ -2428,6 +2536,10 @@ class LessonsTableData extends DataClass
   final String? attemptsUrl;
   final String? slug;
   final String? description;
+  final bool enableTranscript;
+  final String? videoSubtitleUrl;
+  final bool isAiEnabled;
+  final String? aiNotesUrl;
   const LessonsTableData({
     required this.id,
     required this.chapterId,
@@ -2463,6 +2575,10 @@ class LessonsTableData extends DataClass
     this.attemptsUrl,
     this.slug,
     this.description,
+    required this.enableTranscript,
+    this.videoSubtitleUrl,
+    required this.isAiEnabled,
+    this.aiNotesUrl,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2539,6 +2655,14 @@ class LessonsTableData extends DataClass
     if (!nullToAbsent || description != null) {
       map['description'] = Variable<String>(description);
     }
+    map['enable_transcript'] = Variable<bool>(enableTranscript);
+    if (!nullToAbsent || videoSubtitleUrl != null) {
+      map['video_subtitle_url'] = Variable<String>(videoSubtitleUrl);
+    }
+    map['is_ai_enabled'] = Variable<bool>(isAiEnabled);
+    if (!nullToAbsent || aiNotesUrl != null) {
+      map['ai_notes_url'] = Variable<String>(aiNotesUrl);
+    }
     return map;
   }
 
@@ -2614,6 +2738,14 @@ class LessonsTableData extends DataClass
       description: description == null && nullToAbsent
           ? const Value.absent()
           : Value(description),
+      enableTranscript: Value(enableTranscript),
+      videoSubtitleUrl: videoSubtitleUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(videoSubtitleUrl),
+      isAiEnabled: Value(isAiEnabled),
+      aiNotesUrl: aiNotesUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(aiNotesUrl),
     );
   }
 
@@ -2661,6 +2793,10 @@ class LessonsTableData extends DataClass
       attemptsUrl: serializer.fromJson<String?>(json['attemptsUrl']),
       slug: serializer.fromJson<String?>(json['slug']),
       description: serializer.fromJson<String?>(json['description']),
+      enableTranscript: serializer.fromJson<bool>(json['enableTranscript']),
+      videoSubtitleUrl: serializer.fromJson<String?>(json['videoSubtitleUrl']),
+      isAiEnabled: serializer.fromJson<bool>(json['isAiEnabled']),
+      aiNotesUrl: serializer.fromJson<String?>(json['aiNotesUrl']),
     );
   }
   @override
@@ -2701,6 +2837,10 @@ class LessonsTableData extends DataClass
       'attemptsUrl': serializer.toJson<String?>(attemptsUrl),
       'slug': serializer.toJson<String?>(slug),
       'description': serializer.toJson<String?>(description),
+      'enableTranscript': serializer.toJson<bool>(enableTranscript),
+      'videoSubtitleUrl': serializer.toJson<String?>(videoSubtitleUrl),
+      'isAiEnabled': serializer.toJson<bool>(isAiEnabled),
+      'aiNotesUrl': serializer.toJson<String?>(aiNotesUrl),
     };
   }
 
@@ -2739,6 +2879,10 @@ class LessonsTableData extends DataClass
     Value<String?> attemptsUrl = const Value.absent(),
     Value<String?> slug = const Value.absent(),
     Value<String?> description = const Value.absent(),
+    bool? enableTranscript,
+    Value<String?> videoSubtitleUrl = const Value.absent(),
+    bool? isAiEnabled,
+    Value<String?> aiNotesUrl = const Value.absent(),
   }) => LessonsTableData(
     id: id ?? this.id,
     chapterId: chapterId ?? this.chapterId,
@@ -2782,6 +2926,12 @@ class LessonsTableData extends DataClass
     attemptsUrl: attemptsUrl.present ? attemptsUrl.value : this.attemptsUrl,
     slug: slug.present ? slug.value : this.slug,
     description: description.present ? description.value : this.description,
+    enableTranscript: enableTranscript ?? this.enableTranscript,
+    videoSubtitleUrl: videoSubtitleUrl.present
+        ? videoSubtitleUrl.value
+        : this.videoSubtitleUrl,
+    isAiEnabled: isAiEnabled ?? this.isAiEnabled,
+    aiNotesUrl: aiNotesUrl.present ? aiNotesUrl.value : this.aiNotesUrl,
   );
   LessonsTableData copyWithCompanion(LessonsTableCompanion data) {
     return LessonsTableData(
@@ -2865,6 +3015,18 @@ class LessonsTableData extends DataClass
       description: data.description.present
           ? data.description.value
           : this.description,
+      enableTranscript: data.enableTranscript.present
+          ? data.enableTranscript.value
+          : this.enableTranscript,
+      videoSubtitleUrl: data.videoSubtitleUrl.present
+          ? data.videoSubtitleUrl.value
+          : this.videoSubtitleUrl,
+      isAiEnabled: data.isAiEnabled.present
+          ? data.isAiEnabled.value
+          : this.isAiEnabled,
+      aiNotesUrl: data.aiNotesUrl.present
+          ? data.aiNotesUrl.value
+          : this.aiNotesUrl,
     );
   }
 
@@ -2904,7 +3066,11 @@ class LessonsTableData extends DataClass
           ..write('scheduledMessage: $scheduledMessage, ')
           ..write('attemptsUrl: $attemptsUrl, ')
           ..write('slug: $slug, ')
-          ..write('description: $description')
+          ..write('description: $description, ')
+          ..write('enableTranscript: $enableTranscript, ')
+          ..write('videoSubtitleUrl: $videoSubtitleUrl, ')
+          ..write('isAiEnabled: $isAiEnabled, ')
+          ..write('aiNotesUrl: $aiNotesUrl')
           ..write(')'))
         .toString();
   }
@@ -2945,6 +3111,10 @@ class LessonsTableData extends DataClass
     attemptsUrl,
     slug,
     description,
+    enableTranscript,
+    videoSubtitleUrl,
+    isAiEnabled,
+    aiNotesUrl,
   ]);
   @override
   bool operator ==(Object other) =>
@@ -2983,7 +3153,11 @@ class LessonsTableData extends DataClass
           other.scheduledMessage == this.scheduledMessage &&
           other.attemptsUrl == this.attemptsUrl &&
           other.slug == this.slug &&
-          other.description == this.description);
+          other.description == this.description &&
+          other.enableTranscript == this.enableTranscript &&
+          other.videoSubtitleUrl == this.videoSubtitleUrl &&
+          other.isAiEnabled == this.isAiEnabled &&
+          other.aiNotesUrl == this.aiNotesUrl);
 }
 
 class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
@@ -3021,6 +3195,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   final Value<String?> attemptsUrl;
   final Value<String?> slug;
   final Value<String?> description;
+  final Value<bool> enableTranscript;
+  final Value<String?> videoSubtitleUrl;
+  final Value<bool> isAiEnabled;
+  final Value<String?> aiNotesUrl;
   final Value<int> rowid;
   const LessonsTableCompanion({
     this.id = const Value.absent(),
@@ -3057,6 +3235,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.attemptsUrl = const Value.absent(),
     this.slug = const Value.absent(),
     this.description = const Value.absent(),
+    this.enableTranscript = const Value.absent(),
+    this.videoSubtitleUrl = const Value.absent(),
+    this.isAiEnabled = const Value.absent(),
+    this.aiNotesUrl = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   LessonsTableCompanion.insert({
@@ -3094,6 +3276,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.attemptsUrl = const Value.absent(),
     this.slug = const Value.absent(),
     this.description = const Value.absent(),
+    this.enableTranscript = const Value.absent(),
+    this.videoSubtitleUrl = const Value.absent(),
+    this.isAiEnabled = const Value.absent(),
+    this.aiNotesUrl = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        chapterId = Value(chapterId),
@@ -3136,6 +3322,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Expression<String>? attemptsUrl,
     Expression<String>? slug,
     Expression<String>? description,
+    Expression<bool>? enableTranscript,
+    Expression<String>? videoSubtitleUrl,
+    Expression<bool>? isAiEnabled,
+    Expression<String>? aiNotesUrl,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -3174,6 +3364,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       if (attemptsUrl != null) 'attempts_url': attemptsUrl,
       if (slug != null) 'slug': slug,
       if (description != null) 'description': description,
+      if (enableTranscript != null) 'enable_transcript': enableTranscript,
+      if (videoSubtitleUrl != null) 'video_subtitle_url': videoSubtitleUrl,
+      if (isAiEnabled != null) 'is_ai_enabled': isAiEnabled,
+      if (aiNotesUrl != null) 'ai_notes_url': aiNotesUrl,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -3213,6 +3407,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Value<String?>? attemptsUrl,
     Value<String?>? slug,
     Value<String?>? description,
+    Value<bool>? enableTranscript,
+    Value<String?>? videoSubtitleUrl,
+    Value<bool>? isAiEnabled,
+    Value<String?>? aiNotesUrl,
     Value<int>? rowid,
   }) {
     return LessonsTableCompanion(
@@ -3250,6 +3448,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       attemptsUrl: attemptsUrl ?? this.attemptsUrl,
       slug: slug ?? this.slug,
       description: description ?? this.description,
+      enableTranscript: enableTranscript ?? this.enableTranscript,
+      videoSubtitleUrl: videoSubtitleUrl ?? this.videoSubtitleUrl,
+      isAiEnabled: isAiEnabled ?? this.isAiEnabled,
+      aiNotesUrl: aiNotesUrl ?? this.aiNotesUrl,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -3359,6 +3561,18 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     if (description.present) {
       map['description'] = Variable<String>(description.value);
     }
+    if (enableTranscript.present) {
+      map['enable_transcript'] = Variable<bool>(enableTranscript.value);
+    }
+    if (videoSubtitleUrl.present) {
+      map['video_subtitle_url'] = Variable<String>(videoSubtitleUrl.value);
+    }
+    if (isAiEnabled.present) {
+      map['is_ai_enabled'] = Variable<bool>(isAiEnabled.value);
+    }
+    if (aiNotesUrl.present) {
+      map['ai_notes_url'] = Variable<String>(aiNotesUrl.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -3402,6 +3616,10 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
           ..write('attemptsUrl: $attemptsUrl, ')
           ..write('slug: $slug, ')
           ..write('description: $description, ')
+          ..write('enableTranscript: $enableTranscript, ')
+          ..write('videoSubtitleUrl: $videoSubtitleUrl, ')
+          ..write('isAiEnabled: $isAiEnabled, ')
+          ..write('aiNotesUrl: $aiNotesUrl, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -11008,6 +11226,10 @@ typedef $$LessonsTableTableCreateCompanionBuilder =
       Value<String?> attemptsUrl,
       Value<String?> slug,
       Value<String?> description,
+      Value<bool> enableTranscript,
+      Value<String?> videoSubtitleUrl,
+      Value<bool> isAiEnabled,
+      Value<String?> aiNotesUrl,
       Value<int> rowid,
     });
 typedef $$LessonsTableTableUpdateCompanionBuilder =
@@ -11046,6 +11268,10 @@ typedef $$LessonsTableTableUpdateCompanionBuilder =
       Value<String?> attemptsUrl,
       Value<String?> slug,
       Value<String?> description,
+      Value<bool> enableTranscript,
+      Value<String?> videoSubtitleUrl,
+      Value<bool> isAiEnabled,
+      Value<String?> aiNotesUrl,
       Value<int> rowid,
     });
 
@@ -11225,6 +11451,26 @@ class $$LessonsTableTableFilterComposer
 
   ColumnFilters<String> get description => $composableBuilder(
     column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get enableTranscript => $composableBuilder(
+    column: $table.enableTranscript,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get videoSubtitleUrl => $composableBuilder(
+    column: $table.videoSubtitleUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isAiEnabled => $composableBuilder(
+    column: $table.isAiEnabled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get aiNotesUrl => $composableBuilder(
+    column: $table.aiNotesUrl,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -11407,6 +11653,26 @@ class $$LessonsTableTableOrderingComposer
     column: $table.description,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get enableTranscript => $composableBuilder(
+    column: $table.enableTranscript,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get videoSubtitleUrl => $composableBuilder(
+    column: $table.videoSubtitleUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isAiEnabled => $composableBuilder(
+    column: $table.isAiEnabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get aiNotesUrl => $composableBuilder(
+    column: $table.aiNotesUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$LessonsTableTableAnnotationComposer
@@ -11565,6 +11831,26 @@ class $$LessonsTableTableAnnotationComposer
     column: $table.description,
     builder: (column) => column,
   );
+
+  GeneratedColumn<bool> get enableTranscript => $composableBuilder(
+    column: $table.enableTranscript,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get videoSubtitleUrl => $composableBuilder(
+    column: $table.videoSubtitleUrl,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isAiEnabled => $composableBuilder(
+    column: $table.isAiEnabled,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get aiNotesUrl => $composableBuilder(
+    column: $table.aiNotesUrl,
+    builder: (column) => column,
+  );
 }
 
 class $$LessonsTableTableTableManager
@@ -11632,6 +11918,10 @@ class $$LessonsTableTableTableManager
                 Value<String?> attemptsUrl = const Value.absent(),
                 Value<String?> slug = const Value.absent(),
                 Value<String?> description = const Value.absent(),
+                Value<bool> enableTranscript = const Value.absent(),
+                Value<String?> videoSubtitleUrl = const Value.absent(),
+                Value<bool> isAiEnabled = const Value.absent(),
+                Value<String?> aiNotesUrl = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LessonsTableCompanion(
                 id: id,
@@ -11668,6 +11958,10 @@ class $$LessonsTableTableTableManager
                 attemptsUrl: attemptsUrl,
                 slug: slug,
                 description: description,
+                enableTranscript: enableTranscript,
+                videoSubtitleUrl: videoSubtitleUrl,
+                isAiEnabled: isAiEnabled,
+                aiNotesUrl: aiNotesUrl,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -11706,6 +12000,10 @@ class $$LessonsTableTableTableManager
                 Value<String?> attemptsUrl = const Value.absent(),
                 Value<String?> slug = const Value.absent(),
                 Value<String?> description = const Value.absent(),
+                Value<bool> enableTranscript = const Value.absent(),
+                Value<String?> videoSubtitleUrl = const Value.absent(),
+                Value<bool> isAiEnabled = const Value.absent(),
+                Value<String?> aiNotesUrl = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LessonsTableCompanion.insert(
                 id: id,
@@ -11742,6 +12040,10 @@ class $$LessonsTableTableTableManager
                 attemptsUrl: attemptsUrl,
                 slug: slug,
                 description: description,
+                enableTranscript: enableTranscript,
+                videoSubtitleUrl: videoSubtitleUrl,
+                isAiEnabled: isAiEnabled,
+                aiNotesUrl: aiNotesUrl,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

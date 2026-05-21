@@ -505,5 +505,12 @@
   "infoPageEmptyState": "ഇപ്പോൾ ലേണിംഗ് റിസോഴ്‌സുകൾ ലഭ്യമല്ല.",
   "infoPageLoadError": "റിസോഴ്‌സുകൾ ലോഡ് ചെയ്യാനായില്ല. ദയവായി വീണ്ടും ശ്രമിക്കുക.",
   "infoPageOpenCourse": "{title} തുറക്കുക",
-  "infoPageLessonsCount": "{count,plural, =1{1 പാഠം} other{{count} പാഠങ്ങൾ}}"
+  "infoPageLessonsCount": "{count,plural, =1{1 പാഠം} other{{count} പാഠങ്ങൾ}}",
+  "videoLessonNoTranscriptAvailable": "ഈ പാഠത്തിന് ട്രാൻസ്ക്രിപ്റ്റ് ലഭ്യമല്ല.",
+  "videoLessonTranscriptionInProgress": "ട്രാൻസ്ക്രിപ്ഷൻ പുരോഗമിക്കുന്നു",
+  "videoLessonTranscriptionInProgressDesc": "ഈ വീഡിയോയ്ക്കായുള്ള ട്രാൻസ്ക്രിപ്റ്റ് ഞങ്ങൾ തയ്യാറാക്കുകയാണ്. ദയവായി അല്പം കഴിഞ്ഞ് പരിശോധിക്കുക.",
+  "videoLessonFailedToLoadTranscript": "ട്രാൻസ്ക്രിപ്റ്റ് ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.",
+  "videoLessonNoNotesAvailable": "ഈ പാഠത്തിന് കുറിപ്പുകൾ ലഭ്യമല്ല.",
+  "videoLessonNotesEmpty": "കുറിപ്പുകൾ ഇപ്പോൾ ശൂന്യമാണ്.",
+  "videoLessonFailedToLoadNotes": "ലെക്ചർ കുറിപ്പുകൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു."
 }

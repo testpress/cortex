@@ -12,10 +12,16 @@ class CustomVideoPlayer extends StatefulWidget {
   });
 
   @override
-  State<CustomVideoPlayer> createState() => _CustomVideoPlayerState();
+  State<CustomVideoPlayer> createState() => CustomVideoPlayerState();
 }
 
-class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
+class CustomVideoPlayerState extends State<CustomVideoPlayer> {
+  TestpressPlayerController? _controller;
+
+  Future<void> seek(Duration position) async {
+    await _controller?.seek(position);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.assetId != null && widget.assetId!.isNotEmpty) {
@@ -24,6 +30,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
         autoPlay: true,
         showDownloadOption: true,
         onPlayerCreated: (TestpressPlayerController controller) {
+          _controller = controller;
           // controller.disableAutoFullscreenOnRotate();
           controller.addListener(() {
             if (controller.value.position >= controller.value.duration &&

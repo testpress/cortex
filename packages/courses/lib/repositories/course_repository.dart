@@ -974,6 +974,10 @@ class CourseRepository {
     attemptsUrl: row.attemptsUrl,
     slug: row.slug,
     description: row.description,
+    enableTranscript: row.enableTranscript,
+    videoSubtitleUrl: row.videoSubtitleUrl,
+    isAiEnabled: row.isAiEnabled,
+    aiNotesUrl: row.aiNotesUrl,
   );
 
   LessonsTableCompanion _lessonDtoToCompanion(LessonDto dto) =>
@@ -1043,6 +1047,14 @@ class CourseRepository {
         slug: dto.slug != null ? Value(dto.slug) : const Value.absent(),
         description: dto.description != null 
             ? Value(dto.description) 
+            : const Value.absent(),
+        enableTranscript: Value(dto.enableTranscript),
+        videoSubtitleUrl: dto.videoSubtitleUrl != null
+            ? Value(dto.videoSubtitleUrl)
+            : const Value.absent(),
+        isAiEnabled: Value(dto.isAiEnabled),
+        aiNotesUrl: dto.aiNotesUrl != null
+            ? Value(dto.aiNotesUrl)
             : const Value.absent(),
       );
 
