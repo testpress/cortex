@@ -1,10 +1,8 @@
 # video-lesson-subtabs Specification
 
 ## Purpose
-Specifies the behavior of dynamic subtabs (Notes, Transcript, Ask Doubt, AI Support) in the video lesson details.
-
+TBD - created by archiving change integrate-video-subtabs. Update Purpose after archive.
 ## Requirements
-
 ### Requirement: Dynamic Video Subtabs Display
 The system SHALL dynamically determine and render the subtabs in `VideoLessonDetailScreen` based on API-provided flags for the video lesson.
 
@@ -57,10 +55,10 @@ The system SHALL ensure that tab switching and scrolling are buttery smooth and 
 - **THEN** the active tab's scroll position, fetched data, and widget state MUST be preserved (using keep-alive)
 - **AND** the transition between tabs MUST be instantaneous without showing shimmers or triggering new network calls.
 
-#### Scenario: Scrolling notes and transcripts is highly responsive
-- **WHEN** the user scrolls the "Notes" or "Transcript" content
-- **THEN** the scrolling MUST be smooth without any lag or frame drops
-- **AND** the inner scroll view MUST support proper physics coordinating smoothly with the parent NestedScrollView.
+#### Scenario: Heavy Layout Performance (Slivers)
+- **WHEN** the "Transcript" or "Notes" tab is rendered with a large amount of content
+- **THEN** the layout MUST use a lazy-loading Sliver architecture (`CustomScrollView`, `SliverList`)
+- **AND** the UI thread MUST NOT be blocked during layout, ensuring loading animations (shimmers) run flawlessly and user interactions (tab taps) respond immediately without queueing lag.
 
 ---
 
@@ -73,3 +71,19 @@ The system SHALL NOT render the video viewer and tabs until the full lesson deta
 - **AND** the orchestrator MUST show a loading indicator instead of rendering the viewer
 - **WHEN** the lesson detail is fetched from the API and `isDetailFetched` becomes true
 - **THEN** the orchestrator SHALL render the viewer, displaying all dynamic tabs immediately at once.
+
+---
+
+### Requirement: Structural Loading States (Skeletonizer)
+The system SHALL display high-fidelity skeleton loading states during data fetches within individual tabs to maintain intrinsic layout height, preventing any nested static footers from floating up awkwardly.
+
+#### Scenario: Notes Tab is fetching content
+- **WHEN** the Notes Tab is active and its content is actively being fetched
+- **THEN** the system MUST display a `Skeletonizer` layout containing mock text paragraphs (`Bone.multiText`)
+- **AND** this mock layout MUST simulate realistic text height to properly push down the sticky footer.
+
+#### Scenario: Transcript Tab is fetching content
+- **WHEN** the Transcript Tab is active and its WebVTT content is actively being fetched
+- **THEN** the system MUST display a `Skeletonizer` layout containing mock transcript cues (timestamp and text lines)
+- **AND** this mock layout MUST simulate realistic list height to properly push down the sticky footer.
+
