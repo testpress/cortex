@@ -567,28 +567,32 @@ class CourseRepository {
             .get();
         final chapterById = {for (final row in chapterRows) row.id: row};
 
-        final companions = lessons
-            .map(
-              (lesson) => _lessonDtoToCompanion(
-                lesson.copyWith(
-                  courseId: lesson.courseId ?? courseId,
-                  ancestorChapterIds:
-                      lesson.ancestorChapterIds ?? _buildAncestorChapterIds(lesson.chapterId, chapterById),
-                ),
-              ),
-            )
-            .toList();
-
         final remoteIds = lessons.map((l) => l.id).toSet();
 
         await _db.transaction(() async {
           final localLessons = await getLessons(chapterId);
           final localIds = localLessons.map((l) => l.id).toSet();
+          final existingById = {
+            for (final row in localLessons) row.id: rowToLessonDto(row)
+          };
 
           final idsToDelete = localIds.difference(remoteIds).toList();
           if (idsToDelete.isNotEmpty) {
             await _db.deleteLessonsByIds(idsToDelete);
           }
+
+          // Merge each remote lesson with its local counterpart before persisting.
+          // This preserves locally-enriched fields (e.g. duration, contentUrl, videoSubtitleUrl)
+          // that the list API may return as empty/null.
+          final companions = lessons.map((lesson) {
+            final enriched = lesson.copyWith(
+              courseId: lesson.courseId ?? courseId,
+              ancestorChapterIds: lesson.ancestorChapterIds ??
+                  _buildAncestorChapterIds(lesson.chapterId, chapterById),
+            );
+            final existing = existingById[lesson.id];
+            return _lessonDtoToCompanion(enriched.mergeWith(existing));
+          }).toList();
 
           await _db.upsertLessons(companions);
         });
@@ -670,14 +674,22 @@ class CourseRepository {
         .get();
     final chapterById = {for (final row in chapterRows) row.id: row};
 
+    final lessonIds = curriculum.lessons.map((l) => l.id).toList();
+    final existingLessons = await (_db.select(_db.lessonsTable)
+          ..where((t) => t.id.isIn(lessonIds)))
+        .get();
+    final existingById = {
+      for (final row in existingLessons) row.id: rowToLessonDto(row)
+    };
+
     final lessonCompanions = curriculum.lessons.map((lesson) {
       final ancestry = lesson.ancestorChapterIds ?? _buildAncestorChapterIds(lesson.chapterId, chapterById);
-      return _lessonDtoToCompanion(
-        lesson.copyWith(
-          courseId: lesson.courseId ?? courseId,
-          ancestorChapterIds: ancestry,
-        ),
+      final enriched = lesson.copyWith(
+        courseId: lesson.courseId ?? courseId,
+        ancestorChapterIds: ancestry,
       );
+      final existing = existingById[lesson.id];
+      return _lessonDtoToCompanion(enriched.mergeWith(existing));
     }).toList();
     final chapterCompanions = curriculum.chapters.map(_chapterDtoToCompanion).toList();
 
@@ -1103,3 +1115,4 @@ class LessonPaginationController {
     required this.dispose,
   });
 }
+
