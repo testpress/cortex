@@ -12,7 +12,7 @@ Follow these precise steps to refactor the leaderboard database and data fetchin
 
 ### [x] Task 1.2: Create Dedicated `leaderboard_tables.dart` File
 - **File**: `packages/core/lib/data/db/tables/leaderboard_tables.dart` [NEW]
-- **Instructions**: Create a new file containing the reusable `LeaderboardColumns` mixin and three isolated table classes `WeeklyLeaderboardTable`, `MonthlyLeaderboardTable`, and `AllTimeLeaderboardTable` with custom table name overrides, composite primary keys `{id, page}`, and distinct SQLite index declarations.
+- **Instructions**: Create a new file containing the reusable `LeaderboardColumns` mixin and three isolated table classes `WeeklyLeaderboardTable`, `MonthlyLeaderboardTable`, and `AllTimeLeaderboardTable` with custom table name overrides, user `id` as the sole primary key, and distinct SQLite index declarations.
 - **Target Code**:
   ```dart
   import 'package:drift/drift.dart';
@@ -36,7 +36,7 @@ Follow these precise steps to refactor the leaderboard database and data fetchin
     String get tableName => 'weekly_leaderboard';
 
     @override
-    Set<Column> get primaryKey => {id, page};
+    Set<Column> get primaryKey => {id};
 
     @override
     List<Index> get indexes => [
@@ -52,7 +52,7 @@ Follow these precise steps to refactor the leaderboard database and data fetchin
     String get tableName => 'monthly_leaderboard';
 
     @override
-    Set<Column> get primaryKey => {id, page};
+    Set<Column> get primaryKey => {id};
 
     @override
     List<Index> get indexes => [
@@ -68,7 +68,7 @@ Follow these precise steps to refactor the leaderboard database and data fetchin
     String get tableName => 'all_time_leaderboard';
 
     @override
-    Set<Column> get primaryKey => {id, page};
+    Set<Column> get primaryKey => {id};
 
     @override
     List<Index> get indexes => [

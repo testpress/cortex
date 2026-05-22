@@ -6,7 +6,7 @@ The current leaderboard local database design (`LearnersTable`) only supports a 
 
 - **Database Separation & Dedicated File**: Create a dedicated database schema file `packages/core/lib/data/db/tables/leaderboard_tables.dart`. Define the shared Drift mixin and three distinct, explicitly named tables (`weekly_leaderboard`, `monthly_leaderboard`, and `all_time_leaderboard`) with custom table name overrides.
 - **Type-Safe Persistence**: Remove all `dynamic` stream and query return types. Define explicit, type-safe database queries (`watchWeeklyLeaderboard`, etc.) and map database records directly to the `LearnerDto` domain DTO model.
-- **Pagination Support**: Add a `page` column to the Drift table schema mixin and include `page` in the composite primary key `{id, page}` to allow infinite scrolling and page appending without data loss.
+- **Pagination Support**: Add a `page` column to the Drift table schema mixin. Use user `id` as the sole primary key to prevent duplicate entries when users shift ranks across page boundaries, using `insertAllOnConflictUpdate` to automatically handle rank/page updates.
 - **Dynamic Limit & Pagination in HTTP calls**: Support pagination on the network layer via `limit` and `page` parameters in the leaderboard API endpoint.
 - **Correct Query Parameters**: Correct the timeline query parameter mapping to return `null` for `allTime` timeline, matching the backend's default behavior.
 - **Database Indexes**: Add database indexes on `rank` and `points` columns inside all three tables for high-performance sorting and query optimization.
@@ -22,7 +22,7 @@ None.
 ## Impact
 
 - `packages/core/lib/data/db/tables/dashboard_tables.dart`: Delete the old `LearnersTable`.
-- `packages/core/lib/data/db/tables/leaderboard_tables.dart` [NEW]: Define the reusable Drift `LeaderboardColumns` mixin (with `page` column), three database tables (`WeeklyLeaderboardTable`, `MonthlyLeaderboardTable`, `AllTimeLeaderboardTable`) with composite primary keys, custom table names, and indexes on `rank` and `points`.
+- `packages/core/lib/data/db/tables/leaderboard_tables.dart` [NEW]: Define the reusable Drift `LeaderboardColumns` mixin (with `page` column), three database tables (`WeeklyLeaderboardTable`, `MonthlyLeaderboardTable`, `AllTimeLeaderboardTable`) with user `id` as the sole primary key to prevent duplications, custom table names, and indexes on `rank` and `points`.
 - `packages/core/lib/data/db/app_database.dart`: Register the three tables, bump `schemaVersion` to `22`, implement type-safe watch and paginated upsert queries, and add non-destructive migration code.
 - `packages/core/lib/data/models/dashboard_dto.dart`: Implement `LeaderboardTimeline` enum with dynamic query parameter mapper (returning `null` for `allTime`).
 - `packages/core/lib/data/sources/`: Refactor `DataSource`, `HttpDataSource`, and `MockDataSource` to support `fetchLeaderboard` with parameter-driven pagination.

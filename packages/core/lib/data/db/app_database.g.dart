@@ -7360,7 +7360,7 @@ class $WeeklyLeaderboardTableTable extends WeeklyLeaderboardTable
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id, page};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   WeeklyLeaderboardData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -7868,7 +7868,7 @@ class $MonthlyLeaderboardTableTable extends MonthlyLeaderboardTable
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id, page};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   MonthlyLeaderboardData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -8376,7 +8376,7 @@ class $AllTimeLeaderboardTableTable extends AllTimeLeaderboardTable
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id, page};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   AllTimeLeaderboardData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';

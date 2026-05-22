@@ -19,7 +19,7 @@ class WeeklyLeaderboardTable extends Table with LeaderboardColumns {
   String get tableName => 'weekly_leaderboard';
 
   @override
-  Set<Column> get primaryKey => {id, page};
+  Set<Column> get primaryKey => {id};
 }
 
 @DataClassName('MonthlyLeaderboardData')
@@ -30,7 +30,7 @@ class MonthlyLeaderboardTable extends Table with LeaderboardColumns {
   String get tableName => 'monthly_leaderboard';
 
   @override
-  Set<Column> get primaryKey => {id, page};
+  Set<Column> get primaryKey => {id};
 }
 
 @DataClassName('AllTimeLeaderboardData')
@@ -41,5 +41,5 @@ class AllTimeLeaderboardTable extends Table with LeaderboardColumns {
   String get tableName => 'all_time_leaderboard';
 
   @override
-  Set<Column> get primaryKey => {id, page};
+  Set<Column> get primaryKey => {id};
 }

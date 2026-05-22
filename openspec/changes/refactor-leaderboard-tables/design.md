@@ -10,7 +10,7 @@ To keep the database schema modular, type-safe, and scalable, we will extract th
 **Goals:**
 - Keep persistence DRY by using a Drift Table mixin.
 - Isolate caching into a new dedicated schema file: `packages/core/lib/data/db/tables/leaderboard_tables.dart`.
-- Support infinite scroll and pagination by adding a `page` column to the schema and setting a composite primary key `{id, page}`.
+- Support infinite scroll and pagination by adding a `page` column to the schema and setting user `id` as the sole primary key to prevent user duplication when ranks shift.
 - Remove all `dynamic` database query return types to enforce compile-time type safety.
 - Optimize query performance with indexes on `rank` and `points`.
 - Map correct query parameters for timelines, returning `null` for `allTime` (which matches the backend contract).
@@ -29,11 +29,11 @@ To keep the database schema modular, type-safe, and scalable, we will extract th
 - **Rationale**: All leaderboard tables share identical schema. Reusing them via a mixin avoids repeating column definitions across three tables.
 - **Columns**: `id`, `name`, `avatar` (nullable), `points`, `rank`, `coursesCompleted`, `streakDays`, and `page` (with default value `1`).
 
-### 3. Custom Table Names & Composite Keys
-To ensure clean migrations and support infinite scroll/pagination, we override the table names explicitly and use composite primary keys:
-- `WeeklyLeaderboardTable`: overrides `tableName` to `'weekly_leaderboard'`. Primary key: `{id, page}`.
-- `MonthlyLeaderboardTable`: overrides `tableName` to `'monthly_leaderboard'`. Primary key: `{id, page}`.
-- `AllTimeLeaderboardTable`: overrides `tableName` to `'all_time_leaderboard'`. Primary key: `{id, page}`.
+### 3. Custom Table Names & Sole Primary Key
+To ensure clean migrations, support infinite scroll/pagination, and prevent user duplication during rank shifting, we override the table names explicitly and use the user `id` as the sole primary key:
+- `WeeklyLeaderboardTable`: overrides `tableName` to `'weekly_leaderboard'`. Primary key: `{id}`.
+- `MonthlyLeaderboardTable`: overrides `tableName` to `'monthly_leaderboard'`. Primary key: `{id}`.
+- `AllTimeLeaderboardTable`: overrides `tableName` to `'all_time_leaderboard'`. Primary key: `{id}`.
 
 ### 4. Database Indexes
 Add indexes on `rank` and `points` to optimize pagination ordering:
