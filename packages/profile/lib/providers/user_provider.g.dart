@@ -6,10 +6,9 @@ part of 'user_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$userHash() => r'bb6951f483be1b4a94b5488905ddf3d83a7a73e6';
+String _$userHash() => r'0bdd7424374c984544a7ba0443ce1845fa2a0975';
 
 /// Reactive provider that exposes the current user's profile metadata from the database.
-/// Automatically triggers a background refresh from the network whenever it's watched.
 ///
 /// Copied from [user].
 @ProviderFor(user)
