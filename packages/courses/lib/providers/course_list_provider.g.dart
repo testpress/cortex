@@ -328,7 +328,7 @@ class _AllChaptersProviderElement
   String get courseId => (origin as AllChaptersProvider).courseId;
 }
 
-String _$courseListHash() => r'146010fe7ff8a71f716bb3932d0fda0bf0b80dcc';
+String _$courseListHash() => r'c8fd4747cb6c94fc88837968c3313def4657acf8';
 
 /// See also [CourseList].
 @ProviderFor(CourseList)

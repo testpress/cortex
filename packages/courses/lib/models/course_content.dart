@@ -18,7 +18,7 @@ class Lesson {
     this.subjectIndex,
     this.lessonNumber,
     this.totalLessons,
-    this.isBookmarked = false,
+    this.bookmarkId,
     this.isRunning = false,
     this.isUpcoming = false,
     this.hasAttempts = false,
@@ -50,7 +50,7 @@ class Lesson {
   final int orderIndex;
   final String? duration;
   final bool isLocked;
-  final bool isBookmarked;
+  final int? bookmarkId;
   final bool isDetailFetched;
 
   // New fields for LessonDetailScreen (Phase-2)
@@ -122,7 +122,7 @@ class Lesson {
       lessonNumber: lessonNumber,
       totalLessons: totalLessons,
       contentUrl: contentUrl,
-      isBookmarked: isBookmarked,
+      bookmarkId: bookmarkId,
       isRunning: isRunning,
       isUpcoming: isUpcoming,
       hasAttempts: hasAttempts,

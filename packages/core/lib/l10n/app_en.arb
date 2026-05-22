@@ -751,5 +751,36 @@
   "videoLessonFailedToLoadTranscript": "Failed to load transcript.",
   "videoLessonNoNotesAvailable": "No notes available for this lesson.",
   "videoLessonNotesEmpty": "Notes are currently empty.",
-  "videoLessonFailedToLoadNotes": "Failed to load lecture notes."
+  "videoLessonFailedToLoadNotes": "Failed to load lecture notes.",
+  "labelSave": "Save",
+  "labelUncategorized": "Uncategorized",
+  "labelNewFolder": "New Folder",
+  "actionCreateNewFolder": "Create new folder",
+  "hintEnterFolderName": "Enter Folder name",
+  "hintExampleFolderName": "e.g. Physics, Revision",
+  "errorFailedToLoadFolders": "Failed to load folders.",
+  "errorFailedToCreateFolder": "Failed to create folder. Please try again.",
+  "bookmarkSaveToFolders": "Save to playlist or folders",
+  "bookmarkSaveTo": "Save to...",
+  "bookmarkAddedToFolder": "Added bookmark to {folderName}",
+  "@bookmarkAddedToFolder": {
+    "placeholders": {
+      "folderName": { "type": "String" }
+    }
+  },
+  "bookmarkRemovedFromFolder": "Removed bookmark from {folderName}",
+  "@bookmarkRemovedFromFolder": {
+    "placeholders": {
+      "folderName": { "type": "String" }
+    }
+  },
+  "bookmarkRemoved": "Bookmark removed",
+  "errorFailedToUpdateBookmark": "Failed to update bookmark. Please try again.",
+  "errorFailedToRemoveBookmark": "Failed to remove bookmark. Please try again.",
+  "lessonSpecializedViewerRequired": "Specialized viewer required for {type}",
+  "@lessonSpecializedViewerRequired": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  }
 }

@@ -640,4 +640,58 @@ class HttpDataSource implements DataSource {
       ),
     );
   }
+
+  @override
+  Future<List<BookmarkFolderDto>> getBookmarkFolders() async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.bookmarkFolders),
+      fromJson: (data) {
+        final results = data['results'] as List<dynamic>?;
+        return results
+                ?.map((e) => BookmarkFolderDto.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            [];
+      },
+    );
+  }
+
+  @override
+  Future<BookmarkFolderDto> createBookmarkFolder(String name) async {
+    return performNetworkRequest(
+      _dio.post(
+        ApiEndpoints.createBookmarkFolder,
+        data: {'name': name},
+      ),
+      fromJson: (data) => BookmarkFolderDto.fromJson(data as Map<String, dynamic>),
+    );
+  }
+
+  @override
+  Future<BookmarkDto> createBookmark({
+    required String category,
+    required int lessonId,
+    String? folder,
+    String? bookmarkType,
+  }) async {
+    return performNetworkRequest(
+      _dio.post(
+        ApiEndpoints.bookmarks,
+        data: {
+          'category': category,
+          'object_id': lessonId,
+          'folder': ?folder,
+          'bookmark_type': ?bookmarkType,
+        },
+      ),
+      fromJson: (data) => BookmarkDto.fromJson(data as Map<String, dynamic>),
+    );
+  }
+
+  @override
+  Future<void> deleteBookmark(String bookmarkId) async {
+    await performNetworkRequest(
+      _dio.delete(ApiEndpoints.deleteBookmark(bookmarkId)),
+      fromJson: (data) => null,
+    );
+  }
 }

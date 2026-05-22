@@ -26,7 +26,7 @@ Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
       orderIndex: lessonDto.orderIndex,
       duration: lessonDto.duration,
       isLocked: lessonDto.isLocked,
-      isBookmarked: lessonDto.isBookmarked,
+      bookmarkId: lessonDto.bookmarkId,
       subtitle: lessonDto.subtitle,
       subjectName: lessonDto.subjectName,
       subjectIndex: lessonDto.subjectIndex,
@@ -85,5 +85,5 @@ Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
 @riverpod
 Stream<bool> lessonBookmark(LessonBookmarkRef ref, String lessonId) async* {
   final repository = await ref.watch(courseRepositoryProvider.future);
-  yield* repository.watchLesson(lessonId).map((l) => l?.isBookmarked ?? false);
+  yield* repository.watchLesson(lessonId).map((l) => l?.bookmarkId != null);
 }

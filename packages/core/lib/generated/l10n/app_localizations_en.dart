@@ -1516,4 +1516,61 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get videoLessonFailedToLoadNotes => 'Failed to load lecture notes.';
+
+  @override
+  String get labelSave => 'Save';
+
+  @override
+  String get labelUncategorized => 'Uncategorized';
+
+  @override
+  String get labelNewFolder => 'New Folder';
+
+  @override
+  String get actionCreateNewFolder => 'Create new folder';
+
+  @override
+  String get hintEnterFolderName => 'Enter Folder name';
+
+  @override
+  String get hintExampleFolderName => 'e.g. Physics, Revision';
+
+  @override
+  String get errorFailedToLoadFolders => 'Failed to load folders.';
+
+  @override
+  String get errorFailedToCreateFolder =>
+      'Failed to create folder. Please try again.';
+
+  @override
+  String get bookmarkSaveToFolders => 'Save to playlist or folders';
+
+  @override
+  String get bookmarkSaveTo => 'Save to...';
+
+  @override
+  String bookmarkAddedToFolder(String folderName) {
+    return 'Added bookmark to $folderName';
+  }
+
+  @override
+  String bookmarkRemovedFromFolder(String folderName) {
+    return 'Removed bookmark from $folderName';
+  }
+
+  @override
+  String get bookmarkRemoved => 'Bookmark removed';
+
+  @override
+  String get errorFailedToUpdateBookmark =>
+      'Failed to update bookmark. Please try again.';
+
+  @override
+  String get errorFailedToRemoveBookmark =>
+      'Failed to remove bookmark. Please try again.';
+
+  @override
+  String lessonSpecializedViewerRequired(String type) {
+    return 'Specialized viewer required for $type';
+  }
 }

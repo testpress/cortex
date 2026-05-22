@@ -969,7 +969,7 @@ class CourseRepository {
     subjectIndex: row.subjectIndex,
     lessonNumber: row.lessonNumber,
     totalLessons: row.totalLessons,
-    isBookmarked: row.isBookmarked,
+    bookmarkId: row.bookmarkId,
     isRunning: row.isRunning,
     isUpcoming: row.isUpcoming,
     hasAttempts: row.hasAttempts,
@@ -1027,7 +1027,7 @@ class CourseRepository {
         totalLessons: dto.totalLessons != null
             ? Value(dto.totalLessons)
             : const Value.absent(),
-        isBookmarked: Value(dto.isBookmarked),
+        bookmarkId: Value(dto.bookmarkId),
         isRunning: Value(dto.isRunning),
         isUpcoming: Value(dto.isUpcoming),
         hasAttempts: Value(dto.hasAttempts),

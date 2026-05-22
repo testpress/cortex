@@ -2786,6 +2786,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to load lecture notes.'**
   String get videoLessonFailedToLoadNotes;
+
+  /// No description provided for @labelSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get labelSave;
+
+  /// No description provided for @labelUncategorized.
+  ///
+  /// In en, this message translates to:
+  /// **'Uncategorized'**
+  String get labelUncategorized;
+
+  /// No description provided for @labelNewFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'New Folder'**
+  String get labelNewFolder;
+
+  /// No description provided for @actionCreateNewFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new folder'**
+  String get actionCreateNewFolder;
+
+  /// No description provided for @hintEnterFolderName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Folder name'**
+  String get hintEnterFolderName;
+
+  /// No description provided for @hintExampleFolderName.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Physics, Revision'**
+  String get hintExampleFolderName;
+
+  /// No description provided for @errorFailedToLoadFolders.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load folders.'**
+  String get errorFailedToLoadFolders;
+
+  /// No description provided for @errorFailedToCreateFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create folder. Please try again.'**
+  String get errorFailedToCreateFolder;
+
+  /// No description provided for @bookmarkSaveToFolders.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to playlist or folders'**
+  String get bookmarkSaveToFolders;
+
+  /// No description provided for @bookmarkSaveTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to...'**
+  String get bookmarkSaveTo;
+
+  /// No description provided for @bookmarkAddedToFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Added bookmark to {folderName}'**
+  String bookmarkAddedToFolder(String folderName);
+
+  /// No description provided for @bookmarkRemovedFromFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed bookmark from {folderName}'**
+  String bookmarkRemovedFromFolder(String folderName);
+
+  /// No description provided for @bookmarkRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark removed'**
+  String get bookmarkRemoved;
+
+  /// No description provided for @errorFailedToUpdateBookmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update bookmark. Please try again.'**
+  String get errorFailedToUpdateBookmark;
+
+  /// No description provided for @errorFailedToRemoveBookmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to remove bookmark. Please try again.'**
+  String get errorFailedToRemoveBookmark;
+
+  /// No description provided for @lessonSpecializedViewerRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Specialized viewer required for {type}'**
+  String lessonSpecializedViewerRequired(String type);
 }
 
 class _AppLocalizationsDelegate

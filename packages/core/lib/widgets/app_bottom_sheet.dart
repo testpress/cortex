@@ -98,7 +98,27 @@ class _AppBottomSheetState extends State<AppBottomSheet>
                   child: Container(
                     width: double.infinity,
                     constraints: const BoxConstraints(maxWidth: 500),
-                    child: widget.child,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onVerticalDragUpdate: (details) {
+                        // Fluidly move the sheet with the drag
+                        final screenHeight = MediaQuery.of(context).size.height;
+                        if (screenHeight > 0) {
+                          _controller.value = (_controller.value - details.delta.dy / (screenHeight * 0.5)).clamp(0.0, 1.0);
+                        } 
+                      },
+                      onVerticalDragEnd: (details) {
+                        final velocity = details.primaryVelocity ?? 0;
+                        // Close if dragged down sufficiently or swiped down fast
+                        if (_controller.value < 0.7 || velocity > 300) {
+                          widget.onClose();
+                        } else {
+                          // Snap back to full open state
+                          _controller.forward();
+                        }
+                      },
+                      child: widget.child,
+                    ),
                   ),
                 ),
               ),

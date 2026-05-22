@@ -1526,4 +1526,61 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get videoLessonFailedToLoadNotes => 'فشل تحميل ملاحظات المحاضرة.';
+
+  @override
+  String get labelSave => 'حفظ';
+
+  @override
+  String get labelUncategorized => 'غير مصنف';
+
+  @override
+  String get labelNewFolder => 'مجلد جديد';
+
+  @override
+  String get actionCreateNewFolder => 'إنشاء مجلد جديد';
+
+  @override
+  String get hintEnterFolderName => 'أدخل اسم المجلد';
+
+  @override
+  String get hintExampleFolderName => 'مثل الفيزياء، المراجعة';
+
+  @override
+  String get errorFailedToLoadFolders => 'فشل تحميل المجلدات.';
+
+  @override
+  String get errorFailedToCreateFolder =>
+      'فشل إنشاء المجلد. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get bookmarkSaveToFolders => 'حفظ في قائمة التشغيل أو المجلدات';
+
+  @override
+  String get bookmarkSaveTo => 'حفظ في...';
+
+  @override
+  String bookmarkAddedToFolder(String folderName) {
+    return 'تمت إضافة الإشارة المرجعية إلى $folderName';
+  }
+
+  @override
+  String bookmarkRemovedFromFolder(String folderName) {
+    return 'تمت إزالة الإشارة المرجعية من $folderName';
+  }
+
+  @override
+  String get bookmarkRemoved => 'تمت إزالة الإشارة المرجعية';
+
+  @override
+  String get errorFailedToUpdateBookmark =>
+      'فشل تحديث الإشارة المرجعية. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get errorFailedToRemoveBookmark =>
+      'فشل إزالة الإشارة المرجعية. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String lessonSpecializedViewerRequired(String type) {
+    return 'مطلوب عارض متخصص لـ $type';
+  }
 }

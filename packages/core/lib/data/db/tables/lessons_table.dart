@@ -26,7 +26,7 @@ class LessonsTable extends Table {
   IntColumn get subjectIndex => integer().nullable()();
   IntColumn get lessonNumber => integer().nullable()();
   IntColumn get totalLessons => integer().nullable()();
-  BoolColumn get isBookmarked => boolean().withDefault(const Constant(false))();
+  IntColumn get bookmarkId => integer().nullable()();
   
   // Status flags for localized filtering
   BoolColumn get isRunning => boolean().withDefault(const Constant(false))();

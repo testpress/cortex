@@ -1,5 +1,17 @@
 import 'package:core/data/data.dart';
 
+final List<BookmarkFolderDto> _mockFolders = [
+  const BookmarkFolderDto(id: 1, name: 'Physics Notes', bookmarksCount: 2),
+  const BookmarkFolderDto(id: 2, name: 'Important Derivations', bookmarksCount: 1),
+  const BookmarkFolderDto(id: 3, name: 'NEET Prep', bookmarksCount: 0),
+];
+
+final List<BookmarkDto> _mockBookmarks = [
+  const BookmarkDto(id: 101, folderId: 1, folderName: 'Physics Notes', lessonId: 1001),
+  const BookmarkDto(id: 102, folderId: 1, folderName: 'Physics Notes', lessonId: 1002),
+  const BookmarkDto(id: 103, folderId: 2, folderName: 'Important Derivations', lessonId: 1003),
+];
+
 /// Static mock data source for development and testing.
 /// Implements [DataSource]; no network calls are made.
 /// Data is derived from the React reference design.
@@ -1174,5 +1186,102 @@ class MockDataSource implements DataSource {
   Future<List<DoubtReplyDto>> getDoubtReplies(String doubtId) async {
 
     return getMockDoubtReplies(doubtId);
+  }
+
+  @override
+  Future<List<BookmarkFolderDto>> getBookmarkFolders() async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return _mockFolders;
+  }
+
+  @override
+  Future<BookmarkFolderDto> createBookmarkFolder(String name) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    final newFolder = BookmarkFolderDto(
+      id: _mockFolders.length + 1,
+      name: name,
+      bookmarksCount: 0,
+    );
+    _mockFolders.add(newFolder);
+    return newFolder;
+  }
+
+  @override
+  Future<BookmarkDto> createBookmark({
+    required String category,
+    required int lessonId,
+    String? folder,
+    String? bookmarkType,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    
+    int? folderId;
+    String? folderName;
+    if (folder != null && folder.isNotEmpty) {
+      final match = _mockFolders.firstWhere(
+        (f) => f.name == folder,
+        orElse: () {
+          final newFolder = BookmarkFolderDto(
+            id: _mockFolders.length + 1,
+            name: folder,
+            bookmarksCount: 0,
+          );
+          _mockFolders.add(newFolder);
+          return newFolder;
+        },
+      );
+      folderId = match.id;
+      folderName = match.name;
+    }
+
+    final newBookmark = BookmarkDto(
+      id: _mockBookmarks.length + 101,
+      folderId: folderId,
+      folderName: folderName,
+      lessonId: lessonId,
+      bookmarkType: bookmarkType,
+    );
+    
+    final existingIndex = _mockBookmarks.indexWhere(
+      (b) => b.lessonId == lessonId && b.folderId == folderId,
+    );
+    if (existingIndex != -1) {
+      return _mockBookmarks[existingIndex];
+    }
+    
+    _mockBookmarks.add(newBookmark);
+    
+    if (folderId != null) {
+      final index = _mockFolders.indexWhere((f) => f.id == folderId);
+      if (index != -1) {
+        _mockFolders[index] = _mockFolders[index].copyWith(
+          bookmarksCount: _mockFolders[index].bookmarksCount + 1,
+        );
+      }
+    }
+    
+    return newBookmark;
+  }
+
+  @override
+  Future<void> deleteBookmark(String bookmarkId) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    final idInt = int.tryParse(bookmarkId);
+    if (idInt == null) return;
+    
+    final index = _mockBookmarks.indexWhere((b) => b.id == idInt);
+    if (index != -1) {
+      final bookmark = _mockBookmarks[index];
+      _mockBookmarks.removeAt(index);
+      
+      if (bookmark.folderId != null) {
+        final fIndex = _mockFolders.indexWhere((f) => f.id == bookmark.folderId);
+        if (fIndex != -1) {
+          _mockFolders[fIndex] = _mockFolders[fIndex].copyWith(
+            bookmarksCount: (_mockFolders[fIndex].bookmarksCount - 1).clamp(0, 999999),
+          );
+        }
+      }
+    }
   }
 }

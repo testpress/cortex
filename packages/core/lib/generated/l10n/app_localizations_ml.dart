@@ -1550,4 +1550,63 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get videoLessonFailedToLoadNotes =>
       'ലെക്ചർ കുറിപ്പുകൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.';
+
+  @override
+  String get labelSave => 'സേവ് ചെയ്യുക';
+
+  @override
+  String get labelUncategorized => 'തരംതിരിക്കാത്തത്';
+
+  @override
+  String get labelNewFolder => 'പുതിയ ഫോൾഡർ';
+
+  @override
+  String get actionCreateNewFolder => 'പുതിയ ഫോൾഡർ നിർമ്മിക്കുക';
+
+  @override
+  String get hintEnterFolderName => 'ഫോൾഡറിന്റെ പേര് നൽകുക';
+
+  @override
+  String get hintExampleFolderName => 'ഉദാഹരണത്തിന് ഫിസിക്സ്, റിവിഷൻ';
+
+  @override
+  String get errorFailedToLoadFolders =>
+      'ഫോൾഡറുകൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.';
+
+  @override
+  String get errorFailedToCreateFolder =>
+      'ഫോൾഡർ നിർമ്മിക്കുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get bookmarkSaveToFolders =>
+      'പ്ലേലിസ്റ്റിലേക്കോ ഫോൾഡറുകളിലേക്കോ സേവ് ചെയ്യുക';
+
+  @override
+  String get bookmarkSaveTo => 'ഇതിലേക്ക് സേവ് ചെയ്യുക...';
+
+  @override
+  String bookmarkAddedToFolder(String folderName) {
+    return 'ബുക്ക്മാർക്ക് $folderName-ലേക്ക് ചേർത്തു';
+  }
+
+  @override
+  String bookmarkRemovedFromFolder(String folderName) {
+    return 'ബുക്ക്മാർക്ക് $folderName-ൽ നിന്ന് നീക്കം ചെയ്തു';
+  }
+
+  @override
+  String get bookmarkRemoved => 'ബുക്ക്മാർക്ക് നീക്കം ചെയ്തു';
+
+  @override
+  String get errorFailedToUpdateBookmark =>
+      'ബുക്ക്മാർക്ക് അപ്ഡേറ്റ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get errorFailedToRemoveBookmark =>
+      'ബുക്ക്മാർക്ക് നീക്കം ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String lessonSpecializedViewerRequired(String type) {
+    return '$type-ന് പ്രത്യേക വ്യൂവർ ആവശ്യമാണ്';
+  }
 }

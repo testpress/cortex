@@ -512,5 +512,36 @@
   "videoLessonFailedToLoadTranscript": "ട്രാൻസ്ക്രിപ്റ്റ് ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.",
   "videoLessonNoNotesAvailable": "ഈ പാഠത്തിന് കുറിപ്പുകൾ ലഭ്യമല്ല.",
   "videoLessonNotesEmpty": "കുറിപ്പുകൾ ഇപ്പോൾ ശൂന്യമാണ്.",
-  "videoLessonFailedToLoadNotes": "ലെക്ചർ കുറിപ്പുകൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു."
+  "videoLessonFailedToLoadNotes": "ലെക്ചർ കുറിപ്പുകൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.",
+  "labelSave": "സേവ് ചെയ്യുക",
+  "labelUncategorized": "തരംതിരിക്കാത്തത്",
+  "labelNewFolder": "പുതിയ ഫോൾഡർ",
+  "actionCreateNewFolder": "പുതിയ ഫോൾഡർ നിർമ്മിക്കുക",
+  "hintEnterFolderName": "ഫോൾഡറിന്റെ പേര് നൽകുക",
+  "hintExampleFolderName": "ഉദാഹരണത്തിന് ഫിസിക്സ്, റിവിഷൻ",
+  "errorFailedToLoadFolders": "ഫോൾഡറുകൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.",
+  "errorFailedToCreateFolder": "ഫോൾഡർ നിർമ്മിക്കുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.",
+  "bookmarkSaveToFolders": "പ്ലേലിസ്റ്റിലേക്കോ ഫോൾഡറുകളിലേക്കോ സേവ് ചെയ്യുക",
+  "bookmarkSaveTo": "ഇതിലേക്ക് സേവ് ചെയ്യുക...",
+  "bookmarkAddedToFolder": "ബുക്ക്മാർക്ക് {folderName}-ലേക്ക് ചേർത്തു",
+  "@bookmarkAddedToFolder": {
+    "placeholders": {
+      "folderName": { "type": "String" }
+    }
+  },
+  "bookmarkRemovedFromFolder": "ബുക്ക്മാർക്ക് {folderName}-ൽ നിന്ന് നീക്കം ചെയ്തു",
+  "@bookmarkRemovedFromFolder": {
+    "placeholders": {
+      "folderName": { "type": "String" }
+    }
+  },
+  "bookmarkRemoved": "ബുക്ക്മാർക്ക് നീക്കം ചെയ്തു",
+  "errorFailedToUpdateBookmark": "ബുക്ക്മാർക്ക് അപ്ഡേറ്റ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.",
+  "errorFailedToRemoveBookmark": "ബുക്ക്മാർക്ക് നീക്കം ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.",
+  "lessonSpecializedViewerRequired": "{type}-ന് പ്രത്യേക വ്യൂവർ ആവശ്യമാണ്",
+  "@lessonSpecializedViewerRequired": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  }
 }

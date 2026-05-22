@@ -142,4 +142,23 @@ abstract class DataSource {
     dynamic cancelToken,
     bool requireAuth = true,
   });
+
+  // ── Bookmarks ───────────────────────────────────────────────────────────
+
+  /// Fetch user's bookmark folders.
+  Future<List<BookmarkFolderDto>> getBookmarkFolders();
+
+  /// Create a new bookmark folder.
+  Future<BookmarkFolderDto> createBookmarkFolder(String name);
+
+  /// Create a new bookmark for a lesson.
+  Future<BookmarkDto> createBookmark({
+    required String category,
+    required int lessonId,
+    String? folder,
+    String? bookmarkType,
+  });
+
+  /// Delete a bookmark by its server-side ID.
+  Future<void> deleteBookmark(String bookmarkId);
 }
