@@ -75,7 +75,7 @@ Stream<Chapter?> _watchChapter(
               lessonNumber: l.lessonNumber,
               totalLessons: l.totalLessons,
               contentUrl: l.contentUrl,
-              isBookmarked: l.isBookmarked,
+              bookmarkId: l.bookmarkId,
               isRunning: l.isRunning,
               isUpcoming: l.isUpcoming,
               hasAttempts: l.hasAttempts,

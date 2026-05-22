@@ -31,6 +31,7 @@ export 'models/question_dto.dart';
 export 'models/answer_dto.dart';
 export 'models/download_item.dart';
 export 'models/doubt_dto.dart';
+export 'models/bookmark_dto.dart';
 
 // Database
 export 'db/tables/dashboard_tables.dart';
@@ -56,7 +57,9 @@ export '../network/api_endpoints.dart';
 
 // Repositories
 export 'repositories/user_progress_repository.dart';
+export 'repositories/bookmark_repository.dart';
 export 'repositories/repository_providers.dart';
+export 'providers/bookmark_provider.dart';
 
 //service
 export 'services/downloads_service.dart';

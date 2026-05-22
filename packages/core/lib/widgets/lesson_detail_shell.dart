@@ -261,9 +261,10 @@ class LessonDetailShell extends StatelessWidget {
           ),
         if (onBookmarkToggle != null)
           _HeaderButton(
-            icon: LucideIcons.bookmark,
+            icon: isBookmarked ? LucideIcons.bookmarkMinus : LucideIcons.bookmark,
             label: isBookmarked ? 'Remove bookmark' : 'Bookmark lesson',
             onTap: onBookmarkToggle!,
+            iconColor: isBookmarked ? design.colors.primary : null,
           ),
         if (onDownload != null)
           _HeaderButton(
@@ -306,10 +307,11 @@ class LessonDetailShell extends StatelessWidget {
 }
 
 class _HeaderButton extends StatelessWidget {
-  const _HeaderButton({required this.icon, required this.label, required this.onTap});
+  const _HeaderButton({required this.icon, required this.label, required this.onTap, this.iconColor});
   final IconData icon;
   final String label;
   final VoidCallback onTap;
+  final Color? iconColor;
 
   @override
   Widget build(BuildContext context) {
@@ -326,7 +328,7 @@ class _HeaderButton extends StatelessWidget {
             child: Icon(
               icon,
               size: 20,
-              color: design.colors.textPrimary,
+              color: iconColor ?? design.colors.textPrimary,
             ),
           ),
         ),

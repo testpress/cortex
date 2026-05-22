@@ -512,5 +512,36 @@
   "videoLessonFailedToLoadTranscript": "فشل تحميل تفريغ النص.",
   "videoLessonNoNotesAvailable": "لا توجد ملاحظات متاحة لهذا الدرس.",
   "videoLessonNotesEmpty": "الملاحظات فارغة حاليًا.",
-  "videoLessonFailedToLoadNotes": "فشل تحميل ملاحظات المحاضرة."
+  "videoLessonFailedToLoadNotes": "فشل تحميل ملاحظات المحاضرة.",
+  "labelSave": "حفظ",
+  "labelUncategorized": "غير مصنف",
+  "labelNewFolder": "مجلد جديد",
+  "actionCreateNewFolder": "إنشاء مجلد جديد",
+  "hintEnterFolderName": "أدخل اسم المجلد",
+  "hintExampleFolderName": "مثل الفيزياء، المراجعة",
+  "errorFailedToLoadFolders": "فشل تحميل المجلدات.",
+  "errorFailedToCreateFolder": "فشل إنشاء المجلد. يرجى المحاولة مرة أخرى.",
+  "bookmarkSaveToFolders": "حفظ في قائمة التشغيل أو المجلدات",
+  "bookmarkSaveTo": "حفظ في...",
+  "bookmarkAddedToFolder": "تمت إضافة الإشارة المرجعية إلى {folderName}",
+  "@bookmarkAddedToFolder": {
+    "placeholders": {
+      "folderName": { "type": "String" }
+    }
+  },
+  "bookmarkRemovedFromFolder": "تمت إزالة الإشارة المرجعية من {folderName}",
+  "@bookmarkRemovedFromFolder": {
+    "placeholders": {
+      "folderName": { "type": "String" }
+    }
+  },
+  "bookmarkRemoved": "تمت إزالة الإشارة المرجعية",
+  "errorFailedToUpdateBookmark": "فشل تحديث الإشارة المرجعية. يرجى المحاولة مرة أخرى.",
+  "errorFailedToRemoveBookmark": "فشل إزالة الإشارة المرجعية. يرجى المحاولة مرة أخرى.",
+  "lessonSpecializedViewerRequired": "مطلوب عارض متخصص لـ {type}",
+  "@lessonSpecializedViewerRequired": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  }
 }

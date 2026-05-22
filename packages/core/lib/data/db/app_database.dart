@@ -16,6 +16,7 @@ import 'tables/app_settings_table.dart';
 import 'tables/users_table.dart';
 import 'tables/downloads_table.dart';
 import 'tables/doubts_table.dart';
+import 'tables/bookmarks_table.dart';
 
 import 'package:core/data/data.dart';
 
@@ -38,13 +39,15 @@ part 'app_database.g.dart';
     DownloadsTable,
     DoubtsTable,
     DoubtRepliesTable,
+    BookmarkFoldersTable,
+    BookmarkItemsTable,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 20;
+  int get schemaVersion => 21;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -87,7 +90,14 @@ class AppDatabase extends _$AppDatabase {
             await addColumnSafely(lessonsTable, lessonsTable.totalLessons);
           }
           if (from < 4) {
-            await addColumnSafely(lessonsTable, lessonsTable.isBookmarked);
+            // isBookmarked was removed in v21. We add it via raw SQL to support older migrations.
+            final res = await customSelect(
+              "PRAGMA table_info('lessons_table')",
+            ).get();
+            final existingColumns = res.map((r) => r.read<String>('name'));
+            if (!existingColumns.contains('is_bookmarked')) {
+              await customStatement('ALTER TABLE lessons_table ADD COLUMN is_bookmarked INTEGER DEFAULT 0');
+            }
           }
           if (from < 5) {
             await m.createTable(appSettingsTable);
@@ -200,6 +210,12 @@ class AppDatabase extends _$AppDatabase {
             await addColumnSafely(lessonsTable, lessonsTable.videoSubtitleUrl);
             await addColumnSafely(lessonsTable, lessonsTable.isAiEnabled);
             await addColumnSafely(lessonsTable, lessonsTable.aiNotesUrl);
+          }
+          if (from < 21) {
+            // Version 21: Bookmark integration
+            await createTableSafely(bookmarkFoldersTable);
+            await createTableSafely(bookmarkItemsTable);
+            await addColumnSafely(lessonsTable, lessonsTable.bookmarkId);
           }
         },
       );
@@ -320,9 +336,10 @@ class AppDatabase extends _$AppDatabase {
   Future<void> toggleLessonBookmark(String id) async {
     final lesson = await getLessonById(id);
     if (lesson == null) return;
+    final isCurrentlyBookmarked = lesson.bookmarkId != null;
     await (update(lessonsTable)..where((t) => t.id.equals(id))).write(
       LessonsTableCompanion(
-        isBookmarked: Value(!lesson.isBookmarked),
+        bookmarkId: Value(isCurrentlyBookmarked ? null : 1), // Local toggle / dummy ID
       ),
     );
   }

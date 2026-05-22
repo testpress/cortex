@@ -28,4 +28,10 @@ class ApiEndpoints {
   static String contentAttemptEnd(String id) => '/api/v2.2/content_attempts/$id/end/';
   static String subjectAnalytics(String attemptId) => '/api/v2.4/attempts/$attemptId/review/subjects/';
   static String solutionsReview(String attemptId) => '/api/v2.2.1/attempts/$attemptId/review/';
+
+  // Bookmarks
+  static const String bookmarkFolders = '/api/v2.5/folders/';
+  static const String createBookmarkFolder = '/api/v3/bookmarks/folders/';
+  static const String bookmarks = '/api/v3/bookmarks/';
+  static String deleteBookmark(String id) => '/api/v3/bookmarks/$id/';
 }

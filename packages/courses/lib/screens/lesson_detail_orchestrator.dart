@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import '../models/course_content.dart';
 import '../providers/course_list_provider.dart';
-import '../providers/lesson_detail_provider.dart';
 import '../widgets/lesson_detail/pdf_viewer.dart';
 import '../widgets/lesson_detail/lesson_web_view.dart';
 import '../widgets/lesson_detail/video_lesson_viewer.dart';
@@ -43,6 +43,8 @@ class _LessonDetailOrchestratorState
     extends ConsumerState<LessonDetailOrchestrator> {
   double _readingProgress = 0.0;
   bool _alreadyMarkedComplete = false;
+  bool _isBookmarkSheetOpen = false;
+  bool _isCreateFolderDialogOpen = false;
 
   Future<void> _markAsCompleted() async {
     if (_alreadyMarkedComplete) return;
@@ -55,11 +57,37 @@ class _LessonDetailOrchestratorState
     );
   }
 
+  Future<void> _removeBookmark(Lesson lesson) async {
+    final bookmarkId = lesson.bookmarkId;
+    if (bookmarkId == null) return;
+
+    final l10n = L10n.of(context);
+
+    // Optimistic toast
+    AppToast.show(context, message: l10n.bookmarkRemoved);
+
+    try {
+      await ref.read(removeBookmarkProvider(
+        bookmarkId: bookmarkId,
+        lessonId: int.tryParse(lesson.id) ?? 0,
+      ).future);
+    } catch (e, stack) {
+      debugPrint('Error removing bookmark: $e\n$stack');
+      if (mounted) {
+        AppToast.show(
+          context,
+          message: L10n.of(context).errorFailedToRemoveBookmark,
+          isError: true,
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final lesson = widget.lesson;
-    final isBookmarked =
-        ref.watch(lessonBookmarkProvider(lesson.id)).valueOrNull ?? false;
+    final isBookmarked = lesson.bookmarkId != null;
+    final parsedLessonId = int.tryParse(lesson.id) ?? 0;
 
     // Determine if we should show the "Mark as Completed" button in the header
     final supportsManualCompletion = [
@@ -72,24 +100,53 @@ class _LessonDetailOrchestratorState
     final isCompleted = _alreadyMarkedComplete ||
         lesson.progressStatus == LessonProgressStatus.completed;
 
-    return LessonDetailShell(
-      title: lesson.title,
-      subtitle: lesson.subtitle,
-      isBookmarked: isBookmarked,
-      isCompleted: isCompleted,
-      progress: lesson.type == LessonType.pdf ? _readingProgress : null,
-      onBack: () => Navigator.of(context).pop(),
-      onBookmarkToggle: () async {
-        final repository = await ref.read(courseRepositoryProvider.future);
-        await repository.toggleLessonBookmark(lesson.id);
-      },
-      onMarkAsCompleted: supportsManualCompletion ? _markAsCompleted : null,
-      onNext: widget.onNext,
-      onPrevious: widget.onPrevious,
-      stickyFooter:
-          lesson.type != LessonType.video && 
-          lesson.type != LessonType.liveStream,
-      child: _buildLessonContent(context),
+    return Stack(
+      children: [
+        LessonDetailShell(
+          title: lesson.title,
+          subtitle: lesson.subtitle,
+          isBookmarked: isBookmarked,
+          isCompleted: isCompleted,
+          progress: lesson.type == LessonType.pdf ? _readingProgress : null,
+          onBack: () => Navigator.of(context).pop(),
+          onBookmarkToggle: () {
+            if (isBookmarked) {
+              _removeBookmark(lesson);
+            } else {
+              setState(() => _isBookmarkSheetOpen = true);
+            }
+          },
+          onMarkAsCompleted: supportsManualCompletion ? _markAsCompleted : null,
+          onNext: widget.onNext,
+          onPrevious: widget.onPrevious,
+          stickyFooter:
+              lesson.type != LessonType.video && 
+              lesson.type != LessonType.liveStream,
+          child: _buildLessonContent(context),
+        ),
+        AppBottomSheet(
+          isOpen: _isBookmarkSheetOpen,
+          onClose: () => setState(() => _isBookmarkSheetOpen = false),
+          child: BookmarkFoldersSheet(
+            lessonId: parsedLessonId,
+            category: lesson.type.name,
+            parentContext: context,
+            onClose: () => setState(() => _isBookmarkSheetOpen = false),
+            onCreateFolderRequest: () {
+              setState(() {
+                _isBookmarkSheetOpen = false;
+                _isCreateFolderDialogOpen = true;
+              });
+            },
+          ),
+        ),
+        if (_isCreateFolderDialogOpen)
+          CreateFolderDialog(
+            lessonId: parsedLessonId,
+            category: lesson.type.name,
+            onClose: () => setState(() => _isCreateFolderDialogOpen = false),
+          ),
+      ],
     );
   }
 
@@ -164,7 +221,7 @@ class _LessonDetailOrchestratorState
       case LessonType.assessment:
         return Center(
           child: AppText.body(
-            'Specialized viewer required for ${lesson.type.name}',
+            L10n.of(context).lessonSpecializedViewerRequired(lesson.type.name),
             color: design.colors.textSecondary,
           ),
         );

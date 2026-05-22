@@ -27,7 +27,7 @@ class LessonDto {
   final int? subjectIndex;
   final int? lessonNumber;
   final int? totalLessons;
-  final bool isBookmarked;
+  final int? bookmarkId;
   final bool isRunning;
   final bool isUpcoming;
   final bool hasAttempts;
@@ -94,7 +94,7 @@ class LessonDto {
     this.subjectIndex,
     this.lessonNumber,
     this.totalLessons,
-    this.isBookmarked = false,
+    this.bookmarkId,
     this.isRunning = false,
     this.isUpcoming = false,
     this.hasAttempts = false,
@@ -137,7 +137,7 @@ class LessonDto {
     int? subjectIndex,
     int? lessonNumber,
     int? totalLessons,
-    bool? isBookmarked,
+    int? bookmarkId,
     bool? isRunning,
     bool? isUpcoming,
     bool? hasAttempts,
@@ -175,7 +175,7 @@ class LessonDto {
       subjectIndex: subjectIndex ?? this.subjectIndex,
       lessonNumber: lessonNumber ?? this.lessonNumber,
       totalLessons: totalLessons ?? this.totalLessons,
-      isBookmarked: isBookmarked ?? this.isBookmarked,
+      bookmarkId: bookmarkId ?? this.bookmarkId,
       isRunning: isRunning ?? this.isRunning,
       isUpcoming: isUpcoming ?? this.isUpcoming,
       hasAttempts: hasAttempts ?? this.hasAttempts,
@@ -232,6 +232,7 @@ class LessonDto {
       isAiEnabled: isAiEnabled || other.isAiEnabled,
       aiNotesUrl: (aiNotesUrl?.isEmpty ?? true) ? other.aiNotesUrl : aiNotesUrl,
       isDetailFetched: isDetailFetched || other.isDetailFetched,
+      bookmarkId: bookmarkId ?? other.bookmarkId,
       // Status flags: Prefer 'true' or more advanced progress
       isRunning: isRunning || other.isRunning,
       isUpcoming: isUpcoming || other.isUpcoming,
@@ -456,7 +457,14 @@ class LessonDto {
       subjectIndex: (json['subject_index'] as num?)?.toInt() ?? (json['subjectIndex'] as num?)?.toInt(),
       lessonNumber: (json['lesson_number'] as num?)?.toInt() ?? (json['lessonNumber'] as num?)?.toInt(),
       totalLessons: (json['total_lessons'] as num?)?.toInt() ?? (json['totalLessons'] as num?)?.toInt(),
-      isBookmarked: json['is_bookmarked'] as bool? ?? json['isBookmarked'] as bool? ?? false,
+      bookmarkId: () {
+        final val = json['bookmark_id'] ?? json['bookmarkId'];
+        if (val is num) return val.toInt();
+        if (json['is_bookmarked'] == true || json['isBookmarked'] == true) {
+          return 1;
+        }
+        return null;
+      }(),
       image: json['icon'] as String? ?? json['image'] as String?,
       isRunning: json['is_running'] as bool? ?? 
           ['running', 'live'].contains(liveStream?['status']?.toString().toLowerCase()) ||
@@ -513,7 +521,7 @@ class LessonDto {
       'subjectIndex': subjectIndex,
       'lessonNumber': lessonNumber,
       'totalLessons': totalLessons,
-      'isBookmarked': isBookmarked,
+      'bookmarkId': bookmarkId,
       'isRunning': isRunning,
       'isUpcoming': isUpcoming,
       'hasAttempts': hasAttempts,

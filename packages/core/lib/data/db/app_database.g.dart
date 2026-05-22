@@ -1700,20 +1700,16 @@ class $LessonsTableTable extends LessonsTable
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _isBookmarkedMeta = const VerificationMeta(
-    'isBookmarked',
+  static const VerificationMeta _bookmarkIdMeta = const VerificationMeta(
+    'bookmarkId',
   );
   @override
-  late final GeneratedColumn<bool> isBookmarked = GeneratedColumn<bool>(
-    'is_bookmarked',
+  late final GeneratedColumn<int> bookmarkId = GeneratedColumn<int>(
+    'bookmark_id',
     aliasedName,
-    false,
-    type: DriftSqlType.bool,
+    true,
+    type: DriftSqlType.int,
     requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("is_bookmarked" IN (0, 1))',
-    ),
-    defaultValue: const Constant(false),
   );
   static const VerificationMeta _isRunningMeta = const VerificationMeta(
     'isRunning',
@@ -1983,7 +1979,7 @@ class $LessonsTableTable extends LessonsTable
     subjectIndex,
     lessonNumber,
     totalLessons,
-    isBookmarked,
+    bookmarkId,
     isRunning,
     isUpcoming,
     hasAttempts,
@@ -2149,13 +2145,10 @@ class $LessonsTableTable extends LessonsTable
         ),
       );
     }
-    if (data.containsKey('is_bookmarked')) {
+    if (data.containsKey('bookmark_id')) {
       context.handle(
-        _isBookmarkedMeta,
-        isBookmarked.isAcceptableOrUnknown(
-          data['is_bookmarked']!,
-          _isBookmarkedMeta,
-        ),
+        _bookmarkIdMeta,
+        bookmarkId.isAcceptableOrUnknown(data['bookmark_id']!, _bookmarkIdMeta),
       );
     }
     if (data.containsKey('is_running')) {
@@ -2403,10 +2396,10 @@ class $LessonsTableTable extends LessonsTable
         DriftSqlType.int,
         data['${effectivePrefix}total_lessons'],
       ),
-      isBookmarked: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}is_bookmarked'],
-      )!,
+      bookmarkId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}bookmark_id'],
+      ),
       isRunning: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_running'],
@@ -2519,7 +2512,7 @@ class LessonsTableData extends DataClass
   final int? subjectIndex;
   final int? lessonNumber;
   final int? totalLessons;
-  final bool isBookmarked;
+  final int? bookmarkId;
   final bool isRunning;
   final bool isUpcoming;
   final bool hasAttempts;
@@ -2558,7 +2551,7 @@ class LessonsTableData extends DataClass
     this.subjectIndex,
     this.lessonNumber,
     this.totalLessons,
-    required this.isBookmarked,
+    this.bookmarkId,
     required this.isRunning,
     required this.isUpcoming,
     required this.hasAttempts,
@@ -2618,7 +2611,9 @@ class LessonsTableData extends DataClass
     if (!nullToAbsent || totalLessons != null) {
       map['total_lessons'] = Variable<int>(totalLessons);
     }
-    map['is_bookmarked'] = Variable<bool>(isBookmarked);
+    if (!nullToAbsent || bookmarkId != null) {
+      map['bookmark_id'] = Variable<int>(bookmarkId);
+    }
     map['is_running'] = Variable<bool>(isRunning);
     map['is_upcoming'] = Variable<bool>(isUpcoming);
     map['has_attempts'] = Variable<bool>(hasAttempts);
@@ -2703,7 +2698,9 @@ class LessonsTableData extends DataClass
       totalLessons: totalLessons == null && nullToAbsent
           ? const Value.absent()
           : Value(totalLessons),
-      isBookmarked: Value(isBookmarked),
+      bookmarkId: bookmarkId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bookmarkId),
       isRunning: Value(isRunning),
       isUpcoming: Value(isUpcoming),
       hasAttempts: Value(hasAttempts),
@@ -2774,7 +2771,7 @@ class LessonsTableData extends DataClass
       subjectIndex: serializer.fromJson<int?>(json['subjectIndex']),
       lessonNumber: serializer.fromJson<int?>(json['lessonNumber']),
       totalLessons: serializer.fromJson<int?>(json['totalLessons']),
-      isBookmarked: serializer.fromJson<bool>(json['isBookmarked']),
+      bookmarkId: serializer.fromJson<int?>(json['bookmarkId']),
       isRunning: serializer.fromJson<bool>(json['isRunning']),
       isUpcoming: serializer.fromJson<bool>(json['isUpcoming']),
       hasAttempts: serializer.fromJson<bool>(json['hasAttempts']),
@@ -2820,7 +2817,7 @@ class LessonsTableData extends DataClass
       'subjectIndex': serializer.toJson<int?>(subjectIndex),
       'lessonNumber': serializer.toJson<int?>(lessonNumber),
       'totalLessons': serializer.toJson<int?>(totalLessons),
-      'isBookmarked': serializer.toJson<bool>(isBookmarked),
+      'bookmarkId': serializer.toJson<int?>(bookmarkId),
       'isRunning': serializer.toJson<bool>(isRunning),
       'isUpcoming': serializer.toJson<bool>(isUpcoming),
       'hasAttempts': serializer.toJson<bool>(hasAttempts),
@@ -2862,7 +2859,7 @@ class LessonsTableData extends DataClass
     Value<int?> subjectIndex = const Value.absent(),
     Value<int?> lessonNumber = const Value.absent(),
     Value<int?> totalLessons = const Value.absent(),
-    bool? isBookmarked,
+    Value<int?> bookmarkId = const Value.absent(),
     bool? isRunning,
     bool? isUpcoming,
     bool? hasAttempts,
@@ -2903,7 +2900,7 @@ class LessonsTableData extends DataClass
     subjectIndex: subjectIndex.present ? subjectIndex.value : this.subjectIndex,
     lessonNumber: lessonNumber.present ? lessonNumber.value : this.lessonNumber,
     totalLessons: totalLessons.present ? totalLessons.value : this.totalLessons,
-    isBookmarked: isBookmarked ?? this.isBookmarked,
+    bookmarkId: bookmarkId.present ? bookmarkId.value : this.bookmarkId,
     isRunning: isRunning ?? this.isRunning,
     isUpcoming: isUpcoming ?? this.isUpcoming,
     hasAttempts: hasAttempts ?? this.hasAttempts,
@@ -2970,9 +2967,9 @@ class LessonsTableData extends DataClass
       totalLessons: data.totalLessons.present
           ? data.totalLessons.value
           : this.totalLessons,
-      isBookmarked: data.isBookmarked.present
-          ? data.isBookmarked.value
-          : this.isBookmarked,
+      bookmarkId: data.bookmarkId.present
+          ? data.bookmarkId.value
+          : this.bookmarkId,
       isRunning: data.isRunning.present ? data.isRunning.value : this.isRunning,
       isUpcoming: data.isUpcoming.present
           ? data.isUpcoming.value
@@ -3050,7 +3047,7 @@ class LessonsTableData extends DataClass
           ..write('subjectIndex: $subjectIndex, ')
           ..write('lessonNumber: $lessonNumber, ')
           ..write('totalLessons: $totalLessons, ')
-          ..write('isBookmarked: $isBookmarked, ')
+          ..write('bookmarkId: $bookmarkId, ')
           ..write('isRunning: $isRunning, ')
           ..write('isUpcoming: $isUpcoming, ')
           ..write('hasAttempts: $hasAttempts, ')
@@ -3094,7 +3091,7 @@ class LessonsTableData extends DataClass
     subjectIndex,
     lessonNumber,
     totalLessons,
-    isBookmarked,
+    bookmarkId,
     isRunning,
     isUpcoming,
     hasAttempts,
@@ -3137,7 +3134,7 @@ class LessonsTableData extends DataClass
           other.subjectIndex == this.subjectIndex &&
           other.lessonNumber == this.lessonNumber &&
           other.totalLessons == this.totalLessons &&
-          other.isBookmarked == this.isBookmarked &&
+          other.bookmarkId == this.bookmarkId &&
           other.isRunning == this.isRunning &&
           other.isUpcoming == this.isUpcoming &&
           other.hasAttempts == this.hasAttempts &&
@@ -3178,7 +3175,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   final Value<int?> subjectIndex;
   final Value<int?> lessonNumber;
   final Value<int?> totalLessons;
-  final Value<bool> isBookmarked;
+  final Value<int?> bookmarkId;
   final Value<bool> isRunning;
   final Value<bool> isUpcoming;
   final Value<bool> hasAttempts;
@@ -3218,7 +3215,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.subjectIndex = const Value.absent(),
     this.lessonNumber = const Value.absent(),
     this.totalLessons = const Value.absent(),
-    this.isBookmarked = const Value.absent(),
+    this.bookmarkId = const Value.absent(),
     this.isRunning = const Value.absent(),
     this.isUpcoming = const Value.absent(),
     this.hasAttempts = const Value.absent(),
@@ -3259,7 +3256,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.subjectIndex = const Value.absent(),
     this.lessonNumber = const Value.absent(),
     this.totalLessons = const Value.absent(),
-    this.isBookmarked = const Value.absent(),
+    this.bookmarkId = const Value.absent(),
     this.isRunning = const Value.absent(),
     this.isUpcoming = const Value.absent(),
     this.hasAttempts = const Value.absent(),
@@ -3305,7 +3302,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Expression<int>? subjectIndex,
     Expression<int>? lessonNumber,
     Expression<int>? totalLessons,
-    Expression<bool>? isBookmarked,
+    Expression<int>? bookmarkId,
     Expression<bool>? isRunning,
     Expression<bool>? isUpcoming,
     Expression<bool>? hasAttempts,
@@ -3347,7 +3344,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       if (subjectIndex != null) 'subject_index': subjectIndex,
       if (lessonNumber != null) 'lesson_number': lessonNumber,
       if (totalLessons != null) 'total_lessons': totalLessons,
-      if (isBookmarked != null) 'is_bookmarked': isBookmarked,
+      if (bookmarkId != null) 'bookmark_id': bookmarkId,
       if (isRunning != null) 'is_running': isRunning,
       if (isUpcoming != null) 'is_upcoming': isUpcoming,
       if (hasAttempts != null) 'has_attempts': hasAttempts,
@@ -3390,7 +3387,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Value<int?>? subjectIndex,
     Value<int?>? lessonNumber,
     Value<int?>? totalLessons,
-    Value<bool>? isBookmarked,
+    Value<int?>? bookmarkId,
     Value<bool>? isRunning,
     Value<bool>? isUpcoming,
     Value<bool>? hasAttempts,
@@ -3431,7 +3428,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       subjectIndex: subjectIndex ?? this.subjectIndex,
       lessonNumber: lessonNumber ?? this.lessonNumber,
       totalLessons: totalLessons ?? this.totalLessons,
-      isBookmarked: isBookmarked ?? this.isBookmarked,
+      bookmarkId: bookmarkId ?? this.bookmarkId,
       isRunning: isRunning ?? this.isRunning,
       isUpcoming: isUpcoming ?? this.isUpcoming,
       hasAttempts: hasAttempts ?? this.hasAttempts,
@@ -3510,8 +3507,8 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     if (totalLessons.present) {
       map['total_lessons'] = Variable<int>(totalLessons.value);
     }
-    if (isBookmarked.present) {
-      map['is_bookmarked'] = Variable<bool>(isBookmarked.value);
+    if (bookmarkId.present) {
+      map['bookmark_id'] = Variable<int>(bookmarkId.value);
     }
     if (isRunning.present) {
       map['is_running'] = Variable<bool>(isRunning.value);
@@ -3599,7 +3596,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
           ..write('subjectIndex: $subjectIndex, ')
           ..write('lessonNumber: $lessonNumber, ')
           ..write('totalLessons: $totalLessons, ')
-          ..write('isBookmarked: $isBookmarked, ')
+          ..write('bookmarkId: $bookmarkId, ')
           ..write('isRunning: $isRunning, ')
           ..write('isUpcoming: $isUpcoming, ')
           ..write('hasAttempts: $hasAttempts, ')
@@ -10422,6 +10419,673 @@ class DoubtRepliesTableCompanion
   }
 }
 
+class $BookmarkFoldersTableTable extends BookmarkFoldersTable
+    with TableInfo<$BookmarkFoldersTableTable, BookmarkFoldersTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BookmarkFoldersTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _bookmarksCountMeta = const VerificationMeta(
+    'bookmarksCount',
+  );
+  @override
+  late final GeneratedColumn<int> bookmarksCount = GeneratedColumn<int>(
+    'bookmarks_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<int> userId = GeneratedColumn<int>(
+    'user_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, name, bookmarksCount, userId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'bookmark_folders_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BookmarkFoldersTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('bookmarks_count')) {
+      context.handle(
+        _bookmarksCountMeta,
+        bookmarksCount.isAcceptableOrUnknown(
+          data['bookmarks_count']!,
+          _bookmarksCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BookmarkFoldersTableData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BookmarkFoldersTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      bookmarksCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}bookmarks_count'],
+      )!,
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}user_id'],
+      ),
+    );
+  }
+
+  @override
+  $BookmarkFoldersTableTable createAlias(String alias) {
+    return $BookmarkFoldersTableTable(attachedDatabase, alias);
+  }
+}
+
+class BookmarkFoldersTableData extends DataClass
+    implements Insertable<BookmarkFoldersTableData> {
+  final int id;
+  final String name;
+  final int bookmarksCount;
+  final int? userId;
+  const BookmarkFoldersTableData({
+    required this.id,
+    required this.name,
+    required this.bookmarksCount,
+    this.userId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['bookmarks_count'] = Variable<int>(bookmarksCount);
+    if (!nullToAbsent || userId != null) {
+      map['user_id'] = Variable<int>(userId);
+    }
+    return map;
+  }
+
+  BookmarkFoldersTableCompanion toCompanion(bool nullToAbsent) {
+    return BookmarkFoldersTableCompanion(
+      id: Value(id),
+      name: Value(name),
+      bookmarksCount: Value(bookmarksCount),
+      userId: userId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(userId),
+    );
+  }
+
+  factory BookmarkFoldersTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BookmarkFoldersTableData(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      bookmarksCount: serializer.fromJson<int>(json['bookmarksCount']),
+      userId: serializer.fromJson<int?>(json['userId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'bookmarksCount': serializer.toJson<int>(bookmarksCount),
+      'userId': serializer.toJson<int?>(userId),
+    };
+  }
+
+  BookmarkFoldersTableData copyWith({
+    int? id,
+    String? name,
+    int? bookmarksCount,
+    Value<int?> userId = const Value.absent(),
+  }) => BookmarkFoldersTableData(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    bookmarksCount: bookmarksCount ?? this.bookmarksCount,
+    userId: userId.present ? userId.value : this.userId,
+  );
+  BookmarkFoldersTableData copyWithCompanion(
+    BookmarkFoldersTableCompanion data,
+  ) {
+    return BookmarkFoldersTableData(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      bookmarksCount: data.bookmarksCount.present
+          ? data.bookmarksCount.value
+          : this.bookmarksCount,
+      userId: data.userId.present ? data.userId.value : this.userId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BookmarkFoldersTableData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('bookmarksCount: $bookmarksCount, ')
+          ..write('userId: $userId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, bookmarksCount, userId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BookmarkFoldersTableData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.bookmarksCount == this.bookmarksCount &&
+          other.userId == this.userId);
+}
+
+class BookmarkFoldersTableCompanion
+    extends UpdateCompanion<BookmarkFoldersTableData> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<int> bookmarksCount;
+  final Value<int?> userId;
+  const BookmarkFoldersTableCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.bookmarksCount = const Value.absent(),
+    this.userId = const Value.absent(),
+  });
+  BookmarkFoldersTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    this.bookmarksCount = const Value.absent(),
+    this.userId = const Value.absent(),
+  }) : name = Value(name);
+  static Insertable<BookmarkFoldersTableData> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<int>? bookmarksCount,
+    Expression<int>? userId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (bookmarksCount != null) 'bookmarks_count': bookmarksCount,
+      if (userId != null) 'user_id': userId,
+    });
+  }
+
+  BookmarkFoldersTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<int>? bookmarksCount,
+    Value<int?>? userId,
+  }) {
+    return BookmarkFoldersTableCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      bookmarksCount: bookmarksCount ?? this.bookmarksCount,
+      userId: userId ?? this.userId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (bookmarksCount.present) {
+      map['bookmarks_count'] = Variable<int>(bookmarksCount.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<int>(userId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BookmarkFoldersTableCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('bookmarksCount: $bookmarksCount, ')
+          ..write('userId: $userId')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BookmarkItemsTableTable extends BookmarkItemsTable
+    with TableInfo<$BookmarkItemsTableTable, BookmarkItemsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BookmarkItemsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _folderIdMeta = const VerificationMeta(
+    'folderId',
+  );
+  @override
+  late final GeneratedColumn<int> folderId = GeneratedColumn<int>(
+    'folder_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES bookmark_folders_table (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _folderNameMeta = const VerificationMeta(
+    'folderName',
+  );
+  @override
+  late final GeneratedColumn<String> folderName = GeneratedColumn<String>(
+    'folder_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lessonIdMeta = const VerificationMeta(
+    'lessonId',
+  );
+  @override
+  late final GeneratedColumn<int> lessonId = GeneratedColumn<int>(
+    'lesson_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _bookmarkTypeMeta = const VerificationMeta(
+    'bookmarkType',
+  );
+  @override
+  late final GeneratedColumn<String> bookmarkType = GeneratedColumn<String>(
+    'bookmark_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    folderId,
+    folderName,
+    lessonId,
+    bookmarkType,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'bookmark_items_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BookmarkItemsTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('folder_id')) {
+      context.handle(
+        _folderIdMeta,
+        folderId.isAcceptableOrUnknown(data['folder_id']!, _folderIdMeta),
+      );
+    }
+    if (data.containsKey('folder_name')) {
+      context.handle(
+        _folderNameMeta,
+        folderName.isAcceptableOrUnknown(data['folder_name']!, _folderNameMeta),
+      );
+    }
+    if (data.containsKey('lesson_id')) {
+      context.handle(
+        _lessonIdMeta,
+        lessonId.isAcceptableOrUnknown(data['lesson_id']!, _lessonIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lessonIdMeta);
+    }
+    if (data.containsKey('bookmark_type')) {
+      context.handle(
+        _bookmarkTypeMeta,
+        bookmarkType.isAcceptableOrUnknown(
+          data['bookmark_type']!,
+          _bookmarkTypeMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BookmarkItemsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BookmarkItemsTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      folderId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}folder_id'],
+      ),
+      folderName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}folder_name'],
+      ),
+      lessonId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}lesson_id'],
+      )!,
+      bookmarkType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bookmark_type'],
+      ),
+    );
+  }
+
+  @override
+  $BookmarkItemsTableTable createAlias(String alias) {
+    return $BookmarkItemsTableTable(attachedDatabase, alias);
+  }
+}
+
+class BookmarkItemsTableData extends DataClass
+    implements Insertable<BookmarkItemsTableData> {
+  final int id;
+  final int? folderId;
+  final String? folderName;
+  final int lessonId;
+  final String? bookmarkType;
+  const BookmarkItemsTableData({
+    required this.id,
+    this.folderId,
+    this.folderName,
+    required this.lessonId,
+    this.bookmarkType,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || folderId != null) {
+      map['folder_id'] = Variable<int>(folderId);
+    }
+    if (!nullToAbsent || folderName != null) {
+      map['folder_name'] = Variable<String>(folderName);
+    }
+    map['lesson_id'] = Variable<int>(lessonId);
+    if (!nullToAbsent || bookmarkType != null) {
+      map['bookmark_type'] = Variable<String>(bookmarkType);
+    }
+    return map;
+  }
+
+  BookmarkItemsTableCompanion toCompanion(bool nullToAbsent) {
+    return BookmarkItemsTableCompanion(
+      id: Value(id),
+      folderId: folderId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(folderId),
+      folderName: folderName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(folderName),
+      lessonId: Value(lessonId),
+      bookmarkType: bookmarkType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bookmarkType),
+    );
+  }
+
+  factory BookmarkItemsTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BookmarkItemsTableData(
+      id: serializer.fromJson<int>(json['id']),
+      folderId: serializer.fromJson<int?>(json['folderId']),
+      folderName: serializer.fromJson<String?>(json['folderName']),
+      lessonId: serializer.fromJson<int>(json['lessonId']),
+      bookmarkType: serializer.fromJson<String?>(json['bookmarkType']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'folderId': serializer.toJson<int?>(folderId),
+      'folderName': serializer.toJson<String?>(folderName),
+      'lessonId': serializer.toJson<int>(lessonId),
+      'bookmarkType': serializer.toJson<String?>(bookmarkType),
+    };
+  }
+
+  BookmarkItemsTableData copyWith({
+    int? id,
+    Value<int?> folderId = const Value.absent(),
+    Value<String?> folderName = const Value.absent(),
+    int? lessonId,
+    Value<String?> bookmarkType = const Value.absent(),
+  }) => BookmarkItemsTableData(
+    id: id ?? this.id,
+    folderId: folderId.present ? folderId.value : this.folderId,
+    folderName: folderName.present ? folderName.value : this.folderName,
+    lessonId: lessonId ?? this.lessonId,
+    bookmarkType: bookmarkType.present ? bookmarkType.value : this.bookmarkType,
+  );
+  BookmarkItemsTableData copyWithCompanion(BookmarkItemsTableCompanion data) {
+    return BookmarkItemsTableData(
+      id: data.id.present ? data.id.value : this.id,
+      folderId: data.folderId.present ? data.folderId.value : this.folderId,
+      folderName: data.folderName.present
+          ? data.folderName.value
+          : this.folderName,
+      lessonId: data.lessonId.present ? data.lessonId.value : this.lessonId,
+      bookmarkType: data.bookmarkType.present
+          ? data.bookmarkType.value
+          : this.bookmarkType,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BookmarkItemsTableData(')
+          ..write('id: $id, ')
+          ..write('folderId: $folderId, ')
+          ..write('folderName: $folderName, ')
+          ..write('lessonId: $lessonId, ')
+          ..write('bookmarkType: $bookmarkType')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, folderId, folderName, lessonId, bookmarkType);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BookmarkItemsTableData &&
+          other.id == this.id &&
+          other.folderId == this.folderId &&
+          other.folderName == this.folderName &&
+          other.lessonId == this.lessonId &&
+          other.bookmarkType == this.bookmarkType);
+}
+
+class BookmarkItemsTableCompanion
+    extends UpdateCompanion<BookmarkItemsTableData> {
+  final Value<int> id;
+  final Value<int?> folderId;
+  final Value<String?> folderName;
+  final Value<int> lessonId;
+  final Value<String?> bookmarkType;
+  const BookmarkItemsTableCompanion({
+    this.id = const Value.absent(),
+    this.folderId = const Value.absent(),
+    this.folderName = const Value.absent(),
+    this.lessonId = const Value.absent(),
+    this.bookmarkType = const Value.absent(),
+  });
+  BookmarkItemsTableCompanion.insert({
+    this.id = const Value.absent(),
+    this.folderId = const Value.absent(),
+    this.folderName = const Value.absent(),
+    required int lessonId,
+    this.bookmarkType = const Value.absent(),
+  }) : lessonId = Value(lessonId);
+  static Insertable<BookmarkItemsTableData> custom({
+    Expression<int>? id,
+    Expression<int>? folderId,
+    Expression<String>? folderName,
+    Expression<int>? lessonId,
+    Expression<String>? bookmarkType,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (folderId != null) 'folder_id': folderId,
+      if (folderName != null) 'folder_name': folderName,
+      if (lessonId != null) 'lesson_id': lessonId,
+      if (bookmarkType != null) 'bookmark_type': bookmarkType,
+    });
+  }
+
+  BookmarkItemsTableCompanion copyWith({
+    Value<int>? id,
+    Value<int?>? folderId,
+    Value<String?>? folderName,
+    Value<int>? lessonId,
+    Value<String?>? bookmarkType,
+  }) {
+    return BookmarkItemsTableCompanion(
+      id: id ?? this.id,
+      folderId: folderId ?? this.folderId,
+      folderName: folderName ?? this.folderName,
+      lessonId: lessonId ?? this.lessonId,
+      bookmarkType: bookmarkType ?? this.bookmarkType,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (folderId.present) {
+      map['folder_id'] = Variable<int>(folderId.value);
+    }
+    if (folderName.present) {
+      map['folder_name'] = Variable<String>(folderName.value);
+    }
+    if (lessonId.present) {
+      map['lesson_id'] = Variable<int>(lessonId.value);
+    }
+    if (bookmarkType.present) {
+      map['bookmark_type'] = Variable<String>(bookmarkType.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BookmarkItemsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('folderId: $folderId, ')
+          ..write('folderName: $folderName, ')
+          ..write('lessonId: $lessonId, ')
+          ..write('bookmarkType: $bookmarkType')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -10450,6 +11114,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $DoubtsTableTable doubtsTable = $DoubtsTableTable(this);
   late final $DoubtRepliesTableTable doubtRepliesTable =
       $DoubtRepliesTableTable(this);
+  late final $BookmarkFoldersTableTable bookmarkFoldersTable =
+      $BookmarkFoldersTableTable(this);
+  late final $BookmarkItemsTableTable bookmarkItemsTable =
+      $BookmarkItemsTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -10470,7 +11138,19 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     downloadsTable,
     doubtsTable,
     doubtRepliesTable,
+    bookmarkFoldersTable,
+    bookmarkItemsTable,
   ];
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'bookmark_folders_table',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('bookmark_items_table', kind: UpdateKind.delete)],
+    ),
+  ]);
 }
 
 typedef $$CoursesTableTableCreateCompanionBuilder =
@@ -11209,7 +11889,7 @@ typedef $$LessonsTableTableCreateCompanionBuilder =
       Value<int?> subjectIndex,
       Value<int?> lessonNumber,
       Value<int?> totalLessons,
-      Value<bool> isBookmarked,
+      Value<int?> bookmarkId,
       Value<bool> isRunning,
       Value<bool> isUpcoming,
       Value<bool> hasAttempts,
@@ -11251,7 +11931,7 @@ typedef $$LessonsTableTableUpdateCompanionBuilder =
       Value<int?> subjectIndex,
       Value<int?> lessonNumber,
       Value<int?> totalLessons,
-      Value<bool> isBookmarked,
+      Value<int?> bookmarkId,
       Value<bool> isRunning,
       Value<bool> isUpcoming,
       Value<bool> hasAttempts,
@@ -11369,8 +12049,8 @@ class $$LessonsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<bool> get isBookmarked => $composableBuilder(
-    column: $table.isBookmarked,
+  ColumnFilters<int> get bookmarkId => $composableBuilder(
+    column: $table.bookmarkId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -11569,8 +12249,8 @@ class $$LessonsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<bool> get isBookmarked => $composableBuilder(
-    column: $table.isBookmarked,
+  ColumnOrderings<int> get bookmarkId => $composableBuilder(
+    column: $table.bookmarkId,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -11753,8 +12433,8 @@ class $$LessonsTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<bool> get isBookmarked => $composableBuilder(
-    column: $table.isBookmarked,
+  GeneratedColumn<int> get bookmarkId => $composableBuilder(
+    column: $table.bookmarkId,
     builder: (column) => column,
   );
 
@@ -11901,7 +12581,7 @@ class $$LessonsTableTableTableManager
                 Value<int?> subjectIndex = const Value.absent(),
                 Value<int?> lessonNumber = const Value.absent(),
                 Value<int?> totalLessons = const Value.absent(),
-                Value<bool> isBookmarked = const Value.absent(),
+                Value<int?> bookmarkId = const Value.absent(),
                 Value<bool> isRunning = const Value.absent(),
                 Value<bool> isUpcoming = const Value.absent(),
                 Value<bool> hasAttempts = const Value.absent(),
@@ -11941,7 +12621,7 @@ class $$LessonsTableTableTableManager
                 subjectIndex: subjectIndex,
                 lessonNumber: lessonNumber,
                 totalLessons: totalLessons,
-                isBookmarked: isBookmarked,
+                bookmarkId: bookmarkId,
                 isRunning: isRunning,
                 isUpcoming: isUpcoming,
                 hasAttempts: hasAttempts,
@@ -11983,7 +12663,7 @@ class $$LessonsTableTableTableManager
                 Value<int?> subjectIndex = const Value.absent(),
                 Value<int?> lessonNumber = const Value.absent(),
                 Value<int?> totalLessons = const Value.absent(),
-                Value<bool> isBookmarked = const Value.absent(),
+                Value<int?> bookmarkId = const Value.absent(),
                 Value<bool> isRunning = const Value.absent(),
                 Value<bool> isUpcoming = const Value.absent(),
                 Value<bool> hasAttempts = const Value.absent(),
@@ -12023,7 +12703,7 @@ class $$LessonsTableTableTableManager
                 subjectIndex: subjectIndex,
                 lessonNumber: lessonNumber,
                 totalLessons: totalLessons,
-                isBookmarked: isBookmarked,
+                bookmarkId: bookmarkId,
                 isRunning: isRunning,
                 isUpcoming: isUpcoming,
                 hasAttempts: hasAttempts,
@@ -15543,6 +16223,651 @@ typedef $$DoubtRepliesTableTableProcessedTableManager =
       DoubtRepliesTableData,
       PrefetchHooks Function()
     >;
+typedef $$BookmarkFoldersTableTableCreateCompanionBuilder =
+    BookmarkFoldersTableCompanion Function({
+      Value<int> id,
+      required String name,
+      Value<int> bookmarksCount,
+      Value<int?> userId,
+    });
+typedef $$BookmarkFoldersTableTableUpdateCompanionBuilder =
+    BookmarkFoldersTableCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<int> bookmarksCount,
+      Value<int?> userId,
+    });
+
+final class $$BookmarkFoldersTableTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $BookmarkFoldersTableTable,
+          BookmarkFoldersTableData
+        > {
+  $$BookmarkFoldersTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<
+    $BookmarkItemsTableTable,
+    List<BookmarkItemsTableData>
+  >
+  _bookmarkItemsTableRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.bookmarkItemsTable,
+        aliasName: $_aliasNameGenerator(
+          db.bookmarkFoldersTable.id,
+          db.bookmarkItemsTable.folderId,
+        ),
+      );
+
+  $$BookmarkItemsTableTableProcessedTableManager get bookmarkItemsTableRefs {
+    final manager = $$BookmarkItemsTableTableTableManager(
+      $_db,
+      $_db.bookmarkItemsTable,
+    ).filter((f) => f.folderId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _bookmarkItemsTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$BookmarkFoldersTableTableFilterComposer
+    extends Composer<_$AppDatabase, $BookmarkFoldersTableTable> {
+  $$BookmarkFoldersTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get bookmarksCount => $composableBuilder(
+    column: $table.bookmarksCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> bookmarkItemsTableRefs(
+    Expression<bool> Function($$BookmarkItemsTableTableFilterComposer f) f,
+  ) {
+    final $$BookmarkItemsTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.bookmarkItemsTable,
+      getReferencedColumn: (t) => t.folderId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BookmarkItemsTableTableFilterComposer(
+            $db: $db,
+            $table: $db.bookmarkItemsTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$BookmarkFoldersTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $BookmarkFoldersTableTable> {
+  $$BookmarkFoldersTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get bookmarksCount => $composableBuilder(
+    column: $table.bookmarksCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$BookmarkFoldersTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BookmarkFoldersTableTable> {
+  $$BookmarkFoldersTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get bookmarksCount => $composableBuilder(
+    column: $table.bookmarksCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  Expression<T> bookmarkItemsTableRefs<T extends Object>(
+    Expression<T> Function($$BookmarkItemsTableTableAnnotationComposer a) f,
+  ) {
+    final $$BookmarkItemsTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.bookmarkItemsTable,
+          getReferencedColumn: (t) => t.folderId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$BookmarkItemsTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.bookmarkItemsTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$BookmarkFoldersTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BookmarkFoldersTableTable,
+          BookmarkFoldersTableData,
+          $$BookmarkFoldersTableTableFilterComposer,
+          $$BookmarkFoldersTableTableOrderingComposer,
+          $$BookmarkFoldersTableTableAnnotationComposer,
+          $$BookmarkFoldersTableTableCreateCompanionBuilder,
+          $$BookmarkFoldersTableTableUpdateCompanionBuilder,
+          (BookmarkFoldersTableData, $$BookmarkFoldersTableTableReferences),
+          BookmarkFoldersTableData,
+          PrefetchHooks Function({bool bookmarkItemsTableRefs})
+        > {
+  $$BookmarkFoldersTableTableTableManager(
+    _$AppDatabase db,
+    $BookmarkFoldersTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BookmarkFoldersTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BookmarkFoldersTableTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$BookmarkFoldersTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> bookmarksCount = const Value.absent(),
+                Value<int?> userId = const Value.absent(),
+              }) => BookmarkFoldersTableCompanion(
+                id: id,
+                name: name,
+                bookmarksCount: bookmarksCount,
+                userId: userId,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String name,
+                Value<int> bookmarksCount = const Value.absent(),
+                Value<int?> userId = const Value.absent(),
+              }) => BookmarkFoldersTableCompanion.insert(
+                id: id,
+                name: name,
+                bookmarksCount: bookmarksCount,
+                userId: userId,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$BookmarkFoldersTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({bookmarkItemsTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (bookmarkItemsTableRefs) db.bookmarkItemsTable,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (bookmarkItemsTableRefs)
+                    await $_getPrefetchedData<
+                      BookmarkFoldersTableData,
+                      $BookmarkFoldersTableTable,
+                      BookmarkItemsTableData
+                    >(
+                      currentTable: table,
+                      referencedTable: $$BookmarkFoldersTableTableReferences
+                          ._bookmarkItemsTableRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$BookmarkFoldersTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).bookmarkItemsTableRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.folderId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$BookmarkFoldersTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BookmarkFoldersTableTable,
+      BookmarkFoldersTableData,
+      $$BookmarkFoldersTableTableFilterComposer,
+      $$BookmarkFoldersTableTableOrderingComposer,
+      $$BookmarkFoldersTableTableAnnotationComposer,
+      $$BookmarkFoldersTableTableCreateCompanionBuilder,
+      $$BookmarkFoldersTableTableUpdateCompanionBuilder,
+      (BookmarkFoldersTableData, $$BookmarkFoldersTableTableReferences),
+      BookmarkFoldersTableData,
+      PrefetchHooks Function({bool bookmarkItemsTableRefs})
+    >;
+typedef $$BookmarkItemsTableTableCreateCompanionBuilder =
+    BookmarkItemsTableCompanion Function({
+      Value<int> id,
+      Value<int?> folderId,
+      Value<String?> folderName,
+      required int lessonId,
+      Value<String?> bookmarkType,
+    });
+typedef $$BookmarkItemsTableTableUpdateCompanionBuilder =
+    BookmarkItemsTableCompanion Function({
+      Value<int> id,
+      Value<int?> folderId,
+      Value<String?> folderName,
+      Value<int> lessonId,
+      Value<String?> bookmarkType,
+    });
+
+final class $$BookmarkItemsTableTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $BookmarkItemsTableTable,
+          BookmarkItemsTableData
+        > {
+  $$BookmarkItemsTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $BookmarkFoldersTableTable _folderIdTable(_$AppDatabase db) =>
+      db.bookmarkFoldersTable.createAlias(
+        $_aliasNameGenerator(
+          db.bookmarkItemsTable.folderId,
+          db.bookmarkFoldersTable.id,
+        ),
+      );
+
+  $$BookmarkFoldersTableTableProcessedTableManager? get folderId {
+    final $_column = $_itemColumn<int>('folder_id');
+    if ($_column == null) return null;
+    final manager = $$BookmarkFoldersTableTableTableManager(
+      $_db,
+      $_db.bookmarkFoldersTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_folderIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$BookmarkItemsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $BookmarkItemsTableTable> {
+  $$BookmarkItemsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get folderName => $composableBuilder(
+    column: $table.folderName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get lessonId => $composableBuilder(
+    column: $table.lessonId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get bookmarkType => $composableBuilder(
+    column: $table.bookmarkType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$BookmarkFoldersTableTableFilterComposer get folderId {
+    final $$BookmarkFoldersTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.folderId,
+      referencedTable: $db.bookmarkFoldersTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BookmarkFoldersTableTableFilterComposer(
+            $db: $db,
+            $table: $db.bookmarkFoldersTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$BookmarkItemsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $BookmarkItemsTableTable> {
+  $$BookmarkItemsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get folderName => $composableBuilder(
+    column: $table.folderName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get lessonId => $composableBuilder(
+    column: $table.lessonId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get bookmarkType => $composableBuilder(
+    column: $table.bookmarkType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$BookmarkFoldersTableTableOrderingComposer get folderId {
+    final $$BookmarkFoldersTableTableOrderingComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.folderId,
+          referencedTable: $db.bookmarkFoldersTable,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$BookmarkFoldersTableTableOrderingComposer(
+                $db: $db,
+                $table: $db.bookmarkFoldersTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$BookmarkItemsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BookmarkItemsTableTable> {
+  $$BookmarkItemsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get folderName => $composableBuilder(
+    column: $table.folderName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get lessonId =>
+      $composableBuilder(column: $table.lessonId, builder: (column) => column);
+
+  GeneratedColumn<String> get bookmarkType => $composableBuilder(
+    column: $table.bookmarkType,
+    builder: (column) => column,
+  );
+
+  $$BookmarkFoldersTableTableAnnotationComposer get folderId {
+    final $$BookmarkFoldersTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.folderId,
+          referencedTable: $db.bookmarkFoldersTable,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$BookmarkFoldersTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.bookmarkFoldersTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$BookmarkItemsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BookmarkItemsTableTable,
+          BookmarkItemsTableData,
+          $$BookmarkItemsTableTableFilterComposer,
+          $$BookmarkItemsTableTableOrderingComposer,
+          $$BookmarkItemsTableTableAnnotationComposer,
+          $$BookmarkItemsTableTableCreateCompanionBuilder,
+          $$BookmarkItemsTableTableUpdateCompanionBuilder,
+          (BookmarkItemsTableData, $$BookmarkItemsTableTableReferences),
+          BookmarkItemsTableData,
+          PrefetchHooks Function({bool folderId})
+        > {
+  $$BookmarkItemsTableTableTableManager(
+    _$AppDatabase db,
+    $BookmarkItemsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BookmarkItemsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BookmarkItemsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BookmarkItemsTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int?> folderId = const Value.absent(),
+                Value<String?> folderName = const Value.absent(),
+                Value<int> lessonId = const Value.absent(),
+                Value<String?> bookmarkType = const Value.absent(),
+              }) => BookmarkItemsTableCompanion(
+                id: id,
+                folderId: folderId,
+                folderName: folderName,
+                lessonId: lessonId,
+                bookmarkType: bookmarkType,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int?> folderId = const Value.absent(),
+                Value<String?> folderName = const Value.absent(),
+                required int lessonId,
+                Value<String?> bookmarkType = const Value.absent(),
+              }) => BookmarkItemsTableCompanion.insert(
+                id: id,
+                folderId: folderId,
+                folderName: folderName,
+                lessonId: lessonId,
+                bookmarkType: bookmarkType,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$BookmarkItemsTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({folderId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (folderId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.folderId,
+                                referencedTable:
+                                    $$BookmarkItemsTableTableReferences
+                                        ._folderIdTable(db),
+                                referencedColumn:
+                                    $$BookmarkItemsTableTableReferences
+                                        ._folderIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$BookmarkItemsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BookmarkItemsTableTable,
+      BookmarkItemsTableData,
+      $$BookmarkItemsTableTableFilterComposer,
+      $$BookmarkItemsTableTableOrderingComposer,
+      $$BookmarkItemsTableTableAnnotationComposer,
+      $$BookmarkItemsTableTableCreateCompanionBuilder,
+      $$BookmarkItemsTableTableUpdateCompanionBuilder,
+      (BookmarkItemsTableData, $$BookmarkItemsTableTableReferences),
+      BookmarkItemsTableData,
+      PrefetchHooks Function({bool folderId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -15580,4 +16905,8 @@ class $AppDatabaseManager {
       $$DoubtsTableTableTableManager(_db, _db.doubtsTable);
   $$DoubtRepliesTableTableTableManager get doubtRepliesTable =>
       $$DoubtRepliesTableTableTableManager(_db, _db.doubtRepliesTable);
+  $$BookmarkFoldersTableTableTableManager get bookmarkFoldersTable =>
+      $$BookmarkFoldersTableTableTableManager(_db, _db.bookmarkFoldersTable);
+  $$BookmarkItemsTableTableTableManager get bookmarkItemsTable =>
+      $$BookmarkItemsTableTableTableManager(_db, _db.bookmarkItemsTable);
 }

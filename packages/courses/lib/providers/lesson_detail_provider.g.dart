@@ -6,7 +6,7 @@ part of 'lesson_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$lessonDetailHash() => r'77601453c3aadbb884e1d06b0d0e3c50f930bc8b';
+String _$lessonDetailHash() => r'cf8fcbbc28e30ca767a51d5c027289a68bf45c1e';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -169,7 +169,7 @@ class _LessonDetailProviderElement
   String get lessonId => (origin as LessonDetailProvider).lessonId;
 }
 
-String _$lessonBookmarkHash() => r'5a2993eba7aeac8e300bbf1f51eaf2bfb54a813b';
+String _$lessonBookmarkHash() => r'deaca38d470eade802fb4b88f53091259d8dce7b';
 
 /// Provider that watches and manages the bookmark status of a specific lesson.
 ///
