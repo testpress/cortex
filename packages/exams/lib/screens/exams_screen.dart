@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
 import '../providers/exam_providers.dart';
 
@@ -94,16 +95,10 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
           
           examCoursesState.when(
             data: (courses) {
-              if (courses.isEmpty) {
-                if (isSyncing) {
-                  return const SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: Center(
-                      child: AppLoadingIndicator(),
-                    ),
-                  );
-                }
-                
+              final isSkeleton = isSyncing && courses.isEmpty;
+              final displayCourses = isSkeleton ? _skeletonCourses : courses;
+
+              if (displayCourses.isEmpty) {
                 return SliverFillRemaining(
                   hasScrollBody: false,
                   child: Center(
@@ -122,37 +117,57 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
-                          final course = courses[index];
+                          final course = displayCourses[index];
                           return Padding(
                             padding: EdgeInsets.only(bottom: design.spacing.md),
                             child: CourseCard(
                               course: course,
-                              onTap: () {
-                                context.push('/exams/course/${course.id}/chapters');
-                              },
+                              isSkeleton: isSkeleton,
+                              onTap: isSkeleton
+                                  ? null
+                                  : () {
+                                      context.push('/exams/course/${course.id}/chapters');
+                                    },
                             ),
                           );
                         },
-                        childCount: courses.length,
+                        childCount: displayCourses.length,
                       ),
                     ),
                   ),
                   if (isSyncingMore)
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: design.spacing.md),
-                        child: const Center(child: AppLoadingIndicator()),
+                    SliverPadding(
+                      padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+                      sliver: SliverToBoxAdapter(
+                        child: Padding(
+                          padding: EdgeInsets.only(bottom: design.spacing.md),
+                          child: CourseCard(
+                            course: _skeletonCourses.first,
+                            isSkeleton: isSyncingMore,
+                          ),
+                        ),
                       ),
                     ),
                 ],
               );
             },
-            loading: () => const SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: AppLoadingIndicator(),
-              ),
-            ),
+            loading: () => isSyncing
+                ? SliverPadding(
+                    padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) => Padding(
+                          padding: EdgeInsets.only(bottom: design.spacing.md),
+                          child: CourseCard(
+                            course: _skeletonCourses[index],
+                            isSkeleton: isSyncing,
+                          ),
+                        ),
+                        childCount: _skeletonCourses.length,
+                      ),
+                    ),
+                  )
+                : const SliverToBoxAdapter(child: SizedBox.shrink()),
             error: (error, stack) => SliverFillRemaining(
               hasScrollBody: false,
               child: Center(
@@ -172,3 +187,20 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
     );
   }
 }
+
+final _skeletonCourses = List.generate(
+  6,
+  (index) => CourseDto(
+    id: 'skeleton-$index',
+    title: 'Loading course title text',
+    colorIndex: index % 6,
+    chapterCount: 12,
+    totalContents: 48,
+    progress: 0,
+    completedLessons: 0,
+    totalLessons: 48,
+    image: '',
+    examsCount: 0,
+    order: index,
+  ),
+);
