@@ -1,10 +1,8 @@
 # bookmark-folders Specification
 
 ## Purpose
-This capability enables users to organize bookmarked lessons into user-defined bookmark folders (playlists) and the default "Uncategorized" folder. It supports loading lists of existing folders, adding or removing lessons, creating new folders with dynamic dialog overlay UI, and instant feedback.
-
+TBD - created by archiving change integrate-bookmark. Update Purpose after archive.
 ## Requirements
-
 ### Requirement: List Folders in Bottom Sheet
 The system SHALL retrieve all bookmark folders and render them in a premium floating card bottom sheet (matching the styling, handle bar, and rounded corners of the Logout sheet, with no close button in the header).
 
@@ -52,3 +50,4 @@ The system SHALL sync folder selection actions immediately. The entire folder ro
 - **AND** delete the bookmark from the local database
 - **AND** upon successful completion, display a premium dark capsule toast confirming "Removed bookmark from [Folder Name]"
 - **AND** if the request fails, display a premium error toast "Failed to update bookmark. Please try again.".
+
