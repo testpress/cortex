@@ -6,7 +6,6 @@ import 'profile_providers.dart';
 part 'user_provider.g.dart';
 
 /// Reactive provider that exposes the current user's profile metadata from the database.
-/// Automatically triggers a background refresh from the network whenever it's watched.
 @riverpod
 Stream<UsersTableData?> user(UserRef ref) async* {
   final userRepository = await ref.watch(userRepositoryProvider.future);
@@ -16,9 +15,6 @@ Stream<UsersTableData?> user(UserRef ref) async* {
     yield null;
     return;
   }
-
-  // Refresh the profile in the background - the stream will update once it's saved.
-  userRepository.refreshProfile().ignore();
 
   yield* userRepository.watchCurrentUser();
 }

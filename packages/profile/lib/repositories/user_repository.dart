@@ -17,8 +17,23 @@ class UserRepository {
     return _db.select(_db.usersTable).getSingleOrNull();
   }
 
+  Future<UserDto>? _activeProfileRefresh;
+
   /// Fetches the profile from the network and updates the local cache.
-  Future<UserDto> refreshProfile() async {
+  /// If a fetch is already in progress, returns the existing future.
+  Future<UserDto> refreshProfile() {
+    if (_activeProfileRefresh != null) {
+      return _activeProfileRefresh!;
+    }
+
+    _activeProfileRefresh = _doRefreshProfile().whenComplete(() {
+      _activeProfileRefresh = null;
+    });
+
+    return _activeProfileRefresh!;
+  }
+
+  Future<UserDto> _doRefreshProfile() async {
     final user = await _source.getProfile();
     await _db.upsertUser(user.toCompanion());
     return user;
