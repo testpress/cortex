@@ -11,7 +11,7 @@ export 'design/design_context.dart';
 export 'design/design_provider.dart';
 
 // Icons
-export 'package:lucide_icons/lucide_icons.dart';
+export 'package:lucide_icons_flutter/lucide_icons.dart';
 export 'package:package_info_plus/package_info_plus.dart';
 
 // Tokens (legacy tokens removed - use Design.of(context))

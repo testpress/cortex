@@ -1,0 +1,12 @@
+## ADDED Requirements
+
+### Requirement: Migrate core icon dependency
+The system SHALL use `lucide_icons_flutter` as the default Lucide icon provider across all Dart files in the monorepo for standard UI icons.
+
+### Requirement: Preserve legacy brand icons
+The system SHALL retain access to deprecated brand icons (like Chrome and YouTube) by exposing the legacy `lucide_icons` package through a dedicated `legacy_icons.dart` export in the `core` package, preventing naming collisions.
+
+#### Scenario: App builds with new icons and legacy brand icons
+- **WHEN** developers compile the application
+- **THEN** standard icons resolve correctly via `lucide_icons_flutter`
+- **AND** brand icons resolve correctly via the legacy export without missing definition errors or lint warnings
