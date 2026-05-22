@@ -119,17 +119,15 @@ class LessonListItem extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 6),
-                      Row(
-                        children: [
-                          if (lesson.duration.isNotEmpty)
-                            AppText.cardCaption(lesson.duration),
-                          if (lesson.type != LessonType.liveStream) ...[
-                            if (lesson.duration.isNotEmpty) const SizedBox(width: 8),
-                            LessonStatusBadge(status: lesson.progressStatus),
+                      if (!isSkeleton) ...[
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            if (lesson.type != LessonType.liveStream)
+                              LessonStatusBadge(status: lesson.progressStatus),
                           ],
-                        ],
-                      ),
+                        ),
+                      ],
                     ],
                   ),
                 ),

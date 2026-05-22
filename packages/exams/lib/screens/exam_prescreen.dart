@@ -154,32 +154,32 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
 
                 Padding(
                   padding: EdgeInsets.all(design.spacing.lg),
-                  child: Column(
-                    children: [
-                      // Metadata Info (Clean text-only header layout)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  child: SkeletonizerConfig(
+                    data: SkeletonizerConfigData(
+                      effect: ShimmerEffect(
+                        baseColor: design.colors.skeleton,
+                        highlightColor: design.colors.onSkeleton,
+                        duration: MotionPreferences.duration(context, const Duration(milliseconds: 800)),
+                      ),
+                    ),
+                    child: Skeletonizer(
+                      enabled: isMetadataLoading,
+                      child: Column(
                         children: [
-                          AppText.headline(
-                            lesson?.title ?? exam?.title ?? 'Question Paper',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 19,
-                              color: design.colors.textPrimary,
-                            ),
-                          ),
-                          SizedBox(height: design.spacing.sm),
-                          SkeletonizerConfig(
-                            data: SkeletonizerConfigData(
-                              effect: ShimmerEffect(
-                                baseColor: design.colors.skeleton,
-                                highlightColor: design.colors.onSkeleton,
-                                duration: MotionPreferences.duration(context, const Duration(milliseconds: 800)),
+                          // Metadata Info (Clean text-only header layout)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              AppText.headline(
+                                lesson?.title ?? exam?.title ?? 'Question Paper',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 19,
+                                  color: design.colors.textPrimary,
+                                ),
                               ),
-                            ),
-                            child: Skeletonizer(
-                              enabled: isMetadataLoading,
-                              child: Row(
+                              SizedBox(height: design.spacing.sm),
+                              Row(
                                 children: [
                                   if (isMetadataLoading || exam?.questionCount != null) ...[
                                     // Questions Count
@@ -223,69 +223,70 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                                   ],
                                 ],
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: design.spacing.lg),
-
-                      // Start Exam Online Option Button
-                      GestureDetector(
-                        onTap: () async {
-                          ref.read(examAttemptProvider.notifier).reset();
-                          await widget.onStartAttempt();
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(design.spacing.md),
-                          decoration: BoxDecoration(
-                            color: design.colors.primary, // Premium dynamic brand color
-                            borderRadius: BorderRadius.circular(design.radius.lg),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(design.spacing.sm),
-                                decoration: BoxDecoration(
-                                  color: design.colors.onPrimary.withValues(alpha: 0.15), // Light semi-transparent overlay
-                                  borderRadius: BorderRadius.circular(design.radius.md),
-                                ),
-                                child: Icon(
-                                  LucideIcons.play,
-                                  color: design.colors.onPrimary,
-                                  size: 24,
-                                ),
-                              ),
-                              SizedBox(width: design.spacing.md),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Start Exam Online',
-                                      style: TextStyle(
-                                        color: design.colors.onPrimary,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      'Take the test in exam mode with timer',
-                                      style: TextStyle(
-                                        color: design.colors.onPrimary.withValues(alpha: 0.8),
-                                        fontSize: 13,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
                             ],
                           ),
-                        ),
+                          SizedBox(height: design.spacing.lg),
+
+                          // Start Exam Online Option Button
+                          GestureDetector(
+                            onTap: () async {
+                              if (isMetadataLoading) return;
+                              ref.read(examAttemptProvider.notifier).reset();
+                              await widget.onStartAttempt();
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.all(design.spacing.md),
+                              decoration: BoxDecoration(
+                                color: design.colors.primary, // Premium dynamic brand color
+                                borderRadius: BorderRadius.circular(design.radius.lg),
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(design.spacing.sm),
+                                    decoration: BoxDecoration(
+                                      color: design.colors.onPrimary.withValues(alpha: 0.15), // Light semi-transparent overlay
+                                      borderRadius: BorderRadius.circular(design.radius.md),
+                                    ),
+                                    child: Icon(
+                                      LucideIcons.play,
+                                      color: design.colors.onPrimary,
+                                      size: 24,
+                                    ),
+                                  ),
+                                  SizedBox(width: design.spacing.md),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Start Exam Online',
+                                          style: TextStyle(
+                                            color: design.colors.onPrimary,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'Take the test in exam mode with timer',
+                                          style: TextStyle(
+                                            color: design.colors.onPrimary.withValues(alpha: 0.8),
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                        ],
                       ),
-                      const SizedBox(height: 4),
-                    ],
+                    ),
                   ),
                 ),
               ],
