@@ -103,7 +103,9 @@ class _AppBottomSheetState extends State<AppBottomSheet>
                       onVerticalDragUpdate: (details) {
                         // Fluidly move the sheet with the drag
                         final screenHeight = MediaQuery.of(context).size.height;
-                        _controller.value -= details.delta.dy / (screenHeight * 0.5); 
+                        if (screenHeight > 0) {
+                          _controller.value = (_controller.value - details.delta.dy / (screenHeight * 0.5)).clamp(0.0, 1.0);
+                        } 
                       },
                       onVerticalDragEnd: (details) {
                         final velocity = details.primaryVelocity ?? 0;
