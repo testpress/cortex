@@ -39,7 +39,6 @@ dependencies:
   flutter_smooth_markdown: ^0.7.2
   fluttertoast: ^9.1.0
   collection: ^1.19.1
-  simple_icons: ^14.6.1
 
 dev_dependencies:
   flutter_test:

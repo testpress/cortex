@@ -1048,14 +1048,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.28.0"
-  simple_icons:
-    dependency: transitive
-    description:
-      name: simple_icons
-      sha256: "2ca3cd79c9f12e97a8588cae0f342609f19fd2e82315356cb09b5c4987ad0808"
-      url: "https://pub.dev"
-    source: hosted
-    version: "14.6.1"
   skeletonizer:
     dependency: transitive
     description:
