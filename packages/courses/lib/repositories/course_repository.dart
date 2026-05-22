@@ -364,7 +364,7 @@ class CourseRepository {
   }
 
   String? _getApiCompatibleType(String? type) {
-    if (type == 'test') return 'exams';
+    if (type == 'test') return 'exam';
     if (type == 'assessment') return 'quiz';
     return type;
   }
