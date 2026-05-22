@@ -12,9 +12,6 @@ class BookmarkRepository {
 
   /// Watches all bookmark folders from the local database.
   Stream<List<BookmarkFolderDto>> watchBookmarkFolders() {
-    // Automatically trigger a background network synchronization when the stream is listened to.
-    // Errors are caught and ignored to ensure offline operation is unaffected.
-    refreshFolders().catchError((_) {});
 
     return _db.select(_db.bookmarkFoldersTable).watch().map((rows) {
       return rows

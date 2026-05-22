@@ -8,6 +8,11 @@ part 'bookmark_provider.g.dart';
 @riverpod
 Stream<List<BookmarkFolderDto>> bookmarkFolders(BookmarkFoldersRef ref) async* {
   final repository = await ref.watch(bookmarkRepositoryProvider.future);
+  
+  // Trigger a background network sync when the provider is first initialized.
+  // We do not await this, so the local cached stream emits instantly!
+  repository.refreshFolders().catchError((_) {});
+  
   yield* repository.watchBookmarkFolders();
 }
 
