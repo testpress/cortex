@@ -15,48 +15,65 @@ class LeaderboardRepository {
   })  : _dataSource = dataSource,
         _db = db;
 
-  Stream<List<LearnerDto>> watchLeaderboard(LeaderboardTimeline timeline, {int? limit}) async* {
+  Stream<List<LearnerDto>> watchLeaderboard(LeaderboardTimeline timeline, {int? limit}) {
     switch (timeline) {
       case LeaderboardTimeline.thisWeek:
-        yield* _db.watchWeeklyLeaderboard(limit: limit).map((rows) => rows
-            .map((row) => LearnerDto(
-                  id: row.id,
-                  rank: row.rank,
-                  name: row.name,
-                  avatar: row.avatar ?? '',
-                  points: row.points,
-                  coursesCompleted: row.coursesCompleted,
-                  streakDays: row.streakDays,
-                ))
-            .toList());
-        break;
+        return _db.watchWeeklyLeaderboard(limit: limit).map((rows) => rows.map(_mapWeekly).toList());
       case LeaderboardTimeline.thisMonth:
-        yield* _db.watchMonthlyLeaderboard(limit: limit).map((rows) => rows
-            .map((row) => LearnerDto(
-                  id: row.id,
-                  rank: row.rank,
-                  name: row.name,
-                  avatar: row.avatar ?? '',
-                  points: row.points,
-                  coursesCompleted: row.coursesCompleted,
-                  streakDays: row.streakDays,
-                ))
-            .toList());
-        break;
+        return _db.watchMonthlyLeaderboard(limit: limit).map((rows) => rows.map(_mapMonthly).toList());
       case LeaderboardTimeline.allTime:
-        yield* _db.watchAllTimeLeaderboard(limit: limit).map((rows) => rows
-            .map((row) => LearnerDto(
-                  id: row.id,
-                  rank: row.rank,
-                  name: row.name,
-                  avatar: row.avatar ?? '',
-                  points: row.points,
-                  coursesCompleted: row.coursesCompleted,
-                  streakDays: row.streakDays,
-                ))
-            .toList());
-        break;
+        return _db.watchAllTimeLeaderboard(limit: limit).map((rows) => rows.map(_mapAllTime).toList());
     }
+  }
+
+  LearnerDto _mapWeekly(WeeklyLeaderboardData row) => _toLearnerDto(
+        id: row.id,
+        rank: row.rank,
+        name: row.name,
+        avatar: row.avatar,
+        points: row.points,
+        coursesCompleted: row.coursesCompleted,
+        streakDays: row.streakDays,
+      );
+
+  LearnerDto _mapMonthly(MonthlyLeaderboardData row) => _toLearnerDto(
+        id: row.id,
+        rank: row.rank,
+        name: row.name,
+        avatar: row.avatar,
+        points: row.points,
+        coursesCompleted: row.coursesCompleted,
+        streakDays: row.streakDays,
+      );
+
+  LearnerDto _mapAllTime(AllTimeLeaderboardData row) => _toLearnerDto(
+        id: row.id,
+        rank: row.rank,
+        name: row.name,
+        avatar: row.avatar,
+        points: row.points,
+        coursesCompleted: row.coursesCompleted,
+        streakDays: row.streakDays,
+      );
+
+  LearnerDto _toLearnerDto({
+    required String id,
+    required int rank,
+    required String name,
+    required String? avatar,
+    required double points,
+    required int coursesCompleted,
+    required int streakDays,
+  }) {
+    return LearnerDto(
+      id: id,
+      rank: rank,
+      name: name,
+      avatar: avatar ?? '',
+      points: points,
+      coursesCompleted: coursesCompleted,
+      streakDays: streakDays,
+    );
   }
 
   Future<void> refreshLeaderboard(LeaderboardTimeline timeline, {int limit = 10, int page = 1}) async {
