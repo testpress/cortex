@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:core/legacy_icons.dart' as legacy;
 import 'package:core/core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -204,7 +205,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           AppButton.secondary(
             label: 'Continue with Google',
             fullWidth: true,
-            leading: const Icon(LucideIcons.chrome),
+            leading: const Icon(legacy.LucideIcons.chrome),
             onPressed: () => context.go('/home'),
           ),
           SizedBox(height: design.spacing.xxl),

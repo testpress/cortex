@@ -689,6 +689,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.257.0"
+  lucide_icons_flutter:
+    dependency: transitive
+    description:
+      name: lucide_icons_flutter
+      sha256: f9fd5d49b93bf14b89e0ff4818658a74ab16899bdaf7aa745358ee1a34f54eed
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.14+1"
   markdown:
     dependency: transitive
     description:
@@ -1040,6 +1048,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.28.0"
+  simple_icons:
+    dependency: transitive
+    description:
+      name: simple_icons
+      sha256: "2ca3cd79c9f12e97a8588cae0f342609f19fd2e82315356cb09b5c4987ad0808"
+      url: "https://pub.dev"
+    source: hosted
+    version: "14.6.1"
   skeletonizer:
     dependency: transitive
     description:

@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'routes.dart';
 import 'package:core/core.dart';
+import 'package:core/legacy_icons.dart' as legacy;
 import 'package:core/data/data.dart';
 import 'package:profile/profile.dart';
 import '../widgets/dashboard_drawer.dart';
@@ -56,7 +57,7 @@ enum NavTab {
   study('/study', 'Study', LucideIcons.bookOpen),
   exams('/exams', 'Exam', LucideIcons.fileText),
   explore('/explore', 'Explore', LucideIcons.compass),
-  info('/info', 'Info', LucideIcons.youtube),
+  info('/info', 'Info', legacy.LucideIcons.youtube),
   profile('/profile', 'Profile', LucideIcons.user);
 
   final String id;

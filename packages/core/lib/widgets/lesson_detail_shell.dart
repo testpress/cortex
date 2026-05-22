@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../design/design_provider.dart';
 import '../design/design_config.dart';
 import '../accessibility/app_semantics.dart';
@@ -261,7 +261,7 @@ class LessonDetailShell extends StatelessWidget {
           ),
         if (onBookmarkToggle != null)
           _HeaderButton(
-            icon: isBookmarked ? LucideIcons.bookmarkMinus : LucideIcons.bookmark,
+            icon: isBookmarked ? LucideIcons.bookmarkOff : LucideIcons.bookmark,
             label: isBookmarked ? 'Remove bookmark' : 'Bookmark lesson',
             onTap: onBookmarkToggle!,
             iconColor: isBookmarked ? design.colors.primary : null,
