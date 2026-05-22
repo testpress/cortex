@@ -327,6 +327,7 @@ final _skeletonLessons = List.generate(
     id: 'skeleton-lesson-$index',
     chapterId: 'skeleton-chapter-0',
     title: 'Loading lesson title text content',
+    chapterTitle: 'Loading chapter title text',
     type: LessonType.video,
     progressStatus: LessonProgressStatus.notStarted,
     isLocked: false,
