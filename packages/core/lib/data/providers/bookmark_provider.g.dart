@@ -6,7 +6,7 @@ part of 'bookmark_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$bookmarkFoldersHash() => r'd688a42f9f7ead677c4fbb117a66ee74d753389c';
+String _$bookmarkFoldersHash() => r'1852849c49cb76b3f4047d4bea3715c64f08c055';
 
 /// Stream of all bookmark folders.
 ///

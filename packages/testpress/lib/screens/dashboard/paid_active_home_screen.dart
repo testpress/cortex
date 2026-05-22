@@ -25,7 +25,10 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     
     final heroBanners = ref.watch(heroBannersProvider);
     final promotionBanners = ref.watch(promotionBannersProvider);
-    final learnersState = ref.watch(learnersProvider);
+    final learnersState = ref.watch(learnersProvider(
+      timeline: dto.LeaderboardTimeline.thisWeek,
+      limit: 10,
+    ));
     final shortcuts = ref.watch(quickShortcutsProvider);
 
     final whatsNewAsync = ref.watch(whatsNewFeedProvider);

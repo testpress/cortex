@@ -49,37 +49,6 @@ class DashboardRepository {
     }
   }
 
-  Stream<List<LearnerDto>> watchLearners() async* {
-    yield* _db.watchLearners().map((rows) {
-      return rows.map((row) => LearnerDto(
-        id: row.id,
-        rank: row.rank,
-        name: row.name,
-        avatar: row.avatar,
-        points: row.points,
-        coursesCompleted: row.coursesCompleted,
-        streakDays: row.streakDays,
-      )).toList();
-    });
-  }
-
-  Future<void> refreshLearners() async {
-    try {
-      final freshLearners = await _dataSource.getLearners();
-      await _db.wipeAndInsertLearners(freshLearners.map((dto) => LearnersTableCompanion(
-        id: Value(dto.id),
-        rank: Value(dto.rank),
-        name: Value(dto.name),
-        avatar: Value(dto.avatar),
-        points: Value(dto.points),
-        coursesCompleted: Value(dto.coursesCompleted),
-        streakDays: Value(dto.streakDays),
-      )).toList());
-    } catch (e) {
-      debugPrint('DEBUG: Failed to fetch top learners: $e');
-    }
-  }
-
   /// Watch the "What's New" feed.
   Stream<List<DashboardContentDto>> watchWhatsNewFeed() async* {
     // Stream from database directly

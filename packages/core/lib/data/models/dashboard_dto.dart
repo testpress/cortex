@@ -266,6 +266,25 @@ class DashboardBannerDto {
 }
 
 
+enum LeaderboardTimeline {
+  allTime,
+  thisWeek,
+  thisMonth,
+}
+
+extension LeaderboardTimelineExtension on LeaderboardTimeline {
+  String? get timelineQuery {
+    switch (this) {
+      case LeaderboardTimeline.allTime:
+        return null;
+      case LeaderboardTimeline.thisWeek:
+        return 'this_week';
+      case LeaderboardTimeline.thisMonth:
+        return 'this_month';
+    }
+  }
+}
+
 @immutable
 class LearnerDto {
   final String id;

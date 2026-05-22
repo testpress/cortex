@@ -17,7 +17,6 @@ import 'tables/users_table.dart';
 import 'tables/downloads_table.dart';
 import 'tables/doubts_table.dart';
 import 'tables/bookmarks_table.dart';
-
 import 'package:core/data/data.dart';
 
 part 'app_database.g.dart';
@@ -34,7 +33,9 @@ part 'app_database.g.dart';
     AppSettingsTable,
     UsersTable,
     DashboardBannersTable,
-    LearnersTable,
+    WeeklyLeaderboardTable,
+    MonthlyLeaderboardTable,
+    AllTimeLeaderboardTable,
     DashboardContentsTable,
     DownloadsTable,
     DoubtsTable,
@@ -47,7 +48,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 21;
+  int get schemaVersion => 22;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -180,7 +181,25 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 13) {
             // Version 13 adds Learners table for top learners offline caching
-            await createTableSafely(learnersTable);
+            // Note: learnersTable was removed in v22 — the raw SQL check avoids
+            // referencing a deleted TableInfo type.
+            final res = await customSelect(
+              "SELECT name FROM sqlite_master WHERE type='table' AND name='learners_table'",
+            ).get();
+            if (res.isEmpty) {
+              await customStatement('''
+                CREATE TABLE IF NOT EXISTS learners_table (
+                  id TEXT NOT NULL,
+                  name TEXT NOT NULL,
+                  avatar TEXT NOT NULL,
+                  points REAL NOT NULL,
+                  rank INTEGER NOT NULL,
+                  courses_completed INTEGER DEFAULT 0 NOT NULL,
+                  streak_days INTEGER DEFAULT 0 NOT NULL,
+                  PRIMARY KEY (id)
+                )
+              ''');
+            }
           }
           if (from < 14) {
             // Version 14 adds Dashboard Contents table for generic section caching
@@ -216,6 +235,14 @@ class AppDatabase extends _$AppDatabase {
             await createTableSafely(bookmarkFoldersTable);
             await createTableSafely(bookmarkItemsTable);
             await addColumnSafely(lessonsTable, lessonsTable.bookmarkId);
+          }
+          if (from < 22) {
+            // Version 22: Refactor leaderboard tables — drop old learners_table,
+            // create three new leaderboard cache tables
+            await m.deleteTable('learners_table');
+            await createTableSafely(weeklyLeaderboardTable);
+            await createTableSafely(monthlyLeaderboardTable);
+            await createTableSafely(allTimeLeaderboardTable);
           }
         },
       );
@@ -420,15 +447,61 @@ class AppDatabase extends _$AppDatabase {
   Future<void> upsertDashboardBanners(List<DashboardBannersTableCompanion> rows) =>
       batch((b) => b.insertAllOnConflictUpdate(dashboardBannersTable, rows));
 
-  // ── Learners ──────────────────────────────────────────────────────────────
+  // ── Leaderboard Cache ─────────────────────────────────────────────────────
 
-  Stream<List<LearnersTableData>> watchLearners() =>
-      (select(learnersTable)..orderBy([(t) => OrderingTerm.asc(t.rank)])).watch();
+  Stream<List<WeeklyLeaderboardData>> watchWeeklyLeaderboard({int? limit}) {
+    final query = select(weeklyLeaderboardTable)..orderBy([(t) => OrderingTerm.asc(t.rank)]);
+    if (limit != null) {
+      query.limit(limit);
+    }
+    return query.watch();
+  }
 
-  Future<void> wipeAndInsertLearners(List<LearnersTableCompanion> rows) {
+  Stream<List<MonthlyLeaderboardData>> watchMonthlyLeaderboard({int? limit}) {
+    final query = select(monthlyLeaderboardTable)..orderBy([(t) => OrderingTerm.asc(t.rank)]);
+    if (limit != null) {
+      query.limit(limit);
+    }
+    return query.watch();
+  }
+
+  Stream<List<AllTimeLeaderboardData>> watchAllTimeLeaderboard({int? limit}) {
+    final query = select(allTimeLeaderboardTable)..orderBy([(t) => OrderingTerm.asc(t.rank)]);
+    if (limit != null) {
+      query.limit(limit);
+    }
+    return query.watch();
+  }
+
+  Future<void> saveLeaderboardPage({
+    required LeaderboardTimeline timeline,
+    required int page,
+    required List<Insertable> rows,
+  }) {
     return transaction(() async {
-      await delete(learnersTable).go();
-      await batch((b) => b.insertAll(learnersTable, rows));
+      switch (timeline) {
+        case LeaderboardTimeline.thisWeek:
+          if (page == 1) {
+            await delete(weeklyLeaderboardTable).go();
+          }
+          await batch((b) => b.insertAllOnConflictUpdate(
+              weeklyLeaderboardTable, rows.cast<WeeklyLeaderboardTableCompanion>()));
+          break;
+        case LeaderboardTimeline.thisMonth:
+          if (page == 1) {
+            await delete(monthlyLeaderboardTable).go();
+          }
+          await batch((b) => b.insertAllOnConflictUpdate(
+              monthlyLeaderboardTable, rows.cast<MonthlyLeaderboardTableCompanion>()));
+          break;
+        case LeaderboardTimeline.allTime:
+          if (page == 1) {
+            await delete(allTimeLeaderboardTable).go();
+          }
+          await batch((b) => b.insertAllOnConflictUpdate(
+              allTimeLeaderboardTable, rows.cast<AllTimeLeaderboardTableCompanion>()));
+          break;
+      }
     });
   }
 

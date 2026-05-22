@@ -68,8 +68,12 @@ abstract class DataSource {
   /// Fetch hero banners for the dashboard from `/api/v3/dashboard/`.
   Future<List<DashboardBannerDto>> getDashboardBanners();
 
-  /// Fetch top learners from `/api/v2.3/leaderboard/`.
-  Future<List<LearnerDto>> getLearners();
+  /// Fetch leaderboards from `/api/v2.3/leaderboard/` for a specific timeline and page.
+  Future<List<LearnerDto>> fetchLeaderboard({
+    required LeaderboardTimeline timeline,
+    int limit = 10,
+    int page = 1,
+  });
 
   /// Fetch the latest content updates from `/api/v2.4/whats-new/`.
   Future<DashboardContentsDto> getWhatsNewFeed(DashboardSectionType sectionType);

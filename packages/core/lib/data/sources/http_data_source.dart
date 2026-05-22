@@ -229,19 +229,29 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<List<LearnerDto>> getLearners() async {
+  Future<List<LearnerDto>> fetchLeaderboard({
+    required LeaderboardTimeline timeline,
+    int limit = 10,
+    int page = 1,
+  }) async {
+    final Map<String, dynamic> params = {
+      'limit': limit,
+      'page': page,
+    };
+    final timelineStr = timeline.timelineQuery;
+    if (timelineStr != null) {
+      params['timeline'] = timelineStr;
+    }
+
     return performNetworkRequest(
-      // Top 10 learners for this week
-      _dio.get(ApiEndpoints.leaderboard, queryParameters: {
-        'timeline': 'this_week',
-        'limit': 10,
-      }),
+      _dio.get(ApiEndpoints.leaderboard, queryParameters: params),
       fromJson: (data) {
         final results = data['results'] as List<dynamic>?;
         if (results == null) return [];
         final learners = <LearnerDto>[];
         for (var i = 0; i < results.length; i++) {
-          learners.add(LearnerDto.fromJson(results[i] as Map<String, dynamic>, i + 1));
+          final calculatedRank = (page - 1) * limit + i + 1;
+          learners.add(LearnerDto.fromJson(results[i] as Map<String, dynamic>, calculatedRank));
         }
         return learners;
       },
