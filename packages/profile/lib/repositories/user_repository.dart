@@ -22,15 +22,9 @@ class UserRepository {
   /// Fetches the profile from the network and updates the local cache.
   /// If a fetch is already in progress, returns the existing future.
   Future<UserDto> refreshProfile() {
-    if (_activeProfileRefresh != null) {
-      return _activeProfileRefresh!;
-    }
-
-    _activeProfileRefresh = _doRefreshProfile().whenComplete(() {
+    return _activeProfileRefresh ??= _doRefreshProfile().whenComplete(() {
       _activeProfileRefresh = null;
     });
-
-    return _activeProfileRefresh!;
   }
 
   Future<UserDto> _doRefreshProfile() async {
