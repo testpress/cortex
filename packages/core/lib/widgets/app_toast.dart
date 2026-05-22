@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../design/design_provider.dart';
+import '../design/design_config.dart';
 import 'app_text.dart';
 
 /// A premium, platform-neutral toast notification utility powered by [FToast].
@@ -34,19 +35,19 @@ class AppToast {
   }
 
   static Widget _buildCapsule(
-    dynamic design,
+    DesignConfig design,
     String message,
     bool isError,
   ) {
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: design.spacing.md as double,
-        vertical: (design.spacing.sm as double) * 1.5,
+        horizontal: design.spacing.md,
+        vertical: design.spacing.sm * 1.5,
       ),
       decoration: BoxDecoration(
-        color: design.colors.textPrimary as Color,
-        borderRadius: BorderRadius.circular(design.radius.xl as double),
-        boxShadow: design.shadows.floating as List<BoxShadow>,
+        color: design.colors.textPrimary,
+        borderRadius: BorderRadius.circular(design.radius.xl),
+        boxShadow: design.shadows.floating,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -55,14 +56,14 @@ class AppToast {
             isError ? LucideIcons.alertTriangle : LucideIcons.check,
             size: 20,
             color: isError
-                ? design.colors.error as Color
-                : design.colors.success as Color,
+                ? design.colors.error
+                : design.colors.success,
           ),
-          SizedBox(width: design.spacing.sm as double),
+          SizedBox(width: design.spacing.sm),
           Flexible(
             child: AppText.labelBold(
               message,
-              color: design.colors.textInverse as Color,
+              color: design.colors.textInverse,
             ),
           ),
         ],
