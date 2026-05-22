@@ -18,62 +18,12 @@ class LeaderboardRepository {
   Stream<List<LearnerDto>> watchLeaderboard(LeaderboardTimeline timeline, {int? limit}) {
     switch (timeline) {
       case LeaderboardTimeline.thisWeek:
-        return _db.watchWeeklyLeaderboard(limit: limit).map((rows) => rows.map(_mapWeekly).toList());
+        return _db.watchWeeklyLeaderboard(limit: limit).map((rows) => rows.map((r) => r.toDto()).toList());
       case LeaderboardTimeline.thisMonth:
-        return _db.watchMonthlyLeaderboard(limit: limit).map((rows) => rows.map(_mapMonthly).toList());
+        return _db.watchMonthlyLeaderboard(limit: limit).map((rows) => rows.map((r) => r.toDto()).toList());
       case LeaderboardTimeline.allTime:
-        return _db.watchAllTimeLeaderboard(limit: limit).map((rows) => rows.map(_mapAllTime).toList());
+        return _db.watchAllTimeLeaderboard(limit: limit).map((rows) => rows.map((r) => r.toDto()).toList());
     }
-  }
-
-  LearnerDto _mapWeekly(WeeklyLeaderboardData row) => _toLearnerDto(
-        id: row.id,
-        rank: row.rank,
-        name: row.name,
-        avatar: row.avatar,
-        points: row.points,
-        coursesCompleted: row.coursesCompleted,
-        streakDays: row.streakDays,
-      );
-
-  LearnerDto _mapMonthly(MonthlyLeaderboardData row) => _toLearnerDto(
-        id: row.id,
-        rank: row.rank,
-        name: row.name,
-        avatar: row.avatar,
-        points: row.points,
-        coursesCompleted: row.coursesCompleted,
-        streakDays: row.streakDays,
-      );
-
-  LearnerDto _mapAllTime(AllTimeLeaderboardData row) => _toLearnerDto(
-        id: row.id,
-        rank: row.rank,
-        name: row.name,
-        avatar: row.avatar,
-        points: row.points,
-        coursesCompleted: row.coursesCompleted,
-        streakDays: row.streakDays,
-      );
-
-  LearnerDto _toLearnerDto({
-    required String id,
-    required int rank,
-    required String name,
-    required String? avatar,
-    required double points,
-    required int coursesCompleted,
-    required int streakDays,
-  }) {
-    return LearnerDto(
-      id: id,
-      rank: rank,
-      name: name,
-      avatar: avatar ?? '',
-      points: points,
-      coursesCompleted: coursesCompleted,
-      streakDays: streakDays,
-    );
   }
 
   Future<void> refreshLeaderboard(LeaderboardTimeline timeline, {int limit = 10, int page = 1}) async {
@@ -84,50 +34,19 @@ class LeaderboardRepository {
         page: page,
       );
 
-      List<Insertable> companions;
-      switch (timeline) {
-        case LeaderboardTimeline.thisWeek:
-          companions = freshLearners
-              .map((dto) => WeeklyLeaderboardTableCompanion(
-                    id: Value(dto.id),
-                    rank: Value(dto.rank),
-                    name: Value(dto.name),
-                    avatar: Value(dto.avatar),
-                    points: Value(dto.points),
-                    coursesCompleted: Value(dto.coursesCompleted),
-                    streakDays: Value(dto.streakDays),
-                    page: Value(page),
-                  ))
-              .toList();
-          break;
-        case LeaderboardTimeline.thisMonth:
-          companions = freshLearners
-              .map((dto) => MonthlyLeaderboardTableCompanion(
-                    id: Value(dto.id),
-                    rank: Value(dto.rank),
-                    name: Value(dto.name),
-                    avatar: Value(dto.avatar),
-                    points: Value(dto.points),
-                    coursesCompleted: Value(dto.coursesCompleted),
-                    streakDays: Value(dto.streakDays),
-                    page: Value(page),
-                  ))
-              .toList();
-          break;
-        case LeaderboardTimeline.allTime:
-          companions = freshLearners
-              .map((dto) => AllTimeLeaderboardTableCompanion(
-                    id: Value(dto.id),
-                    rank: Value(dto.rank),
-                    name: Value(dto.name),
-                    avatar: Value(dto.avatar),
-                    points: Value(dto.points),
-                    coursesCompleted: Value(dto.coursesCompleted),
-                    streakDays: Value(dto.streakDays),
-                    page: Value(page),
-                  ))
-              .toList();
-          break;
+      final companions = <Insertable>[];
+      for (final dto in freshLearners) {
+        switch (timeline) {
+          case LeaderboardTimeline.thisWeek:
+            companions.add(dto.toWeeklyCompanion(page));
+            break;
+          case LeaderboardTimeline.thisMonth:
+            companions.add(dto.toMonthlyCompanion(page));
+            break;
+          case LeaderboardTimeline.allTime:
+            companions.add(dto.toAllTimeCompanion(page));
+            break;
+        }
       }
 
       await _db.saveLeaderboardPage(
@@ -136,7 +55,7 @@ class LeaderboardRepository {
         rows: companions,
       );
     } catch (e) {
-      debugPrint('DEBUG: Failed to fetch leaderboard ($timeline): $e');
+      debugPrint('LeaderboardRepository: Failed to refresh leaderboard ($timeline): $e');
     }
   }
 }
@@ -149,4 +68,105 @@ Future<LeaderboardRepository> leaderboardRepository(LeaderboardRepositoryRef ref
     dataSource: dataSource,
     db: db,
   );
+}
+
+// ── Private Mapping Helpers ───────────────────────────────────────────────────
+// These extensions isolate the tedious field-by-field mapping from repository
+// business logic. Adding or renaming a column only requires updating here.
+
+LearnerDto _buildDto({
+  required String id,
+  required int rank,
+  required String name,
+  required String? avatar,
+  required double points,
+  required int coursesCompleted,
+  required int streakDays,
+}) =>
+    LearnerDto(
+      id: id,
+      rank: rank,
+      name: name,
+      avatar: avatar ?? '',
+      points: points,
+      coursesCompleted: coursesCompleted,
+      streakDays: streakDays,
+    );
+
+// ── Database Row → Domain DTO ─────────────────────────────────────────────────
+
+extension on WeeklyLeaderboardData {
+  LearnerDto toDto() => _buildDto(
+        id: id,
+        rank: rank,
+        name: name,
+        avatar: avatar,
+        points: points,
+        coursesCompleted: coursesCompleted,
+        streakDays: streakDays,
+      );
+}
+
+extension on MonthlyLeaderboardData {
+  LearnerDto toDto() => _buildDto(
+        id: id,
+        rank: rank,
+        name: name,
+        avatar: avatar,
+        points: points,
+        coursesCompleted: coursesCompleted,
+        streakDays: streakDays,
+      );
+}
+
+extension on AllTimeLeaderboardData {
+  LearnerDto toDto() => _buildDto(
+        id: id,
+        rank: rank,
+        name: name,
+        avatar: avatar,
+        points: points,
+        coursesCompleted: coursesCompleted,
+        streakDays: streakDays,
+      );
+}
+
+// ── Domain DTO → Database Companion ──────────────────────────────────────────
+
+extension on LearnerDto {
+  WeeklyLeaderboardTableCompanion toWeeklyCompanion(int page) =>
+      WeeklyLeaderboardTableCompanion(
+        id: Value(id),
+        rank: Value(rank),
+        name: Value(name),
+        avatar: Value(avatar),
+        points: Value(points),
+        coursesCompleted: Value(coursesCompleted),
+        streakDays: Value(streakDays),
+        page: Value(page),
+      );
+
+  MonthlyLeaderboardTableCompanion toMonthlyCompanion(int page) =>
+      MonthlyLeaderboardTableCompanion(
+        id: Value(id),
+        rank: Value(rank),
+        name: Value(name),
+        avatar: Value(avatar),
+        points: Value(points),
+        coursesCompleted: Value(coursesCompleted),
+        streakDays: Value(streakDays),
+        page: Value(page),
+      );
+
+  AllTimeLeaderboardTableCompanion toAllTimeCompanion(int page) =>
+      AllTimeLeaderboardTableCompanion(
+        id: Value(id),
+        rank: Value(rank),
+        name: Value(name),
+        avatar: Value(avatar),
+        points: Value(points),
+        coursesCompleted: Value(coursesCompleted),
+        streakDays: Value(streakDays),
+        page: Value(page),
+      );
 }

@@ -113,6 +113,13 @@ Future<List<LearnerDto>> fetchLeaderboard({
   }
   ```
 
+### 9. Private Extension Pattern for DTO Mapping
+- **Rationale**: Because Drift generates three distinct data classes (`WeeklyLeaderboardData`, `MonthlyLeaderboardData`, `AllTimeLeaderboardData`) from the shared `LeaderboardColumns` mixin, naïve mapping requires copy-pasting the same field assignments three times — both for reading (row → `LearnerDto`) and writing (`LearnerDto` → companion). Private Dart extensions at the bottom of `leaderboard_repository.dart` isolate this boilerplate completely from the repository's business logic.
+- **Pattern**:
+  - `extension on WeeklyLeaderboardData` / `MonthlyLeaderboardData` / `AllTimeLeaderboardData` each expose `.toDto()` — all delegate to a shared private `_buildDto()` function.
+  - `extension on LearnerDto` exposes `.toWeeklyCompanion(page)`, `.toMonthlyCompanion(page)`, `.toAllTimeCompanion(page)`.
+- **Benefit**: Adding or renaming a column requires a change in exactly one place (the extensions), with zero impact on `watchLeaderboard` or `refreshLeaderboard`.
+
 ## Risks / Trade-offs
 
 - **Risk**: Database migrations for existing users who already have `LearnersTable`.
