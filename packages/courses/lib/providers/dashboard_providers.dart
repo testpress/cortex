@@ -11,10 +11,11 @@ part 'dashboard_providers.g.dart';
 @riverpod
 Future<void> dashboardBootstrap(Ref ref) async {
   final repository = await ref.watch(dashboardRepositoryProvider.future);
+  final leaderboardRepository = await ref.watch(leaderboardRepositoryProvider.future);
   
   await Future.wait([
     repository.refreshHeroBanners(),
-    repository.refreshLearners(),
+    leaderboardRepository.refreshLeaderboard(LeaderboardTimeline.thisWeek),
     repository.refreshWhatsNewFeed(),
     repository.refreshResumeLearningFeed(),
     repository.refreshRecentlyCompletedFeed(),
@@ -60,9 +61,13 @@ Future<List<DashboardBannerDto>> promotionBanners(Ref ref) async {
 }
 
 @riverpod
-Stream<List<LearnerDto>> learners(Ref ref) async* {
-  final repository = await ref.watch(dashboardRepositoryProvider.future);
-  yield* repository.watchLearners();
+Stream<List<LearnerDto>> learners(
+  Ref ref, {
+  LeaderboardTimeline timeline = LeaderboardTimeline.thisWeek,
+  int? limit,
+}) async* {
+  final repository = await ref.watch(leaderboardRepositoryProvider.future);
+  yield* repository.watchLeaderboard(timeline, limit: limit);
 }
 
 @riverpod

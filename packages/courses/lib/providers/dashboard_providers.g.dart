@@ -7,7 +7,7 @@ part of 'dashboard_providers.dart';
 // **************************************************************************
 
 String _$dashboardBootstrapHash() =>
-    r'bcafc95b7140edd809903a317274e0ac052b77c4';
+    r'02cd49e31a0858a811708b359dff8a6c68291928';
 
 /// See also [dashboardBootstrap].
 @ProviderFor(dashboardBootstrap)
@@ -131,22 +131,174 @@ final promotionBannersProvider =
 // ignore: unused_element
 typedef PromotionBannersRef
     = AutoDisposeFutureProviderRef<List<DashboardBannerDto>>;
-String _$learnersHash() => r'8a404337f6c8195a3af2fa4d91deecd77b10c82d';
+String _$learnersHash() => r'b9222aef15875e6bc5f67b0c8da9e1f8995f7b16';
+
+/// Copied from Dart SDK
+class _SystemHash {
+  _SystemHash._();
+
+  static int combine(int hash, int value) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + value);
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
+    return hash ^ (hash >> 6);
+  }
+
+  static int finish(int hash) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
+    // ignore: parameter_assignments
+    hash = hash ^ (hash >> 11);
+    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
+  }
+}
 
 /// See also [learners].
 @ProviderFor(learners)
-final learnersProvider = AutoDisposeStreamProvider<List<LearnerDto>>.internal(
-  learners,
-  name: r'learnersProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$learnersHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+const learnersProvider = LearnersFamily();
+
+/// See also [learners].
+class LearnersFamily extends Family<AsyncValue<List<LearnerDto>>> {
+  /// See also [learners].
+  const LearnersFamily();
+
+  /// See also [learners].
+  LearnersProvider call({
+    LeaderboardTimeline timeline = LeaderboardTimeline.thisWeek,
+    int? limit,
+  }) {
+    return LearnersProvider(
+      timeline: timeline,
+      limit: limit,
+    );
+  }
+
+  @override
+  LearnersProvider getProviderOverride(
+    covariant LearnersProvider provider,
+  ) {
+    return call(
+      timeline: provider.timeline,
+      limit: provider.limit,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'learnersProvider';
+}
+
+/// See also [learners].
+class LearnersProvider extends AutoDisposeStreamProvider<List<LearnerDto>> {
+  /// See also [learners].
+  LearnersProvider({
+    LeaderboardTimeline timeline = LeaderboardTimeline.thisWeek,
+    int? limit,
+  }) : this._internal(
+          (ref) => learners(
+            ref as LearnersRef,
+            timeline: timeline,
+            limit: limit,
+          ),
+          from: learnersProvider,
+          name: r'learnersProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$learnersHash,
+          dependencies: LearnersFamily._dependencies,
+          allTransitiveDependencies: LearnersFamily._allTransitiveDependencies,
+          timeline: timeline,
+          limit: limit,
+        );
+
+  LearnersProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.timeline,
+    required this.limit,
+  }) : super.internal();
+
+  final LeaderboardTimeline timeline;
+  final int? limit;
+
+  @override
+  Override overrideWith(
+    Stream<List<LearnerDto>> Function(LearnersRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: LearnersProvider._internal(
+        (ref) => create(ref as LearnersRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        timeline: timeline,
+        limit: limit,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<List<LearnerDto>> createElement() {
+    return _LearnersProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is LearnersProvider &&
+        other.timeline == timeline &&
+        other.limit == limit;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, timeline.hashCode);
+    hash = _SystemHash.combine(hash, limit.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef LearnersRef = AutoDisposeStreamProviderRef<List<LearnerDto>>;
+mixin LearnersRef on AutoDisposeStreamProviderRef<List<LearnerDto>> {
+  /// The parameter `timeline` of this provider.
+  LeaderboardTimeline get timeline;
+
+  /// The parameter `limit` of this provider.
+  int? get limit;
+}
+
+class _LearnersProviderElement
+    extends AutoDisposeStreamProviderElement<List<LearnerDto>>
+    with LearnersRef {
+  _LearnersProviderElement(super.provider);
+
+  @override
+  LeaderboardTimeline get timeline => (origin as LearnersProvider).timeline;
+  @override
+  int? get limit => (origin as LearnersProvider).limit;
+}
+
 String _$quickShortcutsHash() => r'ba6b6c2b269ef7d8f60a4f782a9e8fbb1b2d24a6';
 
 /// See also [quickShortcuts].

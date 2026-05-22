@@ -35,9 +35,11 @@ export 'models/bookmark_dto.dart';
 
 // Database
 export 'db/tables/dashboard_tables.dart';
+export 'db/tables/leaderboard_tables.dart';
 export 'db/app_database.dart';
 export 'repositories/dashboard_repository.dart';
 export 'repositories/downloads_repository.dart';
+export 'repositories/leaderboard_repository.dart';
 export 'db/database_provider.dart';
 
 // Auth

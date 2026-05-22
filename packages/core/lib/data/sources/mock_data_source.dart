@@ -893,7 +893,11 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<List<LearnerDto>> getLearners() async {
+  Future<List<LearnerDto>> fetchLeaderboard({
+    required LeaderboardTimeline timeline,
+    int limit = 10,
+    int page = 1,
+  }) async {
     await Future.delayed(const Duration(milliseconds: 300));
     return mockLearners;
   }
