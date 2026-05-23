@@ -103,7 +103,10 @@ class DashboardDrawer extends ConsumerWidget {
             AppDrawerItem(
               icon: LucideIcons.lock,
               label: l10n.drawerLoginActivity,
-              action: () {},
+              action: () {
+                ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                context.push('/profile/login-activity');
+              },
             ),
             AppDrawerItem(
               icon: LucideIcons.logOut,

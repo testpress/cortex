@@ -13,6 +13,7 @@ export 'screens/certificates_screen.dart';
 export 'screens/certificate_preview_screen.dart';
 export 'screens/app_settings_screen.dart';
 export 'screens/edit_profile_screen.dart';
+export 'screens/login_activity_screen.dart';
 export 'providers/profile_providers.dart';
 export 'providers/user_provider.dart';
 export 'providers/notification_preferences_provider.dart';
