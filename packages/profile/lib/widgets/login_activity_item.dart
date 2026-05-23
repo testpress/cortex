@@ -25,7 +25,7 @@ class LoginActivityItem extends StatelessWidget {
     final design = Design.of(context);
     final l10n = L10n.of(context);
     
-    final formattedDate = DateFormat('MMM d, yyyy, h:mm a').format(activity.lastUsed);
+    final formattedDate = DateFormat.yMMMd().add_jm().format(activity.lastUsed);
 
     return Container(
       padding: EdgeInsets.all(design.spacing.md),
