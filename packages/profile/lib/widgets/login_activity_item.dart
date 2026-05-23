@@ -25,7 +25,9 @@ class LoginActivityItem extends StatelessWidget {
     final design = Design.of(context);
     final l10n = L10n.of(context);
     
-    final formattedDate = DateFormat.yMMMd().add_jm().format(activity.lastUsed);
+    final date = DateFormat.yMMMd().format(activity.lastUsed);
+    final time = DateFormat.jm().format(activity.lastUsed);
+    final formattedDate = '$date, $time';
 
     return Container(
       padding: EdgeInsets.all(design.spacing.md),
