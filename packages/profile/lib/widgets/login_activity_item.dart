@@ -23,6 +23,7 @@ class LoginActivityItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     
     final formattedDate = DateFormat('MMM d, yyyy, h:mm a').format(activity.lastUsed);
 
@@ -73,7 +74,7 @@ class LoginActivityItem extends StatelessWidget {
                           borderRadius: BorderRadius.circular(design.radius.sm),
                         ),
                         child: AppText.labelSmall(
-                          'Current Device',
+                          l10n.loginActivityCurrentDevice,
                           color: design.colors.primary,
                         ),
                       ),

@@ -19,3 +19,9 @@
 
 - [x] 4.1 Register `LoginActivityScreen` route in the application router
 - [x] 4.2 Add "Login Activity" navigation entry to the App Drawer
+
+## 5. Logout Devices
+
+- [x] 5.1 Add `logoutOtherDevices` method to the Auth architecture (`AuthApiService`, `AuthRepository`, `AuthProvider`) targeting `POST /api/v2.4/auth/logout_devices/`.
+- [x] 5.2 Add a static "Logout other devices" button at the bottom of `LoginActivityScreen`.
+- [x] 5.3 Connect the button to the auth provider, displaying appropriate loading states and success toasts, then refreshing the list.

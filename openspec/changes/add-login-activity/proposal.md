@@ -8,6 +8,7 @@ Users need visibility into their active and past login sessions for security and
 - Implement a screen to fetch and display login activity from the `https://elearn.brilliantpala.org/api/v2.3/me/login_activity/` endpoint.
 - Display each session as a list item with details: OS, browser, location, IP address, and last used timestamp.
 - Indicate the "current device" if applicable.
+- Add a "Logout other devices" action to allow users to securely terminate active mobile sessions remotely.
 - The data will be fetched on demand, properly paginated, and not persisted in the local database.
 
 ## Capabilities

@@ -69,6 +69,14 @@ class AuthApiService {
     );
   }
 
+  Future<void> logoutOtherDevices({String? authToken}) {
+    return _post(
+      ApiEndpoints.logoutDevices,
+      const <String, dynamic>{},
+      authToken: authToken,
+    );
+  }
+
   Future<void> resetPassword({required String email}) {
     return _post(ApiEndpoints.resetPassword, {'email': email});
   }

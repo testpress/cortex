@@ -376,6 +376,15 @@ class MockAuthApiService extends _i1.Mock implements _i2.AuthApiService {
           as _i6.Future<void>);
 
   @override
+  _i6.Future<void> logoutOtherDevices({String? authToken}) =>
+      (super.noSuchMethod(
+            Invocation.method(#logoutOtherDevices, [], {#authToken: authToken}),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
   _i6.Future<void> resetPassword({required String? email}) =>
       (super.noSuchMethod(
             Invocation.method(#resetPassword, [], {#email: email}),

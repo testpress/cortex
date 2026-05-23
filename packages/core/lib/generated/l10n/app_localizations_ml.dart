@@ -1643,4 +1643,22 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get leaderboardYouSuffix => ' (നിങ്ങൾ)';
+
+  @override
+  String get loginActivityCurrentDevice => 'നിലവിലെ ഉപകരണം';
+
+  @override
+  String get loginActivityNoActivityFound =>
+      'ലോഗിൻ ആക്റ്റിവിറ്റിയൊന്നും കണ്ടെത്തിയില്ല';
+
+  @override
+  String get loginActivityLogoutOtherDevices =>
+      'മറ്റ് ഉപകരണങ്ങളിൽ നിന്ന് ലോഗൗട്ട് ചെയ്യുക';
+
+  @override
+  String get loginActivityLogoutSuccess =>
+      'മറ്റ് ഉപകരണങ്ങളിൽ നിന്ന് വിജയകരമായി ലോഗൗട്ട് ചെയ്തു';
+
+  @override
+  String get loginActivityLogoutFailed => 'ലോഗൗട്ട് പരാജയപ്പെട്ടു';
 }

@@ -554,5 +554,10 @@
   "leaderboardErrorLoading": "خطأ في تحميل قائمة المتصدرين",
   "leaderboardNoCompetitorsFound": "لم يتم العثور على منافسين",
   "leaderboardErrorLoadingCompetitors": "خطأ في تحميل المنافسين",
-  "leaderboardYouSuffix": " (أنت)"
+  "leaderboardYouSuffix": " (أنت)",
+  "loginActivityCurrentDevice": "الجهاز الحالي",
+  "loginActivityNoActivityFound": "لا يوجد نشاط تسجيل دخول",
+  "loginActivityLogoutOtherDevices": "تسجيل الخروج من الأجهزة الأخرى",
+  "loginActivityLogoutSuccess": "تم تسجيل الخروج من الأجهزة الأخرى بنجاح",
+  "loginActivityLogoutFailed": "فشل تسجيل الخروج"
 }

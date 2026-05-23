@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../widgets/login_activity_item.dart';
 import '../providers/profile_providers.dart';
 
@@ -20,6 +22,7 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
   String? _error;
   int _currentPage = 1;
   bool _hasMore = true;
+  bool _isLoggingOut = false;
 
   @override
   void initState() {
@@ -60,6 +63,21 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
     }
   }
 
+  Future<void> _refreshData() async {
+    final repo = await ref.read(userRepositoryProvider.future);
+    final newItems = await repo.getLoginActivity(page: 1);
+    
+    if (mounted) {
+      setState(() {
+        _currentPage = 1;
+        _activities.clear();
+        _activities.addAll(newItems.results);
+        _hasMore = newItems.next != null;
+        _error = null;
+      });
+    }
+  }
+
   Future<void> _fetchMore() async {
     setState(() {
       _isLoadingMore = true;
@@ -67,11 +85,12 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
     });
 
     try {
-      _currentPage++;
+      final nextPage = _currentPage + 1;
       final repo = await ref.read(userRepositoryProvider.future);
-      final newItems = await repo.getLoginActivity(page: _currentPage);
+      final newItems = await repo.getLoginActivity(page: nextPage);
       
       setState(() {
+        _currentPage = nextPage;
         _activities.addAll(newItems.results);
         _hasMore = newItems.next != null;
         _isLoadingMore = false;
@@ -81,6 +100,29 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
         _error = e.toString();
         _isLoadingMore = false;
       });
+    }
+  }
+
+  Future<void> _logoutDevices() async {
+    if (_isLoggingOut) return;
+    setState(() => _isLoggingOut = true);
+    
+    try {
+      await ref.read(authProvider.notifier).logoutOtherDevices();
+      if (mounted) {
+        AppToast.show(context, message: L10n.of(context).loginActivityLogoutSuccess);
+        _currentPage = 1;
+        _activities.clear();
+        _fetchData();
+      }
+    } catch (e) {
+      if (mounted) {
+        AppToast.show(context, message: '${L10n.of(context).loginActivityLogoutFailed}: $e');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoggingOut = false);
+      }
     }
   }
 
@@ -118,7 +160,7 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
+                      onTap: () => context.pop(),
                       behavior: HitTestBehavior.opaque,
                       child: Padding(
                         padding: const EdgeInsets.only(top: 2),
@@ -143,9 +185,16 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
             
             // Content
             Expanded(
-              child: _isLoading
-                  ? Center(child: AppLoadingIndicator(color: design.colors.primary))
-                  : _error != null && _activities.isEmpty
+              child: SkeletonizerConfig(
+                data: SkeletonizerConfigData(
+                  effect: ShimmerEffect(
+                    baseColor: design.colors.surfaceVariant,
+                    highlightColor: const Color(0xFFFFFFFF),
+                  ),
+                ),
+                child: Skeletonizer(
+                  enabled: _isLoading,
+                  child: _error != null && _activities.isEmpty
                       ? Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -153,39 +202,93 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
                               AppText.body(_error!, color: design.colors.error),
                               SizedBox(height: design.spacing.md),
                               AppButton.secondary(
-                                label: 'Retry',
+                                label: l10n.labelRetry,
                                 onPressed: _fetchData,
                               ),
                             ],
                           ),
                         )
-                      : _activities.isEmpty
+                      : (_activities.isEmpty && !_isLoading)
                           ? Center(
                               child: AppText.body(
-                                'No login activity found',
+                                l10n.loginActivityNoActivityFound,
                                 color: design.colors.textSecondary,
                               ),
                             )
-                          : ListView.builder(
+                          : CustomScrollView(
                               controller: _scrollController,
-                              padding: EdgeInsets.all(design.spacing.md),
-                              itemCount: _activities.length + (_isLoadingMore ? 1 : 0),
-                              itemBuilder: (context, index) {
-                                if (index < _activities.length) {
-                                  return LoginActivityItem(activity: _activities[index]);
-                                }
-                                return Padding(
-                                  padding: EdgeInsets.symmetric(vertical: design.spacing.md),
-                                  child: Center(
-                                    child: AppLoadingIndicator(color: design.colors.primary),
+                              physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                              slivers: [
+                                CupertinoSliverRefreshControl(
+                                  onRefresh: _refreshData,
+                                  builder: (context, refreshState, pulledExtent, refreshTriggerPullDistance, refreshIndicatorExtent) {
+                                    return Opacity(
+                                      opacity: (pulledExtent / refreshTriggerPullDistance).clamp(0.0, 1.0),
+                                      child: Center(
+                                        child: AppLoadingIndicator(color: design.colors.primary),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                SliverPadding(
+                                  padding: EdgeInsets.all(design.spacing.md),
+                                  sliver: SliverList.builder(
+                                    itemCount: _isLoading ? 4 : (_activities.length + (_isLoadingMore ? 1 : 0)),
+                                    itemBuilder: (context, index) {
+                                      if (_isLoading) {
+                                        return LoginActivityItem(activity: _skeletonActivity);
+                                      }
+                                      if (index < _activities.length) {
+                                        return LoginActivityItem(activity: _activities[index]);
+                                      }
+                                      return Padding(
+                                        padding: EdgeInsets.symmetric(vertical: design.spacing.md),
+                                        child: Center(
+                                          child: AppLoadingIndicator(color: design.colors.primary),
+                                        ),
+                                      );
+                                    },
                                   ),
-                                );
-                              },
+                                ),
+                              ],
                             ),
+                ),
+              ),
             ),
+
+            // Static Logout Button
+            if (_activities.isNotEmpty && !_isLoading && _error == null)
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(design.spacing.md),
+                decoration: BoxDecoration(
+                  color: design.colors.surface,
+                ),
+                child: AppButton.primary(
+                  label: l10n.loginActivityLogoutOtherDevices,
+                  fullWidth: true,
+                  loading: _isLoggingOut,
+                  backgroundColor: design.colors.error,
+                  foregroundColor: design.colors.onError,
+                  onPressed: _logoutDevices,
+                ),
+              ),
           ],
         ),
       ),
     );
   }
 }
+
+final _skeletonActivity = LoginActivityDto(
+  id: 0,
+  userAgent: 'Mozilla/5.0...',
+  ipAddress: '192.168.1.1',
+  device: 'Mobile',
+  deviceName: 'Device placeholder',
+  browser: 'Browser placeholder',
+  os: 'OS placeholder',
+  lastUsed: DateTime.now(),
+  location: 'Location placeholder',
+  currentDevice: false,
+);

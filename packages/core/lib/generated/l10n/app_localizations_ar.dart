@@ -1616,4 +1616,21 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get leaderboardYouSuffix => ' (أنت)';
+
+  @override
+  String get loginActivityCurrentDevice => 'الجهاز الحالي';
+
+  @override
+  String get loginActivityNoActivityFound => 'لا يوجد نشاط تسجيل دخول';
+
+  @override
+  String get loginActivityLogoutOtherDevices =>
+      'تسجيل الخروج من الأجهزة الأخرى';
+
+  @override
+  String get loginActivityLogoutSuccess =>
+      'تم تسجيل الخروج من الأجهزة الأخرى بنجاح';
+
+  @override
+  String get loginActivityLogoutFailed => 'فشل تسجيل الخروج';
 }

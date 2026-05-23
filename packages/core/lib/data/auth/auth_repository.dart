@@ -70,6 +70,11 @@ class AuthRepository {
     }
   }
 
+  Future<void> logoutOtherDevices() async {
+    final token = await _localDataSource.getToken();
+    await _apiService.logoutOtherDevices(authToken: token);
+  }
+
   Future<void> resetPassword({required String email}) {
     return _apiService.resetPassword(email: email);
   }

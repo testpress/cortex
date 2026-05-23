@@ -1606,4 +1606,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get leaderboardYouSuffix => ' (You)';
+
+  @override
+  String get loginActivityCurrentDevice => 'Current Device';
+
+  @override
+  String get loginActivityNoActivityFound => 'No login activity found';
+
+  @override
+  String get loginActivityLogoutOtherDevices => 'Logout other devices';
+
+  @override
+  String get loginActivityLogoutSuccess =>
+      'Successfully logged out of other devices';
+
+  @override
+  String get loginActivityLogoutFailed => 'Failed to logout';
 }

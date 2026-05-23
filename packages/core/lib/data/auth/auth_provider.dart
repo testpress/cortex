@@ -81,6 +81,10 @@ class Auth extends _$Auth {
       rethrow;
     }
   }
+
+  Future<void> logoutOtherDevices() async {
+    await _repository.logoutOtherDevices();
+  }
 }
 
 

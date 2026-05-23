@@ -793,5 +793,10 @@
   "leaderboardErrorLoading": "Error loading leaderboard",
   "leaderboardNoCompetitorsFound": "No competitors found",
   "leaderboardErrorLoadingCompetitors": "Error loading competitors",
-  "leaderboardYouSuffix": " (You)"
+  "leaderboardYouSuffix": " (You)",
+  "loginActivityCurrentDevice": "Current Device",
+  "loginActivityNoActivityFound": "No login activity found",
+  "loginActivityLogoutOtherDevices": "Logout other devices",
+  "loginActivityLogoutSuccess": "Successfully logged out of other devices",
+  "loginActivityLogoutFailed": "Failed to logout"
 }
