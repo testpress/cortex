@@ -95,18 +95,15 @@ class LeaderboardRepository {
     competitors.add(myRankData.copyWith(isCurrentUser: true));
 
     // Threats (Below)
-    int currentThreatRank = currentUserRank;
-    for (int i = 0; i < threatsData.length; i++) {
-      final threatData = threatsData[i];
+    double lastTrophies = currentUserTrophies;
+    int lastRank = currentUserRank;
+    for (final threatData in threatsData) {
       final threatTrophies = threatData.points;
-      
-      if (threatTrophies == currentUserTrophies) {
-        // Tied
-        competitors.add(threatData.copyWith(rank: currentUserRank));
-      } else {
-        currentThreatRank++;
-        competitors.add(threatData.copyWith(rank: currentThreatRank));
+      if (threatTrophies != lastTrophies) {
+        lastRank++;
+        lastTrophies = threatTrophies;
       }
+      competitors.add(threatData.copyWith(rank: lastRank));
     }
 
     return competitors;
