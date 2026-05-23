@@ -259,6 +259,36 @@ class HttpDataSource implements DataSource {
   }
 
   @override
+  Future<LearnerDto> fetchMyRank() async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.myRank),
+      fromJson: (data) => LearnerDto.fromJson(data as Map<String, dynamic>, data['rank'] as int? ?? 0),
+    );
+  }
+
+  @override
+  Future<List<LearnerDto>> fetchCompetitorTargets() async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.competitorTargets),
+      fromJson: (data) {
+        final list = data is List ? data : (data['results'] as List? ?? []);
+        return list.map((e) => LearnerDto.fromJson(e as Map<String, dynamic>, 0)).toList();
+      },
+    );
+  }
+
+  @override
+  Future<List<LearnerDto>> fetchCompetitorThreats() async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.competitorThreats),
+      fromJson: (data) {
+        final list = data is List ? data : (data['results'] as List? ?? []);
+        return list.map((e) => LearnerDto.fromJson(e as Map<String, dynamic>, 0)).toList();
+      },
+    );
+  }
+
+  @override
   Future<DashboardContentsDto> getWhatsNewFeed(DashboardSectionType sectionType) async {
     return performNetworkRequest(
       _dio.get(ApiEndpoints.whatsNewFeed),

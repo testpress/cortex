@@ -1609,4 +1609,38 @@ class AppLocalizationsMl extends AppLocalizations {
   String lessonSpecializedViewerRequired(String type) {
     return '$type-ന് പ്രത്യേക വ്യൂവർ ആവശ്യമാണ്';
   }
+
+  @override
+  String get leaderboardTitle => 'ലീഡർബോർഡ്';
+
+  @override
+  String get leaderboardRankListTab => 'റാങ്ക് ലിസ്റ്റ്';
+
+  @override
+  String get leaderboardCompetitorsTab => 'മത്സരാർത്ഥികൾ';
+
+  @override
+  String get leaderboardTimelineThisWeek => 'ഈ ആഴ്ച';
+
+  @override
+  String get leaderboardTimelineThisMonth => 'ഈ മാസം';
+
+  @override
+  String get leaderboardTimelineAllTime => 'എക്കാലത്തെയും';
+
+  @override
+  String get leaderboardNoLearnersFound => 'പഠിതാക്കളെ കണ്ടെത്തിയില്ല';
+
+  @override
+  String get leaderboardErrorLoading => 'ലീഡർബോർഡ് ലോഡ് ചെയ്യുന്നതിൽ പിശക്';
+
+  @override
+  String get leaderboardNoCompetitorsFound => 'മത്സരാർത്ഥികളെ കണ്ടെത്തിയില്ല';
+
+  @override
+  String get leaderboardErrorLoadingCompetitors =>
+      'മത്സരാർത്ഥികളെ ലോഡ് ചെയ്യുന്നതിൽ പിശക്';
+
+  @override
+  String get leaderboardYouSuffix => ' (നിങ്ങൾ)';
 }

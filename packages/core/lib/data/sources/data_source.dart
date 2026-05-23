@@ -75,6 +75,15 @@ abstract class DataSource {
     int page = 1,
   });
 
+  /// Fetch the authenticated user's current rank and leaderboard stats.
+  Future<LearnerDto> fetchMyRank();
+
+  /// Fetch users strictly ranked above the current user.
+  Future<List<LearnerDto>> fetchCompetitorTargets();
+
+  /// Fetch users ranked equal to or below the current user.
+  Future<List<LearnerDto>> fetchCompetitorThreats();
+
   /// Fetch the latest content updates from `/api/v2.4/whats-new/`.
   Future<DashboardContentsDto> getWhatsNewFeed(DashboardSectionType sectionType);
 

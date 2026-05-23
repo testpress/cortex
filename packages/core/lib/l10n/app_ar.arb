@@ -543,5 +543,16 @@
     "placeholders": {
       "type": { "type": "String" }
     }
-  }
+  },
+  "leaderboardTitle": "المتصدرون",
+  "leaderboardRankListTab": "قائمة الرتب",
+  "leaderboardCompetitorsTab": "المنافسون",
+  "leaderboardTimelineThisWeek": "هذا الأسبوع",
+  "leaderboardTimelineThisMonth": "هذا الشهر",
+  "leaderboardTimelineAllTime": "كل الوقت",
+  "leaderboardNoLearnersFound": "لم يتم العثور على متعلمين",
+  "leaderboardErrorLoading": "خطأ في تحميل قائمة المتصدرين",
+  "leaderboardNoCompetitorsFound": "لم يتم العثور على منافسين",
+  "leaderboardErrorLoadingCompetitors": "خطأ في تحميل المنافسين",
+  "leaderboardYouSuffix": " (أنت)"
 }

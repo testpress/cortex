@@ -1583,4 +1583,37 @@ class AppLocalizationsAr extends AppLocalizations {
   String lessonSpecializedViewerRequired(String type) {
     return 'مطلوب عارض متخصص لـ $type';
   }
+
+  @override
+  String get leaderboardTitle => 'المتصدرون';
+
+  @override
+  String get leaderboardRankListTab => 'قائمة الرتب';
+
+  @override
+  String get leaderboardCompetitorsTab => 'المنافسون';
+
+  @override
+  String get leaderboardTimelineThisWeek => 'هذا الأسبوع';
+
+  @override
+  String get leaderboardTimelineThisMonth => 'هذا الشهر';
+
+  @override
+  String get leaderboardTimelineAllTime => 'كل الوقت';
+
+  @override
+  String get leaderboardNoLearnersFound => 'لم يتم العثور على متعلمين';
+
+  @override
+  String get leaderboardErrorLoading => 'خطأ في تحميل قائمة المتصدرين';
+
+  @override
+  String get leaderboardNoCompetitorsFound => 'لم يتم العثور على منافسين';
+
+  @override
+  String get leaderboardErrorLoadingCompetitors => 'خطأ في تحميل المنافسين';
+
+  @override
+  String get leaderboardYouSuffix => ' (أنت)';
 }

@@ -903,6 +903,30 @@ class MockDataSource implements DataSource {
   }
 
   @override
+  Future<LearnerDto> fetchMyRank() async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    return const LearnerDto(id: 'me', rank: 150, name: 'Current User', avatar: '', points: 450, coursesCompleted: 8, streakDays: 3);
+  }
+
+  @override
+  Future<List<LearnerDto>> fetchCompetitorTargets() async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    return const [
+      LearnerDto(id: 'c1', rank: 0, name: 'Target 1', avatar: '', points: 500, coursesCompleted: 10, streakDays: 5),
+      LearnerDto(id: 'c2', rank: 0, name: 'Target 2', avatar: '', points: 480, coursesCompleted: 9, streakDays: 4),
+    ];
+  }
+
+  @override
+  Future<List<LearnerDto>> fetchCompetitorThreats() async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    return const [
+      LearnerDto(id: 'c3', rank: 0, name: 'Threat 1', avatar: '', points: 420, coursesCompleted: 7, streakDays: 2),
+      LearnerDto(id: 'c4', rank: 0, name: 'Threat 2', avatar: '', points: 400, coursesCompleted: 6, streakDays: 1),
+    ];
+  }
+
+  @override
   Future<DashboardContentsDto> getWhatsNewFeed(DashboardSectionType sectionType) async {
     await Future.delayed(const Duration(milliseconds: 400));
     return mockWhatsNewFeed;

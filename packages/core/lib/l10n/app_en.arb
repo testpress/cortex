@@ -782,5 +782,16 @@
     "placeholders": {
       "type": { "type": "String" }
     }
-  }
+  },
+  "leaderboardTitle": "Leaderboard",
+  "leaderboardRankListTab": "Rank List",
+  "leaderboardCompetitorsTab": "Competitors",
+  "leaderboardTimelineThisWeek": "This Week",
+  "leaderboardTimelineThisMonth": "This Month",
+  "leaderboardTimelineAllTime": "All Time",
+  "leaderboardNoLearnersFound": "No learners found",
+  "leaderboardErrorLoading": "Error loading leaderboard",
+  "leaderboardNoCompetitorsFound": "No competitors found",
+  "leaderboardErrorLoadingCompetitors": "Error loading competitors",
+  "leaderboardYouSuffix": " (You)"
 }

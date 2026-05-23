@@ -2882,6 +2882,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Specialized viewer required for {type}'**
   String lessonSpecializedViewerRequired(String type);
+
+  /// No description provided for @leaderboardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Leaderboard'**
+  String get leaderboardTitle;
+
+  /// No description provided for @leaderboardRankListTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Rank List'**
+  String get leaderboardRankListTab;
+
+  /// No description provided for @leaderboardCompetitorsTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Competitors'**
+  String get leaderboardCompetitorsTab;
+
+  /// No description provided for @leaderboardTimelineThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This Week'**
+  String get leaderboardTimelineThisWeek;
+
+  /// No description provided for @leaderboardTimelineThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This Month'**
+  String get leaderboardTimelineThisMonth;
+
+  /// No description provided for @leaderboardTimelineAllTime.
+  ///
+  /// In en, this message translates to:
+  /// **'All Time'**
+  String get leaderboardTimelineAllTime;
+
+  /// No description provided for @leaderboardNoLearnersFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No learners found'**
+  String get leaderboardNoLearnersFound;
+
+  /// No description provided for @leaderboardErrorLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading leaderboard'**
+  String get leaderboardErrorLoading;
+
+  /// No description provided for @leaderboardNoCompetitorsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No competitors found'**
+  String get leaderboardNoCompetitorsFound;
+
+  /// No description provided for @leaderboardErrorLoadingCompetitors.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading competitors'**
+  String get leaderboardErrorLoadingCompetitors;
+
+  /// No description provided for @leaderboardYouSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **' (You)'**
+  String get leaderboardYouSuffix;
 }
 
 class _AppLocalizationsDelegate

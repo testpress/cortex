@@ -1573,4 +1573,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String lessonSpecializedViewerRequired(String type) {
     return 'Specialized viewer required for $type';
   }
+
+  @override
+  String get leaderboardTitle => 'Leaderboard';
+
+  @override
+  String get leaderboardRankListTab => 'Rank List';
+
+  @override
+  String get leaderboardCompetitorsTab => 'Competitors';
+
+  @override
+  String get leaderboardTimelineThisWeek => 'This Week';
+
+  @override
+  String get leaderboardTimelineThisMonth => 'This Month';
+
+  @override
+  String get leaderboardTimelineAllTime => 'All Time';
+
+  @override
+  String get leaderboardNoLearnersFound => 'No learners found';
+
+  @override
+  String get leaderboardErrorLoading => 'Error loading leaderboard';
+
+  @override
+  String get leaderboardNoCompetitorsFound => 'No competitors found';
+
+  @override
+  String get leaderboardErrorLoadingCompetitors => 'Error loading competitors';
+
+  @override
+  String get leaderboardYouSuffix => ' (You)';
 }
