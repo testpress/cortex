@@ -99,3 +99,12 @@ The router SHALL use auth provider state to decide redirects for auth routes and
 - **WHEN** auth provider is in loading state during startup restoration
 - **THEN** router SHALL avoid premature redirect loops until state resolves
 
+### Requirement: Login activity navigation
+The system SHALL provide a navigation entry point to the Login Activity feature from within the main app drawer.
+
+#### Scenario: Navigate to login activity
+- **WHEN** the user opens the app drawer
+- **THEN** the system displays a "Login Activity" menu item
+- **WHEN** the user taps the "Login Activity" item
+- **THEN** the system navigates to the Login Activity screen.
+
