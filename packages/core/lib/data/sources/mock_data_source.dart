@@ -955,6 +955,41 @@ class MockDataSource implements DataSource {
   }
 
   @override
+  Future<PaginatedLoginActivityDto> getLoginActivity({int page = 1}) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return PaginatedLoginActivityDto(
+      count: 2,
+      perPage: 20,
+      results: [
+        LoginActivityDto(
+          id: 11245579,
+          userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',
+          ipAddress: '122.178.92.74',
+          device: 'PC',
+          deviceName: 'Chrome',
+          browser: 'Chrome',
+          os: 'Mac OS X',
+          lastUsed: DateTime.parse('2026-05-23T08:58:46.800545Z'),
+          location: 'India',
+          currentDevice: true,
+        ),
+        LoginActivityDto(
+          id: 11245566,
+          userAgent: 'flutter-app/0.1.0 (I2126; Android 14)',
+          ipAddress: '122.178.92.74',
+          device: 'Android/iOS App',
+          deviceName: 'Smartphone',
+          browser: 'Other',
+          os: 'Android',
+          lastUsed: DateTime.parse('2026-05-23T09:24:18.602268Z'),
+          location: 'India',
+          currentDevice: false,
+        ),
+      ],
+    );
+  }
+
+  @override
   Future<UserDto> updateProfile(
     Map<String, dynamic> data,
   ) async {

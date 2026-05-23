@@ -38,4 +38,9 @@ class UserRepository {
     final updated = await _source.updateProfile(data);
     await _db.upsertUser(updated.toCompanion());
   }
+
+  /// Fetches paginated login activity for the authenticated user.
+  Future<PaginatedLoginActivityDto> getLoginActivity({int page = 1}) {
+    return _source.getLoginActivity(page: page);
+  }
 }

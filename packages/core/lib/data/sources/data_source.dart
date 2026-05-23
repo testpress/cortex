@@ -139,6 +139,9 @@ abstract class DataSource {
   /// Update the authenticated user's profile with the given fields (supports multipart image updates).
   Future<UserDto> updateProfile(Map<String, dynamic> data);
   
+  /// Fetch the authenticated user's login activity.
+  Future<PaginatedLoginActivityDto> getLoginActivity({int page = 1});
+  
   /// Fetch personal doubts for the current user.
   Future<List<DoubtDto>> getDoubts();
 

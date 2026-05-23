@@ -322,6 +322,19 @@ class HttpDataSource implements DataSource {
   }
 
   @override
+  Future<PaginatedLoginActivityDto> getLoginActivity({int page = 1}) async {
+    return performNetworkRequest(
+      _dio.get(
+        ApiEndpoints.loginActivity,
+        queryParameters: {
+          'page': page,
+        },
+      ),
+      fromJson: (data) => PaginatedLoginActivityDto.fromJson(data as Map<String, dynamic>),
+    );
+  }
+
+  @override
   Future<UserDto> getProfile() async {
     return performNetworkRequest(
       _dio.get(ApiEndpoints.userProfile),

@@ -2948,6 +2948,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **' (You)'**
   String get leaderboardYouSuffix;
+
+  /// No description provided for @loginActivityCurrentDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Device'**
+  String get loginActivityCurrentDevice;
+
+  /// No description provided for @loginActivityNoActivityFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No login activity found'**
+  String get loginActivityNoActivityFound;
+
+  /// No description provided for @loginActivityLogoutOtherDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout other devices'**
+  String get loginActivityLogoutOtherDevices;
+
+  /// No description provided for @loginActivityLogoutSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully logged out of other devices'**
+  String get loginActivityLogoutSuccess;
+
+  /// No description provided for @loginActivityLogoutFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to logout'**
+  String get loginActivityLogoutFailed;
 }
 
 class _AppLocalizationsDelegate

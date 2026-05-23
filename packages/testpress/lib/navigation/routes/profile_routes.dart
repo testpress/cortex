@@ -33,6 +33,14 @@ class ProfileRoutes {
               },
             ),
             GoRoute(
+              name: 'profile-login-activity',
+              path: 'login-activity',
+              parentNavigatorKey: rootNavigatorKey,
+              builder: (context, state) {
+                return const LoginActivityScreen();
+              },
+            ),
+            GoRoute(
               name: 'profile-certificates',
               path: 'certificates',
               parentNavigatorKey: rootNavigatorKey,

@@ -32,6 +32,7 @@ export 'models/answer_dto.dart';
 export 'models/download_item.dart';
 export 'models/doubt_dto.dart';
 export 'models/bookmark_dto.dart';
+export 'models/login_activity_dto.dart';
 
 // Database
 export 'db/tables/dashboard_tables.dart';
