@@ -58,6 +58,59 @@ class LeaderboardRepository {
       debugPrint('LeaderboardRepository: Failed to refresh leaderboard ($timeline): $e');
     }
   }
+
+  /// Fetches the current user's competitors (above and below).
+  /// This completely bypasses the local DB and fetches directly from the API.
+  Future<List<LearnerDto>> getCompetitors() async {
+    final futures = await Future.wait([
+      _dataSource.fetchMyRank(),
+      _dataSource.fetchCompetitorTargets(),
+      _dataSource.fetchCompetitorThreats(),
+    ]);
+
+    final myRankData = futures[0] as LearnerDto;
+    final targetsData = futures[1] as List<LearnerDto>;
+    final threatsData = futures[2] as List<LearnerDto>;
+
+    return _assembleCompetitors(myRankData, targetsData, threatsData);
+  }
+
+  List<LearnerDto> _assembleCompetitors(
+    LearnerDto myRankData,
+    List<LearnerDto> targetsData,
+    List<LearnerDto> threatsData,
+  ) {
+    final int currentUserRank = myRankData.rank;
+    final double currentUserTrophies = myRankData.points;
+    final List<LearnerDto> competitors = [];
+
+    // Targets (Above)
+    for (int i = 0; i < targetsData.length; i++) {
+      final int offset = targetsData.length - i;
+      final int approxRank = currentUserRank - offset < 1 ? 1 : currentUserRank - offset;
+      competitors.add(targetsData[i].copyWith(rank: approxRank));
+    }
+
+    // Current User
+    competitors.add(myRankData.copyWith(isCurrentUser: true));
+
+    // Threats (Below)
+    int currentThreatRank = currentUserRank;
+    for (int i = 0; i < threatsData.length; i++) {
+      final threatData = threatsData[i];
+      final threatTrophies = threatData.points;
+      
+      if (threatTrophies == currentUserTrophies) {
+        // Tied
+        competitors.add(threatData.copyWith(rank: currentUserRank));
+      } else {
+        currentThreatRank++;
+        competitors.add(threatData.copyWith(rank: currentThreatRank));
+      }
+    }
+
+    return competitors;
+  }
 }
 
 @Riverpod(keepAlive: true)

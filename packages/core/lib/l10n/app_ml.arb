@@ -543,5 +543,16 @@
     "placeholders": {
       "type": { "type": "String" }
     }
-  }
+  },
+  "leaderboardTitle": "ലീഡർബോർഡ്",
+  "leaderboardRankListTab": "റാങ്ക് ലിസ്റ്റ്",
+  "leaderboardCompetitorsTab": "മത്സരാർത്ഥികൾ",
+  "leaderboardTimelineThisWeek": "ഈ ആഴ്ച",
+  "leaderboardTimelineThisMonth": "ഈ മാസം",
+  "leaderboardTimelineAllTime": "എക്കാലത്തെയും",
+  "leaderboardNoLearnersFound": "പഠിതാക്കളെ കണ്ടെത്തിയില്ല",
+  "leaderboardErrorLoading": "ലീഡർബോർഡ് ലോഡ് ചെയ്യുന്നതിൽ പിശക്",
+  "leaderboardNoCompetitorsFound": "മത്സരാർത്ഥികളെ കണ്ടെത്തിയില്ല",
+  "leaderboardErrorLoadingCompetitors": "മത്സരാർത്ഥികളെ ലോഡ് ചെയ്യുന്നതിൽ പിശക്",
+  "leaderboardYouSuffix": " (നിങ്ങൾ)"
 }

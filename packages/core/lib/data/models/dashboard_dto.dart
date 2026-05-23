@@ -294,6 +294,7 @@ class LearnerDto {
   final double points;
   final int coursesCompleted;
   final int streakDays;
+  final bool isCurrentUser;
 
   const LearnerDto({
     required this.id,
@@ -303,6 +304,7 @@ class LearnerDto {
     required this.points,
     required this.coursesCompleted,
     required this.streakDays,
+    this.isCurrentUser = false,
   });
 
   factory LearnerDto.fromJson(Map<String, dynamic> json, int rank) {
@@ -314,6 +316,28 @@ class LearnerDto {
       points: double.tryParse(json['trophies_count']?.toString() ?? '0') ?? 0.0,
       coursesCompleted: json['courses_completed']?.toInt() ?? 0,
       streakDays: json['streak_days']?.toInt() ?? 0,
+    );
+  }
+
+  LearnerDto copyWith({
+    String? id,
+    int? rank,
+    String? name,
+    String? avatar,
+    double? points,
+    int? coursesCompleted,
+    int? streakDays,
+    bool? isCurrentUser,
+  }) {
+    return LearnerDto(
+      id: id ?? this.id,
+      rank: rank ?? this.rank,
+      name: name ?? this.name,
+      avatar: avatar ?? this.avatar,
+      points: points ?? this.points,
+      coursesCompleted: coursesCompleted ?? this.coursesCompleted,
+      streakDays: streakDays ?? this.streakDays,
+      isCurrentUser: isCurrentUser ?? this.isCurrentUser,
     );
   }
 }
