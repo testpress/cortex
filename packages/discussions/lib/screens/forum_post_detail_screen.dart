@@ -33,9 +33,12 @@ class ForumPostDetailScreen extends ConsumerWidget {
     final l10n = L10n.of(context);
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
-    final threadAsync = initialThread != null
-        ? AsyncValue.data(initialThread!)
-        : ref.watch(globalForumThreadDetailProvider(slug));
+    var threadAsync = ref.watch(globalForumThreadDetailProvider(slug));
+    if (threadAsync.valueOrNull == null && initialThread != null) {
+      threadAsync = AsyncValue.data(initialThread!);
+    }
+    
+    final thread = threadAsync.valueOrNull;
 
     return SkeletonizerConfig(
       data: SkeletonizerConfigData(
@@ -48,20 +51,20 @@ class ForumPostDetailScreen extends ConsumerWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(color: design.colors.card),
         child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: EdgeInsets.only(bottom: bottomInset),
-          child: Column(
-            children: [
-              _buildHeader(design, l10n),
-              _buildDivider(design),
-              Expanded(child: _buildBody(context, ref, l10n, threadAsync)),
-              if (threadAsync.valueOrNull != null)
-                _StickyReplyInput(threadId: threadAsync.valueOrNull!.threadId.toString()),
-            ],
+          bottom: false,
+          child: Padding(
+            padding: EdgeInsets.only(bottom: bottomInset),
+            child: Column(
+              children: [
+                _buildHeader(design, l10n),
+                _buildDivider(design),
+                Expanded(child: _buildBody(context, ref, l10n, threadAsync)),
+                if (thread != null)
+                  _StickyReplyInput(threadId: thread.threadId.toString()),
+              ],
+            ),
           ),
         ),
-      ),
       ),
     );
   }

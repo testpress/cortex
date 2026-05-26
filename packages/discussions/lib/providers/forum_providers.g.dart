@@ -74,7 +74,7 @@ final createForumThreadProvider =
     );
 
 typedef _$CreateForumThread = AutoDisposeAsyncNotifier<void>;
-String _$globalForumFeedHash() => r'5ddcf6cfaaa9a705d4e8ab163a9d7ddd6c2ff8f4';
+String _$globalForumFeedHash() => r'c0eae2814da9dc9445dea9baa59b94e965f5f08c';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -98,7 +98,7 @@ class _SystemHash {
 }
 
 abstract class _$GlobalForumFeed
-    extends BuildlessAsyncNotifier<GlobalForumFeedState> {
+    extends BuildlessAutoDisposeAsyncNotifier<GlobalForumFeedState> {
   late final int? categoryId;
   late final String? searchQuery;
 
@@ -149,7 +149,11 @@ class GlobalForumFeedFamily extends Family<AsyncValue<GlobalForumFeedState>> {
 
 /// See also [GlobalForumFeed].
 class GlobalForumFeedProvider
-    extends AsyncNotifierProviderImpl<GlobalForumFeed, GlobalForumFeedState> {
+    extends
+        AutoDisposeAsyncNotifierProviderImpl<
+          GlobalForumFeed,
+          GlobalForumFeedState
+        > {
   /// See also [GlobalForumFeed].
   GlobalForumFeedProvider({int? categoryId, String? searchQuery})
     : this._internal(
@@ -209,7 +213,7 @@ class GlobalForumFeedProvider
   }
 
   @override
-  AsyncNotifierProviderElement<GlobalForumFeed, GlobalForumFeedState>
+  AutoDisposeAsyncNotifierProviderElement<GlobalForumFeed, GlobalForumFeedState>
   createElement() {
     return _GlobalForumFeedProviderElement(this);
   }
@@ -233,7 +237,8 @@ class GlobalForumFeedProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin GlobalForumFeedRef on AsyncNotifierProviderRef<GlobalForumFeedState> {
+mixin GlobalForumFeedRef
+    on AutoDisposeAsyncNotifierProviderRef<GlobalForumFeedState> {
   /// The parameter `categoryId` of this provider.
   int? get categoryId;
 
@@ -242,7 +247,11 @@ mixin GlobalForumFeedRef on AsyncNotifierProviderRef<GlobalForumFeedState> {
 }
 
 class _GlobalForumFeedProviderElement
-    extends AsyncNotifierProviderElement<GlobalForumFeed, GlobalForumFeedState>
+    extends
+        AutoDisposeAsyncNotifierProviderElement<
+          GlobalForumFeed,
+          GlobalForumFeedState
+        >
     with GlobalForumFeedRef {
   _GlobalForumFeedProviderElement(super.provider);
 

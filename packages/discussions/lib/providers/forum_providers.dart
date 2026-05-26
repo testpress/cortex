@@ -19,10 +19,10 @@ final globalForumThreadDetailProvider =
 });
 
 final globalForumCommentsProvider =
-    FutureProvider.family<List<ForumCommentDto>, int>((ref, threadId) async {
+    StreamProvider.family<List<ForumCommentDto>, int>((ref, threadId) async* {
   final repo = await ref.watch(forumRepositoryProvider.future);
-  final response = await repo.fetchComments(threadId: threadId);
-  return response.results;
+  repo.fetchComments(threadId: threadId).ignore();
+  yield* repo.watchComments(threadId);
 });
 
 @riverpod
@@ -103,10 +103,13 @@ Future<List<ForumCategoryDto>> globalForumCategories(GlobalForumCategoriesRef re
   return repo.fetchCategories();
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 class GlobalForumFeed extends _$GlobalForumFeed {
   @override
   Future<GlobalForumFeedState> build({int? categoryId, String? searchQuery}) async {
+    if (searchQuery == null || searchQuery.isEmpty) {
+      ref.keepAlive();
+    }
     final repo = await ref.watch(forumRepositoryProvider.future);
     final response = await repo.fetchThreads(categoryId: categoryId, searchQuery: searchQuery);
     final nextPage = _extractPageNumber(response.next);
