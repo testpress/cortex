@@ -21,7 +21,20 @@ final globalForumThreadDetailProvider =
 final globalForumCommentsProvider =
     StreamProvider.family<List<ForumCommentDto>, int>((ref, threadId) async* {
   final repo = await ref.watch(forumRepositoryProvider.future);
-  repo.fetchComments(threadId: threadId).ignore();
+  
+  final localData = await repo.watchComments(threadId).first;
+  final fetchFuture = repo.fetchComments(threadId: threadId);
+  
+  if (localData.isEmpty) {
+    try {
+      await fetchFuture;
+    } catch (_) {
+      // Ignore network errors so the provider doesn't crash
+    }
+  } else {
+    fetchFuture.ignore();
+  }
+  
   yield* repo.watchComments(threadId);
 });
 
