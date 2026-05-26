@@ -560,4 +560,13 @@
   "loginActivityLogoutOtherDevices": "മറ്റ് ഉപകരണങ്ങളിൽ നിന്ന് ലോഗൗട്ട് ചെയ്യുക",
   "loginActivityLogoutSuccess": "മറ്റ് ഉപകരണങ്ങളിൽ നിന്ന് വിജയകരമായി ലോഗൗട്ട് ചെയ്തു",
   "loginActivityLogoutFailed": "ലോഗൗട്ട് പരാജയപ്പെട്ടു"
+,
+  "forumErrorFailedToCreatePost": "പോസ്റ്റ് നിർമ്മിക്കുന്നതിൽ പരാജയപ്പെട്ടു",
+  "forumErrorDiscussionNotFound": "ചർച്ച കണ്ടെത്തിയില്ല",
+  "forumErrorLoadingComments": "അഭിപ്രായങ്ങൾ ലോഡുചെയ്യുന്നതിൽ പിശക്",
+  "forumCommentsEmptyTitle": "അഭിപ്രായങ്ങളൊന്നുമില്ല",
+  "forumCommentsEmptySubtitle": "ഈ ത്രെഡിന് ആദ്യം മറുപടി നൽകൂ.",
+  "forumRepliesCount": "{count,plural, =1{1 മറുപടി} other{{count} മറുപടികൾ}}",
+  "forumRoleInstructor": "ഇൻസ്ട്രക്ടർ",
+  "forumErrorFailedToPostReply": "മറുപടി പോസ്റ്റ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു"
 }

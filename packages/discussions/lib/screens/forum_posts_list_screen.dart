@@ -106,7 +106,7 @@ class _ForumPostsListScreenState extends ConsumerState<ForumPostsListScreen> {
                   : feedState;
                 
                 if (feedAsync.hasError && feedState.items.isEmpty) {
-                  return Center(child: AppText.body('Error: ${feedAsync.error}'));
+                  return Center(child: AppText.body(l10n.errorGenericMessage));
                 }
 
                 return Skeletonizer(
@@ -182,7 +182,7 @@ class _CategoryChips extends StatelessWidget {
           itemBuilder: (context, index) {
             if (index == 0) {
               return _ChipButton(
-                label: 'All',
+                label: L10n.of(context).filterAll,
                 isSelected: selectedId == null,
                 onTap: () => onCategorySelected(null),
               );

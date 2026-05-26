@@ -799,4 +799,18 @@
   "loginActivityLogoutOtherDevices": "Logout other devices",
   "loginActivityLogoutSuccess": "Successfully logged out of other devices",
   "loginActivityLogoutFailed": "Failed to logout"
+,
+  "forumErrorFailedToCreatePost": "Failed to create post",
+  "forumErrorDiscussionNotFound": "Discussion not found",
+  "forumErrorLoadingComments": "Error loading comments",
+  "forumCommentsEmptyTitle": "No Comments Yet",
+  "forumCommentsEmptySubtitle": "Be the first to reply to this thread.",
+  "forumRepliesCount": "{count,plural, =1{1 Reply} other{{count} Replies}}",
+  "@forumRepliesCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "forumRoleInstructor": "Instructor",
+  "forumErrorFailedToPostReply": "Failed to post reply"
 }

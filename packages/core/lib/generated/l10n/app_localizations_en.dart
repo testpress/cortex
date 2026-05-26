@@ -1622,4 +1622,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginActivityLogoutFailed => 'Failed to logout';
+
+  @override
+  String get forumErrorFailedToCreatePost => 'Failed to create post';
+
+  @override
+  String get forumErrorDiscussionNotFound => 'Discussion not found';
+
+  @override
+  String get forumErrorLoadingComments => 'Error loading comments';
+
+  @override
+  String get forumCommentsEmptyTitle => 'No Comments Yet';
+
+  @override
+  String get forumCommentsEmptySubtitle =>
+      'Be the first to reply to this thread.';
+
+  @override
+  String forumRepliesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Replies',
+      one: '1 Reply',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get forumRoleInstructor => 'Instructor';
+
+  @override
+  String get forumErrorFailedToPostReply => 'Failed to post reply';
 }

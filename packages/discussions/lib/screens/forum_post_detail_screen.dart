@@ -99,7 +99,7 @@ class ForumPostDetailScreen extends ConsumerWidget {
     AsyncValue<ForumThreadDto?> threadAsync,
   ) {
     if (threadAsync.hasError) {
-      return Center(child: AppText.body('Error: ${threadAsync.error}'));
+      return Center(child: AppText.body(l10n.errorGenericMessage));
     }
 
     final thread = threadAsync.valueOrNull;
@@ -108,7 +108,7 @@ class ForumPostDetailScreen extends ConsumerWidget {
     if (thread == null && !isLoading) {
       return Center(
         child: AppText.body(
-          'Discussion not found',
+          l10n.forumErrorDiscussionNotFound,
           color: Design.of(context).colors.textSecondary,
         ),
       );
@@ -152,11 +152,12 @@ class _ThreadDetailBody extends ConsumerWidget {
     AsyncValue<List<ForumCommentDto>> commentsAsync,
   ) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     if (commentsAsync.hasError) {
       return Padding(
         padding: EdgeInsets.all(design.spacing.xl),
-        child: const Center(child: AppText.body('Error loading comments')),
+        child: Center(child: AppText.body(l10n.forumErrorLoadingComments)),
       );
     }
 
@@ -180,6 +181,7 @@ class _ThreadDetailBody extends ConsumerWidget {
   }
 
   Widget _buildEmptyState(BuildContext context, DesignConfig design) {
+    final l10n = L10n.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 150),
       child: Center(
@@ -193,14 +195,14 @@ class _ThreadDetailBody extends ConsumerWidget {
             ),
             SizedBox(height: design.spacing.md),
             AppText.title(
-              'No Comments Yet',
+              l10n.forumCommentsEmptyTitle,
               color: design.colors.textSecondary,
             ),
             SizedBox(height: design.spacing.xs),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: design.spacing.xl),
               child: AppText.body(
-                'Be the first to reply to this thread.',
+                l10n.forumCommentsEmptySubtitle,
                 color: design.colors.textTertiary,
                 textAlign: TextAlign.center,
               ),
@@ -330,6 +332,7 @@ class _CommentsHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
@@ -339,7 +342,7 @@ class _CommentsHeader extends StatelessWidget {
         design.spacing.sm,
       ),
       child: AppText.labelBold(
-        '$count Replies',
+        l10n.forumRepliesCount(count),
         color: design.colors.textPrimary,
       ),
     );
@@ -474,6 +477,7 @@ class _CommentAuthorInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -483,7 +487,7 @@ class _CommentAuthorInfo extends StatelessWidget {
             AppText.labelBold(comment.authorName, color: design.colors.textPrimary),
             if (comment.isInstructor) ...[
               SizedBox(width: design.spacing.sm),
-              const _RoleBadge(role: 'Instructor'),
+              _RoleBadge(role: l10n.forumRoleInstructor),
             ],
           ],
         ),
@@ -536,6 +540,7 @@ class _StickyReplyInputState extends ConsumerState<_StickyReplyInput> {
     if (!_hasContent && _attachments.isEmpty) return;
     
     final html = _editorService.toHtml(_controller.document);
+    final l10n = L10n.of(context);
     
     try {
       final threadId = int.parse(widget.threadId);
@@ -549,7 +554,7 @@ class _StickyReplyInputState extends ConsumerState<_StickyReplyInput> {
       setState(() => _attachments.clear());
       if (mounted) FocusScope.of(context).unfocus();
     } catch (e) {
-      if (mounted) AppToast.show(context, message: 'Failed to post reply');
+      if (mounted) AppToast.show(context, message: l10n.forumErrorFailedToPostReply);
     }
   }
 

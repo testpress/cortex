@@ -109,7 +109,7 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
     } catch (e) {
       if (mounted) {
         setState(() => _isSubmitting = false);
-        AppToast.show(context, message: 'Failed to create post');
+        AppToast.show(context, message: L10n.of(context).forumErrorFailedToCreatePost);
       }
     }
   }

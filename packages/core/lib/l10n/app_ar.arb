@@ -560,4 +560,13 @@
   "loginActivityLogoutOtherDevices": "تسجيل الخروج من الأجهزة الأخرى",
   "loginActivityLogoutSuccess": "تم تسجيل الخروج من الأجهزة الأخرى بنجاح",
   "loginActivityLogoutFailed": "فشل تسجيل الخروج"
+,
+  "forumErrorFailedToCreatePost": "فشل في إنشاء المنشور",
+  "forumErrorDiscussionNotFound": "النقاش غير موجود",
+  "forumErrorLoadingComments": "خطأ في تحميل التعليقات",
+  "forumCommentsEmptyTitle": "لا توجد تعليقات بعد",
+  "forumCommentsEmptySubtitle": "كن أول من يرد على هذا الموضوع.",
+  "forumRepliesCount": "{count,plural, =1{رد واحد} other{{count} ردود}}",
+  "forumRoleInstructor": "مدرب",
+  "forumErrorFailedToPostReply": "فشل في نشر الرد"
 }
