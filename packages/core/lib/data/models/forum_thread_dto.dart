@@ -164,14 +164,26 @@ class ForumCommentDto {
     final contentObj = json['content_object'] as Map<String, dynamic>?;
     return ForumCommentDto(
       id: json['id']?.toString() ?? '',
-      threadId: json['thread'] as int? ?? contentObj?['id'] as int? ?? 0,
-      authorName: json['author_name'] as String? ?? user?['display_name'] as String? ?? 'Anonymous',
-      authorAvatar: json['author_avatar'] as String? ?? user?['photo'] as String?,
-      content: json['content'] as String? ?? json['comment'] as String? ?? '',
-      createdAt: json['time_ago'] as String? ?? json['created'] as String? ?? '',
-      upvotes: (json['upvotes'] as int?) ?? 0,
-      downvotes: (json['downvotes'] as int?) ?? 0,
-      isInstructor: (json['is_instructor'] as bool?) ?? false,
+      threadId: _asInt(json['thread']) ?? _asInt(contentObj?['id']) ?? 0,
+      authorName: _asString(json['author_name']) ?? _asString(user?['display_name']) ?? 'Anonymous',
+      authorAvatar: _asString(json['author_avatar']) ?? _asString(user?['photo']),
+      content: _asString(json['content']) ?? _asString(json['comment']) ?? '',
+      createdAt: _asString(json['time_ago']) ?? _asString(json['created']) ?? '',
+      upvotes: _asInt(json['upvotes']) ?? 0,
+      downvotes: _asInt(json['downvotes']) ?? 0,
+      isInstructor: json['is_instructor'] == true,
     );
+  }
+
+  static int? _asInt(dynamic value) {
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value);
+    return null;
+  }
+
+  static String? _asString(dynamic value) {
+    if (value == null) return null;
+    if (value is String) return value;
+    return value.toString();
   }
 }
