@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:core/data/data.dart';
 
 /// Abstract data source — implemented by [MockDataSource] and [HttpDataSource].
@@ -38,14 +39,32 @@ abstract class DataSource {
   /// Fetch today's live class schedule.
   Future<List<LiveClassDto>> getLiveClasses();
 
-  /// Fetch discussion forum threads for a course.
-  Future<List<ForumThreadDto>> getForumThreads(String courseId);
+  /// Fetch all forum categories (global, not course-scoped).
+  Future<List<ForumCategoryDto>> getForumCategories();
 
-  /// Fetch forum categories available for a course.
-  Future<List<ForumCategoryDto>> getForumCategories(String courseId);
+  /// Fetch paginated global forum threads, optionally filtered by category.
+  Future<PaginatedResponseDto<ForumThreadDto>> getForumThreads({int page = 1, int? categoryId, String? searchQuery});
 
-  /// Fetch comments for a specific thread.
-  Future<List<ForumCommentDto>> getForumComments(String threadId);
+  // ── Forum Comments ─────────────────────────────────────────────────────────
+
+  Future<PaginatedResponseDto<ForumCommentDto>> getForumComments({
+    required int threadId,
+    int page = 1,
+  });
+
+  Future<ForumCommentDto> postForumComment({
+    required int threadId,
+    required String content,
+  });
+
+  Future<ForumThreadDto> postForumThread({
+    required String title,
+    required String contentHtml,
+    required String categorySlug,
+    String? courseId,
+  });
+
+  Future<String> uploadImage(File file);
 
   /// Fetch per-lesson progress for a user.
   Future<List<UserProgressDto>> getUserProgress(String userId);

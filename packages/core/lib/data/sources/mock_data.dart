@@ -224,28 +224,33 @@ final mockDiscoveryCourses = [
 
 const mockForumCategories = [
   ForumCategoryDto(
-    id: 'general_discussion',
+    id: 1,
     name: 'General Discussion',
+    slug: 'general-discussion',
   ),
   ForumCategoryDto(
-    id: 'lecture_questions',
+    id: 2,
     name: 'Lecture Questions',
+    slug: 'lecture-questions',
   ),
   ForumCategoryDto(
-    id: 'assignment_help',
+    id: 3,
     name: 'Assignment Help',
+    slug: 'assignment-help',
   ),
   ForumCategoryDto(
-    id: 'study_resources',
+    id: 4,
     name: 'Study Resources',
+    slug: 'study-resources',
   ),
   ForumCategoryDto(
-    id: 'exam_preparation',
+    id: 5,
     name: 'Exam Preparation',
+    slug: 'exam-preparation',
   ),
 ];
 
-ForumCategoryDto? findMockForumCategoryById(String categoryId) {
+ForumCategoryDto? findMockForumCategoryById(int categoryId) {
   for (final category in mockForumCategories) {
     if (category.id == categoryId) {
       return category;
@@ -287,16 +292,18 @@ final mockPopularTests = [
 ];
 
 
-List<ForumThreadDto> mockForumThreads(String courseId) => [
+List<ForumThreadDto> mockForumThreads({int page = 1, int? categoryId}) => [
       ForumThreadDto(
-        id: 'ft-1-$courseId',
-        courseId: courseId,
+        threadId: 1,
+        slug: 'integration-substitution-method',
+        courseId: 'course-1',
+        categoryId: categoryId,
         title: 'How to solve integration using substitution method?',
-        description:
+        summary:
             "I'm having trouble understanding when to use substitution method in integration. Can someone explain with an example? Specifically for problems involving trigonometric functions.",
         authorName: 'Priya Sharma',
         authorAvatar: 'https://ui-avatars.com/api/?name=Priya&format=png',
-        timeAgo: '2 hours ago',
+        createdAt: '2 hours ago',
         replyCount: 3,
         upvotes: 24,
         downvotes: 2,
@@ -305,56 +312,64 @@ List<ForumThreadDto> mockForumThreads(String courseId) => [
             'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&q=80&w=2070',
       ),
       ForumThreadDto(
-        id: 'ft-2-$courseId',
-        courseId: courseId,
+        threadId: 2,
+        slug: 'newtons-third-law-examples',
+        courseId: 'course-1',
+        categoryId: categoryId,
         title: "Understanding Newton's Third Law with examples",
-        description:
+        summary:
             "Can someone help me understand the practical applications of Newton's Third Law? I'm confused about action-reaction pairs in different scenarios.",
         authorName: 'Amit Patel',
         authorAvatar: 'https://ui-avatars.com/api/?name=Amit&format=png',
-        timeAgo: '5 hours ago',
+        createdAt: '5 hours ago',
         replyCount: 5,
         upvotes: 12,
         downvotes: 1,
         status: ForumThreadStatus.answered,
       ),
       ForumThreadDto(
-        id: 'ft-3-$courseId',
-        courseId: courseId,
+        threadId: 3,
+        slug: 'sn1-vs-sn2-reactions',
+        courseId: 'course-1',
+        categoryId: categoryId,
         title: 'Organic Chemistry — SN1 vs SN2 reactions',
-        description:
+        summary:
             'What are the key differences between SN1 and SN2 reactions? How do I identify which mechanism will occur in a given reaction?',
         authorName: 'Sneha Gupta',
         authorAvatar: 'https://ui-avatars.com/api/?name=Sneha&format=png',
-        timeAgo: '1 day ago',
+        createdAt: '1 day ago',
         replyCount: 0,
         upvotes: 8,
         downvotes: 0,
         status: ForumThreadStatus.unanswered,
       ),
       ForumThreadDto(
-        id: 'ft-4-$courseId',
-        courseId: courseId,
+        threadId: 4,
+        slug: 'complex-numbers-geometric-interpretation',
+        courseId: 'course-1',
+        categoryId: categoryId,
         title: 'Complex numbers — geometric interpretation doubt',
-        description:
+        summary:
             'I need help understanding the geometric interpretation of complex number multiplication. Can someone explain with diagrams?',
         authorName: 'Rahul Singh',
         authorAvatar: 'https://ui-avatars.com/api/?name=Rahul&format=png',
-        timeAgo: '1 day ago',
+        createdAt: '1 day ago',
         replyCount: 4,
         upvotes: 15,
         downvotes: 3,
         status: ForumThreadStatus.answered,
       ),
       ForumThreadDto(
-        id: 'ft-5-$courseId',
-        courseId: courseId,
+        threadId: 5,
+        slug: 'thermodynamics-entropy-clarification',
+        courseId: 'course-1',
+        categoryId: categoryId,
         title: 'Thermodynamics — Entropy concept clarification',
-        description:
+        summary:
             'Why does entropy always increase in an isolated system? Can someone provide a simple explanation without too much math?',
         authorName: 'Kavya Reddy',
         authorAvatar: 'https://ui-avatars.com/api/?name=Kavya&format=png',
-        timeAgo: '2 days ago',
+        createdAt: '2 days ago',
         replyCount: 0,
         upvotes: 5,
         downvotes: 0,
@@ -362,51 +377,28 @@ List<ForumThreadDto> mockForumThreads(String courseId) => [
       ),
     ];
 
-List<ForumCommentDto> mockForumComments(String threadId) {
-  if (threadId.contains('ft-1')) {
-    return [
-      ForumCommentDto(
-        id: 'fc-1-$threadId',
-        threadId: threadId,
-        authorName: 'Dr. Rajesh Kumar',
-        authorAvatar: 'https://ui-avatars.com/api/?name=Rajesh&format=png',
-        content:
-            'Great question! The substitution method works best when you can identify an inner function whose derivative also appears in the integral. For trigonometric functions, look for patterns like sin(x)cos(x) where you can substitute u = sin(x). Let me know if you need more specific examples.',
-        timeAgo: '1 hour 30 minutes ago',
-        upvotes: 12,
-        isInstructor: true,
-      ),
-      ForumCommentDto(
-        id: 'fc-2-$threadId',
-        threadId: threadId,
-        authorName: 'Amit Verma',
-        authorAvatar: 'https://ui-avatars.com/api/?name=Amit&format=png',
-        content: 'I had the same doubt! The explanation really helped. Thanks!',
-        timeAgo: '45 minutes ago',
-        upvotes: 3,
-      ),
-    ];
-  }
-
+List<ForumCommentDto> mockForumComments(int threadId) {
+  final prefix = 'fc-$threadId';
   return [
     ForumCommentDto(
-      id: 'fc-1-$threadId',
+      id: '$prefix-1',
       threadId: threadId,
-      authorName: 'Dr. Anita Sharma',
-      authorAvatar: 'https://ui-avatars.com/api/?name=Anita&format=png',
+      authorName: 'Dr. Rajesh Kumar',
+      authorAvatar: 'https://ui-avatars.com/api/?name=Rajesh&format=png',
       content:
-          'The substitution method is generally best when you see a function and its derivative (or a multiple of it) within the integrand.',
-      timeAgo: '1 hour ago',
-      upvotes: 8,
+          'Great question! The substitution method works best when you can identify an inner function whose derivative also appears in the integral. For trigonometric functions, look for patterns like sin(x)cos(x) where you can substitute u = sin(x). Let me know if you need more specific examples.',
+      createdAt: '1 hour 30 minutes ago',
+      upvotes: 12,
+      isInstructor: true,
     ),
     ForumCommentDto(
-      id: 'fc-2-$threadId',
+      id: '$prefix-2',
       threadId: threadId,
-      authorName: 'Rahul Singh',
-      authorAvatar: 'https://ui-avatars.com/api/?name=Rahul&format=png',
-      content: 'Can you show an example with tan(x) and sec^2(x)?',
-      timeAgo: '45 mins ago',
-      upvotes: 2,
+      authorName: 'Amit Verma',
+      authorAvatar: 'https://ui-avatars.com/api/?name=Amit&format=png',
+      content: 'I had the same doubt! The explanation really helped. Thanks!',
+      createdAt: '45 minutes ago',
+      upvotes: 3,
     ),
   ];
 }

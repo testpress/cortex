@@ -14,6 +14,7 @@ class DashboardHeader extends StatelessWidget {
     this.greetingSubtitle,
     this.useSafeArea = true,
     this.customTopPadding,
+    this.onMenuPressed,
   });
 
   final String title;
@@ -26,6 +27,7 @@ class DashboardHeader extends StatelessWidget {
   final String? greetingSubtitle;
   final bool useSafeArea;
   final double? customTopPadding;
+  final VoidCallback? onMenuPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +62,21 @@ class DashboardHeader extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (onMenuPressed != null) ...[
+            AppFocusable(
+              onTap: onMenuPressed,
+              borderRadius: BorderRadius.circular(design.radius.full),
+              child: Padding(
+                padding: EdgeInsets.all(design.spacing.xs),
+                child: Icon(
+                  LucideIcons.menu,
+                  color: design.colors.textPrimary,
+                  size: 24,
+                ),
+              ),
+            ),
+            SizedBox(width: design.spacing.sm),
+          ],
           Expanded(
             child: Column(
               mainAxisSize: MainAxisSize.min,

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:core/data/data.dart';
 
 final List<BookmarkFolderDto> _mockFolders = [
@@ -799,16 +800,72 @@ class MockDataSource implements DataSource {
   // ─────────────────────────────────────────────────────────────────────────
 
   @override
-  Future<List<ForumThreadDto>> getForumThreads(String courseId) async =>
-      mockForumThreads(courseId);
-
-  @override
-  Future<List<ForumCategoryDto>> getForumCategories(String courseId) async =>
+  Future<List<ForumCategoryDto>> getForumCategories() async =>
       mockForumCategories;
 
   @override
-  Future<List<ForumCommentDto>> getForumComments(String threadId) async =>
-      mockForumComments(threadId);
+  Future<PaginatedResponseDto<ForumThreadDto>> getForumThreads({int page = 1, int? categoryId, String? searchQuery}) async {
+    final results = mockForumThreads(page: page, categoryId: categoryId);
+    return PaginatedResponseDto<ForumThreadDto>(
+      results: results,
+      count: results.length * 5,
+      next: page < 3 ? 'https://api.cortex.com/v2.5/discussions/?page=${page + 1}' : null,
+    );
+  }
+
+  @override
+  Future<PaginatedResponseDto<ForumCommentDto>> getForumComments({required int threadId, int page = 1}) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    final results = mockForumComments(threadId);
+    return PaginatedResponseDto<ForumCommentDto>(
+      results: results,
+      count: results.length,
+      next: null,
+    );
+  }
+
+  @override
+  Future<ForumCommentDto> postForumComment({required int threadId, required String content}) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    return ForumCommentDto(
+      id: '999', // Mock ID
+      threadId: threadId,
+      authorName: 'Mock User',
+      authorAvatar: null,
+      content: content,
+      createdAt: DateTime.now().toIso8601String(),
+    );
+  }
+
+  @override
+  Future<String> uploadImage(File file) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    return 'https://mock.url/${file.path.split('/').last}';
+  }
+
+  @override
+  Future<ForumThreadDto> postForumThread({
+    required String title,
+    required String contentHtml,
+    required String categorySlug,
+    String? courseId,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    return ForumThreadDto(
+      threadId: 999,
+      slug: title.toLowerCase().replaceAll(' ', '-'),
+      title: title,
+      authorName: 'Mock User',
+      authorAvatar: null,
+      replyCount: 0,
+      createdAt: DateTime.now().toIso8601String(),
+      contentHtml: contentHtml,
+      summary: 'Mock summary',
+      status: ForumThreadStatus.unanswered,
+      upvotes: 0,
+      downvotes: 0,
+    );
+  }
 
   // ─────────────────────────────────────────────────────────────────────────
   // User Progress

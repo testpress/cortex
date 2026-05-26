@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import 'package:discussions/discussions.dart';
 import '../../screens/dashboard/paid_active_home_screen.dart';
 
@@ -13,29 +14,26 @@ class HomeRoutes {
             GoRoute(
               path: 'discussions/forum',
               parentNavigatorKey: rootNavigatorKey,
-              builder: (context, state) => const ForumCourseSelectionScreen(),
+              builder: (context, state) => const ForumPostsListScreen(),
               routes: [
                 GoRoute(
-                  path: 'posts/:courseId',
+                  path: 'create',
+                  parentNavigatorKey: rootNavigatorKey,
+                  builder: (context, state) => const ForumPostCreateScreen(),
+                ),
+                GoRoute(
+                  path: 'posts/:slug',
                   parentNavigatorKey: rootNavigatorKey,
                   builder: (context, state) {
-                    final courseId = state.pathParameters['courseId']!;
-                    return ForumPostsListScreen(courseId: courseId);
+                    final slug = state.pathParameters['slug']!;
+                    final initialThread = state.extra is ForumThreadDto
+                        ? state.extra as ForumThreadDto
+                        : null;
+                    return ForumPostDetailScreen(
+                      slug: slug,
+                      initialThread: initialThread,
+                    );
                   },
-                  routes: [
-                    GoRoute(
-                      path: ':threadId',
-                      parentNavigatorKey: rootNavigatorKey,
-                      builder: (context, state) {
-                        final courseId = state.pathParameters['courseId']!;
-                        final threadId = state.pathParameters['threadId']!;
-                        return ForumPostDetailScreen(
-                          courseId: courseId,
-                          threadId: threadId,
-                        );
-                      },
-                    ),
-                  ],
                 ),
               ],
             ),

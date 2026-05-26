@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:image_picker/image_picker.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../providers/forum_providers.dart';
@@ -17,27 +18,36 @@ import '../widgets/forum_composer.dart';
 /// Displays the full thread content, replies, and the sticky reply input.
 /// Follows neutral UI semantics using core Design tokens exclusively.
 class ForumPostDetailScreen extends ConsumerWidget {
-  final String courseId;
-  final String threadId;
+  final String slug;
+  final ForumThreadDto? initialThread;
 
   const ForumPostDetailScreen({
     super.key,
-    required this.courseId,
-    required this.threadId,
+    required this.slug,
+    this.initialThread,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final threadAsync = ref.watch(
-      forumThreadDetailProvider(courseId: courseId, threadId: threadId),
-    );
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(color: design.colors.card),
-      child: SafeArea(
+    final threadAsync = initialThread != null
+        ? AsyncValue.data(initialThread!)
+        : ref.watch(globalForumThreadDetailProvider(slug));
+
+    return SkeletonizerConfig(
+      data: SkeletonizerConfigData(
+        effect: ShimmerEffect(
+          baseColor: design.colors.skeleton,
+          highlightColor: design.colors.onSkeleton,
+          duration: MotionPreferences.duration(context, const Duration(milliseconds: 800)),
+        ),
+      ),
+      child: DecoratedBox(
+        decoration: BoxDecoration(color: design.colors.card),
+        child: SafeArea(
         bottom: false,
         child: Padding(
           padding: EdgeInsets.only(bottom: bottomInset),
@@ -46,10 +56,12 @@ class ForumPostDetailScreen extends ConsumerWidget {
               _buildHeader(design, l10n),
               _buildDivider(design),
               Expanded(child: _buildBody(context, ref, l10n, threadAsync)),
-              _StickyReplyInput(threadId: threadId),
+              if (threadAsync.valueOrNull != null)
+                _StickyReplyInput(threadId: threadAsync.valueOrNull!.threadId.toString()),
             ],
           ),
         ),
+      ),
       ),
     );
   }
@@ -86,12 +98,27 @@ class ForumPostDetailScreen extends ConsumerWidget {
     AppLocalizations l10n,
     AsyncValue<ForumThreadDto?> threadAsync,
   ) {
-    return threadAsync.when(
-      data: (thread) => thread == null
-          ? Center(child: AppText.body(l10n.errorGenericTitle))
-          : _ThreadDetailBody(thread: thread),
-      loading: () => const Center(child: AppLoadingIndicator()),
-      error: (error, stackTrace) => Center(child: AppText.body('Error: $error')),
+    if (threadAsync.hasError) {
+      return Center(child: AppText.body('Error: ${threadAsync.error}'));
+    }
+
+    final thread = threadAsync.valueOrNull;
+    final isLoading = threadAsync.isLoading && thread == null;
+
+    if (thread == null && !isLoading) {
+      return Center(
+        child: AppText.body(
+          'Discussion not found',
+          color: Design.of(context).colors.textSecondary,
+        ),
+      );
+    }
+
+    final displayThread = thread ?? _mockSkeletonThread;
+
+    return Skeletonizer(
+      enabled: isLoading,
+      child: _ThreadDetailBody(thread: displayThread),
     );
   }
 }
@@ -107,7 +134,9 @@ class _ThreadDetailBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final commentsAsync = ref.watch(threadCommentsProvider(thread.id));
+    final commentsAsync = thread.threadId == 0 
+        ? const AsyncValue<List<ForumCommentDto>>.loading()
+        : ref.watch(globalForumCommentsProvider(thread.threadId));
 
     return ListView(
       padding: EdgeInsets.zero,
@@ -124,21 +153,60 @@ class _ThreadDetailBody extends ConsumerWidget {
   ) {
     final design = Design.of(context);
 
-    return commentsAsync.when(
-      data: (comments) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _CommentsHeader(count: comments.length),
-          _CommentList(comments: comments),
-        ],
-      ),
-      loading: () => Padding(
-        padding: EdgeInsets.all(design.spacing.xl),
-        child: const Center(child: AppLoadingIndicator()),
-      ),
-      error: (error, stackTrace) => Padding(
+    if (commentsAsync.hasError) {
+      return Padding(
         padding: EdgeInsets.all(design.spacing.xl),
         child: const Center(child: AppText.body('Error loading comments')),
+      );
+    }
+
+    final comments = commentsAsync.valueOrNull ?? [];
+    final isLoading = commentsAsync.isLoading && comments.isEmpty;
+    final displayComments = isLoading ? _mockSkeletonComments : comments;
+
+    return Skeletonizer(
+      enabled: isLoading,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _CommentsHeader(count: displayComments.length),
+          if (displayComments.isEmpty && !isLoading)
+            _buildEmptyState(context, design)
+          else
+            _CommentList(comments: displayComments),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context, DesignConfig design) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 150),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              LucideIcons.messageSquare,
+              size: 48,
+              color: design.colors.textTertiary.withValues(alpha: 0.2),
+            ),
+            SizedBox(height: design.spacing.md),
+            AppText.title(
+              'No Comments Yet',
+              color: design.colors.textSecondary,
+            ),
+            SizedBox(height: design.spacing.xs),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: design.spacing.xl),
+              child: AppText.body(
+                'Be the first to reply to this thread.',
+                color: design.colors.textTertiary,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -166,7 +234,16 @@ class _ThreadContentHeader extends StatelessWidget {
           SizedBox(height: design.spacing.md),
           _ThreadMeta(thread: thread),
           SizedBox(height: design.spacing.lg),
-          AppText.bodySmall(thread.description),
+          if (thread.contentHtml != null && thread.contentHtml!.trim().isNotEmpty)
+            AppHtml(
+              data: thread.contentHtml!,
+              placeholder: Skeletonizer(
+                enabled: true,
+                child: AppText.bodySmall(thread.summary),
+              ),
+            )
+          else
+            AppText.bodySmall(thread.summary),
           if (thread.imageUrl != null) ...[
             SizedBox(height: design.spacing.md),
             _ThreadImage(imageUrl: thread.imageUrl!),
@@ -189,7 +266,7 @@ class _ThreadMeta extends StatelessWidget {
       children: [
         _AuthorAvatar(avatarUrl: thread.authorAvatar, size: 36),
         const SizedBox(width: 12),
-        _AuthorInfo(name: thread.authorName, timeAgo: thread.timeAgo),
+        _AuthorInfo(name: thread.authorName, createdAt: thread.createdAt),
         const Spacer(),
         _StatusBadge(status: thread.status),
       ],
@@ -199,9 +276,9 @@ class _ThreadMeta extends StatelessWidget {
 
 class _AuthorInfo extends StatelessWidget {
   final String name;
-  final String timeAgo;
+  final String createdAt;
 
-  const _AuthorInfo({required this.name, required this.timeAgo});
+  const _AuthorInfo({required this.name, required this.createdAt});
 
   @override
   Widget build(BuildContext context) {
@@ -211,7 +288,7 @@ class _AuthorInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText.labelBold(name, color: design.colors.textPrimary),
-        AppText.caption(timeAgo, color: design.colors.textSecondary),
+        AppText.caption(_formatDateSafe(createdAt), color: design.colors.textSecondary),
       ],
     );
   }
@@ -339,10 +416,36 @@ class _CommentItem extends StatelessWidget {
         children: [
           _CommentHeader(comment: comment),
           SizedBox(height: design.spacing.md),
-          AppText.bodySmall(comment.content, color: design.colors.textPrimary),
+          AppText.bodySmall(_stripHtmlTags(comment.content), color: design.colors.textPrimary),
         ],
       ),
     );
+  }
+
+  String _stripHtmlTags(String htmlString) {
+    // 1. Convert block tags to actual newlines
+    String s = htmlString.replaceAll(RegExp(r'<br\s*/?>', caseSensitive: false), '\n');
+    s = s.replaceAll(RegExp(r'</p>', caseSensitive: false), '\n\n');
+    s = s.replaceAll(RegExp(r'</div>', caseSensitive: false), '\n');
+
+    // 2. Remove all remaining HTML tags
+    s = s.replaceAll(RegExp(r'<[^>]*>', multiLine: true), '');
+
+    // 3. Unescape basic entities
+    s = s.replaceAll('&nbsp;', ' ')
+         .replaceAll('&amp;', '&')
+         .replaceAll('&lt;', '<')
+         .replaceAll('&gt;', '>')
+         .replaceAll('&quot;', '"')
+         .replaceAll('&#39;', "'");
+
+    // 4. Clean up multiple spaces (but preserve newlines)
+    s = s.replaceAll(RegExp(r'[ \t]+'), ' ');
+
+    // 5. Clean up excessive newlines
+    s = s.replaceAll(RegExp(r'\n{3,}'), '\n\n');
+
+    return s.trim();
   }
 }
 
@@ -384,7 +487,7 @@ class _CommentAuthorInfo extends StatelessWidget {
             ],
           ],
         ),
-        AppText.caption(comment.timeAgo, color: design.colors.textSecondary),
+        AppText.caption(_formatDateSafe(comment.createdAt), color: design.colors.textSecondary),
       ],
     );
   }
@@ -394,16 +497,16 @@ class _CommentAuthorInfo extends StatelessWidget {
 // Sticky Reply Input
 // ─────────────────────────────────────────────────────
 
-class _StickyReplyInput extends StatefulWidget {
+class _StickyReplyInput extends ConsumerStatefulWidget {
   final String threadId;
 
   const _StickyReplyInput({required this.threadId});
 
   @override
-  State<_StickyReplyInput> createState() => _StickyReplyInputState();
+  ConsumerState<_StickyReplyInput> createState() => _StickyReplyInputState();
 }
 
-class _StickyReplyInputState extends State<_StickyReplyInput> {
+class _StickyReplyInputState extends ConsumerState<_StickyReplyInput> {
   static const _editorService = QuillEditorService();
 
   late final quill.QuillController _controller;
@@ -429,12 +532,25 @@ class _StickyReplyInputState extends State<_StickyReplyInput> {
 
   bool get _hasContent => _controller.document.length > 1;
 
-  void _handleSend() {
+  Future<void> _handleSend() async {
     if (!_hasContent && _attachments.isEmpty) return;
-    // ignore: unused_local_variable
+    
     final html = _editorService.toHtml(_controller.document);
-    _controller.clear();
-    setState(() => _attachments.clear());
+    
+    try {
+      final threadId = int.parse(widget.threadId);
+      await ref.read(postForumCommentProvider.notifier).submit(
+            threadId: threadId,
+            content: html,
+            attachments: _attachments,
+          );
+      
+      _controller.clear();
+      setState(() => _attachments.clear());
+      if (mounted) FocusScope.of(context).unfocus();
+    } catch (e) {
+      if (mounted) AppToast.show(context, message: 'Failed to post reply');
+    }
   }
 
   void _toggleToolbar() => setState(() => _showToolbar = !_showToolbar);
@@ -486,6 +602,7 @@ class _StickyReplyInputState extends State<_StickyReplyInput> {
             showToolbar: _showToolbar,
             onToggleToolbar: _toggleToolbar,
             onSend: _handleSend,
+            isLoading: ref.watch(postForumCommentProvider).isLoading,
             l10n: AppLocalizations.of(context)!,
           ),
         ],
@@ -501,6 +618,7 @@ class _ReplyInputRow extends StatelessWidget {
   final bool showToolbar;
   final VoidCallback onToggleToolbar;
   final VoidCallback onSend;
+  final bool isLoading;
   final AppLocalizations l10n;
 
   const _ReplyInputRow({
@@ -510,6 +628,7 @@ class _ReplyInputRow extends StatelessWidget {
     required this.showToolbar,
     required this.onToggleToolbar,
     required this.onSend,
+    this.isLoading = false,
     required this.l10n,
   });
 
@@ -551,7 +670,10 @@ class _ReplyInputRow extends StatelessWidget {
           SizedBox(
             height: 44,
             child: Center(
-              child: ForumSendButton(onTap: onSend),
+              child: ForumSendButton(
+                onTap: onSend,
+                isLoading: isLoading,
+              ),
             ),
           ),
         ],
@@ -612,21 +734,23 @@ class _StatusBadge extends StatelessWidget {
     final l10n = L10n.of(context);
     final isAnswered = status == ForumThreadStatus.answered;
 
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: design.spacing.sm,
-        vertical: design.spacing.xs,
-      ),
-      decoration: BoxDecoration(
-        color: isAnswered
-            ? design.colors.accent2.withValues(alpha: 0.12)
-            : design.colors.surfaceVariant,
-        borderRadius: BorderRadius.circular(design.radius.sm),
-      ),
-      child: AppText.caption(
-        isAnswered ? l10n.forumLabelAnswered : l10n.forumLabelUnanswered,
-        color: isAnswered ? design.colors.accent2 : design.colors.textSecondary,
-        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, height: 1.1),
+    return Skeleton.leaf(
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: design.spacing.sm,
+          vertical: design.spacing.xs,
+        ),
+        decoration: BoxDecoration(
+          color: isAnswered
+              ? design.colors.accent2.withValues(alpha: 0.12)
+              : design.colors.surfaceVariant,
+          borderRadius: BorderRadius.circular(design.radius.sm),
+        ),
+        child: AppText.caption(
+          isAnswered ? l10n.forumLabelAnswered : l10n.forumLabelUnanswered,
+          color: isAnswered ? design.colors.accent2 : design.colors.textSecondary,
+          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, height: 1.1),
+        ),
       ),
     );
   }
@@ -655,3 +779,36 @@ class _RoleBadge extends StatelessWidget {
     );
   }
 }
+
+String _formatDateSafe(String dateStr) {
+  if (dateStr.isEmpty) return '';
+  final dt = DateTime.tryParse(dateStr);
+  if (dt != null) {
+    return DateFormatter.formatDateTime(dt.toLocal());
+  }
+  return dateStr;
+}
+
+final _mockSkeletonComments = List.generate(
+  3,
+  (index) => ForumCommentDto(
+    id: '$index',
+    threadId: 0,
+    authorName: 'Author Name',
+    content: 'Loading comment content placeholder that spans across multiple lines...',
+    createdAt: '2026-05-25T11:43:37Z',
+  ),
+);
+
+final _mockSkeletonThread = ForumThreadDto(
+  threadId: 0,
+  slug: 'skeleton',
+  title: 'Loading thread title placeholder...',
+  summary: 'Loading thread summary placeholder that spans across multiple lines...',
+  authorName: 'Author Name',
+  createdAt: '2026-05-25T11:43:37Z',
+  replyCount: 0,
+  upvotes: 0,
+  downvotes: 0,
+  status: ForumThreadStatus.unanswered,
+);

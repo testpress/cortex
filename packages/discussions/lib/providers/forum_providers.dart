@@ -1,19 +1,9 @@
+import 'dart:io';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
 import '../repositories/forum_repository.dart';
 
 part 'forum_providers.g.dart';
-
-final forumCategoriesProvider =
-    FutureProvider.family<List<ForumCategoryDto>, String>((ref, courseId) async {
-      try {
-        final repo = await ref.watch(forumRepositoryProvider.future);
-        return await repo.getCategories(courseId).timeout(const Duration(seconds: 3));
-      } catch (_) {
-        // Fallback to mock data if primary source fails, times out, or is unimplemented
-        return const MockDataSource().getForumCategories(courseId);
-      }
-    });
 
 @Riverpod(keepAlive: true)
 Future<ForumRepository> forumRepository(ForumRepositoryRef ref) async {
@@ -22,46 +12,177 @@ Future<ForumRepository> forumRepository(ForumRepositoryRef ref) async {
   return ForumRepository(db, source);
 }
 
-@Riverpod(keepAlive: true)
-Stream<List<ForumThreadDto>> courseForumThreads(CourseForumThreadsRef ref, String courseId) async* {
+final globalForumThreadDetailProvider =
+    FutureProvider.family<ForumThreadDto?, String>((ref, slug) async {
   final repo = await ref.watch(forumRepositoryProvider.future);
-  
-  final count = await repo.getThreadsCount(courseId);
-  
-  final refreshFuture = repo.refreshThreads(courseId);
+  return repo.watchThreadBySlug(slug).first;
+});
 
-  if (count == 0) {
-    await refreshFuture;
-  } else {
-    refreshFuture.ignore();
+final globalForumCommentsProvider =
+    FutureProvider.family<List<ForumCommentDto>, int>((ref, threadId) async {
+  final repo = await ref.watch(forumRepositoryProvider.future);
+  final response = await repo.fetchComments(threadId: threadId);
+  return response.results;
+});
+
+@riverpod
+class PostForumComment extends _$PostForumComment {
+  @override
+  FutureOr<void> build() {}
+
+  Future<void> submit({
+    required int threadId,
+    required String content,
+    List<String> attachments = const [],
+  }) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      final repo = await ref.read(forumRepositoryProvider.future);
+      
+      String finalContent = content;
+      
+      if (attachments.isNotEmpty) {
+        final uploadFutures = attachments.map((path) => repo.uploadImage(File(path)));
+        final urls = await Future.wait(uploadFutures);
+        
+        for (final url in urls) {
+          finalContent += '<br><img src="$url" />';
+        }
+      }
+      
+      await repo.postComment(threadId: threadId, content: finalContent);
+      ref.invalidate(globalForumCommentsProvider(threadId));
+    });
   }
+}
 
-  yield* repo.watchThreads(courseId);
+@riverpod
+class CreateForumThread extends _$CreateForumThread {
+  @override
+  FutureOr<void> build() {}
+
+  Future<void> submit({
+    required String title,
+    required String content,
+    required String categorySlug,
+    String? courseId,
+    List<String> attachments = const [],
+  }) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      final repo = await ref.read(forumRepositoryProvider.future);
+      
+      String finalContent = content;
+      
+      if (attachments.isNotEmpty) {
+        final uploadFutures = attachments.map((path) => repo.uploadImage(File(path)));
+        final urls = await Future.wait(uploadFutures);
+        
+        for (final url in urls) {
+          finalContent += '<br><img src="$url" />';
+        }
+      }
+      
+      await repo.createThread(
+        title: title,
+        html: finalContent,
+        categorySlug: categorySlug,
+        courseId: courseId,
+      );
+      
+      ref.invalidate(globalForumFeedProvider);
+    });
+  }
+}
+
+// ── Global Providers ────────────────────────────────────────────────────
+
+@Riverpod(keepAlive: true)
+Future<List<ForumCategoryDto>> globalForumCategories(GlobalForumCategoriesRef ref) async {
+  final repo = await ref.watch(forumRepositoryProvider.future);
+  return repo.fetchCategories();
 }
 
 @Riverpod(keepAlive: true)
-Stream<ForumThreadDto?> forumThreadDetail(ForumThreadDetailRef ref, {required String courseId, required String threadId}) async* {
-  final repo = await ref.watch(forumRepositoryProvider.future);
-  
-  // Fetch existing count to decide if we need to block on initial load
-  final count = await repo.getThreadsCount(courseId);
-  final refreshFuture = repo.refreshThreads(courseId);
-
-  if (count == 0) {
-    await refreshFuture;
-  } else {
-    refreshFuture.ignore();
+class GlobalForumFeed extends _$GlobalForumFeed {
+  @override
+  Future<GlobalForumFeedState> build({int? categoryId, String? searchQuery}) async {
+    final repo = await ref.watch(forumRepositoryProvider.future);
+    final response = await repo.fetchThreads(categoryId: categoryId, searchQuery: searchQuery);
+    final nextPage = _extractPageNumber(response.next);
+    return GlobalForumFeedState(
+      items: response.results,
+      nextPage: nextPage,
+      hasMore: nextPage != null,
+    );
   }
 
-  yield* repo.watchThread(threadId);
+  Future<void> loadMore() async {
+    final currentState = state.valueOrNull;
+    if (currentState == null || !currentState.hasMore || currentState.isLoadingMore) return;
+
+    state = AsyncData(currentState.copyWith(isLoadingMore: true));
+
+    final repo = await ref.read(forumRepositoryProvider.future);
+    final response = await repo.fetchThreads(
+      page: currentState.nextPage!,
+      categoryId: categoryId,
+      searchQuery: searchQuery,
+    );
+
+    final existingIds = currentState.items.map((t) => t.threadId).toSet();
+    final newItems = response.results.where((t) => !existingIds.contains(t.threadId)).toList();
+
+    final nextPage = _extractPageNumber(response.next);
+    state = AsyncData(GlobalForumFeedState(
+      items: [...currentState.items, ...newItems],
+      nextPage: nextPage,
+      hasMore: nextPage != null,
+      isInitialLoading: false,
+      isLoadingMore: false,
+    ));
+  }
+
+  int? _extractPageNumber(String? nextUrl) {
+    if (nextUrl == null) return null;
+    final uri = Uri.tryParse(nextUrl);
+    if (uri == null) return null;
+    final pageParam = uri.queryParameters['page'];
+    return pageParam != null ? int.tryParse(pageParam) : null;
+  }
 }
 
-@Riverpod(keepAlive: true)
-Stream<List<ForumCommentDto>> threadComments(ThreadCommentsRef ref, String threadId) async* {
-  final repo = await ref.watch(forumRepositoryProvider.future);
-  
-  // Refresh comments on load
-  repo.refreshComments(threadId).ignore();
+class GlobalForumFeedState {
+  final List<ForumThreadDto> items;
+  final int? nextPage;
+  final bool hasMore;
+  final bool isInitialLoading;
+  final bool isLoadingMore;
+  final Object? error;
 
-  yield* repo.watchComments(threadId);
+  const GlobalForumFeedState({
+    required this.items,
+    this.nextPage,
+    this.hasMore = true,
+    this.isInitialLoading = true,
+    this.isLoadingMore = false,
+    this.error,
+  });
+
+  GlobalForumFeedState copyWith({
+    List<ForumThreadDto>? items,
+    int? nextPage,
+    bool? hasMore,
+    bool? isInitialLoading,
+    bool? isLoadingMore,
+    Object? error,
+  }) =>
+      GlobalForumFeedState(
+        items: items ?? this.items,
+        nextPage: nextPage ?? this.nextPage,
+        hasMore: hasMore ?? this.hasMore,
+        isInitialLoading: isInitialLoading ?? this.isInitialLoading,
+        isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+        error: error ?? this.error,
+      );
 }

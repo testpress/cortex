@@ -18,6 +18,7 @@ class AppHtml extends StatefulWidget {
     this.textColor,
     this.fontSize = 16,
     this.padding = EdgeInsets.zero,
+    this.placeholder,
     this.onHeightChanged,
     this.onMessage,
   });
@@ -36,6 +37,10 @@ class AppHtml extends StatefulWidget {
 
   /// Padding around the content.
   final EdgeInsets padding;
+
+  /// Optional placeholder to render while measuring height.
+  /// This helps prevent layout jumps by providing an accurate initial height.
+  final Widget? placeholder;
 
   /// Optional callback when the height of the content changes.
   final void Function(double)? onHeightChanged;
@@ -313,28 +318,34 @@ class _AppHtmlState extends State<AppHtml> {
 
   @override
   Widget build(BuildContext context) {
-    final design = Design.of(context);
-    final double h = _height == 0 ? 300 : _height;
-    
-    return SizedBox(
-      height: h,
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOutCubic,
+      alignment: Alignment.topCenter,
       child: Stack(
         children: [
-          AnimatedOpacity(
-            opacity: _isReady ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 150),
-            curve: Curves.easeIn,
-            child: WebViewWidget(controller: _controller),
-          ),
-          if (!_isReady)
-            Positioned.fill(
-              child: Container(
-                color: design.colors.card,
-                child: Center(
-                  child: AppLoadingIndicator(
-                    color: design.colors.primary.withValues(alpha: 0.2),
-                  ),
-                ),
+          // 1. Placeholder dictates height while loading
+          if (!_isReady && widget.placeholder != null)
+            widget.placeholder!,
+
+          // 2. The actual WebView
+          if (_isReady)
+            AnimatedOpacity(
+              opacity: 1.0,
+              duration: const Duration(milliseconds: 150),
+              curve: Curves.easeIn,
+              child: SizedBox(
+                height: _height,
+                child: WebViewWidget(controller: _controller),
+              ),
+            )
+          else
+            // Render invisibly to allow JS measurement
+            Opacity(
+              opacity: 0.0,
+              child: SizedBox(
+                height: 1,
+                child: WebViewWidget(controller: _controller),
               ),
             ),
         ],

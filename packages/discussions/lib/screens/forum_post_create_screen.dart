@@ -7,12 +7,11 @@ import 'package:core/data/data.dart';
 import '../providers/forum_providers.dart';
 import '../widgets/forum_header.dart';
 import '../widgets/forum_composer.dart';
-import '../widgets/forum_category_sheet.dart';
 
 class ForumPostCreateScreen extends ConsumerStatefulWidget {
-  final String courseId;
+  final String? courseId;
 
-  const ForumPostCreateScreen({super.key, required this.courseId});
+  const ForumPostCreateScreen({super.key, this.courseId});
 
   @override
   ConsumerState<ForumPostCreateScreen> createState() =>
@@ -28,8 +27,7 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
   final ImagePicker _picker = ImagePicker();
   
   bool _isSubmitting = false;
-  String? _selectedCategoryId;
-  bool _isCategorySheetOpen = false;
+  int? _selectedCategoryId;
 
   @override
   void initState() {
@@ -74,7 +72,7 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
   }
 
   Future<void> _handleSubmit() async {
-    final categories = ref.read(forumCategoriesProvider(widget.courseId)).valueOrNull ??
+    final categories = ref.read(globalForumCategoriesProvider).valueOrNull ??
         const <ForumCategoryDto>[];
     final effectiveSelectedCategoryId = _selectedCategoryId ??
         (categories.isNotEmpty ? categories.first.id : null);
@@ -86,23 +84,43 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
 
     setState(() => _isSubmitting = true);
 
-    // Mock delay for "submission"
-    await Future.delayed(const Duration(milliseconds: 1000));
+    final category = categories.firstWhere((c) => c.id == effectiveSelectedCategoryId);
+    
+    final html = QuillEditorService().toHtml(_quillController.document);
 
-    if (mounted) {
-      Navigator.of(context).pop();
+    try {
+      final notifier = ref.read(createForumThreadProvider.notifier);
+      await notifier.submit(
+        title: _titleController.text.trim(),
+        content: html,
+        categorySlug: category.slug,
+        courseId: widget.courseId,
+        attachments: _attachments,
+      );
+      
+      final state = ref.read(createForumThreadProvider);
+      if (state.hasError) {
+        throw state.error!;
+      }
+      
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+        AppToast.show(context, message: 'Failed to create post');
+      }
     }
-  }
-
-  void _toggleCategorySheet() {
-    setState(() => _isCategorySheetOpen = !_isCategorySheetOpen);
   }
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final categoriesAsync = ref.watch(forumCategoriesProvider(widget.courseId));
+    final categoriesAsync = ref.watch(globalForumCategoriesProvider);
+    final createPostState = ref.watch(createForumThreadProvider);
+    
     final categories = categoriesAsync.valueOrNull ?? const <ForumCategoryDto>[];
     final effectiveSelectedCategoryId = _selectedCategoryId ??
         (categories.isNotEmpty ? categories.first.id : null);
@@ -171,17 +189,10 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
                     ),
                   ),
                 ),
-                _buildBottomActionBar(design, l10n, isValid),
+                _buildBottomActionBar(design, l10n, isValid, createPostState),
               ],
             ),
           ),
-        ),
-        ForumCategorySheet(
-          courseId: widget.courseId,
-          selectedCategoryId: _selectedCategoryId,
-          isOpen: _isCategorySheetOpen,
-          onClose: _toggleCategorySheet,
-          onCategorySelected: (id) => setState(() => _selectedCategoryId = id),
         ),
       ],
     );
@@ -197,46 +208,31 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
     // Resolve selection
     final selectedCategoryId = _selectedCategoryId ?? 
         (categories.isNotEmpty ? categories.first.id : null);
-    final selectedCategory = categories.firstWhere(
-      (c) => c.id == selectedCategoryId,
-      orElse: () => categories.isNotEmpty ? categories.first : const ForumCategoryDto(id: '', name: ''),
-    );
-
-    final hasCategories = categories.isNotEmpty;
-
-    final displayText = categories.isNotEmpty 
-        ? selectedCategory.name 
-        : l10n.labelLoading;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText.labelBold(l10n.forumPostCategoryLabel, color: design.colors.textPrimary),
         SizedBox(height: design.spacing.xs),
-        AppFocusable(
-          onTap: hasCategories ? _toggleCategorySheet : null,
-          borderRadius: BorderRadius.circular(design.radius.lg),
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: design.spacing.md,
-              vertical: design.spacing.sm,
-            ),
-            constraints: const BoxConstraints(minHeight: 44),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(design.radius.lg),
-              border: Border.all(color: design.colors.border),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                AppText.bodySmall(
-                  displayText,
-                  color: design.colors.textPrimary,
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: categories.map((c) {
+            final isSelected = selectedCategoryId == c.id;
+            return GestureDetector(
+              onTap: () => setState(() => _selectedCategoryId = c.id),
+              child: AnimatedContainer(
+                duration: design.motion.fast,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: isSelected ? design.colors.accent2 : design.colors.card,
+                  borderRadius: design.radius.pill,
+                  border: Border.all(color: isSelected ? design.colors.accent2 : design.colors.border),
                 ),
-                Icon(LucideIcons.chevronDown, size: 16, color: design.colors.textSecondary),
-              ],
-            ),
-          ),
+                child: AppText.labelSmall(c.name, color: isSelected ? design.colors.textInverse : null),
+              ),
+            );
+          }).toList(),
         ),
       ],
     );
@@ -246,8 +242,10 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
     DesignConfig design,
     AppLocalizations l10n,
     bool isValid,
+    AsyncValue<void> createPostState,
   ) {
-    final isSubmitEnabled = isValid && !_isSubmitting;
+    final isSubmitting = createPostState.isLoading;
+    final isSubmitEnabled = isValid && !isSubmitting;
 
     return Container(
       padding: EdgeInsets.fromLTRB(
@@ -282,7 +280,7 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
               label: l10n.forumButtonSubmit,
               fullWidth: true,
               onPressed: isSubmitEnabled ? _handleSubmit : null,
-              loading: _isSubmitting,
+              loading: isSubmitting,
               backgroundColor: isSubmitEnabled
                   ? design.colors.accent2
                   : design.colors.accent2.withValues(alpha: 0.5),

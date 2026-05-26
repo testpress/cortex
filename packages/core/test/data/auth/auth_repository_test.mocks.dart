@@ -1228,6 +1228,26 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
           as _i6.Future<void>);
 
   @override
+  _i6.Stream<List<_i4.ForumThreadsTableData>> watchAllThreads() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchAllThreads, []),
+            returnValue: _i6.Stream<List<_i4.ForumThreadsTableData>>.empty(),
+            returnValueForMissingStub:
+                _i6.Stream<List<_i4.ForumThreadsTableData>>.empty(),
+          )
+          as _i6.Stream<List<_i4.ForumThreadsTableData>>);
+
+  @override
+  _i6.Stream<_i4.ForumThreadsTableData?> watchThreadBySlug(String? slug) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchThreadBySlug, [slug]),
+            returnValue: _i6.Stream<_i4.ForumThreadsTableData?>.empty(),
+            returnValueForMissingStub:
+                _i6.Stream<_i4.ForumThreadsTableData?>.empty(),
+          )
+          as _i6.Stream<_i4.ForumThreadsTableData?>);
+
+  @override
   _i6.Stream<List<_i4.ForumThreadsTableData>> watchThreadsForCourse(
     String? courseId,
   ) =>
@@ -1262,7 +1282,7 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
 
   @override
   _i6.Stream<List<_i4.ForumCommentsTableData>> watchCommentsForThread(
-    String? threadId,
+    int? threadId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#watchCommentsForThread, [threadId]),

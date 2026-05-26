@@ -34,6 +34,14 @@ class ApiEndpoints {
   static String subjectAnalytics(String attemptId) => '/api/v2.4/attempts/$attemptId/review/subjects/';
   static String solutionsReview(String attemptId) => '/api/v2.2.1/attempts/$attemptId/review/';
 
+  // Forum
+  static const String forumCategories = '/api/v2.3/forum/categories/';
+  static const String forumThreads = '/api/v2.5/discussions/';
+  static String forumComments(int threadId) => '/api/v2.5/discussions/$threadId/comments/';
+
+  // Uploads
+  static const String imageUpload = '/api/v2.3/image_upload/';
+
   // Bookmarks
   static const String bookmarkFolders = '/api/v2.5/folders/';
   static const String createBookmarkFolder = '/api/v3/bookmarks/folders/';
