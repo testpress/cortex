@@ -3,13 +3,21 @@
 ## Purpose
 TBD - created by archiving change lms-forum-main. Update Purpose after archive.
 ## Requirements
-### Requirement: Thread Isolation
-The system SHALL strictly isolate discussion threads to the course context.
+### Requirement: Thread Browsing Context
+The system SHALL default to global thread browsing instead of course-isolated thread browsing.
 
-#### Scenario: Viewing course discussions
-- **WHEN** a user selects a specific course from the Forum entry screen
-- **THEN** the system SHALL fetch only threads associated with that courseId
-- **AND** the UI SHALL display the threads in a chronologically sorted list
+#### Scenario: User opens forum from main menu
+- **WHEN** a user navigates to Discussion Forum
+- **THEN** the system SHALL show global threads from all contexts
+- **AND** the list SHALL be rendered in a unified feed
+
+### Requirement: Detail and Comments Identity
+The system SHALL use slug for thread route identity and numeric thread id for comments retrieval.
+
+#### Scenario: User opens thread and views comments
+- **WHEN** user opens `/home/discussions/forum/posts/:slug`
+- **THEN** thread detail SHALL resolve by slug from available list/cache context
+- **AND** comments SHALL be fetched using numeric `threadId`
 
 ### Requirement: Social Metadata
 The system SHALL display social metadata and authorship as per the design reference.
