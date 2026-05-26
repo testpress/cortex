@@ -31,11 +31,10 @@ class TestProgressSection extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               AppText.body(
-                answeredCount != null
-                    ? l10n.testPaletteAnsweredCount(answeredCount!, totalQuestions)
-                    : l10n.testQuestionXofY(currentQuestionIndex + 1, totalQuestions),
+                l10n.testQuestionXofY(currentQuestionIndex + 1, totalQuestions),
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 16,
@@ -57,6 +56,14 @@ class TestProgressSection extends StatelessWidget {
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
+                )
+              else if (answeredCount != null)
+                AppText.body(
+                  '$answeredCount ${l10n.testStatusAnswered.toLowerCase()}',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: design.colors.textPrimary.withOpacity(0.6),
+                  ),
                 ),
             ],
           ),
@@ -77,7 +84,10 @@ class TestProgressSection extends StatelessWidget {
         alignment: Alignment.centerLeft,
         widthFactor: progress,
         child: Container(
-          decoration: BoxDecoration(color: design.colors.textPrimary),
+          decoration: BoxDecoration(
+            color: design.colors.primary,
+            borderRadius: BorderRadius.circular(2),
+          ),
         ),
       ),
     );

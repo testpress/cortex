@@ -228,61 +228,74 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                           SizedBox(height: design.spacing.lg),
 
                           // Start Exam Online Option Button
-                          GestureDetector(
-                            onTap: () async {
-                              if (isMetadataLoading) return;
-                              ref.read(examAttemptProvider.notifier).reset();
-                              await widget.onStartAttempt();
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              padding: EdgeInsets.all(design.spacing.md),
-                              decoration: BoxDecoration(
-                                color: design.colors.primary, // Premium dynamic brand color
-                                borderRadius: BorderRadius.circular(design.radius.lg),
-                              ),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.all(design.spacing.sm),
-                                    decoration: BoxDecoration(
-                                      color: design.colors.onPrimary.withValues(alpha: 0.15), // Light semi-transparent overlay
-                                      borderRadius: BorderRadius.circular(design.radius.md),
+                          if ((exam?.allowRetake ?? true) ||
+                              !((lesson?.hasAttempts ?? false) &&
+                                  (exam?.pausedAttemptsCount ?? 0) == 0))
+                            GestureDetector(
+                              onTap: () async {
+                                if (isMetadataLoading) return;
+                                ref.read(examAttemptProvider.notifier).reset();
+                                await widget.onStartAttempt();
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.all(design.spacing.md),
+                                decoration: BoxDecoration(
+                                  color: design.colors.primary,
+                                  borderRadius: BorderRadius.circular(design.radius.lg),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.all(design.spacing.sm),
+                                      decoration: BoxDecoration(
+                                        color: design.colors.onPrimary.withValues(alpha: 0.15),
+                                        borderRadius: BorderRadius.circular(design.radius.md),
+                                      ),
+                                      child: Icon(
+                                        LucideIcons.play,
+                                        color: design.colors.onPrimary,
+                                        size: 24,
+                                      ),
                                     ),
-                                    child: Icon(
-                                      LucideIcons.play,
-                                      color: design.colors.onPrimary,
-                                      size: 24,
-                                    ),
-                                  ),
-                                  SizedBox(width: design.spacing.md),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Start Exam Online',
-                                          style: TextStyle(
-                                            color: design.colors.onPrimary,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
+                                    SizedBox(width: design.spacing.md),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            ((exam?.pausedAttemptsCount ?? 0) >
+                                                        0 &&
+                                                    !(exam?.disableAttemptResume ??
+                                                        false))
+                                                ? 'Resume Exam Online'
+                                                : 'Start Exam Online',
+                                            style: TextStyle(
+                                              color: design.colors.onPrimary,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          'Take the test in exam mode with timer',
-                                          style: TextStyle(
-                                            color: design.colors.onPrimary.withValues(alpha: 0.8),
-                                            fontSize: 13,
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            ((exam?.pausedAttemptsCount ?? 0) >
+                                                        0 &&
+                                                    !(exam?.disableAttemptResume ??
+                                                        false))
+                                                ? 'Resume from where you left off'
+                                                : 'Take the test in exam mode with timer',
+                                            style: TextStyle(
+                                              color: design.colors.onPrimary.withValues(alpha: 0.8),
+                                              fontSize: 13,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
                           const SizedBox(height: 4),
                         ],
                       ),

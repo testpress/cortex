@@ -13,6 +13,7 @@ import '../widgets/test_detail/test_result_view.dart';
 import '../widgets/test_detail/test_progress_section.dart';
 import '../widgets/test_detail/test_question_card.dart';
 import '../widgets/test_detail/submit_confirmation_dialog.dart';
+import '../widgets/test_detail/pause_confirmation_dialog.dart';
 import '../widgets/test_detail/exam_instructions_view.dart';
 import '../widgets/test_detail/sections_tab_bar.dart';
 
@@ -39,6 +40,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
   bool _isSectionsTabBarExpanded = true;
   bool _showPalette = false;
   bool _showSubmitConfirmation = false;
+  bool _showPauseConfirmation = false;
 
   // Flash "Saved" indicator
   bool _isSavedVisible = false;
@@ -70,10 +72,15 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     if (status == ExamAttemptStatus.idle || (status == ExamAttemptStatus.loading && state.exam == null)) {
       final lessonDetailAsync = ref.read(lessonDetailProvider(widget.testId));
       final fetchedLesson = lessonDetailAsync.valueOrNull?.toDto();
-      final lesson = widget.lesson ?? fetchedLesson;
-      
-      final attemptsUrl = widget.lesson?.attemptsUrl ?? fetchedLesson?.attemptsUrl;
+      final lesson = widget.lesson?.mergeWith(fetchedLesson) ?? fetchedLesson;
+
+      final attemptsUrl =
+          widget.lesson?.attemptsUrl ?? fetchedLesson?.attemptsUrl;
       final slug = widget.lesson?.slug ?? fetchedLesson?.slug;
+
+      final cachedExam = slug != null
+          ? ref.read(examDetailProvider(slug)).valueOrNull
+          : null;
 
       if (lesson != null && attemptsUrl != null && attemptsUrl.isNotEmpty) {
         ref.read(examAttemptProvider.notifier).startCourseLinkedExam(
@@ -83,6 +90,12 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                 duration: lesson.duration,
                 questionCount: 0,
                 attemptsUrl: attemptsUrl,
+                pausedAttemptsCount: lesson.pausedAttemptsCount > 0
+                    ? lesson.pausedAttemptsCount
+                    : (cachedExam?.pausedAttemptsCount ?? 0),
+                disableAttemptResume: lesson.disableAttemptResume || (cachedExam?.disableAttemptResume ?? false),
+                allowRetake: lesson.allowRetake && (cachedExam?.allowRetake ?? true),
+                maxRetakes: lesson.maxRetakes != -1 ? lesson.maxRetakes : (cachedExam?.maxRetakes ?? -1),
               ),
               attemptsUrl,
             );
@@ -132,7 +145,21 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     });
 
     ref.listen<ExamAttemptState>(examAttemptProvider, (previous, next) {
-      if (previous != null && previous.currentSectionIndex != next.currentSectionIndex) {
+      if (previous?.status != ExamAttemptStatus.inProgress &&
+          next.status == ExamAttemptStatus.inProgress) {
+        // Just loaded the exam (or resumed it), jump to the initial question index
+        setState(() {
+          _currentQuestionIndex = next.currentQuestionIndex;
+        });
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (_pageController.hasClients) {
+            _pageController.jumpToPage(next.currentQuestionIndex);
+          }
+        });
+      } else if (previous != null &&
+          previous.status == ExamAttemptStatus.inProgress &&
+          previous.currentSectionIndex != next.currentSectionIndex) {
+        // User changed sections, reset to 0
         setState(() {
           _currentQuestionIndex = 0;
         });
@@ -244,11 +271,10 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
         state.currentSectionIndex < state.sections.length - 1;
 
     return PopScope(
-      canPop: true,
+      canPop: false,
       onPopInvokedWithResult: (didPop, result) {
-        if (didPop) {
-          ref.read(examAttemptProvider.notifier).reset();
-        }
+        if (didPop) return;
+        setState(() => _showPauseConfirmation = true);
       },
       child: Container(
         color: design.colors.surface,
@@ -259,7 +285,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
               TestHeader(
                 exam: state.exam!,
                 timeFormatted: _formatTime(state.remainingSeconds),
-                onExit: widget.onClose,
+                onExit: () => setState(() => _showPauseConfirmation = true),
               ),
               SectionsTabBar(
                 state: state,
@@ -380,18 +406,37 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                 ref
                     .read(examAttemptProvider.notifier)
                     .endExam(state.attempt!.endUrl);
-              },
-            ),
-          if (state.status == ExamAttemptStatus.completed)
-            TestResultView(
-              score: state.attempt?.score,
-              onReviewAnswers: () => _openReviewAnswers(state),
-              onViewAnalytics: () => _openAnalytics(state),
-              onClose: widget.onClose,
-            ),
-        ],
-      ),
-    ),);
+                },
+              ),
+            if (_showPauseConfirmation)
+              PauseConfirmationDialog(
+                disablePause:
+                    state.exam?.disableAttemptResume ??
+                    widget.lesson?.disableAttemptResume ??
+                    false,
+                onCancel: () => setState(() => _showPauseConfirmation = false),
+                onPause: () {
+                  setState(() => _showPauseConfirmation = false);
+                  ref.read(examAttemptProvider.notifier).reset();
+                  widget.onClose();
+                },
+                onEnd: () {
+                  setState(() => _showPauseConfirmation = false);
+                  ref
+                      .read(examAttemptProvider.notifier)
+                      .endExam(state.attempt!.endUrl);
+                },
+              ),
+            if (state.status == ExamAttemptStatus.completed)
+              TestResultView(
+                score: state.attempt?.score,
+                onReviewAnswers: () => _openReviewAnswers(state),
+                onViewAnalytics: () => _openAnalytics(state),
+                onClose: widget.onClose,
+              ),
+          ],
+        ),
+      ),);
   }
 
   void _handleOptionSelect(ExamAttemptState state, QuestionDto question, String optionId) {

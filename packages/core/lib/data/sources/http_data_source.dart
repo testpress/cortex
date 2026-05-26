@@ -517,8 +517,10 @@ class HttpDataSource implements DataSource {
   Future<List<QuestionDto>> getQuestions(String questionsUrl) async {
     if (questionsUrl.isEmpty) return [];
 
+    final String resolvedUrl = questionsUrl.replaceAll('v2.3', 'v2.2.1');
+
     final dynamic firstPageData = await performNetworkRequest(
-      _dio.get(questionsUrl),
+      _dio.get(resolvedUrl),
       fromJson: (json) => json,
     );
 
@@ -546,7 +548,7 @@ class HttpDataSource implements DataSource {
     if (nextUrl != null && nextUrl.isNotEmpty && count > 0 && perPage > 0) {
       final int totalPages = (count / perPage).ceil();
       if (totalPages > 1) {
-        final uri = Uri.parse(questionsUrl);
+        final uri = Uri.parse(resolvedUrl);
         final List<Future<dynamic>> futureRequests = [];
 
         for (int page = 2; page <= totalPages; page++) {
