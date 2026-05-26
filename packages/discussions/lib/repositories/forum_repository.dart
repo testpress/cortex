@@ -109,6 +109,7 @@ class ForumRepository {
             ? ForumThreadStatus.answered
             : ForumThreadStatus.unanswered,
         imageUrl: row.imageUrl,
+        contentHtml: row.contentHtml,
       );
 
   ForumThreadsTableCompanion _dtoToCompanion(ForumThreadDto dto) =>
@@ -127,6 +128,7 @@ class ForumRepository {
         status: dto.status.name,
         imageUrl: Value(dto.imageUrl),
         categorySlug: Value(dto.categorySlug),
+        contentHtml: Value(dto.contentHtml),
       );
 
   ForumCommentDto _commentRowToDto(ForumCommentsTableData row) => ForumCommentDto(

@@ -4186,6 +4186,17 @@ class $ForumThreadsTableTable extends ForumThreadsTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _contentHtmlMeta = const VerificationMeta(
+    'contentHtml',
+  );
+  @override
+  late final GeneratedColumn<String> contentHtml = GeneratedColumn<String>(
+    'content_html',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -4202,6 +4213,7 @@ class $ForumThreadsTableTable extends ForumThreadsTable
     status,
     imageUrl,
     categorySlug,
+    contentHtml,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4317,6 +4329,15 @@ class $ForumThreadsTableTable extends ForumThreadsTable
         ),
       );
     }
+    if (data.containsKey('content_html')) {
+      context.handle(
+        _contentHtmlMeta,
+        contentHtml.isAcceptableOrUnknown(
+          data['content_html']!,
+          _contentHtmlMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -4382,6 +4403,10 @@ class $ForumThreadsTableTable extends ForumThreadsTable
         DriftSqlType.string,
         data['${effectivePrefix}category_slug'],
       ),
+      contentHtml: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content_html'],
+      ),
     );
   }
 
@@ -4411,6 +4436,7 @@ class ForumThreadsTableData extends DataClass
   final String status;
   final String? imageUrl;
   final String? categorySlug;
+  final String? contentHtml;
   const ForumThreadsTableData({
     required this.id,
     this.courseId,
@@ -4426,6 +4452,7 @@ class ForumThreadsTableData extends DataClass
     required this.status,
     this.imageUrl,
     this.categorySlug,
+    this.contentHtml,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -4453,6 +4480,9 @@ class ForumThreadsTableData extends DataClass
     }
     if (!nullToAbsent || categorySlug != null) {
       map['category_slug'] = Variable<String>(categorySlug);
+    }
+    if (!nullToAbsent || contentHtml != null) {
+      map['content_html'] = Variable<String>(contentHtml);
     }
     return map;
   }
@@ -4483,6 +4513,9 @@ class ForumThreadsTableData extends DataClass
       categorySlug: categorySlug == null && nullToAbsent
           ? const Value.absent()
           : Value(categorySlug),
+      contentHtml: contentHtml == null && nullToAbsent
+          ? const Value.absent()
+          : Value(contentHtml),
     );
   }
 
@@ -4506,6 +4539,7 @@ class ForumThreadsTableData extends DataClass
       status: serializer.fromJson<String>(json['status']),
       imageUrl: serializer.fromJson<String?>(json['imageUrl']),
       categorySlug: serializer.fromJson<String?>(json['categorySlug']),
+      contentHtml: serializer.fromJson<String?>(json['contentHtml']),
     );
   }
   @override
@@ -4526,6 +4560,7 @@ class ForumThreadsTableData extends DataClass
       'status': serializer.toJson<String>(status),
       'imageUrl': serializer.toJson<String?>(imageUrl),
       'categorySlug': serializer.toJson<String?>(categorySlug),
+      'contentHtml': serializer.toJson<String?>(contentHtml),
     };
   }
 
@@ -4544,6 +4579,7 @@ class ForumThreadsTableData extends DataClass
     String? status,
     Value<String?> imageUrl = const Value.absent(),
     Value<String?> categorySlug = const Value.absent(),
+    Value<String?> contentHtml = const Value.absent(),
   }) => ForumThreadsTableData(
     id: id ?? this.id,
     courseId: courseId.present ? courseId.value : this.courseId,
@@ -4559,6 +4595,7 @@ class ForumThreadsTableData extends DataClass
     status: status ?? this.status,
     imageUrl: imageUrl.present ? imageUrl.value : this.imageUrl,
     categorySlug: categorySlug.present ? categorySlug.value : this.categorySlug,
+    contentHtml: contentHtml.present ? contentHtml.value : this.contentHtml,
   );
   ForumThreadsTableData copyWithCompanion(ForumThreadsTableCompanion data) {
     return ForumThreadsTableData(
@@ -4586,6 +4623,9 @@ class ForumThreadsTableData extends DataClass
       categorySlug: data.categorySlug.present
           ? data.categorySlug.value
           : this.categorySlug,
+      contentHtml: data.contentHtml.present
+          ? data.contentHtml.value
+          : this.contentHtml,
     );
   }
 
@@ -4605,7 +4645,8 @@ class ForumThreadsTableData extends DataClass
           ..write('threadId: $threadId, ')
           ..write('status: $status, ')
           ..write('imageUrl: $imageUrl, ')
-          ..write('categorySlug: $categorySlug')
+          ..write('categorySlug: $categorySlug, ')
+          ..write('contentHtml: $contentHtml')
           ..write(')'))
         .toString();
   }
@@ -4626,6 +4667,7 @@ class ForumThreadsTableData extends DataClass
     status,
     imageUrl,
     categorySlug,
+    contentHtml,
   );
   @override
   bool operator ==(Object other) =>
@@ -4644,7 +4686,8 @@ class ForumThreadsTableData extends DataClass
           other.threadId == this.threadId &&
           other.status == this.status &&
           other.imageUrl == this.imageUrl &&
-          other.categorySlug == this.categorySlug);
+          other.categorySlug == this.categorySlug &&
+          other.contentHtml == this.contentHtml);
 }
 
 class ForumThreadsTableCompanion
@@ -4663,6 +4706,7 @@ class ForumThreadsTableCompanion
   final Value<String> status;
   final Value<String?> imageUrl;
   final Value<String?> categorySlug;
+  final Value<String?> contentHtml;
   final Value<int> rowid;
   const ForumThreadsTableCompanion({
     this.id = const Value.absent(),
@@ -4679,6 +4723,7 @@ class ForumThreadsTableCompanion
     this.status = const Value.absent(),
     this.imageUrl = const Value.absent(),
     this.categorySlug = const Value.absent(),
+    this.contentHtml = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ForumThreadsTableCompanion.insert({
@@ -4696,6 +4741,7 @@ class ForumThreadsTableCompanion
     required String status,
     this.imageUrl = const Value.absent(),
     this.categorySlug = const Value.absent(),
+    this.contentHtml = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        title = Value(title),
@@ -4718,6 +4764,7 @@ class ForumThreadsTableCompanion
     Expression<String>? status,
     Expression<String>? imageUrl,
     Expression<String>? categorySlug,
+    Expression<String>? contentHtml,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -4735,6 +4782,7 @@ class ForumThreadsTableCompanion
       if (status != null) 'status': status,
       if (imageUrl != null) 'image_url': imageUrl,
       if (categorySlug != null) 'category_slug': categorySlug,
+      if (contentHtml != null) 'content_html': contentHtml,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4754,6 +4802,7 @@ class ForumThreadsTableCompanion
     Value<String>? status,
     Value<String?>? imageUrl,
     Value<String?>? categorySlug,
+    Value<String?>? contentHtml,
     Value<int>? rowid,
   }) {
     return ForumThreadsTableCompanion(
@@ -4771,6 +4820,7 @@ class ForumThreadsTableCompanion
       status: status ?? this.status,
       imageUrl: imageUrl ?? this.imageUrl,
       categorySlug: categorySlug ?? this.categorySlug,
+      contentHtml: contentHtml ?? this.contentHtml,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -4820,6 +4870,9 @@ class ForumThreadsTableCompanion
     if (categorySlug.present) {
       map['category_slug'] = Variable<String>(categorySlug.value);
     }
+    if (contentHtml.present) {
+      map['content_html'] = Variable<String>(contentHtml.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -4843,6 +4896,7 @@ class ForumThreadsTableCompanion
           ..write('status: $status, ')
           ..write('imageUrl: $imageUrl, ')
           ..write('categorySlug: $categorySlug, ')
+          ..write('contentHtml: $contentHtml, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -14210,6 +14264,7 @@ typedef $$ForumThreadsTableTableCreateCompanionBuilder =
       required String status,
       Value<String?> imageUrl,
       Value<String?> categorySlug,
+      Value<String?> contentHtml,
       Value<int> rowid,
     });
 typedef $$ForumThreadsTableTableUpdateCompanionBuilder =
@@ -14228,6 +14283,7 @@ typedef $$ForumThreadsTableTableUpdateCompanionBuilder =
       Value<String> status,
       Value<String?> imageUrl,
       Value<String?> categorySlug,
+      Value<String?> contentHtml,
       Value<int> rowid,
     });
 
@@ -14307,6 +14363,11 @@ class $$ForumThreadsTableTableFilterComposer
 
   ColumnFilters<String> get categorySlug => $composableBuilder(
     column: $table.categorySlug,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contentHtml => $composableBuilder(
+    column: $table.contentHtml,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -14389,6 +14450,11 @@ class $$ForumThreadsTableTableOrderingComposer
     column: $table.categorySlug,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get contentHtml => $composableBuilder(
+    column: $table.contentHtml,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$ForumThreadsTableTableAnnotationComposer
@@ -14451,6 +14517,11 @@ class $$ForumThreadsTableTableAnnotationComposer
     column: $table.categorySlug,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get contentHtml => $composableBuilder(
+    column: $table.contentHtml,
+    builder: (column) => column,
+  );
 }
 
 class $$ForumThreadsTableTableTableManager
@@ -14507,6 +14578,7 @@ class $$ForumThreadsTableTableTableManager
                 Value<String> status = const Value.absent(),
                 Value<String?> imageUrl = const Value.absent(),
                 Value<String?> categorySlug = const Value.absent(),
+                Value<String?> contentHtml = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ForumThreadsTableCompanion(
                 id: id,
@@ -14523,6 +14595,7 @@ class $$ForumThreadsTableTableTableManager
                 status: status,
                 imageUrl: imageUrl,
                 categorySlug: categorySlug,
+                contentHtml: contentHtml,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -14541,6 +14614,7 @@ class $$ForumThreadsTableTableTableManager
                 required String status,
                 Value<String?> imageUrl = const Value.absent(),
                 Value<String?> categorySlug = const Value.absent(),
+                Value<String?> contentHtml = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ForumThreadsTableCompanion.insert(
                 id: id,
@@ -14557,6 +14631,7 @@ class $$ForumThreadsTableTableTableManager
                 status: status,
                 imageUrl: imageUrl,
                 categorySlug: categorySlug,
+                contentHtml: contentHtml,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

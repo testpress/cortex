@@ -20,6 +20,7 @@ class ForumThreadsTable extends Table {
   TextColumn get status => text()();
   TextColumn get imageUrl => text().nullable()();
   TextColumn get categorySlug => text().nullable()();
+  TextColumn get contentHtml => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};

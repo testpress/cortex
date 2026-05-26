@@ -238,6 +238,10 @@ class _ThreadContentHeader extends StatelessWidget {
           AppText.title(thread.title, color: design.colors.textPrimary),
           SizedBox(height: design.spacing.md),
           _ThreadMeta(thread: thread),
+          if (thread.categorySlug != null && thread.categorySlug!.isNotEmpty) ...[
+            SizedBox(height: design.spacing.md),
+            _CategoryBadge(slug: thread.categorySlug!),
+          ],
           SizedBox(height: design.spacing.lg),
           if (thread.contentHtml != null && thread.contentHtml!.trim().isNotEmpty)
             AppHtml(
@@ -295,6 +299,37 @@ class _AuthorInfo extends StatelessWidget {
         AppText.labelBold(name, color: design.colors.textPrimary),
         AppText.caption(_formatDateSafe(createdAt), color: design.colors.textSecondary),
       ],
+    );
+  }
+}
+
+class _CategoryBadge extends StatelessWidget {
+  final String slug;
+
+  const _CategoryBadge({required this.slug});
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+
+    final label = slug
+        .split('-')
+        .map((s) => s.isNotEmpty ? '${s[0].toUpperCase()}${s.substring(1)}' : '')
+        .join(' ');
+
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: design.spacing.sm,
+        vertical: design.spacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color: design.colors.surfaceVariant,
+        borderRadius: BorderRadius.circular(design.radius.sm),
+      ),
+      child: AppText.caption(
+        label,
+        color: design.colors.textSecondary,
+      ),
     );
   }
 }
