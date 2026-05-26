@@ -105,7 +105,7 @@ class ForumPostDetailScreen extends ConsumerWidget {
       return Center(child: AppText.body(l10n.errorGenericMessage));
     }
 
-    final thread = threadAsync.valueOrNull;
+    final thread = threadAsync.valueOrNull ?? initialThread;
     final isLoading = threadAsync.isLoading && thread == null;
 
     if (thread == null && !isLoading) {
