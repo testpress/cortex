@@ -374,27 +374,38 @@ class ForumToolbarToggle extends StatelessWidget {
 
 class ForumSendButton extends StatelessWidget {
   final VoidCallback onTap;
+  final bool isLoading;
 
-  const ForumSendButton({super.key, required this.onTap});
+  const ForumSendButton({
+    super.key, 
+    required this.onTap,
+    this.isLoading = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
     return AppFocusable(
-      onTap: onTap,
+      onTap: isLoading ? null : onTap,
       borderRadius: BorderRadius.circular(design.radius.full),
       child: Container(
         padding: EdgeInsets.all(design.spacing.sm),
         decoration: BoxDecoration(
-          color: design.colors.accent2,
+          color: isLoading ? design.colors.textSecondary : design.colors.accent2,
           shape: BoxShape.circle,
         ),
-        child: Icon(
-          LucideIcons.send,
-          color: design.colors.textInverse,
-          size: 18,
-        ),
+        child: isLoading 
+            ? SizedBox(
+                width: 18, 
+                height: 18, 
+                child: AppLoadingIndicator(color: design.colors.textInverse)
+              )
+            : Icon(
+                LucideIcons.send,
+                color: design.colors.textInverse,
+                size: 18,
+              ),
       ),
     );
   }

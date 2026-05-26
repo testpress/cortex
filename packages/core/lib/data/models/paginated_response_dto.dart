@@ -33,22 +33,44 @@ class PaginatedResponseDto<T> {
       rawResults = _resolveTags(rawResults);
     }
 
-    final rawList = rawResults as List<dynamic>? ?? [];
+    final rawList = rawResults is List ? rawResults : const <dynamic>[];
+    final safeItems = rawList
+        .whereType<Map>()
+        .map((e) => e.map((k, v) => MapEntry(k.toString(), v)))
+        .toList();
 
     return PaginatedResponseDto<T>(
-      results: rawList.map((e) => fromJsonT(e as Map<String, dynamic>)).toList(),
-      next: json['next'] as String?,
-      previous: json['previous'] as String?,
-      count: (json['count'] as int?) ?? rawList.length,
+      results: safeItems.map((e) => fromJsonT(e)).toList(),
+      next: _asNullableString(json['next']),
+      previous: _asNullableString(json['previous']),
+      count: _asNullableInt(json['count']) ?? safeItems.length,
     );
+  }
+
+  static String? _asNullableString(dynamic value) {
+    if (value == null) return null;
+    if (value is String) return value;
+    return value.toString();
+  }
+
+  static int? _asNullableInt(dynamic value) {
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value);
+    return null;
   }
 
   static List<dynamic> _resolveTags(Map<String, dynamic> results) {
     final tagsList = results['tags'] as List<dynamic>? ?? [];
-    final tagMap = {
-      for (var t in tagsList.whereType<Map<String, dynamic>>())
-        t['id'] as int: t['name'] as String
-    };
+    final tagMap = <int, String>{};
+    for (final t in tagsList.whereType<Map>()) {
+      final idRaw = t['id'];
+      final nameRaw = t['name'];
+      final id = idRaw is int ? idRaw : (idRaw is String ? int.tryParse(idRaw) : null);
+      final name = nameRaw?.toString();
+      if (id != null && name != null && name.isNotEmpty) {
+        tagMap[id] = name;
+      }
+    }
 
     // Prefer the known Testpress payload key.
     List<dynamic> nestedList;

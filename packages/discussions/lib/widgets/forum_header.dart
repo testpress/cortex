@@ -39,13 +39,13 @@ class ForumHeader extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Back chevron inline with title
+              // Back arrow inline with title
               GestureDetector(
                 onTap: () => context.pop(),
                 child: Padding(
                   padding: const EdgeInsets.only(top: 2), // Optical alignment
                   child: Icon(
-                    LucideIcons.chevronLeft,
+                    LucideIcons.arrowLeft,
                     color: design.colors.textPrimary,
                     size: 22,
                   ),

@@ -10,7 +10,6 @@ import 'tables/chapters_table.dart';
 import 'tables/lessons_table.dart';
 import 'tables/live_classes_table.dart';
 import 'tables/forum_threads_table.dart';
-import 'tables/forum_comments_table.dart';
 import 'tables/user_progress_table.dart';
 import 'tables/app_settings_table.dart';
 import 'tables/users_table.dart';
@@ -48,7 +47,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 23;
+  int get schemaVersion => 24;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -244,6 +243,15 @@ class AppDatabase extends _$AppDatabase {
             await createTableSafely(monthlyLeaderboardTable);
             await createTableSafely(allTimeLeaderboardTable);
           }
+          if (from < 24) {
+            // Version 24: Forum schema updates
+            // - courseId nullable, add categorySlug & threadId to forum threads
+            // - threadId type text→int in forum comments
+            // ignore: experimental_member_use
+            await m.alterTable(TableMigration(forumThreadsTable));
+            // ignore: experimental_member_use
+            await m.alterTable(TableMigration(forumCommentsTable));
+          }
         },
       );
 
@@ -404,6 +412,13 @@ class AppDatabase extends _$AppDatabase {
 
   // ── Forum Threads ─────────────────────────────────────────────────────────
 
+  Stream<List<ForumThreadsTableData>> watchAllThreads() =>
+      select(forumThreadsTable).watch();
+
+  Stream<ForumThreadsTableData?> watchThreadBySlug(String slug) =>
+      (select(forumThreadsTable)..where((t) => t.id.equals(slug)))
+          .watchSingleOrNull();
+
   Stream<List<ForumThreadsTableData>> watchThreadsForCourse(String courseId) =>
       (select(
         forumThreadsTable,
@@ -419,10 +434,10 @@ class AppDatabase extends _$AppDatabase {
 
   // ── Forum Comments ─────────────────────────────────────────────────────────
 
-  Stream<List<ForumCommentsTableData>> watchCommentsForThread(String threadId) =>
-      (select(
-        forumCommentsTable,
-      )..where((t) => t.threadId.equals(threadId)))
+  Stream<List<ForumCommentsTableData>> watchCommentsForThread(int threadId) =>
+      (select(forumCommentsTable)
+            ..where((t) => t.threadId.equals(threadId))
+            ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
           .watch();
 
   Future<void> upsertForumComments(List<ForumCommentsTableCompanion> rows) =>

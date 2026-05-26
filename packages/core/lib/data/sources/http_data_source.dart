@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:core/data/data.dart';
 import '../../network/network_utils.dart';
@@ -180,16 +181,100 @@ class HttpDataSource implements DataSource {
   );
 
   @override
-  Future<List<ForumThreadDto>> getForumThreads(String courseId) =>
-      Future.value(mockForumThreads(courseId));
+  Future<List<ForumCategoryDto>> getForumCategories() async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.forumCategories),
+      fromJson: (data) {
+        final results = data['results'] as List<dynamic>? ?? [];
+        return results
+            .map((e) => ForumCategoryDto.fromJson(e as Map<String, dynamic>))
+            .toList();
+      },
+    );
+  }
 
   @override
-  Future<List<ForumCategoryDto>> getForumCategories(String courseId) =>
-      Future.value(mockForumCategories);
+  Future<PaginatedResponseDto<ForumThreadDto>> getForumThreads({int page = 1, int? categoryId, String? searchQuery}) async {
+    return performNetworkRequest(
+      _dio.get(
+        ApiEndpoints.forumThreads,
+        queryParameters: {
+          'page': page,
+          'category': ?categoryId,
+          if (searchQuery != null && searchQuery.isNotEmpty) 'search': searchQuery,
+        },
+      ),
+      fromJson: (json) => PaginatedResponseDto<ForumThreadDto>.fromJson(
+        json,
+        (item) => ForumThreadDto.fromJson(item),
+      ),
+    );
+  }
 
   @override
-  Future<List<ForumCommentDto>> getForumComments(String threadId) =>
-      Future.value(mockForumComments(threadId));
+  Future<PaginatedResponseDto<ForumCommentDto>> getForumComments({required int threadId, int page = 1}) async {
+    return performNetworkRequest(
+      _dio.get(
+        ApiEndpoints.forumComments(threadId),
+        queryParameters: {
+          'page': page,
+          'o': '-created',
+        },
+      ),
+      fromJson: (json) => PaginatedResponseDto<ForumCommentDto>.fromJson(
+        json,
+        (item) => ForumCommentDto.fromJson(item),
+      ),
+    );
+  }
+
+  @override
+  Future<ForumCommentDto> postForumComment({required int threadId, required String content}) async {
+    return performNetworkRequest(
+      _dio.post(
+        ApiEndpoints.forumComments(threadId),
+        data: {'comment': content},
+      ),
+      fromJson: (json) => ForumCommentDto.fromJson(json),
+    );
+  }
+
+  @override
+  Future<String> uploadImage(File file) async {
+    final fileName = file.path.split('/').last;
+    final formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(file.path, filename: fileName),
+    });
+
+    return performNetworkRequest(
+      _dio.post(
+        ApiEndpoints.imageUpload,
+        data: formData,
+      ),
+      fromJson: (json) => json['url'] as String,
+    );
+  }
+
+  @override
+  Future<ForumThreadDto> postForumThread({
+    required String title,
+    required String contentHtml,
+    required String categorySlug,
+    String? courseId,
+  }) async {
+    return performNetworkRequest(
+      _dio.post(
+        ApiEndpoints.forumThreads,
+        data: {
+          'title': title,
+          'content_html': contentHtml,
+          'category': categorySlug,
+          'course_id': ?courseId,
+        },
+      ),
+      fromJson: (json) => ForumThreadDto.fromJson(json),
+    );
+  }
 
   @override
   Future<List<UserProgressDto>> getUserProgress(String userId) =>

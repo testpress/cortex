@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:drift/drift.dart';
 import 'package:core/data/data.dart';
 
@@ -8,41 +10,98 @@ class ForumRepository {
 
   ForumRepository(this._db, this._source);
 
+  // ── Categories ───────────────────────────────────────────────────────────
+
+  Future<List<ForumCategoryDto>> fetchCategories() {
+    return _source.getForumCategories();
+  }
+
+  // ── Threads ──────────────────────────────────────────────────────────────
+
+  Future<PaginatedResponseDto<ForumThreadDto>> fetchThreads({int page = 1, int? categoryId, String? searchQuery}) async {
+    final response = await _source.getForumThreads(page: page, categoryId: categoryId, searchQuery: searchQuery);
+    final companions = response.results.map(_dtoToCompanion).toList();
+    await _db.upsertForumThreads(companions);
+    return response;
+  }
+
+  Stream<List<ForumThreadDto>> watchAllThreads() {
+    return _db.watchAllThreads().map((rows) => rows.map(_rowToDto).toList());
+  }
+
+  Stream<ForumThreadDto?> watchThreadBySlug(String slug) {
+    return _db.watchThreadBySlug(slug).map((row) => row != null ? _rowToDto(row) : null);
+  }
+
+  @Deprecated('Use watchAllThreads instead')
   Stream<List<ForumThreadDto>> watchThreads(String courseId) {
     return _db
         .watchThreadsForCourse(courseId)
         .map((rows) => rows.map(_rowToDto).toList());
   }
 
+  @Deprecated('Use watchThreadBySlug instead')
   Stream<ForumThreadDto?> watchThread(String threadId) {
     return _db
         .watchThreadById(threadId)
         .map((row) => row != null ? _rowToDto(row) : null);
   }
 
-  Future<int> getThreadsCount(String courseId) async {
-    final results = await _db.watchThreadsForCourse(courseId).first;
-    return results.length;
+  // ── Comments ─────────────────────────────────────────────────────────────
+
+  Future<PaginatedResponseDto<ForumCommentDto>> fetchComments({required int threadId, int page = 1}) async {
+    final response = await _source.getForumComments(threadId: threadId, page: page);
+    final companions = response.results.map(_commentDtoToCompanion).toList();
+    await _db.upsertForumComments(companions);
+    return response;
   }
 
-  Future<void> refreshThreads(String courseId) async {
-    final threads = await _source.getForumThreads(courseId);
-    final companions = threads.map(_dtoToCompanion).toList();
-    await _db.upsertForumThreads(companions);
+  Stream<List<ForumCommentDto>> watchComments(int threadId) {
+    return _db
+        .watchCommentsForThread(threadId)
+        .map((rows) => rows.map(_commentRowToDto).toList());
   }
 
-  Future<List<ForumCategoryDto>> getCategories(String courseId) {
-    return _source.getForumCategories(courseId);
+  Future<ForumCommentDto> postComment({required int threadId, required String content}) async {
+    final commentDto = await _source.postForumComment(threadId: threadId, content: content);
+    final companion = _commentDtoToCompanion(commentDto);
+    await _db.upsertForumComments([companion]);
+    return commentDto;
   }
+
+  Future<String> uploadImage(File file) {
+    return _source.uploadImage(file);
+  }
+
+  Future<ForumThreadDto> createThread({
+    required String title,
+    required String html,
+    required String categorySlug,
+    String? courseId,
+  }) async {
+    final threadDto = await _source.postForumThread(
+      title: title,
+      contentHtml: html,
+      categorySlug: categorySlug,
+      courseId: courseId,
+    );
+    await _db.upsertForumThreads([_dtoToCompanion(threadDto)]);
+    return threadDto;
+  }
+
+  // ── Mappers ──────────────────────────────────────────────────────────────
 
   ForumThreadDto _rowToDto(ForumThreadsTableData row) => ForumThreadDto(
-        id: row.id,
+        threadId: row.threadId ?? 0,
+        slug: row.id,
         courseId: row.courseId,
+        categoryId: null,
+        categorySlug: row.categorySlug,
         title: row.title,
-        description: row.description,
+        summary: row.description,
         authorName: row.authorName,
         authorAvatar: row.authorAvatar,
-        timeAgo: row.timeAgo,
+        createdAt: row.createdAt,
         replyCount: row.replyCount,
         upvotes: row.upvotes,
         downvotes: row.downvotes,
@@ -50,37 +109,27 @@ class ForumRepository {
             ? ForumThreadStatus.answered
             : ForumThreadStatus.unanswered,
         imageUrl: row.imageUrl,
+        contentHtml: row.contentHtml,
       );
 
   ForumThreadsTableCompanion _dtoToCompanion(ForumThreadDto dto) =>
       ForumThreadsTableCompanion.insert(
-        id: dto.id,
-        courseId: dto.courseId,
+        id: dto.slug,
+        courseId: Value(dto.courseId),
+        threadId: Value(dto.threadId),
         title: dto.title,
-        description: dto.description,
+        description: dto.summary,
         authorName: dto.authorName,
         authorAvatar: Value(dto.authorAvatar),
-        timeAgo: dto.timeAgo,
+        createdAt: dto.createdAt,
         replyCount: Value(dto.replyCount),
         upvotes: Value(dto.upvotes),
         downvotes: Value(dto.downvotes),
         status: dto.status.name,
         imageUrl: Value(dto.imageUrl),
+        categorySlug: Value(dto.categorySlug),
+        contentHtml: Value(dto.contentHtml),
       );
-
-  // ── Comments ─────────────────────────────────────────────────────────────
-
-  Stream<List<ForumCommentDto>> watchComments(String threadId) {
-    return _db
-        .watchCommentsForThread(threadId)
-        .map((rows) => rows.map(_commentRowToDto).toList());
-  }
-
-  Future<void> refreshComments(String threadId) async {
-    final comments = await _source.getForumComments(threadId);
-    final companions = comments.map(_commentDtoToCompanion).toList();
-    await _db.upsertForumComments(companions);
-  }
 
   ForumCommentDto _commentRowToDto(ForumCommentsTableData row) => ForumCommentDto(
         id: row.id,
@@ -88,7 +137,7 @@ class ForumRepository {
         authorName: row.authorName,
         authorAvatar: row.authorAvatar,
         content: row.content,
-        timeAgo: row.timeAgo,
+        createdAt: row.createdAt,
         upvotes: row.upvotes,
         downvotes: row.downvotes,
         isInstructor: row.isInstructor,
@@ -101,7 +150,7 @@ class ForumRepository {
         authorName: dto.authorName,
         authorAvatar: Value(dto.authorAvatar),
         content: dto.content,
-        timeAgo: dto.timeAgo,
+        createdAt: dto.createdAt,
         upvotes: Value(dto.upvotes),
         downvotes: Value(dto.downvotes),
         isInstructor: Value(dto.isInstructor),

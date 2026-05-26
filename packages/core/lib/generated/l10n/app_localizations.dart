@@ -2978,6 +2978,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to logout'**
   String get loginActivityLogoutFailed;
+
+  /// No description provided for @forumErrorFailedToCreatePost.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create post'**
+  String get forumErrorFailedToCreatePost;
+
+  /// No description provided for @forumErrorDiscussionNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Discussion not found'**
+  String get forumErrorDiscussionNotFound;
+
+  /// No description provided for @forumErrorLoadingComments.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading comments'**
+  String get forumErrorLoadingComments;
+
+  /// No description provided for @forumCommentsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No Comments Yet'**
+  String get forumCommentsEmptyTitle;
+
+  /// No description provided for @forumCommentsEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Be the first to reply to this thread.'**
+  String get forumCommentsEmptySubtitle;
+
+  /// No description provided for @forumRepliesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count,plural, =1{1 Reply} other{{count} Replies}}'**
+  String forumRepliesCount(int count);
+
+  /// No description provided for @forumRoleInstructor.
+  ///
+  /// In en, this message translates to:
+  /// **'Instructor'**
+  String get forumRoleInstructor;
+
+  /// No description provided for @forumErrorFailedToPostReply.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to post reply'**
+  String get forumErrorFailedToPostReply;
 }
 
 class _AppLocalizationsDelegate

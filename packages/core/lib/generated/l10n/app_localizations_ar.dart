@@ -1633,4 +1633,36 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get loginActivityLogoutFailed => 'فشل تسجيل الخروج';
+
+  @override
+  String get forumErrorFailedToCreatePost => 'فشل في إنشاء المنشور';
+
+  @override
+  String get forumErrorDiscussionNotFound => 'النقاش غير موجود';
+
+  @override
+  String get forumErrorLoadingComments => 'خطأ في تحميل التعليقات';
+
+  @override
+  String get forumCommentsEmptyTitle => 'لا توجد تعليقات بعد';
+
+  @override
+  String get forumCommentsEmptySubtitle => 'كن أول من يرد على هذا الموضوع.';
+
+  @override
+  String forumRepliesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ردود',
+      one: 'رد واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get forumRoleInstructor => 'مدرب';
+
+  @override
+  String get forumErrorFailedToPostReply => 'فشل في نشر الرد';
 }

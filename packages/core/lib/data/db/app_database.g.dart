@@ -4051,9 +4051,9 @@ class $ForumThreadsTableTable extends ForumThreadsTable
   late final GeneratedColumn<String> courseId = GeneratedColumn<String>(
     'course_id',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
@@ -4097,12 +4097,12 @@ class $ForumThreadsTableTable extends ForumThreadsTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _timeAgoMeta = const VerificationMeta(
-    'timeAgo',
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
   );
   @override
-  late final GeneratedColumn<String> timeAgo = GeneratedColumn<String>(
-    'time_ago',
+  late final GeneratedColumn<String> createdAt = GeneratedColumn<String>(
+    'created_at',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -4144,6 +4144,17 @@ class $ForumThreadsTableTable extends ForumThreadsTable
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _threadIdMeta = const VerificationMeta(
+    'threadId',
+  );
+  @override
+  late final GeneratedColumn<int> threadId = GeneratedColumn<int>(
+    'thread_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
   late final GeneratedColumn<String> status = GeneratedColumn<String>(
@@ -4164,6 +4175,28 @@ class $ForumThreadsTableTable extends ForumThreadsTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _categorySlugMeta = const VerificationMeta(
+    'categorySlug',
+  );
+  @override
+  late final GeneratedColumn<String> categorySlug = GeneratedColumn<String>(
+    'category_slug',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _contentHtmlMeta = const VerificationMeta(
+    'contentHtml',
+  );
+  @override
+  late final GeneratedColumn<String> contentHtml = GeneratedColumn<String>(
+    'content_html',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -4172,12 +4205,15 @@ class $ForumThreadsTableTable extends ForumThreadsTable
     description,
     authorName,
     authorAvatar,
-    timeAgo,
+    createdAt,
     replyCount,
     upvotes,
     downvotes,
+    threadId,
     status,
     imageUrl,
+    categorySlug,
+    contentHtml,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4201,8 +4237,6 @@ class $ForumThreadsTableTable extends ForumThreadsTable
         _courseIdMeta,
         courseId.isAcceptableOrUnknown(data['course_id']!, _courseIdMeta),
       );
-    } else if (isInserting) {
-      context.missing(_courseIdMeta);
     }
     if (data.containsKey('title')) {
       context.handle(
@@ -4240,13 +4274,13 @@ class $ForumThreadsTableTable extends ForumThreadsTable
         ),
       );
     }
-    if (data.containsKey('time_ago')) {
+    if (data.containsKey('created_at')) {
       context.handle(
-        _timeAgoMeta,
-        timeAgo.isAcceptableOrUnknown(data['time_ago']!, _timeAgoMeta),
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
       );
     } else if (isInserting) {
-      context.missing(_timeAgoMeta);
+      context.missing(_createdAtMeta);
     }
     if (data.containsKey('reply_count')) {
       context.handle(
@@ -4266,6 +4300,12 @@ class $ForumThreadsTableTable extends ForumThreadsTable
         downvotes.isAcceptableOrUnknown(data['downvotes']!, _downvotesMeta),
       );
     }
+    if (data.containsKey('thread_id')) {
+      context.handle(
+        _threadIdMeta,
+        threadId.isAcceptableOrUnknown(data['thread_id']!, _threadIdMeta),
+      );
+    }
     if (data.containsKey('status')) {
       context.handle(
         _statusMeta,
@@ -4278,6 +4318,24 @@ class $ForumThreadsTableTable extends ForumThreadsTable
       context.handle(
         _imageUrlMeta,
         imageUrl.isAcceptableOrUnknown(data['image_url']!, _imageUrlMeta),
+      );
+    }
+    if (data.containsKey('category_slug')) {
+      context.handle(
+        _categorySlugMeta,
+        categorySlug.isAcceptableOrUnknown(
+          data['category_slug']!,
+          _categorySlugMeta,
+        ),
+      );
+    }
+    if (data.containsKey('content_html')) {
+      context.handle(
+        _contentHtmlMeta,
+        contentHtml.isAcceptableOrUnknown(
+          data['content_html']!,
+          _contentHtmlMeta,
+        ),
       );
     }
     return context;
@@ -4296,7 +4354,7 @@ class $ForumThreadsTableTable extends ForumThreadsTable
       courseId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}course_id'],
-      )!,
+      ),
       title: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}title'],
@@ -4313,9 +4371,9 @@ class $ForumThreadsTableTable extends ForumThreadsTable
         DriftSqlType.string,
         data['${effectivePrefix}author_avatar'],
       ),
-      timeAgo: attachedDatabase.typeMapping.read(
+      createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}time_ago'],
+        data['${effectivePrefix}created_at'],
       )!,
       replyCount: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
@@ -4329,6 +4387,10 @@ class $ForumThreadsTableTable extends ForumThreadsTable
         DriftSqlType.int,
         data['${effectivePrefix}downvotes'],
       )!,
+      threadId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}thread_id'],
+      ),
       status: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}status'],
@@ -4336,6 +4398,14 @@ class $ForumThreadsTableTable extends ForumThreadsTable
       imageUrl: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}image_url'],
+      ),
+      categorySlug: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category_slug'],
+      ),
+      contentHtml: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content_html'],
       ),
     );
   }
@@ -4349,51 +4419,70 @@ class $ForumThreadsTableTable extends ForumThreadsTable
 class ForumThreadsTableData extends DataClass
     implements Insertable<ForumThreadsTableData> {
   final String id;
-  final String courseId;
+  final String? courseId;
   final String title;
   final String description;
   final String authorName;
   final String? authorAvatar;
-  final String timeAgo;
+  final String createdAt;
   final int replyCount;
   final int upvotes;
   final int downvotes;
 
   /// Stored as string: 'answered' | 'unanswered'
+  final int? threadId;
+
+  /// Stored as string: 'answered' | 'unanswered'
   final String status;
   final String? imageUrl;
+  final String? categorySlug;
+  final String? contentHtml;
   const ForumThreadsTableData({
     required this.id,
-    required this.courseId,
+    this.courseId,
     required this.title,
     required this.description,
     required this.authorName,
     this.authorAvatar,
-    required this.timeAgo,
+    required this.createdAt,
     required this.replyCount,
     required this.upvotes,
     required this.downvotes,
+    this.threadId,
     required this.status,
     this.imageUrl,
+    this.categorySlug,
+    this.contentHtml,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['course_id'] = Variable<String>(courseId);
+    if (!nullToAbsent || courseId != null) {
+      map['course_id'] = Variable<String>(courseId);
+    }
     map['title'] = Variable<String>(title);
     map['description'] = Variable<String>(description);
     map['author_name'] = Variable<String>(authorName);
     if (!nullToAbsent || authorAvatar != null) {
       map['author_avatar'] = Variable<String>(authorAvatar);
     }
-    map['time_ago'] = Variable<String>(timeAgo);
+    map['created_at'] = Variable<String>(createdAt);
     map['reply_count'] = Variable<int>(replyCount);
     map['upvotes'] = Variable<int>(upvotes);
     map['downvotes'] = Variable<int>(downvotes);
+    if (!nullToAbsent || threadId != null) {
+      map['thread_id'] = Variable<int>(threadId);
+    }
     map['status'] = Variable<String>(status);
     if (!nullToAbsent || imageUrl != null) {
       map['image_url'] = Variable<String>(imageUrl);
+    }
+    if (!nullToAbsent || categorySlug != null) {
+      map['category_slug'] = Variable<String>(categorySlug);
+    }
+    if (!nullToAbsent || contentHtml != null) {
+      map['content_html'] = Variable<String>(contentHtml);
     }
     return map;
   }
@@ -4401,21 +4490,32 @@ class ForumThreadsTableData extends DataClass
   ForumThreadsTableCompanion toCompanion(bool nullToAbsent) {
     return ForumThreadsTableCompanion(
       id: Value(id),
-      courseId: Value(courseId),
+      courseId: courseId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(courseId),
       title: Value(title),
       description: Value(description),
       authorName: Value(authorName),
       authorAvatar: authorAvatar == null && nullToAbsent
           ? const Value.absent()
           : Value(authorAvatar),
-      timeAgo: Value(timeAgo),
+      createdAt: Value(createdAt),
       replyCount: Value(replyCount),
       upvotes: Value(upvotes),
       downvotes: Value(downvotes),
+      threadId: threadId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(threadId),
       status: Value(status),
       imageUrl: imageUrl == null && nullToAbsent
           ? const Value.absent()
           : Value(imageUrl),
+      categorySlug: categorySlug == null && nullToAbsent
+          ? const Value.absent()
+          : Value(categorySlug),
+      contentHtml: contentHtml == null && nullToAbsent
+          ? const Value.absent()
+          : Value(contentHtml),
     );
   }
 
@@ -4426,17 +4526,20 @@ class ForumThreadsTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return ForumThreadsTableData(
       id: serializer.fromJson<String>(json['id']),
-      courseId: serializer.fromJson<String>(json['courseId']),
+      courseId: serializer.fromJson<String?>(json['courseId']),
       title: serializer.fromJson<String>(json['title']),
       description: serializer.fromJson<String>(json['description']),
       authorName: serializer.fromJson<String>(json['authorName']),
       authorAvatar: serializer.fromJson<String?>(json['authorAvatar']),
-      timeAgo: serializer.fromJson<String>(json['timeAgo']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
       replyCount: serializer.fromJson<int>(json['replyCount']),
       upvotes: serializer.fromJson<int>(json['upvotes']),
       downvotes: serializer.fromJson<int>(json['downvotes']),
+      threadId: serializer.fromJson<int?>(json['threadId']),
       status: serializer.fromJson<String>(json['status']),
       imageUrl: serializer.fromJson<String?>(json['imageUrl']),
+      categorySlug: serializer.fromJson<String?>(json['categorySlug']),
+      contentHtml: serializer.fromJson<String?>(json['contentHtml']),
     );
   }
   @override
@@ -4444,46 +4547,55 @@ class ForumThreadsTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'courseId': serializer.toJson<String>(courseId),
+      'courseId': serializer.toJson<String?>(courseId),
       'title': serializer.toJson<String>(title),
       'description': serializer.toJson<String>(description),
       'authorName': serializer.toJson<String>(authorName),
       'authorAvatar': serializer.toJson<String?>(authorAvatar),
-      'timeAgo': serializer.toJson<String>(timeAgo),
+      'createdAt': serializer.toJson<String>(createdAt),
       'replyCount': serializer.toJson<int>(replyCount),
       'upvotes': serializer.toJson<int>(upvotes),
       'downvotes': serializer.toJson<int>(downvotes),
+      'threadId': serializer.toJson<int?>(threadId),
       'status': serializer.toJson<String>(status),
       'imageUrl': serializer.toJson<String?>(imageUrl),
+      'categorySlug': serializer.toJson<String?>(categorySlug),
+      'contentHtml': serializer.toJson<String?>(contentHtml),
     };
   }
 
   ForumThreadsTableData copyWith({
     String? id,
-    String? courseId,
+    Value<String?> courseId = const Value.absent(),
     String? title,
     String? description,
     String? authorName,
     Value<String?> authorAvatar = const Value.absent(),
-    String? timeAgo,
+    String? createdAt,
     int? replyCount,
     int? upvotes,
     int? downvotes,
+    Value<int?> threadId = const Value.absent(),
     String? status,
     Value<String?> imageUrl = const Value.absent(),
+    Value<String?> categorySlug = const Value.absent(),
+    Value<String?> contentHtml = const Value.absent(),
   }) => ForumThreadsTableData(
     id: id ?? this.id,
-    courseId: courseId ?? this.courseId,
+    courseId: courseId.present ? courseId.value : this.courseId,
     title: title ?? this.title,
     description: description ?? this.description,
     authorName: authorName ?? this.authorName,
     authorAvatar: authorAvatar.present ? authorAvatar.value : this.authorAvatar,
-    timeAgo: timeAgo ?? this.timeAgo,
+    createdAt: createdAt ?? this.createdAt,
     replyCount: replyCount ?? this.replyCount,
     upvotes: upvotes ?? this.upvotes,
     downvotes: downvotes ?? this.downvotes,
+    threadId: threadId.present ? threadId.value : this.threadId,
     status: status ?? this.status,
     imageUrl: imageUrl.present ? imageUrl.value : this.imageUrl,
+    categorySlug: categorySlug.present ? categorySlug.value : this.categorySlug,
+    contentHtml: contentHtml.present ? contentHtml.value : this.contentHtml,
   );
   ForumThreadsTableData copyWithCompanion(ForumThreadsTableCompanion data) {
     return ForumThreadsTableData(
@@ -4499,14 +4611,21 @@ class ForumThreadsTableData extends DataClass
       authorAvatar: data.authorAvatar.present
           ? data.authorAvatar.value
           : this.authorAvatar,
-      timeAgo: data.timeAgo.present ? data.timeAgo.value : this.timeAgo,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       replyCount: data.replyCount.present
           ? data.replyCount.value
           : this.replyCount,
       upvotes: data.upvotes.present ? data.upvotes.value : this.upvotes,
       downvotes: data.downvotes.present ? data.downvotes.value : this.downvotes,
+      threadId: data.threadId.present ? data.threadId.value : this.threadId,
       status: data.status.present ? data.status.value : this.status,
       imageUrl: data.imageUrl.present ? data.imageUrl.value : this.imageUrl,
+      categorySlug: data.categorySlug.present
+          ? data.categorySlug.value
+          : this.categorySlug,
+      contentHtml: data.contentHtml.present
+          ? data.contentHtml.value
+          : this.contentHtml,
     );
   }
 
@@ -4519,12 +4638,15 @@ class ForumThreadsTableData extends DataClass
           ..write('description: $description, ')
           ..write('authorName: $authorName, ')
           ..write('authorAvatar: $authorAvatar, ')
-          ..write('timeAgo: $timeAgo, ')
+          ..write('createdAt: $createdAt, ')
           ..write('replyCount: $replyCount, ')
           ..write('upvotes: $upvotes, ')
           ..write('downvotes: $downvotes, ')
+          ..write('threadId: $threadId, ')
           ..write('status: $status, ')
-          ..write('imageUrl: $imageUrl')
+          ..write('imageUrl: $imageUrl, ')
+          ..write('categorySlug: $categorySlug, ')
+          ..write('contentHtml: $contentHtml')
           ..write(')'))
         .toString();
   }
@@ -4537,12 +4659,15 @@ class ForumThreadsTableData extends DataClass
     description,
     authorName,
     authorAvatar,
-    timeAgo,
+    createdAt,
     replyCount,
     upvotes,
     downvotes,
+    threadId,
     status,
     imageUrl,
+    categorySlug,
+    contentHtml,
   );
   @override
   bool operator ==(Object other) =>
@@ -4554,28 +4679,34 @@ class ForumThreadsTableData extends DataClass
           other.description == this.description &&
           other.authorName == this.authorName &&
           other.authorAvatar == this.authorAvatar &&
-          other.timeAgo == this.timeAgo &&
+          other.createdAt == this.createdAt &&
           other.replyCount == this.replyCount &&
           other.upvotes == this.upvotes &&
           other.downvotes == this.downvotes &&
+          other.threadId == this.threadId &&
           other.status == this.status &&
-          other.imageUrl == this.imageUrl);
+          other.imageUrl == this.imageUrl &&
+          other.categorySlug == this.categorySlug &&
+          other.contentHtml == this.contentHtml);
 }
 
 class ForumThreadsTableCompanion
     extends UpdateCompanion<ForumThreadsTableData> {
   final Value<String> id;
-  final Value<String> courseId;
+  final Value<String?> courseId;
   final Value<String> title;
   final Value<String> description;
   final Value<String> authorName;
   final Value<String?> authorAvatar;
-  final Value<String> timeAgo;
+  final Value<String> createdAt;
   final Value<int> replyCount;
   final Value<int> upvotes;
   final Value<int> downvotes;
+  final Value<int?> threadId;
   final Value<String> status;
   final Value<String?> imageUrl;
+  final Value<String?> categorySlug;
+  final Value<String?> contentHtml;
   final Value<int> rowid;
   const ForumThreadsTableCompanion({
     this.id = const Value.absent(),
@@ -4584,34 +4715,39 @@ class ForumThreadsTableCompanion
     this.description = const Value.absent(),
     this.authorName = const Value.absent(),
     this.authorAvatar = const Value.absent(),
-    this.timeAgo = const Value.absent(),
+    this.createdAt = const Value.absent(),
     this.replyCount = const Value.absent(),
     this.upvotes = const Value.absent(),
     this.downvotes = const Value.absent(),
+    this.threadId = const Value.absent(),
     this.status = const Value.absent(),
     this.imageUrl = const Value.absent(),
+    this.categorySlug = const Value.absent(),
+    this.contentHtml = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ForumThreadsTableCompanion.insert({
     required String id,
-    required String courseId,
+    this.courseId = const Value.absent(),
     required String title,
     required String description,
     required String authorName,
     this.authorAvatar = const Value.absent(),
-    required String timeAgo,
+    required String createdAt,
     this.replyCount = const Value.absent(),
     this.upvotes = const Value.absent(),
     this.downvotes = const Value.absent(),
+    this.threadId = const Value.absent(),
     required String status,
     this.imageUrl = const Value.absent(),
+    this.categorySlug = const Value.absent(),
+    this.contentHtml = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
-       courseId = Value(courseId),
        title = Value(title),
        description = Value(description),
        authorName = Value(authorName),
-       timeAgo = Value(timeAgo),
+       createdAt = Value(createdAt),
        status = Value(status);
   static Insertable<ForumThreadsTableData> custom({
     Expression<String>? id,
@@ -4620,12 +4756,15 @@ class ForumThreadsTableCompanion
     Expression<String>? description,
     Expression<String>? authorName,
     Expression<String>? authorAvatar,
-    Expression<String>? timeAgo,
+    Expression<String>? createdAt,
     Expression<int>? replyCount,
     Expression<int>? upvotes,
     Expression<int>? downvotes,
+    Expression<int>? threadId,
     Expression<String>? status,
     Expression<String>? imageUrl,
+    Expression<String>? categorySlug,
+    Expression<String>? contentHtml,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -4635,29 +4774,35 @@ class ForumThreadsTableCompanion
       if (description != null) 'description': description,
       if (authorName != null) 'author_name': authorName,
       if (authorAvatar != null) 'author_avatar': authorAvatar,
-      if (timeAgo != null) 'time_ago': timeAgo,
+      if (createdAt != null) 'created_at': createdAt,
       if (replyCount != null) 'reply_count': replyCount,
       if (upvotes != null) 'upvotes': upvotes,
       if (downvotes != null) 'downvotes': downvotes,
+      if (threadId != null) 'thread_id': threadId,
       if (status != null) 'status': status,
       if (imageUrl != null) 'image_url': imageUrl,
+      if (categorySlug != null) 'category_slug': categorySlug,
+      if (contentHtml != null) 'content_html': contentHtml,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
   ForumThreadsTableCompanion copyWith({
     Value<String>? id,
-    Value<String>? courseId,
+    Value<String?>? courseId,
     Value<String>? title,
     Value<String>? description,
     Value<String>? authorName,
     Value<String?>? authorAvatar,
-    Value<String>? timeAgo,
+    Value<String>? createdAt,
     Value<int>? replyCount,
     Value<int>? upvotes,
     Value<int>? downvotes,
+    Value<int?>? threadId,
     Value<String>? status,
     Value<String?>? imageUrl,
+    Value<String?>? categorySlug,
+    Value<String?>? contentHtml,
     Value<int>? rowid,
   }) {
     return ForumThreadsTableCompanion(
@@ -4667,12 +4812,15 @@ class ForumThreadsTableCompanion
       description: description ?? this.description,
       authorName: authorName ?? this.authorName,
       authorAvatar: authorAvatar ?? this.authorAvatar,
-      timeAgo: timeAgo ?? this.timeAgo,
+      createdAt: createdAt ?? this.createdAt,
       replyCount: replyCount ?? this.replyCount,
       upvotes: upvotes ?? this.upvotes,
       downvotes: downvotes ?? this.downvotes,
+      threadId: threadId ?? this.threadId,
       status: status ?? this.status,
       imageUrl: imageUrl ?? this.imageUrl,
+      categorySlug: categorySlug ?? this.categorySlug,
+      contentHtml: contentHtml ?? this.contentHtml,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -4698,8 +4846,8 @@ class ForumThreadsTableCompanion
     if (authorAvatar.present) {
       map['author_avatar'] = Variable<String>(authorAvatar.value);
     }
-    if (timeAgo.present) {
-      map['time_ago'] = Variable<String>(timeAgo.value);
+    if (createdAt.present) {
+      map['created_at'] = Variable<String>(createdAt.value);
     }
     if (replyCount.present) {
       map['reply_count'] = Variable<int>(replyCount.value);
@@ -4710,11 +4858,20 @@ class ForumThreadsTableCompanion
     if (downvotes.present) {
       map['downvotes'] = Variable<int>(downvotes.value);
     }
+    if (threadId.present) {
+      map['thread_id'] = Variable<int>(threadId.value);
+    }
     if (status.present) {
       map['status'] = Variable<String>(status.value);
     }
     if (imageUrl.present) {
       map['image_url'] = Variable<String>(imageUrl.value);
+    }
+    if (categorySlug.present) {
+      map['category_slug'] = Variable<String>(categorySlug.value);
+    }
+    if (contentHtml.present) {
+      map['content_html'] = Variable<String>(contentHtml.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -4731,12 +4888,15 @@ class ForumThreadsTableCompanion
           ..write('description: $description, ')
           ..write('authorName: $authorName, ')
           ..write('authorAvatar: $authorAvatar, ')
-          ..write('timeAgo: $timeAgo, ')
+          ..write('createdAt: $createdAt, ')
           ..write('replyCount: $replyCount, ')
           ..write('upvotes: $upvotes, ')
           ..write('downvotes: $downvotes, ')
+          ..write('threadId: $threadId, ')
           ..write('status: $status, ')
           ..write('imageUrl: $imageUrl, ')
+          ..write('categorySlug: $categorySlug, ')
+          ..write('contentHtml: $contentHtml, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4762,11 +4922,11 @@ class $ForumCommentsTableTable extends ForumCommentsTable
     'threadId',
   );
   @override
-  late final GeneratedColumn<String> threadId = GeneratedColumn<String>(
+  late final GeneratedColumn<int> threadId = GeneratedColumn<int>(
     'thread_id',
     aliasedName,
     false,
-    type: DriftSqlType.string,
+    type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
   static const VerificationMeta _authorNameMeta = const VerificationMeta(
@@ -4802,12 +4962,12 @@ class $ForumCommentsTableTable extends ForumCommentsTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _timeAgoMeta = const VerificationMeta(
-    'timeAgo',
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
   );
   @override
-  late final GeneratedColumn<String> timeAgo = GeneratedColumn<String>(
-    'time_ago',
+  late final GeneratedColumn<String> createdAt = GeneratedColumn<String>(
+    'created_at',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -4859,7 +5019,7 @@ class $ForumCommentsTableTable extends ForumCommentsTable
     authorName,
     authorAvatar,
     content,
-    timeAgo,
+    createdAt,
     upvotes,
     downvotes,
     isInstructor,
@@ -4914,13 +5074,13 @@ class $ForumCommentsTableTable extends ForumCommentsTable
     } else if (isInserting) {
       context.missing(_contentMeta);
     }
-    if (data.containsKey('time_ago')) {
+    if (data.containsKey('created_at')) {
       context.handle(
-        _timeAgoMeta,
-        timeAgo.isAcceptableOrUnknown(data['time_ago']!, _timeAgoMeta),
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
       );
     } else if (isInserting) {
-      context.missing(_timeAgoMeta);
+      context.missing(_createdAtMeta);
     }
     if (data.containsKey('upvotes')) {
       context.handle(
@@ -4957,7 +5117,7 @@ class $ForumCommentsTableTable extends ForumCommentsTable
         data['${effectivePrefix}id'],
       )!,
       threadId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
+        DriftSqlType.int,
         data['${effectivePrefix}thread_id'],
       )!,
       authorName: attachedDatabase.typeMapping.read(
@@ -4972,9 +5132,9 @@ class $ForumCommentsTableTable extends ForumCommentsTable
         DriftSqlType.string,
         data['${effectivePrefix}content'],
       )!,
-      timeAgo: attachedDatabase.typeMapping.read(
+      createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}time_ago'],
+        data['${effectivePrefix}created_at'],
       )!,
       upvotes: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
@@ -5000,11 +5160,11 @@ class $ForumCommentsTableTable extends ForumCommentsTable
 class ForumCommentsTableData extends DataClass
     implements Insertable<ForumCommentsTableData> {
   final String id;
-  final String threadId;
+  final int threadId;
   final String authorName;
   final String? authorAvatar;
   final String content;
-  final String timeAgo;
+  final String createdAt;
   final int upvotes;
   final int downvotes;
   final bool isInstructor;
@@ -5014,7 +5174,7 @@ class ForumCommentsTableData extends DataClass
     required this.authorName,
     this.authorAvatar,
     required this.content,
-    required this.timeAgo,
+    required this.createdAt,
     required this.upvotes,
     required this.downvotes,
     required this.isInstructor,
@@ -5023,13 +5183,13 @@ class ForumCommentsTableData extends DataClass
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['thread_id'] = Variable<String>(threadId);
+    map['thread_id'] = Variable<int>(threadId);
     map['author_name'] = Variable<String>(authorName);
     if (!nullToAbsent || authorAvatar != null) {
       map['author_avatar'] = Variable<String>(authorAvatar);
     }
     map['content'] = Variable<String>(content);
-    map['time_ago'] = Variable<String>(timeAgo);
+    map['created_at'] = Variable<String>(createdAt);
     map['upvotes'] = Variable<int>(upvotes);
     map['downvotes'] = Variable<int>(downvotes);
     map['is_instructor'] = Variable<bool>(isInstructor);
@@ -5045,7 +5205,7 @@ class ForumCommentsTableData extends DataClass
           ? const Value.absent()
           : Value(authorAvatar),
       content: Value(content),
-      timeAgo: Value(timeAgo),
+      createdAt: Value(createdAt),
       upvotes: Value(upvotes),
       downvotes: Value(downvotes),
       isInstructor: Value(isInstructor),
@@ -5059,11 +5219,11 @@ class ForumCommentsTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return ForumCommentsTableData(
       id: serializer.fromJson<String>(json['id']),
-      threadId: serializer.fromJson<String>(json['threadId']),
+      threadId: serializer.fromJson<int>(json['threadId']),
       authorName: serializer.fromJson<String>(json['authorName']),
       authorAvatar: serializer.fromJson<String?>(json['authorAvatar']),
       content: serializer.fromJson<String>(json['content']),
-      timeAgo: serializer.fromJson<String>(json['timeAgo']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
       upvotes: serializer.fromJson<int>(json['upvotes']),
       downvotes: serializer.fromJson<int>(json['downvotes']),
       isInstructor: serializer.fromJson<bool>(json['isInstructor']),
@@ -5074,11 +5234,11 @@ class ForumCommentsTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'threadId': serializer.toJson<String>(threadId),
+      'threadId': serializer.toJson<int>(threadId),
       'authorName': serializer.toJson<String>(authorName),
       'authorAvatar': serializer.toJson<String?>(authorAvatar),
       'content': serializer.toJson<String>(content),
-      'timeAgo': serializer.toJson<String>(timeAgo),
+      'createdAt': serializer.toJson<String>(createdAt),
       'upvotes': serializer.toJson<int>(upvotes),
       'downvotes': serializer.toJson<int>(downvotes),
       'isInstructor': serializer.toJson<bool>(isInstructor),
@@ -5087,11 +5247,11 @@ class ForumCommentsTableData extends DataClass
 
   ForumCommentsTableData copyWith({
     String? id,
-    String? threadId,
+    int? threadId,
     String? authorName,
     Value<String?> authorAvatar = const Value.absent(),
     String? content,
-    String? timeAgo,
+    String? createdAt,
     int? upvotes,
     int? downvotes,
     bool? isInstructor,
@@ -5101,7 +5261,7 @@ class ForumCommentsTableData extends DataClass
     authorName: authorName ?? this.authorName,
     authorAvatar: authorAvatar.present ? authorAvatar.value : this.authorAvatar,
     content: content ?? this.content,
-    timeAgo: timeAgo ?? this.timeAgo,
+    createdAt: createdAt ?? this.createdAt,
     upvotes: upvotes ?? this.upvotes,
     downvotes: downvotes ?? this.downvotes,
     isInstructor: isInstructor ?? this.isInstructor,
@@ -5117,7 +5277,7 @@ class ForumCommentsTableData extends DataClass
           ? data.authorAvatar.value
           : this.authorAvatar,
       content: data.content.present ? data.content.value : this.content,
-      timeAgo: data.timeAgo.present ? data.timeAgo.value : this.timeAgo,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       upvotes: data.upvotes.present ? data.upvotes.value : this.upvotes,
       downvotes: data.downvotes.present ? data.downvotes.value : this.downvotes,
       isInstructor: data.isInstructor.present
@@ -5134,7 +5294,7 @@ class ForumCommentsTableData extends DataClass
           ..write('authorName: $authorName, ')
           ..write('authorAvatar: $authorAvatar, ')
           ..write('content: $content, ')
-          ..write('timeAgo: $timeAgo, ')
+          ..write('createdAt: $createdAt, ')
           ..write('upvotes: $upvotes, ')
           ..write('downvotes: $downvotes, ')
           ..write('isInstructor: $isInstructor')
@@ -5149,7 +5309,7 @@ class ForumCommentsTableData extends DataClass
     authorName,
     authorAvatar,
     content,
-    timeAgo,
+    createdAt,
     upvotes,
     downvotes,
     isInstructor,
@@ -5163,7 +5323,7 @@ class ForumCommentsTableData extends DataClass
           other.authorName == this.authorName &&
           other.authorAvatar == this.authorAvatar &&
           other.content == this.content &&
-          other.timeAgo == this.timeAgo &&
+          other.createdAt == this.createdAt &&
           other.upvotes == this.upvotes &&
           other.downvotes == this.downvotes &&
           other.isInstructor == this.isInstructor);
@@ -5172,11 +5332,11 @@ class ForumCommentsTableData extends DataClass
 class ForumCommentsTableCompanion
     extends UpdateCompanion<ForumCommentsTableData> {
   final Value<String> id;
-  final Value<String> threadId;
+  final Value<int> threadId;
   final Value<String> authorName;
   final Value<String?> authorAvatar;
   final Value<String> content;
-  final Value<String> timeAgo;
+  final Value<String> createdAt;
   final Value<int> upvotes;
   final Value<int> downvotes;
   final Value<bool> isInstructor;
@@ -5187,7 +5347,7 @@ class ForumCommentsTableCompanion
     this.authorName = const Value.absent(),
     this.authorAvatar = const Value.absent(),
     this.content = const Value.absent(),
-    this.timeAgo = const Value.absent(),
+    this.createdAt = const Value.absent(),
     this.upvotes = const Value.absent(),
     this.downvotes = const Value.absent(),
     this.isInstructor = const Value.absent(),
@@ -5195,11 +5355,11 @@ class ForumCommentsTableCompanion
   });
   ForumCommentsTableCompanion.insert({
     required String id,
-    required String threadId,
+    required int threadId,
     required String authorName,
     this.authorAvatar = const Value.absent(),
     required String content,
-    required String timeAgo,
+    required String createdAt,
     this.upvotes = const Value.absent(),
     this.downvotes = const Value.absent(),
     this.isInstructor = const Value.absent(),
@@ -5208,14 +5368,14 @@ class ForumCommentsTableCompanion
        threadId = Value(threadId),
        authorName = Value(authorName),
        content = Value(content),
-       timeAgo = Value(timeAgo);
+       createdAt = Value(createdAt);
   static Insertable<ForumCommentsTableData> custom({
     Expression<String>? id,
-    Expression<String>? threadId,
+    Expression<int>? threadId,
     Expression<String>? authorName,
     Expression<String>? authorAvatar,
     Expression<String>? content,
-    Expression<String>? timeAgo,
+    Expression<String>? createdAt,
     Expression<int>? upvotes,
     Expression<int>? downvotes,
     Expression<bool>? isInstructor,
@@ -5227,7 +5387,7 @@ class ForumCommentsTableCompanion
       if (authorName != null) 'author_name': authorName,
       if (authorAvatar != null) 'author_avatar': authorAvatar,
       if (content != null) 'content': content,
-      if (timeAgo != null) 'time_ago': timeAgo,
+      if (createdAt != null) 'created_at': createdAt,
       if (upvotes != null) 'upvotes': upvotes,
       if (downvotes != null) 'downvotes': downvotes,
       if (isInstructor != null) 'is_instructor': isInstructor,
@@ -5237,11 +5397,11 @@ class ForumCommentsTableCompanion
 
   ForumCommentsTableCompanion copyWith({
     Value<String>? id,
-    Value<String>? threadId,
+    Value<int>? threadId,
     Value<String>? authorName,
     Value<String?>? authorAvatar,
     Value<String>? content,
-    Value<String>? timeAgo,
+    Value<String>? createdAt,
     Value<int>? upvotes,
     Value<int>? downvotes,
     Value<bool>? isInstructor,
@@ -5253,7 +5413,7 @@ class ForumCommentsTableCompanion
       authorName: authorName ?? this.authorName,
       authorAvatar: authorAvatar ?? this.authorAvatar,
       content: content ?? this.content,
-      timeAgo: timeAgo ?? this.timeAgo,
+      createdAt: createdAt ?? this.createdAt,
       upvotes: upvotes ?? this.upvotes,
       downvotes: downvotes ?? this.downvotes,
       isInstructor: isInstructor ?? this.isInstructor,
@@ -5268,7 +5428,7 @@ class ForumCommentsTableCompanion
       map['id'] = Variable<String>(id.value);
     }
     if (threadId.present) {
-      map['thread_id'] = Variable<String>(threadId.value);
+      map['thread_id'] = Variable<int>(threadId.value);
     }
     if (authorName.present) {
       map['author_name'] = Variable<String>(authorName.value);
@@ -5279,8 +5439,8 @@ class ForumCommentsTableCompanion
     if (content.present) {
       map['content'] = Variable<String>(content.value);
     }
-    if (timeAgo.present) {
-      map['time_ago'] = Variable<String>(timeAgo.value);
+    if (createdAt.present) {
+      map['created_at'] = Variable<String>(createdAt.value);
     }
     if (upvotes.present) {
       map['upvotes'] = Variable<int>(upvotes.value);
@@ -5305,7 +5465,7 @@ class ForumCommentsTableCompanion
           ..write('authorName: $authorName, ')
           ..write('authorAvatar: $authorAvatar, ')
           ..write('content: $content, ')
-          ..write('timeAgo: $timeAgo, ')
+          ..write('createdAt: $createdAt, ')
           ..write('upvotes: $upvotes, ')
           ..write('downvotes: $downvotes, ')
           ..write('isInstructor: $isInstructor, ')
@@ -14091,33 +14251,39 @@ typedef $$LiveClassesTableTableProcessedTableManager =
 typedef $$ForumThreadsTableTableCreateCompanionBuilder =
     ForumThreadsTableCompanion Function({
       required String id,
-      required String courseId,
+      Value<String?> courseId,
       required String title,
       required String description,
       required String authorName,
       Value<String?> authorAvatar,
-      required String timeAgo,
+      required String createdAt,
       Value<int> replyCount,
       Value<int> upvotes,
       Value<int> downvotes,
+      Value<int?> threadId,
       required String status,
       Value<String?> imageUrl,
+      Value<String?> categorySlug,
+      Value<String?> contentHtml,
       Value<int> rowid,
     });
 typedef $$ForumThreadsTableTableUpdateCompanionBuilder =
     ForumThreadsTableCompanion Function({
       Value<String> id,
-      Value<String> courseId,
+      Value<String?> courseId,
       Value<String> title,
       Value<String> description,
       Value<String> authorName,
       Value<String?> authorAvatar,
-      Value<String> timeAgo,
+      Value<String> createdAt,
       Value<int> replyCount,
       Value<int> upvotes,
       Value<int> downvotes,
+      Value<int?> threadId,
       Value<String> status,
       Value<String?> imageUrl,
+      Value<String?> categorySlug,
+      Value<String?> contentHtml,
       Value<int> rowid,
     });
 
@@ -14160,8 +14326,8 @@ class $$ForumThreadsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get timeAgo => $composableBuilder(
-    column: $table.timeAgo,
+  ColumnFilters<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -14180,6 +14346,11 @@ class $$ForumThreadsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get threadId => $composableBuilder(
+    column: $table.threadId,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get status => $composableBuilder(
     column: $table.status,
     builder: (column) => ColumnFilters(column),
@@ -14187,6 +14358,16 @@ class $$ForumThreadsTableTableFilterComposer
 
   ColumnFilters<String> get imageUrl => $composableBuilder(
     column: $table.imageUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get categorySlug => $composableBuilder(
+    column: $table.categorySlug,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contentHtml => $composableBuilder(
+    column: $table.contentHtml,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -14230,8 +14411,8 @@ class $$ForumThreadsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get timeAgo => $composableBuilder(
-    column: $table.timeAgo,
+  ColumnOrderings<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -14250,6 +14431,11 @@ class $$ForumThreadsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get threadId => $composableBuilder(
+    column: $table.threadId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get status => $composableBuilder(
     column: $table.status,
     builder: (column) => ColumnOrderings(column),
@@ -14257,6 +14443,16 @@ class $$ForumThreadsTableTableOrderingComposer
 
   ColumnOrderings<String> get imageUrl => $composableBuilder(
     column: $table.imageUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get categorySlug => $composableBuilder(
+    column: $table.categorySlug,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contentHtml => $composableBuilder(
+    column: $table.contentHtml,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -14294,8 +14490,8 @@ class $$ForumThreadsTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get timeAgo =>
-      $composableBuilder(column: $table.timeAgo, builder: (column) => column);
+  GeneratedColumn<String> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
   GeneratedColumn<int> get replyCount => $composableBuilder(
     column: $table.replyCount,
@@ -14308,11 +14504,24 @@ class $$ForumThreadsTableTableAnnotationComposer
   GeneratedColumn<int> get downvotes =>
       $composableBuilder(column: $table.downvotes, builder: (column) => column);
 
+  GeneratedColumn<int> get threadId =>
+      $composableBuilder(column: $table.threadId, builder: (column) => column);
+
   GeneratedColumn<String> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
 
   GeneratedColumn<String> get imageUrl =>
       $composableBuilder(column: $table.imageUrl, builder: (column) => column);
+
+  GeneratedColumn<String> get categorySlug => $composableBuilder(
+    column: $table.categorySlug,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get contentHtml => $composableBuilder(
+    column: $table.contentHtml,
+    builder: (column) => column,
+  );
 }
 
 class $$ForumThreadsTableTableTableManager
@@ -14356,17 +14565,20 @@ class $$ForumThreadsTableTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
-                Value<String> courseId = const Value.absent(),
+                Value<String?> courseId = const Value.absent(),
                 Value<String> title = const Value.absent(),
                 Value<String> description = const Value.absent(),
                 Value<String> authorName = const Value.absent(),
                 Value<String?> authorAvatar = const Value.absent(),
-                Value<String> timeAgo = const Value.absent(),
+                Value<String> createdAt = const Value.absent(),
                 Value<int> replyCount = const Value.absent(),
                 Value<int> upvotes = const Value.absent(),
                 Value<int> downvotes = const Value.absent(),
+                Value<int?> threadId = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<String?> imageUrl = const Value.absent(),
+                Value<String?> categorySlug = const Value.absent(),
+                Value<String?> contentHtml = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ForumThreadsTableCompanion(
                 id: id,
@@ -14375,28 +14587,34 @@ class $$ForumThreadsTableTableTableManager
                 description: description,
                 authorName: authorName,
                 authorAvatar: authorAvatar,
-                timeAgo: timeAgo,
+                createdAt: createdAt,
                 replyCount: replyCount,
                 upvotes: upvotes,
                 downvotes: downvotes,
+                threadId: threadId,
                 status: status,
                 imageUrl: imageUrl,
+                categorySlug: categorySlug,
+                contentHtml: contentHtml,
                 rowid: rowid,
               ),
           createCompanionCallback:
               ({
                 required String id,
-                required String courseId,
+                Value<String?> courseId = const Value.absent(),
                 required String title,
                 required String description,
                 required String authorName,
                 Value<String?> authorAvatar = const Value.absent(),
-                required String timeAgo,
+                required String createdAt,
                 Value<int> replyCount = const Value.absent(),
                 Value<int> upvotes = const Value.absent(),
                 Value<int> downvotes = const Value.absent(),
+                Value<int?> threadId = const Value.absent(),
                 required String status,
                 Value<String?> imageUrl = const Value.absent(),
+                Value<String?> categorySlug = const Value.absent(),
+                Value<String?> contentHtml = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ForumThreadsTableCompanion.insert(
                 id: id,
@@ -14405,12 +14623,15 @@ class $$ForumThreadsTableTableTableManager
                 description: description,
                 authorName: authorName,
                 authorAvatar: authorAvatar,
-                timeAgo: timeAgo,
+                createdAt: createdAt,
                 replyCount: replyCount,
                 upvotes: upvotes,
                 downvotes: downvotes,
+                threadId: threadId,
                 status: status,
                 imageUrl: imageUrl,
+                categorySlug: categorySlug,
+                contentHtml: contentHtml,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -14445,11 +14666,11 @@ typedef $$ForumThreadsTableTableProcessedTableManager =
 typedef $$ForumCommentsTableTableCreateCompanionBuilder =
     ForumCommentsTableCompanion Function({
       required String id,
-      required String threadId,
+      required int threadId,
       required String authorName,
       Value<String?> authorAvatar,
       required String content,
-      required String timeAgo,
+      required String createdAt,
       Value<int> upvotes,
       Value<int> downvotes,
       Value<bool> isInstructor,
@@ -14458,11 +14679,11 @@ typedef $$ForumCommentsTableTableCreateCompanionBuilder =
 typedef $$ForumCommentsTableTableUpdateCompanionBuilder =
     ForumCommentsTableCompanion Function({
       Value<String> id,
-      Value<String> threadId,
+      Value<int> threadId,
       Value<String> authorName,
       Value<String?> authorAvatar,
       Value<String> content,
-      Value<String> timeAgo,
+      Value<String> createdAt,
       Value<int> upvotes,
       Value<int> downvotes,
       Value<bool> isInstructor,
@@ -14483,7 +14704,7 @@ class $$ForumCommentsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get threadId => $composableBuilder(
+  ColumnFilters<int> get threadId => $composableBuilder(
     column: $table.threadId,
     builder: (column) => ColumnFilters(column),
   );
@@ -14503,8 +14724,8 @@ class $$ForumCommentsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get timeAgo => $composableBuilder(
-    column: $table.timeAgo,
+  ColumnFilters<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -14538,7 +14759,7 @@ class $$ForumCommentsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get threadId => $composableBuilder(
+  ColumnOrderings<int> get threadId => $composableBuilder(
     column: $table.threadId,
     builder: (column) => ColumnOrderings(column),
   );
@@ -14558,8 +14779,8 @@ class $$ForumCommentsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get timeAgo => $composableBuilder(
-    column: $table.timeAgo,
+  ColumnOrderings<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -14591,7 +14812,7 @@ class $$ForumCommentsTableTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<String> get threadId =>
+  GeneratedColumn<int> get threadId =>
       $composableBuilder(column: $table.threadId, builder: (column) => column);
 
   GeneratedColumn<String> get authorName => $composableBuilder(
@@ -14607,8 +14828,8 @@ class $$ForumCommentsTableTableAnnotationComposer
   GeneratedColumn<String> get content =>
       $composableBuilder(column: $table.content, builder: (column) => column);
 
-  GeneratedColumn<String> get timeAgo =>
-      $composableBuilder(column: $table.timeAgo, builder: (column) => column);
+  GeneratedColumn<String> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
   GeneratedColumn<int> get upvotes =>
       $composableBuilder(column: $table.upvotes, builder: (column) => column);
@@ -14663,11 +14884,11 @@ class $$ForumCommentsTableTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
-                Value<String> threadId = const Value.absent(),
+                Value<int> threadId = const Value.absent(),
                 Value<String> authorName = const Value.absent(),
                 Value<String?> authorAvatar = const Value.absent(),
                 Value<String> content = const Value.absent(),
-                Value<String> timeAgo = const Value.absent(),
+                Value<String> createdAt = const Value.absent(),
                 Value<int> upvotes = const Value.absent(),
                 Value<int> downvotes = const Value.absent(),
                 Value<bool> isInstructor = const Value.absent(),
@@ -14678,7 +14899,7 @@ class $$ForumCommentsTableTableTableManager
                 authorName: authorName,
                 authorAvatar: authorAvatar,
                 content: content,
-                timeAgo: timeAgo,
+                createdAt: createdAt,
                 upvotes: upvotes,
                 downvotes: downvotes,
                 isInstructor: isInstructor,
@@ -14687,11 +14908,11 @@ class $$ForumCommentsTableTableTableManager
           createCompanionCallback:
               ({
                 required String id,
-                required String threadId,
+                required int threadId,
                 required String authorName,
                 Value<String?> authorAvatar = const Value.absent(),
                 required String content,
-                required String timeAgo,
+                required String createdAt,
                 Value<int> upvotes = const Value.absent(),
                 Value<int> downvotes = const Value.absent(),
                 Value<bool> isInstructor = const Value.absent(),
@@ -14702,7 +14923,7 @@ class $$ForumCommentsTableTableTableManager
                 authorName: authorName,
                 authorAvatar: authorAvatar,
                 content: content,
-                timeAgo: timeAgo,
+                createdAt: createdAt,
                 upvotes: upvotes,
                 downvotes: downvotes,
                 isInstructor: isInstructor,

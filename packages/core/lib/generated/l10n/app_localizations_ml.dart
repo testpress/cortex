@@ -1661,4 +1661,38 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get loginActivityLogoutFailed => 'ലോഗൗട്ട് പരാജയപ്പെട്ടു';
+
+  @override
+  String get forumErrorFailedToCreatePost =>
+      'പോസ്റ്റ് നിർമ്മിക്കുന്നതിൽ പരാജയപ്പെട്ടു';
+
+  @override
+  String get forumErrorDiscussionNotFound => 'ചർച്ച കണ്ടെത്തിയില്ല';
+
+  @override
+  String get forumErrorLoadingComments => 'അഭിപ്രായങ്ങൾ ലോഡുചെയ്യുന്നതിൽ പിശക്';
+
+  @override
+  String get forumCommentsEmptyTitle => 'അഭിപ്രായങ്ങളൊന്നുമില്ല';
+
+  @override
+  String get forumCommentsEmptySubtitle => 'ഈ ത്രെഡിന് ആദ്യം മറുപടി നൽകൂ.';
+
+  @override
+  String forumRepliesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count മറുപടികൾ',
+      one: '1 മറുപടി',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get forumRoleInstructor => 'ഇൻസ്ട്രക്ടർ';
+
+  @override
+  String get forumErrorFailedToPostReply =>
+      'മറുപടി പോസ്റ്റ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു';
 }

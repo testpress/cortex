@@ -14,7 +14,6 @@ export 'models/course_curriculum_dto.dart';
 export 'models/lesson_dto.dart';
 export 'models/live_class_dto.dart';
 export 'models/forum_thread_dto.dart';
-export 'models/forum_comment_dto.dart';
 export 'models/user_progress_dto.dart';
 export 'models/user_dto.dart';
 export 'models/settings_models.dart';

@@ -116,6 +116,9 @@ class PaidActiveHomeScreen extends ConsumerWidget {
             showBottomBorder: !isBannerPresent,
             useSafeArea: !isBannerPresent,
             customTopPadding: isBannerPresent ? 8 : null,
+            onMenuPressed: () {
+              ref.read(isHomeDrawerOpenProvider.notifier).state = true;
+            },
           );
 
           return Column(

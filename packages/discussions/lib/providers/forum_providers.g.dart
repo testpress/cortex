@@ -23,8 +23,58 @@ final forumRepositoryProvider = FutureProvider<ForumRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ForumRepositoryRef = FutureProviderRef<ForumRepository>;
-String _$courseForumThreadsHash() =>
-    r'8eb3cf3d8bd35c7052a52c2afe532bd881d4655e';
+String _$globalForumCategoriesHash() =>
+    r'84bad9a5238ba442a11a6f16f947bf2add28cb11';
+
+/// See also [globalForumCategories].
+@ProviderFor(globalForumCategories)
+final globalForumCategoriesProvider =
+    FutureProvider<List<ForumCategoryDto>>.internal(
+      globalForumCategories,
+      name: r'globalForumCategoriesProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$globalForumCategoriesHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef GlobalForumCategoriesRef = FutureProviderRef<List<ForumCategoryDto>>;
+String _$postForumCommentHash() => r'dff11df23405bb814a6b893d54a56694ade1f7ec';
+
+/// See also [PostForumComment].
+@ProviderFor(PostForumComment)
+final postForumCommentProvider =
+    AutoDisposeAsyncNotifierProvider<PostForumComment, void>.internal(
+      PostForumComment.new,
+      name: r'postForumCommentProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$postForumCommentHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$PostForumComment = AutoDisposeAsyncNotifier<void>;
+String _$createForumThreadHash() => r'68830dfb776fb7f593f0f6ebd16e3a2127fcad1e';
+
+/// See also [CreateForumThread].
+@ProviderFor(CreateForumThread)
+final createForumThreadProvider =
+    AutoDisposeAsyncNotifierProvider<CreateForumThread, void>.internal(
+      CreateForumThread.new,
+      name: r'createForumThreadProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$createForumThreadHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$CreateForumThread = AutoDisposeAsyncNotifier<void>;
+String _$globalForumFeedHash() => r'c0eae2814da9dc9445dea9baa59b94e965f5f08c';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -47,26 +97,39 @@ class _SystemHash {
   }
 }
 
-/// See also [courseForumThreads].
-@ProviderFor(courseForumThreads)
-const courseForumThreadsProvider = CourseForumThreadsFamily();
+abstract class _$GlobalForumFeed
+    extends BuildlessAutoDisposeAsyncNotifier<GlobalForumFeedState> {
+  late final int? categoryId;
+  late final String? searchQuery;
 
-/// See also [courseForumThreads].
-class CourseForumThreadsFamily
-    extends Family<AsyncValue<List<ForumThreadDto>>> {
-  /// See also [courseForumThreads].
-  const CourseForumThreadsFamily();
+  FutureOr<GlobalForumFeedState> build({int? categoryId, String? searchQuery});
+}
 
-  /// See also [courseForumThreads].
-  CourseForumThreadsProvider call(String courseId) {
-    return CourseForumThreadsProvider(courseId);
+/// See also [GlobalForumFeed].
+@ProviderFor(GlobalForumFeed)
+const globalForumFeedProvider = GlobalForumFeedFamily();
+
+/// See also [GlobalForumFeed].
+class GlobalForumFeedFamily extends Family<AsyncValue<GlobalForumFeedState>> {
+  /// See also [GlobalForumFeed].
+  const GlobalForumFeedFamily();
+
+  /// See also [GlobalForumFeed].
+  GlobalForumFeedProvider call({int? categoryId, String? searchQuery}) {
+    return GlobalForumFeedProvider(
+      categoryId: categoryId,
+      searchQuery: searchQuery,
+    );
   }
 
   @override
-  CourseForumThreadsProvider getProviderOverride(
-    covariant CourseForumThreadsProvider provider,
+  GlobalForumFeedProvider getProviderOverride(
+    covariant GlobalForumFeedProvider provider,
   ) {
-    return call(provider.courseId);
+    return call(
+      categoryId: provider.categoryId,
+      searchQuery: provider.searchQuery,
+    );
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -81,71 +144,92 @@ class CourseForumThreadsFamily
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'courseForumThreadsProvider';
+  String? get name => r'globalForumFeedProvider';
 }
 
-/// See also [courseForumThreads].
-class CourseForumThreadsProvider extends StreamProvider<List<ForumThreadDto>> {
-  /// See also [courseForumThreads].
-  CourseForumThreadsProvider(String courseId)
+/// See also [GlobalForumFeed].
+class GlobalForumFeedProvider
+    extends
+        AutoDisposeAsyncNotifierProviderImpl<
+          GlobalForumFeed,
+          GlobalForumFeedState
+        > {
+  /// See also [GlobalForumFeed].
+  GlobalForumFeedProvider({int? categoryId, String? searchQuery})
     : this._internal(
-        (ref) => courseForumThreads(ref as CourseForumThreadsRef, courseId),
-        from: courseForumThreadsProvider,
-        name: r'courseForumThreadsProvider',
+        () => GlobalForumFeed()
+          ..categoryId = categoryId
+          ..searchQuery = searchQuery,
+        from: globalForumFeedProvider,
+        name: r'globalForumFeedProvider',
         debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
             ? null
-            : _$courseForumThreadsHash,
-        dependencies: CourseForumThreadsFamily._dependencies,
+            : _$globalForumFeedHash,
+        dependencies: GlobalForumFeedFamily._dependencies,
         allTransitiveDependencies:
-            CourseForumThreadsFamily._allTransitiveDependencies,
-        courseId: courseId,
+            GlobalForumFeedFamily._allTransitiveDependencies,
+        categoryId: categoryId,
+        searchQuery: searchQuery,
       );
 
-  CourseForumThreadsProvider._internal(
+  GlobalForumFeedProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.courseId,
+    required this.categoryId,
+    required this.searchQuery,
   }) : super.internal();
 
-  final String courseId;
+  final int? categoryId;
+  final String? searchQuery;
 
   @override
-  Override overrideWith(
-    Stream<List<ForumThreadDto>> Function(CourseForumThreadsRef provider)
-    create,
+  FutureOr<GlobalForumFeedState> runNotifierBuild(
+    covariant GlobalForumFeed notifier,
   ) {
+    return notifier.build(categoryId: categoryId, searchQuery: searchQuery);
+  }
+
+  @override
+  Override overrideWith(GlobalForumFeed Function() create) {
     return ProviderOverride(
       origin: this,
-      override: CourseForumThreadsProvider._internal(
-        (ref) => create(ref as CourseForumThreadsRef),
+      override: GlobalForumFeedProvider._internal(
+        () => create()
+          ..categoryId = categoryId
+          ..searchQuery = searchQuery,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        courseId: courseId,
+        categoryId: categoryId,
+        searchQuery: searchQuery,
       ),
     );
   }
 
   @override
-  StreamProviderElement<List<ForumThreadDto>> createElement() {
-    return _CourseForumThreadsProviderElement(this);
+  AutoDisposeAsyncNotifierProviderElement<GlobalForumFeed, GlobalForumFeedState>
+  createElement() {
+    return _GlobalForumFeedProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is CourseForumThreadsProvider && other.courseId == courseId;
+    return other is GlobalForumFeedProvider &&
+        other.categoryId == categoryId &&
+        other.searchQuery == searchQuery;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, courseId.hashCode);
+    hash = _SystemHash.combine(hash, categoryId.hashCode);
+    hash = _SystemHash.combine(hash, searchQuery.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -153,279 +237,28 @@ class CourseForumThreadsProvider extends StreamProvider<List<ForumThreadDto>> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin CourseForumThreadsRef on StreamProviderRef<List<ForumThreadDto>> {
-  /// The parameter `courseId` of this provider.
-  String get courseId;
+mixin GlobalForumFeedRef
+    on AutoDisposeAsyncNotifierProviderRef<GlobalForumFeedState> {
+  /// The parameter `categoryId` of this provider.
+  int? get categoryId;
+
+  /// The parameter `searchQuery` of this provider.
+  String? get searchQuery;
 }
 
-class _CourseForumThreadsProviderElement
-    extends StreamProviderElement<List<ForumThreadDto>>
-    with CourseForumThreadsRef {
-  _CourseForumThreadsProviderElement(super.provider);
+class _GlobalForumFeedProviderElement
+    extends
+        AutoDisposeAsyncNotifierProviderElement<
+          GlobalForumFeed,
+          GlobalForumFeedState
+        >
+    with GlobalForumFeedRef {
+  _GlobalForumFeedProviderElement(super.provider);
 
   @override
-  String get courseId => (origin as CourseForumThreadsProvider).courseId;
-}
-
-String _$forumThreadDetailHash() => r'35a663ac2c423f4a02b845397f6ea8ccc4e6c055';
-
-/// See also [forumThreadDetail].
-@ProviderFor(forumThreadDetail)
-const forumThreadDetailProvider = ForumThreadDetailFamily();
-
-/// See also [forumThreadDetail].
-class ForumThreadDetailFamily extends Family<AsyncValue<ForumThreadDto?>> {
-  /// See also [forumThreadDetail].
-  const ForumThreadDetailFamily();
-
-  /// See also [forumThreadDetail].
-  ForumThreadDetailProvider call({
-    required String courseId,
-    required String threadId,
-  }) {
-    return ForumThreadDetailProvider(courseId: courseId, threadId: threadId);
-  }
-
+  int? get categoryId => (origin as GlobalForumFeedProvider).categoryId;
   @override
-  ForumThreadDetailProvider getProviderOverride(
-    covariant ForumThreadDetailProvider provider,
-  ) {
-    return call(courseId: provider.courseId, threadId: provider.threadId);
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'forumThreadDetailProvider';
-}
-
-/// See also [forumThreadDetail].
-class ForumThreadDetailProvider extends StreamProvider<ForumThreadDto?> {
-  /// See also [forumThreadDetail].
-  ForumThreadDetailProvider({
-    required String courseId,
-    required String threadId,
-  }) : this._internal(
-         (ref) => forumThreadDetail(
-           ref as ForumThreadDetailRef,
-           courseId: courseId,
-           threadId: threadId,
-         ),
-         from: forumThreadDetailProvider,
-         name: r'forumThreadDetailProvider',
-         debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-             ? null
-             : _$forumThreadDetailHash,
-         dependencies: ForumThreadDetailFamily._dependencies,
-         allTransitiveDependencies:
-             ForumThreadDetailFamily._allTransitiveDependencies,
-         courseId: courseId,
-         threadId: threadId,
-       );
-
-  ForumThreadDetailProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.courseId,
-    required this.threadId,
-  }) : super.internal();
-
-  final String courseId;
-  final String threadId;
-
-  @override
-  Override overrideWith(
-    Stream<ForumThreadDto?> Function(ForumThreadDetailRef provider) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      override: ForumThreadDetailProvider._internal(
-        (ref) => create(ref as ForumThreadDetailRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        courseId: courseId,
-        threadId: threadId,
-      ),
-    );
-  }
-
-  @override
-  StreamProviderElement<ForumThreadDto?> createElement() {
-    return _ForumThreadDetailProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is ForumThreadDetailProvider &&
-        other.courseId == courseId &&
-        other.threadId == threadId;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, courseId.hashCode);
-    hash = _SystemHash.combine(hash, threadId.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin ForumThreadDetailRef on StreamProviderRef<ForumThreadDto?> {
-  /// The parameter `courseId` of this provider.
-  String get courseId;
-
-  /// The parameter `threadId` of this provider.
-  String get threadId;
-}
-
-class _ForumThreadDetailProviderElement
-    extends StreamProviderElement<ForumThreadDto?>
-    with ForumThreadDetailRef {
-  _ForumThreadDetailProviderElement(super.provider);
-
-  @override
-  String get courseId => (origin as ForumThreadDetailProvider).courseId;
-  @override
-  String get threadId => (origin as ForumThreadDetailProvider).threadId;
-}
-
-String _$threadCommentsHash() => r'a118b04e5f7c9bd558208e18564d882b623f6de8';
-
-/// See also [threadComments].
-@ProviderFor(threadComments)
-const threadCommentsProvider = ThreadCommentsFamily();
-
-/// See also [threadComments].
-class ThreadCommentsFamily extends Family<AsyncValue<List<ForumCommentDto>>> {
-  /// See also [threadComments].
-  const ThreadCommentsFamily();
-
-  /// See also [threadComments].
-  ThreadCommentsProvider call(String threadId) {
-    return ThreadCommentsProvider(threadId);
-  }
-
-  @override
-  ThreadCommentsProvider getProviderOverride(
-    covariant ThreadCommentsProvider provider,
-  ) {
-    return call(provider.threadId);
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'threadCommentsProvider';
-}
-
-/// See also [threadComments].
-class ThreadCommentsProvider extends StreamProvider<List<ForumCommentDto>> {
-  /// See also [threadComments].
-  ThreadCommentsProvider(String threadId)
-    : this._internal(
-        (ref) => threadComments(ref as ThreadCommentsRef, threadId),
-        from: threadCommentsProvider,
-        name: r'threadCommentsProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$threadCommentsHash,
-        dependencies: ThreadCommentsFamily._dependencies,
-        allTransitiveDependencies:
-            ThreadCommentsFamily._allTransitiveDependencies,
-        threadId: threadId,
-      );
-
-  ThreadCommentsProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.threadId,
-  }) : super.internal();
-
-  final String threadId;
-
-  @override
-  Override overrideWith(
-    Stream<List<ForumCommentDto>> Function(ThreadCommentsRef provider) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      override: ThreadCommentsProvider._internal(
-        (ref) => create(ref as ThreadCommentsRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        threadId: threadId,
-      ),
-    );
-  }
-
-  @override
-  StreamProviderElement<List<ForumCommentDto>> createElement() {
-    return _ThreadCommentsProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is ThreadCommentsProvider && other.threadId == threadId;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, threadId.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin ThreadCommentsRef on StreamProviderRef<List<ForumCommentDto>> {
-  /// The parameter `threadId` of this provider.
-  String get threadId;
-}
-
-class _ThreadCommentsProviderElement
-    extends StreamProviderElement<List<ForumCommentDto>>
-    with ThreadCommentsRef {
-  _ThreadCommentsProviderElement(super.provider);
-
-  @override
-  String get threadId => (origin as ThreadCommentsProvider).threadId;
+  String? get searchQuery => (origin as GlobalForumFeedProvider).searchQuery;
 }
 
 // ignore_for_file: type=lint
