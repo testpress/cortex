@@ -13,9 +13,9 @@ Future<ForumRepository> forumRepository(ForumRepositoryRef ref) async {
 }
 
 final globalForumThreadDetailProvider =
-    FutureProvider.family<ForumThreadDto?, String>((ref, slug) async {
+    StreamProvider.family<ForumThreadDto?, String>((ref, slug) async* {
   final repo = await ref.watch(forumRepositoryProvider.future);
-  return repo.watchThreadBySlug(slug).first;
+  yield* repo.watchThreadBySlug(slug);
 });
 
 final globalForumCommentsProvider =
