@@ -221,6 +221,10 @@ class _AppHtmlState extends State<AppHtml> {
               if (!container) return;
               const elements = container.querySelectorAll('p, div, span');
               elements.forEach(el => {
+                // Do not remove custom option selection indicators or their inner child elements
+                if (el.closest('.indicator') || el.classList.contains('indicator')) {
+                  return;
+                }
                 const text = el.textContent.replace(/\u00a0/g, ' ').trim();
                 if (text === '' && !el.querySelector('img, iframe, math, svg, table')) {
                   el.remove();

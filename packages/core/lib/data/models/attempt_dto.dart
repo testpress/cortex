@@ -4,6 +4,7 @@ import 'section_dto.dart';
 /// Attempt DTO — represents an active or completed exam attempt.
 class AttemptDto {
   final String id;
+  final String? state;
   final String? remainingTime;
   final String questionsUrl;
   final String heartbeatUrl;
@@ -24,9 +25,11 @@ class AttemptDto {
   final bool? rankEnabled;
   final String? markPerQuestion;
   final String? negativeMarks;
+  final int? lastViewedQuestionId;
 
   const AttemptDto({
     required this.id,
+    this.state,
     this.remainingTime,
     required this.questionsUrl,
     required this.heartbeatUrl,
@@ -47,6 +50,7 @@ class AttemptDto {
     this.rankEnabled,
     this.markPerQuestion,
     this.negativeMarks,
+    this.lastViewedQuestionId,
   });
 
   factory AttemptDto.fromJson(Map<String, dynamic> json) {
@@ -71,6 +75,14 @@ class AttemptDto {
     final String rawReviewUrl = (data['review_url'] ?? json['review_url'])?.toString() ?? 
                                 (cleanBase.isNotEmpty ? '${cleanBase}review/' : '');
     final String finalReviewUrl = rawReviewUrl.replaceFirst('v2.3', 'v2.2.1');
+
+    final String rawHeartbeatUrl =
+        (data['heartbeat_url'] ?? json['heartbeat_url'])?.toString() ??
+        (cleanBase.isNotEmpty ? '${cleanBase}heartbeat/' : '');
+    final String finalHeartbeatUrl = rawHeartbeatUrl.replaceFirst(
+      'v2.3',
+      'v2.2.1',
+    );
 
     return AttemptDto(
       id: (data['id'] ?? json['id'] ?? '').toString(),
@@ -105,12 +117,14 @@ class AttemptDto {
       rankEnabled: json['rank_enabled'] as bool? ?? data['rank_enabled'] as bool?,
       markPerQuestion: (data['mark_per_question'] ?? json['mark_per_question'])?.toString(),
       negativeMarks: (data['negative_marks'] ?? json['negative_marks'])?.toString(),
+      lastViewedQuestionId: json['last_viewed_question_id'] as int? ?? data['last_viewed_question_id'] as int?,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'state': state,
       'remaining_time': remainingTime,
       'questions_url': questionsUrl,
       'heartbeat_url': heartbeatUrl,
@@ -131,6 +145,7 @@ class AttemptDto {
       'rank_enabled': rankEnabled,
       'mark_per_question': markPerQuestion,
       'negative_marks': negativeMarks,
+      'last_viewed_question_id': lastViewedQuestionId,
     };
   }
 }

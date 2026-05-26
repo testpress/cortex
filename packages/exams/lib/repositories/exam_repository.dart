@@ -147,8 +147,31 @@ class ExamRepository {
   Future<void> startStandaloneExam(ExamDto exam) async {
     _emit(ExamAttemptState(status: ExamAttemptStatus.loading, exam: exam));
     try {
-      final attempt = await _dataSource.createAttempt(exam.attemptsUrl);
-      await _initializeAttempt(exam, attempt);
+      if (exam.pausedAttemptsCount > 0) {
+        final attempts = await _dataSource.getAttempts(exam.attemptsUrl);
+        final runningAttempt = attempts.firstWhere(
+          (a) => a.state == 'Running',
+          orElse: () => attempts.first,
+        );
+        AttemptDto attemptToInitialize = runningAttempt;
+        if (runningAttempt.startUrl != null) {
+          try {
+            attemptToInitialize = await _dataSource.startAttempt(
+              runningAttempt.startUrl!,
+            );
+          } catch (e) {
+            dev.log(
+              'Failed to call startUrl on resumed attempt',
+              name: 'ExamRepository',
+              error: e,
+            );
+          }
+        }
+        await _initializeAttempt(exam, attemptToInitialize, isResume: true);
+      } else {
+        final attempt = await _dataSource.createAttempt(exam.attemptsUrl);
+        await _initializeAttempt(exam, attempt);
+      }
     } catch (e) {
       final msg = e is ApiException ? e.message : e.toString();
       _emit(ExamAttemptState(status: ExamAttemptStatus.error, exam: exam, errorMessage: msg));
@@ -158,8 +181,33 @@ class ExamRepository {
   Future<void> startCourseLinkedExam(ExamDto exam, String contentAttemptsUrl) async {
     _emit(ExamAttemptState(status: ExamAttemptStatus.loading, exam: exam));
     try {
-      final attempt = await _dataSource.createContentAttempt(contentAttemptsUrl);
-      await _initializeAttempt(exam, attempt);
+      if (exam.pausedAttemptsCount > 0) {
+        final attempts = await _dataSource.getAttempts(contentAttemptsUrl);
+        final runningAttempt = attempts.firstWhere(
+          (a) => a.state == 'Running',
+          orElse: () => attempts.first,
+        );
+        AttemptDto attemptToInitialize = runningAttempt;
+        if (runningAttempt.startUrl != null) {
+          try {
+            attemptToInitialize = await _dataSource.startAttempt(
+              runningAttempt.startUrl!,
+            );
+          } catch (e) {
+            dev.log(
+              'Failed to call startUrl on resumed course attempt',
+              name: 'ExamRepository',
+              error: e,
+            );
+          }
+        }
+        await _initializeAttempt(exam, attemptToInitialize, isResume: true);
+      } else {
+        final attempt = await _dataSource.createContentAttempt(
+          contentAttemptsUrl,
+        );
+        await _initializeAttempt(exam, attempt);
+      }
     } catch (e) {
       final msg = e is ApiException ? e.message : e.toString();
       _emit(ExamAttemptState(status: ExamAttemptStatus.error, exam: exam, errorMessage: msg));
@@ -168,13 +216,26 @@ class ExamRepository {
 
   Timer? _countdownTimer;
 
-  Future<void> _initializeAttempt(ExamDto exam, AttemptDto attempt) async {
-    // 1. Kick off background heartbeat query concurrently if remainingTime is null
-    final Future<AttemptDto?> heartbeatFuture = (attempt.remainingTime == null && attempt.heartbeatUrl.isNotEmpty)
-        ? _dataSource.sendHeartbeat(attempt.heartbeatUrl).then<AttemptDto?>((val) => val).catchError((e) {
-            dev.log('Failed to fetch initial heartbeat remaining time', name: 'ExamRepository', error: e);
-            return null;
-          })
+  Future<void> _initializeAttempt(
+    ExamDto exam,
+    AttemptDto attempt, {
+    bool isResume = false,
+  }) async {
+    // 1. Kick off background heartbeat query concurrently if remainingTime is null OR it's a resumed attempt
+    final Future<AttemptDto?> heartbeatFuture =
+        ((attempt.remainingTime == null || isResume) &&
+            attempt.heartbeatUrl.isNotEmpty)
+        ? _dataSource
+              .sendHeartbeat(attempt.heartbeatUrl)
+              .then<AttemptDto?>((val) => val)
+              .catchError((e) {
+                dev.log(
+                  'Failed to fetch initial heartbeat remaining time',
+                  name: 'ExamRepository',
+                  error: e,
+                );
+                return null;
+              })
         : Future.value(null);
 
     final List<SectionDto> sections = attempt.sections ?? [];
@@ -218,6 +279,15 @@ class ExamRepository {
           );
         }
       }
+      int initialQuestionIndex = 0;
+      if (updatedAttempt.lastViewedQuestionId != null) {
+        final index = questions.indexWhere(
+          (q) => q.id == updatedAttempt.lastViewedQuestionId.toString(),
+        );
+        if (index != -1) {
+          initialQuestionIndex = index;
+        }
+      }
 
       final state = ExamAttemptState(
         status: ExamAttemptStatus.inProgress,
@@ -226,6 +296,7 @@ class ExamRepository {
         sections: updatedSections.isNotEmpty ? updatedSections : sections,
         currentSectionIndex: activeIndex,
         questions: questions,
+        currentQuestionIndex: initialQuestionIndex,
         answers: initialAnswers,
         remainingSeconds: remainingSeconds,
       );
@@ -258,12 +329,22 @@ class ExamRepository {
           );
         }
       }
+      int initialQuestionIndex = 0;
+      if (updatedAttempt.lastViewedQuestionId != null) {
+        final index = questions.indexWhere(
+          (q) => q.id == updatedAttempt.lastViewedQuestionId.toString(),
+        );
+        if (index != -1) {
+          initialQuestionIndex = index;
+        }
+      }
 
       final state = ExamAttemptState(
         status: ExamAttemptStatus.inProgress,
         exam: exam,
         attempt: updatedAttempt,
         questions: questions,
+        currentQuestionIndex: initialQuestionIndex,
         answers: initialAnswers,
         remainingSeconds: remainingSeconds,
       );

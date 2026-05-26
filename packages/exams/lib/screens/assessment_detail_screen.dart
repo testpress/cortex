@@ -561,34 +561,38 @@ class _AssessmentDetailScreenState
                   ),
                 ),
                 SizedBox(height: design.spacing.xl),
-                GestureDetector(
-                  onTap: _handleRetake,
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(vertical: design.spacing.md),
-                    decoration: BoxDecoration(
-                      color: design.colors.textPrimary,
-                      borderRadius: BorderRadius.circular(design.radius.md),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          LucideIcons.refreshCw,
-                          color: design.colors.textInverse,
-                          size: 20,
-                        ),
-                        SizedBox(width: design.spacing.sm),
-                        AppText.body(
-                          l10n.testRetake,
-                          color: design.colors.textInverse,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                if (widget.lesson?.allowRetake != false) ...[
+                  GestureDetector(
+                    onTap: _handleRetake,
+                    child: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                        vertical: design.spacing.md,
+                      ),
+                      decoration: BoxDecoration(
+                        color: design.colors.textPrimary,
+                        borderRadius: BorderRadius.circular(design.radius.md),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            LucideIcons.refreshCw,
+                            color: design.colors.textInverse,
+                            size: 20,
+                          ),
+                          SizedBox(width: design.spacing.sm),
+                          AppText.body(
+                            l10n.testRetake,
+                            color: design.colors.textInverse,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: design.spacing.md),
+                  SizedBox(height: design.spacing.md),
+                ],
                 GestureDetector(
                   onTap: widget.onClose,
                   child: Container(

@@ -57,7 +57,7 @@ class QuestionDto {
       explanation: (data['explanation'] ?? data['explanation_html'] ?? json['explanation_html']) as String?,
       directionHtml: (data['direction'] ?? data['direction_html'] ?? json['direction'] ?? json['direction_html']) as String?,
       order: int.tryParse((json['order'] ?? json['question_index'] ?? '').toString()) ?? 0,
-      selectedOptionIds: (json['selected_options'] as List<dynamic>?)
+      selectedOptionIds: (json['selected_options'] as List<dynamic>? ?? json['selected_answers'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           const [],

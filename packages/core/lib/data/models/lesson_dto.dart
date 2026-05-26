@@ -31,6 +31,10 @@ class LessonDto {
   final bool isRunning;
   final bool isUpcoming;
   final bool hasAttempts;
+  final int pausedAttemptsCount;
+  final bool disableAttemptResume;
+  final bool allowRetake;
+  final int maxRetakes;
   final String? image;
 
   // New fields for sequential navigation and rich content (v2.4+)
@@ -98,6 +102,10 @@ class LessonDto {
     this.isRunning = false,
     this.isUpcoming = false,
     this.hasAttempts = false,
+    this.pausedAttemptsCount = 0,
+    this.disableAttemptResume = false,
+    this.allowRetake = true,
+    this.maxRetakes = -1,
     this.image,
     this.nextContentId,
     this.previousContentId,
@@ -141,6 +149,10 @@ class LessonDto {
     bool? isRunning,
     bool? isUpcoming,
     bool? hasAttempts,
+    int? pausedAttemptsCount,
+    bool? disableAttemptResume,
+    bool? allowRetake,
+    int? maxRetakes,
     String? image,
     String? description,
     String? nextContentId,
@@ -179,6 +191,10 @@ class LessonDto {
       isRunning: isRunning ?? this.isRunning,
       isUpcoming: isUpcoming ?? this.isUpcoming,
       hasAttempts: hasAttempts ?? this.hasAttempts,
+      pausedAttemptsCount: pausedAttemptsCount ?? this.pausedAttemptsCount,
+      disableAttemptResume: disableAttemptResume ?? this.disableAttemptResume,
+      allowRetake: allowRetake ?? this.allowRetake,
+      maxRetakes: maxRetakes ?? this.maxRetakes,
       image: image ?? this.image,
       description: description ?? this.description,
       nextContentId: nextContentId ?? this.nextContentId,
@@ -237,7 +253,14 @@ class LessonDto {
       isRunning: isRunning || other.isRunning,
       isUpcoming: isUpcoming || other.isUpcoming,
       hasAttempts: hasAttempts || other.hasAttempts,
-      isLocked: isLocked && other.isLocked, // Only locked if both say so (safer)
+      pausedAttemptsCount: pausedAttemptsCount > 0
+          ? pausedAttemptsCount
+          : other.pausedAttemptsCount,
+      disableAttemptResume: disableAttemptResume || other.disableAttemptResume,
+      allowRetake: allowRetake && other.allowRetake,
+      maxRetakes: maxRetakes != -1 ? maxRetakes : other.maxRetakes,
+      isLocked:
+          isLocked && other.isLocked, // Only locked if both say so (safer)
       progressStatus: progressStatus != LessonProgressStatus.notStarted
           ? progressStatus
           : other.progressStatus,
@@ -472,6 +495,22 @@ class LessonDto {
       isUpcoming: json['is_upcoming'] as bool? ?? 
           ['upcoming', 'scheduled'].contains(liveStream?['status']?.toString().toLowerCase()),
       hasAttempts: json['has_attempts'] as bool? ?? false,
+      pausedAttemptsCount:
+          (json['paused_attempts_count'] as num?)?.toInt() ??
+          (exam?['paused_attempts_count'] as num?)?.toInt() ??
+          0,
+      disableAttemptResume:
+          json['disable_attempt_resume'] as bool? ??
+          exam?['disable_attempt_resume'] as bool? ??
+          false,
+      allowRetake:
+          json['allow_retake'] as bool? ??
+          exam?['allow_retake'] as bool? ??
+          true,
+      maxRetakes:
+          (json['max_retakes'] as num?)?.toInt() ??
+          (exam?['max_retakes'] as num?)?.toInt() ??
+          -1,
       nextContentId: getString('next_content_id'),
       previousContentId: getString('previous_content_id'),
       isDetailFetched: json['is_detail_fetched'] as bool? ?? false,
@@ -525,6 +564,9 @@ class LessonDto {
       'isRunning': isRunning,
       'isUpcoming': isUpcoming,
       'hasAttempts': hasAttempts,
+      'disableAttemptResume': disableAttemptResume,
+      'allowRetake': allowRetake,
+      'maxRetakes': maxRetakes,
       'nextContentId': nextContentId,
       'previousContentId': previousContentId,
       'htmlContent': htmlContent,
