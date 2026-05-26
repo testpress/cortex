@@ -149,25 +149,30 @@ class ExamRepository {
     try {
       if (exam.pausedAttemptsCount > 0) {
         final attempts = await _dataSource.getAttempts(exam.attemptsUrl);
-        final runningAttempt = attempts.firstWhere(
-          (a) => a.state == 'Running',
-          orElse: () => attempts.first,
-        );
-        AttemptDto attemptToInitialize = runningAttempt;
-        if (runningAttempt.startUrl != null) {
-          try {
-            attemptToInitialize = await _dataSource.startAttempt(
-              runningAttempt.startUrl!,
-            );
-          } catch (e) {
-            dev.log(
-              'Failed to call startUrl on resumed attempt',
-              name: 'ExamRepository',
-              error: e,
-            );
+        if (attempts.isEmpty) {
+          final attempt = await _dataSource.createAttempt(exam.attemptsUrl);
+          await _initializeAttempt(exam, attempt);
+        } else {
+          final runningAttempt = attempts.firstWhere(
+            (a) => a.state == 'Running',
+            orElse: () => attempts.first,
+          );
+          AttemptDto attemptToInitialize = runningAttempt;
+          if (runningAttempt.startUrl != null) {
+            try {
+              attemptToInitialize = await _dataSource.startAttempt(
+                runningAttempt.startUrl!,
+              );
+            } catch (e) {
+              dev.log(
+                'Failed to call startUrl on resumed attempt',
+                name: 'ExamRepository',
+                error: e,
+              );
+            }
           }
+          await _initializeAttempt(exam, attemptToInitialize, isResume: true);
         }
-        await _initializeAttempt(exam, attemptToInitialize, isResume: true);
       } else {
         final attempt = await _dataSource.createAttempt(exam.attemptsUrl);
         await _initializeAttempt(exam, attempt);
@@ -183,25 +188,30 @@ class ExamRepository {
     try {
       if (exam.pausedAttemptsCount > 0) {
         final attempts = await _dataSource.getAttempts(contentAttemptsUrl);
-        final runningAttempt = attempts.firstWhere(
-          (a) => a.state == 'Running',
-          orElse: () => attempts.first,
-        );
-        AttemptDto attemptToInitialize = runningAttempt;
-        if (runningAttempt.startUrl != null) {
-          try {
-            attemptToInitialize = await _dataSource.startAttempt(
-              runningAttempt.startUrl!,
-            );
-          } catch (e) {
-            dev.log(
-              'Failed to call startUrl on resumed course attempt',
-              name: 'ExamRepository',
-              error: e,
-            );
+        if (attempts.isEmpty) {
+          final attempt = await _dataSource.createAttempt(contentAttemptsUrl);
+          await _initializeAttempt(exam, attempt);
+        } else {
+          final runningAttempt = attempts.firstWhere(
+            (a) => a.state == 'Running',
+            orElse: () => attempts.first,
+          );
+          AttemptDto attemptToInitialize = runningAttempt;
+          if (runningAttempt.startUrl != null) {
+            try {
+              attemptToInitialize = await _dataSource.startAttempt(
+                runningAttempt.startUrl!,
+              );
+            } catch (e) {
+              dev.log(
+                'Failed to call startUrl on resumed course attempt',
+                name: 'ExamRepository',
+                error: e,
+              );
+            }
           }
+          await _initializeAttempt(exam, attemptToInitialize, isResume: true);
         }
-        await _initializeAttempt(exam, attemptToInitialize, isResume: true);
       } else {
         final attempt = await _dataSource.createContentAttempt(
           contentAttemptsUrl,

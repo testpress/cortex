@@ -4,6 +4,10 @@ The Cortex app currently forces users to start a new exam attempt every time the
 ## What Changes
 - Parse `paused_attempts_count` from the exam metadata API.
 - If `paused_attempts_count > 0`, fetch the existing attempts and extract the active one.
+- Parse `state` from the attempt JSON payload in the `AttemptDto.fromJson` factory method to restore correct resumption matching.
+- Add a safety check in `ExamRepository` when resuming exams to fall back to creating a new attempt if the fetched attempts list is empty, preventing a `StateError`.
+- Prevent custom exam option indicators (radio/checkboxes) or their parent wrapper elements from being stripped out by the HTML clean-up script in the WebView.
+- Preserve resumption and retake settings (`disableAttemptResume`, `allowRetake`, `maxRetakes`) from cached exams and lessons when instantiating the temporary `ExamDto` for course-linked attempts.
 - Update the exam prescreen CTA to "Resume Exam Online".
 - Intercept back navigation and exit actions during an exam.
 - Show a "Pause Exam" confirmation dialog to prevent accidental exits.

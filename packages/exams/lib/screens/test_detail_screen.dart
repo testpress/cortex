@@ -93,6 +93,9 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                 pausedAttemptsCount: lesson.pausedAttemptsCount > 0
                     ? lesson.pausedAttemptsCount
                     : (cachedExam?.pausedAttemptsCount ?? 0),
+                disableAttemptResume: lesson.disableAttemptResume || (cachedExam?.disableAttemptResume ?? false),
+                allowRetake: lesson.allowRetake && (cachedExam?.allowRetake ?? true),
+                maxRetakes: lesson.maxRetakes != -1 ? lesson.maxRetakes : (cachedExam?.maxRetakes ?? -1),
               ),
               attemptsUrl,
             );

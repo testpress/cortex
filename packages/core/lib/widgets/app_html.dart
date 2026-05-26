@@ -221,8 +221,8 @@ class _AppHtmlState extends State<AppHtml> {
               if (!container) return;
               const elements = container.querySelectorAll('p, div, span');
               elements.forEach(el => {
-                // Do not remove custom option selection indicators or their inner child elements
-                if (el.closest('.indicator') || el.classList.contains('indicator')) {
+                // Do not remove custom option selection indicators, their descendants, or their parent wrappers
+                if (el.closest('.indicator') || el.classList.contains('indicator') || el.querySelector('.indicator')) {
                   return;
                 }
                 const text = el.textContent.replace(/\u00a0/g, ' ').trim();

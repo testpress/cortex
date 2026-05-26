@@ -15,12 +15,14 @@ Currently, the Cortex app does not support resuming exam attempts that were paus
 - Refactoring the entire `ExamRepository` state management.
 
 ## Decisions
-- **Attempt Fetching**: If `paused_attempts_count > 0`, we fetch the list of attempts via `_dataSource.getAttempts()` and find the one with `state == 'Running'`. This avoids introducing a new specific API call and reuses existing pagination/fetching logic.
+- **Attempt Fetching**: If `paused_attempts_count > 0`, we fetch the list of attempts via `_dataSource.getAttempts()` and find the one with `state == 'Running'`. This avoids introducing a new specific API call and reuses existing pagination/fetching logic. We ensure `state` is parsed inside `AttemptDto.fromJson` to enable this comparison. If the fetched list is empty, we fall back to creating a new attempt.
 - **Resumption Endpoint**: We will trigger the attempt's `startUrl` to inform the server that the session is active again.
 - **Exit Interception**: We will intercept `PopScope` and the `onExit` callback in `TestHeader`. A new `PauseConfirmationDialog` will be presented.
 - **Pause Action**: We will clear the `ExamAttemptState` and pop the screen. The backend considers it paused since heartbeat updates will cease.
-- **HTML Option Indicator Preservation**: The clean-up logic in `AppHtml` (`removeEmptyNodes`) will check for `.indicator` elements or their descendants and bypass them, ensuring custom radio and checkbox indicators are not stripped from the DOM.
+- **HTML Option Indicator Preservation**: The clean-up logic in `AppHtml` (`removeEmptyNodes`) will check for `.indicator` elements or their descendants and bypass them, ensuring custom radio and checkbox indicators are not stripped from the DOM. We also protect parent wrapper elements (like empty divs or p tags) enclosing `.indicator` children by checking `el.querySelector('.indicator')` to prevent recursive removal.
 - **Subject Mapping / API URL Swap**: To resolve correct subject names (like `PHYSICS`, `CHEMISTRY`, `BIOLOGY`) for the tab bar while fully preserving user attempt progress state, the app will replicate the legacy Android SDK hotfix. When invoking the questions endpoint URL in `HttpDataSource`, any occurrence of `v2.3` will be replaced with `v2.2.1` before the GET request is made.
+- **Exam Settings Preservation**: In `TestDetailScreen`, when creating the `ExamDto` to pass to `startCourseLinkedExam`, we will map `disableAttemptResume`, `allowRetake`, and `maxRetakes` by merging properties from the active `lesson` and `cachedExam` to ensure constraints don't revert to defaults.
+
 
 ## Risks / Trade-offs
 - [Risk] What if `paused_attempts_count` is 0 but an active attempt actually exists? → Mitigation: The backend is assumed to be the source of truth, aligning perfectly with the legacy Android SDK logic.

@@ -86,11 +86,11 @@ class AttemptDto {
 
     return AttemptDto(
       id: (data['id'] ?? json['id'] ?? '').toString(),
+      state: (data['state'] ?? json['state'])?.toString(),
       remainingTime: (data['remaining_time'] ?? json['remaining_time'])?.toString(),
       questionsUrl: (data['questions_url'] ?? json['questions_url'])?.toString() ?? 
                     (cleanBase.isNotEmpty ? '${cleanBase}questions/' : ''),
-      heartbeatUrl: (data['heartbeat_url'] ?? json['heartbeat_url'])?.toString() ?? 
-                    (cleanBase.isNotEmpty ? '${cleanBase}heartbeat/' : ''),
+      heartbeatUrl: finalHeartbeatUrl,
       endUrl: contentAttemptEndUrl.isNotEmpty 
               ? contentAttemptEndUrl 
               : ((json['end_url'] ?? data['end_url'] ?? json['terminate_url'] ?? data['terminate_url'])?.toString() ?? 
