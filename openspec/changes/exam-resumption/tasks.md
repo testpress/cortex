@@ -21,3 +21,9 @@
 ## 5. UI: WebView/HTML Option Indicator Rendering Fix
 
 - [x] 5.1 Update `removeEmptyNodes` inside `packages/core/lib/widgets/app_html.dart` to check and preserve elements with the `.indicator` class (or their descendants).
+
+## 6. Subject Mapping API Translation
+
+- [x] 6.1 In `packages/core/lib/data/sources/http_data_source.dart`, update the `getQuestions` method to replace `'v2.3'` with `'v2.2.1'` in the questions URL before making the GET request.
+
+

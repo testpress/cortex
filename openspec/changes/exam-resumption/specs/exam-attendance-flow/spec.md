@@ -23,3 +23,12 @@ The system SHALL ensure that custom HTML option selection indicators (radio butt
 #### Scenario: Rendering Exam Question Options
 - **WHEN** a question card is rendered in the WebView (AppHtml)
 - **THEN** the radio buttons and checkboxes MUST be fully visible and functional in the options list.
+
+### Requirement: Subject Mapping Preservation
+The system SHALL request attempt questions by substituting `v2.3` with `v2.2.1` in the questions endpoint URL. This ensures correct subject name groupings are returned for all questions, enabling proper subject/section tab bar rendering, matching the legacy Android SDK behavior.
+
+#### Scenario: Fetching Questions in Exam Attempt
+- **WHEN** a questions endpoint containing `v2.3` is invoked to load questions for an active attempt
+- **THEN** the request SHALL instead be translated to `v2.2.1` before execution
+- **THEN** the response questions MUST map correct subject names (e.g. "PHYSICS", "CHEMISTRY", "BIOLOGY") instead of "Uncategorized", unlocking the subject tabs
+
