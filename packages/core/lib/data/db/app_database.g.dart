@@ -10412,23 +10412,23 @@ class $DoubtsTableTable extends DoubtsTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _courseIdMeta = const VerificationMeta(
-    'courseId',
+  static const VerificationMeta _topicIdMeta = const VerificationMeta(
+    'topicId',
   );
   @override
-  late final GeneratedColumn<String> courseId = GeneratedColumn<String>(
-    'course_id',
+  late final GeneratedColumn<int> topicId = GeneratedColumn<int>(
+    'topic_id',
     aliasedName,
     true,
-    type: DriftSqlType.string,
+    type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _courseNameMeta = const VerificationMeta(
-    'courseName',
+  static const VerificationMeta _topicNameMeta = const VerificationMeta(
+    'topicName',
   );
   @override
-  late final GeneratedColumn<String> courseName = GeneratedColumn<String>(
-    'course_name',
+  late final GeneratedColumn<String> topicName = GeneratedColumn<String>(
+    'topic_name',
     aliasedName,
     true,
     type: DriftSqlType.string,
@@ -10494,10 +10494,9 @@ class $DoubtsTableTable extends DoubtsTable
   late final GeneratedColumn<int> replyCount = GeneratedColumn<int>(
     'reply_count',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
-    defaultValue: const Constant(0),
   );
   static const VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
@@ -10519,6 +10518,17 @@ class $DoubtsTableTable extends DoubtsTable
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _createdHumanizedMeta = const VerificationMeta(
+    'createdHumanized',
+  );
+  @override
+  late final GeneratedColumn<String> createdHumanized = GeneratedColumn<String>(
+    'created_humanized',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _attachmentsMeta = const VerificationMeta(
     'attachments',
   );
@@ -10533,8 +10543,8 @@ class $DoubtsTableTable extends DoubtsTable
   @override
   List<GeneratedColumn> get $columns => [
     id,
-    courseId,
-    courseName,
+    topicId,
+    topicName,
     lessonId,
     title,
     content,
@@ -10543,6 +10553,7 @@ class $DoubtsTableTable extends DoubtsTable
     replyCount,
     status,
     createdAt,
+    createdHumanized,
     attachments,
   ];
   @override
@@ -10562,16 +10573,16 @@ class $DoubtsTableTable extends DoubtsTable
     } else if (isInserting) {
       context.missing(_idMeta);
     }
-    if (data.containsKey('course_id')) {
+    if (data.containsKey('topic_id')) {
       context.handle(
-        _courseIdMeta,
-        courseId.isAcceptableOrUnknown(data['course_id']!, _courseIdMeta),
+        _topicIdMeta,
+        topicId.isAcceptableOrUnknown(data['topic_id']!, _topicIdMeta),
       );
     }
-    if (data.containsKey('course_name')) {
+    if (data.containsKey('topic_name')) {
       context.handle(
-        _courseNameMeta,
-        courseName.isAcceptableOrUnknown(data['course_name']!, _courseNameMeta),
+        _topicNameMeta,
+        topicName.isAcceptableOrUnknown(data['topic_name']!, _topicNameMeta),
       );
     }
     if (data.containsKey('lesson_id')) {
@@ -10638,6 +10649,15 @@ class $DoubtsTableTable extends DoubtsTable
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
+    if (data.containsKey('created_humanized')) {
+      context.handle(
+        _createdHumanizedMeta,
+        createdHumanized.isAcceptableOrUnknown(
+          data['created_humanized']!,
+          _createdHumanizedMeta,
+        ),
+      );
+    }
     if (data.containsKey('attachments')) {
       context.handle(
         _attachmentsMeta,
@@ -10660,13 +10680,13 @@ class $DoubtsTableTable extends DoubtsTable
         DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
-      courseId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}course_id'],
+      topicId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}topic_id'],
       ),
-      courseName: attachedDatabase.typeMapping.read(
+      topicName: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}course_name'],
+        data['${effectivePrefix}topic_name'],
       ),
       lessonId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -10691,7 +10711,7 @@ class $DoubtsTableTable extends DoubtsTable
       replyCount: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}reply_count'],
-      )!,
+      ),
       status: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}status'],
@@ -10700,6 +10720,10 @@ class $DoubtsTableTable extends DoubtsTable
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
+      createdHumanized: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_humanized'],
+      ),
       attachments: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}attachments'],
@@ -10715,40 +10739,42 @@ class $DoubtsTableTable extends DoubtsTable
 
 class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
   final String id;
-  final String? courseId;
-  final String? courseName;
+  final int? topicId;
+  final String? topicName;
   final String? lessonId;
   final String title;
   final String content;
   final String studentName;
   final String? studentAvatar;
-  final int replyCount;
+  final int? replyCount;
   final String status;
   final DateTime createdAt;
+  final String? createdHumanized;
   final String? attachments;
   const DoubtsTableData({
     required this.id,
-    this.courseId,
-    this.courseName,
+    this.topicId,
+    this.topicName,
     this.lessonId,
     required this.title,
     required this.content,
     required this.studentName,
     this.studentAvatar,
-    required this.replyCount,
+    this.replyCount,
     required this.status,
     required this.createdAt,
+    this.createdHumanized,
     this.attachments,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    if (!nullToAbsent || courseId != null) {
-      map['course_id'] = Variable<String>(courseId);
+    if (!nullToAbsent || topicId != null) {
+      map['topic_id'] = Variable<int>(topicId);
     }
-    if (!nullToAbsent || courseName != null) {
-      map['course_name'] = Variable<String>(courseName);
+    if (!nullToAbsent || topicName != null) {
+      map['topic_name'] = Variable<String>(topicName);
     }
     if (!nullToAbsent || lessonId != null) {
       map['lesson_id'] = Variable<String>(lessonId);
@@ -10759,9 +10785,14 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
     if (!nullToAbsent || studentAvatar != null) {
       map['student_avatar'] = Variable<String>(studentAvatar);
     }
-    map['reply_count'] = Variable<int>(replyCount);
+    if (!nullToAbsent || replyCount != null) {
+      map['reply_count'] = Variable<int>(replyCount);
+    }
     map['status'] = Variable<String>(status);
     map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || createdHumanized != null) {
+      map['created_humanized'] = Variable<String>(createdHumanized);
+    }
     if (!nullToAbsent || attachments != null) {
       map['attachments'] = Variable<String>(attachments);
     }
@@ -10771,12 +10802,12 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
   DoubtsTableCompanion toCompanion(bool nullToAbsent) {
     return DoubtsTableCompanion(
       id: Value(id),
-      courseId: courseId == null && nullToAbsent
+      topicId: topicId == null && nullToAbsent
           ? const Value.absent()
-          : Value(courseId),
-      courseName: courseName == null && nullToAbsent
+          : Value(topicId),
+      topicName: topicName == null && nullToAbsent
           ? const Value.absent()
-          : Value(courseName),
+          : Value(topicName),
       lessonId: lessonId == null && nullToAbsent
           ? const Value.absent()
           : Value(lessonId),
@@ -10786,9 +10817,14 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
       studentAvatar: studentAvatar == null && nullToAbsent
           ? const Value.absent()
           : Value(studentAvatar),
-      replyCount: Value(replyCount),
+      replyCount: replyCount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(replyCount),
       status: Value(status),
       createdAt: Value(createdAt),
+      createdHumanized: createdHumanized == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdHumanized),
       attachments: attachments == null && nullToAbsent
           ? const Value.absent()
           : Value(attachments),
@@ -10802,16 +10838,17 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DoubtsTableData(
       id: serializer.fromJson<String>(json['id']),
-      courseId: serializer.fromJson<String?>(json['courseId']),
-      courseName: serializer.fromJson<String?>(json['courseName']),
+      topicId: serializer.fromJson<int?>(json['topicId']),
+      topicName: serializer.fromJson<String?>(json['topicName']),
       lessonId: serializer.fromJson<String?>(json['lessonId']),
       title: serializer.fromJson<String>(json['title']),
       content: serializer.fromJson<String>(json['content']),
       studentName: serializer.fromJson<String>(json['studentName']),
       studentAvatar: serializer.fromJson<String?>(json['studentAvatar']),
-      replyCount: serializer.fromJson<int>(json['replyCount']),
+      replyCount: serializer.fromJson<int?>(json['replyCount']),
       status: serializer.fromJson<String>(json['status']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      createdHumanized: serializer.fromJson<String?>(json['createdHumanized']),
       attachments: serializer.fromJson<String?>(json['attachments']),
     );
   }
@@ -10820,37 +10857,39 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'courseId': serializer.toJson<String?>(courseId),
-      'courseName': serializer.toJson<String?>(courseName),
+      'topicId': serializer.toJson<int?>(topicId),
+      'topicName': serializer.toJson<String?>(topicName),
       'lessonId': serializer.toJson<String?>(lessonId),
       'title': serializer.toJson<String>(title),
       'content': serializer.toJson<String>(content),
       'studentName': serializer.toJson<String>(studentName),
       'studentAvatar': serializer.toJson<String?>(studentAvatar),
-      'replyCount': serializer.toJson<int>(replyCount),
+      'replyCount': serializer.toJson<int?>(replyCount),
       'status': serializer.toJson<String>(status),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'createdHumanized': serializer.toJson<String?>(createdHumanized),
       'attachments': serializer.toJson<String?>(attachments),
     };
   }
 
   DoubtsTableData copyWith({
     String? id,
-    Value<String?> courseId = const Value.absent(),
-    Value<String?> courseName = const Value.absent(),
+    Value<int?> topicId = const Value.absent(),
+    Value<String?> topicName = const Value.absent(),
     Value<String?> lessonId = const Value.absent(),
     String? title,
     String? content,
     String? studentName,
     Value<String?> studentAvatar = const Value.absent(),
-    int? replyCount,
+    Value<int?> replyCount = const Value.absent(),
     String? status,
     DateTime? createdAt,
+    Value<String?> createdHumanized = const Value.absent(),
     Value<String?> attachments = const Value.absent(),
   }) => DoubtsTableData(
     id: id ?? this.id,
-    courseId: courseId.present ? courseId.value : this.courseId,
-    courseName: courseName.present ? courseName.value : this.courseName,
+    topicId: topicId.present ? topicId.value : this.topicId,
+    topicName: topicName.present ? topicName.value : this.topicName,
     lessonId: lessonId.present ? lessonId.value : this.lessonId,
     title: title ?? this.title,
     content: content ?? this.content,
@@ -10858,18 +10897,19 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
     studentAvatar: studentAvatar.present
         ? studentAvatar.value
         : this.studentAvatar,
-    replyCount: replyCount ?? this.replyCount,
+    replyCount: replyCount.present ? replyCount.value : this.replyCount,
     status: status ?? this.status,
     createdAt: createdAt ?? this.createdAt,
+    createdHumanized: createdHumanized.present
+        ? createdHumanized.value
+        : this.createdHumanized,
     attachments: attachments.present ? attachments.value : this.attachments,
   );
   DoubtsTableData copyWithCompanion(DoubtsTableCompanion data) {
     return DoubtsTableData(
       id: data.id.present ? data.id.value : this.id,
-      courseId: data.courseId.present ? data.courseId.value : this.courseId,
-      courseName: data.courseName.present
-          ? data.courseName.value
-          : this.courseName,
+      topicId: data.topicId.present ? data.topicId.value : this.topicId,
+      topicName: data.topicName.present ? data.topicName.value : this.topicName,
       lessonId: data.lessonId.present ? data.lessonId.value : this.lessonId,
       title: data.title.present ? data.title.value : this.title,
       content: data.content.present ? data.content.value : this.content,
@@ -10884,6 +10924,9 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
           : this.replyCount,
       status: data.status.present ? data.status.value : this.status,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      createdHumanized: data.createdHumanized.present
+          ? data.createdHumanized.value
+          : this.createdHumanized,
       attachments: data.attachments.present
           ? data.attachments.value
           : this.attachments,
@@ -10894,8 +10937,8 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
   String toString() {
     return (StringBuffer('DoubtsTableData(')
           ..write('id: $id, ')
-          ..write('courseId: $courseId, ')
-          ..write('courseName: $courseName, ')
+          ..write('topicId: $topicId, ')
+          ..write('topicName: $topicName, ')
           ..write('lessonId: $lessonId, ')
           ..write('title: $title, ')
           ..write('content: $content, ')
@@ -10904,6 +10947,7 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
           ..write('replyCount: $replyCount, ')
           ..write('status: $status, ')
           ..write('createdAt: $createdAt, ')
+          ..write('createdHumanized: $createdHumanized, ')
           ..write('attachments: $attachments')
           ..write(')'))
         .toString();
@@ -10912,8 +10956,8 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
   @override
   int get hashCode => Object.hash(
     id,
-    courseId,
-    courseName,
+    topicId,
+    topicName,
     lessonId,
     title,
     content,
@@ -10922,6 +10966,7 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
     replyCount,
     status,
     createdAt,
+    createdHumanized,
     attachments,
   );
   @override
@@ -10929,8 +10974,8 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
       identical(this, other) ||
       (other is DoubtsTableData &&
           other.id == this.id &&
-          other.courseId == this.courseId &&
-          other.courseName == this.courseName &&
+          other.topicId == this.topicId &&
+          other.topicName == this.topicName &&
           other.lessonId == this.lessonId &&
           other.title == this.title &&
           other.content == this.content &&
@@ -10939,27 +10984,29 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
           other.replyCount == this.replyCount &&
           other.status == this.status &&
           other.createdAt == this.createdAt &&
+          other.createdHumanized == this.createdHumanized &&
           other.attachments == this.attachments);
 }
 
 class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
   final Value<String> id;
-  final Value<String?> courseId;
-  final Value<String?> courseName;
+  final Value<int?> topicId;
+  final Value<String?> topicName;
   final Value<String?> lessonId;
   final Value<String> title;
   final Value<String> content;
   final Value<String> studentName;
   final Value<String?> studentAvatar;
-  final Value<int> replyCount;
+  final Value<int?> replyCount;
   final Value<String> status;
   final Value<DateTime> createdAt;
+  final Value<String?> createdHumanized;
   final Value<String?> attachments;
   final Value<int> rowid;
   const DoubtsTableCompanion({
     this.id = const Value.absent(),
-    this.courseId = const Value.absent(),
-    this.courseName = const Value.absent(),
+    this.topicId = const Value.absent(),
+    this.topicName = const Value.absent(),
     this.lessonId = const Value.absent(),
     this.title = const Value.absent(),
     this.content = const Value.absent(),
@@ -10968,13 +11015,14 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
     this.replyCount = const Value.absent(),
     this.status = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.createdHumanized = const Value.absent(),
     this.attachments = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   DoubtsTableCompanion.insert({
     required String id,
-    this.courseId = const Value.absent(),
-    this.courseName = const Value.absent(),
+    this.topicId = const Value.absent(),
+    this.topicName = const Value.absent(),
     this.lessonId = const Value.absent(),
     required String title,
     required String content,
@@ -10983,6 +11031,7 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
     this.replyCount = const Value.absent(),
     required String status,
     required DateTime createdAt,
+    this.createdHumanized = const Value.absent(),
     this.attachments = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -10993,8 +11042,8 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
        createdAt = Value(createdAt);
   static Insertable<DoubtsTableData> custom({
     Expression<String>? id,
-    Expression<String>? courseId,
-    Expression<String>? courseName,
+    Expression<int>? topicId,
+    Expression<String>? topicName,
     Expression<String>? lessonId,
     Expression<String>? title,
     Expression<String>? content,
@@ -11003,13 +11052,14 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
     Expression<int>? replyCount,
     Expression<String>? status,
     Expression<DateTime>? createdAt,
+    Expression<String>? createdHumanized,
     Expression<String>? attachments,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (courseId != null) 'course_id': courseId,
-      if (courseName != null) 'course_name': courseName,
+      if (topicId != null) 'topic_id': topicId,
+      if (topicName != null) 'topic_name': topicName,
       if (lessonId != null) 'lesson_id': lessonId,
       if (title != null) 'title': title,
       if (content != null) 'content': content,
@@ -11018,6 +11068,7 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
       if (replyCount != null) 'reply_count': replyCount,
       if (status != null) 'status': status,
       if (createdAt != null) 'created_at': createdAt,
+      if (createdHumanized != null) 'created_humanized': createdHumanized,
       if (attachments != null) 'attachments': attachments,
       if (rowid != null) 'rowid': rowid,
     });
@@ -11025,23 +11076,24 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
 
   DoubtsTableCompanion copyWith({
     Value<String>? id,
-    Value<String?>? courseId,
-    Value<String?>? courseName,
+    Value<int?>? topicId,
+    Value<String?>? topicName,
     Value<String?>? lessonId,
     Value<String>? title,
     Value<String>? content,
     Value<String>? studentName,
     Value<String?>? studentAvatar,
-    Value<int>? replyCount,
+    Value<int?>? replyCount,
     Value<String>? status,
     Value<DateTime>? createdAt,
+    Value<String?>? createdHumanized,
     Value<String?>? attachments,
     Value<int>? rowid,
   }) {
     return DoubtsTableCompanion(
       id: id ?? this.id,
-      courseId: courseId ?? this.courseId,
-      courseName: courseName ?? this.courseName,
+      topicId: topicId ?? this.topicId,
+      topicName: topicName ?? this.topicName,
       lessonId: lessonId ?? this.lessonId,
       title: title ?? this.title,
       content: content ?? this.content,
@@ -11050,6 +11102,7 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
       replyCount: replyCount ?? this.replyCount,
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
+      createdHumanized: createdHumanized ?? this.createdHumanized,
       attachments: attachments ?? this.attachments,
       rowid: rowid ?? this.rowid,
     );
@@ -11061,11 +11114,11 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
     if (id.present) {
       map['id'] = Variable<String>(id.value);
     }
-    if (courseId.present) {
-      map['course_id'] = Variable<String>(courseId.value);
+    if (topicId.present) {
+      map['topic_id'] = Variable<int>(topicId.value);
     }
-    if (courseName.present) {
-      map['course_name'] = Variable<String>(courseName.value);
+    if (topicName.present) {
+      map['topic_name'] = Variable<String>(topicName.value);
     }
     if (lessonId.present) {
       map['lesson_id'] = Variable<String>(lessonId.value);
@@ -11091,6 +11144,9 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
+    if (createdHumanized.present) {
+      map['created_humanized'] = Variable<String>(createdHumanized.value);
+    }
     if (attachments.present) {
       map['attachments'] = Variable<String>(attachments.value);
     }
@@ -11104,8 +11160,8 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
   String toString() {
     return (StringBuffer('DoubtsTableCompanion(')
           ..write('id: $id, ')
-          ..write('courseId: $courseId, ')
-          ..write('courseName: $courseName, ')
+          ..write('topicId: $topicId, ')
+          ..write('topicName: $topicName, ')
           ..write('lessonId: $lessonId, ')
           ..write('title: $title, ')
           ..write('content: $content, ')
@@ -11114,6 +11170,7 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
           ..write('replyCount: $replyCount, ')
           ..write('status: $status, ')
           ..write('createdAt: $createdAt, ')
+          ..write('createdHumanized: $createdHumanized, ')
           ..write('attachments: $attachments, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -11206,6 +11263,17 @@ class $DoubtRepliesTableTable extends DoubtRepliesTable
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _createdHumanizedMeta = const VerificationMeta(
+    'createdHumanized',
+  );
+  @override
+  late final GeneratedColumn<String> createdHumanized = GeneratedColumn<String>(
+    'created_humanized',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _attachmentsMeta = const VerificationMeta(
     'attachments',
   );
@@ -11226,6 +11294,7 @@ class $DoubtRepliesTableTable extends DoubtRepliesTable
     authorAvatar,
     isMentor,
     createdAt,
+    createdHumanized,
     attachments,
   ];
   @override
@@ -11292,6 +11361,15 @@ class $DoubtRepliesTableTable extends DoubtRepliesTable
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
+    if (data.containsKey('created_humanized')) {
+      context.handle(
+        _createdHumanizedMeta,
+        createdHumanized.isAcceptableOrUnknown(
+          data['created_humanized']!,
+          _createdHumanizedMeta,
+        ),
+      );
+    }
     if (data.containsKey('attachments')) {
       context.handle(
         _attachmentsMeta,
@@ -11338,6 +11416,10 @@ class $DoubtRepliesTableTable extends DoubtRepliesTable
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
+      createdHumanized: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_humanized'],
+      ),
       attachments: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}attachments'],
@@ -11360,6 +11442,7 @@ class DoubtRepliesTableData extends DataClass
   final String? authorAvatar;
   final bool isMentor;
   final DateTime createdAt;
+  final String? createdHumanized;
   final String? attachments;
   const DoubtRepliesTableData({
     required this.id,
@@ -11369,6 +11452,7 @@ class DoubtRepliesTableData extends DataClass
     this.authorAvatar,
     required this.isMentor,
     required this.createdAt,
+    this.createdHumanized,
     this.attachments,
   });
   @override
@@ -11383,6 +11467,9 @@ class DoubtRepliesTableData extends DataClass
     }
     map['is_mentor'] = Variable<bool>(isMentor);
     map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || createdHumanized != null) {
+      map['created_humanized'] = Variable<String>(createdHumanized);
+    }
     if (!nullToAbsent || attachments != null) {
       map['attachments'] = Variable<String>(attachments);
     }
@@ -11400,6 +11487,9 @@ class DoubtRepliesTableData extends DataClass
           : Value(authorAvatar),
       isMentor: Value(isMentor),
       createdAt: Value(createdAt),
+      createdHumanized: createdHumanized == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdHumanized),
       attachments: attachments == null && nullToAbsent
           ? const Value.absent()
           : Value(attachments),
@@ -11419,6 +11509,7 @@ class DoubtRepliesTableData extends DataClass
       authorAvatar: serializer.fromJson<String?>(json['authorAvatar']),
       isMentor: serializer.fromJson<bool>(json['isMentor']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      createdHumanized: serializer.fromJson<String?>(json['createdHumanized']),
       attachments: serializer.fromJson<String?>(json['attachments']),
     );
   }
@@ -11433,6 +11524,7 @@ class DoubtRepliesTableData extends DataClass
       'authorAvatar': serializer.toJson<String?>(authorAvatar),
       'isMentor': serializer.toJson<bool>(isMentor),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'createdHumanized': serializer.toJson<String?>(createdHumanized),
       'attachments': serializer.toJson<String?>(attachments),
     };
   }
@@ -11445,6 +11537,7 @@ class DoubtRepliesTableData extends DataClass
     Value<String?> authorAvatar = const Value.absent(),
     bool? isMentor,
     DateTime? createdAt,
+    Value<String?> createdHumanized = const Value.absent(),
     Value<String?> attachments = const Value.absent(),
   }) => DoubtRepliesTableData(
     id: id ?? this.id,
@@ -11454,6 +11547,9 @@ class DoubtRepliesTableData extends DataClass
     authorAvatar: authorAvatar.present ? authorAvatar.value : this.authorAvatar,
     isMentor: isMentor ?? this.isMentor,
     createdAt: createdAt ?? this.createdAt,
+    createdHumanized: createdHumanized.present
+        ? createdHumanized.value
+        : this.createdHumanized,
     attachments: attachments.present ? attachments.value : this.attachments,
   );
   DoubtRepliesTableData copyWithCompanion(DoubtRepliesTableCompanion data) {
@@ -11469,6 +11565,9 @@ class DoubtRepliesTableData extends DataClass
           : this.authorAvatar,
       isMentor: data.isMentor.present ? data.isMentor.value : this.isMentor,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      createdHumanized: data.createdHumanized.present
+          ? data.createdHumanized.value
+          : this.createdHumanized,
       attachments: data.attachments.present
           ? data.attachments.value
           : this.attachments,
@@ -11485,6 +11584,7 @@ class DoubtRepliesTableData extends DataClass
           ..write('authorAvatar: $authorAvatar, ')
           ..write('isMentor: $isMentor, ')
           ..write('createdAt: $createdAt, ')
+          ..write('createdHumanized: $createdHumanized, ')
           ..write('attachments: $attachments')
           ..write(')'))
         .toString();
@@ -11499,6 +11599,7 @@ class DoubtRepliesTableData extends DataClass
     authorAvatar,
     isMentor,
     createdAt,
+    createdHumanized,
     attachments,
   );
   @override
@@ -11512,6 +11613,7 @@ class DoubtRepliesTableData extends DataClass
           other.authorAvatar == this.authorAvatar &&
           other.isMentor == this.isMentor &&
           other.createdAt == this.createdAt &&
+          other.createdHumanized == this.createdHumanized &&
           other.attachments == this.attachments);
 }
 
@@ -11524,6 +11626,7 @@ class DoubtRepliesTableCompanion
   final Value<String?> authorAvatar;
   final Value<bool> isMentor;
   final Value<DateTime> createdAt;
+  final Value<String?> createdHumanized;
   final Value<String?> attachments;
   final Value<int> rowid;
   const DoubtRepliesTableCompanion({
@@ -11534,6 +11637,7 @@ class DoubtRepliesTableCompanion
     this.authorAvatar = const Value.absent(),
     this.isMentor = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.createdHumanized = const Value.absent(),
     this.attachments = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -11545,6 +11649,7 @@ class DoubtRepliesTableCompanion
     this.authorAvatar = const Value.absent(),
     this.isMentor = const Value.absent(),
     required DateTime createdAt,
+    this.createdHumanized = const Value.absent(),
     this.attachments = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -11560,6 +11665,7 @@ class DoubtRepliesTableCompanion
     Expression<String>? authorAvatar,
     Expression<bool>? isMentor,
     Expression<DateTime>? createdAt,
+    Expression<String>? createdHumanized,
     Expression<String>? attachments,
     Expression<int>? rowid,
   }) {
@@ -11571,6 +11677,7 @@ class DoubtRepliesTableCompanion
       if (authorAvatar != null) 'author_avatar': authorAvatar,
       if (isMentor != null) 'is_mentor': isMentor,
       if (createdAt != null) 'created_at': createdAt,
+      if (createdHumanized != null) 'created_humanized': createdHumanized,
       if (attachments != null) 'attachments': attachments,
       if (rowid != null) 'rowid': rowid,
     });
@@ -11584,6 +11691,7 @@ class DoubtRepliesTableCompanion
     Value<String?>? authorAvatar,
     Value<bool>? isMentor,
     Value<DateTime>? createdAt,
+    Value<String?>? createdHumanized,
     Value<String?>? attachments,
     Value<int>? rowid,
   }) {
@@ -11595,6 +11703,7 @@ class DoubtRepliesTableCompanion
       authorAvatar: authorAvatar ?? this.authorAvatar,
       isMentor: isMentor ?? this.isMentor,
       createdAt: createdAt ?? this.createdAt,
+      createdHumanized: createdHumanized ?? this.createdHumanized,
       attachments: attachments ?? this.attachments,
       rowid: rowid ?? this.rowid,
     );
@@ -11624,6 +11733,9 @@ class DoubtRepliesTableCompanion
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
+    if (createdHumanized.present) {
+      map['created_humanized'] = Variable<String>(createdHumanized.value);
+    }
     if (attachments.present) {
       map['attachments'] = Variable<String>(attachments.value);
     }
@@ -11643,8 +11755,311 @@ class DoubtRepliesTableCompanion
           ..write('authorAvatar: $authorAvatar, ')
           ..write('isMentor: $isMentor, ')
           ..write('createdAt: $createdAt, ')
+          ..write('createdHumanized: $createdHumanized, ')
           ..write('attachments: $attachments, ')
           ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DoubtTopicsTableTable extends DoubtTopicsTable
+    with TableInfo<$DoubtTopicsTableTable, DoubtTopicsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DoubtTopicsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _parentIdMeta = const VerificationMeta(
+    'parentId',
+  );
+  @override
+  late final GeneratedColumn<int> parentId = GeneratedColumn<int>(
+    'parent_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _hasChildrenMeta = const VerificationMeta(
+    'hasChildren',
+  );
+  @override
+  late final GeneratedColumn<bool> hasChildren = GeneratedColumn<bool>(
+    'has_children',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("has_children" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, title, parentId, hasChildren];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'doubt_topics_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DoubtTopicsTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('parent_id')) {
+      context.handle(
+        _parentIdMeta,
+        parentId.isAcceptableOrUnknown(data['parent_id']!, _parentIdMeta),
+      );
+    }
+    if (data.containsKey('has_children')) {
+      context.handle(
+        _hasChildrenMeta,
+        hasChildren.isAcceptableOrUnknown(
+          data['has_children']!,
+          _hasChildrenMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DoubtTopicsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DoubtTopicsTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      parentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}parent_id'],
+      ),
+      hasChildren: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}has_children'],
+      )!,
+    );
+  }
+
+  @override
+  $DoubtTopicsTableTable createAlias(String alias) {
+    return $DoubtTopicsTableTable(attachedDatabase, alias);
+  }
+}
+
+class DoubtTopicsTableData extends DataClass
+    implements Insertable<DoubtTopicsTableData> {
+  final int id;
+  final String title;
+  final int? parentId;
+  final bool hasChildren;
+  const DoubtTopicsTableData({
+    required this.id,
+    required this.title,
+    this.parentId,
+    required this.hasChildren,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || parentId != null) {
+      map['parent_id'] = Variable<int>(parentId);
+    }
+    map['has_children'] = Variable<bool>(hasChildren);
+    return map;
+  }
+
+  DoubtTopicsTableCompanion toCompanion(bool nullToAbsent) {
+    return DoubtTopicsTableCompanion(
+      id: Value(id),
+      title: Value(title),
+      parentId: parentId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(parentId),
+      hasChildren: Value(hasChildren),
+    );
+  }
+
+  factory DoubtTopicsTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DoubtTopicsTableData(
+      id: serializer.fromJson<int>(json['id']),
+      title: serializer.fromJson<String>(json['title']),
+      parentId: serializer.fromJson<int?>(json['parentId']),
+      hasChildren: serializer.fromJson<bool>(json['hasChildren']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'title': serializer.toJson<String>(title),
+      'parentId': serializer.toJson<int?>(parentId),
+      'hasChildren': serializer.toJson<bool>(hasChildren),
+    };
+  }
+
+  DoubtTopicsTableData copyWith({
+    int? id,
+    String? title,
+    Value<int?> parentId = const Value.absent(),
+    bool? hasChildren,
+  }) => DoubtTopicsTableData(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    parentId: parentId.present ? parentId.value : this.parentId,
+    hasChildren: hasChildren ?? this.hasChildren,
+  );
+  DoubtTopicsTableData copyWithCompanion(DoubtTopicsTableCompanion data) {
+    return DoubtTopicsTableData(
+      id: data.id.present ? data.id.value : this.id,
+      title: data.title.present ? data.title.value : this.title,
+      parentId: data.parentId.present ? data.parentId.value : this.parentId,
+      hasChildren: data.hasChildren.present
+          ? data.hasChildren.value
+          : this.hasChildren,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DoubtTopicsTableData(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('parentId: $parentId, ')
+          ..write('hasChildren: $hasChildren')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, title, parentId, hasChildren);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DoubtTopicsTableData &&
+          other.id == this.id &&
+          other.title == this.title &&
+          other.parentId == this.parentId &&
+          other.hasChildren == this.hasChildren);
+}
+
+class DoubtTopicsTableCompanion extends UpdateCompanion<DoubtTopicsTableData> {
+  final Value<int> id;
+  final Value<String> title;
+  final Value<int?> parentId;
+  final Value<bool> hasChildren;
+  const DoubtTopicsTableCompanion({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.parentId = const Value.absent(),
+    this.hasChildren = const Value.absent(),
+  });
+  DoubtTopicsTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String title,
+    this.parentId = const Value.absent(),
+    this.hasChildren = const Value.absent(),
+  }) : title = Value(title);
+  static Insertable<DoubtTopicsTableData> custom({
+    Expression<int>? id,
+    Expression<String>? title,
+    Expression<int>? parentId,
+    Expression<bool>? hasChildren,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (parentId != null) 'parent_id': parentId,
+      if (hasChildren != null) 'has_children': hasChildren,
+    });
+  }
+
+  DoubtTopicsTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? title,
+    Value<int?>? parentId,
+    Value<bool>? hasChildren,
+  }) {
+    return DoubtTopicsTableCompanion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      parentId: parentId ?? this.parentId,
+      hasChildren: hasChildren ?? this.hasChildren,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (parentId.present) {
+      map['parent_id'] = Variable<int>(parentId.value);
+    }
+    if (hasChildren.present) {
+      map['has_children'] = Variable<bool>(hasChildren.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DoubtTopicsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('parentId: $parentId, ')
+          ..write('hasChildren: $hasChildren')
           ..write(')'))
         .toString();
   }
@@ -12350,6 +12765,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $DoubtsTableTable doubtsTable = $DoubtsTableTable(this);
   late final $DoubtRepliesTableTable doubtRepliesTable =
       $DoubtRepliesTableTable(this);
+  late final $DoubtTopicsTableTable doubtTopicsTable = $DoubtTopicsTableTable(
+    this,
+  );
   late final $BookmarkFoldersTableTable bookmarkFoldersTable =
       $BookmarkFoldersTableTable(this);
   late final $BookmarkItemsTableTable bookmarkItemsTable =
@@ -12400,6 +12818,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     downloadsTable,
     doubtsTable,
     doubtRepliesTable,
+    doubtTopicsTable,
     bookmarkFoldersTable,
     bookmarkItemsTable,
     weeklyRankIdx,
@@ -17530,32 +17949,34 @@ typedef $$DownloadsTableTableProcessedTableManager =
 typedef $$DoubtsTableTableCreateCompanionBuilder =
     DoubtsTableCompanion Function({
       required String id,
-      Value<String?> courseId,
-      Value<String?> courseName,
+      Value<int?> topicId,
+      Value<String?> topicName,
       Value<String?> lessonId,
       required String title,
       required String content,
       required String studentName,
       Value<String?> studentAvatar,
-      Value<int> replyCount,
+      Value<int?> replyCount,
       required String status,
       required DateTime createdAt,
+      Value<String?> createdHumanized,
       Value<String?> attachments,
       Value<int> rowid,
     });
 typedef $$DoubtsTableTableUpdateCompanionBuilder =
     DoubtsTableCompanion Function({
       Value<String> id,
-      Value<String?> courseId,
-      Value<String?> courseName,
+      Value<int?> topicId,
+      Value<String?> topicName,
       Value<String?> lessonId,
       Value<String> title,
       Value<String> content,
       Value<String> studentName,
       Value<String?> studentAvatar,
-      Value<int> replyCount,
+      Value<int?> replyCount,
       Value<String> status,
       Value<DateTime> createdAt,
+      Value<String?> createdHumanized,
       Value<String?> attachments,
       Value<int> rowid,
     });
@@ -17574,13 +17995,13 @@ class $$DoubtsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get courseId => $composableBuilder(
-    column: $table.courseId,
+  ColumnFilters<int> get topicId => $composableBuilder(
+    column: $table.topicId,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get courseName => $composableBuilder(
-    column: $table.courseName,
+  ColumnFilters<String> get topicName => $composableBuilder(
+    column: $table.topicName,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -17624,6 +18045,11 @@ class $$DoubtsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get createdHumanized => $composableBuilder(
+    column: $table.createdHumanized,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get attachments => $composableBuilder(
     column: $table.attachments,
     builder: (column) => ColumnFilters(column),
@@ -17644,13 +18070,13 @@ class $$DoubtsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get courseId => $composableBuilder(
-    column: $table.courseId,
+  ColumnOrderings<int> get topicId => $composableBuilder(
+    column: $table.topicId,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get courseName => $composableBuilder(
-    column: $table.courseName,
+  ColumnOrderings<String> get topicName => $composableBuilder(
+    column: $table.topicName,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -17694,6 +18120,11 @@ class $$DoubtsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get createdHumanized => $composableBuilder(
+    column: $table.createdHumanized,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get attachments => $composableBuilder(
     column: $table.attachments,
     builder: (column) => ColumnOrderings(column),
@@ -17712,13 +18143,11 @@ class $$DoubtsTableTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<String> get courseId =>
-      $composableBuilder(column: $table.courseId, builder: (column) => column);
+  GeneratedColumn<int> get topicId =>
+      $composableBuilder(column: $table.topicId, builder: (column) => column);
 
-  GeneratedColumn<String> get courseName => $composableBuilder(
-    column: $table.courseName,
-    builder: (column) => column,
-  );
+  GeneratedColumn<String> get topicName =>
+      $composableBuilder(column: $table.topicName, builder: (column) => column);
 
   GeneratedColumn<String> get lessonId =>
       $composableBuilder(column: $table.lessonId, builder: (column) => column);
@@ -17749,6 +18178,11 @@ class $$DoubtsTableTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get createdHumanized => $composableBuilder(
+    column: $table.createdHumanized,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get attachments => $composableBuilder(
     column: $table.attachments,
@@ -17788,22 +18222,23 @@ class $$DoubtsTableTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
-                Value<String?> courseId = const Value.absent(),
-                Value<String?> courseName = const Value.absent(),
+                Value<int?> topicId = const Value.absent(),
+                Value<String?> topicName = const Value.absent(),
                 Value<String?> lessonId = const Value.absent(),
                 Value<String> title = const Value.absent(),
                 Value<String> content = const Value.absent(),
                 Value<String> studentName = const Value.absent(),
                 Value<String?> studentAvatar = const Value.absent(),
-                Value<int> replyCount = const Value.absent(),
+                Value<int?> replyCount = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> createdHumanized = const Value.absent(),
                 Value<String?> attachments = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DoubtsTableCompanion(
                 id: id,
-                courseId: courseId,
-                courseName: courseName,
+                topicId: topicId,
+                topicName: topicName,
                 lessonId: lessonId,
                 title: title,
                 content: content,
@@ -17812,28 +18247,30 @@ class $$DoubtsTableTableTableManager
                 replyCount: replyCount,
                 status: status,
                 createdAt: createdAt,
+                createdHumanized: createdHumanized,
                 attachments: attachments,
                 rowid: rowid,
               ),
           createCompanionCallback:
               ({
                 required String id,
-                Value<String?> courseId = const Value.absent(),
-                Value<String?> courseName = const Value.absent(),
+                Value<int?> topicId = const Value.absent(),
+                Value<String?> topicName = const Value.absent(),
                 Value<String?> lessonId = const Value.absent(),
                 required String title,
                 required String content,
                 required String studentName,
                 Value<String?> studentAvatar = const Value.absent(),
-                Value<int> replyCount = const Value.absent(),
+                Value<int?> replyCount = const Value.absent(),
                 required String status,
                 required DateTime createdAt,
+                Value<String?> createdHumanized = const Value.absent(),
                 Value<String?> attachments = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DoubtsTableCompanion.insert(
                 id: id,
-                courseId: courseId,
-                courseName: courseName,
+                topicId: topicId,
+                topicName: topicName,
                 lessonId: lessonId,
                 title: title,
                 content: content,
@@ -17842,6 +18279,7 @@ class $$DoubtsTableTableTableManager
                 replyCount: replyCount,
                 status: status,
                 createdAt: createdAt,
+                createdHumanized: createdHumanized,
                 attachments: attachments,
                 rowid: rowid,
               ),
@@ -17879,6 +18317,7 @@ typedef $$DoubtRepliesTableTableCreateCompanionBuilder =
       Value<String?> authorAvatar,
       Value<bool> isMentor,
       required DateTime createdAt,
+      Value<String?> createdHumanized,
       Value<String?> attachments,
       Value<int> rowid,
     });
@@ -17891,6 +18330,7 @@ typedef $$DoubtRepliesTableTableUpdateCompanionBuilder =
       Value<String?> authorAvatar,
       Value<bool> isMentor,
       Value<DateTime> createdAt,
+      Value<String?> createdHumanized,
       Value<String?> attachments,
       Value<int> rowid,
     });
@@ -17936,6 +18376,11 @@ class $$DoubtRepliesTableTableFilterComposer
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdHumanized => $composableBuilder(
+    column: $table.createdHumanized,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -17989,6 +18434,11 @@ class $$DoubtRepliesTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get createdHumanized => $composableBuilder(
+    column: $table.createdHumanized,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get attachments => $composableBuilder(
     column: $table.attachments,
     builder: (column) => ColumnOrderings(column),
@@ -18028,6 +18478,11 @@ class $$DoubtRepliesTableTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get createdHumanized => $composableBuilder(
+    column: $table.createdHumanized,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get attachments => $composableBuilder(
     column: $table.attachments,
@@ -18082,6 +18537,7 @@ class $$DoubtRepliesTableTableTableManager
                 Value<String?> authorAvatar = const Value.absent(),
                 Value<bool> isMentor = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> createdHumanized = const Value.absent(),
                 Value<String?> attachments = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DoubtRepliesTableCompanion(
@@ -18092,6 +18548,7 @@ class $$DoubtRepliesTableTableTableManager
                 authorAvatar: authorAvatar,
                 isMentor: isMentor,
                 createdAt: createdAt,
+                createdHumanized: createdHumanized,
                 attachments: attachments,
                 rowid: rowid,
               ),
@@ -18104,6 +18561,7 @@ class $$DoubtRepliesTableTableTableManager
                 Value<String?> authorAvatar = const Value.absent(),
                 Value<bool> isMentor = const Value.absent(),
                 required DateTime createdAt,
+                Value<String?> createdHumanized = const Value.absent(),
                 Value<String?> attachments = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DoubtRepliesTableCompanion.insert(
@@ -18114,6 +18572,7 @@ class $$DoubtRepliesTableTableTableManager
                 authorAvatar: authorAvatar,
                 isMentor: isMentor,
                 createdAt: createdAt,
+                createdHumanized: createdHumanized,
                 attachments: attachments,
                 rowid: rowid,
               ),
@@ -18144,6 +18603,193 @@ typedef $$DoubtRepliesTableTableProcessedTableManager =
         >,
       ),
       DoubtRepliesTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$DoubtTopicsTableTableCreateCompanionBuilder =
+    DoubtTopicsTableCompanion Function({
+      Value<int> id,
+      required String title,
+      Value<int?> parentId,
+      Value<bool> hasChildren,
+    });
+typedef $$DoubtTopicsTableTableUpdateCompanionBuilder =
+    DoubtTopicsTableCompanion Function({
+      Value<int> id,
+      Value<String> title,
+      Value<int?> parentId,
+      Value<bool> hasChildren,
+    });
+
+class $$DoubtTopicsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $DoubtTopicsTableTable> {
+  $$DoubtTopicsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get parentId => $composableBuilder(
+    column: $table.parentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get hasChildren => $composableBuilder(
+    column: $table.hasChildren,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DoubtTopicsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $DoubtTopicsTableTable> {
+  $$DoubtTopicsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get parentId => $composableBuilder(
+    column: $table.parentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get hasChildren => $composableBuilder(
+    column: $table.hasChildren,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DoubtTopicsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DoubtTopicsTableTable> {
+  $$DoubtTopicsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<int> get parentId =>
+      $composableBuilder(column: $table.parentId, builder: (column) => column);
+
+  GeneratedColumn<bool> get hasChildren => $composableBuilder(
+    column: $table.hasChildren,
+    builder: (column) => column,
+  );
+}
+
+class $$DoubtTopicsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DoubtTopicsTableTable,
+          DoubtTopicsTableData,
+          $$DoubtTopicsTableTableFilterComposer,
+          $$DoubtTopicsTableTableOrderingComposer,
+          $$DoubtTopicsTableTableAnnotationComposer,
+          $$DoubtTopicsTableTableCreateCompanionBuilder,
+          $$DoubtTopicsTableTableUpdateCompanionBuilder,
+          (
+            DoubtTopicsTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $DoubtTopicsTableTable,
+              DoubtTopicsTableData
+            >,
+          ),
+          DoubtTopicsTableData,
+          PrefetchHooks Function()
+        > {
+  $$DoubtTopicsTableTableTableManager(
+    _$AppDatabase db,
+    $DoubtTopicsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DoubtTopicsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DoubtTopicsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DoubtTopicsTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<int?> parentId = const Value.absent(),
+                Value<bool> hasChildren = const Value.absent(),
+              }) => DoubtTopicsTableCompanion(
+                id: id,
+                title: title,
+                parentId: parentId,
+                hasChildren: hasChildren,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String title,
+                Value<int?> parentId = const Value.absent(),
+                Value<bool> hasChildren = const Value.absent(),
+              }) => DoubtTopicsTableCompanion.insert(
+                id: id,
+                title: title,
+                parentId: parentId,
+                hasChildren: hasChildren,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DoubtTopicsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DoubtTopicsTableTable,
+      DoubtTopicsTableData,
+      $$DoubtTopicsTableTableFilterComposer,
+      $$DoubtTopicsTableTableOrderingComposer,
+      $$DoubtTopicsTableTableAnnotationComposer,
+      $$DoubtTopicsTableTableCreateCompanionBuilder,
+      $$DoubtTopicsTableTableUpdateCompanionBuilder,
+      (
+        DoubtTopicsTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $DoubtTopicsTableTable,
+          DoubtTopicsTableData
+        >,
+      ),
+      DoubtTopicsTableData,
       PrefetchHooks Function()
     >;
 typedef $$BookmarkFoldersTableTableCreateCompanionBuilder =
@@ -18841,6 +19487,8 @@ class $AppDatabaseManager {
       $$DoubtsTableTableTableManager(_db, _db.doubtsTable);
   $$DoubtRepliesTableTableTableManager get doubtRepliesTable =>
       $$DoubtRepliesTableTableTableManager(_db, _db.doubtRepliesTable);
+  $$DoubtTopicsTableTableTableManager get doubtTopicsTable =>
+      $$DoubtTopicsTableTableTableManager(_db, _db.doubtTopicsTable);
   $$BookmarkFoldersTableTableTableManager get bookmarkFoldersTable =>
       $$BookmarkFoldersTableTableTableManager(_db, _db.bookmarkFoldersTable);
   $$BookmarkItemsTableTableTableManager get bookmarkItemsTable =>

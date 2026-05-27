@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,39 +14,182 @@ import '../widgets/forum_composer.dart';
 // Screen
 // ─────────────────────────────────────────────────────
 
-class DoubtDetailScreen extends ConsumerWidget {
+class DoubtDetailScreen extends ConsumerStatefulWidget {
   final String doubtId;
 
   const DoubtDetailScreen({super.key, required this.doubtId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final detailAsync = ref.watch(doubtDetailProvider(doubtId));
-    final repliesAsync = ref.watch(doubtRepliesProvider(doubtId));
+  ConsumerState<DoubtDetailScreen> createState() => _DoubtDetailScreenState();
+}
+
+class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
+  bool _isMenuOpen = false;
+
+  void _openMenu() => setState(() => _isMenuOpen = true);
+  void _closeMenu() => setState(() => _isMenuOpen = false);
+
+  @override
+  Widget build(BuildContext context) {
+    // Watch this at the ROOT of the screen so it NEVER loses its listener 
+    // when the widget tree changes below (e.g. between loading and data states).
+    // This entirely prevents the auto-dispose infinite API loop.
+    final repliesAsync = ref.watch(doubtRepliesProvider(widget.doubtId));
+    
+    final detailAsync = ref.watch(doubtDetailProvider(widget.doubtId));
     final design = Design.of(context);
     final l10n = L10n.of(context);
+    final postReplyState = ref.watch(postDoubtReplyNotifierProvider);
+    final isResolving = postReplyState.isLoading;
 
     return AppShell(
       backgroundColor: design.colors.card,
+      bottomSheet: _buildActionSheet(design, l10n, detailAsync.valueOrNull),
       child: detailAsync.when(
-        data: (doubt) => Column(
-          children: [
-            ForumHeader(title: l10n.doubtDetailTitle),
-            Expanded(
-              child: Skeletonizer(
-                enabled: repliesAsync.isLoading,
-                child: _DoubtScrollBody(doubt: doubt, repliesAsync: repliesAsync, doubtId: doubtId),
-              ),
-            ),
-            _DoubtReplyComposer(doubtId: doubtId),
-          ],
+        skipLoadingOnReload: true,
+        data: (doubt) => _buildContent(context, ref, design, l10n, isResolving, doubt, widget.doubtId, repliesAsync, false),
+        loading: () => Skeletonizer(
+          enabled: true,
+          child: _buildContent(context, ref, design, l10n, isResolving, _dummyDoubt, widget.doubtId, repliesAsync, true),
         ),
-        loading: () => const Center(child: AppLoadingIndicator()),
         error: (_, _) => AppErrorView(
           message: l10n.errorFailedToLoadDoubtDetails,
-          onRetry: () => ref.invalidate(doubtDetailProvider(doubtId)),
+          onRetry: () => ref.invalidate(doubtDetailProvider(widget.doubtId)),
         ),
       ),
+    );
+  }
+
+  Widget _buildActionSheet(DesignConfig design, AppLocalizations l10n, DoubtDto? doubt) {
+    return AppBottomSheet(
+      isOpen: _isMenuOpen,
+      onClose: _closeMenu,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          design.spacing.sm,
+          0,
+          design.spacing.sm,
+          design.spacing.md,
+        ),
+        child: SafeArea(
+          top: false,
+          child: Container(
+            padding: EdgeInsets.fromLTRB(
+              design.spacing.lg,
+              design.spacing.md,
+              design.spacing.lg,
+              design.spacing.lg,
+            ),
+            decoration: BoxDecoration(
+              color: design.colors.card,
+              borderRadius: BorderRadius.all(Radius.circular(design.radius.xxl)),
+              boxShadow: design.shadows.floating,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Handle Bar
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    width: design.spacing.xl * 1.5,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: design.colors.border,
+                      borderRadius: BorderRadius.circular(design.radius.full),
+                    ),
+                  ),
+                ),
+                SizedBox(height: design.spacing.lg),
+                
+                if (doubt != null && doubt.status != DoubtStatus.resolved)
+                  AppFocusable(
+                  onTap: () {
+                    _closeMenu();
+                    ref.read(postDoubtReplyNotifierProvider.notifier).submit(
+                          doubtId: widget.doubtId,
+                          shouldResolve: true,
+                        );
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: design.spacing.md),
+                    child: Row(
+                      children: [
+                    Icon(LucideIcons.checkCircle, size: design.iconSize.md, color: design.colors.textPrimary),
+                        SizedBox(width: design.spacing.md),
+                        AppText.body(l10n.actionMarkAsResolved, color: design.colors.textPrimary),
+                      ],
+                    ),
+                  ),
+                ),
+                
+                AppFocusable(
+                  onTap: () {
+                    _closeMenu();
+                    ref.read(postDoubtReplyNotifierProvider.notifier).submit(
+                          doubtId: widget.doubtId,
+                          shouldClose: true,
+                        );
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: design.spacing.md),
+                    child: Row(
+                      children: [
+                        Icon(LucideIcons.xCircle, size: design.iconSize.md, color: design.colors.error),
+                        SizedBox(width: design.spacing.md),
+                        AppText.body(l10n.actionCloseDoubt, color: design.colors.error),
+                      ],
+                    ),
+                  ),
+                ),
+          ],
+        ),
+      ),
+      ),
+      ),
+    );
+  }
+
+  Widget _buildContent(
+    BuildContext context,
+    WidgetRef ref,
+    DesignConfig design,
+    AppLocalizations l10n,
+    bool isResolving,
+    DoubtDto doubt,
+    String doubtId,
+    AsyncValue<List<DoubtReplyDto>> repliesAsync,
+    bool isLoading,
+  ) {
+    // If the doubt is loading, pretend replies are loading too
+    final effectiveRepliesAsync = isLoading
+        ? const AsyncValue<List<DoubtReplyDto>>.loading()
+        : repliesAsync;
+
+    return AnimatedPadding(
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeOutCubic,
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: Column(
+      children: [
+        ForumHeader(
+          title: l10n.doubtDetailTitle,
+          actions: [
+            if (doubt.status != DoubtStatus.closed)
+              AppFocusable(
+                onTap: _openMenu,
+                child: Icon(LucideIcons.moreVertical, color: design.colors.textPrimary, size: design.iconSize.md),
+              ),
+          ],
+        ),
+        Expanded(
+          child: _DoubtScrollBody(doubt: doubt, repliesAsync: effectiveRepliesAsync, doubtId: doubtId),
+        ),
+        if (!isLoading)
+          _DoubtReplyComposer(doubtId: doubtId, status: doubt.status),
+      ],
+    ),
     );
   }
 }
@@ -54,7 +198,7 @@ class DoubtDetailScreen extends ConsumerWidget {
 // Scrollable body
 // ─────────────────────────────────────────────────────
 
-class _DoubtScrollBody extends StatefulWidget {
+class _DoubtScrollBody extends ConsumerStatefulWidget {
   final DoubtDto doubt;
   final AsyncValue<List<DoubtReplyDto>> repliesAsync;
   final String doubtId;
@@ -66,10 +210,10 @@ class _DoubtScrollBody extends StatefulWidget {
   });
 
   @override
-  State<_DoubtScrollBody> createState() => _DoubtScrollBodyState();
+  ConsumerState<_DoubtScrollBody> createState() => _DoubtScrollBodyState();
 }
 
-class _DoubtScrollBodyState extends State<_DoubtScrollBody> {
+class _DoubtScrollBodyState extends ConsumerState<_DoubtScrollBody> {
   final _scrollController = ScrollController();
 
   @override
@@ -80,10 +224,92 @@ class _DoubtScrollBodyState extends State<_DoubtScrollBody> {
 
   @override
   Widget build(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
     return CustomScrollView(
       controller: _scrollController,
-      physics: const ClampingScrollPhysics(),
+      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
       slivers: [
+        CupertinoSliverRefreshControl(
+          onRefresh: () async {
+            final repo = await ref.read(doubtRepositoryProvider.future);
+            await repo.syncReplies(widget.doubtId);
+          },
+          builder: (context, refreshState, pulledExtent, refreshTriggerPullDistance, refreshIndicatorExtent) {
+            return Opacity(
+              opacity: (pulledExtent / refreshTriggerPullDistance).clamp(0.0, 1.0),
+              child: Center(
+                child: AppLoadingIndicator(color: design.colors.primary),
+              ),
+            );
+          },
+        ),
+        if (widget.doubt.status == DoubtStatus.resolved)
+          SliverToBoxAdapter(
+            child: Container(
+              margin: EdgeInsets.all(design.spacing.md),
+              padding: EdgeInsets.symmetric(
+                horizontal: design.spacing.md,
+                vertical: design.spacing.sm,
+              ),
+              decoration: BoxDecoration(
+                color: design.colors.accent2.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(design.radius.md),
+                border: Border.all(
+                  color: design.colors.accent2.withValues(alpha: 0.3),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    LucideIcons.checkCircle,
+                    color: design.colors.accent2,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: AppText.bodySmall(
+                      l10n.messageDoubtResolved,
+                      color: design.colors.accent2,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        if (widget.doubt.status == DoubtStatus.closed)
+          SliverToBoxAdapter(
+            child: Container(
+              margin: EdgeInsets.all(design.spacing.md),
+              padding: EdgeInsets.symmetric(
+                horizontal: design.spacing.md,
+                vertical: design.spacing.sm,
+              ),
+              decoration: BoxDecoration(
+                color: design.colors.textTertiary.withValues(alpha: 0.05),
+                borderRadius: BorderRadius.circular(design.radius.md),
+                border: Border.all(
+                  color: design.colors.divider,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    LucideIcons.lock,
+                    color: design.colors.textTertiary,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: AppText.bodySmall(
+                      l10n.messageDiscussionClosed,
+                      color: design.colors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         SliverToBoxAdapter(
           child: _DoubtHeaderCard(doubt: widget.doubt),
         ),
@@ -114,9 +340,12 @@ class _RepliesList extends ConsumerWidget {
         itemCount: replies.length,
         itemBuilder: (context, index) => _ReplyCard(reply: replies[index]),
       ),
-      loading: () => SliverList.builder(
-        itemCount: 2,
-        itemBuilder: (context, index) => _ReplyCard(reply: _dummyReply),
+      loading: () => SliverSkeletonizer(
+        enabled: true,
+        child: SliverList.builder(
+          itemCount: 2,
+          itemBuilder: (context, index) => _ReplyCard(reply: _dummyReply),
+        ),
       ),
       error: (_, _) => SliverToBoxAdapter(
         child: AppErrorView(
@@ -146,13 +375,16 @@ class _DoubtHeaderCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (doubt.courseName != null) ...[
-            _SubjectBadge(subject: doubt.courseName!),
+          if (doubt.topicName != null) ...[
+            _SubjectBadge(subject: doubt.topicName!),
             const SizedBox(height: 12),
           ],
           AppText.headline(doubt.title),
           const SizedBox(height: 12),
-          AppText.bodySmall(doubt.content),
+          if (doubt.id == 'dummy')
+            const _HtmlSkeletonPlaceholder()
+          else
+            AppHtmlV2(data: doubt.content),
           if (doubt.attachmentUrls.isNotEmpty)
             _AttachmentStrip(urls: doubt.attachmentUrls),
           const SizedBox(height: 16),
@@ -182,7 +414,7 @@ class _DoubtMeta extends StatelessWidget {
         SizedBox(width: design.spacing.sm),
         Skeleton.ignore(child: AppText.caption('•')),
         SizedBox(width: design.spacing.sm),
-        Skeleton.ignore(child: AppText.caption(DateFormatter.formatTimeAgo(doubt.createdAt))),
+        Skeleton.ignore(child: AppText.caption(doubt.createdHumanized ?? DateFormatter.formatTimeAgo(doubt.createdAt))),
       ],
     );
   }
@@ -210,7 +442,10 @@ class _ReplyCard extends StatelessWidget {
         children: [
           _ReplyHeader(reply: reply),
           const SizedBox(height: 12),
-          AppText.bodySmall(reply.content),
+          if (reply.id == 'dummy')
+            const _HtmlSkeletonPlaceholder()
+          else
+            AppHtmlV2(data: reply.content),
           if (reply.attachmentUrls.isNotEmpty)
             _AttachmentStrip(urls: reply.attachmentUrls),
         ],
@@ -260,7 +495,7 @@ class _ReplyHeader extends StatelessWidget {
         ],
         const Spacer(),
         Skeleton.ignore(
-          child: AppText.caption(DateFormatter.formatTimeAgo(reply.createdAt)),
+          child: AppText.caption(reply.createdHumanized ?? DateFormatter.formatTimeAgo(reply.createdAt)),
         ),
       ],
     );
@@ -271,24 +506,25 @@ class _ReplyHeader extends StatelessWidget {
 // Reply Composer
 // ─────────────────────────────────────────────────────
 
-class _DoubtReplyComposer extends StatefulWidget {
+class _DoubtReplyComposer extends ConsumerStatefulWidget {
   final String doubtId;
+  final DoubtStatus status;
 
-  const _DoubtReplyComposer({required this.doubtId});
+  const _DoubtReplyComposer({
+    required this.doubtId,
+    required this.status,
+  });
 
   @override
-  State<_DoubtReplyComposer> createState() => _DoubtReplyComposerState();
+  ConsumerState<_DoubtReplyComposer> createState() => _DoubtReplyComposerState();
 }
 
-class _DoubtReplyComposerState extends State<_DoubtReplyComposer> {
+class _DoubtReplyComposerState extends ConsumerState<_DoubtReplyComposer> {
   final _controller = quill.QuillController.basic();
   final _scrollController = ScrollController();
   final _focusNode = FocusNode();
-  final _attachments = <String>[];
   bool _showToolbar = true;
   bool _isSubmitting = false;
-
-  static const _maxAttachments = 5;
 
   @override
   void dispose() {
@@ -303,6 +539,29 @@ class _DoubtReplyComposerState extends State<_DoubtReplyComposer> {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
+    if (widget.status == DoubtStatus.closed) {
+      return Container(
+        color: design.colors.surfaceVariant,
+        padding: EdgeInsets.all(design.spacing.md),
+        child: SafeArea(
+          top: false,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(LucideIcons.lock, size: 18, color: design.colors.textTertiary),
+              const SizedBox(width: 8),
+              Expanded(
+                child: AppText.bodySmall(
+                  l10n.messageDiscussionClosed,
+                  color: design.colors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Container(
       decoration: BoxDecoration(
         color: design.colors.card,
@@ -313,18 +572,11 @@ class _DoubtReplyComposerState extends State<_DoubtReplyComposer> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (_attachments.isNotEmpty) ...[
-              ForumAttachmentPreview(
-                imageUrls: _attachments,
-                onRemove: (i) => setState(() => _attachments.removeAt(i)),
-              ),
-              const SizedBox(height: 8),
-            ],
             if (_showToolbar) ...[
               ForumEditorToolbar(
                 controller: _controller,
                 onImagePick: _pickAttachments,
-                isImageLimitReached: _attachments.length >= _maxAttachments,
+                isImageLimitReached: false,
               ),
               const SizedBox(height: 8),
             ],
@@ -366,6 +618,7 @@ class _DoubtReplyComposerState extends State<_DoubtReplyComposer> {
                     child: Center(
                       child: ForumSendButton(
                         onTap: _isSubmitting ? () {} : _handleSubmit,
+                        isLoading: _isSubmitting,
                       ),
                     ),
                   ),
@@ -379,37 +632,59 @@ class _DoubtReplyComposerState extends State<_DoubtReplyComposer> {
   }
 
   Future<void> _pickAttachments() async {
-    if (_attachments.length >= _maxAttachments) return;
-
     final result = await FilePicker.pickFiles(
-      allowMultiple: true,
+      allowMultiple: false,
       type: FileType.custom,
-      allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
+      allowedExtensions: ['jpg', 'jpeg', 'png'],
     );
 
-    if (result == null || result.paths.isEmpty) return;
+    if (result != null && result.paths.isNotEmpty) {
+      final path = result.paths.first;
+      if (path == null) return;
 
-    setState(() {
-      final remaining = _maxAttachments - _attachments.length;
-      _attachments.addAll(result.paths.take(remaining).whereType<String>());
-    });
+      setState(() => _isSubmitting = true);
+
+      try {
+        final repo = await ref.read(doubtRepositoryProvider.future);
+        final url = await repo.uploadDoubtImage(path, ticketId: int.tryParse(widget.doubtId));
+
+        // Insert image embed block into Quill editor
+        final index = _controller.selection.baseOffset;
+        _controller.document.insert(index, quill.BlockEmbed.image(url));
+        _controller.document.insert(index + 1, '\n');
+      } catch (e) {
+        debugPrint('Attachment upload failed: $e');
+      } finally {
+        if (mounted) {
+          setState(() => _isSubmitting = false);
+        }
+      }
+    }
   }
 
   Future<void> _handleSubmit() async {
     final text = _controller.document.toPlainText().trim();
-    if (text.isEmpty && _attachments.isEmpty) return;
+    if (text.isEmpty) return;
 
     setState(() => _isSubmitting = true);
-    await Future.delayed(const Duration(milliseconds: 500));
 
-    if (!mounted) return;
+    try {
+      final commentHtml = const QuillEditorService().toHtml(_controller.document);
+      
+      await ref.read(postDoubtReplyNotifierProvider.notifier).submit(
+        doubtId: widget.doubtId,
+        comment: commentHtml,
+      );
 
-    _controller.clear();
-    _focusNode.unfocus();
-    setState(() {
-      _isSubmitting = false;
-      _attachments.clear();
-    });
+      _controller.clear();
+      _focusNode.unfocus();
+    } catch (e) {
+      debugPrint('Error posting reply: $e');
+    } finally {
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+      }
+    }
   }
 }
 
@@ -512,16 +787,19 @@ class _AttachmentThumbnail extends StatelessWidget {
         color: design.colors.surfaceVariant,
       ),
       child: _isPdf
-          ? Center(
+          ? Padding(
+              padding: const EdgeInsets.all(4.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(LucideIcons.fileText, size: 24, color: design.colors.accent2),
                   const SizedBox(height: 2),
                   AppText.labelSmall(
-                    'PDF',
+                    url.split('/').last,
                     color: design.colors.textSecondary,
                     style: const TextStyle(fontSize: 8),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
@@ -551,3 +829,34 @@ final _dummyReply = DoubtReplyDto(
   isMentor: false,
   createdAt: DateTime.now(),
 );
+
+final _dummyDoubt = DoubtDto(
+  id: 'dummy',
+  title: 'This is a dummy doubt title for skeleton loading',
+  content: 'Dummy content to show while the doubt details are still being fetched from the server...',
+  studentName: 'Student Name',
+  status: DoubtStatus.active,
+  createdAt: DateTime.now(),
+);
+
+// ─────────────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────────────
+
+class _HtmlSkeletonPlaceholder extends StatelessWidget {
+  const _HtmlSkeletonPlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AppText.body('This is a placeholder line that will be skeletonized.'),
+        const SizedBox(height: 4),
+        AppText.body('Another placeholder line that is slightly longer for variation.'),
+        const SizedBox(height: 4),
+        AppText.body('Short line.'),
+      ],
+    );
+  }
+}

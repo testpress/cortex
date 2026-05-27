@@ -1297,15 +1297,114 @@ class MockDataSource implements DataSource {
   // ─────────────────────────────────────────────────────────────────────────
 
   @override
-  Future<List<DoubtDto>> getDoubts() async {
+  Future<PaginatedResponseDto<DoubtDto>> getDoubts({int page = 1, String? searchQuery}) async {
     await Future.delayed(const Duration(milliseconds: 500));
-    return mockDoubts;
+    return PaginatedResponseDto<DoubtDto>(
+      results: mockDoubts,
+      count: mockDoubts.length,
+      next: null,
+      previous: null,
+    );
   }
 
   @override
-  Future<List<DoubtReplyDto>> getDoubtReplies(String doubtId) async {
+  Future<({DoubtDto doubt, List<DoubtReplyDto> replies})> getDoubtReplies(String doubtId) async {
+    final doubt = mockDoubts.firstWhere(
+      (d) => d.id == doubtId,
+      orElse: () => mockDoubts.first,
+    );
+    return (doubt: doubt, replies: getMockDoubtReplies(doubtId));
+  }
 
-    return getMockDoubtReplies(doubtId);
+  @override
+  Future<List<DoubtTopicDto>> getDoubtTopics() async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    return const [
+      DoubtTopicDto(id: 10, title: 'Mathematics', parentId: null, hasChildren: true),
+      DoubtTopicDto(id: 11, title: 'Physics', parentId: null, hasChildren: true),
+      DoubtTopicDto(id: 12, title: 'Chemistry', parentId: null, hasChildren: false),
+    ];
+  }
+
+  @override
+  Future<DoubtDto> createDoubt({
+    required String title,
+    required String description,
+    int? topicId,
+    int? chapterContentId,
+    int? questionId,
+    int? queryType,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    final newDoubt = DoubtDto(
+      id: 'mock_doubt_${DateTime.now().millisecondsSinceEpoch}',
+      topicId: topicId,
+      topicName: 'Mock Topic',
+      lessonId: chapterContentId?.toString(),
+      title: title,
+      content: description,
+      studentName: 'Arjun Sharma',
+      studentAvatar: null,
+      replyCount: 0,
+      status: DoubtStatus.active,
+      createdAt: DateTime.now(),
+      attachmentUrls: const [],
+    );
+    mockDoubts.insert(0, newDoubt);
+    return newDoubt;
+  }
+
+  @override
+  Future<DoubtReplyDto> postDoubtReply({
+    required String doubtId,
+    String? comment,
+    bool? shouldResolve,
+    bool? shouldClose,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    
+    final index = mockDoubts.indexWhere((d) => d.id == doubtId);
+    if (index != -1) {
+      var newStatus = mockDoubts[index].status;
+      if (shouldResolve == true) {
+        newStatus = DoubtStatus.resolved;
+      } else if (shouldClose == true) {
+        newStatus = DoubtStatus.closed;
+      } else if (mockDoubts[index].status == DoubtStatus.resolved) {
+        newStatus = DoubtStatus.active;
+      }
+      
+      mockDoubts[index] = DoubtDto(
+        id: mockDoubts[index].id,
+        topicId: mockDoubts[index].topicId,
+        topicName: mockDoubts[index].topicName,
+        lessonId: mockDoubts[index].lessonId,
+        title: mockDoubts[index].title,
+        content: mockDoubts[index].content,
+        studentName: mockDoubts[index].studentName,
+        studentAvatar: mockDoubts[index].studentAvatar,
+        replyCount: (mockDoubts[index].replyCount ?? 0) + (comment != null ? 1 : 0),
+        status: newStatus,
+        createdAt: mockDoubts[index].createdAt,
+        attachmentUrls: mockDoubts[index].attachmentUrls,
+      );
+    }
+
+    return DoubtReplyDto(
+      id: 'mock_reply_${DateTime.now().millisecondsSinceEpoch}',
+      doubtId: doubtId,
+      content: comment ?? '',
+      authorName: 'Arjun Sharma',
+      authorAvatar: null,
+      isMentor: false,
+      createdAt: DateTime.now(),
+    );
+  }
+
+  @override
+  Future<String> uploadDoubtImage(File file, {int? ticketId}) async {
+    await Future.delayed(const Duration(milliseconds: 400));
+    return 'https://mock.url/uploads/${file.path.split('/').last}';
   }
 
   @override

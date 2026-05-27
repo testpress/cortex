@@ -449,15 +449,101 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<List<DoubtDto>> getDoubts() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    return mockDoubts;
+  Future<PaginatedResponseDto<DoubtDto>> getDoubts({int page = 1, String? searchQuery}) async {
+    final queryParameters = <String, dynamic>{'page': page};
+    if (searchQuery != null && searchQuery.isNotEmpty) {
+      queryParameters['search'] = searchQuery;
+    }
+    
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.helpdeskTickets, queryParameters: queryParameters),
+      fromJson: (data) => DoubtDto.fromListResponse(data as Map<String, dynamic>),
+    );
   }
 
   @override
-  Future<List<DoubtReplyDto>> getDoubtReplies(String doubtId) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    return getMockDoubtReplies(doubtId);
+  Future<({DoubtDto doubt, List<DoubtReplyDto> replies})> getDoubtReplies(String doubtId) async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.helpdeskTicketDetail(doubtId)),
+      fromJson: (data) {
+        final map = data as Map<String, dynamic>;
+        return (
+          doubt: DoubtDto.fromDetailJson(map),
+          replies: DoubtReplyDto.fromDetailResponse(map, doubtId),
+        );
+      },
+    );
+  }
+
+  @override
+  Future<List<DoubtTopicDto>> getDoubtTopics() async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.helpdeskTopics),
+      fromJson: DoubtTopicDto.fromListResponse,
+    );
+  }
+
+  @override
+  Future<DoubtDto> createDoubt({
+    required String title,
+    required String description,
+    int? topicId,
+    int? chapterContentId,
+    int? questionId,
+    int? queryType,
+  }) async {
+    final Map<String, dynamic> body = {
+      'title': title,
+      'description': description,
+    };
+    if (topicId != null) body['topic'] = topicId;
+    if (chapterContentId != null) body['chapter_content'] = chapterContentId;
+    if (questionId != null) body['question'] = questionId;
+    if (queryType != null) body['query_type'] = queryType;
+
+    return performNetworkRequest(
+      _dio.post(ApiEndpoints.helpdeskTickets, data: body),
+      fromJson: (data) => DoubtDto.fromJson(data as Map<String, dynamic>),
+    );
+  }
+
+  @override
+  Future<DoubtReplyDto> postDoubtReply({
+    required String doubtId,
+    String? comment,
+    bool? shouldResolve,
+    bool? shouldClose,
+  }) async {
+    final Map<String, dynamic> body = {};
+    if (comment != null) body['comment'] = comment;
+    if (shouldResolve != null) body['should_resolve'] = shouldResolve;
+    if (shouldClose != null) body['should_close'] = shouldClose;
+
+    return performNetworkRequest(
+      _dio.post(ApiEndpoints.helpdeskTicketFollowup(doubtId), data: body),
+      fromJson: (data) => DoubtReplyDto.fromJson(data as Map<String, dynamic>, doubtId),
+    );
+  }
+
+  @override
+  Future<String> uploadDoubtImage(File file, {int? ticketId}) async {
+    final fileName = file.path.split('/').last;
+    final Map<String, dynamic> map = {
+      'image': await MultipartFile.fromFile(file.path, filename: fileName),
+      'uploaded_for': 'doubts',
+    };
+    if (ticketId != null) {
+      map['uploaded_for_object_id'] = ticketId;
+    }
+    final formData = FormData.fromMap(map);
+
+    return performNetworkRequest(
+      _dio.post(
+        ApiEndpoints.imageUploadV3,
+        data: formData,
+      ),
+      fromJson: (json) => json['url'] as String,
+    );
   }
 
   @override

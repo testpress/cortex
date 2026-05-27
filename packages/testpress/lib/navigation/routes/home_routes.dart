@@ -45,7 +45,14 @@ class HomeRoutes {
                 GoRoute(
                   path: 'ask',
                   parentNavigatorKey: rootNavigatorKey,
-                  builder: (context, state) => const AskDoubtFormScreen(),
+                  builder: (context, state) {
+                    final chapterContentId = int.tryParse(state.uri.queryParameters['chapter_content_id'] ?? '');
+                    final questionId = int.tryParse(state.uri.queryParameters['question_id'] ?? '');
+                    return AskDoubtFormScreen(
+                      chapterContentId: chapterContentId,
+                      questionId: questionId,
+                    );
+                  },
                 ),
                 GoRoute(
                   path: ':doubtId',

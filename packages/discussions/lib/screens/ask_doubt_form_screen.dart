@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,7 +9,10 @@ import '../widgets/forum_header.dart';
 import '../widgets/forum_composer.dart';
 
 class AskDoubtFormScreen extends ConsumerStatefulWidget {
-  const AskDoubtFormScreen({super.key});
+  final int? chapterContentId;
+  final int? questionId;
+
+  const AskDoubtFormScreen({super.key, this.chapterContentId, this.questionId});
 
   @override
   ConsumerState<AskDoubtFormScreen> createState() => _AskDoubtFormScreenState();
@@ -21,10 +23,12 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
   late final quill.QuillController _quillController;
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
-  final List<String> _attachments = [];
-  
+
+  bool _isUploadingAttachment = false;
+  DoubtTopicDto? _selectedTopic;
+  bool _isTopicNotKnown = false;
+  bool _isSubmitSheetOpen = false;
   bool _isSubmitting = false;
-  String? _selectedCategory;
 
   @override
   void initState() {
@@ -47,76 +51,158 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
+    final rootTopicsAsync = ref.watch(doubtSubtopicsProvider(null));
 
-    return DecoratedBox(
-      decoration: BoxDecoration(color: design.colors.card),
-      child: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            ForumHeader(title: l10n.doubtsHeaderAskDoubt),
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const ClampingScrollPhysics(),
-                padding: EdgeInsets.all(design.spacing.md),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _sectionLabel(l10n.doubtsFormTitleLabel),
-                    const SizedBox(height: 8),
-                    AppTextField(
-                      label: '',
-                      hintText: l10n.doubtsFormTitleHint,
-                      controller: _titleController,
-                      autofocus: true,
-                      textStyle: design.typography.bodySmall,
-                      contentPadding: EdgeInsets.all(design.spacing.md),
+    return Stack(
+      children: [
+        DecoratedBox(
+          decoration: BoxDecoration(color: design.colors.card),
+          child: SafeArea(
+            bottom: false,
+            child: Column(
+              children: [
+                ForumHeader(title: l10n.doubtsHeaderAskDoubt),
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    padding: EdgeInsets.all(design.spacing.md),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (widget.chapterContentId != null ||
+                            widget.questionId != null) ...[
+                          _contextLinkBadge(design, l10n),
+                          const SizedBox(height: 16),
+                        ],
+                        _sectionLabel(l10n.doubtsFormTitleLabel),
+                        const SizedBox(height: 8),
+                        AppTextField(
+                          label: '',
+                          hintText: l10n.doubtsFormTitleHint,
+                          controller: _titleController,
+                          autofocus: true,
+                          textStyle: design.typography.bodySmall,
+                          contentPadding: EdgeInsets.all(design.spacing.md),
+                        ),
+                        const SizedBox(height: 24),
+                        _sectionLabel(l10n.doubtsFormDescriptionLabel),
+                        const SizedBox(height: 8),
+                        ForumEditorToolbar(
+                          controller: _quillController,
+                          onImagePick: _pickAndEmbedAttachment,
+                          isImageLimitReached: false,
+                        ),
+                        const SizedBox(height: 4),
+                        Stack(
+                          children: [
+                            ForumEditorField(
+                              controller: _quillController,
+                              scrollController: _scrollController,
+                              focusNode: _focusNode,
+                              placeholder: l10n.doubtsFormDescriptionLabel,
+                              minHeight: 160,
+                              maxHeight: 240,
+                            ),
+                            if (_isUploadingAttachment)
+                              Positioned.fill(
+                                child: Container(
+                                  color: design.colors.card.withValues(
+                                    alpha: 0.7,
+                                  ),
+                                  child: const Center(
+                                    child: AppLoadingIndicator(),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                        _sectionLabel(l10n.doubtsFormCategoryLabel),
+                        const SizedBox(height: 8),
+                        rootTopicsAsync.when(
+                          data: (topics) {
+                            return Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: [
+                                ...topics.map((topic) {
+                                  final isSelected =
+                                      _selectedTopic?.id == topic.id;
+                                  return AppChip(
+                                    label: topic.title,
+                                    isSelected: isSelected,
+                                    onTap: () {
+                                      setState(() {
+                                        _selectedTopic = isSelected
+                                            ? null
+                                            : topic;
+                                        if (!isSelected) {
+                                          _isTopicNotKnown = false;
+                                        }
+                                      });
+                                    },
+                                  );
+                                }),
+                                AppChip(
+                                  label: 'I don\'t know',
+                                  isSelected: _isTopicNotKnown,
+                                  onTap: () {
+                                    setState(() {
+                                      _isTopicNotKnown = !_isTopicNotKnown;
+                                      if (_isTopicNotKnown) {
+                                        _selectedTopic = null;
+                                      }
+                                    });
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                          loading: () =>
+                              const Center(child: AppLoadingIndicator()),
+                          error: (e, s) => AppText.bodySmall(
+                            'Failed to load topics',
+                            color: design.colors.textTertiary,
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                        _sectionLabel(l10n.doubtsFormAttachmentsLabel),
+                        const SizedBox(height: 8),
+                        _uploadButton(l10n.doubtsFormUploadAction),
+                        const SizedBox(height: 32),
+                      ],
                     ),
-                    const SizedBox(height: 24),
-                    _sectionLabel(l10n.doubtsFormDescriptionLabel),
-                    const SizedBox(height: 8),
-                    ForumEditorToolbar(
-                      controller: _quillController,
-                      onImagePick: _pickAttachments,
-                      isImageLimitReached: _attachments.length >= 5,
-                    ),
-                    const SizedBox(height: 4),
-                    ForumEditorField(
-                      controller: _quillController,
-                      scrollController: _scrollController,
-                      focusNode: _focusNode,
-                      placeholder: l10n.doubtsFormDescriptionLabel,
-                      minHeight: 180,
-                      maxHeight: 180,
-                    ),
-                    const SizedBox(height: 24),
-                    _sectionLabel(l10n.doubtsFormCategoryLabel),
-                    const SizedBox(height: 16),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: ref.watch(doubtCategoriesProvider).map((c) => _categoryChip(c)).toList(),
-                    ),
-                    const SizedBox(height: 32),
-                    _sectionLabel(l10n.doubtsFormAttachmentsLabel),
-                    const SizedBox(height: 8),
-                    _uploadButton(l10n.doubtsFormUploadAction),
-                    if (_attachments.isNotEmpty) ...[
-                      const SizedBox(height: 16),
-                      ForumAttachmentPreview(
-                        imageUrls: _attachments,
-                        onRemove: (i) => setState(() => _attachments.removeAt(i)),
-                      ),
-                    ],
-                    const SizedBox(height: 32),
-                  ],
+                  ),
                 ),
+                _actionBar(design, l10n),
+              ],
+            ),
+          ),
+        ),
+        AppBottomSheet(
+          isOpen: _isSubmitSheetOpen,
+          onClose: () => setState(() => _isSubmitSheetOpen = false),
+          child: _SubmitOptionsSheet(
+            design: design,
+            l10n: l10n,
+            onOptionSelected: (queryType) {
+              setState(() => _isSubmitSheetOpen = false);
+              _submitDoubt(queryType);
+            },
+          ),
+        ),
+        if (_isSubmitting)
+          Positioned.fill(
+            child: Container(
+              color: design.colors.card.withValues(
+                alpha: 0.7,
+              ),
+              child: const Center(
+                child: AppLoadingIndicator(),
               ),
             ),
-            _actionBar(design, l10n),
-          ],
-        ),
-      ),
+          ),
+      ],
     );
   }
 
@@ -124,20 +210,32 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
 
   Widget _sectionLabel(String label) => AppText.labelBold(label);
 
-  Widget _categoryChip(String label) {
-    final design = Design.of(context);
-    final isSelected = _selectedCategory == label;
-    return GestureDetector(
-      onTap: () => setState(() => _selectedCategory = isSelected ? null : label),
-      child: AnimatedContainer(
-        duration: design.motion.fast,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? design.colors.accent2 : design.colors.card,
-          borderRadius: design.radius.pill,
-          border: Border.all(color: isSelected ? design.colors.accent2 : design.colors.border),
-        ),
-        child: AppText.labelSmall(label, color: isSelected ? design.colors.textInverse : null),
+  Widget _contextLinkBadge(DesignConfig design, AppLocalizations l10n) {
+    final isQuestion = widget.questionId != null;
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: design.spacing.sm, vertical: 8),
+      decoration: BoxDecoration(
+        color: design.colors.surfaceVariant,
+        borderRadius: BorderRadius.circular(design.radius.md),
+        border: Border.all(color: design.colors.divider),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            isQuestion ? LucideIcons.helpCircle : LucideIcons.bookOpen,
+            size: 18,
+            color: design.colors.accent2,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: AppText.caption(
+              isQuestion
+                  ? 'Linked to Question ID: ${widget.questionId}'
+                  : 'Linked to Lesson ID: ${widget.chapterContentId}',
+              color: design.colors.textSecondary,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -145,7 +243,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
   Widget _uploadButton(String label) {
     final design = Design.of(context);
     return AppFocusable(
-      onTap: _pickAttachments,
+      onTap: _isUploadingAttachment ? null : _pickAndEmbedAttachment,
       borderRadius: BorderRadius.circular(design.radius.lg),
       child: Container(
         padding: EdgeInsets.all(design.spacing.md),
@@ -157,9 +255,22 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(LucideIcons.upload, size: 20, color: design.colors.textSecondary),
-            const SizedBox(width: 8),
-            AppText.bodySmall(label),
+            if (_isUploadingAttachment) ...[
+              const SizedBox(
+                width: 20,
+                height: 20,
+                child: AppLoadingIndicator(),
+              ),
+              const SizedBox(width: 8),
+            ] else ...[
+              Icon(
+                LucideIcons.upload,
+                size: 20,
+                color: design.colors.textSecondary,
+              ),
+              const SizedBox(width: 8),
+            ],
+            AppText.bodySmall(_isUploadingAttachment ? 'Uploading...' : label),
           ],
         ),
       ),
@@ -167,26 +278,60 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
   }
 
   Widget _actionBar(DesignConfig design, AppLocalizations l10n) {
-    final canSubmit = _titleController.text.trim().isNotEmpty && 
-                      _quillController.document.toPlainText().trim().isNotEmpty && 
-                      _selectedCategory != null;
-    final isEnabled = canSubmit && !_isSubmitting;
+    final canSubmit =
+        _titleController.text.trim().isNotEmpty &&
+        _quillController.document.toPlainText().trim().isNotEmpty &&
+        (_selectedTopic != null || _isTopicNotKnown);
+    final isEnabled = canSubmit && !_isUploadingAttachment;
 
     return Container(
-      padding: EdgeInsets.fromLTRB(design.spacing.md, 8, design.spacing.md, design.spacing.md),
-      decoration: BoxDecoration(color: design.colors.card, border: Border(top: BorderSide(color: design.colors.divider))),
+      padding: EdgeInsets.fromLTRB(
+        design.spacing.md,
+        8,
+        design.spacing.md,
+        design.spacing.md,
+      ),
+      decoration: BoxDecoration(
+        color: design.colors.card,
+        border: Border(top: BorderSide(color: design.colors.divider)),
+      ),
       child: Row(
         children: [
-          Expanded(child: AppButton.secondary(
-            label: l10n.forumButtonCancel, fullWidth: true, onPressed: () => Navigator.pop(context),
-            backgroundColor: design.colors.surfaceVariant, foregroundColor: design.colors.textPrimary,
-            borderColor: const Color(0x00000000), height: 52)),
+          Expanded(
+            child: AppButton.secondary(
+              label: l10n.forumButtonCancel,
+              fullWidth: true,
+              onPressed: () => Navigator.pop(context),
+              backgroundColor: design.colors.surfaceVariant,
+              foregroundColor: design.colors.textPrimary,
+              borderColor: const Color(0x00000000),
+              height: 52,
+            ),
+          ),
           const SizedBox(width: 16),
-          Expanded(child: AppButton.primary(
-            label: l10n.doubtsFormSubmitAction, fullWidth: true, onPressed: isEnabled ? _handleSubmit : null,
-            loading: _isSubmitting, height: 52,
-            backgroundColor: isEnabled ? design.colors.accent2 : design.colors.accent2.withValues(alpha: 0.5),
-            foregroundColor: isEnabled ? design.colors.textInverse : design.colors.textInverse.withValues(alpha: 0.9))),
+          Expanded(
+            child: AppButton.primary(
+              label: l10n.doubtsFormNextAction,
+              trailing: Icon(
+                LucideIcons.arrowRight,
+                size: 18,
+                color: isEnabled
+                    ? design.colors.textInverse
+                    : design.colors.textInverse.withValues(alpha: 0.9),
+              ),
+              fullWidth: true,
+              onPressed: isEnabled
+                  ? () => setState(() => _isSubmitSheetOpen = true)
+                  : null,
+              height: 52,
+              backgroundColor: isEnabled
+                  ? design.colors.accent2
+                  : design.colors.accent2.withValues(alpha: 0.5),
+              foregroundColor: isEnabled
+                  ? design.colors.textInverse
+                  : design.colors.textInverse.withValues(alpha: 0.9),
+            ),
+          ),
         ],
       ),
     );
@@ -194,59 +339,211 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
 
   // --- Logic ---
 
-  Future<void> _pickAttachments() async {
-    if (_attachments.length >= 5) return;
-    
+  Future<void> _pickAndEmbedAttachment() async {
     final result = await FilePicker.pickFiles(
-      allowMultiple: true,
+      allowMultiple: false,
       type: FileType.custom,
-      allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
+      allowedExtensions: ['jpg', 'jpeg', 'png'],
     );
 
     if (result != null && result.paths.isNotEmpty) {
-      setState(() {
-        final remaining = 5 - _attachments.length;
-        _attachments.addAll(
-          result.paths.take(remaining).whereType<String>(),
-        );
-      });
+      final path = result.paths.first;
+      if (path == null) return;
+
+      setState(() => _isUploadingAttachment = true);
+
+      try {
+        final repo = await ref.read(doubtRepositoryProvider.future);
+        final url = await repo.uploadDoubtImage(path);
+
+        // Insert image embed block into Quill editor
+        final index = _quillController.selection.baseOffset;
+        _quillController.document.insert(index, quill.BlockEmbed.image(url));
+        _quillController.document.insert(index + 1, '\n');
+      } catch (e) {
+        debugPrint('Attachment upload failed: $e');
+      } finally {
+        if (mounted) {
+          setState(() => _isUploadingAttachment = false);
+        }
+      }
     }
   }
 
-  Future<void> _handleSubmit() async {
+  void _submitDoubt(DoubtQueryType queryType) {
     final title = _titleController.text.trim();
     final contentText = _quillController.document.toPlainText().trim();
-    if (title.isEmpty || contentText.isEmpty || _selectedCategory == null) return;
+    if (title.isEmpty ||
+        contentText.isEmpty ||
+        (_selectedTopic == null && !_isTopicNotKnown)) {
+      return;
+    }
 
     setState(() => _isSubmitting = true);
 
-    try {
-      final db = await ref.read(appDatabaseProvider.future);
-      final user = await db.select(db.usersTable).getSingleOrNull();
-      final studentName = user?.name ?? 'Student';
-      final studentAvatar = user?.avatar;
+    // Capture values needed for background task
+    final descriptionHtml = const QuillEditorService().toHtml(
+      _quillController.document,
+    );
+    final topicId = _selectedTopic?.id;
+    final chapterContentId = widget.chapterContentId;
+    final questionId = widget.questionId;
 
-      final repo = await ref.read(doubtRepositoryProvider.future);
-      final doubt = DoubtDto(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        title: title,
-        content: jsonEncode(_quillController.document.toDelta().toJson()),
-        studentName: studentName,
-        studentAvatar: studentAvatar,
-        replyCount: 0,
-        status: DoubtStatus.pending,
-        createdAt: DateTime.now(),
-        attachmentUrls: _attachments,
-      );
-
-      await repo.createDoubt(doubt);
-    } catch (e) {
-      debugPrint('Error submitting doubt: $e');
-    } finally {
-      if (mounted) {
-        setState(() => _isSubmitting = false);
-        Navigator.pop(context);
+    ref.read(doubtRepositoryProvider.future).then((repo) async {
+      try {
+        await repo.createDoubt(
+          title: title,
+          description: descriptionHtml,
+          topicId: topicId,
+          chapterContentId: chapterContentId,
+          questionId: questionId,
+          queryType: queryType,
+        );
+        ref.invalidate(doubtsListProvider);
+        if (mounted) {
+          AppToast.show(
+            context,
+            message: L10n.of(context).doubtsSubmitSuccessMessage,
+          );
+          Navigator.pop(context);
+        }
+      } catch (e) {
+        debugPrint('Doubt submit failed: $e');
+        if (mounted) {
+          setState(() => _isSubmitting = false);
+          AppToast.show(
+            context,
+            message: L10n.of(context).doubtsSubmitErrorMessage,
+          );
+        }
       }
-    }
+    });
+  }
+}
+
+class _SubmitOptionsSheet extends StatelessWidget {
+  final DesignConfig design;
+  final AppLocalizations l10n;
+  final void Function(DoubtQueryType) onOptionSelected;
+
+  const _SubmitOptionsSheet({
+    required this.design,
+    required this.l10n,
+    required this.onOptionSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        design.spacing.sm,
+        0,
+        design.spacing.sm,
+        design.spacing.md,
+      ),
+      child: SafeArea(
+        top: false,
+        child: Container(
+          padding: EdgeInsets.fromLTRB(
+            design.spacing.lg,
+            design.spacing.md,
+            design.spacing.lg,
+            design.spacing.lg,
+          ),
+          decoration: BoxDecoration(
+            color: design.colors.card,
+            borderRadius: BorderRadius.all(Radius.circular(design.radius.xxl)),
+            boxShadow: design.shadows.floating,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  width: design.spacing.xl * 1.5,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: design.colors.border,
+                    borderRadius: BorderRadius.circular(design.radius.full),
+                  ),
+                ),
+              ),
+              SizedBox(height: design.spacing.lg),
+              AppText.subtitle(
+                l10n.doubtsSubmitSheetTitle,
+                color: design.colors.textPrimary,
+                style: const TextStyle(fontWeight: FontWeight.w700),
+              ),
+              SizedBox(height: design.spacing.md),
+              _OptionCard(
+                design: design,
+                icon: LucideIcons.bot,
+                title: l10n.doubtsSubmitSheetAskAi,
+                description: l10n.doubtsSubmitSheetAskAiDesc,
+                onTap: () => onOptionSelected(DoubtQueryType.ai),
+              ),
+              _OptionCard(
+                design: design,
+                icon: LucideIcons.user,
+                title: l10n.doubtsSubmitSheetAskMentor,
+                description: l10n.doubtsSubmitSheetAskMentorDesc,
+                onTap: () => onOptionSelected(DoubtQueryType.mentor),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _OptionCard extends StatelessWidget {
+  final DesignConfig design;
+  final IconData icon;
+  final String title;
+  final String description;
+  final VoidCallback onTap;
+
+  const _OptionCard({
+    required this.design,
+    required this.icon,
+    required this.title,
+    required this.description,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppFocusable(
+      onTap: onTap,
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: design.spacing.md),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: design.colors.textPrimary,
+              size: design.iconSize.lg,
+            ),
+            SizedBox(width: design.spacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppText.body(title, color: design.colors.textPrimary),
+                  SizedBox(height: 2),
+                  AppText.caption(
+                    description,
+                    color: design.colors.textSecondary,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

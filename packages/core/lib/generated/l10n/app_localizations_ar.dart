@@ -509,7 +509,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get drawerForum => 'منتدى المناقشات';
 
   @override
-  String get drawerDoubts => 'اسأل المرشد';
+  String get drawerDoubts => 'اطرح سؤالاً';
 
   @override
   String get drawerCustomExam => 'نموذج امتحان';
@@ -1449,8 +1449,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get doubtsFormDescriptionLabel => 'اشرح سؤالك بالتفصيل';
 
   @override
-  String get doubtsFormCategoryLabel =>
-      'هل يمكنك اختيار الفئة التي ينتمي إليها سؤالك؟';
+  String get doubtsFormCategoryLabel => 'حدد الموضوع';
 
   @override
   String get doubtsFormAttachmentsLabel => 'المرفقات (اختياري)';
@@ -1460,6 +1459,36 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get doubtsFormSubmitAction => 'إرسال السؤال';
+
+  @override
+  String get doubtsFormNextAction => 'التالي';
+
+  @override
+  String get doubtsSubmitSheetTitle => 'كيف تود أن تسأل؟';
+
+  @override
+  String get doubtsSubmitSheetAskAi => 'اسأل الذكاء الاصطناعي';
+
+  @override
+  String get doubtsSubmitSheetAskAiDesc =>
+      'احصل على إجابة فورية لسؤالك باستخدام الذكاء الاصطناعي';
+
+  @override
+  String get doubtsSubmitSheetAskMentor => 'اسأل المرشد';
+
+  @override
+  String get doubtsSubmitSheetAskMentorDesc =>
+      'احصل على مساعدة من مرشد بخصوص سؤالك';
+
+  @override
+  String get doubtsSubmitSuccessMessage => 'تم إرسال السؤال بنجاح';
+
+  @override
+  String get doubtsSubmitErrorMessage =>
+      'فشل في إرسال السؤال. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get doubtsFormCancelAction => 'إلغاء';
 
   @override
   String get examInstructions => 'Exam Instructions';
@@ -1474,7 +1503,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get nextSection => 'Next Section';
 
   @override
-  String get doubtDetailTitle => 'سؤال';
+  String get doubtDetailTitle => 'Doubt';
 
   @override
   String get errorFailedToLoadReplies => 'فشل تحميل الردود';
@@ -1638,6 +1667,18 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get loginActivityLogoutSuccess =>
       'تم تسجيل الخروج من الأجهزة الأخرى بنجاح';
+
+  @override
+  String get actionMarkAsResolved => 'تحديد كمحلول';
+
+  @override
+  String get actionCloseDoubt => 'إغلاق الشك';
+
+  @override
+  String get messageDoubtResolved => 'تم وضع علامة على هذا الشك كمحلول.';
+
+  @override
+  String get messageDiscussionClosed => 'موضوع النقاش هذا مغلق وللقراءة فقط.';
 
   @override
   String get loginActivityLogoutFailed => 'فشل تسجيل الخروج';

@@ -517,7 +517,7 @@ class AppLocalizationsMl extends AppLocalizations {
   String get drawerForum => 'ചർച്ചാ ഫോറം';
 
   @override
-  String get drawerDoubts => 'മെന്ററോട് ചോദിക്കുക';
+  String get drawerDoubts => 'സംശയം ചോദിക്കുക';
 
   @override
   String get drawerCustomExam => 'കസ്റ്റം എക്സാം';
@@ -1465,8 +1465,7 @@ class AppLocalizationsMl extends AppLocalizations {
       'നിങ്ങളുടെ സംശയത്തെക്കുറിച്ച് വിശദമായി വിവരിക്കുക';
 
   @override
-  String get doubtsFormCategoryLabel =>
-      'നിങ്ങളുടെ ചോദ്യം ഏത് വിഭാഗത്തിൽപ്പെട്ടതാണെന്ന് തിരഞ്ഞെടുക്കാമോ?';
+  String get doubtsFormCategoryLabel => 'വിഷയം തിരഞ്ഞെടുക്കുക';
 
   @override
   String get doubtsFormAttachmentsLabel => 'അറ്റാച്ച്‌മെന്റുകൾ (നിർബന്ധമില്ല)';
@@ -1476,6 +1475,37 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get doubtsFormSubmitAction => 'സംശയം സമർപ്പിക്കുക';
+
+  @override
+  String get doubtsFormNextAction => 'അടുത്തത്';
+
+  @override
+  String get doubtsSubmitSheetTitle =>
+      'നിങ്ങൾ എങ്ങനെ ചോദിക്കാൻ ആഗ്രഹിക്കുന്നു?';
+
+  @override
+  String get doubtsSubmitSheetAskAi => 'AI-യോട് ചോദിക്കുക';
+
+  @override
+  String get doubtsSubmitSheetAskAiDesc =>
+      'നിങ്ങളുടെ സംശയത്തിന് തൽക്ഷണം AI സൃഷ്ടിച്ച ഉത്തരം നേടുക';
+
+  @override
+  String get doubtsSubmitSheetAskMentor => 'മെൻ്ററോട് ചോദിക്കുക';
+
+  @override
+  String get doubtsSubmitSheetAskMentorDesc =>
+      'നിങ്ങളുടെ സംശയത്തിന് ഒരു മെൻ്ററിൽ നിന്ന് സഹായം നേടുക';
+
+  @override
+  String get doubtsSubmitSuccessMessage => 'സംശയം വിജയകരമായി സമർപ്പിച്ചു';
+
+  @override
+  String get doubtsSubmitErrorMessage =>
+      'സംശയം സമർപ്പിക്കുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get doubtsFormCancelAction => 'റദ്ദാക്കുക';
 
   @override
   String get examInstructions => 'Exam Instructions';
@@ -1666,6 +1696,19 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get loginActivityLogoutSuccess =>
       'മറ്റ് ഉപകരണങ്ങളിൽ നിന്ന് വിജയകരമായി ലോഗൗട്ട് ചെയ്തു';
+
+  @override
+  String get actionMarkAsResolved => 'പരിഹരിച്ചതായി അടയാളപ്പെടുത്തുക';
+
+  @override
+  String get actionCloseDoubt => 'സംശയം അടയ്ക്കുക';
+
+  @override
+  String get messageDoubtResolved => 'ഈ സംശയം പരിഹരിച്ചതായി അടയാളപ്പെടുത്തി.';
+
+  @override
+  String get messageDiscussionClosed =>
+      'ഈ ചർച്ചാ ത്രെഡ് അടച്ചു, ഇത് വായിക്കാൻ മാത്രമേ കഴിയൂ.';
 
   @override
   String get loginActivityLogoutFailed => 'ലോഗൗട്ട് പരാജയപ്പെട്ടു';

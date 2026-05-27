@@ -1009,7 +1009,7 @@ abstract class AppLocalizations {
   /// No description provided for @drawerDoubts.
   ///
   /// In en, this message translates to:
-  /// **'Ask Mentor'**
+  /// **'Ask Doubt'**
   String get drawerDoubts;
 
   /// No description provided for @drawerCustomExam.
@@ -2652,7 +2652,7 @@ abstract class AppLocalizations {
   /// No description provided for @doubtsFormCategoryLabel.
   ///
   /// In en, this message translates to:
-  /// **'Could you select the category which your question belongs to?'**
+  /// **'Select Topic'**
   String get doubtsFormCategoryLabel;
 
   /// No description provided for @doubtsFormAttachmentsLabel.
@@ -2672,6 +2672,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Submit Doubt'**
   String get doubtsFormSubmitAction;
+
+  /// No description provided for @doubtsFormNextAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get doubtsFormNextAction;
+
+  /// No description provided for @doubtsSubmitSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How would you like to ask?'**
+  String get doubtsSubmitSheetTitle;
+
+  /// No description provided for @doubtsSubmitSheetAskAi.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask AI'**
+  String get doubtsSubmitSheetAskAi;
+
+  /// No description provided for @doubtsSubmitSheetAskAiDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Get an instant AI-generated answer for your doubt'**
+  String get doubtsSubmitSheetAskAiDesc;
+
+  /// No description provided for @doubtsSubmitSheetAskMentor.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask Mentor'**
+  String get doubtsSubmitSheetAskMentor;
+
+  /// No description provided for @doubtsSubmitSheetAskMentorDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Get assistance from a mentor for your doubt'**
+  String get doubtsSubmitSheetAskMentorDesc;
+
+  /// No description provided for @doubtsSubmitSuccessMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Doubt submitted successfully'**
+  String get doubtsSubmitSuccessMessage;
+
+  /// No description provided for @doubtsSubmitErrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to submit doubt. Please try again.'**
+  String get doubtsSubmitErrorMessage;
+
+  /// No description provided for @doubtsFormCancelAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get doubtsFormCancelAction;
 
   /// No description provided for @examInstructions.
   ///
@@ -2984,6 +3038,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Successfully logged out of other devices'**
   String get loginActivityLogoutSuccess;
+
+  /// No description provided for @actionMarkAsResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as Resolved'**
+  String get actionMarkAsResolved;
+
+  /// No description provided for @actionCloseDoubt.
+  ///
+  /// In en, this message translates to:
+  /// **'Close Doubt'**
+  String get actionCloseDoubt;
+
+  /// No description provided for @messageDoubtResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'This doubt has been marked as resolved.'**
+  String get messageDoubtResolved;
+
+  /// No description provided for @messageDiscussionClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'This discussion thread is closed and read-only.'**
+  String get messageDiscussionClosed;
 
   /// No description provided for @loginActivityLogoutFailed.
   ///
