@@ -73,54 +73,69 @@ class _TestQuestionCardState extends State<TestQuestionCard> {
     }
 
     return SingleChildScrollView(
-      child: Container(
-        width: double.infinity,
-        constraints: const BoxConstraints(minHeight: 400),
-        margin: EdgeInsets.all(design.spacing.md),
-        padding: EdgeInsets.all(design.spacing.md),
-        decoration: BoxDecoration(
-          color: design.colors.card,
-          borderRadius: BorderRadius.circular(design.radius.md),
-          border: Border.all(color: design.colors.border),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Direction / passage shown above the question when present
-            if (widget.question.directionHtml != null &&
-                widget.question.directionHtml!.isNotEmpty) ...[
-              AppHtml(data: widget.question.directionHtml!, fontSize: 16),
-              SizedBox(height: design.spacing.md),
-              Container(height: 1, color: design.colors.border),
-              SizedBox(height: design.spacing.md),
-            ],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            constraints: const BoxConstraints(minHeight: 400),
+            margin: EdgeInsets.all(design.spacing.md),
+            padding: EdgeInsets.all(design.spacing.md),
+            decoration: BoxDecoration(
+              color: design.colors.card,
+              borderRadius: BorderRadius.circular(design.radius.md),
+              border: Border.all(color: design.colors.border),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Direction / passage shown above the question when present
+                if (widget.question.directionHtml != null &&
+                    widget.question.directionHtml!.isNotEmpty) ...[
+                  AppHtml(data: widget.question.directionHtml!, fontSize: 16),
+                  SizedBox(height: design.spacing.md),
+                  Container(height: 1, color: design.colors.border),
+                  SizedBox(height: design.spacing.md),
+                ],
 
-            // Unified question + options WebView
-            AppHtml(
-              data: _htmlData,
-              fontSize: 16,
-              onMessage: widget.onOptionSelect,
+                // Unified question + options WebView
+                AppHtml(
+                  data: _htmlData,
+                  fontSize: 16,
+                  onMessage: widget.onOptionSelect,
+                ),
+              ],
             ),
-
-            SizedBox(height: design.spacing.lg),
-            TestNavigationActions(
-              isMarked: widget.isMarked,
-              canGoPrevious: widget.canGoPrevious,
-              isLastQuestion: widget.isLastQuestion,
-              finishLabel: widget.finishLabel,
-              onToggleMark: widget.onToggleMark,
-              onPrevious: widget.onPrevious,
-              onNext: widget.onNext,
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+              left: design.spacing.md,
+              right: design.spacing.md,
+              bottom: design.spacing.md,
             ),
-            SizedBox(height: design.spacing.md),
-            TestPaletteTrigger(
-              answeredCount: widget.answeredCount,
-              totalQuestions: widget.totalQuestions,
-              onTap: widget.onPaletteTap,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TestNavigationActions(
+                  isMarked: widget.isMarked,
+                  canGoPrevious: widget.canGoPrevious,
+                  isLastQuestion: widget.isLastQuestion,
+                  finishLabel: widget.finishLabel,
+                  onToggleMark: widget.onToggleMark,
+                  onPrevious: widget.onPrevious,
+                  onNext: widget.onNext,
+                ),
+                SizedBox(height: design.spacing.md),
+                TestPaletteTrigger(
+                  answeredCount: widget.answeredCount,
+                  totalQuestions: widget.totalQuestions,
+                  onTap: widget.onPaletteTap,
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

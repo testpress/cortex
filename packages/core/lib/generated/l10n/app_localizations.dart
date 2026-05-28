@@ -424,6 +424,18 @@ abstract class AppLocalizations {
   /// **'Loading...'**
   String get labelLoading;
 
+  /// No description provided for @labelGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get labelGeneral;
+
+  /// No description provided for @filterBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by {name}'**
+  String filterBy(String name);
+
   /// No description provided for @labelProgress.
   ///
   /// In en, this message translates to:
@@ -1596,7 +1608,7 @@ abstract class AppLocalizations {
   /// No description provided for @testStatusNotVisited.
   ///
   /// In en, this message translates to:
-  /// **'Not visited'**
+  /// **'Unanswered'**
   String get testStatusNotVisited;
 
   /// No description provided for @testStatusAnswered.

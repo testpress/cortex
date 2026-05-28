@@ -54,6 +54,15 @@
   "labelContinue": "استمر",
   "labelRetry": "إعادة المحاولة",
   "labelLoading": "جاري التحميل...",
+  "labelGeneral": "عام",
+  "filterBy": "تصفية حسب {name}",
+  "@filterBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "labelProgress": "تقدم",
   "labelResume": "استئناف",
   "labelCourseProgress": "تقدم الدورة",

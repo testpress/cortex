@@ -185,6 +185,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get labelLoading => 'Loading...';
 
   @override
+  String get labelGeneral => 'General';
+
+  @override
+  String filterBy(String name) {
+    return 'Filter by $name';
+  }
+
+  @override
   String get labelProgress => 'Progress';
 
   @override
@@ -853,7 +861,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get testStatusNotVisited => 'Not visited';
+  String get testStatusNotVisited => 'Unanswered';
 
   @override
   String get testStatusAnswered => 'Answered';

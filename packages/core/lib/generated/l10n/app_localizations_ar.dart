@@ -184,6 +184,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get labelLoading => 'جاري التحميل...';
 
   @override
+  String get labelGeneral => 'عام';
+
+  @override
+  String filterBy(String name) {
+    return 'تصفية حسب $name';
+  }
+
+  @override
   String get labelProgress => 'تقدم';
 
   @override

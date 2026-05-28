@@ -25,10 +25,6 @@ class TestHeader extends StatelessWidget {
         left: design.spacing.md,
         right: design.spacing.md,
       ),
-      decoration: BoxDecoration(
-        color: design.colors.card,
-        border: Border(bottom: BorderSide(color: design.colors.border)),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -93,30 +89,6 @@ class TestHeader extends StatelessWidget {
           AppText.headline(
             '${l10n.filterTest}: ${exam.title}',
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: design.spacing.xs),
-          Row(
-            children: [
-              AppText.caption(
-                '${exam.questionCount} ${l10n.shortcutTests}',
-                color: design.colors.textSecondary,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: design.spacing.sm),
-                child: Container(
-                  width: 3,
-                  height: 3,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: design.colors.textSecondary,
-                  ),
-                ),
-              ),
-              AppText.caption(
-                l10n.testAttemptXofY(1, 2),
-                color: design.colors.textSecondary,
-              ),
-            ],
           ),
         ],
       ),

@@ -63,6 +63,15 @@
   "labelContinue": "Continue",
   "labelRetry": "Retry",
   "labelLoading": "Loading...",
+  "labelGeneral": "General",
+  "filterBy": "Filter by {name}",
+  "@filterBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "labelProgress": "Progress",
   "labelResume": "Resume",
   "@labelResume": {
@@ -424,7 +433,7 @@
   "testScoreSummary": "{correct} out of {total} correct",
   "testPaletteTitle": "Hey! Review Your Answers",
   "testPaletteAnsweredCount": "{answered} of {total} answered",
-  "testStatusNotVisited": "Not visited",
+  "testStatusNotVisited": "Unanswered",
   "testStatusAnswered": "Answered",
   "testStatusMarked": "Marked",
   "testStatusAnsweredMarked": "Answered & Reviewed",
