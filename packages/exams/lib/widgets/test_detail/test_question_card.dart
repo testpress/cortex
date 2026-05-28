@@ -78,6 +78,7 @@ class _TestQuestionCardState extends State<TestQuestionCard> {
         children: [
           Container(
             width: double.infinity,
+            constraints: const BoxConstraints(minHeight: 400),
             margin: EdgeInsets.all(design.spacing.md),
             padding: EdgeInsets.all(design.spacing.md),
             decoration: BoxDecoration(

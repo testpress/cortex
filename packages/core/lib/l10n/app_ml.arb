@@ -54,6 +54,15 @@
   "labelContinue": "തുടരുക",
   "labelRetry": "വീണ്ടും ശ്രമിക്കുക",
   "labelLoading": "ലോഡ് ചെയ്യുന്നു...",
+  "labelGeneral": "പൊതുവായത്",
+  "filterBy": "{name} അനുസരിച്ച് ഫിൽട്ടർ ചെയ്യുക",
+  "@filterBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "labelProgress": "പുരോഗതി",
   "labelResume": "തുടരുക",
   "labelCourseProgress": "കോഴ്സിന്റെ പുരോഗതി",

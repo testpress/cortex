@@ -63,6 +63,15 @@
   "labelContinue": "Continue",
   "labelRetry": "Retry",
   "labelLoading": "Loading...",
+  "labelGeneral": "General",
+  "filterBy": "Filter by {name}",
+  "@filterBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "labelProgress": "Progress",
   "labelResume": "Resume",
   "@labelResume": {

@@ -186,6 +186,14 @@ class AppLocalizationsMl extends AppLocalizations {
   String get labelLoading => 'ലോഡ് ചെയ്യുന്നു...';
 
   @override
+  String get labelGeneral => 'പൊതുവായത്';
+
+  @override
+  String filterBy(String name) {
+    return '$name അനുസരിച്ച് ഫിൽട്ടർ ചെയ്യുക';
+  }
+
+  @override
   String get labelProgress => 'പുരോഗതി';
 
   @override

@@ -35,6 +35,7 @@ class SectionsTabBar extends StatelessWidget {
     if (tabNames.isEmpty) return const SizedBox.shrink();
 
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     final activeIndex = state.sections.length > 1
         ? state.currentSectionIndex
         : activeSubjectIndex;
@@ -59,10 +60,12 @@ class SectionsTabBar extends StatelessWidget {
                 ? design.colors.card
                 : design.colors.textPrimary;
 
+            final tabDisplayName = tabName.isEmpty ? l10n.labelGeneral : tabName;
+
             return Padding(
               padding: EdgeInsets.only(right: design.spacing.sm),
               child: AppSemantics.button(
-                label: 'Filter by ${tabName.isEmpty ? 'General' : tabName}',
+                label: l10n.filterBy(tabDisplayName),
                 onTap: () {
                   if (!isActive) {
                     onTabSelected(index);
@@ -87,7 +90,7 @@ class SectionsTabBar extends StatelessWidget {
                       borderRadius: design.radius.pill,
                     ),
                     child: AppText.label(
-                      tabName.isEmpty ? 'General' : tabName,
+                      tabDisplayName,
                       color: fgColor,
                       style: TextStyle(
                         fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
