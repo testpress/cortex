@@ -853,7 +853,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get testStatusNotVisited => 'Not visited';
+  String get testStatusNotVisited => 'Unanswered';
 
   @override
   String get testStatusAnswered => 'Answered';

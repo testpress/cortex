@@ -62,7 +62,7 @@ class TestProgressSection extends StatelessWidget {
                   '$answeredCount ${l10n.testStatusAnswered.toLowerCase()}',
                   style: TextStyle(
                     fontSize: 14,
-                    color: design.colors.textPrimary.withOpacity(0.6),
+                    color: design.colors.textPrimary.withValues(alpha: 0.6),
                   ),
                 ),
             ],

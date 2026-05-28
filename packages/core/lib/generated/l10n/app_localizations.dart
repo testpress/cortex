@@ -1596,7 +1596,7 @@ abstract class AppLocalizations {
   /// No description provided for @testStatusNotVisited.
   ///
   /// In en, this message translates to:
-  /// **'Not visited'**
+  /// **'Unanswered'**
   String get testStatusNotVisited;
 
   /// No description provided for @testStatusAnswered.

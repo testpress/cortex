@@ -37,7 +37,6 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
   final PageController _pageController = PageController();
   int _currentQuestionIndex = 0;
   int _activeSubjectIndex = 0;
-  bool _isSectionsTabBarExpanded = true;
   bool _showPalette = false;
   bool _showSubmitConfirmation = false;
   bool _showPauseConfirmation = false;
@@ -282,28 +281,42 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
           children: [
           Column(
             children: [
-              TestHeader(
-                exam: state.exam!,
-                timeFormatted: _formatTime(state.remainingSeconds),
-                onExit: () => setState(() => _showPauseConfirmation = true),
-              ),
-              SectionsTabBar(
-                state: state,
-                activeSubjectIndex: currentSubjectIndex != -1 ? currentSubjectIndex : _activeSubjectIndex,
-                isExpanded: _isSectionsTabBarExpanded,
-                onExpandChanged: (val) => setState(() => _isSectionsTabBarExpanded = val),
-                onTabSelected: (index) {
-                  if (state.sections.length > 1) {
-                    ref.read(examAttemptProvider.notifier).switchSection(index);
-                  } else {
-                    // Jump to the first question of this subject
-                    final targetSubject = subjects[index];
-                    final targetIndex = allQuestions.indexWhere((q) => q.subject == targetSubject);
-                    if (targetIndex != -1) {
-                      _pageController.jumpToPage(targetIndex);
-                    }
-                  }
-                },
+              Container(
+                decoration: BoxDecoration(
+                  color: design.colors.card,
+                  border: Border(
+                    bottom: BorderSide(
+                      color: design.colors.border,
+                      width: 1,
+                    ),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TestHeader(
+                      exam: state.exam!,
+                      timeFormatted: _formatTime(state.remainingSeconds),
+                      onExit: () => setState(() => _showPauseConfirmation = true),
+                    ),
+                    SectionsTabBar(
+                      state: state,
+                      activeSubjectIndex: currentSubjectIndex != -1 ? currentSubjectIndex : _activeSubjectIndex,
+                      onTabSelected: (index) {
+                        if (state.sections.length > 1) {
+                          ref.read(examAttemptProvider.notifier).switchSection(index);
+                        } else {
+                          // Jump to the first question of this subject
+                          final targetSubject = subjects[index];
+                          final targetIndex = allQuestions.indexWhere((q) => q.subject == targetSubject);
+                          if (targetIndex != -1) {
+                            _pageController.jumpToPage(targetIndex);
+                          }
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
               Expanded(
                 child: Column(

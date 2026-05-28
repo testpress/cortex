@@ -424,7 +424,7 @@
   "testScoreSummary": "{correct} out of {total} correct",
   "testPaletteTitle": "Hey! Review Your Answers",
   "testPaletteAnsweredCount": "{answered} of {total} answered",
-  "testStatusNotVisited": "Not visited",
+  "testStatusNotVisited": "Unanswered",
   "testStatusAnswered": "Answered",
   "testStatusMarked": "Marked",
   "testStatusAnsweredMarked": "Answered & Reviewed",
