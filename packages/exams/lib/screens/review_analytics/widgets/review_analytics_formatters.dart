@@ -1,4 +1,5 @@
-String formatDuration(Duration duration, {bool showUnit = false}) {
+String formatDuration(Duration? duration, {bool showUnit = false}) {
+  if (duration == null) return '-';
   if (showUnit) {
     if (duration.inHours > 0 && duration.inMinutes.remainder(60) == 0) {
       return '${duration.inHours * 60} min';

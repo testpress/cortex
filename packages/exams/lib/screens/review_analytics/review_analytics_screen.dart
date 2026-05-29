@@ -22,6 +22,7 @@ class ReviewAnalyticsScreen extends ConsumerWidget {
     required this.questions,
     required this.attemptStates,
     this.attempt,
+    this.exam,
     required this.onBack,
   });
 
@@ -30,6 +31,7 @@ class ReviewAnalyticsScreen extends ConsumerWidget {
   final List<QuestionDto> questions;
   final Map<String, AnswerDto> attemptStates;
   final AttemptDto? attempt;
+  final ExamDto? exam;
   final VoidCallback onBack;
 
   @override
@@ -38,6 +40,7 @@ class ReviewAnalyticsScreen extends ConsumerWidget {
 
     final param = ReviewAnalyticsParam(
       attempt: attempt,
+      exam: exam,
       questions: questions,
       attemptStates: attemptStates,
     );

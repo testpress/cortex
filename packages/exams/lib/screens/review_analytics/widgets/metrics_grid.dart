@@ -33,18 +33,20 @@ class MetricsGrid extends StatelessWidget {
       _MetricData(
         label: 'Time Taken',
         value: formatDuration(overview.timeTaken),
-        subValue: ' / ${formatDuration(overview.totalTime, showUnit: true)}',
+        subValue: overview.totalTime != null ? ' / ${formatDuration(overview.totalTime, showUnit: true)}' : null,
       ),
-      _MetricData(
-        label: 'Overall Rank',
-        value: '${overview.overallRank}',
-        subValue: ' / ${overview.totalParticipants}',
-      ),
+      if (overview.rankEnabled == true)
+        _MetricData(
+          label: 'Overall Rank',
+          value: '${overview.overallRank}',
+          subValue: ' / ${overview.totalParticipants}',
+        ),
     ];
 
     return GridView.builder(
       itemCount: metrics.length,
       shrinkWrap: true,
+      padding: EdgeInsets.zero,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,

@@ -6,10 +6,11 @@ class AnalyticsOverview {
     required this.totalQuestions,
     required this.percentile,
     required this.accuracy,
-    required this.timeTaken,
-    required this.totalTime,
+    this.timeTaken,
+    this.totalTime,
     required this.overallRank,
     required this.totalParticipants,
+    this.rankEnabled,
     required this.correct,
     required this.incorrect,
     required this.unanswered,
@@ -22,10 +23,11 @@ class AnalyticsOverview {
   final int totalQuestions;
   final double percentile;
   final double accuracy;
-  final Duration timeTaken;
-  final Duration totalTime;
+  final Duration? timeTaken;
+  final Duration? totalTime;
   final int overallRank;
   final int totalParticipants;
+  final bool? rankEnabled;
   final int correct;
   final int incorrect;
   final int unanswered;

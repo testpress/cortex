@@ -25,6 +25,7 @@ class AttemptDto {
   final bool? rankEnabled;
   final String? markPerQuestion;
   final String? negativeMarks;
+  final String? timeTaken;
   final int? lastViewedQuestionId;
 
   const AttemptDto({
@@ -50,6 +51,7 @@ class AttemptDto {
     this.rankEnabled,
     this.markPerQuestion,
     this.negativeMarks,
+    this.timeTaken,
     this.lastViewedQuestionId,
   });
 
@@ -117,6 +119,7 @@ class AttemptDto {
       rankEnabled: json['rank_enabled'] as bool? ?? data['rank_enabled'] as bool?,
       markPerQuestion: (data['mark_per_question'] ?? json['mark_per_question'])?.toString(),
       negativeMarks: (data['negative_marks'] ?? json['negative_marks'])?.toString(),
+      timeTaken: (data['time_taken'] ?? json['time_taken'])?.toString(),
       lastViewedQuestionId: json['last_viewed_question_id'] as int? ?? data['last_viewed_question_id'] as int?,
     );
   }
@@ -145,6 +148,7 @@ class AttemptDto {
       'rank_enabled': rankEnabled,
       'mark_per_question': markPerQuestion,
       'negative_marks': negativeMarks,
+      'time_taken': timeTaken,
       'last_viewed_question_id': lastViewedQuestionId,
     };
   }

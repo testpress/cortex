@@ -86,9 +86,11 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
               ExamDto(
                 id: lesson.id,
                 title: lesson.title,
-                duration: lesson.duration,
+                duration: cachedExam?.duration ?? lesson.duration,
                 questionCount: 0,
                 attemptsUrl: attemptsUrl,
+                markPerQuestion: cachedExam?.markPerQuestion,
+                negativeMarks: cachedExam?.negativeMarks,
                 pausedAttemptsCount: lesson.pausedAttemptsCount > 0
                     ? lesson.pausedAttemptsCount
                     : (cachedExam?.pausedAttemptsCount ?? 0),
@@ -511,6 +513,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
         questions: state.questions,
         attemptStates: state.answers,
         attempt: state.attempt,
+        exam: state.exam,
       ),
     );
   }

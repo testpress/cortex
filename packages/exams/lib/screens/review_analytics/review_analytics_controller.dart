@@ -41,11 +41,13 @@ class ReviewAnalyticsState {
 
 class ReviewAnalyticsParam {
   final AttemptDto? attempt;
+  final ExamDto? exam;
   final List<QuestionDto> questions;
   final Map<String, AnswerDto> attemptStates;
 
   ReviewAnalyticsParam({
     required this.attempt,
+    this.exam,
     required this.questions,
     required this.attemptStates,
   });
@@ -94,45 +96,52 @@ class ReviewAnalyticsController extends StateNotifier<ReviewAnalyticsState> {
       return;
     }
 
-    // Parse overview stats immediately from attempt DTO to show UI instantly
-    int scoreVal = 0;
-    int maxScoreVal = 0;
+    // Score might be "6.00/6.00", just "6.00", or null
+    double scoreValD = 0;
+    double maxScoreValD = 0;
     final totalQs = attempt.totalQuestions ?? param.questions.length;
-    double derivedMarkPerQuestion = double.tryParse(attempt.markPerQuestion ?? '') ?? 4.0;
-
-    if (attempt.score != null) {
-      final parts = attempt.score!.split('/');
-      scoreVal = int.tryParse(parts[0]) ?? 0;
-      if (parts.length > 1) {
-        maxScoreVal = int.tryParse(parts[1]) ?? 0;
-        if (maxScoreVal > 0 && totalQs > 0 && attempt.markPerQuestion == null) {
-          derivedMarkPerQuestion = maxScoreVal / totalQs;
-        }
-      }
-    }
-    if (maxScoreVal == 0) {
-      maxScoreVal = (totalQs * derivedMarkPerQuestion).toInt();
-    }
-
-    int totalDurationSeconds = 0;
-    int remainingSeconds = 0;
-    if (attempt.sections != null) {
-      for (final s in attempt.sections!) {
-        totalDurationSeconds += _parseDurationToSeconds(s.duration);
-        remainingSeconds += _parseDurationToSeconds(s.remainingTime);
-      }
-    }
-
-    final totalTime = totalDurationSeconds > 0
-        ? Duration(seconds: totalDurationSeconds)
-        : Duration(minutes: totalQs * 2);
-
-    final timeTaken = totalDurationSeconds > 0
-        ? Duration(seconds: (totalDurationSeconds - remainingSeconds).clamp(0, totalDurationSeconds))
-        : const Duration(minutes: 10);
-
     final correct = attempt.correctCount ?? 0;
     final incorrect = attempt.incorrectCount ?? 0;
+
+    final double? markPerQuestion = param.exam?.markPerQuestion != null
+        ? double.tryParse(param.exam!.markPerQuestion!)
+        : double.tryParse(attempt.markPerQuestion ?? '');
+    final double? negativeMarks = param.exam?.negativeMarks != null
+        ? double.tryParse(param.exam!.negativeMarks!)
+        : double.tryParse(attempt.negativeMarks ?? '');
+
+    if (attempt.score != null && attempt.score!.isNotEmpty) {
+      final parts = attempt.score!.split('/');
+      scoreValD = double.tryParse(parts[0].trim()) ?? 0;
+      if (parts.length > 1) {
+        maxScoreValD = double.tryParse(parts[1].trim()) ?? 0;
+      }
+    } else {
+      if (markPerQuestion != null && negativeMarks != null) {
+        scoreValD = (correct * markPerQuestion) - (incorrect * negativeMarks);
+      }
+    }
+
+    // If max score is 0 (either missing from string or score was null), calculate it
+    if (maxScoreValD == 0 && markPerQuestion != null) {
+      maxScoreValD = totalQs * markPerQuestion;
+    }
+
+    final scoreVal = scoreValD.round();
+    final maxScoreVal = maxScoreValD.round();
+
+    Duration? timeTaken;
+    if (attempt.timeTaken != null) {
+      timeTaken = Duration(seconds: _parseDurationToSeconds(attempt.timeTaken));
+    }
+
+    Duration? totalTime;
+    if (param.exam?.duration != null) {
+      totalTime = Duration(seconds: _parseDurationToSeconds(param.exam?.duration));
+    } else if (attempt.timeTaken != null && attempt.remainingTime != null) {
+      totalTime = Duration(seconds: _parseDurationToSeconds(attempt.timeTaken) + _parseDurationToSeconds(attempt.remainingTime));
+    }
+
     final attempted = correct + incorrect;
     final unanswered = (totalQs - attempted).clamp(0, totalQs);
 
@@ -147,6 +156,7 @@ class ReviewAnalyticsController extends StateNotifier<ReviewAnalyticsState> {
       totalTime: totalTime,
       overallRank: int.tryParse(attempt.rank ?? '') ?? 0,
       totalParticipants: int.tryParse(attempt.maxRank ?? '') ?? 0,
+      rankEnabled: attempt.rankEnabled,
       correct: correct,
       incorrect: incorrect,
       unanswered: unanswered,
@@ -193,22 +203,18 @@ class ReviewAnalyticsController extends StateNotifier<ReviewAnalyticsState> {
 
       final subjects = await examRepository.getSubjectAnalytics(analyticsUrl);
 
-      // Derive marking parameters dynamically from attempt score
-      final totalQs = attempt.totalQuestions ?? param.questions.length;
-      double derivedMarkPerQuestion = double.tryParse(attempt.markPerQuestion ?? '') ?? 4.0;
-      if (attempt.score != null) {
-        final parts = attempt.score!.split('/');
-        if (parts.length > 1) {
-          final maxScoreVal = double.tryParse(parts[1]) ?? 0.0;
-          if (maxScoreVal > 0 && totalQs > 0 && attempt.markPerQuestion == null) {
-            derivedMarkPerQuestion = maxScoreVal / totalQs;
-          }
-        }
-      }
-      final double negativeMarks = double.tryParse(attempt.negativeMarks ?? '') ?? (derivedMarkPerQuestion / 4.0);
+      // Use markPerQuestion from exam (preferred) then fall back to attempt field
+      final double? markPerQuestion = param.exam?.markPerQuestion != null
+          ? double.tryParse(param.exam!.markPerQuestion!)
+          : double.tryParse(attempt.markPerQuestion ?? '');
+      final double? negativeMarks = param.exam?.negativeMarks != null
+          ? double.tryParse(param.exam!.negativeMarks!)
+          : double.tryParse(attempt.negativeMarks ?? '');
 
       final mappedSections = subjects.map((s) {
-        final subjectScore = (s.correct * derivedMarkPerQuestion) - (s.incorrect * negativeMarks);
+        final subjectScore = (markPerQuestion != null && negativeMarks != null) 
+            ? ((s.correct * markPerQuestion) - (s.incorrect * negativeMarks)) 
+            : 0.0;
         return SectionPerformanceOverview(
           name: s.name,
           totalQuestions: s.total,
