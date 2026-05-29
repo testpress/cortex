@@ -68,3 +68,4 @@
 - [x] 11.3 Subject Accuracy parsing: Compute `correctPercentage` from `correct / total * 100` if the API omits `correct_percentage` in `SubjectAnalyticsDto`.
 - [x] 11.4 Max Score fallback: Compute `maxScore` dynamically (`totalQs * markPerQuestion`) if the API score string omits the max score (e.g. returns `"6.00"` instead of `"6.00/6.00"`) or if the score string is `null`.
 - [x] 11.5 UI Polish: Set `padding: EdgeInsets.zero` on the `MetricsGrid`'s `GridView.builder` to remove the awkward default excess spacing above the cards.
+- [x] 11.6 Code Review Improvements: Simplify negative marking fallbacks (default to `0.0`) and improve duration parsing to safely ignore empty/invalid durations.

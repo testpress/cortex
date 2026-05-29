@@ -103,12 +103,10 @@ class ReviewAnalyticsController extends StateNotifier<ReviewAnalyticsState> {
     final correct = attempt.correctCount ?? 0;
     final incorrect = attempt.incorrectCount ?? 0;
 
-    final double? markPerQuestion = param.exam?.markPerQuestion != null
-        ? double.tryParse(param.exam!.markPerQuestion!)
-        : double.tryParse(attempt.markPerQuestion ?? '');
-    final double? negativeMarks = param.exam?.negativeMarks != null
-        ? double.tryParse(param.exam!.negativeMarks!)
-        : double.tryParse(attempt.negativeMarks ?? '');
+    final double? markPerQuestion = double.tryParse(param.exam?.markPerQuestion ?? '') ??
+        double.tryParse(attempt.markPerQuestion ?? '');
+    final double negativeMarks = double.tryParse(param.exam?.negativeMarks ?? '') ??
+        double.tryParse(attempt.negativeMarks ?? '') ?? 0.0;
 
     if (attempt.score != null && attempt.score!.isNotEmpty) {
       final parts = attempt.score!.split('/');
@@ -117,7 +115,7 @@ class ReviewAnalyticsController extends StateNotifier<ReviewAnalyticsState> {
         maxScoreValD = double.tryParse(parts[1].trim()) ?? 0;
       }
     } else {
-      if (markPerQuestion != null && negativeMarks != null) {
+      if (markPerQuestion != null) {
         scoreValD = (correct * markPerQuestion) - (incorrect * negativeMarks);
       }
     }
@@ -136,8 +134,9 @@ class ReviewAnalyticsController extends StateNotifier<ReviewAnalyticsState> {
     }
 
     Duration? totalTime;
-    if (param.exam?.duration != null) {
-      totalTime = Duration(seconds: _parseDurationToSeconds(param.exam?.duration));
+    final examDurationSeconds = _parseDurationToSeconds(param.exam?.duration);
+    if (examDurationSeconds > 0) {
+      totalTime = Duration(seconds: examDurationSeconds);
     } else if (attempt.timeTaken != null && attempt.remainingTime != null) {
       totalTime = Duration(seconds: _parseDurationToSeconds(attempt.timeTaken) + _parseDurationToSeconds(attempt.remainingTime));
     }
@@ -204,15 +203,13 @@ class ReviewAnalyticsController extends StateNotifier<ReviewAnalyticsState> {
       final subjects = await examRepository.getSubjectAnalytics(analyticsUrl);
 
       // Use markPerQuestion from exam (preferred) then fall back to attempt field
-      final double? markPerQuestion = param.exam?.markPerQuestion != null
-          ? double.tryParse(param.exam!.markPerQuestion!)
-          : double.tryParse(attempt.markPerQuestion ?? '');
-      final double? negativeMarks = param.exam?.negativeMarks != null
-          ? double.tryParse(param.exam!.negativeMarks!)
-          : double.tryParse(attempt.negativeMarks ?? '');
+      final double? markPerQuestion = double.tryParse(param.exam?.markPerQuestion ?? '') ??
+          double.tryParse(attempt.markPerQuestion ?? '');
+      final double negativeMarks = double.tryParse(param.exam?.negativeMarks ?? '') ??
+          double.tryParse(attempt.negativeMarks ?? '') ?? 0.0;
 
       final mappedSections = subjects.map((s) {
-        final subjectScore = (markPerQuestion != null && negativeMarks != null) 
+        final subjectScore = markPerQuestion != null 
             ? ((s.correct * markPerQuestion) - (s.incorrect * negativeMarks)) 
             : 0.0;
         return SectionPerformanceOverview(
