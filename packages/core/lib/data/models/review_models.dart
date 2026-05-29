@@ -21,14 +21,20 @@ class SubjectAnalyticsDto {
   });
 
   factory SubjectAnalyticsDto.fromJson(Map<String, dynamic> json) {
+    final int total = json['total'] as int? ?? 0;
+    final int correct = json['correct'] as int? ?? 0;
+    final int incorrect = json['incorrect'] as int? ?? 0;
+    // API doesn't always return correct_percentage — derive it when absent
+    final double correctPct = (json['correct_percentage'] as num?)?.toDouble() ??
+        (total > 0 ? (correct / total * 100) : 0.0);
     return SubjectAnalyticsDto(
       id: json['id'] as int? ?? 0,
       name: (json['name'] ?? '').toString(),
-      total: json['total'] as int? ?? 0,
-      correct: json['correct'] as int? ?? 0,
-      incorrect: json['incorrect'] as int? ?? 0,
+      total: total,
+      correct: correct,
+      incorrect: incorrect,
       unanswered: json['unanswered'] as int? ?? 0,
-      correctPercentage: (json['correct_percentage'] as num?)?.toDouble() ?? 0.0,
+      correctPercentage: correctPct,
     );
   }
 

@@ -101,6 +101,7 @@ class ExamsRoutes {
                       attemptStates:
                           payload?.attemptStates ?? const <String, AnswerDto>{},
                       attempt: payload?.attempt,
+                      exam: payload?.exam,
                       onBack: () => context.pop(),
                     );
                   },
