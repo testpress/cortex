@@ -16,6 +16,7 @@ The system SHALL provide a feed of content items recently finished by the user f
 - **THEN** it MUST show the 100% progress badge in the top right corner.
 - **AND** it MUST show the full progress bar at the bottom of the card.
 - **AND** it MUST display the chapter name as the subtitle.
+- **AND** it MUST NOT apply any disabled or reduced opacity visual styling to the item.
 
 #### Scenario: Background Synchronization
 - **WHEN** the user opens the dashboard
