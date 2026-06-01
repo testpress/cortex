@@ -28,34 +28,29 @@ Future<List<DoubtDto>> doubtsSearch(DoubtsSearchRef ref, String query) async {
 
 @riverpod
 class DoubtsSync extends _$DoubtsSync {
-  bool _hasMore = true;
-  int _nextPage = 1;
-  bool _isSyncing = false;
+  int _nextPage = 2;
 
   @override
-  Future<void> build() async {
+  Future<({bool hasMore, bool isLoadingMore})> build() async {
     final repo = await ref.watch(doubtRepositoryProvider.future);
-    _hasMore = true;
-    _nextPage = 1;
-    _isSyncing = false;
     final response = await repo.syncDoubts(page: 1);
-    _hasMore = response.next != null;
     _nextPage = 2;
+    return (hasMore: response.next != null, isLoadingMore: false);
   }
 
-  bool get hasMore => _hasMore;
-  bool get isLoadingMore => _isSyncing;
-
   Future<void> loadMore() async {
-    if (!_hasMore || _isSyncing) return;
-    _isSyncing = true;
+    final current = state.valueOrNull;
+    if (current == null || !current.hasMore || current.isLoadingMore) return;
+
+    state = AsyncData((hasMore: current.hasMore, isLoadingMore: true));
     try {
       final repo = await ref.read(doubtRepositoryProvider.future);
       final response = await repo.syncDoubts(page: _nextPage);
-      _hasMore = response.next != null;
-      if (_hasMore) _nextPage++;
-    } finally {
-      _isSyncing = false;
+      final hasMore = response.next != null;
+      if (hasMore) _nextPage++;
+      state = AsyncData((hasMore: hasMore, isLoadingMore: false));
+    } catch (e, st) {
+      state = AsyncError(e, st);
     }
   }
 }
@@ -64,16 +59,6 @@ class DoubtsSync extends _$DoubtsSync {
 Future<void> doubtTopicsSync(DoubtTopicsSyncRef ref) async {
   final repo = await ref.watch(doubtRepositoryProvider.future);
   return repo.syncTopics();
-}
-
-@riverpod
-List<String> doubtCategories(DoubtCategoriesRef ref) {
-  return [
-    'Physics', 'Chemistry', 'Mathematics', 'Biology', 'English', 'Accounts',
-    'Anatomy', 'Discrete Maths', 'Algebra', 'Calculus', 'Organic Chemistry',
-    'Inorganic Chemistry', 'Mechanics', 'Thermodynamics', 'Optics',
-    'Cell Biology', 'Genetics', 'Ecology', 'Grammar', 'Literature'
-  ];
 }
 
 @riverpod

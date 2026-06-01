@@ -198,23 +198,6 @@ final doubtTopicsSyncProvider = AutoDisposeFutureProvider<void>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef DoubtTopicsSyncRef = AutoDisposeFutureProviderRef<void>;
-String _$doubtCategoriesHash() => r'57e7e0ac2bfed9f0fc06c447435de42543935686';
-
-/// See also [doubtCategories].
-@ProviderFor(doubtCategories)
-final doubtCategoriesProvider = AutoDisposeProvider<List<String>>.internal(
-  doubtCategories,
-  name: r'doubtCategoriesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$doubtCategoriesHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef DoubtCategoriesRef = AutoDisposeProviderRef<List<String>>;
 String _$doubtDetailHash() => r'a300245f15c35b44b5d9d1bcc64b573261e6dd38';
 
 /// See also [doubtDetail].
@@ -576,12 +559,15 @@ class _DoubtSubtopicsProviderElement
   int? get parentId => (origin as DoubtSubtopicsProvider).parentId;
 }
 
-String _$doubtsSyncHash() => r'ed766ce109e1659927f16f3fa2d76bd46ce06f55';
+String _$doubtsSyncHash() => r'632af9f7cca92b3fa71ea48e64d70a0116d22ab1';
 
 /// See also [DoubtsSync].
 @ProviderFor(DoubtsSync)
 final doubtsSyncProvider =
-    AutoDisposeAsyncNotifierProvider<DoubtsSync, void>.internal(
+    AutoDisposeAsyncNotifierProvider<
+      DoubtsSync,
+      ({bool hasMore, bool isLoadingMore})
+    >.internal(
       DoubtsSync.new,
       name: r'doubtsSyncProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -591,7 +577,8 @@ final doubtsSyncProvider =
       allTransitiveDependencies: null,
     );
 
-typedef _$DoubtsSync = AutoDisposeAsyncNotifier<void>;
+typedef _$DoubtsSync =
+    AutoDisposeAsyncNotifier<({bool hasMore, bool isLoadingMore})>;
 String _$createDoubtNotifierHash() =>
     r'b015ae4d53e721e0e660c8043260d81fc4d4355c';
 

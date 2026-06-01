@@ -89,8 +89,9 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
               data: (doubts) {
                 // Show skeleton only if initial sync is still loading AND database is empty
                 final isInitialLoading = !isSearching && syncAsync.isLoading && doubts.isEmpty;
-                final isLoadingMore = !isSearching && syncNotifier.isLoadingMore;
-                final hasMore = !isSearching && syncNotifier.hasMore;
+                final syncState = syncAsync.valueOrNull;
+                final isLoadingMore = !isSearching && (syncState?.isLoadingMore ?? false);
+                final hasMore = !isSearching && (syncState?.hasMore ?? true);
 
                 return doubts.isEmpty && !isInitialLoading
                     ? _buildEmptyState(context, design, ref)
