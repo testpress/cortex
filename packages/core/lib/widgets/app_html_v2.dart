@@ -130,7 +130,7 @@ class AppHtmlV2 extends StatelessWidget {
     );
   }
 
-  /// Converts LaTeX delimiters into custom <math-tex> tags.
+  /// Converts LaTeX delimiters into custom math-tex tags.
   ///
   /// Handles all delimiter variants the API may produce:
   ///
@@ -147,7 +147,7 @@ class AppHtmlV2 extends StatelessWidget {
   /// Order matters:
   ///   All BLOCK patterns are processed first, then INLINE.
   ///   Bare paren detection runs only on text outside already-converted tags
-  ///   to prevent nested <math-tex> tags inside block equations.
+  ///   to prevent nested math-tex tags inside block equations.
   String _preprocessMath(String html) {
     var res = html;
 
