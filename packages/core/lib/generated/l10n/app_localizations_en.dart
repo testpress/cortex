@@ -511,7 +511,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawerForum => 'Discussions Forum';
 
   @override
-  String get drawerDoubts => 'Ask Mentor';
+  String get drawerDoubts => 'Ask Doubt';
 
   @override
   String get drawerCustomExam => 'Custom Exam';
@@ -1437,8 +1437,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get doubtsFormDescriptionLabel => 'Explain in detail about your doubt';
 
   @override
-  String get doubtsFormCategoryLabel =>
-      'Could you select the category which your question belongs to?';
+  String get doubtsFormCategoryLabel => 'Select Topic';
 
   @override
   String get doubtsFormAttachmentsLabel => 'Attachments (Optional)';
@@ -1448,6 +1447,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get doubtsFormSubmitAction => 'Submit Doubt';
+
+  @override
+  String get doubtsFormNextAction => 'Next';
+
+  @override
+  String get doubtsSubmitSheetTitle => 'How would you like to ask?';
+
+  @override
+  String get doubtsSubmitSheetAskAi => 'Ask AI';
+
+  @override
+  String get doubtsSubmitSheetAskAiDesc =>
+      'Get an instant AI-generated answer for your doubt';
+
+  @override
+  String get doubtsSubmitSheetAskMentor => 'Ask Mentor';
+
+  @override
+  String get doubtsSubmitSheetAskMentorDesc =>
+      'Get assistance from a mentor for your doubt';
+
+  @override
+  String get doubtsSubmitSuccessMessage => 'Doubt submitted successfully';
+
+  @override
+  String get doubtsSubmitErrorMessage =>
+      'Failed to submit doubt. Please try again.';
+
+  @override
+  String get doubtsFormCancelAction => 'Cancel';
 
   @override
   String get examInstructions => 'Exam Instructions';
@@ -1627,6 +1656,19 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get loginActivityLogoutSuccess =>
       'Successfully logged out of other devices';
+
+  @override
+  String get actionMarkAsResolved => 'Mark as Resolved';
+
+  @override
+  String get actionCloseDoubt => 'Close Doubt';
+
+  @override
+  String get messageDoubtResolved => 'This doubt has been marked as resolved.';
+
+  @override
+  String get messageDiscussionClosed =>
+      'This discussion thread is closed and read-only.';
 
   @override
   String get loginActivityLogoutFailed => 'Failed to logout';

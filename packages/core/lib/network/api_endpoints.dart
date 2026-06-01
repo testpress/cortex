@@ -47,4 +47,12 @@ class ApiEndpoints {
   static const String createBookmarkFolder = '/api/v3/bookmarks/folders/';
   static const String bookmarks = '/api/v3/bookmarks/';
   static String deleteBookmark(String id) => '/api/v3/bookmarks/$id/';
+
+  // Helpdesk / Doubts
+  static const String helpdeskTopics = '/api/v2.5/helpdesk/topics/';
+  static const String helpdeskTickets = '/api/v3/helpdesk/';
+  static String helpdeskTicketDetail(String id) => '/api/v3/helpdesk/$id/';
+  static String helpdeskTicketFollowup(String id) => '/api/v3/helpdesk/$id/followup/';
+  static const String imageUploadV3 = '/api/v3/upload-image/';
 }
+

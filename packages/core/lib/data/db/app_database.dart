@@ -39,6 +39,7 @@ part 'app_database.g.dart';
     DownloadsTable,
     DoubtsTable,
     DoubtRepliesTable,
+    DoubtTopicsTable,
     BookmarkFoldersTable,
     BookmarkItemsTable,
   ],
@@ -47,12 +48,19 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 24;
+  int get schemaVersion => 25;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
       await m.createAll();
+    },
+    onUpgrade: (m, from, to) async {
+      // For beta development, recreate all tables instead of complex migrations
+      for (final table in allTables) {
+        await m.deleteTable(table.actualTableName);
+        await m.createTable(table);
+      }
     },
   );
 
@@ -367,11 +375,24 @@ class AppDatabase extends _$AppDatabase {
   Stream<List<DoubtRepliesTableData>> watchRepliesForDoubt(String doubtId) =>
       (select(doubtRepliesTable)
             ..where((t) => t.doubtId.equals(doubtId))
-            ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]))
+            ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
           .watch();
 
   Future<void> upsertDoubtReplies(List<DoubtRepliesTableCompanion> rows) =>
       batch((b) => b.insertAllOnConflictUpdate(doubtRepliesTable, rows));
+
+  Stream<List<DoubtTopicsTableData>> watchDoubtTopics({int? parentId}) {
+    final query = select(doubtTopicsTable);
+    if (parentId != null) {
+      query.where((t) => t.parentId.equals(parentId));
+    } else {
+      query.where((t) => t.parentId.isNull());
+    }
+    return query.watch();
+  }
+
+  Future<void> upsertDoubtTopics(List<DoubtTopicsTableCompanion> rows) =>
+      batch((b) => b.insertAllOnConflictUpdate(doubtTopicsTable, rows));
 }
 
 /// Opens the SQLite database from the app documents directory.

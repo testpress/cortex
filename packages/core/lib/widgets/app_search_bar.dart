@@ -1,6 +1,6 @@
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:flutter/material.dart'
-    show TextField, InputDecoration, InputBorder, Icon, Material, MaterialType;
+    show TextField, InputDecoration, InputBorder, Icon, Material, MaterialType, TextInputAction;
 import 'package:flutter/widgets.dart';
 import '../design/design_provider.dart';
 
@@ -9,12 +9,14 @@ class AppSearchBar extends StatelessWidget {
     super.key,
     required this.hintText,
     this.onChanged,
+    this.onSubmitted,
     this.controller,
     this.backgroundColor,
   });
 
   final String hintText;
   final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmitted;
   final TextEditingController? controller;
   final Color? backgroundColor;
 
@@ -39,6 +41,8 @@ class AppSearchBar extends StatelessWidget {
               child: TextField(
                 controller: controller,
                 onChanged: onChanged,
+                onSubmitted: onSubmitted,
+                textInputAction: TextInputAction.search,
                 style: design.typography.body.copyWith(
                   color: design.colors.textPrimary,
                 ),

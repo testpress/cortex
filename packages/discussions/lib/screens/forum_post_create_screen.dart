@@ -25,7 +25,7 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
   final FocusNode _focusNode = FocusNode();
   final List<String> _attachments = [];
   final ImagePicker _picker = ImagePicker();
-  
+
   bool _isSubmitting = false;
   int? _selectedCategoryId;
 
@@ -33,7 +33,7 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
   void initState() {
     super.initState();
     _quillController = quill.QuillController.basic();
-    
+
     // Refresh UI on changes to enable/disable submit button
     _titleController.addListener(_onInputChanged);
     _quillController.addListener(_onInputChanged);
@@ -57,7 +57,7 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
 
   Future<void> _pickImages() async {
     if (_attachments.length >= 3) return;
-    
+
     final images = await _picker.pickMultiImage();
     if (images.isNotEmpty) {
       setState(() {
@@ -72,11 +72,14 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
   }
 
   Future<void> _handleSubmit() async {
-    final categories = ref.read(globalForumCategoriesProvider).valueOrNull ??
+    final categories =
+        ref.read(globalForumCategoriesProvider).valueOrNull ??
         const <ForumCategoryDto>[];
-    final effectiveSelectedCategoryId = _selectedCategoryId ??
+    final effectiveSelectedCategoryId =
+        _selectedCategoryId ??
         (categories.isNotEmpty ? categories.first.id : null);
-    final isValid = _titleController.text.trim().isNotEmpty &&
+    final isValid =
+        _titleController.text.trim().isNotEmpty &&
         _hasDescription &&
         effectiveSelectedCategoryId != null;
 
@@ -84,8 +87,10 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
 
     setState(() => _isSubmitting = true);
 
-    final category = categories.firstWhere((c) => c.id == effectiveSelectedCategoryId);
-    
+    final category = categories.firstWhere(
+      (c) => c.id == effectiveSelectedCategoryId,
+    );
+
     final html = QuillEditorService().toHtml(_quillController.document);
 
     try {
@@ -97,19 +102,22 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
         courseId: widget.courseId,
         attachments: _attachments,
       );
-      
+
       final state = ref.read(createForumThreadProvider);
       if (state.hasError) {
         throw state.error!;
       }
-      
+
       if (mounted) {
         Navigator.of(context).pop();
       }
     } catch (e) {
       if (mounted) {
         setState(() => _isSubmitting = false);
-        AppToast.show(context, message: L10n.of(context).forumErrorFailedToCreatePost);
+        AppToast.show(
+          context,
+          message: L10n.of(context).forumErrorFailedToCreatePost,
+        );
       }
     }
   }
@@ -120,11 +128,14 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
     final l10n = L10n.of(context);
     final categoriesAsync = ref.watch(globalForumCategoriesProvider);
     final createPostState = ref.watch(createForumThreadProvider);
-    
-    final categories = categoriesAsync.valueOrNull ?? const <ForumCategoryDto>[];
-    final effectiveSelectedCategoryId = _selectedCategoryId ??
+
+    final categories =
+        categoriesAsync.valueOrNull ?? const <ForumCategoryDto>[];
+    final effectiveSelectedCategoryId =
+        _selectedCategoryId ??
         (categories.isNotEmpty ? categories.first.id : null);
-    final isValid = _titleController.text.trim().isNotEmpty &&
+    final isValid =
+        _titleController.text.trim().isNotEmpty &&
         _hasDescription &&
         effectiveSelectedCategoryId != null;
 
@@ -136,16 +147,17 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
             bottom: false,
             child: Column(
               children: [
-                ForumHeader(
-                  title: l10n.forumCreateNewPost,
-                ),
+                ForumHeader(title: l10n.forumCreateNewPost),
                 Expanded(
                   child: SingleChildScrollView(
                     padding: EdgeInsets.all(design.spacing.md),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        AppText.labelBold(l10n.forumPostSubjectLabel, color: design.colors.textPrimary),
+                        AppText.labelBold(
+                          l10n.forumPostSubjectLabel,
+                          color: design.colors.textPrimary,
+                        ),
                         SizedBox(height: design.spacing.xs),
                         AppTextField(
                           label: '', // Empty because we manual label above
@@ -161,7 +173,10 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
                         SizedBox(height: design.spacing.lg),
                         _buildCategoryPicker(design, categoriesAsync),
                         SizedBox(height: design.spacing.lg),
-                        AppText.labelBold(l10n.forumPostDescriptionLabel, color: design.colors.textPrimary),
+                        AppText.labelBold(
+                          l10n.forumPostDescriptionLabel,
+                          color: design.colors.textPrimary,
+                        ),
                         SizedBox(height: design.spacing.xs),
                         ForumEditorToolbar(
                           controller: _quillController,
@@ -203,34 +218,31 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
     AsyncValue<List<ForumCategoryDto>> categoriesAsync,
   ) {
     final l10n = L10n.of(context);
-    final categories = categoriesAsync.valueOrNull ?? const <ForumCategoryDto>[];
-    
+    final categories =
+        categoriesAsync.valueOrNull ?? const <ForumCategoryDto>[];
+
     // Resolve selection
-    final selectedCategoryId = _selectedCategoryId ?? 
+    final selectedCategoryId =
+        _selectedCategoryId ??
         (categories.isNotEmpty ? categories.first.id : null);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppText.labelBold(l10n.forumPostCategoryLabel, color: design.colors.textPrimary),
+        AppText.labelBold(
+          l10n.forumPostCategoryLabel,
+          color: design.colors.textPrimary,
+        ),
         SizedBox(height: design.spacing.xs),
         Wrap(
           spacing: 8,
           runSpacing: 8,
           children: categories.map((c) {
             final isSelected = selectedCategoryId == c.id;
-            return GestureDetector(
+            return AppChip(
+              label: c.name,
+              isSelected: isSelected,
               onTap: () => setState(() => _selectedCategoryId = c.id),
-              child: AnimatedContainer(
-                duration: design.motion.fast,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: isSelected ? design.colors.accent2 : design.colors.card,
-                  borderRadius: design.radius.pill,
-                  border: Border.all(color: isSelected ? design.colors.accent2 : design.colors.border),
-                ),
-                child: AppText.labelSmall(c.name, color: isSelected ? design.colors.textInverse : null),
-              ),
             );
           }).toList(),
         ),
@@ -254,9 +266,7 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
         design.spacing.md,
         design.spacing.md,
       ),
-      decoration: BoxDecoration(
-        color: design.colors.card,
-      ),
+      decoration: BoxDecoration(color: design.colors.card),
       child: Row(
         children: [
           Expanded(

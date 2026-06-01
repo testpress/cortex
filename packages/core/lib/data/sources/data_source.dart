@@ -162,10 +162,35 @@ abstract class DataSource {
   Future<PaginatedLoginActivityDto> getLoginActivity({int page = 1});
   
   /// Fetch personal doubts for the current user.
-  Future<List<DoubtDto>> getDoubts();
+  Future<PaginatedResponseDto<DoubtDto>> getDoubts({int page = 1, String? searchQuery});
 
-  /// Fetch replies for a specific doubt.
-  Future<List<DoubtReplyDto>> getDoubtReplies(String doubtId);
+  /// Fetch the detail for a specific doubt, including its replies.
+  /// Returns both the [DoubtDto] (with fresh status/content) and its [DoubtReplyDto] list.
+  Future<({DoubtDto doubt, List<DoubtReplyDto> replies})> getDoubtReplies(String doubtId);
+
+  /// Fetch dynamic doubt categories/topics hierarchy.
+  Future<List<DoubtTopicDto>> getDoubtTopics();
+
+  /// Create a new doubt on the server.
+  Future<DoubtDto> createDoubt({
+    required String title,
+    required String description,
+    int? topicId,
+    int? chapterContentId,
+    int? questionId,
+    int? queryType,
+  });
+
+  /// Post a reply comment to a doubt, optionally resolving or closing it.
+  Future<DoubtReplyDto> postDoubtReply({
+    required String doubtId,
+    String? comment,
+    bool? shouldResolve,
+    bool? shouldClose,
+  });
+
+  /// Upload an image specifically for doubts attachments storage.
+  Future<String> uploadDoubtImage(File file, {int? ticketId});
 
   /// Mark a lesson as completed on the server.
   Future<void> markLessonCompleted(String lessonId);

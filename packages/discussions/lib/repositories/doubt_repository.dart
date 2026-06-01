@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:core/data/data.dart';
 import 'package:drift/drift.dart';
 
@@ -16,28 +17,42 @@ class DoubtRepository {
 
   /// Watch personal doubts for the current user.
   Stream<List<DoubtDto>> watchDoubts() {
-    return _db.select(_db.doubtsTable).watch().map((rows) {
-      return rows.map((row) => _mapToDto(row)).toList();
-    });
+    return (_db.select(_db.doubtsTable)
+          ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
+        .watch()
+        .map((rows) => rows.map((row) => _mapToDto(row)).toList());
   }
 
-  /// Sync doubts from the remote source.
-  Future<void> syncDoubts() async {
-    final results = await _dataSource.getDoubts();
+  /// Sync doubts from the remote source for a given page.
+  Future<PaginatedResponseDto<DoubtDto>> syncDoubts({int page = 1, String? searchQuery}) async {
+    final response = await _dataSource.getDoubts(page: page, searchQuery: searchQuery);
     await _db.batch((b) {
       b.insertAllOnConflictUpdate(
         _db.doubtsTable,
-        results.map((dto) => _mapToCompanion(dto)).toList(),
+        response.results.map((dto) => _mapToCompanion(dto)).toList(),
       );
     });
+    return response;
   }
 
-  /// Create a new doubt locally.
-  Future<void> createDoubt(DoubtDto doubt) async {
-    // Mock network delay
-    await Future.delayed(const Duration(seconds: 1));
-    
-    await _db.into(_db.doubtsTable).insert(_mapToCompanion(doubt));
+  /// Create a new doubt on the server and cache it locally.
+  Future<void> createDoubt({
+    required String title,
+    required String description,
+    int? topicId,
+    int? chapterContentId,
+    int? questionId,
+    DoubtQueryType? queryType,
+  }) async {
+    final response = await _dataSource.createDoubt(
+      title: title,
+      description: description,
+      topicId: topicId,
+      chapterContentId: chapterContentId,
+      questionId: questionId,
+      queryType: queryType == DoubtQueryType.ai ? 2 : 1,
+    );
+    await _db.into(_db.doubtsTable).insertOnConflictUpdate(_mapToCompanion(response));
   }
 
   /// Watch replies for a specific doubt thread.
@@ -48,23 +63,39 @@ class DoubtRepository {
   }
 
   /// Sync replies for a specific doubt thread.
+  ///
+  /// Also upserts the doubt itself from the detail response using a smart merge:
+  /// fields like [status], [title], and [content] are updated, but [replyCount]
+  /// (which is only available from the list endpoint) is preserved.
   Future<void> syncReplies(String doubtId) async {
-    final results = await _dataSource.getDoubtReplies(doubtId);
+    final result = await _dataSource.getDoubtReplies(doubtId);
+
+    // Smart merge: update mutable fields but preserve replyCount from the list endpoint.
+    final companion = _mapToCompanion(result.doubt);
+    await _db.into(_db.doubtsTable).insert(
+      companion,
+      onConflict: DoUpdate(
+        (old) => companion.copyWith(
+          replyCount: const Value.absent(),
+          createdAt: const Value.absent(),
+        ),
+        target: [_db.doubtsTable.id],
+      ),
+    );
+
     await _db.upsertDoubtReplies(
-      results.map((dto) => _mapReplyToCompanion(dto)).toList(),
+      result.replies.map((dto) => _mapReplyToCompanion(dto)).toList(),
     );
   }
 
   /// Fetch replies for a specific doubt thread.
   Future<List<DoubtReplyDto>> getDoubtReplies(String doubtId) async {
-    // Return cached data if available, while syncing in the background
     final cached = await (_db.select(_db.doubtRepliesTable)
           ..where((t) => t.doubtId.equals(doubtId))
-          ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]))
+          ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
         .get();
 
     if (cached.isNotEmpty) {
-      // Background sync
       syncReplies(doubtId).ignore();
       return cached.map((row) => _mapReplyToDto(row)).toList();
     }
@@ -72,6 +103,83 @@ class DoubtRepository {
     await syncReplies(doubtId);
     return watchReplies(doubtId).first;
   }
+
+  /// Post a new reply comment and update doubt status locally.
+  Future<void> postDoubtReply({
+    required String doubtId,
+    String? comment,
+    bool? shouldResolve,
+    bool? shouldClose,
+  }) async {
+    final response = await _dataSource.postDoubtReply(
+      doubtId: doubtId,
+      comment: comment,
+      shouldResolve: shouldResolve,
+      shouldClose: shouldClose,
+    );
+
+    if (response.id != 'null') {
+      await _db.into(_db.doubtRepliesTable).insertOnConflictUpdate(_mapReplyToCompanion(response));
+    }
+
+    // Update local doubt status/replyCount
+    final existing = await (_db.select(_db.doubtsTable)..where((t) => t.id.equals(doubtId))).getSingleOrNull();
+    if (existing != null) {
+      var updatedStatus = existing.status;
+      if (shouldResolve == true) {
+        updatedStatus = DoubtStatus.resolved.name;
+      } else if (shouldClose == true) {
+        updatedStatus = DoubtStatus.closed.name;
+      }
+      await (_db.update(_db.doubtsTable)..where((t) => t.id.equals(doubtId))).write(
+        DoubtsTableCompanion(
+          status: Value(updatedStatus),
+          replyCount: Value(existing.replyCount != null ? existing.replyCount! + (comment != null ? 1 : 0) : null),
+        ),
+      );
+    }
+
+    // Refresh the single doubt thread to pick up backend state changes (e.g., reverting to Active)
+    syncReplies(doubtId).ignore();
+  }
+
+  /// Watch local topics cache for a parentId.
+  Stream<List<DoubtTopicDto>> watchTopics({int? parentId}) {
+    final query = _db.select(_db.doubtTopicsTable);
+    if (parentId != null) {
+      query.where((t) => t.parentId.equals(parentId));
+    } else {
+      query.where((t) => t.parentId.isNull());
+    }
+    return query.watch().map((rows) {
+      return rows.map((row) => DoubtTopicDto(
+        id: row.id,
+        title: row.title,
+        parentId: row.parentId,
+        hasChildren: row.hasChildren,
+      )).toList();
+    });
+  }
+
+  /// Fetch and cache doubt topics (categories).
+  Future<void> syncTopics({int? parentId}) async {
+    final results = await _dataSource.getDoubtTopics();
+    await _db.upsertDoubtTopics(
+      results.map((dto) => DoubtTopicsTableCompanion(
+        id: Value(dto.id),
+        title: Value(dto.title),
+        parentId: Value(dto.parentId),
+        hasChildren: Value(dto.hasChildren),
+      )).toList(),
+    );
+  }
+
+  /// Upload an attachment image file for doubts.
+  Future<String> uploadDoubtImage(String path, {int? ticketId}) async {
+    return _dataSource.uploadDoubtImage(File(path), ticketId: ticketId);
+  }
+
+  // --- Mappers ---
 
   DoubtReplyDto _mapReplyToDto(DoubtRepliesTableData row) {
     return DoubtReplyDto(
@@ -85,6 +193,7 @@ class DoubtRepository {
           ? List<String>.from(jsonDecode(row.attachments!))
           : [],
       createdAt: row.createdAt,
+      createdHumanized: row.createdHumanized,
     );
   }
 
@@ -98,14 +207,15 @@ class DoubtRepository {
       isMentor: Value(dto.isMentor),
       attachments: Value(jsonEncode(dto.attachmentUrls)),
       createdAt: Value(dto.createdAt),
+      createdHumanized: Value(dto.createdHumanized),
     );
   }
 
   DoubtDto _mapToDto(DoubtsTableData row) {
     return DoubtDto(
       id: row.id,
-      courseId: row.courseId,
-      courseName: row.courseName,
+      topicId: row.topicId,
+      topicName: row.topicName,
       lessonId: row.lessonId,
       title: row.title,
       content: row.content,
@@ -120,14 +230,15 @@ class DoubtRepository {
           ? List<String>.from(jsonDecode(row.attachments!))
           : [],
       createdAt: row.createdAt,
+      createdHumanized: row.createdHumanized,
     );
   }
 
   DoubtsTableCompanion _mapToCompanion(DoubtDto dto) {
     return DoubtsTableCompanion(
       id: Value(dto.id),
-      courseId: Value(dto.courseId),
-      courseName: Value(dto.courseName),
+      topicId: Value(dto.topicId),
+      topicName: Value(dto.topicName),
       lessonId: Value(dto.lessonId),
       title: Value(dto.title),
       content: Value(dto.content),
@@ -137,6 +248,7 @@ class DoubtRepository {
       status: Value(dto.status.name),
       attachments: Value(jsonEncode(dto.attachmentUrls)),
       createdAt: Value(dto.createdAt),
+      createdHumanized: Value(dto.createdHumanized),
     );
   }
 }

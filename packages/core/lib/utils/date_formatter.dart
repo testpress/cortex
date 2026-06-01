@@ -7,10 +7,10 @@ class DateFormatter {
 
     if (difference.inDays >= 365) {
       final years = (difference.inDays / 365).floor();
-      return '$years ${years == 1 ? 'yr' : 'yrs'} ago';
+      return '$years ${years == 1 ? 'year' : 'years'} ago';
     } else if (difference.inDays >= 30) {
       final months = (difference.inDays / 30).floor();
-      return '$months ${months == 1 ? 'mo' : 'mos'} ago';
+      return '$months ${months == 1 ? 'month' : 'months'} ago';
     } else if (difference.inDays >= 7) {
       final weeks = (difference.inDays / 7).floor();
       return '$weeks ${weeks == 1 ? 'week' : 'weeks'} ago';
