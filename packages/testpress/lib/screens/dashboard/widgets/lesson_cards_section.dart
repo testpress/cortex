@@ -11,7 +11,7 @@ const _skeletonLesson = DashboardContentDto(
   contentType: DashboardContentType.video,
 );
 
-class LessonCardWidget extends StatelessWidget {
+class LessonCardWidget extends StatefulWidget {
   final DashboardContentDto lesson;
   final bool isCompleted;
 
@@ -22,8 +22,19 @@ class LessonCardWidget extends StatelessWidget {
   });
 
   @override
+  State<LessonCardWidget> createState() => _LessonCardWidgetState();
+}
+
+class _LessonCardWidgetState extends State<LessonCardWidget> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     final design = Design.of(context);
+    final lesson = widget.lesson;
+    final isCompleted = widget.isCompleted;
     final cardBgColor =
         design.isDark ? const Color(0xFF202023) : Colors.white;
     final textPrimary = design.colors.textPrimary;
@@ -31,7 +42,7 @@ class LessonCardWidget extends StatelessWidget {
     final textMuted = design.colors.textSecondary.withValues(alpha: 0.7);
 
     return Opacity(
-      opacity: isCompleted ? 0.6 : 1.0,
+      opacity: 1.0,
       child: Container(
         decoration: BoxDecoration(
           color: cardBgColor,
@@ -58,6 +69,9 @@ class LessonCardWidget extends StatelessWidget {
                     CachedNetworkImage(
                       imageUrl: lesson.coverImage!,
                       fit: BoxFit.cover,
+                      fadeInDuration: Duration.zero,
+                      filterQuality: FilterQuality.high,
+                      memCacheWidth: 400,
                       errorWidget: (context, url, error) => Container(),
                     )
                   else

@@ -52,6 +52,8 @@ class _AppCarouselState extends State<AppCarousel> {
           height: widget.height,
           child: PageView.builder(
             controller: _pageController,
+            physics: const BouncingScrollPhysics(),
+            pageSnapping: false,
             itemCount: widget.itemCount,
             padEnds: widget.padEnds,
             onPageChanged: widget.onPageChanged,
