@@ -32,7 +32,7 @@ The cortex app drawer features an "Ask Mentor" item which navigates to private d
 ### 3. Detail Lock States and Resolution Banners
 *   **Choice**: Read-only status checks on doubt details.
 *   *   If `status == "Closed"`, hide/disable the message entry field and display a locked thread message.
-*   *   If `status == "Resolved"`, display a resolution banner. Any sent reply will revert the local/remote state back to `"Active"`.
+*   *   If `status == "Resolved"`, display a resolution banner. Any sent reply will automatically be handled by the backend to revert the state back to `"Active"`, without manual state manipulation from the app.
 *   **Rationale**: Keeps the UI synchronized with backend validation rules and prevents unnecessary network exceptions (like 403 or 400).
 
 ### 4. Ask AI / Ask Mentor Selection and Confirmed Flow

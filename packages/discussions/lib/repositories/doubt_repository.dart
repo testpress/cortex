@@ -130,8 +130,6 @@ class DoubtRepository {
         updatedStatus = DoubtStatus.resolved.name;
       } else if (shouldClose == true) {
         updatedStatus = DoubtStatus.closed.name;
-      } else if (existing.status == DoubtStatus.resolved.name) {
-        updatedStatus = DoubtStatus.active.name;
       }
       await (_db.update(_db.doubtsTable)..where((t) => t.id.equals(doubtId))).write(
         DoubtsTableCompanion(
@@ -140,6 +138,9 @@ class DoubtRepository {
         ),
       );
     }
+
+    // Refresh the single doubt thread to pick up backend state changes (e.g., reverting to Active)
+    syncReplies(doubtId).ignore();
   }
 
   /// Watch local topics cache for a parentId.
