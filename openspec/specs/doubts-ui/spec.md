@@ -4,14 +4,13 @@
 TBD - created by archiving change lms-doubts-list. Update Purpose after archive.
 ## Requirements
 ### Requirement: UI-only Search Bar
-The Doubts List SHALL include a top-level search bar for visual parity with other modules.
-- **Scope**: Functionality is intentionally excluded from the current scope.
-- **Interaction**: The search bar acts as a UI placeholder; it SHALL NOT trigger filtering or data updates.
+The Doubts List SHALL include a search bar that queries the backend to filter doubts by keyword.
+- **Interaction**: Typing in the search bar and submitting SHALL trigger a fetch from the backend `GET /api/v3/helpdesk/?search=<query>` and update the displayed doubts.
 
-#### Scenario: Visual Search Bar
+#### Scenario: Searching doubts
 - **GIVEN** the user is on the Doubts List screen
-- **WHEN** they see the top area
-- **THEN** a search bar SHALL be visible but typing in it SHALL NOT affect the list
+- **WHEN** they enter a query in the search bar
+- **THEN** the list of doubts matching the search query is fetched and displayed
 
 ### Requirement: Status Indication
 The system SHALL display a high-visibility "Unanswered" badge for doubts where the last activity was a student post or where no mentor has responded.

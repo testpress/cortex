@@ -4,11 +4,13 @@
 TBD - created by archiving change lms-doubt-detail. Update Purpose after archive.
 ## Requirements
 ### Requirement: Persistent Reply Composer
-The system SHALL display a persistent reply input field at the bottom of the `DoubtDetailScreen`.
+The system SHALL anchor a reply composer at the bottom of the doubt detail thread if the status is not `"Closed"`.
+- **Closed Status**: If the doubt's status is `"Closed"`, the composer SHALL be hidden or disabled, displaying a read-only locked message instead.
 
-#### Scenario: Accessing reply composer
-- **WHEN** the student scrolls through the doubt thread
-- **THEN** the reply input field remains anchored at the bottom of the screen.
+#### Scenario: Replying to a closed doubt
+- **GIVEN** the student opens a doubt with status "Closed"
+- **WHEN** they look at the bottom of the screen
+- **THEN** the reply input field is disabled or hidden and a locked thread notification is shown
 
 ### Requirement: Rich-Text Support in Replies
 The system SHALL allow students to use rich-text formatting (bold, italic, lists) within their follow-up replies.
@@ -25,9 +27,20 @@ The system SHALL allow students to attach up to 5 files (Images/PDFs) to a follo
 - **THEN** the PDF is added to the preview strip with a file icon.
 
 ### Requirement: Reply Submission and Feedback
-The system SHALL allow the student to post their reply and provide immediate feedback (loading state on button) during the submission.
+The system SHALL post follow-up comments to the backend `/api/v3/helpdesk/<pk>/followup/` endpoint.
+- **Status Change**: Posting a reply to a doubt that is currently `"Resolved"` SHALL automatically revert the doubt's local and remote status back to `"Active"`.
 
-#### Scenario: Posting a reply successfully
-- **WHEN** the student taps "Post Reply" after entering text
-- **THEN** the button shows a loading indicator and the reply appears in the thread after a short delay.
+#### Scenario: Replying to a resolved doubt
+- **GIVEN** a doubt's status is "Resolved"
+- **WHEN** the student posts a reply
+- **THEN** the comment is saved and the status transitions to "Active"
+
+### Requirement: Attachment File Upload in Reply
+The reply composer SHALL support uploading image attachments to `/api/v3/upload-image/` with `uploaded_for: "doubts"` and `uploaded_for_object_id` set to the ticket's ID.
+- **Embedding**: On successful upload, the returned URL SHALL be formatted as an HTML `<img>` tag and appended to the reply body.
+
+#### Scenario: Attaching image to reply
+- **GIVEN** the student adds an image to a reply
+- **WHEN** the upload succeeds
+- **THEN** the image tag is inserted into the reply text body
 
