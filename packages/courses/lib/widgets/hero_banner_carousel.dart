@@ -126,13 +126,28 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
                   )
                 : Stack(
                     children: [
-                      PageView.builder(
-                        controller: _controller,
-                        onPageChanged: (index) {
-                          setState(() {
-                            _currentIndex = index;
-                          });
+                      Listener(
+                        onPointerDown: (_) => _timer?.cancel(),
+                        onPointerUp: (_) {
+                          if (widget.banners.length > 1) {
+                            _timer?.cancel();
+                            _startTimer();
+                          }
                         },
+                        onPointerCancel: (_) {
+                          if (widget.banners.length > 1) {
+                            _timer?.cancel();
+                            _startTimer();
+                          }
+                        },
+                        child: PageView.builder(
+                          controller: _controller,
+                          physics: const BouncingScrollPhysics(),
+                          onPageChanged: (index) {
+                            setState(() {
+                              _currentIndex = index;
+                            });
+                          },
                         itemCount: widget.banners.length,
                         itemBuilder: (context, index) {
                           final banner = widget.banners[index];
@@ -145,6 +160,9 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
                                     ? CachedNetworkImage(
                                         imageUrl: banner.imageUrl,
                                         fit: BoxFit.cover,
+                                        fadeInDuration: Duration.zero,
+                                        filterQuality: FilterQuality.high,
+                                        memCacheWidth: 800,
                                         alignment: Alignment.topCenter,
                                         placeholder: (context, url) => Container(
                                           color: Color.lerp(
@@ -182,6 +200,7 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
                             ),
                           );
                         },
+                      ),
                       ),
                       if (widget.banners.length > 1)
                         Positioned(
