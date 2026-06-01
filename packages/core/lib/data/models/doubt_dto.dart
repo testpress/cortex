@@ -176,7 +176,7 @@ class DoubtReplyDto {
     final authorAvatar = userMap?['photo'] as String? ?? userMap?['medium_image'] as String?;
     // A follow-up is a mentor reply if the author differs from the student who raised the doubt.
     final authorId = userMap?['id']?.toString();
-    final isMentor = reportedById != null ? authorId != reportedById : true;
+    final isMentor = reportedById != null ? authorId != reportedById : false;
 
     return DoubtReplyDto(
       id: json['id'].toString(),

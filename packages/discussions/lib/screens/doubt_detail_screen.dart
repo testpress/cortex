@@ -525,6 +525,7 @@ class _DoubtReplyComposerState extends ConsumerState<_DoubtReplyComposer> {
   final _focusNode = FocusNode();
   bool _showToolbar = true;
   bool _isSubmitting = false;
+  final List<String> _attachments = [];
 
   @override
   void dispose() {
@@ -571,12 +572,18 @@ class _DoubtReplyComposerState extends ConsumerState<_DoubtReplyComposer> {
         top: false,
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (_attachments.isNotEmpty)
+              ForumAttachmentPreview(
+                imageUrls: _attachments,
+                onRemove: (idx) => setState(() => _attachments.removeAt(idx)),
+              ),
             if (_showToolbar) ...[
               ForumEditorToolbar(
                 controller: _controller,
                 onImagePick: _pickAttachments,
-                isImageLimitReached: false,
+                isImageLimitReached: _attachments.length >= 3,
               ),
               const SizedBox(height: 8),
             ],
@@ -632,51 +639,47 @@ class _DoubtReplyComposerState extends ConsumerState<_DoubtReplyComposer> {
   }
 
   Future<void> _pickAttachments() async {
+    if (_attachments.length >= 3) return;
+
     final result = await FilePicker.pickFiles(
-      allowMultiple: false,
+      allowMultiple: true,
       type: FileType.custom,
       allowedExtensions: ['jpg', 'jpeg', 'png'],
     );
 
     if (result != null && result.paths.isNotEmpty) {
-      final path = result.paths.first;
-      if (path == null) return;
-
-      setState(() => _isSubmitting = true);
-
-      try {
-        final repo = await ref.read(doubtRepositoryProvider.future);
-        final url = await repo.uploadDoubtImage(path, ticketId: int.tryParse(widget.doubtId));
-
-        // Insert image embed block into Quill editor
-        final index = _controller.selection.baseOffset;
-        _controller.document.insert(index, quill.BlockEmbed.image(url));
-        _controller.document.insert(index + 1, '\n');
-      } catch (e) {
-        debugPrint('Attachment upload failed: $e');
-      } finally {
-        if (mounted) {
-          setState(() => _isSubmitting = false);
-        }
-      }
+      setState(() {
+        final remaining = 3 - _attachments.length;
+        _attachments.addAll(result.paths.whereType<String>().take(remaining));
+      });
     }
   }
 
   Future<void> _handleSubmit() async {
     final text = _controller.document.toPlainText().trim();
-    if (text.isEmpty) return;
+    if (text.isEmpty && _attachments.isEmpty) return;
 
     setState(() => _isSubmitting = true);
 
     try {
-      final commentHtml = const QuillEditorService().toHtml(_controller.document);
+      String finalHtml = const QuillEditorService().toHtml(_controller.document);
+      final repo = await ref.read(doubtRepositoryProvider.future);
+      
+      if (_attachments.isNotEmpty) {
+        final uploadFutures = _attachments.map((path) => repo.uploadDoubtImage(path, ticketId: int.tryParse(widget.doubtId)));
+        final urls = await Future.wait(uploadFutures);
+        for (final url in urls) {
+          finalHtml += '<br><img src="$url" />';
+        }
+      }
       
       await ref.read(postDoubtReplyNotifierProvider.notifier).submit(
         doubtId: widget.doubtId,
-        comment: commentHtml,
+        comment: finalHtml,
       );
 
       _controller.clear();
+      _attachments.clear();
       _focusNode.unfocus();
     } catch (e) {
       debugPrint('Error posting reply: $e');

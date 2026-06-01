@@ -24,7 +24,8 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
 
-  bool _isUploadingAttachment = false;
+  final List<String> _attachments = [];
+  final List<String> _fileAttachments = [];
   DoubtTopicDto? _selectedTopic;
   bool _isTopicNotKnown = false;
   bool _isSubmitSheetOpen = false;
@@ -89,33 +90,25 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                         const SizedBox(height: 8),
                         ForumEditorToolbar(
                           controller: _quillController,
-                          onImagePick: _pickAndEmbedAttachment,
-                          isImageLimitReached: false,
+                          onImagePick: _pickAttachments,
+                          isImageLimitReached: _attachments.length >= 3,
                         ),
                         const SizedBox(height: 4),
-                        Stack(
-                          children: [
-                            ForumEditorField(
-                              controller: _quillController,
-                              scrollController: _scrollController,
-                              focusNode: _focusNode,
-                              placeholder: l10n.doubtsFormDescriptionLabel,
-                              minHeight: 160,
-                              maxHeight: 240,
-                            ),
-                            if (_isUploadingAttachment)
-                              Positioned.fill(
-                                child: Container(
-                                  color: design.colors.card.withValues(
-                                    alpha: 0.7,
-                                  ),
-                                  child: const Center(
-                                    child: AppLoadingIndicator(),
-                                  ),
-                                ),
-                              ),
-                          ],
+                        ForumEditorField(
+                          controller: _quillController,
+                          scrollController: _scrollController,
+                          focusNode: _focusNode,
+                          placeholder: l10n.doubtsFormDescriptionLabel,
+                          minHeight: 160,
+                          maxHeight: 240,
                         ),
+                        if (_attachments.isNotEmpty) ...[
+                          SizedBox(height: design.spacing.sm),
+                          ForumAttachmentPreview(
+                            imageUrls: _attachments,
+                            onRemove: (idx) => setState(() => _attachments.removeAt(idx)),
+                          ),
+                        ],
                         const SizedBox(height: 24),
                         _sectionLabel(l10n.doubtsFormCategoryLabel),
                         const SizedBox(height: 8),
@@ -169,6 +162,43 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                         _sectionLabel(l10n.doubtsFormAttachmentsLabel),
                         const SizedBox(height: 8),
                         _uploadButton(l10n.doubtsFormUploadAction),
+                        if (_fileAttachments.isNotEmpty) ...[
+                          const SizedBox(height: 12),
+                          ..._fileAttachments.asMap().entries.map((e) {
+                            final idx = e.key;
+                            final path = e.value;
+                            final name = path.split('/').last;
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: design.colors.surfaceVariant,
+                                  borderRadius: BorderRadius.circular(design.radius.md),
+                                  border: Border.all(color: design.colors.divider),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(LucideIcons.fileText, size: 16, color: design.colors.textSecondary),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: AppText.bodySmall(
+                                        name,
+                                        color: design.colors.textPrimary,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    AppFocusable(
+                                      onTap: () => setState(() => _fileAttachments.removeAt(idx)),
+                                      child: Icon(LucideIcons.x, size: 16, color: design.colors.textTertiary),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                        ],
                         const SizedBox(height: 32),
                       ],
                     ),
@@ -242,36 +272,31 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
 
   Widget _uploadButton(String label) {
     final design = Design.of(context);
+    final isLimitReached = _fileAttachments.length >= 3;
     return AppFocusable(
-      onTap: _isUploadingAttachment ? null : _pickAndEmbedAttachment,
+      onTap: isLimitReached ? null : _pickFiles,
       borderRadius: BorderRadius.circular(design.radius.lg),
-      child: Container(
-        padding: EdgeInsets.all(design.spacing.md),
-        decoration: BoxDecoration(
-          color: design.colors.surfaceVariant,
-          borderRadius: BorderRadius.circular(design.radius.lg),
-          border: Border.all(color: design.colors.divider),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (_isUploadingAttachment) ...[
-              const SizedBox(
-                width: 20,
-                height: 20,
-                child: AppLoadingIndicator(),
-              ),
-              const SizedBox(width: 8),
-            ] else ...[
+      child: Opacity(
+        opacity: isLimitReached ? 0.5 : 1.0,
+        child: Container(
+          padding: EdgeInsets.all(design.spacing.md),
+          decoration: BoxDecoration(
+            color: design.colors.surfaceVariant,
+            borderRadius: BorderRadius.circular(design.radius.lg),
+            border: Border.all(color: design.colors.divider),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
               Icon(
                 LucideIcons.upload,
                 size: 20,
                 color: design.colors.textSecondary,
               ),
               const SizedBox(width: 8),
+              AppText.bodySmall(isLimitReached ? 'Limit Reached' : label),
             ],
-            AppText.bodySmall(_isUploadingAttachment ? 'Uploading...' : label),
-          ],
+          ),
         ),
       ),
     );
@@ -282,7 +307,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
         _titleController.text.trim().isNotEmpty &&
         _quillController.document.toPlainText().trim().isNotEmpty &&
         (_selectedTopic != null || _isTopicNotKnown);
-    final isEnabled = canSubmit && !_isUploadingAttachment;
+    final isEnabled = canSubmit;
 
     return Container(
       padding: EdgeInsets.fromLTRB(
@@ -339,34 +364,37 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
 
   // --- Logic ---
 
-  Future<void> _pickAndEmbedAttachment() async {
+  Future<void> _pickAttachments() async {
+    if (_attachments.length >= 3) return;
+
     final result = await FilePicker.pickFiles(
-      allowMultiple: false,
+      allowMultiple: true,
       type: FileType.custom,
       allowedExtensions: ['jpg', 'jpeg', 'png'],
     );
 
     if (result != null && result.paths.isNotEmpty) {
-      final path = result.paths.first;
-      if (path == null) return;
+      setState(() {
+        final remaining = 3 - _attachments.length;
+        _attachments.addAll(result.paths.whereType<String>().take(remaining));
+      });
+    }
+  }
 
-      setState(() => _isUploadingAttachment = true);
+  Future<void> _pickFiles() async {
+    if (_fileAttachments.length >= 3) return;
 
-      try {
-        final repo = await ref.read(doubtRepositoryProvider.future);
-        final url = await repo.uploadDoubtImage(path);
+    final result = await FilePicker.pickFiles(
+      allowMultiple: true,
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'doc', 'docx', 'txt'],
+    );
 
-        // Insert image embed block into Quill editor
-        final index = _quillController.selection.baseOffset;
-        _quillController.document.insert(index, quill.BlockEmbed.image(url));
-        _quillController.document.insert(index + 1, '\n');
-      } catch (e) {
-        debugPrint('Attachment upload failed: $e');
-      } finally {
-        if (mounted) {
-          setState(() => _isUploadingAttachment = false);
-        }
-      }
+    if (result != null && result.paths.isNotEmpty) {
+      setState(() {
+        final remaining = 3 - _fileAttachments.length;
+        _fileAttachments.addAll(result.paths.whereType<String>().take(remaining));
+      });
     }
   }
 
@@ -391,9 +419,30 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
 
     ref.read(doubtRepositoryProvider.future).then((repo) async {
       try {
+        String finalHtml = descriptionHtml;
+        
+        if (_attachments.isNotEmpty) {
+          final uploadFutures = _attachments.map((path) => repo.uploadDoubtImage(path));
+          final urls = await Future.wait(uploadFutures);
+          for (final url in urls) {
+            finalHtml += '<br><img src="$url" />';
+          }
+        }
+
+        if (_fileAttachments.isNotEmpty) {
+          final uploadFutures = _fileAttachments.map((path) => repo.uploadDoubtImage(path));
+          final urls = await Future.wait(uploadFutures);
+          for (var i = 0; i < urls.length; i++) {
+            final url = urls[i];
+            final localPath = _fileAttachments[i];
+            final name = localPath.split('/').last;
+            finalHtml += '<br><a href="$url" target="_blank" style="display:inline-flex;align-items:center;padding:8px 12px;background:#f3f4f6;border-radius:8px;text-decoration:none;color:#374151;">📎 $name</a>';
+          }
+        }
+        
         await repo.createDoubt(
           title: title,
-          description: descriptionHtml,
+          description: finalHtml,
           topicId: topicId,
           chapterContentId: chapterContentId,
           questionId: questionId,
