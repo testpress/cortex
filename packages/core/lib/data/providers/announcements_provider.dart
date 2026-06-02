@@ -9,12 +9,16 @@ part 'announcements_provider.g.dart';
 class Announcements extends _$Announcements {
   PaginationState _paginationState = const PaginationState();
   final _paginationService = const PaginationService();
+  // Tracks the in-flight page 1 fetch so loadMore() can wait for it
+  // before reading _paginationState, preventing a race where nextPage=1.
+  Future<void>? _initialFetch;
 
   @override
   Stream<List<PostDto>> build() async* {
     _paginationState = const PaginationState();
-    // Fire and forget fetch for page 1 to populate DB
-    _fetchPage(1);
+    // Fire and forget fetch for page 1 to populate DB,
+    // but hold a reference so loadMore() can await it.
+    _initialFetch = _fetchPage(1);
 
     // Watch the database for reactive UI updates
     final repository = await ref.watch(postsRepositoryProvider.future);
@@ -32,14 +36,20 @@ class Announcements extends _$Announcements {
   }
 
   Future<void> loadMore() async {
+    // Wait for page 1 to finish so _paginationState.nextPage is correct.
+    await _initialFetch;
+
     if (!_paginationState.hasMore) return;
     if (ref.read(announcementsFetchingPageProvider)) return;
-    
+
     ref.read(announcementsFetchingPageProvider.notifier).setFetching(true);
     try {
       // We don't need to manually update state since it's a stream watching the DB.
       // Fetching the page inserts it into the DB, triggering a stream update automatically!
       await _fetchPage(_paginationState.nextPage);
+    } catch (e, stack) {
+      // Rethrow so the UI layer (scroll listener) can show a toast to the user.
+      Error.throwWithStackTrace(e, stack);
     } finally {
       ref.read(announcementsFetchingPageProvider.notifier).setFetching(false);
     }
@@ -47,7 +57,8 @@ class Announcements extends _$Announcements {
 
   Future<void> refresh() async {
     _paginationState = const PaginationState();
-    await _fetchPage(1);
+    _initialFetch = _fetchPage(1);
+    await _initialFetch;
   }
 }
 

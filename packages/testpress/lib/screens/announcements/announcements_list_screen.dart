@@ -30,10 +30,16 @@ class _AnnouncementsListScreenState extends ConsumerState<AnnouncementsListScree
     super.dispose();
   }
 
-  void _onScroll() {
+  Future<void> _onScroll() async {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
       if (!ref.read(announcementsFetchingPageProvider)) {
-        ref.read(announcementsProvider.notifier).loadMore();
+        try {
+          await ref.read(announcementsProvider.notifier).loadMore();
+        } catch (_) {
+          if (mounted) {
+            AppToast.show(context, message: L10n.of(context).errorGenericMessage);
+          }
+        }
       }
     }
   }
