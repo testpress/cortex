@@ -1908,6 +1908,17 @@ class $LessonsTableTable extends LessonsTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _examMetadataJsonMeta = const VerificationMeta(
+    'examMetadataJson',
+  );
+  @override
+  late final GeneratedColumn<String> examMetadataJson = GeneratedColumn<String>(
+    'exam_metadata_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _enableTranscriptMeta = const VerificationMeta(
     'enableTranscript',
   );
@@ -1996,6 +2007,7 @@ class $LessonsTableTable extends LessonsTable
     attemptsUrl,
     slug,
     description,
+    examMetadataJson,
     enableTranscript,
     videoSubtitleUrl,
     isAiEnabled,
@@ -2283,6 +2295,15 @@ class $LessonsTableTable extends LessonsTable
         ),
       );
     }
+    if (data.containsKey('exam_metadata_json')) {
+      context.handle(
+        _examMetadataJsonMeta,
+        examMetadataJson.isAcceptableOrUnknown(
+          data['exam_metadata_json']!,
+          _examMetadataJsonMeta,
+        ),
+      );
+    }
     if (data.containsKey('enable_transcript')) {
       context.handle(
         _enableTranscriptMeta,
@@ -2464,6 +2485,10 @@ class $LessonsTableTable extends LessonsTable
         DriftSqlType.string,
         data['${effectivePrefix}description'],
       ),
+      examMetadataJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}exam_metadata_json'],
+      ),
       enableTranscript: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}enable_transcript'],
@@ -2529,6 +2554,7 @@ class LessonsTableData extends DataClass
   final String? attemptsUrl;
   final String? slug;
   final String? description;
+  final String? examMetadataJson;
   final bool enableTranscript;
   final String? videoSubtitleUrl;
   final bool isAiEnabled;
@@ -2568,6 +2594,7 @@ class LessonsTableData extends DataClass
     this.attemptsUrl,
     this.slug,
     this.description,
+    this.examMetadataJson,
     required this.enableTranscript,
     this.videoSubtitleUrl,
     required this.isAiEnabled,
@@ -2649,6 +2676,9 @@ class LessonsTableData extends DataClass
     }
     if (!nullToAbsent || description != null) {
       map['description'] = Variable<String>(description);
+    }
+    if (!nullToAbsent || examMetadataJson != null) {
+      map['exam_metadata_json'] = Variable<String>(examMetadataJson);
     }
     map['enable_transcript'] = Variable<bool>(enableTranscript);
     if (!nullToAbsent || videoSubtitleUrl != null) {
@@ -2735,6 +2765,9 @@ class LessonsTableData extends DataClass
       description: description == null && nullToAbsent
           ? const Value.absent()
           : Value(description),
+      examMetadataJson: examMetadataJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(examMetadataJson),
       enableTranscript: Value(enableTranscript),
       videoSubtitleUrl: videoSubtitleUrl == null && nullToAbsent
           ? const Value.absent()
@@ -2790,6 +2823,7 @@ class LessonsTableData extends DataClass
       attemptsUrl: serializer.fromJson<String?>(json['attemptsUrl']),
       slug: serializer.fromJson<String?>(json['slug']),
       description: serializer.fromJson<String?>(json['description']),
+      examMetadataJson: serializer.fromJson<String?>(json['examMetadataJson']),
       enableTranscript: serializer.fromJson<bool>(json['enableTranscript']),
       videoSubtitleUrl: serializer.fromJson<String?>(json['videoSubtitleUrl']),
       isAiEnabled: serializer.fromJson<bool>(json['isAiEnabled']),
@@ -2834,6 +2868,7 @@ class LessonsTableData extends DataClass
       'attemptsUrl': serializer.toJson<String?>(attemptsUrl),
       'slug': serializer.toJson<String?>(slug),
       'description': serializer.toJson<String?>(description),
+      'examMetadataJson': serializer.toJson<String?>(examMetadataJson),
       'enableTranscript': serializer.toJson<bool>(enableTranscript),
       'videoSubtitleUrl': serializer.toJson<String?>(videoSubtitleUrl),
       'isAiEnabled': serializer.toJson<bool>(isAiEnabled),
@@ -2876,6 +2911,7 @@ class LessonsTableData extends DataClass
     Value<String?> attemptsUrl = const Value.absent(),
     Value<String?> slug = const Value.absent(),
     Value<String?> description = const Value.absent(),
+    Value<String?> examMetadataJson = const Value.absent(),
     bool? enableTranscript,
     Value<String?> videoSubtitleUrl = const Value.absent(),
     bool? isAiEnabled,
@@ -2923,6 +2959,9 @@ class LessonsTableData extends DataClass
     attemptsUrl: attemptsUrl.present ? attemptsUrl.value : this.attemptsUrl,
     slug: slug.present ? slug.value : this.slug,
     description: description.present ? description.value : this.description,
+    examMetadataJson: examMetadataJson.present
+        ? examMetadataJson.value
+        : this.examMetadataJson,
     enableTranscript: enableTranscript ?? this.enableTranscript,
     videoSubtitleUrl: videoSubtitleUrl.present
         ? videoSubtitleUrl.value
@@ -3012,6 +3051,9 @@ class LessonsTableData extends DataClass
       description: data.description.present
           ? data.description.value
           : this.description,
+      examMetadataJson: data.examMetadataJson.present
+          ? data.examMetadataJson.value
+          : this.examMetadataJson,
       enableTranscript: data.enableTranscript.present
           ? data.enableTranscript.value
           : this.enableTranscript,
@@ -3064,6 +3106,7 @@ class LessonsTableData extends DataClass
           ..write('attemptsUrl: $attemptsUrl, ')
           ..write('slug: $slug, ')
           ..write('description: $description, ')
+          ..write('examMetadataJson: $examMetadataJson, ')
           ..write('enableTranscript: $enableTranscript, ')
           ..write('videoSubtitleUrl: $videoSubtitleUrl, ')
           ..write('isAiEnabled: $isAiEnabled, ')
@@ -3108,6 +3151,7 @@ class LessonsTableData extends DataClass
     attemptsUrl,
     slug,
     description,
+    examMetadataJson,
     enableTranscript,
     videoSubtitleUrl,
     isAiEnabled,
@@ -3151,6 +3195,7 @@ class LessonsTableData extends DataClass
           other.attemptsUrl == this.attemptsUrl &&
           other.slug == this.slug &&
           other.description == this.description &&
+          other.examMetadataJson == this.examMetadataJson &&
           other.enableTranscript == this.enableTranscript &&
           other.videoSubtitleUrl == this.videoSubtitleUrl &&
           other.isAiEnabled == this.isAiEnabled &&
@@ -3192,6 +3237,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   final Value<String?> attemptsUrl;
   final Value<String?> slug;
   final Value<String?> description;
+  final Value<String?> examMetadataJson;
   final Value<bool> enableTranscript;
   final Value<String?> videoSubtitleUrl;
   final Value<bool> isAiEnabled;
@@ -3232,6 +3278,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.attemptsUrl = const Value.absent(),
     this.slug = const Value.absent(),
     this.description = const Value.absent(),
+    this.examMetadataJson = const Value.absent(),
     this.enableTranscript = const Value.absent(),
     this.videoSubtitleUrl = const Value.absent(),
     this.isAiEnabled = const Value.absent(),
@@ -3273,6 +3320,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.attemptsUrl = const Value.absent(),
     this.slug = const Value.absent(),
     this.description = const Value.absent(),
+    this.examMetadataJson = const Value.absent(),
     this.enableTranscript = const Value.absent(),
     this.videoSubtitleUrl = const Value.absent(),
     this.isAiEnabled = const Value.absent(),
@@ -3319,6 +3367,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Expression<String>? attemptsUrl,
     Expression<String>? slug,
     Expression<String>? description,
+    Expression<String>? examMetadataJson,
     Expression<bool>? enableTranscript,
     Expression<String>? videoSubtitleUrl,
     Expression<bool>? isAiEnabled,
@@ -3361,6 +3410,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       if (attemptsUrl != null) 'attempts_url': attemptsUrl,
       if (slug != null) 'slug': slug,
       if (description != null) 'description': description,
+      if (examMetadataJson != null) 'exam_metadata_json': examMetadataJson,
       if (enableTranscript != null) 'enable_transcript': enableTranscript,
       if (videoSubtitleUrl != null) 'video_subtitle_url': videoSubtitleUrl,
       if (isAiEnabled != null) 'is_ai_enabled': isAiEnabled,
@@ -3404,6 +3454,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Value<String?>? attemptsUrl,
     Value<String?>? slug,
     Value<String?>? description,
+    Value<String?>? examMetadataJson,
     Value<bool>? enableTranscript,
     Value<String?>? videoSubtitleUrl,
     Value<bool>? isAiEnabled,
@@ -3445,6 +3496,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       attemptsUrl: attemptsUrl ?? this.attemptsUrl,
       slug: slug ?? this.slug,
       description: description ?? this.description,
+      examMetadataJson: examMetadataJson ?? this.examMetadataJson,
       enableTranscript: enableTranscript ?? this.enableTranscript,
       videoSubtitleUrl: videoSubtitleUrl ?? this.videoSubtitleUrl,
       isAiEnabled: isAiEnabled ?? this.isAiEnabled,
@@ -3558,6 +3610,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     if (description.present) {
       map['description'] = Variable<String>(description.value);
     }
+    if (examMetadataJson.present) {
+      map['exam_metadata_json'] = Variable<String>(examMetadataJson.value);
+    }
     if (enableTranscript.present) {
       map['enable_transcript'] = Variable<bool>(enableTranscript.value);
     }
@@ -3613,6 +3668,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
           ..write('attemptsUrl: $attemptsUrl, ')
           ..write('slug: $slug, ')
           ..write('description: $description, ')
+          ..write('examMetadataJson: $examMetadataJson, ')
           ..write('enableTranscript: $enableTranscript, ')
           ..write('videoSubtitleUrl: $videoSubtitleUrl, ')
           ..write('isAiEnabled: $isAiEnabled, ')
@@ -13593,6 +13649,7 @@ typedef $$LessonsTableTableCreateCompanionBuilder =
       Value<String?> attemptsUrl,
       Value<String?> slug,
       Value<String?> description,
+      Value<String?> examMetadataJson,
       Value<bool> enableTranscript,
       Value<String?> videoSubtitleUrl,
       Value<bool> isAiEnabled,
@@ -13635,6 +13692,7 @@ typedef $$LessonsTableTableUpdateCompanionBuilder =
       Value<String?> attemptsUrl,
       Value<String?> slug,
       Value<String?> description,
+      Value<String?> examMetadataJson,
       Value<bool> enableTranscript,
       Value<String?> videoSubtitleUrl,
       Value<bool> isAiEnabled,
@@ -13818,6 +13876,11 @@ class $$LessonsTableTableFilterComposer
 
   ColumnFilters<String> get description => $composableBuilder(
     column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get examMetadataJson => $composableBuilder(
+    column: $table.examMetadataJson,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -14021,6 +14084,11 @@ class $$LessonsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get examMetadataJson => $composableBuilder(
+    column: $table.examMetadataJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get enableTranscript => $composableBuilder(
     column: $table.enableTranscript,
     builder: (column) => ColumnOrderings(column),
@@ -14199,6 +14267,11 @@ class $$LessonsTableTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get examMetadataJson => $composableBuilder(
+    column: $table.examMetadataJson,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<bool> get enableTranscript => $composableBuilder(
     column: $table.enableTranscript,
     builder: (column) => column,
@@ -14285,6 +14358,7 @@ class $$LessonsTableTableTableManager
                 Value<String?> attemptsUrl = const Value.absent(),
                 Value<String?> slug = const Value.absent(),
                 Value<String?> description = const Value.absent(),
+                Value<String?> examMetadataJson = const Value.absent(),
                 Value<bool> enableTranscript = const Value.absent(),
                 Value<String?> videoSubtitleUrl = const Value.absent(),
                 Value<bool> isAiEnabled = const Value.absent(),
@@ -14325,6 +14399,7 @@ class $$LessonsTableTableTableManager
                 attemptsUrl: attemptsUrl,
                 slug: slug,
                 description: description,
+                examMetadataJson: examMetadataJson,
                 enableTranscript: enableTranscript,
                 videoSubtitleUrl: videoSubtitleUrl,
                 isAiEnabled: isAiEnabled,
@@ -14367,6 +14442,7 @@ class $$LessonsTableTableTableManager
                 Value<String?> attemptsUrl = const Value.absent(),
                 Value<String?> slug = const Value.absent(),
                 Value<String?> description = const Value.absent(),
+                Value<String?> examMetadataJson = const Value.absent(),
                 Value<bool> enableTranscript = const Value.absent(),
                 Value<String?> videoSubtitleUrl = const Value.absent(),
                 Value<bool> isAiEnabled = const Value.absent(),
@@ -14407,6 +14483,7 @@ class $$LessonsTableTableTableManager
                 attemptsUrl: attemptsUrl,
                 slug: slug,
                 description: description,
+                examMetadataJson: examMetadataJson,
                 enableTranscript: enableTranscript,
                 videoSubtitleUrl: videoSubtitleUrl,
                 isAiEnabled: isAiEnabled,

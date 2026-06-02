@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
@@ -14,11 +15,59 @@ ExamRepository examRepository(Ref ref) {
   return ExamRepository(dataSource: dataSource);
 }
 
-/// Fetches exam details by slug.
-@riverpod
-Future<ExamDto> examDetail(Ref ref, String slug) async {
-  final dataSource = ref.watch(dataSourceProvider);
-  return dataSource.getExam(slug);
+/// Fetches exam details by slug with Stale-While-Revalidate (SWR) cache.
+@Riverpod(keepAlive: true)
+class ExamDetail extends _$ExamDetail {
+  @override
+  FutureOr<ExamDto> build(String slug) async {
+    final db = await ref.watch(appDatabaseProvider.future);
+    
+    // 1. Emit cached data instantly if it exists
+    final cachedJson = await db.watchLessonExamMetadataBySlug(slug).first;
+    if (cachedJson != null) {
+      try {
+        state = AsyncData(ExamDto.fromJson(jsonDecode(cachedJson)));
+      } catch (_) {
+        // Fallback if JSON is malformed
+      }
+    }
+
+    // 2. Fetch fresh data from network in background
+    _revalidate(slug);
+
+    // 3. Keep the future resolving based on cache or a new fetch
+    if (state.hasValue) {
+      return state.requireValue;
+    }
+    
+    // First ever fetch (no cache)
+    final dataSource = ref.watch(dataSourceProvider);
+    final freshDto = await dataSource.getExam(slug);
+    await db.updateLessonExamMetadata(slug, jsonEncode(freshDto.toJson()));
+    return freshDto;
+  }
+
+  Future<void> _revalidate(String slug) async {
+    try {
+      final dataSource = ref.read(dataSourceProvider);
+      final freshDto = await dataSource.getExam(slug);
+      final freshJson = jsonEncode(freshDto.toJson());
+      
+      final db = await ref.read(appDatabaseProvider.future);
+      final cachedJson = await db.watchLessonExamMetadataBySlug(slug).first;
+      
+      // Only upsert if data changed
+      if (cachedJson != freshJson) {
+        await db.updateLessonExamMetadata(slug, freshJson);
+        state = AsyncData(freshDto);
+      }
+    } catch (_) {
+      // SWR silently ignores background fetch errors if we have cache
+      if (!state.hasValue) {
+        rethrow;
+      }
+    }
+  }
 }
 
 /// Fetches attempt history for an exam.

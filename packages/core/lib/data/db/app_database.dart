@@ -48,7 +48,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 25;
+  int get schemaVersion => 26;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -210,6 +210,22 @@ class AppDatabase extends _$AppDatabase {
   /// Useful for pruning orphaned records.
   Future<void> deleteLessonsByIds(Iterable<String> ids) =>
       (delete(lessonsTable)..where((t) => t.id.isIn(ids))).go();
+
+  /// Watch just the exam metadata JSON for a lesson by its slug.
+  Stream<String?> watchLessonExamMetadataBySlug(String slug) {
+    return (select(lessonsTable)..where((t) => t.slug.equals(slug)))
+        .watchSingleOrNull()
+        .map((row) => row?.examMetadataJson);
+  }
+
+  /// Update the exam metadata JSON for a lesson by its slug.
+  Future<void> updateLessonExamMetadata(String slug, String json) async {
+    await (update(lessonsTable)..where((t) => t.slug.equals(slug))).write(
+      LessonsTableCompanion(
+        examMetadataJson: Value(json),
+      ),
+    );
+  }
 
   // ── Live Classes ──────────────────────────────────────────────────────────
 
