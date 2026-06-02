@@ -47,12 +47,19 @@ class HomeRoutes {
                   parentNavigatorKey: rootNavigatorKey,
                   builder: (context, state) {
                     final questionId = int.tryParse(state.uri.queryParameters['question_id'] ?? '');
-                    final extra = state.extra is Map<String, dynamic> ? state.extra as Map<String, dynamic> : null;
+                    final chapterContentId = int.tryParse(state.uri.queryParameters['chapterContentId'] ?? '');
+                    final lessonTitle = state.uri.queryParameters['lessonTitle'];
+                    final lessonTypeStr = state.uri.queryParameters['lessonType'];
+                    final lessonType = lessonTypeStr != null 
+                        ? LessonType.values.firstWhere(
+                            (e) => e.name == lessonTypeStr, 
+                            orElse: () => LessonType.unknown)
+                        : null;
                     
                     return AskDoubtFormScreen(
-                      chapterContentId: extra?['chapterContentId'] as int?,
-                      lessonTitle: extra?['lessonTitle'] as String?,
-                      lessonType: extra?['lessonType'] as LessonType?,
+                      chapterContentId: chapterContentId,
+                      lessonTitle: lessonTitle,
+                      lessonType: lessonType,
                       questionId: questionId,
                     );
                   },
