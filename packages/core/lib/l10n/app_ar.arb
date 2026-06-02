@@ -588,5 +588,7 @@
   "forumCommentsEmptySubtitle": "كن أول من يرد على هذا الموضوع.",
   "forumRepliesCount": "{count,plural, =1{رد واحد} other{{count} ردود}}",
   "forumRoleInstructor": "مدرب",
-  "forumErrorFailedToPostReply": "فشل في نشر الرد"
+  "forumErrorFailedToPostReply": "فشل في نشر الرد",
+  "noAnnouncementsFound": "لم يتم العثور على إعلانات.",
+  "commentsDisabledByAdmin": "تم تعطيل التعليقات على هذا المنشور من قبل المسؤول"
 }

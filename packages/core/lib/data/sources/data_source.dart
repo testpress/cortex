@@ -108,6 +108,15 @@ abstract class DataSource {
 
   /// Fetch the resume learning feed from `/api/v2.4/resume/`.
   Future<DashboardContentsDto> getResumeLearningFeed(DashboardSectionType sectionType);
+
+  // ── Posts / Announcements ────────────────────────────────────────────────
+  
+  /// Fetch a paginated list of posts/announcements.
+  Future<PaginatedResponseDto<PostDto>> getPosts({int page = 1, String? categorySlug});
+
+  /// Fetch a list of post categories.
+  Future<List<PostCategoryDto>> getPostCategories();
+
   // ── Exams ───────────────────────────────────────────────────────────────
 
   /// Fetch full metadata for an exam from `/api/v2.2.1/exams/{slug}/`.

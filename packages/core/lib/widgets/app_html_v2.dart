@@ -3,6 +3,8 @@ import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart
 import 'package:flutter_math_fork/flutter_math.dart';
 import '../design/design_provider.dart';
 
+import 'package:skeletonizer/skeletonizer.dart';
+
 /// Native HTML + LaTeX renderer.
 ///
 /// Features:
@@ -47,6 +49,43 @@ class AppHtmlV2 extends StatelessWidget {
           fontSize: fontSize,
         ),
 
+        onLoadingBuilder: (context, element, progress) {
+          final widthAttr = element.attributes['width'];
+          final heightAttr = element.attributes['height'];
+          
+          double? w = widthAttr != null ? double.tryParse(widthAttr) : null;
+          double? h = heightAttr != null ? double.tryParse(heightAttr) : null;
+          
+          final decoration = BoxDecoration(
+            color: design.colors.surfaceVariant,
+            borderRadius: BorderRadius.circular(design.radius.md),
+          );
+
+          Widget placeholder;
+          if (w != null && h != null && w > 0 && h > 0) {
+            placeholder = AspectRatio(
+              aspectRatio: w / h,
+              child: Container(decoration: decoration),
+            );
+          } else {
+            placeholder = SizedBox(
+              width: double.infinity,
+              height: h ?? 250,
+              child: Container(decoration: decoration),
+            );
+          }
+
+          return Padding(
+            padding: EdgeInsets.symmetric(vertical: design.spacing.md),
+            child: Skeletonizer(
+              enabled: true,
+              child: Skeleton.replace(
+                child: placeholder,
+              ),
+            ),
+          );
+        },
+
         textStyle: design.typography.body.copyWith(
           color: effectiveTextColor,
           fontSize: fontSize,
@@ -75,7 +114,7 @@ class AppHtmlV2 extends StatelessWidget {
             return {
               'margin': insideLi
                   ? '0'
-                  : '0 0 6px 0',
+                  : '0 0 14px 0',
             };
           }
 

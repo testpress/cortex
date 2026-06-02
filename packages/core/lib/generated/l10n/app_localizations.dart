@@ -3116,6 +3116,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to post reply'**
   String get forumErrorFailedToPostReply;
+
+  /// No description provided for @noAnnouncementsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No announcements found.'**
+  String get noAnnouncementsFound;
+
+  /// No description provided for @commentsDisabledByAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments are disabled for this post by Administrator'**
+  String get commentsDisabledByAdmin;
 }
 
 class _AppLocalizationsDelegate

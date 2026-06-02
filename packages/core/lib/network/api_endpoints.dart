@@ -20,6 +20,11 @@ class ApiEndpoints {
   static String lessonDetail(String id) => '/api/v2.4/contents/$id/';
   static String markCompleted(String id) => '/api/v2.5/chapter_contents/$id/attempts/';
   static const String bannerAds = '/api/v2.4/banner-ads/';
+
+  // Posts / Announcements
+  static const String posts = '/api/v3/posts/';
+  static const String postCategories = '/api/v2.3/posts/categories/';
+  
   static const String leaderboard = '/api/v2.3/leaderboard/';
   static const String myRank = '/api/v2.3/me/rank/';
   static const String competitorTargets = '/api/v2.3/me/targets/';

@@ -1746,4 +1746,11 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get forumErrorFailedToPostReply =>
       'മറുപടി പോസ്റ്റ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു';
+
+  @override
+  String get noAnnouncementsFound => 'അറിയിപ്പുകളൊന്നും കണ്ടെത്തിയില്ല.';
+
+  @override
+  String get commentsDisabledByAdmin =>
+      'അഡ്മിനിസ്ട്രേറ്റർ ഈ പോസ്റ്റിനായുള്ള അഭിപ്രായങ്ങൾ പ്രവർത്തനരഹിതമാക്കി';
 }

@@ -25,36 +25,6 @@ const mockHeroBanners = [
   ),
 ];
 
-/// Mock promotional banners (Updates & Announcements)
-const mockPromotionBanners = [
-  DashboardBannerDto(
-    id: '1',
-    imageUrl: '',
-    title: '📚 Study Smart, Not Hard',
-    description:
-        'Master complex topics with our structured learning paths - Physics, Chemistry & Math all in one place',
-    bgColor: 0xFFEFF6FF,
-    textColor: 0xFF1E40AF,
-  ),
-  DashboardBannerDto(
-    id: '2',
-    imageUrl: '',
-    title: '🎯 Your Daily Study Companion',
-    description:
-        'Track progress across 45+ chapters with video lessons, practice sets, and chapter tests designed by experts',
-    bgColor: 0xFFECFDF5,
-    textColor: 0xFF065F46,
-  ),
-  DashboardBannerDto(
-    id: '3',
-    imageUrl: '',
-    title: '⚡ Learn at Your Pace',
-    description:
-        '180+ hours of content available 24/7 - watch recordings, download notes, and practice anytime',
-    bgColor: 0xFFFAF5FF,
-    textColor: 0xFF6B21A8,
-  ),
-];
 
 /// Mock quick access shortcuts
 const mockQuickShortcuts = [

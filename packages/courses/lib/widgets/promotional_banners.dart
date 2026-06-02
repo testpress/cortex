@@ -1,41 +1,25 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-
-class AnnouncementBanner {
-  final String id;
-  final String title;
-  final String description;
-  final String? tag;
-  final Color bgColor;
-  final Color textColor;
-
-  const AnnouncementBanner({
-    required this.id,
-    required this.title,
-    required this.description,
-    this.tag,
-    required this.bgColor,
-    required this.textColor,
-  });
-}
+import 'package:core/data/data.dart'; // To access PostDto
 
 /// A section for updates and announcements on the dashboard.
 class UpdatesAnnouncementsSection extends StatelessWidget {
   const UpdatesAnnouncementsSection({
     super.key,
-    required this.banners,
+    required this.posts,
     this.onViewAll,
+    this.onItemTap,
   });
 
-  final List<AnnouncementBanner> banners;
+  final List<PostDto> posts;
   final VoidCallback? onViewAll;
+  final void Function(PostDto)? onItemTap;
 
   @override
   Widget build(BuildContext context) {
-    if (banners.isEmpty) return const SizedBox.shrink();
+    if (posts.isEmpty) return const SizedBox.shrink();
 
     final design = Design.of(context);
-
     final l10n = L10n.of(context);
 
     return Padding(
@@ -63,7 +47,7 @@ class UpdatesAnnouncementsSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          PromotionalBanners(banners: banners),
+          PromotionalBanners(posts: posts, onItemTap: onItemTap),
         ],
       ),
     );
@@ -72,22 +56,23 @@ class UpdatesAnnouncementsSection extends StatelessWidget {
 
 /// A generic horizontal list/carousel of announcement banners.
 class PromotionalBanners extends StatelessWidget {
-  const PromotionalBanners({super.key, required this.banners});
+  const PromotionalBanners({super.key, required this.posts, this.onItemTap});
 
-  final List<AnnouncementBanner> banners;
+  final List<PostDto> posts;
+  final void Function(PostDto)? onItemTap;
 
   @override
   Widget build(BuildContext context) {
-    if (banners.isEmpty) return const SizedBox.shrink();
+    if (posts.isEmpty) return const SizedBox.shrink();
 
     final design = Design.of(context);
 
-    if (banners.length > 1) {
+    if (posts.length > 1) {
       return _buildCarousel(context);
     } else {
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-        child: _BannerCard(banner: banners.first),
+        child: AnnouncementCard(post: posts.first, index: 0, onTap: () => onItemTap?.call(posts.first)),
       );
     }
   }
@@ -99,52 +84,67 @@ class PromotionalBanners extends StatelessWidget {
       showDots: false,
       viewportFraction: 0.88,
       padEnds: false,
-      itemCount: banners.length,
+      itemCount: posts.length,
       itemPadding: EdgeInsets.only(left: design.spacing.md),
       itemBuilder: (context, index) {
-        return _BannerCard(banner: banners[index]);
+        return AnnouncementCard(post: posts[index], index: index, onTap: () => onItemTap?.call(posts[index]));
       },
     );
   }
 }
 
-class _BannerCard extends StatelessWidget {
-  const _BannerCard({required this.banner});
-  final AnnouncementBanner banner;
+class AnnouncementCard extends StatelessWidget {
+  const AnnouncementCard({super.key, required this.post, this.index = 0, this.onTap});
+  final PostDto post;
+  final int index;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    
+    // Create a deterministic color palette based on item index
+    final colors = [
+      (bg: const Color(0xFFECFDF5), text: const Color(0xFF065F46)), // Green
+      (bg: const Color(0xFFFAF5FF), text: const Color(0xFF6B21A8)), // Purple
+      (bg: const Color(0xFFFFFBEB), text: const Color(0xFF92400E)), // Amber
+    ];
+    final colorScheme = colors[index % colors.length];
 
-    return Container(
-      padding: EdgeInsets.all(design.spacing.md),
-      decoration: BoxDecoration(
-        color: banner.bgColor,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: design.colors.border.withValues(alpha: 0.06),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(design.spacing.md),
+        decoration: BoxDecoration(
+          color: colorScheme.bg,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: design.colors.border.withValues(alpha: 0.06),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
         children: [
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 AppText.body(
-                  banner.title,
-                  color: banner.textColor,
+                  post.title,
+                  color: colorScheme.text,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 2),
                 AppText.bodySmall(
-                  banner.description,
-                  color: banner.textColor.withValues(alpha: 0.8),
+                  post.summary.replaceAll(RegExp(r'[\r\n]+'), ' ').trim(),
+                  color: colorScheme.text.withValues(alpha: 0.8),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -155,9 +155,10 @@ class _BannerCard extends StatelessWidget {
           Icon(
             LucideIcons.chevronRight,
             size: 20,
-            color: banner.textColor.withValues(alpha: 0.6),
+            color: colorScheme.text.withValues(alpha: 0.6),
           ),
         ],
+      ),
       ),
     );
   }

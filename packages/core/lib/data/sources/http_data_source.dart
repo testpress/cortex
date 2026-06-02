@@ -395,6 +395,36 @@ class HttpDataSource implements DataSource {
     );
   }
 
+  // ── Posts / Announcements ────────────────────────────────────────────────
+
+  @override
+  Future<PaginatedResponseDto<PostDto>> getPosts({int page = 1, String? categorySlug}) async {
+    return performNetworkRequest(
+      _dio.get(
+        ApiEndpoints.posts,
+        queryParameters: {
+          'order_by': '-created',
+          'page': page,
+          if (categorySlug != null && categorySlug.isNotEmpty) 'category': categorySlug,
+        },
+      ),
+      fromJson: (data) => PostDto.fromListResponse(data as Map<String, dynamic>),
+    );
+  }
+
+  @override
+  Future<List<PostCategoryDto>> getPostCategories() async {
+    return performNetworkRequest(
+      _dio.get(
+        ApiEndpoints.postCategories,
+      ),
+      fromJson: (data) {
+        final list = data as List<dynamic>? ?? [];
+        return list.map((e) => PostCategoryDto.fromJson(e as Map<String, dynamic>)).toList();
+      },
+    );
+  }
+
   @override
   Future<DashboardContentsDto> getRecentlyCompletedFeed(DashboardSectionType sectionType) async {
     return performNetworkRequest(

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:profile/profile.dart';
 import 'package:courses/courses.dart';
+import '../screens/announcements/announcements_list_screen.dart';
 
 class DashboardDrawer extends ConsumerWidget {
   const DashboardDrawer({
@@ -39,7 +40,14 @@ class DashboardDrawer extends ConsumerWidget {
             AppDrawerItem(
               icon: LucideIcons.fileText,
               label: l10n.drawerPosts,
-              action: () {},
+              action: () {
+                ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                Navigator.of(context, rootNavigator: true).push(
+                  AppRoute(
+                    page: const AnnouncementsListScreen(),
+                  ),
+                );
+              },
             ),
             AppDrawerItem(
               icon: LucideIcons.pieChart,

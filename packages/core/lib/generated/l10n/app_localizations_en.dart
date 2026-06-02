@@ -1705,4 +1705,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get forumErrorFailedToPostReply => 'Failed to post reply';
+
+  @override
+  String get noAnnouncementsFound => 'No announcements found.';
+
+  @override
+  String get commentsDisabledByAdmin =>
+      'Comments are disabled for this post by Administrator';
 }

@@ -16,6 +16,7 @@ import 'tables/users_table.dart';
 import 'tables/downloads_table.dart';
 import 'tables/doubts_table.dart';
 import 'tables/bookmarks_table.dart';
+import 'tables/posts_table.dart';
 import 'package:core/data/data.dart';
 
 part 'app_database.g.dart';
@@ -42,13 +43,15 @@ part 'app_database.g.dart';
     DoubtTopicsTable,
     BookmarkFoldersTable,
     BookmarkItemsTable,
+    PostCategoriesTable,
+    PostsTable,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 26;
+  int get schemaVersion => 27;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -409,6 +412,33 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> upsertDoubtTopics(List<DoubtTopicsTableCompanion> rows) =>
       batch((b) => b.insertAllOnConflictUpdate(doubtTopicsTable, rows));
+
+  // ── Posts / Announcements ──────────────────────────────────────────────────
+
+  Stream<List<PostData>> watchPosts() =>
+      (select(postsTable)..orderBy([(t) => OrderingTerm.desc(t.publishedDate)]))
+          .watch();
+
+  Future<void> upsertPosts(List<PostsTableCompanion> rows) =>
+      batch((b) => b.insertAllOnConflictUpdate(postsTable, rows));
+
+  /// Replaces all posts — used on page 1 / pull-to-refresh.
+  /// Runs in a single transaction so the stream emits only once.
+  Future<void> replacePosts(List<PostsTableCompanion> rows) => transaction(() async {
+    await delete(postsTable).go();
+    await batch((b) => b.insertAllOnConflictUpdate(postsTable, rows));
+  });
+
+  Stream<List<PostCategoryData>> watchPostCategories() =>
+      (select(postCategoriesTable)..orderBy([(t) => OrderingTerm.asc(t.displayOrder)]))
+          .watch();
+
+  /// Replaces all post categories — categories aren't paginated.
+  Future<void> replacePostCategories(List<PostCategoriesTableCompanion> rows) =>
+      transaction(() async {
+        await delete(postCategoriesTable).go();
+        await batch((b) => b.insertAllOnConflictUpdate(postCategoriesTable, rows));
+      });
 }
 
 /// Opens the SQLite database from the app documents directory.

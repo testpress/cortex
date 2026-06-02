@@ -716,3 +716,60 @@ List<DoubtReplyDto> getMockDoubtReplies(String doubtId) {
 
   return [];
 }
+
+/// Mock Post Categories
+const mockPostCategories = [
+  PostCategoryDto(
+    id: 1,
+    name: 'Tips & Tricks',
+    order: 1,
+    color: '3B82F6', // Blue
+    slug: 'tips-tricks',
+    isStarred: true,
+  ),
+  PostCategoryDto(
+    id: 2,
+    name: 'Updates',
+    order: 2,
+    color: '10B981', // Green
+    slug: 'updates',
+    isStarred: false,
+  ),
+];
+
+/// Mock announcements / posts
+const mockPosts = [
+  PostDto(
+    id: 1,
+    slug: 'study-smart-not-hard',
+    title: '📚 Study Smart, Not Hard',
+    categoryId: 1,
+    shortLink: 'smart-study',
+    summary: 'Master complex topics with our structured learning paths - Physics, Chemistry & Math all in one place',
+    contentHtml: '<p>Master complex topics with our structured learning paths - Physics, Chemistry & Math all in one place</p>',
+    publishedDate: '2026-06-01T10:00:00Z',
+    allowComments: true,
+  ),
+  PostDto(
+    id: 2,
+    slug: 'daily-study-companion',
+    title: '🎯 Your Daily Study Companion',
+    categoryId: 2,
+    shortLink: 'study-companion',
+    summary: 'Track progress across 45+ chapters with video lessons, practice sets, and chapter tests designed by experts',
+    contentHtml: '<p>Track progress across 45+ chapters with video lessons, practice sets, and chapter tests designed by experts</p>',
+    publishedDate: '2026-06-01T09:00:00Z',
+    allowComments: true,
+  ),
+  PostDto(
+    id: 3,
+    slug: 'learn-at-your-pace',
+    title: '⚡ Learn at Your Pace',
+    categoryId: 1,
+    shortLink: 'learn-pace',
+    summary: '180+ hours of content available 24/7 - watch recordings, download notes, and practice anytime',
+    contentHtml: '<p>180+ hours of content available 24/7 - watch recordings, download notes, and practice anytime</p>',
+    publishedDate: '2026-06-01T08:00:00Z',
+    allowComments: false,
+  ),
+];

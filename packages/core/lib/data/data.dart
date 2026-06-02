@@ -32,6 +32,7 @@ export 'models/download_item.dart';
 export 'models/doubt_dto.dart';
 export 'models/bookmark_dto.dart';
 export 'models/login_activity_dto.dart';
+export 'models/post_dto.dart';
 
 // Database
 export 'db/tables/dashboard_tables.dart';
@@ -62,6 +63,7 @@ export 'repositories/user_progress_repository.dart';
 export 'repositories/bookmark_repository.dart';
 export 'repositories/repository_providers.dart';
 export 'providers/bookmark_provider.dart';
+export 'providers/announcements_provider.dart';
 
 //service
 export 'services/downloads_service.dart';

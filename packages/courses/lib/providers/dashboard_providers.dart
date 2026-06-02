@@ -55,12 +55,6 @@ Stream<List<DashboardBannerDto>> heroBanners(Ref ref) async* {
 }
 
 @riverpod
-Future<List<DashboardBannerDto>> promotionBanners(Ref ref) async {
-  await Future.delayed(const Duration(milliseconds: 500));
-  return mockPromotionBanners;
-}
-
-@riverpod
 Stream<List<LearnerDto>> learners(
   Ref ref, {
   LeaderboardTimeline timeline = LeaderboardTimeline.thisWeek,
