@@ -1503,4 +1503,22 @@ class MockDataSource implements DataSource {
       }
     }
   }
+
+  // ── Posts / Announcements ──────────────────────────────────────────────────
+
+  @override
+  Future<PaginatedResponseDto<PostDto>> getPosts({int page = 1, String? categorySlug}) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return PaginatedResponseDto(
+      results: mockPosts,
+      count: 3, 
+      next: null,
+    );
+  }
+
+  @override
+  Future<List<PostCategoryDto>> getPostCategories() async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return mockPostCategories;
+  }
 }

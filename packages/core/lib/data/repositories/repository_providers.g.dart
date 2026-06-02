@@ -47,5 +47,24 @@ final bookmarkRepositoryProvider = FutureProvider<BookmarkRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef BookmarkRepositoryRef = FutureProviderRef<BookmarkRepository>;
+String _$postsRepositoryHash() => r'88a353bf1f18da346d08d68856f6cc03872f2abe';
+
+/// Provides the [PostsRepository].
+///
+/// Copied from [postsRepository].
+@ProviderFor(postsRepository)
+final postsRepositoryProvider = FutureProvider<PostsRepository>.internal(
+  postsRepository,
+  name: r'postsRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$postsRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef PostsRepositoryRef = FutureProviderRef<PostsRepository>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

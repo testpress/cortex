@@ -37,7 +37,7 @@ class AppShell extends StatelessWidget {
 
         return Stack(
           children: [
-            Container(
+            PhysicalModel(
               color: backgroundColor ?? design.colors.surface,
               child: isLandscape
                   ? Row(

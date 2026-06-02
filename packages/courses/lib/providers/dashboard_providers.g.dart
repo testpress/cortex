@@ -112,25 +112,6 @@ final heroBannersProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef HeroBannersRef = AutoDisposeStreamProviderRef<List<DashboardBannerDto>>;
-String _$promotionBannersHash() => r'3099fb8dbd8de6979ab08ba1ec0abf007dac0c66';
-
-/// See also [promotionBanners].
-@ProviderFor(promotionBanners)
-final promotionBannersProvider =
-    AutoDisposeFutureProvider<List<DashboardBannerDto>>.internal(
-  promotionBanners,
-  name: r'promotionBannersProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$promotionBannersHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef PromotionBannersRef
-    = AutoDisposeFutureProviderRef<List<DashboardBannerDto>>;
 String _$learnersHash() => r'b9222aef15875e6bc5f67b0c8da9e1f8995f7b16';
 
 /// Copied from Dart SDK

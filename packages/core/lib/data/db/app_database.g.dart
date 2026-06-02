@@ -12788,6 +12788,1120 @@ class BookmarkItemsTableCompanion
   }
 }
 
+class $PostCategoriesTableTable extends PostCategoriesTable
+    with TableInfo<$PostCategoriesTableTable, PostCategoryData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PostCategoriesTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _displayOrderMeta = const VerificationMeta(
+    'displayOrder',
+  );
+  @override
+  late final GeneratedColumn<int> displayOrder = GeneratedColumn<int>(
+    'display_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _colorMeta = const VerificationMeta('color');
+  @override
+  late final GeneratedColumn<String> color = GeneratedColumn<String>(
+    'color',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _slugMeta = const VerificationMeta('slug');
+  @override
+  late final GeneratedColumn<String> slug = GeneratedColumn<String>(
+    'slug',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isStarredMeta = const VerificationMeta(
+    'isStarred',
+  );
+  @override
+  late final GeneratedColumn<bool> isStarred = GeneratedColumn<bool>(
+    'is_starred',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_starred" IN (0, 1))',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    displayOrder,
+    color,
+    slug,
+    isStarred,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'post_categories_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PostCategoryData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('display_order')) {
+      context.handle(
+        _displayOrderMeta,
+        displayOrder.isAcceptableOrUnknown(
+          data['display_order']!,
+          _displayOrderMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_displayOrderMeta);
+    }
+    if (data.containsKey('color')) {
+      context.handle(
+        _colorMeta,
+        color.isAcceptableOrUnknown(data['color']!, _colorMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_colorMeta);
+    }
+    if (data.containsKey('slug')) {
+      context.handle(
+        _slugMeta,
+        slug.isAcceptableOrUnknown(data['slug']!, _slugMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_slugMeta);
+    }
+    if (data.containsKey('is_starred')) {
+      context.handle(
+        _isStarredMeta,
+        isStarred.isAcceptableOrUnknown(data['is_starred']!, _isStarredMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_isStarredMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PostCategoryData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PostCategoryData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      displayOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}display_order'],
+      )!,
+      color: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}color'],
+      )!,
+      slug: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}slug'],
+      )!,
+      isStarred: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_starred'],
+      )!,
+    );
+  }
+
+  @override
+  $PostCategoriesTableTable createAlias(String alias) {
+    return $PostCategoriesTableTable(attachedDatabase, alias);
+  }
+}
+
+class PostCategoryData extends DataClass
+    implements Insertable<PostCategoryData> {
+  final int id;
+  final String name;
+  final int displayOrder;
+  final String color;
+  final String slug;
+  final bool isStarred;
+  const PostCategoryData({
+    required this.id,
+    required this.name,
+    required this.displayOrder,
+    required this.color,
+    required this.slug,
+    required this.isStarred,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['display_order'] = Variable<int>(displayOrder);
+    map['color'] = Variable<String>(color);
+    map['slug'] = Variable<String>(slug);
+    map['is_starred'] = Variable<bool>(isStarred);
+    return map;
+  }
+
+  PostCategoriesTableCompanion toCompanion(bool nullToAbsent) {
+    return PostCategoriesTableCompanion(
+      id: Value(id),
+      name: Value(name),
+      displayOrder: Value(displayOrder),
+      color: Value(color),
+      slug: Value(slug),
+      isStarred: Value(isStarred),
+    );
+  }
+
+  factory PostCategoryData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PostCategoryData(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      displayOrder: serializer.fromJson<int>(json['displayOrder']),
+      color: serializer.fromJson<String>(json['color']),
+      slug: serializer.fromJson<String>(json['slug']),
+      isStarred: serializer.fromJson<bool>(json['isStarred']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'displayOrder': serializer.toJson<int>(displayOrder),
+      'color': serializer.toJson<String>(color),
+      'slug': serializer.toJson<String>(slug),
+      'isStarred': serializer.toJson<bool>(isStarred),
+    };
+  }
+
+  PostCategoryData copyWith({
+    int? id,
+    String? name,
+    int? displayOrder,
+    String? color,
+    String? slug,
+    bool? isStarred,
+  }) => PostCategoryData(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    displayOrder: displayOrder ?? this.displayOrder,
+    color: color ?? this.color,
+    slug: slug ?? this.slug,
+    isStarred: isStarred ?? this.isStarred,
+  );
+  PostCategoryData copyWithCompanion(PostCategoriesTableCompanion data) {
+    return PostCategoryData(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      displayOrder: data.displayOrder.present
+          ? data.displayOrder.value
+          : this.displayOrder,
+      color: data.color.present ? data.color.value : this.color,
+      slug: data.slug.present ? data.slug.value : this.slug,
+      isStarred: data.isStarred.present ? data.isStarred.value : this.isStarred,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PostCategoryData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('displayOrder: $displayOrder, ')
+          ..write('color: $color, ')
+          ..write('slug: $slug, ')
+          ..write('isStarred: $isStarred')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, name, displayOrder, color, slug, isStarred);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PostCategoryData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.displayOrder == this.displayOrder &&
+          other.color == this.color &&
+          other.slug == this.slug &&
+          other.isStarred == this.isStarred);
+}
+
+class PostCategoriesTableCompanion extends UpdateCompanion<PostCategoryData> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<int> displayOrder;
+  final Value<String> color;
+  final Value<String> slug;
+  final Value<bool> isStarred;
+  const PostCategoriesTableCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.displayOrder = const Value.absent(),
+    this.color = const Value.absent(),
+    this.slug = const Value.absent(),
+    this.isStarred = const Value.absent(),
+  });
+  PostCategoriesTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required int displayOrder,
+    required String color,
+    required String slug,
+    required bool isStarred,
+  }) : name = Value(name),
+       displayOrder = Value(displayOrder),
+       color = Value(color),
+       slug = Value(slug),
+       isStarred = Value(isStarred);
+  static Insertable<PostCategoryData> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<int>? displayOrder,
+    Expression<String>? color,
+    Expression<String>? slug,
+    Expression<bool>? isStarred,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (displayOrder != null) 'display_order': displayOrder,
+      if (color != null) 'color': color,
+      if (slug != null) 'slug': slug,
+      if (isStarred != null) 'is_starred': isStarred,
+    });
+  }
+
+  PostCategoriesTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<int>? displayOrder,
+    Value<String>? color,
+    Value<String>? slug,
+    Value<bool>? isStarred,
+  }) {
+    return PostCategoriesTableCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      displayOrder: displayOrder ?? this.displayOrder,
+      color: color ?? this.color,
+      slug: slug ?? this.slug,
+      isStarred: isStarred ?? this.isStarred,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (displayOrder.present) {
+      map['display_order'] = Variable<int>(displayOrder.value);
+    }
+    if (color.present) {
+      map['color'] = Variable<String>(color.value);
+    }
+    if (slug.present) {
+      map['slug'] = Variable<String>(slug.value);
+    }
+    if (isStarred.present) {
+      map['is_starred'] = Variable<bool>(isStarred.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PostCategoriesTableCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('displayOrder: $displayOrder, ')
+          ..write('color: $color, ')
+          ..write('slug: $slug, ')
+          ..write('isStarred: $isStarred')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PostsTableTable extends PostsTable
+    with TableInfo<$PostsTableTable, PostData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PostsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _slugMeta = const VerificationMeta('slug');
+  @override
+  late final GeneratedColumn<String> slug = GeneratedColumn<String>(
+    'slug',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _categoryIdMeta = const VerificationMeta(
+    'categoryId',
+  );
+  @override
+  late final GeneratedColumn<int> categoryId = GeneratedColumn<int>(
+    'category_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _categoryNameMeta = const VerificationMeta(
+    'categoryName',
+  );
+  @override
+  late final GeneratedColumn<String> categoryName = GeneratedColumn<String>(
+    'category_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _shortLinkMeta = const VerificationMeta(
+    'shortLink',
+  );
+  @override
+  late final GeneratedColumn<String> shortLink = GeneratedColumn<String>(
+    'short_link',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _summaryMeta = const VerificationMeta(
+    'summary',
+  );
+  @override
+  late final GeneratedColumn<String> summary = GeneratedColumn<String>(
+    'summary',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentHtmlMeta = const VerificationMeta(
+    'contentHtml',
+  );
+  @override
+  late final GeneratedColumn<String> contentHtml = GeneratedColumn<String>(
+    'content_html',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _coverImageMeta = const VerificationMeta(
+    'coverImage',
+  );
+  @override
+  late final GeneratedColumn<String> coverImage = GeneratedColumn<String>(
+    'cover_image',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _publishedDateMeta = const VerificationMeta(
+    'publishedDate',
+  );
+  @override
+  late final GeneratedColumn<String> publishedDate = GeneratedColumn<String>(
+    'published_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _webUrlMeta = const VerificationMeta('webUrl');
+  @override
+  late final GeneratedColumn<String> webUrl = GeneratedColumn<String>(
+    'web_url',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _allowCommentsMeta = const VerificationMeta(
+    'allowComments',
+  );
+  @override
+  late final GeneratedColumn<bool> allowComments = GeneratedColumn<bool>(
+    'allow_comments',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("allow_comments" IN (0, 1))',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    slug,
+    title,
+    categoryId,
+    categoryName,
+    shortLink,
+    summary,
+    contentHtml,
+    coverImage,
+    publishedDate,
+    webUrl,
+    allowComments,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'posts_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PostData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('slug')) {
+      context.handle(
+        _slugMeta,
+        slug.isAcceptableOrUnknown(data['slug']!, _slugMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_slugMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('category_id')) {
+      context.handle(
+        _categoryIdMeta,
+        categoryId.isAcceptableOrUnknown(data['category_id']!, _categoryIdMeta),
+      );
+    }
+    if (data.containsKey('category_name')) {
+      context.handle(
+        _categoryNameMeta,
+        categoryName.isAcceptableOrUnknown(
+          data['category_name']!,
+          _categoryNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('short_link')) {
+      context.handle(
+        _shortLinkMeta,
+        shortLink.isAcceptableOrUnknown(data['short_link']!, _shortLinkMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_shortLinkMeta);
+    }
+    if (data.containsKey('summary')) {
+      context.handle(
+        _summaryMeta,
+        summary.isAcceptableOrUnknown(data['summary']!, _summaryMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_summaryMeta);
+    }
+    if (data.containsKey('content_html')) {
+      context.handle(
+        _contentHtmlMeta,
+        contentHtml.isAcceptableOrUnknown(
+          data['content_html']!,
+          _contentHtmlMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_contentHtmlMeta);
+    }
+    if (data.containsKey('cover_image')) {
+      context.handle(
+        _coverImageMeta,
+        coverImage.isAcceptableOrUnknown(data['cover_image']!, _coverImageMeta),
+      );
+    }
+    if (data.containsKey('published_date')) {
+      context.handle(
+        _publishedDateMeta,
+        publishedDate.isAcceptableOrUnknown(
+          data['published_date']!,
+          _publishedDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_publishedDateMeta);
+    }
+    if (data.containsKey('web_url')) {
+      context.handle(
+        _webUrlMeta,
+        webUrl.isAcceptableOrUnknown(data['web_url']!, _webUrlMeta),
+      );
+    }
+    if (data.containsKey('allow_comments')) {
+      context.handle(
+        _allowCommentsMeta,
+        allowComments.isAcceptableOrUnknown(
+          data['allow_comments']!,
+          _allowCommentsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_allowCommentsMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PostData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PostData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      slug: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}slug'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      categoryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}category_id'],
+      ),
+      categoryName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category_name'],
+      ),
+      shortLink: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}short_link'],
+      )!,
+      summary: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}summary'],
+      )!,
+      contentHtml: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content_html'],
+      )!,
+      coverImage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cover_image'],
+      ),
+      publishedDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}published_date'],
+      )!,
+      webUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}web_url'],
+      ),
+      allowComments: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}allow_comments'],
+      )!,
+    );
+  }
+
+  @override
+  $PostsTableTable createAlias(String alias) {
+    return $PostsTableTable(attachedDatabase, alias);
+  }
+}
+
+class PostData extends DataClass implements Insertable<PostData> {
+  final int id;
+  final String slug;
+  final String title;
+  final int? categoryId;
+  final String? categoryName;
+  final String shortLink;
+  final String summary;
+  final String contentHtml;
+  final String? coverImage;
+  final String publishedDate;
+  final String? webUrl;
+  final bool allowComments;
+  const PostData({
+    required this.id,
+    required this.slug,
+    required this.title,
+    this.categoryId,
+    this.categoryName,
+    required this.shortLink,
+    required this.summary,
+    required this.contentHtml,
+    this.coverImage,
+    required this.publishedDate,
+    this.webUrl,
+    required this.allowComments,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['slug'] = Variable<String>(slug);
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || categoryId != null) {
+      map['category_id'] = Variable<int>(categoryId);
+    }
+    if (!nullToAbsent || categoryName != null) {
+      map['category_name'] = Variable<String>(categoryName);
+    }
+    map['short_link'] = Variable<String>(shortLink);
+    map['summary'] = Variable<String>(summary);
+    map['content_html'] = Variable<String>(contentHtml);
+    if (!nullToAbsent || coverImage != null) {
+      map['cover_image'] = Variable<String>(coverImage);
+    }
+    map['published_date'] = Variable<String>(publishedDate);
+    if (!nullToAbsent || webUrl != null) {
+      map['web_url'] = Variable<String>(webUrl);
+    }
+    map['allow_comments'] = Variable<bool>(allowComments);
+    return map;
+  }
+
+  PostsTableCompanion toCompanion(bool nullToAbsent) {
+    return PostsTableCompanion(
+      id: Value(id),
+      slug: Value(slug),
+      title: Value(title),
+      categoryId: categoryId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(categoryId),
+      categoryName: categoryName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(categoryName),
+      shortLink: Value(shortLink),
+      summary: Value(summary),
+      contentHtml: Value(contentHtml),
+      coverImage: coverImage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(coverImage),
+      publishedDate: Value(publishedDate),
+      webUrl: webUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(webUrl),
+      allowComments: Value(allowComments),
+    );
+  }
+
+  factory PostData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PostData(
+      id: serializer.fromJson<int>(json['id']),
+      slug: serializer.fromJson<String>(json['slug']),
+      title: serializer.fromJson<String>(json['title']),
+      categoryId: serializer.fromJson<int?>(json['categoryId']),
+      categoryName: serializer.fromJson<String?>(json['categoryName']),
+      shortLink: serializer.fromJson<String>(json['shortLink']),
+      summary: serializer.fromJson<String>(json['summary']),
+      contentHtml: serializer.fromJson<String>(json['contentHtml']),
+      coverImage: serializer.fromJson<String?>(json['coverImage']),
+      publishedDate: serializer.fromJson<String>(json['publishedDate']),
+      webUrl: serializer.fromJson<String?>(json['webUrl']),
+      allowComments: serializer.fromJson<bool>(json['allowComments']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'slug': serializer.toJson<String>(slug),
+      'title': serializer.toJson<String>(title),
+      'categoryId': serializer.toJson<int?>(categoryId),
+      'categoryName': serializer.toJson<String?>(categoryName),
+      'shortLink': serializer.toJson<String>(shortLink),
+      'summary': serializer.toJson<String>(summary),
+      'contentHtml': serializer.toJson<String>(contentHtml),
+      'coverImage': serializer.toJson<String?>(coverImage),
+      'publishedDate': serializer.toJson<String>(publishedDate),
+      'webUrl': serializer.toJson<String?>(webUrl),
+      'allowComments': serializer.toJson<bool>(allowComments),
+    };
+  }
+
+  PostData copyWith({
+    int? id,
+    String? slug,
+    String? title,
+    Value<int?> categoryId = const Value.absent(),
+    Value<String?> categoryName = const Value.absent(),
+    String? shortLink,
+    String? summary,
+    String? contentHtml,
+    Value<String?> coverImage = const Value.absent(),
+    String? publishedDate,
+    Value<String?> webUrl = const Value.absent(),
+    bool? allowComments,
+  }) => PostData(
+    id: id ?? this.id,
+    slug: slug ?? this.slug,
+    title: title ?? this.title,
+    categoryId: categoryId.present ? categoryId.value : this.categoryId,
+    categoryName: categoryName.present ? categoryName.value : this.categoryName,
+    shortLink: shortLink ?? this.shortLink,
+    summary: summary ?? this.summary,
+    contentHtml: contentHtml ?? this.contentHtml,
+    coverImage: coverImage.present ? coverImage.value : this.coverImage,
+    publishedDate: publishedDate ?? this.publishedDate,
+    webUrl: webUrl.present ? webUrl.value : this.webUrl,
+    allowComments: allowComments ?? this.allowComments,
+  );
+  PostData copyWithCompanion(PostsTableCompanion data) {
+    return PostData(
+      id: data.id.present ? data.id.value : this.id,
+      slug: data.slug.present ? data.slug.value : this.slug,
+      title: data.title.present ? data.title.value : this.title,
+      categoryId: data.categoryId.present
+          ? data.categoryId.value
+          : this.categoryId,
+      categoryName: data.categoryName.present
+          ? data.categoryName.value
+          : this.categoryName,
+      shortLink: data.shortLink.present ? data.shortLink.value : this.shortLink,
+      summary: data.summary.present ? data.summary.value : this.summary,
+      contentHtml: data.contentHtml.present
+          ? data.contentHtml.value
+          : this.contentHtml,
+      coverImage: data.coverImage.present
+          ? data.coverImage.value
+          : this.coverImage,
+      publishedDate: data.publishedDate.present
+          ? data.publishedDate.value
+          : this.publishedDate,
+      webUrl: data.webUrl.present ? data.webUrl.value : this.webUrl,
+      allowComments: data.allowComments.present
+          ? data.allowComments.value
+          : this.allowComments,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PostData(')
+          ..write('id: $id, ')
+          ..write('slug: $slug, ')
+          ..write('title: $title, ')
+          ..write('categoryId: $categoryId, ')
+          ..write('categoryName: $categoryName, ')
+          ..write('shortLink: $shortLink, ')
+          ..write('summary: $summary, ')
+          ..write('contentHtml: $contentHtml, ')
+          ..write('coverImage: $coverImage, ')
+          ..write('publishedDate: $publishedDate, ')
+          ..write('webUrl: $webUrl, ')
+          ..write('allowComments: $allowComments')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    slug,
+    title,
+    categoryId,
+    categoryName,
+    shortLink,
+    summary,
+    contentHtml,
+    coverImage,
+    publishedDate,
+    webUrl,
+    allowComments,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PostData &&
+          other.id == this.id &&
+          other.slug == this.slug &&
+          other.title == this.title &&
+          other.categoryId == this.categoryId &&
+          other.categoryName == this.categoryName &&
+          other.shortLink == this.shortLink &&
+          other.summary == this.summary &&
+          other.contentHtml == this.contentHtml &&
+          other.coverImage == this.coverImage &&
+          other.publishedDate == this.publishedDate &&
+          other.webUrl == this.webUrl &&
+          other.allowComments == this.allowComments);
+}
+
+class PostsTableCompanion extends UpdateCompanion<PostData> {
+  final Value<int> id;
+  final Value<String> slug;
+  final Value<String> title;
+  final Value<int?> categoryId;
+  final Value<String?> categoryName;
+  final Value<String> shortLink;
+  final Value<String> summary;
+  final Value<String> contentHtml;
+  final Value<String?> coverImage;
+  final Value<String> publishedDate;
+  final Value<String?> webUrl;
+  final Value<bool> allowComments;
+  const PostsTableCompanion({
+    this.id = const Value.absent(),
+    this.slug = const Value.absent(),
+    this.title = const Value.absent(),
+    this.categoryId = const Value.absent(),
+    this.categoryName = const Value.absent(),
+    this.shortLink = const Value.absent(),
+    this.summary = const Value.absent(),
+    this.contentHtml = const Value.absent(),
+    this.coverImage = const Value.absent(),
+    this.publishedDate = const Value.absent(),
+    this.webUrl = const Value.absent(),
+    this.allowComments = const Value.absent(),
+  });
+  PostsTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String slug,
+    required String title,
+    this.categoryId = const Value.absent(),
+    this.categoryName = const Value.absent(),
+    required String shortLink,
+    required String summary,
+    required String contentHtml,
+    this.coverImage = const Value.absent(),
+    required String publishedDate,
+    this.webUrl = const Value.absent(),
+    required bool allowComments,
+  }) : slug = Value(slug),
+       title = Value(title),
+       shortLink = Value(shortLink),
+       summary = Value(summary),
+       contentHtml = Value(contentHtml),
+       publishedDate = Value(publishedDate),
+       allowComments = Value(allowComments);
+  static Insertable<PostData> custom({
+    Expression<int>? id,
+    Expression<String>? slug,
+    Expression<String>? title,
+    Expression<int>? categoryId,
+    Expression<String>? categoryName,
+    Expression<String>? shortLink,
+    Expression<String>? summary,
+    Expression<String>? contentHtml,
+    Expression<String>? coverImage,
+    Expression<String>? publishedDate,
+    Expression<String>? webUrl,
+    Expression<bool>? allowComments,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (slug != null) 'slug': slug,
+      if (title != null) 'title': title,
+      if (categoryId != null) 'category_id': categoryId,
+      if (categoryName != null) 'category_name': categoryName,
+      if (shortLink != null) 'short_link': shortLink,
+      if (summary != null) 'summary': summary,
+      if (contentHtml != null) 'content_html': contentHtml,
+      if (coverImage != null) 'cover_image': coverImage,
+      if (publishedDate != null) 'published_date': publishedDate,
+      if (webUrl != null) 'web_url': webUrl,
+      if (allowComments != null) 'allow_comments': allowComments,
+    });
+  }
+
+  PostsTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? slug,
+    Value<String>? title,
+    Value<int?>? categoryId,
+    Value<String?>? categoryName,
+    Value<String>? shortLink,
+    Value<String>? summary,
+    Value<String>? contentHtml,
+    Value<String?>? coverImage,
+    Value<String>? publishedDate,
+    Value<String?>? webUrl,
+    Value<bool>? allowComments,
+  }) {
+    return PostsTableCompanion(
+      id: id ?? this.id,
+      slug: slug ?? this.slug,
+      title: title ?? this.title,
+      categoryId: categoryId ?? this.categoryId,
+      categoryName: categoryName ?? this.categoryName,
+      shortLink: shortLink ?? this.shortLink,
+      summary: summary ?? this.summary,
+      contentHtml: contentHtml ?? this.contentHtml,
+      coverImage: coverImage ?? this.coverImage,
+      publishedDate: publishedDate ?? this.publishedDate,
+      webUrl: webUrl ?? this.webUrl,
+      allowComments: allowComments ?? this.allowComments,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (slug.present) {
+      map['slug'] = Variable<String>(slug.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (categoryId.present) {
+      map['category_id'] = Variable<int>(categoryId.value);
+    }
+    if (categoryName.present) {
+      map['category_name'] = Variable<String>(categoryName.value);
+    }
+    if (shortLink.present) {
+      map['short_link'] = Variable<String>(shortLink.value);
+    }
+    if (summary.present) {
+      map['summary'] = Variable<String>(summary.value);
+    }
+    if (contentHtml.present) {
+      map['content_html'] = Variable<String>(contentHtml.value);
+    }
+    if (coverImage.present) {
+      map['cover_image'] = Variable<String>(coverImage.value);
+    }
+    if (publishedDate.present) {
+      map['published_date'] = Variable<String>(publishedDate.value);
+    }
+    if (webUrl.present) {
+      map['web_url'] = Variable<String>(webUrl.value);
+    }
+    if (allowComments.present) {
+      map['allow_comments'] = Variable<bool>(allowComments.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PostsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('slug: $slug, ')
+          ..write('title: $title, ')
+          ..write('categoryId: $categoryId, ')
+          ..write('categoryName: $categoryName, ')
+          ..write('shortLink: $shortLink, ')
+          ..write('summary: $summary, ')
+          ..write('contentHtml: $contentHtml, ')
+          ..write('coverImage: $coverImage, ')
+          ..write('publishedDate: $publishedDate, ')
+          ..write('webUrl: $webUrl, ')
+          ..write('allowComments: $allowComments')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -12828,6 +13942,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $BookmarkFoldersTableTable(this);
   late final $BookmarkItemsTableTable bookmarkItemsTable =
       $BookmarkItemsTableTable(this);
+  late final $PostCategoriesTableTable postCategoriesTable =
+      $PostCategoriesTableTable(this);
+  late final $PostsTableTable postsTable = $PostsTableTable(this);
   late final Index weeklyRankIdx = Index(
     'weekly_rank_idx',
     'CREATE INDEX weekly_rank_idx ON weekly_leaderboard (rank)',
@@ -12877,6 +13994,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     doubtTopicsTable,
     bookmarkFoldersTable,
     bookmarkItemsTable,
+    postCategoriesTable,
+    postsTable,
     weeklyRankIdx,
     weeklyPointsIdx,
     monthlyRankIdx,
@@ -19514,6 +20633,570 @@ typedef $$BookmarkItemsTableTableProcessedTableManager =
       BookmarkItemsTableData,
       PrefetchHooks Function({bool folderId})
     >;
+typedef $$PostCategoriesTableTableCreateCompanionBuilder =
+    PostCategoriesTableCompanion Function({
+      Value<int> id,
+      required String name,
+      required int displayOrder,
+      required String color,
+      required String slug,
+      required bool isStarred,
+    });
+typedef $$PostCategoriesTableTableUpdateCompanionBuilder =
+    PostCategoriesTableCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<int> displayOrder,
+      Value<String> color,
+      Value<String> slug,
+      Value<bool> isStarred,
+    });
+
+class $$PostCategoriesTableTableFilterComposer
+    extends Composer<_$AppDatabase, $PostCategoriesTableTable> {
+  $$PostCategoriesTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get color => $composableBuilder(
+    column: $table.color,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get slug => $composableBuilder(
+    column: $table.slug,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isStarred => $composableBuilder(
+    column: $table.isStarred,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PostCategoriesTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $PostCategoriesTableTable> {
+  $$PostCategoriesTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get color => $composableBuilder(
+    column: $table.color,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get slug => $composableBuilder(
+    column: $table.slug,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isStarred => $composableBuilder(
+    column: $table.isStarred,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PostCategoriesTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PostCategoriesTableTable> {
+  $$PostCategoriesTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => column);
+
+  GeneratedColumn<String> get slug =>
+      $composableBuilder(column: $table.slug, builder: (column) => column);
+
+  GeneratedColumn<bool> get isStarred =>
+      $composableBuilder(column: $table.isStarred, builder: (column) => column);
+}
+
+class $$PostCategoriesTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PostCategoriesTableTable,
+          PostCategoryData,
+          $$PostCategoriesTableTableFilterComposer,
+          $$PostCategoriesTableTableOrderingComposer,
+          $$PostCategoriesTableTableAnnotationComposer,
+          $$PostCategoriesTableTableCreateCompanionBuilder,
+          $$PostCategoriesTableTableUpdateCompanionBuilder,
+          (
+            PostCategoryData,
+            BaseReferences<
+              _$AppDatabase,
+              $PostCategoriesTableTable,
+              PostCategoryData
+            >,
+          ),
+          PostCategoryData,
+          PrefetchHooks Function()
+        > {
+  $$PostCategoriesTableTableTableManager(
+    _$AppDatabase db,
+    $PostCategoriesTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PostCategoriesTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PostCategoriesTableTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$PostCategoriesTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> displayOrder = const Value.absent(),
+                Value<String> color = const Value.absent(),
+                Value<String> slug = const Value.absent(),
+                Value<bool> isStarred = const Value.absent(),
+              }) => PostCategoriesTableCompanion(
+                id: id,
+                name: name,
+                displayOrder: displayOrder,
+                color: color,
+                slug: slug,
+                isStarred: isStarred,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String name,
+                required int displayOrder,
+                required String color,
+                required String slug,
+                required bool isStarred,
+              }) => PostCategoriesTableCompanion.insert(
+                id: id,
+                name: name,
+                displayOrder: displayOrder,
+                color: color,
+                slug: slug,
+                isStarred: isStarred,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PostCategoriesTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PostCategoriesTableTable,
+      PostCategoryData,
+      $$PostCategoriesTableTableFilterComposer,
+      $$PostCategoriesTableTableOrderingComposer,
+      $$PostCategoriesTableTableAnnotationComposer,
+      $$PostCategoriesTableTableCreateCompanionBuilder,
+      $$PostCategoriesTableTableUpdateCompanionBuilder,
+      (
+        PostCategoryData,
+        BaseReferences<
+          _$AppDatabase,
+          $PostCategoriesTableTable,
+          PostCategoryData
+        >,
+      ),
+      PostCategoryData,
+      PrefetchHooks Function()
+    >;
+typedef $$PostsTableTableCreateCompanionBuilder =
+    PostsTableCompanion Function({
+      Value<int> id,
+      required String slug,
+      required String title,
+      Value<int?> categoryId,
+      Value<String?> categoryName,
+      required String shortLink,
+      required String summary,
+      required String contentHtml,
+      Value<String?> coverImage,
+      required String publishedDate,
+      Value<String?> webUrl,
+      required bool allowComments,
+    });
+typedef $$PostsTableTableUpdateCompanionBuilder =
+    PostsTableCompanion Function({
+      Value<int> id,
+      Value<String> slug,
+      Value<String> title,
+      Value<int?> categoryId,
+      Value<String?> categoryName,
+      Value<String> shortLink,
+      Value<String> summary,
+      Value<String> contentHtml,
+      Value<String?> coverImage,
+      Value<String> publishedDate,
+      Value<String?> webUrl,
+      Value<bool> allowComments,
+    });
+
+class $$PostsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $PostsTableTable> {
+  $$PostsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get slug => $composableBuilder(
+    column: $table.slug,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get categoryId => $composableBuilder(
+    column: $table.categoryId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get categoryName => $composableBuilder(
+    column: $table.categoryName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get shortLink => $composableBuilder(
+    column: $table.shortLink,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get summary => $composableBuilder(
+    column: $table.summary,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contentHtml => $composableBuilder(
+    column: $table.contentHtml,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get coverImage => $composableBuilder(
+    column: $table.coverImage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get publishedDate => $composableBuilder(
+    column: $table.publishedDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get webUrl => $composableBuilder(
+    column: $table.webUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get allowComments => $composableBuilder(
+    column: $table.allowComments,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PostsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $PostsTableTable> {
+  $$PostsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get slug => $composableBuilder(
+    column: $table.slug,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get categoryId => $composableBuilder(
+    column: $table.categoryId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get categoryName => $composableBuilder(
+    column: $table.categoryName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get shortLink => $composableBuilder(
+    column: $table.shortLink,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get summary => $composableBuilder(
+    column: $table.summary,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contentHtml => $composableBuilder(
+    column: $table.contentHtml,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get coverImage => $composableBuilder(
+    column: $table.coverImage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get publishedDate => $composableBuilder(
+    column: $table.publishedDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get webUrl => $composableBuilder(
+    column: $table.webUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get allowComments => $composableBuilder(
+    column: $table.allowComments,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PostsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PostsTableTable> {
+  $$PostsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get slug =>
+      $composableBuilder(column: $table.slug, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<int> get categoryId => $composableBuilder(
+    column: $table.categoryId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get categoryName => $composableBuilder(
+    column: $table.categoryName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get shortLink =>
+      $composableBuilder(column: $table.shortLink, builder: (column) => column);
+
+  GeneratedColumn<String> get summary =>
+      $composableBuilder(column: $table.summary, builder: (column) => column);
+
+  GeneratedColumn<String> get contentHtml => $composableBuilder(
+    column: $table.contentHtml,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get coverImage => $composableBuilder(
+    column: $table.coverImage,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get publishedDate => $composableBuilder(
+    column: $table.publishedDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get webUrl =>
+      $composableBuilder(column: $table.webUrl, builder: (column) => column);
+
+  GeneratedColumn<bool> get allowComments => $composableBuilder(
+    column: $table.allowComments,
+    builder: (column) => column,
+  );
+}
+
+class $$PostsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PostsTableTable,
+          PostData,
+          $$PostsTableTableFilterComposer,
+          $$PostsTableTableOrderingComposer,
+          $$PostsTableTableAnnotationComposer,
+          $$PostsTableTableCreateCompanionBuilder,
+          $$PostsTableTableUpdateCompanionBuilder,
+          (PostData, BaseReferences<_$AppDatabase, $PostsTableTable, PostData>),
+          PostData,
+          PrefetchHooks Function()
+        > {
+  $$PostsTableTableTableManager(_$AppDatabase db, $PostsTableTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PostsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PostsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PostsTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> slug = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<int?> categoryId = const Value.absent(),
+                Value<String?> categoryName = const Value.absent(),
+                Value<String> shortLink = const Value.absent(),
+                Value<String> summary = const Value.absent(),
+                Value<String> contentHtml = const Value.absent(),
+                Value<String?> coverImage = const Value.absent(),
+                Value<String> publishedDate = const Value.absent(),
+                Value<String?> webUrl = const Value.absent(),
+                Value<bool> allowComments = const Value.absent(),
+              }) => PostsTableCompanion(
+                id: id,
+                slug: slug,
+                title: title,
+                categoryId: categoryId,
+                categoryName: categoryName,
+                shortLink: shortLink,
+                summary: summary,
+                contentHtml: contentHtml,
+                coverImage: coverImage,
+                publishedDate: publishedDate,
+                webUrl: webUrl,
+                allowComments: allowComments,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String slug,
+                required String title,
+                Value<int?> categoryId = const Value.absent(),
+                Value<String?> categoryName = const Value.absent(),
+                required String shortLink,
+                required String summary,
+                required String contentHtml,
+                Value<String?> coverImage = const Value.absent(),
+                required String publishedDate,
+                Value<String?> webUrl = const Value.absent(),
+                required bool allowComments,
+              }) => PostsTableCompanion.insert(
+                id: id,
+                slug: slug,
+                title: title,
+                categoryId: categoryId,
+                categoryName: categoryName,
+                shortLink: shortLink,
+                summary: summary,
+                contentHtml: contentHtml,
+                coverImage: coverImage,
+                publishedDate: publishedDate,
+                webUrl: webUrl,
+                allowComments: allowComments,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PostsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PostsTableTable,
+      PostData,
+      $$PostsTableTableFilterComposer,
+      $$PostsTableTableOrderingComposer,
+      $$PostsTableTableAnnotationComposer,
+      $$PostsTableTableCreateCompanionBuilder,
+      $$PostsTableTableUpdateCompanionBuilder,
+      (PostData, BaseReferences<_$AppDatabase, $PostsTableTable, PostData>),
+      PostData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -19570,4 +21253,8 @@ class $AppDatabaseManager {
       $$BookmarkFoldersTableTableTableManager(_db, _db.bookmarkFoldersTable);
   $$BookmarkItemsTableTableTableManager get bookmarkItemsTable =>
       $$BookmarkItemsTableTableTableManager(_db, _db.bookmarkItemsTable);
+  $$PostCategoriesTableTableTableManager get postCategoriesTable =>
+      $$PostCategoriesTableTableTableManager(_db, _db.postCategoriesTable);
+  $$PostsTableTableTableManager get postsTable =>
+      $$PostsTableTableTableManager(_db, _db.postsTable);
 }

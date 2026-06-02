@@ -1714,4 +1714,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get forumErrorFailedToPostReply => 'فشل في نشر الرد';
+
+  @override
+  String get noAnnouncementsFound => 'لم يتم العثور على إعلانات.';
+
+  @override
+  String get commentsDisabledByAdmin =>
+      'تم تعطيل التعليقات على هذا المنشور من قبل المسؤول';
 }

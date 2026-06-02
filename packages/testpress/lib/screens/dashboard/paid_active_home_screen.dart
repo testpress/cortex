@@ -6,6 +6,8 @@ import 'package:core/data/data.dart' as dto;
 import 'package:profile/profile.dart';
 import 'package:courses/courses.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import '../announcements/announcements_list_screen.dart';
+import '../announcements/announcement_detail_screen.dart';
 import 'widgets/lesson_cards_section.dart';
 
 class PaidActiveHomeScreen extends ConsumerWidget {
@@ -24,7 +26,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     final userAsync = ref.watch(userProvider);
     
     final heroBanners = ref.watch(heroBannersProvider);
-    final promotionBanners = ref.watch(promotionBannersProvider);
+    final announcements = ref.watch(dto.announcementsProvider);
     final learnersState = ref.watch(learnersProvider(
       timeline: dto.LeaderboardTimeline.thisWeek,
       limit: 10,
@@ -72,11 +74,22 @@ class PaidActiveHomeScreen extends ConsumerWidget {
       isLoading: isBootstrapping,
     );
 
-    final updatesAnnouncements = promotionBanners.when(
+    final updatesAnnouncements = announcements.when(
       data: (data) => UpdatesAnnouncementsSection(
-        banners: data.map(_mapPromotionBanner).toList(),
+        posts: data.take(3).toList(),
         onViewAll: () {
-          // Handle view all navigation
+          Navigator.of(context, rootNavigator: true).push(
+            AppRoute(
+              page: const AnnouncementsListScreen(),
+            ),
+          );
+        },
+        onItemTap: (post) {
+          Navigator.of(context, rootNavigator: true).push(
+            AppRoute(
+              page: AnnouncementDetailScreen(post: post),
+            ),
+          );
         },
       ),
       loading: () => const SizedBox(height: 100),
@@ -240,17 +253,6 @@ class PaidActiveHomeScreen extends ConsumerWidget {
       imageUrl: d.imageUrl,
       title: d.title ?? '',
       link: d.link ?? '#',
-    );
-  }
-
-  AnnouncementBanner _mapPromotionBanner(dto.DashboardBannerDto d) {
-    return AnnouncementBanner(
-      id: d.id,
-      title: d.title ?? '',
-      description: d.description ?? '',
-      tag: d.tag,
-      bgColor: Color(d.bgColor ?? 0xFFFFFFFF),
-      textColor: Color(d.textColor ?? 0xFF000000),
     );
   }
 
