@@ -146,8 +146,15 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     });
 
     ref.listen<ExamAttemptState>(examAttemptProvider, (previous, next) {
+      final slug = widget.lesson?.slug ?? lessonDetailAsync.valueOrNull?.slug;
+
       if (previous?.status != ExamAttemptStatus.inProgress &&
           next.status == ExamAttemptStatus.inProgress) {
+        
+        if (slug != null && slug.isNotEmpty) {
+          ref.read(examDetailProvider(slug).notifier).setPausedAttemptsCount(slug, 1);
+        }
+
         // Just loaded the exam (or resumed it), jump to the initial question index
         setState(() {
           _currentQuestionIndex = next.currentQuestionIndex;
@@ -166,6 +173,11 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
         });
         if (_pageController.hasClients) {
           _pageController.jumpToPage(0);
+        }
+      } else if (previous?.status != ExamAttemptStatus.completed &&
+          next.status == ExamAttemptStatus.completed) {
+        if (slug != null && slug.isNotEmpty) {
+          ref.read(examDetailProvider(slug).notifier).setPausedAttemptsCount(slug, 0);
         }
       }
     });

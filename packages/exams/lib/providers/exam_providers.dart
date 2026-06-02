@@ -18,8 +18,14 @@ ExamRepository examRepository(Ref ref) {
 /// Fetches exam details by slug with Stale-While-Revalidate (SWR) cache.
 @Riverpod(keepAlive: true)
 class ExamDetail extends _$ExamDetail {
+  DateTime? _lastLocalPausedUpdate;
+
   @override
   FutureOr<ExamDto> build(String slug) async {
+    ref.onResume(() {
+      revalidate(slug);
+    });
+
     final db = await ref.watch(appDatabaseProvider.future);
     
     // 1. Emit cached data instantly if it exists
@@ -33,7 +39,7 @@ class ExamDetail extends _$ExamDetail {
     }
 
     // 2. Fetch fresh data from network in background
-    _revalidate(slug);
+    revalidate(slug);
 
     // 3. Keep the future resolving based on cache or a new fetch
     if (state.hasValue) {
@@ -47,25 +53,73 @@ class ExamDetail extends _$ExamDetail {
     return freshDto;
   }
 
-  Future<void> _revalidate(String slug) async {
+  Future<void> revalidate(String slug) async {
     try {
       final dataSource = ref.read(dataSourceProvider);
       final freshDto = await dataSource.getExam(slug);
-      final freshJson = jsonEncode(freshDto.toJson());
       
       final db = await ref.read(appDatabaseProvider.future);
       final cachedJson = await db.watchLessonExamMetadataBySlug(slug).first;
       
-      // Only upsert if data changed
-      if (cachedJson != freshJson) {
-        await db.updateLessonExamMetadata(slug, freshJson);
-        state = AsyncData(freshDto);
+      // If we recently updated the paused attempts locally, ignore the API's count
+      // because the API or CDN might be serving stale data.
+      final freshJsonMap = freshDto.toJson();
+      
+      DateTime? lastPausedUpdate = _lastLocalPausedUpdate;
+      if (cachedJson != null) {
+        try {
+          final cachedJsonMap = jsonDecode(cachedJson);
+          final lastUpdateStr = cachedJsonMap['last_local_paused_update'] as String?;
+          if (lastUpdateStr != null) {
+            final parsedDate = DateTime.tryParse(lastUpdateStr);
+            if (parsedDate != null && (lastPausedUpdate == null || parsedDate.isAfter(lastPausedUpdate))) {
+              lastPausedUpdate = parsedDate;
+            }
+          }
+        } catch (_) {}
       }
-    } catch (_) {
+
+      if (lastPausedUpdate != null && 
+          DateTime.now().difference(lastPausedUpdate) < const Duration(minutes: 5)) {
+        if (cachedJson != null) {
+          try {
+            final cachedJsonMap = jsonDecode(cachedJson);
+            if (cachedJsonMap.containsKey('paused_attempts_count')) {
+              freshJsonMap['paused_attempts_count'] = cachedJsonMap['paused_attempts_count'];
+              freshJsonMap['last_local_paused_update'] = lastPausedUpdate.toIso8601String();
+            }
+          } catch (_) {}
+        }
+      }
+      
+      final freshJsonToSave = jsonEncode(freshJsonMap);
+      
+      // Only upsert if data changed
+      if (cachedJson != freshJsonToSave) {
+        await db.updateLessonExamMetadata(slug, freshJsonToSave);
+        state = AsyncData(ExamDto.fromJson(freshJsonMap));
+      }
+    } catch (e, stack) {
       // SWR silently ignores background fetch errors if we have cache
       if (!state.hasValue) {
-        rethrow;
+        state = AsyncError(e, stack);
       }
+    }
+  }
+
+  Future<void> setPausedAttemptsCount(String slug, int count) async {
+    _lastLocalPausedUpdate = DateTime.now();
+    final db = await ref.read(appDatabaseProvider.future);
+    final cachedJsonStr = await db.watchLessonExamMetadataBySlug(slug).first;
+    if (cachedJsonStr != null) {
+      try {
+        final json = jsonDecode(cachedJsonStr) as Map<String, dynamic>;
+        json['paused_attempts_count'] = count;
+        json['last_local_paused_update'] = _lastLocalPausedUpdate?.toIso8601String();
+        final updatedJsonStr = jsonEncode(json);
+        await db.updateLessonExamMetadata(slug, updatedJsonStr);
+        state = AsyncData(ExamDto.fromJson(json));
+      } catch (_) {}
     }
   }
 }
