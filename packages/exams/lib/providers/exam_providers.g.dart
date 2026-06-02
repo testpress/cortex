@@ -25,7 +25,7 @@ final examRepositoryProvider = Provider<ExamRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ExamRepositoryRef = ProviderRef<ExamRepository>;
-String _$examDetailHash() => r'a26751b686b0cef6f195bd5c34c9096d0d754069';
+String _$examAttemptsHash() => r'02cf0665e87034ed8a5e43e4a7104ddc85da2800';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -47,137 +47,6 @@ class _SystemHash {
     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
 }
-
-/// Fetches exam details by slug.
-///
-/// Copied from [examDetail].
-@ProviderFor(examDetail)
-const examDetailProvider = ExamDetailFamily();
-
-/// Fetches exam details by slug.
-///
-/// Copied from [examDetail].
-class ExamDetailFamily extends Family<AsyncValue<ExamDto>> {
-  /// Fetches exam details by slug.
-  ///
-  /// Copied from [examDetail].
-  const ExamDetailFamily();
-
-  /// Fetches exam details by slug.
-  ///
-  /// Copied from [examDetail].
-  ExamDetailProvider call(String slug) {
-    return ExamDetailProvider(slug);
-  }
-
-  @override
-  ExamDetailProvider getProviderOverride(
-    covariant ExamDetailProvider provider,
-  ) {
-    return call(provider.slug);
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'examDetailProvider';
-}
-
-/// Fetches exam details by slug.
-///
-/// Copied from [examDetail].
-class ExamDetailProvider extends AutoDisposeFutureProvider<ExamDto> {
-  /// Fetches exam details by slug.
-  ///
-  /// Copied from [examDetail].
-  ExamDetailProvider(String slug)
-    : this._internal(
-        (ref) => examDetail(ref as ExamDetailRef, slug),
-        from: examDetailProvider,
-        name: r'examDetailProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$examDetailHash,
-        dependencies: ExamDetailFamily._dependencies,
-        allTransitiveDependencies: ExamDetailFamily._allTransitiveDependencies,
-        slug: slug,
-      );
-
-  ExamDetailProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.slug,
-  }) : super.internal();
-
-  final String slug;
-
-  @override
-  Override overrideWith(
-    FutureOr<ExamDto> Function(ExamDetailRef provider) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      override: ExamDetailProvider._internal(
-        (ref) => create(ref as ExamDetailRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        slug: slug,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeFutureProviderElement<ExamDto> createElement() {
-    return _ExamDetailProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is ExamDetailProvider && other.slug == slug;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, slug.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin ExamDetailRef on AutoDisposeFutureProviderRef<ExamDto> {
-  /// The parameter `slug` of this provider.
-  String get slug;
-}
-
-class _ExamDetailProviderElement
-    extends AutoDisposeFutureProviderElement<ExamDto>
-    with ExamDetailRef {
-  _ExamDetailProviderElement(super.provider);
-
-  @override
-  String get slug => (origin as ExamDetailProvider).slug;
-}
-
-String _$examAttemptsHash() => r'02cf0665e87034ed8a5e43e4a7104ddc85da2800';
 
 /// Fetches attempt history for an exam.
 ///
@@ -307,6 +176,147 @@ class _ExamAttemptsProviderElement
 
   @override
   String get attemptsUrl => (origin as ExamAttemptsProvider).attemptsUrl;
+}
+
+String _$examDetailHash() => r'b14fd81ab3d0142889d3f8cb9ddf22656a3b22a2';
+
+abstract class _$ExamDetail extends BuildlessAsyncNotifier<ExamDto> {
+  late final String slug;
+
+  FutureOr<ExamDto> build(String slug);
+}
+
+/// Fetches exam details by slug with Stale-While-Revalidate (SWR) cache.
+///
+/// Copied from [ExamDetail].
+@ProviderFor(ExamDetail)
+const examDetailProvider = ExamDetailFamily();
+
+/// Fetches exam details by slug with Stale-While-Revalidate (SWR) cache.
+///
+/// Copied from [ExamDetail].
+class ExamDetailFamily extends Family<AsyncValue<ExamDto>> {
+  /// Fetches exam details by slug with Stale-While-Revalidate (SWR) cache.
+  ///
+  /// Copied from [ExamDetail].
+  const ExamDetailFamily();
+
+  /// Fetches exam details by slug with Stale-While-Revalidate (SWR) cache.
+  ///
+  /// Copied from [ExamDetail].
+  ExamDetailProvider call(String slug) {
+    return ExamDetailProvider(slug);
+  }
+
+  @override
+  ExamDetailProvider getProviderOverride(
+    covariant ExamDetailProvider provider,
+  ) {
+    return call(provider.slug);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'examDetailProvider';
+}
+
+/// Fetches exam details by slug with Stale-While-Revalidate (SWR) cache.
+///
+/// Copied from [ExamDetail].
+class ExamDetailProvider
+    extends AsyncNotifierProviderImpl<ExamDetail, ExamDto> {
+  /// Fetches exam details by slug with Stale-While-Revalidate (SWR) cache.
+  ///
+  /// Copied from [ExamDetail].
+  ExamDetailProvider(String slug)
+    : this._internal(
+        () => ExamDetail()..slug = slug,
+        from: examDetailProvider,
+        name: r'examDetailProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$examDetailHash,
+        dependencies: ExamDetailFamily._dependencies,
+        allTransitiveDependencies: ExamDetailFamily._allTransitiveDependencies,
+        slug: slug,
+      );
+
+  ExamDetailProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.slug,
+  }) : super.internal();
+
+  final String slug;
+
+  @override
+  FutureOr<ExamDto> runNotifierBuild(covariant ExamDetail notifier) {
+    return notifier.build(slug);
+  }
+
+  @override
+  Override overrideWith(ExamDetail Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: ExamDetailProvider._internal(
+        () => create()..slug = slug,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        slug: slug,
+      ),
+    );
+  }
+
+  @override
+  AsyncNotifierProviderElement<ExamDetail, ExamDto> createElement() {
+    return _ExamDetailProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ExamDetailProvider && other.slug == slug;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, slug.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin ExamDetailRef on AsyncNotifierProviderRef<ExamDto> {
+  /// The parameter `slug` of this provider.
+  String get slug;
+}
+
+class _ExamDetailProviderElement
+    extends AsyncNotifierProviderElement<ExamDetail, ExamDto>
+    with ExamDetailRef {
+  _ExamDetailProviderElement(super.provider);
+
+  @override
+  String get slug => (origin as ExamDetailProvider).slug;
 }
 
 String _$examAttemptHash() => r'3ee751f3208d764d020b9ac9a7ba641073e91764';

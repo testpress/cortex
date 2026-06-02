@@ -54,6 +54,7 @@ class LessonsTable extends Table {
   TextColumn get attemptsUrl => text().nullable()();
   TextColumn get slug => text().nullable()();
   TextColumn get description => text().nullable()();
+  TextColumn get examMetadataJson => text().nullable()(); // SWR cache
 
   // Video Subtabs Fields
   BoolColumn get enableTranscript => boolean().withDefault(const Constant(false))();

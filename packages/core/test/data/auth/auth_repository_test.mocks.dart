@@ -1228,6 +1228,24 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
           as _i6.Future<void>);
 
   @override
+  _i6.Stream<String?> watchLessonExamMetadataBySlug(String? slug) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchLessonExamMetadataBySlug, [slug]),
+            returnValue: _i6.Stream<String?>.empty(),
+            returnValueForMissingStub: _i6.Stream<String?>.empty(),
+          )
+          as _i6.Stream<String?>);
+
+  @override
+  _i6.Future<void> updateLessonExamMetadata(String? slug, String? json) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateLessonExamMetadata, [slug, json]),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
   _i6.Stream<List<_i4.LiveClassesTableData>> watchAllLiveClasses() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllLiveClasses, []),
