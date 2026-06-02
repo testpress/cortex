@@ -41,13 +41,15 @@ class AnnouncementListItem extends StatelessWidget {
                   AppText.cardSubtitle(
                     formattedDate,
                   ),
-                  SizedBox(width: design.spacing.sm),
+                  if (post.categoryName != null && post.categoryName!.isNotEmpty)
+                    SizedBox(width: design.spacing.sm),
                 ],
-                AppBadge(
-                  label: post.categoryName ?? '',
-                  isPill: true,
-                  backgroundColor: design.colors.surface,
-                ),
+                if (post.categoryName != null && post.categoryName!.isNotEmpty)
+                  AppBadge(
+                    label: post.categoryName!,
+                    isPill: true,
+                    backgroundColor: design.colors.surface,
+                  ),
               ],
             ),
             SizedBox(height: design.spacing.sm),
