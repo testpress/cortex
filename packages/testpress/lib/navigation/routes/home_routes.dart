@@ -46,10 +46,20 @@ class HomeRoutes {
                   path: 'ask',
                   parentNavigatorKey: rootNavigatorKey,
                   builder: (context, state) {
-                    final chapterContentId = int.tryParse(state.uri.queryParameters['chapter_content_id'] ?? '');
                     final questionId = int.tryParse(state.uri.queryParameters['question_id'] ?? '');
+                    final chapterContentId = int.tryParse(state.uri.queryParameters['chapterContentId'] ?? '');
+                    final lessonTitle = state.uri.queryParameters['lessonTitle'];
+                    final lessonTypeStr = state.uri.queryParameters['lessonType'];
+                    final lessonType = lessonTypeStr != null 
+                        ? LessonType.values.firstWhere(
+                            (e) => e.name == lessonTypeStr, 
+                            orElse: () => LessonType.unknown)
+                        : null;
+                    
                     return AskDoubtFormScreen(
                       chapterContentId: chapterContentId,
+                      lessonTitle: lessonTitle,
+                      lessonType: lessonType,
                       questionId: questionId,
                     );
                   },
