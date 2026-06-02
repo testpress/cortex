@@ -137,7 +137,11 @@ class _LessonDetailOrchestratorState
             right: 24,
             child: AskDoubtFab(
               onTap: () {
-                context.push('/home/discussions/doubts/ask', extra: lesson);
+                context.push('/home/discussions/doubts/ask', extra: {
+                  'chapterContentId': int.tryParse(lesson.id),
+                  'lessonTitle': lesson.title,
+                  'lessonType': lesson.type,
+                });
               },
             ),
           ),

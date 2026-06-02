@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:discussions/discussions.dart';
-import 'package:courses/courses.dart';
 import '../../screens/dashboard/paid_active_home_screen.dart';
 
 class HomeRoutes {
@@ -48,9 +47,12 @@ class HomeRoutes {
                   parentNavigatorKey: rootNavigatorKey,
                   builder: (context, state) {
                     final questionId = int.tryParse(state.uri.queryParameters['question_id'] ?? '');
-                    final lesson = state.extra is Lesson ? state.extra as Lesson : null;
+                    final extra = state.extra is Map<String, dynamic> ? state.extra as Map<String, dynamic> : null;
+                    
                     return AskDoubtFormScreen(
-                      lesson: lesson,
+                      chapterContentId: extra?['chapterContentId'] as int?,
+                      lessonTitle: extra?['lessonTitle'] as String?,
+                      lessonType: extra?['lessonType'] as LessonType?,
                       questionId: questionId,
                     );
                   },

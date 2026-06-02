@@ -8,14 +8,19 @@ import '../providers/doubt_providers.dart';
 import '../widgets/forum_header.dart';
 import '../widgets/forum_composer.dart';
 
-import 'package:courses/courses.dart';
-
 class AskDoubtFormScreen extends ConsumerStatefulWidget {
-  final Lesson? lesson;
+  final int? chapterContentId;
+  final String? lessonTitle;
+  final LessonType? lessonType;
   final int? questionId;
 
-  const AskDoubtFormScreen({super.key, this.lesson, this.questionId})
-      : assert(lesson == null || questionId == null, 'Cannot provide both lesson and questionId');
+  const AskDoubtFormScreen({
+    super.key, 
+    this.chapterContentId, 
+    this.lessonTitle, 
+    this.lessonType,
+    this.questionId,
+  }) : assert((chapterContentId == null && lessonTitle == null) || questionId == null, 'Cannot provide both lesson context and questionId');
 
   @override
   ConsumerState<AskDoubtFormScreen> createState() => _AskDoubtFormScreenState();
@@ -73,7 +78,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        if (widget.lesson != null ||
+                        if (widget.chapterContentId != null ||
                             widget.questionId != null) ...[
                           _contextLinkBadge(design, l10n),
                           const SizedBox(height: 16),
@@ -246,7 +251,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
     final isQuestion = widget.questionId != null;
     final icon = isQuestion 
         ? LucideIcons.helpCircle 
-        : widget.lesson?.type.icon ?? LucideIcons.bookOpen;
+        : widget.lessonType?.icon ?? LucideIcons.bookOpen;
         
     return Container(
       padding: EdgeInsets.symmetric(horizontal: design.spacing.md, vertical: design.spacing.sm),
@@ -269,9 +274,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
             child: AppText.bodySmall(
               isQuestion
                   ? 'Question ID: ${widget.questionId}'
-                  : widget.lesson != null
-                      ? widget.lesson!.title
-                      : 'Lesson Details',
+                  : widget.lessonTitle ?? 'Lesson Details',
               color: design.colors.accent2,
             ),
           ),
@@ -424,7 +427,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
       _quillController.document,
     );
     final topicId = _selectedTopic?.id;
-    final chapterContentId = widget.lesson != null ? int.tryParse(widget.lesson!.id) : null;
+    final chapterContentId = widget.chapterContentId;
     final questionId = widget.questionId;
 
     ref.read(doubtRepositoryProvider.future).then((repo) async {
