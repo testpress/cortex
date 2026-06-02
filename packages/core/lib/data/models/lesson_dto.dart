@@ -466,10 +466,10 @@ class LessonDto {
       title: json['title'] as String? ?? json['name'] as String? ?? '',
       type: type,
       duration: TimeFormatter.formatDuration(
-            json['duration'] as String? ?? 
-            video?['duration'] as String? ??
-            liveStream?['duration'] as String? ??
-            exam?['duration'] as String?) ??
+            json['duration']?.toString() ?? 
+            video?['duration']?.toString() ??
+            liveStream?['duration']?.toString() ??
+            exam?['duration']?.toString()) ??
         '',
       progressStatus: _parseStatus(json['state'] ?? json['progressStatus']),
       isLocked: !(json['active'] as bool? ?? json['isLocked'] == false),

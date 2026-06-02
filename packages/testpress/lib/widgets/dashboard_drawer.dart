@@ -63,7 +63,7 @@ class DashboardDrawer extends ConsumerWidget {
               },
             ),
             AppDrawerItem(
-              icon: LucideIcons.helpCircle,
+              icon: LucideIcons.messageCircleQuestionMark,
               label: l10n.drawerDoubts,
               action: () {
                 ref.read(isHomeDrawerOpenProvider.notifier).state = false;
