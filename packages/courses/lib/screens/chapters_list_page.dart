@@ -8,6 +8,7 @@ import '../widgets/chapters_filter_tab_bar.dart';
 import '../widgets/chapter_curriculum_item.dart';
 import '../widgets/curriculum_header.dart';
 import '../widgets/lesson_list_item.dart';
+import '../widgets/chapters_filter_rules.dart';
 
 /// Screen displaying the full curriculum (chapters and lessons) of a course.
 class ChaptersListPage extends ConsumerStatefulWidget {
@@ -77,6 +78,11 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final config = ref.watch(clientConfigProvider);
+    final visibleFilters = ChaptersFilterRules.getVisibleFilters(config);
+    final activeFilter = visibleFilters.contains(_activeFilter)
+        ? _activeFilter
+        : CurriculumFilter.all;
 
     final chaptersAsync = ref.watch(
       subChaptersProvider(widget.courseId, widget.parentId),
@@ -91,14 +97,14 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
             orElse: () => null,
           );
 
-          final showLessons = _activeFilter != CurriculumFilter.all || chapters.isEmpty;
+          final showLessons = activeFilter != CurriculumFilter.all || chapters.isEmpty;
 
           final lessons = <LessonDto>[];
           bool isLoadingFilter = false;
           bool isLoadingMore = false;
 
           if (showLessons) {
-            final type = _apiTypeForFilter(_activeFilter);
+            final type = _apiTypeForFilter(activeFilter);
             final filterState = ref.watch(filteredLessonsProvider(
               widget.courseId,
               chapterId: widget.parentId,
@@ -109,10 +115,10 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
             isLoadingMore = filterState.isLoadingMore;
           }
 
-          final filteredLessons = _activeFilter == CurriculumFilter.all || _activeFilter == CurriculumFilter.lesson
+          final filteredLessons = activeFilter == CurriculumFilter.all || activeFilter == CurriculumFilter.lesson
               ? lessons
               : lessons.where((l) {
-                  final targetType = switch (_activeFilter) {
+                  final targetType = switch (activeFilter) {
                     CurriculumFilter.video => LessonType.video,
                     CurriculumFilter.assessment => LessonType.assessment,
                     CurriculumFilter.test => LessonType.test,
@@ -121,7 +127,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                   return l.type == targetType;
                 }).toList();
 
-          final showChapters = _activeFilter == CurriculumFilter.all && chapters.isNotEmpty;
+          final showChapters = activeFilter == CurriculumFilter.all && chapters.isNotEmpty;
           String headerTitle = course?.title ?? 'Curriculum';
 
           return Column(
@@ -145,8 +151,9 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 12),
                         child: ChaptersFilterTabBar(
-                          activeFilter: _activeFilter,
+                          activeFilter: activeFilter,
                           onFilterChanged: _onFilterChanged,
+                          visibleFilters: visibleFilters,
                         ),
                       ),
                   ],
@@ -199,7 +206,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                       : filteredLessons.isEmpty
                           ? Center(
                               child: AppText.body(
-                                'No ${widget.showFilters ? _activeFilter.displayName : "exams"} found.',
+                                'No ${widget.showFilters ? activeFilter.displayName : "exams"} found.',
                                 color: design.colors.textSecondary,
                               ),
                             )
@@ -274,8 +281,9 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 12),
                         child: ChaptersFilterTabBar(
-                          activeFilter: _activeFilter,
+                          activeFilter: activeFilter,
                           onFilterChanged: _onFilterChanged,
+                          visibleFilters: visibleFilters,
                         ),
                       ),
                   ],

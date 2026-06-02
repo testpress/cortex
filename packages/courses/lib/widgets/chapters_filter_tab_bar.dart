@@ -26,10 +26,12 @@ class ChaptersFilterTabBar extends StatelessWidget {
     super.key,
     required this.activeFilter,
     required this.onFilterChanged,
+    required this.visibleFilters,
   });
 
   final CurriculumFilter activeFilter;
   final ValueChanged<CurriculumFilter> onFilterChanged;
+  final List<CurriculumFilter> visibleFilters;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +60,7 @@ class ChaptersFilterTabBar extends StatelessWidget {
         label: l10n.filterTest,
         icon: LucideIcons.award,
       ),
-    ];
+    ].where((tab) => visibleFilters.contains(tab.filter)).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
