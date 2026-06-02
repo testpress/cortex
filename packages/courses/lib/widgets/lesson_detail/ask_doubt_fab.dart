@@ -15,12 +15,12 @@ class AskDoubtFab extends StatelessWidget {
 
     return AppFocusable(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(50),
+      borderRadius: BorderRadius.circular(design.radius.full),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: design.colors.primary,
-          borderRadius: BorderRadius.circular(50),
+          borderRadius: BorderRadius.circular(design.radius.full),
           boxShadow: design.shadows.floating,
         ),
         child: Row(
