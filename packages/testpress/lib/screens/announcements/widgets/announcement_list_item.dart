@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../announcement_detail_screen.dart';
 
 class AnnouncementListItem extends StatelessWidget {
@@ -22,6 +23,7 @@ class AnnouncementListItem extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
+        if (Skeletonizer.maybeOf(context)?.enabled ?? false) return;
         Navigator.of(context, rootNavigator: true).push(
           AppRoute(
             page: AnnouncementDetailScreen(post: post),
