@@ -16,12 +16,27 @@ class Announcements extends _$Announcements {
   @override
   Stream<List<PostDto>> build() async* {
     _paginationState = const PaginationState();
-    // Fire and forget fetch for page 1 to populate DB,
-    // but hold a reference so loadMore() can await it.
-    _initialFetch = _fetchPage(1);
-
-    // Watch the database for reactive UI updates
     final repository = await ref.watch(postsRepositoryProvider.future);
+
+    // Check if we have cached posts to decide how aggressively to handle errors.
+    final cachedPosts = await repository.watchPosts().first;
+
+    if (cachedPosts.isEmpty) {
+      // First launch or cleared cache: await the fetch so a network failure
+      // surfaces as a stream error and the UI shows AppErrorView + retry.
+      try {
+        _initialFetch = _fetchPage(1);
+        await _initialFetch;
+      } catch (e, stack) {
+        yield* Stream.error(e, stack);
+        return;
+      }
+    } else {
+      // We already have cached data: show it immediately and sync in background.
+      // Errors here are non-critical — the user still sees their cached content.
+      _initialFetch = _fetchPage(1).catchError((_) {});
+    }
+
     yield* repository.watchPosts();
   }
 
