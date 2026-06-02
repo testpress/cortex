@@ -9,6 +9,7 @@ import '../widgets/lesson_detail/lesson_web_view.dart';
 import '../widgets/lesson_detail/video_lesson_viewer.dart';
 import '../widgets/lesson_detail/attachment_viewer.dart';
 import '../widgets/lesson_detail/live_stream_viewer.dart';
+import '../widgets/lesson_detail/ask_doubt_fab.dart';
 
 /// Orchestrator that decides which viewer to show for a given lesson.
 /// It wraps content in the unified [LessonDetailShell].
@@ -124,6 +125,22 @@ class _LessonDetailOrchestratorState
               lesson.type != LessonType.liveStream,
           child: _buildLessonContent(context),
         ),
+        if (lesson.isComplete && [
+          LessonType.pdf,
+          LessonType.notes,
+          LessonType.embedContent,
+          LessonType.liveStream,
+          LessonType.attachment,
+        ].contains(lesson.type))
+          Positioned(
+            bottom: 106,
+            right: 24,
+            child: AskDoubtFab(
+              onTap: () {
+                context.push('/home/discussions/doubts/ask', extra: lesson);
+              },
+            ),
+          ),
         AppBottomSheet(
           isOpen: _isBookmarkSheetOpen,
           onClose: () => setState(() => _isBookmarkSheetOpen = false),

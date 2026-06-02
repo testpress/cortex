@@ -1,6 +1,27 @@
+import 'package:flutter/widgets.dart';
+import 'package:core/core.dart';
 import 'package:core/data/data.dart' show LessonType, LessonProgressStatus, LessonDto;
 
 export 'package:core/data/data.dart' show LessonType, LessonProgressStatus, LessonDto;
+
+extension LessonTypeIconX on LessonType {
+  IconData get icon {
+    switch (this) {
+      case LessonType.video:
+        return LucideIcons.playCircle;
+      case LessonType.pdf:
+      case LessonType.attachment:
+        return LucideIcons.paperclip;
+      case LessonType.notes:
+      case LessonType.embedContent:
+        return LucideIcons.penSquare;
+      case LessonType.liveStream:
+        return LucideIcons.video;
+      default:
+        return LucideIcons.bookOpen;
+    }
+  }
+}
 
 /// Domain model for a specific content item within a chapter.
 class Lesson {

@@ -8,11 +8,14 @@ import '../providers/doubt_providers.dart';
 import '../widgets/forum_header.dart';
 import '../widgets/forum_composer.dart';
 
+import 'package:courses/courses.dart';
+
 class AskDoubtFormScreen extends ConsumerStatefulWidget {
-  final int? chapterContentId;
+  final Lesson? lesson;
   final int? questionId;
 
-  const AskDoubtFormScreen({super.key, this.chapterContentId, this.questionId});
+  const AskDoubtFormScreen({super.key, this.lesson, this.questionId})
+      : assert(lesson == null || questionId == null, 'Cannot provide both lesson and questionId');
 
   @override
   ConsumerState<AskDoubtFormScreen> createState() => _AskDoubtFormScreenState();
@@ -70,7 +73,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        if (widget.chapterContentId != null ||
+                        if (widget.lesson != null ||
                             widget.questionId != null) ...[
                           _contextLinkBadge(design, l10n),
                           const SizedBox(height: 16),
@@ -83,7 +86,6 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                           controller: _titleController,
                           autofocus: true,
                           textStyle: design.typography.bodySmall,
-                          contentPadding: EdgeInsets.all(design.spacing.md),
                         ),
                         const SizedBox(height: 24),
                         _sectionLabel(l10n.doubtsFormDescriptionLabel),
@@ -242,27 +244,35 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
 
   Widget _contextLinkBadge(DesignConfig design, AppLocalizations l10n) {
     final isQuestion = widget.questionId != null;
+    final icon = isQuestion 
+        ? LucideIcons.helpCircle 
+        : widget.lesson?.type.icon ?? LucideIcons.bookOpen;
+        
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: design.spacing.sm, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: design.spacing.md, vertical: design.spacing.sm),
       decoration: BoxDecoration(
-        color: design.colors.surfaceVariant,
+        color: design.colors.accent2.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(design.radius.md),
-        border: Border.all(color: design.colors.divider),
+        border: Border.all(
+          color: design.colors.accent2.withValues(alpha: 0.3),
+        ),
       ),
       child: Row(
         children: [
           Icon(
-            isQuestion ? LucideIcons.helpCircle : LucideIcons.bookOpen,
-            size: 18,
+            icon,
+            size: 20,
             color: design.colors.accent2,
           ),
           const SizedBox(width: 8),
           Expanded(
-            child: AppText.caption(
+            child: AppText.bodySmall(
               isQuestion
-                  ? 'Linked to Question ID: ${widget.questionId}'
-                  : 'Linked to Lesson ID: ${widget.chapterContentId}',
-              color: design.colors.textSecondary,
+                  ? 'Question ID: ${widget.questionId}'
+                  : widget.lesson != null
+                      ? widget.lesson!.title
+                      : 'Lesson Details',
+              color: design.colors.accent2,
             ),
           ),
         ],
@@ -414,7 +424,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
       _quillController.document,
     );
     final topicId = _selectedTopic?.id;
-    final chapterContentId = widget.chapterContentId;
+    final chapterContentId = widget.lesson != null ? int.tryParse(widget.lesson!.id) : null;
     final questionId = widget.questionId;
 
     ref.read(doubtRepositoryProvider.future).then((repo) async {
