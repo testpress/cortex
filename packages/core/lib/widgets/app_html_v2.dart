@@ -56,19 +56,22 @@ class AppHtmlV2 extends StatelessWidget {
           double? w = widthAttr != null ? double.tryParse(widthAttr) : null;
           double? h = heightAttr != null ? double.tryParse(heightAttr) : null;
           
-          Widget placeholder = Container(
-            width: double.infinity,
-            height: h ?? 250,
-            decoration: BoxDecoration(
-              color: design.colors.surfaceVariant,
-              borderRadius: BorderRadius.circular(design.radius.md),
-            ),
+          final decoration = BoxDecoration(
+            color: design.colors.surfaceVariant,
+            borderRadius: BorderRadius.circular(design.radius.md),
           );
 
+          Widget placeholder;
           if (w != null && h != null && w > 0 && h > 0) {
             placeholder = AspectRatio(
               aspectRatio: w / h,
-              child: placeholder,
+              child: Container(decoration: decoration),
+            );
+          } else {
+            placeholder = SizedBox(
+              width: double.infinity,
+              height: h ?? 250,
+              child: Container(decoration: decoration),
             );
           }
 
