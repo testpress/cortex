@@ -119,7 +119,7 @@ class PostDto {
     final categoryMap = <int, String>{};
     for (final c in categoriesJson) {
       if (c is Map<String, dynamic> && c['id'] != null && c['name'] != null) {
-        categoryMap[c['id'] as int] = c['name'] as String;
+        categoryMap[(c['id'] as num).toInt()] = c['name'] as String;
       }
     }
 
