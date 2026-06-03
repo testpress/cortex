@@ -536,14 +536,14 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
       if (data is Map<String, dynamic>) {
         if (data['type'] == 'optionSelect') {
           _handleOptionSelect(state, question, data['id'].toString());
+          return;
         } else if (data['type'] == 'inputChange') {
           _handleInputChange(state, question, data['value'].toString());
+          return;
         }
       }
-    } catch (_) {
-      // Legacy fallback: plain string is an option ID
-      _handleOptionSelect(state, question, message);
-    }
+    } catch (_) {}
+    _handleOptionSelect(state, question, message);
   }
 
   void _handleInputChange(ExamAttemptState state, QuestionDto question, String value) {

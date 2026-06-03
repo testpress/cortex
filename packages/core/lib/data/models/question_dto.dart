@@ -72,7 +72,7 @@ class QuestionDto {
           const [],
       shortText: (data['short_text'] ?? json['short_text']) as String?,
       essayText: (data['essay_text'] ?? json['essay_text']) as String?,
-      sectionName: (json['attempt_section'] as Map<String, dynamic>?)?['name'] as String? ?? (data['attempt_section'] as Map<String, dynamic>?)?['name'] as String?,
+      sectionName: (json['attempt_section'] is Map) ? (json['attempt_section'] as Map)['name']?.toString() : (data['attempt_section'] is Map) ? (data['attempt_section'] as Map)['name']?.toString() : null,
     );
   }
 

@@ -45,7 +45,11 @@ abstract final class TestQuestionHtmlBuilder {
     }
 
     if (question.type == 'shortAnswer') {
-      final value = (answer?.shortText ?? '').replaceAll('"', '&quot;');
+      final value = (answer?.shortText ?? '')
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;');
       sb.writeln('''
         <div class="input-container">
           <input class="edit_box" type="text" inputmode="text" placeholder="YOUR ANSWER"
@@ -54,7 +58,11 @@ abstract final class TestQuestionHtmlBuilder {
         </div>
       ''');
     } else if (question.type == 'numerical') {
-      final value = (answer?.shortText ?? '').replaceAll('"', '&quot;');
+      final value = (answer?.shortText ?? '')
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;');
       sb.writeln('''
         <div class="input-container">
           <input class="edit_box" type="text" inputmode="decimal" placeholder="YOUR ANSWER"
@@ -63,7 +71,11 @@ abstract final class TestQuestionHtmlBuilder {
         </div>
       ''');
     } else if (question.type == 'essay') {
-      final value = answer?.essayText ?? '';
+      final value = (answer?.essayText ?? '')
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;');
       sb.writeln('''
         <div class="input-container">
           <textarea class="essay_box" rows="10" placeholder="YOUR ANSWER"

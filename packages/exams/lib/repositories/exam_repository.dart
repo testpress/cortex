@@ -310,11 +310,12 @@ class ExamRepository {
 
       final initialAnswers = Map<String, AnswerDto>.from(_currentState.answers);
       for (final q in questions) {
-        if (q.selectedOptionIds.isNotEmpty || (q.shortText != null && q.shortText!.isNotEmpty)) {
+        if (q.selectedOptionIds.isNotEmpty || (q.shortText != null && q.shortText!.isNotEmpty) || (q.essayText != null && q.essayText!.isNotEmpty)) {
           initialAnswers[q.id] = AnswerDto(
             questionId: q.id,
             selectedOptions: q.selectedOptionIds,
             shortText: q.shortText,
+            essayText: q.essayText,
           );
         }
       }
