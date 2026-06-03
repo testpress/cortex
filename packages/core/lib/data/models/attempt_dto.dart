@@ -55,6 +55,60 @@ class AttemptDto {
     this.lastViewedQuestionId,
   });
 
+  AttemptDto copyWith({
+    String? id,
+    String? state,
+    String? remainingTime,
+    String? questionsUrl,
+    String? heartbeatUrl,
+    String? endUrl,
+    String? startUrl,
+    String? score,
+    String? date,
+    int? correctCount,
+    int? incorrectCount,
+    int? totalQuestions,
+    List<SectionDto>? sections,
+    String? reviewUrl,
+    int? accuracy,
+    String? percentile,
+    String? percentage,
+    String? rank,
+    String? maxRank,
+    bool? rankEnabled,
+    String? markPerQuestion,
+    String? negativeMarks,
+    String? timeTaken,
+    int? lastViewedQuestionId,
+  }) {
+    return AttemptDto(
+      id: id ?? this.id,
+      state: state ?? this.state,
+      remainingTime: remainingTime ?? this.remainingTime,
+      questionsUrl: questionsUrl ?? this.questionsUrl,
+      heartbeatUrl: heartbeatUrl ?? this.heartbeatUrl,
+      endUrl: endUrl ?? this.endUrl,
+      startUrl: startUrl ?? this.startUrl,
+      score: score ?? this.score,
+      date: date ?? this.date,
+      correctCount: correctCount ?? this.correctCount,
+      incorrectCount: incorrectCount ?? this.incorrectCount,
+      totalQuestions: totalQuestions ?? this.totalQuestions,
+      sections: sections ?? this.sections,
+      reviewUrl: reviewUrl ?? this.reviewUrl,
+      accuracy: accuracy ?? this.accuracy,
+      percentile: percentile ?? this.percentile,
+      percentage: percentage ?? this.percentage,
+      rank: rank ?? this.rank,
+      maxRank: maxRank ?? this.maxRank,
+      rankEnabled: rankEnabled ?? this.rankEnabled,
+      markPerQuestion: markPerQuestion ?? this.markPerQuestion,
+      negativeMarks: negativeMarks ?? this.negativeMarks,
+      timeTaken: timeTaken ?? this.timeTaken,
+      lastViewedQuestionId: lastViewedQuestionId ?? this.lastViewedQuestionId,
+    );
+  }
+
   factory AttemptDto.fromJson(Map<String, dynamic> json) {
     // Handle nested assessment/attempt object in some API versions
     final Map<String, dynamic> data = json['assessment'] as Map<String, dynamic>? ?? 

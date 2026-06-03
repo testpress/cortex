@@ -231,10 +231,23 @@ class ExamRepository {
     AttemptDto attempt, {
     bool isResume = false,
   }) async {
-    // 1. Kick off background heartbeat query concurrently if remainingTime is null OR it's a resumed attempt
+    AttemptDto currentAttempt = attempt;
+    bool heartbeatFetched = false;
+
+    // If we are resuming and sections are missing, fetch the full details via heartbeat first.
+    if (isResume && (attempt.sections == null || attempt.sections!.isEmpty) && attempt.heartbeatUrl.isNotEmpty) {
+      try {
+        currentAttempt = await _dataSource.sendHeartbeat(attempt.heartbeatUrl);
+        heartbeatFetched = true;
+      } catch (_) {}
+    }
+
+    // Kick off background heartbeat query concurrently if remainingTime is null OR it's a resumed attempt
+    // and we haven't already fetched the fresh details above.
     final Future<AttemptDto?> heartbeatFuture =
-        ((attempt.remainingTime == null || isResume) &&
-            attempt.heartbeatUrl.isNotEmpty)
+        (!heartbeatFetched &&
+         (attempt.remainingTime == null || isResume) &&
+         attempt.heartbeatUrl.isNotEmpty)
         ? _dataSource
               .sendHeartbeat(attempt.heartbeatUrl)
               .then<AttemptDto?>((val) => val)
@@ -248,7 +261,7 @@ class ExamRepository {
               })
         : Future.value(null);
 
-    final List<SectionDto> sections = attempt.sections ?? [];
+    final List<SectionDto> sections = currentAttempt.sections ?? [];
     int remainingSeconds = 0;
     List<QuestionDto> questions = [];
 
@@ -270,7 +283,18 @@ class ExamRepository {
 
       // Await both operations concurrently
       final List<dynamic> results = await Future.wait([heartbeatFuture, questionsFuture]);
-      final AttemptDto updatedAttempt = results[0] as AttemptDto? ?? attempt;
+      final AttemptDto heartbeatAttempt = results[0] as AttemptDto? ?? currentAttempt;
+      // Merge the heartbeat details while preserving the original attempt's context (like the course-linked endUrl).
+      final AttemptDto updatedAttempt = currentAttempt.copyWith(
+        state: heartbeatAttempt.state,
+        remainingTime: heartbeatAttempt.remainingTime,
+        sections: heartbeatAttempt.sections,
+        lastViewedQuestionId: heartbeatAttempt.lastViewedQuestionId,
+        // Update any other fields that heartbeat might have refreshed, but preserve critical URLs.
+        score: heartbeatAttempt.score,
+        correctCount: heartbeatAttempt.correctCount,
+        incorrectCount: heartbeatAttempt.incorrectCount,
+      );
       questions = results[1] as List<QuestionDto>;
 
       // Resolve the actual synchronized remainingSeconds from heartbeat
@@ -299,11 +323,31 @@ class ExamRepository {
         }
       }
 
+      final baseSections = updatedSections.isNotEmpty ? updatedSections : sections;
+      final initializedSections = baseSections.asMap().map((idx, s) {
+        if (idx == activeIndex) {
+          return MapEntry(idx, SectionDto(
+            id: s.id,
+            name: s.name,
+            state: 'Running',
+            questionsUrl: s.questionsUrl,
+            startUrl: s.startUrl,
+            endUrl: s.endUrl,
+            remainingTime: s.remainingTime,
+            duration: s.duration,
+            order: s.order,
+            instructions: s.instructions,
+            questionsCount: s.questionsCount,
+          ));
+        }
+        return MapEntry(idx, s);
+      }).values.toList();
+
       final state = ExamAttemptState(
         status: ExamAttemptStatus.inProgress,
         exam: exam,
         attempt: updatedAttempt,
-        sections: updatedSections.isNotEmpty ? updatedSections : sections,
+        sections: initializedSections,
         currentSectionIndex: activeIndex,
         questions: questions,
         currentQuestionIndex: initialQuestionIndex,
@@ -554,6 +598,16 @@ class ExamRepository {
     _emit(_currentState.copyWith(status: ExamAttemptStatus.submitting));
     try {
       await _flushPendingAnswers();
+      if (_currentState.sections.isNotEmpty &&
+          _currentState.currentSectionIndex >= 0 &&
+          _currentState.currentSectionIndex < _currentState.sections.length) {
+        final currentSection = _currentState.sections[_currentState.currentSectionIndex];
+        if (currentSection.state == 'Running' && currentSection.endUrl != null) {
+          try {
+            await _dataSource.endSection(currentSection.endUrl!);
+          } catch (_) {}
+        }
+      }
       final finalAttempt = await _dataSource.endExam(endUrl);
       stopHeartbeat();
       stopCountdown();

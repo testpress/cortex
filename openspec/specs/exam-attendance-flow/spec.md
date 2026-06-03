@@ -4,7 +4,8 @@
 The exams package SHALL provide a `ExamPrescreen` that summarizes exam duration, question count, and marks. The exam metadata fetched for the prescreen SHALL be persisted to the local Drift database and served using a Stale-While-Revalidate (SWR) strategy:
 - On every open, the last-cached metadata SHALL be shown instantly without a loading shimmer (if a cache entry exists).
 - A background network fetch SHALL always be triggered on open.
-- If the server returns metadata different from the cached version, the UI SHALL update automatically.
+- If the server returns metadata different from the cached version, the UI SHALL update automatically, EXCEPT that if the paused attempts count has been updated locally within the last 5 minutes, the local count SHALL take precedence over the server's count to guard against stale CDN/API responses.
+- The 5-minute guard timestamp for local updates SHALL persist across app restarts.
 - The cache SHALL survive app restarts (stored in SQLite).
 
 #### Scenario: Summarizes metadata correctly
@@ -29,6 +30,14 @@ The exams package SHALL provide a `ExamPrescreen` that summarizes exam duration,
 - **WHEN** a user opens the prescreen for an exam that has never been fetched
 - **THEN** a shimmer is shown while the network request completes
 - **THEN** on success the metadata is stored in the local database and shown
+
+#### Scenario: Stale server update ignored after app restart
+- **WHEN** the user ends or pauses the exam, restarts the app within 5 minutes, and opens the prescreen
+- **THEN** the background fetch's stale `paused_attempts_count` from the server SHALL NOT overwrite the local database cache
+
+#### Scenario: Active section is terminated when ending the exam
+- **WHEN** the user ends the exam
+- **THEN** the active running section SHALL be terminated (PUT request sent to the section's end URL) before the overall exam attempt is ended
 
 ### Requirement: Historical Attempts Log
 The `ExamPrescreen` SHALL fetch and present previous exam attempts in a structured table.
