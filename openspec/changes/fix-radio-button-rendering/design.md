@@ -31,6 +31,10 @@ Additionally, nesting concentric circular containers (`BoxShape.circle`) with in
   - *Cons*: Requires reading parent card color (`design.colors.card`) to mask the center.
 - **Decision**: Option D is chosen to achieve professional, premium, high-fidelity graphics.
 
+### Decision 2: Smoothly Interpolate Inner Background Color to Prevent Animation Popping
+- **Problem**: When the animation completes (at `1.0`), the inner background circle of `cardColor` was conditionally hidden, revealing the `fillColor` underneath. This caused a visual flash/pop at the very end of the animation.
+- **Solution**: Always draw the inner background circle, and interpolate its color from `cardColor` to `fillColor` based on the `animationValue` using `Color.lerp`.
+
 ## Risks / Trade-offs
 
 - **[Risk] Custom Rendering Overhead** → Custom painters bypass standard widget tree caching if not implemented correctly.

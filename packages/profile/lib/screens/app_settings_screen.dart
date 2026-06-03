@@ -641,14 +641,13 @@ class _RadioPainter extends CustomPainter {
       ..isAntiAlias = true;
     canvas.drawCircle(center, radius, paintRing);
 
-    // 2. Draw the inner background circle as a filled circle of the card background color
-    if (animationValue < 1.0) {
-      final paintInner = Paint()
-        ..color = cardColor
-        ..style = PaintingStyle.fill
-        ..isAntiAlias = true;
-      canvas.drawCircle(center, radius - strokeWidth, paintInner);
-    }
+    // 2. Draw the inner background circle as a filled circle, interpolating color to prevent visual popping.
+    final currentInnerColor = Color.lerp(cardColor, fillColor, animationValue)!;
+    final paintInner = Paint()
+      ..color = currentInnerColor
+      ..style = PaintingStyle.fill
+      ..isAntiAlias = true;
+    canvas.drawCircle(center, radius - strokeWidth, paintInner);
 
     // 3. Draw the inner center dot (grows and fades in as selected)
     if (animationValue > 0) {

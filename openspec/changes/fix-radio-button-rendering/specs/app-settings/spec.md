@@ -6,3 +6,7 @@ The system SHALL render custom radio indicator selection controls smoothly witho
 #### Scenario: Visual Verification of Radio Indicator
 - **WHEN** the user views the settings options
 - **THEN** all radio indicators MUST render as perfect circles with a solid inner dot when selected and a clean, uniform outer border ring when unselected, without uneven thickness or joint gaps.
+
+#### Scenario: Selection Animation Smoothness
+- **WHEN** the selection animation transitions to completion (reaches `animationValue = 1.0`)
+- **THEN** the inner background of the indicator MUST transition smoothly from `cardColor` to `fillColor` without any sudden visual jump, pop, or flash.
