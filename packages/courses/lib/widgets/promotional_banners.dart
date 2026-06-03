@@ -79,8 +79,11 @@ class PromotionalBanners extends StatelessWidget {
 
   Widget _buildCarousel(BuildContext context) {
     final design = Design.of(context);
+    final textScaler = MediaQuery.textScalerOf(context);
+    final scale = textScaler.scale(1.0).clamp(1.0, double.infinity);
+
     return AppCarousel(
-      height: 110,
+      height: 110 * scale,
       showDots: false,
       viewportFraction: 0.88,
       padEnds: false,
