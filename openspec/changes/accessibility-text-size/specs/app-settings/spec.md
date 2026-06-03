@@ -1,6 +1,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: Accessibility Options
+The system SHALL support visual accessibility adjustments.
 
 #### Scenario: Scaling Text
 - **WHEN** user selects a text size (Small, Medium, or Large)

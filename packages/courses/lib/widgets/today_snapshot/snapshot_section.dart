@@ -15,6 +15,9 @@ class SnapshotSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textScaler = MediaQuery.textScalerOf(context);
+    final scale = textScaler.scale(1.0).clamp(1.0, double.infinity);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -28,7 +31,7 @@ class SnapshotSection extends StatelessWidget {
         const SizedBox(height: 12),
         if (items.length > 1)
           AppCarousel(
-            height: 92, // Much tighter fit for dash cards
+            height: 92 * scale, // Scale dynamically to avoid clipping
             showDots: false,
             viewportFraction: 0.88,
             padEnds: false,
