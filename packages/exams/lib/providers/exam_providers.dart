@@ -22,10 +22,6 @@ class ExamDetail extends _$ExamDetail {
 
   @override
   FutureOr<ExamDto> build(String slug) async {
-    ref.onResume(() {
-      revalidate(slug);
-    });
-
     final db = await ref.watch(appDatabaseProvider.future);
     
     // 1. Emit cached data instantly if it exists
@@ -111,9 +107,17 @@ class ExamDetail extends _$ExamDetail {
     _lastLocalPausedUpdate = DateTime.now();
     final db = await ref.read(appDatabaseProvider.future);
     final cachedJsonStr = await db.watchLessonExamMetadataBySlug(slug).first;
+    Map<String, dynamic>? json;
     if (cachedJsonStr != null) {
       try {
-        final json = jsonDecode(cachedJsonStr) as Map<String, dynamic>;
+        json = jsonDecode(cachedJsonStr) as Map<String, dynamic>;
+      } catch (_) {}
+    }
+    
+    json ??= state.valueOrNull?.toJson();
+    
+    if (json != null) {
+      try {
         json['paused_attempts_count'] = count;
         json['last_local_paused_update'] = _lastLocalPausedUpdate?.toIso8601String();
         final updatedJsonStr = jsonEncode(json);

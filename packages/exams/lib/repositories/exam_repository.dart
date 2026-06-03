@@ -232,18 +232,20 @@ class ExamRepository {
     bool isResume = false,
   }) async {
     AttemptDto currentAttempt = attempt;
+    bool heartbeatFetched = false;
 
     // If we are resuming and sections are missing, fetch the full details via heartbeat first.
     if (isResume && (attempt.sections == null || attempt.sections!.isEmpty) && attempt.heartbeatUrl.isNotEmpty) {
       try {
         currentAttempt = await _dataSource.sendHeartbeat(attempt.heartbeatUrl);
+        heartbeatFetched = true;
       } catch (_) {}
     }
 
     // Kick off background heartbeat query concurrently if remainingTime is null OR it's a resumed attempt
     // and we haven't already fetched the fresh details above.
     final Future<AttemptDto?> heartbeatFuture =
-        (currentAttempt == attempt &&
+        (!heartbeatFetched &&
          (attempt.remainingTime == null || isResume) &&
          attempt.heartbeatUrl.isNotEmpty)
         ? _dataSource
@@ -600,7 +602,7 @@ class ExamRepository {
           _currentState.currentSectionIndex >= 0 &&
           _currentState.currentSectionIndex < _currentState.sections.length) {
         final currentSection = _currentState.sections[_currentState.currentSectionIndex];
-        if (currentSection.endUrl != null) {
+        if (currentSection.state == 'Running' && currentSection.endUrl != null) {
           try {
             await _dataSource.endSection(currentSection.endUrl!);
           } catch (_) {}
