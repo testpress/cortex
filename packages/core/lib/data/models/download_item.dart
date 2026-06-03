@@ -23,6 +23,7 @@ class DownloadItem {
   final String? thumbnailUrl;
   final String? duration;
   final String? fileType;
+  final String? contentUrl;
 
   const DownloadItem({
     required this.id,
@@ -37,5 +38,38 @@ class DownloadItem {
     this.thumbnailUrl,
     this.duration,
     this.fileType,
+    this.contentUrl,
   });
+
+  DownloadItem copyWith({
+    String? id,
+    String? title,
+    String? course,
+    String? chapter,
+    int? sizeInBytes,
+    String? downloadedDate,
+    DownloadType? type,
+    DownloadStatus? status,
+    int? progress,
+    String? thumbnailUrl,
+    String? duration,
+    String? fileType,
+    String? contentUrl,
+  }) {
+    return DownloadItem(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      course: course ?? this.course,
+      chapter: chapter ?? this.chapter,
+      sizeInBytes: sizeInBytes ?? this.sizeInBytes,
+      downloadedDate: downloadedDate ?? this.downloadedDate,
+      type: type ?? this.type,
+      status: status ?? this.status,
+      progress: progress ?? this.progress,
+      thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
+      duration: duration ?? this.duration,
+      fileType: fileType ?? this.fileType,
+      contentUrl: contentUrl ?? this.contentUrl,
+    );
+  }
 }

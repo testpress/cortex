@@ -1581,6 +1581,15 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
           as _i6.Future<void>);
 
   @override
+  _i6.Future<void> replacePosts(List<_i4.PostsTableCompanion>? rows) =>
+      (super.noSuchMethod(
+            Invocation.method(#replacePosts, [rows]),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
   _i6.Stream<List<_i4.PostCategoryData>> watchPostCategories() =>
       (super.noSuchMethod(
             Invocation.method(#watchPostCategories, []),
@@ -1591,11 +1600,11 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
           as _i6.Stream<List<_i4.PostCategoryData>>);
 
   @override
-  _i6.Future<void> upsertPostCategories(
+  _i6.Future<void> replacePostCategories(
     List<_i4.PostCategoriesTableCompanion>? rows,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#upsertPostCategories, [rows]),
+            Invocation.method(#replacePostCategories, [rows]),
             returnValue: _i6.Future<void>.value(),
             returnValueForMissingStub: _i6.Future<void>.value(),
           )

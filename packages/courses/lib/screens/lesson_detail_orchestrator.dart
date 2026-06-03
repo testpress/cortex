@@ -237,6 +237,7 @@ class _LessonDetailOrchestratorState
       case LessonType.attachment:
         if (lesson.contentUrl != null) {
           return AttachmentViewer(
+            id: lesson.id,
             title: lesson.title,
             url: lesson.contentUrl!,
           );

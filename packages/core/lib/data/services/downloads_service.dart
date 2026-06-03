@@ -1,37 +1,90 @@
+import 'dart:io';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../models/download_item.dart';
+import '../../network/file_downloader.dart';
 
 part 'downloads_service.g.dart';
 
-/// Single integration layer responsible for coordinating between different SDKs
-/// (Player SDK, Attachment Manager) and the rest of the app.
+/// Pure worker layer responsible for executing downloads via different SDKs.
+/// This class has NO knowledge of the database or DownloadsRepository.
+/// All DB writes are coordinated by DownloadsRepository via callbacks.
 class DownloadsService {
-  /// Fetches all active downloads from the various SDKs.
-  Future<List<DownloadItem>> getActiveDownloads() async {
-    // Simulate a short network/IO delay to show the skeleton loader
+  final FileDownloader _fileDownloader;
+
+  DownloadsService(this._fileDownloader);
+
+  /// Downloads an attachment file and reports progress via [onProgress].
+  /// Returns the local file path on success, or null on failure.
+  Future<String?> downloadAttachment(
+    String url, {
+    void Function(int progressPercent)? onProgress,
+  }) async {
+    return await _fileDownloader.download(
+      url: url,
+      type: StorageType.publicDownload,
+      onReceiveProgress: (count, total) {
+        if (total > 0) {
+          onProgress?.call(((count / total) * 100).toInt());
+        }
+      },
+      requireAuth: false, // Signed URLs often fail with Auth headers
+    );
+  }
+
+  /// Returns the deterministic file path if the file physically exists on disk,
+  /// or null if it does not exist.
+  Future<String?> getExistingAttachmentPath(String url) async {
+    try {
+      final path = await _fileDownloader.getLocalPath(url, StorageType.publicDownload);
+      if (await File(path).exists()) return path;
+    } catch (_) {}
+    return null;
+  }
+
+  /// Verifies if an attachment file physically exists on the device.
+  Future<bool> verifyAttachmentExists(String url) async {
+    return (await getExistingAttachmentPath(url)) != null;
+  }
+
+  /// Fetches all active video downloads from the TPStreams SDK.
+  /// Replace mock with real TPStreamsDownloadManager.getAllDownloads()
+  Future<List<DownloadItem>> getActiveVideoDownloads() async {
+    // Simulate a short IO delay to show the skeleton loader
     await Future.delayed(const Duration(seconds: 2));
-    // Return mock data directly from the service
-    return [..._mockVideoDownloads, ..._mockAttachmentDownloads];
+    return [..._mockVideoDownloads];
   }
 
-  /// Starts a new download.
-  Future<void> startDownload(DownloadItem item) async {
-    // No-op
+  /// Pauses a video download via the TPStreams SDK.
+  /// Replace with real TPStreamsDownloadManager.pauseDownload()
+  Future<void> pauseVideoDownload(String id) async {
+    // No-op (mock)
   }
 
-  /// Pauses an active download.
-  Future<void> pauseDownload(String id) async {
-    // No-op
+  /// Resumes a video download via the TPStreams SDK.
+  /// Replace with real TPStreamsDownloadManager.resumeDownload()
+  Future<void> resumeVideoDownload(String id) async {
+    // No-op (mock)
   }
 
-  /// Resumes a paused download.
-  Future<void> resumeDownload(String id) async {
-    // No-op
+  /// Deletes a video download via the TPStreams SDK.
+  /// Replace with real TPStreamsDownloadManager.deleteDownload()
+  Future<void> deleteVideoDownload(String id) async {
+    // No-op (mock)
   }
 
-  /// Deletes a download from the SDK and disk.
-  Future<void> deleteDownload(String id) async {
-    // No-op
+  Future<void> deleteDownloadItem(DownloadItem item) async {
+    if (item.type == DownloadType.attachment) {
+      if (item.contentUrl != null) {
+        final existingPath = await getExistingAttachmentPath(item.contentUrl!);
+        if (existingPath != null) {
+          try {
+            await File(existingPath).delete();
+          } catch (_) {}
+        }
+      }
+    } else {
+      await deleteVideoDownload(item.id);
+    }
   }
 
   // --- Mock Data ---
@@ -64,25 +117,10 @@ class DownloadsService {
       thumbnailUrl: "https://d1j3vi2u94ebt0.cloudfront.net/institute/brilliantpalalms/banners/1efd1311adca4dd78c18f18813148ab0.jpg",
     ),
   ];
-
-  static const _mockAttachmentDownloads = [
-    DownloadItem(
-      id: "a1",
-      title: "Formula Sheet - Calculus",
-      course: "Mathematics - Class 12",
-      chapter: "Chapter 5: Continuity and Differentiability",
-      sizeInBytes: 1572864,
-      downloadedDate: "3 days ago",
-      type: DownloadType.attachment,
-      fileType: "PDF",
-      status: DownloadStatus.completed,
-      progress: 100,
-      thumbnailUrl: "https://d1j3vi2u94ebt0.cloudfront.net/institute/brilliantpalalms/banners/ffd05ad8baad4f4c96d08825536f9e24.jpeg",
-    ),
-  ];
 }
 
 @Riverpod(keepAlive: true)
 DownloadsService downloadsService(DownloadsServiceRef ref) {
-  return DownloadsService();
+  final fileDownloader = ref.watch(fileDownloaderProvider);
+  return DownloadsService(fileDownloader);
 }
