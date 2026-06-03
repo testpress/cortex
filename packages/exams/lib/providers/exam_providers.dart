@@ -170,6 +170,12 @@ class ExamAttempt extends _$ExamAttempt {
   Future<void> submitAnswer(String answerUrl, AnswerDto answer) =>
       ref.read(examRepositoryProvider).submitAnswer(answerUrl, answer);
 
+  void updateShortText(String questionId, String answerUrl, String text) =>
+      ref.read(examRepositoryProvider).updateShortText(questionId, answerUrl, text);
+
+  void updateEssayText(String questionId, String answerUrl, String text) =>
+      ref.read(examRepositoryProvider).updateEssayText(questionId, answerUrl, text);
+
   Future<void> endExam(String endUrl) =>
       ref.read(examRepositoryProvider).endExam(endUrl);
 

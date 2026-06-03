@@ -272,11 +272,15 @@ class ExamRepository {
       final activeSection = sections[activeIndex];
       remainingSeconds = _parseDuration(activeSection.remainingTime ?? activeSection.duration ?? exam.duration);
       
+      final String targetQuestionsUrl = currentAttempt.hasSectionalLock 
+          ? activeSection.questionsUrl 
+          : currentAttempt.questionsUrl;
+          
       final Future<List<QuestionDto>> questionsFuture = remainingSeconds > 0
-          ? (_sectionQuestionsCache.containsKey(activeSection.questionsUrl)
-              ? Future.value(_sectionQuestionsCache[activeSection.questionsUrl]!)
-              : _dataSource.getQuestions(activeSection.questionsUrl).then((q) {
-                  _sectionQuestionsCache[activeSection.questionsUrl] = q;
+          ? (_sectionQuestionsCache.containsKey(targetQuestionsUrl)
+              ? Future.value(_sectionQuestionsCache[targetQuestionsUrl]!)
+              : _dataSource.getQuestions(targetQuestionsUrl).then((q) {
+                  _sectionQuestionsCache[targetQuestionsUrl] = q;
                   return q;
                 }))
           : Future.value(<QuestionDto>[]);
@@ -306,10 +310,11 @@ class ExamRepository {
 
       final initialAnswers = Map<String, AnswerDto>.from(_currentState.answers);
       for (final q in questions) {
-        if (q.selectedOptionIds.isNotEmpty) {
+        if (q.selectedOptionIds.isNotEmpty || (q.shortText != null && q.shortText!.isNotEmpty)) {
           initialAnswers[q.id] = AnswerDto(
             questionId: q.id,
             selectedOptions: q.selectedOptionIds,
+            shortText: q.shortText,
           );
         }
       }
@@ -592,6 +597,50 @@ class ExamRepository {
         }
       }
     });
+  }
+
+  void updateShortText(String questionId, String answerUrl, String text) {
+    final currentAnswer = _currentState.answers[questionId] ??
+        AnswerDto(questionId: questionId, selectedOptions: []);
+
+    final newAnswer = AnswerDto(
+      questionId: questionId,
+      selectedOptions: currentAnswer.selectedOptions,
+      isMarked: currentAnswer.isMarked,
+      shortText: text,
+      essayText: currentAnswer.essayText,
+    );
+
+    // Update optimistic state only, do not trigger immediate network submission
+    final newAnswers = Map<String, AnswerDto>.from(_currentState.answers);
+    newAnswers[questionId] = newAnswer;
+    _emit(_currentState.copyWith(answers: newAnswers));
+
+    // Keep it in pending so flush handles it on heartbeat or exam end
+    _pendingAnswers[questionId] = newAnswer;
+    _pendingAnswerUrls[questionId] = answerUrl;
+  }
+
+  void updateEssayText(String questionId, String answerUrl, String text) {
+    final currentAnswer = _currentState.answers[questionId] ??
+        AnswerDto(questionId: questionId, selectedOptions: []);
+
+    final newAnswer = AnswerDto(
+      questionId: questionId,
+      selectedOptions: currentAnswer.selectedOptions,
+      isMarked: currentAnswer.isMarked,
+      shortText: currentAnswer.shortText,
+      essayText: text,
+    );
+
+    // Update optimistic state only, do not trigger immediate network submission
+    final newAnswers = Map<String, AnswerDto>.from(_currentState.answers);
+    newAnswers[questionId] = newAnswer;
+    _emit(_currentState.copyWith(answers: newAnswers));
+
+    // Keep it in pending so flush handles it on heartbeat or exam end
+    _pendingAnswers[questionId] = newAnswer;
+    _pendingAnswerUrls[questionId] = answerUrl;
   }
 
   Future<void> endExam(String endUrl) async {

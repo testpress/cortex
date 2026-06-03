@@ -33,9 +33,9 @@ class SectionDto {
       id: (json['id'] ?? '').toString(),
       name: (info?['name'] ?? json['name'] ?? '').toString(),
       state: (json['state'] ?? 'Not Started').toString(),
-      questionsUrl: (json['questions_url'] ?? '').toString(),
-      startUrl: json['start_url']?.toString(),
-      endUrl: json['end_url']?.toString(),
+      questionsUrl: (json['questions_url'] ?? '').toString().replaceFirst('v2.3', 'v2.2.1'),
+      startUrl: json['start_url']?.toString().replaceFirst('v2.3', 'v2.2.1'),
+      endUrl: json['end_url']?.toString().replaceFirst('v2.3', 'v2.2.1'),
       remainingTime: json['remaining_time']?.toString(),
       duration: (info?['duration'] ?? json['duration'])?.toString(),
       order: info?['order'] != null

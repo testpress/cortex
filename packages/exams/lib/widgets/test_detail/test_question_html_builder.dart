@@ -44,27 +44,55 @@ abstract final class TestQuestionHtmlBuilder {
       );
     }
 
-    // ── Options ────────────────────────────────────────────────────────────
-    sb.writeln('<div class="options-container">');
-    for (final option in question.options) {
-      final isSelected =
-          answer?.selectedOptions.any((id) => id.toString() == option.id.toString()) ?? false;
-      final indicatorType = question.type == 'multipleSelect' ? 'checkbox' : 'radio';
-
+    if (question.type == 'shortAnswer') {
+      final value = (answer?.shortText ?? '').replaceAll('"', '&quot;');
       sb.writeln('''
-        <div class="option-card ${isSelected ? 'selected' : ''}"
-             onclick="selectOption('${option.id}', '${question.type}')"
-             id="option-${option.id}">
-          <div class="indicator $indicatorType">
-            <div class="inner"></div>
-          </div>
-          <div class="option-text">
-            ${option.text}
-          </div>
+        <div class="input-container">
+          <input class="edit_box" type="text" inputmode="text" placeholder="YOUR ANSWER"
+                 value="$value"
+                 oninput="onInputChange(this.value)">
         </div>
       ''');
+    } else if (question.type == 'numerical') {
+      final value = (answer?.shortText ?? '').replaceAll('"', '&quot;');
+      sb.writeln('''
+        <div class="input-container">
+          <input class="edit_box" type="text" inputmode="decimal" placeholder="YOUR ANSWER"
+                 value="$value"
+                 oninput="onNumericalChange(this)">
+        </div>
+      ''');
+    } else if (question.type == 'essay') {
+      final value = answer?.essayText ?? '';
+      sb.writeln('''
+        <div class="input-container">
+          <textarea class="essay_box" rows="10" placeholder="YOUR ANSWER"
+                    oninput="onInputChange(this.value)">$value</textarea>
+        </div>
+      ''');
+    } else {
+      // ── Options (MCQ) ────────────────────────────────────────────────────────────
+      sb.writeln('<div class="options-container">');
+      for (final option in question.options) {
+        final isSelected =
+            answer?.selectedOptions.any((id) => id.toString() == option.id.toString()) ?? false;
+        final indicatorType = question.type == 'multipleSelect' ? 'checkbox' : 'radio';
+
+        sb.writeln('''
+          <div class="option-card ${isSelected ? 'selected' : ''}"
+               onclick="selectOption('${option.id}', '${question.type}')"
+               id="option-${option.id}">
+            <div class="indicator $indicatorType">
+              <div class="inner"></div>
+            </div>
+            <div class="option-text">
+              ${option.text}
+            </div>
+          </div>
+        ''');
+      }
+      sb.writeln('</div>');
     }
-    sb.writeln('</div>');
     sb.writeln('</div>');
 
     return _css(
@@ -164,6 +192,24 @@ abstract final class TestQuestionHtmlBuilder {
         }
         .option-text p { margin: 0; }
         .mjx-chtml { color: inherit !important; }
+        
+        /* Input questions */
+        .edit_box, .essay_box {
+          width: 100%;
+          box-sizing: border-box;
+          padding: ${design.spacing.md}px;
+          margin-top: ${design.spacing.md}px;
+          background-color: transparent;
+          border-radius: ${design.radius.md}px;
+          border: 1.5px solid $borderColor;
+          color: $textPrimary;
+          font-size: 16px;
+          font-family: inherit;
+        }
+        .edit_box:focus, .essay_box:focus {
+          outline: none;
+          border-color: $primaryColor;
+        }
       </style>
     ''';
 
@@ -182,8 +228,28 @@ abstract final class TestQuestionHtmlBuilder {
             document.getElementById('option-' + id).classList.add('selected');
           }
           if (window.MessageChannel) {
-            MessageChannel.postMessage(id.toString());
+            MessageChannel.postMessage(JSON.stringify({ type: 'optionSelect', id: id.toString() }));
           }
+        }
+        
+        function onInputChange(val) {
+          if (window.MessageChannel) {
+            MessageChannel.postMessage(JSON.stringify({ type: 'inputChange', value: val }));
+          }
+        }
+        
+        function onNumericalChange(input) {
+          var val = input.value;
+          val = val.replace(/,/g, '');
+          var hasNegative = val.startsWith('-');
+          val = val.replace(/-/g, '');
+          var parts = val.split('.');
+          if (parts.length > 1) {
+            val = parts[0] + '.' + parts.slice(1).join('');
+          }
+          if (hasNegative) val = '-' + val;
+          input.value = val;
+          onInputChange(val);
         }
       </script>
     ''';

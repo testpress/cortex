@@ -12,6 +12,9 @@ class QuestionDto {
   final String? directionHtml;
   final int order;
   final List<String> selectedOptionIds;
+  final String? shortText;
+  final String? essayText;
+  final String? sectionName;
 
   const QuestionDto({
     required this.id,
@@ -26,6 +29,9 @@ class QuestionDto {
     this.directionHtml,
     this.order = 0,
     this.selectedOptionIds = const [],
+    this.shortText,
+    this.essayText,
+    this.sectionName,
   });
 
   factory QuestionDto.fromJson(Map<String, dynamic> json) {
@@ -38,6 +44,9 @@ class QuestionDto {
       type: switch ((data['type'] ?? json['type']) as String?) {
         'R' => 'singleSelect',   // MCQ, Single Correct (Testpress API)
         'C' => 'multipleSelect', // MCQ, Multiple Correct (Testpress API)
+        'S' => 'shortAnswer',
+        'N' => 'numerical',
+        'E' => 'essay',
         _ => 'singleSelect',
       },
       subject: (data['subject'] ?? data['subject_name'] ?? json['subject_name']) as String? ?? 'General',
@@ -61,6 +70,9 @@ class QuestionDto {
               ?.map((e) => e.toString())
               .toList() ??
           const [],
+      shortText: (data['short_text'] ?? json['short_text']) as String?,
+      essayText: (data['essay_text'] ?? json['essay_text']) as String?,
+      sectionName: (json['attempt_section'] as Map<String, dynamic>?)?['name'] as String? ?? (data['attempt_section'] as Map<String, dynamic>?)?['name'] as String?,
     );
   }
 
@@ -78,6 +90,9 @@ class QuestionDto {
       'directionHtml': directionHtml,
       'order': order,
       'selected_options': selectedOptionIds,
+      'short_text': shortText,
+      'essay_text': essayText,
+      'sectionName': sectionName,
     };
   }
 }
