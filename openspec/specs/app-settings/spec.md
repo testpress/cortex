@@ -30,15 +30,18 @@ The system SHALL provide controls for video playback behavior and quality.
 - **THEN** the system MUST enable or disable the automatic transition to the next lesson upon current lesson completion.
 
 ### Requirement: Accessibility Options
-The system SHALL support visual accessibility adjustments.
 
 #### Scenario: Scaling Text
 - **WHEN** user selects a text size (Small, Medium, or Large)
-- **THEN** the system MUST update the global text scale factor to the corresponding value.
+- **THEN** the system MUST update the global text scale factor to the corresponding value:
+  - `0.85` for Small
+  - `1.0` for Medium (Default)
+  - `1.15` for Large
+  and apply it to all text rendering across the application.
 
-#### Scenario: Enabling High Contrast
-- **WHEN** user enables the "High contrast" toggle
-- **THEN** the system MUST apply a high-contrast color palette, increasing the distinction between background and foreground elements.
+#### Scenario: Layout Adaptability to Text Scale
+- **WHEN** the text size is scaled up
+- **THEN** the cards in the "Resume Learning", "What's New", and "Recently Completed" carousels MUST adapt their height dynamically to prevent any layout clipping or bottom overflows.
 
 ### Requirement: Smooth Radio Selection Rendering
 The system SHALL render custom radio indicator selection controls smoothly without visual artifacts, pixelation, or alignment gaps at both standard (20px / design.iconSize.md) and small (16px / design.iconSize.sm) sizes.
