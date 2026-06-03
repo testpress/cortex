@@ -1,7 +1,9 @@
+import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:open_filex/open_filex.dart';
 
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
@@ -32,11 +34,19 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
   DownloadType _activeTab = DownloadType.video;
 
   @override
+  void initState() {
+    super.initState();
+    // Trigger background sync to verify files and fetch latest SDK state.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(downloadsProvider.notifier).synchronize();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
-    final bootstrapAsync = ref.watch(downloadsBootstrapProvider);
     final downloadsAsync = ref.watch(downloadsProvider);
 
     final downloads = downloadsAsync.valueOrNull ?? [];
@@ -47,10 +57,7 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
     final activeItems =
         _activeTab == DownloadType.video ? videos : attachments;
 
-    final isInitialLoading = _isInitialLoading(
-      bootstrapAsync: bootstrapAsync,
-      downloadsAsync: downloadsAsync,
-    );
+    final isInitialLoading = downloadsAsync.isLoading;
 
     return Container(
       color: design.colors.canvas,
@@ -123,32 +130,60 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
     );
   }
 
-  bool _isInitialLoading({
-    required AsyncValue<void> bootstrapAsync,
-    required AsyncValue<List<DownloadItem>> downloadsAsync,
-  }) {
-    final hasData = downloadsAsync.valueOrNull?.isNotEmpty ?? false;
-
-    return downloadsAsync.isLoading ||
-        (bootstrapAsync.isLoading && !hasData);
-  }
-
-  void _handleAction(DownloadItem item) {
+  Future<void> _handleAction(DownloadItem item) async {
     switch (item.status) {
       case DownloadStatus.downloading:
-        ref.read(pauseDownloadProvider(item.id).future);
+        if (item.type == DownloadType.video) {
+          ref.read(downloadsProvider.notifier).pause(item.id);
+        }
         break;
 
       case DownloadStatus.paused:
-        ref.read(resumeDownloadProvider(item.id).future);
+        if (item.type == DownloadType.video) {
+          ref.read(downloadsProvider.notifier).resume(item.id);
+        }
         break;
 
       case DownloadStatus.error:
         break;
 
       case DownloadStatus.completed:
+        if (item.type == DownloadType.attachment && item.contentUrl != null) {
+          await _openAttachment(item);
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Navigate to the lesson to play this video.')),
+            );
+          }
+        }
         break;
     }
+  }
+
+  Future<void> _openAttachment(DownloadItem item) async {
+    try {
+      final downloader = ref.read(fileDownloaderProvider);
+      final path = await downloader.getLocalPath(item.contentUrl!, StorageType.publicDownload);
+      
+      final fileExists = await File(path).exists();
+      if (!fileExists) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('File not found. It may have been deleted.')),
+          );
+        }
+        await ref.read(downloadsProvider.notifier).delete(item);
+        return;
+      }
+
+      final result = await OpenFilex.open(path);
+      if (result.type != ResultType.done && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not open file: ${result.message}')),
+        );
+      }
+    } catch (_) {}
   }
 }
 
@@ -248,7 +283,7 @@ class _DownloadsList extends ConsumerWidget {
                 item: item,
                 onAction: () => onAction(item),
                 onDelete: () {
-                  ref.read(deleteDownloadProvider(item.id).future);
+                  ref.read(downloadsProvider.notifier).delete(item);
                 },
               );
             },
@@ -259,8 +294,7 @@ class _DownloadsList extends ConsumerWidget {
   }
 
   Future<void> _onRefresh(WidgetRef ref) async {
-    ref.invalidate(downloadsBootstrapProvider);
-    await ref.read(downloadsBootstrapProvider.future);
+    await ref.read(downloadsProvider.notifier).synchronize();
   }
 }
 
@@ -280,6 +314,7 @@ class _DownloadCard extends StatelessWidget {
     final design = Design.of(context);
 
     return AppCard(
+      onTap: onAction,
       child: Padding(
         padding: EdgeInsets.all(design.spacing.sm),
         child: Row(
@@ -755,7 +790,12 @@ extension DownloadItemX on DownloadItem {
       return 'Error';
     }
 
-    return downloadedDate;
+    try {
+      final date = DateTime.parse(downloadedDate);
+      return DateFormatter.formatDateTime(date);
+    } catch (_) {
+      return downloadedDate; // fallback if parsing fails
+    }
   }
 }
 
@@ -763,12 +803,10 @@ extension DownloadStatusX on DownloadStatus {
   IconData? actionIcon(DownloadType type) {
     switch (this) {
       case DownloadStatus.downloading:
-        return LucideIcons.pause;
+        return type == DownloadType.video ? LucideIcons.pause : null;
 
       case DownloadStatus.paused:
-        return type == DownloadType.video
-            ? LucideIcons.download
-            : LucideIcons.play;
+        return type == DownloadType.video ? LucideIcons.download : null;
 
       case DownloadStatus.error:
         return LucideIcons.refreshCw;

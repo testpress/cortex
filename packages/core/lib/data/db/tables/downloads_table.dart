@@ -43,6 +43,9 @@ class DownloadsTable extends Table {
   /// Optional file extension (e.g. "PDF", "DOC").
   TextColumn get fileType => text().nullable()();
 
+  /// Original download URL, required to safely manage physical file paths.
+  TextColumn get contentUrl => text().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }

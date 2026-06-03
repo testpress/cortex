@@ -9799,6 +9799,17 @@ class $DownloadsTableTable extends DownloadsTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _contentUrlMeta = const VerificationMeta(
+    'contentUrl',
+  );
+  @override
+  late final GeneratedColumn<String> contentUrl = GeneratedColumn<String>(
+    'content_url',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -9814,6 +9825,7 @@ class $DownloadsTableTable extends DownloadsTable
     thumbnailUrl,
     duration,
     fileType,
+    contentUrl,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -9930,6 +9942,12 @@ class $DownloadsTableTable extends DownloadsTable
         fileType.isAcceptableOrUnknown(data['file_type']!, _fileTypeMeta),
       );
     }
+    if (data.containsKey('content_url')) {
+      context.handle(
+        _contentUrlMeta,
+        contentUrl.isAcceptableOrUnknown(data['content_url']!, _contentUrlMeta),
+      );
+    }
     return context;
   }
 
@@ -9991,6 +10009,10 @@ class $DownloadsTableTable extends DownloadsTable
         DriftSqlType.string,
         data['${effectivePrefix}file_type'],
       ),
+      contentUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content_url'],
+      ),
     );
   }
 
@@ -10042,6 +10064,9 @@ class DownloadsTableData extends DataClass
 
   /// Optional file extension (e.g. "PDF", "DOC").
   final String? fileType;
+
+  /// Original download URL, required to safely manage physical file paths.
+  final String? contentUrl;
   const DownloadsTableData({
     required this.id,
     required this.title,
@@ -10056,6 +10081,7 @@ class DownloadsTableData extends DataClass
     this.thumbnailUrl,
     this.duration,
     this.fileType,
+    this.contentUrl,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -10080,6 +10106,9 @@ class DownloadsTableData extends DataClass
     }
     if (!nullToAbsent || fileType != null) {
       map['file_type'] = Variable<String>(fileType);
+    }
+    if (!nullToAbsent || contentUrl != null) {
+      map['content_url'] = Variable<String>(contentUrl);
     }
     return map;
   }
@@ -10107,6 +10136,9 @@ class DownloadsTableData extends DataClass
       fileType: fileType == null && nullToAbsent
           ? const Value.absent()
           : Value(fileType),
+      contentUrl: contentUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(contentUrl),
     );
   }
 
@@ -10129,6 +10161,7 @@ class DownloadsTableData extends DataClass
       thumbnailUrl: serializer.fromJson<String?>(json['thumbnailUrl']),
       duration: serializer.fromJson<String?>(json['duration']),
       fileType: serializer.fromJson<String?>(json['fileType']),
+      contentUrl: serializer.fromJson<String?>(json['contentUrl']),
     );
   }
   @override
@@ -10148,6 +10181,7 @@ class DownloadsTableData extends DataClass
       'thumbnailUrl': serializer.toJson<String?>(thumbnailUrl),
       'duration': serializer.toJson<String?>(duration),
       'fileType': serializer.toJson<String?>(fileType),
+      'contentUrl': serializer.toJson<String?>(contentUrl),
     };
   }
 
@@ -10165,6 +10199,7 @@ class DownloadsTableData extends DataClass
     Value<String?> thumbnailUrl = const Value.absent(),
     Value<String?> duration = const Value.absent(),
     Value<String?> fileType = const Value.absent(),
+    Value<String?> contentUrl = const Value.absent(),
   }) => DownloadsTableData(
     id: id ?? this.id,
     title: title ?? this.title,
@@ -10179,6 +10214,7 @@ class DownloadsTableData extends DataClass
     thumbnailUrl: thumbnailUrl.present ? thumbnailUrl.value : this.thumbnailUrl,
     duration: duration.present ? duration.value : this.duration,
     fileType: fileType.present ? fileType.value : this.fileType,
+    contentUrl: contentUrl.present ? contentUrl.value : this.contentUrl,
   );
   DownloadsTableData copyWithCompanion(DownloadsTableCompanion data) {
     return DownloadsTableData(
@@ -10203,6 +10239,9 @@ class DownloadsTableData extends DataClass
           : this.thumbnailUrl,
       duration: data.duration.present ? data.duration.value : this.duration,
       fileType: data.fileType.present ? data.fileType.value : this.fileType,
+      contentUrl: data.contentUrl.present
+          ? data.contentUrl.value
+          : this.contentUrl,
     );
   }
 
@@ -10221,7 +10260,8 @@ class DownloadsTableData extends DataClass
           ..write('progress: $progress, ')
           ..write('thumbnailUrl: $thumbnailUrl, ')
           ..write('duration: $duration, ')
-          ..write('fileType: $fileType')
+          ..write('fileType: $fileType, ')
+          ..write('contentUrl: $contentUrl')
           ..write(')'))
         .toString();
   }
@@ -10241,6 +10281,7 @@ class DownloadsTableData extends DataClass
     thumbnailUrl,
     duration,
     fileType,
+    contentUrl,
   );
   @override
   bool operator ==(Object other) =>
@@ -10258,7 +10299,8 @@ class DownloadsTableData extends DataClass
           other.progress == this.progress &&
           other.thumbnailUrl == this.thumbnailUrl &&
           other.duration == this.duration &&
-          other.fileType == this.fileType);
+          other.fileType == this.fileType &&
+          other.contentUrl == this.contentUrl);
 }
 
 class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
@@ -10275,6 +10317,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
   final Value<String?> thumbnailUrl;
   final Value<String?> duration;
   final Value<String?> fileType;
+  final Value<String?> contentUrl;
   final Value<int> rowid;
   const DownloadsTableCompanion({
     this.id = const Value.absent(),
@@ -10290,6 +10333,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
     this.thumbnailUrl = const Value.absent(),
     this.duration = const Value.absent(),
     this.fileType = const Value.absent(),
+    this.contentUrl = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   DownloadsTableCompanion.insert({
@@ -10306,6 +10350,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
     this.thumbnailUrl = const Value.absent(),
     this.duration = const Value.absent(),
     this.fileType = const Value.absent(),
+    this.contentUrl = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        title = Value(title),
@@ -10329,6 +10374,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
     Expression<String>? thumbnailUrl,
     Expression<String>? duration,
     Expression<String>? fileType,
+    Expression<String>? contentUrl,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -10345,6 +10391,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
       if (thumbnailUrl != null) 'thumbnail_url': thumbnailUrl,
       if (duration != null) 'duration': duration,
       if (fileType != null) 'file_type': fileType,
+      if (contentUrl != null) 'content_url': contentUrl,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -10363,6 +10410,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
     Value<String?>? thumbnailUrl,
     Value<String?>? duration,
     Value<String?>? fileType,
+    Value<String?>? contentUrl,
     Value<int>? rowid,
   }) {
     return DownloadsTableCompanion(
@@ -10379,6 +10427,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
       thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
       duration: duration ?? this.duration,
       fileType: fileType ?? this.fileType,
+      contentUrl: contentUrl ?? this.contentUrl,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -10425,6 +10474,9 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
     if (fileType.present) {
       map['file_type'] = Variable<String>(fileType.value);
     }
+    if (contentUrl.present) {
+      map['content_url'] = Variable<String>(contentUrl.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -10447,6 +10499,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
           ..write('thumbnailUrl: $thumbnailUrl, ')
           ..write('duration: $duration, ')
           ..write('fileType: $fileType, ')
+          ..write('contentUrl: $contentUrl, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -18791,6 +18844,7 @@ typedef $$DownloadsTableTableCreateCompanionBuilder =
       Value<String?> thumbnailUrl,
       Value<String?> duration,
       Value<String?> fileType,
+      Value<String?> contentUrl,
       Value<int> rowid,
     });
 typedef $$DownloadsTableTableUpdateCompanionBuilder =
@@ -18808,6 +18862,7 @@ typedef $$DownloadsTableTableUpdateCompanionBuilder =
       Value<String?> thumbnailUrl,
       Value<String?> duration,
       Value<String?> fileType,
+      Value<String?> contentUrl,
       Value<int> rowid,
     });
 
@@ -18882,6 +18937,11 @@ class $$DownloadsTableTableFilterComposer
 
   ColumnFilters<String> get fileType => $composableBuilder(
     column: $table.fileType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contentUrl => $composableBuilder(
+    column: $table.contentUrl,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -18959,6 +19019,11 @@ class $$DownloadsTableTableOrderingComposer
     column: $table.fileType,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get contentUrl => $composableBuilder(
+    column: $table.contentUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$DownloadsTableTableAnnotationComposer
@@ -19016,6 +19081,11 @@ class $$DownloadsTableTableAnnotationComposer
 
   GeneratedColumn<String> get fileType =>
       $composableBuilder(column: $table.fileType, builder: (column) => column);
+
+  GeneratedColumn<String> get contentUrl => $composableBuilder(
+    column: $table.contentUrl,
+    builder: (column) => column,
+  );
 }
 
 class $$DownloadsTableTableTableManager
@@ -19068,6 +19138,7 @@ class $$DownloadsTableTableTableManager
                 Value<String?> thumbnailUrl = const Value.absent(),
                 Value<String?> duration = const Value.absent(),
                 Value<String?> fileType = const Value.absent(),
+                Value<String?> contentUrl = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DownloadsTableCompanion(
                 id: id,
@@ -19083,6 +19154,7 @@ class $$DownloadsTableTableTableManager
                 thumbnailUrl: thumbnailUrl,
                 duration: duration,
                 fileType: fileType,
+                contentUrl: contentUrl,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -19100,6 +19172,7 @@ class $$DownloadsTableTableTableManager
                 Value<String?> thumbnailUrl = const Value.absent(),
                 Value<String?> duration = const Value.absent(),
                 Value<String?> fileType = const Value.absent(),
+                Value<String?> contentUrl = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DownloadsTableCompanion.insert(
                 id: id,
@@ -19115,6 +19188,7 @@ class $$DownloadsTableTableTableManager
                 thumbnailUrl: thumbnailUrl,
                 duration: duration,
                 fileType: fileType,
+                contentUrl: contentUrl,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

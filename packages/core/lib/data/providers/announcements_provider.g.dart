@@ -6,7 +6,7 @@ part of 'announcements_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$announcementsHash() => r'756a4979fd22b23f18f5ba0c55331e57d8d0d745';
+String _$announcementsHash() => r'60e6b8d9e7ec37952855932dc6dfab14d026f291';
 
 /// See also [Announcements].
 @ProviderFor(Announcements)

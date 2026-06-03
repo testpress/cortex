@@ -2,125 +2,82 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
-import 'package:media_scanner/media_scanner.dart';
+import 'package:core/data/data.dart';
 import 'package:open_filex/open_filex.dart';
-import 'package:dio/dio.dart';
-
-enum AttachmentDownloadState { idle, downloading, completed, error }
+import '../../providers/course_list_provider.dart';
+import '../../providers/downloads_provider.dart';
 
 class AttachmentViewer extends ConsumerStatefulWidget {
+  final String id;
   final String title;
   final String url;
   final String? fileSize;
+  final String? courseName;
+  final String? chapterName;
 
   const AttachmentViewer({
     super.key,
+    required this.id,
     required this.title,
     required this.url,
     this.fileSize,
+    this.courseName,
+    this.chapterName,
   });
 
   @override
   ConsumerState<AttachmentViewer> createState() => _AttachmentViewerState();
 }
 
-class _AttachmentViewerState extends ConsumerState<AttachmentViewer> with WidgetsBindingObserver {
-  AttachmentDownloadState _state = AttachmentDownloadState.idle;
-  double _downloadProgress = 0;
-  String? _localPath;
-  CancelToken? _cancelToken;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    _checkIfFileExists();
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    _cancelToken?.cancel();
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _checkIfFileExists();
-    }
-  }
-
-  Future<void> _checkIfFileExists() async {
-    try {
-      final downloader = ref.read(fileDownloaderProvider);
-      final path = await downloader.getLocalPath(widget.url, StorageType.publicDownload);
-      final file = File(path);
-      
-      final exists = await file.exists();
-      if (mounted) {
-        setState(() {
-          if (exists) {
-            _localPath = file.path;
-            _state = AttachmentDownloadState.completed;
-          } else if (_state == AttachmentDownloadState.completed) {
-            _localPath = null;
-            _state = AttachmentDownloadState.idle;
-          }
-        });
-      }
-    } catch (_) {}
-  }
-
-
-
+class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
   Future<void> _startDownload() async {
-    setState(() {
-      _state = AttachmentDownloadState.downloading;
-      _downloadProgress = 0;
-    });
-
     try {
-      _cancelToken = CancelToken();
-      final downloader = ref.read(fileDownloaderProvider);
-      final savePath = await downloader.download(
-        url: widget.url,
-        type: StorageType.publicDownload,
-        cancelToken: _cancelToken,
-        onReceiveProgress: (count, total) {
-          if (mounted) {
-            setState(() {
-              if (total != -1) {
-                _downloadProgress = count / total;
-              } else {
-                _downloadProgress = -1.0;
-              }
-            });
-          }
-        },
-        requireAuth: false, // Signed URLs often fail with Auth headers
+      final repo = await ref.read(courseRepositoryProvider.future);
+      final details = await repo.getLessonDetails(widget.id);
+      final resolvedCourseName = details?.courseTitle ?? widget.courseName ?? 'Unknown Course';
+      final resolvedChapterName = details?.chapterTitle ?? widget.chapterName ?? 'Unknown Chapter';
+
+      final item = DownloadItem(
+        id: widget.id,
+        title: widget.title,
+        course: resolvedCourseName,
+        chapter: resolvedChapterName,
+        sizeInBytes: 0,
+        downloadedDate: DateTime.now().toIso8601String(),
+        type: DownloadType.attachment,
+        status: DownloadStatus.downloading,
+        progress: 0,
+        fileType: widget.url.split('/').last.split('?').first.split('.').last.toUpperCase(),
+        contentUrl: widget.url,
       );
 
-      if (mounted && savePath != null) {
-        setState(() {
-          _localPath = savePath;
-          _state = AttachmentDownloadState.completed;
-        });
-        await MediaScanner.loadMedia(path: savePath);
-      } else if (mounted && savePath == null) {
-        setState(() => _state = AttachmentDownloadState.idle);
-      }
-    } catch (e) {
-      final isCancel = e is DioException && CancelToken.isCancel(e);
-      if (mounted && !isCancel) {
-        setState(() => _state = AttachmentDownloadState.error);
+      await ref.read(downloadsProvider.notifier).startAttachmentDownload(item, widget.url);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not start download. Please try again.')),
+        );
       }
     }
   }
 
-  Future<void> _openFile() async {
-    if (_localPath == null) return;
-    final result = await OpenFilex.open(_localPath!);
+  Future<void> _openFile(DownloadItem item) async {
+    final downloader = ref.read(fileDownloaderProvider);
+    final path = await downloader.getLocalPath(widget.url, StorageType.publicDownload);
+    
+    // Check if the user manually deleted the file via File Explorer
+    final fileExists = await File(path).exists();
+    if (!fileExists) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('File not found. It may have been deleted.')),
+        );
+      }
+      await ref.read(downloadsProvider.notifier).delete(item);
+      return;
+    }
+
+    final result = await OpenFilex.open(path);
     if (result.type != ResultType.done && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Could not open file: ${result.message}')),
@@ -140,8 +97,13 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> with Widget
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final isDownloading = _state == AttachmentDownloadState.downloading;
-    final isCompleted = _state == AttachmentDownloadState.completed;
+    final downloadItemAsync = ref.watch(watchDownloadItemProvider(widget.id));
+    
+    final item = downloadItemAsync.valueOrNull;
+    final isDownloading = item?.status == DownloadStatus.downloading;
+    final isCompleted = item?.status == DownloadStatus.completed;
+    final isError = item?.status == DownloadStatus.error;
+    final progress = item?.progress ?? 0;
 
     return Center(
       child: Column(
@@ -168,24 +130,24 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> with Widget
             SizedBox(
               width: 200,
               child: LinearProgressIndicator(
-                value: _downloadProgress >= 0 ? _downloadProgress : null,
+                value: progress > 0 ? progress / 100.0 : null,
                 backgroundColor: design.colors.surfaceVariant,
                 color: design.colors.primary,
               ),
             ),
             const SizedBox(height: 16),
             Text(
-              _downloadProgress >= 0 ? '${(_downloadProgress * 100).toInt()}%' : 'Downloading...',
+              progress > 0 ? '$progress%' : 'Downloading...',
               style: design.typography.bodySmall,
             ),
           ] else
             AppButton(
-              onPressed: isCompleted ? _openFile : _startDownload,
+              onPressed: isCompleted && item != null ? () => _openFile(item) : _startDownload,
               label: isCompleted ? 'View Downloaded File' : 'Download Attachment',
               backgroundColor: isCompleted ? design.colors.success : null,
               foregroundColor: isCompleted ? design.colors.onSuccess : null,
             ),
-          if (_state == AttachmentDownloadState.error) ...[
+          if (isError) ...[
             const SizedBox(height: 16),
             Text(
               'Download failed. Please try again.',
