@@ -19,12 +19,17 @@ class DownloadsService {
     String url, {
     void Function(int progressPercent)? onProgress,
   }) async {
+    int lastProgress = 0;
     return await _fileDownloader.download(
       url: url,
       type: StorageType.publicDownload,
       onReceiveProgress: (count, total) {
         if (total > 0) {
-          onProgress?.call(((count / total) * 100).toInt());
+          final percent = ((count / total) * 100).toInt();
+          if (percent != lastProgress) {
+            lastProgress = percent;
+            onProgress?.call(percent);
+          }
         }
       },
       requireAuth: false, // Signed URLs often fail with Auth headers

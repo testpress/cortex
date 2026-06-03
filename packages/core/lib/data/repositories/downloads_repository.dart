@@ -111,7 +111,9 @@ class DownloadsRepository {
 
     final activeAttachmentIds = <String>[];
     for (final attachment in dbAttachments) {
-      if (attachment.contentUrl != null) {
+      if (attachment.statusIndex != DownloadStatus.completed.index) {
+        activeAttachmentIds.add(attachment.id);
+      } else if (attachment.contentUrl != null) {
         if (await _service.verifyAttachmentExists(attachment.contentUrl!)) {
           activeAttachmentIds.add(attachment.id);
         }
