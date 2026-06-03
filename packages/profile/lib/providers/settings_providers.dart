@@ -102,3 +102,18 @@ class AccessibilitySettingsNotifier extends _$AccessibilitySettingsNotifier {
     state = AsyncValue.data(current.copyWith(highContrast: enabled));
   }
 }
+
+/// A provider that exposes the active text scale multiplier factor.
+final appTextScaleMultiplierProvider = Provider<double>((ref) {
+  final settingsAsync = ref.watch(accessibilitySettingsNotifierProvider);
+  final textScaleSize = settingsAsync.maybeWhen(
+    data: (settings) => settings.textScale,
+    orElse: () => TextScaleSize.medium,
+  );
+
+  return switch (textScaleSize) {
+    TextScaleSize.small => 0.85,
+    TextScaleSize.medium => 1.0,
+    TextScaleSize.large => 1.15,
+  };
+});

@@ -260,12 +260,13 @@ class LessonCardsSectionWidget extends StatelessWidget {
       enabled: isSkeleton,
       child: LayoutBuilder(
         builder: (context, constraints) {
+          final textScaler = MediaQuery.textScalerOf(context);
           final itemWidth = constraints.maxWidth * 0.45; // viewportFraction is 0.45
-          
           // Image height (16:9) + Content & Padding + Carousel margin
-          final contentHeight = showMetadata 
+          final baseContentHeight = showMetadata 
               ? _cardContentHeightWithMetadata 
               : _cardContentHeightCompact;
+          final contentHeight = baseContentHeight * textScaler.scale(1.0);
               
           final calculatedHeight = (itemWidth / (16 / 9)) + contentHeight + _carouselBottomMargin;
 

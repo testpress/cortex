@@ -50,6 +50,8 @@ class CortexApp extends ConsumerWidget {
     final localization = LocalizationProvider.of(context);
     final locale = localization.locale;
 
+    final scaleMultiplier = ref.watch(appTextScaleMultiplierProvider);
+
     return MaterialApp.router(
       title: 'Cortex',
       debugShowCheckedModeBanner: false,
@@ -73,12 +75,19 @@ class CortexApp extends ConsumerWidget {
         ),
       ),
       builder: (context, child) {
-        return DefaultTextStyle(
-          style: design.typography.body.copyWith(
-            color: design.colors.textPrimary,
-            decoration: TextDecoration.none,
+        final originalData = MediaQuery.of(context);
+        final systemScale = originalData.textScaler.scale(1.0);
+        return MediaQuery(
+          data: originalData.copyWith(
+            textScaler: TextScaler.linear(systemScale * scaleMultiplier),
           ),
-          child: child ?? const SizedBox.shrink(),
+          child: DefaultTextStyle(
+            style: design.typography.body.copyWith(
+              color: design.colors.textPrimary,
+              decoration: TextDecoration.none,
+            ),
+            child: child ?? const SizedBox.shrink(),
+          ),
         );
       },
     );
