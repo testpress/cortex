@@ -144,14 +144,14 @@ class AttemptDto {
       id: (data['id'] ?? json['id'] ?? '').toString(),
       state: (data['state'] ?? json['state'])?.toString(),
       remainingTime: (data['remaining_time'] ?? json['remaining_time'])?.toString(),
-      questionsUrl: (data['questions_url'] ?? json['questions_url'])?.toString() ?? 
-                    (cleanBase.isNotEmpty ? '${cleanBase}questions/' : ''),
+      questionsUrl: ((data['questions_url'] ?? json['questions_url'])?.toString() ?? 
+                    (cleanBase.isNotEmpty ? '${cleanBase}questions/' : '')).replaceFirst('v2.3', 'v2.2.1'),
       heartbeatUrl: finalHeartbeatUrl,
-      endUrl: contentAttemptEndUrl.isNotEmpty 
+      endUrl: (contentAttemptEndUrl.isNotEmpty 
               ? contentAttemptEndUrl 
               : ((json['end_url'] ?? data['end_url'] ?? json['terminate_url'] ?? data['terminate_url'])?.toString() ?? 
-                (cleanBase.isNotEmpty ? '${cleanBase}end/' : '')),
-      startUrl: (data['start_url'] ?? json['start_url'])?.toString(),
+                (cleanBase.isNotEmpty ? '${cleanBase}end/' : ''))).replaceFirst('v2.3', 'v2.2.1'),
+      startUrl: (data['start_url'] ?? json['start_url'])?.toString().replaceFirst('v2.3', 'v2.2.1'),
       score: (data['score'] ?? json['score'])?.toString(),
       date: (data['date'] ?? json['date'] ?? data['started_on'] ?? json['started_on'] ?? data['date_created'] ?? json['date_created'])?.toString(),
       correctCount: (data['correct_count'] ?? json['correct_count'] ?? data['correct'] ?? json['correct']) != null
@@ -206,4 +206,18 @@ class AttemptDto {
       'last_viewed_question_id': lastViewedQuestionId,
     };
   }
+
+  bool get hasSectionalLock {
+    if (sections == null || sections!.length < 2) {
+      return false;
+    }
+    for (final section in sections!) {
+      if (section.duration == null || section.duration == '0:00:00' || section.duration == '0') {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool get hasNoSectionalLock => !hasSectionalLock;
 }

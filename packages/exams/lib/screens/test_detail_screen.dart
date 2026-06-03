@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
@@ -239,8 +240,34 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
       }
     }
 
-    // Use all questions for the PageView to maintain KeepAlive state across the entire exam
-    final allQuestions = state.questions;
+    final bool useSections = state.sections.length > 1 && state.attempt?.hasSectionalLock == true;
+    final bool useFlexibleSections = state.sections.length > 1 && state.attempt?.hasSectionalLock == false;
+
+    // --- Parse and Group Questions for Flexible Sections ---
+    List<QuestionDto> allQuestions = List.of(state.questions);
+    List<SectionDto> localSections = List.of(state.sections);
+
+    if (useFlexibleSections && allQuestions.isNotEmpty) {
+      final sectionGroups = <String, List<QuestionDto>>{};
+      for (final q in state.questions) {
+        final secName = q.sectionName ?? 'General';
+        sectionGroups.putIfAbsent(secName, () => []).add(q);
+      }
+      
+      allQuestions = [];
+      localSections = [];
+      for (final entry in sectionGroups.entries) {
+        allQuestions.addAll(entry.value);
+        localSections.add(SectionDto(
+          id: '',
+          name: entry.key,
+          state: 'Not Started',
+          questionsUrl: '',
+          order: localSections.length,
+          questionsCount: entry.value.length,
+        ));
+      }
+    }
     
     if (allQuestions.isEmpty) {
       return Container(
@@ -267,21 +294,49 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
 
     // Calculate global question position and total question count across all sections
     int globalOffset = 0;
-    for (int i = 0; i < state.currentSectionIndex; i++) {
-      if (i < state.sections.length) {
-        globalOffset += state.sections[i].questionsCount ?? 0;
+    if (useSections) {
+      for (int i = 0; i < state.currentSectionIndex; i++) {
+        if (i < localSections.length) {
+          globalOffset += localSections[i].questionsCount ?? 0;
+        }
       }
     }
     final globalCurrentIndex = globalOffset + safeIndex;
 
     final globalTotalCount = state.attempt?.totalQuestions ?? 
-        state.sections.fold<int>(0, (sum, s) => sum + (s.questionsCount ?? 0));
+        localSections.fold<int>(0, (sum, s) => sum + (s.questionsCount ?? 0));
     final displayTotalCount = globalTotalCount > 0 ? globalTotalCount : allQuestions.length;
 
     // Determine whether there are more tabs to navigate to after this one.
-    final isMultiSection = state.sections.length > 1;
-    final hasNextSection = isMultiSection &&
-        state.currentSectionIndex < state.sections.length - 1;
+    final hasNextSection = useSections &&
+        state.currentSectionIndex < localSections.length - 1;
+
+    // --- Compute Tabs & Active Index ---
+    final List<String> tabNames = [];
+    int activeTabIndex = 0;
+
+    if (useSections || useFlexibleSections) {
+      tabNames.addAll(localSections.map((s) => s.name));
+      
+      if (useSections) {
+        activeTabIndex = state.currentSectionIndex;
+      } else {
+        // Flexible sections: calculate which section we are in based on safeIndex
+        int offset = 0;
+        for (int i = 0; i < localSections.length; i++) {
+          offset += localSections[i].questionsCount ?? 0;
+          if (safeIndex < offset) {
+            activeTabIndex = i;
+            break;
+          }
+        }
+      }
+    } else {
+      if (subjects.length > 1) {
+        tabNames.addAll(subjects);
+      }
+      activeTabIndex = currentSubjectIndex != -1 ? currentSubjectIndex : _activeSubjectIndex;
+    }
 
     return PopScope(
       canPop: false,
@@ -314,11 +369,20 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                       onExit: () => setState(() => _showPauseConfirmation = true),
                     ),
                     SectionsTabBar(
-                      state: state,
-                      activeSubjectIndex: currentSubjectIndex != -1 ? currentSubjectIndex : _activeSubjectIndex,
+                      tabNames: tabNames,
+                      activeIndex: activeTabIndex,
                       onTabSelected: (index) {
-                        if (state.sections.length > 1) {
+                        if (useSections) {
                           ref.read(examAttemptProvider.notifier).switchSection(index);
+                        } else if (useFlexibleSections) {
+                          // Jump to the first question of the selected flexible section
+                          int targetIndex = 0;
+                          for (int i = 0; i < index; i++) {
+                            targetIndex += localSections[i].questionsCount ?? 0;
+                          }
+                          if (targetIndex < allQuestions.length) {
+                            _pageController.jumpToPage(targetIndex);
+                          }
                         } else {
                           // Jump to the first question of this subject
                           final targetSubject = subjects[index];
@@ -396,8 +460,8 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                                 setState(() => _showSubmitConfirmation = true);
                               }
                             },
-                            onOptionSelect: (optionId) =>
-                                _handleOptionSelect(state, q, optionId),
+                            onOptionSelect: (message) =>
+                                _handleHtmlMessage(state, q, message),
                           );
                         },
                       ),
@@ -464,6 +528,31 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
           ],
         ),
       ),);
+  }
+
+  void _handleHtmlMessage(ExamAttemptState state, QuestionDto question, String message) {
+    try {
+      final data = jsonDecode(message);
+      if (data is Map<String, dynamic>) {
+        if (data['type'] == 'optionSelect') {
+          _handleOptionSelect(state, question, data['id'].toString());
+          return;
+        } else if (data['type'] == 'inputChange') {
+          _handleInputChange(state, question, data['value'].toString());
+          return;
+        }
+      }
+    } catch (_) {}
+    _handleOptionSelect(state, question, message);
+  }
+
+  void _handleInputChange(ExamAttemptState state, QuestionDto question, String value) {
+    if (question.type == 'essay') {
+      ref.read(examAttemptProvider.notifier).updateEssayText(question.id, question.answerUrl, value);
+    } else {
+      ref.read(examAttemptProvider.notifier).updateShortText(question.id, question.answerUrl, value);
+    }
+    // Don't show the saved indicator for every keystroke since it doesn't trigger immediate network submission
   }
 
   void _handleOptionSelect(ExamAttemptState state, QuestionDto question, String optionId) {
