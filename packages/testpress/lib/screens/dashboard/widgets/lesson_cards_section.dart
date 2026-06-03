@@ -266,7 +266,8 @@ class LessonCardsSectionWidget extends StatelessWidget {
           final baseContentHeight = showMetadata 
               ? _cardContentHeightWithMetadata 
               : _cardContentHeightCompact;
-          final contentHeight = baseContentHeight * textScaler.scale(1.0);
+          final scale = textScaler.scale(1.0).clamp(1.0, double.infinity);
+          final contentHeight = baseContentHeight * scale;
               
           final calculatedHeight = (itemWidth / (16 / 9)) + contentHeight + _carouselBottomMargin;
 
