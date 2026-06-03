@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:media_scanner/media_scanner.dart';
 import '../models/download_item.dart';
 import '../../network/file_downloader.dart';
 
@@ -14,13 +15,13 @@ class DownloadsService {
   DownloadsService(this._fileDownloader);
 
   /// Downloads an attachment file and reports progress via [onProgress].
-  /// Returns the local file path on success, or null on failure.
-  Future<String?> downloadAttachment(
+  /// Returns the final file size in bytes on success, or null on failure.
+  Future<int?> downloadAttachment(
     String url, {
     void Function(int progressPercent)? onProgress,
   }) async {
     int lastProgress = 0;
-    return await _fileDownloader.download(
+    final savePath = await _fileDownloader.download(
       url: url,
       type: StorageType.publicDownload,
       onReceiveProgress: (count, total) {
@@ -32,8 +33,33 @@ class DownloadsService {
           }
         }
       },
-      requireAuth: false, // Signed URLs often fail with Auth headers
+      requireAuth: false,
     );
+
+    if (savePath != null) {
+      if (Platform.isAndroid) {
+        try {
+          await MediaScanner.loadMedia(path: savePath);
+        } catch (_) {}
+      }
+      return await File(savePath).length();
+    }
+    return null;
+  }
+
+  /// Checks if the attachment exists and returns its size in bytes. 
+  /// Triggers MediaScanner if it does. Returns null if missing.
+  Future<int?> getExistingAttachmentSize(String url) async {
+    final path = await getExistingAttachmentPath(url);
+    if (path != null) {
+      if (Platform.isAndroid) {
+        try {
+          await MediaScanner.loadMedia(path: path);
+        } catch (_) {}
+      }
+      return await File(path).length();
+    }
+    return null;
   }
 
   /// Returns the deterministic file path if the file physically exists on disk,

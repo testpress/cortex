@@ -1,9 +1,7 @@
-import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../db/app_database.dart';
 import '../db/database_provider.dart';
-import 'package:media_scanner/media_scanner.dart';
 import '../models/download_item.dart';
 import '../services/downloads_service.dart';
 
@@ -42,33 +40,25 @@ class DownloadsRepository {
   /// Starts an attachment download and owns the full lifecycle:
   /// insert "downloading" → receive progress updates → write "completed" or "error".
   Future<void> startAttachmentDownload(DownloadItem item, String url) async {
-    // 0. Check if the file already exists physically on the device.
-    // If it does (e.g. downloaded before DB clear), adopt it instead of overwriting.
-    // This prevents Android 14 Scoped Storage Permission Denied errors.
-    final existingPath = await _service.getExistingAttachmentPath(url);
-    if (existingPath != null) {
-      final fileSize = await File(existingPath).length();
-      await upsertDownload(item.copyWith(
-        status: DownloadStatus.completed,
-        progress: 100,
-        sizeInBytes: fileSize,
-      ));
-      
-      // Register file with Android MediaStore so it's visible in public Downloads
-      if (Platform.isAndroid) {
-        try {
-          await MediaScanner.loadMedia(path: existingPath);
-        } catch (_) {}
-      }
-      return;
-    }
-
-    // 1. Persist the initial "downloading" state immediately
-    await upsertDownload(item);
-
     try {
+      // 0. Check if the file already exists physically on the device.
+      // If it does (e.g. downloaded before DB clear), adopt it instead of overwriting.
+      // This prevents Android 14 Scoped Storage Permission Denied errors.
+      final existingSize = await _service.getExistingAttachmentSize(url);
+      if (existingSize != null) {
+        await upsertDownload(item.copyWith(
+          status: DownloadStatus.completed,
+          progress: 100,
+          sizeInBytes: existingSize,
+        ));
+        return;
+      }
+
+      // 1. Persist the initial "downloading" state immediately
+      await upsertDownload(item);
+
       // 2. Delegate the actual HTTP download to the service worker
-      final savePath = await _service.downloadAttachment(
+      final downloadedSize = await _service.downloadAttachment(
         url,
         onProgress: (progressPercent) {
           // 3. Persist progress updates as they arrive
@@ -77,20 +67,12 @@ class DownloadsRepository {
       );
 
       // 4. Persist the final "completed" state with actual file size
-      if (savePath != null) {
-        final fileSize = await File(savePath).length();
+      if (downloadedSize != null) {
         await upsertDownload(item.copyWith(
           status: DownloadStatus.completed,
           progress: 100,
-          sizeInBytes: fileSize,
+          sizeInBytes: downloadedSize,
         ));
-        
-        // Register file with Android MediaStore so it's visible in public Downloads
-        if (Platform.isAndroid) {
-          try {
-            await MediaScanner.loadMedia(path: savePath);
-          } catch (_) {}
-        }
       } else {
         await upsertDownload(item.copyWith(status: DownloadStatus.error, progress: 0));
       }
