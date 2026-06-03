@@ -104,7 +104,8 @@ class AccessibilitySettingsNotifier extends _$AccessibilitySettingsNotifier {
 }
 
 /// A provider that exposes the active text scale multiplier factor.
-final appTextScaleMultiplierProvider = Provider<double>((ref) {
+@Riverpod(keepAlive: true)
+double appTextScaleMultiplier(Ref ref) {
   final settingsAsync = ref.watch(accessibilitySettingsNotifierProvider);
   final textScaleSize = settingsAsync.maybeWhen(
     data: (settings) => settings.textScale,
@@ -116,4 +117,4 @@ final appTextScaleMultiplierProvider = Provider<double>((ref) {
     TextScaleSize.medium => 1.0,
     TextScaleSize.large => 1.15,
   };
-});
+}

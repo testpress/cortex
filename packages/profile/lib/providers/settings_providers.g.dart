@@ -24,6 +24,26 @@ final settingsRepositoryProvider = FutureProvider<SettingsRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef SettingsRepositoryRef = FutureProviderRef<SettingsRepository>;
+String _$appTextScaleMultiplierHash() =>
+    r'9579f8006a89d61bf9481bfcf4edf224ac351465';
+
+/// A provider that exposes the active text scale multiplier factor.
+///
+/// Copied from [appTextScaleMultiplier].
+@ProviderFor(appTextScaleMultiplier)
+final appTextScaleMultiplierProvider = Provider<double>.internal(
+  appTextScaleMultiplier,
+  name: r'appTextScaleMultiplierProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$appTextScaleMultiplierHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef AppTextScaleMultiplierRef = ProviderRef<double>;
 String _$appearanceSettingsNotifierHash() =>
     r'6811e8e3bb037d59a699bba5962c2b39259923de';
 
