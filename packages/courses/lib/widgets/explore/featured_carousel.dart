@@ -11,8 +11,11 @@ class FeaturedCarousel extends StatelessWidget {
   Widget build(BuildContext context) {
     if (banners.isEmpty) return const SizedBox.shrink();
 
+    final textScaler = MediaQuery.textScalerOf(context);
+    final scale = textScaler.scale(1.0).clamp(1.0, double.infinity);
+
     return AppCarousel(
-      height: 160, // Reduced height
+      height: 160 * scale, // Scale dynamically to avoid clipping
       itemCount: banners.length,
       viewportFraction: 0.92, // Increased width
       itemBuilder: (context, index) {

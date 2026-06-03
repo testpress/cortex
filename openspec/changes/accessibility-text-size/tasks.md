@@ -15,3 +15,5 @@
 ## 4. Fix Layout Overflows
 
 - [x] 4.1 Scale `contentHeight` dynamically based on `MediaQuery.textScalerOf(context)` in `LessonCardsSectionWidget` to prevent bottom overflows on larger text sizes.
+- [x] 4.2 Scale carousel heights dynamically in `SnapshotSection`, `PromotionalBanners`, and `FeaturedCarousel` to prevent clipping and overflows under large font scaling settings.
+
