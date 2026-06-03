@@ -580,28 +580,94 @@ class _RadioIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final size = small ? design.iconSize.sm : design.iconSize.md;
+    // Add 1px padding on all sides of the canvas (2px total width/height extension)
+    // to prevent anti-aliased edge clipping at the boundary.
+    final canvasSize = size + 2.0;
 
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: isSelected ? design.colors.accent2 : design.colors.border,
-          width: 2,
-        ),
-        color: isSelected ? design.colors.accent2 : null,
-      ),
-      padding: const EdgeInsets.all(3),
-      child: isSelected
-          ? Container(
-              decoration: BoxDecoration(
-                color: design.colors.textInverse,
-                shape: BoxShape.circle,
-              ),
-            )
-          : null,
+    final shouldAnimate = MotionPreferences.shouldAnimate(context);
+
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(end: isSelected ? 1.0 : 0.0),
+      duration: shouldAnimate ? const Duration(milliseconds: 150) : Duration.zero,
+      builder: (context, value, child) {
+        return CustomPaint(
+          size: Size(canvasSize, canvasSize),
+          painter: _RadioPainter(
+            borderColor: design.colors.border,
+            fillColor: design.colors.accent2,
+            dotColor: design.colors.textInverse,
+            cardColor: design.colors.card,
+            isSelected: isSelected,
+            animationValue: value,
+          ),
+        );
+      },
     );
+  }
+}
+
+class _RadioPainter extends CustomPainter {
+  _RadioPainter({
+    required this.borderColor,
+    required this.fillColor,
+    required this.dotColor,
+    required this.cardColor,
+    required this.isSelected,
+    required this.animationValue,
+  });
+
+  final Color borderColor;
+  final Color fillColor;
+  final Color dotColor;
+  final Color cardColor;
+  final bool isSelected;
+  final double animationValue;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final width = size.width.roundToDouble();
+    final height = size.height.roundToDouble();
+    final center = Offset(width / 2, height / 2);
+    // Draw the circle with the original logical radius, leaving 1px margin inside canvas.
+    final radius = (width - 2.0) / 2;
+
+    const strokeWidth = 1.5;
+
+    // 1. Draw the outer ring as a filled circle of the current border/fill color
+    final currentBorderColor = Color.lerp(borderColor, fillColor, animationValue)!;
+    final paintRing = Paint()
+      ..color = currentBorderColor
+      ..style = PaintingStyle.fill
+      ..isAntiAlias = true;
+    canvas.drawCircle(center, radius, paintRing);
+
+    // 2. Draw the inner background circle as a filled circle, interpolating color to prevent visual popping.
+    final currentInnerColor = Color.lerp(cardColor, fillColor, animationValue)!;
+    final paintInner = Paint()
+      ..color = currentInnerColor
+      ..style = PaintingStyle.fill
+      ..isAntiAlias = true;
+    canvas.drawCircle(center, radius - strokeWidth, paintInner);
+
+    // 3. Draw the inner center dot (grows and fades in as selected)
+    if (animationValue > 0) {
+      final innerRadius = radius * 0.5 * animationValue;
+      final paintDot = Paint()
+        ..color = dotColor.withValues(alpha: animationValue)
+        ..style = PaintingStyle.fill
+        ..isAntiAlias = true;
+      canvas.drawCircle(center, innerRadius, paintDot);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _RadioPainter oldDelegate) {
+    return oldDelegate.borderColor != borderColor ||
+        oldDelegate.fillColor != fillColor ||
+        oldDelegate.dotColor != dotColor ||
+        oldDelegate.cardColor != cardColor ||
+        oldDelegate.isSelected != isSelected ||
+        oldDelegate.animationValue != animationValue;
   }
 }
 
