@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:drift/drift.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../db/app_database.dart';
@@ -13,8 +14,48 @@ part 'downloads_repository.g.dart';
 class DownloadsRepository {
   final AppDatabase _db;
   final DownloadsService _service;
+  final Map<String, DownloadItem> _lastKnownState = {};
+  final Set<String> _deletedIds = {};
+  StreamSubscription<List<DownloadItem>>? _subscription;
 
-  DownloadsRepository(this._db, this._service);
+  DownloadsRepository(this._db, this._service) {
+    _initStream();
+  }
+
+  void dispose() {
+    _subscription?.cancel();
+  }
+
+  void _initStream() {
+    _subscription = _service.downloadsStream.listen(
+      (items) {
+        final currentIds = items.map((e) => e.id).toSet();
+        _deletedIds.removeWhere((id) => !currentIds.contains(id));
+
+        for (final item in items) {
+          if (_deletedIds.contains(item.id)) continue;
+
+          final existing = _lastKnownState[item.id];
+          if (existing == null || 
+              existing.progress != item.progress || 
+              existing.status != item.status) {
+            
+            final itemToSave = existing != null
+                ? item.copyWith(downloadedDate: existing.downloadedDate)
+                : item;
+                
+            _lastKnownState[item.id] = itemToSave;
+            upsertDownload(itemToSave).catchError((Object e, StackTrace st) {
+              // Ignore or log error without crashing the stream
+            });
+          }
+        }
+      },
+      onError: (Object error, StackTrace stackTrace) {
+        // Handle underlying stream errors safely
+      },
+    );
+  }
 
   /// Watch all persistent downloads from the DB, mapped to domain models.
   Stream<List<DownloadItem>> watchAllDownloads() {
@@ -173,8 +214,32 @@ class DownloadsRepository {
   }
 
   Future<void> deleteDownload(DownloadItem item) async {
+    _deletedIds.add(item.id);
+    _lastKnownState.remove(item.id);
     await _service.deleteDownloadItem(item);
     await (_db.delete(_db.downloadsTable)..where((tbl) => tbl.id.equals(item.id))).go();
+  }
+
+  Future<void> purgeAllDownloads() async {
+    final downloads = await _db.select(_db.downloadsTable).get();
+    for (final row in downloads) {
+      final item = DownloadItem(
+        id: row.id,
+        title: row.title,
+        course: row.course,
+        chapter: row.chapter,
+        sizeInBytes: row.sizeInBytes.toInt(),
+        downloadedDate: row.downloadedDate,
+        type: DownloadType.values[row.typeIndex],
+        status: DownloadStatus.values[row.statusIndex],
+        progress: row.progress,
+        thumbnailUrl: row.thumbnailUrl,
+        duration: row.duration,
+        fileType: row.fileType,
+        contentUrl: row.contentUrl,
+      );
+      await deleteDownload(item);
+    }
   }
 }
 
@@ -182,7 +247,9 @@ class DownloadsRepository {
 Future<DownloadsRepository> downloadsRepository(DownloadsRepositoryRef ref) async {
   final db = await ref.watch(appDatabaseProvider.future);
   final service = ref.watch(downloadsServiceProvider);
-  return DownloadsRepository(db, service);
+  final repo = DownloadsRepository(db, service);
+  ref.onDispose(() => repo.dispose());
+  return repo;
 }
 
 @riverpod

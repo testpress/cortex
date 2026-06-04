@@ -172,7 +172,9 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
   Widget _buildVideoSection(DesignConfig design) {
     return CustomVideoPlayer(
       key: _videoPlayerKey,
+      lessonId: widget.lesson.id,
       assetId: widget.lesson.contentUrl,
+      thumbnailUrl: widget.lesson.image,
       onComplete: widget.onComplete,
     );
   }

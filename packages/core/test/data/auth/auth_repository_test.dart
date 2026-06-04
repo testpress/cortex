@@ -27,7 +27,6 @@ void main() {
     repository = AuthRepository(
       apiService: mockApi,
       localDataSource: mockLocal,
-      database: Future.value(mockDatabase),
     );
 
     // Mock the database purge call
@@ -80,7 +79,6 @@ void main() {
       verify(mockLocal.getToken()).called(1);
       verify(mockApi.logout(authToken: 'old_token')).called(1);
       verify(mockLocal.clearToken()).called(1);
-      verify(mockDatabase.purgeAllData()).called(1);
     });
 
     test('isUserLoggedIn should delegate to local data source', () async {
