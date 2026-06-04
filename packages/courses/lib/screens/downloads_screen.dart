@@ -4,11 +4,13 @@ import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:open_filex/open_filex.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 
 import '../providers/downloads_provider.dart';
+import 'offline_video_player_screen.dart';
 
 const _dummyDownload = DownloadItem(
   id: 'skeleton',
@@ -152,8 +154,10 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
           await _openAttachment(item);
         } else {
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Navigate to the lesson to play this video.')),
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => OfflineVideoPlayerScreen(item: item),
+              ),
             );
           }
         }
@@ -282,8 +286,17 @@ class _DownloadsList extends ConsumerWidget {
               return _DownloadCard(
                 item: item,
                 onAction: () => onAction(item),
-                onDelete: () {
-                  ref.read(downloadsProvider.notifier).delete(item);
+                onDelete: () async {
+                  try {
+                    await ref.read(downloadsProvider.notifier).delete(item);
+                  } catch (e, st) {
+                    debugPrint('Delete Error: $e\n$st');
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Failed to delete: $e')),
+                      );
+                    }
+                  }
                 },
               );
             },
@@ -373,15 +386,29 @@ class _VideoThumbnail extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
+    final placeholder = Center(
+      child: Icon(
+        LucideIcons.video,
+        size: 24,
+        color: design.colors.textTertiary,
+      ),
+    );
+
     return Stack(
+      fit: StackFit.expand,
       children: [
-        Center(
-          child: Icon(
-            LucideIcons.video,
-            size: 24,
-            color: design.colors.textTertiary,
-          ),
-        ),
+        if (item.thumbnailUrl != null && item.thumbnailUrl!.isNotEmpty)
+          ClipRRect(
+            borderRadius: BorderRadius.circular(design.radius.md),
+            child: CachedNetworkImage(
+              imageUrl: item.thumbnailUrl!,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => placeholder,
+              errorWidget: (context, url, error) => placeholder,
+            ),
+          )
+        else
+          placeholder,
         if (item.duration != null)
           Positioned(
             bottom: 4,
@@ -471,21 +498,28 @@ class _DownloadInfo extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        SizedBox(height: design.spacing.xs),
-        AppText.cardSubtitle(
-          item.course,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        SizedBox(height: design.spacing.xs),
-        AppText.cardCaption(
-          item.chapter,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+        if (item.course.isNotEmpty) ...[
+          SizedBox(height: design.spacing.xs),
+          AppText.cardSubtitle(
+            item.course,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+        if (item.chapter.isNotEmpty) ...[
+          SizedBox(height: design.spacing.xs),
+          AppText.cardCaption(
+            item.chapter,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
         SizedBox(height: design.spacing.md),
-        if (item.status == DownloadStatus.downloading) ...[
-          _DownloadProgressBar(progress: item.progress),
+        if (item.status != DownloadStatus.completed) ...[
+          _DownloadProgressBar(
+            progress: item.progress,
+            status: item.status,
+          ),
           SizedBox(height: design.spacing.xs),
         ],
         _DownloadMeta(item: item),
@@ -527,29 +561,36 @@ class _DownloadMeta extends StatelessWidget {
 
 class _DownloadProgressBar extends StatelessWidget {
   final int progress;
+  final DownloadStatus status;
 
   const _DownloadProgressBar({
     required this.progress,
+    required this.status,
   });
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    return Container(
-      height: 4,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: design.colors.surfaceVariant,
-        borderRadius: design.radius.pill,
-      ),
-      child: FractionallySizedBox(
-        alignment: Alignment.centerLeft,
-        widthFactor: progress / 100,
-        child: Container(
-          decoration: BoxDecoration(
-            color: design.colors.primary,
-            borderRadius: design.radius.pill,
+    return Padding(
+      padding: EdgeInsets.only(right: design.spacing.md),
+      child: Container(
+        height: 4,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: design.colors.surfaceVariant,
+          borderRadius: design.radius.pill,
+        ),
+        child: FractionallySizedBox(
+          alignment: Alignment.centerLeft,
+          widthFactor: progress / 100,
+          child: Container(
+            decoration: BoxDecoration(
+              color: status == DownloadStatus.paused
+                  ? design.colors.textTertiary
+                  : design.colors.primary,
+              borderRadius: design.radius.pill,
+            ),
           ),
         ),
       ),
@@ -778,8 +819,15 @@ String _formatBytes(int bytes) {
 extension DownloadItemX on DownloadItem {
   String get progressText {
     final size = _formatBytes(sizeInBytes);
-    if (status == DownloadStatus.downloading) {
+    if (status != DownloadStatus.completed) {
+      if (type == DownloadType.video) {
+        return '$progress%';
+      }
       return '$progress% of $size';
+    }
+
+    if (type == DownloadType.video && sizeInBytes == 0) {
+      return 'Video';
     }
 
     return size;

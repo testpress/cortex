@@ -6,6 +6,7 @@
 import 'dart:async' as _i3;
 
 import 'package:core/data/auth/auth_repository.dart' as _i2;
+import 'package:core/domain/usecases/app_reset_use_case.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -106,6 +107,38 @@ class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
   _i3.Future<void> resetPassword({required String? email}) =>
       (super.noSuchMethod(
             Invocation.method(#resetPassword, [], {#email: email}),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+}
+
+/// A class which mocks [AppResetUseCase].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockAppResetUseCase extends _i1.Mock implements _i4.AppResetUseCase {
+  @override
+  _i3.Future<void> execute() =>
+      (super.noSuchMethod(
+            Invocation.method(#execute, []),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> purgeDownloads() =>
+      (super.noSuchMethod(
+            Invocation.method(#purgeDownloads, []),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> purgeDatabase() =>
+      (super.noSuchMethod(
+            Invocation.method(#purgeDatabase, []),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),
           )

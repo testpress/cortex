@@ -5,6 +5,7 @@ import 'auth_local_data_source.dart';
 import 'auth_repository.dart';
 import '../../network/dio_provider.dart';
 import '../db/database_provider.dart';
+import '../../domain/usecases/app_reset_use_case.dart';
 
 part 'auth_provider.g.dart';
 
@@ -20,7 +21,6 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
   return AuthRepository(
     apiService: ref.watch(authApiServiceProvider),
     localDataSource: ref.watch(authLocalDataSourceProvider),
-    database: ref.watch(appDatabaseProvider.future),
   );
 });
 
@@ -73,6 +73,9 @@ class Auth extends _$Auth {
 
   Future<void> logout() async {
     try {
+      final resetUseCase = await ref.read(appResetUseCaseProvider.future);
+      await resetUseCase.execute();
+
       await _repository.logout();
       
       state = const AsyncData(false);

@@ -204,7 +204,9 @@ class _VideoLessonDetailScreenState
             children: [
               CustomVideoPlayer(
                 key: _videoPlayerKey,
+                lessonId: widget.lesson.id,
                 assetId: widget.lesson.contentUrl,
+                thumbnailUrl: widget.lesson.image,
               ),
               Positioned(
                 top: design.spacing.md,

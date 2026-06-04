@@ -6,18 +6,29 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/data/data.dart';
 import 'package:core/data/auth/auth_repository.dart';
 
-@GenerateNiceMocks([MockSpec<AuthRepository>()])
+import 'package:core/domain/usecases/app_reset_use_case.dart';
+
+@GenerateNiceMocks([
+  MockSpec<AuthRepository>(),
+  MockSpec<AppResetUseCase>(),
+])
 import 'auth_provider_test.mocks.dart';
 
 void main() {
   late ProviderContainer container;
   late MockAuthRepository mockRepository;
+  late MockAppResetUseCase mockResetUseCase;
 
   setUp(() {
     mockRepository = MockAuthRepository();
+    mockResetUseCase = MockAppResetUseCase();
+    
+    when(mockResetUseCase.execute()).thenAnswer((_) async {});
+
     container = ProviderContainer(
       overrides: [
         authRepositoryProvider.overrideWithValue(mockRepository),
+        appResetUseCaseProvider.overrideWith((ref) => mockResetUseCase),
       ],
     );
   });
@@ -78,6 +89,7 @@ void main() {
 
       // Assert
       expect(container.read(authProvider).value, isFalse);
+      verify(mockResetUseCase.execute()).called(1);
       verify(mockRepository.logout()).called(1);
     });
   });
