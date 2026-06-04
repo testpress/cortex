@@ -39,12 +39,17 @@ The system SHALL persist all download records in a local database (`AppDatabase`
 - **THEN** the local database SHALL be updated to reflect the new state.
 
 ### Requirement: Background Synchronization
-The system SHALL synchronize the local database with the active state upon entering the Downloads screen. This includes verifying the physical existence of attachment files on the device.
+The system SHALL synchronize the local database with the active state upon entering the Downloads screen, and actively listen to real-time streams for ongoing SDK downloads.
 
 #### Scenario: Triggering background sync
 - **WHEN** the user navigates to the Downloads screen
-- **THEN** the system SHALL trigger a background synchronization via `downloadsBootstrapProvider`.
+- **THEN** the system SHALL trigger a background synchronization via `downloadsBootstrapProvider` or equivalent initialization.
 - **AND** the system SHALL fetch real (non-mocked) active attachments and verify their file existence to remove orphaned database records.
+- **AND** the system SHALL fetch real (non-mocked) active video downloads from `TPStreamsDownloadManager.getAllDownloads()`.
+
+#### Scenario: Real-time synchronization
+- **WHEN** the SDK broadcasts an update via `downloadsStream`
+- **THEN** the system SHALL map the `DownloadAsset` to a domain `DownloadItem` and update the local database reactively.
 
 ### Requirement: Aesthetic Loading State (Shimmer)
 The system SHALL display a high-fidelity shimmer effect using `Skeletonizer` during initial data load or synchronization.
