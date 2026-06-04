@@ -56,6 +56,22 @@ class _LessonDetailOrchestratorState
       widget.lesson.id,
       LessonProgressStatus.completed,
     );
+
+    if (!mounted) return;
+
+    if (widget.lesson.type == LessonType.video && widget.onNext != null) {
+      // Auto-play the next video if the user setting allows it
+      final db = await ref.read(appDatabaseProvider.future);
+      final settings = await db.getAppSettings();
+      
+      if (!mounted) return;
+      
+      final autoPlayNext = settings.autoPlayNext;
+      
+      if (autoPlayNext) {
+        widget.onNext!();
+      }
+    }
   }
 
   Future<void> _removeBookmark(Lesson lesson) async {
