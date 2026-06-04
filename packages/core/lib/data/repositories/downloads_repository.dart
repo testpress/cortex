@@ -27,22 +27,34 @@ class DownloadsRepository {
   }
 
   void _initStream() {
-    _subscription = _service.downloadsStream.listen((items) {
-      final currentIds = items.map((e) => e.id).toSet();
-      _deletedIds.removeWhere((id) => !currentIds.contains(id));
+    _subscription = _service.downloadsStream.listen(
+      (items) {
+        final currentIds = items.map((e) => e.id).toSet();
+        _deletedIds.removeWhere((id) => !currentIds.contains(id));
 
-      for (final item in items) {
-        if (_deletedIds.contains(item.id)) continue;
+        for (final item in items) {
+          if (_deletedIds.contains(item.id)) continue;
 
-        final existing = _lastKnownState[item.id];
-        if (existing == null || 
-            existing.progress != item.progress || 
-            existing.status != item.status) {
-          _lastKnownState[item.id] = item;
-          upsertDownload(item);
+          final existing = _lastKnownState[item.id];
+          if (existing == null || 
+              existing.progress != item.progress || 
+              existing.status != item.status) {
+            
+            final itemToSave = existing != null
+                ? item.copyWith(downloadedDate: existing.downloadedDate)
+                : item;
+                
+            _lastKnownState[item.id] = itemToSave;
+            upsertDownload(itemToSave).catchError((Object e, StackTrace st) {
+              // Ignore or log error without crashing the stream
+            });
+          }
         }
-      }
-    });
+      },
+      onError: (Object error, StackTrace stackTrace) {
+        // Handle underlying stream errors safely
+      },
+    );
   }
 
   /// Watch all persistent downloads from the DB, mapped to domain models.

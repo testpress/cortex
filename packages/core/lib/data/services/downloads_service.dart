@@ -129,7 +129,7 @@ class DownloadsService {
     final asset = assets.where((a) => a.assetId == id).firstOrNull;
     if (asset != null) {
       try {
-        _downloadManager.pauseDownload(asset);
+        await _downloadManager.pauseDownload(asset);
       } catch (e) {
         // UnsupportedError on iOS
       }
@@ -142,7 +142,7 @@ class DownloadsService {
     final asset = assets.where((a) => a.assetId == id).firstOrNull;
     if (asset != null) {
       try {
-        _downloadManager.resumeDownload(asset);
+        await _downloadManager.resumeDownload(asset);
       } catch (e) {
         // UnsupportedError on iOS
       }
@@ -154,7 +154,7 @@ class DownloadsService {
     final assets = await _downloadManager.getAllDownloads();
     final asset = assets.where((a) => a.assetId == id).firstOrNull;
     if (asset != null) {
-      _downloadManager.deleteDownload(asset);
+      await _downloadManager.deleteDownload(asset);
     }
   }
 
