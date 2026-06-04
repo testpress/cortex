@@ -10,6 +10,7 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 
 import '../providers/downloads_provider.dart';
+import '../widgets/downloads_header.dart';
 import 'offline_video_player_screen.dart';
 
 const _dummyDownload = DownloadItem(
@@ -65,15 +66,9 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
       color: design.colors.canvas,
       child: Column(
         children: [
-          AppHeader(
+          DownloadsHeader(
             title: l10n.downloadsTitle,
-            leading: AppFocusable(
-              onTap: () => context.pop(),
-              child: Icon(
-                LucideIcons.arrowLeft,
-                color: design.colors.textPrimary,
-              ),
-            ),
+            onBack: () => context.pop(),
           ),
 
           _DownloadsTabBar(

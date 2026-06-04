@@ -5,6 +5,7 @@ import 'package:core/data/data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../widgets/lesson_detail/custom_video_player.dart';
+import '../widgets/downloads_header.dart';
 import '../providers/downloads_provider.dart';
 
 class OfflineVideoPlayerScreen extends ConsumerStatefulWidget {
@@ -35,15 +36,9 @@ class _OfflineVideoPlayerScreenState extends ConsumerState<OfflineVideoPlayerScr
           child: SafeArea(
             child: Column(
               children: [
-                AppHeader(
+                DownloadsHeader(
                   title: l10n.downloadsTitle,
-                  leading: AppFocusable(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Icon(
-                      LucideIcons.arrowLeft,
-                      color: design.colors.textPrimary,
-                    ),
-                  ),
+                  onBack: () => Navigator.of(context).pop(),
                   actions: [
                     AppFocusable(
                       onTap: () => setState(() => _isSheetOpen = true),
