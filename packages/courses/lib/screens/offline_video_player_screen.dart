@@ -67,24 +67,28 @@ class _OfflineVideoPlayerScreenState extends ConsumerState<OfflineVideoPlayerScr
                           color: design.colors.textPrimary,
                         ),
                         const SizedBox(height: 8),
-                        Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(
-                                text: item.course,
-                                style: const TextStyle(fontWeight: FontWeight.w400),
-                              ),
-                              const TextSpan(text: '  >  '),
-                              TextSpan(
-                                text: item.chapter,
-                                style: const TextStyle(fontWeight: FontWeight.w400),
-                              ),
-                            ],
+                        if (item.course.isNotEmpty || item.chapter.isNotEmpty)
+                          Text.rich(
+                            TextSpan(
+                              children: [
+                                if (item.course.isNotEmpty)
+                                  TextSpan(
+                                    text: item.course,
+                                    style: const TextStyle(fontWeight: FontWeight.w400),
+                                  ),
+                                if (item.course.isNotEmpty && item.chapter.isNotEmpty)
+                                  const TextSpan(text: '  >  '),
+                                if (item.chapter.isNotEmpty)
+                                  TextSpan(
+                                    text: item.chapter,
+                                    style: const TextStyle(fontWeight: FontWeight.w400),
+                                  ),
+                              ],
+                            ),
+                            style: design.typography.body.copyWith(
+                              color: design.colors.primary,
+                            ),
                           ),
-                          style: design.typography.body.copyWith(
-                            color: design.colors.primary,
-                          ),
-                        ),
                         const SizedBox(height: 16),
                         Row(
                           children: [
