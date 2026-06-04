@@ -26,7 +26,7 @@ class AppHeader extends StatelessWidget {
     final design = Design.of(context);
     return Container(
       decoration: BoxDecoration(
-        color: design.colors.card,
+        color: design.colors.surface,
         border: Border(
           bottom: BorderSide(color: design.colors.divider, width: 1),
         ),
