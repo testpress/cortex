@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:drift/drift.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../db/app_database.dart';
@@ -15,13 +16,18 @@ class DownloadsRepository {
   final DownloadsService _service;
   final Map<String, DownloadItem> _lastKnownState = {};
   final Set<String> _deletedIds = {};
+  StreamSubscription<List<DownloadItem>>? _subscription;
 
   DownloadsRepository(this._db, this._service) {
     _initStream();
   }
 
+  void dispose() {
+    _subscription?.cancel();
+  }
+
   void _initStream() {
-    _service.downloadsStream.listen((items) {
+    _subscription = _service.downloadsStream.listen((items) {
       final currentIds = items.map((e) => e.id).toSet();
       _deletedIds.removeWhere((id) => !currentIds.contains(id));
 
@@ -229,7 +235,9 @@ class DownloadsRepository {
 Future<DownloadsRepository> downloadsRepository(DownloadsRepositoryRef ref) async {
   final db = await ref.watch(appDatabaseProvider.future);
   final service = ref.watch(downloadsServiceProvider);
-  return DownloadsRepository(db, service);
+  final repo = DownloadsRepository(db, service);
+  ref.onDispose(() => repo.dispose());
+  return repo;
 }
 
 @riverpod
