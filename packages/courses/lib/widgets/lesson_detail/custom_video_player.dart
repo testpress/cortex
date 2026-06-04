@@ -76,7 +76,12 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
       }
 
       final downloadItemAsync = ref.watch(watchDownloadItemProvider(widget.assetId!));
-      final isCompleted = downloadItemAsync.valueOrNull?.status == DownloadStatus.completed;
+      
+      if (!downloadItemAsync.hasValue) {
+        return const SizedBox.shrink(); // Wait for database to emit initial status to avoid online player flicker
+      }
+
+      final isCompleted = downloadItemAsync.value?.status == DownloadStatus.completed;
 
       if (isCompleted) {
         return TestpressPlayer.offline(
