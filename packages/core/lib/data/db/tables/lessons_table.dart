@@ -61,6 +61,7 @@ class LessonsTable extends Table {
   TextColumn get videoSubtitleUrl => text().nullable()(); // Stores subtitle URL
   BoolColumn get isAiEnabled => boolean().withDefault(const Constant(false))();
   TextColumn get aiNotesUrl => text().nullable()();
+  TextColumn get lastWatchedDuration => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};

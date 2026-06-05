@@ -776,10 +776,23 @@ class CourseRepository {
   /// Refetches a single lesson's full metadata from the v2.4 API and persists it.
   Future<LessonDto> refreshLesson(String id) async {
     final dto = await _source.getLessonDetail(id);
-    final existing = await getLesson(id);
+    
+    // Attempts call here, before anything else
+    LessonDto dtoWithAttempts = dto;
+    if (dto.attemptsUrl != null) {
+      try {
+        final lastWatched = await _source.getLastWatchedPosition(dto.attemptsUrl!);
+        dtoWithAttempts = dto.copyWith(
+          lastWatchedDuration: lastWatched,
+        );
+      } catch (e) {
+        // Log the error but allow the lesson refresh to succeed
+        debugPrint('CourseRepository: Failed to fetch last watched position: $e');
+      }
+    }
 
-    // Explicitly mark as detail fetched
-    final updated = dto.copyWith(isDetailFetched: true);
+    final existing = await getLesson(id);
+    final updated = dtoWithAttempts.copyWith(isDetailFetched: true);
     final merged = updated.mergeWith(existing);
 
     await _db.upsertLessons([_lessonDtoToCompanion(merged)]);
@@ -836,6 +849,30 @@ class CourseRepository {
         // Log error but don't block local success
         debugPrint('CourseRepository: Failed to sync completion to server: $e');
       }
+    }
+  }
+
+  /// Updates video attempt with watched time ranges
+  Future<void> updateVideoAttempt({
+    required int chapterContentId,
+    required String lastWatchPosition,
+    required List<List<double>> watchedTimeRanges,
+  }) async {
+    await _source.updateVideoAttempt(
+      chapterContentId: chapterContentId,
+      lastWatchPosition: lastWatchPosition,
+      watchedTimeRanges: watchedTimeRanges,
+    );
+    
+    // Update the local database with the new position so it resumes correctly when navigating back
+    try {
+      final existing = await getLesson(chapterContentId.toString());
+      if (existing != null) {
+        final updated = existing.copyWith(lastWatchedDuration: lastWatchPosition);
+        await _db.upsertLessons([_lessonDtoToCompanion(updated)]);
+      }
+    } catch (e) {
+      debugPrint('CourseRepository: Failed to update local DB after sync: $e');
     }
   }
 
@@ -990,6 +1027,7 @@ class CourseRepository {
     videoSubtitleUrl: row.videoSubtitleUrl,
     isAiEnabled: row.isAiEnabled,
     aiNotesUrl: row.aiNotesUrl,
+    lastWatchedDuration: row.lastWatchedDuration,
   );
 
   LessonsTableCompanion _lessonDtoToCompanion(LessonDto dto) =>
@@ -1067,6 +1105,9 @@ class CourseRepository {
         isAiEnabled: Value(dto.isAiEnabled),
         aiNotesUrl: dto.aiNotesUrl != null
             ? Value(dto.aiNotesUrl)
+            : const Value.absent(),
+        lastWatchedDuration: dto.lastWatchedDuration != null
+            ? Value(dto.lastWatchedDuration)
             : const Value.absent(),
       );
 

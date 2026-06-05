@@ -59,6 +59,7 @@ class LessonDto {
   final String? videoSubtitleUrl;
   final bool isAiEnabled;
   final String? aiNotesUrl;
+  final String? lastWatchedDuration;
 
   /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
   bool get isComplete {
@@ -123,6 +124,7 @@ class LessonDto {
     this.videoSubtitleUrl,
     this.isAiEnabled = false,
     this.aiNotesUrl,
+    this.lastWatchedDuration,
   });
 
   LessonDto copyWith({
@@ -168,6 +170,7 @@ class LessonDto {
     String? videoSubtitleUrl,
     bool? isAiEnabled,
     String? aiNotesUrl,
+    String? lastWatchedDuration,
   }) {
     return LessonDto(
       id: id ?? this.id,
@@ -212,6 +215,7 @@ class LessonDto {
       videoSubtitleUrl: videoSubtitleUrl ?? this.videoSubtitleUrl,
       isAiEnabled: isAiEnabled ?? this.isAiEnabled,
       aiNotesUrl: aiNotesUrl ?? this.aiNotesUrl,
+      lastWatchedDuration: lastWatchedDuration ?? this.lastWatchedDuration,
     );
   }
 
@@ -247,6 +251,7 @@ class LessonDto {
       videoSubtitleUrl: (videoSubtitleUrl?.isEmpty ?? true) ? other.videoSubtitleUrl : videoSubtitleUrl,
       isAiEnabled: isAiEnabled || other.isAiEnabled,
       aiNotesUrl: (aiNotesUrl?.isEmpty ?? true) ? other.aiNotesUrl : aiNotesUrl,
+      lastWatchedDuration: (lastWatchedDuration?.isEmpty ?? true) ? other.lastWatchedDuration : lastWatchedDuration,
       isDetailFetched: isDetailFetched || other.isDetailFetched,
       bookmarkId: bookmarkId ?? other.bookmarkId,
       // Status flags: Prefer 'true' or more advanced progress
@@ -531,6 +536,7 @@ class LessonDto {
       }(),
       isAiEnabled: json['is_ai_enabled'] as bool? ?? json['isAiEnabled'] as bool? ?? false,
       aiNotesUrl: json['ai_notes_url']?.toString() ?? json['aiNotesUrl']?.toString(),
+      attemptsUrl: getString('attempts_url') ?? getString('attemptsUrl'),
     );
   }
 
@@ -578,6 +584,8 @@ class LessonDto {
       'videoSubtitleUrl': videoSubtitleUrl,
       'isAiEnabled': isAiEnabled,
       'aiNotesUrl': aiNotesUrl,
+      'lastWatchedDuration': lastWatchedDuration,
+      'attemptsUrl': attemptsUrl,
     };
   }
 }
