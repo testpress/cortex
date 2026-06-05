@@ -195,9 +195,6 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
         _isPlayingTracker = true;
       } else if (!isPlaying && _isPlayingTracker) {
         _finalizeCurrentInterval();
-        
-        // Sync when paused
-        _syncVideoAttempt(currentPos);
       }
 
       // Check for completion
