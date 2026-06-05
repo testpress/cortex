@@ -865,16 +865,15 @@ class CourseRepository {
     );
     
     // Update the local database with the new position so it resumes correctly when navigating back
-    // try {
-    //   final existing = await getLesson(chapterContentId.toString());
-    //   if (existing != null) {
-    //     final updated = existing.copyWith(lastWatchedDuration: lastWatchPosition);
-    //     await _db.upsertLessons([_lessonDtoToCompanion(updated)]);
-
-    //   }
-    // } catch (e) {
-    //   debugPrint('CourseRepository: Failed to update local DB after sync: $e');
-    // }
+    try {
+      final existing = await getLesson(chapterContentId.toString());
+      if (existing != null) {
+        final updated = existing.copyWith(lastWatchedDuration: lastWatchPosition);
+        await _db.upsertLessons([_lessonDtoToCompanion(updated)]);
+      }
+    } catch (e) {
+      debugPrint('CourseRepository: Failed to update local DB after sync: $e');
+    }
   }
 
   /// Downloads a file via the data source.
