@@ -4,6 +4,7 @@ import 'package:core/data/data.dart';
 import 'test_navigation_actions.dart';
 import 'test_palette_trigger.dart';
 import 'test_question_html_builder.dart';
+import '../../screens/review_answer/widgets/review_question_html_builder.dart';
 
 /// Card displayed for each question during an active exam session.
 ///
@@ -20,6 +21,10 @@ class TestQuestionCard extends StatefulWidget {
   final VoidCallback onToggleMark;
   final VoidCallback onPrevious;
   final VoidCallback onNext;
+  final bool isQuizMode;
+  final bool isQuizChecked;
+  final QuizReviewResultDto? quizReview;
+  final VoidCallback? onCheck;
   final int answeredCount;
   final int totalQuestions;
   final VoidCallback onPaletteTap;
@@ -40,6 +45,10 @@ class TestQuestionCard extends StatefulWidget {
     required this.onPrevious,
     required this.onNext,
     required this.onOptionSelect,
+    this.isQuizMode = false,
+    this.isQuizChecked = false,
+    this.quizReview,
+    this.onCheck,
   });
 
   @override
@@ -57,17 +66,33 @@ class _TestQuestionCardState extends State<TestQuestionCard> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final isDark = design.isDark;
+    final l10n = L10n.of(context);
 
     // Rebuild HTML only when the question or colour-scheme changes.
     if (_htmlData.isEmpty ||
         _lastQuestionId != widget.question.id ||
-        _lastIsDark != isDark) {
-      _htmlData = TestQuestionHtmlBuilder.build(
-        question: widget.question,
-        answer: widget.answer,
-        design: design,
-        context: context,
-      );
+        _lastIsDark != isDark ||
+        widget.isQuizChecked) {
+      if (widget.isQuizChecked) {
+        // We must import ReviewQuestionHtmlBuilder at the top. Wait!
+        // Actually, we can just use the html builder inline if we import it.
+        // I will add the import below.
+      }
+      
+      _htmlData = widget.isQuizChecked
+          ? ReviewQuestionHtmlBuilder.build(
+              question: widget.question,
+              attemptState: widget.answer,
+              quizReview: widget.quizReview,
+              design: design,
+              l10n: l10n,
+            )
+          : TestQuestionHtmlBuilder.build(
+              question: widget.question,
+              answer: widget.answer,
+              design: design,
+              context: context,
+            );
       _lastQuestionId = widget.question.id;
       _lastIsDark = isDark;
     }
@@ -125,6 +150,9 @@ class _TestQuestionCardState extends State<TestQuestionCard> {
                   onToggleMark: widget.onToggleMark,
                   onPrevious: widget.onPrevious,
                   onNext: widget.onNext,
+                  isQuizMode: widget.isQuizMode,
+                  isQuizChecked: widget.isQuizChecked,
+                  onCheck: widget.onCheck,
                 ),
                 SizedBox(height: design.spacing.md),
                 TestPaletteTrigger(

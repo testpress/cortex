@@ -164,29 +164,34 @@ class ExamAttempt extends _$ExamAttempt {
     return repo.state;
   }
 
-  Future<void> loadExam(String slug) =>
-      ref.read(examRepositoryProvider).loadExam(slug);
-
+  Future<void> loadExam(String slug, {bool isQuizMode = false}) => ref.read(examRepositoryProvider).loadExam(slug, isQuizMode: isQuizMode);
+  
   void reset() => ref.read(examRepositoryProvider).reset();
-
-  Future<void> startStandaloneExam(ExamDto exam) =>
-      ref.read(examRepositoryProvider).startStandaloneExam(exam);
-
-  Future<void> startCourseLinkedExam(ExamDto exam, String contentAttemptsUrl) =>
-      ref
-          .read(examRepositoryProvider)
-          .startCourseLinkedExam(exam, contentAttemptsUrl);
+  
+  Future<void> startStandaloneExam(ExamDto exam, {bool isQuizMode = false}) => 
+      ref.read(examRepositoryProvider).startStandaloneExam(exam, isQuizMode: isQuizMode);
+      
+  Future<void> startCourseLinkedExam(ExamDto exam, String contentAttemptsUrl, {bool isQuizMode = false}) =>
+      ref.read(examRepositoryProvider).startCourseLinkedExam(exam, contentAttemptsUrl, isQuizMode: isQuizMode);
 
   Future<void> submitAnswer(String answerUrl, AnswerDto answer) =>
       ref.read(examRepositoryProvider).submitAnswer(answerUrl, answer);
 
-  void updateShortText(String questionId, String answerUrl, String text) => ref
-      .read(examRepositoryProvider)
-      .updateShortText(questionId, answerUrl, text);
+  void updateLocalAnswer(String questionId, AnswerDto answer) =>
+      ref.read(examRepositoryProvider).updateLocalAnswer(questionId, answer);
+
+  Future<void> checkQuizAnswer(String answerUrl, AnswerDto answer) =>
+      ref.read(examRepositoryProvider).checkQuizAnswer(answerUrl, answer);
+
+  void updateShortText(String questionId, String answerUrl, String text) =>
+      ref.read(examRepositoryProvider).updateShortText(questionId, answerUrl, text);
 
   void updateEssayText(String questionId, String answerUrl, String text) => ref
       .read(examRepositoryProvider)
       .updateEssayText(questionId, answerUrl, text);
+
+  void markQuestionAsChecked(String questionId) =>
+      ref.read(examRepositoryProvider).markQuestionAsChecked(questionId);
 
   Future<void> endExam(String endUrl) =>
       ref.read(examRepositoryProvider).endExam(endUrl);

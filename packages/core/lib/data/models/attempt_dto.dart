@@ -27,6 +27,7 @@ class AttemptDto {
   final String? negativeMarks;
   final String? timeTaken;
   final int? lastViewedQuestionId;
+  final int? attemptType;
 
   const AttemptDto({
     required this.id,
@@ -53,6 +54,7 @@ class AttemptDto {
     this.negativeMarks,
     this.timeTaken,
     this.lastViewedQuestionId,
+    this.attemptType,
   });
 
   AttemptDto copyWith({
@@ -80,6 +82,7 @@ class AttemptDto {
     String? negativeMarks,
     String? timeTaken,
     int? lastViewedQuestionId,
+    int? attemptType,
   }) {
     return AttemptDto(
       id: id ?? this.id,
@@ -106,6 +109,7 @@ class AttemptDto {
       negativeMarks: negativeMarks ?? this.negativeMarks,
       timeTaken: timeTaken ?? this.timeTaken,
       lastViewedQuestionId: lastViewedQuestionId ?? this.lastViewedQuestionId,
+      attemptType: attemptType ?? this.attemptType,
     );
   }
 
@@ -238,9 +242,7 @@ class AttemptDto {
       negativeMarks: (data['negative_marks'] ?? json['negative_marks'])
           ?.toString(),
       timeTaken: (data['time_taken'] ?? json['time_taken'])?.toString(),
-      lastViewedQuestionId:
-          json['last_viewed_question_id'] as int? ??
-          data['last_viewed_question_id'] as int?,
+      lastViewedQuestionId: json['last_viewed_question_id'] as int? ?? data['last_viewed_question_id'] as int?,
     );
   }
 
@@ -270,6 +272,7 @@ class AttemptDto {
       'negative_marks': negativeMarks,
       'time_taken': timeTaken,
       'last_viewed_question_id': lastViewedQuestionId,
+      'attempt_type': attemptType,
     };
   }
 
@@ -288,4 +291,6 @@ class AttemptDto {
   }
 
   bool get hasNoSectionalLock => !hasSectionalLock;
+
+  bool get isQuizMode => attemptType == 1;
 }

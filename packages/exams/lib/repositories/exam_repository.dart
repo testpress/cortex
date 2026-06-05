@@ -24,7 +24,10 @@ class ExamAttemptState {
   final List<QuestionDto> questions;
   final int currentQuestionIndex;
   final Map<String, AnswerDto> answers;
+  final Set<String> checkedQuestions;
+  final Map<String, QuizReviewResultDto> quizReviews;
   final int remainingSeconds;
+  final bool isQuizMode;
   final String? errorMessage;
 
   const ExamAttemptState({
@@ -36,7 +39,10 @@ class ExamAttemptState {
     this.questions = const [],
     this.currentQuestionIndex = 0,
     this.answers = const {},
+    this.checkedQuestions = const {},
+    this.quizReviews = const {},
     this.remainingSeconds = 0,
+    this.isQuizMode = false,
     this.errorMessage,
   });
 
@@ -49,7 +55,10 @@ class ExamAttemptState {
     List<QuestionDto>? questions,
     int? currentQuestionIndex,
     Map<String, AnswerDto>? answers,
+    Set<String>? checkedQuestions,
+    Map<String, QuizReviewResultDto>? quizReviews,
     int? remainingSeconds,
+    bool? isQuizMode,
     String? errorMessage,
   }) {
     return ExamAttemptState(
@@ -61,7 +70,10 @@ class ExamAttemptState {
       questions: questions ?? this.questions,
       currentQuestionIndex: currentQuestionIndex ?? this.currentQuestionIndex,
       answers: answers ?? this.answers,
+      checkedQuestions: checkedQuestions ?? this.checkedQuestions,
+      quizReviews: quizReviews ?? this.quizReviews,
       remainingSeconds: remainingSeconds ?? this.remainingSeconds,
+      isQuizMode: isQuizMode ?? this.isQuizMode,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
@@ -135,7 +147,7 @@ class ExamRepository {
 
   // ─── Real-time Attempt Management ──────────────────────────────────────────
 
-  Future<void> loadExam(String slug) async {
+  Future<void> loadExam(String slug, {bool isQuizMode = false}) async {
     _emit(const ExamAttemptState(status: ExamAttemptStatus.loading));
     try {
       final exam = await _dataSource.getExam(slug);
@@ -144,7 +156,7 @@ class ExamRepository {
           ExamAttemptState(status: ExamAttemptStatus.instructions, exam: exam),
         );
       } else {
-        await startStandaloneExam(exam);
+        await startStandaloneExam(exam, isQuizMode: isQuizMode);
       }
     } catch (e) {
       final msg = e is ApiException ? e.message : e.toString();
@@ -154,13 +166,16 @@ class ExamRepository {
     }
   }
 
-  Future<void> startStandaloneExam(ExamDto exam) async {
+  Future<void> startStandaloneExam(ExamDto exam, {bool isQuizMode = false}) async {
     _emit(ExamAttemptState(status: ExamAttemptStatus.loading, exam: exam));
     try {
       if (exam.pausedAttemptsCount > 0) {
         final attempts = await _dataSource.getAttempts(exam.attemptsUrl);
         if (attempts.isEmpty) {
-          final attempt = await _dataSource.createAttempt(exam.attemptsUrl);
+          final attempt = await _dataSource.createAttempt(
+            exam.attemptsUrl,
+            data: isQuizMode ? {'attempt_type': 1} : null,
+          );
           await _initializeAttempt(exam, attempt);
         } else {
           final runningAttempt = attempts.firstWhere(
@@ -184,7 +199,10 @@ class ExamRepository {
           await _initializeAttempt(exam, attemptToInitialize, isResume: true);
         }
       } else {
-        final attempt = await _dataSource.createAttempt(exam.attemptsUrl);
+        final attempt = await _dataSource.createAttempt(
+          exam.attemptsUrl,
+          data: isQuizMode ? {'attempt_type': 1} : null,
+        );
         await _initializeAttempt(exam, attempt);
       }
     } catch (e) {
@@ -199,16 +217,16 @@ class ExamRepository {
     }
   }
 
-  Future<void> startCourseLinkedExam(
-    ExamDto exam,
-    String contentAttemptsUrl,
-  ) async {
+  Future<void> startCourseLinkedExam(ExamDto exam, String contentAttemptsUrl, {bool isQuizMode = false}) async {
     _emit(ExamAttemptState(status: ExamAttemptStatus.loading, exam: exam));
     try {
       if (exam.pausedAttemptsCount > 0) {
         final attempts = await _dataSource.getAttempts(contentAttemptsUrl);
         if (attempts.isEmpty) {
-          final attempt = await _dataSource.createAttempt(contentAttemptsUrl);
+          final attempt = await _dataSource.createContentAttempt(
+            contentAttemptsUrl,
+            data: isQuizMode ? {'attempt_type': 1} : null,
+          );
           await _initializeAttempt(exam, attempt);
         } else {
           final runningAttempt = attempts.firstWhere(
@@ -234,6 +252,7 @@ class ExamRepository {
       } else {
         final attempt = await _dataSource.createContentAttempt(
           contentAttemptsUrl,
+          data: isQuizMode ? {'attempt_type': 1} : null,
         );
         await _initializeAttempt(exam, attempt);
       }
@@ -406,6 +425,7 @@ class ExamRepository {
         currentQuestionIndex: initialQuestionIndex,
         answers: initialAnswers,
         remainingSeconds: remainingSeconds,
+        isQuizMode: currentAttempt.isQuizMode,
       );
       _emit(state);
     } else {
@@ -459,6 +479,7 @@ class ExamRepository {
         currentQuestionIndex: initialQuestionIndex,
         answers: initialAnswers,
         remainingSeconds: remainingSeconds,
+        isQuizMode: currentAttempt.isQuizMode,
       );
       _emit(state);
     }
@@ -726,6 +747,65 @@ class ExamRepository {
     });
   }
 
+  void updateLocalAnswer(String questionId, AnswerDto answer) {
+    final newAnswers = Map<String, AnswerDto>.from(_currentState.answers);
+    newAnswers[questionId] = answer;
+    _emit(_currentState.copyWith(answers: newAnswers));
+  }
+
+  Future<void> checkQuizAnswer(String answerUrl, AnswerDto answer) async {
+    final questionId = answer.questionId;
+
+    // Flush any pending network debounce for this question to avoid conflicts
+    _submitTimers[questionId]?.cancel();
+    _submitTimers.remove(questionId);
+    _pendingAnswers.remove(questionId);
+    _pendingAnswerUrls.remove(questionId);
+
+    // Update local state first to indicate submission attempt
+    updateLocalAnswer(questionId, answer);
+    
+    try {
+      dev.log(
+        'checkQuizAnswer submitting: '
+        'questionId=$questionId, '
+        'answerUrl=$answerUrl, '
+        'payload=${answer.toJson(review: true)}',
+        name: 'ExamRepository',
+      );
+
+      final quizReview = await _dataSource.submitQuizAnswer(answerUrl, answer);
+
+      dev.log(
+        'checkQuizAnswer received review: '
+        'questionId=${quizReview.questionId}, '
+        'selected=${quizReview.selectedAnswers}, '
+        'correct=${quizReview.correctAnswers}, '
+        'result=${quizReview.result}, '
+        'review=${quizReview.review}, '
+        'hasExplanation=${quizReview.explanationHtml != null && quizReview.explanationHtml!.isNotEmpty}',
+        name: 'ExamRepository',
+      );
+      
+      final newQuizReviews = Map<String, QuizReviewResultDto>.from(_currentState.quizReviews);
+      newQuizReviews[questionId] = quizReview;
+      
+      final newChecked = Set<String>.from(_currentState.checkedQuestions)..add(questionId);
+
+      _emit(_currentState.copyWith(
+        quizReviews: newQuizReviews,
+        checkedQuestions: newChecked,
+      ));
+    } catch (e, stackTrace) {
+      dev.log('Failed to check quiz answer', name: 'ExamRepository', error: e, stackTrace: stackTrace);
+      // Even on failure, we probably want to let the user move on or retry.
+      // For now, emit an error state but don't crash.
+      _emit(_currentState.copyWith(
+        errorMessage: 'Failed to check answer: $e',
+      ));
+    }
+  }
+
   void updateShortText(String questionId, String answerUrl, String text) {
     final currentAnswer =
         _currentState.answers[questionId] ??
@@ -770,6 +850,11 @@ class ExamRepository {
     // Keep it in pending so flush handles it on heartbeat or exam end
     _pendingAnswers[questionId] = newAnswer;
     _pendingAnswerUrls[questionId] = answerUrl;
+  }
+
+  void markQuestionAsChecked(String questionId) {
+    final newChecked = Set<String>.from(_currentState.checkedQuestions)..add(questionId);
+    _emit(_currentState.copyWith(checkedQuestions: newChecked));
   }
 
   Future<void> endExam(String endUrl) async {

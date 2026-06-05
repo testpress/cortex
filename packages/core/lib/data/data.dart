@@ -33,6 +33,7 @@ export 'models/doubt_dto.dart';
 export 'models/bookmark_dto.dart';
 export 'models/login_activity_dto.dart';
 export 'models/post_dto.dart';
+export 'models/quiz_review_result_dto.dart';
 
 // Database
 export 'db/tables/dashboard_tables.dart';

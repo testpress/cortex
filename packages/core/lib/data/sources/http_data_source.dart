@@ -651,17 +651,23 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<AttemptDto> createAttempt(String attemptsUrl) async {
+  Future<AttemptDto> createAttempt(
+    String attemptsUrl, {
+    Map<String, dynamic>? data,
+  }) async {
     return performNetworkRequest(
-      _dio.post(attemptsUrl),
+      _dio.post(attemptsUrl, data: data),
       fromJson: AttemptDto.fromJson,
     );
   }
 
   @override
-  Future<AttemptDto> createContentAttempt(String contentAttemptsUrl) async {
+  Future<AttemptDto> createContentAttempt(
+    String contentAttemptsUrl, {
+    Map<String, dynamic>? data,
+  }) async {
     return performNetworkRequest(
-      _dio.post(contentAttemptsUrl),
+      _dio.post(contentAttemptsUrl, data: data),
       fromJson: AttemptDto.fromJson,
     );
   }
@@ -747,6 +753,14 @@ class HttpDataSource implements DataSource {
     await performNetworkRequest(
       _dio.put(answerUrl, data: answer.toJson()),
       fromJson: (data) => null,
+    );
+  }
+
+  @override
+  Future<QuizReviewResultDto> submitQuizAnswer(String answerUrl, AnswerDto answer) async {
+    return performNetworkRequest(
+      _dio.put(answerUrl, data: answer.toJson(review: true)),
+      fromJson: (data) => QuizReviewResultDto.fromJson(data as Map<String, dynamic>),
     );
   }
 

@@ -1,3 +1,4 @@
+import 'dart:developer' as dev;
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
@@ -16,6 +17,7 @@ abstract final class ReviewQuestionHtmlBuilder {
   static String build({
     required QuestionDto question,
     required AnswerDto? attemptState,
+    QuizReviewResultDto? quizReview,
     required DesignConfig design,
     required AppLocalizations l10n,
   }) {
@@ -32,6 +34,41 @@ abstract final class ReviewQuestionHtmlBuilder {
       design.isDark ? 0.15 : 0.08,
     );
 
+    // ── Evaluate exact correctness ─────────────────────────────────────────
+    final selectedIds = attemptState?.selectedOptions.map((e) => e.toString()).toList() ?? [];
+    selectedIds.sort();
+
+    List<String> correctIds;
+    bool isAnswerCorrect;
+
+    if (quizReview != null && quizReview.correctAnswers.isNotEmpty) {
+      correctIds = quizReview.correctAnswers.map((e) => e.toString()).toList();
+      isAnswerCorrect = selectedIds.join(',') == correctIds.join(',');
+    } else {
+      correctIds = (question.correctOptionIds.isNotEmpty
+              ? question.correctOptionIds
+              : question.options
+                  .where((opt) => opt.isCorrect)
+                  .map((opt) => opt.id)
+                  .toList())
+          .map((e) => e.toString())
+          .toList();
+      isAnswerCorrect = selectedIds.join(',') == correctIds.join(',');
+    }
+    correctIds.sort();
+
+    dev.log(
+      'Review builder: '
+      'questionId=${question.id}, '
+      'selectedIds=$selectedIds, '
+      'correctIds=$correctIds, '
+      'hasQuizReview=${quizReview != null}, '
+      'quizReviewResult=${quizReview?.result}, '
+      'quizReviewSelected=${quizReview?.selectedAnswers}, '
+      'quizReviewCorrect=${quizReview?.correctAnswers}',
+      name: 'ReviewQuestionHtmlBuilder',
+    );
+
     final sb = StringBuffer();
 
     // ── Question text ──────────────────────────────────────────────────────
@@ -41,15 +78,9 @@ abstract final class ReviewQuestionHtmlBuilder {
     // ── Colour-coded options ───────────────────────────────────────────────
     sb.writeln('<div class="options-container">');
     for (final opt in question.options) {
-      final isCorrect = question.correctOptionIds.any(
-        (id) => id.toString() == opt.id.toString(),
-      );
-      final isSelected =
-          attemptState?.selectedOptions.any(
-            (id) => id.toString() == opt.id.toString(),
-          ) ??
-          false;
-      final isActive = isCorrect || isSelected;
+      final isCorrect = correctIds.any((id) => id.toString() == opt.id.toString());
+      final isSelected = attemptState?.selectedOptions.any((id) => id.toString() == opt.id.toString()) ?? false;
+      final isActive   = isCorrect || isSelected;
 
       // Border, background and text colour per option state
       final optBorder = isCorrect
@@ -82,20 +113,44 @@ abstract final class ReviewQuestionHtmlBuilder {
     }
     sb.writeln('</div>');
 
+    // ── Feedback Banner ────────────────────────────────────────────────────
+    final amberAccent = _hex(design.subjectPalette.atIndex(6).accent);
+    final amberBg     = _hex(design.subjectPalette.atIndex(6).background);
+    final amberFg     = _hex(design.subjectPalette.atIndex(6).foreground);
+    final successColor = _hex(design.colors.success);
+    final successBg    = _rgba(design.colors.success, 0.07);
+
+    final feedbackIcon = isAnswerCorrect ? '✓' : '✗';
+    final feedbackColor = isAnswerCorrect ? successColor : amberFg;
+    final feedbackIconColor = isAnswerCorrect ? successColor : amberAccent;
+    final feedbackBgColor = isAnswerCorrect ? successBg : amberBg;
+    final feedbackBorder = isAnswerCorrect 
+        ? _rgba(design.colors.success, 0.3) 
+        : _rgba(design.subjectPalette.atIndex(6).accent, 0.4);
+    final feedbackLabel = isAnswerCorrect ? l10n.assessmentCorrect : l10n.assessmentIncorrect;
+
+    sb.writeln('''
+      <div class="feedback-banner" style="background-color: $feedbackBgColor; border-color: $feedbackBorder;">
+        <span class="feedback-icon" style="color: $feedbackIconColor;">$feedbackIcon</span>
+        <span class="feedback-text" style="color: $feedbackColor;">$feedbackLabel</span>
+      </div>
+    ''');
+
     // ── Explanation (if present) ───────────────────────────────────────────
-    if (question.explanation != null && question.explanation!.isNotEmpty) {
-      final explBg = _rgba(design.colors.accent2, design.isDark ? 0.18 : 0.12);
-      final explBorder = _rgba(
-        design.colors.accent2,
-        design.isDark ? 0.40 : 0.35,
-      );
-      final explTitle = _hex(design.colors.accent2);
+    final explanationContent = (quizReview != null && quizReview.explanationHtml != null && quizReview.explanationHtml!.isNotEmpty)
+        ? quizReview.explanationHtml!
+        : question.explanation;
+
+    if (explanationContent != null && explanationContent.isNotEmpty) {
+      final explBg     = _rgba(design.colors.accent2, design.isDark ? 0.18 : 0.12);
+      final explBorder = _rgba(design.colors.accent2, design.isDark ? 0.40 : 0.35);
+      final explTitle  = _hex(design.colors.accent2);
 
       sb.writeln('''
         <div class="explanation-box" style="background-color: $explBg; border-color: $explBorder;">
           <div class="explanation-title" style="color: $explTitle;">${l10n.assessmentExplanation}</div>
           <div class="explanation-text" style="color: $textSecondary;">
-            ${question.explanation}
+            $explanationContent
           </div>
         </div>
       ''');
@@ -177,6 +232,16 @@ abstract final class ReviewQuestionHtmlBuilder {
         }
         .explanation-title { font-weight: 600; margin-bottom: 8px; }
         .explanation-text  { font-size: 14px; }
+        .feedback-banner {
+          display: flex;
+          align-items: center;
+          padding: 16px;
+          border-radius: 8px;
+          border-style: solid;
+          border-width: 1px;
+        }
+        .feedback-icon { font-weight: bold; font-size: 18px; margin-right: 8px; }
+        .feedback-text { font-weight: bold; font-size: 15px; }
         .mjx-chtml         { color: inherit !important; }
       </style>
     ''';

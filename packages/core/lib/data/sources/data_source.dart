@@ -155,11 +155,17 @@ abstract class DataSource {
   /// Fetch list of historical attempts.
   Future<List<AttemptDto>> getAttempts(String attemptsUrl);
 
-  /// Create an exam attempt.
-  Future<AttemptDto> createAttempt(String attemptsUrl);
+  /// Create a standalone exam attempt
+  Future<AttemptDto> createAttempt(
+    String attemptsUrl, {
+    Map<String, dynamic>? data,
+  });
 
-  /// Create a course-linked content attempt.
-  Future<AttemptDto> createContentAttempt(String contentAttemptsUrl);
+  /// Create a course-linked exam attempt (which tracks course progress)
+  Future<AttemptDto> createContentAttempt(
+    String contentAttemptsUrl, {
+    Map<String, dynamic>? data,
+  });
 
   /// Resume or start an attempt via its start URL.
   Future<AttemptDto> startAttempt(String startUrl);
@@ -169,6 +175,9 @@ abstract class DataSource {
 
   /// Submit a single answer to the backend.
   Future<void> submitAnswer(String answerUrl, AnswerDto answer);
+
+  /// Submit a single answer in quiz mode and return the server's review state.
+  Future<QuizReviewResultDto> submitQuizAnswer(String answerUrl, AnswerDto answer);
 
   /// Send a heartbeat to maintain the attempt session.
   Future<AttemptDto> sendHeartbeat(String heartbeatUrl);

@@ -14,6 +14,7 @@ class ExamDto {
   final bool disableAttemptResume;
   final bool allowRetake;
   final int maxRetakes;
+  final bool enableQuizMode;
 
   const ExamDto({
     required this.id,
@@ -30,6 +31,7 @@ class ExamDto {
     this.disableAttemptResume = false,
     this.allowRetake = true,
     this.maxRetakes = -1,
+    this.enableQuizMode = false,
   });
 
   factory ExamDto.fromJson(Map<String, dynamic> json) {
@@ -49,6 +51,7 @@ class ExamDto {
       disableAttemptResume: json['disable_attempt_resume'] as bool? ?? false,
       allowRetake: json['allow_retake'] as bool? ?? true,
       maxRetakes: json['max_retakes'] as int? ?? -1,
+      enableQuizMode: json['enable_quiz_mode'] as bool? ?? false,
     );
   }
 
@@ -68,6 +71,7 @@ class ExamDto {
       'disable_attempt_resume': disableAttemptResume,
       'allow_retake': allowRetake,
       'max_retakes': maxRetakes,
+      'enable_quiz_mode': enableQuizMode,
     };
   }
 }

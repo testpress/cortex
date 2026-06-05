@@ -14,11 +14,12 @@ mixin ReviewStateLogic {
       return res == 'correct' || res == '1';
     }
     if (state == null || state.selectedOptions.isEmpty) return false;
-    final selected = List<String>.from(
-      state.selectedOptions.map((e) => e.toString()),
-    )..sort();
+    final selected = List<String>.from(state.selectedOptions.map((e) => e.toString()))..sort();
     final correct = List<String>.from(
-      q.correctOptionIds.map((e) => e.toString()),
+      (q.correctOptionIds.isNotEmpty
+              ? q.correctOptionIds
+              : q.options.where((option) => option.isCorrect).map((option) => option.id))
+          .map((e) => e.toString()),
     )..sort();
     return listEquals(selected, correct);
   }

@@ -6,12 +6,13 @@ import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
 import '../providers/exam_providers.dart';
 import '../repositories/exam_repository.dart';
+import '../widgets/exam_mode_selection_dialog.dart';
 
 class ExamPrescreen extends ConsumerStatefulWidget {
   final String testId;
   final LessonDto? lesson;
   final VoidCallback onClose;
-  final Future<void> Function() onStartAttempt;
+  final Future<void> Function(bool isQuizMode) onStartAttempt;
 
   const ExamPrescreen({
     super.key,
@@ -41,7 +42,7 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
           current.status == ExamAttemptStatus.submitting;
 
       if (isActiveAttempt && examId == widget.testId) {
-        widget.onStartAttempt();
+        widget.onStartAttempt(current.isQuizMode);
         return;
       }
 
@@ -243,8 +244,31 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                             GestureDetector(
                               onTap: () async {
                                 if (isMetadataLoading) return;
-                                ref.read(examAttemptProvider.notifier).reset();
-                                await widget.onStartAttempt();
+
+                                final bool isResuming = ((exam?.pausedAttemptsCount ?? 0) > 0 && !(exam?.disableAttemptResume ?? false));
+
+                                if (!isResuming && exam?.enableQuizMode == true) {
+                                  showGeneralDialog(
+                                    context: context,
+                                    barrierDismissible: true,
+                                    barrierLabel: 'Dismiss',
+                                    pageBuilder: (context, animation, secondaryAnimation) => ExamModeSelectionDialog(
+                                      onSelectRegular: () async {
+                                        Navigator.pop(context);
+                                        ref.read(examAttemptProvider.notifier).reset();
+                                        await widget.onStartAttempt(false);
+                                      },
+                                      onSelectQuiz: () async {
+                                        Navigator.pop(context);
+                                        ref.read(examAttemptProvider.notifier).reset();
+                                        await widget.onStartAttempt(true);
+                                      },
+                                    ),
+                                  );
+                                } else {
+                                  ref.read(examAttemptProvider.notifier).reset();
+                                  await widget.onStartAttempt(false);
+                                }
                               },
                               child: Container(
                                 width: double.infinity,
