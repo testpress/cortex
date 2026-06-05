@@ -780,10 +780,15 @@ class CourseRepository {
     // Attempts call here, before anything else
     LessonDto dtoWithAttempts = dto;
     if (dto.attemptsUrl != null) {
-      final lastWatched = await _source.getLastWatchedPosition(dto.attemptsUrl!);
-      dtoWithAttempts = dto.copyWith(
-        lastWatchedDuration: lastWatched,
-      );
+      try {
+        final lastWatched = await _source.getLastWatchedPosition(dto.attemptsUrl!);
+        dtoWithAttempts = dto.copyWith(
+          lastWatchedDuration: lastWatched,
+        );
+      } catch (e) {
+        // Log the error but allow the lesson refresh to succeed
+        debugPrint('CourseRepository: Failed to fetch last watched position: $e');
+      }
     }
 
     final existing = await getLesson(id);
