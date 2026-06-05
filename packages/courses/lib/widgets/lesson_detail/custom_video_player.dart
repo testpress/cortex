@@ -34,37 +34,37 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
 
   // Track the playback intervals
   double _currentIntervalStart = 0.0;
+  double _lastPosition = 0.0;
   final List<List<double>> _watchedTimeRanges = [];
   bool _isPlayingTracker = false;
 
-  late final VideoAttemptNotifier _videoAttemptNotifier;
+  late final VideoAttemptNotifier? _videoAttemptNotifier;
+  late final int? _contentId;
   
   @override
   void initState() {
     super.initState();
-    _videoAttemptNotifier = ref.read(videoAttemptNotifierProvider.notifier);
     _fetchMetadata();
     
     if (widget.lessonId != null) {
-      final contentId = int.tryParse(widget.lessonId!);
-      if (contentId != null) {
-        // Initialize periodic sync
-        Future.microtask(() {
-          ref.read(videoAttemptNotifierProvider.notifier).initialize(contentId);
-        });
+      _contentId = int.tryParse(widget.lessonId!);
+      if (_contentId != null) {
+        _videoAttemptNotifier = ref.read(videoAttemptNotifierProvider(_contentId!).notifier);
+      } else {
+        _videoAttemptNotifier = null;
       }
+    } else {
+      _contentId = null;
+      _videoAttemptNotifier = null;
     }
   }
 
   @override
   void dispose() {
     _finalizeCurrentInterval();
-    if (widget.lessonId != null) {
-      final contentId = int.tryParse(widget.lessonId!);
-      if (contentId != null) {
-        // Force a final sync before leaving using the safe notifier reference
-        _videoAttemptNotifier.forceSync();
-      }
+    if (_contentId != null && _videoAttemptNotifier != null) {
+      // Force a final sync before leaving using the safe notifier reference
+      _videoAttemptNotifier!.forceSync();
     }
     super.dispose();
   }
@@ -117,7 +117,9 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
   @override
   Widget build(BuildContext context) {
     // Watch the provider to keep it alive while the video player is open
-    ref.watch(videoAttemptNotifierProvider);
+    if (_contentId != null) {
+      ref.watch(videoAttemptNotifierProvider(_contentId!));
+    }
 
     if (widget.assetId != null && widget.assetId!.isNotEmpty) {
       if (_isFetchingMetadata) {
@@ -164,10 +166,27 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
       final currentPos = controller.value.position.inMilliseconds / 1000.0;
 
       // Ensure we only seek once the video is loaded (duration > 0)
-      if (!_hasSeekedToInitial && widget.initialPosition > 0 && controller.value.duration != Duration.zero) {
-        controller.seek(Duration(milliseconds: (widget.initialPosition * 1000).toInt()));
-        _currentIntervalStart = widget.initialPosition;
-        _hasSeekedToInitial = true;
+      final needsInitialSeek = widget.initialPosition > 0 && !_hasSeekedToInitial;
+      if (needsInitialSeek) {
+        if (controller.value.duration != Duration.zero) {
+          controller.seek(Duration(milliseconds: (widget.initialPosition * 1000).toInt()));
+          _lastPosition = widget.initialPosition;
+          _currentIntervalStart = widget.initialPosition;
+          _hasSeekedToInitial = true;
+        }
+        return;
+      }
+
+      // Detect seek (position jumped by more than 1.5s or went backwards)
+      final isSeeking = (currentPos - _lastPosition).abs() > 1.5;
+      if (isSeeking) {
+        if (_isPlayingTracker) {
+          if (_lastPosition > _currentIntervalStart) {
+            _watchedTimeRanges.add([_currentIntervalStart, _lastPosition]);
+          }
+          _currentIntervalStart = currentPos;
+        }
+        _syncVideoAttempt(currentPos);
       }
 
       // Track watched ranges
@@ -186,19 +205,18 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
           controller.value.duration != Duration.zero) {
         widget.onComplete?.call();
       }
+
+      _lastPosition = currentPos;
     });
   }
 
   void _syncVideoAttempt(double currentPos) {
-    if (widget.lessonId != null) {
-      final contentId = int.tryParse(widget.lessonId!);
-      if (contentId != null) {
-        _videoAttemptNotifier.updatePositionAndRanges(
-          currentPos.toString(),
-          List<List<double>>.from(_watchedTimeRanges),
-        );
-        _watchedTimeRanges.clear();
-      }
+    if (_contentId != null && _videoAttemptNotifier != null) {
+      _videoAttemptNotifier!.updatePositionAndRanges(
+        currentPos.toString(),
+        List<List<double>>.from(_watchedTimeRanges),
+      );
+      _watchedTimeRanges.clear();
     }
   }
 }
