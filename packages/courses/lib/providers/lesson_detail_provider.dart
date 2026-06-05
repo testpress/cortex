@@ -1,7 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'course_list_provider.dart';
 import '../models/course_content.dart';
-
 import 'package:async/async.dart';
  
 part 'lesson_detail_provider.g.dart';
@@ -9,6 +8,7 @@ part 'lesson_detail_provider.g.dart';
 /// Provider that fetches a specific lesson domain model by its ID.
 @riverpod
 Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
+
   final repository = await ref.watch(courseRepositoryProvider.future);
  
   final initial = await repository.getLesson(lessonId);
@@ -53,6 +53,7 @@ Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
       videoSubtitleUrl: lessonDto.videoSubtitleUrl,
       isAiEnabled: lessonDto.isAiEnabled,
       aiNotesUrl: lessonDto.aiNotesUrl,
+      lastWatchedDuration: lessonDto.lastWatchedDuration,
     );
   });
  

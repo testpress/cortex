@@ -7,7 +7,7 @@ part of 'downloads_repository.dart';
 // **************************************************************************
 
 String _$downloadsRepositoryHash() =>
-    r'b76950b4db80f06c217f67425ecec93cc2efb4cb';
+    r'6d2716016dcd788e9a8e9051553b32405417b0ff';
 
 /// See also [downloadsRepository].
 @ProviderFor(downloadsRepository)

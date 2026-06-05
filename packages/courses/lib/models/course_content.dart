@@ -40,6 +40,7 @@ class Lesson {
     this.videoSubtitleUrl,
     this.isAiEnabled = false,
     this.aiNotesUrl,
+    this.lastWatchedDuration,
   });
 
   final String id;
@@ -83,6 +84,7 @@ class Lesson {
   final String? videoSubtitleUrl;
   final bool isAiEnabled;
   final String? aiNotesUrl;
+  final String? lastWatchedDuration;
  
   /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
   bool get isComplete {
@@ -143,6 +145,7 @@ class Lesson {
       videoSubtitleUrl: videoSubtitleUrl,
       isAiEnabled: isAiEnabled,
       aiNotesUrl: aiNotesUrl,
+      lastWatchedDuration: lastWatchedDuration,
     );
   }
 }

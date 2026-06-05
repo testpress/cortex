@@ -145,6 +145,7 @@ class _VideoLessonDetailScreenState
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final initialPos = double.tryParse(widget.lesson.lastWatchedDuration ?? '0') ?? 0.0;
 
     final header = Container(
       width: double.infinity,
@@ -207,6 +208,7 @@ class _VideoLessonDetailScreenState
                 lessonId: widget.lesson.id,
                 assetId: widget.lesson.contentUrl,
                 thumbnailUrl: widget.lesson.image,
+                initialPosition: initialPos,
               ),
               Positioned(
                 top: design.spacing.md,

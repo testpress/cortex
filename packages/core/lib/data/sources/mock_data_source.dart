@@ -1171,6 +1171,21 @@ class MockDataSource implements DataSource {
   }
 
   @override
+  Future<String?> getLastWatchedPosition(String attemptsUrl) async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    return '45.0';
+  }
+
+  @override
+  Future<void> updateVideoAttempt({
+    required int chapterContentId,
+    required String lastWatchPosition,
+    required List<List<double>> watchedTimeRanges,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 200));
+  }
+
+  @override
   Future<AttemptDto> endExam(String endUrl) async {
     await Future.delayed(const Duration(milliseconds: 800));
     return const AttemptDto(

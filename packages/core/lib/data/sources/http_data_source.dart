@@ -714,6 +714,50 @@ class HttpDataSource implements DataSource {
   }
 
   @override
+  Future<String?> getLastWatchedPosition(String attemptsUrl) async {
+    final dynamic data = await performNetworkRequest(
+      _dio.get(attemptsUrl),
+      fromJson: (json) => json,
+    );
+    if (data is Map<String, dynamic>) {
+      if (data['results'] is List) {
+        final results = data['results'] as List;
+        if (results.isNotEmpty) {
+          final attempt = results.first;
+          if (attempt is Map<String, dynamic> && attempt['video'] is Map<String, dynamic>) {
+            final lastPosition = attempt['video']['last_position']?.toString();
+            return lastPosition;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  @override
+  Future<void> updateVideoAttempt({
+    required int chapterContentId,
+    required String lastWatchPosition,
+    required List<List<double>> watchedTimeRanges,
+  }) async {
+    try {
+      await performNetworkRequest(
+        _dio.post(
+          ApiEndpoints.updateVideoAttempt,
+          data: {
+            'chapter_content_id': chapterContentId,
+            'last_watch_position': lastWatchPosition,
+            'watched_time_ranges': watchedTimeRanges,
+          },
+        ),
+        fromJson: (data) => data,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
   Future<AttemptDto> endExam(String endUrl) async {
     if (endUrl.isEmpty) {
       throw Exception('Unable to end exam: End URL is missing.');

@@ -143,6 +143,16 @@ abstract class DataSource {
   /// Send a heartbeat to maintain the attempt session.
   Future<AttemptDto> sendHeartbeat(String heartbeatUrl);
 
+  /// Fetch last watched position from an attempts URL.
+  Future<String?> getLastWatchedPosition(String attemptsUrl);
+
+  /// Update video attempt with new time ranges
+  Future<void> updateVideoAttempt({
+    required int chapterContentId,
+    required String lastWatchPosition,
+    required List<List<double>> watchedTimeRanges,
+  });
+
   /// End the exam attempt and finalize results.
   Future<AttemptDto> endExam(String endUrl);
 
