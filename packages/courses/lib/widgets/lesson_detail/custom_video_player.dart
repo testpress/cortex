@@ -38,7 +38,7 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
   final List<List<double>> _watchedTimeRanges = [];
   bool _isPlayingTracker = false;
 
-  late final VideoAttemptNotifier? _videoAttemptNotifier;
+  VideoAttemptNotifier? _videoAttemptNotifier;
   late final int? _contentId;
   
   @override
@@ -48,14 +48,8 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
     
     if (widget.lessonId != null) {
       _contentId = int.tryParse(widget.lessonId!);
-      if (_contentId != null) {
-        _videoAttemptNotifier = ref.read(videoAttemptNotifierProvider(_contentId!).notifier);
-      } else {
-        _videoAttemptNotifier = null;
-      }
     } else {
       _contentId = null;
-      _videoAttemptNotifier = null;
     }
   }
 
@@ -119,6 +113,8 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
     // Watch the provider to keep it alive while the video player is open
     if (_contentId != null) {
       ref.watch(videoAttemptNotifierProvider(_contentId!));
+      // Grab the active notifier instance safely inside build
+      _videoAttemptNotifier = ref.read(videoAttemptNotifierProvider(_contentId!).notifier);
     }
 
     if (widget.assetId != null && widget.assetId!.isNotEmpty) {
