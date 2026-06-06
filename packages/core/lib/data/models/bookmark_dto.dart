@@ -67,7 +67,8 @@ class BookmarkDto {
   final String title;
   final String chapterName;
   final String type;
-  
+  final String? slug;        // populated for post-type bookmarks
+  final bool isForumPost;   // true when post.forum == true
   final DateTime? created;
 
   const BookmarkDto({
@@ -79,6 +80,8 @@ class BookmarkDto {
     this.title = '',
     this.chapterName = '',
     this.type = '',
+    this.slug,
+    this.isForumPost = false,
     this.created,
   });
 
@@ -91,6 +94,8 @@ class BookmarkDto {
     String? title,
     String? chapterName,
     String? type,
+    String? slug,
+    bool? isForumPost,
     DateTime? created,
   }) {
     return BookmarkDto(
@@ -102,6 +107,8 @@ class BookmarkDto {
       title: title ?? this.title,
       chapterName: chapterName ?? this.chapterName,
       type: type ?? this.type,
+      slug: slug ?? this.slug,
+      isForumPost: isForumPost ?? this.isForumPost,
       created: created ?? this.created,
     );
   }
@@ -160,8 +167,8 @@ class BookmarkDto {
       final createdStr = bookmark['created'] as String?;
       final created = createdStr != null ? DateTime.tryParse(createdStr) : null;
       
-      final objectId = bookmark['object_id'] as int;
-      final contentTypeId = bookmark['content_type_id'] as int;
+      final objectId = (bookmark['object_id'] as num?)?.toInt() ?? 0;
+      final contentTypeId = (bookmark['content_type_id'] as num?)?.toInt() ?? 0;
       final modelName = contentTypeMap[contentTypeId];
 
       String title = 'Unknown';
@@ -195,7 +202,18 @@ class BookmarkDto {
         );
         if (post != null && post is Map<String, dynamic>) {
           title = post['title'] as String? ?? 'Untitled Post';
-          type = 'Post';
+          final isForum = post['forum'] as bool? ?? false;
+          type = isForum ? 'ForumPost' : 'Post';
+
+          items.add(BookmarkDto.fromJson(bookmark).copyWith(
+            title: title,
+            chapterName: '',
+            type: type,
+            slug: post['slug'] as String?,
+            isForumPost: isForum,
+            created: created,
+          ));
+          continue;
         }
       } else if (modelName == 'question') {
          final question = questionsList.firstWhere(

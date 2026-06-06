@@ -255,7 +255,7 @@ class BookmarkRepository {
   String _mapToBackendCategory(String category) {
     switch (category.toLowerCase()) {
       case 'video':
-      case 'liveStream':
+      case 'livestream':
         return 'video';
       case 'pdf':
       case 'attachment':

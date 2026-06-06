@@ -88,6 +88,23 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
     };
   }
 
+  /// Routes to the correct destination based on what the bookmark points to.
+  void _navigateToBookmark(BuildContext context, BookmarkDto bookmark) {
+    switch (bookmark.type) {
+      case 'ForumPost':
+      case 'Post':
+        break;
+      case 'Video':
+      case 'Attachment':
+      case 'Notes':
+        if (bookmark.lessonId > 0) {
+          context.push('/study/lesson/${bookmark.lessonId}');
+        }
+      default:
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
@@ -251,7 +268,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
                       _buildOption(
                         context,
                         LucideIcons.edit2,
-                        'Rename Folder',
+                        l10n.bookmarkActionRenameFolder,
                         design,
                         onTap: () {
                           setState(() {
@@ -539,11 +556,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
               'thumbnailColor': isLoading ? design.colors.surfaceVariant : null,
               'iconColor': isLoading ? design.colors.surfaceVariant : null,
             },
-            onTap: () {
-              if (bookmark.lessonId > 0) {
-                context.push('/info/lesson/${bookmark.lessonId}');
-              }
-            },
+            onTap: () => _navigateToBookmark(context, bookmark),
             onMoreTap: (!isLoading) 
               ? () {
                   setState(() {

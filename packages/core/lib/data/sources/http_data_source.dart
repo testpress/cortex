@@ -997,7 +997,7 @@ class HttpDataSource implements DataSource {
   @override
   Future<BookmarkFolderDto> updateBookmarkFolder(int id, String name) async {
     return performNetworkRequest(
-      _dio.put(
+      _dio.patch(
         ApiEndpoints.updateBookmarkFolder(id.toString()),
         data: {'name': name},
       ),
