@@ -3128,6 +3128,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Comments are disabled for this post by Administrator'**
   String get commentsDisabledByAdmin;
+
+  /// No description provided for @bookmarkFolderItemsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count,plural, =1{1 item} other{{count} items}}'**
+  String bookmarkFolderItemsCount(int count);
+
+  /// No description provided for @bookmarksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks'**
+  String get bookmarksTitle;
+
+  /// No description provided for @bookmarkFilterAllContents.
+  ///
+  /// In en, this message translates to:
+  /// **'All contents'**
+  String get bookmarkFilterAllContents;
+
+  /// No description provided for @bookmarkFilterQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Questions'**
+  String get bookmarkFilterQuestions;
+
+  /// No description provided for @bookmarkFilterVideos.
+  ///
+  /// In en, this message translates to:
+  /// **'Videos'**
+  String get bookmarkFilterVideos;
+
+  /// No description provided for @bookmarkFilterPDFs.
+  ///
+  /// In en, this message translates to:
+  /// **'PDFs'**
+  String get bookmarkFilterPDFs;
+
+  /// No description provided for @bookmarkFilterNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get bookmarkFilterNotes;
+
+  /// No description provided for @bookmarkFilterExamsAndQuiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Exams and Quiz'**
+  String get bookmarkFilterExamsAndQuiz;
+
+  /// No description provided for @bookmarkFilterLiveClasses.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Classes'**
+  String get bookmarkFilterLiveClasses;
+
+  /// No description provided for @bookmarkSortRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent'**
+  String get bookmarkSortRecent;
+
+  /// No description provided for @bookmarkSortOldest.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest'**
+  String get bookmarkSortOldest;
+
+  /// No description provided for @bookmarkSortLastlyOpened.
+  ///
+  /// In en, this message translates to:
+  /// **'Lastly opened'**
+  String get bookmarkSortLastlyOpened;
+
+  /// No description provided for @bookmarkTabAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get bookmarkTabAll;
+
+  /// No description provided for @bookmarkTabFolders.
+  ///
+  /// In en, this message translates to:
+  /// **'Folders'**
+  String get bookmarkTabFolders;
+
+  /// No description provided for @bookmarkActionRenameFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename Folder'**
+  String get bookmarkActionRenameFolder;
+
+  /// No description provided for @bookmarkActionDeleteFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Folder'**
+  String get bookmarkActionDeleteFolder;
+
+  /// No description provided for @bookmarkActionMoveBookmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Move Bookmark'**
+  String get bookmarkActionMoveBookmark;
+
+  /// No description provided for @bookmarkActionRemoveBookmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Bookmark'**
+  String get bookmarkActionRemoveBookmark;
+
+  /// No description provided for @bookmarkDeleteFolderConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this folder?'**
+  String get bookmarkDeleteFolderConfirmation;
+
+  /// No description provided for @bookmarkLabelContentType.
+  ///
+  /// In en, this message translates to:
+  /// **'Content Type'**
+  String get bookmarkLabelContentType;
+
+  /// No description provided for @bookmarkLabelSortBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by'**
+  String get bookmarkLabelSortBy;
+
+  /// No description provided for @bookmarkActionCreateFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Create folder'**
+  String get bookmarkActionCreateFolder;
+
+  /// No description provided for @bookmarkLabelName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get bookmarkLabelName;
+
+  /// No description provided for @bookmarkActionDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get bookmarkActionDelete;
 }
 
 class _AppLocalizationsDelegate

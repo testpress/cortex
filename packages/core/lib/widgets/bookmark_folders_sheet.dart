@@ -337,14 +337,20 @@ class _BookmarkFoldersSheetState extends ConsumerState<BookmarkFoldersSheet> {
 class CreateFolderDialog extends ConsumerStatefulWidget {
   const CreateFolderDialog({
     super.key,
-    required this.lessonId,
-    required this.category,
+    this.lessonId,
+    this.category,
+    this.initialName,
+    this.folderId,
     required this.onClose,
   });
 
-  final int lessonId;
-  final String category;
+  final int? lessonId;
+  final String? category;
+  final String? initialName;
+  final int? folderId;
   final VoidCallback onClose;
+
+  bool get isRenameMode => folderId != null;
 
   @override
   ConsumerState<CreateFolderDialog> createState() => _CreateFolderDialogState();
@@ -358,6 +364,9 @@ class _CreateFolderDialogState extends ConsumerState<CreateFolderDialog> {
   @override
   void initState() {
     super.initState();
+    if (widget.initialName != null) {
+      _nameController.text = widget.initialName!;
+    }
     _nameController.addListener(_onTextChanged);
   }
 
@@ -383,24 +392,33 @@ class _CreateFolderDialogState extends ConsumerState<CreateFolderDialog> {
     });
 
     try {
-      // 1. Create the folder on server and save locally
-      final newFolder = await ref.read(createBookmarkFolderProvider(folderName).future);
+      if (widget.isRenameMode) {
+        await ref.read(updateBookmarkFolderProvider(
+          widget.folderId!,
+          folderName,
+        ).future);
+      } else {
+        // 1. Create the folder on server and save locally
+        final newFolder = await ref.read(createBookmarkFolderProvider(folderName).future);
 
-      // 2. Automatically select it for the current lesson
-      await ref.read(addBookmarkProvider(
-        category: widget.category,
-        lessonId: widget.lessonId,
-        folder: newFolder.name,
-      ).future);
+        // 2. Automatically select it for the current lesson if provided
+        if (widget.lessonId != null && widget.category != null) {
+          await ref.read(addBookmarkProvider(
+            category: widget.category!,
+            lessonId: widget.lessonId!,
+            folder: newFolder.name,
+          ).future);
+        }
+      }
 
       if (mounted) {
         widget.onClose();
       }
     } catch (e, stack) {
-      debugPrint('Error creating folder: $e\n$stack');
+      debugPrint('Error saving folder: $e\n$stack');
       if (mounted) {
         setState(() {
-          _errorMessage = L10n.of(context).errorFailedToCreateFolder;
+          _errorMessage = widget.isRenameMode ? 'Failed to rename folder.' : L10n.of(context).errorFailedToCreateFolder;
           _isLoading = false;
         });
       }
@@ -450,7 +468,7 @@ class _CreateFolderDialogState extends ConsumerState<CreateFolderDialog> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppText.title(
-                      L10n.of(context).labelNewFolder,
+                      widget.isRenameMode ? L10n.of(context).bookmarkActionRenameFolder : L10n.of(context).labelNewFolder,
                       color: design.colors.textPrimary,
                     ),
                     if (_errorMessage != null) ...[

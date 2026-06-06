@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 
 import '../db/app_database.dart';
 import '../models/bookmark_dto.dart';
+import '../models/paginated_response_dto.dart';
 import '../sources/data_source.dart';
 
 class BookmarkRepository {
@@ -64,6 +65,21 @@ class BookmarkRepository {
     });
   }
 
+  /// Fetch a paginated list of bookmarks from the remote source.
+  Future<PaginatedResponseDto<BookmarkDto>> fetchBookmarks({
+    int page = 1,
+    String? folder,
+    String? order,
+    String? filter,
+  }) async {
+    return _dataSource.getBookmarks(
+      page: page,
+      folder: folder,
+      order: order,
+      filter: filter,
+    );
+  }
+
   /// Fetch all folders from the remote source and refresh the local cache.
   Future<void> refreshFolders() async {
     final folders = await _dataSource.getBookmarkFolders();
@@ -101,6 +117,30 @@ class BookmarkRepository {
       ),
     );
     return newFolder;
+  }
+
+  /// Update an existing bookmark folder and save it to the local cache.
+  Future<BookmarkFolderDto> updateFolder(int id, String name) async {
+    final updatedFolder = await _dataSource.updateBookmarkFolder(id, name);
+    await _db.into(_db.bookmarkFoldersTable).insertOnConflictUpdate(
+      BookmarkFoldersTableCompanion.insert(
+        id: Value(updatedFolder.id),
+        name: updatedFolder.name,
+        bookmarksCount: Value(updatedFolder.bookmarksCount),
+        userId: Value(updatedFolder.userId),
+      ),
+    );
+    return updatedFolder;
+  }
+
+  /// Delete an existing bookmark folder.
+  Future<void> deleteFolder(int id) async {
+    await _dataSource.deleteBookmarkFolder(id);
+    await _db.transaction(() async {
+      await (_db.delete(_db.bookmarkFoldersTable)..where((tbl) => tbl.id.equals(id))).go();
+      // If we need to cascade delete or set bookmark.folderId to null, we could do it here
+      // But for now, just deleting the folder from local cache is fine.
+    });
   }
 
   /// Add a bookmark for a lesson, linking it optionally to a folder.
@@ -213,7 +253,7 @@ class BookmarkRepository {
   }
 
   String _mapToBackendCategory(String category) {
-    switch (category) {
+    switch (category.toLowerCase()) {
       case 'video':
       case 'liveStream':
         return 'video';

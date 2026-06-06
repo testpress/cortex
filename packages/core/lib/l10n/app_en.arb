@@ -835,5 +835,34 @@
   "forumRoleInstructor": "Instructor",
   "forumErrorFailedToPostReply": "Failed to post reply",
   "noAnnouncementsFound": "No announcements found.",
-  "commentsDisabledByAdmin": "Comments are disabled for this post by Administrator"
+  "commentsDisabledByAdmin": "Comments are disabled for this post by Administrator",
+  "bookmarkFolderItemsCount": "{count,plural, =1{1 item} other{{count} items}}",
+  "@bookmarkFolderItemsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "bookmarksTitle": "Bookmarks",
+  "bookmarkFilterAllContents": "All contents",
+  "bookmarkFilterQuestions": "Questions",
+  "bookmarkFilterVideos": "Videos",
+  "bookmarkFilterPDFs": "PDFs",
+  "bookmarkFilterNotes": "Notes",
+  "bookmarkFilterExamsAndQuiz": "Exams and Quiz",
+  "bookmarkFilterLiveClasses": "Live Classes",
+  "bookmarkSortRecent": "Recent",
+  "bookmarkSortOldest": "Oldest",
+  "bookmarkSortLastlyOpened": "Lastly opened",
+  "bookmarkTabAll": "All",
+  "bookmarkTabFolders": "Folders",
+  "bookmarkActionRenameFolder": "Rename Folder",
+  "bookmarkActionDeleteFolder": "Delete Folder",
+  "bookmarkActionMoveBookmark": "Move Bookmark",
+  "bookmarkActionRemoveBookmark": "Remove Bookmark",
+  "bookmarkDeleteFolderConfirmation": "Are you sure you want to delete this folder?",
+  "bookmarkLabelContentType": "Content Type",
+  "bookmarkLabelSortBy": "Sort by",
+  "bookmarkActionCreateFolder": "Create folder",
+  "bookmarkLabelName": "Name",
+  "bookmarkActionDelete": "Delete"
 }

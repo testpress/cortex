@@ -227,8 +227,23 @@ abstract class DataSource {
   /// Fetch user's bookmark folders.
   Future<List<BookmarkFolderDto>> getBookmarkFolders();
 
+  /// Fetch a paginated list of bookmarks (v2.4).
+  Future<PaginatedResponseDto<BookmarkDto>> getBookmarks({
+    int page = 1,
+    String? folder,
+    String? order,
+    String? filter,
+  });
+
   /// Create a new bookmark folder.
   Future<BookmarkFolderDto> createBookmarkFolder(String name);
+
+  /// Update an existing bookmark folder.
+  Future<BookmarkFolderDto> updateBookmarkFolder(int id, String name);
+
+  /// Delete an existing bookmark folder.
+  Future<void> deleteBookmarkFolder(int id);
+
 
   /// Create a new bookmark for a lesson.
   Future<BookmarkDto> createBookmark({
