@@ -90,17 +90,16 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
 
   /// Routes to the correct destination based on what the bookmark points to.
   void _navigateToBookmark(BuildContext context, BookmarkDto bookmark) {
-    switch (bookmark.type) {
-      case 'ForumPost':
-      case 'Post':
+    final type = (bookmark.bookmarkType ?? bookmark.type).toLowerCase();
+    switch (type) {
+      case 'forumpost':
+      case 'post':
+      case 'question':
         break;
-      case 'Video':
-      case 'Attachment':
-      case 'Notes':
+      default:
         if (bookmark.lessonId > 0) {
           context.push('/study/lesson/${bookmark.lessonId}');
         }
-      default:
         break;
     }
   }
@@ -111,9 +110,9 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
     final l10n = L10n.of(context);
 
     // Derive filter params from UI state
-    final String? folderParam = widget.folderName ?? (_activeFilter == 'uncategorized'
-        ? 'uncategorized'
-        : null);
+    final String? folderParam =
+        widget.folderName ??
+        (_activeFilter == 'uncategorized' ? 'uncategorized' : null);
 
     String? orderParam;
     if (_selectedSort == 'Oldest') {
@@ -125,7 +124,9 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
     }
 
     String? filterParam;
-    if (_selectedContentType == 'Exams and Quiz' || _selectedContentType == 'Questions') filterParam = 'question';
+    if (_selectedContentType == 'Exams and Quiz' ||
+        _selectedContentType == 'Questions')
+      filterParam = 'question';
     if (_selectedContentType == 'Videos') filterParam = 'video';
     if (_selectedContentType == 'PDFs') filterParam = 'attachment';
     if (_selectedContentType == 'Notes') filterParam = 'html';
@@ -139,6 +140,9 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
 
     final bookmarksAsync = ref.watch(
       paginatedBookmarksProvider(filter: bookmarkFilter),
+    );
+    final isFetchingNextPage = ref.watch(
+      paginatedBookmarksFetchingPageProvider(bookmarkFilter),
     );
     final foldersAsync = ref.watch(bookmarkFoldersProvider);
 
@@ -187,13 +191,29 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
                 child: _activeFilter == 'folders'
                     ? foldersAsync.when(
                         data: (folders) => _buildFoldersList(folders, design),
-                        loading: () => _buildFoldersList(_dummyFolders, design, isLoading: true),
-                        error: (err, stack) => Center(child: Text(l10n.errorGenericTitle)),
+                        loading: () => _buildFoldersList(
+                          _dummyFolders,
+                          design,
+                          isLoading: true,
+                        ),
+                        error: (err, stack) =>
+                            Center(child: Text(l10n.errorGenericTitle)),
                       )
                     : bookmarksAsync.when(
-                        data: (bookmarks) => _buildBookmarksList(bookmarks, design),
-                        loading: () => _buildBookmarksList(_dummyBookmarks, design, isLoading: true),
-                        error: (err, stack) => Center(child: Text(l10n.errorGenericTitle)),
+                        data: (bookmarks) => _buildBookmarksList(
+                          bookmarks,
+                          design,
+                          bookmarkFilter: bookmarkFilter,
+                          isFetchingNextPage: isFetchingNextPage,
+                        ),
+                        loading: () => _buildBookmarksList(
+                          _dummyBookmarks,
+                          design,
+                          isLoading: true,
+                          bookmarkFilter: bookmarkFilter,
+                        ),
+                        error: (err, stack) =>
+                            Center(child: Text(l10n.errorGenericTitle)),
                       ),
               ),
             ],
@@ -221,10 +241,12 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
                   size: design.iconSize.lg,
                   color: design.colors.onPrimary,
                 ),
-                label: AppText.labelBold(l10n.labelNewFolder, color: design.colors.onPrimary),
+                label: AppText.labelBold(
+                  l10n.labelNewFolder,
+                  color: design.colors.onPrimary,
+                ),
               ),
-
-          ),
+            ),
           AppBottomSheet(
             isOpen: _isFolderOptionsOpen,
             onClose: () => setState(() => _isFolderOptionsOpen = false),
@@ -286,13 +308,17 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
                         isDestructive: true,
                         onTap: () async {
                           if (_selectedFolder == null) return;
-                          
+
                           setState(() {
                             _isFolderOptionsOpen = false;
                           });
 
                           try {
-                            await ref.read(deleteBookmarkFolderProvider(_selectedFolder!.id).future);
+                            await ref.read(
+                              deleteBookmarkFolderProvider(
+                                _selectedFolder!.id,
+                              ).future,
+                            );
                             if (context.mounted) {
                               AppToast.show(
                                 context,
@@ -376,22 +402,21 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
                         isDestructive: true,
                         onTap: () async {
                           if (_selectedBookmark == null) return;
-                          
+
                           setState(() {
                             _isBookmarkOptionsOpen = false;
                           });
-                          
+
                           try {
-                            await ref.read(removeBookmarkProvider(
-                              bookmarkId: _selectedBookmark!.id,
-                              lessonId: _selectedBookmark!.lessonId,
-                            ).future);
-                            
-                            if (!context.mounted) return;
-                            AppToast.show(
-                              context,
-                              message: 'Bookmark removed',
+                            await ref.read(
+                              removeBookmarkProvider(
+                                bookmarkId: _selectedBookmark!.id,
+                                lessonId: _selectedBookmark!.lessonId,
+                              ).future,
                             );
+
+                            if (!context.mounted) return;
+                            AppToast.show(context, message: 'Bookmark removed');
                           } catch (e) {
                             if (!context.mounted) return;
                             AppToast.show(
@@ -411,20 +436,21 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
           AppBottomSheet(
             isOpen: _isBookmarkFolderSheetOpen,
             onClose: () => setState(() => _isBookmarkFolderSheetOpen = false),
-            child: _selectedBookmark != null 
-              ? BookmarkFoldersSheet(
-                  lessonId: _selectedBookmark!.lessonId,
-                  category: _selectedBookmark!.type,
-                  parentContext: context,
-                  onClose: () => setState(() => _isBookmarkFolderSheetOpen = false),
-                  onCreateFolderRequest: () {
-                    setState(() {
-                      _isBookmarkFolderSheetOpen = false;
-                      _isCreateFolderDialogOpen = true;
-                    });
-                  },
-                )
-              : const SizedBox.shrink(),
+            child: _selectedBookmark != null
+                ? BookmarkFoldersSheet(
+                    lessonId: _selectedBookmark!.lessonId,
+                    category: _selectedBookmark!.type,
+                    parentContext: context,
+                    onClose: () =>
+                        setState(() => _isBookmarkFolderSheetOpen = false),
+                    onCreateFolderRequest: () {
+                      setState(() {
+                        _isBookmarkFolderSheetOpen = false;
+                        _isCreateFolderDialogOpen = true;
+                      });
+                    },
+                  )
+                : const SizedBox.shrink(),
           ),
           if (_isCreateFolderDialogOpen)
             CreateFolderDialog(
@@ -477,7 +503,11 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
     );
   }
 
-  Widget _buildFoldersList(List<BookmarkFolderDto> folders, DesignConfig design, {bool isLoading = false}) {
+  Widget _buildFoldersList(
+    List<BookmarkFolderDto> folders,
+    DesignConfig design, {
+    bool isLoading = false,
+  }) {
     if (!isLoading && folders.isEmpty) {
       return _buildEmptyState(
         design: design,
@@ -492,7 +522,8 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
       child: ListView.separated(
         padding: EdgeInsets.all(design.spacing.md),
         itemCount: folders.length,
-        separatorBuilder: (context, index) => SizedBox(height: design.spacing.sm),
+        separatorBuilder: (context, index) =>
+            SizedBox(height: design.spacing.sm),
         itemBuilder: (context, index) {
           return FolderItem(
             folder: {
@@ -505,9 +536,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
                 // Navigate to folder contents
                 Navigator.of(context).push(
                   AppRoute(
-                    page: BookmarksScreen(
-                      folderName: folders[index].name,
-                    ),
+                    page: BookmarksScreen(folderName: folders[index].name),
                   ),
                 );
               }
@@ -526,7 +555,13 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
     );
   }
 
-  Widget _buildBookmarksList(List<BookmarkDto> bookmarks, DesignConfig design, {bool isLoading = false}) {
+  Widget _buildBookmarksList(
+    List<BookmarkDto> bookmarks,
+    DesignConfig design, {
+    bool isLoading = false,
+    bool isFetchingNextPage = false,
+    required BookmarkFilter bookmarkFilter,
+  }) {
     if (!isLoading && bookmarks.isEmpty) {
       return _buildEmptyState(
         design: design,
@@ -538,35 +573,71 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
 
     return Skeletonizer(
       enabled: isLoading,
-      child: ListView.separated(
-        padding: EdgeInsets.all(design.spacing.md),
-        itemCount: bookmarks.length,
-        separatorBuilder: (context, index) => SizedBox(height: design.spacing.sm),
-        itemBuilder: (context, index) {
-          final bookmark = bookmarks[index];
-          return BookmarkItem(
-            item: {
-              'id': bookmark.id.toString(),
-              'title': bookmark.title.isNotEmpty ? bookmark.title : 'Unknown Lesson',
-              'chapterName': bookmark.chapterName,
-              'savedDate': bookmark.created != null
-                  ? DateFormatter.formatFullDate(bookmark.created!)
-                  : '',
-              'contentType': bookmark.type,
-              'thumbnailColor': isLoading ? design.colors.surfaceVariant : null,
-              'iconColor': isLoading ? design.colors.surfaceVariant : null,
-            },
-            onTap: () => _navigateToBookmark(context, bookmark),
-            onMoreTap: (!isLoading) 
-              ? () {
-                  setState(() {
-                    _selectedBookmark = bookmark;
-                    _isBookmarkOptionsOpen = true;
-                  });
-                }
-              : null,
-          );
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (notification) {
+          if (!isLoading &&
+              notification.metrics.pixels >=
+                  notification.metrics.maxScrollExtent - 200) {
+            ref
+                .read(
+                  paginatedBookmarksProvider(filter: bookmarkFilter).notifier,
+                )
+                .loadMore();
+          }
+          return false;
         },
+        child: ListView.separated(
+          padding: EdgeInsets.all(design.spacing.md),
+          itemCount: bookmarks.length + (isFetchingNextPage ? 1 : 0),
+          separatorBuilder: (context, index) =>
+              SizedBox(height: design.spacing.sm),
+          itemBuilder: (context, index) {
+            if (index == bookmarks.length) {
+              return Skeletonizer(
+                enabled: true,
+                child: BookmarkItem(
+                  item: {
+                    'id': 'dummy',
+                    'title': 'Loading Bookmark Title Long',
+                    'chapterName': 'Loading Chapter Name',
+                    'savedDate': '',
+                    'contentType': 'video',
+                    'thumbnailColor': design.colors.surfaceVariant,
+                    'iconColor': design.colors.surfaceVariant,
+                  },
+                  onTap: () {},
+                ),
+              );
+            }
+            final bookmark = bookmarks[index];
+            return BookmarkItem(
+              item: {
+                'id': bookmark.id.toString(),
+                'title': bookmark.title.isNotEmpty
+                    ? bookmark.title
+                    : 'Unknown Lesson',
+                'chapterName': bookmark.chapterName,
+                'savedDate': bookmark.created != null
+                    ? DateFormatter.formatFullDate(bookmark.created!)
+                    : '',
+                'contentType': bookmark.bookmarkType ?? bookmark.type,
+                'thumbnailColor': isLoading
+                    ? design.colors.surfaceVariant
+                    : null,
+                'iconColor': isLoading ? design.colors.surfaceVariant : null,
+              },
+              onTap: () => _navigateToBookmark(context, bookmark),
+              onMoreTap: (!isLoading)
+                  ? () {
+                      setState(() {
+                        _selectedBookmark = bookmark;
+                        _isBookmarkOptionsOpen = true;
+                      });
+                    }
+                  : null,
+            );
+          },
+        ),
       ),
     );
   }
@@ -663,9 +734,11 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
     VoidCallback? onTap,
   }) {
     return AppFocusable(
-      onTap: onTap ?? () {
-        setState(() => _isFolderOptionsOpen = false);
-      },
+      onTap:
+          onTap ??
+          () {
+            setState(() => _isFolderOptionsOpen = false);
+          },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: design.spacing.md),
         child: Row(
@@ -693,7 +766,6 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
 
   Widget _buildFilterChips(DesignConfig design) {
     final filters = const ['All', 'Folders', 'Uncategorized'];
-
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -770,7 +842,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
               color: design.colors.textSecondary,
             ),
           ],
-        )
+        ),
       ),
     );
   }
@@ -791,10 +863,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
             color: design.colors.textTertiary.withValues(alpha: 0.2),
           ),
           SizedBox(height: design.spacing.lg),
-          AppText.headline(
-            title,
-            color: design.colors.textSecondary,
-          ),
+          AppText.headline(title, color: design.colors.textSecondary),
           SizedBox(height: design.spacing.xs),
           AppText.body(
             subtitle,
