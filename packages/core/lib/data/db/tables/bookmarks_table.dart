@@ -18,6 +18,11 @@ class BookmarkItemsTable extends Table {
   TextColumn get folderName => text().nullable()();
   IntColumn get lessonId => integer()();
   TextColumn get bookmarkType => text().nullable()();
+  TextColumn get title => text().nullable()();
+  TextColumn get chapterName => text().nullable()();
+  TextColumn get slug => text().nullable()();
+  BoolColumn get isForumPost => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get created => dateTime().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};

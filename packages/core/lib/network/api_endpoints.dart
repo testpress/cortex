@@ -51,7 +51,10 @@ class ApiEndpoints {
   // Bookmarks
   static const String bookmarkFolders = '/api/v2.5/folders/';
   static const String createBookmarkFolder = '/api/v3/bookmarks/folders/';
+  static String updateBookmarkFolder(String id) => '/api/v2.5/folders/$id/';
+  static String deleteBookmarkFolder(String id) => '/api/v2.5/folders/$id/';
   static const String bookmarks = '/api/v3/bookmarks/';
+  static const String bookmarksV2_4 = '/api/v2.4/bookmarks/';
   static String deleteBookmark(String id) => '/api/v3/bookmarks/$id/';
 
   // Helpdesk / Doubts

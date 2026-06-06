@@ -203,7 +203,7 @@ final refreshBookmarkFoldersProvider = AutoDisposeFutureProvider<void>.internal(
 // ignore: unused_element
 typedef RefreshBookmarkFoldersRef = AutoDisposeFutureProviderRef<void>;
 String _$createBookmarkFolderHash() =>
-    r'292a6f252f38123df7a1d9be64e3fd5f5e3350b2';
+    r'cf2aa3fe48fb4523b9cd4f89d76c8defae229ec1';
 
 /// Action to create a new bookmark folder.
 ///
@@ -340,7 +340,292 @@ class _CreateBookmarkFolderProviderElement
   String get folderName => (origin as CreateBookmarkFolderProvider).folderName;
 }
 
-String _$addBookmarkHash() => r'813b125bb1beea10e23c4cdd704ae6dbc24aa657';
+String _$updateBookmarkFolderHash() =>
+    r'58cc9825eb7527c12d62a5db9981391e1aa8070d';
+
+/// Action to update an existing bookmark folder.
+///
+/// Copied from [updateBookmarkFolder].
+@ProviderFor(updateBookmarkFolder)
+const updateBookmarkFolderProvider = UpdateBookmarkFolderFamily();
+
+/// Action to update an existing bookmark folder.
+///
+/// Copied from [updateBookmarkFolder].
+class UpdateBookmarkFolderFamily extends Family<AsyncValue<BookmarkFolderDto>> {
+  /// Action to update an existing bookmark folder.
+  ///
+  /// Copied from [updateBookmarkFolder].
+  const UpdateBookmarkFolderFamily();
+
+  /// Action to update an existing bookmark folder.
+  ///
+  /// Copied from [updateBookmarkFolder].
+  UpdateBookmarkFolderProvider call(int folderId, String folderName) {
+    return UpdateBookmarkFolderProvider(folderId, folderName);
+  }
+
+  @override
+  UpdateBookmarkFolderProvider getProviderOverride(
+    covariant UpdateBookmarkFolderProvider provider,
+  ) {
+    return call(provider.folderId, provider.folderName);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'updateBookmarkFolderProvider';
+}
+
+/// Action to update an existing bookmark folder.
+///
+/// Copied from [updateBookmarkFolder].
+class UpdateBookmarkFolderProvider
+    extends AutoDisposeFutureProvider<BookmarkFolderDto> {
+  /// Action to update an existing bookmark folder.
+  ///
+  /// Copied from [updateBookmarkFolder].
+  UpdateBookmarkFolderProvider(int folderId, String folderName)
+    : this._internal(
+        (ref) => updateBookmarkFolder(
+          ref as UpdateBookmarkFolderRef,
+          folderId,
+          folderName,
+        ),
+        from: updateBookmarkFolderProvider,
+        name: r'updateBookmarkFolderProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$updateBookmarkFolderHash,
+        dependencies: UpdateBookmarkFolderFamily._dependencies,
+        allTransitiveDependencies:
+            UpdateBookmarkFolderFamily._allTransitiveDependencies,
+        folderId: folderId,
+        folderName: folderName,
+      );
+
+  UpdateBookmarkFolderProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.folderId,
+    required this.folderName,
+  }) : super.internal();
+
+  final int folderId;
+  final String folderName;
+
+  @override
+  Override overrideWith(
+    FutureOr<BookmarkFolderDto> Function(UpdateBookmarkFolderRef provider)
+    create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: UpdateBookmarkFolderProvider._internal(
+        (ref) => create(ref as UpdateBookmarkFolderRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        folderId: folderId,
+        folderName: folderName,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<BookmarkFolderDto> createElement() {
+    return _UpdateBookmarkFolderProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is UpdateBookmarkFolderProvider &&
+        other.folderId == folderId &&
+        other.folderName == folderName;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, folderId.hashCode);
+    hash = _SystemHash.combine(hash, folderName.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin UpdateBookmarkFolderRef
+    on AutoDisposeFutureProviderRef<BookmarkFolderDto> {
+  /// The parameter `folderId` of this provider.
+  int get folderId;
+
+  /// The parameter `folderName` of this provider.
+  String get folderName;
+}
+
+class _UpdateBookmarkFolderProviderElement
+    extends AutoDisposeFutureProviderElement<BookmarkFolderDto>
+    with UpdateBookmarkFolderRef {
+  _UpdateBookmarkFolderProviderElement(super.provider);
+
+  @override
+  int get folderId => (origin as UpdateBookmarkFolderProvider).folderId;
+  @override
+  String get folderName => (origin as UpdateBookmarkFolderProvider).folderName;
+}
+
+String _$deleteBookmarkFolderHash() =>
+    r'710d319bbf2d448dd495151e6044a78f9ddc0327';
+
+/// Action to delete an existing bookmark folder.
+///
+/// Copied from [deleteBookmarkFolder].
+@ProviderFor(deleteBookmarkFolder)
+const deleteBookmarkFolderProvider = DeleteBookmarkFolderFamily();
+
+/// Action to delete an existing bookmark folder.
+///
+/// Copied from [deleteBookmarkFolder].
+class DeleteBookmarkFolderFamily extends Family<AsyncValue<void>> {
+  /// Action to delete an existing bookmark folder.
+  ///
+  /// Copied from [deleteBookmarkFolder].
+  const DeleteBookmarkFolderFamily();
+
+  /// Action to delete an existing bookmark folder.
+  ///
+  /// Copied from [deleteBookmarkFolder].
+  DeleteBookmarkFolderProvider call(int folderId) {
+    return DeleteBookmarkFolderProvider(folderId);
+  }
+
+  @override
+  DeleteBookmarkFolderProvider getProviderOverride(
+    covariant DeleteBookmarkFolderProvider provider,
+  ) {
+    return call(provider.folderId);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'deleteBookmarkFolderProvider';
+}
+
+/// Action to delete an existing bookmark folder.
+///
+/// Copied from [deleteBookmarkFolder].
+class DeleteBookmarkFolderProvider extends AutoDisposeFutureProvider<void> {
+  /// Action to delete an existing bookmark folder.
+  ///
+  /// Copied from [deleteBookmarkFolder].
+  DeleteBookmarkFolderProvider(int folderId)
+    : this._internal(
+        (ref) => deleteBookmarkFolder(ref as DeleteBookmarkFolderRef, folderId),
+        from: deleteBookmarkFolderProvider,
+        name: r'deleteBookmarkFolderProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$deleteBookmarkFolderHash,
+        dependencies: DeleteBookmarkFolderFamily._dependencies,
+        allTransitiveDependencies:
+            DeleteBookmarkFolderFamily._allTransitiveDependencies,
+        folderId: folderId,
+      );
+
+  DeleteBookmarkFolderProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.folderId,
+  }) : super.internal();
+
+  final int folderId;
+
+  @override
+  Override overrideWith(
+    FutureOr<void> Function(DeleteBookmarkFolderRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: DeleteBookmarkFolderProvider._internal(
+        (ref) => create(ref as DeleteBookmarkFolderRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        folderId: folderId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<void> createElement() {
+    return _DeleteBookmarkFolderProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is DeleteBookmarkFolderProvider && other.folderId == folderId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, folderId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin DeleteBookmarkFolderRef on AutoDisposeFutureProviderRef<void> {
+  /// The parameter `folderId` of this provider.
+  int get folderId;
+}
+
+class _DeleteBookmarkFolderProviderElement
+    extends AutoDisposeFutureProviderElement<void>
+    with DeleteBookmarkFolderRef {
+  _DeleteBookmarkFolderProviderElement(super.provider);
+
+  @override
+  int get folderId => (origin as DeleteBookmarkFolderProvider).folderId;
+}
+
+String _$addBookmarkHash() => r'7d60f31af11b18eb5656748bfaad7ac3b31808d8';
 
 /// Action to add a bookmark for a lesson.
 ///
@@ -531,7 +816,7 @@ class _AddBookmarkProviderElement
   String? get bookmarkType => (origin as AddBookmarkProvider).bookmarkType;
 }
 
-String _$removeBookmarkHash() => r'8d622c612df3d3542084a5a311e6e0f56e33053c';
+String _$removeBookmarkHash() => r'00a4db2f5754d920583875c6e5c82ddfc0aed96e';
 
 /// Action to remove a bookmark by ID.
 ///
@@ -680,6 +965,293 @@ class _RemoveBookmarkProviderElement
   int get bookmarkId => (origin as RemoveBookmarkProvider).bookmarkId;
   @override
   int get lessonId => (origin as RemoveBookmarkProvider).lessonId;
+}
+
+String _$paginatedBookmarksHash() =>
+    r'0d085f4f12ebb235c2a2e1115c815272ea2fa2d6';
+
+abstract class _$PaginatedBookmarks
+    extends BuildlessAutoDisposeAsyncNotifier<List<BookmarkDto>> {
+  late final BookmarkFilter filter;
+
+  FutureOr<List<BookmarkDto>> build({
+    BookmarkFilter filter = const BookmarkFilter(),
+  });
+}
+
+/// See also [PaginatedBookmarks].
+@ProviderFor(PaginatedBookmarks)
+const paginatedBookmarksProvider = PaginatedBookmarksFamily();
+
+/// See also [PaginatedBookmarks].
+class PaginatedBookmarksFamily extends Family<AsyncValue<List<BookmarkDto>>> {
+  /// See also [PaginatedBookmarks].
+  const PaginatedBookmarksFamily();
+
+  /// See also [PaginatedBookmarks].
+  PaginatedBookmarksProvider call({
+    BookmarkFilter filter = const BookmarkFilter(),
+  }) {
+    return PaginatedBookmarksProvider(filter: filter);
+  }
+
+  @override
+  PaginatedBookmarksProvider getProviderOverride(
+    covariant PaginatedBookmarksProvider provider,
+  ) {
+    return call(filter: provider.filter);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'paginatedBookmarksProvider';
+}
+
+/// See also [PaginatedBookmarks].
+class PaginatedBookmarksProvider
+    extends
+        AutoDisposeAsyncNotifierProviderImpl<
+          PaginatedBookmarks,
+          List<BookmarkDto>
+        > {
+  /// See also [PaginatedBookmarks].
+  PaginatedBookmarksProvider({BookmarkFilter filter = const BookmarkFilter()})
+    : this._internal(
+        () => PaginatedBookmarks()..filter = filter,
+        from: paginatedBookmarksProvider,
+        name: r'paginatedBookmarksProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$paginatedBookmarksHash,
+        dependencies: PaginatedBookmarksFamily._dependencies,
+        allTransitiveDependencies:
+            PaginatedBookmarksFamily._allTransitiveDependencies,
+        filter: filter,
+      );
+
+  PaginatedBookmarksProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.filter,
+  }) : super.internal();
+
+  final BookmarkFilter filter;
+
+  @override
+  FutureOr<List<BookmarkDto>> runNotifierBuild(
+    covariant PaginatedBookmarks notifier,
+  ) {
+    return notifier.build(filter: filter);
+  }
+
+  @override
+  Override overrideWith(PaginatedBookmarks Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: PaginatedBookmarksProvider._internal(
+        () => create()..filter = filter,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        filter: filter,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeAsyncNotifierProviderElement<PaginatedBookmarks, List<BookmarkDto>>
+  createElement() {
+    return _PaginatedBookmarksProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is PaginatedBookmarksProvider && other.filter == filter;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, filter.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin PaginatedBookmarksRef
+    on AutoDisposeAsyncNotifierProviderRef<List<BookmarkDto>> {
+  /// The parameter `filter` of this provider.
+  BookmarkFilter get filter;
+}
+
+class _PaginatedBookmarksProviderElement
+    extends
+        AutoDisposeAsyncNotifierProviderElement<
+          PaginatedBookmarks,
+          List<BookmarkDto>
+        >
+    with PaginatedBookmarksRef {
+  _PaginatedBookmarksProviderElement(super.provider);
+
+  @override
+  BookmarkFilter get filter => (origin as PaginatedBookmarksProvider).filter;
+}
+
+String _$paginatedBookmarksFetchingPageHash() =>
+    r'cdd87804e3bfdc67326fef51d0cbe0db8e298b1e';
+
+abstract class _$PaginatedBookmarksFetchingPage
+    extends BuildlessAutoDisposeNotifier<bool> {
+  late final BookmarkFilter filter;
+
+  bool build(BookmarkFilter filter);
+}
+
+/// See also [PaginatedBookmarksFetchingPage].
+@ProviderFor(PaginatedBookmarksFetchingPage)
+const paginatedBookmarksFetchingPageProvider =
+    PaginatedBookmarksFetchingPageFamily();
+
+/// See also [PaginatedBookmarksFetchingPage].
+class PaginatedBookmarksFetchingPageFamily extends Family<bool> {
+  /// See also [PaginatedBookmarksFetchingPage].
+  const PaginatedBookmarksFetchingPageFamily();
+
+  /// See also [PaginatedBookmarksFetchingPage].
+  PaginatedBookmarksFetchingPageProvider call(BookmarkFilter filter) {
+    return PaginatedBookmarksFetchingPageProvider(filter);
+  }
+
+  @override
+  PaginatedBookmarksFetchingPageProvider getProviderOverride(
+    covariant PaginatedBookmarksFetchingPageProvider provider,
+  ) {
+    return call(provider.filter);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'paginatedBookmarksFetchingPageProvider';
+}
+
+/// See also [PaginatedBookmarksFetchingPage].
+class PaginatedBookmarksFetchingPageProvider
+    extends
+        AutoDisposeNotifierProviderImpl<PaginatedBookmarksFetchingPage, bool> {
+  /// See also [PaginatedBookmarksFetchingPage].
+  PaginatedBookmarksFetchingPageProvider(BookmarkFilter filter)
+    : this._internal(
+        () => PaginatedBookmarksFetchingPage()..filter = filter,
+        from: paginatedBookmarksFetchingPageProvider,
+        name: r'paginatedBookmarksFetchingPageProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$paginatedBookmarksFetchingPageHash,
+        dependencies: PaginatedBookmarksFetchingPageFamily._dependencies,
+        allTransitiveDependencies:
+            PaginatedBookmarksFetchingPageFamily._allTransitiveDependencies,
+        filter: filter,
+      );
+
+  PaginatedBookmarksFetchingPageProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.filter,
+  }) : super.internal();
+
+  final BookmarkFilter filter;
+
+  @override
+  bool runNotifierBuild(covariant PaginatedBookmarksFetchingPage notifier) {
+    return notifier.build(filter);
+  }
+
+  @override
+  Override overrideWith(PaginatedBookmarksFetchingPage Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: PaginatedBookmarksFetchingPageProvider._internal(
+        () => create()..filter = filter,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        filter: filter,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<PaginatedBookmarksFetchingPage, bool>
+  createElement() {
+    return _PaginatedBookmarksFetchingPageProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is PaginatedBookmarksFetchingPageProvider &&
+        other.filter == filter;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, filter.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin PaginatedBookmarksFetchingPageRef
+    on AutoDisposeNotifierProviderRef<bool> {
+  /// The parameter `filter` of this provider.
+  BookmarkFilter get filter;
+}
+
+class _PaginatedBookmarksFetchingPageProviderElement
+    extends
+        AutoDisposeNotifierProviderElement<PaginatedBookmarksFetchingPage, bool>
+    with PaginatedBookmarksFetchingPageRef {
+  _PaginatedBookmarksFetchingPageProviderElement(super.provider);
+
+  @override
+  BookmarkFilter get filter =>
+      (origin as PaginatedBookmarksFetchingPageProvider).filter;
 }
 
 // ignore_for_file: type=lint

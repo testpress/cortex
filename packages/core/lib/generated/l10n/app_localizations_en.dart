@@ -1712,4 +1712,85 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get commentsDisabledByAdmin =>
       'Comments are disabled for this post by Administrator';
+
+  @override
+  String bookmarkFolderItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get bookmarksTitle => 'Bookmarks';
+
+  @override
+  String get bookmarkFilterAllContents => 'All contents';
+
+  @override
+  String get bookmarkFilterQuestions => 'Questions';
+
+  @override
+  String get bookmarkFilterVideos => 'Videos';
+
+  @override
+  String get bookmarkFilterPDFs => 'PDFs';
+
+  @override
+  String get bookmarkFilterNotes => 'Notes';
+
+  @override
+  String get bookmarkFilterExamsAndQuiz => 'Exams and Quiz';
+
+  @override
+  String get bookmarkFilterLiveClasses => 'Live Classes';
+
+  @override
+  String get bookmarkSortRecent => 'Recent';
+
+  @override
+  String get bookmarkSortOldest => 'Oldest';
+
+  @override
+  String get bookmarkSortLastlyOpened => 'Lastly opened';
+
+  @override
+  String get bookmarkTabAll => 'All';
+
+  @override
+  String get bookmarkTabFolders => 'Folders';
+
+  @override
+  String get bookmarkActionRenameFolder => 'Rename Folder';
+
+  @override
+  String get bookmarkActionDeleteFolder => 'Delete Folder';
+
+  @override
+  String get bookmarkActionMoveBookmark => 'Move Bookmark';
+
+  @override
+  String get bookmarkActionRemoveBookmark => 'Remove Bookmark';
+
+  @override
+  String get bookmarkDeleteFolderConfirmation =>
+      'Are you sure you want to delete this folder?';
+
+  @override
+  String get bookmarkLabelContentType => 'Content Type';
+
+  @override
+  String get bookmarkLabelSortBy => 'Sort by';
+
+  @override
+  String get bookmarkActionCreateFolder => 'Create folder';
+
+  @override
+  String get bookmarkLabelName => 'Name';
+
+  @override
+  String get bookmarkActionDelete => 'Delete';
 }

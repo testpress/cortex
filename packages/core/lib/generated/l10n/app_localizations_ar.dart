@@ -1721,4 +1721,85 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get commentsDisabledByAdmin =>
       'تم تعطيل التعليقات على هذا المنشور من قبل المسؤول';
+
+  @override
+  String bookmarkFolderItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count عناصر',
+      one: '1 عنصر',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get bookmarksTitle => 'إشارات مرجعية';
+
+  @override
+  String get bookmarkFilterAllContents => 'جميع المحتويات';
+
+  @override
+  String get bookmarkFilterQuestions => 'أسئلة';
+
+  @override
+  String get bookmarkFilterVideos => 'مقاطع فيديو';
+
+  @override
+  String get bookmarkFilterPDFs => 'ملفات PDF';
+
+  @override
+  String get bookmarkFilterNotes => 'ملاحظات';
+
+  @override
+  String get bookmarkFilterExamsAndQuiz => 'الامتحانات والاختبارات';
+
+  @override
+  String get bookmarkFilterLiveClasses => 'فصول مباشرة';
+
+  @override
+  String get bookmarkSortRecent => 'الأخيرة';
+
+  @override
+  String get bookmarkSortOldest => 'الأقدم';
+
+  @override
+  String get bookmarkSortLastlyOpened => 'تم فتحها مؤخرًا';
+
+  @override
+  String get bookmarkTabAll => 'الكل';
+
+  @override
+  String get bookmarkTabFolders => 'المجلدات';
+
+  @override
+  String get bookmarkActionRenameFolder => 'إعادة تسمية المجلد';
+
+  @override
+  String get bookmarkActionDeleteFolder => 'حذف المجلد';
+
+  @override
+  String get bookmarkActionMoveBookmark => 'نقل الإشارة المرجعية';
+
+  @override
+  String get bookmarkActionRemoveBookmark => 'إزالة الإشارة المرجعية';
+
+  @override
+  String get bookmarkDeleteFolderConfirmation =>
+      'هل أنت متأكد أنك تريد حذف هذا المجلد؟';
+
+  @override
+  String get bookmarkLabelContentType => 'نوع المحتوى';
+
+  @override
+  String get bookmarkLabelSortBy => 'فرز حسب';
+
+  @override
+  String get bookmarkActionCreateFolder => 'إنشاء مجلد';
+
+  @override
+  String get bookmarkLabelName => 'الاسم';
+
+  @override
+  String get bookmarkActionDelete => 'حذف';
 }

@@ -956,6 +956,34 @@ class HttpDataSource implements DataSource {
   }
 
   @override
+  Future<PaginatedResponseDto<BookmarkDto>> getBookmarks({
+    int page = 1,
+    String? folder,
+    String? order,
+    String? filter,
+  }) async {
+    final queryParams = <String, dynamic>{
+      'page': page,
+    };
+    if (folder != null) queryParams['folder'] = folder;
+    if (order != null) queryParams['order'] = order;
+    if (filter != null) queryParams['filter'] = filter;
+
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.bookmarksV2_4, queryParameters: queryParams),
+      fromJson: (data) {
+        final items = BookmarkDto.fromListResponse(data as Map<String, dynamic>);
+        return PaginatedResponseDto<BookmarkDto>(
+          results: items,
+          count: data['count'] as int? ?? items.length,
+          next: data['next']?.toString(),
+          previous: data['previous']?.toString(),
+        );
+      },
+    );
+  }
+
+  @override
   Future<BookmarkFolderDto> createBookmarkFolder(String name) async {
     return performNetworkRequest(
       _dio.post(
@@ -963,6 +991,25 @@ class HttpDataSource implements DataSource {
         data: {'name': name},
       ),
       fromJson: (data) => BookmarkFolderDto.fromJson(data as Map<String, dynamic>),
+    );
+  }
+
+  @override
+  Future<BookmarkFolderDto> updateBookmarkFolder(int id, String name) async {
+    return performNetworkRequest(
+      _dio.patch(
+        ApiEndpoints.updateBookmarkFolder(id.toString()),
+        data: {'name': name},
+      ),
+      fromJson: (data) => BookmarkFolderDto.fromJson(data as Map<String, dynamic>),
+    );
+  }
+
+  @override
+  Future<void> deleteBookmarkFolder(int id) async {
+    await performNetworkRequest(
+      _dio.delete(ApiEndpoints.deleteBookmarkFolder(id.toString())),
+      fromJson: (data) => null,
     );
   }
 

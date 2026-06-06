@@ -12600,6 +12600,61 @@ class $BookmarkItemsTableTable extends BookmarkItemsTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _chapterNameMeta = const VerificationMeta(
+    'chapterName',
+  );
+  @override
+  late final GeneratedColumn<String> chapterName = GeneratedColumn<String>(
+    'chapter_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _slugMeta = const VerificationMeta('slug');
+  @override
+  late final GeneratedColumn<String> slug = GeneratedColumn<String>(
+    'slug',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isForumPostMeta = const VerificationMeta(
+    'isForumPost',
+  );
+  @override
+  late final GeneratedColumn<bool> isForumPost = GeneratedColumn<bool>(
+    'is_forum_post',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_forum_post" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _createdMeta = const VerificationMeta(
+    'created',
+  );
+  @override
+  late final GeneratedColumn<DateTime> created = GeneratedColumn<DateTime>(
+    'created',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -12607,6 +12662,11 @@ class $BookmarkItemsTableTable extends BookmarkItemsTable
     folderName,
     lessonId,
     bookmarkType,
+    title,
+    chapterName,
+    slug,
+    isForumPost,
+    created,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -12652,6 +12712,42 @@ class $BookmarkItemsTableTable extends BookmarkItemsTable
         ),
       );
     }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    }
+    if (data.containsKey('chapter_name')) {
+      context.handle(
+        _chapterNameMeta,
+        chapterName.isAcceptableOrUnknown(
+          data['chapter_name']!,
+          _chapterNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('slug')) {
+      context.handle(
+        _slugMeta,
+        slug.isAcceptableOrUnknown(data['slug']!, _slugMeta),
+      );
+    }
+    if (data.containsKey('is_forum_post')) {
+      context.handle(
+        _isForumPostMeta,
+        isForumPost.isAcceptableOrUnknown(
+          data['is_forum_post']!,
+          _isForumPostMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created')) {
+      context.handle(
+        _createdMeta,
+        created.isAcceptableOrUnknown(data['created']!, _createdMeta),
+      );
+    }
     return context;
   }
 
@@ -12681,6 +12777,26 @@ class $BookmarkItemsTableTable extends BookmarkItemsTable
         DriftSqlType.string,
         data['${effectivePrefix}bookmark_type'],
       ),
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      ),
+      chapterName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}chapter_name'],
+      ),
+      slug: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}slug'],
+      ),
+      isForumPost: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_forum_post'],
+      )!,
+      created: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created'],
+      ),
     );
   }
 
@@ -12697,12 +12813,22 @@ class BookmarkItemsTableData extends DataClass
   final String? folderName;
   final int lessonId;
   final String? bookmarkType;
+  final String? title;
+  final String? chapterName;
+  final String? slug;
+  final bool isForumPost;
+  final DateTime? created;
   const BookmarkItemsTableData({
     required this.id,
     this.folderId,
     this.folderName,
     required this.lessonId,
     this.bookmarkType,
+    this.title,
+    this.chapterName,
+    this.slug,
+    required this.isForumPost,
+    this.created,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -12717,6 +12843,19 @@ class BookmarkItemsTableData extends DataClass
     map['lesson_id'] = Variable<int>(lessonId);
     if (!nullToAbsent || bookmarkType != null) {
       map['bookmark_type'] = Variable<String>(bookmarkType);
+    }
+    if (!nullToAbsent || title != null) {
+      map['title'] = Variable<String>(title);
+    }
+    if (!nullToAbsent || chapterName != null) {
+      map['chapter_name'] = Variable<String>(chapterName);
+    }
+    if (!nullToAbsent || slug != null) {
+      map['slug'] = Variable<String>(slug);
+    }
+    map['is_forum_post'] = Variable<bool>(isForumPost);
+    if (!nullToAbsent || created != null) {
+      map['created'] = Variable<DateTime>(created);
     }
     return map;
   }
@@ -12734,6 +12873,17 @@ class BookmarkItemsTableData extends DataClass
       bookmarkType: bookmarkType == null && nullToAbsent
           ? const Value.absent()
           : Value(bookmarkType),
+      title: title == null && nullToAbsent
+          ? const Value.absent()
+          : Value(title),
+      chapterName: chapterName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(chapterName),
+      slug: slug == null && nullToAbsent ? const Value.absent() : Value(slug),
+      isForumPost: Value(isForumPost),
+      created: created == null && nullToAbsent
+          ? const Value.absent()
+          : Value(created),
     );
   }
 
@@ -12748,6 +12898,11 @@ class BookmarkItemsTableData extends DataClass
       folderName: serializer.fromJson<String?>(json['folderName']),
       lessonId: serializer.fromJson<int>(json['lessonId']),
       bookmarkType: serializer.fromJson<String?>(json['bookmarkType']),
+      title: serializer.fromJson<String?>(json['title']),
+      chapterName: serializer.fromJson<String?>(json['chapterName']),
+      slug: serializer.fromJson<String?>(json['slug']),
+      isForumPost: serializer.fromJson<bool>(json['isForumPost']),
+      created: serializer.fromJson<DateTime?>(json['created']),
     );
   }
   @override
@@ -12759,6 +12914,11 @@ class BookmarkItemsTableData extends DataClass
       'folderName': serializer.toJson<String?>(folderName),
       'lessonId': serializer.toJson<int>(lessonId),
       'bookmarkType': serializer.toJson<String?>(bookmarkType),
+      'title': serializer.toJson<String?>(title),
+      'chapterName': serializer.toJson<String?>(chapterName),
+      'slug': serializer.toJson<String?>(slug),
+      'isForumPost': serializer.toJson<bool>(isForumPost),
+      'created': serializer.toJson<DateTime?>(created),
     };
   }
 
@@ -12768,12 +12928,22 @@ class BookmarkItemsTableData extends DataClass
     Value<String?> folderName = const Value.absent(),
     int? lessonId,
     Value<String?> bookmarkType = const Value.absent(),
+    Value<String?> title = const Value.absent(),
+    Value<String?> chapterName = const Value.absent(),
+    Value<String?> slug = const Value.absent(),
+    bool? isForumPost,
+    Value<DateTime?> created = const Value.absent(),
   }) => BookmarkItemsTableData(
     id: id ?? this.id,
     folderId: folderId.present ? folderId.value : this.folderId,
     folderName: folderName.present ? folderName.value : this.folderName,
     lessonId: lessonId ?? this.lessonId,
     bookmarkType: bookmarkType.present ? bookmarkType.value : this.bookmarkType,
+    title: title.present ? title.value : this.title,
+    chapterName: chapterName.present ? chapterName.value : this.chapterName,
+    slug: slug.present ? slug.value : this.slug,
+    isForumPost: isForumPost ?? this.isForumPost,
+    created: created.present ? created.value : this.created,
   );
   BookmarkItemsTableData copyWithCompanion(BookmarkItemsTableCompanion data) {
     return BookmarkItemsTableData(
@@ -12786,6 +12956,15 @@ class BookmarkItemsTableData extends DataClass
       bookmarkType: data.bookmarkType.present
           ? data.bookmarkType.value
           : this.bookmarkType,
+      title: data.title.present ? data.title.value : this.title,
+      chapterName: data.chapterName.present
+          ? data.chapterName.value
+          : this.chapterName,
+      slug: data.slug.present ? data.slug.value : this.slug,
+      isForumPost: data.isForumPost.present
+          ? data.isForumPost.value
+          : this.isForumPost,
+      created: data.created.present ? data.created.value : this.created,
     );
   }
 
@@ -12796,14 +12975,29 @@ class BookmarkItemsTableData extends DataClass
           ..write('folderId: $folderId, ')
           ..write('folderName: $folderName, ')
           ..write('lessonId: $lessonId, ')
-          ..write('bookmarkType: $bookmarkType')
+          ..write('bookmarkType: $bookmarkType, ')
+          ..write('title: $title, ')
+          ..write('chapterName: $chapterName, ')
+          ..write('slug: $slug, ')
+          ..write('isForumPost: $isForumPost, ')
+          ..write('created: $created')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, folderId, folderName, lessonId, bookmarkType);
+  int get hashCode => Object.hash(
+    id,
+    folderId,
+    folderName,
+    lessonId,
+    bookmarkType,
+    title,
+    chapterName,
+    slug,
+    isForumPost,
+    created,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -12812,7 +13006,12 @@ class BookmarkItemsTableData extends DataClass
           other.folderId == this.folderId &&
           other.folderName == this.folderName &&
           other.lessonId == this.lessonId &&
-          other.bookmarkType == this.bookmarkType);
+          other.bookmarkType == this.bookmarkType &&
+          other.title == this.title &&
+          other.chapterName == this.chapterName &&
+          other.slug == this.slug &&
+          other.isForumPost == this.isForumPost &&
+          other.created == this.created);
 }
 
 class BookmarkItemsTableCompanion
@@ -12822,12 +13021,22 @@ class BookmarkItemsTableCompanion
   final Value<String?> folderName;
   final Value<int> lessonId;
   final Value<String?> bookmarkType;
+  final Value<String?> title;
+  final Value<String?> chapterName;
+  final Value<String?> slug;
+  final Value<bool> isForumPost;
+  final Value<DateTime?> created;
   const BookmarkItemsTableCompanion({
     this.id = const Value.absent(),
     this.folderId = const Value.absent(),
     this.folderName = const Value.absent(),
     this.lessonId = const Value.absent(),
     this.bookmarkType = const Value.absent(),
+    this.title = const Value.absent(),
+    this.chapterName = const Value.absent(),
+    this.slug = const Value.absent(),
+    this.isForumPost = const Value.absent(),
+    this.created = const Value.absent(),
   });
   BookmarkItemsTableCompanion.insert({
     this.id = const Value.absent(),
@@ -12835,6 +13044,11 @@ class BookmarkItemsTableCompanion
     this.folderName = const Value.absent(),
     required int lessonId,
     this.bookmarkType = const Value.absent(),
+    this.title = const Value.absent(),
+    this.chapterName = const Value.absent(),
+    this.slug = const Value.absent(),
+    this.isForumPost = const Value.absent(),
+    this.created = const Value.absent(),
   }) : lessonId = Value(lessonId);
   static Insertable<BookmarkItemsTableData> custom({
     Expression<int>? id,
@@ -12842,6 +13056,11 @@ class BookmarkItemsTableCompanion
     Expression<String>? folderName,
     Expression<int>? lessonId,
     Expression<String>? bookmarkType,
+    Expression<String>? title,
+    Expression<String>? chapterName,
+    Expression<String>? slug,
+    Expression<bool>? isForumPost,
+    Expression<DateTime>? created,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -12849,6 +13068,11 @@ class BookmarkItemsTableCompanion
       if (folderName != null) 'folder_name': folderName,
       if (lessonId != null) 'lesson_id': lessonId,
       if (bookmarkType != null) 'bookmark_type': bookmarkType,
+      if (title != null) 'title': title,
+      if (chapterName != null) 'chapter_name': chapterName,
+      if (slug != null) 'slug': slug,
+      if (isForumPost != null) 'is_forum_post': isForumPost,
+      if (created != null) 'created': created,
     });
   }
 
@@ -12858,6 +13082,11 @@ class BookmarkItemsTableCompanion
     Value<String?>? folderName,
     Value<int>? lessonId,
     Value<String?>? bookmarkType,
+    Value<String?>? title,
+    Value<String?>? chapterName,
+    Value<String?>? slug,
+    Value<bool>? isForumPost,
+    Value<DateTime?>? created,
   }) {
     return BookmarkItemsTableCompanion(
       id: id ?? this.id,
@@ -12865,6 +13094,11 @@ class BookmarkItemsTableCompanion
       folderName: folderName ?? this.folderName,
       lessonId: lessonId ?? this.lessonId,
       bookmarkType: bookmarkType ?? this.bookmarkType,
+      title: title ?? this.title,
+      chapterName: chapterName ?? this.chapterName,
+      slug: slug ?? this.slug,
+      isForumPost: isForumPost ?? this.isForumPost,
+      created: created ?? this.created,
     );
   }
 
@@ -12886,6 +13120,21 @@ class BookmarkItemsTableCompanion
     if (bookmarkType.present) {
       map['bookmark_type'] = Variable<String>(bookmarkType.value);
     }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (chapterName.present) {
+      map['chapter_name'] = Variable<String>(chapterName.value);
+    }
+    if (slug.present) {
+      map['slug'] = Variable<String>(slug.value);
+    }
+    if (isForumPost.present) {
+      map['is_forum_post'] = Variable<bool>(isForumPost.value);
+    }
+    if (created.present) {
+      map['created'] = Variable<DateTime>(created.value);
+    }
     return map;
   }
 
@@ -12896,7 +13145,12 @@ class BookmarkItemsTableCompanion
           ..write('folderId: $folderId, ')
           ..write('folderName: $folderName, ')
           ..write('lessonId: $lessonId, ')
-          ..write('bookmarkType: $bookmarkType')
+          ..write('bookmarkType: $bookmarkType, ')
+          ..write('title: $title, ')
+          ..write('chapterName: $chapterName, ')
+          ..write('slug: $slug, ')
+          ..write('isForumPost: $isForumPost, ')
+          ..write('created: $created')
           ..write(')'))
         .toString();
   }
@@ -20458,6 +20712,11 @@ typedef $$BookmarkItemsTableTableCreateCompanionBuilder =
       Value<String?> folderName,
       required int lessonId,
       Value<String?> bookmarkType,
+      Value<String?> title,
+      Value<String?> chapterName,
+      Value<String?> slug,
+      Value<bool> isForumPost,
+      Value<DateTime?> created,
     });
 typedef $$BookmarkItemsTableTableUpdateCompanionBuilder =
     BookmarkItemsTableCompanion Function({
@@ -20466,6 +20725,11 @@ typedef $$BookmarkItemsTableTableUpdateCompanionBuilder =
       Value<String?> folderName,
       Value<int> lessonId,
       Value<String?> bookmarkType,
+      Value<String?> title,
+      Value<String?> chapterName,
+      Value<String?> slug,
+      Value<bool> isForumPost,
+      Value<DateTime?> created,
     });
 
 final class $$BookmarkItemsTableTableReferences
@@ -20533,6 +20797,31 @@ class $$BookmarkItemsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get chapterName => $composableBuilder(
+    column: $table.chapterName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get slug => $composableBuilder(
+    column: $table.slug,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isForumPost => $composableBuilder(
+    column: $table.isForumPost,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get created => $composableBuilder(
+    column: $table.created,
+    builder: (column) => ColumnFilters(column),
+  );
+
   $$BookmarkFoldersTableTableFilterComposer get folderId {
     final $$BookmarkFoldersTableTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -20586,6 +20875,31 @@ class $$BookmarkItemsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get chapterName => $composableBuilder(
+    column: $table.chapterName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get slug => $composableBuilder(
+    column: $table.slug,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isForumPost => $composableBuilder(
+    column: $table.isForumPost,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get created => $composableBuilder(
+    column: $table.created,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$BookmarkFoldersTableTableOrderingComposer get folderId {
     final $$BookmarkFoldersTableTableOrderingComposer composer =
         $composerBuilder(
@@ -20635,6 +20949,25 @@ class $$BookmarkItemsTableTableAnnotationComposer
     column: $table.bookmarkType,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get chapterName => $composableBuilder(
+    column: $table.chapterName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get slug =>
+      $composableBuilder(column: $table.slug, builder: (column) => column);
+
+  GeneratedColumn<bool> get isForumPost => $composableBuilder(
+    column: $table.isForumPost,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get created =>
+      $composableBuilder(column: $table.created, builder: (column) => column);
 
   $$BookmarkFoldersTableTableAnnotationComposer get folderId {
     final $$BookmarkFoldersTableTableAnnotationComposer composer =
@@ -20699,12 +21032,22 @@ class $$BookmarkItemsTableTableTableManager
                 Value<String?> folderName = const Value.absent(),
                 Value<int> lessonId = const Value.absent(),
                 Value<String?> bookmarkType = const Value.absent(),
+                Value<String?> title = const Value.absent(),
+                Value<String?> chapterName = const Value.absent(),
+                Value<String?> slug = const Value.absent(),
+                Value<bool> isForumPost = const Value.absent(),
+                Value<DateTime?> created = const Value.absent(),
               }) => BookmarkItemsTableCompanion(
                 id: id,
                 folderId: folderId,
                 folderName: folderName,
                 lessonId: lessonId,
                 bookmarkType: bookmarkType,
+                title: title,
+                chapterName: chapterName,
+                slug: slug,
+                isForumPost: isForumPost,
+                created: created,
               ),
           createCompanionCallback:
               ({
@@ -20713,12 +21056,22 @@ class $$BookmarkItemsTableTableTableManager
                 Value<String?> folderName = const Value.absent(),
                 required int lessonId,
                 Value<String?> bookmarkType = const Value.absent(),
+                Value<String?> title = const Value.absent(),
+                Value<String?> chapterName = const Value.absent(),
+                Value<String?> slug = const Value.absent(),
+                Value<bool> isForumPost = const Value.absent(),
+                Value<DateTime?> created = const Value.absent(),
               }) => BookmarkItemsTableCompanion.insert(
                 id: id,
                 folderId: folderId,
                 folderName: folderName,
                 lessonId: lessonId,
                 bookmarkType: bookmarkType,
+                title: title,
+                chapterName: chapterName,
+                slug: slug,
+                isForumPost: isForumPost,
+                created: created,
               ),
           withReferenceMapper: (p0) => p0
               .map(

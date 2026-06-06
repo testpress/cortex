@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:courses/courses.dart';
+import '../../screens/bookmarks/bookmarks_screen.dart';
 
 class GlobalRoutes {
   static List<RouteBase> get exploreRoutes => [
@@ -110,6 +111,11 @@ class GlobalRoutes {
           path: '/downloads',
           parentNavigatorKey: rootNavigatorKey,
           builder: (context, state) => const DownloadsScreen(),
+        ),
+        GoRoute(
+          path: '/bookmarks',
+          parentNavigatorKey: rootNavigatorKey,
+          builder: (context, state) => const BookmarksScreen(),
         ),
       ];
 }
