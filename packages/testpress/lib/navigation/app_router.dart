@@ -19,7 +19,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   // Only watch the boolean login status to prevent the router from rebuilding
   // on every loading state change or refresh.
   final isLoggedIn = ref.watch(authProvider).valueOrNull ?? false;
-  final config = ref.watch(clientConfigProvider);
   const allTabs = NavTab.values;
 
   return GoRouter(
@@ -32,7 +31,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) => _AppShellBuilder(
           navigationShell: navigationShell,
-          config: config,
           allTabs: allTabs,
         ),
         branches: allTabs.map((tab) {
@@ -68,23 +66,21 @@ enum NavTab {
 
   AppTabItem toTabItem() => AppTabItem(id: id, label: label, icon: icon);
 
-  static List<NavTab> active(ClientConfig config) {
+  static List<NavTab> active() {
     return values.where((tab) {
       return switch (tab) {
-        NavTab.exams => config.showExamTab,
-        NavTab.info => config.showInfoTab,
-        NavTab.explore => config.showExploreTab,
-        NavTab.profile => config.showProfileTab,
+        NavTab.exams => AppConfig.showExamTab,
+        NavTab.info => AppConfig.showInfoTab,
+        NavTab.explore => AppConfig.showExploreTab,
+        NavTab.profile => AppConfig.showProfileTab,
         _ => true,
       };
     }).toList();
   }
 }
 
-List<AppTabItem> buildPrimaryNavigationItems({
-  required ClientConfig config,
-}) {
-  return NavTab.active(config).map((tab) => tab.toTabItem()).toList();
+List<AppTabItem> buildPrimaryNavigationItems() {
+  return NavTab.active().map((tab) => tab.toTabItem()).toList();
 }
 
 
@@ -93,18 +89,16 @@ List<AppTabItem> buildPrimaryNavigationItems({
 
 class _AppShellBuilder extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
-  final ClientConfig config;
   final List<NavTab> allTabs;
 
   const _AppShellBuilder({
     required this.navigationShell,
-    required this.config,
     required this.allTabs,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activeTabs = NavTab.active(config);
+    final activeTabs = NavTab.active();
     final items = activeTabs.map((tab) => tab.toTabItem()).toList();
     final isLogoutSheetOpen = ref.watch(isLogoutSheetOpenProvider);
     final activeTabId = allTabs[navigationShell.currentIndex].id;

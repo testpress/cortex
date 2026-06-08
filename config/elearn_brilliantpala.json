@@ -1,0 +1,16 @@
+{
+  "API_BASE_URL": "https://brilliantpalalms.testpress.in",
+  "SHOW_TODAY_SCHEDULE": false,
+  "SHOW_QUICK_ACCESS": false,
+  "SHOW_CONTEXTUAL_HERO": false,
+  "SHOW_STUDY_CATEGORY_BUTTONS": false,
+  "SHOW_RESUME_SECTION": true,
+  "SHOW_WHATS_NEW_SECTION": true,
+  "SHOW_RECENTLY_COMPLETED_SECTION": true,
+  "SHOW_EXAM_TAB": true,
+  "SHOW_INFO_TAB": true,
+  "SHOW_EXPLORE_TAB": false,
+  "SHOW_PROFILE_TAB": false,
+  "INSTITUTE_LOGO_URL": "assets/images/brilliant_pala_logo.png",
+  "IS_LOCAL_LOGO": true
+}

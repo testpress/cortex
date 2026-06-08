@@ -61,7 +61,6 @@ class InstituteBanner extends StatelessWidget {
                     if (isLocal)
                       Image.asset(
                         logoUrl,
-                        package: 'core',
                         height: 40,
                         fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTrace) =>

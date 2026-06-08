@@ -60,8 +60,6 @@ dev_dependencies:
 flutter:
   generate: true
 
-  assets:
-    - assets/images/
   # For details regarding assets in packages, see
   # https://flutter.dev/to/asset-from-package
   #

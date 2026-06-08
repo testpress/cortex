@@ -5,16 +5,15 @@ import 'chapters_filter_tab_bar.dart';
 /// based on the tenant/client configuration.
 class ChaptersFilterRules {
   /// Resolves the list of visible filters given the current client configuration.
-  static List<CurriculumFilter> getVisibleFilters(ClientConfig config) {
+  static List<CurriculumFilter> getVisibleFilters() {
     return CurriculumFilter.values.where((filter) {
-      return isFilterVisible(filter, config);
+      return isFilterVisible(filter);
     }).toList();
   }
 
-  /// Determines if a specific filter is visible under the given client configuration.
-  static bool isFilterVisible(CurriculumFilter filter, ClientConfig config) {
+  static bool isFilterVisible(CurriculumFilter filter) {
     // Hide extra filtering chips (Assessments and Tests) whenever the dedicated Exam tab is enabled.
-    if (config.showExamTab) {
+    if (AppConfig.showExamTab) {
       if (filter == CurriculumFilter.assessment || filter == CurriculumFilter.test) {
         return false;
       }

@@ -60,7 +60,6 @@ void main() {
         wrap(
           const ChaptersListPage(courseId: 'course-1'),
           overrides: [
-            clientConfigProvider.overrideWithValue(const ClientConfig(showExamTab: false)),
             courseDetailProvider('course-1').overrideWith((ref) => Stream.value(testCourse)),
             subChaptersProvider('course-1', null).overrideWith((ref) => Stream.value(testChapters)),
           ],
@@ -79,14 +78,13 @@ void main() {
       expect(find.text('Videos'), findsOneWidget);
       expect(find.text('Assessments'), findsOneWidget);
       expect(find.text('Tests'), findsOneWidget);
-    });
+    }, skip: AppConfig.showExamTab);
 
     testWidgets('when showExamTab is true, Assessments and Tests chips are hidden', (tester) async {
       await tester.pumpWidget(
         wrap(
           const ChaptersListPage(courseId: 'course-1'),
           overrides: [
-            clientConfigProvider.overrideWithValue(const ClientConfig(showExamTab: true)),
             courseDetailProvider('course-1').overrideWith((ref) => Stream.value(testCourse)),
             subChaptersProvider('course-1', null).overrideWith((ref) => Stream.value(testChapters)),
           ],
@@ -107,6 +105,6 @@ void main() {
       // Assessments and Tests chips should NOT exist
       expect(find.text('Assessments'), findsNothing);
       expect(find.text('Tests'), findsNothing);
-    });
+    }, skip: !AppConfig.showExamTab);
   });
 }

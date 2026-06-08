@@ -90,8 +90,6 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     final allLessons = ref.watch(allLessonsProvider);
     final recentActivityState = ref.watch(recentActivityProvider);
     final activeSyncError = ref.watch(courseListSyncError);
-    final config = ref.watch(clientConfigProvider);
-
 
     return DecoratedBox(
       decoration: BoxDecoration(color: design.colors.canvas),
@@ -121,7 +119,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                           onChanged: _onSearchChanged,
                           backgroundColor: design.colors.surfaceVariant,
                         ),
-                        if (config.showStudyCategoryButtons) ...[
+                        if (AppConfig.showStudyCategoryButtons) ...[
                           SizedBox(height: design.spacing.md),
                           StudyFilterBar(
                             activeTypeFilters: _activeTypeFilters,
