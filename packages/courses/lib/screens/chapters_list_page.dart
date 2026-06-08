@@ -78,8 +78,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final config = ref.watch(clientConfigProvider);
-    final visibleFilters = ChaptersFilterRules.getVisibleFilters(config);
+    final visibleFilters = ChaptersFilterRules.getVisibleFilters();
     final activeFilter = visibleFilters.contains(_activeFilter)
         ? _activeFilter
         : CurriculumFilter.all;

@@ -232,7 +232,6 @@ class LessonCardsSectionWidget extends StatelessWidget {
   final List<DashboardContentDto> resumeLessons;
   final List<DashboardContentDto> whatsNewLessons;
   final List<DashboardContentDto> recentlyCompletedLessons;
-  final ClientConfig config;
   final bool isLoading;
 
   const LessonCardsSectionWidget({
@@ -240,7 +239,6 @@ class LessonCardsSectionWidget extends StatelessWidget {
     required this.resumeLessons,
     required this.whatsNewLessons,
     required this.recentlyCompletedLessons,
-    required this.config,
     this.isLoading = false,
   });
 
@@ -330,21 +328,21 @@ class LessonCardsSectionWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (config.showResumeSection)
+        if (AppConfig.showResumeSection)
           _buildCarouselSection(
             context,
             l10n.dashboardResumeTitle,
             resumeLessons,
             showMetadata: true,
           ),
-        if (config.showWhatsNewSection)
+        if (AppConfig.showWhatsNewSection)
           _buildCarouselSection(
             context,
             l10n.dashboardWhatsNewTitle,
             whatsNewLessons,
             showMetadata: false,
           ),
-        if (config.showRecentlyCompletedSection)
+        if (AppConfig.showRecentlyCompletedSection)
           _buildCarouselSection(
             context,
             l10n.dashboardRecentlyCompletedTitle,

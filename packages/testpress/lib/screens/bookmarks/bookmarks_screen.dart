@@ -125,8 +125,9 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
 
     String? filterParam;
     if (_selectedContentType == 'Exams and Quiz' ||
-        _selectedContentType == 'Questions')
+        _selectedContentType == 'Questions') {
       filterParam = 'question';
+    }
     if (_selectedContentType == 'Videos') filterParam = 'video';
     if (_selectedContentType == 'PDFs') filterParam = 'attachment';
     if (_selectedContentType == 'Notes') filterParam = 'html';

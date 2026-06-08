@@ -20,7 +20,6 @@ export 'models/settings_models.dart';
 export 'models/study_momentum_dto.dart';
 export 'models/explore_models.dart';
 export 'models/paginated_response_dto.dart';
-export 'models/client_config.dart';
 export 'models/dashboard_dto.dart';
 export 'models/exam_dto.dart';
 export 'models/attempt_dto.dart';
@@ -53,7 +52,6 @@ export 'sources/mock_data_source.dart';
 export 'sources/http_data_source.dart';
 export 'sources/data_source_provider.dart';
 export 'sources/study_momentum_provider.dart';
-export 'sources/client_config_provider.dart';
 
 // Network Endpoints
 export '../network/api_endpoints.dart';
