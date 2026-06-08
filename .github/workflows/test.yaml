@@ -1,0 +1,107 @@
+name: Build & Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.1'
+
+      - name: Fetch Dependencies
+        run: |
+          for dir in app packages/*; do
+            if [ -d "$dir" ] && [ -f "$dir/pubspec.yaml" ]; then
+              echo "Fetching dependencies in $dir..."
+              (cd "$dir" && flutter pub get)
+            fi
+          done
+
+      - name: Dart Format
+        run: dart format --output=none --set-exit-if-changed .
+
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.1'
+
+      - name: Fetch Dependencies
+        run: |
+          for dir in app packages/*; do
+            if [ -d "$dir" ] && [ -f "$dir/pubspec.yaml" ]; then
+              echo "Fetching dependencies in $dir..."
+              (cd "$dir" && flutter pub get)
+            fi
+          done
+
+      - name: Flutter Analyze
+        run: flutter analyze
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.1'
+
+      - name: Fetch Dependencies
+        run: |
+          for dir in app packages/*; do
+            if [ -d "$dir" ] && [ -f "$dir/pubspec.yaml" ]; then
+              echo "Fetching dependencies in $dir..."
+              (cd "$dir" && flutter pub get)
+            fi
+          done
+
+      - name: Run Tests
+        run: |
+          for dir in app packages/*; do
+            if [ -d "$dir/test" ]; then
+              echo "Testing $dir..."
+              (cd "$dir" && flutter test)
+            fi
+          done
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.1'
+
+      - name: Fetch Dependencies
+        run: |
+          for dir in app packages/*; do
+            if [ -d "$dir" ] && [ -f "$dir/pubspec.yaml" ]; then
+              echo "Fetching dependencies in $dir..."
+              (cd "$dir" && flutter pub get)
+            fi
+          done
+
+      - name: Build APK (Debug)
+        working-directory: app
+        run: flutter build apk --debug
