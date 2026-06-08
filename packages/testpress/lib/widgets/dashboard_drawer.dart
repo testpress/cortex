@@ -51,7 +51,10 @@ class DashboardDrawer extends ConsumerWidget {
             AppDrawerItem(
               icon: LucideIcons.pieChart,
               label: l10n.drawerAnalytics,
-              action: () {},
+              action: () {
+                ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                context.push('/exams/analytics');
+              },
             ),
             AppDrawerItem(
               icon: LucideIcons.messageSquare,

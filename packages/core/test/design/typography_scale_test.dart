@@ -10,6 +10,7 @@ void main() {
     ) async {
       final scale = DesignTypographyScale.defaults();
 
+      expect(scale.xxs.fontSize, 10);
       expect(scale.xs.fontSize, 12);
       expect(scale.sm.fontSize, 14);
       expect(scale.base.fontSize, 16);
@@ -26,6 +27,7 @@ void main() {
       final scale = DesignTypographyScale.defaults();
 
       // Small text carries explicit height for readability in dense rows.
+      expect(scale.xxs.height, 1.2);
       expect(scale.xs.height, 1.2);
       expect(scale.sm.height, 1.4);
       // base atom is height-neutral (body semantic role sets 1.5 explicitly).

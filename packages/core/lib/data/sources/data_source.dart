@@ -189,6 +189,9 @@ abstract class DataSource {
   /// Fetch subject-wise analytics for a specific attempt.
   Future<List<SubjectAnalyticsDto>> getSubjectAnalytics(String analyticsUrl);
 
+  /// Fetch subject analytics for the root dashboard screen.
+  Future<List<SubjectAnalyticsDto>> getAnalyticsData(String analyticsUrl);
+
   /// Start an attempt section via its start URL.
   Future<SectionDto> startSection(String startUrl);
 

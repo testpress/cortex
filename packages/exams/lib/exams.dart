@@ -15,3 +15,4 @@ export 'data/mock_tests.dart';
 export 'screens/review_analytics/review_analytics_screen.dart';
 export 'repositories/exam_repository.dart';
 export 'providers/exam_providers.dart';
+export 'screens/subject_analytics/subject_analytics_screen.dart';

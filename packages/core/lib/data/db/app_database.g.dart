@@ -14270,6 +14270,609 @@ class PostsTableCompanion extends UpdateCompanion<PostData> {
   }
 }
 
+class $SubjectAnalyticsTableTable extends SubjectAnalyticsTable
+    with TableInfo<$SubjectAnalyticsTableTable, SubjectAnalyticsData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SubjectAnalyticsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _totalMeta = const VerificationMeta('total');
+  @override
+  late final GeneratedColumn<int> total = GeneratedColumn<int>(
+    'total',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _correctMeta = const VerificationMeta(
+    'correct',
+  );
+  @override
+  late final GeneratedColumn<int> correct = GeneratedColumn<int>(
+    'correct',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _incorrectMeta = const VerificationMeta(
+    'incorrect',
+  );
+  @override
+  late final GeneratedColumn<int> incorrect = GeneratedColumn<int>(
+    'incorrect',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _unansweredMeta = const VerificationMeta(
+    'unanswered',
+  );
+  @override
+  late final GeneratedColumn<int> unanswered = GeneratedColumn<int>(
+    'unanswered',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _correctPercentageMeta = const VerificationMeta(
+    'correctPercentage',
+  );
+  @override
+  late final GeneratedColumn<double> correctPercentage =
+      GeneratedColumn<double>(
+        'correct_percentage',
+        aliasedName,
+        false,
+        type: DriftSqlType.double,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _parentMeta = const VerificationMeta('parent');
+  @override
+  late final GeneratedColumn<int> parent = GeneratedColumn<int>(
+    'parent',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _leafMeta = const VerificationMeta('leaf');
+  @override
+  late final GeneratedColumn<bool> leaf = GeneratedColumn<bool>(
+    'leaf',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("leaf" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _analyticsUrlMeta = const VerificationMeta(
+    'analyticsUrl',
+  );
+  @override
+  late final GeneratedColumn<String> analyticsUrl = GeneratedColumn<String>(
+    'analytics_url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    total,
+    correct,
+    incorrect,
+    unanswered,
+    correctPercentage,
+    parent,
+    leaf,
+    analyticsUrl,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'subject_analytics_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SubjectAnalyticsData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('total')) {
+      context.handle(
+        _totalMeta,
+        total.isAcceptableOrUnknown(data['total']!, _totalMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_totalMeta);
+    }
+    if (data.containsKey('correct')) {
+      context.handle(
+        _correctMeta,
+        correct.isAcceptableOrUnknown(data['correct']!, _correctMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_correctMeta);
+    }
+    if (data.containsKey('incorrect')) {
+      context.handle(
+        _incorrectMeta,
+        incorrect.isAcceptableOrUnknown(data['incorrect']!, _incorrectMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_incorrectMeta);
+    }
+    if (data.containsKey('unanswered')) {
+      context.handle(
+        _unansweredMeta,
+        unanswered.isAcceptableOrUnknown(data['unanswered']!, _unansweredMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_unansweredMeta);
+    }
+    if (data.containsKey('correct_percentage')) {
+      context.handle(
+        _correctPercentageMeta,
+        correctPercentage.isAcceptableOrUnknown(
+          data['correct_percentage']!,
+          _correctPercentageMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_correctPercentageMeta);
+    }
+    if (data.containsKey('parent')) {
+      context.handle(
+        _parentMeta,
+        parent.isAcceptableOrUnknown(data['parent']!, _parentMeta),
+      );
+    }
+    if (data.containsKey('leaf')) {
+      context.handle(
+        _leafMeta,
+        leaf.isAcceptableOrUnknown(data['leaf']!, _leafMeta),
+      );
+    }
+    if (data.containsKey('analytics_url')) {
+      context.handle(
+        _analyticsUrlMeta,
+        analyticsUrl.isAcceptableOrUnknown(
+          data['analytics_url']!,
+          _analyticsUrlMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_analyticsUrlMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SubjectAnalyticsData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SubjectAnalyticsData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      total: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total'],
+      )!,
+      correct: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}correct'],
+      )!,
+      incorrect: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}incorrect'],
+      )!,
+      unanswered: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}unanswered'],
+      )!,
+      correctPercentage: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}correct_percentage'],
+      )!,
+      parent: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}parent'],
+      ),
+      leaf: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}leaf'],
+      )!,
+      analyticsUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}analytics_url'],
+      )!,
+    );
+  }
+
+  @override
+  $SubjectAnalyticsTableTable createAlias(String alias) {
+    return $SubjectAnalyticsTableTable(attachedDatabase, alias);
+  }
+}
+
+class SubjectAnalyticsData extends DataClass
+    implements Insertable<SubjectAnalyticsData> {
+  final int id;
+  final String name;
+  final int total;
+  final int correct;
+  final int incorrect;
+  final int unanswered;
+  final double correctPercentage;
+  final int? parent;
+  final bool leaf;
+  final String analyticsUrl;
+  const SubjectAnalyticsData({
+    required this.id,
+    required this.name,
+    required this.total,
+    required this.correct,
+    required this.incorrect,
+    required this.unanswered,
+    required this.correctPercentage,
+    this.parent,
+    required this.leaf,
+    required this.analyticsUrl,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['total'] = Variable<int>(total);
+    map['correct'] = Variable<int>(correct);
+    map['incorrect'] = Variable<int>(incorrect);
+    map['unanswered'] = Variable<int>(unanswered);
+    map['correct_percentage'] = Variable<double>(correctPercentage);
+    if (!nullToAbsent || parent != null) {
+      map['parent'] = Variable<int>(parent);
+    }
+    map['leaf'] = Variable<bool>(leaf);
+    map['analytics_url'] = Variable<String>(analyticsUrl);
+    return map;
+  }
+
+  SubjectAnalyticsTableCompanion toCompanion(bool nullToAbsent) {
+    return SubjectAnalyticsTableCompanion(
+      id: Value(id),
+      name: Value(name),
+      total: Value(total),
+      correct: Value(correct),
+      incorrect: Value(incorrect),
+      unanswered: Value(unanswered),
+      correctPercentage: Value(correctPercentage),
+      parent: parent == null && nullToAbsent
+          ? const Value.absent()
+          : Value(parent),
+      leaf: Value(leaf),
+      analyticsUrl: Value(analyticsUrl),
+    );
+  }
+
+  factory SubjectAnalyticsData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SubjectAnalyticsData(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      total: serializer.fromJson<int>(json['total']),
+      correct: serializer.fromJson<int>(json['correct']),
+      incorrect: serializer.fromJson<int>(json['incorrect']),
+      unanswered: serializer.fromJson<int>(json['unanswered']),
+      correctPercentage: serializer.fromJson<double>(json['correctPercentage']),
+      parent: serializer.fromJson<int?>(json['parent']),
+      leaf: serializer.fromJson<bool>(json['leaf']),
+      analyticsUrl: serializer.fromJson<String>(json['analyticsUrl']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'total': serializer.toJson<int>(total),
+      'correct': serializer.toJson<int>(correct),
+      'incorrect': serializer.toJson<int>(incorrect),
+      'unanswered': serializer.toJson<int>(unanswered),
+      'correctPercentage': serializer.toJson<double>(correctPercentage),
+      'parent': serializer.toJson<int?>(parent),
+      'leaf': serializer.toJson<bool>(leaf),
+      'analyticsUrl': serializer.toJson<String>(analyticsUrl),
+    };
+  }
+
+  SubjectAnalyticsData copyWith({
+    int? id,
+    String? name,
+    int? total,
+    int? correct,
+    int? incorrect,
+    int? unanswered,
+    double? correctPercentage,
+    Value<int?> parent = const Value.absent(),
+    bool? leaf,
+    String? analyticsUrl,
+  }) => SubjectAnalyticsData(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    total: total ?? this.total,
+    correct: correct ?? this.correct,
+    incorrect: incorrect ?? this.incorrect,
+    unanswered: unanswered ?? this.unanswered,
+    correctPercentage: correctPercentage ?? this.correctPercentage,
+    parent: parent.present ? parent.value : this.parent,
+    leaf: leaf ?? this.leaf,
+    analyticsUrl: analyticsUrl ?? this.analyticsUrl,
+  );
+  SubjectAnalyticsData copyWithCompanion(SubjectAnalyticsTableCompanion data) {
+    return SubjectAnalyticsData(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      total: data.total.present ? data.total.value : this.total,
+      correct: data.correct.present ? data.correct.value : this.correct,
+      incorrect: data.incorrect.present ? data.incorrect.value : this.incorrect,
+      unanswered: data.unanswered.present
+          ? data.unanswered.value
+          : this.unanswered,
+      correctPercentage: data.correctPercentage.present
+          ? data.correctPercentage.value
+          : this.correctPercentage,
+      parent: data.parent.present ? data.parent.value : this.parent,
+      leaf: data.leaf.present ? data.leaf.value : this.leaf,
+      analyticsUrl: data.analyticsUrl.present
+          ? data.analyticsUrl.value
+          : this.analyticsUrl,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SubjectAnalyticsData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('total: $total, ')
+          ..write('correct: $correct, ')
+          ..write('incorrect: $incorrect, ')
+          ..write('unanswered: $unanswered, ')
+          ..write('correctPercentage: $correctPercentage, ')
+          ..write('parent: $parent, ')
+          ..write('leaf: $leaf, ')
+          ..write('analyticsUrl: $analyticsUrl')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    name,
+    total,
+    correct,
+    incorrect,
+    unanswered,
+    correctPercentage,
+    parent,
+    leaf,
+    analyticsUrl,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SubjectAnalyticsData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.total == this.total &&
+          other.correct == this.correct &&
+          other.incorrect == this.incorrect &&
+          other.unanswered == this.unanswered &&
+          other.correctPercentage == this.correctPercentage &&
+          other.parent == this.parent &&
+          other.leaf == this.leaf &&
+          other.analyticsUrl == this.analyticsUrl);
+}
+
+class SubjectAnalyticsTableCompanion
+    extends UpdateCompanion<SubjectAnalyticsData> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<int> total;
+  final Value<int> correct;
+  final Value<int> incorrect;
+  final Value<int> unanswered;
+  final Value<double> correctPercentage;
+  final Value<int?> parent;
+  final Value<bool> leaf;
+  final Value<String> analyticsUrl;
+  const SubjectAnalyticsTableCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.total = const Value.absent(),
+    this.correct = const Value.absent(),
+    this.incorrect = const Value.absent(),
+    this.unanswered = const Value.absent(),
+    this.correctPercentage = const Value.absent(),
+    this.parent = const Value.absent(),
+    this.leaf = const Value.absent(),
+    this.analyticsUrl = const Value.absent(),
+  });
+  SubjectAnalyticsTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required int total,
+    required int correct,
+    required int incorrect,
+    required int unanswered,
+    required double correctPercentage,
+    this.parent = const Value.absent(),
+    this.leaf = const Value.absent(),
+    required String analyticsUrl,
+  }) : name = Value(name),
+       total = Value(total),
+       correct = Value(correct),
+       incorrect = Value(incorrect),
+       unanswered = Value(unanswered),
+       correctPercentage = Value(correctPercentage),
+       analyticsUrl = Value(analyticsUrl);
+  static Insertable<SubjectAnalyticsData> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<int>? total,
+    Expression<int>? correct,
+    Expression<int>? incorrect,
+    Expression<int>? unanswered,
+    Expression<double>? correctPercentage,
+    Expression<int>? parent,
+    Expression<bool>? leaf,
+    Expression<String>? analyticsUrl,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (total != null) 'total': total,
+      if (correct != null) 'correct': correct,
+      if (incorrect != null) 'incorrect': incorrect,
+      if (unanswered != null) 'unanswered': unanswered,
+      if (correctPercentage != null) 'correct_percentage': correctPercentage,
+      if (parent != null) 'parent': parent,
+      if (leaf != null) 'leaf': leaf,
+      if (analyticsUrl != null) 'analytics_url': analyticsUrl,
+    });
+  }
+
+  SubjectAnalyticsTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<int>? total,
+    Value<int>? correct,
+    Value<int>? incorrect,
+    Value<int>? unanswered,
+    Value<double>? correctPercentage,
+    Value<int?>? parent,
+    Value<bool>? leaf,
+    Value<String>? analyticsUrl,
+  }) {
+    return SubjectAnalyticsTableCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      total: total ?? this.total,
+      correct: correct ?? this.correct,
+      incorrect: incorrect ?? this.incorrect,
+      unanswered: unanswered ?? this.unanswered,
+      correctPercentage: correctPercentage ?? this.correctPercentage,
+      parent: parent ?? this.parent,
+      leaf: leaf ?? this.leaf,
+      analyticsUrl: analyticsUrl ?? this.analyticsUrl,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (total.present) {
+      map['total'] = Variable<int>(total.value);
+    }
+    if (correct.present) {
+      map['correct'] = Variable<int>(correct.value);
+    }
+    if (incorrect.present) {
+      map['incorrect'] = Variable<int>(incorrect.value);
+    }
+    if (unanswered.present) {
+      map['unanswered'] = Variable<int>(unanswered.value);
+    }
+    if (correctPercentage.present) {
+      map['correct_percentage'] = Variable<double>(correctPercentage.value);
+    }
+    if (parent.present) {
+      map['parent'] = Variable<int>(parent.value);
+    }
+    if (leaf.present) {
+      map['leaf'] = Variable<bool>(leaf.value);
+    }
+    if (analyticsUrl.present) {
+      map['analytics_url'] = Variable<String>(analyticsUrl.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SubjectAnalyticsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('total: $total, ')
+          ..write('correct: $correct, ')
+          ..write('incorrect: $incorrect, ')
+          ..write('unanswered: $unanswered, ')
+          ..write('correctPercentage: $correctPercentage, ')
+          ..write('parent: $parent, ')
+          ..write('leaf: $leaf, ')
+          ..write('analyticsUrl: $analyticsUrl')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -14313,6 +14916,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $PostCategoriesTableTable postCategoriesTable =
       $PostCategoriesTableTable(this);
   late final $PostsTableTable postsTable = $PostsTableTable(this);
+  late final $SubjectAnalyticsTableTable subjectAnalyticsTable =
+      $SubjectAnalyticsTableTable(this);
   late final Index weeklyRankIdx = Index(
     'weekly_rank_idx',
     'CREATE INDEX weekly_rank_idx ON weekly_leaderboard (rank)',
@@ -14364,6 +14969,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     bookmarkItemsTable,
     postCategoriesTable,
     postsTable,
+    subjectAnalyticsTable,
     weeklyRankIdx,
     weeklyPointsIdx,
     monthlyRankIdx,
@@ -21706,6 +22312,320 @@ typedef $$PostsTableTableProcessedTableManager =
       PostData,
       PrefetchHooks Function()
     >;
+typedef $$SubjectAnalyticsTableTableCreateCompanionBuilder =
+    SubjectAnalyticsTableCompanion Function({
+      Value<int> id,
+      required String name,
+      required int total,
+      required int correct,
+      required int incorrect,
+      required int unanswered,
+      required double correctPercentage,
+      Value<int?> parent,
+      Value<bool> leaf,
+      required String analyticsUrl,
+    });
+typedef $$SubjectAnalyticsTableTableUpdateCompanionBuilder =
+    SubjectAnalyticsTableCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<int> total,
+      Value<int> correct,
+      Value<int> incorrect,
+      Value<int> unanswered,
+      Value<double> correctPercentage,
+      Value<int?> parent,
+      Value<bool> leaf,
+      Value<String> analyticsUrl,
+    });
+
+class $$SubjectAnalyticsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $SubjectAnalyticsTableTable> {
+  $$SubjectAnalyticsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get total => $composableBuilder(
+    column: $table.total,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get correct => $composableBuilder(
+    column: $table.correct,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get incorrect => $composableBuilder(
+    column: $table.incorrect,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get unanswered => $composableBuilder(
+    column: $table.unanswered,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get correctPercentage => $composableBuilder(
+    column: $table.correctPercentage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get parent => $composableBuilder(
+    column: $table.parent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get leaf => $composableBuilder(
+    column: $table.leaf,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get analyticsUrl => $composableBuilder(
+    column: $table.analyticsUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SubjectAnalyticsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $SubjectAnalyticsTableTable> {
+  $$SubjectAnalyticsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get total => $composableBuilder(
+    column: $table.total,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get correct => $composableBuilder(
+    column: $table.correct,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get incorrect => $composableBuilder(
+    column: $table.incorrect,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get unanswered => $composableBuilder(
+    column: $table.unanswered,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get correctPercentage => $composableBuilder(
+    column: $table.correctPercentage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get parent => $composableBuilder(
+    column: $table.parent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get leaf => $composableBuilder(
+    column: $table.leaf,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get analyticsUrl => $composableBuilder(
+    column: $table.analyticsUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SubjectAnalyticsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SubjectAnalyticsTableTable> {
+  $$SubjectAnalyticsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get total =>
+      $composableBuilder(column: $table.total, builder: (column) => column);
+
+  GeneratedColumn<int> get correct =>
+      $composableBuilder(column: $table.correct, builder: (column) => column);
+
+  GeneratedColumn<int> get incorrect =>
+      $composableBuilder(column: $table.incorrect, builder: (column) => column);
+
+  GeneratedColumn<int> get unanswered => $composableBuilder(
+    column: $table.unanswered,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get correctPercentage => $composableBuilder(
+    column: $table.correctPercentage,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get parent =>
+      $composableBuilder(column: $table.parent, builder: (column) => column);
+
+  GeneratedColumn<bool> get leaf =>
+      $composableBuilder(column: $table.leaf, builder: (column) => column);
+
+  GeneratedColumn<String> get analyticsUrl => $composableBuilder(
+    column: $table.analyticsUrl,
+    builder: (column) => column,
+  );
+}
+
+class $$SubjectAnalyticsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SubjectAnalyticsTableTable,
+          SubjectAnalyticsData,
+          $$SubjectAnalyticsTableTableFilterComposer,
+          $$SubjectAnalyticsTableTableOrderingComposer,
+          $$SubjectAnalyticsTableTableAnnotationComposer,
+          $$SubjectAnalyticsTableTableCreateCompanionBuilder,
+          $$SubjectAnalyticsTableTableUpdateCompanionBuilder,
+          (
+            SubjectAnalyticsData,
+            BaseReferences<
+              _$AppDatabase,
+              $SubjectAnalyticsTableTable,
+              SubjectAnalyticsData
+            >,
+          ),
+          SubjectAnalyticsData,
+          PrefetchHooks Function()
+        > {
+  $$SubjectAnalyticsTableTableTableManager(
+    _$AppDatabase db,
+    $SubjectAnalyticsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SubjectAnalyticsTableTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$SubjectAnalyticsTableTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SubjectAnalyticsTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> total = const Value.absent(),
+                Value<int> correct = const Value.absent(),
+                Value<int> incorrect = const Value.absent(),
+                Value<int> unanswered = const Value.absent(),
+                Value<double> correctPercentage = const Value.absent(),
+                Value<int?> parent = const Value.absent(),
+                Value<bool> leaf = const Value.absent(),
+                Value<String> analyticsUrl = const Value.absent(),
+              }) => SubjectAnalyticsTableCompanion(
+                id: id,
+                name: name,
+                total: total,
+                correct: correct,
+                incorrect: incorrect,
+                unanswered: unanswered,
+                correctPercentage: correctPercentage,
+                parent: parent,
+                leaf: leaf,
+                analyticsUrl: analyticsUrl,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String name,
+                required int total,
+                required int correct,
+                required int incorrect,
+                required int unanswered,
+                required double correctPercentage,
+                Value<int?> parent = const Value.absent(),
+                Value<bool> leaf = const Value.absent(),
+                required String analyticsUrl,
+              }) => SubjectAnalyticsTableCompanion.insert(
+                id: id,
+                name: name,
+                total: total,
+                correct: correct,
+                incorrect: incorrect,
+                unanswered: unanswered,
+                correctPercentage: correctPercentage,
+                parent: parent,
+                leaf: leaf,
+                analyticsUrl: analyticsUrl,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SubjectAnalyticsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SubjectAnalyticsTableTable,
+      SubjectAnalyticsData,
+      $$SubjectAnalyticsTableTableFilterComposer,
+      $$SubjectAnalyticsTableTableOrderingComposer,
+      $$SubjectAnalyticsTableTableAnnotationComposer,
+      $$SubjectAnalyticsTableTableCreateCompanionBuilder,
+      $$SubjectAnalyticsTableTableUpdateCompanionBuilder,
+      (
+        SubjectAnalyticsData,
+        BaseReferences<
+          _$AppDatabase,
+          $SubjectAnalyticsTableTable,
+          SubjectAnalyticsData
+        >,
+      ),
+      SubjectAnalyticsData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -21766,4 +22686,6 @@ class $AppDatabaseManager {
       $$PostCategoriesTableTableTableManager(_db, _db.postCategoriesTable);
   $$PostsTableTableTableManager get postsTable =>
       $$PostsTableTableTableManager(_db, _db.postsTable);
+  $$SubjectAnalyticsTableTableTableManager get subjectAnalyticsTable =>
+      $$SubjectAnalyticsTableTableTableManager(_db, _db.subjectAnalyticsTable);
 }

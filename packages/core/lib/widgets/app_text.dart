@@ -155,6 +155,16 @@ class AppText extends StatelessWidget {
     this.style,
   }) : _variant = _AppTextVariant.cardCaption;
 
+  const AppText.xxs(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.style,
+  }) : _variant = _AppTextVariant.xxs;
+
   const AppText.xs(
     this.text, {
     super.key,
@@ -268,6 +278,7 @@ class AppText extends StatelessWidget {
         _AppTextVariant.cardSubtitle => design.typography.cardSubtitle,
         _AppTextVariant.cardCaption => design.typography.cardCaption,
         // Scale roles
+        _AppTextVariant.xxs => design.typographyScale.xxs,
         _AppTextVariant.xs => design.typographyScale.xs,
         _AppTextVariant.sm => design.typographyScale.sm,
         _AppTextVariant.base => design.typographyScale.base,
@@ -311,6 +322,7 @@ enum _AppTextVariant {
   cardTitle,
   cardSubtitle,
   cardCaption,
+  xxs,
   xs,
   sm,
   base,

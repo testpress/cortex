@@ -1210,6 +1210,7 @@ class DesignSpacing {
 @immutable
 class DesignTypographyScale {
   const DesignTypographyScale({
+    required this.xxs,
     required this.xs,
     required this.sm,
     required this.base,
@@ -1221,6 +1222,7 @@ class DesignTypographyScale {
     required this.xl5,
   });
 
+  final TextStyle xxs;
   final TextStyle xs;
   final TextStyle sm;
   final TextStyle base;
@@ -1241,7 +1243,8 @@ class DesignTypographyScale {
     // by every semantic role (display, headline, body, etc.) automatically.
     final f = GoogleFonts.plusJakartaSans;
     return DesignTypographyScale(
-      // xs/sm carry body-adjacent height for readability in dense rows.
+      // xxs/xs/sm carry body-adjacent height for readability in dense rows.
+      xxs: f(fontSize: 10, height: 1.2),
       xs: f(fontSize: 12, height: 1.2),
       sm: f(fontSize: 14, height: 1.4),
       // base atom is height-neutral so the body semantic role can
@@ -1263,6 +1266,7 @@ class DesignTypographyScale {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     return other is DesignTypographyScale &&
+        other.xxs == xxs &&
         other.xs == xs &&
         other.sm == sm &&
         other.base == base &&
@@ -1276,7 +1280,7 @@ class DesignTypographyScale {
 
   @override
   int get hashCode {
-    return Object.hash(xs, sm, base, lg, xl, xl2, xl3, xl4, xl5);
+    return Object.hash(xxs, xs, sm, base, lg, xl, xl2, xl3, xl4, xl5);
   }
 }
 

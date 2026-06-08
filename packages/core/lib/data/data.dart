@@ -36,6 +36,7 @@ export 'models/post_dto.dart';
 // Database
 export 'db/tables/dashboard_tables.dart';
 export 'db/tables/leaderboard_tables.dart';
+export 'db/tables/subject_analytics_table.dart';
 export 'db/app_database.dart';
 export 'repositories/dashboard_repository.dart';
 export 'repositories/downloads_repository.dart';
