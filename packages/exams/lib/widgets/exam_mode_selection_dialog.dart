@@ -14,6 +14,7 @@ class ExamModeSelectionDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     
     return Center(
       child: Container(
@@ -40,7 +41,7 @@ class ExamModeSelectionDialog extends StatelessWidget {
               children: [
                 Expanded(
                   child: AppText.title(
-                    'Select Exam Mode',
+                    l10n.examModeSelectTitle,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -86,12 +87,12 @@ class ExamModeSelectionDialog extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           AppText.body(
-                            'Regular Mode',
+                            l10n.examModeRegularTitle,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 4),
                           AppText.caption(
-                            'Take the test in standard exam mode with a timer.',
+                            l10n.examModeRegularDesc,
                             color: design.colors.textSecondary,
                           ),
                         ],
@@ -139,12 +140,12 @@ class ExamModeSelectionDialog extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           AppText.body(
-                            'Quiz Mode',
+                            l10n.examModeQuizTitle,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 4),
                           AppText.caption(
-                            'Check answers immediately as you go.',
+                            l10n.examModeQuizDesc,
                             color: design.colors.textSecondary,
                           ),
                         ],

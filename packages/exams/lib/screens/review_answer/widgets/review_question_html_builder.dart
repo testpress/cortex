@@ -39,11 +39,9 @@ abstract final class ReviewQuestionHtmlBuilder {
     selectedIds.sort();
 
     List<String> correctIds;
-    bool isAnswerCorrect;
 
     if (quizReview != null && quizReview.correctAnswers.isNotEmpty) {
       correctIds = quizReview.correctAnswers.map((e) => e.toString()).toList();
-      isAnswerCorrect = selectedIds.join(',') == correctIds.join(',');
     } else {
       correctIds = (question.correctOptionIds.isNotEmpty
               ? question.correctOptionIds
@@ -53,10 +51,9 @@ abstract final class ReviewQuestionHtmlBuilder {
                   .toList())
           .map((e) => e.toString())
           .toList();
-      isAnswerCorrect = selectedIds.join(',') == correctIds.join(',');
     }
     correctIds.sort();
-
+    final isAnswerCorrect = selectedIds.join(',') == correctIds.join(',');
     dev.log(
       'Review builder: '
       'questionId=${question.id}, '

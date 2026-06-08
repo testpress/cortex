@@ -136,10 +136,18 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
         _selectedContentType == 'Questions') {
       filterParam = 'question';
     }
-    if (_selectedContentType == 'Videos') filterParam = 'video';
-    if (_selectedContentType == 'PDFs') filterParam = 'attachment';
-    if (_selectedContentType == 'Notes') filterParam = 'html';
-    if (_selectedContentType == 'Live Classes') filterParam = 'video';
+    if (_selectedContentType == 'Videos') {
+      filterParam = 'video';
+    }
+    if (_selectedContentType == 'PDFs') {
+      filterParam = 'attachment';
+    }
+    if (_selectedContentType == 'Notes') {
+      filterParam = 'html';
+    }
+    if (_selectedContentType == 'Live Classes') {
+      filterParam = 'video';
+    }
 
     final bookmarkFilter = BookmarkFilter(
       folder: folderParam,

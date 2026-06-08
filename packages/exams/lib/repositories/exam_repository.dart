@@ -798,11 +798,7 @@ class ExamRepository {
       ));
     } catch (e, stackTrace) {
       dev.log('Failed to check quiz answer', name: 'ExamRepository', error: e, stackTrace: stackTrace);
-      // Even on failure, we probably want to let the user move on or retry.
-      // For now, emit an error state but don't crash.
-      _emit(_currentState.copyWith(
-        errorMessage: 'Failed to check answer: $e',
-      ));
+      rethrow;
     }
   }
 

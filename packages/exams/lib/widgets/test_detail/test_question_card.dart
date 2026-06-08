@@ -73,12 +73,7 @@ class _TestQuestionCardState extends State<TestQuestionCard> {
         _lastQuestionId != widget.question.id ||
         _lastIsDark != isDark ||
         widget.isQuizChecked) {
-      if (widget.isQuizChecked) {
-        // We must import ReviewQuestionHtmlBuilder at the top. Wait!
-        // Actually, we can just use the html builder inline if we import it.
-        // I will add the import below.
-      }
-      
+
       _htmlData = widget.isQuizChecked
           ? ReviewQuestionHtmlBuilder.build(
               question: widget.question,

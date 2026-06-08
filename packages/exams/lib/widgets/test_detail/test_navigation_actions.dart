@@ -48,13 +48,13 @@ class TestNavigationActions extends StatelessWidget {
             ),
             if (isQuizMode && !isQuizChecked && onCheck != null)
               NavButton(
-                label: 'Check',
+                label: l10n.actionCheck,
                 icon: LucideIcons.checkCircle2,
                 onTap: onCheck,
               )
             else if (isQuizMode && isQuizChecked)
               NavButton(
-                label: isLastQuestion ? l10n.testFinish : 'Continue',
+                label: isLastQuestion ? l10n.testFinish : l10n.labelContinue,
                 icon: LucideIcons.chevronRight,
                 onTap: onNext,
               )

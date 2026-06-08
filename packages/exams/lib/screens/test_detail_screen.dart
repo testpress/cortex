@@ -523,9 +523,15 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                             isQuizMode: state.isQuizMode,
                             isQuizChecked: state.checkedQuestions.contains(q.id),
                             quizReview: state.quizReviews[q.id],
-                            onCheck: () {
+                            onCheck: () async {
                               if (a != null) {
-                                ref.read(examAttemptProvider.notifier).checkQuizAnswer(q.answerUrl, a);
+                                try {
+                                  await ref.read(examAttemptProvider.notifier).checkQuizAnswer(q.answerUrl, a);
+                                } catch (e) {
+                                  if (context.mounted) {
+                                    AppToast.show(context, message: 'Failed to check answer. Please try again.', isError: true);
+                                  }
+                                }
                               }
                             },
                           );
