@@ -175,8 +175,9 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
     } on AuthException catch (error) {
       if (mounted) setState(() => _errorMessage = error.message);
     } catch (_) {
-      if (mounted)
+      if (mounted) {
         setState(() => _errorMessage = l10n.loginErrorGenericRequest);
+      }
     } finally {
       if (mounted) setState(() => _isBusy = false);
     }

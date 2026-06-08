@@ -134,8 +134,9 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     } on AuthException catch (e) {
       if (mounted) setState(() => _errorMessage = e.message);
     } catch (_) {
-      if (mounted)
+      if (mounted) {
         setState(() => _errorMessage = l10n.loginErrorGenericRequest);
+      }
     } finally {
       if (mounted) setState(() => _isBusy = false);
     }
