@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:drift/native.dart';
-import 'package:core/data/data.dart';
 import 'package:exams/exams.dart';
 import 'package:exams/screens/subject_analytics/widgets/overall_reports_view.dart';
 import 'package:exams/screens/subject_analytics/widgets/individual_reports_view.dart';

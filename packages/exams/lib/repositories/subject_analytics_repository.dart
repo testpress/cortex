@@ -1,10 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:drift/drift.dart';
 import 'package:core/data/data.dart';
-
-part 'subject_analytics_repository.g.dart';
 
 class SubjectAnalyticsRepository {
   final DataSource _dataSource;
@@ -73,12 +70,3 @@ class SubjectAnalyticsRepository {
   }
 }
 
-@Riverpod(keepAlive: true)
-Future<SubjectAnalyticsRepository> subjectAnalyticsRepository(SubjectAnalyticsRepositoryRef ref) async {
-  final db = await ref.watch(appDatabaseProvider.future);
-  final dataSource = ref.watch(dataSourceProvider);
-  return SubjectAnalyticsRepository(
-    dataSource: dataSource,
-    db: db,
-  );
-}

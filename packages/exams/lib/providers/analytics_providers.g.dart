@@ -6,7 +6,27 @@ part of 'analytics_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$subjectAnalyticsHash() => r'47684517e69d88bb58b66d0f3597f2850e56c426';
+String _$subjectAnalyticsRepositoryHash() =>
+    r'f5cae0d3f40def3d518ce428f495325584125df9';
+
+/// See also [subjectAnalyticsRepository].
+@ProviderFor(subjectAnalyticsRepository)
+final subjectAnalyticsRepositoryProvider =
+    FutureProvider<SubjectAnalyticsRepository>.internal(
+      subjectAnalyticsRepository,
+      name: r'subjectAnalyticsRepositoryProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$subjectAnalyticsRepositoryHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef SubjectAnalyticsRepositoryRef =
+    FutureProviderRef<SubjectAnalyticsRepository>;
+String _$subjectAnalyticsHash() => r'b7610c08a91067185df3ffa1a0ca39412789a06c';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -152,7 +172,7 @@ class _SubjectAnalyticsProviderElement
 }
 
 String _$subjectAnalyticsByIdHash() =>
-    r'adb96cf6c5f86143a3a4ecc83484f0d2dff8f75f';
+    r'e1062dfd77a5bd7a1516f9215f2ec4face06f45e';
 
 /// See also [subjectAnalyticsById].
 @ProviderFor(subjectAnalyticsById)
