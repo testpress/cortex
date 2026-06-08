@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:core/core.dart';
 import 'package:exams/widgets/test_detail/test_navigation_actions.dart';
@@ -10,11 +10,13 @@ void main() {
     required bool isQuizChecked,
     required bool isLastQuestion,
   }) {
-    return MaterialApp(
+    return WidgetsApp(
+      color: const Color(0xFF000000),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: Scaffold(
-        body: Builder(
+      builder: (context, child) => Directionality(
+        textDirection: TextDirection.ltr,
+        child: Builder(
           builder: (context) {
             return DesignProvider(
               config: DesignConfig.light(),
