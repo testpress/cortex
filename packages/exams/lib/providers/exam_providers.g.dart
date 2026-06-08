@@ -178,7 +178,7 @@ class _ExamAttemptsProviderElement
   String get attemptsUrl => (origin as ExamAttemptsProvider).attemptsUrl;
 }
 
-String _$examDetailHash() => r'b14fd81ab3d0142889d3f8cb9ddf22656a3b22a2';
+String _$examDetailHash() => r'8fa06e72cb0b5d9dfd87e416b3efabbe35ee1ffa';
 
 abstract class _$ExamDetail extends BuildlessAsyncNotifier<ExamDto> {
   late final String slug;
@@ -319,7 +319,7 @@ class _ExamDetailProviderElement
   String get slug => (origin as ExamDetailProvider).slug;
 }
 
-String _$examAttemptHash() => r'3ee751f3208d764d020b9ac9a7ba641073e91764';
+String _$examAttemptHash() => r'b3478bac8b427f40dc758c3cf7c73dcf085ceb6e';
 
 /// Notifier that manages the active exam attempt lifecycle.
 ///

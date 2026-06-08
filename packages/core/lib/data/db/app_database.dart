@@ -45,13 +45,14 @@ part 'app_database.g.dart';
     BookmarkItemsTable,
     PostCategoriesTable,
     PostsTable,
+    SubjectAnalyticsTable,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 27;
+  int get schemaVersion => 28;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(

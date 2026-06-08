@@ -276,3 +276,5 @@ class ExamList extends _$ExamList {
 /// Simple provider to track the independent loading state of the Exams tab.
 final isSyncingExamsProvider = StateProvider<bool>((ref) => false);
 final isSyncingMoreExamsProvider = StateProvider<bool>((ref) => false);
+
+

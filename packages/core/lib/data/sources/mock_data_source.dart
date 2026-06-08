@@ -1273,26 +1273,7 @@ class MockDataSource implements DataSource {
   @override
   Future<List<SubjectAnalyticsDto>> getSubjectAnalytics(String analyticsUrl) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    return const [
-      SubjectAnalyticsDto(
-        id: 101,
-        name: 'Physics',
-        total: 10,
-        correct: 6,
-        incorrect: 3,
-        unanswered: 1,
-        correctPercentage: 60.0,
-      ),
-      SubjectAnalyticsDto(
-        id: 102,
-        name: 'Chemistry',
-        total: 10,
-        correct: 8,
-        incorrect: 1,
-        unanswered: 1,
-        correctPercentage: 80.0,
-      ),
-    ];
+    return mockSubjectAnalytics;
   }
 
   @override

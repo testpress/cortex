@@ -10,6 +10,19 @@ class ExamsRoutes {
           builder: (context, state) => const ExamsScreen(),
           routes: [
             GoRoute(
+              path: 'analytics',
+              parentNavigatorKey: rootNavigatorKey,
+              builder: (context, state) {
+                final parentId = state.uri.queryParameters['parentId'];
+                final subjectName = state.uri.queryParameters['subjectName'];
+                return SubjectAnalyticsScreen(
+                  parentId: parentId,
+                  subjectName: subjectName,
+                  onBack: () => context.pop(),
+                );
+              },
+            ),
+            GoRoute(
               path: 'course/:courseId/chapters',
               parentNavigatorKey: rootNavigatorKey,
               builder: (context, state) {
