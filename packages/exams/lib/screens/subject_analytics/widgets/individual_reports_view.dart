@@ -94,16 +94,17 @@ class IndividualReportsView extends ConsumerWidget {
       return subjectsAsync.when(
         data: (subjects) {
           if (subjects.isNotEmpty) {
-            final donutCardsData = _filterDonutCards(
-              subjects,
-              activeFilter,
-            );
+            final donutCardsData = _filterDonutCards(subjects, activeFilter);
             return _buildContent(context, design, subjects, donutCardsData);
           } else {
-            final selfSubjectAsync = ref.watch(subjectAnalyticsByIdProvider(parsedParentId));
+            final selfSubjectAsync = ref.watch(
+              subjectAnalyticsByIdProvider(parsedParentId),
+            );
             return selfSubjectAsync.when(
               data: (selfSubject) {
-                final rawDonutCards = selfSubject != null ? [selfSubject] : <SubjectAnalyticsDto>[];
+                final rawDonutCards = selfSubject != null
+                    ? [selfSubject]
+                    : <SubjectAnalyticsDto>[];
                 final donutCardsData = _filterDonutCards(
                   rawDonutCards,
                   activeFilter,
@@ -139,7 +140,8 @@ class IndividualReportsView extends ConsumerWidget {
   ) {
     final showCorrect = activeFilter == 'All' || activeFilter == 'Correct';
     final showIncorrect = activeFilter == 'All' || activeFilter == 'Incorrect';
-    final showUnanswered = activeFilter == 'All' || activeFilter == 'Unanswered';
+    final showUnanswered =
+        activeFilter == 'All' || activeFilter == 'Unanswered';
 
     final columnWidths = _getTableColumnWidths(
       activeFilter,

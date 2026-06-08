@@ -27,7 +27,8 @@ class DonutChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final resolvedSize = size ?? (design.spacing.xxxl + design.spacing.sm); // 72px (64 + 8)
+    final resolvedSize =
+        size ?? (design.spacing.xxxl + design.spacing.sm); // 72px (64 + 8)
     final resolvedStrokeWidth = strokeWidth ?? design.spacing.sm; // 8px
 
     return SizedBox(

@@ -9,19 +9,19 @@ part 'analytics_providers.g.dart';
 Future<SubjectAnalyticsRepository> subjectAnalyticsRepository(Ref ref) async {
   final db = await ref.watch(appDatabaseProvider.future);
   final dataSource = ref.watch(dataSourceProvider);
-  return SubjectAnalyticsRepository(
-    dataSource: dataSource,
-    db: db,
-  );
+  return SubjectAnalyticsRepository(dataSource: dataSource, db: db);
 }
 
 @riverpod
-Stream<List<SubjectAnalyticsDto>> subjectAnalytics(Ref ref, int? parentId) async* {
+Stream<List<SubjectAnalyticsDto>> subjectAnalytics(
+  Ref ref,
+  int? parentId,
+) async* {
   final repository = await ref.watch(subjectAnalyticsRepositoryProvider.future);
-  
+
   // Trigger background sync (Stale-While-Revalidate pattern)
   repository.refreshSubjectAnalytics('').catchError((_) {});
-  
+
   yield* repository.watchSubjectAnalytics(parentId);
 }
 

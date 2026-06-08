@@ -4,11 +4,7 @@ import 'package:core/data/models/review_models.dart';
 import '../subject_analytics_screen.dart';
 
 class BarRow extends StatelessWidget {
-  const BarRow({
-    super.key,
-    required this.subject,
-    required this.activeFilter,
-  });
+  const BarRow({super.key, required this.subject, required this.activeFilter});
 
   final SubjectAnalyticsDto subject;
   final String activeFilter;
@@ -28,8 +24,10 @@ class BarRow extends StatelessWidget {
 
     // Determine colors based on active filter
     final isCorrectActive = activeFilter == 'All' || activeFilter == 'Correct';
-    final isIncorrectActive = activeFilter == 'All' || activeFilter == 'Incorrect';
-    final isUnansweredActive = activeFilter == 'All' || activeFilter == 'Unanswered';
+    final isIncorrectActive =
+        activeFilter == 'All' || activeFilter == 'Incorrect';
+    final isUnansweredActive =
+        activeFilter == 'All' || activeFilter == 'Unanswered';
 
     final Color correctColor = isCorrectActive
         ? design.correctColor
@@ -81,15 +79,18 @@ class BarRow extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          SizedBox(width: design.spacing.sm + design.spacing.xs), // 12px gap using design tokens
-
+          SizedBox(
+            width: design.spacing.sm + design.spacing.xs,
+          ), // 12px gap using design tokens
           // Stacked Bar - 24 height (lg token)
           Expanded(
             child: Container(
               height: design.spacing.lg,
               decoration: BoxDecoration(
                 color: design.colors.surfaceVariant,
-                borderRadius: BorderRadius.circular(design.radius.sm), // 4px border radius
+                borderRadius: BorderRadius.circular(
+                  design.radius.sm,
+                ), // 4px border radius
               ),
               clipBehavior: Clip.antiAlias,
               child: Row(
@@ -109,7 +110,9 @@ class BarRow extends StatelessWidget {
                           flex: unansweredFlex,
                           color: unansweredColor,
                           pct: unansweredPct,
-                          padding: EdgeInsets.only(right: design.spacing.sm), // 8px padding using token
+                          padding: EdgeInsets.only(
+                            right: design.spacing.sm,
+                          ), // 8px padding using token
                         ),
                       ]
                     : [

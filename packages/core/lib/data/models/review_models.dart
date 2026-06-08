@@ -24,8 +24,10 @@ class SubjectAnalyticsDto {
     this.leaf = true,
   });
 
-  double get incorrectPercentage => total == 0 ? 0.0 : (incorrect / total * 100);
-  double get unansweredPercentage => total == 0 ? 0.0 : (unanswered / total * 100);
+  double get incorrectPercentage =>
+      total == 0 ? 0.0 : (incorrect / total * 100);
+  double get unansweredPercentage =>
+      total == 0 ? 0.0 : (unanswered / total * 100);
 
   factory SubjectAnalyticsDto.fromJson(Map<String, dynamic> json) {
     final int total = json['total'] as int? ?? 0;
