@@ -8,7 +8,7 @@ The repository SHALL contain a GitHub Actions workflow configuration at `.github
 - **THEN** the CI workflow is executed automatically
 
 ### Requirement: Specific Flutter Environment
-The CI environment MUST be configured to use Flutter version `3.41.1`, on the `[user-branch]` channel, with Engine hash `cc8e596aa651` and Dart `3.11.0`.
+The CI environment MUST be configured to use Flutter version `3.41.1`.
 
 #### Scenario: Environment setup
 - **WHEN** the CI job initializes
