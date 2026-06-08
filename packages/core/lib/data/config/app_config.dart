@@ -17,7 +17,7 @@ class AppConfig {
 
   // --- UI Feature Flags & Branding ---
   // These are automatically populated at compile-time when using:
-  // --dart-define-from-file=assets/configs/brilliant.json
+  // --dart-define-from-file=../config/<institure_name>.json
 
   static const bool showTodaySchedule = bool.fromEnvironment(
     'SHOW_TODAY_SCHEDULE',
