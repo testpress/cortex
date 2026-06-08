@@ -6,10 +6,7 @@ import 'package:intl/intl.dart';
 class LoginActivityItem extends StatelessWidget {
   final LoginActivityDto activity;
 
-  const LoginActivityItem({
-    super.key,
-    required this.activity,
-  });
+  const LoginActivityItem({super.key, required this.activity});
 
   IconData _getDeviceIcon(String deviceType) {
     final type = deviceType.toLowerCase();
@@ -24,7 +21,7 @@ class LoginActivityItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    
+
     final date = DateFormat.yMMMd().format(activity.lastUsed);
     final time = DateFormat.jm().format(activity.lastUsed);
     final formattedDate = '$date, $time';
@@ -48,7 +45,9 @@ class LoginActivityItem extends StatelessWidget {
             ),
             child: Icon(
               _getDeviceIcon(activity.device),
-              color: activity.currentDevice ? design.colors.primary : design.colors.textSecondary,
+              color: activity.currentDevice
+                  ? design.colors.primary
+                  : design.colors.textSecondary,
               size: 24,
             ),
           ),
@@ -85,7 +84,11 @@ class LoginActivityItem extends StatelessWidget {
                 SizedBox(height: design.spacing.xs),
                 Row(
                   children: [
-                    Icon(LucideIcons.mapPin, size: 14, color: design.colors.textSecondary),
+                    Icon(
+                      LucideIcons.mapPin,
+                      size: 14,
+                      color: design.colors.textSecondary,
+                    ),
                     SizedBox(width: design.spacing.xs),
                     AppText.cardSubtitle(
                       '${activity.location} · ${activity.ipAddress}',
@@ -96,7 +99,11 @@ class LoginActivityItem extends StatelessWidget {
                 SizedBox(height: design.spacing.xs),
                 Row(
                   children: [
-                    Icon(LucideIcons.clock, size: 14, color: design.colors.textSecondary),
+                    Icon(
+                      LucideIcons.clock,
+                      size: 14,
+                      color: design.colors.textSecondary,
+                    ),
                     SizedBox(width: design.spacing.xs),
                     AppText.cardSubtitle(
                       formattedDate,

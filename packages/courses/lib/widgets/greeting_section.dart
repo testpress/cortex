@@ -42,5 +42,4 @@ class HomeGreetingSection extends StatelessWidget {
       ),
     );
   }
-
 }

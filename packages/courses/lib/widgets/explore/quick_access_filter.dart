@@ -59,9 +59,11 @@ class _ExploreFilterChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    final bgColor = isActive ? design.colors.textPrimary : design.colors.surfaceVariant;
+    final bgColor =
+        isActive ? design.colors.textPrimary : design.colors.surfaceVariant;
 
-    final textColor = isActive ? design.colors.textInverse : design.colors.textSecondary;
+    final textColor =
+        isActive ? design.colors.textInverse : design.colors.textSecondary;
 
     return GestureDetector(
       onTap: onTap,

@@ -46,7 +46,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
-    
+
     // Scale down the carousel area slightly if keyboard is open to preserve space
     final flexTop = bottomInset > 0 ? 25 : 55;
     final flexBottom = bottomInset > 0 ? 75 : 45;
@@ -55,16 +55,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       backgroundColor: design.colors.primary.withValues(alpha: 0.05),
       body: Column(
         children: [
-          Expanded(
-            flex: flexTop,
-            child: _buildBrandingSection(),
-          ),
+          Expanded(flex: flexTop, child: _buildBrandingSection()),
           Expanded(
             flex: flexBottom,
             child: Container(
               decoration: BoxDecoration(
                 color: design.colors.surface,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(32),
+                ),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.05),
@@ -74,7 +73,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ],
               ),
               child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(32),
+                ),
                 child: _buildOptions(key: const ValueKey('options')),
               ),
             ),
@@ -86,7 +87,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Widget _buildBrandingSection() {
     final design = Design.of(context);
-    
+
     return SafeArea(
       bottom: false,
       child: Stack(
@@ -97,9 +98,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               setState(() => _currentPage = index);
             },
             children: [
-              _buildCarouselItem(LucideIcons.globe, 'Learn Anywhere', 'Access courses and materials on the go.'),
-              _buildCarouselItem(LucideIcons.barChart, 'Track Progress', 'Stay on top of your learning goals.'),
-              _buildCarouselItem(LucideIcons.award, 'Achieve Success', 'Get certified and advance your career.'),
+              _buildCarouselItem(
+                LucideIcons.globe,
+                'Learn Anywhere',
+                'Access courses and materials on the go.',
+              ),
+              _buildCarouselItem(
+                LucideIcons.barChart,
+                'Track Progress',
+                'Stay on top of your learning goals.',
+              ),
+              _buildCarouselItem(
+                LucideIcons.award,
+                'Achieve Success',
+                'Get certified and advance your career.',
+              ),
             ],
           ),
           Positioned(
@@ -109,7 +122,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(LucideIcons.graduationCap, color: design.colors.primary, size: 28),
+                Icon(
+                  LucideIcons.graduationCap,
+                  color: design.colors.primary,
+                  size: 28,
+                ),
                 SizedBox(width: design.spacing.xs),
                 AppText.headline(
                   'CORTEX',
@@ -131,7 +148,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   width: _currentPage == index ? 24 : 8,
                   height: 8,
                   decoration: BoxDecoration(
-                    color: _currentPage == index ? design.colors.primary : design.colors.border,
+                    color: _currentPage == index
+                        ? design.colors.primary
+                        : design.colors.border,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 );
@@ -229,4 +248,3 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 }
-

@@ -42,7 +42,7 @@ class AppShell extends StatelessWidget {
               child: isLandscape
                   ? Row(
                       children: [
-                        ? navigationRail,
+                        ?navigationRail,
                         Expanded(
                           child: SafeArea(
                             left: navigationRail == null,
@@ -63,12 +63,12 @@ class AppShell extends StatelessWidget {
                             child: child,
                           ),
                         ),
-                        ? bottomNavigationBar,
+                        ?bottomNavigationBar,
                       ],
                     ),
             ),
-            ? drawer,
-            ? bottomSheet,
+            ?drawer,
+            ?bottomSheet,
           ],
         );
       },

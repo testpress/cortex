@@ -500,7 +500,8 @@ class DesignColors {
       overlay: overlay,
       shadow: shadow,
       skeleton: skeleton ?? computedSurfaceVariant,
-      onSkeleton: onSkeleton ?? _lighten(skeleton ?? computedSurfaceVariant, 0.95),
+      onSkeleton:
+          onSkeleton ?? _lighten(skeleton ?? computedSurfaceVariant, 0.95),
       transparent: transparent,
     );
   }

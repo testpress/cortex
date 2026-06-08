@@ -41,7 +41,9 @@ class TestNavigationActions extends StatelessWidget {
               isBack: true,
             ),
             NavButton(
-              label: finishLabel ?? (isLastQuestion ? l10n.testFinish : l10n.testNext),
+              label:
+                  finishLabel ??
+                  (isLastQuestion ? l10n.testFinish : l10n.testNext),
               icon: LucideIcons.chevronRight,
               onTap: onNext,
             ),
@@ -63,8 +65,8 @@ class TestNavigationActions extends StatelessWidget {
         decoration: BoxDecoration(
           color: isMarked
               ? (design.isDark
-                  ? markColor.withValues(alpha: 0.15)
-                  : markColor.withValues(alpha: 0.05))
+                    ? markColor.withValues(alpha: 0.15)
+                    : markColor.withValues(alpha: 0.05))
               : design.colors.card,
           borderRadius: BorderRadius.circular(design.radius.md),
           border: Border.all(
@@ -91,6 +93,4 @@ class TestNavigationActions extends StatelessWidget {
       ),
     );
   }
-
-
 }

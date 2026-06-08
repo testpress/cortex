@@ -4,7 +4,7 @@ import '../design/design_provider.dart';
 
 /// Platform-neutral Markdown widget aligned with the design system.
 ///
-/// Ensures consistent markdown rendering across the app by mapping the 
+/// Ensures consistent markdown rendering across the app by mapping the
 /// central typography and layout spacing tokens to [SmoothMarkdown].
 class AppMarkdown extends StatelessWidget {
   const AppMarkdown({
@@ -35,9 +35,7 @@ class AppMarkdown extends StatelessWidget {
       styleSheet: MarkdownStyleSheet.light().copyWith(
         textStyle: baseStyle,
         paragraphStyle: baseStyle,
-        linkStyle: baseStyle.copyWith(
-          color: design.colors.accent2,
-        ),
+        linkStyle: baseStyle.copyWith(color: design.colors.accent2),
         h1Style: design.typography.headline.copyWith(
           color: design.colors.textPrimary,
         ),
@@ -48,9 +46,7 @@ class AppMarkdown extends StatelessWidget {
           color: design.colors.textPrimary,
           fontWeight: FontWeight.w700,
         ),
-        listBulletStyle: baseStyle.copyWith(
-          color: design.colors.textTertiary,
-        ),
+        listBulletStyle: baseStyle.copyWith(color: design.colors.textTertiary),
         blockSpacing: design.spacing.md,
         listIndent: design.spacing.lg,
         blockquotePadding: EdgeInsets.symmetric(

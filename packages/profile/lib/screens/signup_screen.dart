@@ -42,9 +42,14 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: design.spacing.xl, vertical: design.spacing.md),
+              padding: EdgeInsets.symmetric(
+                horizontal: design.spacing.xl,
+                vertical: design.spacing.md,
+              ),
               child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight - design.spacing.xl * 2),
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight - design.spacing.xl * 2,
+                ),
                 child: IntrinsicHeight(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -69,7 +74,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                       ),
-                        SizedBox(height: design.spacing.md),
+                      SizedBox(height: design.spacing.md),
                       AppTextField(
                         label: 'Password',
                         hintText: 'Create a password',
@@ -105,7 +110,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                             child: AppText.body(
                               'Log in',
                               color: design.colors.primary,
-                              style: const TextStyle(fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             onTap: () => context.go('/login'),
                           ),

@@ -42,7 +42,9 @@ class CompetitorsBody extends StatelessWidget {
                     return Padding(
                       padding: EdgeInsets.all(design.spacing.lg),
                       child: Center(
-                        child: AppText.body(l10n.leaderboardErrorLoadingCompetitors, color: design.colors.error),
+                        child: AppText.body(
+                            l10n.leaderboardErrorLoadingCompetitors,
+                            color: design.colors.error),
                       ),
                     );
                   }
@@ -50,12 +52,14 @@ class CompetitorsBody extends StatelessWidget {
                     return Padding(
                       padding: EdgeInsets.all(design.spacing.lg),
                       child: Center(
-                        child: AppText.body(l10n.leaderboardNoCompetitorsFound, color: design.colors.textSecondary),
+                        child: AppText.body(l10n.leaderboardNoCompetitorsFound,
+                            color: design.colors.textSecondary),
                       ),
                     );
                   }
 
-                  final displayCompetitors = isLoading ? _mockCompetitors : competitors;
+                  final displayCompetitors =
+                      isLoading ? _mockCompetitors : competitors;
 
                   return Skeletonizer(
                     enabled: isLoading,
@@ -64,9 +68,11 @@ class CompetitorsBody extends StatelessWidget {
                       physics: const NeverScrollableScrollPhysics(),
                       padding: EdgeInsets.zero,
                       itemCount: displayCompetitors.length,
-                      separatorBuilder: (_, __) => RowDivider(color: design.colors.divider),
+                      separatorBuilder: (_, __) =>
+                          RowDivider(color: design.colors.divider),
                       itemBuilder: (context, index) {
-                        return CompetitorListItem(learner: displayCompetitors[index]);
+                        return CompetitorListItem(
+                            learner: displayCompetitors[index]);
                       },
                     ),
                   );

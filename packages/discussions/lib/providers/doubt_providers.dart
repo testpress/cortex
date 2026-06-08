@@ -71,9 +71,12 @@ Future<DoubtDto> doubtDetail(DoubtDetailRef ref, String id) async {
 }
 
 @riverpod
-Stream<List<DoubtReplyDto>> doubtReplies(DoubtRepliesRef ref, String id) async* {
+Stream<List<DoubtReplyDto>> doubtReplies(
+  DoubtRepliesRef ref,
+  String id,
+) async* {
   final repo = await ref.watch(doubtRepositoryProvider.future);
-  
+
   final initial = await repo.watchReplies(id).first;
   if (initial.isEmpty) {
     // If we have no cached replies, await the sync so the UI shows the skeleton (loading state).
@@ -82,12 +85,15 @@ Stream<List<DoubtReplyDto>> doubtReplies(DoubtRepliesRef ref, String id) async* 
     // If we have cached replies, show them immediately and sync in the background.
     repo.syncReplies(id).ignore();
   }
-  
+
   yield* repo.watchReplies(id);
 }
 
 @riverpod
-Stream<List<DoubtTopicDto>> doubtSubtopics(DoubtSubtopicsRef ref, int? parentId) async* {
+Stream<List<DoubtTopicDto>> doubtSubtopics(
+  DoubtSubtopicsRef ref,
+  int? parentId,
+) async* {
   final repo = await ref.watch(doubtRepositoryProvider.future);
   repo.syncTopics(parentId: parentId).ignore();
   yield* repo.watchTopics(parentId: parentId);
@@ -110,16 +116,18 @@ class CreateDoubtNotifier extends _$CreateDoubtNotifier {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       final repo = await ref.read(doubtRepositoryProvider.future);
-      
+
       String finalContent = description;
       if (attachments.isNotEmpty) {
-        final uploadFutures = attachments.map((path) => repo.uploadDoubtImage(path));
+        final uploadFutures = attachments.map(
+          (path) => repo.uploadDoubtImage(path),
+        );
         final uploaded = await Future.wait(uploadFutures);
         for (final url in uploaded) {
           finalContent += '<br><img src="$url" />';
         }
       }
-      
+
       await repo.createDoubt(
         title: title,
         description: finalContent,
@@ -128,7 +136,7 @@ class CreateDoubtNotifier extends _$CreateDoubtNotifier {
         questionId: questionId,
         queryType: queryType,
       );
-      
+
       ref.invalidate(doubtsListProvider);
     });
   }
@@ -149,10 +157,12 @@ class PostDoubtReplyNotifier extends _$PostDoubtReplyNotifier {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       final repo = await ref.read(doubtRepositoryProvider.future);
-      
+
       String? finalContent = comment;
       if (attachments.isNotEmpty) {
-        final uploadFutures = attachments.map((path) => repo.uploadDoubtImage(path));
+        final uploadFutures = attachments.map(
+          (path) => repo.uploadDoubtImage(path),
+        );
         final uploaded = await Future.wait(uploadFutures);
         String tempContent = finalContent ?? '';
         for (final url in uploaded) {
@@ -160,14 +170,14 @@ class PostDoubtReplyNotifier extends _$PostDoubtReplyNotifier {
         }
         finalContent = tempContent;
       }
-      
+
       await repo.postDoubtReply(
         doubtId: doubtId,
         comment: finalContent,
         shouldResolve: shouldResolve,
         shouldClose: shouldClose,
       );
-      
+
       ref.invalidate(doubtRepliesProvider(doubtId));
       ref.invalidate(doubtsListProvider);
     });

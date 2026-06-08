@@ -30,13 +30,13 @@ class PostCategoryDto {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'order': order,
-        'color': color,
-        'slug': slug,
-        'is_starred': isStarred,
-      };
+    'id': id,
+    'name': name,
+    'order': order,
+    'color': color,
+    'slug': slug,
+    'is_starred': isStarred,
+  };
 }
 
 /// DTO for a single post/announcement from /api/v3/posts/.
@@ -74,7 +74,11 @@ class PostDto {
       id: (json['id'] as num).toInt(),
       slug: json['slug'] as String? ?? '',
       title: json['title'] as String? ?? '',
-      categoryId: (json['category_id'] as num?)?.toInt() ?? (json['category'] is Map ? (json['category']['id'] as num?)?.toInt() : null),
+      categoryId:
+          (json['category_id'] as num?)?.toInt() ??
+          (json['category'] is Map
+              ? (json['category']['id'] as num?)?.toInt()
+              : null),
       categoryName: json['category_name'] as String?,
       shortLink: json['short_link'] as String? ?? '',
       summary: json['summary'] as String? ?? '',
@@ -87,33 +91,35 @@ class PostDto {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'slug': slug,
-        'title': title,
-        'category_id': categoryId,
-        'category_name': categoryName,
-        'short_link': shortLink,
-        'summary': summary,
-        'content_html': contentHtml,
-        'cover_image': coverImage,
-        'published_date': publishedDate,
-        'web_url': webUrl,
-        'allow_comments': allowComments,
-      };
+    'id': id,
+    'slug': slug,
+    'title': title,
+    'category_id': categoryId,
+    'category_name': categoryName,
+    'short_link': shortLink,
+    'summary': summary,
+    'content_html': contentHtml,
+    'cover_image': coverImage,
+    'published_date': publishedDate,
+    'web_url': webUrl,
+    'allow_comments': allowComments,
+  };
 
   /// Parses the full list API response.
   ///
   /// The `/api/v3/posts/` endpoint returns a nested `results` object containing
   /// both `posts` and `categories`. This method extracts the posts array and maps
   /// it to a standard `PaginatedResponseDto`.
-  static PaginatedResponseDto<PostDto> fromListResponse(Map<String, dynamic> response) {
+  static PaginatedResponseDto<PostDto> fromListResponse(
+    Map<String, dynamic> response,
+  ) {
     final count = response['count'] as int? ?? 0;
     final next = response['next'] as String?;
     final previous = response['previous'] as String?;
 
     final resultsMap = response['results'] as Map<String, dynamic>?;
     final postsJson = resultsMap?['posts'] as List? ?? [];
-    
+
     // Extract side-loaded categories to map category names
     final categoriesJson = resultsMap?['categories'] as List? ?? [];
     final categoryMap = <int, String>{};
@@ -123,17 +129,14 @@ class PostDto {
       }
     }
 
-    final results = postsJson
-        .whereType<Map<String, dynamic>>()
-        .map((item) {
-          // Inject category name before parsing
-          final catId = (item['category_id'] as num?)?.toInt();
-          if (catId != null && categoryMap.containsKey(catId)) {
-            item['category_name'] = categoryMap[catId];
-          }
-          return PostDto.fromJson(item);
-        })
-        .toList();
+    final results = postsJson.whereType<Map<String, dynamic>>().map((item) {
+      // Inject category name before parsing
+      final catId = (item['category_id'] as num?)?.toInt();
+      if (catId != null && categoryMap.containsKey(catId)) {
+        item['category_name'] = categoryMap[catId];
+      }
+      return PostDto.fromJson(item);
+    }).toList();
 
     return PaginatedResponseDto<PostDto>(
       count: count,
@@ -143,4 +146,3 @@ class PostDto {
     );
   }
 }
-

@@ -70,7 +70,8 @@ class LearnerAvatar extends StatelessWidget {
             color: design.colors.surfaceVariant,
             shape: BoxShape.circle,
             image: avatar.isNotEmpty
-                ? DecorationImage(image: NetworkImage(avatar), fit: BoxFit.cover)
+                ? DecorationImage(
+                    image: NetworkImage(avatar), fit: BoxFit.cover)
                 : null,
           ),
           clipBehavior: Clip.antiAlias,
@@ -189,7 +190,8 @@ class LearnerStats extends StatelessWidget {
     return Row(
       children: [
         if (courses > 0) ...[
-          Icon(LucideIcons.checkCircle2, size: iconSize, color: design.colors.success),
+          Icon(LucideIcons.checkCircle2,
+              size: iconSize, color: design.colors.success),
           const SizedBox(width: 4),
           AppText.caption(
             l10n.coursesCompletedLabel(courses),

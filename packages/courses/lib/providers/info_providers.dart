@@ -17,7 +17,7 @@ class InfoList extends _$InfoList {
   @override
   Stream<List<CourseDto>> build() async* {
     final repo = await ref.watch(courseRepositoryProvider.future);
-    
+
     // Yield the filtered stream from the repository
     yield* repo.watchInfoCourses().map(
           (rows) => rows.map((row) => repo.rowToCourseDto(row)).toList(),
@@ -55,7 +55,7 @@ class InfoList extends _$InfoList {
   Future<void> _performSync({required bool isReset}) async {
     if (isReset) {
       _paginationTracker = const PaginationState();
-      
+
       // Only show the initial loader if the local database is actually empty.
       final hasData = state.valueOrNull?.isNotEmpty ?? false;
       if (!hasData) {

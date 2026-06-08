@@ -2,20 +2,19 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'course_list_provider.dart';
 import '../models/course_content.dart';
 import 'package:async/async.dart';
- 
+
 part 'lesson_detail_provider.g.dart';
- 
+
 /// Provider that fetches a specific lesson domain model by its ID.
 @riverpod
 Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
-
   final repository = await ref.watch(courseRepositoryProvider.future);
- 
+
   final initial = await repository.getLesson(lessonId);
- 
+
   final Stream<Lesson?> dbStream = repository.watchLesson(lessonId).map((row) {
     if (row == null) return null;
- 
+
     final lessonDto = repository.rowToLessonDto(row);
     return Lesson(
       id: lessonDto.id,
@@ -56,7 +55,7 @@ Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
       lastWatchedDuration: lessonDto.lastWatchedDuration,
     );
   });
- 
+
   if (initial == null) {
     // First time load: Await fetch so the UI starts in a loading state
     try {
@@ -70,9 +69,14 @@ Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
     // If refresh fails, the error propagates through the merged stream.
     yield* StreamGroup.merge<Lesson?>([
       dbStream,
-      repository.refreshLesson(lessonId).asStream().handleError((e) {
-        throw e;
-      }).where((_) => false).cast<Lesson?>(),
+      repository
+          .refreshLesson(lessonId)
+          .asStream()
+          .handleError((e) {
+            throw e;
+          })
+          .where((_) => false)
+          .cast<Lesson?>(),
     ]);
   } else {
     // Already have complete data: Safe to refresh in the background silently
@@ -80,7 +84,6 @@ Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
     yield* dbStream;
   }
 }
-
 
 /// Provider that watches and manages the bookmark status of a specific lesson.
 @riverpod

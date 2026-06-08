@@ -102,15 +102,25 @@ class ForumThreadDto {
       slug: _asString(json['slug']) ?? _asString(json['id']) ?? '',
       courseId: json['course']?.toString(),
       categoryId: _asInt(json['category_id']) ?? _asInt(categoryJson?['id']),
-      categorySlug: _asString(json['category_slug']) ?? _asString(categoryJson?['slug']),
+      categorySlug:
+          _asString(json['category_slug']) ?? _asString(categoryJson?['slug']),
       category: parsedCategory,
       title: _asString(json['title']) ?? 'Untitled',
-      summary: _asString(json['summary']) ?? _asString(json['description']) ?? '',
-      contentHtml: _asString(json['content_html']) ?? _asString(json['description_html']),
-      authorName: _asString(json['author_name']) ?? _asString(user?['display_name']) ?? 'Anonymous',
-      authorAvatar: _asString(json['author_avatar']) ?? _asString(user?['photo']),
-      createdAt: _asString(json['time_ago']) ?? _asString(json['created']) ?? '',
-      replyCount: _asInt(json['reply_count']) ?? _asInt(json['comments_count']) ?? 0,
+      summary:
+          _asString(json['summary']) ?? _asString(json['description']) ?? '',
+      contentHtml:
+          _asString(json['content_html']) ??
+          _asString(json['description_html']),
+      authorName:
+          _asString(json['author_name']) ??
+          _asString(user?['display_name']) ??
+          'Anonymous',
+      authorAvatar:
+          _asString(json['author_avatar']) ?? _asString(user?['photo']),
+      createdAt:
+          _asString(json['time_ago']) ?? _asString(json['created']) ?? '',
+      replyCount:
+          _asInt(json['reply_count']) ?? _asInt(json['comments_count']) ?? 0,
       upvotes: _asInt(json['upvotes']) ?? 0,
       downvotes: _asInt(json['downvotes']) ?? 0,
       status: json['status'] == 'answered' || hasAnswer
@@ -165,10 +175,15 @@ class ForumCommentDto {
     return ForumCommentDto(
       id: json['id']?.toString() ?? '',
       threadId: _asInt(json['thread']) ?? _asInt(contentObj?['id']) ?? 0,
-      authorName: _asString(json['author_name']) ?? _asString(user?['display_name']) ?? 'Anonymous',
-      authorAvatar: _asString(json['author_avatar']) ?? _asString(user?['photo']),
+      authorName:
+          _asString(json['author_name']) ??
+          _asString(user?['display_name']) ??
+          'Anonymous',
+      authorAvatar:
+          _asString(json['author_avatar']) ?? _asString(user?['photo']),
       content: _asString(json['content']) ?? _asString(json['comment']) ?? '',
-      createdAt: _asString(json['time_ago']) ?? _asString(json['created']) ?? '',
+      createdAt:
+          _asString(json['time_ago']) ?? _asString(json['created']) ?? '',
       upvotes: _asInt(json['upvotes']) ?? 0,
       downvotes: _asInt(json['downvotes']) ?? 0,
       isInstructor: json['is_instructor'] == true,

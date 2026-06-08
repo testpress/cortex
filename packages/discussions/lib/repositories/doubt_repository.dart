@@ -9,11 +9,9 @@ class DoubtRepository {
   final DataSource _dataSource;
   final AppDatabase _db;
 
-  DoubtRepository({
-    required DataSource dataSource,
-    required AppDatabase db,
-  })  : _dataSource = dataSource,
-        _db = db;
+  DoubtRepository({required DataSource dataSource, required AppDatabase db})
+    : _dataSource = dataSource,
+      _db = db;
 
   /// Watch personal doubts for the current user.
   Stream<List<DoubtDto>> watchDoubts() {
@@ -24,8 +22,14 @@ class DoubtRepository {
   }
 
   /// Sync doubts from the remote source for a given page.
-  Future<PaginatedResponseDto<DoubtDto>> syncDoubts({int page = 1, String? searchQuery}) async {
-    final response = await _dataSource.getDoubts(page: page, searchQuery: searchQuery);
+  Future<PaginatedResponseDto<DoubtDto>> syncDoubts({
+    int page = 1,
+    String? searchQuery,
+  }) async {
+    final response = await _dataSource.getDoubts(
+      page: page,
+      searchQuery: searchQuery,
+    );
     await _db.batch((b) {
       b.insertAllOnConflictUpdate(
         _db.doubtsTable,
@@ -52,7 +56,9 @@ class DoubtRepository {
       questionId: questionId,
       queryType: queryType == DoubtQueryType.ai ? 2 : 1,
     );
-    await _db.into(_db.doubtsTable).insertOnConflictUpdate(_mapToCompanion(response));
+    await _db
+        .into(_db.doubtsTable)
+        .insertOnConflictUpdate(_mapToCompanion(response));
   }
 
   /// Watch replies for a specific doubt thread.
@@ -72,16 +78,18 @@ class DoubtRepository {
 
     // Smart merge: update mutable fields but preserve replyCount from the list endpoint.
     final companion = _mapToCompanion(result.doubt);
-    await _db.into(_db.doubtsTable).insert(
-      companion,
-      onConflict: DoUpdate(
-        (old) => companion.copyWith(
-          replyCount: const Value.absent(),
-          createdAt: const Value.absent(),
-        ),
-        target: [_db.doubtsTable.id],
-      ),
-    );
+    await _db
+        .into(_db.doubtsTable)
+        .insert(
+          companion,
+          onConflict: DoUpdate(
+            (old) => companion.copyWith(
+              replyCount: const Value.absent(),
+              createdAt: const Value.absent(),
+            ),
+            target: [_db.doubtsTable.id],
+          ),
+        );
 
     await _db.upsertDoubtReplies(
       result.replies.map((dto) => _mapReplyToCompanion(dto)).toList(),
@@ -90,10 +98,11 @@ class DoubtRepository {
 
   /// Fetch replies for a specific doubt thread.
   Future<List<DoubtReplyDto>> getDoubtReplies(String doubtId) async {
-    final cached = await (_db.select(_db.doubtRepliesTable)
-          ..where((t) => t.doubtId.equals(doubtId))
-          ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
-        .get();
+    final cached =
+        await (_db.select(_db.doubtRepliesTable)
+              ..where((t) => t.doubtId.equals(doubtId))
+              ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
+            .get();
 
     if (cached.isNotEmpty) {
       syncReplies(doubtId).ignore();
@@ -119,11 +128,15 @@ class DoubtRepository {
     );
 
     if (response.id != 'null') {
-      await _db.into(_db.doubtRepliesTable).insertOnConflictUpdate(_mapReplyToCompanion(response));
+      await _db
+          .into(_db.doubtRepliesTable)
+          .insertOnConflictUpdate(_mapReplyToCompanion(response));
     }
 
     // Update local doubt status/replyCount
-    final existing = await (_db.select(_db.doubtsTable)..where((t) => t.id.equals(doubtId))).getSingleOrNull();
+    final existing = await (_db.select(
+      _db.doubtsTable,
+    )..where((t) => t.id.equals(doubtId))).getSingleOrNull();
     if (existing != null) {
       var updatedStatus = existing.status;
       if (shouldResolve == true) {
@@ -131,10 +144,16 @@ class DoubtRepository {
       } else if (shouldClose == true) {
         updatedStatus = DoubtStatus.closed.name;
       }
-      await (_db.update(_db.doubtsTable)..where((t) => t.id.equals(doubtId))).write(
+      await (_db.update(
+        _db.doubtsTable,
+      )..where((t) => t.id.equals(doubtId))).write(
         DoubtsTableCompanion(
           status: Value(updatedStatus),
-          replyCount: Value(existing.replyCount != null ? existing.replyCount! + (comment != null ? 1 : 0) : null),
+          replyCount: Value(
+            existing.replyCount != null
+                ? existing.replyCount! + (comment != null ? 1 : 0)
+                : null,
+          ),
         ),
       );
     }
@@ -152,12 +171,16 @@ class DoubtRepository {
       query.where((t) => t.parentId.isNull());
     }
     return query.watch().map((rows) {
-      return rows.map((row) => DoubtTopicDto(
-        id: row.id,
-        title: row.title,
-        parentId: row.parentId,
-        hasChildren: row.hasChildren,
-      )).toList();
+      return rows
+          .map(
+            (row) => DoubtTopicDto(
+              id: row.id,
+              title: row.title,
+              parentId: row.parentId,
+              hasChildren: row.hasChildren,
+            ),
+          )
+          .toList();
     });
   }
 
@@ -165,12 +188,16 @@ class DoubtRepository {
   Future<void> syncTopics({int? parentId}) async {
     final results = await _dataSource.getDoubtTopics();
     await _db.upsertDoubtTopics(
-      results.map((dto) => DoubtTopicsTableCompanion(
-        id: Value(dto.id),
-        title: Value(dto.title),
-        parentId: Value(dto.parentId),
-        hasChildren: Value(dto.hasChildren),
-      )).toList(),
+      results
+          .map(
+            (dto) => DoubtTopicsTableCompanion(
+              id: Value(dto.id),
+              title: Value(dto.title),
+              parentId: Value(dto.parentId),
+              hasChildren: Value(dto.hasChildren),
+            ),
+          )
+          .toList(),
     );
   }
 

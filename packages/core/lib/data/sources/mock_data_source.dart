@@ -3,14 +3,33 @@ import 'package:core/data/data.dart';
 
 final List<BookmarkFolderDto> _mockFolders = [
   const BookmarkFolderDto(id: 1, name: 'Physics Notes', bookmarksCount: 2),
-  const BookmarkFolderDto(id: 2, name: 'Important Derivations', bookmarksCount: 1),
+  const BookmarkFolderDto(
+    id: 2,
+    name: 'Important Derivations',
+    bookmarksCount: 1,
+  ),
   const BookmarkFolderDto(id: 3, name: 'NEET Prep', bookmarksCount: 0),
 ];
 
 final List<BookmarkDto> _mockBookmarks = [
-  const BookmarkDto(id: 101, folderId: 1, folderName: 'Physics Notes', lessonId: 1001),
-  const BookmarkDto(id: 102, folderId: 1, folderName: 'Physics Notes', lessonId: 1002),
-  const BookmarkDto(id: 103, folderId: 2, folderName: 'Important Derivations', lessonId: 1003),
+  const BookmarkDto(
+    id: 101,
+    folderId: 1,
+    folderName: 'Physics Notes',
+    lessonId: 1001,
+  ),
+  const BookmarkDto(
+    id: 102,
+    folderId: 1,
+    folderName: 'Physics Notes',
+    lessonId: 1002,
+  ),
+  const BookmarkDto(
+    id: 103,
+    folderId: 2,
+    folderName: 'Important Derivations',
+    lessonId: 1003,
+  ),
 ];
 
 /// Static mock data source for development and testing.
@@ -58,11 +77,7 @@ class MockDataSource implements DataSource {
         ? 'https://lmsdemo.testpress.in/api/v3/courses/?page=${page + 1}'
         : null;
 
-    return PaginatedResponseDto(
-      results: results,
-      next: next,
-      count: 15,
-    );
+    return PaginatedResponseDto(results: results, next: next, count: 15);
   }
 
   List<CourseDto> _getMockCourses(int page) {
@@ -174,15 +189,19 @@ class MockDataSource implements DataSource {
   @override
   Future<CourseDto> getCourseDetail(String courseId) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    final all = [..._getMockCourses(1), ..._getMockCourses(2), ..._getMockCourses(3)];
-    return all.firstWhere(
-      (c) => c.id == courseId,
-      orElse: () => all.first,
-    );
+    final all = [
+      ..._getMockCourses(1),
+      ..._getMockCourses(2),
+      ..._getMockCourses(3),
+    ];
+    return all.firstWhere((c) => c.id == courseId, orElse: () => all.first);
   }
 
   @override
-  Future<List<ChapterDto>> getChapters(String courseId, {String? parentId}) async {
+  Future<List<ChapterDto>> getChapters(
+    String courseId, {
+    String? parentId,
+  }) async {
     switch (courseId) {
       case 'jee-main-2026':
         return _jeeMainChapters();
@@ -200,10 +219,17 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Stream<CourseCurriculumDto> getCourseContents(String courseId, {String? chapterId, String? type}) async* {
+  Stream<CourseCurriculumDto> getCourseContents(
+    String courseId, {
+    String? chapterId,
+    String? type,
+  }) async* {
     // Collect chapters in the course/chapter branch.
     // In mock, we simulate recursion starting from the parentId if provided.
-    final allChapters = await _getAllChaptersRecursively(courseId, parentId: chapterId);
+    final allChapters = await _getAllChaptersRecursively(
+      courseId,
+      parentId: chapterId,
+    );
 
     final lessons = <LessonDto>[];
     for (var ch in allChapters) {
@@ -212,203 +238,223 @@ class MockDataSource implements DataSource {
     yield CourseCurriculumDto(chapters: allChapters, lessons: lessons);
   }
 
-  Future<List<ChapterDto>> _getAllChaptersRecursively(String courseId, {String? parentId}) async {
+  Future<List<ChapterDto>> _getAllChaptersRecursively(
+    String courseId, {
+    String? parentId,
+  }) async {
     final List<ChapterDto> result = [];
     final chapters = await getChapters(courseId, parentId: parentId);
-    
+
     for (final chapter in chapters) {
       result.add(chapter);
       if (!chapter.isLeaf) {
-        result.addAll(await _getAllChaptersRecursively(courseId, parentId: chapter.id));
+        result.addAll(
+          await _getAllChaptersRecursively(courseId, parentId: chapter.id),
+        );
       }
     }
     return result;
   }
 
   @override
-  Future<CourseCurriculumDto> getRunningContents(String courseId, {String? chapterId}) async {
+  Future<CourseCurriculumDto> getRunningContents(
+    String courseId, {
+    String? chapterId,
+  }) async {
     final all = await getCourseContents(courseId).first;
     return all.copyWith(
-      lessons: all.lessons.where((l) => l.progressStatus == LessonProgressStatus.inProgress).toList(),
+      lessons: all.lessons
+          .where((l) => l.progressStatus == LessonProgressStatus.inProgress)
+          .toList(),
     );
   }
 
   @override
-  Future<CourseCurriculumDto> getUpcomingContents(String courseId, {String? chapterId}) async {
+  Future<CourseCurriculumDto> getUpcomingContents(
+    String courseId, {
+    String? chapterId,
+  }) async {
     final all = await getCourseContents(courseId).first;
     return all.copyWith(
-      lessons: all.lessons.where((l) => l.progressStatus == LessonProgressStatus.notStarted).toList(),
+      lessons: all.lessons
+          .where((l) => l.progressStatus == LessonProgressStatus.notStarted)
+          .toList(),
     );
   }
 
   @override
-  Future<CourseCurriculumDto> getContentAttempts(String courseId, {String? chapterId}) async {
+  Future<CourseCurriculumDto> getContentAttempts(
+    String courseId, {
+    String? chapterId,
+  }) async {
     final all = await getCourseContents(courseId).first;
     return all.copyWith(
-      lessons: all.lessons.where((l) => l.progressStatus == LessonProgressStatus.completed).toList(),
+      lessons: all.lessons
+          .where((l) => l.progressStatus == LessonProgressStatus.completed)
+          .toList(),
     );
   }
 
   List<ChapterDto> _jeeMainChapters() => [
-        const ChapterDto(
-          id: 'jee-main-ch-1',
-          courseId: 'jee-main-2026',
-          title: 'Physics Foundations',
-          isLeaf: false,
-          lessonCount: 0,
-          assessmentCount: 0,
-          orderIndex: 0,
-        ),
-        const ChapterDto(
-          id: 'jee-main-ch-1-sub-1',
-          parentId: 'jee-main-ch-1',
-          courseId: 'jee-main-2026',
-          title: 'Thermodynamics & Heat',
-          lessonCount: 6,
-          assessmentCount: 1,
-          orderIndex: 0,
-        ),
-        const ChapterDto(
-          id: 'jee-main-ch-2',
-          courseId: 'jee-main-2026',
-          title: 'Mechanics — Laws of Motion',
-          lessonCount: 5,
-          assessmentCount: 1,
-          orderIndex: 1,
-        ),
-        const ChapterDto(
-          id: 'jee-main-ch-3',
-          courseId: 'jee-main-2026',
-          title: 'Electrostatics',
-          lessonCount: 7,
-          assessmentCount: 1,
-          orderIndex: 2,
-        ),
-      ];
+    const ChapterDto(
+      id: 'jee-main-ch-1',
+      courseId: 'jee-main-2026',
+      title: 'Physics Foundations',
+      isLeaf: false,
+      lessonCount: 0,
+      assessmentCount: 0,
+      orderIndex: 0,
+    ),
+    const ChapterDto(
+      id: 'jee-main-ch-1-sub-1',
+      parentId: 'jee-main-ch-1',
+      courseId: 'jee-main-2026',
+      title: 'Thermodynamics & Heat',
+      lessonCount: 6,
+      assessmentCount: 1,
+      orderIndex: 0,
+    ),
+    const ChapterDto(
+      id: 'jee-main-ch-2',
+      courseId: 'jee-main-2026',
+      title: 'Mechanics — Laws of Motion',
+      lessonCount: 5,
+      assessmentCount: 1,
+      orderIndex: 1,
+    ),
+    const ChapterDto(
+      id: 'jee-main-ch-3',
+      courseId: 'jee-main-2026',
+      title: 'Electrostatics',
+      lessonCount: 7,
+      assessmentCount: 1,
+      orderIndex: 2,
+    ),
+  ];
 
   List<ChapterDto> _neetChapters() => [
-        const ChapterDto(
-          id: 'neet-ch-1',
-          courseId: 'neet-2026',
-          title: 'Cell Biology & Genetics',
-          lessonCount: 7,
-          assessmentCount: 1,
-          orderIndex: 0,
-        ),
-        const ChapterDto(
-          id: 'neet-ch-2',
-          courseId: 'neet-2026',
-          title: 'Human Physiology',
-          lessonCount: 9,
-          assessmentCount: 2,
-          orderIndex: 1,
-        ),
-        const ChapterDto(
-          id: 'neet-ch-3',
-          courseId: 'neet-2026',
-          title: 'Organic Chemistry for NEET',
-          lessonCount: 6,
-          assessmentCount: 1,
-          orderIndex: 2,
-        ),
-        const ChapterDto(
-          id: 'neet-ch-4',
-          courseId: 'neet-2026',
-          title: 'Modern Physics',
-          lessonCount: 5,
-          assessmentCount: 1,
-          orderIndex: 3,
-        ),
-        const ChapterDto(
-          id: 'neet-ch-5',
-          courseId: 'neet-2026',
-          title: 'Ecology & Biodiversity',
-          lessonCount: 4,
-          assessmentCount: 1,
-          orderIndex: 4,
-        ),
-      ];
+    const ChapterDto(
+      id: 'neet-ch-1',
+      courseId: 'neet-2026',
+      title: 'Cell Biology & Genetics',
+      lessonCount: 7,
+      assessmentCount: 1,
+      orderIndex: 0,
+    ),
+    const ChapterDto(
+      id: 'neet-ch-2',
+      courseId: 'neet-2026',
+      title: 'Human Physiology',
+      lessonCount: 9,
+      assessmentCount: 2,
+      orderIndex: 1,
+    ),
+    const ChapterDto(
+      id: 'neet-ch-3',
+      courseId: 'neet-2026',
+      title: 'Organic Chemistry for NEET',
+      lessonCount: 6,
+      assessmentCount: 1,
+      orderIndex: 2,
+    ),
+    const ChapterDto(
+      id: 'neet-ch-4',
+      courseId: 'neet-2026',
+      title: 'Modern Physics',
+      lessonCount: 5,
+      assessmentCount: 1,
+      orderIndex: 3,
+    ),
+    const ChapterDto(
+      id: 'neet-ch-5',
+      courseId: 'neet-2026',
+      title: 'Ecology & Biodiversity',
+      lessonCount: 4,
+      assessmentCount: 1,
+      orderIndex: 4,
+    ),
+  ];
 
   List<ChapterDto> _jeeAdvancedChapters() => [
-        const ChapterDto(
-          id: 'jee-adv-ch-1',
-          courseId: 'jee-advanced-2026',
-          title: 'Waves & Oscillations',
-          lessonCount: 5,
-          assessmentCount: 1,
-          orderIndex: 0,
-        ),
-        const ChapterDto(
-          id: 'jee-adv-ch-2',
-          courseId: 'jee-advanced-2026',
-          title: 'Coordinate Geometry',
-          lessonCount: 6,
-          assessmentCount: 1,
-          orderIndex: 1,
-        ),
-        const ChapterDto(
-          id: 'jee-adv-ch-3',
-          courseId: 'jee-advanced-2026',
-          title: 'Chemical Bonding',
-          lessonCount: 4,
-          assessmentCount: 1,
-          orderIndex: 2,
-        ),
-        const ChapterDto(
-          id: 'jee-adv-ch-4',
-          courseId: 'jee-advanced-2026',
-          title: 'Vectors & 3D Geometry',
-          lessonCount: 5,
-          assessmentCount: 1,
-          orderIndex: 3,
-        ),
-        const ChapterDto(
-          id: 'jee-adv-ch-5',
-          courseId: 'jee-advanced-2026',
-          title: 'Rotational Mechanics',
-          lessonCount: 5,
-          assessmentCount: 1,
-          orderIndex: 4,
-        ),
-      ];
+    const ChapterDto(
+      id: 'jee-adv-ch-1',
+      courseId: 'jee-advanced-2026',
+      title: 'Waves & Oscillations',
+      lessonCount: 5,
+      assessmentCount: 1,
+      orderIndex: 0,
+    ),
+    const ChapterDto(
+      id: 'jee-adv-ch-2',
+      courseId: 'jee-advanced-2026',
+      title: 'Coordinate Geometry',
+      lessonCount: 6,
+      assessmentCount: 1,
+      orderIndex: 1,
+    ),
+    const ChapterDto(
+      id: 'jee-adv-ch-3',
+      courseId: 'jee-advanced-2026',
+      title: 'Chemical Bonding',
+      lessonCount: 4,
+      assessmentCount: 1,
+      orderIndex: 2,
+    ),
+    const ChapterDto(
+      id: 'jee-adv-ch-4',
+      courseId: 'jee-advanced-2026',
+      title: 'Vectors & 3D Geometry',
+      lessonCount: 5,
+      assessmentCount: 1,
+      orderIndex: 3,
+    ),
+    const ChapterDto(
+      id: 'jee-adv-ch-5',
+      courseId: 'jee-advanced-2026',
+      title: 'Rotational Mechanics',
+      lessonCount: 5,
+      assessmentCount: 1,
+      orderIndex: 4,
+    ),
+  ];
 
   List<ChapterDto> _biologyChapters() => [
-        const ChapterDto(
-          id: 'bio-ch-1',
-          courseId: 'biology-neet-2026',
-          title: 'Plant Kingdom',
-          lessonCount: 8,
-          assessmentCount: 2,
-          orderIndex: 0,
-        ),
-        const ChapterDto(
-          id: 'bio-ch-2',
-          courseId: 'biology-neet-2026',
-          title: 'Animal Kingdom',
-          lessonCount: 10,
-          assessmentCount: 2,
-          orderIndex: 1,
-        ),
-      ];
+    const ChapterDto(
+      id: 'bio-ch-1',
+      courseId: 'biology-neet-2026',
+      title: 'Plant Kingdom',
+      lessonCount: 8,
+      assessmentCount: 2,
+      orderIndex: 0,
+    ),
+    const ChapterDto(
+      id: 'bio-ch-2',
+      courseId: 'biology-neet-2026',
+      title: 'Animal Kingdom',
+      lessonCount: 10,
+      assessmentCount: 2,
+      orderIndex: 1,
+    ),
+  ];
 
   List<ChapterDto> _englishChapters() => [
-        const ChapterDto(
-          id: 'eng-ch-1',
-          courseId: 'english-core-2026',
-          title: 'Reading Comprehension',
-          lessonCount: 5,
-          assessmentCount: 1,
-          orderIndex: 0,
-        ),
-        const ChapterDto(
-          id: 'eng-ch-2',
-          courseId: 'english-core-2026',
-          title: 'Creative Writing Skills',
-          lessonCount: 7,
-          assessmentCount: 2,
-          orderIndex: 1,
-        ),
-      ];
+    const ChapterDto(
+      id: 'eng-ch-1',
+      courseId: 'english-core-2026',
+      title: 'Reading Comprehension',
+      lessonCount: 5,
+      assessmentCount: 1,
+      orderIndex: 0,
+    ),
+    const ChapterDto(
+      id: 'eng-ch-2',
+      courseId: 'english-core-2026',
+      title: 'Creative Writing Skills',
+      lessonCount: 7,
+      assessmentCount: 2,
+      orderIndex: 1,
+    ),
+  ];
 
   // ─────────────────────────────────────────────────────────────────────────
   // Lessons
@@ -440,320 +486,331 @@ class MockDataSource implements DataSource {
   }
 
   List<LessonDto> _thermodynamicsLessons() => [
-        const LessonDto(
-          id: 'thermo-1',
-          chapterId: 'jee-main-ch-1',
-          title: 'Introduction to Thermodynamics',
-          subtitle:
-              'Understanding the fundamental principles that govern energy transfer and conservation in physical systems',
-          type: LessonType.pdf,
-          duration: '30 min read',
-          progressStatus: LessonProgressStatus.completed,
-          isLocked: false,
-          orderIndex: 0,
-          subjectName: 'Physics',
-          subjectIndex: 3, // violet
-          lessonNumber: 1,
-          totalLessons: 8,
-          contentUrl: 'https://drive.google.com/uc?export=download&id=1QxJ4yF2LdlCVSll4NkTXj5bO-nL6Xzol',
-        ),
-        const LessonDto(
-          id: 'thermo-2',
-          chapterId: 'jee-main-ch-1',
-          title: 'First Law of Thermodynamics',
-          subtitle:
-              'Understanding the fundamental principles of the first law of thermodynamics, internal energy, and their applications in various systems.',
-          type: LessonType.video,
-          duration: '38 min',
-          progressStatus: LessonProgressStatus.inProgress,
-          isLocked: false,
-          orderIndex: 1,
-          subjectName: 'Physics',
-          subjectIndex: 3,
-          lessonNumber: 2,
-          totalLessons: 8,
-          contentUrl: 'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-        ),
-        const LessonDto(
-          id: 'thermo-3',
-          chapterId: 'jee-main-ch-1',
-          title: 'Practice Problems — First Law',
-          subtitle:
-              'Test your understanding of the First Law of Thermodynamics with these curated practice problems',
-          type: LessonType.pdf,
-          duration: '20 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: false,
-          orderIndex: 2,
-          subjectName: 'Physics',
-          subjectIndex: 3,
-          lessonNumber: 3,
-          totalLessons: 8,
-        ),
-        const LessonDto(
-          id: 'thermo-4',
-          chapterId: 'jee-main-ch-1',
-          title: 'Second Law & Entropy',
-          type: LessonType.video,
-          duration: '42 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: true,
-          orderIndex: 3,
-        ),
-        const LessonDto(
-          id: 'thermo-5',
-          chapterId: 'jee-main-ch-1',
-          title: 'Heat Engines & Efficiency',
-          type: LessonType.assessment,
-          duration: '30 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: true,
-          orderIndex: 4,
-        ),
-        const LessonDto(
-          id: 'thermo-6',
-          chapterId: 'jee-main-ch-1',
-          title: 'Thermodynamics Chapter Test',
-          type: LessonType.test,
-          duration: '60 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          attemptsUrl: 'https://demo.testpress.in/api/v3/exams/thermodynamics-chapter-test/attempts/',
-          isLocked: true,
-          orderIndex: 5,
-        ),
-      ];
+    const LessonDto(
+      id: 'thermo-1',
+      chapterId: 'jee-main-ch-1',
+      title: 'Introduction to Thermodynamics',
+      subtitle:
+          'Understanding the fundamental principles that govern energy transfer and conservation in physical systems',
+      type: LessonType.pdf,
+      duration: '30 min read',
+      progressStatus: LessonProgressStatus.completed,
+      isLocked: false,
+      orderIndex: 0,
+      subjectName: 'Physics',
+      subjectIndex: 3, // violet
+      lessonNumber: 1,
+      totalLessons: 8,
+      contentUrl:
+          'https://drive.google.com/uc?export=download&id=1QxJ4yF2LdlCVSll4NkTXj5bO-nL6Xzol',
+    ),
+    const LessonDto(
+      id: 'thermo-2',
+      chapterId: 'jee-main-ch-1',
+      title: 'First Law of Thermodynamics',
+      subtitle:
+          'Understanding the fundamental principles of the first law of thermodynamics, internal energy, and their applications in various systems.',
+      type: LessonType.video,
+      duration: '38 min',
+      progressStatus: LessonProgressStatus.inProgress,
+      isLocked: false,
+      orderIndex: 1,
+      subjectName: 'Physics',
+      subjectIndex: 3,
+      lessonNumber: 2,
+      totalLessons: 8,
+      contentUrl:
+          'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+    ),
+    const LessonDto(
+      id: 'thermo-3',
+      chapterId: 'jee-main-ch-1',
+      title: 'Practice Problems — First Law',
+      subtitle:
+          'Test your understanding of the First Law of Thermodynamics with these curated practice problems',
+      type: LessonType.pdf,
+      duration: '20 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: false,
+      orderIndex: 2,
+      subjectName: 'Physics',
+      subjectIndex: 3,
+      lessonNumber: 3,
+      totalLessons: 8,
+    ),
+    const LessonDto(
+      id: 'thermo-4',
+      chapterId: 'jee-main-ch-1',
+      title: 'Second Law & Entropy',
+      type: LessonType.video,
+      duration: '42 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: true,
+      orderIndex: 3,
+    ),
+    const LessonDto(
+      id: 'thermo-5',
+      chapterId: 'jee-main-ch-1',
+      title: 'Heat Engines & Efficiency',
+      type: LessonType.assessment,
+      duration: '30 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: true,
+      orderIndex: 4,
+    ),
+    const LessonDto(
+      id: 'thermo-6',
+      chapterId: 'jee-main-ch-1',
+      title: 'Thermodynamics Chapter Test',
+      type: LessonType.test,
+      duration: '60 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      attemptsUrl:
+          'https://demo.testpress.in/api/v3/exams/thermodynamics-chapter-test/attempts/',
+      isLocked: true,
+      orderIndex: 5,
+    ),
+  ];
 
   List<LessonDto> _mechanicsLessons() => [
-        const LessonDto(
-          id: 'mech-1',
-          chapterId: 'jee-main-ch-2',
-          title: "Newton's Laws Overview",
-          type: LessonType.video,
-          duration: '40 min',
-          progressStatus: LessonProgressStatus.completed,
-          isLocked: false,
-          orderIndex: 0,
-          contentUrl: 'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-        ),
-        const LessonDto(
-          id: 'mech-2',
-          chapterId: 'jee-main-ch-2',
-          title: 'Free Body Diagrams',
-          type: LessonType.pdf,
-          duration: '25 min',
-          progressStatus: LessonProgressStatus.completed,
-          isLocked: false,
-          orderIndex: 1,
-          contentUrl: 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf',
-        ),
-        const LessonDto(
-          id: 'mech-3',
-          chapterId: 'jee-main-ch-2',
-          title: 'Friction & Normal Force',
-          type: LessonType.video,
-          duration: '35 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: false,
-          orderIndex: 2,
-          contentUrl: 'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-        ),
-        const LessonDto(
-          id: 'mech-4',
-          chapterId: 'jee-main-ch-2',
-          title: 'Practice: Laws of Motion',
-          type: LessonType.assessment,
-          duration: '25 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: true,
-          orderIndex: 3,
-        ),
-        const LessonDto(
-          id: 'mech-5',
-          chapterId: 'jee-main-ch-2',
-          title: 'Mechanics Chapter Test',
-          type: LessonType.test,
-          duration: '45 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: true,
-          orderIndex: 4,
-        ),
-      ];
+    const LessonDto(
+      id: 'mech-1',
+      chapterId: 'jee-main-ch-2',
+      title: "Newton's Laws Overview",
+      type: LessonType.video,
+      duration: '40 min',
+      progressStatus: LessonProgressStatus.completed,
+      isLocked: false,
+      orderIndex: 0,
+      contentUrl:
+          'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+    ),
+    const LessonDto(
+      id: 'mech-2',
+      chapterId: 'jee-main-ch-2',
+      title: 'Free Body Diagrams',
+      type: LessonType.pdf,
+      duration: '25 min',
+      progressStatus: LessonProgressStatus.completed,
+      isLocked: false,
+      orderIndex: 1,
+      contentUrl:
+          'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf',
+    ),
+    const LessonDto(
+      id: 'mech-3',
+      chapterId: 'jee-main-ch-2',
+      title: 'Friction & Normal Force',
+      type: LessonType.video,
+      duration: '35 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: false,
+      orderIndex: 2,
+      contentUrl:
+          'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+    ),
+    const LessonDto(
+      id: 'mech-4',
+      chapterId: 'jee-main-ch-2',
+      title: 'Practice: Laws of Motion',
+      type: LessonType.assessment,
+      duration: '25 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: true,
+      orderIndex: 3,
+    ),
+    const LessonDto(
+      id: 'mech-5',
+      chapterId: 'jee-main-ch-2',
+      title: 'Mechanics Chapter Test',
+      type: LessonType.test,
+      duration: '45 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: true,
+      orderIndex: 4,
+    ),
+  ];
 
   List<LessonDto> _electrostaticsLessons() => [
-        const LessonDto(
-          id: 'elec-1',
-          chapterId: 'jee-main-ch-3',
-          title: "Coulomb's Law",
-          type: LessonType.video,
-          duration: '38 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: false,
-          orderIndex: 0,
-          contentUrl: 'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-        ),
-        const LessonDto(
-          id: 'elec-2',
-          chapterId: 'jee-main-ch-3',
-          title: 'Electric Field & Potential',
-          type: LessonType.video,
-          duration: '44 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: false,
-          orderIndex: 1,
-          contentUrl: 'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-        ),
-        const LessonDto(
-          id: 'elec-3',
-          chapterId: 'jee-main-ch-3',
-          title: 'Gauss Law',
-          type: LessonType.video,
-          duration: '42 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: true,
-          orderIndex: 2,
-          contentUrl: 'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-        ),
-        const LessonDto(
-          id: 'elec-4',
-          chapterId: 'jee-main-ch-3',
-          title: 'Electrostatics Notes PDF',
-          type: LessonType.pdf,
-          duration: '15 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: true,
-          orderIndex: 3,
-          contentUrl: 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf',
-        ),
-        const LessonDto(
-          id: 'elec-5',
-          chapterId: 'jee-main-ch-3',
-          title: 'Electrostatics Practice Test',
-          type: LessonType.test,
-          duration: '60 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: true,
-          orderIndex: 4,
-        ),
-      ];
-
+    const LessonDto(
+      id: 'elec-1',
+      chapterId: 'jee-main-ch-3',
+      title: "Coulomb's Law",
+      type: LessonType.video,
+      duration: '38 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: false,
+      orderIndex: 0,
+      contentUrl:
+          'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+    ),
+    const LessonDto(
+      id: 'elec-2',
+      chapterId: 'jee-main-ch-3',
+      title: 'Electric Field & Potential',
+      type: LessonType.video,
+      duration: '44 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: false,
+      orderIndex: 1,
+      contentUrl:
+          'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+    ),
+    const LessonDto(
+      id: 'elec-3',
+      chapterId: 'jee-main-ch-3',
+      title: 'Gauss Law',
+      type: LessonType.video,
+      duration: '42 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: true,
+      orderIndex: 2,
+      contentUrl:
+          'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+    ),
+    const LessonDto(
+      id: 'elec-4',
+      chapterId: 'jee-main-ch-3',
+      title: 'Electrostatics Notes PDF',
+      type: LessonType.pdf,
+      duration: '15 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: true,
+      orderIndex: 3,
+      contentUrl:
+          'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf',
+    ),
+    const LessonDto(
+      id: 'elec-5',
+      chapterId: 'jee-main-ch-3',
+      title: 'Electrostatics Practice Test',
+      type: LessonType.test,
+      duration: '60 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: true,
+      orderIndex: 4,
+    ),
+  ];
 
   List<LessonDto> _calculusLessons() => [
-        const LessonDto(
-          id: 'calc-1',
-          chapterId: 'jee-main-ch-5',
-          title: 'Integration by Substitution',
-          type: LessonType.video,
-          duration: '40 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: false,
-          orderIndex: 0,
-        ),
-        const LessonDto(
-          id: 'calc-2',
-          chapterId: 'jee-main-ch-5',
-          title: 'Integration by Parts',
-          type: LessonType.video,
-          duration: '42 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: false,
-          orderIndex: 1,
-        ),
-        const LessonDto(
-          id: 'calc-3',
-          chapterId: 'jee-main-ch-5',
-          title: 'Definite Integrals',
-          type: LessonType.video,
-          duration: '35 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: true,
-          orderIndex: 2,
-        ),
-        const LessonDto(
-          id: 'calc-4',
-          chapterId: 'jee-main-ch-5',
-          title: 'Practice Problems PDF',
-          type: LessonType.pdf,
-          duration: '20 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: true,
-          orderIndex: 3,
-        ),
-        const LessonDto(
-          id: 'calc-5',
-          chapterId: 'jee-main-ch-5',
-          title: 'Calculus Integration Test',
-          type: LessonType.test,
-          duration: '60 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: true,
-          orderIndex: 4,
-        ),
-      ];
+    const LessonDto(
+      id: 'calc-1',
+      chapterId: 'jee-main-ch-5',
+      title: 'Integration by Substitution',
+      type: LessonType.video,
+      duration: '40 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: false,
+      orderIndex: 0,
+    ),
+    const LessonDto(
+      id: 'calc-2',
+      chapterId: 'jee-main-ch-5',
+      title: 'Integration by Parts',
+      type: LessonType.video,
+      duration: '42 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: false,
+      orderIndex: 1,
+    ),
+    const LessonDto(
+      id: 'calc-3',
+      chapterId: 'jee-main-ch-5',
+      title: 'Definite Integrals',
+      type: LessonType.video,
+      duration: '35 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: true,
+      orderIndex: 2,
+    ),
+    const LessonDto(
+      id: 'calc-4',
+      chapterId: 'jee-main-ch-5',
+      title: 'Practice Problems PDF',
+      type: LessonType.pdf,
+      duration: '20 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: true,
+      orderIndex: 3,
+    ),
+    const LessonDto(
+      id: 'calc-5',
+      chapterId: 'jee-main-ch-5',
+      title: 'Calculus Integration Test',
+      type: LessonType.test,
+      duration: '60 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: true,
+      orderIndex: 4,
+    ),
+  ];
 
   /// Generic lessons for other chapters not explicitly mapped.
   List<LessonDto> _genericLessons(String chapterId) => [
-        LessonDto(
-          id: '$chapterId-l1',
-          chapterId: chapterId,
-          title: 'Introduction',
-          subtitle:
-              'An introductory overview of the core concepts in this lesson.',
-          type: LessonType.video,
-          duration: '40 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: false,
-          orderIndex: 0,
-          lessonNumber: 1,
-          totalLessons: 5,
-          contentUrl: 'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-        ),
-        LessonDto(
-          id: '$chapterId-l2',
-          chapterId: chapterId,
-          title: 'Core Concepts',
-          subtitle:
-              'Deep dive into the fundamental theories and practical applications.',
-          type: LessonType.video,
-          duration: '45 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: false,
-          orderIndex: 1,
-          lessonNumber: 2,
-          totalLessons: 5,
-          contentUrl: 'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-        ),
-        LessonDto(
-          id: '$chapterId-l3',
-          chapterId: chapterId,
-          title: 'Notes PDF',
-          type: LessonType.pdf,
-          duration: '15 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: true,
-          orderIndex: 2,
-          contentUrl: 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf',
-        ),
-        LessonDto(
-          id: '$chapterId-l4',
-          chapterId: chapterId,
-          title: 'Chapter Assessment',
-          type: LessonType.assessment,
-          duration: '30 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: true,
-          orderIndex: 3,
-        ),
-        LessonDto(
-          id: '$chapterId-l5',
-          chapterId: chapterId,
-          title: 'Chapter Test',
-          type: LessonType.test,
-          duration: '60 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: true,
-          orderIndex: 4,
-        ),
-      ];
+    LessonDto(
+      id: '$chapterId-l1',
+      chapterId: chapterId,
+      title: 'Introduction',
+      subtitle: 'An introductory overview of the core concepts in this lesson.',
+      type: LessonType.video,
+      duration: '40 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: false,
+      orderIndex: 0,
+      lessonNumber: 1,
+      totalLessons: 5,
+      contentUrl:
+          'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+    ),
+    LessonDto(
+      id: '$chapterId-l2',
+      chapterId: chapterId,
+      title: 'Core Concepts',
+      subtitle:
+          'Deep dive into the fundamental theories and practical applications.',
+      type: LessonType.video,
+      duration: '45 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: false,
+      orderIndex: 1,
+      lessonNumber: 2,
+      totalLessons: 5,
+      contentUrl:
+          'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+    ),
+    LessonDto(
+      id: '$chapterId-l3',
+      chapterId: chapterId,
+      title: 'Notes PDF',
+      type: LessonType.pdf,
+      duration: '15 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: true,
+      orderIndex: 2,
+      contentUrl:
+          'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf',
+    ),
+    LessonDto(
+      id: '$chapterId-l4',
+      chapterId: chapterId,
+      title: 'Chapter Assessment',
+      type: LessonType.assessment,
+      duration: '30 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: true,
+      orderIndex: 3,
+    ),
+    LessonDto(
+      id: '$chapterId-l5',
+      chapterId: chapterId,
+      title: 'Chapter Test',
+      type: LessonType.test,
+      duration: '60 min',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: true,
+      orderIndex: 4,
+    ),
+  ];
 
   // ─────────────────────────────────────────────────────────────────────────
   // Live Classes
@@ -761,39 +818,39 @@ class MockDataSource implements DataSource {
 
   @override
   Future<List<LiveClassDto>> getLiveClasses() async => const [
-        LiveClassDto(
-          id: 'lc-1',
-          subject: 'Physics — Thermodynamics',
-          topic: 'Laws of Thermodynamics & Heat Engines',
-          time: '10:00 AM – 12:00 PM',
-          faculty: 'Prof. Anita Sharma',
-          status: LiveClassStatus.completed,
-        ),
-        LiveClassDto(
-          id: 'lc-2',
-          subject: 'Chemistry — Organic Chemistry',
-          topic: 'Reaction Mechanisms',
-          time: '3:00 PM – 5:00 PM',
-          faculty: 'Dr. Rajesh Kumar',
-          status: LiveClassStatus.live,
-        ),
-        LiveClassDto(
-          id: 'lc-3',
-          subject: 'Mathematics — Calculus II',
-          topic: 'Integration Techniques',
-          time: '5:30 PM – 7:30 PM',
-          faculty: 'Dr. Vikram Singh',
-          status: LiveClassStatus.upcoming,
-        ),
-        LiveClassDto(
-          id: 'lc-4',
-          subject: 'English — Communication Skills',
-          topic: 'Essay Writing & Comprehension',
-          time: '8:00 PM – 9:00 PM',
-          faculty: 'Ms. Priya Verma',
-          status: LiveClassStatus.upcoming,
-        ),
-      ];
+    LiveClassDto(
+      id: 'lc-1',
+      subject: 'Physics — Thermodynamics',
+      topic: 'Laws of Thermodynamics & Heat Engines',
+      time: '10:00 AM – 12:00 PM',
+      faculty: 'Prof. Anita Sharma',
+      status: LiveClassStatus.completed,
+    ),
+    LiveClassDto(
+      id: 'lc-2',
+      subject: 'Chemistry — Organic Chemistry',
+      topic: 'Reaction Mechanisms',
+      time: '3:00 PM – 5:00 PM',
+      faculty: 'Dr. Rajesh Kumar',
+      status: LiveClassStatus.live,
+    ),
+    LiveClassDto(
+      id: 'lc-3',
+      subject: 'Mathematics — Calculus II',
+      topic: 'Integration Techniques',
+      time: '5:30 PM – 7:30 PM',
+      faculty: 'Dr. Vikram Singh',
+      status: LiveClassStatus.upcoming,
+    ),
+    LiveClassDto(
+      id: 'lc-4',
+      subject: 'English — Communication Skills',
+      topic: 'Essay Writing & Comprehension',
+      time: '8:00 PM – 9:00 PM',
+      faculty: 'Ms. Priya Verma',
+      status: LiveClassStatus.upcoming,
+    ),
+  ];
 
   // ─────────────────────────────────────────────────────────────────────────
   // Forum Threads
@@ -804,17 +861,26 @@ class MockDataSource implements DataSource {
       mockForumCategories;
 
   @override
-  Future<PaginatedResponseDto<ForumThreadDto>> getForumThreads({int page = 1, int? categoryId, String? searchQuery}) async {
+  Future<PaginatedResponseDto<ForumThreadDto>> getForumThreads({
+    int page = 1,
+    int? categoryId,
+    String? searchQuery,
+  }) async {
     final results = mockForumThreads(page: page, categoryId: categoryId);
     return PaginatedResponseDto<ForumThreadDto>(
       results: results,
       count: results.length * 5,
-      next: page < 3 ? 'https://api.cortex.com/v2.5/discussions/?page=${page + 1}' : null,
+      next: page < 3
+          ? 'https://api.cortex.com/v2.5/discussions/?page=${page + 1}'
+          : null,
     );
   }
 
   @override
-  Future<PaginatedResponseDto<ForumCommentDto>> getForumComments({required int threadId, int page = 1}) async {
+  Future<PaginatedResponseDto<ForumCommentDto>> getForumComments({
+    required int threadId,
+    int page = 1,
+  }) async {
     await Future.delayed(const Duration(milliseconds: 300));
     final results = mockForumComments(threadId);
     return PaginatedResponseDto<ForumCommentDto>(
@@ -825,7 +891,10 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<ForumCommentDto> postForumComment({required int threadId, required String content}) async {
+  Future<ForumCommentDto> postForumComment({
+    required int threadId,
+    required String content,
+  }) async {
     await Future.delayed(const Duration(milliseconds: 500));
     return ForumCommentDto(
       id: '999', // Mock ID
@@ -873,35 +942,35 @@ class MockDataSource implements DataSource {
 
   @override
   Future<List<UserProgressDto>> getUserProgress(String userId) async => [
-        UserProgressDto(
-          userId: userId,
-          lessonId: 'thermo-1',
-          courseId: 'jee-main-2026',
-          percentComplete: 100,
-          lastAccessedAt: DateTime.now().subtract(const Duration(hours: 2)),
-        ),
-        UserProgressDto(
-          userId: userId,
-          lessonId: 'thermo-2',
-          courseId: 'jee-main-2026',
-          percentComplete: 67,
-          lastAccessedAt: DateTime.now().subtract(const Duration(minutes: 5)),
-        ),
-        UserProgressDto(
-          userId: userId,
-          lessonId: 'mech-1',
-          courseId: 'jee-main-2026',
-          percentComplete: 100,
-          lastAccessedAt: DateTime.now().subtract(const Duration(days: 1)),
-        ),
-        UserProgressDto(
-          userId: userId,
-          lessonId: 'mech-2',
-          courseId: 'jee-main-2026',
-          percentComplete: 100,
-          lastAccessedAt: DateTime.now().subtract(const Duration(days: 1)),
-        ),
-      ];
+    UserProgressDto(
+      userId: userId,
+      lessonId: 'thermo-1',
+      courseId: 'jee-main-2026',
+      percentComplete: 100,
+      lastAccessedAt: DateTime.now().subtract(const Duration(hours: 2)),
+    ),
+    UserProgressDto(
+      userId: userId,
+      lessonId: 'thermo-2',
+      courseId: 'jee-main-2026',
+      percentComplete: 67,
+      lastAccessedAt: DateTime.now().subtract(const Duration(minutes: 5)),
+    ),
+    UserProgressDto(
+      userId: userId,
+      lessonId: 'mech-1',
+      courseId: 'jee-main-2026',
+      percentComplete: 100,
+      lastAccessedAt: DateTime.now().subtract(const Duration(days: 1)),
+    ),
+    UserProgressDto(
+      userId: userId,
+      lessonId: 'mech-2',
+      courseId: 'jee-main-2026',
+      percentComplete: 100,
+      lastAccessedAt: DateTime.now().subtract(const Duration(days: 1)),
+    ),
+  ];
 
   // ─────────────────────────────────────────────────────────────────────────
   // Explore
@@ -962,15 +1031,39 @@ class MockDataSource implements DataSource {
   @override
   Future<LearnerDto> fetchMyRank() async {
     await Future.delayed(const Duration(milliseconds: 200));
-    return const LearnerDto(id: 'me', rank: 150, name: 'Current User', avatar: '', points: 450, coursesCompleted: 8, streakDays: 3);
+    return const LearnerDto(
+      id: 'me',
+      rank: 150,
+      name: 'Current User',
+      avatar: '',
+      points: 450,
+      coursesCompleted: 8,
+      streakDays: 3,
+    );
   }
 
   @override
   Future<List<LearnerDto>> fetchCompetitorTargets() async {
     await Future.delayed(const Duration(milliseconds: 200));
     return const [
-      LearnerDto(id: 'c1', rank: 0, name: 'Target 1', avatar: '', points: 500, coursesCompleted: 10, streakDays: 5),
-      LearnerDto(id: 'c2', rank: 0, name: 'Target 2', avatar: '', points: 480, coursesCompleted: 9, streakDays: 4),
+      LearnerDto(
+        id: 'c1',
+        rank: 0,
+        name: 'Target 1',
+        avatar: '',
+        points: 500,
+        coursesCompleted: 10,
+        streakDays: 5,
+      ),
+      LearnerDto(
+        id: 'c2',
+        rank: 0,
+        name: 'Target 2',
+        avatar: '',
+        points: 480,
+        coursesCompleted: 9,
+        streakDays: 4,
+      ),
     ];
   }
 
@@ -978,25 +1071,47 @@ class MockDataSource implements DataSource {
   Future<List<LearnerDto>> fetchCompetitorThreats() async {
     await Future.delayed(const Duration(milliseconds: 200));
     return const [
-      LearnerDto(id: 'c3', rank: 0, name: 'Threat 1', avatar: '', points: 420, coursesCompleted: 7, streakDays: 2),
-      LearnerDto(id: 'c4', rank: 0, name: 'Threat 2', avatar: '', points: 400, coursesCompleted: 6, streakDays: 1),
+      LearnerDto(
+        id: 'c3',
+        rank: 0,
+        name: 'Threat 1',
+        avatar: '',
+        points: 420,
+        coursesCompleted: 7,
+        streakDays: 2,
+      ),
+      LearnerDto(
+        id: 'c4',
+        rank: 0,
+        name: 'Threat 2',
+        avatar: '',
+        points: 400,
+        coursesCompleted: 6,
+        streakDays: 1,
+      ),
     ];
   }
 
   @override
-  Future<DashboardContentsDto> getWhatsNewFeed(DashboardSectionType sectionType) async {
+  Future<DashboardContentsDto> getWhatsNewFeed(
+    DashboardSectionType sectionType,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 400));
     return mockWhatsNewFeed;
   }
 
   @override
-  Future<DashboardContentsDto> getResumeLearningFeed(DashboardSectionType sectionType) async {
+  Future<DashboardContentsDto> getResumeLearningFeed(
+    DashboardSectionType sectionType,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 400));
     return mockResumeLearningFeed;
   }
 
   @override
-  Future<DashboardContentsDto> getRecentlyCompletedFeed(DashboardSectionType sectionType) async {
+  Future<DashboardContentsDto> getRecentlyCompletedFeed(
+    DashboardSectionType sectionType,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 400));
     return mockRecentlyCompletedFeed;
   }
@@ -1020,7 +1135,8 @@ class MockDataSource implements DataSource {
       results: [
         LoginActivityDto(
           id: 11245579,
-          userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',
+          userAgent:
+              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',
           ipAddress: '122.178.92.74',
           device: 'PC',
           deviceName: 'Chrome',
@@ -1047,9 +1163,7 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<UserDto> updateProfile(
-    Map<String, dynamic> data,
-  ) async {
+  Future<UserDto> updateProfile(Map<String, dynamic> data) async {
     await Future.delayed(const Duration(milliseconds: 500));
     final updated = mockCurrentUser.copyWith(
       name: data['display_name'] as String? ?? mockCurrentUser.name,
@@ -1078,7 +1192,8 @@ class MockDataSource implements DataSource {
       duration: '01:00:00',
       questionCount: 30,
       hasInstructions: true,
-      attemptsUrl: 'https://api.testpress.in/api/v2.2.1/exams/mock-exam-slug/attempts/',
+      attemptsUrl:
+          'https://api.testpress.in/api/v2.2.1/exams/mock-exam-slug/attempts/',
       state: 'Available',
     );
   }
@@ -1089,15 +1204,20 @@ class MockDataSource implements DataSource {
     return [
       AttemptDto(
         id: 'mock-attempt-1',
-        questionsUrl: 'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/questions/',
-        heartbeatUrl: 'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/heartbeat/',
-        endUrl: 'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/end/',
-        date: DateTime.now().subtract(const Duration(days: 2)).toIso8601String(),
+        questionsUrl:
+            'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/questions/',
+        heartbeatUrl:
+            'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/heartbeat/',
+        endUrl:
+            'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/end/',
+        date: DateTime.now()
+            .subtract(const Duration(days: 2))
+            .toIso8601String(),
         score: '45.0',
         correctCount: 15,
         incorrectCount: 5,
         totalQuestions: 30,
-      )
+      ),
     ];
   }
 
@@ -1106,9 +1226,12 @@ class MockDataSource implements DataSource {
     await Future.delayed(const Duration(milliseconds: 800));
     return const AttemptDto(
       id: 'mock-attempt-1',
-      questionsUrl: 'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/questions/',
-      heartbeatUrl: 'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/heartbeat/',
-      endUrl: 'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/end/',
+      questionsUrl:
+          'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/questions/',
+      heartbeatUrl:
+          'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/heartbeat/',
+      endUrl:
+          'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/end/',
     );
   }
 
@@ -1236,7 +1359,8 @@ class MockDataSource implements DataSource {
         question: ReviewQuestionDto(
           id: 1,
           questionHtml: '<p>What is the SI unit of Force?</p>',
-          explanationHtml: '<p>The SI unit of Force is the Newton (N), named after Sir Isaac Newton.</p>',
+          explanationHtml:
+              '<p>The SI unit of Force is the Newton (N), named after Sir Isaac Newton.</p>',
           type: 'R',
           answers: [
             ReviewAnswerDto(id: 1, textHtml: 'Newton', isCorrect: true),
@@ -1257,7 +1381,8 @@ class MockDataSource implements DataSource {
         question: ReviewQuestionDto(
           id: 2,
           questionHtml: '<p>Which of the following are vector quantities?</p>',
-          explanationHtml: '<p>Velocity and Acceleration have both magnitude and direction, making them vectors.</p>',
+          explanationHtml:
+              '<p>Velocity and Acceleration have both magnitude and direction, making them vectors.</p>',
           type: 'C',
           answers: [
             ReviewAnswerDto(id: 21, textHtml: 'Velocity', isCorrect: true),
@@ -1271,7 +1396,9 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<List<SubjectAnalyticsDto>> getSubjectAnalytics(String analyticsUrl) async {
+  Future<List<SubjectAnalyticsDto>> getSubjectAnalytics(
+    String analyticsUrl,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 300));
     return mockSubjectAnalytics;
   }
@@ -1299,7 +1426,10 @@ class MockDataSource implements DataSource {
   // ─────────────────────────────────────────────────────────────────────────
 
   @override
-  Future<PaginatedResponseDto<DoubtDto>> getDoubts({int page = 1, String? searchQuery}) async {
+  Future<PaginatedResponseDto<DoubtDto>> getDoubts({
+    int page = 1,
+    String? searchQuery,
+  }) async {
     await Future.delayed(const Duration(milliseconds: 500));
     return PaginatedResponseDto<DoubtDto>(
       results: mockDoubts,
@@ -1310,7 +1440,9 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<({DoubtDto doubt, List<DoubtReplyDto> replies})> getDoubtReplies(String doubtId) async {
+  Future<({DoubtDto doubt, List<DoubtReplyDto> replies})> getDoubtReplies(
+    String doubtId,
+  ) async {
     final doubt = mockDoubts.firstWhere(
       (d) => d.id == doubtId,
       orElse: () => mockDoubts.first,
@@ -1322,9 +1454,24 @@ class MockDataSource implements DataSource {
   Future<List<DoubtTopicDto>> getDoubtTopics() async {
     await Future.delayed(const Duration(milliseconds: 200));
     return const [
-      DoubtTopicDto(id: 10, title: 'Mathematics', parentId: null, hasChildren: true),
-      DoubtTopicDto(id: 11, title: 'Physics', parentId: null, hasChildren: true),
-      DoubtTopicDto(id: 12, title: 'Chemistry', parentId: null, hasChildren: false),
+      DoubtTopicDto(
+        id: 10,
+        title: 'Mathematics',
+        parentId: null,
+        hasChildren: true,
+      ),
+      DoubtTopicDto(
+        id: 11,
+        title: 'Physics',
+        parentId: null,
+        hasChildren: true,
+      ),
+      DoubtTopicDto(
+        id: 12,
+        title: 'Chemistry',
+        parentId: null,
+        hasChildren: false,
+      ),
     ];
   }
 
@@ -1364,7 +1511,7 @@ class MockDataSource implements DataSource {
     bool? shouldClose,
   }) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    
+
     final index = mockDoubts.indexWhere((d) => d.id == doubtId);
     if (index != -1) {
       var newStatus = mockDoubts[index].status;
@@ -1375,7 +1522,7 @@ class MockDataSource implements DataSource {
       } else if (mockDoubts[index].status == DoubtStatus.resolved) {
         newStatus = DoubtStatus.active;
       }
-      
+
       mockDoubts[index] = DoubtDto(
         id: mockDoubts[index].id,
         topicId: mockDoubts[index].topicId,
@@ -1385,7 +1532,8 @@ class MockDataSource implements DataSource {
         content: mockDoubts[index].content,
         studentName: mockDoubts[index].studentName,
         studentAvatar: mockDoubts[index].studentAvatar,
-        replyCount: (mockDoubts[index].replyCount ?? 0) + (comment != null ? 1 : 0),
+        replyCount:
+            (mockDoubts[index].replyCount ?? 0) + (comment != null ? 1 : 0),
         status: newStatus,
         createdAt: mockDoubts[index].createdAt,
         attachmentUrls: mockDoubts[index].attachmentUrls,
@@ -1471,7 +1619,7 @@ class MockDataSource implements DataSource {
     String? bookmarkType,
   }) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    
+
     int? folderId;
     String? folderName;
     if (folder != null && folder.isNotEmpty) {
@@ -1498,16 +1646,16 @@ class MockDataSource implements DataSource {
       lessonId: lessonId,
       bookmarkType: bookmarkType,
     );
-    
+
     final existingIndex = _mockBookmarks.indexWhere(
       (b) => b.lessonId == lessonId && b.folderId == folderId,
     );
     if (existingIndex != -1) {
       return _mockBookmarks[existingIndex];
     }
-    
+
     _mockBookmarks.add(newBookmark);
-    
+
     if (folderId != null) {
       final index = _mockFolders.indexWhere((f) => f.id == folderId);
       if (index != -1) {
@@ -1516,7 +1664,7 @@ class MockDataSource implements DataSource {
         );
       }
     }
-    
+
     return newBookmark;
   }
 
@@ -1525,17 +1673,22 @@ class MockDataSource implements DataSource {
     await Future.delayed(const Duration(milliseconds: 300));
     final idInt = int.tryParse(bookmarkId);
     if (idInt == null) return;
-    
+
     final index = _mockBookmarks.indexWhere((b) => b.id == idInt);
     if (index != -1) {
       final bookmark = _mockBookmarks[index];
       _mockBookmarks.removeAt(index);
-      
+
       if (bookmark.folderId != null) {
-        final fIndex = _mockFolders.indexWhere((f) => f.id == bookmark.folderId);
+        final fIndex = _mockFolders.indexWhere(
+          (f) => f.id == bookmark.folderId,
+        );
         if (fIndex != -1) {
           _mockFolders[fIndex] = _mockFolders[fIndex].copyWith(
-            bookmarksCount: (_mockFolders[fIndex].bookmarksCount - 1).clamp(0, 999999),
+            bookmarksCount: (_mockFolders[fIndex].bookmarksCount - 1).clamp(
+              0,
+              999999,
+            ),
           );
         }
       }
@@ -1545,13 +1698,12 @@ class MockDataSource implements DataSource {
   // ── Posts / Announcements ──────────────────────────────────────────────────
 
   @override
-  Future<PaginatedResponseDto<PostDto>> getPosts({int page = 1, String? categorySlug}) async {
+  Future<PaginatedResponseDto<PostDto>> getPosts({
+    int page = 1,
+    String? categorySlug,
+  }) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    return PaginatedResponseDto(
-      results: mockPosts,
-      count: 3, 
-      next: null,
-    );
+    return PaginatedResponseDto(results: mockPosts, count: 3, next: null);
   }
 
   @override

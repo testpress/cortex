@@ -1,6 +1,13 @@
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:flutter/material.dart'
-    show TextField, InputDecoration, InputBorder, Icon, Material, MaterialType, TextInputAction;
+    show
+        TextField,
+        InputDecoration,
+        InputBorder,
+        Icon,
+        Material,
+        MaterialType,
+        TextInputAction;
 import 'package:flutter/widgets.dart';
 import '../design/design_provider.dart';
 

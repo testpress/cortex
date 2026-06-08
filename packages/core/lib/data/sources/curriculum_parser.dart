@@ -2,18 +2,23 @@ import '../../data/models/chapter_dto.dart';
 import '../../data/models/course_curriculum_dto.dart';
 import '../../data/models/lesson_dto.dart';
 
-/// Specialist class for parsing complex curriculum and lesson responses 
+/// Specialist class for parsing complex curriculum and lesson responses
 /// from various Testpress API versions (V2.5, V3, etc.).
 class CurriculumParser {
   /// Parses the full hierarchy (chapters and lessons) from a course contents response.
   /// This provides the authoritative "blueprint" for the projection layer.
-  static CourseCurriculumDto parseFullCurriculum(dynamic data, {String? chapterId}) {
+  static CourseCurriculumDto parseFullCurriculum(
+    dynamic data, {
+    String? chapterId,
+  }) {
     final lessons = mapLessons(data, chapterId: chapterId);
     final List<ChapterDto> chapters = [];
 
     if (data is Map) {
       final results = data['results'] ?? data;
-      final chaptersListRaw = (results is Map) ? results['chapters'] : data['chapters'];
+      final chaptersListRaw = (results is Map)
+          ? results['chapters']
+          : data['chapters'];
       final chaptersList = chaptersListRaw as List<dynamic>?;
 
       if (chaptersList != null) {
@@ -25,10 +30,7 @@ class CurriculumParser {
       }
     }
 
-    return CourseCurriculumDto(
-      lessons: lessons,
-      chapters: chapters,
-    );
+    return CourseCurriculumDto(lessons: lessons, chapters: chapters);
   }
 
   /// Maps raw API data into a clean list of [LessonDto]s.
@@ -49,9 +51,11 @@ class CurriculumParser {
 
     if (results is Map) {
       // Handle both V2.5 (chapter_contents) and V3 (contents) structures
-      list = (results['contents'] ??
-          results['chapter_contents'] ??
-          results['results']) as List<dynamic>?;
+      list =
+          (results['contents'] ??
+                  results['chapter_contents'] ??
+                  results['results'])
+              as List<dynamic>?;
 
       // Extract chapter metadata if available to enrich lessons
       final chaptersList = results['chapters'] as List<dynamic>?;
@@ -67,33 +71,40 @@ class CurriculumParser {
     }
 
     // Default to the outer results if the inner detection failed
-    list ??= (data['results'] ?? data['contents'] ?? data['chapter_contents'])
-        as List<dynamic>?;
+    list ??=
+        (data['results'] ?? data['contents'] ?? data['chapter_contents'])
+            as List<dynamic>?;
 
-    return list?.map((e) {
-      final json = e as Map<String, dynamic>;
+    return list
+            ?.map((e) {
+              final json = e as Map<String, dynamic>;
 
-      // Filter out curriculum items that are actually chapters
-      final type = (json['content_type'] ?? json['type'] ?? json['kind'])
-          ?.toString()
-          .toLowerCase();
-      if (type == 'chapter') return null;
-      final dto = LessonDto.fromJson(json);
+              // Filter out curriculum items that are actually chapters
+              final type =
+                  (json['content_type'] ?? json['type'] ?? json['kind'])
+                      ?.toString()
+                      .toLowerCase();
+              if (type == 'chapter') return null;
+              final dto = LessonDto.fromJson(json);
 
-      // Enrich with chapter title if we found it in the metadata
-      if (dto.chapterTitle == null || dto.chapterTitle!.isEmpty) {
-        final name = chapterNames[dto.chapterId] ??
-            chapterNames[json['chapter']?.toString() ?? ''];
-        if (name != null) return dto.copyWith(chapterTitle: name);
-      }
+              // Enrich with chapter title if we found it in the metadata
+              if (dto.chapterTitle == null || dto.chapterTitle!.isEmpty) {
+                final name =
+                    chapterNames[dto.chapterId] ??
+                    chapterNames[json['chapter']?.toString() ?? ''];
+                if (name != null) return dto.copyWith(chapterTitle: name);
+              }
 
-      // Enforce specific chapter ID if provided
-      if (chapterId != null && (dto.chapterId.isEmpty || dto.chapterId == '0')) {
-        return dto.copyWith(chapterId: chapterId);
-      }
+              // Enforce specific chapter ID if provided
+              if (chapterId != null &&
+                  (dto.chapterId.isEmpty || dto.chapterId == '0')) {
+                return dto.copyWith(chapterId: chapterId);
+              }
 
-      return dto;
-    }).whereType<LessonDto>().toList() ?? [];
+              return dto;
+            })
+            .whereType<LessonDto>()
+            .toList() ??
+        [];
   }
-
 }

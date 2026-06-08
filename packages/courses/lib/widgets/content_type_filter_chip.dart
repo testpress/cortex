@@ -36,8 +36,8 @@ class ContentTypeFilterChip extends StatelessWidget {
     final Color borderColor = design.isDark
         ? (isSelected ? effectiveAccent : design.colors.border)
         : (isSelected
-              ? effectiveAccent.withValues(alpha: 0.3)
-              : design.colors.border);
+            ? effectiveAccent.withValues(alpha: 0.3)
+            : design.colors.border);
 
     final Color textColor = design.isDark
         ? (isSelected ? design.colors.textPrimary : effectiveAccent)

@@ -59,9 +59,7 @@ class ChapterDto {
   /// Merges this DTO with another to preserve rich metadata.
   ChapterDto mergeWith(ChapterDto? other) {
     if (other == null) return this;
-    return copyWith(
-      image: (image?.isEmpty ?? true) ? other.image : image,
-    );
+    return copyWith(image: (image?.isEmpty ?? true) ? other.image : image);
   }
 
   /// Maps from the `/api/v3/courses/{id}/chapters/` response.
@@ -72,17 +70,24 @@ class ChapterDto {
       id: (json['id'] ?? '').toString(),
       courseId: (json['course_id'] ?? json['courseId'] ?? '').toString(),
       title: json['title'] as String? ?? json['name'] as String? ?? '',
-      lessonCount: (json['contents_count'] as num?)?.toInt() ?? (json['lessonCount'] as num?)?.toInt() ?? 0,
+      lessonCount:
+          (json['contents_count'] as num?)?.toInt() ??
+          (json['lessonCount'] as num?)?.toInt() ??
+          0,
       assessmentCount:
           ((json['exams_count'] as num?)?.toInt() ?? 0) +
           ((json['quizzes_count'] as num?)?.toInt() ?? 0) +
           ((json['assessmentCount'] as num?)?.toInt() ?? 0),
-      orderIndex: (json['order'] as num?)?.toInt() ?? (json['orderIndex'] as num?)?.toInt() ?? 0,
+      orderIndex:
+          (json['order'] as num?)?.toInt() ??
+          (json['orderIndex'] as num?)?.toInt() ??
+          0,
       parentId: (json['parent_id'] ?? json['parentId'])?.toString(),
       isLeaf: json['leaf'] as bool? ?? json['isLeaf'] as bool? ?? true,
       isChaptersSynced: json['isChaptersSynced'] as bool? ?? false,
       image: json['image'] as String?,
-      lessons: (json['lessons'] as List<dynamic>?)
+      lessons:
+          (json['lessons'] as List<dynamic>?)
               ?.map((e) => LessonDto.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],

@@ -13,7 +13,8 @@ class LessonWebView extends StatefulWidget {
     this.description,
     this.url,
     this.padding,
-  }) : assert(htmlContent != null || url != null, 'Either htmlContent or url must be provided');
+  }) : assert(htmlContent != null || url != null,
+            'Either htmlContent or url must be provided');
 
   /// The raw HTML content or embed code to render.
   final String? htmlContent;
@@ -34,9 +35,6 @@ class LessonWebView extends StatefulWidget {
 class _LessonWebViewState extends State<LessonWebView> {
   late final WebViewController _controller;
 
-
-
-
   @override
   void initState() {
     super.initState();
@@ -51,7 +49,7 @@ class _LessonWebViewState extends State<LessonWebView> {
           },
           onWebResourceError: (error) {},
           onNavigationRequest: (request) {
-            // Block all subsequent navigations to ensure users stay 
+            // Block all subsequent navigations to ensure users stay
             // locked within the current lesson content.
             return NavigationDecision.prevent;
           },
@@ -70,7 +68,8 @@ class _LessonWebViewState extends State<LessonWebView> {
   @override
   void didUpdateWidget(LessonWebView oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.htmlContent != widget.htmlContent || oldWidget.url != widget.url) {
+    if (oldWidget.htmlContent != widget.htmlContent ||
+        oldWidget.url != widget.url) {
       _loadContent();
     }
   }
@@ -95,7 +94,7 @@ class _LessonWebViewState extends State<LessonWebView> {
     // We use https://www.testpress.in as baseUrl to provide a valid HTTPS origin.
     // This fixes YouTube Error 153 where local file:// or null origins are blocked.
     const baseUrl = 'https://www.testpress.in';
-    
+
     final textColor = _colorToHexString(design.colors.textPrimary);
     final backgroundColor = _colorToHexString(design.colors.canvas);
 

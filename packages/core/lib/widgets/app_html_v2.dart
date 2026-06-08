@@ -34,8 +34,7 @@ class AppHtmlV2 extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    final effectiveTextColor =
-        textColor ?? design.colors.textPrimary;
+    final effectiveTextColor = textColor ?? design.colors.textPrimary;
 
     final processedData = _preprocessMath(data);
 
@@ -52,10 +51,10 @@ class AppHtmlV2 extends StatelessWidget {
         onLoadingBuilder: (context, element, progress) {
           final widthAttr = element.attributes['width'];
           final heightAttr = element.attributes['height'];
-          
+
           double? w = widthAttr != null ? double.tryParse(widthAttr) : null;
           double? h = heightAttr != null ? double.tryParse(heightAttr) : null;
-          
+
           final decoration = BoxDecoration(
             color: design.colors.surfaceVariant,
             borderRadius: BorderRadius.circular(design.radius.md),
@@ -79,9 +78,7 @@ class AppHtmlV2 extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: design.spacing.md),
             child: Skeletonizer(
               enabled: true,
-              child: Skeleton.replace(
-                child: placeholder,
-              ),
+              child: Skeleton.replace(child: placeholder),
             ),
           );
         },
@@ -111,33 +108,22 @@ class AppHtmlV2 extends StatelessWidget {
 
           // Paragraphs
           if (tag == 'p') {
-            return {
-              'margin': insideLi
-                  ? '0'
-                  : '0 0 14px 0',
-            };
+            return {'margin': insideLi ? '0' : '0 0 14px 0'};
           }
 
           // Divs
           if (tag == 'div') {
-            return {
-              'margin': '0',
-            };
+            return {'margin': '0'};
           }
 
           // Ordered / unordered lists
           if (tag == 'ol' || tag == 'ul') {
-            return {
-              'margin': '0 0 8px 0',
-              'padding-left': '20px',
-            };
+            return {'margin': '0 0 8px 0', 'padding-left': '20px'};
           }
 
           // List items
           if (tag == 'li') {
-            return {
-              'margin': '0 0 4px 0',
-            };
+            return {'margin': '0 0 4px 0'};
           }
 
           // Tables
@@ -150,17 +136,12 @@ class AppHtmlV2 extends StatelessWidget {
           }
 
           if (tag == 'td' || tag == 'th') {
-            return {
-              'border': '1px solid currentColor',
-              'padding': '6px',
-            };
+            return {'border': '1px solid currentColor', 'padding': '6px'};
           }
 
           // Images
           if (tag == 'img') {
-            return {
-              'max-width': '100%',
-            };
+            return {'max-width': '100%'};
           }
 
           return null;
@@ -243,10 +224,12 @@ class AppHtmlV2 extends StatelessWidget {
     for (final match in tagPattern.allMatches(res)) {
       // Text before this tag — apply bare-paren regex
       final before = res.substring(cursor, match.start);
-      buffer.write(before.replaceAllMapped(
-        bareParenRegex,
-        (m) => '<math-tex>${m[1]!.trim()}</math-tex>',
-      ));
+      buffer.write(
+        before.replaceAllMapped(
+          bareParenRegex,
+          (m) => '<math-tex>${m[1]!.trim()}</math-tex>',
+        ),
+      );
       // The tag itself — keep as-is
       buffer.write(match.group(0));
       cursor = match.end;
@@ -254,10 +237,12 @@ class AppHtmlV2 extends StatelessWidget {
 
     // Remaining text after last tag
     final tail = res.substring(cursor);
-    buffer.write(tail.replaceAllMapped(
-      bareParenRegex,
-      (m) => '<math-tex>${m[1]!.trim()}</math-tex>',
-    ));
+    buffer.write(
+      tail.replaceAllMapped(
+        bareParenRegex,
+        (m) => '<math-tex>${m[1]!.trim()}</math-tex>',
+      ),
+    );
 
     res = buffer.toString();
 
@@ -266,10 +251,7 @@ class AppHtmlV2 extends StatelessWidget {
 }
 
 class _MathWidgetFactory extends WidgetFactory {
-  _MathWidgetFactory({
-    required this.textColor,
-    required this.fontSize,
-  });
+  _MathWidgetFactory({required this.textColor, required this.fontSize});
 
   final Color textColor;
   final double fontSize;
@@ -277,8 +259,7 @@ class _MathWidgetFactory extends WidgetFactory {
   @override
   void parse(BuildTree meta) {
     if (meta.element.localName == 'math-tex') {
-      final isBlock =
-          meta.element.attributes['block'] == 'true';
+      final isBlock = meta.element.attributes['block'] == 'true';
 
       final tex = meta.element.text.trim();
 
@@ -292,7 +273,6 @@ class _MathWidgetFactory extends WidgetFactory {
           ),
         );
       }
-
       // INLINE EQUATIONS
       // INLINE EQUATIONS
       else {
@@ -321,18 +301,12 @@ class _MathWidgetFactory extends WidgetFactory {
       // Prevents giant display-style inline equations
       mathStyle: MathStyle.text,
 
-      textStyle: TextStyle(
-        color: textColor,
-        fontSize: fontSize,
-      ),
+      textStyle: TextStyle(color: textColor, fontSize: fontSize),
 
       onErrorFallback: (error) {
         return Text(
           tex,
-          style: TextStyle(
-            color: const Color(0xFFFF0000),
-            fontSize: fontSize,
-          ),
+          style: TextStyle(color: const Color(0xFFFF0000), fontSize: fontSize),
         );
       },
     );
@@ -344,26 +318,18 @@ class _MathWidgetFactory extends WidgetFactory {
 
       mathStyle: MathStyle.display,
 
-      textStyle: TextStyle(
-        color: textColor,
-        fontSize: fontSize,
-      ),
+      textStyle: TextStyle(color: textColor, fontSize: fontSize),
 
       onErrorFallback: (error) {
         return Text(
           tex,
-          style: TextStyle(
-            color: const Color(0xFFFF0000),
-            fontSize: fontSize,
-          ),
+          style: TextStyle(color: const Color(0xFFFF0000), fontSize: fontSize),
         );
       },
     );
 
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 4,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Center(
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,

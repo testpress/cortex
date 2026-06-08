@@ -19,7 +19,7 @@ class VideoAttemptNotifier extends _$VideoAttemptNotifier {
   @override
   void build(int chapterContentId) {
     _startPeriodicSync();
-    
+
     ref.onDispose(() {
       _periodicSyncTimer?.cancel();
       _debounceTimer?.cancel();
@@ -30,7 +30,7 @@ class VideoAttemptNotifier extends _$VideoAttemptNotifier {
   void updatePositionAndRanges(String position, List<List<double>> ranges) {
     _lastWatchPosition = position;
     _watchedTimeRanges.addAll(ranges);
-    
+
     // Debounce the event-driven sync (e.g., pause, seek)
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(seconds: 3), () {
@@ -49,7 +49,10 @@ class VideoAttemptNotifier extends _$VideoAttemptNotifier {
     if (_watchedTimeRanges.isEmpty) return;
 
     // Respect backend 1 request/min throttling unless it's a forced sync (e.g. Back button)
-    if (!isForce && _lastSyncTime != null && DateTime.now().difference(_lastSyncTime!) < const Duration(seconds: 60)) {
+    if (!isForce &&
+        _lastSyncTime != null &&
+        DateTime.now().difference(_lastSyncTime!) <
+            const Duration(seconds: 60)) {
       return;
     }
 
@@ -60,10 +63,10 @@ class VideoAttemptNotifier extends _$VideoAttemptNotifier {
 
     try {
       final repository = await ref.read(courseRepositoryProvider.future);
-      
+
       // Save current state locally before sending, so we know what we sent
       final rangesToSend = List<List<double>>.from(_watchedTimeRanges);
-      
+
       await repository.updateVideoAttempt(
         chapterContentId: chapterContentId,
         lastWatchPosition: _lastWatchPosition,
@@ -74,10 +77,11 @@ class VideoAttemptNotifier extends _$VideoAttemptNotifier {
 
       // Successfully sent! Now we can clear the delta ranges that were sent
       // We must compare by value because Dart lists use identity equality
-      _watchedTimeRanges.removeWhere((r1) => 
-        rangesToSend.any((r2) => r1.length >= 2 && r2.length >= 2 && r1[0] == r2[0] && r1[1] == r2[1])
-      );
-      
+      _watchedTimeRanges.removeWhere((r1) => rangesToSend.any((r2) =>
+          r1.length >= 2 &&
+          r2.length >= 2 &&
+          r1[0] == r2[0] &&
+          r1[1] == r2[1]));
     } catch (e) {
       // Ignore network errors during background sync
     } finally {

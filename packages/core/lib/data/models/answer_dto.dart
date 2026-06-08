@@ -7,7 +7,8 @@ class AnswerDto {
   final String? essayText;
 
   bool get isMarked => review;
-  List<String> get selectedOptions => selectedAnswers.map((e) => e.toString()).toList();
+  List<String> get selectedOptions =>
+      selectedAnswers.map((e) => e.toString()).toList();
 
   AnswerDto({
     required this.questionId,
@@ -19,9 +20,9 @@ class AnswerDto {
     this.essayText,
   }) : review = review || (isMarked ?? false),
        selectedAnswers = selectedOptions
-            .map((e) => int.tryParse(e.toString()) ?? 0)
-            .where((id) => id != 0)
-            .toList();
+           .map((e) => int.tryParse(e.toString()) ?? 0)
+           .where((id) => id != 0)
+           .toList();
 
   Map<String, dynamic> toJson() {
     return {

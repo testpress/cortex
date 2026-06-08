@@ -3,8 +3,9 @@ import 'package:core/core.dart';
 import '../../screens/leaderboard/top_learners_screen.dart';
 
 class LeaderboardSubtabs extends StatelessWidget {
-  const LeaderboardSubtabs({super.key, required this.activeTab, required this.onChanged});
-  
+  const LeaderboardSubtabs(
+      {super.key, required this.activeTab, required this.onChanged});
+
   final LeaderboardTab activeTab;
   final ValueChanged<LeaderboardTab> onChanged;
 
@@ -12,7 +13,7 @@ class LeaderboardSubtabs extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    
+
     return Row(
       children: [
         Expanded(
@@ -53,10 +54,12 @@ class _SubtabItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    
-    final bgColor = isActive ? design.colors.accent2 : design.colors.surfaceVariant;
-    final fgColor = isActive ? design.colors.textInverse : design.colors.textSecondary;
-    
+
+    final bgColor =
+        isActive ? design.colors.accent2 : design.colors.surfaceVariant;
+    final fgColor =
+        isActive ? design.colors.textInverse : design.colors.textSecondary;
+
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,

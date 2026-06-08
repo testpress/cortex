@@ -5,4 +5,3 @@ typedef TestType = PopularTestType;
 
 /// Redirect to core's PopularTestDto for consistency.
 typedef TestDto = PopularTestDto;
-

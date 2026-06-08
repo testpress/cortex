@@ -32,7 +32,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   void initState() {
     super.initState();
     final user = ref.read(userProvider).value;
-    
+
     _firstNameController = TextEditingController(text: user?.firstName ?? '');
     _lastNameController = TextEditingController(text: user?.lastName ?? '');
     _emailController = TextEditingController(text: user?.email ?? '');
@@ -42,7 +42,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   Future<void> _pickAndUploadImage() async {
     final picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-    
+
     if (image != null) {
       final bytes = await image.readAsBytes();
       setState(() {
@@ -80,13 +80,15 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       setState(() => _isSaving = true);
 
       try {
-        await ref.read(userActionsControllerProvider.notifier).updateProfile(
+        await ref
+            .read(userActionsControllerProvider.notifier)
+            .updateProfile(
               firstName: _firstNameController.text.trim(),
               lastName: _lastNameController.text.trim(),
               phone: _phoneController.text.trim(),
               photo: _selectedAvatarPath,
             );
-        
+
         if (mounted) context.pop(true);
       } catch (e) {
         if (mounted) setState(() => _errorMessage = e.toString());
@@ -176,7 +178,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   Widget _buildHeader(BuildContext context, DesignConfig design, dynamic l10n) {
     final statusBarHeight = MediaQuery.of(context).padding.top;
-    
+
     return Container(
       width: double.infinity,
       // Total height = status bar + content bar height
@@ -221,17 +223,17 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   ),
                 ),
               ),
-              
+
               // Save Button - Explicitly constrained height
               SizedBox(
                 height: 36,
                 child: AppButton(
-                   label: l10n.editProfileSave,
-                   onPressed: _validateAndSave,
-                   loading: _isSaving,
-                   padding: EdgeInsets.symmetric(horizontal: design.spacing.lg),
-                   backgroundColor: design.colors.accent2,
-                   foregroundColor: design.colors.onPrimary,
+                  label: l10n.editProfileSave,
+                  onPressed: _validateAndSave,
+                  loading: _isSaving,
+                  padding: EdgeInsets.symmetric(horizontal: design.spacing.lg),
+                  backgroundColor: design.colors.accent2,
+                  foregroundColor: design.colors.onPrimary,
                 ),
               ),
             ],
@@ -265,18 +267,18 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: _selectedAvatarBytes != null
-                        ? Image.memory(
-                            _selectedAvatarBytes!,
-                            fit: BoxFit.cover,
-                          )
+                        ? Image.memory(_selectedAvatarBytes!, fit: BoxFit.cover)
                         : (user.avatar != null && user.avatar!.isNotEmpty
-                            ? Image.network(
-                                user.avatar!,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    _buildInitialsAvatar(user.name ?? '', design),
-                              )
-                            : _buildInitialsAvatar(user.name ?? '', design)),
+                              ? Image.network(
+                                  user.avatar!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      _buildInitialsAvatar(
+                                        user.name ?? '',
+                                        design,
+                                      ),
+                                )
+                              : _buildInitialsAvatar(user.name ?? '', design)),
                   ),
                   Positioned(
                     bottom: 0,
@@ -324,14 +326,15 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget _buildInitialsAvatar(String name, DesignConfig design) {
-     final initials = name.isNotEmpty
-         ? name.split(' ').take(2).map((e) => e.isNotEmpty ? e[0].toUpperCase() : '').join()
-         : '?';
-     return Center(
-       child: AppText.headline(
-          initials,
-          color: design.colors.onPrimary,
-       ),
-     );
+    final initials = name.isNotEmpty
+        ? name
+              .split(' ')
+              .take(2)
+              .map((e) => e.isNotEmpty ? e[0].toUpperCase() : '')
+              .join()
+        : '?';
+    return Center(
+      child: AppText.headline(initials, color: design.colors.onPrimary),
+    );
   }
 }

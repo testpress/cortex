@@ -36,43 +36,83 @@ class QuestionDto {
 
   factory QuestionDto.fromJson(Map<String, dynamic> json) {
     // Handle nested question object in some API versions
-    final Map<String, dynamic> data = json['question'] as Map<String, dynamic>? ?? json;
+    final Map<String, dynamic> data =
+        json['question'] as Map<String, dynamic>? ?? json;
 
     return QuestionDto(
       id: (data['id'] ?? json['id'] ?? '').toString(),
-      text: (data['text'] ?? data['question'] ?? data['question_html'] ?? json['text_html']) as String? ?? '',
+      text:
+          (data['text'] ??
+                  data['question'] ??
+                  data['question_html'] ??
+                  json['text_html'])
+              as String? ??
+          '',
       type: switch ((data['type'] ?? json['type']) as String?) {
-        'R' => 'singleSelect',   // MCQ, Single Correct (Testpress API)
+        'R' => 'singleSelect', // MCQ, Single Correct (Testpress API)
         'C' => 'multipleSelect', // MCQ, Multiple Correct (Testpress API)
         'S' => 'shortAnswer',
         'N' => 'numerical',
         'E' => 'essay',
         _ => 'singleSelect',
       },
-      subject: (data['subject'] ?? data['subject_name'] ?? json['subject_name']) as String? ?? 'General',
-      options: (data['options'] as List<dynamic>? ?? 
-                 data['answers'] as List<dynamic>? ?? 
-                 json['options'] as List<dynamic>? ?? 
-                 json['answers'] as List<dynamic>?)
-              ?.map((e) => QuestionOptionDto.fromJson(e as Map<String, dynamic>))
+      subject:
+          (data['subject'] ?? data['subject_name'] ?? json['subject_name'])
+              as String? ??
+          'General',
+      options:
+          (data['options'] as List<dynamic>? ??
+                  data['answers'] as List<dynamic>? ??
+                  json['options'] as List<dynamic>? ??
+                  json['answers'] as List<dynamic>?)
+              ?.map(
+                (e) => QuestionOptionDto.fromJson(e as Map<String, dynamic>),
+              )
               .toList() ??
           const [],
-      answerUrl: (data['answer_url'] ?? json['answer_url'] ?? data['url'] ?? json['url']) as String? ?? '',
+      answerUrl:
+          (data['answer_url'] ??
+                  json['answer_url'] ??
+                  data['url'] ??
+                  json['url'])
+              as String? ??
+          '',
       markUrl: (data['mark_url'] ?? json['mark_url']) as String?,
-      correctOptionIds: (data['correct_option_ids'] as List<dynamic>? ?? json['correct_option_ids'] as List<dynamic>?)
+      correctOptionIds:
+          (data['correct_option_ids'] as List<dynamic>? ??
+                  json['correct_option_ids'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           const [],
-      explanation: (data['explanation'] ?? data['explanation_html'] ?? json['explanation_html']) as String?,
-      directionHtml: (data['direction'] ?? data['direction_html'] ?? json['direction'] ?? json['direction_html']) as String?,
-      order: int.tryParse((json['order'] ?? json['question_index'] ?? '').toString()) ?? 0,
-      selectedOptionIds: (json['selected_options'] as List<dynamic>? ?? json['selected_answers'] as List<dynamic>?)
+      explanation:
+          (data['explanation'] ??
+                  data['explanation_html'] ??
+                  json['explanation_html'])
+              as String?,
+      directionHtml:
+          (data['direction'] ??
+                  data['direction_html'] ??
+                  json['direction'] ??
+                  json['direction_html'])
+              as String?,
+      order:
+          int.tryParse(
+            (json['order'] ?? json['question_index'] ?? '').toString(),
+          ) ??
+          0,
+      selectedOptionIds:
+          (json['selected_options'] as List<dynamic>? ??
+                  json['selected_answers'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           const [],
       shortText: (data['short_text'] ?? json['short_text']) as String?,
       essayText: (data['essay_text'] ?? json['essay_text']) as String?,
-      sectionName: (json['attempt_section'] is Map) ? (json['attempt_section'] as Map)['name']?.toString() : (data['attempt_section'] is Map) ? (data['attempt_section'] as Map)['name']?.toString() : null,
+      sectionName: (json['attempt_section'] is Map)
+          ? (json['attempt_section'] as Map)['name']?.toString()
+          : (data['attempt_section'] is Map)
+          ? (data['attempt_section'] as Map)['name']?.toString()
+          : null,
     );
   }
 
@@ -102,10 +142,7 @@ class QuestionOptionDto {
   final String id;
   final String text;
 
-  const QuestionOptionDto({
-    required this.id,
-    required this.text,
-  });
+  const QuestionOptionDto({required this.id, required this.text});
 
   factory QuestionOptionDto.fromJson(Map<String, dynamic> json) {
     return QuestionOptionDto(
@@ -115,9 +152,6 @@ class QuestionOptionDto {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'text': text,
-    };
+    return {'id': id, 'text': text};
   }
 }

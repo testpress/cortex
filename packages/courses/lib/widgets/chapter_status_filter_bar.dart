@@ -42,9 +42,9 @@ class ChapterStatusFilterBar extends ConsumerWidget {
             child: _FilterPill(
               label: filter.label,
               isSelected: isSelected,
-              onTap: () =>
-                  ref.read(chapterStatusFilterProvider.notifier).state =
-                      filter.filter,
+              onTap: () => ref
+                  .read(chapterStatusFilterProvider.notifier)
+                  .state = filter.filter,
             ),
           );
         }).toList(),
@@ -68,12 +68,10 @@ class _FilterPill extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    final bgColor = isSelected
-        ? design.colors.textPrimary
-        : design.colors.surfaceVariant;
-    final fgColor = isSelected
-        ? design.colors.textInverse
-        : design.colors.textPrimary;
+    final bgColor =
+        isSelected ? design.colors.textPrimary : design.colors.surfaceVariant;
+    final fgColor =
+        isSelected ? design.colors.textInverse : design.colors.textPrimary;
 
     return AppSemantics.button(
       label: 'Filter by $label',

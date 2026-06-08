@@ -36,7 +36,6 @@ Future<List<PopularTestDto>> popularTests(PopularTestsRef ref) async {
   return ref.watch(dataSourceProvider).getPopularTests();
 }
 
-
 // Filtered Providers
 
 @riverpod
@@ -60,13 +59,13 @@ Future<List<ShortLessonDto>> filteredShortLessons(
 }
 
 @riverpod
-Future<List<PopularTestDto>> filteredPopularTests(FilteredPopularTestsRef ref) async {
+Future<List<PopularTestDto>> filteredPopularTests(
+    FilteredPopularTestsRef ref) async {
   final query = ref.watch(exploreSearchQueryProvider).toLowerCase();
   final tests = await ref.watch(popularTestsProvider.future);
   if (query.isEmpty) return tests;
   return tests.where((t) => t.title.toLowerCase().contains(query)).toList();
 }
-
 
 @riverpod
 Future<List<StudyTipDto>> filteredStudyTips(FilteredStudyTipsRef ref) async {

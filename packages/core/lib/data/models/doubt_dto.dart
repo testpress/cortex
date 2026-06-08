@@ -19,9 +19,11 @@ class DoubtDto {
   final DoubtStatus status;
   final List<String> attachmentUrls;
   final DateTime createdAt;
+
   /// Human-readable relative time from the API (e.g. "4 days, 1 hour ago").
   /// Null when loaded from local cache — use [DateFormatter.formatTimeAgo] as fallback.
   final String? createdHumanized;
+
   /// Kept for local tracking (e.g. incremented on reply). Not returned by the list API.
   final int? replyCount;
 
@@ -41,14 +43,19 @@ class DoubtDto {
     this.replyCount,
   });
 
-  factory DoubtDto.fromJson(Map<String, dynamic> json, {List<dynamic>? topicsList}) {
+  factory DoubtDto.fromJson(
+    Map<String, dynamic> json, {
+    List<dynamic>? topicsList,
+  }) {
     // Parse reporter info — already a full user object at this point.
     String studentName = 'Student';
     String? studentAvatar;
     final reportedByVal = json['reported_by'];
     if (reportedByVal is Map<String, dynamic>) {
       studentName = reportedByVal['display_name'] as String? ?? 'Student';
-      studentAvatar = reportedByVal['photo'] as String? ?? reportedByVal['medium_image'] as String?;
+      studentAvatar =
+          reportedByVal['photo'] as String? ??
+          reportedByVal['medium_image'] as String?;
     }
 
     // Parse topic (course/category).
@@ -62,7 +69,10 @@ class DoubtDto {
       topicId = topicVal;
       // Look up topic name from the provided list if available
       if (topicsList != null) {
-        final found = topicsList.whereType<Map<String, dynamic>>().where((t) => t['id'] == topicId).firstOrNull;
+        final found = topicsList
+            .whereType<Map<String, dynamic>>()
+            .where((t) => t['id'] == topicId)
+            .firstOrNull;
         if (found != null) {
           topicName = found['title'] as String?;
         }
@@ -75,7 +85,9 @@ class DoubtDto {
       'resolved': DoubtStatus.resolved,
       'closed': DoubtStatus.closed,
     };
-    final status = statusMap[(json['status'] as String? ?? '').toLowerCase()] ?? DoubtStatus.active;
+    final status =
+        statusMap[(json['status'] as String? ?? '').toLowerCase()] ??
+        DoubtStatus.active;
 
     return DoubtDto(
       id: json['id'].toString(),
@@ -98,14 +110,17 @@ class DoubtDto {
   ///
   /// The detail endpoint returns the ticket as the root JSON object — this is
   /// a convenience alias since the field shapes match [fromJson].
-  factory DoubtDto.fromDetailJson(Map<String, dynamic> json) => DoubtDto.fromJson(json);
+  factory DoubtDto.fromDetailJson(Map<String, dynamic> json) =>
+      DoubtDto.fromJson(json);
 
   /// Parses the full list API response.
   ///
   /// The list endpoint returns tickets with [reported_by] as a bare int ID,
   /// and a separate [reportees] array of full user objects. This method
   /// joins them before delegating to [fromJson].
-  static PaginatedResponseDto<DoubtDto> fromListResponse(Map<String, dynamic> response) {
+  static PaginatedResponseDto<DoubtDto> fromListResponse(
+    Map<String, dynamic> response,
+  ) {
     final count = response['count'] as int? ?? 0;
     final next = response['next'] as String?;
     final previous = response['previous'] as String?;
@@ -127,7 +142,10 @@ class DoubtDto {
     final results = ticketsJson.whereType<Map<String, dynamic>>().map((ticket) {
       final reportedBy = ticket['reported_by'];
       if (reportedBy is int && reportees.containsKey(reportedBy)) {
-        return DoubtDto.fromJson({...ticket, 'reported_by': reportees[reportedBy]}, topicsList: topicsJson);
+        return DoubtDto.fromJson({
+          ...ticket,
+          'reported_by': reportees[reportedBy],
+        }, topicsList: topicsJson);
       }
       return DoubtDto.fromJson(ticket, topicsList: topicsJson);
     }).toList();
@@ -140,7 +158,6 @@ class DoubtDto {
     );
   }
 }
-
 
 /// DTO for a reply in a doubt thread.
 class DoubtReplyDto {
@@ -173,7 +190,8 @@ class DoubtReplyDto {
   }) {
     final userMap = json['user'] as Map<String, dynamic>?;
     final authorName = userMap?['display_name'] as String? ?? 'User';
-    final authorAvatar = userMap?['photo'] as String? ?? userMap?['medium_image'] as String?;
+    final authorAvatar =
+        userMap?['photo'] as String? ?? userMap?['medium_image'] as String?;
     // A follow-up is a mentor reply if the author differs from the student who raised the doubt.
     final authorId = userMap?['id']?.toString();
     final isMentor = reportedById != null ? authorId != reportedById : false;
@@ -209,11 +227,13 @@ class DoubtReplyDto {
     final followUpsJson = response['follow_ups'] as List<dynamic>? ?? [];
     return followUpsJson
         .whereType<Map<String, dynamic>>()
-        .map((item) => DoubtReplyDto.fromJson(item, doubtId, reportedById: reportedById))
+        .map(
+          (item) =>
+              DoubtReplyDto.fromJson(item, doubtId, reportedById: reportedById),
+        )
         .toList();
   }
 }
-
 
 /// DTO for a hierarchical doubt topic (category).
 class DoubtTopicDto {

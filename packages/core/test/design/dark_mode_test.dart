@@ -32,7 +32,7 @@ void main() {
       );
 
       // Default is light
-      expect(capturedConfig.colors.surface, const Color(0xFFF9FAFB));
+      expect(capturedConfig.colors.surface, const Color(0xFFE9EEF4));
 
       // Simulate dark mode
       tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
@@ -40,7 +40,7 @@ void main() {
 
       // Should now be dark
       capturedConfig = Design.of(tester.element(find.byType(SizedBox)));
-      expect(capturedConfig.colors.surface, const Color(0xFF0F172A));
+      expect(capturedConfig.colors.surface, const Color(0xFF18181B));
     });
 
     testWidgets('Manual override forces theme', (tester) async {
@@ -64,7 +64,7 @@ void main() {
       );
 
       // Even if platform is light, it should be dark
-      expect(capturedConfig.colors.surface, const Color(0xFF0F172A));
+      expect(capturedConfig.colors.surface, const Color(0xFF18181B));
     });
   });
 }

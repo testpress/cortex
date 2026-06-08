@@ -13,12 +13,12 @@ class VttCue {
     final parts = startTime.split('.');
     final timeStr = parts.isNotEmpty ? parts[0].trim() : startTime.trim();
     final timeUnits = timeStr.split(':');
-    
+
     if (timeUnits.length == 3) {
       final hrs = int.tryParse(timeUnits[0]) ?? 0;
       final mins = int.tryParse(timeUnits[1]) ?? 0;
       final secs = int.tryParse(timeUnits[2]) ?? 0;
-      
+
       if (hrs == 0) {
         final mm = mins.toString().padLeft(2, '0');
         final ss = secs.toString().padLeft(2, '0');
@@ -44,16 +44,16 @@ class VttParser {
   static List<VttCue> parse(String vttContent) {
     final List<VttCue> cues = [];
     final lines = vttContent.split(RegExp(r'\r?\n'));
-    
+
     int index = 0;
     while (index < lines.length) {
       final line = lines[index].trim();
-      
+
       // Skip empty lines, headers, notes, or style definitions
-      if (line.isEmpty || 
-          line.startsWith('WEBVTT') || 
-          line.startsWith('NOTE') || 
-          line.startsWith('STYLE') || 
+      if (line.isEmpty ||
+          line.startsWith('WEBVTT') ||
+          line.startsWith('NOTE') ||
+          line.startsWith('STYLE') ||
           line.startsWith('REGION')) {
         index++;
         continue;
@@ -66,7 +66,7 @@ class VttParser {
           final startTime = timeParts[0].trim();
           // The end time might be followed by settings, so split by space
           final endTime = timeParts[1].trim().split(RegExp(r'\s+'))[0];
-          
+
           // Read subsequent lines until we hit an empty line or another timestamp
           final List<String> textLines = [];
           index++;
@@ -87,7 +87,7 @@ class VttParser {
             }
             index++;
           }
-          
+
           if (textLines.isNotEmpty) {
             cues.add(VttCue(
               startTime: startTime,
@@ -99,7 +99,7 @@ class VttParser {
       }
       index++;
     }
-    
+
     return cues;
   }
 }

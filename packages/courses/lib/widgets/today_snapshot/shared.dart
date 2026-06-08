@@ -6,12 +6,10 @@ import '../../models/assignment_dto.dart';
 extension StringExtension on String {
   String toTitleCase() {
     if (isEmpty) return this;
-    return split(' ')
-        .map((word) {
-          if (word.isEmpty) return word;
-          return '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}';
-        })
-        .join(' ');
+    return split(' ').map((word) {
+      if (word.isEmpty) return word;
+      return '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}';
+    }).join(' ');
   }
 }
 
@@ -24,20 +22,20 @@ class ContentIcon extends StatelessWidget {
     final design = Design.of(context);
     return switch (status) {
       ClassStatus.live => Icon(
-        LucideIcons.video,
-        size: 20,
-        color: design.colors.error,
-      ),
+          LucideIcons.video,
+          size: 20,
+          color: design.colors.error,
+        ),
       ClassStatus.completed => Icon(
-        LucideIcons.checkCircle2,
-        size: 20,
-        color: design.colors.success,
-      ),
+          LucideIcons.checkCircle2,
+          size: 20,
+          color: design.colors.success,
+        ),
       ClassStatus.upcoming => Icon(
-        LucideIcons.clock,
-        size: 20,
-        color: design.colors.warning,
-      ),
+          LucideIcons.clock,
+          size: 20,
+          color: design.colors.warning,
+        ),
     };
   }
 }
@@ -51,20 +49,20 @@ class AssignmentIcon extends StatelessWidget {
     final design = Design.of(context);
     return switch (status) {
       AssignmentStatus.overdue => Icon(
-        LucideIcons.alertCircle,
-        size: 20,
-        color: design.colors.error,
-      ),
+          LucideIcons.alertCircle,
+          size: 20,
+          color: design.colors.error,
+        ),
       AssignmentStatus.submitted => Icon(
-        LucideIcons.checkCircle2,
-        size: 20,
-        color: design.colors.success,
-      ),
+          LucideIcons.checkCircle2,
+          size: 20,
+          color: design.colors.success,
+        ),
       AssignmentStatus.pending => Icon(
-        LucideIcons.clock,
-        size: 20,
-        color: design.colors.warning,
-      ),
+          LucideIcons.clock,
+          size: 20,
+          color: design.colors.warning,
+        ),
     };
   }
 }

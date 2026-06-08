@@ -46,17 +46,14 @@ class AuthApiService {
     required String phoneNumber,
     String? email,
   }) async {
-    final response = await _post(
-      ApiEndpoints.verifyOtp,
-      {
-        'otp': _parseOtp(otp),
-        ..._buildOtpIdentityPayload(
-          phoneNumber: phoneNumber,
-          countryCode: null,
-          email: email,
-        ),
-      },
-    );
+    final response = await _post(ApiEndpoints.verifyOtp, {
+      'otp': _parseOtp(otp),
+      ..._buildOtpIdentityPayload(
+        phoneNumber: phoneNumber,
+        countryCode: null,
+        email: email,
+      ),
+    });
 
     return _parseSession(response);
   }

@@ -24,17 +24,23 @@ Future<List<RecentActivityDto>> profileRecentActivity(Ref ref) async {
 @riverpod
 Stream<List<CourseDto>> profileEnrollment(Ref ref) async* {
   final db = await ref.watch(appDatabaseProvider.future);
-  yield* db.watchAllCourses().map((rows) => rows.map((row) => CourseDto(
-        id: row.id,
-        title: row.title,
-        colorIndex: row.colorIndex,
-        chapterCount: row.chapterCount,
-        totalDuration: row.totalDuration,
-        totalContents: row.totalContents,
-        progress: row.progress,
-        completedLessons: row.completedLessons,
-        totalLessons: row.totalLessons,
-      )).toList());
+  yield* db.watchAllCourses().map(
+    (rows) => rows
+        .map(
+          (row) => CourseDto(
+            id: row.id,
+            title: row.title,
+            colorIndex: row.colorIndex,
+            chapterCount: row.chapterCount,
+            totalDuration: row.totalDuration,
+            totalContents: row.totalContents,
+            progress: row.progress,
+            completedLessons: row.completedLessons,
+            totalLessons: row.totalLessons,
+          ),
+        )
+        .toList(),
+  );
 }
 
 final isLogoutSheetOpenProvider = StateProvider<bool>((ref) => false);

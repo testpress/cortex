@@ -30,7 +30,7 @@ class PopularTestsSection extends StatelessWidget {
                 ),
               ),
               GestureDetector(
-                  onTap: () => context.go('/study'),
+                onTap: () => context.go('/study'),
                 child: AppText.labelBold(
                   l10n.viewAllAction,
                   color: design.colors.textPrimary,
@@ -130,16 +130,14 @@ class _TestCard extends StatelessWidget {
                         label: test.type == PopularTestType.mock
                             ? l10n.labelMock
                             : l10n.labelPractice,
-                        backgroundColor:
-                            (test.type == PopularTestType.mock
-                                    ? design.colors.primary
-                                    : design.colors.success)
-                                .withValues(alpha: 0.08),
+                        backgroundColor: (test.type == PopularTestType.mock
+                                ? design.colors.primary
+                                : design.colors.success)
+                            .withValues(alpha: 0.08),
                         foregroundColor: test.type == PopularTestType.mock
                             ? design.colors.primary
                             : design.colors.success,
                       ),
-
                       const Spacer(),
                       AppText.bodySmall(
                         test.duration,

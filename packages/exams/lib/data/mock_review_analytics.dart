@@ -55,7 +55,9 @@ class MockReviewAnalyticsFactory {
           final isCorrect =
               attempt.selectedOptions.length == q.correctOptionIds.length &&
               q.correctOptionIds.every(
-                (id) => attempt.selectedOptions.any((optId) => optId.toString() == id.toString()),
+                (id) => attempt.selectedOptions.any(
+                  (optId) => optId.toString() == id.toString(),
+                ),
               );
           if (isCorrect) {
             subjectCorrect++;

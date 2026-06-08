@@ -33,7 +33,9 @@ class MetricsGrid extends StatelessWidget {
       _MetricData(
         label: 'Time Taken',
         value: formatDuration(overview.timeTaken),
-        subValue: overview.totalTime != null ? ' / ${formatDuration(overview.totalTime, showUnit: true)}' : null,
+        subValue: overview.totalTime != null
+            ? ' / ${formatDuration(overview.totalTime, showUnit: true)}'
+            : null,
       ),
       if (overview.rankEnabled == true)
         _MetricData(

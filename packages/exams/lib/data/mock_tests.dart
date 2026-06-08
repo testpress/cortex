@@ -28,7 +28,6 @@ const mockTests = [
 ];
 
 class MockTestFactory {
-
   static Test createMockTest() {
     return const Test(
       id: 'mock-test-thermo',
@@ -56,7 +55,8 @@ class MockTestFactory {
           QuestionOption(id: 'o4', text: 'Rankine'),
         ],
         correctOptionIds: ['o3'],
-        explanation: 'Kelvin is the primary unit of temperature in the International System of Units (SI).',
+        explanation:
+            'Kelvin is the primary unit of temperature in the International System of Units (SI).',
       ),
       const TestQuestion(
         id: 'q2',
@@ -71,12 +71,14 @@ class MockTestFactory {
           QuestionOption(id: 'o8', text: 'Time'),
         ],
         correctOptionIds: ['o6'],
-        explanation: 'F = ma, where F is force, m is mass, and a is acceleration.',
+        explanation:
+            'F = ma, where F is force, m is mass, and a is acceleration.',
       ),
       const TestQuestion(
         id: 'q3',
         number: 3,
-        text: 'Which gas law describes the relationship between pressure and volume at constant temperature?',
+        text:
+            'Which gas law describes the relationship between pressure and volume at constant temperature?',
         subject: 'Chemistry',
         type: QuestionType.mcq,
         options: [
@@ -86,7 +88,8 @@ class MockTestFactory {
           QuestionOption(id: 'o12', text: 'Henry’s Law'),
         ],
         correctOptionIds: ['o10'],
-        explanation: 'Boyle’s Law states that pressure and volume are inversely proportional at constant temperature.',
+        explanation:
+            'Boyle’s Law states that pressure and volume are inversely proportional at constant temperature.',
       ),
       const TestQuestion(
         id: 'q4',
@@ -130,7 +133,8 @@ class MockTestFactory {
           QuestionOption(id: 'q6o4', text: 'Work done by the system'),
         ],
         correctOptionIds: ['q6o2'],
-        explanation: 'ΔU is the change in internal energy; the first law relates it to heat and work.',
+        explanation:
+            'ΔU is the change in internal energy; the first law relates it to heat and work.',
       ),
       const TestQuestion(
         id: 'q7',
@@ -143,12 +147,14 @@ class MockTestFactory {
           QuestionOption(id: 'q7o2', text: 'False'),
         ],
         correctOptionIds: ['q7o1'],
-        explanation: 'Entropy tends to increase in isolated systems (second law of thermodynamics).',
+        explanation:
+            'Entropy tends to increase in isolated systems (second law of thermodynamics).',
       ),
       const TestQuestion(
         id: 'q8',
         number: 8,
-        text: 'What is the Carnot efficiency η for a reversible engine operating between a hot reservoir at Th and cold at Tc?',
+        text:
+            'What is the Carnot efficiency η for a reversible engine operating between a hot reservoir at Th and cold at Tc?',
         subject: 'Thermodynamics',
         type: QuestionType.mcq,
         options: [
@@ -158,7 +164,8 @@ class MockTestFactory {
           QuestionOption(id: 'q8o4', text: 'η = Th/Tc'),
         ],
         correctOptionIds: ['q8o1'],
-        explanation: 'Carnot efficiency depends only on the two reservoir temperatures in Kelvin.',
+        explanation:
+            'Carnot efficiency depends only on the two reservoir temperatures in Kelvin.',
       ),
       const TestQuestion(
         id: 'q9',
@@ -167,33 +174,49 @@ class MockTestFactory {
         subject: 'Thermodynamics',
         type: QuestionType.mcq,
         options: [
-          QuestionOption(id: 'q9o1', text: 'When it operates reversibly between two fixed temperatures'),
-          QuestionOption(id: 'q9o2', text: 'When it runs faster than other engines'),
-          QuestionOption(id: 'q9o3', text: 'When it rejects more heat than it absorbs'),
+          QuestionOption(
+            id: 'q9o1',
+            text: 'When it operates reversibly between two fixed temperatures',
+          ),
+          QuestionOption(
+            id: 'q9o2',
+            text: 'When it runs faster than other engines',
+          ),
+          QuestionOption(
+            id: 'q9o3',
+            text: 'When it rejects more heat than it absorbs',
+          ),
           QuestionOption(id: 'q9o4', text: 'When it makes no work output'),
         ],
         correctOptionIds: ['q9o1'],
-        explanation: 'The reversible Carnot cycle defines the upper bound for efficiency.',
+        explanation:
+            'The reversible Carnot cycle defines the upper bound for efficiency.',
       ),
       const TestQuestion(
         id: 'q10',
         number: 10,
-        text: 'Minimizing the Helmholtz free energy at constant volume and temperature indicates what?',
+        text:
+            'Minimizing the Helmholtz free energy at constant volume and temperature indicates what?',
         subject: 'Thermodynamics',
         type: QuestionType.mcq,
         options: [
-          QuestionOption(id: 'q10o1', text: 'The system is at equilibrium and cannot do net work'),
+          QuestionOption(
+            id: 'q10o1',
+            text: 'The system is at equilibrium and cannot do net work',
+          ),
           QuestionOption(id: 'q10o2', text: 'The entropy is decreasing'),
           QuestionOption(id: 'q10o3', text: 'Heat is being added constantly'),
           QuestionOption(id: 'q10o4', text: 'Pressure is increasing'),
         ],
         correctOptionIds: ['q10o1'],
-        explanation: 'Helmholtz free energy reaches a minimum at equilibrium under constant T and V.',
+        explanation:
+            'Helmholtz free energy reaches a minimum at equilibrium under constant T and V.',
       ),
       const TestQuestion(
         id: 'q11',
         number: 11,
-        text: 'At constant pressure, the heat added to a system changes which state function?',
+        text:
+            'At constant pressure, the heat added to a system changes which state function?',
         subject: 'Thermodynamics',
         type: QuestionType.mcq,
         options: [
@@ -203,7 +226,8 @@ class MockTestFactory {
           QuestionOption(id: 'q11o4', text: 'Work'),
         ],
         correctOptionIds: ['q11o3'],
-        explanation: 'At constant pressure, heat equals the change in enthalpy (ΔH = Qp).',
+        explanation:
+            'At constant pressure, heat equals the change in enthalpy (ΔH = Qp).',
       ),
       const TestQuestion(
         id: 'q12',
@@ -218,12 +242,14 @@ class MockTestFactory {
           QuestionOption(id: 'q12o4', text: 'Cp + Cv'),
         ],
         correctOptionIds: ['q12o2'],
-        explanation: 'γ is the ratio of specific heats at constant pressure and volume.',
+        explanation:
+            'γ is the ratio of specific heats at constant pressure and volume.',
       ),
       const TestQuestion(
         id: 'q13',
         number: 13,
-        text: 'In an adiabatic process, how much heat is exchanged with the surroundings?',
+        text:
+            'In an adiabatic process, how much heat is exchanged with the surroundings?',
         subject: 'Thermodynamics',
         type: QuestionType.mcq,
         options: [
@@ -233,12 +259,14 @@ class MockTestFactory {
           QuestionOption(id: 'q13o4', text: 'Depends on pressure only'),
         ],
         correctOptionIds: ['q13o1'],
-        explanation: 'Adiabatic means Q = 0; no heat enters or leaves the system.',
+        explanation:
+            'Adiabatic means Q = 0; no heat enters or leaves the system.',
       ),
       const TestQuestion(
         id: 'q14',
         number: 14,
-        text: 'During an isothermal expansion of an ideal gas, the temperature remains constant.',
+        text:
+            'During an isothermal expansion of an ideal gas, the temperature remains constant.',
         subject: 'Thermodynamics',
         type: QuestionType.trueFalse,
         options: [
@@ -246,12 +274,14 @@ class MockTestFactory {
           QuestionOption(id: 'q14o2', text: 'False'),
         ],
         correctOptionIds: ['q14o1'],
-        explanation: 'Isothermal means constant temperature, even while volume and pressure change.',
+        explanation:
+            'Isothermal means constant temperature, even while volume and pressure change.',
       ),
       const TestQuestion(
         id: 'q15',
         number: 15,
-        text: 'Which Maxwell relation is derived from the Helmholtz free energy A(T,V)?',
+        text:
+            'Which Maxwell relation is derived from the Helmholtz free energy A(T,V)?',
         subject: 'Thermodynamics',
         type: QuestionType.mcq,
         options: [
@@ -261,7 +291,8 @@ class MockTestFactory {
           QuestionOption(id: 'q15o4', text: '(∂G/∂P)_T = -(∂V/∂T)_P'),
         ],
         correctOptionIds: ['q15o1'],
-        explanation: 'Helmholtz free energy yields (∂P/∂T)_V = (∂S/∂V)_T as one of its Maxwell relations.',
+        explanation:
+            'Helmholtz free energy yields (∂P/∂T)_V = (∂S/∂V)_T as one of its Maxwell relations.',
       ),
       const TestQuestion(
         id: 'q16',
@@ -276,22 +307,34 @@ class MockTestFactory {
           QuestionOption(id: 'q16o4', text: 'W/Qc'),
         ],
         correctOptionIds: ['q16o2'],
-        explanation: 'COP for refrigerators is the ratio of heat removed from the cold reservoir to the work input.',
+        explanation:
+            'COP for refrigerators is the ratio of heat removed from the cold reservoir to the work input.',
       ),
       const TestQuestion(
         id: 'q17',
         number: 17,
-        text: 'According to the Clausius statement of the second law, which device is impossible?',
+        text:
+            'According to the Clausius statement of the second law, which device is impossible?',
         subject: 'Thermodynamics',
         type: QuestionType.mcq,
         options: [
-          QuestionOption(id: 'q17o1', text: 'A device that transfers heat from cold to hot without work'),
-          QuestionOption(id: 'q17o2', text: 'A device that converts all heat into work'),
-          QuestionOption(id: 'q17o3', text: 'A device that operates reversibly'),
+          QuestionOption(
+            id: 'q17o1',
+            text: 'A device that transfers heat from cold to hot without work',
+          ),
+          QuestionOption(
+            id: 'q17o2',
+            text: 'A device that converts all heat into work',
+          ),
+          QuestionOption(
+            id: 'q17o3',
+            text: 'A device that operates reversibly',
+          ),
           QuestionOption(id: 'q17o4', text: 'A heat pump performing work'),
         ],
         correctOptionIds: ['q17o1'],
-        explanation: 'Clausius phrasing forbids spontaneous heat transfer from cold to hot without external work.',
+        explanation:
+            'Clausius phrasing forbids spontaneous heat transfer from cold to hot without external work.',
       ),
       const TestQuestion(
         id: 'q18',
@@ -300,13 +343,23 @@ class MockTestFactory {
         subject: 'Thermodynamics',
         type: QuestionType.multipleSelect,
         options: [
-          QuestionOption(id: 'q18o1', text: 'It transfers heat from cold to hot by doing work'),
+          QuestionOption(
+            id: 'q18o1',
+            text: 'It transfers heat from cold to hot by doing work',
+          ),
           QuestionOption(id: 'q18o2', text: 'It always has COP less than 1'),
-          QuestionOption(id: 'q18o3', text: 'It can be used for heating or cooling'),
-          QuestionOption(id: 'q18o4', text: 'It violates the second law of thermodynamics'),
+          QuestionOption(
+            id: 'q18o3',
+            text: 'It can be used for heating or cooling',
+          ),
+          QuestionOption(
+            id: 'q18o4',
+            text: 'It violates the second law of thermodynamics',
+          ),
         ],
         correctOptionIds: ['q18o1', 'q18o3'],
-        explanation: 'Heat pumps move heat uphill using work; their COP can exceed 1 and they serve both heating and cooling.',
+        explanation:
+            'Heat pumps move heat uphill using work; their COP can exceed 1 and they serve both heating and cooling.',
       ),
       const TestQuestion(
         id: 'q19',
@@ -315,18 +368,29 @@ class MockTestFactory {
         subject: 'Thermodynamics',
         type: QuestionType.mcq,
         options: [
-          QuestionOption(id: 'q19o1', text: 'Temperature where the solid melts'),
-          QuestionOption(id: 'q19o2', text: 'Single pressure where all three phases coexist'),
+          QuestionOption(
+            id: 'q19o1',
+            text: 'Temperature where the solid melts',
+          ),
+          QuestionOption(
+            id: 'q19o2',
+            text: 'Single pressure where all three phases coexist',
+          ),
           QuestionOption(id: 'q19o3', text: 'Point where entropy is zero'),
-          QuestionOption(id: 'q19o4', text: 'State with equal internal energy for all phases'),
+          QuestionOption(
+            id: 'q19o4',
+            text: 'State with equal internal energy for all phases',
+          ),
         ],
         correctOptionIds: ['q19o2'],
-        explanation: 'The triple point is the unique (T,P) point where solid, liquid, and gas phases are in equilibrium.',
+        explanation:
+            'The triple point is the unique (T,P) point where solid, liquid, and gas phases are in equilibrium.',
       ),
       const TestQuestion(
         id: 'q20',
         number: 20,
-        text: 'The latent heat of vaporization is the energy required to change a liquid to a gas at constant temperature.',
+        text:
+            'The latent heat of vaporization is the energy required to change a liquid to a gas at constant temperature.',
         subject: 'Thermodynamics',
         type: QuestionType.trueFalse,
         options: [
@@ -334,12 +398,14 @@ class MockTestFactory {
           QuestionOption(id: 'q20o2', text: 'False'),
         ],
         correctOptionIds: ['q20o1'],
-        explanation: 'During a phase change at constant temperature, the latent heat supplies the energy for rearranging molecular bonds.',
+        explanation:
+            'During a phase change at constant temperature, the latent heat supplies the energy for rearranging molecular bonds.',
       ),
       const TestQuestion(
         id: 'q21',
         number: 21,
-        text: 'Which constant relates average kinetic energy to temperature in the ideal gas law?',
+        text:
+            'Which constant relates average kinetic energy to temperature in the ideal gas law?',
         subject: 'Thermodynamics',
         type: QuestionType.mcq,
         options: [
@@ -349,12 +415,14 @@ class MockTestFactory {
           QuestionOption(id: 'q21o4', text: 'Gravitational constant'),
         ],
         correctOptionIds: ['q21o2'],
-        explanation: 'Boltzmann constant (k ≈ 1.38×10⁻²³ J/K) bridges microscopic and macroscopic temperature scales.',
+        explanation:
+            'Boltzmann constant (k ≈ 1.38×10⁻²³ J/K) bridges microscopic and macroscopic temperature scales.',
       ),
       const TestQuestion(
         id: 'q22',
         number: 22,
-        text: 'The equipartition theorem gives what average energy per quadratic degree of freedom?',
+        text:
+            'The equipartition theorem gives what average energy per quadratic degree of freedom?',
         subject: 'Thermodynamics',
         type: QuestionType.mcq,
         options: [
@@ -364,7 +432,8 @@ class MockTestFactory {
           QuestionOption(id: 'q22o4', text: '0'),
         ],
         correctOptionIds: ['q22o1'],
-        explanation: 'Each quadratic degree of freedom contributes ½ kT to the average energy.',
+        explanation:
+            'Each quadratic degree of freedom contributes ½ kT to the average energy.',
       ),
       const TestQuestion(
         id: 'q23',
@@ -410,7 +479,8 @@ class MockTestFactory {
           QuestionOption(id: 'q25o4', text: 'Enthalpy'),
         ],
         correctOptionIds: ['q25o3'],
-        explanation: 'Work depends on the path taken; state functions like entropy do not.',
+        explanation:
+            'Work depends on the path taken; state functions like entropy do not.',
       ),
       const TestQuestion(
         id: 'q26',
@@ -425,12 +495,14 @@ class MockTestFactory {
           QuestionOption(id: 'q26o4', text: 'Work'),
         ],
         correctOptionIds: ['q26o1', 'q26o3'],
-        explanation: 'Entropy and enthalpy are state functions; heat and work depend on the process.',
+        explanation:
+            'Entropy and enthalpy are state functions; heat and work depend on the process.',
       ),
       const TestQuestion(
         id: 'q27',
         number: 27,
-        text: 'For an ideal gas at constant pressure, increasing the temperature increases the volume.',
+        text:
+            'For an ideal gas at constant pressure, increasing the temperature increases the volume.',
         subject: 'Thermodynamics',
         type: QuestionType.trueFalse,
         options: [
@@ -438,12 +510,14 @@ class MockTestFactory {
           QuestionOption(id: 'q27o2', text: 'False'),
         ],
         correctOptionIds: ['q27o1'],
-        explanation: 'PV = nRT; at constant P, volume rises proportionally with T.',
+        explanation:
+            'PV = nRT; at constant P, volume rises proportionally with T.',
       ),
       const TestQuestion(
         id: 'q28',
         number: 28,
-        text: 'In a free expansion of an ideal gas into vacuum, the internal energy remains constant.',
+        text:
+            'In a free expansion of an ideal gas into vacuum, the internal energy remains constant.',
         subject: 'Thermodynamics',
         type: QuestionType.trueFalse,
         options: [
@@ -451,12 +525,14 @@ class MockTestFactory {
           QuestionOption(id: 'q28o2', text: 'False'),
         ],
         correctOptionIds: ['q28o1'],
-        explanation: 'No heat or work is exchanged, so ΔU = 0 for an ideal gas.',
+        explanation:
+            'No heat or work is exchanged, so ΔU = 0 for an ideal gas.',
       ),
       const TestQuestion(
         id: 'q29',
         number: 29,
-        text: 'The entropy change for a reversible process is given by which integral?',
+        text:
+            'The entropy change for a reversible process is given by which integral?',
         subject: 'Thermodynamics',
         type: QuestionType.mcq,
         options: [
@@ -466,7 +542,8 @@ class MockTestFactory {
           QuestionOption(id: 'q29o4', text: '∮δU/T'),
         ],
         correctOptionIds: ['q29o1'],
-        explanation: 'Entropy is the integral of reversible heat transfer divided by temperature.',
+        explanation:
+            'Entropy is the integral of reversible heat transfer divided by temperature.',
       ),
       const TestQuestion(
         id: 'q30',
@@ -475,13 +552,27 @@ class MockTestFactory {
         subject: 'Thermodynamics',
         type: QuestionType.mcq,
         options: [
-          QuestionOption(id: 'q30o1', text: 'Because it aligns with Celsius degrees'),
-          QuestionOption(id: 'q30o2', text: 'Because it avoids negative temperatures and touches absolute zero'),
-          QuestionOption(id: 'q30o3', text: 'Because it is used only in Europe'),
-          QuestionOption(id: 'q30o4', text: 'Because it counts energy in joules'),
+          QuestionOption(
+            id: 'q30o1',
+            text: 'Because it aligns with Celsius degrees',
+          ),
+          QuestionOption(
+            id: 'q30o2',
+            text:
+                'Because it avoids negative temperatures and touches absolute zero',
+          ),
+          QuestionOption(
+            id: 'q30o3',
+            text: 'Because it is used only in Europe',
+          ),
+          QuestionOption(
+            id: 'q30o4',
+            text: 'Because it counts energy in joules',
+          ),
         ],
         correctOptionIds: ['q30o2'],
-        explanation: 'Zero Kelvin represents the absence of thermal motion; Kelvin avoids negative values in thermodynamic equations.',
+        explanation:
+            'Zero Kelvin represents the absence of thermal motion; Kelvin avoids negative values in thermodynamic equations.',
       ),
     ];
   }

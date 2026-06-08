@@ -109,11 +109,7 @@ class QuestionPalette extends StatelessWidget {
     );
   }
 
-  Widget _buildPaletteItem(
-    DesignConfig design,
-    int index,
-    AnswerDto? answer,
-  ) {
+  Widget _buildPaletteItem(DesignConfig design, int index, AnswerDto? answer) {
     final isSelected = answer != null && answer.selectedOptions.isNotEmpty;
     final isMarked = answer?.isMarked ?? false;
     const double baseSize = 44.0;

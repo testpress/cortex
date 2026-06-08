@@ -32,7 +32,8 @@ class SubjectAnalyticsDto {
     final int correct = json['correct'] as int? ?? 0;
     final int incorrect = json['incorrect'] as int? ?? 0;
     // API doesn't always return correct_percentage — derive it when absent
-    final double correctPct = (json['correct_percentage'] as num?)?.toDouble() ??
+    final double correctPct =
+        (json['correct_percentage'] as num?)?.toDouble() ??
         (total > 0 ? (correct / total * 100) : 0.0);
     return SubjectAnalyticsDto(
       id: json['id'] as int? ?? 0,
@@ -82,11 +83,7 @@ class ReviewAnswerDto {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'text_html': textHtml,
-      'is_correct': isCorrect,
-    };
+    return {'id': id, 'text_html': textHtml, 'is_correct': isCorrect};
   }
 }
 
@@ -115,10 +112,13 @@ class ReviewQuestionDto {
       id: json['id'] as int? ?? 0,
       questionHtml: (json['question_html'] ?? '').toString(),
       direction: json['direction']?.toString(),
-      explanationHtml: (json['explanation_html'] ?? json['explanation'] ?? '').toString(),
+      explanationHtml: (json['explanation_html'] ?? json['explanation'] ?? '')
+          .toString(),
       type: (json['type'] ?? 'R').toString(),
       subject: json['subject']?.toString(),
-      answers: answersList.map((a) => ReviewAnswerDto.fromJson(a as Map<String, dynamic>)).toList(),
+      answers: answersList
+          .map((a) => ReviewAnswerDto.fromJson(a as Map<String, dynamic>))
+          .toList(),
     );
   }
 
@@ -165,14 +165,18 @@ class ReviewItemDto {
     return ReviewItemDto(
       id: (json['id'] ?? '').toString(),
       index: (json['order'] ?? json['index']) as int? ?? 0,
-      selectedAnswers: selectedList.map((s) => int.parse(s.toString())).toList(),
+      selectedAnswers: selectedList
+          .map((s) => int.parse(s.toString()))
+          .toList(),
       result: json['result']?.toString(),
       marks: json['marks']?.toString(),
       duration: json['duration']?.toString(),
       bookmarkId: json['bookmark_id'] as int?,
       correctPercentage: json['correct_percentage'] as int?,
       shortText: json['short_text']?.toString(),
-      question: ReviewQuestionDto.fromJson(json['question'] as Map<String, dynamic>? ?? {}),
+      question: ReviewQuestionDto.fromJson(
+        json['question'] as Map<String, dynamic>? ?? {},
+      ),
     );
   }
 
@@ -198,10 +202,12 @@ class ReviewItemDto {
       directionHtml: question.direction,
       type: question.type == 'C' ? 'multipleSelect' : 'singleSelect',
       explanation: question.explanationHtml,
-      options: question.answers.map((ans) => QuestionOptionDto(
-        id: ans.id.toString(),
-        text: ans.textHtml,
-      )).toList(),
+      options: question.answers
+          .map(
+            (ans) =>
+                QuestionOptionDto(id: ans.id.toString(), text: ans.textHtml),
+          )
+          .toList(),
       correctOptionIds: question.answers
           .where((ans) => ans.isCorrect)
           .map((ans) => ans.id.toString())

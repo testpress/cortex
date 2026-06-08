@@ -34,13 +34,16 @@ class DashboardContentDto {
     Map<String, String>? chapterMap,
     DashboardSectionType? sectionType,
   }) {
-    final chapterId = json['chapter_id']?.toString() ?? json['chapter']?.toString();
+    final chapterId =
+        json['chapter_id']?.toString() ?? json['chapter']?.toString();
     return DashboardContentDto(
       id: json['id']?.toString() ?? '',
       title: json['title'] ?? '',
       chapterId: chapterId,
       chapterTitle: chapterMap?[chapterId],
-      contentType: _mapContentType((json['content_type'] ?? json['type'] ?? 'unknown').toString()),
+      contentType: _mapContentType(
+        (json['content_type'] ?? json['type'] ?? 'unknown').toString(),
+      ),
       totalDuration: json['total_duration'] ?? json['duration'],
       remainingDuration: json['remaining_duration'],
       coverImage: json['cover_image'] ?? json['image'],
@@ -53,17 +56,19 @@ class DashboardContentDto {
     final t = type.toLowerCase();
     if (t.contains('video')) return DashboardContentType.video;
     if (t.contains('pdf')) return DashboardContentType.pdf;
-    if (t.contains('notes') || t.contains('html')) return DashboardContentType.notes;
-    if (t.contains('test') || t.contains('exam')) return DashboardContentType.test;
-    if (t.contains('assessment') || t.contains('quiz')) return DashboardContentType.assessment;
+    if (t.contains('notes') || t.contains('html'))
+      return DashboardContentType.notes;
+    if (t.contains('test') || t.contains('exam'))
+      return DashboardContentType.test;
+    if (t.contains('assessment') || t.contains('quiz'))
+      return DashboardContentType.assessment;
     if (t.contains('live')) return DashboardContentType.liveStream;
     if (t.contains('attachment')) return DashboardContentType.attachment;
     if (t.contains('embed')) return DashboardContentType.embedContent;
-    
+
     return DashboardContentType.unknown;
   }
 }
-
 
 /// Container for the dashboard contents list.
 class DashboardContentsDto {
@@ -87,11 +92,13 @@ class DashboardContentsDto {
     }
   }
 
-  static DashboardContentsDto _parseRecentlyCompleted(Map<String, dynamic> results) {
+  static DashboardContentsDto _parseRecentlyCompleted(
+    Map<String, dynamic> results,
+  ) {
     final chaptersList = (results['chapters'] ?? []) as List;
     final chapterMap = {
       for (var chapter in chaptersList)
-        chapter['id'].toString(): chapter['name']?.toString() ?? ''
+        chapter['id'].toString(): chapter['name']?.toString() ?? '',
     };
 
     final contentsList = (results['chapter_contents'] ?? []) as List;
@@ -115,56 +122,70 @@ class DashboardContentsDto {
     final chaptersList = (results['chapters'] ?? []) as List;
     final chapterMap = {
       for (var chapter in chaptersList)
-        chapter['id'].toString(): chapter['name']?.toString() ?? ''
+        chapter['id'].toString(): chapter['name']?.toString() ?? '',
     };
 
-    final contentsList = (results['chapter_contents'] ?? results['contents'] ?? []) as List;
+    final contentsList =
+        (results['chapter_contents'] ?? results['contents'] ?? []) as List;
     final items = contentsList
-        .map((e) => DashboardContentDto.fromJson(
-              e as Map<String, dynamic>,
-              chapterMap: chapterMap,
-              sectionType: sectionType,
-            ))
+        .map(
+          (e) => DashboardContentDto.fromJson(
+            e as Map<String, dynamic>,
+            chapterMap: chapterMap,
+            sectionType: sectionType,
+          ),
+        )
         .toList();
 
     return DashboardContentsDto(items: items);
   }
 
-  static DashboardContentsDto _parseResumeLearning(Map<String, dynamic> results) {
+  static DashboardContentsDto _parseResumeLearning(
+    Map<String, dynamic> results,
+  ) {
     final chaptersList = (results['chapters'] ?? []) as List;
     final chapterMap = {
       for (var chapter in chaptersList)
-        chapter['id'].toString(): chapter['name']?.toString() ?? ''
+        chapter['id'].toString(): chapter['name']?.toString() ?? '',
     };
 
     final contentMap = {
       for (var c in (results['chapter_contents'] ?? []))
-        c['id'].toString(): Map<String, dynamic>.from(c as Map)
+        c['id'].toString(): Map<String, dynamic>.from(c as Map),
     };
 
     final videoProgressMap = <String, double>{};
     final videoDurationMap = <String, String>{};
     final videoRemainingDurationMap = <String, String>{};
     for (var v in (results['user_videos'] ?? [])) {
-      final totalSeconds = (v['video_content']?['duration'] as num?)?.toDouble() ??
-                           (v['duration'] as num?)?.toDouble() ?? 0.0;
-      final lastPosition = double.tryParse(v['last_position']?.toString() ?? '0') ?? 0.0;
-      final watched = double.tryParse(v['watched_duration']?.toString() ?? '0') ?? 0.0;
+      final totalSeconds =
+          (v['video_content']?['duration'] as num?)?.toDouble() ??
+          (v['duration'] as num?)?.toDouble() ??
+          0.0;
+      final lastPosition =
+          double.tryParse(v['last_position']?.toString() ?? '0') ?? 0.0;
+      final watched =
+          double.tryParse(v['watched_duration']?.toString() ?? '0') ?? 0.0;
       final effectiveProgress = math.max(lastPosition, watched);
-      
+
       if (totalSeconds > 0) {
         final videoEntryId = v['id'].toString();
         final calculatedProgress = (effectiveProgress / totalSeconds) * 100;
         videoProgressMap[videoEntryId] = calculatedProgress.clamp(0.0, 100.0);
-        videoDurationMap[videoEntryId] = TimeFormatter.formatDuration(totalSeconds.toInt().toString()) ?? '';
-        
-        final remainingSeconds = math.max(0, (totalSeconds - effectiveProgress).toInt());
-        videoRemainingDurationMap[videoEntryId] = TimeFormatter.formatDuration(remainingSeconds.toString()) ?? '';
+        videoDurationMap[videoEntryId] =
+            TimeFormatter.formatDuration(totalSeconds.toInt().toString()) ?? '';
+
+        final remainingSeconds = math.max(
+          0,
+          (totalSeconds - effectiveProgress).toInt(),
+        );
+        videoRemainingDurationMap[videoEntryId] =
+            TimeFormatter.formatDuration(remainingSeconds.toString()) ?? '';
       }
     }
 
     final assessmentMap = {
-      for (var a in (results['assessments'] ?? [])) a['id'].toString(): a
+      for (var a in (results['assessments'] ?? [])) a['id'].toString(): a,
     };
 
     final attempts = (results['chapter_content_attempts'] ?? []) as List;
@@ -199,7 +220,9 @@ class DashboardContentsDto {
           final assessment = assessmentMap[assessmentId];
           final exam = assessment?['exam'];
           final remainingTime = assessment?['remaining_time']?.toString();
-          totalDuration = TimeFormatter.formatDuration(exam?['duration']?.toString());
+          totalDuration = TimeFormatter.formatDuration(
+            exam?['duration']?.toString(),
+          );
           remainingDuration = TimeFormatter.formatDuration(remainingTime);
         } else {
           continue;
@@ -211,19 +234,21 @@ class DashboardContentsDto {
       seenContentIds.add(contentId);
       map['progress'] = progress;
       if (totalDuration != null) map['total_duration'] = totalDuration;
-      if (remainingDuration != null) map['remaining_duration'] = remainingDuration;
+      if (remainingDuration != null)
+        map['remaining_duration'] = remainingDuration;
 
-      items.add(DashboardContentDto.fromJson(
-        map,
-        chapterMap: chapterMap,
-        sectionType: DashboardSectionType.resumeLearning,
-      ));
+      items.add(
+        DashboardContentDto.fromJson(
+          map,
+          chapterMap: chapterMap,
+          sectionType: DashboardSectionType.resumeLearning,
+        ),
+      );
     }
 
     return DashboardContentsDto(items: items);
   }
 }
-
 
 class DashboardBannerDto {
   final String id;
@@ -265,12 +290,7 @@ class DashboardBannerDto {
   }
 }
 
-
-enum LeaderboardTimeline {
-  allTime,
-  thisWeek,
-  thisMonth,
-}
+enum LeaderboardTimeline { allTime, thisWeek, thisMonth }
 
 extension LeaderboardTimelineExtension on LeaderboardTimeline {
   String? get timelineQuery {

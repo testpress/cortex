@@ -43,7 +43,8 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
       final repo = await ref.read(courseRepositoryProvider.future);
       await Future.wait([
         repo.syncChapterContents(widget.courseId, widget.chapterId),
-        repo.refreshContentStatuses(widget.courseId, chapterId: widget.chapterId),
+        repo.refreshContentStatuses(widget.courseId,
+            chapterId: widget.chapterId),
       ]);
 
       if (mounted) setState(() => _isSyncing = false);
@@ -56,7 +57,8 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
     final l10n = L10n.of(context);
 
     // Watch the chapter detail data
-    final chapterAsync = ref.watch(chapterDetailProvider(widget.courseId, widget.chapterId));
+    final chapterAsync =
+        ref.watch(chapterDetailProvider(widget.courseId, widget.chapterId));
 
     // Check status filter state
     final activeStatusFilter = ref.watch(chapterStatusFilterProvider);

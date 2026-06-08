@@ -27,12 +27,13 @@ class BookmarkFoldersSheet extends ConsumerStatefulWidget {
   final BuildContext parentContext;
 
   @override
-  ConsumerState<BookmarkFoldersSheet> createState() => _BookmarkFoldersSheetState();
+  ConsumerState<BookmarkFoldersSheet> createState() =>
+      _BookmarkFoldersSheetState();
 }
 
 class _BookmarkFoldersSheetState extends ConsumerState<BookmarkFoldersSheet> {
   final ScrollController _scrollController = ScrollController();
-  
+
   // No background state variables needed as sheet dismisses instantly like YouTube.
 
   @override
@@ -59,26 +60,27 @@ class _BookmarkFoldersSheetState extends ConsumerState<BookmarkFoldersSheet> {
     final toastMessage = existingBookmarks.isNotEmpty
         ? l10n.bookmarkRemoved
         : l10n.bookmarkAddedToFolder(folderName ?? l10n.labelUncategorized);
-    AppToast.show(
-      widget.parentContext,
-      message: toastMessage,
-    );
+    AppToast.show(widget.parentContext, message: toastMessage);
 
     // 3. Fire the API call in the background
     try {
       if (existingBookmarks.isNotEmpty) {
         for (final b in existingBookmarks) {
-          await ref.read(removeBookmarkProvider(
-            bookmarkId: b.id,
-            lessonId: widget.lessonId,
-          ).future);
+          await ref.read(
+            removeBookmarkProvider(
+              bookmarkId: b.id,
+              lessonId: widget.lessonId,
+            ).future,
+          );
         }
       } else {
-        await ref.read(addBookmarkProvider(
-          category: widget.category,
-          lessonId: widget.lessonId,
-          folder: folderName,
-        ).future);
+        await ref.read(
+          addBookmarkProvider(
+            category: widget.category,
+            lessonId: widget.lessonId,
+            folder: folderName,
+          ).future,
+        );
       }
     } catch (e, stack) {
       debugPrint('Error updating bookmark: $e\n$stack');
@@ -96,7 +98,9 @@ class _BookmarkFoldersSheetState extends ConsumerState<BookmarkFoldersSheet> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final foldersAsync = ref.watch(bookmarkFoldersProvider);
-    final bookmarksAsync = ref.watch(bookmarksForLessonProvider(widget.lessonId));
+    final bookmarksAsync = ref.watch(
+      bookmarksForLessonProvider(widget.lessonId),
+    );
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
@@ -160,32 +164,42 @@ class _BookmarkFoldersSheetState extends ConsumerState<BookmarkFoldersSheet> {
                         return bookmarksAsync.when(
                           data: (activeBookmarks) {
                             // 1. Check if lesson has "Uncategorized" bookmark (folderId == null)
-                            final uncategorizedBookmarks = activeBookmarks.where(
-                              (b) => b.folderId == null,
-                            ).toList();
+                            final uncategorizedBookmarks = activeBookmarks
+                                .where((b) => b.folderId == null)
+                                .toList();
 
                             return ConstrainedBox(
-                              constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.4),
+                              constraints: BoxConstraints(
+                                maxHeight:
+                                    MediaQuery.of(context).size.height * 0.4,
+                              ),
                               child: RawScrollbar(
                                 controller: _scrollController,
                                 thumbVisibility: true,
                                 thickness: 4.0,
                                 radius: Radius.circular(design.radius.full),
-                                thumbColor: design.colors.textSecondary.withValues(alpha: 0.3),
+                                thumbColor: design.colors.textSecondary
+                                    .withValues(alpha: 0.3),
                                 child: SingleChildScrollView(
                                   controller: _scrollController,
                                   child: Padding(
                                     // Add minor right padding so scrollbar doesn't overlap rows
-                                    padding: EdgeInsets.only(right: design.spacing.sm),
+                                    padding: EdgeInsets.only(
+                                      right: design.spacing.sm,
+                                    ),
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         // Uncategorized row (Hardcoded at the top)
                                         _buildFolderRow(
-                                          title: L10n.of(context).labelUncategorized,
-                                          isChecked: uncategorizedBookmarks.isNotEmpty,
+                                          title: L10n.of(
+                                            context,
+                                          ).labelUncategorized,
+                                          isChecked:
+                                              uncategorizedBookmarks.isNotEmpty,
                                           onTap: () => _toggleBookmark(
-                                            existingBookmarks: uncategorizedBookmarks,
+                                            existingBookmarks:
+                                                uncategorizedBookmarks,
                                             folderName: null,
                                           ),
                                           design: design,
@@ -193,15 +207,21 @@ class _BookmarkFoldersSheetState extends ConsumerState<BookmarkFoldersSheet> {
 
                                         // Dynamic User folders
                                         ...folders.map((folder) {
-                                          final folderBookmarks = activeBookmarks.where(
-                                            (b) => b.folderId == folder.id,
-                                          ).toList();
+                                          final folderBookmarks =
+                                              activeBookmarks
+                                                  .where(
+                                                    (b) =>
+                                                        b.folderId == folder.id,
+                                                  )
+                                                  .toList();
 
                                           return _buildFolderRow(
                                             title: folder.name,
-                                            isChecked: folderBookmarks.isNotEmpty,
+                                            isChecked:
+                                                folderBookmarks.isNotEmpty,
                                             onTap: () => _toggleBookmark(
-                                              existingBookmarks: folderBookmarks,
+                                              existingBookmarks:
+                                                  folderBookmarks,
                                               folderName: folder.name,
                                             ),
                                             design: design,
@@ -261,7 +281,9 @@ class _BookmarkFoldersSheetState extends ConsumerState<BookmarkFoldersSheet> {
               Icon(
                 LucideIcons.folder,
                 size: design.iconSize.md,
-                color: isChecked ? design.colors.primary : design.colors.textSecondary,
+                color: isChecked
+                    ? design.colors.primary
+                    : design.colors.textSecondary,
               ),
               SizedBox(width: design.spacing.md),
               Expanded(
@@ -393,21 +415,24 @@ class _CreateFolderDialogState extends ConsumerState<CreateFolderDialog> {
 
     try {
       if (widget.isRenameMode) {
-        await ref.read(updateBookmarkFolderProvider(
-          widget.folderId!,
-          folderName,
-        ).future);
+        await ref.read(
+          updateBookmarkFolderProvider(widget.folderId!, folderName).future,
+        );
       } else {
         // 1. Create the folder on server and save locally
-        final newFolder = await ref.read(createBookmarkFolderProvider(folderName).future);
+        final newFolder = await ref.read(
+          createBookmarkFolderProvider(folderName).future,
+        );
 
         // 2. Automatically select it for the current lesson if provided
         if (widget.lessonId != null && widget.category != null) {
-          await ref.read(addBookmarkProvider(
-            category: widget.category!,
-            lessonId: widget.lessonId!,
-            folder: newFolder.name,
-          ).future);
+          await ref.read(
+            addBookmarkProvider(
+              category: widget.category!,
+              lessonId: widget.lessonId!,
+              folder: newFolder.name,
+            ).future,
+          );
         }
       }
 
@@ -418,7 +443,9 @@ class _CreateFolderDialogState extends ConsumerState<CreateFolderDialog> {
       debugPrint('Error saving folder: $e\n$stack');
       if (mounted) {
         setState(() {
-          _errorMessage = widget.isRenameMode ? 'Failed to rename folder.' : L10n.of(context).errorFailedToCreateFolder;
+          _errorMessage = widget.isRenameMode
+              ? 'Failed to rename folder.'
+              : L10n.of(context).errorFailedToCreateFolder;
           _isLoading = false;
         });
       }
@@ -435,9 +462,7 @@ class _CreateFolderDialogState extends ConsumerState<CreateFolderDialog> {
         // Backdrop overlay
         GestureDetector(
           onTap: widget.onClose,
-          child: Container(
-            color: design.colors.overlay,
-          ),
+          child: Container(color: design.colors.overlay),
         ),
         // Centered dialog with keyboard avoidance
         Center(
@@ -458,17 +483,16 @@ class _CreateFolderDialogState extends ConsumerState<CreateFolderDialog> {
                   color: design.colors.card,
                   borderRadius: BorderRadius.circular(design.radius.xl),
                   boxShadow: design.shadows.floating,
-                  border: Border.all(
-                    color: design.colors.border,
-                    width: 1,
-                  ),
+                  border: Border.all(color: design.colors.border, width: 1),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppText.title(
-                      widget.isRenameMode ? L10n.of(context).bookmarkActionRenameFolder : L10n.of(context).labelNewFolder,
+                      widget.isRenameMode
+                          ? L10n.of(context).bookmarkActionRenameFolder
+                          : L10n.of(context).labelNewFolder,
                       color: design.colors.textPrimary,
                     ),
                     if (_errorMessage != null) ...[
@@ -506,13 +530,17 @@ class _CreateFolderDialogState extends ConsumerState<CreateFolderDialog> {
                             label: L10n.of(context).labelSave,
                             fullWidth: true,
                             loading: _isLoading,
-                            onPressed: (hasText && !_isLoading) ? _saveFolder : null,
+                            onPressed: (hasText && !_isLoading)
+                                ? _saveFolder
+                                : null,
                             backgroundColor: (hasText && !_isLoading)
                                 ? design.colors.accent2
                                 : design.colors.accent2.withValues(alpha: 0.5),
                             foregroundColor: (hasText && !_isLoading)
                                 ? design.colors.textInverse
-                                : design.colors.textInverse.withValues(alpha: 0.9),
+                                : design.colors.textInverse.withValues(
+                                    alpha: 0.9,
+                                  ),
                             height: 52,
                           ),
                         ),

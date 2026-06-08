@@ -8,8 +8,8 @@ class AuthRepository {
   AuthRepository({
     required AuthApiService apiService,
     required AuthLocalDataSource localDataSource,
-  })  : _apiService = apiService,
-        _localDataSource = localDataSource;
+  }) : _apiService = apiService,
+       _localDataSource = localDataSource;
 
   Future<bool> isUserLoggedIn() async {
     return _localDataSource.isUserLoggedIn();
@@ -61,7 +61,6 @@ class AuthRepository {
       // Still logout locally if API fails
     } finally {
       await _clearToken();
-
     }
   }
 

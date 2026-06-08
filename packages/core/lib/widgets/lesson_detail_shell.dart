@@ -10,8 +10,8 @@ import '../localization/l10n_helper.dart';
 import '../accessibility/app_focusable.dart';
 
 /// A premium, unified scaffold for lesson-like detail screens.
-/// 
-/// Provides a consistent header with actions and a sticky navigation footer 
+///
+/// Provides a consistent header with actions and a sticky navigation footer
 /// with "Next" and "Previous" capabilities. This ensures a seamless UX across
 /// Videos, PDFs, HTML, and Exam content.
 class LessonDetailShell extends StatelessWidget {
@@ -130,11 +130,7 @@ class LessonDetailShell extends StatelessWidget {
 
   /// Exposed for children to use if [stickyFooter] is false.
   Widget buildFooter(BuildContext context) {
-    return buildStaticFooter(
-      context,
-      onNext: onNext,
-      onPrevious: onPrevious,
-    );
+    return buildStaticFooter(context, onNext: onNext, onPrevious: onPrevious);
   }
 
   /// Static helper to build the navigation footer anywhere.
@@ -155,9 +151,7 @@ class LessonDetailShell extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: design.colors.surface,
-        border: Border(
-          top: BorderSide(color: design.colors.divider, width: 1),
-        ),
+        border: Border(top: BorderSide(color: design.colors.divider, width: 1)),
       ),
       child: Row(
         children: [
@@ -234,10 +228,14 @@ class LessonDetailShell extends StatelessWidget {
                   vertical: design.spacing.xs,
                 ),
                 decoration: BoxDecoration(
-                  color: isCompleted ? design.colors.success.withValues(alpha: 0.1) : design.colors.surfaceVariant,
+                  color: isCompleted
+                      ? design.colors.success.withValues(alpha: 0.1)
+                      : design.colors.surfaceVariant,
                   borderRadius: BorderRadius.circular(design.radius.md),
                   border: Border.all(
-                    color: isCompleted ? design.colors.success.withValues(alpha: 0.2) : design.colors.divider,
+                    color: isCompleted
+                        ? design.colors.success.withValues(alpha: 0.2)
+                        : design.colors.divider,
                   ),
                 ),
                 child: Row(
@@ -245,14 +243,18 @@ class LessonDetailShell extends StatelessWidget {
                   children: [
                     AppText.label(
                       isCompleted ? 'Completed' : 'Mark as completed',
-                      color: isCompleted ? design.colors.success : design.colors.textPrimary,
+                      color: isCompleted
+                          ? design.colors.success
+                          : design.colors.textPrimary,
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(width: 8),
                     Icon(
                       LucideIcons.check,
                       size: 16,
-                      color: isCompleted ? design.colors.success : design.colors.textPrimary,
+                      color: isCompleted
+                          ? design.colors.success
+                          : design.colors.textPrimary,
                     ),
                   ],
                 ),
@@ -288,26 +290,24 @@ class LessonDetailShell extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: FractionallySizedBox(
           widthFactor: (progress ?? 0).clamp(0.005, 1.0),
-          child: Container(
-            height: 3,
-            color: design.colors.primary,
-          ),
+          child: Container(height: 3, color: design.colors.primary),
         ),
       ),
     );
   }
 
   Widget _buildFooter(BuildContext context) {
-    return buildStaticFooter(
-      context,
-      onNext: onNext,
-      onPrevious: onPrevious,
-    );
+    return buildStaticFooter(context, onNext: onNext, onPrevious: onPrevious);
   }
 }
 
 class _HeaderButton extends StatelessWidget {
-  const _HeaderButton({required this.icon, required this.label, required this.onTap, this.iconColor});
+  const _HeaderButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.iconColor,
+  });
   final IconData icon;
   final String label;
   final VoidCallback onTap;

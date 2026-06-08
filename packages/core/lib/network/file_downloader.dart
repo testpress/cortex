@@ -50,9 +50,9 @@ class FileDownloader {
       } else {
         dir = await getDownloadsDirectory();
       }
-      
+
       final finalDir = dir ?? await getApplicationDocumentsDirectory();
-      
+
       // Ensure directory exists
       if (!await finalDir.exists()) {
         try {
@@ -87,7 +87,7 @@ class FileDownloader {
       if (!status.isGranted) {
         status = await Permission.storage.request();
       }
-      // On Android 13+, Permission.storage is automatically denied. 
+      // On Android 13+, Permission.storage is automatically denied.
       // However, apps are still allowed to write files to the public Downloads directory.
       // Therefore, we do not abort if the status is denied. We proceed and let the
       // actual file system operation throw an exception if it is truly blocked.
@@ -106,9 +106,7 @@ class FileDownloader {
       savePath,
       cancelToken: cancelToken,
       onReceiveProgress: onReceiveProgress,
-      options: Options(
-        extra: {'requireAuth': requireAuth},
-      ),
+      options: Options(extra: {'requireAuth': requireAuth}),
     );
 
     return savePath;

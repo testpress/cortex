@@ -43,9 +43,14 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: design.spacing.xl, vertical: design.spacing.md),
+              padding: EdgeInsets.symmetric(
+                horizontal: design.spacing.xl,
+                vertical: design.spacing.md,
+              ),
               child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight - design.spacing.xl * 2),
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight - design.spacing.xl * 2,
+                ),
                 child: IntrinsicHeight(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -78,7 +83,10 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
                       ),
                       if (_errorMessage != null) ...[
                         SizedBox(height: design.spacing.md),
-                        AppText.bodySmall(_errorMessage!, color: design.colors.error),
+                        AppText.bodySmall(
+                          _errorMessage!,
+                          color: design.colors.error,
+                        ),
                       ],
                       const Spacer(),
                       SizedBox(height: design.spacing.xxl),
@@ -107,7 +115,9 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
     final phoneNumber = _phoneController.text.trim();
 
     if (countryCode.isEmpty || phoneNumber.isEmpty) {
-      setState(() { _errorMessage = l10n.loginErrorOtpIdentityRequired; });
+      setState(() {
+        _errorMessage = l10n.loginErrorOtpIdentityRequired;
+      });
       return;
     }
 
@@ -118,10 +128,9 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
     });
 
     try {
-      await ref.read(authProvider.notifier).generateOtp(
-        phoneNumber: phoneNumber,
-        countryCode: countryCode,
-      );
+      await ref
+          .read(authProvider.notifier)
+          .generateOtp(phoneNumber: phoneNumber, countryCode: countryCode);
       if (mounted) {
         context.push(
           '/otp',
@@ -134,7 +143,8 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
     } on AuthException catch (error) {
       if (mounted) setState(() => _errorMessage = error.message);
     } catch (_) {
-      if (mounted) setState(() => _errorMessage = l10n.loginErrorGenericRequest);
+      if (mounted)
+        setState(() => _errorMessage = l10n.loginErrorGenericRequest);
     } finally {
       if (mounted) setState(() => _isBusy = false);
     }

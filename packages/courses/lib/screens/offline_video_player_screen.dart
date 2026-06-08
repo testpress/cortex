@@ -17,10 +17,12 @@ class OfflineVideoPlayerScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<OfflineVideoPlayerScreen> createState() => _OfflineVideoPlayerScreenState();
+  ConsumerState<OfflineVideoPlayerScreen> createState() =>
+      _OfflineVideoPlayerScreenState();
 }
 
-class _OfflineVideoPlayerScreenState extends ConsumerState<OfflineVideoPlayerScreen> {
+class _OfflineVideoPlayerScreenState
+    extends ConsumerState<OfflineVideoPlayerScreen> {
   bool _isSheetOpen = false;
 
   @override
@@ -42,7 +44,9 @@ class _OfflineVideoPlayerScreenState extends ConsumerState<OfflineVideoPlayerScr
                   actions: [
                     AppFocusable(
                       onTap: () => setState(() => _isSheetOpen = true),
-                      child: Icon(LucideIcons.moreVertical, color: design.colors.textPrimary, size: design.iconSize.md),
+                      child: Icon(LucideIcons.moreVertical,
+                          color: design.colors.textPrimary,
+                          size: design.iconSize.md),
                     ),
                   ],
                 ),
@@ -69,14 +73,17 @@ class _OfflineVideoPlayerScreenState extends ConsumerState<OfflineVideoPlayerScr
                                 if (item.course.isNotEmpty)
                                   TextSpan(
                                     text: item.course,
-                                    style: const TextStyle(fontWeight: FontWeight.w400),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w400),
                                   ),
-                                if (item.course.isNotEmpty && item.chapter.isNotEmpty)
+                                if (item.course.isNotEmpty &&
+                                    item.chapter.isNotEmpty)
                                   const TextSpan(text: '  >  '),
                                 if (item.chapter.isNotEmpty)
                                   TextSpan(
                                     text: item.chapter,
-                                    style: const TextStyle(fontWeight: FontWeight.w400),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w400),
                                   ),
                               ],
                             ),
@@ -87,17 +94,24 @@ class _OfflineVideoPlayerScreenState extends ConsumerState<OfflineVideoPlayerScr
                         const SizedBox(height: 16),
                         Row(
                           children: [
-                            if (item.duration != null && item.duration!.isNotEmpty) ...[
-                              Icon(LucideIcons.clock, size: 16, color: design.colors.textSecondary),
+                            if (item.duration != null &&
+                                item.duration!.isNotEmpty) ...[
+                              Icon(LucideIcons.clock,
+                                  size: 16, color: design.colors.textSecondary),
                               const SizedBox(width: 4),
-                              AppText.caption(item.duration!, color: design.colors.textSecondary),
+                              AppText.caption(item.duration!,
+                                  color: design.colors.textSecondary),
                             ],
-                            if (item.duration != null && item.duration!.isNotEmpty && item.sizeInBytes > 0)
+                            if (item.duration != null &&
+                                item.duration!.isNotEmpty &&
+                                item.sizeInBytes > 0)
                               const SizedBox(width: 16),
                             if (item.sizeInBytes > 0) ...[
-                              Icon(LucideIcons.hardDrive, size: 16, color: design.colors.textSecondary),
+                              Icon(LucideIcons.hardDrive,
+                                  size: 16, color: design.colors.textSecondary),
                               const SizedBox(width: 4),
-                              AppText.caption(_formatBytes(item.sizeInBytes), color: design.colors.textSecondary),
+                              AppText.caption(_formatBytes(item.sizeInBytes),
+                                  color: design.colors.textSecondary),
                             ],
                           ],
                         ),
@@ -130,7 +144,8 @@ class _OfflineVideoPlayerScreenState extends ConsumerState<OfflineVideoPlayerScr
                 ),
                 decoration: BoxDecoration(
                   color: design.colors.card,
-                  borderRadius: BorderRadius.all(Radius.circular(design.radius.xxl)),
+                  borderRadius:
+                      BorderRadius.all(Radius.circular(design.radius.xxl)),
                   boxShadow: design.shadows.floating,
                 ),
                 child: Column(
@@ -145,12 +160,13 @@ class _OfflineVideoPlayerScreenState extends ConsumerState<OfflineVideoPlayerScr
                         height: 4,
                         decoration: BoxDecoration(
                           color: design.colors.border,
-                          borderRadius: BorderRadius.circular(design.radius.full),
+                          borderRadius:
+                              BorderRadius.circular(design.radius.full),
                         ),
                       ),
                     ),
                     SizedBox(height: design.spacing.lg),
-                    
+
                     AppFocusable(
                       onTap: () async {
                         setState(() => _isSheetOpen = false);
@@ -160,12 +176,16 @@ class _OfflineVideoPlayerScreenState extends ConsumerState<OfflineVideoPlayerScr
                         }
                       },
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: design.spacing.md),
+                        padding:
+                            EdgeInsets.symmetric(vertical: design.spacing.md),
                         child: Row(
                           children: [
-                            Icon(LucideIcons.trash2, size: design.iconSize.md, color: design.colors.error),
+                            Icon(LucideIcons.trash2,
+                                size: design.iconSize.md,
+                                color: design.colors.error),
                             SizedBox(width: design.spacing.md),
-                            AppText.body('Delete Download', color: design.colors.error),
+                            AppText.body('Delete Download',
+                                color: design.colors.error),
                           ],
                         ),
                       ),

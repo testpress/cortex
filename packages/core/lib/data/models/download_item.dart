@@ -1,14 +1,6 @@
-enum DownloadStatus {
-  downloading,
-  paused,
-  completed,
-  error,
-}
+enum DownloadStatus { downloading, paused, completed, error }
 
-enum DownloadType {
-  video,
-  attachment,
-}
+enum DownloadType { video, attachment }
 
 class DownloadItem {
   final String id;

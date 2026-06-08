@@ -148,59 +148,64 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
                               _currentIndex = index;
                             });
                           },
-                        itemCount: widget.banners.length,
-                        itemBuilder: (context, index) {
-                          final banner = widget.banners[index];
-                          return Container(
-                            color: design.colors.surfaceVariant,
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                banner.imageUrl.isNotEmpty
-                                    ? CachedNetworkImage(
-                                        imageUrl: banner.imageUrl,
-                                        fit: BoxFit.cover,
-                                        fadeInDuration: Duration.zero,
-                                        filterQuality: FilterQuality.high,
-                                        memCacheWidth: 800,
-                                        alignment: Alignment.topCenter,
-                                        placeholder: (context, url) => Container(
+                          itemCount: widget.banners.length,
+                          itemBuilder: (context, index) {
+                            final banner = widget.banners[index];
+                            return Container(
+                              color: design.colors.surfaceVariant,
+                              child: Stack(
+                                fit: StackFit.expand,
+                                children: [
+                                  banner.imageUrl.isNotEmpty
+                                      ? CachedNetworkImage(
+                                          imageUrl: banner.imageUrl,
+                                          fit: BoxFit.cover,
+                                          fadeInDuration: Duration.zero,
+                                          filterQuality: FilterQuality.high,
+                                          memCacheWidth: 800,
+                                          alignment: Alignment.topCenter,
+                                          placeholder: (context, url) =>
+                                              Container(
+                                            color: Color.lerp(
+                                              design.colors.primaryContainer,
+                                              design.colors.surfaceVariant,
+                                              0.5,
+                                            ),
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              Container(
+                                            color: Color.lerp(
+                                              design.colors.primaryContainer,
+                                              design.colors.surfaceVariant,
+                                              0.5,
+                                            ),
+                                          ),
+                                        )
+                                      : Container(
                                           color: Color.lerp(
                                             design.colors.primaryContainer,
                                             design.colors.surfaceVariant,
                                             0.5,
                                           ),
                                         ),
-                                        errorWidget: (context, url, error) => Container(
-                                          color: Color.lerp(
-                                            design.colors.primaryContainer,
-                                            design.colors.surfaceVariant,
-                                            0.5,
-                                          ),
-                                        ),
-                                      )
-                                    : Container(
-                                        color: Color.lerp(
-                                          design.colors.primaryContainer,
-                                          design.colors.surfaceVariant,
-                                          0.5,
-                                        ),
+                                  // Soft gradient overlay for contrast
+                                  const DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Color(0x00000000),
+                                          Color(0x66000000)
+                                        ],
                                       ),
-                                // Soft gradient overlay for contrast
-                                const DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: [Color(0x00000000), Color(0x66000000)],
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                       ),
                       if (widget.banners.length > 1)
                         Positioned(
@@ -209,17 +214,20 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
                           right: 0,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(widget.banners.length, (index) {
+                            children:
+                                List.generate(widget.banners.length, (index) {
                               final isActive = _currentIndex == index;
                               return AnimatedContainer(
                                 duration: const Duration(milliseconds: 300),
-                                margin: const EdgeInsets.symmetric(horizontal: 3),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 3),
                                 height: 6,
                                 width: isActive ? 24 : 6,
                                 decoration: BoxDecoration(
                                   color: isActive
                                       ? design.colors.onPrimary
-                                      : design.colors.onPrimary.withValues(alpha: 0.6),
+                                      : design.colors.onPrimary
+                                          .withValues(alpha: 0.6),
                                   borderRadius: BorderRadius.circular(3),
                                 ),
                               );

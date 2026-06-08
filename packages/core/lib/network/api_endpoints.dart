@@ -13,19 +13,25 @@ class ApiEndpoints {
   static String courseDetail(String id) => '/api/v3/courses/$id/';
   static String courseChapters(String id) => '/api/v3/courses/$id/chapters/';
   static String courseContents(String id) => '/api/v3/courses/$id/contents/';
-  static String runningContents(String id) => '/api/v2.5/courses/$id/running_contents/';
-  static String upcomingContents(String id) => '/api/v2.5/courses/$id/upcoming_contents/';
-  static String contentAttempts(String id) => '/api/v2.5/courses/$id/content_attempts/';
-  static String chapterContents(String id) => '/api/v2.5/chapters/$id/contents/';
+  static String runningContents(String id) =>
+      '/api/v2.5/courses/$id/running_contents/';
+  static String upcomingContents(String id) =>
+      '/api/v2.5/courses/$id/upcoming_contents/';
+  static String contentAttempts(String id) =>
+      '/api/v2.5/courses/$id/content_attempts/';
+  static String chapterContents(String id) =>
+      '/api/v2.5/chapters/$id/contents/';
   static String lessonDetail(String id) => '/api/v2.4/contents/$id/';
-  static String markCompleted(String id) => '/api/v2.5/chapter_contents/$id/attempts/';
-  static const String updateVideoAttempt = '/api/v2.5/chapter_content_attempts/videos/update/';
+  static String markCompleted(String id) =>
+      '/api/v2.5/chapter_contents/$id/attempts/';
+  static const String updateVideoAttempt =
+      '/api/v2.5/chapter_content_attempts/videos/update/';
   static const String bannerAds = '/api/v2.4/banner-ads/';
 
   // Posts / Announcements
   static const String posts = '/api/v3/posts/';
   static const String postCategories = '/api/v2.3/posts/categories/';
-  
+
   static const String leaderboard = '/api/v2.3/leaderboard/';
   static const String myRank = '/api/v2.3/me/rank/';
   static const String competitorTargets = '/api/v2.3/me/targets/';
@@ -36,14 +42,18 @@ class ApiEndpoints {
 
   // Exams
   static String examDetail(String slug) => '/api/v2.2.1/exams/$slug/';
-  static String contentAttemptEnd(String id) => '/api/v2.2/content_attempts/$id/end/';
-  static String subjectAnalytics(String attemptId) => '/api/v2.4/attempts/$attemptId/review/subjects/';
-  static String solutionsReview(String attemptId) => '/api/v2.2.1/attempts/$attemptId/review/';
+  static String contentAttemptEnd(String id) =>
+      '/api/v2.2/content_attempts/$id/end/';
+  static String subjectAnalytics(String attemptId) =>
+      '/api/v2.4/attempts/$attemptId/review/subjects/';
+  static String solutionsReview(String attemptId) =>
+      '/api/v2.2.1/attempts/$attemptId/review/';
 
   // Forum
   static const String forumCategories = '/api/v2.3/forum/categories/';
   static const String forumThreads = '/api/v2.5/discussions/';
-  static String forumComments(int threadId) => '/api/v2.5/discussions/$threadId/comments/';
+  static String forumComments(int threadId) =>
+      '/api/v2.5/discussions/$threadId/comments/';
 
   // Uploads
   static const String imageUpload = '/api/v2.3/image_upload/';
@@ -61,7 +71,7 @@ class ApiEndpoints {
   static const String helpdeskTopics = '/api/v2.5/helpdesk/topics/';
   static const String helpdeskTickets = '/api/v3/helpdesk/';
   static String helpdeskTicketDetail(String id) => '/api/v3/helpdesk/$id/';
-  static String helpdeskTicketFollowup(String id) => '/api/v3/helpdesk/$id/followup/';
+  static String helpdeskTicketFollowup(String id) =>
+      '/api/v3/helpdesk/$id/followup/';
   static const String imageUploadV3 = '/api/v3/upload-image/';
 }
-

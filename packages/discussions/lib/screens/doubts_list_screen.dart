@@ -20,8 +20,8 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
   @override
   Widget build(BuildContext context) {
     final isSearching = _searchQuery != null && _searchQuery!.isNotEmpty;
-    
-    final doubtsAsync = isSearching 
+
+    final doubtsAsync = isSearching
         ? ref.watch(doubtsSearchProvider(_searchQuery!))
         : ref.watch(doubtsListProvider);
     final syncAsync = ref.watch(doubtsSyncProvider);
@@ -41,7 +41,9 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
             color: design.colors.card,
             child: Column(
               children: [
-                if (doubtsAsync.valueOrNull?.isEmpty == true && !syncAsync.isLoading && !isSearching)
+                if (doubtsAsync.valueOrNull?.isEmpty == true &&
+                    !syncAsync.isLoading &&
+                    !isSearching)
                   AppHeader(
                     title: l10n.drawerDoubts,
                     subtitle: l10n.doubtsEmptySubtitle,
@@ -56,7 +58,9 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
                           context.push('/home/discussions/doubts/ask');
                         },
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: design.spacing.sm),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: design.spacing.sm,
+                          ),
                           child: AppText.labelSmall(
                             l10n.doubtsHeaderAskDoubt,
                             color: design.colors.accent2,
@@ -74,7 +78,9 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
                     hintText: l10n.doubtsSearchHint,
                     onSubmitted: (query) {
                       setState(() {
-                        _searchQuery = query.trim().isEmpty ? null : query.trim();
+                        _searchQuery = query.trim().isEmpty
+                            ? null
+                            : query.trim();
                       });
                     },
                     backgroundColor: design.colors.surfaceVariant,
@@ -88,9 +94,11 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
             child: doubtsAsync.when(
               data: (doubts) {
                 // Show skeleton only if initial sync is still loading AND database is empty
-                final isInitialLoading = !isSearching && syncAsync.isLoading && doubts.isEmpty;
+                final isInitialLoading =
+                    !isSearching && syncAsync.isLoading && doubts.isEmpty;
                 final syncState = syncAsync.valueOrNull;
-                final isLoadingMore = !isSearching && (syncState?.isLoadingMore ?? false);
+                final isLoadingMore =
+                    !isSearching && (syncState?.isLoadingMore ?? false);
                 final hasMore = !isSearching && (syncState?.hasMore ?? true);
 
                 return doubts.isEmpty && !isInitialLoading
@@ -130,7 +138,11 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
     );
   }
 
-  Widget _buildEmptyState(BuildContext context, DesignConfig design, WidgetRef ref) {
+  Widget _buildEmptyState(
+    BuildContext context,
+    DesignConfig design,
+    WidgetRef ref,
+  ) {
     final l10n = L10n.of(context);
 
     return Center(
@@ -159,7 +171,11 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
           SizedBox(height: design.spacing.xl),
           AppButton.primary(
             label: l10n.doubtsHeaderAskDoubt,
-            leading: const Icon(LucideIcons.plus, size: 20, color: Color(0xFFFFFFFF)),
+            leading: const Icon(
+              LucideIcons.plus,
+              size: 20,
+              color: Color(0xFFFFFFFF),
+            ),
             onPressed: () {
               context.push('/home/discussions/doubts/ask');
             },
@@ -236,18 +252,30 @@ class _DoubtsBodyState extends State<_DoubtsBody> {
 
     return CustomScrollView(
       controller: _scrollController,
-      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+      physics: const AlwaysScrollableScrollPhysics(
+        parent: BouncingScrollPhysics(),
+      ),
       slivers: [
         CupertinoSliverRefreshControl(
           onRefresh: widget.onRefresh,
-          builder: (context, refreshState, pulledExtent, refreshTriggerPullDistance, refreshIndicatorExtent) {
-            return Opacity(
-              opacity: (pulledExtent / refreshTriggerPullDistance).clamp(0.0, 1.0),
-              child: Center(
-                child: AppLoadingIndicator(color: design.colors.primary),
-              ),
-            );
-          },
+          builder:
+              (
+                context,
+                refreshState,
+                pulledExtent,
+                refreshTriggerPullDistance,
+                refreshIndicatorExtent,
+              ) {
+                return Opacity(
+                  opacity: (pulledExtent / refreshTriggerPullDistance).clamp(
+                    0.0,
+                    1.0,
+                  ),
+                  child: Center(
+                    child: AppLoadingIndicator(color: design.colors.primary),
+                  ),
+                );
+              },
         ),
         SliverPadding(
           padding: EdgeInsets.symmetric(
@@ -263,7 +291,9 @@ class _DoubtsBodyState extends State<_DoubtsBody> {
                 if (index >= widget.doubts.length) {
                   return Skeletonizer(
                     enabled: true,
-                    child: _DoubtItem(doubt: _dummyDoubts[index % _dummyDoubts.length]),
+                    child: _DoubtItem(
+                      doubt: _dummyDoubts[index % _dummyDoubts.length],
+                    ),
                   );
                 }
                 return _DoubtItem(doubt: widget.doubts[index]);
@@ -312,7 +342,8 @@ class _DoubtItem extends StatelessWidget {
                 _buildDot(design),
               ],
               AppText.caption(
-                doubt.createdHumanized ?? DateFormatter.formatTimeAgo(doubt.createdAt),
+                doubt.createdHumanized ??
+                    DateFormatter.formatTimeAgo(doubt.createdAt),
                 color: design.colors.textTertiary,
               ),
             ],
@@ -350,7 +381,7 @@ class _DoubtItem extends StatelessWidget {
         break;
     }
 
-    final label ='${status.name[0].toUpperCase()}${status.name.substring(1)}';
+    final label = '${status.name[0].toUpperCase()}${status.name.substring(1)}';
 
     return Skeleton.leaf(
       child: Container(
@@ -362,7 +393,11 @@ class _DoubtItem extends StatelessWidget {
         child: AppText.labelSmall(
           label,
           color: color,
-          style: const TextStyle(fontSize: 10, height: 1.1, fontWeight: FontWeight.w600),
+          style: const TextStyle(
+            fontSize: 10,
+            height: 1.1,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );

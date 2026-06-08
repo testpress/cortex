@@ -33,10 +33,7 @@ class InstituteBanner extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
             border: Border(
-              bottom: BorderSide(
-                color: design.colors.divider,
-                width: 1,
-              ),
+              bottom: BorderSide(color: design.colors.divider, width: 1),
             ),
           ),
           child: Row(
@@ -89,9 +86,7 @@ class InstituteBanner extends StatelessWidget {
                         ),
                         AppText.caption(
                           enrollmentId,
-                          style: TextStyle(
-                            color: design.colors.textSecondary,
-                          ),
+                          style: TextStyle(color: design.colors.textSecondary),
                         ),
                       ],
                     ),

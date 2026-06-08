@@ -57,8 +57,7 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
     final videos = downloads.byType(DownloadType.video);
     final attachments = downloads.byType(DownloadType.attachment);
 
-    final activeItems =
-        _activeTab == DownloadType.video ? videos : attachments;
+    final activeItems = _activeTab == DownloadType.video ? videos : attachments;
 
     final isInitialLoading = downloadsAsync.isLoading;
 
@@ -70,7 +69,6 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
             title: l10n.downloadsTitle,
             onBack: () => context.pop(),
           ),
-
           _DownloadsTabBar(
             activeTab: _activeTab,
             isLoading: isInitialLoading,
@@ -82,7 +80,6 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
               });
             },
           ),
-
           Expanded(
             child: SkeletonizerConfig(
               data: SkeletonizerConfigData(
@@ -116,7 +113,6 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
               ),
             ),
           ),
-
           if (activeItems.isNotEmpty)
             _DownloadsFooter(
               activeTab: _activeTab,
@@ -163,13 +159,15 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
   Future<void> _openAttachment(DownloadItem item) async {
     try {
       final downloader = ref.read(fileDownloaderProvider);
-      final path = await downloader.getLocalPath(item.contentUrl!, StorageType.publicDownload);
-      
+      final path = await downloader.getLocalPath(
+          item.contentUrl!, StorageType.publicDownload);
+
       final fileExists = await File(path).exists();
       if (!fileExists) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('File not found. It may have been deleted.')),
+            const SnackBar(
+                content: Text('File not found. It may have been deleted.')),
           );
         }
         await ref.read(downloadsProvider.notifier).delete(item);
@@ -545,9 +543,8 @@ class _DownloadMeta extends StatelessWidget {
         ),
         AppText.cardCaption(
           item.metaText,
-          color: item.status == DownloadStatus.error
-              ? design.colors.error
-              : null,
+          color:
+              item.status == DownloadStatus.error ? design.colors.error : null,
         ),
       ],
     );
@@ -759,9 +756,8 @@ class _TabButton extends StatelessWidget {
           vertical: design.spacing.sm,
         ),
         decoration: BoxDecoration(
-          color: isActive
-              ? design.colors.primary
-              : design.colors.surfaceVariant,
+          color:
+              isActive ? design.colors.primary : design.colors.surfaceVariant,
           borderRadius: BorderRadius.circular(
             design.radius.md,
           ),

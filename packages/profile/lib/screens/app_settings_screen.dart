@@ -588,7 +588,9 @@ class _RadioIndicator extends StatelessWidget {
 
     return TweenAnimationBuilder<double>(
       tween: Tween<double>(end: isSelected ? 1.0 : 0.0),
-      duration: shouldAnimate ? const Duration(milliseconds: 150) : Duration.zero,
+      duration: shouldAnimate
+          ? const Duration(milliseconds: 150)
+          : Duration.zero,
       builder: (context, value, child) {
         return CustomPaint(
           size: Size(canvasSize, canvasSize),
@@ -634,7 +636,11 @@ class _RadioPainter extends CustomPainter {
     const strokeWidth = 1.5;
 
     // 1. Draw the outer ring as a filled circle of the current border/fill color
-    final currentBorderColor = Color.lerp(borderColor, fillColor, animationValue)!;
+    final currentBorderColor = Color.lerp(
+      borderColor,
+      fillColor,
+      animationValue,
+    )!;
     final paintRing = Paint()
       ..color = currentBorderColor
       ..style = PaintingStyle.fill

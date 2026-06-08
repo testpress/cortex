@@ -115,12 +115,16 @@ class _AITabState extends State<AITab> with AutomaticKeepAliveClientMixin {
                           filled: true,
                           fillColor: design.colors.surface,
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(design.radius.md),
-                            borderSide: BorderSide(color: design.colors.divider),
+                            borderRadius:
+                                BorderRadius.circular(design.radius.md),
+                            borderSide:
+                                BorderSide(color: design.colors.divider),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(design.radius.md),
-                            borderSide: BorderSide(color: design.colors.divider),
+                            borderRadius:
+                                BorderRadius.circular(design.radius.md),
+                            borderSide:
+                                BorderSide(color: design.colors.divider),
                           ),
                           contentPadding: EdgeInsets.symmetric(
                             horizontal: design.spacing.md,
@@ -143,7 +147,8 @@ class _AITabState extends State<AITab> with AutomaticKeepAliveClientMixin {
                             color: isDirty
                                 ? design.colors.accent2
                                 : design.colors.accent2.withValues(alpha: 0.4),
-                            borderRadius: BorderRadius.circular(design.radius.sm),
+                            borderRadius:
+                                BorderRadius.circular(design.radius.sm),
                           ),
                           child: Icon(
                             LucideIcons.send,
@@ -174,9 +179,8 @@ class _AITabState extends State<AITab> with AutomaticKeepAliveClientMixin {
       padding: EdgeInsets.only(bottom: design.spacing.md),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: isAI
-            ? MainAxisAlignment.start
-            : MainAxisAlignment.end,
+        mainAxisAlignment:
+            isAI ? MainAxisAlignment.start : MainAxisAlignment.end,
         children: [
           if (isAI)
             Container(

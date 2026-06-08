@@ -35,7 +35,11 @@ class FolderItem extends StatelessWidget {
               children: [
                 AppText.cardTitle(folder['name']),
                 SizedBox(height: design.spacing.xs),
-                AppText.cardCaption(L10n.of(context).bookmarkFolderItemsCount(folder['count'] as int)),
+                AppText.cardCaption(
+                  L10n.of(
+                    context,
+                  ).bookmarkFolderItemsCount(folder['count'] as int),
+                ),
               ],
             ),
           ),

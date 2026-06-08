@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:core/core.dart'; 
+import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -25,7 +25,8 @@ class LessonCardWidget extends StatefulWidget {
   State<LessonCardWidget> createState() => _LessonCardWidgetState();
 }
 
-class _LessonCardWidgetState extends State<LessonCardWidget> with AutomaticKeepAliveClientMixin {
+class _LessonCardWidgetState extends State<LessonCardWidget>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -35,8 +36,7 @@ class _LessonCardWidgetState extends State<LessonCardWidget> with AutomaticKeepA
     final design = Design.of(context);
     final lesson = widget.lesson;
     final isCompleted = widget.isCompleted;
-    final cardBgColor =
-        design.isDark ? const Color(0xFF202023) : Colors.white;
+    final cardBgColor = design.isDark ? const Color(0xFF202023) : Colors.white;
     final textPrimary = design.colors.textPrimary;
     final textSecondary = design.colors.textSecondary;
     final textMuted = design.colors.textSecondary.withValues(alpha: 0.7);
@@ -81,8 +81,14 @@ class _LessonCardWidgetState extends State<LessonCardWidget> with AutomaticKeepA
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: design.isDark
-                              ? [const Color(0xFF1E293B), const Color(0xFF0F172A)]
-                              : [const Color(0xFFF1F5F9), const Color(0xFFE2E8F0)],
+                              ? [
+                                  const Color(0xFF1E293B),
+                                  const Color(0xFF0F172A),
+                                ]
+                              : [
+                                  const Color(0xFFF1F5F9),
+                                  const Color(0xFFE2E8F0),
+                                ],
                         ),
                       ),
                       child: Center(
@@ -169,24 +175,19 @@ class _LessonCardWidgetState extends State<LessonCardWidget> with AutomaticKeepA
                             ],
                           ),
                         ),
-                        Icon(
-                          Icons.chevron_right,
-                          size: 16,
-                          color: textMuted,
-                        ),
+                        Icon(Icons.chevron_right, size: 16, color: textMuted),
                       ],
                     ),
                     const SizedBox(height: 6),
                     // Metadata
-                    if (lesson.remainingDuration != null || lesson.totalDuration != null) ...[
+                    if (lesson.remainingDuration != null ||
+                        lesson.totalDuration != null) ...[
                       Text(
                         (lesson.remainingDuration != null && !isCompleted)
                             ? '${lesson.remainingDuration!} left'
-                            : (lesson.totalDuration ?? lesson.remainingDuration!),
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: textMuted,
-                        ),
+                            : (lesson.totalDuration ??
+                                  lesson.remainingDuration!),
+                        style: TextStyle(fontSize: 11, color: textMuted),
                       ),
                     ],
                     // Progress Bar
@@ -259,15 +260,17 @@ class LessonCardsSectionWidget extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final textScaler = MediaQuery.textScalerOf(context);
-          final itemWidth = constraints.maxWidth * 0.45; // viewportFraction is 0.45
+          final itemWidth =
+              constraints.maxWidth * 0.45; // viewportFraction is 0.45
           // Image height (16:9) + Content & Padding + Carousel margin
-          final baseContentHeight = showMetadata 
-              ? _cardContentHeightWithMetadata 
+          final baseContentHeight = showMetadata
+              ? _cardContentHeightWithMetadata
               : _cardContentHeightCompact;
           final scale = textScaler.scale(1.0).clamp(1.0, double.infinity);
           final contentHeight = baseContentHeight * scale;
-              
-          final calculatedHeight = (itemWidth / (16 / 9)) + contentHeight + _carouselBottomMargin;
+
+          final calculatedHeight =
+              (itemWidth / (16 / 9)) + contentHeight + _carouselBottomMargin;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -286,30 +289,30 @@ class LessonCardsSectionWidget extends StatelessWidget {
               SizedBox(height: design.spacing.sm),
               AppCarousel(
                 itemCount: isSkeleton ? 3 : lessons.length,
-                height: calculatedHeight, 
-                viewportFraction: 0.45, 
-                padEnds: false, 
-                itemPadding: EdgeInsets.only(left: design.spacing.md), 
+                height: calculatedHeight,
+                viewportFraction: 0.45,
+                padEnds: false,
+                itemPadding: EdgeInsets.only(left: design.spacing.md),
                 itemBuilder: (context, index) {
                   final lesson = isSkeleton ? _skeletonLesson : lessons[index];
                   return Container(
-                     margin: const EdgeInsets.only(bottom: 16.0), 
-                     child: AppFocusable(
-                       onTap: () {
-                         if (!isSkeleton) {
-                           LessonRouter.navigateToLesson(
-                             context,
-                             id: lesson.id,
-                             type: lesson.contentType,
-                           );
-                         }
-                       },
-                       borderRadius: BorderRadius.circular(design.spacing.md),
-                       child: LessonCardWidget(
-                         lesson: lesson,
-                         isCompleted: isCompleted,
-                       ),
-                     ),
+                    margin: const EdgeInsets.only(bottom: 16.0),
+                    child: AppFocusable(
+                      onTap: () {
+                        if (!isSkeleton) {
+                          LessonRouter.navigateToLesson(
+                            context,
+                            id: lesson.id,
+                            type: lesson.contentType,
+                          );
+                        }
+                      },
+                      borderRadius: BorderRadius.circular(design.spacing.md),
+                      child: LessonCardWidget(
+                        lesson: lesson,
+                        isCompleted: isCompleted,
+                      ),
+                    ),
                   );
                 },
               ),

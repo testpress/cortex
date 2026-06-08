@@ -114,20 +114,20 @@ class _QuestionHeader extends StatelessWidget {
     final IconData icon;
 
     if (isUnanswered) {
-      bg    = design.colors.accent3.withValues(alpha: design.isDark ? 0.2 : 0.1);
-      text  = design.colors.accent3;
+      bg = design.colors.accent3.withValues(alpha: design.isDark ? 0.2 : 0.1);
+      text = design.colors.accent3;
       label = l10n.examReviewFilterUnanswered;
-      icon  = LucideIcons.alertCircle;
+      icon = LucideIcons.alertCircle;
     } else if (isCorrect) {
-      bg    = design.colors.accent4.withValues(alpha: design.isDark ? 0.2 : 0.1);
-      text  = design.colors.accent4;
+      bg = design.colors.accent4.withValues(alpha: design.isDark ? 0.2 : 0.1);
+      text = design.colors.accent4;
       label = l10n.examReviewFilterCorrect;
-      icon  = LucideIcons.checkCircle2;
+      icon = LucideIcons.checkCircle2;
     } else {
-      bg    = design.colors.accent5.withValues(alpha: design.isDark ? 0.2 : 0.1);
-      text  = design.colors.accent5;
+      bg = design.colors.accent5.withValues(alpha: design.isDark ? 0.2 : 0.1);
+      text = design.colors.accent5;
       label = l10n.assessmentIncorrect;
-      icon  = LucideIcons.xCircle;
+      icon = LucideIcons.xCircle;
     }
 
     return Container(

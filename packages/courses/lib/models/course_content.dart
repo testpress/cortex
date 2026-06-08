@@ -1,6 +1,8 @@
-import 'package:core/data/data.dart' show LessonType, LessonProgressStatus, LessonDto;
+import 'package:core/data/data.dart'
+    show LessonType, LessonProgressStatus, LessonDto;
 
-export 'package:core/data/data.dart' show LessonType, LessonProgressStatus, LessonDto;
+export 'package:core/data/data.dart'
+    show LessonType, LessonProgressStatus, LessonDto;
 
 /// Domain model for a specific content item within a chapter.
 class Lesson {
@@ -85,12 +87,12 @@ class Lesson {
   final bool isAiEnabled;
   final String? aiNotesUrl;
   final String? lastWatchedDuration;
- 
+
   /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
   bool get isComplete {
     if (isDetailFetched) return true;
     if (isScheduled) return true;
- 
+
     switch (type) {
       case LessonType.video:
         return false;

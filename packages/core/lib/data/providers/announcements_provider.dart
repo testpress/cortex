@@ -43,7 +43,7 @@ class Announcements extends _$Announcements {
   Future<void> _fetchPage(int page) async {
     final repository = await ref.read(postsRepositoryProvider.future);
     final response = await repository.fetchPosts(page: page);
-    
+
     _paginationState = _paginationService.calculateNextState(
       response: response,
       currentPage: page,
@@ -82,10 +82,10 @@ class PostCategories extends _$PostCategories {
   @override
   Stream<List<PostCategoryDto>> build() async* {
     final repository = await ref.watch(postsRepositoryProvider.future);
-    
+
     // Fetch categories in background to keep DB up to date
     repository.fetchPostCategories().catchError((_) => <PostCategoryDto>[]);
-    
+
     yield* repository.watchPostCategories();
   }
 }

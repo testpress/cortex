@@ -13,7 +13,11 @@ class AuthRoutes {
     '/onboarding',
   };
 
-  static String? redirect(BuildContext context, GoRouterState state, bool isLoggedIn) {
+  static String? redirect(
+    BuildContext context,
+    GoRouterState state,
+    bool isLoggedIn,
+  ) {
     final path = state.uri.path;
     final isAuthRoute = _authPaths.contains(path);
 
@@ -27,10 +31,7 @@ class AuthRoutes {
       path: '/onboarding',
       builder: (context, state) => const OnboardingScreen(),
     ),
-    GoRoute(
-      path: '/login',
-      builder: (context, state) => const LoginScreen(),
-    ),
+    GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
     GoRoute(
       path: '/password-login',
       builder: (context, state) => const PasswordLoginScreen(),
@@ -39,10 +40,7 @@ class AuthRoutes {
       path: '/mobile-login',
       builder: (context, state) => const MobileLoginScreen(),
     ),
-    GoRoute(
-      path: '/signup',
-      builder: (context, state) => const SignupScreen(),
-    ),
+    GoRoute(path: '/signup', builder: (context, state) => const SignupScreen()),
     GoRoute(
       path: '/forgot-password',
       builder: (context, state) => const ForgotPasswordScreen(),

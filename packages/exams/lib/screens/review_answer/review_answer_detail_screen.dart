@@ -36,7 +36,8 @@ class ReviewAnswerDetailScreen extends ConsumerStatefulWidget {
       _ReviewAnswerDetailScreenState();
 }
 
-class _ReviewAnswerDetailScreenState extends ConsumerState<ReviewAnswerDetailScreen>
+class _ReviewAnswerDetailScreenState
+    extends ConsumerState<ReviewAnswerDetailScreen>
     with ReviewStateLogic {
   late int _currentQuestionIndex;
   ReviewFilter _activeFilter = ReviewFilter.all;
@@ -78,9 +79,12 @@ class _ReviewAnswerDetailScreenState extends ConsumerState<ReviewAnswerDetailScr
     if (attempt == null) return;
 
     try {
-      final String reviewUrl = attempt.reviewUrl ?? ApiEndpoints.solutionsReview(attempt.id);
+      final String reviewUrl =
+          attempt.reviewUrl ?? ApiEndpoints.solutionsReview(attempt.id);
 
-      final reviewItems = await ref.read(examRepositoryProvider).getReviewItems(reviewUrl);
+      final reviewItems = await ref
+          .read(examRepositoryProvider)
+          .getReviewItems(reviewUrl);
 
       if (!mounted) return;
 
@@ -192,7 +196,9 @@ class _ReviewAnswerDetailScreenState extends ConsumerState<ReviewAnswerDetailScr
                       isCorrect: isAnswerCorrect(currentQuestion),
                       isUnanswered: isUnanswered(currentQuestion),
                       questionNumber: (() {
-                        final idx = _questions.indexWhere((q) => q.id == currentQuestion.id);
+                        final idx = _questions.indexWhere(
+                          (q) => q.id == currentQuestion.id,
+                        );
                         return (idx != -1 ? idx + 1 : 1).toString();
                       })(),
                     ),
@@ -233,8 +239,14 @@ class _ReviewAnswerDetailScreenState extends ConsumerState<ReviewAnswerDetailScr
   }
 
   String _stripHtml(String htmlString) {
-    final cleanStyle = htmlString.replaceAll(RegExp(r'<style[^>]*>[\s\S]*?<\/style>', caseSensitive: false), '');
-    final cleanScript = cleanStyle.replaceAll(RegExp(r'<script[^>]*>[\s\S]*?<\/script>', caseSensitive: false), '');
+    final cleanStyle = htmlString.replaceAll(
+      RegExp(r'<style[^>]*>[\s\S]*?<\/style>', caseSensitive: false),
+      '',
+    );
+    final cleanScript = cleanStyle.replaceAll(
+      RegExp(r'<script[^>]*>[\s\S]*?<\/script>', caseSensitive: false),
+      '',
+    );
     final cleanTags = cleanScript.replaceAll(RegExp(r'<[^>]*>'), '');
     final decoded = cleanTags
         .replaceAll('&nbsp;', ' ')
@@ -255,7 +267,9 @@ class _ReviewAnswerDetailScreenState extends ConsumerState<ReviewAnswerDetailScr
     final plainText = _stripHtml(question.text);
     final truncatedText = plainText.isEmpty
         ? "Multimedia question"
-        : (plainText.length > 50 ? "${plainText.substring(0, 50)}..." : plainText);
+        : (plainText.length > 50
+              ? "${plainText.substring(0, 50)}..."
+              : plainText);
 
     showGeneralDialog(
       context: context,
@@ -312,7 +326,9 @@ class _ReviewAnswerDetailScreenState extends ConsumerState<ReviewAnswerDetailScr
           mainAxisSize: MainAxisSize.min,
           children: [
             AppText.body(
-              l10n.reviewShareThoughtsOnQuestion(_questions.indexOf(question) + 1),
+              l10n.reviewShareThoughtsOnQuestion(
+                _questions.indexOf(question) + 1,
+              ),
               color: design.colors.textSecondary,
             ),
             SizedBox(height: design.spacing.md),

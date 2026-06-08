@@ -34,12 +34,15 @@ class BookmarkFolderDto {
     return BookmarkFolderDto(
       id: (json['id'] as num?)?.toInt() ?? 0,
       name: json['name'] as String? ?? '',
-      bookmarksCount: (json['bookmarks_count'] as num?)?.toInt() ??
+      bookmarksCount:
+          (json['bookmarks_count'] as num?)?.toInt() ??
           (json['bookmarksCount'] as num?)?.toInt() ??
           0,
-      parentId: (json['parent'] as num?)?.toInt() ??
+      parentId:
+          (json['parent'] as num?)?.toInt() ??
           (json['parentId'] as num?)?.toInt(),
-      userId: (json['userId'] as num?)?.toInt() ??
+      userId:
+          (json['userId'] as num?)?.toInt() ??
           (json['user_id'] as num?)?.toInt(),
     );
   }
@@ -62,13 +65,13 @@ class BookmarkDto {
   final String? folderName;
   final int lessonId;
   final String? bookmarkType;
-  
+
   // Transient UI fields from side-loaded JSON
   final String title;
   final String chapterName;
   final String type;
-  final String? slug;        // populated for post-type bookmarks
-  final bool isForumPost;   // true when post.forum == true
+  final String? slug; // populated for post-type bookmarks
+  final bool isForumPost; // true when post.forum == true
   final DateTime? created;
 
   const BookmarkDto({
@@ -116,14 +119,19 @@ class BookmarkDto {
   factory BookmarkDto.fromJson(Map<String, dynamic> json) {
     return BookmarkDto(
       id: (json['id'] as num?)?.toInt() ?? 0,
-      folderId: (json['folder_id'] as num?)?.toInt() ??
+      folderId:
+          (json['folder_id'] as num?)?.toInt() ??
           (json['folderId'] as num?)?.toInt(),
       folderName: json['folder'] as String? ?? json['folderName'] as String?,
-      lessonId: (json['object_id'] as num?)?.toInt() ??
+      lessonId:
+          (json['object_id'] as num?)?.toInt() ??
           (json['lessonId'] as num?)?.toInt() ??
           0,
-      bookmarkType: json['bookmark_type'] as String? ?? json['bookmarkType'] as String?,
-      created: json['created'] != null ? DateTime.tryParse(json['created'].toString()) : null,
+      bookmarkType:
+          json['bookmark_type'] as String? ?? json['bookmarkType'] as String?,
+      created: json['created'] != null
+          ? DateTime.tryParse(json['created'].toString())
+          : null,
     );
   }
 
@@ -146,7 +154,8 @@ class BookmarkDto {
 
     final bookmarks = results['bookmarks'] as List<dynamic>? ?? [];
     final contentTypesList = results['content_types'] as List<dynamic>? ?? [];
-    final chapterContentsList = results['chapter_contents'] as List<dynamic>? ?? [];
+    final chapterContentsList =
+        results['chapter_contents'] as List<dynamic>? ?? [];
     final chaptersList = results['chapters'] as List<dynamic>? ?? [];
     final postsList = results['posts'] as List<dynamic>? ?? [];
     final questionsList = results['questions'] as List<dynamic>? ?? [];
@@ -166,7 +175,7 @@ class BookmarkDto {
 
       final createdStr = bookmark['created'] as String?;
       final created = createdStr != null ? DateTime.tryParse(createdStr) : null;
-      
+
       final objectId = (bookmark['object_id'] as num?)?.toInt() ?? 0;
       final contentTypeId = (bookmark['content_type_id'] as num?)?.toInt() ?? 0;
       final modelName = contentTypeMap[contentTypeId];
@@ -183,7 +192,7 @@ class BookmarkDto {
         if (content != null && content is Map<String, dynamic>) {
           title = content['name'] as String? ?? 'Untitled Lesson';
           type = content['content_type'] as String? ?? 'Lesson';
-          
+
           final chapterId = content['chapter_id'] as int?;
           if (chapterId != null) {
             final chapter = chaptersList.firstWhere(
@@ -205,18 +214,20 @@ class BookmarkDto {
           final isForum = post['forum'] as bool? ?? false;
           type = isForum ? 'ForumPost' : 'Post';
 
-          items.add(BookmarkDto.fromJson(bookmark).copyWith(
-            title: title,
-            chapterName: '',
-            type: type,
-            slug: post['slug'] as String?,
-            isForumPost: isForum,
-            created: created,
-          ));
+          items.add(
+            BookmarkDto.fromJson(bookmark).copyWith(
+              title: title,
+              chapterName: '',
+              type: type,
+              slug: post['slug'] as String?,
+              isForumPost: isForum,
+              created: created,
+            ),
+          );
           continue;
         }
       } else if (modelName == 'question') {
-         final question = questionsList.firstWhere(
+        final question = questionsList.firstWhere(
           (q) => q is Map<String, dynamic> && q['id'] == objectId,
           orElse: () => null,
         );
@@ -226,12 +237,14 @@ class BookmarkDto {
         }
       }
 
-      items.add(BookmarkDto.fromJson(bookmark).copyWith(
-        title: title,
-        chapterName: chapterName,
-        type: type,
-        created: created,
-      ));
+      items.add(
+        BookmarkDto.fromJson(bookmark).copyWith(
+          title: title,
+          chapterName: chapterName,
+          type: type,
+          created: created,
+        ),
+      );
     }
 
     return items;

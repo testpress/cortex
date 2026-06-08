@@ -12,9 +12,11 @@ class BookmarkFoldersTable extends Table {
 
 class BookmarkItemsTable extends Table {
   IntColumn get id => integer()();
-  IntColumn get folderId => integer()
-      .nullable()
-      .references(BookmarkFoldersTable, #id, onDelete: KeyAction.cascade)();
+  IntColumn get folderId => integer().nullable().references(
+    BookmarkFoldersTable,
+    #id,
+    onDelete: KeyAction.cascade,
+  )();
   TextColumn get folderName => text().nullable()();
   IntColumn get lessonId => integer()();
   TextColumn get bookmarkType => text().nullable()();

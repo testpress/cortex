@@ -29,11 +29,6 @@ class UserProgressDto {
   }
 
   @override
-  int get hashCode => Object.hash(
-        userId,
-        lessonId,
-        courseId,
-        percentComplete,
-        lastAccessedAt,
-      );
+  int get hashCode =>
+      Object.hash(userId, lessonId, courseId, percentComplete, lastAccessedAt);
 }

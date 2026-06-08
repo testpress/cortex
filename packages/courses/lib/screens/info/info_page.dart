@@ -77,7 +77,7 @@ class _InfoPageHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    
+
     return SliverToBoxAdapter(
       child: Container(
         color: design.colors.card,
@@ -319,15 +319,18 @@ class _InfoCourseCard extends StatelessWidget {
                           ? Image.network(
                               course.image!,
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) => Icon(
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Icon(
                                 LucideIcons.bookOpen,
-                                color: design.colors.textSecondary.withValues(alpha: 0.5),
+                                color: design.colors.textSecondary
+                                    .withValues(alpha: 0.5),
                                 size: 32,
                               ),
                             )
                           : Icon(
                               LucideIcons.bookOpen,
-                              color: design.colors.textSecondary.withValues(alpha: 0.5),
+                              color: design.colors.textSecondary
+                                  .withValues(alpha: 0.5),
                               size: 32,
                             ),
                     ),
@@ -351,7 +354,8 @@ class _InfoCourseCard extends StatelessWidget {
                           ),
                           Icon(
                             LucideIcons.chevronRight,
-                            color: design.colors.textSecondary.withValues(alpha: 0.3),
+                            color: design.colors.textSecondary
+                                .withValues(alpha: 0.3),
                             size: 20,
                           ),
                         ],
@@ -364,25 +368,28 @@ class _InfoCourseCard extends StatelessWidget {
                           Icon(
                             LucideIcons.layers,
                             size: 14,
-                            color: design.colors.textSecondary.withValues(alpha: 0.7),
+                            color: design.colors.textSecondary
+                                .withValues(alpha: 0.7),
                           ),
                           const SizedBox(width: 4),
                           AppText.caption(
-                            L10n.of(context).curriculumChaptersCount(course.chapterCount),
+                            L10n.of(context)
+                                .curriculumChaptersCount(course.chapterCount),
                             color: design.colors.textSecondary,
                           ),
                         ],
                       ),
-                      
+
                       SizedBox(height: design.spacing.sm),
-                      
+
                       // Specific Info Metadata: Lessons
                       Row(
                         children: [
                           Icon(
                             LucideIcons.playCircle,
                             size: 14,
-                            color: design.colors.textSecondary.withValues(alpha: 0.7),
+                            color: design.colors.textSecondary
+                                .withValues(alpha: 0.7),
                           ),
                           const SizedBox(width: 4),
                           AppText.cardCaption(

@@ -111,25 +111,38 @@ class AttemptDto {
 
   factory AttemptDto.fromJson(Map<String, dynamic> json) {
     // Handle nested assessment/attempt object in some API versions
-    final Map<String, dynamic> data = json['assessment'] as Map<String, dynamic>? ?? 
-                                      json['attempt'] as Map<String, dynamic>? ?? 
-                                      json;
-    
-    final String baseUrl = (data['url'] ?? json['url'] ?? data['object_url'] ?? json['object_url'] ?? '').toString();
+    final Map<String, dynamic> data =
+        json['assessment'] as Map<String, dynamic>? ??
+        json['attempt'] as Map<String, dynamic>? ??
+        json;
+
+    final String baseUrl =
+        (data['url'] ??
+                json['url'] ??
+                data['object_url'] ??
+                json['object_url'] ??
+                '')
+            .toString();
     final String cleanBase = baseUrl.endsWith('/') ? baseUrl : '$baseUrl/';
-    
+
     // For CourseAttempts, we must use the content_attempts end URL to ensure course progress is updated.
     final bool isCourseAttempt = json['assessment'] != null;
     final String courseAttemptId = json['id']?.toString() ?? '';
-    final String contentAttemptEndUrl = isCourseAttempt && courseAttemptId.isNotEmpty 
-        ? ApiEndpoints.contentAttemptEnd(courseAttemptId) 
+    final String contentAttemptEndUrl =
+        isCourseAttempt && courseAttemptId.isNotEmpty
+        ? ApiEndpoints.contentAttemptEnd(courseAttemptId)
         : '';
 
-    final List<dynamic>? sectionsList = data['sections'] as List<dynamic>? ?? json['sections'] as List<dynamic>?;
-    final List<SectionDto>? parsedSections = sectionsList?.map((s) => SectionDto.fromJson(s as Map<String, dynamic>)).toList();
+    final List<dynamic>? sectionsList =
+        data['sections'] as List<dynamic>? ??
+        json['sections'] as List<dynamic>?;
+    final List<SectionDto>? parsedSections = sectionsList
+        ?.map((s) => SectionDto.fromJson(s as Map<String, dynamic>))
+        .toList();
 
-    final String rawReviewUrl = (data['review_url'] ?? json['review_url'])?.toString() ?? 
-                                (cleanBase.isNotEmpty ? '${cleanBase}review/' : '');
+    final String rawReviewUrl =
+        (data['review_url'] ?? json['review_url'])?.toString() ??
+        (cleanBase.isNotEmpty ? '${cleanBase}review/' : '');
     final String finalReviewUrl = rawReviewUrl.replaceFirst('v2.3', 'v2.2.1');
 
     final String rawHeartbeatUrl =
@@ -143,25 +156,68 @@ class AttemptDto {
     return AttemptDto(
       id: (data['id'] ?? json['id'] ?? '').toString(),
       state: (data['state'] ?? json['state'])?.toString(),
-      remainingTime: (data['remaining_time'] ?? json['remaining_time'])?.toString(),
-      questionsUrl: ((data['questions_url'] ?? json['questions_url'])?.toString() ?? 
-                    (cleanBase.isNotEmpty ? '${cleanBase}questions/' : '')).replaceFirst('v2.3', 'v2.2.1'),
+      remainingTime: (data['remaining_time'] ?? json['remaining_time'])
+          ?.toString(),
+      questionsUrl:
+          ((data['questions_url'] ?? json['questions_url'])?.toString() ??
+                  (cleanBase.isNotEmpty ? '${cleanBase}questions/' : ''))
+              .replaceFirst('v2.3', 'v2.2.1'),
       heartbeatUrl: finalHeartbeatUrl,
-      endUrl: (contentAttemptEndUrl.isNotEmpty 
-              ? contentAttemptEndUrl 
-              : ((json['end_url'] ?? data['end_url'] ?? json['terminate_url'] ?? data['terminate_url'])?.toString() ?? 
-                (cleanBase.isNotEmpty ? '${cleanBase}end/' : ''))).replaceFirst('v2.3', 'v2.2.1'),
-      startUrl: (data['start_url'] ?? json['start_url'])?.toString().replaceFirst('v2.3', 'v2.2.1'),
+      endUrl:
+          (contentAttemptEndUrl.isNotEmpty
+                  ? contentAttemptEndUrl
+                  : ((json['end_url'] ??
+                                data['end_url'] ??
+                                json['terminate_url'] ??
+                                data['terminate_url'])
+                            ?.toString() ??
+                        (cleanBase.isNotEmpty ? '${cleanBase}end/' : '')))
+              .replaceFirst('v2.3', 'v2.2.1'),
+      startUrl: (data['start_url'] ?? json['start_url'])
+          ?.toString()
+          .replaceFirst('v2.3', 'v2.2.1'),
       score: (data['score'] ?? json['score'])?.toString(),
-      date: (data['date'] ?? json['date'] ?? data['started_on'] ?? json['started_on'] ?? data['date_created'] ?? json['date_created'])?.toString(),
-      correctCount: (data['correct_count'] ?? json['correct_count'] ?? data['correct'] ?? json['correct']) != null
-          ? int.tryParse((data['correct_count'] ?? json['correct_count'] ?? data['correct'] ?? json['correct']).toString())
+      date:
+          (data['date'] ??
+                  json['date'] ??
+                  data['started_on'] ??
+                  json['started_on'] ??
+                  data['date_created'] ??
+                  json['date_created'])
+              ?.toString(),
+      correctCount:
+          (data['correct_count'] ??
+                  json['correct_count'] ??
+                  data['correct'] ??
+                  json['correct']) !=
+              null
+          ? int.tryParse(
+              (data['correct_count'] ??
+                      json['correct_count'] ??
+                      data['correct'] ??
+                      json['correct'])
+                  .toString(),
+            )
           : null,
-      incorrectCount: (data['incorrect_count'] ?? json['incorrect_count'] ?? data['incorrect'] ?? json['incorrect']) != null
-          ? int.tryParse((data['incorrect_count'] ?? json['incorrect_count'] ?? data['incorrect'] ?? json['incorrect']).toString())
+      incorrectCount:
+          (data['incorrect_count'] ??
+                  json['incorrect_count'] ??
+                  data['incorrect'] ??
+                  json['incorrect']) !=
+              null
+          ? int.tryParse(
+              (data['incorrect_count'] ??
+                      json['incorrect_count'] ??
+                      data['incorrect'] ??
+                      json['incorrect'])
+                  .toString(),
+            )
           : null,
-      totalQuestions: (data['total_questions'] ?? json['total_questions']) != null
-          ? int.tryParse((data['total_questions'] ?? json['total_questions']).toString())
+      totalQuestions:
+          (data['total_questions'] ?? json['total_questions']) != null
+          ? int.tryParse(
+              (data['total_questions'] ?? json['total_questions']).toString(),
+            )
           : null,
       sections: parsedSections,
       reviewUrl: finalReviewUrl.isNotEmpty ? finalReviewUrl : null,
@@ -169,12 +225,22 @@ class AttemptDto {
       percentile: (json['percentile'] ?? data['percentile'])?.toString(),
       percentage: (json['percentage'] ?? data['percentage'])?.toString(),
       rank: (json['rank'] ?? data['rank'])?.toString(),
-      maxRank: (json['max_rank'] ?? data['max_rank'] ?? json['maxRank'] ?? data['maxRank'])?.toString(),
-      rankEnabled: json['rank_enabled'] as bool? ?? data['rank_enabled'] as bool?,
-      markPerQuestion: (data['mark_per_question'] ?? json['mark_per_question'])?.toString(),
-      negativeMarks: (data['negative_marks'] ?? json['negative_marks'])?.toString(),
+      maxRank:
+          (json['max_rank'] ??
+                  data['max_rank'] ??
+                  json['maxRank'] ??
+                  data['maxRank'])
+              ?.toString(),
+      rankEnabled:
+          json['rank_enabled'] as bool? ?? data['rank_enabled'] as bool?,
+      markPerQuestion: (data['mark_per_question'] ?? json['mark_per_question'])
+          ?.toString(),
+      negativeMarks: (data['negative_marks'] ?? json['negative_marks'])
+          ?.toString(),
       timeTaken: (data['time_taken'] ?? json['time_taken'])?.toString(),
-      lastViewedQuestionId: json['last_viewed_question_id'] as int? ?? data['last_viewed_question_id'] as int?,
+      lastViewedQuestionId:
+          json['last_viewed_question_id'] as int? ??
+          data['last_viewed_question_id'] as int?,
     );
   }
 
@@ -212,7 +278,9 @@ class AttemptDto {
       return false;
     }
     for (final section in sections!) {
-      if (section.duration == null || section.duration == '0:00:00' || section.duration == '0') {
+      if (section.duration == null ||
+          section.duration == '0:00:00' ||
+          section.duration == '0') {
         return false;
       }
     }

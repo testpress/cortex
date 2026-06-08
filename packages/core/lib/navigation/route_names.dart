@@ -1,5 +1,5 @@
 /// Centralized route names for the Cortex application.
-/// 
+///
 /// Using constants ensures that all packages (core, courses, exams, testpress)
 /// can refer to the same navigation targets without tight coupling to URL paths.
 class AppRouteNames {
@@ -7,7 +7,7 @@ class AppRouteNames {
   static const videoDetail = 'video-detail';
   static const testDetail = 'test-detail';
   static const assessmentDetail = 'assessment-detail';
-  
+
   // Tab routes
   static const home = 'home';
   static const study = 'study';

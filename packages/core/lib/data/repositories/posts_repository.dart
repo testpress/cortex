@@ -17,19 +17,19 @@ class PostsRepository {
   /// Watch all post categories from the local database.
   Stream<List<PostCategoryDto>> watchPostCategories() {
     return _db.watchPostCategories().map(
-          (rows) => rows
-              .map(
-                (r) => PostCategoryDto(
-                  id: r.id,
-                  name: r.name,
-                  order: r.displayOrder,
-                  color: r.color,
-                  slug: r.slug,
-                  isStarred: r.isStarred,
-                ),
-              )
-              .toList(),
-        );
+      (rows) => rows
+          .map(
+            (r) => PostCategoryDto(
+              id: r.id,
+              name: r.name,
+              order: r.displayOrder,
+              color: r.color,
+              slug: r.slug,
+              isStarred: r.isStarred,
+            ),
+          )
+          .toList(),
+    );
   }
 
   /// Fetch post categories from the network and cache them locally.
@@ -56,30 +56,36 @@ class PostsRepository {
   /// Watch all posts from the local database.
   Stream<List<PostDto>> watchPosts() {
     return _db.watchPosts().map(
-          (rows) => rows
-              .map(
-                (r) => PostDto(
-                  id: r.id,
-                  slug: r.slug,
-                  title: r.title,
-                  categoryId: r.categoryId,
-                  categoryName: r.categoryName,
-                  shortLink: r.shortLink,
-                  summary: r.summary,
-                  contentHtml: r.contentHtml,
-                  coverImage: r.coverImage,
-                  publishedDate: r.publishedDate,
-                  webUrl: r.webUrl,
-                  allowComments: r.allowComments,
-                ),
-              )
-              .toList(),
-        );
+      (rows) => rows
+          .map(
+            (r) => PostDto(
+              id: r.id,
+              slug: r.slug,
+              title: r.title,
+              categoryId: r.categoryId,
+              categoryName: r.categoryName,
+              shortLink: r.shortLink,
+              summary: r.summary,
+              contentHtml: r.contentHtml,
+              coverImage: r.coverImage,
+              publishedDate: r.publishedDate,
+              webUrl: r.webUrl,
+              allowComments: r.allowComments,
+            ),
+          )
+          .toList(),
+    );
   }
 
   /// Fetch a paginated list of posts from the network and cache them locally.
-  Future<PaginatedResponseDto<PostDto>> fetchPosts({int page = 1, String? categorySlug}) async {
-    final response = await _source.getPosts(page: page, categorySlug: categorySlug);
+  Future<PaginatedResponseDto<PostDto>> fetchPosts({
+    int page = 1,
+    String? categorySlug,
+  }) async {
+    final response = await _source.getPosts(
+      page: page,
+      categorySlug: categorySlug,
+    );
     final companions = response.results
         .map(
           (dto) => PostsTableCompanion.insert(

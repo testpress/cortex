@@ -37,11 +37,8 @@ class Auth extends _$Auth {
     required String username,
     required String password,
   }) async {
-    await _repository.loginWithPassword(
-      username: username,
-      password: password,
-    );
-    
+    await _repository.loginWithPassword(username: username, password: password);
+
     state = const AsyncData(true);
   }
 
@@ -77,7 +74,7 @@ class Auth extends _$Auth {
       await resetUseCase.execute();
 
       await _repository.logout();
-      
+
       state = const AsyncData(false);
     } catch (e) {
       state = const AsyncData(false);
@@ -89,7 +86,6 @@ class Auth extends _$Auth {
     await _repository.logoutOtherDevices();
   }
 }
-
 
 @Riverpod(keepAlive: true)
 Stream<String?> userId(UserIdRef ref) async* {

@@ -38,13 +38,6 @@ class RecentActivityDto {
   }
 
   @override
-  int get hashCode => Object.hash(
-        id,
-        type,
-        title,
-        timeAgo,
-        status,
-        progress,
-        score,
-      );
+  int get hashCode =>
+      Object.hash(id, type, title, timeAgo, status, progress, score);
 }

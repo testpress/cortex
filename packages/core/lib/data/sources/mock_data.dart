@@ -175,7 +175,6 @@ final mockShortLessons = [
   ),
 ];
 
-
 /// Mock discovery courses.
 final mockDiscoveryCourses = [
   const DiscoveryCourseDto(
@@ -228,26 +227,10 @@ const mockForumCategories = [
     name: 'General Discussion',
     slug: 'general-discussion',
   ),
-  ForumCategoryDto(
-    id: 2,
-    name: 'Lecture Questions',
-    slug: 'lecture-questions',
-  ),
-  ForumCategoryDto(
-    id: 3,
-    name: 'Assignment Help',
-    slug: 'assignment-help',
-  ),
-  ForumCategoryDto(
-    id: 4,
-    name: 'Study Resources',
-    slug: 'study-resources',
-  ),
-  ForumCategoryDto(
-    id: 5,
-    name: 'Exam Preparation',
-    slug: 'exam-preparation',
-  ),
+  ForumCategoryDto(id: 2, name: 'Lecture Questions', slug: 'lecture-questions'),
+  ForumCategoryDto(id: 3, name: 'Assignment Help', slug: 'assignment-help'),
+  ForumCategoryDto(id: 4, name: 'Study Resources', slug: 'study-resources'),
+  ForumCategoryDto(id: 5, name: 'Exam Preparation', slug: 'exam-preparation'),
 ];
 
 ForumCategoryDto? findMockForumCategoryById(int categoryId) {
@@ -291,91 +274,90 @@ final mockPopularTests = [
   ),
 ];
 
-
 List<ForumThreadDto> mockForumThreads({int page = 1, int? categoryId}) => [
-      ForumThreadDto(
-        threadId: 1,
-        slug: 'integration-substitution-method',
-        courseId: 'course-1',
-        categoryId: categoryId,
-        title: 'How to solve integration using substitution method?',
-        summary:
-            "I'm having trouble understanding when to use substitution method in integration. Can someone explain with an example? Specifically for problems involving trigonometric functions.",
-        authorName: 'Priya Sharma',
-        authorAvatar: 'https://ui-avatars.com/api/?name=Priya&format=png',
-        createdAt: '2 hours ago',
-        replyCount: 3,
-        upvotes: 24,
-        downvotes: 2,
-        status: ForumThreadStatus.answered,
-        imageUrl:
-            'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&q=80&w=2070',
-      ),
-      ForumThreadDto(
-        threadId: 2,
-        slug: 'newtons-third-law-examples',
-        courseId: 'course-1',
-        categoryId: categoryId,
-        title: "Understanding Newton's Third Law with examples",
-        summary:
-            "Can someone help me understand the practical applications of Newton's Third Law? I'm confused about action-reaction pairs in different scenarios.",
-        authorName: 'Amit Patel',
-        authorAvatar: 'https://ui-avatars.com/api/?name=Amit&format=png',
-        createdAt: '5 hours ago',
-        replyCount: 5,
-        upvotes: 12,
-        downvotes: 1,
-        status: ForumThreadStatus.answered,
-      ),
-      ForumThreadDto(
-        threadId: 3,
-        slug: 'sn1-vs-sn2-reactions',
-        courseId: 'course-1',
-        categoryId: categoryId,
-        title: 'Organic Chemistry — SN1 vs SN2 reactions',
-        summary:
-            'What are the key differences between SN1 and SN2 reactions? How do I identify which mechanism will occur in a given reaction?',
-        authorName: 'Sneha Gupta',
-        authorAvatar: 'https://ui-avatars.com/api/?name=Sneha&format=png',
-        createdAt: '1 day ago',
-        replyCount: 0,
-        upvotes: 8,
-        downvotes: 0,
-        status: ForumThreadStatus.unanswered,
-      ),
-      ForumThreadDto(
-        threadId: 4,
-        slug: 'complex-numbers-geometric-interpretation',
-        courseId: 'course-1',
-        categoryId: categoryId,
-        title: 'Complex numbers — geometric interpretation doubt',
-        summary:
-            'I need help understanding the geometric interpretation of complex number multiplication. Can someone explain with diagrams?',
-        authorName: 'Rahul Singh',
-        authorAvatar: 'https://ui-avatars.com/api/?name=Rahul&format=png',
-        createdAt: '1 day ago',
-        replyCount: 4,
-        upvotes: 15,
-        downvotes: 3,
-        status: ForumThreadStatus.answered,
-      ),
-      ForumThreadDto(
-        threadId: 5,
-        slug: 'thermodynamics-entropy-clarification',
-        courseId: 'course-1',
-        categoryId: categoryId,
-        title: 'Thermodynamics — Entropy concept clarification',
-        summary:
-            'Why does entropy always increase in an isolated system? Can someone provide a simple explanation without too much math?',
-        authorName: 'Kavya Reddy',
-        authorAvatar: 'https://ui-avatars.com/api/?name=Kavya&format=png',
-        createdAt: '2 days ago',
-        replyCount: 0,
-        upvotes: 5,
-        downvotes: 0,
-        status: ForumThreadStatus.unanswered,
-      ),
-    ];
+  ForumThreadDto(
+    threadId: 1,
+    slug: 'integration-substitution-method',
+    courseId: 'course-1',
+    categoryId: categoryId,
+    title: 'How to solve integration using substitution method?',
+    summary:
+        "I'm having trouble understanding when to use substitution method in integration. Can someone explain with an example? Specifically for problems involving trigonometric functions.",
+    authorName: 'Priya Sharma',
+    authorAvatar: 'https://ui-avatars.com/api/?name=Priya&format=png',
+    createdAt: '2 hours ago',
+    replyCount: 3,
+    upvotes: 24,
+    downvotes: 2,
+    status: ForumThreadStatus.answered,
+    imageUrl:
+        'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&q=80&w=2070',
+  ),
+  ForumThreadDto(
+    threadId: 2,
+    slug: 'newtons-third-law-examples',
+    courseId: 'course-1',
+    categoryId: categoryId,
+    title: "Understanding Newton's Third Law with examples",
+    summary:
+        "Can someone help me understand the practical applications of Newton's Third Law? I'm confused about action-reaction pairs in different scenarios.",
+    authorName: 'Amit Patel',
+    authorAvatar: 'https://ui-avatars.com/api/?name=Amit&format=png',
+    createdAt: '5 hours ago',
+    replyCount: 5,
+    upvotes: 12,
+    downvotes: 1,
+    status: ForumThreadStatus.answered,
+  ),
+  ForumThreadDto(
+    threadId: 3,
+    slug: 'sn1-vs-sn2-reactions',
+    courseId: 'course-1',
+    categoryId: categoryId,
+    title: 'Organic Chemistry — SN1 vs SN2 reactions',
+    summary:
+        'What are the key differences between SN1 and SN2 reactions? How do I identify which mechanism will occur in a given reaction?',
+    authorName: 'Sneha Gupta',
+    authorAvatar: 'https://ui-avatars.com/api/?name=Sneha&format=png',
+    createdAt: '1 day ago',
+    replyCount: 0,
+    upvotes: 8,
+    downvotes: 0,
+    status: ForumThreadStatus.unanswered,
+  ),
+  ForumThreadDto(
+    threadId: 4,
+    slug: 'complex-numbers-geometric-interpretation',
+    courseId: 'course-1',
+    categoryId: categoryId,
+    title: 'Complex numbers — geometric interpretation doubt',
+    summary:
+        'I need help understanding the geometric interpretation of complex number multiplication. Can someone explain with diagrams?',
+    authorName: 'Rahul Singh',
+    authorAvatar: 'https://ui-avatars.com/api/?name=Rahul&format=png',
+    createdAt: '1 day ago',
+    replyCount: 4,
+    upvotes: 15,
+    downvotes: 3,
+    status: ForumThreadStatus.answered,
+  ),
+  ForumThreadDto(
+    threadId: 5,
+    slug: 'thermodynamics-entropy-clarification',
+    courseId: 'course-1',
+    categoryId: categoryId,
+    title: 'Thermodynamics — Entropy concept clarification',
+    summary:
+        'Why does entropy always increase in an isolated system? Can someone provide a simple explanation without too much math?',
+    authorName: 'Kavya Reddy',
+    authorAvatar: 'https://ui-avatars.com/api/?name=Kavya&format=png',
+    createdAt: '2 days ago',
+    replyCount: 0,
+    upvotes: 5,
+    downvotes: 0,
+    status: ForumThreadStatus.unanswered,
+  ),
+];
 
 List<ForumCommentDto> mockForumComments(int threadId) {
   final prefix = 'fc-$threadId';
@@ -438,7 +420,8 @@ const mockResumeLearningFeed = DashboardContentsDto(
       sectionType: DashboardSectionType.resumeLearning,
       totalDuration: '1h 36m',
       remainingDuration: '45m',
-      coverImage: 'https://d1j3vi2u94ebt0.cloudfront.net/institute/brilliantpalalms/chapter_contents/192570/7f977cf2e71e4ecba9909788605737a7.png',
+      coverImage:
+          'https://d1j3vi2u94ebt0.cloudfront.net/institute/brilliantpalalms/chapter_contents/192570/7f977cf2e71e4ecba9909788605737a7.png',
       progress: 65.0,
     ),
     DashboardContentDto(
@@ -449,7 +432,8 @@ const mockResumeLearningFeed = DashboardContentsDto(
       sectionType: DashboardSectionType.resumeLearning,
       totalDuration: '3h',
       remainingDuration: '2h 15m',
-      coverImage: 'https://d1j3vi2u94ebt0.cloudfront.net/institute/brilliantpalalms/chapter_contents/363107/047b484129f04324b36ceaf5ebadf348.png',
+      coverImage:
+          'https://d1j3vi2u94ebt0.cloudfront.net/institute/brilliantpalalms/chapter_contents/363107/047b484129f04324b36ceaf5ebadf348.png',
       progress: 0.0,
     ),
   ],
@@ -463,7 +447,8 @@ const mockRecentlyCompletedFeed = DashboardContentsDto(
       chapterTitle: 'Biology Class 11',
       progress: 100,
       totalDuration: '1h',
-      coverImage: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
+      coverImage:
+          'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
       contentType: DashboardContentType.video,
       sectionType: DashboardSectionType.recentlyCompleted,
     ),
@@ -473,7 +458,8 @@ const mockRecentlyCompletedFeed = DashboardContentsDto(
       chapterTitle: 'Biology Class 12',
       progress: 100,
       totalDuration: '2h 15m',
-      coverImage: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
+      coverImage:
+          'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
       contentType: DashboardContentType.video,
       sectionType: DashboardSectionType.recentlyCompleted,
     ),
@@ -483,7 +469,8 @@ const mockRecentlyCompletedFeed = DashboardContentsDto(
       chapterTitle: 'Biology Class 11',
       progress: 100,
       totalDuration: '1h 20m',
-      coverImage: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
+      coverImage:
+          'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
       contentType: DashboardContentType.video,
       sectionType: DashboardSectionType.recentlyCompleted,
     ),
@@ -495,7 +482,8 @@ const mockLearners = [
     id: '1',
     rank: 1,
     name: 'AlexR_21',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
+    avatar:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
     points: 1520,
     coursesCompleted: 12,
     streakDays: 15,
@@ -504,7 +492,8 @@ const mockLearners = [
     id: '2',
     rank: 2,
     name: 'LearnWithMira',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200',
+    avatar:
+        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200',
     points: 1340,
     coursesCompleted: 9,
     streakDays: 18,
@@ -513,7 +502,8 @@ const mockLearners = [
     id: '3',
     rank: 3,
     name: 'CodeNinja_47',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200',
+    avatar:
+        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200',
     points: 1180,
     coursesCompleted: 8,
     streakDays: 12,
@@ -522,7 +512,8 @@ const mockLearners = [
     id: '4',
     rank: 4,
     name: 'DesignGuru',
-    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200',
+    avatar:
+        'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200',
     points: 980,
     coursesCompleted: 8,
     streakDays: 8,
@@ -531,7 +522,8 @@ const mockLearners = [
     id: '5',
     rank: 5,
     name: 'MathMaster',
-    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200',
+    avatar:
+        'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200',
     points: 890,
     coursesCompleted: 7,
     streakDays: 7,
@@ -540,7 +532,8 @@ const mockLearners = [
     id: '6',
     rank: 6,
     name: 'GrowthHacker',
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200',
+    avatar:
+        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200',
     points: 832,
     coursesCompleted: 6,
     streakDays: 7,
@@ -549,7 +542,8 @@ const mockLearners = [
     id: '7',
     rank: 7,
     name: 'DevWizard',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
+    avatar:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
     points: 791,
     coursesCompleted: 5,
     streakDays: 7,
@@ -558,7 +552,8 @@ const mockLearners = [
     id: '8',
     rank: 8,
     name: 'You',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200',
+    avatar:
+        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200',
     points: 790,
     coursesCompleted: 4,
     streakDays: 4,
@@ -567,7 +562,8 @@ const mockLearners = [
     id: '9',
     rank: 9,
     name: 'UIUXExplorer',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200',
+    avatar:
+        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200',
     points: 788,
     coursesCompleted: 4,
     streakDays: 6,
@@ -590,7 +586,8 @@ final List<DoubtDto> mockDoubts = [
     topicId: 101,
     topicName: 'Physics',
     title: 'How to solve depreciation question in Accounts?',
-    content: "I'm having trouble understanding how to calculate depreciation using the reducing balance method. Can someone explain with a simple example?",
+    content:
+        "I'm having trouble understanding how to calculate depreciation using the reducing balance method. Can someone explain with a simple example?",
     studentName: 'Arjun Sharma',
     replyCount: 3,
     status: DoubtStatus.active,
@@ -653,7 +650,8 @@ List<DoubtReplyDto> getMockDoubtReplies(String doubtId) {
       DoubtReplyDto(
         id: 'reply_1_1',
         doubtId: doubtId,
-        content: 'The straight line method is simple: Depreciation = (Cost - Salvage Value) / Useful Life. For example, if a machine costs ₹1,00,000 with a salvage value of ₹10,000 and a life of 10 years, annual depreciation is ₹9,000.',
+        content:
+            'The straight line method is simple: Depreciation = (Cost - Salvage Value) / Useful Life. For example, if a machine costs ₹1,00,000 with a salvage value of ₹10,000 and a life of 10 years, annual depreciation is ₹9,000.',
         authorName: 'Dr. Rajesh Kumar',
         isMentor: true,
         createdAt: DateTime.now().subtract(const Duration(hours: 1)),
@@ -662,7 +660,8 @@ List<DoubtReplyDto> getMockDoubtReplies(String doubtId) {
       DoubtReplyDto(
         id: 'reply_1_2',
         doubtId: doubtId,
-        content: 'Got it! So the depreciation amount remains constant every year in this method, right?',
+        content:
+            'Got it! So the depreciation amount remains constant every year in this method, right?',
         authorName: 'Arjun Sharma',
         isMentor: false,
         createdAt: DateTime.now().subtract(const Duration(minutes: 30)),
@@ -685,7 +684,8 @@ List<DoubtReplyDto> getMockDoubtReplies(String doubtId) {
       DoubtReplyDto(
         id: 'reply_2_1',
         doubtId: doubtId,
-        content: 'Ionic bonding involves the complete transfer of electrons from one atom to another, whereas covalent bonding involves sharing of electron pairs between atoms.',
+        content:
+            'Ionic bonding involves the complete transfer of electrons from one atom to another, whereas covalent bonding involves sharing of electron pairs between atoms.',
         authorName: 'Prof. Anjali Sharma',
         isMentor: true,
         createdAt: DateTime.now().subtract(const Duration(hours: 3)),
@@ -693,7 +693,8 @@ List<DoubtReplyDto> getMockDoubtReplies(String doubtId) {
       DoubtReplyDto(
         id: 'reply_2_2',
         doubtId: doubtId,
-        content: 'In general, ionic bonds are stronger than covalent bonds due to the strong electrostatic forces between oppositely charged ions.',
+        content:
+            'In general, ionic bonds are stronger than covalent bonds due to the strong electrostatic forces between oppositely charged ions.',
         authorName: 'Prof. Anjali Sharma',
         isMentor: true,
         createdAt: DateTime.now().subtract(const Duration(hours: 2)),
@@ -706,7 +707,8 @@ List<DoubtReplyDto> getMockDoubtReplies(String doubtId) {
       DoubtReplyDto(
         id: 'reply_4_1',
         doubtId: doubtId,
-        content: 'Yes, it is very different! C4 plants have a special leaf anatomy called Kranz anatomy to minimize photorespiration, which C3 plants do not have.',
+        content:
+            'Yes, it is very different! C4 plants have a special leaf anatomy called Kranz anatomy to minimize photorespiration, which C3 plants do not have.',
         authorName: 'Dr. Priya Verma',
         isMentor: true,
         createdAt: DateTime.now().subtract(const Duration(hours: 5)),
@@ -745,8 +747,10 @@ const mockPosts = [
     title: '📚 Study Smart, Not Hard',
     categoryId: 1,
     shortLink: 'smart-study',
-    summary: 'Master complex topics with our structured learning paths - Physics, Chemistry & Math all in one place',
-    contentHtml: '<p>Master complex topics with our structured learning paths - Physics, Chemistry & Math all in one place</p>',
+    summary:
+        'Master complex topics with our structured learning paths - Physics, Chemistry & Math all in one place',
+    contentHtml:
+        '<p>Master complex topics with our structured learning paths - Physics, Chemistry & Math all in one place</p>',
     publishedDate: '2026-06-01T10:00:00Z',
     allowComments: true,
   ),
@@ -756,8 +760,10 @@ const mockPosts = [
     title: '🎯 Your Daily Study Companion',
     categoryId: 2,
     shortLink: 'study-companion',
-    summary: 'Track progress across 45+ chapters with video lessons, practice sets, and chapter tests designed by experts',
-    contentHtml: '<p>Track progress across 45+ chapters with video lessons, practice sets, and chapter tests designed by experts</p>',
+    summary:
+        'Track progress across 45+ chapters with video lessons, practice sets, and chapter tests designed by experts',
+    contentHtml:
+        '<p>Track progress across 45+ chapters with video lessons, practice sets, and chapter tests designed by experts</p>',
     publishedDate: '2026-06-01T09:00:00Z',
     allowComments: true,
   ),
@@ -767,8 +773,10 @@ const mockPosts = [
     title: '⚡ Learn at Your Pace',
     categoryId: 1,
     shortLink: 'learn-pace',
-    summary: '180+ hours of content available 24/7 - watch recordings, download notes, and practice anytime',
-    contentHtml: '<p>180+ hours of content available 24/7 - watch recordings, download notes, and practice anytime</p>',
+    summary:
+        '180+ hours of content available 24/7 - watch recordings, download notes, and practice anytime',
+    contentHtml:
+        '<p>180+ hours of content available 24/7 - watch recordings, download notes, and practice anytime</p>',
     publishedDate: '2026-06-01T08:00:00Z',
     allowComments: false,
   ),

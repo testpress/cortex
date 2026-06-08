@@ -18,13 +18,15 @@ class TimelineChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? design.colors.accent2.withValues(alpha: 0.1) : design.colors.card,
+          color: isSelected
+              ? design.colors.accent2.withValues(alpha: 0.1)
+              : design.colors.card,
           borderRadius: BorderRadius.circular(100),
           border: isSelected ? null : Border.all(color: design.colors.border),
         ),
@@ -32,14 +34,18 @@ class TimelineChip extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              icon, 
-              size: 14, 
-              color: isSelected ? design.colors.accent2 : design.colors.textSecondary,
+              icon,
+              size: 14,
+              color: isSelected
+                  ? design.colors.accent2
+                  : design.colors.textSecondary,
             ),
             const SizedBox(width: 6),
             AppText.labelSmall(
-              label, 
-              color: isSelected ? design.colors.accent2 : design.colors.textSecondary,
+              label,
+              color: isSelected
+                  ? design.colors.accent2
+                  : design.colors.textSecondary,
             ),
           ],
         ),

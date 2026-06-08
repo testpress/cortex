@@ -14,7 +14,8 @@ class CompetitorListItem extends StatelessWidget {
     final isCurrentUser = learner.isCurrentUser;
 
     return Container(
-      color: isCurrentUser ? design.colors.accent2.withValues(alpha: 0.05) : null,
+      color:
+          isCurrentUser ? design.colors.accent2.withValues(alpha: 0.05) : null,
       padding: const EdgeInsets.only(left: 16, right: 24, top: 12, bottom: 12),
       child: Row(
         children: [
@@ -26,7 +27,9 @@ class CompetitorListItem extends StatelessWidget {
               child: AppText.labelBold(
                 learner.rank.toString(),
                 style: TextStyle(
-                  color: isCurrentUser ? design.colors.accent2 : design.colors.textSecondary,
+                  color: isCurrentUser
+                      ? design.colors.accent2
+                      : design.colors.textSecondary,
                 ),
               ),
             ),
@@ -42,7 +45,9 @@ class CompetitorListItem extends StatelessWidget {
               learner.name + (isCurrentUser ? l10n.leaderboardYouSuffix : ""),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              color: isCurrentUser ? design.colors.accent2 : design.colors.textPrimary,
+              color: isCurrentUser
+                  ? design.colors.accent2
+                  : design.colors.textPrimary,
             ),
           ),
           const SizedBox(width: 8),

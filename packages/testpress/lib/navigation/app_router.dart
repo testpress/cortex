@@ -8,11 +8,8 @@ import 'package:core/data/data.dart';
 import 'package:profile/profile.dart';
 import '../widgets/dashboard_drawer.dart';
 
-
-
 /// The root navigator key for the whole app
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
-
 
 /// Provider that exposes the application router.
 final goRouterProvider = Provider<GoRouter>((ref) {
@@ -83,10 +80,6 @@ List<AppTabItem> buildPrimaryNavigationItems() {
   return NavTab.active().map((tab) => tab.toTabItem()).toList();
 }
 
-
-
-
-
 class _AppShellBuilder extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
   final List<NavTab> allTabs;
@@ -142,7 +135,6 @@ class _AppShellBuilder extends ConsumerWidget {
   }
 }
 
-
 void _onTabItemTapped(
   StatefulNavigationShell navigationShell,
   String id, {
@@ -151,4 +143,3 @@ void _onTabItemTapped(
   final index = allTabs.indexWhere((tab) => tab.id == id);
   navigationShell.goBranch(index != -1 ? index : 0);
 }
-

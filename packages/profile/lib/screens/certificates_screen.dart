@@ -80,9 +80,9 @@ class _CertificatesHeader extends StatelessWidget {
   }
 
   BoxDecoration _headerDecoration(DesignConfig design) => BoxDecoration(
-        color: design.isDark ? design.colors.surface : design.colors.card,
-        border: Border(bottom: BorderSide(color: design.colors.border)),
-      );
+    color: design.isDark ? design.colors.surface : design.colors.card,
+    border: Border(bottom: BorderSide(color: design.colors.border)),
+  );
 }
 
 class _BackButton extends StatelessWidget {
@@ -219,12 +219,14 @@ class _CertificateList extends StatelessWidget {
 
     return Column(
       children: certificates
-          .map((certificate) => _CertificateCardSpaced(
-                certificate: certificate,
-                onContinueCourse: onContinueCourse,
-                onOpenPreview: onOpenPreview,
-                onDownloadCertificate: onDownloadCertificate,
-              ))
+          .map(
+            (certificate) => _CertificateCardSpaced(
+              certificate: certificate,
+              onContinueCourse: onContinueCourse,
+              onOpenPreview: onOpenPreview,
+              onDownloadCertificate: onDownloadCertificate,
+            ),
+          )
           .toList(),
     );
   }
@@ -319,7 +321,6 @@ class _CardHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-
     return Container(
       padding: EdgeInsets.all(design.spacing.md),
       decoration: BoxDecoration(gradient: _headerGradient(design)),
@@ -327,9 +328,7 @@ class _CardHeader extends StatelessWidget {
         children: [
           _StatusIcon(certificate: certificate),
           SizedBox(width: design.spacing.sm),
-          Expanded(
-            child: _StatusLabel(certificate: certificate),
-          ),
+          Expanded(child: _StatusLabel(certificate: certificate)),
         ],
       ),
     );

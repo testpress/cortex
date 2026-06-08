@@ -23,7 +23,7 @@ class ExamDetail extends _$ExamDetail {
   @override
   FutureOr<ExamDto> build(String slug) async {
     final db = await ref.watch(appDatabaseProvider.future);
-    
+
     // 1. Emit cached data instantly if it exists
     final cachedJson = await db.watchLessonExamMetadataBySlug(slug).first;
     if (cachedJson != null) {
@@ -41,7 +41,7 @@ class ExamDetail extends _$ExamDetail {
     if (state.hasValue) {
       return state.requireValue;
     }
-    
+
     // First ever fetch (no cache)
     final dataSource = ref.watch(dataSourceProvider);
     final freshDto = await dataSource.getExam(slug);
@@ -53,43 +53,49 @@ class ExamDetail extends _$ExamDetail {
     try {
       final dataSource = ref.read(dataSourceProvider);
       final freshDto = await dataSource.getExam(slug);
-      
+
       final db = await ref.read(appDatabaseProvider.future);
       final cachedJson = await db.watchLessonExamMetadataBySlug(slug).first;
-      
+
       // If we recently updated the paused attempts locally, ignore the API's count
       // because the API or CDN might be serving stale data.
       final freshJsonMap = freshDto.toJson();
-      
+
       DateTime? lastPausedUpdate = _lastLocalPausedUpdate;
       if (cachedJson != null) {
         try {
           final cachedJsonMap = jsonDecode(cachedJson);
-          final lastUpdateStr = cachedJsonMap['last_local_paused_update'] as String?;
+          final lastUpdateStr =
+              cachedJsonMap['last_local_paused_update'] as String?;
           if (lastUpdateStr != null) {
             final parsedDate = DateTime.tryParse(lastUpdateStr);
-            if (parsedDate != null && (lastPausedUpdate == null || parsedDate.isAfter(lastPausedUpdate))) {
+            if (parsedDate != null &&
+                (lastPausedUpdate == null ||
+                    parsedDate.isAfter(lastPausedUpdate))) {
               lastPausedUpdate = parsedDate;
             }
           }
         } catch (_) {}
       }
 
-      if (lastPausedUpdate != null && 
-          DateTime.now().difference(lastPausedUpdate) < const Duration(minutes: 5)) {
+      if (lastPausedUpdate != null &&
+          DateTime.now().difference(lastPausedUpdate) <
+              const Duration(minutes: 5)) {
         if (cachedJson != null) {
           try {
             final cachedJsonMap = jsonDecode(cachedJson);
             if (cachedJsonMap.containsKey('paused_attempts_count')) {
-              freshJsonMap['paused_attempts_count'] = cachedJsonMap['paused_attempts_count'];
-              freshJsonMap['last_local_paused_update'] = lastPausedUpdate.toIso8601String();
+              freshJsonMap['paused_attempts_count'] =
+                  cachedJsonMap['paused_attempts_count'];
+              freshJsonMap['last_local_paused_update'] = lastPausedUpdate
+                  .toIso8601String();
             }
           } catch (_) {}
         }
       }
-      
+
       final freshJsonToSave = jsonEncode(freshJsonMap);
-      
+
       // Only upsert if data changed
       if (cachedJson != freshJsonToSave) {
         await db.updateLessonExamMetadata(slug, freshJsonToSave);
@@ -113,13 +119,14 @@ class ExamDetail extends _$ExamDetail {
         json = jsonDecode(cachedJsonStr) as Map<String, dynamic>;
       } catch (_) {}
     }
-    
+
     json ??= state.valueOrNull?.toJson();
-    
+
     if (json != null) {
       try {
         json['paused_attempts_count'] = count;
-        json['last_local_paused_update'] = _lastLocalPausedUpdate?.toIso8601String();
+        json['last_local_paused_update'] = _lastLocalPausedUpdate
+            ?.toIso8601String();
         final updatedJsonStr = jsonEncode(json);
         await db.updateLessonExamMetadata(slug, updatedJsonStr);
         state = AsyncData(ExamDto.fromJson(json));
@@ -143,7 +150,7 @@ class ExamAttempt extends _$ExamAttempt {
   @override
   ExamAttemptState build() {
     final repo = ref.watch(examRepositoryProvider);
-    
+
     // Subscribe to repository updates
     _subscription?.cancel();
     _subscription = repo.stateStream.listen((newState) {
@@ -157,24 +164,29 @@ class ExamAttempt extends _$ExamAttempt {
     return repo.state;
   }
 
-  Future<void> loadExam(String slug) => ref.read(examRepositoryProvider).loadExam(slug);
-  
+  Future<void> loadExam(String slug) =>
+      ref.read(examRepositoryProvider).loadExam(slug);
+
   void reset() => ref.read(examRepositoryProvider).reset();
-  
-  Future<void> startStandaloneExam(ExamDto exam) => 
+
+  Future<void> startStandaloneExam(ExamDto exam) =>
       ref.read(examRepositoryProvider).startStandaloneExam(exam);
-      
+
   Future<void> startCourseLinkedExam(ExamDto exam, String contentAttemptsUrl) =>
-      ref.read(examRepositoryProvider).startCourseLinkedExam(exam, contentAttemptsUrl);
+      ref
+          .read(examRepositoryProvider)
+          .startCourseLinkedExam(exam, contentAttemptsUrl);
 
   Future<void> submitAnswer(String answerUrl, AnswerDto answer) =>
       ref.read(examRepositoryProvider).submitAnswer(answerUrl, answer);
 
-  void updateShortText(String questionId, String answerUrl, String text) =>
-      ref.read(examRepositoryProvider).updateShortText(questionId, answerUrl, text);
+  void updateShortText(String questionId, String answerUrl, String text) => ref
+      .read(examRepositoryProvider)
+      .updateShortText(questionId, answerUrl, text);
 
-  void updateEssayText(String questionId, String answerUrl, String text) =>
-      ref.read(examRepositoryProvider).updateEssayText(questionId, answerUrl, text);
+  void updateEssayText(String questionId, String answerUrl, String text) => ref
+      .read(examRepositoryProvider)
+      .updateEssayText(questionId, answerUrl, text);
 
   Future<void> endExam(String endUrl) =>
       ref.read(examRepositoryProvider).endExam(endUrl);
@@ -193,17 +205,17 @@ class ExamList extends _$ExamList {
   @override
   Stream<List<CourseDto>> build() async* {
     final repo = await ref.watch(courseRepositoryProvider.future);
-    
+
     // Yield the filtered stream from the repository (shared cache)
     yield* repo.watchExamCourses().map(
-          (rows) => rows.map((row) => repo.rowToCourseDto(row)).toList(),
-        );
+      (rows) => rows.map((row) => repo.rowToCourseDto(row)).toList(),
+    );
   }
 
   /// Triggers an independent sync for the Exams tab by fetching the first page.
   Future<void> initialize() async {
     if (_isInitialized) return;
-    
+
     if (_pendingSyncRequest != null) return _pendingSyncRequest;
     _isInitialized = true;
 
@@ -231,7 +243,7 @@ class ExamList extends _$ExamList {
   Future<void> _performSync({required bool isReset}) async {
     if (isReset) {
       _paginationTracker = const PaginationState();
-      
+
       // Only show the initial loader if the local database is actually empty.
       final hasData = state.valueOrNull?.isNotEmpty ?? false;
       if (!hasData) {

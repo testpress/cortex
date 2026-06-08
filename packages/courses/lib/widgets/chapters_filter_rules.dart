@@ -14,7 +14,8 @@ class ChaptersFilterRules {
   static bool isFilterVisible(CurriculumFilter filter) {
     // Hide extra filtering chips (Assessments and Tests) whenever the dedicated Exam tab is enabled.
     if (AppConfig.showExamTab) {
-      if (filter == CurriculumFilter.assessment || filter == CurriculumFilter.test) {
+      if (filter == CurriculumFilter.assessment ||
+          filter == CurriculumFilter.test) {
         return false;
       }
     }
