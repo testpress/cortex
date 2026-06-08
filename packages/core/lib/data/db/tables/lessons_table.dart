@@ -27,7 +27,7 @@ class LessonsTable extends Table {
   IntColumn get lessonNumber => integer().nullable()();
   IntColumn get totalLessons => integer().nullable()();
   IntColumn get bookmarkId => integer().nullable()();
-  
+
   // Status flags for localized filtering
   BoolColumn get isRunning => boolean().withDefault(const Constant(false))();
   BoolColumn get isUpcoming => boolean().withDefault(const Constant(false))();
@@ -38,13 +38,15 @@ class LessonsTable extends Table {
   TextColumn get nextContentId => text().nullable()();
   TextColumn get previousContentId => text().nullable()();
   TextColumn get htmlContent => text().nullable()();
-  
+
   // Live Stream specific fields
   TextColumn get chatEmbedUrl => text().nullable()();
   TextColumn get streamStatus => text().nullable()();
-  BoolColumn get showRecordedVideo => boolean().withDefault(const Constant(false))();
-  
-  BoolColumn get isDetailFetched => boolean().withDefault(const Constant(false))();
+  BoolColumn get showRecordedVideo =>
+      boolean().withDefault(const Constant(false))();
+
+  BoolColumn get isDetailFetched =>
+      boolean().withDefault(const Constant(false))();
 
   // Scheduled content fields
   BoolColumn get isScheduled => boolean().withDefault(const Constant(false))();
@@ -57,7 +59,8 @@ class LessonsTable extends Table {
   TextColumn get examMetadataJson => text().nullable()(); // SWR cache
 
   // Video Subtabs Fields
-  BoolColumn get enableTranscript => boolean().withDefault(const Constant(false))();
+  BoolColumn get enableTranscript =>
+      boolean().withDefault(const Constant(false))();
   TextColumn get videoSubtitleUrl => text().nullable()(); // Stores subtitle URL
   BoolColumn get isAiEnabled => boolean().withDefault(const Constant(false))();
   TextColumn get aiNotesUrl => text().nullable()();

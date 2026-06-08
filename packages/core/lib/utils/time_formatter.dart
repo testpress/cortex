@@ -2,7 +2,12 @@
 class TimeFormatter {
   /// Formats duration strings like "0.02:17" or "00:45:00" into "2min 17sec" or "45min".
   static String? formatDuration(String? duration) {
-    if (duration == null || duration.isEmpty || duration == '0' || duration == '00:00' || duration == '00:00:00' || duration == '0:00:00') {
+    if (duration == null ||
+        duration.isEmpty ||
+        duration == '0' ||
+        duration == '00:00' ||
+        duration == '00:00:00' ||
+        duration == '0:00:00') {
       return null;
     }
 
@@ -14,8 +19,11 @@ class TimeFormatter {
     try {
       // Normalize: Some APIs return "0.02:17" or "0:02:17" or "45:00"
       final normalized = duration.replaceAll('.', ':');
-      final parts = normalized.split(':').map((s) => int.tryParse(s) ?? 0).toList();
-      
+      final parts = normalized
+          .split(':')
+          .map((s) => int.tryParse(s) ?? 0)
+          .toList();
+
       int hours = 0;
       int minutes = 0;
       int seconds = 0;
@@ -50,7 +58,7 @@ class TimeFormatter {
 
       final result = buffer.toString().trim();
       if (result.isEmpty) return null;
-      
+
       // Post-process to match common "45 min" style if it's just minutes
       if (hours == 0 && seconds == 0 && minutes > 0) {
         return '$minutes min';
@@ -87,7 +95,8 @@ class TimeFormatter {
         seconds = int.tryParse(timeUnits[0]) ?? 0;
       }
 
-      final milliseconds = int.tryParse(msPart.padRight(3, '0').substring(0, 3)) ?? 0;
+      final milliseconds =
+          int.tryParse(msPart.padRight(3, '0').substring(0, 3)) ?? 0;
 
       return Duration(
         hours: hours,

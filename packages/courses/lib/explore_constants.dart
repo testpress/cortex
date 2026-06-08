@@ -1,4 +1,3 @@
-
 /// Common UI constants for the Explore package.
 class ExploreConstants {
   ExploreConstants._();

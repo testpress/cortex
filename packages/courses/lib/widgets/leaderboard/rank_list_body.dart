@@ -32,7 +32,8 @@ class RankListBody extends StatelessWidget {
         // Timeline Chips
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          padding: EdgeInsets.symmetric(horizontal: design.spacing.md, vertical: design.spacing.md),
+          padding: EdgeInsets.symmetric(
+              horizontal: design.spacing.md, vertical: design.spacing.md),
           child: Row(
             children: [
               TimelineChip(
@@ -58,7 +59,7 @@ class RankListBody extends StatelessWidget {
             ],
           ),
         ),
-        
+
         // The List
         Expanded(
           child: Padding(
@@ -78,12 +79,14 @@ class RankListBody extends StatelessWidget {
                 builder: (context) {
                   if (hasError) {
                     return Center(
-                      child: AppText.body(l10n.leaderboardErrorLoading, color: design.colors.error),
+                      child: AppText.body(l10n.leaderboardErrorLoading,
+                          color: design.colors.error),
                     );
                   }
                   if (!isLoading && learners.isEmpty) {
                     return Center(
-                      child: AppText.body(l10n.leaderboardNoLearnersFound, color: design.colors.textSecondary),
+                      child: AppText.body(l10n.leaderboardNoLearnersFound,
+                          color: design.colors.textSecondary),
                     );
                   }
 
@@ -94,9 +97,11 @@ class RankListBody extends StatelessWidget {
                     child: ListView.separated(
                       padding: EdgeInsets.zero,
                       itemCount: displayLearners.length,
-                      separatorBuilder: (_, __) => RowDivider(color: design.colors.divider),
+                      separatorBuilder: (_, __) =>
+                          RowDivider(color: design.colors.divider),
                       itemBuilder: (context, index) {
-                        return LeaderboardListItem(learner: displayLearners[index]);
+                        return LeaderboardListItem(
+                            learner: displayLearners[index]);
                       },
                     ),
                   );

@@ -36,7 +36,8 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
 
       final current = ref.read(examAttemptProvider);
       final examId = current.exam?.id;
-      final isActiveAttempt = current.status == ExamAttemptStatus.inProgress ||
+      final isActiveAttempt =
+          current.status == ExamAttemptStatus.inProgress ||
           current.status == ExamAttemptStatus.submitting;
 
       if (isActiveAttempt && examId == widget.testId) {
@@ -54,7 +55,7 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    
+
     final lessonDetailAsync = ref.watch(lessonDetailProvider(widget.testId));
     final lesson = widget.lesson ?? lessonDetailAsync.valueOrNull?.toDto();
 
@@ -74,10 +75,11 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
     }
 
     final exam = examDetailAsync?.valueOrNull;
-    
+
     // Metadata is loading if we don't have the exam data yet and no errors have occurred.
     // This guarantees it shimmers immediately on frame 1 instead of showing an empty layout.
-    final bool hasError = (examDetailAsync?.hasError ?? false) || lessonDetailAsync.hasError;
+    final bool hasError =
+        (examDetailAsync?.hasError ?? false) || lessonDetailAsync.hasError;
     final bool isMetadataLoading = exam == null && !hasError;
 
     // Parse duration format from e.g. "03:00:00" to "180 mins"
@@ -104,7 +106,6 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
         totalMarksText = 'Marks: ${exam.questionCount}';
       }
     }
-
 
     return GestureDetector(
       onTap: widget.onClose,
@@ -159,7 +160,10 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                       effect: ShimmerEffect(
                         baseColor: design.colors.skeleton,
                         highlightColor: design.colors.onSkeleton,
-                        duration: MotionPreferences.duration(context, const Duration(milliseconds: 800)),
+                        duration: MotionPreferences.duration(
+                          context,
+                          const Duration(milliseconds: 800),
+                        ),
                       ),
                     ),
                     child: Skeletonizer(
@@ -171,7 +175,9 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               AppText.headline(
-                                lesson?.title ?? exam?.title ?? 'Question Paper',
+                                lesson?.title ??
+                                    exam?.title ??
+                                    'Question Paper',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 19,
@@ -181,7 +187,8 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                               SizedBox(height: design.spacing.sm),
                               Row(
                                 children: [
-                                  if (isMetadataLoading || exam?.questionCount != null) ...[
+                                  if (isMetadataLoading ||
+                                      exam?.questionCount != null) ...[
                                     // Questions Count
                                     Icon(
                                       LucideIcons.fileText,
@@ -197,7 +204,8 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                                     SizedBox(width: design.spacing.lg),
                                   ],
 
-                                  if (isMetadataLoading || durationText != 'N/A') ...[
+                                  if (isMetadataLoading ||
+                                      durationText != 'N/A') ...[
                                     // Duration
                                     Icon(
                                       LucideIcons.clock,
@@ -213,7 +221,8 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                                     SizedBox(width: design.spacing.lg),
                                   ],
 
-                                  if (isMetadataLoading || totalMarksText != 'Marks: --') ...[
+                                  if (isMetadataLoading ||
+                                      totalMarksText != 'Marks: --') ...[
                                     // Marks
                                     AppText.caption(
                                       totalMarksText,
@@ -242,15 +251,22 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                                 padding: EdgeInsets.all(design.spacing.md),
                                 decoration: BoxDecoration(
                                   color: design.colors.primary,
-                                  borderRadius: BorderRadius.circular(design.radius.lg),
+                                  borderRadius: BorderRadius.circular(
+                                    design.radius.lg,
+                                  ),
                                 ),
                                 child: Row(
                                   children: [
                                     Container(
-                                      padding: EdgeInsets.all(design.spacing.sm),
+                                      padding: EdgeInsets.all(
+                                        design.spacing.sm,
+                                      ),
                                       decoration: BoxDecoration(
-                                        color: design.colors.onPrimary.withValues(alpha: 0.15),
-                                        borderRadius: BorderRadius.circular(design.radius.md),
+                                        color: design.colors.onPrimary
+                                            .withValues(alpha: 0.15),
+                                        borderRadius: BorderRadius.circular(
+                                          design.radius.md,
+                                        ),
                                       ),
                                       child: Icon(
                                         LucideIcons.play,
@@ -261,7 +277,8 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                                     SizedBox(width: design.spacing.md),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             ((exam?.pausedAttemptsCount ?? 0) >
@@ -285,7 +302,8 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                                                 ? 'Resume from where you left off'
                                                 : 'Take the test in exam mode with timer',
                                             style: TextStyle(
-                                              color: design.colors.onPrimary.withValues(alpha: 0.8),
+                                              color: design.colors.onPrimary
+                                                  .withValues(alpha: 0.8),
                                               fontSize: 13,
                                             ),
                                           ),

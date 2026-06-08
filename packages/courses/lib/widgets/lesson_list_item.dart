@@ -26,8 +26,14 @@ class LessonListItem extends StatelessWidget {
 
     // Exact colors from reference
     final typeTheme = switch (lesson.type) {
-      LessonType.video || LessonType.liveStream || LessonType.embedContent => design.study.video,
-      LessonType.pdf || LessonType.notes || LessonType.attachment => design.study.pdf,
+      LessonType.video ||
+      LessonType.liveStream ||
+      LessonType.embedContent =>
+        design.study.video,
+      LessonType.pdf ||
+      LessonType.notes ||
+      LessonType.attachment =>
+        design.study.pdf,
       LessonType.assessment => design.study.assessment,
       LessonType.test => design.study.test,
       LessonType.unknown => design.study.video,
@@ -66,87 +72,91 @@ class LessonListItem extends StatelessWidget {
             onTap: isSkeleton ? null : onTap,
             borderRadius: BorderRadius.circular(12),
             child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Skeleton.replace(
-                  width: iconSize,
-                  height: iconSize,
-                  replacement: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: design.colors.skeleton,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Skeleton.replace(
                     width: iconSize,
                     height: iconSize,
-                    decoration: BoxDecoration(
-                      color: lesson.image != null ? null : typeTheme.background,
-                      borderRadius: BorderRadius.circular(8),
+                    replacement: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: design.colors.skeleton,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
-                    child: Center(
-                      child: lesson.image != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                lesson.image!,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    Icon(icon, size: 20, color: typeTheme.foreground),
-                              ),
-                            )
-                          : Icon(icon, size: 20, color: typeTheme.foreground),
+                    child: Container(
+                      width: iconSize,
+                      height: iconSize,
+                      decoration: BoxDecoration(
+                        color:
+                            lesson.image != null ? null : typeTheme.background,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Center(
+                        child: lesson.image != null
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.network(
+                                  lesson.image!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Icon(icon,
+                                          size: 20,
+                                          color: typeTheme.foreground),
+                                ),
+                              )
+                            : Icon(icon, size: 20, color: typeTheme.foreground),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 12),
+                  const SizedBox(width: 12),
 
-                // Title and Metadata
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AppText.cardTitle(
-                        lesson.title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 4),
-                      AppText.cardSubtitle(
-                        lesson.chapterTitle ?? '',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      if (!isSkeleton) ...[
-                        const SizedBox(height: 6),
-                        Row(
-                          children: [
-                            if (lesson.type != LessonType.liveStream)
-                              LessonStatusBadge(status: lesson.progressStatus),
-                          ],
+                  // Title and Metadata
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AppText.cardTitle(
+                          lesson.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
+                        const SizedBox(height: 4),
+                        AppText.cardSubtitle(
+                          lesson.chapterTitle ?? '',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        if (!isSkeleton) ...[
+                          const SizedBox(height: 6),
+                          Row(
+                            children: [
+                              if (lesson.type != LessonType.liveStream)
+                                LessonStatusBadge(
+                                    status: lesson.progressStatus),
+                            ],
+                          ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
-                ),
 
-                // Navigation Indicator
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Icon(
-                    LucideIcons.chevronRight,
-                    color: design.colors.textSecondary.withValues(alpha: 0.5),
-                    size: 20,
+                  // Navigation Indicator
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Icon(
+                      LucideIcons.chevronRight,
+                      color: design.colors.textSecondary.withValues(alpha: 0.5),
+                      size: 20,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 }

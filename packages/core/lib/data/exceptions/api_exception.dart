@@ -68,77 +68,78 @@ class ApiException implements Exception {
     }
 
     if (error.type == DioExceptionType.badResponse) {
-       final statusCode = error.response?.statusCode;
-       final data = error.response?.data;
-       final backendMessage = _extractApiMessage(data);
+      final statusCode = error.response?.statusCode;
+      final data = error.response?.data;
+      final backendMessage = _extractApiMessage(data);
 
-       if (statusCode == 400 || statusCode == 422) {
-         return ApiException(
-           backendMessage ?? 'Something looks wrong with the info you provided.',
-           type: ApiErrorType.badRequest,
-           statusCode: statusCode,
-           data: data,
-           error: error.error,
-         );
-       }
+      if (statusCode == 400 || statusCode == 422) {
+        return ApiException(
+          backendMessage ?? 'Something looks wrong with the info you provided.',
+          type: ApiErrorType.badRequest,
+          statusCode: statusCode,
+          data: data,
+          error: error.error,
+        );
+      }
 
-       if (statusCode == 401) {
-         return ApiException(
-           backendMessage ?? 'You are not authorized to perform this action.',
-           type: ApiErrorType.unauthorized,
-           statusCode: statusCode,
-           data: data,
-           error: error.error,
-         );
-       }
+      if (statusCode == 401) {
+        return ApiException(
+          backendMessage ?? 'You are not authorized to perform this action.',
+          type: ApiErrorType.unauthorized,
+          statusCode: statusCode,
+          data: data,
+          error: error.error,
+        );
+      }
 
-       if (statusCode == 403) {
-         return ApiException(
-           backendMessage ?? 'It looks like you don\'t have access to this feature.',
-           type: ApiErrorType.forbidden,
-           statusCode: statusCode,
-           data: data,
-           error: error.error,
-         );
-       }
+      if (statusCode == 403) {
+        return ApiException(
+          backendMessage ??
+              'It looks like you don\'t have access to this feature.',
+          type: ApiErrorType.forbidden,
+          statusCode: statusCode,
+          data: data,
+          error: error.error,
+        );
+      }
 
-       if (statusCode == 404) {
-          return ApiException(
-            backendMessage ?? 'The requested resource was not found.',
-            type: ApiErrorType.notFound,
-            statusCode: statusCode,
-            data: data,
-            error: error.error,
-          );
-       }
+      if (statusCode == 404) {
+        return ApiException(
+          backendMessage ?? 'The requested resource was not found.',
+          type: ApiErrorType.notFound,
+          statusCode: statusCode,
+          data: data,
+          error: error.error,
+        );
+      }
 
-       if (statusCode == 429) {
-          return ApiException(
-            'Please take a short break and try again in a moment.',
-            type: ApiErrorType.rateLimited,
-            statusCode: statusCode,
-            data: data,
-            error: error.error,
-          );
-       }
+      if (statusCode == 429) {
+        return ApiException(
+          'Please take a short break and try again in a moment.',
+          type: ApiErrorType.rateLimited,
+          statusCode: statusCode,
+          data: data,
+          error: error.error,
+        );
+      }
 
-       if (statusCode != null && statusCode >= 500) {
-         return ApiException(
-           'The server is having trouble. Please try again later.',
-           type: ApiErrorType.serverError,
-           statusCode: statusCode,
-           data: data,
-           error: error.error,
-         );
-       }
+      if (statusCode != null && statusCode >= 500) {
+        return ApiException(
+          'The server is having trouble. Please try again later.',
+          type: ApiErrorType.serverError,
+          statusCode: statusCode,
+          data: data,
+          error: error.error,
+        );
+      }
 
-       return ApiException(
-         backendMessage ?? 'Oops! Something went wrong. Please try again.',
-         type: ApiErrorType.unknown,
-         statusCode: statusCode,
-         data: data,
-         error: error.error,
-       );
+      return ApiException(
+        backendMessage ?? 'Oops! Something went wrong. Please try again.',
+        type: ApiErrorType.unknown,
+        statusCode: statusCode,
+        data: data,
+        error: error.error,
+      );
     }
 
     return ApiException(
@@ -192,5 +193,6 @@ class ApiException implements Exception {
   }
 
   @override
-  String toString() => 'ApiException: $message (Type: $type, Status: $statusCode)';
+  String toString() =>
+      'ApiException: $message (Type: $type, Status: $statusCode)';
 }

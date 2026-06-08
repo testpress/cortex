@@ -323,7 +323,8 @@ class _ContextualHeroCardState extends State<ContextualHeroCard>
       HeroActionType.prepareTest => LucideIcons.clock,
       HeroActionType.continueStudy => LucideIcons.bookOpen,
       HeroActionType.exploreCourses ||
-      HeroActionType.startTrial => LucideIcons.sparkles,
+      HeroActionType.startTrial =>
+        LucideIcons.sparkles,
       HeroActionType.upgradePrompt => LucideIcons.lock,
     };
   }
@@ -334,7 +335,8 @@ class _ContextualHeroCardState extends State<ContextualHeroCard>
       HeroActionType.takeTest => 'AVAILABLE NOW',
       HeroActionType.prepareTest => 'UPCOMING',
       HeroActionType.exploreCourses ||
-      HeroActionType.startTrial => 'FREE ACCESS',
+      HeroActionType.startTrial =>
+        'FREE ACCESS',
       HeroActionType.upgradePrompt => 'PREMIUM',
       _ => 'RECOMMENDED',
     };

@@ -7,8 +7,8 @@ import '../design/design_config.dart';
 import 'app_loading_indicator.dart';
 
 /// A premium HTML renderer for the Cortex SDK.
-/// 
-/// Uses a WebView to ensure perfect rendering of complex HTML, 
+///
+/// Uses a WebView to ensure perfect rendering of complex HTML,
 /// including MathJax, Tables, and Custom Styles used in Testpress.
 class AppHtml extends StatefulWidget {
   const AppHtml({
@@ -67,8 +67,11 @@ class _AppHtmlState extends State<AppHtml> {
         'HeightChannel',
         onMessageReceived: (JavaScriptMessage message) {
           try {
-            final Map<String, dynamic> data = jsonDecode(message.message) as Map<String, dynamic>;
-            final double? height = double.tryParse(data['height']?.toString() ?? '');
+            final Map<String, dynamic> data =
+                jsonDecode(message.message) as Map<String, dynamic>;
+            final double? height = double.tryParse(
+              data['height']?.toString() ?? '',
+            );
             final bool ready = data['ready'] == true || _isReady;
 
             if (height != null && mounted) {
@@ -124,7 +127,7 @@ class _AppHtmlState extends State<AppHtml> {
   @override
   void didUpdateWidget(AppHtml oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.data != widget.data || 
+    if (oldWidget.data != widget.data ||
         oldWidget.textColor != widget.textColor ||
         oldWidget.backgroundColor != widget.backgroundColor) {
       _loadHtml();
@@ -135,13 +138,14 @@ class _AppHtmlState extends State<AppHtml> {
     final design = Design.of(context);
     final bgColor = widget.backgroundColor;
     final txtColor = widget.textColor ?? design.colors.textPrimary;
-    
-    final bgCss = bgColor == null || bgColor.a == 0 
-        ? 'transparent' 
+
+    final bgCss = bgColor == null || bgColor.a == 0
+        ? 'transparent'
         : _colorToRgba(bgColor);
     final txCss = _colorToRgba(txtColor);
 
-    final html = '''
+    final html =
+        '''
       <!DOCTYPE html>
       <html>
         <head>
@@ -329,8 +333,7 @@ class _AppHtmlState extends State<AppHtml> {
       child: Stack(
         children: [
           // 1. Placeholder dictates height while loading
-          if (!_isReady && widget.placeholder != null)
-            widget.placeholder!,
+          if (!_isReady && widget.placeholder != null) widget.placeholder!,
 
           // 2. The actual WebView
           if (_isReady)
@@ -359,7 +362,7 @@ class _AppHtmlState extends State<AppHtml> {
 
   void _showZoomableImage(BuildContext context, String imageUrl) {
     final design = Design.of(context);
-    
+
     Navigator.of(context).push(
       PageRouteBuilder(
         opaque: false,
@@ -368,10 +371,7 @@ class _AppHtmlState extends State<AppHtml> {
         pageBuilder: (context, animation, secondaryAnimation) {
           return FadeTransition(
             opacity: animation,
-            child: _ZoomableImageViewer(
-              imageUrl: imageUrl,
-              design: design,
-            ),
+            child: _ZoomableImageViewer(imageUrl: imageUrl, design: design),
           );
         },
       ),
@@ -380,10 +380,7 @@ class _AppHtmlState extends State<AppHtml> {
 }
 
 class _ZoomableImageViewer extends StatelessWidget {
-  const _ZoomableImageViewer({
-    required this.imageUrl,
-    required this.design,
-  });
+  const _ZoomableImageViewer({required this.imageUrl, required this.design});
 
   final String imageUrl;
   final DesignConfig design;

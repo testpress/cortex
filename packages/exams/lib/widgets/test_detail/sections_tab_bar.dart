@@ -24,9 +24,7 @@ class SectionsTabBar extends StatelessWidget {
       padding: EdgeInsets.only(bottom: design.spacing.md),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(
-          horizontal: design.spacing.md,
-        ),
+        padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
         child: Row(
           children: tabNames.asMap().entries.map((entry) {
             final index = entry.key;
@@ -40,7 +38,9 @@ class SectionsTabBar extends StatelessWidget {
                 ? design.colors.card
                 : design.colors.textPrimary;
 
-            final tabDisplayName = tabName.isEmpty ? l10n.labelGeneral : tabName;
+            final tabDisplayName = tabName.isEmpty
+                ? l10n.labelGeneral
+                : tabName;
 
             return Padding(
               padding: EdgeInsets.only(right: design.spacing.sm),
@@ -73,7 +73,9 @@ class SectionsTabBar extends StatelessWidget {
                       tabDisplayName,
                       color: fgColor,
                       style: TextStyle(
-                        fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                        fontWeight: isActive
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                       ),
                     ),
                   ),

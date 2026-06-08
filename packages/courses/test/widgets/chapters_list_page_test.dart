@@ -55,13 +55,17 @@ void main() {
   }
 
   group('ChaptersListPage filtering chip visibility tests', () {
-    testWidgets('when showExamTab is false, Assessments and Tests chips are visible', (tester) async {
+    testWidgets(
+        'when showExamTab is false, Assessments and Tests chips are visible',
+        (tester) async {
       await tester.pumpWidget(
         wrap(
           const ChaptersListPage(courseId: 'course-1'),
           overrides: [
-            courseDetailProvider('course-1').overrideWith((ref) => Stream.value(testCourse)),
-            subChaptersProvider('course-1', null).overrideWith((ref) => Stream.value(testChapters)),
+            courseDetailProvider('course-1')
+                .overrideWith((ref) => Stream.value(testCourse)),
+            subChaptersProvider('course-1', null)
+                .overrideWith((ref) => Stream.value(testChapters)),
           ],
         ),
       );
@@ -80,13 +84,17 @@ void main() {
       expect(find.text('Tests'), findsOneWidget);
     }, skip: AppConfig.showExamTab);
 
-    testWidgets('when showExamTab is true, Assessments and Tests chips are hidden', (tester) async {
+    testWidgets(
+        'when showExamTab is true, Assessments and Tests chips are hidden',
+        (tester) async {
       await tester.pumpWidget(
         wrap(
           const ChaptersListPage(courseId: 'course-1'),
           overrides: [
-            courseDetailProvider('course-1').overrideWith((ref) => Stream.value(testCourse)),
-            subChaptersProvider('course-1', null).overrideWith((ref) => Stream.value(testChapters)),
+            courseDetailProvider('course-1')
+                .overrideWith((ref) => Stream.value(testCourse)),
+            subChaptersProvider('course-1', null)
+                .overrideWith((ref) => Stream.value(testChapters)),
           ],
         ),
       );

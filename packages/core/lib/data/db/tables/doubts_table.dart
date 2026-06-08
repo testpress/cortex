@@ -46,4 +46,3 @@ class DoubtTopicsTable extends Table {
   @override
   Set<Column> get primaryKey => {id};
 }
-

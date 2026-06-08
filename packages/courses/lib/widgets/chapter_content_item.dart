@@ -66,11 +66,13 @@ class ChapterContentItem extends StatelessWidget {
                     child: Center(
                       child: lesson.image != null
                           ? ClipRRect(
-                              borderRadius: BorderRadius.circular(design.radius.md),
+                              borderRadius:
+                                  BorderRadius.circular(design.radius.md),
                               child: Image.network(
                                 lesson.image!,
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) => Icon(
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Icon(
                                   icon,
                                   size: 20,
                                   color: _getColorForType(context, lesson.type),
@@ -119,7 +121,9 @@ class ChapterContentItem extends StatelessWidget {
     final typeLabel = _getLabelForType(context, lesson.type);
     final duration = TimeFormatter.formatDuration(lesson.duration);
 
-    if (duration == null || duration.isEmpty || lesson.type == LessonType.test) {
+    if (duration == null ||
+        duration.isEmpty ||
+        lesson.type == LessonType.test) {
       return typeLabel;
     }
 

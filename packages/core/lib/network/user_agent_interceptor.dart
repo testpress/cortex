@@ -10,11 +10,14 @@ class UserAgentInterceptor extends Interceptor {
   String? _userAgent;
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     _userAgent ??= await _generateUserAgent();
-    
+
     options.headers['User-Agent'] = _userAgent;
-    
+
     return handler.next(options);
   }
 
@@ -28,7 +31,7 @@ class UserAgentInterceptor extends Interceptor {
         final androidInfo = await deviceInfo.androidInfo;
         return '$_userAgentPrefix/$appVersion (${androidInfo.model}; Android ${androidInfo.version.release})';
       }
- 
+
       if (Platform.isIOS) {
         final iosInfo = await deviceInfo.iosInfo;
         return '$_userAgentPrefix/$appVersion (${iosInfo.utsname.machine}; iOS ${iosInfo.systemVersion})';

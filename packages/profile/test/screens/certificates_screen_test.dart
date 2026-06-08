@@ -30,7 +30,9 @@ void main() {
             weakSubject: '',
           ),
         ),
-        profileEnrollmentProvider.overrideWith((ref) => Stream.value(<CourseDto>[])),
+        profileEnrollmentProvider.overrideWith(
+          (ref) => Stream.value(<CourseDto>[]),
+        ),
         profileRecentActivityProvider.overrideWith((ref) async => const []),
         // Certificates provider can stay as is if it uses local mock data
       ],

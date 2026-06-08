@@ -103,7 +103,10 @@ class ForumEditorField extends StatelessWidget {
           listenable: controller,
           builder: (context, _) => ClipRect(
             child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: minHeight, maxHeight: maxHeight),
+              constraints: BoxConstraints(
+                minHeight: minHeight,
+                maxHeight: maxHeight,
+              ),
               child: RawScrollbar(
                 controller: scrollController,
                 thumbColor: design.colors.textTertiary.withValues(alpha: 0.3),
@@ -178,9 +181,7 @@ class ForumAttachmentPreview extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       clipBehavior: Clip.none,
-      padding: EdgeInsets.only(
-        bottom: design.spacing.sm,
-      ),
+      padding: EdgeInsets.only(bottom: design.spacing.sm),
       child: Row(
         children: [
           for (int i = 0; i < imageUrls.length; i++) ...[
@@ -276,8 +277,8 @@ class _ToolbarButtons extends StatelessWidget {
 
   void _toggleAttribute(quill.Attribute attribute) {
     final style = controller.getSelectionStyle();
-    final isApplied = _isAttributeActive(style, attribute) ||
-        _isListActive(style, attribute);
+    final isApplied =
+        _isAttributeActive(style, attribute) || _isListActive(style, attribute);
     controller.formatSelection(
       isApplied ? quill.Attribute.clone(attribute, null) : attribute,
     );
@@ -311,13 +312,17 @@ class ForumToolbarButton extends StatelessWidget {
           margin: EdgeInsets.symmetric(horizontal: design.spacing.xs),
           padding: EdgeInsets.all(design.spacing.sm),
           decoration: BoxDecoration(
-            color: isActive ? design.colors.accent2.withValues(alpha: 0.12) : null,
+            color: isActive
+                ? design.colors.accent2.withValues(alpha: 0.12)
+                : null,
             borderRadius: BorderRadius.circular(design.radius.sm),
           ),
           child: Icon(
             icon,
             size: 18,
-            color: isActive ? design.colors.accent2 : design.colors.textSecondary,
+            color: isActive
+                ? design.colors.accent2
+                : design.colors.textSecondary,
           ),
         ),
       ),
@@ -346,7 +351,11 @@ class ForumToolbarToggle extends StatelessWidget {
   final bool isActive;
   final VoidCallback onTap;
 
-  const ForumToolbarToggle({super.key, required this.isActive, required this.onTap});
+  const ForumToolbarToggle({
+    super.key,
+    required this.isActive,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -377,7 +386,7 @@ class ForumSendButton extends StatelessWidget {
   final bool isLoading;
 
   const ForumSendButton({
-    super.key, 
+    super.key,
     required this.onTap,
     this.isLoading = false,
   });
@@ -392,14 +401,16 @@ class ForumSendButton extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(design.spacing.sm),
         decoration: BoxDecoration(
-          color: isLoading ? design.colors.textSecondary : design.colors.accent2,
+          color: isLoading
+              ? design.colors.textSecondary
+              : design.colors.accent2,
           shape: BoxShape.circle,
         ),
-        child: isLoading 
+        child: isLoading
             ? SizedBox(
-                width: 18, 
-                height: 18, 
-                child: AppLoadingIndicator(color: design.colors.textInverse)
+                width: 18,
+                height: 18,
+                child: AppLoadingIndicator(color: design.colors.textInverse),
               )
             : Icon(
                 LucideIcons.send,
@@ -415,10 +426,7 @@ class _AttachmentItem extends StatelessWidget {
   final String imageUrl;
   final VoidCallback onRemove;
 
-  const _AttachmentItem({
-    required this.imageUrl,
-    required this.onRemove,
-  });
+  const _AttachmentItem({required this.imageUrl, required this.onRemove});
 
   @override
   Widget build(BuildContext context) {
@@ -462,11 +470,7 @@ class _AttachmentItem extends StatelessWidget {
                   color: design.colors.textPrimary,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  LucideIcons.x,
-                  size: 14,
-                  color: design.colors.card,
-                ),
+                child: Icon(LucideIcons.x, size: 14, color: design.colors.card),
               ),
             ),
           ),

@@ -18,17 +18,18 @@ class AnnouncementListItem extends StatelessWidget {
       date = DateTime.parse(post.publishedDate);
     } catch (_) {}
 
-    final formattedDate = date != null ? DateFormatter.formatFullDate(date) : '';
+    final formattedDate = date != null
+        ? DateFormatter.formatFullDate(date)
+        : '';
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
         if (Skeletonizer.maybeOf(context)?.enabled ?? false) return;
-        Navigator.of(context, rootNavigator: true).push(
-          AppRoute(
-            page: AnnouncementDetailScreen(post: post),
-          ),
-        );
+        Navigator.of(
+          context,
+          rootNavigator: true,
+        ).push(AppRoute(page: AnnouncementDetailScreen(post: post)));
       },
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: design.spacing.sm),
@@ -38,10 +39,9 @@ class AnnouncementListItem extends StatelessWidget {
             Row(
               children: [
                 if (formattedDate.isNotEmpty) ...[
-                  AppText.cardSubtitle(
-                    formattedDate,
-                  ),
-                  if (post.categoryName != null && post.categoryName!.isNotEmpty)
+                  AppText.cardSubtitle(formattedDate),
+                  if (post.categoryName != null &&
+                      post.categoryName!.isNotEmpty)
                     SizedBox(width: design.spacing.sm),
                 ],
                 if (post.categoryName != null && post.categoryName!.isNotEmpty)

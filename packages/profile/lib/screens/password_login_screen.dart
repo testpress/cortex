@@ -7,7 +7,8 @@ class PasswordLoginScreen extends ConsumerStatefulWidget {
   const PasswordLoginScreen({super.key});
 
   @override
-  ConsumerState<PasswordLoginScreen> createState() => _PasswordLoginScreenState();
+  ConsumerState<PasswordLoginScreen> createState() =>
+      _PasswordLoginScreenState();
 }
 
 class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
@@ -43,9 +44,14 @@ class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: design.spacing.xl, vertical: design.spacing.md),
+              padding: EdgeInsets.symmetric(
+                horizontal: design.spacing.xl,
+                vertical: design.spacing.md,
+              ),
               child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight - design.spacing.xl * 2),
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight - design.spacing.xl * 2,
+                ),
                 child: IntrinsicHeight(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -70,7 +76,10 @@ class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
                       ),
                       if (_errorMessage != null) ...[
                         SizedBox(height: design.spacing.md),
-                        AppText.bodySmall(_errorMessage!, color: design.colors.error),
+                        AppText.bodySmall(
+                          _errorMessage!,
+                          color: design.colors.error,
+                        ),
                       ],
                       SizedBox(height: design.spacing.md),
                       Align(
@@ -111,7 +120,9 @@ class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
     final password = _passwordController.text;
 
     if (username.isEmpty || password.isEmpty) {
-      setState(() { _errorMessage = l10n.loginErrorUsernamePasswordRequired; });
+      setState(() {
+        _errorMessage = l10n.loginErrorUsernamePasswordRequired;
+      });
       return;
     }
 
@@ -122,15 +133,15 @@ class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
     });
 
     try {
-      await ref.read(authProvider.notifier).loginWithPassword(
-            username: username,
-            password: password,
-          );
+      await ref
+          .read(authProvider.notifier)
+          .loginWithPassword(username: username, password: password);
       if (mounted) context.go('/home');
     } on AuthException catch (error) {
       if (mounted) setState(() => _errorMessage = error.message);
     } catch (_) {
-      if (mounted) setState(() => _errorMessage = l10n.loginErrorGenericRequest);
+      if (mounted)
+        setState(() => _errorMessage = l10n.loginErrorGenericRequest);
     } finally {
       if (mounted) setState(() => _isBusy = false);
     }

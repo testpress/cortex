@@ -1,7 +1,17 @@
 import '../../utils/time_formatter.dart';
 
 /// Lesson content type.
-enum LessonType { video, pdf, notes, embedContent, liveStream, attachment, test, assessment, unknown }
+enum LessonType {
+  video,
+  pdf,
+  notes,
+  embedContent,
+  liveStream,
+  attachment,
+  test,
+  assessment,
+  unknown,
+}
 
 /// Lesson progress status.
 enum LessonProgressStatus { notStarted, inProgress, completed }
@@ -219,39 +229,65 @@ class LessonDto {
     );
   }
 
-  /// Merges this DTO with another (typically local cached) DTO to preserve 
+  /// Merges this DTO with another (typically local cached) DTO to preserve
   /// rich metadata that might be missing in basic list API responses.
   LessonDto mergeWith(LessonDto? other) {
     if (other == null) return this;
-    
+
     // Treat '0', '00:00', or '00:00:00' as effectively empty for duration merging
-    bool isDurationEmpty(String? d) => d == null || d.isEmpty || d == '0' || d == '00:00' || d == '00:00:00' || d == '0:00:00';
+    bool isDurationEmpty(String? d) =>
+        d == null ||
+        d.isEmpty ||
+        d == '0' ||
+        d == '00:00' ||
+        d == '00:00:00' ||
+        d == '0:00:00';
 
     return copyWith(
-      duration: (isDurationEmpty(duration) && !isDurationEmpty(other.duration)) ? other.duration : duration,
+      duration: (isDurationEmpty(duration) && !isDurationEmpty(other.duration))
+          ? other.duration
+          : duration,
       contentUrl: (contentUrl?.isEmpty ?? true) ? other.contentUrl : contentUrl,
-      htmlContent: (htmlContent?.isEmpty ?? true) ? other.htmlContent : htmlContent,
+      htmlContent: (htmlContent?.isEmpty ?? true)
+          ? other.htmlContent
+          : htmlContent,
       subtitle: (subtitle?.isEmpty ?? true) ? other.subtitle : subtitle,
-      subjectName: (subjectName?.isEmpty ?? true) ? other.subjectName : subjectName,
+      subjectName: (subjectName?.isEmpty ?? true)
+          ? other.subjectName
+          : subjectName,
       subjectIndex: subjectIndex ?? other.subjectIndex,
       lessonNumber: lessonNumber ?? other.lessonNumber,
       totalLessons: totalLessons ?? other.totalLessons,
-      nextContentId: (nextContentId?.isEmpty ?? true) ? other.nextContentId : nextContentId,
-      previousContentId: (previousContentId?.isEmpty ?? true) ? other.previousContentId : previousContentId,
-      chapterTitle: (chapterTitle?.isEmpty ?? true) ? other.chapterTitle : chapterTitle,
+      nextContentId: (nextContentId?.isEmpty ?? true)
+          ? other.nextContentId
+          : nextContentId,
+      previousContentId: (previousContentId?.isEmpty ?? true)
+          ? other.previousContentId
+          : previousContentId,
+      chapterTitle: (chapterTitle?.isEmpty ?? true)
+          ? other.chapterTitle
+          : chapterTitle,
       courseId: (courseId?.isEmpty ?? true) ? other.courseId : courseId,
       ancestorChapterIds: (ancestorChapterIds?.isEmpty ?? true)
           ? other.ancestorChapterIds
           : ancestorChapterIds,
       image: (image?.isEmpty ?? true) ? other.image : image,
-      description: (description?.isEmpty ?? true) ? other.description : description,
-      attemptsUrl: (attemptsUrl?.isEmpty ?? true) ? other.attemptsUrl : attemptsUrl,
+      description: (description?.isEmpty ?? true)
+          ? other.description
+          : description,
+      attemptsUrl: (attemptsUrl?.isEmpty ?? true)
+          ? other.attemptsUrl
+          : attemptsUrl,
       slug: (slug?.isEmpty ?? true) ? other.slug : slug,
       enableTranscript: enableTranscript || other.enableTranscript,
-      videoSubtitleUrl: (videoSubtitleUrl?.isEmpty ?? true) ? other.videoSubtitleUrl : videoSubtitleUrl,
+      videoSubtitleUrl: (videoSubtitleUrl?.isEmpty ?? true)
+          ? other.videoSubtitleUrl
+          : videoSubtitleUrl,
       isAiEnabled: isAiEnabled || other.isAiEnabled,
       aiNotesUrl: (aiNotesUrl?.isEmpty ?? true) ? other.aiNotesUrl : aiNotesUrl,
-      lastWatchedDuration: (lastWatchedDuration?.isEmpty ?? true) ? other.lastWatchedDuration : lastWatchedDuration,
+      lastWatchedDuration: (lastWatchedDuration?.isEmpty ?? true)
+          ? other.lastWatchedDuration
+          : lastWatchedDuration,
       isDetailFetched: isDetailFetched || other.isDetailFetched,
       bookmarkId: bookmarkId ?? other.bookmarkId,
       // Status flags: Prefer 'true' or more advanced progress
@@ -269,25 +305,37 @@ class LessonDto {
       progressStatus: progressStatus != LessonProgressStatus.notStarted
           ? progressStatus
           : other.progressStatus,
-      chatEmbedUrl: (chatEmbedUrl?.isEmpty ?? true) ? other.chatEmbedUrl : chatEmbedUrl,
-      streamStatus: (streamStatus?.isEmpty ?? true) ? other.streamStatus : streamStatus,
+      chatEmbedUrl: (chatEmbedUrl?.isEmpty ?? true)
+          ? other.chatEmbedUrl
+          : chatEmbedUrl,
+      streamStatus: (streamStatus?.isEmpty ?? true)
+          ? other.streamStatus
+          : streamStatus,
       showRecordedVideo: showRecordedVideo || other.showRecordedVideo,
       isScheduled: isScheduled || other.isScheduled,
-      scheduledMessage: (scheduledMessage?.isEmpty ?? true) ? other.scheduledMessage : scheduledMessage,
+      scheduledMessage: (scheduledMessage?.isEmpty ?? true)
+          ? other.scheduledMessage
+          : scheduledMessage,
       // Preserve specialized types (e.g. Attachment promoted to PDF, or Video promoted to Embed)
       type: (() {
         // If they are different, prefer the more specific one if one is 'attachment' or 'video'
         if (type == other.type) return type;
-        
-        // Promotion: Preference for PDF/Embed/Notes over generic Attachment/Video
-        if (type == LessonType.attachment && other.type == LessonType.pdf) return LessonType.pdf;
-        if (other.type == LessonType.attachment && type == LessonType.pdf) return LessonType.pdf;
-        
-        if (type == LessonType.video && other.type == LessonType.embedContent) return LessonType.embedContent;
-        if (other.type == LessonType.video && type == LessonType.embedContent) return LessonType.embedContent;
 
-        if (type == LessonType.video && other.type == LessonType.notes) return LessonType.notes;
-        if (other.type == LessonType.video && type == LessonType.notes) return LessonType.notes;
+        // Promotion: Preference for PDF/Embed/Notes over generic Attachment/Video
+        if (type == LessonType.attachment && other.type == LessonType.pdf)
+          return LessonType.pdf;
+        if (other.type == LessonType.attachment && type == LessonType.pdf)
+          return LessonType.pdf;
+
+        if (type == LessonType.video && other.type == LessonType.embedContent)
+          return LessonType.embedContent;
+        if (other.type == LessonType.video && type == LessonType.embedContent)
+          return LessonType.embedContent;
+
+        if (type == LessonType.video && other.type == LessonType.notes)
+          return LessonType.notes;
+        if (other.type == LessonType.video && type == LessonType.notes)
+          return LessonType.notes;
 
         return type;
       })(),
@@ -327,7 +375,8 @@ class LessonDto {
       return LessonType.test;
     }
 
-    final String contentType = (json['content_type'] ?? json['type'] ?? json['kind'])
+    final String contentType =
+        (json['content_type'] ?? json['type'] ?? json['kind'])
             ?.toString()
             .toLowerCase() ??
         '';
@@ -339,7 +388,8 @@ class LessonDto {
     // Video vs Embed
     if (contentType.contains('video')) {
       final video = json['video'] as Map<String, dynamic>?;
-      final bool isEmbedded = json['is_embedded_content'] as bool? ??
+      final bool isEmbedded =
+          json['is_embedded_content'] as bool? ??
           video?['is_embedded_content'] as bool? ??
           false;
       return isEmbedded ? LessonType.embedContent : LessonType.video;
@@ -372,19 +422,26 @@ class LessonDto {
   static LessonDto _parseVideoLesson(Map<String, dynamic> json) {
     final base = _parseBase(json, LessonType.video);
 
-    return base.copyWith(
-      contentUrl: json['uuid']?.toString(),
-    );
+    return base.copyWith(contentUrl: json['uuid']?.toString());
   }
 
   static LessonDto _parseEmbedLesson(Map<String, dynamic> json) {
     final base = _parseBase(json, LessonType.embedContent);
     final video = json['video'] as Map<String, dynamic>?;
-    
+
     return base.copyWith(
-      contentUrl: json['uuid']?.toString() ?? video?['url']?.toString() ?? json['url']?.toString(),
-      htmlContent: video?['embed_code']?.toString() ?? json['embed_code']?.toString() ?? '',
-      description: json['description']?.toString() ?? video?['description']?.toString() ?? base.description,
+      contentUrl:
+          json['uuid']?.toString() ??
+          video?['url']?.toString() ??
+          json['url']?.toString(),
+      htmlContent:
+          video?['embed_code']?.toString() ??
+          json['embed_code']?.toString() ??
+          '',
+      description:
+          json['description']?.toString() ??
+          video?['description']?.toString() ??
+          base.description,
     );
   }
 
@@ -393,7 +450,8 @@ class LessonDto {
     final attachment = json['attachment'] as Map<String, dynamic>?;
 
     return base.copyWith(
-      contentUrl: json['content_url'] as String? ??
+      contentUrl:
+          json['content_url'] as String? ??
           attachment?['attachment_url'] as String? ??
           json['url'] as String?,
     );
@@ -414,7 +472,8 @@ class LessonDto {
     final attachment = json['attachment'] as Map<String, dynamic>?;
 
     return base.copyWith(
-      contentUrl: attachment?['attachment_url'] as String? ?? json['url'] as String?,
+      contentUrl:
+          attachment?['attachment_url'] as String? ?? json['url'] as String?,
     );
   }
 
@@ -423,7 +482,8 @@ class LessonDto {
     final liveStream = json['live_stream'] as Map<String, dynamic>?;
 
     return base.copyWith(
-      contentUrl: json['uuid']?.toString() ??
+      contentUrl:
+          json['uuid']?.toString() ??
           liveStream?['stream_url']?.toString() ??
           json['live_stream_url']?.toString() ??
           json['url']?.toString(),
@@ -433,18 +493,23 @@ class LessonDto {
     );
   }
 
-  static LessonDto _parseExamLesson(Map<String, dynamic> json, LessonType type) {
+  static LessonDto _parseExamLesson(
+    Map<String, dynamic> json,
+    LessonType type,
+  ) {
     final base = _parseBase(json, type);
     final exam = json['exam'] as Map<String, dynamic>?;
 
     return base.copyWith(
-      attemptsUrl: json['attempts_url'] as String? ?? 
-                   exam?['attempts_url'] as String? ??
-                   json['start_url'] as String? ??
-                   exam?['start_url'] as String?,
-      slug: json['slug'] as String? ?? 
-            exam?['slug'] as String? ??
-            json['exam_slug'] as String?,
+      attemptsUrl:
+          json['attempts_url'] as String? ??
+          exam?['attempts_url'] as String? ??
+          json['start_url'] as String? ??
+          exam?['start_url'] as String?,
+      slug:
+          json['slug'] as String? ??
+          exam?['slug'] as String? ??
+          json['exam_slug'] as String?,
     );
   }
 
@@ -466,25 +531,39 @@ class LessonDto {
         if (val is Map) return val['id']?.toString();
         return val?.toString();
       }(),
-      ancestorChapterIds: json['ancestor_chapter_ids']?.toString() ??
+      ancestorChapterIds:
+          json['ancestor_chapter_ids']?.toString() ??
           json['ancestorChapterIds']?.toString(),
       title: json['title'] as String? ?? json['name'] as String? ?? '',
       type: type,
-      duration: TimeFormatter.formatDuration(
-            json['duration']?.toString() ?? 
-            video?['duration']?.toString() ??
-            liveStream?['duration']?.toString() ??
-            exam?['duration']?.toString()) ??
-        '',
+      duration:
+          TimeFormatter.formatDuration(
+            json['duration']?.toString() ??
+                video?['duration']?.toString() ??
+                liveStream?['duration']?.toString() ??
+                exam?['duration']?.toString(),
+          ) ??
+          '',
       progressStatus: _parseStatus(json['state'] ?? json['progressStatus']),
       isLocked: !(json['active'] as bool? ?? json['isLocked'] == false),
-      orderIndex: (json['order'] as num?)?.toInt() ?? (json['orderIndex'] as num?)?.toInt() ?? 0,
-      chapterTitle: json['chapter_title'] as String? ?? json['chapterTitle'] as String?,
+      orderIndex:
+          (json['order'] as num?)?.toInt() ??
+          (json['orderIndex'] as num?)?.toInt() ??
+          0,
+      chapterTitle:
+          json['chapter_title'] as String? ?? json['chapterTitle'] as String?,
       subtitle: json['subtitle'] as String?,
-      subjectName: json['subject_name'] as String? ?? json['subjectName'] as String?,
-      subjectIndex: (json['subject_index'] as num?)?.toInt() ?? (json['subjectIndex'] as num?)?.toInt(),
-      lessonNumber: (json['lesson_number'] as num?)?.toInt() ?? (json['lessonNumber'] as num?)?.toInt(),
-      totalLessons: (json['total_lessons'] as num?)?.toInt() ?? (json['totalLessons'] as num?)?.toInt(),
+      subjectName:
+          json['subject_name'] as String? ?? json['subjectName'] as String?,
+      subjectIndex:
+          (json['subject_index'] as num?)?.toInt() ??
+          (json['subjectIndex'] as num?)?.toInt(),
+      lessonNumber:
+          (json['lesson_number'] as num?)?.toInt() ??
+          (json['lessonNumber'] as num?)?.toInt(),
+      totalLessons:
+          (json['total_lessons'] as num?)?.toInt() ??
+          (json['totalLessons'] as num?)?.toInt(),
       bookmarkId: () {
         final val = json['bookmark_id'] ?? json['bookmarkId'];
         if (val is num) return val.toInt();
@@ -494,11 +573,19 @@ class LessonDto {
         return null;
       }(),
       image: json['icon'] as String? ?? json['image'] as String?,
-      isRunning: json['is_running'] as bool? ?? 
-          ['running', 'live'].contains(liveStream?['status']?.toString().toLowerCase()) ||
-          (json['has_started'] as bool? ?? false),
-      isUpcoming: json['is_upcoming'] as bool? ?? 
-          ['upcoming', 'scheduled'].contains(liveStream?['status']?.toString().toLowerCase()),
+      isRunning:
+          json['is_running'] as bool? ??
+          [
+                'running',
+                'live',
+              ].contains(liveStream?['status']?.toString().toLowerCase()) ||
+              (json['has_started'] as bool? ?? false),
+      isUpcoming:
+          json['is_upcoming'] as bool? ??
+          [
+            'upcoming',
+            'scheduled',
+          ].contains(liveStream?['status']?.toString().toLowerCase()),
       hasAttempts: json['has_attempts'] as bool? ?? false,
       pausedAttemptsCount:
           (json['paused_attempts_count'] as num?)?.toInt() ??
@@ -522,7 +609,10 @@ class LessonDto {
       isScheduled: json['error_code'] == 'scheduled',
       scheduledMessage: json['message'] as String?,
       description: getString('description'),
-      enableTranscript: json['enable_transcript'] as bool? ?? json['enableTranscript'] as bool? ?? false,
+      enableTranscript:
+          json['enable_transcript'] as bool? ??
+          json['enableTranscript'] as bool? ??
+          false,
       videoSubtitleUrl: () {
         final vs = json['video_subtitle'] ?? json['videoSubtitle'];
         if (vs is Map) {
@@ -534,8 +624,12 @@ class LessonDto {
         }
         return vs?.toString();
       }(),
-      isAiEnabled: json['is_ai_enabled'] as bool? ?? json['isAiEnabled'] as bool? ?? false,
-      aiNotesUrl: json['ai_notes_url']?.toString() ?? json['aiNotesUrl']?.toString(),
+      isAiEnabled:
+          json['is_ai_enabled'] as bool? ??
+          json['isAiEnabled'] as bool? ??
+          false,
+      aiNotesUrl:
+          json['ai_notes_url']?.toString() ?? json['aiNotesUrl']?.toString(),
       attemptsUrl: getString('attempts_url') ?? getString('attemptsUrl'),
     );
   }
@@ -543,7 +637,8 @@ class LessonDto {
   static LessonProgressStatus _parseStatus(dynamic value) {
     final s = value?.toString().toLowerCase();
     if (s == 'completed' || s == '1') return LessonProgressStatus.completed;
-    if (s == 'in_progress' || s == 'started' || s == '0') return LessonProgressStatus.inProgress;
+    if (s == 'in_progress' || s == 'started' || s == '0')
+      return LessonProgressStatus.inProgress;
     return LessonProgressStatus.notStarted;
   }
 

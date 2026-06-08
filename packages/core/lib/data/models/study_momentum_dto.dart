@@ -74,15 +74,15 @@ class StudyMomentumDto {
 
   @override
   int get hashCode => Object.hash(
-        Object.hashAll(weekDays),
-        weeklyHours,
-        currentStreak,
-        latestActivityTitle,
-        latestActivityTimeAgo,
-        lessonsFinished,
-        testsAttempted,
-        assessmentsDone,
-        strongestSubject,
-        weakSubject,
-      );
+    Object.hashAll(weekDays),
+    weeklyHours,
+    currentStreak,
+    latestActivityTitle,
+    latestActivityTimeAgo,
+    lessonsFinished,
+    testsAttempted,
+    assessmentsDone,
+    strongestSubject,
+    weakSubject,
+  );
 }

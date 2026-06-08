@@ -87,8 +87,13 @@ abstract final class TestQuestionHtmlBuilder {
       sb.writeln('<div class="options-container">');
       for (final option in question.options) {
         final isSelected =
-            answer?.selectedOptions.any((id) => id.toString() == option.id.toString()) ?? false;
-        final indicatorType = question.type == 'multipleSelect' ? 'checkbox' : 'radio';
+            answer?.selectedOptions.any(
+              (id) => id.toString() == option.id.toString(),
+            ) ??
+            false;
+        final indicatorType = question.type == 'multipleSelect'
+            ? 'checkbox'
+            : 'radio';
 
         sb.writeln('''
           <div class="option-card ${isSelected ? 'selected' : ''}"

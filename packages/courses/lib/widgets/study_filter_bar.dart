@@ -19,10 +19,30 @@ class StudyFilterBar extends StatelessWidget {
     final l10n = L10n.of(context);
 
     final filterConfigs = [
-      (LessonType.video, l10n.filterVideo, LucideIcons.playCircle, design.study.video),
-      (LessonType.pdf, l10n.filterLesson, LucideIcons.fileText, design.study.pdf),
-      (LessonType.assessment, l10n.filterAssessment, LucideIcons.clipboardCheck, design.study.assessment),
-      (LessonType.test, l10n.filterTest, LucideIcons.shieldCheck, design.study.test),
+      (
+        LessonType.video,
+        l10n.filterVideo,
+        LucideIcons.playCircle,
+        design.study.video
+      ),
+      (
+        LessonType.pdf,
+        l10n.filterLesson,
+        LucideIcons.fileText,
+        design.study.pdf
+      ),
+      (
+        LessonType.assessment,
+        l10n.filterAssessment,
+        LucideIcons.clipboardCheck,
+        design.study.assessment
+      ),
+      (
+        LessonType.test,
+        l10n.filterTest,
+        LucideIcons.shieldCheck,
+        design.study.test
+      ),
     ];
 
     return GridView.count(

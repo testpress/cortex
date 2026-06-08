@@ -38,8 +38,8 @@ class UserDto {
       email: json['email'] as String?,
       phone: json['phone'] as String?,
       avatar: json['medium_image'] as String?,
-      joinedDate: json['joined_date'] != null 
-          ? DateTime.tryParse(json['joined_date'].toString()) 
+      joinedDate: json['joined_date'] != null
+          ? DateTime.tryParse(json['joined_date'].toString())
           : null,
     );
   }
@@ -102,17 +102,17 @@ class UserDto {
 
   @override
   int get hashCode => Object.hash(
-        id,
-        name,
-        username,
-        firstName,
-        lastName,
-        email,
-        phone,
-        avatar,
-        isPro,
-        joinedDate,
-      );
+    id,
+    name,
+    username,
+    firstName,
+    lastName,
+    email,
+    phone,
+    avatar,
+    isPro,
+    joinedDate,
+  );
 }
 
 /// Extension to bridge [UserDto] metadata into individual database rows.
@@ -132,4 +132,3 @@ extension UserDtoPersistence on UserDto {
     );
   }
 }
-

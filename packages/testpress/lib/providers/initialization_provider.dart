@@ -9,11 +9,12 @@ part 'initialization_provider.g.dart';
 @Riverpod(keepAlive: true)
 Future<void> appInitialization(AppInitializationRef ref) async {
   final userRepo = await ref.watch(userRepositoryProvider.future);
-  final userProgressRepo = await ref.watch(userProgressRepositoryProvider.future);
+  final userProgressRepo = await ref.watch(
+    userProgressRepositoryProvider.future,
+  );
 
   // Ensure 3rd party SDKs (TPStreams, etc) are initialized via core
   await ref.watch(sdkInitializationProvider.future);
-
 
   final isLoggedIn = ref.watch(authProvider).asData?.value ?? false;
   if (!isLoggedIn) return;

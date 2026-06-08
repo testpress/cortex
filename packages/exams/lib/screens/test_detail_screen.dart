@@ -60,7 +60,9 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     var state = ref.read(examAttemptProvider);
     final status = state.status;
 
-    if (status != ExamAttemptStatus.idle && status != ExamAttemptStatus.error && state.exam?.id == widget.testId) {
+    if (status != ExamAttemptStatus.idle &&
+        status != ExamAttemptStatus.error &&
+        state.exam?.id == widget.testId) {
       return;
     }
 
@@ -69,7 +71,8 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
       state = ref.read(examAttemptProvider);
     }
 
-    if (status == ExamAttemptStatus.idle || (status == ExamAttemptStatus.loading && state.exam == null)) {
+    if (status == ExamAttemptStatus.idle ||
+        (status == ExamAttemptStatus.loading && state.exam == null)) {
       final lessonDetailAsync = ref.read(lessonDetailProvider(widget.testId));
       final fetchedLesson = lessonDetailAsync.valueOrNull?.toDto();
       final lesson = widget.lesson?.mergeWith(fetchedLesson) ?? fetchedLesson;
@@ -83,7 +86,9 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
           : null;
 
       if (lesson != null && attemptsUrl != null && attemptsUrl.isNotEmpty) {
-        ref.read(examAttemptProvider.notifier).startCourseLinkedExam(
+        ref
+            .read(examAttemptProvider.notifier)
+            .startCourseLinkedExam(
               ExamDto(
                 id: lesson.id,
                 title: lesson.title,
@@ -95,15 +100,22 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                 pausedAttemptsCount: lesson.pausedAttemptsCount > 0
                     ? lesson.pausedAttemptsCount
                     : (cachedExam?.pausedAttemptsCount ?? 0),
-                disableAttemptResume: lesson.disableAttemptResume || (cachedExam?.disableAttemptResume ?? false),
-                allowRetake: lesson.allowRetake && (cachedExam?.allowRetake ?? true),
-                maxRetakes: lesson.maxRetakes != -1 ? lesson.maxRetakes : (cachedExam?.maxRetakes ?? -1),
+                disableAttemptResume:
+                    lesson.disableAttemptResume ||
+                    (cachedExam?.disableAttemptResume ?? false),
+                allowRetake:
+                    lesson.allowRetake && (cachedExam?.allowRetake ?? true),
+                maxRetakes: lesson.maxRetakes != -1
+                    ? lesson.maxRetakes
+                    : (cachedExam?.maxRetakes ?? -1),
               ),
               attemptsUrl,
             );
       } else if (slug != null && slug.isNotEmpty) {
         ref.read(examAttemptProvider.notifier).loadExam(slug);
-      } else if (widget.lesson == null && !lessonDetailAsync.isLoading && lessonDetailAsync.value == null) {
+      } else if (widget.lesson == null &&
+          !lessonDetailAsync.isLoading &&
+          lessonDetailAsync.value == null) {
         ref.read(examAttemptProvider.notifier).loadExam(widget.testId);
       }
     }
@@ -138,7 +150,10 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     final state = ref.watch(examAttemptProvider);
     final lessonDetailAsync = ref.watch(lessonDetailProvider(widget.testId));
 
-    ref.listen<AsyncValue<Lesson?>>(lessonDetailProvider(widget.testId), (previous, next) {
+    ref.listen<AsyncValue<Lesson?>>(lessonDetailProvider(widget.testId), (
+      previous,
+      next,
+    ) {
       next.whenData((lesson) {
         if (lesson != null) {
           _initializeExam();
@@ -151,9 +166,10 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
 
       if (previous?.status != ExamAttemptStatus.inProgress &&
           next.status == ExamAttemptStatus.inProgress) {
-        
         if (slug != null && slug.isNotEmpty) {
-          ref.read(examDetailProvider(slug).notifier).setPausedAttemptsCount(slug, 1);
+          ref
+              .read(examDetailProvider(slug).notifier)
+              .setPausedAttemptsCount(slug, 1);
         }
 
         // Just loaded the exam (or resumed it), jump to the initial question index
@@ -178,7 +194,9 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
       } else if (previous?.status != ExamAttemptStatus.completed &&
           next.status == ExamAttemptStatus.completed) {
         if (slug != null && slug.isNotEmpty) {
-          ref.read(examDetailProvider(slug).notifier).setPausedAttemptsCount(slug, 0);
+          ref
+              .read(examDetailProvider(slug).notifier)
+              .setPausedAttemptsCount(slug, 0);
         }
       }
     });
@@ -186,12 +204,18 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     if (state.status == ExamAttemptStatus.idle ||
         state.status == ExamAttemptStatus.loading) {
       return lessonDetailAsync.when(
-        data: (lesson) =>
-            Container(color: design.colors.surface, child: const Center(child: AppLoadingIndicator())),
-        loading: () =>
-            Container(color: design.colors.surface, child: const Center(child: AppLoadingIndicator())),
-        error: (err, stack) =>
-            Container(color: design.colors.surface, child: Center(child: AppText.body('Error loading lesson: $err'))),
+        data: (lesson) => Container(
+          color: design.colors.surface,
+          child: const Center(child: AppLoadingIndicator()),
+        ),
+        loading: () => Container(
+          color: design.colors.surface,
+          child: const Center(child: AppLoadingIndicator()),
+        ),
+        error: (err, stack) => Container(
+          color: design.colors.surface,
+          child: Center(child: AppText.body('Error loading lesson: $err')),
+        ),
       );
     }
 
@@ -200,7 +224,9 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
         exam: state.exam,
         onClose: widget.onClose,
         onStartExam: () {
-          ref.read(examAttemptProvider.notifier).startStandaloneExam(state.exam!);
+          ref
+              .read(examAttemptProvider.notifier)
+              .startStandaloneExam(state.exam!);
         },
       );
     }
@@ -213,9 +239,16 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(LucideIcons.alertCircle, size: 48, color: design.colors.accent5),
+              Icon(
+                LucideIcons.alertCircle,
+                size: 48,
+                color: design.colors.accent5,
+              ),
               SizedBox(height: design.spacing.lg),
-              AppText.title('Oops! Cannot start exam', textAlign: TextAlign.center),
+              AppText.title(
+                'Oops! Cannot start exam',
+                textAlign: TextAlign.center,
+              ),
               SizedBox(height: design.spacing.sm),
               AppText.body(
                 state.errorMessage ?? 'An unknown error occurred.',
@@ -223,10 +256,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                 color: design.colors.textSecondary,
               ),
               SizedBox(height: design.spacing.xl),
-              AppButton(
-                label: 'Go Back',
-                onPressed: () => context.pop(),
-              ),
+              AppButton(label: 'Go Back', onPressed: () => context.pop()),
             ],
           ),
         ),
@@ -240,8 +270,10 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
       }
     }
 
-    final bool useSections = state.sections.length > 1 && state.attempt?.hasSectionalLock == true;
-    final bool useFlexibleSections = state.sections.length > 1 && state.attempt?.hasSectionalLock == false;
+    final bool useSections =
+        state.sections.length > 1 && state.attempt?.hasSectionalLock == true;
+    final bool useFlexibleSections =
+        state.sections.length > 1 && state.attempt?.hasSectionalLock == false;
 
     // --- Parse and Group Questions for Flexible Sections ---
     List<QuestionDto> allQuestions = List.of(state.questions);
@@ -253,31 +285,36 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
         final secName = q.sectionName ?? 'General';
         sectionGroups.putIfAbsent(secName, () => []).add(q);
       }
-      
+
       allQuestions = [];
       localSections = [];
       for (final entry in sectionGroups.entries) {
         allQuestions.addAll(entry.value);
-        localSections.add(SectionDto(
-          id: '',
-          name: entry.key,
-          state: 'Not Started',
-          questionsUrl: '',
-          order: localSections.length,
-          questionsCount: entry.value.length,
-        ));
+        localSections.add(
+          SectionDto(
+            id: '',
+            name: entry.key,
+            state: 'Not Started',
+            questionsUrl: '',
+            order: localSections.length,
+            questionsCount: entry.value.length,
+          ),
+        );
       }
     }
-    
+
     if (allQuestions.isEmpty) {
       return Container(
-          color: design.colors.surface,
-          child: Center(child: AppText.body('No questions found.')));
+        color: design.colors.surface,
+        child: Center(child: AppText.body('No questions found.')),
+      );
     }
 
-    final safeIndex = _currentQuestionIndex < allQuestions.length ? _currentQuestionIndex : 0;
+    final safeIndex = _currentQuestionIndex < allQuestions.length
+        ? _currentQuestionIndex
+        : 0;
     final question = allQuestions[safeIndex];
-    
+
     // Map the current question to its subject for the UI
     final currentSubject = question.subject;
     final currentSubjectIndex = subjects.indexOf(currentSubject);
@@ -303,13 +340,16 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     }
     final globalCurrentIndex = globalOffset + safeIndex;
 
-    final globalTotalCount = state.attempt?.totalQuestions ?? 
+    final globalTotalCount =
+        state.attempt?.totalQuestions ??
         localSections.fold<int>(0, (sum, s) => sum + (s.questionsCount ?? 0));
-    final displayTotalCount = globalTotalCount > 0 ? globalTotalCount : allQuestions.length;
+    final displayTotalCount = globalTotalCount > 0
+        ? globalTotalCount
+        : allQuestions.length;
 
     // Determine whether there are more tabs to navigate to after this one.
-    final hasNextSection = useSections &&
-        state.currentSectionIndex < localSections.length - 1;
+    final hasNextSection =
+        useSections && state.currentSectionIndex < localSections.length - 1;
 
     // --- Compute Tabs & Active Index ---
     final List<String> tabNames = [];
@@ -317,7 +357,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
 
     if (useSections || useFlexibleSections) {
       tabNames.addAll(localSections.map((s) => s.name));
-      
+
       if (useSections) {
         activeTabIndex = state.currentSectionIndex;
       } else {
@@ -335,7 +375,9 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
       if (subjects.length > 1) {
         tabNames.addAll(subjects);
       }
-      activeTabIndex = currentSubjectIndex != -1 ? currentSubjectIndex : _activeSubjectIndex;
+      activeTabIndex = currentSubjectIndex != -1
+          ? currentSubjectIndex
+          : _activeSubjectIndex;
     }
 
     return PopScope(
@@ -348,155 +390,166 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
         color: design.colors.surface,
         child: Stack(
           children: [
-          Column(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: design.colors.card,
-                  border: Border(
-                    bottom: BorderSide(
-                      color: design.colors.border,
-                      width: 1,
+            Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: design.colors.card,
+                    border: Border(
+                      bottom: BorderSide(color: design.colors.border, width: 1),
                     ),
                   ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TestHeader(
-                      exam: state.exam!,
-                      timeFormatted: _formatTime(state.remainingSeconds),
-                      onExit: () => setState(() => _showPauseConfirmation = true),
-                    ),
-                    SectionsTabBar(
-                      tabNames: tabNames,
-                      activeIndex: activeTabIndex,
-                      onTabSelected: (index) {
-                        if (useSections) {
-                          ref.read(examAttemptProvider.notifier).switchSection(index);
-                        } else if (useFlexibleSections) {
-                          // Jump to the first question of the selected flexible section
-                          int targetIndex = 0;
-                          for (int i = 0; i < index; i++) {
-                            targetIndex += localSections[i].questionsCount ?? 0;
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TestHeader(
+                        exam: state.exam!,
+                        timeFormatted: _formatTime(state.remainingSeconds),
+                        onExit: () =>
+                            setState(() => _showPauseConfirmation = true),
+                      ),
+                      SectionsTabBar(
+                        tabNames: tabNames,
+                        activeIndex: activeTabIndex,
+                        onTabSelected: (index) {
+                          if (useSections) {
+                            ref
+                                .read(examAttemptProvider.notifier)
+                                .switchSection(index);
+                          } else if (useFlexibleSections) {
+                            // Jump to the first question of the selected flexible section
+                            int targetIndex = 0;
+                            for (int i = 0; i < index; i++) {
+                              targetIndex +=
+                                  localSections[i].questionsCount ?? 0;
+                            }
+                            if (targetIndex < allQuestions.length) {
+                              _pageController.jumpToPage(targetIndex);
+                            }
+                          } else {
+                            // Jump to the first question of this subject
+                            final targetSubject = subjects[index];
+                            final targetIndex = allQuestions.indexWhere(
+                              (q) => q.subject == targetSubject,
+                            );
+                            if (targetIndex != -1) {
+                              _pageController.jumpToPage(targetIndex);
+                            }
                           }
-                          if (targetIndex < allQuestions.length) {
-                            _pageController.jumpToPage(targetIndex);
-                          }
-                        } else {
-                          // Jump to the first question of this subject
-                          final targetSubject = subjects[index];
-                          final targetIndex = allQuestions.indexWhere((q) => q.subject == targetSubject);
-                          if (targetIndex != -1) {
-                            _pageController.jumpToPage(targetIndex);
-                          }
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  children: [
-                    TestProgressSection(
-                      currentQuestionIndex: globalCurrentIndex,
-                      totalQuestions: displayTotalCount,
-                      isSavedVisible: _isSavedVisible,
-                      answeredCount: answeredCount,
-                    ),
-                    Expanded(
-                      child: PageView.builder(
-                        controller: _pageController,
-                        allowImplicitScrolling: true,
-                        onPageChanged: (index) {
-                          setState(() {
-                            _currentQuestionIndex = index;
-                            // Sync subject index if needed
-                            final q = allQuestions[index];
-                            final sIdx = subjects.indexOf(q.subject);
-                            if (sIdx != -1) _activeSubjectIndex = sIdx;
-                          });
-                        },
-                        itemCount: allQuestions.length,
-                        itemBuilder: (context, index) {
-                          final q = allQuestions[index];
-                          final a = state.answers[q.id];
-                          final isLast = index == allQuestions.length - 1;
-                          
-                          return TestQuestionCard(
-                            key: ValueKey(q.id),
-                            question: q,
-                            answer: a,
-                            isMarked: a?.isMarked ?? false,
-                            canGoPrevious: index > 0,
-                            isLastQuestion: isLast,
-                            finishLabel: isLast && hasNextSection 
-                                ? l10n.nextSection
-                                : null,
-                            answeredCount: sectionAnsweredCount,
-                            totalQuestions: allQuestions.length,
-                            onPaletteTap: () => setState(() => _showPalette = true),
-                            onToggleMark: () => _handleToggleMark(state, q),
-                            onPrevious: () {
-                              if (index > 0) {
-                                _pageController.previousPage(
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeInOut,
-                                );
-                              }
-                            },
-                            onNext: () {
-                              if (index < allQuestions.length - 1) {
-                                _pageController.nextPage(
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeInOut,
-                                );
-                              } else if (hasNextSection) {
-                                ref
-                                    .read(examAttemptProvider.notifier)
-                                    .switchSection(state.currentSectionIndex + 1);
-                              } else {
-                                setState(() => _showSubmitConfirmation = true);
-                              }
-                            },
-                            onOptionSelect: (message) =>
-                                _handleHtmlMessage(state, q, message),
-                          );
                         },
                       ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).padding.bottom + design.spacing.md),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-          if (_showPalette)
-            QuestionPalette(
-              questions: allQuestions,
-              answers: state.answers,
-              currentIndex: safeIndex,
-              onClose: () => setState(() => _showPalette = false),
-              onQuestionSelected: (index) {
-                setState(() {
-                  _currentQuestionIndex = index;
-                  _showPalette = false;
-                });
-                _pageController.jumpToPage(index);
-              },
+                Expanded(
+                  child: Column(
+                    children: [
+                      TestProgressSection(
+                        currentQuestionIndex: globalCurrentIndex,
+                        totalQuestions: displayTotalCount,
+                        isSavedVisible: _isSavedVisible,
+                        answeredCount: answeredCount,
+                      ),
+                      Expanded(
+                        child: PageView.builder(
+                          controller: _pageController,
+                          allowImplicitScrolling: true,
+                          onPageChanged: (index) {
+                            setState(() {
+                              _currentQuestionIndex = index;
+                              // Sync subject index if needed
+                              final q = allQuestions[index];
+                              final sIdx = subjects.indexOf(q.subject);
+                              if (sIdx != -1) _activeSubjectIndex = sIdx;
+                            });
+                          },
+                          itemCount: allQuestions.length,
+                          itemBuilder: (context, index) {
+                            final q = allQuestions[index];
+                            final a = state.answers[q.id];
+                            final isLast = index == allQuestions.length - 1;
+
+                            return TestQuestionCard(
+                              key: ValueKey(q.id),
+                              question: q,
+                              answer: a,
+                              isMarked: a?.isMarked ?? false,
+                              canGoPrevious: index > 0,
+                              isLastQuestion: isLast,
+                              finishLabel: isLast && hasNextSection
+                                  ? l10n.nextSection
+                                  : null,
+                              answeredCount: sectionAnsweredCount,
+                              totalQuestions: allQuestions.length,
+                              onPaletteTap: () =>
+                                  setState(() => _showPalette = true),
+                              onToggleMark: () => _handleToggleMark(state, q),
+                              onPrevious: () {
+                                if (index > 0) {
+                                  _pageController.previousPage(
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeInOut,
+                                  );
+                                }
+                              },
+                              onNext: () {
+                                if (index < allQuestions.length - 1) {
+                                  _pageController.nextPage(
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeInOut,
+                                  );
+                                } else if (hasNextSection) {
+                                  ref
+                                      .read(examAttemptProvider.notifier)
+                                      .switchSection(
+                                        state.currentSectionIndex + 1,
+                                      );
+                                } else {
+                                  setState(
+                                    () => _showSubmitConfirmation = true,
+                                  );
+                                }
+                              },
+                              onOptionSelect: (message) =>
+                                  _handleHtmlMessage(state, q, message),
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        height:
+                            MediaQuery.of(context).padding.bottom +
+                            design.spacing.md,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          if (_showSubmitConfirmation)
-            SubmitConfirmationDialog(
-              answeredCount: answeredCount,
-              totalCount: displayTotalCount,
-              onCancel: () =>
-                  setState(() => _showSubmitConfirmation = false),
-              onSubmit: () {
-                setState(() => _showSubmitConfirmation = false);
-                ref
-                    .read(examAttemptProvider.notifier)
-                    .endExam(state.attempt!.endUrl);
+            if (_showPalette)
+              QuestionPalette(
+                questions: allQuestions,
+                answers: state.answers,
+                currentIndex: safeIndex,
+                onClose: () => setState(() => _showPalette = false),
+                onQuestionSelected: (index) {
+                  setState(() {
+                    _currentQuestionIndex = index;
+                    _showPalette = false;
+                  });
+                  _pageController.jumpToPage(index);
+                },
+              ),
+            if (_showSubmitConfirmation)
+              SubmitConfirmationDialog(
+                answeredCount: answeredCount,
+                totalCount: displayTotalCount,
+                onCancel: () => setState(() => _showSubmitConfirmation = false),
+                onSubmit: () {
+                  setState(() => _showSubmitConfirmation = false);
+                  ref
+                      .read(examAttemptProvider.notifier)
+                      .endExam(state.attempt!.endUrl);
                 },
               ),
             if (_showPauseConfirmation)
@@ -527,10 +580,15 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
               ),
           ],
         ),
-      ),);
+      ),
+    );
   }
 
-  void _handleHtmlMessage(ExamAttemptState state, QuestionDto question, String message) {
+  void _handleHtmlMessage(
+    ExamAttemptState state,
+    QuestionDto question,
+    String message,
+  ) {
     try {
       final data = jsonDecode(message);
       if (data is Map<String, dynamic>) {
@@ -546,17 +604,30 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     _handleOptionSelect(state, question, message);
   }
 
-  void _handleInputChange(ExamAttemptState state, QuestionDto question, String value) {
+  void _handleInputChange(
+    ExamAttemptState state,
+    QuestionDto question,
+    String value,
+  ) {
     if (question.type == 'essay') {
-      ref.read(examAttemptProvider.notifier).updateEssayText(question.id, question.answerUrl, value);
+      ref
+          .read(examAttemptProvider.notifier)
+          .updateEssayText(question.id, question.answerUrl, value);
     } else {
-      ref.read(examAttemptProvider.notifier).updateShortText(question.id, question.answerUrl, value);
+      ref
+          .read(examAttemptProvider.notifier)
+          .updateShortText(question.id, question.answerUrl, value);
     }
     // Don't show the saved indicator for every keystroke since it doesn't trigger immediate network submission
   }
 
-  void _handleOptionSelect(ExamAttemptState state, QuestionDto question, String optionId) {
-    final currentAnswer = state.answers[question.id] ??
+  void _handleOptionSelect(
+    ExamAttemptState state,
+    QuestionDto question,
+    String optionId,
+  ) {
+    final currentAnswer =
+        state.answers[question.id] ??
         AnswerDto(questionId: question.id, selectedOptions: []);
 
     List<String> newSelections;
@@ -577,12 +648,15 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
       isMarked: currentAnswer.isMarked,
     );
 
-    ref.read(examAttemptProvider.notifier).submitAnswer(question.answerUrl, newAnswer);
+    ref
+        .read(examAttemptProvider.notifier)
+        .submitAnswer(question.answerUrl, newAnswer);
     _showSavedIndicator();
   }
 
   void _handleToggleMark(ExamAttemptState state, QuestionDto question) {
-    final currentAnswer = state.answers[question.id] ??
+    final currentAnswer =
+        state.answers[question.id] ??
         AnswerDto(questionId: question.id, selectedOptions: []);
 
     final newAnswer = AnswerDto(
@@ -591,7 +665,9 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
       isMarked: !currentAnswer.isMarked,
     );
 
-    ref.read(examAttemptProvider.notifier).submitAnswer(question.answerUrl, newAnswer);
+    ref
+        .read(examAttemptProvider.notifier)
+        .submitAnswer(question.answerUrl, newAnswer);
   }
 
   void _openReviewAnswers(ExamAttemptState state) {
@@ -618,5 +694,4 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
       ),
     );
   }
-
 }

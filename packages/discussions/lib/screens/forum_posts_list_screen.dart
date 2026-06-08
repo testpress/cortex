@@ -12,7 +12,8 @@ class ForumPostsListScreen extends ConsumerStatefulWidget {
   const ForumPostsListScreen({super.key});
 
   @override
-  ConsumerState<ForumPostsListScreen> createState() => _ForumPostsListScreenState();
+  ConsumerState<ForumPostsListScreen> createState() =>
+      _ForumPostsListScreenState();
 }
 
 class _ForumPostsListScreenState extends ConsumerState<ForumPostsListScreen> {
@@ -41,10 +42,12 @@ class _ForumPostsListScreenState extends ConsumerState<ForumPostsListScreen> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final feedAsync = ref.watch(globalForumFeedProvider(
-      categoryId: _selectedCategoryId,
-      searchQuery: _searchQuery,
-    ));
+    final feedAsync = ref.watch(
+      globalForumFeedProvider(
+        categoryId: _selectedCategoryId,
+        searchQuery: _searchQuery,
+      ),
+    );
     final categoriesAsync = ref.watch(globalForumCategoriesProvider);
 
     return SkeletonizerConfig(
@@ -52,93 +55,109 @@ class _ForumPostsListScreenState extends ConsumerState<ForumPostsListScreen> {
         effect: ShimmerEffect(
           baseColor: design.colors.skeleton,
           highlightColor: design.colors.onSkeleton,
-          duration: MotionPreferences.duration(context, const Duration(milliseconds: 800)),
+          duration: MotionPreferences.duration(
+            context,
+            const Duration(milliseconds: 800),
+          ),
         ),
       ),
       child: DecoratedBox(
         decoration: BoxDecoration(color: design.colors.card),
         child: Column(
-        children: [
-          ForumHeader(
-            title: l10n.forumTitle,
-            showDivider: false,
-            actions: [
-              AppFocusable(
-                onTap: () {
-                  context.push('/home/discussions/forum/create');
-                },
-                borderRadius: BorderRadius.circular(design.radius.full),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: design.spacing.sm),
-                  child: AppText.labelSmall(
-                    l10n.forumCreatePost,
-                    color: design.colors.accent2,
+          children: [
+            ForumHeader(
+              title: l10n.forumTitle,
+              showDivider: false,
+              actions: [
+                AppFocusable(
+                  onTap: () {
+                    context.push('/home/discussions/forum/create');
+                  },
+                  borderRadius: BorderRadius.circular(design.radius.full),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: design.spacing.sm,
+                    ),
+                    child: AppText.labelSmall(
+                      l10n.forumCreatePost,
+                      color: design.colors.accent2,
+                    ),
                   ),
                 ),
+              ],
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: design.spacing.md,
+                vertical: design.spacing.sm,
               ),
-            ],
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: design.spacing.md,
-              vertical: design.spacing.sm,
+              child: AppSearchBar(
+                hintText: l10n.forumSearchDiscussions,
+                onChanged: _onSearchChanged,
+                backgroundColor: design.colors.surfaceVariant,
+              ),
             ),
-            child: AppSearchBar(
-              hintText: l10n.forumSearchDiscussions,
-              onChanged: _onSearchChanged,
-              backgroundColor: design.colors.surfaceVariant,
-            ),
-          ),
-          _CategoryChips(
-            categoriesAsync: categoriesAsync,
-            selectedId: _selectedCategoryId,
-            onCategorySelected: (id) {
-              setState(() => _selectedCategoryId = id);
-            },
-          ),
-          Expanded(
-            child:            Builder(
-              builder: (context) {
-                final feedState = feedAsync.valueOrNull ?? const GlobalForumFeedState(items: []);
-                final isLoading = feedAsync.isLoading && feedState.items.isEmpty;
-                final displayState = isLoading 
-                  ? feedState.copyWith(items: _mockSkeletonThreads) 
-                  : feedState;
-                
-                if (feedAsync.hasError && feedState.items.isEmpty) {
-                  return Center(child: AppText.body(l10n.errorGenericMessage));
-                }
-
-                return Skeletonizer(
-                  enabled: isLoading,
-                  child: Column(
-                    children: [
-                      Container(height: 1, color: design.colors.divider),
-                      Expanded(
-                        child: _ThreadList(
-                          state: displayState,
-                          onRefresh: () async {
-                            return ref.refresh(globalForumFeedProvider(
-                              categoryId: _selectedCategoryId,
-                              searchQuery: _searchQuery,
-                            ).future);
-                          },
-                          onLoadMore: () {
-                            ref.read(globalForumFeedProvider(
-                              categoryId: _selectedCategoryId,
-                              searchQuery: _searchQuery,
-                            ).notifier).loadMore();
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                );
+            _CategoryChips(
+              categoriesAsync: categoriesAsync,
+              selectedId: _selectedCategoryId,
+              onCategorySelected: (id) {
+                setState(() => _selectedCategoryId = id);
               },
             ),
-          ),
-        ],
-      ),
+            Expanded(
+              child: Builder(
+                builder: (context) {
+                  final feedState =
+                      feedAsync.valueOrNull ??
+                      const GlobalForumFeedState(items: []);
+                  final isLoading =
+                      feedAsync.isLoading && feedState.items.isEmpty;
+                  final displayState = isLoading
+                      ? feedState.copyWith(items: _mockSkeletonThreads)
+                      : feedState;
+
+                  if (feedAsync.hasError && feedState.items.isEmpty) {
+                    return Center(
+                      child: AppText.body(l10n.errorGenericMessage),
+                    );
+                  }
+
+                  return Skeletonizer(
+                    enabled: isLoading,
+                    child: Column(
+                      children: [
+                        Container(height: 1, color: design.colors.divider),
+                        Expanded(
+                          child: _ThreadList(
+                            state: displayState,
+                            onRefresh: () async {
+                              return ref.refresh(
+                                globalForumFeedProvider(
+                                  categoryId: _selectedCategoryId,
+                                  searchQuery: _searchQuery,
+                                ).future,
+                              );
+                            },
+                            onLoadMore: () {
+                              ref
+                                  .read(
+                                    globalForumFeedProvider(
+                                      categoryId: _selectedCategoryId,
+                                      searchQuery: _searchQuery,
+                                    ).notifier,
+                                  )
+                                  .loadMore();
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -200,8 +219,6 @@ class _CategoryChips extends StatelessWidget {
   }
 }
 
-
-
 class _ChipButton extends StatelessWidget {
   final String label;
   final bool isSelected;
@@ -225,20 +242,22 @@ class _ChipButton extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
           decoration: BoxDecoration(
-            color: isSelected ? design.colors.primary : design.colors.surfaceVariant,
+            color: isSelected
+                ? design.colors.primary
+                : design.colors.surfaceVariant,
             borderRadius: BorderRadius.circular(design.radius.full),
           ),
           child: AppText.caption(
             label,
-            color: isSelected ? design.colors.textInverse : design.colors.textPrimary,
+            color: isSelected
+                ? design.colors.textInverse
+                : design.colors.textPrimary,
           ),
         ),
       ),
     );
   }
 }
-
-
 
 class _ThreadList extends StatefulWidget {
   final GlobalForumFeedState state;
@@ -272,7 +291,8 @@ class _ThreadListState extends State<_ThreadList> {
 
   void _onScroll() {
     if (_scrollController.hasClients &&
-        _scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+        _scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 200) {
       if (!widget.state.isLoadingMore && widget.state.hasMore) {
         widget.onLoadMore();
       }
@@ -295,31 +315,43 @@ class _ThreadListState extends State<_ThreadList> {
 
     return CustomScrollView(
       controller: _scrollController,
-      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+      physics: const AlwaysScrollableScrollPhysics(
+        parent: BouncingScrollPhysics(),
+      ),
       slivers: [
         CupertinoSliverRefreshControl(
           onRefresh: widget.onRefresh,
-          builder: (context, refreshState, pulledExtent, refreshTriggerPullDistance, refreshIndicatorExtent) {
-            return Opacity(
-              opacity: (pulledExtent / refreshTriggerPullDistance).clamp(0.0, 1.0),
-              child: Center(
-                child: AppLoadingIndicator(color: design.colors.primary),
-              ),
-            );
-          },
+          builder:
+              (
+                context,
+                refreshState,
+                pulledExtent,
+                refreshTriggerPullDistance,
+                refreshIndicatorExtent,
+              ) {
+                return Opacity(
+                  opacity: (pulledExtent / refreshTriggerPullDistance).clamp(
+                    0.0,
+                    1.0,
+                  ),
+                  child: Center(
+                    child: AppLoadingIndicator(color: design.colors.primary),
+                  ),
+                );
+              },
         ),
         SliverList.separated(
-          itemCount: widget.state.items.length + (widget.state.isLoadingMore ? 1 : 0),
-          separatorBuilder: (context, index) => Container(
-            height: 1,
-            color: design.colors.divider,
-          ),
+          itemCount:
+              widget.state.items.length + (widget.state.isLoadingMore ? 1 : 0),
+          separatorBuilder: (context, index) =>
+              Container(height: 1, color: design.colors.divider),
           itemBuilder: (context, index) {
             if (index >= widget.state.items.length) {
               return Skeletonizer(
                 enabled: true,
                 child: _ThreadItem(
-                  thread: _mockSkeletonThreads[index % _mockSkeletonThreads.length],
+                  thread:
+                      _mockSkeletonThreads[index % _mockSkeletonThreads.length],
                 ),
               );
             }
@@ -341,7 +373,10 @@ class _ThreadItem extends StatelessWidget {
     final design = Design.of(context);
 
     return GestureDetector(
-      onTap: () => context.push('/home/discussions/forum/posts/${thread.slug}', extra: thread),
+      onTap: () => context.push(
+        '/home/discussions/forum/posts/${thread.slug}',
+        extra: thread,
+      ),
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: design.spacing.md,
@@ -351,10 +386,7 @@ class _ThreadItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppText.cardTitle(
-              thread.title,
-              color: design.colors.textPrimary,
-            ),
+            AppText.cardTitle(thread.title, color: design.colors.textPrimary),
             if (thread.summary.trim().isNotEmpty) ...[
               const SizedBox(height: 6),
               AppText.cardSubtitle(
@@ -463,10 +495,7 @@ class _StatusBadge extends StatelessWidget {
 
     return Skeleton.leaf(
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 6,
-          vertical: 2,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: BoxDecoration(
           color: isAnswered
               ? design.colors.accent2.withValues(alpha: 0.12)
@@ -475,8 +504,14 @@ class _StatusBadge extends StatelessWidget {
         ),
         child: AppText.caption(
           isAnswered ? l10n.forumLabelAnswered : l10n.forumLabelUnanswered,
-          color: isAnswered ? design.colors.accent2 : design.colors.textSecondary,
-          style: const TextStyle(fontSize: 10, height: 1.1, fontWeight: FontWeight.w600),
+          color: isAnswered
+              ? design.colors.accent2
+              : design.colors.textSecondary,
+          style: const TextStyle(
+            fontSize: 10,
+            height: 1.1,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );
@@ -509,7 +544,8 @@ final _mockSkeletonThreads = List.generate(
     threadId: index,
     slug: 'slug-$index',
     title: 'Loading thread title placeholder...',
-    summary: 'Loading thread summary placeholder that spans across multiple lines...',
+    summary:
+        'Loading thread summary placeholder that spans across multiple lines...',
     authorName: 'Author Name',
     createdAt: '2026-05-25T11:43:37Z',
     replyCount: 1,

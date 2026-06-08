@@ -84,10 +84,9 @@ class AppTextField extends StatelessWidget {
                 ),
                 border: InputBorder.none,
                 isDense: true,
-                contentPadding: contentPadding ??
-                    EdgeInsets.symmetric(
-                      vertical: design.spacing.md,
-                    ),
+                contentPadding:
+                    contentPadding ??
+                    EdgeInsets.symmetric(vertical: design.spacing.md),
               ),
             ),
           ),

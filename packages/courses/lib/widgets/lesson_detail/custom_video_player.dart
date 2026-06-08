@@ -40,12 +40,12 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
 
   VideoAttemptNotifier? _videoAttemptNotifier;
   late final int? _contentId;
-  
+
   @override
   void initState() {
     super.initState();
     _fetchMetadata();
-    
+
     if (widget.lessonId != null) {
       _contentId = int.tryParse(widget.lessonId!);
     } else {
@@ -65,13 +65,13 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
 
   void _finalizeCurrentInterval() {
     if (_controller == null || !_isPlayingTracker) return;
-    
+
     final currentPos = _controller!.value.position.inMilliseconds / 1000.0;
     if (currentPos > _currentIntervalStart) {
       _watchedTimeRanges.add([_currentIntervalStart, currentPos]);
     }
     _isPlayingTracker = false;
-    
+
     _syncVideoAttempt(currentPos);
   }
 
@@ -114,21 +114,26 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
     if (_contentId != null) {
       ref.watch(videoAttemptNotifierProvider(_contentId!));
       // Grab the active notifier instance safely inside build
-      _videoAttemptNotifier = ref.read(videoAttemptNotifierProvider(_contentId!).notifier);
+      _videoAttemptNotifier =
+          ref.read(videoAttemptNotifierProvider(_contentId!).notifier);
     }
 
     if (widget.assetId != null && widget.assetId!.isNotEmpty) {
       if (_isFetchingMetadata) {
-        return const SizedBox.shrink(); // Wait for local DB to provide metadata (extremely fast)
+        return const SizedBox
+            .shrink(); // Wait for local DB to provide metadata (extremely fast)
       }
 
-      final downloadItemAsync = ref.watch(watchDownloadItemProvider(widget.assetId!));
-      
+      final downloadItemAsync =
+          ref.watch(watchDownloadItemProvider(widget.assetId!));
+
       if (!downloadItemAsync.hasValue) {
-        return const SizedBox.shrink(); // Wait for database to emit initial status to avoid online player flicker
+        return const SizedBox
+            .shrink(); // Wait for database to emit initial status to avoid online player flicker
       }
 
-      final isCompleted = downloadItemAsync.value?.status == DownloadStatus.completed;
+      final isCompleted =
+          downloadItemAsync.value?.status == DownloadStatus.completed;
 
       if (isCompleted) {
         return TestpressPlayer.offline(
@@ -162,10 +167,12 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
       final currentPos = controller.value.position.inMilliseconds / 1000.0;
 
       // Ensure we only seek once the video is loaded (duration > 0)
-      final needsInitialSeek = widget.initialPosition > 0 && !_hasSeekedToInitial;
+      final needsInitialSeek =
+          widget.initialPosition > 0 && !_hasSeekedToInitial;
       if (needsInitialSeek) {
         if (controller.value.duration != Duration.zero) {
-          controller.seek(Duration(milliseconds: (widget.initialPosition * 1000).toInt()));
+          controller.seek(
+              Duration(milliseconds: (widget.initialPosition * 1000).toInt()));
           _lastPosition = widget.initialPosition;
           _currentIntervalStart = widget.initialPosition;
           _hasSeekedToInitial = true;

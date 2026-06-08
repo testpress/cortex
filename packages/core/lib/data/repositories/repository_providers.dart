@@ -10,7 +10,9 @@ part 'repository_providers.g.dart';
 
 /// Provides the [UserProgressRepository].
 @Riverpod(keepAlive: true)
-Future<UserProgressRepository> userProgressRepository(UserProgressRepositoryRef ref) async {
+Future<UserProgressRepository> userProgressRepository(
+  UserProgressRepositoryRef ref,
+) async {
   final db = await ref.watch(appDatabaseProvider.future);
   final source = ref.watch(dataSourceProvider);
   return UserProgressRepository(db, source);

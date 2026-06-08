@@ -5,8 +5,12 @@ import 'package:core/data/data.dart';
 /// Repositories call these methods to populate the local Drift DB.
 abstract class DataSource {
   /// Fetch all courses available to the current user.
-  Future<PaginatedResponseDto<CourseDto>> getCourses(
-      {int page = 1, int pageSize = 10, String? search, dynamic tags});
+  Future<PaginatedResponseDto<CourseDto>> getCourses({
+    int page = 1,
+    int pageSize = 10,
+    String? search,
+    dynamic tags,
+  });
 
   /// Fetch full metadata for a single course from `/api/v3/courses/{id}/`.
   Future<CourseDto> getCourseDetail(String courseId);
@@ -18,17 +22,29 @@ abstract class DataSource {
   /// [chapterId] is an optional filter to fetch only a specific branch.
   /// [type] is an optional filter to scope results to a content type (video, assessment, test, etc).
   /// Returns a Stream to support incremental/paginated updates.
-  Stream<CourseCurriculumDto> getCourseContents(String courseId, {String? chapterId, String? type});
-  
+  Stream<CourseCurriculumDto> getCourseContents(
+    String courseId, {
+    String? chapterId,
+    String? type,
+  });
+
   /// Fetch running contents for a specific course.
-  Future<CourseCurriculumDto> getRunningContents(String courseId, {String? chapterId});
+  Future<CourseCurriculumDto> getRunningContents(
+    String courseId, {
+    String? chapterId,
+  });
 
   /// Fetch upcoming contents for a specific course.
-  Future<CourseCurriculumDto> getUpcomingContents(String courseId, {String? chapterId});
-
+  Future<CourseCurriculumDto> getUpcomingContents(
+    String courseId, {
+    String? chapterId,
+  });
 
   /// Fetch content attempts (History) for a specific course.
-  Future<CourseCurriculumDto> getContentAttempts(String courseId, {String? chapterId});
+  Future<CourseCurriculumDto> getContentAttempts(
+    String courseId, {
+    String? chapterId,
+  });
 
   /// Fetch lessons for a specific chapter (Legacy/Sub-fetch).
   Future<List<LessonDto>> getLessons(String chapterId);
@@ -43,7 +59,11 @@ abstract class DataSource {
   Future<List<ForumCategoryDto>> getForumCategories();
 
   /// Fetch paginated global forum threads, optionally filtered by category.
-  Future<PaginatedResponseDto<ForumThreadDto>> getForumThreads({int page = 1, int? categoryId, String? searchQuery});
+  Future<PaginatedResponseDto<ForumThreadDto>> getForumThreads({
+    int page = 1,
+    int? categoryId,
+    String? searchQuery,
+  });
 
   // ── Forum Comments ─────────────────────────────────────────────────────────
 
@@ -104,15 +124,22 @@ abstract class DataSource {
   Future<List<LearnerDto>> fetchCompetitorThreats();
 
   /// Fetch the latest content updates from `/api/v2.4/whats-new/`.
-  Future<DashboardContentsDto> getWhatsNewFeed(DashboardSectionType sectionType);
+  Future<DashboardContentsDto> getWhatsNewFeed(
+    DashboardSectionType sectionType,
+  );
 
   /// Fetch the resume learning feed from `/api/v2.4/resume/`.
-  Future<DashboardContentsDto> getResumeLearningFeed(DashboardSectionType sectionType);
+  Future<DashboardContentsDto> getResumeLearningFeed(
+    DashboardSectionType sectionType,
+  );
 
   // ── Posts / Announcements ────────────────────────────────────────────────
-  
+
   /// Fetch a paginated list of posts/announcements.
-  Future<PaginatedResponseDto<PostDto>> getPosts({int page = 1, String? categorySlug});
+  Future<PaginatedResponseDto<PostDto>> getPosts({
+    int page = 1,
+    String? categorySlug,
+  });
 
   /// Fetch a list of post categories.
   Future<List<PostCategoryDto>> getPostCategories();
@@ -169,23 +196,30 @@ abstract class DataSource {
   Future<SectionDto> endSection(String endUrl);
 
   /// Fetch the recently completed feed from `/api/v2.4/completed/`.
-  Future<DashboardContentsDto> getRecentlyCompletedFeed(DashboardSectionType sectionType);
+  Future<DashboardContentsDto> getRecentlyCompletedFeed(
+    DashboardSectionType sectionType,
+  );
 
   /// Fetch the authenticated user's profile.
   Future<UserDto> getProfile();
 
   /// Update the authenticated user's profile with the given fields (supports multipart image updates).
   Future<UserDto> updateProfile(Map<String, dynamic> data);
-  
+
   /// Fetch the authenticated user's login activity.
   Future<PaginatedLoginActivityDto> getLoginActivity({int page = 1});
-  
+
   /// Fetch personal doubts for the current user.
-  Future<PaginatedResponseDto<DoubtDto>> getDoubts({int page = 1, String? searchQuery});
+  Future<PaginatedResponseDto<DoubtDto>> getDoubts({
+    int page = 1,
+    String? searchQuery,
+  });
 
   /// Fetch the detail for a specific doubt, including its replies.
   /// Returns both the [DoubtDto] (with fresh status/content) and its [DoubtReplyDto] list.
-  Future<({DoubtDto doubt, List<DoubtReplyDto> replies})> getDoubtReplies(String doubtId);
+  Future<({DoubtDto doubt, List<DoubtReplyDto> replies})> getDoubtReplies(
+    String doubtId,
+  );
 
   /// Fetch dynamic doubt categories/topics hierarchy.
   Future<List<DoubtTopicDto>> getDoubtTopics();
@@ -213,6 +247,7 @@ abstract class DataSource {
 
   /// Mark a lesson as completed on the server.
   Future<void> markLessonCompleted(String lessonId);
+
   /// Directly downloads a file to the [savePath].
   Future<void> downloadFile({
     required String url,
@@ -243,7 +278,6 @@ abstract class DataSource {
 
   /// Delete an existing bookmark folder.
   Future<void> deleteBookmarkFolder(int id);
-
 
   /// Create a new bookmark for a lesson.
   Future<BookmarkDto> createBookmark({

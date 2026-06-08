@@ -55,12 +55,11 @@ class CourseRepository {
         final hasMobileAccess = dto.allowedDevices.any(
           (d) => d.toLowerCase().contains('mobile'),
         );
-        
+
         // If showExamTab is enabled, identify exams by tag or fallback to examsCount.
-        final isExamCourse =
-            dto.tags.any((t) => t.toLowerCase() == 'exams') ||
+        final isExamCourse = dto.tags.any((t) => t.toLowerCase() == 'exams') ||
             (dto.tags.isEmpty && dto.examsCount > 0);
-        
+
         return isExamCourse && hasMobileAccess;
       }).toList();
     });
@@ -74,7 +73,8 @@ class CourseRepository {
         final hasMobileAccess = dto.allowedDevices.any(
           (d) => d.toLowerCase().contains('mobile'),
         );
-        return dto.tags.any((t) => t.toLowerCase() == 'info') && hasMobileAccess;
+        return dto.tags.any((t) => t.toLowerCase() == 'info') &&
+            hasMobileAccess;
       }).toList();
     });
   }
@@ -86,8 +86,7 @@ class CourseRepository {
       return courses.where((course) {
         final dto = rowToCourseDto(course);
 
-        final isExamCourse =
-            dto.tags.any((t) => t.toLowerCase() == 'exams') ||
+        final isExamCourse = dto.tags.any((t) => t.toLowerCase() == 'exams') ||
             (dto.tags.isEmpty && dto.examsCount > 0);
         final isInfoCourse = dto.tags.any((t) => t.toLowerCase() == 'info');
 
@@ -105,16 +104,19 @@ class CourseRepository {
       Stream.value(null), // Initial trigger
       (_db.select(
         _db.coursesTable,
-      )..where((t) => t.id.equals(courseId))).watch(),
+      )..where((t) => t.id.equals(courseId)))
+          .watch(),
       (_db.select(
         _db.chaptersTable,
-      )..where((t) => t.courseId.equals(courseId))).watch(),
+      )..where((t) => t.courseId.equals(courseId)))
+          .watch(),
     ]);
 
     yield* combinedWatcher.asyncMap((_) async {
       final courseData = await (_db.select(
         _db.coursesTable,
-      )..where((t) => t.id.equals(courseId))).getSingleOrNull();
+      )..where((t) => t.id.equals(courseId)))
+          .getSingleOrNull();
 
       CourseDto course;
       if (courseData != null) {
@@ -129,13 +131,12 @@ class CourseRepository {
         }
       }
 
-      final chaptersData =
-          await (_db.select(_db.chaptersTable)
-                ..where(
-                  (t) => t.courseId.equals(courseId) & t.parentId.isNull(),
-                )
-                ..orderBy([(t) => OrderingTerm.asc(t.orderIndex)]))
-              .get();
+      final chaptersData = await (_db.select(_db.chaptersTable)
+            ..where(
+              (t) => t.courseId.equals(courseId) & t.parentId.isNull(),
+            )
+            ..orderBy([(t) => OrderingTerm.asc(t.orderIndex)]))
+          .get();
 
       return course.copyWith(
         chapters: chaptersData.map(rowToChapterDto).toList(),
@@ -152,9 +153,7 @@ class CourseRepository {
     final response = await _source.getCourses(page: page, tags: tags);
 
     if (response.results.isNotEmpty) {
-      final companions = response.results
-          .map(_courseDtoToCompanion)
-          .toList();
+      final companions = response.results.map(_courseDtoToCompanion).toList();
       await _db.upsertCourses(companions);
     }
 
@@ -224,12 +223,14 @@ class CourseRepository {
     if (isChapter) {
       final chapter = await (_db.select(
         _db.chaptersTable,
-      )..where((t) => t.id.equals(rowId))).getSingleOrNull();
+      )..where((t) => t.id.equals(rowId)))
+          .getSingleOrNull();
       return chapter?.isChaptersSynced ?? false;
     } else {
       final course = await (_db.select(
         _db.coursesTable,
-      )..where((t) => t.id.equals(rowId))).getSingleOrNull();
+      )..where((t) => t.id.equals(rowId)))
+          .getSingleOrNull();
       return course?.isChaptersSynced ?? false;
     }
   }
@@ -265,7 +266,6 @@ class CourseRepository {
     _activeChapterSyncs[lockKey] = syncFuture;
     return syncFuture;
   }
-
 
   // ── Internal Helpers ─────────────────────────────────────────────────────
 
@@ -332,9 +332,11 @@ class CourseRepository {
   }
 
   /// Watches filtered lessons directly from the local database.
-  Stream<List<LessonDto>> watchFilteredLessonsLocal(String courseId, {String? chapterId, String? type}) {
+  Stream<List<LessonDto>> watchFilteredLessonsLocal(String courseId,
+      {String? chapterId, String? type}) {
     final query = _db.select(_db.lessonsTable).join([
-      leftOuterJoin(_db.chaptersTable, _db.chaptersTable.id.equalsExp(_db.lessonsTable.chapterId)),
+      leftOuterJoin(_db.chaptersTable,
+          _db.chaptersTable.id.equalsExp(_db.lessonsTable.chapterId)),
     ]);
 
     if (chapterId != null && chapterId.isNotEmpty) {
@@ -351,9 +353,10 @@ class CourseRepository {
       return rows.map((row) {
         final lessonRow = row.readTable(_db.lessonsTable);
         final chapterRow = row.readTableOrNull(_db.chaptersTable);
-        
+
         var dto = rowToLessonDto(lessonRow);
-        if ((dto.chapterTitle == null || dto.chapterTitle!.isEmpty) && chapterRow != null) {
+        if ((dto.chapterTitle == null || dto.chapterTitle!.isEmpty) &&
+            chapterRow != null) {
           dto = dto.copyWith(chapterTitle: chapterRow.title);
         }
         return dto;
@@ -375,7 +378,8 @@ class CourseRepository {
     final chain = <String>[];
     final visited = <String>{};
     String? current = chapterId;
-    while (current != null && current.isNotEmpty && !visited.contains(current)) {
+    while (
+        current != null && current.isNotEmpty && !visited.contains(current)) {
       visited.add(current);
       chain.insert(0, current);
       current = chapterById[current]?.parentId;
@@ -485,7 +489,8 @@ class CourseRepository {
   /// Streams filtered content from the API and persists results to DB.
   /// Used by filter tabs (Videos/Assessments/Tests) for direct API results.
   /// Lessons are yielded incrementally as pages arrive.
-  Stream<List<LessonDto>> streamFilteredContents(String courseId, {String? chapterId, String? type}) {
+  Stream<List<LessonDto>> streamFilteredContents(String courseId,
+      {String? chapterId, String? type}) {
     String? mergeScopedAncestor(String? existing, String scopedChapterId) {
       final token = ',$scopedChapterId,';
       if (existing == null || existing.isEmpty) return token;
@@ -497,29 +502,30 @@ class CourseRepository {
 
     return () async* {
       final apiType = _getApiCompatibleType(type);
-      final stream =
-          _source.getCourseContents(courseId, chapterId: chapterId, type: apiType);
+      final stream = _source.getCourseContents(courseId,
+          chapterId: chapterId, type: apiType);
       await for (final page in stream) {
         final lessonIds = page.lessons.map((l) => l.id).toList();
         final existingLessons = await (_db.select(_db.lessonsTable)
               ..where((t) => t.id.isIn(lessonIds)))
             .get();
-        
+
         final existingById = {
           for (final row in existingLessons) row.id: rowToLessonDto(row)
         };
 
         final enrichedLessons = page.lessons.map((lesson) {
           final existingDbLesson = existingById[lesson.id];
-          final existingAncestry = existingDbLesson?.ancestorChapterIds ?? lesson.ancestorChapterIds;
-          
+          final existingAncestry =
+              existingDbLesson?.ancestorChapterIds ?? lesson.ancestorChapterIds;
+
           final seededAncestor = chapterId != null && chapterId.isNotEmpty
               ? mergeScopedAncestor(existingAncestry, chapterId)
               : existingAncestry;
 
           // Merge with existing DB lesson to preserve local progress and bookmarks
-          var enriched = existingDbLesson != null 
-              ? lesson.mergeWith(existingDbLesson) 
+          var enriched = existingDbLesson != null
+              ? lesson.mergeWith(existingDbLesson)
               : lesson;
 
           // Apply the newly computed ancestry and courseId
@@ -551,7 +557,8 @@ class CourseRepository {
     return await refreshLessons(courseId, chapterId);
   }
 
-  Future<List<LessonDto>> refreshLessons(String courseId, String chapterId) async {
+  Future<List<LessonDto>> refreshLessons(
+      String courseId, String chapterId) async {
     if (_activeContentSyncs.containsKey(chapterId)) {
       final rows = await getLessons(chapterId);
       return rows.map(rowToLessonDto).toList();
@@ -624,9 +631,9 @@ class CourseRepository {
     final syncFuture = () async {
       try {
         _updateSyncStatus(courseId, true);
-        
+
         final curriculumStream = _source.getCourseContents(
-          courseId, 
+          courseId,
           chapterId: chapterId,
         );
 
@@ -635,7 +642,7 @@ class CourseRepository {
         // 1. Process and persist each page incrementally.
         await for (final pageCurriculum in curriculumStream) {
           await _persistCurriculumPage(courseId, pageCurriculum);
-          
+
           // Collect for the final return value
           finalSnapshot = finalSnapshot.copyWith(
             chapters: [...finalSnapshot.chapters, ...pageCurriculum.chapters],
@@ -681,7 +688,8 @@ class CourseRepository {
     };
 
     final lessonCompanions = curriculum.lessons.map((lesson) {
-      final ancestry = lesson.ancestorChapterIds ?? _buildAncestorChapterIds(lesson.chapterId, chapterById);
+      final ancestry = lesson.ancestorChapterIds ??
+          _buildAncestorChapterIds(lesson.chapterId, chapterById);
       final enriched = lesson.copyWith(
         courseId: lesson.courseId ?? courseId,
         ancestorChapterIds: ancestry,
@@ -689,7 +697,8 @@ class CourseRepository {
       final existing = existingById[lesson.id];
       return _lessonDtoToCompanion(enriched.mergeWith(existing));
     }).toList();
-    final chapterCompanions = curriculum.chapters.map(_chapterDtoToCompanion).toList();
+    final chapterCompanions =
+        curriculum.chapters.map(_chapterDtoToCompanion).toList();
 
     await _db.transaction(() async {
       if (lessonCompanions.isNotEmpty) {
@@ -702,7 +711,8 @@ class CourseRepository {
   }
 
   /// Background refresh for lesson progress/lifecycle statuses.
-  Future<void> refreshContentStatuses(String courseId, {String? chapterId}) async {
+  Future<void> refreshContentStatuses(String courseId,
+      {String? chapterId}) async {
     try {
       final results = await Future.wait([
         _source.getRunningContents(courseId, chapterId: chapterId),
@@ -738,7 +748,6 @@ class CourseRepository {
     }
   }
 
-
   List<LessonsTableCompanion> _applyContentStatuses(
     List<LessonDto> lessons,
     ({
@@ -746,8 +755,7 @@ class CourseRepository {
       CourseCurriculumDto running,
       CourseCurriculumDto upcoming,
       CourseCurriculumDto attempts,
-    })
-    remote,
+    }) remote,
   ) {
     final runningIds = remote.running.lessons.map((l) => l.id).toSet();
     final upcomingIds = remote.upcoming.lessons.map((l) => l.id).toSet();
@@ -774,18 +782,20 @@ class CourseRepository {
   /// Refetches a single lesson's full metadata from the v2.4 API and persists it.
   Future<LessonDto> refreshLesson(String id) async {
     final dto = await _source.getLessonDetail(id);
-    
+
     // Attempts call here, before anything else
     LessonDto dtoWithAttempts = dto;
     if (dto.attemptsUrl != null) {
       try {
-        final lastWatched = await _source.getLastWatchedPosition(dto.attemptsUrl!);
+        final lastWatched =
+            await _source.getLastWatchedPosition(dto.attemptsUrl!);
         dtoWithAttempts = dto.copyWith(
           lastWatchedDuration: lastWatched,
         );
       } catch (e) {
         // Log the error but allow the lesson refresh to succeed
-        debugPrint('CourseRepository: Failed to fetch last watched position: $e');
+        debugPrint(
+            'CourseRepository: Failed to fetch last watched position: $e');
       }
     }
 
@@ -806,14 +816,16 @@ class CourseRepository {
   Stream<ChaptersTableData?> watchChapter(String id) {
     return (_db.select(
       _db.chaptersTable,
-    )..where((t) => t.id.equals(id))).watchSingleOrNull();
+    )..where((t) => t.id.equals(id)))
+        .watchSingleOrNull();
   }
 
   /// Direct fetch of a chapter by ID.
   Future<ChaptersTableData?> getChapter(String id) async {
     return (_db.select(
       _db.chaptersTable,
-    )..where((t) => t.id.equals(id))).getSingleOrNull();
+    )..where((t) => t.id.equals(id)))
+        .getSingleOrNull();
   }
 
   /// Direct fetch of lessons for a chapter from DB.
@@ -821,8 +833,8 @@ class CourseRepository {
     return (_db.select(
       _db.lessonsTable,
     )
-      ..where((t) => t.chapterId.equals(chapterId))
-      ..orderBy([(t) => OrderingTerm.asc(t.orderIndex)]))
+          ..where((t) => t.chapterId.equals(chapterId))
+          ..orderBy([(t) => OrderingTerm.asc(t.orderIndex)]))
         .get();
   }
 
@@ -861,12 +873,13 @@ class CourseRepository {
       lastWatchPosition: lastWatchPosition,
       watchedTimeRanges: watchedTimeRanges,
     );
-    
+
     // Update the local database with the new position so it resumes correctly when navigating back
     try {
       final existing = await getLesson(chapterContentId.toString());
       if (existing != null) {
-        final updated = existing.copyWith(lastWatchedDuration: lastWatchPosition);
+        final updated =
+            existing.copyWith(lastWatchedDuration: lastWatchPosition);
         await _db.upsertLessons([_lessonDtoToCompanion(updated)]);
       }
     } catch (e) {
@@ -893,7 +906,7 @@ class CourseRepository {
 
   /// Efficiently fetches lesson and parent titles by lesson ID.
   Future<({String lessonTitle, String chapterTitle, String courseTitle})?>
-  getLessonDetails(String lessonId) async {
+      getLessonDetails(String lessonId) async {
     final result = await _db.getLessonDetails(lessonId);
     if (result == null) return null;
 
@@ -913,20 +926,20 @@ class CourseRepository {
   // ─────────────────────────────────────────────────────────────────────────
 
   CourseDto rowToCourseDto(CoursesTableData row) => CourseDto(
-    id: row.id,
-    title: row.title,
-    colorIndex: row.colorIndex,
-    chapterCount: row.chapterCount,
-    totalContents: row.totalContents,
-    progress: row.progress,
-    completedLessons: row.completedLessons,
-    totalLessons: row.totalLessons,
-    image: row.image,
-    tags: _safeDecodeList<String>(row.tags),
-    allowedDevices: _safeDecodeList<String>(row.allowedDevices),
-    examsCount: row.examsCount,
-    isChaptersSynced: row.isChaptersSynced,
-  );
+        id: row.id,
+        title: row.title,
+        colorIndex: row.colorIndex,
+        chapterCount: row.chapterCount,
+        totalContents: row.totalContents,
+        progress: row.progress,
+        completedLessons: row.completedLessons,
+        totalLessons: row.totalLessons,
+        image: row.image,
+        tags: _safeDecodeList<String>(row.tags),
+        allowedDevices: _safeDecodeList<String>(row.allowedDevices),
+        examsCount: row.examsCount,
+        isChaptersSynced: row.isChaptersSynced,
+      );
 
   static List<T> _safeDecodeList<T>(String? json) {
     if (json == null || json.isEmpty) return const [];
@@ -948,7 +961,9 @@ class CourseRepository {
         completedLessons: Value(dto.completedLessons),
         totalLessons: Value(dto.totalLessons),
         image: dto.image != null ? Value(dto.image) : const Value.absent(),
-        tags: dto.tags.isNotEmpty ? Value(jsonEncode(dto.tags)) : const Value.absent(),
+        tags: dto.tags.isNotEmpty
+            ? Value(jsonEncode(dto.tags))
+            : const Value.absent(),
         allowedDevices: dto.allowedDevices.isNotEmpty
             ? Value(jsonEncode(dto.allowedDevices))
             : const Value.absent(),
@@ -958,17 +973,17 @@ class CourseRepository {
       );
 
   ChapterDto rowToChapterDto(ChaptersTableData row) => ChapterDto(
-    id: row.id,
-    courseId: row.courseId,
-    title: row.title,
-    lessonCount: row.lessonCount,
-    assessmentCount: row.assessmentCount,
-    orderIndex: row.orderIndex,
-    parentId: row.parentId,
-    isLeaf: row.isLeaf,
-    isChaptersSynced: row.isChaptersSynced,
-    image: row.image,
-  );
+        id: row.id,
+        courseId: row.courseId,
+        title: row.title,
+        lessonCount: row.lessonCount,
+        assessmentCount: row.assessmentCount,
+        orderIndex: row.orderIndex,
+        parentId: row.parentId,
+        isLeaf: row.isLeaf,
+        isChaptersSynced: row.isChaptersSynced,
+        image: row.image,
+      );
 
   ChaptersTableCompanion _chapterDtoToCompanion(ChapterDto dto) =>
       ChaptersTableCompanion(
@@ -978,61 +993,61 @@ class CourseRepository {
         lessonCount: Value(dto.lessonCount),
         assessmentCount: Value(dto.assessmentCount),
         orderIndex: Value(dto.orderIndex),
-        parentId: dto.parentId != null
-            ? Value(dto.parentId)
-            : const Value.absent(),
+        parentId:
+            dto.parentId != null ? Value(dto.parentId) : const Value.absent(),
         isLeaf: Value(dto.isLeaf),
         isChaptersSynced: Value(dto.isChaptersSynced),
         image: dto.image != null ? Value(dto.image) : const Value.absent(),
       );
 
   LessonDto rowToLessonDto(LessonsTableData row) => LessonDto(
-    id: row.id,
-    chapterId: row.chapterId,
-    courseId: row.courseId,
-    ancestorChapterIds: row.ancestorChapterIds,
-    title: row.title,
-    type: _parseType(row.type),
-    duration: row.duration,
-    progressStatus: _parseStatus(row.progressStatus),
-    isLocked: row.isLocked,
-    orderIndex: row.orderIndex,
-    chapterTitle: row.chapterTitle,
-    contentUrl: row.contentUrl,
-    subtitle: row.subtitle,
-    subjectName: row.subjectName,
-    subjectIndex: row.subjectIndex,
-    lessonNumber: row.lessonNumber,
-    totalLessons: row.totalLessons,
-    bookmarkId: row.bookmarkId,
-    isRunning: row.isRunning,
-    isUpcoming: row.isUpcoming,
-    hasAttempts: row.hasAttempts,
-    image: row.image,
-    nextContentId: row.nextContentId,
-    previousContentId: row.previousContentId,
-    htmlContent: row.htmlContent,
-    isDetailFetched: row.isDetailFetched,
-    chatEmbedUrl: row.chatEmbedUrl,
-    streamStatus: row.streamStatus,
-    showRecordedVideo: row.showRecordedVideo,
-    isScheduled: row.isScheduled,
-    scheduledMessage: row.scheduledMessage,
-    attemptsUrl: row.attemptsUrl,
-    slug: row.slug,
-    description: row.description,
-    enableTranscript: row.enableTranscript,
-    videoSubtitleUrl: row.videoSubtitleUrl,
-    isAiEnabled: row.isAiEnabled,
-    aiNotesUrl: row.aiNotesUrl,
-    lastWatchedDuration: row.lastWatchedDuration,
-  );
+        id: row.id,
+        chapterId: row.chapterId,
+        courseId: row.courseId,
+        ancestorChapterIds: row.ancestorChapterIds,
+        title: row.title,
+        type: _parseType(row.type),
+        duration: row.duration,
+        progressStatus: _parseStatus(row.progressStatus),
+        isLocked: row.isLocked,
+        orderIndex: row.orderIndex,
+        chapterTitle: row.chapterTitle,
+        contentUrl: row.contentUrl,
+        subtitle: row.subtitle,
+        subjectName: row.subjectName,
+        subjectIndex: row.subjectIndex,
+        lessonNumber: row.lessonNumber,
+        totalLessons: row.totalLessons,
+        bookmarkId: row.bookmarkId,
+        isRunning: row.isRunning,
+        isUpcoming: row.isUpcoming,
+        hasAttempts: row.hasAttempts,
+        image: row.image,
+        nextContentId: row.nextContentId,
+        previousContentId: row.previousContentId,
+        htmlContent: row.htmlContent,
+        isDetailFetched: row.isDetailFetched,
+        chatEmbedUrl: row.chatEmbedUrl,
+        streamStatus: row.streamStatus,
+        showRecordedVideo: row.showRecordedVideo,
+        isScheduled: row.isScheduled,
+        scheduledMessage: row.scheduledMessage,
+        attemptsUrl: row.attemptsUrl,
+        slug: row.slug,
+        description: row.description,
+        enableTranscript: row.enableTranscript,
+        videoSubtitleUrl: row.videoSubtitleUrl,
+        isAiEnabled: row.isAiEnabled,
+        aiNotesUrl: row.aiNotesUrl,
+        lastWatchedDuration: row.lastWatchedDuration,
+      );
 
   LessonsTableCompanion _lessonDtoToCompanion(LessonDto dto) =>
       LessonsTableCompanion(
         id: Value(dto.id),
         chapterId: Value(dto.chapterId),
-        courseId: dto.courseId != null ? Value(dto.courseId) : const Value.absent(),
+        courseId:
+            dto.courseId != null ? Value(dto.courseId) : const Value.absent(),
         ancestorChapterIds: dto.ancestorChapterIds != null
             ? Value(dto.ancestorChapterIds)
             : const Value.absent(),
@@ -1048,9 +1063,8 @@ class CourseRepository {
         contentUrl: dto.contentUrl != null
             ? Value(dto.contentUrl)
             : const Value.absent(),
-        subtitle: dto.subtitle != null
-            ? Value(dto.subtitle)
-            : const Value.absent(),
+        subtitle:
+            dto.subtitle != null ? Value(dto.subtitle) : const Value.absent(),
         subjectName: dto.subjectName != null
             ? Value(dto.subjectName)
             : const Value.absent(),
@@ -1093,8 +1107,8 @@ class CourseRepository {
             ? Value(dto.attemptsUrl)
             : const Value.absent(),
         slug: dto.slug != null ? Value(dto.slug) : const Value.absent(),
-        description: dto.description != null 
-            ? Value(dto.description) 
+        description: dto.description != null
+            ? Value(dto.description)
             : const Value.absent(),
         enableTranscript: Value(dto.enableTranscript),
         videoSubtitleUrl: dto.videoSubtitleUrl != null
@@ -1154,4 +1168,3 @@ class LessonPaginationController {
     required this.dispose,
   });
 }
-

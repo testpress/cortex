@@ -10,8 +10,6 @@ import '../../widgets/explore/short_lessons_section.dart';
 import '../../widgets/explore/popular_tests_section.dart';
 import '../../widgets/explore/study_tips_list.dart';
 
-
-
 class ExplorePage extends ConsumerStatefulWidget {
   const ExplorePage({super.key});
 
@@ -106,7 +104,8 @@ class _ExplorePageState extends ConsumerState<ExplorePage> {
                     AppSearchBar(
                       controller: _searchController,
                       hintText: l10n.exploreSearchHint,
-                      backgroundColor: design.colors.surface, // Support dark mode better
+                      backgroundColor:
+                          design.colors.surface, // Support dark mode better
                       onChanged: (value) {
                         ref
                             .read(exploreSearchQueryProvider.notifier)
@@ -173,13 +172,15 @@ class _ExplorePageState extends ConsumerState<ExplorePage> {
                           CourseDiscoveryList(
                             key: _trendingKey,
                             title: l10n.exploreTrendingTitle,
-                            courses: courses.where((c) => c.isTrending).toList(),
+                            courses:
+                                courses.where((c) => c.isTrending).toList(),
                           ),
                           SizedBox(height: design.spacing.xl),
                           CourseDiscoveryList(
                             key: _recommendedKey,
                             title: l10n.exploreRecommendedTitle,
-                            courses: courses.where((c) => c.isRecommended).toList(),
+                            courses:
+                                courses.where((c) => c.isRecommended).toList(),
                           ),
                         ],
                       );

@@ -8,7 +8,7 @@ part 'course_detail_provider.g.dart';
 @Riverpod(keepAlive: true)
 Stream<CourseDto?> courseDetail(CourseDetailRef ref, String courseId) async* {
   final repo = await ref.watch(courseRepositoryProvider.future);
-  
+
   // We no longer trigger greedy background refreshes here.
   // Structural sync happens lazily via subChaptersProvider.
   // Content sync happens on-demand when a filter is applied in ChaptersListPage.
@@ -26,7 +26,8 @@ Stream<List<ChapterDto>> subChapters(
   final repo = await ref.watch(courseRepositoryProvider.future);
 
   // 1. Check for existing local data to avoid blocking the UI with a loader.
-  final localChapters = await repo.watchChapters(courseId, parentId: parentId).first;
+  final localChapters =
+      await repo.watchChapters(courseId, parentId: parentId).first;
 
   if (localChapters.isNotEmpty) {
     // If we have contents, yield them instantly from DB and refresh in background.
@@ -70,5 +71,7 @@ Stream<List<LessonDto>> chapterLessons(
 Stream<bool> courseSyncStatus(CourseSyncStatusRef ref, String courseId) async* {
   final repo = await ref.watch(courseRepositoryProvider.future);
   yield repo.isSyncing(courseId);
-  yield* repo.activeSyncsStream.map((syncs) => syncs.contains(courseId)).distinct();
+  yield* repo.activeSyncsStream
+      .map((syncs) => syncs.contains(courseId))
+      .distinct();
 }

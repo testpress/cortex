@@ -34,8 +34,10 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
     try {
       final repo = await ref.read(courseRepositoryProvider.future);
       final details = await repo.getLessonDetails(widget.id);
-      final resolvedCourseName = details?.courseTitle ?? widget.courseName ?? 'Unknown Course';
-      final resolvedChapterName = details?.chapterTitle ?? widget.chapterName ?? 'Unknown Chapter';
+      final resolvedCourseName =
+          details?.courseTitle ?? widget.courseName ?? 'Unknown Course';
+      final resolvedChapterName =
+          details?.chapterTitle ?? widget.chapterName ?? 'Unknown Chapter';
 
       final item = DownloadItem(
         id: widget.id,
@@ -47,15 +49,25 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
         type: DownloadType.attachment,
         status: DownloadStatus.downloading,
         progress: 0,
-        fileType: widget.url.split('/').last.split('?').first.split('.').last.toUpperCase(),
+        fileType: widget.url
+            .split('/')
+            .last
+            .split('?')
+            .first
+            .split('.')
+            .last
+            .toUpperCase(),
         contentUrl: widget.url,
       );
 
-      await ref.read(downloadsProvider.notifier).startAttachmentDownload(item, widget.url);
+      await ref
+          .read(downloadsProvider.notifier)
+          .startAttachmentDownload(item, widget.url);
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not start download. Please try again.')),
+          const SnackBar(
+              content: Text('Could not start download. Please try again.')),
         );
       }
     }
@@ -63,14 +75,16 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
 
   Future<void> _openFile(DownloadItem item) async {
     final downloader = ref.read(fileDownloaderProvider);
-    final path = await downloader.getLocalPath(widget.url, StorageType.publicDownload);
-    
+    final path =
+        await downloader.getLocalPath(widget.url, StorageType.publicDownload);
+
     // Check if the user manually deleted the file via File Explorer
     final fileExists = await File(path).exists();
     if (!fileExists) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('File not found. It may have been deleted.')),
+          const SnackBar(
+              content: Text('File not found. It may have been deleted.')),
         );
       }
       await ref.read(downloadsProvider.notifier).delete(item);
@@ -87,8 +101,8 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
 
   String _getMetadataString() {
     final fileName = widget.url.split('/').last.split('?').first;
-    final extension = fileName.contains('.') 
-        ? fileName.split('.').last.toUpperCase() 
+    final extension = fileName.contains('.')
+        ? fileName.split('.').last.toUpperCase()
         : 'Unknown';
     final size = widget.fileSize ?? 'N/A';
     return '$extension • $size';
@@ -98,7 +112,7 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final downloadItemAsync = ref.watch(watchDownloadItemProvider(widget.id));
-    
+
     final item = downloadItemAsync.valueOrNull;
     final isDownloading = item?.status == DownloadStatus.downloading;
     final isCompleted = item?.status == DownloadStatus.completed;
@@ -142,8 +156,11 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
             ),
           ] else
             AppButton(
-              onPressed: isCompleted && item != null ? () => _openFile(item) : _startDownload,
-              label: isCompleted ? 'View Downloaded File' : 'Download Attachment',
+              onPressed: isCompleted && item != null
+                  ? () => _openFile(item)
+                  : _startDownload,
+              label:
+                  isCompleted ? 'View Downloaded File' : 'Download Attachment',
               backgroundColor: isCompleted ? design.colors.success : null,
               foregroundColor: isCompleted ? design.colors.onSuccess : null,
             ),
@@ -151,7 +168,8 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
             const SizedBox(height: 16),
             Text(
               'Download failed. Please try again.',
-              style: design.typography.bodySmall.copyWith(color: design.colors.error),
+              style: design.typography.bodySmall
+                  .copyWith(color: design.colors.error),
             ),
           ],
         ],

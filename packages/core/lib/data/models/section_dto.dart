@@ -33,18 +33,25 @@ class SectionDto {
       id: (json['id'] ?? '').toString(),
       name: (info?['name'] ?? json['name'] ?? '').toString(),
       state: (json['state'] ?? 'Not Started').toString(),
-      questionsUrl: (json['questions_url'] ?? '').toString().replaceFirst('v2.3', 'v2.2.1'),
+      questionsUrl: (json['questions_url'] ?? '').toString().replaceFirst(
+        'v2.3',
+        'v2.2.1',
+      ),
       startUrl: json['start_url']?.toString().replaceFirst('v2.3', 'v2.2.1'),
       endUrl: json['end_url']?.toString().replaceFirst('v2.3', 'v2.2.1'),
       remainingTime: json['remaining_time']?.toString(),
       duration: (info?['duration'] ?? json['duration'])?.toString(),
       order: info?['order'] != null
           ? int.tryParse(info!['order'].toString()) ?? 0
-          : (json['order'] != null ? int.tryParse(json['order'].toString()) ?? 0 : 0),
+          : (json['order'] != null
+                ? int.tryParse(json['order'].toString()) ?? 0
+                : 0),
       instructions: (info?['instructions'] ?? json['instructions'])?.toString(),
       questionsCount: info?['questions_count'] != null
           ? int.tryParse(info!['questions_count'].toString())
-          : (json['questions_count'] != null ? int.tryParse(json['questions_count'].toString()) : null),
+          : (json['questions_count'] != null
+                ? int.tryParse(json['questions_count'].toString())
+                : null),
     );
   }
 

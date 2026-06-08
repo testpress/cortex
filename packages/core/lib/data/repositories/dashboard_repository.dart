@@ -9,41 +9,49 @@ class DashboardRepository {
   final DataSource _dataSource;
   final AppDatabase _db;
 
-  DashboardRepository({
-    required DataSource dataSource,
-    required AppDatabase db,
-  })  : _dataSource = dataSource,
-        _db = db;
+  DashboardRepository({required DataSource dataSource, required AppDatabase db})
+    : _dataSource = dataSource,
+      _db = db;
 
   Stream<List<DashboardBannerDto>> watchHeroBanners() async* {
     // Emit data from DB (updated by explicit sync calls)
     yield* _db.watchDashboardBanners().map((rows) {
-      return rows.map((row) => DashboardBannerDto(
-        id: row.id,
-        imageUrl: row.imageUrl,
-        title: row.title,
-        link: row.link,
-        description: row.description,
-        bgColor: row.bgColor,
-        textColor: row.textColor,
-        tag: row.tag,
-      )).toList();
+      return rows
+          .map(
+            (row) => DashboardBannerDto(
+              id: row.id,
+              imageUrl: row.imageUrl,
+              title: row.title,
+              link: row.link,
+              description: row.description,
+              bgColor: row.bgColor,
+              textColor: row.textColor,
+              tag: row.tag,
+            ),
+          )
+          .toList();
     });
   }
 
   Future<void> refreshHeroBanners() async {
     try {
       final freshBanners = await _dataSource.getDashboardBanners();
-      await _db.upsertDashboardBanners(freshBanners.map((dto) => DashboardBannersTableCompanion(
-        id: Value(dto.id),
-        imageUrl: Value(dto.imageUrl),
-        title: Value(dto.title),
-        link: Value(dto.link),
-        description: Value(dto.description),
-        bgColor: Value(dto.bgColor),
-        textColor: Value(dto.textColor),
-        tag: Value(dto.tag),
-      )).toList());
+      await _db.upsertDashboardBanners(
+        freshBanners
+            .map(
+              (dto) => DashboardBannersTableCompanion(
+                id: Value(dto.id),
+                imageUrl: Value(dto.imageUrl),
+                title: Value(dto.title),
+                link: Value(dto.link),
+                description: Value(dto.description),
+                bgColor: Value(dto.bgColor),
+                textColor: Value(dto.textColor),
+                tag: Value(dto.tag),
+              ),
+            )
+            .toList(),
+      );
     } catch (e) {
       debugPrint('DEBUG: Failed to fetch dashboard banners: $e');
     }
@@ -53,26 +61,32 @@ class DashboardRepository {
   Stream<List<DashboardContentDto>> watchWhatsNewFeed() async* {
     // Stream from database directly
     yield* _db.watchDashboardSection(DashboardSectionType.whatsNew).map((rows) {
-      return rows.map((data) => DashboardContentDto(
-        id: data.lessonId,
-        title: data.title,
-        chapterId: data.chapterId,
-        chapterTitle: data.chapterTitle,
-        contentType: data.lessonType,
-        totalDuration: data.totalDuration,
-        remainingDuration: data.remainingDuration,
-        coverImage: data.coverImage,
-        progress: data.progress,
-        sectionType: data.sectionType,
-      )).toList();
+      return rows
+          .map(
+            (data) => DashboardContentDto(
+              id: data.lessonId,
+              title: data.title,
+              chapterId: data.chapterId,
+              chapterTitle: data.chapterTitle,
+              contentType: data.lessonType,
+              totalDuration: data.totalDuration,
+              remainingDuration: data.remainingDuration,
+              coverImage: data.coverImage,
+              progress: data.progress,
+              sectionType: data.sectionType,
+            ),
+          )
+          .toList();
     });
   }
 
   /// Fetch the latest feed and refresh the database mappings.
   Future<void> refreshWhatsNewFeed() async {
     try {
-      final dto = await _dataSource.getWhatsNewFeed(DashboardSectionType.whatsNew);
-      
+      final dto = await _dataSource.getWhatsNewFeed(
+        DashboardSectionType.whatsNew,
+      );
+
       await _db.wipeAndInsertDashboardSection(
         DashboardSectionType.whatsNew,
         dto.items.asMap().entries.map((entry) {
@@ -100,26 +114,34 @@ class DashboardRepository {
 
   /// Watch the "Resume Learning" feed.
   Stream<List<DashboardContentDto>> watchResumeLearningFeed() async* {
-    yield* _db.watchDashboardSection(DashboardSectionType.resumeLearning).map((rows) {
-      return rows.map((data) => DashboardContentDto(
-        id: data.lessonId,
-        title: data.title,
-        chapterId: data.chapterId,
-        chapterTitle: data.chapterTitle,
-        contentType: data.lessonType,
-        totalDuration: data.totalDuration,
-        remainingDuration: data.remainingDuration,
-        coverImage: data.coverImage,
-        progress: data.progress,
-        sectionType: data.sectionType,
-      )).toList();
+    yield* _db.watchDashboardSection(DashboardSectionType.resumeLearning).map((
+      rows,
+    ) {
+      return rows
+          .map(
+            (data) => DashboardContentDto(
+              id: data.lessonId,
+              title: data.title,
+              chapterId: data.chapterId,
+              chapterTitle: data.chapterTitle,
+              contentType: data.lessonType,
+              totalDuration: data.totalDuration,
+              remainingDuration: data.remainingDuration,
+              coverImage: data.coverImage,
+              progress: data.progress,
+              sectionType: data.sectionType,
+            ),
+          )
+          .toList();
     });
   }
 
   /// Fetch the latest resume feed and refresh the database.
   Future<void> refreshResumeLearningFeed() async {
     try {
-      final dto = await _dataSource.getResumeLearningFeed(DashboardSectionType.resumeLearning);
+      final dto = await _dataSource.getResumeLearningFeed(
+        DashboardSectionType.resumeLearning,
+      );
 
       await _db.wipeAndInsertDashboardSection(
         DashboardSectionType.resumeLearning,
@@ -148,26 +170,34 @@ class DashboardRepository {
 
   /// Watch the "Recently Completed" feed.
   Stream<List<DashboardContentDto>> watchRecentlyCompletedFeed() async* {
-    yield* _db.watchDashboardSection(DashboardSectionType.recentlyCompleted).map((rows) {
-      return rows.map((data) => DashboardContentDto(
-        id: data.lessonId,
-        title: data.title,
-        chapterId: data.chapterId,
-        chapterTitle: data.chapterTitle,
-        contentType: data.lessonType,
-        totalDuration: data.totalDuration,
-        remainingDuration: data.remainingDuration,
-        coverImage: data.coverImage,
-        progress: data.progress,
-        sectionType: data.sectionType,
-      )).toList();
-    });
+    yield* _db
+        .watchDashboardSection(DashboardSectionType.recentlyCompleted)
+        .map((rows) {
+          return rows
+              .map(
+                (data) => DashboardContentDto(
+                  id: data.lessonId,
+                  title: data.title,
+                  chapterId: data.chapterId,
+                  chapterTitle: data.chapterTitle,
+                  contentType: data.lessonType,
+                  totalDuration: data.totalDuration,
+                  remainingDuration: data.remainingDuration,
+                  coverImage: data.coverImage,
+                  progress: data.progress,
+                  sectionType: data.sectionType,
+                ),
+              )
+              .toList();
+        });
   }
 
   /// Fetch the latest completed feed and refresh the database.
   Future<void> refreshRecentlyCompletedFeed() async {
     try {
-      final dto = await _dataSource.getRecentlyCompletedFeed(DashboardSectionType.recentlyCompleted);
+      final dto = await _dataSource.getRecentlyCompletedFeed(
+        DashboardSectionType.recentlyCompleted,
+      );
 
       await _db.wipeAndInsertDashboardSection(
         DashboardSectionType.recentlyCompleted,
@@ -196,11 +226,10 @@ class DashboardRepository {
 }
 
 @riverpod
-Future<DashboardRepository> dashboardRepository(DashboardRepositoryRef ref) async {
+Future<DashboardRepository> dashboardRepository(
+  DashboardRepositoryRef ref,
+) async {
   final db = await ref.watch(appDatabaseProvider.future);
   final dataSource = ref.watch(dataSourceProvider);
-  return DashboardRepository(
-    dataSource: dataSource,
-    db: db,
-  );
+  return DashboardRepository(dataSource: dataSource, db: db);
 }

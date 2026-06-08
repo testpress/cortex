@@ -85,15 +85,16 @@ class ExamRepository {
     yield _currentState;
     yield* _stateController.stream;
   }
+
   ExamAttemptState get state => _currentState;
 
   Future<void> _flushPendingAnswers() async {
     final futures = <Future<void>>[];
-    
+
     final timers = Map<String, Timer>.from(_submitTimers);
     final pending = Map<String, AnswerDto>.from(_pendingAnswers);
     final urls = Map<String, String>.from(_pendingAnswerUrls);
-    
+
     for (final timer in timers.values) {
       timer.cancel();
     }
@@ -108,12 +109,17 @@ class ExamRepository {
       if (url != null) {
         futures.add(
           _dataSource.submitAnswer(url, answer).catchError((e, stackTrace) {
-            dev.log('Failed to flush answer for $questionId', name: 'ExamRepository', error: e, stackTrace: stackTrace);
+            dev.log(
+              'Failed to flush answer for $questionId',
+              name: 'ExamRepository',
+              error: e,
+              stackTrace: stackTrace,
+            );
           }),
         );
       }
     }
-    
+
     if (futures.isNotEmpty) {
       await Future.wait(futures);
     }
@@ -134,13 +140,17 @@ class ExamRepository {
     try {
       final exam = await _dataSource.getExam(slug);
       if (exam.hasInstructions) {
-        _emit(ExamAttemptState(status: ExamAttemptStatus.instructions, exam: exam));
+        _emit(
+          ExamAttemptState(status: ExamAttemptStatus.instructions, exam: exam),
+        );
       } else {
         await startStandaloneExam(exam);
       }
     } catch (e) {
       final msg = e is ApiException ? e.message : e.toString();
-      _emit(ExamAttemptState(status: ExamAttemptStatus.error, errorMessage: msg));
+      _emit(
+        ExamAttemptState(status: ExamAttemptStatus.error, errorMessage: msg),
+      );
     }
   }
 
@@ -179,11 +189,20 @@ class ExamRepository {
       }
     } catch (e) {
       final msg = e is ApiException ? e.message : e.toString();
-      _emit(ExamAttemptState(status: ExamAttemptStatus.error, exam: exam, errorMessage: msg));
+      _emit(
+        ExamAttemptState(
+          status: ExamAttemptStatus.error,
+          exam: exam,
+          errorMessage: msg,
+        ),
+      );
     }
   }
 
-  Future<void> startCourseLinkedExam(ExamDto exam, String contentAttemptsUrl) async {
+  Future<void> startCourseLinkedExam(
+    ExamDto exam,
+    String contentAttemptsUrl,
+  ) async {
     _emit(ExamAttemptState(status: ExamAttemptStatus.loading, exam: exam));
     try {
       if (exam.pausedAttemptsCount > 0) {
@@ -220,7 +239,13 @@ class ExamRepository {
       }
     } catch (e) {
       final msg = e is ApiException ? e.message : e.toString();
-      _emit(ExamAttemptState(status: ExamAttemptStatus.error, exam: exam, errorMessage: msg));
+      _emit(
+        ExamAttemptState(
+          status: ExamAttemptStatus.error,
+          exam: exam,
+          errorMessage: msg,
+        ),
+      );
     }
   }
 
@@ -235,7 +260,9 @@ class ExamRepository {
     bool heartbeatFetched = false;
 
     // If we are resuming and sections are missing, fetch the full details via heartbeat first.
-    if (isResume && (attempt.sections == null || attempt.sections!.isEmpty) && attempt.heartbeatUrl.isNotEmpty) {
+    if (isResume &&
+        (attempt.sections == null || attempt.sections!.isEmpty) &&
+        attempt.heartbeatUrl.isNotEmpty) {
       try {
         currentAttempt = await _dataSource.sendHeartbeat(attempt.heartbeatUrl);
         heartbeatFetched = true;
@@ -246,8 +273,8 @@ class ExamRepository {
     // and we haven't already fetched the fresh details above.
     final Future<AttemptDto?> heartbeatFuture =
         (!heartbeatFetched &&
-         (attempt.remainingTime == null || isResume) &&
-         attempt.heartbeatUrl.isNotEmpty)
+            (attempt.remainingTime == null || isResume) &&
+            attempt.heartbeatUrl.isNotEmpty)
         ? _dataSource
               .sendHeartbeat(attempt.heartbeatUrl)
               .then<AttemptDto?>((val) => val)
@@ -268,26 +295,32 @@ class ExamRepository {
     if (sections.isNotEmpty) {
       int activeIndex = sections.indexWhere((s) => s.state == 'Running');
       if (activeIndex == -1) activeIndex = 0;
-      
+
       final activeSection = sections[activeIndex];
-      remainingSeconds = _parseDuration(activeSection.remainingTime ?? activeSection.duration ?? exam.duration);
-      
-      final String targetQuestionsUrl = currentAttempt.hasSectionalLock 
-          ? activeSection.questionsUrl 
+      remainingSeconds = _parseDuration(
+        activeSection.remainingTime ?? activeSection.duration ?? exam.duration,
+      );
+
+      final String targetQuestionsUrl = currentAttempt.hasSectionalLock
+          ? activeSection.questionsUrl
           : currentAttempt.questionsUrl;
-          
+
       final Future<List<QuestionDto>> questionsFuture = remainingSeconds > 0
           ? (_sectionQuestionsCache.containsKey(targetQuestionsUrl)
-              ? Future.value(_sectionQuestionsCache[targetQuestionsUrl]!)
-              : _dataSource.getQuestions(targetQuestionsUrl).then((q) {
-                  _sectionQuestionsCache[targetQuestionsUrl] = q;
-                  return q;
-                }))
+                ? Future.value(_sectionQuestionsCache[targetQuestionsUrl]!)
+                : _dataSource.getQuestions(targetQuestionsUrl).then((q) {
+                    _sectionQuestionsCache[targetQuestionsUrl] = q;
+                    return q;
+                  }))
           : Future.value(<QuestionDto>[]);
 
       // Await both operations concurrently
-      final List<dynamic> results = await Future.wait([heartbeatFuture, questionsFuture]);
-      final AttemptDto heartbeatAttempt = results[0] as AttemptDto? ?? currentAttempt;
+      final List<dynamic> results = await Future.wait([
+        heartbeatFuture,
+        questionsFuture,
+      ]);
+      final AttemptDto heartbeatAttempt =
+          results[0] as AttemptDto? ?? currentAttempt;
       // Merge the heartbeat details while preserving the original attempt's context (like the course-linked endUrl).
       final AttemptDto updatedAttempt = currentAttempt.copyWith(
         state: heartbeatAttempt.state,
@@ -303,14 +336,19 @@ class ExamRepository {
 
       // Resolve the actual synchronized remainingSeconds from heartbeat
       final updatedSections = updatedAttempt.sections ?? [];
-      final syncSection = updatedSections.isNotEmpty && activeIndex < updatedSections.length
+      final syncSection =
+          updatedSections.isNotEmpty && activeIndex < updatedSections.length
           ? updatedSections[activeIndex]
           : activeSection;
-      remainingSeconds = _parseDuration(syncSection.remainingTime ?? syncSection.duration ?? exam.duration);
+      remainingSeconds = _parseDuration(
+        syncSection.remainingTime ?? syncSection.duration ?? exam.duration,
+      );
 
       final initialAnswers = Map<String, AnswerDto>.from(_currentState.answers);
       for (final q in questions) {
-        if (q.selectedOptionIds.isNotEmpty || (q.shortText != null && q.shortText!.isNotEmpty) || (q.essayText != null && q.essayText!.isNotEmpty)) {
+        if (q.selectedOptionIds.isNotEmpty ||
+            (q.shortText != null && q.shortText!.isNotEmpty) ||
+            (q.essayText != null && q.essayText!.isNotEmpty)) {
           initialAnswers[q.id] = AnswerDto(
             questionId: q.id,
             selectedOptions: q.selectedOptionIds,
@@ -329,25 +367,34 @@ class ExamRepository {
         }
       }
 
-      final baseSections = updatedSections.isNotEmpty ? updatedSections : sections;
-      final initializedSections = baseSections.asMap().map((idx, s) {
-        if (idx == activeIndex) {
-          return MapEntry(idx, SectionDto(
-            id: s.id,
-            name: s.name,
-            state: 'Running',
-            questionsUrl: s.questionsUrl,
-            startUrl: s.startUrl,
-            endUrl: s.endUrl,
-            remainingTime: s.remainingTime,
-            duration: s.duration,
-            order: s.order,
-            instructions: s.instructions,
-            questionsCount: s.questionsCount,
-          ));
-        }
-        return MapEntry(idx, s);
-      }).values.toList();
+      final baseSections = updatedSections.isNotEmpty
+          ? updatedSections
+          : sections;
+      final initializedSections = baseSections
+          .asMap()
+          .map((idx, s) {
+            if (idx == activeIndex) {
+              return MapEntry(
+                idx,
+                SectionDto(
+                  id: s.id,
+                  name: s.name,
+                  state: 'Running',
+                  questionsUrl: s.questionsUrl,
+                  startUrl: s.startUrl,
+                  endUrl: s.endUrl,
+                  remainingTime: s.remainingTime,
+                  duration: s.duration,
+                  order: s.order,
+                  instructions: s.instructions,
+                  questionsCount: s.questionsCount,
+                ),
+              );
+            }
+            return MapEntry(idx, s);
+          })
+          .values
+          .toList();
 
       final state = ExamAttemptState(
         status: ExamAttemptStatus.inProgress,
@@ -363,22 +410,27 @@ class ExamRepository {
       _emit(state);
     } else {
       remainingSeconds = _parseDuration(attempt.remainingTime ?? exam.duration);
-      
+
       final Future<List<QuestionDto>> questionsFuture = remainingSeconds > 0
           ? (_sectionQuestionsCache.containsKey(attempt.questionsUrl)
-              ? Future.value(_sectionQuestionsCache[attempt.questionsUrl]!)
-              : _dataSource.getQuestions(attempt.questionsUrl).then((q) {
-                  _sectionQuestionsCache[attempt.questionsUrl] = q;
-                  return q;
-                }))
+                ? Future.value(_sectionQuestionsCache[attempt.questionsUrl]!)
+                : _dataSource.getQuestions(attempt.questionsUrl).then((q) {
+                    _sectionQuestionsCache[attempt.questionsUrl] = q;
+                    return q;
+                  }))
           : Future.value(<QuestionDto>[]);
 
       // Await both operations concurrently
-      final List<dynamic> results = await Future.wait([heartbeatFuture, questionsFuture]);
+      final List<dynamic> results = await Future.wait([
+        heartbeatFuture,
+        questionsFuture,
+      ]);
       final AttemptDto updatedAttempt = results[0] as AttemptDto? ?? attempt;
       questions = results[1] as List<QuestionDto>;
 
-      remainingSeconds = _parseDuration(updatedAttempt.remainingTime ?? exam.duration);
+      remainingSeconds = _parseDuration(
+        updatedAttempt.remainingTime ?? exam.duration,
+      );
 
       final initialAnswers = Map<String, AnswerDto>.from(_currentState.answers);
       for (final q in questions) {
@@ -410,7 +462,7 @@ class ExamRepository {
       );
       _emit(state);
     }
-    
+
     if (remainingSeconds > 0) {
       _startCountdown();
       _startHeartbeat(attempt.heartbeatUrl);
@@ -423,9 +475,11 @@ class ExamRepository {
     _countdownTimer?.cancel();
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_currentState.remainingSeconds > 0) {
-        _emit(_currentState.copyWith(
-          remainingSeconds: _currentState.remainingSeconds - 1,
-        ));
+        _emit(
+          _currentState.copyWith(
+            remainingSeconds: _currentState.remainingSeconds - 1,
+          ),
+        );
       } else {
         _handleTimeOut();
       }
@@ -434,7 +488,8 @@ class ExamRepository {
 
   void _handleTimeOut() {
     stopCountdown();
-    if (_currentState.sections.isNotEmpty && _currentState.currentSectionIndex < _currentState.sections.length - 1) {
+    if (_currentState.sections.isNotEmpty &&
+        _currentState.currentSectionIndex < _currentState.sections.length - 1) {
       switchSection(_currentState.currentSectionIndex + 1);
     } else {
       endExam(_currentState.attempt?.endUrl ?? '');
@@ -448,10 +503,11 @@ class ExamRepository {
 
   Future<void> switchSection(int index) async {
     if (index < 0 || index >= _currentState.sections.length) return;
-    
+
     _emit(_currentState.copyWith(status: ExamAttemptStatus.loading));
     try {
-      final currentSection = _currentState.sections[_currentState.currentSectionIndex];
+      final currentSection =
+          _currentState.sections[_currentState.currentSectionIndex];
       final nextSection = _currentState.sections[index];
 
       // Perform all section lifecycle transitions and question loading concurrently
@@ -459,10 +515,24 @@ class ExamRepository {
 
       if (currentSection.state == 'Running' && currentSection.endUrl != null) {
         futures.add(
-          _dataSource.endSection(currentSection.endUrl!).catchError((e, stackTrace) {
-            dev.log('Failed to end section on server, proceeding anyway', name: 'ExamRepository', error: e, stackTrace: stackTrace);
-            return const SectionDto(id: '', name: '', state: '', questionsUrl: '', order: 0);
-          })
+          _dataSource.endSection(currentSection.endUrl!).catchError((
+            e,
+            stackTrace,
+          ) {
+            dev.log(
+              'Failed to end section on server, proceeding anyway',
+              name: 'ExamRepository',
+              error: e,
+              stackTrace: stackTrace,
+            );
+            return const SectionDto(
+              id: '',
+              name: '',
+              state: '',
+              questionsUrl: '',
+              order: 0,
+            );
+          }),
         );
       } else {
         futures.add(Future.value(null));
@@ -470,44 +540,78 @@ class ExamRepository {
 
       if (nextSection.state != 'Running' && nextSection.startUrl != null) {
         futures.add(
-          _dataSource.startSection(nextSection.startUrl!).catchError((e, stackTrace) {
-            dev.log('Failed to start section on server, proceeding anyway', name: 'ExamRepository', error: e, stackTrace: stackTrace);
-            return const SectionDto(id: '', name: '', state: '', questionsUrl: '', order: 0);
-          })
+          _dataSource.startSection(nextSection.startUrl!).catchError((
+            e,
+            stackTrace,
+          ) {
+            dev.log(
+              'Failed to start section on server, proceeding anyway',
+              name: 'ExamRepository',
+              error: e,
+              stackTrace: stackTrace,
+            );
+            return const SectionDto(
+              id: '',
+              name: '',
+              state: '',
+              questionsUrl: '',
+              order: 0,
+            );
+          }),
         );
       } else {
         futures.add(Future.value(null));
       }
 
       if (_sectionQuestionsCache.containsKey(nextSection.questionsUrl)) {
-        futures.add(Future.value(_sectionQuestionsCache[nextSection.questionsUrl]!));
+        futures.add(
+          Future.value(_sectionQuestionsCache[nextSection.questionsUrl]!),
+        );
       } else {
         futures.add(
           _dataSource.getQuestions(nextSection.questionsUrl).then((q) {
             _sectionQuestionsCache[nextSection.questionsUrl] = q;
             return q;
-          })
+          }),
         );
       }
 
       final results = await Future.wait(futures);
       final List<QuestionDto> questions = results[2] as List<QuestionDto>;
 
-      final remainingSeconds = _parseDuration(nextSection.remainingTime ?? nextSection.duration ?? _currentState.exam!.duration);
-      
+      final remainingSeconds = _parseDuration(
+        nextSection.remainingTime ??
+            nextSection.duration ??
+            _currentState.exam!.duration,
+      );
+
       final updatedSections = _currentState.sections.map((s) {
         if (s.id == currentSection.id) {
           return SectionDto(
-            id: s.id, name: s.name, state: 'Completed', questionsUrl: s.questionsUrl,
-            startUrl: s.startUrl, endUrl: s.endUrl, remainingTime: s.remainingTime,
-            duration: s.duration, order: s.order, instructions: s.instructions,
+            id: s.id,
+            name: s.name,
+            state: 'Completed',
+            questionsUrl: s.questionsUrl,
+            startUrl: s.startUrl,
+            endUrl: s.endUrl,
+            remainingTime: s.remainingTime,
+            duration: s.duration,
+            order: s.order,
+            instructions: s.instructions,
             questionsCount: s.questionsCount,
           );
         } else if (s.id == nextSection.id) {
           return SectionDto(
-            id: s.id, name: s.name, state: 'Running', questionsUrl: s.questionsUrl,
-            startUrl: s.startUrl, endUrl: s.endUrl, remainingTime: s.remainingTime,
-            duration: s.duration, order: s.order, instructions: s.instructions,
+            id: s.id,
+            name: s.name,
+            state: 'Running',
+            questionsUrl: s.questionsUrl,
+            startUrl: s.startUrl,
+            endUrl: s.endUrl,
+            remainingTime: s.remainingTime,
+            duration: s.duration,
+            order: s.order,
+            instructions: s.instructions,
             questionsCount: s.questionsCount,
           );
         }
@@ -524,38 +628,51 @@ class ExamRepository {
         }
       }
 
-      _emit(_currentState.copyWith(
-        status: ExamAttemptStatus.inProgress,
-        sections: updatedSections,
-        currentSectionIndex: index,
-        questions: questions,
-        currentQuestionIndex: 0,
-        answers: currentAnswers,
-        remainingSeconds: remainingSeconds,
-      ));
-      
+      _emit(
+        _currentState.copyWith(
+          status: ExamAttemptStatus.inProgress,
+          sections: updatedSections,
+          currentSectionIndex: index,
+          questions: questions,
+          currentQuestionIndex: 0,
+          answers: currentAnswers,
+          remainingSeconds: remainingSeconds,
+        ),
+      );
+
       _startCountdown();
     } catch (e) {
-      _emit(_currentState.copyWith(
-        status: ExamAttemptStatus.error,
-        errorMessage: 'Failed to switch section: $e',
-      ));
+      _emit(
+        _currentState.copyWith(
+          status: ExamAttemptStatus.error,
+          errorMessage: 'Failed to switch section: $e',
+        ),
+      );
     }
   }
 
   void _startHeartbeat(String url) {
     _heartbeatTimer?.cancel();
-    _heartbeatTimer = Timer.periodic(const Duration(seconds: 30), (timer) async {
+    _heartbeatTimer = Timer.periodic(const Duration(seconds: 30), (
+      timer,
+    ) async {
       try {
         final attempt = await _dataSource.sendHeartbeat(url);
         if (attempt.remainingTime != null) {
           // Sync timer with server
-          _emit(_currentState.copyWith(
-            remainingSeconds: _parseDuration(attempt.remainingTime!),
-          ));
+          _emit(
+            _currentState.copyWith(
+              remainingSeconds: _parseDuration(attempt.remainingTime!),
+            ),
+          );
         }
       } catch (e, stackTrace) {
-        dev.log('Heartbeat failure', name: 'ExamRepository', error: e, stackTrace: stackTrace);
+        dev.log(
+          'Heartbeat failure',
+          name: 'ExamRepository',
+          error: e,
+          stackTrace: stackTrace,
+        );
       }
     });
   }
@@ -589,19 +706,29 @@ class ExamRepository {
           await _dataSource.submitAnswer(pendingUrl, pendingAns);
         } catch (e, stackTrace) {
           // Rollback on failure
-          final currentAnswers = Map<String, AnswerDto>.from(_currentState.answers);
+          final currentAnswers = Map<String, AnswerDto>.from(
+            _currentState.answers,
+          );
           if (currentAnswers[questionId] == pendingAns) {
-            currentAnswers[questionId] = previousAnswers[questionId] ?? AnswerDto(questionId: questionId, selectedOptions: []);
+            currentAnswers[questionId] =
+                previousAnswers[questionId] ??
+                AnswerDto(questionId: questionId, selectedOptions: []);
             _emit(_currentState.copyWith(answers: currentAnswers));
           }
-          dev.log('Failed to submit answer', name: 'ExamRepository', error: e, stackTrace: stackTrace);
+          dev.log(
+            'Failed to submit answer',
+            name: 'ExamRepository',
+            error: e,
+            stackTrace: stackTrace,
+          );
         }
       }
     });
   }
 
   void updateShortText(String questionId, String answerUrl, String text) {
-    final currentAnswer = _currentState.answers[questionId] ??
+    final currentAnswer =
+        _currentState.answers[questionId] ??
         AnswerDto(questionId: questionId, selectedOptions: []);
 
     final newAnswer = AnswerDto(
@@ -623,7 +750,8 @@ class ExamRepository {
   }
 
   void updateEssayText(String questionId, String answerUrl, String text) {
-    final currentAnswer = _currentState.answers[questionId] ??
+    final currentAnswer =
+        _currentState.answers[questionId] ??
         AnswerDto(questionId: questionId, selectedOptions: []);
 
     final newAnswer = AnswerDto(
@@ -651,8 +779,10 @@ class ExamRepository {
       if (_currentState.sections.isNotEmpty &&
           _currentState.currentSectionIndex >= 0 &&
           _currentState.currentSectionIndex < _currentState.sections.length) {
-        final currentSection = _currentState.sections[_currentState.currentSectionIndex];
-        if (currentSection.state == 'Running' && currentSection.endUrl != null) {
+        final currentSection =
+            _currentState.sections[_currentState.currentSectionIndex];
+        if (currentSection.state == 'Running' &&
+            currentSection.endUrl != null) {
           try {
             await _dataSource.endSection(currentSection.endUrl!);
           } catch (_) {}
@@ -661,15 +791,19 @@ class ExamRepository {
       final finalAttempt = await _dataSource.endExam(endUrl);
       stopHeartbeat();
       stopCountdown();
-      _emit(_currentState.copyWith(
-        status: ExamAttemptStatus.completed,
-        attempt: finalAttempt,
-      ));
+      _emit(
+        _currentState.copyWith(
+          status: ExamAttemptStatus.completed,
+          attempt: finalAttempt,
+        ),
+      );
     } catch (e) {
-      _emit(_currentState.copyWith(
-        status: ExamAttemptStatus.error,
-        errorMessage: 'Failed to end exam: ${e.toString()}',
-      ));
+      _emit(
+        _currentState.copyWith(
+          status: ExamAttemptStatus.error,
+          errorMessage: 'Failed to end exam: ${e.toString()}',
+        ),
+      );
     }
   }
 
@@ -679,7 +813,9 @@ class ExamRepository {
     return _dataSource.getReviewItems(reviewUrl);
   }
 
-  Future<List<SubjectAnalyticsDto>> getSubjectAnalytics(String analyticsUrl) async {
+  Future<List<SubjectAnalyticsDto>> getSubjectAnalytics(
+    String analyticsUrl,
+  ) async {
     return _dataSource.getSubjectAnalytics(analyticsUrl);
   }
 
@@ -713,7 +849,9 @@ class ExamRepository {
   int _parseDuration(String duration) {
     final parts = duration.split(':');
     if (parts.length != 3) return 3600;
-    return int.parse(parts[0]) * 3600 + int.parse(parts[1]) * 60 + int.parse(parts[2]);
+    return int.parse(parts[0]) * 3600 +
+        int.parse(parts[1]) * 60 +
+        int.parse(parts[2]);
   }
 
   void dispose() {

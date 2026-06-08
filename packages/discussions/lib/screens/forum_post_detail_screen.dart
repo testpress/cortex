@@ -37,7 +37,7 @@ class ForumPostDetailScreen extends ConsumerWidget {
     if (threadAsync.valueOrNull == null && initialThread != null) {
       threadAsync = AsyncValue.data(initialThread!);
     }
-    
+
     final thread = threadAsync.valueOrNull;
 
     return SkeletonizerConfig(
@@ -45,7 +45,10 @@ class ForumPostDetailScreen extends ConsumerWidget {
         effect: ShimmerEffect(
           baseColor: design.colors.skeleton,
           highlightColor: design.colors.onSkeleton,
-          duration: MotionPreferences.duration(context, const Duration(milliseconds: 800)),
+          duration: MotionPreferences.duration(
+            context,
+            const Duration(milliseconds: 800),
+          ),
         ),
       ),
       child: DecoratedBox(
@@ -75,8 +78,7 @@ class ForumPostDetailScreen extends ConsumerWidget {
       showDivider: false,
       actions: [
         AppFocusable(
-          onTap: () {
-          },
+          onTap: () {},
           borderRadius: BorderRadius.circular(design.radius.full),
           child: Padding(
             padding: EdgeInsets.all(design.spacing.xs),
@@ -137,7 +139,7 @@ class _ThreadDetailBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final commentsAsync = thread.threadId == 0 
+    final commentsAsync = thread.threadId == 0
         ? const AsyncValue<List<ForumCommentDto>>.loading()
         : ref.watch(globalForumCommentsProvider(thread.threadId));
 
@@ -238,12 +240,14 @@ class _ThreadContentHeader extends StatelessWidget {
           AppText.title(thread.title, color: design.colors.textPrimary),
           SizedBox(height: design.spacing.md),
           _ThreadMeta(thread: thread),
-          if (thread.categorySlug != null && thread.categorySlug!.isNotEmpty) ...[
+          if (thread.categorySlug != null &&
+              thread.categorySlug!.isNotEmpty) ...[
             SizedBox(height: design.spacing.md),
             _CategoryBadge(slug: thread.categorySlug!),
           ],
           SizedBox(height: design.spacing.lg),
-          if (thread.contentHtml != null && thread.contentHtml!.trim().isNotEmpty)
+          if (thread.contentHtml != null &&
+              thread.contentHtml!.trim().isNotEmpty)
             AppHtml(
               data: thread.contentHtml!,
               placeholder: Skeletonizer(
@@ -297,7 +301,10 @@ class _AuthorInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText.labelBold(name, color: design.colors.textPrimary),
-        AppText.caption(_formatDateSafe(createdAt), color: design.colors.textSecondary),
+        AppText.caption(
+          _formatDateSafe(createdAt),
+          color: design.colors.textSecondary,
+        ),
       ],
     );
   }
@@ -314,7 +321,9 @@ class _CategoryBadge extends StatelessWidget {
 
     final label = slug
         .split('-')
-        .map((s) => s.isNotEmpty ? '${s[0].toUpperCase()}${s.substring(1)}' : '')
+        .map(
+          (s) => s.isNotEmpty ? '${s[0].toUpperCase()}${s.substring(1)}' : '',
+        )
         .join(' ');
 
     return Container(
@@ -326,10 +335,7 @@ class _CategoryBadge extends StatelessWidget {
         color: design.colors.surfaceVariant,
         borderRadius: BorderRadius.circular(design.radius.sm),
       ),
-      child: AppText.caption(
-        label,
-        color: design.colors.textSecondary,
-      ),
+      child: AppText.caption(label, color: design.colors.textSecondary),
     );
   }
 }
@@ -457,7 +463,10 @@ class _CommentItem extends StatelessWidget {
         children: [
           _CommentHeader(comment: comment),
           SizedBox(height: design.spacing.md),
-          AppText.bodySmall(_stripHtmlTags(comment.content), color: design.colors.textPrimary),
+          AppText.bodySmall(
+            _stripHtmlTags(comment.content),
+            color: design.colors.textPrimary,
+          ),
         ],
       ),
     );
@@ -465,7 +474,10 @@ class _CommentItem extends StatelessWidget {
 
   String _stripHtmlTags(String htmlString) {
     // 1. Convert block tags to actual newlines
-    String s = htmlString.replaceAll(RegExp(r'<br\s*/?>', caseSensitive: false), '\n');
+    String s = htmlString.replaceAll(
+      RegExp(r'<br\s*/?>', caseSensitive: false),
+      '\n',
+    );
     s = s.replaceAll(RegExp(r'</p>', caseSensitive: false), '\n\n');
     s = s.replaceAll(RegExp(r'</div>', caseSensitive: false), '\n');
 
@@ -473,12 +485,13 @@ class _CommentItem extends StatelessWidget {
     s = s.replaceAll(RegExp(r'<[^>]*>', multiLine: true), '');
 
     // 3. Unescape basic entities
-    s = s.replaceAll('&nbsp;', ' ')
-         .replaceAll('&amp;', '&')
-         .replaceAll('&lt;', '<')
-         .replaceAll('&gt;', '>')
-         .replaceAll('&quot;', '"')
-         .replaceAll('&#39;', "'");
+    s = s
+        .replaceAll('&nbsp;', ' ')
+        .replaceAll('&amp;', '&')
+        .replaceAll('&lt;', '<')
+        .replaceAll('&gt;', '>')
+        .replaceAll('&quot;', '"')
+        .replaceAll('&#39;', "'");
 
     // 4. Clean up multiple spaces (but preserve newlines)
     s = s.replaceAll(RegExp(r'[ \t]+'), ' ');
@@ -522,14 +535,20 @@ class _CommentAuthorInfo extends StatelessWidget {
       children: [
         Row(
           children: [
-            AppText.labelBold(comment.authorName, color: design.colors.textPrimary),
+            AppText.labelBold(
+              comment.authorName,
+              color: design.colors.textPrimary,
+            ),
             if (comment.isInstructor) ...[
               SizedBox(width: design.spacing.sm),
               _RoleBadge(role: l10n.forumRoleInstructor),
             ],
           ],
         ),
-        AppText.caption(_formatDateSafe(comment.createdAt), color: design.colors.textSecondary),
+        AppText.caption(
+          _formatDateSafe(comment.createdAt),
+          color: design.colors.textSecondary,
+        ),
       ],
     );
   }
@@ -576,23 +595,22 @@ class _StickyReplyInputState extends ConsumerState<_StickyReplyInput> {
 
   Future<void> _handleSend() async {
     if (!_hasContent && _attachments.isEmpty) return;
-    
+
     final html = _editorService.toHtml(_controller.document);
     final l10n = L10n.of(context);
-    
+
     try {
       final threadId = int.parse(widget.threadId);
-      await ref.read(postForumCommentProvider.notifier).submit(
-            threadId: threadId,
-            content: html,
-            attachments: _attachments,
-          );
-      
+      await ref
+          .read(postForumCommentProvider.notifier)
+          .submit(threadId: threadId, content: html, attachments: _attachments);
+
       _controller.clear();
       setState(() => _attachments.clear());
       if (mounted) FocusScope.of(context).unfocus();
     } catch (e) {
-      if (mounted) AppToast.show(context, message: l10n.forumErrorFailedToPostReply);
+      if (mounted)
+        AppToast.show(context, message: l10n.forumErrorFailedToPostReply);
     }
   }
 
@@ -600,7 +618,7 @@ class _StickyReplyInputState extends ConsumerState<_StickyReplyInput> {
 
   Future<void> _pickImages() async {
     if (_attachments.length >= 3) return;
-    
+
     final images = await _picker.pickMultiImage();
     if (images.isNotEmpty) {
       setState(() {
@@ -692,7 +710,10 @@ class _ReplyInputRow extends StatelessWidget {
           SizedBox(
             height: 44,
             child: Center(
-              child: ForumToolbarToggle(isActive: showToolbar, onTap: onToggleToolbar),
+              child: ForumToolbarToggle(
+                isActive: showToolbar,
+                onTap: onToggleToolbar,
+              ),
             ),
           ),
           SizedBox(width: design.spacing.sm),
@@ -706,17 +727,16 @@ class _ReplyInputRow extends StatelessWidget {
               minHeight: 24,
               maxHeight: 80,
               expands: false,
-              backgroundColor: design.colors.surfaceVariant.withValues(alpha: 0.5),
+              backgroundColor: design.colors.surfaceVariant.withValues(
+                alpha: 0.5,
+              ),
             ),
           ),
           SizedBox(width: design.spacing.sm),
           SizedBox(
             height: 44,
             child: Center(
-              child: ForumSendButton(
-                onTap: onSend,
-                isLoading: isLoading,
-              ),
+              child: ForumSendButton(onTap: onSend, isLoading: isLoading),
             ),
           ),
         ],
@@ -751,7 +771,8 @@ class _AuthorAvatar extends StatelessWidget {
           ? Image.network(
               avatarUrl!,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => _fallbackIcon(design),
+              errorBuilder: (context, error, stackTrace) =>
+                  _fallbackIcon(design),
             )
           : _fallbackIcon(design),
     );
@@ -791,8 +812,14 @@ class _StatusBadge extends StatelessWidget {
         ),
         child: AppText.caption(
           isAnswered ? l10n.forumLabelAnswered : l10n.forumLabelUnanswered,
-          color: isAnswered ? design.colors.accent2 : design.colors.textSecondary,
-          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, height: 1.1),
+          color: isAnswered
+              ? design.colors.accent2
+              : design.colors.textSecondary,
+          style: const TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w700,
+            height: 1.1,
+          ),
         ),
       ),
     );
@@ -817,7 +844,11 @@ class _RoleBadge extends StatelessWidget {
       child: AppText.caption(
         role,
         color: design.colors.accent2,
-        style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w800, letterSpacing: 0.2),
+        style: const TextStyle(
+          fontSize: 9,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 0.2,
+        ),
       ),
     );
   }
@@ -838,7 +869,8 @@ final _mockSkeletonComments = List.generate(
     id: '$index',
     threadId: 0,
     authorName: 'Author Name',
-    content: 'Loading comment content placeholder that spans across multiple lines...',
+    content:
+        'Loading comment content placeholder that spans across multiple lines...',
     createdAt: '2026-05-25T11:43:37Z',
   ),
 );
@@ -847,7 +879,8 @@ final _mockSkeletonThread = ForumThreadDto(
   threadId: 0,
   slug: 'skeleton',
   title: 'Loading thread title placeholder...',
-  summary: 'Loading thread summary placeholder that spans across multiple lines...',
+  summary:
+      'Loading thread summary placeholder that spans across multiple lines...',
   authorName: 'Author Name',
   createdAt: '2026-05-25T11:43:37Z',
   replyCount: 0,

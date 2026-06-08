@@ -22,9 +22,7 @@ class BookmarksHeader extends StatelessWidget {
       decoration: BoxDecoration(
         color: design.colors.card,
         border: showDivider
-            ? Border(
-                bottom: BorderSide(color: design.colors.divider, width: 1),
-              )
+            ? Border(bottom: BorderSide(color: design.colors.divider, width: 1))
             : null,
       ),
       child: SafeArea(
@@ -50,10 +48,7 @@ class BookmarksHeader extends StatelessWidget {
               ),
               SizedBox(width: design.spacing.sm),
               Expanded(
-                child: AppText.title(
-                  title,
-                  color: design.colors.textPrimary,
-                ),
+                child: AppText.title(title, color: design.colors.textPrimary),
               ),
               if (actions != null) ...actions!,
             ],

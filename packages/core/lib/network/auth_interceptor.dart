@@ -16,10 +16,7 @@ class AuthInterceptor extends Interceptor {
     ApiEndpoints.resetPassword,
   ];
 
-  const AuthInterceptor({
-    required this.getToken,
-    this.onUnauthorized,
-  });
+  const AuthInterceptor({required this.getToken, this.onUnauthorized});
 
   @override
   void onRequest(
@@ -27,15 +24,17 @@ class AuthInterceptor extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     // Skip attaching token for login related paths
-    final isAuthFlowPath = _authFlowPaths.any((path) => options.path.contains(path));
-    
+    final isAuthFlowPath = _authFlowPaths.any(
+      (path) => options.path.contains(path),
+    );
+
     if (!isAuthFlowPath) {
       final token = await getToken();
       if (token != null && token.isNotEmpty) {
         options.headers['Authorization'] = 'JWT $token';
       }
     }
-    
+
     handler.next(options);
   }
 
@@ -45,8 +44,10 @@ class AuthInterceptor extends Interceptor {
       final isAuthFlowPath = _authFlowPaths.any(
         (path) => err.requestOptions.path.contains(path),
       );
-      
-      final isLogoutRequest = err.requestOptions.path.contains(ApiEndpoints.logout);
+
+      final isLogoutRequest = err.requestOptions.path.contains(
+        ApiEndpoints.logout,
+      );
 
       if (!isAuthFlowPath && !isLogoutRequest) {
         onUnauthorized?.call();

@@ -18,7 +18,7 @@ subtitle line.
 
       final cues = VttParser.parse(vtt);
       expect(cues.length, 2);
-      
+
       expect(cues[0].startTime, '00:00:01.000');
       expect(cues[0].endTime, '00:00:04.000');
       expect(cues[0].text, 'Hello World');
@@ -46,13 +46,16 @@ Inline subtitle with layout options.
     });
 
     test('should correctly format sub-minute and different time layouts', () {
-      const cue1 = VttCue(startTime: '00:00:19.450', endTime: '00:00:22.000', text: 'Test 1');
+      const cue1 = VttCue(
+          startTime: '00:00:19.450', endTime: '00:00:22.000', text: 'Test 1');
       expect(cue1.displayStartTime, '00:19');
 
-      const cue2 = VttCue(startTime: '00:19.000', endTime: '00:22.000', text: 'Test 2');
+      const cue2 =
+          VttCue(startTime: '00:19.000', endTime: '00:22.000', text: 'Test 2');
       expect(cue2.displayStartTime, '00:19');
 
-      const cue3 = VttCue(startTime: '01:04:12.300', endTime: '01:04:15.000', text: 'Test 3');
+      const cue3 = VttCue(
+          startTime: '01:04:12.300', endTime: '01:04:15.000', text: 'Test 3');
       expect(cue3.displayStartTime, '01:04:12');
     });
 

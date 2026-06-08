@@ -34,10 +34,12 @@ class DashboardHeader extends StatelessWidget {
     final design = Design.of(context);
 
     final padding = MediaQuery.of(context).padding;
-    final effectiveBgColor = backgroundColor ??
+    final effectiveBgColor =
+        backgroundColor ??
         (design.isDark ? design.colors.surface : design.colors.card);
 
-    final topPadding = customTopPadding ??
+    final topPadding =
+        customTopPadding ??
         (useSafeArea ? padding.top + design.spacing.md : design.spacing.md);
 
     return Container(
@@ -54,9 +56,7 @@ class DashboardHeader extends StatelessWidget {
       decoration: BoxDecoration(
         color: effectiveBgColor,
         border: showBottomBorder
-            ? Border(
-                bottom: BorderSide(color: design.colors.border, width: 1),
-              )
+            ? Border(bottom: BorderSide(color: design.colors.border, width: 1))
             : null,
       ),
       child: Row(

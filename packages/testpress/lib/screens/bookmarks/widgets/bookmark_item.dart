@@ -3,7 +3,12 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 
 class BookmarkItem extends StatelessWidget {
-  const BookmarkItem({super.key, required this.item, required this.onTap, this.onMoreTap});
+  const BookmarkItem({
+    super.key,
+    required this.item,
+    required this.onTap,
+    this.onMoreTap,
+  });
 
   final Map<String, dynamic> item;
   final VoidCallback onTap;
@@ -41,8 +46,12 @@ class BookmarkItem extends StatelessWidget {
 
     final lessonType = _parseLessonType(item['contentType'] as String);
     final typeTheme = switch (lessonType) {
-      LessonType.video || LessonType.liveStream || LessonType.embedContent => design.study.video,
-      LessonType.pdf || LessonType.notes || LessonType.attachment => design.study.pdf,
+      LessonType.video ||
+      LessonType.liveStream ||
+      LessonType.embedContent => design.study.video,
+      LessonType.pdf ||
+      LessonType.notes ||
+      LessonType.attachment => design.study.pdf,
       LessonType.assessment => design.study.assessment,
       LessonType.test => design.study.test,
       LessonType.unknown => design.study.video,
@@ -61,7 +70,8 @@ class BookmarkItem extends StatelessWidget {
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: item['thumbnailColor'] as Color? ?? typeTheme.background,
+                  color:
+                      item['thumbnailColor'] as Color? ?? typeTheme.background,
                   borderRadius: BorderRadius.circular(design.radius.md),
                 ),
                 child: Center(

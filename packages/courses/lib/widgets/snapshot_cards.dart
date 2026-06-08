@@ -257,9 +257,8 @@ class _SegmentedProgressBar extends StatelessWidget {
           height: 4,
           margin: const EdgeInsets.symmetric(horizontal: 1),
           decoration: BoxDecoration(
-            color: isFilled
-                ? color
-                : design.colors.border.withValues(alpha: 0.5),
+            color:
+                isFilled ? color : design.colors.border.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(2),
           ),
         );

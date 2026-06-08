@@ -53,10 +53,7 @@ class ForumHeader extends StatelessWidget {
               ),
               SizedBox(width: design.spacing.sm),
               Expanded(
-                child: AppText.title(
-                  title,
-                  color: design.colors.textPrimary,
-                ),
+                child: AppText.title(title, color: design.colors.textPrimary),
               ),
               if (actions != null) ...actions!,
             ],

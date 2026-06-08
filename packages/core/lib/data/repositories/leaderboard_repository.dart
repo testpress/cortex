@@ -12,21 +12,34 @@ class LeaderboardRepository {
   LeaderboardRepository({
     required DataSource dataSource,
     required AppDatabase db,
-  })  : _dataSource = dataSource,
-        _db = db;
+  }) : _dataSource = dataSource,
+       _db = db;
 
-  Stream<List<LearnerDto>> watchLeaderboard(LeaderboardTimeline timeline, {int? limit}) {
+  Stream<List<LearnerDto>> watchLeaderboard(
+    LeaderboardTimeline timeline, {
+    int? limit,
+  }) {
     switch (timeline) {
       case LeaderboardTimeline.thisWeek:
-        return _db.watchWeeklyLeaderboard(limit: limit).map((rows) => rows.map((r) => r.toDto()).toList());
+        return _db
+            .watchWeeklyLeaderboard(limit: limit)
+            .map((rows) => rows.map((r) => r.toDto()).toList());
       case LeaderboardTimeline.thisMonth:
-        return _db.watchMonthlyLeaderboard(limit: limit).map((rows) => rows.map((r) => r.toDto()).toList());
+        return _db
+            .watchMonthlyLeaderboard(limit: limit)
+            .map((rows) => rows.map((r) => r.toDto()).toList());
       case LeaderboardTimeline.allTime:
-        return _db.watchAllTimeLeaderboard(limit: limit).map((rows) => rows.map((r) => r.toDto()).toList());
+        return _db
+            .watchAllTimeLeaderboard(limit: limit)
+            .map((rows) => rows.map((r) => r.toDto()).toList());
     }
   }
 
-  Future<void> refreshLeaderboard(LeaderboardTimeline timeline, {int limit = 10, int page = 1}) async {
+  Future<void> refreshLeaderboard(
+    LeaderboardTimeline timeline, {
+    int limit = 10,
+    int page = 1,
+  }) async {
     try {
       final freshLearners = await _dataSource.fetchLeaderboard(
         timeline: timeline,
@@ -55,7 +68,9 @@ class LeaderboardRepository {
         rows: companions,
       );
     } catch (e) {
-      debugPrint('LeaderboardRepository: Failed to refresh leaderboard ($timeline): $e');
+      debugPrint(
+        'LeaderboardRepository: Failed to refresh leaderboard ($timeline): $e',
+      );
     }
   }
 
@@ -87,7 +102,9 @@ class LeaderboardRepository {
     // Targets (Above)
     for (int i = 0; i < targetsData.length; i++) {
       final int offset = targetsData.length - i;
-      final int approxRank = currentUserRank - offset < 1 ? 1 : currentUserRank - offset;
+      final int approxRank = currentUserRank - offset < 1
+          ? 1
+          : currentUserRank - offset;
       competitors.add(targetsData[i].copyWith(rank: approxRank));
     }
 
@@ -111,13 +128,12 @@ class LeaderboardRepository {
 }
 
 @Riverpod(keepAlive: true)
-Future<LeaderboardRepository> leaderboardRepository(LeaderboardRepositoryRef ref) async {
+Future<LeaderboardRepository> leaderboardRepository(
+  LeaderboardRepositoryRef ref,
+) async {
   final db = await ref.watch(appDatabaseProvider.future);
   final dataSource = ref.watch(dataSourceProvider);
-  return LeaderboardRepository(
-    dataSource: dataSource,
-    db: db,
-  );
+  return LeaderboardRepository(dataSource: dataSource, db: db);
 }
 
 // ── Private Mapping Helpers ───────────────────────────────────────────────────
@@ -132,53 +148,52 @@ LearnerDto _buildDto({
   required double points,
   required int coursesCompleted,
   required int streakDays,
-}) =>
-    LearnerDto(
-      id: id,
-      rank: rank,
-      name: name,
-      avatar: avatar ?? '',
-      points: points,
-      coursesCompleted: coursesCompleted,
-      streakDays: streakDays,
-    );
+}) => LearnerDto(
+  id: id,
+  rank: rank,
+  name: name,
+  avatar: avatar ?? '',
+  points: points,
+  coursesCompleted: coursesCompleted,
+  streakDays: streakDays,
+);
 
 // ── Database Row → Domain DTO ─────────────────────────────────────────────────
 
 extension on WeeklyLeaderboardData {
   LearnerDto toDto() => _buildDto(
-        id: id,
-        rank: rank,
-        name: name,
-        avatar: avatar,
-        points: points,
-        coursesCompleted: coursesCompleted,
-        streakDays: streakDays,
-      );
+    id: id,
+    rank: rank,
+    name: name,
+    avatar: avatar,
+    points: points,
+    coursesCompleted: coursesCompleted,
+    streakDays: streakDays,
+  );
 }
 
 extension on MonthlyLeaderboardData {
   LearnerDto toDto() => _buildDto(
-        id: id,
-        rank: rank,
-        name: name,
-        avatar: avatar,
-        points: points,
-        coursesCompleted: coursesCompleted,
-        streakDays: streakDays,
-      );
+    id: id,
+    rank: rank,
+    name: name,
+    avatar: avatar,
+    points: points,
+    coursesCompleted: coursesCompleted,
+    streakDays: streakDays,
+  );
 }
 
 extension on AllTimeLeaderboardData {
   LearnerDto toDto() => _buildDto(
-        id: id,
-        rank: rank,
-        name: name,
-        avatar: avatar,
-        points: points,
-        coursesCompleted: coursesCompleted,
-        streakDays: streakDays,
-      );
+    id: id,
+    rank: rank,
+    name: name,
+    avatar: avatar,
+    points: points,
+    coursesCompleted: coursesCompleted,
+    streakDays: streakDays,
+  );
 }
 
 // ── Domain DTO → Database Companion ──────────────────────────────────────────

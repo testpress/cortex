@@ -63,11 +63,11 @@ class _LessonDetailOrchestratorState
       // Auto-play the next video if the user setting allows it
       final db = await ref.read(appDatabaseProvider.future);
       final settings = await db.getAppSettings();
-      
+
       if (!mounted) return;
-      
+
       final autoPlayNext = settings.autoPlayNext;
-      
+
       if (autoPlayNext) {
         widget.onNext!();
       }
@@ -136,18 +136,18 @@ class _LessonDetailOrchestratorState
           onMarkAsCompleted: supportsManualCompletion ? _markAsCompleted : null,
           onNext: widget.onNext,
           onPrevious: widget.onPrevious,
-          stickyFooter:
-              lesson.type != LessonType.video && 
+          stickyFooter: lesson.type != LessonType.video &&
               lesson.type != LessonType.liveStream,
           child: _buildLessonContent(context),
         ),
-        if (lesson.isComplete && [
-          LessonType.pdf,
-          LessonType.notes,
-          LessonType.embedContent,
-          LessonType.liveStream,
-          LessonType.attachment,
-        ].contains(lesson.type))
+        if (lesson.isComplete &&
+            [
+              LessonType.pdf,
+              LessonType.notes,
+              LessonType.embedContent,
+              LessonType.liveStream,
+              LessonType.attachment,
+            ].contains(lesson.type))
           Positioned(
             bottom: 106,
             right: 24,
@@ -156,7 +156,8 @@ class _LessonDetailOrchestratorState
                 final uri = Uri(
                   path: '/home/discussions/doubts/ask',
                   queryParameters: {
-                    'chapterContentId': int.tryParse(lesson.id)?.toString() ?? '',
+                    'chapterContentId':
+                        int.tryParse(lesson.id)?.toString() ?? '',
                     'lessonTitle': lesson.title,
                     'lessonType': lesson.type.name,
                   },

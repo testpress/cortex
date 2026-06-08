@@ -33,7 +33,7 @@ class UserActionsController extends _$UserActionsController {
     String? photo,
   }) async {
     final userRepository = await ref.read(userRepositoryProvider.future);
-    
+
     await userRepository.updateProfile({
       'first_name': ?firstName,
       'last_name': ?lastName,

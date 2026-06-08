@@ -30,7 +30,8 @@ class TopLearnersSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isSkeleton = isLoading && topLearners.isEmpty && otherLearners.isEmpty;
+    final isSkeleton =
+        isLoading && topLearners.isEmpty && otherLearners.isEmpty;
     if (!isSkeleton && topLearners.isEmpty && otherLearners.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -45,12 +46,14 @@ class TopLearnersSection extends StatelessWidget {
             const _SectionHeader(),
             const SizedBox(height: 12),
             _LearnersCarousel(
-              learners: isSkeleton ? List.filled(3, _dummyLearner) : topLearners,
+              learners:
+                  isSkeleton ? List.filled(3, _dummyLearner) : topLearners,
             ),
             if (otherLearners.isNotEmpty || isSkeleton) ...[
               const SizedBox(height: 16),
               _LeaderboardCard(
-                learners: isSkeleton ? List.filled(5, _dummyLearner) : otherLearners,
+                learners:
+                    isSkeleton ? List.filled(5, _dummyLearner) : otherLearners,
               ),
             ],
           ],

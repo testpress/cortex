@@ -41,9 +41,7 @@ class StudyContentList extends ConsumerWidget {
         final filteredLessons = _filterLessons(allLessons);
 
         final isSkeleton = showInitialLoader && filteredCourses.isEmpty;
-        final displayCourses = isSkeleton
-            ? _skeletonCourses
-            : filteredCourses;
+        final displayCourses = isSkeleton ? _skeletonCourses : filteredCourses;
 
         return SliverMainAxisGroup(
           slivers: [
@@ -125,16 +123,16 @@ class StudyContentList extends ConsumerWidget {
           ? SliverPadding(
               padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
               sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) => Padding(
-                      padding: EdgeInsets.only(bottom: design.spacing.md),
-                      child: CourseCard(
-                        course: _skeletonCourses[index],
-                        isSkeleton: isSyncingInitial,
-                      ),
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => Padding(
+                    padding: EdgeInsets.only(bottom: design.spacing.md),
+                    child: CourseCard(
+                      course: _skeletonCourses[index],
+                      isSkeleton: isSyncingInitial,
                     ),
-                    childCount: _skeletonCourses.length,
                   ),
+                  childCount: _skeletonCourses.length,
+                ),
               ),
             )
           : const SliverToBoxAdapter(child: SizedBox.shrink()),

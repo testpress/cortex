@@ -41,10 +41,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               ),
             ),
             SizedBox(height: design.spacing.md),
-            AppText.headline(
-              'Cortex Platform',
-              color: design.colors.onPrimary,
-            ),
+            AppText.headline('Cortex Platform', color: design.colors.onPrimary),
           ],
         ),
       ),

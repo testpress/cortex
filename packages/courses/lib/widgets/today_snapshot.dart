@@ -29,27 +29,22 @@ class TodaySnapshot extends StatelessWidget {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
-    final liveClasses = classes
-        .where((c) => c.status == ClassStatus.live)
-        .toList();
-    final upcomingClasses = classes
-        .where((c) => c.status == ClassStatus.upcoming)
-        .toList();
-    final completedClasses = classes
-        .where((c) => c.status == ClassStatus.completed)
-        .toList();
+    final liveClasses =
+        classes.where((c) => c.status == ClassStatus.live).toList();
+    final upcomingClasses =
+        classes.where((c) => c.status == ClassStatus.upcoming).toList();
+    final completedClasses =
+        classes.where((c) => c.status == ClassStatus.completed).toList();
 
     final nextClass = upcomingClasses.isNotEmpty ? upcomingClasses.first : null;
     final laterClasses = upcomingClasses.length > 1
         ? upcomingClasses.skip(1).toList()
         : <ClassItem>[];
 
-    final overdueAssignments = assignments
-        .where((a) => a.status == AssignmentStatus.overdue)
-        .toList();
-    final pendingAssignments = assignments
-        .where((a) => a.status == AssignmentStatus.pending)
-        .toList();
+    final overdueAssignments =
+        assignments.where((a) => a.status == AssignmentStatus.overdue).toList();
+    final pendingAssignments =
+        assignments.where((a) => a.status == AssignmentStatus.pending).toList();
     final deadlineItems = [...overdueAssignments, ...pendingAssignments];
 
     final hasNowAndNext = liveClasses.isNotEmpty || nextClass != null;

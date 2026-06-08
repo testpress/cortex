@@ -54,7 +54,7 @@ class _PdfLessonDetailScreenState extends ConsumerState<PdfLessonDetailScreen> {
 
     final isBookmarked =
         ref.watch(lessonBookmarkProvider(widget.lesson.id)).valueOrNull ??
-        false;
+            false;
 
     return Container(
       color: design.colors.surface,

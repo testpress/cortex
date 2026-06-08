@@ -22,7 +22,6 @@ class AppPdfViewer extends ConsumerStatefulWidget {
 
 class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-
   late PdfViewerController _controller;
   late final Ticker _ticker;
 
@@ -182,8 +181,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
           duration: const Duration(milliseconds: 200),
           child: viewer,
         ),
-        if (!_isVisible)
-          const Center(child: AppLoadingIndicator()),
+        if (!_isVisible) const Center(child: AppLoadingIndicator()),
       ],
     );
   }
@@ -256,9 +254,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
       final offset = _controller.scrollOffset.dy;
       final max = _totalHeight - _viewportHeight;
 
-      final progress = max > 0
-          ? (offset / max).clamp(0.0, 1.0)
-          : 1.0;
+      final progress = max > 0 ? (offset / max).clamp(0.0, 1.0) : 1.0;
 
       if ((progress - _lastProgress).abs() > 0.001) {
         _lastProgress = progress;
@@ -284,7 +280,6 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
     final uriA = Uri.parse(a);
     final uriB = Uri.parse(b);
 
-    return uriA.host == uriB.host &&
-          uriA.path == uriB.path;
+    return uriA.host == uriB.host && uriA.path == uriB.path;
   }
 }

@@ -46,13 +46,14 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<List<ChapterDto>> getChapters(String courseId, {String? parentId}) async {
+  Future<List<ChapterDto>> getChapters(
+    String courseId, {
+    String? parentId,
+  }) async {
     return performNetworkRequest(
       _dio.get(
         ApiEndpoints.courseChapters(courseId),
-        queryParameters: {
-          'parent_id': parentId ?? 'null',
-        },
+        queryParameters: {'parent_id': parentId ?? 'null'},
       ),
       fromJson: (data) {
         final results = data['results'] as Map<String, dynamic>?;
@@ -67,7 +68,11 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Stream<CourseCurriculumDto> getCourseContents(String courseId, {String? chapterId, String? type}) async* {
+  Stream<CourseCurriculumDto> getCourseContents(
+    String courseId, {
+    String? chapterId,
+    String? type,
+  }) async* {
     final String initialUrl = ApiEndpoints.courseContents(courseId);
     String? nextUrl = initialUrl;
     final Map<String, dynamic> queryParameters = {};
@@ -97,7 +102,10 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<CourseCurriculumDto> getRunningContents(String courseId, {String? chapterId}) async {
+  Future<CourseCurriculumDto> getRunningContents(
+    String courseId, {
+    String? chapterId,
+  }) async {
     return _fetchFullCurriculum(
       ApiEndpoints.runningContents(courseId),
       queryParameters: {'chapter': chapterId},
@@ -105,7 +113,10 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<CourseCurriculumDto> getUpcomingContents(String courseId, {String? chapterId}) async {
+  Future<CourseCurriculumDto> getUpcomingContents(
+    String courseId, {
+    String? chapterId,
+  }) async {
     return _fetchFullCurriculum(
       ApiEndpoints.upcomingContents(courseId),
       queryParameters: {'chapter': chapterId},
@@ -113,7 +124,10 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<CourseCurriculumDto> getContentAttempts(String courseId, {String? chapterId}) async {
+  Future<CourseCurriculumDto> getContentAttempts(
+    String courseId, {
+    String? chapterId,
+  }) async {
     return _fetchFullCurriculum(
       ApiEndpoints.contentAttempts(courseId),
       queryParameters: {'chapter': chapterId},
@@ -131,7 +145,10 @@ class HttpDataSource implements DataSource {
 
     while (nextUrl != null) {
       final responseData = await performNetworkRequest(
-        _dio.get(nextUrl, queryParameters: nextUrl == url ? queryParameters : null),
+        _dio.get(
+          nextUrl,
+          queryParameters: nextUrl == url ? queryParameters : null,
+        ),
         fromJson: (data) => data,
       );
 
@@ -150,12 +167,12 @@ class HttpDataSource implements DataSource {
     return CourseCurriculumDto(lessons: lessons, chapters: chapters);
   }
 
-
   @override
   Future<List<LessonDto>> getLessons(String chapterId) async {
     return performNetworkRequest(
-      _dio.get(ApiEndpoints.chapterContents(chapterId)), 
-      fromJson: (data) => CurriculumParser.mapLessons(data, chapterId: chapterId),
+      _dio.get(ApiEndpoints.chapterContents(chapterId)),
+      fromJson: (data) =>
+          CurriculumParser.mapLessons(data, chapterId: chapterId),
     );
   }
 
@@ -194,14 +211,19 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<PaginatedResponseDto<ForumThreadDto>> getForumThreads({int page = 1, int? categoryId, String? searchQuery}) async {
+  Future<PaginatedResponseDto<ForumThreadDto>> getForumThreads({
+    int page = 1,
+    int? categoryId,
+    String? searchQuery,
+  }) async {
     return performNetworkRequest(
       _dio.get(
         ApiEndpoints.forumThreads,
         queryParameters: {
           'page': page,
           'category': ?categoryId,
-          if (searchQuery != null && searchQuery.isNotEmpty) 'search': searchQuery,
+          if (searchQuery != null && searchQuery.isNotEmpty)
+            'search': searchQuery,
         },
       ),
       fromJson: (json) => PaginatedResponseDto<ForumThreadDto>.fromJson(
@@ -212,14 +234,14 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<PaginatedResponseDto<ForumCommentDto>> getForumComments({required int threadId, int page = 1}) async {
+  Future<PaginatedResponseDto<ForumCommentDto>> getForumComments({
+    required int threadId,
+    int page = 1,
+  }) async {
     return performNetworkRequest(
       _dio.get(
         ApiEndpoints.forumComments(threadId),
-        queryParameters: {
-          'page': page,
-          'o': '-created',
-        },
+        queryParameters: {'page': page, 'o': '-created'},
       ),
       fromJson: (json) => PaginatedResponseDto<ForumCommentDto>.fromJson(
         json,
@@ -229,7 +251,10 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<ForumCommentDto> postForumComment({required int threadId, required String content}) async {
+  Future<ForumCommentDto> postForumComment({
+    required int threadId,
+    required String content,
+  }) async {
     return performNetworkRequest(
       _dio.post(
         ApiEndpoints.forumComments(threadId),
@@ -247,10 +272,7 @@ class HttpDataSource implements DataSource {
     });
 
     return performNetworkRequest(
-      _dio.post(
-        ApiEndpoints.imageUpload,
-        data: formData,
-      ),
+      _dio.post(ApiEndpoints.imageUpload, data: formData),
       fromJson: (json) => json['url'] as String,
     );
   }
@@ -283,7 +305,8 @@ class HttpDataSource implements DataSource {
       );
 
   @override
-  Future<List<ExploreBannerDto>> getExploreBanners() async => mockExploreBanners;
+  Future<List<ExploreBannerDto>> getExploreBanners() async =>
+      mockExploreBanners;
 
   @override
   Future<List<StudyTipDto>> getStudyTips() async => mockStudyTips;
@@ -305,7 +328,9 @@ class HttpDataSource implements DataSource {
       fromJson: (data) {
         final results = data['results'] as List<dynamic>?;
         return results
-                ?.map((e) => DashboardBannerDto.fromJson(e as Map<String, dynamic>))
+                ?.map(
+                  (e) => DashboardBannerDto.fromJson(e as Map<String, dynamic>),
+                )
                 .whereType<DashboardBannerDto>()
                 .toList() ??
             [];
@@ -319,10 +344,7 @@ class HttpDataSource implements DataSource {
     int limit = 10,
     int page = 1,
   }) async {
-    final Map<String, dynamic> params = {
-      'limit': limit,
-      'page': page,
-    };
+    final Map<String, dynamic> params = {'limit': limit, 'page': page};
     final timelineStr = timeline.timelineQuery;
     if (timelineStr != null) {
       params['timeline'] = timelineStr;
@@ -336,7 +358,12 @@ class HttpDataSource implements DataSource {
         final learners = <LearnerDto>[];
         for (var i = 0; i < results.length; i++) {
           final calculatedRank = (page - 1) * limit + i + 1;
-          learners.add(LearnerDto.fromJson(results[i] as Map<String, dynamic>, calculatedRank));
+          learners.add(
+            LearnerDto.fromJson(
+              results[i] as Map<String, dynamic>,
+              calculatedRank,
+            ),
+          );
         }
         return learners;
       },
@@ -347,7 +374,10 @@ class HttpDataSource implements DataSource {
   Future<LearnerDto> fetchMyRank() async {
     return performNetworkRequest(
       _dio.get(ApiEndpoints.myRank),
-      fromJson: (data) => LearnerDto.fromJson(data as Map<String, dynamic>, data['rank'] as int? ?? 0),
+      fromJson: (data) => LearnerDto.fromJson(
+        data as Map<String, dynamic>,
+        data['rank'] as int? ?? 0,
+      ),
     );
   }
 
@@ -357,7 +387,9 @@ class HttpDataSource implements DataSource {
       _dio.get(ApiEndpoints.competitorTargets),
       fromJson: (data) {
         final list = data is List ? data : (data['results'] as List? ?? []);
-        return list.map((e) => LearnerDto.fromJson(e as Map<String, dynamic>, 0)).toList();
+        return list
+            .map((e) => LearnerDto.fromJson(e as Map<String, dynamic>, 0))
+            .toList();
       },
     );
   }
@@ -368,84 +400,87 @@ class HttpDataSource implements DataSource {
       _dio.get(ApiEndpoints.competitorThreats),
       fromJson: (data) {
         final list = data is List ? data : (data['results'] as List? ?? []);
-        return list.map((e) => LearnerDto.fromJson(e as Map<String, dynamic>, 0)).toList();
+        return list
+            .map((e) => LearnerDto.fromJson(e as Map<String, dynamic>, 0))
+            .toList();
       },
     );
   }
 
   @override
-  Future<DashboardContentsDto> getWhatsNewFeed(DashboardSectionType sectionType) async {
+  Future<DashboardContentsDto> getWhatsNewFeed(
+    DashboardSectionType sectionType,
+  ) async {
     return performNetworkRequest(
       _dio.get(ApiEndpoints.whatsNewFeed),
-      fromJson: (data) => DashboardContentsDto.fromJson(
-        data,
-        sectionType: sectionType,
-      ),
+      fromJson: (data) =>
+          DashboardContentsDto.fromJson(data, sectionType: sectionType),
     );
   }
 
   @override
-  Future<DashboardContentsDto> getResumeLearningFeed(DashboardSectionType sectionType) async {
+  Future<DashboardContentsDto> getResumeLearningFeed(
+    DashboardSectionType sectionType,
+  ) async {
     return performNetworkRequest(
       _dio.get(ApiEndpoints.resumeLearning),
-      fromJson: (data) => DashboardContentsDto.fromJson(
-        data,
-        sectionType: sectionType,
-      ),
+      fromJson: (data) =>
+          DashboardContentsDto.fromJson(data, sectionType: sectionType),
     );
   }
 
   // ── Posts / Announcements ────────────────────────────────────────────────
 
   @override
-  Future<PaginatedResponseDto<PostDto>> getPosts({int page = 1, String? categorySlug}) async {
+  Future<PaginatedResponseDto<PostDto>> getPosts({
+    int page = 1,
+    String? categorySlug,
+  }) async {
     return performNetworkRequest(
       _dio.get(
         ApiEndpoints.posts,
         queryParameters: {
           'order_by': '-created',
           'page': page,
-          if (categorySlug != null && categorySlug.isNotEmpty) 'category': categorySlug,
+          if (categorySlug != null && categorySlug.isNotEmpty)
+            'category': categorySlug,
         },
       ),
-      fromJson: (data) => PostDto.fromListResponse(data as Map<String, dynamic>),
+      fromJson: (data) =>
+          PostDto.fromListResponse(data as Map<String, dynamic>),
     );
   }
 
   @override
   Future<List<PostCategoryDto>> getPostCategories() async {
     return performNetworkRequest(
-      _dio.get(
-        ApiEndpoints.postCategories,
-      ),
+      _dio.get(ApiEndpoints.postCategories),
       fromJson: (data) {
         final list = data as List<dynamic>? ?? [];
-        return list.map((e) => PostCategoryDto.fromJson(e as Map<String, dynamic>)).toList();
+        return list
+            .map((e) => PostCategoryDto.fromJson(e as Map<String, dynamic>))
+            .toList();
       },
     );
   }
 
   @override
-  Future<DashboardContentsDto> getRecentlyCompletedFeed(DashboardSectionType sectionType) async {
+  Future<DashboardContentsDto> getRecentlyCompletedFeed(
+    DashboardSectionType sectionType,
+  ) async {
     return performNetworkRequest(
       _dio.get(ApiEndpoints.recentlyCompleted),
-      fromJson: (data) => DashboardContentsDto.fromJson(
-        data,
-        sectionType: sectionType,
-      ),
+      fromJson: (data) =>
+          DashboardContentsDto.fromJson(data, sectionType: sectionType),
     );
   }
 
   @override
   Future<PaginatedLoginActivityDto> getLoginActivity({int page = 1}) async {
     return performNetworkRequest(
-      _dio.get(
-        ApiEndpoints.loginActivity,
-        queryParameters: {
-          'page': page,
-        },
-      ),
-      fromJson: (data) => PaginatedLoginActivityDto.fromJson(data as Map<String, dynamic>),
+      _dio.get(ApiEndpoints.loginActivity, queryParameters: {'page': page}),
+      fromJson: (data) =>
+          PaginatedLoginActivityDto.fromJson(data as Map<String, dynamic>),
     );
   }
 
@@ -479,20 +514,26 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<PaginatedResponseDto<DoubtDto>> getDoubts({int page = 1, String? searchQuery}) async {
+  Future<PaginatedResponseDto<DoubtDto>> getDoubts({
+    int page = 1,
+    String? searchQuery,
+  }) async {
     final queryParameters = <String, dynamic>{'page': page};
     if (searchQuery != null && searchQuery.isNotEmpty) {
       queryParameters['search'] = searchQuery;
     }
-    
+
     return performNetworkRequest(
       _dio.get(ApiEndpoints.helpdeskTickets, queryParameters: queryParameters),
-      fromJson: (data) => DoubtDto.fromListResponse(data as Map<String, dynamic>),
+      fromJson: (data) =>
+          DoubtDto.fromListResponse(data as Map<String, dynamic>),
     );
   }
 
   @override
-  Future<({DoubtDto doubt, List<DoubtReplyDto> replies})> getDoubtReplies(String doubtId) async {
+  Future<({DoubtDto doubt, List<DoubtReplyDto> replies})> getDoubtReplies(
+    String doubtId,
+  ) async {
     return performNetworkRequest(
       _dio.get(ApiEndpoints.helpdeskTicketDetail(doubtId)),
       fromJson: (data) {
@@ -551,7 +592,8 @@ class HttpDataSource implements DataSource {
 
     return performNetworkRequest(
       _dio.post(ApiEndpoints.helpdeskTicketFollowup(doubtId), data: body),
-      fromJson: (data) => DoubtReplyDto.fromJson(data as Map<String, dynamic>, doubtId),
+      fromJson: (data) =>
+          DoubtReplyDto.fromJson(data as Map<String, dynamic>, doubtId),
     );
   }
 
@@ -568,10 +610,7 @@ class HttpDataSource implements DataSource {
     final formData = FormData.fromMap(map);
 
     return performNetworkRequest(
-      _dio.post(
-        ApiEndpoints.imageUploadV3,
-        data: formData,
-      ),
+      _dio.post(ApiEndpoints.imageUploadV3, data: formData),
       fromJson: (json) => json['url'] as String,
     );
   }
@@ -598,10 +637,8 @@ class HttpDataSource implements DataSource {
   Future<List<AttemptDto>> getAttempts(String attemptsUrl) async {
     return performNetworkRequest(
       _dio.get(attemptsUrl),
-      fromJson: (json) => PaginatedResponseDto<AttemptDto>.fromJson(
-        json,
-        AttemptDto.fromJson,
-      ),
+      fromJson: (json) =>
+          PaginatedResponseDto<AttemptDto>.fromJson(json, AttemptDto.fromJson),
     ).then((response) => response.results);
   }
 
@@ -724,7 +761,8 @@ class HttpDataSource implements DataSource {
         final results = data['results'] as List;
         if (results.isNotEmpty) {
           final attempt = results.first;
-          if (attempt is Map<String, dynamic> && attempt['video'] is Map<String, dynamic>) {
+          if (attempt is Map<String, dynamic> &&
+              attempt['video'] is Map<String, dynamic>) {
             final lastPosition = attempt['video']['last_position']?.toString();
             return lastPosition;
           }
@@ -820,7 +858,9 @@ class HttpDataSource implements DataSource {
     }
 
     allReviewItems.addAll(
-      firstPageList.map((e) => ReviewItemDto.fromJson(e as Map<String, dynamic>)),
+      firstPageList.map(
+        (e) => ReviewItemDto.fromJson(e as Map<String, dynamic>),
+      ),
     );
 
     if (nextUrl != null && nextUrl.isNotEmpty && count > 0 && perPage > 0) {
@@ -846,7 +886,9 @@ class HttpDataSource implements DataSource {
           if (pageData is Map && pageData['results'] is List) {
             final list = pageData['results'] as List<dynamic>;
             allReviewItems.addAll(
-              list.map((e) => ReviewItemDto.fromJson(e as Map<String, dynamic>)),
+              list.map(
+                (e) => ReviewItemDto.fromJson(e as Map<String, dynamic>),
+              ),
             );
           }
         }
@@ -860,7 +902,9 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<List<SubjectAnalyticsDto>> getSubjectAnalytics(String analyticsUrl) async {
+  Future<List<SubjectAnalyticsDto>> getSubjectAnalytics(
+    String analyticsUrl,
+  ) async {
     if (analyticsUrl.isEmpty) return [];
 
     final dynamic firstPageData = await performNetworkRequest(
@@ -886,7 +930,9 @@ class HttpDataSource implements DataSource {
     }
 
     allSubjects.addAll(
-      firstPageList.map((e) => SubjectAnalyticsDto.fromJson(e as Map<String, dynamic>)),
+      firstPageList.map(
+        (e) => SubjectAnalyticsDto.fromJson(e as Map<String, dynamic>),
+      ),
     );
 
     if (nextUrl != null && nextUrl.isNotEmpty && count > 0 && perPage > 0) {
@@ -912,7 +958,9 @@ class HttpDataSource implements DataSource {
           if (pageData is Map && pageData['results'] is List) {
             final list = pageData['results'] as List<dynamic>;
             allSubjects.addAll(
-              list.map((e) => SubjectAnalyticsDto.fromJson(e as Map<String, dynamic>)),
+              list.map(
+                (e) => SubjectAnalyticsDto.fromJson(e as Map<String, dynamic>),
+              ),
             );
           }
         }
@@ -935,9 +983,7 @@ class HttpDataSource implements DataSource {
       savePath,
       onReceiveProgress: onReceiveProgress,
       cancelToken: cancelToken as CancelToken?,
-      options: Options(
-        extra: {'requireAuth': requireAuth},
-      ),
+      options: Options(extra: {'requireAuth': requireAuth}),
     );
   }
 
@@ -948,7 +994,9 @@ class HttpDataSource implements DataSource {
       fromJson: (data) {
         final results = data['results'] as List<dynamic>?;
         return results
-                ?.map((e) => BookmarkFolderDto.fromJson(e as Map<String, dynamic>))
+                ?.map(
+                  (e) => BookmarkFolderDto.fromJson(e as Map<String, dynamic>),
+                )
                 .toList() ??
             [];
       },
@@ -962,9 +1010,7 @@ class HttpDataSource implements DataSource {
     String? order,
     String? filter,
   }) async {
-    final queryParams = <String, dynamic>{
-      'page': page,
-    };
+    final queryParams = <String, dynamic>{'page': page};
     if (folder != null) queryParams['folder'] = folder;
     if (order != null) queryParams['order'] = order;
     if (filter != null) queryParams['filter'] = filter;
@@ -972,7 +1018,9 @@ class HttpDataSource implements DataSource {
     return performNetworkRequest(
       _dio.get(ApiEndpoints.bookmarksV2_4, queryParameters: queryParams),
       fromJson: (data) {
-        final items = BookmarkDto.fromListResponse(data as Map<String, dynamic>);
+        final items = BookmarkDto.fromListResponse(
+          data as Map<String, dynamic>,
+        );
         return PaginatedResponseDto<BookmarkDto>(
           results: items,
           count: data['count'] as int? ?? items.length,
@@ -986,11 +1034,9 @@ class HttpDataSource implements DataSource {
   @override
   Future<BookmarkFolderDto> createBookmarkFolder(String name) async {
     return performNetworkRequest(
-      _dio.post(
-        ApiEndpoints.createBookmarkFolder,
-        data: {'name': name},
-      ),
-      fromJson: (data) => BookmarkFolderDto.fromJson(data as Map<String, dynamic>),
+      _dio.post(ApiEndpoints.createBookmarkFolder, data: {'name': name}),
+      fromJson: (data) =>
+          BookmarkFolderDto.fromJson(data as Map<String, dynamic>),
     );
   }
 
@@ -1001,7 +1047,8 @@ class HttpDataSource implements DataSource {
         ApiEndpoints.updateBookmarkFolder(id.toString()),
         data: {'name': name},
       ),
-      fromJson: (data) => BookmarkFolderDto.fromJson(data as Map<String, dynamic>),
+      fromJson: (data) =>
+          BookmarkFolderDto.fromJson(data as Map<String, dynamic>),
     );
   }
 

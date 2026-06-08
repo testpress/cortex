@@ -54,71 +54,71 @@ class ChapterCurriculumItem extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               child: Row(
-              children: [
-                Skeleton.replace(
-                  width: iconSize,
-                  height: iconSize,
-                  replacement: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: design.colors.skeleton,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: Container(
+                children: [
+                  Skeleton.replace(
                     width: iconSize,
                     height: iconSize,
-                    decoration: BoxDecoration(
-                      color: chapter.image?.isNotEmpty == true
-                          ? design.colors.transparent // Transparent when image is present
-                          : iconTheme.background,
-                      borderRadius: BorderRadius.circular(8),
+                    replacement: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: design.colors.skeleton,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
-                    child: _buildIcon(chapter, iconTheme),
-                  ),
-                ),
-                const SizedBox(width: 12),
-
-                // Title and Metadata
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AppText.cardTitle(
-                        chapter.title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                    child: Container(
+                      width: iconSize,
+                      height: iconSize,
+                      decoration: BoxDecoration(
+                        color: chapter.image?.isNotEmpty == true
+                            ? design.colors
+                                .transparent // Transparent when image is present
+                            : iconTheme.background,
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      const SizedBox(height: 2),
-
-                      AppText.cardSubtitle(
-                        chapter.assessmentCount > 0
-                            ? l10n.chapterMetadata(
-                                chapter.lessonCount,
-                                l10n.curriculumLessonsLabel,
-                                chapter.assessmentCount,
-                                l10n.curriculumAssessmentsLabel,
-                              )
-                            : '${chapter.lessonCount} ${l10n.curriculumLessonsLabel}',
-                      ),
-                    ],
+                      child: _buildIcon(chapter, iconTheme),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 4),
+                  const SizedBox(width: 12),
 
-                // Navigation Indicator
-                Icon(
-                  LucideIcons.chevronRight,
-                  color: design.colors.textSecondary.withValues(alpha: 0.5),
-                  size: 20,
-                ),
-              ],
+                  // Title and Metadata
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AppText.cardTitle(
+                          chapter.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 2),
+                        AppText.cardSubtitle(
+                          chapter.assessmentCount > 0
+                              ? l10n.chapterMetadata(
+                                  chapter.lessonCount,
+                                  l10n.curriculumLessonsLabel,
+                                  chapter.assessmentCount,
+                                  l10n.curriculumAssessmentsLabel,
+                                )
+                              : '${chapter.lessonCount} ${l10n.curriculumLessonsLabel}',
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+
+                  // Navigation Indicator
+                  Icon(
+                    LucideIcons.chevronRight,
+                    color: design.colors.textSecondary.withValues(alpha: 0.5),
+                    size: 20,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildIcon(ChapterDto chapter, ShortcutColors chapterTheme) {
     final image = chapter.image;

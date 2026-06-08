@@ -47,9 +47,14 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: design.spacing.xl, vertical: design.spacing.md),
+              padding: EdgeInsets.symmetric(
+                horizontal: design.spacing.xl,
+                vertical: design.spacing.md,
+              ),
               child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight - design.spacing.xl * 2),
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight - design.spacing.xl * 2,
+                ),
                 child: IntrinsicHeight(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -72,11 +77,17 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                       ),
                       if (_errorMessage != null) ...[
                         SizedBox(height: design.spacing.md),
-                        AppText.bodySmall(_errorMessage!, color: design.colors.error),
+                        AppText.bodySmall(
+                          _errorMessage!,
+                          color: design.colors.error,
+                        ),
                       ],
                       if (_successMessage != null) ...[
                         SizedBox(height: design.spacing.md),
-                        AppText.bodySmall(_successMessage!, color: design.colors.success),
+                        AppText.bodySmall(
+                          _successMessage!,
+                          color: design.colors.success,
+                        ),
                       ],
                       const Spacer(),
                       SizedBox(height: design.spacing.xxl),
@@ -118,16 +129,20 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
     });
 
     try {
-      await ref.read(authProvider.notifier).generateOtp(
-        phoneNumber: widget.phoneNumber,
-        countryCode: widget.countryCode,
-      );
+      await ref
+          .read(authProvider.notifier)
+          .generateOtp(
+            phoneNumber: widget.phoneNumber,
+            countryCode: widget.countryCode,
+          );
       if (mounted) {
         setState(() => _successMessage = 'Code Resent Successfully!');
       }
     } catch (_) {
       if (mounted) {
-        setState(() => _errorMessage = 'Failed to resend code. Please try again.');
+        setState(
+          () => _errorMessage = 'Failed to resend code. Please try again.',
+        );
       }
     } finally {
       if (mounted) setState(() => _isBusy = false);
@@ -139,7 +154,9 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
     final otp = _otpController.text.trim();
 
     if (otp.isEmpty) {
-      setState(() { _errorMessage = l10n.loginErrorPhoneOtpRequired; });
+      setState(() {
+        _errorMessage = l10n.loginErrorPhoneOtpRequired;
+      });
       return;
     }
 
@@ -151,15 +168,15 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
     });
 
     try {
-      await ref.read(authProvider.notifier).verifyOtp(
-        otp: otp,
-        phoneNumber: widget.phoneNumber,
-      );
+      await ref
+          .read(authProvider.notifier)
+          .verifyOtp(otp: otp, phoneNumber: widget.phoneNumber);
       if (mounted) context.go('/home');
     } on AuthException catch (error) {
       if (mounted) setState(() => _errorMessage = error.message);
     } catch (_) {
-      if (mounted) setState(() => _errorMessage = l10n.loginErrorGenericRequest);
+      if (mounted)
+        setState(() => _errorMessage = l10n.loginErrorGenericRequest);
     } finally {
       if (mounted) setState(() => _isBusy = false);
     }

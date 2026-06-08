@@ -36,14 +36,13 @@ class DownloadsRepository {
           if (_deletedIds.contains(item.id)) continue;
 
           final existing = _lastKnownState[item.id];
-          if (existing == null || 
-              existing.progress != item.progress || 
+          if (existing == null ||
+              existing.progress != item.progress ||
               existing.status != item.status) {
-            
             final itemToSave = existing != null
                 ? item.copyWith(downloadedDate: existing.downloadedDate)
                 : item;
-                
+
             _lastKnownState[item.id] = itemToSave;
             upsertDownload(itemToSave).catchError((Object e, StackTrace st) {
               // Ignore or log error without crashing the stream
@@ -60,21 +59,25 @@ class DownloadsRepository {
   /// Watch all persistent downloads from the DB, mapped to domain models.
   Stream<List<DownloadItem>> watchAllDownloads() {
     return _db.select(_db.downloadsTable).watch().map((rows) {
-      return rows.map((row) => DownloadItem(
-        id: row.id,
-        title: row.title,
-        course: row.course,
-        chapter: row.chapter,
-        sizeInBytes: row.sizeInBytes.toInt(),
-        downloadedDate: row.downloadedDate,
-        type: DownloadType.values[row.typeIndex],
-        status: DownloadStatus.values[row.statusIndex],
-        progress: row.progress,
-        thumbnailUrl: row.thumbnailUrl,
-        duration: row.duration,
-        fileType: row.fileType,
-        contentUrl: row.contentUrl,
-      )).toList();
+      return rows
+          .map(
+            (row) => DownloadItem(
+              id: row.id,
+              title: row.title,
+              course: row.course,
+              chapter: row.chapter,
+              sizeInBytes: row.sizeInBytes.toInt(),
+              downloadedDate: row.downloadedDate,
+              type: DownloadType.values[row.typeIndex],
+              status: DownloadStatus.values[row.statusIndex],
+              progress: row.progress,
+              thumbnailUrl: row.thumbnailUrl,
+              duration: row.duration,
+              fileType: row.fileType,
+              contentUrl: row.contentUrl,
+            ),
+          )
+          .toList();
     });
   }
 
@@ -87,11 +90,13 @@ class DownloadsRepository {
       // This prevents Android 14 Scoped Storage Permission Denied errors.
       final existingSize = await _service.getExistingAttachmentSize(url);
       if (existingSize != null) {
-        await upsertDownload(item.copyWith(
-          status: DownloadStatus.completed,
-          progress: 100,
-          sizeInBytes: existingSize,
-        ));
+        await upsertDownload(
+          item.copyWith(
+            status: DownloadStatus.completed,
+            progress: 100,
+            sizeInBytes: existingSize,
+          ),
+        );
         return;
       }
 
@@ -109,16 +114,22 @@ class DownloadsRepository {
 
       // 4. Persist the final "completed" state with actual file size
       if (downloadedSize != null) {
-        await upsertDownload(item.copyWith(
-          status: DownloadStatus.completed,
-          progress: 100,
-          sizeInBytes: downloadedSize,
-        ));
+        await upsertDownload(
+          item.copyWith(
+            status: DownloadStatus.completed,
+            progress: 100,
+            sizeInBytes: downloadedSize,
+          ),
+        );
       } else {
-        await upsertDownload(item.copyWith(status: DownloadStatus.error, progress: 0));
+        await upsertDownload(
+          item.copyWith(status: DownloadStatus.error, progress: 0),
+        );
       }
     } catch (e) {
-      await upsertDownload(item.copyWith(status: DownloadStatus.error, progress: 0));
+      await upsertDownload(
+        item.copyWith(status: DownloadStatus.error, progress: 0),
+      );
     }
   }
 
@@ -128,9 +139,9 @@ class DownloadsRepository {
     final activeVideoIds = activeVideoDownloads.map((e) => e.id).toList();
 
     // Verify attachment files exist on disk
-    final dbAttachments = await (_db.select(_db.downloadsTable)
-          ..where((t) => t.typeIndex.equals(DownloadType.attachment.index)))
-        .get();
+    final dbAttachments = await (_db.select(
+      _db.downloadsTable,
+    )..where((t) => t.typeIndex.equals(DownloadType.attachment.index))).get();
 
     final activeAttachmentIds = <String>[];
     for (final attachment in dbAttachments) {
@@ -147,30 +158,29 @@ class DownloadsRepository {
 
     await _db.batch((batch) {
       // 1. Remove stale records that are no longer active.
-      batch.deleteWhere(
-        _db.downloadsTable,
-        (tbl) => tbl.id.isNotIn(activeIds),
-      );
+      batch.deleteWhere(_db.downloadsTable, (tbl) => tbl.id.isNotIn(activeIds));
 
       // 2. Sync/Update active video records (attachments are managed directly).
       if (activeVideoDownloads.isNotEmpty) {
         batch.insertAllOnConflictUpdate(
           _db.downloadsTable,
-          activeVideoDownloads.map((item) => DownloadsTableCompanion(
-                id: Value(item.id),
-                title: Value(item.title),
-                course: Value(item.course),
-                chapter: Value(item.chapter),
-                sizeInBytes: Value(BigInt.from(item.sizeInBytes)),
-                downloadedDate: Value(item.downloadedDate),
-                typeIndex: Value(item.type.index),
-                statusIndex: Value(item.status.index),
-                progress: Value(item.progress),
-                thumbnailUrl: Value(item.thumbnailUrl),
-                duration: Value(item.duration),
-                fileType: Value(item.fileType),
-                contentUrl: Value(item.contentUrl),
-              )),
+          activeVideoDownloads.map(
+            (item) => DownloadsTableCompanion(
+              id: Value(item.id),
+              title: Value(item.title),
+              course: Value(item.course),
+              chapter: Value(item.chapter),
+              sizeInBytes: Value(BigInt.from(item.sizeInBytes)),
+              downloadedDate: Value(item.downloadedDate),
+              typeIndex: Value(item.type.index),
+              statusIndex: Value(item.status.index),
+              progress: Value(item.progress),
+              thumbnailUrl: Value(item.thumbnailUrl),
+              duration: Value(item.duration),
+              fileType: Value(item.fileType),
+              contentUrl: Value(item.contentUrl),
+            ),
+          ),
         );
       }
     });
@@ -178,38 +188,46 @@ class DownloadsRepository {
 
   /// Upserts a [DownloadItem] into the database.
   Future<void> upsertDownload(DownloadItem item) async {
-    await _db.into(_db.downloadsTable).insertOnConflictUpdate(
-      DownloadsTableCompanion(
-        id: Value(item.id),
-        title: Value(item.title),
-        course: Value(item.course),
-        chapter: Value(item.chapter),
-        sizeInBytes: Value(BigInt.from(item.sizeInBytes)),
-        downloadedDate: Value(item.downloadedDate),
-        typeIndex: Value(item.type.index),
-        statusIndex: Value(item.status.index),
-        progress: Value(item.progress),
-        thumbnailUrl: Value(item.thumbnailUrl),
-        duration: Value(item.duration),
-        fileType: Value(item.fileType),
-        contentUrl: Value(item.contentUrl),
-      ),
-    );
+    await _db
+        .into(_db.downloadsTable)
+        .insertOnConflictUpdate(
+          DownloadsTableCompanion(
+            id: Value(item.id),
+            title: Value(item.title),
+            course: Value(item.course),
+            chapter: Value(item.chapter),
+            sizeInBytes: Value(BigInt.from(item.sizeInBytes)),
+            downloadedDate: Value(item.downloadedDate),
+            typeIndex: Value(item.type.index),
+            statusIndex: Value(item.status.index),
+            progress: Value(item.progress),
+            thumbnailUrl: Value(item.thumbnailUrl),
+            duration: Value(item.duration),
+            fileType: Value(item.fileType),
+            contentUrl: Value(item.contentUrl),
+          ),
+        );
   }
 
   // --- Actions delegated to the service worker then persisted ---
 
   Future<void> pauseDownload(String id) async {
     await _service.pauseVideoDownload(id);
-    await (_db.update(_db.downloadsTable)..where((tbl) => tbl.id.equals(id))).write(
+    await (_db.update(
+      _db.downloadsTable,
+    )..where((tbl) => tbl.id.equals(id))).write(
       DownloadsTableCompanion(statusIndex: Value(DownloadStatus.paused.index)),
     );
   }
 
   Future<void> resumeDownload(String id) async {
     await _service.resumeVideoDownload(id);
-    await (_db.update(_db.downloadsTable)..where((tbl) => tbl.id.equals(id))).write(
-      DownloadsTableCompanion(statusIndex: Value(DownloadStatus.downloading.index)),
+    await (_db.update(
+      _db.downloadsTable,
+    )..where((tbl) => tbl.id.equals(id))).write(
+      DownloadsTableCompanion(
+        statusIndex: Value(DownloadStatus.downloading.index),
+      ),
     );
   }
 
@@ -217,7 +235,9 @@ class DownloadsRepository {
     _deletedIds.add(item.id);
     _lastKnownState.remove(item.id);
     await _service.deleteDownloadItem(item);
-    await (_db.delete(_db.downloadsTable)..where((tbl) => tbl.id.equals(item.id))).go();
+    await (_db.delete(
+      _db.downloadsTable,
+    )..where((tbl) => tbl.id.equals(item.id))).go();
   }
 
   Future<void> purgeAllDownloads() async {
@@ -244,7 +264,9 @@ class DownloadsRepository {
 }
 
 @Riverpod(keepAlive: true)
-Future<DownloadsRepository> downloadsRepository(DownloadsRepositoryRef ref) async {
+Future<DownloadsRepository> downloadsRepository(
+  DownloadsRepositoryRef ref,
+) async {
   final db = await ref.watch(appDatabaseProvider.future);
   final service = ref.watch(downloadsServiceProvider);
   final repo = DownloadsRepository(db, service);
@@ -253,7 +275,10 @@ Future<DownloadsRepository> downloadsRepository(DownloadsRepositoryRef ref) asyn
 }
 
 @riverpod
-Stream<DownloadItem?> watchDownloadItem(WatchDownloadItemRef ref, String id) async* {
+Stream<DownloadItem?> watchDownloadItem(
+  WatchDownloadItemRef ref,
+  String id,
+) async* {
   final repo = await ref.watch(downloadsRepositoryProvider.future);
   yield* repo.watchAllDownloads().map((list) {
     for (var item in list) {

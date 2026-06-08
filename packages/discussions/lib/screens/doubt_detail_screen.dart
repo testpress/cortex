@@ -31,11 +31,11 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Watch this at the ROOT of the screen so it NEVER loses its listener 
+    // Watch this at the ROOT of the screen so it NEVER loses its listener
     // when the widget tree changes below (e.g. between loading and data states).
     // This entirely prevents the auto-dispose infinite API loop.
     final repliesAsync = ref.watch(doubtRepliesProvider(widget.doubtId));
-    
+
     final detailAsync = ref.watch(doubtDetailProvider(widget.doubtId));
     final design = Design.of(context);
     final l10n = L10n.of(context);
@@ -47,10 +47,30 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
       bottomSheet: _buildActionSheet(design, l10n, detailAsync.valueOrNull),
       child: detailAsync.when(
         skipLoadingOnReload: true,
-        data: (doubt) => _buildContent(context, ref, design, l10n, isResolving, doubt, widget.doubtId, repliesAsync, false),
+        data: (doubt) => _buildContent(
+          context,
+          ref,
+          design,
+          l10n,
+          isResolving,
+          doubt,
+          widget.doubtId,
+          repliesAsync,
+          false,
+        ),
         loading: () => Skeletonizer(
           enabled: true,
-          child: _buildContent(context, ref, design, l10n, isResolving, _dummyDoubt, widget.doubtId, repliesAsync, true),
+          child: _buildContent(
+            context,
+            ref,
+            design,
+            l10n,
+            isResolving,
+            _dummyDoubt,
+            widget.doubtId,
+            repliesAsync,
+            true,
+          ),
         ),
         error: (_, _) => AppErrorView(
           message: l10n.errorFailedToLoadDoubtDetails,
@@ -60,7 +80,11 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
     );
   }
 
-  Widget _buildActionSheet(DesignConfig design, AppLocalizations l10n, DoubtDto? doubt) {
+  Widget _buildActionSheet(
+    DesignConfig design,
+    AppLocalizations l10n,
+    DoubtDto? doubt,
+  ) {
     return AppBottomSheet(
       isOpen: _isMenuOpen,
       onClose: _closeMenu,
@@ -82,7 +106,9 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
             ),
             decoration: BoxDecoration(
               color: design.colors.card,
-              borderRadius: BorderRadius.all(Radius.circular(design.radius.xxl)),
+              borderRadius: BorderRadius.all(
+                Radius.circular(design.radius.xxl),
+              ),
               boxShadow: design.shadows.floating,
             ),
             child: Column(
@@ -102,51 +128,65 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
                   ),
                 ),
                 SizedBox(height: design.spacing.lg),
-                
+
                 if (doubt != null && doubt.status != DoubtStatus.resolved)
                   AppFocusable(
-                  onTap: () {
-                    _closeMenu();
-                    ref.read(postDoubtReplyNotifierProvider.notifier).submit(
-                          doubtId: widget.doubtId,
-                          shouldResolve: true,
-                        );
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: design.spacing.md),
-                    child: Row(
-                      children: [
-                    Icon(LucideIcons.checkCircle, size: design.iconSize.md, color: design.colors.textPrimary),
-                        SizedBox(width: design.spacing.md),
-                        AppText.body(l10n.actionMarkAsResolved, color: design.colors.textPrimary),
-                      ],
+                    onTap: () {
+                      _closeMenu();
+                      ref
+                          .read(postDoubtReplyNotifierProvider.notifier)
+                          .submit(doubtId: widget.doubtId, shouldResolve: true);
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: design.spacing.md,
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            LucideIcons.checkCircle,
+                            size: design.iconSize.md,
+                            color: design.colors.textPrimary,
+                          ),
+                          SizedBox(width: design.spacing.md),
+                          AppText.body(
+                            l10n.actionMarkAsResolved,
+                            color: design.colors.textPrimary,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                
+
                 AppFocusable(
                   onTap: () {
                     _closeMenu();
-                    ref.read(postDoubtReplyNotifierProvider.notifier).submit(
-                          doubtId: widget.doubtId,
-                          shouldClose: true,
-                        );
+                    ref
+                        .read(postDoubtReplyNotifierProvider.notifier)
+                        .submit(doubtId: widget.doubtId, shouldClose: true);
                   },
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: design.spacing.md),
                     child: Row(
                       children: [
-                        Icon(LucideIcons.xCircle, size: design.iconSize.md, color: design.colors.error),
+                        Icon(
+                          LucideIcons.xCircle,
+                          size: design.iconSize.md,
+                          color: design.colors.error,
+                        ),
                         SizedBox(width: design.spacing.md),
-                        AppText.body(l10n.actionCloseDoubt, color: design.colors.error),
+                        AppText.body(
+                          l10n.actionCloseDoubt,
+                          color: design.colors.error,
+                        ),
                       ],
                     ),
                   ),
                 ),
-          ],
+              ],
+            ),
+          ),
         ),
-      ),
-      ),
       ),
     );
   }
@@ -170,26 +210,36 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
     return AnimatedPadding(
       duration: const Duration(milliseconds: 250),
       curve: Curves.easeOutCubic,
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: Column(
-      children: [
-        ForumHeader(
-          title: l10n.doubtDetailTitle,
-          actions: [
-            if (doubt.status != DoubtStatus.closed)
-              AppFocusable(
-                onTap: _openMenu,
-                child: Icon(LucideIcons.moreVertical, color: design.colors.textPrimary, size: design.iconSize.md),
-              ),
-          ],
-        ),
-        Expanded(
-          child: _DoubtScrollBody(doubt: doubt, repliesAsync: effectiveRepliesAsync, doubtId: doubtId),
-        ),
-        if (!isLoading)
-          _DoubtReplyComposer(doubtId: doubtId, status: doubt.status),
-      ],
-    ),
+        children: [
+          ForumHeader(
+            title: l10n.doubtDetailTitle,
+            actions: [
+              if (doubt.status != DoubtStatus.closed)
+                AppFocusable(
+                  onTap: _openMenu,
+                  child: Icon(
+                    LucideIcons.moreVertical,
+                    color: design.colors.textPrimary,
+                    size: design.iconSize.md,
+                  ),
+                ),
+            ],
+          ),
+          Expanded(
+            child: _DoubtScrollBody(
+              doubt: doubt,
+              repliesAsync: effectiveRepliesAsync,
+              doubtId: doubtId,
+            ),
+          ),
+          if (!isLoading)
+            _DoubtReplyComposer(doubtId: doubtId, status: doubt.status),
+        ],
+      ),
     );
   }
 }
@@ -228,21 +278,33 @@ class _DoubtScrollBodyState extends ConsumerState<_DoubtScrollBody> {
     final l10n = L10n.of(context);
     return CustomScrollView(
       controller: _scrollController,
-      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+      physics: const AlwaysScrollableScrollPhysics(
+        parent: BouncingScrollPhysics(),
+      ),
       slivers: [
         CupertinoSliverRefreshControl(
           onRefresh: () async {
             final repo = await ref.read(doubtRepositoryProvider.future);
             await repo.syncReplies(widget.doubtId);
           },
-          builder: (context, refreshState, pulledExtent, refreshTriggerPullDistance, refreshIndicatorExtent) {
-            return Opacity(
-              opacity: (pulledExtent / refreshTriggerPullDistance).clamp(0.0, 1.0),
-              child: Center(
-                child: AppLoadingIndicator(color: design.colors.primary),
-              ),
-            );
-          },
+          builder:
+              (
+                context,
+                refreshState,
+                pulledExtent,
+                refreshTriggerPullDistance,
+                refreshIndicatorExtent,
+              ) {
+                return Opacity(
+                  opacity: (pulledExtent / refreshTriggerPullDistance).clamp(
+                    0.0,
+                    1.0,
+                  ),
+                  child: Center(
+                    child: AppLoadingIndicator(color: design.colors.primary),
+                  ),
+                );
+              },
         ),
         if (widget.doubt.status == DoubtStatus.resolved)
           SliverToBoxAdapter(
@@ -288,9 +350,7 @@ class _DoubtScrollBodyState extends ConsumerState<_DoubtScrollBody> {
               decoration: BoxDecoration(
                 color: design.colors.textTertiary.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(design.radius.md),
-                border: Border.all(
-                  color: design.colors.divider,
-                ),
+                border: Border.all(color: design.colors.divider),
               ),
               child: Row(
                 children: [
@@ -310,11 +370,12 @@ class _DoubtScrollBodyState extends ConsumerState<_DoubtScrollBody> {
               ),
             ),
           ),
-        SliverToBoxAdapter(
-          child: _DoubtHeaderCard(doubt: widget.doubt),
-        ),
+        SliverToBoxAdapter(child: _DoubtHeaderCard(doubt: widget.doubt)),
         const SliverToBoxAdapter(child: SizedBox(height: 8)),
-        _RepliesList(repliesAsync: widget.repliesAsync, doubtId: widget.doubtId),
+        _RepliesList(
+          repliesAsync: widget.repliesAsync,
+          doubtId: widget.doubtId,
+        ),
         const SliverToBoxAdapter(child: SizedBox(height: 100)),
       ],
     );
@@ -414,7 +475,12 @@ class _DoubtMeta extends StatelessWidget {
         SizedBox(width: design.spacing.sm),
         Skeleton.ignore(child: AppText.caption('•')),
         SizedBox(width: design.spacing.sm),
-        Skeleton.ignore(child: AppText.caption(doubt.createdHumanized ?? DateFormatter.formatTimeAgo(doubt.createdAt))),
+        Skeleton.ignore(
+          child: AppText.caption(
+            doubt.createdHumanized ??
+                DateFormatter.formatTimeAgo(doubt.createdAt),
+          ),
+        ),
       ],
     );
   }
@@ -434,7 +500,12 @@ class _ReplyCard extends StatelessWidget {
     final design = Design.of(context);
 
     return Container(
-      margin: EdgeInsets.fromLTRB(design.spacing.md, 0, design.spacing.md, design.spacing.md),
+      margin: EdgeInsets.fromLTRB(
+        design.spacing.md,
+        0,
+        design.spacing.md,
+        design.spacing.md,
+      ),
       padding: EdgeInsets.all(design.spacing.md),
       decoration: _replyDecoration(design),
       child: Column(
@@ -495,7 +566,10 @@ class _ReplyHeader extends StatelessWidget {
         ],
         const Spacer(),
         Skeleton.ignore(
-          child: AppText.caption(reply.createdHumanized ?? DateFormatter.formatTimeAgo(reply.createdAt)),
+          child: AppText.caption(
+            reply.createdHumanized ??
+                DateFormatter.formatTimeAgo(reply.createdAt),
+          ),
         ),
       ],
     );
@@ -510,13 +584,11 @@ class _DoubtReplyComposer extends ConsumerStatefulWidget {
   final String doubtId;
   final DoubtStatus status;
 
-  const _DoubtReplyComposer({
-    required this.doubtId,
-    required this.status,
-  });
+  const _DoubtReplyComposer({required this.doubtId, required this.status});
 
   @override
-  ConsumerState<_DoubtReplyComposer> createState() => _DoubtReplyComposerState();
+  ConsumerState<_DoubtReplyComposer> createState() =>
+      _DoubtReplyComposerState();
 }
 
 class _DoubtReplyComposerState extends ConsumerState<_DoubtReplyComposer> {
@@ -549,7 +621,11 @@ class _DoubtReplyComposerState extends ConsumerState<_DoubtReplyComposer> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(LucideIcons.lock, size: 18, color: design.colors.textTertiary),
+              Icon(
+                LucideIcons.lock,
+                size: 18,
+                color: design.colors.textTertiary,
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: AppText.bodySmall(
@@ -602,7 +678,8 @@ class _DoubtReplyComposerState extends ConsumerState<_DoubtReplyComposer> {
                     child: Center(
                       child: ForumToolbarToggle(
                         isActive: _showToolbar,
-                        onTap: () => setState(() => _showToolbar = !_showToolbar),
+                        onTap: () =>
+                            setState(() => _showToolbar = !_showToolbar),
                       ),
                     ),
                   ),
@@ -616,7 +693,9 @@ class _DoubtReplyComposerState extends ConsumerState<_DoubtReplyComposer> {
                       minHeight: 24,
                       maxHeight: 80,
                       expands: false,
-                      backgroundColor: design.colors.surfaceVariant.withValues(alpha: 0.5),
+                      backgroundColor: design.colors.surfaceVariant.withValues(
+                        alpha: 0.5,
+                      ),
                     ),
                   ),
                   SizedBox(width: design.spacing.sm),
@@ -662,21 +741,27 @@ class _DoubtReplyComposerState extends ConsumerState<_DoubtReplyComposer> {
     setState(() => _isSubmitting = true);
 
     try {
-      String finalHtml = const QuillEditorService().toHtml(_controller.document);
+      String finalHtml = const QuillEditorService().toHtml(
+        _controller.document,
+      );
       final repo = await ref.read(doubtRepositoryProvider.future);
-      
+
       if (_attachments.isNotEmpty) {
-        final uploadFutures = _attachments.map((path) => repo.uploadDoubtImage(path, ticketId: int.tryParse(widget.doubtId)));
+        final uploadFutures = _attachments.map(
+          (path) => repo.uploadDoubtImage(
+            path,
+            ticketId: int.tryParse(widget.doubtId),
+          ),
+        );
         final urls = await Future.wait(uploadFutures);
         for (final url in urls) {
           finalHtml += '<br><img src="$url" />';
         }
       }
-      
-      await ref.read(postDoubtReplyNotifierProvider.notifier).submit(
-        doubtId: widget.doubtId,
-        comment: finalHtml,
-      );
+
+      await ref
+          .read(postDoubtReplyNotifierProvider.notifier)
+          .submit(doubtId: widget.doubtId, comment: finalHtml);
 
       _controller.clear();
       _attachments.clear();
@@ -795,7 +880,11 @@ class _AttachmentThumbnail extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(LucideIcons.fileText, size: 24, color: design.colors.accent2),
+                  Icon(
+                    LucideIcons.fileText,
+                    size: 24,
+                    color: design.colors.accent2,
+                  ),
                   const SizedBox(height: 2),
                   AppText.labelSmall(
                     url.split('/').last,
@@ -812,8 +901,11 @@ class _AttachmentThumbnail extends StatelessWidget {
               child: Image.network(
                 url,
                 fit: BoxFit.cover,
-                errorBuilder: (_, _, _) =>
-                    Icon(LucideIcons.image, size: 24, color: design.colors.textSecondary),
+                errorBuilder: (_, _, _) => Icon(
+                  LucideIcons.image,
+                  size: 24,
+                  color: design.colors.textSecondary,
+                ),
               ),
             ),
     );
@@ -836,7 +928,8 @@ final _dummyReply = DoubtReplyDto(
 final _dummyDoubt = DoubtDto(
   id: 'dummy',
   title: 'This is a dummy doubt title for skeleton loading',
-  content: 'Dummy content to show while the doubt details are still being fetched from the server...',
+  content:
+      'Dummy content to show while the doubt details are still being fetched from the server...',
   studentName: 'Student Name',
   status: DoubtStatus.active,
   createdAt: DateTime.now(),
@@ -856,7 +949,9 @@ class _HtmlSkeletonPlaceholder extends StatelessWidget {
       children: [
         AppText.body('This is a placeholder line that will be skeletonized.'),
         const SizedBox(height: 4),
-        AppText.body('Another placeholder line that is slightly longer for variation.'),
+        AppText.body(
+          'Another placeholder line that is slightly longer for variation.',
+        ),
         const SizedBox(height: 4),
         AppText.body('Short line.'),
       ],

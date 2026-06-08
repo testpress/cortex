@@ -29,8 +29,7 @@ class LessonStatusBadge extends StatelessWidget {
         return AppBadge(
           label: l10n.statusInProgress,
           semanticStatus: design
-              .statusColors
-              .upcoming, // Using upcoming (blue) for progress
+              .statusColors.upcoming, // Using upcoming (blue) for progress
         );
       case LessonProgressStatus.notStarted:
         return const SizedBox.shrink();

@@ -2,11 +2,11 @@ import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 
 /// Filter options for the curriculum view.
-enum CurriculumFilter { 
-  all, 
-  video, 
-  lesson, 
-  assessment, 
+enum CurriculumFilter {
+  all,
+  video,
+  lesson,
+  assessment,
   test;
 
   String get displayName => switch (this) {
@@ -106,9 +106,8 @@ class _FilterTab extends StatelessWidget {
     final design = Design.of(context);
 
     // Use design tokens for tab backgrounds/foregrounds
-    final bgColor = isSelected
-        ? design.colors.textPrimary
-        : design.colors.surfaceVariant;
+    final bgColor =
+        isSelected ? design.colors.textPrimary : design.colors.surfaceVariant;
     final fgColor = isSelected ? design.colors.card : design.colors.textPrimary;
 
     return AppSemantics.button(

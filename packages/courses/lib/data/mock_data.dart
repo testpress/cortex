@@ -25,7 +25,6 @@ const mockHeroBanners = [
   ),
 ];
 
-
 /// Mock quick access shortcuts
 const mockQuickShortcuts = [
   QuickShortcutDto(

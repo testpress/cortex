@@ -8,17 +8,20 @@ import '../../widgets/leaderboard/competitors_body.dart';
 
 enum LeaderboardTab { rankList, competitors }
 
-final leaderboardTabProvider = StateProvider<LeaderboardTab>((ref) => LeaderboardTab.rankList);
+final leaderboardTabProvider =
+    StateProvider<LeaderboardTab>((ref) => LeaderboardTab.rankList);
 
-final leaderboardTimelineProvider = StateProvider<LeaderboardTimeline>((ref) => LeaderboardTimeline.thisWeek);
+final leaderboardTimelineProvider =
+    StateProvider<LeaderboardTimeline>((ref) => LeaderboardTimeline.thisWeek);
 
-final leaderboardStreamProvider = StreamProvider.autoDispose<List<LearnerDto>>((ref) async* {
+final leaderboardStreamProvider =
+    StreamProvider.autoDispose<List<LearnerDto>>((ref) async* {
   final repo = await ref.watch(leaderboardRepositoryProvider.future);
   final timeline = ref.watch(leaderboardTimelineProvider);
-  
+
   // Check if we have cached data
   final cached = await repo.watchLeaderboard(timeline, limit: 200).first;
-  
+
   if (cached.isEmpty) {
     // Await the refresh so the provider remains in AsyncLoading state until the network completes
     await repo.refreshLeaderboard(timeline, limit: 200);
@@ -26,11 +29,12 @@ final leaderboardStreamProvider = StreamProvider.autoDispose<List<LearnerDto>>((
     // If we have data, fire-and-forget refresh to update the cache in background
     repo.refreshLeaderboard(timeline, limit: 200);
   }
-  
+
   yield* repo.watchLeaderboard(timeline, limit: 200);
 });
 
-final competitorsProvider = FutureProvider.autoDispose<List<LearnerDto>>((ref) async {
+final competitorsProvider =
+    FutureProvider.autoDispose<List<LearnerDto>>((ref) async {
   final repo = await ref.watch(leaderboardRepositoryProvider.future);
   return repo.getCompetitors();
 });
@@ -96,30 +100,36 @@ class TopLearnersScreen extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  
+
                   // Subtabs
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: design.spacing.md),
                     child: LeaderboardSubtabs(
                       activeTab: activeTab,
-                      onChanged: (tab) => ref.read(leaderboardTabProvider.notifier).state = tab,
+                      onChanged: (tab) =>
+                          ref.read(leaderboardTabProvider.notifier).state = tab,
                     ),
                   ),
                   SizedBox(height: design.spacing.md),
                 ],
               ),
             ),
-            
+
             // Body Area
             Expanded(
               child: activeTab == LeaderboardTab.rankList
                   ? Builder(builder: (context) {
-                      final asyncLearners = ref.watch(leaderboardStreamProvider);
-                      final selectedTimeline = ref.watch(leaderboardTimelineProvider);
+                      final asyncLearners =
+                          ref.watch(leaderboardStreamProvider);
+                      final selectedTimeline =
+                          ref.watch(leaderboardTimelineProvider);
                       return RankListBody(
                         learners: asyncLearners.valueOrNull ?? [],
                         selectedTimeline: selectedTimeline,
-                        onTimelineChanged: (t) => ref.read(leaderboardTimelineProvider.notifier).state = t,
+                        onTimelineChanged: (t) => ref
+                            .read(leaderboardTimelineProvider.notifier)
+                            .state = t,
                         isLoading: asyncLearners.isLoading,
                         hasError: asyncLearners.hasError,
                       );
@@ -139,5 +149,3 @@ class TopLearnersScreen extends ConsumerWidget {
     );
   }
 }
-
-

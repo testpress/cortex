@@ -45,11 +45,11 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    
+
     final examCoursesState = ref.watch(examListProvider);
     final isSyncing = ref.watch(isSyncingExamsProvider);
     final isSyncingMore = ref.watch(isSyncingMoreExamsProvider);
-    
+
     return DecoratedBox(
       decoration: BoxDecoration(color: design.colors.canvas),
       child: CustomScrollView(
@@ -62,10 +62,7 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppText.headline(
-                    'Exams',
-                    color: design.colors.textPrimary,
-                  ),
+                  AppText.headline('Exams', color: design.colors.textPrimary),
                   SizedBox(height: design.spacing.xs),
                   AppText.body(
                     'Select an exam to view question papers',
@@ -75,14 +72,11 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
               ),
             ),
           ),
-          
+
           SliverToBoxAdapter(
-            child: Container(
-              height: 1,
-              color: design.colors.divider,
-            ),
+            child: Container(height: 1, color: design.colors.divider),
           ),
-          
+
           SliverPadding(
             padding: EdgeInsets.all(design.spacing.md),
             sliver: SliverToBoxAdapter(
@@ -92,7 +86,7 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
               ),
             ),
           ),
-          
+
           examCoursesState.when(
             data: (courses) {
               final isSkeleton = isSyncing && courses.isEmpty;
@@ -109,35 +103,38 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
                   ),
                 );
               }
-              
+
               return SliverMainAxisGroup(
                 slivers: [
                   SliverPadding(
-                    padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: design.spacing.md,
+                    ),
                     sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final course = displayCourses[index];
-                          return Padding(
-                            padding: EdgeInsets.only(bottom: design.spacing.md),
-                            child: CourseCard(
-                              course: course,
-                              isSkeleton: isSkeleton,
-                              onTap: isSkeleton
-                                  ? null
-                                  : () {
-                                      context.push('/exams/course/${course.id}/chapters');
-                                    },
-                            ),
-                          );
-                        },
-                        childCount: displayCourses.length,
-                      ),
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final course = displayCourses[index];
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: design.spacing.md),
+                          child: CourseCard(
+                            course: course,
+                            isSkeleton: isSkeleton,
+                            onTap: isSkeleton
+                                ? null
+                                : () {
+                                    context.push(
+                                      '/exams/course/${course.id}/chapters',
+                                    );
+                                  },
+                          ),
+                        );
+                      }, childCount: displayCourses.length),
                     ),
                   ),
                   if (isSyncingMore)
                     SliverPadding(
-                      padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: design.spacing.md,
+                      ),
                       sliver: SliverToBoxAdapter(
                         child: Padding(
                           padding: EdgeInsets.only(bottom: design.spacing.md),
@@ -153,7 +150,9 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
             },
             loading: () => isSyncing
                 ? SliverPadding(
-                    padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: design.spacing.md,
+                    ),
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) => Padding(
@@ -178,10 +177,8 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
               ),
             ),
           ),
-          
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 120),
-          ),
+
+          const SliverToBoxAdapter(child: SizedBox(height: 120)),
         ],
       ),
     );

@@ -5,15 +5,9 @@ class PaginationState {
   final int nextPage;
   final bool hasMore;
 
-  const PaginationState({
-    this.nextPage = 1,
-    this.hasMore = true,
-  });
+  const PaginationState({this.nextPage = 1, this.hasMore = true});
 
-  PaginationState copyWith({
-    int? nextPage,
-    bool? hasMore,
-  }) {
+  PaginationState copyWith({int? nextPage, bool? hasMore}) {
     return PaginationState(
       nextPage: nextPage ?? this.nextPage,
       hasMore: hasMore ?? this.hasMore,
@@ -44,7 +38,8 @@ class PaginationService {
     final nextPage = _extractPageFromUrl(nextUrl);
 
     return PaginationState(
-      nextPage: nextPage ?? currentPage, // Stay on current page if parsing fails
+      nextPage:
+          nextPage ?? currentPage, // Stay on current page if parsing fails
       hasMore: nextPage != null, // Treat as no more if we can't parse the URL
     );
   }

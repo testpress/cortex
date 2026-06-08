@@ -18,8 +18,16 @@ class ForumRepository {
 
   // ── Threads ──────────────────────────────────────────────────────────────
 
-  Future<PaginatedResponseDto<ForumThreadDto>> fetchThreads({int page = 1, int? categoryId, String? searchQuery}) async {
-    final response = await _source.getForumThreads(page: page, categoryId: categoryId, searchQuery: searchQuery);
+  Future<PaginatedResponseDto<ForumThreadDto>> fetchThreads({
+    int page = 1,
+    int? categoryId,
+    String? searchQuery,
+  }) async {
+    final response = await _source.getForumThreads(
+      page: page,
+      categoryId: categoryId,
+      searchQuery: searchQuery,
+    );
     final companions = response.results.map(_dtoToCompanion).toList();
     await _db.upsertForumThreads(companions);
     return response;
@@ -30,7 +38,9 @@ class ForumRepository {
   }
 
   Stream<ForumThreadDto?> watchThreadBySlug(String slug) {
-    return _db.watchThreadBySlug(slug).map((row) => row != null ? _rowToDto(row) : null);
+    return _db
+        .watchThreadBySlug(slug)
+        .map((row) => row != null ? _rowToDto(row) : null);
   }
 
   @Deprecated('Use watchAllThreads instead')
@@ -49,8 +59,14 @@ class ForumRepository {
 
   // ── Comments ─────────────────────────────────────────────────────────────
 
-  Future<PaginatedResponseDto<ForumCommentDto>> fetchComments({required int threadId, int page = 1}) async {
-    final response = await _source.getForumComments(threadId: threadId, page: page);
+  Future<PaginatedResponseDto<ForumCommentDto>> fetchComments({
+    required int threadId,
+    int page = 1,
+  }) async {
+    final response = await _source.getForumComments(
+      threadId: threadId,
+      page: page,
+    );
     final companions = response.results.map(_commentDtoToCompanion).toList();
     await _db.upsertForumComments(companions);
     return response;
@@ -62,8 +78,14 @@ class ForumRepository {
         .map((rows) => rows.map(_commentRowToDto).toList());
   }
 
-  Future<ForumCommentDto> postComment({required int threadId, required String content}) async {
-    final commentDto = await _source.postForumComment(threadId: threadId, content: content);
+  Future<ForumCommentDto> postComment({
+    required int threadId,
+    required String content,
+  }) async {
+    final commentDto = await _source.postForumComment(
+      threadId: threadId,
+      content: content,
+    );
     final companion = _commentDtoToCompanion(commentDto);
     await _db.upsertForumComments([companion]);
     return commentDto;
@@ -92,25 +114,25 @@ class ForumRepository {
   // ── Mappers ──────────────────────────────────────────────────────────────
 
   ForumThreadDto _rowToDto(ForumThreadsTableData row) => ForumThreadDto(
-        threadId: row.threadId ?? 0,
-        slug: row.id,
-        courseId: row.courseId,
-        categoryId: null,
-        categorySlug: row.categorySlug,
-        title: row.title,
-        summary: row.description,
-        authorName: row.authorName,
-        authorAvatar: row.authorAvatar,
-        createdAt: row.createdAt,
-        replyCount: row.replyCount,
-        upvotes: row.upvotes,
-        downvotes: row.downvotes,
-        status: row.status == 'answered'
-            ? ForumThreadStatus.answered
-            : ForumThreadStatus.unanswered,
-        imageUrl: row.imageUrl,
-        contentHtml: row.contentHtml,
-      );
+    threadId: row.threadId ?? 0,
+    slug: row.id,
+    courseId: row.courseId,
+    categoryId: null,
+    categorySlug: row.categorySlug,
+    title: row.title,
+    summary: row.description,
+    authorName: row.authorName,
+    authorAvatar: row.authorAvatar,
+    createdAt: row.createdAt,
+    replyCount: row.replyCount,
+    upvotes: row.upvotes,
+    downvotes: row.downvotes,
+    status: row.status == 'answered'
+        ? ForumThreadStatus.answered
+        : ForumThreadStatus.unanswered,
+    imageUrl: row.imageUrl,
+    contentHtml: row.contentHtml,
+  );
 
   ForumThreadsTableCompanion _dtoToCompanion(ForumThreadDto dto) =>
       ForumThreadsTableCompanion.insert(
@@ -131,7 +153,8 @@ class ForumRepository {
         contentHtml: Value(dto.contentHtml),
       );
 
-  ForumCommentDto _commentRowToDto(ForumCommentsTableData row) => ForumCommentDto(
+  ForumCommentDto _commentRowToDto(ForumCommentsTableData row) =>
+      ForumCommentDto(
         id: row.id,
         threadId: row.threadId,
         authorName: row.authorName,

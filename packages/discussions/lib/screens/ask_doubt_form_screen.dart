@@ -15,12 +15,16 @@ class AskDoubtFormScreen extends ConsumerStatefulWidget {
   final int? questionId;
 
   const AskDoubtFormScreen({
-    super.key, 
-    this.chapterContentId, 
-    this.lessonTitle, 
+    super.key,
+    this.chapterContentId,
+    this.lessonTitle,
     this.lessonType,
     this.questionId,
-  }) : assert((chapterContentId == null && lessonTitle == null) || questionId == null, 'Cannot provide both lesson context and questionId');
+  }) : assert(
+         (chapterContentId == null && lessonTitle == null) ||
+             questionId == null,
+         'Cannot provide both lesson context and questionId',
+       );
 
   @override
   ConsumerState<AskDoubtFormScreen> createState() => _AskDoubtFormScreenState();
@@ -113,7 +117,8 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                           SizedBox(height: design.spacing.sm),
                           ForumAttachmentPreview(
                             imageUrls: _attachments,
-                            onRemove: (idx) => setState(() => _attachments.removeAt(idx)),
+                            onRemove: (idx) =>
+                                setState(() => _attachments.removeAt(idx)),
                           ),
                         ],
                         const SizedBox(height: 24),
@@ -178,15 +183,26 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 8),
                               child: Container(
-                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
+                                ),
                                 decoration: BoxDecoration(
                                   color: design.colors.surfaceVariant,
-                                  borderRadius: BorderRadius.circular(design.radius.md),
-                                  border: Border.all(color: design.colors.divider),
+                                  borderRadius: BorderRadius.circular(
+                                    design.radius.md,
+                                  ),
+                                  border: Border.all(
+                                    color: design.colors.divider,
+                                  ),
                                 ),
                                 child: Row(
                                   children: [
-                                    Icon(LucideIcons.fileText, size: 16, color: design.colors.textSecondary),
+                                    Icon(
+                                      LucideIcons.fileText,
+                                      size: 16,
+                                      color: design.colors.textSecondary,
+                                    ),
                                     const SizedBox(width: 8),
                                     Expanded(
                                       child: AppText.bodySmall(
@@ -197,8 +213,14 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                                       ),
                                     ),
                                     AppFocusable(
-                                      onTap: () => setState(() => _fileAttachments.removeAt(idx)),
-                                      child: Icon(LucideIcons.x, size: 16, color: design.colors.textTertiary),
+                                      onTap: () => setState(
+                                        () => _fileAttachments.removeAt(idx),
+                                      ),
+                                      child: Icon(
+                                        LucideIcons.x,
+                                        size: 16,
+                                        color: design.colors.textTertiary,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -231,12 +253,8 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
         if (_isSubmitting)
           Positioned.fill(
             child: Container(
-              color: design.colors.card.withValues(
-                alpha: 0.7,
-              ),
-              child: const Center(
-                child: AppLoadingIndicator(),
-              ),
+              color: design.colors.card.withValues(alpha: 0.7),
+              child: const Center(child: AppLoadingIndicator()),
             ),
           ),
       ],
@@ -249,26 +267,23 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
 
   Widget _contextLinkBadge(DesignConfig design, AppLocalizations l10n) {
     final isQuestion = widget.questionId != null;
-    final icon = isQuestion 
-        ? LucideIcons.helpCircle 
+    final icon = isQuestion
+        ? LucideIcons.helpCircle
         : widget.lessonType?.icon ?? LucideIcons.bookOpen;
-        
+
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: design.spacing.md, vertical: design.spacing.sm),
+      padding: EdgeInsets.symmetric(
+        horizontal: design.spacing.md,
+        vertical: design.spacing.sm,
+      ),
       decoration: BoxDecoration(
         color: design.colors.accent2.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(design.radius.md),
-        border: Border.all(
-          color: design.colors.accent2.withValues(alpha: 0.3),
-        ),
+        border: Border.all(color: design.colors.accent2.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
-          Icon(
-            icon,
-            size: 20,
-            color: design.colors.accent2,
-          ),
+          Icon(icon, size: 20, color: design.colors.accent2),
           const SizedBox(width: 8),
           Expanded(
             child: AppText.bodySmall(
@@ -406,7 +421,9 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
     if (result != null && result.paths.isNotEmpty) {
       setState(() {
         final remaining = 3 - _fileAttachments.length;
-        _fileAttachments.addAll(result.paths.whereType<String>().take(remaining));
+        _fileAttachments.addAll(
+          result.paths.whereType<String>().take(remaining),
+        );
       });
     }
   }
@@ -433,9 +450,11 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
     ref.read(doubtRepositoryProvider.future).then((repo) async {
       try {
         String finalHtml = descriptionHtml;
-        
+
         if (_attachments.isNotEmpty) {
-          final uploadFutures = _attachments.map((path) => repo.uploadDoubtImage(path));
+          final uploadFutures = _attachments.map(
+            (path) => repo.uploadDoubtImage(path),
+          );
           final urls = await Future.wait(uploadFutures);
           for (final url in urls) {
             finalHtml += '<br><img src="$url" />';
@@ -443,16 +462,19 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
         }
 
         if (_fileAttachments.isNotEmpty) {
-          final uploadFutures = _fileAttachments.map((path) => repo.uploadDoubtImage(path));
+          final uploadFutures = _fileAttachments.map(
+            (path) => repo.uploadDoubtImage(path),
+          );
           final urls = await Future.wait(uploadFutures);
           for (var i = 0; i < urls.length; i++) {
             final url = urls[i];
             final localPath = _fileAttachments[i];
             final name = localPath.split('/').last;
-            finalHtml += '<br><a href="$url" target="_blank" style="display:inline-flex;align-items:center;padding:8px 12px;background:#f3f4f6;border-radius:8px;text-decoration:none;color:#374151;">📎 $name</a>';
+            finalHtml +=
+                '<br><a href="$url" target="_blank" style="display:inline-flex;align-items:center;padding:8px 12px;background:#f3f4f6;border-radius:8px;text-decoration:none;color:#374151;">📎 $name</a>';
           }
         }
-        
+
         await repo.createDoubt(
           title: title,
           description: finalHtml,

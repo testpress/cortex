@@ -7,7 +7,6 @@ import '../data/auth/auth_provider.dart';
 import 'user_agent_interceptor.dart';
 import 'auth_interceptor.dart';
 
-
 /// Provider that manages the app-wide singleton Dio instance.
 /// It includes the default UserAgentInterceptor and is intended to be
 /// the primary consumer of network requests.
@@ -21,7 +20,7 @@ final Provider<Dio> dioProvider = Provider<Dio>((ref) {
       },
     ),
   );
-  
+
   dio.interceptors.add(UserAgentInterceptor());
   dio.interceptors.add(
     AuthInterceptor(
@@ -36,4 +35,3 @@ final Provider<Dio> dioProvider = Provider<Dio>((ref) {
 
   return dio;
 });
-

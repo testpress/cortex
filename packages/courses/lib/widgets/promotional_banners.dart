@@ -72,7 +72,10 @@ class PromotionalBanners extends StatelessWidget {
     } else {
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-        child: AnnouncementCard(post: posts.first, index: 0, onTap: () => onItemTap?.call(posts.first)),
+        child: AnnouncementCard(
+            post: posts.first,
+            index: 0,
+            onTap: () => onItemTap?.call(posts.first)),
       );
     }
   }
@@ -90,14 +93,18 @@ class PromotionalBanners extends StatelessWidget {
       itemCount: posts.length,
       itemPadding: EdgeInsets.only(left: design.spacing.md),
       itemBuilder: (context, index) {
-        return AnnouncementCard(post: posts[index], index: index, onTap: () => onItemTap?.call(posts[index]));
+        return AnnouncementCard(
+            post: posts[index],
+            index: index,
+            onTap: () => onItemTap?.call(posts[index]));
       },
     );
   }
 }
 
 class AnnouncementCard extends StatelessWidget {
-  const AnnouncementCard({super.key, required this.post, this.index = 0, this.onTap});
+  const AnnouncementCard(
+      {super.key, required this.post, this.index = 0, this.onTap});
   final PostDto post;
   final int index;
   final VoidCallback? onTap;
@@ -105,7 +112,7 @@ class AnnouncementCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    
+
     // Create a deterministic color palette based on item index
     final colors = [
       (bg: const Color(0xFFECFDF5), text: const Color(0xFF065F46)), // Green
@@ -131,37 +138,37 @@ class AnnouncementCard extends StatelessWidget {
           ],
         ),
         child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                AppText.body(
-                  post.title,
-                  color: colorScheme.text,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 2),
-                AppText.bodySmall(
-                  post.summary.replaceAll(RegExp(r'[\r\n]+'), ' ').trim(),
-                  color: colorScheme.text.withValues(alpha: 0.8),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  AppText.body(
+                    post.title,
+                    color: colorScheme.text,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: 2),
+                  AppText.bodySmall(
+                    post.summary.replaceAll(RegExp(r'[\r\n]+'), ' ').trim(),
+                    color: colorScheme.text.withValues(alpha: 0.8),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Icon(
-            LucideIcons.chevronRight,
-            size: 20,
-            color: colorScheme.text.withValues(alpha: 0.6),
-          ),
-        ],
-      ),
+            const SizedBox(width: 12),
+            Icon(
+              LucideIcons.chevronRight,
+              size: 20,
+              color: colorScheme.text.withValues(alpha: 0.6),
+            ),
+          ],
+        ),
       ),
     );
   }

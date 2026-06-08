@@ -6,75 +6,80 @@ import '../../screens/dashboard/paid_active_home_screen.dart';
 
 class HomeRoutes {
   static List<RouteBase> routes(GlobalKey<NavigatorState> rootNavigatorKey) => [
+    GoRoute(
+      name: AppRouteNames.home,
+      path: '/home',
+      builder: (context, state) => const PaidActiveHomeScreen(),
+      routes: [
         GoRoute(
-          name: AppRouteNames.home,
-          path: '/home',
-          builder: (context, state) => const PaidActiveHomeScreen(),
+          path: 'discussions/forum',
+          parentNavigatorKey: rootNavigatorKey,
+          builder: (context, state) => const ForumPostsListScreen(),
           routes: [
             GoRoute(
-              path: 'discussions/forum',
+              path: 'create',
               parentNavigatorKey: rootNavigatorKey,
-              builder: (context, state) => const ForumPostsListScreen(),
-              routes: [
-                GoRoute(
-                  path: 'create',
-                  parentNavigatorKey: rootNavigatorKey,
-                  builder: (context, state) => const ForumPostCreateScreen(),
-                ),
-                GoRoute(
-                  path: 'posts/:slug',
-                  parentNavigatorKey: rootNavigatorKey,
-                  builder: (context, state) {
-                    final slug = state.pathParameters['slug']!;
-                    final initialThread = state.extra is ForumThreadDto
-                        ? state.extra as ForumThreadDto
-                        : null;
-                    return ForumPostDetailScreen(
-                      slug: slug,
-                      initialThread: initialThread,
-                    );
-                  },
-                ),
-              ],
+              builder: (context, state) => const ForumPostCreateScreen(),
             ),
             GoRoute(
-              path: 'discussions/doubts',
+              path: 'posts/:slug',
               parentNavigatorKey: rootNavigatorKey,
-              builder: (context, state) => const DoubtsListScreen(),
-              routes: [
-                GoRoute(
-                  path: 'ask',
-                  parentNavigatorKey: rootNavigatorKey,
-                  builder: (context, state) {
-                    final questionId = int.tryParse(state.uri.queryParameters['question_id'] ?? '');
-                    final chapterContentId = int.tryParse(state.uri.queryParameters['chapterContentId'] ?? '');
-                    final lessonTitle = state.uri.queryParameters['lessonTitle'];
-                    final lessonTypeStr = state.uri.queryParameters['lessonType'];
-                    final lessonType = lessonTypeStr != null 
-                        ? LessonType.values.firstWhere(
-                            (e) => e.name == lessonTypeStr, 
-                            orElse: () => LessonType.unknown)
-                        : null;
-                    
-                    return AskDoubtFormScreen(
-                      chapterContentId: chapterContentId,
-                      lessonTitle: lessonTitle,
-                      lessonType: lessonType,
-                      questionId: questionId,
-                    );
-                  },
-                ),
-                GoRoute(
-                  path: ':doubtId',
-                  parentNavigatorKey: rootNavigatorKey,
-                  builder: (context, state) {
-                    final doubtId = state.pathParameters['doubtId']!;
-                    return DoubtDetailScreen(doubtId: doubtId);
-                  },
-                ),
-              ],
+              builder: (context, state) {
+                final slug = state.pathParameters['slug']!;
+                final initialThread = state.extra is ForumThreadDto
+                    ? state.extra as ForumThreadDto
+                    : null;
+                return ForumPostDetailScreen(
+                  slug: slug,
+                  initialThread: initialThread,
+                );
+              },
             ),
           ],
         ),
-      ];
+        GoRoute(
+          path: 'discussions/doubts',
+          parentNavigatorKey: rootNavigatorKey,
+          builder: (context, state) => const DoubtsListScreen(),
+          routes: [
+            GoRoute(
+              path: 'ask',
+              parentNavigatorKey: rootNavigatorKey,
+              builder: (context, state) {
+                final questionId = int.tryParse(
+                  state.uri.queryParameters['question_id'] ?? '',
+                );
+                final chapterContentId = int.tryParse(
+                  state.uri.queryParameters['chapterContentId'] ?? '',
+                );
+                final lessonTitle = state.uri.queryParameters['lessonTitle'];
+                final lessonTypeStr = state.uri.queryParameters['lessonType'];
+                final lessonType = lessonTypeStr != null
+                    ? LessonType.values.firstWhere(
+                        (e) => e.name == lessonTypeStr,
+                        orElse: () => LessonType.unknown,
+                      )
+                    : null;
+
+                return AskDoubtFormScreen(
+                  chapterContentId: chapterContentId,
+                  lessonTitle: lessonTitle,
+                  lessonType: lessonType,
+                  questionId: questionId,
+                );
+              },
+            ),
+            GoRoute(
+              path: ':doubtId',
+              parentNavigatorKey: rootNavigatorKey,
+              builder: (context, state) {
+                final doubtId = state.pathParameters['doubtId']!;
+                return DoubtDetailScreen(doubtId: doubtId);
+              },
+            ),
+          ],
+        ),
+      ],
+    ),
+  ];
 }

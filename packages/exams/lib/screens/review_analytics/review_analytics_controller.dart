@@ -72,10 +72,8 @@ class ReviewAnalyticsController extends StateNotifier<ReviewAnalyticsState> {
   final ReviewAnalyticsParam param;
   final ExamRepository examRepository;
 
-  ReviewAnalyticsController({
-    required this.param,
-    required this.examRepository,
-  }) : super(ReviewAnalyticsState(isLoading: true)) {
+  ReviewAnalyticsController({required this.param, required this.examRepository})
+    : super(ReviewAnalyticsState(isLoading: true)) {
     _initializeData();
   }
 
@@ -103,10 +101,13 @@ class ReviewAnalyticsController extends StateNotifier<ReviewAnalyticsState> {
     final correct = attempt.correctCount ?? 0;
     final incorrect = attempt.incorrectCount ?? 0;
 
-    final double? markPerQuestion = double.tryParse(param.exam?.markPerQuestion ?? '') ??
+    final double? markPerQuestion =
+        double.tryParse(param.exam?.markPerQuestion ?? '') ??
         double.tryParse(attempt.markPerQuestion ?? '');
-    final double negativeMarks = double.tryParse(param.exam?.negativeMarks ?? '') ??
-        double.tryParse(attempt.negativeMarks ?? '') ?? 0.0;
+    final double negativeMarks =
+        double.tryParse(param.exam?.negativeMarks ?? '') ??
+        double.tryParse(attempt.negativeMarks ?? '') ??
+        0.0;
 
     if (attempt.score != null && attempt.score!.isNotEmpty) {
       final parts = attempt.score!.split('/');
@@ -138,7 +139,11 @@ class ReviewAnalyticsController extends StateNotifier<ReviewAnalyticsState> {
     if (examDurationSeconds > 0) {
       totalTime = Duration(seconds: examDurationSeconds);
     } else if (attempt.timeTaken != null && attempt.remainingTime != null) {
-      totalTime = Duration(seconds: _parseDurationToSeconds(attempt.timeTaken) + _parseDurationToSeconds(attempt.remainingTime));
+      totalTime = Duration(
+        seconds:
+            _parseDurationToSeconds(attempt.timeTaken) +
+            _parseDurationToSeconds(attempt.remainingTime),
+      );
     }
 
     final attempted = correct + incorrect;
@@ -162,10 +167,7 @@ class ReviewAnalyticsController extends StateNotifier<ReviewAnalyticsState> {
       performanceLevel: _performanceLevel(scoreVal, maxScoreVal),
     );
 
-    state = ReviewAnalyticsState(
-      isLoading: true,
-      overview: overview,
-    );
+    state = ReviewAnalyticsState(isLoading: true, overview: overview);
 
     _fetchSubjectAnalytics();
   }
@@ -203,14 +205,17 @@ class ReviewAnalyticsController extends StateNotifier<ReviewAnalyticsState> {
       final subjects = await examRepository.getSubjectAnalytics(analyticsUrl);
 
       // Use markPerQuestion from exam (preferred) then fall back to attempt field
-      final double? markPerQuestion = double.tryParse(param.exam?.markPerQuestion ?? '') ??
+      final double? markPerQuestion =
+          double.tryParse(param.exam?.markPerQuestion ?? '') ??
           double.tryParse(attempt.markPerQuestion ?? '');
-      final double negativeMarks = double.tryParse(param.exam?.negativeMarks ?? '') ??
-          double.tryParse(attempt.negativeMarks ?? '') ?? 0.0;
+      final double negativeMarks =
+          double.tryParse(param.exam?.negativeMarks ?? '') ??
+          double.tryParse(attempt.negativeMarks ?? '') ??
+          0.0;
 
       final mappedSections = subjects.map((s) {
-        final subjectScore = markPerQuestion != null 
-            ? ((s.correct * markPerQuestion) - (s.incorrect * negativeMarks)) 
+        final subjectScore = markPerQuestion != null
+            ? ((s.correct * markPerQuestion) - (s.incorrect * negativeMarks))
             : 0.0;
         return SectionPerformanceOverview(
           name: s.name,
@@ -257,22 +262,20 @@ class ReviewAnalyticsController extends StateNotifier<ReviewAnalyticsState> {
         sectionTotals: mappedTotals,
       );
     } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        errorMessage: e.toString(),
-      );
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
     }
   }
 }
 
-final reviewAnalyticsControllerProvider = StateNotifierProvider.family<
-    ReviewAnalyticsController,
-    ReviewAnalyticsState,
-    ReviewAnalyticsParam
->((ref, param) {
-  final repository = ref.watch(examRepositoryProvider);
-  return ReviewAnalyticsController(
-    param: param,
-    examRepository: repository,
-  );
-});
+final reviewAnalyticsControllerProvider =
+    StateNotifierProvider.family<
+      ReviewAnalyticsController,
+      ReviewAnalyticsState,
+      ReviewAnalyticsParam
+    >((ref, param) {
+      final repository = ref.watch(examRepositoryProvider);
+      return ReviewAnalyticsController(
+        param: param,
+        examRepository: repository,
+      );
+    });

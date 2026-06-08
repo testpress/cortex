@@ -20,14 +20,17 @@ abstract final class ReviewQuestionHtmlBuilder {
     required AppLocalizations l10n,
   }) {
     // ── Theme colour tokens ────────────────────────────────────────────────
-    final borderColor   = _hex(design.colors.border);
-    final textPrimary   = _hex(design.colors.textPrimary);
+    final borderColor = _hex(design.colors.border);
+    final textPrimary = _hex(design.colors.textPrimary);
     final textSecondary = _hex(design.colors.textSecondary);
-    final cardColor     = _hex(design.colors.card);
-    final correctColor  = _hex(design.colors.accent4);
-    final correctBg     = _rgba(design.colors.accent4, design.isDark ? 0.15 : 0.08);
+    final cardColor = _hex(design.colors.card);
+    final correctColor = _hex(design.colors.accent4);
+    final correctBg = _rgba(design.colors.accent4, design.isDark ? 0.15 : 0.08);
     final incorrectColor = _hex(design.colors.accent5);
-    final incorrectBg   = _rgba(design.colors.accent5, design.isDark ? 0.15 : 0.08);
+    final incorrectBg = _rgba(
+      design.colors.accent5,
+      design.isDark ? 0.15 : 0.08,
+    );
 
     final sb = StringBuffer();
 
@@ -38,22 +41,32 @@ abstract final class ReviewQuestionHtmlBuilder {
     // ── Colour-coded options ───────────────────────────────────────────────
     sb.writeln('<div class="options-container">');
     for (final opt in question.options) {
-      final isCorrect  = question.correctOptionIds.any((id) => id.toString() == opt.id.toString());
-      final isSelected = attemptState?.selectedOptions.any((id) => id.toString() == opt.id.toString()) ?? false;
-      final isActive   = isCorrect || isSelected;
+      final isCorrect = question.correctOptionIds.any(
+        (id) => id.toString() == opt.id.toString(),
+      );
+      final isSelected =
+          attemptState?.selectedOptions.any(
+            (id) => id.toString() == opt.id.toString(),
+          ) ??
+          false;
+      final isActive = isCorrect || isSelected;
 
       // Border, background and text colour per option state
-      final optBorder    = isCorrect ? correctColor : (isSelected ? incorrectColor : borderColor);
-      final optBg        = isCorrect ? correctBg    : (isSelected ? incorrectBg    : cardColor);
-      final optTextColor = isActive  ? textPrimary  : textSecondary;
+      final optBorder = isCorrect
+          ? correctColor
+          : (isSelected ? incorrectColor : borderColor);
+      final optBg = isCorrect
+          ? correctBg
+          : (isSelected ? incorrectBg : cardColor);
+      final optTextColor = isActive ? textPrimary : textSecondary;
       final indicatorColor = isCorrect ? correctColor : incorrectColor;
 
       // Trailing icon: ✓ for correct, ✗ for wrong selection, empty otherwise
       final iconHtml = isCorrect
           ? '<span style="color: $correctColor; margin-left: 12px; font-weight: bold; font-size: 18px;">✓</span>'
           : isSelected
-              ? '<span style="color: $incorrectColor; margin-left: 12px; font-weight: bold; font-size: 18px;">✗</span>'
-              : '';
+          ? '<span style="color: $incorrectColor; margin-left: 12px; font-weight: bold; font-size: 18px;">✗</span>'
+          : '';
 
       sb.writeln('''
         <div class="option-item" style="border-color: $optBorder; background-color: $optBg; border-width: ${isActive ? '1.5px' : '1px'};">
@@ -71,9 +84,12 @@ abstract final class ReviewQuestionHtmlBuilder {
 
     // ── Explanation (if present) ───────────────────────────────────────────
     if (question.explanation != null && question.explanation!.isNotEmpty) {
-      final explBg     = _rgba(design.colors.accent2, design.isDark ? 0.18 : 0.12);
-      final explBorder = _rgba(design.colors.accent2, design.isDark ? 0.40 : 0.35);
-      final explTitle  = _hex(design.colors.accent2);
+      final explBg = _rgba(design.colors.accent2, design.isDark ? 0.18 : 0.12);
+      final explBorder = _rgba(
+        design.colors.accent2,
+        design.isDark ? 0.40 : 0.35,
+      );
+      final explTitle = _hex(design.colors.accent2);
 
       sb.writeln('''
         <div class="explanation-box" style="background-color: $explBg; border-color: $explBorder;">
@@ -108,7 +124,11 @@ abstract final class ReviewQuestionHtmlBuilder {
     return 'rgba($r, $g, $b, $alpha)';
   }
 
-  static String _css({required String cardColor, required String textPrimary}) => '''
+  static String _css({
+    required String cardColor,
+    required String textPrimary,
+  }) =>
+      '''
       <style>
         body {
           background-color: $cardColor;

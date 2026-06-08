@@ -16,7 +16,9 @@ class AnnouncementDetailScreen extends StatelessWidget {
     try {
       date = DateTime.parse(post.publishedDate);
     } catch (_) {}
-    final formattedDate = date != null ? DateFormatter.formatFullDate(date) : '';
+    final formattedDate = date != null
+        ? DateFormatter.formatFullDate(date)
+        : '';
 
     return AppShell(
       backgroundColor: design.colors.card,
@@ -42,7 +44,9 @@ class AnnouncementDetailScreen extends StatelessWidget {
                     GestureDetector(
                       onTap: () => Navigator.of(context).pop(),
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 2), // Optical alignment
+                        padding: const EdgeInsets.only(
+                          top: 2,
+                        ), // Optical alignment
                         child: Icon(
                           LucideIcons.arrowLeft,
                           color: design.colors.textPrimary,
@@ -62,7 +66,7 @@ class AnnouncementDetailScreen extends StatelessWidget {
               ),
             ),
           ),
-          
+
           Expanded(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -81,11 +85,17 @@ class AnnouncementDetailScreen extends StatelessWidget {
                           color: design.colors.textSecondary,
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: design.spacing.xs),
-                          child: AppText.caption('•', color: design.colors.textTertiary),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: design.spacing.xs,
+                          ),
+                          child: AppText.caption(
+                            '•',
+                            color: design.colors.textTertiary,
+                          ),
                         ),
                       ],
-                      if (post.categoryName != null && post.categoryName!.isNotEmpty)
+                      if (post.categoryName != null &&
+                          post.categoryName!.isNotEmpty)
                         AppBadge(
                           label: post.categoryName!,
                           isPill: true,
@@ -94,23 +104,21 @@ class AnnouncementDetailScreen extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: design.spacing.md),
-                  
+
                   AppText.headline(
                     post.title,
                     color: design.colors.textPrimary,
                   ),
                   SizedBox(height: design.spacing.xl),
-                  
-                  AppHtmlV2(
-                    data: post.contentHtml,
-                  ),
-                  
+
+                  AppHtmlV2(data: post.contentHtml),
+
                   SizedBox(height: design.spacing.xxl),
                 ],
               ),
             ),
           ),
-          
+
           if (!post.allowComments)
             Container(
               decoration: BoxDecoration(
@@ -123,7 +131,11 @@ class AnnouncementDetailScreen extends StatelessWidget {
                   padding: EdgeInsets.all(design.spacing.md),
                   child: Row(
                     children: [
-                      Icon(LucideIcons.messageSquareOff, size: 20, color: design.colors.textSecondary),
+                      Icon(
+                        LucideIcons.messageSquareOff,
+                        size: 20,
+                        color: design.colors.textSecondary,
+                      ),
                       SizedBox(width: design.spacing.md),
                       Expanded(
                         child: AppText.bodySmall(

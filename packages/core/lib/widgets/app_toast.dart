@@ -55,16 +55,11 @@ class AppToast {
           Icon(
             isError ? LucideIcons.alertTriangle : LucideIcons.check,
             size: 20,
-            color: isError
-                ? design.colors.error
-                : design.colors.success,
+            color: isError ? design.colors.error : design.colors.success,
           ),
           SizedBox(width: design.spacing.sm),
           Flexible(
-            child: AppText.labelBold(
-              message,
-              color: design.colors.textInverse,
-            ),
+            child: AppText.labelBold(message, color: design.colors.textInverse),
           ),
         ],
       ),

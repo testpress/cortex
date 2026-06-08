@@ -6,10 +6,7 @@ import 'package:courses/courses.dart';
 import '../screens/announcements/announcements_list_screen.dart';
 
 class DashboardDrawer extends ConsumerWidget {
-  const DashboardDrawer({
-    super.key,
-    this.isLandscape = false,
-  });
+  const DashboardDrawer({super.key, this.isLandscape = false});
 
   final bool isLandscape;
 
@@ -45,11 +42,10 @@ class DashboardDrawer extends ConsumerWidget {
               label: l10n.drawerPosts,
               action: () {
                 ref.read(isHomeDrawerOpenProvider.notifier).state = false;
-                Navigator.of(context, rootNavigator: true).push(
-                  AppRoute(
-                    page: const AnnouncementsListScreen(),
-                  ),
-                );
+                Navigator.of(
+                  context,
+                  rootNavigator: true,
+                ).push(AppRoute(page: const AnnouncementsListScreen()));
               },
             ),
             AppDrawerItem(

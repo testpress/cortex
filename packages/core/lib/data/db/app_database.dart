@@ -81,7 +81,6 @@ class AppDatabase extends _$AppDatabase {
   Future<void> upsertUser(UsersTableCompanion companion) =>
       into(usersTable).insertOnConflictUpdate(companion);
 
-
   /// Wipe all data from all local tables.
   /// Typically used during logout for a clean factory-reset state.
   Future<void> purgeAllData() {
@@ -112,12 +111,13 @@ class AppDatabase extends _$AppDatabase {
         // Initial insert happens out-of-band to establish the row.
         // Returning a default until the watchdog picks up the new row.
         return const AppSettingsTableData(
-            id: 1,
-            appearanceMode: AppSettingsDefaults.appearanceMode,
-            videoQuality: AppSettingsDefaults.videoQuality,
-            autoPlayNext: AppSettingsDefaults.autoPlayNext,
-            textSize: AppSettingsDefaults.textSize,
-            highContrast: AppSettingsDefaults.highContrast);
+          id: 1,
+          appearanceMode: AppSettingsDefaults.appearanceMode,
+          videoQuality: AppSettingsDefaults.videoQuality,
+          autoPlayNext: AppSettingsDefaults.autoPlayNext,
+          textSize: AppSettingsDefaults.textSize,
+          highContrast: AppSettingsDefaults.highContrast,
+        );
       }
       return entry;
     });
@@ -125,15 +125,17 @@ class AppDatabase extends _$AppDatabase {
 
   /// Update app settings.
   Future<void> updateSettings(AppSettingsTableCompanion companion) {
-    return (update(appSettingsTable)..where((t) => t.id.equals(1)))
-        .write(companion);
+    return (update(
+      appSettingsTable,
+    )..where((t) => t.id.equals(1))).write(companion);
   }
 
   // ── Courses ──────────────────────────────────────────────────────────────
 
   /// Watch all courses as a live stream.
-  Stream<List<CoursesTableData>> watchAllCourses() =>
-      (select(coursesTable)..orderBy([(t) => OrderingTerm.asc(t.orderIndex)])).watch();
+  Stream<List<CoursesTableData>> watchAllCourses() => (select(
+    coursesTable,
+  )..orderBy([(t) => OrderingTerm.asc(t.orderIndex)])).watch();
 
   /// Insert or replace a list of courses.
   Future<void> upsertCourses(List<CoursesTableCompanion> rows) =>
@@ -155,9 +157,9 @@ class AppDatabase extends _$AppDatabase {
 
   /// Watch all lessons in the database.
   /// Used for mapping the overall course structure.
-  Stream<List<LessonsTableData>> watchAllLessons() =>
-      (select(lessonsTable)..orderBy([(t) => OrderingTerm.asc(t.orderIndex)]))
-          .watch();
+  Stream<List<LessonsTableData>> watchAllLessons() => (select(
+    lessonsTable,
+  )..orderBy([(t) => OrderingTerm.asc(t.orderIndex)])).watch();
 
   /// Watch all lessons for a specific course.
   Stream<List<LessonsTableData>> watchLessonsForCourse(String courseId) {
@@ -186,18 +188,20 @@ class AppDatabase extends _$AppDatabase {
     final isCurrentlyBookmarked = lesson.bookmarkId != null;
     await (update(lessonsTable)..where((t) => t.id.equals(id))).write(
       LessonsTableCompanion(
-        bookmarkId: Value(isCurrentlyBookmarked ? null : 1), // Local toggle / dummy ID
+        bookmarkId: Value(
+          isCurrentlyBookmarked ? null : 1,
+        ), // Local toggle / dummy ID
       ),
     );
   }
 
   /// Updates the progress status of a lesson.
   Future<void> updateLessonProgress(
-      String id, LessonProgressStatus status) async {
+    String id,
+    LessonProgressStatus status,
+  ) async {
     await (update(lessonsTable)..where((t) => t.id.equals(id))).write(
-      LessonsTableCompanion(
-        progressStatus: Value(status.name),
-      ),
+      LessonsTableCompanion(progressStatus: Value(status.name)),
     );
   }
 
@@ -224,9 +228,7 @@ class AppDatabase extends _$AppDatabase {
   /// Update the exam metadata JSON for a lesson by its slug.
   Future<void> updateLessonExamMetadata(String slug, String json) async {
     await (update(lessonsTable)..where((t) => t.slug.equals(slug))).write(
-      LessonsTableCompanion(
-        examMetadataJson: Value(json),
-      ),
+      LessonsTableCompanion(examMetadataJson: Value(json)),
     );
   }
 
@@ -243,19 +245,18 @@ class AppDatabase extends _$AppDatabase {
   Stream<List<ForumThreadsTableData>> watchAllThreads() =>
       select(forumThreadsTable).watch();
 
-  Stream<ForumThreadsTableData?> watchThreadBySlug(String slug) =>
-      (select(forumThreadsTable)..where((t) => t.id.equals(slug)))
-          .watchSingleOrNull();
+  Stream<ForumThreadsTableData?> watchThreadBySlug(String slug) => (select(
+    forumThreadsTable,
+  )..where((t) => t.id.equals(slug))).watchSingleOrNull();
 
   Stream<List<ForumThreadsTableData>> watchThreadsForCourse(String courseId) =>
       (select(
         forumThreadsTable,
-      )..where((t) => t.courseId.equals(courseId)))
-          .watch();
+      )..where((t) => t.courseId.equals(courseId))).watch();
 
-  Stream<ForumThreadsTableData?> watchThreadById(String threadId) =>
-      (select(forumThreadsTable)..where((t) => t.id.equals(threadId)))
-          .watchSingleOrNull();
+  Stream<ForumThreadsTableData?> watchThreadById(String threadId) => (select(
+    forumThreadsTable,
+  )..where((t) => t.id.equals(threadId))).watchSingleOrNull();
 
   Future<void> upsertForumThreads(List<ForumThreadsTableCompanion> rows) =>
       batch((b) => b.insertAllOnConflictUpdate(forumThreadsTable, rows));
@@ -276,8 +277,7 @@ class AppDatabase extends _$AppDatabase {
   Stream<List<UserProgressTableData>> watchProgressForUser(String userId) =>
       (select(
         userProgressTable,
-      )..where((t) => t.userId.equals(userId)))
-          .watch();
+      )..where((t) => t.userId.equals(userId))).watch();
 
   Future<void> upsertProgress(List<UserProgressTableCompanion> rows) =>
       batch((b) => b.insertAllOnConflictUpdate(userProgressTable, rows));
@@ -287,13 +287,15 @@ class AppDatabase extends _$AppDatabase {
   Stream<List<DashboardBannersTableData>> watchDashboardBanners() =>
       select(dashboardBannersTable).watch();
 
-  Future<void> upsertDashboardBanners(List<DashboardBannersTableCompanion> rows) =>
-      batch((b) => b.insertAllOnConflictUpdate(dashboardBannersTable, rows));
+  Future<void> upsertDashboardBanners(
+    List<DashboardBannersTableCompanion> rows,
+  ) => batch((b) => b.insertAllOnConflictUpdate(dashboardBannersTable, rows));
 
   // ── Leaderboard Cache ─────────────────────────────────────────────────────
 
   Stream<List<WeeklyLeaderboardData>> watchWeeklyLeaderboard({int? limit}) {
-    final query = select(weeklyLeaderboardTable)..orderBy([(t) => OrderingTerm.asc(t.rank)]);
+    final query = select(weeklyLeaderboardTable)
+      ..orderBy([(t) => OrderingTerm.asc(t.rank)]);
     if (limit != null) {
       query.limit(limit);
     }
@@ -301,7 +303,8 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Stream<List<MonthlyLeaderboardData>> watchMonthlyLeaderboard({int? limit}) {
-    final query = select(monthlyLeaderboardTable)..orderBy([(t) => OrderingTerm.asc(t.rank)]);
+    final query = select(monthlyLeaderboardTable)
+      ..orderBy([(t) => OrderingTerm.asc(t.rank)]);
     if (limit != null) {
       query.limit(limit);
     }
@@ -309,7 +312,8 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Stream<List<AllTimeLeaderboardData>> watchAllTimeLeaderboard({int? limit}) {
-    final query = select(allTimeLeaderboardTable)..orderBy([(t) => OrderingTerm.asc(t.rank)]);
+    final query = select(allTimeLeaderboardTable)
+      ..orderBy([(t) => OrderingTerm.asc(t.rank)]);
     if (limit != null) {
       query.limit(limit);
     }
@@ -327,22 +331,34 @@ class AppDatabase extends _$AppDatabase {
           if (page == 1) {
             await delete(weeklyLeaderboardTable).go();
           }
-          await batch((b) => b.insertAllOnConflictUpdate(
-              weeklyLeaderboardTable, rows.cast<WeeklyLeaderboardTableCompanion>()));
+          await batch(
+            (b) => b.insertAllOnConflictUpdate(
+              weeklyLeaderboardTable,
+              rows.cast<WeeklyLeaderboardTableCompanion>(),
+            ),
+          );
           break;
         case LeaderboardTimeline.thisMonth:
           if (page == 1) {
             await delete(monthlyLeaderboardTable).go();
           }
-          await batch((b) => b.insertAllOnConflictUpdate(
-              monthlyLeaderboardTable, rows.cast<MonthlyLeaderboardTableCompanion>()));
+          await batch(
+            (b) => b.insertAllOnConflictUpdate(
+              monthlyLeaderboardTable,
+              rows.cast<MonthlyLeaderboardTableCompanion>(),
+            ),
+          );
           break;
         case LeaderboardTimeline.allTime:
           if (page == 1) {
             await delete(allTimeLeaderboardTable).go();
           }
-          await batch((b) => b.insertAllOnConflictUpdate(
-              allTimeLeaderboardTable, rows.cast<AllTimeLeaderboardTableCompanion>()));
+          await batch(
+            (b) => b.insertAllOnConflictUpdate(
+              allTimeLeaderboardTable,
+              rows.cast<AllTimeLeaderboardTableCompanion>(),
+            ),
+          );
           break;
       }
     });
@@ -351,7 +367,9 @@ class AppDatabase extends _$AppDatabase {
   // ── Dashboard Feed Management ─────────────────────────────────────────────
 
   /// Watch a specific dashboard section.
-  Stream<List<DashboardContentData>> watchDashboardSection(DashboardSectionType sectionType) {
+  Stream<List<DashboardContentData>> watchDashboardSection(
+    DashboardSectionType sectionType,
+  ) {
     final query = select(dashboardContentsTable)
       ..where((t) => t.sectionType.equalsValue(sectionType))
       ..orderBy([(t) => OrderingTerm.asc(t.displayOrder)]);
@@ -361,11 +379,13 @@ class AppDatabase extends _$AppDatabase {
 
   /// Wipe and refresh a specific dashboard section.
   Future<void> wipeAndInsertDashboardSection(
-      DashboardSectionType sectionType, List<DashboardContentsTableCompanion> rows) {
+    DashboardSectionType sectionType,
+    List<DashboardContentsTableCompanion> rows,
+  ) {
     return transaction(() async {
-      await (delete(dashboardContentsTable)
-            ..where((t) => t.sectionType.equalsValue(sectionType)))
-          .go();
+      await (delete(
+        dashboardContentsTable,
+      )..where((t) => t.sectionType.equalsValue(sectionType))).go();
       await batch((b) => b.insertAll(dashboardContentsTable, rows));
     });
   }
@@ -383,8 +403,7 @@ class AppDatabase extends _$AppDatabase {
         coursesTable,
         coursesTable.id.equalsExp(chaptersTable.courseId),
       ),
-    ])
-      ..where(lessonsTable.id.equals(lessonId));
+    ])..where(lessonsTable.id.equals(lessonId));
 
     return query.getSingleOrNull();
   }
@@ -415,29 +434,32 @@ class AppDatabase extends _$AppDatabase {
 
   // ── Posts / Announcements ──────────────────────────────────────────────────
 
-  Stream<List<PostData>> watchPosts() =>
-      (select(postsTable)..orderBy([(t) => OrderingTerm.desc(t.publishedDate)]))
-          .watch();
+  Stream<List<PostData>> watchPosts() => (select(
+    postsTable,
+  )..orderBy([(t) => OrderingTerm.desc(t.publishedDate)])).watch();
 
   Future<void> upsertPosts(List<PostsTableCompanion> rows) =>
       batch((b) => b.insertAllOnConflictUpdate(postsTable, rows));
 
   /// Replaces all posts — used on page 1 / pull-to-refresh.
   /// Runs in a single transaction so the stream emits only once.
-  Future<void> replacePosts(List<PostsTableCompanion> rows) => transaction(() async {
-    await delete(postsTable).go();
-    await batch((b) => b.insertAllOnConflictUpdate(postsTable, rows));
-  });
+  Future<void> replacePosts(List<PostsTableCompanion> rows) =>
+      transaction(() async {
+        await delete(postsTable).go();
+        await batch((b) => b.insertAllOnConflictUpdate(postsTable, rows));
+      });
 
-  Stream<List<PostCategoryData>> watchPostCategories() =>
-      (select(postCategoriesTable)..orderBy([(t) => OrderingTerm.asc(t.displayOrder)]))
-          .watch();
+  Stream<List<PostCategoryData>> watchPostCategories() => (select(
+    postCategoriesTable,
+  )..orderBy([(t) => OrderingTerm.asc(t.displayOrder)])).watch();
 
   /// Replaces all post categories — categories aren't paginated.
   Future<void> replacePostCategories(List<PostCategoriesTableCompanion> rows) =>
       transaction(() async {
         await delete(postCategoriesTable).go();
-        await batch((b) => b.insertAllOnConflictUpdate(postCategoriesTable, rows));
+        await batch(
+          (b) => b.insertAllOnConflictUpdate(postCategoriesTable, rows),
+        );
       });
 }
 

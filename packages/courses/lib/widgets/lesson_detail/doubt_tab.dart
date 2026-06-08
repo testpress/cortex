@@ -150,7 +150,8 @@ class _DoubtTabState extends State<DoubtTab>
                             ? design.colors.accent2
                             : design.colors.accent2.withValues(alpha: 0.4),
                         onPressed: () {},
-                        padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: design.spacing.md),
                       );
                     },
                   ),

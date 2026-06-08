@@ -41,4 +41,3 @@ export 'providers/info_providers.dart';
 export 'screens/info/info_page.dart';
 export 'screens/downloads_screen.dart';
 export 'providers/downloads_provider.dart';
-

@@ -65,7 +65,9 @@ class PaginatedResponseDto<T> {
     for (final t in tagsList.whereType<Map>()) {
       final idRaw = t['id'];
       final nameRaw = t['name'];
-      final id = idRaw is int ? idRaw : (idRaw is String ? int.tryParse(idRaw) : null);
+      final id = idRaw is int
+          ? idRaw
+          : (idRaw is String ? int.tryParse(idRaw) : null);
       final name = nameRaw?.toString();
       if (id != null && name != null && name.isNotEmpty) {
         tagMap[id] = name;
@@ -79,23 +81,23 @@ class PaginatedResponseDto<T> {
       nestedList = courses;
     } else {
       // Defensive fallback: pick a non-tags list that looks like a course list.
-      nestedList =
-          results.values
-              .whereType<List<dynamic>>()
-              .firstWhere((list) {
-                if (identical(list, tagsList) || list.isEmpty) return false;
-                final first = list.first;
-                if (first is! Map<String, dynamic>) return false;
-                return first.containsKey('id') &&
-                    first.containsKey('title') &&
-                    first.containsKey('tag_ids');
-              }, orElse: () => <dynamic>[]);
+      nestedList = results.values.whereType<List<dynamic>>().firstWhere((list) {
+        if (identical(list, tagsList) || list.isEmpty) return false;
+        final first = list.first;
+        if (first is! Map<String, dynamic>) return false;
+        return first.containsKey('id') &&
+            first.containsKey('title') &&
+            first.containsKey('tag_ids');
+      }, orElse: () => <dynamic>[]);
     }
 
     if (tagMap.isNotEmpty) {
       for (final item in nestedList.whereType<Map<String, dynamic>>()) {
         final tagIds = item['tag_ids'] as List<dynamic>? ?? [];
-        item['tags'] = tagIds.map((id) => tagMap[id]).whereType<String>().toList();
+        item['tags'] = tagIds
+            .map((id) => tagMap[id])
+            .whereType<String>()
+            .toList();
       }
     }
     return nestedList;

@@ -7,7 +7,8 @@ class ForgotPasswordScreen extends ConsumerStatefulWidget {
   const ForgotPasswordScreen({super.key});
 
   @override
-  ConsumerState<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+  ConsumerState<ForgotPasswordScreen> createState() =>
+      _ForgotPasswordScreenState();
 }
 
 class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
@@ -41,9 +42,14 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: design.spacing.xl, vertical: design.spacing.md),
+              padding: EdgeInsets.symmetric(
+                horizontal: design.spacing.xl,
+                vertical: design.spacing.md,
+              ),
               child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight - design.spacing.xl * 2),
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight - design.spacing.xl * 2,
+                ),
                 child: IntrinsicHeight(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -67,7 +73,10 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                         ),
                         if (_errorMessage != null) ...[
                           SizedBox(height: design.spacing.md),
-                          AppText.bodySmall(_errorMessage!, color: design.colors.error),
+                          AppText.bodySmall(
+                            _errorMessage!,
+                            color: design.colors.error,
+                          ),
                         ],
                         const Spacer(),
                         SizedBox(height: design.spacing.xxl),
@@ -116,7 +125,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     try {
       final repository = ref.read(authRepositoryProvider);
       await repository.resetPassword(email: email);
-      
+
       if (mounted) {
         setState(() {
           _emailSent = true;
@@ -125,7 +134,8 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     } on AuthException catch (e) {
       if (mounted) setState(() => _errorMessage = e.message);
     } catch (_) {
-      if (mounted) setState(() => _errorMessage = l10n.loginErrorGenericRequest);
+      if (mounted)
+        setState(() => _errorMessage = l10n.loginErrorGenericRequest);
     } finally {
       if (mounted) setState(() => _isBusy = false);
     }

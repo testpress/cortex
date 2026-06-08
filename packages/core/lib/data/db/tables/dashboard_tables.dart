@@ -11,7 +11,7 @@ enum DashboardContentType {
   liveStream,
   attachment,
   embedContent,
-  unknown
+  unknown,
 }
 
 @DataClassName('DashboardContentData')
@@ -32,7 +32,6 @@ class DashboardContentsTable extends Table {
   Set<Column> get primaryKey => {lessonId, sectionType};
 }
 
-
 class DashboardBannersTable extends Table {
   TextColumn get id => text()();
   TextColumn get imageUrl => text()();
@@ -46,5 +45,3 @@ class DashboardBannersTable extends Table {
   @override
   Set<Column> get primaryKey => {id};
 }
-
-

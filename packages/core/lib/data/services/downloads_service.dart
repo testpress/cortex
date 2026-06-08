@@ -56,7 +56,7 @@ class DownloadsService {
     return null;
   }
 
-  /// Checks if the attachment exists and returns its size in bytes. 
+  /// Checks if the attachment exists and returns its size in bytes.
   /// Triggers MediaScanner if it does. Returns null if missing.
   Future<int?> getExistingAttachmentSize(String url) async {
     final path = await getExistingAttachmentPath(url);
@@ -75,7 +75,10 @@ class DownloadsService {
   /// or null if it does not exist.
   Future<String?> getExistingAttachmentPath(String url) async {
     try {
-      final path = await _fileDownloader.getLocalPath(url, StorageType.publicDownload);
+      final path = await _fileDownloader.getLocalPath(
+        url,
+        StorageType.publicDownload,
+      );
       if (await File(path).exists()) return path;
     } catch (_) {}
     return null;
@@ -100,8 +103,10 @@ class DownloadsService {
       course: asset.metadata?['course'] ?? '',
       chapter: asset.metadata?['chapter'] ?? '',
       thumbnailUrl: asset.metadata?['thumbnail_url'],
-      sizeInBytes: 0, // TPStreams does not currently expose total size easily here, we just use 0
-      downloadedDate: DateTime.now().toIso8601String(), // Mocked or handled if needed
+      sizeInBytes:
+          0, // TPStreams does not currently expose total size easily here, we just use 0
+      downloadedDate: DateTime.now()
+          .toIso8601String(), // Mocked or handled if needed
       type: DownloadType.video,
       status: _mapDownloadState(asset.state),
       progress: asset.progress.toInt(),
