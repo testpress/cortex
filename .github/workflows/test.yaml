@@ -18,6 +18,15 @@ jobs:
         with:
           flutter-version: '3.41.1'
 
+      - name: Fetch Dependencies
+        run: |
+          for dir in app packages/*; do
+            if [ -d "$dir" ] && [ -f "$dir/pubspec.yaml" ]; then
+              echo "Fetching dependencies in $dir..."
+              (cd "$dir" && flutter pub get)
+            fi
+          done
+
       - name: Dart Format
         run: dart format --output=none --set-exit-if-changed .
 
