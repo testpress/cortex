@@ -17,7 +17,6 @@ class PaidActiveHomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
 
-    final config = ref.watch(dto.clientConfigProvider);
     final todayClasses = ref.watch(todayClassesProvider);
     final pendingAssignments = ref.watch(pendingAssignmentsProvider);
     final upcomingTests = ref.watch(upcomingTestsProvider);
@@ -38,7 +37,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     final recentlyCompletedAsync = ref.watch(recentlyCompletedFeedProvider);
     final user = userAsync.valueOrNull;
 
-    final isBannerPresent = config.instituteLogoUrl != null;
+    final isBannerPresent = dto.AppConfig.instituteLogoUrl.isNotEmpty;
 
     final whatsNewLessons = whatsNewAsync.valueOrNull ?? [];
     final resumeLessons = resumeLearningAsync.valueOrNull ?? [];
@@ -100,7 +99,6 @@ class PaidActiveHomeScreen extends ConsumerWidget {
       resumeLessons: resumeLessons,
       whatsNewLessons: whatsNewLessons,
       recentlyCompletedLessons: recentlyCompletedLessons,
-      config: config,
       isLoading: isBootstrapping,
     );
 
@@ -138,8 +136,8 @@ class PaidActiveHomeScreen extends ConsumerWidget {
             children: [
               if (isBannerPresent)
                 InstituteBanner(
-                  logoUrl: config.instituteLogoUrl!,
-                  isLocal: config.isLocalLogo,
+                  logoUrl: dto.AppConfig.instituteLogoUrl,
+                  isLocal: dto.AppConfig.isLocalLogo,
                   userName: user?.name ?? 'Student',
                   enrollmentId: user?.id ?? '-',
                   onMenuPressed: () {
@@ -168,7 +166,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                       topLearnersSection,
                     ] else ...[
                       // Standard order
-                      if (config.showContextualHero)
+                      if (dto.AppConfig.showContextualHero)
                         todayClasses.when(
                           data: (classes) {
                             if (classes.isEmpty) return const SizedBox.shrink();
@@ -202,7 +200,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                           error: (error, stack) => const SizedBox.shrink(),
                         ),
                       const SizedBox(height: 16),
-                      if (config.showTodaySchedule)
+                      if (dto.AppConfig.showTodaySchedule)
                         Builder(
                           builder: (context) {
                             if (todayClasses.isLoading ||
@@ -227,7 +225,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                       studyMomentum,
                       topLearnersSection,
                       updatesAnnouncements,
-                      if (config.showQuickAccess)
+                      if (dto.AppConfig.showQuickAccess)
                         shortcuts.when(
                           data: (data) => QuickAccessGrid(
                             shortcuts: data.map(_mapShortcut).toList(),

@@ -1753,4 +1753,85 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get commentsDisabledByAdmin =>
       'അഡ്മിനിസ്ട്രേറ്റർ ഈ പോസ്റ്റിനായുള്ള അഭിപ്രായങ്ങൾ പ്രവർത്തനരഹിതമാക്കി';
+
+  @override
+  String bookmarkFolderItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ഇനങ്ങൾ',
+      one: '1 ഇനം',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get bookmarksTitle => 'ബുക്ക്മാർക്കുകൾ';
+
+  @override
+  String get bookmarkFilterAllContents => 'എല്ലാ ഉള്ളടക്കങ്ങളും';
+
+  @override
+  String get bookmarkFilterQuestions => 'ചോദ്യങ്ങൾ';
+
+  @override
+  String get bookmarkFilterVideos => 'വീഡിയോകൾ';
+
+  @override
+  String get bookmarkFilterPDFs => 'PDF-കൾ';
+
+  @override
+  String get bookmarkFilterNotes => 'കുറിപ്പുകൾ';
+
+  @override
+  String get bookmarkFilterExamsAndQuiz => 'പരീക്ഷകളും ക്വിസും';
+
+  @override
+  String get bookmarkFilterLiveClasses => 'തത്സമയ ക്ലാസുകൾ';
+
+  @override
+  String get bookmarkSortRecent => 'ഏറ്റവും പുതിയത്';
+
+  @override
+  String get bookmarkSortOldest => 'ഏറ്റവും പഴയത്';
+
+  @override
+  String get bookmarkSortLastlyOpened => 'അവസാനം തുറന്നത്';
+
+  @override
+  String get bookmarkTabAll => 'എല്ലാം';
+
+  @override
+  String get bookmarkTabFolders => 'ഫോൾഡറുകൾ';
+
+  @override
+  String get bookmarkActionRenameFolder => 'ഫോൾഡർ പേര് മാറ്റുക';
+
+  @override
+  String get bookmarkActionDeleteFolder => 'ഫോൾഡർ ഇല്ലാതാക്കുക';
+
+  @override
+  String get bookmarkActionMoveBookmark => 'ബുക്ക്മാർക്ക് മാറ്റുക';
+
+  @override
+  String get bookmarkActionRemoveBookmark => 'ബുക്ക്മാർക്ക് നീക്കം ചെയ്യുക';
+
+  @override
+  String get bookmarkDeleteFolderConfirmation =>
+      'ഈ ഫോൾഡർ ഇല്ലാതാക്കണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?';
+
+  @override
+  String get bookmarkLabelContentType => 'ഉള്ളടക്ക തരം';
+
+  @override
+  String get bookmarkLabelSortBy => 'തരം തിരിക്കുക';
+
+  @override
+  String get bookmarkActionCreateFolder => 'ഫോൾഡർ സൃഷ്ടിക്കുക';
+
+  @override
+  String get bookmarkLabelName => 'പേര്';
+
+  @override
+  String get bookmarkActionDelete => 'ഇല്ലാതാക്കുക';
 }

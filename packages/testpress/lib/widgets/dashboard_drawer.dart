@@ -35,7 +35,10 @@ class DashboardDrawer extends ConsumerWidget {
             AppDrawerItem(
               icon: LucideIcons.bookmark,
               label: l10n.drawerBookmark,
-              action: () {},
+              action: () {
+                ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                context.push('/bookmarks');
+              },
             ),
             AppDrawerItem(
               icon: LucideIcons.fileText,

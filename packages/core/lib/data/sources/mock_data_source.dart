@@ -1410,6 +1410,22 @@ class MockDataSource implements DataSource {
   }
 
   @override
+  Future<PaginatedResponseDto<BookmarkDto>> getBookmarks({
+    int page = 1,
+    String? folder,
+    String? order,
+    String? filter,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return PaginatedResponseDto(
+      results: _mockBookmarks,
+      count: _mockBookmarks.length,
+      next: null,
+      previous: null,
+    );
+  }
+
+  @override
   Future<BookmarkFolderDto> createBookmarkFolder(String name) async {
     await Future.delayed(const Duration(milliseconds: 300));
     final newFolder = BookmarkFolderDto(
@@ -1419,6 +1435,26 @@ class MockDataSource implements DataSource {
     );
     _mockFolders.add(newFolder);
     return newFolder;
+  }
+
+  @override
+  Future<BookmarkFolderDto> updateBookmarkFolder(int id, String name) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    final index = _mockFolders.indexWhere((f) => f.id == id);
+    if (index == -1) throw Exception('Folder not found');
+    final updatedFolder = BookmarkFolderDto(
+      id: id,
+      name: name,
+      bookmarksCount: _mockFolders[index].bookmarksCount,
+    );
+    _mockFolders[index] = updatedFolder;
+    return updatedFolder;
+  }
+
+  @override
+  Future<void> deleteBookmarkFolder(int id) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    _mockFolders.removeWhere((f) => f.id == id);
   }
 
   @override

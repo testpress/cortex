@@ -38,9 +38,7 @@ class CourseRepository {
     _syncStatusController.add(Set.unmodifiable(_activeSyncIds));
   }
 
-  final ClientConfig config;
-
-  CourseRepository(this._db, this._source, {this.config = const ClientConfig()});
+  CourseRepository(this._db, this._source);
 
   // ── Courses ──────────────────────────────────────────────────────────────
 
@@ -93,8 +91,8 @@ class CourseRepository {
             (dto.tags.isEmpty && dto.examsCount > 0);
         final isInfoCourse = dto.tags.any((t) => t.toLowerCase() == 'info');
 
-        if (config.showExamTab && isExamCourse) return false;
-        if (config.showInfoTab && isInfoCourse) return false;
+        if (AppConfig.showExamTab && isExamCourse) return false;
+        if (AppConfig.showInfoTab && isInfoCourse) return false;
         return true;
       }).toList();
     });

@@ -10,8 +10,7 @@ part 'course_list_provider.g.dart';
 Future<CourseRepository> courseRepository(Ref ref) async {
   final db = await ref.watch(appDatabaseProvider.future);
   final source = ref.watch(dataSourceProvider);
-  final config = ref.watch(clientConfigProvider);
-  return CourseRepository(db, source, config: config);
+  return CourseRepository(db, source);
 }
 
 /// Tracks if the initial API sync for the course list was completed in this session.

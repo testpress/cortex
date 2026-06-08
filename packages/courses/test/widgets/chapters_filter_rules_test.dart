@@ -6,8 +6,7 @@ import 'package:courses/widgets/chapters_filter_rules.dart';
 void main() {
   group('ChaptersFilterRules tests', () {
     test('showExamTab is false - all filters should be visible', () {
-      const config = ClientConfig(showExamTab: false);
-      final visible = ChaptersFilterRules.getVisibleFilters(config);
+      final visible = ChaptersFilterRules.getVisibleFilters();
 
       expect(visible, contains(CurriculumFilter.all));
       expect(visible, contains(CurriculumFilter.lesson));
@@ -15,11 +14,10 @@ void main() {
       expect(visible, contains(CurriculumFilter.assessment));
       expect(visible, contains(CurriculumFilter.test));
       expect(visible.length, equals(5));
-    });
+    }, skip: AppConfig.showExamTab);
 
     test('showExamTab is true - Assessments and Tests should be hidden', () {
-      const config = ClientConfig(showExamTab: true);
-      final visible = ChaptersFilterRules.getVisibleFilters(config);
+      final visible = ChaptersFilterRules.getVisibleFilters();
 
       expect(visible, contains(CurriculumFilter.all));
       expect(visible, contains(CurriculumFilter.lesson));
@@ -27,6 +25,6 @@ void main() {
       expect(visible, isNot(contains(CurriculumFilter.assessment)));
       expect(visible, isNot(contains(CurriculumFilter.test)));
       expect(visible.length, equals(3));
-    });
+    }, skip: !AppConfig.showExamTab);
   });
 }

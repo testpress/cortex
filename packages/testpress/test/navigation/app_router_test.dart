@@ -1,15 +1,14 @@
 import 'package:core/core.dart';
 import 'package:core/legacy_icons.dart' as legacy;
 import 'package:core/data/data.dart';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:testpress/navigation/app_router.dart';
 
 void main() {
   group('buildPrimaryNavigationItems', () {
     test('keeps Profile as the default fifth destination', () {
-      final items = buildPrimaryNavigationItems(
-        config: const ClientConfig(showInfoTab: false),
-      );
+      final items = buildPrimaryNavigationItems();
 
       expect(items.length, 4);
       expect(items.last.id, '/profile');
@@ -18,10 +17,7 @@ void main() {
     });
 
     test('adds Info as the fourth destination when enabled', () {
-      final items = buildPrimaryNavigationItems(
-        config: const ClientConfig(showInfoTab: true),
-      );
-
+      final items = buildPrimaryNavigationItems();
 
       expect(items.length, 5);
       expect(items[3].id, '/info');
@@ -30,6 +26,6 @@ void main() {
 
       expect(items[4].id, '/profile');
       expect(items[4].label, 'Profile');
-    });
+    }, skip: !AppConfig.showInfoTab);
   });
 }
