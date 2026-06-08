@@ -1277,6 +1277,12 @@ class MockDataSource implements DataSource {
   }
 
   @override
+  Future<List<SubjectAnalyticsDto>> getAnalyticsData(String analyticsUrl) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return mockSubjectAnalytics;
+  }
+
+  @override
   Future<void> downloadFile({
     required String url,
     required String savePath,

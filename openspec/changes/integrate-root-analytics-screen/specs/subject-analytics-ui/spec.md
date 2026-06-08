@@ -65,3 +65,16 @@ The individual reports view SHALL render category cards below the main table, di
 #### Scenario: Rendering donut cards
 - **WHEN** the individual reports view is scrolled below the table
 - **THEN** the system SHALL display cards containing circular donut visualizations with correct, incorrect, and unanswered percentage slices.
+
+### Requirement: Analytics Data Layer (Stale-While-Revalidate)
+The system SHALL persist subject analytics locally in a Drift table and keep the data fresh by calling the `getAnalyticsData` method on the datasource in the background on every screen visit.
+
+#### Scenario: Displaying cached data immediately
+- **WHEN** the Analytics screen is opened
+- **THEN** the system SHALL immediately display any locally cached analytics data from Drift
+- **AND** the system SHALL initiate a background refresh via the `getAnalyticsData` method
+
+#### Scenario: Reacting to fresh data
+- **WHEN** the `getAnalyticsData` background fetch completes
+- **THEN** the system SHALL upsert the updated rows into the Drift table
+- **AND** the UI SHALL automatically reflect the updated data via the reactive stream
