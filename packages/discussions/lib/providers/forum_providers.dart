@@ -149,8 +149,9 @@ class GlobalForumFeed extends _$GlobalForumFeed {
     final currentState = state.valueOrNull;
     if (currentState == null ||
         !currentState.hasMore ||
-        currentState.isLoadingMore)
+        currentState.isLoadingMore) {
       return;
+    }
 
     state = AsyncData(currentState.copyWith(isLoadingMore: true));
 

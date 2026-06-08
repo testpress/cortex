@@ -322,20 +322,26 @@ class LessonDto {
         if (type == other.type) return type;
 
         // Promotion: Preference for PDF/Embed/Notes over generic Attachment/Video
-        if (type == LessonType.attachment && other.type == LessonType.pdf)
+        if (type == LessonType.attachment && other.type == LessonType.pdf) {
           return LessonType.pdf;
-        if (other.type == LessonType.attachment && type == LessonType.pdf)
+        }
+        if (other.type == LessonType.attachment && type == LessonType.pdf) {
           return LessonType.pdf;
+        }
 
-        if (type == LessonType.video && other.type == LessonType.embedContent)
+        if (type == LessonType.video && other.type == LessonType.embedContent) {
           return LessonType.embedContent;
-        if (other.type == LessonType.video && type == LessonType.embedContent)
+        }
+        if (other.type == LessonType.video && type == LessonType.embedContent) {
           return LessonType.embedContent;
+        }
 
-        if (type == LessonType.video && other.type == LessonType.notes)
+        if (type == LessonType.video && other.type == LessonType.notes) {
           return LessonType.notes;
-        if (other.type == LessonType.video && type == LessonType.notes)
+        }
+        if (other.type == LessonType.video && type == LessonType.notes) {
           return LessonType.notes;
+        }
 
         return type;
       })(),
@@ -637,8 +643,9 @@ class LessonDto {
   static LessonProgressStatus _parseStatus(dynamic value) {
     final s = value?.toString().toLowerCase();
     if (s == 'completed' || s == '1') return LessonProgressStatus.completed;
-    if (s == 'in_progress' || s == 'started' || s == '0')
+    if (s == 'in_progress' || s == 'started' || s == '0') {
       return LessonProgressStatus.inProgress;
+    }
     return LessonProgressStatus.notStarted;
   }
 

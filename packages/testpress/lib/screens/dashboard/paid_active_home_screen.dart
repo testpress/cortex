@@ -173,8 +173,9 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                         if (dto.AppConfig.showContextualHero)
                           todayClasses.when(
                             data: (classes) {
-                              if (classes.isEmpty)
+                              if (classes.isEmpty) {
                                 return const SizedBox.shrink();
+                              }
                               final liveOrUpcoming = classes.firstWhere(
                                 (c) =>
                                     c.status == dto.LiveClassStatus.live ||

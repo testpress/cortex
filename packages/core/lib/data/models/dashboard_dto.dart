@@ -56,12 +56,15 @@ class DashboardContentDto {
     final t = type.toLowerCase();
     if (t.contains('video')) return DashboardContentType.video;
     if (t.contains('pdf')) return DashboardContentType.pdf;
-    if (t.contains('notes') || t.contains('html'))
+    if (t.contains('notes') || t.contains('html')) {
       return DashboardContentType.notes;
-    if (t.contains('test') || t.contains('exam'))
+    }
+    if (t.contains('test') || t.contains('exam')) {
       return DashboardContentType.test;
-    if (t.contains('assessment') || t.contains('quiz'))
+    }
+    if (t.contains('assessment') || t.contains('quiz')) {
       return DashboardContentType.assessment;
+    }
     if (t.contains('live')) return DashboardContentType.liveStream;
     if (t.contains('attachment')) return DashboardContentType.attachment;
     if (t.contains('embed')) return DashboardContentType.embedContent;
@@ -234,8 +237,9 @@ class DashboardContentsDto {
       seenContentIds.add(contentId);
       map['progress'] = progress;
       if (totalDuration != null) map['total_duration'] = totalDuration;
-      if (remainingDuration != null)
+      if (remainingDuration != null) {
         map['remaining_duration'] = remainingDuration;
+      }
 
       items.add(
         DashboardContentDto.fromJson(

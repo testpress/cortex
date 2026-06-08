@@ -6,7 +6,9 @@ import 'package:core/core.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   group('DesignTypographyScale', () {
-    testWidgets('defaults() returns standardized Tailwind-like scale', (tester) async {
+    testWidgets('defaults() returns standardized Tailwind-like scale', (
+      tester,
+    ) async {
       final scale = DesignTypographyScale.defaults();
 
       expect(scale.xxs.fontSize, 10);
@@ -42,7 +44,9 @@ void main() {
   });
 
   group('DesignTypography Composition', () {
-    testWidgets('semantic roles are composed from scale tokens', (tester) async {
+    testWidgets('semantic roles are composed from scale tokens', (
+      tester,
+    ) async {
       final colors = DesignColors.light();
       final scale = DesignTypographyScale.defaults();
       final typography = DesignTypography.defaults(
