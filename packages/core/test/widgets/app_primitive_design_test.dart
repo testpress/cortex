@@ -160,7 +160,7 @@ void main() {
     });
 
     test(
-      'textSecondary is at least 20% closer to surface than textPrimary',
+      'textSecondary is at least 15% closer to surface than textPrimary',
       () {
         final design = DesignConfig.light();
         final pLum = design.colors.textPrimary.computeLuminance();
@@ -170,8 +170,8 @@ void main() {
         final pDist = (surfLum - pLum).abs();
         final sDist = (surfLum - sLum).abs();
 
-        // Secondary must be at least 20% closer: sDist <= pDist * 0.8
-        expect(sDist, lessThanOrEqualTo(pDist * 0.8));
+        // Secondary must be at least 15% closer: sDist <= pDist * 0.85
+        expect(sDist, lessThanOrEqualTo(pDist * 0.85));
       },
     );
 

@@ -3,8 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:core/core.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   group('DesignTypographyScale', () {
-    test('defaults() returns standardized Tailwind-like scale', () {
+    testWidgets('defaults() returns standardized Tailwind-like scale', (tester) async {
       final scale = DesignTypographyScale.defaults();
 
       expect(scale.xs.fontSize, 12);
@@ -19,7 +20,7 @@ void main() {
       expect(scale.xl5.fontSize, 48);
     });
 
-    test('line heights match the scale specification', () {
+    testWidgets('line heights match the scale specification', (tester) async {
       final scale = DesignTypographyScale.defaults();
 
       // Small text carries explicit height for readability in dense rows.
@@ -38,7 +39,7 @@ void main() {
   });
 
   group('DesignTypography Composition', () {
-    test('semantic roles are composed from scale tokens', () {
+    testWidgets('semantic roles are composed from scale tokens', (tester) async {
       final colors = DesignColors.light();
       final scale = DesignTypographyScale.defaults();
       final typography = DesignTypography.defaults(
@@ -64,22 +65,22 @@ void main() {
       expect(typography.title.fontSize, scale.lg.fontSize);
       expect(typography.title.fontWeight, FontWeight.w600);
 
-      // Subtitle uses sm (14px) at w400 — NOT a heading role.
+      // Subtitle uses sm (14px) at w600.
       expect(typography.subtitle.fontSize, scale.sm.fontSize);
-      expect(typography.subtitle.fontWeight, FontWeight.w400);
+      expect(typography.subtitle.fontWeight, FontWeight.w600);
       expect(typography.subtitle.height, 1.4);
 
       // labelSmall: w600 ensures legibility at 12px.
       expect(typography.labelSmall.fontWeight, FontWeight.w600);
       expect(typography.labelSmall.height, 1.1);
 
-      // Caption uses xs (12px) with positive tracking for legibility.
+      // Caption uses xs (12px) for timestamps and metadata.
       expect(typography.caption.fontSize, scale.xs.fontSize);
       expect(typography.caption.color, colors.textSecondary);
-      expect(typography.caption.height, 1.2);
+      expect(typography.caption.height, 1.4);
     });
 
-    test('optical tracking is applied correctly', () {
+    testWidgets('optical tracking is applied correctly', (tester) async {
       final typography = DesignTypography.defaults();
 
       // display (30px) — tight tracking valid at this size.
@@ -92,8 +93,8 @@ void main() {
       expect(typography.subtitle.letterSpacing, isNull);
       // body — no tracking.
       expect(typography.body.letterSpacing, isNull);
-      // caption — slight positive tracking aids legibility at 12px.
-      expect(typography.caption.letterSpacing, 0.4);
+      // caption — no tracking.
+      expect(typography.caption.letterSpacing, isNull);
     });
   });
 }
