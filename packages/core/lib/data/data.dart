@@ -6,6 +6,7 @@ library;
 // Config
 export 'config/app_config.dart';
 export 'config/sdk_initialization.dart';
+export 'config/institute_settings.dart';
 
 // DTOs
 export 'models/course_dto.dart';
@@ -53,6 +54,8 @@ export 'sources/mock_data_source.dart';
 export 'sources/http_data_source.dart';
 export 'sources/data_source_provider.dart';
 export 'sources/study_momentum_provider.dart';
+export 'sources/institute_settings_remote_data_source.dart';
+export 'sources/institute_settings_local_data_source.dart';
 
 // Network Endpoints
 export '../network/api_endpoints.dart';
@@ -61,8 +64,10 @@ export '../network/api_endpoints.dart';
 export 'repositories/user_progress_repository.dart';
 export 'repositories/bookmark_repository.dart';
 export 'repositories/repository_providers.dart';
+export 'repositories/institute_settings_repository.dart';
 export 'providers/bookmark_provider.dart';
 export 'providers/announcements_provider.dart';
+export 'providers/institute_settings_provider.dart';
 
 //service
 export 'services/downloads_service.dart';
