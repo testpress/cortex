@@ -81,10 +81,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final flexBottom = bottomInset > 0 ? 75 : 45;
 
     return Scaffold(
-      backgroundColor: design.colors.primary.withValues(alpha: 0.05),
-      body: Column(
-        children: [
-          Expanded(flex: flexTop, child: _buildBrandingSection()),
+      backgroundColor: design.colors.surface,
+      body: Container(
+        color: design.colors.primary.withValues(alpha: 0.05),
+        child: Column(
+          children: [
+            Expanded(flex: flexTop, child: _buildBrandingSection()),
           Expanded(
             flex: flexBottom,
             child: Container(
@@ -111,6 +113,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ),
         ],
       ),
+    ),
     );
   }
 
