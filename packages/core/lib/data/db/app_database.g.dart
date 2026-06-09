@@ -11504,6 +11504,15 @@ class $DoubtRepliesTableTable extends DoubtRepliesTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -11515,6 +11524,7 @@ class $DoubtRepliesTableTable extends DoubtRepliesTable
     createdAt,
     createdHumanized,
     attachments,
+    source,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -11598,6 +11608,12 @@ class $DoubtRepliesTableTable extends DoubtRepliesTable
         ),
       );
     }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    }
     return context;
   }
 
@@ -11643,6 +11659,10 @@ class $DoubtRepliesTableTable extends DoubtRepliesTable
         DriftSqlType.string,
         data['${effectivePrefix}attachments'],
       ),
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      ),
     );
   }
 
@@ -11663,6 +11683,7 @@ class DoubtRepliesTableData extends DataClass
   final DateTime createdAt;
   final String? createdHumanized;
   final String? attachments;
+  final String? source;
   const DoubtRepliesTableData({
     required this.id,
     required this.doubtId,
@@ -11673,6 +11694,7 @@ class DoubtRepliesTableData extends DataClass
     required this.createdAt,
     this.createdHumanized,
     this.attachments,
+    this.source,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -11691,6 +11713,9 @@ class DoubtRepliesTableData extends DataClass
     }
     if (!nullToAbsent || attachments != null) {
       map['attachments'] = Variable<String>(attachments);
+    }
+    if (!nullToAbsent || source != null) {
+      map['source'] = Variable<String>(source);
     }
     return map;
   }
@@ -11712,6 +11737,9 @@ class DoubtRepliesTableData extends DataClass
       attachments: attachments == null && nullToAbsent
           ? const Value.absent()
           : Value(attachments),
+      source: source == null && nullToAbsent
+          ? const Value.absent()
+          : Value(source),
     );
   }
 
@@ -11730,6 +11758,7 @@ class DoubtRepliesTableData extends DataClass
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       createdHumanized: serializer.fromJson<String?>(json['createdHumanized']),
       attachments: serializer.fromJson<String?>(json['attachments']),
+      source: serializer.fromJson<String?>(json['source']),
     );
   }
   @override
@@ -11745,6 +11774,7 @@ class DoubtRepliesTableData extends DataClass
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'createdHumanized': serializer.toJson<String?>(createdHumanized),
       'attachments': serializer.toJson<String?>(attachments),
+      'source': serializer.toJson<String?>(source),
     };
   }
 
@@ -11758,6 +11788,7 @@ class DoubtRepliesTableData extends DataClass
     DateTime? createdAt,
     Value<String?> createdHumanized = const Value.absent(),
     Value<String?> attachments = const Value.absent(),
+    Value<String?> source = const Value.absent(),
   }) => DoubtRepliesTableData(
     id: id ?? this.id,
     doubtId: doubtId ?? this.doubtId,
@@ -11770,6 +11801,7 @@ class DoubtRepliesTableData extends DataClass
         ? createdHumanized.value
         : this.createdHumanized,
     attachments: attachments.present ? attachments.value : this.attachments,
+    source: source.present ? source.value : this.source,
   );
   DoubtRepliesTableData copyWithCompanion(DoubtRepliesTableCompanion data) {
     return DoubtRepliesTableData(
@@ -11790,6 +11822,7 @@ class DoubtRepliesTableData extends DataClass
       attachments: data.attachments.present
           ? data.attachments.value
           : this.attachments,
+      source: data.source.present ? data.source.value : this.source,
     );
   }
 
@@ -11804,7 +11837,8 @@ class DoubtRepliesTableData extends DataClass
           ..write('isMentor: $isMentor, ')
           ..write('createdAt: $createdAt, ')
           ..write('createdHumanized: $createdHumanized, ')
-          ..write('attachments: $attachments')
+          ..write('attachments: $attachments, ')
+          ..write('source: $source')
           ..write(')'))
         .toString();
   }
@@ -11820,6 +11854,7 @@ class DoubtRepliesTableData extends DataClass
     createdAt,
     createdHumanized,
     attachments,
+    source,
   );
   @override
   bool operator ==(Object other) =>
@@ -11833,7 +11868,8 @@ class DoubtRepliesTableData extends DataClass
           other.isMentor == this.isMentor &&
           other.createdAt == this.createdAt &&
           other.createdHumanized == this.createdHumanized &&
-          other.attachments == this.attachments);
+          other.attachments == this.attachments &&
+          other.source == this.source);
 }
 
 class DoubtRepliesTableCompanion
@@ -11847,6 +11883,7 @@ class DoubtRepliesTableCompanion
   final Value<DateTime> createdAt;
   final Value<String?> createdHumanized;
   final Value<String?> attachments;
+  final Value<String?> source;
   final Value<int> rowid;
   const DoubtRepliesTableCompanion({
     this.id = const Value.absent(),
@@ -11858,6 +11895,7 @@ class DoubtRepliesTableCompanion
     this.createdAt = const Value.absent(),
     this.createdHumanized = const Value.absent(),
     this.attachments = const Value.absent(),
+    this.source = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   DoubtRepliesTableCompanion.insert({
@@ -11870,6 +11908,7 @@ class DoubtRepliesTableCompanion
     required DateTime createdAt,
     this.createdHumanized = const Value.absent(),
     this.attachments = const Value.absent(),
+    this.source = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        doubtId = Value(doubtId),
@@ -11886,6 +11925,7 @@ class DoubtRepliesTableCompanion
     Expression<DateTime>? createdAt,
     Expression<String>? createdHumanized,
     Expression<String>? attachments,
+    Expression<String>? source,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -11898,6 +11938,7 @@ class DoubtRepliesTableCompanion
       if (createdAt != null) 'created_at': createdAt,
       if (createdHumanized != null) 'created_humanized': createdHumanized,
       if (attachments != null) 'attachments': attachments,
+      if (source != null) 'source': source,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -11912,6 +11953,7 @@ class DoubtRepliesTableCompanion
     Value<DateTime>? createdAt,
     Value<String?>? createdHumanized,
     Value<String?>? attachments,
+    Value<String?>? source,
     Value<int>? rowid,
   }) {
     return DoubtRepliesTableCompanion(
@@ -11924,6 +11966,7 @@ class DoubtRepliesTableCompanion
       createdAt: createdAt ?? this.createdAt,
       createdHumanized: createdHumanized ?? this.createdHumanized,
       attachments: attachments ?? this.attachments,
+      source: source ?? this.source,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -11958,6 +12001,9 @@ class DoubtRepliesTableCompanion
     if (attachments.present) {
       map['attachments'] = Variable<String>(attachments.value);
     }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -11976,6 +12022,7 @@ class DoubtRepliesTableCompanion
           ..write('createdAt: $createdAt, ')
           ..write('createdHumanized: $createdHumanized, ')
           ..write('attachments: $attachments, ')
+          ..write('source: $source, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -20599,6 +20646,7 @@ typedef $$DoubtRepliesTableTableCreateCompanionBuilder =
       required DateTime createdAt,
       Value<String?> createdHumanized,
       Value<String?> attachments,
+      Value<String?> source,
       Value<int> rowid,
     });
 typedef $$DoubtRepliesTableTableUpdateCompanionBuilder =
@@ -20612,6 +20660,7 @@ typedef $$DoubtRepliesTableTableUpdateCompanionBuilder =
       Value<DateTime> createdAt,
       Value<String?> createdHumanized,
       Value<String?> attachments,
+      Value<String?> source,
       Value<int> rowid,
     });
 
@@ -20666,6 +20715,11 @@ class $$DoubtRepliesTableTableFilterComposer
 
   ColumnFilters<String> get attachments => $composableBuilder(
     column: $table.attachments,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -20723,6 +20777,11 @@ class $$DoubtRepliesTableTableOrderingComposer
     column: $table.attachments,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$DoubtRepliesTableTableAnnotationComposer
@@ -20768,6 +20827,9 @@ class $$DoubtRepliesTableTableAnnotationComposer
     column: $table.attachments,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
 }
 
 class $$DoubtRepliesTableTableTableManager
@@ -20819,6 +20881,7 @@ class $$DoubtRepliesTableTableTableManager
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<String?> createdHumanized = const Value.absent(),
                 Value<String?> attachments = const Value.absent(),
+                Value<String?> source = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DoubtRepliesTableCompanion(
                 id: id,
@@ -20830,6 +20893,7 @@ class $$DoubtRepliesTableTableTableManager
                 createdAt: createdAt,
                 createdHumanized: createdHumanized,
                 attachments: attachments,
+                source: source,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -20843,6 +20907,7 @@ class $$DoubtRepliesTableTableTableManager
                 required DateTime createdAt,
                 Value<String?> createdHumanized = const Value.absent(),
                 Value<String?> attachments = const Value.absent(),
+                Value<String?> source = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DoubtRepliesTableCompanion.insert(
                 id: id,
@@ -20854,6 +20919,7 @@ class $$DoubtRepliesTableTableTableManager
                 createdAt: createdAt,
                 createdHumanized: createdHumanized,
                 attachments: attachments,
+                source: source,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

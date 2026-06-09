@@ -170,6 +170,7 @@ class DoubtReplyDto {
   final DateTime createdAt;
   final String? createdHumanized;
   final List<String> attachmentUrls;
+  final String? source;
 
   const DoubtReplyDto({
     required this.id,
@@ -181,6 +182,7 @@ class DoubtReplyDto {
     required this.createdAt,
     this.createdHumanized,
     this.attachmentUrls = const [],
+    this.source,
   });
 
   factory DoubtReplyDto.fromJson(
@@ -208,6 +210,7 @@ class DoubtReplyDto {
           : DateTime.now(),
       createdHumanized: json['created_humanize'] as String?,
       attachmentUrls: const [],
+      source: json['source'] as String?,
     );
   }
 

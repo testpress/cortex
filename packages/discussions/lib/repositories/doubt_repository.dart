@@ -221,6 +221,7 @@ class DoubtRepository {
           : [],
       createdAt: row.createdAt,
       createdHumanized: row.createdHumanized,
+      source: row.source,
     );
   }
 
@@ -235,6 +236,7 @@ class DoubtRepository {
       attachments: Value(jsonEncode(dto.attachmentUrls)),
       createdAt: Value(dto.createdAt),
       createdHumanized: Value(dto.createdHumanized),
+      source: Value(dto.source),
     );
   }
 

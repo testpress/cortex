@@ -551,18 +551,20 @@ class _ReplyHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final isBot = reply.source?.toLowerCase() == 'bot' || reply.source?.toLowerCase() == 'ai';
+    final displayName = isBot ? 'AI Bot Response' : reply.authorName;
 
     return Row(
       children: [
         Skeleton.ignore(
           child: AppText.labelBold(
-            reply.authorName,
+            displayName,
             color: reply.isMentor ? design.colors.accent2 : null,
           ),
         ),
         if (reply.isMentor) ...[
           SizedBox(width: design.spacing.sm),
-          Skeleton.ignore(child: _MentorBadge()),
+          Skeleton.ignore(child: _MentorBadge(isBot: isBot)),
         ],
         const Spacer(),
         Skeleton.ignore(
@@ -808,6 +810,10 @@ class _SubjectBadge extends StatelessWidget {
 }
 
 class _MentorBadge extends StatelessWidget {
+  final bool isBot;
+
+  const _MentorBadge({this.isBot = false});
+
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
@@ -823,7 +829,7 @@ class _MentorBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(design.radius.sm),
       ),
       child: AppText.labelSmall(
-        l10n.labelMentor,
+        isBot ? 'Bot' : l10n.labelMentor,
         color: design.colors.textInverse,
       ),
     );
