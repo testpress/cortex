@@ -874,13 +874,16 @@ class _PendingModerationBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF8E1),
-        border: Border.all(color: const Color(0xFFFFE082), width: 0.5),
+        color: design.colors.warning.withValues(alpha: 0.1),
+        border: Border.all(
+          color: design.colors.warning.withValues(alpha: 0.3),
+          width: 0.5,
+        ),
         borderRadius: BorderRadius.circular(design.radius.sm),
       ),
       child: AppText.caption(
         l10n.forumPendingModeration,
-        color: const Color(0xFF8D6E63),
+        color: design.colors.warning,
         style: const TextStyle(
           fontSize: 9,
           fontWeight: FontWeight.w700,
