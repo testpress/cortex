@@ -12,12 +12,25 @@ The Login Screen SHALL be implemented within the `profile` package as part of th
 - **AND** it SHALL be exported from the `profile` package library.
 
 ### Requirement: Login screen layout
-The system SHALL provide a centered, card-style login layout with branding and support for two authentication modes: Password and OTP.
+The system SHALL provide a centered, card-style login layout supporting Password and OTP modes, with fields and buttons configured by the institute settings.
 
-#### Scenario: Rendering the default login screen
-- **WHEN** the user navigates to `/login`
-- **THEN** the system SHALL display the Password login form by default
-- **AND** it SHALL show fields for Username/Email and Password.
+#### Scenario: Displaying multiple login options
+- **WHEN** the `instituteSettings` configure two or more active login methods
+- **THEN** the login options screen SHALL display only the buttons for the currently active methods
+- **AND** it SHALL conditionally evaluate `googleLoginEnabled` alongside `socialLogin`.
+
+#### Scenario: Auto-routing for a single login option
+- **WHEN** the `instituteSettings` configure exactly one active login method
+- **THEN** the system SHALL skip the login options screen
+- **AND** automatically route the user directly to the respective authentication screen (e.g., `/password-login`).
+
+#### Scenario: Disabling forgot password
+- **WHEN** the institute settings have `disableForgotPassword` set to true
+- **THEN** the login screen SHALL hide the forgot password link
+
+#### Scenario: Controlling signup visibility
+- **WHEN** the institute settings have `allowSignup` set to false
+- **THEN** the login screen SHALL hide the sign up link/button
 
 ### Requirement: Authentication mode switching
 The system SHALL allow users to toggle between "Password" and "OTP" login methods.
@@ -36,9 +49,9 @@ The system SHALL display visual feedback for user interactions, including loadin
 ### Requirement: Localized UI copy
 All user-facing text in the login flow SHALL be localized.
 
-#### Scenario: Displaying labels in English
+#### Scenario: Displaying default localized labels
 - **WHEN** the app locale is set to English
-- **THEN** the system SHALL display labels like "Username", "Password", and "Sign In" from the localization bundle.
+- **THEN** the system SHALL display default labels from the localization bundle
 
 ### Requirement: API-backed login screen actions
 The login UI SHALL execute auth actions via auth provider/repository instead of direct mock client calls.
