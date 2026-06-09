@@ -18,11 +18,17 @@ The system SHALL render the doubt's description and its replies using an HTML/Ri
 - **THEN** the system displays the content with rich formatting, LaTeX equations, and embedded inline images correctly formatted
 
 ### Requirement: Chronological Reply Thread
-The system SHALL display all replies in chronological order, clearly distinguishing mentor replies with a "Mentor" badge and the mentor's avatar.
+The system SHALL display all replies in chronological order, clearly distinguishing mentor replies with a "Mentor" badge and the mentor's avatar. 
+- **AI Bot Identification**: If a reply has a `source` of "Bot" (or equivalent AI source), the system SHALL override the author's display name to "AI Bot Response".
+- **Bot Mentor Badge**: If a reply has a `source` of "Bot" AND `isMentor` is true, the system SHALL display a "Bot" badge instead of the standard "Mentor" badge.
+
+#### Scenario: Viewing AI Bot replies
+- **WHEN** an AI Bot has responded to the doubt and `isMentor` is true
+- **THEN** the reply appears in the thread with the display name "AI Bot Response" and a "Bot" badge instead of the usual author name and "Mentor" badge.
 
 #### Scenario: Viewing mentor replies
-- **WHEN** a mentor has responded to the doubt
-- **THEN** the reply appears in the thread with a "Mentor" badge and the author's name.
+- **WHEN** a human mentor has responded to the doubt
+- **THEN** the reply appears in the thread with a "Mentor" badge and the author's actual name.
 
 ### Requirement: Multi-Format Attachment Display
 The system SHALL display a list of attachments (Images/PDFs) associated with a doubt or a reply. PDFs SHALL be represented by a distinct icon and tappable to open.
