@@ -33,12 +33,23 @@ class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
     final disableForgotPassword = settings?.disableForgotPassword ?? true;
 
     final loginIdLabel = settings?.loginIdLabel;
-    final displayLoginIdLabel = (loginIdLabel != null && loginIdLabel.isNotEmpty) ? loginIdLabel : l10n.loginUsernameLabel;
-    final displayLoginIdHint = (loginIdLabel != null && loginIdLabel.isNotEmpty) ? "Enter $loginIdLabel" : l10n.loginUsernameHint;
+    final displayLoginIdLabel =
+        (loginIdLabel != null && loginIdLabel.isNotEmpty)
+        ? loginIdLabel
+        : l10n.loginUsernameLabel;
+    final displayLoginIdHint = (loginIdLabel != null && loginIdLabel.isNotEmpty)
+        ? "Enter $loginIdLabel"
+        : l10n.loginUsernameHint;
 
     final loginPasswordLabel = settings?.loginPasswordLabel;
-    final displayPasswordLabel = (loginPasswordLabel != null && loginPasswordLabel.isNotEmpty) ? loginPasswordLabel : l10n.loginPasswordLabel;
-    final displayPasswordHint = (loginPasswordLabel != null && loginPasswordLabel.isNotEmpty) ? "Enter $loginPasswordLabel" : l10n.loginPasswordHint;
+    final displayPasswordLabel =
+        (loginPasswordLabel != null && loginPasswordLabel.isNotEmpty)
+        ? loginPasswordLabel
+        : l10n.loginPasswordLabel;
+    final displayPasswordHint =
+        (loginPasswordLabel != null && loginPasswordLabel.isNotEmpty)
+        ? "Enter $loginPasswordLabel"
+        : l10n.loginPasswordHint;
 
     return Scaffold(
       backgroundColor: design.colors.surface,
@@ -47,7 +58,10 @@ class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
         elevation: 0,
         leading: context.canPop()
             ? IconButton(
-                icon: Icon(LucideIcons.arrowLeft, color: design.colors.textPrimary),
+                icon: Icon(
+                  LucideIcons.arrowLeft,
+                  color: design.colors.textPrimary,
+                ),
                 onPressed: () => context.pop(),
               )
             : null,
@@ -69,58 +83,60 @@ class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                      AppText.headline('Sign In'),
-                      SizedBox(height: design.spacing.xxl),
-                      AppTextField(
-                        label: displayLoginIdLabel,
-                        hintText: displayLoginIdHint,
-                        controller: _usernameController,
-                        autofocus: true,
-                        textInputAction: TextInputAction.next,
-                        autofillHints: const [AutofillHints.username],
-                      ),
-                      SizedBox(height: design.spacing.md),
-                      AppTextField(
-                        label: displayPasswordLabel,
-                        hintText: displayPasswordHint,
-                        controller: _passwordController,
-                        obscureText: true,
-                        textInputAction: TextInputAction.done,
-                        autofillHints: const [AutofillHints.password],
-                        onSubmitted: (_) => _handlePasswordLogin(),
-                      ),
-                      if (_errorMessage != null) ...[
-                        SizedBox(height: design.spacing.md),
-                        AppText.bodySmall(
-                          _errorMessage!,
-                          color: design.colors.error,
+                        AppText.headline('Sign In'),
+                        SizedBox(height: design.spacing.xxl),
+                        AppTextField(
+                          label: displayLoginIdLabel,
+                          hintText: displayLoginIdHint,
+                          controller: _usernameController,
+                          autofocus: true,
+                          textInputAction: TextInputAction.next,
+                          autofillHints: const [AutofillHints.username],
                         ),
-                      ],
-                      if (!disableForgotPassword) ...[
                         SizedBox(height: design.spacing.md),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: GestureDetector(
-                            onTap: () => context.push('/forgot-password'),
-                            child: AppText.body(
-                              'Forgot Password?',
-                              color: design.colors.primary,
-                              style: const TextStyle(fontWeight: FontWeight.bold),
+                        AppTextField(
+                          label: displayPasswordLabel,
+                          hintText: displayPasswordHint,
+                          controller: _passwordController,
+                          obscureText: true,
+                          textInputAction: TextInputAction.done,
+                          autofillHints: const [AutofillHints.password],
+                          onSubmitted: (_) => _handlePasswordLogin(),
+                        ),
+                        if (_errorMessage != null) ...[
+                          SizedBox(height: design.spacing.md),
+                          AppText.bodySmall(
+                            _errorMessage!,
+                            color: design.colors.error,
+                          ),
+                        ],
+                        if (!disableForgotPassword) ...[
+                          SizedBox(height: design.spacing.md),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: GestureDetector(
+                              onTap: () => context.push('/forgot-password'),
+                              child: AppText.body(
+                                'Forgot Password?',
+                                color: design.colors.primary,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                        ],
+                        const Spacer(),
+                        SizedBox(height: design.spacing.xxl),
+                        if (_isBusy)
+                          const Center(child: AppLoadingIndicator())
+                        else
+                          AppButton.primary(
+                            label: l10n.loginButton,
+                            fullWidth: true,
+                            onPressed: _handlePasswordLogin,
+                          ),
                       ],
-                      const Spacer(),
-                      SizedBox(height: design.spacing.xxl),
-                      if (_isBusy)
-                        const Center(child: AppLoadingIndicator())
-                      else
-                        AppButton.primary(
-                          label: l10n.loginButton,
-                          fullWidth: true,
-                          onPressed: _handlePasswordLogin,
-                        ),
-                    ],
                     ),
                   ),
                 ),

@@ -41,9 +41,12 @@ Future<void> settingsInitialization(SettingsInitializationRef ref) async {
     final cached = await settingsRepo.loadSettings();
     if (cached != null) {
       ref.read(instituteSettingsProvider.notifier).state = cached;
-      settingsRepo.refreshSettings().then((fresh) {
-        ref.read(instituteSettingsProvider.notifier).state = fresh;
-      }).catchError((_) {});
+      settingsRepo
+          .refreshSettings()
+          .then((fresh) {
+            ref.read(instituteSettingsProvider.notifier).state = fresh;
+          })
+          .catchError((_) {});
     } else {
       final fresh = await settingsRepo.refreshSettings();
       ref.read(instituteSettingsProvider.notifier).state = fresh;

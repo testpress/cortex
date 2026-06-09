@@ -9,7 +9,9 @@ class InstituteSettingsRemoteDataSource {
 
   Future<InstituteSettings> fetchInstituteSettings() async {
     try {
-      final response = await _dio.get<Map<String, dynamic>>('/api/v2.3/settings/');
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/api/v2.3/settings/',
+      );
       if (response.data != null) {
         return InstituteSettings.fromJson(response.data!);
       } else {

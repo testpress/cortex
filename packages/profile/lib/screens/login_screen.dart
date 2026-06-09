@@ -50,14 +50,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
     final settings = ref.watch(instituteSettingsProvider);
-    final allowedMethods = settings?.allowedLoginMethods ?? const [LoginMethod.formLogin];
+    final allowedMethods =
+        settings?.allowedLoginMethods ?? const [LoginMethod.formLogin];
     final googleLoginEnabled = settings?.googleLoginEnabled ?? false;
-    
+
     final showOtp = allowedMethods.contains(LoginMethod.otpLogin);
     final showForm = allowedMethods.contains(LoginMethod.formLogin);
-    final showSocial = allowedMethods.contains(LoginMethod.socialLogin) && googleLoginEnabled;
+    final showSocial =
+        allowedMethods.contains(LoginMethod.socialLogin) && googleLoginEnabled;
 
-    final activeCount = (showOtp ? 1 : 0) + (showForm ? 1 : 0) + (showSocial ? 1 : 0);
+    final activeCount =
+        (showOtp ? 1 : 0) + (showForm ? 1 : 0) + (showSocial ? 1 : 0);
 
     if (activeCount == 1 && (showForm || showOtp) && !_hasAutoRedirected) {
       _hasAutoRedirected = true;
@@ -115,9 +118,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final design = Design.of(context);
     final settings = ref.watch(instituteSettingsProvider);
     final name = settings?.name;
-    final instituteName = (name != null && name.isNotEmpty) 
-        ? name
-        : 'CORTEX';
+    final instituteName = (name != null && name.isNotEmpty) ? name : 'CORTEX';
 
     return SafeArea(
       bottom: false,
@@ -201,24 +202,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         fit: BoxFit.scaleDown,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: EdgeInsets.all(design.spacing.xl),
-            decoration: BoxDecoration(
-              color: design.colors.primary.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
+          children: [
+            Container(
+              padding: EdgeInsets.all(design.spacing.xl),
+              decoration: BoxDecoration(
+                color: design.colors.primary.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, size: 64, color: design.colors.primary),
             ),
-            child: Icon(icon, size: 64, color: design.colors.primary),
-          ),
-          SizedBox(height: design.spacing.xl),
-          AppText.headline(title, textAlign: TextAlign.center),
-          SizedBox(height: design.spacing.sm),
-          AppText.body(
-            subtitle,
-            color: design.colors.textSecondary,
-            textAlign: TextAlign.center,
-          ),
-        ],
+            SizedBox(height: design.spacing.xl),
+            AppText.headline(title, textAlign: TextAlign.center),
+            SizedBox(height: design.spacing.sm),
+            AppText.body(
+              subtitle,
+              color: design.colors.textSecondary,
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );
@@ -227,17 +228,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget _buildOptions({required Key key}) {
     final design = Design.of(context);
     final settings = ref.watch(instituteSettingsProvider);
-    final allowedMethods = settings?.allowedLoginMethods ?? const [LoginMethod.formLogin];
+    final allowedMethods =
+        settings?.allowedLoginMethods ?? const [LoginMethod.formLogin];
     final allowSignup = settings?.allowSignup ?? false;
     final googleLoginEnabled = settings?.googleLoginEnabled ?? false;
-    
+
     final showOtp = allowedMethods.contains(LoginMethod.otpLogin);
     final showForm = allowedMethods.contains(LoginMethod.formLogin);
-    final showSocial = allowedMethods.contains(LoginMethod.socialLogin) && googleLoginEnabled;
+    final showSocial =
+        allowedMethods.contains(LoginMethod.socialLogin) && googleLoginEnabled;
 
     final loginIdLabel = settings?.loginIdLabel;
-    final displayLoginIdLabel = (loginIdLabel != null && loginIdLabel.isNotEmpty) 
-        ? loginIdLabel 
+    final displayLoginIdLabel =
+        (loginIdLabel != null && loginIdLabel.isNotEmpty)
+        ? loginIdLabel
         : 'Student ID';
 
     final buttons = [

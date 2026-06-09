@@ -7,7 +7,7 @@ class InstituteSettingsLocalDataSource {
   final FlutterSecureStorage _secureStorage;
 
   InstituteSettingsLocalDataSource({FlutterSecureStorage? secureStorage})
-      : _secureStorage = secureStorage ?? const FlutterSecureStorage();
+    : _secureStorage = secureStorage ?? const FlutterSecureStorage();
 
   Future<void> saveSettings(InstituteSettings settings) async {
     final jsonString = jsonEncode(settings.toJson());

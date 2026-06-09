@@ -1,16 +1,10 @@
-
 import 'package:flutter/widgets.dart';
 
 /// Defines the allowed login methods for an institute.
-enum LoginMethod {
-  formLogin,
-  socialLogin,
-  otpLogin,
-}
+enum LoginMethod { formLogin, socialLogin, otpLogin }
 
 @immutable
 class InstituteSettings {
-
   static InstituteSettings? current;
 
   // APP Specific
@@ -36,7 +30,6 @@ class InstituteSettings {
   final bool enableUserPhoto;
   final bool allowProfileEdit;
 
-
   //Learnings
   final bool coursesEnabled;
   final String coursesLabel;
@@ -44,7 +37,6 @@ class InstituteSettings {
   final bool isVideoDownloadEnabled;
   final bool activityFeedEnabled;
   final bool enableCustomTest;
-
 
   //Community and Discussions
   final bool postsEnabled;
@@ -58,7 +50,6 @@ class InstituteSettings {
 
   final bool helpdeskEnabled;
 
-
   //Security Settings
   final bool allowScreenshotInApp;
 
@@ -66,7 +57,6 @@ class InstituteSettings {
   final bool storeEnabled;
   final String storeLabel;
   final String currentPaymentApp;
-
 
   const InstituteSettings({
     required this.name,
@@ -103,16 +93,15 @@ class InstituteSettings {
     required this.currentPaymentApp,
   });
 
-
   factory InstituteSettings.fromJson(Map<String, dynamic> json) {
     return InstituteSettings(
       name: json['name'] as String? ?? '',
       photo: json['photo'] as String? ?? '',
       timezone: json['timezone'] as String? ?? '',
-      
+
       dashboardEnabled: json['dashboard_enabled'] as bool? ?? false,
       leaderboardEnabled: json['leaderboard_enabled'] as bool? ?? false,
-      
+
       allowedLoginMethods: () {
         final parsed = (json['allowed_login_methods'] as List<dynamic>?)
             ?.map((e) {
@@ -133,17 +122,19 @@ class InstituteSettings {
       loginIdLabel: json['login_label'] as String? ?? 'Student Id',
       loginPasswordLabel: json['login_password_label'] as String? ?? 'Password',
       disableForgotPassword: json['disable_forgot_password'] as bool? ?? true,
-      enableParallelLoginRestriction: json['enable_parallel_login_restriction'] as bool? ?? false,
+      enableParallelLoginRestriction:
+          json['enable_parallel_login_restriction'] as bool? ?? false,
       maxParallelLogins: json['max_parallel_logins'] as int? ?? 0,
       googleLoginEnabled: json['google_login_enabled'] as bool? ?? false,
-      
+
       coursesEnabled: json['courses_enabled'] as bool? ?? false,
       coursesLabel: json['courses_label'] as String? ?? 'Courses',
       contentsLabel: json['contents_button_label'] as String? ?? 'Contents',
-      isVideoDownloadEnabled: json['is_video_download_enabled'] as bool? ?? false,
+      isVideoDownloadEnabled:
+          json['is_video_download_enabled'] as bool? ?? false,
       activityFeedEnabled: json['activity_feed_enabled'] as bool? ?? false,
       enableCustomTest: json['enable_custom_test'] as bool? ?? false,
-      
+
       postsEnabled: json['posts_enabled'] as bool? ?? false,
       postsLabel: json['posts_label'] as String? ?? 'Posts',
       bookmarksEnabled: json['bookmarks_enabled'] as bool? ?? false,
@@ -151,9 +142,9 @@ class InstituteSettings {
       forumEnabled: json['forum_enabled'] as bool? ?? false,
       forumLabel: json['forum_label'] as String? ?? 'Discussions',
       helpdeskEnabled: json['is_helpdesk_enabled'] as bool? ?? false,
-      
+
       allowScreenshotInApp: json['allow_screenshot_in_app'] as bool? ?? false,
-      
+
       storeEnabled: json['store_enabled'] as bool? ?? false,
       storeLabel: json['store_label'] as String? ?? 'Store',
       currentPaymentApp: json['current_payment_app'] as String? ?? '',

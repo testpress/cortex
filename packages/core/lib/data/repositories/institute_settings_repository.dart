@@ -9,8 +9,8 @@ class InstituteSettingsRepository {
   InstituteSettingsRepository({
     required InstituteSettingsRemoteDataSource remoteDataSource,
     required InstituteSettingsLocalDataSource localDataSource,
-  })  : _remoteDataSource = remoteDataSource,
-        _localDataSource = localDataSource;
+  }) : _remoteDataSource = remoteDataSource,
+       _localDataSource = localDataSource;
 
   Future<InstituteSettings?> loadSettings() async {
     final settings = await _localDataSource.loadSettings();

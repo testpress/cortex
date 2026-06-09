@@ -36,7 +36,10 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
         elevation: 0,
         leading: context.canPop()
             ? IconButton(
-                icon: Icon(LucideIcons.arrowLeft, color: design.colors.textPrimary),
+                icon: Icon(
+                  LucideIcons.arrowLeft,
+                  color: design.colors.textPrimary,
+                ),
                 onPressed: () => context.pop(),
               )
             : null,
