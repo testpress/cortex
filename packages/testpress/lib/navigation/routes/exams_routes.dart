@@ -144,14 +144,30 @@ class ExamsRoutes {
           path: 'analytics',
           parentNavigatorKey: rootNavigatorKey,
           builder: (context, state) {
-            final parentId = state.uri.queryParameters['parentId'];
-            final subjectName = state.uri.queryParameters['subjectName'];
             return SubjectAnalyticsScreen(
-              parentId: parentId,
-              subjectName: subjectName,
+              parentId: null,
+              subjectName: null,
               onBack: () => context.pop(),
             );
           },
+          routes: [
+            GoRoute(
+              path: ':parentId',
+              parentNavigatorKey: rootNavigatorKey,
+              builder: (context, state) {
+                final parentId = state.pathParameters['parentId'];
+                final extra = state.extra;
+                final subjectName = extra is SubjectAnalyticsDto
+                    ? extra.name
+                    : null;
+                return SubjectAnalyticsScreen(
+                  parentId: parentId,
+                  subjectName: subjectName,
+                  onBack: () => context.pop(),
+                );
+              },
+            ),
+          ],
         ),
       ],
     ),

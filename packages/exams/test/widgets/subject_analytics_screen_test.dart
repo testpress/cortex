@@ -37,6 +37,37 @@ void main() {
   }
 
   testWidgets(
+    'SubjectAnalyticsScreen with parentId hides tabs and shows OverallReportsView only',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(
+        wrap(
+          SubjectAnalyticsScreen(
+            parentId: 'chemistry',
+            subjectName: 'Chemistry',
+            onBack: () {},
+          ),
+        ),
+      );
+
+      // Verify Chemistry title is rendered
+      expect(find.text('Chemistry'), findsOneWidget);
+
+      // Verify tabs are NOT rendered
+      expect(find.text('Overall Reports'), findsNothing);
+      expect(find.text('Individual Reports'), findsNothing);
+
+      // Verify OverallReportsView is rendered
+      expect(find.byType(OverallReportsView), findsOneWidget);
+      expect(find.byType(IndividualReportsView), findsNothing);
+
+      // Clean up the widget tree to dispose of the providers and database,
+      // and pump the event loop to run and clear any pending database stream timers.
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pumpAndSettle();
+    },
+  );
+
+  testWidgets(
     'SubjectAnalyticsScreen renders start-aligned title and tab buttons',
     (WidgetTester tester) async {
       await tester.pumpWidget(

@@ -300,12 +300,20 @@ class _StatsTable extends StatelessWidget {
           ),
 
           // Table Body Rows
-          for (int i = 0; i < subjects.length; i++)
-            TableRow(
+          ...subjects.map((subject) {
+            final onTap = subject.leaf
+                ? null
+                : () {
+                    context.push(
+                      '/exams/analytics/${subject.id}',
+                      extra: subject,
+                    );
+                  };
+            return TableRow(
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
-                    color: i == subjects.length - 1
+                    color: subject == subjects.last
                         ? design.colors.transparent
                         : design.colors.divider,
                     width: 1,
@@ -313,53 +321,74 @@ class _StatsTable extends StatelessWidget {
                 ),
               ),
               children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacing.sm,
-                    vertical: design.spacing.sm + design.spacing.xs,
-                  ),
-                  child: AppText.xs(
-                    subjects[i].name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: onTap,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: design.spacing.sm,
+                      vertical: design.spacing.sm + design.spacing.xs,
+                    ),
+                    child: AppText.xs(
+                      subject.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
                   ),
                 ),
                 if (showCorrect)
-                  _StatsCell(
-                    value: subjects[i].correct.toString(),
-                    color: design.correctColor,
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: onTap,
+                    child: _StatsCell(
+                      value: subject.correct.toString(),
+                      color: design.correctColor,
+                    ),
                   ),
                 if (showIncorrect)
-                  _StatsCell(
-                    value: subjects[i].incorrect.toString(),
-                    color: design.incorrectColor,
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: onTap,
+                    child: _StatsCell(
+                      value: subject.incorrect.toString(),
+                      color: design.incorrectColor,
+                    ),
                   ),
                 if (showUnanswered)
-                  _StatsCell(
-                    value: subjects[i].unanswered.toString(),
-                    color: design.unansweredColor,
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: onTap,
+                    child: _StatsCell(
+                      value: subject.unanswered.toString(),
+                      color: design.unansweredColor,
+                    ),
                   ),
                 // Chevron column
-                Padding(
-                  padding: EdgeInsets.only(
-                    right: design.spacing.xs,
-                    top: design.spacing.sm + design.spacing.xs,
-                    bottom: design.spacing.sm + design.spacing.xs,
-                  ),
-                  child: Container(
-                    alignment: Alignment.centerRight,
-                    child: subjects[i].leaf
-                        ? const SizedBox.shrink()
-                        : Icon(
-                            LucideIcons.chevronRight,
-                            size: design.iconSize.sm,
-                            color: design.colors.textTertiary,
-                          ),
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: onTap,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      right: design.spacing.xs,
+                      top: design.spacing.sm + design.spacing.xs,
+                      bottom: design.spacing.sm + design.spacing.xs,
+                    ),
+                    child: Container(
+                      alignment: Alignment.centerRight,
+                      child: subject.leaf
+                          ? const SizedBox.shrink()
+                          : Icon(
+                              LucideIcons.chevronRight,
+                              size: design.iconSize.sm,
+                              color: design.colors.textTertiary,
+                            ),
+                    ),
                   ),
                 ),
               ],
-            ),
+            );
+          }),
         ],
       ),
     );

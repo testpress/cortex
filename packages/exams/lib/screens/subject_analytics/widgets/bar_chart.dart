@@ -3,6 +3,9 @@ import 'package:core/core.dart';
 import 'package:core/data/models/review_models.dart';
 import '../subject_analytics_screen.dart';
 
+const double _minPctForStackedLabel = 12.0;
+const double _minPctForInsideLabel = 30.0;
+
 class BarRow extends StatelessWidget {
   const BarRow({super.key, required this.subject, required this.activeFilter});
 
@@ -121,7 +124,7 @@ class BarRow extends StatelessWidget {
                           color: activeColor,
                           alignment: Alignment.centerRight,
                           padding: EdgeInsets.only(right: design.spacing.sm),
-                          showLabel: pct >= 30.0,
+                          showLabel: pct >= _minPctForInsideLabel,
                           labelText: labelText,
                           textColor: design.colors.textInverse,
                         ),
@@ -130,7 +133,7 @@ class BarRow extends StatelessWidget {
                           color: activeBgColor,
                           alignment: Alignment.centerLeft,
                           padding: EdgeInsets.only(left: design.spacing.sm),
-                          showLabel: pct < 30.0,
+                          showLabel: pct < _minPctForInsideLabel,
                           labelText: labelText,
                           textColor: activeColor,
                         ),
@@ -168,7 +171,7 @@ class _BarSegment extends StatelessWidget {
         color: color,
         alignment: Alignment.center,
         padding: padding,
-        child: pct > 10
+        child: pct >= _minPctForStackedLabel
             ? AppText.xxs(
                 '${pct.toStringAsFixed(pct % 1 == 0 ? 0 : 1)}%',
                 style: const TextStyle(

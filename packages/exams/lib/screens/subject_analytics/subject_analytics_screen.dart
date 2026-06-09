@@ -146,41 +146,43 @@ class _SubjectAnalyticsScreenState
                       ),
 
                       // Tabs Row: Overall / Individual Report Pills
-                      Container(
-                        padding: EdgeInsets.fromLTRB(
-                          design.spacing.md,
-                          design.spacing.xs,
-                          design.spacing.md,
-                          design.spacing.sm,
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: _TabButton(
-                                label: 'Overall Reports',
-                                isActive: _activeTab == AnalyticsTab.overall,
-                                onTap: () {
-                                  setState(() {
-                                    _activeTab = AnalyticsTab.overall;
-                                  });
-                                },
+                      if (widget.parentId == null)
+                        Container(
+                          padding: EdgeInsets.fromLTRB(
+                            design.spacing.md,
+                            design.spacing.xs,
+                            design.spacing.md,
+                            design.spacing.sm,
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: _TabButton(
+                                  label: 'Overall Reports',
+                                  isActive: _activeTab == AnalyticsTab.overall,
+                                  onTap: () {
+                                    setState(() {
+                                      _activeTab = AnalyticsTab.overall;
+                                    });
+                                  },
+                                ),
                               ),
-                            ),
-                            SizedBox(width: design.spacing.sm),
-                            Expanded(
-                              child: _TabButton(
-                                label: 'Individual Reports',
-                                isActive: _activeTab == AnalyticsTab.individual,
-                                onTap: () {
-                                  setState(() {
-                                    _activeTab = AnalyticsTab.individual;
-                                  });
-                                },
+                              SizedBox(width: design.spacing.sm),
+                              Expanded(
+                                child: _TabButton(
+                                  label: 'Individual Reports',
+                                  isActive:
+                                      _activeTab == AnalyticsTab.individual,
+                                  onTap: () {
+                                    setState(() {
+                                      _activeTab = AnalyticsTab.individual;
+                                    });
+                                  },
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),
@@ -205,7 +207,7 @@ class _SubjectAnalyticsScreenState
         // Filter Dropdown Overlay Menu & transparent dismissal barrier
         if (_isFilterMenuOpen) ...[
           GestureDetector(
-            behavior: HitTestBehavior.translucent,
+            behavior: HitTestBehavior.opaque,
             onTap: () {
               setState(() {
                 _isFilterMenuOpen = false;

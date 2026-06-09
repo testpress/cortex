@@ -88,7 +88,20 @@ class OverallReportsView extends ConsumerWidget {
                 ),
                 children: [
                   for (final subject in subjects) ...[
-                    BarRow(subject: subject, activeFilter: activeFilter),
+                    subject.leaf
+                        ? BarRow(subject: subject, activeFilter: activeFilter)
+                        : AppFocusable(
+                            onTap: () {
+                              context.push(
+                                '/exams/analytics/${subject.id}',
+                                extra: subject,
+                              );
+                            },
+                            child: BarRow(
+                              subject: subject,
+                              activeFilter: activeFilter,
+                            ),
+                          ),
                     SizedBox(height: design.spacing.sm + design.spacing.xs),
                   ],
                 ],
