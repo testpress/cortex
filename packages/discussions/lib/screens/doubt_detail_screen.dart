@@ -551,7 +551,9 @@ class _ReplyHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final isBot = reply.source?.toLowerCase() == 'bot' || reply.source?.toLowerCase() == 'ai';
+    final isBot =
+        reply.source?.toLowerCase() == 'bot' ||
+        reply.source?.toLowerCase() == 'ai';
     final displayName = isBot ? 'AI Bot Response' : reply.authorName;
 
     return Row(
