@@ -31,6 +31,7 @@ class DoubtRepliesTable extends Table {
   DateTimeColumn get createdAt => dateTime()();
   TextColumn get createdHumanized => text().nullable()();
   TextColumn get attachments => text().nullable()(); // JSON-encoded list
+  TextColumn get source => text().nullable()(); // human, ai
 
   @override
   Set<Column> get primaryKey => {id};
