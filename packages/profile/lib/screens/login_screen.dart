@@ -87,33 +87,33 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         child: Column(
           children: [
             Expanded(flex: flexTop, child: _buildBrandingSection()),
-          Expanded(
-            flex: flexBottom,
-            child: Container(
-              decoration: BoxDecoration(
-                color: design.colors.surface,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(32),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, -5),
+            Expanded(
+              flex: flexBottom,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: design.colors.surface,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(32),
                   ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(32),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, -5),
+                    ),
+                  ],
                 ),
-                child: _buildOptions(key: const ValueKey('options')),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(32),
+                  ),
+                  child: _buildOptions(key: const ValueKey('options')),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
     );
   }
 
