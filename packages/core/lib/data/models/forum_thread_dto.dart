@@ -154,6 +154,7 @@ class ForumCommentDto {
   final int upvotes;
   final int downvotes;
   final bool isInstructor;
+  final bool isPublic;
 
   const ForumCommentDto({
     required this.id,
@@ -165,6 +166,7 @@ class ForumCommentDto {
     this.upvotes = 0,
     this.downvotes = 0,
     this.isInstructor = false,
+    this.isPublic = true,
   });
 
   int get score => upvotes - downvotes;
@@ -187,6 +189,7 @@ class ForumCommentDto {
       upvotes: _asInt(json['upvotes']) ?? 0,
       downvotes: _asInt(json['downvotes']) ?? 0,
       isInstructor: json['is_instructor'] == true,
+      isPublic: json['is_public'] as bool? ?? true,
     );
   }
 

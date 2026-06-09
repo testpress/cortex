@@ -5129,6 +5129,21 @@ class $ForumCommentsTableTable extends ForumCommentsTable
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _isPublicMeta = const VerificationMeta(
+    'isPublic',
+  );
+  @override
+  late final GeneratedColumn<bool> isPublic = GeneratedColumn<bool>(
+    'is_public',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_public" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -5140,6 +5155,7 @@ class $ForumCommentsTableTable extends ForumCommentsTable
     upvotes,
     downvotes,
     isInstructor,
+    isPublic,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -5220,6 +5236,12 @@ class $ForumCommentsTableTable extends ForumCommentsTable
         ),
       );
     }
+    if (data.containsKey('is_public')) {
+      context.handle(
+        _isPublicMeta,
+        isPublic.isAcceptableOrUnknown(data['is_public']!, _isPublicMeta),
+      );
+    }
     return context;
   }
 
@@ -5265,6 +5287,10 @@ class $ForumCommentsTableTable extends ForumCommentsTable
         DriftSqlType.bool,
         data['${effectivePrefix}is_instructor'],
       )!,
+      isPublic: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_public'],
+      )!,
     );
   }
 
@@ -5285,6 +5311,7 @@ class ForumCommentsTableData extends DataClass
   final int upvotes;
   final int downvotes;
   final bool isInstructor;
+  final bool isPublic;
   const ForumCommentsTableData({
     required this.id,
     required this.threadId,
@@ -5295,6 +5322,7 @@ class ForumCommentsTableData extends DataClass
     required this.upvotes,
     required this.downvotes,
     required this.isInstructor,
+    required this.isPublic,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -5310,6 +5338,7 @@ class ForumCommentsTableData extends DataClass
     map['upvotes'] = Variable<int>(upvotes);
     map['downvotes'] = Variable<int>(downvotes);
     map['is_instructor'] = Variable<bool>(isInstructor);
+    map['is_public'] = Variable<bool>(isPublic);
     return map;
   }
 
@@ -5326,6 +5355,7 @@ class ForumCommentsTableData extends DataClass
       upvotes: Value(upvotes),
       downvotes: Value(downvotes),
       isInstructor: Value(isInstructor),
+      isPublic: Value(isPublic),
     );
   }
 
@@ -5344,6 +5374,7 @@ class ForumCommentsTableData extends DataClass
       upvotes: serializer.fromJson<int>(json['upvotes']),
       downvotes: serializer.fromJson<int>(json['downvotes']),
       isInstructor: serializer.fromJson<bool>(json['isInstructor']),
+      isPublic: serializer.fromJson<bool>(json['isPublic']),
     );
   }
   @override
@@ -5359,6 +5390,7 @@ class ForumCommentsTableData extends DataClass
       'upvotes': serializer.toJson<int>(upvotes),
       'downvotes': serializer.toJson<int>(downvotes),
       'isInstructor': serializer.toJson<bool>(isInstructor),
+      'isPublic': serializer.toJson<bool>(isPublic),
     };
   }
 
@@ -5372,6 +5404,7 @@ class ForumCommentsTableData extends DataClass
     int? upvotes,
     int? downvotes,
     bool? isInstructor,
+    bool? isPublic,
   }) => ForumCommentsTableData(
     id: id ?? this.id,
     threadId: threadId ?? this.threadId,
@@ -5382,6 +5415,7 @@ class ForumCommentsTableData extends DataClass
     upvotes: upvotes ?? this.upvotes,
     downvotes: downvotes ?? this.downvotes,
     isInstructor: isInstructor ?? this.isInstructor,
+    isPublic: isPublic ?? this.isPublic,
   );
   ForumCommentsTableData copyWithCompanion(ForumCommentsTableCompanion data) {
     return ForumCommentsTableData(
@@ -5400,6 +5434,7 @@ class ForumCommentsTableData extends DataClass
       isInstructor: data.isInstructor.present
           ? data.isInstructor.value
           : this.isInstructor,
+      isPublic: data.isPublic.present ? data.isPublic.value : this.isPublic,
     );
   }
 
@@ -5414,7 +5449,8 @@ class ForumCommentsTableData extends DataClass
           ..write('createdAt: $createdAt, ')
           ..write('upvotes: $upvotes, ')
           ..write('downvotes: $downvotes, ')
-          ..write('isInstructor: $isInstructor')
+          ..write('isInstructor: $isInstructor, ')
+          ..write('isPublic: $isPublic')
           ..write(')'))
         .toString();
   }
@@ -5430,6 +5466,7 @@ class ForumCommentsTableData extends DataClass
     upvotes,
     downvotes,
     isInstructor,
+    isPublic,
   );
   @override
   bool operator ==(Object other) =>
@@ -5443,7 +5480,8 @@ class ForumCommentsTableData extends DataClass
           other.createdAt == this.createdAt &&
           other.upvotes == this.upvotes &&
           other.downvotes == this.downvotes &&
-          other.isInstructor == this.isInstructor);
+          other.isInstructor == this.isInstructor &&
+          other.isPublic == this.isPublic);
 }
 
 class ForumCommentsTableCompanion
@@ -5457,6 +5495,7 @@ class ForumCommentsTableCompanion
   final Value<int> upvotes;
   final Value<int> downvotes;
   final Value<bool> isInstructor;
+  final Value<bool> isPublic;
   final Value<int> rowid;
   const ForumCommentsTableCompanion({
     this.id = const Value.absent(),
@@ -5468,6 +5507,7 @@ class ForumCommentsTableCompanion
     this.upvotes = const Value.absent(),
     this.downvotes = const Value.absent(),
     this.isInstructor = const Value.absent(),
+    this.isPublic = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ForumCommentsTableCompanion.insert({
@@ -5480,6 +5520,7 @@ class ForumCommentsTableCompanion
     this.upvotes = const Value.absent(),
     this.downvotes = const Value.absent(),
     this.isInstructor = const Value.absent(),
+    this.isPublic = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        threadId = Value(threadId),
@@ -5496,6 +5537,7 @@ class ForumCommentsTableCompanion
     Expression<int>? upvotes,
     Expression<int>? downvotes,
     Expression<bool>? isInstructor,
+    Expression<bool>? isPublic,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -5508,6 +5550,7 @@ class ForumCommentsTableCompanion
       if (upvotes != null) 'upvotes': upvotes,
       if (downvotes != null) 'downvotes': downvotes,
       if (isInstructor != null) 'is_instructor': isInstructor,
+      if (isPublic != null) 'is_public': isPublic,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -5522,6 +5565,7 @@ class ForumCommentsTableCompanion
     Value<int>? upvotes,
     Value<int>? downvotes,
     Value<bool>? isInstructor,
+    Value<bool>? isPublic,
     Value<int>? rowid,
   }) {
     return ForumCommentsTableCompanion(
@@ -5534,6 +5578,7 @@ class ForumCommentsTableCompanion
       upvotes: upvotes ?? this.upvotes,
       downvotes: downvotes ?? this.downvotes,
       isInstructor: isInstructor ?? this.isInstructor,
+      isPublic: isPublic ?? this.isPublic,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -5568,6 +5613,9 @@ class ForumCommentsTableCompanion
     if (isInstructor.present) {
       map['is_instructor'] = Variable<bool>(isInstructor.value);
     }
+    if (isPublic.present) {
+      map['is_public'] = Variable<bool>(isPublic.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -5586,6 +5634,7 @@ class ForumCommentsTableCompanion
           ..write('upvotes: $upvotes, ')
           ..write('downvotes: $downvotes, ')
           ..write('isInstructor: $isInstructor, ')
+          ..write('isPublic: $isPublic, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -17284,6 +17333,7 @@ typedef $$ForumCommentsTableTableCreateCompanionBuilder =
       Value<int> upvotes,
       Value<int> downvotes,
       Value<bool> isInstructor,
+      Value<bool> isPublic,
       Value<int> rowid,
     });
 typedef $$ForumCommentsTableTableUpdateCompanionBuilder =
@@ -17297,6 +17347,7 @@ typedef $$ForumCommentsTableTableUpdateCompanionBuilder =
       Value<int> upvotes,
       Value<int> downvotes,
       Value<bool> isInstructor,
+      Value<bool> isPublic,
       Value<int> rowid,
     });
 
@@ -17351,6 +17402,11 @@ class $$ForumCommentsTableTableFilterComposer
 
   ColumnFilters<bool> get isInstructor => $composableBuilder(
     column: $table.isInstructor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isPublic => $composableBuilder(
+    column: $table.isPublic,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -17408,6 +17464,11 @@ class $$ForumCommentsTableTableOrderingComposer
     column: $table.isInstructor,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get isPublic => $composableBuilder(
+    column: $table.isPublic,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$ForumCommentsTableTableAnnotationComposer
@@ -17451,6 +17512,9 @@ class $$ForumCommentsTableTableAnnotationComposer
     column: $table.isInstructor,
     builder: (column) => column,
   );
+
+  GeneratedColumn<bool> get isPublic =>
+      $composableBuilder(column: $table.isPublic, builder: (column) => column);
 }
 
 class $$ForumCommentsTableTableTableManager
@@ -17502,6 +17566,7 @@ class $$ForumCommentsTableTableTableManager
                 Value<int> upvotes = const Value.absent(),
                 Value<int> downvotes = const Value.absent(),
                 Value<bool> isInstructor = const Value.absent(),
+                Value<bool> isPublic = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ForumCommentsTableCompanion(
                 id: id,
@@ -17513,6 +17578,7 @@ class $$ForumCommentsTableTableTableManager
                 upvotes: upvotes,
                 downvotes: downvotes,
                 isInstructor: isInstructor,
+                isPublic: isPublic,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -17526,6 +17592,7 @@ class $$ForumCommentsTableTableTableManager
                 Value<int> upvotes = const Value.absent(),
                 Value<int> downvotes = const Value.absent(),
                 Value<bool> isInstructor = const Value.absent(),
+                Value<bool> isPublic = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ForumCommentsTableCompanion.insert(
                 id: id,
@@ -17537,6 +17604,7 @@ class $$ForumCommentsTableTableTableManager
                 upvotes: upvotes,
                 downvotes: downvotes,
                 isInstructor: isInstructor,
+                isPublic: isPublic,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

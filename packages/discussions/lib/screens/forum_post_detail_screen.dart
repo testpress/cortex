@@ -545,9 +545,17 @@ class _CommentAuthorInfo extends StatelessWidget {
             ],
           ],
         ),
-        AppText.caption(
-          _formatDateSafe(comment.createdAt),
-          color: design.colors.textSecondary,
+        Row(
+          children: [
+            AppText.caption(
+              _formatDateSafe(comment.createdAt),
+              color: design.colors.textSecondary,
+            ),
+            if (!comment.isPublic) ...[
+              SizedBox(width: design.spacing.sm),
+              const _PendingModerationBadge(),
+            ],
+          ],
         ),
       ],
     );
@@ -848,6 +856,34 @@ class _RoleBadge extends StatelessWidget {
         style: const TextStyle(
           fontSize: 9,
           fontWeight: FontWeight.w800,
+          letterSpacing: 0.2,
+        ),
+      ),
+    );
+  }
+}
+
+class _PendingModerationBadge extends StatelessWidget {
+  const _PendingModerationBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF8E1),
+        border: Border.all(color: const Color(0xFFFFE082), width: 0.5),
+        borderRadius: BorderRadius.circular(design.radius.sm),
+      ),
+      child: AppText.caption(
+        l10n.forumPendingModeration,
+        color: const Color(0xFF8D6E63),
+        style: const TextStyle(
+          fontSize: 9,
+          fontWeight: FontWeight.w700,
           letterSpacing: 0.2,
         ),
       ),

@@ -37,6 +37,7 @@ class ForumCommentsTable extends Table {
   IntColumn get upvotes => integer().withDefault(const Constant(0))();
   IntColumn get downvotes => integer().withDefault(const Constant(0))();
   BoolColumn get isInstructor => boolean().withDefault(const Constant(false))();
+  BoolColumn get isPublic => boolean().withDefault(const Constant(true))();
 
   @override
   Set<Column> get primaryKey => {id};

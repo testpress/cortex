@@ -1744,6 +1744,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get forumRoleInstructor => 'ഇൻസ്ട്രക്ടർ';
 
   @override
+  String get forumPendingModeration => 'മോഡറേഷനായി കാത്തിരിക്കുന്നു';
+
+  @override
   String get forumErrorFailedToPostReply =>
       'മറുപടി പോസ്റ്റ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു';
 

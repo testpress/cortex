@@ -833,6 +833,7 @@
     }
   },
   "forumRoleInstructor": "Instructor",
+  "forumPendingModeration": "Pending Moderation",
   "forumErrorFailedToPostReply": "Failed to post reply",
   "noAnnouncementsFound": "No announcements found.",
   "commentsDisabledByAdmin": "Comments are disabled for this post by Administrator",
