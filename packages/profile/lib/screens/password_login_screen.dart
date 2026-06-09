@@ -32,6 +32,14 @@ class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
     final settings = ref.watch(instituteSettingsProvider);
     final disableForgotPassword = settings?.disableForgotPassword ?? true;
 
+    final loginIdLabel = settings?.loginIdLabel;
+    final displayLoginIdLabel = (loginIdLabel != null && loginIdLabel.isNotEmpty) ? loginIdLabel : l10n.loginUsernameLabel;
+    final displayLoginIdHint = (loginIdLabel != null && loginIdLabel.isNotEmpty) ? "Enter $loginIdLabel" : l10n.loginUsernameHint;
+
+    final loginPasswordLabel = settings?.loginPasswordLabel;
+    final displayPasswordLabel = (loginPasswordLabel != null && loginPasswordLabel.isNotEmpty) ? loginPasswordLabel : l10n.loginPasswordLabel;
+    final displayPasswordHint = (loginPasswordLabel != null && loginPasswordLabel.isNotEmpty) ? "Enter $loginPasswordLabel" : l10n.loginPasswordHint;
+
     return Scaffold(
       backgroundColor: design.colors.surface,
       appBar: AppBar(
@@ -64,12 +72,8 @@ class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
                       AppText.headline('Sign In'),
                       SizedBox(height: design.spacing.xxl),
                       AppTextField(
-                        label: settings?.loginIdLabel.isNotEmpty == true 
-                            ? settings!.loginIdLabel 
-                            : l10n.loginUsernameLabel,
-                        hintText: settings?.loginIdLabel.isNotEmpty == true 
-                            ? 'Enter ${settings!.loginIdLabel}' 
-                            : l10n.loginUsernameHint,
+                        label: displayLoginIdLabel,
+                        hintText: displayLoginIdHint,
                         controller: _usernameController,
                         autofocus: true,
                         textInputAction: TextInputAction.next,
@@ -77,12 +81,8 @@ class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
                       ),
                       SizedBox(height: design.spacing.md),
                       AppTextField(
-                        label: settings?.loginPasswordLabel.isNotEmpty == true 
-                            ? settings!.loginPasswordLabel 
-                            : l10n.loginPasswordLabel,
-                        hintText: settings?.loginPasswordLabel.isNotEmpty == true 
-                            ? 'Enter ${settings!.loginPasswordLabel}' 
-                            : l10n.loginPasswordHint,
+                        label: displayPasswordLabel,
+                        hintText: displayPasswordHint,
                         controller: _passwordController,
                         obscureText: true,
                         textInputAction: TextInputAction.done,

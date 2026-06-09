@@ -15,14 +15,14 @@ class InstituteSettingsLocalDataSource {
   }
 
   Future<InstituteSettings?> loadSettings() async {
-    final jsonString = await _secureStorage.read(key: _settingsKey);
-    if (jsonString != null && jsonString.isNotEmpty) {
-      try {
+    try {
+      final jsonString = await _secureStorage.read(key: _settingsKey);
+      if (jsonString != null && jsonString.isNotEmpty) {
         final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
         return InstituteSettings.fromJson(jsonMap);
-      } catch (e) {
-        return null;
       }
+    } catch (e) {
+      // Fail silently and return null if secure storage read or JSON parsing fails
     }
     return null;
   }

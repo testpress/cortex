@@ -59,7 +59,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     final activeCount = (showOtp ? 1 : 0) + (showForm ? 1 : 0) + (showSocial ? 1 : 0);
 
-    if (activeCount == 1 && !_hasAutoRedirected) {
+    if (activeCount == 1 && (showForm || showOtp) && !_hasAutoRedirected) {
       _hasAutoRedirected = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
@@ -114,8 +114,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget _buildBrandingSection() {
     final design = Design.of(context);
     final settings = ref.watch(instituteSettingsProvider);
-    final instituteName = settings?.name.isNotEmpty == true 
-        ? settings!.name.toUpperCase() 
+    final name = settings?.name;
+    final instituteName = (name != null && name.isNotEmpty) 
+        ? name
         : 'CORTEX';
 
     return SafeArea(
@@ -234,6 +235,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final showForm = allowedMethods.contains(LoginMethod.formLogin);
     final showSocial = allowedMethods.contains(LoginMethod.socialLogin) && googleLoginEnabled;
 
+    final loginIdLabel = settings?.loginIdLabel;
+    final displayLoginIdLabel = (loginIdLabel != null && loginIdLabel.isNotEmpty) 
+        ? loginIdLabel 
+        : 'Student ID';
+
     final buttons = [
       if (showOtp)
         AppButton.primary(
@@ -244,7 +250,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ),
       if (showForm)
         AppButton.secondary(
-          label: 'Continue with ${settings?.loginIdLabel.isNotEmpty == true ? settings!.loginIdLabel : 'Student ID'}',
+          label: 'Continue with $displayLoginIdLabel',
           fullWidth: true,
           leading: const Icon(LucideIcons.mail),
           onPressed: () => context.push('/password-login'),

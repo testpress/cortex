@@ -13,7 +13,11 @@ class InstituteSettingsRepository {
         _localDataSource = localDataSource;
 
   Future<InstituteSettings?> loadSettings() async {
-    return _localDataSource.loadSettings();
+    final settings = await _localDataSource.loadSettings();
+    if (settings != null) {
+      InstituteSettings.current = settings;
+    }
+    return settings;
   }
 
   Future<InstituteSettings> refreshSettings() async {

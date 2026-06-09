@@ -113,16 +113,20 @@ class InstituteSettings {
       dashboardEnabled: json['dashboard_enabled'] as bool? ?? false,
       leaderboardEnabled: json['leaderboard_enabled'] as bool? ?? false,
       
-      allowedLoginMethods: (json['allowed_login_methods'] as List<dynamic>?)
-              ?.map((e) {
-                if (e == 1) return LoginMethod.formLogin;
-                if (e == 2) return LoginMethod.socialLogin;
-                if (e == 3) return LoginMethod.otpLogin;
-                return null;
-              })
-              .whereType<LoginMethod>()
-              .toList() ??
-          const [LoginMethod.formLogin],
+      allowedLoginMethods: () {
+        final parsed = (json['allowed_login_methods'] as List<dynamic>?)
+            ?.map((e) {
+              if (e == 1) return LoginMethod.formLogin;
+              if (e == 2) return LoginMethod.socialLogin;
+              if (e == 3) return LoginMethod.otpLogin;
+              return null;
+            })
+            .whereType<LoginMethod>()
+            .toList();
+        return (parsed == null || parsed.isEmpty)
+            ? const [LoginMethod.formLogin]
+            : parsed;
+      }(),
       allowSignup: json['allow_signup'] as bool? ?? false,
       enableUserPhoto: json['enable_user_photo'] as bool? ?? false,
       allowProfileEdit: json['allow_profile_edit'] as bool? ?? false,
