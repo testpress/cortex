@@ -16,6 +16,9 @@ Future<void> appInitialization(AppInitializationRef ref) async {
   // Ensure 3rd party SDKs (TPStreams, etc) are initialized via core
   await ref.watch(sdkInitializationProvider.future);
 
+  // Initialize Institute Settings before launching UI (runs exactly once)
+  await ref.watch(settingsInitializationProvider.future);
+
   final isLoggedIn = ref.watch(authProvider).asData?.value ?? false;
   if (!isLoggedIn) return;
 
@@ -28,5 +31,27 @@ Future<void> appInitialization(AppInitializationRef ref) async {
   } catch (e) {
     // Initialization errors are handled here or surfaced to the listener
     // We don't rethrow here to allow the app to start even if profile/progress refresh fails.
+  }
+}
+
+@Riverpod(keepAlive: true)
+Future<void> settingsInitialization(SettingsInitializationRef ref) async {
+  try {
+    final settingsRepo = ref.read(instituteSettingsRepositoryProvider);
+    final cached = await settingsRepo.loadSettings();
+    if (cached != null) {
+      ref.read(instituteSettingsProvider.notifier).state = cached;
+      settingsRepo
+          .refreshSettings()
+          .then((fresh) {
+            ref.read(instituteSettingsProvider.notifier).state = fresh;
+          })
+          .catchError((_) {});
+    } else {
+      final fresh = await settingsRepo.refreshSettings();
+      ref.read(instituteSettingsProvider.notifier).state = fresh;
+    }
+  } catch (e) {
+    // Fail silently if unable to fetch settings, the app will use defaults
   }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:core/legacy_icons.dart' as legacy;
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -15,6 +16,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _pageController = PageController();
   int _currentPage = 0;
   Timer? _carouselTimer;
+  bool _hasAutoRedirected = false;
 
   @override
   void initState() {
@@ -46,6 +48,33 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+
+    final settings = ref.watch(instituteSettingsProvider);
+    final allowedMethods =
+        settings?.allowedLoginMethods ?? const [LoginMethod.formLogin];
+    final googleLoginEnabled = settings?.googleLoginEnabled ?? false;
+
+    final showOtp = allowedMethods.contains(LoginMethod.otpLogin);
+    final showForm = allowedMethods.contains(LoginMethod.formLogin);
+    final showSocial =
+        allowedMethods.contains(LoginMethod.socialLogin) && googleLoginEnabled;
+
+    final activeCount =
+        (showOtp ? 1 : 0) + (showForm ? 1 : 0) + (showSocial ? 1 : 0);
+
+    if (activeCount == 1 && (showForm || showOtp) && !_hasAutoRedirected) {
+      _hasAutoRedirected = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        if (showForm) {
+          context.pushReplacement('/password-login');
+        } else if (showOtp) {
+          context.pushReplacement('/mobile-login');
+        }
+      });
+      // Return empty scaffold while redirecting to prevent flicker
+      return Scaffold(backgroundColor: design.colors.surface);
+    }
 
     // Scale down the carousel area slightly if keyboard is open to preserve space
     final flexTop = bottomInset > 0 ? 25 : 55;
@@ -87,6 +116,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Widget _buildBrandingSection() {
     final design = Design.of(context);
+    final settings = ref.watch(instituteSettingsProvider);
+    final name = settings?.name;
+    final instituteName = (name != null && name.isNotEmpty) ? name : 'CORTEX';
 
     return SafeArea(
       bottom: false,
@@ -129,7 +161,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
                 SizedBox(width: design.spacing.xs),
                 AppText.headline(
-                  'CORTEX',
+                  instituteName,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
@@ -166,32 +198,76 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final design = Design.of(context);
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: design.spacing.xxl),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: EdgeInsets.all(design.spacing.xl),
-            decoration: BoxDecoration(
-              color: design.colors.primary.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: EdgeInsets.all(design.spacing.xl),
+              decoration: BoxDecoration(
+                color: design.colors.primary.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, size: 64, color: design.colors.primary),
             ),
-            child: Icon(icon, size: 64, color: design.colors.primary),
-          ),
-          SizedBox(height: design.spacing.xl),
-          AppText.headline(title, textAlign: TextAlign.center),
-          SizedBox(height: design.spacing.sm),
-          AppText.body(
-            subtitle,
-            color: design.colors.textSecondary,
-            textAlign: TextAlign.center,
-          ),
-        ],
+            SizedBox(height: design.spacing.xl),
+            AppText.headline(title, textAlign: TextAlign.center),
+            SizedBox(height: design.spacing.sm),
+            AppText.body(
+              subtitle,
+              color: design.colors.textSecondary,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildOptions({required Key key}) {
     final design = Design.of(context);
+    final settings = ref.watch(instituteSettingsProvider);
+    final allowedMethods =
+        settings?.allowedLoginMethods ?? const [LoginMethod.formLogin];
+    final allowSignup = settings?.allowSignup ?? false;
+    final googleLoginEnabled = settings?.googleLoginEnabled ?? false;
+
+    final showOtp = allowedMethods.contains(LoginMethod.otpLogin);
+    final showForm = allowedMethods.contains(LoginMethod.formLogin);
+    final showSocial =
+        allowedMethods.contains(LoginMethod.socialLogin) && googleLoginEnabled;
+
+    final loginIdLabel = settings?.loginIdLabel;
+    final displayLoginIdLabel =
+        (loginIdLabel != null && loginIdLabel.isNotEmpty)
+        ? loginIdLabel
+        : 'Student ID';
+
+    final buttons = [
+      if (showOtp)
+        AppButton.primary(
+          label: 'Continue with Mobile Number',
+          fullWidth: true,
+          leading: const Icon(LucideIcons.smartphone),
+          onPressed: () => context.push('/mobile-login'),
+        ),
+      if (showForm)
+        AppButton.secondary(
+          label: 'Continue with $displayLoginIdLabel',
+          fullWidth: true,
+          leading: const Icon(LucideIcons.mail),
+          onPressed: () => context.push('/password-login'),
+        ),
+      if (showSocial)
+        AppButton.secondary(
+          label: 'Continue with Google',
+          fullWidth: true,
+          leading: const Icon(legacy.LucideIcons.chrome),
+          onPressed: () => context.go('/home'),
+        ),
+    ];
+
     return SingleChildScrollView(
       key: key,
       padding: EdgeInsets.all(design.spacing.xl),
@@ -207,41 +283,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: design.spacing.xxl),
-          AppButton.primary(
-            label: 'Continue with Mobile Number',
-            fullWidth: true,
-            leading: const Icon(LucideIcons.smartphone),
-            onPressed: () => context.push('/mobile-login'),
-          ),
-          SizedBox(height: design.spacing.md),
-          AppButton.secondary(
-            label: 'Continue with Student ID',
-            fullWidth: true,
-            leading: const Icon(LucideIcons.mail),
-            onPressed: () => context.push('/password-login'),
-          ),
-          SizedBox(height: design.spacing.md),
-          AppButton.secondary(
-            label: 'Continue with Google',
-            fullWidth: true,
-            leading: const Icon(legacy.LucideIcons.chrome),
-            onPressed: () => context.go('/home'),
-          ),
+          for (int i = 0; i < buttons.length; i++) ...[
+            buttons[i],
+            if (i < buttons.length - 1) SizedBox(height: design.spacing.md),
+          ],
           SizedBox(height: design.spacing.xxl),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AppText.body('Don\'t have an account? '),
-              GestureDetector(
-                child: AppText.body(
-                  'Sign up',
-                  color: design.colors.primary,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+          if (allowSignup)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AppText.body('Don\'t have an account? '),
+                GestureDetector(
+                  child: AppText.body(
+                    'Sign up',
+                    color: design.colors.primary,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  onTap: () => context.push('/signup'),
                 ),
-                onTap: () => context.push('/signup'),
-              ),
-            ],
-          ),
+              ],
+            ),
           SizedBox(height: design.spacing.xl),
         ],
       ),

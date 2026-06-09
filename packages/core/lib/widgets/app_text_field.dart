@@ -22,6 +22,7 @@ class AppTextField extends StatelessWidget {
     this.onSubmitted,
     this.contentPadding,
     this.textStyle,
+    this.autofillHints,
   });
 
   final String label;
@@ -38,6 +39,7 @@ class AppTextField extends StatelessWidget {
   final ValueChanged<String>? onSubmitted;
   final EdgeInsetsGeometry? contentPadding;
   final TextStyle? textStyle;
+  final Iterable<String>? autofillHints;
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +74,7 @@ class AppTextField extends StatelessWidget {
               autofocus: autofocus,
               textInputAction: textInputAction,
               onSubmitted: onSubmitted,
+              autofillHints: autofillHints,
               style: (textStyle ?? design.typography.body).copyWith(
                 color: readOnly
                     ? design.colors.textSecondary

@@ -34,10 +34,15 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(LucideIcons.arrowLeft, color: design.colors.textPrimary),
-          onPressed: () => context.pop(),
-        ),
+        leading: context.canPop()
+            ? IconButton(
+                icon: Icon(
+                  LucideIcons.arrowLeft,
+                  color: design.colors.textPrimary,
+                ),
+                onPressed: () => context.pop(),
+              )
+            : null,
       ),
       body: SafeArea(
         child: LayoutBuilder(

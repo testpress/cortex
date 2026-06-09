@@ -83,4 +83,9 @@ class AppConfig {
     'IS_LOCAL_LOGO',
     defaultValue: false,
   );
+
+  static const String loginScreenImageLocalPath = String.fromEnvironment(
+    'LOGIN_SCREEN_IMAGE_LOCAL_PATH',
+    defaultValue: '',
+  );
 }
