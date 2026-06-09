@@ -1713,6 +1713,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get forumRoleInstructor => 'مدرب';
 
   @override
+  String get forumPendingModeration => 'في انتظار المراجعة';
+
+  @override
   String get forumErrorFailedToPostReply => 'فشل في نشر الرد';
 
   @override

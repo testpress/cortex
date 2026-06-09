@@ -968,7 +968,7 @@ class _RemoveBookmarkProviderElement
 }
 
 String _$paginatedBookmarksHash() =>
-    r'0d085f4f12ebb235c2a2e1115c815272ea2fa2d6';
+    r'5e2eb4fe15f63364693630f1e420e990ec513462';
 
 abstract class _$PaginatedBookmarks
     extends BuildlessAutoDisposeAsyncNotifier<List<BookmarkDto>> {

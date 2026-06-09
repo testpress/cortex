@@ -1704,6 +1704,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forumRoleInstructor => 'Instructor';
 
   @override
+  String get forumPendingModeration => 'Pending Moderation';
+
+  @override
   String get forumErrorFailedToPostReply => 'Failed to post reply';
 
   @override

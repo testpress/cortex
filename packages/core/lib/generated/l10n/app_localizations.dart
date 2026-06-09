@@ -3111,6 +3111,12 @@ abstract class AppLocalizations {
   /// **'Instructor'**
   String get forumRoleInstructor;
 
+  /// No description provided for @forumPendingModeration.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Moderation'**
+  String get forumPendingModeration;
+
   /// No description provided for @forumErrorFailedToPostReply.
   ///
   /// In en, this message translates to:

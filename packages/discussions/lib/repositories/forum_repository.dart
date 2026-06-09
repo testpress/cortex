@@ -164,6 +164,7 @@ class ForumRepository {
         upvotes: row.upvotes,
         downvotes: row.downvotes,
         isInstructor: row.isInstructor,
+        isPublic: row.isPublic,
       );
 
   ForumCommentsTableCompanion _commentDtoToCompanion(ForumCommentDto dto) =>
@@ -177,5 +178,6 @@ class ForumRepository {
         upvotes: Value(dto.upvotes),
         downvotes: Value(dto.downvotes),
         isInstructor: Value(dto.isInstructor),
+        isPublic: Value(dto.isPublic),
       );
 }
