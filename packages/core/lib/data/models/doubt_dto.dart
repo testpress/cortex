@@ -172,6 +172,8 @@ class DoubtReplyDto {
   final List<String> attachmentUrls;
   final String? source;
 
+  bool get isBot => source?.toLowerCase() == 'bot' || source?.toLowerCase() == 'ai';
+
   const DoubtReplyDto({
     required this.id,
     required this.doubtId,

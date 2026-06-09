@@ -551,10 +551,7 @@ class _ReplyHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final isBot =
-        reply.source?.toLowerCase() == 'bot' ||
-        reply.source?.toLowerCase() == 'ai';
-    final displayName = isBot ? 'AI Bot Response' : reply.authorName;
+    final displayName = reply.isBot ? 'AI Bot Response' : reply.authorName;
 
     return Row(
       children: [
@@ -566,7 +563,7 @@ class _ReplyHeader extends StatelessWidget {
         ),
         if (reply.isMentor) ...[
           SizedBox(width: design.spacing.sm),
-          Skeleton.ignore(child: _MentorBadge(isBot: isBot)),
+          Skeleton.ignore(child: _MentorBadge(isBot: reply.isBot)),
         ],
         const Spacer(),
         Skeleton.ignore(
