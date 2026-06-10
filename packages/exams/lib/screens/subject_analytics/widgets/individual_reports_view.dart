@@ -301,14 +301,20 @@ class _StatsTable extends StatelessWidget {
 
           // Table Body Rows
           ...subjects.map((subjectAnalytics) {
-            final onTap = subjectAnalytics.isLeaf
-                ? null
-                : () {
-                    context.push(
-                      '/exams/analytics/${subjectAnalytics.id}',
-                      extra: subjectAnalytics,
-                    );
-                  };
+            void onTap() {
+              if (subjectAnalytics.isLeaf) {
+                context.push(
+                  '/exams/analytics/topic/${subjectAnalytics.id}',
+                  extra: subjectAnalytics,
+                );
+              } else {
+                context.push(
+                  '/exams/analytics/${subjectAnalytics.id}',
+                  extra: subjectAnalytics,
+                );
+              }
+            }
+
             return TableRow(
               decoration: BoxDecoration(
                 border: Border(

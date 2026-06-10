@@ -6,15 +6,45 @@ import '../subject_analytics_screen.dart';
 const double _minPctForStackedLabel = 12.0;
 const double _minPctForInsideLabel = 30.0;
 
+String _formatPct(double pct) =>
+    '${pct.toStringAsFixed(pct % 1 == 0 ? 0 : 1)}%';
+
+Widget _barLabel(String text, Color color, bool isLargeText) {
+  return isLargeText
+      ? AppText.xs(
+          text,
+          style: const TextStyle(fontWeight: FontWeight.w600),
+          color: color,
+        )
+      : AppText.xxs(
+          text,
+          style: const TextStyle(
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.06,
+          ),
+          color: color,
+        );
+}
+
 class BarRow extends StatelessWidget {
   const BarRow({
     super.key,
     required this.subjectAnalytics,
     required this.activeFilter,
+    this.showLabel = true,
+    this.contentPadding,
+    this.fixedLabelWidth = true,
+    this.height,
+    this.isLargeText = false,
   });
 
   final SubjectAnalyticsDto subjectAnalytics;
   final String activeFilter;
+  final bool showLabel;
+  final EdgeInsetsGeometry? contentPadding;
+  final bool fixedLabelWidth;
+  final double? height;
+  final bool isLargeText;
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +54,10 @@ class BarRow extends StatelessWidget {
     final incorrectPct = subjectAnalytics.incorrectPercentage;
     final unansweredPct = subjectAnalytics.unansweredPercentage;
 
-    // Convert double percentage to integer flex weight
     final correctFlex = (correctPct * 10).round();
     final incorrectFlex = (incorrectPct * 10).round();
     final unansweredFlex = (unansweredPct * 10).round();
 
-    // Determine colors based on active filter
     final isCorrectActive = activeFilter == 'All' || activeFilter == 'Correct';
     final isIncorrectActive =
         activeFilter == 'All' || activeFilter == 'Incorrect';
@@ -48,7 +76,6 @@ class BarRow extends StatelessWidget {
         ? design.unansweredColor
         : design.colors.surfaceVariant;
 
-    // Determine single-metric variables using a clean switch expression
     final (pct, activeColor) = switch (activeFilter) {
       'Correct' => (correctPct, design.correctColor),
       'Incorrect' => (incorrectPct, design.incorrectColor),
@@ -62,42 +89,40 @@ class BarRow extends StatelessWidget {
 
     final labelText = activeColor == design.colors.transparent
         ? ''
-        : '${pct.toStringAsFixed(pct % 1 == 0 ? 0 : 1)}%';
+        : _formatPct(pct);
 
     final activeFlex = (pct * 10).round();
     final remainingFlex = ((100.0 - pct) * 10).round();
 
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: design.spacing.md,
-        vertical: design.spacing.sm,
-      ),
+      padding:
+          contentPadding ??
+          EdgeInsets.symmetric(
+            horizontal: design.spacing.md,
+            vertical: design.spacing.sm,
+          ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Subject Label - 128 width
-          SizedBox(
-            width: design.spacing.xxxl * 2,
-            child: AppText.xs(
-              subjectAnalytics.name,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-              color: design.colors.textPrimary,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+          if (showLabel) ...[
+            SizedBox(
+              width: fixedLabelWidth ? design.spacing.xxxl * 2 : null,
+              child: AppText.xs(
+                subjectAnalytics.name,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+                color: design.colors.textPrimary,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          ),
-          SizedBox(
-            width: design.spacing.sm + design.spacing.xs,
-          ), // 12px gap using design tokens
-          // Stacked Bar - 24 height (lg token)
+            SizedBox(width: design.spacing.sm + design.spacing.xs),
+          ],
           Expanded(
             child: Container(
-              height: design.spacing.lg,
+              height: height ?? design.spacing.lg,
               decoration: BoxDecoration(
                 color: design.colors.surfaceVariant,
-                borderRadius: BorderRadius.circular(
-                  design.radius.sm,
-                ), // 4px border radius
+                borderRadius: BorderRadius.circular(design.radius.sm),
               ),
               clipBehavior: Clip.antiAlias,
               child: Row(
@@ -107,19 +132,20 @@ class BarRow extends StatelessWidget {
                           flex: correctFlex,
                           color: correctColor,
                           pct: correctPct,
+                          isLargeText: isLargeText,
                         ),
                         _BarSegment(
                           flex: incorrectFlex,
                           color: incorrectColor,
                           pct: incorrectPct,
+                          isLargeText: isLargeText,
                         ),
                         _BarSegment(
                           flex: unansweredFlex,
                           color: unansweredColor,
                           pct: unansweredPct,
-                          padding: EdgeInsets.only(
-                            right: design.spacing.sm,
-                          ), // 8px padding using token
+                          padding: EdgeInsets.only(right: design.spacing.sm),
+                          isLargeText: isLargeText,
                         ),
                       ]
                     : [
@@ -131,6 +157,7 @@ class BarRow extends StatelessWidget {
                           showLabel: pct >= _minPctForInsideLabel,
                           labelText: labelText,
                           textColor: design.colors.textInverse,
+                          isLargeText: isLargeText,
                         ),
                         _SingleMetricSegment(
                           flex: remainingFlex,
@@ -140,6 +167,7 @@ class BarRow extends StatelessWidget {
                           showLabel: pct < _minPctForInsideLabel,
                           labelText: labelText,
                           textColor: activeColor,
+                          isLargeText: isLargeText,
                         ),
                       ],
               ),
@@ -157,16 +185,17 @@ class _BarSegment extends StatelessWidget {
     required this.color,
     required this.pct,
     this.padding,
+    this.isLargeText = false,
   });
 
   final int flex;
   final Color color;
   final double pct;
   final EdgeInsetsGeometry? padding;
+  final bool isLargeText;
 
   @override
   Widget build(BuildContext context) {
-    final design = Design.of(context);
     if (flex <= 0) return const SizedBox.shrink();
 
     return Expanded(
@@ -176,13 +205,10 @@ class _BarSegment extends StatelessWidget {
         alignment: Alignment.center,
         padding: padding,
         child: pct >= _minPctForStackedLabel
-            ? AppText.xxs(
-                '${pct.toStringAsFixed(pct % 1 == 0 ? 0 : 1)}%',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.06,
-                ),
-                color: design.colors.textInverse,
+            ? _barLabel(
+                _formatPct(pct),
+                Design.of(context).colors.textInverse,
+                isLargeText,
               )
             : const SizedBox.shrink(),
       ),
@@ -199,6 +225,7 @@ class _SingleMetricSegment extends StatelessWidget {
     required this.showLabel,
     required this.labelText,
     required this.textColor,
+    this.isLargeText = false,
   });
 
   final int flex;
@@ -208,10 +235,12 @@ class _SingleMetricSegment extends StatelessWidget {
   final bool showLabel;
   final String labelText;
   final Color textColor;
+  final bool isLargeText;
 
   @override
   Widget build(BuildContext context) {
     if (flex <= 0) return const SizedBox.shrink();
+
     return Expanded(
       flex: flex,
       child: Container(
@@ -219,14 +248,7 @@ class _SingleMetricSegment extends StatelessWidget {
         alignment: alignment,
         padding: padding,
         child: showLabel
-            ? AppText.xxs(
-                labelText,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.06,
-                ),
-                color: textColor,
-              )
+            ? _barLabel(labelText, textColor, isLargeText)
             : const SizedBox.shrink(),
       ),
     );

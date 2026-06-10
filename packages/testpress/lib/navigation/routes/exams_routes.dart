@@ -152,6 +152,19 @@ class ExamsRoutes {
           },
           routes: [
             GoRoute(
+              path: 'topic/:id',
+              parentNavigatorKey: rootNavigatorKey,
+              builder: (context, state) {
+                final topicId = state.pathParameters['id']!;
+                final topic = state.extra as SubjectAnalyticsDto?;
+                return TopicAnalyticsScreen(
+                  topicId: topicId,
+                  topic: topic,
+                  onBack: () => context.pop(),
+                );
+              },
+            ),
+            GoRoute(
               path: ':parentId',
               parentNavigatorKey: rootNavigatorKey,
               builder: (context, state) {
