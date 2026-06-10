@@ -478,10 +478,7 @@ class _LessonContextBadge extends ConsumerWidget {
     return lessonAsync.when(
       data: (lesson) {
         if (lesson == null) return const SizedBox.shrink();
-        return DoubtContextBadge(
-          icon: lesson.type.icon,
-          text: lesson.title,
-        );
+        return DoubtContextBadge(icon: lesson.type.icon, text: lesson.title);
       },
       loading: () => const SizedBox.shrink(),
       error: (_, _) => const SizedBox.shrink(),

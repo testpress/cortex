@@ -5,11 +5,7 @@ class DoubtContextBadge extends StatelessWidget {
   final IconData icon;
   final String text;
 
-  const DoubtContextBadge({
-    super.key,
-    required this.icon,
-    required this.text,
-  });
+  const DoubtContextBadge({super.key, required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +26,7 @@ class DoubtContextBadge extends StatelessWidget {
           Icon(icon, size: 20, color: design.colors.accent2),
           const SizedBox(width: 8),
           Expanded(
-            child: AppText.bodySmall(
-              text,
-              color: design.colors.accent2,
-            ),
+            child: AppText.bodySmall(text, color: design.colors.accent2),
           ),
         ],
       ),
