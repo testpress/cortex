@@ -94,7 +94,8 @@ class CortexApp extends ConsumerWidget {
   }
 }
 
-class _FallbackQuillDelegate extends LocalizationsDelegate<quill.FlutterQuillLocalizations> {
+class _FallbackQuillDelegate
+    extends LocalizationsDelegate<quill.FlutterQuillLocalizations> {
   const _FallbackQuillDelegate();
 
   @override
