@@ -42,10 +42,22 @@ class AccessibilitySettings {
   }
 }
 
+class AppLanguageSettings {
+  final String languageCode;
+  AppLanguageSettings({required this.languageCode});
+
+  AppLanguageSettings copyWith({String? languageCode}) {
+    return AppLanguageSettings(
+      languageCode: languageCode ?? this.languageCode,
+    );
+  }
+}
+
 class AppSettingsDefaults {
   static const appearanceMode = 'system';
   static const videoQuality = 'auto';
   static const autoPlayNext = true;
   static const textSize = 'medium';
   static const highContrast = false;
+  static const appLanguage = 'system';
 }

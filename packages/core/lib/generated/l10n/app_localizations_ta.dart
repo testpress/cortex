@@ -1121,13 +1121,16 @@ class AppLocalizationsTa extends AppLocalizations {
   String get settingsAppearanceTitle => 'தோற்றம்';
 
   @override
-  String get settingsPlaybackTitle => 'கற்றல் மற்றும் பின்னணி';
+  String get settingsPlaybackTitle => 'கற்றல் & இயக்கம்';
 
   @override
   String get settingsAccessibilityTitle => 'அணுகல்தன்மை';
 
   @override
-  String get settingsVideoQuality => 'வீடியோ தரம்';
+  String get settingsLanguageTitle => 'மொழி';
+
+  @override
+  String get settingsVideoQuality => 'காணொளி தரம்';
 
   @override
   String get settingsVideoQualityCaption =>

@@ -103,6 +103,26 @@ class AccessibilitySettingsNotifier extends _$AccessibilitySettingsNotifier {
   }
 }
 
+@Riverpod(keepAlive: true)
+class AppLanguageSettingsNotifier extends _$AppLanguageSettingsNotifier {
+  @override
+  Future<AppLanguageSettings> build() async {
+    final repository = await ref.watch(settingsRepositoryProvider.future);
+    final settings = await repository.getSettings();
+
+    return AppLanguageSettings(
+      languageCode: settings.appLanguage,
+    );
+  }
+
+  Future<void> updateLanguage(String languageCode) async {
+    final repository = await ref.read(settingsRepositoryProvider.future);
+    await repository.updateSettings(appLanguage: languageCode);
+
+    state = AsyncValue.data(AppLanguageSettings(languageCode: languageCode));
+  }
+}
+
 /// A provider that exposes the active text scale multiplier factor.
 @Riverpod(keepAlive: true)
 double appTextScaleMultiplier(Ref ref) {

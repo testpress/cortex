@@ -6099,6 +6099,18 @@ class $AppSettingsTableTable extends AppSettingsTable
     ),
     defaultValue: const Constant(AppSettingsDefaults.highContrast),
   );
+  static const VerificationMeta _appLanguageMeta = const VerificationMeta(
+    'appLanguage',
+  );
+  @override
+  late final GeneratedColumn<String> appLanguage = GeneratedColumn<String>(
+    'app_language',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(AppSettingsDefaults.appLanguage),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -6107,6 +6119,7 @@ class $AppSettingsTableTable extends AppSettingsTable
     autoPlayNext,
     textSize,
     highContrast,
+    appLanguage,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -6165,6 +6178,15 @@ class $AppSettingsTableTable extends AppSettingsTable
         ),
       );
     }
+    if (data.containsKey('app_language')) {
+      context.handle(
+        _appLanguageMeta,
+        appLanguage.isAcceptableOrUnknown(
+          data['app_language']!,
+          _appLanguageMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -6198,6 +6220,10 @@ class $AppSettingsTableTable extends AppSettingsTable
         DriftSqlType.bool,
         data['${effectivePrefix}high_contrast'],
       )!,
+      appLanguage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}app_language'],
+      )!,
     );
   }
 
@@ -6215,6 +6241,7 @@ class AppSettingsTableData extends DataClass
   final bool autoPlayNext;
   final String textSize;
   final bool highContrast;
+  final String appLanguage;
   const AppSettingsTableData({
     required this.id,
     required this.appearanceMode,
@@ -6222,6 +6249,7 @@ class AppSettingsTableData extends DataClass
     required this.autoPlayNext,
     required this.textSize,
     required this.highContrast,
+    required this.appLanguage,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -6232,6 +6260,7 @@ class AppSettingsTableData extends DataClass
     map['auto_play_next'] = Variable<bool>(autoPlayNext);
     map['text_size'] = Variable<String>(textSize);
     map['high_contrast'] = Variable<bool>(highContrast);
+    map['app_language'] = Variable<String>(appLanguage);
     return map;
   }
 
@@ -6243,6 +6272,7 @@ class AppSettingsTableData extends DataClass
       autoPlayNext: Value(autoPlayNext),
       textSize: Value(textSize),
       highContrast: Value(highContrast),
+      appLanguage: Value(appLanguage),
     );
   }
 
@@ -6258,6 +6288,7 @@ class AppSettingsTableData extends DataClass
       autoPlayNext: serializer.fromJson<bool>(json['autoPlayNext']),
       textSize: serializer.fromJson<String>(json['textSize']),
       highContrast: serializer.fromJson<bool>(json['highContrast']),
+      appLanguage: serializer.fromJson<String>(json['appLanguage']),
     );
   }
   @override
@@ -6270,6 +6301,7 @@ class AppSettingsTableData extends DataClass
       'autoPlayNext': serializer.toJson<bool>(autoPlayNext),
       'textSize': serializer.toJson<String>(textSize),
       'highContrast': serializer.toJson<bool>(highContrast),
+      'appLanguage': serializer.toJson<String>(appLanguage),
     };
   }
 
@@ -6280,6 +6312,7 @@ class AppSettingsTableData extends DataClass
     bool? autoPlayNext,
     String? textSize,
     bool? highContrast,
+    String? appLanguage,
   }) => AppSettingsTableData(
     id: id ?? this.id,
     appearanceMode: appearanceMode ?? this.appearanceMode,
@@ -6287,6 +6320,7 @@ class AppSettingsTableData extends DataClass
     autoPlayNext: autoPlayNext ?? this.autoPlayNext,
     textSize: textSize ?? this.textSize,
     highContrast: highContrast ?? this.highContrast,
+    appLanguage: appLanguage ?? this.appLanguage,
   );
   AppSettingsTableData copyWithCompanion(AppSettingsTableCompanion data) {
     return AppSettingsTableData(
@@ -6304,6 +6338,9 @@ class AppSettingsTableData extends DataClass
       highContrast: data.highContrast.present
           ? data.highContrast.value
           : this.highContrast,
+      appLanguage: data.appLanguage.present
+          ? data.appLanguage.value
+          : this.appLanguage,
     );
   }
 
@@ -6315,7 +6352,8 @@ class AppSettingsTableData extends DataClass
           ..write('videoQuality: $videoQuality, ')
           ..write('autoPlayNext: $autoPlayNext, ')
           ..write('textSize: $textSize, ')
-          ..write('highContrast: $highContrast')
+          ..write('highContrast: $highContrast, ')
+          ..write('appLanguage: $appLanguage')
           ..write(')'))
         .toString();
   }
@@ -6328,6 +6366,7 @@ class AppSettingsTableData extends DataClass
     autoPlayNext,
     textSize,
     highContrast,
+    appLanguage,
   );
   @override
   bool operator ==(Object other) =>
@@ -6338,7 +6377,8 @@ class AppSettingsTableData extends DataClass
           other.videoQuality == this.videoQuality &&
           other.autoPlayNext == this.autoPlayNext &&
           other.textSize == this.textSize &&
-          other.highContrast == this.highContrast);
+          other.highContrast == this.highContrast &&
+          other.appLanguage == this.appLanguage);
 }
 
 class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
@@ -6348,6 +6388,7 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
   final Value<bool> autoPlayNext;
   final Value<String> textSize;
   final Value<bool> highContrast;
+  final Value<String> appLanguage;
   const AppSettingsTableCompanion({
     this.id = const Value.absent(),
     this.appearanceMode = const Value.absent(),
@@ -6355,6 +6396,7 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
     this.autoPlayNext = const Value.absent(),
     this.textSize = const Value.absent(),
     this.highContrast = const Value.absent(),
+    this.appLanguage = const Value.absent(),
   });
   AppSettingsTableCompanion.insert({
     this.id = const Value.absent(),
@@ -6363,6 +6405,7 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
     this.autoPlayNext = const Value.absent(),
     this.textSize = const Value.absent(),
     this.highContrast = const Value.absent(),
+    this.appLanguage = const Value.absent(),
   });
   static Insertable<AppSettingsTableData> custom({
     Expression<int>? id,
@@ -6371,6 +6414,7 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
     Expression<bool>? autoPlayNext,
     Expression<String>? textSize,
     Expression<bool>? highContrast,
+    Expression<String>? appLanguage,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -6379,6 +6423,7 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
       if (autoPlayNext != null) 'auto_play_next': autoPlayNext,
       if (textSize != null) 'text_size': textSize,
       if (highContrast != null) 'high_contrast': highContrast,
+      if (appLanguage != null) 'app_language': appLanguage,
     });
   }
 
@@ -6389,6 +6434,7 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
     Value<bool>? autoPlayNext,
     Value<String>? textSize,
     Value<bool>? highContrast,
+    Value<String>? appLanguage,
   }) {
     return AppSettingsTableCompanion(
       id: id ?? this.id,
@@ -6397,6 +6443,7 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
       autoPlayNext: autoPlayNext ?? this.autoPlayNext,
       textSize: textSize ?? this.textSize,
       highContrast: highContrast ?? this.highContrast,
+      appLanguage: appLanguage ?? this.appLanguage,
     );
   }
 
@@ -6421,6 +6468,9 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
     if (highContrast.present) {
       map['high_contrast'] = Variable<bool>(highContrast.value);
     }
+    if (appLanguage.present) {
+      map['app_language'] = Variable<String>(appLanguage.value);
+    }
     return map;
   }
 
@@ -6432,7 +6482,8 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
           ..write('videoQuality: $videoQuality, ')
           ..write('autoPlayNext: $autoPlayNext, ')
           ..write('textSize: $textSize, ')
-          ..write('highContrast: $highContrast')
+          ..write('highContrast: $highContrast, ')
+          ..write('appLanguage: $appLanguage')
           ..write(')'))
         .toString();
   }
@@ -17879,6 +17930,7 @@ typedef $$AppSettingsTableTableCreateCompanionBuilder =
       Value<bool> autoPlayNext,
       Value<String> textSize,
       Value<bool> highContrast,
+      Value<String> appLanguage,
     });
 typedef $$AppSettingsTableTableUpdateCompanionBuilder =
     AppSettingsTableCompanion Function({
@@ -17888,6 +17940,7 @@ typedef $$AppSettingsTableTableUpdateCompanionBuilder =
       Value<bool> autoPlayNext,
       Value<String> textSize,
       Value<bool> highContrast,
+      Value<String> appLanguage,
     });
 
 class $$AppSettingsTableTableFilterComposer
@@ -17926,6 +17979,11 @@ class $$AppSettingsTableTableFilterComposer
 
   ColumnFilters<bool> get highContrast => $composableBuilder(
     column: $table.highContrast,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get appLanguage => $composableBuilder(
+    column: $table.appLanguage,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -17968,6 +18026,11 @@ class $$AppSettingsTableTableOrderingComposer
     column: $table.highContrast,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get appLanguage => $composableBuilder(
+    column: $table.appLanguage,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$AppSettingsTableTableAnnotationComposer
@@ -18002,6 +18065,11 @@ class $$AppSettingsTableTableAnnotationComposer
 
   GeneratedColumn<bool> get highContrast => $composableBuilder(
     column: $table.highContrast,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get appLanguage => $composableBuilder(
+    column: $table.appLanguage,
     builder: (column) => column,
   );
 }
@@ -18049,6 +18117,7 @@ class $$AppSettingsTableTableTableManager
                 Value<bool> autoPlayNext = const Value.absent(),
                 Value<String> textSize = const Value.absent(),
                 Value<bool> highContrast = const Value.absent(),
+                Value<String> appLanguage = const Value.absent(),
               }) => AppSettingsTableCompanion(
                 id: id,
                 appearanceMode: appearanceMode,
@@ -18056,6 +18125,7 @@ class $$AppSettingsTableTableTableManager
                 autoPlayNext: autoPlayNext,
                 textSize: textSize,
                 highContrast: highContrast,
+                appLanguage: appLanguage,
               ),
           createCompanionCallback:
               ({
@@ -18065,6 +18135,7 @@ class $$AppSettingsTableTableTableManager
                 Value<bool> autoPlayNext = const Value.absent(),
                 Value<String> textSize = const Value.absent(),
                 Value<bool> highContrast = const Value.absent(),
+                Value<String> appLanguage = const Value.absent(),
               }) => AppSettingsTableCompanion.insert(
                 id: id,
                 appearanceMode: appearanceMode,
@@ -18072,6 +18143,7 @@ class $$AppSettingsTableTableTableManager
                 autoPlayNext: autoPlayNext,
                 textSize: textSize,
                 highContrast: highContrast,
+                appLanguage: appLanguage,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

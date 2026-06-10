@@ -118,6 +118,7 @@ class AppDatabase extends _$AppDatabase {
           autoPlayNext: AppSettingsDefaults.autoPlayNext,
           textSize: AppSettingsDefaults.textSize,
           highContrast: AppSettingsDefaults.highContrast,
+          appLanguage: AppSettingsDefaults.appLanguage,
         );
       }
       return entry;
