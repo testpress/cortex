@@ -6,7 +6,9 @@ import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:file_picker/file_picker.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
+import 'package:courses/courses.dart';
 import '../providers/doubt_providers.dart';
+import '../widgets/doubt_context_badge.dart';
 import '../widgets/forum_header.dart';
 import '../widgets/forum_composer.dart';
 
@@ -436,6 +438,10 @@ class _DoubtHeaderCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (doubt.lessonId != null) ...[
+            _LessonContextBadge(lessonId: doubt.lessonId!),
+            const SizedBox(height: 12),
+          ],
           if (doubt.topicName != null) ...[
             _SubjectBadge(subject: doubt.topicName!),
             const SizedBox(height: 12),
@@ -452,6 +458,33 @@ class _DoubtHeaderCard extends StatelessWidget {
           _DoubtMeta(doubt: doubt),
         ],
       ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────
+// Lesson Context Badge
+// ─────────────────────────────────────────────────────
+
+class _LessonContextBadge extends ConsumerWidget {
+  final String lessonId;
+
+  const _LessonContextBadge({required this.lessonId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final lessonAsync = ref.watch(lessonDetailProvider(lessonId));
+
+    return lessonAsync.when(
+      data: (lesson) {
+        if (lesson == null) return const SizedBox.shrink();
+        return DoubtContextBadge(
+          icon: lesson.type.icon,
+          text: lesson.title,
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
     );
   }
 }
