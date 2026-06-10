@@ -102,7 +102,7 @@ final accessibilitySettingsNotifierProvider =
 
 typedef _$AccessibilitySettingsNotifier = AsyncNotifier<AccessibilitySettings>;
 String _$appLanguageSettingsNotifierHash() =>
-    r'56a819e28796197b0f79f6be8f547df2ae560422';
+    r'42d4e90f3a390a1e2ca1cb194612a3a18af85d34';
 
 /// See also [AppLanguageSettingsNotifier].
 @ProviderFor(AppLanguageSettingsNotifier)

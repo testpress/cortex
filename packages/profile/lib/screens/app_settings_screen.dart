@@ -231,19 +231,19 @@ class _AppearanceSection extends ConsumerWidget {
 }
 
 class _LanguageSection extends ConsumerWidget {
-  static const _availableLanguages = [
-    (code: 'system', title: 'System Default'),
-    (code: 'en', title: 'English'),
-    (code: 'ar', title: 'العربية (Arabic)'),
-    (code: 'ml', title: 'മലയാളം (Malayalam)'),
-    (code: 'ta', title: 'தமிழ் (Tamil)'),
-  ];
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
     final settingsAsync = ref.watch(appLanguageSettingsNotifierProvider);
+
+    final availableLanguages = [
+      (code: 'system', title: l10n.settingsThemeSystemDefault),
+      (code: 'en', title: 'English'),
+      (code: 'ar', title: 'العربية (Arabic)'),
+      (code: 'ml', title: 'മലയാളം (Malayalam)'),
+      (code: 'ta', title: 'தமிழ் (Tamil)'),
+    ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -256,18 +256,18 @@ class _LanguageSection extends ConsumerWidget {
             padding: EdgeInsets.zero,
             child: Column(
               children: [
-                for (var i = 0; i < _availableLanguages.length; i++) ...[
+                for (var i = 0; i < availableLanguages.length; i++) ...[
                   _buildOption(
                     context: context,
                     ref: ref,
-                    title: _availableLanguages[i].title,
-                    value: _availableLanguages[i].code,
+                    title: availableLanguages[i].title,
+                    value: availableLanguages[i].code,
                     groupValue: settings.languageCode,
                     onChanged: (val) => ref
                         .read(appLanguageSettingsNotifierProvider.notifier)
                         .updateLanguage(val),
                   ),
-                  if (i < _availableLanguages.length - 1) _Divider(),
+                  if (i < availableLanguages.length - 1) _Divider(),
                 ],
               ],
             ),

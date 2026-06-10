@@ -114,10 +114,12 @@ class AppLanguageSettingsNotifier extends _$AppLanguageSettingsNotifier {
   }
 
   Future<void> updateLanguage(String languageCode) async {
-    final repository = await ref.read(settingsRepositoryProvider.future);
-    await repository.updateSettings(appLanguage: languageCode);
-
-    state = AsyncValue.data(AppLanguageSettings(languageCode: languageCode));
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      final repository = await ref.read(settingsRepositoryProvider.future);
+      await repository.updateSettings(appLanguage: languageCode);
+      return AppLanguageSettings(languageCode: languageCode);
+    });
   }
 }
 
