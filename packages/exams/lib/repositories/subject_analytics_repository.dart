@@ -17,22 +17,22 @@ class SubjectAnalyticsRepository {
     return SubjectAnalyticsDto(
       id: row.id,
       name: row.name,
-      total: row.total,
-      correct: row.correct,
-      incorrect: row.incorrect,
-      unanswered: row.unanswered,
+      totalQuestionCount: row.totalQuestionCount,
+      correctAnswerCount: row.correctAnswerCount,
+      incorrectAnswerCount: row.incorrectAnswerCount,
+      unansweredCount: row.unansweredCount,
       correctPercentage: row.correctPercentage,
-      parent: row.parent,
-      leaf: row.leaf,
+      parentId: row.parentId,
+      isLeaf: row.isLeaf,
     );
   }
 
   Stream<List<SubjectAnalyticsDto>> watchSubjectAnalytics(int? parentId) {
     final query = _db.select(_db.subjectAnalyticsTable);
     if (parentId == null) {
-      query.where((t) => t.parent.isNull());
+      query.where((t) => t.parentId.isNull());
     } else {
-      query.where((t) => t.parent.equals(parentId));
+      query.where((t) => t.parentId.equals(parentId));
     }
     return query.watch().map(
       (rows) => rows.map((row) => _mapRowToDto(row)).toList(),
@@ -46,9 +46,9 @@ class SubjectAnalyticsRepository {
         .map((row) => row == null ? null : _mapRowToDto(row));
   }
 
-  Future<void> refreshSubjectAnalytics(String analyticsUrl) async {
+  Future<void> refreshSubjectAnalytics() async {
     try {
-      final freshData = await _dataSource.getAnalyticsData(analyticsUrl);
+      final freshData = await _dataSource.getAnalyticsData();
 
       await _db.batch((batch) {
         batch.insertAllOnConflictUpdate(
@@ -58,14 +58,13 @@ class SubjectAnalyticsRepository {
                 (dto) => SubjectAnalyticsTableCompanion(
                   id: Value(dto.id),
                   name: Value(dto.name),
-                  total: Value(dto.total),
-                  correct: Value(dto.correct),
-                  incorrect: Value(dto.incorrect),
-                  unanswered: Value(dto.unanswered),
+                  totalQuestionCount: Value(dto.totalQuestionCount),
+                  correctAnswerCount: Value(dto.correctAnswerCount),
+                  incorrectAnswerCount: Value(dto.incorrectAnswerCount),
+                  unansweredCount: Value(dto.unansweredCount),
                   correctPercentage: Value(dto.correctPercentage),
-                  parent: Value(dto.parent),
-                  leaf: Value(dto.leaf),
-                  analyticsUrl: Value(analyticsUrl),
+                  parentId: Value(dto.parentId),
+                  isLeaf: Value(dto.isLeaf),
                 ),
               )
               .toList(),

@@ -971,9 +971,7 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<List<SubjectAnalyticsDto>> getAnalyticsData(
-    String analyticsUrl,
-  ) async {
+  Future<List<SubjectAnalyticsDto>> getAnalyticsData() async {
     return mockSubjectAnalytics;
   }
 

@@ -4,14 +4,13 @@ import 'package:drift/drift.dart';
 class SubjectAnalyticsTable extends Table {
   IntColumn get id => integer()();
   TextColumn get name => text()();
-  IntColumn get total => integer()();
-  IntColumn get correct => integer()();
-  IntColumn get incorrect => integer()();
-  IntColumn get unanswered => integer()();
+  IntColumn get totalQuestionCount => integer()();
+  IntColumn get correctAnswerCount => integer()();
+  IntColumn get incorrectAnswerCount => integer()();
+  IntColumn get unansweredCount => integer()();
   RealColumn get correctPercentage => real()();
-  IntColumn get parent => integer().nullable()();
-  BoolColumn get leaf => boolean().withDefault(const Constant(true))();
-  TextColumn get analyticsUrl => text()();
+  IntColumn get parentId => integer().nullable()();
+  BoolColumn get isLeaf => boolean().withDefault(const Constant(true))();
 
   @override
   Set<Column> get primaryKey => {id};

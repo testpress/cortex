@@ -7,18 +7,22 @@ const double _minPctForStackedLabel = 12.0;
 const double _minPctForInsideLabel = 30.0;
 
 class BarRow extends StatelessWidget {
-  const BarRow({super.key, required this.subject, required this.activeFilter});
+  const BarRow({
+    super.key,
+    required this.subjectAnalytics,
+    required this.activeFilter,
+  });
 
-  final SubjectAnalyticsDto subject;
+  final SubjectAnalyticsDto subjectAnalytics;
   final String activeFilter;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    final correctPct = subject.correctPercentage;
-    final incorrectPct = subject.incorrectPercentage;
-    final unansweredPct = subject.unansweredPercentage;
+    final correctPct = subjectAnalytics.correctPercentage;
+    final incorrectPct = subjectAnalytics.incorrectPercentage;
+    final unansweredPct = subjectAnalytics.unansweredPercentage;
 
     // Convert double percentage to integer flex weight
     final correctFlex = (correctPct * 10).round();
@@ -75,7 +79,7 @@ class BarRow extends StatelessWidget {
           SizedBox(
             width: design.spacing.xxxl * 2,
             child: AppText.xs(
-              subject.name,
+              subjectAnalytics.name,
               style: const TextStyle(fontWeight: FontWeight.w600),
               color: design.colors.textPrimary,
               maxLines: 1,

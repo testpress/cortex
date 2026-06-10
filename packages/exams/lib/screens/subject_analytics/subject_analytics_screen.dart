@@ -34,9 +34,7 @@ class _SubjectAnalyticsScreenState
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-
     final title = widget.subjectName ?? l10n.drawerAnalytics;
-
     return Stack(
       children: [
         Container(
@@ -85,13 +83,9 @@ class _SubjectAnalyticsScreenState
                             ),
                             SizedBox(width: design.spacing.sm),
                             Expanded(
-                              child: AppText.headline(
+                              child: AppText.title(
                                 title,
                                 color: design.colors.textPrimary,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: -0.44,
-                                ),
                               ),
                             ),
                             // Filter icon button — AppSemantics wraps for accessibility label only;

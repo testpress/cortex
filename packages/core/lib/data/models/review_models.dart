@@ -4,49 +4,53 @@ import 'answer_dto.dart';
 class SubjectAnalyticsDto {
   final int id;
   final String name;
-  final int total;
-  final int correct;
-  final int incorrect;
-  final int unanswered;
+  final int totalQuestionCount;
+  final int correctAnswerCount;
+  final int incorrectAnswerCount;
+  final int unansweredCount;
   final double correctPercentage;
-  final int? parent;
-  final bool leaf;
+  final int? parentId;
+  final bool isLeaf;
 
   const SubjectAnalyticsDto({
     required this.id,
     required this.name,
-    required this.total,
-    required this.correct,
-    required this.incorrect,
-    required this.unanswered,
+    required this.totalQuestionCount,
+    required this.correctAnswerCount,
+    required this.incorrectAnswerCount,
+    required this.unansweredCount,
     required this.correctPercentage,
-    this.parent,
-    this.leaf = true,
+    this.parentId,
+    this.isLeaf = true,
   });
 
-  double get incorrectPercentage =>
-      total == 0 ? 0.0 : (incorrect / total * 100);
-  double get unansweredPercentage =>
-      total == 0 ? 0.0 : (unanswered / total * 100);
+  double get incorrectPercentage => totalQuestionCount == 0
+      ? 0.0
+      : (incorrectAnswerCount / totalQuestionCount * 100);
+  double get unansweredPercentage => totalQuestionCount == 0
+      ? 0.0
+      : (unansweredCount / totalQuestionCount * 100);
 
   factory SubjectAnalyticsDto.fromJson(Map<String, dynamic> json) {
-    final int total = json['total'] as int? ?? 0;
-    final int correct = json['correct'] as int? ?? 0;
-    final int incorrect = json['incorrect'] as int? ?? 0;
+    final int totalQuestionCount = json['total'] as int? ?? 0;
+    final int correctAnswerCount = json['correct'] as int? ?? 0;
+    final int incorrectAnswerCount = json['incorrect'] as int? ?? 0;
     // API doesn't always return correct_percentage — derive it when absent
     final double correctPct =
         (json['correct_percentage'] as num?)?.toDouble() ??
-        (total > 0 ? (correct / total * 100) : 0.0);
+        (totalQuestionCount > 0
+            ? (correctAnswerCount / totalQuestionCount * 100)
+            : 0.0);
     return SubjectAnalyticsDto(
       id: json['id'] as int? ?? 0,
       name: (json['name'] ?? '').toString(),
-      total: total,
-      correct: correct,
-      incorrect: incorrect,
-      unanswered: json['unanswered'] as int? ?? 0,
+      totalQuestionCount: totalQuestionCount,
+      correctAnswerCount: correctAnswerCount,
+      incorrectAnswerCount: incorrectAnswerCount,
+      unansweredCount: json['unanswered'] as int? ?? 0,
       correctPercentage: correctPct,
-      parent: json['parent'] as int?,
-      leaf: json['leaf'] as bool? ?? true,
+      parentId: json['parent'] as int? ?? json['parent_id'] as int?,
+      isLeaf: json['leaf'] as bool? ?? true,
     );
   }
 
@@ -54,13 +58,13 @@ class SubjectAnalyticsDto {
     return {
       'id': id,
       'name': name,
-      'total': total,
-      'correct': correct,
-      'incorrect': incorrect,
-      'unanswered': unanswered,
+      'total': totalQuestionCount,
+      'correct': correctAnswerCount,
+      'incorrect': incorrectAnswerCount,
+      'unanswered': unansweredCount,
       'correct_percentage': correctPercentage,
-      'parent': parent,
-      'leaf': leaf,
+      'parent': parentId,
+      'leaf': isLeaf,
     };
   }
 }

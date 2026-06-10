@@ -87,18 +87,21 @@ class OverallReportsView extends ConsumerWidget {
                   vertical: design.spacing.sm + design.spacing.xs,
                 ),
                 children: [
-                  for (final subject in subjects) ...[
-                    subject.leaf
-                        ? BarRow(subject: subject, activeFilter: activeFilter)
+                  for (final subjectAnalytics in subjects) ...[
+                    subjectAnalytics.isLeaf
+                        ? BarRow(
+                            subjectAnalytics: subjectAnalytics,
+                            activeFilter: activeFilter,
+                          )
                         : AppFocusable(
                             onTap: () {
                               context.push(
-                                '/exams/analytics/${subject.id}',
-                                extra: subject,
+                                '/exams/analytics/${subjectAnalytics.id}',
+                                extra: subjectAnalytics,
                               );
                             },
                             child: BarRow(
-                              subject: subject,
+                              subjectAnalytics: subjectAnalytics,
                               activeFilter: activeFilter,
                             ),
                           ),

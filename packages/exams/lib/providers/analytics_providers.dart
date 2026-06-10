@@ -20,7 +20,7 @@ Stream<List<SubjectAnalyticsDto>> subjectAnalytics(
   final repository = await ref.watch(subjectAnalyticsRepositoryProvider.future);
 
   // Trigger background sync (Stale-While-Revalidate pattern)
-  repository.refreshSubjectAnalytics('').catchError((_) {});
+  repository.refreshSubjectAnalytics().catchError((_) {});
 
   yield* repository.watchSubjectAnalytics(parentId);
 }

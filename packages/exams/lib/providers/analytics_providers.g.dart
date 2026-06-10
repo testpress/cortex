@@ -26,7 +26,7 @@ final subjectAnalyticsRepositoryProvider =
 // ignore: unused_element
 typedef SubjectAnalyticsRepositoryRef =
     FutureProviderRef<SubjectAnalyticsRepository>;
-String _$subjectAnalyticsHash() => r'b7610c08a91067185df3ffa1a0ca39412789a06c';
+String _$subjectAnalyticsHash() => r'77a1ba598d83955a7895d6858176d6741b92b9dd';
 
 /// Copied from Dart SDK
 class _SystemHash {
