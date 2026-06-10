@@ -14390,43 +14390,42 @@ class $SubjectAnalyticsTableTable extends SubjectAnalyticsTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _totalMeta = const VerificationMeta('total');
+  static const VerificationMeta _totalQuestionCountMeta =
+      const VerificationMeta('totalQuestionCount');
   @override
-  late final GeneratedColumn<int> total = GeneratedColumn<int>(
-    'total',
+  late final GeneratedColumn<int> totalQuestionCount = GeneratedColumn<int>(
+    'total_question_count',
     aliasedName,
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _correctMeta = const VerificationMeta(
-    'correct',
-  );
+  static const VerificationMeta _correctAnswerCountMeta =
+      const VerificationMeta('correctAnswerCount');
   @override
-  late final GeneratedColumn<int> correct = GeneratedColumn<int>(
-    'correct',
+  late final GeneratedColumn<int> correctAnswerCount = GeneratedColumn<int>(
+    'correct_answer_count',
     aliasedName,
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _incorrectMeta = const VerificationMeta(
-    'incorrect',
-  );
+  static const VerificationMeta _incorrectAnswerCountMeta =
+      const VerificationMeta('incorrectAnswerCount');
   @override
-  late final GeneratedColumn<int> incorrect = GeneratedColumn<int>(
-    'incorrect',
+  late final GeneratedColumn<int> incorrectAnswerCount = GeneratedColumn<int>(
+    'incorrect_answer_count',
     aliasedName,
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _unansweredMeta = const VerificationMeta(
-    'unanswered',
+  static const VerificationMeta _unansweredCountMeta = const VerificationMeta(
+    'unansweredCount',
   );
   @override
-  late final GeneratedColumn<int> unanswered = GeneratedColumn<int>(
-    'unanswered',
+  late final GeneratedColumn<int> unansweredCount = GeneratedColumn<int>(
+    'unanswered_count',
     aliasedName,
     false,
     type: DriftSqlType.int,
@@ -14444,51 +14443,41 @@ class $SubjectAnalyticsTableTable extends SubjectAnalyticsTable
         type: DriftSqlType.double,
         requiredDuringInsert: true,
       );
-  static const VerificationMeta _parentMeta = const VerificationMeta('parent');
+  static const VerificationMeta _parentIdMeta = const VerificationMeta(
+    'parentId',
+  );
   @override
-  late final GeneratedColumn<int> parent = GeneratedColumn<int>(
-    'parent',
+  late final GeneratedColumn<int> parentId = GeneratedColumn<int>(
+    'parent_id',
     aliasedName,
     true,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _leafMeta = const VerificationMeta('leaf');
+  static const VerificationMeta _isLeafMeta = const VerificationMeta('isLeaf');
   @override
-  late final GeneratedColumn<bool> leaf = GeneratedColumn<bool>(
-    'leaf',
+  late final GeneratedColumn<bool> isLeaf = GeneratedColumn<bool>(
+    'is_leaf',
     aliasedName,
     false,
     type: DriftSqlType.bool,
     requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("leaf" IN (0, 1))',
+      'CHECK ("is_leaf" IN (0, 1))',
     ),
     defaultValue: const Constant(true),
-  );
-  static const VerificationMeta _analyticsUrlMeta = const VerificationMeta(
-    'analyticsUrl',
-  );
-  @override
-  late final GeneratedColumn<String> analyticsUrl = GeneratedColumn<String>(
-    'analytics_url',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
   );
   @override
   List<GeneratedColumn> get $columns => [
     id,
     name,
-    total,
-    correct,
-    incorrect,
-    unanswered,
+    totalQuestionCount,
+    correctAnswerCount,
+    incorrectAnswerCount,
+    unansweredCount,
     correctPercentage,
-    parent,
-    leaf,
-    analyticsUrl,
+    parentId,
+    isLeaf,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -14513,37 +14502,49 @@ class $SubjectAnalyticsTableTable extends SubjectAnalyticsTable
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (data.containsKey('total')) {
+    if (data.containsKey('total_question_count')) {
       context.handle(
-        _totalMeta,
-        total.isAcceptableOrUnknown(data['total']!, _totalMeta),
+        _totalQuestionCountMeta,
+        totalQuestionCount.isAcceptableOrUnknown(
+          data['total_question_count']!,
+          _totalQuestionCountMeta,
+        ),
       );
     } else if (isInserting) {
-      context.missing(_totalMeta);
+      context.missing(_totalQuestionCountMeta);
     }
-    if (data.containsKey('correct')) {
+    if (data.containsKey('correct_answer_count')) {
       context.handle(
-        _correctMeta,
-        correct.isAcceptableOrUnknown(data['correct']!, _correctMeta),
+        _correctAnswerCountMeta,
+        correctAnswerCount.isAcceptableOrUnknown(
+          data['correct_answer_count']!,
+          _correctAnswerCountMeta,
+        ),
       );
     } else if (isInserting) {
-      context.missing(_correctMeta);
+      context.missing(_correctAnswerCountMeta);
     }
-    if (data.containsKey('incorrect')) {
+    if (data.containsKey('incorrect_answer_count')) {
       context.handle(
-        _incorrectMeta,
-        incorrect.isAcceptableOrUnknown(data['incorrect']!, _incorrectMeta),
+        _incorrectAnswerCountMeta,
+        incorrectAnswerCount.isAcceptableOrUnknown(
+          data['incorrect_answer_count']!,
+          _incorrectAnswerCountMeta,
+        ),
       );
     } else if (isInserting) {
-      context.missing(_incorrectMeta);
+      context.missing(_incorrectAnswerCountMeta);
     }
-    if (data.containsKey('unanswered')) {
+    if (data.containsKey('unanswered_count')) {
       context.handle(
-        _unansweredMeta,
-        unanswered.isAcceptableOrUnknown(data['unanswered']!, _unansweredMeta),
+        _unansweredCountMeta,
+        unansweredCount.isAcceptableOrUnknown(
+          data['unanswered_count']!,
+          _unansweredCountMeta,
+        ),
       );
     } else if (isInserting) {
-      context.missing(_unansweredMeta);
+      context.missing(_unansweredCountMeta);
     }
     if (data.containsKey('correct_percentage')) {
       context.handle(
@@ -14556,28 +14557,17 @@ class $SubjectAnalyticsTableTable extends SubjectAnalyticsTable
     } else if (isInserting) {
       context.missing(_correctPercentageMeta);
     }
-    if (data.containsKey('parent')) {
+    if (data.containsKey('parent_id')) {
       context.handle(
-        _parentMeta,
-        parent.isAcceptableOrUnknown(data['parent']!, _parentMeta),
+        _parentIdMeta,
+        parentId.isAcceptableOrUnknown(data['parent_id']!, _parentIdMeta),
       );
     }
-    if (data.containsKey('leaf')) {
+    if (data.containsKey('is_leaf')) {
       context.handle(
-        _leafMeta,
-        leaf.isAcceptableOrUnknown(data['leaf']!, _leafMeta),
+        _isLeafMeta,
+        isLeaf.isAcceptableOrUnknown(data['is_leaf']!, _isLeafMeta),
       );
-    }
-    if (data.containsKey('analytics_url')) {
-      context.handle(
-        _analyticsUrlMeta,
-        analyticsUrl.isAcceptableOrUnknown(
-          data['analytics_url']!,
-          _analyticsUrlMeta,
-        ),
-      );
-    } else if (isInserting) {
-      context.missing(_analyticsUrlMeta);
     }
     return context;
   }
@@ -14596,37 +14586,33 @@ class $SubjectAnalyticsTableTable extends SubjectAnalyticsTable
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
-      total: attachedDatabase.typeMapping.read(
+      totalQuestionCount: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
-        data['${effectivePrefix}total'],
+        data['${effectivePrefix}total_question_count'],
       )!,
-      correct: attachedDatabase.typeMapping.read(
+      correctAnswerCount: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
-        data['${effectivePrefix}correct'],
+        data['${effectivePrefix}correct_answer_count'],
       )!,
-      incorrect: attachedDatabase.typeMapping.read(
+      incorrectAnswerCount: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
-        data['${effectivePrefix}incorrect'],
+        data['${effectivePrefix}incorrect_answer_count'],
       )!,
-      unanswered: attachedDatabase.typeMapping.read(
+      unansweredCount: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
-        data['${effectivePrefix}unanswered'],
+        data['${effectivePrefix}unanswered_count'],
       )!,
       correctPercentage: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}correct_percentage'],
       )!,
-      parent: attachedDatabase.typeMapping.read(
+      parentId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
-        data['${effectivePrefix}parent'],
+        data['${effectivePrefix}parent_id'],
       ),
-      leaf: attachedDatabase.typeMapping.read(
+      isLeaf: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
-        data['${effectivePrefix}leaf'],
-      )!,
-      analyticsUrl: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}analytics_url'],
+        data['${effectivePrefix}is_leaf'],
       )!,
     );
   }
@@ -14641,41 +14627,38 @@ class SubjectAnalyticsData extends DataClass
     implements Insertable<SubjectAnalyticsData> {
   final int id;
   final String name;
-  final int total;
-  final int correct;
-  final int incorrect;
-  final int unanswered;
+  final int totalQuestionCount;
+  final int correctAnswerCount;
+  final int incorrectAnswerCount;
+  final int unansweredCount;
   final double correctPercentage;
-  final int? parent;
-  final bool leaf;
-  final String analyticsUrl;
+  final int? parentId;
+  final bool isLeaf;
   const SubjectAnalyticsData({
     required this.id,
     required this.name,
-    required this.total,
-    required this.correct,
-    required this.incorrect,
-    required this.unanswered,
+    required this.totalQuestionCount,
+    required this.correctAnswerCount,
+    required this.incorrectAnswerCount,
+    required this.unansweredCount,
     required this.correctPercentage,
-    this.parent,
-    required this.leaf,
-    required this.analyticsUrl,
+    this.parentId,
+    required this.isLeaf,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
-    map['total'] = Variable<int>(total);
-    map['correct'] = Variable<int>(correct);
-    map['incorrect'] = Variable<int>(incorrect);
-    map['unanswered'] = Variable<int>(unanswered);
+    map['total_question_count'] = Variable<int>(totalQuestionCount);
+    map['correct_answer_count'] = Variable<int>(correctAnswerCount);
+    map['incorrect_answer_count'] = Variable<int>(incorrectAnswerCount);
+    map['unanswered_count'] = Variable<int>(unansweredCount);
     map['correct_percentage'] = Variable<double>(correctPercentage);
-    if (!nullToAbsent || parent != null) {
-      map['parent'] = Variable<int>(parent);
+    if (!nullToAbsent || parentId != null) {
+      map['parent_id'] = Variable<int>(parentId);
     }
-    map['leaf'] = Variable<bool>(leaf);
-    map['analytics_url'] = Variable<String>(analyticsUrl);
+    map['is_leaf'] = Variable<bool>(isLeaf);
     return map;
   }
 
@@ -14683,16 +14666,15 @@ class SubjectAnalyticsData extends DataClass
     return SubjectAnalyticsTableCompanion(
       id: Value(id),
       name: Value(name),
-      total: Value(total),
-      correct: Value(correct),
-      incorrect: Value(incorrect),
-      unanswered: Value(unanswered),
+      totalQuestionCount: Value(totalQuestionCount),
+      correctAnswerCount: Value(correctAnswerCount),
+      incorrectAnswerCount: Value(incorrectAnswerCount),
+      unansweredCount: Value(unansweredCount),
       correctPercentage: Value(correctPercentage),
-      parent: parent == null && nullToAbsent
+      parentId: parentId == null && nullToAbsent
           ? const Value.absent()
-          : Value(parent),
-      leaf: Value(leaf),
-      analyticsUrl: Value(analyticsUrl),
+          : Value(parentId),
+      isLeaf: Value(isLeaf),
     );
   }
 
@@ -14704,14 +14686,15 @@ class SubjectAnalyticsData extends DataClass
     return SubjectAnalyticsData(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      total: serializer.fromJson<int>(json['total']),
-      correct: serializer.fromJson<int>(json['correct']),
-      incorrect: serializer.fromJson<int>(json['incorrect']),
-      unanswered: serializer.fromJson<int>(json['unanswered']),
+      totalQuestionCount: serializer.fromJson<int>(json['totalQuestionCount']),
+      correctAnswerCount: serializer.fromJson<int>(json['correctAnswerCount']),
+      incorrectAnswerCount: serializer.fromJson<int>(
+        json['incorrectAnswerCount'],
+      ),
+      unansweredCount: serializer.fromJson<int>(json['unansweredCount']),
       correctPercentage: serializer.fromJson<double>(json['correctPercentage']),
-      parent: serializer.fromJson<int?>(json['parent']),
-      leaf: serializer.fromJson<bool>(json['leaf']),
-      analyticsUrl: serializer.fromJson<String>(json['analyticsUrl']),
+      parentId: serializer.fromJson<int?>(json['parentId']),
+      isLeaf: serializer.fromJson<bool>(json['isLeaf']),
     );
   }
   @override
@@ -14720,58 +14703,58 @@ class SubjectAnalyticsData extends DataClass
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
-      'total': serializer.toJson<int>(total),
-      'correct': serializer.toJson<int>(correct),
-      'incorrect': serializer.toJson<int>(incorrect),
-      'unanswered': serializer.toJson<int>(unanswered),
+      'totalQuestionCount': serializer.toJson<int>(totalQuestionCount),
+      'correctAnswerCount': serializer.toJson<int>(correctAnswerCount),
+      'incorrectAnswerCount': serializer.toJson<int>(incorrectAnswerCount),
+      'unansweredCount': serializer.toJson<int>(unansweredCount),
       'correctPercentage': serializer.toJson<double>(correctPercentage),
-      'parent': serializer.toJson<int?>(parent),
-      'leaf': serializer.toJson<bool>(leaf),
-      'analyticsUrl': serializer.toJson<String>(analyticsUrl),
+      'parentId': serializer.toJson<int?>(parentId),
+      'isLeaf': serializer.toJson<bool>(isLeaf),
     };
   }
 
   SubjectAnalyticsData copyWith({
     int? id,
     String? name,
-    int? total,
-    int? correct,
-    int? incorrect,
-    int? unanswered,
+    int? totalQuestionCount,
+    int? correctAnswerCount,
+    int? incorrectAnswerCount,
+    int? unansweredCount,
     double? correctPercentage,
-    Value<int?> parent = const Value.absent(),
-    bool? leaf,
-    String? analyticsUrl,
+    Value<int?> parentId = const Value.absent(),
+    bool? isLeaf,
   }) => SubjectAnalyticsData(
     id: id ?? this.id,
     name: name ?? this.name,
-    total: total ?? this.total,
-    correct: correct ?? this.correct,
-    incorrect: incorrect ?? this.incorrect,
-    unanswered: unanswered ?? this.unanswered,
+    totalQuestionCount: totalQuestionCount ?? this.totalQuestionCount,
+    correctAnswerCount: correctAnswerCount ?? this.correctAnswerCount,
+    incorrectAnswerCount: incorrectAnswerCount ?? this.incorrectAnswerCount,
+    unansweredCount: unansweredCount ?? this.unansweredCount,
     correctPercentage: correctPercentage ?? this.correctPercentage,
-    parent: parent.present ? parent.value : this.parent,
-    leaf: leaf ?? this.leaf,
-    analyticsUrl: analyticsUrl ?? this.analyticsUrl,
+    parentId: parentId.present ? parentId.value : this.parentId,
+    isLeaf: isLeaf ?? this.isLeaf,
   );
   SubjectAnalyticsData copyWithCompanion(SubjectAnalyticsTableCompanion data) {
     return SubjectAnalyticsData(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
-      total: data.total.present ? data.total.value : this.total,
-      correct: data.correct.present ? data.correct.value : this.correct,
-      incorrect: data.incorrect.present ? data.incorrect.value : this.incorrect,
-      unanswered: data.unanswered.present
-          ? data.unanswered.value
-          : this.unanswered,
+      totalQuestionCount: data.totalQuestionCount.present
+          ? data.totalQuestionCount.value
+          : this.totalQuestionCount,
+      correctAnswerCount: data.correctAnswerCount.present
+          ? data.correctAnswerCount.value
+          : this.correctAnswerCount,
+      incorrectAnswerCount: data.incorrectAnswerCount.present
+          ? data.incorrectAnswerCount.value
+          : this.incorrectAnswerCount,
+      unansweredCount: data.unansweredCount.present
+          ? data.unansweredCount.value
+          : this.unansweredCount,
       correctPercentage: data.correctPercentage.present
           ? data.correctPercentage.value
           : this.correctPercentage,
-      parent: data.parent.present ? data.parent.value : this.parent,
-      leaf: data.leaf.present ? data.leaf.value : this.leaf,
-      analyticsUrl: data.analyticsUrl.present
-          ? data.analyticsUrl.value
-          : this.analyticsUrl,
+      parentId: data.parentId.present ? data.parentId.value : this.parentId,
+      isLeaf: data.isLeaf.present ? data.isLeaf.value : this.isLeaf,
     );
   }
 
@@ -14780,14 +14763,13 @@ class SubjectAnalyticsData extends DataClass
     return (StringBuffer('SubjectAnalyticsData(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('total: $total, ')
-          ..write('correct: $correct, ')
-          ..write('incorrect: $incorrect, ')
-          ..write('unanswered: $unanswered, ')
+          ..write('totalQuestionCount: $totalQuestionCount, ')
+          ..write('correctAnswerCount: $correctAnswerCount, ')
+          ..write('incorrectAnswerCount: $incorrectAnswerCount, ')
+          ..write('unansweredCount: $unansweredCount, ')
           ..write('correctPercentage: $correctPercentage, ')
-          ..write('parent: $parent, ')
-          ..write('leaf: $leaf, ')
-          ..write('analyticsUrl: $analyticsUrl')
+          ..write('parentId: $parentId, ')
+          ..write('isLeaf: $isLeaf')
           ..write(')'))
         .toString();
   }
@@ -14796,14 +14778,13 @@ class SubjectAnalyticsData extends DataClass
   int get hashCode => Object.hash(
     id,
     name,
-    total,
-    correct,
-    incorrect,
-    unanswered,
+    totalQuestionCount,
+    correctAnswerCount,
+    incorrectAnswerCount,
+    unansweredCount,
     correctPercentage,
-    parent,
-    leaf,
-    analyticsUrl,
+    parentId,
+    isLeaf,
   );
   @override
   bool operator ==(Object other) =>
@@ -14811,107 +14792,101 @@ class SubjectAnalyticsData extends DataClass
       (other is SubjectAnalyticsData &&
           other.id == this.id &&
           other.name == this.name &&
-          other.total == this.total &&
-          other.correct == this.correct &&
-          other.incorrect == this.incorrect &&
-          other.unanswered == this.unanswered &&
+          other.totalQuestionCount == this.totalQuestionCount &&
+          other.correctAnswerCount == this.correctAnswerCount &&
+          other.incorrectAnswerCount == this.incorrectAnswerCount &&
+          other.unansweredCount == this.unansweredCount &&
           other.correctPercentage == this.correctPercentage &&
-          other.parent == this.parent &&
-          other.leaf == this.leaf &&
-          other.analyticsUrl == this.analyticsUrl);
+          other.parentId == this.parentId &&
+          other.isLeaf == this.isLeaf);
 }
 
 class SubjectAnalyticsTableCompanion
     extends UpdateCompanion<SubjectAnalyticsData> {
   final Value<int> id;
   final Value<String> name;
-  final Value<int> total;
-  final Value<int> correct;
-  final Value<int> incorrect;
-  final Value<int> unanswered;
+  final Value<int> totalQuestionCount;
+  final Value<int> correctAnswerCount;
+  final Value<int> incorrectAnswerCount;
+  final Value<int> unansweredCount;
   final Value<double> correctPercentage;
-  final Value<int?> parent;
-  final Value<bool> leaf;
-  final Value<String> analyticsUrl;
+  final Value<int?> parentId;
+  final Value<bool> isLeaf;
   const SubjectAnalyticsTableCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
-    this.total = const Value.absent(),
-    this.correct = const Value.absent(),
-    this.incorrect = const Value.absent(),
-    this.unanswered = const Value.absent(),
+    this.totalQuestionCount = const Value.absent(),
+    this.correctAnswerCount = const Value.absent(),
+    this.incorrectAnswerCount = const Value.absent(),
+    this.unansweredCount = const Value.absent(),
     this.correctPercentage = const Value.absent(),
-    this.parent = const Value.absent(),
-    this.leaf = const Value.absent(),
-    this.analyticsUrl = const Value.absent(),
+    this.parentId = const Value.absent(),
+    this.isLeaf = const Value.absent(),
   });
   SubjectAnalyticsTableCompanion.insert({
     this.id = const Value.absent(),
     required String name,
-    required int total,
-    required int correct,
-    required int incorrect,
-    required int unanswered,
+    required int totalQuestionCount,
+    required int correctAnswerCount,
+    required int incorrectAnswerCount,
+    required int unansweredCount,
     required double correctPercentage,
-    this.parent = const Value.absent(),
-    this.leaf = const Value.absent(),
-    required String analyticsUrl,
+    this.parentId = const Value.absent(),
+    this.isLeaf = const Value.absent(),
   }) : name = Value(name),
-       total = Value(total),
-       correct = Value(correct),
-       incorrect = Value(incorrect),
-       unanswered = Value(unanswered),
-       correctPercentage = Value(correctPercentage),
-       analyticsUrl = Value(analyticsUrl);
+       totalQuestionCount = Value(totalQuestionCount),
+       correctAnswerCount = Value(correctAnswerCount),
+       incorrectAnswerCount = Value(incorrectAnswerCount),
+       unansweredCount = Value(unansweredCount),
+       correctPercentage = Value(correctPercentage);
   static Insertable<SubjectAnalyticsData> custom({
     Expression<int>? id,
     Expression<String>? name,
-    Expression<int>? total,
-    Expression<int>? correct,
-    Expression<int>? incorrect,
-    Expression<int>? unanswered,
+    Expression<int>? totalQuestionCount,
+    Expression<int>? correctAnswerCount,
+    Expression<int>? incorrectAnswerCount,
+    Expression<int>? unansweredCount,
     Expression<double>? correctPercentage,
-    Expression<int>? parent,
-    Expression<bool>? leaf,
-    Expression<String>? analyticsUrl,
+    Expression<int>? parentId,
+    Expression<bool>? isLeaf,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
-      if (total != null) 'total': total,
-      if (correct != null) 'correct': correct,
-      if (incorrect != null) 'incorrect': incorrect,
-      if (unanswered != null) 'unanswered': unanswered,
+      if (totalQuestionCount != null)
+        'total_question_count': totalQuestionCount,
+      if (correctAnswerCount != null)
+        'correct_answer_count': correctAnswerCount,
+      if (incorrectAnswerCount != null)
+        'incorrect_answer_count': incorrectAnswerCount,
+      if (unansweredCount != null) 'unanswered_count': unansweredCount,
       if (correctPercentage != null) 'correct_percentage': correctPercentage,
-      if (parent != null) 'parent': parent,
-      if (leaf != null) 'leaf': leaf,
-      if (analyticsUrl != null) 'analytics_url': analyticsUrl,
+      if (parentId != null) 'parent_id': parentId,
+      if (isLeaf != null) 'is_leaf': isLeaf,
     });
   }
 
   SubjectAnalyticsTableCompanion copyWith({
     Value<int>? id,
     Value<String>? name,
-    Value<int>? total,
-    Value<int>? correct,
-    Value<int>? incorrect,
-    Value<int>? unanswered,
+    Value<int>? totalQuestionCount,
+    Value<int>? correctAnswerCount,
+    Value<int>? incorrectAnswerCount,
+    Value<int>? unansweredCount,
     Value<double>? correctPercentage,
-    Value<int?>? parent,
-    Value<bool>? leaf,
-    Value<String>? analyticsUrl,
+    Value<int?>? parentId,
+    Value<bool>? isLeaf,
   }) {
     return SubjectAnalyticsTableCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
-      total: total ?? this.total,
-      correct: correct ?? this.correct,
-      incorrect: incorrect ?? this.incorrect,
-      unanswered: unanswered ?? this.unanswered,
+      totalQuestionCount: totalQuestionCount ?? this.totalQuestionCount,
+      correctAnswerCount: correctAnswerCount ?? this.correctAnswerCount,
+      incorrectAnswerCount: incorrectAnswerCount ?? this.incorrectAnswerCount,
+      unansweredCount: unansweredCount ?? this.unansweredCount,
       correctPercentage: correctPercentage ?? this.correctPercentage,
-      parent: parent ?? this.parent,
-      leaf: leaf ?? this.leaf,
-      analyticsUrl: analyticsUrl ?? this.analyticsUrl,
+      parentId: parentId ?? this.parentId,
+      isLeaf: isLeaf ?? this.isLeaf,
     );
   }
 
@@ -14924,29 +14899,26 @@ class SubjectAnalyticsTableCompanion
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
-    if (total.present) {
-      map['total'] = Variable<int>(total.value);
+    if (totalQuestionCount.present) {
+      map['total_question_count'] = Variable<int>(totalQuestionCount.value);
     }
-    if (correct.present) {
-      map['correct'] = Variable<int>(correct.value);
+    if (correctAnswerCount.present) {
+      map['correct_answer_count'] = Variable<int>(correctAnswerCount.value);
     }
-    if (incorrect.present) {
-      map['incorrect'] = Variable<int>(incorrect.value);
+    if (incorrectAnswerCount.present) {
+      map['incorrect_answer_count'] = Variable<int>(incorrectAnswerCount.value);
     }
-    if (unanswered.present) {
-      map['unanswered'] = Variable<int>(unanswered.value);
+    if (unansweredCount.present) {
+      map['unanswered_count'] = Variable<int>(unansweredCount.value);
     }
     if (correctPercentage.present) {
       map['correct_percentage'] = Variable<double>(correctPercentage.value);
     }
-    if (parent.present) {
-      map['parent'] = Variable<int>(parent.value);
+    if (parentId.present) {
+      map['parent_id'] = Variable<int>(parentId.value);
     }
-    if (leaf.present) {
-      map['leaf'] = Variable<bool>(leaf.value);
-    }
-    if (analyticsUrl.present) {
-      map['analytics_url'] = Variable<String>(analyticsUrl.value);
+    if (isLeaf.present) {
+      map['is_leaf'] = Variable<bool>(isLeaf.value);
     }
     return map;
   }
@@ -14956,14 +14928,13 @@ class SubjectAnalyticsTableCompanion
     return (StringBuffer('SubjectAnalyticsTableCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('total: $total, ')
-          ..write('correct: $correct, ')
-          ..write('incorrect: $incorrect, ')
-          ..write('unanswered: $unanswered, ')
+          ..write('totalQuestionCount: $totalQuestionCount, ')
+          ..write('correctAnswerCount: $correctAnswerCount, ')
+          ..write('incorrectAnswerCount: $incorrectAnswerCount, ')
+          ..write('unansweredCount: $unansweredCount, ')
           ..write('correctPercentage: $correctPercentage, ')
-          ..write('parent: $parent, ')
-          ..write('leaf: $leaf, ')
-          ..write('analyticsUrl: $analyticsUrl')
+          ..write('parentId: $parentId, ')
+          ..write('isLeaf: $isLeaf')
           ..write(')'))
         .toString();
   }
@@ -22450,27 +22421,25 @@ typedef $$SubjectAnalyticsTableTableCreateCompanionBuilder =
     SubjectAnalyticsTableCompanion Function({
       Value<int> id,
       required String name,
-      required int total,
-      required int correct,
-      required int incorrect,
-      required int unanswered,
+      required int totalQuestionCount,
+      required int correctAnswerCount,
+      required int incorrectAnswerCount,
+      required int unansweredCount,
       required double correctPercentage,
-      Value<int?> parent,
-      Value<bool> leaf,
-      required String analyticsUrl,
+      Value<int?> parentId,
+      Value<bool> isLeaf,
     });
 typedef $$SubjectAnalyticsTableTableUpdateCompanionBuilder =
     SubjectAnalyticsTableCompanion Function({
       Value<int> id,
       Value<String> name,
-      Value<int> total,
-      Value<int> correct,
-      Value<int> incorrect,
-      Value<int> unanswered,
+      Value<int> totalQuestionCount,
+      Value<int> correctAnswerCount,
+      Value<int> incorrectAnswerCount,
+      Value<int> unansweredCount,
       Value<double> correctPercentage,
-      Value<int?> parent,
-      Value<bool> leaf,
-      Value<String> analyticsUrl,
+      Value<int?> parentId,
+      Value<bool> isLeaf,
     });
 
 class $$SubjectAnalyticsTableTableFilterComposer
@@ -22492,23 +22461,23 @@ class $$SubjectAnalyticsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get total => $composableBuilder(
-    column: $table.total,
+  ColumnFilters<int> get totalQuestionCount => $composableBuilder(
+    column: $table.totalQuestionCount,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get correct => $composableBuilder(
-    column: $table.correct,
+  ColumnFilters<int> get correctAnswerCount => $composableBuilder(
+    column: $table.correctAnswerCount,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get incorrect => $composableBuilder(
-    column: $table.incorrect,
+  ColumnFilters<int> get incorrectAnswerCount => $composableBuilder(
+    column: $table.incorrectAnswerCount,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get unanswered => $composableBuilder(
-    column: $table.unanswered,
+  ColumnFilters<int> get unansweredCount => $composableBuilder(
+    column: $table.unansweredCount,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -22517,18 +22486,13 @@ class $$SubjectAnalyticsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get parent => $composableBuilder(
-    column: $table.parent,
+  ColumnFilters<int> get parentId => $composableBuilder(
+    column: $table.parentId,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<bool> get leaf => $composableBuilder(
-    column: $table.leaf,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get analyticsUrl => $composableBuilder(
-    column: $table.analyticsUrl,
+  ColumnFilters<bool> get isLeaf => $composableBuilder(
+    column: $table.isLeaf,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -22552,23 +22516,23 @@ class $$SubjectAnalyticsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get total => $composableBuilder(
-    column: $table.total,
+  ColumnOrderings<int> get totalQuestionCount => $composableBuilder(
+    column: $table.totalQuestionCount,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get correct => $composableBuilder(
-    column: $table.correct,
+  ColumnOrderings<int> get correctAnswerCount => $composableBuilder(
+    column: $table.correctAnswerCount,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get incorrect => $composableBuilder(
-    column: $table.incorrect,
+  ColumnOrderings<int> get incorrectAnswerCount => $composableBuilder(
+    column: $table.incorrectAnswerCount,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get unanswered => $composableBuilder(
-    column: $table.unanswered,
+  ColumnOrderings<int> get unansweredCount => $composableBuilder(
+    column: $table.unansweredCount,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -22577,18 +22541,13 @@ class $$SubjectAnalyticsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get parent => $composableBuilder(
-    column: $table.parent,
+  ColumnOrderings<int> get parentId => $composableBuilder(
+    column: $table.parentId,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<bool> get leaf => $composableBuilder(
-    column: $table.leaf,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get analyticsUrl => $composableBuilder(
-    column: $table.analyticsUrl,
+  ColumnOrderings<bool> get isLeaf => $composableBuilder(
+    column: $table.isLeaf,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -22608,17 +22567,23 @@ class $$SubjectAnalyticsTableTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
-  GeneratedColumn<int> get total =>
-      $composableBuilder(column: $table.total, builder: (column) => column);
+  GeneratedColumn<int> get totalQuestionCount => $composableBuilder(
+    column: $table.totalQuestionCount,
+    builder: (column) => column,
+  );
 
-  GeneratedColumn<int> get correct =>
-      $composableBuilder(column: $table.correct, builder: (column) => column);
+  GeneratedColumn<int> get correctAnswerCount => $composableBuilder(
+    column: $table.correctAnswerCount,
+    builder: (column) => column,
+  );
 
-  GeneratedColumn<int> get incorrect =>
-      $composableBuilder(column: $table.incorrect, builder: (column) => column);
+  GeneratedColumn<int> get incorrectAnswerCount => $composableBuilder(
+    column: $table.incorrectAnswerCount,
+    builder: (column) => column,
+  );
 
-  GeneratedColumn<int> get unanswered => $composableBuilder(
-    column: $table.unanswered,
+  GeneratedColumn<int> get unansweredCount => $composableBuilder(
+    column: $table.unansweredCount,
     builder: (column) => column,
   );
 
@@ -22627,16 +22592,11 @@ class $$SubjectAnalyticsTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<int> get parent =>
-      $composableBuilder(column: $table.parent, builder: (column) => column);
+  GeneratedColumn<int> get parentId =>
+      $composableBuilder(column: $table.parentId, builder: (column) => column);
 
-  GeneratedColumn<bool> get leaf =>
-      $composableBuilder(column: $table.leaf, builder: (column) => column);
-
-  GeneratedColumn<String> get analyticsUrl => $composableBuilder(
-    column: $table.analyticsUrl,
-    builder: (column) => column,
-  );
+  GeneratedColumn<bool> get isLeaf =>
+      $composableBuilder(column: $table.isLeaf, builder: (column) => column);
 }
 
 class $$SubjectAnalyticsTableTableTableManager
@@ -22687,49 +22647,45 @@ class $$SubjectAnalyticsTableTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
-                Value<int> total = const Value.absent(),
-                Value<int> correct = const Value.absent(),
-                Value<int> incorrect = const Value.absent(),
-                Value<int> unanswered = const Value.absent(),
+                Value<int> totalQuestionCount = const Value.absent(),
+                Value<int> correctAnswerCount = const Value.absent(),
+                Value<int> incorrectAnswerCount = const Value.absent(),
+                Value<int> unansweredCount = const Value.absent(),
                 Value<double> correctPercentage = const Value.absent(),
-                Value<int?> parent = const Value.absent(),
-                Value<bool> leaf = const Value.absent(),
-                Value<String> analyticsUrl = const Value.absent(),
+                Value<int?> parentId = const Value.absent(),
+                Value<bool> isLeaf = const Value.absent(),
               }) => SubjectAnalyticsTableCompanion(
                 id: id,
                 name: name,
-                total: total,
-                correct: correct,
-                incorrect: incorrect,
-                unanswered: unanswered,
+                totalQuestionCount: totalQuestionCount,
+                correctAnswerCount: correctAnswerCount,
+                incorrectAnswerCount: incorrectAnswerCount,
+                unansweredCount: unansweredCount,
                 correctPercentage: correctPercentage,
-                parent: parent,
-                leaf: leaf,
-                analyticsUrl: analyticsUrl,
+                parentId: parentId,
+                isLeaf: isLeaf,
               ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 required String name,
-                required int total,
-                required int correct,
-                required int incorrect,
-                required int unanswered,
+                required int totalQuestionCount,
+                required int correctAnswerCount,
+                required int incorrectAnswerCount,
+                required int unansweredCount,
                 required double correctPercentage,
-                Value<int?> parent = const Value.absent(),
-                Value<bool> leaf = const Value.absent(),
-                required String analyticsUrl,
+                Value<int?> parentId = const Value.absent(),
+                Value<bool> isLeaf = const Value.absent(),
               }) => SubjectAnalyticsTableCompanion.insert(
                 id: id,
                 name: name,
-                total: total,
-                correct: correct,
-                incorrect: incorrect,
-                unanswered: unanswered,
+                totalQuestionCount: totalQuestionCount,
+                correctAnswerCount: correctAnswerCount,
+                incorrectAnswerCount: incorrectAnswerCount,
+                unansweredCount: unansweredCount,
                 correctPercentage: correctPercentage,
-                parent: parent,
-                leaf: leaf,
-                analyticsUrl: analyticsUrl,
+                parentId: parentId,
+                isLeaf: isLeaf,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

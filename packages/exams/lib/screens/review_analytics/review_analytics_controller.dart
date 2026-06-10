@@ -215,13 +215,14 @@ class ReviewAnalyticsController extends StateNotifier<ReviewAnalyticsState> {
 
       final mappedSections = subjects.map((s) {
         final subjectScore = markPerQuestion != null
-            ? ((s.correct * markPerQuestion) - (s.incorrect * negativeMarks))
+            ? ((s.correctAnswerCount * markPerQuestion) -
+                  (s.incorrectAnswerCount * negativeMarks))
             : 0.0;
         return SectionPerformanceOverview(
           name: s.name,
-          totalQuestions: s.total,
-          correct: s.correct,
-          incorrect: s.incorrect,
+          totalQuestions: s.totalQuestionCount,
+          correct: s.correctAnswerCount,
+          incorrect: s.incorrectAnswerCount,
           score: subjectScore.toInt(),
           accuracy: s.correctPercentage,
           timeSpent: Duration.zero,

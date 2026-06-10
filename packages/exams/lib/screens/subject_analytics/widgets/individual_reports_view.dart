@@ -21,9 +21,9 @@ class IndividualReportsView extends ConsumerWidget {
     String filter,
   ) {
     return switch (filter) {
-      'Correct' => data.where((s) => s.correct > 0).toList(),
-      'Incorrect' => data.where((s) => s.incorrect > 0).toList(),
-      'Unanswered' => data.where((s) => s.unanswered > 0).toList(),
+      'Correct' => data.where((s) => s.correctAnswerCount > 0).toList(),
+      'Incorrect' => data.where((s) => s.incorrectAnswerCount > 0).toList(),
+      'Unanswered' => data.where((s) => s.unansweredCount > 0).toList(),
       _ => data,
     };
   }
@@ -300,20 +300,20 @@ class _StatsTable extends StatelessWidget {
           ),
 
           // Table Body Rows
-          ...subjects.map((subject) {
-            final onTap = subject.leaf
+          ...subjects.map((subjectAnalytics) {
+            final onTap = subjectAnalytics.isLeaf
                 ? null
                 : () {
                     context.push(
-                      '/exams/analytics/${subject.id}',
-                      extra: subject,
+                      '/exams/analytics/${subjectAnalytics.id}',
+                      extra: subjectAnalytics,
                     );
                   };
             return TableRow(
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
-                    color: subject == subjects.last
+                    color: subjectAnalytics == subjects.last
                         ? design.colors.transparent
                         : design.colors.divider,
                     width: 1,
@@ -330,7 +330,7 @@ class _StatsTable extends StatelessWidget {
                       vertical: design.spacing.sm + design.spacing.xs,
                     ),
                     child: AppText.xs(
-                      subject.name,
+                      subjectAnalytics.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontWeight: FontWeight.w600),
@@ -342,7 +342,7 @@ class _StatsTable extends StatelessWidget {
                     behavior: HitTestBehavior.opaque,
                     onTap: onTap,
                     child: _StatsCell(
-                      value: subject.correct.toString(),
+                      value: subjectAnalytics.correctAnswerCount.toString(),
                       color: design.correctColor,
                     ),
                   ),
@@ -351,7 +351,7 @@ class _StatsTable extends StatelessWidget {
                     behavior: HitTestBehavior.opaque,
                     onTap: onTap,
                     child: _StatsCell(
-                      value: subject.incorrect.toString(),
+                      value: subjectAnalytics.incorrectAnswerCount.toString(),
                       color: design.incorrectColor,
                     ),
                   ),
@@ -360,7 +360,7 @@ class _StatsTable extends StatelessWidget {
                     behavior: HitTestBehavior.opaque,
                     onTap: onTap,
                     child: _StatsCell(
-                      value: subject.unanswered.toString(),
+                      value: subjectAnalytics.unansweredCount.toString(),
                       color: design.unansweredColor,
                     ),
                   ),
@@ -376,7 +376,7 @@ class _StatsTable extends StatelessWidget {
                     ),
                     child: Container(
                       alignment: Alignment.centerRight,
-                      child: subject.leaf
+                      child: subjectAnalytics.isLeaf
                           ? const SizedBox.shrink()
                           : Icon(
                               LucideIcons.chevronRight,
@@ -493,7 +493,7 @@ class _DonutCard extends StatelessWidget {
                 ),
               ),
               AppText.xs(
-                'Total: ${data.total}',
+                'Total: ${data.totalQuestionCount}',
                 color: design.colors.textSecondary,
               ),
             ],
@@ -508,7 +508,7 @@ class _DonutCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 AppText.xs(
-                  'Correct: ${data.correct}',
+                  'Correct: ${data.correctAnswerCount}',
                   color: correctStyle.textColor,
                 ),
                 Padding(
@@ -516,7 +516,7 @@ class _DonutCard extends StatelessWidget {
                   child: AppText.xs('•', color: dotSeparatorColor),
                 ),
                 AppText.xs(
-                  'Incorrect: ${data.incorrect}',
+                  'Incorrect: ${data.incorrectAnswerCount}',
                   color: incorrectStyle.textColor,
                 ),
                 Padding(
@@ -524,7 +524,7 @@ class _DonutCard extends StatelessWidget {
                   child: AppText.xs('•', color: dotSeparatorColor),
                 ),
                 AppText.xs(
-                  'Unanswered: ${data.unanswered}',
+                  'Unanswered: ${data.unansweredCount}',
                   color: unansweredStyle.textColor,
                 ),
               ],
