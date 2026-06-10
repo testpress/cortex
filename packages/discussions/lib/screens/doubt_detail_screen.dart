@@ -438,10 +438,8 @@ class _DoubtHeaderCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (doubt.lessonId != null) ...[
+          if (doubt.lessonId != null)
             _LessonContextBadge(lessonId: doubt.lessonId!),
-            const SizedBox(height: 12),
-          ],
           if (doubt.topicName != null) ...[
             _SubjectBadge(subject: doubt.topicName!),
             const SizedBox(height: 12),
@@ -478,7 +476,10 @@ class _LessonContextBadge extends ConsumerWidget {
     return lessonAsync.when(
       data: (lesson) {
         if (lesson == null) return const SizedBox.shrink();
-        return DoubtContextBadge(icon: lesson.type.icon, text: lesson.title);
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12.0),
+          child: DoubtContextBadge(icon: lesson.type.icon, text: lesson.title),
+        );
       },
       loading: () => const SizedBox.shrink(),
       error: (_, _) => const SizedBox.shrink(),
