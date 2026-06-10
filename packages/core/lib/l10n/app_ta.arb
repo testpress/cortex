@@ -545,21 +545,29 @@
   "reviewQuestionLabel": "கேள்வி {number}",
   "@reviewQuestionLabel": {
     "placeholders": {
-      "number": { "type": "String" }
+      "number": {
+        "type": "String"
+      }
     }
   },
   "reviewEmptyStateMessage": "இந்த வடிகட்டிக்கு கேள்விகள் எதுவும் கிடைக்கவில்லை.",
   "reviewAnswersTitle": "பதில்களை மதிப்பாய்வு செய் - {title}",
   "@reviewAnswersTitle": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "reviewQuestionCount": "{total} இல் {current}",
   "@reviewQuestionCount": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "settingsAppearanceTitle": "தோற்றம்",
@@ -779,13 +787,17 @@
   "bookmarkAddedToFolder": "{folderName} கோப்புறையில் புக்மார்க் சேர்க்கப்பட்டது",
   "@bookmarkAddedToFolder": {
     "placeholders": {
-      "folderName": { "type": "String" }
+      "folderName": {
+        "type": "String"
+      }
     }
   },
   "bookmarkRemovedFromFolder": "{folderName} கோப்புறையிலிருந்து புக்மார்க் அகற்றப்பட்டது",
   "@bookmarkRemovedFromFolder": {
     "placeholders": {
-      "folderName": { "type": "String" }
+      "folderName": {
+        "type": "String"
+      }
     }
   },
   "bookmarkRemoved": "புக்மார்க் அகற்றப்பட்டது",
@@ -794,7 +806,79 @@
   "lessonSpecializedViewerRequired": "{type} க்கு சிறப்புப் பார்வையாளர் தேவை",
   "@lessonSpecializedViewerRequired": {
     "placeholders": {
-      "type": { "type": "String" }
+      "type": {
+        "type": "String"
+      }
     }
-  }
+  },
+  "labelPractice": "பயிற்சி",
+  "leaderboardTitle": "தரவரிசைப் பலகை",
+  "leaderboardRankListTab": "தரவரிசை பட்டியல்",
+  "leaderboardCompetitorsTab": "போட்டியாளர்கள்",
+  "leaderboardTimelineThisWeek": "இந்த வாரம்",
+  "leaderboardTimelineThisMonth": "இந்த மாதம்",
+  "leaderboardTimelineAllTime": "எல்லா நேரமும்",
+  "leaderboardNoLearnersFound": "கற்பவர்கள் எவரும் காணப்படவில்லை",
+  "leaderboardErrorLoading": "தரவரிசைப் பலகையை ஏற்றுவதில் பிழை",
+  "leaderboardNoCompetitorsFound": "போட்டியாளர்கள் யாரும் இல்லை",
+  "leaderboardErrorLoadingCompetitors": "போட்டியாளர்களை ஏற்றுவதில் பிழை",
+  "leaderboardYouSuffix": " (நீங்கள்)",
+  "loginActivityCurrentDevice": "தற்போதைய சாதனம்",
+  "loginActivityNoActivityFound": "உள்நுழைவு செயல்பாடு எதுவும் காணப்படவில்லை",
+  "loginActivityLogoutOtherDevices": "பிற சாதனங்களிலிருந்து வெளியேறு",
+  "loginActivityLogoutSuccess": "பிற சாதனங்களிலிருந்து வெற்றிகரமாக வெளியேறினீர்கள்",
+  "actionMarkAsResolved": "தீர்க்கப்பட்டதாகக் குறிக்கவும்",
+  "actionCloseDoubt": "சந்தேகத்தை மூடு",
+  "messageDoubtResolved": "இந்த சந்தேகம் தீர்க்கப்பட்டதாக குறிக்கப்பட்டுள்ளது.",
+  "messageDiscussionClosed": "இந்த விவாத இழை மூடப்பட்டுள்ளது மற்றும் படிக்க மட்டுமே முடியும்.",
+  "loginActivityLogoutFailed": "வெளியேற முடியவில்லை",
+  "forumErrorFailedToCreatePost": "இடுகையை உருவாக்க முடியவில்லை",
+  "forumErrorDiscussionNotFound": "விவாதம் காணப்படவில்லை",
+  "forumErrorLoadingComments": "கருத்துகளை ஏற்றுவதில் பிழை",
+  "forumCommentsEmptyTitle": "இன்னும் கருத்துகள் இல்லை",
+  "forumCommentsEmptySubtitle": "இந்த இழைக்கு முதலில் பதிலளிக்கவும்.",
+  "forumRepliesCount": "{count,plural, =1{1 பதில்} other{{count} பதில்கள்}}",
+  "@forumRepliesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "forumRoleInstructor": "பயிற்றுவிப்பாளர்",
+  "forumPendingModeration": "மதிப்பீட்டிற்காக காத்திருக்கிறது",
+  "forumErrorFailedToPostReply": "பதிலை இடுகையிட முடியவில்லை",
+  "noAnnouncementsFound": "அறிவிப்புகள் எதுவும் காணப்படவில்லை.",
+  "commentsDisabledByAdmin": "இந்த இடுகைக்கு நிர்வாகியால் கருத்துகள் முடக்கப்பட்டுள்ளன",
+  "bookmarkFolderItemsCount": "{count,plural, =1{1 உருப்படி} other{{count} உருப்படிகள்}}",
+  "@bookmarkFolderItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarksTitle": "புக்மார்க்குகள்",
+  "bookmarkFilterAllContents": "அனைத்து உள்ளடக்கங்களும்",
+  "bookmarkFilterQuestions": "கேள்விகள்",
+  "bookmarkFilterVideos": "வீடியோக்கள்",
+  "bookmarkFilterPDFs": "PDF-கள்",
+  "bookmarkFilterNotes": "குறிப்புகள்",
+  "bookmarkFilterExamsAndQuiz": "தேர்வுகள் மற்றும் வினாடி வினாக்கள்",
+  "bookmarkFilterLiveClasses": "நேரலை வகுப்புகள்",
+  "bookmarkSortRecent": "சமீபத்தியவை",
+  "bookmarkSortOldest": "பழையவை",
+  "bookmarkSortLastlyOpened": "கடைசியாக திறக்கப்பட்டவை",
+  "bookmarkTabAll": "அனைத்தும்",
+  "bookmarkTabFolders": "கோப்புறைகள்",
+  "bookmarkActionRenameFolder": "கோப்புறையின் பெயரை மாற்று",
+  "bookmarkActionDeleteFolder": "கோப்புறையை நீக்கு",
+  "bookmarkActionMoveBookmark": "புக்மார்க்கை நகர்த்து",
+  "bookmarkActionRemoveBookmark": "புக்மார்க்கை அகற்று",
+  "bookmarkDeleteFolderConfirmation": "இந்த கோப்புறையை நிச்சயமாக நீக்க விரும்புகிறீர்களா?",
+  "bookmarkLabelContentType": "உள்ளடக்க வகை",
+  "bookmarkLabelSortBy": "வரிசைப்படுத்து",
+  "bookmarkActionCreateFolder": "கோப்புறையை உருவாக்கு",
+  "bookmarkLabelName": "பெயர்",
+  "bookmarkActionDelete": "நீக்கு"
 }

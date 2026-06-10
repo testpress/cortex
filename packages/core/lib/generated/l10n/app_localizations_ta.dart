@@ -1270,7 +1270,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get labelMock => 'மாதிரி';
 
   @override
-  String get labelPractice => 'Practice';
+  String get labelPractice => 'பயிற்சி';
 
   @override
   String get forumTitle => 'விவாத மன்றம்';
@@ -1639,188 +1639,192 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
-  String get leaderboardTitle => 'Leaderboard';
+  String get leaderboardTitle => 'தரவரிசைப் பலகை';
 
   @override
-  String get leaderboardRankListTab => 'Rank List';
+  String get leaderboardRankListTab => 'தரவரிசை பட்டியல்';
 
   @override
-  String get leaderboardCompetitorsTab => 'Competitors';
+  String get leaderboardCompetitorsTab => 'போட்டியாளர்கள்';
 
   @override
-  String get leaderboardTimelineThisWeek => 'This Week';
+  String get leaderboardTimelineThisWeek => 'இந்த வாரம்';
 
   @override
-  String get leaderboardTimelineThisMonth => 'This Month';
+  String get leaderboardTimelineThisMonth => 'இந்த மாதம்';
 
   @override
-  String get leaderboardTimelineAllTime => 'All Time';
+  String get leaderboardTimelineAllTime => 'எல்லா நேரமும்';
 
   @override
-  String get leaderboardNoLearnersFound => 'No learners found';
+  String get leaderboardNoLearnersFound => 'கற்பவர்கள் எவரும் காணப்படவில்லை';
 
   @override
-  String get leaderboardErrorLoading => 'Error loading leaderboard';
+  String get leaderboardErrorLoading => 'தரவரிசைப் பலகையை ஏற்றுவதில் பிழை';
 
   @override
-  String get leaderboardNoCompetitorsFound => 'No competitors found';
+  String get leaderboardNoCompetitorsFound => 'போட்டியாளர்கள் யாரும் இல்லை';
 
   @override
-  String get leaderboardErrorLoadingCompetitors => 'Error loading competitors';
+  String get leaderboardErrorLoadingCompetitors =>
+      'போட்டியாளர்களை ஏற்றுவதில் பிழை';
 
   @override
-  String get leaderboardYouSuffix => ' (You)';
+  String get leaderboardYouSuffix => ' (நீங்கள்)';
 
   @override
-  String get loginActivityCurrentDevice => 'Current Device';
+  String get loginActivityCurrentDevice => 'தற்போதைய சாதனம்';
 
   @override
-  String get loginActivityNoActivityFound => 'No login activity found';
+  String get loginActivityNoActivityFound =>
+      'உள்நுழைவு செயல்பாடு எதுவும் காணப்படவில்லை';
 
   @override
-  String get loginActivityLogoutOtherDevices => 'Logout other devices';
+  String get loginActivityLogoutOtherDevices =>
+      'பிற சாதனங்களிலிருந்து வெளியேறு';
 
   @override
   String get loginActivityLogoutSuccess =>
-      'Successfully logged out of other devices';
+      'பிற சாதனங்களிலிருந்து வெற்றிகரமாக வெளியேறினீர்கள்';
 
   @override
-  String get actionMarkAsResolved => 'Mark as Resolved';
+  String get actionMarkAsResolved => 'தீர்க்கப்பட்டதாகக் குறிக்கவும்';
 
   @override
-  String get actionCloseDoubt => 'Close Doubt';
+  String get actionCloseDoubt => 'சந்தேகத்தை மூடு';
 
   @override
-  String get messageDoubtResolved => 'This doubt has been marked as resolved.';
+  String get messageDoubtResolved =>
+      'இந்த சந்தேகம் தீர்க்கப்பட்டதாக குறிக்கப்பட்டுள்ளது.';
 
   @override
   String get messageDiscussionClosed =>
-      'This discussion thread is closed and read-only.';
+      'இந்த விவாத இழை மூடப்பட்டுள்ளது மற்றும் படிக்க மட்டுமே முடியும்.';
 
   @override
-  String get loginActivityLogoutFailed => 'Failed to logout';
+  String get loginActivityLogoutFailed => 'வெளியேற முடியவில்லை';
 
   @override
-  String get forumErrorFailedToCreatePost => 'Failed to create post';
+  String get forumErrorFailedToCreatePost => 'இடுகையை உருவாக்க முடியவில்லை';
 
   @override
-  String get forumErrorDiscussionNotFound => 'Discussion not found';
+  String get forumErrorDiscussionNotFound => 'விவாதம் காணப்படவில்லை';
 
   @override
-  String get forumErrorLoadingComments => 'Error loading comments';
+  String get forumErrorLoadingComments => 'கருத்துகளை ஏற்றுவதில் பிழை';
 
   @override
-  String get forumCommentsEmptyTitle => 'No Comments Yet';
+  String get forumCommentsEmptyTitle => 'இன்னும் கருத்துகள் இல்லை';
 
   @override
   String get forumCommentsEmptySubtitle =>
-      'Be the first to reply to this thread.';
+      'இந்த இழைக்கு முதலில் பதிலளிக்கவும்.';
 
   @override
   String forumRepliesCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count Replies',
-      one: '1 Reply',
+      other: '$count பதில்கள்',
+      one: '1 பதில்',
     );
     return '$_temp0';
   }
 
   @override
-  String get forumRoleInstructor => 'Instructor';
+  String get forumRoleInstructor => 'பயிற்றுவிப்பாளர்';
 
   @override
-  String get forumPendingModeration => 'Pending Moderation';
+  String get forumPendingModeration => 'மதிப்பீட்டிற்காக காத்திருக்கிறது';
 
   @override
-  String get forumErrorFailedToPostReply => 'Failed to post reply';
+  String get forumErrorFailedToPostReply => 'பதிலை இடுகையிட முடியவில்லை';
 
   @override
-  String get noAnnouncementsFound => 'No announcements found.';
+  String get noAnnouncementsFound => 'அறிவிப்புகள் எதுவும் காணப்படவில்லை.';
 
   @override
   String get commentsDisabledByAdmin =>
-      'Comments are disabled for this post by Administrator';
+      'இந்த இடுகைக்கு நிர்வாகியால் கருத்துகள் முடக்கப்பட்டுள்ளன';
 
   @override
   String bookmarkFolderItemsCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count items',
-      one: '1 item',
+      other: '$count உருப்படிகள்',
+      one: '1 உருப்படி',
     );
     return '$_temp0';
   }
 
   @override
-  String get bookmarksTitle => 'Bookmarks';
+  String get bookmarksTitle => 'புக்மார்க்குகள்';
 
   @override
-  String get bookmarkFilterAllContents => 'All contents';
+  String get bookmarkFilterAllContents => 'அனைத்து உள்ளடக்கங்களும்';
 
   @override
-  String get bookmarkFilterQuestions => 'Questions';
+  String get bookmarkFilterQuestions => 'கேள்விகள்';
 
   @override
-  String get bookmarkFilterVideos => 'Videos';
+  String get bookmarkFilterVideos => 'வீடியோக்கள்';
 
   @override
-  String get bookmarkFilterPDFs => 'PDFs';
+  String get bookmarkFilterPDFs => 'PDF-கள்';
 
   @override
-  String get bookmarkFilterNotes => 'Notes';
+  String get bookmarkFilterNotes => 'குறிப்புகள்';
 
   @override
-  String get bookmarkFilterExamsAndQuiz => 'Exams and Quiz';
+  String get bookmarkFilterExamsAndQuiz => 'தேர்வுகள் மற்றும் வினாடி வினாக்கள்';
 
   @override
-  String get bookmarkFilterLiveClasses => 'Live Classes';
+  String get bookmarkFilterLiveClasses => 'நேரலை வகுப்புகள்';
 
   @override
-  String get bookmarkSortRecent => 'Recent';
+  String get bookmarkSortRecent => 'சமீபத்தியவை';
 
   @override
-  String get bookmarkSortOldest => 'Oldest';
+  String get bookmarkSortOldest => 'பழையவை';
 
   @override
-  String get bookmarkSortLastlyOpened => 'Lastly opened';
+  String get bookmarkSortLastlyOpened => 'கடைசியாக திறக்கப்பட்டவை';
 
   @override
-  String get bookmarkTabAll => 'All';
+  String get bookmarkTabAll => 'அனைத்தும்';
 
   @override
-  String get bookmarkTabFolders => 'Folders';
+  String get bookmarkTabFolders => 'கோப்புறைகள்';
 
   @override
-  String get bookmarkActionRenameFolder => 'Rename Folder';
+  String get bookmarkActionRenameFolder => 'கோப்புறையின் பெயரை மாற்று';
 
   @override
-  String get bookmarkActionDeleteFolder => 'Delete Folder';
+  String get bookmarkActionDeleteFolder => 'கோப்புறையை நீக்கு';
 
   @override
-  String get bookmarkActionMoveBookmark => 'Move Bookmark';
+  String get bookmarkActionMoveBookmark => 'புக்மார்க்கை நகர்த்து';
 
   @override
-  String get bookmarkActionRemoveBookmark => 'Remove Bookmark';
+  String get bookmarkActionRemoveBookmark => 'புக்மார்க்கை அகற்று';
 
   @override
   String get bookmarkDeleteFolderConfirmation =>
-      'Are you sure you want to delete this folder?';
+      'இந்த கோப்புறையை நிச்சயமாக நீக்க விரும்புகிறீர்களா?';
 
   @override
-  String get bookmarkLabelContentType => 'Content Type';
+  String get bookmarkLabelContentType => 'உள்ளடக்க வகை';
 
   @override
-  String get bookmarkLabelSortBy => 'Sort by';
+  String get bookmarkLabelSortBy => 'வரிசைப்படுத்து';
 
   @override
-  String get bookmarkActionCreateFolder => 'Create folder';
+  String get bookmarkActionCreateFolder => 'கோப்புறையை உருவாக்கு';
 
   @override
-  String get bookmarkLabelName => 'Name';
+  String get bookmarkLabelName => 'பெயர்';
 
   @override
-  String get bookmarkActionDelete => 'Delete';
+  String get bookmarkActionDelete => 'நீக்கு';
 }
