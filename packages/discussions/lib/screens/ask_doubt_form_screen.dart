@@ -7,6 +7,7 @@ import 'package:core/data/data.dart';
 import '../providers/doubt_providers.dart';
 import '../widgets/forum_header.dart';
 import '../widgets/forum_composer.dart';
+import '../widgets/doubt_context_badge.dart';
 
 class AskDoubtFormScreen extends ConsumerStatefulWidget {
   final int? chapterContentId;
@@ -271,30 +272,11 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
         ? LucideIcons.helpCircle
         : widget.lessonType?.icon ?? LucideIcons.bookOpen;
 
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: design.spacing.md,
-        vertical: design.spacing.sm,
-      ),
-      decoration: BoxDecoration(
-        color: design.colors.accent2.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(design.radius.md),
-        border: Border.all(color: design.colors.accent2.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: 20, color: design.colors.accent2),
-          const SizedBox(width: 8),
-          Expanded(
-            child: AppText.bodySmall(
-              isQuestion
-                  ? 'Question ID: ${widget.questionId}'
-                  : widget.lessonTitle ?? 'Lesson Details',
-              color: design.colors.accent2,
-            ),
-          ),
-        ],
-      ),
+    return DoubtContextBadge(
+      icon: icon,
+      text: isQuestion
+          ? 'Question ID: ${widget.questionId}'
+          : widget.lessonTitle ?? 'Lesson Details',
     );
   }
 
