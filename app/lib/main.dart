@@ -61,6 +61,18 @@ class CortexApp extends ConsumerWidget {
         const _FallbackQuillDelegate(),
       ],
       supportedLocales: LocalizationProvider.supportedLocales,
+      localeListResolutionCallback: (locales, supportedLocales) {
+        if (locales != null) {
+          for (final locale in locales) {
+            for (final supportedLocale in supportedLocales) {
+              if (supportedLocale.languageCode == locale.languageCode) {
+                return supportedLocale;
+              }
+            }
+          }
+        }
+        return const Locale('en');
+      },
       routerConfig: ref.watch(goRouterProvider),
       // Set Plus Jakarta Sans on the Material theme so widgets that still
       // use Material's text theme (Scaffold, SnackBar, etc.) also use it.
