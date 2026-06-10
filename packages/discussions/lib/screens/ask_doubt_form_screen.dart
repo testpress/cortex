@@ -475,7 +475,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
           }
         }
 
-        await repo.createDoubt(
+        final newDoubtId = await repo.createDoubt(
           title: title,
           description: finalHtml,
           topicId: topicId,
@@ -490,6 +490,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
             message: L10n.of(context).doubtsSubmitSuccessMessage,
           );
           Navigator.pop(context);
+          context.push('/home/discussions/doubts/$newDoubtId');
         }
       } catch (e) {
         debugPrint('Doubt submit failed: $e');
@@ -499,6 +500,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
             context,
             message: L10n.of(context).doubtsSubmitErrorMessage,
           );
+          Navigator.pop(context);
         }
       }
     });

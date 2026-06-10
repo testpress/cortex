@@ -40,7 +40,7 @@ class DoubtRepository {
   }
 
   /// Create a new doubt on the server and cache it locally.
-  Future<void> createDoubt({
+  Future<String> createDoubt({
     required String title,
     required String description,
     int? topicId,
@@ -59,6 +59,7 @@ class DoubtRepository {
     await _db
         .into(_db.doubtsTable)
         .insertOnConflictUpdate(_mapToCompanion(response));
+    return response.id;
   }
 
   /// Watch replies for a specific doubt thread.
