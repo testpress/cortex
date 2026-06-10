@@ -58,7 +58,7 @@ class CortexApp extends ConsumerWidget {
       locale: locale,
       localizationsDelegates: [
         ...LocalizationProvider.delegates,
-        quill.FlutterQuillLocalizations.delegate,
+        const _FallbackQuillDelegate(),
       ],
       supportedLocales: LocalizationProvider.supportedLocales,
       routerConfig: ref.watch(goRouterProvider),
@@ -92,4 +92,22 @@ class CortexApp extends ConsumerWidget {
       },
     );
   }
+}
+
+class _FallbackQuillDelegate extends LocalizationsDelegate<quill.FlutterQuillLocalizations> {
+  const _FallbackQuillDelegate();
+
+  @override
+  bool isSupported(Locale locale) => true;
+
+  @override
+  Future<quill.FlutterQuillLocalizations> load(Locale locale) async {
+    if (quill.FlutterQuillLocalizations.delegate.isSupported(locale)) {
+      return quill.FlutterQuillLocalizations.delegate.load(locale);
+    }
+    return quill.FlutterQuillLocalizations.delegate.load(const Locale('en'));
+  }
+
+  @override
+  bool shouldReload(_FallbackQuillDelegate old) => false;
 }

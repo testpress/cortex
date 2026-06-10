@@ -5,11 +5,11 @@ import '../generated/l10n/app_localizations.dart';
 class LocalizationProvider extends StatefulWidget {
   const LocalizationProvider({
     super.key,
-    this.initialLocale = const Locale('en'),
+    this.initialLocale,
     required this.child,
   });
 
-  final Locale initialLocale;
+  final Locale? initialLocale;
   final Widget child;
 
   @override
@@ -36,13 +36,13 @@ class LocalizationProvider extends StatefulWidget {
 }
 
 abstract class LocalizationProviderScope {
-  Locale get locale;
-  void setLocale(Locale locale);
+  Locale? get locale;
+  void setLocale(Locale? locale);
 }
 
 class _LocalizationProviderState extends State<LocalizationProvider>
     implements LocalizationProviderScope {
-  late Locale _locale;
+  Locale? _locale;
 
   @override
   void initState() {
@@ -51,10 +51,10 @@ class _LocalizationProviderState extends State<LocalizationProvider>
   }
 
   @override
-  Locale get locale => _locale;
+  Locale? get locale => _locale;
 
   @override
-  void setLocale(Locale locale) {
+  void setLocale(Locale? locale) {
     if (_locale != locale) {
       setState(() {
         _locale = locale;
@@ -80,7 +80,7 @@ class _LocalizationProviderInherited extends InheritedWidget {
   });
 
   final _LocalizationProviderState state;
-  final Locale locale;
+  final Locale? locale;
 
   @override
   bool updateShouldNotify(_LocalizationProviderInherited oldWidget) {
