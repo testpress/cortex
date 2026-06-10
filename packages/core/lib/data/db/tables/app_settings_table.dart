@@ -19,4 +19,6 @@ class AppSettingsTable extends Table {
       text().withDefault(const Constant(AppSettingsDefaults.textSize))();
   BoolColumn get highContrast =>
       boolean().withDefault(const Constant(AppSettingsDefaults.highContrast))();
+  TextColumn get appLanguage =>
+      text().withDefault(const Constant(AppSettingsDefaults.appLanguage))();
 }

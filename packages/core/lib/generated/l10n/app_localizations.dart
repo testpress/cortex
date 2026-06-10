@@ -2063,6 +2063,12 @@ abstract class AppLocalizations {
   /// **'Accessibility'**
   String get settingsAccessibilityTitle;
 
+  /// No description provided for @settingsLanguageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguageTitle;
+
   /// No description provided for @settingsVideoQuality.
   ///
   /// In en, this message translates to:

@@ -1111,6 +1111,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsAccessibilityTitle => 'إمكانية الوصول';
 
   @override
+  String get settingsLanguageTitle => 'اللغة';
+
+  @override
   String get settingsVideoQuality => 'جودة الفيديو';
 
   @override

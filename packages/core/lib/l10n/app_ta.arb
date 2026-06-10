@@ -571,9 +571,10 @@
     }
   },
   "settingsAppearanceTitle": "தோற்றம்",
-  "settingsPlaybackTitle": "கற்றல் மற்றும் பின்னணி",
+  "settingsPlaybackTitle": "கற்றல் & இயக்கம்",
   "settingsAccessibilityTitle": "அணுகல்தன்மை",
-  "settingsVideoQuality": "வீடியோ தரம்",
+  "settingsLanguageTitle": "மொழி",
+  "settingsVideoQuality": "காணொளி தரம்",
   "settingsVideoQualityCaption": "உங்கள் விருப்பமான இயல்புநிலை தரத்தை அமைக்கவும்",
   "settingsAutoPlay": "அடுத்த பாடத்தை தானாக இயக்கு",
   "settingsTextSize": "உரை அளவு",

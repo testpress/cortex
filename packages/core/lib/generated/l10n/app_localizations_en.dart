@@ -1114,6 +1114,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsAccessibilityTitle => 'Accessibility';
 
   @override
+  String get settingsLanguageTitle => 'Language';
+
+  @override
   String get settingsVideoQuality => 'Video quality';
 
   @override

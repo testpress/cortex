@@ -101,5 +101,25 @@ final accessibilitySettingsNotifierProvider =
     );
 
 typedef _$AccessibilitySettingsNotifier = AsyncNotifier<AccessibilitySettings>;
+String _$appLanguageSettingsNotifierHash() =>
+    r'42d4e90f3a390a1e2ca1cb194612a3a18af85d34';
+
+/// See also [AppLanguageSettingsNotifier].
+@ProviderFor(AppLanguageSettingsNotifier)
+final appLanguageSettingsNotifierProvider =
+    AsyncNotifierProvider<
+      AppLanguageSettingsNotifier,
+      AppLanguageSettings
+    >.internal(
+      AppLanguageSettingsNotifier.new,
+      name: r'appLanguageSettingsNotifierProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$appLanguageSettingsNotifierHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$AppLanguageSettingsNotifier = AsyncNotifier<AppLanguageSettings>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

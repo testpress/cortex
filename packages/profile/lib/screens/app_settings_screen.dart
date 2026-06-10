@@ -51,6 +51,8 @@ class AppSettingsScreen extends ConsumerWidget {
                 _PlaybackSection(),
                 SizedBox(height: design.spacing.xl),
                 _AccessibilitySection(),
+                SizedBox(height: design.spacing.xl),
+                _LanguageSection(),
               ],
             ),
           ),
@@ -211,6 +213,98 @@ class _AppearanceSection extends ConsumerWidget {
             children: [
               _IconContainer(icon: icon, color: iconColor),
               SizedBox(width: (design.spacing.md + design.spacing.sm) / 2),
+              Expanded(
+                child: AppText.body(
+                  title,
+                  style: TextStyle(
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                  ),
+                ),
+              ),
+              _RadioIndicator(isSelected: isSelected),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LanguageSection extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
+    final settingsAsync = ref.watch(appLanguageSettingsNotifierProvider);
+
+    final availableLanguages = [
+      (code: 'system', title: l10n.settingsThemeSystemDefault),
+      (code: 'en', title: 'English'),
+      (code: 'ar', title: 'العربية (Arabic)'),
+      (code: 'ml', title: 'മലയാളം (Malayalam)'),
+      (code: 'ta', title: 'தமிழ் (Tamil)'),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _SectionHeader(title: l10n.settingsLanguageTitle),
+        SizedBox(height: design.spacing.md),
+        settingsAsync.when(
+          data: (settings) => AppCard(
+            showShadow: true,
+            padding: EdgeInsets.zero,
+            child: Column(
+              children: [
+                for (var i = 0; i < availableLanguages.length; i++) ...[
+                  _buildOption(
+                    context: context,
+                    ref: ref,
+                    title: availableLanguages[i].title,
+                    value: availableLanguages[i].code,
+                    groupValue: settings.languageCode,
+                    onChanged: (val) => ref
+                        .read(appLanguageSettingsNotifierProvider.notifier)
+                        .updateLanguage(val),
+                  ),
+                  if (i < availableLanguages.length - 1) _Divider(),
+                ],
+              ],
+            ),
+          ),
+          loading: () => const Center(child: AppLoadingIndicator()),
+          error: (_, _) => const AppErrorView(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildOption({
+    required BuildContext context,
+    required WidgetRef ref,
+    required String title,
+    required String value,
+    required String groupValue,
+    required ValueChanged<String> onChanged,
+  }) {
+    final design = Design.of(context);
+    final isSelected = value == groupValue;
+
+    return AppSemantics.button(
+      label: '$title, ${isSelected ? 'selected' : 'unselected'}',
+      onTap: () => onChanged(value),
+      child: GestureDetector(
+        onTap: () => onChanged(value),
+        behavior: HitTestBehavior.opaque,
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: design.spacing.lg,
+            right: design.spacing.xl,
+            top: design.spacing.md,
+            bottom: design.spacing.md,
+          ),
+          child: Row(
+            children: [
               Expanded(
                 child: AppText.body(
                   title,

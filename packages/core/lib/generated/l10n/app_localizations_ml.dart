@@ -1122,6 +1122,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get settingsAccessibilityTitle => 'ആക്സസിബിലിറ്റി';
 
   @override
+  String get settingsLanguageTitle => 'ഭാഷ';
+
+  @override
   String get settingsVideoQuality => 'വീഡിയോ ഗുണമേന്മ';
 
   @override

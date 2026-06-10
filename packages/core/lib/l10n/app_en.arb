@@ -567,6 +567,7 @@
   "settingsAppearanceTitle": "Appearance",
   "settingsPlaybackTitle": "Learning & Playback",
   "settingsAccessibilityTitle": "Accessibility",
+  "settingsLanguageTitle": "Language",
   "settingsVideoQuality": "Video quality",
   "settingsVideoQualityCaption": "Set your preferred default quality",
   "settingsAutoPlay": "Auto-play next lesson",

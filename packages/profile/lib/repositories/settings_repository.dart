@@ -19,6 +19,7 @@ class SettingsRepository {
     bool? autoPlayNext,
     String? textSize,
     bool? highContrast,
+    String? appLanguage,
   }) {
     return _db.updateSettings(
       AppSettingsTableCompanion(
@@ -34,6 +35,9 @@ class SettingsRepository {
         textSize: textSize != null ? Value(textSize) : const Value.absent(),
         highContrast: highContrast != null
             ? Value(highContrast)
+            : const Value.absent(),
+        appLanguage: appLanguage != null
+            ? Value(appLanguage)
             : const Value.absent(),
       ),
     );

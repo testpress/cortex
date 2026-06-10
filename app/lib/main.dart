@@ -47,8 +47,14 @@ class CortexApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
-    final localization = LocalizationProvider.of(context);
-    final locale = localization.isSystemLocale ? null : localization.locale;
+    final languageAsync = ref.watch(appLanguageSettingsNotifierProvider);
+
+    final locale = languageAsync.maybeWhen(
+      data: (settings) => settings.languageCode == 'system'
+          ? null
+          : Locale(settings.languageCode),
+      orElse: () => null, // Default to system resolution while loading
+    );
 
     final scaleMultiplier = ref.watch(appTextScaleMultiplierProvider);
 
