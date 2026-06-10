@@ -2,9 +2,7 @@
 
 ## Purpose
 Enable the Cortex SDK to serve global markets by providing robust translation infrastructure.
-
 ## Requirements
-
 ### Requirement: Centralized Locale Management
 
 The system MUST provide a `LocalizationProvider` at the application root to manage the active locale and distribute it to all child widgets.
@@ -40,3 +38,13 @@ All hardcoded strings in the `courses` package and reference app `main.dart` MUS
 #### Scenario: Localizing Course Library header
 - **WHEN** viewing the `CourseListScreen` in Arabic
 - **THEN** the subtitle MUST render as "مكتبة الدورات" instead of hardcoded English.
+
+### Requirement: Tamil (ta) Support
+
+The SDK MUST provide full support for the Tamil language, including translations for all core widgets and reference app components.
+
+#### Scenario: Verify Tamil translation
+- **WHEN** the locale is set to 'ta'
+- **THEN** the system MUST use the translated strings from `app_ta.arb`
+- **AND** the app MUST render Tamil characters correctly without layout issues
+
