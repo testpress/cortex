@@ -48,7 +48,7 @@ class CortexApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
     final localization = LocalizationProvider.of(context);
-    final locale = localization.locale;
+    final locale = localization.isSystemLocale ? null : localization.locale;
 
     final scaleMultiplier = ref.watch(appTextScaleMultiplierProvider);
 
@@ -58,9 +58,21 @@ class CortexApp extends ConsumerWidget {
       locale: locale,
       localizationsDelegates: [
         ...LocalizationProvider.delegates,
-        quill.FlutterQuillLocalizations.delegate,
+        const _FallbackQuillDelegate(),
       ],
       supportedLocales: LocalizationProvider.supportedLocales,
+      localeListResolutionCallback: (locales, supportedLocales) {
+        if (locales != null) {
+          for (final locale in locales) {
+            for (final supportedLocale in supportedLocales) {
+              if (supportedLocale.languageCode == locale.languageCode) {
+                return supportedLocale;
+              }
+            }
+          }
+        }
+        return const Locale('en');
+      },
       routerConfig: ref.watch(goRouterProvider),
       // Set Plus Jakarta Sans on the Material theme so widgets that still
       // use Material's text theme (Scaffold, SnackBar, etc.) also use it.
@@ -92,4 +104,23 @@ class CortexApp extends ConsumerWidget {
       },
     );
   }
+}
+
+class _FallbackQuillDelegate
+    extends LocalizationsDelegate<quill.FlutterQuillLocalizations> {
+  const _FallbackQuillDelegate();
+
+  @override
+  bool isSupported(Locale locale) => true;
+
+  @override
+  Future<quill.FlutterQuillLocalizations> load(Locale locale) async {
+    if (quill.FlutterQuillLocalizations.delegate.isSupported(locale)) {
+      return quill.FlutterQuillLocalizations.delegate.load(locale);
+    }
+    return quill.FlutterQuillLocalizations.delegate.load(const Locale('en'));
+  }
+
+  @override
+  bool shouldReload(_FallbackQuillDelegate old) => false;
 }
