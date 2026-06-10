@@ -110,9 +110,7 @@ class AppLanguageSettingsNotifier extends _$AppLanguageSettingsNotifier {
     final repository = await ref.watch(settingsRepositoryProvider.future);
     final settings = await repository.getSettings();
 
-    return AppLanguageSettings(
-      languageCode: settings.appLanguage,
-    );
+    return AppLanguageSettings(languageCode: settings.appLanguage);
   }
 
   Future<void> updateLanguage(String languageCode) async {

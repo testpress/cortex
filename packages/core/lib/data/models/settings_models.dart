@@ -47,9 +47,7 @@ class AppLanguageSettings {
   AppLanguageSettings({required this.languageCode});
 
   AppLanguageSettings copyWith({String? languageCode}) {
-    return AppLanguageSettings(
-      languageCode: languageCode ?? this.languageCode,
-    );
+    return AppLanguageSettings(languageCode: languageCode ?? this.languageCode);
   }
 }
 
