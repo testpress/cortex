@@ -1,0 +1,800 @@
+{
+  "@@locale": "ta",
+  "appTitle": "Cortex SDK",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "loginButton": "உள்நுழைக",
+  "@loginButton": {
+    "description": "Text for the login button"
+  },
+  "loginWelcomeBack": "மீண்டும் வரவேற்கிறோம்",
+  "loginPasswordSubtitle": "உங்கள் பயனர் பெயர் மற்றும் கடவுச்சொல்லைப் பயன்படுத்தி உள்நுழையவும்",
+  "loginOtpSubtitle": "OTP சரிபார்ப்பைப் பயன்படுத்தி உள்நுழையவும்",
+  "loginModePassword": "கடவுச்சொல்",
+  "loginModeOtp": "OTP",
+  "loginUsernameLabel": "பயனர் பெயர் அல்லது மின்னஞ்சல்",
+  "loginUsernameHint": "பயனர் பெயர் அல்லது மின்னஞ்சலை உள்ளிடவும்",
+  "loginPasswordLabel": "கடவுச்சொல்",
+  "loginPasswordHint": "கடவுச்சொல்லை உள்ளிடவும்",
+  "loginSigningIn": "உள்நுழைகிறது...",
+  "loginCountryCodeLabel": "நாட்டின் குறியீடு",
+  "loginCountryCodeHint": "+91",
+  "loginPhoneNumberLabel": "தொலைபேசி எண்",
+  "loginPhoneNumberHint": "9876543210",
+  "loginEmailOptionalLabel": "மின்னஞ்சல் (விருப்பத்திற்குரியது)",
+  "loginEmailHint": "student@example.com",
+  "loginGenerateOtp": "OTP உருவாக்கு",
+  "loginSendingOtp": "OTP அனுப்பப்படுகிறது...",
+  "loginOtpCodeLabel": "OTP",
+  "loginOtpCodeHint": "1234",
+  "loginVerifyOtp": "OTP ஐச் சரிபார்",
+  "loginVerifyingOtp": "சரிபார்க்கப்படுகிறது...",
+  "loginOtpSentInfo": "OTP அனுப்பப்பட்டது. தொடர குறியீட்டை உள்ளிடவும்.",
+  "loginErrorUsernamePasswordRequired": "பயனர் பெயர் மற்றும் கடவுச்சொல் தேவை.",
+  "loginErrorOtpIdentityRequired": "OTP க்கு நாட்டின் குறியீடு மற்றும் தொலைபேசி எண் தேவை.",
+  "loginErrorPhoneOtpRequired": "தொலைபேசி எண் மற்றும் OTP தேவை.",
+  "loginErrorGenericRequest": "கோரிக்கையை முடிக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
+  "loginErrorInvalidCredentials": "தவறான பயனர் பெயர் அல்லது கடவுச்சொல்.",
+  "loginErrorValidation": "உள்ளிடப்பட்ட புலங்களைச் சரிபார்த்து திருத்தவும்.",
+  "loginErrorThrottled": "பல முயற்சிகள் செய்யப்பட்டன. மீண்டும் முயற்சிக்கும் முன் காத்திருக்கவும்.",
+  "loginErrorLockout": "இந்த கணக்கு பூட்டப்பட்டுள்ளது. உங்கள் நிர்வாகியைத் தொடர்பு கொள்ளவும்.",
+  "loginErrorNetwork": "நெட்வொர்க் பிழை. உங்கள் இணைய இணைப்பைச் சரிபார்க்கவும்.",
+  "loginErrorServer": "சேவையக பிழை. சிறிது நேரத்திற்குப் பிறகு மீண்டும் முயற்சிக்கவும்.",
+  "welcomeMessage": "Cortex-க்கு வரவேற்கிறோம்",
+  "@welcomeMessage": {
+    "description": "A welcome message for the user"
+  },
+  "courseLibraryTitle": "Cortex",
+  "courseLibrarySubtitle": "பாடநூல் நூலகம்",
+  "course_1_title": "Flutter அடிப்படைகள்",
+  "course_1_description": "செய்முறை திட்டங்கள் மற்றும் நிஜ உலக உதாரணங்களுடன் Flutter மேம்பாட்டின் அடிப்படைகளைக் கற்றுக்கொள்ளுங்கள்.",
+  "course_2_title": "மேம்பட்ட நிலை மேலாண்மை",
+  "course_2_description": "Provider, Riverpod, மற்றும் Bloc உள்ளிட்ட நிலை மேலாண்மை முறைகளை ஆழமாகப் படிக்கவும்.",
+  "course_3_title": "தனிப்பயன் அனிமேஷன்கள்",
+  "course_3_description": "Flutter அனிமேஷன் கட்டமைப்பைப் பயன்படுத்தி அற்புதமான அனிமேஷன்களை உருவாக்கவும்.",
+  "course_4_title": "Firebase ஒருங்கிணைப்பு",
+  "course_4_description": "Firebase அங்கீகாரம், Firestore மற்றும் கிளவுட் செயல்பாடுகளுடன் தயாரிப்புக்கான பயன்பாடுகளை உருவாக்கவும்.",
+  "course_5_title": "சோதனை உத்திகள்",
+  "course_5_description": "Flutter பயன்பாடுகளுக்கான விரிவான யூனிட் மற்றும் ஒருங்கிணைப்பு சோதனைகளை எழுதவும்.",
+  "course_6_title": "செயல்திறன் மேம்படுத்தல்",
+  "course_6_description": "அனைத்து சாதனங்களிலும் மென்மையான 60fps செயல்திறனுக்காக உங்கள் Flutter பயன்பாடுகளை மேம்படுத்தவும்.",
+  "labelStart": "தொடங்கு",
+  "labelContinue": "தொடரவும்",
+  "labelRetry": "மீண்டும் முயற்சி செய்",
+  "labelLoading": "ஏற்றுகிறது...",
+  "labelGeneral": "பொதுவானவை",
+  "filterBy": "{name} மூலம் வடிகட்டவும்",
+  "@filterBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "labelProgress": "முன்னேற்றம்",
+  "labelResume": "மீண்டும் தொடங்கு",
+  "@labelResume": {
+    "description": "Label for the resume button on cards"
+  },
+  "labelCourseProgress": "பாட முன்னேற்றம்",
+  "homeHeaderTitle": "BrightMinds Academy",
+  "todayScheduleTitle": "இன்றைய அட்டவணை",
+  "viewAllAction": "அனைத்தையும் காண்க",
+  "nowAndNextSection": "இப்போது & அடுத்து",
+  "deadlinesSection": "கெடு தேதிகள்",
+  "upcomingTestsSection": "வரவிருக்கும் தேர்வுகள்",
+  "laterTodaySection": "இன்று பின்னர்",
+  "topLearnersTitle": "இந்த வாரத்தின் சிறந்த கற்பவர்கள்",
+  "updatesAnnouncementsTitle": "புதுப்பிப்புகள் & அறிவிப்புகள்",
+  "quickAccessTitle": "விரைவு அணுகல்",
+  "greetingMorning": "காலை வணக்கம்",
+  "greetingAfternoon": "மதிய வணக்கம்",
+  "greetingEvening": "மாலை வணக்கம்",
+  "shortcutRecordings": "பதிவுகள்",
+  "shortcutPractice": "பயிற்சி",
+  "shortcutTests": "தேர்வுகள்",
+  "shortcutNotes": "குறிப்புகள்",
+  "shortcutAskDoubt": "சந்தேகம் கேள்",
+  "shortcutSchedule": "அட்டவணை",
+  "learningPerformanceTitle": "கற்றல் செயல்திறன்",
+  "profileLearningSnapshotTitle": "உங்கள் கற்றல் ஒரு பார்வையில்",
+  "profileActiveCoursesTitle": "உங்கள் தற்போதைய பாடங்கள்",
+  "profileRecentLearningTitle": "உங்கள் சமீபத்திய கற்றல்",
+  "profileAccountSettingsTitle": "கணக்கு மற்றும் விருப்பங்கள்",
+  "profileEditProfile": "சுயவிவரத்தைத் திருத்து",
+  "profileNotifications": "அறிவிப்புகள்",
+  "notificationsManagePreferences": "உங்கள் அறிவிப்பு விருப்பங்களை நிர்வகிக்கவும்",
+  "notificationsLiveClassReminders": "நேரலை வகுப்பு நினைவூட்டல்கள்",
+  "notificationsLiveClassRemindersDesc": "உங்கள் நேரலை வகுப்புகள் தொடங்கும் முன் அறிவிப்பைப் பெறவும்",
+  "notificationsTestAssessmentAlerts": "தேர்வு மற்றும் மதிப்பீட்டு விழிப்பூட்டல்கள்",
+  "notificationsTestAssessmentAlertsDesc": "வரவிருக்கும் தேர்வுகள் மற்றும் கெடு தேதிகளுக்கான நினைவூட்டல்கள்",
+  "notificationsAnnouncementsUpdates": "அறிவிப்புகள் மற்றும் புதுப்பிப்புகள்",
+  "notificationsAnnouncementsUpdatesDesc": "முக்கியமான செய்திகள் மற்றும் தள புதுப்பிப்புகள்",
+  "notificationsAchievementsBadges": "சாதனைகள் மற்றும் பேட்ஜ்கள்",
+  "notificationsAchievementsBadgesDesc": "நீங்கள் சாதனைகளைப் பெறும்போது கொண்டாடவும்",
+  "notificationsStateOn": "ஆன்",
+  "notificationsStateOff": "ஆஃப்",
+  "profileCertificates": "உங்கள் சான்றிதழ்கள்",
+  "profileLogout": "வெளியேறு",
+  "logoutConfirmationTitle": "வெளியேறவா?",
+  "logoutConfirmationMessage": "உங்கள் கணக்கை அணுக மீண்டும் உள்நுழைய வேண்டும்",
+  "logoutButtonLabel": "வெளியேறு",
+  "certificatesSubtitleAvailable": "உங்கள் பாடநெறி முடித்த சான்றிதழ்களைப் பார்த்து பதிவிறக்கவும்",
+  "certificatesEmptyPaidNewDesc": "இன்னும் சான்றிதழ்கள் கிடைக்கவில்லை",
+  "certificatesLockedBadge": "திறக்க பாடத்தை முடிக்கவும்",
+  "certificatesUnlockedBadge": "முடித்ததற்கான சான்றிதழ்",
+  "certificatesCourseProgress": "பாட முன்னேற்றம்",
+  "certificatesKeepGoing": "உங்கள் சான்றிதழைத் திறக்க தொடர்ந்து செல்லுங்கள்",
+  "certificatesContinueCourse": "பாடத்தைத் தொடரவும்",
+  "certificatesCompletedOn": "{date} அன்று முடிக்கப்பட்டது",
+  "@certificatesCompletedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "certificatesCertificateId": "சான்றிதழ் ஐடி",
+  "certificatesViewCertificate": "சான்றிதழைக் காண்க",
+  "certificatesDownload": "பதிவிறக்கு",
+  "certificatesPreviewTitle": "சான்றிதழ் முன்னோட்டம்",
+  "certificatesShareAchievementTitle": "உங்கள் சாதனையைப் பகிரவும்",
+  "certificatesShareAchievementDescription": "உங்கள் சாதனையை வெளிப்படுத்த இந்த சான்றிதழைப் பதிவிறக்கவும் அல்லது பகிரவும்",
+  "certificatesShare": "பகிர்",
+  "certificatesHelpText": "இந்த சான்றிதழ் டிஜிட்டல் முறையில் கையொப்பமிடப்பட்டுள்ளது மற்றும் சான்றிதழ் ஐடியைப் பயன்படுத்தி சரிபார்க்கலாம்",
+  "certificatesCertificateOfCompletion": "முடித்ததற்கான சான்றிதழ்",
+  "certificatesCertifyLine": "இது சான்றளிப்பது என்னவென்றால்",
+  "certificatesCompletedCourseLine": "பாடத்தை வெற்றிகரமாக முடித்துள்ளார்",
+  "certificatesAwardedOn": "{date} அன்று வழங்கப்பட்டது",
+  "@certificatesAwardedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "certificatesVerified": "சரிபார்க்கப்பட்டது",
+  "activityStatusStarted": "தொடங்கப்பட்டது",
+  "activityScoreLabel": "மதிப்பெண்: {score}%",
+  "@activityScoreLabel": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "activityProgressLabel": "இதுவரை {progress}% பார்க்கப்பட்டது",
+  "@activityProgressLabel": {
+    "placeholders": {
+      "progress": {
+        "type": "int"
+      }
+    }
+  },
+  "profileTabTitle": "சுயவிவரம்",
+  "profileMembershipLabel": "{date} முதல் எங்களுடன் கற்கிறீர்கள்",
+  "@profileMembershipLabel": {
+    "description": "Label showing when the user joined",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "August 2025"
+      }
+    }
+  },
+  "latestActivityLabel": "சமீபத்திய செயல்பாடு",
+  "streakMomentumLabel": "{days} நாள் தொடர்ச்சி",
+  "@streakMomentumLabel": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "weeklyHoursLabel": "இந்த வாரம் {hours} மணி",
+  "@weeklyHoursLabel": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "lessonsFinishedLabel": "பாடங்கள்",
+  "testsAttemptedLabel": "தேர்வுகள்",
+  "assessmentsDoneLabel": "மதிப்பீடுகள்",
+  "strongestSubjectLabel": "நீங்கள் இதில் வலுவாக உள்ளீர்கள்",
+  "weakSubjectLabel": "இங்கு கவனம் தேவை",
+  "noActivityTitle": "இன்னும் ஆய்வு செயல்பாடு இல்லை",
+  "noActivitySubtitle": "வேகத்தை உருவாக்க ஒரு அமர்வுடன் தொடங்குங்கள்",
+  "allCaughtUpTitle": "அனைத்தும் முடிந்தது!",
+  "noScheduledActivitiesSubtitle": "தற்போது திட்டமிடப்பட்ட செயல்பாடுகள் எதுவும் இல்லை",
+  "liveLabel": "நேரலை",
+  "importantLabel": "முக்கியம்",
+  "testTypeLabel": "{type} தேர்வு",
+  "@testTypeLabel": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "coursesCompletedLabel": "{count} பாடங்கள்",
+  "@coursesCompletedLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "streakDaysLabel": "{count} நாட்கள்",
+  "@streakDaysLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "achievementsLabel": "சாதனைகள்",
+  "moreBadgesLabel": "மேலும் {count}",
+  "@moreBadgesLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "drawerMenuTitle": "பட்டியல்",
+  "drawerBookmark": "புக்மார்க்",
+  "drawerPosts": "அறிவிப்புகள்",
+  "drawerAnalytics": "பகுப்பாய்வு",
+  "drawerForum": "விவாத மன்றம்",
+  "drawerDoubts": "சந்தேகம் கேள்",
+  "drawerCustomExam": "தனிப்பயன் தேர்வு",
+  "drawerReports": "அறிக்கைகள்",
+  "drawerProfile": "சுயவிவரம்",
+  "drawerSettings": "பயன்பாட்டு அமைப்புகள்",
+  "drawerLoginActivity": "உள்நுழைவு செயல்பாடு",
+  "drawerLogout": "வெளியேறு",
+  "drawerPrivacy": "தனியுரிமைக் கொள்கை",
+  "drawerThemeLight": "ஒளி பயன்முறை",
+  "drawerThemeDark": "இருண்ட பயன்முறை",
+  "drawerVersion": "பதிப்பு - {version}",
+  "@drawerVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "studyTabTitle": "படிப்பு",
+  "studySearchHint": "பாடங்கள், அத்தியாயங்களைத் தேடுங்கள்",
+  "studyYourCoursesTitle": "உங்கள் பாடங்கள்",
+  "studyLessonsTitle": "பாடங்கள்",
+  "filterVideo": "வீடியோக்கள்",
+  "filterLesson": "பாடங்கள்",
+  "filterAssessment": "மதிப்பீடுகள்",
+  "filterTest": "தேர்வுகள்",
+  "resumeStudyHeader": "படிப்பை தொடரவும்",
+  "labelCompleted": "முடிக்கப்பட்டது",
+  "errorGenericTitle": "ஏதோ தவறு நடந்துவிட்டது",
+  "errorGenericMessage": "தரவை ஏற்ற முடியவில்லை. உங்கள் இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.",
+  "errorLessonLoad": "பாடத்தை ஏற்ற முடியவில்லை. உங்கள் இணைப்பைச் சரிபார்க்கவும்.",
+  "labelLessonsPlural": "பாடங்கள்",
+  "labelContentsPlural": "உள்ளடக்கங்கள்",
+  "curriculumBackButton": "பின்செல்",
+  "commonCloseButton": "மூடு",
+  "curriculumChaptersCount": "{count,plural, =1{1 அத்தியாயம்} other{{count} அத்தியாயங்கள்}}",
+  "@curriculumChaptersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "courseContentsCount": "{count,plural, =1{1 உள்ளடக்கம்} other{{count} உள்ளடக்கங்கள்}}",
+  "@courseContentsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "filterAll": "அனைத்தும்",
+  "curriculumLessonsLabel": "பாடங்கள்",
+  "curriculumAssessmentsLabel": "மதிப்பீடுகள்",
+  "curriculumTestsCompletedLabel": "{count} தேர்வுகள் முடிக்கப்பட்டன",
+  "chapterIndexLabel": "அத்தியாயம் {index}: {title}",
+  "@chapterIndexLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "chapterMetadata": "{lessons} {lessonsLabel} · {assessments} {assessmentsLabel}",
+  "@chapterMetadata": {
+    "placeholders": {
+      "lessons": {
+        "type": "int"
+      },
+      "lessonsLabel": {
+        "type": "String"
+      },
+      "assessments": {
+        "type": "int"
+      },
+      "assessmentsLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "statusLocked": "பூட்டப்பட்டது",
+  "statusInProgress": "செயல்பாட்டில் உள்ளது",
+  "statusCompleted": "முடிக்கப்பட்டது",
+  "chapterStatusRunning": "இயங்குகிறது",
+  "chapterStatusUpcoming": "வரவிருக்கிறது",
+  "chapterStatusHistory": "வரலாறு",
+  "chapterTypeVideo": "வீடியோ பாடம்",
+  "chapterTypePdf": "PDF குறிப்புகள்",
+  "chapterTypeAssessment": "பயிற்சி மதிப்பீடு",
+  "chapterTypeTest": "தேர்வு",
+  "chapterTypeLiveStream": "நேரலை ஸ்ட்ரீம்",
+  "chapterTypeEmbed": "உட்பொதி உள்ளடக்கம்",
+  "chapterTypeNotes": "குறிப்புகள்",
+  "chapterTypeAttachment": "இணைப்பு",
+  "chapterTypeUnknown": "தெரியவில்லை",
+  "chapterNoContent": "உள்ளடக்கம் இல்லை",
+  "chapterNotFound": "அத்தியாயம் காணவில்லை",
+  "lessonXofY": "பாடம் {index} / {total}",
+  "@lessonXofY": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "lessonBookmarkAdd": "பாடத்தை புக்மார்க் செய்",
+  "lessonBookmarkRemove": "புக்மார்க்கை அகற்று",
+  "lessonDownload": "பாடத்தைப் பதிவிறக்கு",
+  "navigationPrevious": "முந்தைய பாடம்",
+  "navigationNext": "அடுத்த பாடம்",
+  "openDetailedLesson": "பாடத்தைத் திற: {title}",
+  "@openDetailedLesson": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "videoLessonTabNotes": "குறிப்புகள்",
+  "videoLessonTabTranscript": "டிரான்ஸ்கிரிப்ட்",
+  "videoLessonTabAskDoubt": "சந்தேகம் கேள்",
+  "videoLessonTabAiSupport": "AI ஆதரவு",
+  "videoLessonLectureNotes": "விரிவுரை குறிப்புகள்",
+  "videoLessonDownloadPdf": "PDF பதிவிறக்கு",
+  "videoLessonKeyFormula": "முக்கிய சூத்திரம்",
+  "videoLessonTranscript": "வீடியோ டிரான்ஸ்கிரிப்ட்",
+  "videoLessonContinueNext": "அடுத்த பாடத்திற்குத் தொடரவும்",
+  "videoLessonAskYourDoubt": "உங்கள் சந்தேகத்தைக் கேளுங்கள்",
+  "videoLessonDoubtDescription": "இந்த விரிவுரையைப் பற்றி ஏதேனும் கேள்வி உள்ளதா? எங்கள் நிபுணர் 24 மணி நேரத்திற்குள் பதிலளிப்பார்.",
+  "videoLessonRecentDoubts": "சமீபத்திய சந்தேகங்கள்",
+  "videoLessonPostYourDoubt": "உங்கள் சந்தேகத்தை பதிவு செய்யவும்",
+  "videoLessonDoubtHint": "உங்கள் கேள்வியை இங்கே தட்டச்சு செய்க...",
+  "videoLessonCharacterCount": "{current}/{max} எழுத்துக்கள்",
+  "@videoLessonCharacterCount": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "videoLessonSubmitDoubt": "சந்தேகத்தை சமர்ப்பி",
+  "videoLessonPending": "நிலுவையில் உள்ளது",
+  "videoLessonAiAssistant": "AI கற்றல் உதவியாளர்",
+  "videoLessonAiHelp": "உங்கள் கேள்விகளுக்கு உடனடி உதவி பெறுங்கள்",
+  "videoLessonAiHint": "இந்த விரிவுரையைப் பற்றி AI-யிடம் எதையும் கேளுங்கள்...",
+  "videoLessonAiDisclaimer": "AI பதில்கள் உடனடியாக உருவாக்கப்படுகின்றன",
+  "testExit": "தேர்விலிருந்து வெளியேறு",
+  "testTimeLeft": "{time} மீதமுள்ளது",
+  "testQuestionXofY": "கேள்வி {index} / {total}",
+  "@testQuestionXofY": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "testSaved": "சேமிக்கப்பட்டது",
+  "testMarked": "குறிக்கப்பட்டது",
+  "testMarkForReview": "மதிப்பாய்வுக்கு குறிக்கவும்",
+  "testPrevious": "முந்தையது",
+  "testNext": "அடுத்தது",
+  "testFinish": "முடித்துவிடு",
+  "testViewAllQuestions": "அனைத்து கேள்விகளையும் காண்க ({answered}/{total} பதிலளிக்கப்பட்டது)",
+  "testCompleteTitle": "தேர்வு முடிந்தது!",
+  "testCompleteSubtitle": "சிறந்த வேலை! நீங்கள் பயிற்சி தேர்வை முடித்துவிட்டீர்கள்.",
+  "testRetake": "தேர்வை மீண்டும் எழுது",
+  "testBackToChapter": "அத்தியாயத்திற்குத் திரும்பு",
+  "testScorePercentage": "{percentage}%",
+  "testScoreSummary": "{total}-ல் {correct} சரியானவை",
+  "testPaletteTitle": "உங்கள் பதில்களை மதிப்பாய்வு செய்யவும்",
+  "testPaletteAnsweredCount": "{total}-ல் {answered} பதிலளிக்கப்பட்டது",
+  "testStatusNotVisited": "பதிலளிக்கப்படவில்லை",
+  "testStatusAnswered": "பதிலளிக்கப்பட்டது",
+  "testStatusMarked": "குறிக்கப்பட்டது",
+  "testStatusAnsweredMarked": "பதிலளிக்கப்பட்டு மதிப்பாய்வு செய்யப்பட்டது",
+  "testAttemptXofY": "முயற்சி {index} / {total}",
+  "@testAttemptXofY": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "testSelectAllApply": "பொருந்தக்கூடிய அனைத்தையும் தேர்ந்தெடுக்கவும்",
+  "testSubmitConfirmationTitle": "தேர்வை சமர்ப்பிக்கவா?",
+  "testSubmitConfirmationBody": "நீங்கள் {total} கேள்விகளில் {answered} க்கு பதிலளித்துள்ளீர்கள்.",
+  "@testSubmitConfirmationBody": {
+    "placeholders": {
+      "answered": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "testSubmitConfirmationUnanswered": "{count, plural, =0{அனைத்து கேள்விகளுக்கும் பதிலளிக்கப்பட்டது} =1{1 கேள்வி பதிலளிக்கப்படவில்லை} other{{count} கேள்விகள் பதிலளிக்கப்படவில்லை}}",
+  "@testSubmitConfirmationUnanswered": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "labelCancel": "ரத்துசெய்",
+  "labelSubmitNow": "இப்போதே சமர்ப்பி",
+  "testSubmittedTitle": "தேர்வு சமர்ப்பிக்கப்பட்டது!",
+  "testSubmittedBody": "உங்கள் தேர்வு வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது.",
+  "testReviewAnswers": "பதில்களை மதிப்பாய்வு செய்யவும்",
+  "testViewAnalytics": "பகுப்பாய்வுகளைக் காண்க",
+  "assessmentCheckAnswer": "பதிலைச் சரிபார்க்கவும்",
+  "assessmentCorrect": "சரியானது!",
+  "assessmentIncorrect": "சரியல்ல",
+  "assessmentTryAgain": "மீண்டும் முயற்சிக்கவும்",
+  "assessmentNext": "அடுத்தது",
+  "assessmentExplanation": "விளக்கம்",
+  "assessmentPracticeComplete": "பயிற்சி மதிப்பீடு முடிந்தது!",
+  "assessmentExit": "மதிப்பீட்டிலிருந்து வெளியேறு",
+  "assessmentPaletteTitle": "கேள்வித் தட்டு",
+  "assessmentUnanswered": "பதிலளிக்கப்படவில்லை",
+  "assessmentBackToChapter": "அத்தியாயத்திற்குத் திரும்பு",
+  "examReviewTitle": "தேர்வு மதிப்பாய்வு",
+  "examReviewFilterWrong": "தவறு",
+  "examReviewFilterCorrect": "சரி",
+  "examReviewFilterUnanswered": "பதிலளிக்கப்படவில்லை",
+  "examReviewCorrectAnswerLabel": "சரியான பதில்:",
+  "examReviewYourAnswerLabel": "உங்கள் பதில்:",
+  "examReviewFilterAnswered": "பதிலளிக்கப்பட்டது",
+  "labelAskDoubt": "சந்தேகம் கேள்",
+  "labelComment": "கருத்து",
+  "labelReport": "புகாரளி",
+  "labelOverallSummary": "ஒட்டுமொத்த சுருக்கம்",
+  "labelFilter": "வடிகட்டி:",
+  "labelAccuracy": "துல்லியம்",
+  "labelScore": "மதிப்பெண்",
+  "labelTimeTaken": "எடுத்துக்கொண்ட நேரம்",
+  "labelPercentile": "சதவீதம்",
+  "labelRank": "தரம்",
+  "labelPerformance": "செயல்திறன்",
+  "labelSubject": "பாடம்",
+  "labelAttempted": "முயற்சிக்கப்பட்டது",
+  "labelTotalQuestions": "மொத்த கேள்விகள்",
+  "performanceExcellent": "மிகச் சிறப்பு",
+  "performanceGood": "நன்று",
+  "performanceAverage": "சராசரி",
+  "performancePoor": "மோசம்",
+  "recommendationHigh": "உயர்",
+  "recommendationMedium": "நடுத்தரம்",
+  "recommendationLow": "குறைந்த",
+  "reviewAskDoubtTitle": "சந்தேகம் கேள்",
+  "reviewSubmitDoubt": "சந்தேகத்தை சமர்ப்பி",
+  "reviewAddCommentTitle": "கருத்தைச் சேர்",
+  "reviewPostComment": "கருத்தைப் பதிவிடு",
+  "reviewReportIssueTitle": "சிக்கலைப் புகாரளி",
+  "reviewSubmitReport": "புகாரைச் சமர்ப்பி",
+  "reviewReportIssueWithQuestion": "கேள்வி {number} இல் ஒரு சிக்கலைப் புகாரளி",
+  "@reviewReportIssueWithQuestion": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewDescribeDoubtHint": "உங்கள் சந்தேகத்தை இங்கே விவரிக்கவும்...",
+  "reviewWriteCommentHint": "உங்கள் கருத்தை எழுதுங்கள்...",
+  "reviewReportOptionIncorrect": "தவறான பதில் சரியானது என குறிக்கப்பட்டுள்ளது",
+  "reviewReportOptionUnclear": "கேள்வி தெளிவாக இல்லை",
+  "reviewReportOptionWrongExplanation": "விளக்கம் தவறானது",
+  "reviewReportOptionOther": "பிற சிக்கல்",
+  "reviewReportDetailsHint": "கூடுதல் விவரங்கள் (விருப்பத்திற்குரியது)...",
+  "reviewShareThoughtsOnQuestion": "கேள்வி {number} பற்றி உங்கள் கருத்துகளைப் பகிரவும்",
+  "@reviewShareThoughtsOnQuestion": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewQuestionLabel": "கேள்வி {number}",
+  "@reviewQuestionLabel": {
+    "placeholders": {
+      "number": { "type": "String" }
+    }
+  },
+  "reviewEmptyStateMessage": "இந்த வடிகட்டிக்கு கேள்விகள் எதுவும் கிடைக்கவில்லை.",
+  "reviewAnswersTitle": "பதில்களை மதிப்பாய்வு செய் - {title}",
+  "@reviewAnswersTitle": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "reviewQuestionCount": "{total} இல் {current}",
+  "@reviewQuestionCount": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "settingsAppearanceTitle": "தோற்றம்",
+  "settingsPlaybackTitle": "கற்றல் மற்றும் பின்னணி",
+  "settingsAccessibilityTitle": "அணுகல்தன்மை",
+  "settingsVideoQuality": "வீடியோ தரம்",
+  "settingsVideoQualityCaption": "உங்கள் விருப்பமான இயல்புநிலை தரத்தை அமைக்கவும்",
+  "settingsAutoPlay": "அடுத்த பாடத்தை தானாக இயக்கு",
+  "settingsTextSize": "உரை அளவு",
+  "settingsHighContrast": "அதிக முரண்பாடு",
+  "settingsDescription": "உங்கள் கற்றல் அனுபவத்தைத் தனிப்பயனாக்குங்கள்",
+  "settingsThemeLightMode": "ஒளி பயன்முறை",
+  "settingsThemeDarkMode": "இருண்ட பயன்முறை",
+  "settingsThemeSystemDefault": "கணினி இயல்புநிலை",
+  "settingsPlaybackDescription": "பின்னணி தரத்தைத் தேர்வுசெய்க",
+  "settingsTextSizeDescription": "வாசிப்பு வசதியைச் சரிசெய்யவும்",
+  "settingsRecommended": "பரிந்துரைக்கப்படுகிறது",
+  "settingsDefault": "இயல்புநிலை",
+  "settingsAutoPlaySubtitle": "அடுத்த பாடத்தை தானாகத் தொடங்கு",
+  "settingsHighContrastSubtitle": "காட்சி முரண்பாட்டை அதிகரிக்கவும்",
+  "editProfileTitle": "சுயவிவரத்தைத் திருத்து",
+  "editProfileNameLabel": "முழு பெயர்",
+  "editProfileNameHint": "உங்கள் முழு பெயரை உள்ளிடவும்",
+  "editProfileEmailLabel": "மின்னஞ்சல்",
+  "editProfileEmailHint": "உங்கள் மின்னஞ்சல் முகவரியை உள்ளிடவும்",
+  "editProfileEmailHelper": "மின்னஞ்சலை மாற்ற முடியாது",
+  "editProfilePhoneLabel": "தொலைபேசி எண்",
+  "editProfilePhoneHint": "உங்கள் தொலைபேசி எண்ணை உள்ளிடவும்",
+  "editProfileSave": "சேமி",
+  "editProfileSuccess": "சுயவிவரம் வெற்றிகரமாக புதுப்பிக்கப்பட்டது",
+  "editProfileErrorNameEmpty": "பெயர் காலியாக இருக்கக்கூடாது",
+  "editProfilePhotoLabel": "சுயவிவரப் புகைப்படம்",
+  "editProfileChangePhoto": "புகைப்படத்தை மாற்று",
+  "editProfileBack": "பின்செல்",
+  "exploreTabTitle": "ஆராயுங்கள்",
+  "exploreSearchHint": "பாடங்கள், தலைப்புகளைத் தேடுங்கள்...",
+  "exploreSearchResultsTitle": "தேடல் முடிவுகள்",
+  "exploreTrendingTitle": "தற்போது பிரபலமாக இருப்பவை",
+  "exploreRecommendedTitle": "உங்களுக்காக பரிந்துரைக்கப்படுகிறது",
+  "exploreShortLessonsTitle": "அதிகம் பார்க்கப்பட்ட வீடியோக்கள்",
+  "explorePopularTestsTitle": "பிரபலமான தேர்வுகள்",
+  "exploreStudyTipsTitle": "கற்றல் குறிப்புகள் & புதுப்பிப்புகள்",
+  "exploreFilterTrending": "பிரபலமானவை",
+  "exploreFilterRecommended": "பரிந்துரைக்கப்பட்டவை",
+  "exploreFilterShortLessons": "குறுகிய பாடங்கள்",
+  "exploreFilterPopular": "பிரபலமானவை",
+  "exploreFilterStudyTips": "கற்றல் குறிப்புகள்",
+  "editProfileFirstNameLabel": "முதல் பெயர்",
+  "editProfileFirstNameHint": "உங்கள் முதல் பெயரை உள்ளிடவும்",
+  "editProfileLastNameLabel": "கடைசி பெயர்",
+  "editProfileLastNameHint": "உங்கள் கடைசி பெயரை உள்ளிடவும்",
+  "labelMock": "மாதிரி",
+  "forumTitle": "விவாத மன்றம்",
+  "forumSelectCourse": "விவாதங்களைக் காண ஒரு பாடத்தைத் தேர்ந்தெடுக்கவும்",
+  "forumThreadsCount": "{count} இழைகள்",
+  "@forumThreadsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "forumUnansweredCount": "{count} பதிலளிக்கப்படாதவை",
+  "@forumUnansweredCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "forumLabelAnswered": "பதிலளிக்கப்பட்டது",
+  "forumLabelUnanswered": "பதிலளிக்கப்படவில்லை",
+  "forumSearchDiscussions": "விவாதங்களைத் தேடுங்கள்",
+  "forumCreatePost": "புதிய இடுகையை உருவாக்கு",
+  "forumNoDiscussions": "விவாதங்கள் எதுவும் காணப்படவில்லை",
+  "forumDiscussion": "விவாதம்",
+  "forumReplyPlaceholder": "உங்கள் பதிலை இங்கே எழுதுங்கள்...",
+  "forumCreateNewPost": "புதிய இடுகையை உருவாக்கு",
+  "forumPostTitleHint": "ஒரு தலைப்பைச் சேர்க்கவும்...",
+  "forumPostDescriptionHint": "உங்கள் கேள்வியை விரிவாக விவரிக்கவும்...",
+  "forumPostSubjectLabel": "தலைப்பு",
+  "forumPostDescriptionLabel": "விளக்கம்",
+  "forumPostCategoryLabel": "வகை",
+  "forumPostSelectCategoryTitle": "வகையைத் தேர்ந்தெடுக்கவும்",
+  "forumButtonSubmit": "சமர்ப்பி",
+  "forumButtonCancel": "ரத்துசெய்",
+  "attachmentSize": "அளவு: {size}",
+  "@attachmentSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "attachmentDownload": "பதிவிறக்கு",
+  "attachmentDownloading": "பதிவிறக்கப்படுகிறது...",
+  "attachmentViewFile": "பதிவிறக்கிய கோப்பைக் காண்க",
+  "dashboardWhatsNewTitle": "புதியவை என்ன",
+  "dashboardRecentlyCompletedTitle": "சமீபத்தில் முடிக்கப்பட்டவை",
+  "dashboardResumeTitle": "கற்றலை மீண்டும் தொடங்கு",
+  "downloadsTitle": "பதிவிறக்கங்கள்",
+  "downloadsVideosTab": "வீடியோக்கள்",
+  "downloadsAttachmentsTab": "இணைப்புகள்",
+  "downloadsVideosTabCount": "வீடியோக்கள் ({count})",
+  "@downloadsVideosTabCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "downloadsAttachmentsTabCount": "இணைப்புகள் ({count})",
+  "@downloadsAttachmentsTabCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "downloadsEmpty": "பதிவிறக்கங்கள் எதுவும் கிடைக்கவில்லை",
+  "downloadsEmptyVideosSubtitle": "நீங்கள் பதிவிறக்கிய வீடியோக்கள் இங்கே தோன்றும்",
+  "downloadsEmptyAttachmentsSubtitle": "நீங்கள் பதிவிறக்கிய கோப்புகள் இங்கே தோன்றும்",
+  "downloadsTotalVideos": "மொத்த வீடியோக்கள்: {count}",
+  "@downloadsTotalVideos": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "downloadsTotalFiles": "மொத்த கோப்புகள்: {count}",
+  "@downloadsTotalFiles": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "downloadsStorageUsed": "{size} பயன்படுத்தப்பட்டுள்ளது",
+  "@downloadsStorageUsed": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "doubtsEmptyTitle": "சந்தேகங்கள் எதுவும் கிடைக்கவில்லை",
+  "doubtsEmptySubtitle": "வழிகாட்டிகளிடமிருந்து உதவி பெற உங்கள் முதல் சந்தேகத்தைக் கேளுங்கள்.",
+  "doubtsSearchNoResults": "பொருத்தங்கள் எதுவும் காணப்படவில்லை",
+  "doubtsSearchNoResultsSubtitle": "உங்கள் தேடல் வினவலைச் சரிசெய்து முயற்சிக்கவும்",
+  "doubtsHeaderAskDoubt": "சந்தேகம் கேள்",
+  "doubtsSearchHint": "சந்தேகங்களைத் தேடு",
+  "doubtsLabelUnanswered": "பதிலளிக்கப்படவில்லை",
+  "doubtsLabelAnswered": "பதிலளிக்கப்பட்டது",
+  "doubtsReplyCount": "{count,plural, =1{1 பதில்} other{{count} பதில்கள்}}",
+  "doubtsFormTitleLabel": "உங்கள் சந்தேகம் எதைப்பற்றியது?",
+  "doubtsFormTitleHint": "உதாரணமாக, இந்த கேள்வியை என்னால் புரிந்து கொள்ள முடியவில்லை",
+  "doubtsFormDescriptionLabel": "உங்கள் சந்தேகம் பற்றி விரிவாக விளக்கவும்",
+  "doubtsFormCategoryLabel": "தலைப்பைத் தேர்ந்தெடுக்கவும்",
+  "doubtsFormAttachmentsLabel": "இணைப்புகள் (விருப்பத்திற்குரியது)",
+  "doubtsFormUploadAction": "படம் அல்லது PDF ஐ பதிவேற்று",
+  "doubtsFormSubmitAction": "சந்தேகத்தை சமர்ப்பி",
+  "doubtsFormNextAction": "அடுத்தது",
+  "doubtsSubmitSheetTitle": "நீங்கள் எப்படி கேட்க விரும்புகிறீர்கள்?",
+  "doubtsSubmitSheetAskAi": "AI இடம் கேள்",
+  "doubtsSubmitSheetAskAiDesc": "உங்கள் சந்தேகத்திற்கு உடனடி AI-உருவாக்கப்பட்ட பதிலைப் பெறுங்கள்",
+  "doubtsSubmitSheetAskMentor": "வழிகாட்டியிடம் கேள்",
+  "doubtsSubmitSheetAskMentorDesc": "உங்கள் சந்தேகத்திற்கு வழிகாட்டியின் உதவியைப் பெறுங்கள்",
+  "doubtsSubmitSuccessMessage": "சந்தேகம் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது",
+  "doubtsSubmitErrorMessage": "சந்தேகத்தை சமர்ப்பிக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
+  "doubtsFormCancelAction": "ரத்துசெய்",
+  "examInstructions": "தேர்வு வழிமுறைகள்",
+  "startExam": "தேர்வைத் தொடங்கு",
+  "nextSubject": "அடுத்த பாடம்",
+  "nextSection": "அடுத்த பகுதி",
+  "doubtDetailTitle": "சந்தேகம்",
+  "errorFailedToLoadReplies": "பதில்களை ஏற்ற முடியவில்லை",
+  "errorFailedToLoadDoubtDetails": "சந்தேக விவரங்களை ஏற்ற முடியவில்லை",
+  "labelMentor": "வழிகாட்டி",
+  "infoPageTitle": "கற்றல் வளங்கள்",
+  "infoPageSubtitle": "விவரங்களைக் காண ஒரு வளத்தைத் தேர்ந்தெடுக்கவும்",
+  "infoPageEmptyState": "கற்றல் வளங்கள் இன்னும் கிடைக்கவில்லை.",
+  "infoPageLoadError": "வளங்களை ஏற்ற முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
+  "infoPageOpenCourse": "திற: {title}",
+  "@infoPageOpenCourse": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "infoPageLessonsCount": "{count,plural, =1{1 பாடம்} other{{count} பாடங்கள்}}",
+  "@infoPageLessonsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "videoLessonNoTranscriptAvailable": "இந்த பாடத்திற்கான டிரான்ஸ்கிரிப்ட் கிடைக்கவில்லை.",
+  "videoLessonTranscriptionInProgress": "டிரான்ஸ்கிரிப்ஷன் செயல்பாட்டில் உள்ளது",
+  "videoLessonTranscriptionInProgressDesc": "இந்த வீடியோவிற்கான டிரான்ஸ்கிரிப்டை தற்போது உருவாக்குகிறோம். சிறிது நேரம் கழித்து சரிபார்க்கவும்.",
+  "videoLessonFailedToLoadTranscript": "டிரான்ஸ்கிரிப்டை ஏற்ற முடியவில்லை.",
+  "videoLessonNoNotesAvailable": "இந்த பாடத்திற்கு குறிப்புகள் எதுவும் கிடைக்கவில்லை.",
+  "videoLessonNotesEmpty": "குறிப்புகள் தற்போது காலியாக உள்ளன.",
+  "videoLessonFailedToLoadNotes": "விரிவுரை குறிப்புகளை ஏற்ற முடியவில்லை.",
+  "labelSave": "சேமி",
+  "labelUncategorized": "வகைப்படுத்தப்படாதவை",
+  "labelNewFolder": "புதிய கோப்புறை",
+  "actionCreateNewFolder": "புதிய கோப்புறையை உருவாக்கு",
+  "hintEnterFolderName": "கோப்புறையின் பெயரை உள்ளிடவும்",
+  "hintExampleFolderName": "உதாரணமாக: இயற்பியல், திருப்புதல்",
+  "errorFailedToLoadFolders": "கோப்புறைகளை ஏற்ற முடியவில்லை.",
+  "errorFailedToCreateFolder": "கோப்புறையை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
+  "bookmarkSaveToFolders": "பிளேலிஸ்ட் அல்லது கோப்புறைகளில் சேமிக்கவும்",
+  "bookmarkSaveTo": "சேமி...",
+  "bookmarkAddedToFolder": "{folderName} கோப்புறையில் புக்மார்க் சேர்க்கப்பட்டது",
+  "@bookmarkAddedToFolder": {
+    "placeholders": {
+      "folderName": { "type": "String" }
+    }
+  },
+  "bookmarkRemovedFromFolder": "{folderName} கோப்புறையிலிருந்து புக்மார்க் அகற்றப்பட்டது",
+  "@bookmarkRemovedFromFolder": {
+    "placeholders": {
+      "folderName": { "type": "String" }
+    }
+  },
+  "bookmarkRemoved": "புக்மார்க் அகற்றப்பட்டது",
+  "errorFailedToUpdateBookmark": "புக்மார்க்கைப் புதுப்பிக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
+  "errorFailedToRemoveBookmark": "புக்மார்க்கை அகற்ற முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
+  "lessonSpecializedViewerRequired": "{type} க்கு சிறப்புப் பார்வையாளர் தேவை",
+  "@lessonSpecializedViewerRequired": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  }
+}
