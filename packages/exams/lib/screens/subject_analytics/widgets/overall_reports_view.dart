@@ -89,9 +89,17 @@ class OverallReportsView extends ConsumerWidget {
                 children: [
                   for (final subjectAnalytics in subjects) ...[
                     subjectAnalytics.isLeaf
-                        ? BarRow(
-                            subjectAnalytics: subjectAnalytics,
-                            activeFilter: activeFilter,
+                        ? AppFocusable(
+                            onTap: () {
+                              context.push(
+                                '/exams/analytics/topic/${subjectAnalytics.id}',
+                                extra: subjectAnalytics,
+                              );
+                            },
+                            child: BarRow(
+                              subjectAnalytics: subjectAnalytics,
+                              activeFilter: activeFilter,
+                            ),
                           )
                         : AppFocusable(
                             onTap: () {
