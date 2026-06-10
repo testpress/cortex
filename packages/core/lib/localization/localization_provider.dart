@@ -36,7 +36,8 @@ class LocalizationProvider extends StatefulWidget {
 }
 
 abstract class LocalizationProviderScope {
-  Locale? get locale;
+  Locale get locale;
+  bool get isSystemLocale;
   void setLocale(Locale? locale);
 }
 
@@ -51,7 +52,10 @@ class _LocalizationProviderState extends State<LocalizationProvider>
   }
 
   @override
-  Locale? get locale => _locale;
+  Locale get locale => _locale ?? const Locale('en');
+
+  @override
+  bool get isSystemLocale => _locale == null;
 
   @override
   void setLocale(Locale? locale) {

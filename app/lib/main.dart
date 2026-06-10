@@ -48,7 +48,7 @@ class CortexApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
     final localization = LocalizationProvider.of(context);
-    final locale = localization.locale;
+    final locale = localization.isSystemLocale ? null : localization.locale;
 
     final scaleMultiplier = ref.watch(appTextScaleMultiplierProvider);
 
