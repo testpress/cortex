@@ -34,7 +34,12 @@ class DoubtTab extends ConsumerWidget {
               physics: const ClampingScrollPhysics(),
               slivers: [
                 SliverPadding(
-                  padding: EdgeInsets.all(design.spacing.md),
+                  padding: EdgeInsets.only(
+                    left: design.spacing.md,
+                    right: design.spacing.md,
+                    top: design.spacing.md,
+                    bottom: 100,
+                  ),
                   sliver: SliverList.separated(
                     itemCount: doubts.length,
                     separatorBuilder: (context, index) =>
@@ -65,7 +70,12 @@ class DoubtTab extends ConsumerWidget {
             physics: const ClampingScrollPhysics(),
             slivers: [
               SliverPadding(
-                padding: EdgeInsets.all(design.spacing.md),
+                padding: EdgeInsets.only(
+                  left: design.spacing.md,
+                  right: design.spacing.md,
+                  top: design.spacing.md,
+                  bottom: 100,
+                ),
                 sliver: SliverList.separated(
                   itemCount: 2,
                   separatorBuilder: (context, index) =>

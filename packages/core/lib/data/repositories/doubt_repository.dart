@@ -21,6 +21,16 @@ class DoubtRepository {
         .map((rows) => rows.map((row) => _mapToDto(row)).toList());
   }
 
+  /// Watch personal doubts for a specific lesson.
+  Stream<List<DoubtDto>> watchDoubtsForLesson(int lessonId) {
+    final lessonIdStr = lessonId.toString();
+    return (_db.select(_db.doubtsTable)
+          ..where((t) => t.lessonId.equals(lessonIdStr))
+          ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
+        .watch()
+        .map((rows) => rows.map((row) => _mapToDto(row)).toList());
+  }
+
   /// Sync doubts from the remote source for a given page.
   Future<PaginatedResponseDto<DoubtDto>> syncDoubts({
     int page = 1,

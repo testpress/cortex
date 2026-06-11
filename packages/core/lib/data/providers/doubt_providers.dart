@@ -26,16 +26,13 @@ Future<List<DoubtDto>> doubtsSearch(DoubtsSearchRef ref, String query) async {
 }
 
 @riverpod
-Future<List<DoubtDto>> lessonDoubts(
+Stream<List<DoubtDto>> lessonDoubts(
   LessonDoubtsRef ref,
   int chapterContentId,
-) async {
+) async* {
   final repository = await ref.watch(doubtRepositoryProvider.future);
-  final response = await repository.syncDoubts(
-    page: 1,
-    chapterContentId: chapterContentId,
-  );
-  return response.results;
+  repository.syncDoubts(page: 1, chapterContentId: chapterContentId).ignore();
+  yield* repository.watchDoubtsForLesson(chapterContentId);
 }
 
 @riverpod
