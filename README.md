@@ -47,6 +47,16 @@ Internal packages (`core`, `courses`, `exams`) are never exposed to consumers.
 # Install dependencies
 flutter pub get
 
+# Install pre-commit hooks
+# Mac:
+brew install lefthook
+
+# Ubuntu:
+curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.deb.sh' | sudo -E bash
+sudo apt install lefthook
+
+lefthook install
+
 # Run reference app
 cd app
 flutter run
