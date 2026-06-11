@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 
 /// Skeleton layout for the lesson detail screen while content is loading.
@@ -12,8 +13,12 @@ class LessonDetailSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final design = Design.of(context);
+
+    Widget skeletonContent;
+
     if (lessonType == LessonType.video || lessonType == LessonType.liveStream) {
-      return Column(
+      skeletonContent = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const AspectRatio(
@@ -51,10 +56,9 @@ class LessonDetailSkeleton extends StatelessWidget {
           const Spacer(),
         ],
       );
-    }
-
-    if (lessonType == LessonType.pdf || lessonType == LessonType.attachment) {
-      return Column(
+    } else if (lessonType == LessonType.pdf ||
+        lessonType == LessonType.attachment) {
+      skeletonContent = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const Padding(
@@ -79,20 +83,32 @@ class LessonDetailSkeleton extends StatelessWidget {
           ),
         ],
       );
+    } else {
+      // Generic fallback for notes, embeds, etc.
+      skeletonContent = const Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Bone.text(words: 4, fontSize: 28),
+            SizedBox(height: 24),
+            Bone.multiText(lines: 12),
+            SizedBox(height: 24),
+            Bone.multiText(lines: 8),
+          ],
+        ),
+      );
     }
 
-    // Generic fallback for notes, embeds, etc.
-    return const Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Bone.text(words: 4, fontSize: 28),
-          SizedBox(height: 24),
-          Bone.multiText(lines: 12),
-          SizedBox(height: 24),
-          Bone.multiText(lines: 8),
-        ],
+    return SkeletonizerConfig(
+      data: SkeletonizerConfigData(
+        effect: ShimmerEffect(
+          baseColor: design.colors.skeleton,
+          highlightColor: design.colors.onSkeleton,
+        ),
+      ),
+      child: Skeletonizer(
+        child: skeletonContent,
       ),
     );
   }

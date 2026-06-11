@@ -5,7 +5,6 @@ import 'package:core/core.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 import 'package:core/data/data.dart';
 import 'lesson_detail_skeleton.dart';
 
@@ -190,17 +189,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   }
 
   Widget _buildLoadingSkeleton(DesignConfig design) {
-    return SkeletonizerConfig(
-      data: SkeletonizerConfigData(
-        effect: ShimmerEffect(
-          baseColor: design.colors.skeleton,
-          highlightColor: design.colors.onSkeleton,
-        ),
-      ),
-      child: const Skeletonizer(
-        child: LessonDetailSkeleton(lessonType: LessonType.pdf),
-      ),
-    );
+    return const LessonDetailSkeleton(lessonType: LessonType.pdf);
   }
 
   Widget _buildError() => Center(child: Text(_error!));
