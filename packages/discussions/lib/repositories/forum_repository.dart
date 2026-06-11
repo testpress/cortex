@@ -33,6 +33,12 @@ class ForumRepository {
     return response;
   }
 
+  Future<ForumThreadDto> fetchThread(String slug) async {
+    final threadDto = await _source.getForumThread(slug);
+    await _db.upsertForumThreads([_dtoToCompanion(threadDto)]);
+    return threadDto;
+  }
+
   Stream<List<ForumThreadDto>> watchAllThreads() {
     return _db.watchAllThreads().map((rows) => rows.map(_rowToDto).toList());
   }

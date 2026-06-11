@@ -32,11 +32,54 @@ class BookmarkItem extends StatelessWidget {
         return LessonType.test;
       case 'post':
       case 'notice':
-        // Not strictly a lesson type, but fallback to notes/book
         return LessonType.notes;
       case 'question':
       default:
         return LessonType.unknown;
+    }
+  }
+
+  IconData _getIconForType(String type, LessonType lessonType) {
+    switch (type.toLowerCase()) {
+      case 'forumpost':
+        return LucideIcons.messageSquare;
+      case 'post':
+        return LucideIcons.fileText;
+      case 'notice':
+        return LucideIcons.bell;
+      case 'question':
+        return LucideIcons.helpCircle;
+      default:
+        return lessonType.icon;
+    }
+  }
+
+  ShortcutColors _getThemeForType(
+    String type,
+    LessonType lessonType,
+    DesignConfig design,
+  ) {
+    switch (type.toLowerCase()) {
+      case 'forumpost':
+        return design.shortcutPalette.atIndex(3); // green
+      case 'post':
+        return design.shortcutPalette.atIndex(0); // Purple
+      case 'notice':
+        return design.shortcutPalette.atIndex(2); // Orange
+      case 'question':
+        return design.shortcutPalette.atIndex(4); // Cyan
+      default:
+        return switch (lessonType) {
+          LessonType.video ||
+          LessonType.liveStream ||
+          LessonType.embedContent => design.study.video,
+          LessonType.pdf ||
+          LessonType.notes ||
+          LessonType.attachment => design.study.pdf,
+          LessonType.assessment => design.study.assessment,
+          LessonType.test => design.study.test,
+          LessonType.unknown => design.study.video,
+        };
     }
   }
 
@@ -45,17 +88,11 @@ class BookmarkItem extends StatelessWidget {
     final design = Design.of(context);
 
     final lessonType = _parseLessonType(item['contentType'] as String);
-    final typeTheme = switch (lessonType) {
-      LessonType.video ||
-      LessonType.liveStream ||
-      LessonType.embedContent => design.study.video,
-      LessonType.pdf ||
-      LessonType.notes ||
-      LessonType.attachment => design.study.pdf,
-      LessonType.assessment => design.study.assessment,
-      LessonType.test => design.study.test,
-      LessonType.unknown => design.study.video,
-    };
+    final typeTheme = _getThemeForType(
+      item['contentType'] as String,
+      lessonType,
+      design,
+    );
 
     return AppCard(
       showShadow: true,
@@ -76,7 +113,7 @@ class BookmarkItem extends StatelessWidget {
                 ),
                 child: Center(
                   child: Icon(
-                    lessonType.icon,
+                    _getIconForType(item['contentType'] as String, lessonType),
                     color: item['iconColor'] as Color? ?? typeTheme.foreground,
                     size: 28,
                   ),
