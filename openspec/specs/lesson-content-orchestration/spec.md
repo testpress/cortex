@@ -20,7 +20,7 @@ The system SHALL handle the fetching of lesson domain models via `lessonDetailPr
 
 #### Scenario: Unified loading indicator across types
 - **WHEN** a lesson payload is being fetched for any screen
-- **THEN** the router SHALL display a unified `AppLoadingIndicator`.
+- **THEN** the router SHALL display a structured skeleton loader via `LessonDetailSkeleton` instead of a simple circular indicator.
 
 ### Requirement: Live Stream Metadata Enrichment
 The system MUST correctly parse and expose live-stream specific metadata including stream URLs and current status from the content API.
