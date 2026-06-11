@@ -21,13 +21,19 @@ The system SHALL display a Bookmarks screen built with the design system tokens.
 ---
 
 ### Requirement: Bookmark Navigation to Content
-The system SHALL navigate to the Content Detail page when a bookmark is tapped.
+The system SHALL navigate to the appropriate Detail page based on the bookmark content type.
 
-#### Scenario: User taps a bookmark item
-- **WHEN** the user taps a bookmark in the list
-- **THEN** the system navigates to the Content Detail page for that bookmark.
+#### Scenario: User taps a lesson bookmark
+- **WHEN** the user taps a bookmark of type video, attachment, pdf, html, etc.
+- **THEN** the system navigates to the Content Detail page (`/study/lesson/<id>`).
 
----
+#### Scenario: User taps a forum post bookmark
+- **WHEN** the user taps a bookmark of type `forumpost`
+- **THEN** the system navigates to the Forum Post Detail screen (`/home/discussions/forum/posts/<slug>`).
+
+#### Scenario: User taps an unsupported community bookmark
+- **WHEN** the user taps a bookmark of type `post`, `exam`, `notice`, or `question`
+- **THEN** the system safely ignores the tap (no-op) until detail routes exist for those types.
 
 ### Requirement: Bookmarks Filtering & Sorting
 The system SHALL allow filtering by content type and sorting.
@@ -76,4 +82,14 @@ The system SHALL use only design system tokens for colors, spacing, and radii.
 - **WHEN** any component in the Bookmarks feature renders
 - **THEN** all colors are sourced from `design.colors.*`, all padding from `design.spacing.*`, and all border radii from `design.radius.*`.
 - **AND** no hardcoded hex colors or raw pixel values are present.
+
+### Requirement: Community Post Visual Distinction
+The system SHALL display distinct icons and shortcut palette colors for community post types (forumposts, notices, questions) in the bookmark list, rather than falling back to standard lesson themes.
+
+#### Scenario: User views community bookmarks
+- **WHEN** rendering a bookmark item
+- **THEN** `forumpost` uses `LucideIcons.messageSquare` and index 3
+- **AND** `post` uses `LucideIcons.fileText` and index 0
+- **AND** `notice` uses `LucideIcons.bell` and index 2
+- **AND** `question` uses `LucideIcons.helpCircle` and index 4.
 
