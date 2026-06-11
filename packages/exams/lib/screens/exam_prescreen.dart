@@ -245,28 +245,46 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                               onTap: () async {
                                 if (isMetadataLoading) return;
 
-                                final bool isResuming = ((exam?.pausedAttemptsCount ?? 0) > 0 && !(exam?.disableAttemptResume ?? false));
+                                final bool isResuming =
+                                    ((exam?.pausedAttemptsCount ?? 0) > 0 &&
+                                    !(exam?.disableAttemptResume ?? false));
 
-                                if (!isResuming && exam?.enableQuizMode == true) {
+                                if (!isResuming &&
+                                    exam?.enableQuizMode == true) {
                                   showGeneralDialog(
                                     context: context,
                                     barrierDismissible: true,
                                     barrierLabel: 'Dismiss',
-                                    pageBuilder: (context, animation, secondaryAnimation) => ExamModeSelectionDialog(
-                                      onSelectRegular: () async {
-                                        Navigator.pop(context);
-                                        ref.read(examAttemptProvider.notifier).reset();
-                                        await widget.onStartAttempt(false);
-                                      },
-                                      onSelectQuiz: () async {
-                                        Navigator.pop(context);
-                                        ref.read(examAttemptProvider.notifier).reset();
-                                        await widget.onStartAttempt(true);
-                                      },
-                                    ),
+                                    pageBuilder:
+                                        (
+                                          context,
+                                          animation,
+                                          secondaryAnimation,
+                                        ) => ExamModeSelectionDialog(
+                                          onSelectRegular: () async {
+                                            Navigator.pop(context);
+                                            ref
+                                                .read(
+                                                  examAttemptProvider.notifier,
+                                                )
+                                                .reset();
+                                            await widget.onStartAttempt(false);
+                                          },
+                                          onSelectQuiz: () async {
+                                            Navigator.pop(context);
+                                            ref
+                                                .read(
+                                                  examAttemptProvider.notifier,
+                                                )
+                                                .reset();
+                                            await widget.onStartAttempt(true);
+                                          },
+                                        ),
                                   );
                                 } else {
-                                  ref.read(examAttemptProvider.notifier).reset();
+                                  ref
+                                      .read(examAttemptProvider.notifier)
+                                      .reset();
                                   await widget.onStartAttempt(false);
                                 }
                               },

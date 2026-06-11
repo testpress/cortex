@@ -171,7 +171,10 @@ class ExamRepository {
     }
   }
 
-  Future<void> startStandaloneExam(ExamDto exam, {bool isQuizMode = false}) async {
+  Future<void> startStandaloneExam(
+    ExamDto exam, {
+    bool isQuizMode = false,
+  }) async {
     _emit(ExamAttemptState(status: ExamAttemptStatus.loading, exam: exam));
     try {
       if (exam.pausedAttemptsCount > 0) {
@@ -205,7 +208,12 @@ class ExamRepository {
               );
             }
           }
-          await _initializeAttempt(exam, attemptToInitialize, isResume: true, isQuizMode: isQuizMode);
+          await _initializeAttempt(
+            exam,
+            attemptToInitialize,
+            isResume: true,
+            isQuizMode: isQuizMode,
+          );
         }
       } else {
         final attempt = await _dataSource.createAttempt(
@@ -230,7 +238,11 @@ class ExamRepository {
     }
   }
 
-  Future<void> startCourseLinkedExam(ExamDto exam, String contentAttemptsUrl, {bool isQuizMode = false}) async {
+  Future<void> startCourseLinkedExam(
+    ExamDto exam,
+    String contentAttemptsUrl, {
+    bool isQuizMode = false,
+  }) async {
     _emit(ExamAttemptState(status: ExamAttemptStatus.loading, exam: exam));
     try {
       if (exam.pausedAttemptsCount > 0) {
@@ -264,7 +276,12 @@ class ExamRepository {
               );
             }
           }
-          await _initializeAttempt(exam, attemptToInitialize, isResume: true, isQuizMode: isQuizMode);
+          await _initializeAttempt(
+            exam,
+            attemptToInitialize,
+            isResume: true,
+            isQuizMode: isQuizMode,
+          );
         }
       } else {
         final attempt = await _dataSource.createContentAttempt(
@@ -300,9 +317,12 @@ class ExamRepository {
     AttemptDto currentAttempt = attempt;
     // Short-circuit: skip the DB read if the attempt or caller already tells us it's a quiz.
     // The DB check is only needed as a fallback when the backend drops attempt_type.
-    final effectiveQuizMode = isQuizMode ||
+    final effectiveQuizMode =
+        isQuizMode ||
         attempt.isQuizMode ||
-        await _dbFuture.then((db) => db.isQuizModeAttempt(attempt.id.toString()));
+        await _dbFuture.then(
+          (db) => db.isQuizModeAttempt(attempt.id.toString()),
+        );
     if (effectiveQuizMode) {
       final db = await _dbFuture;
       await db.setQuizModeAttempt(attempt.id.toString());
@@ -354,8 +374,8 @@ class ExamRepository {
       final String targetQuestionsUrl = effectiveQuizMode
           ? '/api/v2.5/attempts/${currentAttempt.id}/questions/'
           : (currentAttempt.hasSectionalLock
-              ? activeSection.questionsUrl
-              : currentAttempt.questionsUrl);
+                ? activeSection.questionsUrl
+                : currentAttempt.questionsUrl);
 
       final Future<List<QuestionDto>> questionsFuture = remainingSeconds > 0
           ? (_sectionQuestionsCache.containsKey(targetQuestionsUrl)
@@ -812,8 +832,11 @@ class ExamRepository {
     // Update local answer state
     updateLocalAnswer(questionId, answer);
 
-    final question = _currentState.questions.firstWhere((q) => q.id == questionId);
-    final hasLocalCorrectAnswers = question.options.any((o) => o.isCorrect) ||
+    final question = _currentState.questions.firstWhere(
+      (q) => q.id == questionId,
+    );
+    final hasLocalCorrectAnswers =
+        question.options.any((o) => o.isCorrect) ||
         question.correctOptionIds.isNotEmpty;
 
     // ── Optimistic update ──────────────────────────────────────────────────
@@ -821,7 +844,8 @@ class ExamRepository {
     // Otherwise, wait for the network roundtrip so that the button does not
     // prematurely swap to "Continue" before visual review feedback is ready.
     if (hasLocalCorrectAnswers) {
-      final optimisticChecked = Set<String>.from(_currentState.checkedQuestions)..add(questionId);
+      final optimisticChecked = Set<String>.from(_currentState.checkedQuestions)
+        ..add(questionId);
       _emit(_currentState.copyWith(checkedQuestions: optimisticChecked));
     }
     // ───────────────────────────────────────────────────────────────────────
@@ -840,17 +864,27 @@ class ExamRepository {
         name: 'ExamRepository',
       );
 
-      final newQuizReviews = Map<String, QuizReviewResultDto>.from(_currentState.quizReviews);
+      final newQuizReviews = Map<String, QuizReviewResultDto>.from(
+        _currentState.quizReviews,
+      );
       newQuizReviews[questionId] = quizReview;
 
-      final newChecked = Set<String>.from(_currentState.checkedQuestions)..add(questionId);
+      final newChecked = Set<String>.from(_currentState.checkedQuestions)
+        ..add(questionId);
 
-      _emit(_currentState.copyWith(
-        quizReviews: newQuizReviews,
-        checkedQuestions: newChecked,
-      ));
+      _emit(
+        _currentState.copyWith(
+          quizReviews: newQuizReviews,
+          checkedQuestions: newChecked,
+        ),
+      );
     } catch (e, stackTrace) {
-      dev.log('Failed to check quiz answer', name: 'ExamRepository', error: e, stackTrace: stackTrace);
+      dev.log(
+        'Failed to check quiz answer',
+        name: 'ExamRepository',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -902,7 +936,8 @@ class ExamRepository {
   }
 
   void markQuestionAsChecked(String questionId) {
-    final newChecked = Set<String>.from(_currentState.checkedQuestions)..add(questionId);
+    final newChecked = Set<String>.from(_currentState.checkedQuestions)
+      ..add(questionId);
     _emit(_currentState.copyWith(checkedQuestions: newChecked));
   }
 

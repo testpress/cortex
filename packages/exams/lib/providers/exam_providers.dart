@@ -165,15 +165,23 @@ class ExamAttempt extends _$ExamAttempt {
     return repo.state;
   }
 
-  Future<void> loadExam(String slug, {bool isQuizMode = false}) => ref.read(examRepositoryProvider).loadExam(slug, isQuizMode: isQuizMode);
-  
+  Future<void> loadExam(String slug, {bool isQuizMode = false}) =>
+      ref.read(examRepositoryProvider).loadExam(slug, isQuizMode: isQuizMode);
+
   void reset() => ref.read(examRepositoryProvider).reset();
-  
-  Future<void> startStandaloneExam(ExamDto exam, {bool isQuizMode = false}) => 
-      ref.read(examRepositoryProvider).startStandaloneExam(exam, isQuizMode: isQuizMode);
-      
-  Future<void> startCourseLinkedExam(ExamDto exam, String contentAttemptsUrl, {bool isQuizMode = false}) =>
-      ref.read(examRepositoryProvider).startCourseLinkedExam(exam, contentAttemptsUrl, isQuizMode: isQuizMode);
+
+  Future<void> startStandaloneExam(ExamDto exam, {bool isQuizMode = false}) =>
+      ref
+          .read(examRepositoryProvider)
+          .startStandaloneExam(exam, isQuizMode: isQuizMode);
+
+  Future<void> startCourseLinkedExam(
+    ExamDto exam,
+    String contentAttemptsUrl, {
+    bool isQuizMode = false,
+  }) => ref
+      .read(examRepositoryProvider)
+      .startCourseLinkedExam(exam, contentAttemptsUrl, isQuizMode: isQuizMode);
 
   Future<void> submitAnswer(String answerUrl, AnswerDto answer) =>
       ref.read(examRepositoryProvider).submitAnswer(answerUrl, answer);
@@ -184,8 +192,9 @@ class ExamAttempt extends _$ExamAttempt {
   Future<void> checkQuizAnswer(String answerUrl, AnswerDto answer) =>
       ref.read(examRepositoryProvider).checkQuizAnswer(answerUrl, answer);
 
-  void updateShortText(String questionId, String answerUrl, String text) =>
-      ref.read(examRepositoryProvider).updateShortText(questionId, answerUrl, text);
+  void updateShortText(String questionId, String answerUrl, String text) => ref
+      .read(examRepositoryProvider)
+      .updateShortText(questionId, answerUrl, text);
 
   void updateEssayText(String questionId, String answerUrl, String text) => ref
       .read(examRepositoryProvider)

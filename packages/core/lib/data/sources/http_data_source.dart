@@ -692,7 +692,8 @@ class HttpDataSource implements DataSource {
       fromJson: (json) => json,
     );
 
-    final bool isV2_5Format = firstPageData is Map &&
+    final bool isV2_5Format =
+        firstPageData is Map &&
         firstPageData['results'] is Map &&
         (firstPageData['results'] as Map)['exam_questions'] is List;
 
@@ -725,7 +726,8 @@ class HttpDataSource implements DataSource {
 
       String? nextUrl = firstPageData['next'] as String?;
       int count = (firstPageData['count'] as int?) ?? 0;
-      final int resultsLength = (firstPageData['results'] as Map)['exam_questions'].length;
+      final int resultsLength =
+          (firstPageData['results'] as Map)['exam_questions'].length;
       int perPage = (firstPageData['per_page'] as int?) ?? resultsLength;
 
       final List<Future<dynamic>> concurrentFutures = [];
@@ -801,15 +803,21 @@ class HttpDataSource implements DataSource {
               final int v2_2Count = (v2_2FirstPage['count'] as int?) ?? 0;
               final results = v2_2FirstPage['results'];
               final int resultsLength = results is List ? results.length : 0;
-              final int v2_2PerPage = (v2_2FirstPage['per_page'] as int?) ?? resultsLength;
+              final int v2_2PerPage =
+                  (v2_2FirstPage['per_page'] as int?) ?? resultsLength;
 
-              if (v2_2Next != null && v2_2Next.isNotEmpty && v2_2Count > 0 && v2_2PerPage > 0) {
+              if (v2_2Next != null &&
+                  v2_2Next.isNotEmpty &&
+                  v2_2Count > 0 &&
+                  v2_2PerPage > 0) {
                 final int totalPages = (v2_2Count / v2_2PerPage).ceil();
                 if (totalPages > 1) {
                   final uri = Uri.parse(v2_2Url);
                   final List<Future<dynamic>> mappingRequests = [];
                   for (int page = 2; page <= totalPages; page++) {
-                    final queryParams = Map<String, String>.from(uri.queryParameters);
+                    final queryParams = Map<String, String>.from(
+                      uri.queryParameters,
+                    );
                     queryParams['page'] = page.toString();
                     final pageUri = uri.replace(queryParameters: queryParams);
                     mappingRequests.add(
@@ -819,7 +827,9 @@ class HttpDataSource implements DataSource {
                       ),
                     );
                   }
-                  final List<dynamic> pagesData = await Future.wait(mappingRequests);
+                  final List<dynamic> pagesData = await Future.wait(
+                    mappingRequests,
+                  );
                   for (final pageData in pagesData) {
                     extractUrls(pageData);
                   }
@@ -920,7 +930,8 @@ class HttpDataSource implements DataSource {
                 .replaceAll('v2.2.1', 'v2.2')
                 .replaceAll('v2.3', 'v2.2');
           } else {
-            merged['answer_url'] = '/api/v2.2/attempts/$attemptId/questions/${eq['id']}/';
+            merged['answer_url'] =
+                '/api/v2.2/attempts/$attemptId/questions/${eq['id']}/';
           }
         }
         allQuestions.add(QuestionDto.fromJson(merged));
@@ -931,12 +942,16 @@ class HttpDataSource implements DataSource {
     // Standard mode path (V2.2/V2.3)
     List<QuestionDto> parsePage(dynamic pageData) {
       if (pageData is List) {
-        return pageData.map((e) => QuestionDto.fromJson(e as Map<String, dynamic>)).toList();
+        return pageData
+            .map((e) => QuestionDto.fromJson(e as Map<String, dynamic>))
+            .toList();
       }
       if (pageData is Map) {
         final results = pageData['results'];
         if (results is List) {
-          return results.map((e) => QuestionDto.fromJson(e as Map<String, dynamic>)).toList();
+          return results
+              .map((e) => QuestionDto.fromJson(e as Map<String, dynamic>))
+              .toList();
         }
         if (results is Map && results['exam_questions'] is List) {
           final examQuestions = results['exam_questions'] as List<dynamic>;
@@ -944,11 +959,13 @@ class HttpDataSource implements DataSource {
 
           final Map<String, dynamic> questionsMap = {
             for (var q in questionsList)
-              if (q is Map<String, dynamic>) q['id'].toString(): q
+              if (q is Map<String, dynamic>) q['id'].toString(): q,
           };
 
           final RegExp attemptRegex = RegExp(r'/attempts/(\d+)/');
-          final String? attemptId = attemptRegex.firstMatch(questionsUrl)?.group(1);
+          final String? attemptId = attemptRegex
+              .firstMatch(questionsUrl)
+              ?.group(1);
 
           final List<QuestionDto> parsed = [];
           for (var eq in examQuestions) {
@@ -960,7 +977,8 @@ class HttpDataSource implements DataSource {
                 merged['question'] = rawQuestion;
               }
               if (attemptId != null && merged['answer_url'] == null) {
-                merged['answer_url'] = '/api/v2.2/attempts/$attemptId/questions/${eq['id']}/';
+                merged['answer_url'] =
+                    '/api/v2.2/attempts/$attemptId/questions/${eq['id']}/';
               }
               parsed.add(QuestionDto.fromJson(merged));
             }
@@ -985,8 +1003,8 @@ class HttpDataSource implements DataSource {
       final int resultsLength = (results is List)
           ? results.length
           : ((results is Map && results['exam_questions'] is List)
-              ? (results['exam_questions'] as List).length
-              : 0);
+                ? (results['exam_questions'] as List).length
+                : 0);
       perPage = (firstPageData['per_page'] as int?) ?? resultsLength;
     }
 
@@ -1030,10 +1048,14 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<QuizReviewResultDto> submitQuizAnswer(String answerUrl, AnswerDto answer) async {
+  Future<QuizReviewResultDto> submitQuizAnswer(
+    String answerUrl,
+    AnswerDto answer,
+  ) async {
     return performNetworkRequest(
       _dio.put(answerUrl, data: answer.toJson(review: true)),
-      fromJson: (data) => QuizReviewResultDto.fromJson(data as Map<String, dynamic>),
+      fromJson: (data) =>
+          QuizReviewResultDto.fromJson(data as Map<String, dynamic>),
     );
   }
 

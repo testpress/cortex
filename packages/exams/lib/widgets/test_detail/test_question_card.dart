@@ -73,7 +73,6 @@ class _TestQuestionCardState extends State<TestQuestionCard> {
         _lastQuestionId != widget.question.id ||
         _lastIsDark != isDark ||
         widget.isQuizChecked) {
-
       _htmlData = widget.isQuizChecked
           ? ReviewQuestionHtmlBuilder.build(
               question: widget.question,

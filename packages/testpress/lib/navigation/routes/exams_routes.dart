@@ -79,7 +79,8 @@ class ExamsRoutes {
                     final lesson = extra is LessonDto
                         ? extra
                         : (extra is Lesson ? extra.toDto() : null);
-                    final isQuizMode = state.uri.queryParameters['isQuizMode'] == 'true';
+                    final isQuizMode =
+                        state.uri.queryParameters['isQuizMode'] == 'true';
                     return TestDetailScreen(
                       testId: id,
                       lesson: lesson,
@@ -175,7 +176,8 @@ class ExamsRoutes {
                 final lesson = extra is LessonDto
                     ? extra
                     : (extra is Lesson ? extra.toDto() : null);
-                final isQuizMode = state.uri.queryParameters['isQuizMode'] == 'true';
+                final isQuizMode =
+                    state.uri.queryParameters['isQuizMode'] == 'true';
                 return TestDetailScreen(
                   testId: id,
                   lesson: lesson,

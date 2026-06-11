@@ -116,9 +116,15 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
               isQuizMode: widget.isQuizMode,
             );
       } else if (slug != null && slug.isNotEmpty) {
-        ref.read(examAttemptProvider.notifier).loadExam(slug, isQuizMode: widget.isQuizMode);
-      } else if (widget.lesson == null && !lessonDetailAsync.isLoading && lessonDetailAsync.value == null) {
-        ref.read(examAttemptProvider.notifier).loadExam(widget.testId, isQuizMode: widget.isQuizMode);
+        ref
+            .read(examAttemptProvider.notifier)
+            .loadExam(slug, isQuizMode: widget.isQuizMode);
+      } else if (widget.lesson == null &&
+          !lessonDetailAsync.isLoading &&
+          lessonDetailAsync.value == null) {
+        ref
+            .read(examAttemptProvider.notifier)
+            .loadExam(widget.testId, isQuizMode: widget.isQuizMode);
       }
     }
   }
@@ -226,7 +232,9 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
         exam: state.exam,
         onClose: widget.onClose,
         onStartExam: () {
-          ref.read(examAttemptProvider.notifier).startStandaloneExam(state.exam!, isQuizMode: widget.isQuizMode);
+          ref
+              .read(examAttemptProvider.notifier)
+              .startStandaloneExam(state.exam!, isQuizMode: widget.isQuizMode);
         },
       );
     }
@@ -440,18 +448,18 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                             }
                           },
                         ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Column(
-                  children: [
-                    TestProgressSection(
-                      currentQuestionIndex: globalCurrentIndex,
-                      totalQuestions: displayTotalCount,
-                      isSavedVisible: _isSavedVisible,
-                      answeredCount: answeredCount,
-                    ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      TestProgressSection(
+                        currentQuestionIndex: globalCurrentIndex,
+                        totalQuestions: displayTotalCount,
+                        isSavedVisible: _isSavedVisible,
+                        answeredCount: answeredCount,
+                      ),
                       Expanded(
                         child: PageView.builder(
                           controller: _pageController,
@@ -470,7 +478,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                             final q = allQuestions[index];
                             final a = state.answers[q.id];
                             final isLast = index == allQuestions.length - 1;
-                            
+
                             return TestQuestionCard(
                               key: ValueKey(q.id),
                               question: q,
@@ -478,12 +486,13 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                               isMarked: a?.isMarked ?? false,
                               canGoPrevious: index > 0,
                               isLastQuestion: isLast,
-                              finishLabel: isLast && hasNextSection 
+                              finishLabel: isLast && hasNextSection
                                   ? l10n.nextSection
                                   : null,
                               answeredCount: sectionAnsweredCount,
                               totalQuestions: allQuestions.length,
-                              onPaletteTap: () => setState(() => _showPalette = true),
+                              onPaletteTap: () =>
+                                  setState(() => _showPalette = true),
                               onToggleMark: () => _handleToggleMark(state, q),
                               onPrevious: () {
                                 if (index > 0) {
@@ -502,25 +511,39 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                                 } else if (hasNextSection) {
                                   ref
                                       .read(examAttemptProvider.notifier)
-                                      .switchSection(state.currentSectionIndex + 1);
+                                      .switchSection(
+                                        state.currentSectionIndex + 1,
+                                      );
                                 } else {
-                                  setState(() => _showSubmitConfirmation = true);
+                                  setState(
+                                    () => _showSubmitConfirmation = true,
+                                  );
                                 }
                               },
                               onOptionSelect: (message) {
-                                if (state.checkedQuestions.contains(q.id)) return;
+                                if (state.checkedQuestions.contains(q.id))
+                                  return;
                                 _handleHtmlMessage(state, q, message);
                               },
                               isQuizMode: state.isQuizMode,
-                              isQuizChecked: state.checkedQuestions.contains(q.id),
+                              isQuizChecked: state.checkedQuestions.contains(
+                                q.id,
+                              ),
                               quizReview: state.quizReviews[q.id],
                               onCheck: () async {
                                 if (a != null) {
                                   try {
-                                    await ref.read(examAttemptProvider.notifier).checkQuizAnswer(q.answerUrl, a);
+                                    await ref
+                                        .read(examAttemptProvider.notifier)
+                                        .checkQuizAnswer(q.answerUrl, a);
                                   } catch (e) {
                                     if (context.mounted) {
-                                      AppToast.show(context, message: "Failed to check answer. Please try again.", isError: true);
+                                      AppToast.show(
+                                        context,
+                                        message:
+                                            "Failed to check answer. Please try again.",
+                                        isError: true,
+                                      );
                                     }
                                   }
                                 }
@@ -586,39 +609,45 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
               ),
             if (state.status == ExamAttemptStatus.completed)
               state.isQuizMode
-                ? QuizResultView(
-                    score: state.attempt?.score,
-                    allowRetake: widget.lesson?.allowRetake != false && (state.exam?.allowRetake ?? true),
-                    onRetake: () {
-                      ref.read(examAttemptProvider.notifier).reset();
-                      setState(() {
-                        _currentQuestionIndex = 0;
-                        _showPalette = false;
-                        _showSubmitConfirmation = false;
-                        _showPauseConfirmation = false;
-                      });
-                      final lesson = widget.lesson;
-                      if (lesson != null && lesson.attemptsUrl != null) {
-                        ref.read(examAttemptProvider.notifier).startCourseLinkedExam(
-                          state.exam!,
-                          lesson.attemptsUrl!,
-                          isQuizMode: true,
-                        );
-                      } else {
-                        ref.read(examAttemptProvider.notifier).startStandaloneExam(
-                          state.exam!,
-                          isQuizMode: true,
-                        );
-                      }
-                    },
-                    onClose: widget.onClose,
-                  )
-                : TestResultView(
-                    score: state.attempt?.score,
-                    onReviewAnswers: () => _openReviewAnswers(state),
-                    onViewAnalytics: () => _openAnalytics(state),
-                    onClose: widget.onClose,
-                  ),
+                  ? QuizResultView(
+                      score: state.attempt?.score,
+                      allowRetake:
+                          widget.lesson?.allowRetake != false &&
+                          (state.exam?.allowRetake ?? true),
+                      onRetake: () {
+                        ref.read(examAttemptProvider.notifier).reset();
+                        setState(() {
+                          _currentQuestionIndex = 0;
+                          _showPalette = false;
+                          _showSubmitConfirmation = false;
+                          _showPauseConfirmation = false;
+                        });
+                        final lesson = widget.lesson;
+                        if (lesson != null && lesson.attemptsUrl != null) {
+                          ref
+                              .read(examAttemptProvider.notifier)
+                              .startCourseLinkedExam(
+                                state.exam!,
+                                lesson.attemptsUrl!,
+                                isQuizMode: true,
+                              );
+                        } else {
+                          ref
+                              .read(examAttemptProvider.notifier)
+                              .startStandaloneExam(
+                                state.exam!,
+                                isQuizMode: true,
+                              );
+                        }
+                      },
+                      onClose: widget.onClose,
+                    )
+                  : TestResultView(
+                      score: state.attempt?.score,
+                      onReviewAnswers: () => _openReviewAnswers(state),
+                      onViewAnalytics: () => _openAnalytics(state),
+                      onClose: widget.onClose,
+                    ),
           ],
         ),
       ),
@@ -689,9 +718,13 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
       isMarked: currentAnswer.isMarked,
     );
     if (state.isQuizMode) {
-      ref.read(examAttemptProvider.notifier).updateLocalAnswer(question.id, newAnswer);
+      ref
+          .read(examAttemptProvider.notifier)
+          .updateLocalAnswer(question.id, newAnswer);
     } else {
-      ref.read(examAttemptProvider.notifier).submitAnswer(question.answerUrl, newAnswer);
+      ref
+          .read(examAttemptProvider.notifier)
+          .submitAnswer(question.answerUrl, newAnswer);
       _showSavedIndicator();
     }
   }

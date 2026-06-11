@@ -57,9 +57,7 @@ class NavButton extends StatelessWidget {
               SizedBox(
                 width: 14,
                 height: 14,
-                child: AppLoadingIndicator(
-                  color: textColor,
-                ),
+                child: AppLoadingIndicator(color: textColor),
               ),
               const SizedBox(width: 8),
             ] else if (isBack) ...[

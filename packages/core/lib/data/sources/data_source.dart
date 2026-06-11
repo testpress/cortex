@@ -177,7 +177,10 @@ abstract class DataSource {
   Future<void> submitAnswer(String answerUrl, AnswerDto answer);
 
   /// Submit a single answer in quiz mode and return the server's review state.
-  Future<QuizReviewResultDto> submitQuizAnswer(String answerUrl, AnswerDto answer);
+  Future<QuizReviewResultDto> submitQuizAnswer(
+    String answerUrl,
+    AnswerDto answer,
+  );
 
   /// Send a heartbeat to maintain the attempt session.
   Future<AttemptDto> sendHeartbeat(String heartbeatUrl);

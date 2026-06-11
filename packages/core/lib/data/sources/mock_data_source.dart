@@ -1240,9 +1240,12 @@ class MockDataSource implements DataSource {
     final attemptType = data?['attempt_type'] as int?;
     return AttemptDto(
       id: 'mock-attempt-1',
-      questionsUrl: 'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/questions/',
-      heartbeatUrl: 'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/heartbeat/',
-      endUrl: 'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/end/',
+      questionsUrl:
+          'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/questions/',
+      heartbeatUrl:
+          'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/heartbeat/',
+      endUrl:
+          'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/end/',
       attemptType: attemptType,
     );
   }
@@ -1297,7 +1300,10 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<QuizReviewResultDto> submitQuizAnswer(String answerUrl, AnswerDto answer) async {
+  Future<QuizReviewResultDto> submitQuizAnswer(
+    String answerUrl,
+    AnswerDto answer,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 300));
     return QuizReviewResultDto(
       questionId: answer.questionId,

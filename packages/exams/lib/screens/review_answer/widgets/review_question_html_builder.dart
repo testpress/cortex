@@ -35,7 +35,8 @@ abstract final class ReviewQuestionHtmlBuilder {
     );
 
     // ── Evaluate exact correctness ─────────────────────────────────────────
-    final selectedIds = attemptState?.selectedOptions.map((e) => e.toString()).toList() ?? [];
+    final selectedIds =
+        attemptState?.selectedOptions.map((e) => e.toString()).toList() ?? [];
     selectedIds.sort();
 
     List<String> correctIds;
@@ -43,14 +44,15 @@ abstract final class ReviewQuestionHtmlBuilder {
     if (quizReview != null && quizReview.correctAnswers.isNotEmpty) {
       correctIds = quizReview.correctAnswers.map((e) => e.toString()).toList();
     } else {
-      correctIds = (question.correctOptionIds.isNotEmpty
-              ? question.correctOptionIds
-              : question.options
-                  .where((opt) => opt.isCorrect)
-                  .map((opt) => opt.id)
-                  .toList())
-          .map((e) => e.toString())
-          .toList();
+      correctIds =
+          (question.correctOptionIds.isNotEmpty
+                  ? question.correctOptionIds
+                  : question.options
+                        .where((opt) => opt.isCorrect)
+                        .map((opt) => opt.id)
+                        .toList())
+              .map((e) => e.toString())
+              .toList();
     }
     dev.log(
       'Review builder: '
@@ -70,30 +72,37 @@ abstract final class ReviewQuestionHtmlBuilder {
     sb.writeln('<div class="review-container">');
     sb.writeln('<div class="question-text">${question.text}</div>');
 
-    final isInputType = question.type == 'shortAnswer' ||
+    final isInputType =
+        question.type == 'shortAnswer' ||
         question.type == 'numerical' ||
         question.type == 'essay';
 
     if (isInputType) {
-      final userValue = (question.type == 'essay'
+      final userValue =
+          (question.type == 'essay'
               ? attemptState?.essayText
               : attemptState?.shortText) ??
           '';
-      
-      final hasResult = quizReview?.result ??
+
+      final hasResult =
+          quizReview?.result ??
           (attemptState?.result != null
-              ? (attemptState!.result!.toLowerCase() == 'correct' || attemptState.result == '1')
+              ? (attemptState!.result!.toLowerCase() == 'correct' ||
+                    attemptState.result == '1')
               : null);
 
       bool isCorrect;
       if (hasResult != null) {
         isCorrect = hasResult;
-      } else if (question.type == 'shortAnswer' || question.type == 'numerical') {
+      } else if (question.type == 'shortAnswer' ||
+          question.type == 'numerical') {
         final userAns = userValue.trim().toLowerCase();
         if (userAns.isEmpty) {
           isCorrect = false;
         } else {
-          final correctOptions = question.options.where((o) => o.isCorrect).toList();
+          final correctOptions = question.options
+              .where((o) => o.isCorrect)
+              .toList();
           final correctValues = correctOptions.isNotEmpty
               ? correctOptions.map((o) => o.text).toList()
               : question.options.map((o) => o.text).toList();
@@ -118,8 +127,13 @@ abstract final class ReviewQuestionHtmlBuilder {
       bool isUnansw;
       if (attemptState?.result != null) {
         final res = attemptState!.result!.toLowerCase();
-        isUnansw = res == 'unanswered' || res == 'unvisited' || res == '0' || res == '3';
-      } else if (question.type == 'shortAnswer' || question.type == 'numerical') {
+        isUnansw =
+            res == 'unanswered' ||
+            res == 'unvisited' ||
+            res == '0' ||
+            res == '3';
+      } else if (question.type == 'shortAnswer' ||
+          question.type == 'numerical') {
         isUnansw = userValue.trim().isEmpty;
       } else if (question.type == 'essay') {
         isUnansw = userValue.trim().isEmpty;
@@ -151,7 +165,9 @@ abstract final class ReviewQuestionHtmlBuilder {
         ''');
 
         // Render the correct answer(s) below it
-        final correctOptions = question.options.where((o) => o.isCorrect).toList();
+        final correctOptions = question.options
+            .where((o) => o.isCorrect)
+            .toList();
         final correctValues = correctOptions.isNotEmpty
             ? correctOptions.map((o) => o.text).toList()
             : question.options.map((o) => o.text).toList();
@@ -170,9 +186,15 @@ abstract final class ReviewQuestionHtmlBuilder {
       // ── Colour-coded options ───────────────────────────────────────────────
       sb.writeln('<div class="options-container">');
       for (final opt in question.options) {
-        final isCorrect = correctIds.any((id) => id.toString() == opt.id.toString());
-        final isSelected = attemptState?.selectedOptions.any((id) => id.toString() == opt.id.toString()) ?? false;
-        final isActive   = isCorrect || isSelected;
+        final isCorrect = correctIds.any(
+          (id) => id.toString() == opt.id.toString(),
+        );
+        final isSelected =
+            attemptState?.selectedOptions.any(
+              (id) => id.toString() == opt.id.toString(),
+            ) ??
+            false;
+        final isActive = isCorrect || isSelected;
 
         // Border, background and text colour per option state
         final optBorder = isCorrect
@@ -207,14 +229,20 @@ abstract final class ReviewQuestionHtmlBuilder {
     }
 
     // ── Explanation (if present) ───────────────────────────────────────────
-    final explanationContent = (quizReview != null && quizReview.explanationHtml != null && quizReview.explanationHtml!.isNotEmpty)
+    final explanationContent =
+        (quizReview != null &&
+            quizReview.explanationHtml != null &&
+            quizReview.explanationHtml!.isNotEmpty)
         ? quizReview.explanationHtml!
         : question.explanation;
 
     if (explanationContent != null && explanationContent.isNotEmpty) {
-      final explBg     = _rgba(design.colors.accent2, design.isDark ? 0.18 : 0.12);
-      final explBorder = _rgba(design.colors.accent2, design.isDark ? 0.40 : 0.35);
-      final explTitle  = _hex(design.colors.accent2);
+      final explBg = _rgba(design.colors.accent2, design.isDark ? 0.18 : 0.12);
+      final explBorder = _rgba(
+        design.colors.accent2,
+        design.isDark ? 0.40 : 0.35,
+      );
+      final explTitle = _hex(design.colors.accent2);
 
       sb.writeln('''
         <div class="explanation-box" style="background-color: $explBg; border-color: $explBorder;">
@@ -228,7 +256,12 @@ abstract final class ReviewQuestionHtmlBuilder {
 
     sb.writeln('</div>');
 
-    return _css(cardColor: cardColor, textPrimary: textPrimary, borderColor: borderColor) + sb.toString();
+    return _css(
+          cardColor: cardColor,
+          textPrimary: textPrimary,
+          borderColor: borderColor,
+        ) +
+        sb.toString();
   }
 
   // ── Private helpers ────────────────────────────────────────────────────────

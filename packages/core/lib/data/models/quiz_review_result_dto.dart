@@ -20,12 +20,20 @@ class QuizReviewResultDto {
   factory QuizReviewResultDto.fromJson(Map<String, dynamic> json) {
     List<String> parseStringList(dynamic value) {
       if (value is List) {
-        return value.map((e) {
-          if (e is Map) {
-            return (e['id'] ?? e['answer_id'] ?? e['answerId'] ?? e['question_id'] ?? '').toString();
-          }
-          return e.toString();
-        }).where((e) => e.isNotEmpty).toList();
+        return value
+            .map((e) {
+              if (e is Map) {
+                return (e['id'] ??
+                        e['answer_id'] ??
+                        e['answerId'] ??
+                        e['question_id'] ??
+                        '')
+                    .toString();
+              }
+              return e.toString();
+            })
+            .where((e) => e.isNotEmpty)
+            .toList();
       }
       return const <String>[];
     }
@@ -38,7 +46,10 @@ class QuizReviewResultDto {
             source['correctAnswersIds'] ??
             source['correct_option_ids'] ??
             source['correctOptionIds'] ??
-            (source['question'] is Map ? (source['question']['correct_option_ids'] ?? source['question']['correctOptionIds']) : null),
+            (source['question'] is Map
+                ? (source['question']['correct_option_ids'] ??
+                      source['question']['correctOptionIds'])
+                : null),
       );
       if (direct.isNotEmpty) return direct;
 
@@ -49,13 +60,20 @@ class QuizReviewResultDto {
           return nested
               .whereType<Map>()
               .where((answer) {
-                final raw = answer['is_correct'] ?? answer['isCorrect'] ?? answer['correct'];
+                final raw =
+                    answer['is_correct'] ??
+                    answer['isCorrect'] ??
+                    answer['correct'];
                 if (raw is bool) return raw;
                 if (raw == null) return false;
                 final text = raw.toString().toLowerCase();
                 return text == 'true' || text == '1';
               })
-              .map((answer) => (answer['id'] ?? answer['answer_id'] ?? answer['answerId']).toString())
+              .map(
+                (answer) =>
+                    (answer['id'] ?? answer['answer_id'] ?? answer['answerId'])
+                        .toString(),
+              )
               .where((id) => id.isNotEmpty && id != 'null')
               .toList();
         }
@@ -66,13 +84,20 @@ class QuizReviewResultDto {
         return answers
             .whereType<Map>()
             .where((answer) {
-              final raw = answer['is_correct'] ?? answer['isCorrect'] ?? answer['correct'];
+              final raw =
+                  answer['is_correct'] ??
+                  answer['isCorrect'] ??
+                  answer['correct'];
               if (raw is bool) return raw;
               if (raw == null) return false;
               final text = raw.toString().toLowerCase();
               return text == 'true' || text == '1';
             })
-            .map((answer) => (answer['id'] ?? answer['answer_id'] ?? answer['answerId']).toString())
+            .map(
+              (answer) =>
+                  (answer['id'] ?? answer['answer_id'] ?? answer['answerId'])
+                      .toString(),
+            )
             .where((id) => id.isNotEmpty && id != 'null')
             .toList();
       }
@@ -89,22 +114,32 @@ class QuizReviewResultDto {
       return null;
     }
 
-    final selectedAnswers = parseStringList(json['selected_answers'] ?? json['selectedAnswers']);
+    final selectedAnswers = parseStringList(
+      json['selected_answers'] ?? json['selectedAnswers'],
+    );
     final correctAnswers = parseCorrectAnswers(json);
 
     final nestedQuestion = json['question'];
-    final questionId = json['question_id']?.toString() ??
+    final questionId =
+        json['question_id']?.toString() ??
         json['questionId']?.toString() ??
         (nestedQuestion is Map ? nestedQuestion['id']?.toString() : null) ??
         json['id']?.toString() ??
         '';
 
-    final rawResult = parseBool(json['result'] ?? json['is_correct'] ?? json['correct'] ?? json['isCorrect']);
-    final derivedResult = rawResult ?? (correctAnswers.isNotEmpty
-        ? (selectedAnswers.isNotEmpty &&
-            selectedAnswers.length == correctAnswers.length &&
-            selectedAnswers.toSet().containsAll(correctAnswers))
-        : null);
+    final rawResult = parseBool(
+      json['result'] ??
+          json['is_correct'] ??
+          json['correct'] ??
+          json['isCorrect'],
+    );
+    final derivedResult =
+        rawResult ??
+        (correctAnswers.isNotEmpty
+            ? (selectedAnswers.isNotEmpty &&
+                  selectedAnswers.length == correctAnswers.length &&
+                  selectedAnswers.toSet().containsAll(correctAnswers))
+            : null);
 
     final parsed = QuizReviewResultDto(
       questionId: questionId,
@@ -112,7 +147,15 @@ class QuizReviewResultDto {
       correctAnswers: correctAnswers,
       result: derivedResult,
       review: json['review']?.toString(),
-      explanationHtml: (json['explanation_html'] ?? json['explanationHtml'] ?? json['explanation'] ?? (nestedQuestion is Map ? nestedQuestion['explanation'] ?? nestedQuestion['explanation_html'] : null))?.toString(),
+      explanationHtml:
+          (json['explanation_html'] ??
+                  json['explanationHtml'] ??
+                  json['explanation'] ??
+                  (nestedQuestion is Map
+                      ? nestedQuestion['explanation'] ??
+                            nestedQuestion['explanation_html']
+                      : null))
+              ?.toString(),
     );
 
     dev.log(

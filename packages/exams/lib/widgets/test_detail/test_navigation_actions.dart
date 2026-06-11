@@ -63,7 +63,9 @@ class TestNavigationActions extends StatelessWidget {
               )
             else
               NavButton(
-                label: finishLabel ?? (isLastQuestion ? l10n.testFinish : l10n.testNext),
+                label:
+                    finishLabel ??
+                    (isLastQuestion ? l10n.testFinish : l10n.testNext),
                 icon: LucideIcons.chevronRight,
                 onTap: onNext,
               ),

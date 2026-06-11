@@ -38,54 +38,69 @@ void main() {
     );
   }
 
-  testWidgets('TestNavigationActions shows Next normally when not in quiz mode', (WidgetTester tester) async {
-    await tester.pumpWidget(createWidgetUnderTest(
-      isQuizMode: false,
-      isQuizChecked: false,
-      isLastQuestion: false,
-    ));
-    await tester.pumpAndSettle();
+  testWidgets(
+    'TestNavigationActions shows Next normally when not in quiz mode',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(
+        createWidgetUnderTest(
+          isQuizMode: false,
+          isQuizChecked: false,
+          isLastQuestion: false,
+        ),
+      );
+      await tester.pumpAndSettle();
 
-    final nextButton = find.widgetWithText(NavButton, 'Next');
-    expect(nextButton, findsOneWidget);
-    
-    final checkButton = find.widgetWithText(NavButton, 'Check');
-    expect(checkButton, findsNothing);
-  });
+      final nextButton = find.widgetWithText(NavButton, 'Next');
+      expect(nextButton, findsOneWidget);
 
-  testWidgets('TestNavigationActions shows Check and hides Next before check in quiz mode', (WidgetTester tester) async {
-    await tester.pumpWidget(createWidgetUnderTest(
-      isQuizMode: true,
-      isQuizChecked: false,
-      isLastQuestion: false,
-    ));
-    await tester.pumpAndSettle();
+      final checkButton = find.widgetWithText(NavButton, 'Check');
+      expect(checkButton, findsNothing);
+    },
+  );
 
-    final checkButton = find.widgetWithText(NavButton, 'Check');
-    expect(checkButton, findsOneWidget);
+  testWidgets(
+    'TestNavigationActions shows Check and hides Next before check in quiz mode',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(
+        createWidgetUnderTest(
+          isQuizMode: true,
+          isQuizChecked: false,
+          isLastQuestion: false,
+        ),
+      );
+      await tester.pumpAndSettle();
 
-    final nextButton = find.widgetWithText(NavButton, 'Next');
-    expect(nextButton, findsNothing);
-    final continueButton = find.widgetWithText(NavButton, 'Continue');
-    expect(continueButton, findsNothing);
-  });
+      final checkButton = find.widgetWithText(NavButton, 'Check');
+      expect(checkButton, findsOneWidget);
 
-  testWidgets('TestNavigationActions shows Continue and hides Check after check in quiz mode', (WidgetTester tester) async {
-    await tester.pumpWidget(createWidgetUnderTest(
-      isQuizMode: true,
-      isQuizChecked: true,
-      isLastQuestion: false,
-    ));
-    await tester.pumpAndSettle();
+      final nextButton = find.widgetWithText(NavButton, 'Next');
+      expect(nextButton, findsNothing);
+      final continueButton = find.widgetWithText(NavButton, 'Continue');
+      expect(continueButton, findsNothing);
+    },
+  );
 
-    final continueButton = find.widgetWithText(NavButton, 'Continue');
-    expect(continueButton, findsOneWidget);
+  testWidgets(
+    'TestNavigationActions shows Continue and hides Check after check in quiz mode',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(
+        createWidgetUnderTest(
+          isQuizMode: true,
+          isQuizChecked: true,
+          isLastQuestion: false,
+        ),
+      );
+      await tester.pumpAndSettle();
 
-    final checkButton = find.widgetWithText(NavButton, 'Check');
-    expect(checkButton, findsNothing);
-    
-    // Asserts no "Try Again" is present
-    final tryAgainButton = find.widgetWithText(NavButton, 'Try Again');
-    expect(tryAgainButton, findsNothing);
-  });
+      final continueButton = find.widgetWithText(NavButton, 'Continue');
+      expect(continueButton, findsOneWidget);
+
+      final checkButton = find.widgetWithText(NavButton, 'Check');
+      expect(checkButton, findsNothing);
+
+      // Asserts no "Try Again" is present
+      final tryAgainButton = find.widgetWithText(NavButton, 'Try Again');
+      expect(tryAgainButton, findsNothing);
+    },
+  );
 }

@@ -242,7 +242,9 @@ class AttemptDto {
       negativeMarks: (data['negative_marks'] ?? json['negative_marks'])
           ?.toString(),
       timeTaken: (data['time_taken'] ?? json['time_taken'])?.toString(),
-      lastViewedQuestionId: json['last_viewed_question_id'] as int? ?? data['last_viewed_question_id'] as int?,
+      lastViewedQuestionId:
+          json['last_viewed_question_id'] as int? ??
+          data['last_viewed_question_id'] as int?,
       attemptType: json['attempt_type'] as int? ?? data['attempt_type'] as int?,
     );
   }

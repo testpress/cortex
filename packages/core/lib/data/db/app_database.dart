@@ -137,11 +137,13 @@ class AppDatabase extends _$AppDatabase {
   Future<void> setQuizModeAttempt(String attemptId) async {
     final settings = await getAppSettings();
     final existing = settings.quizModeAttemptsJson;
-    final Map<String, dynamic> map =
-        existing != null ? Map<String, dynamic>.from(jsonDecode(existing) as Map) : {};
+    final Map<String, dynamic> map = existing != null
+        ? Map<String, dynamic>.from(jsonDecode(existing) as Map)
+        : {};
     map[attemptId] = true;
-    await (update(appSettingsTable)..where((t) => t.id.equals(1)))
-        .write(AppSettingsTableCompanion(quizModeAttemptsJson: Value(jsonEncode(map))));
+    await (update(appSettingsTable)..where((t) => t.id.equals(1))).write(
+      AppSettingsTableCompanion(quizModeAttemptsJson: Value(jsonEncode(map))),
+    );
   }
 
   /// Returns true if an attempt was originally started in quiz mode.

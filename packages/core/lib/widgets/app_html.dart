@@ -173,7 +173,6 @@ class _AppHtmlState extends State<AppHtml> {
     _loadHtml();
   }
 
-
   void _loadHtml() {
     final design = Design.of(context);
     final bgColor = widget.backgroundColor;

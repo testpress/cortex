@@ -39,11 +39,15 @@ mixin ReviewStateLogic {
       return false; // Essay questions are graded manually
     }
     if (state.selectedOptions.isEmpty) return false;
-    final selected = List<String>.from(state.selectedOptions.map((e) => e.toString()))..sort();
+    final selected = List<String>.from(
+      state.selectedOptions.map((e) => e.toString()),
+    )..sort();
     final correct = List<String>.from(
       (q.correctOptionIds.isNotEmpty
               ? q.correctOptionIds
-              : q.options.where((option) => option.isCorrect).map((option) => option.id))
+              : q.options
+                    .where((option) => option.isCorrect)
+                    .map((option) => option.id))
           .map((e) => e.toString()),
     )..sort();
     return listEquals(selected, correct);
