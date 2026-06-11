@@ -92,7 +92,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
     final type = (bookmark.bookmarkType ?? bookmark.type).toLowerCase();
     switch (type) {
       case 'forumpost':
-        if (bookmark.slug != null) {
+        if (bookmark.slug != null && bookmark.slug!.isNotEmpty) {
           context.push('/home/discussions/forum/posts/${bookmark.slug}');
         }
         break;

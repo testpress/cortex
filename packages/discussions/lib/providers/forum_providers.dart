@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
 import '../repositories/forum_repository.dart';
@@ -17,16 +18,16 @@ final globalForumThreadDetailProvider =
       final repo = await ref.watch(forumRepositoryProvider.future);
 
       final localData = await repo.watchThreadBySlug(slug).first;
-      final fetchFuture = repo.fetchThread(slug);
 
       if (localData == null) {
         try {
-          await fetchFuture;
-        } catch (_) {
-          // Ignore network errors so the provider doesn't crash
+          await repo.fetchThread(slug);
+        } catch (e) {
+          // Swallow network errors to prevent provider crash, but log them for debugging
+          debugPrint('DEBUG: Failed to fetch thread $slug: $e');
         }
       } else {
-        fetchFuture.ignore();
+        repo.fetchThread(slug).ignore();
       }
 
       yield* repo.watchThreadBySlug(slug);
