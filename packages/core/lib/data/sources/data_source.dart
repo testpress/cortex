@@ -231,6 +231,7 @@ abstract class DataSource {
   Future<PaginatedResponseDto<DoubtDto>> getDoubts({
     int page = 1,
     String? searchQuery,
+    int? chapterContentId,
   });
 
   /// Fetch the detail for a specific doubt, including its replies.

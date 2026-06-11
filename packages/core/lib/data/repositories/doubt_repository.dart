@@ -25,10 +25,12 @@ class DoubtRepository {
   Future<PaginatedResponseDto<DoubtDto>> syncDoubts({
     int page = 1,
     String? searchQuery,
+    int? chapterContentId,
   }) async {
     final response = await _dataSource.getDoubts(
       page: page,
       searchQuery: searchQuery,
+      chapterContentId: chapterContentId,
     );
     await _db.batch((b) {
       b.insertAllOnConflictUpdate(
