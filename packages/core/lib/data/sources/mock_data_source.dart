@@ -1437,9 +1437,17 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<List<SubjectAnalyticsDto>> getAnalyticsData() async {
+  Future<PaginatedResponseDto<SubjectAnalyticsDto>> getAnalyticsData({
+    int page = 1,
+    int? parentId,
+  }) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    return mockSubjectAnalytics;
+    return PaginatedResponseDto<SubjectAnalyticsDto>(
+      count: mockSubjectAnalytics.length,
+      next: null,
+      previous: null,
+      results: mockSubjectAnalytics,
+    );
   }
 
   @override

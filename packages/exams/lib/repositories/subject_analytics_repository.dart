@@ -46,34 +46,51 @@ class SubjectAnalyticsRepository {
         .map((row) => row == null ? null : _mapRowToDto(row));
   }
 
-  Future<void> refreshSubjectAnalytics() async {
+  Future<PaginatedResponseDto<SubjectAnalyticsDto>> fetchSubjectAnalyticsPage({
+    int page = 1,
+    int? parentId,
+  }) async {
     try {
-      final freshData = await _dataSource.getAnalyticsData();
+      final response = await _dataSource.getAnalyticsData(page: page, parentId: parentId);
 
-      await _db.batch((batch) {
-        batch.insertAllOnConflictUpdate(
-          _db.subjectAnalyticsTable,
-          freshData
-              .map(
-                (dto) => SubjectAnalyticsTableCompanion(
-                  id: Value(dto.id),
-                  name: Value(dto.name),
-                  totalQuestionCount: Value(dto.totalQuestionCount),
-                  correctAnswerCount: Value(dto.correctAnswerCount),
-                  incorrectAnswerCount: Value(dto.incorrectAnswerCount),
-                  unansweredCount: Value(dto.unansweredCount),
-                  correctPercentage: Value(dto.correctPercentage),
-                  parentId: Value(dto.parentId),
-                  isLeaf: Value(dto.isLeaf),
-                ),
-              )
-              .toList(),
-        );
-      });
+      final companions = response.results.map(
+        (dto) => SubjectAnalyticsTableCompanion(
+          id: Value(dto.id),
+          name: Value(dto.name),
+          totalQuestionCount: Value(dto.totalQuestionCount),
+          correctAnswerCount: Value(dto.correctAnswerCount),
+          incorrectAnswerCount: Value(dto.incorrectAnswerCount),
+          unansweredCount: Value(dto.unansweredCount),
+          correctPercentage: Value(dto.correctPercentage),
+          parentId: Value(dto.parentId),
+          isLeaf: Value(dto.isLeaf),
+        ),
+      ).toList();
+
+      if (page == 1) {
+        await _db.transaction(() async {
+          final query = _db.delete(_db.subjectAnalyticsTable);
+          if (parentId == null) {
+            query.where((t) => t.parentId.isNull());
+          } else {
+            query.where((t) => t.parentId.equals(parentId));
+          }
+          await query.go();
+
+          await _db.batch((batch) {
+            batch.insertAll(_db.subjectAnalyticsTable, companions);
+          });
+        });
+      } else {
+        await _db.batch((batch) {
+          batch.insertAllOnConflictUpdate(_db.subjectAnalyticsTable, companions);
+        });
+      }
+
+      return response;
     } catch (e) {
-      debugPrint(
-        'SubjectAnalyticsRepository: Failed to refresh subject analytics: $e',
-      );
+      debugPrint('SubjectAnalyticsRepository: Failed to fetch subject analytics page: $e');
+      rethrow;
     }
   }
 }
