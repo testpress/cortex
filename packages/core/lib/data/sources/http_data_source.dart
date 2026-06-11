@@ -234,6 +234,14 @@ class HttpDataSource implements DataSource {
   }
 
   @override
+  Future<ForumThreadDto> getForumThread(String slug) async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.forumThreadDetail(slug)),
+      fromJson: (data) => ForumThreadDto.fromJson(data as Map<String, dynamic>),
+    );
+  }
+
+  @override
   Future<PaginatedResponseDto<ForumCommentDto>> getForumComments({
     required int threadId,
     int page = 1,

@@ -15,6 +15,20 @@ Future<ForumRepository> forumRepository(ForumRepositoryRef ref) async {
 final globalForumThreadDetailProvider =
     StreamProvider.family<ForumThreadDto?, String>((ref, slug) async* {
       final repo = await ref.watch(forumRepositoryProvider.future);
+
+      final localData = await repo.watchThreadBySlug(slug).first;
+      final fetchFuture = repo.fetchThread(slug);
+
+      if (localData == null) {
+        try {
+          await fetchFuture;
+        } catch (_) {
+          // Ignore network errors so the provider doesn't crash
+        }
+      } else {
+        fetchFuture.ignore();
+      }
+
       yield* repo.watchThreadBySlug(slug);
     });
 

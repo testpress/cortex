@@ -88,18 +88,26 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
     };
   }
 
-  /// Routes to the correct destination based on what the bookmark points to.
   void _navigateToBookmark(BuildContext context, BookmarkDto bookmark) {
     final type = (bookmark.bookmarkType ?? bookmark.type).toLowerCase();
     switch (type) {
       case 'forumpost':
-      case 'post':
-      case 'question':
+        if (bookmark.slug != null) {
+          context.push('/home/discussions/forum/posts/${bookmark.slug}');
+        }
         break;
-      default:
+      case 'video':
+      case 'livestream':
+      case 'pdf':
+      case 'attachment':
+      case 'notes':
+      case 'html':
         if (bookmark.lessonId > 0) {
           context.push('/study/lesson/${bookmark.lessonId}');
         }
+        break;
+      default:
+        // No-ops for unsupported types (post, exam, notice, etc.)
         break;
     }
   }

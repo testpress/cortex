@@ -65,6 +65,9 @@ abstract class DataSource {
     String? searchQuery,
   });
 
+  /// Fetch a single forum thread by slug.
+  Future<ForumThreadDto> getForumThread(String slug);
+
   // ── Forum Comments ─────────────────────────────────────────────────────────
 
   Future<PaginatedResponseDto<ForumCommentDto>> getForumComments({

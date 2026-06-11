@@ -877,6 +877,16 @@ class MockDataSource implements DataSource {
   }
 
   @override
+  Future<ForumThreadDto> getForumThread(String slug) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    final thread = mockForumThreads().firstWhere(
+      (t) => t.slug == slug,
+      orElse: () => mockForumThreads().first,
+    );
+    return thread;
+  }
+
+  @override
   Future<PaginatedResponseDto<ForumCommentDto>> getForumComments({
     required int threadId,
     int page = 1,

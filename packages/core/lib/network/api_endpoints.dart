@@ -52,6 +52,8 @@ class ApiEndpoints {
   // Forum
   static const String forumCategories = '/api/v2.3/forum/categories/';
   static const String forumThreads = '/api/v2.5/discussions/';
+  static String forumThreadDetail(String slug) =>
+      '/api/v2.5/discussions/$slug/';
   static String forumComments(int threadId) =>
       '/api/v2.5/discussions/$threadId/comments/';
 
