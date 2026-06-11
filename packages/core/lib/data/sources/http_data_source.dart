@@ -525,10 +525,14 @@ class HttpDataSource implements DataSource {
   Future<PaginatedResponseDto<DoubtDto>> getDoubts({
     int page = 1,
     String? searchQuery,
+    int? chapterContentId,
   }) async {
     final queryParameters = <String, dynamic>{'page': page};
     if (searchQuery != null && searchQuery.isNotEmpty) {
       queryParameters['search'] = searchQuery;
+    }
+    if (chapterContentId != null) {
+      queryParameters['chapter_content_id'] = chapterContentId;
     }
 
     return performNetworkRequest(

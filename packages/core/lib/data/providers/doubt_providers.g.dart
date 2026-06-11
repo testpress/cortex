@@ -181,6 +181,127 @@ class _DoubtsSearchProviderElement
   String get query => (origin as DoubtsSearchProvider).query;
 }
 
+String _$lessonDoubtsHash() => r'290347176a86bc72e2efe665ddc54f606d0f445a';
+
+/// See also [lessonDoubts].
+@ProviderFor(lessonDoubts)
+const lessonDoubtsProvider = LessonDoubtsFamily();
+
+/// See also [lessonDoubts].
+class LessonDoubtsFamily extends Family<AsyncValue<List<DoubtDto>>> {
+  /// See also [lessonDoubts].
+  const LessonDoubtsFamily();
+
+  /// See also [lessonDoubts].
+  LessonDoubtsProvider call(int chapterContentId) {
+    return LessonDoubtsProvider(chapterContentId);
+  }
+
+  @override
+  LessonDoubtsProvider getProviderOverride(
+    covariant LessonDoubtsProvider provider,
+  ) {
+    return call(provider.chapterContentId);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'lessonDoubtsProvider';
+}
+
+/// See also [lessonDoubts].
+class LessonDoubtsProvider extends AutoDisposeFutureProvider<List<DoubtDto>> {
+  /// See also [lessonDoubts].
+  LessonDoubtsProvider(int chapterContentId)
+    : this._internal(
+        (ref) => lessonDoubts(ref as LessonDoubtsRef, chapterContentId),
+        from: lessonDoubtsProvider,
+        name: r'lessonDoubtsProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$lessonDoubtsHash,
+        dependencies: LessonDoubtsFamily._dependencies,
+        allTransitiveDependencies:
+            LessonDoubtsFamily._allTransitiveDependencies,
+        chapterContentId: chapterContentId,
+      );
+
+  LessonDoubtsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.chapterContentId,
+  }) : super.internal();
+
+  final int chapterContentId;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<DoubtDto>> Function(LessonDoubtsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: LessonDoubtsProvider._internal(
+        (ref) => create(ref as LessonDoubtsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        chapterContentId: chapterContentId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<DoubtDto>> createElement() {
+    return _LessonDoubtsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is LessonDoubtsProvider &&
+        other.chapterContentId == chapterContentId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, chapterContentId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin LessonDoubtsRef on AutoDisposeFutureProviderRef<List<DoubtDto>> {
+  /// The parameter `chapterContentId` of this provider.
+  int get chapterContentId;
+}
+
+class _LessonDoubtsProviderElement
+    extends AutoDisposeFutureProviderElement<List<DoubtDto>>
+    with LessonDoubtsRef {
+  _LessonDoubtsProviderElement(super.provider);
+
+  @override
+  int get chapterContentId => (origin as LessonDoubtsProvider).chapterContentId;
+}
+
 String _$doubtTopicsSyncHash() => r'60062db8ad7381a14c31707ce688f1e2d6a743c2';
 
 /// See also [doubtTopicsSync].

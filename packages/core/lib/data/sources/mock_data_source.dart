@@ -1439,6 +1439,7 @@ class MockDataSource implements DataSource {
   Future<PaginatedResponseDto<DoubtDto>> getDoubts({
     int page = 1,
     String? searchQuery,
+    int? chapterContentId,
   }) async {
     await Future.delayed(const Duration(milliseconds: 500));
     return PaginatedResponseDto<DoubtDto>(
