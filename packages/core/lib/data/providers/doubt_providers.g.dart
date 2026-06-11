@@ -181,7 +181,7 @@ class _DoubtsSearchProviderElement
   String get query => (origin as DoubtsSearchProvider).query;
 }
 
-String _$lessonDoubtsHash() => r'290347176a86bc72e2efe665ddc54f606d0f445a';
+String _$lessonDoubtsHash() => r'5e177cabee89ca879a869f172a69cb9a0b39331e';
 
 /// See also [lessonDoubts].
 @ProviderFor(lessonDoubts)
@@ -220,7 +220,7 @@ class LessonDoubtsFamily extends Family<AsyncValue<List<DoubtDto>>> {
 }
 
 /// See also [lessonDoubts].
-class LessonDoubtsProvider extends AutoDisposeFutureProvider<List<DoubtDto>> {
+class LessonDoubtsProvider extends AutoDisposeStreamProvider<List<DoubtDto>> {
   /// See also [lessonDoubts].
   LessonDoubtsProvider(int chapterContentId)
     : this._internal(
@@ -250,7 +250,7 @@ class LessonDoubtsProvider extends AutoDisposeFutureProvider<List<DoubtDto>> {
 
   @override
   Override overrideWith(
-    FutureOr<List<DoubtDto>> Function(LessonDoubtsRef provider) create,
+    Stream<List<DoubtDto>> Function(LessonDoubtsRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -267,7 +267,7 @@ class LessonDoubtsProvider extends AutoDisposeFutureProvider<List<DoubtDto>> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<List<DoubtDto>> createElement() {
+  AutoDisposeStreamProviderElement<List<DoubtDto>> createElement() {
     return _LessonDoubtsProviderElement(this);
   }
 
@@ -288,13 +288,13 @@ class LessonDoubtsProvider extends AutoDisposeFutureProvider<List<DoubtDto>> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin LessonDoubtsRef on AutoDisposeFutureProviderRef<List<DoubtDto>> {
+mixin LessonDoubtsRef on AutoDisposeStreamProviderRef<List<DoubtDto>> {
   /// The parameter `chapterContentId` of this provider.
   int get chapterContentId;
 }
 
 class _LessonDoubtsProviderElement
-    extends AutoDisposeFutureProviderElement<List<DoubtDto>>
+    extends AutoDisposeStreamProviderElement<List<DoubtDto>>
     with LessonDoubtsRef {
   _LessonDoubtsProviderElement(super.provider);
 
