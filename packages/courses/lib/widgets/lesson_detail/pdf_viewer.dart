@@ -163,7 +163,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
   // ---------------- VIEWER ----------------
 
-  Widget _buildViewer(DesignConfig design) {
+  Widget _buildViewer() {
     final viewer = _localPath != null
         ? SfPdfViewer.file(
             File(_localPath!),
@@ -183,13 +183,9 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
           duration: const Duration(milliseconds: 200),
           child: viewer,
         ),
-        if (!_isVisible) _buildLoadingSkeleton(design),
+        if (!_isVisible) const LessonDetailSkeleton(lessonType: LessonType.pdf),
       ],
     );
-  }
-
-  Widget _buildLoadingSkeleton(DesignConfig design) {
-    return const LessonDetailSkeleton(lessonType: LessonType.pdf);
   }
 
   Widget _buildError() => Center(child: Text(_error!));
@@ -202,7 +198,8 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
     final design = Design.of(context);
 
-    if (_isLoading) return _buildLoadingSkeleton(design);
+    if (_isLoading)
+      return const LessonDetailSkeleton(lessonType: LessonType.pdf);
     if (_error != null) return _buildError();
 
     return LayoutBuilder(
@@ -214,7 +211,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
           data: SfPdfViewerThemeData(
             backgroundColor: design.colors.surface,
           ),
-          child: _buildViewer(design),
+          child: _buildViewer(),
         );
       },
     );
