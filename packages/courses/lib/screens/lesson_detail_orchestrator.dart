@@ -10,6 +10,8 @@ import '../widgets/lesson_detail/video_lesson_viewer.dart';
 import '../widgets/lesson_detail/attachment_viewer.dart';
 import '../widgets/lesson_detail/live_stream_viewer.dart';
 import '../widgets/lesson_detail/ask_doubt_fab.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+import '../widgets/lesson_detail/lesson_detail_skeleton.dart';
 
 /// Orchestrator that decides which viewer to show for a given lesson.
 /// It wraps content in the unified [LessonDetailShell].
@@ -207,7 +209,17 @@ class _LessonDetailOrchestratorState
 
     // New: Show loader if we have some data from the list but not enough to render the viewer yet
     if (!lesson.isComplete) {
-      return const Center(child: AppLoadingIndicator());
+      return SkeletonizerConfig(
+        data: SkeletonizerConfigData(
+          effect: ShimmerEffect(
+            baseColor: design.colors.skeleton,
+            highlightColor: design.colors.onSkeleton,
+          ),
+        ),
+        child: Skeletonizer(
+          child: LessonDetailSkeleton(lessonType: lesson.type),
+        ),
+      );
     }
 
     // Priority 2: Built-in viewers
