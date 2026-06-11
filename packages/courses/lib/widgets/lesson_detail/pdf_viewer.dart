@@ -5,6 +5,8 @@ import 'package:core/core.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:core/data/data.dart';
+import 'lesson_detail_skeleton.dart';
 
 class AppPdfViewer extends ConsumerStatefulWidget {
   final String url;
@@ -181,12 +183,10 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
           duration: const Duration(milliseconds: 200),
           child: viewer,
         ),
-        if (!_isVisible) const Center(child: AppLoadingIndicator()),
+        if (!_isVisible) const LessonDetailSkeleton(lessonType: LessonType.pdf),
       ],
     );
   }
-
-  Widget _buildLoading() => const Center(child: AppLoadingIndicator());
 
   Widget _buildError() => Center(child: Text(_error!));
 
@@ -198,8 +198,12 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
     final design = Design.of(context);
 
-    if (_isLoading) return _buildLoading();
-    if (_error != null) return _buildError();
+    if (_isLoading) {
+      return const LessonDetailSkeleton(lessonType: LessonType.pdf);
+    }
+    if (_error != null) {
+      return _buildError();
+    }
 
     return LayoutBuilder(
       builder: (context, constraints) {
