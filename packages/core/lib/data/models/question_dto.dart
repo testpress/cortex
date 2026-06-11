@@ -15,6 +15,7 @@ class QuestionDto {
   final String? shortText;
   final String? essayText;
   final String? sectionName;
+  final String? sectionId;
 
   const QuestionDto({
     required this.id,
@@ -32,11 +33,30 @@ class QuestionDto {
     this.shortText,
     this.essayText,
     this.sectionName,
+    this.sectionId,
   });
 
   factory QuestionDto.fromJson(Map<String, dynamic> json) {
     // Handle nested question object in some API versions
     final Map<String, dynamic> data = json['question'] as Map<String, dynamic>? ?? json;
+
+    final options = (data['options'] as List<dynamic>? ?? 
+                 data['answers'] as List<dynamic>? ?? 
+                 json['options'] as List<dynamic>? ?? 
+                 json['answers'] as List<dynamic>?)
+              ?.map((e) => QuestionOptionDto.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const <QuestionOptionDto>[];
+
+    final explicitCorrectIds = (data['correct_option_ids'] as List<dynamic>? ?? json['correct_option_ids'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const <String>[];
+    
+    final derivedCorrectIds = options
+        .where((option) => option.isCorrect)
+        .map((option) => option.id)
+        .toList();
 
     return QuestionDto(
       id: (data['id'] ?? json['id'] ?? '').toString(),
@@ -56,19 +76,10 @@ class QuestionDto {
         _ => 'singleSelect',
       },
       subject: (data['subject'] ?? data['subject_name'] ?? json['subject_name']) as String? ?? 'General',
-      options: (data['options'] as List<dynamic>? ?? 
-                 data['answers'] as List<dynamic>? ?? 
-                 json['options'] as List<dynamic>? ?? 
-                 json['answers'] as List<dynamic>?)
-              ?.map((e) => QuestionOptionDto.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
-      answerUrl: (data['answer_url'] ?? json['answer_url'] ?? data['url'] ?? json['url']) as String? ?? '',
+      options: options,
+      answerUrl: (json['answer_url'] ?? data['answer_url'] ?? data['url'] ?? json['url']) as String? ?? '',
       markUrl: (data['mark_url'] ?? json['mark_url']) as String?,
-      correctOptionIds: (data['correct_option_ids'] as List<dynamic>? ?? json['correct_option_ids'] as List<dynamic>?)
-              ?.map((e) => e.toString())
-              .toList() ??
-          const [],
+      correctOptionIds: explicitCorrectIds.isNotEmpty ? explicitCorrectIds : derivedCorrectIds,
       explanation: (data['explanation'] ?? data['explanation_html'] ?? json['explanation_html']) as String?,
       directionHtml: (data['direction'] ?? data['direction_html'] ?? json['direction'] ?? json['direction_html']) as String?,
       order: int.tryParse((json['order'] ?? json['question_index'] ?? '').toString()) ?? 0,
@@ -83,6 +94,14 @@ class QuestionDto {
           : (data['attempt_section'] is Map)
           ? (data['attempt_section'] as Map)['name']?.toString()
           : null,
+      sectionId: (json['section_id'] ??
+                  (json['attempt_section'] is Map
+                      ? (json['attempt_section'] as Map)['id']
+                      : json['attempt_section']) ??
+                  data['section_id'] ??
+                  (data['attempt_section'] is Map
+                      ? (data['attempt_section'] as Map)['id']
+                      : data['attempt_section']))?.toString(),
     );
   }
 
@@ -103,6 +122,7 @@ class QuestionDto {
       'short_text': shortText,
       'essay_text': essayText,
       'sectionName': sectionName,
+      'section_id': sectionId,
     };
   }
 }
@@ -116,6 +136,7 @@ class QuestionOptionDto {
   const QuestionOptionDto({
     required this.id,
     required this.text,
+    this.isCorrect = false,
   });
 
   factory QuestionOptionDto.fromJson(Map<String, dynamic> json) {
@@ -137,6 +158,7 @@ class QuestionOptionDto {
     return {
       'id': id,
       'text': text,
+      'is_correct': isCorrect,
     };
   }
 }

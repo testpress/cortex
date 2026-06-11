@@ -12,6 +12,7 @@ class TestNavigationActions extends StatelessWidget {
   final VoidCallback onNext;
   final bool isQuizMode;
   final bool isQuizChecked;
+  final bool isChecking;
   final VoidCallback? onCheck;
 
   const TestNavigationActions({
@@ -25,6 +26,7 @@ class TestNavigationActions extends StatelessWidget {
     required this.onNext,
     this.isQuizMode = false,
     this.isQuizChecked = false,
+    this.isChecking = false,
     this.onCheck,
   });
 
@@ -51,6 +53,7 @@ class TestNavigationActions extends StatelessWidget {
                 label: l10n.actionCheck,
                 icon: LucideIcons.checkCircle2,
                 onTap: onCheck,
+                loading: isChecking,
               )
             else if (isQuizMode && isQuizChecked)
               NavButton(

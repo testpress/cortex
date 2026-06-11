@@ -81,6 +81,7 @@ class ExamAttemptState {
 
 class ExamRepository {
   final DataSource _dataSource;
+  final Future<AppDatabase> _dbFuture;
   Timer? _heartbeatTimer;
   final _stateController = StreamController<ExamAttemptState>.broadcast();
   ExamAttemptState _currentState = const ExamAttemptState();
@@ -90,7 +91,11 @@ class ExamRepository {
   final Map<String, String> _pendingAnswerUrls = {};
   final Map<String, List<QuestionDto>> _sectionQuestionsCache = {};
 
-  ExamRepository({required DataSource dataSource}) : _dataSource = dataSource;
+  ExamRepository({
+    required DataSource dataSource,
+    required Future<AppDatabase> dbFuture,
+  }) : _dataSource = dataSource,
+       _dbFuture = dbFuture;
 
   Stream<ExamAttemptState> get stateStream => _stateController.stream;
   Stream<ExamAttemptState> watchState() async* {
@@ -176,7 +181,11 @@ class ExamRepository {
             exam.attemptsUrl,
             data: isQuizMode ? {'attempt_type': 1} : null,
           );
-          await _initializeAttempt(exam, attempt);
+          if (isQuizMode) {
+            final db = await _dbFuture;
+            await db.setQuizModeAttempt(attempt.id.toString());
+          }
+          await _initializeAttempt(exam, attempt, isQuizMode: isQuizMode);
         } else {
           final runningAttempt = attempts.firstWhere(
             (a) => a.state == 'Running',
@@ -196,14 +205,18 @@ class ExamRepository {
               );
             }
           }
-          await _initializeAttempt(exam, attemptToInitialize, isResume: true);
+          await _initializeAttempt(exam, attemptToInitialize, isResume: true, isQuizMode: isQuizMode);
         }
       } else {
         final attempt = await _dataSource.createAttempt(
           exam.attemptsUrl,
           data: isQuizMode ? {'attempt_type': 1} : null,
         );
-        await _initializeAttempt(exam, attempt);
+        if (isQuizMode) {
+          final db = await _dbFuture;
+          await db.setQuizModeAttempt(attempt.id.toString());
+        }
+        await _initializeAttempt(exam, attempt, isQuizMode: isQuizMode);
       }
     } catch (e) {
       final msg = e is ApiException ? e.message : e.toString();
@@ -227,7 +240,11 @@ class ExamRepository {
             contentAttemptsUrl,
             data: isQuizMode ? {'attempt_type': 1} : null,
           );
-          await _initializeAttempt(exam, attempt);
+          if (isQuizMode) {
+            final db = await _dbFuture;
+            await db.setQuizModeAttempt(attempt.id.toString());
+          }
+          await _initializeAttempt(exam, attempt, isQuizMode: isQuizMode);
         } else {
           final runningAttempt = attempts.firstWhere(
             (a) => a.state == 'Running',
@@ -247,14 +264,18 @@ class ExamRepository {
               );
             }
           }
-          await _initializeAttempt(exam, attemptToInitialize, isResume: true);
+          await _initializeAttempt(exam, attemptToInitialize, isResume: true, isQuizMode: isQuizMode);
         }
       } else {
         final attempt = await _dataSource.createContentAttempt(
           contentAttemptsUrl,
           data: isQuizMode ? {'attempt_type': 1} : null,
         );
-        await _initializeAttempt(exam, attempt);
+        if (isQuizMode) {
+          final db = await _dbFuture;
+          await db.setQuizModeAttempt(attempt.id.toString());
+        }
+        await _initializeAttempt(exam, attempt, isQuizMode: isQuizMode);
       }
     } catch (e) {
       final msg = e is ApiException ? e.message : e.toString();
@@ -274,8 +295,18 @@ class ExamRepository {
     ExamDto exam,
     AttemptDto attempt, {
     bool isResume = false,
+    bool isQuizMode = false,
   }) async {
     AttemptDto currentAttempt = attempt;
+    // Short-circuit: skip the DB read if the attempt or caller already tells us it's a quiz.
+    // The DB check is only needed as a fallback when the backend drops attempt_type.
+    final effectiveQuizMode = isQuizMode ||
+        attempt.isQuizMode ||
+        await _dbFuture.then((db) => db.isQuizModeAttempt(attempt.id.toString()));
+    if (effectiveQuizMode) {
+      final db = await _dbFuture;
+      await db.setQuizModeAttempt(attempt.id.toString());
+    }
     bool heartbeatFetched = false;
 
     // If we are resuming and sections are missing, fetch the full details via heartbeat first.
@@ -320,9 +351,11 @@ class ExamRepository {
         activeSection.remainingTime ?? activeSection.duration ?? exam.duration,
       );
 
-      final String targetQuestionsUrl = currentAttempt.hasSectionalLock
-          ? activeSection.questionsUrl
-          : currentAttempt.questionsUrl;
+      final String targetQuestionsUrl = effectiveQuizMode
+          ? '/api/v2.5/attempts/${currentAttempt.id}/questions/'
+          : (currentAttempt.hasSectionalLock
+              ? activeSection.questionsUrl
+              : currentAttempt.questionsUrl);
 
       final Future<List<QuestionDto>> questionsFuture = remainingSeconds > 0
           ? (_sectionQuestionsCache.containsKey(targetQuestionsUrl)
@@ -351,7 +384,7 @@ class ExamRepository {
         correctCount: heartbeatAttempt.correctCount,
         incorrectCount: heartbeatAttempt.incorrectCount,
       );
-      questions = results[1] as List<QuestionDto>;
+      questions = List<QuestionDto>.from(results[1] as List<QuestionDto>);
 
       // Resolve the actual synchronized remainingSeconds from heartbeat
       final updatedSections = updatedAttempt.sections ?? [];
@@ -407,6 +440,7 @@ class ExamRepository {
                   order: s.order,
                   instructions: s.instructions,
                   questionsCount: s.questionsCount,
+                  infoId: s.infoId,
                 ),
               );
             }
@@ -414,6 +448,8 @@ class ExamRepository {
           })
           .values
           .toList();
+
+      _sortQuestions(questions, initializedSections);
 
       final state = ExamAttemptState(
         status: ExamAttemptStatus.inProgress,
@@ -425,17 +461,21 @@ class ExamRepository {
         currentQuestionIndex: initialQuestionIndex,
         answers: initialAnswers,
         remainingSeconds: remainingSeconds,
-        isQuizMode: currentAttempt.isQuizMode,
+        isQuizMode: effectiveQuizMode,
       );
       _emit(state);
     } else {
       remainingSeconds = _parseDuration(attempt.remainingTime ?? exam.duration);
 
+      final String targetQuestionsUrl = effectiveQuizMode
+          ? '/api/v2.5/attempts/${attempt.id}/questions/'
+          : attempt.questionsUrl;
+
       final Future<List<QuestionDto>> questionsFuture = remainingSeconds > 0
-          ? (_sectionQuestionsCache.containsKey(attempt.questionsUrl)
-                ? Future.value(_sectionQuestionsCache[attempt.questionsUrl]!)
-                : _dataSource.getQuestions(attempt.questionsUrl).then((q) {
-                    _sectionQuestionsCache[attempt.questionsUrl] = q;
+          ? (_sectionQuestionsCache.containsKey(targetQuestionsUrl)
+                ? Future.value(_sectionQuestionsCache[targetQuestionsUrl]!)
+                : _dataSource.getQuestions(targetQuestionsUrl).then((q) {
+                    _sectionQuestionsCache[targetQuestionsUrl] = q;
                     return q;
                   }))
           : Future.value(<QuestionDto>[]);
@@ -446,7 +486,8 @@ class ExamRepository {
         questionsFuture,
       ]);
       final AttemptDto updatedAttempt = results[0] as AttemptDto? ?? attempt;
-      questions = results[1] as List<QuestionDto>;
+      questions = List<QuestionDto>.from(results[1] as List<QuestionDto>);
+      _sortQuestions(questions, updatedAttempt.sections);
 
       remainingSeconds = _parseDuration(
         updatedAttempt.remainingTime ?? exam.duration,
@@ -479,12 +520,14 @@ class ExamRepository {
         currentQuestionIndex: initialQuestionIndex,
         answers: initialAnswers,
         remainingSeconds: remainingSeconds,
-        isQuizMode: currentAttempt.isQuizMode,
+        isQuizMode: isQuizMode || currentAttempt.isQuizMode,
       );
       _emit(state);
     }
 
-    if (remainingSeconds > 0) {
+    if (effectiveQuizMode) {
+      // In Quiz Mode, we do not start countdown or heartbeat, and we don't handle timeout.
+    } else if (remainingSeconds > 0) {
       _startCountdown();
       _startHeartbeat(attempt.heartbeatUrl);
     } else {
@@ -493,6 +536,7 @@ class ExamRepository {
   }
 
   void _startCountdown() {
+    if (_currentState.isQuizMode) return;
     _countdownTimer?.cancel();
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_currentState.remainingSeconds > 0) {
@@ -620,6 +664,7 @@ class ExamRepository {
             order: s.order,
             instructions: s.instructions,
             questionsCount: s.questionsCount,
+            infoId: s.infoId,
           );
         } else if (s.id == nextSection.id) {
           return SectionDto(
@@ -634,6 +679,7 @@ class ExamRepository {
             order: s.order,
             instructions: s.instructions,
             questionsCount: s.questionsCount,
+            infoId: s.infoId,
           );
         }
         return s;
@@ -673,6 +719,7 @@ class ExamRepository {
   }
 
   void _startHeartbeat(String url) {
+    if (_currentState.isQuizMode) return;
     _heartbeatTimer?.cancel();
     _heartbeatTimer = Timer.periodic(const Duration(seconds: 30), (
       timer,
@@ -762,18 +809,24 @@ class ExamRepository {
     _pendingAnswers.remove(questionId);
     _pendingAnswerUrls.remove(questionId);
 
-    // Update local state first to indicate submission attempt
+    // Update local answer state
     updateLocalAnswer(questionId, answer);
-    
-    try {
-      dev.log(
-        'checkQuizAnswer submitting: '
-        'questionId=$questionId, '
-        'answerUrl=$answerUrl, '
-        'payload=${answer.toJson(review: true)}',
-        name: 'ExamRepository',
-      );
 
+    final question = _currentState.questions.firstWhere((q) => q.id == questionId);
+    final hasLocalCorrectAnswers = question.options.any((o) => o.isCorrect) ||
+        question.correctOptionIds.isNotEmpty;
+
+    // ── Optimistic update ──────────────────────────────────────────────────
+    // Mark as checked immediately ONLY if we have local correct answers to show.
+    // Otherwise, wait for the network roundtrip so that the button does not
+    // prematurely swap to "Continue" before visual review feedback is ready.
+    if (hasLocalCorrectAnswers) {
+      final optimisticChecked = Set<String>.from(_currentState.checkedQuestions)..add(questionId);
+      _emit(_currentState.copyWith(checkedQuestions: optimisticChecked));
+    }
+    // ───────────────────────────────────────────────────────────────────────
+
+    try {
       final quizReview = await _dataSource.submitQuizAnswer(answerUrl, answer);
 
       dev.log(
@@ -786,10 +839,10 @@ class ExamRepository {
         'hasExplanation=${quizReview.explanationHtml != null && quizReview.explanationHtml!.isNotEmpty}',
         name: 'ExamRepository',
       );
-      
+
       final newQuizReviews = Map<String, QuizReviewResultDto>.from(_currentState.quizReviews);
       newQuizReviews[questionId] = quizReview;
-      
+
       final newChecked = Set<String>.from(_currentState.checkedQuestions)..add(questionId);
 
       _emit(_currentState.copyWith(
@@ -919,6 +972,30 @@ class ExamRepository {
   }
 
   // ─── Internal Helpers ──────────────────────────────────────────────────────
+
+  void _sortQuestions(List<QuestionDto> questions, List<SectionDto>? sections) {
+    if (sections == null || sections.isEmpty) {
+      questions.sort((a, b) => a.order.compareTo(b.order));
+      return;
+    }
+    final Map<String, int> sectionOrders = {};
+    for (final s in sections) {
+      sectionOrders[s.id] = s.order;
+      if (s.infoId != null) {
+        sectionOrders[s.infoId!] = s.order;
+      }
+    }
+    questions.sort((a, b) {
+      final aSecOrder = a.sectionId != null ? sectionOrders[a.sectionId] : null;
+      final bSecOrder = b.sectionId != null ? sectionOrders[b.sectionId] : null;
+      final aVal = aSecOrder ?? 999;
+      final bVal = bSecOrder ?? 999;
+      if (aVal != bVal) {
+        return aVal.compareTo(bVal);
+      }
+      return a.order.compareTo(b.order);
+    });
+  }
 
   void _emit(ExamAttemptState state) {
     _currentState = state;

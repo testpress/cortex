@@ -12,6 +12,7 @@ class NavButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onTap;
   final bool isBack;
+  final bool loading;
 
   const NavButton({
     super.key,
@@ -19,12 +20,13 @@ class NavButton extends StatelessWidget {
     required this.icon,
     this.onTap,
     this.isBack = false,
+    this.loading = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final bool isDisabled = onTap == null;
+    final bool isDisabled = (onTap == null) || loading;
 
     final Color bgColor = isBack || isDisabled
         ? design.colors.card
@@ -37,7 +39,7 @@ class NavButton extends StatelessWidget {
         : (isBack ? design.colors.textSecondary : design.colors.textPrimary);
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: isDisabled ? null : onTap,
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: design.spacing.md,
@@ -51,7 +53,16 @@ class NavButton extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (isBack) ...[
+            if (loading) ...[
+              SizedBox(
+                width: 14,
+                height: 14,
+                child: AppLoadingIndicator(
+                  color: textColor,
+                ),
+              ),
+              const SizedBox(width: 8),
+            ] else if (isBack) ...[
               Icon(icon, color: textColor, size: 18),
               const SizedBox(width: 8),
             ],
@@ -60,7 +71,7 @@ class NavButton extends StatelessWidget {
               color: textColor,
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
             ),
-            if (!isBack) ...[
+            if (!isBack && !loading) ...[
               const SizedBox(width: 8),
               Icon(icon, color: textColor, size: 18),
             ],

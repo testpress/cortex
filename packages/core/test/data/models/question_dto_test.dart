@@ -41,4 +41,56 @@ void main() {
       expect(answer.toJson(review: false)['review'], false);
     });
   });
+
+  group('QuizReviewResultDto', () {
+    test('parses standard quiz review format correctly', () {
+      final review = QuizReviewResultDto.fromJson({
+        'question_id': '659389',
+        'selected_answers': ['2426143'],
+        'correct_answers': ['2426143'],
+        'result': true,
+      });
+
+      expect(review.questionId, '659389');
+      expect(review.selectedAnswers, ['2426143']);
+      expect(review.correctAnswers, ['2426143']);
+      expect(review.result, true);
+    });
+
+    test('parses attempt question response format with nested fields and correct_option_ids', () {
+      final review = QuizReviewResultDto.fromJson({
+        'id': '1021279043',
+        'selected_answers': ['2426143'],
+        'correct_option_ids': ['2426143'],
+        'question': {
+          'id': '659389',
+          'question_html': 'Let A be a point...',
+        },
+      });
+
+      expect(review.questionId, '659389');
+      expect(review.selectedAnswers, ['2426143']);
+      expect(review.correctAnswers, ['2426143']);
+      expect(review.result, true); // derived since result was missing but answers match
+    });
+
+    test('parses nested options with is_correct flag to identify correct answers', () {
+      final review = QuizReviewResultDto.fromJson({
+        'id': '1021279043',
+        'selected_answers': ['2426143'],
+        'question': {
+          'id': '659389',
+          'options': [
+            {'id': '2426143', 'text': 'Option A', 'is_correct': true},
+            {'id': '2426144', 'text': 'Option B', 'is_correct': false},
+          ],
+        },
+      });
+
+      expect(review.questionId, '659389');
+      expect(review.selectedAnswers, ['2426143']);
+      expect(review.correctAnswers, ['2426143']);
+      expect(review.result, true);
+    });
+  });
 }

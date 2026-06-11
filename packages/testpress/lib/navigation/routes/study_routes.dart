@@ -137,8 +137,8 @@ class StudyRoutes {
                   testId: id,
                   lesson: lesson,
                   onClose: () => context.pop(),
-                  onStartAttempt: () async {
-                    context.pushReplacement('/study/test/$id/player',
+                  onStartAttempt: (isQuizMode) async {
+                    context.pushReplacement('/study/test/$id/player?isQuizMode=$isQuizMode',
                         extra: lesson);
                   },
                 );
@@ -153,9 +153,11 @@ class StudyRoutes {
                     final lesson = extra is LessonDto
                         ? extra
                         : (extra is Lesson ? extra.toDto() : null);
+                    final isQuizMode = state.uri.queryParameters['isQuizMode'] == 'true';
                     return TestDetailScreen(
                       testId: id,
                       lesson: lesson,
+                      isQuizMode: isQuizMode,
                       onClose: () => context.pop(),
                     );
                   },

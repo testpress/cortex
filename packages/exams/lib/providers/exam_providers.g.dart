@@ -6,7 +6,7 @@ part of 'exam_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$examRepositoryHash() => r'52332a2f1aac0aeb79b5fe89412ea09c4f399b6f';
+String _$examRepositoryHash() => r'2c586dc51ef3f378caca0a83aaa3e71d26a9528a';
 
 /// Repository provider for exam-specific operations.
 ///
@@ -319,7 +319,7 @@ class _ExamDetailProviderElement
   String get slug => (origin as ExamDetailProvider).slug;
 }
 
-String _$examAttemptHash() => r'b3478bac8b427f40dc758c3cf7c73dcf085ceb6e';
+String _$examAttemptHash() => r'bc9df018471d08bb0afa028d05232fb3f9c2b920';
 
 /// Notifier that manages the active exam attempt lifecycle.
 ///

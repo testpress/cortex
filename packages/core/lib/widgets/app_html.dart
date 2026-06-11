@@ -6,6 +6,21 @@ import '../design/design_provider.dart';
 import '../design/design_config.dart';
 import 'app_loading_indicator.dart';
 
+/// Controller for [AppHtml] that allows callers to inject JavaScript into
+/// the underlying WebView without triggering a full page reload.
+///
+/// Obtain an instance, pass it to [AppHtml.controller], then call
+/// [runJavaScript] at any time after the widget is built.
+class AppHtmlController {
+  Future<void> Function(String js)? _runner;
+
+  /// Evaluates [js] inside the WebView. Safe to call before the WebView is
+  /// ready — the call is silently dropped if the WebView is not yet attached.
+  Future<void> runJavaScript(String js) async {
+    await _runner?.call(js);
+  }
+}
+
 /// A premium HTML renderer for the Cortex SDK.
 ///
 /// Uses a WebView to ensure perfect rendering of complex HTML,
@@ -21,6 +36,8 @@ class AppHtml extends StatefulWidget {
     this.placeholder,
     this.onHeightChanged,
     this.onMessage,
+    this.controller,
+    this.onPageFinished,
   });
 
   /// The HTML content to render.
@@ -48,6 +65,12 @@ class AppHtml extends StatefulWidget {
   /// Optional callback for receiving messages from JavaScript.
   final void Function(String)? onMessage;
 
+  /// Optional controller for injecting JavaScript into the WebView.
+  final AppHtmlController? controller;
+
+  /// Optional callback when the page finishes loading.
+  final void Function()? onPageFinished;
+
   @override
   State<AppHtml> createState() => _AppHtmlState();
 }
@@ -60,6 +83,31 @@ class _AppHtmlState extends State<AppHtml> {
   @override
   void initState() {
     super.initState();
+    _setupController();
+    widget.controller?._runner = (js) => _controller.runJavaScript(js);
+  }
+
+  @override
+  void didUpdateWidget(AppHtml oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller?._runner = null;
+      widget.controller?._runner = (js) => _controller.runJavaScript(js);
+    }
+    if (oldWidget.data != widget.data ||
+        oldWidget.textColor != widget.textColor ||
+        oldWidget.backgroundColor != widget.backgroundColor) {
+      _loadHtml();
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.controller?._runner = null;
+    super.dispose();
+  }
+
+  void _setupController() {
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0x00000000))
@@ -113,6 +161,7 @@ class _AppHtmlState extends State<AppHtml> {
         NavigationDelegate(
           onPageFinished: (url) {
             _controller.runJavaScript('sendHeight();');
+            widget.onPageFinished?.call();
           },
         ),
       );
@@ -124,15 +173,6 @@ class _AppHtmlState extends State<AppHtml> {
     _loadHtml();
   }
 
-  @override
-  void didUpdateWidget(AppHtml oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.data != widget.data ||
-        oldWidget.textColor != widget.textColor ||
-        oldWidget.backgroundColor != widget.backgroundColor) {
-      _loadHtml();
-    }
-  }
 
   void _loadHtml() {
     final design = Design.of(context);

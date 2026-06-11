@@ -6,12 +6,14 @@ class TestHeader extends StatelessWidget {
   final ExamDto exam;
   final String timeFormatted;
   final VoidCallback onExit;
+  final bool isQuizMode;
 
   const TestHeader({
     super.key,
     required this.exam,
     required this.timeFormatted,
     required this.onExit,
+    this.isQuizMode = false,
   });
 
   @override
@@ -49,40 +51,41 @@ class TestHeader extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
-                constraints: const BoxConstraints(minWidth: 72),
-                padding: EdgeInsets.symmetric(
-                  horizontal: design.spacing.sm,
-                  vertical: design.spacing.xs,
-                ),
-                decoration: BoxDecoration(
-                  color: design.isDark
-                      ? design.colors.surface
-                      : design.colors.surfaceVariant,
-                  borderRadius: BorderRadius.circular(design.radius.xl),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      LucideIcons.clock,
-                      color: design.colors.accent3,
-                      size: 16,
-                    ),
-                    SizedBox(width: design.spacing.xs),
-                    AppText.caption(
-                      timeFormatted,
-                      color: design.colors.textPrimary,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13,
-                        fontFeatures: [FontFeature.tabularFigures()],
+              if (!isQuizMode)
+                Container(
+                  constraints: const BoxConstraints(minWidth: 72),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: design.spacing.sm,
+                    vertical: design.spacing.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: design.isDark
+                        ? design.colors.surface
+                        : design.colors.surfaceVariant,
+                    borderRadius: BorderRadius.circular(design.radius.xl),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        LucideIcons.clock,
+                        color: design.colors.accent3,
+                        size: 16,
                       ),
-                    ),
-                  ],
+                      SizedBox(width: design.spacing.xs),
+                      AppText.caption(
+                        timeFormatted,
+                        color: design.colors.textPrimary,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                          fontFeatures: [FontFeature.tabularFigures()],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
             ],
           ),
           SizedBox(height: design.spacing.lg),

@@ -52,8 +52,6 @@ abstract final class ReviewQuestionHtmlBuilder {
           .map((e) => e.toString())
           .toList();
     }
-    correctIds.sort();
-    final isAnswerCorrect = selectedIds.join(',') == correctIds.join(',');
     dev.log(
       'Review builder: '
       'questionId=${question.id}, '
@@ -72,66 +70,141 @@ abstract final class ReviewQuestionHtmlBuilder {
     sb.writeln('<div class="review-container">');
     sb.writeln('<div class="question-text">${question.text}</div>');
 
-    // ── Colour-coded options ───────────────────────────────────────────────
-    sb.writeln('<div class="options-container">');
-    for (final opt in question.options) {
-      final isCorrect = correctIds.any((id) => id.toString() == opt.id.toString());
-      final isSelected = attemptState?.selectedOptions.any((id) => id.toString() == opt.id.toString()) ?? false;
-      final isActive   = isCorrect || isSelected;
+    final isInputType = question.type == 'shortAnswer' ||
+        question.type == 'numerical' ||
+        question.type == 'essay';
 
-      // Border, background and text colour per option state
-      final optBorder = isCorrect
-          ? correctColor
-          : (isSelected ? incorrectColor : borderColor);
-      final optBg = isCorrect
-          ? correctBg
-          : (isSelected ? incorrectBg : cardColor);
-      final optTextColor = isActive ? textPrimary : textSecondary;
-      final indicatorColor = isCorrect ? correctColor : incorrectColor;
+    if (isInputType) {
+      final userValue = (question.type == 'essay'
+              ? attemptState?.essayText
+              : attemptState?.shortText) ??
+          '';
+      
+      final hasResult = quizReview?.result ??
+          (attemptState?.result != null
+              ? (attemptState!.result!.toLowerCase() == 'correct' || attemptState.result == '1')
+              : null);
 
-      // Trailing icon: ✓ for correct, ✗ for wrong selection, empty otherwise
-      final iconHtml = isCorrect
-          ? '<span style="color: $correctColor; margin-left: 12px; font-weight: bold; font-size: 18px;">✓</span>'
-          : isSelected
-          ? '<span style="color: $incorrectColor; margin-left: 12px; font-weight: bold; font-size: 18px;">✗</span>'
-          : '';
+      bool isCorrect;
+      if (hasResult != null) {
+        isCorrect = hasResult;
+      } else if (question.type == 'shortAnswer' || question.type == 'numerical') {
+        final userAns = userValue.trim().toLowerCase();
+        if (userAns.isEmpty) {
+          isCorrect = false;
+        } else {
+          final correctOptions = question.options.where((o) => o.isCorrect).toList();
+          final correctValues = correctOptions.isNotEmpty
+              ? correctOptions.map((o) => o.text).toList()
+              : question.options.map((o) => o.text).toList();
+          isCorrect = correctValues.any((val) {
+            final cleanVal = val
+                .replaceAll(RegExp(r'<[^>]*>'), '')
+                .replaceAll('&nbsp;', ' ')
+                .replaceAll('&amp;', '&')
+                .replaceAll('&lt;', '<')
+                .replaceAll('&gt;', '>')
+                .replaceAll('&quot;', '"')
+                .replaceAll('&#39;', "'")
+                .trim()
+                .toLowerCase();
+            return cleanVal == userAns;
+          });
+        }
+      } else {
+        isCorrect = false;
+      }
 
-      sb.writeln('''
-        <div class="option-item" style="border-color: $optBorder; background-color: $optBg; border-width: ${isActive ? '1.5px' : '1px'};">
-          <div class="indicator" style="border-color: ${isActive ? indicatorColor : borderColor}; background-color: ${isActive ? indicatorColor : cardColor};">
-            ${isActive ? '<div class="inner"></div>' : ''}
+      bool isUnansw;
+      if (attemptState?.result != null) {
+        final res = attemptState!.result!.toLowerCase();
+        isUnansw = res == 'unanswered' || res == 'unvisited' || res == '0' || res == '3';
+      } else if (question.type == 'shortAnswer' || question.type == 'numerical') {
+        isUnansw = userValue.trim().isEmpty;
+      } else if (question.type == 'essay') {
+        isUnansw = userValue.trim().isEmpty;
+      } else {
+        isUnansw = selectedIds.isEmpty;
+      }
+
+      final borderColorStyle = isUnansw
+          ? borderColor
+          : (isCorrect ? correctColor : incorrectColor);
+      final bgStyle = isUnansw
+          ? cardColor
+          : (isCorrect ? correctBg : incorrectBg);
+
+      if (question.type == 'essay') {
+        sb.writeln('''
+          <div class="input-container" style="margin-bottom: 16px;">
+            <textarea class="essay_box" rows="10" readonly disabled
+                      style="border-color: $borderColorStyle; background-color: $bgStyle; resize: none;">$userValue</textarea>
           </div>
-          <div class="option-text" style="color: $optTextColor;">
-            ${opt.text}
+        ''');
+      } else {
+        sb.writeln('''
+          <div class="input-container" style="margin-bottom: 16px;">
+            <input class="edit_box" type="text" readonly disabled
+                   style="border-color: $borderColorStyle; background-color: $bgStyle;"
+                   value="${userValue.replaceAll('"', '&quot;')}">
           </div>
-          $iconHtml
-        </div>
-      ''');
+        ''');
+
+        // Render the correct answer(s) below it
+        final correctOptions = question.options.where((o) => o.isCorrect).toList();
+        final correctValues = correctOptions.isNotEmpty
+            ? correctOptions.map((o) => o.text).toList()
+            : question.options.map((o) => o.text).toList();
+        if (correctValues.isNotEmpty) {
+          sb.writeln('''
+            <div style="margin-top: 12px; margin-bottom: 16px; font-size: 14px; color: $textSecondary;">
+              <strong>Correct Answer:</strong>
+              <div style="margin-top: 4px; padding: 8px; border-radius: 4px; background: $correctBg; border: 1px solid $correctColor; color: $textPrimary;">
+                ${correctValues.join(', ')}
+              </div>
+            </div>
+          ''');
+        }
+      }
+    } else {
+      // ── Colour-coded options ───────────────────────────────────────────────
+      sb.writeln('<div class="options-container">');
+      for (final opt in question.options) {
+        final isCorrect = correctIds.any((id) => id.toString() == opt.id.toString());
+        final isSelected = attemptState?.selectedOptions.any((id) => id.toString() == opt.id.toString()) ?? false;
+        final isActive   = isCorrect || isSelected;
+
+        // Border, background and text colour per option state
+        final optBorder = isCorrect
+            ? correctColor
+            : (isSelected ? incorrectColor : borderColor);
+        final optBg = isCorrect
+            ? correctBg
+            : (isSelected ? incorrectBg : cardColor);
+        final optTextColor = isActive ? textPrimary : textSecondary;
+        final indicatorColor = isCorrect ? correctColor : incorrectColor;
+
+        // Trailing icon: ✓ for correct, ✗ for wrong selection, empty otherwise
+        final iconHtml = isCorrect
+            ? '<span style="color: $correctColor; margin-left: 12px; font-weight: bold; font-size: 18px;">✓</span>'
+            : isSelected
+            ? '<span style="color: $incorrectColor; margin-left: 12px; font-weight: bold; font-size: 18px;">✗</span>'
+            : '';
+
+        sb.writeln('''
+          <div class="option-item" style="border-color: $optBorder; background-color: $optBg; border-width: ${isActive ? '1.5px' : '1px'};">
+            <div class="indicator" style="border-color: ${isActive ? indicatorColor : borderColor}; background-color: ${isActive ? indicatorColor : cardColor};">
+              ${isActive ? '<div class="inner"></div>' : ''}
+            </div>
+            <div class="option-text" style="color: $optTextColor;">
+              ${opt.text}
+            </div>
+            $iconHtml
+          </div>
+        ''');
+      }
+      sb.writeln('</div>');
     }
-    sb.writeln('</div>');
-
-    // ── Feedback Banner ────────────────────────────────────────────────────
-    final amberAccent = _hex(design.subjectPalette.atIndex(6).accent);
-    final amberBg     = _hex(design.subjectPalette.atIndex(6).background);
-    final amberFg     = _hex(design.subjectPalette.atIndex(6).foreground);
-    final successColor = _hex(design.colors.success);
-    final successBg    = _rgba(design.colors.success, 0.07);
-
-    final feedbackIcon = isAnswerCorrect ? '✓' : '✗';
-    final feedbackColor = isAnswerCorrect ? successColor : amberFg;
-    final feedbackIconColor = isAnswerCorrect ? successColor : amberAccent;
-    final feedbackBgColor = isAnswerCorrect ? successBg : amberBg;
-    final feedbackBorder = isAnswerCorrect 
-        ? _rgba(design.colors.success, 0.3) 
-        : _rgba(design.subjectPalette.atIndex(6).accent, 0.4);
-    final feedbackLabel = isAnswerCorrect ? l10n.assessmentCorrect : l10n.assessmentIncorrect;
-
-    sb.writeln('''
-      <div class="feedback-banner" style="background-color: $feedbackBgColor; border-color: $feedbackBorder;">
-        <span class="feedback-icon" style="color: $feedbackIconColor;">$feedbackIcon</span>
-        <span class="feedback-text" style="color: $feedbackColor;">$feedbackLabel</span>
-      </div>
-    ''');
 
     // ── Explanation (if present) ───────────────────────────────────────────
     final explanationContent = (quizReview != null && quizReview.explanationHtml != null && quizReview.explanationHtml!.isNotEmpty)
@@ -155,7 +228,7 @@ abstract final class ReviewQuestionHtmlBuilder {
 
     sb.writeln('</div>');
 
-    return _css(cardColor: cardColor, textPrimary: textPrimary) + sb.toString();
+    return _css(cardColor: cardColor, textPrimary: textPrimary, borderColor: borderColor) + sb.toString();
   }
 
   // ── Private helpers ────────────────────────────────────────────────────────
@@ -179,6 +252,7 @@ abstract final class ReviewQuestionHtmlBuilder {
   static String _css({
     required String cardColor,
     required String textPrimary,
+    required String borderColor,
   }) =>
       '''
       <style>
@@ -240,6 +314,20 @@ abstract final class ReviewQuestionHtmlBuilder {
         .feedback-icon { font-weight: bold; font-size: 18px; margin-right: 8px; }
         .feedback-text { font-weight: bold; font-size: 15px; }
         .mjx-chtml         { color: inherit !important; }
+        
+        /* Input questions */
+        .edit_box, .essay_box {
+          width: 100%;
+          box-sizing: border-box;
+          padding: 12px;
+          margin-top: 12px;
+          background-color: transparent;
+          border-radius: 8px;
+          border: 1.5px solid $borderColor;
+          color: $textPrimary;
+          font-size: 16px;
+          font-family: inherit;
+        }
       </style>
     ''';
 }

@@ -35,13 +35,16 @@ class QuizReviewResultDto {
         source['correct_answers'] ??
             source['correctAnswers'] ??
             source['correct_answers_ids'] ??
-            source['correctAnswersIds'],
+            source['correctAnswersIds'] ??
+            source['correct_option_ids'] ??
+            source['correctOptionIds'] ??
+            (source['question'] is Map ? (source['question']['correct_option_ids'] ?? source['question']['correctOptionIds']) : null),
       );
       if (direct.isNotEmpty) return direct;
 
       final nestedQuestion = source['question'];
       if (nestedQuestion is Map<String, dynamic>) {
-        final nested = nestedQuestion['answers'];
+        final nested = nestedQuestion['answers'] ?? nestedQuestion['options'];
         if (nested is List) {
           return nested
               .whereType<Map>()
@@ -58,7 +61,7 @@ class QuizReviewResultDto {
         }
       }
 
-      final answers = source['answers'];
+      final answers = source['answers'] ?? source['options'];
       if (answers is List) {
         return answers
             .whereType<Map>()
@@ -86,13 +89,30 @@ class QuizReviewResultDto {
       return null;
     }
 
+    final selectedAnswers = parseStringList(json['selected_answers'] ?? json['selectedAnswers']);
+    final correctAnswers = parseCorrectAnswers(json);
+
+    final nestedQuestion = json['question'];
+    final questionId = json['question_id']?.toString() ??
+        json['questionId']?.toString() ??
+        (nestedQuestion is Map ? nestedQuestion['id']?.toString() : null) ??
+        json['id']?.toString() ??
+        '';
+
+    final rawResult = parseBool(json['result'] ?? json['is_correct'] ?? json['correct'] ?? json['isCorrect']);
+    final derivedResult = rawResult ?? (correctAnswers.isNotEmpty
+        ? (selectedAnswers.isNotEmpty &&
+            selectedAnswers.length == correctAnswers.length &&
+            selectedAnswers.toSet().containsAll(correctAnswers))
+        : null);
+
     final parsed = QuizReviewResultDto(
-      questionId: json['question_id']?.toString() ?? json['questionId']?.toString() ?? '',
-      selectedAnswers: parseStringList(json['selected_answers'] ?? json['selectedAnswers']),
-      correctAnswers: parseCorrectAnswers(json),
-      result: parseBool(json['result'] ?? json['is_correct'] ?? json['correct'] ?? json['isCorrect']),
+      questionId: questionId,
+      selectedAnswers: selectedAnswers,
+      correctAnswers: correctAnswers,
+      result: derivedResult,
       review: json['review']?.toString(),
-      explanationHtml: (json['explanation_html'] ?? json['explanationHtml'] ?? json['explanation'])?.toString(),
+      explanationHtml: (json['explanation_html'] ?? json['explanationHtml'] ?? json['explanation'] ?? (nestedQuestion is Map ? nestedQuestion['explanation'] ?? nestedQuestion['explanation_html'] : null))?.toString(),
     );
 
     dev.log(

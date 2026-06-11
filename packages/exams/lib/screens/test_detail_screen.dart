@@ -405,50 +405,41 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                       TestHeader(
                         exam: state.exam!,
                         timeFormatted: _formatTime(state.remainingSeconds),
+                        isQuizMode: state.isQuizMode,
                         onExit: () =>
                             setState(() => _showPauseConfirmation = true),
                       ),
-                      SectionsTabBar(
-                        tabNames: tabNames,
-                        activeIndex: activeTabIndex,
-                        onTabSelected: (index) {
-                          if (useSections) {
-                            ref
-                                .read(examAttemptProvider.notifier)
-                                .switchSection(index);
-                          } else if (useFlexibleSections) {
-                            // Jump to the first question of the selected flexible section
-                            int targetIndex = 0;
-                            for (int i = 0; i < index; i++) {
-                              targetIndex +=
-                                  localSections[i].questionsCount ?? 0;
+                      if (!state.isQuizMode)
+                        SectionsTabBar(
+                          tabNames: tabNames,
+                          activeIndex: activeTabIndex,
+                          onTabSelected: (index) {
+                            if (useSections) {
+                              ref
+                                  .read(examAttemptProvider.notifier)
+                                  .switchSection(index);
+                            } else if (useFlexibleSections) {
+                              // Jump to the first question of the selected flexible section
+                              int targetIndex = 0;
+                              for (int i = 0; i < index; i++) {
+                                targetIndex +=
+                                    localSections[i].questionsCount ?? 0;
+                              }
+                              if (targetIndex < allQuestions.length) {
+                                _pageController.jumpToPage(targetIndex);
+                              }
+                            } else {
+                              // Jump to the first question of this subject
+                              final targetSubject = subjects[index];
+                              final targetIndex = allQuestions.indexWhere(
+                                (q) => q.subject == targetSubject,
+                              );
+                              if (targetIndex != -1) {
+                                _pageController.jumpToPage(targetIndex);
+                              }
                             }
-                            if (targetIndex < allQuestions.length) {
-                              _pageController.jumpToPage(targetIndex);
-                            }
-                          } else {
-                            // Jump to the first question of this subject
-                            final targetSubject = subjects[index];
-                            final targetIndex = allQuestions.indexWhere(
-                              (q) => q.subject == targetSubject,
-                            );
-                            if (targetIndex != -1) {
-                              _pageController.jumpToPage(targetIndex);
-                            }
-                          }
-                          if (targetIndex < allQuestions.length) {
-                            _pageController.jumpToPage(targetIndex);
-                          }
-                        } else {
-                          // Jump to the first question of this subject
-                          final targetSubject = subjects[index];
-                          final targetIndex = allQuestions.indexWhere((q) => q.subject == targetSubject);
-                          if (targetIndex != -1) {
-                            _pageController.jumpToPage(targetIndex);
-                          }
-                        }
-                      },
-                    ),
+                          },
+                        ),
                   ],
                 ),
               ),
@@ -461,94 +452,6 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                       isSavedVisible: _isSavedVisible,
                       answeredCount: answeredCount,
                     ),
-                    Expanded(
-                      child: PageView.builder(
-                        controller: _pageController,
-                        allowImplicitScrolling: true,
-                        onPageChanged: (index) {
-                          setState(() {
-                            _currentQuestionIndex = index;
-                            // Sync subject index if needed
-                            final q = allQuestions[index];
-                            final sIdx = subjects.indexOf(q.subject);
-                            if (sIdx != -1) _activeSubjectIndex = sIdx;
-                          });
-                        },
-                        itemCount: allQuestions.length,
-                        itemBuilder: (context, index) {
-                          final q = allQuestions[index];
-                          final a = state.answers[q.id];
-                          final isLast = index == allQuestions.length - 1;
-                          
-                          return TestQuestionCard(
-                            key: ValueKey(q.id),
-                            question: q,
-                            answer: a,
-                            isMarked: a?.isMarked ?? false,
-                            canGoPrevious: index > 0,
-                            isLastQuestion: isLast,
-                            finishLabel: isLast && hasNextSection 
-                                ? l10n.nextSection
-                                : null,
-                            answeredCount: sectionAnsweredCount,
-                            totalQuestions: allQuestions.length,
-                            onPaletteTap: () => setState(() => _showPalette = true),
-                            onToggleMark: () => _handleToggleMark(state, q),
-                            onPrevious: () {
-                              if (index > 0) {
-                                _pageController.previousPage(
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeInOut,
-                                );
-                              }
-                            },
-                            onNext: () {
-                              if (index < allQuestions.length - 1) {
-                                _pageController.nextPage(
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeInOut,
-                                );
-                              } else if (hasNextSection) {
-                                ref
-                                    .read(examAttemptProvider.notifier)
-                                    .switchSection(state.currentSectionIndex + 1);
-                              } else {
-                                setState(() => _showSubmitConfirmation = true);
-                              }
-                            },
-                            onOptionSelect: (message) {
-                              if (state.checkedQuestions.contains(q.id)) return;
-                              _handleHtmlMessage(state, q, message);
-                            },
-                            isQuizMode: state.isQuizMode,
-                            isQuizChecked: state.checkedQuestions.contains(q.id),
-                            quizReview: state.quizReviews[q.id],
-                            onCheck: () async {
-                              if (a != null) {
-                                try {
-                                  await ref.read(examAttemptProvider.notifier).checkQuizAnswer(q.answerUrl, a);
-                                } catch (e) {
-                                  if (context.mounted) {
-                                    AppToast.show(context, message: 'Failed to check answer. Please try again.', isError: true);
-                                  }
-                                }
-                              }
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: [
-                      TestProgressSection(
-                        currentQuestionIndex: globalCurrentIndex,
-                        totalQuestions: displayTotalCount,
-                        isSavedVisible: _isSavedVisible,
-                        answeredCount: answeredCount,
-                      ),
                       Expanded(
                         child: PageView.builder(
                           controller: _pageController,
@@ -567,7 +470,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                             final q = allQuestions[index];
                             final a = state.answers[q.id];
                             final isLast = index == allQuestions.length - 1;
-
+                            
                             return TestQuestionCard(
                               key: ValueKey(q.id),
                               question: q,
@@ -575,13 +478,12 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                               isMarked: a?.isMarked ?? false,
                               canGoPrevious: index > 0,
                               isLastQuestion: isLast,
-                              finishLabel: isLast && hasNextSection
+                              finishLabel: isLast && hasNextSection 
                                   ? l10n.nextSection
                                   : null,
                               answeredCount: sectionAnsweredCount,
                               totalQuestions: allQuestions.length,
-                              onPaletteTap: () =>
-                                  setState(() => _showPalette = true),
+                              onPaletteTap: () => setState(() => _showPalette = true),
                               onToggleMark: () => _handleToggleMark(state, q),
                               onPrevious: () {
                                 if (index > 0) {
@@ -600,17 +502,29 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                                 } else if (hasNextSection) {
                                   ref
                                       .read(examAttemptProvider.notifier)
-                                      .switchSection(
-                                        state.currentSectionIndex + 1,
-                                      );
+                                      .switchSection(state.currentSectionIndex + 1);
                                 } else {
-                                  setState(
-                                    () => _showSubmitConfirmation = true,
-                                  );
+                                  setState(() => _showSubmitConfirmation = true);
                                 }
                               },
-                              onOptionSelect: (message) =>
-                                  _handleHtmlMessage(state, q, message),
+                              onOptionSelect: (message) {
+                                if (state.checkedQuestions.contains(q.id)) return;
+                                _handleHtmlMessage(state, q, message);
+                              },
+                              isQuizMode: state.isQuizMode,
+                              isQuizChecked: state.checkedQuestions.contains(q.id),
+                              quizReview: state.quizReviews[q.id],
+                              onCheck: () async {
+                                if (a != null) {
+                                  try {
+                                    await ref.read(examAttemptProvider.notifier).checkQuizAnswer(q.answerUrl, a);
+                                  } catch (e) {
+                                    if (context.mounted) {
+                                      AppToast.show(context, message: "Failed to check answer. Please try again.", isError: true);
+                                    }
+                                  }
+                                }
+                              },
                             );
                           },
                         ),

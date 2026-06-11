@@ -1830,4 +1830,24 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get bookmarkActionDelete => 'நீக்கு';
+
+  @override
+  String get actionCheck => 'சரிபார்க்கவும்';
+
+  @override
+  String get examModeSelectTitle => 'தேர்வு முறையைத் தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get examModeRegularTitle => 'வழக்கமான முறை';
+
+  @override
+  String get examModeRegularDesc =>
+      'நேரக் கட்டுப்பாடுடன் கூடிய சாதாரண தேர்வு முறையில் தேர்வை எழுதவும்.';
+
+  @override
+  String get examModeQuizTitle => 'வினாடி வினா முறை';
+
+  @override
+  String get examModeQuizDesc =>
+      'ஒவ்வொரு கேள்விக்கும் உடனுக்குடன் பதில்களைச் சரிபார்க்கவும்.';
 }

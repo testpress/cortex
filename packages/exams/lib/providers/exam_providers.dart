@@ -12,7 +12,8 @@ part 'exam_providers.g.dart';
 @Riverpod(keepAlive: true)
 ExamRepository examRepository(Ref ref) {
   final dataSource = ref.watch(dataSourceProvider);
-  return ExamRepository(dataSource: dataSource);
+  final dbFuture = ref.watch(appDatabaseProvider.future);
+  return ExamRepository(dataSource: dataSource, dbFuture: dbFuture);
 }
 
 /// Fetches exam details by slug with Stale-While-Revalidate (SWR) cache.

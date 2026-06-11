@@ -110,6 +110,12 @@ The system SHALL evaluate quiz answers by comparing the selected option IDs agai
 - **THEN** the system SHALL mark the checked state as incorrect
 - **AND** it SHALL show the incorrect review state with the explanation.
 
+#### Scenario: API Response Parsing for Evaluation
+- **WHEN** the API returns the attempt question response on checking an answer
+- **THEN** the system SHALL correctly parse the question ID and the correct options
+- **AND** it SHALL support looking up correct options inside `correct_option_ids` (both top-level and nested) or nested `options` where `is_correct` is true
+- **AND** the evaluation SHALL prefer direct backend results (`result` or `is_correct`) if present, otherwise deriving it by comparing selections against correct answers, to avoid flashing false incorrect state.
+
 ### Requirement: No Retry Action in Quiz Mode
 The quiz review state SHALL NOT expose a `Try Again` action for quiz-mode questions.
 
@@ -125,3 +131,21 @@ When a quiz-mode attempt is finished, the system SHALL display a completion resu
 - **WHEN** the final quiz question is continued past its review state
 - **THEN** the system SHALL show a completion card that summarizes the score/result
 - **AND** it SHALL provide `Retake Test` and `Back to Chapter` actions.
+
+### Requirement: Offline-First Quiz Questions Fetching
+To support instant correctness feedback on checking an answer, the system SHALL load the quiz questions using an API endpoint version that returns correct options and explanations.
+
+#### Scenario: Loading quiz questions in quiz mode
+- **WHEN** a quiz-mode attempt is initialized
+- **THEN** the system SHALL fetch questions using the `/api/v2.5/attempts/{id}/questions/` endpoint to retrieve correct options and explanation metadata locally
+- **AND** it SHALL use this local metadata to display review highlights instantly on check.
+
+#### Scenario: Sorting quiz questions by section and order
+- **WHEN** quiz questions are loaded from the `/api/v2.5/attempts/{id}/questions/` endpoint
+- **THEN** the system SHALL sort the questions overall by their section order or section ID (ascending) first
+- **AND** then sort them by their question order within the section (ascending) to prevent interleaving of questions from different sections.
+
+#### Scenario: Submitting quiz answers to v2.2 endpoint
+- **WHEN** constructing the answer check URL for quiz questions fetched from `/api/v2.5/attempts/{id}/questions/`
+- **THEN** the system SHALL use the `/api/v2.2/` endpoint version path (e.g. `/api/v2.2/attempts/{attempt_id}/questions/{attempt_item_id}/`) to ensure check PUT requests are accepted without a 404 error.
+

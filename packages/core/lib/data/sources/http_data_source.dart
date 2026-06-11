@@ -1,3 +1,4 @@
+import 'dart:developer' as dev;
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:core/data/data.dart';
@@ -691,26 +692,303 @@ class HttpDataSource implements DataSource {
       fromJson: (json) => json,
     );
 
+    final bool isV2_5Format = firstPageData is Map &&
+        firstPageData['results'] is Map &&
+        (firstPageData['results'] as Map)['exam_questions'] is List;
+
+    if (isV2_5Format) {
+      final List<Map<String, dynamic>> allExamQuestions = [];
+      final Map<String, dynamic> allQuestionsMap = {};
+
+      void extractRawData(dynamic pageData) {
+        if (pageData is Map) {
+          final results = pageData['results'];
+          if (results is Map && results['exam_questions'] is List) {
+            final examQuestions = results['exam_questions'] as List<dynamic>;
+            final questionsList = results['questions'] as List<dynamic>? ?? [];
+
+            for (var eq in examQuestions) {
+              if (eq is Map<String, dynamic>) {
+                allExamQuestions.add(eq);
+              }
+            }
+            for (var q in questionsList) {
+              if (q is Map<String, dynamic> && q['id'] != null) {
+                allQuestionsMap[q['id'].toString()] = q;
+              }
+            }
+          }
+        }
+      }
+
+      extractRawData(firstPageData);
+
+      String? nextUrl = firstPageData['next'] as String?;
+      int count = (firstPageData['count'] as int?) ?? 0;
+      final int resultsLength = (firstPageData['results'] as Map)['exam_questions'].length;
+      int perPage = (firstPageData['per_page'] as int?) ?? resultsLength;
+
+      final List<Future<dynamic>> concurrentFutures = [];
+
+      if (nextUrl != null && nextUrl.isNotEmpty && count > 0 && perPage > 0) {
+        final int totalPages = (count / perPage).ceil();
+        if (totalPages > 1) {
+          final uri = Uri.parse(resolvedUrl);
+          for (int page = 2; page <= totalPages; page++) {
+            final queryParams = Map<String, String>.from(uri.queryParameters);
+            queryParams['page'] = page.toString();
+            final pageUri = uri.replace(queryParameters: queryParams);
+            concurrentFutures.add(
+              performNetworkRequest(
+                _dio.get(pageUri.toString()),
+                fromJson: (json) => {'type': 'v2_5_page', 'data': json},
+              ),
+            );
+          }
+        }
+      }
+
+      final RegExp attemptRegex = RegExp(r'/attempts/(\d+)/');
+      final String? attemptId = attemptRegex.firstMatch(questionsUrl)?.group(1);
+      final Map<String, String> questionIdToAttemptItemUrl = {};
+
+      Future<void>? v2_2FetchFuture;
+      if (attemptId != null) {
+        final String v2_2Url = resolvedUrl
+            .replaceAll('/api/v2.5/', '/api/v2.2/')
+            .replaceAll('/api/v2.2.1/', '/api/v2.2/');
+
+        v2_2FetchFuture = () async {
+          try {
+            final dynamic v2_2FirstPage = await performNetworkRequest(
+              _dio.get(v2_2Url),
+              fromJson: (json) => json,
+            );
+
+            void extractUrls(dynamic pageData) {
+              if (pageData is List) {
+                for (var item in pageData) {
+                  if (item is Map<String, dynamic>) {
+                    final q = item['question'];
+                    final qId = q is Map ? q['id']?.toString() : null;
+                    final url = item['url']?.toString();
+                    if (qId != null && url != null) {
+                      questionIdToAttemptItemUrl[qId] = url;
+                    }
+                  }
+                }
+              } else if (pageData is Map) {
+                final results = pageData['results'];
+                if (results is List) {
+                  for (var item in results) {
+                    if (item is Map<String, dynamic>) {
+                      final q = item['question'];
+                      final qId = q is Map ? q['id']?.toString() : null;
+                      final url = item['url']?.toString();
+                      if (qId != null && url != null) {
+                        questionIdToAttemptItemUrl[qId] = url;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+
+            extractUrls(v2_2FirstPage);
+
+            if (v2_2FirstPage is Map) {
+              final String? v2_2Next = v2_2FirstPage['next'] as String?;
+              final int v2_2Count = (v2_2FirstPage['count'] as int?) ?? 0;
+              final results = v2_2FirstPage['results'];
+              final int resultsLength = results is List ? results.length : 0;
+              final int v2_2PerPage = (v2_2FirstPage['per_page'] as int?) ?? resultsLength;
+
+              if (v2_2Next != null && v2_2Next.isNotEmpty && v2_2Count > 0 && v2_2PerPage > 0) {
+                final int totalPages = (v2_2Count / v2_2PerPage).ceil();
+                if (totalPages > 1) {
+                  final uri = Uri.parse(v2_2Url);
+                  final List<Future<dynamic>> mappingRequests = [];
+                  for (int page = 2; page <= totalPages; page++) {
+                    final queryParams = Map<String, String>.from(uri.queryParameters);
+                    queryParams['page'] = page.toString();
+                    final pageUri = uri.replace(queryParameters: queryParams);
+                    mappingRequests.add(
+                      performNetworkRequest(
+                        _dio.get(pageUri.toString()),
+                        fromJson: (json) => json,
+                      ),
+                    );
+                  }
+                  final List<dynamic> pagesData = await Future.wait(mappingRequests);
+                  for (final pageData in pagesData) {
+                    extractUrls(pageData);
+                  }
+                }
+              }
+            }
+          } catch (e, stackTrace) {
+            dev.log(
+              'Failed to fetch v2.2 attempt questions mapping',
+              name: 'HttpDataSource',
+              error: e,
+              stackTrace: stackTrace,
+            );
+          }
+        }();
+
+        concurrentFutures.add(
+          v2_2FetchFuture.then((_) => {'type': 'v2_2_mapping', 'data': null}),
+        );
+      }
+
+      if (concurrentFutures.isNotEmpty) {
+        final List<dynamic> results = await Future.wait(concurrentFutures);
+        for (final res in results) {
+          if (res is Map && res['type'] == 'v2_5_page') {
+            extractRawData(res['data']);
+          }
+        }
+      }
+
+      int getSectionOrder(Map<String, dynamic> eq) {
+        final section = eq['attempt_section'];
+        if (section is Map) {
+          final orderVal = section['order'];
+          if (orderVal != null) {
+            return int.tryParse(orderVal.toString()) ?? 0;
+          }
+          final idVal = section['id'];
+          if (idVal != null) {
+            return int.tryParse(idVal.toString()) ?? 0;
+          }
+        }
+        return 0;
+      }
+
+      int getSectionId(Map<String, dynamic> eq) {
+        final sectionIdVal = eq['section_id'];
+        if (sectionIdVal != null) {
+          return int.tryParse(sectionIdVal.toString()) ?? 0;
+        }
+        final section = eq['attempt_section'];
+        if (section is Map) {
+          final idVal = section['id'];
+          if (idVal != null) {
+            return int.tryParse(idVal.toString()) ?? 0;
+          }
+        }
+        return 0;
+      }
+
+      int getQuestionOrder(Map<String, dynamic> eq) {
+        final orderVal = eq['order'] ?? eq['question_index'];
+        if (orderVal != null) {
+          return int.tryParse(orderVal.toString()) ?? 0;
+        }
+        return 0;
+      }
+
+      allExamQuestions.sort((a, b) {
+        final aSecOrder = getSectionOrder(a);
+        final bSecOrder = getSectionOrder(b);
+        if (aSecOrder != bSecOrder) {
+          return aSecOrder.compareTo(bSecOrder);
+        }
+        final aSecId = getSectionId(a);
+        final bSecId = getSectionId(b);
+        if (aSecId != bSecId) {
+          return aSecId.compareTo(bSecId);
+        }
+        final aQOrder = getQuestionOrder(a);
+        final bQOrder = getQuestionOrder(b);
+        return aQOrder.compareTo(bQOrder);
+      });
+
+      final List<QuestionDto> allQuestions = [];
+
+      for (var eq in allExamQuestions) {
+        final qId = eq['question_id']?.toString();
+        final rawQuestion = allQuestionsMap[qId];
+        final merged = Map<String, dynamic>.from(eq);
+        if (rawQuestion != null) {
+          merged['question'] = rawQuestion;
+        }
+        if (attemptId != null) {
+          final mappedAnswerUrl = questionIdToAttemptItemUrl[qId];
+          if (mappedAnswerUrl != null && mappedAnswerUrl.isNotEmpty) {
+            merged['answer_url'] = mappedAnswerUrl
+                .replaceAll('v2.2.1', 'v2.2')
+                .replaceAll('v2.3', 'v2.2');
+          } else {
+            merged['answer_url'] = '/api/v2.2/attempts/$attemptId/questions/${eq['id']}/';
+          }
+        }
+        allQuestions.add(QuestionDto.fromJson(merged));
+      }
+      return allQuestions;
+    }
+
+    // Standard mode path (V2.2/V2.3)
+    List<QuestionDto> parsePage(dynamic pageData) {
+      if (pageData is List) {
+        return pageData.map((e) => QuestionDto.fromJson(e as Map<String, dynamic>)).toList();
+      }
+      if (pageData is Map) {
+        final results = pageData['results'];
+        if (results is List) {
+          return results.map((e) => QuestionDto.fromJson(e as Map<String, dynamic>)).toList();
+        }
+        if (results is Map && results['exam_questions'] is List) {
+          final examQuestions = results['exam_questions'] as List<dynamic>;
+          final questionsList = results['questions'] as List<dynamic>? ?? [];
+
+          final Map<String, dynamic> questionsMap = {
+            for (var q in questionsList)
+              if (q is Map<String, dynamic>) q['id'].toString(): q
+          };
+
+          final RegExp attemptRegex = RegExp(r'/attempts/(\d+)/');
+          final String? attemptId = attemptRegex.firstMatch(questionsUrl)?.group(1);
+
+          final List<QuestionDto> parsed = [];
+          for (var eq in examQuestions) {
+            if (eq is Map<String, dynamic>) {
+              final qId = eq['question_id']?.toString();
+              final rawQuestion = questionsMap[qId];
+              final merged = Map<String, dynamic>.from(eq);
+              if (rawQuestion != null) {
+                merged['question'] = rawQuestion;
+              }
+              if (attemptId != null && merged['answer_url'] == null) {
+                merged['answer_url'] = '/api/v2.2/attempts/$attemptId/questions/${eq['id']}/';
+              }
+              parsed.add(QuestionDto.fromJson(merged));
+            }
+          }
+          return parsed;
+        }
+      }
+      return [];
+    }
+
     final List<QuestionDto> allQuestions = [];
-    final List<dynamic> firstPageList;
+    allQuestions.addAll(parsePage(firstPageData));
+
     String? nextUrl;
     int count = 0;
     int perPage = 0;
 
-    if (firstPageData is List) {
-      firstPageList = firstPageData;
-    } else if (firstPageData is Map && firstPageData['results'] is List) {
-      firstPageList = firstPageData['results'] as List<dynamic>;
+    if (firstPageData is Map) {
       nextUrl = firstPageData['next'] as String?;
       count = (firstPageData['count'] as int?) ?? 0;
-      perPage = (firstPageData['per_page'] as int?) ?? firstPageList.length;
-    } else {
-      firstPageList = [];
+      final results = firstPageData['results'];
+      final int resultsLength = (results is List)
+          ? results.length
+          : ((results is Map && results['exam_questions'] is List)
+              ? (results['exam_questions'] as List).length
+              : 0);
+      perPage = (firstPageData['per_page'] as int?) ?? resultsLength;
     }
-
-    allQuestions.addAll(
-      firstPageList.map((e) => QuestionDto.fromJson(e as Map<String, dynamic>)),
-    );
 
     if (nextUrl != null && nextUrl.isNotEmpty && count > 0 && perPage > 0) {
       final int totalPages = (count / perPage).ceil();
@@ -732,12 +1010,7 @@ class HttpDataSource implements DataSource {
 
         final List<dynamic> pagesData = await Future.wait(futureRequests);
         for (final pageData in pagesData) {
-          if (pageData is Map && pageData['results'] is List) {
-            final list = pageData['results'] as List<dynamic>;
-            allQuestions.addAll(
-              list.map((e) => QuestionDto.fromJson(e as Map<String, dynamic>)),
-            );
-          }
+          allQuestions.addAll(parsePage(pageData));
         }
       }
     }

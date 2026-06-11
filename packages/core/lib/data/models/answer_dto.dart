@@ -8,7 +8,7 @@ class AnswerDto {
   final String? essayText;
 
   bool get isMarked => review;
-  List<String> get selectedOptions => selectedAnswers.map((e) => e.toString()).toList();
+  List<String> get selectedOptions => selectedOptionIds;
 
   AnswerDto({
     required this.questionId,

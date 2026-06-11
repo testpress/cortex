@@ -77,8 +77,9 @@ void main() {
       l10n: l10n,
     );
 
-    // It should render Incorrect
-    expect(html, contains('>Not quite right<'));
+    // It should not render the feedback banner
+    expect(html, isNot(contains('class="feedback-banner"')));
+    expect(html, contains('Option 1'));
   });
 
   testWidgets('build prefers exact selected-answer match over false quiz result when correct answers are present', (WidgetTester tester) async {
@@ -115,7 +116,7 @@ void main() {
       l10n: l10n,
     );
 
-    expect(html, contains('>Correct!<'));
+    expect(html, isNot(contains('class="feedback-banner"')));
     expect(html, contains('Quiz explanation'));
   });
 
@@ -153,7 +154,7 @@ void main() {
       l10n: l10n,
     );
 
-    expect(html, contains('>Correct!<'));
+    expect(html, isNot(contains('class="feedback-banner"')));
     expect(html, contains('Quiz explanation'));
   });
 
@@ -183,7 +184,7 @@ void main() {
       l10n: l10n,
     );
 
-    // It should render Correct due to exact match
-    expect(html, contains('>Correct!<'));
+    expect(html, isNot(contains('class="feedback-banner"')));
+    expect(html, contains('Option 1'));
   });
 }
