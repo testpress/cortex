@@ -198,9 +198,12 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
     final design = Design.of(context);
 
-    if (_isLoading)
+    if (_isLoading) {
       return const LessonDetailSkeleton(lessonType: LessonType.pdf);
-    if (_error != null) return _buildError();
+    }
+    if (_error != null) {
+      return _buildError();
+    }
 
     return LayoutBuilder(
       builder: (context, constraints) {
