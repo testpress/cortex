@@ -448,7 +448,7 @@ class HttpDataSource implements DataSource {
       _dio.get(
         ApiEndpoints.posts,
         queryParameters: {
-          'order_by': '-created',
+          'ordering': '-published_date',
           'page': page,
           if (categorySlug != null && categorySlug.isNotEmpty)
             'category': categorySlug,
