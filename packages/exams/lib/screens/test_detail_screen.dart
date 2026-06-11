@@ -521,8 +521,9 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                                 }
                               },
                               onOptionSelect: (message) {
-                                if (state.checkedQuestions.contains(q.id))
+                                if (state.checkedQuestions.contains(q.id)) {
                                   return;
+                                }
                                 _handleHtmlMessage(state, q, message);
                               },
                               isQuizMode: state.isQuizMode,
