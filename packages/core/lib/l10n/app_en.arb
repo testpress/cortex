@@ -866,5 +866,11 @@
   "bookmarkLabelSortBy": "Sort by",
   "bookmarkActionCreateFolder": "Create folder",
   "bookmarkLabelName": "Name",
-  "bookmarkActionDelete": "Delete"
+  "bookmarkActionDelete": "Delete",
+  "actionCheck": "Check",
+  "examModeSelectTitle": "Select Exam Mode",
+  "examModeRegularTitle": "Regular Mode",
+  "examModeRegularDesc": "Take the test in standard exam mode with a timer.",
+  "examModeQuizTitle": "Quiz Mode",
+  "examModeQuizDesc": "Check answers immediately as you go."
 }

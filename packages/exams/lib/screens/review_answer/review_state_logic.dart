@@ -13,12 +13,42 @@ mixin ReviewStateLogic {
       final res = state.result!.toLowerCase();
       return res == 'correct' || res == '1';
     }
-    if (state == null || state.selectedOptions.isEmpty) return false;
+    if (state == null) return false;
+    if (q.type == 'shortAnswer' || q.type == 'numerical') {
+      final userAns = (state.shortText ?? '').trim().toLowerCase();
+      if (userAns.isEmpty) return false;
+      final correctOptions = q.options.where((o) => o.isCorrect).toList();
+      final correctValues = correctOptions.isNotEmpty
+          ? correctOptions.map((o) => o.text).toList()
+          : q.options.map((o) => o.text).toList();
+      return correctValues.any((val) {
+        final cleanVal = val
+            .replaceAll(RegExp(r'<[^>]*>'), '')
+            .replaceAll('&nbsp;', ' ')
+            .replaceAll('&amp;', '&')
+            .replaceAll('&lt;', '<')
+            .replaceAll('&gt;', '>')
+            .replaceAll('&quot;', '"')
+            .replaceAll('&#39;', "'")
+            .trim()
+            .toLowerCase();
+        return cleanVal == userAns;
+      });
+    }
+    if (q.type == 'essay') {
+      return false; // Essay questions are graded manually
+    }
+    if (state.selectedOptions.isEmpty) return false;
     final selected = List<String>.from(
       state.selectedOptions.map((e) => e.toString()),
     )..sort();
     final correct = List<String>.from(
-      q.correctOptionIds.map((e) => e.toString()),
+      (q.correctOptionIds.isNotEmpty
+              ? q.correctOptionIds
+              : q.options
+                    .where((option) => option.isCorrect)
+                    .map((option) => option.id))
+          .map((e) => e.toString()),
     )..sort();
     return listEquals(selected, correct);
   }
@@ -32,7 +62,14 @@ mixin ReviewStateLogic {
           res == '0' ||
           res == '3';
     }
-    return state == null || state.selectedOptions.isEmpty;
+    if (state == null) return true;
+    if (q.type == 'shortAnswer' || q.type == 'numerical') {
+      return (state.shortText ?? '').trim().isEmpty;
+    }
+    if (q.type == 'essay') {
+      return (state.essayText ?? '').trim().isEmpty;
+    }
+    return state.selectedOptions.isEmpty;
   }
 
   int countFor(ReviewFilter f) {

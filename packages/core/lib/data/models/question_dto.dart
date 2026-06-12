@@ -15,6 +15,7 @@ class QuestionDto {
   final String? shortText;
   final String? essayText;
   final String? sectionName;
+  final String? sectionId;
 
   const QuestionDto({
     required this.id,
@@ -32,12 +33,34 @@ class QuestionDto {
     this.shortText,
     this.essayText,
     this.sectionName,
+    this.sectionId,
   });
 
   factory QuestionDto.fromJson(Map<String, dynamic> json) {
     // Handle nested question object in some API versions
     final Map<String, dynamic> data =
         json['question'] as Map<String, dynamic>? ?? json;
+
+    final options =
+        (data['options'] as List<dynamic>? ??
+                data['answers'] as List<dynamic>? ??
+                json['options'] as List<dynamic>? ??
+                json['answers'] as List<dynamic>?)
+            ?.map((e) => QuestionOptionDto.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        const <QuestionOptionDto>[];
+
+    final explicitCorrectIds =
+        (data['correct_option_ids'] as List<dynamic>? ??
+                json['correct_option_ids'] as List<dynamic>?)
+            ?.map((e) => e.toString())
+            .toList() ??
+        const <String>[];
+
+    final derivedCorrectIds = options
+        .where((option) => option.isCorrect)
+        .map((option) => option.id)
+        .toList();
 
     return QuestionDto(
       id: (data['id'] ?? json['id'] ?? '').toString(),
@@ -60,30 +83,18 @@ class QuestionDto {
           (data['subject'] ?? data['subject_name'] ?? json['subject_name'])
               as String? ??
           'General',
-      options:
-          (data['options'] as List<dynamic>? ??
-                  data['answers'] as List<dynamic>? ??
-                  json['options'] as List<dynamic>? ??
-                  json['answers'] as List<dynamic>?)
-              ?.map(
-                (e) => QuestionOptionDto.fromJson(e as Map<String, dynamic>),
-              )
-              .toList() ??
-          const [],
+      options: options,
       answerUrl:
-          (data['answer_url'] ??
-                  json['answer_url'] ??
+          (json['answer_url'] ??
+                  data['answer_url'] ??
                   data['url'] ??
                   json['url'])
               as String? ??
           '',
       markUrl: (data['mark_url'] ?? json['mark_url']) as String?,
-      correctOptionIds:
-          (data['correct_option_ids'] as List<dynamic>? ??
-                  json['correct_option_ids'] as List<dynamic>?)
-              ?.map((e) => e.toString())
-              .toList() ??
-          const [],
+      correctOptionIds: explicitCorrectIds.isNotEmpty
+          ? explicitCorrectIds
+          : derivedCorrectIds,
       explanation:
           (data['explanation'] ??
                   data['explanation_html'] ??
@@ -113,6 +124,16 @@ class QuestionDto {
           : (data['attempt_section'] is Map)
           ? (data['attempt_section'] as Map)['name']?.toString()
           : null,
+      sectionId:
+          (json['section_id'] ??
+                  (json['attempt_section'] is Map
+                      ? (json['attempt_section'] as Map)['id']
+                      : json['attempt_section']) ??
+                  data['section_id'] ??
+                  (data['attempt_section'] is Map
+                      ? (data['attempt_section'] as Map)['id']
+                      : data['attempt_section']))
+              ?.toString(),
     );
   }
 
@@ -133,6 +154,7 @@ class QuestionDto {
       'short_text': shortText,
       'essay_text': essayText,
       'sectionName': sectionName,
+      'section_id': sectionId,
     };
   }
 }
@@ -141,17 +163,31 @@ class QuestionDto {
 class QuestionOptionDto {
   final String id;
   final String text;
+  final bool isCorrect;
 
-  const QuestionOptionDto({required this.id, required this.text});
+  const QuestionOptionDto({
+    required this.id,
+    required this.text,
+    this.isCorrect = false,
+  });
 
   factory QuestionOptionDto.fromJson(Map<String, dynamic> json) {
+    final rawIsCorrect =
+        json['is_correct'] ?? json['correct'] ?? json['isCorrect'];
+    final bool isCorrect = rawIsCorrect is bool
+        ? rawIsCorrect
+        : rawIsCorrect != null &&
+              (rawIsCorrect.toString().toLowerCase() == 'true' ||
+                  rawIsCorrect.toString() == '1');
+
     return QuestionOptionDto(
       id: (json['id'] ?? '').toString(),
       text: (json['text'] ?? json['text_html']) as String? ?? '',
+      isCorrect: isCorrect,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'id': id, 'text': text};
+    return {'id': id, 'text': text, 'is_correct': isCorrect};
   }
 }

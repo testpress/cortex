@@ -48,6 +48,101 @@ class ExamsRoutes {
                 );
               },
             ),
+            GoRoute(
+              path: 'test/:id',
+              parentNavigatorKey: rootNavigatorKey,
+              builder: (context, state) {
+                final id = state.pathParameters['id']!;
+                final extra = state.extra;
+                final lesson = extra is LessonDto
+                    ? extra
+                    : (extra is Lesson ? extra.toDto() : null);
+                return ExamPrescreen(
+                  testId: id,
+                  lesson: lesson,
+                  onClose: () => context.pop(),
+                  onStartAttempt: (isQuizMode) async {
+                    context.pushReplacement(
+                      '/exams/test/$id/player?isQuizMode=$isQuizMode',
+                      extra: lesson,
+                    );
+                  },
+                );
+              },
+              routes: [
+                GoRoute(
+                  path: 'player',
+                  parentNavigatorKey: rootNavigatorKey,
+                  builder: (context, state) {
+                    final id = state.pathParameters['id']!;
+                    final extra = state.extra;
+                    final lesson = extra is LessonDto
+                        ? extra
+                        : (extra is Lesson ? extra.toDto() : null);
+                    final isQuizMode =
+                        state.uri.queryParameters['isQuizMode'] == 'true';
+                    return TestDetailScreen(
+                      testId: id,
+                      lesson: lesson,
+                      isQuizMode: isQuizMode,
+                      onClose: () => context.pop(),
+                    );
+                  },
+                ),
+                GoRoute(
+                  path: 'review-analytics',
+                  parentNavigatorKey: rootNavigatorKey,
+                  builder: (context, state) {
+                    final id = state.pathParameters['id']!;
+                    final payload = state.extra as ReviewRoutePayload?;
+                    return ReviewAnalyticsScreen(
+                      testId: id,
+                      assessmentTitle:
+                          payload?.assessmentTitle ?? 'Assessment $id',
+                      questions: payload?.questions ?? const <QuestionDto>[],
+                      attemptStates:
+                          payload?.attemptStates ?? const <String, AnswerDto>{},
+                      attempt: payload?.attempt,
+                      exam: payload?.exam,
+                      onBack: () => context.pop(),
+                    );
+                  },
+                ),
+                GoRoute(
+                  path: 'review-answers',
+                  parentNavigatorKey: rootNavigatorKey,
+                  builder: (context, state) {
+                    final id = state.pathParameters['id']!;
+                    final payload = state.extra as ReviewRoutePayload?;
+                    return ReviewAnswerDetailScreen(
+                      assessmentTitle:
+                          payload?.assessmentTitle ?? 'Assessment $id',
+                      questions: payload?.questions ?? const <QuestionDto>[],
+                      attemptStates:
+                          payload?.attemptStates ?? const <String, AnswerDto>{},
+                      attempt: payload?.attempt,
+                      onBack: () => context.pop(),
+                    );
+                  },
+                ),
+              ],
+            ),
+            GoRoute(
+              path: 'assessment/:id',
+              parentNavigatorKey: rootNavigatorKey,
+              builder: (context, state) {
+                final id = state.pathParameters['id']!;
+                final extra = state.extra;
+                final lesson = extra is LessonDto
+                    ? extra
+                    : (extra is Lesson ? extra.toDto() : null);
+                return AssessmentDetailScreen(
+                  assessmentId: id,
+                  lesson: lesson,
+                  onClose: () => context.pop(),
+                );
+              },
+            ),
           ],
         ),
         GoRoute(
@@ -63,9 +158,9 @@ class ExamsRoutes {
               testId: id,
               lesson: lesson,
               onClose: () => context.pop(),
-              onStartAttempt: () async {
+              onStartAttempt: (isQuizMode) async {
                 context.pushReplacement(
-                  '/exams/test/$id/player',
+                  '/exams/test/$id/player?isQuizMode=$isQuizMode',
                   extra: lesson,
                 );
               },
@@ -81,9 +176,12 @@ class ExamsRoutes {
                 final lesson = extra is LessonDto
                     ? extra
                     : (extra is Lesson ? extra.toDto() : null);
+                final isQuizMode =
+                    state.uri.queryParameters['isQuizMode'] == 'true';
                 return TestDetailScreen(
                   testId: id,
                   lesson: lesson,
+                  isQuizMode: isQuizMode,
                   onClose: () => context.pop(),
                 );
               },

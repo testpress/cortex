@@ -1833,11 +1833,30 @@ class AppLocalizationsMl extends AppLocalizations {
   String get bookmarkLabelSortBy => 'തരം തിരിക്കുക';
 
   @override
-  String get bookmarkActionCreateFolder => 'ഫോൾഡർ സൃഷ്ടിക്കുക';
+  String get bookmarkActionCreateFolder => 'Create folder';
 
   @override
-  String get bookmarkLabelName => 'പേര്';
+  String get bookmarkLabelName => 'Name';
 
   @override
-  String get bookmarkActionDelete => 'ഇല്ലാതാക്കുക';
+  String get bookmarkActionDelete => 'Delete';
+
+  @override
+  String get actionCheck => 'Check';
+
+  @override
+  String get examModeSelectTitle => 'Select Exam Mode';
+
+  @override
+  String get examModeRegularTitle => 'Regular Mode';
+
+  @override
+  String get examModeRegularDesc =>
+      'Take the test in standard exam mode with a timer.';
+
+  @override
+  String get examModeQuizTitle => 'Quiz Mode';
+
+  @override
+  String get examModeQuizDesc => 'Check answers immediately as you go.';
 }

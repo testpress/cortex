@@ -10,6 +10,10 @@ class TestNavigationActions extends StatelessWidget {
   final VoidCallback onToggleMark;
   final VoidCallback onPrevious;
   final VoidCallback onNext;
+  final bool isQuizMode;
+  final bool isQuizChecked;
+  final bool isChecking;
+  final VoidCallback? onCheck;
 
   const TestNavigationActions({
     super.key,
@@ -20,6 +24,10 @@ class TestNavigationActions extends StatelessWidget {
     required this.onToggleMark,
     required this.onPrevious,
     required this.onNext,
+    this.isQuizMode = false,
+    this.isQuizChecked = false,
+    this.isChecking = false,
+    this.onCheck,
   });
 
   @override
@@ -40,13 +48,27 @@ class TestNavigationActions extends StatelessWidget {
               onTap: canGoPrevious ? onPrevious : null,
               isBack: true,
             ),
-            NavButton(
-              label:
-                  finishLabel ??
-                  (isLastQuestion ? l10n.testFinish : l10n.testNext),
-              icon: LucideIcons.chevronRight,
-              onTap: onNext,
-            ),
+            if (isQuizMode && !isQuizChecked && onCheck != null)
+              NavButton(
+                label: l10n.actionCheck,
+                icon: LucideIcons.checkCircle2,
+                onTap: onCheck,
+                loading: isChecking,
+              )
+            else if (isQuizMode && isQuizChecked)
+              NavButton(
+                label: isLastQuestion ? l10n.testFinish : l10n.labelContinue,
+                icon: LucideIcons.chevronRight,
+                onTap: onNext,
+              )
+            else
+              NavButton(
+                label:
+                    finishLabel ??
+                    (isLastQuestion ? l10n.testFinish : l10n.testNext),
+                icon: LucideIcons.chevronRight,
+                onTap: onNext,
+              ),
           ],
         ),
       ],

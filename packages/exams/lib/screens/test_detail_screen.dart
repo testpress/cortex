@@ -11,6 +11,7 @@ import '../models/review_route_payload.dart';
 import '../widgets/test_detail/test_header.dart';
 import '../widgets/test_detail/question_palette.dart';
 import '../widgets/test_detail/test_result_view.dart';
+import '../widgets/test_detail/quiz_result_view.dart';
 import '../widgets/test_detail/test_progress_section.dart';
 import '../widgets/test_detail/test_question_card.dart';
 import '../widgets/test_detail/submit_confirmation_dialog.dart';
@@ -21,12 +22,14 @@ import '../widgets/test_detail/sections_tab_bar.dart';
 class TestDetailScreen extends ConsumerStatefulWidget {
   final String testId;
   final LessonDto? lesson;
+  final bool isQuizMode;
   final VoidCallback onClose;
 
   const TestDetailScreen({
     super.key,
     required this.testId,
     this.lesson,
+    this.isQuizMode = false,
     required this.onClose,
   });
 
@@ -110,13 +113,18 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                     : (cachedExam?.maxRetakes ?? -1),
               ),
               attemptsUrl,
+              isQuizMode: widget.isQuizMode,
             );
       } else if (slug != null && slug.isNotEmpty) {
-        ref.read(examAttemptProvider.notifier).loadExam(slug);
+        ref
+            .read(examAttemptProvider.notifier)
+            .loadExam(slug, isQuizMode: widget.isQuizMode);
       } else if (widget.lesson == null &&
           !lessonDetailAsync.isLoading &&
           lessonDetailAsync.value == null) {
-        ref.read(examAttemptProvider.notifier).loadExam(widget.testId);
+        ref
+            .read(examAttemptProvider.notifier)
+            .loadExam(widget.testId, isQuizMode: widget.isQuizMode);
       }
     }
   }
@@ -226,7 +234,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
         onStartExam: () {
           ref
               .read(examAttemptProvider.notifier)
-              .startStandaloneExam(state.exam!);
+              .startStandaloneExam(state.exam!, isQuizMode: widget.isQuizMode);
         },
       );
     }
@@ -405,39 +413,41 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                       TestHeader(
                         exam: state.exam!,
                         timeFormatted: _formatTime(state.remainingSeconds),
+                        isQuizMode: state.isQuizMode,
                         onExit: () =>
                             setState(() => _showPauseConfirmation = true),
                       ),
-                      SectionsTabBar(
-                        tabNames: tabNames,
-                        activeIndex: activeTabIndex,
-                        onTabSelected: (index) {
-                          if (useSections) {
-                            ref
-                                .read(examAttemptProvider.notifier)
-                                .switchSection(index);
-                          } else if (useFlexibleSections) {
-                            // Jump to the first question of the selected flexible section
-                            int targetIndex = 0;
-                            for (int i = 0; i < index; i++) {
-                              targetIndex +=
-                                  localSections[i].questionsCount ?? 0;
+                      if (!state.isQuizMode)
+                        SectionsTabBar(
+                          tabNames: tabNames,
+                          activeIndex: activeTabIndex,
+                          onTabSelected: (index) {
+                            if (useSections) {
+                              ref
+                                  .read(examAttemptProvider.notifier)
+                                  .switchSection(index);
+                            } else if (useFlexibleSections) {
+                              // Jump to the first question of the selected flexible section
+                              int targetIndex = 0;
+                              for (int i = 0; i < index; i++) {
+                                targetIndex +=
+                                    localSections[i].questionsCount ?? 0;
+                              }
+                              if (targetIndex < allQuestions.length) {
+                                _pageController.jumpToPage(targetIndex);
+                              }
+                            } else {
+                              // Jump to the first question of this subject
+                              final targetSubject = subjects[index];
+                              final targetIndex = allQuestions.indexWhere(
+                                (q) => q.subject == targetSubject,
+                              );
+                              if (targetIndex != -1) {
+                                _pageController.jumpToPage(targetIndex);
+                              }
                             }
-                            if (targetIndex < allQuestions.length) {
-                              _pageController.jumpToPage(targetIndex);
-                            }
-                          } else {
-                            // Jump to the first question of this subject
-                            final targetSubject = subjects[index];
-                            final targetIndex = allQuestions.indexWhere(
-                              (q) => q.subject == targetSubject,
-                            );
-                            if (targetIndex != -1) {
-                              _pageController.jumpToPage(targetIndex);
-                            }
-                          }
-                        },
-                      ),
+                          },
+                        ),
                     ],
                   ),
                 ),
@@ -510,8 +520,35 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                                   );
                                 }
                               },
-                              onOptionSelect: (message) =>
-                                  _handleHtmlMessage(state, q, message),
+                              onOptionSelect: (message) {
+                                if (state.checkedQuestions.contains(q.id)) {
+                                  return;
+                                }
+                                _handleHtmlMessage(state, q, message);
+                              },
+                              isQuizMode: state.isQuizMode,
+                              isQuizChecked: state.checkedQuestions.contains(
+                                q.id,
+                              ),
+                              quizReview: state.quizReviews[q.id],
+                              onCheck: () async {
+                                if (a != null) {
+                                  try {
+                                    await ref
+                                        .read(examAttemptProvider.notifier)
+                                        .checkQuizAnswer(q.answerUrl, a);
+                                  } catch (e) {
+                                    if (context.mounted) {
+                                      AppToast.show(
+                                        context,
+                                        message:
+                                            "Failed to check answer. Please try again.",
+                                        isError: true,
+                                      );
+                                    }
+                                  }
+                                }
+                              },
                             );
                           },
                         ),
@@ -572,12 +609,46 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                 },
               ),
             if (state.status == ExamAttemptStatus.completed)
-              TestResultView(
-                score: state.attempt?.score,
-                onReviewAnswers: () => _openReviewAnswers(state),
-                onViewAnalytics: () => _openAnalytics(state),
-                onClose: widget.onClose,
-              ),
+              state.isQuizMode
+                  ? QuizResultView(
+                      score: state.attempt?.score,
+                      allowRetake:
+                          widget.lesson?.allowRetake != false &&
+                          (state.exam?.allowRetake ?? true),
+                      onRetake: () {
+                        ref.read(examAttemptProvider.notifier).reset();
+                        setState(() {
+                          _currentQuestionIndex = 0;
+                          _showPalette = false;
+                          _showSubmitConfirmation = false;
+                          _showPauseConfirmation = false;
+                        });
+                        final lesson = widget.lesson;
+                        if (lesson != null && lesson.attemptsUrl != null) {
+                          ref
+                              .read(examAttemptProvider.notifier)
+                              .startCourseLinkedExam(
+                                state.exam!,
+                                lesson.attemptsUrl!,
+                                isQuizMode: true,
+                              );
+                        } else {
+                          ref
+                              .read(examAttemptProvider.notifier)
+                              .startStandaloneExam(
+                                state.exam!,
+                                isQuizMode: true,
+                              );
+                        }
+                      },
+                      onClose: widget.onClose,
+                    )
+                  : TestResultView(
+                      score: state.attempt?.score,
+                      onReviewAnswers: () => _openReviewAnswers(state),
+                      onViewAnalytics: () => _openAnalytics(state),
+                      onClose: widget.onClose,
+                    ),
           ],
         ),
       ),
@@ -647,11 +718,16 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
       selectedOptions: newSelections,
       isMarked: currentAnswer.isMarked,
     );
-
-    ref
-        .read(examAttemptProvider.notifier)
-        .submitAnswer(question.answerUrl, newAnswer);
-    _showSavedIndicator();
+    if (state.isQuizMode) {
+      ref
+          .read(examAttemptProvider.notifier)
+          .updateLocalAnswer(question.id, newAnswer);
+    } else {
+      ref
+          .read(examAttemptProvider.notifier)
+          .submitAnswer(question.answerUrl, newAnswer);
+      _showSavedIndicator();
+    }
   }
 
   void _handleToggleMark(ExamAttemptState state, QuestionDto question) {

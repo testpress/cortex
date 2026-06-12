@@ -1151,6 +1151,24 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
           as _i6.Future<void>);
 
   @override
+  _i6.Future<void> setQuizModeAttempt(String? attemptId) =>
+      (super.noSuchMethod(
+            Invocation.method(#setQuizModeAttempt, [attemptId]),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
+  _i6.Future<bool> isQuizModeAttempt(String? attemptId) =>
+      (super.noSuchMethod(
+            Invocation.method(#isQuizModeAttempt, [attemptId]),
+            returnValue: _i6.Future<bool>.value(false),
+            returnValueForMissingStub: _i6.Future<bool>.value(false),
+          )
+          as _i6.Future<bool>);
+
+  @override
   _i6.Stream<List<_i4.CoursesTableData>> watchAllCourses() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllCourses, []),

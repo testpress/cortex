@@ -1799,4 +1799,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bookmarkActionDelete => 'Delete';
+
+  @override
+  String get actionCheck => 'Check';
+
+  @override
+  String get examModeSelectTitle => 'Select Exam Mode';
+
+  @override
+  String get examModeRegularTitle => 'Regular Mode';
+
+  @override
+  String get examModeRegularDesc =>
+      'Take the test in standard exam mode with a timer.';
+
+  @override
+  String get examModeQuizTitle => 'Quiz Mode';
+
+  @override
+  String get examModeQuizDesc => 'Check answers immediately as you go.';
 }

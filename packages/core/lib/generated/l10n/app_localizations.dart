@@ -3286,6 +3286,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete'**
   String get bookmarkActionDelete;
+
+  /// No description provided for @actionCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Check'**
+  String get actionCheck;
+
+  /// No description provided for @examModeSelectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Exam Mode'**
+  String get examModeSelectTitle;
+
+  /// No description provided for @examModeRegularTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Regular Mode'**
+  String get examModeRegularTitle;
+
+  /// No description provided for @examModeRegularDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Take the test in standard exam mode with a timer.'**
+  String get examModeRegularDesc;
+
+  /// No description provided for @examModeQuizTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiz Mode'**
+  String get examModeQuizTitle;
+
+  /// No description provided for @examModeQuizDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Check answers immediately as you go.'**
+  String get examModeQuizDesc;
 }
 
 class _AppLocalizationsDelegate

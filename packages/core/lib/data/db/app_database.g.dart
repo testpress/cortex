@@ -6111,6 +6111,17 @@ class $AppSettingsTableTable extends AppSettingsTable
     requiredDuringInsert: false,
     defaultValue: const Constant(AppSettingsDefaults.appLanguage),
   );
+  static const VerificationMeta _quizModeAttemptsJsonMeta =
+      const VerificationMeta('quizModeAttemptsJson');
+  @override
+  late final GeneratedColumn<String> quizModeAttemptsJson =
+      GeneratedColumn<String>(
+        'quiz_mode_attempts_json',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -6120,6 +6131,7 @@ class $AppSettingsTableTable extends AppSettingsTable
     textSize,
     highContrast,
     appLanguage,
+    quizModeAttemptsJson,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -6187,6 +6199,15 @@ class $AppSettingsTableTable extends AppSettingsTable
         ),
       );
     }
+    if (data.containsKey('quiz_mode_attempts_json')) {
+      context.handle(
+        _quizModeAttemptsJsonMeta,
+        quizModeAttemptsJson.isAcceptableOrUnknown(
+          data['quiz_mode_attempts_json']!,
+          _quizModeAttemptsJsonMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -6224,6 +6245,10 @@ class $AppSettingsTableTable extends AppSettingsTable
         DriftSqlType.string,
         data['${effectivePrefix}app_language'],
       )!,
+      quizModeAttemptsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}quiz_mode_attempts_json'],
+      ),
     );
   }
 
@@ -6242,6 +6267,10 @@ class AppSettingsTableData extends DataClass
   final String textSize;
   final bool highContrast;
   final String appLanguage;
+
+  /// JSON-encoded map of attemptId → true for quiz-mode attempts.
+  /// Used to restore quiz mode on resume when the backend drops `attempt_type`.
+  final String? quizModeAttemptsJson;
   const AppSettingsTableData({
     required this.id,
     required this.appearanceMode,
@@ -6250,6 +6279,7 @@ class AppSettingsTableData extends DataClass
     required this.textSize,
     required this.highContrast,
     required this.appLanguage,
+    this.quizModeAttemptsJson,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -6261,6 +6291,9 @@ class AppSettingsTableData extends DataClass
     map['text_size'] = Variable<String>(textSize);
     map['high_contrast'] = Variable<bool>(highContrast);
     map['app_language'] = Variable<String>(appLanguage);
+    if (!nullToAbsent || quizModeAttemptsJson != null) {
+      map['quiz_mode_attempts_json'] = Variable<String>(quizModeAttemptsJson);
+    }
     return map;
   }
 
@@ -6273,6 +6306,9 @@ class AppSettingsTableData extends DataClass
       textSize: Value(textSize),
       highContrast: Value(highContrast),
       appLanguage: Value(appLanguage),
+      quizModeAttemptsJson: quizModeAttemptsJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(quizModeAttemptsJson),
     );
   }
 
@@ -6289,6 +6325,9 @@ class AppSettingsTableData extends DataClass
       textSize: serializer.fromJson<String>(json['textSize']),
       highContrast: serializer.fromJson<bool>(json['highContrast']),
       appLanguage: serializer.fromJson<String>(json['appLanguage']),
+      quizModeAttemptsJson: serializer.fromJson<String?>(
+        json['quizModeAttemptsJson'],
+      ),
     );
   }
   @override
@@ -6302,6 +6341,7 @@ class AppSettingsTableData extends DataClass
       'textSize': serializer.toJson<String>(textSize),
       'highContrast': serializer.toJson<bool>(highContrast),
       'appLanguage': serializer.toJson<String>(appLanguage),
+      'quizModeAttemptsJson': serializer.toJson<String?>(quizModeAttemptsJson),
     };
   }
 
@@ -6313,6 +6353,7 @@ class AppSettingsTableData extends DataClass
     String? textSize,
     bool? highContrast,
     String? appLanguage,
+    Value<String?> quizModeAttemptsJson = const Value.absent(),
   }) => AppSettingsTableData(
     id: id ?? this.id,
     appearanceMode: appearanceMode ?? this.appearanceMode,
@@ -6321,6 +6362,9 @@ class AppSettingsTableData extends DataClass
     textSize: textSize ?? this.textSize,
     highContrast: highContrast ?? this.highContrast,
     appLanguage: appLanguage ?? this.appLanguage,
+    quizModeAttemptsJson: quizModeAttemptsJson.present
+        ? quizModeAttemptsJson.value
+        : this.quizModeAttemptsJson,
   );
   AppSettingsTableData copyWithCompanion(AppSettingsTableCompanion data) {
     return AppSettingsTableData(
@@ -6341,6 +6385,9 @@ class AppSettingsTableData extends DataClass
       appLanguage: data.appLanguage.present
           ? data.appLanguage.value
           : this.appLanguage,
+      quizModeAttemptsJson: data.quizModeAttemptsJson.present
+          ? data.quizModeAttemptsJson.value
+          : this.quizModeAttemptsJson,
     );
   }
 
@@ -6353,7 +6400,8 @@ class AppSettingsTableData extends DataClass
           ..write('autoPlayNext: $autoPlayNext, ')
           ..write('textSize: $textSize, ')
           ..write('highContrast: $highContrast, ')
-          ..write('appLanguage: $appLanguage')
+          ..write('appLanguage: $appLanguage, ')
+          ..write('quizModeAttemptsJson: $quizModeAttemptsJson')
           ..write(')'))
         .toString();
   }
@@ -6367,6 +6415,7 @@ class AppSettingsTableData extends DataClass
     textSize,
     highContrast,
     appLanguage,
+    quizModeAttemptsJson,
   );
   @override
   bool operator ==(Object other) =>
@@ -6378,7 +6427,8 @@ class AppSettingsTableData extends DataClass
           other.autoPlayNext == this.autoPlayNext &&
           other.textSize == this.textSize &&
           other.highContrast == this.highContrast &&
-          other.appLanguage == this.appLanguage);
+          other.appLanguage == this.appLanguage &&
+          other.quizModeAttemptsJson == this.quizModeAttemptsJson);
 }
 
 class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
@@ -6389,6 +6439,7 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
   final Value<String> textSize;
   final Value<bool> highContrast;
   final Value<String> appLanguage;
+  final Value<String?> quizModeAttemptsJson;
   const AppSettingsTableCompanion({
     this.id = const Value.absent(),
     this.appearanceMode = const Value.absent(),
@@ -6397,6 +6448,7 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
     this.textSize = const Value.absent(),
     this.highContrast = const Value.absent(),
     this.appLanguage = const Value.absent(),
+    this.quizModeAttemptsJson = const Value.absent(),
   });
   AppSettingsTableCompanion.insert({
     this.id = const Value.absent(),
@@ -6406,6 +6458,7 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
     this.textSize = const Value.absent(),
     this.highContrast = const Value.absent(),
     this.appLanguage = const Value.absent(),
+    this.quizModeAttemptsJson = const Value.absent(),
   });
   static Insertable<AppSettingsTableData> custom({
     Expression<int>? id,
@@ -6415,6 +6468,7 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
     Expression<String>? textSize,
     Expression<bool>? highContrast,
     Expression<String>? appLanguage,
+    Expression<String>? quizModeAttemptsJson,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -6424,6 +6478,8 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
       if (textSize != null) 'text_size': textSize,
       if (highContrast != null) 'high_contrast': highContrast,
       if (appLanguage != null) 'app_language': appLanguage,
+      if (quizModeAttemptsJson != null)
+        'quiz_mode_attempts_json': quizModeAttemptsJson,
     });
   }
 
@@ -6435,6 +6491,7 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
     Value<String>? textSize,
     Value<bool>? highContrast,
     Value<String>? appLanguage,
+    Value<String?>? quizModeAttemptsJson,
   }) {
     return AppSettingsTableCompanion(
       id: id ?? this.id,
@@ -6444,6 +6501,7 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
       textSize: textSize ?? this.textSize,
       highContrast: highContrast ?? this.highContrast,
       appLanguage: appLanguage ?? this.appLanguage,
+      quizModeAttemptsJson: quizModeAttemptsJson ?? this.quizModeAttemptsJson,
     );
   }
 
@@ -6471,6 +6529,11 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
     if (appLanguage.present) {
       map['app_language'] = Variable<String>(appLanguage.value);
     }
+    if (quizModeAttemptsJson.present) {
+      map['quiz_mode_attempts_json'] = Variable<String>(
+        quizModeAttemptsJson.value,
+      );
+    }
     return map;
   }
 
@@ -6483,7 +6546,8 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
           ..write('autoPlayNext: $autoPlayNext, ')
           ..write('textSize: $textSize, ')
           ..write('highContrast: $highContrast, ')
-          ..write('appLanguage: $appLanguage')
+          ..write('appLanguage: $appLanguage, ')
+          ..write('quizModeAttemptsJson: $quizModeAttemptsJson')
           ..write(')'))
         .toString();
   }
@@ -17931,6 +17995,7 @@ typedef $$AppSettingsTableTableCreateCompanionBuilder =
       Value<String> textSize,
       Value<bool> highContrast,
       Value<String> appLanguage,
+      Value<String?> quizModeAttemptsJson,
     });
 typedef $$AppSettingsTableTableUpdateCompanionBuilder =
     AppSettingsTableCompanion Function({
@@ -17941,6 +18006,7 @@ typedef $$AppSettingsTableTableUpdateCompanionBuilder =
       Value<String> textSize,
       Value<bool> highContrast,
       Value<String> appLanguage,
+      Value<String?> quizModeAttemptsJson,
     });
 
 class $$AppSettingsTableTableFilterComposer
@@ -17984,6 +18050,11 @@ class $$AppSettingsTableTableFilterComposer
 
   ColumnFilters<String> get appLanguage => $composableBuilder(
     column: $table.appLanguage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get quizModeAttemptsJson => $composableBuilder(
+    column: $table.quizModeAttemptsJson,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -18031,6 +18102,11 @@ class $$AppSettingsTableTableOrderingComposer
     column: $table.appLanguage,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get quizModeAttemptsJson => $composableBuilder(
+    column: $table.quizModeAttemptsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$AppSettingsTableTableAnnotationComposer
@@ -18070,6 +18146,11 @@ class $$AppSettingsTableTableAnnotationComposer
 
   GeneratedColumn<String> get appLanguage => $composableBuilder(
     column: $table.appLanguage,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get quizModeAttemptsJson => $composableBuilder(
+    column: $table.quizModeAttemptsJson,
     builder: (column) => column,
   );
 }
@@ -18118,6 +18199,7 @@ class $$AppSettingsTableTableTableManager
                 Value<String> textSize = const Value.absent(),
                 Value<bool> highContrast = const Value.absent(),
                 Value<String> appLanguage = const Value.absent(),
+                Value<String?> quizModeAttemptsJson = const Value.absent(),
               }) => AppSettingsTableCompanion(
                 id: id,
                 appearanceMode: appearanceMode,
@@ -18126,6 +18208,7 @@ class $$AppSettingsTableTableTableManager
                 textSize: textSize,
                 highContrast: highContrast,
                 appLanguage: appLanguage,
+                quizModeAttemptsJson: quizModeAttemptsJson,
               ),
           createCompanionCallback:
               ({
@@ -18136,6 +18219,7 @@ class $$AppSettingsTableTableTableManager
                 Value<String> textSize = const Value.absent(),
                 Value<bool> highContrast = const Value.absent(),
                 Value<String> appLanguage = const Value.absent(),
+                Value<String?> quizModeAttemptsJson = const Value.absent(),
               }) => AppSettingsTableCompanion.insert(
                 id: id,
                 appearanceMode: appearanceMode,
@@ -18144,6 +18228,7 @@ class $$AppSettingsTableTableTableManager
                 textSize: textSize,
                 highContrast: highContrast,
                 appLanguage: appLanguage,
+                quizModeAttemptsJson: quizModeAttemptsJson,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

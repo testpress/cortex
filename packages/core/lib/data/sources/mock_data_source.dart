@@ -1232,9 +1232,13 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<AttemptDto> createAttempt(String attemptsUrl) async {
+  Future<AttemptDto> createAttempt(
+    String attemptsUrl, {
+    Map<String, dynamic>? data,
+  }) async {
     await Future.delayed(const Duration(milliseconds: 800));
-    return const AttemptDto(
+    final attemptType = data?['attempt_type'] as int?;
+    return AttemptDto(
       id: 'mock-attempt-1',
       questionsUrl:
           'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/questions/',
@@ -1242,12 +1246,16 @@ class MockDataSource implements DataSource {
           'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/heartbeat/',
       endUrl:
           'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/end/',
+      attemptType: attemptType,
     );
   }
 
   @override
-  Future<AttemptDto> createContentAttempt(String contentAttemptsUrl) async {
-    return createAttempt(contentAttemptsUrl);
+  Future<AttemptDto> createContentAttempt(
+    String contentAttemptsUrl, {
+    Map<String, dynamic>? data,
+  }) async {
+    return createAttempt(contentAttemptsUrl, data: data);
   }
 
   @override
@@ -1289,6 +1297,21 @@ class MockDataSource implements DataSource {
   @override
   Future<void> submitAnswer(String answerUrl, AnswerDto answer) async {
     await Future.delayed(const Duration(milliseconds: 300));
+  }
+
+  @override
+  Future<QuizReviewResultDto> submitQuizAnswer(
+    String answerUrl,
+    AnswerDto answer,
+  ) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return QuizReviewResultDto(
+      questionId: answer.questionId,
+      selectedAnswers: answer.selectedOptions,
+      correctAnswers: [], // mock doesn't know correct answers
+      result: null,
+      review: 'true',
+    );
   }
 
   @override

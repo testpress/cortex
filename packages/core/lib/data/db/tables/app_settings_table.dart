@@ -21,4 +21,8 @@ class AppSettingsTable extends Table {
       boolean().withDefault(const Constant(AppSettingsDefaults.highContrast))();
   TextColumn get appLanguage =>
       text().withDefault(const Constant(AppSettingsDefaults.appLanguage))();
+
+  /// JSON-encoded map of attemptId → true for quiz-mode attempts.
+  /// Used to restore quiz mode on resume when the backend drops `attempt_type`.
+  TextColumn get quizModeAttemptsJson => text().nullable()();
 }

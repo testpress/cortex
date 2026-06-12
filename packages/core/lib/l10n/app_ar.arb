@@ -616,5 +616,11 @@
   "bookmarkLabelSortBy": "فرز حسب",
   "bookmarkActionCreateFolder": "إنشاء مجلد",
   "bookmarkLabelName": "الاسم",
-  "bookmarkActionDelete": "حذف"
+  "bookmarkActionDelete": "حذف",
+  "actionCheck": "Check",
+  "examModeSelectTitle": "Select Exam Mode",
+  "examModeRegularTitle": "Regular Mode",
+  "examModeRegularDesc": "Take the test in standard exam mode with a timer.",
+  "examModeQuizTitle": "Quiz Mode",
+  "examModeQuizDesc": "Check answers immediately as you go."
 }

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
@@ -130,6 +131,28 @@ class AppDatabase extends _$AppDatabase {
     return (update(
       appSettingsTable,
     )..where((t) => t.id.equals(1))).write(companion);
+  }
+
+  /// Marks an attempt ID as quiz-mode in the DB.
+  Future<void> setQuizModeAttempt(String attemptId) async {
+    final settings = await getAppSettings();
+    final existing = settings.quizModeAttemptsJson;
+    final Map<String, dynamic> map = existing != null
+        ? Map<String, dynamic>.from(jsonDecode(existing) as Map)
+        : {};
+    map[attemptId] = true;
+    await (update(appSettingsTable)..where((t) => t.id.equals(1))).write(
+      AppSettingsTableCompanion(quizModeAttemptsJson: Value(jsonEncode(map))),
+    );
+  }
+
+  /// Returns true if an attempt was originally started in quiz mode.
+  Future<bool> isQuizModeAttempt(String attemptId) async {
+    final settings = await getAppSettings();
+    final existing = settings.quizModeAttemptsJson;
+    if (existing == null) return false;
+    final map = jsonDecode(existing) as Map;
+    return map[attemptId] == true;
   }
 
   // ── Courses ──────────────────────────────────────────────────────────────
