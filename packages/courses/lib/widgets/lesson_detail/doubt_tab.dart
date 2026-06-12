@@ -123,23 +123,24 @@ class DoubtTab extends ConsumerWidget {
             design: design,
           ),
         ),
-        Positioned(
-          bottom: 96,
-          right: design.spacing.md,
-          child: AskDoubtFab(
-            onTap: () {
-              final uri = Uri(
-                path: '/home/discussions/doubts/ask',
-                queryParameters: {
-                  'chapterContentId': lesson.id,
-                  'lessonTitle': lesson.title,
-                  'lessonType': lesson.type.name,
-                },
-              );
-              context.push(uri.toString());
-            },
+        if (doubtsAsync.hasValue || doubtsAsync.hasError)
+          Positioned(
+            bottom: 96,
+            right: design.spacing.md,
+            child: AskDoubtFab(
+              onTap: () {
+                final uri = Uri(
+                  path: '/home/discussions/doubts/ask',
+                  queryParameters: {
+                    'chapterContentId': lesson.id,
+                    'lessonTitle': lesson.title,
+                    'lessonType': lesson.type.name,
+                  },
+                );
+                context.push(uri.toString());
+              },
+            ),
           ),
-        ),
       ],
     );
   }
