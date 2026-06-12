@@ -464,10 +464,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
           questionId: questionId,
           queryType: queryType,
         );
-        ref.invalidate(doubtsListProvider);
-        if (chapterContentId != null) {
-          ref.invalidate(lessonDoubtsProvider(chapterContentId));
-        }
+
         if (mounted) {
           AppToast.show(
             context,

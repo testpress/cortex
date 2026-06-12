@@ -151,8 +151,6 @@ class CreateDoubtNotifier extends _$CreateDoubtNotifier {
         questionId: questionId,
         queryType: queryType,
       );
-
-      ref.invalidate(doubtsListProvider);
     });
   }
 }
@@ -192,9 +190,6 @@ class PostDoubtReplyNotifier extends _$PostDoubtReplyNotifier {
         shouldResolve: shouldResolve,
         shouldClose: shouldClose,
       );
-
-      ref.invalidate(doubtRepliesProvider(doubtId));
-      ref.invalidate(doubtsListProvider);
     });
   }
 }
