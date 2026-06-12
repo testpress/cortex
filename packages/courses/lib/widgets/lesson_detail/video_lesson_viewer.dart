@@ -150,10 +150,7 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
                 lesson: widget.lesson, isSliver: true, onSeek: _handleSeek),
             isSliver: true);
       case VideoLessonTab.askDoubt:
-        return DoubtTab(
-          lesson: widget.lesson,
-          footerBuilder: widget.footerBuilder,
-        );
+        return _buildTabContent(DoubtTab(lesson: widget.lesson));
       case VideoLessonTab.aiSupport:
         return _buildTabContent(AITab(lesson: widget.lesson));
     }

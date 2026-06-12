@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
+import '../repositories/doubt_repository.dart';
 
 part 'doubt_providers.g.dart';
 
@@ -23,16 +24,6 @@ Future<List<DoubtDto>> doubtsSearch(DoubtsSearchRef ref, String query) async {
   final repository = await ref.watch(doubtRepositoryProvider.future);
   final response = await repository.syncDoubts(page: 1, searchQuery: query);
   return response.results;
-}
-
-@riverpod
-Stream<List<DoubtDto>> lessonDoubts(
-  LessonDoubtsRef ref,
-  int chapterContentId,
-) async* {
-  final repository = await ref.watch(doubtRepositoryProvider.future);
-  repository.syncDoubts(page: 1, chapterContentId: chapterContentId).ignore();
-  yield* repository.watchDoubtsForLesson(chapterContentId);
 }
 
 @riverpod

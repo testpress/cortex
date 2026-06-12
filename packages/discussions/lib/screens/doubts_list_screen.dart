@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
+import '../providers/doubt_providers.dart';
 import '../widgets/forum_header.dart';
 
 class DoubtsListScreen extends ConsumerStatefulWidget {
