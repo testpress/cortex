@@ -31,7 +31,13 @@ Stream<List<DoubtDto>> lessonDoubts(
   int chapterContentId,
 ) async* {
   final repository = await ref.watch(doubtRepositoryProvider.future);
-  repository.syncDoubts(page: 1, chapterContentId: chapterContentId).ignore();
+  final initial = await repository.watchDoubtsForLesson(chapterContentId).first;
+  if (initial.isEmpty) {
+    await repository.syncDoubts(page: 1, chapterContentId: chapterContentId);
+  } else {
+    repository.syncDoubts(page: 1, chapterContentId: chapterContentId).ignore();
+  }
+
   yield* repository.watchDoubtsForLesson(chapterContentId);
 }
 

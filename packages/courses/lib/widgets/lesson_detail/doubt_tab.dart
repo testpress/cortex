@@ -105,7 +105,6 @@ class DoubtTab extends ConsumerWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (footerBuilder != null) footerBuilder!(context),
                       SizedBox(height: design.spacing.sm),
                     ],
                   ),
