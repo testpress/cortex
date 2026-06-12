@@ -7,7 +7,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
-import '../providers/doubt_providers.dart';
 import '../widgets/doubt_context_badge.dart';
 import '../widgets/forum_header.dart';
 import '../widgets/forum_composer.dart';

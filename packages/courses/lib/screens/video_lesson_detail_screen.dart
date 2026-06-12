@@ -117,10 +117,7 @@ class _VideoLessonDetailScreenState
       case VideoLessonTab.transcript:
         return TranscriptsTab(lesson: widget.lesson, onSeek: _handleSeek);
       case VideoLessonTab.askDoubt:
-        return SingleChildScrollView(
-          physics: const ClampingScrollPhysics(),
-          child: DoubtTab(lesson: widget.lesson),
-        );
+        return DoubtTab(lesson: widget.lesson);
       case VideoLessonTab.aiSupport:
         return SingleChildScrollView(
           physics: const ClampingScrollPhysics(),

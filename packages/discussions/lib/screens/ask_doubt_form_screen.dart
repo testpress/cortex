@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-import '../providers/doubt_providers.dart';
 import '../widgets/forum_header.dart';
 import '../widgets/forum_composer.dart';
 import '../widgets/doubt_context_badge.dart';
@@ -465,7 +464,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
           questionId: questionId,
           queryType: queryType,
         );
-        ref.invalidate(doubtsListProvider);
+
         if (mounted) {
           AppToast.show(
             context,

@@ -64,11 +64,13 @@ export '../network/api_endpoints.dart';
 // Repositories
 export 'repositories/user_progress_repository.dart';
 export 'repositories/bookmark_repository.dart';
+export 'repositories/doubt_repository.dart';
 export 'repositories/repository_providers.dart';
 export 'repositories/institute_settings_repository.dart';
 export 'providers/bookmark_provider.dart';
 export 'providers/announcements_provider.dart';
 export 'providers/institute_settings_provider.dart';
+export 'providers/doubt_providers.dart';
 
 //service
 export 'services/downloads_service.dart';
