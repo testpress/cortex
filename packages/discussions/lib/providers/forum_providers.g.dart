@@ -74,7 +74,7 @@ final createForumThreadProvider =
     );
 
 typedef _$CreateForumThread = AutoDisposeAsyncNotifier<void>;
-String _$globalForumFeedHash() => r'daaabf975050b926ac5fda9e7514e99275e18aa3';
+String _$globalForumFeedHash() => r'c0eae2814da9dc9445dea9baa59b94e965f5f08c';
 
 /// Copied from Dart SDK
 class _SystemHash {
