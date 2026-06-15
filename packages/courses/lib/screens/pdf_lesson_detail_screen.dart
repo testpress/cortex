@@ -64,6 +64,7 @@ class _PdfLessonDetailScreenState extends ConsumerState<PdfLessonDetailScreen> {
             children: [
               // Sticky Top Navigation
               LessonDetailHeader(
+                lessonTitle: widget.lesson.title,
                 onBack: () => Navigator.of(context).pop(),
                 isBookmarked: isBookmarked,
                 onBookmarkToggle: () async {
