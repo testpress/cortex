@@ -111,6 +111,15 @@ class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
             returnValueForMissingStub: _i3.Future<void>.value(),
           )
           as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> verifyLogin() =>
+      (super.noSuchMethod(
+            Invocation.method(#verifyLogin, []),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
 }
 
 /// A class which mocks [AppResetUseCase].

@@ -181,7 +181,7 @@ class _DoubtsSearchProviderElement
   String get query => (origin as DoubtsSearchProvider).query;
 }
 
-String _$lessonDoubtsHash() => r'5e177cabee89ca879a869f172a69cb9a0b39331e';
+String _$lessonDoubtsHash() => r'a063004a06660204fff9abb2b827fe5bffae2ec5';
 
 /// See also [lessonDoubts].
 @ProviderFor(lessonDoubts)
@@ -701,7 +701,7 @@ final doubtsSyncProvider =
 typedef _$DoubtsSync =
     AutoDisposeAsyncNotifier<({bool hasMore, bool isLoadingMore})>;
 String _$createDoubtNotifierHash() =>
-    r'b015ae4d53e721e0e660c8043260d81fc4d4355c';
+    r'e1e4c8b766e1061267854a7617f4f834044f8f2d';
 
 /// See also [CreateDoubtNotifier].
 @ProviderFor(CreateDoubtNotifier)
@@ -718,7 +718,7 @@ final createDoubtNotifierProvider =
 
 typedef _$CreateDoubtNotifier = AutoDisposeAsyncNotifier<void>;
 String _$postDoubtReplyNotifierHash() =>
-    r'bcee50857504643d07423aa10842537a0e417cd6';
+    r'1a3ad848644b34aeb2f49dd6956e233320e6b97f';
 
 /// See also [PostDoubtReplyNotifier].
 @ProviderFor(PostDoubtReplyNotifier)

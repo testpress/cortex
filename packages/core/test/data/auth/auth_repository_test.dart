@@ -18,15 +18,18 @@ void main() {
   late MockAuthApiService mockApi;
   late MockAuthLocalDataSource mockLocal;
   late MockAppDatabase mockDatabase;
+  late MockDataSource mockDataSource;
 
   setUp(() {
     mockApi = MockAuthApiService();
     mockLocal = MockAuthLocalDataSource();
     mockDatabase = MockAppDatabase();
+    mockDataSource = MockDataSource();
 
     repository = AuthRepository(
       apiService: mockApi,
       localDataSource: mockLocal,
+      dataSource: mockDataSource,
     );
 
     // Mock the database purge call
