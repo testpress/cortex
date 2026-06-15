@@ -154,14 +154,11 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
             color: design.colors.textTertiary.withValues(alpha: 0.2),
           ),
           SizedBox(height: design.spacing.lg),
-          AppText.headline(
-            l10n.doubtsEmptyTitle,
-            color: design.colors.textSecondary,
-          ),
+          AppText.body(l10n.doubtsEmptyTitle),
           SizedBox(height: design.spacing.xs),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: design.spacing.xl),
-            child: AppText.body(
+            child: AppText.bodySmall(
               l10n.doubtsEmptySubtitle,
               color: design.colors.textTertiary,
               textAlign: TextAlign.center,
@@ -252,7 +249,7 @@ class _DoubtsBodyState extends State<_DoubtsBody> {
     return CustomScrollView(
       controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(
-        parent: BouncingScrollPhysics(),
+        parent: ClampingScrollPhysics(),
       ),
       slivers: [
         CupertinoSliverRefreshControl(

@@ -145,6 +145,9 @@ class _VideoLessonDetailScreenState
     final initialPos =
         double.tryParse(widget.lesson.lastWatchedDuration ?? '0') ?? 0.0;
 
+    final padding = MediaQuery.of(context).padding;
+    final l10n = L10n.of(context);
+
     final header = Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -157,38 +160,51 @@ class _VideoLessonDetailScreenState
         ),
         boxShadow: design.shadows.surfaceSoft,
       ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: design.spacing.md,
-            vertical: design.spacing.md,
-          ),
-          child: Row(
+      padding: EdgeInsets.fromLTRB(
+        16,
+        padding.top + 12,
+        16,
+        12,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Row 1: Back Button
+          Row(
             children: [
-              AppFocusable(
+              AppSemantics.button(
+                label: l10n.curriculumBackButton,
                 onTap: () => Navigator.of(context).pop(),
-                borderRadius: BorderRadius.circular(design.radius.md),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      LucideIcons.chevronLeft,
-                      size: 20,
-                      color: design.colors.textPrimary,
-                    ),
-                    SizedBox(width: design.spacing.xs),
-                    AppText.label(
-                      L10n.of(context).curriculumBackButton,
-                      color: design.colors.textPrimary,
-                      style: const TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                  ],
+                child: AppFocusable(
+                  onTap: () => Navigator.of(context).pop(),
+                  borderRadius: design.radius.button,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        LucideIcons.chevronLeft,
+                        size: 20,
+                        color: design.colors.textPrimary,
+                      ),
+                      const SizedBox(width: 8),
+                      AppText.label(
+                        l10n.curriculumBackButton,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
-        ),
+          const SizedBox(height: 12),
+          // Row 2: Lesson Title
+          AppText.headline(
+            widget.lesson.title,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
 
@@ -233,31 +249,7 @@ class _VideoLessonDetailScreenState
       ),
     );
 
-    final titleSection = Padding(
-      padding: EdgeInsets.all(design.spacing.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AppText.headline(
-            widget.lesson.title,
-            color: design.colors.textPrimary,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.5,
-            ),
-          ),
-          if (widget.lesson.subtitle?.isNotEmpty ?? false) ...[
-            SizedBox(height: design.spacing.xs),
-            AppText.body(
-              widget.lesson.subtitle!,
-              color: design.colors.textSecondary,
-              style: const TextStyle(fontSize: 14, height: 1.4),
-            ),
-          ],
-        ],
-      ),
-    );
+    final titleSection = const SizedBox.shrink();
 
     final tabBar = TabBar(
       controller: _tabController,
