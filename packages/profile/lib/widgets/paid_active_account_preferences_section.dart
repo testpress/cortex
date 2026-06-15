@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 
 class AccountPreferencesSection extends StatelessWidget {
   const AccountPreferencesSection({
@@ -19,6 +20,8 @@ class AccountPreferencesSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
+    final allowProfileEdit =
+        InstituteSettings.current?.allowProfileEdit ?? false;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,13 +41,15 @@ class AccountPreferencesSection extends StatelessWidget {
             padding: EdgeInsets.zero,
             child: Column(
               children: [
-                _PreferenceItem(
-                  icon: LucideIcons.user,
-                  label: l10n.profileEditProfile,
-                  iconColor: design.colors.accent2,
-                  onTap: onEditProfileTap ?? () {},
-                ),
-                _Divider(),
+                if (allowProfileEdit) ...[
+                  _PreferenceItem(
+                    icon: LucideIcons.user,
+                    label: l10n.profileEditProfile,
+                    iconColor: design.colors.accent2,
+                    onTap: onEditProfileTap ?? () {},
+                  ),
+                  _Divider(),
+                ],
                 _PreferenceItem(
                   icon: LucideIcons.bell,
                   label: l10n.profileNotifications,
