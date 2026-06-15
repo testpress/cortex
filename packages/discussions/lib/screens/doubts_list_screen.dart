@@ -249,7 +249,7 @@ class _DoubtsBodyState extends State<_DoubtsBody> {
     return CustomScrollView(
       controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(
-        parent: ClampingScrollPhysics(),
+        parent: BouncingScrollPhysics(),
       ),
       slivers: [
         CupertinoSliverRefreshControl(

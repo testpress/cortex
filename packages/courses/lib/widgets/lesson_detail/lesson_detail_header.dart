@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter/material.dart' show Icons;
 import 'package:core/core.dart';
 
 /// Minimalist header for the lesson detail screen.
@@ -101,7 +100,9 @@ class LessonDetailHeader extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 _HeaderActionButton(
-                  icon: isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                  icon: isBookmarked
+                      ? LucideIcons.bookmarkOff
+                      : LucideIcons.bookmark,
                   onTap: onBookmarkToggle,
                   ariaLabel: isBookmarked
                       ? l10n.lessonBookmarkRemove
