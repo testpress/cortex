@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 
 import 'package:intl/intl.dart';
 
@@ -20,11 +21,13 @@ class ProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final allowProfileEdit =
+        InstituteSettings.current?.allowProfileEdit ?? false;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
       child: AppFocusable(
-        onTap: onEditProfileTap,
+        onTap: allowProfileEdit ? onEditProfileTap : null,
         child: AppCard(
           showShadow: true,
           padding: EdgeInsets.zero,
@@ -76,22 +79,23 @@ class ProfileHeader extends StatelessWidget {
                   ],
                 ),
               ),
-              Positioned(
-                right: design.spacing.md,
-                top: design.spacing.md,
-                child: Container(
-                  padding: EdgeInsets.all(design.spacing.sm),
-                  decoration: BoxDecoration(
-                    color: design.colors.primaryContainer,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    LucideIcons.pencil,
-                    size: design.iconSize.sm,
-                    color: design.colors.onPrimaryContainer,
+              if (allowProfileEdit)
+                Positioned(
+                  right: design.spacing.md,
+                  top: design.spacing.md,
+                  child: Container(
+                    padding: EdgeInsets.all(design.spacing.sm),
+                    decoration: BoxDecoration(
+                      color: design.colors.primaryContainer,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      LucideIcons.pencil,
+                      size: design.iconSize.sm,
+                      color: design.colors.onPrimaryContainer,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ),
