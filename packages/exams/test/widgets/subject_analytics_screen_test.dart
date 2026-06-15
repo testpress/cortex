@@ -53,8 +53,8 @@ void main() {
       expect(find.text('Chemistry'), findsOneWidget);
 
       // Verify tabs are NOT rendered
-      expect(find.text('Overall Reports'), findsNothing);
-      expect(find.text('Individual Reports'), findsNothing);
+      expect(find.text('Graph Reports'), findsNothing);
+      expect(find.text('Table Reports'), findsNothing);
 
       // Verify OverallReportsView is rendered
       expect(find.byType(OverallReportsView), findsOneWidget);
@@ -84,16 +84,16 @@ void main() {
       expect(find.text('Test Analytics'), findsOneWidget);
 
       // Verify tab buttons are rendered
-      expect(find.text('Overall Reports'), findsOneWidget);
-      expect(find.text('Individual Reports'), findsOneWidget);
+      expect(find.text('Graph Reports'), findsOneWidget);
+      expect(find.text('Table Reports'), findsOneWidget);
 
       // Verify OverallReportsView is rendered initially
       expect(find.byType(OverallReportsView), findsOneWidget);
       expect(find.byType(IndividualReportsView), findsNothing);
 
-      // Switch to Individual Reports tab
-      await tester.tap(find.text('Individual Reports'));
-      await tester.pumpAndSettle();
+      // Switch to Table Reports tab
+      await tester.tap(find.text('Table Reports'));
+      await tester.pump();
 
       // Verify IndividualReportsView is rendered now
       expect(find.byType(OverallReportsView), findsNothing);
@@ -127,7 +127,7 @@ void main() {
           .ancestor(
             of: filterIconFinder,
             matching: find.byWidgetPredicate(
-              (w) => w is Container && w.constraints?.maxWidth == 36,
+              (w) => w is Container && w.constraints?.maxWidth == 48,
             ),
           )
           .first;
@@ -140,7 +140,7 @@ void main() {
                   w is Container &&
                   w.decoration is BoxDecoration &&
                   (w.decoration as BoxDecoration).color == errorColor &&
-                  w.constraints?.maxWidth == 8,
+                  w.constraints?.maxWidth == 10,
             ),
           ),
         );

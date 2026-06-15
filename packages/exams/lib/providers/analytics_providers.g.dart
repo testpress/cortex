@@ -26,7 +26,7 @@ final subjectAnalyticsRepositoryProvider =
 // ignore: unused_element
 typedef SubjectAnalyticsRepositoryRef =
     FutureProviderRef<SubjectAnalyticsRepository>;
-String _$subjectAnalyticsHash() => r'3adada68d368176af6987accab7bbd203cec149f';
+String _$subjectAnalyticsHash() => r'3f364d611df75ae63e558185c339e9dc6d3bf049';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -297,10 +297,10 @@ class _SubjectAnalyticsByIdProviderElement
 }
 
 String _$subjectAnalyticsPaginationHash() =>
-    r'bcacadaa23e69b16b32b5f42c76355787f97d721';
+    r'5bebbfc3c477072d34f12628584e4d189658f253';
 
 abstract class _$SubjectAnalyticsPagination
-    extends BuildlessAutoDisposeNotifier<SubjectAnalyticsPaginationState> {
+    extends BuildlessNotifier<SubjectAnalyticsPaginationState> {
   late final int? parentId;
 
   SubjectAnalyticsPaginationState build(int? parentId);
@@ -346,7 +346,7 @@ class SubjectAnalyticsPaginationFamily
 /// See also [SubjectAnalyticsPagination].
 class SubjectAnalyticsPaginationProvider
     extends
-        AutoDisposeNotifierProviderImpl<
+        NotifierProviderImpl<
           SubjectAnalyticsPagination,
           SubjectAnalyticsPaginationState
         > {
@@ -401,7 +401,7 @@ class SubjectAnalyticsPaginationProvider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<
+  NotifierProviderElement<
     SubjectAnalyticsPagination,
     SubjectAnalyticsPaginationState
   >
@@ -427,14 +427,14 @@ class SubjectAnalyticsPaginationProvider
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 mixin SubjectAnalyticsPaginationRef
-    on AutoDisposeNotifierProviderRef<SubjectAnalyticsPaginationState> {
+    on NotifierProviderRef<SubjectAnalyticsPaginationState> {
   /// The parameter `parentId` of this provider.
   int? get parentId;
 }
 
 class _SubjectAnalyticsPaginationProviderElement
     extends
-        AutoDisposeNotifierProviderElement<
+        NotifierProviderElement<
           SubjectAnalyticsPagination,
           SubjectAnalyticsPaginationState
         >

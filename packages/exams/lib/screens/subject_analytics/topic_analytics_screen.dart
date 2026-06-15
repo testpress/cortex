@@ -30,20 +30,14 @@ class TopicAnalyticsScreen extends ConsumerWidget {
 
     final parsedTopicId = int.tryParse(topicId);
     if (parsedTopicId == null) {
-      return Container(
-        color: Design.of(context).colors.canvas,
-        child: const Center(child: Text('Invalid Topic ID')),
-      );
+      return const _FullScreenMessage(child: Text('Invalid Topic ID'));
     }
 
     final asyncTopic = ref.watch(subjectAnalyticsByIdProvider(parsedTopicId));
     return asyncTopic.when(
       data: (loadedTopic) {
         if (loadedTopic == null) {
-          return Container(
-            color: Design.of(context).colors.canvas,
-            child: const Center(child: Text('Topic not found')),
-          );
+          return const _FullScreenMessage(child: Text('Topic not found'));
         }
         return _TopicAnalyticsScreenContent(
           topicId: topicId,
@@ -51,14 +45,23 @@ class TopicAnalyticsScreen extends ConsumerWidget {
           onBack: onBack,
         );
       },
-      loading: () => Container(
-        color: Design.of(context).colors.canvas,
-        child: const Center(child: AppLoadingIndicator()),
+      loading: () => const _FullScreenMessage(child: AppLoadingIndicator()),
+      error: (error, stack) => _FullScreenMessage(
+        child: Text('Error loading topic analytics: $error'),
       ),
-      error: (error, stack) => Container(
-        color: Design.of(context).colors.canvas,
-        child: Center(child: Text('Error loading topic analytics: $error')),
-      ),
+    );
+  }
+}
+
+class _FullScreenMessage extends StatelessWidget {
+  const _FullScreenMessage({required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Design.of(context).colors.canvas,
+      child: Center(child: child),
     );
   }
 }
@@ -77,12 +80,6 @@ class _TopicAnalyticsScreenContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-
-    int getAccuracy() {
-      if (topic.totalQuestionCount == 0) return 0;
-      return ((topic.correctAnswerCount / topic.totalQuestionCount) * 100)
-          .round();
-    }
 
     return Container(
       color: design.colors.canvas,
@@ -228,7 +225,7 @@ class _TopicAnalyticsScreenContent extends StatelessWidget {
                         Container(height: 1, color: design.colors.border),
                         _StatRow(
                           label: 'Accuracy',
-                          value: '${getAccuracy()}%',
+                          value: '${topic.accuracy.toStringAsFixed(2)}%',
                           color: design.colors.primary,
                           isBoldValue: true,
                         ),

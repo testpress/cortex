@@ -224,7 +224,7 @@ class ReviewAnalyticsController extends StateNotifier<ReviewAnalyticsState> {
           correct: s.correctAnswerCount,
           incorrect: s.incorrectAnswerCount,
           score: subjectScore.toInt(),
-          accuracy: s.correctPercentage,
+          accuracy: s.accuracy,
           timeSpent: Duration.zero,
           totalTime: Duration.zero,
         );

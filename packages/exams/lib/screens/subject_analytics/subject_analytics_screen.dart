@@ -61,12 +61,13 @@ class _SubjectAnalyticsScreenState
                     children: [
                       // Navigation Row: Chevron icon, Title, Filter icon
                       Container(
-                        height: 56,
+                        constraints: const BoxConstraints(minHeight: 56),
                         padding: EdgeInsets.symmetric(
                           horizontal: design.spacing.xs,
+                          vertical: 10.0,
                         ),
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             AppFocusable(
                               onTap: widget.onBack,
@@ -102,34 +103,31 @@ class _SubjectAnalyticsScreenState
                                   },
                                   child: Container(
                                     width: 48,
-                                    height: 48,
+                                    height: 36,
                                     alignment: Alignment.center,
-                                    child: Container(
-                                      width: 36,
-                                      height: 36,
+                                    child: Stack(
                                       alignment: Alignment.center,
-                                      child: Stack(
-                                        children: [
-                                          Icon(
-                                            LucideIcons.filter,
-                                            color: design.colors.textPrimary,
-                                            size: design.iconSize.md,
-                                          ),
-                                          if (_selectedFilter != 'All')
-                                            Positioned(
-                                              right: 0,
-                                              top: 0,
-                                              child: Container(
-                                                width: 8,
-                                                height: 8,
-                                                decoration: BoxDecoration(
-                                                  color: design.colors.error,
-                                                  shape: BoxShape.circle,
-                                                ),
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        Icon(
+                                          LucideIcons.filter,
+                                          color: design.colors.textPrimary,
+                                          size: design.iconSize.md,
+                                        ),
+                                        if (_selectedFilter != 'All')
+                                          Positioned(
+                                            right: -1,
+                                            top: -1,
+                                            child: Container(
+                                              width: 10,
+                                              height: 10,
+                                              decoration: BoxDecoration(
+                                                color: design.colors.error,
+                                                shape: BoxShape.circle,
                                               ),
                                             ),
-                                        ],
-                                      ),
+                                          ),
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -152,7 +150,7 @@ class _SubjectAnalyticsScreenState
                             children: [
                               Expanded(
                                 child: _TabButton(
-                                  label: 'Overall Reports',
+                                  label: 'Graph Reports',
                                   isActive: _activeTab == AnalyticsTab.overall,
                                   onTap: () {
                                     setState(() {
@@ -164,7 +162,7 @@ class _SubjectAnalyticsScreenState
                               SizedBox(width: design.spacing.sm),
                               Expanded(
                                 child: _TabButton(
-                                  label: 'Individual Reports',
+                                  label: 'Table Reports',
                                   isActive:
                                       _activeTab == AnalyticsTab.individual,
                                   onTap: () {
@@ -361,20 +359,7 @@ class _FilterMenuItem extends StatelessWidget {
             color: isSelected
                 ? design.colors.surfaceVariant
                 : design.colors.transparent,
-            borderRadius: BorderRadius.only(
-              topLeft: isFirst
-                  ? Radius.circular(design.radius.lg)
-                  : Radius.zero,
-              topRight: isFirst
-                  ? Radius.circular(design.radius.lg)
-                  : Radius.zero,
-              bottomLeft: isLast
-                  ? Radius.circular(design.radius.lg)
-                  : Radius.zero,
-              bottomRight: isLast
-                  ? Radius.circular(design.radius.lg)
-                  : Radius.zero,
-            ),
+            borderRadius: _menuItemRadius(isFirst, isLast, design.radius.lg),
           ),
           padding: EdgeInsets.symmetric(
             horizontal: design.spacing.md,
@@ -386,6 +371,15 @@ class _FilterMenuItem extends StatelessWidget {
       ),
     );
   }
+}
+
+BorderRadius _menuItemRadius(bool isFirst, bool isLast, double radius) {
+  return BorderRadius.only(
+    topLeft: isFirst ? Radius.circular(radius) : Radius.zero,
+    topRight: isFirst ? Radius.circular(radius) : Radius.zero,
+    bottomLeft: isLast ? Radius.circular(radius) : Radius.zero,
+    bottomRight: isLast ? Radius.circular(radius) : Radius.zero,
+  );
 }
 
 extension SubjectAnalyticsColors on DesignConfig {

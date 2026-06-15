@@ -1305,27 +1305,22 @@ class HttpDataSource implements DataSource {
         queryParameters: queryParams,
       ),
       fromJson: (data) {
-        final subjectsData = data['subjects'] as List<dynamic>? ?? [];
-        final statsData = data['subject_stats'] as List<dynamic>? ?? [];
+        final results = data['results'] as Map<String, dynamic>? ?? {};
+        final subjectsData = results['subjects'] as List<dynamic>? ?? [];
+        final statsData = results['subject_stats'] as List<dynamic>? ?? [];
 
         final statsMap = {
           for (final stat in statsData)
-            if (stat['subject_id'] != null)
-              stat['subject_id'].toString(): stat
+            if (stat['subject_id'] != null) stat['subject_id'].toString(): stat,
         };
 
         final mergedList = <SubjectAnalyticsDto>[];
         for (final subject in subjectsData) {
           final id = subject['id']?.toString();
           if (id != null) {
-            final stat = statsMap[id] as Map<String, dynamic>?;
-            if (stat != null) {
-              final mergedJson = {
-                ...subject as Map<String, dynamic>,
-                ...stat,
-              };
-              mergedList.add(SubjectAnalyticsDto.fromJson(mergedJson));
-            }
+            final stat = statsMap[id] as Map<String, dynamic>? ?? {};
+            final mergedJson = {...subject as Map<String, dynamic>, ...stat};
+            mergedList.add(SubjectAnalyticsDto.fromJson(mergedJson));
           }
         }
 

@@ -3,27 +3,33 @@ import 'package:core/core.dart';
 import 'package:core/data/models/review_models.dart';
 import '../subject_analytics_screen.dart';
 
-const double _minPctForStackedLabel = 12.0;
+import 'package:skeletonizer/skeletonizer.dart';
+
+const double _minPctForStackedLabel = 20.0;
 const double _minPctForInsideLabel = 30.0;
 
-String _formatPct(double pct) =>
-    '${pct.toStringAsFixed(pct % 1 == 0 ? 0 : 1)}%';
+String formatPct(double pct) => '${pct.toStringAsFixed(pct % 1 == 0 ? 0 : 2)}%';
 
 Widget _barLabel(String text, Color color, bool isLargeText) {
-  return isLargeText
-      ? AppText.xs(
-          text,
-          style: const TextStyle(fontWeight: FontWeight.w600),
-          color: color,
-        )
-      : AppText.xxs(
-          text,
-          style: const TextStyle(
-            fontWeight: FontWeight.w500,
-            letterSpacing: 0.06,
+  return FittedBox(
+    fit: BoxFit.scaleDown,
+    child: isLargeText
+        ? AppText.xs(
+            text,
+            style: const TextStyle(fontWeight: FontWeight.w600),
+            color: color,
+            maxLines: 1,
+          )
+        : AppText.xxs(
+            text,
+            style: const TextStyle(
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0.06,
+            ),
+            color: color,
+            maxLines: 1,
           ),
-          color: color,
-        );
+  );
 }
 
 class BarRow extends StatelessWidget {
@@ -49,6 +55,9 @@ class BarRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final isSkeleton =
+        Skeletonizer.maybeOf(context)?.enabled == true ||
+        subjectAnalytics.id == 0;
 
     final correctPct = subjectAnalytics.correctPercentage;
     final incorrectPct = subjectAnalytics.incorrectPercentage;
@@ -64,24 +73,34 @@ class BarRow extends StatelessWidget {
     final isUnansweredActive =
         activeFilter == 'All' || activeFilter == 'Unanswered';
 
-    final Color correctColor = isCorrectActive
-        ? design.correctColor
-        : design.colors.surfaceVariant;
+    final Color correctColor = isSkeleton
+        ? design.colors.surfaceVariant
+        : (isCorrectActive
+              ? design.correctColor
+              : design.colors.surfaceVariant);
 
-    final Color incorrectColor = isIncorrectActive
-        ? design.incorrectColor
-        : design.colors.surfaceVariant;
+    final Color incorrectColor = isSkeleton
+        ? design.colors.surfaceVariant
+        : (isIncorrectActive
+              ? design.incorrectColor
+              : design.colors.surfaceVariant);
 
-    final Color unansweredColor = isUnansweredActive
-        ? design.unansweredColor
-        : design.colors.surfaceVariant;
+    final Color unansweredColor = isSkeleton
+        ? design.colors.surfaceVariant
+        : (isUnansweredActive
+              ? design.unansweredColor
+              : design.colors.surfaceVariant);
 
-    final (pct, activeColor) = switch (activeFilter) {
+    final (pct, baseActiveColor) = switch (activeFilter) {
       'Correct' => (correctPct, design.correctColor),
       'Incorrect' => (incorrectPct, design.incorrectColor),
       'Unanswered' => (unansweredPct, design.unansweredColor),
       _ => (0.0, design.colors.transparent),
     };
+
+    final activeColor = isSkeleton
+        ? design.colors.surfaceVariant
+        : baseActiveColor;
 
     final activeBgColor = activeColor == design.colors.transparent
         ? design.colors.transparent
@@ -89,7 +108,7 @@ class BarRow extends StatelessWidget {
 
     final labelText = activeColor == design.colors.transparent
         ? ''
-        : _formatPct(pct);
+        : formatPct(pct);
 
     final activeFlex = (pct * 10).round();
     final remainingFlex = ((100.0 - pct) * 10).round();
@@ -107,13 +126,22 @@ class BarRow extends StatelessWidget {
           if (showLabel) ...[
             SizedBox(
               width: fixedLabelWidth ? design.spacing.xxxl * 2 : null,
-              child: AppText.xs(
-                subjectAnalytics.name,
-                style: const TextStyle(fontWeight: FontWeight.w600),
-                color: design.colors.textPrimary,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+              child: isSkeleton
+                  ? Container(
+                      height: 12,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: design.colors.surfaceVariant,
+                        borderRadius: BorderRadius.circular(design.radius.sm),
+                      ),
+                    )
+                  : AppText.xs(
+                      subjectAnalytics.name,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                      color: design.colors.textPrimary,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
             ),
             SizedBox(width: design.spacing.sm + design.spacing.xs),
           ],
@@ -133,12 +161,14 @@ class BarRow extends StatelessWidget {
                           color: correctColor,
                           pct: correctPct,
                           isLargeText: isLargeText,
+                          showLabel: !isSkeleton,
                         ),
                         _BarSegment(
                           flex: incorrectFlex,
                           color: incorrectColor,
                           pct: incorrectPct,
                           isLargeText: isLargeText,
+                          showLabel: !isSkeleton,
                         ),
                         _BarSegment(
                           flex: unansweredFlex,
@@ -146,6 +176,7 @@ class BarRow extends StatelessWidget {
                           pct: unansweredPct,
                           padding: EdgeInsets.only(right: design.spacing.sm),
                           isLargeText: isLargeText,
+                          showLabel: !isSkeleton,
                         ),
                       ]
                     : [
@@ -154,7 +185,8 @@ class BarRow extends StatelessWidget {
                           color: activeColor,
                           alignment: Alignment.centerRight,
                           padding: EdgeInsets.only(right: design.spacing.sm),
-                          showLabel: pct >= _minPctForInsideLabel,
+                          showLabel:
+                              !isSkeleton && pct >= _minPctForInsideLabel,
                           labelText: labelText,
                           textColor: design.colors.textInverse,
                           isLargeText: isLargeText,
@@ -164,7 +196,7 @@ class BarRow extends StatelessWidget {
                           color: activeBgColor,
                           alignment: Alignment.centerLeft,
                           padding: EdgeInsets.only(left: design.spacing.sm),
-                          showLabel: pct < _minPctForInsideLabel,
+                          showLabel: !isSkeleton && pct < _minPctForInsideLabel,
                           labelText: labelText,
                           textColor: activeColor,
                           isLargeText: isLargeText,
@@ -186,6 +218,7 @@ class _BarSegment extends StatelessWidget {
     required this.pct,
     this.padding,
     this.isLargeText = false,
+    this.showLabel = true,
   });
 
   final int flex;
@@ -193,6 +226,7 @@ class _BarSegment extends StatelessWidget {
   final double pct;
   final EdgeInsetsGeometry? padding;
   final bool isLargeText;
+  final bool showLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -204,9 +238,9 @@ class _BarSegment extends StatelessWidget {
         color: color,
         alignment: Alignment.center,
         padding: padding,
-        child: pct >= _minPctForStackedLabel
+        child: (showLabel && pct >= _minPctForStackedLabel)
             ? _barLabel(
-                _formatPct(pct),
+                formatPct(pct),
                 Design.of(context).colors.textInverse,
                 isLargeText,
               )

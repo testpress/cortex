@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
@@ -24,12 +24,12 @@ class OverallReportsView extends ConsumerStatefulWidget {
 
 class _OverallReportsViewState extends ConsumerState<OverallReportsView> {
   final ScrollController _scrollController = ScrollController();
-  late final int? _parsedParentId;
+  int? get _parsedParentId =>
+      widget.parentId != null ? int.tryParse(widget.parentId!) : null;
 
   @override
   void initState() {
     super.initState();
-    _parsedParentId = widget.parentId != null ? int.tryParse(widget.parentId!) : null;
     _scrollController.addListener(_onScroll);
   }
 
@@ -37,7 +37,9 @@ class _OverallReportsViewState extends ConsumerState<OverallReportsView> {
     if (_scrollController.hasClients &&
         _scrollController.position.pixels >=
             _scrollController.position.maxScrollExtent - 200) {
-      ref.read(subjectAnalyticsPaginationProvider(_parsedParentId).notifier).fetchNextPage();
+      ref
+          .read(subjectAnalyticsPaginationProvider(_parsedParentId).notifier)
+          .fetchNextPage();
     }
   }
 
@@ -69,10 +71,16 @@ class _OverallReportsViewState extends ConsumerState<OverallReportsView> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final subjectsAsync = ref.watch(subjectAnalyticsProvider(_parsedParentId));
-    final paginationState = ref.watch(subjectAnalyticsPaginationProvider(_parsedParentId));
+    final paginationState = ref.watch(
+      subjectAnalyticsPaginationProvider(_parsedParentId),
+    );
 
     final isFetchingNextPage = paginationState.isFetchingNextPage;
-    final isInitialLoading = subjectsAsync.isLoading && !subjectsAsync.hasValue;
+    final isFetchingInitial = paginationState.isFetchingInitial;
+
+    final hasData = subjectsAsync.valueOrNull?.isNotEmpty == true;
+    final isInitialLoading =
+        !hasData && (subjectsAsync.isLoading || isFetchingInitial);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -112,41 +120,46 @@ class _OverallReportsViewState extends ConsumerState<OverallReportsView> {
 
         // List
         Expanded(
-          child: SkeletonizerConfig(
-            data: SkeletonizerConfigData(
-              effect: ShimmerEffect(
-                baseColor: design.colors.surfaceVariant,
-                highlightColor: const Color(0xFFFFFFFF),
-              ),
-            ),
+          child: RefreshIndicator(
+            onRefresh: () => ref
+                .read(
+                  subjectAnalyticsPaginationProvider(_parsedParentId).notifier,
+                )
+                .fetchInitial(),
             child: subjectsAsync.when(
               data: (subjects) {
                 if (subjects.isEmpty && !isInitialLoading) {
-                  return const Center(child: AppText.body('No subjects found.'));
+                  return const Center(
+                    child: AppText.body('No subjects found.'),
+                  );
                 }
 
                 // If loading, show skeleton list
                 final displayList = isInitialLoading
-                    ? List.generate(5, (_) => _skeletonSubject)
+                    ? List.generate(15, (_) => _skeletonSubject)
                     : subjects;
 
                 return Skeletonizer(
                   enabled: isInitialLoading,
                   child: ListView.separated(
                     controller: _scrollController,
+                    physics: const BouncingScrollPhysics(
+                      parent: AlwaysScrollableScrollPhysics(),
+                    ),
                     padding: EdgeInsets.symmetric(
                       vertical: design.spacing.sm + design.spacing.xs,
                     ),
-                    itemCount: displayList.length + (isFetchingNextPage ? 1 : 0),
-                    separatorBuilder: (context, index) => SizedBox(
-                      height: design.spacing.sm + design.spacing.xs,
-                    ),
+                    itemCount:
+                        displayList.length + (isFetchingNextPage ? 3 : 0),
+                    separatorBuilder: (context, index) =>
+                        SizedBox(height: design.spacing.sm + design.spacing.xs),
                     itemBuilder: (context, index) {
-                      if (index == displayList.length) {
-                        return Padding(
-                          padding: EdgeInsets.symmetric(vertical: design.spacing.md),
-                          child: Center(
-                            child: AppLoadingIndicator(color: design.colors.primary),
+                      if (index >= displayList.length) {
+                        return Skeletonizer(
+                          enabled: true,
+                          child: BarRow(
+                            subjectAnalytics: _skeletonSubject,
+                            activeFilter: widget.activeFilter,
                           ),
                         );
                       }
@@ -190,10 +203,9 @@ class _OverallReportsViewState extends ConsumerState<OverallReportsView> {
                   padding: EdgeInsets.symmetric(
                     vertical: design.spacing.sm + design.spacing.xs,
                   ),
-                  itemCount: 5,
-                  separatorBuilder: (context, index) => SizedBox(
-                    height: design.spacing.sm + design.spacing.xs,
-                  ),
+                  itemCount: 15,
+                  separatorBuilder: (context, index) =>
+                      SizedBox(height: design.spacing.sm + design.spacing.xs),
                   itemBuilder: (context, index) => BarRow(
                     subjectAnalytics: _skeletonSubject,
                     activeFilter: widget.activeFilter,

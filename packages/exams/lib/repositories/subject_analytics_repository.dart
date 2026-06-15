@@ -51,21 +51,26 @@ class SubjectAnalyticsRepository {
     int? parentId,
   }) async {
     try {
-      final response = await _dataSource.getAnalyticsData(page: page, parentId: parentId);
+      final response = await _dataSource.getAnalyticsData(
+        page: page,
+        parentId: parentId,
+      );
 
-      final companions = response.results.map(
-        (dto) => SubjectAnalyticsTableCompanion(
-          id: Value(dto.id),
-          name: Value(dto.name),
-          totalQuestionCount: Value(dto.totalQuestionCount),
-          correctAnswerCount: Value(dto.correctAnswerCount),
-          incorrectAnswerCount: Value(dto.incorrectAnswerCount),
-          unansweredCount: Value(dto.unansweredCount),
-          correctPercentage: Value(dto.correctPercentage),
-          parentId: Value(dto.parentId),
-          isLeaf: Value(dto.isLeaf),
-        ),
-      ).toList();
+      final companions = response.results
+          .map(
+            (dto) => SubjectAnalyticsTableCompanion(
+              id: Value(dto.id),
+              name: Value(dto.name),
+              totalQuestionCount: Value(dto.totalQuestionCount),
+              correctAnswerCount: Value(dto.correctAnswerCount),
+              incorrectAnswerCount: Value(dto.incorrectAnswerCount),
+              unansweredCount: Value(dto.unansweredCount),
+              correctPercentage: Value(dto.correctPercentage),
+              parentId: Value(dto.parentId),
+              isLeaf: Value(dto.isLeaf),
+            ),
+          )
+          .toList();
 
       if (page == 1) {
         await _db.transaction(() async {
@@ -83,13 +88,18 @@ class SubjectAnalyticsRepository {
         });
       } else {
         await _db.batch((batch) {
-          batch.insertAllOnConflictUpdate(_db.subjectAnalyticsTable, companions);
+          batch.insertAllOnConflictUpdate(
+            _db.subjectAnalyticsTable,
+            companions,
+          );
         });
       }
 
       return response;
     } catch (e) {
-      debugPrint('SubjectAnalyticsRepository: Failed to fetch subject analytics page: $e');
+      debugPrint(
+        'SubjectAnalyticsRepository: Failed to fetch subject analytics page: $e',
+      );
       rethrow;
     }
   }

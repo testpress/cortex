@@ -27,7 +27,7 @@ class MetricsGrid extends StatelessWidget {
       ),
       _MetricData(
         label: 'Accuracy',
-        value: '${overview.accuracy.toStringAsFixed(1)}%',
+        value: '${overview.accuracy.toStringAsFixed(2)}%',
         showInfoIcon: true,
       ),
       _MetricData(

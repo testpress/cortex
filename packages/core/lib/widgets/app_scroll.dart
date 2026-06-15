@@ -11,11 +11,13 @@ class AppScroll extends StatelessWidget {
     required this.children,
     this.padding,
     this.controller,
+    this.physics,
   });
 
   final List<Widget> children;
   final EdgeInsetsGeometry? padding;
   final ScrollController? controller;
+  final ScrollPhysics? physics;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class AppScroll extends StatelessWidget {
     return SingleChildScrollView(
       controller: controller,
       padding: padding ?? EdgeInsets.all(design.spacing.screenPadding),
-      physics: const BouncingScrollPhysics(),
+      physics: physics ?? const BouncingScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: children,

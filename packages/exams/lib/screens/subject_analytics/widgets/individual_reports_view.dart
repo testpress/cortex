@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/models/review_models.dart';
@@ -6,7 +6,12 @@ import '../../../../providers/analytics_providers.dart';
 import 'donut_chart.dart';
 import '../subject_analytics_screen.dart';
 
-class IndividualReportsView extends ConsumerWidget {
+import 'package:skeletonizer/skeletonizer.dart';
+
+// Helper to format percentage values: shows no decimal if whole number, 1 decimal otherwise
+String _formatPct(double pct) => pct.toStringAsFixed(pct % 1 == 0 ? 0 : 2);
+
+class IndividualReportsView extends ConsumerStatefulWidget {
   const IndividualReportsView({
     super.key,
     this.parentId,
@@ -15,6 +20,38 @@ class IndividualReportsView extends ConsumerWidget {
 
   final String? parentId;
   final String activeFilter;
+
+  @override
+  ConsumerState<IndividualReportsView> createState() =>
+      _IndividualReportsViewState();
+}
+
+class _IndividualReportsViewState extends ConsumerState<IndividualReportsView> {
+  final ScrollController _scrollController = ScrollController();
+  int? get _parsedParentId =>
+      widget.parentId != null ? int.tryParse(widget.parentId!) : null;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollController.hasClients &&
+        _scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 200) {
+      ref
+          .read(subjectAnalyticsPaginationProvider(_parsedParentId).notifier)
+          .fetchNextPage();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   List<SubjectAnalyticsDto> _filterDonutCards(
     List<SubjectAnalyticsDto> data,
@@ -38,80 +75,123 @@ class IndividualReportsView extends ConsumerWidget {
     int colIndex = 0;
     widths[colIndex++] = const FlexColumnWidth();
     if (filter == 'All') {
-      widths[colIndex++] = const FixedColumnWidth(60.0); // CORRECT
-      widths[colIndex++] = const FixedColumnWidth(70.0); // INCORRECT
-      widths[colIndex++] = const FixedColumnWidth(80.0); // UNANSWERED
+      widths[colIndex++] = const FixedColumnWidth(65.0); // CORRECT
+      widths[colIndex++] = const FixedColumnWidth(75.0); // INCORRECT
+      widths[colIndex++] = const FixedColumnWidth(85.0); // UNANSWERED
     } else {
-      if (showCorrect) widths[colIndex++] = const FixedColumnWidth(80.0);
-      if (showIncorrect) widths[colIndex++] = const FixedColumnWidth(80.0);
-      if (showUnanswered) widths[colIndex++] = const FixedColumnWidth(80.0);
+      if (showCorrect) widths[colIndex++] = const FixedColumnWidth(85.0);
+      if (showIncorrect) widths[colIndex++] = const FixedColumnWidth(85.0);
+      if (showUnanswered) widths[colIndex++] = const FixedColumnWidth(85.0);
     }
     widths[colIndex++] = const FixedColumnWidth(24.0); // CHEVRON
     return widths;
   }
 
-  // Helper to format percentage values: shows no decimal if whole number, 1 decimal otherwise
-  String _formatPct(double pct) => pct.toStringAsFixed(pct % 1 == 0 ? 0 : 1);
+  final _skeletonSubject = const SubjectAnalyticsDto(
+    id: 0,
+    name: 'Loading Subject Name Long',
+    totalQuestionCount: 8888,
+    correctAnswerCount: 8888,
+    incorrectAnswerCount: 8888,
+    unansweredCount: 8888,
+    correctPercentage: 40.0,
+    isLeaf: false,
+  );
+
+  Widget _buildWithSkeleton(
+    BuildContext context,
+    List<SubjectAnalyticsDto> subjects,
+    List<SubjectAnalyticsDto> donutCardsData,
+  ) {
+    final design = Design.of(context);
+    final subjectsAsync = ref.watch(subjectAnalyticsProvider(_parsedParentId));
+    final paginationState = ref.watch(
+      subjectAnalyticsPaginationProvider(_parsedParentId),
+    );
+
+    final isFetchingInitial = paginationState.isFetchingInitial;
+    final isFetchingNextPage = paginationState.isFetchingNextPage;
+
+    final hasData = subjectsAsync.valueOrNull?.isNotEmpty == true;
+    final isInitialLoading =
+        !hasData && (subjectsAsync.isLoading || isFetchingInitial);
+
+    final displaySubjects = isInitialLoading
+        ? List.generate(5, (_) => _skeletonSubject)
+        : List<SubjectAnalyticsDto>.from(subjects);
+
+    final displayDonuts = isInitialLoading
+        ? List.generate(2, (_) => _skeletonSubject)
+        : List<SubjectAnalyticsDto>.from(donutCardsData);
+
+    if (isFetchingNextPage && !isInitialLoading) {
+      displaySubjects.addAll(List.generate(3, (_) => _skeletonSubject));
+      if (displayDonuts.isNotEmpty) {
+        displayDonuts.addAll(List.generate(1, (_) => _skeletonSubject));
+      }
+    }
+
+    return RefreshIndicator(
+      onRefresh: () => ref
+          .read(subjectAnalyticsPaginationProvider(_parsedParentId).notifier)
+          .fetchInitial(),
+      child: Skeletonizer(
+        enabled: isInitialLoading,
+        child: _buildContent(
+          context,
+          design,
+          displaySubjects,
+          displayDonuts,
+          paginationState.hasMorePages,
+          isFetchingNextPage,
+          () => ref
+              .read(
+                subjectAnalyticsPaginationProvider(_parsedParentId).notifier,
+              )
+              .fetchNextPage(),
+        ),
+      ),
+    );
+  }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final design = Design.of(context);
-    final parsedParentId = parentId != null ? int.tryParse(parentId!) : null;
+    final subjectsAsync = ref.watch(subjectAnalyticsProvider(_parsedParentId));
 
-    final subjectsAsync = ref.watch(subjectAnalyticsProvider(parsedParentId));
-
-    if (parsedParentId == null) {
-      final donutSubjectsAsync = ref.watch(subjectAnalyticsProvider(3));
-
-      return subjectsAsync.when(
-        data: (subjects) {
-          return donutSubjectsAsync.when(
-            data: (rawDonutCards) {
-              final donutCardsData = _filterDonutCards(
-                rawDonutCards,
-                activeFilter,
-              );
-              return _buildContent(context, design, subjects, donutCardsData);
-            },
-            loading: () => const Center(child: AppLoadingIndicator()),
-            error: (err, stack) => Center(
-              child: AppText.body(
-                'Error loading donut cards: $err',
-                color: design.colors.error,
-              ),
-            ),
+    return subjectsAsync.when(
+      skipLoadingOnReload: true,
+      data: (subjects) {
+        if (_parsedParentId == null) {
+          final donutCardsData = _filterDonutCards(
+            subjects,
+            widget.activeFilter,
           );
-        },
-        loading: () => const Center(child: AppLoadingIndicator()),
-        error: (err, stack) => Center(
-          child: AppText.body(
-            'Error loading subject table: $err',
-            color: design.colors.error,
-          ),
-        ),
-      );
-    } else {
-      return subjectsAsync.when(
-        data: (subjects) {
+          return _buildWithSkeleton(context, subjects, donutCardsData);
+        } else {
           if (subjects.isNotEmpty) {
-            final donutCardsData = _filterDonutCards(subjects, activeFilter);
-            return _buildContent(context, design, subjects, donutCardsData);
+            final donutCardsData = _filterDonutCards(
+              subjects,
+              widget.activeFilter,
+            );
+            return _buildWithSkeleton(context, subjects, donutCardsData);
           } else {
             final selfSubjectAsync = ref.watch(
-              subjectAnalyticsByIdProvider(parsedParentId),
+              subjectAnalyticsByIdProvider(_parsedParentId!),
             );
             return selfSubjectAsync.when(
+              skipLoadingOnReload: true,
               data: (selfSubject) {
                 final rawDonutCards = selfSubject != null
                     ? [selfSubject]
                     : <SubjectAnalyticsDto>[];
                 final donutCardsData = _filterDonutCards(
                   rawDonutCards,
-                  activeFilter,
+                  widget.activeFilter,
                 );
-                return _buildContent(context, design, subjects, donutCardsData);
+                return _buildWithSkeleton(context, subjects, donutCardsData);
               },
-              loading: () => const Center(child: AppLoadingIndicator()),
+              loading: () => _buildWithSkeleton(context, [], []),
               error: (err, stack) => Center(
                 child: AppText.body(
                   'Error loading donut cards: $err',
@@ -120,16 +200,16 @@ class IndividualReportsView extends ConsumerWidget {
               ),
             );
           }
-        },
-        loading: () => const Center(child: AppLoadingIndicator()),
-        error: (err, stack) => Center(
-          child: AppText.body(
-            'Error loading subject table: $err',
-            color: design.colors.error,
-          ),
+        }
+      },
+      loading: () => _buildWithSkeleton(context, [], []),
+      error: (err, stack) => Center(
+        child: AppText.body(
+          'Error loading subject table: $err',
+          color: design.colors.error,
         ),
-      );
-    }
+      ),
+    );
   }
 
   Widget _buildContent(
@@ -137,20 +217,28 @@ class IndividualReportsView extends ConsumerWidget {
     DesignConfig design,
     List<SubjectAnalyticsDto> subjects,
     List<SubjectAnalyticsDto> donutCardsData,
+    bool hasMorePages,
+    bool isFetchingNextPage,
+    VoidCallback onLoadMore,
   ) {
-    final showCorrect = activeFilter == 'All' || activeFilter == 'Correct';
-    final showIncorrect = activeFilter == 'All' || activeFilter == 'Incorrect';
+    final showCorrect =
+        widget.activeFilter == 'All' || widget.activeFilter == 'Correct';
+    final showIncorrect =
+        widget.activeFilter == 'All' || widget.activeFilter == 'Incorrect';
     final showUnanswered =
-        activeFilter == 'All' || activeFilter == 'Unanswered';
+        widget.activeFilter == 'All' || widget.activeFilter == 'Unanswered';
 
     final columnWidths = _getTableColumnWidths(
-      activeFilter,
+      widget.activeFilter,
       showCorrect,
       showIncorrect,
       showUnanswered,
     );
-
     return AppScroll(
+      controller: _scrollController,
+      physics: const BouncingScrollPhysics(
+        parent: AlwaysScrollableScrollPhysics(),
+      ),
       padding: EdgeInsets.fromLTRB(
         design.spacing.md,
         design.spacing.md,
@@ -159,22 +247,49 @@ class IndividualReportsView extends ConsumerWidget {
       ),
       children: [
         // Table container
-        _StatsTable(
-          subjects: subjects,
-          activeFilter: activeFilter,
-          showCorrect: showCorrect,
-          showIncorrect: showIncorrect,
-          showUnanswered: showUnanswered,
-          columnWidths: columnWidths,
-        ),
+        if (subjects.isEmpty)
+          Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.all(design.spacing.xl),
+            child: AppText.body(
+              'No subjects found.',
+              color: design.colors.textSecondary,
+            ),
+          )
+        else ...[
+          _StatsTable(
+            subjects: subjects,
+            activeFilter: widget.activeFilter,
+            showCorrect: showCorrect,
+            showIncorrect: showIncorrect,
+            showUnanswered: showUnanswered,
+            columnWidths: columnWidths,
+          ),
+          if (hasMorePages && !isFetchingNextPage) ...[
+            SizedBox(height: design.spacing.md),
+            Center(
+              child: GestureDetector(
+                onTap: onLoadMore,
+                behavior: HitTestBehavior.opaque,
+                child: AppText.xs(
+                  'Load More Subjects',
+                  color: design.colors.primary,
+                  style: const TextStyle(fontWeight: FontWeight.w500),
+                ),
+              ),
+            ),
+            SizedBox(height: design.spacing.md),
+          ] else ...[
+            SizedBox(height: design.spacing.lg),
+          ],
+        ],
 
         // Donut Cards Section
         if (donutCardsData.isNotEmpty) ...[
-          SizedBox(height: design.spacing.lg),
           for (final cardData in donutCardsData) ...[
             _DonutCard(
               data: cardData,
-              activeFilter: activeFilter,
+              activeFilter: widget.activeFilter,
               formatPct: _formatPct,
             ),
             SizedBox(height: design.spacing.md),
@@ -221,87 +336,39 @@ class _StatsTable extends StatelessWidget {
           TableRow(
             decoration: BoxDecoration(color: design.colors.surfaceVariant),
             children: [
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: design.spacing.sm,
-                  vertical: design.spacing.sm + design.spacing.xs,
-                ),
-                child: AppText.xxs(
-                  'SUBJECT',
-                  maxLines: 1,
-                  color: design.colors.textSecondary,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 9.0,
-                    letterSpacing: 0.17,
-                  ),
-                ),
+              _HeaderCell(
+                label: 'SUBJECT',
+                horizontalPadding: design.spacing.sm,
               ),
               if (showCorrect)
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacing.xs,
-                    vertical: design.spacing.sm + design.spacing.xs,
-                  ),
-                  child: AppText.xxs(
-                    'CORRECT',
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.visible,
-                    color: design.colors.textSecondary,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 9.0,
-                      letterSpacing: 0.17,
-                    ),
-                  ),
+                _HeaderCell(
+                  label: 'CORRECT',
+                  textAlign: TextAlign.center,
+                  horizontalPadding: design.spacing.xs,
                 ),
               if (showIncorrect)
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacing.xs,
-                    vertical: design.spacing.sm + design.spacing.xs,
-                  ),
-                  child: AppText.xxs(
-                    'INCORRECT',
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.visible,
-                    color: design.colors.textSecondary,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 9.0,
-                      letterSpacing: 0.17,
-                    ),
-                  ),
+                _HeaderCell(
+                  label: 'INCORRECT',
+                  textAlign: TextAlign.center,
+                  horizontalPadding: design.spacing.xs,
                 ),
               if (showUnanswered)
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacing.xs,
-                    vertical: design.spacing.sm + design.spacing.xs,
-                  ),
-                  child: AppText.xxs(
-                    'UNANSWERED',
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.visible,
-                    color: design.colors.textSecondary,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 9.0,
-                      letterSpacing: 0.17,
-                    ),
-                  ),
+                _HeaderCell(
+                  label: 'UNANSWERED',
+                  textAlign: TextAlign.center,
+                  horizontalPadding: design.spacing.xs,
                 ),
               // Empty space for the > chevron icon in the header
-              const SizedBox.shrink(),
+              Skeleton.keep(child: const SizedBox.shrink()),
             ],
           ),
 
           // Table Body Rows
           ...subjects.map((subjectAnalytics) {
+            final isSkeleton = subjectAnalytics.id == 0;
+
             void onTap() {
+              if (isSkeleton) return;
               if (subjectAnalytics.isLeaf) {
                 context.push(
                   '/exams/analytics/topic/${subjectAnalytics.id}',
@@ -327,52 +394,65 @@ class _StatsTable extends StatelessWidget {
                 ),
               ),
               children: [
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
+                _TappableCell(
+                  isSkeleton: isSkeleton,
                   onTap: onTap,
                   child: Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: design.spacing.sm,
                       vertical: design.spacing.sm + design.spacing.xs,
                     ),
-                    child: AppText.xs(
-                      subjectAnalytics.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    child: Skeletonizer(
+                      enabled: isSkeleton,
+                      child: AppText.sm(
+                        subjectAnalytics.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        color: design.colors.textPrimary,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
                     ),
                   ),
                 ),
                 if (showCorrect)
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
+                  _TappableCell(
+                    isSkeleton: isSkeleton,
                     onTap: onTap,
-                    child: _StatsCell(
-                      value: subjectAnalytics.correctAnswerCount.toString(),
-                      color: design.correctColor,
+                    child: Skeletonizer(
+                      enabled: isSkeleton,
+                      child: _StatsCell(
+                        value: '${subjectAnalytics.correctAnswerCount}',
+                        color: design.colors.success,
+                      ),
                     ),
                   ),
                 if (showIncorrect)
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
+                  _TappableCell(
+                    isSkeleton: isSkeleton,
                     onTap: onTap,
-                    child: _StatsCell(
-                      value: subjectAnalytics.incorrectAnswerCount.toString(),
-                      color: design.incorrectColor,
+                    child: Skeletonizer(
+                      enabled: isSkeleton,
+                      child: _StatsCell(
+                        value: '${subjectAnalytics.incorrectAnswerCount}',
+                        color: design.incorrectColor,
+                      ),
                     ),
                   ),
                 if (showUnanswered)
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
+                  _TappableCell(
+                    isSkeleton: isSkeleton,
                     onTap: onTap,
-                    child: _StatsCell(
-                      value: subjectAnalytics.unansweredCount.toString(),
-                      color: design.unansweredColor,
+                    child: Skeletonizer(
+                      enabled: isSkeleton,
+                      child: _StatsCell(
+                        value: '${subjectAnalytics.unansweredCount}',
+                        color: design.unansweredColor,
+                      ),
                     ),
                   ),
                 // Chevron column
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
+                _TappableCell(
+                  isSkeleton: isSkeleton,
                   onTap: onTap,
                   child: Padding(
                     padding: EdgeInsets.only(
@@ -384,10 +464,13 @@ class _StatsTable extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       child: subjectAnalytics.isLeaf
                           ? const SizedBox.shrink()
-                          : Icon(
-                              LucideIcons.chevronRight,
-                              size: design.iconSize.sm,
-                              color: design.colors.textTertiary,
+                          : Skeletonizer(
+                              enabled: isSkeleton,
+                              child: Icon(
+                                LucideIcons.chevronRight,
+                                size: design.iconSize.sm,
+                                color: design.colors.textTertiary,
+                              ),
                             ),
                     ),
                   ),
@@ -416,11 +499,11 @@ class _StatsCell extends StatelessWidget {
         horizontal: design.spacing.xs,
         vertical: design.spacing.sm + design.spacing.xs,
       ),
-      child: AppText.xxs(
+      child: AppText.xs(
         value,
         textAlign: TextAlign.center,
         color: color,
-        style: const TextStyle(fontWeight: FontWeight.w500),
+        style: const TextStyle(fontWeight: FontWeight.w700),
       ),
     );
   }
@@ -441,6 +524,9 @@ class _DonutCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
+    final isSkeleton =
+        (Skeletonizer.maybeOf(context)?.enabled == true) || (data.id == 0);
+
     final correctPct = data.correctPercentage;
     final incorrectPct = data.incorrectPercentage;
     final unansweredPct = data.unansweredPercentage;
@@ -455,6 +541,13 @@ class _DonutCard extends StatelessWidget {
       required Color baseColor,
       required bool isActive,
     }) {
+      if (isSkeleton) {
+        return (
+          color: design.colors.surfaceVariant,
+          textColor: design.colors.surfaceVariant,
+          legendTextColor: design.colors.surfaceVariant,
+        );
+      }
       return (
         color: isActive ? baseColor : design.colors.surfaceVariant,
         textColor: isActive ? baseColor : design.colors.textTertiary,
@@ -481,106 +574,113 @@ class _DonutCard extends StatelessWidget {
         ? design.colors.textSecondary
         : design.colors.textTertiary;
 
-    return AppCard(
-      padding: EdgeInsets.all(design.spacing.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header: Name and Total
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: AppText.xs(
-                  data.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-              ),
-              AppText.xs(
-                'Total: ${data.totalQuestionCount}',
-                color: design.colors.textSecondary,
-              ),
-            ],
-          ),
-          SizedBox(height: design.spacing.sm),
-
-          // Counts row
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
+    return Skeletonizer(
+      enabled: data.id == 0,
+      child: AppCard(
+        padding: EdgeInsets.all(design.spacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header: Name and Total
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AppText.xs(
-                  'Correct: ${data.correctAnswerCount}',
-                  color: correctStyle.textColor,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: design.spacing.sm),
-                  child: AppText.xs('•', color: dotSeparatorColor),
-                ),
-                AppText.xs(
-                  'Incorrect: ${data.incorrectAnswerCount}',
-                  color: incorrectStyle.textColor,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: design.spacing.sm),
-                  child: AppText.xs('•', color: dotSeparatorColor),
+                Expanded(
+                  child: AppText.xs(
+                    data.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
                 ),
                 AppText.xs(
-                  'Unanswered: ${data.unansweredCount}',
-                  color: unansweredStyle.textColor,
+                  'Total: ${data.totalQuestionCount}',
+                  color: design.colors.textSecondary,
                 ),
               ],
             ),
-          ),
-          SizedBox(height: design.spacing.md),
+            SizedBox(height: design.spacing.sm),
 
-          // Chart + Legend Row
-          Row(
-            children: [
-              // Donut Chart
-              DonutChart(
-                correctPct: correctPct,
-                incorrectPct: incorrectPct,
-                unansweredPct: unansweredPct,
-                correctColor: correctStyle.color,
-                incorrectColor: incorrectStyle.color,
-                unansweredColor: unansweredStyle.color,
-                size: design.spacing.xxl + design.spacing.sm,
+            // Counts row
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AppText.xs(
+                    'Correct: ${data.correctAnswerCount}',
+                    color: correctStyle.textColor,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: design.spacing.sm,
+                    ),
+                    child: AppText.xs('•', color: dotSeparatorColor),
+                  ),
+                  AppText.xs(
+                    'Incorrect: ${data.incorrectAnswerCount}',
+                    color: incorrectStyle.textColor,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: design.spacing.sm,
+                    ),
+                    child: AppText.xs('•', color: dotSeparatorColor),
+                  ),
+                  AppText.xs(
+                    'Unanswered: ${data.unansweredCount}',
+                    color: unansweredStyle.textColor,
+                  ),
+                ],
               ),
-              SizedBox(width: design.spacing.lg),
+            ),
+            SizedBox(height: design.spacing.md),
 
-              // Legend
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _LegendRow(
-                      color: correctStyle.color,
-                      text: '${formatPct(correctPct)}% correct',
-                      textColor: correctStyle.legendTextColor,
-                    ),
-                    SizedBox(height: design.spacing.sm),
-                    _LegendRow(
-                      color: incorrectStyle.color,
-                      text: '${formatPct(incorrectPct)}% incorrect',
-                      textColor: incorrectStyle.legendTextColor,
-                    ),
-                    SizedBox(height: design.spacing.sm),
-                    _LegendRow(
-                      color: unansweredStyle.color,
-                      text: '${formatPct(unansweredPct)}% unanswered',
-                      textColor: unansweredStyle.legendTextColor,
-                    ),
-                  ],
+            // Chart + Legend Row
+            Row(
+              children: [
+                // Donut Chart
+                DonutChart(
+                  correctPct: correctPct,
+                  incorrectPct: incorrectPct,
+                  unansweredPct: unansweredPct,
+                  correctColor: correctStyle.color,
+                  incorrectColor: incorrectStyle.color,
+                  unansweredColor: unansweredStyle.color,
+                  size: design.spacing.xxl + design.spacing.sm,
                 ),
-              ),
-            ],
-          ),
-        ],
+                SizedBox(width: design.spacing.lg),
+
+                // Legend
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _LegendRow(
+                        color: correctStyle.color,
+                        text: '${formatPct(correctPct)}% correct',
+                        textColor: correctStyle.legendTextColor,
+                      ),
+                      SizedBox(height: design.spacing.sm),
+                      _LegendRow(
+                        color: incorrectStyle.color,
+                        text: '${formatPct(incorrectPct)}% incorrect',
+                        textColor: incorrectStyle.legendTextColor,
+                      ),
+                      SizedBox(height: design.spacing.sm),
+                      _LegendRow(
+                        color: unansweredStyle.color,
+                        text: '${formatPct(unansweredPct)}% unanswered',
+                        textColor: unansweredStyle.legendTextColor,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -611,6 +711,64 @@ class _LegendRow extends StatelessWidget {
         SizedBox(width: design.spacing.sm),
         Expanded(child: AppText.xs(text, color: textColor)),
       ],
+    );
+  }
+}
+
+class _HeaderCell extends StatelessWidget {
+  const _HeaderCell({
+    required this.label,
+    this.textAlign,
+    required this.horizontalPadding,
+  });
+
+  final String label;
+  final TextAlign? textAlign;
+  final double horizontalPadding;
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    return Skeleton.keep(
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: horizontalPadding,
+          vertical: design.spacing.sm + design.spacing.xs,
+        ),
+        child: AppText.xxs(
+          label,
+          textAlign: textAlign,
+          maxLines: 1,
+          overflow: TextOverflow.visible,
+          color: design.colors.textSecondary,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 9.0,
+            letterSpacing: 0.17,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TappableCell extends StatelessWidget {
+  const _TappableCell({
+    required this.onTap,
+    required this.isSkeleton,
+    required this.child,
+  });
+
+  final VoidCallback? onTap;
+  final bool isSkeleton;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: isSkeleton ? null : onTap,
+      child: child,
     );
   }
 }

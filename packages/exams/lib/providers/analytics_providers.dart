@@ -18,11 +18,6 @@ Stream<List<SubjectAnalyticsDto>> subjectAnalytics(
   int? parentId,
 ) async* {
   final repository = await ref.watch(subjectAnalyticsRepositoryProvider.future);
-
-  // The pagination provider handles the initial background fetch and state
-  // Watching it here ensures it is initialized and kept alive.
-  ref.watch(subjectAnalyticsPaginationProvider(parentId));
-
   yield* repository.watchSubjectAnalytics(parentId);
 }
 
@@ -36,27 +31,31 @@ class SubjectAnalyticsPaginationState {
   final int currentPage;
   final bool hasMorePages;
   final bool isFetchingNextPage;
+  final bool isFetchingInitial;
 
   SubjectAnalyticsPaginationState({
     required this.currentPage,
     required this.hasMorePages,
     required this.isFetchingNextPage,
+    required this.isFetchingInitial,
   });
 
   SubjectAnalyticsPaginationState copyWith({
     int? currentPage,
     bool? hasMorePages,
     bool? isFetchingNextPage,
+    bool? isFetchingInitial,
   }) {
     return SubjectAnalyticsPaginationState(
       currentPage: currentPage ?? this.currentPage,
       hasMorePages: hasMorePages ?? this.hasMorePages,
       isFetchingNextPage: isFetchingNextPage ?? this.isFetchingNextPage,
+      isFetchingInitial: isFetchingInitial ?? this.isFetchingInitial,
     );
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class SubjectAnalyticsPagination extends _$SubjectAnalyticsPagination {
   int? _parentId;
 
@@ -69,11 +68,14 @@ class SubjectAnalyticsPagination extends _$SubjectAnalyticsPagination {
       currentPage: 1,
       hasMorePages: true,
       isFetchingNextPage: false,
+      isFetchingInitial: true,
     );
   }
 
   Future<void> fetchInitial() async {
-    final repository = await ref.read(subjectAnalyticsRepositoryProvider.future);
+    final repository = await ref.read(
+      subjectAnalyticsRepositoryProvider.future,
+    );
     try {
       final response = await repository.fetchSubjectAnalyticsPage(
         page: 1,
@@ -82,20 +84,28 @@ class SubjectAnalyticsPagination extends _$SubjectAnalyticsPagination {
       state = state.copyWith(
         currentPage: 1,
         hasMorePages: response.next != null,
+        isFetchingInitial: false,
       );
     } catch (e) {
       // Ignored intentionally for offline fallback
+      state = state.copyWith(isFetchingInitial: false);
     }
   }
 
   Future<void> fetchNextPage() async {
-    if (!state.hasMorePages || state.isFetchingNextPage) return;
+    if (!state.hasMorePages ||
+        state.isFetchingNextPage ||
+        state.isFetchingInitial) {
+      return;
+    }
 
     state = state.copyWith(isFetchingNextPage: true);
 
     try {
       final nextPage = state.currentPage + 1;
-      final repository = await ref.read(subjectAnalyticsRepositoryProvider.future);
+      final repository = await ref.read(
+        subjectAnalyticsRepositoryProvider.future,
+      );
       final response = await repository.fetchSubjectAnalyticsPage(
         page: nextPage,
         parentId: _parentId,
