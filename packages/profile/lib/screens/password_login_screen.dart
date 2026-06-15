@@ -171,6 +171,10 @@ class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
           .read(authProvider.notifier)
           .loginWithPassword(username: username, password: password);
       if (mounted) context.go('/home');
+    } on ParallelLoginException catch (e) {
+      if (mounted) {
+        context.go('/login-activity', extra: {'message': e.message});
+      }
     } on AuthException catch (error) {
       if (mounted) setState(() => _errorMessage = error.message);
     } catch (_) {

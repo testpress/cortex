@@ -8,7 +8,11 @@ import '../widgets/login_activity_item.dart';
 import '../providers/profile_providers.dart';
 
 class LoginActivityScreen extends ConsumerStatefulWidget {
-  const LoginActivityScreen({super.key});
+  const LoginActivityScreen({super.key, this.restrictionMessage});
+
+  /// When set, a restriction banner is displayed at the top of the screen.
+  /// Used when navigated from the login flow due to a parallel login restriction.
+  final String? restrictionMessage;
 
   @override
   ConsumerState<LoginActivityScreen> createState() =>
@@ -112,13 +116,7 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
     try {
       await ref.read(authProvider.notifier).logoutOtherDevices();
       if (mounted) {
-        AppToast.show(
-          context,
-          message: L10n.of(context).loginActivityLogoutSuccess,
-        );
-        _currentPage = 1;
-        _activities.clear();
-        _fetchData();
+        context.go('/home');
       }
     } catch (e) {
       if (mounted) {
@@ -169,19 +167,20 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    GestureDetector(
-                      onTap: () => context.pop(),
-                      behavior: HitTestBehavior.opaque,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 2),
-                        child: Icon(
-                          LucideIcons.arrowLeft,
-                          size: 22,
-                          color: design.colors.textPrimary,
+                    if (context.canPop())
+                      GestureDetector(
+                        onTap: () => context.pop(),
+                        behavior: HitTestBehavior.opaque,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Icon(
+                            LucideIcons.arrowLeft,
+                            size: 22,
+                            color: design.colors.textPrimary,
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(width: design.spacing.sm),
+                    if (context.canPop()) SizedBox(width: design.spacing.sm),
                     Expanded(
                       child: AppText.title(
                         l10n.drawerLoginActivity,
@@ -192,6 +191,33 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
                 ),
               ),
             ),
+
+            // Restriction Banner
+            if (widget.restrictionMessage != null)
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(
+                  horizontal: design.spacing.screenPadding,
+                  vertical: design.spacing.sm,
+                ),
+                color: design.colors.error.withValues(alpha: 0.1),
+                child: Row(
+                  children: [
+                    Icon(
+                      LucideIcons.alertTriangle,
+                      size: 16,
+                      color: design.colors.error,
+                    ),
+                    SizedBox(width: design.spacing.xs),
+                    Expanded(
+                      child: AppText.bodySmall(
+                        widget.restrictionMessage!,
+                        color: design.colors.error,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
 
             // Content
             Expanded(
