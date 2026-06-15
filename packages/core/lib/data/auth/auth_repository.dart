@@ -87,7 +87,8 @@ class AuthRepository {
 
   /// Verifies the token against the /me/ endpoint to confirm there is no
   /// parallel login restriction active. If 403 with parallel_login_restriction
-  /// is returned, the local token is cleared and a [ParallelLoginException] is thrown.
+  /// is returned, a [ParallelLoginException] is thrown (the token is kept in
+  /// storage so that LoginActivityScreen can use it).
   /// Any other error (network, server) is swallowed — the login proceeds normally.
   Future<void> verifyLogin() async {
     try {

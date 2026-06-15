@@ -116,7 +116,17 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
     try {
       await ref.read(authProvider.notifier).logoutOtherDevices();
       if (mounted) {
-        context.go('/home');
+        if (widget.restrictionMessage != null) {
+          context.pop(true);
+        } else {
+          AppToast.show(
+            context,
+            message: L10n.of(context).loginActivityLogoutSuccess,
+          );
+          _currentPage = 1;
+          _activities.clear();
+          _fetchData();
+        }
       }
     } catch (e) {
       if (mounted) {
