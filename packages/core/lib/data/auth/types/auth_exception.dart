@@ -65,3 +65,15 @@ class AuthException extends ApiException {
     );
   }
 }
+
+/// Thrown when the backend rejects access due to too many parallel logins.
+/// The token is technically valid, but the device limit has been exceeded.
+/// The user must log out of other devices via [LoginActivityScreen] to continue.
+class ParallelLoginException extends AuthException {
+  const ParallelLoginException()
+    : super(
+        'Parallel login is restricted. Logout of other devices to continue.',
+        type: ApiErrorType.forbidden,
+        statusCode: 403,
+      );
+}

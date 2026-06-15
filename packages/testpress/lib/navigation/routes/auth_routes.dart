@@ -11,6 +11,7 @@ class AuthRoutes {
     '/forgot-password',
     '/otp',
     '/onboarding',
+    '/login-activity',
   };
 
   static String? redirect(
@@ -52,6 +53,15 @@ class AuthRoutes {
         return OtpScreen(
           phoneNumber: (extra['phoneNumber'] as String?) ?? '',
           countryCode: (extra['countryCode'] as String?) ?? '',
+        );
+      },
+    ),
+    GoRoute(
+      path: '/login-activity',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        return LoginActivityScreen(
+          restrictionMessage: extra?['message'] as String?,
         );
       },
     ),
