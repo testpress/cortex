@@ -102,10 +102,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
+    final padding = MediaQuery.paddingOf(context);
 
     // Padding for bottom area to handle safe area and consistent spacing
-    final bottomPadding =
-        MediaQuery.of(context).padding.bottom + design.spacing.lg;
+    final bottomPadding = padding.bottom + design.spacing.lg;
 
     return ColoredBox(
       color: design.colors.canvas,
@@ -114,11 +114,15 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           _buildHeader(context, design, l10n),
           Expanded(
             child: AppScroll(
-              padding: EdgeInsets.only(
-                left: design.spacing.md,
-                right: design.spacing.md,
-                top: design.spacing.md,
-                bottom: bottomPadding,
+              padding: EdgeInsets.fromLTRB(
+                padding.left > design.spacing.md
+                    ? padding.left
+                    : design.spacing.md,
+                design.spacing.md,
+                padding.right > design.spacing.md
+                    ? padding.right
+                    : design.spacing.md,
+                bottomPadding,
               ),
               children: [
                 AppText.headline(l10n.editProfileTitle),
@@ -177,7 +181,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget _buildHeader(BuildContext context, DesignConfig design, dynamic l10n) {
-    final statusBarHeight = MediaQuery.of(context).padding.top;
+    final padding = MediaQuery.paddingOf(context);
+    final statusBarHeight = padding.top;
 
     return Container(
       width: double.infinity,
@@ -193,7 +198,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         padding: EdgeInsets.only(top: statusBarHeight),
         child: Container(
           // Inner container for the interactive elements
-          padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+          padding: EdgeInsets.only(
+            left: padding.left > design.spacing.md
+                ? padding.left
+                : design.spacing.md,
+            right: padding.right > design.spacing.md
+                ? padding.right
+                : design.spacing.md,
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -207,6 +219,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     height: 40,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Icon(
                           LucideIcons.chevronLeft,

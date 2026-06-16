@@ -61,6 +61,7 @@ class _ExplorePageState extends ConsumerState<ExplorePage> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
+    final padding = MediaQuery.paddingOf(context);
     _selectedFilter ??= l10n.exploreFilterTrending;
 
     final bannersAsync = ref.watch(exploreBannersProvider);
@@ -82,9 +83,13 @@ class _ExplorePageState extends ConsumerState<ExplorePage> {
               // Title & Search Section
               Padding(
                 padding: EdgeInsets.fromLTRB(
-                  design.spacing.md,
-                  design.spacing.md,
-                  design.spacing.md,
+                  padding.left > design.spacing.md
+                      ? padding.left
+                      : design.spacing.md,
+                  padding.top + design.spacing.md,
+                  padding.right > design.spacing.md
+                      ? padding.right
+                      : design.spacing.md,
                   design.spacing.md,
                 ),
                 child: Column(

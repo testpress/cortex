@@ -62,14 +62,14 @@ class _CertificatesHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final topPadding = MediaQuery.of(context).padding.top;
+    final padding = MediaQuery.paddingOf(context);
 
     return Container(
-      padding: EdgeInsets.only(
-        top: topPadding + design.spacing.md,
-        bottom: design.spacing.md,
-        left: design.spacing.md,
-        right: design.spacing.md,
+      padding: EdgeInsets.fromLTRB(
+        padding.left > design.spacing.md ? padding.left : design.spacing.md,
+        padding.top + design.spacing.md,
+        padding.right > design.spacing.md ? padding.right : design.spacing.md,
+        design.spacing.md,
       ),
       decoration: _headerDecoration(design),
       child: Align(
@@ -80,7 +80,7 @@ class _CertificatesHeader extends StatelessWidget {
   }
 
   BoxDecoration _headerDecoration(DesignConfig design) => BoxDecoration(
-    color: design.isDark ? design.colors.surface : design.colors.card,
+    color: design.colors.card,
     border: Border(bottom: BorderSide(color: design.colors.border)),
   );
 }
@@ -112,11 +112,8 @@ class _BackButton extends StatelessWidget {
                 size: design.iconSize.md,
                 color: design.colors.textPrimary,
               ),
-              SizedBox(width: design.spacing.sm),
-              AppText.subtitle(
-                label,
-                style: const TextStyle(fontWeight: FontWeight.w500),
-              ),
+              SizedBox(width: design.spacing.xs),
+              AppText.label(label, color: design.colors.textPrimary),
             ],
           ),
         ),

@@ -137,19 +137,19 @@ class _NotificationsHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final padding = MediaQuery.of(context).padding;
+    final padding = MediaQuery.paddingOf(context);
 
     return SizedBox(
       width: double.infinity,
       child: Container(
-        padding: EdgeInsets.only(
-          top: padding.top + design.spacing.md,
-          bottom: design.spacing.md,
-          left: design.spacing.md,
-          right: design.spacing.md,
+        padding: EdgeInsets.fromLTRB(
+          padding.left > design.spacing.md ? padding.left : design.spacing.md,
+          padding.top + design.spacing.md,
+          padding.right > design.spacing.md ? padding.right : design.spacing.md,
+          design.spacing.md,
         ),
         decoration: BoxDecoration(
-          color: design.isDark ? design.colors.surface : design.colors.card,
+          color: design.colors.card,
           border: Border(bottom: BorderSide(color: design.colors.border)),
         ),
         child: Align(
@@ -171,11 +171,10 @@ class _NotificationsHeader extends StatelessWidget {
                       size: design.iconSize.md,
                       color: design.colors.textPrimary,
                     ),
-                    SizedBox(width: design.spacing.sm),
-                    AppText.subtitle(
+                    SizedBox(width: design.spacing.xs),
+                    AppText.label(
                       l10n.curriculumBackButton,
                       color: design.colors.textPrimary,
-                      style: const TextStyle(fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),

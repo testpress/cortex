@@ -33,25 +33,20 @@ class DashboardHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    final padding = MediaQuery.of(context).padding;
-    final effectiveBgColor =
-        backgroundColor ??
-        (design.isDark ? design.colors.surface : design.colors.card);
+    final padding = MediaQuery.paddingOf(context);
+    final effectiveBgColor = backgroundColor ?? design.colors.card;
 
     final topPadding =
         customTopPadding ??
         (useSafeArea ? padding.top + design.spacing.md : design.spacing.md);
+    final bottomPadding = design.spacing.md;
 
     return Container(
-      padding: EdgeInsets.only(
-        top: topPadding,
-        bottom: design.spacing.md,
-        left: (isLandscape
-            ? design.spacing.md
-            : (padding.left > 0 ? padding.left : design.spacing.md)),
-        right: (isLandscape
-            ? (padding.right > 0 ? padding.right : design.spacing.md)
-            : design.spacing.md),
+      padding: EdgeInsets.fromLTRB(
+        padding.left > design.spacing.md ? padding.left : design.spacing.md,
+        topPadding,
+        padding.right > design.spacing.md ? padding.right : design.spacing.md,
+        bottomPadding,
       ),
       decoration: BoxDecoration(
         color: effectiveBgColor,
