@@ -14,8 +14,9 @@ The current back buttons in feature screens (Downloads, Bookmarks, Ask Doubt) ar
 
 ## Decisions
 
-1. **Header Padding**: We will replace `design.spacing.screenPadding` with a smaller value (e.g., `design.spacing.sm` or `8.0`) for the left padding of the back button in `DownloadsHeader` and similar custom headers.
+1. **Header Padding**: We will replace `design.spacing.screenPadding` with a smaller value (`design.spacing.md`) for the left padding of the back button in `DownloadsHeader` and similar custom headers (Bookmarks, Forum, Announcements, App Settings, Analytics).
 2. **Ask Doubt Layout**: We will move the timeline text to the third row of the card, right next to the status badge, allowing the lesson title to occupy the full width of the second row.
+3. **App Drawer Cleanup**: We will remove the "Reports" option from the DashboardDrawer.
 
 ## Risks / Trade-offs
 
