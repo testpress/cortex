@@ -327,35 +327,27 @@ class _DoubtItem extends StatelessWidget {
             maxLines: 2,
           ),
           SizedBox(height: design.spacing.sm),
-          // Metadata Row: Subject • Replies • Time
-          Row(
-            children: [
-              if (doubt.topicName != null) ...[
-                AppText.labelSmall(
-                  doubt.topicName!,
-                  color: design.colors.accent2,
-                ),
-                _buildDot(design),
-              ],
-              AppText.caption(
-                doubt.createdHumanized ??
-                    DateFormatter.formatTimeAgo(doubt.createdAt),
-                color: design.colors.textTertiary,
-              ),
-            ],
+          // Metadata Row: Subject (Takes full width now to prevent overflow)
+          if (doubt.topicName != null && doubt.topicName!.isNotEmpty) ...[
+            AppText.labelSmall(
+              doubt.topicName!,
+              color: design.colors.accent2,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            SizedBox(height: design.spacing.sm),
+          ],
+          // Timeline
+          AppText.caption(
+            doubt.createdHumanized ??
+                DateFormatter.formatTimeAgo(doubt.createdAt),
+            color: design.colors.textTertiary,
           ),
-          // Status badge — shown for all statuses
           SizedBox(height: design.spacing.sm),
+          // Status badge
           _buildStatusBadge(design, doubt.status),
         ],
       ),
-    );
-  }
-
-  Widget _buildDot(DesignConfig design) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: design.spacing.xs),
-      child: AppText.caption('•', color: design.colors.textTertiary),
     );
   }
 

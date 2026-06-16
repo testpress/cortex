@@ -70,7 +70,7 @@ class _AnnouncementsListScreenState
               bottom: false,
               child: Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(
-                  design.spacing.screenPadding,
+                  design.spacing.md,
                   design.spacing.md,
                   design.spacing.screenPadding,
                   design.spacing.md,

@@ -77,11 +77,7 @@ class DashboardDrawer extends ConsumerWidget {
               label: l10n.drawerCustomExam,
               action: () {},
             ),
-            AppDrawerItem(
-              icon: LucideIcons.barChart,
-              label: l10n.drawerReports,
-              action: () {},
-            ),
+
             AppDrawerItem(
               icon: LucideIcons.download,
               label: l10n.downloadsTitle,

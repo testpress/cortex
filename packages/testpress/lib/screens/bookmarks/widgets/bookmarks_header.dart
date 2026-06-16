@@ -28,9 +28,11 @@ class BookmarksHeader extends StatelessWidget {
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: design.spacing.screenPadding,
-            vertical: design.spacing.md,
+          padding: EdgeInsetsDirectional.fromSTEB(
+            design.spacing.md,
+            design.spacing.md,
+            design.spacing.screenPadding,
+            design.spacing.md,
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
