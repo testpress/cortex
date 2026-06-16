@@ -86,3 +86,10 @@ The system SHALL support fetching and upserting courses filtered by tags.
 - **THEN** the system MUST fetch page 1 of the tagged API results
 - **AND** upsert them into the local database with their associated tags preserved.
 
+### Requirement: Lesson Data Model Extensions
+The system SHALL update data models to support extracting richer visual properties returned by the curriculum APIs without adding new fields.
+
+#### Scenario: Upgrading LessonDto Mapping
+- **WHEN** mapping API responses to `LessonDto`
+- **THEN** prioritize `cover_image` over `icon` for the `image` property mapping.
+
