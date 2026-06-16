@@ -297,7 +297,7 @@ class _SubjectAnalyticsByIdProviderElement
 }
 
 String _$subjectAnalyticsPaginationHash() =>
-    r'24223033b426e07d875d1d5cdc95cc530232b0a0';
+    r'55e805c0613d9463fe4fce706531264ea1ac4684';
 
 abstract class _$SubjectAnalyticsPagination
     extends

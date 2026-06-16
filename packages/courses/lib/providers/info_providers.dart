@@ -6,13 +6,25 @@ import 'course_list_provider.dart';
 
 part 'info_providers.g.dart';
 
+@riverpod
+class InfoSyncMetadata extends _$InfoSyncMetadata {
+  @override
+  DateTime? build() {
+    ref.watch(authProvider);
+    return null;
+  }
+
+  void markSynced() {
+    state = DateTime.now();
+  }
+}
+
 /// Notifier that manages the info-specific course list and its independent sync state.
 /// This perfectly matches the pattern used in ExamList.
-@Riverpod(keepAlive: true)
+@riverpod
 class InfoList extends _$InfoList {
   PaginationState _paginationTracker = const PaginationState();
   Future<void>? _pendingSyncRequest;
-  bool _isInitialized = false;
 
   @override
   Stream<List<CourseDto>> build() async* {
@@ -26,16 +38,18 @@ class InfoList extends _$InfoList {
 
   /// Triggers an independent sync for the Info tab.
   Future<void> initialize() async {
-    if (_isInitialized) return;
+    final lastSync = ref.read(infoSyncMetadataProvider);
+    if (lastSync != null && DateTime.now().difference(lastSync).inMinutes < 5)
+      return;
 
     if (_pendingSyncRequest != null) return _pendingSyncRequest;
-    _isInitialized = true;
 
     _pendingSyncRequest = _performSync(isReset: true);
     try {
       await _pendingSyncRequest;
+      ref.read(infoSyncMetadataProvider.notifier).markSynced();
     } catch (_) {
-      _isInitialized = false; // Allow retry on error
+      // Allow retry on next initialize call by not marking as synced
     } finally {
       _pendingSyncRequest = null;
     }
