@@ -75,23 +75,25 @@ class _SubjectAnalyticsScreenState
                         // Navigation Row: Chevron icon, Title, Filter icon
                         Container(
                           constraints: const BoxConstraints(minHeight: 56),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: design.spacing.xs,
-                            vertical: 10.0,
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                            design.spacing.md,
+                            10.0,
+                            design.spacing.screenPadding,
+                            10.0,
                           ),
                           child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              AppFocusable(
+                              GestureDetector(
                                 onTap: widget.onBack,
-                                child: Container(
-                                  width: 36,
-                                  height: 36,
-                                  alignment: Alignment.center,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: 2,
+                                  ), // Optical alignment
                                   child: Icon(
                                     LucideIcons.arrowLeft,
                                     color: design.colors.textPrimary,
-                                    size: design.iconSize.md,
+                                    size: 22,
                                   ),
                                 ),
                               ),

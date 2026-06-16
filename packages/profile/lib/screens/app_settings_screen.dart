@@ -12,7 +12,6 @@ class AppSettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
-    final l10n = L10n.of(context);
 
     return ColoredBox(
       color: design.colors.canvas,
@@ -29,23 +28,6 @@ class AppSettingsScreen extends ConsumerWidget {
                 design.spacing.xxl,
               ),
               children: [
-                AppText.xl2(
-                  l10n.drawerSettings,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    height: 1.33,
-                  ),
-                ),
-                SizedBox(height: design.spacing.xs),
-                AppText.sm(
-                  l10n.settingsDescription,
-                  color: design.colors.textSecondary,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w400,
-                    height: 1.4,
-                  ),
-                ),
-                SizedBox(height: design.spacing.lg),
                 _AppearanceSection(),
                 SizedBox(height: design.spacing.xl),
                 _PlaybackSection(),
@@ -71,45 +53,43 @@ class _SettingsHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final padding = MediaQuery.of(context).padding;
-
     return Container(
-      width: double.infinity,
-      padding: EdgeInsets.fromLTRB(
-        16, // px-4
-        padding.top + 12, // py-3
-        16,
-        12,
-      ),
       decoration: BoxDecoration(
         color: design.colors.card,
-        border: Border(
-          bottom: BorderSide(color: design.colors.border, width: 1),
-        ),
+        border: Border(bottom: BorderSide(color: design.colors.divider)),
       ),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: AppSemantics.button(
-          label: l10n.curriculumBackButton,
-          onTap: onBack,
-          child: AppFocusable(
-            onTap: onBack,
-            borderRadius: design.radius.button,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  LucideIcons.chevronLeft,
-                  size: 20,
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(
+            design.spacing.md,
+            design.spacing.md,
+            design.spacing.screenPadding,
+            design.spacing.md,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Back arrow inline with title
+              GestureDetector(
+                onTap: onBack,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 2), // Optical alignment
+                  child: Icon(
+                    LucideIcons.arrowLeft,
+                    color: design.colors.textPrimary,
+                    size: 22,
+                  ),
+                ),
+              ),
+              SizedBox(width: design.spacing.sm),
+              Expanded(
+                child: AppText.title(
+                  l10n.drawerSettings,
                   color: design.colors.textPrimary,
                 ),
-                const SizedBox(width: 8),
-                AppText.label(
-                  l10n.curriculumBackButton,
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
