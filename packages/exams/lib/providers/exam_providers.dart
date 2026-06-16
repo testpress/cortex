@@ -242,7 +242,9 @@ class ExamList extends _$ExamList {
   /// Triggers an independent sync for the Exams tab by fetching the first page.
   Future<void> initialize() async {
     final lastSync = ref.read(examSyncMetadataProvider);
-    if (lastSync != null) return;
+    if (lastSync != null) {
+      return;
+    }
 
     if (_pendingSyncRequest != null) return _pendingSyncRequest;
 

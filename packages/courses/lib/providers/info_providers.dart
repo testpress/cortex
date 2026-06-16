@@ -39,7 +39,9 @@ class InfoList extends _$InfoList {
   /// Triggers an independent sync for the Info tab.
   Future<void> initialize() async {
     final lastSync = ref.read(infoSyncMetadataProvider);
-    if (lastSync != null) return;
+    if (lastSync != null) {
+      return;
+    }
 
     if (_pendingSyncRequest != null) return _pendingSyncRequest;
 

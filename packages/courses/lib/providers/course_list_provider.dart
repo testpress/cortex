@@ -61,7 +61,9 @@ class CourseList extends _$CourseList {
   /// Explicit initialization for browse mode
   Future<void> initialize() async {
     final lastSync = ref.read(courseSyncMetadataProvider);
-    if (lastSync != null) return;
+    if (lastSync != null) {
+      return;
+    }
     if (_pendingSyncRequest != null) return _pendingSyncRequest;
 
     ref.read(isSyncingInitialPage.notifier).state = true;
