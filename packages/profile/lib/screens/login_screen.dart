@@ -16,7 +16,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _pageController = PageController();
   int _currentPage = 0;
   Timer? _carouselTimer;
-  bool _hasAutoRedirected = false;
 
   @override
   void initState() {
@@ -47,38 +46,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
-
-    final settings = ref.watch(instituteSettingsProvider);
-    final allowedMethods =
-        settings?.allowedLoginMethods ?? const [LoginMethod.formLogin];
-    final googleLoginEnabled = settings?.googleLoginEnabled ?? false;
-
-    final showOtp = allowedMethods.contains(LoginMethod.otpLogin);
-    final showForm = allowedMethods.contains(LoginMethod.formLogin);
-    final showSocial =
-        allowedMethods.contains(LoginMethod.socialLogin) && googleLoginEnabled;
-
-    final activeCount =
-        (showOtp ? 1 : 0) + (showForm ? 1 : 0) + (showSocial ? 1 : 0);
-
-    if (activeCount == 1 && (showForm || showOtp) && !_hasAutoRedirected) {
-      _hasAutoRedirected = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        if (showForm) {
-          context.pushReplacement('/password-login');
-        } else if (showOtp) {
-          context.pushReplacement('/mobile-login');
-        }
-      });
-      // Return empty scaffold while redirecting to prevent flicker
-      return Scaffold(backgroundColor: design.colors.surface);
-    }
-
-    // Scale down the carousel area slightly if keyboard is open to preserve space
-    final flexTop = bottomInset > 0 ? 25 : 55;
-    final flexBottom = bottomInset > 0 ? 75 : 45;
 
     return Scaffold(
       backgroundColor: design.colors.surface,
@@ -86,27 +53,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         color: design.colors.primary.withValues(alpha: 0.05),
         child: Column(
           children: [
-            Expanded(flex: flexTop, child: _buildBrandingSection()),
-            Expanded(
-              flex: flexBottom,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: design.colors.surface,
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(32),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, -5),
-                    ),
-                  ],
+            Expanded(child: _buildBrandingSection()),
+            Container(
+              decoration: BoxDecoration(
+                color: design.colors.surface,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(32),
                 ),
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(32),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, -5),
                   ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(32),
+                ),
+                child: SafeArea(
+                  top: false,
                   child: _buildOptions(key: const ValueKey('options')),
                 ),
               ),
@@ -151,7 +118,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ],
           ),
           Positioned(
-            top: design.spacing.lg,
+            top: design.spacing.xxl,
             left: 0,
             right: 0,
             child: Row(
@@ -162,7 +129,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   color: design.colors.primary,
                   size: 28,
                 ),
-                SizedBox(width: design.spacing.xs),
+                SizedBox(width: design.spacing.sm),
                 AppText.headline(
                   instituteName,
                   style: const TextStyle(fontWeight: FontWeight.bold),
@@ -247,29 +214,58 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ? loginIdLabel
         : 'Student ID';
 
-    final buttons = [
-      if (showOtp)
-        AppButton.primary(
-          label: 'Continue with Mobile Number',
-          fullWidth: true,
-          leading: const Icon(LucideIcons.smartphone),
-          onPressed: () => context.push('/mobile-login'),
+    Widget buildButton(
+      String label,
+      Widget icon,
+      VoidCallback onPressed,
+      bool isPrimary,
+    ) {
+      return isPrimary
+          ? AppButton.primary(
+              label: label,
+              fullWidth: true,
+              leading: icon,
+              onPressed: onPressed,
+            )
+          : AppButton.secondary(
+              label: label,
+              fullWidth: true,
+              leading: icon,
+              onPressed: onPressed,
+            );
+    }
+
+    final buttons = <Widget>[];
+    if (showOtp) {
+      buttons.add(
+        buildButton(
+          'Continue with Mobile Number',
+          const Icon(LucideIcons.smartphone),
+          () => context.push('/mobile-login'),
+          buttons.isEmpty,
         ),
-      if (showForm)
-        AppButton.secondary(
-          label: 'Continue with $displayLoginIdLabel',
-          fullWidth: true,
-          leading: const Icon(LucideIcons.mail),
-          onPressed: () => context.push('/password-login'),
+      );
+    }
+    if (showForm) {
+      buttons.add(
+        buildButton(
+          'Continue with $displayLoginIdLabel',
+          const Icon(LucideIcons.mail),
+          () => context.push('/password-login'),
+          buttons.isEmpty,
         ),
-      if (showSocial)
-        AppButton.secondary(
-          label: 'Continue with Google',
-          fullWidth: true,
-          leading: const Icon(legacy.LucideIcons.chrome),
-          onPressed: () => context.go('/home'),
+      );
+    }
+    if (showSocial) {
+      buttons.add(
+        buildButton(
+          'Continue with Google',
+          const Icon(legacy.LucideIcons.chrome),
+          () => context.go('/home'),
+          buttons.isEmpty,
         ),
-    ];
+      );
+    }
 
     return SingleChildScrollView(
       key: key,
@@ -281,17 +277,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           AppText.headline('Welcome to learning', textAlign: TextAlign.center),
           SizedBox(height: design.spacing.xs),
           AppText.body(
-            'Log in or sign up for an account',
+            allowSignup
+                ? 'Log in or sign up for an account'
+                : 'Log in to your account',
             color: design.colors.textSecondary,
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: design.spacing.xxl),
+          SizedBox(height: design.spacing.xl),
           for (int i = 0; i < buttons.length; i++) ...[
             buttons[i],
             if (i < buttons.length - 1) SizedBox(height: design.spacing.md),
           ],
-          SizedBox(height: design.spacing.xxl),
-          if (allowSignup)
+          if (allowSignup) ...[
+            SizedBox(height: design.spacing.xxl),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -306,7 +304,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
               ],
             ),
-          SizedBox(height: design.spacing.xl),
+          ],
         ],
       ),
     );
