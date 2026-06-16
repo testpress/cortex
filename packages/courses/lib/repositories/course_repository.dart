@@ -165,7 +165,7 @@ class CourseRepository {
     required String query,
     int page = 1,
   }) async {
-    return await _source.getCourses(page: page, search: query);
+    return _source.getCourses(page: page, search: query);
   }
 
   // ── Chapters ─────────────────────────────────────────────────────────────
