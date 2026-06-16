@@ -58,15 +58,16 @@ class ChapterContentItem extends StatelessWidget {
                       width: 140,
                       height: 80,
                       decoration: BoxDecoration(
-                        color: lesson.image != null
+                        color: lesson.image?.isNotEmpty == true
                             ? null
                             : _getColorForType(context, lesson.type)
                                 .withValues(alpha: 0.1),
                       ),
-                      child: lesson.image != null
+                      child: lesson.image?.isNotEmpty == true
                           ? CachedNetworkImage(
                               imageUrl: lesson.image!,
                               width: 140,
+                              height: 80,
                               memCacheWidth: 280,
                               fit: BoxFit.cover,
                               placeholder: (context, url) => Container(
@@ -110,19 +111,16 @@ class ChapterContentItem extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 16),
-                        child: Icon(
-                          LucideIcons.chevronRight,
-                          size: 20,
-                          color: design.colors.textSecondary
-                              .withValues(alpha: 0.5),
-                        ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16),
+                    child: Center(
+                      child: Icon(
+                        LucideIcons.chevronRight,
+                        size: 20,
+                        color:
+                            design.colors.textSecondary.withValues(alpha: 0.5),
                       ),
-                    ],
+                    ),
                   ),
                 ],
               ),

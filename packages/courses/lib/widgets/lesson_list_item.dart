@@ -88,13 +88,15 @@ class LessonListItem extends StatelessWidget {
                       width: 140,
                       height: 80,
                       decoration: BoxDecoration(
-                        color:
-                            lesson.image != null ? null : typeTheme.background,
+                        color: lesson.image?.isNotEmpty == true
+                            ? null
+                            : typeTheme.background,
                       ),
-                      child: lesson.image != null
+                      child: lesson.image?.isNotEmpty == true
                           ? CachedNetworkImage(
                               imageUrl: lesson.image!,
                               width: 140,
+                              height: 80,
                               memCacheWidth: 280,
                               fit: BoxFit.cover,
                               placeholder: (context, url) => Container(
@@ -145,18 +147,13 @@ class LessonListItem extends StatelessWidget {
                     ),
                   ),
                   // Navigation Indicator
-                  Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 14, right: 16),
-                        child: Icon(
-                          LucideIcons.chevronRight,
-                          color: design.colors.textSecondary
-                              .withValues(alpha: 0.5),
-                          size: 20,
-                        ),
-                      ),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.only(top: 14, right: 16),
+                    child: Icon(
+                      LucideIcons.chevronRight,
+                      color: design.colors.textSecondary.withValues(alpha: 0.5),
+                      size: 20,
+                    ),
                   ),
                 ],
               ),
