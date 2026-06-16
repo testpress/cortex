@@ -327,16 +327,21 @@ class _DoubtItem extends StatelessWidget {
             maxLines: 2,
           ),
           SizedBox(height: design.spacing.sm),
-          // Metadata Row: Subject • Replies • Time
+          // Metadata Row: Subject (Takes full width now to prevent overflow)
+          if (doubt.topicName != null) ...[
+            AppText.labelSmall(
+              doubt.topicName!,
+              color: design.colors.accent2,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            SizedBox(height: design.spacing.sm),
+          ],
+          // Status badge and timeline
           Row(
             children: [
-              if (doubt.topicName != null) ...[
-                AppText.labelSmall(
-                  doubt.topicName!,
-                  color: design.colors.accent2,
-                ),
-                _buildDot(design),
-              ],
+              _buildStatusBadge(design, doubt.status),
+              SizedBox(width: design.spacing.sm),
               AppText.caption(
                 doubt.createdHumanized ??
                     DateFormatter.formatTimeAgo(doubt.createdAt),
@@ -344,18 +349,8 @@ class _DoubtItem extends StatelessWidget {
               ),
             ],
           ),
-          // Status badge — shown for all statuses
-          SizedBox(height: design.spacing.sm),
-          _buildStatusBadge(design, doubt.status),
         ],
       ),
-    );
-  }
-
-  Widget _buildDot(DesignConfig design) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: design.spacing.xs),
-      child: AppText.caption('•', color: design.colors.textTertiary),
     );
   }
 
