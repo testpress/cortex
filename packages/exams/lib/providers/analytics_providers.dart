@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
 import '../repositories/subject_analytics_repository.dart';
-import 'subject_analytics_pagination_state.dart';
 
 part 'analytics_providers.g.dart';
 
@@ -29,88 +28,56 @@ Stream<SubjectAnalyticsDto?> subjectAnalyticsById(Ref ref, int id) async* {
   yield* repository.watchSubjectById(id);
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 class SubjectAnalyticsPagination extends _$SubjectAnalyticsPagination {
-  SubjectAnalyticsPaginationState _paginationState =
-      SubjectAnalyticsPaginationState(
-        currentPage: 1,
-        hasMorePages: true,
-        isFetchingNextPage: false,
-        isFetchingInitial: true,
-      );
-  final _paginationService = const PaginationService();
-  Future<List<SubjectAnalyticsDto>>? _initialFetch;
+  int _nextPage = 2;
 
   @override
-  SubjectAnalyticsPaginationState build(int? parentId) {
+  Future<({bool hasMore, bool isLoadingMore})> build(int? parentId) async {
+    ref.keepAlive();
     // Rebuild the pagination state if the logged-in user changes (e.g. logout)
     ref.watch(userIdProvider);
 
-    _paginationState = SubjectAnalyticsPaginationState(
-      currentPage: 1,
-      hasMorePages: true,
-      isFetchingNextPage: false,
-      isFetchingInitial: true,
-    );
-
-    Future.microtask(() => fetchInitial());
-
-    return _paginationState;
-  }
-
-  Future<void> fetchInitial() async {
-    _paginationState = _paginationState.copyWith(isFetchingInitial: true);
-    state = _paginationState;
-
-    _initialFetch = _fetchPage(1, clearCache: true);
-    await _initialFetch;
-
-    _paginationState = _paginationState.copyWith(isFetchingInitial: false);
-    state = _paginationState;
-  }
-
-  Future<List<SubjectAnalyticsDto>> _fetchPage(
-    int page, {
-    bool clearCache = false,
-  }) async {
-    final repository = await ref.read(
+    final repository = await ref.watch(
       subjectAnalyticsRepositoryProvider.future,
     );
     final response = await repository.fetchSubjectAnalyticsPage(
-      page: page,
+      page: 1,
       parentId: parentId,
     );
 
-    final serviceState = _paginationService.calculateNextState(
+    final serviceState = const PaginationService().calculateNextState(
       response: response,
-      currentPage: page,
+      currentPage: 1,
     );
 
-    _paginationState = _paginationState.copyWith(
-      currentPage: serviceState.nextPage,
-      hasMorePages: serviceState.hasMore,
-    );
-    state = _paginationState;
-
-    return response.results;
+    _nextPage = serviceState.nextPage;
+    return (hasMore: serviceState.hasMore, isLoadingMore: false);
   }
 
-  Future<void> fetchNextPage() async {
-    await _initialFetch;
+  Future<void> loadMore() async {
+    final current = state.valueOrNull;
+    if (current == null || !current.hasMore || current.isLoadingMore) return;
 
-    if (!_paginationState.hasMorePages) return;
-    if (_paginationState.isFetchingNextPage) return;
-
-    _paginationState = _paginationState.copyWith(isFetchingNextPage: true);
-    state = _paginationState;
-
+    state = AsyncData((hasMore: current.hasMore, isLoadingMore: true));
     try {
-      await _fetchPage(_paginationState.currentPage);
-    } catch (e, stack) {
-      Error.throwWithStackTrace(e, stack);
-    } finally {
-      _paginationState = _paginationState.copyWith(isFetchingNextPage: false);
-      state = _paginationState;
+      final repository = await ref.read(
+        subjectAnalyticsRepositoryProvider.future,
+      );
+      final response = await repository.fetchSubjectAnalyticsPage(
+        page: _nextPage,
+        parentId: parentId,
+      );
+
+      final serviceState = const PaginationService().calculateNextState(
+        response: response,
+        currentPage: _nextPage,
+      );
+
+      _nextPage = serviceState.nextPage;
+      state = AsyncData((hasMore: serviceState.hasMore, isLoadingMore: false));
+    } catch (e, st) {
+      state = AsyncError(e, st);
     }
   }
 }

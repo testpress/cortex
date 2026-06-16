@@ -3322,6 +3322,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Check answers immediately as you go.'**
   String get examModeQuizDesc;
+
+  /// No description provided for @analyticsInvalidTopicId.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid Topic ID'**
+  String get analyticsInvalidTopicId;
+
+  /// No description provided for @analyticsTopicNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Topic not found'**
+  String get analyticsTopicNotFound;
+
+  /// No description provided for @analyticsErrorLoadingTopic.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading topic analytics: {error}'**
+  String analyticsErrorLoadingTopic(String error);
+
+  /// No description provided for @analyticsSubCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Sub Category'**
+  String get analyticsSubCategory;
+
+  /// No description provided for @analyticsStrength.
+  ///
+  /// In en, this message translates to:
+  /// **'Strength'**
+  String get analyticsStrength;
+
+  /// No description provided for @analyticsWeakness.
+  ///
+  /// In en, this message translates to:
+  /// **'Weakness'**
+  String get analyticsWeakness;
+
+  /// No description provided for @analyticsUnanswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Unanswered'**
+  String get analyticsUnanswered;
+
+  /// No description provided for @analyticsCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct'**
+  String get analyticsCorrect;
+
+  /// No description provided for @analyticsIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect'**
+  String get analyticsIncorrect;
+
+  /// No description provided for @analyticsAccuracy.
+  ///
+  /// In en, this message translates to:
+  /// **'Accuracy'**
+  String get analyticsAccuracy;
+
+  /// No description provided for @analyticsNoSubjectsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No subjects found.'**
+  String get analyticsNoSubjectsFound;
+
+  /// No description provided for @analyticsStrengthCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Strength / Correct'**
+  String get analyticsStrengthCorrect;
+
+  /// No description provided for @analyticsWeaknessIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Weakness / Incorrect'**
+  String get analyticsWeaknessIncorrect;
+
+  /// No description provided for @analyticsSubjectUppercase.
+  ///
+  /// In en, this message translates to:
+  /// **'SUBJECT'**
+  String get analyticsSubjectUppercase;
+
+  /// No description provided for @analyticsCorrectUppercase.
+  ///
+  /// In en, this message translates to:
+  /// **'CORRECT'**
+  String get analyticsCorrectUppercase;
+
+  /// No description provided for @analyticsIncorrectUppercase.
+  ///
+  /// In en, this message translates to:
+  /// **'INCORRECT'**
+  String get analyticsIncorrectUppercase;
+
+  /// No description provided for @analyticsUnansweredUppercase.
+  ///
+  /// In en, this message translates to:
+  /// **'UNANSWERED'**
+  String get analyticsUnansweredUppercase;
+
+  /// No description provided for @analyticsFilterSubjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter subjects'**
+  String get analyticsFilterSubjects;
+
+  /// No description provided for @analyticsGraphReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Graph Reports'**
+  String get analyticsGraphReports;
+
+  /// No description provided for @analyticsTableReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Table Reports'**
+  String get analyticsTableReports;
+
+  /// No description provided for @analyticsSelectTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Select {label} tab'**
+  String analyticsSelectTab(String label);
 }
 
 class _AppLocalizationsDelegate

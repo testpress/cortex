@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
@@ -39,7 +39,7 @@ class _OverallReportsViewState extends ConsumerState<OverallReportsView> {
             _scrollController.position.maxScrollExtent - 200) {
       ref
           .read(subjectAnalyticsPaginationProvider(_parsedParentId).notifier)
-          .fetchNextPage();
+          .loadMore();
     }
   }
 
@@ -49,18 +49,23 @@ class _OverallReportsViewState extends ConsumerState<OverallReportsView> {
     super.dispose();
   }
 
-  Widget _buildSingleLegendItem(String filter, DesignConfig design) {
+  Widget _buildSingleLegendItem(
+    String filter,
+    DesignConfig design,
+    BuildContext context,
+  ) {
+    final l10n = L10n.of(context);
     return switch (filter) {
       'Correct' => _LegendItem(
-        label: 'Strength / Correct',
+        label: l10n.analyticsStrengthCorrect,
         color: design.correctColor,
       ),
       'Incorrect' => _LegendItem(
-        label: 'Weakness / Incorrect',
+        label: l10n.analyticsWeaknessIncorrect,
         color: design.incorrectColor,
       ),
       'Unanswered' => _LegendItem(
-        label: 'Unanswered',
+        label: l10n.analyticsUnanswered,
         color: design.unansweredColor,
       ),
       _ => const SizedBox.shrink(),
@@ -70,13 +75,15 @@ class _OverallReportsViewState extends ConsumerState<OverallReportsView> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     final subjectsAsync = ref.watch(subjectAnalyticsProvider(_parsedParentId));
-    final paginationState = ref.watch(
+    final paginationAsync = ref.watch(
       subjectAnalyticsPaginationProvider(_parsedParentId),
     );
 
-    final isFetchingNextPage = paginationState.isFetchingNextPage;
-    final isFetchingInitial = paginationState.isFetchingInitial;
+    final isFetchingNextPage =
+        paginationAsync.valueOrNull?.isLoadingMore ?? false;
+    final isFetchingInitial = paginationAsync.isLoading;
 
     final hasData = subjectsAsync.valueOrNull?.isNotEmpty == true;
     final isInitialLoading =
@@ -102,123 +109,162 @@ class _OverallReportsViewState extends ConsumerState<OverallReportsView> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: widget.activeFilter == 'All'
                 ? [
-                    _LegendItem(label: 'Strength', color: design.correctColor),
+                    _LegendItem(
+                      label: l10n.analyticsStrength,
+                      color: design.correctColor,
+                    ),
                     SizedBox(width: design.spacing.md),
                     _LegendItem(
-                      label: 'Weakness',
+                      label: l10n.analyticsWeakness,
                       color: design.incorrectColor,
                     ),
                     SizedBox(width: design.spacing.md),
                     _LegendItem(
-                      label: 'Unanswered',
+                      label: l10n.analyticsUnanswered,
                       color: design.unansweredColor,
                     ),
                   ]
-                : [_buildSingleLegendItem(widget.activeFilter, design)],
+                : [
+                    _buildSingleLegendItem(
+                      widget.activeFilter,
+                      design,
+                      context,
+                    ),
+                  ],
           ),
         ),
 
         // List
         Expanded(
-          child: RefreshIndicator(
-            onRefresh: () => ref
-                .read(
-                  subjectAnalyticsPaginationProvider(_parsedParentId).notifier,
-                )
-                .fetchInitial(),
-            child: subjectsAsync.when(
-              data: (subjects) {
-                if (subjects.isEmpty && !isInitialLoading) {
-                  return const Center(
-                    child: AppText.body('No subjects found.'),
-                  );
-                }
-
-                // If loading, show skeleton list
-                final displayList = isInitialLoading
-                    ? List.generate(15, (_) => _skeletonSubject)
-                    : subjects;
-
-                return Skeletonizer(
-                  enabled: isInitialLoading,
-                  child: ListView.separated(
-                    controller: _scrollController,
-                    physics: const BouncingScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics(),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      vertical: design.spacing.sm + design.spacing.xs,
-                    ),
-                    itemCount:
-                        displayList.length + (isFetchingNextPage ? 3 : 0),
-                    separatorBuilder: (context, index) =>
-                        SizedBox(height: design.spacing.sm + design.spacing.xs),
-                    itemBuilder: (context, index) {
-                      if (index >= displayList.length) {
-                        return Skeletonizer(
-                          enabled: true,
-                          child: BarRow(
-                            subjectAnalytics: _skeletonSubject,
-                            activeFilter: widget.activeFilter,
+          child: CustomScrollView(
+            controller: _scrollController,
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
+            slivers: [
+              CupertinoSliverRefreshControl(
+                onRefresh: () => ref.refresh(
+                  subjectAnalyticsPaginationProvider(_parsedParentId).future,
+                ),
+                builder:
+                    (
+                      context,
+                      refreshState,
+                      pulledExtent,
+                      refreshTriggerPullDistance,
+                      refreshIndicatorExtent,
+                    ) {
+                      return Opacity(
+                        opacity: (pulledExtent / refreshTriggerPullDistance)
+                            .clamp(0.0, 1.0),
+                        child: Center(
+                          child: AppLoadingIndicator(
+                            color: design.colors.primary,
                           ),
-                        );
-                      }
+                        ),
+                      );
+                    },
+              ),
+              subjectsAsync.when(
+                data: (subjects) {
+                  if (subjects.isEmpty && !isInitialLoading) {
+                    return SliverFillRemaining(
+                      child: Center(
+                        child: AppText.body(l10n.analyticsNoSubjectsFound),
+                      ),
+                    );
+                  }
 
-                      final subjectAnalytics = displayList[index];
+                  // If loading, show skeleton list
+                  final displayList = isInitialLoading
+                      ? List.generate(15, (_) => _skeletonSubject)
+                      : subjects;
 
-                      return subjectAnalytics.isLeaf
-                          ? AppFocusable(
-                              onTap: () {
-                                if (isInitialLoading) return;
-                                context.push(
-                                  '/exams/analytics/topic/${subjectAnalytics.id}',
-                                  extra: subjectAnalytics,
-                                );
-                              },
+                  return Skeletonizer.sliver(
+                    enabled: isInitialLoading,
+                    child: SliverPadding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: design.spacing.sm + design.spacing.xs,
+                      ),
+                      sliver: SliverList.separated(
+                        itemCount:
+                            displayList.length + (isFetchingNextPage ? 3 : 0),
+                        separatorBuilder: (context, index) => SizedBox(
+                          height: design.spacing.sm + design.spacing.xs,
+                        ),
+                        itemBuilder: (context, index) {
+                          if (index >= displayList.length) {
+                            return Skeletonizer(
+                              enabled: true,
                               child: BarRow(
-                                subjectAnalytics: subjectAnalytics,
-                                activeFilter: widget.activeFilter,
-                              ),
-                            )
-                          : AppFocusable(
-                              onTap: () {
-                                if (isInitialLoading) return;
-                                context.push(
-                                  '/exams/analytics/${subjectAnalytics.id}',
-                                  extra: subjectAnalytics,
-                                );
-                              },
-                              child: BarRow(
-                                subjectAnalytics: subjectAnalytics,
+                                subjectAnalytics: _skeletonSubject,
                                 activeFilter: widget.activeFilter,
                               ),
                             );
-                    },
+                          }
+
+                          final subjectAnalytics = displayList[index];
+
+                          return subjectAnalytics.isLeaf
+                              ? AppFocusable(
+                                  onTap: () {
+                                    if (isInitialLoading) return;
+                                    context.push(
+                                      '/exams/analytics/topic/${subjectAnalytics.id}',
+                                      extra: subjectAnalytics,
+                                    );
+                                  },
+                                  child: BarRow(
+                                    subjectAnalytics: subjectAnalytics,
+                                    activeFilter: widget.activeFilter,
+                                  ),
+                                )
+                              : AppFocusable(
+                                  onTap: () {
+                                    if (isInitialLoading) return;
+                                    context.push(
+                                      '/exams/analytics/${subjectAnalytics.id}',
+                                      extra: subjectAnalytics,
+                                    );
+                                  },
+                                  child: BarRow(
+                                    subjectAnalytics: subjectAnalytics,
+                                    activeFilter: widget.activeFilter,
+                                  ),
+                                );
+                        },
+                      ),
+                    ),
+                  );
+                },
+                loading: () => Skeletonizer.sliver(
+                  enabled: true,
+                  child: SliverPadding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: design.spacing.sm + design.spacing.xs,
+                    ),
+                    sliver: SliverList.separated(
+                      itemCount: 15,
+                      separatorBuilder: (context, index) => SizedBox(
+                        height: design.spacing.sm + design.spacing.xs,
+                      ),
+                      itemBuilder: (context, index) => BarRow(
+                        subjectAnalytics: _skeletonSubject,
+                        activeFilter: widget.activeFilter,
+                      ),
+                    ),
                   ),
-                );
-              },
-              loading: () => Skeletonizer(
-                enabled: true,
-                child: ListView.separated(
-                  padding: EdgeInsets.symmetric(
-                    vertical: design.spacing.sm + design.spacing.xs,
-                  ),
-                  itemCount: 15,
-                  separatorBuilder: (context, index) =>
-                      SizedBox(height: design.spacing.sm + design.spacing.xs),
-                  itemBuilder: (context, index) => BarRow(
-                    subjectAnalytics: _skeletonSubject,
-                    activeFilter: widget.activeFilter,
+                ),
+                error: (err, stack) => SliverFillRemaining(
+                  child: Center(
+                    child: AppText.body(
+                      'Error loading subjects: $err',
+                      color: design.colors.error,
+                    ),
                   ),
                 ),
               ),
-              error: (err, stack) => Center(
-                child: AppText.body(
-                  'Error loading subjects: $err',
-                  color: design.colors.error,
-                ),
-              ),
-            ),
+            ],
           ),
         ),
       ],

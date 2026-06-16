@@ -297,13 +297,16 @@ class _SubjectAnalyticsByIdProviderElement
 }
 
 String _$subjectAnalyticsPaginationHash() =>
-    r'5bebbfc3c477072d34f12628584e4d189658f253';
+    r'24223033b426e07d875d1d5cdc95cc530232b0a0';
 
 abstract class _$SubjectAnalyticsPagination
-    extends BuildlessNotifier<SubjectAnalyticsPaginationState> {
+    extends
+        BuildlessAutoDisposeAsyncNotifier<
+          ({bool hasMore, bool isLoadingMore})
+        > {
   late final int? parentId;
 
-  SubjectAnalyticsPaginationState build(int? parentId);
+  FutureOr<({bool hasMore, bool isLoadingMore})> build(int? parentId);
 }
 
 /// See also [SubjectAnalyticsPagination].
@@ -312,7 +315,7 @@ const subjectAnalyticsPaginationProvider = SubjectAnalyticsPaginationFamily();
 
 /// See also [SubjectAnalyticsPagination].
 class SubjectAnalyticsPaginationFamily
-    extends Family<SubjectAnalyticsPaginationState> {
+    extends Family<AsyncValue<({bool hasMore, bool isLoadingMore})>> {
   /// See also [SubjectAnalyticsPagination].
   const SubjectAnalyticsPaginationFamily();
 
@@ -346,9 +349,9 @@ class SubjectAnalyticsPaginationFamily
 /// See also [SubjectAnalyticsPagination].
 class SubjectAnalyticsPaginationProvider
     extends
-        NotifierProviderImpl<
+        AutoDisposeAsyncNotifierProviderImpl<
           SubjectAnalyticsPagination,
-          SubjectAnalyticsPaginationState
+          ({bool hasMore, bool isLoadingMore})
         > {
   /// See also [SubjectAnalyticsPagination].
   SubjectAnalyticsPaginationProvider(int? parentId)
@@ -378,7 +381,7 @@ class SubjectAnalyticsPaginationProvider
   final int? parentId;
 
   @override
-  SubjectAnalyticsPaginationState runNotifierBuild(
+  FutureOr<({bool hasMore, bool isLoadingMore})> runNotifierBuild(
     covariant SubjectAnalyticsPagination notifier,
   ) {
     return notifier.build(parentId);
@@ -401,9 +404,9 @@ class SubjectAnalyticsPaginationProvider
   }
 
   @override
-  NotifierProviderElement<
+  AutoDisposeAsyncNotifierProviderElement<
     SubjectAnalyticsPagination,
-    SubjectAnalyticsPaginationState
+    ({bool hasMore, bool isLoadingMore})
   >
   createElement() {
     return _SubjectAnalyticsPaginationProviderElement(this);
@@ -427,16 +430,19 @@ class SubjectAnalyticsPaginationProvider
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 mixin SubjectAnalyticsPaginationRef
-    on NotifierProviderRef<SubjectAnalyticsPaginationState> {
+    on
+        AutoDisposeAsyncNotifierProviderRef<
+          ({bool hasMore, bool isLoadingMore})
+        > {
   /// The parameter `parentId` of this provider.
   int? get parentId;
 }
 
 class _SubjectAnalyticsPaginationProviderElement
     extends
-        NotifierProviderElement<
+        AutoDisposeAsyncNotifierProviderElement<
           SubjectAnalyticsPagination,
-          SubjectAnalyticsPaginationState
+          ({bool hasMore, bool isLoadingMore})
         >
     with SubjectAnalyticsPaginationRef {
   _SubjectAnalyticsPaginationProviderElement(super.provider);

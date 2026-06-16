@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/models/review_models.dart';
@@ -43,7 +43,7 @@ class _IndividualReportsViewState extends ConsumerState<IndividualReportsView> {
             _scrollController.position.maxScrollExtent - 200) {
       ref
           .read(subjectAnalyticsPaginationProvider(_parsedParentId).notifier)
-          .fetchNextPage();
+          .loadMore();
     }
   }
 
@@ -105,12 +105,14 @@ class _IndividualReportsViewState extends ConsumerState<IndividualReportsView> {
   ) {
     final design = Design.of(context);
     final subjectsAsync = ref.watch(subjectAnalyticsProvider(_parsedParentId));
-    final paginationState = ref.watch(
+    final paginationAsync = ref.watch(
       subjectAnalyticsPaginationProvider(_parsedParentId),
     );
 
-    final isFetchingInitial = paginationState.isFetchingInitial;
-    final isFetchingNextPage = paginationState.isFetchingNextPage;
+    final isFetchingInitial = paginationAsync.isLoading;
+    final isFetchingNextPage =
+        paginationAsync.valueOrNull?.isLoadingMore ?? false;
+    final hasMorePages = paginationAsync.valueOrNull?.hasMore ?? false;
 
     final hasData = subjectsAsync.valueOrNull?.isNotEmpty == true;
     final isInitialLoading =
@@ -131,25 +133,18 @@ class _IndividualReportsViewState extends ConsumerState<IndividualReportsView> {
       }
     }
 
-    return RefreshIndicator(
-      onRefresh: () => ref
-          .read(subjectAnalyticsPaginationProvider(_parsedParentId).notifier)
-          .fetchInitial(),
-      child: Skeletonizer(
-        enabled: isInitialLoading,
-        child: _buildContent(
-          context,
-          design,
-          displaySubjects,
-          displayDonuts,
-          paginationState.hasMorePages,
-          isFetchingNextPage,
-          () => ref
-              .read(
-                subjectAnalyticsPaginationProvider(_parsedParentId).notifier,
-              )
-              .fetchNextPage(),
-        ),
+    return Skeletonizer(
+      enabled: isInitialLoading,
+      child: _buildContent(
+        context,
+        design,
+        displaySubjects,
+        displayDonuts,
+        hasMorePages,
+        isFetchingNextPage,
+        () => ref
+            .read(subjectAnalyticsPaginationProvider(_parsedParentId).notifier)
+            .loadMore(),
       ),
     );
   }
@@ -234,67 +229,96 @@ class _IndividualReportsViewState extends ConsumerState<IndividualReportsView> {
       showIncorrect,
       showUnanswered,
     );
-    return AppScroll(
+    return CustomScrollView(
       controller: _scrollController,
       physics: const BouncingScrollPhysics(
         parent: AlwaysScrollableScrollPhysics(),
       ),
-      padding: EdgeInsets.fromLTRB(
-        design.spacing.md,
-        design.spacing.md,
-        design.spacing.md,
-        design.spacing.xxl,
-      ),
-      children: [
-        // Table container
-        if (subjects.isEmpty)
-          Container(
-            alignment: Alignment.center,
-            padding: EdgeInsets.all(design.spacing.xl),
-            child: AppText.body(
-              'No subjects found.',
-              color: design.colors.textSecondary,
-            ),
-          )
-        else ...[
-          _StatsTable(
-            subjects: subjects,
-            activeFilter: widget.activeFilter,
-            showCorrect: showCorrect,
-            showIncorrect: showIncorrect,
-            showUnanswered: showUnanswered,
-            columnWidths: columnWidths,
+      slivers: [
+        CupertinoSliverRefreshControl(
+          onRefresh: () => ref.refresh(
+            subjectAnalyticsPaginationProvider(_parsedParentId).future,
           ),
-          if (hasMorePages && !isFetchingNextPage) ...[
-            SizedBox(height: design.spacing.md),
-            Center(
-              child: GestureDetector(
-                onTap: onLoadMore,
-                behavior: HitTestBehavior.opaque,
-                child: AppText.xs(
-                  'Load More Subjects',
-                  color: design.colors.primary,
-                  style: const TextStyle(fontWeight: FontWeight.w500),
+          builder:
+              (
+                context,
+                refreshState,
+                pulledExtent,
+                refreshTriggerPullDistance,
+                refreshIndicatorExtent,
+              ) {
+                return Opacity(
+                  opacity: (pulledExtent / refreshTriggerPullDistance).clamp(
+                    0.0,
+                    1.0,
+                  ),
+                  child: Center(
+                    child: AppLoadingIndicator(color: design.colors.primary),
+                  ),
+                );
+              },
+        ),
+        SliverPadding(
+          padding: EdgeInsets.fromLTRB(
+            design.spacing.md,
+            design.spacing.md,
+            design.spacing.md,
+            design.spacing.xxl,
+          ),
+          sliver: SliverList(
+            delegate: SliverChildListDelegate([
+              // Table container
+              if (subjects.isEmpty)
+                Container(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.all(design.spacing.xl),
+                  child: AppText.body(
+                    'No subjects found.',
+                    color: design.colors.textSecondary,
+                  ),
+                )
+              else ...[
+                _StatsTable(
+                  subjects: subjects,
+                  activeFilter: widget.activeFilter,
+                  showCorrect: showCorrect,
+                  showIncorrect: showIncorrect,
+                  showUnanswered: showUnanswered,
+                  columnWidths: columnWidths,
                 ),
-              ),
-            ),
-            SizedBox(height: design.spacing.md),
-          ] else ...[
-            SizedBox(height: design.spacing.lg),
-          ],
-        ],
+                if (hasMorePages && !isFetchingNextPage) ...[
+                  SizedBox(height: design.spacing.md),
+                  Center(
+                    child: GestureDetector(
+                      onTap: onLoadMore,
+                      behavior: HitTestBehavior.opaque,
+                      child: AppText.xs(
+                        'Load More Subjects',
+                        color: design.colors.primary,
+                        style: const TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: design.spacing.md),
+                ] else ...[
+                  SizedBox(height: design.spacing.lg),
+                ],
+              ],
 
-        // Donut Cards Section
-        if (donutCardsData.isNotEmpty) ...[
-          for (final cardData in donutCardsData) ...[
-            _DonutCard(
-              data: cardData,
-              activeFilter: widget.activeFilter,
-              formatPct: _formatPct,
-            ),
-            SizedBox(height: design.spacing.md),
-          ],
-        ],
+              // Donut Cards Section
+              if (donutCardsData.isNotEmpty) ...[
+                for (final cardData in donutCardsData) ...[
+                  _DonutCard(
+                    data: cardData,
+                    activeFilter: widget.activeFilter,
+                    formatPct: _formatPct,
+                  ),
+                  SizedBox(height: design.spacing.md),
+                ],
+              ],
+            ]),
+          ),
+        ),
       ],
     );
   }
@@ -320,6 +344,7 @@ class _StatsTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     return Container(
       decoration: BoxDecoration(
@@ -337,24 +362,24 @@ class _StatsTable extends StatelessWidget {
             decoration: BoxDecoration(color: design.colors.surfaceVariant),
             children: [
               _HeaderCell(
-                label: 'SUBJECT',
+                label: l10n.analyticsSubjectUppercase,
                 horizontalPadding: design.spacing.sm,
               ),
               if (showCorrect)
                 _HeaderCell(
-                  label: 'CORRECT',
+                  label: l10n.analyticsCorrectUppercase,
                   textAlign: TextAlign.center,
                   horizontalPadding: design.spacing.xs,
                 ),
               if (showIncorrect)
                 _HeaderCell(
-                  label: 'INCORRECT',
+                  label: l10n.analyticsIncorrectUppercase,
                   textAlign: TextAlign.center,
                   horizontalPadding: design.spacing.xs,
                 ),
               if (showUnanswered)
                 _HeaderCell(
-                  label: 'UNANSWERED',
+                  label: l10n.analyticsUnansweredUppercase,
                   textAlign: TextAlign.center,
                   horizontalPadding: design.spacing.xs,
                 ),

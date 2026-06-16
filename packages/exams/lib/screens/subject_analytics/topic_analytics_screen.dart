@@ -5,6 +5,7 @@ import 'package:core/data/models/review_models.dart';
 import '../../providers/analytics_providers.dart';
 import 'subject_analytics_screen.dart'; // For SubjectAnalyticsColors extension
 import 'widgets/bar_chart.dart'; // For BarRow
+import 'package:skeletonizer/skeletonizer.dart';
 
 class TopicAnalyticsScreen extends ConsumerWidget {
   const TopicAnalyticsScreen({
@@ -20,6 +21,7 @@ class TopicAnalyticsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = L10n.of(context);
     if (topic != null) {
       return _TopicAnalyticsScreenContent(
         topicId: topicId,
@@ -30,24 +32,58 @@ class TopicAnalyticsScreen extends ConsumerWidget {
 
     final parsedTopicId = int.tryParse(topicId);
     if (parsedTopicId == null) {
-      return const _FullScreenMessage(child: Text('Invalid Topic ID'));
+      return _FullScreenMessage(
+        child: AppText.body(
+          l10n.analyticsInvalidTopicId,
+          color: Design.of(context).colors.textSecondary,
+        ),
+      );
     }
 
     final asyncTopic = ref.watch(subjectAnalyticsByIdProvider(parsedTopicId));
-    return asyncTopic.when(
-      data: (loadedTopic) {
-        if (loadedTopic == null) {
-          return const _FullScreenMessage(child: Text('Topic not found'));
-        }
-        return _TopicAnalyticsScreenContent(
-          topicId: topicId,
-          topic: loadedTopic,
-          onBack: onBack,
-        );
-      },
-      loading: () => const _FullScreenMessage(child: AppLoadingIndicator()),
-      error: (error, stack) => _FullScreenMessage(
-        child: Text('Error loading topic analytics: $error'),
+    final design = Design.of(context);
+    return SkeletonizerConfig(
+      data: SkeletonizerConfigData(
+        effect: ShimmerEffect(
+          baseColor: design.colors.skeleton,
+          highlightColor: design.colors.onSkeleton,
+          duration: MotionPreferences.duration(
+            context,
+            const Duration(milliseconds: 800),
+          ),
+        ),
+        ignoreContainers: false,
+      ),
+      child: asyncTopic.when(
+        data: (loadedTopic) {
+          if (loadedTopic == null) {
+            return _FullScreenMessage(
+              child: AppText.body(
+                l10n.analyticsTopicNotFound,
+                color: design.colors.textSecondary,
+              ),
+            );
+          }
+          return _TopicAnalyticsScreenContent(
+            topicId: topicId,
+            topic: loadedTopic,
+            onBack: onBack,
+          );
+        },
+        loading: () => Skeletonizer(
+          enabled: true,
+          child: _TopicAnalyticsScreenContent(
+            topicId: topicId,
+            topic: _skeletonSubject,
+            onBack: onBack,
+          ),
+        ),
+        error: (error, stack) => _FullScreenMessage(
+          child: AppText.body(
+            l10n.analyticsErrorLoadingTopic(error.toString()),
+            color: design.colors.error,
+          ),
+        ),
       ),
     );
   }
@@ -80,6 +116,7 @@ class _TopicAnalyticsScreenContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     return Container(
       color: design.colors.canvas,
@@ -121,7 +158,7 @@ class _TopicAnalyticsScreenContent extends StatelessWidget {
                     SizedBox(width: design.spacing.sm),
                     Expanded(
                       child: AppText.title(
-                        'Sub Category',
+                        l10n.analyticsSubCategory,
                         color: design.colors.textPrimary,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -156,17 +193,17 @@ class _TopicAnalyticsScreenContent extends StatelessWidget {
                   child: Row(
                     children: [
                       _LegendItem(
-                        label: 'Strength',
+                        label: l10n.analyticsStrength,
                         color: design.correctColor,
                       ),
                       SizedBox(width: design.spacing.md),
                       _LegendItem(
-                        label: 'Weakness',
+                        label: l10n.analyticsWeakness,
                         color: design.incorrectColor,
                       ),
                       SizedBox(width: design.spacing.md),
                       _LegendItem(
-                        label: 'Unanswered',
+                        label: l10n.analyticsUnanswered,
                         color: design.unansweredColor,
                       ),
                     ],
@@ -208,23 +245,23 @@ class _TopicAnalyticsScreenContent extends StatelessWidget {
                     child: Column(
                       children: [
                         _StatRow(
-                          label: 'Correct',
+                          label: l10n.analyticsCorrect,
                           value: '${topic.correctAnswerCount}',
                           color: design.correctColor,
                         ),
                         _StatRow(
-                          label: 'Incorrect',
+                          label: l10n.analyticsIncorrect,
                           value: '${topic.incorrectAnswerCount}',
                           color: design.incorrectColor,
                         ),
                         _StatRow(
-                          label: 'Unanswered',
+                          label: l10n.analyticsUnanswered,
                           value: '${topic.unansweredCount}',
                           color: design.unansweredColor,
                         ),
                         Container(height: 1, color: design.colors.border),
                         _StatRow(
-                          label: 'Accuracy',
+                          label: l10n.analyticsAccuracy,
                           value: '${topic.accuracy.toStringAsFixed(2)}%',
                           color: design.colors.primary,
                           isBoldValue: true,
@@ -317,3 +354,14 @@ class _StatRow extends StatelessWidget {
     );
   }
 }
+
+final _skeletonSubject = const SubjectAnalyticsDto(
+  id: 0,
+  name: 'Loading Topic Details...',
+  totalQuestionCount: 100,
+  correctAnswerCount: 40,
+  incorrectAnswerCount: 40,
+  unansweredCount: 20,
+  correctPercentage: 40.0,
+  isLeaf: true,
+);

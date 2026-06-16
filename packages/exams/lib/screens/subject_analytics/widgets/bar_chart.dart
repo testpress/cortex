@@ -179,6 +179,7 @@ class BarRow extends StatelessWidget {
                           showLabel: !isSkeleton,
                         ),
                       ]
+                    // Why the showLabel: !isSkeleton is repeated, first of all why we have to detect isSkeleton and all? cause we are the one loading the skselton, and instead of passing like showSkeleton to the showLabel, we can simply put sksletonizer.bone.ignore() so that it won't be skeletonized right????
                     : [
                         _SingleMetricSegment(
                           flex: activeFlex,
