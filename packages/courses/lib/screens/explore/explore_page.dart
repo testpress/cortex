@@ -83,9 +83,13 @@ class _ExplorePageState extends ConsumerState<ExplorePage> {
               // Title & Search Section
               Padding(
                 padding: EdgeInsets.fromLTRB(
-                  padding.left > design.spacing.md ? padding.left : design.spacing.md,
+                  padding.left > design.spacing.md
+                      ? padding.left
+                      : design.spacing.md,
                   padding.top + design.spacing.md,
-                  padding.right > design.spacing.md ? padding.right : design.spacing.md,
+                  padding.right > design.spacing.md
+                      ? padding.right
+                      : design.spacing.md,
                   design.spacing.md,
                 ),
                 child: Column(

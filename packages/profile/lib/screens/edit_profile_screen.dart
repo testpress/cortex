@@ -115,9 +115,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           Expanded(
             child: AppScroll(
               padding: EdgeInsets.fromLTRB(
-                padding.left > design.spacing.md ? padding.left : design.spacing.md,
+                padding.left > design.spacing.md
+                    ? padding.left
+                    : design.spacing.md,
                 design.spacing.md,
-                padding.right > design.spacing.md ? padding.right : design.spacing.md,
+                padding.right > design.spacing.md
+                    ? padding.right
+                    : design.spacing.md,
                 bottomPadding,
               ),
               children: [
@@ -195,8 +199,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         child: Container(
           // Inner container for the interactive elements
           padding: EdgeInsets.only(
-            left: padding.left > design.spacing.md ? padding.left : design.spacing.md,
-            right: padding.right > design.spacing.md ? padding.right : design.spacing.md,
+            left: padding.left > design.spacing.md
+                ? padding.left
+                : design.spacing.md,
+            right: padding.right > design.spacing.md
+                ? padding.right
+                : design.spacing.md,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
