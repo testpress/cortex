@@ -15,4 +15,12 @@
 
 - [x] 3.1 Verify that the application builds and runs successfully.
 - [x] 3.2 Run unit tests in `packages/courses` and `packages/exams` to confirm provider behaviors.
-- [x] 3.3 Verify manual logout/login flows:
+- [x] 3.3 Verify manual logout/login flows.
+
+## Phase 4: Refine Lifecycles & Add Tests
+
+- [x] 4.1 Update metadata providers (`CourseSyncMetadata`, `ExamSyncMetadata`, `InfoSyncMetadata`) to `@Riverpod(keepAlive: true)`.
+- [x] 4.2 Replace 5-minute TTL checks with `lastSync != null` checks.
+- [x] 4.3 Add logout metadata reset unit tests in `packages/courses/test/providers/course_list_provider_test.dart`.
+- [x] 4.4 Run `build_runner` to update generated files.
+- [x] 4.5 Verify all unit tests pass.

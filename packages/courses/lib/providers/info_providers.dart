@@ -6,7 +6,7 @@ import 'course_list_provider.dart';
 
 part 'info_providers.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class InfoSyncMetadata extends _$InfoSyncMetadata {
   @override
   DateTime? build() {
@@ -39,8 +39,7 @@ class InfoList extends _$InfoList {
   /// Triggers an independent sync for the Info tab.
   Future<void> initialize() async {
     final lastSync = ref.read(infoSyncMetadataProvider);
-    if (lastSync != null && DateTime.now().difference(lastSync).inMinutes < 5)
-      return;
+    if (lastSync != null) return;
 
     if (_pendingSyncRequest != null) return _pendingSyncRequest;
 

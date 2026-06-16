@@ -337,12 +337,12 @@ final examAttemptProvider =
     );
 
 typedef _$ExamAttempt = AutoDisposeNotifier<ExamAttemptState>;
-String _$examSyncMetadataHash() => r'85aa00b3810b4426dc183275f5af085b326746b1';
+String _$examSyncMetadataHash() => r'fd00ee17ef2b17e986488a634e5b00d0d352b726';
 
 /// See also [ExamSyncMetadata].
 @ProviderFor(ExamSyncMetadata)
 final examSyncMetadataProvider =
-    AutoDisposeNotifierProvider<ExamSyncMetadata, DateTime?>.internal(
+    NotifierProvider<ExamSyncMetadata, DateTime?>.internal(
       ExamSyncMetadata.new,
       name: r'examSyncMetadataProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -352,8 +352,8 @@ final examSyncMetadataProvider =
       allTransitiveDependencies: null,
     );
 
-typedef _$ExamSyncMetadata = AutoDisposeNotifier<DateTime?>;
-String _$examListHash() => r'b82bc5ea7366762243e5df6d491e7ef23a68a4c9';
+typedef _$ExamSyncMetadata = Notifier<DateTime?>;
+String _$examListHash() => r'e64a5dcc1ed86a2cffd18e7a6431787a1f1230d3';
 
 /// Notifier that manages the exam-specific course list and its independent sync state.
 ///

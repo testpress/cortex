@@ -6,12 +6,12 @@ part of 'info_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$infoSyncMetadataHash() => r'53aca41c197f041e1b8e21d885fc9ac36d031e67';
+String _$infoSyncMetadataHash() => r'ef698891e009e2c904e5a94119b3ddaee4d9d8fb';
 
 /// See also [InfoSyncMetadata].
 @ProviderFor(InfoSyncMetadata)
 final infoSyncMetadataProvider =
-    AutoDisposeNotifierProvider<InfoSyncMetadata, DateTime?>.internal(
+    NotifierProvider<InfoSyncMetadata, DateTime?>.internal(
   InfoSyncMetadata.new,
   name: r'infoSyncMetadataProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -21,8 +21,8 @@ final infoSyncMetadataProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$InfoSyncMetadata = AutoDisposeNotifier<DateTime?>;
-String _$infoListHash() => r'2c512a7ddda227b53cb2a18f6863de28cc348417';
+typedef _$InfoSyncMetadata = Notifier<DateTime?>;
+String _$infoListHash() => r'e7527a6fbf22af080d07640b7bb4d89fb49494eb';
 
 /// Notifier that manages the info-specific course list and its independent sync state.
 /// This perfectly matches the pattern used in ExamList.

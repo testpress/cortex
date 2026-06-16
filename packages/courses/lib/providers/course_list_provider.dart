@@ -13,7 +13,7 @@ Future<CourseRepository> courseRepository(Ref ref) async {
   return CourseRepository(db, source);
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class CourseSyncMetadata extends _$CourseSyncMetadata {
   @override
   DateTime? build() {
@@ -61,8 +61,7 @@ class CourseList extends _$CourseList {
   /// Explicit initialization for browse mode
   Future<void> initialize() async {
     final lastSync = ref.read(courseSyncMetadataProvider);
-    if (lastSync != null && DateTime.now().difference(lastSync).inMinutes < 5)
-      return;
+    if (lastSync != null) return;
     if (_pendingSyncRequest != null) return _pendingSyncRequest;
 
     ref.read(isSyncingInitialPage.notifier).state = true;

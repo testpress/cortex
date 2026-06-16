@@ -1,13 +1,25 @@
 ## ADDED Requirements
 
 ### Requirement: Filtering Courses for Exams
-The system SHALL filter the list of courses specifically for the Exams tab based on backend tags and device permissions.
+The system SHALL filter the list of courses specifically for the Exams tab based on backend tags and device permissions, and SHALL trigger a fresh sync whenever a new authenticated session starts.
 
 #### Scenario: Displaying exam-tagged courses
 - **WHEN** the user navigates to the Exams tab
 - **THEN** the system retrieves courses from the local database
 - **AND** filters the list to include only courses that have the 'exams' tag
 - **AND** filters the list to include only courses where 'mobile' is listed in 'allowed_devices'
+
+#### Scenario: Exams sync triggered on session creation
+- **WHEN** a new authenticated session starts and the `ExamsScreen` mounts
+- **THEN** the newly instantiated `ExamList` notifier's `initialize()` method SHALL be called
+- **AND** since `examSyncMetadataProvider` is reset to `null` for the new session, a real network sync for exam-tagged courses SHALL be triggered
+
+#### Scenario: Guard reset on logout
+- **WHEN** the user logs out
+- **THEN** the `ExamList` notifier instance SHALL be fully disposed
+- **AND** the `examSyncMetadataProvider` state SHALL be reset to `null`
+- **AND** on subsequent login, the new `ExamList` instance's pagination tracking and the sync metadata SHALL start completely clean
+- **AND** the subsequent navigate/sync sequence SHALL load fresh exam data
 
 ### Requirement: Exams Screen Layout
 The Exams tab SHALL provide a structured layout for browsing exam-related content.

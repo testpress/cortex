@@ -329,12 +329,12 @@ class _AllChaptersProviderElement
 }
 
 String _$courseSyncMetadataHash() =>
-    r'9812a3aba46141ad8c272aa29b8c581afd33a666';
+    r'45d16306bca7d4f92757cc662b154fdd4ec64ed2';
 
 /// See also [CourseSyncMetadata].
 @ProviderFor(CourseSyncMetadata)
 final courseSyncMetadataProvider =
-    AutoDisposeNotifierProvider<CourseSyncMetadata, DateTime?>.internal(
+    NotifierProvider<CourseSyncMetadata, DateTime?>.internal(
   CourseSyncMetadata.new,
   name: r'courseSyncMetadataProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -344,8 +344,8 @@ final courseSyncMetadataProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$CourseSyncMetadata = AutoDisposeNotifier<DateTime?>;
-String _$courseListHash() => r'346b3d2cc599808cd9e7bb53dddf679c2f029393';
+typedef _$CourseSyncMetadata = Notifier<DateTime?>;
+String _$courseListHash() => r'3ddff2462ed04e8ca9770b07ce1d6539bb0340d7';
 
 /// See also [CourseList].
 @ProviderFor(CourseList)

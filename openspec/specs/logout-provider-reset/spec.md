@@ -1,4 +1,8 @@
-## ADDED Requirements
+# Session-related autoDispose provider lifecycle
+
+Purpose: Specify the lifecycle behavior of list providers and sync metadata across sessions and logouts.
+
+## Requirements
 
 ### Requirement: Session-related autoDispose provider lifecycle
 
