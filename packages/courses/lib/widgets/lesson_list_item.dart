@@ -2,6 +2,7 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:flutter/widgets.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'lesson_status_badge.dart';
 
 /// A list item for a lesson or content type in the filtered view.
@@ -22,7 +23,6 @@ class LessonListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    const double iconSize = 40;
 
     // Exact colors from reference
     final typeTheme = switch (lesson.type) {
@@ -58,6 +58,7 @@ class LessonListItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: design.shadows.surfaceSoft,
       ),
+      clipBehavior: Clip.hardEdge,
       child: Skeletonizer(
         enabled: isSkeleton,
         ignoreContainers: true,
@@ -71,80 +72,83 @@ class LessonListItem extends StatelessWidget {
           child: AppFocusable(
             onTap: isSkeleton ? null : onTap,
             borderRadius: BorderRadius.circular(12),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: IntrinsicHeight(
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Skeleton.replace(
-                    width: iconSize,
-                    height: iconSize,
+                    width: 140,
+                    height: 80,
                     replacement: DecoratedBox(
                       decoration: BoxDecoration(
                         color: design.colors.skeleton,
-                        borderRadius: BorderRadius.circular(8),
                       ),
                     ),
                     child: Container(
-                      width: iconSize,
-                      height: iconSize,
+                      width: 140,
+                      height: 80,
                       decoration: BoxDecoration(
-                        color:
-                            lesson.image != null ? null : typeTheme.background,
-                        borderRadius: BorderRadius.circular(8),
+                        color: lesson.image?.isNotEmpty == true
+                            ? null
+                            : typeTheme.background,
                       ),
-                      child: Center(
-                        child: lesson.image != null
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.network(
-                                  lesson.image!,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      Icon(icon,
-                                          size: 20,
-                                          color: typeTheme.foreground),
-                                ),
-                              )
-                            : Icon(icon, size: 20, color: typeTheme.foreground),
-                      ),
+                      child: lesson.image?.isNotEmpty == true
+                          ? CachedNetworkImage(
+                              imageUrl: lesson.image!,
+                              width: 140,
+                              height: 80,
+                              memCacheWidth: 280,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Container(
+                                color: design.colors.skeleton,
+                              ),
+                              errorWidget: (context, url, error) => Center(
+                                child: Icon(icon,
+                                    size: 24, color: typeTheme.foreground),
+                              ),
+                            )
+                          : Center(
+                              child: Icon(icon,
+                                  size: 24, color: typeTheme.foreground),
+                            ),
                     ),
                   ),
-                  const SizedBox(width: 12),
-
-                  // Title and Metadata
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AppText.cardTitle(
-                          lesson.title,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 4),
-                        AppText.cardSubtitle(
-                          lesson.chapterTitle ?? '',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        if (!isSkeleton) ...[
-                          const SizedBox(height: 6),
-                          Row(
-                            children: [
-                              if (lesson.type != LessonType.liveStream)
-                                LessonStatusBadge(
-                                    status: lesson.progressStatus),
-                            ],
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 14),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          AppText.cardTitle(
+                            lesson.title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
+                          const SizedBox(height: 4),
+                          AppText.cardSubtitle(
+                            lesson.chapterTitle ?? '',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          if (!isSkeleton) ...[
+                            const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                if (lesson.type != LessonType.liveStream)
+                                  LessonStatusBadge(
+                                      status: lesson.progressStatus),
+                              ],
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
-
                   // Navigation Indicator
                   Padding(
-                    padding: const EdgeInsets.only(top: 8),
+                    padding: const EdgeInsets.only(top: 14, right: 16),
                     child: Icon(
                       LucideIcons.chevronRight,
                       color: design.colors.textSecondary.withValues(alpha: 0.5),

@@ -578,7 +578,9 @@ class LessonDto {
         }
         return null;
       }(),
-      image: json['icon'] as String? ?? json['image'] as String?,
+      image:
+          json['cover_image_medium'] as String? ??
+          json['cover_image'] as String?,
       isRunning:
           json['is_running'] as bool? ??
           [
