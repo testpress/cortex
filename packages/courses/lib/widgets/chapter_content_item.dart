@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../models/course_content.dart';
 
 /// Component to display individual lesson or assessment items in the chapter detail.
@@ -19,20 +20,21 @@ class ChapterContentItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    const double iconSize = 40;
-
-    // Get icon based on lesson type
     final icon = _getIconForType(lesson.type);
-
     final activeOnTap = isSkeleton ? null : onTap;
 
     return Padding(
-      padding: EdgeInsets.only(bottom: design.spacing.xs),
-      child: AppFocusable(
-        onTap: activeOnTap,
-        borderRadius: BorderRadius.circular(design.radius.md),
-        child: AppCard(
-          padding: EdgeInsets.all(design.spacing.md),
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Container(
+        decoration: BoxDecoration(
+          color: design.colors.card,
+          borderRadius: BorderRadius.circular(design.radius.md),
+          boxShadow: design.shadows.surfaceSoft,
+        ),
+        clipBehavior: Clip.hardEdge,
+        child: AppFocusable(
+          onTap: activeOnTap,
+          borderRadius: BorderRadius.circular(design.radius.md),
           child: Skeletonizer(
             enabled: isSkeleton,
             ignoreContainers: true,
@@ -40,76 +42,90 @@ class ChapterContentItem extends StatelessWidget {
               baseColor: design.colors.skeleton,
               highlightColor: design.colors.onSkeleton,
             ),
-            child: Row(
-              children: [
-                Skeleton.replace(
-                  width: iconSize,
-                  height: iconSize,
-                  replacement: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: design.colors.skeleton,
-                      borderRadius: BorderRadius.circular(design.radius.md),
+            child: IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Skeleton.replace(
+                    width: 140,
+                    height: 80,
+                    replacement: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: design.colors.skeleton,
+                      ),
                     ),
-                  ),
-                  child: Container(
-                    width: iconSize,
-                    height: iconSize,
-                    decoration: BoxDecoration(
-                      color: lesson.image != null
-                          ? null
-                          : _getColorForType(
-                              context,
-                              lesson.type,
-                            ).withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(design.radius.md),
-                    ),
-                    child: Center(
+                    child: Container(
+                      width: 140,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: lesson.image != null
+                            ? null
+                            : _getColorForType(context, lesson.type)
+                                .withValues(alpha: 0.1),
+                      ),
                       child: lesson.image != null
-                          ? ClipRRect(
-                              borderRadius:
-                                  BorderRadius.circular(design.radius.md),
-                              child: Image.network(
-                                lesson.image!,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    Icon(
+                          ? CachedNetworkImage(
+                              imageUrl: lesson.image!,
+                              width: 140,
+                              memCacheWidth: 280,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Container(
+                                color: design.colors.skeleton,
+                              ),
+                              errorWidget: (context, url, error) => Center(
+                                child: Icon(
                                   icon,
-                                  size: 20,
+                                  size: 24,
                                   color: _getColorForType(context, lesson.type),
                                 ),
                               ),
                             )
-                          : Icon(
-                              icon,
-                              size: 20,
-                              color: _getColorForType(context, lesson.type),
+                          : Center(
+                              child: Icon(
+                                icon,
+                                size: 24,
+                                color: _getColorForType(context, lesson.type),
+                              ),
                             ),
                     ),
                   ),
-                ),
-                SizedBox(width: design.spacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AppText.cardTitle(
-                        lesson.title,
-                        color: design.colors.textPrimary,
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 14),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          AppText.cardTitle(
+                            lesson.title,
+                            color: design.colors.textPrimary,
+                          ),
+                          const SizedBox(height: 2),
+                          AppText.cardSubtitle(
+                            _buildSubtitle(context),
+                            color: design.colors.textSecondary,
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 2),
-                      AppText.cardSubtitle(
-                        _buildSubtitle(context),
-                        color: design.colors.textSecondary,
+                    ),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 16),
+                        child: Icon(
+                          LucideIcons.chevronRight,
+                          size: 20,
+                          color: design.colors.textSecondary
+                              .withValues(alpha: 0.5),
+                        ),
                       ),
                     ],
                   ),
-                ),
-                Icon(
-                  LucideIcons.chevronRight,
-                  size: 20,
-                  color: design.colors.textSecondary.withValues(alpha: 0.5),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
