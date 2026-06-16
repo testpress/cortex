@@ -41,7 +41,7 @@ class ApiEndpoints {
   static const String recentlyCompleted = '/api/v2.4/completed/';
 
   // Exams
-  static const String overallSubjectAnalytics =
+  static const String subjectReports =
       '/api/v3/analytics/overall-subject-analytics/';
   static String examDetail(String slug) => '/api/v2.2.1/exams/$slug/';
   static String contentAttemptEnd(String id) =>

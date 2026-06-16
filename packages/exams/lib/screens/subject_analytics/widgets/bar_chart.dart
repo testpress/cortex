@@ -74,19 +74,19 @@ class BarRow extends StatelessWidget {
         activeFilter == 'All' || activeFilter == 'Unanswered';
 
     final Color correctColor = isSkeleton
-        ? design.colors.surfaceVariant
+        ? design.colors.skeleton
         : (isCorrectActive
               ? design.correctColor
               : design.colors.surfaceVariant);
 
     final Color incorrectColor = isSkeleton
-        ? design.colors.surfaceVariant
+        ? design.colors.skeleton
         : (isIncorrectActive
               ? design.incorrectColor
               : design.colors.surfaceVariant);
 
     final Color unansweredColor = isSkeleton
-        ? design.colors.surfaceVariant
+        ? design.colors.skeleton
         : (isUnansweredActive
               ? design.unansweredColor
               : design.colors.surfaceVariant);
@@ -98,9 +98,7 @@ class BarRow extends StatelessWidget {
       _ => (0.0, design.colors.transparent),
     };
 
-    final activeColor = isSkeleton
-        ? design.colors.surfaceVariant
-        : baseActiveColor;
+    final activeColor = isSkeleton ? design.colors.skeleton : baseActiveColor;
 
     final activeBgColor = activeColor == design.colors.transparent
         ? design.colors.transparent
@@ -131,7 +129,7 @@ class BarRow extends StatelessWidget {
                       height: 12,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: design.colors.surfaceVariant,
+                        color: design.colors.skeleton,
                         borderRadius: BorderRadius.circular(design.radius.sm),
                       ),
                     )
@@ -149,7 +147,9 @@ class BarRow extends StatelessWidget {
             child: Container(
               height: height ?? design.spacing.lg,
               decoration: BoxDecoration(
-                color: design.colors.surfaceVariant,
+                color: isSkeleton
+                    ? design.colors.skeleton
+                    : design.colors.surfaceVariant,
                 borderRadius: BorderRadius.circular(design.radius.sm),
               ),
               clipBehavior: Clip.antiAlias,

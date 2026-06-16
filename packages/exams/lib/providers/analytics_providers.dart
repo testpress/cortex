@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
 import '../repositories/subject_analytics_repository.dart';
+import 'subject_analytics_pagination_state.dart';
 
 part 'analytics_providers.g.dart';
 
@@ -27,97 +29,88 @@ Stream<SubjectAnalyticsDto?> subjectAnalyticsById(Ref ref, int id) async* {
   yield* repository.watchSubjectById(id);
 }
 
-class SubjectAnalyticsPaginationState {
-  final int currentPage;
-  final bool hasMorePages;
-  final bool isFetchingNextPage;
-  final bool isFetchingInitial;
-
-  SubjectAnalyticsPaginationState({
-    required this.currentPage,
-    required this.hasMorePages,
-    required this.isFetchingNextPage,
-    required this.isFetchingInitial,
-  });
-
-  SubjectAnalyticsPaginationState copyWith({
-    int? currentPage,
-    bool? hasMorePages,
-    bool? isFetchingNextPage,
-    bool? isFetchingInitial,
-  }) {
-    return SubjectAnalyticsPaginationState(
-      currentPage: currentPage ?? this.currentPage,
-      hasMorePages: hasMorePages ?? this.hasMorePages,
-      isFetchingNextPage: isFetchingNextPage ?? this.isFetchingNextPage,
-      isFetchingInitial: isFetchingInitial ?? this.isFetchingInitial,
-    );
-  }
-}
-
 @Riverpod(keepAlive: true)
 class SubjectAnalyticsPagination extends _$SubjectAnalyticsPagination {
-  int? _parentId;
+  SubjectAnalyticsPaginationState _paginationState =
+      SubjectAnalyticsPaginationState(
+        currentPage: 1,
+        hasMorePages: true,
+        isFetchingNextPage: false,
+        isFetchingInitial: true,
+      );
+  final _paginationService = const PaginationService();
+  Future<List<SubjectAnalyticsDto>>? _initialFetch;
 
   @override
   SubjectAnalyticsPaginationState build(int? parentId) {
-    _parentId = parentId;
-    Future.microtask(() => fetchInitial());
+    // Rebuild the pagination state if the logged-in user changes (e.g. logout)
+    ref.watch(userIdProvider);
 
-    return SubjectAnalyticsPaginationState(
+    _paginationState = SubjectAnalyticsPaginationState(
       currentPage: 1,
       hasMorePages: true,
       isFetchingNextPage: false,
       isFetchingInitial: true,
     );
+
+    Future.microtask(() => fetchInitial());
+
+    return _paginationState;
   }
 
   Future<void> fetchInitial() async {
+    _paginationState = _paginationState.copyWith(isFetchingInitial: true);
+    state = _paginationState;
+
+    _initialFetch = _fetchPage(1, clearCache: true);
+    await _initialFetch;
+
+    _paginationState = _paginationState.copyWith(isFetchingInitial: false);
+    state = _paginationState;
+  }
+
+  Future<List<SubjectAnalyticsDto>> _fetchPage(
+    int page, {
+    bool clearCache = false,
+  }) async {
     final repository = await ref.read(
       subjectAnalyticsRepositoryProvider.future,
     );
-    try {
-      final response = await repository.fetchSubjectAnalyticsPage(
-        page: 1,
-        parentId: _parentId,
-      );
-      state = state.copyWith(
-        currentPage: 1,
-        hasMorePages: response.next != null,
-        isFetchingInitial: false,
-      );
-    } catch (e) {
-      // Ignored intentionally for offline fallback
-      state = state.copyWith(isFetchingInitial: false);
-    }
+    final response = await repository.fetchSubjectAnalyticsPage(
+      page: page,
+      parentId: parentId,
+    );
+
+    final serviceState = _paginationService.calculateNextState(
+      response: response,
+      currentPage: page,
+    );
+
+    _paginationState = _paginationState.copyWith(
+      currentPage: serviceState.nextPage,
+      hasMorePages: serviceState.hasMore,
+    );
+    state = _paginationState;
+
+    return response.results;
   }
 
   Future<void> fetchNextPage() async {
-    if (!state.hasMorePages ||
-        state.isFetchingNextPage ||
-        state.isFetchingInitial) {
-      return;
-    }
+    await _initialFetch;
 
-    state = state.copyWith(isFetchingNextPage: true);
+    if (!_paginationState.hasMorePages) return;
+    if (_paginationState.isFetchingNextPage) return;
+
+    _paginationState = _paginationState.copyWith(isFetchingNextPage: true);
+    state = _paginationState;
 
     try {
-      final nextPage = state.currentPage + 1;
-      final repository = await ref.read(
-        subjectAnalyticsRepositoryProvider.future,
-      );
-      final response = await repository.fetchSubjectAnalyticsPage(
-        page: nextPage,
-        parentId: _parentId,
-      );
-
-      state = state.copyWith(
-        currentPage: nextPage,
-        hasMorePages: response.next != null,
-        isFetchingNextPage: false,
-      );
-    } catch (e) {
-      state = state.copyWith(isFetchingNextPage: false);
+      await _fetchPage(_paginationState.currentPage);
+    } catch (e, stack) {
+      Error.throwWithStackTrace(e, stack);
+    } finally {
+      _paginationState = _paginationState.copyWith(isFetchingNextPage: false);
+      state = _paginationState;
     }
   }
 }

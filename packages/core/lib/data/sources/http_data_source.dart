@@ -1300,37 +1300,9 @@ class HttpDataSource implements DataSource {
     if (parentId != null) queryParams['parent'] = parentId;
 
     return performNetworkRequest(
-      _dio.get(
-        ApiEndpoints.overallSubjectAnalytics,
-        queryParameters: queryParams,
-      ),
-      fromJson: (data) {
-        final results = data['results'] as Map<String, dynamic>? ?? {};
-        final subjectsData = results['subjects'] as List<dynamic>? ?? [];
-        final statsData = results['subject_stats'] as List<dynamic>? ?? [];
-
-        final statsMap = {
-          for (final stat in statsData)
-            if (stat['subject_id'] != null) stat['subject_id'].toString(): stat,
-        };
-
-        final mergedList = <SubjectAnalyticsDto>[];
-        for (final subject in subjectsData) {
-          final id = subject['id']?.toString();
-          if (id != null) {
-            final stat = statsMap[id] as Map<String, dynamic>? ?? {};
-            final mergedJson = {...subject as Map<String, dynamic>, ...stat};
-            mergedList.add(SubjectAnalyticsDto.fromJson(mergedJson));
-          }
-        }
-
-        return PaginatedResponseDto<SubjectAnalyticsDto>(
-          count: data['count'] as int? ?? mergedList.length,
-          next: data['next']?.toString(),
-          previous: data['previous']?.toString(),
-          results: mergedList,
-        );
-      },
+      _dio.get(ApiEndpoints.subjectReports, queryParameters: queryParams),
+      fromJson: (data) =>
+          SubjectAnalyticsDto.paginatedFromJson(data as Map<String, dynamic>),
     );
   }
 
