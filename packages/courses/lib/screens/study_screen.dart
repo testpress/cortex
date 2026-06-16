@@ -83,7 +83,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final padding = MediaQuery.of(context).padding;
+    final padding = MediaQuery.paddingOf(context);
 
     final enrolledCoursesState = ref.watch(courseListProvider);
     final isSyncingInitial = ref.watch(isSyncingInitialPage);
@@ -105,11 +105,11 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                 SliverToBoxAdapter(
                   child: Container(
                     color: design.colors.card,
-                    padding: EdgeInsets.only(
-                      top: padding.top + design.spacing.md,
-                      bottom: design.spacing.md,
-                      left: design.spacing.md,
-                      right: design.spacing.md,
+                    padding: EdgeInsets.fromLTRB(
+                      padding.left > design.spacing.md ? padding.left : design.spacing.md,
+                      padding.top + design.spacing.md,
+                      padding.right > design.spacing.md ? padding.right : design.spacing.md,
+                      design.spacing.md,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

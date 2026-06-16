@@ -62,14 +62,14 @@ class _CertificatesHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final topPadding = MediaQuery.of(context).padding.top;
+    final padding = MediaQuery.paddingOf(context);
 
     return Container(
-      padding: EdgeInsets.only(
-        top: topPadding + design.spacing.md,
-        bottom: design.spacing.md,
-        left: design.spacing.md,
-        right: design.spacing.md,
+      padding: EdgeInsets.fromLTRB(
+        padding.left > design.spacing.md ? padding.left : design.spacing.md,
+        padding.top + design.spacing.md,
+        padding.right > design.spacing.md ? padding.right : design.spacing.md,
+        design.spacing.md,
       ),
       decoration: _headerDecoration(design),
       child: Align(
