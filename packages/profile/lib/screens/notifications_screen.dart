@@ -149,7 +149,7 @@ class _NotificationsHeader extends StatelessWidget {
           right: design.spacing.md,
         ),
         decoration: BoxDecoration(
-          color: design.isDark ? design.colors.surface : design.colors.card,
+          color: design.colors.card,
           border: Border(bottom: BorderSide(color: design.colors.border)),
         ),
         child: Align(
@@ -171,11 +171,10 @@ class _NotificationsHeader extends StatelessWidget {
                       size: design.iconSize.md,
                       color: design.colors.textPrimary,
                     ),
-                    SizedBox(width: design.spacing.sm),
-                    AppText.subtitle(
+                    SizedBox(width: design.spacing.xs),
+                    AppText.label(
                       l10n.curriculumBackButton,
                       color: design.colors.textPrimary,
-                      style: const TextStyle(fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),

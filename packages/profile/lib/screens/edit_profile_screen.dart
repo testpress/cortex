@@ -207,6 +207,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     height: 40,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Icon(
                           LucideIcons.chevronLeft,

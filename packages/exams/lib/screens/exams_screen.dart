@@ -45,6 +45,7 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final padding = MediaQuery.of(context).padding;
 
     final examCoursesState = ref.watch(examListProvider);
     final isSyncing = ref.watch(isSyncingExamsProvider);
@@ -58,7 +59,12 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
           SliverToBoxAdapter(
             child: Container(
               color: design.colors.card,
-              padding: EdgeInsets.all(design.spacing.md),
+              padding: EdgeInsets.only(
+                top: padding.top + design.spacing.md,
+                bottom: design.spacing.md,
+                left: design.spacing.md,
+                right: design.spacing.md,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

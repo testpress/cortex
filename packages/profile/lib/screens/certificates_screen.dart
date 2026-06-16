@@ -80,7 +80,7 @@ class _CertificatesHeader extends StatelessWidget {
   }
 
   BoxDecoration _headerDecoration(DesignConfig design) => BoxDecoration(
-    color: design.isDark ? design.colors.surface : design.colors.card,
+    color: design.colors.card,
     border: Border(bottom: BorderSide(color: design.colors.border)),
   );
 }
@@ -112,11 +112,8 @@ class _BackButton extends StatelessWidget {
                 size: design.iconSize.md,
                 color: design.colors.textPrimary,
               ),
-              SizedBox(width: design.spacing.sm),
-              AppText.subtitle(
-                label,
-                style: const TextStyle(fontWeight: FontWeight.w500),
-              ),
+              SizedBox(width: design.spacing.xs),
+              AppText.label(label, color: design.colors.textPrimary),
             ],
           ),
         ),

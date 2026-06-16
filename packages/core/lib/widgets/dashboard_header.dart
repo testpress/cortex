@@ -34,9 +34,7 @@ class DashboardHeader extends StatelessWidget {
     final design = Design.of(context);
 
     final padding = MediaQuery.of(context).padding;
-    final effectiveBgColor =
-        backgroundColor ??
-        (design.isDark ? design.colors.surface : design.colors.card);
+    final effectiveBgColor = backgroundColor ?? design.colors.card;
 
     final topPadding =
         customTopPadding ??
