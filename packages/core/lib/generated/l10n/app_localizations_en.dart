@@ -1818,4 +1818,71 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get examModeQuizDesc => 'Check answers immediately as you go.';
+
+  @override
+  String get analyticsInvalidTopicId => 'Invalid Topic ID';
+
+  @override
+  String get analyticsTopicNotFound => 'Topic not found';
+
+  @override
+  String analyticsErrorLoadingTopic(String error) {
+    return 'Error loading topic analytics: $error';
+  }
+
+  @override
+  String get analyticsSubCategory => 'Sub Category';
+
+  @override
+  String get analyticsStrength => 'Strength';
+
+  @override
+  String get analyticsWeakness => 'Weakness';
+
+  @override
+  String get analyticsUnanswered => 'Unanswered';
+
+  @override
+  String get analyticsCorrect => 'Correct';
+
+  @override
+  String get analyticsIncorrect => 'Incorrect';
+
+  @override
+  String get analyticsAccuracy => 'Accuracy';
+
+  @override
+  String get analyticsNoSubjectsFound => 'No subjects found.';
+
+  @override
+  String get analyticsStrengthCorrect => 'Strength / Correct';
+
+  @override
+  String get analyticsWeaknessIncorrect => 'Weakness / Incorrect';
+
+  @override
+  String get analyticsSubjectUppercase => 'SUBJECT';
+
+  @override
+  String get analyticsCorrectUppercase => 'CORRECT';
+
+  @override
+  String get analyticsIncorrectUppercase => 'INCORRECT';
+
+  @override
+  String get analyticsUnansweredUppercase => 'UNANSWERED';
+
+  @override
+  String get analyticsFilterSubjects => 'Filter subjects';
+
+  @override
+  String get analyticsGraphReports => 'Graph Reports';
+
+  @override
+  String get analyticsTableReports => 'Table Reports';
+
+  @override
+  String analyticsSelectTab(String label) {
+    return 'Select $label tab';
+  }
 }

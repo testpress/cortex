@@ -1,5 +1,6 @@
 import 'question_dto.dart';
 import 'answer_dto.dart';
+import 'paginated_response_dto.dart';
 
 class SubjectAnalyticsDto {
   final int id;
@@ -31,13 +32,25 @@ class SubjectAnalyticsDto {
       ? 0.0
       : (unansweredCount / totalQuestionCount * 100);
 
+  double get accuracy {
+    final totalAnswered = correctAnswerCount + incorrectAnswerCount;
+    if (totalAnswered == 0) return 0.0;
+    return (correctAnswerCount / totalAnswered) * 100;
+  }
+
   factory SubjectAnalyticsDto.fromJson(Map<String, dynamic> json) {
-    final int totalQuestionCount = json['total'] as int? ?? 0;
-    final int correctAnswerCount = json['correct'] as int? ?? 0;
-    final int incorrectAnswerCount = json['incorrect'] as int? ?? 0;
+    final int totalQuestionCount =
+        json['total'] as int? ?? json['total_count'] as int? ?? 0;
+    final int correctAnswerCount =
+        json['correct'] as int? ?? json['correct_answers_count'] as int? ?? 0;
+    final int incorrectAnswerCount =
+        json['incorrect'] as int? ??
+        json['incorrect_answers_count'] as int? ??
+        0;
     // API doesn't always return correct_percentage — derive it when absent
     final double correctPct =
         (json['correct_percentage'] as num?)?.toDouble() ??
+        (json['percentage'] as num?)?.toDouble() ??
         (totalQuestionCount > 0
             ? (correctAnswerCount / totalQuestionCount * 100)
             : 0.0);
@@ -47,7 +60,8 @@ class SubjectAnalyticsDto {
       totalQuestionCount: totalQuestionCount,
       correctAnswerCount: correctAnswerCount,
       incorrectAnswerCount: incorrectAnswerCount,
-      unansweredCount: json['unanswered'] as int? ?? 0,
+      unansweredCount:
+          json['unanswered'] as int? ?? json['unanswered_count'] as int? ?? 0,
       correctPercentage: correctPct,
       parentId: json['parent'] as int? ?? json['parent_id'] as int?,
       isLeaf: json['leaf'] as bool? ?? true,
@@ -66,6 +80,36 @@ class SubjectAnalyticsDto {
       'parent': parentId,
       'leaf': isLeaf,
     };
+  }
+
+  static PaginatedResponseDto<SubjectAnalyticsDto> paginatedFromJson(
+    Map<String, dynamic> data,
+  ) {
+    final results = data['results'] as Map<String, dynamic>? ?? {};
+    final subjectsData = results['subjects'] as List<dynamic>? ?? [];
+    final statsData = results['subject_stats'] as List<dynamic>? ?? [];
+
+    final statsMap = {
+      for (final stat in statsData)
+        if (stat['subject_id'] != null) stat['subject_id'].toString(): stat,
+    };
+
+    final mergedList = <SubjectAnalyticsDto>[];
+    for (final subject in subjectsData) {
+      final id = subject['id']?.toString();
+      if (id != null) {
+        final stat = statsMap[id] as Map<String, dynamic>? ?? {};
+        final mergedJson = {...subject as Map<String, dynamic>, ...stat};
+        mergedList.add(SubjectAnalyticsDto.fromJson(mergedJson));
+      }
+    }
+
+    return PaginatedResponseDto<SubjectAnalyticsDto>(
+      count: data['count'] as int? ?? mergedList.length,
+      next: data['next']?.toString(),
+      previous: data['previous']?.toString(),
+      results: mergedList,
+    );
   }
 }
 

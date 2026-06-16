@@ -85,7 +85,7 @@ class _SectionTableState extends State<SectionTable> {
                                 '${section.correct}',
                                 '${section.incorrect}',
                                 '${section.unanswered}',
-                                '${section.accuracy.toStringAsFixed(1)}%',
+                                '${section.accuracy.toStringAsFixed(2)}%',
                               ],
                             ),
                           _TableRow(
@@ -96,7 +96,7 @@ class _SectionTableState extends State<SectionTable> {
                               '${widget.overall.correct}',
                               '${widget.overall.incorrect}',
                               '${widget.overall.unanswered}',
-                              '${widget.overall.accuracy.toStringAsFixed(1)}%',
+                              '${widget.overall.accuracy.toStringAsFixed(2)}%',
                             ],
                           ),
                         ],

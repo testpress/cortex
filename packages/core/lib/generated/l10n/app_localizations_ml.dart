@@ -1859,4 +1859,71 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get examModeQuizDesc => 'Check answers immediately as you go.';
+
+  @override
+  String get analyticsInvalidTopicId => 'അസാധുവായ വിഷയം ഐഡി';
+
+  @override
+  String get analyticsTopicNotFound => 'വിഷയം കണ്ടെത്തിയില്ല';
+
+  @override
+  String analyticsErrorLoadingTopic(String error) {
+    return 'വിഷയ അനലിറ്റിക്സ് ലോഡുചെയ്യുന്നതിൽ പിശക്: $error';
+  }
+
+  @override
+  String get analyticsSubCategory => 'ഉപവിഭാഗം';
+
+  @override
+  String get analyticsStrength => 'കരുത്ത്';
+
+  @override
+  String get analyticsWeakness => 'ബലഹീനത';
+
+  @override
+  String get analyticsUnanswered => 'ഉത്തരം നൽകാത്തവ';
+
+  @override
+  String get analyticsCorrect => 'ശരി';
+
+  @override
+  String get analyticsIncorrect => 'തെറ്റ്';
+
+  @override
+  String get analyticsAccuracy => 'കൃത്യത';
+
+  @override
+  String get analyticsNoSubjectsFound => 'വിഷയങ്ങളൊന്നും കണ്ടെത്തിയില്ല.';
+
+  @override
+  String get analyticsStrengthCorrect => 'കരുത്ത് / ശരി';
+
+  @override
+  String get analyticsWeaknessIncorrect => 'ബലഹീനത / തെറ്റ്';
+
+  @override
+  String get analyticsSubjectUppercase => 'വിഷയം';
+
+  @override
+  String get analyticsCorrectUppercase => 'ശരി';
+
+  @override
+  String get analyticsIncorrectUppercase => 'തെറ്റ്';
+
+  @override
+  String get analyticsUnansweredUppercase => 'ഉത്തരം നൽകാത്തവ';
+
+  @override
+  String get analyticsFilterSubjects => 'വിഷയങ്ങൾ ഫിൽട്ടർ ചെയ്യുക';
+
+  @override
+  String get analyticsGraphReports => 'ഗ്രാഫ് റിപ്പോർട്ടുകൾ';
+
+  @override
+  String get analyticsTableReports => 'ടേബിൾ റിപ്പോർട്ടുകൾ';
+
+  @override
+  String analyticsSelectTab(String label) {
+    return '$label ടാബ് തിരഞ്ഞെടുക്കുക';
+  }
 }

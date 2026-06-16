@@ -26,7 +26,7 @@ final subjectAnalyticsRepositoryProvider =
 // ignore: unused_element
 typedef SubjectAnalyticsRepositoryRef =
     FutureProviderRef<SubjectAnalyticsRepository>;
-String _$subjectAnalyticsHash() => r'77a1ba598d83955a7895d6858176d6741b92b9dd';
+String _$subjectAnalyticsHash() => r'3f364d611df75ae63e558185c339e9dc6d3bf049';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -294,6 +294,161 @@ class _SubjectAnalyticsByIdProviderElement
 
   @override
   int get id => (origin as SubjectAnalyticsByIdProvider).id;
+}
+
+String _$subjectAnalyticsPaginationHash() =>
+    r'24223033b426e07d875d1d5cdc95cc530232b0a0';
+
+abstract class _$SubjectAnalyticsPagination
+    extends
+        BuildlessAutoDisposeAsyncNotifier<
+          ({bool hasMore, bool isLoadingMore})
+        > {
+  late final int? parentId;
+
+  FutureOr<({bool hasMore, bool isLoadingMore})> build(int? parentId);
+}
+
+/// See also [SubjectAnalyticsPagination].
+@ProviderFor(SubjectAnalyticsPagination)
+const subjectAnalyticsPaginationProvider = SubjectAnalyticsPaginationFamily();
+
+/// See also [SubjectAnalyticsPagination].
+class SubjectAnalyticsPaginationFamily
+    extends Family<AsyncValue<({bool hasMore, bool isLoadingMore})>> {
+  /// See also [SubjectAnalyticsPagination].
+  const SubjectAnalyticsPaginationFamily();
+
+  /// See also [SubjectAnalyticsPagination].
+  SubjectAnalyticsPaginationProvider call(int? parentId) {
+    return SubjectAnalyticsPaginationProvider(parentId);
+  }
+
+  @override
+  SubjectAnalyticsPaginationProvider getProviderOverride(
+    covariant SubjectAnalyticsPaginationProvider provider,
+  ) {
+    return call(provider.parentId);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'subjectAnalyticsPaginationProvider';
+}
+
+/// See also [SubjectAnalyticsPagination].
+class SubjectAnalyticsPaginationProvider
+    extends
+        AutoDisposeAsyncNotifierProviderImpl<
+          SubjectAnalyticsPagination,
+          ({bool hasMore, bool isLoadingMore})
+        > {
+  /// See also [SubjectAnalyticsPagination].
+  SubjectAnalyticsPaginationProvider(int? parentId)
+    : this._internal(
+        () => SubjectAnalyticsPagination()..parentId = parentId,
+        from: subjectAnalyticsPaginationProvider,
+        name: r'subjectAnalyticsPaginationProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$subjectAnalyticsPaginationHash,
+        dependencies: SubjectAnalyticsPaginationFamily._dependencies,
+        allTransitiveDependencies:
+            SubjectAnalyticsPaginationFamily._allTransitiveDependencies,
+        parentId: parentId,
+      );
+
+  SubjectAnalyticsPaginationProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.parentId,
+  }) : super.internal();
+
+  final int? parentId;
+
+  @override
+  FutureOr<({bool hasMore, bool isLoadingMore})> runNotifierBuild(
+    covariant SubjectAnalyticsPagination notifier,
+  ) {
+    return notifier.build(parentId);
+  }
+
+  @override
+  Override overrideWith(SubjectAnalyticsPagination Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: SubjectAnalyticsPaginationProvider._internal(
+        () => create()..parentId = parentId,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        parentId: parentId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeAsyncNotifierProviderElement<
+    SubjectAnalyticsPagination,
+    ({bool hasMore, bool isLoadingMore})
+  >
+  createElement() {
+    return _SubjectAnalyticsPaginationProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is SubjectAnalyticsPaginationProvider &&
+        other.parentId == parentId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, parentId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin SubjectAnalyticsPaginationRef
+    on
+        AutoDisposeAsyncNotifierProviderRef<
+          ({bool hasMore, bool isLoadingMore})
+        > {
+  /// The parameter `parentId` of this provider.
+  int? get parentId;
+}
+
+class _SubjectAnalyticsPaginationProviderElement
+    extends
+        AutoDisposeAsyncNotifierProviderElement<
+          SubjectAnalyticsPagination,
+          ({bool hasMore, bool isLoadingMore})
+        >
+    with SubjectAnalyticsPaginationRef {
+  _SubjectAnalyticsPaginationProviderElement(super.provider);
+
+  @override
+  int? get parentId => (origin as SubjectAnalyticsPaginationProvider).parentId;
 }
 
 // ignore_for_file: type=lint

@@ -1850,4 +1850,71 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get examModeQuizDesc =>
       'ஒவ்வொரு கேள்விக்கும் உடனுக்குடன் பதில்களைச் சரிபார்க்கவும்.';
+
+  @override
+  String get analyticsInvalidTopicId => 'தவறான தலைப்பு ஐடி';
+
+  @override
+  String get analyticsTopicNotFound => 'தலைப்பு கிடைக்கவில்லை';
+
+  @override
+  String analyticsErrorLoadingTopic(String error) {
+    return 'தலைப்பு பகுப்பாய்வை ஏற்றுவதில் பிழை: $error';
+  }
+
+  @override
+  String get analyticsSubCategory => 'துணை வகை';
+
+  @override
+  String get analyticsStrength => 'பலம்';
+
+  @override
+  String get analyticsWeakness => 'பலவீனம்';
+
+  @override
+  String get analyticsUnanswered => 'பதிலளிக்கப்படாதவை';
+
+  @override
+  String get analyticsCorrect => 'சரியானது';
+
+  @override
+  String get analyticsIncorrect => 'தவறானது';
+
+  @override
+  String get analyticsAccuracy => 'துல்லியம்';
+
+  @override
+  String get analyticsNoSubjectsFound => 'பாடங்கள் எதுவும் கிடைக்கவில்லை.';
+
+  @override
+  String get analyticsStrengthCorrect => 'பலம் / சரியானது';
+
+  @override
+  String get analyticsWeaknessIncorrect => 'பலவீனம் / தவறானது';
+
+  @override
+  String get analyticsSubjectUppercase => 'பாடம்';
+
+  @override
+  String get analyticsCorrectUppercase => 'சரியானது';
+
+  @override
+  String get analyticsIncorrectUppercase => 'தவறானது';
+
+  @override
+  String get analyticsUnansweredUppercase => 'பதிலளிக்கப்படாதவை';
+
+  @override
+  String get analyticsFilterSubjects => 'பாடங்களை வடிகட்டு';
+
+  @override
+  String get analyticsGraphReports => 'வரைபட அறிக்கைகள்';
+
+  @override
+  String get analyticsTableReports => 'அட்டவணை அறிக்கைகள்';
+
+  @override
+  String analyticsSelectTab(String label) {
+    return '$label தாவலைத் தேர்ந்தெடு';
+  }
 }

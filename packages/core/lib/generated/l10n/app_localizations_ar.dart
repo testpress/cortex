@@ -1827,4 +1827,71 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get examModeQuizDesc => 'Check answers immediately as you go.';
+
+  @override
+  String get analyticsInvalidTopicId => 'معرف الموضوع غير صالح';
+
+  @override
+  String get analyticsTopicNotFound => 'الموضوع غير موجود';
+
+  @override
+  String analyticsErrorLoadingTopic(String error) {
+    return 'خطأ في تحميل تحليلات الموضوع: $error';
+  }
+
+  @override
+  String get analyticsSubCategory => 'فئة فرعية';
+
+  @override
+  String get analyticsStrength => 'نقاط القوة';
+
+  @override
+  String get analyticsWeakness => 'نقاط الضعف';
+
+  @override
+  String get analyticsUnanswered => 'لم يتم الرد عليها';
+
+  @override
+  String get analyticsCorrect => 'صحيح';
+
+  @override
+  String get analyticsIncorrect => 'غير صحيح';
+
+  @override
+  String get analyticsAccuracy => 'الدقة';
+
+  @override
+  String get analyticsNoSubjectsFound => 'لم يتم العثور على أي مواد.';
+
+  @override
+  String get analyticsStrengthCorrect => 'نقاط القوة / صحيح';
+
+  @override
+  String get analyticsWeaknessIncorrect => 'نقاط الضعف / غير صحيح';
+
+  @override
+  String get analyticsSubjectUppercase => 'المادة';
+
+  @override
+  String get analyticsCorrectUppercase => 'صحيح';
+
+  @override
+  String get analyticsIncorrectUppercase => 'غير صحيح';
+
+  @override
+  String get analyticsUnansweredUppercase => 'لم يتم الرد عليها';
+
+  @override
+  String get analyticsFilterSubjects => 'تصفية المواد';
+
+  @override
+  String get analyticsGraphReports => 'تقارير بيانية';
+
+  @override
+  String get analyticsTableReports => 'تقارير جدولية';
+
+  @override
+  String analyticsSelectTab(String label) {
+    return 'تحديد علامة التبويب $label';
+  }
 }

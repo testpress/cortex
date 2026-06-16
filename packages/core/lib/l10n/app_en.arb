@@ -872,5 +872,40 @@
   "examModeRegularTitle": "Regular Mode",
   "examModeRegularDesc": "Take the test in standard exam mode with a timer.",
   "examModeQuizTitle": "Quiz Mode",
-  "examModeQuizDesc": "Check answers immediately as you go."
+  "examModeQuizDesc": "Check answers immediately as you go.",
+  "analyticsInvalidTopicId": "Invalid Topic ID",
+  "analyticsTopicNotFound": "Topic not found",
+  "analyticsErrorLoadingTopic": "Error loading topic analytics: {error}",
+  "analyticsSubCategory": "Sub Category",
+  "analyticsStrength": "Strength",
+  "analyticsWeakness": "Weakness",
+  "analyticsUnanswered": "Unanswered",
+  "analyticsCorrect": "Correct",
+  "analyticsIncorrect": "Incorrect",
+  "analyticsAccuracy": "Accuracy",
+  "analyticsNoSubjectsFound": "No subjects found.",
+  "analyticsStrengthCorrect": "Strength / Correct",
+  "analyticsWeaknessIncorrect": "Weakness / Incorrect",
+  "analyticsSubjectUppercase": "SUBJECT",
+  "analyticsCorrectUppercase": "CORRECT",
+  "analyticsIncorrectUppercase": "INCORRECT",
+  "analyticsUnansweredUppercase": "UNANSWERED",
+  "analyticsFilterSubjects": "Filter subjects",
+  "analyticsGraphReports": "Graph Reports",
+  "analyticsTableReports": "Table Reports",
+  "analyticsSelectTab": "Select {label} tab",
+  "@analyticsErrorLoadingTopic": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@analyticsSelectTab": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  }
 }

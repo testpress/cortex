@@ -1292,8 +1292,18 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<List<SubjectAnalyticsDto>> getAnalyticsData() async {
-    return mockSubjectAnalytics;
+  Future<PaginatedResponseDto<SubjectAnalyticsDto>> getAnalyticsData({
+    int page = 1,
+    int? parentId,
+  }) async {
+    final queryParams = <String, dynamic>{'page': page};
+    if (parentId != null) queryParams['parent'] = parentId;
+
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.subjectReports, queryParameters: queryParams),
+      fromJson: (data) =>
+          SubjectAnalyticsDto.paginatedFromJson(data as Map<String, dynamic>),
+    );
   }
 
   @override
