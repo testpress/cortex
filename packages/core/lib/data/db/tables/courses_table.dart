@@ -8,7 +8,7 @@ class CoursesTable extends Table {
   IntColumn get chapterCount => integer()();
   TextColumn get totalDuration => text().nullable()();
   IntColumn get totalContents => integer().withDefault(const Constant(0))();
-  IntColumn get progress => integer().withDefault(const Constant(0))();
+  RealColumn get progress => real().withDefault(const Constant(0.0))();
   IntColumn get completedLessons => integer().withDefault(const Constant(0))();
   IntColumn get totalLessons => integer()();
   TextColumn get image => text().nullable()();

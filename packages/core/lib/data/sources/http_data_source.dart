@@ -28,13 +28,10 @@ class HttpDataSource implements DataSource {
           'page': page,
           'page_size': pageSize,
           if (search != null && search.isNotEmpty) 'q': search,
-          'tags': ?tags,
+          'tags': tags,
         },
       ),
-      fromJson: (json) => PaginatedResponseDto<CourseDto>.fromJson(
-        json,
-        (item) => CourseDto.fromJson(item),
-      ),
+      fromJson: CourseDto.fromListResponse,
     );
   }
 

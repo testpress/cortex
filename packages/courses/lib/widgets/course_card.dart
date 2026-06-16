@@ -95,7 +95,7 @@ class CourseCard extends StatelessWidget {
                     label: L10n.of(context).labelLessonsPlural,
                   ),
                   _ProgressStat(
-                    value: '${course.progress}%',
+                    value: course.formattedProgress,
                     label: L10n.of(context).labelCompleted,
                   ),
                 ],
@@ -103,7 +103,7 @@ class CourseCard extends StatelessWidget {
               SizedBox(height: design.spacing.sm),
               Semantics(
                 label: 'Course progress',
-                value: '${course.progress}%',
+                value: course.formattedProgress,
                 child: _ProgressBar(
                   progress: course.progress / 100.0,
                   color: design.colors.success,

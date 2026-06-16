@@ -1,4 +1,5 @@
 import 'chapter_dto.dart';
+import 'paginated_response_dto.dart';
 
 /// Course DTO — plain Dart object transferred from DataSource to Drift and back to UI.
 ///
@@ -17,7 +18,7 @@ class CourseDto {
   @Deprecated('Use totalContents instead')
   final String? totalDuration;
   final int totalContents;
-  final int progress; // 0–100
+  final double progress; // 0.0–100.0
   final int completedLessons;
   final int totalLessons;
   final String? image;
@@ -48,6 +49,13 @@ class CourseDto {
 
   final bool isChaptersSynced;
 
+  String get formattedProgress {
+    if (progress == progress.toInt()) {
+      return '${progress.toInt()}%';
+    }
+    return '${progress.toStringAsFixed(2)}%';
+  }
+
   CourseDto copyWith({
     String? id,
     String? title,
@@ -55,7 +63,7 @@ class CourseDto {
     int? chapterCount,
     String? totalDuration,
     int? totalContents,
-    int? progress,
+    double? progress,
     int? completedLessons,
     int? totalLessons,
     String? image,
@@ -94,7 +102,7 @@ class CourseDto {
       chapterCount: json['chapters_count'] as int? ?? 0,
       totalDuration: json['total_duration'] as String?,
       totalContents: json['contents_count'] as int? ?? 0,
-      progress: json['progress'] as int? ?? 0,
+      progress: (json['progress'] as num? ?? 0.0).toDouble(),
       completedLessons: json['completed_lessons_count'] as int? ?? 0,
       totalLessons: json['contents_count'] as int? ?? 0,
       image: json['image'] as String?,
@@ -110,6 +118,44 @@ class CourseDto {
           const [],
     );
     return dto;
+  }
+
+  static PaginatedResponseDto<CourseDto> fromListResponse(
+    Map<String, dynamic> json,
+  ) {
+    final response = PaginatedResponseDto<CourseDto>.fromJson(
+      json,
+      (item) => CourseDto.fromJson(item),
+    );
+
+    final credits = response.userCourseCredits;
+    if (credits == null || credits.isEmpty) return response;
+
+    final creditsMap = <String, Map<String, dynamic>>{
+      for (final credit in credits.whereType<Map<String, dynamic>>())
+        if (credit['course_id'] != null) credit['course_id'].toString(): credit,
+    };
+
+    final enrichedResults = response.results.map((dto) {
+      final credit = creditsMap[dto.id];
+      if (credit == null) return dto;
+      return dto.copyWith(
+        progress:
+            (credit['course_completion_percentage'] as num? ?? dto.progress)
+                .toDouble(),
+        completedLessons:
+            (credit['total_unique_attempts'] as num? ?? dto.completedLessons)
+                .toInt(),
+      );
+    }).toList();
+
+    return PaginatedResponseDto<CourseDto>(
+      results: enrichedResults,
+      next: response.next,
+      previous: response.previous,
+      count: response.count,
+      userCourseCredits: response.userCourseCredits,
+    );
   }
 
   static List<String> _parseList(dynamic value) {

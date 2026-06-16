@@ -76,13 +76,13 @@ class $CoursesTableTable extends CoursesTable
     'progress',
   );
   @override
-  late final GeneratedColumn<int> progress = GeneratedColumn<int>(
+  late final GeneratedColumn<double> progress = GeneratedColumn<double>(
     'progress',
     aliasedName,
     false,
-    type: DriftSqlType.int,
+    type: DriftSqlType.double,
     requiredDuringInsert: false,
-    defaultValue: const Constant(0),
+    defaultValue: const Constant(0.0),
   );
   static const VerificationMeta _completedLessonsMeta = const VerificationMeta(
     'completedLessons',
@@ -357,7 +357,7 @@ class $CoursesTableTable extends CoursesTable
         data['${effectivePrefix}total_contents'],
       )!,
       progress: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
+        DriftSqlType.double,
         data['${effectivePrefix}progress'],
       )!,
       completedLessons: attachedDatabase.typeMapping.read(
@@ -409,7 +409,7 @@ class CoursesTableData extends DataClass
   final int chapterCount;
   final String? totalDuration;
   final int totalContents;
-  final int progress;
+  final double progress;
   final int completedLessons;
   final int totalLessons;
   final String? image;
@@ -446,7 +446,7 @@ class CoursesTableData extends DataClass
       map['total_duration'] = Variable<String>(totalDuration);
     }
     map['total_contents'] = Variable<int>(totalContents);
-    map['progress'] = Variable<int>(progress);
+    map['progress'] = Variable<double>(progress);
     map['completed_lessons'] = Variable<int>(completedLessons);
     map['total_lessons'] = Variable<int>(totalLessons);
     if (!nullToAbsent || image != null) {
@@ -502,7 +502,7 @@ class CoursesTableData extends DataClass
       chapterCount: serializer.fromJson<int>(json['chapterCount']),
       totalDuration: serializer.fromJson<String?>(json['totalDuration']),
       totalContents: serializer.fromJson<int>(json['totalContents']),
-      progress: serializer.fromJson<int>(json['progress']),
+      progress: serializer.fromJson<double>(json['progress']),
       completedLessons: serializer.fromJson<int>(json['completedLessons']),
       totalLessons: serializer.fromJson<int>(json['totalLessons']),
       image: serializer.fromJson<String?>(json['image']),
@@ -523,7 +523,7 @@ class CoursesTableData extends DataClass
       'chapterCount': serializer.toJson<int>(chapterCount),
       'totalDuration': serializer.toJson<String?>(totalDuration),
       'totalContents': serializer.toJson<int>(totalContents),
-      'progress': serializer.toJson<int>(progress),
+      'progress': serializer.toJson<double>(progress),
       'completedLessons': serializer.toJson<int>(completedLessons),
       'totalLessons': serializer.toJson<int>(totalLessons),
       'image': serializer.toJson<String?>(image),
@@ -542,7 +542,7 @@ class CoursesTableData extends DataClass
     int? chapterCount,
     Value<String?> totalDuration = const Value.absent(),
     int? totalContents,
-    int? progress,
+    double? progress,
     int? completedLessons,
     int? totalLessons,
     Value<String?> image = const Value.absent(),
@@ -680,7 +680,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
   final Value<int> chapterCount;
   final Value<String?> totalDuration;
   final Value<int> totalContents;
-  final Value<int> progress;
+  final Value<double> progress;
   final Value<int> completedLessons;
   final Value<int> totalLessons;
   final Value<String?> image;
@@ -737,7 +737,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     Expression<int>? chapterCount,
     Expression<String>? totalDuration,
     Expression<int>? totalContents,
-    Expression<int>? progress,
+    Expression<double>? progress,
     Expression<int>? completedLessons,
     Expression<int>? totalLessons,
     Expression<String>? image,
@@ -775,7 +775,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     Value<int>? chapterCount,
     Value<String?>? totalDuration,
     Value<int>? totalContents,
-    Value<int>? progress,
+    Value<double>? progress,
     Value<int>? completedLessons,
     Value<int>? totalLessons,
     Value<String?>? image,
@@ -828,7 +828,7 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
       map['total_contents'] = Variable<int>(totalContents.value);
     }
     if (progress.present) {
-      map['progress'] = Variable<int>(progress.value);
+      map['progress'] = Variable<double>(progress.value);
     }
     if (completedLessons.present) {
       map['completed_lessons'] = Variable<int>(completedLessons.value);
@@ -15179,7 +15179,7 @@ typedef $$CoursesTableTableCreateCompanionBuilder =
       required int chapterCount,
       Value<String?> totalDuration,
       Value<int> totalContents,
-      Value<int> progress,
+      Value<double> progress,
       Value<int> completedLessons,
       required int totalLessons,
       Value<String?> image,
@@ -15198,7 +15198,7 @@ typedef $$CoursesTableTableUpdateCompanionBuilder =
       Value<int> chapterCount,
       Value<String?> totalDuration,
       Value<int> totalContents,
-      Value<int> progress,
+      Value<double> progress,
       Value<int> completedLessons,
       Value<int> totalLessons,
       Value<String?> image,
@@ -15249,7 +15249,7 @@ class $$CoursesTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get progress => $composableBuilder(
+  ColumnFilters<double> get progress => $composableBuilder(
     column: $table.progress,
     builder: (column) => ColumnFilters(column),
   );
@@ -15334,7 +15334,7 @@ class $$CoursesTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get progress => $composableBuilder(
+  ColumnOrderings<double> get progress => $composableBuilder(
     column: $table.progress,
     builder: (column) => ColumnOrderings(column),
   );
@@ -15415,7 +15415,7 @@ class $$CoursesTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<int> get progress =>
+  GeneratedColumn<double> get progress =>
       $composableBuilder(column: $table.progress, builder: (column) => column);
 
   GeneratedColumn<int> get completedLessons => $composableBuilder(
@@ -15492,7 +15492,7 @@ class $$CoursesTableTableTableManager
                 Value<int> chapterCount = const Value.absent(),
                 Value<String?> totalDuration = const Value.absent(),
                 Value<int> totalContents = const Value.absent(),
-                Value<int> progress = const Value.absent(),
+                Value<double> progress = const Value.absent(),
                 Value<int> completedLessons = const Value.absent(),
                 Value<int> totalLessons = const Value.absent(),
                 Value<String?> image = const Value.absent(),
@@ -15528,7 +15528,7 @@ class $$CoursesTableTableTableManager
                 required int chapterCount,
                 Value<String?> totalDuration = const Value.absent(),
                 Value<int> totalContents = const Value.absent(),
-                Value<int> progress = const Value.absent(),
+                Value<double> progress = const Value.absent(),
                 Value<int> completedLessons = const Value.absent(),
                 required int totalLessons,
                 Value<String?> image = const Value.absent(),
