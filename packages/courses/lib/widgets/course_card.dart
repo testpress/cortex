@@ -105,7 +105,7 @@ class CourseCard extends StatelessWidget {
                 label: 'Course progress',
                 value: course.formattedProgress,
                 child: _ProgressBar(
-                  progress: course.progress / 100.0,
+                  progress: (course.progress / 100.0).clamp(0.0, 1.0),
                   color: design.colors.success,
                 ),
               ),

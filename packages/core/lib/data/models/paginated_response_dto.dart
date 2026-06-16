@@ -46,11 +46,12 @@ class PaginatedResponseDto<T> {
       next: _asNullableString(json['next']),
       previous: _asNullableString(json['previous']),
       count: _asNullableInt(json['count']) ?? safeItems.length,
-      userCourseCredits:
-          json['user_course_credits'] as List<dynamic>? ??
-          (json['results'] is Map
-              ? json['results']['user_course_credits'] as List<dynamic>?
-              : null),
+      userCourseCredits: json['user_course_credits'] is List
+          ? json['user_course_credits'] as List<dynamic>
+          : (json['results'] is Map &&
+                    json['results']['user_course_credits'] is List
+                ? json['results']['user_course_credits'] as List<dynamic>
+                : null),
     );
   }
 

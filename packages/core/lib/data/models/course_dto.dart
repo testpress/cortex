@@ -50,7 +50,10 @@ class CourseDto {
   final bool isChaptersSynced;
 
   String get formattedProgress {
-    if (progress == progress.toInt()) {
+    if (!progress.isFinite) {
+      return '0%';
+    }
+    if (progress % 1 == 0) {
       return '${progress.toInt()}%';
     }
     return '${progress.toStringAsFixed(2)}%';
@@ -131,8 +134,8 @@ class CourseDto {
     final credits = response.userCourseCredits;
     if (credits == null || credits.isEmpty) return response;
 
-    final creditsMap = <String, Map<String, dynamic>>{
-      for (final credit in credits.whereType<Map<String, dynamic>>())
+    final creditsMap = <String, Map<dynamic, dynamic>>{
+      for (final credit in credits.whereType<Map>())
         if (credit['course_id'] != null) credit['course_id'].toString(): credit,
     };
 
