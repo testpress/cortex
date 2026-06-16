@@ -337,14 +337,30 @@ final examAttemptProvider =
     );
 
 typedef _$ExamAttempt = AutoDisposeNotifier<ExamAttemptState>;
-String _$examListHash() => r'1fcbb9ebe9053e236eaf5a63b62e568dce1a00bd';
+String _$examSyncMetadataHash() => r'fd00ee17ef2b17e986488a634e5b00d0d352b726';
+
+/// See also [ExamSyncMetadata].
+@ProviderFor(ExamSyncMetadata)
+final examSyncMetadataProvider =
+    NotifierProvider<ExamSyncMetadata, DateTime?>.internal(
+      ExamSyncMetadata.new,
+      name: r'examSyncMetadataProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$examSyncMetadataHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$ExamSyncMetadata = Notifier<DateTime?>;
+String _$examListHash() => r'e64a5dcc1ed86a2cffd18e7a6431787a1f1230d3';
 
 /// Notifier that manages the exam-specific course list and its independent sync state.
 ///
 /// Copied from [ExamList].
 @ProviderFor(ExamList)
 final examListProvider =
-    StreamNotifierProvider<ExamList, List<CourseDto>>.internal(
+    AutoDisposeStreamNotifierProvider<ExamList, List<CourseDto>>.internal(
       ExamList.new,
       name: r'examListProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -354,6 +370,6 @@ final examListProvider =
       allTransitiveDependencies: null,
     );
 
-typedef _$ExamList = StreamNotifier<List<CourseDto>>;
+typedef _$ExamList = AutoDisposeStreamNotifier<List<CourseDto>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

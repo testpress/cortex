@@ -13,8 +13,18 @@ Future<CourseRepository> courseRepository(Ref ref) async {
   return CourseRepository(db, source);
 }
 
-/// Tracks if the initial API sync for the course list was completed in this session.
-final _wasInitialSyncDone = StateProvider<bool>((ref) => false);
+@Riverpod(keepAlive: true)
+class CourseSyncMetadata extends _$CourseSyncMetadata {
+  @override
+  DateTime? build() {
+    ref.watch(authProvider);
+    return null;
+  }
+
+  void markSynced() {
+    state = DateTime.now();
+  }
+}
 
 /// Tracks if the first page of courses is currently being synced from the network.
 final isSyncingInitialPage = StateProvider<bool>((ref) => false);
@@ -25,7 +35,7 @@ final isSyncingMoreResults = StateProvider<bool>((ref) => false);
 /// Detailed error object from the most recent course sync operation.
 final courseListSyncError = StateProvider<Object?>((ref) => null);
 
-@Riverpod(keepAlive: true)
+@riverpod
 class CourseList extends _$CourseList {
   PaginationState _paginationTracker = const PaginationState();
   Future<void>? _pendingSyncRequest;
@@ -50,7 +60,10 @@ class CourseList extends _$CourseList {
 
   /// Explicit initialization for browse mode
   Future<void> initialize() async {
-    if (ref.read(_wasInitialSyncDone)) return;
+    final lastSync = ref.read(courseSyncMetadataProvider);
+    if (lastSync != null) {
+      return;
+    }
     if (_pendingSyncRequest != null) return _pendingSyncRequest;
 
     ref.read(isSyncingInitialPage.notifier).state = true;
@@ -64,7 +77,7 @@ class CourseList extends _$CourseList {
     _pendingSyncRequest = _performSync(isReset: true);
     try {
       await _pendingSyncRequest;
-      ref.read(_wasInitialSyncDone.notifier).state = true;
+      ref.read(courseSyncMetadataProvider.notifier).markSynced();
     } finally {
       _pendingSyncRequest = null;
     }

@@ -6,7 +6,7 @@ part of 'course_list_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$courseRepositoryHash() => r'69ea44f1c24c8074fd8c673dd145d91bf8cc0d11';
+String _$courseRepositoryHash() => r'62b30446b43101d61052e9c469030f2209080475';
 
 /// See also [courseRepository].
 @ProviderFor(courseRepository)
@@ -328,12 +328,29 @@ class _AllChaptersProviderElement
   String get courseId => (origin as AllChaptersProvider).courseId;
 }
 
-String _$courseListHash() => r'c8fd4747cb6c94fc88837968c3313def4657acf8';
+String _$courseSyncMetadataHash() =>
+    r'45d16306bca7d4f92757cc662b154fdd4ec64ed2';
+
+/// See also [CourseSyncMetadata].
+@ProviderFor(CourseSyncMetadata)
+final courseSyncMetadataProvider =
+    NotifierProvider<CourseSyncMetadata, DateTime?>.internal(
+  CourseSyncMetadata.new,
+  name: r'courseSyncMetadataProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$courseSyncMetadataHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$CourseSyncMetadata = Notifier<DateTime?>;
+String _$courseListHash() => r'3ddff2462ed04e8ca9770b07ce1d6539bb0340d7';
 
 /// See also [CourseList].
 @ProviderFor(CourseList)
 final courseListProvider =
-    StreamNotifierProvider<CourseList, List<CourseDto>>.internal(
+    AutoDisposeStreamNotifierProvider<CourseList, List<CourseDto>>.internal(
   CourseList.new,
   name: r'courseListProvider',
   debugGetCreateSourceHash:
@@ -342,7 +359,7 @@ final courseListProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$CourseList = StreamNotifier<List<CourseDto>>;
+typedef _$CourseList = AutoDisposeStreamNotifier<List<CourseDto>>;
 String _$courseSearchHash() => r'770f25e1a505b2bf43f2399232dc309ea7ef55b7';
 
 /// See also [CourseSearch].

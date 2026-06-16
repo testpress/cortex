@@ -210,10 +210,22 @@ class ExamAttempt extends _$ExamAttempt {
       ref.read(examRepositoryProvider).switchSection(index);
 }
 
-/// Notifier that manages the exam-specific course list and its independent sync state.
 @Riverpod(keepAlive: true)
+class ExamSyncMetadata extends _$ExamSyncMetadata {
+  @override
+  DateTime? build() {
+    ref.watch(authProvider);
+    return null;
+  }
+
+  void markSynced() {
+    state = DateTime.now();
+  }
+}
+
+/// Notifier that manages the exam-specific course list and its independent sync state.
+@riverpod
 class ExamList extends _$ExamList {
-  bool _isInitialized = false;
   PaginationState _paginationTracker = const PaginationState();
   Future<void>? _pendingSyncRequest;
 
@@ -229,16 +241,19 @@ class ExamList extends _$ExamList {
 
   /// Triggers an independent sync for the Exams tab by fetching the first page.
   Future<void> initialize() async {
-    if (_isInitialized) return;
+    final lastSync = ref.read(examSyncMetadataProvider);
+    if (lastSync != null) {
+      return;
+    }
 
     if (_pendingSyncRequest != null) return _pendingSyncRequest;
-    _isInitialized = true;
 
     _pendingSyncRequest = _performSync(isReset: true);
     try {
       await _pendingSyncRequest;
+      ref.read(examSyncMetadataProvider.notifier).markSynced();
     } catch (_) {
-      _isInitialized = false; // Allow retry on error
+      // Allow retry on next initialize call by not marking as synced
     } finally {
       _pendingSyncRequest = null;
     }
