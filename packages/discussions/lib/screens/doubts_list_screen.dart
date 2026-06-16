@@ -328,7 +328,7 @@ class _DoubtItem extends StatelessWidget {
           ),
           SizedBox(height: design.spacing.sm),
           // Metadata Row: Subject (Takes full width now to prevent overflow)
-          if (doubt.topicName != null) ...[
+          if (doubt.topicName != null && doubt.topicName!.isNotEmpty) ...[
             AppText.labelSmall(
               doubt.topicName!,
               color: design.colors.accent2,
@@ -337,18 +337,15 @@ class _DoubtItem extends StatelessWidget {
             ),
             SizedBox(height: design.spacing.sm),
           ],
-          // Status badge and timeline
-          Row(
-            children: [
-              _buildStatusBadge(design, doubt.status),
-              SizedBox(width: design.spacing.sm),
-              AppText.caption(
-                doubt.createdHumanized ??
-                    DateFormatter.formatTimeAgo(doubt.createdAt),
-                color: design.colors.textTertiary,
-              ),
-            ],
+          // Timeline
+          AppText.caption(
+            doubt.createdHumanized ??
+                DateFormatter.formatTimeAgo(doubt.createdAt),
+            color: design.colors.textTertiary,
           ),
+          SizedBox(height: design.spacing.sm),
+          // Status badge
+          _buildStatusBadge(design, doubt.status),
         ],
       ),
     );
