@@ -30,3 +30,10 @@ The system SHALL provide a mechanism to initiate an avatar image change.
 - **WHEN** the user taps on the avatar or the "Edit" affordance next to it
 - **THEN** the system SHALL show an image selection dialog/picker (UI placeholder for now).
 
+### Requirement: Standardized Header Back Button
+The back button in the Edit Profile screen header SHALL use identical alignment constraints as the other profile sub-screens (Notifications, Certificates).
+
+#### Scenario: Displaying the back button
+- **WHEN** the Edit Profile screen header is rendered
+- **THEN** the back arrow icon and accompanying text MUST be vertically centered with respect to each other
+

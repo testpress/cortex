@@ -77,3 +77,11 @@ The certificates flow SHALL use shared design tokens, localized copy, and access
 - **WHEN** app locale changes
 - **THEN** visible certificates and preview text MUST come from localization resources
 
+### Requirement: Standardized Header Back Button
+The back button in the Certificates screen header SHALL explicitly match the color and alignment constraints of the other profile sub-screens (Edit Profile, Notifications).
+
+#### Scenario: Displaying the back button
+- **WHEN** the Certificates screen header is rendered
+- **THEN** the back arrow icon and accompanying text MUST be vertically centered with respect to each other
+- **AND** the icon color MUST explicitly match the standard text primary color token
+
