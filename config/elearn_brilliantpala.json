@@ -1,4 +1,8 @@
 {
+  "APP_NAME": "Elearn",
+  "BUNDLE_ID": "in.testpress.bpelearn",
+  "LAUNCHER_ICON": "https://d1j3vi2u94ebt0.cloudfront.net/institute/brilliantpalalms/institutes/brilliant-pala-lms/bded510cf77a45d49efbb8590f1f59f6.jpg",
+
   "API_BASE_URL": "https://brilliantpalalms.testpress.in",
   "SHOW_TODAY_SCHEDULE": false,
   "SHOW_QUICK_ACCESS": false,
