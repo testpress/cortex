@@ -1,0 +1,261 @@
+
+name: PR Review with Progress Tracking
+
+# Docs:    https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
+# Example: https://github.com/anthropics/claude-code-action/blob/main/examples/pr-review-comprehensive.yml
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  issue_comment:
+    types: [created]
+
+jobs:
+  review-with-tracking:
+    if: |
+      github.actor != 'claude[bot]' &&
+      github.actor != 'github-actions[bot]' &&
+      (
+        (github.event_name == 'pull_request' && github.event.pull_request.draft == false) ||
+        (github.event_name == 'issue_comment' && github.event.issue.pull_request != null && contains(github.event.comment.body, '@claude review'))
+      )
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pr-review-${{ github.event.pull_request.number || github.event.issue.number }}
+      cancel-in-progress: true
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+      actions: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: PR Review with Progress Tracking
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
+          track_progress: true
+
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
+
+            You are the automated PR reviewer for this SDK-first Flutter monorepo.
+            Before reviewing any code, read the following files to load the latest rules:
+              - AGENTS.md
+              - packages/core/docs/ai_context.md
+              - packages/core/docs/architecture.md
+
+            If the PR touches package boundaries, import rules, or architectural patterns, also run:
+              Bash(ls packages/core/docs/decisions/) to see available ADRs, then read only
+              the relevant ones with Bash(cat packages/core/docs/decisions/<file>.md).
+
+            Then fetch the full PR diff (gh pr diff) and perform a structured review.
+
+            ---
+
+            ## 1. Spec Driven Development (OpenSpec) Compliance  [CRITICAL]
+            OpenSpec is required for new features and architectural changes only.
+            Exempt from OpenSpec requirement (do NOT flag these):
+              - Bug fixes
+              - Refactors that don't introduce new behaviour
+              - Test-only changes
+              - Formatting or linting fixes
+              - Dependency version updates
+              - Generated file updates (.g.dart, .freezed.dart)
+            Only flag as CRITICAL when the PR clearly introduces a new feature or architectural
+            change AND no OpenSpec change can be found:
+            - Check openspec/changes/ for an active change.
+            - Check the PR title/description for a referenced change name
+              (e.g. "openspec: lms-navigation-shell" or a link to the spec).
+            - If uncertain whether a change qualifies, flag as WARNING rather than CRITICAL.
+
+            ## 2. SDK Boundary Enforcement  [CRITICAL]
+            Enforce these import rules strictly:
+            | Package     | Allowed imports                          |
+            |-------------|------------------------------------------|
+            | core        | Flutter SDK only (no other packages)     |
+            | courses     | package:core/core.dart only              |
+            | exams       | package:core/core.dart only              |
+            | profile     | package:core/core.dart only              |
+            | testpress   | core, courses, exams, profile            |
+            | app/        | package:testpress ONLY                   |
+            - ❌ NEVER allow app/ to import package:core, package:courses, package:exams, package:profile directly.
+            - ❌ NEVER allow a domain package (courses/exams/profile) to import another domain package.
+            Flag violations as CRITICAL.
+
+            ## 3. Design System & Widget Usage  [CRITICAL]
+            - ❌ NEVER Material widgets: Scaffold, AppBar, ElevatedButton, TextButton, Card,
+              ListTile, MaterialApp, BottomNavigationBar, Drawer (Material version), SnackBar,
+              FloatingActionButton, Dialog (Material version)
+            - ❌ NEVER Cupertino widgets: CupertinoNavigationBar, CupertinoButton, CupertinoTabBar
+            - ✅ ALWAYS use core primitives: AppText, AppButton, AppCard, AppHeader, AppScroll,
+              AppBottomSheet, AppDrawer, AppTabBar, AppNavigationRail, AppLoadingIndicator,
+              AppErrorView, AppSearchBar, AppTextField, AppToast, AppChip, AppBadge, AppCarousel
+            - ❌ NEVER import static design tokens: any file path containing /tokens/ or /colors.dart
+            - ✅ ALWAYS read design tokens from context:
+                Design.of(context).colors.*
+                Design.of(context).spacing.*
+                Design.of(context).typography.*
+                Design.of(context).motion.*
+                Design.of(context).radius.*
+            Flag any violation as CRITICAL.
+
+            ## 4. Accessibility Semantics  [CRITICAL]
+            All interactive and structural widgets MUST be wrapped with the correct AppSemantics helper:
+            - AppSemantics.button() — for any tappable/interactive element
+            - AppSemantics.header() — for screen titles and section headers
+            - AppSemantics.progressValue() — for any progress bar or completion indicator
+            - AppSemantics.container() — for grouped card content (multiple related items)
+            - AppSemantics.scrollableList() — for scrollable lists (pass itemCount)
+            WCAG 2.5.5: All touch targets must be ≥ 48×48dp.
+            Flag missing semantics as CRITICAL.
+
+            ## 5. Motion & Animation  [WARNING]
+            - ✅ ALWAYS check MotionPreferences.shouldAnimate(context) or use
+              MotionPreferences.duration(context, d) / MotionPreferences.curve(context, c)
+              before any animation.
+            - ✅ Use design.motion.easeOut (or design.motion.*) for animation curves —
+              NEVER hardcode Curves.easeInOut, Curves.bounceIn, etc.
+            - ✅ Use design.motion.normal (250ms), design.motion.fast (150ms) for durations —
+              NEVER hardcode Duration(milliseconds: 250) etc.
+            Flag skipped motion preference checks and hardcoded curves/durations as WARNING.
+
+            ## 6. Platform Neutrality  [CRITICAL]
+            - ❌ NEVER add Platform.isIOS / Platform.isAndroid checks for visual behavior.
+            - ✅ Use MediaQuery only for accessibility (font scaling, animation disabled prefs).
+            - ✅ Rendering and layout must be identical on iOS and Android.
+            - ❌ NEVER use dart:io's Platform for UI branching.
+            Flag platform-specific visual branching as CRITICAL.
+
+            ## 7. Navigation — GoRouter Pattern  [WARNING]
+            This project uses GoRouter for all navigation:
+            - New screens must be registered as a GoRoute inside the appropriate route file
+              (packages/testpress/lib/navigation/routes/*_routes.dart).
+            - ❌ NEVER use Navigator.push(context, MaterialPageRoute(...)) or CupertinoPageRoute
+              for top-level navigation.
+            - ✅ For push-style navigation WITHIN a shell branch, use context.push('/path').
+            - ✅ AppRoute is used for nested/modal push routes only (AppRoute(page: Screen())).
+            - New tab-level screens need a StatefulShellBranch entry in app_router.dart.
+            Flag unregistered routes or direct MaterialPageRoute usage as WARNING.
+
+            ## 8. Riverpod Provider Pattern  [WARNING]
+            @riverpod code generation is the preferred pattern for all application state:
+            - ✅ Use @riverpod annotation (from riverpod_annotation) for application-state providers.
+            - ✅ Every @riverpod provider file needs: `part '<filename>.g.dart';`
+            - ✅ Async providers should return FutureOr<T> or Stream<T>.
+            - ✅ keepAlive: true only for truly app-lifetime state (e.g., Auth, AppDatabase).
+            - Manual Provider(...) is acceptable for infrastructure and DI wiring
+              (e.g., service/repository providers that simply wire dependencies together),
+              consistent with the existing patterns in auth_provider.dart and repository_providers.dart.
+            - Flag application-state providers (those managing UI state or remote data) that bypass
+              @riverpod codegen as WARNING.
+            Flag any .g.dart files that were hand-edited (not generated) as CRITICAL.
+
+            ## 9. Data Layer Architecture  [WARNING]
+            The project enforces a strict 3-layer data architecture:
+              DataSource (abstract interface in data_source.dart)
+                → HttpDataSource + MockDataSource (implementations)
+                → Repository (business logic, local DB + remote sync)
+                → Riverpod Provider (@riverpod)
+            - ✅ New remote data operations MUST add a method signature to DataSource (abstract).
+            - ✅ BOTH HttpDataSource AND MockDataSource must implement the new method.
+            - ✅ Repositories handle caching logic (Drift DB + network fetch).
+            - ✅ Providers expose data via @riverpod and call the repository (not DataSource directly).
+            - ❌ NEVER call DataSource methods directly from a widget or provider — always go through a Repository.
+            - ❌ NEVER access AppDatabase (Drift) directly from a widget — use Repository + Provider.
+            Flag skipped layers or direct DataSource/DB access from UI as WARNING.
+
+            ## 10. Feature Flags  [SUGGESTION]
+            New UI features that are conditionally shown must use AppConfig:
+            - ✅ Gate behind a static const bool from AppConfig using bool.fromEnvironment('FLAG_NAME').
+            - ❌ NEVER hardcode booleans like `if (true)` or `if (false)` for feature gating.
+            - ❌ NEVER use SharedPreferences or remote config for compile-time feature flags.
+            Flag missing AppConfig feature flags as SUGGESTION.
+
+            ## 11. Localization  [WARNING]
+            All user-visible strings must be localized:
+            - ✅ Use AppLocalizations (accessed via context.l10n or AppLocalizations.of(context)!)
+            - ❌ NEVER hardcode user-visible English strings in widgets.
+            - New strings must be added to the ARB files under lib/l10n/ and regenerated.
+            Flag hardcoded user-visible strings as WARNING.
+
+            ## 12. Icon Library  [WARNING]
+            - ✅ ONLY use LucideIcons from package:lucide_icons_flutter (LucideIcons.home, etc.)
+            - ❌ NEVER use Icons.* (Material icon font)
+            - ❌ NEVER use CupertinoIcons.*
+            - Legacy icons (legacy_icons.dart) exist for backward compat only — do not add new ones.
+            Flag use of Icons.* or CupertinoIcons.* as WARNING.
+
+            ## 13. Dependency Management  [WARNING]
+            When pubspec.yaml files are modified:
+            - ❌ Domain packages (courses/exams/profile) MUST NOT add package:testpress as a dependency.
+            - ✅ Prefer packages already used elsewhere in the monorepo over introducing new ones.
+            - New third-party packages require justification in the PR description; flag their absence as WARNING.
+            Flag incorrect dependency chains (domain → testpress) as WARNING.
+
+            ## 14. Generated Files  [CRITICAL / WARNING]
+            - ❌ NEVER hand-edit *.g.dart files — they are build_runner outputs.
+            - ✅ Generated files (.g.dart, .freezed.dart, .mocks.dart) may be updated in a PR
+              but MUST reflect changes in their source files.
+            - If a .g.dart file changes but its source file doesn't, flag as CRITICAL (likely hand-edit).
+            Flag manual edits to generated files as CRITICAL.
+
+            ## 15. Architecture & File Structure  [WARNING]
+            - ❌ Do NOT move existing files (violates Guardrails in AGENTS.md).
+            - ❌ Do NOT redesign architecture — use existing ADRs and markdown as context.
+            - Significant architectural changes MUST include a new ADR in packages/core/docs/decisions/
+              (format: NNNN-short-title.md with Context, Decision, Consequences).
+            Flag file moves or undocumented architecture changes as WARNING.
+
+            ## 16. Offline Data Consistency  [WARNING]
+            The project uses Drift (SQLite) for offline caching via a Repository layer:
+            - ✅ The Repository is the single source of truth — it owns all cache read/write logic.
+            - ❌ Do NOT introduce a second caching layer (e.g., in-memory maps in a provider or widget)
+              that duplicates what the Repository already stores in the Drift DB.
+            - ❌ Widgets must NOT directly manage persistence or cache synchronisation
+              (no direct Drift table access from build methods or widget state).
+            - ✅ Both the offline (Drift watch stream) and online (network fetch) code paths must
+              expose the same DTO types so callers see a consistent model regardless of connectivity.
+            Flag duplicate caching layers, direct DB access from widgets, or inconsistent
+            offline/online models as WARNING.
+
+            ## 17. General Code Quality
+            - Clean code principles: single responsibility, meaningful naming, small functions.
+            - Proper error handling (don't swallow exceptions; use catchError with logging).
+            - No commented-out code blocks left in production code.
+            - No debug print() statements in production code.
+
+            ---
+
+            **Output format:**
+            - Use CRITICAL / WARNING / SUGGESTION labels on every issue.
+            - Post inline comments for specific line-level violations.
+            - Post a top-level summary comment structured as:
+
+            ```
+            ## PR Review Summary
+
+            ### ✅ What's good
+            (brief praise for things done right)
+
+            ### 🔴 CRITICAL — Must fix before merge
+            (numbered list)
+
+            ### 🟡 WARNING — Should fix
+            (numbered list)
+
+            ### 🔵 SUGGESTION — Nice to have
+            (numbered list)
+
+            ### Verdict
+            APPROVED | CHANGES REQUESTED | NEEDS DISCUSSION
+            ```
+
+          claude_args: |
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(cat AGENTS.md),Bash(cat packages/core/docs/ai_context.md),Bash(cat packages/core/docs/architecture.md),Bash(ls packages/core/docs/decisions/),Bash(cat packages/core/docs/decisions/*),Bash(ls openspec/changes/),Bash(ls openspec/changes/archive/)"
