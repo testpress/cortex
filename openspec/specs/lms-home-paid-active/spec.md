@@ -156,7 +156,8 @@ The system SHALL support specialized layout rules and section ordering based on 
 #### Scenario: Custom section prioritization
 - **GIVEN** the "Brilliant" institute configuration
 - **WHEN** the dashboard sections are rendered
-- **THEN** they MUST follow the specific sequence: Top Carousel -> Updates & Announcements -> Learning Performance -> Top Learners
+- **THEN** they MUST follow the specific sequence: Top Carousel -> Updates & Announcements -> Top Learners
+- **AND** the Learning Performance section (StudyMomentumGrid) MUST NOT be rendered
 - **AND** this sequence MUST NOT affect the default ordering of other subdomains
 
 ### Requirement: Smooth Loading Experience (Skeletonization)
