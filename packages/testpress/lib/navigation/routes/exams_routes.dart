@@ -1,4 +1,5 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:courses/courses.dart';
 import 'package:exams/exams.dart';
@@ -36,14 +37,12 @@ class ExamsRoutes {
                   onBack: () => context.pop(),
                   showFilters: false,
                   onLessonClick: (lesson) {
-                    final String? path = switch (lesson.type) {
+                    final String path = switch (lesson.type) {
                       LessonType.test => '/exams/test/${lesson.id}',
                       LessonType.assessment => '/exams/assessment/${lesson.id}',
-                      _ => null,
+                      _ => '/exams/lesson/${lesson.id}',
                     };
-                    if (path != null) {
-                      context.push(path, extra: lesson);
-                    }
+                    context.push(path, extra: lesson);
                   },
                 );
               },
@@ -239,6 +238,78 @@ class ExamsRoutes {
           },
         ),
         GoRoute(
+          path: 'lesson/:id',
+          parentNavigatorKey: rootNavigatorKey,
+          builder: (context, state) {
+            final id = state.pathParameters['id']!;
+            return Consumer(
+              builder: (context, ref, child) {
+                final lessonAsync = ref.watch(lessonDetailProvider(id));
+                return lessonAsync.when(
+                  data: (lesson) {
+                    if (lesson == null) {
+                      return const Center(child: Text('Lesson not found'));
+                    }
+                    return _ExamLessonRedirector(
+                      lesson: lesson,
+                      child: LessonDetailOrchestrator(
+                        lesson: lesson,
+                        onNext: lesson.nextContentId != null
+                            ? () => context.pushReplacement(
+                                '/exams/lesson/${lesson.nextContentId}',
+                              )
+                            : null,
+                        onPrevious: lesson.previousContentId != null
+                            ? () => context.pushReplacement(
+                                '/exams/lesson/${lesson.previousContentId}',
+                              )
+                            : null,
+                      ),
+                    );
+                  },
+                  loading: () => Container(
+                    color: Design.of(context).colors.surface,
+                    child: const Center(child: AppLoadingIndicator()),
+                  ),
+                  error: (error, _) {
+                    final l10n = L10n.of(context);
+                    final design = Design.of(context);
+                    return Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(design.spacing.cardPadding),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              LucideIcons.alertCircle,
+                              size: design.spacing.xxl,
+                              color: design.colors.error,
+                            ),
+                            SizedBox(height: design.spacing.md),
+                            Text(
+                              l10n.errorLessonLoad,
+                              textAlign: TextAlign.center,
+                              style: design.typography.body.copyWith(
+                                color: design.colors.textSecondary,
+                              ),
+                            ),
+                            SizedBox(height: design.spacing.lg),
+                            AppButton.primary(
+                              label: l10n.labelRetry,
+                              onPressed: () =>
+                                  ref.refresh(lessonDetailProvider(id)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            );
+          },
+        ),
+        GoRoute(
           path: 'analytics',
           parentNavigatorKey: rootNavigatorKey,
           builder: (context, state) {
@@ -283,4 +354,55 @@ class ExamsRoutes {
       ],
     ),
   ];
+}
+
+/// An internal widget to handle redirects for specific lesson types in exams.
+class _ExamLessonRedirector extends StatefulWidget {
+  final Lesson lesson;
+  final Widget child;
+
+  const _ExamLessonRedirector({required this.lesson, required this.child});
+
+  @override
+  State<_ExamLessonRedirector> createState() => _ExamLessonRedirectorState();
+}
+
+class _ExamLessonRedirectorState extends State<_ExamLessonRedirector> {
+  @override
+  void initState() {
+    super.initState();
+    _checkRedirect();
+  }
+
+  @override
+  void didUpdateWidget(_ExamLessonRedirector oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.lesson.id != oldWidget.lesson.id) {
+      _checkRedirect();
+    }
+  }
+
+  void _checkRedirect() {
+    if (widget.lesson.type == LessonType.test) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          context.go('/exams/test/${widget.lesson.id}', extra: widget.lesson);
+        }
+      });
+    } else if (widget.lesson.type == LessonType.assessment) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          context.go(
+            '/exams/assessment/${widget.lesson.id}',
+            extra: widget.lesson,
+          );
+        }
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
+  }
 }
