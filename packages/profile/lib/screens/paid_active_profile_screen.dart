@@ -35,6 +35,7 @@ class ProfilePage extends ConsumerWidget {
     final recentActivityAsync = ref.watch(profileRecentActivityProvider);
 
     final l10n = L10n.of(context);
+    final isBrilliantPala = AppConfig.apiBaseUrl.contains('brilliant');
 
     return Container(
       color: design.colors.canvas,
@@ -70,51 +71,54 @@ class ProfilePage extends ConsumerWidget {
 
                     SizedBox(height: design.spacing.xl),
 
-                    // Stats Snapshot
-                    statsAsync.when(
-                      data: (StudyMomentumDto stats) => ProfileLearningSnapshot(
-                        lessonsFinished: stats.lessonsFinished,
-                        testsAttempted: stats.testsAttempted,
-                        assessmentsDone: stats.assessmentsDone,
-                        strongestIn: stats.strongestSubject,
-                        focusNeededIn: stats.weakSubject,
+                    if (!isBrilliantPala) ...[
+                      // Stats Snapshot
+                      statsAsync.when(
+                        data: (StudyMomentumDto stats) =>
+                            ProfileLearningSnapshot(
+                              lessonsFinished: stats.lessonsFinished,
+                              testsAttempted: stats.testsAttempted,
+                              assessmentsDone: stats.assessmentsDone,
+                              strongestIn: stats.strongestSubject,
+                              focusNeededIn: stats.weakSubject,
+                            ),
+                        loading: () => const SizedBox(height: 200),
+                        error: (err, _) => AppErrorView(
+                          message: err.toString(),
+                          onRetry: () => ref.invalidate(studyMomentumProvider),
+                        ),
                       ),
-                      loading: () => const SizedBox(height: 200),
-                      error: (err, _) => AppErrorView(
-                        message: err.toString(),
-                        onRetry: () => ref.invalidate(studyMomentumProvider),
+
+                      SizedBox(height: design.spacing.xl),
+
+                      // Enrolled Courses
+                      enrolledCoursesAsync.when(
+                        data: (courses) =>
+                            EnrolledCoursesSection(courses: courses),
+                        loading: () => const SizedBox(height: 150),
+                        error: (err, _) => AppErrorView(
+                          message: err.toString(),
+                          onRetry: () =>
+                              ref.invalidate(profileEnrollmentProvider),
+                        ),
                       ),
-                    ),
 
-                    SizedBox(height: design.spacing.xl),
+                      SizedBox(height: design.spacing.xl),
 
-                    // Enrolled Courses
-                    enrolledCoursesAsync.when(
-                      data: (courses) =>
-                          EnrolledCoursesSection(courses: courses),
-                      loading: () => const SizedBox(height: 150),
-                      error: (err, _) => AppErrorView(
-                        message: err.toString(),
-                        onRetry: () =>
-                            ref.invalidate(profileEnrollmentProvider),
+                      // Recent Activity
+                      recentActivityAsync.when(
+                        data: (activities) =>
+                            RecentActivitySection(activities: activities),
+                        loading: () => const SizedBox(height: 120),
+                        error: (err, _) => AppErrorView(
+                          message: err.toString(),
+                          onRetry: () =>
+                              ref.invalidate(profileRecentActivityProvider),
+                        ),
                       ),
-                    ),
 
-                    SizedBox(height: design.spacing.xl),
-
-                    // Recent Activity
-                    recentActivityAsync.when(
-                      data: (activities) =>
-                          RecentActivitySection(activities: activities),
-                      loading: () => const SizedBox(height: 120),
-                      error: (err, _) => AppErrorView(
-                        message: err.toString(),
-                        onRetry: () =>
-                            ref.invalidate(profileRecentActivityProvider),
-                      ),
-                    ),
-
-                    SizedBox(height: design.spacing.xl),
+                      SizedBox(height: design.spacing.xl),
+                    ],
 
                     // Account & Preferences
                     AccountPreferencesSection(

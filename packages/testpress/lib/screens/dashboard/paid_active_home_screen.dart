@@ -37,6 +37,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     final user = userAsync.valueOrNull;
 
     final isBannerPresent = dto.AppConfig.instituteLogoUrl.isNotEmpty;
+    final isBrilliantPala = dto.AppConfig.apiBaseUrl.contains('brilliant');
 
     final whatsNewLessons = whatsNewAsync.valueOrNull ?? [];
     final resumeLessons = resumeLearningAsync.valueOrNull ?? [];
@@ -164,8 +165,10 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                         // Brilliant specific order
                         lessonCardsSection,
                         updatesAnnouncements,
-                        const SizedBox(height: 24),
-                        studyMomentum,
+                        if (!isBrilliantPala) ...[
+                          const SizedBox(height: 24),
+                          studyMomentum,
+                        ],
                         const SizedBox(height: 24),
                         topLearnersSection,
                       ] else ...[
@@ -231,7 +234,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
                           ),
                         const SizedBox(height: 24),
                         lessonCardsSection,
-                        studyMomentum,
+                        if (!isBrilliantPala) studyMomentum,
                         topLearnersSection,
                         updatesAnnouncements,
                         if (dto.AppConfig.showQuickAccess)
