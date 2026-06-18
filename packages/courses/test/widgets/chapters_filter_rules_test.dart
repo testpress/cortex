@@ -9,22 +9,24 @@ void main() {
       final visible = ChaptersFilterRules.getVisibleFilters();
 
       expect(visible, contains(CurriculumFilter.all));
-      expect(visible, contains(CurriculumFilter.lesson));
       expect(visible, contains(CurriculumFilter.video));
+      expect(visible, contains(CurriculumFilter.notes));
+      expect(visible, contains(CurriculumFilter.attachment));
       expect(visible, contains(CurriculumFilter.assessment));
       expect(visible, contains(CurriculumFilter.test));
-      expect(visible.length, equals(5));
+      expect(visible.length, equals(6));
     }, skip: AppConfig.showExamTab);
 
     test('showExamTab is true - Assessments and Tests should be hidden', () {
       final visible = ChaptersFilterRules.getVisibleFilters();
 
       expect(visible, contains(CurriculumFilter.all));
-      expect(visible, contains(CurriculumFilter.lesson));
       expect(visible, contains(CurriculumFilter.video));
+      expect(visible, contains(CurriculumFilter.notes));
+      expect(visible, contains(CurriculumFilter.attachment));
       expect(visible, isNot(contains(CurriculumFilter.assessment)));
       expect(visible, isNot(contains(CurriculumFilter.test)));
-      expect(visible.length, equals(3));
+      expect(visible.length, equals(4));
     }, skip: !AppConfig.showExamTab);
   });
 }
