@@ -24,59 +24,72 @@ class ExamModeOptionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        padding: EdgeInsets.all(design.spacing.md),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? design.colors.primary.withValues(alpha: 0.08)
-              : design.colors.card,
-          borderRadius: BorderRadius.circular(design.radius.lg),
-          border: Border.all(
-            color: isSelected ? design.colors.primary : design.colors.border,
-            width: 1.5,
+    final childContent = Row(
+      children: [
+        Container(
+          padding: EdgeInsets.all(design.spacing.sm),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? design.colors.primary.withValues(alpha: 0.12)
+                : design.colors.surfaceVariant,
+            borderRadius: BorderRadius.circular(design.radius.md),
+          ),
+          child: Icon(
+            icon,
+            color: isSelected
+                ? design.colors.primary
+                : design.colors.textSecondary,
+            size: 24,
           ),
         ),
-        child: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.all(design.spacing.sm),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? design.colors.primary.withValues(alpha: 0.12)
-                    : design.colors.surfaceVariant,
-                borderRadius: BorderRadius.circular(design.radius.md),
+        SizedBox(width: design.spacing.md),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AppText.body(
+                title,
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              child: Icon(
-                icon,
-                color: isSelected
-                    ? design.colors.primary
-                    : design.colors.textSecondary,
-                size: 24,
-              ),
-            ),
-            SizedBox(width: design.spacing.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppText.body(
-                    title,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 4),
-                  AppText.caption(
-                    description,
-                    color: design.colors.textSecondary,
-                  ),
-                ],
-              ),
-            ),
-          ],
+              SizedBox(height: design.spacing.xs),
+              AppText.caption(description, color: design.colors.textSecondary),
+            ],
+          ),
         ),
+      ],
+    );
+
+    final containerDecoration = BoxDecoration(
+      color: isSelected
+          ? design.colors.primary.withValues(alpha: 0.08)
+          : design.colors.card,
+      borderRadius: BorderRadius.circular(design.radius.lg),
+      border: Border.all(
+        color: isSelected ? design.colors.primary : design.colors.border,
+        width: 1.5,
       ),
+    );
+
+    final containerWidget = MotionPreferences.shouldAnimate(context)
+        ? AnimatedContainer(
+            duration: MotionPreferences.duration(
+              context,
+              const Duration(milliseconds: 150),
+            ),
+            padding: EdgeInsets.all(design.spacing.md),
+            decoration: containerDecoration,
+            child: childContent,
+          )
+        : Container(
+            padding: EdgeInsets.all(design.spacing.md),
+            decoration: containerDecoration,
+            child: childContent,
+          );
+
+    return AppSemantics.button(
+      label: title,
+      onTap: onTap,
+      child: GestureDetector(onTap: onTap, child: containerWidget),
     );
   }
 }

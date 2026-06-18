@@ -3323,6 +3323,18 @@ abstract class AppLocalizations {
   /// **'Check answers as you go.'**
   String get examModeQuizDesc;
 
+  /// No description provided for @resumeExamOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume Exam Online'**
+  String get resumeExamOnline;
+
+  /// No description provided for @startExamOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Exam Online'**
+  String get startExamOnline;
+
   /// No description provided for @analyticsInvalidTopicId.
   ///
   /// In en, this message translates to:

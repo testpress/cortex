@@ -873,6 +873,8 @@
   "examModeRegularDesc": "Take standard exam with a timer.",
   "examModeQuizTitle": "Quiz Mode",
   "examModeQuizDesc": "Check answers as you go.",
+  "resumeExamOnline": "Resume Exam Online",
+  "startExamOnline": "Start Exam Online",
   "analyticsInvalidTopicId": "Invalid Topic ID",
   "analyticsTopicNotFound": "Topic not found",
   "analyticsErrorLoadingTopic": "Error loading topic analytics: {error}",

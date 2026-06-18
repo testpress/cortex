@@ -288,7 +288,10 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                           if ((exam?.allowRetake ?? true) ||
                               !((lesson?.hasAttempts ?? false) &&
                                   (exam?.pausedAttemptsCount ?? 0) == 0))
-                            GestureDetector(
+                            AppSemantics.button(
+                              label: isResuming
+                                  ? 'Resume Exam Online'
+                                  : 'Start Exam Online',
                               onTap: isButtonEnabled
                                   ? () async {
                                       ref
@@ -299,35 +302,48 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                                       await widget.onStartAttempt(isQuizMode);
                                     }
                                   : null,
-                              child: Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.all(design.spacing.md),
-                                decoration: BoxDecoration(
-                                  color: isButtonEnabled
-                                      ? design.colors.primary
-                                      : design.colors.border.withValues(
-                                          alpha: 0.5,
-                                        ),
-                                  borderRadius: BorderRadius.circular(
-                                    design.radius.lg,
-                                  ),
-                                ),
-                                child: Text(
-                                  isResuming
-                                      ? 'Resume Exam Online'
-                                      : 'Start Exam Online',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
+                              enabled: isButtonEnabled,
+                              child: GestureDetector(
+                                onTap: isButtonEnabled
+                                    ? () async {
+                                        ref
+                                            .read(examAttemptProvider.notifier)
+                                            .reset();
+                                        final isQuizMode =
+                                            _selectedIsQuizMode ?? false;
+                                        await widget.onStartAttempt(isQuizMode);
+                                      }
+                                    : null,
+                                child: Container(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.all(design.spacing.md),
+                                  decoration: BoxDecoration(
                                     color: isButtonEnabled
-                                        ? design.colors.onPrimary
-                                        : design.colors.textSecondary,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                                        ? design.colors.primary
+                                        : design.colors.border.withValues(
+                                            alpha: 0.5,
+                                          ),
+                                    borderRadius: BorderRadius.circular(
+                                      design.radius.lg,
+                                    ),
+                                  ),
+                                  child: AppText.body(
+                                    isResuming
+                                        ? l10n.resumeExamOnline
+                                        : l10n.startExamOnline,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: isButtonEnabled
+                                          ? design.colors.onPrimary
+                                          : design.colors.textSecondary,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          const SizedBox(height: 4),
+                          SizedBox(height: design.spacing.xs),
                         ],
                       ),
                     ),

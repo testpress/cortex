@@ -1819,6 +1819,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get examModeQuizDesc => 'Check answers as you go.';
 
   @override
+  String get resumeExamOnline => 'Resume Exam Online';
+
+  @override
+  String get startExamOnline => 'Start Exam Online';
+
+  @override
   String get analyticsInvalidTopicId => 'Invalid Topic ID';
 
   @override
