@@ -220,7 +220,7 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
             child: AppButton.primary(
               label: context.l10n.customExamCreateTitle,
               leading: const Icon(LucideIcons.plus, size: 20),
-              onPressed: () => context.push('/exams/create'),
+              onPressed: () => context.push('/exams/create-custom-exam'),
             ),
           ),
         ],

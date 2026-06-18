@@ -11,7 +11,7 @@ class ExamsRoutes {
       builder: (context, state) => const ExamsScreen(),
       routes: [
         GoRoute(
-          path: 'create',
+          path: 'create-custom-exam',
           parentNavigatorKey: rootNavigatorKey,
           builder: (context, state) => Consumer(
             builder: (context, ref, _) {

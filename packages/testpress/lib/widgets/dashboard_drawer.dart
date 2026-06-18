@@ -77,7 +77,7 @@ class DashboardDrawer extends ConsumerWidget {
               label: l10n.drawerCustomExam,
               action: () {
                 ref.read(isHomeDrawerOpenProvider.notifier).state = false;
-                context.push('/exams/create');
+                context.push('/exams/create-custom-exam');
               },
             ),
 

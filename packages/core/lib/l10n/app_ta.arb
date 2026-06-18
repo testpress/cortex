@@ -914,5 +914,41 @@
   "analyticsTableReports": "அட்டவணை அறிக்கைகள்",
   "analyticsSelectTab": "{label} தாவலைத் தேர்ந்தெடு",
   "filterEmptyStateMessage": "{name} எதுவும் கிடைக்கவில்லை.",
-  "labelExams": "தேர்வுகள்"
+  "labelExams": "தேர்வுகள்",
+  "customExamCreateTitle": "பயிற்சி தேர்வை உருவாக்கவும்",
+  "customExamSelectCourse": "பாடநெறியைத் தேர்ந்தெடுக்கவும்",
+  "customExamSearchCourses": "பாடநெறிகளைத் தேடுங்கள்...",
+  "customExamNoCoursesFound": "பாடநெறிகள் எதுவும் கிடைக்கவில்லை.",
+  "customExamStepScope": "படி 1: பயிற்சியின் வரம்பு",
+  "customExamFullCourse": "முழு பாடநெறி பயிற்சி",
+  "customExamCoverAllTopics": "அனைத்து தலைப்புகளையும் உள்ளடக்கும்",
+  "customExamSpecificCourse": "ஒரு குறிப்பிட்ட பாடநெறியைப் பயிற்சி செய்யவும்",
+  "customExamCoursePrefix": "பாடநெறி: {name}",
+  "customExamStepSource": "படி 2: கேள்வி ஆதாரம்",
+  "customExamSourcePrevYear": "முந்தைய ஆண்டுக் கேள்விகள்",
+  "customExamSourceBoard": "வாரியத் தேர்வு வினாத்தாள்கள்",
+  "customExamSourceImportant": "முக்கியமான கேள்விகள்",
+  "customExamStepCount": "படி 3: கேள்விகளின் எண்ணிக்கை",
+  "customExamStepDifficulty": "படி 4: சிரம நிலை",
+  "customExamDiffEasy": "எளிது",
+  "customExamDiffMedium": "நடுத்தரம்",
+  "customExamDiffHard": "கடினம்",
+  "customExamDiffMixed": "கலப்பு",
+  "customExamStepMode": "படி 5: தேர்வு முறை",
+  "customExamModeQuiz": "வினாடி வினா",
+  "customExamModeQuizDesc": "ஒவ்வொரு கேள்விக்கும் பிறகு உடனடி பின்னூட்டமும் விளக்கமும் பெறுங்கள்",
+  "customExamModeTest": "தேர்வு",
+  "customExamModeTestDesc": "நேரக் கணிப்பானுடன் உண்மையான தேர்வு போல எழுதுங்கள்; இறுதியில் முடிவைப் பெறுங்கள்",
+  "customExamBtnCreate": "பயிற்சி தேர்வை உருவாக்கவும்",
+  "customExamBtnGoBack": "திரும்பிச் செல்",
+  "customExamCountLabel": "{count} கேள்விகள்",
+  "@customExamCountLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resumeExamOnline": "தேர்வை ஆன்லைனில் தொடரவும்",
+  "startExamOnline": "தேர்வை ஆன்லைனில் தொடங்கவும்"
 }

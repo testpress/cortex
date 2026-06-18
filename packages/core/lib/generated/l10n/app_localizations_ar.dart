@@ -1822,29 +1822,29 @@ class AppLocalizationsAr extends AppLocalizations {
   String get bookmarkActionDelete => 'حذف';
 
   @override
-  String get actionCheck => 'Check';
+  String get actionCheck => 'تحقق';
 
   @override
-  String get examModeSelectTitle => 'Select Exam Mode';
+  String get examModeSelectTitle => 'اختر وضع الامتحان';
 
   @override
-  String get examModeRegularTitle => 'Regular Mode';
+  String get examModeRegularTitle => 'الوضع العادي';
 
   @override
   String get examModeRegularDesc =>
-      'Take the test in standard exam mode with a timer.';
+      'أجرِ الاختبار في وضع الامتحان القياسي مع مؤقت.';
 
   @override
-  String get examModeQuizTitle => 'Quiz Mode';
+  String get examModeQuizTitle => 'وضع الاختبار القصير';
 
   @override
-  String get examModeQuizDesc => 'Check answers immediately as you go.';
+  String get examModeQuizDesc => 'تحقق من الإجابات فورًا أثناء تقدمك.';
 
   @override
-  String get resumeExamOnline => 'Resume Exam Online';
+  String get resumeExamOnline => 'استئناف الامتحان عبر الإنترنت';
 
   @override
-  String get startExamOnline => 'Start Exam Online';
+  String get startExamOnline => 'بدء الامتحان عبر الإنترنت';
 
   @override
   String get analyticsInvalidTopicId => 'معرف الموضوع غير صالح';
@@ -1922,89 +1922,89 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get customExamCreateTitle => 'Create Practice Exam';
+  String get customExamCreateTitle => 'إنشاء امتحان تدريبي';
 
   @override
-  String get customExamSelectCourse => 'Select Course';
+  String get customExamSelectCourse => 'اختر الدورة';
 
   @override
-  String get customExamSearchCourses => 'Search courses...';
+  String get customExamSearchCourses => 'البحث في الدورات...';
 
   @override
-  String get customExamNoCoursesFound => 'No courses found.';
+  String get customExamNoCoursesFound => 'لم يتم العثور على دورات.';
 
   @override
-  String get customExamStepScope => 'Step 1: Practice Scope';
+  String get customExamStepScope => 'الخطوة 1: نطاق التدريب';
 
   @override
-  String get customExamFullCourse => 'Full Course Practice';
+  String get customExamFullCourse => 'تدريب على الدورة كاملة';
 
   @override
-  String get customExamCoverAllTopics => 'Cover all topics';
+  String get customExamCoverAllTopics => 'تغطية جميع المواضيع';
 
   @override
-  String get customExamSpecificCourse => 'Practice a specific course';
+  String get customExamSpecificCourse => 'التدريب على دورة محددة';
 
   @override
   String customExamCoursePrefix(String name) {
-    return 'Course: $name';
+    return 'الدورة: $name';
   }
 
   @override
-  String get customExamStepSource => 'Step 2: Question Source';
+  String get customExamStepSource => 'الخطوة 2: مصدر الأسئلة';
 
   @override
-  String get customExamSourcePrevYear => 'Previous Year Questions';
+  String get customExamSourcePrevYear => 'أسئلة السنوات السابقة';
 
   @override
-  String get customExamSourceBoard => 'Board Papers';
+  String get customExamSourceBoard => 'أوراق المجلس';
 
   @override
-  String get customExamSourceImportant => 'Important Questions';
+  String get customExamSourceImportant => 'أسئلة هامة';
 
   @override
-  String get customExamStepCount => 'Step 3: Number of Questions';
+  String get customExamStepCount => 'الخطوة 3: عدد الأسئلة';
 
   @override
-  String get customExamStepDifficulty => 'Step 4: Difficulty Level';
+  String get customExamStepDifficulty => 'الخطوة 4: مستوى الصعوبة';
 
   @override
-  String get customExamDiffEasy => 'Easy';
+  String get customExamDiffEasy => 'سهل';
 
   @override
-  String get customExamDiffMedium => 'Medium';
+  String get customExamDiffMedium => 'متوسط';
 
   @override
-  String get customExamDiffHard => 'Hard';
+  String get customExamDiffHard => 'صعب';
 
   @override
-  String get customExamDiffMixed => 'Mixed';
+  String get customExamDiffMixed => 'مختلط';
 
   @override
-  String get customExamStepMode => 'Step 5: Attempt Mode';
+  String get customExamStepMode => 'الخطوة 5: وضع المحاولة';
 
   @override
-  String get customExamModeQuiz => 'Quiz';
+  String get customExamModeQuiz => 'اختبار قصير';
 
   @override
   String get customExamModeQuizDesc =>
-      'Get instant feedback and explanations after each question';
+      'احصل على ملاحظات وتفسيرات فورية بعد كل سؤال';
 
   @override
-  String get customExamModeTest => 'Test';
+  String get customExamModeTest => 'اختبار';
 
   @override
   String get customExamModeTestDesc =>
-      'Attempt like a real exam with a timer and final result';
+      'محاولة كاختبار حقيقي مع مؤقت ونتيجة نهائية';
 
   @override
-  String get customExamBtnCreate => 'Create Practice Exam';
+  String get customExamBtnCreate => 'إنشاء امتحان تدريبي';
 
   @override
-  String get customExamBtnGoBack => 'Go back';
+  String get customExamBtnGoBack => 'العودة';
 
   @override
   String customExamCountLabel(int count) {
-    return '$count questions';
+    return '$count أسئلة';
   }
 }

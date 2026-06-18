@@ -1846,38 +1846,39 @@ class AppLocalizationsMl extends AppLocalizations {
   String get bookmarkLabelSortBy => 'തരം തിരിക്കുക';
 
   @override
-  String get bookmarkActionCreateFolder => 'Create folder';
+  String get bookmarkActionCreateFolder => 'ഫോൾഡർ സൃഷ്ടിക്കുക';
 
   @override
-  String get bookmarkLabelName => 'Name';
+  String get bookmarkLabelName => 'പേര്';
 
   @override
-  String get bookmarkActionDelete => 'Delete';
+  String get bookmarkActionDelete => 'ഇല്ലാതാക്കുക';
 
   @override
-  String get actionCheck => 'Check';
+  String get actionCheck => 'പരിശോധിക്കുക';
 
   @override
-  String get examModeSelectTitle => 'Select Exam Mode';
+  String get examModeSelectTitle => 'പരീക്ഷാ മോഡ് തിരഞ്ഞെടുക്കുക';
 
   @override
-  String get examModeRegularTitle => 'Regular Mode';
+  String get examModeRegularTitle => 'റെഗുലർ മോഡ്';
 
   @override
   String get examModeRegularDesc =>
-      'Take the test in standard exam mode with a timer.';
+      'ഒരു ടൈമറിനൊപ്പം സ്റ്റാൻഡേർഡ് പരീക്ഷാ മോഡിൽ പരീക്ഷയെഴുതുക.';
 
   @override
-  String get examModeQuizTitle => 'Quiz Mode';
+  String get examModeQuizTitle => 'ക്വിസ് മോഡ്';
 
   @override
-  String get examModeQuizDesc => 'Check answers immediately as you go.';
+  String get examModeQuizDesc =>
+      'നിങ്ങൾ പോകുമ്പോൾ ഉടനടി ഉത്തരങ്ങൾ പരിശോധിക്കുക.';
 
   @override
-  String get resumeExamOnline => 'Resume Exam Online';
+  String get resumeExamOnline => 'പരീക്ഷ ഓൺലൈനിൽ തുടരുക';
 
   @override
-  String get startExamOnline => 'Start Exam Online';
+  String get startExamOnline => 'പരീക്ഷ ഓൺലൈനിൽ ആരംഭിക്കുക';
 
   @override
   String get analyticsInvalidTopicId => 'അസാധുവായ വിഷയം ഐഡി';
@@ -1955,89 +1956,89 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
-  String get customExamCreateTitle => 'Create Practice Exam';
+  String get customExamCreateTitle => 'പ്രാക്ടീസ് പരീക്ഷ സൃഷ്ടിക്കുക';
 
   @override
-  String get customExamSelectCourse => 'Select Course';
+  String get customExamSelectCourse => 'കോഴ്സ് തിരഞ്ഞെടുക്കുക';
 
   @override
-  String get customExamSearchCourses => 'Search courses...';
+  String get customExamSearchCourses => 'കോഴ്സുകൾ തിരയുക...';
 
   @override
-  String get customExamNoCoursesFound => 'No courses found.';
+  String get customExamNoCoursesFound => 'കോഴ്സുകളൊന്നും കണ്ടെത്തിയില്ല.';
 
   @override
-  String get customExamStepScope => 'Step 1: Practice Scope';
+  String get customExamStepScope => 'ഘട്ടം 1: പ്രാക്ടീസ് സ്കോപ്പ്';
 
   @override
-  String get customExamFullCourse => 'Full Course Practice';
+  String get customExamFullCourse => 'മുഴുവൻ കോഴ്സ് പ്രാക്ടീസ്';
 
   @override
-  String get customExamCoverAllTopics => 'Cover all topics';
+  String get customExamCoverAllTopics => 'എല്ലാ വിഷയങ്ങളും ഉൾക്കൊള്ളുന്നു';
 
   @override
-  String get customExamSpecificCourse => 'Practice a specific course';
+  String get customExamSpecificCourse => 'ഒരു നിർദ്ദിഷ്ട കോഴ്സ് പരിശീലിക്കുക';
 
   @override
   String customExamCoursePrefix(String name) {
-    return 'Course: $name';
+    return 'കോഴ്സ്: $name';
   }
 
   @override
-  String get customExamStepSource => 'Step 2: Question Source';
+  String get customExamStepSource => 'ഘട്ടം 2: ചോദ്യ ഉറവിടം';
 
   @override
-  String get customExamSourcePrevYear => 'Previous Year Questions';
+  String get customExamSourcePrevYear => 'കഴിഞ്ഞ വർഷത്തെ ചോദ്യങ്ങൾ';
 
   @override
-  String get customExamSourceBoard => 'Board Papers';
+  String get customExamSourceBoard => 'ബോർഡ് പേപ്പറുകൾ';
 
   @override
-  String get customExamSourceImportant => 'Important Questions';
+  String get customExamSourceImportant => 'പ്രധാനപ്പെട്ട ചോദ്യങ്ങൾ';
 
   @override
-  String get customExamStepCount => 'Step 3: Number of Questions';
+  String get customExamStepCount => 'ഘട്ടം 3: ചോദ്യങ്ങളുടെ എണ്ണം';
 
   @override
-  String get customExamStepDifficulty => 'Step 4: Difficulty Level';
+  String get customExamStepDifficulty => 'ഘട്ടം 4: കാഠിന്യം';
 
   @override
-  String get customExamDiffEasy => 'Easy';
+  String get customExamDiffEasy => 'എളുപ്പം';
 
   @override
-  String get customExamDiffMedium => 'Medium';
+  String get customExamDiffMedium => 'ഇടത്തരം';
 
   @override
-  String get customExamDiffHard => 'Hard';
+  String get customExamDiffHard => 'കഠിനം';
 
   @override
-  String get customExamDiffMixed => 'Mixed';
+  String get customExamDiffMixed => 'മിക്സഡ്';
 
   @override
-  String get customExamStepMode => 'Step 5: Attempt Mode';
+  String get customExamStepMode => 'ഘട്ടം 5: അറ്റംപ്റ്റ് മോഡ്';
 
   @override
-  String get customExamModeQuiz => 'Quiz';
+  String get customExamModeQuiz => 'ക്വിസ്';
 
   @override
   String get customExamModeQuizDesc =>
-      'Get instant feedback and explanations after each question';
+      'ഓരോ ചോദ്യത്തിനും ശേഷം ഉടനടി ഫീഡ്‌ബാക്കും വിശദീകരണങ്ങളും നേടുക';
 
   @override
-  String get customExamModeTest => 'Test';
+  String get customExamModeTest => 'ടെസ്റ്റ്';
 
   @override
   String get customExamModeTestDesc =>
-      'Attempt like a real exam with a timer and final result';
+      'ടൈമറും അവസാന ഫലവുമുള്ള ഒരു യഥാർത്ഥ പരീക്ഷ പോലെ ശ്രമിക്കുക';
 
   @override
-  String get customExamBtnCreate => 'Create Practice Exam';
+  String get customExamBtnCreate => 'പ്രാക്ടീസ് പരീക്ഷ സൃഷ്ടിക്കുക';
 
   @override
-  String get customExamBtnGoBack => 'Go back';
+  String get customExamBtnGoBack => 'തിരികെ പോവുക';
 
   @override
   String customExamCountLabel(int count) {
-    return '$count questions';
+    return '$count ചോദ്യങ്ങൾ';
   }
 }
