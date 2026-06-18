@@ -32,7 +32,7 @@ class ChaptersListPage extends ConsumerStatefulWidget {
 }
 
 class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
-  CurriculumFilter _activeFilter = CurriculumFilter.all;
+  CurriculumFilter? _activeFilter;
   late final ScrollController _scrollController;
 
   @override
@@ -56,17 +56,19 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
     }
   }
 
-  void _onFilterChanged(CurriculumFilter filter) {
+  void _onFilterChanged(CurriculumFilter? filter) {
     setState(() {
       _activeFilter = filter;
     });
   }
 
-  String? _apiTypeForFilter(CurriculumFilter filter) {
+  String? _apiTypeForFilter(CurriculumFilter? filter) {
+    if (filter == null) return null;
     return switch (filter) {
       CurriculumFilter.all => null,
-      CurriculumFilter.lesson => null,
       CurriculumFilter.video => 'video',
+      CurriculumFilter.notes => 'notes',
+      CurriculumFilter.attachment => 'attachment',
       CurriculumFilter.assessment => 'assessment',
       CurriculumFilter.test => 'test',
     };
@@ -82,9 +84,10 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final visibleFilters = ChaptersFilterRules.getVisibleFilters();
-    final activeFilter = visibleFilters.contains(_activeFilter)
-        ? _activeFilter
-        : CurriculumFilter.all;
+    final activeFilter =
+        _activeFilter != null && !visibleFilters.contains(_activeFilter)
+            ? null
+            : _activeFilter;
 
     final chaptersAsync = ref.watch(
       subChaptersProvider(widget.courseId, widget.parentId),
@@ -99,8 +102,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
             orElse: () => null,
           );
 
-          final showLessons =
-              activeFilter != CurriculumFilter.all || chapters.isEmpty;
+          final showLessons = activeFilter != null || chapters.isEmpty;
 
           final lessons = <LessonDto>[];
           bool isLoadingFilter = false;
@@ -118,21 +120,28 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
             isLoadingMore = filterState.isLoadingMore;
           }
 
-          final filteredLessons = activeFilter == CurriculumFilter.all ||
-                  activeFilter == CurriculumFilter.lesson
-              ? lessons
-              : lessons.where((l) {
-                  final targetType = switch (activeFilter) {
-                    CurriculumFilter.video => LessonType.video,
-                    CurriculumFilter.assessment => LessonType.assessment,
-                    CurriculumFilter.test => LessonType.test,
-                    _ => throw UnimplementedError(),
-                  };
-                  return l.type == targetType;
-                }).toList();
+          final filteredLessons =
+              activeFilter == null || activeFilter == CurriculumFilter.all
+                  ? lessons
+                  : lessons.where((l) {
+                      final targetTypes = switch (activeFilter) {
+                        CurriculumFilter.video => [LessonType.video],
+                        CurriculumFilter.notes => [
+                            LessonType.notes,
+                            LessonType.embedContent
+                          ],
+                        CurriculumFilter.attachment => [
+                            LessonType.attachment,
+                            LessonType.pdf
+                          ],
+                        CurriculumFilter.assessment => [LessonType.assessment],
+                        CurriculumFilter.test => [LessonType.test],
+                        _ => throw UnimplementedError(),
+                      };
+                      return targetTypes.contains(l.type);
+                    }).toList();
 
-          final showChapters =
-              activeFilter == CurriculumFilter.all && chapters.isNotEmpty;
+          final showChapters = activeFilter == null && chapters.isNotEmpty;
           String headerTitle = course?.title ?? 'Curriculum';
 
           return Column(
@@ -211,7 +220,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                         : filteredLessons.isEmpty
                             ? Center(
                                 child: AppText.body(
-                                  'No ${widget.showFilters ? activeFilter.displayName : "exams"} found.',
+                                  'No ${widget.showFilters ? (activeFilter?.displayName ?? "items") : "exams"} found.',
                                   color: design.colors.textSecondary,
                                 ),
                               )

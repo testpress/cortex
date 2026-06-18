@@ -5,14 +5,16 @@ import 'package:flutter/widgets.dart';
 enum CurriculumFilter {
   all,
   video,
-  lesson,
+  notes,
+  attachment,
   assessment,
   test;
 
   String get displayName => switch (this) {
         CurriculumFilter.all => 'items',
         CurriculumFilter.video => 'videos',
-        CurriculumFilter.lesson => 'lessons',
+        CurriculumFilter.notes => 'notes',
+        CurriculumFilter.attachment => 'attachments',
         CurriculumFilter.assessment => 'assessments',
         CurriculumFilter.test => 'tests',
       };
@@ -29,8 +31,8 @@ class ChaptersFilterTabBar extends StatelessWidget {
     required this.visibleFilters,
   });
 
-  final CurriculumFilter activeFilter;
-  final ValueChanged<CurriculumFilter> onFilterChanged;
+  final CurriculumFilter? activeFilter;
+  final ValueChanged<CurriculumFilter?> onFilterChanged;
   final List<CurriculumFilter> visibleFilters;
 
   @override
@@ -41,14 +43,19 @@ class ChaptersFilterTabBar extends StatelessWidget {
     final tabs = [
       (filter: CurriculumFilter.all, label: l10n.filterAll, icon: null),
       (
-        filter: CurriculumFilter.lesson,
-        label: l10n.filterLesson,
-        icon: LucideIcons.fileText,
-      ),
-      (
         filter: CurriculumFilter.video,
         label: l10n.filterVideo,
         icon: LucideIcons.playCircle,
+      ),
+      (
+        filter: CurriculumFilter.notes,
+        label: 'Notes', // Using string literal as requested
+        icon: LucideIcons.fileText,
+      ),
+      (
+        filter: CurriculumFilter.attachment,
+        label: 'Attachments', // Using string literal as requested
+        icon: LucideIcons.paperclip,
       ),
       (
         filter: CurriculumFilter.assessment,
@@ -77,7 +84,7 @@ class ChaptersFilterTabBar extends StatelessWidget {
                   label: tab.label,
                   icon: tab.icon,
                   isSelected: isSelected,
-                  onTap: () => onFilterChanged(tab.filter),
+                  onTap: () => onFilterChanged(isSelected ? null : tab.filter),
                 ),
               );
             }).toList(),
