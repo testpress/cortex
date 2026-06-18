@@ -108,6 +108,12 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
           bool isLoadingFilter = false;
           bool isLoadingMore = false;
 
+          final allFilterState = ref.watch(filteredLessonsProvider(
+            widget.courseId,
+            chapterId: widget.parentId,
+            type: null,
+          ));
+
           if (showLessons) {
             final type = _apiTypeForFilter(activeFilter);
             final filterState = ref.watch(filteredLessonsProvider(
@@ -115,8 +121,19 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
               chapterId: widget.parentId,
               type: type,
             ));
-            lessons.addAll(filterState.lessons);
-            isLoadingFilter = filterState.isLoading;
+
+            // Optimistic UI: If the specific filter is loading and has no data yet,
+            // fallback to the 'All' tab's cached data to prevent skeleton flickering.
+            if (filterState.lessons.isEmpty &&
+                filterState.isLoading &&
+                type != null) {
+              lessons.addAll(allFilterState.lessons);
+              isLoadingFilter =
+                  false; // Hide skeleton since we have optimistic data
+            } else {
+              lessons.addAll(filterState.lessons);
+              isLoadingFilter = filterState.isLoading;
+            }
             isLoadingMore = filterState.isLoadingMore;
           }
 
