@@ -566,6 +566,13 @@ class AppLocalizationsTa extends AppLocalizations {
   String get studyLessonsTitle => 'பாடங்கள்';
 
   @override
+  String get noCoursesAvailable => 'பாடநெறிகள் கிடைக்கவில்லை';
+
+  @override
+  String get selectExamToViewQuestions =>
+      'கேள்வித் தாள்களைக் காண ஒரு தேர்வைத் தேர்ந்தெடுக்கவும்';
+
+  @override
   String get filterVideo => 'வீடியோக்கள்';
 
   @override

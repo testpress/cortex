@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart' show RefreshIndicator;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:core/core.dart';
@@ -51,18 +52,29 @@ class _InfoPageState extends ConsumerState<InfoPage> {
 
     return DecoratedBox(
       decoration: BoxDecoration(color: design.colors.canvas),
-      child: CustomScrollView(
-        controller: _scrollController,
-        physics: const BouncingScrollPhysics(),
-        slivers: [
+      child: Column(
+        children: [
           const _InfoPageHeader(),
           _InfoPageSeparator(color: design.colors.divider),
-          _InfoCourseList(
-            coursesAsync: coursesAsync,
-            isSyncing: isSyncing,
-            isSyncingMore: isSyncingMore,
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: () => ref.read(infoListProvider.notifier).refresh(),
+              child: CustomScrollView(
+                controller: _scrollController,
+                physics: const AlwaysScrollableScrollPhysics(
+                  parent: BouncingScrollPhysics(),
+                ),
+                slivers: [
+                  _InfoCourseList(
+                    coursesAsync: coursesAsync,
+                    isSyncing: isSyncing,
+                    isSyncingMore: isSyncingMore,
+                  ),
+                  const SliverToBoxAdapter(child: SizedBox(height: 120)),
+                ],
+              ),
+            ),
           ),
-          const SliverToBoxAdapter(child: SizedBox(height: 120)),
         ],
       ),
     );
@@ -79,29 +91,28 @@ class _InfoPageHeader extends StatelessWidget {
     final l10n = L10n.of(context);
     final padding = MediaQuery.paddingOf(context);
 
-    return SliverToBoxAdapter(
-      child: Container(
-        color: design.colors.card,
-        padding: EdgeInsets.fromLTRB(
-          padding.left > design.spacing.md ? padding.left : design.spacing.md,
-          padding.top + design.spacing.md,
-          padding.right > design.spacing.md ? padding.right : design.spacing.md,
-          design.spacing.md,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AppText.headline(
-              l10n.infoPageTitle,
-              color: design.colors.textPrimary,
-            ),
-            SizedBox(height: design.spacing.xs),
-            AppText.body(
-              l10n.infoPageSubtitle,
-              color: design.colors.textSecondary,
-            ),
-          ],
-        ),
+    return Container(
+      width: double.infinity,
+      color: design.colors.card,
+      padding: EdgeInsets.fromLTRB(
+        padding.left > design.spacing.md ? padding.left : design.spacing.md,
+        padding.top + design.spacing.md,
+        padding.right > design.spacing.md ? padding.right : design.spacing.md,
+        design.spacing.md,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AppText.headline(
+            l10n.infoPageTitle,
+            color: design.colors.textPrimary,
+          ),
+          SizedBox(height: design.spacing.xs),
+          AppText.body(
+            l10n.infoPageSubtitle,
+            color: design.colors.textSecondary,
+          ),
+        ],
       ),
     );
   }
@@ -114,11 +125,9 @@ class _InfoPageSeparator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Container(
-        height: 1,
-        color: color,
-      ),
+    return Container(
+      height: 1,
+      color: color,
     );
   }
 }

@@ -101,6 +101,23 @@ class CourseList extends _$CourseList {
     }
   }
 
+  Future<void> refresh() async {
+    final search = ref.read(courseSearchProvider);
+    if (search.query.isNotEmpty) {
+      await ref.read(courseSearchProvider.notifier).search(search.query);
+      return;
+    }
+
+    if (_pendingSyncRequest != null) return _pendingSyncRequest;
+    _pendingSyncRequest = _performSync(isReset: true);
+    try {
+      await _pendingSyncRequest;
+      ref.read(courseSyncMetadataProvider.notifier).markSynced();
+    } finally {
+      _pendingSyncRequest = null;
+    }
+  }
+
   Future<void> _performSync({required bool isReset}) async {
     // Reset any previous errors
     ref.read(courseListSyncError.notifier).state = null;

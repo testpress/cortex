@@ -558,6 +558,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get studyLessonsTitle => 'Lessons';
 
   @override
+  String get noCoursesAvailable => 'No courses available';
+
+  @override
+  String get selectExamToViewQuestions =>
+      'Select an exam to view question papers';
+
+  @override
   String get filterVideo => 'Videos';
 
   @override

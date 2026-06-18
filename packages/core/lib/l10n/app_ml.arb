@@ -173,6 +173,8 @@
   "studySearchHint": "കോഴ്സുകൾ, ചാപ്റ്ററുകൾ, പാഠങ്ങൾ സെർച്ച് ചെയ്യുക",
   "studyYourCoursesTitle": "നിങ്ങളുടെ കോഴ്സുകൾ",
   "studyLessonsTitle": "പാഠങ്ങൾ",
+  "noCoursesAvailable": "കോഴ്സുകൾ ലഭ്യമല്ല",
+  "selectExamToViewQuestions": "ചോദ്യപേപ്പറുകൾ കാണാൻ ഒരു പരീക്ഷ തിരഞ്ഞെടുക്കുക",
   "filterVideo": "വീഡിയോ",
   "filterAssessment": "അസസ്‌മെന്റ്",
   "filterTest": "ടെസ്റ്റ്",

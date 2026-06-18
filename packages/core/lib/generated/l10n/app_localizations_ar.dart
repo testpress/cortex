@@ -556,6 +556,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get studyLessonsTitle => 'الدروس';
 
   @override
+  String get noCoursesAvailable => 'لا توجد دورات متاحة';
+
+  @override
+  String get selectExamToViewQuestions => 'حدد اختبارًا لعرض أوراق الأسئلة';
+
+  @override
   String get filterVideo => 'فيديو';
 
   @override

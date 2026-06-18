@@ -270,6 +270,17 @@ class ExamList extends _$ExamList {
     }
   }
 
+  Future<void> refresh() async {
+    if (_pendingSyncRequest != null) return _pendingSyncRequest;
+    _pendingSyncRequest = _performSync(isReset: true);
+    try {
+      await _pendingSyncRequest;
+      ref.read(examSyncMetadataProvider.notifier).markSynced();
+    } finally {
+      _pendingSyncRequest = null;
+    }
+  }
+
   Future<void> _performSync({required bool isReset}) async {
     if (isReset) {
       _paginationTracker = const PaginationState();

@@ -271,6 +271,8 @@
   "studySearchHint": "Search courses, chapters, lessons",
   "studyYourCoursesTitle": "Your Courses",
   "studyLessonsTitle": "Lessons",
+  "noCoursesAvailable": "No courses available",
+  "selectExamToViewQuestions": "Select an exam to view question papers",
   "filterVideo": "Videos",
   "filterAssessment": "Assessments",
   "filterTest": "Tests",
