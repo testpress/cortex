@@ -17,18 +17,21 @@ class HierarchicalTopicPicker extends ConsumerStatefulWidget {
 class _HierarchicalTopicPickerState
     extends ConsumerState<HierarchicalTopicPicker> {
   final List<DoubtTopicDto> _topicPath = [];
-  int? _selectedChipId; // The ID of the leaf node or -1 for "I don't know"
+  int? _selectedChipId;
+  bool _isIdkSelected = false;
 
   void _onTopicTapped(DoubtTopicDto topic) {
     if (topic.hasChildren) {
       setState(() {
         _topicPath.add(topic);
         _selectedChipId = null;
+        _isIdkSelected = false;
       });
       widget.onTopicFinalized(null, isFinalized: false);
     } else {
       setState(() {
         _selectedChipId = topic.id;
+        _isIdkSelected = false;
       });
       widget.onTopicFinalized(topic.id, isFinalized: true);
     }
@@ -36,7 +39,8 @@ class _HierarchicalTopicPickerState
 
   void _onIdkTapped() {
     setState(() {
-      _selectedChipId = -1;
+      _selectedChipId = null;
+      _isIdkSelected = true;
     });
     widget.onTopicFinalized(_topicPath.lastOrNull?.id, isFinalized: true);
   }
@@ -45,6 +49,7 @@ class _HierarchicalTopicPickerState
     // -1 means "Topics" (root)
     setState(() {
       _selectedChipId = null;
+      _isIdkSelected = false;
       if (index == -1) {
         _topicPath.clear();
       } else {
@@ -57,6 +62,7 @@ class _HierarchicalTopicPickerState
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     final currentParentId = _topicPath.lastOrNull?.id;
     final topicsAsync = ref.watch(doubtSubtopicsProvider(currentParentId));
 
@@ -68,19 +74,25 @@ class _HierarchicalTopicPickerState
           spacing: 4,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            AppFocusable(
+            AppSemantics.button(
+              label: l10n.doubtsFormTopicsLabel,
               onTap: _topicPath.isNotEmpty
                   ? () => _onBreadcrumbTapped(-1)
                   : null,
-              child: AppText.bodySmall(
-                'Topics',
-                color: _topicPath.isEmpty
-                    ? design.colors.textPrimary
-                    : design.colors.textSecondary,
-                style: TextStyle(
-                  fontWeight: _topicPath.isEmpty
-                      ? FontWeight.w600
-                      : FontWeight.normal,
+              child: AppFocusable(
+                onTap: _topicPath.isNotEmpty
+                    ? () => _onBreadcrumbTapped(-1)
+                    : null,
+                child: AppText.bodySmall(
+                  l10n.doubtsFormTopicsLabel,
+                  color: _topicPath.isEmpty
+                      ? design.colors.textPrimary
+                      : design.colors.textSecondary,
+                  style: TextStyle(
+                    fontWeight: _topicPath.isEmpty
+                        ? FontWeight.w600
+                        : FontWeight.normal,
+                  ),
                 ),
               ),
             ),
@@ -90,19 +102,25 @@ class _HierarchicalTopicPickerState
                 size: 14,
                 color: design.colors.textTertiary,
               ),
-              AppFocusable(
+              AppSemantics.button(
+                label: _topicPath[i].title,
                 onTap: i < _topicPath.length - 1
                     ? () => _onBreadcrumbTapped(i)
                     : null,
-                child: AppText.bodySmall(
-                  _topicPath[i].title,
-                  color: i == _topicPath.length - 1
-                      ? design.colors.textPrimary
-                      : design.colors.textSecondary,
-                  style: TextStyle(
-                    fontWeight: i == _topicPath.length - 1
-                        ? FontWeight.w600
-                        : FontWeight.normal,
+                child: AppFocusable(
+                  onTap: i < _topicPath.length - 1
+                      ? () => _onBreadcrumbTapped(i)
+                      : null,
+                  child: AppText.bodySmall(
+                    _topicPath[i].title,
+                    color: i == _topicPath.length - 1
+                        ? design.colors.textPrimary
+                        : design.colors.textSecondary,
+                    style: TextStyle(
+                      fontWeight: i == _topicPath.length - 1
+                          ? FontWeight.w600
+                          : FontWeight.normal,
+                    ),
                   ),
                 ),
               ),
@@ -126,8 +144,8 @@ class _HierarchicalTopicPickerState
                   );
                 }),
                 AppChip(
-                  label: 'I don\'t know',
-                  isSelected: _selectedChipId == -1,
+                  label: l10n.doubtsFormIdkLabel,
+                  isSelected: _isIdkSelected,
                   onTap: _onIdkTapped,
                 ),
               ],
@@ -138,7 +156,7 @@ class _HierarchicalTopicPickerState
             child: Center(child: AppLoadingIndicator()),
           ),
           error: (e, s) => AppText.bodySmall(
-            'Failed to load topics',
+            l10n.doubtsFormFailedToLoadTopics,
             color: design.colors.textTertiary,
           ),
         ),

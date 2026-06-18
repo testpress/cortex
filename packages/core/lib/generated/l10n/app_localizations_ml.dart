@@ -1514,6 +1514,16 @@ class AppLocalizationsMl extends AppLocalizations {
   String get doubtsFormCancelAction => 'റദ്ദാക്കുക';
 
   @override
+  String get doubtsFormTopicsLabel => 'വിഷയങ്ങൾ';
+
+  @override
+  String get doubtsFormIdkLabel => 'എനിക്കറിയില്ല';
+
+  @override
+  String get doubtsFormFailedToLoadTopics =>
+      'വിഷയങ്ങൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു';
+
+  @override
   String get examInstructions => 'Exam Instructions';
 
   @override

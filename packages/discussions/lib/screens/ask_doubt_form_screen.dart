@@ -173,7 +173,6 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
         _titleController.text.trim().isNotEmpty &&
         _quillController.document.toPlainText().trim().isNotEmpty &&
         _isTopicFinalized;
-    final isEnabled = canSubmit;
 
     return Container(
       padding: EdgeInsets.fromLTRB(
@@ -206,19 +205,19 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
               trailing: Icon(
                 LucideIcons.arrowRight,
                 size: 18,
-                color: isEnabled
+                color: canSubmit
                     ? design.colors.textInverse
                     : design.colors.textInverse.withValues(alpha: 0.9),
               ),
               fullWidth: true,
-              onPressed: isEnabled
+              onPressed: canSubmit
                   ? () => setState(() => _isSubmitSheetOpen = true)
                   : null,
               height: 52,
-              backgroundColor: isEnabled
+              backgroundColor: canSubmit
                   ? design.colors.accent2
                   : design.colors.accent2.withValues(alpha: 0.5),
-              foregroundColor: isEnabled
+              foregroundColor: canSubmit
                   ? design.colors.textInverse
                   : design.colors.textInverse.withValues(alpha: 0.9),
             ),
