@@ -5,17 +5,22 @@ import 'package:flutter/widgets.dart';
 enum CurriculumFilter {
   all,
   video,
-  lesson,
+  notes,
+  attachment,
   assessment,
   test;
 
-  String get displayName => switch (this) {
-        CurriculumFilter.all => 'items',
-        CurriculumFilter.video => 'videos',
-        CurriculumFilter.lesson => 'lessons',
-        CurriculumFilter.assessment => 'assessments',
-        CurriculumFilter.test => 'tests',
-      };
+  String displayName(BuildContext context) {
+    final l10n = L10n.of(context);
+    return switch (this) {
+      CurriculumFilter.all => l10n.labelContentsPlural,
+      CurriculumFilter.video => l10n.filterVideo,
+      CurriculumFilter.notes => l10n.filterNotes,
+      CurriculumFilter.attachment => l10n.filterAttachment,
+      CurriculumFilter.assessment => l10n.filterAssessment,
+      CurriculumFilter.test => l10n.filterTest,
+    };
+  }
 }
 
 /// A horizontal scrollable tab bar for filtering content in the Chapters list.
@@ -29,8 +34,8 @@ class ChaptersFilterTabBar extends StatelessWidget {
     required this.visibleFilters,
   });
 
-  final CurriculumFilter activeFilter;
-  final ValueChanged<CurriculumFilter> onFilterChanged;
+  final CurriculumFilter? activeFilter;
+  final ValueChanged<CurriculumFilter?> onFilterChanged;
   final List<CurriculumFilter> visibleFilters;
 
   @override
@@ -41,14 +46,19 @@ class ChaptersFilterTabBar extends StatelessWidget {
     final tabs = [
       (filter: CurriculumFilter.all, label: l10n.filterAll, icon: null),
       (
-        filter: CurriculumFilter.lesson,
-        label: l10n.filterLesson,
-        icon: LucideIcons.fileText,
-      ),
-      (
         filter: CurriculumFilter.video,
         label: l10n.filterVideo,
         icon: LucideIcons.playCircle,
+      ),
+      (
+        filter: CurriculumFilter.notes,
+        label: l10n.filterNotes,
+        icon: LucideIcons.fileText,
+      ),
+      (
+        filter: CurriculumFilter.attachment,
+        label: l10n.filterAttachment,
+        icon: LucideIcons.paperclip,
       ),
       (
         filter: CurriculumFilter.assessment,
@@ -77,7 +87,7 @@ class ChaptersFilterTabBar extends StatelessWidget {
                   label: tab.label,
                   icon: tab.icon,
                   isSelected: isSelected,
-                  onTap: () => onFilterChanged(tab.filter),
+                  onTap: () => onFilterChanged(isSelected ? null : tab.filter),
                 ),
               );
             }).toList(),
@@ -105,19 +115,23 @@ class _FilterTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
+    final l10n = L10n.of(context);
+
     // Use design tokens for tab backgrounds/foregrounds
     final bgColor =
         isSelected ? design.colors.textPrimary : design.colors.surfaceVariant;
     final fgColor = isSelected ? design.colors.card : design.colors.textPrimary;
 
     return AppSemantics.button(
-      label: 'Filter by $label',
+      label: l10n.filterBy(label),
       onTap: onTap,
       child: AppFocusable(
         onTap: onTap,
         borderRadius: design.radius.pill,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
+          duration: MotionPreferences.shouldAnimate(context)
+              ? MotionPreferences.duration(context, design.motion.fast)
+              : Duration.zero,
           curve: design.motion.easeOut,
           padding: EdgeInsets.symmetric(
             horizontal: design.spacing.md,

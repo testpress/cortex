@@ -569,13 +569,16 @@ class AppLocalizationsTa extends AppLocalizations {
   String get filterVideo => 'வீடியோக்கள்';
 
   @override
-  String get filterLesson => 'பாடங்கள்';
-
-  @override
   String get filterAssessment => 'மதிப்பீடுகள்';
 
   @override
   String get filterTest => 'தேர்வுகள்';
+
+  @override
+  String get filterNotes => 'குறிப்புகள்';
+
+  @override
+  String get filterAttachment => 'இணைப்புகள்';
 
   @override
   String get resumeStudyHeader => 'படிப்பை தொடரவும்';
@@ -1891,6 +1894,14 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get analyticsNoSubjectsFound => 'பாடங்கள் எதுவும் கிடைக்கவில்லை.';
+
+  @override
+  String filterEmptyStateMessage(String name) {
+    return '$name எதுவும் கிடைக்கவில்லை.';
+  }
+
+  @override
+  String get labelExams => 'தேர்வுகள்';
 
   @override
   String get analyticsStrengthCorrect => 'பலம் / சரியானது';

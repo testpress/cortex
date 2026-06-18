@@ -559,13 +559,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get filterVideo => 'فيديو';
 
   @override
-  String get filterLesson => 'درس';
-
-  @override
   String get filterAssessment => 'تقييم';
 
   @override
   String get filterTest => 'اختبار';
+
+  @override
+  String get filterNotes => 'ملاحظات';
+
+  @override
+  String get filterAttachment => 'مرفقات';
 
   @override
   String get resumeStudyHeader => 'استئناف الدراسة';
@@ -1868,6 +1871,14 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get analyticsNoSubjectsFound => 'لم يتم العثور على أي مواد.';
+
+  @override
+  String filterEmptyStateMessage(String name) {
+    return 'لم يتم العثور على $name.';
+  }
+
+  @override
+  String get labelExams => 'امتحانات';
 
   @override
   String get analyticsStrengthCorrect => 'نقاط القوة / صحيح';

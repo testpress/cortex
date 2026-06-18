@@ -561,13 +561,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filterVideo => 'Videos';
 
   @override
-  String get filterLesson => 'Lessons';
-
-  @override
   String get filterAssessment => 'Assessments';
 
   @override
   String get filterTest => 'Tests';
+
+  @override
+  String get filterNotes => 'Notes';
+
+  @override
+  String get filterAttachment => 'Attachments';
 
   @override
   String get resumeStudyHeader => 'Resume Study';
@@ -1858,6 +1861,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get analyticsNoSubjectsFound => 'No subjects found.';
+
+  @override
+  String filterEmptyStateMessage(String name) {
+    return 'No $name found.';
+  }
+
+  @override
+  String get labelExams => 'exams';
 
   @override
   String get analyticsStrengthCorrect => 'Strength / Correct';

@@ -272,9 +272,10 @@
   "studyYourCoursesTitle": "Your Courses",
   "studyLessonsTitle": "Lessons",
   "filterVideo": "Videos",
-  "filterLesson": "Lessons",
   "filterAssessment": "Assessments",
   "filterTest": "Tests",
+  "filterNotes": "Notes",
+  "filterAttachment": "Attachments",
   "resumeStudyHeader": "Resume Study",
   "labelRetry": "Retry",
   "labelCompleted": "completed",
@@ -886,6 +887,15 @@
   "analyticsIncorrect": "Incorrect",
   "analyticsAccuracy": "Accuracy",
   "analyticsNoSubjectsFound": "No subjects found.",
+  "filterEmptyStateMessage": "No {name} found.",
+  "@filterEmptyStateMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "labelExams": "exams",
   "analyticsStrengthCorrect": "Strength / Correct",
   "analyticsWeaknessIncorrect": "Weakness / Incorrect",
   "analyticsSubjectUppercase": "SUBJECT",

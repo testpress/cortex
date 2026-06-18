@@ -346,7 +346,15 @@ class CourseRepository {
     }
 
     if (type != null && type.isNotEmpty) {
-      query.where(_db.lessonsTable.type.equals(type));
+      if (type == LessonType.attachment.name) {
+        query.where(_db.lessonsTable.type
+            .isIn([LessonType.attachment.name, LessonType.pdf.name]));
+      } else if (type == LessonType.notes.name) {
+        query.where(_db.lessonsTable.type
+            .isIn([LessonType.notes.name, LessonType.embedContent.name]));
+      } else {
+        query.where(_db.lessonsTable.type.equals(type));
+      }
     }
 
     return query.watch().map((rows) {
