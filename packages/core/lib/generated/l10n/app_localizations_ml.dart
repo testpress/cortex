@@ -1846,38 +1846,39 @@ class AppLocalizationsMl extends AppLocalizations {
   String get bookmarkLabelSortBy => 'തരം തിരിക്കുക';
 
   @override
-  String get bookmarkActionCreateFolder => 'Create folder';
+  String get bookmarkActionCreateFolder => 'ഫോൾഡർ സൃഷ്ടിക്കുക';
 
   @override
-  String get bookmarkLabelName => 'Name';
+  String get bookmarkLabelName => 'പേര്';
 
   @override
-  String get bookmarkActionDelete => 'Delete';
+  String get bookmarkActionDelete => 'ഇല്ലാതാക്കുക';
 
   @override
-  String get actionCheck => 'Check';
+  String get actionCheck => 'പരിശോധിക്കുക';
 
   @override
-  String get examModeSelectTitle => 'Select Exam Mode';
+  String get examModeSelectTitle => 'പരീക്ഷാ മോഡ് തിരഞ്ഞെടുക്കുക';
 
   @override
-  String get examModeRegularTitle => 'Regular Mode';
+  String get examModeRegularTitle => 'റെഗുലർ മോഡ്';
 
   @override
   String get examModeRegularDesc =>
-      'Take the test in standard exam mode with a timer.';
+      'ഒരു ടൈമറിനൊപ്പം സ്റ്റാൻഡേർഡ് പരീക്ഷാ മോഡിൽ പരീക്ഷയെഴുതുക.';
 
   @override
-  String get examModeQuizTitle => 'Quiz Mode';
+  String get examModeQuizTitle => 'ക്വിസ് മോഡ്';
 
   @override
-  String get examModeQuizDesc => 'Check answers immediately as you go.';
+  String get examModeQuizDesc =>
+      'നിങ്ങൾ പോകുമ്പോൾ ഉടനടി ഉത്തരങ്ങൾ പരിശോധിക്കുക.';
 
   @override
-  String get resumeExamOnline => 'Resume Exam Online';
+  String get resumeExamOnline => 'പരീക്ഷ ഓൺലൈനിൽ തുടരുക';
 
   @override
-  String get startExamOnline => 'Start Exam Online';
+  String get startExamOnline => 'പരീക്ഷ ഓൺലൈനിൽ ആരംഭിക്കുക';
 
   @override
   String get analyticsInvalidTopicId => 'അസാധുവായ വിഷയം ഐഡി';
@@ -1952,5 +1953,92 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String analyticsSelectTab(String label) {
     return '$label ടാബ് തിരഞ്ഞെടുക്കുക';
+  }
+
+  @override
+  String get customExamCreateTitle => 'പ്രാക്ടീസ് പരീക്ഷ സൃഷ്ടിക്കുക';
+
+  @override
+  String get customExamSelectCourse => 'കോഴ്സ് തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get customExamSearchCourses => 'കോഴ്സുകൾ തിരയുക...';
+
+  @override
+  String get customExamNoCoursesFound => 'കോഴ്സുകളൊന്നും കണ്ടെത്തിയില്ല.';
+
+  @override
+  String get customExamStepScope => 'ഘട്ടം 1: പ്രാക്ടീസ് സ്കോപ്പ്';
+
+  @override
+  String get customExamFullCourse => 'മുഴുവൻ കോഴ്സ് പ്രാക്ടീസ്';
+
+  @override
+  String get customExamCoverAllTopics => 'എല്ലാ വിഷയങ്ങളും ഉൾക്കൊള്ളുന്നു';
+
+  @override
+  String get customExamSpecificCourse => 'ഒരു നിർദ്ദിഷ്ട കോഴ്സ് പരിശീലിക്കുക';
+
+  @override
+  String customExamCoursePrefix(String name) {
+    return 'കോഴ്സ്: $name';
+  }
+
+  @override
+  String get customExamStepSource => 'ഘട്ടം 2: ചോദ്യ ഉറവിടം';
+
+  @override
+  String get customExamSourcePrevYear => 'കഴിഞ്ഞ വർഷത്തെ ചോദ്യങ്ങൾ';
+
+  @override
+  String get customExamSourceBoard => 'ബോർഡ് പേപ്പറുകൾ';
+
+  @override
+  String get customExamSourceImportant => 'പ്രധാനപ്പെട്ട ചോദ്യങ്ങൾ';
+
+  @override
+  String get customExamStepCount => 'ഘട്ടം 3: ചോദ്യങ്ങളുടെ എണ്ണം';
+
+  @override
+  String get customExamStepDifficulty => 'ഘട്ടം 4: കാഠിന്യം';
+
+  @override
+  String get customExamDiffEasy => 'എളുപ്പം';
+
+  @override
+  String get customExamDiffMedium => 'ഇടത്തരം';
+
+  @override
+  String get customExamDiffHard => 'കഠിനം';
+
+  @override
+  String get customExamDiffMixed => 'മിക്സഡ്';
+
+  @override
+  String get customExamStepMode => 'ഘട്ടം 5: അറ്റംപ്റ്റ് മോഡ്';
+
+  @override
+  String get customExamModeQuiz => 'ക്വിസ്';
+
+  @override
+  String get customExamModeQuizDesc =>
+      'ഓരോ ചോദ്യത്തിനും ശേഷം ഉടനടി ഫീഡ്‌ബാക്കും വിശദീകരണങ്ങളും നേടുക';
+
+  @override
+  String get customExamModeTest => 'ടെസ്റ്റ്';
+
+  @override
+  String get customExamModeTestDesc =>
+      'ടൈമറും അവസാന ഫലവുമുള്ള ഒരു യഥാർത്ഥ പരീക്ഷ പോലെ ശ്രമിക്കുക';
+
+  @override
+  String get customExamBtnCreate => 'പ്രാക്ടീസ് പരീക്ഷ സൃഷ്ടിക്കുക';
+
+  @override
+  String get customExamBtnGoBack => 'തിരികെ പോവുക';
+
+  @override
+  String customExamCountLabel(int count) {
+    return '$count ചോദ്യങ്ങൾ';
   }
 }

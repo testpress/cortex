@@ -353,7 +353,7 @@ final examSyncMetadataProvider =
     );
 
 typedef _$ExamSyncMetadata = Notifier<DateTime?>;
-String _$examListHash() => r'e64a5dcc1ed86a2cffd18e7a6431787a1f1230d3';
+String _$examListHash() => r'1469aec3bb349ef9c37cbedcd7fc5de4be5522e7';
 
 /// Notifier that manages the exam-specific course list and its independent sync state.
 ///

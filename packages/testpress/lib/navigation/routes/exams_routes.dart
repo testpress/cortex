@@ -11,6 +11,26 @@ class ExamsRoutes {
       builder: (context, state) => const ExamsScreen(),
       routes: [
         GoRoute(
+          path: 'create-custom-exam',
+          parentNavigatorKey: rootNavigatorKey,
+          builder: (context, state) => Consumer(
+            builder: (context, ref, _) {
+              final coursesAsync = ref.watch(courseListProvider);
+              final courses = coursesAsync.asData?.value ?? <CourseDto>[];
+              return CustomExamOptionsScreen(
+                courses: courses,
+                onInitCourses: () =>
+                    ref.read(courseListProvider.notifier).initialize(),
+                onBack: () => context.pop(),
+                onCreateExam: (config) {
+                  // TODO: Initiate custom exam session with config once API is integrated.
+                  context.pop();
+                },
+              );
+            },
+          ),
+        ),
+        GoRoute(
           path: 'course/:courseId/chapters',
           parentNavigatorKey: rootNavigatorKey,
           builder: (context, state) {

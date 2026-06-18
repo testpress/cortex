@@ -23,6 +23,7 @@ class AppTextField extends StatelessWidget {
     this.contentPadding,
     this.textStyle,
     this.autofillHints,
+    this.prefixIcon,
   });
 
   final String label;
@@ -40,6 +41,7 @@ class AppTextField extends StatelessWidget {
   final EdgeInsetsGeometry? contentPadding;
   final TextStyle? textStyle;
   final Iterable<String>? autofillHints;
+  final IconData? prefixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +89,20 @@ class AppTextField extends StatelessWidget {
                 ),
                 border: InputBorder.none,
                 isDense: true,
+                prefixIcon: prefixIcon != null
+                    ? Padding(
+                        padding: EdgeInsets.only(right: design.spacing.sm),
+                        child: Icon(
+                          prefixIcon,
+                          color: design.colors.textSecondary,
+                          size: 20,
+                        ),
+                      )
+                    : null,
+                prefixIconConstraints: const BoxConstraints(
+                  minWidth: 0,
+                  minHeight: 0,
+                ),
                 contentPadding:
                     contentPadding ??
                     EdgeInsets.symmetric(vertical: design.spacing.md),

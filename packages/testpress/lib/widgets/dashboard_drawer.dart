@@ -75,7 +75,10 @@ class DashboardDrawer extends ConsumerWidget {
             AppDrawerItem(
               icon: LucideIcons.fileCheck,
               label: l10n.drawerCustomExam,
-              action: () {},
+              action: () {
+                ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                context.push('/exams/create-custom-exam');
+              },
             ),
 
             AppDrawerItem(

@@ -36,3 +36,7 @@ extension AppLocalizationsX on AppLocalizations {
     return DateFormat('EEEE · MMM d').format(DateTime.now());
   }
 }
+
+extension L10nContextExtension on BuildContext {
+  AppLocalizations get l10n => L10n.of(this);
+}

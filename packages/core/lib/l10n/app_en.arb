@@ -922,5 +922,44 @@
         "type": "String"
       }
     }
+  },
+  "customExamCreateTitle": "Create Practice Exam",
+  "customExamSelectCourse": "Select Course",
+  "customExamSearchCourses": "Search courses...",
+  "customExamNoCoursesFound": "No courses found.",
+  "customExamStepScope": "Step 1: Practice Scope",
+  "customExamFullCourse": "Full Course Practice",
+  "customExamCoverAllTopics": "Cover all topics",
+  "customExamSpecificCourse": "Practice a specific course",
+  "customExamCoursePrefix": "Course: {name}",
+  "@customExamCoursePrefix": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "customExamStepSource": "Step 2: Question Source",
+  "customExamSourcePrevYear": "Previous Year Questions",
+  "customExamSourceBoard": "Board Papers",
+  "customExamSourceImportant": "Important Questions",
+  "customExamStepCount": "Step 3: Number of Questions",
+  "customExamStepDifficulty": "Step 4: Difficulty Level",
+  "customExamDiffEasy": "Easy",
+  "customExamDiffMedium": "Medium",
+  "customExamDiffHard": "Hard",
+  "customExamDiffMixed": "Mixed",
+  "customExamStepMode": "Step 5: Attempt Mode",
+  "customExamModeQuiz": "Quiz",
+  "customExamModeQuizDesc": "Get instant feedback and explanations after each question",
+  "customExamModeTest": "Test",
+  "customExamModeTestDesc": "Attempt like a real exam with a timer and final result",
+  "customExamBtnCreate": "Create Practice Exam",
+  "customExamBtnGoBack": "Go back",
+  "customExamCountLabel": "{count} questions",
+  "@customExamCountLabel": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
   }
 }

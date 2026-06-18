@@ -1864,10 +1864,10 @@ class AppLocalizationsTa extends AppLocalizations {
       'ஒவ்வொரு கேள்விக்கும் உடனுக்குடன் பதில்களைச் சரிபார்க்கவும்.';
 
   @override
-  String get resumeExamOnline => 'Resume Exam Online';
+  String get resumeExamOnline => 'தேர்வை ஆன்லைனில் தொடரவும்';
 
   @override
-  String get startExamOnline => 'Start Exam Online';
+  String get startExamOnline => 'தேர்வை ஆன்லைனில் தொடங்கவும்';
 
   @override
   String get analyticsInvalidTopicId => 'தவறான தலைப்பு ஐடி';
@@ -1942,5 +1942,93 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String analyticsSelectTab(String label) {
     return '$label தாவலைத் தேர்ந்தெடு';
+  }
+
+  @override
+  String get customExamCreateTitle => 'பயிற்சி தேர்வை உருவாக்கவும்';
+
+  @override
+  String get customExamSelectCourse => 'பாடநெறியைத் தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get customExamSearchCourses => 'பாடநெறிகளைத் தேடுங்கள்...';
+
+  @override
+  String get customExamNoCoursesFound => 'பாடநெறிகள் எதுவும் கிடைக்கவில்லை.';
+
+  @override
+  String get customExamStepScope => 'படி 1: பயிற்சியின் வரம்பு';
+
+  @override
+  String get customExamFullCourse => 'முழு பாடநெறி பயிற்சி';
+
+  @override
+  String get customExamCoverAllTopics => 'அனைத்து தலைப்புகளையும் உள்ளடக்கும்';
+
+  @override
+  String get customExamSpecificCourse =>
+      'ஒரு குறிப்பிட்ட பாடநெறியைப் பயிற்சி செய்யவும்';
+
+  @override
+  String customExamCoursePrefix(String name) {
+    return 'பாடநெறி: $name';
+  }
+
+  @override
+  String get customExamStepSource => 'படி 2: கேள்வி ஆதாரம்';
+
+  @override
+  String get customExamSourcePrevYear => 'முந்தைய ஆண்டுக் கேள்விகள்';
+
+  @override
+  String get customExamSourceBoard => 'வாரியத் தேர்வு வினாத்தாள்கள்';
+
+  @override
+  String get customExamSourceImportant => 'முக்கியமான கேள்விகள்';
+
+  @override
+  String get customExamStepCount => 'படி 3: கேள்விகளின் எண்ணிக்கை';
+
+  @override
+  String get customExamStepDifficulty => 'படி 4: சிரம நிலை';
+
+  @override
+  String get customExamDiffEasy => 'எளிது';
+
+  @override
+  String get customExamDiffMedium => 'நடுத்தரம்';
+
+  @override
+  String get customExamDiffHard => 'கடினம்';
+
+  @override
+  String get customExamDiffMixed => 'கலப்பு';
+
+  @override
+  String get customExamStepMode => 'படி 5: தேர்வு முறை';
+
+  @override
+  String get customExamModeQuiz => 'வினாடி வினா';
+
+  @override
+  String get customExamModeQuizDesc =>
+      'ஒவ்வொரு கேள்விக்கும் பிறகு உடனடி பின்னூட்டமும் விளக்கமும் பெறுங்கள்';
+
+  @override
+  String get customExamModeTest => 'தேர்வு';
+
+  @override
+  String get customExamModeTestDesc =>
+      'நேரக் கணிப்பானுடன் உண்மையான தேர்வு போல எழுதுங்கள்; இறுதியில் முடிவைப் பெறுங்கள்';
+
+  @override
+  String get customExamBtnCreate => 'பயிற்சி தேர்வை உருவாக்கவும்';
+
+  @override
+  String get customExamBtnGoBack => 'திரும்பிச் செல்';
+
+  @override
+  String customExamCountLabel(int count) {
+    return '$count கேள்விகள்';
   }
 }

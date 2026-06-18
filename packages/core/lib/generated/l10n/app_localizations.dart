@@ -3496,6 +3496,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select {label} tab'**
   String analyticsSelectTab(String label);
+
+  /// No description provided for @customExamCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Practice Exam'**
+  String get customExamCreateTitle;
+
+  /// No description provided for @customExamSelectCourse.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Course'**
+  String get customExamSelectCourse;
+
+  /// No description provided for @customExamSearchCourses.
+  ///
+  /// In en, this message translates to:
+  /// **'Search courses...'**
+  String get customExamSearchCourses;
+
+  /// No description provided for @customExamNoCoursesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No courses found.'**
+  String get customExamNoCoursesFound;
+
+  /// No description provided for @customExamStepScope.
+  ///
+  /// In en, this message translates to:
+  /// **'Step 1: Practice Scope'**
+  String get customExamStepScope;
+
+  /// No description provided for @customExamFullCourse.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Course Practice'**
+  String get customExamFullCourse;
+
+  /// No description provided for @customExamCoverAllTopics.
+  ///
+  /// In en, this message translates to:
+  /// **'Cover all topics'**
+  String get customExamCoverAllTopics;
+
+  /// No description provided for @customExamSpecificCourse.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice a specific course'**
+  String get customExamSpecificCourse;
+
+  /// No description provided for @customExamCoursePrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Course: {name}'**
+  String customExamCoursePrefix(String name);
+
+  /// No description provided for @customExamStepSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Step 2: Question Source'**
+  String get customExamStepSource;
+
+  /// No description provided for @customExamSourcePrevYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous Year Questions'**
+  String get customExamSourcePrevYear;
+
+  /// No description provided for @customExamSourceBoard.
+  ///
+  /// In en, this message translates to:
+  /// **'Board Papers'**
+  String get customExamSourceBoard;
+
+  /// No description provided for @customExamSourceImportant.
+  ///
+  /// In en, this message translates to:
+  /// **'Important Questions'**
+  String get customExamSourceImportant;
+
+  /// No description provided for @customExamStepCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Step 3: Number of Questions'**
+  String get customExamStepCount;
+
+  /// No description provided for @customExamStepDifficulty.
+  ///
+  /// In en, this message translates to:
+  /// **'Step 4: Difficulty Level'**
+  String get customExamStepDifficulty;
+
+  /// No description provided for @customExamDiffEasy.
+  ///
+  /// In en, this message translates to:
+  /// **'Easy'**
+  String get customExamDiffEasy;
+
+  /// No description provided for @customExamDiffMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get customExamDiffMedium;
+
+  /// No description provided for @customExamDiffHard.
+  ///
+  /// In en, this message translates to:
+  /// **'Hard'**
+  String get customExamDiffHard;
+
+  /// No description provided for @customExamDiffMixed.
+  ///
+  /// In en, this message translates to:
+  /// **'Mixed'**
+  String get customExamDiffMixed;
+
+  /// No description provided for @customExamStepMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Step 5: Attempt Mode'**
+  String get customExamStepMode;
+
+  /// No description provided for @customExamModeQuiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiz'**
+  String get customExamModeQuiz;
+
+  /// No description provided for @customExamModeQuizDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Get instant feedback and explanations after each question'**
+  String get customExamModeQuizDesc;
+
+  /// No description provided for @customExamModeTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Test'**
+  String get customExamModeTest;
+
+  /// No description provided for @customExamModeTestDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Attempt like a real exam with a timer and final result'**
+  String get customExamModeTestDesc;
+
+  /// No description provided for @customExamBtnCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Practice Exam'**
+  String get customExamBtnCreate;
+
+  /// No description provided for @customExamBtnGoBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back'**
+  String get customExamBtnGoBack;
+
+  /// No description provided for @customExamCountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} questions'**
+  String customExamCountLabel(int count);
 }
 
 class _AppLocalizationsDelegate

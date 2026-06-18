@@ -1822,29 +1822,29 @@ class AppLocalizationsAr extends AppLocalizations {
   String get bookmarkActionDelete => 'حذف';
 
   @override
-  String get actionCheck => 'Check';
+  String get actionCheck => 'تحقق';
 
   @override
-  String get examModeSelectTitle => 'Select Exam Mode';
+  String get examModeSelectTitle => 'اختر وضع الامتحان';
 
   @override
-  String get examModeRegularTitle => 'Regular Mode';
+  String get examModeRegularTitle => 'الوضع العادي';
 
   @override
   String get examModeRegularDesc =>
-      'Take the test in standard exam mode with a timer.';
+      'أجرِ الاختبار في وضع الامتحان القياسي مع مؤقت.';
 
   @override
-  String get examModeQuizTitle => 'Quiz Mode';
+  String get examModeQuizTitle => 'وضع الاختبار القصير';
 
   @override
-  String get examModeQuizDesc => 'Check answers immediately as you go.';
+  String get examModeQuizDesc => 'تحقق من الإجابات فورًا أثناء تقدمك.';
 
   @override
-  String get resumeExamOnline => 'Resume Exam Online';
+  String get resumeExamOnline => 'استئناف الامتحان عبر الإنترنت';
 
   @override
-  String get startExamOnline => 'Start Exam Online';
+  String get startExamOnline => 'بدء الامتحان عبر الإنترنت';
 
   @override
   String get analyticsInvalidTopicId => 'معرف الموضوع غير صالح';
@@ -1919,5 +1919,92 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String analyticsSelectTab(String label) {
     return 'تحديد علامة التبويب $label';
+  }
+
+  @override
+  String get customExamCreateTitle => 'إنشاء امتحان تدريبي';
+
+  @override
+  String get customExamSelectCourse => 'اختر الدورة';
+
+  @override
+  String get customExamSearchCourses => 'البحث في الدورات...';
+
+  @override
+  String get customExamNoCoursesFound => 'لم يتم العثور على دورات.';
+
+  @override
+  String get customExamStepScope => 'الخطوة 1: نطاق التدريب';
+
+  @override
+  String get customExamFullCourse => 'تدريب على الدورة كاملة';
+
+  @override
+  String get customExamCoverAllTopics => 'تغطية جميع المواضيع';
+
+  @override
+  String get customExamSpecificCourse => 'التدريب على دورة محددة';
+
+  @override
+  String customExamCoursePrefix(String name) {
+    return 'الدورة: $name';
+  }
+
+  @override
+  String get customExamStepSource => 'الخطوة 2: مصدر الأسئلة';
+
+  @override
+  String get customExamSourcePrevYear => 'أسئلة السنوات السابقة';
+
+  @override
+  String get customExamSourceBoard => 'أوراق المجلس';
+
+  @override
+  String get customExamSourceImportant => 'أسئلة هامة';
+
+  @override
+  String get customExamStepCount => 'الخطوة 3: عدد الأسئلة';
+
+  @override
+  String get customExamStepDifficulty => 'الخطوة 4: مستوى الصعوبة';
+
+  @override
+  String get customExamDiffEasy => 'سهل';
+
+  @override
+  String get customExamDiffMedium => 'متوسط';
+
+  @override
+  String get customExamDiffHard => 'صعب';
+
+  @override
+  String get customExamDiffMixed => 'مختلط';
+
+  @override
+  String get customExamStepMode => 'الخطوة 5: وضع المحاولة';
+
+  @override
+  String get customExamModeQuiz => 'اختبار قصير';
+
+  @override
+  String get customExamModeQuizDesc =>
+      'احصل على ملاحظات وتفسيرات فورية بعد كل سؤال';
+
+  @override
+  String get customExamModeTest => 'اختبار';
+
+  @override
+  String get customExamModeTestDesc =>
+      'محاولة كاختبار حقيقي مع مؤقت ونتيجة نهائية';
+
+  @override
+  String get customExamBtnCreate => 'إنشاء امتحان تدريبي';
+
+  @override
+  String get customExamBtnGoBack => 'العودة';
+
+  @override
+  String customExamCountLabel(int count) {
+    return '$count أسئلة';
   }
 }
