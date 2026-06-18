@@ -116,7 +116,7 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
         child: AspectRatio(
-          aspectRatio: 2.5,
+          aspectRatio: 16 / 9,
           child: ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(design.radius.xl)),
             child: isSkeleton
