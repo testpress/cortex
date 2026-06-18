@@ -127,22 +127,30 @@ class StudyRoutes {
           name: AppRouteNames.testDetail,
           path: 'test/:id',
           parentNavigatorKey: rootNavigatorKey,
-          builder: (context, state) {
+          pageBuilder: (context, state) {
             final id = state.pathParameters['id']!;
             final extra = state.extra;
             final lesson = extra is LessonDto
                 ? extra
                 : (extra is Lesson ? extra.toDto() : null);
-            return ExamPrescreen(
-              testId: id,
-              lesson: lesson,
-              onClose: () => context.pop(),
-              onStartAttempt: (isQuizMode) async {
-                context.pushReplacement(
-                  '/study/test/$id/player?isQuizMode=$isQuizMode',
-                  extra: lesson,
-                );
-              },
+            return CustomTransitionPage(
+              key: state.pageKey,
+              opaque: false,
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                    return child;
+                  },
+              child: ExamPrescreen(
+                testId: id,
+                lesson: lesson,
+                onClose: () => context.pop(),
+                onStartAttempt: (isQuizMode) async {
+                  context.pushReplacement(
+                    '/study/test/$id/player?isQuizMode=$isQuizMode',
+                    extra: lesson,
+                  );
+                },
+              ),
             );
           },
           routes: [

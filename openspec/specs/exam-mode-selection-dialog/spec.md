@@ -6,17 +6,16 @@ Provides a pre-start choice for exams that support quiz mode, allowing users to 
 ## Requirements
 
 ### Requirement: Quiz Mode Eligibility Detection
-The system SHALL detect quiz-capable exams from the exam metadata and only present a mode selection dialog when quiz mode is enabled.
+The system SHALL detect quiz-capable exams from the exam metadata and only present mode selection inline options when quiz mode is enabled.
 
 #### Scenario: Quiz mode disabled
 - **WHEN** the exam metadata does not enable quiz mode
-- **THEN** the system SHALL start the exam directly in regular mode
-- **AND** it SHALL NOT display a mode selection dialog.
+- **THEN** the system SHALL show the exam start bottom sheet without mode selection options
+- **AND** the start button SHALL be enabled by default to start in regular mode.
 
 #### Scenario: Quiz mode enabled
 - **WHEN** the exam metadata enables quiz mode
-- **AND** the user initiates the exam from the prescreen
-- **THEN** the system SHALL display a modal dialog before the attempt starts.
+- **THEN** the system SHALL show the mode selection options inline inside the exam start bottom sheet.
 
 ### Requirement: Quiz Mode Uses the Same Exam APIs
 The system SHALL start, resume, load questions for, submit answers for, and end quiz-mode attempts through the same exam backend endpoints used by regular attempts. Quiz mode SHALL be a client-side launch choice and session state, not a separate API contract.
@@ -32,21 +31,19 @@ The system SHALL start, resume, load questions for, submit answers for, and end 
 - **AND** it SHALL NOT require a separate quiz-specific endpoint or a different attempt resource schema to start the exam, though it passes `attempt_type=1` when creating the attempt.
 
 ### Requirement: Mode Selection Dialog
-The system SHALL present a modal dialog with exactly two explicit choices: Regular Mode and Quiz Mode.
+The system SHALL present exactly two inline choices for mode selection directly within the exam start bottom sheet: Regular Mode and Quiz Mode.
 
-#### Scenario: Dialog dismissal
-- **WHEN** the user cancels the dialog or dismisses it without choosing a mode
-- **THEN** the system SHALL return to the exam prescreen
-- **AND** it SHALL NOT create, resume, or mutate any attempt state.
+#### Scenario: No selection disables start
+- **WHEN** the exam supports both modes and no option is selected
+- **THEN** the start/resume exam button SHALL be disabled.
 
 #### Scenario: Regular mode selection
 - **WHEN** the user selects Regular Mode
-- **THEN** the system SHALL continue the standard exam start flow using the existing Cortex exam UI.
+- **THEN** the system SHALL enable the start/resume exam button to start the exam in regular mode.
 
 #### Scenario: Quiz mode selection
 - **WHEN** the user selects Quiz Mode
-- **THEN** the system SHALL continue the exam start flow in quiz mode using the same Cortex exam shell and question flow.
-- **AND** the selected mode SHALL be preserved as part of the active attempt/session context.
+- **THEN** the system SHALL enable the start/resume exam button to start the exam in quiz mode.
 
 ### Requirement: Mode Persistence
 The system SHALL preserve the selected mode for the lifetime of the attempt so that paused or resumed sessions continue in the same mode.
