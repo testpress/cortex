@@ -1953,4 +1953,91 @@ class AppLocalizationsMl extends AppLocalizations {
   String analyticsSelectTab(String label) {
     return '$label ടാബ് തിരഞ്ഞെടുക്കുക';
   }
+
+  @override
+  String get customExamCreateTitle => 'Create Practice Exam';
+
+  @override
+  String get customExamSelectCourse => 'Select Course';
+
+  @override
+  String get customExamSearchCourses => 'Search courses...';
+
+  @override
+  String get customExamNoCoursesFound => 'No courses found.';
+
+  @override
+  String get customExamStepScope => 'Step 1: Practice Scope';
+
+  @override
+  String get customExamFullCourse => 'Full Course Practice';
+
+  @override
+  String get customExamCoverAllTopics => 'Cover all topics';
+
+  @override
+  String get customExamSpecificCourse => 'Practice a specific course';
+
+  @override
+  String customExamCoursePrefix(String name) {
+    return 'Course: $name';
+  }
+
+  @override
+  String get customExamStepSource => 'Step 2: Question Source';
+
+  @override
+  String get customExamSourcePrevYear => 'Previous Year Questions';
+
+  @override
+  String get customExamSourceBoard => 'Board Papers';
+
+  @override
+  String get customExamSourceImportant => 'Important Questions';
+
+  @override
+  String get customExamStepCount => 'Step 3: Number of Questions';
+
+  @override
+  String get customExamStepDifficulty => 'Step 4: Difficulty Level';
+
+  @override
+  String get customExamDiffEasy => 'Easy';
+
+  @override
+  String get customExamDiffMedium => 'Medium';
+
+  @override
+  String get customExamDiffHard => 'Hard';
+
+  @override
+  String get customExamDiffMixed => 'Mixed';
+
+  @override
+  String get customExamStepMode => 'Step 5: Attempt Mode';
+
+  @override
+  String get customExamModeQuiz => 'Quiz';
+
+  @override
+  String get customExamModeQuizDesc =>
+      'Get instant feedback and explanations after each question';
+
+  @override
+  String get customExamModeTest => 'Test';
+
+  @override
+  String get customExamModeTestDesc =>
+      'Attempt like a real exam with a timer and final result';
+
+  @override
+  String get customExamBtnCreate => 'Create Practice Exam';
+
+  @override
+  String get customExamBtnGoBack => 'Go back';
+
+  @override
+  String customExamCountLabel(int count) {
+    return '$count questions';
+  }
 }
