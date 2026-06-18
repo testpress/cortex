@@ -174,7 +174,6 @@
   "studyYourCoursesTitle": "كورساتك",
   "studyLessonsTitle": "الدروس",
   "filterVideo": "فيديو",
-  "filterLesson": "درس",
   "filterAssessment": "تقييم",
   "filterTest": "اختبار",
   "filterNotes": "ملاحظات",
@@ -645,5 +644,7 @@
   "analyticsFilterSubjects": "تصفية المواد",
   "analyticsGraphReports": "تقارير بيانية",
   "analyticsTableReports": "تقارير جدولية",
-  "analyticsSelectTab": "تحديد علامة التبويب {label}"
+  "analyticsSelectTab": "تحديد علامة التبويب {label}",
+  "filterEmptyStateMessage": "لم يتم العثور على {name}.",
+  "labelExams": "امتحانات"
 }

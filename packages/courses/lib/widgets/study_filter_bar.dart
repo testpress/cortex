@@ -27,7 +27,7 @@ class StudyFilterBar extends StatelessWidget {
       ),
       (
         LessonType.pdf,
-        l10n.filterLesson,
+        l10n.filterAttachment,
         LucideIcons.fileText,
         design.study.pdf
       ),

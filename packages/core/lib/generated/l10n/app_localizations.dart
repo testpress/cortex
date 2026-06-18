@@ -1104,12 +1104,6 @@ abstract class AppLocalizations {
   /// **'Videos'**
   String get filterVideo;
 
-  /// No description provided for @filterLesson.
-  ///
-  /// In en, this message translates to:
-  /// **'Lessons'**
-  String get filterLesson;
-
   /// No description provided for @filterAssessment.
   ///
   /// In en, this message translates to:
@@ -3412,6 +3406,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No subjects found.'**
   String get analyticsNoSubjectsFound;
+
+  /// No description provided for @filterEmptyStateMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No {name} found.'**
+  String filterEmptyStateMessage(String name);
+
+  /// No description provided for @labelExams.
+  ///
+  /// In en, this message translates to:
+  /// **'exams'**
+  String get labelExams;
 
   /// No description provided for @analyticsStrengthCorrect.
   ///

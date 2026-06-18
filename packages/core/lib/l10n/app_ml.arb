@@ -174,7 +174,6 @@
   "studyYourCoursesTitle": "നിങ്ങളുടെ കോഴ്സുകൾ",
   "studyLessonsTitle": "പാഠങ്ങൾ",
   "filterVideo": "വീഡിയോ",
-  "filterLesson": "പാഠം",
   "filterAssessment": "അസസ്‌മെന്റ്",
   "filterTest": "ടെസ്റ്റ്",
   "filterNotes": "കുറിപ്പുകൾ",
@@ -646,5 +645,7 @@
   "analyticsFilterSubjects": "വിഷയങ്ങൾ ഫിൽട്ടർ ചെയ്യുക",
   "analyticsGraphReports": "ഗ്രാഫ് റിപ്പോർട്ടുകൾ",
   "analyticsTableReports": "ടേബിൾ റിപ്പോർട്ടുകൾ",
-  "analyticsSelectTab": "{label} ടാബ് തിരഞ്ഞെടുക്കുക"
+  "analyticsSelectTab": "{label} ടാബ് തിരഞ്ഞെടുക്കുക",
+  "filterEmptyStateMessage": "{name} ഒന്നും കണ്ടെത്തിയില്ല.",
+  "labelExams": "പരീക്ഷകൾ"
 }

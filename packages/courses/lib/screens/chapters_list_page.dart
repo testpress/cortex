@@ -70,15 +70,11 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
   }
 
   String? _apiTypeForFilter(CurriculumFilter? filter) {
-    if (filter == null) return null;
-    return switch (filter) {
-      CurriculumFilter.all => null,
-      CurriculumFilter.video => 'video',
-      CurriculumFilter.notes => 'notes',
-      CurriculumFilter.attachment => 'attachment',
-      CurriculumFilter.assessment => 'assessment',
-      CurriculumFilter.test => 'test',
-    };
+    if (filter == null || filter == CurriculumFilter.all) return null;
+    // Note: The remote API natively groups subtypes for 'notes' and 'attachment'.
+    // Fetching type=notes returns both standard notes and embedContent (HTML with iframes).
+    // Fetching type=attachment returns both standard attachments and pdfs.
+    return filter.name;
   }
 
   @override
@@ -224,7 +220,13 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                         : filteredLessons.isEmpty
                             ? Center(
                                 child: AppText.body(
-                                  'No ${widget.showFilters ? (activeFilter?.displayName(context) ?? L10n.of(context).labelContentsPlural) : "exams"} found.',
+                                  L10n.of(context).filterEmptyStateMessage(
+                                    widget.showFilters
+                                        ? (activeFilter?.displayName(context) ??
+                                            L10n.of(context)
+                                                .labelContentsPlural)
+                                        : L10n.of(context).labelExams,
+                                  ),
                                   color: design.colors.textSecondary,
                                 ),
                               )

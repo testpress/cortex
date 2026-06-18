@@ -272,7 +272,6 @@
   "studyYourCoursesTitle": "உங்கள் பாடங்கள்",
   "studyLessonsTitle": "பாடங்கள்",
   "filterVideo": "வீடியோக்கள்",
-  "filterLesson": "பாடங்கள்",
   "filterAssessment": "மதிப்பீடுகள்",
   "filterTest": "தேர்வுகள்",
   "filterNotes": "குறிப்புகள்",
@@ -910,5 +909,7 @@
   "analyticsFilterSubjects": "பாடங்களை வடிகட்டு",
   "analyticsGraphReports": "வரைபட அறிக்கைகள்",
   "analyticsTableReports": "அட்டவணை அறிக்கைகள்",
-  "analyticsSelectTab": "{label} தாவலைத் தேர்ந்தெடு"
+  "analyticsSelectTab": "{label} தாவலைத் தேர்ந்தெடு",
+  "filterEmptyStateMessage": "{name} எதுவும் கிடைக்கவில்லை.",
+  "labelExams": "தேர்வுகள்"
 }

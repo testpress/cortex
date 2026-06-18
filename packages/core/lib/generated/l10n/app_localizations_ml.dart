@@ -568,9 +568,6 @@ class AppLocalizationsMl extends AppLocalizations {
   String get filterVideo => 'വീഡിയോ';
 
   @override
-  String get filterLesson => 'പാഠം';
-
-  @override
   String get filterAssessment => 'അസസ്‌മെന്റ്';
 
   @override
@@ -1906,6 +1903,14 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get analyticsNoSubjectsFound => 'വിഷയങ്ങളൊന്നും കണ്ടെത്തിയില്ല.';
+
+  @override
+  String filterEmptyStateMessage(String name) {
+    return '$name ഒന്നും കണ്ടെത്തിയില്ല.';
+  }
+
+  @override
+  String get labelExams => 'പരീക്ഷകൾ';
 
   @override
   String get analyticsStrengthCorrect => 'കരുത്ത് / ശരി';

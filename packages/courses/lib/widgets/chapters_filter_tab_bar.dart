@@ -115,19 +115,23 @@ class _FilterTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
+    final l10n = L10n.of(context);
+
     // Use design tokens for tab backgrounds/foregrounds
     final bgColor =
         isSelected ? design.colors.textPrimary : design.colors.surfaceVariant;
     final fgColor = isSelected ? design.colors.card : design.colors.textPrimary;
 
     return AppSemantics.button(
-      label: 'Filter by $label',
+      label: l10n.filterBy(label),
       onTap: onTap,
       child: AppFocusable(
         onTap: onTap,
         borderRadius: design.radius.pill,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
+          duration: MotionPreferences.shouldAnimate(context)
+              ? MotionPreferences.duration(context, design.motion.fast)
+              : Duration.zero,
           curve: design.motion.easeOut,
           padding: EdgeInsets.symmetric(
             horizontal: design.spacing.md,
