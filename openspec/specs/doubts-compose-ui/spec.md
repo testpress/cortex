@@ -29,32 +29,22 @@ The system SHALL provide a rich-text editor for the doubt content to support str
 - **WHEN** the user selects text and taps the "Bold" toolbar action
 - **THEN** the selected text SHALL be rendered in bold weight
 
-### Requirement: Attachment Preview Strip
-The system SHALL display a horizontal scrollable strip of attached files (images/PDFs) before submission.
-- **Interaction**: Users SHALL be able to remove an attachment by tapping a "Delete" icon on the preview card.
-
-#### Scenario: Removing an attachment
-- **GIVEN** the user has attached 3 images
-- **WHEN** the user taps the "Delete" icon on the second image
-- **THEN** that image SHALL be removed from the attachment list and the preview strip SHALL update
-
 ### Requirement: Hierarchical Topic Selection
-The doubt composition form SHALL allow the student to select a category topic via a hierarchical drill-down menu picker.
-- **API Fetching**: The picker SHALL fetch top-level topics from `/api/v2.5/helpdesk/topics/?parent_id=null`. If a topic has `has_children: true`, tapping it SHALL dynamically load and display its subtopics by querying the topics endpoint with the selected topic's `parent_id`.
-- **Validation**: Only a leaf topic (one with `has_children: false`) SHALL be selectable as the doubt's topic.
+The doubt composition form SHALL allow the student to select a category topic via an inline hierarchical drill-down menu.
+- **API Fetching**: The picker SHALL fetch top-level topics from `/api/v2.5/helpdesk/topics/` by passing no `parent_id`. If a topic has `has_children: true`, tapping it SHALL dynamically replace the current list and load its subtopics by querying the topics endpoint with the selected topic's `parent_id`.
+- **Navigation**: The picker SHALL provide a clickable breadcrumb navigation (e.g., `Topics > Math`) to allow users to navigate back up the hierarchy.
+- **I don't know Fallback**: Every level SHALL include an "I don't know" option. Selecting "I don't know" SHALL finalize the selection using the parent ID of the current level (or null if at the root level).
+- **Validation**: Any leaf topic (`has_children: false`) OR the "I don't know" option at any level SHALL be selectable as the final doubt's topic.
 
-#### Scenario: Selecting a subtopic
-- **GIVEN** the student is on the topic selection sheet
-- **WHEN** they tap a topic that has subtopics
-- **THEN** the picker fetches and displays the subtopics recursively
+#### Scenario: Drilling down to a subtopic
+- **GIVEN** the student is viewing the root topics
+- **WHEN** they tap a topic that has `has_children: true`
+- **THEN** the picker replaces the root chips with the subtopics of the tapped topic
+- **AND** a breadcrumb is displayed to allow navigation back to root topics
 
-### Requirement: Attachment File Upload
-The system SHALL support uploading attached image files individually to the `/api/v3/upload-image/` endpoint before submitting the doubt form.
-- **Parameters**: The upload request SHALL be `multipart/form-data` with `image` containing the file and `uploaded_for` set to `"doubts"`.
-- **HTML Embedding**: On successful upload, the returned URL SHALL be formatted as an HTML `<img>` tag and appended to the description/content body.
-
-#### Scenario: Uploading and embedding image
-- **GIVEN** the student attaches an image file
-- **WHEN** the image is successfully uploaded
-- **THEN** an `<img src="<url>" />` tag is inserted into the rich text editor
+#### Scenario: Using I don't know fallback
+- **GIVEN** the student has drilled down into "Physics"
+- **WHEN** they tap the "I don't know" chip
+- **THEN** the topic selection is finalized
+- **AND** the selected topic ID is set to the ID of "Physics"
 
