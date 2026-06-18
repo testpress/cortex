@@ -4,7 +4,8 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 
 class HierarchicalTopicPicker extends ConsumerStatefulWidget {
-  final void Function(int? topicId) onTopicFinalized;
+  final void Function(int? topicId, {required bool isFinalized})
+  onTopicFinalized;
 
   const HierarchicalTopicPicker({super.key, required this.onTopicFinalized});
 
@@ -24,12 +25,12 @@ class _HierarchicalTopicPickerState
         _topicPath.add(topic);
         _selectedChipId = null;
       });
-      widget.onTopicFinalized(null);
+      widget.onTopicFinalized(null, isFinalized: false);
     } else {
       setState(() {
         _selectedChipId = topic.id;
       });
-      widget.onTopicFinalized(topic.id);
+      widget.onTopicFinalized(topic.id, isFinalized: true);
     }
   }
 
@@ -37,7 +38,7 @@ class _HierarchicalTopicPickerState
     setState(() {
       _selectedChipId = -1;
     });
-    widget.onTopicFinalized(_topicPath.lastOrNull?.id);
+    widget.onTopicFinalized(_topicPath.lastOrNull?.id, isFinalized: true);
   }
 
   void _onBreadcrumbTapped(int index) {
@@ -50,7 +51,7 @@ class _HierarchicalTopicPickerState
         _topicPath.removeRange(index + 1, _topicPath.length);
       }
     });
-    widget.onTopicFinalized(null);
+    widget.onTopicFinalized(null, isFinalized: false);
   }
 
   @override

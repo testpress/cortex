@@ -37,6 +37,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
   final FocusNode _focusNode = FocusNode();
 
   int? _finalizedTopicId;
+  bool _isTopicFinalized = false;
   bool _isSubmitSheetOpen = false;
   bool _isSubmitting = false;
 
@@ -109,9 +110,10 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                         _sectionLabel(l10n.doubtsFormCategoryLabel),
                         const SizedBox(height: 8),
                         HierarchicalTopicPicker(
-                          onTopicFinalized: (topicId) {
+                          onTopicFinalized: (topicId, {required isFinalized}) {
                             setState(() {
                               _finalizedTopicId = topicId;
+                              _isTopicFinalized = isFinalized;
                             });
                           },
                         ),
@@ -170,7 +172,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
     final canSubmit =
         _titleController.text.trim().isNotEmpty &&
         _quillController.document.toPlainText().trim().isNotEmpty &&
-        _finalizedTopicId != null;
+        _isTopicFinalized;
     final isEnabled = canSubmit;
 
     return Container(
@@ -231,7 +233,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
   void _submitDoubt(DoubtQueryType queryType) {
     final title = _titleController.text.trim();
     final contentText = _quillController.document.toPlainText().trim();
-    if (title.isEmpty || contentText.isEmpty || _finalizedTopicId == null) {
+    if (title.isEmpty || contentText.isEmpty || !_isTopicFinalized) {
       return;
     }
 
