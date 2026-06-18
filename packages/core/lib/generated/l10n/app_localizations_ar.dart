@@ -1829,6 +1829,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get examModeQuizDesc => 'Check answers immediately as you go.';
 
   @override
+  String get resumeExamOnline => 'Resume Exam Online';
+
+  @override
+  String get startExamOnline => 'Start Exam Online';
+
+  @override
   String get analyticsInvalidTopicId => 'معرف الموضوع غير صالح';
 
   @override

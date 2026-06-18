@@ -1852,6 +1852,12 @@ class AppLocalizationsTa extends AppLocalizations {
       'ஒவ்வொரு கேள்விக்கும் உடனுக்குடன் பதில்களைச் சரிபார்க்கவும்.';
 
   @override
+  String get resumeExamOnline => 'Resume Exam Online';
+
+  @override
+  String get startExamOnline => 'Start Exam Online';
+
+  @override
   String get analyticsInvalidTopicId => 'தவறான தலைப்பு ஐடி';
 
   @override

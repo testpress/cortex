@@ -9,11 +9,13 @@ class AppBottomSheet extends StatefulWidget {
     super.key,
     required this.isOpen,
     required this.onClose,
+    this.onAnimationComplete,
     required this.child,
   });
 
   final bool isOpen;
   final VoidCallback onClose;
+  final VoidCallback? onAnimationComplete;
   final Widget child;
 
   @override
@@ -33,6 +35,11 @@ class _AppBottomSheetState extends State<AppBottomSheet>
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.dismissed && !widget.isOpen) {
+        widget.onAnimationComplete?.call();
+      }
+    });
     _slideAnimation =
         Tween<Offset>(begin: const Offset(0.0, 1.0), end: Offset.zero).animate(
           CurvedAnimation(parent: _controller, curve: Curves.easeInOutCubic),

@@ -3308,7 +3308,7 @@ abstract class AppLocalizations {
   /// No description provided for @examModeRegularDesc.
   ///
   /// In en, this message translates to:
-  /// **'Take the test in standard exam mode with a timer.'**
+  /// **'Take standard exam with a timer.'**
   String get examModeRegularDesc;
 
   /// No description provided for @examModeQuizTitle.
@@ -3320,8 +3320,20 @@ abstract class AppLocalizations {
   /// No description provided for @examModeQuizDesc.
   ///
   /// In en, this message translates to:
-  /// **'Check answers immediately as you go.'**
+  /// **'Check answers as you go.'**
   String get examModeQuizDesc;
+
+  /// No description provided for @resumeExamOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume Exam Online'**
+  String get resumeExamOnline;
+
+  /// No description provided for @startExamOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Exam Online'**
+  String get startExamOnline;
 
   /// No description provided for @analyticsInvalidTopicId.
   ///

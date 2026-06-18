@@ -1810,14 +1810,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get examModeRegularTitle => 'Regular Mode';
 
   @override
-  String get examModeRegularDesc =>
-      'Take the test in standard exam mode with a timer.';
+  String get examModeRegularDesc => 'Take standard exam with a timer.';
 
   @override
   String get examModeQuizTitle => 'Quiz Mode';
 
   @override
-  String get examModeQuizDesc => 'Check answers immediately as you go.';
+  String get examModeQuizDesc => 'Check answers as you go.';
+
+  @override
+  String get resumeExamOnline => 'Resume Exam Online';
+
+  @override
+  String get startExamOnline => 'Start Exam Online';
 
   @override
   String get analyticsInvalidTopicId => 'Invalid Topic ID';

@@ -6,7 +6,7 @@ import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
 import '../providers/exam_providers.dart';
 import '../repositories/exam_repository.dart';
-import '../widgets/exam_mode_selection_dialog.dart';
+import '../widgets/exam_mode_option_card.dart';
 
 class ExamPrescreen extends ConsumerStatefulWidget {
   final String testId;
@@ -27,6 +27,16 @@ class ExamPrescreen extends ConsumerStatefulWidget {
 }
 
 class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
+  bool? _selectedIsQuizMode = false;
+  bool _isOpen = true;
+
+  void _handleClose() {
+    if (!_isOpen) return;
+    setState(() {
+      _isOpen = false;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -56,6 +66,7 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     final lessonDetailAsync = ref.watch(lessonDetailProvider(widget.testId));
     final lesson = widget.lesson ?? lessonDetailAsync.valueOrNull?.toDto();
@@ -108,51 +119,59 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
       }
     }
 
-    return GestureDetector(
-      onTap: widget.onClose,
-      child: Container(
-        color: design.colors.overlay, // Semi-transparent overlay backdrop
-        alignment: Alignment.bottomCenter,
-        child: GestureDetector(
-          onTap: () {}, // Prevent click propagation inside the card
+    final bool isResuming =
+        exam != null &&
+        (exam.pausedAttemptsCount > 0 && !exam.disableAttemptResume);
+
+    final bool showModeSelection =
+        !isMetadataLoading &&
+        exam != null &&
+        exam.enableQuizMode == true &&
+        !isResuming;
+
+    final bool isButtonEnabled =
+        !isMetadataLoading &&
+        (!showModeSelection || _selectedIsQuizMode != null);
+
+    return AppBottomSheet(
+      isOpen: _isOpen,
+      onClose: _handleClose,
+      onAnimationComplete: widget.onClose,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          design.spacing.sm,
+          0,
+          design.spacing.sm,
+          design.spacing.md,
+        ),
+        child: SafeArea(
+          top: false,
           child: Container(
-            width: double.infinity,
+            padding: EdgeInsets.only(bottom: design.spacing.lg),
             decoration: BoxDecoration(
-              color: design.colors.surface,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(design.radius.xl),
-                topRight: Radius.circular(design.radius.xl),
+              color: design.colors.card,
+              borderRadius: BorderRadius.all(
+                Radius.circular(design.radius.xxl),
               ),
+              boxShadow: design.shadows.floating,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Top Header Row
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacing.lg,
-                    vertical: design.spacing.md,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      AppText.title(
-                        'Choose an option',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      GestureDetector(
-                        onTap: widget.onClose,
-                        child: Icon(
-                          LucideIcons.x,
-                          color: design.colors.textSecondary,
-                          size: 24,
-                        ),
-                      ),
-                    ],
+                SizedBox(height: design.spacing.md),
+                // Handle Bar
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    width: design.spacing.xl * 1.5,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: design.colors.border,
+                      borderRadius: BorderRadius.circular(design.radius.full),
+                    ),
                   ),
                 ),
-                Container(height: 1, color: design.colors.border),
 
                 Padding(
                   padding: EdgeInsets.all(design.spacing.lg),
@@ -237,126 +256,94 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                           ),
                           SizedBox(height: design.spacing.lg),
 
+                          // Inline Mode Selection Options
+                          if (showModeSelection) ...[
+                            ExamModeOptionCard(
+                              title: l10n.examModeRegularTitle,
+                              description: l10n.examModeRegularDesc,
+                              icon: LucideIcons.fileText,
+                              isSelected: _selectedIsQuizMode == false,
+                              onTap: () {
+                                setState(() {
+                                  _selectedIsQuizMode = false;
+                                });
+                              },
+                            ),
+                            SizedBox(height: design.spacing.md),
+                            ExamModeOptionCard(
+                              title: l10n.examModeQuizTitle,
+                              description: l10n.examModeQuizDesc,
+                              icon: LucideIcons.checkCircle,
+                              isSelected: _selectedIsQuizMode == true,
+                              onTap: () {
+                                setState(() {
+                                  _selectedIsQuizMode = true;
+                                });
+                              },
+                            ),
+                            SizedBox(height: design.spacing.lg),
+                          ],
+
                           // Start Exam Online Option Button
                           if ((exam?.allowRetake ?? true) ||
                               !((lesson?.hasAttempts ?? false) &&
                                   (exam?.pausedAttemptsCount ?? 0) == 0))
-                            GestureDetector(
-                              onTap: () async {
-                                if (isMetadataLoading) return;
-
-                                final bool isResuming =
-                                    ((exam?.pausedAttemptsCount ?? 0) > 0 &&
-                                    !(exam?.disableAttemptResume ?? false));
-
-                                if (!isResuming &&
-                                    exam?.enableQuizMode == true) {
-                                  showGeneralDialog(
-                                    context: context,
-                                    barrierDismissible: true,
-                                    barrierLabel: 'Dismiss',
-                                    pageBuilder:
-                                        (
-                                          context,
-                                          animation,
-                                          secondaryAnimation,
-                                        ) => ExamModeSelectionDialog(
-                                          onSelectRegular: () async {
-                                            Navigator.pop(context);
-                                            ref
-                                                .read(
-                                                  examAttemptProvider.notifier,
-                                                )
-                                                .reset();
-                                            await widget.onStartAttempt(false);
-                                          },
-                                          onSelectQuiz: () async {
-                                            Navigator.pop(context);
-                                            ref
-                                                .read(
-                                                  examAttemptProvider.notifier,
-                                                )
-                                                .reset();
-                                            await widget.onStartAttempt(true);
-                                          },
-                                        ),
-                                  );
-                                } else {
-                                  ref
-                                      .read(examAttemptProvider.notifier)
-                                      .reset();
-                                  await widget.onStartAttempt(false);
-                                }
-                              },
-                              child: Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.all(design.spacing.md),
-                                decoration: BoxDecoration(
-                                  color: design.colors.primary,
-                                  borderRadius: BorderRadius.circular(
-                                    design.radius.lg,
+                            AppSemantics.button(
+                              label: isResuming
+                                  ? 'Resume Exam Online'
+                                  : 'Start Exam Online',
+                              onTap: isButtonEnabled
+                                  ? () async {
+                                      ref
+                                          .read(examAttemptProvider.notifier)
+                                          .reset();
+                                      final isQuizMode =
+                                          _selectedIsQuizMode ?? false;
+                                      await widget.onStartAttempt(isQuizMode);
+                                    }
+                                  : null,
+                              enabled: isButtonEnabled,
+                              child: GestureDetector(
+                                onTap: isButtonEnabled
+                                    ? () async {
+                                        ref
+                                            .read(examAttemptProvider.notifier)
+                                            .reset();
+                                        final isQuizMode =
+                                            _selectedIsQuizMode ?? false;
+                                        await widget.onStartAttempt(isQuizMode);
+                                      }
+                                    : null,
+                                child: Container(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.all(design.spacing.md),
+                                  decoration: BoxDecoration(
+                                    color: isButtonEnabled
+                                        ? design.colors.primary
+                                        : design.colors.border.withValues(
+                                            alpha: 0.5,
+                                          ),
+                                    borderRadius: BorderRadius.circular(
+                                      design.radius.lg,
+                                    ),
                                   ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.all(
-                                        design.spacing.sm,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: design.colors.onPrimary
-                                            .withValues(alpha: 0.15),
-                                        borderRadius: BorderRadius.circular(
-                                          design.radius.md,
-                                        ),
-                                      ),
-                                      child: Icon(
-                                        LucideIcons.play,
-                                        color: design.colors.onPrimary,
-                                        size: 24,
-                                      ),
+                                  child: AppText.body(
+                                    isResuming
+                                        ? l10n.resumeExamOnline
+                                        : l10n.startExamOnline,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: isButtonEnabled
+                                          ? design.colors.onPrimary
+                                          : design.colors.textSecondary,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
                                     ),
-                                    SizedBox(width: design.spacing.md),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            ((exam?.pausedAttemptsCount ?? 0) >
-                                                        0 &&
-                                                    !(exam?.disableAttemptResume ??
-                                                        false))
-                                                ? 'Resume Exam Online'
-                                                : 'Start Exam Online',
-                                            style: TextStyle(
-                                              color: design.colors.onPrimary,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            ((exam?.pausedAttemptsCount ?? 0) >
-                                                        0 &&
-                                                    !(exam?.disableAttemptResume ??
-                                                        false))
-                                                ? 'Resume from where you left off'
-                                                : 'Take the test in exam mode with timer',
-                                            style: TextStyle(
-                                              color: design.colors.onPrimary
-                                                  .withValues(alpha: 0.8),
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ),
-                          const SizedBox(height: 4),
+                          SizedBox(height: design.spacing.xs),
                         ],
                       ),
                     ),
