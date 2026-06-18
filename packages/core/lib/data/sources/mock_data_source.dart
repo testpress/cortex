@@ -1493,7 +1493,7 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<List<DoubtTopicDto>> getDoubtTopics() async {
+  Future<List<DoubtTopicDto>> getDoubtTopics({int? parentId}) async {
     await Future.delayed(const Duration(milliseconds: 200));
     return const [
       DoubtTopicDto(

@@ -199,7 +199,7 @@ class DoubtRepository {
 
   /// Fetch and cache doubt topics (categories).
   Future<void> syncTopics({int? parentId}) async {
-    final results = await _dataSource.getDoubtTopics();
+    final results = await _dataSource.getDoubtTopics(parentId: parentId);
     await _db.upsertDoubtTopics(
       results
           .map(
