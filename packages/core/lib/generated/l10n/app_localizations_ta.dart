@@ -578,6 +578,12 @@ class AppLocalizationsTa extends AppLocalizations {
   String get filterTest => 'தேர்வுகள்';
 
   @override
+  String get filterNotes => 'குறிப்புகள்';
+
+  @override
+  String get filterAttachment => 'இணைப்புகள்';
+
+  @override
   String get resumeStudyHeader => 'படிப்பை தொடரவும்';
 
   @override

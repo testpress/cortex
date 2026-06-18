@@ -177,6 +177,8 @@
   "filterLesson": "പാഠം",
   "filterAssessment": "അസസ്‌മെന്റ്",
   "filterTest": "ടെസ്റ്റ്",
+  "filterNotes": "കുറിപ്പുകൾ",
+  "filterAttachment": "അറ്റാച്ച്‌മെന്റുകൾ",
   "resumeStudyHeader": "പഠനം തുടരുക",
   "labelCompleted": "പൂർത്തിയായി",
   "labelRetry": "വീണ്ടും ശ്രമിക്കുക",

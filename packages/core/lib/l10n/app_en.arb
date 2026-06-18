@@ -275,6 +275,8 @@
   "filterLesson": "Lessons",
   "filterAssessment": "Assessments",
   "filterTest": "Tests",
+  "filterNotes": "Notes",
+  "filterAttachment": "Attachments",
   "resumeStudyHeader": "Resume Study",
   "labelRetry": "Retry",
   "labelCompleted": "completed",

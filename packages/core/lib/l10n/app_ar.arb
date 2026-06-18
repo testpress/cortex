@@ -177,6 +177,8 @@
   "filterLesson": "درس",
   "filterAssessment": "تقييم",
   "filterTest": "اختبار",
+  "filterNotes": "ملاحظات",
+  "filterAttachment": "مرفقات",
   "resumeStudyHeader": "استئناف الدراسة",
   "labelCompleted": "مكتمل",
   "labelRetry": "إعادة المحاولة",

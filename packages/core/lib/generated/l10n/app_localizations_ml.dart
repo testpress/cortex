@@ -577,6 +577,12 @@ class AppLocalizationsMl extends AppLocalizations {
   String get filterTest => 'ടെസ്റ്റ്';
 
   @override
+  String get filterNotes => 'കുറിപ്പുകൾ';
+
+  @override
+  String get filterAttachment => 'അറ്റാച്ച്‌മെന്റുകൾ';
+
+  @override
   String get resumeStudyHeader => 'പഠനം തുടരുക';
 
   @override

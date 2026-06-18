@@ -346,10 +346,12 @@ class CourseRepository {
     }
 
     if (type != null && type.isNotEmpty) {
-      if (type == 'attachment') {
-        query.where(_db.lessonsTable.type.isIn(['attachment', 'pdf']));
-      } else if (type == 'notes') {
-        query.where(_db.lessonsTable.type.isIn(['notes', 'embedContent']));
+      if (type == LessonType.attachment.name) {
+        query.where(_db.lessonsTable.type
+            .isIn([LessonType.attachment.name, LessonType.pdf.name]));
+      } else if (type == LessonType.notes.name) {
+        query.where(_db.lessonsTable.type
+            .isIn([LessonType.notes.name, LessonType.embedContent.name]));
       } else {
         query.where(_db.lessonsTable.type.equals(type));
       }

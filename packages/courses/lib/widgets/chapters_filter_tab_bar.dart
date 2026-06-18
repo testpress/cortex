@@ -10,14 +10,17 @@ enum CurriculumFilter {
   assessment,
   test;
 
-  String get displayName => switch (this) {
-        CurriculumFilter.all => 'items',
-        CurriculumFilter.video => 'videos',
-        CurriculumFilter.notes => 'notes',
-        CurriculumFilter.attachment => 'attachments',
-        CurriculumFilter.assessment => 'assessments',
-        CurriculumFilter.test => 'tests',
-      };
+  String displayName(BuildContext context) {
+    final l10n = L10n.of(context);
+    return switch (this) {
+      CurriculumFilter.all => l10n.labelContentsPlural,
+      CurriculumFilter.video => l10n.filterVideo,
+      CurriculumFilter.notes => l10n.filterNotes,
+      CurriculumFilter.attachment => l10n.filterAttachment,
+      CurriculumFilter.assessment => l10n.filterAssessment,
+      CurriculumFilter.test => l10n.filterTest,
+    };
+  }
 }
 
 /// A horizontal scrollable tab bar for filtering content in the Chapters list.
@@ -49,12 +52,12 @@ class ChaptersFilterTabBar extends StatelessWidget {
       ),
       (
         filter: CurriculumFilter.notes,
-        label: 'Notes', // Using string literal as requested
+        label: l10n.filterNotes,
         icon: LucideIcons.fileText,
       ),
       (
         filter: CurriculumFilter.attachment,
-        label: 'Attachments', // Using string literal as requested
+        label: l10n.filterAttachment,
         icon: LucideIcons.paperclip,
       ),
       (

@@ -1122,6 +1122,18 @@ abstract class AppLocalizations {
   /// **'Tests'**
   String get filterTest;
 
+  /// No description provided for @filterNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get filterNotes;
+
+  /// No description provided for @filterAttachment.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachments'**
+  String get filterAttachment;
+
   /// No description provided for @resumeStudyHeader.
   ///
   /// In en, this message translates to:

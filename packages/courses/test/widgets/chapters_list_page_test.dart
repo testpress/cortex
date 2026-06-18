@@ -78,8 +78,9 @@ void main() {
 
       // Verify filter chips
       expect(find.text('All'), findsOneWidget);
-      expect(find.text('Lessons'), findsOneWidget);
       expect(find.text('Videos'), findsOneWidget);
+      expect(find.text('Notes'), findsOneWidget);
+      expect(find.text('Attachments'), findsOneWidget);
       expect(find.text('Assessments'), findsOneWidget);
       expect(find.text('Tests'), findsOneWidget);
     }, skip: AppConfig.showExamTab);
@@ -105,10 +106,11 @@ void main() {
       expect(find.text('Test Course'), findsOneWidget);
       expect(find.text('Chapter 1 Title'), findsOneWidget);
 
-      // Verify filter chips: All, Lessons, Videos should exist
+      // Verify filter chips: All, Videos, Notes, Attachments should exist
       expect(find.text('All'), findsOneWidget);
-      expect(find.text('Lessons'), findsOneWidget);
       expect(find.text('Videos'), findsOneWidget);
+      expect(find.text('Notes'), findsOneWidget);
+      expect(find.text('Attachments'), findsOneWidget);
 
       // Assessments and Tests chips should NOT exist
       expect(find.text('Assessments'), findsNothing);

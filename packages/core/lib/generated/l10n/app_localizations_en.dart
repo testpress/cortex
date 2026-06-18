@@ -570,6 +570,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filterTest => 'Tests';
 
   @override
+  String get filterNotes => 'Notes';
+
+  @override
+  String get filterAttachment => 'Attachments';
+
+  @override
   String get resumeStudyHeader => 'Resume Study';
 
   @override

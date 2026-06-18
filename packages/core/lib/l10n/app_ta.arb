@@ -275,6 +275,8 @@
   "filterLesson": "பாடங்கள்",
   "filterAssessment": "மதிப்பீடுகள்",
   "filterTest": "தேர்வுகள்",
+  "filterNotes": "குறிப்புகள்",
+  "filterAttachment": "இணைப்புகள்",
   "resumeStudyHeader": "படிப்பை தொடரவும்",
   "labelCompleted": "முடிக்கப்பட்டது",
   "errorGenericTitle": "ஏதோ தவறு நடந்துவிட்டது",

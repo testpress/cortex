@@ -568,6 +568,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get filterTest => 'اختبار';
 
   @override
+  String get filterNotes => 'ملاحظات';
+
+  @override
+  String get filterAttachment => 'مرفقات';
+
+  @override
   String get resumeStudyHeader => 'استئناف الدراسة';
 
   @override

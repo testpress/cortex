@@ -45,7 +45,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
     if (_scrollController.hasClients &&
         _scrollController.position.pixels >=
             _scrollController.position.maxScrollExtent - 200) {
-      final type = _apiTypeForFilter(_activeFilter);
+      final type = _apiTypeForFilter(_resolvedActiveFilter);
       ref
           .read(filteredLessonsProvider(
             widget.courseId,
@@ -54,6 +54,13 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
           ).notifier)
           .fetchNextPage();
     }
+  }
+
+  CurriculumFilter? get _resolvedActiveFilter {
+    final visibleFilters = ChaptersFilterRules.getVisibleFilters();
+    return _activeFilter != null && !visibleFilters.contains(_activeFilter)
+        ? null
+        : _activeFilter;
   }
 
   void _onFilterChanged(CurriculumFilter? filter) {
@@ -84,10 +91,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final visibleFilters = ChaptersFilterRules.getVisibleFilters();
-    final activeFilter =
-        _activeFilter != null && !visibleFilters.contains(_activeFilter)
-            ? null
-            : _activeFilter;
+    final activeFilter = _resolvedActiveFilter;
 
     final chaptersAsync = ref.watch(
       subChaptersProvider(widget.courseId, widget.parentId),
@@ -136,7 +140,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                           ],
                         CurriculumFilter.assessment => [LessonType.assessment],
                         CurriculumFilter.test => [LessonType.test],
-                        _ => throw UnimplementedError(),
+                        CurriculumFilter.all => const <LessonType>[],
                       };
                       return targetTypes.contains(l.type);
                     }).toList();
@@ -220,7 +224,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                         : filteredLessons.isEmpty
                             ? Center(
                                 child: AppText.body(
-                                  'No ${widget.showFilters ? (activeFilter?.displayName ?? "items") : "exams"} found.',
+                                  'No ${widget.showFilters ? (activeFilter?.displayName(context) ?? L10n.of(context).labelContentsPlural) : "exams"} found.',
                                   color: design.colors.textSecondary,
                                 ),
                               )
