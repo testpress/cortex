@@ -1493,28 +1493,63 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<List<DoubtTopicDto>> getDoubtTopics() async {
+  Future<List<DoubtTopicDto>> getDoubtTopics({int? parentId}) async {
     await Future.delayed(const Duration(milliseconds: 200));
-    return const [
-      DoubtTopicDto(
-        id: 10,
-        title: 'Mathematics',
-        parentId: null,
-        hasChildren: true,
-      ),
-      DoubtTopicDto(
-        id: 11,
-        title: 'Physics',
-        parentId: null,
-        hasChildren: true,
-      ),
-      DoubtTopicDto(
-        id: 12,
-        title: 'Chemistry',
-        parentId: null,
-        hasChildren: false,
-      ),
-    ];
+
+    if (parentId == null) {
+      return const [
+        DoubtTopicDto(
+          id: 10,
+          title: 'Mathematics',
+          parentId: null,
+          hasChildren: true,
+        ),
+        DoubtTopicDto(
+          id: 11,
+          title: 'Physics',
+          parentId: null,
+          hasChildren: true,
+        ),
+        DoubtTopicDto(
+          id: 12,
+          title: 'Chemistry',
+          parentId: null,
+          hasChildren: false,
+        ),
+      ];
+    } else if (parentId == 10) {
+      return const [
+        DoubtTopicDto(
+          id: 101,
+          title: 'Calculus',
+          parentId: 10,
+          hasChildren: false,
+        ),
+        DoubtTopicDto(
+          id: 102,
+          title: 'Algebra',
+          parentId: 10,
+          hasChildren: false,
+        ),
+      ];
+    } else if (parentId == 11) {
+      return const [
+        DoubtTopicDto(
+          id: 111,
+          title: 'Mechanics',
+          parentId: 11,
+          hasChildren: false,
+        ),
+        DoubtTopicDto(
+          id: 112,
+          title: 'Electromagnetism',
+          parentId: 11,
+          hasChildren: false,
+        ),
+      ];
+    }
+
+    return const [];
   }
 
   @override

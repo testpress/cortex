@@ -1497,6 +1497,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get doubtsFormCancelAction => 'إلغاء';
 
   @override
+  String get doubtsFormTopicsLabel => 'المواضيع';
+
+  @override
+  String get doubtsFormIdkLabel => 'لا أعرف';
+
+  @override
+  String get doubtsFormFailedToLoadTopics => 'فشل تحميل المواضيع';
+
+  @override
   String get examInstructions => 'Exam Instructions';
 
   @override

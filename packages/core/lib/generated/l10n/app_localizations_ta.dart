@@ -1505,6 +1505,15 @@ class AppLocalizationsTa extends AppLocalizations {
   String get doubtsFormCancelAction => 'ரத்துசெய்';
 
   @override
+  String get doubtsFormTopicsLabel => 'தலைப்புகள்';
+
+  @override
+  String get doubtsFormIdkLabel => 'எனக்குத் தெரியாது';
+
+  @override
+  String get doubtsFormFailedToLoadTopics => 'தலைப்புகளை ஏற்ற முடியவில்லை';
+
+  @override
   String get examInstructions => 'தேர்வு வழிமுறைகள்';
 
   @override

@@ -244,7 +244,7 @@ abstract class DataSource {
   );
 
   /// Fetch dynamic doubt categories/topics hierarchy.
-  Future<List<DoubtTopicDto>> getDoubtTopics();
+  Future<List<DoubtTopicDto>> getDoubtTopics({int? parentId});
 
   /// Create a new doubt on the server.
   Future<DoubtDto> createDoubt({

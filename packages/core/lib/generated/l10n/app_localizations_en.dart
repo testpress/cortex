@@ -1485,6 +1485,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get doubtsFormCancelAction => 'Cancel';
 
   @override
+  String get doubtsFormTopicsLabel => 'Topics';
+
+  @override
+  String get doubtsFormIdkLabel => 'I don\'t know';
+
+  @override
+  String get doubtsFormFailedToLoadTopics => 'Failed to load topics';
+
+  @override
   String get examInstructions => 'Exam Instructions';
 
   @override

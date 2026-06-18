@@ -2741,6 +2741,24 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get doubtsFormCancelAction;
 
+  /// No description provided for @doubtsFormTopicsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Topics'**
+  String get doubtsFormTopicsLabel;
+
+  /// No description provided for @doubtsFormIdkLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'I don\'t know'**
+  String get doubtsFormIdkLabel;
+
+  /// No description provided for @doubtsFormFailedToLoadTopics.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load topics'**
+  String get doubtsFormFailedToLoadTopics;
+
   /// No description provided for @examInstructions.
   ///
   /// In en, this message translates to:

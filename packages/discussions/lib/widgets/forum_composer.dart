@@ -25,14 +25,14 @@ class QuillEditorService {
 
 class ForumEditorToolbar extends StatelessWidget {
   final quill.QuillController controller;
-  final VoidCallback onImagePick;
+  final VoidCallback? onImagePick;
   final bool isImageLimitReached;
 
   const ForumEditorToolbar({
     super.key,
     required this.controller,
-    required this.onImagePick,
-    required this.isImageLimitReached,
+    this.onImagePick,
+    this.isImageLimitReached = false,
   });
 
   @override
@@ -206,13 +206,13 @@ class ForumAttachmentPreview extends StatelessWidget {
 
 class _ToolbarButtons extends StatelessWidget {
   final quill.QuillController controller;
-  final VoidCallback onImagePick;
+  final VoidCallback? onImagePick;
   final bool isImageLimitReached;
 
   const _ToolbarButtons({
     required this.controller,
-    required this.onImagePick,
-    required this.isImageLimitReached,
+    this.onImagePick,
+    this.isImageLimitReached = false,
   });
 
   @override
@@ -253,11 +253,12 @@ class _ToolbarButtons extends StatelessWidget {
             onTap: () => _toggleAttribute(quill.Attribute.ol),
           ),
           const ForumToolbarDivider(),
-          ForumToolbarButton(
-            icon: LucideIcons.image,
-            onTap: isImageLimitReached ? () {} : onImagePick,
-            isDisabled: isImageLimitReached,
-          ),
+          if (onImagePick != null)
+            ForumToolbarButton(
+              icon: LucideIcons.image,
+              onTap: isImageLimitReached ? () {} : onImagePick!,
+              isDisabled: isImageLimitReached,
+            ),
         ],
       ),
     );

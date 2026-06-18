@@ -557,9 +557,12 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<List<DoubtTopicDto>> getDoubtTopics() async {
+  Future<List<DoubtTopicDto>> getDoubtTopics({int? parentId}) async {
     return performNetworkRequest(
-      _dio.get(ApiEndpoints.helpdeskTopics),
+      _dio.get(
+        ApiEndpoints.helpdeskTopics,
+        queryParameters: parentId != null ? {'parent_id': parentId} : null,
+      ),
       fromJson: DoubtTopicDto.fromListResponse,
     );
   }
