@@ -21,18 +21,34 @@ class HttpDataSource implements DataSource {
     String? search,
     dynamic tags,
   }) async {
-    return performNetworkRequest(
-      _dio.get(
-        ApiEndpoints.courseList,
-        queryParameters: {
-          'page': page,
-          'page_size': pageSize,
-          if (search != null && search.isNotEmpty) 'q': search,
-          'tags': tags,
-        },
-      ),
-      fromJson: CourseDto.fromListResponse,
-    );
+    try {
+      return await performNetworkRequest(
+        _dio.get(
+          ApiEndpoints.courseList,
+          queryParameters: {
+            'page': page,
+            'page_size': pageSize,
+            if (search != null && search.isNotEmpty) 'q': search,
+            'tags': tags,
+          },
+        ),
+        fromJson: CourseDto.fromListResponse,
+      );
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404 && page > 1) {
+        // A 404 on a paginated request (page > 1) typically means the total
+        // number of items shrunk. We return an empty response to cleanly
+        // terminate the pagination (hasMore: false) without throwing an error.
+        // We do NOT swallow 404s on page 1, as that would trigger DB wipe logic.
+        return PaginatedResponseDto<CourseDto>(
+          count: 0,
+          next: null,
+          previous: null,
+          results: [],
+        );
+      }
+      rethrow;
+    }
   }
 
   @override
