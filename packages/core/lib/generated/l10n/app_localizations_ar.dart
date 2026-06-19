@@ -2013,4 +2013,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String customExamCountLabel(int count) {
     return '$count أسئلة';
   }
+
+  @override
+  String get examsTabTitle => 'الامتحانات';
+
+  @override
+  String get availableExamCoursesTitle => 'دورات الامتحانات المتاحة';
 }

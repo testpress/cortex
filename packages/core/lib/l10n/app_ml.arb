@@ -688,5 +688,7 @@
     }
   },
   "resumeExamOnline": "പരീക്ഷ ഓൺലൈനിൽ തുടരുക",
-  "startExamOnline": "പരീക്ഷ ഓൺലൈനിൽ ആരംഭിക്കുക"
+  "startExamOnline": "പരീക്ഷ ഓൺലൈനിൽ ആരംഭിക്കുക",
+  "examsTabTitle": "പരീക്ഷകൾ",
+  "availableExamCoursesTitle": "ലഭ്യമായ പരീക്ഷാ കോഴ്‌സുകൾ"
 }

@@ -2038,4 +2038,10 @@ class AppLocalizationsTa extends AppLocalizations {
   String customExamCountLabel(int count) {
     return '$count கேள்விகள்';
   }
+
+  @override
+  String get examsTabTitle => 'தேர்வுகள்';
+
+  @override
+  String get availableExamCoursesTitle => 'கிடைக்கக்கூடிய தேர்வுப் படிப்புகள்';
 }

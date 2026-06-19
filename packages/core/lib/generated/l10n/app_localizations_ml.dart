@@ -2048,4 +2048,10 @@ class AppLocalizationsMl extends AppLocalizations {
   String customExamCountLabel(int count) {
     return '$count ചോദ്യങ്ങൾ';
   }
+
+  @override
+  String get examsTabTitle => 'പരീക്ഷകൾ';
+
+  @override
+  String get availableExamCoursesTitle => 'ലഭ്യമായ പരീക്ഷാ കോഴ്‌സുകൾ';
 }

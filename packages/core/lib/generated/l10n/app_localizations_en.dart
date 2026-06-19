@@ -2004,4 +2004,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String customExamCountLabel(int count) {
     return '$count questions';
   }
+
+  @override
+  String get examsTabTitle => 'Exams';
+
+  @override
+  String get availableExamCoursesTitle => 'Available Exam Courses';
 }

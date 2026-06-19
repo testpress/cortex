@@ -963,5 +963,7 @@
     "placeholders": {
       "count": { "type": "int" }
     }
-  }
+  },
+  "examsTabTitle": "Exams",
+  "availableExamCoursesTitle": "Available Exam Courses"
 }

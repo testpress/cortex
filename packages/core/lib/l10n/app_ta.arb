@@ -952,5 +952,7 @@
     }
   },
   "resumeExamOnline": "தேர்வை ஆன்லைனில் தொடரவும்",
-  "startExamOnline": "தேர்வை ஆன்லைனில் தொடங்கவும்"
+  "startExamOnline": "தேர்வை ஆன்லைனில் தொடங்கவும்",
+  "examsTabTitle": "தேர்வுகள்",
+  "availableExamCoursesTitle": "கிடைக்கக்கூடிய தேர்வுப் படிப்புகள்"
 }

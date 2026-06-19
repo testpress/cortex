@@ -3670,6 +3670,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} questions'**
   String customExamCountLabel(int count);
+
+  /// No description provided for @examsTabTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exams'**
+  String get examsTabTitle;
+
+  /// No description provided for @availableExamCoursesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Exam Courses'**
+  String get availableExamCoursesTitle;
 }
 
 class _AppLocalizationsDelegate

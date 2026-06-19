@@ -77,7 +77,7 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       AppText.headline(
-                        'Exams',
+                        l10n.examsTabTitle,
                         color: design.colors.textPrimary,
                       ),
                       SizedBox(height: design.spacing.xs),
@@ -103,7 +103,7 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
                           padding: EdgeInsets.all(design.spacing.md),
                           sliver: SliverToBoxAdapter(
                             child: AppText.title(
-                              'Available Exam Courses',
+                              l10n.availableExamCoursesTitle,
                               color: design.colors.textPrimary,
                             ),
                           ),

@@ -687,5 +687,7 @@
     }
   },
   "resumeExamOnline": "استئناف الامتحان عبر الإنترنت",
-  "startExamOnline": "بدء الامتحان عبر الإنترنت"
+  "startExamOnline": "بدء الامتحان عبر الإنترنت",
+  "examsTabTitle": "الامتحانات",
+  "availableExamCoursesTitle": "دورات الامتحانات المتاحة"
 }
