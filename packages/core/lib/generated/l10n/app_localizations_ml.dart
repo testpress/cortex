@@ -565,6 +565,13 @@ class AppLocalizationsMl extends AppLocalizations {
   String get studyLessonsTitle => 'പാഠങ്ങൾ';
 
   @override
+  String get noCoursesAvailable => 'കോഴ്സുകൾ ലഭ്യമല്ല';
+
+  @override
+  String get selectExamToViewQuestions =>
+      'ചോദ്യപേപ്പറുകൾ കാണാൻ ഒരു പരീക്ഷ തിരഞ്ഞെടുക്കുക';
+
+  @override
   String get filterVideo => 'വീഡിയോ';
 
   @override
@@ -2041,4 +2048,10 @@ class AppLocalizationsMl extends AppLocalizations {
   String customExamCountLabel(int count) {
     return '$count ചോദ്യങ്ങൾ';
   }
+
+  @override
+  String get examsTabTitle => 'പരീക്ഷകൾ';
+
+  @override
+  String get availableExamCoursesTitle => 'ലഭ്യമായ പരീക്ഷാ കോഴ്‌സുകൾ';
 }

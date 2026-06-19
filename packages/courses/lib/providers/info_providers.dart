@@ -25,6 +25,7 @@ class InfoSyncMetadata extends _$InfoSyncMetadata {
 class InfoList extends _$InfoList {
   PaginationState _paginationTracker = const PaginationState();
   Future<void>? _pendingSyncRequest;
+  bool _isPendingSyncReset = false;
 
   @override
   Stream<List<CourseDto>> build() async* {
@@ -43,27 +44,57 @@ class InfoList extends _$InfoList {
       return;
     }
 
-    if (_pendingSyncRequest != null) return _pendingSyncRequest;
-
-    _pendingSyncRequest = _performSync(isReset: true);
-    try {
+    if (_pendingSyncRequest != null) {
+      if (_isPendingSyncReset) return _pendingSyncRequest;
       await _pendingSyncRequest;
+    }
+
+    final currentSync = _performSync(isReset: true);
+    _pendingSyncRequest = currentSync;
+    _isPendingSyncReset = true;
+    try {
+      await currentSync;
       ref.read(infoSyncMetadataProvider.notifier).markSynced();
     } catch (_) {
       // Allow retry on next initialize call by not marking as synced
     } finally {
-      _pendingSyncRequest = null;
+      if (_pendingSyncRequest == currentSync) {
+        _pendingSyncRequest = null;
+      }
     }
   }
 
   Future<void> loadMore() async {
     if (!_paginationTracker.hasMore || _pendingSyncRequest != null) return;
 
-    _pendingSyncRequest = _performSync(isReset: false);
+    final currentSync = _performSync(isReset: false);
+    _pendingSyncRequest = currentSync;
+    _isPendingSyncReset = false;
     try {
-      await _pendingSyncRequest;
+      await currentSync;
     } finally {
-      _pendingSyncRequest = null;
+      if (_pendingSyncRequest == currentSync) {
+        _pendingSyncRequest = null;
+      }
+    }
+  }
+
+  Future<void> refresh() async {
+    if (_pendingSyncRequest != null) {
+      if (_isPendingSyncReset) return _pendingSyncRequest;
+      await _pendingSyncRequest;
+    }
+
+    final currentSync = _performSync(isReset: true);
+    _pendingSyncRequest = currentSync;
+    _isPendingSyncReset = true;
+    try {
+      await currentSync;
+      ref.read(infoSyncMetadataProvider.notifier).markSynced();
+    } finally {
+      if (_pendingSyncRequest == currentSync) {
+        _pendingSyncRequest = null;
+      }
     }
   }
 

@@ -271,6 +271,8 @@
   "studySearchHint": "பாடங்கள், அத்தியாயங்களைத் தேடுங்கள்",
   "studyYourCoursesTitle": "உங்கள் பாடங்கள்",
   "studyLessonsTitle": "பாடங்கள்",
+  "noCoursesAvailable": "பாடநெறிகள் கிடைக்கவில்லை",
+  "selectExamToViewQuestions": "கேள்வித் தாள்களைக் காண ஒரு தேர்வைத் தேர்ந்தெடுக்கவும்",
   "filterVideo": "வீடியோக்கள்",
   "filterAssessment": "மதிப்பீடுகள்",
   "filterTest": "தேர்வுகள்",
@@ -950,5 +952,7 @@
     }
   },
   "resumeExamOnline": "தேர்வை ஆன்லைனில் தொடரவும்",
-  "startExamOnline": "தேர்வை ஆன்லைனில் தொடங்கவும்"
+  "startExamOnline": "தேர்வை ஆன்லைனில் தொடங்கவும்",
+  "examsTabTitle": "தேர்வுகள்",
+  "availableExamCoursesTitle": "கிடைக்கக்கூடிய தேர்வுப் படிப்புகள்"
 }

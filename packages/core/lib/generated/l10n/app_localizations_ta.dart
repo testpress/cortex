@@ -566,6 +566,13 @@ class AppLocalizationsTa extends AppLocalizations {
   String get studyLessonsTitle => 'பாடங்கள்';
 
   @override
+  String get noCoursesAvailable => 'பாடநெறிகள் கிடைக்கவில்லை';
+
+  @override
+  String get selectExamToViewQuestions =>
+      'கேள்வித் தாள்களைக் காண ஒரு தேர்வைத் தேர்ந்தெடுக்கவும்';
+
+  @override
   String get filterVideo => 'வீடியோக்கள்';
 
   @override
@@ -2031,4 +2038,10 @@ class AppLocalizationsTa extends AppLocalizations {
   String customExamCountLabel(int count) {
     return '$count கேள்விகள்';
   }
+
+  @override
+  String get examsTabTitle => 'தேர்வுகள்';
+
+  @override
+  String get availableExamCoursesTitle => 'கிடைக்கக்கூடிய தேர்வுப் படிப்புகள்';
 }

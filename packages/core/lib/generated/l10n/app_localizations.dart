@@ -1098,6 +1098,18 @@ abstract class AppLocalizations {
   /// **'Lessons'**
   String get studyLessonsTitle;
 
+  /// No description provided for @noCoursesAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No courses available'**
+  String get noCoursesAvailable;
+
+  /// No description provided for @selectExamToViewQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an exam to view question papers'**
+  String get selectExamToViewQuestions;
+
   /// No description provided for @filterVideo.
   ///
   /// In en, this message translates to:
@@ -3658,6 +3670,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} questions'**
   String customExamCountLabel(int count);
+
+  /// No description provided for @examsTabTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exams'**
+  String get examsTabTitle;
+
+  /// No description provided for @availableExamCoursesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Exam Courses'**
+  String get availableExamCoursesTitle;
 }
 
 class _AppLocalizationsDelegate

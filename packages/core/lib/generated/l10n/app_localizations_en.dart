@@ -558,6 +558,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get studyLessonsTitle => 'Lessons';
 
   @override
+  String get noCoursesAvailable => 'No courses available';
+
+  @override
+  String get selectExamToViewQuestions =>
+      'Select an exam to view question papers';
+
+  @override
   String get filterVideo => 'Videos';
 
   @override
@@ -1997,4 +2004,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String customExamCountLabel(int count) {
     return '$count questions';
   }
+
+  @override
+  String get examsTabTitle => 'Exams';
+
+  @override
+  String get availableExamCoursesTitle => 'Available Exam Courses';
 }

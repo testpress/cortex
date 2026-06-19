@@ -173,6 +173,8 @@
   "studySearchHint": "البحث في الكورسات، الفصول، الدروس",
   "studyYourCoursesTitle": "كورساتك",
   "studyLessonsTitle": "الدروس",
+  "noCoursesAvailable": "لا توجد دورات متاحة",
+  "selectExamToViewQuestions": "حدد اختبارًا لعرض أوراق الأسئلة",
   "filterVideo": "فيديو",
   "filterAssessment": "تقييم",
   "filterTest": "اختبار",
@@ -685,5 +687,7 @@
     }
   },
   "resumeExamOnline": "استئناف الامتحان عبر الإنترنت",
-  "startExamOnline": "بدء الامتحان عبر الإنترنت"
+  "startExamOnline": "بدء الامتحان عبر الإنترنت",
+  "examsTabTitle": "الامتحانات",
+  "availableExamCoursesTitle": "دورات الامتحانات المتاحة"
 }

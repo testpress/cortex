@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart' show RefreshIndicator;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
@@ -45,6 +46,7 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     final padding = MediaQuery.paddingOf(context);
 
     final examCoursesState = ref.watch(examListProvider);
@@ -56,158 +58,162 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
       child: Stack(
         children: [
           Positioned.fill(
-            child: CustomScrollView(
-              controller: _scrollController,
-              slivers: [
-                SliverToBoxAdapter(
-                  child: Container(
-                    color: design.colors.card,
-                    padding: EdgeInsets.fromLTRB(
-                      padding.left > design.spacing.md
-                          ? padding.left
-                          : design.spacing.md,
-                      padding.top + design.spacing.md,
-                      padding.right > design.spacing.md
-                          ? padding.right
-                          : design.spacing.md,
-                      design.spacing.md,
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              AppText.headline(
-                                'Exams',
-                                color: design.colors.textPrimary,
-                              ),
-                              SizedBox(height: design.spacing.xs),
-                              AppText.body(
-                                'Select an exam to view question papers',
-                                color: design.colors.textSecondary,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+            child: Column(
+              children: [
+                Container(
+                  width: double.infinity,
+                  color: design.colors.card,
+                  padding: EdgeInsets.fromLTRB(
+                    padding.left > design.spacing.md
+                        ? padding.left
+                        : design.spacing.md,
+                    padding.top + design.spacing.md,
+                    padding.right > design.spacing.md
+                        ? padding.right
+                        : design.spacing.md,
+                    design.spacing.md,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppText.headline(
+                        l10n.examsTabTitle,
+                        color: design.colors.textPrimary,
+                      ),
+                      SizedBox(height: design.spacing.xs),
+                      AppText.body(
+                        l10n.selectExamToViewQuestions,
+                        color: design.colors.textSecondary,
+                      ),
+                    ],
                   ),
                 ),
-
-                SliverToBoxAdapter(
-                  child: Container(height: 1, color: design.colors.divider),
-                ),
-
-                SliverPadding(
-                  padding: EdgeInsets.all(design.spacing.md),
-                  sliver: SliverToBoxAdapter(
-                    child: AppText.title(
-                      'Available Exam Courses',
-                      color: design.colors.textPrimary,
-                    ),
-                  ),
-                ),
-
-                examCoursesState.when(
-                  data: (courses) {
-                    final isSkeleton = isSyncing && courses.isEmpty;
-                    final displayCourses = isSkeleton
-                        ? _skeletonCourses
-                        : courses;
-
-                    if (displayCourses.isEmpty) {
-                      return SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: Center(
-                          child: AppText.body(
-                            'No exam courses found.',
-                            color: design.colors.textSecondary,
-                          ),
-                        ),
-                      );
-                    }
-
-                    return SliverMainAxisGroup(
+                Container(height: 1, color: design.colors.divider),
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () =>
+                        ref.read(examListProvider.notifier).refresh(),
+                    child: CustomScrollView(
+                      controller: _scrollController,
+                      physics: const AlwaysScrollableScrollPhysics(
+                        parent: BouncingScrollPhysics(),
+                      ),
                       slivers: [
                         SliverPadding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: design.spacing.md,
-                          ),
-                          sliver: SliverList(
-                            delegate: SliverChildBuilderDelegate((
-                              context,
-                              index,
-                            ) {
-                              final course = displayCourses[index];
-                              return Padding(
-                                padding: EdgeInsets.only(
-                                  bottom: design.spacing.md,
-                                ),
-                                child: CourseCard(
-                                  course: course,
-                                  isSkeleton: isSkeleton,
-                                  onTap: isSkeleton
-                                      ? null
-                                      : () {
-                                          context.push(
-                                            '/exams/course/${course.id}/chapters',
-                                          );
-                                        },
-                                ),
-                              );
-                            }, childCount: displayCourses.length),
+                          padding: EdgeInsets.all(design.spacing.md),
+                          sliver: SliverToBoxAdapter(
+                            child: AppText.title(
+                              l10n.availableExamCoursesTitle,
+                              color: design.colors.textPrimary,
+                            ),
                           ),
                         ),
-                        if (isSyncingMore)
-                          SliverPadding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: design.spacing.md,
-                            ),
-                            sliver: SliverToBoxAdapter(
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  bottom: design.spacing.md,
+                        examCoursesState.when(
+                          data: (courses) {
+                            final isSkeleton = isSyncing && courses.isEmpty;
+                            final displayCourses = isSkeleton
+                                ? _skeletonCourses
+                                : courses;
+
+                            if (displayCourses.isEmpty) {
+                              return SliverFillRemaining(
+                                hasScrollBody: false,
+                                child: Center(
+                                  child: AppText.body(
+                                    l10n.noCoursesAvailable,
+                                    color: design.colors.textSecondary,
+                                  ),
                                 ),
-                                child: CourseCard(
-                                  course: _skeletonCourses.first,
-                                  isSkeleton: isSyncingMore,
+                              );
+                            }
+
+                            return SliverMainAxisGroup(
+                              slivers: [
+                                SliverPadding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: design.spacing.md,
+                                  ),
+                                  sliver: SliverList(
+                                    delegate: SliverChildBuilderDelegate((
+                                      context,
+                                      index,
+                                    ) {
+                                      final course = displayCourses[index];
+                                      return Padding(
+                                        padding: EdgeInsets.only(
+                                          bottom: design.spacing.md,
+                                        ),
+                                        child: CourseCard(
+                                          course: course,
+                                          isSkeleton: isSkeleton,
+                                          onTap: isSkeleton
+                                              ? null
+                                              : () {
+                                                  context.push(
+                                                    '/exams/course/${course.id}/chapters',
+                                                  );
+                                                },
+                                        ),
+                                      );
+                                    }, childCount: displayCourses.length),
+                                  ),
                                 ),
+                                if (isSyncingMore)
+                                  SliverPadding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: design.spacing.md,
+                                    ),
+                                    sliver: SliverToBoxAdapter(
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                          bottom: design.spacing.md,
+                                        ),
+                                        child: CourseCard(
+                                          course: _skeletonCourses.first,
+                                          isSkeleton: isSyncingMore,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            );
+                          },
+                          loading: () => isSyncing
+                              ? SliverPadding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: design.spacing.md,
+                                  ),
+                                  sliver: SliverList(
+                                    delegate: SliverChildBuilderDelegate(
+                                      (context, index) => Padding(
+                                        padding: EdgeInsets.only(
+                                          bottom: design.spacing.md,
+                                        ),
+                                        child: CourseCard(
+                                          course: _skeletonCourses[index],
+                                          isSkeleton: isSyncing,
+                                        ),
+                                      ),
+                                      childCount: _skeletonCourses.length,
+                                    ),
+                                  ),
+                                )
+                              : const SliverToBoxAdapter(
+                                  child: SizedBox.shrink(),
+                                ),
+                          error: (error, stack) => SliverFillRemaining(
+                            hasScrollBody: false,
+                            child: Center(
+                              child: AppText.body(
+                                'Error loading exams: $error',
+                                color: design.colors.error,
                               ),
                             ),
                           ),
+                        ),
+
+                        const SliverToBoxAdapter(child: SizedBox(height: 120)),
                       ],
-                    );
-                  },
-                  loading: () => isSyncing
-                      ? SliverPadding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: design.spacing.md,
-                          ),
-                          sliver: SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) => Padding(
-                                padding: EdgeInsets.only(
-                                  bottom: design.spacing.md,
-                                ),
-                                child: CourseCard(
-                                  course: _skeletonCourses[index],
-                                  isSkeleton: isSyncing,
-                                ),
-                              ),
-                              childCount: _skeletonCourses.length,
-                            ),
-                          ),
-                        )
-                      : const SliverToBoxAdapter(child: SizedBox.shrink()),
-                  error: (error, stack) => SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: Center(
-                      child: AppText.body(
-                        'Error loading exams: $error',
-                        color: design.colors.error,
-                      ),
                     ),
                   ),
                 ),

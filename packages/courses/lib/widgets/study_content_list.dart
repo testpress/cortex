@@ -27,6 +27,7 @@ class StudyContentList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     final showInitialLoader = isSyncingInitial &&
         enrolledCoursesState.when(
@@ -45,7 +46,17 @@ class StudyContentList extends ConsumerWidget {
 
         return SliverMainAxisGroup(
           slivers: [
-            if (activeTypeFilters.isEmpty)
+            if (displayCourses.isEmpty && !showInitialLoader)
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: AppText.body(
+                    l10n.noCoursesAvailable,
+                    color: design.colors.textSecondary,
+                  ),
+                ),
+              )
+            else if (activeTypeFilters.isEmpty)
               SliverPadding(
                 padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
                 sliver: SliverList(
@@ -66,6 +77,16 @@ class StudyContentList extends ConsumerWidget {
                       );
                     },
                     childCount: displayCourses.length,
+                  ),
+                ),
+              )
+            else if (filteredLessons.isEmpty)
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: AppText.body(
+                    l10n.chapterNoContent,
+                    color: design.colors.textSecondary,
                   ),
                 ),
               )

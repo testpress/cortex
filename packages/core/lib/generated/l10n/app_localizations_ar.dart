@@ -556,6 +556,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get studyLessonsTitle => 'الدروس';
 
   @override
+  String get noCoursesAvailable => 'لا توجد دورات متاحة';
+
+  @override
+  String get selectExamToViewQuestions => 'حدد اختبارًا لعرض أوراق الأسئلة';
+
+  @override
   String get filterVideo => 'فيديو';
 
   @override
@@ -2007,4 +2013,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String customExamCountLabel(int count) {
     return '$count أسئلة';
   }
+
+  @override
+  String get examsTabTitle => 'الامتحانات';
+
+  @override
+  String get availableExamCoursesTitle => 'دورات الامتحانات المتاحة';
 }

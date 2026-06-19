@@ -152,10 +152,43 @@ class CourseRepository {
   }) async {
     final response = await _source.getCourses(page: page, tags: tags);
 
-    if (response.results.isNotEmpty) {
-      final companions = response.results.map(_courseDtoToCompanion).toList();
-      await _db.upsertCourses(companions);
-    }
+    await _db.transaction(() async {
+      if (page == 1) {
+        final allCourses = await _db.select(_db.coursesTable).get();
+        final idsToDelete = allCourses
+            .where((row) {
+              final dto = rowToCourseDto(row);
+              final isExam = dto.tags.any((t) => t.toLowerCase() == 'exams') ||
+                  (dto.tags.isEmpty && dto.examsCount > 0);
+              final isInfo = dto.tags.any((t) => t.toLowerCase() == 'info');
+
+              if (tags == 'exams') return isExam;
+              if (tags == 'info' || tags == 'info_page') return isInfo;
+              if (tags == null) return !isExam && !isInfo;
+              return dto.tags
+                  .any((t) => t.toLowerCase() == tags.toString().toLowerCase());
+            })
+            .map((r) => r.id)
+            .toList();
+
+        if (idsToDelete.isNotEmpty) {
+          await (_db.delete(_db.chaptersTable)
+                ..where((t) => t.courseId.isIn(idsToDelete)))
+              .go();
+          await (_db.delete(_db.lessonsTable)
+                ..where((t) => t.courseId.isIn(idsToDelete)))
+              .go();
+          await (_db.delete(_db.coursesTable)
+                ..where((t) => t.id.isIn(idsToDelete)))
+              .go();
+        }
+      }
+
+      if (response.results.isNotEmpty) {
+        final companions = response.results.map(_courseDtoToCompanion).toList();
+        await _db.upsertCourses(companions);
+      }
+    });
 
     return response;
   }
