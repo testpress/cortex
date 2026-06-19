@@ -105,7 +105,7 @@ class _LearnersCarousel extends StatelessWidget {
     final design = Design.of(context);
 
     return SizedBox(
-      height: 140,
+      height: 164,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
@@ -114,7 +114,7 @@ class _LearnersCarousel extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.only(right: 12),
             child: SizedBox(
-              width: 260,
+              width: 160,
               child: _LearnerCard(learner: learners[index]),
             ),
           );
@@ -176,18 +176,11 @@ class _LearnerCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              LearnerAvatar(
-                avatar: learner.avatar,
-                name: learner.name,
-                rank: learner.rank,
-                size: 56,
-              ),
-              PointsDisplay(points: learner.points),
-            ],
+          LearnerAvatar(
+            avatar: learner.avatar,
+            name: learner.name,
+            rank: learner.rank,
+            size: 56,
           ),
           const SizedBox(height: 12),
           AppText.subtitle(
@@ -197,7 +190,9 @@ class _LearnerCard extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 4),
+          PointsDisplay(points: learner.points),
+          const SizedBox(height: 8),
           LearnerStats(
             courses: learner.coursesCompleted,
             streak: learner.streakDays,
