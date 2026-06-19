@@ -4,6 +4,8 @@ import 'dart:io';
 import 'client_utils.dart';
 
 void main(List<String> args) async {
+  final List<File> downloadedFiles = [];
+  bool brandingUpdated = false;
   try {
     final cliArgs = parseArgs(args, 'generate_client_app.dart');
     final remoteConfig = await fetchRemoteConfig(
@@ -17,21 +19,30 @@ void main(List<String> args) async {
 
     print('Applying configuration for: $appName');
 
-    final downloadedFiles = await downloadAssets(remoteConfig, appDir.path);
+    downloadedFiles.addAll(await downloadAssets(remoteConfig, appDir.path));
     await updateBranding(appName, bundleId, appDir.path);
-    final iconConfig = await generateNativeIcons(appDir.path);
+    brandingUpdated = true;
 
-    downloadedFiles.add(iconConfig);
+    final iconConfig = await generateNativeIcons(appDir.path);
+    if (iconConfig != null) {
+      downloadedFiles.add(iconConfig);
+    }
+
     await _buildApk(
       appDir.path,
       appName,
       cliArgs.configPath,
       cliArgs.apiBaseUrl,
     );
-    await cleanupTempFiles(downloadedFiles);
-    await restoreGitChanges();
   } catch (e) {
     print('❌ Error: $e');
+  } finally {
+    if (downloadedFiles.isNotEmpty) {
+      await cleanupTempFiles(downloadedFiles);
+    }
+    if (brandingUpdated) {
+      await restoreGitChanges();
+    }
   }
 }
 

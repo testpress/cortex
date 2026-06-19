@@ -31,14 +31,30 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 AppConfig.splashScreenImage,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    color: Colors.white,
-                    child: Center(
-                      child: Icon(
-                        LucideIcons.graduationCap,
-                        size: 80,
-                        color: design.colors.primary,
-                      ),
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(design.spacing.xl),
+                          decoration: BoxDecoration(
+                            color: design.colors.onPrimary.withValues(
+                              alpha: 0.2,
+                            ),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            LucideIcons.graduationCap,
+                            size: 96,
+                            color: design.colors.onPrimary,
+                          ),
+                        ),
+                        SizedBox(height: design.spacing.md),
+                        AppText.headline(
+                          'Cortex Platform',
+                          color: design.colors.onPrimary,
+                        ),
+                      ],
                     ),
                   );
                 },

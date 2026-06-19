@@ -39,10 +39,15 @@ Future<Map<String, dynamic>> fetchRemoteConfig(
   String apiBaseUrl,
   String apiKey,
 ) async {
+  final normalizedBaseUrl = apiBaseUrl.endsWith('/')
+      ? apiBaseUrl.substring(0, apiBaseUrl.length - 1)
+      : apiBaseUrl;
   final configEndpoint = '/api/v2.5/admin/android/app-config/';
-  print('Fetching remote configuration from $apiBaseUrl$configEndpoint...');
+  print(
+    'Fetching remote configuration from $normalizedBaseUrl$configEndpoint...',
+  );
   final response = await http.get(
-    Uri.parse('$apiBaseUrl$configEndpoint'),
+    Uri.parse('$normalizedBaseUrl$configEndpoint'),
     headers: {'API-access-key': apiKey},
   );
 
@@ -61,11 +66,17 @@ Future<List<File>> downloadAssets(
   final loginScreenUrl = remoteConfig['login_screen_image'];
   final List<File> downloadedFiles = [];
 
-  final iconFile = await _downloadIcon(
-    iconUrl,
-    '$appDirPath/assets/images/temp_launcher.png',
-  );
-  downloadedFiles.add(iconFile);
+  if (iconUrl != null) {
+    final iconFile = await _downloadIcon(
+      iconUrl,
+      '$appDirPath/assets/images/temp_launcher.png',
+    );
+    if (iconFile != null) downloadedFiles.add(iconFile);
+  } else {
+    print(
+      '⚠️ Missing launcher icon ("launcher_xxxhdpi") in remote config. Skipping download...',
+    );
+  }
 
   if (splashScreenUrl != null) {
     print('Downloading splash screen...');
@@ -73,7 +84,7 @@ Future<List<File>> downloadAssets(
       splashScreenUrl,
       '$appDirPath/assets/images/splash_screen_image.png',
     );
-    downloadedFiles.add(splashFile);
+    if (splashFile != null) downloadedFiles.add(splashFile);
   }
 
   if (loginScreenUrl != null) {
@@ -82,15 +93,21 @@ Future<List<File>> downloadAssets(
       loginScreenUrl,
       '$appDirPath/assets/images/login_screen_image.png',
     );
-    downloadedFiles.add(loginFile);
+    if (loginFile != null) downloadedFiles.add(loginFile);
   }
 
   return downloadedFiles;
 }
 
-Future<File> _downloadIcon(String url, String destPath) async {
+Future<File?> _downloadIcon(String url, String destPath) async {
   print('Downloading icon...');
   final response = await http.get(Uri.parse(url));
+  if (response.statusCode != 200) {
+    print(
+      '⚠️ Failed to download asset from $url (HTTP ${response.statusCode}). Skipping...',
+    );
+    return null;
+  }
   final iconFile = File(destPath);
   if (!iconFile.parent.existsSync()) {
     iconFile.parent.createSync(recursive: true);
@@ -135,7 +152,13 @@ Future<void> updateBranding(
   }
 }
 
-Future<File> generateNativeIcons(String workingDir) async {
+Future<File?> generateNativeIcons(String workingDir) async {
+  final iconFile = File('$workingDir/assets/images/temp_launcher.png');
+  if (!iconFile.existsSync()) {
+    print('⚠️ Launcher icon not found. Skipping native icon generation.');
+    return null;
+  }
+
   print('Generating native icons...');
   final iconConfig = File('$workingDir/flutter_launcher_icons.yaml');
   await iconConfig.writeAsString('''
@@ -166,7 +189,24 @@ Future<void> cleanupTempFiles(List<File> files) async {
 
 Future<void> restoreGitChanges() async {
   print('🧹 Cleaning up native configuration changes...');
-  await Process.run('git', ['checkout', '--', 'app/ios', 'app/android']);
-  await Process.run('git', ['clean', '-fd', 'app/ios', 'app/android']);
+  final checkoutResult = await Process.run('git', [
+    'checkout',
+    '--',
+    'app/ios',
+    'app/android',
+  ]);
+  if (checkoutResult.exitCode != 0) {
+    print('⚠️ Warning: git checkout failed: ${checkoutResult.stderr}');
+  }
+
+  final cleanResult = await Process.run('git', [
+    'clean',
+    '-fd',
+    'app/ios',
+    'app/android',
+  ]);
+  if (cleanResult.exitCode != 0) {
+    print('⚠️ Warning: git clean failed: ${cleanResult.stderr}');
+  }
   print('✨ Repository restored to original state.');
 }
