@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
@@ -12,8 +13,6 @@ const _dummyLearner = LearnerDto(
   name: 'Student Name',
   avatar: '',
   points: 1200,
-  coursesCompleted: 12,
-  streakDays: 5,
 );
 
 class TopLearnersSection extends StatelessWidget {
@@ -81,13 +80,16 @@ class _SectionHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           AppText.title(l10n.topLearnersTitle),
-          GestureDetector(
-            onTap: () => Navigator.of(context, rootNavigator: true).push(
-              AppRoute(page: const TopLearnersScreen()),
-            ),
-            child: AppText.labelSmall(
-              l10n.viewAllAction,
-              color: design.colors.primary,
+          AppSemantics.button(
+            label: l10n.viewAllAction,
+            child: GestureDetector(
+              onTap: () => Navigator.of(context, rootNavigator: true).push(
+                AppRoute(page: const TopLearnersScreen()),
+              ),
+              child: AppText.labelSmall(
+                l10n.viewAllAction,
+                color: design.colors.primary,
+              ),
             ),
           ),
         ],
@@ -104,22 +106,38 @@ class _LearnersCarousel extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    return SizedBox(
-      height: 164,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-        itemCount: learners.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: SizedBox(
-              width: 160,
-              child: _LearnerCard(learner: learners[index]),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final horizontalPadding = design.spacing.md * 2;
+        final totalGap = 12.0 * math.max(0, learners.length - 1);
+        final availableWidthForCards =
+            constraints.maxWidth - horizontalPadding - totalGap;
+
+        final cardWidth = math.max(
+          160.0,
+          availableWidthForCards / math.max(1, learners.length),
+        );
+
+        return SizedBox(
+          height: 150,
+          child: AppSemantics.scrollableList(
+            itemCount: learners.length,
+            label: L10n.of(context).topLearnersTitle,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+              itemCount: learners.length,
+              separatorBuilder: (context, index) => const SizedBox(width: 12),
+              itemBuilder: (context, index) {
+                return SizedBox(
+                  width: cardWidth,
+                  child: _LearnerCard(learner: learners[index]),
+                );
+              },
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
@@ -166,40 +184,36 @@ class _LearnerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    return Container(
-      padding: EdgeInsets.all(design.spacing.md),
-      decoration: BoxDecoration(
-        color: design.colors.card,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: design.shadows.surfaceSoft,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          LearnerAvatar(
-            avatar: learner.avatar,
-            name: learner.name,
-            rank: learner.rank,
-            size: 56,
-          ),
-          const SizedBox(height: 12),
-          AppText.subtitle(
-            learner.name,
-            color: design.colors.textPrimary,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 4),
-          PointsDisplay(points: learner.points),
-          const SizedBox(height: 8),
-          LearnerStats(
-            courses: learner.coursesCompleted,
-            streak: learner.streakDays,
-            iconSize: 14,
-            fontSize: 13,
-          ),
-        ],
+    return AppSemantics.container(
+      label: '${learner.name}, ${learner.points} points',
+      child: Container(
+        padding: EdgeInsets.all(design.spacing.md),
+        decoration: BoxDecoration(
+          color: design.colors.card,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: design.shadows.surfaceSoft,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            LearnerAvatar(
+              avatar: learner.avatar,
+              name: learner.name,
+              rank: learner.rank,
+              size: 56,
+            ),
+            const SizedBox(height: 12),
+            AppText.subtitle(
+              learner.name,
+              color: design.colors.textPrimary,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 4),
+            PointsDisplay(points: learner.points),
+          ],
+        ),
       ),
     );
   }

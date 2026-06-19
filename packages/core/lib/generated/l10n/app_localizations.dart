@@ -954,18 +954,6 @@ abstract class AppLocalizations {
   /// **'{type} Test'**
   String testTypeLabel(String type);
 
-  /// No description provided for @coursesCompletedLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} courses'**
-  String coursesCompletedLabel(int count);
-
-  /// No description provided for @streakDaysLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} days'**
-  String streakDaysLabel(int count);
-
   /// No description provided for @achievementsLabel.
   ///
   /// In en, this message translates to:

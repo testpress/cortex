@@ -478,16 +478,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String coursesCompletedLabel(int count) {
-    return '$count courses';
-  }
-
-  @override
-  String streakDaysLabel(int count) {
-    return '$count days';
-  }
-
-  @override
   String get achievementsLabel => 'Achievements';
 
   @override

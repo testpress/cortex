@@ -149,8 +149,7 @@
   "liveLabel": "مباشر",
   "importantLabel": "مهم",
   "testTypeLabel": "اختبار {type}",
-  "coursesCompletedLabel": "{count} كورسات",
-  "streakDaysLabel": "{count} أيام",
+
   "achievementsLabel": "الإنجازات",
   "moreBadgesLabel": "+{count} أكثر",
   "drawerMenuTitle": "القائمة",

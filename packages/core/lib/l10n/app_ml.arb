@@ -149,8 +149,7 @@
   "liveLabel": "ലൈവ്",
   "importantLabel": "പ്രധാനം",
   "testTypeLabel": "{type} ടെസ്റ്റ്",
-  "coursesCompletedLabel": "{count} കോഴ്സുകൾ",
-  "streakDaysLabel": "{count} ദിവസങ്ങൾ",
+
   "achievementsLabel": "നേട്ടങ്ങൾ",
   "moreBadgesLabel": "+{count} കൂടുതൽ",
   "drawerMenuTitle": "മെനു",

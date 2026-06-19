@@ -162,53 +162,12 @@ class PointsDisplay extends StatelessWidget {
       children: [
         Icon(LucideIcons.trophy, size: iconSize, color: design.colors.rank3),
         const SizedBox(width: 4),
-        AppText.labelBold(points.toInt().toString()),
-      ],
-    );
-  }
-}
-
-class LearnerStats extends StatelessWidget {
-  const LearnerStats({
-    super.key,
-    required this.courses,
-    required this.streak,
-    this.iconSize = 12,
-    this.fontSize = 12,
-  });
-
-  final int courses;
-  final int streak;
-  final double iconSize;
-  final double fontSize;
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-    final l10n = L10n.of(context);
-
-    return Row(
-      children: [
-        if (courses > 0) ...[
-          Icon(LucideIcons.checkCircle2,
-              size: iconSize, color: design.colors.success),
-          const SizedBox(width: 4),
-          AppText.caption(
-            l10n.coursesCompletedLabel(courses),
-            color: design.colors.textSecondary,
-            style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w500),
+        Flexible(
+          child: AppText.labelBold(
+            points.toInt().toString(),
+            overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(width: 10),
-        ],
-        if (streak > 0) ...[
-          Icon(LucideIcons.flame, size: iconSize, color: design.colors.warning),
-          const SizedBox(width: 4),
-          AppText.caption(
-            l10n.streakDaysLabel(streak),
-            color: design.colors.textSecondary,
-            style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w500),
-          ),
-        ],
+        ),
       ],
     );
   }

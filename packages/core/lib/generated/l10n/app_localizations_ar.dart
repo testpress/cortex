@@ -476,16 +476,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String coursesCompletedLabel(int count) {
-    return '$count كورسات';
-  }
-
-  @override
-  String streakDaysLabel(int count) {
-    return '$count أيام';
-  }
-
-  @override
   String get achievementsLabel => 'الإنجازات';
 
   @override

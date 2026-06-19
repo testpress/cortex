@@ -486,16 +486,6 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
-  String coursesCompletedLabel(int count) {
-    return '$count பாடங்கள்';
-  }
-
-  @override
-  String streakDaysLabel(int count) {
-    return '$count நாட்கள்';
-  }
-
-  @override
   String get achievementsLabel => 'சாதனைகள்';
 
   @override

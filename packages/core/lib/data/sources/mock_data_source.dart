@@ -1047,8 +1047,6 @@ class MockDataSource implements DataSource {
       name: 'Current User',
       avatar: '',
       points: 450,
-      coursesCompleted: 8,
-      streakDays: 3,
     );
   }
 
@@ -1056,24 +1054,8 @@ class MockDataSource implements DataSource {
   Future<List<LearnerDto>> fetchCompetitorTargets() async {
     await Future.delayed(const Duration(milliseconds: 200));
     return const [
-      LearnerDto(
-        id: 'c1',
-        rank: 0,
-        name: 'Target 1',
-        avatar: '',
-        points: 500,
-        coursesCompleted: 10,
-        streakDays: 5,
-      ),
-      LearnerDto(
-        id: 'c2',
-        rank: 0,
-        name: 'Target 2',
-        avatar: '',
-        points: 480,
-        coursesCompleted: 9,
-        streakDays: 4,
-      ),
+      LearnerDto(id: 'c1', rank: 0, name: 'Target 1', avatar: '', points: 500),
+      LearnerDto(id: 'c2', rank: 0, name: 'Target 2', avatar: '', points: 480),
     ];
   }
 
@@ -1081,24 +1063,8 @@ class MockDataSource implements DataSource {
   Future<List<LearnerDto>> fetchCompetitorThreats() async {
     await Future.delayed(const Duration(milliseconds: 200));
     return const [
-      LearnerDto(
-        id: 'c3',
-        rank: 0,
-        name: 'Threat 1',
-        avatar: '',
-        points: 420,
-        coursesCompleted: 7,
-        streakDays: 2,
-      ),
-      LearnerDto(
-        id: 'c4',
-        rank: 0,
-        name: 'Threat 2',
-        avatar: '',
-        points: 400,
-        coursesCompleted: 6,
-        streakDays: 1,
-      ),
+      LearnerDto(id: 'c3', rank: 0, name: 'Threat 1', avatar: '', points: 420),
+      LearnerDto(id: 'c4', rank: 0, name: 'Threat 2', avatar: '', points: 400),
     ];
   }
 

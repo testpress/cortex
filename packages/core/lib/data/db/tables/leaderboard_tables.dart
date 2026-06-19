@@ -6,8 +6,6 @@ mixin LeaderboardColumns on Table {
   TextColumn get avatar => text().nullable()();
   RealColumn get points => real()();
   IntColumn get rank => integer()();
-  IntColumn get coursesCompleted => integer().withDefault(const Constant(0))();
-  IntColumn get streakDays => integer().withDefault(const Constant(0))();
   IntColumn get page => integer().withDefault(const Constant(1))();
 }
 
