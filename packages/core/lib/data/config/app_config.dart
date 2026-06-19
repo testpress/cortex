@@ -79,13 +79,9 @@ class AppConfig {
     defaultValue: '',
   );
 
-  static const bool isLocalLogo = bool.fromEnvironment(
-    'IS_LOCAL_LOGO',
-    defaultValue: false,
-  );
+  static const String loginScreenImageLocalPath =
+      'assets/images/login_screen_image.png';
 
-  static const String loginScreenImageLocalPath = String.fromEnvironment(
-    'LOGIN_SCREEN_IMAGE_LOCAL_PATH',
-    defaultValue: '',
-  );
+  static const String splashScreenImage =
+      'assets/images/splash_screen_image.png';
 }
