@@ -80,6 +80,16 @@ class StudyContentList extends ConsumerWidget {
                   ),
                 ),
               )
+            else if (filteredLessons.isEmpty)
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: AppText.body(
+                    l10n.chapterNoContent,
+                    color: design.colors.textSecondary,
+                  ),
+                ),
+              )
             else
               SliverPadding(
                 padding: EdgeInsets.symmetric(horizontal: design.spacing.md),

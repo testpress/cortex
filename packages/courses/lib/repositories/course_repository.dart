@@ -172,6 +172,12 @@ class CourseRepository {
             .toList();
 
         if (idsToDelete.isNotEmpty) {
+          await (_db.delete(_db.chaptersTable)
+                ..where((t) => t.courseId.isIn(idsToDelete)))
+              .go();
+          await (_db.delete(_db.lessonsTable)
+                ..where((t) => t.courseId.isIn(idsToDelete)))
+              .go();
           await (_db.delete(_db.coursesTable)
                 ..where((t) => t.id.isIn(idsToDelete)))
               .go();

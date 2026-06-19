@@ -39,6 +39,7 @@ final courseListSyncError = StateProvider<Object?>((ref) => null);
 class CourseList extends _$CourseList {
   PaginationState _paginationTracker = const PaginationState();
   Future<void>? _pendingSyncRequest;
+  bool _isPendingSyncReset = false;
 
   @override
   Stream<List<CourseDto>> build() async* {
@@ -64,7 +65,11 @@ class CourseList extends _$CourseList {
     if (lastSync != null) {
       return;
     }
-    if (_pendingSyncRequest != null) return _pendingSyncRequest;
+
+    if (_pendingSyncRequest != null) {
+      if (_isPendingSyncReset) return _pendingSyncRequest;
+      await _pendingSyncRequest;
+    }
 
     ref.read(isSyncingInitialPage.notifier).state = true;
 
@@ -74,12 +79,16 @@ class CourseList extends _$CourseList {
       return;
     }
 
-    _pendingSyncRequest = _performSync(isReset: true);
+    final currentSync = _performSync(isReset: true);
+    _pendingSyncRequest = currentSync;
+    _isPendingSyncReset = true;
     try {
-      await _pendingSyncRequest;
+      await currentSync;
       ref.read(courseSyncMetadataProvider.notifier).markSynced();
     } finally {
-      _pendingSyncRequest = null;
+      if (_pendingSyncRequest == currentSync) {
+        _pendingSyncRequest = null;
+      }
     }
   }
 
@@ -93,11 +102,15 @@ class CourseList extends _$CourseList {
 
     if (!_paginationTracker.hasMore || _pendingSyncRequest != null) return;
 
-    _pendingSyncRequest = _performSync(isReset: false);
+    final currentSync = _performSync(isReset: false);
+    _pendingSyncRequest = currentSync;
+    _isPendingSyncReset = false;
     try {
-      await _pendingSyncRequest;
+      await currentSync;
     } finally {
-      _pendingSyncRequest = null;
+      if (_pendingSyncRequest == currentSync) {
+        _pendingSyncRequest = null;
+      }
     }
   }
 
@@ -108,13 +121,21 @@ class CourseList extends _$CourseList {
       return;
     }
 
-    if (_pendingSyncRequest != null) return _pendingSyncRequest;
-    _pendingSyncRequest = _performSync(isReset: true);
-    try {
+    if (_pendingSyncRequest != null) {
+      if (_isPendingSyncReset) return _pendingSyncRequest;
       await _pendingSyncRequest;
+    }
+
+    final currentSync = _performSync(isReset: true);
+    _pendingSyncRequest = currentSync;
+    _isPendingSyncReset = true;
+    try {
+      await currentSync;
       ref.read(courseSyncMetadataProvider.notifier).markSynced();
     } finally {
-      _pendingSyncRequest = null;
+      if (_pendingSyncRequest == currentSync) {
+        _pendingSyncRequest = null;
+      }
     }
   }
 
