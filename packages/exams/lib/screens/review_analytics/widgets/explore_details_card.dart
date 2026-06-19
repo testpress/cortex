@@ -2,9 +2,14 @@ import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 
 class ExploreDetailsCard extends StatelessWidget {
-  const ExploreDetailsCard({super.key, required this.onExamReviewTap});
+  const ExploreDetailsCard({
+    super.key,
+    required this.onExamReviewTap,
+    required this.onSubjectPerformanceTap,
+  });
 
   final VoidCallback onExamReviewTap;
+  final VoidCallback onSubjectPerformanceTap;
 
   @override
   Widget build(BuildContext context) {
@@ -32,18 +37,10 @@ class ExploreDetailsCard extends StatelessWidget {
           Column(
             children: [
               _ExploreTile(
-                title: 'Overall Performance',
-                description:
-                    'View detailed summary of your overall performance metrics',
-                onTap: () => debugPrint('Overall Performance: coming soon'),
-              ),
-              SizedBox(height: design.spacing.sm),
-              _ExploreTile(
                 title: 'Subject-wise Performance',
                 description:
                     'Analyze your performance across different subjects',
-                onTap: () =>
-                    debugPrint('Subject-wise Performance: coming soon'),
+                onTap: onSubjectPerformanceTap,
               ),
               SizedBox(height: design.spacing.sm),
               _ExploreTile(
@@ -51,13 +48,6 @@ class ExploreDetailsCard extends StatelessWidget {
                 description:
                     'Review each question with answers and explanations',
                 onTap: onExamReviewTap,
-              ),
-              SizedBox(height: design.spacing.sm),
-              _ExploreTile(
-                title: 'Insights & Recommendations',
-                description:
-                    'Get personalized insights and improvement suggestions',
-                onTap: () => debugPrint('Insights: coming soon'),
               ),
             ],
           ),

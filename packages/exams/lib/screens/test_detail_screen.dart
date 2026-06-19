@@ -227,6 +227,25 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
       );
     }
 
+    if (state.status == ExamAttemptStatus.submitting) {
+      return Container(
+        color: design.colors.surface,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const AppLoadingIndicator(),
+              SizedBox(height: design.spacing.md),
+              AppText.body(
+                'Submitting test...',
+                color: design.colors.textSecondary,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     if (state.status == ExamAttemptStatus.instructions) {
       return ExamInstructionsView(
         exam: state.exam,
@@ -645,8 +664,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                     )
                   : TestResultView(
                       score: state.attempt?.score,
-                      onReviewAnswers: () => _openReviewAnswers(state),
-                      onViewAnalytics: () => _openAnalytics(state),
+                      onReview: () => _openAnalytics(state),
                       onClose: widget.onClose,
                     ),
           ],
@@ -744,18 +762,6 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     ref
         .read(examAttemptProvider.notifier)
         .submitAnswer(question.answerUrl, newAnswer);
-  }
-
-  void _openReviewAnswers(ExamAttemptState state) {
-    context.push(
-      '/exams/test/${state.exam!.id}/review-answers',
-      extra: ReviewRoutePayload(
-        assessmentTitle: state.exam!.title,
-        questions: state.questions,
-        attemptStates: state.answers,
-        attempt: state.attempt,
-      ),
-    );
   }
 
   void _openAnalytics(ExamAttemptState state) {

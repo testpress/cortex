@@ -3,15 +3,13 @@ import 'package:core/core.dart';
 
 class TestResultView extends StatelessWidget {
   final String? score;
-  final VoidCallback onReviewAnswers;
-  final VoidCallback onViewAnalytics;
+  final VoidCallback onReview;
   final VoidCallback onClose;
 
   const TestResultView({
     super.key,
     this.score,
-    required this.onReviewAnswers,
-    required this.onViewAnalytics,
+    required this.onReview,
     required this.onClose,
   });
 
@@ -77,7 +75,7 @@ class TestResultView extends StatelessWidget {
                 ),
                 SizedBox(height: design.spacing.xl),
                 GestureDetector(
-                  onTap: onReviewAnswers,
+                  onTap: onReview,
                   child: Container(
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(vertical: design.spacing.sm),
@@ -88,31 +86,8 @@ class TestResultView extends StatelessWidget {
                     ),
                     child: Center(
                       child: AppText.body(
-                        l10n.testReviewAnswers,
+                        'Review',
                         color: design.colors.onPrimary,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          height: 1.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: design.spacing.md),
-                GestureDetector(
-                  onTap: onViewAnalytics,
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(vertical: design.spacing.sm),
-                    decoration: BoxDecoration(
-                      color: design.colors.card,
-                      border: Border.all(color: design.colors.border),
-                      borderRadius: BorderRadius.circular(design.radius.md),
-                    ),
-                    child: Center(
-                      child: AppText.body(
-                        l10n.testViewAnalytics,
-                        color: design.colors.textPrimary,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           height: 1.0,
