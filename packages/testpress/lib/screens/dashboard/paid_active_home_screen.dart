@@ -36,7 +36,14 @@ class PaidActiveHomeScreen extends ConsumerWidget {
     final recentlyCompletedAsync = ref.watch(recentlyCompletedFeedProvider);
     final user = userAsync.valueOrNull;
 
-    final isBannerPresent = dto.AppConfig.instituteLogoUrl.isNotEmpty;
+    final overrideLogoUrl = dto.AppConfig.instituteLogoUrl;
+    final apiLogoUrl = dto.InstituteSettings.current?.photo;
+
+    final finalLogoUrl = overrideLogoUrl.isNotEmpty
+        ? overrideLogoUrl
+        : (apiLogoUrl ?? '');
+
+    final isBannerPresent = finalLogoUrl.isNotEmpty;
     final isBrilliantPala = dto.AppConfig.apiBaseUrl.contains('brilliant');
 
     final whatsNewLessons = whatsNewAsync.valueOrNull ?? [];
@@ -143,8 +150,7 @@ class PaidActiveHomeScreen extends ConsumerWidget {
               children: [
                 if (isBannerPresent)
                   InstituteBanner(
-                    logoUrl: dto.AppConfig.instituteLogoUrl,
-                    isLocal: dto.AppConfig.isLocalLogo,
+                    logoUrl: finalLogoUrl,
                     userName: user?.name ?? 'Student',
                     enrollmentId: user?.id ?? '-',
                     onMenuPressed: () {

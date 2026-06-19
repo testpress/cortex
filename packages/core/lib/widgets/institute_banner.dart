@@ -6,7 +6,6 @@ import '../../core.dart';
 /// the institute logo and user identification details.
 class InstituteBanner extends StatelessWidget {
   final String logoUrl;
-  final bool isLocal;
   final String userName;
   final String enrollmentId;
   final VoidCallback? onMenuPressed;
@@ -16,13 +15,13 @@ class InstituteBanner extends StatelessWidget {
     required this.logoUrl,
     required this.userName,
     required this.enrollmentId,
-    this.isLocal = false,
     this.onMenuPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final isLocal = logoUrl.startsWith('assets/');
 
     return Container(
       color: design.isDark ? design.colors.surface : const Color(0xFFFFFFFF),

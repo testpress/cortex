@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -24,27 +25,26 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
     return Scaffold(
       backgroundColor: design.colors.primary,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: EdgeInsets.all(design.spacing.xl),
-              decoration: BoxDecoration(
-                color: design.colors.onPrimary.withValues(alpha: 0.2),
-                shape: BoxShape.circle,
+      body: AppConfig.splashScreenImage.isNotEmpty
+          ? SizedBox.expand(
+              child: Image.asset(
+                AppConfig.splashScreenImage,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: Colors.white,
+                    child: Center(
+                      child: Icon(
+                        LucideIcons.graduationCap,
+                        size: 80,
+                        color: design.colors.primary,
+                      ),
+                    ),
+                  );
+                },
               ),
-              child: Icon(
-                LucideIcons.graduationCap,
-                size: 96,
-                color: design.colors.onPrimary,
-              ),
-            ),
-            SizedBox(height: design.spacing.md),
-            AppText.headline('Cortex Platform', color: design.colors.onPrimary),
-          ],
-        ),
-      ),
+            )
+          : const SizedBox.shrink(),
     );
   }
 }

@@ -6,9 +6,8 @@
   "SHOW_RESUME_SECTION": true,
   "SHOW_WHATS_NEW_SECTION": true,
   "SHOW_RECENTLY_COMPLETED_SECTION": true,
-  "SHOW_EXAM_TAB": true,
-  "SHOW_INFO_TAB": true,
-  "SHOW_EXPLORE_TAB": false,
-  "SHOW_PROFILE_TAB": false,
-  "INSTITUTE_LOGO_URL": "assets/images/brilliant_pala_logo.png"
+  "SHOW_EXAM_TAB": false,
+  "SHOW_INFO_TAB": false,
+  "SHOW_EXPLORE_TAB": true,
+  "SHOW_PROFILE_TAB": true
 }
