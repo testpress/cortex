@@ -24,7 +24,7 @@ class InstituteBanner extends StatelessWidget {
     final isLocal = logoUrl.startsWith('assets/');
 
     return Container(
-      color: design.isDark ? design.colors.surface : const Color(0xFFFFFFFF),
+      color: design.isDark ? design.colors.surface : design.colors.canvas,
       child: SafeArea(
         bottom: false,
         child: Container(

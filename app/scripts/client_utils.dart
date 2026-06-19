@@ -14,24 +14,31 @@ class CliArgs {
 CliArgs parseArgs(List<String> args, String scriptName) {
   String? configPath;
   String? apiBaseUrl;
-  String? apiKey;
+
   for (final arg in args) {
     if (arg.startsWith('--config=')) {
       configPath = arg.substring('--config='.length);
     } else if (arg.startsWith('--api-base-url=')) {
       apiBaseUrl = arg.substring('--api-base-url='.length);
-    } else if (arg.startsWith('--api-key=')) {
-      apiKey = arg.substring('--api-key='.length);
     }
   }
 
-  if (configPath == null || apiBaseUrl == null || apiKey == null) {
+  if (configPath == null || apiBaseUrl == null) {
     print('❌ Error: Missing required arguments.');
     print(
-      'Usage: dart run app/scripts/$scriptName --config=config/your_client.json --api-base-url=https://your-api.com --api-key=your_key',
+      'Usage: CLIENT_API_KEY=your_key dart run app/scripts/$scriptName --config=config/your_client.json --api-base-url=https://your-api.com',
     );
     exit(1);
   }
+
+  final apiKey = Platform.environment['CLIENT_API_KEY'];
+  if (apiKey == null || apiKey.isEmpty) {
+    print('❌ Error: Missing CLIENT_API_KEY environment variable.');
+    print('Please provide it securely:');
+    print('CLIENT_API_KEY="your_key" dart run app/scripts/$scriptName ...');
+    exit(1);
+  }
+
   return CliArgs(configPath, apiBaseUrl, apiKey);
 }
 
