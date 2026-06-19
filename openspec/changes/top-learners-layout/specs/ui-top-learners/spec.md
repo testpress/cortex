@@ -7,3 +7,4 @@ The dashboard SHALL display learner cards with the points and trophies directly 
 - **WHEN** the dashboard renders the `TopLearnersSection` carousel
 - **THEN** each learner card displays the points (trophies and count) below the learner's name instead of the top-right corner
 - **THEN** the card width is constrained to prevent unnecessary whitespace
+- **THEN** the card features centered typography, a standalone top-left rank badge, a decorative background shape behind the avatar, and a crown overlay on the avatar.

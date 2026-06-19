@@ -15,6 +15,13 @@ const _dummyLearner = LearnerDto(
   points: 1200,
 );
 
+const double _kCarouselHeight = 200;
+const double _kCurveHeight = 114;
+// Chosen so name text falls just below the curved background section.
+const double _kAvatarTextSpacing = 39;
+const double _kSmallBadgeSize = 24;
+const double _kLargeBadgeSize = 28;
+
 class TopLearnersSection extends StatelessWidget {
   const TopLearnersSection({
     super.key,
@@ -119,7 +126,7 @@ class _LearnersCarousel extends StatelessWidget {
         );
 
         return SizedBox(
-          height: 150,
+          height: _kCarouselHeight,
           child: AppSemantics.scrollableList(
             itemCount: learners.length,
             label: L10n.of(context).topLearnersTitle,
@@ -184,34 +191,189 @@ class _LearnerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
+    Color badgeBgColor;
+    Color badgeTextColor;
+    Color cardTopBgColor;
+    IconData rankIcon;
+    switch (learner.rank) {
+      case 1:
+        badgeBgColor = design.colors.rank1.withValues(alpha: 0.18);
+        badgeTextColor = design.colors.rank1;
+        cardTopBgColor = design.colors.rank1.withValues(alpha: 0.12);
+        rankIcon = LucideIcons.crown;
+        break;
+      case 2:
+        badgeBgColor = design.colors.rank2.withValues(alpha: 0.25);
+        badgeTextColor = design.colors.textSecondary;
+        cardTopBgColor = design.colors.rank2.withValues(alpha: 0.25);
+        rankIcon = LucideIcons.crown;
+        break;
+      case 3:
+        badgeBgColor = design.colors.rank3.withValues(alpha: 0.25);
+        badgeTextColor = design.colors.rank3;
+        cardTopBgColor = design.colors.rank3.withValues(alpha: 0.12);
+        rankIcon = LucideIcons.crown;
+        break;
+      default:
+        badgeBgColor = design.colors.surfaceVariant;
+        badgeTextColor = design.colors.textPrimary;
+        cardTopBgColor = design.colors.surfaceVariant.withValues(alpha: 0.5);
+        rankIcon = LucideIcons.star;
+    }
+
     return AppSemantics.container(
       label: '${learner.name}, ${learner.points} points',
       child: Container(
-        padding: EdgeInsets.all(design.spacing.md),
         decoration: BoxDecoration(
           color: design.colors.card,
           borderRadius: BorderRadius.circular(24),
           boxShadow: design.shadows.surfaceSoft,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        clipBehavior: Clip.antiAlias,
+        child: Stack(
+          alignment: Alignment.topCenter,
           children: [
-            LearnerAvatar(
-              avatar: learner.avatar,
-              name: learner.name,
-              rank: learner.rank,
-              size: 56,
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: _kCurveHeight,
+                decoration: BoxDecoration(
+                  color: cardTopBgColor,
+                  borderRadius: const BorderRadius.vertical(
+                    bottom: Radius.elliptical(150, 60),
+                  ),
+                ),
+              ),
             ),
-            const SizedBox(height: 12),
-            AppText.subtitle(
-              learner.name,
-              color: design.colors.textPrimary,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            Padding(
+              padding: EdgeInsets.all(design.spacing.md),
+              child: Column(
+                children: [
+                  const SizedBox(height: 8),
+                  Stack(
+                    alignment: Alignment.center,
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        width: 64,
+                        height: 64,
+                        decoration: BoxDecoration(
+                          color: cardTopBgColor,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      if (learner.rank == 1) ...[
+                        Positioned(
+                          top: 25,
+                          left: -25,
+                          child: Icon(LucideIcons.sparkles,
+                              size: 16,
+                              color:
+                                  design.colors.rank2.withValues(alpha: 0.6)),
+                        ),
+                        Positioned(
+                          top: 5,
+                          right: -20,
+                          child: Icon(LucideIcons.sparkle,
+                              size: 14,
+                              color:
+                                  design.colors.rank1.withValues(alpha: 0.8)),
+                        ),
+                        Positioned(
+                          bottom: 2,
+                          left: -20,
+                          child: Icon(LucideIcons.sparkle,
+                              size: 12,
+                              color:
+                                  design.colors.rank3.withValues(alpha: 0.7)),
+                        ),
+                        Positioned(
+                          top: -15,
+                          right: 5,
+                          child: Icon(LucideIcons.sparkles,
+                              size: 10,
+                              color:
+                                  design.colors.rank1.withValues(alpha: 0.5)),
+                        ),
+                      ],
+                      LearnerAvatar(
+                        avatar: learner.avatar,
+                        name: learner.name,
+                        size: 56,
+                      ),
+                      if (learner.rank <= 3)
+                        Positioned(
+                          bottom: -4,
+                          right: -4,
+                          child: Container(
+                            width: _kSmallBadgeSize,
+                            height: _kSmallBadgeSize,
+                            decoration: BoxDecoration(
+                              color: badgeTextColor,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                  color: design.colors.card, width: 2),
+                            ),
+                            alignment: Alignment.center,
+                            child: Icon(
+                              rankIcon,
+                              size: 12,
+                              color: design.colors.textInverse,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: _kAvatarTextSpacing),
+                  AppText.subtitle(
+                    learner.name,
+                    color: design.colors.textPrimary,
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(LucideIcons.trophy,
+                          size: 14, color: design.colors.rank3),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: AppText.labelBold(
+                          learner.points.toInt().toString(),
+                          color: design.colors.textPrimary,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 4),
-            PointsDisplay(points: learner.points),
+            Positioned(
+              top: design.spacing.md,
+              left: design.spacing.md,
+              child: Container(
+                width: _kLargeBadgeSize,
+                height: _kLargeBadgeSize,
+                decoration: BoxDecoration(
+                  color: badgeBgColor,
+                  shape: BoxShape.circle,
+                ),
+                alignment: Alignment.center,
+                child: AppText.labelBold(
+                  learner.rank.toString(),
+                  color: badgeTextColor,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w900, fontSize: 13),
+                ),
+              ),
+            ),
           ],
         ),
       ),

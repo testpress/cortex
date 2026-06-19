@@ -6,6 +6,7 @@ The Top Learners section on the dashboard currently displays the trophies and th
 
 - **Modify layout of `_LearnerCard`**: Move the `PointsDisplay` widget (which shows the trophy icon and the count) from the top-right corner to be underneath the learner's name.
 - **Reduce card width**: Decrease the `width` of the card in the `_LearnersCarousel` (from `260` to a smaller size, or use constraints/wrap) to eliminate the empty horizontal space on the right.
+- **Redesign `_LearnerCard`**: Apply a modern, gamified UI featuring a standalone rank badge, a colorful background behind the avatar, a crown overlay for the avatar, and centered typography (bold names, orange points).
 
 ## Capabilities
 
