@@ -27,9 +27,9 @@ class ExploreDetailsCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppSemantics.header(
-            label: 'Explore More Details',
+            label: l10n.reviewExploreDetailsTitle,
             child: AppText.body(
-              'Explore More Details',
+              l10n.reviewExploreDetailsTitle,
               color: design.colors.textPrimary,
               style: const TextStyle(fontWeight: FontWeight.w700),
             ),
@@ -39,15 +39,13 @@ class ExploreDetailsCard extends StatelessWidget {
             children: [
               _ExploreTile(
                 title: l10n.reviewSubjectPerformanceTitle,
-                description:
-                    'Analyze your performance across different subjects',
+                description: l10n.reviewSubjectPerformanceTileDesc,
                 onTap: onSubjectPerformanceTap,
               ),
               SizedBox(height: design.spacing.sm),
               _ExploreTile(
-                title: 'Exam Review',
-                description:
-                    'Review each question with answers and explanations',
+                title: l10n.reviewExamReviewTitle,
+                description: l10n.reviewExamReviewDesc,
                 onTap: onExamReviewTap,
               ),
             ],

@@ -989,5 +989,9 @@
       }
     }
   },
-  "reviewPerformanceOverviewTitle": "Performance Overview"
+  "reviewPerformanceOverviewTitle": "Performance Overview",
+  "reviewSubjectPerformanceTileDesc": "Analyze your performance across different subjects",
+  "reviewExploreDetailsTitle": "Explore More Details",
+  "reviewExamReviewTitle": "Exam Review",
+  "reviewExamReviewDesc": "Review each question with answers and explanations"
 }

@@ -2076,4 +2076,18 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get reviewPerformanceOverviewTitle => 'செயல்திறன் கண்ணோட்டம்';
+
+  @override
+  String get reviewSubjectPerformanceTileDesc =>
+      'வெவ்வேறு பாடங்களில் உங்கள் செயல்திறனை பகுப்பாய்வு செய்யுங்கள்';
+
+  @override
+  String get reviewExploreDetailsTitle => 'கூடுதல் விவரங்களை ஆராயுங்கள்';
+
+  @override
+  String get reviewExamReviewTitle => 'தேர்வு மதிப்பாய்வு';
+
+  @override
+  String get reviewExamReviewDesc =>
+      'பதில்கள் மற்றும் விளக்கங்களுடன் ஒவ்வொரு கேள்வியையும் மதிப்பாய்வு செய்யவும்';
 }

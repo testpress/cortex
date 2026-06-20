@@ -3736,6 +3736,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Performance Overview'**
   String get reviewPerformanceOverviewTitle;
+
+  /// No description provided for @reviewSubjectPerformanceTileDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze your performance across different subjects'**
+  String get reviewSubjectPerformanceTileDesc;
+
+  /// No description provided for @reviewExploreDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore More Details'**
+  String get reviewExploreDetailsTitle;
+
+  /// No description provided for @reviewExamReviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam Review'**
+  String get reviewExamReviewTitle;
+
+  /// No description provided for @reviewExamReviewDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Review each question with answers and explanations'**
+  String get reviewExamReviewDesc;
 }
 
 class _AppLocalizationsDelegate

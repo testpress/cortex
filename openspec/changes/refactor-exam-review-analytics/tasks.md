@@ -27,3 +27,6 @@
 - [x] 3.11 Add AppSemantics.button and 48dp touch target to Close button in `TestResultView`
 - [x] 3.12 Localize score result message in `TestResultView` via new l10n key `testScoreResult(score)`
 - [x] 3.13 Localize 'Performance Overview' header in `ReviewAnalyticsScreen` via new l10n key `reviewPerformanceOverviewTitle`
+- [x] 3.14 Wrap the early-return submitting Container in `PopScope(canPop: false)` inside `TestDetailScreen`
+- [x] 3.15 Add `reviewSubjectPerformanceTileDesc`, `reviewExploreDetailsTitle`, `reviewExamReviewTitle`, and `reviewExamReviewDesc` to ARB localization files and regenerate
+- [x] 3.16 Update `ExploreDetailsCard` to use the new localized keys instead of hardcoded strings

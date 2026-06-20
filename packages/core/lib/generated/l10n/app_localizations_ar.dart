@@ -2050,4 +2050,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get reviewPerformanceOverviewTitle => 'نظرة عامة على الأداء';
+
+  @override
+  String get reviewSubjectPerformanceTileDesc => 'حلل أدائك في المواد المختلفة';
+
+  @override
+  String get reviewExploreDetailsTitle => 'استكشف المزيد من التفاصيل';
+
+  @override
+  String get reviewExamReviewTitle => 'مراجعة الامتحان';
+
+  @override
+  String get reviewExamReviewDesc => 'راجع كل سؤال مع الإجابات والشروحات';
 }

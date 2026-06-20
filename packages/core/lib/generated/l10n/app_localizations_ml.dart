@@ -2086,4 +2086,18 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get reviewPerformanceOverviewTitle => 'പ്രകടന അവലോകനം';
+
+  @override
+  String get reviewSubjectPerformanceTileDesc =>
+      'വ്യത്യസ്ത വിഷയങ്ങളിലെ നിങ്ങളുടെ പ്രകടനം വിശകലനം ചെയ്യുക';
+
+  @override
+  String get reviewExploreDetailsTitle => 'കൂടുതൽ വിവരങ്ങൾ പര്യവേക്ഷണം ചെയ്യുക';
+
+  @override
+  String get reviewExamReviewTitle => 'പരീക്ഷ അവലോകനം';
+
+  @override
+  String get reviewExamReviewDesc =>
+      'ഉത്തരങ്ങളും വിശദീകരണങ്ങളും സഹിതം ഓരോ ചോദ്യവും അവലോകനം ചെയ്യുക';
 }

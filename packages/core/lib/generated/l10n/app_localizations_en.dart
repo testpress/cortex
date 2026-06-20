@@ -2042,4 +2042,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reviewPerformanceOverviewTitle => 'Performance Overview';
+
+  @override
+  String get reviewSubjectPerformanceTileDesc =>
+      'Analyze your performance across different subjects';
+
+  @override
+  String get reviewExploreDetailsTitle => 'Explore More Details';
+
+  @override
+  String get reviewExamReviewTitle => 'Exam Review';
+
+  @override
+  String get reviewExamReviewDesc =>
+      'Review each question with answers and explanations';
 }

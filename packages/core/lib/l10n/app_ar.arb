@@ -713,5 +713,9 @@
       }
     }
   },
-  "reviewPerformanceOverviewTitle": "نظرة عامة على الأداء"
+  "reviewPerformanceOverviewTitle": "نظرة عامة على الأداء",
+  "reviewSubjectPerformanceTileDesc": "حلل أدائك في المواد المختلفة",
+  "reviewExploreDetailsTitle": "استكشف المزيد من التفاصيل",
+  "reviewExamReviewTitle": "مراجعة الامتحان",
+  "reviewExamReviewDesc": "راجع كل سؤال مع الإجابات والشروحات"
 }

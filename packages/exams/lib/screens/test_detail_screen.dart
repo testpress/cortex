@@ -228,19 +228,22 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     }
 
     if (state.status == ExamAttemptStatus.submitting) {
-      return Container(
-        color: design.colors.surface,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const AppLoadingIndicator(),
-              SizedBox(height: design.spacing.md),
-              AppText.body(
-                l10n.testSubmitting,
-                color: design.colors.textSecondary,
-              ),
-            ],
+      return PopScope(
+        canPop: false,
+        child: Container(
+          color: design.colors.surface,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const AppLoadingIndicator(),
+                SizedBox(height: design.spacing.md),
+                AppText.body(
+                  l10n.testSubmitting,
+                  color: design.colors.textSecondary,
+                ),
+              ],
+            ),
           ),
         ),
       );

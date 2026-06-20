@@ -47,6 +47,7 @@ The system SHALL render a full-screen loading screen when the exam attempt state
 - **THEN** the system SHALL render a blocking loading indicator screen with text indicating that the exam is being submitted
 - **AND** the loading indicator screen text SHALL be retrieved from localizations (e.g. `l10n.testSubmitting`)
 - **AND** the user SHALL NOT be able to interact with the question card, timer, or exit options
+- **AND** the loading indicator screen SHALL block system back-navigation (e.g. using `PopScope(canPop: false)`) to prevent premature exit during submission
 
 ### Requirement: Unified Review Entry Point
 The system SHALL present a single "Review" button in the `TestResultView` upon successful exam submission, replacing the previous separate "Review Answers" and "View Analytics" buttons.
@@ -79,6 +80,7 @@ The system SHALL display only the general performance overview metrics cards and
 - **AND** the system SHALL display the `ExploreDetailsCard` containing options for further analytics and reviews
 - **AND** the system SHALL NOT render the overall performance bar chart (`OverallPerformanceCard`), subject-wise donut charts (`SectionDonutList`), or subject tabular report (`SectionTable`) directly on this page
 - **AND** the section header "Performance Overview" SHALL be retrieved from localizations using a translation key (e.g. `l10n.reviewPerformanceOverviewTitle`) instead of hardcoded text
+- **AND** all user-visible labels, headers, and descriptions inside `ExploreDetailsCard` (including the section header "Explore More Details", and descriptions/titles for both "Subject-wise Performance" and "Exam Review") SHALL be retrieved from localizations (e.g. using `l10n.reviewExploreDetailsTitle`, `l10n.reviewSubjectPerformanceTileDesc`, `l10n.reviewExamReviewTitle`, and `l10n.reviewExamReviewDesc`) to avoid hardcoded English text
 
 ### Requirement: Subject-wise Performance Detail Screen
 The system SHALL show a dedicated sub-screen/page containing the detailed graphs, performance bar, and tabular subject reports when the user requests "Subject-wise Performance".
