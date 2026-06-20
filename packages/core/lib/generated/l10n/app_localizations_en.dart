@@ -914,6 +914,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your test has been successfully submitted. Review your answers or view detailed analytics.';
 
   @override
+  String get testReview => 'Review';
+
+  @override
   String get testReviewAnswers => 'Review Answers';
 
   @override
@@ -2000,4 +2003,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get availableExamCoursesTitle => 'Available Exam Courses';
+
+  @override
+  String get testSubmitting => 'Submitting test...';
+
+  @override
+  String get reviewSubjectPerformanceTitle => 'Subject-wise Performance';
+
+  @override
+  String get labelOverallPerformance => 'Overall Performance';
+
+  @override
+  String get labelSectionPerformance => 'Section Performance';
+
+  @override
+  String get reviewSubjectPerformanceDesc =>
+      'Breakdown of your performance across each subject';
+
+  @override
+  String reviewSubjectAnalyticsError(String error) {
+    return 'Failed to load subject analytics: $error';
+  }
+
+  @override
+  String testScoreResult(String score) {
+    return 'Your Score: $score';
+  }
+
+  @override
+  String get reviewPerformanceOverviewTitle => 'Performance Overview';
+
+  @override
+  String get reviewSubjectPerformanceTileDesc =>
+      'Analyze your performance across different subjects';
+
+  @override
+  String get reviewExploreDetailsTitle => 'Explore More Details';
+
+  @override
+  String get reviewExamReviewTitle => 'Exam Review';
+
+  @override
+  String get reviewExamReviewDesc =>
+      'Review each question with answers and explanations';
 }

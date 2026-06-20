@@ -3,15 +3,13 @@ import 'package:core/core.dart';
 
 class TestResultView extends StatelessWidget {
   final String? score;
-  final VoidCallback onReviewAnswers;
-  final VoidCallback onViewAnalytics;
+  final VoidCallback onReview;
   final VoidCallback onClose;
 
   const TestResultView({
     super.key,
     this.score,
-    required this.onReviewAnswers,
-    required this.onViewAnalytics,
+    required this.onReview,
     required this.onClose,
   });
 
@@ -38,12 +36,20 @@ class TestResultView extends StatelessWidget {
               children: [
                 Align(
                   alignment: Alignment.topRight,
-                  child: GestureDetector(
+                  child: AppSemantics.button(
+                    label: l10n.commonCloseButton,
                     onTap: onClose,
-                    child: Icon(
-                      LucideIcons.x,
-                      color: design.colors.textSecondary,
-                      size: 24,
+                    child: GestureDetector(
+                      onTap: onClose,
+                      behavior: HitTestBehavior.opaque,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Icon(
+                          LucideIcons.x,
+                          color: design.colors.textSecondary,
+                          size: 24,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -71,55 +77,17 @@ class TestResultView extends StatelessWidget {
                 ),
                 SizedBox(height: design.spacing.md),
                 AppText.body(
-                  score != null ? 'Your Score: $score' : l10n.testSubmittedBody,
+                  score != null
+                      ? l10n.testScoreResult(score!)
+                      : l10n.testSubmittedBody,
                   color: design.colors.textSecondary,
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: design.spacing.xl),
-                GestureDetector(
-                  onTap: onReviewAnswers,
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(vertical: design.spacing.sm),
-                    decoration: BoxDecoration(
-                      color: design.colors.primary,
-                      border: Border.all(color: design.colors.primary),
-                      borderRadius: BorderRadius.circular(design.radius.md),
-                    ),
-                    child: Center(
-                      child: AppText.body(
-                        l10n.testReviewAnswers,
-                        color: design.colors.onPrimary,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          height: 1.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: design.spacing.md),
-                GestureDetector(
-                  onTap: onViewAnalytics,
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(vertical: design.spacing.sm),
-                    decoration: BoxDecoration(
-                      color: design.colors.card,
-                      border: Border.all(color: design.colors.border),
-                      borderRadius: BorderRadius.circular(design.radius.md),
-                    ),
-                    child: Center(
-                      child: AppText.body(
-                        l10n.testViewAnalytics,
-                        color: design.colors.textPrimary,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          height: 1.0,
-                        ),
-                      ),
-                    ),
-                  ),
+                AppButton.primary(
+                  label: l10n.testReview,
+                  onPressed: onReview,
+                  fullWidth: true,
                 ),
               ],
             ),

@@ -190,6 +190,26 @@ class StudyRoutes {
                   onBack: () => context.pop(),
                 );
               },
+              routes: [
+                GoRoute(
+                  path: 'subject-performance',
+                  parentNavigatorKey: rootNavigatorKey,
+                  builder: (context, state) {
+                    final id = state.pathParameters['id']!;
+                    final payload = state.extra as ReviewRoutePayload?;
+                    return ReviewSubjectPerformanceScreen(
+                      assessmentTitle:
+                          payload?.assessmentTitle ?? 'Assessment $id',
+                      questions: payload?.questions ?? const <QuestionDto>[],
+                      attemptStates:
+                          payload?.attemptStates ?? const <String, AnswerDto>{},
+                      attempt: payload?.attempt,
+                      exam: payload?.exam,
+                      onBack: () => context.pop(),
+                    );
+                  },
+                ),
+              ],
             ),
             GoRoute(
               path: 'review-answers',

@@ -14,6 +14,7 @@ export 'models/test_dto.dart';
 export 'data/mock_review_analytics.dart';
 export 'data/mock_tests.dart';
 export 'screens/review_analytics/review_analytics_screen.dart';
+export 'screens/review_analytics/review_subject_performance_screen.dart';
 export 'repositories/exam_repository.dart';
 export 'providers/exam_providers.dart';
 export 'screens/subject_analytics/subject_analytics_screen.dart';

@@ -1691,6 +1691,12 @@ abstract class AppLocalizations {
   /// **'Your test has been successfully submitted. Review your answers or view detailed analytics.'**
   String get testSubmittedBody;
 
+  /// No description provided for @testReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get testReview;
+
   /// No description provided for @testReviewAnswers.
   ///
   /// In en, this message translates to:
@@ -3670,6 +3676,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Available Exam Courses'**
   String get availableExamCoursesTitle;
+
+  /// No description provided for @testSubmitting.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitting test...'**
+  String get testSubmitting;
+
+  /// No description provided for @reviewSubjectPerformanceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject-wise Performance'**
+  String get reviewSubjectPerformanceTitle;
+
+  /// No description provided for @labelOverallPerformance.
+  ///
+  /// In en, this message translates to:
+  /// **'Overall Performance'**
+  String get labelOverallPerformance;
+
+  /// No description provided for @labelSectionPerformance.
+  ///
+  /// In en, this message translates to:
+  /// **'Section Performance'**
+  String get labelSectionPerformance;
+
+  /// No description provided for @reviewSubjectPerformanceDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Breakdown of your performance across each subject'**
+  String get reviewSubjectPerformanceDesc;
+
+  /// No description provided for @reviewSubjectAnalyticsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load subject analytics: {error}'**
+  String reviewSubjectAnalyticsError(String error);
+
+  /// Label for the score obtained in the test
+  ///
+  /// In en, this message translates to:
+  /// **'Your Score: {score}'**
+  String testScoreResult(String score);
+
+  /// No description provided for @reviewPerformanceOverviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Performance Overview'**
+  String get reviewPerformanceOverviewTitle;
+
+  /// No description provided for @reviewSubjectPerformanceTileDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze your performance across different subjects'**
+  String get reviewSubjectPerformanceTileDesc;
+
+  /// No description provided for @reviewExploreDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore More Details'**
+  String get reviewExploreDetailsTitle;
+
+  /// No description provided for @reviewExamReviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam Review'**
+  String get reviewExamReviewTitle;
+
+  /// No description provided for @reviewExamReviewDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Review each question with answers and explanations'**
+  String get reviewExamReviewDesc;
 }
 
 class _AppLocalizationsDelegate

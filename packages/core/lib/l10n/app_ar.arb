@@ -290,6 +290,7 @@
   "labelSubmitNow": "تسليم الآن",
   "testSubmittedTitle": "تم تسليم الاختبار!",
   "testSubmittedBody": "لقد تم تسليم اختبارك بنجاح. راجع إجاباتك أو اعرض التحليلات التفصيلية.",
+  "testReview": "مراجعة",
   "testReviewAnswers": "مراجعة الإجابات",
   "testViewAnalytics": "عرض التحليلات",
   "assessmentCheckAnswer": "تحقق من الإجابة",
@@ -688,5 +689,32 @@
   "resumeExamOnline": "استئناف الامتحان عبر الإنترنت",
   "startExamOnline": "بدء الامتحان عبر الإنترنت",
   "examsTabTitle": "الامتحانات",
-  "availableExamCoursesTitle": "دورات الامتحانات المتاحة"
+  "availableExamCoursesTitle": "دورات الامتحانات المتاحة",
+  "testSubmitting": "جارٍ تسليم الاختبار...",
+  "reviewSubjectPerformanceTitle": "الأداء حسب المادة",
+  "labelOverallPerformance": "الأداء العام",
+  "labelSectionPerformance": "أداء القسم",
+  "reviewSubjectPerformanceDesc": "تفصيل أدائك في كل مادة",
+  "reviewSubjectAnalyticsError": "فشل تحميل تحليلات المادة: {error}",
+  "@reviewSubjectAnalyticsError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "testScoreResult": "درجتك: {score}",
+  "@testScoreResult": {
+    "description": "Label for the score obtained in the test",
+    "placeholders": {
+      "score": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewPerformanceOverviewTitle": "نظرة عامة على الأداء",
+  "reviewSubjectPerformanceTileDesc": "حلل أدائك في المواد المختلفة",
+  "reviewExploreDetailsTitle": "استكشف المزيد من التفاصيل",
+  "reviewExamReviewTitle": "مراجعة الامتحان",
+  "reviewExamReviewDesc": "راجع كل سؤال مع الإجابات والشروحات"
 }
