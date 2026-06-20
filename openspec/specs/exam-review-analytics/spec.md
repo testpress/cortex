@@ -97,3 +97,4 @@ The system SHALL show a dedicated sub-screen/page containing the detailed graphs
 - **THEN** all user-visible text (header title, card labels, descriptions, and error states) SHALL be retrieved from localizations (e.g. using `l10n.reviewSubjectPerformanceTitle`, `l10n.labelOverallPerformance`, `l10n.labelSectionPerformance`, `l10n.reviewSubjectPerformanceDesc`, `l10n.reviewSubjectAnalyticsError`)
 - **AND** the layout padding/margin SHALL use design spacing context tokens (e.g. `design.spacing.md`) instead of hardcoded raw dimensions
 - **AND** the navigation actions (such as `onExamReviewTap`) SHALL resolve GoRouter paths dynamically using the active route context rather than hardcoding static paths
+

@@ -1,4 +1,4 @@
-## ADDED Requirements
+## MODIFIED Requirements
 
 ### Requirement: Submitting State Loader
 The system SHALL render a full-screen loading screen when the exam attempt state transitions to `ExamAttemptStatus.submitting` to prevent user interaction and show that the test submission is in progress.
