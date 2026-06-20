@@ -485,8 +485,6 @@ const mockLearners = [
     avatar:
         'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
     points: 1520,
-    coursesCompleted: 12,
-    streakDays: 15,
   ),
   LearnerDto(
     id: '2',
@@ -495,8 +493,6 @@ const mockLearners = [
     avatar:
         'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200',
     points: 1340,
-    coursesCompleted: 9,
-    streakDays: 18,
   ),
   LearnerDto(
     id: '3',
@@ -505,8 +501,6 @@ const mockLearners = [
     avatar:
         'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200',
     points: 1180,
-    coursesCompleted: 8,
-    streakDays: 12,
   ),
   LearnerDto(
     id: '4',
@@ -515,8 +509,6 @@ const mockLearners = [
     avatar:
         'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200',
     points: 980,
-    coursesCompleted: 8,
-    streakDays: 8,
   ),
   LearnerDto(
     id: '5',
@@ -525,8 +517,6 @@ const mockLearners = [
     avatar:
         'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200',
     points: 890,
-    coursesCompleted: 7,
-    streakDays: 7,
   ),
   LearnerDto(
     id: '6',
@@ -535,8 +525,6 @@ const mockLearners = [
     avatar:
         'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200',
     points: 832,
-    coursesCompleted: 6,
-    streakDays: 7,
   ),
   LearnerDto(
     id: '7',
@@ -545,8 +533,6 @@ const mockLearners = [
     avatar:
         'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
     points: 791,
-    coursesCompleted: 5,
-    streakDays: 7,
   ),
   LearnerDto(
     id: '8',
@@ -555,8 +541,6 @@ const mockLearners = [
     avatar:
         'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200',
     points: 790,
-    coursesCompleted: 4,
-    streakDays: 4,
   ),
   LearnerDto(
     id: '9',
@@ -565,8 +549,6 @@ const mockLearners = [
     avatar:
         'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200',
     points: 788,
-    coursesCompleted: 4,
-    streakDays: 6,
   ),
   LearnerDto(
     id: '10',
@@ -574,8 +556,6 @@ const mockLearners = [
     name: 'DataDriven',
     avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200',
     points: 765,
-    coursesCompleted: 5,
-    streakDays: 5,
   ),
 ];
 

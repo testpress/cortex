@@ -146,54 +146,29 @@ LearnerDto _buildDto({
   required String name,
   required String? avatar,
   required double points,
-  required int coursesCompleted,
-  required int streakDays,
 }) => LearnerDto(
   id: id,
   rank: rank,
   name: name,
   avatar: avatar ?? '',
   points: points,
-  coursesCompleted: coursesCompleted,
-  streakDays: streakDays,
 );
 
 // ── Database Row → Domain DTO ─────────────────────────────────────────────────
 
 extension on WeeklyLeaderboardData {
-  LearnerDto toDto() => _buildDto(
-    id: id,
-    rank: rank,
-    name: name,
-    avatar: avatar,
-    points: points,
-    coursesCompleted: coursesCompleted,
-    streakDays: streakDays,
-  );
+  LearnerDto toDto() =>
+      _buildDto(id: id, rank: rank, name: name, avatar: avatar, points: points);
 }
 
 extension on MonthlyLeaderboardData {
-  LearnerDto toDto() => _buildDto(
-    id: id,
-    rank: rank,
-    name: name,
-    avatar: avatar,
-    points: points,
-    coursesCompleted: coursesCompleted,
-    streakDays: streakDays,
-  );
+  LearnerDto toDto() =>
+      _buildDto(id: id, rank: rank, name: name, avatar: avatar, points: points);
 }
 
 extension on AllTimeLeaderboardData {
-  LearnerDto toDto() => _buildDto(
-    id: id,
-    rank: rank,
-    name: name,
-    avatar: avatar,
-    points: points,
-    coursesCompleted: coursesCompleted,
-    streakDays: streakDays,
-  );
+  LearnerDto toDto() =>
+      _buildDto(id: id, rank: rank, name: name, avatar: avatar, points: points);
 }
 
 // ── Domain DTO → Database Companion ──────────────────────────────────────────
@@ -206,8 +181,6 @@ extension on LearnerDto {
         name: Value(name),
         avatar: Value(avatar),
         points: Value(points),
-        coursesCompleted: Value(coursesCompleted),
-        streakDays: Value(streakDays),
         page: Value(page),
       );
 
@@ -218,8 +191,6 @@ extension on LearnerDto {
         name: Value(name),
         avatar: Value(avatar),
         points: Value(points),
-        coursesCompleted: Value(coursesCompleted),
-        streakDays: Value(streakDays),
         page: Value(page),
       );
 
@@ -230,8 +201,6 @@ extension on LearnerDto {
         name: Value(name),
         avatar: Value(avatar),
         points: Value(points),
-        coursesCompleted: Value(coursesCompleted),
-        streakDays: Value(streakDays),
         page: Value(page),
       );
 }

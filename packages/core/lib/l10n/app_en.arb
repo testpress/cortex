@@ -219,22 +219,7 @@
       }
     }
   },
-  "coursesCompletedLabel": "{count} courses",
-  "@coursesCompletedLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "streakDaysLabel": "{count} days",
-  "@streakDaysLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
+
   "achievementsLabel": "Achievements",
   "moreBadgesLabel": "+{count} more",
   "@moreBadgesLabel": {

@@ -219,22 +219,7 @@
       }
     }
   },
-  "coursesCompletedLabel": "{count} பாடங்கள்",
-  "@coursesCompletedLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "streakDaysLabel": "{count} நாட்கள்",
-  "@streakDaysLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
+
   "achievementsLabel": "சாதனைகள்",
   "moreBadgesLabel": "மேலும் {count}",
   "@moreBadgesLabel": {

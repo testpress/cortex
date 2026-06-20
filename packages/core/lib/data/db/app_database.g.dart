@@ -7684,30 +7684,6 @@ class $WeeklyLeaderboardTableTable extends WeeklyLeaderboardTable
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _coursesCompletedMeta = const VerificationMeta(
-    'coursesCompleted',
-  );
-  @override
-  late final GeneratedColumn<int> coursesCompleted = GeneratedColumn<int>(
-    'courses_completed',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(0),
-  );
-  static const VerificationMeta _streakDaysMeta = const VerificationMeta(
-    'streakDays',
-  );
-  @override
-  late final GeneratedColumn<int> streakDays = GeneratedColumn<int>(
-    'streak_days',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(0),
-  );
   static const VerificationMeta _pageMeta = const VerificationMeta('page');
   @override
   late final GeneratedColumn<int> page = GeneratedColumn<int>(
@@ -7719,16 +7695,7 @@ class $WeeklyLeaderboardTableTable extends WeeklyLeaderboardTable
     defaultValue: const Constant(1),
   );
   @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    name,
-    avatar,
-    points,
-    rank,
-    coursesCompleted,
-    streakDays,
-    page,
-  ];
+  List<GeneratedColumn> get $columns => [id, name, avatar, points, rank, page];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -7776,21 +7743,6 @@ class $WeeklyLeaderboardTableTable extends WeeklyLeaderboardTable
     } else if (isInserting) {
       context.missing(_rankMeta);
     }
-    if (data.containsKey('courses_completed')) {
-      context.handle(
-        _coursesCompletedMeta,
-        coursesCompleted.isAcceptableOrUnknown(
-          data['courses_completed']!,
-          _coursesCompletedMeta,
-        ),
-      );
-    }
-    if (data.containsKey('streak_days')) {
-      context.handle(
-        _streakDaysMeta,
-        streakDays.isAcceptableOrUnknown(data['streak_days']!, _streakDaysMeta),
-      );
-    }
     if (data.containsKey('page')) {
       context.handle(
         _pageMeta,
@@ -7826,14 +7778,6 @@ class $WeeklyLeaderboardTableTable extends WeeklyLeaderboardTable
         DriftSqlType.int,
         data['${effectivePrefix}rank'],
       )!,
-      coursesCompleted: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}courses_completed'],
-      )!,
-      streakDays: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}streak_days'],
-      )!,
       page: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}page'],
@@ -7854,8 +7798,6 @@ class WeeklyLeaderboardData extends DataClass
   final String? avatar;
   final double points;
   final int rank;
-  final int coursesCompleted;
-  final int streakDays;
   final int page;
   const WeeklyLeaderboardData({
     required this.id,
@@ -7863,8 +7805,6 @@ class WeeklyLeaderboardData extends DataClass
     this.avatar,
     required this.points,
     required this.rank,
-    required this.coursesCompleted,
-    required this.streakDays,
     required this.page,
   });
   @override
@@ -7877,8 +7817,6 @@ class WeeklyLeaderboardData extends DataClass
     }
     map['points'] = Variable<double>(points);
     map['rank'] = Variable<int>(rank);
-    map['courses_completed'] = Variable<int>(coursesCompleted);
-    map['streak_days'] = Variable<int>(streakDays);
     map['page'] = Variable<int>(page);
     return map;
   }
@@ -7892,8 +7830,6 @@ class WeeklyLeaderboardData extends DataClass
           : Value(avatar),
       points: Value(points),
       rank: Value(rank),
-      coursesCompleted: Value(coursesCompleted),
-      streakDays: Value(streakDays),
       page: Value(page),
     );
   }
@@ -7909,8 +7845,6 @@ class WeeklyLeaderboardData extends DataClass
       avatar: serializer.fromJson<String?>(json['avatar']),
       points: serializer.fromJson<double>(json['points']),
       rank: serializer.fromJson<int>(json['rank']),
-      coursesCompleted: serializer.fromJson<int>(json['coursesCompleted']),
-      streakDays: serializer.fromJson<int>(json['streakDays']),
       page: serializer.fromJson<int>(json['page']),
     );
   }
@@ -7923,8 +7857,6 @@ class WeeklyLeaderboardData extends DataClass
       'avatar': serializer.toJson<String?>(avatar),
       'points': serializer.toJson<double>(points),
       'rank': serializer.toJson<int>(rank),
-      'coursesCompleted': serializer.toJson<int>(coursesCompleted),
-      'streakDays': serializer.toJson<int>(streakDays),
       'page': serializer.toJson<int>(page),
     };
   }
@@ -7935,8 +7867,6 @@ class WeeklyLeaderboardData extends DataClass
     Value<String?> avatar = const Value.absent(),
     double? points,
     int? rank,
-    int? coursesCompleted,
-    int? streakDays,
     int? page,
   }) => WeeklyLeaderboardData(
     id: id ?? this.id,
@@ -7944,8 +7874,6 @@ class WeeklyLeaderboardData extends DataClass
     avatar: avatar.present ? avatar.value : this.avatar,
     points: points ?? this.points,
     rank: rank ?? this.rank,
-    coursesCompleted: coursesCompleted ?? this.coursesCompleted,
-    streakDays: streakDays ?? this.streakDays,
     page: page ?? this.page,
   );
   WeeklyLeaderboardData copyWithCompanion(
@@ -7957,12 +7885,6 @@ class WeeklyLeaderboardData extends DataClass
       avatar: data.avatar.present ? data.avatar.value : this.avatar,
       points: data.points.present ? data.points.value : this.points,
       rank: data.rank.present ? data.rank.value : this.rank,
-      coursesCompleted: data.coursesCompleted.present
-          ? data.coursesCompleted.value
-          : this.coursesCompleted,
-      streakDays: data.streakDays.present
-          ? data.streakDays.value
-          : this.streakDays,
       page: data.page.present ? data.page.value : this.page,
     );
   }
@@ -7975,24 +7897,13 @@ class WeeklyLeaderboardData extends DataClass
           ..write('avatar: $avatar, ')
           ..write('points: $points, ')
           ..write('rank: $rank, ')
-          ..write('coursesCompleted: $coursesCompleted, ')
-          ..write('streakDays: $streakDays, ')
           ..write('page: $page')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-    id,
-    name,
-    avatar,
-    points,
-    rank,
-    coursesCompleted,
-    streakDays,
-    page,
-  );
+  int get hashCode => Object.hash(id, name, avatar, points, rank, page);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -8002,8 +7913,6 @@ class WeeklyLeaderboardData extends DataClass
           other.avatar == this.avatar &&
           other.points == this.points &&
           other.rank == this.rank &&
-          other.coursesCompleted == this.coursesCompleted &&
-          other.streakDays == this.streakDays &&
           other.page == this.page);
 }
 
@@ -8014,8 +7923,6 @@ class WeeklyLeaderboardTableCompanion
   final Value<String?> avatar;
   final Value<double> points;
   final Value<int> rank;
-  final Value<int> coursesCompleted;
-  final Value<int> streakDays;
   final Value<int> page;
   final Value<int> rowid;
   const WeeklyLeaderboardTableCompanion({
@@ -8024,8 +7931,6 @@ class WeeklyLeaderboardTableCompanion
     this.avatar = const Value.absent(),
     this.points = const Value.absent(),
     this.rank = const Value.absent(),
-    this.coursesCompleted = const Value.absent(),
-    this.streakDays = const Value.absent(),
     this.page = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -8035,8 +7940,6 @@ class WeeklyLeaderboardTableCompanion
     this.avatar = const Value.absent(),
     required double points,
     required int rank,
-    this.coursesCompleted = const Value.absent(),
-    this.streakDays = const Value.absent(),
     this.page = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -8049,8 +7952,6 @@ class WeeklyLeaderboardTableCompanion
     Expression<String>? avatar,
     Expression<double>? points,
     Expression<int>? rank,
-    Expression<int>? coursesCompleted,
-    Expression<int>? streakDays,
     Expression<int>? page,
     Expression<int>? rowid,
   }) {
@@ -8060,8 +7961,6 @@ class WeeklyLeaderboardTableCompanion
       if (avatar != null) 'avatar': avatar,
       if (points != null) 'points': points,
       if (rank != null) 'rank': rank,
-      if (coursesCompleted != null) 'courses_completed': coursesCompleted,
-      if (streakDays != null) 'streak_days': streakDays,
       if (page != null) 'page': page,
       if (rowid != null) 'rowid': rowid,
     });
@@ -8073,8 +7972,6 @@ class WeeklyLeaderboardTableCompanion
     Value<String?>? avatar,
     Value<double>? points,
     Value<int>? rank,
-    Value<int>? coursesCompleted,
-    Value<int>? streakDays,
     Value<int>? page,
     Value<int>? rowid,
   }) {
@@ -8084,8 +7981,6 @@ class WeeklyLeaderboardTableCompanion
       avatar: avatar ?? this.avatar,
       points: points ?? this.points,
       rank: rank ?? this.rank,
-      coursesCompleted: coursesCompleted ?? this.coursesCompleted,
-      streakDays: streakDays ?? this.streakDays,
       page: page ?? this.page,
       rowid: rowid ?? this.rowid,
     );
@@ -8109,12 +8004,6 @@ class WeeklyLeaderboardTableCompanion
     if (rank.present) {
       map['rank'] = Variable<int>(rank.value);
     }
-    if (coursesCompleted.present) {
-      map['courses_completed'] = Variable<int>(coursesCompleted.value);
-    }
-    if (streakDays.present) {
-      map['streak_days'] = Variable<int>(streakDays.value);
-    }
     if (page.present) {
       map['page'] = Variable<int>(page.value);
     }
@@ -8132,8 +8021,6 @@ class WeeklyLeaderboardTableCompanion
           ..write('avatar: $avatar, ')
           ..write('points: $points, ')
           ..write('rank: $rank, ')
-          ..write('coursesCompleted: $coursesCompleted, ')
-          ..write('streakDays: $streakDays, ')
           ..write('page: $page, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -8192,30 +8079,6 @@ class $MonthlyLeaderboardTableTable extends MonthlyLeaderboardTable
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _coursesCompletedMeta = const VerificationMeta(
-    'coursesCompleted',
-  );
-  @override
-  late final GeneratedColumn<int> coursesCompleted = GeneratedColumn<int>(
-    'courses_completed',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(0),
-  );
-  static const VerificationMeta _streakDaysMeta = const VerificationMeta(
-    'streakDays',
-  );
-  @override
-  late final GeneratedColumn<int> streakDays = GeneratedColumn<int>(
-    'streak_days',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(0),
-  );
   static const VerificationMeta _pageMeta = const VerificationMeta('page');
   @override
   late final GeneratedColumn<int> page = GeneratedColumn<int>(
@@ -8227,16 +8090,7 @@ class $MonthlyLeaderboardTableTable extends MonthlyLeaderboardTable
     defaultValue: const Constant(1),
   );
   @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    name,
-    avatar,
-    points,
-    rank,
-    coursesCompleted,
-    streakDays,
-    page,
-  ];
+  List<GeneratedColumn> get $columns => [id, name, avatar, points, rank, page];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -8284,21 +8138,6 @@ class $MonthlyLeaderboardTableTable extends MonthlyLeaderboardTable
     } else if (isInserting) {
       context.missing(_rankMeta);
     }
-    if (data.containsKey('courses_completed')) {
-      context.handle(
-        _coursesCompletedMeta,
-        coursesCompleted.isAcceptableOrUnknown(
-          data['courses_completed']!,
-          _coursesCompletedMeta,
-        ),
-      );
-    }
-    if (data.containsKey('streak_days')) {
-      context.handle(
-        _streakDaysMeta,
-        streakDays.isAcceptableOrUnknown(data['streak_days']!, _streakDaysMeta),
-      );
-    }
     if (data.containsKey('page')) {
       context.handle(
         _pageMeta,
@@ -8334,14 +8173,6 @@ class $MonthlyLeaderboardTableTable extends MonthlyLeaderboardTable
         DriftSqlType.int,
         data['${effectivePrefix}rank'],
       )!,
-      coursesCompleted: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}courses_completed'],
-      )!,
-      streakDays: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}streak_days'],
-      )!,
       page: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}page'],
@@ -8362,8 +8193,6 @@ class MonthlyLeaderboardData extends DataClass
   final String? avatar;
   final double points;
   final int rank;
-  final int coursesCompleted;
-  final int streakDays;
   final int page;
   const MonthlyLeaderboardData({
     required this.id,
@@ -8371,8 +8200,6 @@ class MonthlyLeaderboardData extends DataClass
     this.avatar,
     required this.points,
     required this.rank,
-    required this.coursesCompleted,
-    required this.streakDays,
     required this.page,
   });
   @override
@@ -8385,8 +8212,6 @@ class MonthlyLeaderboardData extends DataClass
     }
     map['points'] = Variable<double>(points);
     map['rank'] = Variable<int>(rank);
-    map['courses_completed'] = Variable<int>(coursesCompleted);
-    map['streak_days'] = Variable<int>(streakDays);
     map['page'] = Variable<int>(page);
     return map;
   }
@@ -8400,8 +8225,6 @@ class MonthlyLeaderboardData extends DataClass
           : Value(avatar),
       points: Value(points),
       rank: Value(rank),
-      coursesCompleted: Value(coursesCompleted),
-      streakDays: Value(streakDays),
       page: Value(page),
     );
   }
@@ -8417,8 +8240,6 @@ class MonthlyLeaderboardData extends DataClass
       avatar: serializer.fromJson<String?>(json['avatar']),
       points: serializer.fromJson<double>(json['points']),
       rank: serializer.fromJson<int>(json['rank']),
-      coursesCompleted: serializer.fromJson<int>(json['coursesCompleted']),
-      streakDays: serializer.fromJson<int>(json['streakDays']),
       page: serializer.fromJson<int>(json['page']),
     );
   }
@@ -8431,8 +8252,6 @@ class MonthlyLeaderboardData extends DataClass
       'avatar': serializer.toJson<String?>(avatar),
       'points': serializer.toJson<double>(points),
       'rank': serializer.toJson<int>(rank),
-      'coursesCompleted': serializer.toJson<int>(coursesCompleted),
-      'streakDays': serializer.toJson<int>(streakDays),
       'page': serializer.toJson<int>(page),
     };
   }
@@ -8443,8 +8262,6 @@ class MonthlyLeaderboardData extends DataClass
     Value<String?> avatar = const Value.absent(),
     double? points,
     int? rank,
-    int? coursesCompleted,
-    int? streakDays,
     int? page,
   }) => MonthlyLeaderboardData(
     id: id ?? this.id,
@@ -8452,8 +8269,6 @@ class MonthlyLeaderboardData extends DataClass
     avatar: avatar.present ? avatar.value : this.avatar,
     points: points ?? this.points,
     rank: rank ?? this.rank,
-    coursesCompleted: coursesCompleted ?? this.coursesCompleted,
-    streakDays: streakDays ?? this.streakDays,
     page: page ?? this.page,
   );
   MonthlyLeaderboardData copyWithCompanion(
@@ -8465,12 +8280,6 @@ class MonthlyLeaderboardData extends DataClass
       avatar: data.avatar.present ? data.avatar.value : this.avatar,
       points: data.points.present ? data.points.value : this.points,
       rank: data.rank.present ? data.rank.value : this.rank,
-      coursesCompleted: data.coursesCompleted.present
-          ? data.coursesCompleted.value
-          : this.coursesCompleted,
-      streakDays: data.streakDays.present
-          ? data.streakDays.value
-          : this.streakDays,
       page: data.page.present ? data.page.value : this.page,
     );
   }
@@ -8483,24 +8292,13 @@ class MonthlyLeaderboardData extends DataClass
           ..write('avatar: $avatar, ')
           ..write('points: $points, ')
           ..write('rank: $rank, ')
-          ..write('coursesCompleted: $coursesCompleted, ')
-          ..write('streakDays: $streakDays, ')
           ..write('page: $page')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-    id,
-    name,
-    avatar,
-    points,
-    rank,
-    coursesCompleted,
-    streakDays,
-    page,
-  );
+  int get hashCode => Object.hash(id, name, avatar, points, rank, page);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -8510,8 +8308,6 @@ class MonthlyLeaderboardData extends DataClass
           other.avatar == this.avatar &&
           other.points == this.points &&
           other.rank == this.rank &&
-          other.coursesCompleted == this.coursesCompleted &&
-          other.streakDays == this.streakDays &&
           other.page == this.page);
 }
 
@@ -8522,8 +8318,6 @@ class MonthlyLeaderboardTableCompanion
   final Value<String?> avatar;
   final Value<double> points;
   final Value<int> rank;
-  final Value<int> coursesCompleted;
-  final Value<int> streakDays;
   final Value<int> page;
   final Value<int> rowid;
   const MonthlyLeaderboardTableCompanion({
@@ -8532,8 +8326,6 @@ class MonthlyLeaderboardTableCompanion
     this.avatar = const Value.absent(),
     this.points = const Value.absent(),
     this.rank = const Value.absent(),
-    this.coursesCompleted = const Value.absent(),
-    this.streakDays = const Value.absent(),
     this.page = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -8543,8 +8335,6 @@ class MonthlyLeaderboardTableCompanion
     this.avatar = const Value.absent(),
     required double points,
     required int rank,
-    this.coursesCompleted = const Value.absent(),
-    this.streakDays = const Value.absent(),
     this.page = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -8557,8 +8347,6 @@ class MonthlyLeaderboardTableCompanion
     Expression<String>? avatar,
     Expression<double>? points,
     Expression<int>? rank,
-    Expression<int>? coursesCompleted,
-    Expression<int>? streakDays,
     Expression<int>? page,
     Expression<int>? rowid,
   }) {
@@ -8568,8 +8356,6 @@ class MonthlyLeaderboardTableCompanion
       if (avatar != null) 'avatar': avatar,
       if (points != null) 'points': points,
       if (rank != null) 'rank': rank,
-      if (coursesCompleted != null) 'courses_completed': coursesCompleted,
-      if (streakDays != null) 'streak_days': streakDays,
       if (page != null) 'page': page,
       if (rowid != null) 'rowid': rowid,
     });
@@ -8581,8 +8367,6 @@ class MonthlyLeaderboardTableCompanion
     Value<String?>? avatar,
     Value<double>? points,
     Value<int>? rank,
-    Value<int>? coursesCompleted,
-    Value<int>? streakDays,
     Value<int>? page,
     Value<int>? rowid,
   }) {
@@ -8592,8 +8376,6 @@ class MonthlyLeaderboardTableCompanion
       avatar: avatar ?? this.avatar,
       points: points ?? this.points,
       rank: rank ?? this.rank,
-      coursesCompleted: coursesCompleted ?? this.coursesCompleted,
-      streakDays: streakDays ?? this.streakDays,
       page: page ?? this.page,
       rowid: rowid ?? this.rowid,
     );
@@ -8617,12 +8399,6 @@ class MonthlyLeaderboardTableCompanion
     if (rank.present) {
       map['rank'] = Variable<int>(rank.value);
     }
-    if (coursesCompleted.present) {
-      map['courses_completed'] = Variable<int>(coursesCompleted.value);
-    }
-    if (streakDays.present) {
-      map['streak_days'] = Variable<int>(streakDays.value);
-    }
     if (page.present) {
       map['page'] = Variable<int>(page.value);
     }
@@ -8640,8 +8416,6 @@ class MonthlyLeaderboardTableCompanion
           ..write('avatar: $avatar, ')
           ..write('points: $points, ')
           ..write('rank: $rank, ')
-          ..write('coursesCompleted: $coursesCompleted, ')
-          ..write('streakDays: $streakDays, ')
           ..write('page: $page, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -8700,30 +8474,6 @@ class $AllTimeLeaderboardTableTable extends AllTimeLeaderboardTable
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _coursesCompletedMeta = const VerificationMeta(
-    'coursesCompleted',
-  );
-  @override
-  late final GeneratedColumn<int> coursesCompleted = GeneratedColumn<int>(
-    'courses_completed',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(0),
-  );
-  static const VerificationMeta _streakDaysMeta = const VerificationMeta(
-    'streakDays',
-  );
-  @override
-  late final GeneratedColumn<int> streakDays = GeneratedColumn<int>(
-    'streak_days',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(0),
-  );
   static const VerificationMeta _pageMeta = const VerificationMeta('page');
   @override
   late final GeneratedColumn<int> page = GeneratedColumn<int>(
@@ -8735,16 +8485,7 @@ class $AllTimeLeaderboardTableTable extends AllTimeLeaderboardTable
     defaultValue: const Constant(1),
   );
   @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    name,
-    avatar,
-    points,
-    rank,
-    coursesCompleted,
-    streakDays,
-    page,
-  ];
+  List<GeneratedColumn> get $columns => [id, name, avatar, points, rank, page];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -8792,21 +8533,6 @@ class $AllTimeLeaderboardTableTable extends AllTimeLeaderboardTable
     } else if (isInserting) {
       context.missing(_rankMeta);
     }
-    if (data.containsKey('courses_completed')) {
-      context.handle(
-        _coursesCompletedMeta,
-        coursesCompleted.isAcceptableOrUnknown(
-          data['courses_completed']!,
-          _coursesCompletedMeta,
-        ),
-      );
-    }
-    if (data.containsKey('streak_days')) {
-      context.handle(
-        _streakDaysMeta,
-        streakDays.isAcceptableOrUnknown(data['streak_days']!, _streakDaysMeta),
-      );
-    }
     if (data.containsKey('page')) {
       context.handle(
         _pageMeta,
@@ -8842,14 +8568,6 @@ class $AllTimeLeaderboardTableTable extends AllTimeLeaderboardTable
         DriftSqlType.int,
         data['${effectivePrefix}rank'],
       )!,
-      coursesCompleted: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}courses_completed'],
-      )!,
-      streakDays: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}streak_days'],
-      )!,
       page: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}page'],
@@ -8870,8 +8588,6 @@ class AllTimeLeaderboardData extends DataClass
   final String? avatar;
   final double points;
   final int rank;
-  final int coursesCompleted;
-  final int streakDays;
   final int page;
   const AllTimeLeaderboardData({
     required this.id,
@@ -8879,8 +8595,6 @@ class AllTimeLeaderboardData extends DataClass
     this.avatar,
     required this.points,
     required this.rank,
-    required this.coursesCompleted,
-    required this.streakDays,
     required this.page,
   });
   @override
@@ -8893,8 +8607,6 @@ class AllTimeLeaderboardData extends DataClass
     }
     map['points'] = Variable<double>(points);
     map['rank'] = Variable<int>(rank);
-    map['courses_completed'] = Variable<int>(coursesCompleted);
-    map['streak_days'] = Variable<int>(streakDays);
     map['page'] = Variable<int>(page);
     return map;
   }
@@ -8908,8 +8620,6 @@ class AllTimeLeaderboardData extends DataClass
           : Value(avatar),
       points: Value(points),
       rank: Value(rank),
-      coursesCompleted: Value(coursesCompleted),
-      streakDays: Value(streakDays),
       page: Value(page),
     );
   }
@@ -8925,8 +8635,6 @@ class AllTimeLeaderboardData extends DataClass
       avatar: serializer.fromJson<String?>(json['avatar']),
       points: serializer.fromJson<double>(json['points']),
       rank: serializer.fromJson<int>(json['rank']),
-      coursesCompleted: serializer.fromJson<int>(json['coursesCompleted']),
-      streakDays: serializer.fromJson<int>(json['streakDays']),
       page: serializer.fromJson<int>(json['page']),
     );
   }
@@ -8939,8 +8647,6 @@ class AllTimeLeaderboardData extends DataClass
       'avatar': serializer.toJson<String?>(avatar),
       'points': serializer.toJson<double>(points),
       'rank': serializer.toJson<int>(rank),
-      'coursesCompleted': serializer.toJson<int>(coursesCompleted),
-      'streakDays': serializer.toJson<int>(streakDays),
       'page': serializer.toJson<int>(page),
     };
   }
@@ -8951,8 +8657,6 @@ class AllTimeLeaderboardData extends DataClass
     Value<String?> avatar = const Value.absent(),
     double? points,
     int? rank,
-    int? coursesCompleted,
-    int? streakDays,
     int? page,
   }) => AllTimeLeaderboardData(
     id: id ?? this.id,
@@ -8960,8 +8664,6 @@ class AllTimeLeaderboardData extends DataClass
     avatar: avatar.present ? avatar.value : this.avatar,
     points: points ?? this.points,
     rank: rank ?? this.rank,
-    coursesCompleted: coursesCompleted ?? this.coursesCompleted,
-    streakDays: streakDays ?? this.streakDays,
     page: page ?? this.page,
   );
   AllTimeLeaderboardData copyWithCompanion(
@@ -8973,12 +8675,6 @@ class AllTimeLeaderboardData extends DataClass
       avatar: data.avatar.present ? data.avatar.value : this.avatar,
       points: data.points.present ? data.points.value : this.points,
       rank: data.rank.present ? data.rank.value : this.rank,
-      coursesCompleted: data.coursesCompleted.present
-          ? data.coursesCompleted.value
-          : this.coursesCompleted,
-      streakDays: data.streakDays.present
-          ? data.streakDays.value
-          : this.streakDays,
       page: data.page.present ? data.page.value : this.page,
     );
   }
@@ -8991,24 +8687,13 @@ class AllTimeLeaderboardData extends DataClass
           ..write('avatar: $avatar, ')
           ..write('points: $points, ')
           ..write('rank: $rank, ')
-          ..write('coursesCompleted: $coursesCompleted, ')
-          ..write('streakDays: $streakDays, ')
           ..write('page: $page')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-    id,
-    name,
-    avatar,
-    points,
-    rank,
-    coursesCompleted,
-    streakDays,
-    page,
-  );
+  int get hashCode => Object.hash(id, name, avatar, points, rank, page);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -9018,8 +8703,6 @@ class AllTimeLeaderboardData extends DataClass
           other.avatar == this.avatar &&
           other.points == this.points &&
           other.rank == this.rank &&
-          other.coursesCompleted == this.coursesCompleted &&
-          other.streakDays == this.streakDays &&
           other.page == this.page);
 }
 
@@ -9030,8 +8713,6 @@ class AllTimeLeaderboardTableCompanion
   final Value<String?> avatar;
   final Value<double> points;
   final Value<int> rank;
-  final Value<int> coursesCompleted;
-  final Value<int> streakDays;
   final Value<int> page;
   final Value<int> rowid;
   const AllTimeLeaderboardTableCompanion({
@@ -9040,8 +8721,6 @@ class AllTimeLeaderboardTableCompanion
     this.avatar = const Value.absent(),
     this.points = const Value.absent(),
     this.rank = const Value.absent(),
-    this.coursesCompleted = const Value.absent(),
-    this.streakDays = const Value.absent(),
     this.page = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -9051,8 +8730,6 @@ class AllTimeLeaderboardTableCompanion
     this.avatar = const Value.absent(),
     required double points,
     required int rank,
-    this.coursesCompleted = const Value.absent(),
-    this.streakDays = const Value.absent(),
     this.page = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -9065,8 +8742,6 @@ class AllTimeLeaderboardTableCompanion
     Expression<String>? avatar,
     Expression<double>? points,
     Expression<int>? rank,
-    Expression<int>? coursesCompleted,
-    Expression<int>? streakDays,
     Expression<int>? page,
     Expression<int>? rowid,
   }) {
@@ -9076,8 +8751,6 @@ class AllTimeLeaderboardTableCompanion
       if (avatar != null) 'avatar': avatar,
       if (points != null) 'points': points,
       if (rank != null) 'rank': rank,
-      if (coursesCompleted != null) 'courses_completed': coursesCompleted,
-      if (streakDays != null) 'streak_days': streakDays,
       if (page != null) 'page': page,
       if (rowid != null) 'rowid': rowid,
     });
@@ -9089,8 +8762,6 @@ class AllTimeLeaderboardTableCompanion
     Value<String?>? avatar,
     Value<double>? points,
     Value<int>? rank,
-    Value<int>? coursesCompleted,
-    Value<int>? streakDays,
     Value<int>? page,
     Value<int>? rowid,
   }) {
@@ -9100,8 +8771,6 @@ class AllTimeLeaderboardTableCompanion
       avatar: avatar ?? this.avatar,
       points: points ?? this.points,
       rank: rank ?? this.rank,
-      coursesCompleted: coursesCompleted ?? this.coursesCompleted,
-      streakDays: streakDays ?? this.streakDays,
       page: page ?? this.page,
       rowid: rowid ?? this.rowid,
     );
@@ -9125,12 +8794,6 @@ class AllTimeLeaderboardTableCompanion
     if (rank.present) {
       map['rank'] = Variable<int>(rank.value);
     }
-    if (coursesCompleted.present) {
-      map['courses_completed'] = Variable<int>(coursesCompleted.value);
-    }
-    if (streakDays.present) {
-      map['streak_days'] = Variable<int>(streakDays.value);
-    }
     if (page.present) {
       map['page'] = Variable<int>(page.value);
     }
@@ -9148,8 +8811,6 @@ class AllTimeLeaderboardTableCompanion
           ..write('avatar: $avatar, ')
           ..write('points: $points, ')
           ..write('rank: $rank, ')
-          ..write('coursesCompleted: $coursesCompleted, ')
-          ..write('streakDays: $streakDays, ')
           ..write('page: $page, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -18822,8 +18483,6 @@ typedef $$WeeklyLeaderboardTableTableCreateCompanionBuilder =
       Value<String?> avatar,
       required double points,
       required int rank,
-      Value<int> coursesCompleted,
-      Value<int> streakDays,
       Value<int> page,
       Value<int> rowid,
     });
@@ -18834,8 +18493,6 @@ typedef $$WeeklyLeaderboardTableTableUpdateCompanionBuilder =
       Value<String?> avatar,
       Value<double> points,
       Value<int> rank,
-      Value<int> coursesCompleted,
-      Value<int> streakDays,
       Value<int> page,
       Value<int> rowid,
     });
@@ -18871,16 +18528,6 @@ class $$WeeklyLeaderboardTableTableFilterComposer
 
   ColumnFilters<int> get rank => $composableBuilder(
     column: $table.rank,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get coursesCompleted => $composableBuilder(
-    column: $table.coursesCompleted,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get streakDays => $composableBuilder(
-    column: $table.streakDays,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -18924,16 +18571,6 @@ class $$WeeklyLeaderboardTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get coursesCompleted => $composableBuilder(
-    column: $table.coursesCompleted,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get streakDays => $composableBuilder(
-    column: $table.streakDays,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<int> get page => $composableBuilder(
     column: $table.page,
     builder: (column) => ColumnOrderings(column),
@@ -18963,16 +18600,6 @@ class $$WeeklyLeaderboardTableTableAnnotationComposer
 
   GeneratedColumn<int> get rank =>
       $composableBuilder(column: $table.rank, builder: (column) => column);
-
-  GeneratedColumn<int> get coursesCompleted => $composableBuilder(
-    column: $table.coursesCompleted,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<int> get streakDays => $composableBuilder(
-    column: $table.streakDays,
-    builder: (column) => column,
-  );
 
   GeneratedColumn<int> get page =>
       $composableBuilder(column: $table.page, builder: (column) => column);
@@ -19029,8 +18656,6 @@ class $$WeeklyLeaderboardTableTableTableManager
                 Value<String?> avatar = const Value.absent(),
                 Value<double> points = const Value.absent(),
                 Value<int> rank = const Value.absent(),
-                Value<int> coursesCompleted = const Value.absent(),
-                Value<int> streakDays = const Value.absent(),
                 Value<int> page = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => WeeklyLeaderboardTableCompanion(
@@ -19039,8 +18664,6 @@ class $$WeeklyLeaderboardTableTableTableManager
                 avatar: avatar,
                 points: points,
                 rank: rank,
-                coursesCompleted: coursesCompleted,
-                streakDays: streakDays,
                 page: page,
                 rowid: rowid,
               ),
@@ -19051,8 +18674,6 @@ class $$WeeklyLeaderboardTableTableTableManager
                 Value<String?> avatar = const Value.absent(),
                 required double points,
                 required int rank,
-                Value<int> coursesCompleted = const Value.absent(),
-                Value<int> streakDays = const Value.absent(),
                 Value<int> page = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => WeeklyLeaderboardTableCompanion.insert(
@@ -19061,8 +18682,6 @@ class $$WeeklyLeaderboardTableTableTableManager
                 avatar: avatar,
                 points: points,
                 rank: rank,
-                coursesCompleted: coursesCompleted,
-                streakDays: streakDays,
                 page: page,
                 rowid: rowid,
               ),
@@ -19102,8 +18721,6 @@ typedef $$MonthlyLeaderboardTableTableCreateCompanionBuilder =
       Value<String?> avatar,
       required double points,
       required int rank,
-      Value<int> coursesCompleted,
-      Value<int> streakDays,
       Value<int> page,
       Value<int> rowid,
     });
@@ -19114,8 +18731,6 @@ typedef $$MonthlyLeaderboardTableTableUpdateCompanionBuilder =
       Value<String?> avatar,
       Value<double> points,
       Value<int> rank,
-      Value<int> coursesCompleted,
-      Value<int> streakDays,
       Value<int> page,
       Value<int> rowid,
     });
@@ -19151,16 +18766,6 @@ class $$MonthlyLeaderboardTableTableFilterComposer
 
   ColumnFilters<int> get rank => $composableBuilder(
     column: $table.rank,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get coursesCompleted => $composableBuilder(
-    column: $table.coursesCompleted,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get streakDays => $composableBuilder(
-    column: $table.streakDays,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -19204,16 +18809,6 @@ class $$MonthlyLeaderboardTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get coursesCompleted => $composableBuilder(
-    column: $table.coursesCompleted,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get streakDays => $composableBuilder(
-    column: $table.streakDays,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<int> get page => $composableBuilder(
     column: $table.page,
     builder: (column) => ColumnOrderings(column),
@@ -19243,16 +18838,6 @@ class $$MonthlyLeaderboardTableTableAnnotationComposer
 
   GeneratedColumn<int> get rank =>
       $composableBuilder(column: $table.rank, builder: (column) => column);
-
-  GeneratedColumn<int> get coursesCompleted => $composableBuilder(
-    column: $table.coursesCompleted,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<int> get streakDays => $composableBuilder(
-    column: $table.streakDays,
-    builder: (column) => column,
-  );
 
   GeneratedColumn<int> get page =>
       $composableBuilder(column: $table.page, builder: (column) => column);
@@ -19309,8 +18894,6 @@ class $$MonthlyLeaderboardTableTableTableManager
                 Value<String?> avatar = const Value.absent(),
                 Value<double> points = const Value.absent(),
                 Value<int> rank = const Value.absent(),
-                Value<int> coursesCompleted = const Value.absent(),
-                Value<int> streakDays = const Value.absent(),
                 Value<int> page = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MonthlyLeaderboardTableCompanion(
@@ -19319,8 +18902,6 @@ class $$MonthlyLeaderboardTableTableTableManager
                 avatar: avatar,
                 points: points,
                 rank: rank,
-                coursesCompleted: coursesCompleted,
-                streakDays: streakDays,
                 page: page,
                 rowid: rowid,
               ),
@@ -19331,8 +18912,6 @@ class $$MonthlyLeaderboardTableTableTableManager
                 Value<String?> avatar = const Value.absent(),
                 required double points,
                 required int rank,
-                Value<int> coursesCompleted = const Value.absent(),
-                Value<int> streakDays = const Value.absent(),
                 Value<int> page = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MonthlyLeaderboardTableCompanion.insert(
@@ -19341,8 +18920,6 @@ class $$MonthlyLeaderboardTableTableTableManager
                 avatar: avatar,
                 points: points,
                 rank: rank,
-                coursesCompleted: coursesCompleted,
-                streakDays: streakDays,
                 page: page,
                 rowid: rowid,
               ),
@@ -19382,8 +18959,6 @@ typedef $$AllTimeLeaderboardTableTableCreateCompanionBuilder =
       Value<String?> avatar,
       required double points,
       required int rank,
-      Value<int> coursesCompleted,
-      Value<int> streakDays,
       Value<int> page,
       Value<int> rowid,
     });
@@ -19394,8 +18969,6 @@ typedef $$AllTimeLeaderboardTableTableUpdateCompanionBuilder =
       Value<String?> avatar,
       Value<double> points,
       Value<int> rank,
-      Value<int> coursesCompleted,
-      Value<int> streakDays,
       Value<int> page,
       Value<int> rowid,
     });
@@ -19431,16 +19004,6 @@ class $$AllTimeLeaderboardTableTableFilterComposer
 
   ColumnFilters<int> get rank => $composableBuilder(
     column: $table.rank,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get coursesCompleted => $composableBuilder(
-    column: $table.coursesCompleted,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get streakDays => $composableBuilder(
-    column: $table.streakDays,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -19484,16 +19047,6 @@ class $$AllTimeLeaderboardTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get coursesCompleted => $composableBuilder(
-    column: $table.coursesCompleted,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get streakDays => $composableBuilder(
-    column: $table.streakDays,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<int> get page => $composableBuilder(
     column: $table.page,
     builder: (column) => ColumnOrderings(column),
@@ -19523,16 +19076,6 @@ class $$AllTimeLeaderboardTableTableAnnotationComposer
 
   GeneratedColumn<int> get rank =>
       $composableBuilder(column: $table.rank, builder: (column) => column);
-
-  GeneratedColumn<int> get coursesCompleted => $composableBuilder(
-    column: $table.coursesCompleted,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<int> get streakDays => $composableBuilder(
-    column: $table.streakDays,
-    builder: (column) => column,
-  );
 
   GeneratedColumn<int> get page =>
       $composableBuilder(column: $table.page, builder: (column) => column);
@@ -19589,8 +19132,6 @@ class $$AllTimeLeaderboardTableTableTableManager
                 Value<String?> avatar = const Value.absent(),
                 Value<double> points = const Value.absent(),
                 Value<int> rank = const Value.absent(),
-                Value<int> coursesCompleted = const Value.absent(),
-                Value<int> streakDays = const Value.absent(),
                 Value<int> page = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => AllTimeLeaderboardTableCompanion(
@@ -19599,8 +19140,6 @@ class $$AllTimeLeaderboardTableTableTableManager
                 avatar: avatar,
                 points: points,
                 rank: rank,
-                coursesCompleted: coursesCompleted,
-                streakDays: streakDays,
                 page: page,
                 rowid: rowid,
               ),
@@ -19611,8 +19150,6 @@ class $$AllTimeLeaderboardTableTableTableManager
                 Value<String?> avatar = const Value.absent(),
                 required double points,
                 required int rank,
-                Value<int> coursesCompleted = const Value.absent(),
-                Value<int> streakDays = const Value.absent(),
                 Value<int> page = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => AllTimeLeaderboardTableCompanion.insert(
@@ -19621,8 +19158,6 @@ class $$AllTimeLeaderboardTableTableTableManager
                 avatar: avatar,
                 points: points,
                 rank: rank,
-                coursesCompleted: coursesCompleted,
-                streakDays: streakDays,
                 page: page,
                 rowid: rowid,
               ),

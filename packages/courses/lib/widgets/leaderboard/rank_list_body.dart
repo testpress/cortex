@@ -123,7 +123,5 @@ final _mockLearners = List.generate(
     name: BoneMock.name,
     avatar: '',
     points: 1000 - (index * 10),
-    coursesCompleted: 5,
-    streakDays: 3,
   ),
 );

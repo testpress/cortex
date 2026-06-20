@@ -316,8 +316,6 @@ class LearnerDto {
   final String name;
   final String avatar;
   final double points;
-  final int coursesCompleted;
-  final int streakDays;
   final bool isCurrentUser;
 
   const LearnerDto({
@@ -326,8 +324,6 @@ class LearnerDto {
     required this.name,
     required this.avatar,
     required this.points,
-    required this.coursesCompleted,
-    required this.streakDays,
     this.isCurrentUser = false,
   });
 
@@ -338,8 +334,6 @@ class LearnerDto {
       name: json['user']?['display_name'] ?? '',
       avatar: json['user']?['medium_image'] ?? '',
       points: double.tryParse(json['trophies_count']?.toString() ?? '0') ?? 0.0,
-      coursesCompleted: json['courses_completed']?.toInt() ?? 0,
-      streakDays: json['streak_days']?.toInt() ?? 0,
     );
   }
 
@@ -349,8 +343,6 @@ class LearnerDto {
     String? name,
     String? avatar,
     double? points,
-    int? coursesCompleted,
-    int? streakDays,
     bool? isCurrentUser,
   }) {
     return LearnerDto(
@@ -359,8 +351,6 @@ class LearnerDto {
       name: name ?? this.name,
       avatar: avatar ?? this.avatar,
       points: points ?? this.points,
-      coursesCompleted: coursesCompleted ?? this.coursesCompleted,
-      streakDays: streakDays ?? this.streakDays,
       isCurrentUser: isCurrentUser ?? this.isCurrentUser,
     );
   }
