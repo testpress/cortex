@@ -3748,6 +3748,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Review each question with answers and explanations'**
   String get reviewExamReviewDesc;
+
+  /// No description provided for @defaultStudentName.
+  ///
+  /// In en, this message translates to:
+  /// **'Student'**
+  String get defaultStudentName;
 }
 
 class _AppLocalizationsDelegate

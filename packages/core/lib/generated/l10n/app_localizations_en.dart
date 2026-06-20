@@ -2046,4 +2046,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reviewExamReviewDesc =>
       'Review each question with answers and explanations';
+
+  @override
+  String get defaultStudentName => 'Student';
 }

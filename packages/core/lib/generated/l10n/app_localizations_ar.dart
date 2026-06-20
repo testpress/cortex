@@ -2052,4 +2052,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get reviewExamReviewDesc => 'راجع كل سؤال مع الإجابات والشروحات';
+
+  @override
+  String get defaultStudentName => 'طالب';
 }

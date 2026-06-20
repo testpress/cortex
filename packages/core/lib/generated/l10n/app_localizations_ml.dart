@@ -2090,4 +2090,7 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get reviewExamReviewDesc =>
       'ഉത്തരങ്ങളും വിശദീകരണങ്ങളും സഹിതം ഓരോ ചോദ്യവും അവലോകനം ചെയ്യുക';
+
+  @override
+  String get defaultStudentName => 'വിദ്യാർത്ഥി';
 }

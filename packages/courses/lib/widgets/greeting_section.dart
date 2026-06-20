@@ -18,7 +18,8 @@ class HomeGreetingSection extends StatelessWidget {
 
     final l10n = L10n.of(context);
     final greeting = l10n.getGreeting();
-    final displayGreeting = showName ? '$greeting, $userName' : greeting;
+    final displayGreeting =
+        (showName && userName.isNotEmpty) ? '$greeting, $userName' : greeting;
 
     return Container(
       padding: EdgeInsets.only(

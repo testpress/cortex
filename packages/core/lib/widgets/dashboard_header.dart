@@ -5,28 +5,23 @@ class DashboardHeader extends StatelessWidget {
   const DashboardHeader({
     super.key,
     required this.title,
+    this.logoUrl,
     this.isLandscape = false,
     this.titleTextStyle,
-    this.showTitle = true,
     this.backgroundColor,
-    this.showBottomBorder = true,
-    this.greeting,
-    this.greetingSubtitle,
-    this.useSafeArea = true,
-    this.customTopPadding,
     this.onMenuPressed,
   });
 
   final String title;
+
+  /// Optional logo URL. When provided, renders the logo image instead of
+  /// the text title. Supports both asset paths (starting with 'assets/')
+  /// and remote network URLs.
+  final String? logoUrl;
+
   final bool isLandscape;
   final TextStyle? titleTextStyle;
-  final bool showTitle;
   final Color? backgroundColor;
-  final bool showBottomBorder;
-  final String? greeting;
-  final String? greetingSubtitle;
-  final bool useSafeArea;
-  final double? customTopPadding;
   final VoidCallback? onMenuPressed;
 
   @override
@@ -36,10 +31,41 @@ class DashboardHeader extends StatelessWidget {
     final padding = MediaQuery.paddingOf(context);
     final effectiveBgColor = backgroundColor ?? design.colors.card;
 
-    final topPadding =
-        customTopPadding ??
-        (useSafeArea ? padding.top + design.spacing.md : design.spacing.md);
+    final topPadding = padding.top + design.spacing.md;
     final bottomPadding = design.spacing.md;
+
+    final hasLogo = logoUrl != null && logoUrl!.isNotEmpty;
+    final isLocal = hasLogo && logoUrl!.startsWith('assets/');
+
+    Widget titleContent;
+    if (hasLogo) {
+      final logoImage = isLocal
+          ? Image.asset(
+              logoUrl!,
+              height: 36,
+              fit: BoxFit.contain,
+              errorBuilder: (_, _, _) => const SizedBox.shrink(),
+            )
+          : Image.network(
+              logoUrl!,
+              height: 36,
+              fit: BoxFit.contain,
+              errorBuilder: (_, _, _) => const SizedBox.shrink(),
+            );
+      titleContent = Align(alignment: Alignment.centerLeft, child: logoImage);
+    } else {
+      titleContent = Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AppText.headline(
+            title,
+            color: design.colors.textPrimary,
+            style: titleTextStyle,
+          ),
+        ],
+      );
+    }
 
     return Container(
       padding: EdgeInsets.fromLTRB(
@@ -50,12 +76,12 @@ class DashboardHeader extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: effectiveBgColor,
-        border: showBottomBorder
-            ? Border(bottom: BorderSide(color: design.colors.border, width: 1))
-            : null,
+        border: Border(
+          bottom: BorderSide(color: design.colors.border, width: 1),
+        ),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (onMenuPressed != null) ...[
             AppFocusable(
@@ -72,27 +98,7 @@ class DashboardHeader extends StatelessWidget {
             ),
             SizedBox(width: design.spacing.sm),
           ],
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (showTitle)
-                  AppText.headline(
-                    title,
-                    color: design.colors.textPrimary,
-                    style: titleTextStyle,
-                  ),
-                if (greeting != null)
-                  AppText.headline(greeting!, color: design.colors.textPrimary),
-                if (greetingSubtitle != null)
-                  AppText.bodySmall(
-                    greetingSubtitle!,
-                    color: design.colors.textSecondary,
-                  ),
-              ],
-            ),
-          ),
+          Expanded(child: titleContent),
         ],
       ),
     );
