@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter/material.dart' show Scaffold;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart' as dto;
@@ -34,9 +33,9 @@ class PaidActiveHomeScreen extends ConsumerWidget {
         ),
         ignoreContainers: false,
       ),
-      child: Scaffold(
-        backgroundColor: design.colors.canvas,
-        body: const _HomeLayout(),
+      child: ColoredBox(
+        color: design.colors.canvas,
+        child: const _HomeLayout(),
       ),
     );
   }
