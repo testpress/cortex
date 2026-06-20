@@ -2034,4 +2034,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String reviewSubjectAnalyticsError(String error) {
     return 'Failed to load subject analytics: $error';
   }
+
+  @override
+  String testScoreResult(String score) {
+    return 'Your Score: $score';
+  }
+
+  @override
+  String get reviewPerformanceOverviewTitle => 'Performance Overview';
 }

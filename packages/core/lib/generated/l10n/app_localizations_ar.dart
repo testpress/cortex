@@ -2042,4 +2042,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String reviewSubjectAnalyticsError(String error) {
     return 'فشل تحميل تحليلات المادة: $error';
   }
+
+  @override
+  String testScoreResult(String score) {
+    return 'درجتك: $score';
+  }
+
+  @override
+  String get reviewPerformanceOverviewTitle => 'نظرة عامة على الأداء';
 }

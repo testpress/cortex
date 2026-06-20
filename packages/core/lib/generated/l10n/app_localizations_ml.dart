@@ -2078,4 +2078,12 @@ class AppLocalizationsMl extends AppLocalizations {
   String reviewSubjectAnalyticsError(String error) {
     return 'വിഷയ അനലിറ്റിക്സ് ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു: $error';
   }
+
+  @override
+  String testScoreResult(String score) {
+    return 'നിങ്ങളുടെ സ്കോർ: $score';
+  }
+
+  @override
+  String get reviewPerformanceOverviewTitle => 'പ്രകടന അവലോകനം';
 }

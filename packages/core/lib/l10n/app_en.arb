@@ -979,5 +979,15 @@
         "type": "String"
       }
     }
-  }
+  },
+  "testScoreResult": "Your Score: {score}",
+  "@testScoreResult": {
+    "description": "Label for the score obtained in the test",
+    "placeholders": {
+      "score": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewPerformanceOverviewTitle": "Performance Overview"
 }

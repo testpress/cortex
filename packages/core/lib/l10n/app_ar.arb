@@ -703,5 +703,15 @@
         "type": "String"
       }
     }
-  }
+  },
+  "testScoreResult": "درجتك: {score}",
+  "@testScoreResult": {
+    "description": "Label for the score obtained in the test",
+    "placeholders": {
+      "score": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewPerformanceOverviewTitle": "نظرة عامة على الأداء"
 }

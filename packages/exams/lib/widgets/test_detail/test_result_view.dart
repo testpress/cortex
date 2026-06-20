@@ -36,12 +36,20 @@ class TestResultView extends StatelessWidget {
               children: [
                 Align(
                   alignment: Alignment.topRight,
-                  child: GestureDetector(
+                  child: AppSemantics.button(
+                    label: l10n.commonCloseButton,
                     onTap: onClose,
-                    child: Icon(
-                      LucideIcons.x,
-                      color: design.colors.textSecondary,
-                      size: 24,
+                    child: GestureDetector(
+                      onTap: onClose,
+                      behavior: HitTestBehavior.opaque,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Icon(
+                          LucideIcons.x,
+                          color: design.colors.textSecondary,
+                          size: 24,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -69,7 +77,9 @@ class TestResultView extends StatelessWidget {
                 ),
                 SizedBox(height: design.spacing.md),
                 AppText.body(
-                  score != null ? 'Your Score: $score' : l10n.testSubmittedBody,
+                  score != null
+                      ? l10n.testScoreResult(score!)
+                      : l10n.testSubmittedBody,
                   color: design.colors.textSecondary,
                   textAlign: TextAlign.center,
                 ),

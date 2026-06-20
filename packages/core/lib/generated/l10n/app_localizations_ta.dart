@@ -2068,4 +2068,12 @@ class AppLocalizationsTa extends AppLocalizations {
   String reviewSubjectAnalyticsError(String error) {
     return 'பாடப் பகுப்பாய்வை ஏற்ற முடியவில்லை: $error';
   }
+
+  @override
+  String testScoreResult(String score) {
+    return 'உங்கள் மதிப்பெண்: $score';
+  }
+
+  @override
+  String get reviewPerformanceOverviewTitle => 'செயல்திறன் கண்ணோட்டம்';
 }

@@ -968,5 +968,15 @@
         "type": "String"
       }
     }
-  }
+  },
+  "testScoreResult": "உங்கள் மதிப்பெண்: {score}",
+  "@testScoreResult": {
+    "description": "Label for the score obtained in the test",
+    "placeholders": {
+      "score": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewPerformanceOverviewTitle": "செயல்திறன் கண்ணோட்டம்"
 }

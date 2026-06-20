@@ -3724,6 +3724,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to load subject analytics: {error}'**
   String reviewSubjectAnalyticsError(String error);
+
+  /// Label for the score obtained in the test
+  ///
+  /// In en, this message translates to:
+  /// **'Your Score: {score}'**
+  String testScoreResult(String score);
+
+  /// No description provided for @reviewPerformanceOverviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Performance Overview'**
+  String get reviewPerformanceOverviewTitle;
 }
 
 class _AppLocalizationsDelegate

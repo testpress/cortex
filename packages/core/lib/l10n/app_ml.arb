@@ -704,5 +704,15 @@
         "type": "String"
       }
     }
-  }
+  },
+  "testScoreResult": "നിങ്ങളുടെ സ്കോർ: {score}",
+  "@testScoreResult": {
+    "description": "Label for the score obtained in the test",
+    "placeholders": {
+      "score": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewPerformanceOverviewTitle": "പ്രകടന അവലോകനം"
 }

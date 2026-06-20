@@ -32,6 +32,7 @@ class ReviewAnalyticsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     final param = ReviewAnalyticsParam(
       attempt: attempt,
@@ -71,9 +72,9 @@ class ReviewAnalyticsScreen extends ConsumerWidget {
               ),
               children: [
                 AppSemantics.header(
-                  label: 'Performance Overview',
+                  label: l10n.reviewPerformanceOverviewTitle,
                   child: AppText.xl2(
-                    'Performance Overview',
+                    l10n.reviewPerformanceOverviewTitle,
                     style: const TextStyle(fontWeight: FontWeight.w700),
                   ),
                 ),

@@ -54,10 +54,21 @@ The system SHALL present a single "Review" button in the `TestResultView` upon s
 #### Scenario: Navigating to Review Analytics from results screen
 - **WHEN** the user submits the exam and the `TestResultView` is shown
 - **THEN** the system SHALL display a single primary button labeled "Review"
+- **AND** the button SHALL be implemented using the core `AppButton.primary` primitive
 - **AND** the button SHALL be wrapped with `AppSemantics.button` for accessibility
 - **AND** the button label and accessibility text SHALL be localized using a shared translation key (e.g. `l10n.testReview`)
 - **AND** WHEN the user taps the "Review" button
 - **THEN** the system SHALL navigate the user to the landing page of the review analytics (`ReviewAnalyticsScreen`)
+- **AND** the navigation SHALL resolve the GoRouter path dynamically (e.g. by replacing '/player' with '/review-analytics' on the active route context) to ensure correct routing in both `/exams/` and `/study/` contexts
+
+#### Scenario: Close button accessibility and touch target
+- **WHEN** the `TestResultView` is shown
+- **THEN** the Close icon button SHALL be wrapped with `AppSemantics.button` using the `l10n.commonCloseButton` translation key
+- **AND** the button SHALL have a minimum touch target size of 48dp by wrapping the `LucideIcons.x` icon with padding (e.g., 12dp padding around a 24dp icon)
+
+#### Scenario: Score result localization
+- **WHEN** the exam is submitted and a score is available
+- **THEN** the score message SHALL be retrieved from localizations using a translation key containing a parameter placeholder (e.g. `l10n.testScoreResult(score)`) to avoid hardcoded English text
 
 ### Requirement: Simplified Review Analytics Landing Page
 The system SHALL display only the general performance overview metrics cards and the "Explore More Details" navigation options card on the main `ReviewAnalyticsScreen`.
@@ -67,6 +78,7 @@ The system SHALL display only the general performance overview metrics cards and
 - **THEN** the system SHALL display the `MetricsGrid` containing total score, attempted questions, percentile, accuracy, and time taken
 - **AND** the system SHALL display the `ExploreDetailsCard` containing options for further analytics and reviews
 - **AND** the system SHALL NOT render the overall performance bar chart (`OverallPerformanceCard`), subject-wise donut charts (`SectionDonutList`), or subject tabular report (`SectionTable`) directly on this page
+- **AND** the section header "Performance Overview" SHALL be retrieved from localizations using a translation key (e.g. `l10n.reviewPerformanceOverviewTitle`) instead of hardcoded text
 
 ### Requirement: Subject-wise Performance Detail Screen
 The system SHALL show a dedicated sub-screen/page containing the detailed graphs, performance bar, and tabular subject reports when the user requests "Subject-wise Performance".

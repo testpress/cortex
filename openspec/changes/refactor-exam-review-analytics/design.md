@@ -30,9 +30,10 @@ The exam player module needs a clearer user experience during the submission pha
 
 ### 4. Localization, Routing, and Clean Code Policies
 - **Decision:**
-  - Wrap `'Submitting test...'` and all labels in `ReviewSubjectPerformanceScreen` and its sub-widgets into new localization ARB keys (`testSubmitting`, `reviewSubjectPerformanceTitle`, `labelOverallPerformance`, `labelSectionPerformance`, `reviewSubjectPerformanceDesc`, `reviewSubjectAnalyticsError`).
+  - Wrap `'Submitting test...'`, all labels in `ReviewSubjectPerformanceScreen` and its sub-widgets, score text, and "Performance Overview" into localization ARB keys (`testSubmitting`, `reviewSubjectPerformanceTitle`, `labelOverallPerformance`, `labelSectionPerformance`, `reviewSubjectPerformanceDesc`, `reviewSubjectAnalyticsError`, `testScoreResult`, `reviewPerformanceOverviewTitle`).
+  - Wrap Close icon in `TestResultView` with `AppSemantics.button` using `l10n.commonCloseButton` and add `12dp` padding for a compliance-safe 48dp touch target.
   - Eliminate all hardcoded margin/padding dimensions (like `const EdgeInsets.all(16.0)`) and use the `Design` context tokens (e.g. `design.spacing.md`).
-  - Replace static navigation paths (like `/study/test/$testId/review-answers`) in `onExamReviewTap` with dynamic path resolution based on the active uri template using `GoRouterState.of(context).uri.path`.
+  - Replace static navigation paths (like `/study/test/$testId/review-answers`) in `onExamReviewTap` and `_openAnalytics` with dynamic path resolution based on the active uri template using `GoRouterState.of(context).uri.path`.
   - Remove the unused `testId` field from `ReviewSubjectPerformanceScreen` to avoid dead/unused code.
 - **Rationale:** Aligns with core app SDK guidelines, ensures localized translation compatibility, and supports seamless navigation in both `/study/` and `/exams/` contexts.
 
