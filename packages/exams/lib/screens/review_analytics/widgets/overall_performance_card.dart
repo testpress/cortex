@@ -11,6 +11,7 @@ class OverallPerformanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     return Container(
       padding: EdgeInsets.all(design.spacing.md),
       decoration: BoxDecoration(
@@ -25,7 +26,7 @@ class OverallPerformanceCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               AppText.body(
-                'Overall Performance',
+                l10n.labelOverallPerformance,
                 color: design.colors.textPrimary,
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),

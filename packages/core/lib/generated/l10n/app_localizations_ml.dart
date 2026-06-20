@@ -931,6 +931,9 @@ class AppLocalizationsMl extends AppLocalizations {
       'നിങ്ങളുടെ ടെസ്റ്റ് വിജയകരമായി സമർപ്പിച്ചു. നിങ്ങളുടെ ഉത്തരങ്ങൾ പരിശോധിക്കുക അല്ലെങ്കിൽ വിശദമായ അനലിറ്റിക്സ് കാണുക.';
 
   @override
+  String get testReview => 'പരിശോധിക്കുക';
+
+  @override
   String get testReviewAnswers => 'ഉത്തരങ്ങൾ പരിശോധിക്കുക';
 
   @override
@@ -2054,4 +2057,25 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get availableExamCoursesTitle => 'ലഭ്യമായ പരീക്ഷാ കോഴ്‌സുകൾ';
+
+  @override
+  String get testSubmitting => 'ടെസ്റ്റ് സമർപ്പിക്കുന്നു...';
+
+  @override
+  String get reviewSubjectPerformanceTitle => 'വിഷയ അടിസ്ഥാനത്തിലുള്ള പ്രകടനം';
+
+  @override
+  String get labelOverallPerformance => 'മൊത്തത്തിലുള്ള പ്രകടനം';
+
+  @override
+  String get labelSectionPerformance => 'സെക്ഷൻ പ്രകടനം';
+
+  @override
+  String get reviewSubjectPerformanceDesc =>
+      'ഓരോ വിഷയത്തിലുമുള്ള നിങ്ങളുടെ പ്രകടനത്തിന്റെ വിവരങ്ങൾ';
+
+  @override
+  String reviewSubjectAnalyticsError(String error) {
+    return 'വിഷയ അനലിറ്റിക്സ് ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു: $error';
+  }
 }

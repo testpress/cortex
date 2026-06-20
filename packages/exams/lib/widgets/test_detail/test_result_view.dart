@@ -74,27 +74,10 @@ class TestResultView extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: design.spacing.xl),
-                GestureDetector(
-                  onTap: onReview,
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(vertical: design.spacing.sm),
-                    decoration: BoxDecoration(
-                      color: design.colors.primary,
-                      border: Border.all(color: design.colors.primary),
-                      borderRadius: BorderRadius.circular(design.radius.md),
-                    ),
-                    child: Center(
-                      child: AppText.body(
-                        'Review',
-                        color: design.colors.onPrimary,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          height: 1.0,
-                        ),
-                      ),
-                    ),
-                  ),
+                AppButton.primary(
+                  label: l10n.testReview,
+                  onPressed: onReview,
+                  fullWidth: true,
                 ),
               ],
             ),

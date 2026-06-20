@@ -13,7 +13,6 @@ import 'widgets/section_table.dart';
 class ReviewSubjectPerformanceScreen extends ConsumerWidget {
   const ReviewSubjectPerformanceScreen({
     super.key,
-    required this.testId,
     required this.assessmentTitle,
     required this.questions,
     required this.attemptStates,
@@ -22,7 +21,6 @@ class ReviewSubjectPerformanceScreen extends ConsumerWidget {
     required this.onBack,
   });
 
-  final String testId;
   final String assessmentTitle;
   final List<QuestionDto> questions;
   final Map<String, AnswerDto> attemptStates;
@@ -33,6 +31,7 @@ class ReviewSubjectPerformanceScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     final param = ReviewAnalyticsParam(
       attempt: attempt,
@@ -49,7 +48,10 @@ class ReviewSubjectPerformanceScreen extends ConsumerWidget {
         color: design.colors.canvas,
         child: Column(
           children: [
-            AnalyticsHeader(title: 'Subject-wise Performance', onBack: onBack),
+            AnalyticsHeader(
+              title: l10n.reviewSubjectPerformanceTitle,
+              onBack: onBack,
+            ),
             const Expanded(child: Center(child: AppLoadingIndicator())),
           ],
         ),
@@ -61,7 +63,10 @@ class ReviewSubjectPerformanceScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AnalyticsHeader(title: 'Subject-wise Performance', onBack: onBack),
+          AnalyticsHeader(
+            title: l10n.reviewSubjectPerformanceTitle,
+            onBack: onBack,
+          ),
           Expanded(
             child: AppScroll(
               padding: EdgeInsets.fromLTRB(
@@ -72,9 +77,9 @@ class ReviewSubjectPerformanceScreen extends ConsumerWidget {
               ),
               children: [
                 AppSemantics.header(
-                  label: 'Overall Performance',
+                  label: l10n.labelOverallPerformance,
                   child: AppText.xl2(
-                    'Overall Performance',
+                    l10n.labelOverallPerformance,
                     style: const TextStyle(fontWeight: FontWeight.w700),
                   ),
                 ),
@@ -82,15 +87,15 @@ class ReviewSubjectPerformanceScreen extends ConsumerWidget {
                 OverallPerformanceCard(overview: overview),
                 SizedBox(height: design.spacing.xl),
                 AppSemantics.header(
-                  label: 'Section Performance',
+                  label: l10n.labelSectionPerformance,
                   child: AppText.xl2(
-                    'Section Performance',
+                    l10n.labelSectionPerformance,
                     style: const TextStyle(fontWeight: FontWeight.w700),
                   ),
                 ),
                 SizedBox(height: design.spacing.xs),
                 AppText.body(
-                  'Breakdown of your performance across each subject',
+                  l10n.reviewSubjectPerformanceDesc,
                   color: design.colors.textSecondary,
                 ),
                 SizedBox(height: design.spacing.md),
@@ -99,9 +104,11 @@ class ReviewSubjectPerformanceScreen extends ConsumerWidget {
                 else if (state.errorMessage != null)
                   Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: EdgeInsets.all(design.spacing.md),
                       child: AppText.body(
-                        'Failed to load subject analytics: ${state.errorMessage}',
+                        l10n.reviewSubjectAnalyticsError(
+                          state.errorMessage ?? '',
+                        ),
                         color: design.colors.error,
                       ),
                     ),

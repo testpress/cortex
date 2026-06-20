@@ -475,6 +475,7 @@
   "labelSubmitNow": "இப்போதே சமர்ப்பி",
   "testSubmittedTitle": "தேர்வு சமர்ப்பிக்கப்பட்டது!",
   "testSubmittedBody": "உங்கள் தேர்வு வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது.",
+  "testReview": "மதிப்பாய்வு",
   "testReviewAnswers": "பதில்களை மதிப்பாய்வு செய்யவும்",
   "testViewAnalytics": "பகுப்பாய்வுகளைக் காண்க",
   "assessmentCheckAnswer": "பதிலைச் சரிபார்க்கவும்",
@@ -954,5 +955,18 @@
   "resumeExamOnline": "தேர்வை ஆன்லைனில் தொடரவும்",
   "startExamOnline": "தேர்வை ஆன்லைனில் தொடங்கவும்",
   "examsTabTitle": "தேர்வுகள்",
-  "availableExamCoursesTitle": "கிடைக்கக்கூடிய தேர்வுப் படிப்புகள்"
+  "availableExamCoursesTitle": "கிடைக்கக்கூடிய தேர்வுப் படிப்புகள்",
+  "testSubmitting": "தேர்வு சமர்ப்பிக்கப்படுகிறது...",
+  "reviewSubjectPerformanceTitle": "பாட வாரியான செயல்திறன்",
+  "labelOverallPerformance": "ஒட்டுமொத்த செயல்திறன்",
+  "labelSectionPerformance": "பிரிவு செயல்திறன்",
+  "reviewSubjectPerformanceDesc": "ஒவ்வொரு பாடத்திலும் உங்கள் செயல்திறனின் விவரம்",
+  "reviewSubjectAnalyticsError": "பாடப் பகுப்பாய்வை ஏற்ற முடியவில்லை: {error}",
+  "@reviewSubjectAnalyticsError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

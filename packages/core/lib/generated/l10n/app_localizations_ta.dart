@@ -934,6 +934,9 @@ class AppLocalizationsTa extends AppLocalizations {
       'உங்கள் தேர்வு வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது.';
 
   @override
+  String get testReview => 'மதிப்பாய்வு';
+
+  @override
   String get testReviewAnswers => 'பதில்களை மதிப்பாய்வு செய்யவும்';
 
   @override
@@ -2044,4 +2047,25 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get availableExamCoursesTitle => 'கிடைக்கக்கூடிய தேர்வுப் படிப்புகள்';
+
+  @override
+  String get testSubmitting => 'தேர்வு சமர்ப்பிக்கப்படுகிறது...';
+
+  @override
+  String get reviewSubjectPerformanceTitle => 'பாட வாரியான செயல்திறன்';
+
+  @override
+  String get labelOverallPerformance => 'ஒட்டுமொத்த செயல்திறன்';
+
+  @override
+  String get labelSectionPerformance => 'பிரிவு செயல்திறன்';
+
+  @override
+  String get reviewSubjectPerformanceDesc =>
+      'ஒவ்வொரு பாடத்திலும் உங்கள் செயல்திறனின் விவரம்';
+
+  @override
+  String reviewSubjectAnalyticsError(String error) {
+    return 'பாடப் பகுப்பாய்வை ஏற்ற முடியவில்லை: $error';
+  }
 }

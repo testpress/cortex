@@ -237,7 +237,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
               const AppLoadingIndicator(),
               SizedBox(height: design.spacing.md),
               AppText.body(
-                'Submitting test...',
+                l10n.testSubmitting,
                 color: design.colors.textSecondary,
               ),
             ],
@@ -765,8 +765,10 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
   }
 
   void _openAnalytics(ExamAttemptState state) {
+    final currentPath = GoRouterState.of(context).uri.path;
+    final reviewPath = currentPath.replaceFirst('/player', '/review-analytics');
     context.push(
-      '/exams/test/${state.exam!.id}/review-analytics',
+      reviewPath,
       extra: ReviewRoutePayload(
         assessmentTitle: state.exam!.title,
         questions: state.questions,

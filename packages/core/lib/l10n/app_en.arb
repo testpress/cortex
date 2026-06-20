@@ -476,6 +476,7 @@
   "labelSubmitNow": "Submit Now",
   "testSubmittedTitle": "Test Submitted!",
   "testSubmittedBody": "Your test has been successfully submitted. Review your answers or view detailed analytics.",
+  "testReview": "Review",
   "testReviewAnswers": "Review Answers",
   "testViewAnalytics": "View Analytics",
   "assessmentCheckAnswer": "Check Answer",
@@ -965,5 +966,18 @@
     }
   },
   "examsTabTitle": "Exams",
-  "availableExamCoursesTitle": "Available Exam Courses"
+  "availableExamCoursesTitle": "Available Exam Courses",
+  "testSubmitting": "Submitting test...",
+  "reviewSubjectPerformanceTitle": "Subject-wise Performance",
+  "labelOverallPerformance": "Overall Performance",
+  "labelSectionPerformance": "Section Performance",
+  "reviewSubjectPerformanceDesc": "Breakdown of your performance across each subject",
+  "reviewSubjectAnalyticsError": "Failed to load subject analytics: {error}",
+  "@reviewSubjectAnalyticsError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

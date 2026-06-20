@@ -198,7 +198,6 @@ class StudyRoutes {
                     final id = state.pathParameters['id']!;
                     final payload = state.extra as ReviewRoutePayload?;
                     return ReviewSubjectPerformanceScreen(
-                      testId: id,
                       assessmentTitle:
                           payload?.assessmentTitle ?? 'Assessment $id',
                       questions: payload?.questions ?? const <QuestionDto>[],

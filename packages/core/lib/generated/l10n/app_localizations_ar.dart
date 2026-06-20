@@ -921,6 +921,9 @@ class AppLocalizationsAr extends AppLocalizations {
       'لقد تم تسليم اختبارك بنجاح. راجع إجاباتك أو اعرض التحليلات التفصيلية.';
 
   @override
+  String get testReview => 'مراجعة';
+
+  @override
   String get testReviewAnswers => 'مراجعة الإجابات';
 
   @override
@@ -2019,4 +2022,24 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get availableExamCoursesTitle => 'دورات الامتحانات المتاحة';
+
+  @override
+  String get testSubmitting => 'جارٍ تسليم الاختبار...';
+
+  @override
+  String get reviewSubjectPerformanceTitle => 'الأداء حسب المادة';
+
+  @override
+  String get labelOverallPerformance => 'الأداء العام';
+
+  @override
+  String get labelSectionPerformance => 'أداء القسم';
+
+  @override
+  String get reviewSubjectPerformanceDesc => 'تفصيل أدائك في كل مادة';
+
+  @override
+  String reviewSubjectAnalyticsError(String error) {
+    return 'فشل تحميل تحليلات المادة: $error';
+  }
 }

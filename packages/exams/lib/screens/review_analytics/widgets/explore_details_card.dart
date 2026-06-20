@@ -14,6 +14,7 @@ class ExploreDetailsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     return Container(
       padding: EdgeInsets.all(design.spacing.md),
@@ -37,7 +38,7 @@ class ExploreDetailsCard extends StatelessWidget {
           Column(
             children: [
               _ExploreTile(
-                title: 'Subject-wise Performance',
+                title: l10n.reviewSubjectPerformanceTitle,
                 description:
                     'Analyze your performance across different subjects',
                 onTap: onSubjectPerformanceTap,

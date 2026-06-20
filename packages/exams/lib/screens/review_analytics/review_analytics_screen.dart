@@ -82,8 +82,11 @@ class ReviewAnalyticsScreen extends ConsumerWidget {
                 SizedBox(height: design.spacing.xl),
                 ExploreDetailsCard(
                   onExamReviewTap: () {
+                    final basePath = GoRouterState.of(
+                      context,
+                    ).uri.path.replaceFirst('/review-analytics', '');
                     context.push(
-                      '/study/test/$testId/review-answers',
+                      '$basePath/review-answers',
                       extra: ReviewRoutePayload(
                         assessmentTitle: assessmentTitle,
                         questions: questions,
