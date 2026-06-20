@@ -13,11 +13,6 @@ The system SHALL conditionally show or hide the user's name across dashboard sur
 - **AND** `InstituteBanner` is rendered
 - **THEN** the user's name and enrollment ID MUST be visible in the top-right of the banner
 
-#### Scenario: Profile tab enabled — greeting shows no name
-- **WHEN** `AppConfig.showProfileTab` is `true`
-- **AND** `HomeGreetingSection` is rendered (standard layout, no banner)
-- **THEN** the greeting MUST show only "Good Morning" (or equivalent time-based greeting) WITHOUT the user's name
-
 #### Scenario: Profile tab disabled — greeting shows no name
 - **WHEN** `AppConfig.showProfileTab` is `false`
 - **AND** `HomeGreetingSection` is rendered (standard layout, no banner)
