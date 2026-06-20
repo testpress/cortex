@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' show Icons;
 import 'package:flutter/widgets.dart';
 import '../../core.dart';
+import '../data/config/app_config.dart';
 
 /// A branding banner displayed at the top of the app, typically showing
 /// the institute logo and user identification details.
@@ -24,7 +25,7 @@ class InstituteBanner extends StatelessWidget {
     final isLocal = logoUrl.startsWith('assets/');
 
     return Container(
-      color: design.isDark ? design.colors.surface : design.colors.canvas,
+      color: design.isDark ? design.colors.surface : design.colors.card,
       child: SafeArea(
         bottom: false,
         child: Container(
@@ -72,23 +73,26 @@ class InstituteBanner extends StatelessWidget {
                       ),
 
                     // User Info
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        AppText.subtitle(
-                          userName,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: design.colors.textPrimary,
+                    if (!AppConfig.showProfileTab)
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          AppText.subtitle(
+                            userName,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: design.colors.textPrimary,
+                            ),
                           ),
-                        ),
-                        AppText.caption(
-                          enrollmentId,
-                          style: TextStyle(color: design.colors.textSecondary),
-                        ),
-                      ],
-                    ),
+                          AppText.caption(
+                            enrollmentId,
+                            style: TextStyle(
+                              color: design.colors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               ),
