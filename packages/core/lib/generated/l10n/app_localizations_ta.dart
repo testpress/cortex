@@ -2080,5 +2080,7 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get reviewExamReviewDesc =>
       'பதில்கள் மற்றும் விளக்கங்களுடன் ஒவ்வொரு கேள்வியையும் மதிப்பாய்வு செய்யவும்';
+
+  @override
   String get defaultStudentName => 'மாணவர்';
 }
