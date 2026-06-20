@@ -2049,6 +2049,7 @@ class AppLocalizationsMl extends AppLocalizations {
   String get availableExamCoursesTitle => 'ലഭ്യമായ പരീക്ഷാ കോഴ്‌സുകൾ';
 
   @override
+<<<<<<< HEAD
   String get testSubmitting => 'ടെസ്റ്റ് സമർപ്പിക്കുന്നു...';
 
   @override
@@ -2090,4 +2091,7 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get reviewExamReviewDesc =>
       'ഉത്തരങ്ങളും വിശദീകരണങ്ങളും സഹിതം ഓരോ ചോദ്യവും അവലോകനം ചെയ്യുക';
+=======
+  String get defaultStudentName => 'വിദ്യാർത്ഥി';
+>>>>>>> 4ed538d (feat: localize default student greeting name in dashboard widget)
 }
