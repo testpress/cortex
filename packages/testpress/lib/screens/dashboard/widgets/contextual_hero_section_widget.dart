@@ -36,7 +36,9 @@ class ContextualHeroSectionWidget extends ConsumerWidget {
               metadata: liveOrUpcoming.faculty,
               timeInfo: liveOrUpcoming.time,
             ),
-            onActionClick: () {},
+            onActionClick: () {
+              // TODO: Implement hero action navigation (Deferred to follow-up feature ticket)
+            },
           ),
         );
       },
