@@ -8,13 +8,7 @@ class DashboardHeader extends StatelessWidget {
     this.logoUrl,
     this.isLandscape = false,
     this.titleTextStyle,
-    this.showTitle = true,
     this.backgroundColor,
-    this.showBottomBorder = true,
-    this.greeting,
-    this.greetingSubtitle,
-    this.useSafeArea = true,
-    this.customTopPadding,
     this.onMenuPressed,
   });
 
@@ -27,13 +21,7 @@ class DashboardHeader extends StatelessWidget {
 
   final bool isLandscape;
   final TextStyle? titleTextStyle;
-  final bool showTitle;
   final Color? backgroundColor;
-  final bool showBottomBorder;
-  final String? greeting;
-  final String? greetingSubtitle;
-  final bool useSafeArea;
-  final double? customTopPadding;
   final VoidCallback? onMenuPressed;
 
   @override
@@ -43,9 +31,7 @@ class DashboardHeader extends StatelessWidget {
     final padding = MediaQuery.paddingOf(context);
     final effectiveBgColor = backgroundColor ?? design.colors.card;
 
-    final topPadding =
-        customTopPadding ??
-        (useSafeArea ? padding.top + design.spacing.md : design.spacing.md);
+    final topPadding = padding.top + design.spacing.md;
     final bottomPadding = design.spacing.md;
 
     final hasLogo = logoUrl != null && logoUrl!.isNotEmpty;
@@ -72,19 +58,11 @@ class DashboardHeader extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (showTitle)
-            AppText.headline(
-              title,
-              color: design.colors.textPrimary,
-              style: titleTextStyle,
-            ),
-          if (greeting != null)
-            AppText.headline(greeting!, color: design.colors.textPrimary),
-          if (greetingSubtitle != null)
-            AppText.bodySmall(
-              greetingSubtitle!,
-              color: design.colors.textSecondary,
-            ),
+          AppText.headline(
+            title,
+            color: design.colors.textPrimary,
+            style: titleTextStyle,
+          ),
         ],
       );
     }
@@ -98,9 +76,9 @@ class DashboardHeader extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: effectiveBgColor,
-        border: showBottomBorder
-            ? Border(bottom: BorderSide(color: design.colors.border, width: 1))
-            : null,
+        border: Border(
+          bottom: BorderSide(color: design.colors.border, width: 1),
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
