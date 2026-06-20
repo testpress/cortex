@@ -2,13 +2,12 @@
 
 - [x] 1.1 Add optional `showName` boolean parameter to `HomeGreetingSection` widget (default: `true` for backward compatibility)
 - [x] 1.2 Conditionally render the user's name in the greeting text based on `showName`
-- [x] 1.3 Verify greeting shows "Good Morning" only (no name) when `showName` is `false`
+- [x] 1.3 Verify greeting shows the name when `showName` is `true` (i.e., profile tab enabled)
 
-## 2. InstituteBanner — Conditional User Info
+## 2. Deprecate InstituteBanner
 
-- [x] 2.1 Wrap the user name + enrollment ID block in `InstituteBanner` with `if (!AppConfig.showProfileTab)`
-- [x] 2.2 Verify banner shows no user info when `showProfileTab` is `true`
-- [x] 2.3 Verify banner shows user name + ID when `showProfileTab` is `false`
+- [x] 2.1 Remove `InstituteBanner` entirely from `PaidActiveHomeScreen`
+- [x] 2.2 Delegate logo rendering and branding entirely to `DashboardHeader`
 
 ## 3. PaidActiveHomeScreen — Dynamic Header Title
 
@@ -17,7 +16,7 @@
 
 ## 4. PaidActiveHomeScreen — Pass showName to Greeting
 
-- [x] 4.1 Pass `showName: !dto.AppConfig.showProfileTab` to `HomeGreetingSection` in the standard layout (no banner)
+- [x] 4.1 Pass `showName: dto.AppConfig.showProfileTab` to `GreetingSectionWidget`
 
 ## 5. PaidActiveHomeScreen — Unified Widget List
 

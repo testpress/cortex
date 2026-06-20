@@ -22,18 +22,14 @@ The `PaidActiveHomeScreen` currently uses `isBannerPresent` (derived from whethe
 
 ## Decisions
 
-### D1: Keep `isBannerPresent` only for the header slot, not for the body layout
-`isBannerPresent` will continue to decide whether `InstituteBanner` or `DashboardHeader` appears at the top. It will no longer control the scroll body widget list at all.
+### D1: Deprecate `InstituteBanner` in favor of `DashboardHeader`
+The `InstituteBanner` widget is fully removed from the dashboard layout. The `DashboardHeader` has been updated to handle both cases (with and without a logo) natively. This drastically simplifies the top-level layout and eliminates the `isBannerPresent` fork completely.
 
-*Alternative considered*: Remove `isBannerPresent` entirely and use `AppConfig.instituteLogoUrl` inline — rejected because it would spread logo URL logic across multiple widgets.
+### D2: Show Study Momentum for all clients (Temporarily Commented Out)
+Remove the `!isBrilliantPala` check. `StudyMomentum` should be available for all clients. However, because the backend does not fully support it yet, it is intentionally commented out in the unified widget list with an explanatory comment. Once the backend support is available, it can simply be uncommented.
 
-### D2: Show Study Momentum for all clients
-Remove the `!isBrilliantPala` check. `StudyMomentum` widget already handles empty/error states by returning `SizedBox.shrink()`, so showing it for all clients is safe. The data provider will simply return no data for clients that don't have the feature enabled server-side.
-
-### D3: Pass `showName` bool to `HomeGreetingSection` and gate username in `InstituteBanner`
-Rather than making the widgets read `AppConfig` directly (which increases coupling), the parent screen passes `showName: !AppConfig.showProfileTab` down. This keeps the widgets reusable and testable.
-
-*Alternative considered*: Have each widget read `AppConfig.showProfileTab` internally — rejected to keep widget API clean and testable.
+### D3: Pass `showName` bool to `HomeGreetingSection`
+Rather than making the widgets read `AppConfig` directly, the parent screen passes `showName: AppConfig.showProfileTab` down. This ensures the name is intentionally shown in the greeting when the profile tab is enabled.
 
 ### D4: Institute name fallback for header title
 `DashboardHeader` title = `InstituteSettings.current?.name` if non-empty, else fall back to `L10n.of(context).homeHeaderTitle`. This is computed in `PaidActiveHomeScreen.build()` before passing to the header widget.
