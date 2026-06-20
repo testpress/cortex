@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart' as dto;
 import 'package:courses/courses.dart';
+import 'package:profile/profile.dart';
 
 class DashboardHeaderWidget extends ConsumerWidget {
   final bool isLandscape;
@@ -25,6 +26,32 @@ class DashboardHeaderWidget extends ConsumerWidget {
       logoUrl: logoUrl.isNotEmpty ? logoUrl : null,
       isLandscape: isLandscape,
       backgroundColor: design.colors.card,
+      trailing: !dto.AppConfig.showProfileTab
+          ? Consumer(
+              builder: (context, ref, _) {
+                final user = ref.watch(userProvider).valueOrNull;
+                final name = user?.name ?? L10n.of(context).defaultStudentName;
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    AppText.subtitle(
+                      name,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: design.colors.textPrimary,
+                      ),
+                    ),
+                    if (user?.username != null && user!.username!.isNotEmpty)
+                      AppText.caption(
+                        user.username!,
+                        style: TextStyle(color: design.colors.textSecondary),
+                      ),
+                  ],
+                );
+              },
+            )
+          : null,
       onMenuPressed: () {
         ref.read(isHomeDrawerOpenProvider.notifier).state = true;
       },

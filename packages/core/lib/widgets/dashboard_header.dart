@@ -10,6 +10,7 @@ class DashboardHeader extends StatelessWidget {
     this.titleTextStyle,
     this.backgroundColor,
     this.onMenuPressed,
+    this.trailing,
   });
 
   final String title;
@@ -23,6 +24,7 @@ class DashboardHeader extends StatelessWidget {
   final TextStyle? titleTextStyle;
   final Color? backgroundColor;
   final VoidCallback? onMenuPressed;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -99,6 +101,10 @@ class DashboardHeader extends StatelessWidget {
             SizedBox(width: design.spacing.sm),
           ],
           Expanded(child: titleContent),
+          if (trailing != null) ...[
+            SizedBox(width: design.spacing.md),
+            trailing!,
+          ],
         ],
       ),
     );
