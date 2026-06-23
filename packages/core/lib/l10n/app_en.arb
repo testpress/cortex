@@ -269,6 +269,15 @@
   "errorGenericTitle": "Something went wrong",
   "errorGenericMessage": "Failed to load data. Please check your connection and try again.",
   "errorLessonLoad": "Failed to load lesson. Please check your connection.",
+  "errorLoadingLesson": "Error loading lesson: {error}",
+  "@errorLoadingLesson": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "noQuestionsFound": "No questions found.",
   "lessonNotFound": "Lesson not found",
   "labelLessonsPlural": "lessons",
   "labelContentsPlural": "contents",

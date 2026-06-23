@@ -133,8 +133,8 @@ class ExamDetail extends _$ExamDetail {
 /// Fetches attempt history for an exam.
 @riverpod
 Future<List<AttemptDto>> examAttempts(Ref ref, String attemptsUrl) async {
-  final dataSource = ref.watch(dataSourceProvider);
-  return dataSource.getAttempts(attemptsUrl);
+  final repository = ref.watch(examRepositoryProvider);
+  return repository.getAttempts(attemptsUrl);
 }
 
 /// Notifier that manages the active exam attempt lifecycle.

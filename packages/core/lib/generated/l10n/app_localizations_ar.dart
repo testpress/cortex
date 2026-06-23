@@ -577,10 +577,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorGenericMessage =>
-      'فشل تحميل البيانات. يرجى التحقق من الاتصال والمحاولة مرة أخرى.';
+      'فشل تحميل البيانات. يرجى التحقق من اتصالك والمحاولة مرة أخرى.';
 
   @override
   String get errorLessonLoad => 'فشل تحميل الدرس. يرجى التحقق من اتصالك.';
+
+  @override
+  String errorLoadingLesson(String error) {
+    return 'خطأ في تحميل الدرس: $error';
+  }
+
+  @override
+  String get noQuestionsFound => 'لم يتم العثور على أي أسئلة.';
 
   @override
   String get lessonNotFound => 'لم يتم العثور على الدرس';

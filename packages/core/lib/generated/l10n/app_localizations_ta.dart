@@ -595,6 +595,14 @@ class AppLocalizationsTa extends AppLocalizations {
       'பாடத்தை ஏற்ற முடியவில்லை. உங்கள் இணைப்பைச் சரிபார்க்கவும்.';
 
   @override
+  String errorLoadingLesson(String error) {
+    return 'பாடத்தை ஏற்றுவதில் பிழை: $error';
+  }
+
+  @override
+  String get noQuestionsFound => 'கேள்விகள் எதுவும் காணப்படவில்லை.';
+
+  @override
   String get lessonNotFound => 'பாடம் காணப்படவில்லை';
 
   @override

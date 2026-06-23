@@ -1158,6 +1158,18 @@ abstract class AppLocalizations {
   /// **'Failed to load lesson. Please check your connection.'**
   String get errorLessonLoad;
 
+  /// No description provided for @errorLoadingLesson.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading lesson: {error}'**
+  String errorLoadingLesson(String error);
+
+  /// No description provided for @noQuestionsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No questions found.'**
+  String get noQuestionsFound;
+
   /// No description provided for @lessonNotFound.
   ///
   /// In en, this message translates to:

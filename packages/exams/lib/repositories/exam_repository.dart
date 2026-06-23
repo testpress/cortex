@@ -102,6 +102,10 @@ class ExamRepository {
     return _dataSource.getExam(slug);
   }
 
+  Future<List<AttemptDto>> getAttempts(String attemptsUrl) async {
+    return _dataSource.getAttempts(attemptsUrl);
+  }
+
   Stream<ExamAttemptState> get stateStream => _stateController.stream;
   Stream<ExamAttemptState> watchState() async* {
     yield _currentState;

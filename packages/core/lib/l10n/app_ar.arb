@@ -185,6 +185,8 @@
   "errorGenericTitle": "حدث خطأ ما",
   "errorGenericMessage": "فشل تحميل البيانات. يرجى التحقق من اتصالك والمحاولة مرة أخرى.",
   "errorLessonLoad": "فشل تحميل الدرس. يرجى التحقق من اتصالك.",
+  "errorLoadingLesson": "خطأ في تحميل الدرس: {error}",
+  "noQuestionsFound": "لم يتم العثور على أي أسئلة.",
   "lessonNotFound": "لم يتم العثور على الدرس",
   "labelLessonsPlural": "دروس",
   "labelContentsPlural": "محتويات",

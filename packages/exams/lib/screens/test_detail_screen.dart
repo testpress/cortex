@@ -224,7 +224,9 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
         ),
         error: (err, stack) => Container(
           color: design.colors.surface,
-          child: Center(child: AppText.body('Error loading lesson: $err')),
+          child: Center(
+            child: AppText.body(l10n.errorLoadingLesson(err.toString())),
+          ),
         ),
       );
     }
@@ -340,7 +342,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     if (allQuestions.isEmpty) {
       return Container(
         color: design.colors.surface,
-        child: Center(child: AppText.body('No questions found.')),
+        child: Center(child: AppText.body(l10n.noQuestionsFound)),
       );
     }
 

@@ -587,6 +587,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Failed to load lesson. Please check your connection.';
 
   @override
+  String errorLoadingLesson(String error) {
+    return 'Error loading lesson: $error';
+  }
+
+  @override
+  String get noQuestionsFound => 'No questions found.';
+
+  @override
   String get lessonNotFound => 'Lesson not found';
 
   @override

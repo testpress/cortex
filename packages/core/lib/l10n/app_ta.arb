@@ -268,6 +268,8 @@
   "errorGenericTitle": "ஏதோ தவறு நடந்துவிட்டது",
   "errorGenericMessage": "தரவை ஏற்ற முடியவில்லை. உங்கள் இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.",
   "errorLessonLoad": "பாடத்தை ஏற்ற முடியவில்லை. உங்கள் இணைப்பைச் சரிபார்க்கவும்.",
+  "errorLoadingLesson": "பாடத்தை ஏற்றுவதில் பிழை: {error}",
+  "noQuestionsFound": "கேள்விகள் எதுவும் காணப்படவில்லை.",
   "lessonNotFound": "பாடம் காணப்படவில்லை",
   "labelLessonsPlural": "பாடங்கள்",
   "labelContentsPlural": "உள்ளடக்கங்கள்",

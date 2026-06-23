@@ -594,6 +594,14 @@ class AppLocalizationsMl extends AppLocalizations {
       'പാഠം ലോഡുചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു. നിങ്ങളുടെ കണക്ഷൻ പരിശോധിക്കുക.';
 
   @override
+  String errorLoadingLesson(String error) {
+    return 'പാഠം ലോഡുചെയ്യുന്നതിൽ പിശക്: $error';
+  }
+
+  @override
+  String get noQuestionsFound => 'ചോദ്യങ്ങളൊന്നും കണ്ടെത്തിയില്ല.';
+
+  @override
   String get lessonNotFound => 'പാഠം കണ്ടെത്താനായില്ല';
 
   @override
