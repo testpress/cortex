@@ -101,29 +101,31 @@ class ChapterContentItem extends StatelessWidget {
                           ),
                         ),
                       ),
-                      if (lesson.progressStatus ==
-                              LessonProgressStatus.completed &&
+                      if (lesson.hasAttempts &&
                           (lesson.type == LessonType.test ||
                               lesson.type == LessonType.assessment))
                         Positioned(
                           top: -6,
                           right: -6,
-                          child: Container(
-                            width: design.iconSize.md,
-                            height: design.iconSize.md,
-                            decoration: BoxDecoration(
-                              color: design.colors.accent4,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: design.colors.card,
-                                width: 1.5,
+                          child: AppSemantics.container(
+                            label: 'Exam completed',
+                            child: Container(
+                              width: design.iconSize.md,
+                              height: design.iconSize.md,
+                              decoration: BoxDecoration(
+                                color: design.colors.accent4,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: design.colors.card,
+                                  width: 1.5,
+                                ),
                               ),
-                            ),
-                            child: Center(
-                              child: Icon(
-                                LucideIcons.check,
-                                size: 11,
-                                color: design.colors.onPrimary,
+                              child: Center(
+                                child: Icon(
+                                  LucideIcons.check,
+                                  size: 11,
+                                  color: design.colors.onSuccess,
+                                ),
                               ),
                             ),
                           ),

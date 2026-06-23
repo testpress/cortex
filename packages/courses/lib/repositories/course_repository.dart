@@ -800,6 +800,7 @@ class CourseRepository {
   ) {
     final runningIds = remote.running.lessons.map((l) => l.id).toSet();
     final upcomingIds = remote.upcoming.lessons.map((l) => l.id).toSet();
+    final attemptsById = {for (final l in remote.attempts.lessons) l.id: l};
 
     return lessons.map((dto) {
       final isVideoOrStream =
@@ -809,10 +810,8 @@ class CourseRepository {
       LessonProgressStatus progressStatus = dto.progressStatus;
 
       if (!isVideoOrStream) {
-        final matchedAttempts =
-            remote.attempts.lessons.where((l) => l.id == dto.id);
-        if (matchedAttempts.isNotEmpty) {
-          final remoteLesson = matchedAttempts.first;
+        final remoteLesson = attemptsById[dto.id];
+        if (remoteLesson != null) {
           hasAttempts = true;
           progressStatus = remoteLesson.progressStatus;
         } else {
