@@ -1,12 +1,13 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
 import '../providers/exam_providers.dart';
 import '../repositories/exam_repository.dart';
 import '../widgets/exam_mode_option_card.dart';
+import '../widgets/exam_prescreen_metadata.dart';
+import '../widgets/exam_prescreen_action_button.dart';
 
 class ExamPrescreen extends ConsumerStatefulWidget {
   final String testId;
@@ -27,15 +28,7 @@ class ExamPrescreen extends ConsumerStatefulWidget {
 }
 
 class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
-  bool? _selectedIsQuizMode = false;
-  bool _isOpen = true;
-
-  void _handleClose() {
-    if (!_isOpen) return;
-    setState(() {
-      _isOpen = false;
-    });
-  }
+  bool _isModeSheetOpen = false;
 
   @override
   void initState() {
@@ -95,28 +88,62 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
     final bool isMetadataLoading = exam == null && !hasError;
 
     // Parse duration format from e.g. "03:00:00" to "180 mins"
-    String durationText = 'N/A';
+    String durationVal = isMetadataLoading ? '120' : '--';
+    String? durationSuffix = isMetadataLoading ? 'mins' : null;
     if (exam?.duration != null || lesson?.duration != null) {
       final rawDuration = exam?.duration ?? lesson?.duration ?? '';
       final parts = rawDuration.split(':');
       if (parts.length == 3) {
         final hours = int.tryParse(parts[0]) ?? 0;
-        final minutes = int.tryParse(parts[1]) ?? 0;
-        final totalMinutes = (hours * 60) + minutes;
-        durationText = '$totalMinutes mins';
+        final mins = int.tryParse(parts[1]) ?? 0;
+        final totalMinutes = (hours * 60) + mins;
+        durationVal = '$totalMinutes';
+        durationSuffix = 'mins';
       }
     }
     // Calculate total marks dynamically from real exam metadata
-    String totalMarksText = 'Marks: --';
+    String totalMarksVal = isMetadataLoading ? '100' : '--';
     if (exam != null) {
       final double mark = double.tryParse(exam.markPerQuestion ?? '') ?? 0.0;
       if (mark > 0 && exam.questionCount > 0) {
         final total = exam.questionCount * mark;
-        totalMarksText = 'Marks: ${total % 1 == 0 ? total.toInt() : total}';
+        totalMarksVal = '${total % 1 == 0 ? total.toInt() : total}';
       } else if (exam.questionCount > 0) {
         // Fallback or general representation if markPerQuestion isn't set
-        totalMarksText = 'Marks: ${exam.questionCount}';
+        totalMarksVal = '${exam.questionCount}';
       }
+    }
+
+    String correctMarks = isMetadataLoading ? '+1.0 Marks' : '--';
+    String wrongMarks = isMetadataLoading ? '-0.5 Marks' : '--';
+    if (exam != null) {
+      final double mark = double.tryParse(exam.markPerQuestion ?? '') ?? 0.0;
+      correctMarks = '+${mark % 1 == 0 ? mark.toInt() : mark} Marks';
+
+      final double neg = double.tryParse(exam.negativeMarks ?? '') ?? 0.0;
+      final String negVal = neg % 1 == 0
+          ? neg.toInt().abs().toString()
+          : neg.abs().toString();
+      wrongMarks = neg == 0.0
+          ? '0 Marks'
+          : '-$negVal Mark${neg == 1.0 ? '' : 's'}';
+    }
+
+    String startDateStr = isMetadataLoading ? 'Oct 14, 2024, 10:00 AM' : '';
+    String endDateStr = isMetadataLoading ? 'Oct 14, 2024, 12:00 PM' : '';
+    if (exam?.startDate != null || exam?.endDate != null) {
+      try {
+        startDateStr = exam?.startDate != null
+            ? DateFormatter.formatDateTime(
+                DateTime.parse(exam!.startDate!).toLocal(),
+              )
+            : 'N/A';
+        endDateStr = exam?.endDate != null
+            ? DateFormatter.formatDateTime(
+                DateTime.parse(exam!.endDate!).toLocal(),
+              )
+            : 'N/A';
+      } catch (_) {}
     }
 
     final bool isResuming =
@@ -130,230 +157,153 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
         !isResuming;
 
     final bool isButtonEnabled =
-        !isMetadataLoading &&
-        (!showModeSelection || _selectedIsQuizMode != null);
+        !isMetadataLoading && (!showModeSelection || _isModeSheetOpen == false);
 
-    return AppBottomSheet(
-      isOpen: _isOpen,
-      onClose: _handleClose,
-      onAnimationComplete: widget.onClose,
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          design.spacing.sm,
-          0,
-          design.spacing.sm,
-          design.spacing.md,
-        ),
-        child: SafeArea(
-          top: false,
-          child: Container(
-            padding: EdgeInsets.only(bottom: design.spacing.lg),
-            decoration: BoxDecoration(
-              color: design.colors.card,
-              borderRadius: BorderRadius.all(
-                Radius.circular(design.radius.xxl),
+    return Stack(
+      children: [
+        LessonDetailShell(
+          title:
+              lesson?.title ?? exam?.title ?? L10n.of(context).examDetailsTitle,
+          onBack: widget.onClose,
+          stickyFooter: true,
+          backgroundColor: design.colors.card,
+          bottomBar: isMetadataLoading
+              ? null
+              : ((exam?.allowRetake ?? true) ||
+                    !((lesson?.hasAttempts ?? false) &&
+                        (exam?.pausedAttemptsCount ?? 0) == 0))
+              ? Container(
+                  color: design.colors.card,
+                  padding: EdgeInsets.fromLTRB(
+                    design.spacing.md,
+                    design.spacing.md,
+                    design.spacing.md,
+                    design.spacing.lg,
+                  ),
+                  child: ExamPrescreenActionButton(
+                    isButtonEnabled: isButtonEnabled,
+                    isResuming: isResuming,
+                    onTap: isButtonEnabled
+                        ? () async {
+                            if (showModeSelection) {
+                              setState(() {
+                                _isModeSheetOpen = true;
+                              });
+                            } else {
+                              ref.read(examAttemptProvider.notifier).reset();
+                              await widget.onStartAttempt(false);
+                            }
+                          }
+                        : null,
+                  ),
+                )
+              : null,
+          child: SafeArea(
+            top: false,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.fromLTRB(
+                design.spacing.lg,
+                design.spacing.md,
+                design.spacing.lg,
+                design.spacing.xxl,
               ),
-              boxShadow: design.shadows.floating,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(height: design.spacing.md),
-                // Handle Bar
-                Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    width: design.spacing.xl * 1.5,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: design.colors.border,
-                      borderRadius: BorderRadius.circular(design.radius.full),
-                    ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ExamPrescreenMetadata(
+                    isMetadataLoading: isMetadataLoading,
+                    title: null,
+                    startDateStr: startDateStr,
+                    endDateStr: endDateStr,
+                    questionCountStr: '${exam?.questionCount ?? '--'}',
+                    durationVal: durationVal,
+                    durationSuffix: durationSuffix,
+                    totalMarksVal: totalMarksVal,
+                    correctMarks: correctMarks,
+                    wrongMarks: wrongMarks,
                   ),
-                ),
-
-                Padding(
-                  padding: EdgeInsets.all(design.spacing.lg),
-                  child: SkeletonizerConfig(
-                    data: SkeletonizerConfigData(
-                      effect: ShimmerEffect(
-                        baseColor: design.colors.skeleton,
-                        highlightColor: design.colors.onSkeleton,
-                        duration: MotionPreferences.duration(
-                          context,
-                          const Duration(milliseconds: 800),
-                        ),
-                      ),
-                    ),
-                    child: Skeletonizer(
-                      enabled: isMetadataLoading,
-                      child: Column(
-                        children: [
-                          // Metadata Info (Clean text-only header layout)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              AppText.headline(
-                                lesson?.title ??
-                                    exam?.title ??
-                                    'Question Paper',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 19,
-                                  color: design.colors.textPrimary,
-                                ),
-                              ),
-                              SizedBox(height: design.spacing.sm),
-                              Row(
-                                children: [
-                                  if (isMetadataLoading ||
-                                      exam?.questionCount != null) ...[
-                                    // Questions Count
-                                    Icon(
-                                      LucideIcons.fileText,
-                                      size: 16,
-                                      color: design.colors.textSecondary,
-                                    ),
-                                    SizedBox(width: design.spacing.xs),
-                                    AppText.caption(
-                                      '${exam?.questionCount ?? '--'} Questions',
-                                      color: design.colors.textSecondary,
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                    SizedBox(width: design.spacing.lg),
-                                  ],
-
-                                  if (isMetadataLoading ||
-                                      durationText != 'N/A') ...[
-                                    // Duration
-                                    Icon(
-                                      LucideIcons.clock,
-                                      size: 16,
-                                      color: design.colors.textSecondary,
-                                    ),
-                                    SizedBox(width: design.spacing.xs),
-                                    AppText.caption(
-                                      durationText,
-                                      color: design.colors.textSecondary,
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                    SizedBox(width: design.spacing.lg),
-                                  ],
-
-                                  if (isMetadataLoading ||
-                                      totalMarksText != 'Marks: --') ...[
-                                    // Marks
-                                    AppText.caption(
-                                      totalMarksText,
-                                      color: design.colors.textSecondary,
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: design.spacing.lg),
-
-                          // Inline Mode Selection Options
-                          if (showModeSelection) ...[
-                            ExamModeOptionCard(
-                              title: l10n.examModeRegularTitle,
-                              description: l10n.examModeRegularDesc,
-                              icon: LucideIcons.fileText,
-                              isSelected: _selectedIsQuizMode == false,
-                              onTap: () {
-                                setState(() {
-                                  _selectedIsQuizMode = false;
-                                });
-                              },
-                            ),
-                            SizedBox(height: design.spacing.md),
-                            ExamModeOptionCard(
-                              title: l10n.examModeQuizTitle,
-                              description: l10n.examModeQuizDesc,
-                              icon: LucideIcons.checkCircle,
-                              isSelected: _selectedIsQuizMode == true,
-                              onTap: () {
-                                setState(() {
-                                  _selectedIsQuizMode = true;
-                                });
-                              },
-                            ),
-                            SizedBox(height: design.spacing.lg),
-                          ],
-
-                          // Start Exam Online Option Button
-                          if ((exam?.allowRetake ?? true) ||
-                              !((lesson?.hasAttempts ?? false) &&
-                                  (exam?.pausedAttemptsCount ?? 0) == 0))
-                            AppSemantics.button(
-                              label: isResuming
-                                  ? 'Resume Exam Online'
-                                  : 'Start Exam Online',
-                              onTap: isButtonEnabled
-                                  ? () async {
-                                      ref
-                                          .read(examAttemptProvider.notifier)
-                                          .reset();
-                                      final isQuizMode =
-                                          _selectedIsQuizMode ?? false;
-                                      await widget.onStartAttempt(isQuizMode);
-                                    }
-                                  : null,
-                              enabled: isButtonEnabled,
-                              child: GestureDetector(
-                                onTap: isButtonEnabled
-                                    ? () async {
-                                        ref
-                                            .read(examAttemptProvider.notifier)
-                                            .reset();
-                                        final isQuizMode =
-                                            _selectedIsQuizMode ?? false;
-                                        await widget.onStartAttempt(isQuizMode);
-                                      }
-                                    : null,
-                                child: Container(
-                                  width: double.infinity,
-                                  padding: EdgeInsets.all(design.spacing.md),
-                                  decoration: BoxDecoration(
-                                    color: isButtonEnabled
-                                        ? design.colors.primary
-                                        : design.colors.border.withValues(
-                                            alpha: 0.5,
-                                          ),
-                                    borderRadius: BorderRadius.circular(
-                                      design.radius.lg,
-                                    ),
-                                  ),
-                                  child: AppText.body(
-                                    isResuming
-                                        ? l10n.resumeExamOnline
-                                        : l10n.startExamOnline,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: isButtonEnabled
-                                          ? design.colors.onPrimary
-                                          : design.colors.textSecondary,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          SizedBox(height: design.spacing.xs),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+                  SizedBox(height: design.spacing.lg),
+                ],
+              ),
             ),
           ),
         ),
-      ),
+        if (showModeSelection)
+          AppBottomSheet(
+            isOpen: _isModeSheetOpen,
+            onClose: () => setState(() => _isModeSheetOpen = false),
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                design.spacing.sm,
+                0,
+                design.spacing.sm,
+                design.spacing.md,
+              ),
+              child: SafeArea(
+                top: false,
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(
+                    design.spacing.lg,
+                    design.spacing.md,
+                    design.spacing.lg,
+                    design.spacing.lg,
+                  ),
+                  decoration: BoxDecoration(
+                    color: design.colors.card,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(design.radius.xxl),
+                    ),
+                    boxShadow: design.shadows.floating,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                          width: design.spacing.xl * 1.5,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: design.colors.border,
+                            borderRadius: BorderRadius.circular(
+                              design.radius.full,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: design.spacing.xl),
+                      ExamModeOptionCard(
+                        title: l10n.examModeRegularTitle,
+                        description: l10n.examModeRegularDesc,
+                        icon: LucideIcons.fileText,
+                        isSelected: false,
+                        onTap: () async {
+                          setState(() => _isModeSheetOpen = false);
+                          ref.read(examAttemptProvider.notifier).reset();
+                          await widget.onStartAttempt(false);
+                        },
+                      ),
+                      SizedBox(height: design.spacing.md),
+                      ExamModeOptionCard(
+                        title: l10n.examModeQuizTitle,
+                        description: l10n.examModeQuizDesc,
+                        icon: LucideIcons.checkCircle,
+                        isSelected: false,
+                        onTap: () async {
+                          setState(() => _isModeSheetOpen = false);
+                          ref.read(examAttemptProvider.notifier).reset();
+                          await widget.onStartAttempt(true);
+                        },
+                      ),
+                      SizedBox(height: design.spacing.lg),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

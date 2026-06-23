@@ -15,6 +15,8 @@ class ExamDto {
   final bool allowRetake;
   final int maxRetakes;
   final bool enableQuizMode;
+  final String? startDate;
+  final String? endDate;
 
   const ExamDto({
     required this.id,
@@ -32,6 +34,8 @@ class ExamDto {
     this.allowRetake = true,
     this.maxRetakes = -1,
     this.enableQuizMode = false,
+    this.startDate,
+    this.endDate,
   });
 
   factory ExamDto.fromJson(Map<String, dynamic> json) {
@@ -52,6 +56,8 @@ class ExamDto {
       allowRetake: json['allow_retake'] as bool? ?? true,
       maxRetakes: json['max_retakes'] as int? ?? -1,
       enableQuizMode: json['enable_quiz_mode'] as bool? ?? false,
+      startDate: json['start_date'] as String?,
+      endDate: json['end_date'] as String?,
     );
   }
 
@@ -72,6 +78,8 @@ class ExamDto {
       'allow_retake': allowRetake,
       'max_retakes': maxRetakes,
       'enable_quiz_mode': enableQuizMode,
+      'start_date': startDate,
+      'end_date': endDate,
     };
   }
 }

@@ -9,7 +9,7 @@ class ChaptersTable extends Table {
   IntColumn get assessmentCount => integer()();
   IntColumn get orderIndex => integer()();
   TextColumn get parentId => text().nullable()();
-  BoolColumn get isLeaf => boolean().withDefault(const Constant(true))();
+  BoolColumn get isLeaf => boolean().withDefault(const Constant(false))();
   BoolColumn get isChaptersSynced =>
       boolean().withDefault(const Constant(false))();
   TextColumn get image => text().nullable()();

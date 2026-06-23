@@ -16,6 +16,7 @@ class ChaptersListPage extends ConsumerStatefulWidget {
     super.key,
     required this.courseId,
     this.parentId,
+    this.isLeaf = false,
     this.onBack,
     this.showFilters = true,
     this.basePath = '/study',
@@ -23,6 +24,7 @@ class ChaptersListPage extends ConsumerStatefulWidget {
 
   final String courseId;
   final String? parentId;
+  final bool isLeaf;
   final VoidCallback? onBack;
   final bool showFilters;
   final String basePath;
@@ -102,19 +104,21 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
             orElse: () => null,
           );
 
-          final showLessons = activeFilter != null || chapters.isEmpty;
+          final showLessons = widget.isLeaf ||
+              activeFilter != null ||
+              (chapters.isEmpty && !chaptersAsync.isLoading);
 
           final lessons = <LessonDto>[];
           bool isLoadingFilter = false;
           bool isLoadingMore = false;
 
-          final allFilterState = ref.watch(filteredLessonsProvider(
-            widget.courseId,
-            chapterId: widget.parentId,
-            type: null,
-          ));
-
           if (showLessons) {
+            final allFilterState = ref.watch(filteredLessonsProvider(
+              widget.courseId,
+              chapterId: widget.parentId,
+              type: null,
+            ));
+
             final type = _apiTypeForFilter(activeFilter);
             final filterState = ref.watch(filteredLessonsProvider(
               widget.courseId,
@@ -158,7 +162,8 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                       return targetTypes.contains(l.type);
                     }).toList();
 
-          final showChapters = activeFilter == null && chapters.isNotEmpty;
+          final showChapters = activeFilter == null &&
+              (chapters.isNotEmpty || chaptersAsync.isLoading);
           String headerTitle = course?.title ?? 'Curriculum';
 
           return Column(

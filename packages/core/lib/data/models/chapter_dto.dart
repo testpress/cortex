@@ -83,7 +83,7 @@ class ChapterDto {
           (json['orderIndex'] as num?)?.toInt() ??
           0,
       parentId: (json['parent_id'] ?? json['parentId'])?.toString(),
-      isLeaf: json['leaf'] as bool? ?? json['isLeaf'] as bool? ?? true,
+      isLeaf: json['leaf'] as bool? ?? json['isLeaf'] as bool? ?? false,
       isChaptersSynced: json['isChaptersSynced'] as bool? ?? false,
       image: json['image'] as String?,
       lessons:

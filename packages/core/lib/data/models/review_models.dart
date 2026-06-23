@@ -64,7 +64,7 @@ class SubjectAnalyticsDto {
           json['unanswered'] as int? ?? json['unanswered_count'] as int? ?? 0,
       correctPercentage: correctPct,
       parentId: json['parent'] as int? ?? json['parent_id'] as int?,
-      isLeaf: json['leaf'] as bool? ?? true,
+      isLeaf: json['leaf'] as bool? ?? false,
     );
   }
 
@@ -221,8 +221,8 @@ class ReviewItemDto {
       result: json['result']?.toString(),
       marks: json['marks']?.toString(),
       duration: json['duration']?.toString(),
-      bookmarkId: json['bookmark_id'] as int?,
-      correctPercentage: json['correct_percentage'] as int?,
+      bookmarkId: (json['bookmark_id'] as num?)?.toInt(),
+      correctPercentage: (json['correct_percentage'] as num?)?.toInt(),
       shortText: json['short_text']?.toString(),
       question: ReviewQuestionDto.fromJson(
         json['question'] as Map<String, dynamic>? ?? {},

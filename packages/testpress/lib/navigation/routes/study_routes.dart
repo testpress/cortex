@@ -56,7 +56,12 @@ class StudyRoutes {
                 return lessonAsync.when(
                   data: (lesson) {
                     if (lesson == null) {
-                      return const Center(child: Text('Lesson not found'));
+                      return Center(
+                        child: AppText.body(
+                          L10n.of(context).lessonNotFound,
+                          color: Design.of(context).colors.textSecondary,
+                        ),
+                      );
                     }
                     return _LessonRedirector(
                       lesson: lesson,
@@ -83,25 +88,22 @@ class StudyRoutes {
                     final l10n = L10n.of(context);
                     return Center(
                       child: Padding(
-                        padding: const EdgeInsets.all(24.0),
+                        padding: EdgeInsets.all(Design.of(context).spacing.xl),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(
+                            Icon(
                               LucideIcons.alertCircle,
                               size: 48,
-                              color: Color(0xFFEF4444),
+                              color: Design.of(context).colors.error,
                             ),
-                            const SizedBox(height: 16),
-                            Text(
+                            SizedBox(height: Design.of(context).spacing.md),
+                            AppText.body(
                               l10n.errorLessonLoad,
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: Color(0xFF6B7280),
-                              ),
+                              color: Design.of(context).colors.textSecondary,
                             ),
-                            const SizedBox(height: 24),
+                            SizedBox(height: Design.of(context).spacing.xl),
                             AppButton.primary(
                               label: l10n.labelRetry,
                               onPressed: () =>
@@ -127,30 +129,22 @@ class StudyRoutes {
           name: AppRouteNames.testDetail,
           path: 'test/:id',
           parentNavigatorKey: rootNavigatorKey,
-          pageBuilder: (context, state) {
+          builder: (context, state) {
             final id = state.pathParameters['id']!;
             final extra = state.extra;
             final lesson = extra is LessonDto
                 ? extra
                 : (extra is Lesson ? extra.toDto() : null);
-            return CustomTransitionPage(
-              key: state.pageKey,
-              opaque: false,
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) {
-                    return child;
-                  },
-              child: ExamPrescreen(
-                testId: id,
-                lesson: lesson,
-                onClose: () => context.pop(),
-                onStartAttempt: (isQuizMode) async {
-                  context.pushReplacement(
-                    '/study/test/$id/player?isQuizMode=$isQuizMode',
-                    extra: lesson,
-                  );
-                },
-              ),
+            return ExamPrescreen(
+              testId: id,
+              lesson: lesson,
+              onClose: () => context.pop(),
+              onStartAttempt: (isQuizMode) async {
+                context.pushReplacement(
+                  '/study/test/$id/player?isQuizMode=$isQuizMode',
+                  extra: lesson,
+                );
+              },
             );
           },
           routes: [

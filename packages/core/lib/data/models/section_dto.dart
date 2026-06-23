@@ -3,9 +3,6 @@ class SectionDto {
   final String id;
   final String name;
   final String state;
-  final String questionsUrl;
-  final String? startUrl;
-  final String? endUrl;
   final String? remainingTime;
   final String? duration;
   final int order;
@@ -17,9 +14,6 @@ class SectionDto {
     required this.id,
     required this.name,
     required this.state,
-    required this.questionsUrl,
-    this.startUrl,
-    this.endUrl,
     this.remainingTime,
     this.duration,
     required this.order,
@@ -33,14 +27,9 @@ class SectionDto {
 
     return SectionDto(
       id: (json['id'] ?? '').toString(),
-      name: (info?['name'] ?? json['name'] ?? '').toString(),
+      name: (info?['name'] ?? json['name'] ?? json['section_name'] ?? '')
+          .toString(),
       state: (json['state'] ?? 'Not Started').toString(),
-      questionsUrl: (json['questions_url'] ?? '').toString().replaceFirst(
-        'v2.3',
-        'v2.2.1',
-      ),
-      startUrl: json['start_url']?.toString().replaceFirst('v2.3', 'v2.2.1'),
-      endUrl: json['end_url']?.toString().replaceFirst('v2.3', 'v2.2.1'),
       remainingTime: json['remaining_time']?.toString(),
       duration: (info?['duration'] ?? json['duration'])?.toString(),
       order: info?['order'] != null
@@ -63,9 +52,6 @@ class SectionDto {
       'id': id,
       'name': name,
       'state': state,
-      'questions_url': questionsUrl,
-      'start_url': startUrl,
-      'end_url': endUrl,
       'remaining_time': remainingTime,
       'duration': duration,
       'order': order,

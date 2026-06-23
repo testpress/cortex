@@ -43,13 +43,34 @@ class ApiEndpoints {
   // Exams
   static const String subjectReports =
       '/api/v3/analytics/overall-subject-analytics/';
-  static String examDetail(String slug) => '/api/v2.2.1/exams/$slug/';
-  static String contentAttemptEnd(String id) =>
-      '/api/v2.2/content_attempts/$id/end/';
   static String subjectAnalytics(String attemptId) =>
-      '/api/v2.4/attempts/$attemptId/review/subjects/';
+      '/api/v2.3/attempts/$attemptId/review/subjects/';
+  static String examDetail(String slug) => '/api/v2.4/exams/$slug/';
+  static String contentAttemptEnd(String id) =>
+      '/api/v2.3/content_attempts/$id/end/';
+
   static String solutionsReview(String attemptId) =>
-      '/api/v2.2.1/attempts/$attemptId/review/';
+      '/api/v2.3/attempts/$attemptId/review/';
+
+  // Exam Routing (v3 and v2.x hardcoded)
+  static String examQuestions(String attemptId) =>
+      '/api/v3/attempts/$attemptId/user_answers/?page_size=1000';
+  static String submitAnswer(String attemptId, String questionId) =>
+      '/api/v3/attempts/$attemptId/user_answers/$questionId/';
+  static String startAttempt(String attemptId) =>
+      '/api/v2.3/attempts/$attemptId/start/';
+  static String endAttempt(String attemptId) =>
+      '/api/v2.3/attempts/$attemptId/end/';
+  static String reviewAttempt(String attemptId) =>
+      '/api/v2.5/attempts/$attemptId/review/';
+  static String startSection(String attemptId, String sectionOrder) =>
+      '/api/v3/attempts/$attemptId/section/$sectionOrder/start/';
+  static String endSection(String attemptId, String sectionOrder) =>
+      '/api/v3/attempts/$attemptId/section/$sectionOrder/end/';
+  static String heartbeat(String attemptId) =>
+      '/api/v2.3/attempts/$attemptId/heartbeat/';
+  static String sectionHeartbeat(String attemptId, String sectionOrder) =>
+      '/api/v2.3/attempts/$attemptId/section/$sectionOrder/heartbeat/';
 
   // Forum
   static const String forumCategories = '/api/v2.3/forum/categories/';

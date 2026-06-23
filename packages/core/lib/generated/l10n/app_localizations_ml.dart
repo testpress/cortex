@@ -594,6 +594,26 @@ class AppLocalizationsMl extends AppLocalizations {
       'പാഠം ലോഡുചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു. നിങ്ങളുടെ കണക്ഷൻ പരിശോധിക്കുക.';
 
   @override
+  String errorLoadingLesson(String error) {
+    return 'പാഠം ലോഡുചെയ്യുന്നതിൽ പിശക്: $error';
+  }
+
+  @override
+  String get noQuestionsFound => 'ചോദ്യങ്ങളൊന്നും കണ്ടെത്തിയില്ല.';
+
+  @override
+  String get semanticExamStatistics => 'പരീക്ഷയുടെ സ്ഥിതിവിവരക്കണക്കുകൾ';
+
+  @override
+  String get semanticMarksPerQuestion => 'ഓരോ ചോദ്യത്തിനുമുള്ള മാർക്ക്';
+
+  @override
+  String get semanticExamTimeline => 'പരീക്ഷാ സമയക്രമം';
+
+  @override
+  String get lessonNotFound => 'പാഠം കണ്ടെത്താനായില്ല';
+
+  @override
   String get labelLessonsPlural => 'പാഠങ്ങൾ';
 
   @override
@@ -1528,6 +1548,42 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get startExam => 'Start Exam';
+
+  @override
+  String get examTotalQuestions => 'മൊത്തം ചോദ്യങ്ങൾ';
+
+  @override
+  String get examDuration => 'സമയദൈർഘ്യം';
+
+  @override
+  String get examTotalMarks => 'മൊത്തം മാർക്കുകൾ';
+
+  @override
+  String get examCorrectAnswer => 'ശരിയായ ഉത്തരം';
+
+  @override
+  String get examWrongAnswer => 'തെറ്റായ ഉത്തരം';
+
+  @override
+  String get examStartsOn => 'ആരംഭിക്കുന്നത്';
+
+  @override
+  String get examEndsOn => 'അവസാനിക്കുന്നത്';
+
+  @override
+  String get examForever => 'എന്നെന്നേക്കുമായി';
+
+  @override
+  String get examDetailsTitle => 'പരീക്ഷാ വിവരങ്ങൾ';
+
+  @override
+  String get errorCannotStartExam => 'ക്ഷമിക്കണം! പരീക്ഷ ആരംഭിക്കാൻ കഴിയില്ല';
+
+  @override
+  String get errorUnknownOccurred => 'ഒരു അജ്ഞാത പിശക് സംഭവിച്ചു.';
+
+  @override
+  String get actionGoBack => 'തിരികെ പോകുക';
 
   @override
   String get nextSubject => 'Next Subject';

@@ -29,31 +29,25 @@ class ExamDetail extends _$ExamDetail {
     final cachedJson = await db.watchLessonExamMetadataBySlug(slug).first;
     if (cachedJson != null) {
       try {
-        state = AsyncData(ExamDto.fromJson(jsonDecode(cachedJson)));
+        final cachedDto = ExamDto.fromJson(jsonDecode(cachedJson));
+        // 2. Fetch fresh data from network in background (Fire and forget)
+        Future.microtask(() => revalidate(slug));
+        return cachedDto;
       } catch (_) {
         // Fallback if JSON is malformed
       }
     }
-
-    // 2. Fetch fresh data from network in background
-    revalidate(slug);
-
-    // 3. Keep the future resolving based on cache or a new fetch
-    if (state.hasValue) {
-      return state.requireValue;
-    }
-
-    // First ever fetch (no cache)
-    final dataSource = ref.watch(dataSourceProvider);
-    final freshDto = await dataSource.getExam(slug);
+    // 3. First ever fetch (no cache)
+    final examRepository = ref.watch(examRepositoryProvider);
+    final freshDto = await examRepository.getExamBySlug(slug);
     await db.updateLessonExamMetadata(slug, jsonEncode(freshDto.toJson()));
     return freshDto;
   }
 
   Future<void> revalidate(String slug) async {
     try {
-      final dataSource = ref.read(dataSourceProvider);
-      final freshDto = await dataSource.getExam(slug);
+      final examRepository = ref.read(examRepositoryProvider);
+      final freshDto = await examRepository.getExamBySlug(slug);
 
       final db = await ref.read(appDatabaseProvider.future);
       final cachedJson = await db.watchLessonExamMetadataBySlug(slug).first;
@@ -139,8 +133,8 @@ class ExamDetail extends _$ExamDetail {
 /// Fetches attempt history for an exam.
 @riverpod
 Future<List<AttemptDto>> examAttempts(Ref ref, String attemptsUrl) async {
-  final dataSource = ref.watch(dataSourceProvider);
-  return dataSource.getAttempts(attemptsUrl);
+  final repository = ref.watch(examRepositoryProvider);
+  return repository.getAttempts(attemptsUrl);
 }
 
 /// Notifier that manages the active exam attempt lifecycle.
@@ -183,28 +177,25 @@ class ExamAttempt extends _$ExamAttempt {
       .read(examRepositoryProvider)
       .startCourseLinkedExam(exam, contentAttemptsUrl, isQuizMode: isQuizMode);
 
-  Future<void> submitAnswer(String answerUrl, AnswerDto answer) =>
-      ref.read(examRepositoryProvider).submitAnswer(answerUrl, answer);
+  Future<void> submitAnswer(String questionId, AnswerDto answer) =>
+      ref.read(examRepositoryProvider).submitAnswer(questionId, answer);
 
   void updateLocalAnswer(String questionId, AnswerDto answer) =>
       ref.read(examRepositoryProvider).updateLocalAnswer(questionId, answer);
 
-  Future<void> checkQuizAnswer(String answerUrl, AnswerDto answer) =>
-      ref.read(examRepositoryProvider).checkQuizAnswer(answerUrl, answer);
+  Future<void> checkQuizAnswer(String questionId, AnswerDto answer) =>
+      ref.read(examRepositoryProvider).checkQuizAnswer(questionId, answer);
 
-  void updateShortText(String questionId, String answerUrl, String text) => ref
-      .read(examRepositoryProvider)
-      .updateShortText(questionId, answerUrl, text);
+  void updateShortText(String questionId, String text) =>
+      ref.read(examRepositoryProvider).updateShortText(questionId, text);
 
-  void updateEssayText(String questionId, String answerUrl, String text) => ref
-      .read(examRepositoryProvider)
-      .updateEssayText(questionId, answerUrl, text);
+  void updateEssayText(String questionId, String text) =>
+      ref.read(examRepositoryProvider).updateEssayText(questionId, text);
 
   void markQuestionAsChecked(String questionId) =>
       ref.read(examRepositoryProvider).markQuestionAsChecked(questionId);
 
-  Future<void> endExam(String endUrl) =>
-      ref.read(examRepositoryProvider).endExam(endUrl);
+  Future<void> endExam() => ref.read(examRepositoryProvider).endExam();
 
   Future<void> switchSection(int index) =>
       ref.read(examRepositoryProvider).switchSection(index);

@@ -45,6 +45,8 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
   bool _showSubmitConfirmation = false;
   bool _showPauseConfirmation = false;
 
+  // Removed _dirtyAnswers to fix out-of-order submission drops.
+
   // Flash "Saved" indicator
   bool _isSavedVisible = false;
   Timer? _savedTimer;
@@ -222,7 +224,9 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
         ),
         error: (err, stack) => Container(
           color: design.colors.surface,
-          child: Center(child: AppText.body('Error loading lesson: $err')),
+          child: Center(
+            child: AppText.body(l10n.errorLoadingLesson(err.toString())),
+          ),
         ),
       );
     }
@@ -276,17 +280,20 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
               ),
               SizedBox(height: design.spacing.lg),
               AppText.title(
-                'Oops! Cannot start exam',
+                L10n.of(context).errorCannotStartExam,
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: design.spacing.sm),
               AppText.body(
-                state.errorMessage ?? 'An unknown error occurred.',
+                state.errorMessage ?? L10n.of(context).errorUnknownOccurred,
                 textAlign: TextAlign.center,
                 color: design.colors.textSecondary,
               ),
               SizedBox(height: design.spacing.xl),
-              AppButton(label: 'Go Back', onPressed: () => context.pop()),
+              AppButton(
+                label: L10n.of(context).actionGoBack,
+                onPressed: () => context.pop(),
+              ),
             ],
           ),
         ),
@@ -325,7 +332,6 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
             id: '',
             name: entry.key,
             state: 'Not Started',
-            questionsUrl: '',
             order: localSections.length,
             questionsCount: entry.value.length,
           ),
@@ -336,7 +342,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     if (allQuestions.isEmpty) {
       return Container(
         color: design.colors.surface,
-        child: Center(child: AppText.body('No questions found.')),
+        child: Center(child: AppText.body(l10n.noQuestionsFound)),
       );
     }
 
@@ -444,6 +450,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                           tabNames: tabNames,
                           activeIndex: activeTabIndex,
                           onTabSelected: (index) {
+                            // No need to manually submit dirty questions; answers are immediately queued to the repository.
                             if (useSections) {
                               ref
                                   .read(examAttemptProvider.notifier)
@@ -487,6 +494,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                           controller: _pageController,
                           allowImplicitScrolling: true,
                           onPageChanged: (index) {
+                            // No need to manually submit dirty questions; answers are immediately queued to the repository.
                             setState(() {
                               _currentQuestionIndex = index;
                               // Sync subject index if needed
@@ -518,19 +526,44 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                               onToggleMark: () => _handleToggleMark(state, q),
                               onPrevious: () {
                                 if (index > 0) {
-                                  _pageController.previousPage(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                  );
+                                  if (MotionPreferences.shouldAnimate(
+                                    context,
+                                  )) {
+                                    _pageController.previousPage(
+                                      duration: MotionPreferences.duration(
+                                        context,
+                                        design.motion.normal,
+                                      ),
+                                      curve: MotionPreferences.curve(
+                                        context,
+                                        design.motion.easeInOut,
+                                      ),
+                                    );
+                                  } else {
+                                    _pageController.jumpToPage(index - 1);
+                                  }
                                 }
                               },
                               onNext: () {
                                 if (index < allQuestions.length - 1) {
-                                  _pageController.nextPage(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                  );
+                                  if (MotionPreferences.shouldAnimate(
+                                    context,
+                                  )) {
+                                    _pageController.nextPage(
+                                      duration: MotionPreferences.duration(
+                                        context,
+                                        design.motion.normal,
+                                      ),
+                                      curve: MotionPreferences.curve(
+                                        context,
+                                        design.motion.easeInOut,
+                                      ),
+                                    );
+                                  } else {
+                                    _pageController.jumpToPage(index + 1);
+                                  }
                                 } else if (hasNextSection) {
+                                  // No need to manually submit dirty questions; answers are immediately queued.
                                   ref
                                       .read(examAttemptProvider.notifier)
                                       .switchSection(
@@ -558,13 +591,14 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                                   try {
                                     await ref
                                         .read(examAttemptProvider.notifier)
-                                        .checkQuizAnswer(q.answerUrl, a);
+                                        .checkQuizAnswer(q.id, a);
                                   } catch (e) {
                                     if (context.mounted) {
                                       AppToast.show(
                                         context,
-                                        message:
-                                            "Failed to check answer. Please try again.",
+                                        message: L10n.of(
+                                          context,
+                                        ).errorUnknownOccurred,
                                         isError: true,
                                       );
                                     }
@@ -604,11 +638,12 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                 answeredCount: answeredCount,
                 totalCount: displayTotalCount,
                 onCancel: () => setState(() => _showSubmitConfirmation = false),
-                onSubmit: () {
+                onSubmit: () async {
                   setState(() => _showSubmitConfirmation = false);
-                  ref
-                      .read(examAttemptProvider.notifier)
-                      .endExam(state.attempt!.endUrl);
+
+                  // Answers are already queued in the repository; endExam flushes them.
+
+                  await ref.read(examAttemptProvider.notifier).endExam();
                 },
               ),
             if (_showPauseConfirmation)
@@ -623,11 +658,12 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                   ref.read(examAttemptProvider.notifier).reset();
                   widget.onClose();
                 },
-                onEnd: () {
+                onEnd: () async {
                   setState(() => _showPauseConfirmation = false);
-                  ref
-                      .read(examAttemptProvider.notifier)
-                      .endExam(state.attempt!.endUrl);
+
+                  // Answers are already queued in the repository; endExam flushes them.
+
+                  await ref.read(examAttemptProvider.notifier).endExam();
                 },
               ),
             if (state.status == ExamAttemptStatus.completed)
@@ -699,18 +735,18 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
   void _handleInputChange(
     ExamAttemptState state,
     QuestionDto question,
-    String value,
+    String text,
   ) {
     if (question.type == 'essay') {
-      ref
-          .read(examAttemptProvider.notifier)
-          .updateEssayText(question.id, question.answerUrl, value);
+      ref.read(examAttemptProvider.notifier).updateEssayText(question.id, text);
     } else {
-      ref
-          .read(examAttemptProvider.notifier)
-          .updateShortText(question.id, question.answerUrl, value);
+      ref.read(examAttemptProvider.notifier).updateShortText(question.id, text);
     }
-    // Don't show the saved indicator for every keystroke since it doesn't trigger immediate network submission
+
+    // The ExamRepository automatically queues this text for submission.
+    if (!state.isQuizMode) {
+      _showSavedIndicator();
+    }
   }
 
   void _handleOptionSelect(
@@ -746,7 +782,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     } else {
       ref
           .read(examAttemptProvider.notifier)
-          .submitAnswer(question.answerUrl, newAnswer);
+          .submitAnswer(question.id, newAnswer);
       _showSavedIndicator();
     }
   }
@@ -762,9 +798,16 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
       isMarked: !currentAnswer.isMarked,
     );
 
-    ref
-        .read(examAttemptProvider.notifier)
-        .submitAnswer(question.answerUrl, newAnswer);
+    if (state.isQuizMode) {
+      ref
+          .read(examAttemptProvider.notifier)
+          .updateLocalAnswer(question.id, newAnswer);
+    } else {
+      ref
+          .read(examAttemptProvider.notifier)
+          .submitAnswer(question.id, newAnswer);
+      _showSavedIndicator();
+    }
   }
 
   void _openAnalytics(ExamAttemptState state) {

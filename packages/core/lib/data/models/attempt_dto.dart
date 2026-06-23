@@ -1,17 +1,12 @@
-import '../../network/api_endpoints.dart';
 import 'section_dto.dart';
 
 /// Attempt DTO — represents an active or completed exam attempt.
 class AttemptDto {
-  final String id;
+  final int? id;
+  final String? date;
   final String? state;
   final String? remainingTime;
-  final String questionsUrl;
-  final String heartbeatUrl;
-  final String endUrl;
-  final String? startUrl;
   final String? score;
-  final String? date;
   final int? correctCount;
   final int? incorrectCount;
   final int? totalQuestions;
@@ -20,8 +15,8 @@ class AttemptDto {
   final int? accuracy;
   final String? percentile;
   final String? percentage;
-  final String? rank;
-  final String? maxRank;
+  final int? rank;
+  final int? maxRank;
   final bool? rankEnabled;
   final String? markPerQuestion;
   final String? negativeMarks;
@@ -30,15 +25,11 @@ class AttemptDto {
   final int? attemptType;
 
   const AttemptDto({
-    required this.id,
+    this.id,
+    this.date,
     this.state,
     this.remainingTime,
-    required this.questionsUrl,
-    required this.heartbeatUrl,
-    required this.endUrl,
-    this.startUrl,
     this.score,
-    this.date,
     this.correctCount,
     this.incorrectCount,
     this.totalQuestions,
@@ -58,15 +49,11 @@ class AttemptDto {
   });
 
   AttemptDto copyWith({
-    String? id,
+    int? id,
+    String? date,
     String? state,
     String? remainingTime,
-    String? questionsUrl,
-    String? heartbeatUrl,
-    String? endUrl,
-    String? startUrl,
     String? score,
-    String? date,
     int? correctCount,
     int? incorrectCount,
     int? totalQuestions,
@@ -75,8 +62,8 @@ class AttemptDto {
     int? accuracy,
     String? percentile,
     String? percentage,
-    String? rank,
-    String? maxRank,
+    int? rank,
+    int? maxRank,
     bool? rankEnabled,
     String? markPerQuestion,
     String? negativeMarks,
@@ -86,14 +73,10 @@ class AttemptDto {
   }) {
     return AttemptDto(
       id: id ?? this.id,
+      date: date ?? this.date,
       state: state ?? this.state,
       remainingTime: remainingTime ?? this.remainingTime,
-      questionsUrl: questionsUrl ?? this.questionsUrl,
-      heartbeatUrl: heartbeatUrl ?? this.heartbeatUrl,
-      endUrl: endUrl ?? this.endUrl,
-      startUrl: startUrl ?? this.startUrl,
       score: score ?? this.score,
-      date: date ?? this.date,
       correctCount: correctCount ?? this.correctCount,
       incorrectCount: incorrectCount ?? this.incorrectCount,
       totalQuestions: totalQuestions ?? this.totalQuestions,
@@ -114,73 +97,22 @@ class AttemptDto {
   }
 
   factory AttemptDto.fromJson(Map<String, dynamic> json) {
-    // Handle nested assessment/attempt object in some API versions
     final Map<String, dynamic> data =
         json['assessment'] as Map<String, dynamic>? ??
         json['attempt'] as Map<String, dynamic>? ??
         json;
 
-    final String baseUrl =
-        (data['url'] ??
-                json['url'] ??
-                data['object_url'] ??
-                json['object_url'] ??
-                '')
-            .toString();
-    final String cleanBase = baseUrl.endsWith('/') ? baseUrl : '$baseUrl/';
-
-    // For CourseAttempts, we must use the content_attempts end URL to ensure course progress is updated.
-    final bool isCourseAttempt = json['assessment'] != null;
-    final String courseAttemptId = json['id']?.toString() ?? '';
-    final String contentAttemptEndUrl =
-        isCourseAttempt && courseAttemptId.isNotEmpty
-        ? ApiEndpoints.contentAttemptEnd(courseAttemptId)
-        : '';
-
     final List<dynamic>? sectionsList =
+        data['attempt_sections'] as List<dynamic>? ??
+        json['attempt_sections'] as List<dynamic>? ??
         data['sections'] as List<dynamic>? ??
         json['sections'] as List<dynamic>?;
     final List<SectionDto>? parsedSections = sectionsList
         ?.map((s) => SectionDto.fromJson(s as Map<String, dynamic>))
         .toList();
 
-    final String rawReviewUrl =
-        (data['review_url'] ?? json['review_url'])?.toString() ??
-        (cleanBase.isNotEmpty ? '${cleanBase}review/' : '');
-    final String finalReviewUrl = rawReviewUrl.replaceFirst('v2.3', 'v2.2.1');
-
-    final String rawHeartbeatUrl =
-        (data['heartbeat_url'] ?? json['heartbeat_url'])?.toString() ??
-        (cleanBase.isNotEmpty ? '${cleanBase}heartbeat/' : '');
-    final String finalHeartbeatUrl = rawHeartbeatUrl.replaceFirst(
-      'v2.3',
-      'v2.2.1',
-    );
-
     return AttemptDto(
-      id: (data['id'] ?? json['id'] ?? '').toString(),
-      state: (data['state'] ?? json['state'])?.toString(),
-      remainingTime: (data['remaining_time'] ?? json['remaining_time'])
-          ?.toString(),
-      questionsUrl:
-          ((data['questions_url'] ?? json['questions_url'])?.toString() ??
-                  (cleanBase.isNotEmpty ? '${cleanBase}questions/' : ''))
-              .replaceFirst('v2.3', 'v2.2.1'),
-      heartbeatUrl: finalHeartbeatUrl,
-      endUrl:
-          (contentAttemptEndUrl.isNotEmpty
-                  ? contentAttemptEndUrl
-                  : ((json['end_url'] ??
-                                data['end_url'] ??
-                                json['terminate_url'] ??
-                                data['terminate_url'])
-                            ?.toString() ??
-                        (cleanBase.isNotEmpty ? '${cleanBase}end/' : '')))
-              .replaceFirst('v2.3', 'v2.2.1'),
-      startUrl: (data['start_url'] ?? json['start_url'])
-          ?.toString()
-          .replaceFirst('v2.3', 'v2.2.1'),
-      score: (data['score'] ?? json['score'])?.toString(),
+      id: int.tryParse((data['id'] ?? json['id']).toString()),
       date:
           (data['date'] ??
                   json['date'] ??
@@ -189,6 +121,10 @@ class AttemptDto {
                   data['date_created'] ??
                   json['date_created'])
               ?.toString(),
+      state: (data['state'] ?? json['state'])?.toString(),
+      remainingTime: (data['remaining_time'] ?? json['remaining_time'])
+          ?.toString(),
+      score: (data['score'] ?? json['score'])?.toString(),
       correctCount:
           (data['correct_count'] ??
                   json['correct_count'] ??
@@ -224,17 +160,19 @@ class AttemptDto {
             )
           : null,
       sections: parsedSections,
-      reviewUrl: finalReviewUrl.isNotEmpty ? finalReviewUrl : null,
+      reviewUrl: (data['review_url'] ?? json['review_url'])?.toString(),
       accuracy: json['accuracy'] as int? ?? data['accuracy'] as int?,
       percentile: (json['percentile'] ?? data['percentile'])?.toString(),
       percentage: (json['percentage'] ?? data['percentage'])?.toString(),
-      rank: (json['rank'] ?? data['rank'])?.toString(),
-      maxRank:
-          (json['max_rank'] ??
-                  data['max_rank'] ??
-                  json['maxRank'] ??
-                  data['maxRank'])
-              ?.toString(),
+      rank: int.tryParse((data['rank'] ?? json['rank'])?.toString() ?? ''),
+      maxRank: int.tryParse(
+        (data['max_rank'] ??
+                    json['max_rank'] ??
+                    data['maxRank'] ??
+                    json['maxRank'])
+                ?.toString() ??
+            '',
+      ),
       rankEnabled:
           json['rank_enabled'] as bool? ?? data['rank_enabled'] as bool?,
       markPerQuestion: (data['mark_per_question'] ?? json['mark_per_question'])
@@ -252,14 +190,10 @@ class AttemptDto {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'date': date,
       'state': state,
       'remaining_time': remainingTime,
-      'questions_url': questionsUrl,
-      'heartbeat_url': heartbeatUrl,
-      'end_url': endUrl,
-      'start_url': startUrl,
       'score': score,
-      'date': date,
       'correct_count': correctCount,
       'incorrect_count': incorrectCount,
       'total_questions': totalQuestions,

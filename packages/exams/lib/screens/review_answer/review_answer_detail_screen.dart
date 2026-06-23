@@ -79,8 +79,9 @@ class _ReviewAnswerDetailScreenState
     if (attempt == null) return;
 
     try {
-      final String reviewUrl =
-          attempt.reviewUrl ?? ApiEndpoints.solutionsReview(attempt.id);
+      final String reviewUrl = ApiEndpoints.solutionsReview(
+        attempt.id.toString(),
+      );
 
       final reviewItems = await ref
           .read(examRepositoryProvider)

@@ -587,6 +587,26 @@ class AppLocalizationsEn extends AppLocalizations {
       'Failed to load lesson. Please check your connection.';
 
   @override
+  String errorLoadingLesson(String error) {
+    return 'Error loading lesson: $error';
+  }
+
+  @override
+  String get noQuestionsFound => 'No questions found.';
+
+  @override
+  String get semanticExamStatistics => 'Exam statistics';
+
+  @override
+  String get semanticMarksPerQuestion => 'Marks per question';
+
+  @override
+  String get semanticExamTimeline => 'Exam timeline';
+
+  @override
+  String get lessonNotFound => 'Lesson not found';
+
+  @override
   String get labelLessonsPlural => 'lessons';
 
   @override
@@ -1498,6 +1518,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get startExam => 'Start Exam';
+
+  @override
+  String get examTotalQuestions => 'Total Questions';
+
+  @override
+  String get examDuration => 'Duration';
+
+  @override
+  String get examTotalMarks => 'Total Marks';
+
+  @override
+  String get examCorrectAnswer => 'Correct Answer';
+
+  @override
+  String get examWrongAnswer => 'Wrong Answer';
+
+  @override
+  String get examStartsOn => 'Starts On';
+
+  @override
+  String get examEndsOn => 'Ends On';
+
+  @override
+  String get examForever => 'Forever';
+
+  @override
+  String get examDetailsTitle => 'Exam Details';
+
+  @override
+  String get errorCannotStartExam => 'Oops! Cannot start exam';
+
+  @override
+  String get errorUnknownOccurred => 'An unknown error occurred.';
+
+  @override
+  String get actionGoBack => 'Go Back';
 
   @override
   String get nextSubject => 'Next Subject';
