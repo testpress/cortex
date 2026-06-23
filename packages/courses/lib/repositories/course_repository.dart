@@ -800,16 +800,32 @@ class CourseRepository {
   ) {
     final runningIds = remote.running.lessons.map((l) => l.id).toSet();
     final upcomingIds = remote.upcoming.lessons.map((l) => l.id).toSet();
-    final historyIds = remote.attempts.lessons.map((l) => l.id).toSet();
 
     return lessons.map((dto) {
+      final isVideoOrStream =
+          dto.type == LessonType.video || dto.type == LessonType.liveStream;
+
+      bool hasAttempts = dto.hasAttempts;
+      LessonProgressStatus progressStatus = dto.progressStatus;
+
+      if (!isVideoOrStream) {
+        final matchedAttempts =
+            remote.attempts.lessons.where((l) => l.id == dto.id);
+        if (matchedAttempts.isNotEmpty) {
+          final remoteLesson = matchedAttempts.first;
+          hasAttempts = true;
+          progressStatus = remoteLesson.progressStatus;
+        } else {
+          hasAttempts = false;
+          progressStatus = LessonProgressStatus.notStarted;
+        }
+      }
+
       return _lessonDtoToCompanion(dto).copyWith(
         isRunning: Value(runningIds.contains(dto.id)),
         isUpcoming: Value(upcomingIds.contains(dto.id)),
-        hasAttempts: Value(
-          historyIds.contains(dto.id) ||
-              dto.progressStatus == LessonProgressStatus.completed,
-        ),
+        hasAttempts: Value(hasAttempts),
+        progressStatus: Value(progressStatus.name),
       );
     }).toList();
   }

@@ -11,20 +11,58 @@ class CurriculumParser {
     dynamic data, {
     String? chapterId,
   }) {
-    final lessons = mapLessons(data, chapterId: chapterId);
+    var lessons = mapLessons(data, chapterId: chapterId);
     final List<ChapterDto> chapters = [];
 
     if (data is Map) {
       final results = data['results'] ?? data;
-      final chaptersListRaw = (results is Map)
-          ? results['chapters']
-          : data['chapters'];
-      final chaptersList = chaptersListRaw as List<dynamic>?;
+      if (results is Map) {
+        // Filter lessons to only those with actual attempts if this is an attempts sync payload
+        if (results.containsKey('content_attempts')) {
+          final attempts = results['content_attempts'] as List?;
+          final Map<String, bool> completedAttempts = {};
+          if (attempts != null) {
+            for (var a in attempts) {
+              if (a is Map) {
+                final contentId = a['chapter_content_id']?.toString();
+                if (contentId != null) {
+                  final attemptData =
+                      a['assessment'] as Map<String, dynamic>? ??
+                      a['attempt'] as Map<String, dynamic>? ??
+                      a;
+                  final stateVal = attemptData['state'];
+                  final isCompleted =
+                      stateVal?.toString() == '1' ||
+                      stateVal?.toString().toLowerCase() == 'completed';
+                  if (isCompleted) {
+                    completedAttempts[contentId] = true;
+                  }
+                }
+              }
+            }
+          }
 
-      if (chaptersList != null) {
-        for (var c in chaptersList) {
-          if (c is Map<String, dynamic>) {
-            chapters.add(ChapterDto.fromJson(c));
+          lessons = lessons.map((l) {
+            final isCompleted = completedAttempts[l.id] ?? false;
+            return l.copyWith(
+              hasAttempts: isCompleted,
+              progressStatus: isCompleted
+                  ? LessonProgressStatus.completed
+                  : LessonProgressStatus.notStarted,
+            );
+          }).toList();
+
+          lessons = lessons.where((l) => l.hasAttempts).toList();
+        }
+
+        final chaptersListRaw = results['chapters'];
+        final chaptersList = chaptersListRaw as List<dynamic>?;
+
+        if (chaptersList != null) {
+          for (var c in chaptersList) {
+            if (c is Map<String, dynamic>) {
+              chapters.add(ChapterDto.fromJson(c));
+            }
           }
         }
       }
