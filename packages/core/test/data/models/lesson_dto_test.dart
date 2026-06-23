@@ -8,6 +8,7 @@ void main() {
     /// 'exam', 'video', 'live', 'notes', etc.
     Map<String, dynamic> lessonJson({
       int attemptsCount = 0,
+      int pausedAttemptsCount = 0,
       String? state,
       String contentType = 'exam',
     }) => {
@@ -16,6 +17,7 @@ void main() {
       'content_type': contentType,
       'active': true,
       'attempts_count': attemptsCount,
+      'paused_attempts_count': pausedAttemptsCount,
       // ignore: use_null_aware_elements
       if (state != null) 'state': state,
     };
@@ -69,13 +71,28 @@ void main() {
       },
     );
 
-    test('exam with attempts_count > 0 is treated as completed on initial load '
-        'even when attempt may be paused — sync layer corrects this later', () {
-      // Documents the intentional trade-off: optimistic completed on first
-      // parse; CurriculumParser overrides with the real state on sync.
-      final dto = LessonDto.fromJson(lessonJson(attemptsCount: 1));
+    test(
+      'exam with only paused attempts is NOT marked completed and hasAttempts is false',
+      () {
+        final dto = LessonDto.fromJson(
+          lessonJson(attemptsCount: 1, pausedAttemptsCount: 1),
+        );
 
-      expect(dto.progressStatus, LessonProgressStatus.completed);
-    });
+        expect(dto.progressStatus, LessonProgressStatus.notStarted);
+        expect(dto.hasAttempts, false);
+      },
+    );
+
+    test(
+      'exam with mixed paused and completed attempts is marked completed and hasAttempts is true',
+      () {
+        final dto = LessonDto.fromJson(
+          lessonJson(attemptsCount: 2, pausedAttemptsCount: 1),
+        );
+
+        expect(dto.progressStatus, LessonProgressStatus.completed);
+        expect(dto.hasAttempts, true);
+      },
+    );
   });
 }

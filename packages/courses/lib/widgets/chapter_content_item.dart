@@ -107,7 +107,8 @@ class ChapterContentItem extends StatelessWidget {
                         Positioned(
                           top: -6,
                           right: -6,
-                          child: AppSemantics.container(
+                          child: AppSemantics.progressValue(
+                            value: 1.0,
                             label: 'Exam completed',
                             child: Container(
                               width: design.iconSize.md,
