@@ -158,8 +158,8 @@ class ReviewAnalyticsController extends StateNotifier<ReviewAnalyticsState> {
       accuracy: (attempt.accuracy ?? 0).toDouble(),
       timeTaken: timeTaken,
       totalTime: totalTime,
-      overallRank: int.tryParse(attempt.rank ?? '') ?? 0,
-      totalParticipants: int.tryParse(attempt.maxRank ?? '') ?? 0,
+      overallRank: attempt.rank ?? 0,
+      totalParticipants: attempt.maxRank ?? 0,
       rankEnabled: attempt.rankEnabled,
       correct: correct,
       incorrect: incorrect,
@@ -198,9 +198,9 @@ class ReviewAnalyticsController extends StateNotifier<ReviewAnalyticsState> {
     if (attempt == null) return;
 
     try {
-      final String analyticsUrl = attempt.reviewUrl != null
-          ? attempt.reviewUrl!.replaceFirst('/review/', '/review/subjects/')
-          : ApiEndpoints.subjectAnalytics(attempt.id);
+      final String analyticsUrl = ApiEndpoints.subjectAnalytics(
+        attempt.id.toString(),
+      );
 
       final subjects = await examRepository.getSubjectAnalytics(analyticsUrl);
 

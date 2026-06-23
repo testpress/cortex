@@ -5,6 +5,8 @@ import '../models/test_dto.dart';
 import '../data/mock_tests.dart';
 import 'package:core/data/exceptions/api_exception.dart';
 
+import 'package:flutter/foundation.dart';
+
 enum ExamAttemptStatus {
   idle,
   loading,
@@ -88,7 +90,6 @@ class ExamRepository {
 
   final Map<String, Timer> _submitTimers = {};
   final Map<String, AnswerDto> _pendingAnswers = {};
-  final Map<String, String> _pendingAnswerUrls = {};
   final Map<String, List<QuestionDto>> _sectionQuestionsCache = {};
 
   ExamRepository({
@@ -110,31 +111,33 @@ class ExamRepository {
 
     final timers = Map<String, Timer>.from(_submitTimers);
     final pending = Map<String, AnswerDto>.from(_pendingAnswers);
-    final urls = Map<String, String>.from(_pendingAnswerUrls);
 
     for (final timer in timers.values) {
       timer.cancel();
     }
     _submitTimers.clear();
     _pendingAnswers.clear();
-    _pendingAnswerUrls.clear();
+
+    final attemptId = _currentState.attempt?.id.toString();
+    if (attemptId == null) return;
 
     for (final entry in pending.entries) {
       final questionId = entry.key;
       final answer = entry.value;
-      final url = urls[questionId];
-      if (url != null) {
-        futures.add(
-          _dataSource.submitAnswer(url, answer).catchError((e, stackTrace) {
-            dev.log(
-              'Failed to flush answer for $questionId',
-              name: 'ExamRepository',
-              error: e,
-              stackTrace: stackTrace,
-            );
-          }),
-        );
-      }
+      futures.add(
+        _dataSource.submitAnswer(attemptId, questionId, answer).catchError((
+          e,
+          stackTrace,
+        ) {
+          dev.log(
+            'Failed to flush answer for $questionId',
+            name: 'ExamRepository',
+            error: e,
+            stackTrace: stackTrace,
+          );
+          return null;
+        }),
+      );
     }
 
     if (futures.isNotEmpty) {
@@ -195,10 +198,10 @@ class ExamRepository {
             orElse: () => attempts.first,
           );
           AttemptDto attemptToInitialize = runningAttempt;
-          if (runningAttempt.startUrl != null) {
+          if (runningAttempt.state != 'Running') {
             try {
               attemptToInitialize = await _dataSource.startAttempt(
-                runningAttempt.startUrl!,
+                runningAttempt.id.toString(),
               );
             } catch (e) {
               dev.log(
@@ -263,10 +266,10 @@ class ExamRepository {
             orElse: () => attempts.first,
           );
           AttemptDto attemptToInitialize = runningAttempt;
-          if (runningAttempt.startUrl != null) {
+          if (runningAttempt.state != 'Running') {
             try {
               attemptToInitialize = await _dataSource.startAttempt(
-                runningAttempt.startUrl!,
+                runningAttempt.id.toString(),
               );
             } catch (e) {
               dev.log(
@@ -317,12 +320,13 @@ class ExamRepository {
     AttemptDto currentAttempt = attempt;
     // Short-circuit: skip the DB read if the attempt or caller already tells us it's a quiz.
     // The DB check is only needed as a fallback when the backend drops attempt_type.
-    final effectiveQuizMode =
-        isQuizMode ||
-        attempt.isQuizMode ||
-        await _dbFuture.then(
-          (db) => db.isQuizModeAttempt(attempt.id.toString()),
-        );
+    final effectiveQuizMode = isResume
+        ? (isQuizMode ||
+              attempt.isQuizMode ||
+              await _dbFuture.then(
+                (db) => db.isQuizModeAttempt(attempt.id.toString()),
+              ))
+        : isQuizMode;
     if (effectiveQuizMode) {
       final db = await _dbFuture;
       await db.setQuizModeAttempt(attempt.id.toString());
@@ -330,11 +334,9 @@ class ExamRepository {
     bool heartbeatFetched = false;
 
     // If we are resuming and sections are missing, fetch the full details via heartbeat first.
-    if (isResume &&
-        (attempt.sections == null || attempt.sections!.isEmpty) &&
-        attempt.heartbeatUrl.isNotEmpty) {
+    if (isResume && (attempt.sections == null || attempt.sections!.isEmpty)) {
       try {
-        currentAttempt = await _dataSource.sendHeartbeat(attempt.heartbeatUrl);
+        currentAttempt = await _dataSource.sendHeartbeat(attempt.id.toString());
         heartbeatFetched = true;
       } catch (_) {}
     }
@@ -342,11 +344,9 @@ class ExamRepository {
     // Kick off background heartbeat query concurrently if remainingTime is null OR it's a resumed attempt
     // and we haven't already fetched the fresh details above.
     final Future<AttemptDto?> heartbeatFuture =
-        (!heartbeatFetched &&
-            (attempt.remainingTime == null || isResume) &&
-            attempt.heartbeatUrl.isNotEmpty)
+        (!heartbeatFetched && (attempt.remainingTime == null || isResume))
         ? _dataSource
-              .sendHeartbeat(attempt.heartbeatUrl)
+              .sendHeartbeat(attempt.id.toString())
               .then<AttemptDto?>((val) => val)
               .catchError((e) {
                 dev.log(
@@ -371,17 +371,13 @@ class ExamRepository {
         activeSection.remainingTime ?? activeSection.duration ?? exam.duration,
       );
 
-      final String targetQuestionsUrl = effectiveQuizMode
-          ? '/api/v2.5/attempts/${currentAttempt.id}/questions/'
-          : (currentAttempt.hasSectionalLock
-                ? activeSection.questionsUrl
-                : currentAttempt.questionsUrl);
+      final attemptIdStr = currentAttempt.id.toString();
 
       final Future<List<QuestionDto>> questionsFuture = remainingSeconds > 0
-          ? (_sectionQuestionsCache.containsKey(targetQuestionsUrl)
-                ? Future.value(_sectionQuestionsCache[targetQuestionsUrl]!)
-                : _dataSource.getQuestions(targetQuestionsUrl).then((q) {
-                    _sectionQuestionsCache[targetQuestionsUrl] = q;
+          ? (_sectionQuestionsCache.containsKey(attemptIdStr)
+                ? Future.value(_sectionQuestionsCache[attemptIdStr]!)
+                : _dataSource.getQuestions(attemptIdStr).then((q) {
+                    _sectionQuestionsCache[attemptIdStr] = q;
                     return q;
                   }))
           : Future.value(<QuestionDto>[]);
@@ -399,12 +395,25 @@ class ExamRepository {
         remainingTime: heartbeatAttempt.remainingTime,
         sections: heartbeatAttempt.sections,
         lastViewedQuestionId: heartbeatAttempt.lastViewedQuestionId,
-        // Update any other fields that heartbeat might have refreshed, but preserve critical URLs.
         score: heartbeatAttempt.score,
         correctCount: heartbeatAttempt.correctCount,
         incorrectCount: heartbeatAttempt.incorrectCount,
       );
-      questions = List<QuestionDto>.from(results[1] as List<QuestionDto>);
+      final allQuestions = List<QuestionDto>.from(
+        results[1] as List<QuestionDto>,
+      );
+      // Local filter: only show questions for the active section if we have sectional locks
+      if (updatedAttempt.hasSectionalLock) {
+        questions = allQuestions
+            .where(
+              (q) =>
+                  q.sectionId == activeSection.id.toString() ||
+                  q.sectionId == activeSection.id,
+            )
+            .toList();
+      } else {
+        questions = allQuestions;
+      }
 
       // Resolve the actual synchronized remainingSeconds from heartbeat
       final updatedSections = updatedAttempt.sections ?? [];
@@ -452,9 +461,7 @@ class ExamRepository {
                   id: s.id,
                   name: s.name,
                   state: 'Running',
-                  questionsUrl: s.questionsUrl,
-                  startUrl: s.startUrl,
-                  endUrl: s.endUrl,
+
                   remainingTime: s.remainingTime,
                   duration: s.duration,
                   order: s.order,
@@ -487,15 +494,12 @@ class ExamRepository {
     } else {
       remainingSeconds = _parseDuration(attempt.remainingTime ?? exam.duration);
 
-      final String targetQuestionsUrl = effectiveQuizMode
-          ? '/api/v2.5/attempts/${attempt.id}/questions/'
-          : attempt.questionsUrl;
-
+      final attemptIdStr = attempt.id.toString();
       final Future<List<QuestionDto>> questionsFuture = remainingSeconds > 0
-          ? (_sectionQuestionsCache.containsKey(targetQuestionsUrl)
-                ? Future.value(_sectionQuestionsCache[targetQuestionsUrl]!)
-                : _dataSource.getQuestions(targetQuestionsUrl).then((q) {
-                    _sectionQuestionsCache[targetQuestionsUrl] = q;
+          ? (_sectionQuestionsCache.containsKey(attemptIdStr)
+                ? Future.value(_sectionQuestionsCache[attemptIdStr]!)
+                : _dataSource.getQuestions(attemptIdStr).then((q) {
+                    _sectionQuestionsCache[attemptIdStr] = q;
                     return q;
                   }))
           : Future.value(<QuestionDto>[]);
@@ -549,7 +553,7 @@ class ExamRepository {
       // In Quiz Mode, we do not start countdown or heartbeat, and we don't handle timeout.
     } else if (remainingSeconds > 0) {
       _startCountdown();
-      _startHeartbeat(attempt.heartbeatUrl);
+      _startHeartbeat(attempt.id.toString());
     } else {
       _handleTimeOut();
     }
@@ -577,7 +581,7 @@ class ExamRepository {
         _currentState.currentSectionIndex < _currentState.sections.length - 1) {
       switchSection(_currentState.currentSectionIndex + 1);
     } else {
-      endExam(_currentState.attempt?.endUrl ?? '');
+      endExam();
     }
   }
 
@@ -598,71 +602,71 @@ class ExamRepository {
       // Perform all section lifecycle transitions and question loading concurrently
       final List<Future<dynamic>> futures = [];
 
-      if (currentSection.state == 'Running' && currentSection.endUrl != null) {
+      if (currentSection.state == 'Running') {
         futures.add(
-          _dataSource.endSection(currentSection.endUrl!).catchError((
-            e,
-            stackTrace,
-          ) {
-            dev.log(
-              'Failed to end section on server, proceeding anyway',
-              name: 'ExamRepository',
-              error: e,
-              stackTrace: stackTrace,
-            );
-            return const SectionDto(
-              id: '',
-              name: '',
-              state: '',
-              questionsUrl: '',
-              order: 0,
-            );
-          }),
+          _dataSource
+              .endSection(
+                _currentState.attempt!.id.toString(),
+                currentSection.order.toString(),
+              )
+              .catchError((e, stackTrace) {
+                dev.log(
+                  'Failed to end section on server, proceeding anyway',
+                  name: 'ExamRepository',
+                  error: e,
+                  stackTrace: stackTrace,
+                );
+                return SectionDto(
+                  id: currentSection.id,
+                  name: currentSection.name,
+                  state: 'Completed',
+
+                  order: currentSection.order,
+                );
+              }),
         );
       } else {
         futures.add(Future.value(null));
       }
 
-      if (nextSection.state != 'Running' && nextSection.startUrl != null) {
+      if (nextSection.state != 'Running') {
         futures.add(
-          _dataSource.startSection(nextSection.startUrl!).catchError((
-            e,
-            stackTrace,
-          ) {
-            dev.log(
-              'Failed to start section on server, proceeding anyway',
-              name: 'ExamRepository',
-              error: e,
-              stackTrace: stackTrace,
-            );
-            return const SectionDto(
-              id: '',
-              name: '',
-              state: '',
-              questionsUrl: '',
-              order: 0,
-            );
-          }),
+          _dataSource
+              .startSection(
+                _currentState.attempt!.id.toString(),
+                nextSection.order.toString(),
+              )
+              .catchError((e, stackTrace) {
+                dev.log(
+                  'Failed to start section on server, proceeding anyway',
+                  name: 'ExamRepository',
+                  error: e,
+                  stackTrace: stackTrace,
+                );
+                return SectionDto(
+                  id: nextSection.id,
+                  name: nextSection.name,
+                  state: 'Running',
+
+                  order: nextSection.order,
+                );
+              }),
         );
       } else {
         futures.add(Future.value(null));
       }
 
-      if (_sectionQuestionsCache.containsKey(nextSection.questionsUrl)) {
-        futures.add(
-          Future.value(_sectionQuestionsCache[nextSection.questionsUrl]!),
-        );
-      } else {
-        futures.add(
-          _dataSource.getQuestions(nextSection.questionsUrl).then((q) {
-            _sectionQuestionsCache[nextSection.questionsUrl] = q;
-            return q;
-          }),
-        );
-      }
+      await Future.wait(futures);
 
-      final results = await Future.wait(futures);
-      final List<QuestionDto> questions = results[2] as List<QuestionDto>;
+      final attemptIdStr = _currentState.attempt!.id.toString();
+      final allQuestions = _sectionQuestionsCache[attemptIdStr] ?? [];
+      final List<QuestionDto> questions = allQuestions
+          .where(
+            (q) =>
+                q.sectionId == nextSection.id.toString() ||
+                q.sectionId == nextSection.id,
+          )
+          .toList();
 
       final remainingSeconds = _parseDuration(
         nextSection.remainingTime ??
@@ -676,9 +680,6 @@ class ExamRepository {
             id: s.id,
             name: s.name,
             state: 'Completed',
-            questionsUrl: s.questionsUrl,
-            startUrl: s.startUrl,
-            endUrl: s.endUrl,
             remainingTime: s.remainingTime,
             duration: s.duration,
             order: s.order,
@@ -691,9 +692,6 @@ class ExamRepository {
             id: s.id,
             name: s.name,
             state: 'Running',
-            questionsUrl: s.questionsUrl,
-            startUrl: s.startUrl,
-            endUrl: s.endUrl,
             remainingTime: s.remainingTime,
             duration: s.duration,
             order: s.order,
@@ -745,15 +743,10 @@ class ExamRepository {
       timer,
     ) async {
       try {
-        final attempt = await _dataSource.sendHeartbeat(url);
-        if (attempt.remainingTime != null) {
-          // Sync timer with server
-          _emit(
-            _currentState.copyWith(
-              remainingSeconds: _parseDuration(attempt.remainingTime!),
-            ),
-          );
-        }
+        await _dataSource.sendHeartbeat(url);
+        // We no longer sync the local timer with the server's heartbeat remaining_time
+        // because the V3 API heartbeat endpoint dynamically returns 0:00:00 or static times,
+        // which incorrectly overrides our local ticking timer.
       } catch (e, stackTrace) {
         dev.log(
           'Heartbeat failure',
@@ -770,48 +763,53 @@ class ExamRepository {
     _heartbeatTimer = null;
   }
 
-  Future<void> submitAnswer(String answerUrl, AnswerDto answer) async {
-    final questionId = answer.questionId;
-    final previousAnswers = Map<String, AnswerDto>.from(_currentState.answers);
+  Future<void> submitAnswer(String questionId, AnswerDto answer) async {
+    if (_currentState.attempt?.id == null) return;
 
-    // 1. Optimistic Update (Immediate)
-    final newAnswers = Map<String, AnswerDto>.from(_currentState.answers);
-    newAnswers[questionId] = answer;
-    _emit(_currentState.copyWith(answers: newAnswers));
+    final updatedAnswers = Map<String, AnswerDto>.from(_currentState.answers);
+    final updatedAnswer = AnswerDto(
+      questionId: questionId,
+      selectedOptions: answer.selectedOptions,
+      shortText: answer.shortText,
+      essayText: answer.essayText,
+      review: answer.review,
+      result: answer.result,
+    );
+    updatedAnswers[questionId] = updatedAnswer;
 
-    // 2. Debounce Network Request
+    _emit(_currentState.copyWith(answers: updatedAnswers));
+
+    // Queue the submission
+    _pendingAnswers[questionId] = updatedAnswer;
+
+    // Throttle the actual network request
     _submitTimers[questionId]?.cancel();
-    _pendingAnswers[questionId] = answer;
-    _pendingAnswerUrls[questionId] = answerUrl;
+    _submitTimers[questionId] = Timer(
+      const Duration(milliseconds: 1000),
+      () async {
+        final attemptId = _currentState.attempt!.id.toString();
+        final pendingAns = _pendingAnswers.remove(questionId);
 
-    _submitTimers[questionId] = Timer(const Duration(seconds: 1), () async {
-      _submitTimers.remove(questionId);
-      final pendingAns = _pendingAnswers.remove(questionId);
-      final pendingUrl = _pendingAnswerUrls.remove(questionId);
-
-      if (pendingAns != null && pendingUrl != null) {
-        try {
-          await _dataSource.submitAnswer(pendingUrl, pendingAns);
-        } catch (e, stackTrace) {
-          // Rollback on failure
-          final currentAnswers = Map<String, AnswerDto>.from(
-            _currentState.answers,
-          );
-          if (currentAnswers[questionId] == pendingAns) {
-            currentAnswers[questionId] =
-                previousAnswers[questionId] ??
-                AnswerDto(questionId: questionId, selectedOptions: []);
+        if (pendingAns != null) {
+          try {
+            await _dataSource.submitAnswer(attemptId, questionId, pendingAns);
+          } catch (e, stackTrace) {
+            // Rollback on failure
+            final currentAnswers = Map<String, AnswerDto>.from(
+              _currentState.answers,
+            );
+            currentAnswers.remove(questionId);
             _emit(_currentState.copyWith(answers: currentAnswers));
+            dev.log(
+              'Failed to submit answer',
+              name: 'ExamRepository',
+              error: e,
+              stackTrace: stackTrace,
+            );
           }
-          dev.log(
-            'Failed to submit answer',
-            name: 'ExamRepository',
-            error: e,
-            stackTrace: stackTrace,
-          );
         }
-      }
-    });
+      },
+    );
   }
 
   void updateLocalAnswer(String questionId, AnswerDto answer) {
@@ -820,14 +818,16 @@ class ExamRepository {
     _emit(_currentState.copyWith(answers: newAnswers));
   }
 
-  Future<void> checkQuizAnswer(String answerUrl, AnswerDto answer) async {
-    final questionId = answer.questionId;
+  Future<void> checkQuizAnswer(String questionId, AnswerDto answer) async {
+    if (_currentState.attempt?.id == null) {
+      return;
+    }
+    final attemptId = _currentState.attempt!.id.toString();
 
     // Flush any pending network debounce for this question to avoid conflicts
     _submitTimers[questionId]?.cancel();
     _submitTimers.remove(questionId);
     _pendingAnswers.remove(questionId);
-    _pendingAnswerUrls.remove(questionId);
 
     // Update local answer state
     updateLocalAnswer(questionId, answer);
@@ -835,61 +835,53 @@ class ExamRepository {
     final question = _currentState.questions.firstWhere(
       (q) => q.id == questionId,
     );
-    final hasLocalCorrectAnswers =
-        question.options.any((o) => o.isCorrect) ||
-        question.correctOptionIds.isNotEmpty;
+    // ── Instant UI Reaction ──────────────────────────────────────────────────
+    final result = listEquals(
+      List<String>.from(answer.selectedOptions)..sort(),
+      List<String>.from(question.correctOptionIds)..sort(),
+    );
 
-    // ── Optimistic update ──────────────────────────────────────────────────
-    // Mark as checked immediately ONLY if we have local correct answers to show.
-    // Otherwise, wait for the network roundtrip so that the button does not
-    // prematurely swap to "Continue" before visual review feedback is ready.
-    if (hasLocalCorrectAnswers) {
-      final optimisticChecked = Set<String>.from(_currentState.checkedQuestions)
-        ..add(questionId);
-      _emit(_currentState.copyWith(checkedQuestions: optimisticChecked));
-    }
+    final quizReview = QuizReviewResultDto(
+      questionId: questionId,
+      selectedAnswers: answer.selectedOptions,
+      correctAnswers: question.correctOptionIds,
+      result: result,
+      review: question.explanation,
+      explanationHtml: question.explanation,
+    );
+
+    final newQuizReviews = Map<String, QuizReviewResultDto>.from(
+      _currentState.quizReviews,
+    );
+    newQuizReviews[questionId] = quizReview;
+
+    final newChecked = Set<String>.from(_currentState.checkedQuestions)
+      ..add(questionId);
+
+    _emit(
+      _currentState.copyWith(
+        quizReviews: newQuizReviews,
+        checkedQuestions: newChecked,
+      ),
+    );
     // ───────────────────────────────────────────────────────────────────────
 
-    try {
-      final quizReview = await _dataSource.submitQuizAnswer(answerUrl, answer);
-
+    // Fire and forget submission
+    _dataSource.submitAnswer(attemptId, questionId, answer).catchError((
+      e,
+      stackTrace,
+    ) {
       dev.log(
-        'checkQuizAnswer received review: '
-        'questionId=${quizReview.questionId}, '
-        'selected=${quizReview.selectedAnswers}, '
-        'correct=${quizReview.correctAnswers}, '
-        'result=${quizReview.result}, '
-        'review=${quizReview.review}, '
-        'hasExplanation=${quizReview.explanationHtml != null && quizReview.explanationHtml!.isNotEmpty}',
-        name: 'ExamRepository',
-      );
-
-      final newQuizReviews = Map<String, QuizReviewResultDto>.from(
-        _currentState.quizReviews,
-      );
-      newQuizReviews[questionId] = quizReview;
-
-      final newChecked = Set<String>.from(_currentState.checkedQuestions)
-        ..add(questionId);
-
-      _emit(
-        _currentState.copyWith(
-          quizReviews: newQuizReviews,
-          checkedQuestions: newChecked,
-        ),
-      );
-    } catch (e, stackTrace) {
-      dev.log(
-        'Failed to check quiz answer',
+        'Background submission failed for $questionId',
         name: 'ExamRepository',
         error: e,
         stackTrace: stackTrace,
       );
-      rethrow;
-    }
+      return null;
+    });
   }
 
-  void updateShortText(String questionId, String answerUrl, String text) {
+  void updateShortText(String questionId, String text) {
     final currentAnswer =
         _currentState.answers[questionId] ??
         AnswerDto(questionId: questionId, selectedOptions: []);
@@ -909,10 +901,9 @@ class ExamRepository {
 
     // Keep it in pending so flush handles it on heartbeat or exam end
     _pendingAnswers[questionId] = newAnswer;
-    _pendingAnswerUrls[questionId] = answerUrl;
   }
 
-  void updateEssayText(String questionId, String answerUrl, String text) {
+  void updateEssayText(String questionId, String text) {
     final currentAnswer =
         _currentState.answers[questionId] ??
         AnswerDto(questionId: questionId, selectedOptions: []);
@@ -932,7 +923,6 @@ class ExamRepository {
 
     // Keep it in pending so flush handles it on heartbeat or exam end
     _pendingAnswers[questionId] = newAnswer;
-    _pendingAnswerUrls[questionId] = answerUrl;
   }
 
   void markQuestionAsChecked(String questionId) {
@@ -941,23 +931,30 @@ class ExamRepository {
     _emit(_currentState.copyWith(checkedQuestions: newChecked));
   }
 
-  Future<void> endExam(String endUrl) async {
+  Future<void> endExam() async {
+    final attemptId = _currentState.attempt!.id.toString();
+
     _emit(_currentState.copyWith(status: ExamAttemptStatus.submitting));
+    stopCountdown();
+    stopHeartbeat();
+    await _flushPendingAnswers();
+
     try {
-      await _flushPendingAnswers();
       if (_currentState.sections.isNotEmpty &&
           _currentState.currentSectionIndex >= 0 &&
           _currentState.currentSectionIndex < _currentState.sections.length) {
         final currentSection =
             _currentState.sections[_currentState.currentSectionIndex];
-        if (currentSection.state == 'Running' &&
-            currentSection.endUrl != null) {
+        if (currentSection.state == 'Running') {
           try {
-            await _dataSource.endSection(currentSection.endUrl!);
+            await _dataSource.endSection(
+              attemptId,
+              currentSection.order.toString(),
+            );
           } catch (_) {}
         }
       }
-      final finalAttempt = await _dataSource.endExam(endUrl);
+      final finalAttempt = await _dataSource.endExam(attemptId);
       stopHeartbeat();
       stopCountdown();
       _emit(

@@ -149,7 +149,7 @@ abstract class DataSource {
 
   // ── Exams ───────────────────────────────────────────────────────────────
 
-  /// Fetch full metadata for an exam from `/api/v2.2.1/exams/{slug}/`.
+  /// Fetch full metadata for an exam from `/api/v2.4/exams/{slug}/`.
   Future<ExamDto> getExam(String slug);
 
   /// Fetch list of historical attempts.
@@ -168,22 +168,20 @@ abstract class DataSource {
   });
 
   /// Resume or start an attempt via its start URL.
-  Future<AttemptDto> startAttempt(String startUrl);
+  Future<AttemptDto> startAttempt(String attemptId);
 
-  /// Fetch all questions for an attempt.
-  Future<List<QuestionDto>> getQuestions(String questionsUrl);
+  /// Fetch all questions for an attempt using v3 unified endpoint.
+  Future<List<QuestionDto>> getQuestions(String attemptId);
 
   /// Submit a single answer to the backend.
-  Future<void> submitAnswer(String answerUrl, AnswerDto answer);
-
-  /// Submit a single answer in quiz mode and return the server's review state.
-  Future<QuizReviewResultDto> submitQuizAnswer(
-    String answerUrl,
+  Future<QuizReviewResultDto?> submitAnswer(
+    String attemptId,
+    String questionId,
     AnswerDto answer,
   );
 
   /// Send a heartbeat to maintain the attempt session.
-  Future<AttemptDto> sendHeartbeat(String heartbeatUrl);
+  Future<AttemptDto> sendHeartbeat(String attemptId);
 
   /// Fetch last watched position from an attempts URL.
   Future<String?> getLastWatchedPosition(String attemptsUrl);
@@ -196,7 +194,7 @@ abstract class DataSource {
   });
 
   /// End the exam attempt and finalize results.
-  Future<AttemptDto> endExam(String endUrl);
+  Future<AttemptDto> endExam(String attemptId);
 
   /// Fetch all review items / solution details for an attempt.
   Future<List<ReviewItemDto>> getReviewItems(String reviewUrl);
@@ -210,11 +208,11 @@ abstract class DataSource {
     int? parentId,
   });
 
-  /// Start an attempt section via its start URL.
-  Future<SectionDto> startSection(String startUrl);
+  /// Start an attempt section.
+  Future<SectionDto> startSection(String attemptId, String sectionOrder);
 
-  /// End an attempt section via its end URL.
-  Future<SectionDto> endSection(String endUrl);
+  /// End an attempt section.
+  Future<SectionDto> endSection(String attemptId, String sectionOrder);
 
   /// Fetch the recently completed feed from `/api/v2.4/completed/`.
   Future<DashboardContentsDto> getRecentlyCompletedFeed(

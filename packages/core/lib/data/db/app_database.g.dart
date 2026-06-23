@@ -974,7 +974,7 @@ class $ChaptersTableTable extends ChaptersTable
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'CHECK ("is_leaf" IN (0, 1))',
     ),
-    defaultValue: const Constant(true),
+    defaultValue: const Constant(false),
   );
   static const VerificationMeta _isChaptersSyncedMeta = const VerificationMeta(
     'isChaptersSynced',
@@ -14241,7 +14241,7 @@ class $SubjectAnalyticsTableTable extends SubjectAnalyticsTable
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'CHECK ("is_leaf" IN (0, 1))',
     ),
-    defaultValue: const Constant(true),
+    defaultValue: const Constant(false),
   );
   @override
   List<GeneratedColumn> get $columns => [

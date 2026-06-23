@@ -1179,13 +1179,9 @@ class MockDataSource implements DataSource {
     await Future.delayed(const Duration(milliseconds: 500));
     return [
       AttemptDto(
-        id: 'mock-attempt-1',
-        questionsUrl:
-            'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/questions/',
-        heartbeatUrl:
-            'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/heartbeat/',
-        endUrl:
-            'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/end/',
+        id: 999,
+        state: 'Completed',
+        remainingTime: '0:00:00',
         date: DateTime.now()
             .subtract(const Duration(days: 2))
             .toIso8601String(),
@@ -1205,13 +1201,10 @@ class MockDataSource implements DataSource {
     await Future.delayed(const Duration(milliseconds: 800));
     final attemptType = data?['attempt_type'] as int?;
     return AttemptDto(
-      id: 'mock-attempt-1',
-      questionsUrl:
-          'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/questions/',
-      heartbeatUrl:
-          'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/heartbeat/',
-      endUrl:
-          'https://api.testpress.in/api/v2.2.1/attempts/mock-attempt-1/end/',
+      id: 999,
+      state: 'Running',
+      remainingTime: '0:30:00',
+      correctCount: 0,
       attemptType: attemptType,
     );
   }
@@ -1225,12 +1218,34 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<AttemptDto> startAttempt(String startUrl) async {
-    return createAttempt(startUrl);
+  Future<SectionDto> startSection(String attemptId, String sectionOrder) async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    return SectionDto(
+      id: 'mock-section-$sectionOrder',
+      name: 'Section $sectionOrder',
+      state: 'Running',
+      order: int.tryParse(sectionOrder) ?? 0,
+    );
   }
 
   @override
-  Future<List<QuestionDto>> getQuestions(String questionsUrl) async {
+  Future<SectionDto> endSection(String attemptId, String sectionOrder) async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    return SectionDto(
+      id: 'mock-section-$sectionOrder',
+      name: 'Section $sectionOrder',
+      state: 'Completed',
+      order: int.tryParse(sectionOrder) ?? 0,
+    );
+  }
+
+  @override
+  Future<AttemptDto> startAttempt(String attemptId) async {
+    return createAttempt('dummy-url');
+  }
+
+  @override
+  Future<List<QuestionDto>> getQuestions(String attemptId) async {
     await Future.delayed(const Duration(milliseconds: 1000));
     return const [
       QuestionDto(
@@ -1261,35 +1276,25 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<void> submitAnswer(String answerUrl, AnswerDto answer) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-  }
-
-  @override
-  Future<QuizReviewResultDto> submitQuizAnswer(
-    String answerUrl,
+  Future<QuizReviewResultDto?> submitAnswer(
+    String attemptId,
+    String questionId,
     AnswerDto answer,
   ) async {
     await Future.delayed(const Duration(milliseconds: 300));
     return QuizReviewResultDto(
-      questionId: answer.questionId,
+      questionId: questionId,
       selectedAnswers: answer.selectedOptions,
-      correctAnswers: [], // mock doesn't know correct answers
-      result: null,
-      review: 'true',
+      correctAnswers: const ['o1'],
+      result: true,
+      explanationHtml: 'This is a mock explanation.',
     );
   }
 
   @override
-  Future<AttemptDto> sendHeartbeat(String heartbeatUrl) async {
+  Future<AttemptDto> sendHeartbeat(String attemptId) async {
     await Future.delayed(const Duration(milliseconds: 200));
-    return const AttemptDto(
-      id: 'mock-attempt-1',
-      questionsUrl: '',
-      heartbeatUrl: '',
-      endUrl: '',
-      remainingTime: '00:59:30',
-    );
+    return const AttemptDto(id: 999, remainingTime: '00:59:30');
   }
 
   @override
@@ -1308,39 +1313,9 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<AttemptDto> endExam(String endUrl) async {
+  Future<AttemptDto> endExam(String attemptId) async {
     await Future.delayed(const Duration(milliseconds: 800));
-    return const AttemptDto(
-      id: 'mock-attempt-1',
-      questionsUrl: '',
-      heartbeatUrl: '',
-      endUrl: '',
-      score: '45/100',
-    );
-  }
-
-  @override
-  Future<SectionDto> startSection(String startUrl) async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    return const SectionDto(
-      id: 'mock-section-1',
-      name: 'Physics',
-      state: 'Running',
-      questionsUrl: '',
-      order: 0,
-    );
-  }
-
-  @override
-  Future<SectionDto> endSection(String endUrl) async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    return const SectionDto(
-      id: 'mock-section-1',
-      name: 'Physics',
-      state: 'Completed',
-      questionsUrl: '',
-      order: 0,
-    );
+    return const AttemptDto(id: 999, score: '45/100');
   }
 
   @override

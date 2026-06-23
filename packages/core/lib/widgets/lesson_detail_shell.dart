@@ -30,6 +30,7 @@ class LessonDetailShell extends StatelessWidget {
     this.progress,
     this.isCompleted = false,
     this.stickyFooter = true,
+    this.backgroundColor,
   });
 
   /// The main title of the lesson.
@@ -77,12 +78,15 @@ class LessonDetailShell extends StatelessWidget {
   /// Whether the footer should be fixed at the bottom.
   final bool stickyFooter;
 
+  /// Optional background color override (defaults to design.colors.surface).
+  final Color? backgroundColor;
+
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
     return Container(
-      color: design.colors.surface,
+      color: backgroundColor ?? design.colors.surface,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -393,6 +397,7 @@ class LessonDetailShell extends StatelessWidget {
   }
 
   Widget _buildFooter(BuildContext context) {
+    if (bottomBar != null) return bottomBar!;
     return buildStaticFooter(context, onNext: onNext, onPrevious: onPrevious);
   }
 }

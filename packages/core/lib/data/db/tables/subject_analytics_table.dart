@@ -10,7 +10,7 @@ class SubjectAnalyticsTable extends Table {
   IntColumn get unansweredCount => integer()();
   RealColumn get correctPercentage => real()();
   IntColumn get parentId => integer().nullable()();
-  BoolColumn get isLeaf => boolean().withDefault(const Constant(true))();
+  BoolColumn get isLeaf => boolean().withDefault(const Constant(false))();
 
   @override
   Set<Column> get primaryKey => {id};

@@ -36,6 +36,44 @@ class QuestionDto {
     this.sectionId,
   });
 
+  QuestionDto copyWith({
+    String? id,
+    String? text,
+    String? type,
+    String? subject,
+    List<QuestionOptionDto>? options,
+    String? answerUrl,
+    String? markUrl,
+    List<String>? correctOptionIds,
+    String? explanation,
+    String? directionHtml,
+    int? order,
+    List<String>? selectedOptionIds,
+    String? shortText,
+    String? essayText,
+    String? sectionName,
+    String? sectionId,
+  }) {
+    return QuestionDto(
+      id: id ?? this.id,
+      text: text ?? this.text,
+      type: type ?? this.type,
+      subject: subject ?? this.subject,
+      options: options ?? this.options,
+      answerUrl: answerUrl ?? this.answerUrl,
+      markUrl: markUrl ?? this.markUrl,
+      correctOptionIds: correctOptionIds ?? this.correctOptionIds,
+      explanation: explanation ?? this.explanation,
+      directionHtml: directionHtml ?? this.directionHtml,
+      order: order ?? this.order,
+      selectedOptionIds: selectedOptionIds ?? this.selectedOptionIds,
+      shortText: shortText ?? this.shortText,
+      essayText: essayText ?? this.essayText,
+      sectionName: sectionName ?? this.sectionName,
+      sectionId: sectionId ?? this.sectionId,
+    );
+  }
+
   factory QuestionDto.fromJson(Map<String, dynamic> json) {
     // Handle nested question object in some API versions
     final Map<String, dynamic> data =
@@ -62,6 +100,12 @@ class QuestionDto {
         .map((option) => option.id)
         .toList();
 
+    final expl =
+        (data['explanation'] ??
+                data['explanation_html'] ??
+                json['explanation_html'])
+            as String?;
+
     return QuestionDto(
       id: (data['id'] ?? json['id'] ?? '').toString(),
       text:
@@ -72,8 +116,8 @@ class QuestionDto {
               as String? ??
           '',
       type: switch ((data['type'] ?? json['type']) as String?) {
-        'R' => 'singleSelect', // MCQ, Single Correct (Testpress API)
-        'C' => 'multipleSelect', // MCQ, Multiple Correct (Testpress API)
+        'R' => 'singleSelect',
+        'C' => 'multipleSelect',
         'S' => 'shortAnswer',
         'N' => 'numerical',
         'E' => 'essay',
@@ -95,11 +139,7 @@ class QuestionDto {
       correctOptionIds: explicitCorrectIds.isNotEmpty
           ? explicitCorrectIds
           : derivedCorrectIds,
-      explanation:
-          (data['explanation'] ??
-                  data['explanation_html'] ??
-                  json['explanation_html'])
-              as String?,
+      explanation: expl,
       directionHtml:
           (data['direction'] ??
                   data['direction_html'] ??
@@ -135,6 +175,76 @@ class QuestionDto {
                       : data['attempt_section']))
               ?.toString(),
     );
+  }
+
+  static List<QuestionDto> parseV3List(Map<String, dynamic> responseData) {
+    final results =
+        responseData['results'] as Map<String, dynamic>? ?? responseData;
+    final userAnswersRaw = results['user_answers'] as List<dynamic>? ?? [];
+    final examQuestionsRaw = results['exam_questions'] as List<dynamic>? ?? [];
+
+    final examQuestionsMap = <int, Map<String, dynamic>>{};
+    for (final eq in examQuestionsRaw) {
+      if (eq is Map<String, dynamic> && eq['id'] != null) {
+        examQuestionsMap[eq['id'] as int] = eq;
+      }
+    }
+
+    final attemptSectionsRaw =
+        results['attempt_sections'] as List<dynamic>? ??
+        results['sections'] as List<dynamic>? ??
+        [];
+
+    final sectionNamesMap = <int, String>{};
+    for (final sec in attemptSectionsRaw) {
+      if (sec is Map<String, dynamic> && sec['id'] != null) {
+        final secName = sec['section_name'] ?? sec['name'];
+        if (secName != null) {
+          sectionNamesMap[sec['id'] as int] = secName.toString();
+        }
+      }
+    }
+
+    final questions = <QuestionDto>[];
+    for (final ua in userAnswersRaw) {
+      if (ua is Map<String, dynamic>) {
+        final eqId = ua['exam_question_id'] as int?;
+        if (eqId != null && examQuestionsMap.containsKey(eqId)) {
+          final eq = examQuestionsMap[eqId]!;
+
+          final mergedJson = Map<String, dynamic>.from(eq);
+          mergedJson['id'] = ua['id'];
+          mergedJson['user_answer'] = ua;
+          // also merge selected options if available in user_answers payload
+          if (ua['selected_answers'] != null) {
+            mergedJson['selected_answers'] = ua['selected_answers'];
+          }
+          if (ua['short_text'] != null) {
+            mergedJson['short_text'] = ua['short_text'];
+          }
+          if (ua['essay_text'] != null) {
+            mergedJson['essay_text'] = ua['essay_text'];
+          }
+
+          final attemptSectionId = ua['attempt_section_id'];
+          if (attemptSectionId != null) {
+            mergedJson['attempt_section_id'] = attemptSectionId;
+            if (sectionNamesMap.containsKey(attemptSectionId)) {
+              // Inject as nested object so QuestionDto.fromJson natively picks up id & name
+              mergedJson['attempt_section'] = {
+                'id': attemptSectionId,
+                'name': sectionNamesMap[attemptSectionId],
+              };
+            }
+          }
+
+          questions.add(QuestionDto.fromJson(mergedJson));
+        }
+      }
+    }
+
+    questions.sort((a, b) => a.order.compareTo(b.order));
+    return questions;
   }
 
   Map<String, dynamic> toJson() {

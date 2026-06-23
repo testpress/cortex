@@ -45,6 +45,33 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
   bool _showSubmitConfirmation = false;
   bool _showPauseConfirmation = false;
 
+  // Track which answers have been modified locally but not yet submitted
+  final Set<String> _dirtyAnswers = {};
+
+  void _submitCurrentQuestionIfDirty(
+    List<QuestionDto> allQuestions,
+    ExamAttemptState state, {
+    bool showIndicator = false,
+  }) {
+    if (allQuestions.isEmpty) return;
+    final safeIndex = _currentQuestionIndex < allQuestions.length
+        ? _currentQuestionIndex
+        : 0;
+    final currentQ = allQuestions[safeIndex];
+    if (!state.isQuizMode && _dirtyAnswers.contains(currentQ.id)) {
+      final currentA = state.answers[currentQ.id];
+      if (currentA != null) {
+        ref
+            .read(examAttemptProvider.notifier)
+            .submitAnswer(currentQ.id, currentA);
+        if (showIndicator) {
+          _showSavedIndicator();
+        }
+      }
+      _dirtyAnswers.remove(currentQ.id);
+    }
+  }
+
   // Flash "Saved" indicator
   bool _isSavedVisible = false;
   Timer? _savedTimer;
@@ -325,7 +352,6 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
             id: '',
             name: entry.key,
             state: 'Not Started',
-            questionsUrl: '',
             order: localSections.length,
             questionsCount: entry.value.length,
           ),
@@ -444,6 +470,12 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                           tabNames: tabNames,
                           activeIndex: activeTabIndex,
                           onTabSelected: (index) {
+                            // Submit the answer of the question we are leaving if it was modified
+                            _submitCurrentQuestionIfDirty(
+                              allQuestions,
+                              state,
+                              showIndicator: true,
+                            );
                             if (useSections) {
                               ref
                                   .read(examAttemptProvider.notifier)
@@ -487,6 +519,13 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                           controller: _pageController,
                           allowImplicitScrolling: true,
                           onPageChanged: (index) {
+                            // Submit the answer of the question we are leaving if it was modified
+                            _submitCurrentQuestionIfDirty(
+                              allQuestions,
+                              state,
+                              showIndicator: true,
+                            );
+
                             setState(() {
                               _currentQuestionIndex = index;
                               // Sync subject index if needed
@@ -531,6 +570,12 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                                     curve: Curves.easeInOut,
                                   );
                                 } else if (hasNextSection) {
+                                  // Submit the answer of the question we are leaving if it was modified
+                                  _submitCurrentQuestionIfDirty(
+                                    allQuestions,
+                                    state,
+                                    showIndicator: true,
+                                  );
                                   ref
                                       .read(examAttemptProvider.notifier)
                                       .switchSection(
@@ -558,7 +603,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                                   try {
                                     await ref
                                         .read(examAttemptProvider.notifier)
-                                        .checkQuizAnswer(q.answerUrl, a);
+                                        .checkQuizAnswer(q.id, a);
                                   } catch (e) {
                                     if (context.mounted) {
                                       AppToast.show(
@@ -604,11 +649,13 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                 answeredCount: answeredCount,
                 totalCount: displayTotalCount,
                 onCancel: () => setState(() => _showSubmitConfirmation = false),
-                onSubmit: () {
+                onSubmit: () async {
                   setState(() => _showSubmitConfirmation = false);
-                  ref
-                      .read(examAttemptProvider.notifier)
-                      .endExam(state.attempt!.endUrl);
+
+                  // Submit current question if dirty before ending
+                  _submitCurrentQuestionIfDirty(allQuestions, state);
+
+                  await ref.read(examAttemptProvider.notifier).endExam();
                 },
               ),
             if (_showPauseConfirmation)
@@ -623,11 +670,13 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                   ref.read(examAttemptProvider.notifier).reset();
                   widget.onClose();
                 },
-                onEnd: () {
+                onEnd: () async {
                   setState(() => _showPauseConfirmation = false);
-                  ref
-                      .read(examAttemptProvider.notifier)
-                      .endExam(state.attempt!.endUrl);
+
+                  // Submit current question if dirty before ending
+                  _submitCurrentQuestionIfDirty(allQuestions, state);
+
+                  await ref.read(examAttemptProvider.notifier).endExam();
                 },
               ),
             if (state.status == ExamAttemptStatus.completed)
@@ -699,16 +748,16 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
   void _handleInputChange(
     ExamAttemptState state,
     QuestionDto question,
-    String value,
+    String text,
   ) {
     if (question.type == 'essay') {
-      ref
-          .read(examAttemptProvider.notifier)
-          .updateEssayText(question.id, question.answerUrl, value);
+      ref.read(examAttemptProvider.notifier).updateEssayText(question.id, text);
     } else {
-      ref
-          .read(examAttemptProvider.notifier)
-          .updateShortText(question.id, question.answerUrl, value);
+      ref.read(examAttemptProvider.notifier).updateShortText(question.id, text);
+    }
+
+    if (!state.isQuizMode) {
+      _dirtyAnswers.add(question.id);
     }
     // Don't show the saved indicator for every keystroke since it doesn't trigger immediate network submission
   }
@@ -744,10 +793,11 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
           .read(examAttemptProvider.notifier)
           .updateLocalAnswer(question.id, newAnswer);
     } else {
+      // Update locally and mark as dirty so it's submitted on navigation
       ref
           .read(examAttemptProvider.notifier)
-          .submitAnswer(question.answerUrl, newAnswer);
-      _showSavedIndicator();
+          .updateLocalAnswer(question.id, newAnswer);
+      _dirtyAnswers.add(question.id);
     }
   }
 
@@ -762,9 +812,17 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
       isMarked: !currentAnswer.isMarked,
     );
 
-    ref
-        .read(examAttemptProvider.notifier)
-        .submitAnswer(question.answerUrl, newAnswer);
+    if (state.isQuizMode) {
+      ref
+          .read(examAttemptProvider.notifier)
+          .updateLocalAnswer(question.id, newAnswer);
+    } else {
+      // Update locally and mark as dirty so it's submitted on navigation
+      ref
+          .read(examAttemptProvider.notifier)
+          .updateLocalAnswer(question.id, newAnswer);
+      _dirtyAnswers.add(question.id);
+    }
   }
 
   void _openAnalytics(ExamAttemptState state) {
