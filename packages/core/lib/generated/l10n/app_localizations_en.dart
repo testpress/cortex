@@ -2105,4 +2105,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get defaultStudentName => 'Student';
+
+  @override
+  String get examCompletedLabel => 'Exam completed';
 }

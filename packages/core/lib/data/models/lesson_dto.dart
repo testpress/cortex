@@ -550,7 +550,23 @@ class LessonDto {
                 exam?['duration']?.toString(),
           ) ??
           '',
-      progressStatus: _parseStatus(json['state'] ?? json['progressStatus']),
+      progressStatus: (() {
+        final parsed = _parseStatus(json['state'] ?? json['progressStatus']);
+        if (parsed == LessonProgressStatus.completed) return parsed;
+
+        final isVideoOrStream =
+            type == LessonType.video || type == LessonType.liveStream;
+        final total = (json['attempts_count'] as num?)?.toInt() ?? 0;
+        final paused =
+            (json['paused_attempts_count'] as num?)?.toInt() ??
+            (exam?['paused_attempts_count'] as num?)?.toInt() ??
+            0;
+        final completedCount = total - paused;
+        if (!isVideoOrStream && completedCount > 0) {
+          return LessonProgressStatus.completed;
+        }
+        return parsed;
+      })(),
       isLocked: !(json['active'] as bool? ?? json['isLocked'] == false),
       orderIndex:
           (json['order'] as num?)?.toInt() ??
@@ -594,7 +610,14 @@ class LessonDto {
             'upcoming',
             'scheduled',
           ].contains(liveStream?['status']?.toString().toLowerCase()),
-      hasAttempts: json['has_attempts'] as bool? ?? false,
+      hasAttempts: (() {
+        final total = (json['attempts_count'] as num?)?.toInt() ?? 0;
+        final paused =
+            (json['paused_attempts_count'] as num?)?.toInt() ??
+            (exam?['paused_attempts_count'] as num?)?.toInt() ??
+            0;
+        return (total - paused) > 0;
+      })(),
       pausedAttemptsCount:
           (json['paused_attempts_count'] as num?)?.toInt() ??
           (exam?['paused_attempts_count'] as num?)?.toInt() ??

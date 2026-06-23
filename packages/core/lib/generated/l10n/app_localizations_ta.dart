@@ -2139,4 +2139,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get defaultStudentName => 'மாணவர்';
+
+  @override
+  String get examCompletedLabel => 'தேர்வு முடிந்தது';
 }

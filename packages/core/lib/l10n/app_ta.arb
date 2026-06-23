@@ -975,6 +975,7 @@
   "reviewExamReviewTitle": "தேர்வு மதிப்பாய்வு",
   "reviewExamReviewDesc": "பதில்கள் மற்றும் விளக்கங்களுடன் ஒவ்வொரு கேள்வியையும் மதிப்பாய்வு செய்யவும்",
   "defaultStudentName": "மாணவர்",
+  "examCompletedLabel": "தேர்வு முடிந்தது",
   "examTotalQuestions": "மொத்த கேள்விகள்",
   "examDuration": "கால அளவு",
   "examTotalMarks": "மொத்த மதிப்பெண்கள்",

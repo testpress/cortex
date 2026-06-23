@@ -31,7 +31,6 @@ class ChapterContentItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(design.radius.md),
           boxShadow: design.shadows.surfaceSoft,
         ),
-        clipBehavior: Clip.hardEdge,
         child: AppFocusable(
           onTap: activeOnTap,
           borderRadius: BorderRadius.circular(design.radius.md),
@@ -46,49 +45,93 @@ class ChapterContentItem extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Skeleton.replace(
-                    width: 140,
-                    height: 80,
-                    replacement: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: design.colors.skeleton,
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(design.radius.md),
+                          bottomLeft: Radius.circular(design.radius.md),
+                        ),
+                        child: Skeleton.replace(
+                          width: 140,
+                          height: 80,
+                          replacement: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: design.colors.skeleton,
+                            ),
+                          ),
+                          child: Container(
+                            width: 140,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              color: lesson.image?.isNotEmpty == true
+                                  ? null
+                                  : _getColorForType(context, lesson.type)
+                                      .withValues(alpha: 0.1),
+                            ),
+                            child: lesson.image?.isNotEmpty == true
+                                ? CachedNetworkImage(
+                                    imageUrl: lesson.image!,
+                                    width: 140,
+                                    height: 80,
+                                    memCacheWidth: 280,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) => Container(
+                                      color: design.colors.skeleton,
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        Center(
+                                      child: Icon(
+                                        icon,
+                                        size: 24,
+                                        color: _getColorForType(
+                                            context, lesson.type),
+                                      ),
+                                    ),
+                                  )
+                                : Center(
+                                    child: Icon(
+                                      icon,
+                                      size: 24,
+                                      color: _getColorForType(
+                                          context, lesson.type),
+                                    ),
+                                  ),
+                          ),
+                        ),
                       ),
-                    ),
-                    child: Container(
-                      width: 140,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        color: lesson.image?.isNotEmpty == true
-                            ? null
-                            : _getColorForType(context, lesson.type)
-                                .withValues(alpha: 0.1),
-                      ),
-                      child: lesson.image?.isNotEmpty == true
-                          ? CachedNetworkImage(
-                              imageUrl: lesson.image!,
-                              width: 140,
-                              height: 80,
-                              memCacheWidth: 280,
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => Container(
-                                color: design.colors.skeleton,
-                              ),
-                              errorWidget: (context, url, error) => Center(
-                                child: Icon(
-                                  icon,
-                                  size: 24,
-                                  color: _getColorForType(context, lesson.type),
+                      if (lesson.hasAttempts &&
+                          (lesson.type == LessonType.test ||
+                              lesson.type == LessonType.assessment))
+                        Positioned(
+                          top: -6,
+                          right: -6,
+                          child: AppSemantics.progressValue(
+                            value: 1.0,
+                            label: L10n.of(context).examCompletedLabel,
+                            child: Container(
+                              width: design.iconSize.md,
+                              height: design.iconSize.md,
+                              decoration: BoxDecoration(
+                                color: design.colors.accent4,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: design.colors.card,
+                                  width: 1.5,
                                 ),
                               ),
-                            )
-                          : Center(
-                              child: Icon(
-                                icon,
-                                size: 24,
-                                color: _getColorForType(context, lesson.type),
+                              child: Center(
+                                child: Icon(
+                                  LucideIcons.check,
+                                  size: 11,
+                                  color: design.colors.onSuccess,
+                                ),
                               ),
                             ),
-                    ),
+                          ),
+                        ),
+                    ],
                   ),
                   Expanded(
                     child: Padding(
