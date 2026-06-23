@@ -38,16 +38,16 @@ class ExamDetail extends _$ExamDetail {
       }
     }
     // 3. First ever fetch (no cache)
-    final dataSource = ref.watch(dataSourceProvider);
-    final freshDto = await dataSource.getExam(slug);
+    final examRepository = ref.watch(examRepositoryProvider);
+    final freshDto = await examRepository.getExamBySlug(slug);
     await db.updateLessonExamMetadata(slug, jsonEncode(freshDto.toJson()));
     return freshDto;
   }
 
   Future<void> revalidate(String slug) async {
     try {
-      final dataSource = ref.read(dataSourceProvider);
-      final freshDto = await dataSource.getExam(slug);
+      final examRepository = ref.read(examRepositoryProvider);
+      final freshDto = await examRepository.getExamBySlug(slug);
 
       final db = await ref.read(appDatabaseProvider.future);
       final cachedJson = await db.watchLessonExamMetadataBySlug(slug).first;

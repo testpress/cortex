@@ -21,7 +21,7 @@ class ExamPrescreenActionButton extends StatelessWidget {
 
     return Skeleton.ignore(
       child: AppSemantics.button(
-        label: isResuming ? 'Resume Exam Online' : 'Start Exam Online',
+        label: isResuming ? l10n.resumeExamOnline : l10n.startExamOnline,
         onTap: onTap,
         enabled: isButtonEnabled,
         child: GestureDetector(
@@ -38,12 +38,11 @@ class ExamPrescreenActionButton extends StatelessWidget {
             child: AppText.body(
               isResuming ? l10n.resumeExamOnline : l10n.startExamOnline,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: design.typography.body.copyWith(
                 color: isButtonEnabled
                     ? design.colors.onPrimary
                     : design.colors.textSecondary,
                 fontWeight: FontWeight.bold,
-                fontSize: 16,
               ),
             ),
           ),
