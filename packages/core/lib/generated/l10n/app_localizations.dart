@@ -1158,6 +1158,12 @@ abstract class AppLocalizations {
   /// **'Failed to load lesson. Please check your connection.'**
   String get errorLessonLoad;
 
+  /// No description provided for @lessonNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Lesson not found'**
+  String get lessonNotFound;
+
   /// No description provided for @labelLessonsPlural.
   ///
   /// In en, this message translates to:
@@ -2776,6 +2782,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start Exam'**
   String get startExam;
+
+  /// No description provided for @examTotalQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Questions'**
+  String get examTotalQuestions;
+
+  /// No description provided for @examDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get examDuration;
+
+  /// No description provided for @examTotalMarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Marks'**
+  String get examTotalMarks;
+
+  /// No description provided for @examCorrectAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct Answer'**
+  String get examCorrectAnswer;
+
+  /// No description provided for @examWrongAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong Answer'**
+  String get examWrongAnswer;
+
+  /// No description provided for @examStartsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Starts On'**
+  String get examStartsOn;
+
+  /// No description provided for @examEndsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Ends On'**
+  String get examEndsOn;
+
+  /// No description provided for @examForever.
+  ///
+  /// In en, this message translates to:
+  /// **'Forever'**
+  String get examForever;
+
+  /// No description provided for @examDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam Details'**
+  String get examDetailsTitle;
+
+  /// No description provided for @errorCannotStartExam.
+  ///
+  /// In en, this message translates to:
+  /// **'Oops! Cannot start exam'**
+  String get errorCannotStartExam;
+
+  /// No description provided for @errorUnknownOccurred.
+  ///
+  /// In en, this message translates to:
+  /// **'An unknown error occurred.'**
+  String get errorUnknownOccurred;
+
+  /// No description provided for @actionGoBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Go Back'**
+  String get actionGoBack;
 
   /// No description provided for @nextSubject.
   ///

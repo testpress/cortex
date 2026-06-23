@@ -27,26 +27,28 @@ class ExamPrescreenMarkCard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          padding: const EdgeInsets.all(10),
+          padding: EdgeInsets.all(design.spacing.sm),
           decoration: BoxDecoration(
             color: effectiveColor.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, size: 20, color: effectiveColor),
         ),
-        const SizedBox(width: 16),
+        SizedBox(width: design.spacing.md),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AppText.caption(
               label,
               color: design.colors.textSecondary,
-              style: const TextStyle(fontSize: 12),
+              style: design.typography.caption,
             ),
             AppText.body(
               value,
               color: effectiveColor,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              style: design.typography.body.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),

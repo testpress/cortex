@@ -45,32 +45,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
   bool _showSubmitConfirmation = false;
   bool _showPauseConfirmation = false;
 
-  // Track which answers have been modified locally but not yet submitted
-  final Set<String> _dirtyAnswers = {};
-
-  void _submitCurrentQuestionIfDirty(
-    List<QuestionDto> allQuestions,
-    ExamAttemptState state, {
-    bool showIndicator = false,
-  }) {
-    if (allQuestions.isEmpty) return;
-    final safeIndex = _currentQuestionIndex < allQuestions.length
-        ? _currentQuestionIndex
-        : 0;
-    final currentQ = allQuestions[safeIndex];
-    if (!state.isQuizMode && _dirtyAnswers.contains(currentQ.id)) {
-      final currentA = state.answers[currentQ.id];
-      if (currentA != null) {
-        ref
-            .read(examAttemptProvider.notifier)
-            .submitAnswer(currentQ.id, currentA);
-        if (showIndicator) {
-          _showSavedIndicator();
-        }
-      }
-      _dirtyAnswers.remove(currentQ.id);
-    }
-  }
+  // Removed _dirtyAnswers to fix out-of-order submission drops.
 
   // Flash "Saved" indicator
   bool _isSavedVisible = false;
@@ -303,17 +278,20 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
               ),
               SizedBox(height: design.spacing.lg),
               AppText.title(
-                'Oops! Cannot start exam',
+                L10n.of(context).errorCannotStartExam,
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: design.spacing.sm),
               AppText.body(
-                state.errorMessage ?? 'An unknown error occurred.',
+                state.errorMessage ?? L10n.of(context).errorUnknownOccurred,
                 textAlign: TextAlign.center,
                 color: design.colors.textSecondary,
               ),
               SizedBox(height: design.spacing.xl),
-              AppButton(label: 'Go Back', onPressed: () => context.pop()),
+              AppButton(
+                label: L10n.of(context).actionGoBack,
+                onPressed: () => context.pop(),
+              ),
             ],
           ),
         ),
@@ -470,12 +448,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                           tabNames: tabNames,
                           activeIndex: activeTabIndex,
                           onTabSelected: (index) {
-                            // Submit the answer of the question we are leaving if it was modified
-                            _submitCurrentQuestionIfDirty(
-                              allQuestions,
-                              state,
-                              showIndicator: true,
-                            );
+                            // No need to manually submit dirty questions; answers are immediately queued to the repository.
                             if (useSections) {
                               ref
                                   .read(examAttemptProvider.notifier)
@@ -519,13 +492,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                           controller: _pageController,
                           allowImplicitScrolling: true,
                           onPageChanged: (index) {
-                            // Submit the answer of the question we are leaving if it was modified
-                            _submitCurrentQuestionIfDirty(
-                              allQuestions,
-                              state,
-                              showIndicator: true,
-                            );
-
+                            // No need to manually submit dirty questions; answers are immediately queued to the repository.
                             setState(() {
                               _currentQuestionIndex = index;
                               // Sync subject index if needed
@@ -557,25 +524,44 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                               onToggleMark: () => _handleToggleMark(state, q),
                               onPrevious: () {
                                 if (index > 0) {
-                                  _pageController.previousPage(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                  );
+                                  if (MotionPreferences.shouldAnimate(
+                                    context,
+                                  )) {
+                                    _pageController.previousPage(
+                                      duration: MotionPreferences.duration(
+                                        context,
+                                        design.motion.normal,
+                                      ),
+                                      curve: MotionPreferences.curve(
+                                        context,
+                                        design.motion.easeInOut,
+                                      ),
+                                    );
+                                  } else {
+                                    _pageController.jumpToPage(index - 1);
+                                  }
                                 }
                               },
                               onNext: () {
                                 if (index < allQuestions.length - 1) {
-                                  _pageController.nextPage(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                  );
+                                  if (MotionPreferences.shouldAnimate(
+                                    context,
+                                  )) {
+                                    _pageController.nextPage(
+                                      duration: MotionPreferences.duration(
+                                        context,
+                                        design.motion.normal,
+                                      ),
+                                      curve: MotionPreferences.curve(
+                                        context,
+                                        design.motion.easeInOut,
+                                      ),
+                                    );
+                                  } else {
+                                    _pageController.jumpToPage(index + 1);
+                                  }
                                 } else if (hasNextSection) {
-                                  // Submit the answer of the question we are leaving if it was modified
-                                  _submitCurrentQuestionIfDirty(
-                                    allQuestions,
-                                    state,
-                                    showIndicator: true,
-                                  );
+                                  // No need to manually submit dirty questions; answers are immediately queued.
                                   ref
                                       .read(examAttemptProvider.notifier)
                                       .switchSection(
@@ -608,8 +594,9 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                                     if (context.mounted) {
                                       AppToast.show(
                                         context,
-                                        message:
-                                            "Failed to check answer. Please try again.",
+                                        message: L10n.of(
+                                          context,
+                                        ).errorUnknownOccurred,
                                         isError: true,
                                       );
                                     }
@@ -652,8 +639,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                 onSubmit: () async {
                   setState(() => _showSubmitConfirmation = false);
 
-                  // Submit current question if dirty before ending
-                  _submitCurrentQuestionIfDirty(allQuestions, state);
+                  // Answers are already queued in the repository; endExam flushes them.
 
                   await ref.read(examAttemptProvider.notifier).endExam();
                 },
@@ -673,8 +659,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                 onEnd: () async {
                   setState(() => _showPauseConfirmation = false);
 
-                  // Submit current question if dirty before ending
-                  _submitCurrentQuestionIfDirty(allQuestions, state);
+                  // Answers are already queued in the repository; endExam flushes them.
 
                   await ref.read(examAttemptProvider.notifier).endExam();
                 },
@@ -756,10 +741,10 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
       ref.read(examAttemptProvider.notifier).updateShortText(question.id, text);
     }
 
+    // The ExamRepository automatically queues this text for submission.
     if (!state.isQuizMode) {
-      _dirtyAnswers.add(question.id);
+      _showSavedIndicator();
     }
-    // Don't show the saved indicator for every keystroke since it doesn't trigger immediate network submission
   }
 
   void _handleOptionSelect(
@@ -793,11 +778,10 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
           .read(examAttemptProvider.notifier)
           .updateLocalAnswer(question.id, newAnswer);
     } else {
-      // Update locally and mark as dirty so it's submitted on navigation
       ref
           .read(examAttemptProvider.notifier)
-          .updateLocalAnswer(question.id, newAnswer);
-      _dirtyAnswers.add(question.id);
+          .submitAnswer(question.id, newAnswer);
+      _showSavedIndicator();
     }
   }
 
@@ -817,11 +801,10 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
           .read(examAttemptProvider.notifier)
           .updateLocalAnswer(question.id, newAnswer);
     } else {
-      // Update locally and mark as dirty so it's submitted on navigation
       ref
           .read(examAttemptProvider.notifier)
-          .updateLocalAnswer(question.id, newAnswer);
-      _dirtyAnswers.add(question.id);
+          .submitAnswer(question.id, newAnswer);
+      _showSavedIndicator();
     }
   }
 

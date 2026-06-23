@@ -29,30 +29,33 @@ class ExamPrescreenTimeline extends StatelessWidget {
         : design.colors.error;
     final showStart = startDateStr.isNotEmpty;
     final finalEndDateStr = (endDateStr.isEmpty || endDateStr == 'N/A')
-        ? 'Forever'
+        ? L10n.of(context).examForever
         : endDateStr;
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (showStart) ...[
+    return AppSemantics.container(
+      label: 'Exam timeline',
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (showStart) ...[
+            Expanded(
+              child: _buildNode(
+                label: L10n.of(context).examStartsOn,
+                value: startDateStr,
+                dotColor: successColor,
+              ),
+            ),
+            SizedBox(width: design.spacing.md),
+          ],
           Expanded(
             child: _buildNode(
-              label: 'Starts On',
-              value: startDateStr,
-              dotColor: successColor,
+              label: L10n.of(context).examEndsOn,
+              value: finalEndDateStr,
+              dotColor: errorColor,
             ),
           ),
-          SizedBox(width: design.spacing.md),
         ],
-        Expanded(
-          child: _buildNode(
-            label: 'Ends On',
-            value: finalEndDateStr,
-            dotColor: errorColor,
-          ),
-        ),
-      ],
+      ),
     );
   }
 
@@ -79,15 +82,15 @@ class ExamPrescreenTimeline extends StatelessWidget {
             AppText.caption(
               label,
               color: design.colors.textSecondary,
-              style: const TextStyle(fontSize: 12),
+              style: design.typography.caption,
             ),
           ],
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: design.spacing.xs),
         AppText.body(
           value,
           color: design.colors.textPrimary,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+          style: design.typography.body.copyWith(fontWeight: FontWeight.bold),
         ),
       ],
     );

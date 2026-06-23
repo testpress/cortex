@@ -30,21 +30,21 @@ class ExamPrescreenVerticalStat extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          padding: const EdgeInsets.all(10),
+          padding: EdgeInsets.all(design.spacing.sm),
           decoration: BoxDecoration(
             color: effectiveColor.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(design.radius.md),
           ),
           child: Icon(icon, size: 24, color: effectiveColor),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: design.spacing.sm),
         AppText.caption(
           label,
           color: design.colors.textSecondary,
           textAlign: TextAlign.center,
           maxLines: 1,
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: design.spacing.xs),
         Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -53,9 +53,8 @@ class ExamPrescreenVerticalStat extends StatelessWidget {
             AppText.body(
               value,
               color: design.colors.textPrimary,
-              style: const TextStyle(
+              style: design.typography.body.copyWith(
                 fontWeight: FontWeight.bold,
-                fontSize: 16,
                 height: 1.2,
               ),
             ),
@@ -63,10 +62,7 @@ class ExamPrescreenVerticalStat extends StatelessWidget {
               AppText.body(
                 ' $suffix',
                 color: design.colors.textSecondary,
-                style: const TextStyle(
-                  fontWeight: FontWeight.normal,
-                  fontSize: 12,
-                ),
+                style: design.typography.caption,
               ),
           ],
         ),

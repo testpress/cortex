@@ -57,90 +57,99 @@ class ExamPrescreenMetadata extends StatelessWidget {
             endDateStr: endDateStr,
           ),
           if (startDateStr.isNotEmpty || endDateStr.isNotEmpty) ...[
-            const SizedBox(height: 24),
+            SizedBox(height: design.spacing.xl),
             Container(
               height: 1,
               width: double.infinity,
               color: design.colors.border.withValues(alpha: 0.5),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: design.spacing.xl),
           ],
-          IntrinsicHeight(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: ExamPrescreenVerticalStat(
-                    design: design,
-                    icon: LucideIcons.fileQuestion,
-                    label: 'Total Questions',
-                    value: questionCountStr,
+          AppSemantics.container(
+            label: 'Exam statistics',
+            child: IntrinsicHeight(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: ExamPrescreenVerticalStat(
+                      design: design,
+                      icon: LucideIcons.fileQuestion,
+                      label: L10n.of(context).examTotalQuestions,
+                      value: questionCountStr,
+                    ),
                   ),
-                ),
-                Container(
-                  width: 1,
-                  color: design.colors.border.withValues(alpha: 0.5),
-                ),
-                Expanded(
-                  child: ExamPrescreenVerticalStat(
-                    design: design,
-                    icon: LucideIcons.clock,
-                    label: 'Duration',
-                    value: durationVal,
-                    suffix: durationSuffix,
+                  Container(
+                    width: 1,
+                    color: design.colors.border.withValues(alpha: 0.5),
                   ),
-                ),
-                Container(
-                  width: 1,
-                  color: design.colors.border.withValues(alpha: 0.5),
-                ),
-                Expanded(
-                  child: ExamPrescreenVerticalStat(
-                    design: design,
-                    icon: LucideIcons.award,
-                    label: 'Total Marks',
-                    value: totalMarksVal,
+                  Expanded(
+                    child: ExamPrescreenVerticalStat(
+                      design: design,
+                      icon: LucideIcons.clock,
+                      label: L10n.of(context).examDuration,
+                      value: durationVal,
+                      suffix: durationSuffix,
+                    ),
                   ),
-                ),
-              ],
+                  Container(
+                    width: 1,
+                    color: design.colors.border.withValues(alpha: 0.5),
+                  ),
+                  Expanded(
+                    child: ExamPrescreenVerticalStat(
+                      design: design,
+                      icon: LucideIcons.award,
+                      label: L10n.of(context).examTotalMarks,
+                      value: totalMarksVal,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          const SizedBox(height: 24),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-            decoration: BoxDecoration(
-              color: design.colors.card,
-              border: Border.all(
-                color: design.colors.border.withValues(alpha: 0.5),
+          SizedBox(height: design.spacing.xl),
+          AppSemantics.container(
+            label: 'Marks per question',
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                vertical: design.spacing.lg,
+                horizontal: design.spacing.md,
               ),
-              borderRadius: BorderRadius.circular(design.radius.xl),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: ExamPrescreenMarkCard(
-                    design: design,
-                    icon: LucideIcons.checkCircle2,
-                    color: design.colors.success,
-                    label: 'Correct Answer',
-                    value: correctMarks,
-                  ),
-                ),
-                Container(
-                  width: 1,
-                  height: 30,
+              decoration: BoxDecoration(
+                color: design.colors.card,
+                border: Border.all(
                   color: design.colors.border.withValues(alpha: 0.5),
                 ),
-                Expanded(
-                  child: ExamPrescreenMarkCard(
-                    design: design,
-                    icon: LucideIcons.xCircle,
-                    color: design.colors.error,
-                    label: 'Wrong Answer',
-                    value: wrongMarks,
+                borderRadius: BorderRadius.circular(design.radius.xl),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ExamPrescreenMarkCard(
+                      design: design,
+                      icon: LucideIcons.checkCircle2,
+                      color: design.colors.success,
+                      label: L10n.of(context).examCorrectAnswer,
+                      value: correctMarks,
+                    ),
                   ),
-                ),
-              ],
+                  Container(
+                    width: 1,
+                    height: 30,
+                    color: design.colors.border.withValues(alpha: 0.5),
+                  ),
+                  Expanded(
+                    child: ExamPrescreenMarkCard(
+                      design: design,
+                      icon: LucideIcons.xCircle,
+                      color: design.colors.error,
+                      label: L10n.of(context).examWrongAnswer,
+                      value: wrongMarks,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

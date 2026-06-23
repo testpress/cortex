@@ -12,6 +12,7 @@ class QuestionDto {
   final String? directionHtml;
   final int order;
   final List<String> selectedOptionIds;
+  final bool isMarked;
   final String? shortText;
   final String? essayText;
   final String? sectionName;
@@ -30,6 +31,7 @@ class QuestionDto {
     this.directionHtml,
     this.order = 0,
     this.selectedOptionIds = const [],
+    this.isMarked = false,
     this.shortText,
     this.essayText,
     this.sectionName,
@@ -49,6 +51,7 @@ class QuestionDto {
     String? directionHtml,
     int? order,
     List<String>? selectedOptionIds,
+    bool? isMarked,
     String? shortText,
     String? essayText,
     String? sectionName,
@@ -67,6 +70,7 @@ class QuestionDto {
       directionHtml: directionHtml ?? this.directionHtml,
       order: order ?? this.order,
       selectedOptionIds: selectedOptionIds ?? this.selectedOptionIds,
+      isMarked: isMarked ?? this.isMarked,
       shortText: shortText ?? this.shortText,
       essayText: essayText ?? this.essayText,
       sectionName: sectionName ?? this.sectionName,
@@ -157,6 +161,8 @@ class QuestionDto {
               ?.map((e) => e.toString())
               .toList() ??
           const [],
+      isMarked:
+          (json['is_marked'] as bool?) ?? (data['is_marked'] as bool?) ?? false,
       shortText: (data['short_text'] ?? json['short_text']) as String?,
       essayText: (data['essay_text'] ?? json['essay_text']) as String?,
       sectionName: (json['attempt_section'] is Map)
@@ -215,16 +221,20 @@ class QuestionDto {
           final mergedJson = Map<String, dynamic>.from(eq);
           mergedJson['id'] = ua['id'];
           mergedJson['user_answer'] = ua;
-          // also merge selected options if available in user_answers payload
-          if (ua['selected_answers'] != null) {
-            mergedJson['selected_answers'] = ua['selected_answers'];
-          }
-          if (ua['short_text'] != null) {
-            mergedJson['short_text'] = ua['short_text'];
-          }
-          if (ua['essay_text'] != null) {
-            mergedJson['essay_text'] = ua['essay_text'];
-          }
+
+          // user_answers is always authoritative for the current attempt.
+          // Unconditionally override exam_questions static data (which may bleed
+          // previous attempt answers) with the current attempt's user_answer values.
+          // - New exam:  ua['selected_answers'] = []      → clean slate
+          // - Resume:    ua['selected_answers'] = [4022]  → restores correctly
+          // Note: the API uses 'review' (not 'is_marked') as the mark-for-review flag.
+          //   review: null  → not visited
+          //   review: false → visited, not marked
+          //   review: true  → marked for review
+          mergedJson['selected_answers'] = ua['selected_answers'] ?? [];
+          mergedJson['is_marked'] = ua['review'] ?? false;
+          mergedJson['short_text'] = ua['short_text'];
+          mergedJson['essay_text'] = ua['essay_text'];
 
           final attemptSectionId = ua['attempt_section_id'];
           if (attemptSectionId != null) {
@@ -261,6 +271,7 @@ class QuestionDto {
       'directionHtml': directionHtml,
       'order': order,
       'selected_options': selectedOptionIds,
+      'is_marked': isMarked,
       'short_text': shortText,
       'essay_text': essayText,
       'sectionName': sectionName,

@@ -583,6 +583,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorLessonLoad => 'فشل تحميل الدرس. يرجى التحقق من اتصالك.';
 
   @override
+  String get lessonNotFound => 'لم يتم العثور على الدرس';
+
+  @override
   String get labelLessonsPlural => 'دروس';
 
   @override
@@ -1509,6 +1512,42 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get startExam => 'Start Exam';
+
+  @override
+  String get examTotalQuestions => 'مجموع الأسئلة';
+
+  @override
+  String get examDuration => 'المدة';
+
+  @override
+  String get examTotalMarks => 'مجموع العلامات';
+
+  @override
+  String get examCorrectAnswer => 'إجابة صحيحة';
+
+  @override
+  String get examWrongAnswer => 'إجابة خاطئة';
+
+  @override
+  String get examStartsOn => 'يبدأ في';
+
+  @override
+  String get examEndsOn => 'ينتهي في';
+
+  @override
+  String get examForever => 'إلى الأبد';
+
+  @override
+  String get examDetailsTitle => 'تفاصيل الامتحان';
+
+  @override
+  String get errorCannotStartExam => 'عفوًا! لا يمكن بدء الامتحان';
+
+  @override
+  String get errorUnknownOccurred => 'حدث خطأ غير معروف.';
+
+  @override
+  String get actionGoBack => 'العودة';
 
   @override
   String get nextSubject => 'Next Subject';

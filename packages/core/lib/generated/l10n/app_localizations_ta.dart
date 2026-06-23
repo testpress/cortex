@@ -595,6 +595,9 @@ class AppLocalizationsTa extends AppLocalizations {
       'பாடத்தை ஏற்ற முடியவில்லை. உங்கள் இணைப்பைச் சரிபார்க்கவும்.';
 
   @override
+  String get lessonNotFound => 'பாடம் காணப்படவில்லை';
+
+  @override
   String get labelLessonsPlural => 'பாடங்கள்';
 
   @override
@@ -1518,6 +1521,42 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get startExam => 'தேர்வைத் தொடங்கு';
+
+  @override
+  String get examTotalQuestions => 'மொத்த கேள்விகள்';
+
+  @override
+  String get examDuration => 'கால அளவு';
+
+  @override
+  String get examTotalMarks => 'மொத்த மதிப்பெண்கள்';
+
+  @override
+  String get examCorrectAnswer => 'சரியான பதில்';
+
+  @override
+  String get examWrongAnswer => 'தவறான பதில்';
+
+  @override
+  String get examStartsOn => 'தொடங்கும் தேதி';
+
+  @override
+  String get examEndsOn => 'முடியும் தேதி';
+
+  @override
+  String get examForever => 'என்றென்றும்';
+
+  @override
+  String get examDetailsTitle => 'தேர்வு விவரங்கள்';
+
+  @override
+  String get errorCannotStartExam => 'மன்னிக்கவும்! தேர்வைத் தொடங்க முடியாது';
+
+  @override
+  String get errorUnknownOccurred => 'அறியப்படாத பிழை ஏற்பட்டது.';
+
+  @override
+  String get actionGoBack => 'திரும்பிச் செல்';
 
   @override
   String get nextSubject => 'அடுத்த பாடம்';

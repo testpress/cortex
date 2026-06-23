@@ -98,6 +98,10 @@ class ExamRepository {
   }) : _dataSource = dataSource,
        _dbFuture = dbFuture;
 
+  Future<ExamDto> getExamBySlug(String slug) async {
+    return _dataSource.getExam(slug);
+  }
+
   Stream<ExamAttemptState> get stateStream => _stateController.stream;
   Stream<ExamAttemptState> watchState() async* {
     yield _currentState;
@@ -193,30 +197,27 @@ class ExamRepository {
           }
           await _initializeAttempt(exam, attempt, isQuizMode: isQuizMode);
         } else {
-          final runningAttempt = attempts.firstWhere(
-            (a) => a.state == 'Running',
-            orElse: () => attempts.first,
-          );
-          AttemptDto attemptToInitialize = runningAttempt;
-          if (runningAttempt.state != 'Running') {
-            try {
-              attemptToInitialize = await _dataSource.startAttempt(
-                runningAttempt.id.toString(),
-              );
-            } catch (e) {
-              dev.log(
-                'Failed to call startUrl on resumed attempt',
-                name: 'ExamRepository',
-                error: e,
-              );
+          final runningAttempt = attempts
+              .where((a) => a.state == 'Running')
+              .firstOrNull;
+          if (runningAttempt != null) {
+            await _initializeAttempt(
+              exam,
+              runningAttempt,
+              isResume: true,
+              isQuizMode: isQuizMode,
+            );
+          } else {
+            final newAttempt = await _dataSource.createAttempt(
+              exam.attemptsUrl,
+              data: isQuizMode ? {'attempt_type': 1} : null,
+            );
+            if (isQuizMode) {
+              final db = await _dbFuture;
+              await db.setQuizModeAttempt(newAttempt.id.toString());
             }
+            await _initializeAttempt(exam, newAttempt, isQuizMode: isQuizMode);
           }
-          await _initializeAttempt(
-            exam,
-            attemptToInitialize,
-            isResume: true,
-            isQuizMode: isQuizMode,
-          );
         }
       } else {
         final attempt = await _dataSource.createAttempt(
@@ -261,30 +262,27 @@ class ExamRepository {
           }
           await _initializeAttempt(exam, attempt, isQuizMode: isQuizMode);
         } else {
-          final runningAttempt = attempts.firstWhere(
-            (a) => a.state == 'Running',
-            orElse: () => attempts.first,
-          );
-          AttemptDto attemptToInitialize = runningAttempt;
-          if (runningAttempt.state != 'Running') {
-            try {
-              attemptToInitialize = await _dataSource.startAttempt(
-                runningAttempt.id.toString(),
-              );
-            } catch (e) {
-              dev.log(
-                'Failed to call startUrl on resumed course attempt',
-                name: 'ExamRepository',
-                error: e,
-              );
+          final runningAttempt = attempts
+              .where((a) => a.state == 'Running')
+              .firstOrNull;
+          if (runningAttempt != null) {
+            await _initializeAttempt(
+              exam,
+              runningAttempt,
+              isResume: true,
+              isQuizMode: isQuizMode,
+            );
+          } else {
+            final newAttempt = await _dataSource.createContentAttempt(
+              contentAttemptsUrl,
+              data: isQuizMode ? {'attempt_type': 1} : null,
+            );
+            if (isQuizMode) {
+              final db = await _dbFuture;
+              await db.setQuizModeAttempt(newAttempt.id.toString());
             }
+            await _initializeAttempt(exam, newAttempt, isQuizMode: isQuizMode);
           }
-          await _initializeAttempt(
-            exam,
-            attemptToInitialize,
-            isResume: true,
-            isQuizMode: isQuizMode,
-          );
         }
       } else {
         final attempt = await _dataSource.createContentAttempt(
@@ -381,7 +379,6 @@ class ExamRepository {
                     return q;
                   }))
           : Future.value(<QuestionDto>[]);
-
       // Await both operations concurrently
       final List<dynamic> results = await Future.wait([
         heartbeatFuture,
@@ -428,11 +425,13 @@ class ExamRepository {
       final initialAnswers = Map<String, AnswerDto>.from(_currentState.answers);
       for (final q in questions) {
         if (q.selectedOptionIds.isNotEmpty ||
+            q.isMarked ||
             (q.shortText != null && q.shortText!.isNotEmpty) ||
             (q.essayText != null && q.essayText!.isNotEmpty)) {
           initialAnswers[q.id] = AnswerDto(
             questionId: q.id,
             selectedOptions: q.selectedOptionIds,
+            isMarked: q.isMarked,
             shortText: q.shortText,
             essayText: q.essayText,
           );
@@ -503,7 +502,6 @@ class ExamRepository {
                     return q;
                   }))
           : Future.value(<QuestionDto>[]);
-
       // Await both operations concurrently
       final List<dynamic> results = await Future.wait([
         heartbeatFuture,
@@ -519,10 +517,16 @@ class ExamRepository {
 
       final initialAnswers = Map<String, AnswerDto>.from(_currentState.answers);
       for (final q in questions) {
-        if (q.selectedOptionIds.isNotEmpty) {
+        if (q.selectedOptionIds.isNotEmpty ||
+            q.isMarked ||
+            (q.shortText != null && q.shortText!.isNotEmpty) ||
+            (q.essayText != null && q.essayText!.isNotEmpty)) {
           initialAnswers[q.id] = AnswerDto(
             questionId: q.id,
             selectedOptions: q.selectedOptionIds,
+            isMarked: q.isMarked,
+            shortText: q.shortText,
+            essayText: q.essayText,
           );
         }
       }

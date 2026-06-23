@@ -162,14 +162,16 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
     return Stack(
       children: [
         LessonDetailShell(
-          title: lesson?.title ?? exam?.title ?? 'Exam Details',
+          title:
+              lesson?.title ?? exam?.title ?? L10n.of(context).examDetailsTitle,
           onBack: widget.onClose,
           stickyFooter: true,
           backgroundColor: design.colors.card,
-          bottomBar:
-              ((exam?.allowRetake ?? true) ||
-                  !((lesson?.hasAttempts ?? false) &&
-                      (exam?.pausedAttemptsCount ?? 0) == 0))
+          bottomBar: isMetadataLoading
+              ? null
+              : ((exam?.allowRetake ?? true) ||
+                    !((lesson?.hasAttempts ?? false) &&
+                        (exam?.pausedAttemptsCount ?? 0) == 0))
               ? Container(
                   color: design.colors.card,
                   padding: EdgeInsets.fromLTRB(
@@ -221,8 +223,6 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                     wrongMarks: wrongMarks,
                   ),
                   SizedBox(height: design.spacing.lg),
-
-                  SizedBox(height: design.spacing.xs),
                 ],
               ),
             ),
