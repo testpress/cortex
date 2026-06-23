@@ -3862,6 +3862,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Student'**
   String get defaultStudentName;
+
+  /// No description provided for @examCompletedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam completed'**
+  String get examCompletedLabel;
 }
 
 class _AppLocalizationsDelegate

@@ -725,6 +725,7 @@
   "reviewExamReviewTitle": "പരീക്ഷ അവലോകനം",
   "reviewExamReviewDesc": "ഉത്തരങ്ങളും വിശദീകരണങ്ങളും സഹിതം ഓരോ ചോദ്യവും അവലോകനം ചെയ്യുക",
   "defaultStudentName": "വിദ്യാർത്ഥി",
+  "examCompletedLabel": "പരീക്ഷ പൂർത്തിയായി",
   "examTotalQuestions": "മൊത്തം ചോദ്യങ്ങൾ",
   "examDuration": "സമയദൈർഘ്യം",
   "examTotalMarks": "മൊത്തം മാർക്കുകൾ",

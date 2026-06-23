@@ -2111,4 +2111,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get defaultStudentName => 'طالب';
+
+  @override
+  String get examCompletedLabel => 'تم إكمال الامتحان';
 }

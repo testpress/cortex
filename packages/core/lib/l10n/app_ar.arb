@@ -724,6 +724,7 @@
   "reviewExamReviewTitle": "مراجعة الامتحان",
   "reviewExamReviewDesc": "راجع كل سؤال مع الإجابات والشروحات",
   "defaultStudentName": "طالب",
+  "examCompletedLabel": "تم إكمال الامتحان",
   "examTotalQuestions": "مجموع الأسئلة",
   "examDuration": "المدة",
   "examTotalMarks": "مجموع العلامات",

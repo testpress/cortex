@@ -94,5 +94,28 @@ void main() {
         expect(dto.hasAttempts, true);
       },
     );
+
+    test(
+      'mergeWith does not re-promote a paused-only exam after fromJson re-parse',
+      () {
+        // fromJson sees attempts_count=1, paused_attempts_count=1 (paused-only)
+        final fresh = LessonDto.fromJson({
+          'id': '1',
+          'content_type': 'exam',
+          'active': true,
+          'attempts_count': 1,
+          'paused_attempts_count': 1,
+        });
+        // Sync sets authoritative notStarted
+        final synced = fresh.copyWith(
+          hasAttempts: false,
+          progressStatus: LessonProgressStatus.notStarted,
+        );
+        // Next refreshLessons re-parses and merges
+        final merged = fresh.mergeWith(synced);
+        expect(merged.hasAttempts, false);
+        expect(merged.progressStatus, LessonProgressStatus.notStarted);
+      },
+    );
   });
 }

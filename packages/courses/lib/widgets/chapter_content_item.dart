@@ -109,7 +109,7 @@ class ChapterContentItem extends StatelessWidget {
                           right: -6,
                           child: AppSemantics.progressValue(
                             value: 1.0,
-                            label: 'Exam completed',
+                            label: L10n.of(context).examCompletedLabel,
                             child: Container(
                               width: design.iconSize.md,
                               height: design.iconSize.md,

@@ -27,9 +27,7 @@ class CurriculumParser {
                 final contentId = a['chapter_content_id']?.toString();
                 if (contentId != null) {
                   final attemptData =
-                      a['assessment'] as Map<String, dynamic>? ??
-                      a['attempt'] as Map<String, dynamic>? ??
-                      a;
+                      a['assessment'] as Map? ?? a['attempt'] as Map? ?? a;
                   final stateVal = attemptData['state'];
                   final isCompleted =
                       stateVal?.toString() == '1' ||

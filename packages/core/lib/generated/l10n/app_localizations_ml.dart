@@ -2149,4 +2149,7 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get defaultStudentName => 'വിദ്യാർത്ഥി';
+
+  @override
+  String get examCompletedLabel => 'പരീക്ഷ പൂർത്തിയായി';
 }
