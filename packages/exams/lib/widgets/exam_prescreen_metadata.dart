@@ -43,9 +43,8 @@ class ExamPrescreenMetadata extends StatelessWidget {
           if (title != null && title!.isNotEmpty) ...[
             AppText.headline(
               title!,
-              style: TextStyle(
+              style: design.typography.headline.copyWith(
                 fontWeight: FontWeight.bold,
-                fontSize: 19,
                 color: design.colors.textPrimary,
               ),
             ),
@@ -66,7 +65,7 @@ class ExamPrescreenMetadata extends StatelessWidget {
             SizedBox(height: design.spacing.xl),
           ],
           AppSemantics.container(
-            label: 'Exam statistics',
+            label: L10n.of(context).semanticExamStatistics,
             child: IntrinsicHeight(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -110,7 +109,7 @@ class ExamPrescreenMetadata extends StatelessWidget {
           ),
           SizedBox(height: design.spacing.xl),
           AppSemantics.container(
-            label: 'Marks per question',
+            label: L10n.of(context).semanticMarksPerQuestion,
             child: Container(
               padding: EdgeInsets.symmetric(
                 vertical: design.spacing.lg,

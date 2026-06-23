@@ -278,6 +278,9 @@
     }
   },
   "noQuestionsFound": "No questions found.",
+  "semanticExamStatistics": "Exam statistics",
+  "semanticMarksPerQuestion": "Marks per question",
+  "semanticExamTimeline": "Exam timeline",
   "lessonNotFound": "Lesson not found",
   "labelLessonsPlural": "lessons",
   "labelContentsPlural": "contents",

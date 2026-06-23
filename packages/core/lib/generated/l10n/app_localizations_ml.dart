@@ -602,6 +602,15 @@ class AppLocalizationsMl extends AppLocalizations {
   String get noQuestionsFound => 'ചോദ്യങ്ങളൊന്നും കണ്ടെത്തിയില്ല.';
 
   @override
+  String get semanticExamStatistics => 'പരീക്ഷയുടെ സ്ഥിതിവിവരക്കണക്കുകൾ';
+
+  @override
+  String get semanticMarksPerQuestion => 'ഓരോ ചോദ്യത്തിനുമുള്ള മാർക്ക്';
+
+  @override
+  String get semanticExamTimeline => 'പരീക്ഷാ സമയക്രമം';
+
+  @override
   String get lessonNotFound => 'പാഠം കണ്ടെത്താനായില്ല';
 
   @override

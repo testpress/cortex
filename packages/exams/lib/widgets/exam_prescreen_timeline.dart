@@ -33,7 +33,7 @@ class ExamPrescreenTimeline extends StatelessWidget {
         : endDateStr;
 
     return AppSemantics.container(
-      label: 'Exam timeline',
+      label: L10n.of(context).semanticExamTimeline,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

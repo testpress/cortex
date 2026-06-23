@@ -1170,6 +1170,24 @@ abstract class AppLocalizations {
   /// **'No questions found.'**
   String get noQuestionsFound;
 
+  /// No description provided for @semanticExamStatistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam statistics'**
+  String get semanticExamStatistics;
+
+  /// No description provided for @semanticMarksPerQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Marks per question'**
+  String get semanticMarksPerQuestion;
+
+  /// No description provided for @semanticExamTimeline.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam timeline'**
+  String get semanticExamTimeline;
+
   /// No description provided for @lessonNotFound.
   ///
   /// In en, this message translates to:

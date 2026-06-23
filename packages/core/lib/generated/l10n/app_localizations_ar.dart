@@ -591,6 +591,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noQuestionsFound => 'لم يتم العثور على أي أسئلة.';
 
   @override
+  String get semanticExamStatistics => 'إحصائيات الامتحان';
+
+  @override
+  String get semanticMarksPerQuestion => 'درجات لكل سؤال';
+
+  @override
+  String get semanticExamTimeline => 'الجدول الزمني للامتحان';
+
+  @override
   String get lessonNotFound => 'لم يتم العثور على الدرس';
 
   @override

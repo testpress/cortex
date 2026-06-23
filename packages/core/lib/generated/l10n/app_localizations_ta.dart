@@ -603,6 +603,15 @@ class AppLocalizationsTa extends AppLocalizations {
   String get noQuestionsFound => 'கேள்விகள் எதுவும் காணப்படவில்லை.';
 
   @override
+  String get semanticExamStatistics => 'தேர்வு புள்ளிவிவரங்கள்';
+
+  @override
+  String get semanticMarksPerQuestion => 'ஒவ்வொரு கேள்விக்கும் மதிப்பெண்கள்';
+
+  @override
+  String get semanticExamTimeline => 'தேர்வு காலக்கோடு';
+
+  @override
   String get lessonNotFound => 'பாடம் காணப்படவில்லை';
 
   @override

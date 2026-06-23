@@ -595,6 +595,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noQuestionsFound => 'No questions found.';
 
   @override
+  String get semanticExamStatistics => 'Exam statistics';
+
+  @override
+  String get semanticMarksPerQuestion => 'Marks per question';
+
+  @override
+  String get semanticExamTimeline => 'Exam timeline';
+
+  @override
   String get lessonNotFound => 'Lesson not found';
 
   @override
