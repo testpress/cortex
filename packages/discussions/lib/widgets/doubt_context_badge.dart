@@ -55,93 +55,40 @@ class _BreadcrumbHeader extends StatelessWidget {
 
     return AppSemantics.container(
       label: semanticLabel,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final textStyle = design.typography.bodySmall.copyWith(
-            color: design.colors.textPrimary,
-          );
-          final chevronWidth = design.iconSize.sm + (design.spacing.xs * 2);
-          final textScaler = MediaQuery.textScalerOf(context);
-
-          double getWidth(String text) {
-            if (text.isEmpty) return 0;
-            final painter = TextPainter(
-              text: TextSpan(text: text, style: textStyle),
-              maxLines: 1,
-              textDirection:
-                  Directionality.maybeOf(context) ?? TextDirection.ltr,
-              textScaler: textScaler,
-            )..layout();
-            final width = painter.size.width;
-            painter.dispose();
-            return width;
-          }
-
-          final courseWidth = getWidth(courseName);
-          final chapterWidth = getWidth(chapterName);
-
-          double courseMaxWidth = 0;
-          double chapterMaxWidth = 0;
-
-          if (courseName.isNotEmpty && chapterName.isEmpty) {
-            courseMaxWidth = constraints.maxWidth;
-          } else if (courseName.isEmpty && chapterName.isNotEmpty) {
-            chapterMaxWidth = constraints.maxWidth;
-          } else {
-            final availableWidth = (constraints.maxWidth - chevronWidth).clamp(
-              0.0,
-              double.infinity,
-            );
-            if (courseWidth + chapterWidth <= availableWidth) {
-              courseMaxWidth = courseWidth;
-              chapterMaxWidth = chapterWidth;
-            } else if (courseWidth > availableWidth / 2 &&
-                chapterWidth > availableWidth / 2) {
-              courseMaxWidth = availableWidth / 2;
-              chapterMaxWidth = availableWidth / 2;
-            } else if (courseWidth <= availableWidth / 2) {
-              courseMaxWidth = courseWidth;
-              chapterMaxWidth = availableWidth - courseWidth;
-            } else {
-              chapterMaxWidth = chapterWidth;
-              courseMaxWidth = availableWidth - chapterWidth;
-            }
-          }
-
-          return Row(
-            children: [
-              if (courseName.isNotEmpty)
-                ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: courseMaxWidth),
-                  child: AppText.labelBold(
-                    courseName,
-                    color: design.colors.textPrimary,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              if (courseName.isNotEmpty && chapterName.isNotEmpty)
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: design.spacing.xs),
-                  child: Icon(
-                    LucideIcons.chevronRight,
-                    size: design.iconSize.sm,
-                    color: design.colors.textTertiary,
-                  ),
-                ),
-              if (chapterName.isNotEmpty)
-                ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: chapterMaxWidth),
-                  child: AppText.labelBold(
-                    chapterName,
-                    color: design.colors.textPrimary,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-            ],
-          );
-        },
+      child: Row(
+        children: [
+          if (courseName.isNotEmpty)
+            Flexible(
+              flex: 1,
+              fit: FlexFit.loose,
+              child: AppText.labelBold(
+                courseName,
+                color: design.colors.textPrimary,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          if (courseName.isNotEmpty && chapterName.isNotEmpty)
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: design.spacing.xs),
+              child: Icon(
+                LucideIcons.chevronRight,
+                size: design.iconSize.sm,
+                color: design.colors.textTertiary,
+              ),
+            ),
+          if (chapterName.isNotEmpty)
+            Flexible(
+              flex: 1,
+              fit: FlexFit.loose,
+              child: AppText.labelBold(
+                chapterName,
+                color: design.colors.textPrimary,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+        ],
       ),
     );
   }

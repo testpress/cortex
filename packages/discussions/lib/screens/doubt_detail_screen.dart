@@ -490,6 +490,20 @@ class _LessonContextBadgeState extends ConsumerState<_LessonContextBadge> {
   @override
   void initState() {
     super.initState();
+    _fetchDetails();
+  }
+
+  @override
+  void didUpdateWidget(covariant _LessonContextBadge oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.lessonId != widget.lessonId) {
+      setState(() {
+        _fetchDetails();
+      });
+    }
+  }
+
+  void _fetchDetails() {
     _detailsFuture = ref
         .read(courseRepositoryProvider.future)
         .then((repo) => repo.getLessonDetails(widget.lessonId));
