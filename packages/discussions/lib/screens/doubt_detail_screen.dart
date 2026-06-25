@@ -310,7 +310,12 @@ class _DoubtScrollBodyState extends ConsumerState<_DoubtScrollBody> {
         if (widget.doubt.status == DoubtStatus.resolved)
           SliverToBoxAdapter(
             child: Container(
-              margin: EdgeInsets.all(design.spacing.md),
+              margin: EdgeInsets.fromLTRB(
+                design.spacing.md,
+                design.spacing.md,
+                design.spacing.md,
+                0,
+              ),
               padding: EdgeInsets.symmetric(
                 horizontal: design.spacing.md,
                 vertical: design.spacing.sm,
@@ -343,7 +348,12 @@ class _DoubtScrollBodyState extends ConsumerState<_DoubtScrollBody> {
         if (widget.doubt.status == DoubtStatus.closed)
           SliverToBoxAdapter(
             child: Container(
-              margin: EdgeInsets.all(design.spacing.md),
+              margin: EdgeInsets.fromLTRB(
+                design.spacing.md,
+                design.spacing.md,
+                design.spacing.md,
+                0,
+              ),
               padding: EdgeInsets.symmetric(
                 horizontal: design.spacing.md,
                 vertical: design.spacing.sm,
@@ -463,25 +473,62 @@ class _DoubtHeaderCard extends StatelessWidget {
 // Lesson Context Badge
 // ─────────────────────────────────────────────────────
 
-class _LessonContextBadge extends ConsumerWidget {
+class _LessonContextBadge extends ConsumerStatefulWidget {
   final String lessonId;
 
   const _LessonContextBadge({required this.lessonId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final lessonAsync = ref.watch(lessonDetailProvider(lessonId));
+  ConsumerState<_LessonContextBadge> createState() =>
+      _LessonContextBadgeState();
+}
 
-    return lessonAsync.when(
-      data: (lesson) {
-        if (lesson == null) return const SizedBox.shrink();
+class _LessonContextBadgeState extends ConsumerState<_LessonContextBadge> {
+  Future<({String lessonTitle, String chapterTitle, String courseTitle})?>?
+  _detailsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchDetails();
+  }
+
+  @override
+  void didUpdateWidget(covariant _LessonContextBadge oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.lessonId != widget.lessonId) {
+      setState(() {
+        _fetchDetails();
+      });
+    }
+  }
+
+  void _fetchDetails() {
+    _detailsFuture = ref
+        .read(courseRepositoryProvider.future)
+        .then((repo) => repo.getLessonDetails(widget.lessonId));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _detailsFuture,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData || snapshot.data == null) {
+          return const SizedBox.shrink();
+        }
+
+        final data = snapshot.data!;
         return Padding(
           padding: const EdgeInsets.only(bottom: 12.0),
-          child: DoubtContextBadge(icon: lesson.type.icon, text: lesson.title),
+          child: DoubtContextBadge(
+            icon: LucideIcons.bookOpen,
+            text: data.lessonTitle,
+            courseName: data.courseTitle,
+            chapterName: data.chapterTitle,
+          ),
         );
       },
-      loading: () => const SizedBox.shrink(),
-      error: (_, _) => const SizedBox.shrink(),
     );
   }
 }

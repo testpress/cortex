@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
+import 'package:courses/courses.dart';
 import '../widgets/forum_header.dart';
 import '../widgets/forum_composer.dart';
 import '../widgets/doubt_context_badge.dart';
@@ -41,12 +42,24 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
   bool _isSubmitSheetOpen = false;
   bool _isSubmitting = false;
 
+  Future<({String lessonTitle, String chapterTitle, String courseTitle})?>?
+  _lessonDetailsFuture;
+
   @override
   void initState() {
     super.initState();
     _quillController = quill.QuillController.basic();
     _titleController.addListener(() => setState(() {}));
     _quillController.addListener(() => setState(() {}));
+
+    if (widget.chapterContentId != null) {
+      _lessonDetailsFuture = ref
+          .read(courseRepositoryProvider.future)
+          .then(
+            (repo) =>
+                repo.getLessonDetails(widget.chapterContentId!.toString()),
+          );
+    }
   }
 
   @override
@@ -159,6 +172,24 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
     final icon = isQuestion
         ? LucideIcons.helpCircle
         : widget.lessonType?.icon ?? LucideIcons.bookOpen;
+
+    if (widget.chapterContentId != null && _lessonDetailsFuture != null) {
+      return FutureBuilder(
+        future: _lessonDetailsFuture,
+        builder: (context, snapshot) {
+          final data = snapshot.data;
+
+          return DoubtContextBadge(
+            icon: icon,
+            text: isQuestion
+                ? 'Question ID: ${widget.questionId}'
+                : data?.lessonTitle ?? widget.lessonTitle ?? 'Lesson Details',
+            courseName: data?.courseTitle,
+            chapterName: data?.chapterTitle,
+          );
+        },
+      );
+    }
 
     return DoubtContextBadge(
       icon: icon,
