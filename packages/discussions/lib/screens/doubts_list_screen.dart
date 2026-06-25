@@ -22,11 +22,19 @@ class DoubtsListScreen extends ConsumerStatefulWidget {
 
 class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
   String? _searchQuery;
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final activeFilter = ref.watch(doubtTypeFilterProvider);
     final isSearching = _searchQuery != null && _searchQuery!.isNotEmpty;
-    final isFiltering = ref.watch(doubtTypeFilterProvider) != null;
+    final isFiltering = activeFilter != null;
 
     final doubtsAsync = isSearching
         ? ref.watch(doubtsSearchProvider(_searchQuery!))
@@ -66,6 +74,7 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
                         vertical: design.spacing.sm,
                       ),
                       child: AppSearchBar(
+                        controller: _searchController,
                         hintText: l10n.doubtsSearchHint,
                         onSubmitted: (query) {
                           setState(() {
@@ -92,12 +101,19 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
                           final option = doubtFilterOptions[index];
                           return _ChipButton(
                             label: option.label,
-                            isSelected:
-                                ref.watch(doubtTypeFilterProvider) ==
-                                option.type,
-                            onTap: () => ref
-                                .read(doubtTypeFilterProvider.notifier)
-                                .setFilter(option.type),
+                            isSelected: activeFilter == option.type,
+                            onTap: () {
+                              ref
+                                  .read(doubtTypeFilterProvider.notifier)
+                                  .setFilter(option.type);
+                              if (_searchQuery != null &&
+                                  _searchQuery!.isNotEmpty) {
+                                setState(() {
+                                  _searchQuery = null;
+                                  _searchController.clear();
+                                });
+                              }
+                            },
                           );
                         },
                       ),
@@ -354,10 +370,15 @@ class _DoubtItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Title (Bold cardTitle)
-                AppText.cardTitle(
-                  doubt.title,
-                  color: design.colors.textPrimary,
-                  maxLines: 2,
+                Padding(
+                  padding: EdgeInsets.only(
+                    right: doubt.queryType == DoubtQueryType.ai ? 64.0 : 0.0,
+                  ),
+                  child: AppText.cardTitle(
+                    doubt.title,
+                    color: design.colors.textPrimary,
+                    maxLines: 2,
+                  ),
                 ),
                 SizedBox(height: design.spacing.sm),
                 // Metadata Row: Subject (Takes full width now to prevent overflow)
@@ -395,7 +416,10 @@ class _DoubtItem extends StatelessWidget {
 
   Widget _buildAIBadge(DesignConfig design) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: EdgeInsets.symmetric(
+        horizontal: design.spacing.md,
+        vertical: design.spacing.xs,
+      ),
       decoration: BoxDecoration(
         color: design.colors.success.withValues(alpha: 0.15),
         borderRadius: BorderRadius.vertical(
@@ -482,7 +506,10 @@ class _ChipButton extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+          padding: EdgeInsets.symmetric(
+            horizontal: design.spacing.md,
+            vertical: design.spacing.xs,
+          ),
           decoration: BoxDecoration(
             color: isSelected
                 ? design.colors.primary
@@ -534,11 +561,9 @@ class _AskDoubtFab extends StatelessWidget {
               size: design.iconSize.action,
             ),
             SizedBox(width: design.spacing.sm),
-            Text(
+            AppText.labelBold(
               L10n.of(context).doubtsHeaderAskDoubt,
-              style: design.typography.labelBold.copyWith(
-                color: design.colors.onPrimary,
-              ),
+              color: design.colors.onPrimary,
             ),
           ],
         ),
