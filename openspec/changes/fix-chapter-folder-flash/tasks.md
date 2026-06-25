@@ -2,7 +2,7 @@
 
 - [x] 1.1 Remove `isSynced` check in `subChaptersProvider` — always `await repo.refreshChapters()` when `localChapters` is empty
 - [x] 1.2 Replace `yield*` passthrough with a resilient `await for` loop
-- [x] 1.3 Track `hasEmittedNonEmpty` to detect external DB purges (`non-empty → empty` transitions)
+- [x] 1.3 Track `hasNonEmptyData` to detect external DB purges (`non-empty → empty` transitions)
 - [x] 1.4 Silently re-fetch via `refreshChapters()` on empty transition instead of yielding the empty state
 
 ## 2. UI Layer

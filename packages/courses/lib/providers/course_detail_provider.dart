@@ -42,16 +42,16 @@ Stream<List<ChapterDto>> subChapters(
   // real data (e.g. a pull-to-refresh on the course list wiped the chapters),
   // silently re-fetch instead of yielding the empty state — which would
   // incorrectly flip the UI into lesson-list mode.
-  bool hasEmittedNonEmpty = localChapters.isNotEmpty;
+  bool hasNonEmptyData = localChapters.isNotEmpty;
 
   await for (final rows in repo.watchChapters(courseId, parentId: parentId)) {
     final chapters = rows.map((row) => repo.rowToChapterDto(row)).toList();
 
-    if (chapters.isEmpty && hasEmittedNonEmpty) {
+    if (chapters.isEmpty && hasNonEmptyData) {
       // Chapters were externally purged (e.g. refreshCourses cascade delete).
       // Reset the flag first — if the re-fetch also returns empty, we should
       // yield the empty state rather than loop indefinitely.
-      hasEmittedNonEmpty = false;
+      hasNonEmptyData = false;
       try {
         final refreshed =
             await repo.refreshChapters(courseId, parentId: parentId);
@@ -67,7 +67,7 @@ Stream<List<ChapterDto>> subChapters(
         yield chapters;
       }
     } else {
-      if (chapters.isNotEmpty) hasEmittedNonEmpty = true;
+      if (chapters.isNotEmpty) hasNonEmptyData = true;
       yield chapters;
     }
   }

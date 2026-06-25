@@ -30,10 +30,10 @@ temporarily deleted by a background sync".
 - If `localChapters.isEmpty`: always `await repo.refreshChapters()` before streaming.
 - If `localChapters.isNotEmpty`: refresh in background (`.ignore()`), stream immediately.
 - Replace `yield*` with a resilient `await for` loop:
-  - Track `hasEmittedNonEmpty`.
-  - If `chapters.isEmpty && hasEmittedNonEmpty`: chapters were externally purged → silently
+  - Track `hasNonEmptyData`.
+  - If `chapters.isEmpty && hasNonEmptyData`: chapters were externally purged → silently
     `await refreshChapters()` and wait for the next DB event. **Do not yield the empty state.**
-  - Otherwise: yield normally and update `hasEmittedNonEmpty`.
+  - Otherwise: yield normally and update `hasNonEmptyData`.
 
 ### `ChaptersListPage` (`chapters_list_page.dart`)
 ```dart
