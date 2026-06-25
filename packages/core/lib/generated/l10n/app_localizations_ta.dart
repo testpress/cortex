@@ -509,7 +509,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get drawerForum => 'விவாத மன்றம்';
 
   @override
-  String get drawerDoubts => 'சந்தேகம் கேள்';
+  String get drawerDoubts => 'சந்தேகங்கள்';
 
   @override
   String get drawerCustomExam => 'தனிப்பயன் தேர்வு';

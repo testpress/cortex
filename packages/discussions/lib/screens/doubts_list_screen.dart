@@ -1,10 +1,17 @@
 import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart' show Icons;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../widgets/forum_header.dart';
+
+const doubtFilterOptions = [
+  (label: 'All', type: null),
+  (label: 'AI', type: DoubtQueryType.ai),
+  (label: 'Mentor', type: DoubtQueryType.mentor),
+];
 
 class DoubtsListScreen extends ConsumerStatefulWidget {
   const DoubtsListScreen({super.key});
@@ -15,10 +22,19 @@ class DoubtsListScreen extends ConsumerStatefulWidget {
 
 class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
   String? _searchQuery;
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final activeFilter = ref.watch(doubtTypeFilterProvider);
     final isSearching = _searchQuery != null && _searchQuery!.isNotEmpty;
+    final isFiltering = activeFilter != null;
 
     final doubtsAsync = isSearching
         ? ref.watch(doubtsSearchProvider(_searchQuery!))
@@ -34,102 +50,131 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
 
     return AppShell(
       backgroundColor: design.colors.surface,
-      child: Column(
+      child: Stack(
         children: [
-          Container(
-            color: design.colors.card,
-            child: Column(
-              children: [
-                if (doubtsAsync.valueOrNull?.isEmpty == true &&
-                    !syncAsync.isLoading &&
-                    !isSearching)
-                  AppHeader(
-                    title: l10n.drawerDoubts,
-                    subtitle: l10n.doubtsEmptySubtitle,
-                  )
-                else
-                  ForumHeader(
-                    title: l10n.drawerDoubts,
-                    showDivider: false,
-                    actions: [
-                      GestureDetector(
-                        onTap: () {
-                          context.push('/home/discussions/doubts/ask');
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: design.spacing.sm,
-                          ),
-                          child: AppText.labelSmall(
-                            l10n.doubtsHeaderAskDoubt,
-                            color: design.colors.accent2,
-                          ),
-                        ),
+          Column(
+            children: [
+              Container(
+                color: design.colors.card,
+                child: Column(
+                  children: [
+                    if (doubtsAsync.valueOrNull?.isEmpty == true &&
+                        !syncAsync.isLoading &&
+                        !isSearching &&
+                        !isFiltering)
+                      AppHeader(
+                        title: l10n.drawerDoubts,
+                        subtitle: l10n.doubtsEmptySubtitle,
+                      )
+                    else
+                      ForumHeader(title: l10n.drawerDoubts, showDivider: false),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: design.spacing.md,
+                        vertical: design.spacing.sm,
                       ),
-                    ],
-                  ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacing.md,
-                    vertical: design.spacing.sm,
-                  ),
-                  child: AppSearchBar(
-                    hintText: l10n.doubtsSearchHint,
-                    onSubmitted: (query) {
-                      setState(() {
-                        _searchQuery = query.trim().isEmpty
-                            ? null
-                            : query.trim();
-                      });
-                    },
-                    backgroundColor: design.colors.surfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(height: 1, color: design.colors.divider),
-          Expanded(
-            child: doubtsAsync.when(
-              data: (doubts) {
-                // Show skeleton only if initial sync is still loading AND database is empty
-                final isInitialLoading =
-                    !isSearching && syncAsync.isLoading && doubts.isEmpty;
-                final syncState = syncAsync.valueOrNull;
-                final isLoadingMore =
-                    !isSearching && (syncState?.isLoadingMore ?? false);
-                final hasMore = !isSearching && (syncState?.hasMore ?? true);
-
-                return doubts.isEmpty && !isInitialLoading
-                    ? _buildEmptyState(context, design, ref)
-                    : _DoubtsBody(
-                        doubts: isInitialLoading ? _dummyDoubts : doubts,
-                        isInitialLoading: isInitialLoading,
-                        isLoadingMore: isLoadingMore,
-                        hasMore: hasMore,
-                        onLoadMore: () => syncNotifier.loadMore(),
-                        onRefresh: () async {
-                          return ref.refresh(doubtsSyncProvider.future);
+                      child: AppSearchBar(
+                        controller: _searchController,
+                        hintText: l10n.doubtsSearchHint,
+                        onSubmitted: (query) {
+                          setState(() {
+                            _searchQuery = query.trim().isEmpty
+                                ? null
+                                : query.trim();
+                          });
                         },
-                      );
-              },
-              loading: () => _DoubtsBody(
-                doubts: _dummyDoubts,
-                isInitialLoading: true,
-                isLoadingMore: false,
-                hasMore: false,
-                onLoadMore: () {},
-                onRefresh: () async {},
-              ),
-              error: (err, stack) => Center(
-                child: AppErrorView(
-                  message: l10n.errorGenericMessage,
-                  onRetry: () {
-                    ref.invalidate(doubtsListProvider);
-                    ref.invalidate(doubtsSyncProvider);
-                  },
+                        backgroundColor: design.colors.surfaceVariant,
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: design.spacing.md,
+                        vertical: design.spacing.sm,
+                      ),
+                      height: 48,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: doubtFilterOptions.length,
+                        separatorBuilder: (_, _) =>
+                            SizedBox(width: design.spacing.sm),
+                        itemBuilder: (context, index) {
+                          final option = doubtFilterOptions[index];
+                          return _ChipButton(
+                            label: option.label,
+                            isSelected: activeFilter == option.type,
+                            onTap: () {
+                              ref
+                                  .read(doubtTypeFilterProvider.notifier)
+                                  .setFilter(option.type);
+                              if (_searchQuery != null &&
+                                  _searchQuery!.isNotEmpty) {
+                                setState(() {
+                                  _searchQuery = null;
+                                  _searchController.clear();
+                                });
+                              }
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
+              Container(height: 1, color: design.colors.divider),
+              Expanded(
+                child: doubtsAsync.when(
+                  data: (doubts) {
+                    // Show skeleton only if initial sync is still loading AND database is empty
+                    final isInitialLoading =
+                        !isSearching && syncAsync.isLoading && doubts.isEmpty;
+                    final syncState = syncAsync.valueOrNull;
+                    final isLoadingMore =
+                        !isSearching && (syncState?.isLoadingMore ?? false);
+                    final hasMore =
+                        !isSearching && (syncState?.hasMore ?? true);
+
+                    return doubts.isEmpty && !isInitialLoading
+                        ? _buildEmptyState(context, design, ref)
+                        : _DoubtsBody(
+                            doubts: isInitialLoading ? _dummyDoubts : doubts,
+                            isInitialLoading: isInitialLoading,
+                            isLoadingMore: isLoadingMore,
+                            hasMore: hasMore,
+                            onLoadMore: () => syncNotifier.loadMore(),
+                            onRefresh: () async {
+                              return ref.refresh(doubtsSyncProvider.future);
+                            },
+                          );
+                  },
+                  loading: () => _DoubtsBody(
+                    doubts: _dummyDoubts,
+                    isInitialLoading: true,
+                    isLoadingMore: false,
+                    hasMore: false,
+                    onLoadMore: () {},
+                    onRefresh: () async {},
+                  ),
+                  error: (err, stack) => Center(
+                    child: AppErrorView(
+                      message: l10n.errorGenericMessage,
+                      onRetry: () {
+                        ref.invalidate(doubtsListProvider);
+                        ref.invalidate(doubtsSyncProvider);
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Positioned(
+            bottom: design.spacing.xl,
+            right: design.spacing.lg,
+            child: _AskDoubtFab(
+              onTap: () {
+                context.push('/home/discussions/doubts/ask');
+              },
             ),
           ),
         ],
@@ -316,36 +361,84 @@ class _DoubtItem extends StatelessWidget {
       onTap: () {
         context.push('/home/discussions/doubts/${doubt.id}');
       },
-      padding: EdgeInsets.all(design.spacing.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: EdgeInsets.zero,
+      child: Stack(
         children: [
-          // Title (Bold cardTitle)
-          AppText.cardTitle(
-            doubt.title,
-            color: design.colors.textPrimary,
-            maxLines: 2,
-          ),
-          SizedBox(height: design.spacing.sm),
-          // Metadata Row: Subject (Takes full width now to prevent overflow)
-          if (doubt.topicName != null && doubt.topicName!.isNotEmpty) ...[
-            AppText.labelSmall(
-              doubt.topicName!,
-              color: design.colors.accent2,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+          Padding(
+            padding: EdgeInsets.all(design.spacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Title (Bold cardTitle)
+                Padding(
+                  padding: EdgeInsets.only(
+                    right: doubt.queryType == DoubtQueryType.ai ? 64.0 : 0.0,
+                  ),
+                  child: AppText.cardTitle(
+                    doubt.title,
+                    color: design.colors.textPrimary,
+                    maxLines: 2,
+                  ),
+                ),
+                SizedBox(height: design.spacing.sm),
+                // Metadata Row: Subject (Takes full width now to prevent overflow)
+                if (doubt.topicName != null && doubt.topicName!.isNotEmpty) ...[
+                  AppText.labelSmall(
+                    doubt.topicName!,
+                    color: design.colors.accent2,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: design.spacing.sm),
+                ],
+                // Timeline
+                AppText.caption(
+                  doubt.createdHumanized ??
+                      DateFormatter.formatTimeAgo(doubt.createdAt),
+                  color: design.colors.textTertiary,
+                ),
+                SizedBox(height: design.spacing.sm),
+                // Status badge
+                _buildStatusBadge(design, doubt.status),
+              ],
             ),
-            SizedBox(height: design.spacing.sm),
-          ],
-          // Timeline
-          AppText.caption(
-            doubt.createdHumanized ??
-                DateFormatter.formatTimeAgo(doubt.createdAt),
-            color: design.colors.textTertiary,
           ),
-          SizedBox(height: design.spacing.sm),
-          // Status badge
-          _buildStatusBadge(design, doubt.status),
+          if (doubt.queryType == DoubtQueryType.ai)
+            Positioned(
+              top: 0,
+              right: design.spacing.md,
+              child: _buildAIBadge(design),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAIBadge(DesignConfig design) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: design.spacing.md,
+        vertical: design.spacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color: design.colors.success.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(design.radius.md),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.auto_awesome,
+            color: design.colors.success,
+            size: design.iconSize.sm,
+          ),
+          SizedBox(width: design.spacing.xs),
+          AppText.labelSmall(
+            DoubtQueryType.ai.name.toUpperCase(),
+            color: design.colors.success,
+          ),
         ],
       ),
     );
@@ -386,6 +479,93 @@ class _DoubtItem extends StatelessWidget {
             height: 1.1,
             fontWeight: FontWeight.w600,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ChipButton extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _ChipButton({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+
+    return AppSemantics.button(
+      label: label,
+      onTap: onTap,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: design.spacing.md,
+            vertical: design.spacing.xs,
+          ),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? design.colors.primary
+                : design.colors.surfaceVariant,
+            borderRadius: BorderRadius.circular(design.radius.full),
+          ),
+          child: Center(
+            child: AppText.caption(
+              label,
+              color: isSelected
+                  ? design.colors.textInverse
+                  : design.colors.textPrimary,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AskDoubtFab extends StatelessWidget {
+  const _AskDoubtFab({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+
+    return AppFocusable(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(design.radius.full),
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: design.spacing.md,
+          vertical: design.spacing.md,
+        ),
+        decoration: BoxDecoration(
+          color: design.colors.primary,
+          borderRadius: BorderRadius.circular(design.radius.full),
+          boxShadow: design.shadows.floating,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              LucideIcons.messageCircleQuestionMark,
+              color: design.colors.onPrimary,
+              size: design.iconSize.action,
+            ),
+            SizedBox(width: design.spacing.sm),
+            AppText.labelBold(
+              L10n.of(context).doubtsHeaderAskDoubt,
+              color: design.colors.onPrimary,
+            ),
+          ],
         ),
       ),
     );

@@ -999,7 +999,7 @@ abstract class AppLocalizations {
   /// No description provided for @drawerDoubts.
   ///
   /// In en, this message translates to:
-  /// **'Ask Doubt'**
+  /// **'Doubts'**
   String get drawerDoubts;
 
   /// No description provided for @drawerCustomExam.

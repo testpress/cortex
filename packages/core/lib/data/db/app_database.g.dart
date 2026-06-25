@@ -10535,6 +10535,17 @@ class $DoubtsTableTable extends DoubtsTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _queryTypeMeta = const VerificationMeta(
+    'queryType',
+  );
+  @override
+  late final GeneratedColumn<String> queryType = GeneratedColumn<String>(
+    'query_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -10550,6 +10561,7 @@ class $DoubtsTableTable extends DoubtsTable
     createdAt,
     createdHumanized,
     attachments,
+    queryType,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -10662,6 +10674,12 @@ class $DoubtsTableTable extends DoubtsTable
         ),
       );
     }
+    if (data.containsKey('query_type')) {
+      context.handle(
+        _queryTypeMeta,
+        queryType.isAcceptableOrUnknown(data['query_type']!, _queryTypeMeta),
+      );
+    }
     return context;
   }
 
@@ -10723,6 +10741,10 @@ class $DoubtsTableTable extends DoubtsTable
         DriftSqlType.string,
         data['${effectivePrefix}attachments'],
       ),
+      queryType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}query_type'],
+      ),
     );
   }
 
@@ -10746,6 +10768,7 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
   final DateTime createdAt;
   final String? createdHumanized;
   final String? attachments;
+  final String? queryType;
   const DoubtsTableData({
     required this.id,
     this.topicId,
@@ -10760,6 +10783,7 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
     required this.createdAt,
     this.createdHumanized,
     this.attachments,
+    this.queryType,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -10790,6 +10814,9 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
     }
     if (!nullToAbsent || attachments != null) {
       map['attachments'] = Variable<String>(attachments);
+    }
+    if (!nullToAbsent || queryType != null) {
+      map['query_type'] = Variable<String>(queryType);
     }
     return map;
   }
@@ -10823,6 +10850,9 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
       attachments: attachments == null && nullToAbsent
           ? const Value.absent()
           : Value(attachments),
+      queryType: queryType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(queryType),
     );
   }
 
@@ -10845,6 +10875,7 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       createdHumanized: serializer.fromJson<String?>(json['createdHumanized']),
       attachments: serializer.fromJson<String?>(json['attachments']),
+      queryType: serializer.fromJson<String?>(json['queryType']),
     );
   }
   @override
@@ -10864,6 +10895,7 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'createdHumanized': serializer.toJson<String?>(createdHumanized),
       'attachments': serializer.toJson<String?>(attachments),
+      'queryType': serializer.toJson<String?>(queryType),
     };
   }
 
@@ -10881,6 +10913,7 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
     DateTime? createdAt,
     Value<String?> createdHumanized = const Value.absent(),
     Value<String?> attachments = const Value.absent(),
+    Value<String?> queryType = const Value.absent(),
   }) => DoubtsTableData(
     id: id ?? this.id,
     topicId: topicId.present ? topicId.value : this.topicId,
@@ -10899,6 +10932,7 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
         ? createdHumanized.value
         : this.createdHumanized,
     attachments: attachments.present ? attachments.value : this.attachments,
+    queryType: queryType.present ? queryType.value : this.queryType,
   );
   DoubtsTableData copyWithCompanion(DoubtsTableCompanion data) {
     return DoubtsTableData(
@@ -10925,6 +10959,7 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
       attachments: data.attachments.present
           ? data.attachments.value
           : this.attachments,
+      queryType: data.queryType.present ? data.queryType.value : this.queryType,
     );
   }
 
@@ -10943,7 +10978,8 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
           ..write('status: $status, ')
           ..write('createdAt: $createdAt, ')
           ..write('createdHumanized: $createdHumanized, ')
-          ..write('attachments: $attachments')
+          ..write('attachments: $attachments, ')
+          ..write('queryType: $queryType')
           ..write(')'))
         .toString();
   }
@@ -10963,6 +10999,7 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
     createdAt,
     createdHumanized,
     attachments,
+    queryType,
   );
   @override
   bool operator ==(Object other) =>
@@ -10980,7 +11017,8 @@ class DoubtsTableData extends DataClass implements Insertable<DoubtsTableData> {
           other.status == this.status &&
           other.createdAt == this.createdAt &&
           other.createdHumanized == this.createdHumanized &&
-          other.attachments == this.attachments);
+          other.attachments == this.attachments &&
+          other.queryType == this.queryType);
 }
 
 class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
@@ -10997,6 +11035,7 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
   final Value<DateTime> createdAt;
   final Value<String?> createdHumanized;
   final Value<String?> attachments;
+  final Value<String?> queryType;
   final Value<int> rowid;
   const DoubtsTableCompanion({
     this.id = const Value.absent(),
@@ -11012,6 +11051,7 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
     this.createdAt = const Value.absent(),
     this.createdHumanized = const Value.absent(),
     this.attachments = const Value.absent(),
+    this.queryType = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   DoubtsTableCompanion.insert({
@@ -11028,6 +11068,7 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
     required DateTime createdAt,
     this.createdHumanized = const Value.absent(),
     this.attachments = const Value.absent(),
+    this.queryType = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        title = Value(title),
@@ -11049,6 +11090,7 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
     Expression<DateTime>? createdAt,
     Expression<String>? createdHumanized,
     Expression<String>? attachments,
+    Expression<String>? queryType,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -11065,6 +11107,7 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
       if (createdAt != null) 'created_at': createdAt,
       if (createdHumanized != null) 'created_humanized': createdHumanized,
       if (attachments != null) 'attachments': attachments,
+      if (queryType != null) 'query_type': queryType,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -11083,6 +11126,7 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
     Value<DateTime>? createdAt,
     Value<String?>? createdHumanized,
     Value<String?>? attachments,
+    Value<String?>? queryType,
     Value<int>? rowid,
   }) {
     return DoubtsTableCompanion(
@@ -11099,6 +11143,7 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
       createdAt: createdAt ?? this.createdAt,
       createdHumanized: createdHumanized ?? this.createdHumanized,
       attachments: attachments ?? this.attachments,
+      queryType: queryType ?? this.queryType,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -11145,6 +11190,9 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
     if (attachments.present) {
       map['attachments'] = Variable<String>(attachments.value);
     }
+    if (queryType.present) {
+      map['query_type'] = Variable<String>(queryType.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -11167,6 +11215,7 @@ class DoubtsTableCompanion extends UpdateCompanion<DoubtsTableData> {
           ..write('createdAt: $createdAt, ')
           ..write('createdHumanized: $createdHumanized, ')
           ..write('attachments: $attachments, ')
+          ..write('queryType: $queryType, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -19951,6 +20000,7 @@ typedef $$DoubtsTableTableCreateCompanionBuilder =
       required DateTime createdAt,
       Value<String?> createdHumanized,
       Value<String?> attachments,
+      Value<String?> queryType,
       Value<int> rowid,
     });
 typedef $$DoubtsTableTableUpdateCompanionBuilder =
@@ -19968,6 +20018,7 @@ typedef $$DoubtsTableTableUpdateCompanionBuilder =
       Value<DateTime> createdAt,
       Value<String?> createdHumanized,
       Value<String?> attachments,
+      Value<String?> queryType,
       Value<int> rowid,
     });
 
@@ -20042,6 +20093,11 @@ class $$DoubtsTableTableFilterComposer
 
   ColumnFilters<String> get attachments => $composableBuilder(
     column: $table.attachments,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get queryType => $composableBuilder(
+    column: $table.queryType,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -20119,6 +20175,11 @@ class $$DoubtsTableTableOrderingComposer
     column: $table.attachments,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get queryType => $composableBuilder(
+    column: $table.queryType,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$DoubtsTableTableAnnotationComposer
@@ -20178,6 +20239,9 @@ class $$DoubtsTableTableAnnotationComposer
     column: $table.attachments,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get queryType =>
+      $composableBuilder(column: $table.queryType, builder: (column) => column);
 }
 
 class $$DoubtsTableTableTableManager
@@ -20224,6 +20288,7 @@ class $$DoubtsTableTableTableManager
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<String?> createdHumanized = const Value.absent(),
                 Value<String?> attachments = const Value.absent(),
+                Value<String?> queryType = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DoubtsTableCompanion(
                 id: id,
@@ -20239,6 +20304,7 @@ class $$DoubtsTableTableTableManager
                 createdAt: createdAt,
                 createdHumanized: createdHumanized,
                 attachments: attachments,
+                queryType: queryType,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -20256,6 +20322,7 @@ class $$DoubtsTableTableTableManager
                 required DateTime createdAt,
                 Value<String?> createdHumanized = const Value.absent(),
                 Value<String?> attachments = const Value.absent(),
+                Value<String?> queryType = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DoubtsTableCompanion.insert(
                 id: id,
@@ -20271,6 +20338,7 @@ class $$DoubtsTableTableTableManager
                 createdAt: createdAt,
                 createdHumanized: createdHumanized,
                 attachments: attachments,
+                queryType: queryType,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

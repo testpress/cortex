@@ -233,6 +233,7 @@ abstract class DataSource {
     int page = 1,
     String? searchQuery,
     int? chapterContentId,
+    String? queryType,
   });
 
   /// Fetch the detail for a specific doubt, including its replies.

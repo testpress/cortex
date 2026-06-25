@@ -14,11 +14,18 @@ class DoubtRepository {
       _db = db;
 
   /// Watch personal doubts for the current user.
-  Stream<List<DoubtDto>> watchDoubts() {
-    return (_db.select(_db.doubtsTable)
-          ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
-        .watch()
-        .map((rows) => rows.map((row) => _mapToDto(row)).toList());
+  Stream<List<DoubtDto>> watchDoubts({DoubtQueryType? queryType}) {
+    final query = _db.select(_db.doubtsTable);
+
+    if (queryType != null) {
+      query.where((t) => t.queryType.equals(queryType.name));
+    }
+
+    query.orderBy([(t) => OrderingTerm.desc(t.createdAt)]);
+
+    return query.watch().map(
+      (rows) => rows.map((row) => _mapToDto(row)).toList(),
+    );
   }
 
   /// Watch personal doubts for a specific lesson.
@@ -36,11 +43,13 @@ class DoubtRepository {
     int page = 1,
     String? searchQuery,
     int? chapterContentId,
+    DoubtQueryType? queryType,
   }) async {
     final response = await _dataSource.getDoubts(
       page: page,
       searchQuery: searchQuery,
       chapterContentId: chapterContentId,
+      queryType: queryType?.name,
     );
     await _db.batch((b) {
       b.insertAllOnConflictUpdate(
@@ -99,6 +108,7 @@ class DoubtRepository {
             (old) => companion.copyWith(
               replyCount: const Value.absent(),
               createdAt: const Value.absent(),
+              queryType: const Value.absent(),
             ),
             target: [_db.doubtsTable.id],
           ),
@@ -254,6 +264,13 @@ class DoubtRepository {
   }
 
   DoubtDto _mapToDto(DoubtsTableData row) {
+    DoubtQueryType? queryType;
+    if (row.queryType == DoubtQueryType.ai.name) {
+      queryType = DoubtQueryType.ai;
+    } else if (row.queryType == DoubtQueryType.mentor.name) {
+      queryType = DoubtQueryType.mentor;
+    }
+
     return DoubtDto(
       id: row.id,
       topicId: row.topicId,
@@ -273,6 +290,7 @@ class DoubtRepository {
           : [],
       createdAt: row.createdAt,
       createdHumanized: row.createdHumanized,
+      queryType: queryType,
     );
   }
 
@@ -291,6 +309,7 @@ class DoubtRepository {
       attachments: Value(jsonEncode(dto.attachmentUrls)),
       createdAt: Value(dto.createdAt),
       createdHumanized: Value(dto.createdHumanized),
+      queryType: Value(dto.queryType?.name),
     );
   }
 }

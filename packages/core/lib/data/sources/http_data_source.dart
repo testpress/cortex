@@ -549,6 +549,7 @@ class HttpDataSource implements DataSource {
     int page = 1,
     String? searchQuery,
     int? chapterContentId,
+    String? queryType,
   }) async {
     final queryParameters = <String, dynamic>{'page': page};
     if (searchQuery != null && searchQuery.isNotEmpty) {
@@ -556,6 +557,9 @@ class HttpDataSource implements DataSource {
     }
     if (chapterContentId != null) {
       queryParameters['chapter_content_id'] = chapterContentId;
+    }
+    if (queryType != null) {
+      queryParameters['query_type'] = queryType;
     }
 
     return performNetworkRequest(
