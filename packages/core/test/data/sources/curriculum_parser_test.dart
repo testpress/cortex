@@ -46,12 +46,20 @@ void main() {
 
         final curriculum = CurriculumParser.parseFullCurriculum(rawPayload);
 
-        // Verify that only lesson-2 exists in the returned lessons
-        expect(curriculum.lessons.length, 1);
-        final parsedLesson = curriculum.lessons.first;
-        expect(parsedLesson.id, 'lesson-2');
-        expect(parsedLesson.hasAttempts, true);
-        expect(parsedLesson.progressStatus, LessonProgressStatus.completed);
+        // Verify that all 3 lessons are returned, but only lesson-2 has attempts
+        expect(curriculum.lessons.length, 3);
+        final lesson2 = curriculum.lessons.firstWhere(
+          (l) => l.id == 'lesson-2',
+        );
+        expect(lesson2.id, 'lesson-2');
+        expect(lesson2.hasAttempts, true);
+        expect(lesson2.progressStatus, LessonProgressStatus.completed);
+
+        final lesson1 = curriculum.lessons.firstWhere(
+          (l) => l.id == 'lesson-1',
+        );
+        expect(lesson1.hasAttempts, false);
+        expect(lesson1.progressStatus, LessonProgressStatus.notStarted);
       },
     );
 
@@ -97,12 +105,23 @@ void main() {
 
         final curriculum = CurriculumParser.parseFullCurriculum(rawPayload);
 
-        // Only lesson-2 (completed) should be returned
-        expect(curriculum.lessons.length, 1);
-        final parsedLesson = curriculum.lessons.first;
-        expect(parsedLesson.id, 'lesson-2');
-        expect(parsedLesson.hasAttempts, true);
-        expect(parsedLesson.progressStatus, LessonProgressStatus.completed);
+        // Both lessons are returned, but only lesson-2 is completed
+        expect(curriculum.lessons.length, 2);
+
+        final lesson1 = curriculum.lessons.firstWhere(
+          (l) => l.id == 'lesson-1',
+        );
+        expect(
+          lesson1.hasAttempts,
+          false,
+        ); // in-progress attempt is treated as not completed
+        expect(lesson1.progressStatus, LessonProgressStatus.notStarted);
+
+        final lesson2 = curriculum.lessons.firstWhere(
+          (l) => l.id == 'lesson-2',
+        );
+        expect(lesson2.hasAttempts, true);
+        expect(lesson2.progressStatus, LessonProgressStatus.completed);
       },
     );
   });

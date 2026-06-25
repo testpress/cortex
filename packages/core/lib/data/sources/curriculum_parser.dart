@@ -49,8 +49,6 @@ class CurriculumParser {
                   : LessonProgressStatus.notStarted,
             );
           }).toList();
-
-          lessons = lessons.where((l) => l.hasAttempts).toList();
         }
 
         final chaptersListRaw = results['chapters'];
