@@ -30,27 +30,32 @@ Stream<List<ChapterDto>> subChapters(
       await repo.watchChapters(courseId, parentId: parentId).first;
 
   if (localChapters.isNotEmpty) {
-    // If we have contents, yield them instantly from DB and refresh in background.
+    // Data in cache — stream immediately and refresh in background.
     repo.refreshChapters(courseId, parentId: parentId).ignore();
-    yield* repo.watchChapters(courseId, parentId: parentId).map(
-          (rows) => rows.map((row) => repo.rowToChapterDto(row)).toList(),
-        );
-    return;
-  }
-
-  // 2. If DB is empty, decide whether to block based on previous sync history.
-  final isSynced = await repo.isChaptersSynced(courseId, parentId: parentId);
-  if (!isSynced) {
-    // Await the sync ONLY if it's the first time and we have no data.
-    await repo.refreshChapters(courseId, parentId: parentId);
   } else {
-    // It's genuinely empty or already synced; refresh quietly.
-    repo.refreshChapters(courseId, parentId: parentId).ignore();
+    // DB is empty — must await network before streaming to avoid the
+    // empty-folder → lessons flash bug.
+    await repo.refreshChapters(courseId, parentId: parentId);
   }
 
-  yield* repo.watchChapters(courseId, parentId: parentId).map(
-        (rows) => rows.map((row) => repo.rowToChapterDto(row)).toList(),
-      );
+  // 2. Stream DB changes. If data drops to empty after we've already emitted
+  // real data (e.g. a pull-to-refresh on the course list wiped the chapters),
+  // silently re-fetch instead of yielding the empty state — which would
+  // incorrectly flip the UI into lesson-list mode.
+  bool hasEmittedNonEmpty = localChapters.isNotEmpty;
+
+  await for (final rows in repo.watchChapters(courseId, parentId: parentId)) {
+    final chapters = rows.map((row) => repo.rowToChapterDto(row)).toList();
+
+    if (chapters.isEmpty && hasEmittedNonEmpty) {
+      // Chapters were externally purged (e.g. refreshCourses cascade delete).
+      // Re-fetch from network and wait for the next DB event.
+      await repo.refreshChapters(courseId, parentId: parentId);
+    } else {
+      if (chapters.isNotEmpty) hasEmittedNonEmpty = true;
+      yield chapters;
+    }
+  }
 }
 
 @Riverpod(keepAlive: true)
