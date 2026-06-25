@@ -22,7 +22,7 @@ final infoSyncMetadataProvider =
 );
 
 typedef _$InfoSyncMetadata = Notifier<DateTime?>;
-String _$infoListHash() => r'e7527a6fbf22af080d07640b7bb4d89fb49494eb';
+String _$infoListHash() => r'58ac4e4fba532f6ce22014cf7bffb191398b65b6';
 
 /// Notifier that manages the info-specific course list and its independent sync state.
 /// This perfectly matches the pattern used in ExamList.

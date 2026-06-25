@@ -104,9 +104,11 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
             orElse: () => null,
           );
 
-          final showLessons = widget.isLeaf ||
-              activeFilter != null ||
-              (chapters.isEmpty && !chaptersAsync.isLoading);
+          // Show lessons ONLY when the route explicitly says this is a leaf
+          // (set from chapter.isLeaf in the API) or a filter tab is active.
+          // Do NOT fall back on chapters.isEmpty — that fires whenever the DB
+          // is wiped by a background sync and wrongly triggers the lesson API.
+          final showLessons = widget.isLeaf || activeFilter != null;
 
           final lessons = <LessonDto>[];
           bool isLoadingFilter = false;
@@ -162,8 +164,9 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                       return targetTypes.contains(l.type);
                     }).toList();
 
-          final showChapters = activeFilter == null &&
-              (chapters.isNotEmpty || chaptersAsync.isLoading);
+          // Show chapters pane whenever we are not in leaf/filter mode,
+          // even if the chapters list is temporarily empty (e.g. DB wipe).
+          final showChapters = !showLessons;
           String headerTitle = course?.title ?? 'Curriculum';
 
           return Column(
