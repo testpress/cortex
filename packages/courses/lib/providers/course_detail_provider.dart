@@ -49,8 +49,17 @@ Stream<List<ChapterDto>> subChapters(
 
     if (chapters.isEmpty && hasEmittedNonEmpty) {
       // Chapters were externally purged (e.g. refreshCourses cascade delete).
-      // Re-fetch from network and wait for the next DB event.
-      await repo.refreshChapters(courseId, parentId: parentId);
+      // Reset the flag first — if the re-fetch also returns empty, we should
+      // yield the empty state rather than loop indefinitely.
+      hasEmittedNonEmpty = false;
+      try {
+        await repo.refreshChapters(courseId, parentId: parentId);
+        // watchChapters will emit naturally once the DB is updated.
+      } catch (_) {
+        // Network failure: yield the empty state so the UI can show
+        // a proper error or empty view rather than staying frozen.
+        yield chapters;
+      }
     } else {
       if (chapters.isNotEmpty) hasEmittedNonEmpty = true;
       yield chapters;
