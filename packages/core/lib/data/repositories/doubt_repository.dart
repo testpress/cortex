@@ -108,6 +108,7 @@ class DoubtRepository {
             (old) => companion.copyWith(
               replyCount: const Value.absent(),
               createdAt: const Value.absent(),
+              queryType: const Value.absent(),
             ),
             target: [_db.doubtsTable.id],
           ),
