@@ -15,6 +15,7 @@ class DoubtsTable extends Table {
   DateTimeColumn get createdAt => dateTime()();
   TextColumn get createdHumanized => text().nullable()();
   TextColumn get attachments => text().nullable()(); // JSON-encoded list
+  TextColumn get queryType => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};

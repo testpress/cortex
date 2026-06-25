@@ -27,6 +27,9 @@ class DoubtDto {
   /// Kept for local tracking (e.g. incremented on reply). Not returned by the list API.
   final int? replyCount;
 
+  /// The type of query (AI vs Mentor)
+  final DoubtQueryType? queryType;
+
   const DoubtDto({
     required this.id,
     this.topicId,
@@ -41,6 +44,7 @@ class DoubtDto {
     required this.createdAt,
     this.createdHumanized,
     this.replyCount,
+    this.queryType,
   });
 
   factory DoubtDto.fromJson(
@@ -89,6 +93,14 @@ class DoubtDto {
         statusMap[(json['status'] as String? ?? '').toLowerCase()] ??
         DoubtStatus.active;
 
+    DoubtQueryType? queryType;
+    final qtStr = json['query_type']?.toString().toLowerCase();
+    if (qtStr == 'ai') {
+      queryType = DoubtQueryType.ai;
+    } else if (qtStr == 'mentor') {
+      queryType = DoubtQueryType.mentor;
+    }
+
     return DoubtDto(
       id: json['id'].toString(),
       topicId: topicId,
@@ -103,6 +115,7 @@ class DoubtDto {
           ? DateTime.tryParse(json['created'].toString()) ?? DateTime.now()
           : DateTime.now(),
       createdHumanized: json['created_humanize'] as String?,
+      queryType: queryType,
     );
   }
 

@@ -23,7 +23,7 @@ final doubtRepositoryProvider = FutureProvider<DoubtRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef DoubtRepositoryRef = FutureProviderRef<DoubtRepository>;
-String _$doubtsListHash() => r'023df4324c162fe41807f79d6c142755fba0d405';
+String _$doubtsListHash() => r'78d5a201e3b1ac00038c431e8d9f4507fa52974e';
 
 /// See also [doubtsList].
 @ProviderFor(doubtsList)
@@ -680,7 +680,23 @@ class _DoubtSubtopicsProviderElement
   int? get parentId => (origin as DoubtSubtopicsProvider).parentId;
 }
 
-String _$doubtsSyncHash() => r'632af9f7cca92b3fa71ea48e64d70a0116d22ab1';
+String _$doubtTypeFilterHash() => r'f0ee277536fd3fb0cbd9ce3dfd3a4410ce73d0cd';
+
+/// See also [DoubtTypeFilter].
+@ProviderFor(DoubtTypeFilter)
+final doubtTypeFilterProvider =
+    AutoDisposeNotifierProvider<DoubtTypeFilter, DoubtQueryType?>.internal(
+      DoubtTypeFilter.new,
+      name: r'doubtTypeFilterProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$doubtTypeFilterHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$DoubtTypeFilter = AutoDisposeNotifier<DoubtQueryType?>;
+String _$doubtsSyncHash() => r'7f25f8e7a4e6e4da026eede2dd275ed11350b684';
 
 /// See also [DoubtsSync].
 @ProviderFor(DoubtsSync)

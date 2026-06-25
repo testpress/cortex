@@ -499,7 +499,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get drawerForum => 'منتدى المناقشات';
 
   @override
-  String get drawerDoubts => 'اطرح سؤالاً';
+  String get drawerDoubts => 'الأسئلة';
 
   @override
   String get drawerCustomExam => 'نموذج امتحان';

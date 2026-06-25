@@ -501,7 +501,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawerForum => 'Discussions Forum';
 
   @override
-  String get drawerDoubts => 'Ask Doubt';
+  String get drawerDoubts => 'Doubts';
 
   @override
   String get drawerCustomExam => 'Custom Exam';

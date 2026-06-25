@@ -507,7 +507,7 @@ class AppLocalizationsMl extends AppLocalizations {
   String get drawerForum => 'ചർച്ചാ ഫോറം';
 
   @override
-  String get drawerDoubts => 'സംശയം ചോദിക്കുക';
+  String get drawerDoubts => 'സംശയങ്ങൾ';
 
   @override
   String get drawerCustomExam => 'കസ്റ്റം എക്സാം';
