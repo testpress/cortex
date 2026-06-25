@@ -53,8 +53,14 @@ Stream<List<ChapterDto>> subChapters(
       // yield the empty state rather than loop indefinitely.
       hasEmittedNonEmpty = false;
       try {
-        await repo.refreshChapters(courseId, parentId: parentId);
-        // watchChapters will emit naturally once the DB is updated.
+        final refreshed =
+            await repo.refreshChapters(courseId, parentId: parentId);
+        if (refreshed.isEmpty) {
+          // Server confirmed the folder is permanently empty.
+          // Since no DB write occurs for empty results, watchChapters won't emit.
+          // We must yield manually to unblock the UI.
+          yield chapters;
+        }
       } catch (_) {
         // Network failure: yield the empty state so the UI can show
         // a proper error or empty view rather than staying frozen.
