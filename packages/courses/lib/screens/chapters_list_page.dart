@@ -206,33 +206,24 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                           vertical: design.spacing.md,
                         ),
                         children: [
-                          if (chapters.isEmpty && chaptersAsync.isLoading)
-                            ..._skeletonChapters.asMap().entries.map((entry) {
-                              return ChapterCurriculumItem(
-                                chapter: entry.value,
-                                index: entry.key,
-                                isSkeleton: true,
-                              );
-                            })
-                          else
-                            ...chapters.asMap().entries.map((entry) {
-                              final chapter = entry.value;
-                              return ChapterCurriculumItem(
-                                chapter: chapter,
-                                index: entry.key,
-                                onTap: () {
-                                  if (chapter.isLeaf) {
-                                    context.push(
-                                      '${widget.basePath}/course/${widget.courseId}/chapters/${chapter.id}',
-                                    );
-                                  } else {
-                                    context.push(
-                                      '${widget.basePath}/course/${widget.courseId}/chapters?parentId=${chapter.id}',
-                                    );
-                                  }
-                                },
-                              );
-                            }),
+                          ...chapters.asMap().entries.map((entry) {
+                            final chapter = entry.value;
+                            return ChapterCurriculumItem(
+                              chapter: chapter,
+                              index: entry.key,
+                              onTap: () {
+                                if (chapter.isLeaf) {
+                                  context.push(
+                                    '${widget.basePath}/course/${widget.courseId}/chapters/${chapter.id}',
+                                  );
+                                } else {
+                                  context.push(
+                                    '${widget.basePath}/course/${widget.courseId}/chapters?parentId=${chapter.id}',
+                                  );
+                                }
+                              },
+                            );
+                          }),
                           const SizedBox(height: 80),
                         ],
                       )

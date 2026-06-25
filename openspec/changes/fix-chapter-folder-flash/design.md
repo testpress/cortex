@@ -51,3 +51,4 @@ empty list.
 - Navigate to a course from cache → should show chapters instantly.
 - Pull-to-refresh on course list → open same course → should recover chapters, never show lesson list.
 - Navigate to a genuine leaf chapter → should show lesson list correctly.
+- Navigate to a chapter folder whose server-side children have been permanently deleted → should recover gracefully and show empty state without looping.
