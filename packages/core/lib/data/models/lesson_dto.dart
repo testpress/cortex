@@ -1,4 +1,5 @@
 import '../../utils/time_formatter.dart';
+import 'exam_dto.dart';
 
 /// Lesson content type.
 enum LessonType {
@@ -70,6 +71,7 @@ class LessonDto {
   final bool isAiEnabled;
   final String? aiNotesUrl;
   final String? lastWatchedDuration;
+  final ExamDto? exam;
 
   /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
   bool get isComplete {
@@ -135,6 +137,7 @@ class LessonDto {
     this.isAiEnabled = false,
     this.aiNotesUrl,
     this.lastWatchedDuration,
+    this.exam,
   });
 
   LessonDto copyWith({
@@ -181,6 +184,7 @@ class LessonDto {
     bool? isAiEnabled,
     String? aiNotesUrl,
     String? lastWatchedDuration,
+    ExamDto? exam,
   }) {
     return LessonDto(
       id: id ?? this.id,
@@ -226,6 +230,7 @@ class LessonDto {
       isAiEnabled: isAiEnabled ?? this.isAiEnabled,
       aiNotesUrl: aiNotesUrl ?? this.aiNotesUrl,
       lastWatchedDuration: lastWatchedDuration ?? this.lastWatchedDuration,
+      exam: exam ?? this.exam,
     );
   }
 
@@ -288,6 +293,7 @@ class LessonDto {
       lastWatchedDuration: (lastWatchedDuration?.isEmpty ?? true)
           ? other.lastWatchedDuration
           : lastWatchedDuration,
+      exam: other.exam ?? exam,
       isDetailFetched: isDetailFetched || other.isDetailFetched,
       bookmarkId: bookmarkId ?? other.bookmarkId,
       // Status flags: Prefer 'true' or more advanced progress
@@ -516,6 +522,7 @@ class LessonDto {
           json['slug'] as String? ??
           exam?['slug'] as String? ??
           json['exam_slug'] as String?,
+      exam: exam != null ? ExamDto.fromJson(exam) : null,
     );
   }
 
@@ -713,6 +720,7 @@ class LessonDto {
       'aiNotesUrl': aiNotesUrl,
       'lastWatchedDuration': lastWatchedDuration,
       'attemptsUrl': attemptsUrl,
+      'exam': exam?.toJson(),
     };
   }
 }

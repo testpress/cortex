@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
-import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
 import '../providers/exam_providers.dart';
 import '../repositories/exam_repository.dart';
@@ -50,9 +49,6 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
       }
 
       // Preload exam details for the metadata display
-      if (widget.lesson?.slug != null) {
-        ref.read(examDetailProvider(widget.lesson!.slug!).future);
-      }
     });
   }
 
@@ -62,7 +58,8 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
     final l10n = L10n.of(context);
 
     final lessonDetailAsync = ref.watch(lessonDetailProvider(widget.testId));
-    final lesson = widget.lesson ?? lessonDetailAsync.valueOrNull?.toDto();
+    final fetchedLesson = lessonDetailAsync.valueOrNull?.toDto();
+    final lesson = widget.lesson?.mergeWith(fetchedLesson) ?? fetchedLesson;
 
     if (lesson == null && lessonDetailAsync.isLoading) {
       return Container(
@@ -71,21 +68,12 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
       );
     }
 
-    final fetchedLesson = lessonDetailAsync.valueOrNull;
-    final slug = lesson?.slug ?? fetchedLesson?.slug;
+    final exam = lesson?.exam;
 
-    AsyncValue<ExamDto>? examDetailAsync;
-    if (slug != null) {
-      examDetailAsync = ref.watch(examDetailProvider(slug));
-    }
-
-    final exam = examDetailAsync?.valueOrNull;
-
-    // Metadata is loading if we don't have the exam data yet and no errors have occurred.
+    // Metadata is loading if we don't have the exam data yet and we are still fetching.
     // This guarantees it shimmers immediately on frame 1 instead of showing an empty layout.
-    final bool hasError =
-        (examDetailAsync?.hasError ?? false) || lessonDetailAsync.hasError;
-    final bool isMetadataLoading = exam == null && !hasError;
+    final bool isMetadataLoading =
+        exam == null && !(lesson?.isDetailFetched ?? false);
 
     // Parse duration format from e.g. "03:00:00" to "180 mins"
     String durationVal = isMetadataLoading ? '120' : '--';

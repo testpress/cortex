@@ -53,6 +53,7 @@ Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
       isAiEnabled: lessonDto.isAiEnabled,
       aiNotesUrl: lessonDto.aiNotesUrl,
       lastWatchedDuration: lessonDto.lastWatchedDuration,
+      exam: lessonDto.exam,
     );
   });
 

@@ -7,7 +7,7 @@ part of 'custom_exam_options_provider.dart';
 // **************************************************************************
 
 String _$customExamOptionsNotifierHash() =>
-    r'b07cd027a6abf63a442c72b5d15183107cd4a524';
+    r'8cdaee628b3cdc454cffbb6edefafdb62646565e';
 
 /// See also [CustomExamOptionsNotifier].
 @ProviderFor(CustomExamOptionsNotifier)

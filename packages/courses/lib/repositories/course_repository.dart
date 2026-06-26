@@ -812,7 +812,7 @@ class CourseRepository {
       if (!isVideoOrStream) {
         final remoteLesson = attemptsById[dto.id];
         if (remoteLesson != null) {
-          hasAttempts = true;
+          hasAttempts = remoteLesson.hasAttempts;
           progressStatus = remoteLesson.progressStatus;
         } else {
           hasAttempts = false;
@@ -1096,6 +1096,10 @@ class CourseRepository {
         isAiEnabled: row.isAiEnabled,
         aiNotesUrl: row.aiNotesUrl,
         lastWatchedDuration: row.lastWatchedDuration,
+        exam: row.examMetadataJson != null
+            ? ExamDto.fromJson(
+                jsonDecode(row.examMetadataJson!) as Map<String, dynamic>)
+            : null,
       );
 
   LessonsTableCompanion _lessonDtoToCompanion(LessonDto dto) =>
@@ -1176,6 +1180,9 @@ class CourseRepository {
             : const Value.absent(),
         lastWatchedDuration: dto.lastWatchedDuration != null
             ? Value(dto.lastWatchedDuration)
+            : const Value.absent(),
+        examMetadataJson: dto.exam != null
+            ? Value(jsonEncode(dto.exam!.toJson()))
             : const Value.absent(),
       );
 

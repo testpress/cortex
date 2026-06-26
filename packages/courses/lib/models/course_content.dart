@@ -1,8 +1,8 @@
 import 'package:core/data/data.dart'
-    show LessonType, LessonProgressStatus, LessonDto;
+    show LessonType, LessonProgressStatus, LessonDto, ExamDto;
 
 export 'package:core/data/data.dart'
-    show LessonType, LessonProgressStatus, LessonDto;
+    show LessonType, LessonProgressStatus, LessonDto, ExamDto;
 
 /// Domain model for a specific content item within a chapter.
 class Lesson {
@@ -43,6 +43,7 @@ class Lesson {
     this.isAiEnabled = false,
     this.aiNotesUrl,
     this.lastWatchedDuration,
+    this.exam,
   });
 
   final String id;
@@ -87,6 +88,7 @@ class Lesson {
   final bool isAiEnabled;
   final String? aiNotesUrl;
   final String? lastWatchedDuration;
+  final ExamDto? exam;
 
   /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
   bool get isComplete {
@@ -148,6 +150,7 @@ class Lesson {
       isAiEnabled: isAiEnabled,
       aiNotesUrl: aiNotesUrl,
       lastWatchedDuration: lastWatchedDuration,
+      exam: exam,
     );
   }
 }

@@ -1159,22 +1159,6 @@ class MockDataSource implements DataSource {
   // --- Exam Attendance ---
 
   @override
-  Future<ExamDto> getExam(String slug) async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    return const ExamDto(
-      id: 'mock-exam-1',
-      slug: 'mock-exam-slug',
-      title: 'JEE Main Physics Mock Test',
-      duration: '01:00:00',
-      questionCount: 30,
-      hasInstructions: true,
-      attemptsUrl:
-          'https://api.testpress.in/api/v2.2.1/exams/mock-exam-slug/attempts/',
-      state: 'Available',
-    );
-  }
-
-  @override
   Future<List<AttemptDto>> getAttempts(String attemptsUrl) async {
     await Future.delayed(const Duration(milliseconds: 500));
     return [
