@@ -1,63 +1,9 @@
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 
-class ExploreDetailsCard extends StatelessWidget {
-  const ExploreDetailsCard({
+class ExploreActionTile extends StatelessWidget {
+  const ExploreActionTile({
     super.key,
-    required this.onExamReviewTap,
-    required this.onSubjectPerformanceTap,
-  });
-
-  final VoidCallback onExamReviewTap;
-  final VoidCallback onSubjectPerformanceTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-    final l10n = L10n.of(context);
-
-    return Container(
-      padding: EdgeInsets.all(design.spacing.md),
-      decoration: BoxDecoration(
-        color: design.colors.card,
-        borderRadius: BorderRadius.circular(design.radius.md),
-        border: Border.all(color: design.colors.border.withValues(alpha: 0.6)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AppSemantics.header(
-            label: l10n.reviewExploreDetailsTitle,
-            child: AppText.body(
-              l10n.reviewExploreDetailsTitle,
-              color: design.colors.textPrimary,
-              style: const TextStyle(fontWeight: FontWeight.w700),
-            ),
-          ),
-          SizedBox(height: design.spacing.md),
-          Column(
-            children: [
-              _ExploreTile(
-                title: l10n.reviewSubjectPerformanceTitle,
-                description: l10n.reviewSubjectPerformanceTileDesc,
-                onTap: onSubjectPerformanceTap,
-              ),
-              SizedBox(height: design.spacing.sm),
-              _ExploreTile(
-                title: l10n.reviewExamReviewTitle,
-                description: l10n.reviewExamReviewDesc,
-                onTap: onExamReviewTap,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ExploreTile extends StatelessWidget {
-  const _ExploreTile({
     required this.title,
     required this.description,
     required this.onTap,
@@ -80,6 +26,7 @@ class _ExploreTile extends StatelessWidget {
           width: double.infinity,
           padding: EdgeInsets.all(design.spacing.md),
           decoration: BoxDecoration(
+            color: design.colors.card,
             borderRadius: BorderRadius.circular(design.radius.md),
             border: Border.all(color: design.colors.border),
           ),

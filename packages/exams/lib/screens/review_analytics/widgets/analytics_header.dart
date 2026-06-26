@@ -10,6 +10,8 @@ class AnalyticsHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
+    final localizedTitle = l10n.reviewAnalyticsForTitle(title);
 
     return Container(
       padding: EdgeInsets.only(
@@ -23,49 +25,43 @@ class AnalyticsHeader extends StatelessWidget {
         border: Border(bottom: BorderSide(color: design.colors.border)),
         boxShadow: design.shadows.surfaceSoft,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AppSemantics.button(
-            label: 'Back',
-            onTap: onBack,
-            child: AppFocusable(
-              onTap: onBack,
-              borderRadius: BorderRadius.circular(design.radius.md),
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: design.spacing.xs,
-                  horizontal: design.spacing.xs,
+      child: AppSemantics.button(
+        label: localizedTitle,
+        onTap: onBack,
+        child: AppFocusable(
+          onTap: onBack,
+          borderRadius: BorderRadius.circular(design.radius.md),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: design.spacing.xs,
+              horizontal: design.spacing.xs,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 4.0,
+                  ), // Optical alignment with first line
+                  child: Icon(
+                    LucideIcons.arrowLeft,
+                    color: design.colors.textPrimary,
+                    size: 22,
+                  ),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      LucideIcons.chevronLeft,
-                      color: design.colors.textPrimary,
-                      size: design.iconSize.md,
-                    ),
-                    SizedBox(width: design.spacing.xs),
-                    AppText.subtitle(
-                      'Back',
-                      color: design.colors.textPrimary,
-                      style: const TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                  ],
+                SizedBox(width: design.spacing.sm),
+                Expanded(
+                  child: AppText.title(
+                    localizedTitle,
+                    color: design.colors.textPrimary,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
-          SizedBox(height: design.spacing.sm),
-          AppSemantics.header(
-            label: 'Review Analytics for $title',
-            child: AppText.headline(
-              'Review Analytics for $title',
-              color: design.colors.textPrimary,
-              maxLines: 2,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

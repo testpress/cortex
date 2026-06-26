@@ -737,5 +737,13 @@
   "examDetailsTitle": "പരീക്ഷാ വിവരങ്ങൾ",
   "errorCannotStartExam": "ക്ഷമിക്കണം! പരീക്ഷ ആരംഭിക്കാൻ കഴിയില്ല",
   "errorUnknownOccurred": "ഒരു അജ്ഞാത പിശക് സംഭവിച്ചു.",
-  "actionGoBack": "തിരികെ പോകുക"
+  "actionGoBack": "തിരികെ പോകുക",
+  "reviewAnalyticsForTitle": "{title} എന്നതിനായുള്ള റിവ്യൂ അനലിറ്റിക്സ്",
+  "@reviewAnalyticsForTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  }
 }

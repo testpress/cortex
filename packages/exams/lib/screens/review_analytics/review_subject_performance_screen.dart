@@ -71,14 +71,14 @@ class ReviewSubjectPerformanceScreen extends ConsumerWidget {
             child: AppScroll(
               padding: EdgeInsets.fromLTRB(
                 design.spacing.md,
-                design.spacing.lg,
+                design.spacing.md,
                 design.spacing.md,
                 design.spacing.xxl,
               ),
               children: [
                 AppSemantics.header(
                   label: l10n.labelOverallPerformance,
-                  child: AppText.xl2(
+                  child: AppText.title(
                     l10n.labelOverallPerformance,
                     style: const TextStyle(fontWeight: FontWeight.w700),
                   ),
@@ -88,13 +88,13 @@ class ReviewSubjectPerformanceScreen extends ConsumerWidget {
                 SizedBox(height: design.spacing.xl),
                 AppSemantics.header(
                   label: l10n.labelSectionPerformance,
-                  child: AppText.xl2(
+                  child: AppText.title(
                     l10n.labelSectionPerformance,
                     style: const TextStyle(fontWeight: FontWeight.w700),
                   ),
                 ),
                 SizedBox(height: design.spacing.xs),
-                AppText.body(
+                AppText.bodySmall(
                   l10n.reviewSubjectPerformanceDesc,
                   color: design.colors.textSecondary,
                 ),

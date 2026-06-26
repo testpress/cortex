@@ -1004,6 +1004,14 @@
   "reviewExploreDetailsTitle": "Explore More Details",
   "reviewExamReviewTitle": "Exam Review",
   "reviewExamReviewDesc": "Review each question with answers and explanations",
+  "reviewAnalyticsForTitle": "Review Analytics for {title}",
+  "@reviewAnalyticsForTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "defaultStudentName": "Student",
   "examCompletedLabel": "Exam completed"
 }

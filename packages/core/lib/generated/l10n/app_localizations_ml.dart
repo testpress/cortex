@@ -2148,6 +2148,11 @@ class AppLocalizationsMl extends AppLocalizations {
       'ഉത്തരങ്ങളും വിശദീകരണങ്ങളും സഹിതം ഓരോ ചോദ്യവും അവലോകനം ചെയ്യുക';
 
   @override
+  String reviewAnalyticsForTitle(String title) {
+    return '$title എന്നതിനായുള്ള റിവ്യൂ അനലിറ്റിക്സ്';
+  }
+
+  @override
   String get defaultStudentName => 'വിദ്യാർത്ഥി';
 
   @override

@@ -66,14 +66,14 @@ class ReviewAnalyticsScreen extends ConsumerWidget {
             child: AppScroll(
               padding: EdgeInsets.fromLTRB(
                 design.spacing.md,
-                design.spacing.lg,
+                design.spacing.md,
                 design.spacing.md,
                 design.spacing.xxl,
               ),
               children: [
                 AppSemantics.header(
                   label: l10n.reviewPerformanceOverviewTitle,
-                  child: AppText.xl2(
+                  child: AppText.title(
                     l10n.reviewPerformanceOverviewTitle,
                     style: const TextStyle(fontWeight: FontWeight.w700),
                   ),
@@ -81,13 +81,21 @@ class ReviewAnalyticsScreen extends ConsumerWidget {
                 SizedBox(height: design.spacing.md),
                 MetricsGrid(overview: overview),
                 SizedBox(height: design.spacing.xl),
-                ExploreDetailsCard(
-                  onExamReviewTap: () {
-                    final basePath = GoRouterState.of(
-                      context,
-                    ).uri.path.replaceFirst('/review-analytics', '');
+                AppSemantics.header(
+                  label: l10n.reviewExploreDetailsTitle,
+                  child: AppText.title(
+                    l10n.reviewExploreDetailsTitle,
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                ),
+                SizedBox(height: design.spacing.md),
+                ExploreActionTile(
+                  title: l10n.reviewSubjectPerformanceTitle,
+                  description: l10n.reviewSubjectPerformanceTileDesc,
+                  onTap: () {
+                    final currentPath = GoRouterState.of(context).uri.path;
                     context.push(
-                      '$basePath/review-answers',
+                      '$currentPath/subject-performance',
                       extra: ReviewRoutePayload(
                         assessmentTitle: assessmentTitle,
                         questions: questions,
@@ -97,10 +105,17 @@ class ReviewAnalyticsScreen extends ConsumerWidget {
                       ),
                     );
                   },
-                  onSubjectPerformanceTap: () {
-                    final currentPath = GoRouterState.of(context).uri.path;
+                ),
+                SizedBox(height: design.spacing.sm),
+                ExploreActionTile(
+                  title: l10n.reviewExamReviewTitle,
+                  description: l10n.reviewExamReviewDesc,
+                  onTap: () {
+                    final basePath = GoRouterState.of(
+                      context,
+                    ).uri.path.replaceFirst('/review-analytics', '');
                     context.push(
-                      '$currentPath/subject-performance',
+                      '$basePath/review-answers',
                       extra: ReviewRoutePayload(
                         assessmentTitle: assessmentTitle,
                         questions: questions,
