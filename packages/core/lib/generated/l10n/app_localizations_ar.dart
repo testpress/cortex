@@ -2110,6 +2110,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reviewExamReviewDesc => 'راجع كل سؤال مع الإجابات والشروحات';
 
   @override
+  String reviewAnalyticsForTitle(String title) {
+    return 'تحليلات المراجعة لـ $title';
+  }
+
+  @override
   String get defaultStudentName => 'طالب';
 
   @override

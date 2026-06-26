@@ -2104,6 +2104,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Review each question with answers and explanations';
 
   @override
+  String reviewAnalyticsForTitle(String title) {
+    return 'Review Analytics for $title';
+  }
+
+  @override
   String get defaultStudentName => 'Student';
 
   @override

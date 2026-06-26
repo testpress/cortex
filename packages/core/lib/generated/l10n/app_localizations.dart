@@ -3857,6 +3857,12 @@ abstract class AppLocalizations {
   /// **'Review each question with answers and explanations'**
   String get reviewExamReviewDesc;
 
+  /// No description provided for @reviewAnalyticsForTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review Analytics for {title}'**
+  String reviewAnalyticsForTitle(String title);
+
   /// No description provided for @defaultStudentName.
   ///
   /// In en, this message translates to:

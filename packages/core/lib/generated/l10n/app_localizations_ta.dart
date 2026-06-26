@@ -2138,6 +2138,11 @@ class AppLocalizationsTa extends AppLocalizations {
       'பதில்கள் மற்றும் விளக்கங்களுடன் ஒவ்வொரு கேள்வியையும் மதிப்பாய்வு செய்யவும்';
 
   @override
+  String reviewAnalyticsForTitle(String title) {
+    return '$title க்கான மதிப்பாய்வு பகுப்பாய்வு';
+  }
+
+  @override
   String get defaultStudentName => 'மாணவர்';
 
   @override

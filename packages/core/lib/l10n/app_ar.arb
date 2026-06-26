@@ -736,5 +736,13 @@
   "examDetailsTitle": "تفاصيل الامتحان",
   "errorCannotStartExam": "عفوًا! لا يمكن بدء الامتحان",
   "errorUnknownOccurred": "حدث خطأ غير معروف.",
-  "actionGoBack": "العودة"
+  "actionGoBack": "العودة",
+  "reviewAnalyticsForTitle": "تحليلات المراجعة لـ {title}",
+  "@reviewAnalyticsForTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  }
 }

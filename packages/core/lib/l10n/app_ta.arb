@@ -987,5 +987,13 @@
   "examDetailsTitle": "தேர்வு விவரங்கள்",
   "errorCannotStartExam": "மன்னிக்கவும்! தேர்வைத் தொடங்க முடியாது",
   "errorUnknownOccurred": "அறியப்படாத பிழை ஏற்பட்டது.",
-  "actionGoBack": "திரும்பிச் செல்"
+  "actionGoBack": "திரும்பிச் செல்",
+  "reviewAnalyticsForTitle": "{title} க்கான மதிப்பாய்வு பகுப்பாய்வு",
+  "@reviewAnalyticsForTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  }
 }
