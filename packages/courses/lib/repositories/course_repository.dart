@@ -812,7 +812,7 @@ class CourseRepository {
       if (!isVideoOrStream) {
         final remoteLesson = attemptsById[dto.id];
         if (remoteLesson != null) {
-          hasAttempts = true;
+          hasAttempts = remoteLesson.hasAttempts;
           progressStatus = remoteLesson.progressStatus;
         } else {
           hasAttempts = false;
@@ -1096,6 +1096,19 @@ class CourseRepository {
         isAiEnabled: row.isAiEnabled,
         aiNotesUrl: row.aiNotesUrl,
         lastWatchedDuration: row.lastWatchedDuration,
+        exam: (() {
+          final jsonStr = row.examMetadataJson;
+          if (jsonStr == null || jsonStr.isEmpty) return null;
+          try {
+            final decoded = jsonDecode(jsonStr);
+            if (decoded is Map<String, dynamic>) {
+              return ExamDto.fromJson(decoded);
+            }
+          } catch (e) {
+            debugPrint('CourseRepository: Failed to decode exam metadata: $e');
+          }
+          return null;
+        })(),
       );
 
   LessonsTableCompanion _lessonDtoToCompanion(LessonDto dto) =>
@@ -1176,6 +1189,9 @@ class CourseRepository {
             : const Value.absent(),
         lastWatchedDuration: dto.lastWatchedDuration != null
             ? Value(dto.lastWatchedDuration)
+            : const Value.absent(),
+        examMetadataJson: dto.exam != null
+            ? Value(jsonEncode(dto.exam!.toJson()))
             : const Value.absent(),
       );
 

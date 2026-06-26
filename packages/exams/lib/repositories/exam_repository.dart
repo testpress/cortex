@@ -98,10 +98,6 @@ class ExamRepository {
   }) : _dataSource = dataSource,
        _dbFuture = dbFuture;
 
-  Future<ExamDto> getExamBySlug(String slug) async {
-    return _dataSource.getExam(slug);
-  }
-
   Future<List<AttemptDto>> getAttempts(String attemptsUrl) async {
     return _dataSource.getAttempts(attemptsUrl);
   }
@@ -162,25 +158,6 @@ class ExamRepository {
   }
 
   // ─── Real-time Attempt Management ──────────────────────────────────────────
-
-  Future<void> loadExam(String slug, {bool isQuizMode = false}) async {
-    _emit(const ExamAttemptState(status: ExamAttemptStatus.loading));
-    try {
-      final exam = await _dataSource.getExam(slug);
-      if (exam.hasInstructions) {
-        _emit(
-          ExamAttemptState(status: ExamAttemptStatus.instructions, exam: exam),
-        );
-      } else {
-        await startStandaloneExam(exam, isQuizMode: isQuizMode);
-      }
-    } catch (e) {
-      final msg = e is ApiException ? e.message : e.toString();
-      _emit(
-        ExamAttemptState(status: ExamAttemptStatus.error, errorMessage: msg),
-      );
-    }
-  }
 
   Future<void> startStandaloneExam(
     ExamDto exam, {

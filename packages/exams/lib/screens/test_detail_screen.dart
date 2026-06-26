@@ -84,11 +84,8 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
 
       final attemptsUrl =
           widget.lesson?.attemptsUrl ?? fetchedLesson?.attemptsUrl;
-      final slug = widget.lesson?.slug ?? fetchedLesson?.slug;
 
-      final cachedExam = slug != null
-          ? ref.read(examDetailProvider(slug)).valueOrNull
-          : null;
+      final embeddedExam = lesson?.exam;
 
       if (lesson != null && attemptsUrl != null && attemptsUrl.isNotEmpty) {
         ref
@@ -97,36 +94,27 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
               ExamDto(
                 id: lesson.id,
                 title: lesson.title,
-                duration: cachedExam?.duration ?? lesson.duration,
-                questionCount: 0,
+                duration: embeddedExam?.duration ?? lesson.duration,
+                questionCount: embeddedExam?.questionCount ?? 0,
                 attemptsUrl: attemptsUrl,
-                markPerQuestion: cachedExam?.markPerQuestion,
-                negativeMarks: cachedExam?.negativeMarks,
+                markPerQuestion: embeddedExam?.markPerQuestion,
+                negativeMarks: embeddedExam?.negativeMarks,
                 pausedAttemptsCount: lesson.pausedAttemptsCount > 0
                     ? lesson.pausedAttemptsCount
-                    : (cachedExam?.pausedAttemptsCount ?? 0),
+                    : (embeddedExam?.pausedAttemptsCount ?? 0),
                 disableAttemptResume:
                     lesson.disableAttemptResume ||
-                    (cachedExam?.disableAttemptResume ?? false),
+                    (embeddedExam?.disableAttemptResume ?? false),
                 allowRetake:
-                    lesson.allowRetake && (cachedExam?.allowRetake ?? true),
+                    lesson.allowRetake && (embeddedExam?.allowRetake ?? true),
                 maxRetakes: lesson.maxRetakes != -1
                     ? lesson.maxRetakes
-                    : (cachedExam?.maxRetakes ?? -1),
+                    : (embeddedExam?.maxRetakes ?? -1),
+                hasInstructions: embeddedExam?.hasInstructions ?? false,
               ),
               attemptsUrl,
               isQuizMode: widget.isQuizMode,
             );
-      } else if (slug != null && slug.isNotEmpty) {
-        ref
-            .read(examAttemptProvider.notifier)
-            .loadExam(slug, isQuizMode: widget.isQuizMode);
-      } else if (widget.lesson == null &&
-          !lessonDetailAsync.isLoading &&
-          lessonDetailAsync.value == null) {
-        ref
-            .read(examAttemptProvider.notifier)
-            .loadExam(widget.testId, isQuizMode: widget.isQuizMode);
       }
     }
   }
@@ -172,16 +160,8 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
     });
 
     ref.listen<ExamAttemptState>(examAttemptProvider, (previous, next) {
-      final slug = widget.lesson?.slug ?? lessonDetailAsync.valueOrNull?.slug;
-
       if (previous?.status != ExamAttemptStatus.inProgress &&
           next.status == ExamAttemptStatus.inProgress) {
-        if (slug != null && slug.isNotEmpty) {
-          ref
-              .read(examDetailProvider(slug).notifier)
-              .setPausedAttemptsCount(slug, 1);
-        }
-
         // Just loaded the exam (or resumed it), jump to the initial question index
         setState(() {
           _currentQuestionIndex = next.currentQuestionIndex;
@@ -201,18 +181,24 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
         if (_pageController.hasClients) {
           _pageController.jumpToPage(0);
         }
-      } else if (previous?.status != ExamAttemptStatus.completed &&
-          next.status == ExamAttemptStatus.completed) {
-        if (slug != null && slug.isNotEmpty) {
-          ref
-              .read(examDetailProvider(slug).notifier)
-              .setPausedAttemptsCount(slug, 0);
-        }
       }
     });
 
     if (state.status == ExamAttemptStatus.idle ||
         state.status == ExamAttemptStatus.loading) {
+      final lesson = lessonDetailAsync.valueOrNull;
+      final attemptsUrl = widget.lesson?.attemptsUrl ?? lesson?.attemptsUrl;
+      if (lesson != null && (attemptsUrl == null || attemptsUrl.isEmpty)) {
+        return Container(
+          color: design.colors.surface,
+          child: Center(
+            child: AppText.body(
+              l10n.errorCannotStartExam,
+              color: design.colors.textSecondary,
+            ),
+          ),
+        );
+      }
       return lessonDetailAsync.when(
         data: (lesson) => Container(
           color: design.colors.surface,

@@ -149,9 +149,6 @@ abstract class DataSource {
 
   // ── Exams ───────────────────────────────────────────────────────────────
 
-  /// Fetch full metadata for an exam from `/api/v2.4/exams/{slug}/`.
-  Future<ExamDto> getExam(String slug);
-
   /// Fetch list of historical attempts.
   Future<List<AttemptDto>> getAttempts(String attemptsUrl);
 

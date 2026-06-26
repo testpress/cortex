@@ -684,14 +684,6 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<ExamDto> getExam(String slug) async {
-    return performNetworkRequest(
-      _dio.get(ApiEndpoints.examDetail(slug)),
-      fromJson: ExamDto.fromJson,
-    );
-  }
-
-  @override
   Future<List<AttemptDto>> getAttempts(String attemptsUrl) async {
     return performNetworkRequest(
       _dio.get(attemptsUrl),
