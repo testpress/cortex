@@ -47,8 +47,6 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
         widget.onStartAttempt(current.isQuizMode);
         return;
       }
-
-      // Preload exam details for the metadata display
     });
   }
 
@@ -73,7 +71,9 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
     // Metadata is loading if we don't have the exam data yet and we are still fetching.
     // This guarantees it shimmers immediately on frame 1 instead of showing an empty layout.
     final bool isMetadataLoading =
-        exam == null && !(lesson?.isDetailFetched ?? false);
+        exam == null &&
+        !(lesson?.isDetailFetched ?? false) &&
+        !lessonDetailAsync.hasError;
 
     // Parse duration format from e.g. "03:00:00" to "180 mins"
     String durationVal = isMetadataLoading ? '120' : '--';

@@ -110,6 +110,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                 maxRetakes: lesson.maxRetakes != -1
                     ? lesson.maxRetakes
                     : (embeddedExam?.maxRetakes ?? -1),
+                hasInstructions: embeddedExam?.hasInstructions ?? false,
               ),
               attemptsUrl,
               isQuizMode: widget.isQuizMode,
@@ -180,14 +181,24 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
         if (_pageController.hasClients) {
           _pageController.jumpToPage(0);
         }
-      } else if (previous?.status != ExamAttemptStatus.completed &&
-          next.status == ExamAttemptStatus.completed) {
-        // Handle completed state if needed
       }
     });
 
     if (state.status == ExamAttemptStatus.idle ||
         state.status == ExamAttemptStatus.loading) {
+      final lesson = lessonDetailAsync.valueOrNull;
+      final attemptsUrl = widget.lesson?.attemptsUrl ?? lesson?.attemptsUrl;
+      if (lesson != null && (attemptsUrl == null || attemptsUrl.isEmpty)) {
+        return Container(
+          color: design.colors.surface,
+          child: Center(
+            child: AppText.body(
+              l10n.errorCannotStartExam,
+              color: design.colors.textSecondary,
+            ),
+          ),
+        );
+      }
       return lessonDetailAsync.when(
         data: (lesson) => Container(
           color: design.colors.surface,
