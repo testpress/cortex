@@ -1096,10 +1096,19 @@ class CourseRepository {
         isAiEnabled: row.isAiEnabled,
         aiNotesUrl: row.aiNotesUrl,
         lastWatchedDuration: row.lastWatchedDuration,
-        exam: row.examMetadataJson != null
-            ? ExamDto.fromJson(
-                jsonDecode(row.examMetadataJson!) as Map<String, dynamic>)
-            : null,
+        exam: (() {
+          final jsonStr = row.examMetadataJson;
+          if (jsonStr == null || jsonStr.isEmpty) return null;
+          try {
+            final decoded = jsonDecode(jsonStr);
+            if (decoded is Map<String, dynamic>) {
+              return ExamDto.fromJson(decoded);
+            }
+          } catch (e) {
+            debugPrint('CourseRepository: Failed to decode exam metadata: $e');
+          }
+          return null;
+        })(),
       );
 
   LessonsTableCompanion _lessonDtoToCompanion(LessonDto dto) =>

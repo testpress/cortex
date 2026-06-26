@@ -87,6 +87,16 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
         final totalMinutes = (hours * 60) + mins;
         durationVal = '$totalMinutes';
         durationSuffix = 'mins';
+      } else {
+        final spaceParts = rawDuration.trim().split(' ');
+        if (spaceParts.isNotEmpty) {
+          durationVal = spaceParts[0];
+          if (spaceParts.length > 1) {
+            durationSuffix = spaceParts[1];
+          } else {
+            durationSuffix = 'mins';
+          }
+        }
       }
     }
     // Calculate total marks dynamically from real exam metadata
