@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 /// Dummy data used as placeholder content when [isLoading] is true.
