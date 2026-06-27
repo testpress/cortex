@@ -1,4 +1,4 @@
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: Display Announcement Cards at Reduced Width
 The announcements carousel SHALL render each card at a reduced width, so that more announcement cards are visible at a glance without horizontal scrolling.
