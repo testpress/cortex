@@ -46,18 +46,27 @@ class ExamAttempt extends _$ExamAttempt {
 
   void reset() => ref.read(examRepositoryProvider).reset();
 
-  Future<void> startStandaloneExam(ExamDto exam, {bool isQuizMode = false}) =>
-      ref
-          .read(examRepositoryProvider)
-          .startStandaloneExam(exam, isQuizMode: isQuizMode);
+  Future<void> startStandaloneExam(
+    ExamDto exam, {
+    bool isQuizMode = false,
+    bool isPartial = false,
+  }) => ref
+      .read(examRepositoryProvider)
+      .startStandaloneExam(exam, isQuizMode: isQuizMode, isPartial: isPartial);
 
   Future<void> startCourseLinkedExam(
     ExamDto exam,
     String contentAttemptsUrl, {
     bool isQuizMode = false,
+    bool isPartial = false,
   }) => ref
       .read(examRepositoryProvider)
-      .startCourseLinkedExam(exam, contentAttemptsUrl, isQuizMode: isQuizMode);
+      .startCourseLinkedExam(
+        exam,
+        contentAttemptsUrl,
+        isQuizMode: isQuizMode,
+        isPartial: isPartial,
+      );
 
   Future<void> submitAnswer(String questionId, AnswerDto answer) =>
       ref.read(examRepositoryProvider).submitAnswer(questionId, answer);

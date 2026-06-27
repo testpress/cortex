@@ -139,9 +139,9 @@ class StudyRoutes {
               testId: id,
               lesson: lesson,
               onClose: () => context.pop(),
-              onStartAttempt: (isQuizMode) async {
+              onStartAttempt: (isQuizMode, {bool isPartial = false}) async {
                 context.pushReplacement(
-                  '/study/test/$id/player?isQuizMode=$isQuizMode',
+                  '/study/test/$id/player?isQuizMode=$isQuizMode&isPartial=$isPartial',
                   extra: lesson,
                 );
               },
@@ -159,10 +159,13 @@ class StudyRoutes {
                     : (extra is Lesson ? extra.toDto() : null);
                 final isQuizMode =
                     state.uri.queryParameters['isQuizMode'] == 'true';
+                final isPartial =
+                    state.uri.queryParameters['isPartial'] == 'true';
                 return TestDetailScreen(
                   testId: id,
                   lesson: lesson,
                   isQuizMode: isQuizMode,
+                  isPartial: isPartial,
                   onClose: () => context.pop(),
                 );
               },

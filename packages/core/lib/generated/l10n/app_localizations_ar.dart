@@ -1902,6 +1902,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get startExamOnline => 'بدء الامتحان عبر الإنترنت';
 
   @override
+  String get retakeExamOnline => 'إعادة التقديم';
+
+  @override
+  String get retakeIncorrectExamOnline => 'إعادة تقديم غير الصحيح';
+
+  @override
+  String get examPreviousAttempts => 'المحاولات السابقة';
+
+  @override
+  String get labelDate => 'التاريخ';
+
+  @override
   String get analyticsInvalidTopicId => 'معرف الموضوع غير صالح';
 
   @override

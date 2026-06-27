@@ -1926,6 +1926,18 @@ class AppLocalizationsTa extends AppLocalizations {
   String get startExamOnline => 'தேர்வை ஆன்லைனில் தொடங்கவும்';
 
   @override
+  String get retakeExamOnline => 'மீண்டும் எழுதுக';
+
+  @override
+  String get retakeIncorrectExamOnline => 'தவறானவற்றை மீண்டும் செய்';
+
+  @override
+  String get examPreviousAttempts => 'முந்தைய முயற்சிகள்';
+
+  @override
+  String get labelDate => 'தேதி';
+
+  @override
   String get analyticsInvalidTopicId => 'தவறான தலைப்பு ஐடி';
 
   @override

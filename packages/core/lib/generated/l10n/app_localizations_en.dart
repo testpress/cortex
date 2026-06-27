@@ -1893,6 +1893,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get startExamOnline => 'Start Exam Online';
 
   @override
+  String get retakeExamOnline => 'Retake';
+
+  @override
+  String get retakeIncorrectExamOnline => 'Retake Incorrect';
+
+  @override
+  String get examPreviousAttempts => 'Previous Attempts';
+
+  @override
+  String get labelDate => 'Date';
+
+  @override
   String get analyticsInvalidTopicId => 'Invalid Topic ID';
 
   @override
