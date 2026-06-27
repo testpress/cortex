@@ -189,24 +189,28 @@ class ExamHistoryTable extends StatelessWidget {
                     onTap: () => onReviewTapped(attempt),
                     child: GestureDetector(
                       onTap: () => onReviewTapped(attempt),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          AppText.label(
-                            l10n.testReview,
-                            style: design.typography.label.copyWith(
-                              color: design.colors.primary,
-                              fontWeight: FontWeight.w600,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerRight,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            AppText.label(
+                              l10n.testReview,
+                              style: design.typography.label.copyWith(
+                                color: design.colors.primary,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          ),
-                          SizedBox(width: design.spacing.xs),
-                          Icon(
-                            LucideIcons.chevronRight,
-                            size: design.spacing.md,
-                            color: design.colors.primary,
-                          ),
-                        ],
+                            SizedBox(width: design.spacing.xs),
+                            Icon(
+                              LucideIcons.chevronRight,
+                              size: design.spacing.md,
+                              color: design.colors.primary,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
