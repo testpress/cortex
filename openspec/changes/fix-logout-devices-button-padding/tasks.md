@@ -1,8 +1,8 @@
 ## 1. Implementation
 
 - [x] 1.1 In `LoginActivityScreen`, update the button container's padding to add the device's system bottom inset on top of the existing vertical spacing
-- [ ] 1.2 Verify the button clears the home indicator / gesture bar on a device or simulator with a bottom inset (e.g., iPhone with Face ID)
-- [ ] 1.3 Verify there is no visual regression on a device without a bottom inset (e.g., simulator with home button)
+- [x] 1.2 Verify the button clears the home indicator / gesture bar on a device or simulator with a bottom inset (e.g., iPhone with Face ID)
+- [x] 1.3 Verify there is no visual regression on a device without a bottom inset (e.g., simulator with home button)
 
 ## 2. Verification
 

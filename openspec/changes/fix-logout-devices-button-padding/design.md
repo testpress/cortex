@@ -23,7 +23,7 @@ The fix is purely cosmetic — add bottom padding to the button container that a
 
 The `SafeArea(bottom: false)` pattern is intentional — it lets the content scroll edge-to-edge. For a bottom-anchored action button, the correct approach is to add the device's system bottom inset on top of the existing design token spacing, keeping all other sides unchanged. This ensures the button clears the home indicator / gesture bar on all device types without affecting the rest of the layout.
 
-**Alternative considered**: Wrapping the button in a `SafeArea(top: false)` widget. Rejected — it would add bottom padding even on devices without a home indicator (like older iPhones with a physical home button), and is inconsistent with how other screens in the app handle this pattern.
+**Alternative considered**: Wrapping the button in a `SafeArea(top: false)` widget. Rejected for consistency — other screens in the app that use `SafeArea(bottom: false)` handle the bottom inset manually, and this change follows the same pattern.
 
 ## Risks / Trade-offs
 

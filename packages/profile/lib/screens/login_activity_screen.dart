@@ -335,7 +335,7 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
                   design.spacing.md,
                   design.spacing.md,
                   design.spacing.md,
-                  design.spacing.md + MediaQuery.of(context).padding.bottom,
+                  design.spacing.md + MediaQuery.paddingOf(context).bottom,
                 ),
                 decoration: BoxDecoration(color: design.colors.surface),
                 child: AppButton.primary(
