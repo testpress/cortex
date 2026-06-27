@@ -331,7 +331,12 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
             if (_activities.isNotEmpty && !_isLoading && _error == null)
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.all(design.spacing.md),
+                padding: EdgeInsetsDirectional.fromSTEB(
+                  design.spacing.md,
+                  design.spacing.md,
+                  design.spacing.md,
+                  design.spacing.md + MediaQuery.of(context).padding.bottom,
+                ),
                 decoration: BoxDecoration(color: design.colors.surface),
                 child: AppButton.primary(
                   label: l10n.loginActivityLogoutOtherDevices,
