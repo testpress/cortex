@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import 'package:core/data/data.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 /// Dummy data used as placeholder content when [isLoading] is true.
@@ -53,10 +52,13 @@ class ExamHistoryTable extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AppText.title(
-            l10n.examPreviousAttempts,
-            style: design.typography.title.copyWith(
-              fontWeight: FontWeight.bold,
+          AppSemantics.header(
+            label: l10n.examPreviousAttempts,
+            child: AppText.title(
+              l10n.examPreviousAttempts,
+              style: design.typography.title.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           SizedBox(height: design.spacing.md),
@@ -190,29 +192,35 @@ class ExamHistoryTable extends StatelessWidget {
                 : AppSemantics.button(
                     label: l10n.testReview,
                     onTap: () => onReviewTapped(attempt),
-                    child: GestureDetector(
-                      onTap: () => onReviewTapped(attempt),
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.centerRight,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            AppText.label(
-                              l10n.testReview,
-                              style: design.typography.label.copyWith(
-                                color: design.colors.primary,
-                                fontWeight: FontWeight.w600,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        minHeight: 48,
+                        minWidth: 48,
+                      ),
+                      child: GestureDetector(
+                        onTap: () => onReviewTapped(attempt),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerRight,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              AppText.label(
+                                l10n.testReview,
+                                style: design.typography.label.copyWith(
+                                  color: design.colors.primary,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
-                            SizedBox(width: design.spacing.xs),
-                            Icon(
-                              LucideIcons.chevronRight,
-                              size: design.spacing.md,
-                              color: design.colors.primary,
-                            ),
-                          ],
+                              SizedBox(width: design.spacing.xs),
+                              Icon(
+                                LucideIcons.chevronRight,
+                                size: design.spacing.md,
+                                color: design.colors.primary,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

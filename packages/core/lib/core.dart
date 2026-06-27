@@ -43,6 +43,9 @@ export 'widgets/lesson_detail_shell.dart';
 export 'widgets/bookmark_folders_sheet.dart';
 export 'widgets/app_toast.dart';
 
+// Data
+export 'data/data.dart';
+
 // Shell
 export 'shell/app_shell.dart';
 
