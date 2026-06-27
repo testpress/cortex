@@ -36,11 +36,15 @@ class UpdatesAnnouncementsSection extends StatelessWidget {
                   l10n.updatesAnnouncementsTitle,
                   color: design.colors.textPrimary,
                 ),
-                GestureDetector(
+                AppSemantics.button(
+                  label: l10n.viewAllAction,
                   onTap: onViewAll,
-                  child: AppText.labelSmall(
-                    l10n.viewAllAction,
-                    color: design.colors.primary,
+                  child: GestureDetector(
+                    onTap: onViewAll,
+                    child: AppText.labelSmall(
+                      l10n.viewAllAction,
+                      color: design.colors.primary,
+                    ),
                   ),
                 ),
               ],
@@ -88,7 +92,8 @@ class PromotionalBanners extends StatelessWidget {
     return AppCarousel(
       height: 110 * scale,
       showDots: false,
-      viewportFraction: 0.88,
+      viewportFraction:
+          (320.0 / MediaQuery.sizeOf(context).width).clamp(0.30, 0.85),
       padEnds: false,
       itemCount: posts.length,
       itemPadding: EdgeInsets.only(left: design.spacing.md),
@@ -113,61 +118,74 @@ class AnnouncementCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    // Create a deterministic color palette based on item index
+    // Create a deterministic color palette based on item index using design tokens
     final colors = [
-      (bg: const Color(0xFFECFDF5), text: const Color(0xFF065F46)), // Green
-      (bg: const Color(0xFFFAF5FF), text: const Color(0xFF6B21A8)), // Purple
-      (bg: const Color(0xFFFFFBEB), text: const Color(0xFF92400E)), // Amber
+      (
+        bg: design.colors.success.withValues(alpha: 0.1),
+        text: design.colors.success
+      ), // Green
+      (
+        bg: design.colors.primary.withValues(alpha: 0.1),
+        text: design.colors.primary
+      ), // Purple
+      (
+        bg: design.colors.warning.withValues(alpha: 0.1),
+        text: design.colors.warning
+      ), // Amber
     ];
     final colorScheme = colors[index % colors.length];
 
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    return AppSemantics.button(
+      label: post.title,
       onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(design.spacing.md),
-        decoration: BoxDecoration(
-          color: colorScheme.bg,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: design.colors.border.withValues(alpha: 0.06),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  AppText.body(
-                    post.title,
-                    color: colorScheme.text,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(height: 2),
-                  AppText.bodySmall(
-                    post.summary.replaceAll(RegExp(r'[\r\n]+'), ' ').trim(),
-                    color: colorScheme.text.withValues(alpha: 0.8),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.all(design.spacing.md),
+          decoration: BoxDecoration(
+            color: colorScheme.bg,
+            borderRadius: design.radius.card,
+            boxShadow: [
+              BoxShadow(
+                color: design.colors.border.withValues(alpha: 0.06),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
               ),
-            ),
-            const SizedBox(width: 12),
-            Icon(
-              LucideIcons.chevronRight,
-              size: 20,
-              color: colorScheme.text.withValues(alpha: 0.6),
-            ),
-          ],
+            ],
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    AppText.body(
+                      post.title,
+                      color: colorScheme.text,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 2),
+                    AppText.bodySmall(
+                      post.summary.replaceAll(RegExp(r'[\r\n]+'), ' ').trim(),
+                      color: colorScheme.text.withValues(alpha: 0.8),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              Icon(
+                LucideIcons.chevronRight,
+                size: 20,
+                color: colorScheme.text.withValues(alpha: 0.6),
+              ),
+            ],
+          ),
         ),
       ),
     );
