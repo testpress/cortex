@@ -94,23 +94,20 @@ class _BaseReviewDialogState extends State<BaseReviewDialog> {
             Padding(
               padding: const EdgeInsets.only(left: 24, right: 24, bottom: 24),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Expanded(
-                    child: AppButton(
-                      label: L10n.of(context).labelCancel,
-                      onPressed: widget.onCancel,
-                      variant: AppButtonVariant.secondary,
-                      borderColor: widget.design.colors.border,
-                      foregroundColor: widget.design.colors.textPrimary,
-                    ),
+                  AppButton(
+                    label: L10n.of(context).labelCancel,
+                    onPressed: widget.onCancel,
+                    variant: AppButtonVariant.secondary,
+                    borderColor: widget.design.colors.border,
+                    foregroundColor: widget.design.colors.textPrimary,
                   ),
                   const SizedBox(width: 12),
-                  Expanded(
-                    child: AppButton(
-                      label: widget.submitLabel,
-                      onPressed: () => widget.onSubmit(_controller.text),
-                      backgroundColor: widget.submitColor,
-                    ),
+                  AppButton(
+                    label: widget.submitLabel,
+                    onPressed: () => widget.onSubmit(_controller.text),
+                    backgroundColor: widget.submitColor,
                   ),
                 ],
               ),
@@ -313,25 +310,22 @@ class _ReportReviewDialogState extends State<ReportReviewDialog> {
             Padding(
               padding: const EdgeInsets.all(24),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Expanded(
-                    child: AppButton(
-                      label: L10n.of(context).labelCancel,
-                      onPressed: () => Navigator.pop(context),
-                      variant: AppButtonVariant.secondary,
-                      borderColor: design.colors.border,
-                      foregroundColor: design.colors.textPrimary,
-                    ),
+                  AppButton(
+                    label: L10n.of(context).labelCancel,
+                    onPressed: () => Navigator.pop(context),
+                    variant: AppButtonVariant.secondary,
+                    borderColor: design.colors.border,
+                    foregroundColor: design.colors.textPrimary,
                   ),
                   const SizedBox(width: 12),
-                  Expanded(
-                    child: AppButton(
-                      label: widget.l10n.reviewSubmitReport,
-                      onPressed: () {
-                        widget.onSubmit(_selectedIndex, _controller.text);
-                      },
-                      backgroundColor: design.colors.accent5,
-                    ),
+                  AppButton(
+                    label: widget.l10n.reviewSubmitReport,
+                    onPressed: () {
+                      widget.onSubmit(_selectedIndex, _controller.text);
+                    },
+                    backgroundColor: design.colors.accent5,
                   ),
                 ],
               ),
