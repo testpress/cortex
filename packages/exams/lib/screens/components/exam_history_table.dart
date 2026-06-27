@@ -135,8 +135,11 @@ class ExamHistoryTable extends StatelessWidget {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
-    final dateStr = attempt.date != null
-        ? DateFormatter.formatFullDate(DateTime.parse(attempt.date!).toLocal())
+    final parsedDate = attempt.date != null
+        ? DateTime.tryParse(attempt.date!)
+        : null;
+    final dateStr = parsedDate != null
+        ? DateFormatter.formatFullDate(parsedDate.toLocal())
         : '--';
 
     final correctColor = design.colors.success;

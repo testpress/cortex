@@ -171,16 +171,12 @@ class ExamRepository {
         if (attempts.isEmpty) {
           final attempt = await _dataSource.createAttempt(
             exam.attemptsUrl,
-            data:
-                {
-                  if (isQuizMode) 'attempt_type': 1,
-                  if (isPartial) 'is_partial': true,
-                }.isEmpty
-                ? null
-                : {
+            data: (isQuizMode || isPartial)
+                ? {
                     if (isQuizMode) 'attempt_type': 1,
                     if (isPartial) 'is_partial': true,
-                  },
+                  }
+                : null,
           );
           if (isQuizMode) {
             final db = await _dbFuture;
@@ -201,16 +197,12 @@ class ExamRepository {
           } else {
             final newAttempt = await _dataSource.createAttempt(
               exam.attemptsUrl,
-              data:
-                  {
-                    if (isQuizMode) 'attempt_type': 1,
-                    if (isPartial) 'is_partial': true,
-                  }.isEmpty
-                  ? null
-                  : {
+              data: (isQuizMode || isPartial)
+                  ? {
                       if (isQuizMode) 'attempt_type': 1,
                       if (isPartial) 'is_partial': true,
-                    },
+                    }
+                  : null,
             );
             if (isQuizMode) {
               final db = await _dbFuture;
@@ -222,16 +214,12 @@ class ExamRepository {
       } else {
         final attempt = await _dataSource.createAttempt(
           exam.attemptsUrl,
-          data:
-              {
-                if (isQuizMode) 'attempt_type': 1,
-                if (isPartial) 'is_partial': true,
-              }.isEmpty
-              ? null
-              : {
+          data: (isQuizMode || isPartial)
+              ? {
                   if (isQuizMode) 'attempt_type': 1,
                   if (isPartial) 'is_partial': true,
-                },
+                }
+              : null,
         );
         if (isQuizMode) {
           final db = await _dbFuture;
@@ -264,16 +252,12 @@ class ExamRepository {
         if (attempts.isEmpty) {
           final attempt = await _dataSource.createContentAttempt(
             contentAttemptsUrl,
-            data:
-                {
-                  if (isQuizMode) 'attempt_type': 1,
-                  if (isPartial) 'is_partial': true,
-                }.isEmpty
-                ? null
-                : {
+            data: (isQuizMode || isPartial)
+                ? {
                     if (isQuizMode) 'attempt_type': 1,
                     if (isPartial) 'is_partial': true,
-                  },
+                  }
+                : null,
           );
           if (isQuizMode) {
             final db = await _dbFuture;
@@ -294,16 +278,12 @@ class ExamRepository {
           } else {
             final newAttempt = await _dataSource.createContentAttempt(
               contentAttemptsUrl,
-              data:
-                  {
-                    if (isQuizMode) 'attempt_type': 1,
-                    if (isPartial) 'is_partial': true,
-                  }.isEmpty
-                  ? null
-                  : {
+              data: (isQuizMode || isPartial)
+                  ? {
                       if (isQuizMode) 'attempt_type': 1,
                       if (isPartial) 'is_partial': true,
-                    },
+                    }
+                  : null,
             );
             if (isQuizMode) {
               final db = await _dbFuture;
@@ -315,16 +295,12 @@ class ExamRepository {
       } else {
         final attempt = await _dataSource.createContentAttempt(
           contentAttemptsUrl,
-          data:
-              {
-                if (isQuizMode) 'attempt_type': 1,
-                if (isPartial) 'is_partial': true,
-              }.isEmpty
-              ? null
-              : {
+          data: (isQuizMode || isPartial)
+              ? {
                   if (isQuizMode) 'attempt_type': 1,
                   if (isPartial) 'is_partial': true,
-                },
+                }
+              : null,
         );
         if (isQuizMode) {
           final db = await _dbFuture;

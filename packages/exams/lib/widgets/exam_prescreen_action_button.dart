@@ -56,7 +56,7 @@ class ExamPrescreenActionButton extends StatelessWidget {
                 context,
                 l10n.retakeExamOnline,
                 onTap,
-                isPrimary: true,
+                isPrimary: false,
               ),
             ),
           ),

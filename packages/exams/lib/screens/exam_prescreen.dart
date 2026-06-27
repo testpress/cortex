@@ -267,7 +267,7 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                     attemptsAsync.when(
                       data: (attempts) {
                         final completedAttempts = attempts
-                            .where((a) => a.state == 'Completed')
+                            .where((a) => a.state?.toLowerCase() == 'completed')
                             .toList();
                         if (completedAttempts.isEmpty) {
                           return const SizedBox.shrink();
