@@ -1,18 +1,21 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
 import '../providers/exam_providers.dart';
 import '../repositories/exam_repository.dart';
 import '../widgets/exam_mode_option_card.dart';
 import '../widgets/exam_prescreen_metadata.dart';
 import '../widgets/exam_prescreen_action_button.dart';
+import '../models/review_route_payload.dart';
+import 'components/exam_history_table.dart';
 
 class ExamPrescreen extends ConsumerStatefulWidget {
   final String testId;
   final LessonDto? lesson;
   final VoidCallback onClose;
-  final Future<void> Function(bool isQuizMode) onStartAttempt;
+  final Future<void> Function(bool isQuizMode, {bool isPartial}) onStartAttempt;
 
   const ExamPrescreen({
     super.key,
@@ -28,6 +31,7 @@ class ExamPrescreen extends ConsumerStatefulWidget {
 
 class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
   bool _isModeSheetOpen = false;
+  bool _selectedRetakeIsPartial = false;
 
   @override
   void initState() {
@@ -59,14 +63,27 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
     final fetchedLesson = lessonDetailAsync.valueOrNull?.toDto();
     final lesson = widget.lesson?.mergeWith(fetchedLesson) ?? fetchedLesson;
 
-    if (lesson == null && lessonDetailAsync.isLoading) {
-      return Container(
-        color: design.colors.overlay, // Semi-transparent backdrop
-        child: const Center(child: AppLoadingIndicator()),
-      );
-    }
-
     final exam = lesson?.exam;
+
+    final attemptsUrl = lesson?.attemptsUrl ?? exam?.attemptsUrl;
+    final attemptsAsync = attemptsUrl != null
+        ? ref.watch(examAttemptsProvider(attemptsUrl))
+        : const AsyncValue<List<AttemptDto>>.data([]);
+
+    final bool isAttemptsLoading = attemptsAsync.isLoading;
+    final bool hasRunningAttempt =
+        attemptsAsync.valueOrNull?.any(
+          (a) =>
+              a.state?.toLowerCase() == 'running' ||
+              a.state?.toLowerCase() == 'submitting',
+        ) ??
+        false;
+
+    final bool hasCompletedAttempts =
+        attemptsAsync.valueOrNull?.any(
+          (a) => a.state?.toLowerCase() == 'completed',
+        ) ??
+        false;
 
     // Metadata is loading if we don't have the exam data yet and we are still fetching.
     // This guarantees it shimmers immediately on frame 1 instead of showing an empty layout.
@@ -145,8 +162,12 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
     }
 
     final bool isResuming =
-        exam != null &&
-        (exam.pausedAttemptsCount > 0 && !exam.disableAttemptResume);
+        ((exam?.pausedAttemptsCount ?? 0) > 0 &&
+            !(exam?.disableAttemptResume ?? false)) ||
+        hasRunningAttempt;
+
+    // Show "Retake" when there are past completed attempts but no running one.
+    final bool isRetaking = hasCompletedAttempts && !isResuming;
 
     final bool showModeSelection =
         !isMetadataLoading &&
@@ -165,7 +186,7 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
           onBack: widget.onClose,
           stickyFooter: true,
           backgroundColor: design.colors.card,
-          bottomBar: isMetadataLoading
+          bottomBar: (isMetadataLoading || isAttemptsLoading)
               ? null
               : ((exam?.allowRetake ?? true) ||
                     !((lesson?.hasAttempts ?? false) &&
@@ -181,15 +202,36 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                   child: ExamPrescreenActionButton(
                     isButtonEnabled: isButtonEnabled,
                     isResuming: isResuming,
+                    isRetaking: isRetaking,
                     onTap: isButtonEnabled
                         ? () async {
                             if (showModeSelection) {
                               setState(() {
+                                _selectedRetakeIsPartial = false;
                                 _isModeSheetOpen = true;
                               });
                             } else {
                               ref.read(examAttemptProvider.notifier).reset();
-                              await widget.onStartAttempt(false);
+                              await widget.onStartAttempt(
+                                false,
+                                isPartial: false,
+                              );
+                            }
+                          }
+                        : null,
+                    onRetakeIncorrectTap: isButtonEnabled
+                        ? () async {
+                            if (showModeSelection) {
+                              setState(() {
+                                _selectedRetakeIsPartial = true;
+                                _isModeSheetOpen = true;
+                              });
+                            } else {
+                              ref.read(examAttemptProvider.notifier).reset();
+                              await widget.onStartAttempt(
+                                false,
+                                isPartial: true,
+                              );
                             }
                           }
                         : null,
@@ -220,6 +262,40 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                     correctMarks: correctMarks,
                     wrongMarks: wrongMarks,
                   ),
+                  SizedBox(height: design.spacing.lg),
+                  if (attemptsUrl != null)
+                    attemptsAsync.when(
+                      data: (attempts) {
+                        final completedAttempts = attempts
+                            .where((a) => a.state?.toLowerCase() == 'completed')
+                            .toList();
+                        if (completedAttempts.isEmpty) {
+                          return const SizedBox.shrink();
+                        }
+                        return ExamHistoryTable(
+                          attempts: completedAttempts,
+                          onReviewTapped: (attempt) {
+                            final payload = ReviewRoutePayload(
+                              attempt: attempt,
+                              assessmentTitle:
+                                  exam?.title ?? lesson?.title ?? '',
+                              questions: const [],
+                              attemptStates: const {},
+                            );
+                            context.push(
+                              '${GoRouterState.of(context).matchedLocation}/review-analytics',
+                              extra: payload,
+                            );
+                          },
+                        );
+                      },
+                      loading: () => ExamHistoryTable(
+                        isLoading: true,
+                        attempts: const [],
+                        onReviewTapped: (_) {},
+                      ),
+                      error: (_, _) => const SizedBox.shrink(),
+                    ),
                   SizedBox(height: design.spacing.lg),
                 ],
               ),
@@ -279,7 +355,10 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                         onTap: () async {
                           setState(() => _isModeSheetOpen = false);
                           ref.read(examAttemptProvider.notifier).reset();
-                          await widget.onStartAttempt(false);
+                          await widget.onStartAttempt(
+                            false,
+                            isPartial: _selectedRetakeIsPartial,
+                          );
                         },
                       ),
                       SizedBox(height: design.spacing.md),
@@ -291,7 +370,10 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                         onTap: () async {
                           setState(() => _isModeSheetOpen = false);
                           ref.read(examAttemptProvider.notifier).reset();
-                          await widget.onStartAttempt(true);
+                          await widget.onStartAttempt(
+                            true,
+                            isPartial: _selectedRetakeIsPartial,
+                          );
                         },
                       ),
                       SizedBox(height: design.spacing.lg),

@@ -694,7 +694,11 @@
     }
   },
   "resumeExamOnline": "പരീക്ഷ ഓൺലൈനിൽ തുടരുക",
-  "startExamOnline": "പരീക്ഷ ഓൺലൈനിൽ ആരംഭിക്കുക",
+  "startExamOnline": "പരീക്ഷ ഓൺലൈനില്‍ ആരംഭിക്കുക",
+  "retakeExamOnline": "പരീക്ഷ വീണ്ടും എഴുതുക",
+  "retakeIncorrectExamOnline": "തെറ്റായവ വീണ്ടും ചെയ്യുക",
+  "examPreviousAttempts": "മുൻ ശ്രമങ്ങൾ",
+  "labelDate": "തേഴ്വ്",
   "examsTabTitle": "പരീക്ഷകൾ",
   "availableExamCoursesTitle": "ലഭ്യമായ പരീക്ഷാ കോഴ്‌സുകൾ",
   "testSubmitting": "ടെസ്റ്റ് സമർപ്പിക്കുന്നു...",

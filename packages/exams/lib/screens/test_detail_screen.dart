@@ -23,6 +23,7 @@ class TestDetailScreen extends ConsumerStatefulWidget {
   final String testId;
   final LessonDto? lesson;
   final bool isQuizMode;
+  final bool isPartial;
   final VoidCallback onClose;
 
   const TestDetailScreen({
@@ -30,6 +31,7 @@ class TestDetailScreen extends ConsumerStatefulWidget {
     required this.testId,
     this.lesson,
     this.isQuizMode = false,
+    this.isPartial = false,
     required this.onClose,
   });
 
@@ -114,6 +116,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
               ),
               attemptsUrl,
               isQuizMode: widget.isQuizMode,
+              isPartial: widget.isPartial,
             );
       }
     }
@@ -246,7 +249,11 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
         onStartExam: () {
           ref
               .read(examAttemptProvider.notifier)
-              .startStandaloneExam(state.exam!, isQuizMode: widget.isQuizMode);
+              .startStandaloneExam(
+                state.exam!,
+                isQuizMode: widget.isQuizMode,
+                isPartial: widget.isPartial,
+              );
         },
       );
     }

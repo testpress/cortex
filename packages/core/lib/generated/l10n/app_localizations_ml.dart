@@ -1934,7 +1934,19 @@ class AppLocalizationsMl extends AppLocalizations {
   String get resumeExamOnline => 'പരീക്ഷ ഓൺലൈനിൽ തുടരുക';
 
   @override
-  String get startExamOnline => 'പരീക്ഷ ഓൺലൈനിൽ ആരംഭിക്കുക';
+  String get startExamOnline => 'പരീക്ഷ ഓൺലൈനില്‍ ആരംഭിക്കുക';
+
+  @override
+  String get retakeExamOnline => 'പരീക്ഷ വീണ്ടും എഴുതുക';
+
+  @override
+  String get retakeIncorrectExamOnline => 'തെറ്റായവ വീണ്ടും ചെയ്യുക';
+
+  @override
+  String get examPreviousAttempts => 'മുൻ ശ്രമങ്ങൾ';
+
+  @override
+  String get labelDate => 'തേഴ്വ്';
 
   @override
   String get analyticsInvalidTopicId => 'അസാധുവായ വിഷയം ഐഡി';

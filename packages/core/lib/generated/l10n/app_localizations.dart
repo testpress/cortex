@@ -3473,6 +3473,30 @@ abstract class AppLocalizations {
   /// **'Start Exam Online'**
   String get startExamOnline;
 
+  /// No description provided for @retakeExamOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Retake'**
+  String get retakeExamOnline;
+
+  /// No description provided for @retakeIncorrectExamOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Retake Incorrect'**
+  String get retakeIncorrectExamOnline;
+
+  /// No description provided for @examPreviousAttempts.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous Attempts'**
+  String get examPreviousAttempts;
+
+  /// No description provided for @labelDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get labelDate;
+
   /// No description provided for @analyticsInvalidTopicId.
   ///
   /// In en, this message translates to:
