@@ -11,8 +11,8 @@
 
 ## 3. Verify
 
-- [ ] 3.1 Confirm `_stripHtml` is not used anywhere else in the file before removing it
-- [ ] 3.2 Hot-reload and navigate to the exam review screen — tap "Ask Doubt" on any question and confirm it opens `AskDoubtFormScreen` with the correct question ID shown in the context badge
-- [ ] 3.3 Tap "Comment" — verify Cancel button is left-aligned and "Post Comment" is right-aligned at natural width
-- [ ] 3.4 Tap "Report" — verify Cancel button is left-aligned and "Report" is right-aligned at natural width
-- [ ] 3.5 Confirm tapping back from the ask doubt form returns to the exam review screen at the same question
+- [x] 3.1 Confirm `_stripHtml` is not used anywhere else in the file before removing it
+- [x] 3.2 Hot-reload and navigate to the exam review screen — tap "Ask Doubt" on any question and confirm it opens `AskDoubtFormScreen` with the correct question ID shown in the context badge
+- [x] 3.3 Tap "Comment" — verify Cancel button is left-aligned and "Post Comment" is right-aligned at natural width
+- [x] 3.4 Tap "Report" — verify Cancel button is left-aligned and "Report" is right-aligned at natural width
+- [x] 3.5 Confirm tapping back from the ask doubt form returns to the exam review screen at the same question

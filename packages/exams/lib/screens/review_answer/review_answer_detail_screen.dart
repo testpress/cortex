@@ -206,7 +206,7 @@ class _ReviewAnswerDetailScreenState
                     ReviewFooterActions(
                       l10n: l10n,
                       onAskDoubt: () => context.push(
-                        '/home/discussions/doubts/ask?question_id=${currentQuestion.id}',
+                        '/home/discussions/doubts/ask?question_id=${Uri.encodeComponent(currentQuestion.id)}',
                       ),
                       onComment: () =>
                           _showCommentDialog(currentQuestion, design, l10n),

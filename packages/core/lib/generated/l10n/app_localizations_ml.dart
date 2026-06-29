@@ -931,6 +931,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get labelCancel => 'റദ്ദാക്കുക';
 
   @override
+  String get labelClose => 'അടയ്ക്കുക';
+
+  @override
   String get labelSubmitNow => 'ഇപ്പോൾ സമർപ്പിക്കുക';
 
   @override

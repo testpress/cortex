@@ -293,6 +293,7 @@
     }
   },
   "labelCancel": "إلغاء",
+  "labelClose": "إغلاق",
   "labelSubmitNow": "تسليم الآن",
   "testSubmittedTitle": "تم تسليم الاختبار!",
   "testSubmittedBody": "لقد تم تسليم اختبارك بنجاح. راجع إجاباتك أو اعرض التحليلات التفصيلية.",

@@ -1709,6 +1709,12 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get labelCancel;
 
+  /// No description provided for @labelClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get labelClose;
+
   /// No description provided for @labelSubmitNow.
   ///
   /// In en, this message translates to:

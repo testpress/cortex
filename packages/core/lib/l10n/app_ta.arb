@@ -463,6 +463,7 @@
     }
   },
   "labelCancel": "ரத்துசெய்",
+  "labelClose": "மூடு",
   "labelSubmitNow": "இப்போதே சமர்ப்பி",
   "testSubmittedTitle": "தேர்வு சமர்ப்பிக்கப்பட்டது!",
   "testSubmittedBody": "உங்கள் தேர்வு வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது.",

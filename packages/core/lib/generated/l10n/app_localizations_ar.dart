@@ -921,6 +921,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get labelCancel => 'إلغاء';
 
   @override
+  String get labelClose => 'إغلاق';
+
+  @override
   String get labelSubmitNow => 'تسليم الآن';
 
   @override
