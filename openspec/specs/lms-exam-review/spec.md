@@ -44,12 +44,12 @@ The system SHALL provide filter options (e.g. chips) at the top or in a filter b
 - **AND** the "All" filter SHALL reset the view to include every question in the test.
 
 ### Requirement: Contextual Action Dialogs
-The system SHALL provide interactive dialogs for "Ask Doubt", "Comment", and "Report Issue" to facilitate user interaction during question review.
+The system SHALL provide interactive actions for "Ask Doubt", "Comment", and "Report Issue" to facilitate user interaction during question review. The "Ask Doubt" action SHALL navigate to the full ask doubt form screen; "Comment" and "Report Issue" SHALL continue to use inline dialogs.
 
 #### Scenario: Open Ask Doubt
 - **WHEN** the user selects "Ask Doubt" on a question
-- **THEN** a dialog SHALL appear displaying the question text as context
-- **AND** a multi-line text input SHALL be provided for the user to describe their doubt.
+- **THEN** the system SHALL navigate to the ask doubt form screen (`/home/discussions/doubts/ask`)
+- **AND** the current question's ID SHALL be passed as the `question_id` query parameter
 
 #### Scenario: Open Add Comment
 - **WHEN** the user selects "Comment"
@@ -70,4 +70,19 @@ The exam review and answer detail components MUST be implemented within the `exa
 #### Scenario: Implementation location
 - **WHEN** the application is compiled
 - **THEN** the exam review screen and related components are sourced from `package:exams` instead of `package:courses`
+
+### Requirement: Dialog Action Button Alignment
+The Comment and Report dialogs SHALL display their action buttons right-aligned, with the Cancel button at natural width to the left of the primary action button.
+
+#### Scenario: Comment dialog button layout
+- **WHEN** the Comment dialog is open
+- **THEN** the Cancel button SHALL appear at its natural width
+- **AND** the "Post Comment" button SHALL appear to the right of Cancel, also at natural width
+- **AND** both buttons SHALL be aligned to the right edge of the dialog
+
+#### Scenario: Report dialog button layout
+- **WHEN** the Report dialog is open
+- **THEN** the Cancel button SHALL appear at its natural width
+- **AND** the "Report" button SHALL appear to the right of Cancel, also at natural width
+- **AND** both buttons SHALL be aligned to the right edge of the dialog
 
