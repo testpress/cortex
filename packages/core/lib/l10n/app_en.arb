@@ -471,7 +471,6 @@
     }
   },
   "labelCancel": "Cancel",
-  "labelClose": "Close",
   "labelSubmitNow": "Submit Now",
   "testSubmittedTitle": "Test Submitted!",
   "testSubmittedBody": "Your test has been successfully submitted. Review your answers or view detailed analytics.",

@@ -924,9 +924,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get labelCancel => 'Cancel';
 
   @override
-  String get labelClose => 'Close';
-
-  @override
   String get labelSubmitNow => 'Submit Now';
 
   @override

@@ -934,9 +934,6 @@ class AppLocalizationsTa extends AppLocalizations {
   String get labelCancel => 'ரத்துசெய்';
 
   @override
-  String get labelClose => 'மூடு';
-
-  @override
   String get labelSubmitNow => 'இப்போதே சமர்ப்பி';
 
   @override
