@@ -65,33 +65,13 @@ class _BaseReviewDialogState extends State<BaseReviewDialog> {
             Padding(
               padding: const EdgeInsets.only(
                 left: 24,
-                right: 16,
+                right: 24,
                 top: 24,
                 bottom: 0,
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  AppText.headline(
-                    widget.title,
-                    color: widget.design.colors.textPrimary,
-                  ),
-                  AppSemantics.button(
-                    label: L10n.of(context).labelClose,
-                    onTap: widget.onCancel,
-                    child: GestureDetector(
-                      onTap: widget.onCancel,
-                      child: Padding(
-                        padding: const EdgeInsets.all(14),
-                        child: Icon(
-                          LucideIcons.x,
-                          color: widget.design.colors.textSecondary,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+              child: AppText.headline(
+                widget.title,
+                color: widget.design.colors.textPrimary,
               ),
             ),
             Padding(
@@ -147,10 +127,12 @@ class ReportReviewDialog extends StatefulWidget {
 class _ReportReviewDialogState extends State<ReportReviewDialog> {
   int _selectedIndex = -1;
   final _controller = TextEditingController();
+  final _scrollController = ScrollController();
 
   @override
   void dispose() {
     _controller.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -193,136 +175,128 @@ class _ReportReviewDialogState extends State<ReportReviewDialog> {
             Padding(
               padding: const EdgeInsets.only(
                 left: 24,
-                right: 16,
+                right: 24,
                 top: 24,
                 bottom: 0,
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  AppText.headline(
-                    widget.l10n.reviewReportIssueTitle,
-                    color: design.colors.textPrimary,
-                  ),
-                  AppSemantics.button(
-                    label: L10n.of(context).labelClose,
-                    onTap: () => Navigator.pop(context),
-                    child: GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Padding(
-                        padding: const EdgeInsets.all(14),
-                        child: Icon(
-                          LucideIcons.x,
-                          color: design.colors.textSecondary,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+              child: AppText.headline(
+                widget.l10n.reviewReportIssueTitle,
+                color: design.colors.textPrimary,
               ),
             ),
             const SizedBox(height: 20),
             ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 320),
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppText.body(
-                      widget.l10n.reviewReportIssueWithQuestion(
-                        widget.questionNumber,
+              child: RawScrollbar(
+                controller: _scrollController,
+                thumbVisibility: true,
+                thumbColor: design.colors.textSecondary.withValues(
+                  alpha: design.isDark ? 0.6 : 0.4,
+                ),
+                radius: const Radius.circular(8),
+                thickness: 6,
+                crossAxisMargin: 6,
+                mainAxisMargin: 6,
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppText.body(
+                        widget.l10n.reviewReportIssueWithQuestion(
+                          widget.questionNumber,
+                        ),
+                        color: design.colors.textSecondary,
                       ),
-                      color: design.colors.textSecondary,
-                    ),
-                    const SizedBox(height: 20),
-                    ...List.generate(options.length, (index) {
-                      final isSelected = _selectedIndex == index;
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: AppSemantics.button(
-                          label: options[index],
-                          onTap: () => setState(() => _selectedIndex = index),
-                          child: GestureDetector(
+                      const SizedBox(height: 20),
+                      ...List.generate(options.length, (index) {
+                        final isSelected = _selectedIndex == index;
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: AppSemantics.button(
+                            label: options[index],
                             onTap: () => setState(() => _selectedIndex = index),
-                            child: Container(
-                              padding: const EdgeInsets.all(14),
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? design.colors.accent5.withValues(
-                                        alpha: design.isDark ? 0.2 : 0.08,
-                                      )
-                                    : design.colors.card,
-                                border: Border.all(
+                            child: GestureDetector(
+                              onTap: () =>
+                                  setState(() => _selectedIndex = index),
+                              child: Container(
+                                padding: const EdgeInsets.all(14),
+                                decoration: BoxDecoration(
                                   color: isSelected
-                                      ? design.colors.accent5
-                                      : design.colors.border,
-                                  width: isSelected ? 1.5 : 1,
+                                      ? design.colors.accent5.withValues(
+                                          alpha: design.isDark ? 0.2 : 0.08,
+                                        )
+                                      : design.colors.card,
+                                  border: Border.all(
+                                    color: isSelected
+                                        ? design.colors.accent5
+                                        : design.colors.border,
+                                    width: isSelected ? 1.5 : 1,
+                                  ),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 20,
-                                    height: 20,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 20,
+                                      height: 20,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: isSelected
+                                              ? design.colors.accent5
+                                              : design.colors.textTertiary,
+                                          width: 2,
+                                        ),
                                         color: isSelected
                                             ? design.colors.accent5
-                                            : design.colors.textTertiary,
-                                        width: 2,
+                                            : design.colors.card,
                                       ),
-                                      color: isSelected
-                                          ? design.colors.accent5
-                                          : design.colors.card,
-                                    ),
-                                    child: isSelected
-                                        ? Center(
-                                            child: Container(
-                                              width: 8,
-                                              height: 8,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: design.colors.onPrimary,
+                                      child: isSelected
+                                          ? Center(
+                                              child: Container(
+                                                width: 8,
+                                                height: 8,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color:
+                                                      design.colors.onPrimary,
+                                                ),
                                               ),
-                                            ),
-                                          )
-                                        : null,
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: AppText.base(
-                                      options[index],
-                                      color: isSelected
-                                          ? design.colors.textPrimary
-                                          : design.colors.textSecondary,
-                                      style: TextStyle(
-                                        fontWeight: isSelected
-                                            ? FontWeight.w600
-                                            : FontWeight.normal,
+                                            )
+                                          : null,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: AppText.base(
+                                        options[index],
+                                        color: isSelected
+                                            ? design.colors.textPrimary
+                                            : design.colors.textSecondary,
+                                        style: TextStyle(
+                                          fontWeight: isSelected
+                                              ? FontWeight.w600
+                                              : FontWeight.normal,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    }),
-                    const SizedBox(height: 8),
-                    ReviewTextField(
-                      hint: widget.l10n.reviewReportDetailsHint,
-                      design: widget.design,
-                      maxLines: 3,
-                      controller: _controller,
-                    ),
-                  ],
+                        );
+                      }),
+                      ReviewTextField(
+                        hint: widget.l10n.reviewReportDetailsHint,
+                        design: widget.design,
+                        maxLines: 3,
+                        controller: _controller,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
