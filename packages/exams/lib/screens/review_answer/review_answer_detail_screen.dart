@@ -205,8 +205,9 @@ class _ReviewAnswerDetailScreenState
                     ),
                     ReviewFooterActions(
                       l10n: l10n,
-                      onAskDoubt: () =>
-                          _showAskDoubtDialog(currentQuestion, design, l10n),
+                      onAskDoubt: () => context.push(
+                        '/home/discussions/doubts/ask?question_id=${Uri.encodeComponent(currentQuestion.id)}',
+                      ),
                       onComment: () =>
                           _showCommentDialog(currentQuestion, design, l10n),
                       onReport: () =>
@@ -235,72 +236,6 @@ class _ReviewAnswerDetailScreenState
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  String _stripHtml(String htmlString) {
-    final cleanStyle = htmlString.replaceAll(
-      RegExp(r'<style[^>]*>[\s\S]*?<\/style>', caseSensitive: false),
-      '',
-    );
-    final cleanScript = cleanStyle.replaceAll(
-      RegExp(r'<script[^>]*>[\s\S]*?<\/script>', caseSensitive: false),
-      '',
-    );
-    final cleanTags = cleanScript.replaceAll(RegExp(r'<[^>]*>'), '');
-    final decoded = cleanTags
-        .replaceAll('&nbsp;', ' ')
-        .replaceAll('&amp;', '&')
-        .replaceAll('&lt;', '<')
-        .replaceAll('&gt;', '>')
-        .replaceAll('&quot;', '"')
-        .replaceAll('&#39;', "'");
-    return decoded.replaceAll(RegExp(r'\s+'), ' ').trim();
-  }
-
-  void _showAskDoubtDialog(
-    QuestionDto question,
-    DesignConfig design,
-    AppLocalizations l10n,
-  ) {
-    final questionIndex = _questions.indexOf(question) + 1;
-    final plainText = _stripHtml(question.text);
-    final truncatedText = plainText.isEmpty
-        ? "Multimedia question"
-        : (plainText.length > 50
-              ? "${plainText.substring(0, 50)}..."
-              : plainText);
-
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: l10n.labelAskDoubt,
-      barrierColor: design.colors.shadow.withValues(alpha: 0.6),
-      pageBuilder: (context, anim1, anim2) => BaseReviewDialog(
-        title: l10n.reviewAskDoubtTitle,
-        design: design,
-        submitLabel: l10n.reviewSubmitDoubt,
-        submitColor: design.colors.accent2,
-        onCancel: () => Navigator.pop(context),
-        onSubmit: (val) => Navigator.pop(context),
-        contentBuilder: (controller) => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AppText.body(
-              "${l10n.reviewQuestionLabel(questionIndex.toString())}: $truncatedText",
-              color: design.colors.textSecondary,
-              maxLines: 2,
-            ),
-            SizedBox(height: design.spacing.md),
-            ReviewTextField(
-              hint: l10n.reviewDescribeDoubtHint,
-              design: design,
-              controller: controller,
-            ),
-          ],
-        ),
       ),
     );
   }

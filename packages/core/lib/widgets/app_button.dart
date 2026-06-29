@@ -141,6 +141,7 @@ class AppButton extends StatelessWidget {
               ),
               child: Stack(
                 alignment: Alignment.center,
+                clipBehavior: Clip.none,
                 children: [
                   // Original Content (Hidden but keeps size if not loading)
                   Opacity(
