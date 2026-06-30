@@ -109,7 +109,7 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
     await _controller?.seek(position);
   }
 
-  Future<void> finalizePlayback() async {
+  void finalizePlayback() {
     _finalizeCurrentInterval();
     _pendingSeekPosition = _lastPosition;
     if (_contentId != null && _videoAttemptNotifier != null) {
@@ -121,12 +121,16 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
   }
 
   void restorePlayback() {
-    _isPlayerDestroyed = false;
-    _controller = null;
-    _hasSeekedToInitial = false;
-    _isPlayingTracker = false;
-    _currentIntervalStart = 0;
-    setState(() {});
+    if (mounted) {
+      setState(() {
+        _isPlayerDestroyed = false;
+        _controller = null;
+        _hasSeekedToInitial = false;
+        _isPlayingTracker = false;
+        _currentIntervalStart = 0.0;
+        _lastPosition = 0.0;
+      });
+    }
   }
 
   @override

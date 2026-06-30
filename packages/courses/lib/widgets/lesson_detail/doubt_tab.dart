@@ -146,6 +146,7 @@ class DoubtTab extends ConsumerWidget {
                   },
                 );
                 await context.push(uri.toString());
+                if (!context.mounted) return;
                 onResumeVideo?.call();
               },
             ),
