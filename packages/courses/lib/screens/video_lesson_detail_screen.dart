@@ -117,7 +117,12 @@ class _VideoLessonDetailScreenState
       case VideoLessonTab.transcript:
         return TranscriptsTab(lesson: widget.lesson, onSeek: _handleSeek);
       case VideoLessonTab.askDoubt:
-        return DoubtTab(lesson: widget.lesson);
+        return DoubtTab(
+          lesson: widget.lesson,
+          onBeforeNavigate: () =>
+              _videoPlayerKey.currentState?.finalizePlayback(),
+          onResumeVideo: () => _videoPlayerKey.currentState?.restorePlayback(),
+        );
       case VideoLessonTab.aiSupport:
         return SingleChildScrollView(
           physics: const ClampingScrollPhysics(),

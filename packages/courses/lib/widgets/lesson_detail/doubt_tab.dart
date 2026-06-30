@@ -9,8 +9,15 @@ import 'ask_doubt_fab.dart';
 class DoubtTab extends ConsumerWidget {
   final Lesson lesson;
   final WidgetBuilder? footerBuilder;
+  final VoidCallback? onBeforeNavigate;
+  final VoidCallback? onResumeVideo;
 
-  const DoubtTab({super.key, required this.lesson, this.footerBuilder});
+  const DoubtTab(
+      {super.key,
+      required this.lesson,
+      this.footerBuilder,
+      this.onBeforeNavigate,
+      this.onResumeVideo});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -128,7 +135,8 @@ class DoubtTab extends ConsumerWidget {
             bottom: 96,
             right: design.spacing.md,
             child: AskDoubtFab(
-              onTap: () {
+              onTap: () async {
+                onBeforeNavigate?.call();
                 final uri = Uri(
                   path: '/home/discussions/doubts/ask',
                   queryParameters: {
@@ -137,7 +145,9 @@ class DoubtTab extends ConsumerWidget {
                     'lessonType': lesson.type.name,
                   },
                 );
-                context.push(uri.toString());
+                await context.push(uri.toString());
+                if (!context.mounted) return;
+                onResumeVideo?.call();
               },
             ),
           ),
