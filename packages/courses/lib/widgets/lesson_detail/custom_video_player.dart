@@ -193,13 +193,11 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
       final currentPos = controller.value.position.inMilliseconds / 1000.0;
 
       // Ensure we only seek once the video is loaded (duration > 0)
-      final targetSeek =
-          _pendingSeekPosition ?? widget.initialPosition;
+      final targetSeek = _pendingSeekPosition ?? widget.initialPosition;
       final needsInitialSeek = targetSeek > 0 && !_hasSeekedToInitial;
       if (needsInitialSeek) {
         if (controller.value.duration != Duration.zero) {
-          controller.seek(
-              Duration(milliseconds: (targetSeek * 1000).toInt()));
+          controller.seek(Duration(milliseconds: (targetSeek * 1000).toInt()));
           _lastPosition = targetSeek;
           _currentIntervalStart = targetSeek;
           _hasSeekedToInitial = true;

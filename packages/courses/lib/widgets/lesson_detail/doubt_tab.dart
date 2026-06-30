@@ -12,7 +12,12 @@ class DoubtTab extends ConsumerWidget {
   final VoidCallback? onBeforeNavigate;
   final VoidCallback? onResumeVideo;
 
-  const DoubtTab({super.key, required this.lesson, this.footerBuilder, this.onBeforeNavigate, this.onResumeVideo});
+  const DoubtTab(
+      {super.key,
+      required this.lesson,
+      this.footerBuilder,
+      this.onBeforeNavigate,
+      this.onResumeVideo});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

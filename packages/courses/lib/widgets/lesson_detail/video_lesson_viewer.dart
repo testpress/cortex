@@ -153,7 +153,8 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
         return DoubtTab(
           lesson: widget.lesson,
           footerBuilder: widget.footerBuilder,
-          onBeforeNavigate: () => _videoPlayerKey.currentState?.finalizePlayback(),
+          onBeforeNavigate: () =>
+              _videoPlayerKey.currentState?.finalizePlayback(),
           onResumeVideo: () => _videoPlayerKey.currentState?.restorePlayback(),
         );
       case VideoLessonTab.aiSupport:
