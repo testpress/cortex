@@ -21,6 +21,7 @@ class ApiEndpoints {
       '/api/v2.5/courses/$id/content_attempts/';
   static String chapterContents(String id) =>
       '/api/v2.5/chapters/$id/contents/';
+  static String chapterDetail(String slug) => '/api/v2.4/chapters/$slug/';
   static String lessonDetail(String id) => '/api/v2.4/contents/$id/';
   static String markCompleted(String id) =>
       '/api/v2.5/chapter_contents/$id/attempts/';

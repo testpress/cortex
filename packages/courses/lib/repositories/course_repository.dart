@@ -835,9 +835,41 @@ class CourseRepository {
     return row != null ? rowToLessonDto(row) : null;
   }
 
+  Future<void> _hydrateParentsBackground(String courseId) async {
+    try {
+      await refreshCourseDetail(courseId);
+      await refreshChapters(courseId);
+    } catch (e) {
+      debugPrint('CourseRepository: Failed to hydrate parents: $e');
+    }
+  }
+
+  Future<void> _hydrateNestedChapterBackground(
+      String chapterId, String chapterSlug) async {
+    try {
+      final existingChapter = await getChapter(chapterId);
+      if (existingChapter == null) {
+        final chapterDto = await _source.getChapterDetail(chapterSlug);
+        await _db.upsertChapters([_chapterDtoToCompanion(chapterDto)]);
+      }
+    } catch (e) {
+      debugPrint('CourseRepository: Failed to hydrate nested chapter: $e');
+    }
+  }
+
   /// Refetches a single lesson's full metadata from the v2.4 API and persists it.
   Future<LessonDto> refreshLesson(String id) async {
     final dto = await _source.getLessonDetail(id);
+
+    // Proactively hydrate the DB in the background for all child widgets
+    if (dto.courseId != null) {
+      _hydrateParentsBackground(dto.courseId!).ignore();
+    }
+
+    // Hydrate the missing nested chapter in the background (non-blocking)
+    if (dto.chapterSlug?.isNotEmpty == true) {
+      _hydrateNestedChapterBackground(dto.chapterId, dto.chapterSlug!).ignore();
+    }
 
     // Attempts call here, before anything else
     LessonDto dtoWithAttempts = dto;

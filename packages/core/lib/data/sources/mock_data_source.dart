@@ -219,6 +219,20 @@ class MockDataSource implements DataSource {
   }
 
   @override
+  Future<ChapterDto> getChapterDetail(String slug) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return const ChapterDto(
+      id: '999',
+      title: 'Mock Chapter Detail',
+      courseId: 'mock-course',
+      orderIndex: 1,
+      lessonCount: 0,
+      assessmentCount: 0,
+      isLeaf: true,
+    );
+  }
+
+  @override
   Stream<CourseCurriculumDto> getCourseContents(
     String courseId, {
     String? chapterId,

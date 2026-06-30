@@ -1,13 +1,15 @@
 ## 1. UI Implementation
 
-- [x] 1.1 Implement `DoubtContextBadge` using a simple `Row` with `Flexible` and `TextOverflow.ellipsis`.
-- [x] 1.2 Ensure Line 1 shows Course Name and Chapter Name separated by a chevron.
-- [x] 1.3 Ensure Line 2 shows the appropriate content-type icon and the Topic Name.
+- [x] 1.1 Ensure `DoubtContextBadge` renders the 2-level breadcrumb using a simple `Row` with `Flexible` and `TextOverflow.ellipsis`.
+- [x] 1.2 Ensure the top line correctly shows Course Name and Chapter Name separated by a chevron, fixing the bug where it was blank.
+- [x] 1.3 Ensure the lesson name continues to render below the breadcrumb inside the distinct Context Pill.
 
 ## 2. Data Integration
 
-- [x] 2.1 In `AskDoubtFormScreen`, pass the `chapterTitle` from the lesson data, and use `courseDetailProvider(courseId)` to get the course title.
-- [x] 2.2 In `DoubtDetailScreen`, use the `CourseRepository.getLessonDetails(lessonId)` helper to populate the badge.
+- [x] 2.1 Update `LessonDto` to parse `chapter_slug` from API responses.
+- [x] 2.2 Add `getChapterDetail(slug)` to `DataSource` and `HttpDataSource`.
+- [x] 2.3 Update `CourseRepository.refreshLesson` to hydrate missing chapters using a non-blocking background fetch.
+- [x] 2.4 In `AskDoubtFormScreen` and `DoubtDetailScreen`, rely cleanly on `CourseRepository.getLessonDetails(lessonId)` for robust local data retrieval.
 
 ## 3. Verification
 
