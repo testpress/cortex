@@ -31,6 +31,7 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
   bool _isFetchingMetadata = true;
   String _courseName = '';
   String _chapterName = '';
+  bool _isPlayerDestroyed = false;
 
   // Track the playback intervals
   double _currentIntervalStart = 0.0;
@@ -108,6 +109,26 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
     await _controller?.seek(position);
   }
 
+  Future<void> finalizePlayback() async {
+    _finalizeCurrentInterval();
+    _pendingSeekPosition = _lastPosition;
+    if (_contentId != null && _videoAttemptNotifier != null) {
+      _videoAttemptNotifier!.forceSync();
+    }
+    if (mounted) {
+      setState(() => _isPlayerDestroyed = true);
+    }
+  }
+
+  void restorePlayback() {
+    _isPlayerDestroyed = false;
+    _controller = null;
+    _hasSeekedToInitial = false;
+    _isPlayingTracker = false;
+    _currentIntervalStart = 0;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     // Watch the provider to keep it alive while the video player is open
@@ -116,6 +137,10 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
       // Grab the active notifier instance safely inside build
       _videoAttemptNotifier =
           ref.read(videoAttemptNotifierProvider(_contentId!).notifier);
+    }
+
+    if (_isPlayerDestroyed) {
+      return const SizedBox.shrink();
     }
 
     if (widget.assetId != null && widget.assetId!.isNotEmpty) {
@@ -158,6 +183,7 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
   }
 
   bool _hasSeekedToInitial = false;
+  double? _pendingSeekPosition;
 
   void _onPlayerCreated(TestpressPlayerController controller) {
     _controller = controller;
@@ -167,15 +193,17 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
       final currentPos = controller.value.position.inMilliseconds / 1000.0;
 
       // Ensure we only seek once the video is loaded (duration > 0)
-      final needsInitialSeek =
-          widget.initialPosition > 0 && !_hasSeekedToInitial;
+      final targetSeek =
+          _pendingSeekPosition ?? widget.initialPosition;
+      final needsInitialSeek = targetSeek > 0 && !_hasSeekedToInitial;
       if (needsInitialSeek) {
         if (controller.value.duration != Duration.zero) {
           controller.seek(
-              Duration(milliseconds: (widget.initialPosition * 1000).toInt()));
-          _lastPosition = widget.initialPosition;
-          _currentIntervalStart = widget.initialPosition;
+              Duration(milliseconds: (targetSeek * 1000).toInt()));
+          _lastPosition = targetSeek;
+          _currentIntervalStart = targetSeek;
           _hasSeekedToInitial = true;
+          _pendingSeekPosition = null;
         }
         return;
       }
