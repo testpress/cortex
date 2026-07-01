@@ -18,6 +18,9 @@ abstract class DataSource {
   /// Fetch chapters for a specific course, optionally filtered by parentId.
   Future<List<ChapterDto>> getChapters(String courseId, {String? parentId});
 
+  /// Fetch full metadata for a single chapter by slug.
+  Future<ChapterDto> getChapterDetail(String slug);
+
   /// Fetch all course contents for a specific course (V3 flat list).
   /// [chapterId] is an optional filter to fetch only a specific branch.
   /// [type] is an optional filter to scope results to a content type (video, assessment, test, etc).

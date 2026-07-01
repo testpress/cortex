@@ -64,6 +64,7 @@ class LessonDto {
 
   final String? attemptsUrl;
   final String? slug;
+  final String? chapterSlug;
   final String? description;
 
   final bool enableTranscript;
@@ -131,6 +132,7 @@ class LessonDto {
     this.scheduledMessage,
     this.attemptsUrl,
     this.slug,
+    this.chapterSlug,
     this.description,
     this.enableTranscript = false,
     this.videoSubtitleUrl,
@@ -179,6 +181,7 @@ class LessonDto {
     bool? showRecordedVideo,
     String? attemptsUrl,
     String? slug,
+    String? chapterSlug,
     bool? enableTranscript,
     String? videoSubtitleUrl,
     bool? isAiEnabled,
@@ -225,6 +228,7 @@ class LessonDto {
       scheduledMessage: scheduledMessage ?? this.scheduledMessage,
       attemptsUrl: attemptsUrl ?? this.attemptsUrl,
       slug: slug ?? this.slug,
+      chapterSlug: chapterSlug ?? this.chapterSlug,
       enableTranscript: enableTranscript ?? this.enableTranscript,
       videoSubtitleUrl: videoSubtitleUrl ?? this.videoSubtitleUrl,
       isAiEnabled: isAiEnabled ?? this.isAiEnabled,
@@ -272,6 +276,9 @@ class LessonDto {
       chapterTitle: (chapterTitle?.isEmpty ?? true)
           ? other.chapterTitle
           : chapterTitle,
+      chapterSlug: (chapterSlug?.isEmpty ?? true)
+          ? other.chapterSlug
+          : chapterSlug,
       courseId: (courseId?.isEmpty ?? true) ? other.courseId : courseId,
       ancestorChapterIds: (ancestorChapterIds?.isEmpty ?? true)
           ? other.ancestorChapterIds
@@ -579,6 +586,7 @@ class LessonDto {
           (json['order'] as num?)?.toInt() ??
           (json['orderIndex'] as num?)?.toInt() ??
           0,
+      chapterSlug: json['chapter_slug'] as String?,
       chapterTitle:
           json['chapter_title'] as String? ?? json['chapterTitle'] as String?,
       subtitle: json['subtitle'] as String?,
@@ -720,6 +728,8 @@ class LessonDto {
       'aiNotesUrl': aiNotesUrl,
       'lastWatchedDuration': lastWatchedDuration,
       'attemptsUrl': attemptsUrl,
+      'slug': slug,
+      'chapterSlug': chapterSlug,
       'exam': exam?.toJson(),
     };
   }

@@ -91,6 +91,14 @@ class HttpDataSource implements DataSource {
   }
 
   @override
+  Future<ChapterDto> getChapterDetail(String slug) async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.chapterDetail(slug)),
+      fromJson: ChapterDto.fromJson,
+    );
+  }
+
+  @override
   Stream<CourseCurriculumDto> getCourseContents(
     String courseId, {
     String? chapterId,
