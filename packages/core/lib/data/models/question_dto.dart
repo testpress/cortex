@@ -257,6 +257,63 @@ class QuestionDto {
     return questions;
   }
 
+  static List<QuestionDto> parseOfflineQuestions(
+    Map<String, dynamic> responseData,
+  ) {
+    final results =
+        responseData['results'] as Map<String, dynamic>? ?? responseData;
+    final questionsRaw = results['questions'] as List<dynamic>? ?? [];
+    final examQuestionsRaw = results['exam_questions'] as List<dynamic>? ?? [];
+    final sectionsRaw = results['sections'] as List<dynamic>? ?? [];
+
+    final sectionNamesMap = <int, String>{};
+    for (final sec in sectionsRaw) {
+      if (sec is Map<String, dynamic> && sec['id'] != null) {
+        final secName = sec['name'] ?? sec['section_name'];
+        if (secName != null) {
+          sectionNamesMap[sec['id'] as int] = secName.toString();
+        }
+      }
+    }
+
+    final questionsMap = <int, Map<String, dynamic>>{};
+    for (final q in questionsRaw) {
+      if (q is Map<String, dynamic> && q['id'] != null) {
+        questionsMap[q['id'] as int] = q;
+      }
+    }
+
+    final parsedQuestions = <QuestionDto>[];
+    for (final eq in examQuestionsRaw) {
+      if (eq is Map<String, dynamic>) {
+        final qId = eq['question_id'] as int?;
+        if (qId != null && questionsMap.containsKey(qId)) {
+          final q = questionsMap[qId]!;
+
+          final mergedJson = Map<String, dynamic>.from(q);
+          mergedJson['id'] = eq['id'];
+          mergedJson['order'] = eq['order'];
+
+          final sectionId = eq['section_id'];
+          if (sectionId != null) {
+            mergedJson['section_id'] = sectionId;
+            if (sectionNamesMap.containsKey(sectionId)) {
+              mergedJson['attempt_section'] = {
+                'id': sectionId,
+                'name': sectionNamesMap[sectionId],
+              };
+            }
+          }
+
+          parsedQuestions.add(QuestionDto.fromJson(mergedJson));
+        }
+      }
+    }
+
+    parsedQuestions.sort((a, b) => a.order.compareTo(b.order));
+    return parsedQuestions;
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -292,6 +349,14 @@ class QuestionOptionDto {
     this.isCorrect = false,
   });
 
+  QuestionOptionDto copyWith({String? id, String? text, bool? isCorrect}) {
+    return QuestionOptionDto(
+      id: id ?? this.id,
+      text: text ?? this.text,
+      isCorrect: isCorrect ?? this.isCorrect,
+    );
+  }
+
   factory QuestionOptionDto.fromJson(Map<String, dynamic> json) {
     final rawIsCorrect =
         json['is_correct'] ?? json['correct'] ?? json['isCorrect'];
@@ -310,5 +375,22 @@ class QuestionOptionDto {
 
   Map<String, dynamic> toJson() {
     return {'id': id, 'text': text, 'is_correct': isCorrect};
+  }
+}
+
+/// DTO to encapsulate the paginated response for offline exams.
+class OfflineQuestionsResponseDto {
+  final String? nextUrl;
+  final List<QuestionDto> questions;
+
+  const OfflineQuestionsResponseDto({this.nextUrl, required this.questions});
+
+  factory OfflineQuestionsResponseDto.fromJson(Map<String, dynamic> json) {
+    final next = json['next'] as String?;
+    final parsedQuestions = QuestionDto.parseOfflineQuestions(json);
+    return OfflineQuestionsResponseDto(
+      nextUrl: next,
+      questions: parsedQuestions,
+    );
   }
 }

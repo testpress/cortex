@@ -173,7 +173,7 @@ class _AppHtmlState extends State<AppHtml> {
     _loadHtml();
   }
 
-  void _loadHtml() {
+  void _loadHtml() async {
     final design = Design.of(context);
     final bgColor = widget.backgroundColor;
     final txtColor = widget.textColor ?? design.colors.textPrimary;
@@ -183,32 +183,16 @@ class _AppHtmlState extends State<AppHtml> {
         : _colorToRgba(bgColor);
     final txCss = _colorToRgba(txtColor);
 
+    var rawHtml = widget.data;
+
+    if (!mounted) return;
+
     final html =
         '''
       <!DOCTYPE html>
       <html>
         <head>
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-          <script>
-            function signalReady() {
-              if (window._isSignaled) return;
-              window._isSignaled = true;
-              if (window.HeightChannel) {
-                window.HeightChannel.postMessage("ready:" + document.getElementById('content').offsetHeight);
-              }
-            }
-
-            // Safety fallback: if MathJax takes too long or fails to load, signal ready anyway
-            setTimeout(signalReady, 1000);
-
-            window.MathJax = {
-              startup: {
-                pageReady: () => {
-                  return MathJax.startup.defaultPageReady().then(signalReady);
-                }
-              }
-            };
-          </script>
           <style>
             body {
               margin: 0;
@@ -257,7 +241,7 @@ class _AppHtmlState extends State<AppHtml> {
         </head>
         <body>
           <div id="content">
-            ${widget.data.trim()}
+            ${rawHtml.trim()}
           </div>
           <script>
             function removeEmptyNodes(container) {
@@ -440,27 +424,38 @@ class _ZoomableImageViewer extends StatelessWidget {
                   child: InteractiveViewer(
                     minScale: 0.8,
                     maxScale: 5.0,
-                    child: Image.network(
-                      imageUrl,
-                      fit: BoxFit.contain,
-                      loadingBuilder: (context, child, progress) {
-                        if (progress == null) return child;
-                        return Center(
-                          child: AppLoadingIndicator(
-                            color: design.colors.primary.withValues(alpha: 0.5),
-                          ),
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) {
-                        return Center(
-                          child: Text(
-                            'Failed to load image',
-                            style: TextStyle(
-                              color: design.colors.textInverse,
-                              fontSize: 14,
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
+                    child: Builder(
+                      builder: (context) {
+                        if (imageUrl.startsWith('data:image')) {
+                          try {
+                            final uriData = UriData.parse(imageUrl);
+                            return Image.memory(
+                              uriData.contentAsBytes(),
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) {
+                                return _buildErrorText(design);
+                              },
+                            );
+                          } catch (e) {
+                            return _buildErrorText(design);
+                          }
+                        }
+                        return Image.network(
+                          imageUrl,
+                          fit: BoxFit.contain,
+                          loadingBuilder: (context, child, progress) {
+                            if (progress == null) return child;
+                            return Center(
+                              child: AppLoadingIndicator(
+                                color: design.colors.primary.withValues(
+                                  alpha: 0.5,
+                                ),
+                              ),
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return _buildErrorText(design);
+                          },
                         );
                       },
                     ),
@@ -490,6 +485,19 @@ class _ZoomableImageViewer extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorText(DesignConfig design) {
+    return Center(
+      child: Text(
+        'Failed to load image',
+        style: TextStyle(
+          color: design.colors.textInverse,
+          fontSize: 14,
+          decoration: TextDecoration.none,
         ),
       ),
     );

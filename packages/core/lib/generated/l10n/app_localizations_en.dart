@@ -2125,4 +2125,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get examCompletedLabel => 'Exam completed';
+
+  @override
+  String get downloadingExam => 'Downloading Exam...';
+
+  @override
+  String get deadlinePassedCannotSync =>
+      'Deadline Passed. Exam cannot be synced.';
+
+  @override
+  String get pendingSyncConnectToUpload =>
+      'Pending Sync. Connect to internet to upload answers.';
+
+  @override
+  String get resumeOfflineExam => 'Resume offline exam';
+
+  @override
+  String get startOfflineExam => 'Start offline exam';
+
+  @override
+  String get downloadExamOffline => 'Download Exam (Offline)';
 }

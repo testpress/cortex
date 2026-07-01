@@ -81,7 +81,42 @@ class ExamAttemptState {
   }
 }
 
-class ExamRepository {
+abstract class ExamRepository {
+  Stream<ExamAttemptState> get stateStream;
+  Stream<ExamAttemptState> watchState();
+  ExamAttemptState get state;
+
+  void reset();
+  Future<List<AttemptDto>> getAttempts(String attemptsUrl);
+  Future<void> startStandaloneExam(
+    ExamDto exam, {
+    bool isQuizMode = false,
+    bool isPartial = false,
+  });
+  Future<void> startCourseLinkedExam(
+    ExamDto exam,
+    String contentAttemptsUrl, {
+    bool isQuizMode = false,
+    bool isPartial = false,
+  });
+  Future<void> stopCountdown();
+  void stopHeartbeat();
+
+  Future<void> switchSection(int index);
+  Future<void> submitAnswer(String questionId, AnswerDto answer);
+  void updateLocalAnswer(String questionId, AnswerDto answer);
+  Future<void> checkQuizAnswer(String questionId, AnswerDto answer);
+  void updateShortText(String questionId, String text);
+  void updateEssayText(String questionId, String text);
+  void markQuestionAsChecked(String questionId);
+  Future<void> endExam();
+  Future<void> pauseExam();
+
+  Future<List<ReviewItemDto>> getReviewItems(String reviewUrl);
+  Future<List<SubjectAnalyticsDto>> getSubjectAnalytics(String analyticsUrl);
+}
+
+class OnlineExamRepository implements ExamRepository {
   final DataSource _dataSource;
   final Future<AppDatabase> _dbFuture;
   Timer? _heartbeatTimer;
@@ -92,22 +127,26 @@ class ExamRepository {
   final Map<String, AnswerDto> _pendingAnswers = {};
   final Map<String, List<QuestionDto>> _sectionQuestionsCache = {};
 
-  ExamRepository({
+  OnlineExamRepository({
     required DataSource dataSource,
     required Future<AppDatabase> dbFuture,
   }) : _dataSource = dataSource,
        _dbFuture = dbFuture;
 
+  @override
   Future<List<AttemptDto>> getAttempts(String attemptsUrl) async {
     return _dataSource.getAttempts(attemptsUrl);
   }
 
+  @override
   Stream<ExamAttemptState> get stateStream => _stateController.stream;
+  @override
   Stream<ExamAttemptState> watchState() async* {
     yield _currentState;
     yield* _stateController.stream;
   }
 
+  @override
   ExamAttemptState get state => _currentState;
 
   Future<void> _flushPendingAnswers() async {
@@ -149,6 +188,7 @@ class ExamRepository {
     }
   }
 
+  @override
   void reset() {
     _flushPendingAnswers().catchError((e) {});
     stopHeartbeat();
@@ -159,6 +199,7 @@ class ExamRepository {
 
   // ─── Real-time Attempt Management ──────────────────────────────────────────
 
+  @override
   Future<void> startStandaloneExam(
     ExamDto exam, {
     bool isQuizMode = false,
@@ -239,6 +280,7 @@ class ExamRepository {
     }
   }
 
+  @override
   Future<void> startCourseLinkedExam(
     ExamDto exam,
     String contentAttemptsUrl, {
@@ -384,14 +426,13 @@ class ExamRepository {
 
       final attemptIdStr = currentAttempt.id.toString();
 
-      final Future<List<QuestionDto>> questionsFuture = remainingSeconds > 0
-          ? (_sectionQuestionsCache.containsKey(attemptIdStr)
-                ? Future.value(_sectionQuestionsCache[attemptIdStr]!)
-                : _dataSource.getQuestions(attemptIdStr).then((q) {
-                    _sectionQuestionsCache[attemptIdStr] = q;
-                    return q;
-                  }))
-          : Future.value(<QuestionDto>[]);
+      final Future<List<QuestionDto>> questionsFuture =
+          _sectionQuestionsCache.containsKey(attemptIdStr)
+          ? Future.value(_sectionQuestionsCache[attemptIdStr]!)
+          : _dataSource.getQuestions(attemptIdStr).then((q) {
+              _sectionQuestionsCache[attemptIdStr] = q;
+              return q;
+            });
       // Await both operations concurrently
       final List<dynamic> results = await Future.wait([
         heartbeatFuture,
@@ -507,14 +548,13 @@ class ExamRepository {
       remainingSeconds = _parseDuration(attempt.remainingTime ?? exam.duration);
 
       final attemptIdStr = attempt.id.toString();
-      final Future<List<QuestionDto>> questionsFuture = remainingSeconds > 0
-          ? (_sectionQuestionsCache.containsKey(attemptIdStr)
-                ? Future.value(_sectionQuestionsCache[attemptIdStr]!)
-                : _dataSource.getQuestions(attemptIdStr).then((q) {
-                    _sectionQuestionsCache[attemptIdStr] = q;
-                    return q;
-                  }))
-          : Future.value(<QuestionDto>[]);
+      final Future<List<QuestionDto>> questionsFuture =
+          _sectionQuestionsCache.containsKey(attemptIdStr)
+          ? Future.value(_sectionQuestionsCache[attemptIdStr]!)
+          : _dataSource.getQuestions(attemptIdStr).then((q) {
+              _sectionQuestionsCache[attemptIdStr] = q;
+              return q;
+            });
       // Await both operations concurrently
       final List<dynamic> results = await Future.wait([
         heartbeatFuture,
@@ -571,6 +611,9 @@ class ExamRepository {
     } else if (remainingSeconds > 0) {
       _startCountdown();
       _startHeartbeat(attempt.id.toString());
+    } else if (attempt.state == 'Running' || attempt.state == 'running') {
+      // Unlimited time exam (remainingSeconds == 0 but attempt is still running)
+      _startHeartbeat(attempt.id.toString());
     } else {
       _handleTimeOut();
     }
@@ -602,11 +645,13 @@ class ExamRepository {
     }
   }
 
-  void stopCountdown() {
+  @override
+  Future<void> stopCountdown() async {
     _countdownTimer?.cancel();
     _countdownTimer = null;
   }
 
+  @override
   Future<void> switchSection(int index) async {
     if (index < 0 || index >= _currentState.sections.length) return;
 
@@ -775,11 +820,13 @@ class ExamRepository {
     });
   }
 
+  @override
   void stopHeartbeat() {
     _heartbeatTimer?.cancel();
     _heartbeatTimer = null;
   }
 
+  @override
   Future<void> submitAnswer(String questionId, AnswerDto answer) async {
     if (_currentState.attempt?.id == null) return;
 
@@ -829,12 +876,14 @@ class ExamRepository {
     );
   }
 
+  @override
   void updateLocalAnswer(String questionId, AnswerDto answer) {
     final newAnswers = Map<String, AnswerDto>.from(_currentState.answers);
     newAnswers[questionId] = answer;
     _emit(_currentState.copyWith(answers: newAnswers));
   }
 
+  @override
   Future<void> checkQuizAnswer(String questionId, AnswerDto answer) async {
     if (_currentState.attempt?.id == null) {
       return;
@@ -898,6 +947,7 @@ class ExamRepository {
     });
   }
 
+  @override
   void updateShortText(String questionId, String text) {
     final currentAnswer =
         _currentState.answers[questionId] ??
@@ -920,6 +970,7 @@ class ExamRepository {
     _pendingAnswers[questionId] = newAnswer;
   }
 
+  @override
   void updateEssayText(String questionId, String text) {
     final currentAnswer =
         _currentState.answers[questionId] ??
@@ -942,12 +993,14 @@ class ExamRepository {
     _pendingAnswers[questionId] = newAnswer;
   }
 
+  @override
   void markQuestionAsChecked(String questionId) {
     final newChecked = Set<String>.from(_currentState.checkedQuestions)
       ..add(questionId);
     _emit(_currentState.copyWith(checkedQuestions: newChecked));
   }
 
+  @override
   Future<void> endExam() async {
     final attemptId = _currentState.attempt!.id.toString();
 
@@ -992,10 +1045,19 @@ class ExamRepository {
 
   // ─── Solutions & Analytics ──────────────────────────────────────────────────
 
+  @override
+  Future<void> pauseExam() async {
+    // Online API relies on user dropping off to naturally pause the timer server-side
+    stopCountdown();
+    stopHeartbeat();
+  }
+
+  @override
   Future<List<ReviewItemDto>> getReviewItems(String reviewUrl) async {
     return _dataSource.getReviewItems(reviewUrl);
   }
 
+  @override
   Future<List<SubjectAnalyticsDto>> getSubjectAnalytics(
     String analyticsUrl,
   ) async {

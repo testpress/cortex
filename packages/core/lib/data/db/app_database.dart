@@ -18,6 +18,7 @@ import 'tables/downloads_table.dart';
 import 'tables/doubts_table.dart';
 import 'tables/bookmarks_table.dart';
 import 'tables/posts_table.dart';
+import 'tables/offline_exam_tables.dart';
 import 'package:core/data/data.dart';
 
 part 'app_database.g.dart';
@@ -47,13 +48,15 @@ part 'app_database.g.dart';
     PostCategoriesTable,
     PostsTable,
     SubjectAnalyticsTable,
+    OfflineExamDownloadsTable,
+    OfflineExamAnswersTable,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 30;
+  int get schemaVersion => 31;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -486,6 +489,66 @@ class AppDatabase extends _$AppDatabase {
           (b) => b.insertAllOnConflictUpdate(postCategoriesTable, rows),
         );
       });
+
+  // ── Offline Exams ─────────────────────────────────────────────────────────
+
+  /// Upsert an offline exam download.
+  Future<int> upsertDownload(OfflineExamDownloadsTableCompanion companion) {
+    return into(offlineExamDownloadsTable).insertOnConflictUpdate(companion);
+  }
+
+  /// Upsert an item (question/answer).
+  Future<int> upsertAnswer(OfflineExamAnswersTableCompanion companion) {
+    return into(offlineExamAnswersTable).insertOnConflictUpdate(companion);
+  }
+
+  /// Get a download record by content ID.
+  Future<OfflineExamDownloadsTableData?> getDownloadByContentId(
+    String contentId,
+  ) {
+    return (select(offlineExamDownloadsTable)
+          ..where((t) => t.contentId.equals(contentId))
+          ..limit(1))
+        .getSingleOrNull();
+  }
+
+  /// Watch a download record by content ID for reactive UI updates.
+  Stream<OfflineExamDownloadsTableData?> watchDownloadByContentId(
+    String contentId,
+  ) {
+    return (select(offlineExamDownloadsTable)
+          ..where((t) => t.contentId.equals(contentId))
+          ..limit(1))
+        .watchSingleOrNull();
+  }
+
+  /// Get all saved items (answers) for a specific download.
+  Future<List<OfflineExamAnswersTableData>> getAnswersForDownload(
+    int downloadId,
+  ) {
+    return (select(
+      offlineExamAnswersTable,
+    )..where((t) => t.downloadId.equals(downloadId))).get();
+  }
+
+  /// Get all pending synced downloads.
+  Future<List<OfflineExamDownloadsTableData>> getPendingSyncDownloads() {
+    return (select(
+      offlineExamDownloadsTable,
+    )..where((t) => t.status.equals('PENDING_SYNC'))).get();
+  }
+
+  /// Delete an entire download and cascade its answers.
+  Future<void> deleteDownload(int downloadId) {
+    return transaction(() async {
+      await (delete(
+        offlineExamAnswersTable,
+      )..where((t) => t.downloadId.equals(downloadId))).go();
+      await (delete(
+        offlineExamDownloadsTable,
+      )..where((t) => t.id.equals(downloadId))).go();
+    });
+  }
 }
 
 /// Opens the SQLite database from the app documents directory.

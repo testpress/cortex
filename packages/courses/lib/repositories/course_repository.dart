@@ -649,11 +649,7 @@ class CourseRepository {
       }
     }();
 
-    _activeContentSyncs[chapterId] = syncFuture.then((_) async {
-      final rows = await getLessons(chapterId);
-      return rows.map(rowToLessonDto).toList();
-    });
-
+    _activeContentSyncs[chapterId] = syncFuture;
     return syncFuture;
   }
 

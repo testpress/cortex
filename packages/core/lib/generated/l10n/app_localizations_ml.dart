@@ -2169,4 +2169,24 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get examCompletedLabel => 'പരീക്ഷ പൂർത്തിയായി';
+
+  @override
+  String get downloadingExam => 'പരീക്ഷ ഡൗൺലോഡ് ചെയ്യുന്നു...';
+
+  @override
+  String get deadlinePassedCannotSync =>
+      'സമയപരിധി കഴിഞ്ഞു. പരീക്ഷ സമന്വയിപ്പിക്കാൻ കഴിയില്ല.';
+
+  @override
+  String get pendingSyncConnectToUpload =>
+      'സമന്വയിപ്പിക്കാൻ കാത്തിരിക്കുന്നു. ഉത്തരങ്ങൾ അപ്‌ലോഡ് ചെയ്യാൻ ഇന്റർനെറ്റുമായി ബന്ധിപ്പിക്കുക.';
+
+  @override
+  String get resumeOfflineExam => 'ഓഫ്‌ലൈൻ പരീക്ഷ പുനരാരംഭിക്കുക';
+
+  @override
+  String get startOfflineExam => 'ഓഫ്‌ലൈൻ പരീക്ഷ ആരംഭിക്കുക';
+
+  @override
+  String get downloadExamOffline => 'പരീക്ഷ ഡൗൺലോഡ് ചെയ്യുക (ഓഫ്‌ലൈൻ)';
 }

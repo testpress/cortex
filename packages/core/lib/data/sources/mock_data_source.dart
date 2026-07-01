@@ -1276,6 +1276,14 @@ class MockDataSource implements DataSource {
   }
 
   @override
+  Future<void> submitOfflineExamAnswers(
+    String examId,
+    Map<String, dynamic> payload,
+  ) async {
+    return Future.delayed(const Duration(milliseconds: 300));
+  }
+
+  @override
   Future<AttemptDto> sendHeartbeat(String attemptId) async {
     await Future.delayed(const Duration(milliseconds: 200));
     return const AttemptDto(id: 999, remainingTime: '00:59:30');
@@ -1713,5 +1721,10 @@ class MockDataSource implements DataSource {
   Future<List<PostCategoryDto>> getPostCategories() async {
     await Future.delayed(const Duration(milliseconds: 300));
     return mockPostCategories;
+  }
+
+  @override
+  Future<List<QuestionDto>> getOfflineExamQuestions(String examId) async {
+    return [];
   }
 }

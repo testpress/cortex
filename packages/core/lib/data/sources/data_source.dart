@@ -170,6 +170,15 @@ abstract class DataSource {
   /// Fetch all questions for an attempt using v3 unified endpoint.
   Future<List<QuestionDto>> getQuestions(String attemptId);
 
+  /// Fetch all questions directly for an offline exam using v2.4 endpoint without creating an attempt.
+  Future<List<QuestionDto>> getOfflineExamQuestions(String examId);
+
+  /// Submit offline exam answers in bulk.
+  Future<void> submitOfflineExamAnswers(
+    String examId,
+    Map<String, dynamic> payload,
+  );
+
   /// Submit a single answer to the backend.
   Future<QuizReviewResultDto?> submitAnswer(
     String attemptId,
