@@ -861,7 +861,7 @@ class CourseRepository {
   Future<LessonDto> refreshLesson(String id) async {
     final dto = await _source.getLessonDetail(id);
 
-    // Proactively hydrate the DB in the background for all child widgets
+    // Pre-fill parent course and chapter rows so getLessonDetails JOIN has data to return
     if (dto.courseId != null) {
       _hydrateParentsBackground(dto.courseId!).ignore();
     }

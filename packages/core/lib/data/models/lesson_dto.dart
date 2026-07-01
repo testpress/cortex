@@ -276,6 +276,9 @@ class LessonDto {
       chapterTitle: (chapterTitle?.isEmpty ?? true)
           ? other.chapterTitle
           : chapterTitle,
+      chapterSlug: (chapterSlug?.isEmpty ?? true)
+          ? other.chapterSlug
+          : chapterSlug,
       courseId: (courseId?.isEmpty ?? true) ? other.courseId : courseId,
       ancestorChapterIds: (ancestorChapterIds?.isEmpty ?? true)
           ? other.ancestorChapterIds
@@ -725,6 +728,8 @@ class LessonDto {
       'aiNotesUrl': aiNotesUrl,
       'lastWatchedDuration': lastWatchedDuration,
       'attemptsUrl': attemptsUrl,
+      'slug': slug,
+      'chapterSlug': chapterSlug,
       'exam': exam?.toJson(),
     };
   }
