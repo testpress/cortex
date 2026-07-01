@@ -1,13 +1,15 @@
 ## Why
 
-Currently, when users open the Ask Doubt screen directly from the Dashboard on a fresh app start, the context breadcrumbs (`Course Name > Chapter Name`) fail to load and appear blank. This occurs due to missing parent chapter data in the local database. We need to fix this so users always have clear navigation context about which course and chapter they are asking a doubt in.
+Currently, when a user accesses the "Ask a Doubt" screen from a learning page, the screen only displays the title of the immediate topic they are viewing. In courses with deeply nested content structures, this lack of context can confuse users and make it hard to confirm exactly which module or subject they are asking a doubt about. To improve clarity and navigation context, we need to introduce a hierarchy breadcrumb that displays the Course name, Chapter Name, and the Topic name.
 
 ## What Changes
 
-- Fix the Ask Doubt screen header to consistently display the 2-level breadcrumb (`Course Name > Chapter Name`).
-- The current lesson/topic name will continue to be displayed properly below the breadcrumbs inside the Context Pill (`_ContextPill`).
-- We will retrieve the breadcrumb titles cleanly via `CourseRepository.getLessonDetails(lessonId)`, which uses a pure SQLite join.
-- To handle missing local data on fresh app starts, `CourseRepository.refreshLesson` will perform a non-blocking background hydration of the missing chapter by parsing its `chapter_slug` and fetching it from a new `getChapterDetail(slug)` endpoint.
+- Update the "Ask a Doubt" screen header to display a breadcrumb hierarchy.
+- Use a clean, simple layout for the breadcrumb:
+  - Display `Course Name > Chapter Name` using standard text truncation (e.g., `TextOverflow.ellipsis`).
+  - Below it, display the Topic Name preceded by an appropriate content-type icon.
+- We will retrieve the `chapterTitle` directly from the `LessonDto` or the `Lesson` domain model.
+- We will retrieve the `courseTitle` using the existing `courseDetailProvider` helper (by passing the `courseId`), or the `getLessonDetails` helper.
 
 ## Capabilities
 

@@ -33,12 +33,3 @@ The Course and Chapter names on Line 1 SHALL use balanced truncation to ensure b
 - **WHEN** space is extremely limited and both names are long
 - **THEN** both names SHALL be truncated to a minimum width but remain visible with ellipses
 
-### Requirement: Upstream Data Hydration (No UI Fetching)
-The system SHALL NOT fetch missing chapter names directly from the UI or within the local database join method. Instead, the repository SHALL hydrate missing nested chapters via a non-blocking background fetch when a lesson is opened, ensuring that the database `innerJoin` works perfectly by the time the user opens the Ask a Doubt screen.
-
-#### Scenario: Navigating to Ask Doubt for deeply nested content
-- **WHEN** the user opens a deeply nested lesson via a deep link or the dashboard
-- **THEN** the system SHALL silently fetch the missing nested chapter in the background using its `chapter_slug`
-- **AND** save it to the local SQLite database
-- **WHEN** the user opens the Ask a Doubt form
-- **THEN** the system SHALL instantly load the Course and Chapter names using a pure local database join with zero network delay
