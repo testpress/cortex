@@ -207,6 +207,29 @@ class _ReviewAnswerDetailScreenState
                       l10n: l10n,
                       onAskDoubt: () => context.push(
                         '/home/discussions/doubts/ask?question_id=${Uri.encodeComponent(currentQuestion.id)}',
+                        extra: {
+                          'questionText': currentQuestion.text
+                              .replaceAll(
+                                RegExp(
+                                  r'<style[^>]*>.*?</style>',
+                                  dotAll: true,
+                                  multiLine: true,
+                                ),
+                                '',
+                              )
+                              .replaceAll(
+                                RegExp(
+                                  r'<script[^>]*>.*?</script>',
+                                  dotAll: true,
+                                  multiLine: true,
+                                ),
+                                '',
+                              )
+                              .replaceAll(RegExp(r'<[^>]*>'), '')
+                              .replaceAll('&nbsp;', ' ')
+                              .trim(),
+                          'assessmentTitle': widget.assessmentTitle,
+                        },
                       ),
                       onComment: () =>
                           _showCommentDialog(currentQuestion, design, l10n),

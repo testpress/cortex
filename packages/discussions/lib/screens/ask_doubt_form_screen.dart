@@ -14,6 +14,8 @@ class AskDoubtFormScreen extends ConsumerStatefulWidget {
   final String? lessonTitle;
   final LessonType? lessonType;
   final int? questionId;
+  final String? questionText;
+  final String? assessmentTitle;
 
   const AskDoubtFormScreen({
     super.key,
@@ -21,6 +23,8 @@ class AskDoubtFormScreen extends ConsumerStatefulWidget {
     this.lessonTitle,
     this.lessonType,
     this.questionId,
+    this.questionText,
+    this.assessmentTitle,
   }) : assert(
          (chapterContentId == null && lessonTitle == null) ||
              questionId == null,
@@ -182,10 +186,13 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
           return DoubtContextBadge(
             icon: icon,
             text: isQuestion
-                ? 'Question ID: ${widget.questionId}'
+                ? widget.questionText ?? 'Question ID: ${widget.questionId}'
                 : data?.lessonTitle ?? widget.lessonTitle ?? 'Lesson Details',
-            courseName: data?.courseTitle,
-            chapterName: data?.chapterTitle,
+            breadcrumbs: data != null
+                ? [data.courseTitle, data.chapterTitle]
+                : (isQuestion && widget.assessmentTitle != null
+                      ? [widget.assessmentTitle!]
+                      : null),
           );
         },
       );
@@ -194,8 +201,11 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
     return DoubtContextBadge(
       icon: icon,
       text: isQuestion
-          ? 'Question ID: ${widget.questionId}'
+          ? widget.questionText ?? 'Question ID: ${widget.questionId}'
           : widget.lessonTitle ?? 'Lesson Details',
+      breadcrumbs: isQuestion && widget.assessmentTitle != null
+          ? [widget.assessmentTitle!]
+          : null,
     );
   }
 

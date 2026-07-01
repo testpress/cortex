@@ -61,11 +61,17 @@ class HomeRoutes {
                       )
                     : null;
 
+                final extra = state.extra as Map<String, dynamic>?;
+                final questionText = extra?['questionText'] as String?;
+                final assessmentTitle = extra?['assessmentTitle'] as String?;
+
                 return AskDoubtFormScreen(
                   chapterContentId: chapterContentId,
                   lessonTitle: lessonTitle,
                   lessonType: lessonType,
                   questionId: questionId,
+                  questionText: questionText,
+                  assessmentTitle: assessmentTitle,
                 );
               },
             ),
