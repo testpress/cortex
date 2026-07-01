@@ -3898,6 +3898,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Exam completed'**
   String get examCompletedLabel;
+
+  /// No description provided for @downloadingExam.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading Exam...'**
+  String get downloadingExam;
+
+  /// No description provided for @deadlinePassedCannotSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadline Passed. Exam cannot be synced.'**
+  String get deadlinePassedCannotSync;
+
+  /// No description provided for @pendingSyncConnectToUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Sync. Connect to internet to upload answers.'**
+  String get pendingSyncConnectToUpload;
+
+  /// No description provided for @resumeOfflineExam.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume offline exam'**
+  String get resumeOfflineExam;
+
+  /// No description provided for @startOfflineExam.
+  ///
+  /// In en, this message translates to:
+  /// **'Start offline exam'**
+  String get startOfflineExam;
+
+  /// No description provided for @downloadExamOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Download Exam (Offline)'**
+  String get downloadExamOffline;
 }
 
 class _AppLocalizationsDelegate

@@ -1,0 +1,113 @@
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import '../sources/data_source.dart';
+import '../models/answer_dto.dart';
+import '../db/app_database.dart';
+import '../db/database_provider.dart';
+import '../../network/dio_provider.dart';
+import '../sources/http_data_source.dart';
+
+part 'offline_exam_sync_service.g.dart';
+
+class OfflineExamSyncService {
+  final AppDatabase _db;
+  final DataSource _api;
+
+  OfflineExamSyncService(this._db, this._api);
+
+  /// Background sync executor. Iterates pending exams, constructs payloads,
+  /// pushes to backend, and marks them as synced by deleting them.
+  Future<void> syncPendingExams() async {
+    debugPrint(
+      '[OfflineDebug] Fetching pending offline exams from local DB...',
+    );
+    final pendingDownloads = await _db.getPendingSyncDownloads();
+    debugPrint(
+      '[OfflineDebug] Found ${pendingDownloads.length} pending offline exams to sync.',
+    );
+
+    for (final download in pendingDownloads) {
+      try {
+        debugPrint(
+          '[OfflineDebug] Processing offline download ID: ${download.id} for Exam ID: ${download.examId}',
+        );
+
+        // Build specific payload and push offline answers
+        debugPrint(
+          '[OfflineDebug] Fetching local answers for download ID: ${download.id}...',
+        );
+        final items = await _db.getAnswersForDownload(download.id);
+        debugPrint(
+          '[OfflineDebug] Found ${items.length} answers to sync for download ID: ${download.id}.',
+        );
+
+        final List<Map<String, dynamic>> offlineAnswers = [];
+
+        for (final item in items) {
+          List<dynamic> selectedOptions = [];
+          if (item.selectedChoices != null &&
+              item.selectedChoices!.isNotEmpty) {
+            try {
+              selectedOptions =
+                  jsonDecode(item.selectedChoices!) as List<dynamic>;
+            } catch (e) {
+              // Ignore failure
+            }
+          }
+
+          final answerPayload = AnswerDto(
+            questionId: item.questionId,
+            selectedOptions: selectedOptions,
+            review: item.review,
+            shortText: item.shortAnswer,
+          );
+
+          final jsonAns = answerPayload.toJson();
+          jsonAns['question_id'] = item.questionId;
+          offlineAnswers.add(jsonAns);
+        }
+
+        final payload = {
+          "offline_attempt": {
+            "started_on": download.startedAt?.toUtc().toIso8601String(),
+            "completed_on": download.completedAt?.toUtc().toIso8601String(),
+          },
+          "offline_answers": offlineAnswers,
+        };
+
+        // Submit to bulk celery endpoint
+        debugPrint(
+          '[OfflineDebug] Submitting ${offlineAnswers.length} answers to backend for exam ${download.examId}...',
+        );
+        await _api.submitOfflineExamAnswers(download.examId, payload);
+        debugPrint(
+          '[OfflineDebug] Successfully submitted answers to backend for exam ${download.examId}!',
+        );
+
+        // Mark as successfully synced in local DB by deleting the download and answers
+        debugPrint(
+          '[OfflineDebug] Deleting synced download ID: ${download.id} from local database...',
+        );
+        await _db.deleteDownload(download.id);
+        debugPrint(
+          '[OfflineDebug] Sync cycle complete for download ID: ${download.id}',
+        );
+      } catch (e) {
+        debugPrint(
+          "[OfflineDebug] Sync failed for offline exam ${download.id}: $e",
+        );
+        // Failed to sync this download, it will remain in queue and retry next time
+      }
+    }
+  }
+}
+
+@Riverpod(keepAlive: true)
+Future<OfflineExamSyncService> offlineExamSyncService(Ref ref) async {
+  final db = await ref.watch(appDatabaseProvider.future);
+  final dio = ref.watch(dioProvider);
+  final dataSource = HttpDataSource(dio: dio);
+  return OfflineExamSyncService(db, dataSource);
+}

@@ -17,6 +17,7 @@ class ExamDto {
   final bool enableQuizMode;
   final String? startDate;
   final String? endDate;
+  final String? gracePeriod;
 
   const ExamDto({
     required this.id,
@@ -36,6 +37,7 @@ class ExamDto {
     this.enableQuizMode = false,
     this.startDate,
     this.endDate,
+    this.gracePeriod,
   });
 
   factory ExamDto.fromJson(Map<String, dynamic> json) {
@@ -58,6 +60,7 @@ class ExamDto {
       enableQuizMode: json['enable_quiz_mode'] as bool? ?? false,
       startDate: json['start_date'] as String?,
       endDate: json['end_date'] as String?,
+      gracePeriod: json['grace_period']?.toString(),
     );
   }
 
@@ -80,6 +83,7 @@ class ExamDto {
       'enable_quiz_mode': enableQuizMode,
       'start_date': startDate,
       'end_date': endDate,
+      'grace_period': gracePeriod,
     };
   }
 }

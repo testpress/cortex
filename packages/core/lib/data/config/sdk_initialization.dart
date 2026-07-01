@@ -2,6 +2,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tpstreams_player_sdk/tpstreams_player_sdk.dart';
 import '../auth/auth_provider.dart';
 import 'app_config.dart';
+import '../../workers/offline_exam_sync_worker.dart';
+import '../services/sync_manager.dart';
 
 part 'sdk_initialization.g.dart';
 
@@ -21,4 +23,10 @@ Future<void> sdkInitialization(SdkInitializationRef ref) async {
   }
 
   TestpressSDK.initialize(subdomain: subdomain, authToken: authToken);
+
+  // Initialize background worker for offline exam syncing
+  await OfflineExamSyncWorker.initialize();
+
+  // Initialize foreground aggressive sync listener
+  ref.watch(syncManagerProvider);
 }

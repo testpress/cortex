@@ -61,9 +61,9 @@ class OptionCard extends StatelessWidget {
             SizedBox(width: design.spacing.md),
             Expanded(
               child: AbsorbPointer(
-                child: AppHtml(
+                child: AppHtmlV2(
                   data: option.text,
-                  fontSize: 15,
+                  fontSize: design.typography.body.fontSize ?? 18.0,
                   textColor: isCorrect
                       ? design.colors.success
                       : (isIncorrect
@@ -76,7 +76,7 @@ class OptionCard extends StatelessWidget {
               Icon(
                 isCorrect ? LucideIcons.check : LucideIcons.x,
                 color: selectionColor,
-                size: 18,
+                size: design.iconSize.sm,
               ),
           ],
         ),
@@ -89,8 +89,8 @@ class OptionCard extends StatelessWidget {
 
     if (type == 'multipleSelect') {
       return Container(
-        width: 20,
-        height: 20,
+        width: design.iconSize.md,
+        height: design.iconSize.md,
         decoration: BoxDecoration(
           color: isSelected ? selectionColor : const Color(0x00000000),
           borderRadius: BorderRadius.circular(design.radius.sm),
@@ -103,33 +103,33 @@ class OptionCard extends StatelessWidget {
             ? Icon(
                 isIncorrect ? LucideIcons.x : LucideIcons.check,
                 color: design.colors.textInverse,
-                size: 12,
+                size: design.iconSize.xs,
               )
             : null,
       );
     } else {
-      return Container(
-        width: 20,
-        height: 20,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: active ? selectionColor : design.colors.border,
-            width: 2,
-          ),
-        ),
-        child: active
-            ? Center(
-                child: Container(
-                  width: 10,
-                  height: 10,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: selectionColor,
-                  ),
+      return SizedBox(
+        width: design.iconSize.md,
+        height: design.iconSize.md,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Icon(
+              LucideIcons.circle,
+              color: active ? selectionColor : design.colors.border,
+              size: design.iconSize.md,
+            ),
+            if (active)
+              Container(
+                width: design.iconSize.xs,
+                height: design.iconSize.xs,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: selectionColor,
                 ),
-              )
-            : null,
+              ),
+          ],
+        ),
       );
     }
   }

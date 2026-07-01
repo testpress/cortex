@@ -8,6 +8,7 @@ import '../repositories/exam_repository.dart';
 import '../widgets/exam_mode_option_card.dart';
 import '../widgets/exam_prescreen_metadata.dart';
 import '../widgets/exam_prescreen_action_button.dart';
+import '../widgets/offline_exam_action_button.dart';
 import '../models/review_route_payload.dart';
 import 'components/exam_history_table.dart';
 
@@ -15,7 +16,8 @@ class ExamPrescreen extends ConsumerStatefulWidget {
   final String testId;
   final LessonDto? lesson;
   final VoidCallback onClose;
-  final Future<void> Function(bool isQuizMode, {bool isPartial}) onStartAttempt;
+  final Future<void> Function(bool isQuizMode, {bool isPartial, bool isOffline})
+  onStartAttempt;
 
   const ExamPrescreen({
     super.key,
@@ -199,42 +201,66 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                     design.spacing.md,
                     design.spacing.lg,
                   ),
-                  child: ExamPrescreenActionButton(
-                    isButtonEnabled: isButtonEnabled,
-                    isResuming: isResuming,
-                    isRetaking: isRetaking,
-                    onTap: isButtonEnabled
-                        ? () async {
-                            if (showModeSelection) {
-                              setState(() {
-                                _selectedRetakeIsPartial = false;
-                                _isModeSheetOpen = true;
-                              });
-                            } else {
-                              ref.read(examAttemptProvider.notifier).reset();
-                              await widget.onStartAttempt(
-                                false,
-                                isPartial: false,
-                              );
-                            }
-                          }
-                        : null,
-                    onRetakeIncorrectTap: isButtonEnabled
-                        ? () async {
-                            if (showModeSelection) {
-                              setState(() {
-                                _selectedRetakeIsPartial = true;
-                                _isModeSheetOpen = true;
-                              });
-                            } else {
-                              ref.read(examAttemptProvider.notifier).reset();
-                              await widget.onStartAttempt(
-                                false,
-                                isPartial: true,
-                              );
-                            }
-                          }
-                        : null,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (exam != null && attemptsUrl != null)
+                        OfflineExamActionButton(
+                          examId: widget.testId,
+                          examData: exam,
+                          attemptsUrl: attemptsUrl,
+                          onStartOfflineAttempt: () async {
+                            ref.read(examAttemptProvider.notifier).reset();
+                            // Force regular mode as per spec
+                            await widget.onStartAttempt(
+                              false,
+                              isPartial: false,
+                              isOffline: true,
+                            );
+                          },
+                        ),
+                      ExamPrescreenActionButton(
+                        isButtonEnabled: isButtonEnabled,
+                        isResuming: isResuming,
+                        isRetaking: isRetaking,
+                        onTap: isButtonEnabled
+                            ? () async {
+                                if (showModeSelection) {
+                                  setState(() {
+                                    _selectedRetakeIsPartial = false;
+                                    _isModeSheetOpen = true;
+                                  });
+                                } else {
+                                  ref
+                                      .read(examAttemptProvider.notifier)
+                                      .reset();
+                                  await widget.onStartAttempt(
+                                    false,
+                                    isPartial: false,
+                                  );
+                                }
+                              }
+                            : null,
+                        onRetakeIncorrectTap: isButtonEnabled
+                            ? () async {
+                                if (showModeSelection) {
+                                  setState(() {
+                                    _selectedRetakeIsPartial = true;
+                                    _isModeSheetOpen = true;
+                                  });
+                                } else {
+                                  ref
+                                      .read(examAttemptProvider.notifier)
+                                      .reset();
+                                  await widget.onStartAttempt(
+                                    false,
+                                    isPartial: true,
+                                  );
+                                }
+                              }
+                            : null,
+                      ),
+                    ],
                   ),
                 )
               : null,

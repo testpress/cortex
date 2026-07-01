@@ -139,12 +139,17 @@ class StudyRoutes {
               testId: id,
               lesson: lesson,
               onClose: () => context.pop(),
-              onStartAttempt: (isQuizMode, {bool isPartial = false}) async {
-                context.pushReplacement(
-                  '/study/test/$id/player?isQuizMode=$isQuizMode&isPartial=$isPartial',
-                  extra: lesson,
-                );
-              },
+              onStartAttempt:
+                  (
+                    isQuizMode, {
+                    bool isPartial = false,
+                    bool isOffline = false,
+                  }) async {
+                    context.pushReplacement(
+                      '/study/test/$id/player?isQuizMode=$isQuizMode&isPartial=$isPartial',
+                      extra: lesson,
+                    );
+                  },
             );
           },
           routes: [

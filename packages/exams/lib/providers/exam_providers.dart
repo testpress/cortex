@@ -2,28 +2,47 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
+import '../repositories/offline_exam_repository.dart';
 import 'package:courses/courses.dart';
 import '../repositories/exam_repository.dart';
+import 'package:core/network/file_downloader.dart';
 
 part 'exam_providers.g.dart';
 
+/// Repository provider for exam-specific operations.
 /// Repository provider for exam-specific operations.
 @Riverpod(keepAlive: true)
 ExamRepository examRepository(Ref ref) {
   final dataSource = ref.watch(dataSourceProvider);
   final dbFuture = ref.watch(appDatabaseProvider.future);
-  return ExamRepository(dataSource: dataSource, dbFuture: dbFuture);
+  return OnlineExamRepository(dataSource: dataSource, dbFuture: dbFuture);
+}
+
+@riverpod
+Future<OfflineExamRepository> offlineExamRepositoryFactory(
+  Ref ref,
+  String contentId,
+) async {
+  final db = await ref.watch(appDatabaseProvider.future);
+  final api = ref.watch(dataSourceProvider);
+  final fileDownloader = ref.watch(fileDownloaderProvider);
+  return OfflineExamRepository(
+    contentId: contentId,
+    db: db,
+    api: api,
+    fileDownloader: fileDownloader,
+  );
 }
 
 /// Fetches attempt history for an exam.
-@riverpod
+@Riverpod(dependencies: [examRepository])
 Future<List<AttemptDto>> examAttempts(Ref ref, String attemptsUrl) async {
   final repository = ref.watch(examRepositoryProvider);
   return repository.getAttempts(attemptsUrl);
 }
 
 /// Notifier that manages the active exam attempt lifecycle.
-@riverpod
+@Riverpod(dependencies: [examRepository])
 class ExamAttempt extends _$ExamAttempt {
   StreamSubscription<ExamAttemptState>? _subscription;
 
@@ -45,6 +64,8 @@ class ExamAttempt extends _$ExamAttempt {
   }
 
   void reset() => ref.read(examRepositoryProvider).reset();
+
+  Future<void> pauseExam() => ref.read(examRepositoryProvider).pauseExam();
 
   Future<void> startStandaloneExam(
     ExamDto exam, {

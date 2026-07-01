@@ -7,31 +7,42 @@ import '../data/auth/auth_provider.dart';
 import 'user_agent_interceptor.dart';
 import 'auth_interceptor.dart';
 
+class DioFactory {
+  static Dio createBackgroundDio({
+    required Future<String?> Function() getToken,
+    void Function()? onUnauthorized,
+  }) {
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: AppConfig.apiBaseUrl,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
+
+    dio.interceptors.add(UserAgentInterceptor());
+    dio.interceptors.add(
+      AuthInterceptor(getToken: getToken, onUnauthorized: onUnauthorized),
+    );
+
+    if (kDebugMode) {
+      dio.interceptors.add(
+        LogInterceptor(responseBody: true, requestBody: true),
+      );
+    }
+
+    return dio;
+  }
+}
+
 /// Provider that manages the app-wide singleton Dio instance.
 /// It includes the default UserAgentInterceptor and is intended to be
 /// the primary consumer of network requests.
 final Provider<Dio> dioProvider = Provider<Dio>((ref) {
-  final dio = Dio(
-    BaseOptions(
-      baseUrl: AppConfig.apiBaseUrl,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    ),
+  return DioFactory.createBackgroundDio(
+    getToken: () => ref.read(authLocalDataSourceProvider).getToken(),
+    onUnauthorized: () => ref.read(authProvider.notifier).logout(),
   );
-
-  dio.interceptors.add(UserAgentInterceptor());
-  dio.interceptors.add(
-    AuthInterceptor(
-      getToken: () => ref.read(authLocalDataSourceProvider).getToken(),
-      onUnauthorized: () => ref.read(authProvider.notifier).logout(),
-    ),
-  );
-
-  if (kDebugMode) {
-    dio.interceptors.add(LogInterceptor(responseBody: true, requestBody: true));
-  }
-
-  return dio;
 });

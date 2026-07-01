@@ -6,8 +6,9 @@ part of 'exam_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$examRepositoryHash() => r'2c586dc51ef3f378caca0a83aaa3e71d26a9528a';
+String _$examRepositoryHash() => r'02b16aece7d1da9b5a73c9f2f28e490e7c2fe06f';
 
+/// Repository provider for exam-specific operations.
 /// Repository provider for exam-specific operations.
 ///
 /// Copied from [examRepository].
@@ -25,7 +26,8 @@ final examRepositoryProvider = Provider<ExamRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ExamRepositoryRef = ProviderRef<ExamRepository>;
-String _$examAttemptsHash() => r'42f952f3c74098dae420a492213a434c67697c05';
+String _$offlineExamRepositoryFactoryHash() =>
+    r'db45db2873fa5dad13b78b0dddce5af92f760bb9';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -47,6 +49,138 @@ class _SystemHash {
     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
 }
+
+/// See also [offlineExamRepositoryFactory].
+@ProviderFor(offlineExamRepositoryFactory)
+const offlineExamRepositoryFactoryProvider =
+    OfflineExamRepositoryFactoryFamily();
+
+/// See also [offlineExamRepositoryFactory].
+class OfflineExamRepositoryFactoryFamily
+    extends Family<AsyncValue<OfflineExamRepository>> {
+  /// See also [offlineExamRepositoryFactory].
+  const OfflineExamRepositoryFactoryFamily();
+
+  /// See also [offlineExamRepositoryFactory].
+  OfflineExamRepositoryFactoryProvider call(String contentId) {
+    return OfflineExamRepositoryFactoryProvider(contentId);
+  }
+
+  @override
+  OfflineExamRepositoryFactoryProvider getProviderOverride(
+    covariant OfflineExamRepositoryFactoryProvider provider,
+  ) {
+    return call(provider.contentId);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'offlineExamRepositoryFactoryProvider';
+}
+
+/// See also [offlineExamRepositoryFactory].
+class OfflineExamRepositoryFactoryProvider
+    extends AutoDisposeFutureProvider<OfflineExamRepository> {
+  /// See also [offlineExamRepositoryFactory].
+  OfflineExamRepositoryFactoryProvider(String contentId)
+    : this._internal(
+        (ref) => offlineExamRepositoryFactory(
+          ref as OfflineExamRepositoryFactoryRef,
+          contentId,
+        ),
+        from: offlineExamRepositoryFactoryProvider,
+        name: r'offlineExamRepositoryFactoryProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$offlineExamRepositoryFactoryHash,
+        dependencies: OfflineExamRepositoryFactoryFamily._dependencies,
+        allTransitiveDependencies:
+            OfflineExamRepositoryFactoryFamily._allTransitiveDependencies,
+        contentId: contentId,
+      );
+
+  OfflineExamRepositoryFactoryProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.contentId,
+  }) : super.internal();
+
+  final String contentId;
+
+  @override
+  Override overrideWith(
+    FutureOr<OfflineExamRepository> Function(
+      OfflineExamRepositoryFactoryRef provider,
+    )
+    create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: OfflineExamRepositoryFactoryProvider._internal(
+        (ref) => create(ref as OfflineExamRepositoryFactoryRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        contentId: contentId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<OfflineExamRepository> createElement() {
+    return _OfflineExamRepositoryFactoryProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is OfflineExamRepositoryFactoryProvider &&
+        other.contentId == contentId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, contentId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin OfflineExamRepositoryFactoryRef
+    on AutoDisposeFutureProviderRef<OfflineExamRepository> {
+  /// The parameter `contentId` of this provider.
+  String get contentId;
+}
+
+class _OfflineExamRepositoryFactoryProviderElement
+    extends AutoDisposeFutureProviderElement<OfflineExamRepository>
+    with OfflineExamRepositoryFactoryRef {
+  _OfflineExamRepositoryFactoryProviderElement(super.provider);
+
+  @override
+  String get contentId =>
+      (origin as OfflineExamRepositoryFactoryProvider).contentId;
+}
+
+String _$examAttemptsHash() => r'698ad78d688258faa461f487e8eaa0e49d30bd63';
 
 /// Fetches attempt history for an exam.
 ///
@@ -77,12 +211,18 @@ class ExamAttemptsFamily extends Family<AsyncValue<List<AttemptDto>>> {
     return call(provider.attemptsUrl);
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
+    examRepositoryProvider,
+  ];
 
   @override
   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
 
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
+      <ProviderOrFamily>{
+        examRepositoryProvider,
+        ...?examRepositoryProvider.allTransitiveDependencies,
+      };
 
   @override
   Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
@@ -178,7 +318,7 @@ class _ExamAttemptsProviderElement
   String get attemptsUrl => (origin as ExamAttemptsProvider).attemptsUrl;
 }
 
-String _$examAttemptHash() => r'1cd9cbc38e418998d8a56c374df2852bc26d0dc1';
+String _$examAttemptHash() => r'cd74666f286c00d5dc8b9a965480402afca9231a';
 
 /// Notifier that manages the active exam attempt lifecycle.
 ///
@@ -191,8 +331,11 @@ final examAttemptProvider =
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
           : _$examAttemptHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
+      dependencies: <ProviderOrFamily>[examRepositoryProvider],
+      allTransitiveDependencies: <ProviderOrFamily>{
+        examRepositoryProvider,
+        ...?examRepositoryProvider.allTransitiveDependencies,
+      },
     );
 
 typedef _$ExamAttempt = AutoDisposeNotifier<ExamAttemptState>;
