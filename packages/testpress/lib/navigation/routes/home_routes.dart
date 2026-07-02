@@ -61,7 +61,9 @@ class HomeRoutes {
                       )
                     : null;
 
-                final extra = state.extra as Map<String, dynamic>?;
+                final extra = state.extra is Map<String, dynamic>
+                    ? state.extra as Map<String, dynamic>
+                    : null;
                 final questionText = extra?['questionText'] as String?;
                 final assessmentTitle = extra?['assessmentTitle'] as String?;
 

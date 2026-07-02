@@ -69,6 +69,7 @@ export 'network/file_downloader.dart';
 export 'utils/date_formatter.dart';
 export 'utils/time_formatter.dart';
 export 'utils/lesson_type_icon_x.dart';
+export 'utils/string_extensions.dart';
 
 // Localization
 export 'localization/localization_provider.dart';
