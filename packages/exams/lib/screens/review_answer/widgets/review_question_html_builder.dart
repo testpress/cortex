@@ -107,16 +107,7 @@ abstract final class ReviewQuestionHtmlBuilder {
               ? correctOptions.map((o) => o.text).toList()
               : question.options.map((o) => o.text).toList();
           isCorrect = correctValues.any((val) {
-            final cleanVal = val
-                .replaceAll(RegExp(r'<[^>]*>'), '')
-                .replaceAll('&nbsp;', ' ')
-                .replaceAll('&amp;', '&')
-                .replaceAll('&lt;', '<')
-                .replaceAll('&gt;', '>')
-                .replaceAll('&quot;', '"')
-                .replaceAll('&#39;', "'")
-                .trim()
-                .toLowerCase();
+            final cleanVal = val.stripHtml().toLowerCase();
             return cleanVal == userAns;
           });
         }
