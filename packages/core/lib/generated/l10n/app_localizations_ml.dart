@@ -2199,4 +2199,8 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get correctAnswerLabel => 'ശരിയായ ഉത്തരം:';
+
+  @override
+  String get errorOfflineDataNotFound =>
+      'പരീക്ഷാ ഡാറ്റ കണ്ടെത്തിയില്ല. നിങ്ങളുടെ ഉത്തരങ്ങൾ സമർപ്പിച്ചേക്കില്ല.';
 }

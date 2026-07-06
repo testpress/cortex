@@ -2189,4 +2189,8 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get correctAnswerLabel => 'சரியான பதில்:';
+
+  @override
+  String get errorOfflineDataNotFound =>
+      'தேர்வு தரவு கிடைக்கவில்லை. உங்கள் பதில்கள் சமர்ப்பிக்கப்படாமல் போகலாம்.';
 }

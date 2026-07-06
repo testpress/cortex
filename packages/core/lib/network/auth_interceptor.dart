@@ -7,6 +7,7 @@ import 'api_endpoints.dart';
 class AuthInterceptor extends Interceptor {
   final Future<String?> Function() getToken;
   final void Function()? onUnauthorized;
+  bool _isLoggingOut = false;
 
   /// Paths that should not have an Authorization header attached.
   static const _authFlowPaths = [
@@ -16,7 +17,7 @@ class AuthInterceptor extends Interceptor {
     ApiEndpoints.resetPassword,
   ];
 
-  const AuthInterceptor({required this.getToken, this.onUnauthorized});
+  AuthInterceptor({required this.getToken, this.onUnauthorized});
 
   @override
   void onRequest(
@@ -50,7 +51,10 @@ class AuthInterceptor extends Interceptor {
       );
 
       if (!isAuthFlowPath && !isLogoutRequest) {
-        onUnauthorized?.call();
+        if (!_isLoggingOut) {
+          _isLoggingOut = true;
+          onUnauthorized?.call();
+        }
       }
     }
     super.onError(err, handler);

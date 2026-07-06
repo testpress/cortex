@@ -372,19 +372,33 @@ class OfflineExamRepository implements ExamRepository {
 
   @override
   Future<void> endExam() async {
+    if (_currentState.status == ExamAttemptStatus.submitting ||
+        _currentState.status == ExamAttemptStatus.completed) {
+      return;
+    }
+    _countdownTimer?.cancel();
+
     _emit(_currentState.copyWith(status: ExamAttemptStatus.submitting));
 
     final row = await _db.getDownloadByContentId(_contentId);
-    if (row != null) {
-      await _db.upsertDownload(
-        row
-            .toCompanion(false)
-            .copyWith(
-              completedAt: drift.Value(DateTime.now()),
-              status: const drift.Value('PENDING_SYNC'),
-            ),
+    if (row == null) {
+      _emit(
+        _currentState.copyWith(
+          status: ExamAttemptStatus.error,
+          errorMessage: ExamErrorCodes.offlineDataNotFound,
+        ),
       );
+      return;
     }
+
+    await _db.upsertDownload(
+      row
+          .toCompanion(false)
+          .copyWith(
+            completedAt: drift.Value(DateTime.now()),
+            status: const drift.Value('PENDING_SYNC'),
+          ),
+    );
 
     _emit(_currentState.copyWith(status: ExamAttemptStatus.completed));
   }

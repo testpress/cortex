@@ -601,8 +601,7 @@ class CourseRepository {
   Future<List<LessonDto>> refreshLessons(
       String courseId, String chapterId) async {
     if (_activeContentSyncs.containsKey(chapterId)) {
-      final rows = await getLessons(chapterId);
-      return rows.map(rowToLessonDto).toList();
+      return _activeContentSyncs[chapterId]!;
     }
 
     final syncFuture = () async {

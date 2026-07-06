@@ -2155,4 +2155,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get correctAnswerLabel => 'Correct Answer:';
+
+  @override
+  String get errorOfflineDataNotFound =>
+      'Exam data not found. Your answers may not submitted.';
 }
