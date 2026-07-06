@@ -3956,7 +3956,7 @@ abstract class AppLocalizations {
   /// Error message when local offline exam data goes missing
   ///
   /// In en, this message translates to:
-  /// **'Exam data not found. Your answers may not submitted.'**
+  /// **'Exam data not found. Your answers may not be submitted.'**
   String get errorOfflineDataNotFound;
 }
 

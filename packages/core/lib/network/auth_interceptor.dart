@@ -29,7 +29,9 @@ class AuthInterceptor extends Interceptor {
       (path) => options.path.contains(path),
     );
 
-    if (!isAuthFlowPath) {
+    if (isAuthFlowPath) {
+      _isLoggingOut = false;
+    } else {
       final token = await getToken();
       if (token != null && token.isNotEmpty) {
         options.headers['Authorization'] = 'JWT $token';
