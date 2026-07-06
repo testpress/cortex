@@ -190,10 +190,15 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                       ? widget.questionText!
                       : 'Question ID: ${widget.questionId}')
                 : data?.lessonTitle ?? widget.lessonTitle ?? 'Lesson Details',
-            courseName: data?.courseTitle,
-            chapterName: data != null
-                ? data.chapterTitle
-                : (isQuestion ? widget.assessmentTitle : null),
+            breadcrumbs: isQuestion
+                ? [
+                    if (data != null) data.chapterTitle,
+                    if (widget.assessmentTitle != null) widget.assessmentTitle!,
+                  ]
+                : [
+                    if (data != null) data.courseTitle,
+                    if (data != null) data.chapterTitle,
+                  ],
           );
         },
       );
@@ -206,8 +211,9 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                 ? widget.questionText!
                 : 'Question ID: ${widget.questionId}')
           : widget.lessonTitle ?? 'Lesson Details',
-      courseName: null,
-      chapterName: isQuestion ? widget.assessmentTitle : null,
+      breadcrumbs: isQuestion
+          ? [if (widget.assessmentTitle != null) widget.assessmentTitle!]
+          : [],
     );
   }
 

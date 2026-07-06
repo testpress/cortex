@@ -4,29 +4,25 @@ import 'package:core/core.dart';
 class DoubtContextBadge extends StatelessWidget {
   final IconData icon;
   final String text;
-  final String? courseName;
-  final String? chapterName;
+  final List<String> breadcrumbs;
 
   const DoubtContextBadge({
     super.key,
     required this.icon,
     required this.text,
-    this.courseName,
-    this.chapterName,
+    this.breadcrumbs = const [],
   });
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final course = courseName ?? '';
-    final chapter = chapterName ?? '';
-    final hasHierarchy = course.isNotEmpty || chapter.isNotEmpty;
+    final hasHierarchy = breadcrumbs.isNotEmpty;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (hasHierarchy) ...[
-          _BreadcrumbHeader(courseName: course, chapterName: chapter),
+          _BreadcrumbHeader(breadcrumbs: breadcrumbs),
           SizedBox(height: design.spacing.sm),
         ],
         _ContextPill(icon: icon, text: text),
@@ -36,59 +32,43 @@ class DoubtContextBadge extends StatelessWidget {
 }
 
 class _BreadcrumbHeader extends StatelessWidget {
-  final String courseName;
-  final String chapterName;
+  final List<String> breadcrumbs;
 
-  const _BreadcrumbHeader({
-    required this.courseName,
-    required this.chapterName,
-  });
+  const _BreadcrumbHeader({required this.breadcrumbs});
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    final semanticLabel = [
-      if (courseName.isNotEmpty) courseName,
-      if (chapterName.isNotEmpty) chapterName,
-    ].join(', ');
+    final validBreadcrumbs = breadcrumbs.where((b) => b.isNotEmpty).toList();
+    final semanticLabel = validBreadcrumbs.join(', ');
 
     return AppSemantics.container(
       label: semanticLabel,
       child: Row(
-        children: [
-          if (courseName.isNotEmpty)
-            Flexible(
-              flex: 1,
-              fit: FlexFit.loose,
-              child: AppText.labelBold(
-                courseName,
-                color: design.colors.textPrimary,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+        children: validBreadcrumbs.asMap().entries.expand((entry) {
+          final isLast = entry.key == validBreadcrumbs.length - 1;
+
+          final textWidget = AppText.labelBold(
+            entry.value,
+            color: design.colors.textPrimary,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          );
+
+          return [
+            Flexible(flex: 1, fit: FlexFit.loose, child: textWidget),
+            if (!isLast)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: design.spacing.xs),
+                child: Icon(
+                  LucideIcons.chevronRight,
+                  size: design.iconSize.sm,
+                  color: design.colors.textTertiary,
+                ),
               ),
-            ),
-          if (courseName.isNotEmpty && chapterName.isNotEmpty)
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: design.spacing.xs),
-              child: Icon(
-                LucideIcons.chevronRight,
-                size: design.iconSize.sm,
-                color: design.colors.textTertiary,
-              ),
-            ),
-          if (chapterName.isNotEmpty)
-            Flexible(
-              flex: 1,
-              fit: FlexFit.loose,
-              child: AppText.labelBold(
-                chapterName,
-                color: design.colors.textPrimary,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-        ],
+          ];
+        }).toList(),
       ),
     );
   }
