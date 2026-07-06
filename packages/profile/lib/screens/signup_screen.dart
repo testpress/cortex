@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:core/legacy_icons.dart' as legacy;
 import 'package:core/core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -97,7 +96,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                         AppButton.secondary(
                           label: 'Continue with Google',
                           fullWidth: true,
-                          leading: const Icon(legacy.LucideIcons.chrome),
+                          leading: const FaIcon(FontAwesomeIcons.google),
                           onPressed: () => context.go('/home'),
                         ),
                       ],

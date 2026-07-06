@@ -14,8 +14,8 @@ dependencies:
     sdk: flutter
   go_router: ^17.1.0
   intl: any
-  lucide_icons: ^0.257.0
   lucide_icons_flutter: ^3.1.14+1
+  font_awesome_flutter: ^11.0.0
   package_info_plus: ^8.2.1
   device_info_plus: ^12.1.0
   google_fonts: ^6.2.1
