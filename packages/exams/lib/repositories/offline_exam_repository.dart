@@ -281,7 +281,7 @@ class OfflineExamRepository implements ExamRepository {
 
   @override
   Future<void> submitAnswer(String questionId, AnswerDto answer) async {
-    if (_currentState.status != ExamAttemptStatus.inProgress) return;
+    if (_currentState.status == ExamAttemptStatus.completed) return;
     final updatedAnswers = Map<String, AnswerDto>.from(_currentState.answers);
     updatedAnswers[questionId] = answer;
     _emit(_currentState.copyWith(answers: updatedAnswers));
@@ -373,10 +373,7 @@ class OfflineExamRepository implements ExamRepository {
 
   @override
   Future<void> endExam() async {
-    if (_currentState.status == ExamAttemptStatus.submitting ||
-        _currentState.status == ExamAttemptStatus.completed) {
-      return;
-    }
+    if (_currentState.status != ExamAttemptStatus.inProgress) return;
     _countdownTimer?.cancel();
 
     _emit(_currentState.copyWith(status: ExamAttemptStatus.submitting));
