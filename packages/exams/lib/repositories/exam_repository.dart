@@ -1123,7 +1123,7 @@ class OnlineExamRepository implements ExamRepository {
     if (parts.length != 3) return 3600;
     return int.parse(parts[0]) * 3600 +
         int.parse(parts[1]) * 60 +
-        int.parse(parts[2]);
+        double.parse(parts[2]).toInt();
   }
 
   void dispose() {
