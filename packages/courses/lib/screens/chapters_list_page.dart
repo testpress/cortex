@@ -359,7 +359,13 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
             ],
           );
         },
-        error: (error, _) => Center(child: AppText.body(error.toString())),
+        error: (error, _) {
+          return AppErrorView(
+            onRetry: () => ref.invalidate(
+              subChaptersProvider(widget.courseId, widget.parentId),
+            ),
+          );
+        },
       ),
     );
   }

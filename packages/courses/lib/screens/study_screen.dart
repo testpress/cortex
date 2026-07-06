@@ -152,7 +152,9 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                                 SizedBox(width: design.spacing.sm),
                                 Expanded(
                                   child: AppText.body(
-                                    'Sync issues: $activeSyncError',
+                                    activeSyncError is ApiException
+                                        ? activeSyncError.message
+                                        : activeSyncError.toString(),
                                     color: const Color(0xFFFFFFFF),
                                   ),
                                 ),

@@ -3,7 +3,6 @@ import 'dart:developer' as dev;
 import 'package:core/data/data.dart';
 import '../models/test_dto.dart';
 import '../data/mock_tests.dart';
-import 'package:core/data/exceptions/api_exception.dart';
 
 import 'package:flutter/foundation.dart';
 

@@ -143,34 +143,8 @@ class ExamsRoutes {
                     child: const Center(child: AppLoadingIndicator()),
                   ),
                   error: (error, _) {
-                    final l10n = L10n.of(context);
-                    final design = Design.of(context);
-                    return Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(design.spacing.cardPadding),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              LucideIcons.alertCircle,
-                              size: design.spacing.xxl,
-                              color: design.colors.error,
-                            ),
-                            SizedBox(height: design.spacing.md),
-                            AppText.body(
-                              l10n.errorLessonLoad,
-                              textAlign: TextAlign.center,
-                              color: design.colors.textSecondary,
-                            ),
-                            SizedBox(height: design.spacing.lg),
-                            AppButton.primary(
-                              label: l10n.labelRetry,
-                              onPressed: () =>
-                                  ref.refresh(lessonDetailProvider(id)),
-                            ),
-                          ],
-                        ),
-                      ),
+                    return AppErrorView(
+                      onRetry: () => ref.invalidate(lessonDetailProvider(id)),
                     );
                   },
                 );

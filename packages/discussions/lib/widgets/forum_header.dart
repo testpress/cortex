@@ -55,7 +55,7 @@ class ForumHeader extends StatelessWidget {
               Expanded(
                 child: AppText.title(title, color: design.colors.textPrimary),
               ),
-              if (actions != null) ...actions!,
+              ...?actions,
             ],
           ),
         ),

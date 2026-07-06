@@ -370,7 +370,7 @@ class LessonDetailShell extends StatelessWidget {
                     label: 'Download content',
                     onTap: onDownload!,
                   ),
-                if (headerActions != null) ...headerActions!,
+                ...?headerActions,
               ],
             ),
           ),

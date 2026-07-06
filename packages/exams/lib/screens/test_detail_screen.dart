@@ -62,10 +62,17 @@ class TestDetailScreen extends ConsumerWidget {
           color: Design.of(context).colors.surface,
           child: const Center(child: AppLoadingIndicator()),
         ),
-        error: (err, stack) => Container(
-          color: Design.of(context).colors.surface,
-          child: Center(child: Text('Failed to load offline exam: $err')),
-        ),
+        error: (err, stack) {
+          final errorMessage = err is ApiException
+              ? err.message
+              : err.toString();
+          return AppErrorView(
+            title: 'Cannot Start Exam',
+            message: 'Failed to load offline exam: $errorMessage',
+            onRetry: () =>
+                ref.invalidate(offlineExamRepositoryFactoryProvider(testId)),
+          );
+        },
       );
     }
 
@@ -283,12 +290,15 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
           color: design.colors.surface,
           child: const Center(child: AppLoadingIndicator()),
         ),
-        error: (err, stack) => Container(
-          color: design.colors.surface,
-          child: Center(
-            child: AppText.body(l10n.errorLoadingLesson(err.toString())),
-          ),
-        ),
+        error: (err, stack) {
+          final errorMessage = err is ApiException
+              ? err.message
+              : err.toString();
+          return AppErrorView(
+            message: errorMessage,
+            onRetry: () => ref.invalidate(lessonDetailProvider(widget.testId)),
+          );
+        },
       );
     }
 

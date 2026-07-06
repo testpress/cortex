@@ -85,33 +85,9 @@ class StudyRoutes {
                     child: const Center(child: AppLoadingIndicator()),
                   ),
                   error: (error, _) {
-                    final l10n = L10n.of(context);
-                    return Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(Design.of(context).spacing.xl),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              LucideIcons.alertCircle,
-                              size: 48,
-                              color: Design.of(context).colors.error,
-                            ),
-                            SizedBox(height: Design.of(context).spacing.md),
-                            AppText.body(
-                              l10n.errorLessonLoad,
-                              textAlign: TextAlign.center,
-                              color: Design.of(context).colors.textSecondary,
-                            ),
-                            SizedBox(height: Design.of(context).spacing.xl),
-                            AppButton.primary(
-                              label: l10n.labelRetry,
-                              onPressed: () =>
-                                  ref.refresh(lessonDetailProvider(id)),
-                            ),
-                          ],
-                        ),
-                      ),
+                    return AppErrorView(
+                      message: L10n.of(context).errorLessonLoad,
+                      onRetry: () => ref.invalidate(lessonDetailProvider(id)),
                     );
                   },
                 );

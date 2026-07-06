@@ -58,6 +58,9 @@ export 'sources/study_momentum_provider.dart';
 export 'sources/institute_settings_remote_data_source.dart';
 export 'sources/institute_settings_local_data_source.dart';
 
+// Exceptions
+export 'exceptions/api_exception.dart';
+
 // Network Endpoints
 export '../network/api_endpoints.dart';
 
