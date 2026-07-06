@@ -3934,6 +3934,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Download Exam (Offline)'**
   String get downloadExamOffline;
+
+  /// No description provided for @testSavedLocallyOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Test saved locally. Results will be available once synced.'**
+  String get testSavedLocallyOffline;
+
+  /// No description provided for @noAnswerGiven.
+  ///
+  /// In en, this message translates to:
+  /// **'(No answer given)'**
+  String get noAnswerGiven;
+
+  /// No description provided for @correctAnswerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct Answer:'**
+  String get correctAnswerLabel;
 }
 
 class _AppLocalizationsDelegate

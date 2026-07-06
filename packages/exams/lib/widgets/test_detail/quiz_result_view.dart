@@ -70,7 +70,7 @@ class QuizResultView extends StatelessWidget {
                 SizedBox(height: design.spacing.sm),
                 AppText.body(
                   isOffline
-                      ? 'Test saved locally. Results will be available once synced.'
+                      ? l10n.testSavedLocallyOffline
                       : l10n.testCompleteSubtitle,
                   color: design.colors.textSecondary,
                   textAlign: TextAlign.center,

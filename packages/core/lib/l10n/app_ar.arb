@@ -754,5 +754,8 @@
         "type": "String"
       }
     }
-  }
+  },
+  "testSavedLocallyOffline": "تم حفظ الاختبار محليًا. ستكون النتائج متاحة بمجرد المزامنة.",
+  "noAnswerGiven": "(لم يتم تقديم إجابة)",
+  "correctAnswerLabel": "الإجابة الصحيحة:"
 }

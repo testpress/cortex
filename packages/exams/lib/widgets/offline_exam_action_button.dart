@@ -34,17 +34,12 @@ class _OfflineExamActionButtonState
     });
 
     try {
-      debugPrint(
-        '[OfflineDebug] Initiating download for exam: ${widget.examId}',
-      );
       final repo = await ref.read(
         offlineExamRepositoryFactoryProvider(widget.examId).future,
       );
       await repo.downloadExam(widget.examData);
-
-      debugPrint('[OfflineDebug] Exam download completed successfully!');
     } catch (e) {
-      debugPrint("[OfflineDebug] Failed to download offline exam: $e");
+      debugPrint("Failed to download offline exam: $e");
     } finally {
       if (mounted) {
         setState(() {

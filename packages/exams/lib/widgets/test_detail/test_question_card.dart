@@ -182,7 +182,7 @@ class _TestQuestionCardState extends State<TestQuestionCard> {
 
                 // Options or input field.
                 if (isInputType)
-                  _buildInputField(design, q, answer, correctIds)
+                  _buildInputField(design, l10n, q, answer, correctIds)
                 else
                   _buildOptions(design, q, answer, correctIds),
 
@@ -267,6 +267,7 @@ class _TestQuestionCardState extends State<TestQuestionCard> {
   /// as read-only display containers.
   Widget _buildInputField(
     DesignConfig design,
+    AppLocalizations l10n,
     QuestionDto q,
     AnswerDto? answer,
     List<String> correctIds,
@@ -293,14 +294,14 @@ class _TestQuestionCardState extends State<TestQuestionCard> {
               border: Border.all(color: design.colors.border),
             ),
             child: Text(
-              userValue.isEmpty ? '(No answer given)' : userValue,
+              userValue.isEmpty ? l10n.noAnswerGiven : userValue,
               style: TextStyle(color: design.colors.textPrimary, fontSize: 18),
             ),
           ),
           if (correctValues.isNotEmpty) ...[
             SizedBox(height: design.spacing.sm),
             Text(
-              'Correct Answer:',
+              l10n.correctAnswerLabel,
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -332,6 +333,7 @@ class _TestQuestionCardState extends State<TestQuestionCard> {
       label: '',
       hintText: 'YOUR ANSWER',
       controller: _textController,
+      maxLines: q.type == 'essay' ? null : 1,
       keyboardType: q.type == 'numerical'
           ? const TextInputType.numberWithOptions(decimal: true, signed: true)
           : q.type == 'essay'

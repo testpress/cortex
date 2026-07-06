@@ -23,31 +23,18 @@ class SyncManager {
       if (results.contains(ConnectivityResult.mobile) ||
           results.contains(ConnectivityResult.wifi) ||
           results.contains(ConnectivityResult.ethernet)) {
-        debugPrint(
-          "[OfflineDebug] Network regained (mobile/wifi/ethernet detected).",
-        );
-        debugPrint(
-          "[OfflineDebug] Scheduling background Workmanager fallback...",
-        );
-
         // We regained connection, schedule a one-off sync task.
         // Workmanager handles ensuring this runs even if the app closes shortly after.
         OfflineExamSyncWorker.scheduleSync();
 
         // Immediate foreground sync attempt
         try {
-          debugPrint(
-            "[OfflineDebug] Triggering immediate foreground offline sync...",
-          );
           final syncService = await _ref.read(
             offlineExamSyncServiceProvider.future,
           );
           await syncService.syncPendingExams();
-          debugPrint(
-            "[OfflineDebug] Immediate foreground sync execution triggered successfully.",
-          );
         } catch (e) {
-          debugPrint("[OfflineDebug] Foreground sync attempt failed: $e");
+          debugPrint("Foreground sync attempt failed: $e");
         }
       }
     });

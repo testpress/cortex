@@ -1023,5 +1023,8 @@
   "pendingSyncConnectToUpload": "Pending Sync. Connect to internet to upload answers.",
   "resumeOfflineExam": "Resume offline exam",
   "startOfflineExam": "Start offline exam",
-  "downloadExamOffline": "Download Exam (Offline)"
+  "downloadExamOffline": "Download Exam (Offline)",
+  "testSavedLocallyOffline": "Test saved locally. Results will be available once synced.",
+  "noAnswerGiven": "(No answer given)",
+  "correctAnswerLabel": "Correct Answer:"
 }

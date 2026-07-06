@@ -25,15 +25,20 @@ void callbackDispatcher() {
         );
 
         final db = AppDatabase();
-        final api = HttpDataSource(dio: dio);
-        final service = OfflineExamSyncService(db, api);
+        try {
+          final api = HttpDataSource(dio: dio);
+          final service = OfflineExamSyncService(db, api);
 
-        await service.syncPendingExams();
-        debugPrint("Background sync completed successfully.");
+          await service.syncPendingExams();
+          debugPrint("Background sync completed successfully.");
+        } finally {
+          await db.close();
+        }
       } catch (err) {
         debugPrint("Background sync failed: $err");
         return Future.value(false); // Retries based on workmanager config
       }
+      return Future.value(true);
     }
     return Future.value(true);
   });

@@ -2179,4 +2179,14 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get downloadExamOffline => 'தேர்வைப் பதிவிறக்கு (ஆஃப்லைன்)';
+
+  @override
+  String get testSavedLocallyOffline =>
+      'தேர்வு லோக்கலாக சேமிக்கப்பட்டது. ஒத்திசைக்கப்பட்டதும் முடிவுகள் கிடைக்கும்.';
+
+  @override
+  String get noAnswerGiven => '(பதில் அளிக்கப்படவில்லை)';
+
+  @override
+  String get correctAnswerLabel => 'சரியான பதில்:';
 }

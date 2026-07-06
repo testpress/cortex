@@ -2151,4 +2151,14 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get downloadExamOffline => 'تنزيل الامتحان (للاستخدام غير المتصل)';
+
+  @override
+  String get testSavedLocallyOffline =>
+      'تم حفظ الاختبار محليًا. ستكون النتائج متاحة بمجرد المزامنة.';
+
+  @override
+  String get noAnswerGiven => '(لم يتم تقديم إجابة)';
+
+  @override
+  String get correctAnswerLabel => 'الإجابة الصحيحة:';
 }

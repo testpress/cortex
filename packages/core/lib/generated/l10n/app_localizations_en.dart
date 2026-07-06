@@ -2145,4 +2145,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get downloadExamOffline => 'Download Exam (Offline)';
+
+  @override
+  String get testSavedLocallyOffline =>
+      'Test saved locally. Results will be available once synced.';
+
+  @override
+  String get noAnswerGiven => '(No answer given)';
+
+  @override
+  String get correctAnswerLabel => 'Correct Answer:';
 }

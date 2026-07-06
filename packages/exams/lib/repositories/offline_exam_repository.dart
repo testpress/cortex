@@ -132,7 +132,8 @@ class OfflineExamRepository implements ExamRepository {
     List<QuestionDto> questions,
   ) async {
     final updated = <QuestionDto>[];
-    for (final q in questions) {
+
+    Future<QuestionDto> processQuestion(QuestionDto q) async {
       String modifiedHtml = q.text; // Text contains the HTML for questions
       final urls = HtmlAssetExtractor.extractImageUrls(modifiedHtml);
       for (final url in urls) {
@@ -166,8 +167,11 @@ class OfflineExamRepository implements ExamRepository {
         modifiedOptions.add(opt.copyWith(text: optHtml));
       }
 
-      updated.add(q.copyWith(text: modifiedHtml, options: modifiedOptions));
+      return q.copyWith(text: modifiedHtml, options: modifiedOptions);
     }
+
+    final futures = questions.map(processQuestion);
+    updated.addAll(await Future.wait(futures));
     return updated;
   }
 
@@ -286,7 +290,11 @@ class OfflineExamRepository implements ExamRepository {
         downloadId: row.id,
         questionId: questionId,
         selectedChoices: drift.Value(selectedChoices),
-        shortAnswer: drift.Value(answer.shortText),
+        shortAnswer: drift.Value(
+          (answer.essayText?.isNotEmpty ?? false)
+              ? answer.essayText
+              : answer.shortText,
+        ),
         review: drift.Value(answer.review),
         savedAt: DateTime.now(),
       ),

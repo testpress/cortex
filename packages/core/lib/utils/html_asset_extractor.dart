@@ -10,6 +10,7 @@ class HtmlAssetExtractor {
     // Matches <img ... src="url" ...> or JSON-escaped <img ... src=\"url\" ...>
     final imgRegExp = RegExp(
       r'<img[^>]+src=\\?["\u0027]([^\\"\u0027]+)\\?["\u0027]',
+      caseSensitive: false,
     );
     final matches = imgRegExp.allMatches(htmlContent);
 

@@ -20,28 +20,10 @@ class OfflineExamSyncService {
   /// Background sync executor. Iterates pending exams, constructs payloads,
   /// pushes to backend, and marks them as synced by deleting them.
   Future<void> syncPendingExams() async {
-    debugPrint(
-      '[OfflineDebug] Fetching pending offline exams from local DB...',
-    );
     final pendingDownloads = await _db.getPendingSyncDownloads();
-    debugPrint(
-      '[OfflineDebug] Found ${pendingDownloads.length} pending offline exams to sync.',
-    );
-
     for (final download in pendingDownloads) {
       try {
-        debugPrint(
-          '[OfflineDebug] Processing offline download ID: ${download.id} for Exam ID: ${download.examId}',
-        );
-
-        // Build specific payload and push offline answers
-        debugPrint(
-          '[OfflineDebug] Fetching local answers for download ID: ${download.id}...',
-        );
         final items = await _db.getAnswersForDownload(download.id);
-        debugPrint(
-          '[OfflineDebug] Found ${items.length} answers to sync for download ID: ${download.id}.',
-        );
 
         final List<Map<String, dynamic>> offlineAnswers = [];
 
@@ -50,8 +32,10 @@ class OfflineExamSyncService {
           if (item.selectedChoices != null &&
               item.selectedChoices!.isNotEmpty) {
             try {
-              selectedOptions =
-                  jsonDecode(item.selectedChoices!) as List<dynamic>;
+              final decoded = jsonDecode(item.selectedChoices!);
+              if (decoded is List) {
+                selectedOptions = decoded;
+              }
             } catch (e) {
               // Ignore failure
             }
@@ -77,27 +61,12 @@ class OfflineExamSyncService {
           "offline_answers": offlineAnswers,
         };
 
-        // Submit to bulk celery endpoint
-        debugPrint(
-          '[OfflineDebug] Submitting ${offlineAnswers.length} answers to backend for exam ${download.examId}...',
-        );
         await _api.submitOfflineExamAnswers(download.examId, payload);
-        debugPrint(
-          '[OfflineDebug] Successfully submitted answers to backend for exam ${download.examId}!',
-        );
 
         // Mark as successfully synced in local DB by deleting the download and answers
-        debugPrint(
-          '[OfflineDebug] Deleting synced download ID: ${download.id} from local database...',
-        );
         await _db.deleteDownload(download.id);
-        debugPrint(
-          '[OfflineDebug] Sync cycle complete for download ID: ${download.id}',
-        );
       } catch (e) {
-        debugPrint(
-          "[OfflineDebug] Sync failed for offline exam ${download.id}: $e",
-        );
+        debugPrint("Sync failed for offline exam ${download.id}: $e");
         // Failed to sync this download, it will remain in queue and retry next time
       }
     }

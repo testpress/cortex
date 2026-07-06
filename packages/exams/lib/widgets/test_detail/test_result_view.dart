@@ -80,7 +80,7 @@ class TestResultView extends StatelessWidget {
                 SizedBox(height: design.spacing.md),
                 AppText.body(
                   isOffline
-                      ? 'Test saved locally. Results will be available once synced.'
+                      ? l10n.testSavedLocallyOffline
                       : (score != null
                             ? l10n.testScoreResult(score!)
                             : l10n.testSubmittedBody),

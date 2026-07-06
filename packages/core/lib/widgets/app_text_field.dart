@@ -24,6 +24,7 @@ class AppTextField extends StatelessWidget {
     this.textStyle,
     this.autofillHints,
     this.prefixIcon,
+    this.maxLines = 1,
   });
 
   final String label;
@@ -42,6 +43,7 @@ class AppTextField extends StatelessWidget {
   final TextStyle? textStyle;
   final Iterable<String>? autofillHints;
   final IconData? prefixIcon;
+  final int? maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +79,7 @@ class AppTextField extends StatelessWidget {
               textInputAction: textInputAction,
               onSubmitted: onSubmitted,
               autofillHints: autofillHints,
+              maxLines: maxLines,
               style: (textStyle ?? design.typography.body).copyWith(
                 color: readOnly
                     ? design.colors.textSecondary

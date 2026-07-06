@@ -2189,4 +2189,14 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get downloadExamOffline => 'പരീക്ഷ ഡൗൺലോഡ് ചെയ്യുക (ഓഫ്‌ലൈൻ)';
+
+  @override
+  String get testSavedLocallyOffline =>
+      'പരീക്ഷ ലോക്കലായി സേവ് ചെയ്തു. സിങ്ക് ചെയ്തുകഴിഞ്ഞാൽ ഫലങ്ങൾ ലഭ്യമാകും.';
+
+  @override
+  String get noAnswerGiven => '(ഉത്തരം നൽകിയിട്ടില്ല)';
+
+  @override
+  String get correctAnswerLabel => 'ശരിയായ ഉത്തരം:';
 }
