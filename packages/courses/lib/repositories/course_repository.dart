@@ -124,10 +124,16 @@ class CourseRepository {
       } else {
         // Search result fallback: Fetch from network but DON'T persist
         // to avoid cluttering the user's course list.
+        if (!_activeDetailSyncs.containsKey(courseId)) {
+          _activeDetailSyncs[courseId] = _source.getCourseDetail(courseId);
+        }
         try {
-          course = await _source.getCourseDetail(courseId);
-        } catch (_) {
-          return null; // Both local and remote failed
+          final fetchedCourse = await _activeDetailSyncs[courseId]!;
+          if (fetchedCourse == null) return null;
+          course = fetchedCourse;
+        } catch (e) {
+          _activeDetailSyncs.remove(courseId);
+          rethrow;
         }
       }
 

@@ -170,28 +170,33 @@ class GlobalForumFeed extends _$GlobalForumFeed {
 
     state = AsyncData(currentState.copyWith(isLoadingMore: true));
 
-    final repo = await ref.read(forumRepositoryProvider.future);
-    final response = await repo.fetchThreads(
-      page: currentState.nextPage!,
-      categoryId: categoryId,
-      searchQuery: searchQuery,
-    );
+    try {
+      final repo = await ref.read(forumRepositoryProvider.future);
+      final response = await repo.fetchThreads(
+        page: currentState.nextPage!,
+        categoryId: categoryId,
+        searchQuery: searchQuery,
+      );
 
-    final existingIds = currentState.items.map((t) => t.threadId).toSet();
-    final newItems = response.results
-        .where((t) => !existingIds.contains(t.threadId))
-        .toList();
+      final existingIds = currentState.items.map((t) => t.threadId).toSet();
+      final newItems = response.results
+          .where((t) => !existingIds.contains(t.threadId))
+          .toList();
 
-    final nextPage = _extractPageNumber(response.next);
-    state = AsyncData(
-      GlobalForumFeedState(
-        items: [...currentState.items, ...newItems],
-        nextPage: nextPage,
-        hasMore: nextPage != null,
-        isInitialLoading: false,
-        isLoadingMore: false,
-      ),
-    );
+      final nextPage = _extractPageNumber(response.next);
+      state = AsyncData(
+        GlobalForumFeedState(
+          items: [...currentState.items, ...newItems],
+          nextPage: nextPage,
+          hasMore: nextPage != null,
+          isInitialLoading: false,
+          isLoadingMore: false,
+        ),
+      );
+    } catch (e) {
+      state = AsyncData(currentState.copyWith(isLoadingMore: false));
+      rethrow;
+    }
   }
 
   int? _extractPageNumber(String? nextUrl) {

@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
 import 'package:profile/profile.dart';
+import 'dart:developer' as dev;
 
 part 'initialization_provider.g.dart';
 
@@ -28,9 +29,9 @@ Future<void> appInitialization(AppInitializationRef ref) async {
     // This allows the Resume Card to find the most recent lesson in the fully-populated DB.
     final user = await userRepo.refreshProfile();
     await userProgressRepo.refreshProgress(user.id);
-  } catch (e) {
-    // Initialization errors are handled here or surfaced to the listener
-    // We don't rethrow here to allow the app to start even if profile/progress refresh fails.
+  } catch (e, stack) {
+    dev.log('App initialization failed', error: e, stackTrace: stack);
+    rethrow;
   }
 }
 
