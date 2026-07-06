@@ -123,9 +123,12 @@ class ForumThreadDto {
           _asInt(json['reply_count']) ?? _asInt(json['comments_count']) ?? 0,
       upvotes: _asInt(json['upvotes']) ?? 0,
       downvotes: _asInt(json['downvotes']) ?? 0,
-      status: json['status'] == 'answered' || hasAnswer
-          ? ForumThreadStatus.answered
-          : ForumThreadStatus.unanswered,
+      status: ForumThreadStatus.values.firstWhere(
+        (s) => s.name == json['status'],
+        orElse: () => hasAnswer
+            ? ForumThreadStatus.answered
+            : ForumThreadStatus.unanswered,
+      ),
       imageUrl: _asString(json['image_url']),
     );
   }
