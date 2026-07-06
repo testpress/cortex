@@ -7,6 +7,7 @@ class ReviewRoutePayload {
     required this.attemptStates,
     this.attempt,
     this.exam,
+    this.chapterContentId,
   });
 
   final String assessmentTitle;
@@ -14,4 +15,5 @@ class ReviewRoutePayload {
   final Map<String, AnswerDto> attemptStates;
   final AttemptDto? attempt;
   final ExamDto? exam;
+  final int? chapterContentId;
 }

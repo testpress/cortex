@@ -18,6 +18,7 @@ class ReviewAnalyticsScreen extends ConsumerWidget {
     required this.attemptStates,
     this.attempt,
     this.exam,
+    this.chapterContentId,
     required this.onBack,
   });
 
@@ -27,6 +28,7 @@ class ReviewAnalyticsScreen extends ConsumerWidget {
   final Map<String, AnswerDto> attemptStates;
   final AttemptDto? attempt;
   final ExamDto? exam;
+  final int? chapterContentId;
   final VoidCallback onBack;
 
   @override
@@ -102,6 +104,7 @@ class ReviewAnalyticsScreen extends ConsumerWidget {
                         attemptStates: attemptStates,
                         attempt: attempt,
                         exam: exam,
+                        chapterContentId: chapterContentId,
                       ),
                     );
                   },
@@ -122,6 +125,7 @@ class ReviewAnalyticsScreen extends ConsumerWidget {
                         attemptStates: attemptStates,
                         attempt: attempt,
                         exam: exam,
+                        chapterContentId: chapterContentId,
                       ),
                     );
                   },

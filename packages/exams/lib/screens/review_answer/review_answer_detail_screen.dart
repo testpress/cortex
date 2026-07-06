@@ -18,6 +18,7 @@ class ReviewAnswerDetailScreen extends ConsumerStatefulWidget {
   final List<QuestionDto> questions;
   final Map<String, AnswerDto> attemptStates;
   final AttemptDto? attempt;
+  final int? chapterContentId;
   final VoidCallback onBack;
   final int initialQuestionIndex;
 
@@ -27,6 +28,7 @@ class ReviewAnswerDetailScreen extends ConsumerStatefulWidget {
     required this.questions,
     required this.attemptStates,
     this.attempt,
+    this.chapterContentId,
     required this.onBack,
     this.initialQuestionIndex = 0,
   });
@@ -206,9 +208,9 @@ class _ReviewAnswerDetailScreenState
                     ReviewFooterActions(
                       l10n: l10n,
                       onAskDoubt: () => context.push(
-                        '/home/discussions/doubts/ask?question_id=${Uri.encodeComponent(currentQuestion.id)}',
+                        '/home/discussions/doubts/ask?question_id=${Uri.encodeComponent(currentQuestion.id)}${widget.chapterContentId != null ? '&chapterContentId=${widget.chapterContentId}' : ''}',
                         extra: {
-                          'questionText': currentQuestion.text.stripHtml(),
+                          'questionText': currentQuestion.text,
                           'assessmentTitle': widget.assessmentTitle,
                         },
                       ),

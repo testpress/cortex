@@ -307,6 +307,9 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                                   exam?.title ?? lesson?.title ?? '',
                               questions: const [],
                               attemptStates: const {},
+                              chapterContentId: widget.lesson != null
+                                  ? int.tryParse(widget.lesson!.id)
+                                  : null,
                             );
                             context.push(
                               '${GoRouterState.of(context).matchedLocation}/review-analytics',

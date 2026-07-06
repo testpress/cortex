@@ -12,6 +12,7 @@ class LessonRouter {
     BuildContext context, {
     required String id,
     required dynamic type,
+    dynamic extra,
   }) {
     final typeStr = type is Enum
         ? type.name.toLowerCase()
@@ -30,7 +31,7 @@ class LessonRouter {
     };
 
     if (routeName != null) {
-      context.pushNamed(routeName, pathParameters: {'id': id});
+      context.pushNamed(routeName, pathParameters: {'id': id}, extra: extra);
     }
   }
 }

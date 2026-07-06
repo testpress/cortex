@@ -289,6 +289,7 @@ class ExamsRoutes {
                   payload?.attemptStates ?? const <String, AnswerDto>{},
               attempt: payload?.attempt,
               exam: payload?.exam,
+              chapterContentId: payload?.chapterContentId,
               onBack: () => context.pop(),
             );
           },
@@ -324,6 +325,7 @@ class ExamsRoutes {
               attemptStates:
                   payload?.attemptStates ?? const <String, AnswerDto>{},
               attempt: payload?.attempt,
+              chapterContentId: payload?.chapterContentId,
               onBack: () => context.pop(),
             );
           },

@@ -524,7 +524,8 @@ class _LessonContextBadgeState extends ConsumerState<_LessonContextBadge> {
           child: DoubtContextBadge(
             icon: LucideIcons.bookOpen,
             text: data.lessonTitle,
-            breadcrumbs: [data.courseTitle, data.chapterTitle],
+            courseName: data.courseTitle,
+            chapterName: data.chapterTitle,
           ),
         );
       },

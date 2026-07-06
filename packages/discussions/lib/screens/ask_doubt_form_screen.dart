@@ -26,9 +26,8 @@ class AskDoubtFormScreen extends ConsumerStatefulWidget {
     this.questionText,
     this.assessmentTitle,
   }) : assert(
-         (chapterContentId == null && lessonTitle == null) ||
-             questionId == null,
-         'Cannot provide both lesson context and questionId',
+         lessonTitle == null || questionId == null,
+         'Cannot provide both lessonTitle and questionId',
        );
 
   @override
@@ -191,11 +190,10 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                       ? widget.questionText!
                       : 'Question ID: ${widget.questionId}')
                 : data?.lessonTitle ?? widget.lessonTitle ?? 'Lesson Details',
-            breadcrumbs: data != null
-                ? [data.courseTitle, data.chapterTitle]
-                : (isQuestion && widget.assessmentTitle != null
-                      ? [widget.assessmentTitle!]
-                      : null),
+            courseName: data?.courseTitle,
+            chapterName: data != null
+                ? data.chapterTitle
+                : (isQuestion ? widget.assessmentTitle : null),
           );
         },
       );
@@ -208,9 +206,8 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                 ? widget.questionText!
                 : 'Question ID: ${widget.questionId}')
           : widget.lessonTitle ?? 'Lesson Details',
-      breadcrumbs: isQuestion && widget.assessmentTitle != null
-          ? [widget.assessmentTitle!]
-          : null,
+      courseName: null,
+      chapterName: isQuestion ? widget.assessmentTitle : null,
     );
   }
 

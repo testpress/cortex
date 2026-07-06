@@ -10,8 +10,10 @@ When a user navigates from an exam review to the Ask Doubt form, a context box d
 - Completely rewrite HTML stripping to use a DOM parser.
 
 ## Decisions
-- **Decision 1: Update Breadcrumb Widget to use a List of Strings**
-  - *Rationale:* Instead of rigid `courseName` and `chapterName` fields, a `List<String> breadcrumbs` makes the component fully generic and supports varying hierarchy depths (e.g. single exam title).
+- **Decision 1: Full Hierarchical Breadcrumbs for Exams**
+  - *Rationale:* Passing `chapterContentId` down the router stack allows the Ask Doubt screen to fetch the `Course Name` and `Chapter Name`, appending the `Exam Title` to show a full 3-level hierarchy instead of just the exam title.
+- **Decision 2: Update Breadcrumb Widget to use a List of Strings**
+  - *Rationale:* Instead of rigid `courseName` and `chapterName` fields, a `List<String> breadcrumbs` makes the component fully generic and supports varying hierarchy depths.
 
 ## Risks / Trade-offs
 - None

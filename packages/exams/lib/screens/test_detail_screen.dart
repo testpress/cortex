@@ -889,6 +889,9 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
         attemptStates: state.answers,
         attempt: state.attempt,
         exam: state.exam,
+        chapterContentId: widget.lesson != null
+            ? int.tryParse(widget.lesson!.id)
+            : null,
       ),
     );
   }

@@ -4,26 +4,29 @@ import 'package:core/core.dart';
 class DoubtContextBadge extends StatelessWidget {
   final IconData icon;
   final String text;
-  final List<String>? breadcrumbs;
+  final String? courseName;
+  final String? chapterName;
 
   const DoubtContextBadge({
     super.key,
     required this.icon,
     required this.text,
-    this.breadcrumbs,
+    this.courseName,
+    this.chapterName,
   });
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final crumbs = (breadcrumbs ?? []).where((s) => s.isNotEmpty).toList();
-    final hasHierarchy = crumbs.isNotEmpty;
+    final course = courseName ?? '';
+    final chapter = chapterName ?? '';
+    final hasHierarchy = course.isNotEmpty || chapter.isNotEmpty;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (hasHierarchy) ...[
-          _BreadcrumbHeader(breadcrumbs: crumbs),
+          _BreadcrumbHeader(courseName: course, chapterName: chapter),
           SizedBox(height: design.spacing.sm),
         ],
         _ContextPill(icon: icon, text: text),
@@ -33,41 +36,58 @@ class DoubtContextBadge extends StatelessWidget {
 }
 
 class _BreadcrumbHeader extends StatelessWidget {
-  final List<String> breadcrumbs;
+  final String courseName;
+  final String chapterName;
 
-  const _BreadcrumbHeader({required this.breadcrumbs});
+  const _BreadcrumbHeader({
+    required this.courseName,
+    required this.chapterName,
+  });
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    final semanticLabel = breadcrumbs.join(', ');
+    final semanticLabel = [
+      if (courseName.isNotEmpty) courseName,
+      if (chapterName.isNotEmpty) chapterName,
+    ].join(', ');
 
     return AppSemantics.container(
       label: semanticLabel,
       child: Row(
         children: [
-          for (int i = 0; i < breadcrumbs.length; i++) ...[
-            if (i > 0)
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: design.spacing.xs),
-                child: Icon(
-                  LucideIcons.chevronRight,
-                  size: design.iconSize.sm,
-                  color: design.colors.textTertiary,
-                ),
-              ),
+          if (courseName.isNotEmpty)
             Flexible(
               flex: 1,
               fit: FlexFit.loose,
               child: AppText.labelBold(
-                breadcrumbs[i],
+                courseName,
                 color: design.colors.textPrimary,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-          ],
+          if (courseName.isNotEmpty && chapterName.isNotEmpty)
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: design.spacing.xs),
+              child: Icon(
+                LucideIcons.chevronRight,
+                size: design.iconSize.sm,
+                color: design.colors.textTertiary,
+              ),
+            ),
+          if (chapterName.isNotEmpty)
+            Flexible(
+              flex: 1,
+              fit: FlexFit.loose,
+              child: AppText.labelBold(
+                chapterName,
+                color: design.colors.textPrimary,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
         ],
       ),
     );
@@ -99,11 +119,13 @@ class _ContextPill extends StatelessWidget {
           Icon(icon, size: design.iconSize.md, color: design.colors.accent2),
           SizedBox(width: design.spacing.sm),
           Expanded(
-            child: AppText.bodySmall(
-              text,
-              color: design.colors.accent2,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            child: AppSemantics.container(
+              label: text,
+              child: AppHtmlV2(
+                data: text,
+                textColor: design.colors.accent2,
+                fontSize: 12,
+              ),
             ),
           ),
         ],

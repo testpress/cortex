@@ -132,24 +132,44 @@ class StudyRoutes {
           builder: (context, state) {
             final id = state.pathParameters['id']!;
             final extra = state.extra;
-            final lesson = extra is LessonDto
+            final initialLesson = extra is LessonDto
                 ? extra
                 : (extra is Lesson ? extra.toDto() : null);
-            return ExamPrescreen(
-              testId: id,
-              lesson: lesson,
-              onClose: () => context.pop(),
-              onStartAttempt:
-                  (
-                    isQuizMode, {
-                    bool isPartial = false,
-                    bool isOffline = false,
-                  }) async {
-                    context.pushReplacement(
-                      '/study/test/$id/player?isQuizMode=$isQuizMode&isPartial=$isPartial&isOffline=$isOffline',
-                      extra: lesson,
-                    );
-                  },
+            Widget buildPrescreen(LessonDto? lessonToUse) {
+              return ExamPrescreen(
+                testId: id,
+                lesson: lessonToUse,
+                onClose: () => context.pop(),
+                onStartAttempt:
+                    (
+                      isQuizMode, {
+                      bool isPartial = false,
+                      bool isOffline = false,
+                    }) async {
+                      context.pushReplacement(
+                        '/study/test/$id/player?isQuizMode=$isQuizMode&isPartial=$isPartial&isOffline=$isOffline',
+                        extra: lessonToUse,
+                      );
+                    },
+              );
+            }
+
+            if (initialLesson != null) {
+              return buildPrescreen(initialLesson);
+            }
+
+            return Consumer(
+              builder: (context, ref, child) {
+                final lessonAsync = ref.watch(lessonDetailProvider(id));
+                return lessonAsync.when(
+                  data: (lesson) => buildPrescreen(lesson?.toDto()),
+                  loading: () => Container(
+                    color: Design.of(context).colors.surface,
+                    child: const Center(child: AppLoadingIndicator()),
+                  ),
+                  error: (error, stack) => buildPrescreen(null),
+                );
+              },
             );
           },
           routes: [
@@ -159,7 +179,7 @@ class StudyRoutes {
               builder: (context, state) {
                 final id = state.pathParameters['id']!;
                 final extra = state.extra;
-                final lesson = extra is LessonDto
+                final initialLesson = extra is LessonDto
                     ? extra
                     : (extra is Lesson ? extra.toDto() : null);
                 final isQuizMode =
@@ -168,13 +188,34 @@ class StudyRoutes {
                     state.uri.queryParameters['isPartial'] == 'true';
                 final isOffline =
                     state.uri.queryParameters['isOffline'] == 'true';
-                return TestDetailScreen(
-                  testId: id,
-                  lesson: lesson,
-                  isQuizMode: isQuizMode,
-                  isPartial: isPartial,
-                  isOfflineMode: isOffline,
-                  onClose: () => context.pop(),
+
+                Widget buildPlayer(LessonDto? lessonToUse) {
+                  return TestDetailScreen(
+                    testId: id,
+                    lesson: lessonToUse,
+                    isQuizMode: isQuizMode,
+                    isPartial: isPartial,
+                    isOfflineMode: isOffline,
+                    onClose: () => context.pop(),
+                  );
+                }
+
+                if (initialLesson != null) {
+                  return buildPlayer(initialLesson);
+                }
+
+                return Consumer(
+                  builder: (context, ref, child) {
+                    final lessonAsync = ref.watch(lessonDetailProvider(id));
+                    return lessonAsync.when(
+                      data: (lesson) => buildPlayer(lesson?.toDto()),
+                      loading: () => Container(
+                        color: Design.of(context).colors.surface,
+                        child: const Center(child: AppLoadingIndicator()),
+                      ),
+                      error: (error, stack) => buildPlayer(null),
+                    );
+                  },
                 );
               },
             ),
@@ -192,6 +233,7 @@ class StudyRoutes {
                       payload?.attemptStates ?? const <String, AnswerDto>{},
                   attempt: payload?.attempt,
                   exam: payload?.exam,
+                  chapterContentId: payload?.chapterContentId,
                   onBack: () => context.pop(),
                 );
               },
@@ -228,6 +270,7 @@ class StudyRoutes {
                   attemptStates:
                       payload?.attemptStates ?? const <String, AnswerDto>{},
                   attempt: payload?.attempt,
+                  chapterContentId: payload?.chapterContentId,
                   onBack: () => context.pop(),
                 );
               },
