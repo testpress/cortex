@@ -133,9 +133,10 @@ class ForumRepository {
     replyCount: row.replyCount,
     upvotes: row.upvotes,
     downvotes: row.downvotes,
-    status: row.status == 'answered'
-        ? ForumThreadStatus.answered
-        : ForumThreadStatus.unanswered,
+    status: ForumThreadStatus.values.firstWhere(
+      (s) => s.name == row.status,
+      orElse: () => ForumThreadStatus.unanswered,
+    ),
     imageUrl: row.imageUrl,
     contentHtml: row.contentHtml,
   );

@@ -57,7 +57,14 @@ Future<void> settingsInitialization(SettingsInitializationRef ref) async {
       final fresh = await settingsRepo.refreshSettings();
       ref.read(instituteSettingsProvider.notifier).state = fresh;
     }
-  } catch (e) {
+  } catch (e, stack) {
     // Fail silently if unable to fetch settings, the app will use defaults
+    // BUT rethrow if we don't even have cached settings (first launch offline)
+    dev.log('Settings initialization failed', error: e, stackTrace: stack);
+    final settingsRepo = ref.read(instituteSettingsRepositoryProvider);
+    final cached = await settingsRepo.loadSettings();
+    if (cached == null) {
+      rethrow;
+    }
   }
 }

@@ -281,6 +281,7 @@ class OfflineExamRepository implements ExamRepository {
 
   @override
   Future<void> submitAnswer(String questionId, AnswerDto answer) async {
+    if (_currentState.status != ExamAttemptStatus.inProgress) return;
     final updatedAnswers = Map<String, AnswerDto>.from(_currentState.answers);
     updatedAnswers[questionId] = answer;
     _emit(_currentState.copyWith(answers: updatedAnswers));
