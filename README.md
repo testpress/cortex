@@ -12,7 +12,7 @@ cortex/
     ├── core/              # Design system primitives & cross-cutting configs
     ├── courses/           # Courses SDK module (includes Explore & Info)
     ├── exams/             # Exams SDK module
-    ├── forum/             # Community & discussion module
+    ├── discussions/             # Community & discussion module
     ├── profile/           # User profile & identity module
     └── testpress/         # PUBLIC SDK aggregator
 ```
