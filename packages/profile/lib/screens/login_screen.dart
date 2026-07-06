@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:core/legacy_icons.dart' as legacy;
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -260,7 +259,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       buttons.add(
         buildButton(
           'Continue with Google',
-          const Icon(legacy.LucideIcons.chrome),
+          const FaIcon(FontAwesomeIcons.google),
           () => context.go('/home'),
           buttons.isEmpty,
         ),
