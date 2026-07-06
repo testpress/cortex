@@ -41,6 +41,11 @@ class OfflineExamRepository implements ExamRepository {
     yield* _stateController.stream;
   }
 
+  /// Exposes the download status stream for the current content ID.
+  Stream<OfflineExamDownloadsTableData?> watchDownloadStatus() {
+    return _db.watchDownloadByContentId(_contentId);
+  }
+
   @override
   ExamAttemptState get state => _currentState;
 

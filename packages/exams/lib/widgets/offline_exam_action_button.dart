@@ -53,28 +53,25 @@ class _OfflineExamActionButtonState
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final dbFuture = ref.watch(appDatabaseProvider.future);
+    final repoAsync = ref.watch(
+      offlineExamRepositoryFactoryProvider(widget.examId),
+    );
 
-    return FutureBuilder<AppDatabase>(
-      future: dbFuture,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return const SizedBox.shrink();
-
-        final db = snapshot.data!;
-
+    return repoAsync.when(
+      data: (repo) {
         return StreamBuilder<OfflineExamDownloadsTableData?>(
-          stream: db.watchDownloadByContentId(widget.examId),
+          stream: repo.watchDownloadStatus(),
           builder: (context, attemptSnapshot) {
             final download = attemptSnapshot.data;
 
             if (_isDownloading) {
               return Padding(
                 padding: EdgeInsets.only(bottom: design.spacing.md),
-                child: _buildButtonContainer(
-                  context,
-                  l10n.downloadingExam,
-                  null, // Disabled
-                  isPrimary: false,
+                child: AppButton.secondary(
+                  label: l10n.downloadingExam,
+                  fullWidth: true,
+                  loading: true,
+                  onPressed: null,
                 ),
               );
             }
@@ -130,17 +127,12 @@ class _OfflineExamActionButtonState
 
               return Padding(
                 padding: EdgeInsets.only(bottom: design.spacing.md),
-                child: AppSemantics.button(
+                child: AppButton.primary(
                   label: label,
-                  onTap: widget.onStartOfflineAttempt,
-                  child: _buildButtonContainer(
-                    context,
-                    label,
-                    widget.onStartOfflineAttempt,
-                    isPrimary: true,
-                    bgColorOverride:
-                        design.colors.accent4, // Green/Teal accent for offline
-                  ),
+                  onPressed: widget.onStartOfflineAttempt,
+                  fullWidth: true,
+                  backgroundColor:
+                      design.colors.accent4, // Green/Teal accent for offline
                 ),
               );
             }
@@ -149,74 +141,17 @@ class _OfflineExamActionButtonState
             final downloadLabel = l10n.downloadExamOffline;
             return Padding(
               padding: EdgeInsets.only(bottom: design.spacing.md),
-              child: AppSemantics.button(
+              child: AppButton.secondary(
                 label: downloadLabel,
-                onTap: _downloadExam,
-                child: _buildButtonContainer(
-                  context,
-                  downloadLabel,
-                  _downloadExam,
-                  isPrimary: false,
-                ),
+                onPressed: _downloadExam,
+                fullWidth: true,
               ),
             );
           },
         );
       },
-    );
-  }
-
-  Widget _buildButtonContainer(
-    BuildContext context,
-    String label,
-    VoidCallback? action, {
-    required bool isPrimary,
-    Color? bgColorOverride,
-  }) {
-    final design = Design.of(context);
-
-    final Color bgColor;
-    final Color textColor;
-    final Border? border;
-
-    if (action == null) {
-      bgColor = design.colors.border.withAlpha(128); // 0.5 opacity
-      textColor = design.colors.textSecondary;
-      border = null;
-    } else if (bgColorOverride != null) {
-      bgColor = bgColorOverride;
-      textColor =
-          design.colors.onPrimary; // Assumes accent colors have white text
-      border = null;
-    } else if (isPrimary) {
-      bgColor = design.colors.primary;
-      textColor = design.colors.onPrimary;
-      border = null;
-    } else {
-      bgColor = design.colors.surface;
-      textColor = design.colors.primary;
-      border = Border.all(color: design.colors.primary, width: 1.5);
-    }
-
-    return GestureDetector(
-      onTap: action,
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(design.spacing.md),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(design.radius.lg),
-          border: border,
-        ),
-        child: AppText.body(
-          label,
-          textAlign: TextAlign.center,
-          style: design.typography.body.copyWith(
-            color: textColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
+      loading: () => const SizedBox.shrink(),
+      error: (e, st) => const SizedBox.shrink(),
     );
   }
 

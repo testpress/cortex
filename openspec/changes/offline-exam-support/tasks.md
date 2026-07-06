@@ -22,8 +22,8 @@
 - [x] 3.2 Add `connectivity_plus` listener for aggressive foreground syncing
 - [x] 3.3 Implement `endDate` + grace period validation in the local sync queue
 - [x] 3.4 Build specific backend payload builder for pushing offline answers and files
-- [x] 3.5 Extract `buildOfflineDio()` factory in `offline_dio_factory.dart`.
-- [x] 3.6 Update `offline_exam_sync_worker.dart` to use `buildOfflineDio` and avoid recreating `AppDatabase`.
+- [x] 3.5 Use existing `DioFactory.createBackgroundDio()` directly instead of extracting a new factory.
+- [x] 3.6 Update `offline_exam_sync_worker.dart` to use background Dio and avoid recreating `AppDatabase`.
 - [x] 3.7 Update `SyncManager` to only schedule background sync on foreground sync failure.
 
 ## 4. Exam Engine & UI Updates

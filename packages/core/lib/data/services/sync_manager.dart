@@ -23,10 +23,6 @@ class SyncManager {
       if (results.contains(ConnectivityResult.mobile) ||
           results.contains(ConnectivityResult.wifi) ||
           results.contains(ConnectivityResult.ethernet)) {
-        // We regained connection, schedule a one-off sync task.
-        // Workmanager handles ensuring this runs even if the app closes shortly after.
-        OfflineExamSyncWorker.scheduleSync();
-
         // Immediate foreground sync attempt
         try {
           final syncService = await _ref.read(
@@ -35,6 +31,9 @@ class SyncManager {
           await syncService.syncPendingExams();
         } catch (e) {
           debugPrint("Foreground sync attempt failed: $e");
+          // If foreground sync fails, schedule a background task.
+          // Workmanager handles ensuring this runs even if the app closes shortly after.
+          OfflineExamSyncWorker.scheduleSync();
         }
       }
     });

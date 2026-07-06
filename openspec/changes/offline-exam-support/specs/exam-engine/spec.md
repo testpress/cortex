@@ -19,11 +19,11 @@ The system SHALL display a vertically stacked button above the primary online ac
 - **THEN** the button reads [Start offline exam].
 
 ### Requirement: Unified Exam Engine Architecture
-The system SHALL abstract exam state management into a unified `IExamManager` interface that handles state updates and interactions.
+The system SHALL abstract exam state management into a unified `ExamRepository` interface that handles state updates and interactions.
 
 #### Scenario: Running an offline exam
 - **WHEN** the UI requests to start, submit an answer, or switch a section
-- **THEN** it communicates identically with the `IExamManager`, which routes to an `OfflineExamManager` (SQLite-backed, no heartbeats) instead of an `OnlineExamManager` (API-backed, strict heartbeats) without the UI knowing the difference.
+- **THEN** it communicates identically with the `ExamRepository`, which routes to an `OfflineExamRepository` (SQLite-backed, no heartbeats) instead of an `OnlineExamRepository` (API-backed, strict heartbeats) without the UI knowing the difference.
 
 ### Requirement: Decoupled Exam Downloading
 The system SHALL NOT leak raw JSON parsing or dummy attempt creation logic into the UI widget.

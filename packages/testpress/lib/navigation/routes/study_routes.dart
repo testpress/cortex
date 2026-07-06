@@ -146,7 +146,7 @@ class StudyRoutes {
                     bool isOffline = false,
                   }) async {
                     context.pushReplacement(
-                      '/study/test/$id/player?isQuizMode=$isQuizMode&isPartial=$isPartial',
+                      '/study/test/$id/player?isQuizMode=$isQuizMode&isPartial=$isPartial&isOffline=$isOffline',
                       extra: lesson,
                     );
                   },
@@ -166,11 +166,14 @@ class StudyRoutes {
                     state.uri.queryParameters['isQuizMode'] == 'true';
                 final isPartial =
                     state.uri.queryParameters['isPartial'] == 'true';
+                final isOffline =
+                    state.uri.queryParameters['isOffline'] == 'true';
                 return TestDetailScreen(
                   testId: id,
                   lesson: lesson,
                   isQuizMode: isQuizMode,
                   isPartial: isPartial,
+                  isOfflineMode: isOffline,
                   onClose: () => context.pop(),
                 );
               },

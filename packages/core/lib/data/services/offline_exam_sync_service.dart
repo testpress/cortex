@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -67,7 +68,19 @@ class OfflineExamSyncService {
         await _db.deleteDownload(download.id);
       } catch (e) {
         debugPrint("Sync failed for offline exam ${download.id}: $e");
-        // Failed to sync this download, it will remain in queue and retry next time
+        if (e is DioException) {
+          final statusCode = e.response?.statusCode;
+          // Permanent failure handling: 4xx errors (except 401 Auth, 408 Timeout, 429 Rate Limit)
+          if (statusCode != null && statusCode >= 400 && statusCode < 500) {
+            if (statusCode != 401 && statusCode != 408 && statusCode != 429) {
+              debugPrint(
+                "Permanent failure ($statusCode). Dropping sync for exam ${download.id}.",
+              );
+              await _db.deleteDownload(download.id);
+            }
+          }
+        }
+        // Other failures (like 5xx, or network issues) will remain in queue and retry next time
       }
     }
   }
