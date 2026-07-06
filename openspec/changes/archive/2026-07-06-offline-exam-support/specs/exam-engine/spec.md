@@ -27,5 +27,7 @@ The system SHALL abstract exam state management into a unified `ExamRepository` 
 
 ### Requirement: Decoupled Exam Downloading
 The system SHALL NOT leak raw JSON parsing or dummy attempt creation logic into the UI widget.
+
+#### Scenario: Downloading an exam
 - **WHEN** the user clicks [Download Exam]
 - **THEN** the UI simply invokes `downloadService.downloadExam(exam)`, and the service handles backend requests, data formatting, and caching securely.
