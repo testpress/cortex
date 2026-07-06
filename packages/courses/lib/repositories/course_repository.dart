@@ -99,6 +99,8 @@ class CourseRepository {
 
   /// Live stream of a specific course with its chapters.
   Stream<CourseDto?> watchCourse(String courseId) async* {
+    CourseDto? localStreamCache;
+
     // Combine course and chapter streams by reacting to both table changes
     final combinedWatcher = StreamGroup.merge([
       Stream.value(null), // Initial trigger
@@ -124,16 +126,23 @@ class CourseRepository {
       } else {
         // Search result fallback: Fetch from network but DON'T persist
         // to avoid cluttering the user's course list.
-        if (!_activeDetailSyncs.containsKey(courseId)) {
-          _activeDetailSyncs[courseId] = _source.getCourseDetail(courseId);
-        }
-        try {
-          final fetchedCourse = await _activeDetailSyncs[courseId]!;
-          if (fetchedCourse == null) return null;
-          course = fetchedCourse;
-        } catch (e) {
-          _activeDetailSyncs.remove(courseId);
-          rethrow;
+        if (localStreamCache != null) {
+          course = localStreamCache!;
+        } else {
+          if (!_activeDetailSyncs.containsKey(courseId)) {
+            _activeDetailSyncs[courseId] =
+                _source.getCourseDetail(courseId).whenComplete(() {
+              _activeDetailSyncs.remove(courseId);
+            });
+          }
+          try {
+            final fetchedCourse = await _activeDetailSyncs[courseId]!;
+            if (fetchedCourse == null) return null;
+            course = fetchedCourse;
+            localStreamCache = course; // Cache for the lifetime of this stream
+          } catch (e) {
+            rethrow;
+          }
         }
       }
 

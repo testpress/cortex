@@ -31,7 +31,12 @@ Future<void> appInitialization(AppInitializationRef ref) async {
     await userProgressRepo.refreshProgress(user.id);
   } catch (e, stack) {
     dev.log('App initialization failed', error: e, stackTrace: stack);
-    rethrow;
+
+    // Support offline mode: only rethrow if this is a first launch (no cached data).
+    final cachedProfile = await userRepo.getCurrentProfile();
+    if (cachedProfile == null) {
+      rethrow;
+    }
   }
 }
 
