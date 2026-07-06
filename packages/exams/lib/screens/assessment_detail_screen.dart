@@ -147,12 +147,7 @@ class _AssessmentDetailScreenState
     if (_assessmentComplete) return _buildResultView(design, context);
 
     if (_questions.isEmpty) {
-      return Container(
-        color: design.colors.surface,
-        child: Center(
-          child: Text(l10n.noQuestionsFound, style: design.typography.body),
-        ),
-      );
+      return AppErrorView(message: l10n.noQuestionsFound);
     }
 
     final q = _questions[_currentQuestionIndex];
