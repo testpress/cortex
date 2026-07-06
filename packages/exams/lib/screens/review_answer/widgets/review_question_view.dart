@@ -67,21 +67,21 @@ class ReviewQuestionCard extends StatelessWidget {
             // Direction / passage shown above the question when present
             if (question.directionHtml != null &&
                 question.directionHtml!.isNotEmpty) ...[
-              AppHtmlV2(data: question.directionHtml!, fontSize: 15),
+              AppHtml(data: question.directionHtml!, fontSize: 15),
               const SizedBox(height: 16),
               Container(height: 1, color: design.colors.border),
               const SizedBox(height: 16),
             ],
 
             // Unified question + colour-coded options + explanation
-            AppHtmlV2(
+            AppHtml(
               data: ReviewQuestionHtmlBuilder.build(
                 question: question,
                 attemptState: attemptState,
                 design: design,
                 l10n: l10n,
               ),
-              fontSize: 16,
+              fontSize: 15,
             ),
           ],
         ),
