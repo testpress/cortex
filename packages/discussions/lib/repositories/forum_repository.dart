@@ -40,7 +40,10 @@ class ForumRepository {
   }
 
   Stream<List<ForumThreadDto>> watchAllThreads() {
-    return _db.watchAllThreads().map((rows) => rows.map(_rowToDto).toList());
+    return _db.watchAllThreads().map(
+      (rows) =>
+          rows.where((row) => row.threadId != null).map(_rowToDto).toList(),
+    );
   }
 
   Stream<ForumThreadDto?> watchThreadBySlug(String slug) {
@@ -53,7 +56,10 @@ class ForumRepository {
   Stream<List<ForumThreadDto>> watchThreads(String courseId) {
     return _db
         .watchThreadsForCourse(courseId)
-        .map((rows) => rows.map(_rowToDto).toList());
+        .map(
+          (rows) =>
+              rows.where((row) => row.threadId != null).map(_rowToDto).toList(),
+        );
   }
 
   @Deprecated('Use watchThreadBySlug instead')
@@ -120,8 +126,7 @@ class ForumRepository {
   // ── Mappers ──────────────────────────────────────────────────────────────
 
   ForumThreadDto _rowToDto(ForumThreadsTableData row) => ForumThreadDto(
-    threadId:
-        row.threadId ?? (throw StateError('Forum thread ID cannot be null')),
+    threadId: row.threadId!,
     slug: row.id,
     courseId: row.courseId,
     categoryId: null,
