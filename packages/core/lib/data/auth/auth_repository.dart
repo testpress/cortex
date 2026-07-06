@@ -74,6 +74,7 @@ class AuthRepository {
 
   Future<void> logoutOtherDevices() async {
     final token = await _localDataSource.getToken();
+    if (token == null) return;
     await _apiService.logoutOtherDevices(authToken: token);
   }
 

@@ -1,5 +1,5 @@
 /// Forum thread status.
-enum ForumThreadStatus { answered, unanswered }
+enum ForumThreadStatus { answered, unanswered, closed, archived, pending }
 
 /// Forum category DTO — maps to `/api/v2.3/forum/categories/`.
 class ForumCategoryDto {

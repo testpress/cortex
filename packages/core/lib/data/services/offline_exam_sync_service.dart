@@ -56,7 +56,10 @@ class OfflineExamSyncService {
 
         final payload = {
           "offline_attempt": {
-            "started_on": download.startedAt?.toUtc().toIso8601String(),
+            "started_on":
+                (download.startedAt ?? download.completedAt ?? DateTime.now())
+                    .toUtc()
+                    .toIso8601String(),
             "completed_on": download.completedAt?.toUtc().toIso8601String(),
           },
           "offline_answers": offlineAnswers,

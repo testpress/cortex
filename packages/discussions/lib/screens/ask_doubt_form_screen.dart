@@ -260,7 +260,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
 
   // --- Logic ---
 
-  void _submitDoubt(DoubtQueryType queryType) {
+  Future<void> _submitDoubt(DoubtQueryType queryType) async {
     final title = _titleController.text.trim();
     final contentText = _quillController.document.toPlainText().trim();
     if (title.isEmpty || contentText.isEmpty || !_isTopicFinalized) {
@@ -277,39 +277,41 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
     final chapterContentId = widget.chapterContentId;
     final questionId = widget.questionId;
 
-    ref.read(doubtRepositoryProvider.future).then((repo) async {
-      try {
-        String finalHtml = descriptionHtml;
+    try {
+      final repo = await ref.read(doubtRepositoryProvider.future);
+      String finalHtml = descriptionHtml;
 
-        final newDoubtId = await repo.createDoubt(
-          title: title,
-          description: finalHtml,
-          topicId: topicId,
-          chapterContentId: chapterContentId,
-          questionId: questionId,
-          queryType: queryType,
+      final newDoubtId = await repo.createDoubt(
+        title: title,
+        description: finalHtml,
+        topicId: topicId,
+        chapterContentId: chapterContentId,
+        questionId: questionId,
+        queryType: queryType,
+      );
+
+      if (mounted) {
+        AppToast.show(
+          context,
+          message: L10n.of(context).doubtsSubmitSuccessMessage,
         );
-
-        if (mounted) {
-          AppToast.show(
-            context,
-            message: L10n.of(context).doubtsSubmitSuccessMessage,
-          );
-          Navigator.pop(context);
-          context.push('/home/discussions/doubts/$newDoubtId');
-        }
-      } catch (e) {
-        debugPrint('Doubt submit failed: $e');
-        if (mounted) {
-          setState(() => _isSubmitting = false);
-          AppToast.show(
-            context,
-            message: L10n.of(context).doubtsSubmitErrorMessage,
-          );
-          Navigator.pop(context);
-        }
+        Navigator.pop(context);
+        context.push('/home/discussions/doubts/$newDoubtId');
       }
-    });
+    } catch (e) {
+      debugPrint('Doubt submit failed: $e');
+      if (mounted) {
+        AppToast.show(
+          context,
+          message: L10n.of(context).doubtsSubmitErrorMessage,
+        );
+        Navigator.pop(context);
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+      }
+    }
   }
 }
 
