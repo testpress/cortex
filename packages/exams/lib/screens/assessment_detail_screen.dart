@@ -483,7 +483,9 @@ class _AssessmentDetailScreenState
 
   Widget _buildResultView(DesignConfig design, BuildContext context) {
     final l10n = L10n.of(context);
-    final scorePercent = (_correctCount / _questions.length * 100).round();
+    final scorePercent = _questions.isEmpty
+        ? 0
+        : (_correctCount / _questions.length * 100).round();
     final accentColor = design.colors.success;
 
     return Container(

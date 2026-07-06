@@ -65,7 +65,13 @@ class VttParser {
         if (timeParts.length >= 2) {
           final startTime = timeParts[0].trim();
           // The end time might be followed by settings, so split by space
-          final endTime = timeParts[1].trim().split(RegExp(r'\s+'))[0];
+          final parts = timeParts[1].trim().split(RegExp(r'\s+'));
+          final endTime = parts.isNotEmpty ? parts[0] : '';
+
+          if (endTime.isEmpty) {
+            index++;
+            continue;
+          }
 
           // Read subsequent lines until we hit an empty line or another timestamp
           final List<String> textLines = [];

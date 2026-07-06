@@ -120,7 +120,8 @@ class ForumRepository {
   // ── Mappers ──────────────────────────────────────────────────────────────
 
   ForumThreadDto _rowToDto(ForumThreadsTableData row) => ForumThreadDto(
-    threadId: row.threadId ?? 0,
+    threadId:
+        row.threadId ?? (throw StateError('Forum thread ID cannot be null')),
     slug: row.id,
     courseId: row.courseId,
     categoryId: null,
