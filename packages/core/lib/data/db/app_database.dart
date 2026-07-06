@@ -64,12 +64,15 @@ class AppDatabase extends _$AppDatabase {
       await m.createAll();
     },
     onUpgrade: (m, from, to) async {
+      // Fetch all existing tables from sqlite_master
+      final existingTables = await customSelect(
+        "SELECT name FROM sqlite_master WHERE type='table'",
+      ).get().then((rows) => rows.map((r) => r.read<String>('name')).toSet());
+
       // Safe minimum: create any tables that don't exist yet without dropping existing ones.
       for (final table in allTables) {
-        try {
+        if (!existingTables.contains(table.actualTableName)) {
           await m.createTable(table);
-        } catch (_) {
-          // Table already exists, ignore if the driver doesn't support IF NOT EXISTS natively
         }
       }
     },
