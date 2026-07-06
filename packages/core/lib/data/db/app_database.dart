@@ -56,7 +56,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 31;
+  int get schemaVersion => 1;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -64,10 +64,16 @@ class AppDatabase extends _$AppDatabase {
       await m.createAll();
     },
     onUpgrade: (m, from, to) async {
-      // For beta development, recreate all tables instead of complex migrations
+      // Fetch all existing tables from sqlite_master
+      final existingTables = await customSelect(
+        "SELECT name FROM sqlite_master WHERE type='table'",
+      ).get().then((rows) => rows.map((r) => r.read<String>('name')).toSet());
+
+      // Safe minimum: create any tables that don't exist yet without dropping existing ones.
       for (final table in allTables) {
-        await m.deleteTable(table.actualTableName);
-        await m.createTable(table);
+        if (!existingTables.contains(table.actualTableName)) {
+          await m.createTable(table);
+        }
       }
     },
   );

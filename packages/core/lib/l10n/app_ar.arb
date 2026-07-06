@@ -757,5 +757,6 @@
   },
   "testSavedLocallyOffline": "تم حفظ الاختبار محليًا. ستكون النتائج متاحة بمجرد المزامنة.",
   "noAnswerGiven": "(لم يتم تقديم إجابة)",
-  "correctAnswerLabel": "الإجابة الصحيحة:"
+  "correctAnswerLabel": "الإجابة الصحيحة:",
+  "errorOfflineDataNotFound": "لم يتم العثور على بيانات الاختبار. قد لا يتم إرسال إجاباتك."
 }

@@ -1026,5 +1026,9 @@
   "downloadExamOffline": "Download Exam (Offline)",
   "testSavedLocallyOffline": "Test saved locally. Results will be available once synced.",
   "noAnswerGiven": "(No answer given)",
-  "correctAnswerLabel": "Correct Answer:"
+  "correctAnswerLabel": "Correct Answer:",
+  "errorOfflineDataNotFound": "Exam data not found. Your answers may not be submitted.",
+  "@errorOfflineDataNotFound": {
+    "description": "Error message when local offline exam data goes missing"
+  }
 }

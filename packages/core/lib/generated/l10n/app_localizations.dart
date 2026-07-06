@@ -3952,6 +3952,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Correct Answer:'**
   String get correctAnswerLabel;
+
+  /// Error message when local offline exam data goes missing
+  ///
+  /// In en, this message translates to:
+  /// **'Exam data not found. Your answers may not be submitted.'**
+  String get errorOfflineDataNotFound;
 }
 
 class _AppLocalizationsDelegate

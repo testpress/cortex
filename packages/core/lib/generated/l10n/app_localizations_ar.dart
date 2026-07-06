@@ -2161,4 +2161,8 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get correctAnswerLabel => 'الإجابة الصحيحة:';
+
+  @override
+  String get errorOfflineDataNotFound =>
+      'لم يتم العثور على بيانات الاختبار. قد لا يتم إرسال إجاباتك.';
 }
