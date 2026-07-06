@@ -1,7 +1,11 @@
+import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../design/design_provider.dart';
+import '../design/design_config.dart';
+import 'app_loading_indicator.dart';
 
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -43,9 +47,18 @@ class AppHtmlV2 extends StatelessWidget {
       child: HtmlWidget(
         processedData,
 
+        onTapImage: (metadata) {
+          final sources = metadata.sources;
+          if (sources.isNotEmpty) {
+            final url = sources.first.url;
+            _showZoomableImage(context, url, design);
+          }
+        },
+
         factoryBuilder: () => _MathWidgetFactory(
           textColor: effectiveTextColor,
           fontSize: fontSize,
+          maxWidth: MediaQuery.of(context).size.width - 64,
         ),
 
         onLoadingBuilder: (context, element, progress) {
@@ -86,20 +99,25 @@ class AppHtmlV2 extends StatelessWidget {
         textStyle: design.typography.body.copyWith(
           color: effectiveTextColor,
           fontSize: fontSize,
-          height: 1.35,
         ),
 
         customStylesBuilder: (element) {
           final tag = element.localName;
 
+          final Map<String, String> styles = {};
+          // We allow the backend's colors and font-families,
+          // but we will strictly override the font size below.
+
+          if (tag != 'math-tex') {
+            styles['font-size'] = '${fontSize}px';
+          }
+
           // Detect if paragraph is inside a list item
-          bool insideLi = false;
 
           var parent = element.parent;
 
           while (parent != null) {
             if (parent.localName == 'li') {
-              insideLi = true;
               break;
             }
 
@@ -108,43 +126,64 @@ class AppHtmlV2 extends StatelessWidget {
 
           // Paragraphs
           if (tag == 'p') {
-            return {'margin': insideLi ? '0' : '0 0 14px 0'};
+            styles['margin'] =
+                '0'; // Fixed the huge gap on the bottom of options
           }
 
           // Divs
           if (tag == 'div') {
-            return {'margin': '0'};
+            styles['margin'] = '0';
           }
 
           // Ordered / unordered lists
           if (tag == 'ol' || tag == 'ul') {
-            return {'margin': '0 0 8px 0', 'padding-left': '20px'};
+            styles['margin'] = '0 0 8px 0';
+            styles['padding-left'] = '20px';
           }
 
           // List items
           if (tag == 'li') {
-            return {'margin': '0 0 4px 0'};
+            styles['margin'] = '0 0 4px 0';
           }
 
           // Tables
           if (tag == 'table') {
-            return {
-              'border-collapse': 'collapse',
-              'width': '100%',
-              'margin': '8px 0',
-            };
+            styles['border-collapse'] = 'collapse';
+            styles['width'] = '100%';
+            styles['margin'] = '8px 0';
           }
 
           if (tag == 'td' || tag == 'th') {
-            return {'border': '1px solid currentColor', 'padding': '6px'};
+            styles['border'] = '1px solid currentColor';
+            styles['padding'] = '6px';
           }
 
           // Images
           if (tag == 'img') {
-            return {'max-width': '100%'};
+            styles['max-width'] = '100%';
           }
 
-          return null;
+          return styles.isNotEmpty ? styles : null;
+        },
+      ),
+    );
+  }
+
+  void _showZoomableImage(
+    BuildContext context,
+    String imageUrl,
+    DesignConfig design,
+  ) {
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        opaque: false,
+        barrierDismissible: true,
+        barrierColor: design.colors.overlay.withValues(alpha: 0.8),
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return FadeTransition(
+            opacity: animation,
+            child: _ZoomableImageViewer(imageUrl: imageUrl, design: design),
+          );
         },
       ),
     );
@@ -170,6 +209,44 @@ class AppHtmlV2 extends StatelessWidget {
   ///   to prevent nested math-tex tags inside block equations.
   String _preprocessMath(String html) {
     var res = html;
+
+    // ── PASS 0: STRIP MS WORD INLINE FONTS & STYLES ─────────────────────────
+
+    // 1. Strip <style> blocks entirely (contains .MsoNormal etc.)
+    res = res.replaceAll(
+      RegExp(r'<style[^>]*>[\s\S]*?</style>', caseSensitive: false),
+      '',
+    );
+
+    // 2. Strip only size from legacy <font> tags (preserve color and face)
+    res = res.replaceAllMapped(
+      RegExp(r'''<font([^>]*)>''', caseSensitive: false),
+      (m) {
+        String attrs = m[1] ?? '';
+        attrs = attrs.replaceAll(
+          RegExp(
+            r'''size\s*=\s*(?:["'][^"']*["']|\S+)''',
+            caseSensitive: false,
+          ),
+          '',
+        );
+        return '<font$attrs>';
+      },
+    );
+
+    // 3. Strip only font-size from inline styles (preserve color and font-family)
+    res = res.replaceAllMapped(
+      RegExp(r'''style\s*=\s*(["'])(.*?)\1''', caseSensitive: false),
+      (m) {
+        String style = m[2] ?? '';
+        style = style.replaceAll('&quot;', "'");
+        style = style.replaceAll(
+          RegExp(r'''font-size\s*:[^;]*;?''', caseSensitive: false),
+          '',
+        );
+        return 'style=${m[1]}$style${m[1]}';
+      },
+    );
 
     // ── PASS 1: BLOCK MATH ──────────────────────────────────────────────────
 
@@ -251,10 +328,15 @@ class AppHtmlV2 extends StatelessWidget {
 }
 
 class _MathWidgetFactory extends WidgetFactory {
-  _MathWidgetFactory({required this.textColor, required this.fontSize});
+  _MathWidgetFactory({
+    required this.textColor,
+    required this.fontSize,
+    required this.maxWidth,
+  });
 
   final Color textColor;
   final double fontSize;
+  final double maxWidth;
 
   @override
   void parse(BuildTree meta) {
@@ -274,15 +356,29 @@ class _MathWidgetFactory extends WidgetFactory {
         );
       }
       // INLINE EQUATIONS
-      // INLINE EQUATIONS
       else {
         meta.register(
           BuildOp.inline(
             onRenderInlineBlock: (tree, child) {
+              final mathWidget = _buildInlineMath(tex);
+              // Heuristic: If an inline equation is very long, it will overflow the line.
+              // We wrap it in a scroll view constrained to the screen width.
+              // Because it's an inline WidgetSpan, it will naturally wrap to the next
+              // line if it doesn't fit next to the preceding text, preventing crashes.
+              if (tex.length > 35) {
+                return ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: maxWidth),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: mathWidget,
+                  ),
+                );
+              }
+
               return Baseline(
                 baseline: fontSize * 1.15,
                 baselineType: TextBaseline.alphabetic,
-                child: _buildInlineMath(tex),
+                child: mathWidget,
               );
             },
           ),
@@ -297,16 +393,18 @@ class _MathWidgetFactory extends WidgetFactory {
     return Math.tex(
       tex,
 
-      // Important:
-      // Prevents giant display-style inline equations
+      // Prevents giant display-style inline equations from breaking line height
       mathStyle: MathStyle.text,
 
-      textStyle: TextStyle(color: textColor, fontSize: fontSize),
+      textStyle: TextStyle(color: textColor, fontSize: fontSize * 1.1),
 
       onErrorFallback: (error) {
         return Text(
           tex,
-          style: TextStyle(color: const Color(0xFFFF0000), fontSize: fontSize),
+          style: TextStyle(
+            color: const Color(0xFFFF0000),
+            fontSize: fontSize * 1.1,
+          ),
         );
       },
     );
@@ -318,12 +416,15 @@ class _MathWidgetFactory extends WidgetFactory {
 
       mathStyle: MathStyle.display,
 
-      textStyle: TextStyle(color: textColor, fontSize: fontSize),
+      textStyle: TextStyle(color: textColor, fontSize: fontSize * 1.2),
 
       onErrorFallback: (error) {
         return Text(
           tex,
-          style: TextStyle(color: const Color(0xFFFF0000), fontSize: fontSize),
+          style: TextStyle(
+            color: const Color(0xFFFF0000),
+            fontSize: fontSize * 1.2,
+          ),
         );
       },
     );
@@ -334,6 +435,125 @@ class _MathWidgetFactory extends WidgetFactory {
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: mathWidget,
+        ),
+      ),
+    );
+  }
+}
+
+class _ZoomableImageViewer extends StatelessWidget {
+  const _ZoomableImageViewer({required this.imageUrl, required this.design});
+
+  final String imageUrl;
+  final DesignConfig design;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.of(context).pop(),
+      child: Container(
+        color: design.colors.transparent, // Transparent to catch tap
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Positioned.fill(
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: InteractiveViewer(
+                    minScale: 0.8,
+                    maxScale: 5.0,
+                    child: Builder(
+                      builder: (context) {
+                        if (imageUrl.startsWith('data:image')) {
+                          try {
+                            // Extract just the base64 part
+                            final commaIndex = imageUrl.indexOf(',');
+                            if (commaIndex != -1) {
+                              // We use dart:convert if we imported it, but for data URIs UriData works:
+                              final uriData = UriData.parse(imageUrl);
+                              return Image.memory(
+                                uriData.contentAsBytes(),
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return _buildErrorText(design);
+                                },
+                              );
+                            }
+                          } catch (e) {
+                            return _buildErrorText(design);
+                          }
+                        }
+
+                        if (imageUrl.startsWith('file://')) {
+                          final path = imageUrl.replaceFirst('file://', '');
+                          return Image.file(
+                            File(path),
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) {
+                              return _buildErrorText(design);
+                            },
+                          );
+                        }
+
+                        return Image.network(
+                          imageUrl,
+                          fit: BoxFit.contain,
+                          loadingBuilder: (context, child, progress) {
+                            if (progress == null) return child;
+                            return Center(
+                              child: AppLoadingIndicator(
+                                color: design.colors.primary.withValues(
+                                  alpha: 0.5,
+                                ),
+                              ),
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return _buildErrorText(design);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 24,
+              right: 24,
+              child: SafeArea(
+                child: GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: design.colors.onPrimary.withValues(alpha: 0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      LucideIcons.x,
+                      color: design.colors.onPrimary,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorText(DesignConfig design) {
+    return Center(
+      child: Text(
+        'Failed to load image',
+        style: TextStyle(
+          color: design.colors.textInverse,
+          fontSize: 14,
+          decoration: TextDecoration.none,
         ),
       ),
     );

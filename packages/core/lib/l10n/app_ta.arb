@@ -980,6 +980,12 @@
   "reviewExamReviewDesc": "பதில்கள் மற்றும் விளக்கங்களுடன் ஒவ்வொரு கேள்வியையும் மதிப்பாய்வு செய்யவும்",
   "defaultStudentName": "மாணவர்",
   "examCompletedLabel": "தேர்வு முடிந்தது",
+  "downloadingExam": "தேர்வு பதிவிறக்கப்படுகிறது...",
+  "deadlinePassedCannotSync": "காலக்கெடு முடிந்தது. தேர்வை ஒத்திசைக்க முடியாது.",
+  "pendingSyncConnectToUpload": "ஒத்திசைக்க காத்திருக்கிறது. பதில்களைப் பதிவேற்ற இணையத்துடன் இணைக்கவும்.",
+  "resumeOfflineExam": "ஆஃப்லைன் தேர்வை மீண்டும் தொடங்கு",
+  "startOfflineExam": "ஆஃப்லைன் தேர்வைத் தொடங்கு",
+  "downloadExamOffline": "தேர்வைப் பதிவிறக்கு (ஆஃப்லைன்)",
   "examTotalQuestions": "மொத்த கேள்விகள்",
   "examDuration": "கால அளவு",
   "examTotalMarks": "மொத்த மதிப்பெண்கள்",
@@ -999,5 +1005,8 @@
         "type": "String"
       }
     }
-  }
+  },
+  "testSavedLocallyOffline": "தேர்வு லோக்கலாக சேமிக்கப்பட்டது. ஒத்திசைக்கப்பட்டதும் முடிவுகள் கிடைக்கும்.",
+  "noAnswerGiven": "(பதில் அளிக்கப்படவில்லை)",
+  "correctAnswerLabel": "சரியான பதில்:"
 }

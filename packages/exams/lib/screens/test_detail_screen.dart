@@ -19,11 +19,12 @@ import '../widgets/test_detail/pause_confirmation_dialog.dart';
 import '../widgets/test_detail/exam_instructions_view.dart';
 import '../widgets/test_detail/sections_tab_bar.dart';
 
-class TestDetailScreen extends ConsumerStatefulWidget {
+class TestDetailScreen extends ConsumerWidget {
   final String testId;
   final LessonDto? lesson;
   final bool isQuizMode;
   final bool isPartial;
+  final bool isOfflineMode;
   final VoidCallback onClose;
 
   const TestDetailScreen({
@@ -32,14 +33,75 @@ class TestDetailScreen extends ConsumerStatefulWidget {
     this.lesson,
     this.isQuizMode = false,
     this.isPartial = false,
+    this.isOfflineMode = false,
     required this.onClose,
   });
 
   @override
-  ConsumerState<TestDetailScreen> createState() => _TestDetailScreenState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (isOfflineMode) {
+      final offlineRepoAsync = ref.watch(
+        offlineExamRepositoryFactoryProvider(testId),
+      );
+      return offlineRepoAsync.when(
+        data: (repo) => ProviderScope(
+          overrides: [
+            examRepositoryProvider.overrideWithValue(repo),
+            examAttemptProvider.overrideWith(ExamAttempt.new),
+          ],
+          child: _TestDetailContent(
+            testId: testId,
+            lesson: lesson,
+            isQuizMode: isQuizMode,
+            isPartial: isPartial,
+            isOfflineMode: isOfflineMode,
+            onClose: onClose,
+          ),
+        ),
+        loading: () => Container(
+          color: Design.of(context).colors.surface,
+          child: const Center(child: AppLoadingIndicator()),
+        ),
+        error: (err, stack) => Container(
+          color: Design.of(context).colors.surface,
+          child: Center(child: Text('Failed to load offline exam: $err')),
+        ),
+      );
+    }
+
+    return _TestDetailContent(
+      testId: testId,
+      lesson: lesson,
+      isQuizMode: isQuizMode,
+      isPartial: isPartial,
+      isOfflineMode: isOfflineMode,
+      onClose: onClose,
+    );
+  }
 }
 
-class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
+class _TestDetailContent extends ConsumerStatefulWidget {
+  final String testId;
+  final LessonDto? lesson;
+  final bool isQuizMode;
+  final bool isPartial;
+  final bool isOfflineMode;
+  final VoidCallback onClose;
+
+  const _TestDetailContent({
+    required this.testId,
+    this.lesson,
+    this.isQuizMode = false,
+    this.isPartial = false,
+    this.isOfflineMode = false,
+    required this.onClose,
+  });
+
+  @override
+  ConsumerState<_TestDetailContent> createState() => _TestDetailContentState();
+}
+
+class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
   final PageController _pageController = PageController();
   int _currentQuestionIndex = 0;
   int _activeSubjectIndex = 0;
@@ -202,6 +264,16 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
           ),
         );
       }
+
+      // If the exam is already loading via ExamRepository, just show the loading indicator.
+      // This prevents network failures in lessonDetailAsync from blocking offline exams.
+      if (state.status == ExamAttemptStatus.loading && widget.lesson != null) {
+        return Container(
+          color: design.colors.surface,
+          child: const Center(child: AppLoadingIndicator()),
+        );
+      }
+
       return lessonDetailAsync.when(
         data: (lesson) => Container(
           color: design.colors.surface,
@@ -646,8 +718,9 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                     widget.lesson?.disableAttemptResume ??
                     false,
                 onCancel: () => setState(() => _showPauseConfirmation = false),
-                onPause: () {
+                onPause: () async {
                   setState(() => _showPauseConfirmation = false);
+                  await ref.read(examAttemptProvider.notifier).pauseExam();
                   ref.read(examAttemptProvider.notifier).reset();
                   widget.onClose();
                 },
@@ -666,6 +739,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                       allowRetake:
                           widget.lesson?.allowRetake != false &&
                           (state.exam?.allowRetake ?? true),
+                      isOffline: widget.isOfflineMode,
                       onRetake: () {
                         ref.read(examAttemptProvider.notifier).reset();
                         setState(() {
@@ -696,6 +770,7 @@ class _TestDetailScreenState extends ConsumerState<TestDetailScreen> {
                     )
                   : TestResultView(
                       score: state.attempt?.score,
+                      isOffline: widget.isOfflineMode,
                       onReview: () => _openAnalytics(state),
                       onClose: widget.onClose,
                     ),

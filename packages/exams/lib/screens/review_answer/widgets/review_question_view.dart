@@ -81,7 +81,7 @@ class ReviewQuestionCard extends StatelessWidget {
                 design: design,
                 l10n: l10n,
               ),
-              fontSize: 16,
+              fontSize: 15,
             ),
           ],
         ),

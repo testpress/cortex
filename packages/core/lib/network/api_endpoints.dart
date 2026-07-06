@@ -57,6 +57,10 @@ class ApiEndpoints {
       '/api/v3/attempts/$attemptId/user_answers/?page_size=1000';
   static String submitAnswer(String attemptId, String questionId) =>
       '/api/v3/attempts/$attemptId/user_answers/$questionId/';
+  static String submitOfflineExamAnswers(String examId) =>
+      '/api/v3/exams/$examId/submit-offline-exam-answers/';
+  static String offlineExamQuestions(String examId) =>
+      '/api/v2.4/exams/$examId/questions/';
   static String startAttempt(String attemptId) =>
       '/api/v2.3/attempts/$attemptId/start/';
   static String endAttempt(String attemptId) =>

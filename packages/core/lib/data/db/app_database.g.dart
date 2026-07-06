@@ -14765,6 +14765,1118 @@ class SubjectAnalyticsTableCompanion
   }
 }
 
+class $OfflineExamDownloadsTableTable extends OfflineExamDownloadsTable
+    with
+        TableInfo<
+          $OfflineExamDownloadsTableTable,
+          OfflineExamDownloadsTableData
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $OfflineExamDownloadsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _contentIdMeta = const VerificationMeta(
+    'contentId',
+  );
+  @override
+  late final GeneratedColumn<String> contentId = GeneratedColumn<String>(
+    'content_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _examIdMeta = const VerificationMeta('examId');
+  @override
+  late final GeneratedColumn<String> examId = GeneratedColumn<String>(
+    'exam_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _questionsJsonMeta = const VerificationMeta(
+    'questionsJson',
+  );
+  @override
+  late final GeneratedColumn<String> questionsJson = GeneratedColumn<String>(
+    'questions_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _downloadedAtMeta = const VerificationMeta(
+    'downloadedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> downloadedAt = GeneratedColumn<DateTime>(
+    'downloaded_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startedAtMeta = const VerificationMeta(
+    'startedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startedAt = GeneratedColumn<DateTime>(
+    'started_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _completedAtMeta = const VerificationMeta(
+    'completedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> completedAt = GeneratedColumn<DateTime>(
+    'completed_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('DOWNLOADED'),
+  );
+  static const VerificationMeta _elapsedSecondsMeta = const VerificationMeta(
+    'elapsedSeconds',
+  );
+  @override
+  late final GeneratedColumn<int> elapsedSeconds = GeneratedColumn<int>(
+    'elapsed_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    contentId,
+    examId,
+    questionsJson,
+    downloadedAt,
+    startedAt,
+    completedAt,
+    status,
+    elapsedSeconds,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'offline_exam_downloads_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<OfflineExamDownloadsTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('content_id')) {
+      context.handle(
+        _contentIdMeta,
+        contentId.isAcceptableOrUnknown(data['content_id']!, _contentIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_contentIdMeta);
+    }
+    if (data.containsKey('exam_id')) {
+      context.handle(
+        _examIdMeta,
+        examId.isAcceptableOrUnknown(data['exam_id']!, _examIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_examIdMeta);
+    }
+    if (data.containsKey('questions_json')) {
+      context.handle(
+        _questionsJsonMeta,
+        questionsJson.isAcceptableOrUnknown(
+          data['questions_json']!,
+          _questionsJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_questionsJsonMeta);
+    }
+    if (data.containsKey('downloaded_at')) {
+      context.handle(
+        _downloadedAtMeta,
+        downloadedAt.isAcceptableOrUnknown(
+          data['downloaded_at']!,
+          _downloadedAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_downloadedAtMeta);
+    }
+    if (data.containsKey('started_at')) {
+      context.handle(
+        _startedAtMeta,
+        startedAt.isAcceptableOrUnknown(data['started_at']!, _startedAtMeta),
+      );
+    }
+    if (data.containsKey('completed_at')) {
+      context.handle(
+        _completedAtMeta,
+        completedAt.isAcceptableOrUnknown(
+          data['completed_at']!,
+          _completedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('elapsed_seconds')) {
+      context.handle(
+        _elapsedSecondsMeta,
+        elapsedSeconds.isAcceptableOrUnknown(
+          data['elapsed_seconds']!,
+          _elapsedSecondsMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  OfflineExamDownloadsTableData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return OfflineExamDownloadsTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      contentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content_id'],
+      )!,
+      examId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}exam_id'],
+      )!,
+      questionsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}questions_json'],
+      )!,
+      downloadedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}downloaded_at'],
+      )!,
+      startedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}started_at'],
+      ),
+      completedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}completed_at'],
+      ),
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      elapsedSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}elapsed_seconds'],
+      )!,
+    );
+  }
+
+  @override
+  $OfflineExamDownloadsTableTable createAlias(String alias) {
+    return $OfflineExamDownloadsTableTable(attachedDatabase, alias);
+  }
+}
+
+class OfflineExamDownloadsTableData extends DataClass
+    implements Insertable<OfflineExamDownloadsTableData> {
+  final int id;
+  final String contentId;
+  final String examId;
+  final String questionsJson;
+  final DateTime downloadedAt;
+  final DateTime? startedAt;
+  final DateTime? completedAt;
+  final String status;
+  final int elapsedSeconds;
+  const OfflineExamDownloadsTableData({
+    required this.id,
+    required this.contentId,
+    required this.examId,
+    required this.questionsJson,
+    required this.downloadedAt,
+    this.startedAt,
+    this.completedAt,
+    required this.status,
+    required this.elapsedSeconds,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['content_id'] = Variable<String>(contentId);
+    map['exam_id'] = Variable<String>(examId);
+    map['questions_json'] = Variable<String>(questionsJson);
+    map['downloaded_at'] = Variable<DateTime>(downloadedAt);
+    if (!nullToAbsent || startedAt != null) {
+      map['started_at'] = Variable<DateTime>(startedAt);
+    }
+    if (!nullToAbsent || completedAt != null) {
+      map['completed_at'] = Variable<DateTime>(completedAt);
+    }
+    map['status'] = Variable<String>(status);
+    map['elapsed_seconds'] = Variable<int>(elapsedSeconds);
+    return map;
+  }
+
+  OfflineExamDownloadsTableCompanion toCompanion(bool nullToAbsent) {
+    return OfflineExamDownloadsTableCompanion(
+      id: Value(id),
+      contentId: Value(contentId),
+      examId: Value(examId),
+      questionsJson: Value(questionsJson),
+      downloadedAt: Value(downloadedAt),
+      startedAt: startedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(startedAt),
+      completedAt: completedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(completedAt),
+      status: Value(status),
+      elapsedSeconds: Value(elapsedSeconds),
+    );
+  }
+
+  factory OfflineExamDownloadsTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return OfflineExamDownloadsTableData(
+      id: serializer.fromJson<int>(json['id']),
+      contentId: serializer.fromJson<String>(json['contentId']),
+      examId: serializer.fromJson<String>(json['examId']),
+      questionsJson: serializer.fromJson<String>(json['questionsJson']),
+      downloadedAt: serializer.fromJson<DateTime>(json['downloadedAt']),
+      startedAt: serializer.fromJson<DateTime?>(json['startedAt']),
+      completedAt: serializer.fromJson<DateTime?>(json['completedAt']),
+      status: serializer.fromJson<String>(json['status']),
+      elapsedSeconds: serializer.fromJson<int>(json['elapsedSeconds']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'contentId': serializer.toJson<String>(contentId),
+      'examId': serializer.toJson<String>(examId),
+      'questionsJson': serializer.toJson<String>(questionsJson),
+      'downloadedAt': serializer.toJson<DateTime>(downloadedAt),
+      'startedAt': serializer.toJson<DateTime?>(startedAt),
+      'completedAt': serializer.toJson<DateTime?>(completedAt),
+      'status': serializer.toJson<String>(status),
+      'elapsedSeconds': serializer.toJson<int>(elapsedSeconds),
+    };
+  }
+
+  OfflineExamDownloadsTableData copyWith({
+    int? id,
+    String? contentId,
+    String? examId,
+    String? questionsJson,
+    DateTime? downloadedAt,
+    Value<DateTime?> startedAt = const Value.absent(),
+    Value<DateTime?> completedAt = const Value.absent(),
+    String? status,
+    int? elapsedSeconds,
+  }) => OfflineExamDownloadsTableData(
+    id: id ?? this.id,
+    contentId: contentId ?? this.contentId,
+    examId: examId ?? this.examId,
+    questionsJson: questionsJson ?? this.questionsJson,
+    downloadedAt: downloadedAt ?? this.downloadedAt,
+    startedAt: startedAt.present ? startedAt.value : this.startedAt,
+    completedAt: completedAt.present ? completedAt.value : this.completedAt,
+    status: status ?? this.status,
+    elapsedSeconds: elapsedSeconds ?? this.elapsedSeconds,
+  );
+  OfflineExamDownloadsTableData copyWithCompanion(
+    OfflineExamDownloadsTableCompanion data,
+  ) {
+    return OfflineExamDownloadsTableData(
+      id: data.id.present ? data.id.value : this.id,
+      contentId: data.contentId.present ? data.contentId.value : this.contentId,
+      examId: data.examId.present ? data.examId.value : this.examId,
+      questionsJson: data.questionsJson.present
+          ? data.questionsJson.value
+          : this.questionsJson,
+      downloadedAt: data.downloadedAt.present
+          ? data.downloadedAt.value
+          : this.downloadedAt,
+      startedAt: data.startedAt.present ? data.startedAt.value : this.startedAt,
+      completedAt: data.completedAt.present
+          ? data.completedAt.value
+          : this.completedAt,
+      status: data.status.present ? data.status.value : this.status,
+      elapsedSeconds: data.elapsedSeconds.present
+          ? data.elapsedSeconds.value
+          : this.elapsedSeconds,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OfflineExamDownloadsTableData(')
+          ..write('id: $id, ')
+          ..write('contentId: $contentId, ')
+          ..write('examId: $examId, ')
+          ..write('questionsJson: $questionsJson, ')
+          ..write('downloadedAt: $downloadedAt, ')
+          ..write('startedAt: $startedAt, ')
+          ..write('completedAt: $completedAt, ')
+          ..write('status: $status, ')
+          ..write('elapsedSeconds: $elapsedSeconds')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    contentId,
+    examId,
+    questionsJson,
+    downloadedAt,
+    startedAt,
+    completedAt,
+    status,
+    elapsedSeconds,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is OfflineExamDownloadsTableData &&
+          other.id == this.id &&
+          other.contentId == this.contentId &&
+          other.examId == this.examId &&
+          other.questionsJson == this.questionsJson &&
+          other.downloadedAt == this.downloadedAt &&
+          other.startedAt == this.startedAt &&
+          other.completedAt == this.completedAt &&
+          other.status == this.status &&
+          other.elapsedSeconds == this.elapsedSeconds);
+}
+
+class OfflineExamDownloadsTableCompanion
+    extends UpdateCompanion<OfflineExamDownloadsTableData> {
+  final Value<int> id;
+  final Value<String> contentId;
+  final Value<String> examId;
+  final Value<String> questionsJson;
+  final Value<DateTime> downloadedAt;
+  final Value<DateTime?> startedAt;
+  final Value<DateTime?> completedAt;
+  final Value<String> status;
+  final Value<int> elapsedSeconds;
+  const OfflineExamDownloadsTableCompanion({
+    this.id = const Value.absent(),
+    this.contentId = const Value.absent(),
+    this.examId = const Value.absent(),
+    this.questionsJson = const Value.absent(),
+    this.downloadedAt = const Value.absent(),
+    this.startedAt = const Value.absent(),
+    this.completedAt = const Value.absent(),
+    this.status = const Value.absent(),
+    this.elapsedSeconds = const Value.absent(),
+  });
+  OfflineExamDownloadsTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String contentId,
+    required String examId,
+    required String questionsJson,
+    required DateTime downloadedAt,
+    this.startedAt = const Value.absent(),
+    this.completedAt = const Value.absent(),
+    this.status = const Value.absent(),
+    this.elapsedSeconds = const Value.absent(),
+  }) : contentId = Value(contentId),
+       examId = Value(examId),
+       questionsJson = Value(questionsJson),
+       downloadedAt = Value(downloadedAt);
+  static Insertable<OfflineExamDownloadsTableData> custom({
+    Expression<int>? id,
+    Expression<String>? contentId,
+    Expression<String>? examId,
+    Expression<String>? questionsJson,
+    Expression<DateTime>? downloadedAt,
+    Expression<DateTime>? startedAt,
+    Expression<DateTime>? completedAt,
+    Expression<String>? status,
+    Expression<int>? elapsedSeconds,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (contentId != null) 'content_id': contentId,
+      if (examId != null) 'exam_id': examId,
+      if (questionsJson != null) 'questions_json': questionsJson,
+      if (downloadedAt != null) 'downloaded_at': downloadedAt,
+      if (startedAt != null) 'started_at': startedAt,
+      if (completedAt != null) 'completed_at': completedAt,
+      if (status != null) 'status': status,
+      if (elapsedSeconds != null) 'elapsed_seconds': elapsedSeconds,
+    });
+  }
+
+  OfflineExamDownloadsTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? contentId,
+    Value<String>? examId,
+    Value<String>? questionsJson,
+    Value<DateTime>? downloadedAt,
+    Value<DateTime?>? startedAt,
+    Value<DateTime?>? completedAt,
+    Value<String>? status,
+    Value<int>? elapsedSeconds,
+  }) {
+    return OfflineExamDownloadsTableCompanion(
+      id: id ?? this.id,
+      contentId: contentId ?? this.contentId,
+      examId: examId ?? this.examId,
+      questionsJson: questionsJson ?? this.questionsJson,
+      downloadedAt: downloadedAt ?? this.downloadedAt,
+      startedAt: startedAt ?? this.startedAt,
+      completedAt: completedAt ?? this.completedAt,
+      status: status ?? this.status,
+      elapsedSeconds: elapsedSeconds ?? this.elapsedSeconds,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (contentId.present) {
+      map['content_id'] = Variable<String>(contentId.value);
+    }
+    if (examId.present) {
+      map['exam_id'] = Variable<String>(examId.value);
+    }
+    if (questionsJson.present) {
+      map['questions_json'] = Variable<String>(questionsJson.value);
+    }
+    if (downloadedAt.present) {
+      map['downloaded_at'] = Variable<DateTime>(downloadedAt.value);
+    }
+    if (startedAt.present) {
+      map['started_at'] = Variable<DateTime>(startedAt.value);
+    }
+    if (completedAt.present) {
+      map['completed_at'] = Variable<DateTime>(completedAt.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (elapsedSeconds.present) {
+      map['elapsed_seconds'] = Variable<int>(elapsedSeconds.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OfflineExamDownloadsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('contentId: $contentId, ')
+          ..write('examId: $examId, ')
+          ..write('questionsJson: $questionsJson, ')
+          ..write('downloadedAt: $downloadedAt, ')
+          ..write('startedAt: $startedAt, ')
+          ..write('completedAt: $completedAt, ')
+          ..write('status: $status, ')
+          ..write('elapsedSeconds: $elapsedSeconds')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $OfflineExamAnswersTableTable extends OfflineExamAnswersTable
+    with TableInfo<$OfflineExamAnswersTableTable, OfflineExamAnswersTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $OfflineExamAnswersTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _downloadIdMeta = const VerificationMeta(
+    'downloadId',
+  );
+  @override
+  late final GeneratedColumn<int> downloadId = GeneratedColumn<int>(
+    'download_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES offline_exam_downloads_table (id)',
+    ),
+  );
+  static const VerificationMeta _questionIdMeta = const VerificationMeta(
+    'questionId',
+  );
+  @override
+  late final GeneratedColumn<String> questionId = GeneratedColumn<String>(
+    'question_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _selectedChoicesMeta = const VerificationMeta(
+    'selectedChoices',
+  );
+  @override
+  late final GeneratedColumn<String> selectedChoices = GeneratedColumn<String>(
+    'selected_choices',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _shortAnswerMeta = const VerificationMeta(
+    'shortAnswer',
+  );
+  @override
+  late final GeneratedColumn<String> shortAnswer = GeneratedColumn<String>(
+    'short_answer',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _reviewMeta = const VerificationMeta('review');
+  @override
+  late final GeneratedColumn<bool> review = GeneratedColumn<bool>(
+    'review',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("review" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _savedAtMeta = const VerificationMeta(
+    'savedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> savedAt = GeneratedColumn<DateTime>(
+    'saved_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _unSyncedFilesMeta = const VerificationMeta(
+    'unSyncedFiles',
+  );
+  @override
+  late final GeneratedColumn<String> unSyncedFiles = GeneratedColumn<String>(
+    'un_synced_files',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    downloadId,
+    questionId,
+    selectedChoices,
+    shortAnswer,
+    review,
+    savedAt,
+    unSyncedFiles,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'offline_exam_answers_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<OfflineExamAnswersTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('download_id')) {
+      context.handle(
+        _downloadIdMeta,
+        downloadId.isAcceptableOrUnknown(data['download_id']!, _downloadIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_downloadIdMeta);
+    }
+    if (data.containsKey('question_id')) {
+      context.handle(
+        _questionIdMeta,
+        questionId.isAcceptableOrUnknown(data['question_id']!, _questionIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_questionIdMeta);
+    }
+    if (data.containsKey('selected_choices')) {
+      context.handle(
+        _selectedChoicesMeta,
+        selectedChoices.isAcceptableOrUnknown(
+          data['selected_choices']!,
+          _selectedChoicesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('short_answer')) {
+      context.handle(
+        _shortAnswerMeta,
+        shortAnswer.isAcceptableOrUnknown(
+          data['short_answer']!,
+          _shortAnswerMeta,
+        ),
+      );
+    }
+    if (data.containsKey('review')) {
+      context.handle(
+        _reviewMeta,
+        review.isAcceptableOrUnknown(data['review']!, _reviewMeta),
+      );
+    }
+    if (data.containsKey('saved_at')) {
+      context.handle(
+        _savedAtMeta,
+        savedAt.isAcceptableOrUnknown(data['saved_at']!, _savedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_savedAtMeta);
+    }
+    if (data.containsKey('un_synced_files')) {
+      context.handle(
+        _unSyncedFilesMeta,
+        unSyncedFiles.isAcceptableOrUnknown(
+          data['un_synced_files']!,
+          _unSyncedFilesMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  OfflineExamAnswersTableData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return OfflineExamAnswersTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      downloadId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}download_id'],
+      )!,
+      questionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}question_id'],
+      )!,
+      selectedChoices: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}selected_choices'],
+      ),
+      shortAnswer: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}short_answer'],
+      ),
+      review: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}review'],
+      )!,
+      savedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}saved_at'],
+      )!,
+      unSyncedFiles: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}un_synced_files'],
+      ),
+    );
+  }
+
+  @override
+  $OfflineExamAnswersTableTable createAlias(String alias) {
+    return $OfflineExamAnswersTableTable(attachedDatabase, alias);
+  }
+}
+
+class OfflineExamAnswersTableData extends DataClass
+    implements Insertable<OfflineExamAnswersTableData> {
+  final int id;
+  final int downloadId;
+  final String questionId;
+  final String? selectedChoices;
+  final String? shortAnswer;
+  final bool review;
+  final DateTime savedAt;
+  final String? unSyncedFiles;
+  const OfflineExamAnswersTableData({
+    required this.id,
+    required this.downloadId,
+    required this.questionId,
+    this.selectedChoices,
+    this.shortAnswer,
+    required this.review,
+    required this.savedAt,
+    this.unSyncedFiles,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['download_id'] = Variable<int>(downloadId);
+    map['question_id'] = Variable<String>(questionId);
+    if (!nullToAbsent || selectedChoices != null) {
+      map['selected_choices'] = Variable<String>(selectedChoices);
+    }
+    if (!nullToAbsent || shortAnswer != null) {
+      map['short_answer'] = Variable<String>(shortAnswer);
+    }
+    map['review'] = Variable<bool>(review);
+    map['saved_at'] = Variable<DateTime>(savedAt);
+    if (!nullToAbsent || unSyncedFiles != null) {
+      map['un_synced_files'] = Variable<String>(unSyncedFiles);
+    }
+    return map;
+  }
+
+  OfflineExamAnswersTableCompanion toCompanion(bool nullToAbsent) {
+    return OfflineExamAnswersTableCompanion(
+      id: Value(id),
+      downloadId: Value(downloadId),
+      questionId: Value(questionId),
+      selectedChoices: selectedChoices == null && nullToAbsent
+          ? const Value.absent()
+          : Value(selectedChoices),
+      shortAnswer: shortAnswer == null && nullToAbsent
+          ? const Value.absent()
+          : Value(shortAnswer),
+      review: Value(review),
+      savedAt: Value(savedAt),
+      unSyncedFiles: unSyncedFiles == null && nullToAbsent
+          ? const Value.absent()
+          : Value(unSyncedFiles),
+    );
+  }
+
+  factory OfflineExamAnswersTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return OfflineExamAnswersTableData(
+      id: serializer.fromJson<int>(json['id']),
+      downloadId: serializer.fromJson<int>(json['downloadId']),
+      questionId: serializer.fromJson<String>(json['questionId']),
+      selectedChoices: serializer.fromJson<String?>(json['selectedChoices']),
+      shortAnswer: serializer.fromJson<String?>(json['shortAnswer']),
+      review: serializer.fromJson<bool>(json['review']),
+      savedAt: serializer.fromJson<DateTime>(json['savedAt']),
+      unSyncedFiles: serializer.fromJson<String?>(json['unSyncedFiles']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'downloadId': serializer.toJson<int>(downloadId),
+      'questionId': serializer.toJson<String>(questionId),
+      'selectedChoices': serializer.toJson<String?>(selectedChoices),
+      'shortAnswer': serializer.toJson<String?>(shortAnswer),
+      'review': serializer.toJson<bool>(review),
+      'savedAt': serializer.toJson<DateTime>(savedAt),
+      'unSyncedFiles': serializer.toJson<String?>(unSyncedFiles),
+    };
+  }
+
+  OfflineExamAnswersTableData copyWith({
+    int? id,
+    int? downloadId,
+    String? questionId,
+    Value<String?> selectedChoices = const Value.absent(),
+    Value<String?> shortAnswer = const Value.absent(),
+    bool? review,
+    DateTime? savedAt,
+    Value<String?> unSyncedFiles = const Value.absent(),
+  }) => OfflineExamAnswersTableData(
+    id: id ?? this.id,
+    downloadId: downloadId ?? this.downloadId,
+    questionId: questionId ?? this.questionId,
+    selectedChoices: selectedChoices.present
+        ? selectedChoices.value
+        : this.selectedChoices,
+    shortAnswer: shortAnswer.present ? shortAnswer.value : this.shortAnswer,
+    review: review ?? this.review,
+    savedAt: savedAt ?? this.savedAt,
+    unSyncedFiles: unSyncedFiles.present
+        ? unSyncedFiles.value
+        : this.unSyncedFiles,
+  );
+  OfflineExamAnswersTableData copyWithCompanion(
+    OfflineExamAnswersTableCompanion data,
+  ) {
+    return OfflineExamAnswersTableData(
+      id: data.id.present ? data.id.value : this.id,
+      downloadId: data.downloadId.present
+          ? data.downloadId.value
+          : this.downloadId,
+      questionId: data.questionId.present
+          ? data.questionId.value
+          : this.questionId,
+      selectedChoices: data.selectedChoices.present
+          ? data.selectedChoices.value
+          : this.selectedChoices,
+      shortAnswer: data.shortAnswer.present
+          ? data.shortAnswer.value
+          : this.shortAnswer,
+      review: data.review.present ? data.review.value : this.review,
+      savedAt: data.savedAt.present ? data.savedAt.value : this.savedAt,
+      unSyncedFiles: data.unSyncedFiles.present
+          ? data.unSyncedFiles.value
+          : this.unSyncedFiles,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OfflineExamAnswersTableData(')
+          ..write('id: $id, ')
+          ..write('downloadId: $downloadId, ')
+          ..write('questionId: $questionId, ')
+          ..write('selectedChoices: $selectedChoices, ')
+          ..write('shortAnswer: $shortAnswer, ')
+          ..write('review: $review, ')
+          ..write('savedAt: $savedAt, ')
+          ..write('unSyncedFiles: $unSyncedFiles')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    downloadId,
+    questionId,
+    selectedChoices,
+    shortAnswer,
+    review,
+    savedAt,
+    unSyncedFiles,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is OfflineExamAnswersTableData &&
+          other.id == this.id &&
+          other.downloadId == this.downloadId &&
+          other.questionId == this.questionId &&
+          other.selectedChoices == this.selectedChoices &&
+          other.shortAnswer == this.shortAnswer &&
+          other.review == this.review &&
+          other.savedAt == this.savedAt &&
+          other.unSyncedFiles == this.unSyncedFiles);
+}
+
+class OfflineExamAnswersTableCompanion
+    extends UpdateCompanion<OfflineExamAnswersTableData> {
+  final Value<int> id;
+  final Value<int> downloadId;
+  final Value<String> questionId;
+  final Value<String?> selectedChoices;
+  final Value<String?> shortAnswer;
+  final Value<bool> review;
+  final Value<DateTime> savedAt;
+  final Value<String?> unSyncedFiles;
+  const OfflineExamAnswersTableCompanion({
+    this.id = const Value.absent(),
+    this.downloadId = const Value.absent(),
+    this.questionId = const Value.absent(),
+    this.selectedChoices = const Value.absent(),
+    this.shortAnswer = const Value.absent(),
+    this.review = const Value.absent(),
+    this.savedAt = const Value.absent(),
+    this.unSyncedFiles = const Value.absent(),
+  });
+  OfflineExamAnswersTableCompanion.insert({
+    this.id = const Value.absent(),
+    required int downloadId,
+    required String questionId,
+    this.selectedChoices = const Value.absent(),
+    this.shortAnswer = const Value.absent(),
+    this.review = const Value.absent(),
+    required DateTime savedAt,
+    this.unSyncedFiles = const Value.absent(),
+  }) : downloadId = Value(downloadId),
+       questionId = Value(questionId),
+       savedAt = Value(savedAt);
+  static Insertable<OfflineExamAnswersTableData> custom({
+    Expression<int>? id,
+    Expression<int>? downloadId,
+    Expression<String>? questionId,
+    Expression<String>? selectedChoices,
+    Expression<String>? shortAnswer,
+    Expression<bool>? review,
+    Expression<DateTime>? savedAt,
+    Expression<String>? unSyncedFiles,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (downloadId != null) 'download_id': downloadId,
+      if (questionId != null) 'question_id': questionId,
+      if (selectedChoices != null) 'selected_choices': selectedChoices,
+      if (shortAnswer != null) 'short_answer': shortAnswer,
+      if (review != null) 'review': review,
+      if (savedAt != null) 'saved_at': savedAt,
+      if (unSyncedFiles != null) 'un_synced_files': unSyncedFiles,
+    });
+  }
+
+  OfflineExamAnswersTableCompanion copyWith({
+    Value<int>? id,
+    Value<int>? downloadId,
+    Value<String>? questionId,
+    Value<String?>? selectedChoices,
+    Value<String?>? shortAnswer,
+    Value<bool>? review,
+    Value<DateTime>? savedAt,
+    Value<String?>? unSyncedFiles,
+  }) {
+    return OfflineExamAnswersTableCompanion(
+      id: id ?? this.id,
+      downloadId: downloadId ?? this.downloadId,
+      questionId: questionId ?? this.questionId,
+      selectedChoices: selectedChoices ?? this.selectedChoices,
+      shortAnswer: shortAnswer ?? this.shortAnswer,
+      review: review ?? this.review,
+      savedAt: savedAt ?? this.savedAt,
+      unSyncedFiles: unSyncedFiles ?? this.unSyncedFiles,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (downloadId.present) {
+      map['download_id'] = Variable<int>(downloadId.value);
+    }
+    if (questionId.present) {
+      map['question_id'] = Variable<String>(questionId.value);
+    }
+    if (selectedChoices.present) {
+      map['selected_choices'] = Variable<String>(selectedChoices.value);
+    }
+    if (shortAnswer.present) {
+      map['short_answer'] = Variable<String>(shortAnswer.value);
+    }
+    if (review.present) {
+      map['review'] = Variable<bool>(review.value);
+    }
+    if (savedAt.present) {
+      map['saved_at'] = Variable<DateTime>(savedAt.value);
+    }
+    if (unSyncedFiles.present) {
+      map['un_synced_files'] = Variable<String>(unSyncedFiles.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OfflineExamAnswersTableCompanion(')
+          ..write('id: $id, ')
+          ..write('downloadId: $downloadId, ')
+          ..write('questionId: $questionId, ')
+          ..write('selectedChoices: $selectedChoices, ')
+          ..write('shortAnswer: $shortAnswer, ')
+          ..write('review: $review, ')
+          ..write('savedAt: $savedAt, ')
+          ..write('unSyncedFiles: $unSyncedFiles')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -14810,6 +15922,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $PostsTableTable postsTable = $PostsTableTable(this);
   late final $SubjectAnalyticsTableTable subjectAnalyticsTable =
       $SubjectAnalyticsTableTable(this);
+  late final $OfflineExamDownloadsTableTable offlineExamDownloadsTable =
+      $OfflineExamDownloadsTableTable(this);
+  late final $OfflineExamAnswersTableTable offlineExamAnswersTable =
+      $OfflineExamAnswersTableTable(this);
   late final Index weeklyRankIdx = Index(
     'weekly_rank_idx',
     'CREATE INDEX weekly_rank_idx ON weekly_leaderboard (rank)',
@@ -14862,6 +15978,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     postCategoriesTable,
     postsTable,
     subjectAnalyticsTable,
+    offlineExamDownloadsTable,
+    offlineExamAnswersTable,
     weeklyRankIdx,
     weeklyPointsIdx,
     monthlyRankIdx,
@@ -22476,6 +23594,836 @@ typedef $$SubjectAnalyticsTableTableProcessedTableManager =
       SubjectAnalyticsData,
       PrefetchHooks Function()
     >;
+typedef $$OfflineExamDownloadsTableTableCreateCompanionBuilder =
+    OfflineExamDownloadsTableCompanion Function({
+      Value<int> id,
+      required String contentId,
+      required String examId,
+      required String questionsJson,
+      required DateTime downloadedAt,
+      Value<DateTime?> startedAt,
+      Value<DateTime?> completedAt,
+      Value<String> status,
+      Value<int> elapsedSeconds,
+    });
+typedef $$OfflineExamDownloadsTableTableUpdateCompanionBuilder =
+    OfflineExamDownloadsTableCompanion Function({
+      Value<int> id,
+      Value<String> contentId,
+      Value<String> examId,
+      Value<String> questionsJson,
+      Value<DateTime> downloadedAt,
+      Value<DateTime?> startedAt,
+      Value<DateTime?> completedAt,
+      Value<String> status,
+      Value<int> elapsedSeconds,
+    });
+
+final class $$OfflineExamDownloadsTableTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $OfflineExamDownloadsTableTable,
+          OfflineExamDownloadsTableData
+        > {
+  $$OfflineExamDownloadsTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<
+    $OfflineExamAnswersTableTable,
+    List<OfflineExamAnswersTableData>
+  >
+  _offlineExamAnswersTableRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.offlineExamAnswersTable,
+        aliasName: $_aliasNameGenerator(
+          db.offlineExamDownloadsTable.id,
+          db.offlineExamAnswersTable.downloadId,
+        ),
+      );
+
+  $$OfflineExamAnswersTableTableProcessedTableManager
+  get offlineExamAnswersTableRefs {
+    final manager = $$OfflineExamAnswersTableTableTableManager(
+      $_db,
+      $_db.offlineExamAnswersTable,
+    ).filter((f) => f.downloadId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _offlineExamAnswersTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$OfflineExamDownloadsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $OfflineExamDownloadsTableTable> {
+  $$OfflineExamDownloadsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contentId => $composableBuilder(
+    column: $table.contentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get examId => $composableBuilder(
+    column: $table.examId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get questionsJson => $composableBuilder(
+    column: $table.questionsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get downloadedAt => $composableBuilder(
+    column: $table.downloadedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get startedAt => $composableBuilder(
+    column: $table.startedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get elapsedSeconds => $composableBuilder(
+    column: $table.elapsedSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> offlineExamAnswersTableRefs(
+    Expression<bool> Function($$OfflineExamAnswersTableTableFilterComposer f) f,
+  ) {
+    final $$OfflineExamAnswersTableTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.offlineExamAnswersTable,
+          getReferencedColumn: (t) => t.downloadId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$OfflineExamAnswersTableTableFilterComposer(
+                $db: $db,
+                $table: $db.offlineExamAnswersTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$OfflineExamDownloadsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $OfflineExamDownloadsTableTable> {
+  $$OfflineExamDownloadsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contentId => $composableBuilder(
+    column: $table.contentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get examId => $composableBuilder(
+    column: $table.examId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get questionsJson => $composableBuilder(
+    column: $table.questionsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get downloadedAt => $composableBuilder(
+    column: $table.downloadedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get startedAt => $composableBuilder(
+    column: $table.startedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get elapsedSeconds => $composableBuilder(
+    column: $table.elapsedSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$OfflineExamDownloadsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $OfflineExamDownloadsTableTable> {
+  $$OfflineExamDownloadsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get contentId =>
+      $composableBuilder(column: $table.contentId, builder: (column) => column);
+
+  GeneratedColumn<String> get examId =>
+      $composableBuilder(column: $table.examId, builder: (column) => column);
+
+  GeneratedColumn<String> get questionsJson => $composableBuilder(
+    column: $table.questionsJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get downloadedAt => $composableBuilder(
+    column: $table.downloadedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get startedAt =>
+      $composableBuilder(column: $table.startedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<int> get elapsedSeconds => $composableBuilder(
+    column: $table.elapsedSeconds,
+    builder: (column) => column,
+  );
+
+  Expression<T> offlineExamAnswersTableRefs<T extends Object>(
+    Expression<T> Function($$OfflineExamAnswersTableTableAnnotationComposer a)
+    f,
+  ) {
+    final $$OfflineExamAnswersTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.offlineExamAnswersTable,
+          getReferencedColumn: (t) => t.downloadId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$OfflineExamAnswersTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.offlineExamAnswersTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$OfflineExamDownloadsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $OfflineExamDownloadsTableTable,
+          OfflineExamDownloadsTableData,
+          $$OfflineExamDownloadsTableTableFilterComposer,
+          $$OfflineExamDownloadsTableTableOrderingComposer,
+          $$OfflineExamDownloadsTableTableAnnotationComposer,
+          $$OfflineExamDownloadsTableTableCreateCompanionBuilder,
+          $$OfflineExamDownloadsTableTableUpdateCompanionBuilder,
+          (
+            OfflineExamDownloadsTableData,
+            $$OfflineExamDownloadsTableTableReferences,
+          ),
+          OfflineExamDownloadsTableData,
+          PrefetchHooks Function({bool offlineExamAnswersTableRefs})
+        > {
+  $$OfflineExamDownloadsTableTableTableManager(
+    _$AppDatabase db,
+    $OfflineExamDownloadsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$OfflineExamDownloadsTableTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$OfflineExamDownloadsTableTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$OfflineExamDownloadsTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> contentId = const Value.absent(),
+                Value<String> examId = const Value.absent(),
+                Value<String> questionsJson = const Value.absent(),
+                Value<DateTime> downloadedAt = const Value.absent(),
+                Value<DateTime?> startedAt = const Value.absent(),
+                Value<DateTime?> completedAt = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int> elapsedSeconds = const Value.absent(),
+              }) => OfflineExamDownloadsTableCompanion(
+                id: id,
+                contentId: contentId,
+                examId: examId,
+                questionsJson: questionsJson,
+                downloadedAt: downloadedAt,
+                startedAt: startedAt,
+                completedAt: completedAt,
+                status: status,
+                elapsedSeconds: elapsedSeconds,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String contentId,
+                required String examId,
+                required String questionsJson,
+                required DateTime downloadedAt,
+                Value<DateTime?> startedAt = const Value.absent(),
+                Value<DateTime?> completedAt = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int> elapsedSeconds = const Value.absent(),
+              }) => OfflineExamDownloadsTableCompanion.insert(
+                id: id,
+                contentId: contentId,
+                examId: examId,
+                questionsJson: questionsJson,
+                downloadedAt: downloadedAt,
+                startedAt: startedAt,
+                completedAt: completedAt,
+                status: status,
+                elapsedSeconds: elapsedSeconds,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$OfflineExamDownloadsTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({offlineExamAnswersTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (offlineExamAnswersTableRefs) db.offlineExamAnswersTable,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (offlineExamAnswersTableRefs)
+                    await $_getPrefetchedData<
+                      OfflineExamDownloadsTableData,
+                      $OfflineExamDownloadsTableTable,
+                      OfflineExamAnswersTableData
+                    >(
+                      currentTable: table,
+                      referencedTable:
+                          $$OfflineExamDownloadsTableTableReferences
+                              ._offlineExamAnswersTableRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$OfflineExamDownloadsTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).offlineExamAnswersTableRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.downloadId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$OfflineExamDownloadsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $OfflineExamDownloadsTableTable,
+      OfflineExamDownloadsTableData,
+      $$OfflineExamDownloadsTableTableFilterComposer,
+      $$OfflineExamDownloadsTableTableOrderingComposer,
+      $$OfflineExamDownloadsTableTableAnnotationComposer,
+      $$OfflineExamDownloadsTableTableCreateCompanionBuilder,
+      $$OfflineExamDownloadsTableTableUpdateCompanionBuilder,
+      (
+        OfflineExamDownloadsTableData,
+        $$OfflineExamDownloadsTableTableReferences,
+      ),
+      OfflineExamDownloadsTableData,
+      PrefetchHooks Function({bool offlineExamAnswersTableRefs})
+    >;
+typedef $$OfflineExamAnswersTableTableCreateCompanionBuilder =
+    OfflineExamAnswersTableCompanion Function({
+      Value<int> id,
+      required int downloadId,
+      required String questionId,
+      Value<String?> selectedChoices,
+      Value<String?> shortAnswer,
+      Value<bool> review,
+      required DateTime savedAt,
+      Value<String?> unSyncedFiles,
+    });
+typedef $$OfflineExamAnswersTableTableUpdateCompanionBuilder =
+    OfflineExamAnswersTableCompanion Function({
+      Value<int> id,
+      Value<int> downloadId,
+      Value<String> questionId,
+      Value<String?> selectedChoices,
+      Value<String?> shortAnswer,
+      Value<bool> review,
+      Value<DateTime> savedAt,
+      Value<String?> unSyncedFiles,
+    });
+
+final class $$OfflineExamAnswersTableTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $OfflineExamAnswersTableTable,
+          OfflineExamAnswersTableData
+        > {
+  $$OfflineExamAnswersTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $OfflineExamDownloadsTableTable _downloadIdTable(_$AppDatabase db) =>
+      db.offlineExamDownloadsTable.createAlias(
+        $_aliasNameGenerator(
+          db.offlineExamAnswersTable.downloadId,
+          db.offlineExamDownloadsTable.id,
+        ),
+      );
+
+  $$OfflineExamDownloadsTableTableProcessedTableManager get downloadId {
+    final $_column = $_itemColumn<int>('download_id')!;
+
+    final manager = $$OfflineExamDownloadsTableTableTableManager(
+      $_db,
+      $_db.offlineExamDownloadsTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_downloadIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$OfflineExamAnswersTableTableFilterComposer
+    extends Composer<_$AppDatabase, $OfflineExamAnswersTableTable> {
+  $$OfflineExamAnswersTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get questionId => $composableBuilder(
+    column: $table.questionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get selectedChoices => $composableBuilder(
+    column: $table.selectedChoices,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get shortAnswer => $composableBuilder(
+    column: $table.shortAnswer,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get review => $composableBuilder(
+    column: $table.review,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get savedAt => $composableBuilder(
+    column: $table.savedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get unSyncedFiles => $composableBuilder(
+    column: $table.unSyncedFiles,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$OfflineExamDownloadsTableTableFilterComposer get downloadId {
+    final $$OfflineExamDownloadsTableTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.downloadId,
+          referencedTable: $db.offlineExamDownloadsTable,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$OfflineExamDownloadsTableTableFilterComposer(
+                $db: $db,
+                $table: $db.offlineExamDownloadsTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$OfflineExamAnswersTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $OfflineExamAnswersTableTable> {
+  $$OfflineExamAnswersTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get questionId => $composableBuilder(
+    column: $table.questionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get selectedChoices => $composableBuilder(
+    column: $table.selectedChoices,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get shortAnswer => $composableBuilder(
+    column: $table.shortAnswer,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get review => $composableBuilder(
+    column: $table.review,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get savedAt => $composableBuilder(
+    column: $table.savedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get unSyncedFiles => $composableBuilder(
+    column: $table.unSyncedFiles,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$OfflineExamDownloadsTableTableOrderingComposer get downloadId {
+    final $$OfflineExamDownloadsTableTableOrderingComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.downloadId,
+          referencedTable: $db.offlineExamDownloadsTable,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$OfflineExamDownloadsTableTableOrderingComposer(
+                $db: $db,
+                $table: $db.offlineExamDownloadsTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$OfflineExamAnswersTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $OfflineExamAnswersTableTable> {
+  $$OfflineExamAnswersTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get questionId => $composableBuilder(
+    column: $table.questionId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get selectedChoices => $composableBuilder(
+    column: $table.selectedChoices,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get shortAnswer => $composableBuilder(
+    column: $table.shortAnswer,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get review =>
+      $composableBuilder(column: $table.review, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get savedAt =>
+      $composableBuilder(column: $table.savedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get unSyncedFiles => $composableBuilder(
+    column: $table.unSyncedFiles,
+    builder: (column) => column,
+  );
+
+  $$OfflineExamDownloadsTableTableAnnotationComposer get downloadId {
+    final $$OfflineExamDownloadsTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.downloadId,
+          referencedTable: $db.offlineExamDownloadsTable,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$OfflineExamDownloadsTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.offlineExamDownloadsTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$OfflineExamAnswersTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $OfflineExamAnswersTableTable,
+          OfflineExamAnswersTableData,
+          $$OfflineExamAnswersTableTableFilterComposer,
+          $$OfflineExamAnswersTableTableOrderingComposer,
+          $$OfflineExamAnswersTableTableAnnotationComposer,
+          $$OfflineExamAnswersTableTableCreateCompanionBuilder,
+          $$OfflineExamAnswersTableTableUpdateCompanionBuilder,
+          (
+            OfflineExamAnswersTableData,
+            $$OfflineExamAnswersTableTableReferences,
+          ),
+          OfflineExamAnswersTableData,
+          PrefetchHooks Function({bool downloadId})
+        > {
+  $$OfflineExamAnswersTableTableTableManager(
+    _$AppDatabase db,
+    $OfflineExamAnswersTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$OfflineExamAnswersTableTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$OfflineExamAnswersTableTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$OfflineExamAnswersTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> downloadId = const Value.absent(),
+                Value<String> questionId = const Value.absent(),
+                Value<String?> selectedChoices = const Value.absent(),
+                Value<String?> shortAnswer = const Value.absent(),
+                Value<bool> review = const Value.absent(),
+                Value<DateTime> savedAt = const Value.absent(),
+                Value<String?> unSyncedFiles = const Value.absent(),
+              }) => OfflineExamAnswersTableCompanion(
+                id: id,
+                downloadId: downloadId,
+                questionId: questionId,
+                selectedChoices: selectedChoices,
+                shortAnswer: shortAnswer,
+                review: review,
+                savedAt: savedAt,
+                unSyncedFiles: unSyncedFiles,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int downloadId,
+                required String questionId,
+                Value<String?> selectedChoices = const Value.absent(),
+                Value<String?> shortAnswer = const Value.absent(),
+                Value<bool> review = const Value.absent(),
+                required DateTime savedAt,
+                Value<String?> unSyncedFiles = const Value.absent(),
+              }) => OfflineExamAnswersTableCompanion.insert(
+                id: id,
+                downloadId: downloadId,
+                questionId: questionId,
+                selectedChoices: selectedChoices,
+                shortAnswer: shortAnswer,
+                review: review,
+                savedAt: savedAt,
+                unSyncedFiles: unSyncedFiles,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$OfflineExamAnswersTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({downloadId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (downloadId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.downloadId,
+                                referencedTable:
+                                    $$OfflineExamAnswersTableTableReferences
+                                        ._downloadIdTable(db),
+                                referencedColumn:
+                                    $$OfflineExamAnswersTableTableReferences
+                                        ._downloadIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$OfflineExamAnswersTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $OfflineExamAnswersTableTable,
+      OfflineExamAnswersTableData,
+      $$OfflineExamAnswersTableTableFilterComposer,
+      $$OfflineExamAnswersTableTableOrderingComposer,
+      $$OfflineExamAnswersTableTableAnnotationComposer,
+      $$OfflineExamAnswersTableTableCreateCompanionBuilder,
+      $$OfflineExamAnswersTableTableUpdateCompanionBuilder,
+      (OfflineExamAnswersTableData, $$OfflineExamAnswersTableTableReferences),
+      OfflineExamAnswersTableData,
+      PrefetchHooks Function({bool downloadId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -22538,4 +24486,14 @@ class $AppDatabaseManager {
       $$PostsTableTableTableManager(_db, _db.postsTable);
   $$SubjectAnalyticsTableTableTableManager get subjectAnalyticsTable =>
       $$SubjectAnalyticsTableTableTableManager(_db, _db.subjectAnalyticsTable);
+  $$OfflineExamDownloadsTableTableTableManager get offlineExamDownloadsTable =>
+      $$OfflineExamDownloadsTableTableTableManager(
+        _db,
+        _db.offlineExamDownloadsTable,
+      );
+  $$OfflineExamAnswersTableTableTableManager get offlineExamAnswersTable =>
+      $$OfflineExamAnswersTableTableTableManager(
+        _db,
+        _db.offlineExamAnswersTable,
+      );
 }

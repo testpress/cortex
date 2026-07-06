@@ -6,7 +6,7 @@ part of 'sdk_initialization.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$sdkInitializationHash() => r'b02fb25029732b0d1989a2d6c3714502781c4c76';
+String _$sdkInitializationHash() => r'ae97a95d4f0d8e573894d837e4f2df1d3072d72f';
 
 /// Provider that handles the initialization of 3rd party SDKs (like TPStreams).
 /// This is centralized in core so all domain packages benefit.

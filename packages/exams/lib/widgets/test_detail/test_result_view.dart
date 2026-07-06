@@ -5,12 +5,14 @@ class TestResultView extends StatelessWidget {
   final String? score;
   final VoidCallback onReview;
   final VoidCallback onClose;
+  final bool isOffline;
 
   const TestResultView({
     super.key,
     this.score,
     required this.onReview,
     required this.onClose,
+    this.isOffline = false,
   });
 
   @override
@@ -77,18 +79,21 @@ class TestResultView extends StatelessWidget {
                 ),
                 SizedBox(height: design.spacing.md),
                 AppText.body(
-                  score != null
-                      ? l10n.testScoreResult(score!)
-                      : l10n.testSubmittedBody,
+                  isOffline
+                      ? l10n.testSavedLocallyOffline
+                      : (score != null
+                            ? l10n.testScoreResult(score!)
+                            : l10n.testSubmittedBody),
                   color: design.colors.textSecondary,
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: design.spacing.xl),
-                AppButton.primary(
-                  label: l10n.testReview,
-                  onPressed: onReview,
-                  fullWidth: true,
-                ),
+                if (!isOffline)
+                  AppButton.primary(
+                    label: l10n.testReview,
+                    onPressed: onReview,
+                    fullWidth: true,
+                  ),
               ],
             ),
           ),

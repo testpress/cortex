@@ -2131,4 +2131,34 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get examCompletedLabel => 'تم إكمال الامتحان';
+
+  @override
+  String get downloadingExam => 'جاري تنزيل الامتحان...';
+
+  @override
+  String get deadlinePassedCannotSync =>
+      'انتهى الموعد النهائي. لا يمكن مزامنة الامتحان.';
+
+  @override
+  String get pendingSyncConnectToUpload =>
+      'في انتظار المزامنة. اتصل بالإنترنت لتحميل الإجابات.';
+
+  @override
+  String get resumeOfflineExam => 'استئناف الامتحان غير المتصل';
+
+  @override
+  String get startOfflineExam => 'بدء الامتحان غير المتصل';
+
+  @override
+  String get downloadExamOffline => 'تنزيل الامتحان (للاستخدام غير المتصل)';
+
+  @override
+  String get testSavedLocallyOffline =>
+      'تم حفظ الاختبار محليًا. ستكون النتائج متاحة بمجرد المزامنة.';
+
+  @override
+  String get noAnswerGiven => '(لم يتم تقديم إجابة)';
+
+  @override
+  String get correctAnswerLabel => 'الإجابة الصحيحة:';
 }

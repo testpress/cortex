@@ -69,6 +69,32 @@ class HttpDataSource implements DataSource {
   }
 
   @override
+  Future<List<QuestionDto>> getOfflineExamQuestions(String examId) async {
+    final String initialUrl = ApiEndpoints.offlineExamQuestions(examId);
+    String? nextUrl = initialUrl;
+
+    final List<QuestionDto> allQuestions = [];
+
+    while (nextUrl != null) {
+      final response = await performNetworkRequest<OfflineQuestionsResponseDto>(
+        _dio.get(nextUrl),
+        fromJson: (json) => OfflineQuestionsResponseDto.fromJson(json),
+      );
+
+      allQuestions.addAll(response.questions);
+
+      final next = response.nextUrl;
+      if (next != null && !next.startsWith('http')) {
+        nextUrl = '${AppConfig.apiBaseUrl}$next';
+      } else {
+        nextUrl = next;
+      }
+    }
+
+    return allQuestions;
+  }
+
+  @override
   Future<List<ChapterDto>> getChapters(
     String courseId, {
     String? parentId,
@@ -750,6 +776,17 @@ class HttpDataSource implements DataSource {
     return performNetworkRequest(
       _dio.put(ApiEndpoints.endAttempt(attemptId)),
       fromJson: AttemptDto.fromJson,
+    );
+  }
+
+  @override
+  Future<void> submitOfflineExamAnswers(
+    String examId,
+    Map<String, dynamic> payload,
+  ) async {
+    await performNetworkRequest(
+      _dio.post(ApiEndpoints.submitOfflineExamAnswers(examId), data: payload),
+      fromJson: (data) => null,
     );
   }
 

@@ -8,7 +8,7 @@ import 'dio_provider.dart';
 
 final fileDownloaderProvider = Provider((ref) {
   final dio = ref.watch(dioProvider);
-  return FileDownloader(dio);
+  return FileDownloader(authenticatedDio: dio);
 });
 
 enum StorageType {
@@ -22,9 +22,14 @@ enum StorageType {
 }
 
 class FileDownloader {
-  final Dio _dio;
+  final Dio _authenticatedDio;
 
-  FileDownloader(this._dio);
+  /// A plain Dio instance with no auth interceptors, used for downloading
+  /// public assets (CDN images, videos, etc.) that don't require authentication.
+  final Dio _plainDio = Dio();
+
+  FileDownloader({required Dio authenticatedDio})
+    : _authenticatedDio = authenticatedDio;
 
   /// Gets the appropriate directory based on the [StorageType].
   Future<Directory> getDirectory(StorageType type) async {
@@ -101,12 +106,13 @@ class FileDownloader {
       await file.parent.create(recursive: true);
     }
 
-    await _dio.download(
+    final dio = requireAuth ? _authenticatedDio : _plainDio;
+
+    await dio.download(
       url,
       savePath,
       cancelToken: cancelToken,
       onReceiveProgress: onReceiveProgress,
-      options: Options(extra: {'requireAuth': requireAuth}),
     );
 
     return savePath;

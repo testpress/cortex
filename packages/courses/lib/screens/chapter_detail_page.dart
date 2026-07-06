@@ -40,14 +40,18 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final repo = await ref.read(courseRepositoryProvider.future);
-      await Future.wait([
-        repo.syncChapterContents(widget.courseId, widget.chapterId),
-        repo.refreshContentStatuses(widget.courseId,
-            chapterId: widget.chapterId),
-      ]);
-
-      if (mounted) setState(() => _isSyncing = false);
+      try {
+        final repo = await ref.read(courseRepositoryProvider.future);
+        await Future.wait([
+          repo.syncChapterContents(widget.courseId, widget.chapterId),
+          repo.refreshContentStatuses(widget.courseId,
+              chapterId: widget.chapterId),
+        ]);
+      } catch (e) {
+        debugPrint('ChapterDetailPage: Background sync failed: $e');
+      } finally {
+        if (mounted) setState(() => _isSyncing = false);
+      }
     });
   }
 

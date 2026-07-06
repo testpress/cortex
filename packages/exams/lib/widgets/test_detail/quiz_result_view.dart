@@ -6,6 +6,7 @@ class QuizResultView extends StatelessWidget {
   final VoidCallback onRetake;
   final VoidCallback onClose;
   final bool allowRetake;
+  final bool isOffline;
 
   const QuizResultView({
     super.key,
@@ -13,6 +14,7 @@ class QuizResultView extends StatelessWidget {
     required this.onRetake,
     required this.onClose,
     this.allowRetake = true,
+    this.isOffline = false,
   });
 
   @override
@@ -20,10 +22,6 @@ class QuizResultView extends StatelessWidget {
     final design = Design.of(context);
     final l10n = L10n.of(context);
     final accentColor = design.colors.success;
-
-    // Parse score to calculate percentage or just show score.
-    // If the score is a number, we could show percentage. But `score` is a String like "8/10"
-    // In AssessmentDetailScreen it computes percentage. For now we just show the score string.
 
     return Container(
       color: design.colors.surface,
@@ -71,37 +69,40 @@ class QuizResultView extends StatelessWidget {
                 ),
                 SizedBox(height: design.spacing.sm),
                 AppText.body(
-                  l10n.testCompleteSubtitle,
+                  isOffline
+                      ? l10n.testSavedLocallyOffline
+                      : l10n.testCompleteSubtitle,
                   color: design.colors.textSecondary,
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: design.spacing.xl),
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(design.spacing.lg),
-                  decoration: BoxDecoration(
-                    color: design.colors.surface,
-                    borderRadius: BorderRadius.circular(design.radius.md),
-                  ),
-                  child: Column(
-                    children: [
-                      AppText.headline(
-                        score ?? '-',
-                        style: TextStyle(
-                          fontSize: 52,
-                          fontWeight: FontWeight.w900,
-                          color: accentColor,
+                if (!isOffline)
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(design.spacing.lg),
+                    decoration: BoxDecoration(
+                      color: design.colors.surface,
+                      borderRadius: BorderRadius.circular(design.radius.md),
+                    ),
+                    child: Column(
+                      children: [
+                        AppText.headline(
+                          score ?? '-',
+                          style: TextStyle(
+                            fontSize: 52,
+                            fontWeight: FontWeight.w900,
+                            color: accentColor,
+                          ),
                         ),
-                      ),
-                      AppText.body(
-                        'Your Score', // Fallback or find better l10n
-                        color: design.colors.textSecondary,
-                      ),
-                    ],
+                        AppText.body(
+                          'Your Score', // Fallback or find better l10n
+                          color: design.colors.textSecondary,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(height: design.spacing.xl),
-                if (allowRetake) ...[
+                if (!isOffline) SizedBox(height: design.spacing.xl),
+                if (!isOffline && allowRetake) ...[
                   GestureDetector(
                     onTap: onRetake,
                     child: Container(
