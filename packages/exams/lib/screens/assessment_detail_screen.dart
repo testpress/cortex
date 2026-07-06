@@ -146,6 +146,10 @@ class _AssessmentDetailScreenState
     final l10n = L10n.of(context);
     if (_assessmentComplete) return _buildResultView(design, context);
 
+    if (_questions.isEmpty) {
+      return AppErrorView(message: l10n.noQuestionsFound);
+    }
+
     final q = _questions[_currentQuestionIndex];
     final state = _stateFor(q.id);
 
@@ -483,7 +487,9 @@ class _AssessmentDetailScreenState
 
   Widget _buildResultView(DesignConfig design, BuildContext context) {
     final l10n = L10n.of(context);
-    final scorePercent = (_correctCount / _questions.length * 100).round();
+    final scorePercent = _questions.isEmpty
+        ? 0
+        : (_correctCount / _questions.length * 100).round();
     final accentColor = design.colors.success;
 
     return Container(
