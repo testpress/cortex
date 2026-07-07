@@ -186,7 +186,7 @@ class ReviewStrategy implements PaletteColorStrategy {
       ),
       PaletteLegendEntry(
         shape: SquareShape(borderColor: design.colors.border, size: 18),
-        label: l10n.testStatusNotVisited,
+        label: l10n.analyticsUnanswered,
       ),
     ];
   }

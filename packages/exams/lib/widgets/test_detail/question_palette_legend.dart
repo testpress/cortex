@@ -32,9 +32,12 @@ class QuestionPaletteLegend extends StatelessWidget {
           for (var i = 0; i < rows.length; i++) ...[
             if (i > 0) SizedBox(height: design.spacing.sm),
             Row(
-              children: rows[i]
-                  .map((entry) => _buildEntry(design, entry))
-                  .toList(),
+              children: [
+                for (var j = 0; j < rows[i].length; j++) ...[
+                  if (j > 0) SizedBox(width: design.spacing.md),
+                  _buildEntry(design, rows[i][j]),
+                ],
+              ],
             ),
           ],
         ],
