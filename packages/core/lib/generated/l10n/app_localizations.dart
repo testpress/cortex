@@ -1601,6 +1601,12 @@ abstract class AppLocalizations {
   /// **'View All Questions ({answered}/{total} answered)'**
   String testViewAllQuestions(Object answered, Object total);
 
+  /// No description provided for @testViewAllQuestionsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'View All Questions'**
+  String get testViewAllQuestionsShort;
+
   /// No description provided for @testCompleteTitle.
   ///
   /// In en, this message translates to:

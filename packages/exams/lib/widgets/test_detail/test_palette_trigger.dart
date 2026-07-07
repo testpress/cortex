@@ -2,13 +2,13 @@ import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 
 class TestPaletteTrigger extends StatelessWidget {
-  final int answeredCount;
+  final int? answeredCount;
   final int totalQuestions;
   final VoidCallback onTap;
 
   const TestPaletteTrigger({
     super.key,
-    required this.answeredCount,
+    this.answeredCount,
     required this.totalQuestions,
     required this.onTap,
   });
@@ -17,6 +17,9 @@ class TestPaletteTrigger extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
+    final label = answeredCount != null
+        ? l10n.testViewAllQuestions(answeredCount!, totalQuestions)
+        : l10n.testViewAllQuestionsShort;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -29,7 +32,7 @@ class TestPaletteTrigger extends StatelessWidget {
         ),
         child: Center(
           child: AppText.body(
-            l10n.testViewAllQuestions(answeredCount, totalQuestions),
+            label,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               color: design.colors.textPrimary,

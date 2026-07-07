@@ -847,6 +847,9 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get testViewAllQuestionsShort => 'عرض جميع الأسئلة';
+
+  @override
   String get testCompleteTitle => 'اكتمل الاختبار!';
 
   @override

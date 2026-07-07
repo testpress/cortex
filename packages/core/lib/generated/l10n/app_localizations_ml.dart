@@ -857,6 +857,9 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
+  String get testViewAllQuestionsShort => 'എല്ലാ ചോദ്യങ്ങളും കാണുക';
+
+  @override
   String get testCompleteTitle => 'ടെസ്റ്റ് പൂർത്തിയായി!';
 
   @override

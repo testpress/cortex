@@ -10,6 +10,7 @@ import '../repositories/exam_repository.dart';
 import '../models/review_route_payload.dart';
 import '../widgets/test_detail/test_header.dart';
 import '../widgets/test_detail/question_palette.dart';
+import '../widgets/test_detail/question_palette_strategy.dart';
 import '../widgets/test_detail/test_result_view.dart';
 import '../widgets/test_detail/quiz_result_view.dart';
 import '../widgets/test_detail/test_progress_section.dart';
@@ -700,7 +701,6 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
               QuestionPalette(
                 questions: allQuestions,
                 answers: state.answers,
-                currentIndex: safeIndex,
                 onClose: () => setState(() => _showPalette = false),
                 onQuestionSelected: (index) {
                   setState(() {
@@ -709,6 +709,7 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
                   });
                   _pageController.jumpToPage(index);
                 },
+                strategy: const TestTakingStrategy(),
               ),
             if (_showSubmitConfirmation)
               SubmitConfirmationDialog(

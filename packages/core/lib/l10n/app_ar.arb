@@ -258,6 +258,7 @@
   "testNext": "التالي",
   "testFinish": "إنهاء",
   "testViewAllQuestions": "عرض جميع الأسئلة ({answered}/{total} تمت الإجابة عليها)",
+  "testViewAllQuestionsShort": "عرض جميع الأسئلة",
   "testCompleteTitle": "اكتمل الاختبار!",
   "testCompleteSubtitle": "عمل رائع! لقد أكملت الاختبار التدريبي.",
   "testRetake": "إعادة الاختبار",

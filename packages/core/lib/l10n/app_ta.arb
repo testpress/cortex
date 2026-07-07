@@ -418,6 +418,7 @@
   "testNext": "அடுத்தது",
   "testFinish": "முடித்துவிடு",
   "testViewAllQuestions": "அனைத்து கேள்விகளையும் காண்க ({answered}/{total} பதிலளிக்கப்பட்டது)",
+  "testViewAllQuestionsShort": "அனைத்து கேள்விகளையும் காண்க",
   "testCompleteTitle": "தேர்வு முடிந்தது!",
   "testCompleteSubtitle": "சிறந்த வேலை! நீங்கள் பயிற்சி தேர்வை முடித்துவிட்டீர்கள்.",
   "testRetake": "தேர்வை மீண்டும் எழுது",
