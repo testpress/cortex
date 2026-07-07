@@ -248,78 +248,83 @@ class AppHtmlV2 extends StatelessWidget {
       },
     );
 
+    // 4. Strip empty paragraphs
+    res = res.replaceAll(
+      RegExp(
+        r'<p[^>]*>(?:\s|&nbsp;|<(?:span|div|br)[^>]*>(?:\s|&nbsp;)*</(?:span|div)>|<br\s*/?>)*</p>',
+        caseSensitive: false,
+      ),
+      '',
+    );
+
+    // ── PASS 0b: REMAP UNSUPPORTED LATEX COMMANDS ─────────────────────────
+    res = res.replaceAllMapped(
+      RegExp(r'\\operatorname\{([^}]*)\}'),
+      (m) => '\\mathrm{${m[1]}}',
+    );
+
     // ── PASS 1: BLOCK MATH ──────────────────────────────────────────────────
 
-    // Block: $$ ... $$
     res = res.replaceAllMapped(
       RegExp(r'\$\$(.*?)\$\$', dotAll: true),
       (m) => '<math-tex block="true">${m[1]}</math-tex>',
     );
 
-    // Block: \[ ... \] (proper backslash delimiters)
     res = res.replaceAllMapped(
       RegExp(r'\\\[(.*?)\\\]', dotAll: true),
       (m) => '<math-tex block="true">${m[1]}</math-tex>',
     );
 
-    // Block: bare [ ... ] — must contain a \ command, caret ^, or underscore _.
-    // Avoids matching normal text like [see above] or [1].
-    res = res.replaceAllMapped(
-      RegExp(r'(?<!\[)\[([^\]]*?(?:\\|\^|_)[^\]]*?)\](?!\])'),
-      (m) => '<math-tex block="true">${m[1]!.trim()}</math-tex>',
-    );
-
     // ── PASS 2: INLINE MATH ─────────────────────────────────────────────────
 
-    // Inline: \( ... \) (proper backslash delimiters)
     res = res.replaceAllMapped(
       RegExp(r'\\\((.*?)\\\)', dotAll: true),
       (m) => '<math-tex>${m[1]}</math-tex>',
     );
 
-    // Inline: $ ... $ (single dollar)
-    // Standard MathJax/KaTeX rule: the $ must not be immediately followed by a space,
-    // and the closing $ must not be immediately preceded by a space.
-    // This perfectly skips false positives like "I paid $5 and he paid $10."
     res = res.replaceAllMapped(
       RegExp(r'\$(?!\s)([^$\n]+?)(?<!\s)\$'),
       (m) => '<math-tex>${m[1]}</math-tex>',
     );
 
-    // Inline: bare ( ... ) — must contain a \ command, caret ^, or underscore _.
-    // Runs only on text OUTSIDE existing <math-tex> tags.
+    // ── PASS 3: BARE DELIMITERS ─────────────────────────────────────────────
+
+    final bareBracketRegex = RegExp(
+      r'(?<!\[)\[([^\]]*?(?:\\|\^|_)[^\]]*?)\](?!\])',
+    );
     final bareParenRegex = RegExp(
       r'(?<![a-zA-Z0-9])\(([^)]*?(?:\\|\^|_)[^)]*?)\)',
     );
 
-    // Split by existing tags, apply bare-paren regex only to plain text parts.
-    // Manually reconstruct segments because splitWithDelimiters is unavailable.
     final tagPattern = RegExp(r'<math-tex[^>]*>[\s\S]*?</math-tex>');
     final buffer = StringBuffer();
     var cursor = 0;
 
     for (final match in tagPattern.allMatches(res)) {
-      // Text before this tag — apply bare-paren regex
-      final before = res.substring(cursor, match.start);
-      buffer.write(
-        before.replaceAllMapped(
-          bareParenRegex,
-          (m) => '<math-tex>${m[1]!.trim()}</math-tex>',
-        ),
+      var before = res.substring(cursor, match.start);
+      before = before.replaceAllMapped(
+        bareBracketRegex,
+        (m) => '<math-tex block="true">${m[1]!.trim()}</math-tex>',
       );
-      // The tag itself — keep as-is
+      before = before.replaceAllMapped(
+        bareParenRegex,
+        (m) => '<math-tex>${m[1]!.trim()}</math-tex>',
+      );
+      buffer.write(before);
       buffer.write(match.group(0));
       cursor = match.end;
     }
 
-    // Remaining text after last tag
-    final tail = res.substring(cursor);
-    buffer.write(
-      tail.replaceAllMapped(
-        bareParenRegex,
-        (m) => '<math-tex>${m[1]!.trim()}</math-tex>',
-      ),
+    var tail = res.substring(cursor);
+    tail = tail.replaceAllMapped(
+      bareBracketRegex,
+      (m) => '<math-tex block="true">${m[1]!.trim()}</math-tex>',
     );
+    tail = tail.replaceAllMapped(
+      bareParenRegex,
+      (m) => '<math-tex>${m[1]!.trim()}</math-tex>',
+    );
+    buffer.write(tail);
 
     res = buffer.toString();
 
@@ -343,7 +348,7 @@ class _MathWidgetFactory extends WidgetFactory {
     if (meta.element.localName == 'math-tex') {
       final isBlock = meta.element.attributes['block'] == 'true';
 
-      final tex = meta.element.text.trim();
+      final tex = meta.element.text.trim().replaceAll(RegExp(r'\s+'), ' ');
 
       // BLOCK EQUATIONS
       if (isBlock) {
