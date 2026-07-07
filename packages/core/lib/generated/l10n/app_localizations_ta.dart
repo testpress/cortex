@@ -125,6 +125,129 @@ class AppLocalizationsTa extends AppLocalizations {
       'சேவையக பிழை. சிறிது நேரத்திற்குப் பிறகு மீண்டும் முயற்சிக்கவும்.';
 
   @override
+  String get loginSignIn => 'உள்நுழைக';
+
+  @override
+  String get loginSignUp => 'பதிவு செய்க';
+
+  @override
+  String get loginSignUpPrompt => 'கணக்கு இல்லையா? ';
+
+  @override
+  String get loginAlreadyHaveAccount => 'ஏற்கனவே கணக்கு உள்ளதா? ';
+
+  @override
+  String get loginForgotPassword => 'கடவுச்சொல் மறந்துவிட்டதா?';
+
+  @override
+  String get loginOr => 'அல்லது';
+
+  @override
+  String get loginContinueWithMobile => 'மொபைலுடன் தொடர்க';
+
+  @override
+  String get loginContinueWithGoogle => 'Google-உடன் தொடர்க';
+
+  @override
+  String get loginMobileLoginTitle => 'மொபைல் உள்நுழைவு';
+
+  @override
+  String get loginMobileLoginSubtitle =>
+      'தொடர உங்கள் தொலைபேசி எண்ணை உள்ளிடவும்';
+
+  @override
+  String get loginCountryCodeShortLabel => 'குறியீடு';
+
+  @override
+  String get loginContinue => 'தொடர்க';
+
+  @override
+  String get loginVerifyOtpTitle => 'OTP சரிபார்க்கவும்';
+
+  @override
+  String get loginVerify => 'சரிபார்க்க';
+
+  @override
+  String loginResendCodeIn(String time) {
+    return '$time நேரத்தில் குறியீட்டை மீண்டும் அனுப்பு';
+  }
+
+  @override
+  String get loginDidntReceiveCode => 'குறியீடு வரவில்லையா? ';
+
+  @override
+  String get loginResend => 'மீண்டும் அனுப்பு';
+
+  @override
+  String get loginOtpError => 'சரியான 4 இலக்க OTP ஐ உள்ளிடவும்';
+
+  @override
+  String get loginResendSuccess =>
+      'குறியீடு வெற்றிகரமாக மீண்டும் அனுப்பப்பட்டது!';
+
+  @override
+  String get loginResendFailed =>
+      'குறியீட்டை மீண்டும் அனுப்ப முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
+
+  @override
+  String get loginForgotPasswordTitle => 'கடவுச்சொல் மறந்துவிட்டது';
+
+  @override
+  String get loginForgotPasswordSubtitle =>
+      'உங்கள் கணக்குடன் இணைக்கப்பட்ட மின்னஞ்சலை உள்ளிடவும். கடவுச்சொல்லை மீட்டமைக்க சரிபார்ப்பு குறியீடு அனுப்பப்படும்.';
+
+  @override
+  String get loginForgotPasswordSent =>
+      'உங்கள் மின்னஞ்சலுக்கு கடவுச்சொல் மீட்டமைப்பு இணைப்பை அனுப்பியுள்ளோம்.';
+
+  @override
+  String get loginSendResetLink => 'மீட்டமைப்பு இணைப்பை அனுப்பு';
+
+  @override
+  String get loginBackToLogin => 'உள்நுழைவுக்கு திரும்பு';
+
+  @override
+  String get loginEmailLabel => 'மின்னஞ்சல்';
+
+  @override
+  String get loginEmailHintFull => 'உங்கள் மின்னஞ்சலை உள்ளிடவும்';
+
+  @override
+  String get loginEmailRequired => 'உங்கள் மின்னஞ்சல் முகவரியை உள்ளிடவும்.';
+
+  @override
+  String get loginSignUpTitle => 'பதிவு செய்க';
+
+  @override
+  String get loginFullNameLabel => 'முழு பெயர்';
+
+  @override
+  String get loginFullNameHint => 'உங்கள் பெயரை உள்ளிடவும்';
+
+  @override
+  String get loginEmailHintId => 'உங்கள் மின்னஞ்சல் ஐடியை உள்ளிடவும்';
+
+  @override
+  String get loginDateOfBirthLabel => 'பிறந்த தேதி';
+
+  @override
+  String get loginDateOfBirthHint => '18/03/2004';
+
+  @override
+  String get loginPhoneNumberShortHint => '92726-05921';
+
+  @override
+  String get loginSetPasswordLabel => 'கடவுச்சொல் அமை';
+
+  @override
+  String get loginRegister => 'பதிவு செய்';
+
+  @override
+  String loginOtpVerifySubtitle(String phone) {
+    return 'உங்கள் $phone க்கு அனுப்பப்பட்ட 4 இலக்க குறியீட்டை உள்ளிடவும்';
+  }
+
+  @override
   String get welcomeMessage => 'Cortex-க்கு வரவேற்கிறோம்';
 
   @override

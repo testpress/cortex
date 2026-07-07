@@ -121,6 +121,127 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loginErrorServer => 'خطأ في الخادم. يرجى المحاولة بعد قليل.';
 
   @override
+  String get loginSignIn => 'تسجيل الدخول';
+
+  @override
+  String get loginSignUp => 'إنشاء حساب';
+
+  @override
+  String get loginSignUpPrompt => 'ليس لديك حساب؟ ';
+
+  @override
+  String get loginAlreadyHaveAccount => 'هل لديك حساب بالفعل؟ ';
+
+  @override
+  String get loginForgotPassword => 'نسيت كلمة المرور؟';
+
+  @override
+  String get loginOr => 'أو';
+
+  @override
+  String get loginContinueWithMobile => 'المتابعة برقم الهاتف';
+
+  @override
+  String get loginContinueWithGoogle => 'المتابعة عبر Google';
+
+  @override
+  String get loginMobileLoginTitle => 'تسجيل الدخول بالجوال';
+
+  @override
+  String get loginMobileLoginSubtitle => 'أدخل رقم هاتفك للمتابعة';
+
+  @override
+  String get loginCountryCodeShortLabel => 'الرمز';
+
+  @override
+  String get loginContinue => 'متابعة';
+
+  @override
+  String get loginVerifyOtpTitle => 'التحقق من OTP';
+
+  @override
+  String get loginVerify => 'تحقق';
+
+  @override
+  String loginResendCodeIn(String time) {
+    return 'إعادة إرسال الرمز خلال $time';
+  }
+
+  @override
+  String get loginDidntReceiveCode => 'لم تستلم الرمز؟ ';
+
+  @override
+  String get loginResend => 'إعادة الإرسال';
+
+  @override
+  String get loginOtpError => 'يرجى إدخال رمز OTP المكون من 4 أرقام';
+
+  @override
+  String get loginResendSuccess => 'تمت إعادة إرسال الرمز بنجاح!';
+
+  @override
+  String get loginResendFailed =>
+      'فشل في إعادة إرسال الرمز. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get loginForgotPasswordTitle => 'نسيت كلمة المرور';
+
+  @override
+  String get loginForgotPasswordSubtitle =>
+      'أدخل البريد الإلكتروني المرتبط بحسابك. سنرسل رمز تحقق لإعادة تعيين كلمة المرور.';
+
+  @override
+  String get loginForgotPasswordSent =>
+      'لقد أرسلنا رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.';
+
+  @override
+  String get loginSendResetLink => 'إرسال رابط الإعادة';
+
+  @override
+  String get loginBackToLogin => 'العودة إلى تسجيل الدخول';
+
+  @override
+  String get loginEmailLabel => 'البريد الإلكتروني';
+
+  @override
+  String get loginEmailHintFull => 'أدخل بريدك الإلكتروني';
+
+  @override
+  String get loginEmailRequired => 'يرجى إدخال عنوان بريدك الإلكتروني.';
+
+  @override
+  String get loginSignUpTitle => 'إنشاء حساب';
+
+  @override
+  String get loginFullNameLabel => 'الاسم الكامل';
+
+  @override
+  String get loginFullNameHint => 'أدخل اسمك';
+
+  @override
+  String get loginEmailHintId => 'أدخل معرّف بريدك الإلكتروني';
+
+  @override
+  String get loginDateOfBirthLabel => 'تاريخ الميلاد';
+
+  @override
+  String get loginDateOfBirthHint => '18/03/2004';
+
+  @override
+  String get loginPhoneNumberShortHint => '92726-05921';
+
+  @override
+  String get loginSetPasswordLabel => 'تعيين كلمة المرور';
+
+  @override
+  String get loginRegister => 'تسجيل';
+
+  @override
+  String loginOtpVerifySubtitle(String phone) {
+    return 'أدخل الرمز المكون من 4 أرقام المُرسَل إلى $phone';
+  }
+
+  @override
   String get welcomeMessage => 'مرحبًا بك في كورتيكس';
 
   @override
