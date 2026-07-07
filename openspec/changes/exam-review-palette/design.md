@@ -15,9 +15,9 @@ During an active exam, the `QuestionPalette` widget provides a bottom sheet grid
 
 ## Decisions
 
-**1. Mode Flag vs Separate Widget:**
-- *Decision:* Introduce an `isReviewMode` flag (or `PaletteMode` enum) to the `QuestionPalette` widget.
-- *Rationale:* The layout, interaction logic, and bottom-sheet presentation are identical between exam and review contexts. Duplicating the widget into a `ReviewQuestionPalette` would cause maintenance overhead. By passing a mode flag, we can selectively alter just the color resolution (`_buildPaletteItem`) and legend labels.
+**1. Strategy Pattern vs Separate Widget:**
+- *Decision:* Introduce a `PaletteColorStrategy` interface (Strategy Pattern) to abstract the color and legend logic.
+- *Rationale:* The layout, interaction logic, and bottom-sheet presentation are identical between exam and review contexts. Duplicating the widget into a `ReviewQuestionPalette` would cause maintenance overhead. By passing a strategy object (`TestTakingStrategy` or `ReviewStrategy`), the palette widget remains dumb and simply delegates the coloring and legend generation to the active context's strategy.
 
 **2. State Integration:**
 - *Decision:* Add the `TestPaletteTrigger` widget to the bottom of the `ReviewAnswerDetailScreen`.
