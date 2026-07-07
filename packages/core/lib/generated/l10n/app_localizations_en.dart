@@ -850,6 +850,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get testViewAllQuestionsShort => 'View All Questions';
+
+  @override
   String get testCompleteTitle => 'Test Complete!';
 
   @override

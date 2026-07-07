@@ -258,6 +258,7 @@
   "testNext": "അടുത്തത്",
   "testFinish": "പൂർത്തിയാക്കുക",
   "testViewAllQuestions": "എല്ലാ ചോദ്യങ്ങളും കാണുക ({answered}/{total} ഉത്തരങ്ങൾ നൽകി)",
+  "testViewAllQuestionsShort": "എല്ലാ ചോദ്യങ്ങളും കാണുക",
   "testCompleteTitle": "ടെസ്റ്റ് പൂർത്തിയായി!",
   "testCompleteSubtitle": "നന്നായി ചെയ്തു! നിങ്ങൾ പ്രാക്ടീസ് ടെസ്റ്റ് പൂർത്തിയാക്കി.",
   "testRetake": "വീണ്ടും ടെസ്റ്റ് എടുക്കുക",

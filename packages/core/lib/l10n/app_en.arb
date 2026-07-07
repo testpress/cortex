@@ -426,6 +426,7 @@
   "testNext": "Next",
   "testFinish": "Finish",
   "testViewAllQuestions": "View All Questions ({answered}/{total} answered)",
+  "testViewAllQuestionsShort": "View All Questions",
   "testCompleteTitle": "Test Complete!",
   "testCompleteSubtitle": "Great job! You've completed the practice test.",
   "testRetake": "Retake Test",

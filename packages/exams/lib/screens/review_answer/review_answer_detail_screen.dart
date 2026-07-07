@@ -9,9 +9,11 @@ import 'widgets/review_filter_bar.dart';
 import 'widgets/review_question_view.dart';
 import 'widgets/review_footer_actions.dart';
 import 'widgets/review_navigation.dart';
-import 'widgets/review_analytics_view.dart';
 import 'widgets/review_dialog_components.dart';
 import 'widgets/review_empty_state.dart';
+import '../../widgets/test_detail/question_palette.dart';
+import '../../widgets/test_detail/question_palette_strategy.dart';
+import '../../widgets/test_detail/test_palette_trigger.dart';
 
 class ReviewAnswerDetailScreen extends ConsumerStatefulWidget {
   final String assessmentTitle;
@@ -41,6 +43,7 @@ class _ReviewAnswerDetailScreenState
     with ReviewStateLogic {
   late int _currentQuestionIndex;
   ReviewFilter _activeFilter = ReviewFilter.all;
+  bool _showPalette = false;
 
   bool _isLoading = true;
   List<QuestionDto> _questions = [];
@@ -57,6 +60,14 @@ class _ReviewAnswerDetailScreenState
     super.initState();
     _currentQuestionIndex = widget.initialQuestionIndex;
     _initializeData();
+  }
+
+  void _navigateToQuestion(int index) {
+    setState(() {
+      _activeFilter = ReviewFilter.all;
+      _currentQuestionIndex = index;
+      _showPalette = false;
+    });
   }
 
   void _initializeData() {
@@ -166,75 +177,94 @@ class _ReviewAnswerDetailScreenState
 
     return Container(
       color: design.colors.surface,
-      child: Column(
+      child: Stack(
         children: [
-          ReviewHeader(
-            l10n: l10n,
-            assessmentTitle: widget.assessmentTitle,
-            onBack: widget.onBack,
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  ReviewFilterBar(
-                    l10n: l10n,
-                    activeFilter: _activeFilter,
-                    onFilterChanged: (f) => setState(() {
-                      _activeFilter = f;
-                      _currentQuestionIndex = 0;
-                    }),
-                    countAll: countFor(ReviewFilter.all),
-                    countCorrect: countFor(ReviewFilter.correct),
-                    countIncorrect: countFor(ReviewFilter.incorrect),
-                    countUnanswered: countFor(ReviewFilter.unanswered),
-                  ),
-                  if (currentQuestion != null) ...[
-                    ReviewQuestionCard(
-                      question: currentQuestion,
-                      attemptState: _attemptStates[currentQuestion.id],
-                      l10n: l10n,
-                      isCorrect: isAnswerCorrect(currentQuestion),
-                      isUnanswered: isUnanswered(currentQuestion),
-                      questionNumber: (() {
-                        final idx = _questions.indexWhere(
-                          (q) => q.id == currentQuestion.id,
-                        );
-                        return (idx != -1 ? idx + 1 : 1).toString();
-                      })(),
-                    ),
-                    ReviewFooterActions(
-                      l10n: l10n,
-                      onAskDoubt: () => context.push(
-                        '/home/discussions/doubts/ask?question_id=${Uri.encodeComponent(currentQuestion.id)}',
+          Column(
+            children: [
+              ReviewHeader(
+                l10n: l10n,
+                assessmentTitle: widget.assessmentTitle,
+                onBack: widget.onBack,
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      ReviewFilterBar(
+                        l10n: l10n,
+                        activeFilter: _activeFilter,
+                        onFilterChanged: (f) => setState(() {
+                          _activeFilter = f;
+                          _currentQuestionIndex = 0;
+                        }),
+                        countAll: countFor(ReviewFilter.all),
+                        countCorrect: countFor(ReviewFilter.correct),
+                        countIncorrect: countFor(ReviewFilter.incorrect),
+                        countUnanswered: countFor(ReviewFilter.unanswered),
                       ),
-                      onComment: () =>
-                          _showCommentDialog(currentQuestion, design, l10n),
-                      onReport: () =>
-                          _showReportDialog(currentQuestion, design, l10n),
-                    ),
-                    ReviewNavigation(
-                      l10n: l10n,
-                      currentIndex: _currentQuestionIndex,
-                      totalCount: filtered.length,
-                      onPrevious: () => setState(() => _currentQuestionIndex--),
-                      onNext: () => setState(() => _currentQuestionIndex++),
-                    ),
-                  ] else
-                    ReviewEmptyState(l10n: l10n),
-                  ReviewOverallSummary(
-                    l10n: l10n,
-                    correct: countFor(ReviewFilter.correct),
-                    incorrect: countFor(ReviewFilter.incorrect),
-                    unanswered: countFor(ReviewFilter.unanswered),
-                    total: _questions.length,
-                  ),
+                      if (currentQuestion != null) ...[
+                        ReviewQuestionCard(
+                          question: currentQuestion,
+                          attemptState: _attemptStates[currentQuestion.id],
+                          l10n: l10n,
+                          isCorrect: isAnswerCorrect(currentQuestion),
+                          isUnanswered: isUnanswered(currentQuestion),
+                          questionNumber: (() {
+                            final idx = _questions.indexWhere(
+                              (q) => q.id == currentQuestion.id,
+                            );
+                            return (idx != -1 ? idx + 1 : 1).toString();
+                          })(),
+                        ),
+                        ReviewFooterActions(
+                          l10n: l10n,
+                          onAskDoubt: () => context.push(
+                            '/home/discussions/doubts/ask?question_id=${Uri.encodeComponent(currentQuestion.id)}',
+                          ),
+                          onComment: () =>
+                              _showCommentDialog(currentQuestion, design, l10n),
+                          onReport: () =>
+                              _showReportDialog(currentQuestion, design, l10n),
+                        ),
+                        ReviewNavigation(
+                          l10n: l10n,
+                          currentIndex: _currentQuestionIndex,
+                          totalCount: filtered.length,
+                          onPrevious: () =>
+                              setState(() => _currentQuestionIndex--),
+                          onNext: () => setState(() => _currentQuestionIndex++),
+                        ),
+                      ] else
+                        ReviewEmptyState(l10n: l10n),
 
-                  SizedBox(height: design.spacing.xl),
-                ],
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: design.spacing.md,
+                        ),
+                        child: TestPaletteTrigger(
+                          totalQuestions: _questions.length,
+                          onTap: () => setState(() => _showPalette = true),
+                        ),
+                      ),
+
+                      SizedBox(height: design.spacing.xl),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (_showPalette)
+            QuestionPalette(
+              questions: _questions,
+              answers: _attemptStates,
+              onClose: () => setState(() => _showPalette = false),
+              onQuestionSelected: _navigateToQuestion,
+              strategy: ReviewStrategy(
+                isAnswerCorrect: isAnswerCorrect,
+                isUnanswered: isUnanswered,
               ),
             ),
-          ),
         ],
       ),
     );

@@ -858,6 +858,9 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
+  String get testViewAllQuestionsShort => 'அனைத்து கேள்விகளையும் காண்க';
+
+  @override
   String get testCompleteTitle => 'தேர்வு முடிந்தது!';
 
   @override
