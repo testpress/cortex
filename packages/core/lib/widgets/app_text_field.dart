@@ -24,6 +24,7 @@ class AppTextField extends StatelessWidget {
     this.textStyle,
     this.autofillHints,
     this.prefixIcon,
+    this.suffixIcon,
     this.maxLines = 1,
   });
 
@@ -43,6 +44,7 @@ class AppTextField extends StatelessWidget {
   final TextStyle? textStyle;
   final Iterable<String>? autofillHints;
   final IconData? prefixIcon;
+  final Widget? suffixIcon;
   final int? maxLines;
 
   @override
@@ -66,7 +68,6 @@ class AppTextField extends StatelessWidget {
                   : design.colors.border,
             ),
           ),
-          padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
           child: Material(
             type: MaterialType.transparency,
             child: TextField(
@@ -106,9 +107,18 @@ class AppTextField extends StatelessWidget {
                   minWidth: 0,
                   minHeight: 0,
                 ),
+                suffixIcon: suffixIcon != null
+                    ? Padding(
+                        padding: EdgeInsets.only(right: design.spacing.md),
+                        child: suffixIcon,
+                      )
+                    : null,
                 contentPadding:
                     contentPadding ??
-                    EdgeInsets.symmetric(vertical: design.spacing.md),
+                    EdgeInsets.symmetric(
+                      horizontal: design.spacing.md,
+                      vertical: design.spacing.md,
+                    ),
               ),
             ),
           ),

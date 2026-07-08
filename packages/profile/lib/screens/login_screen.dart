@@ -1,8 +1,9 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sign_in_button/sign_in_button.dart';
+import '../widgets/login_branding.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -12,300 +13,337 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final _pageController = PageController();
-  int _currentPage = 0;
-  Timer? _carouselTimer;
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    _startCarousel();
-  }
+  bool _isBusy = false;
+  bool _obscurePassword = true;
 
-  void _startCarousel() {
-    _carouselTimer = Timer.periodic(const Duration(seconds: 4), (timer) {
-      if (_pageController.hasClients) {
-        final nextPage = (_currentPage + 1) % 3;
-        _pageController.animateToPage(
-          nextPage,
-          duration: const Duration(milliseconds: 600),
-          curve: Curves.easeInOut,
-        );
-      }
-    });
-  }
+  String? _errorMessage;
 
   @override
   void dispose() {
-    _carouselTimer?.cancel();
-    _pageController.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-
-    return Scaffold(
-      backgroundColor: design.colors.surface,
-      body: Container(
-        color: design.colors.primary.withValues(alpha: 0.05),
-        child: Column(
-          children: [
-            Expanded(child: _buildBrandingSection()),
-            Container(
-              decoration: BoxDecoration(
-                color: design.colors.surface,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(32),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, -5),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(32),
-                ),
-                child: SafeArea(
-                  top: false,
-                  child: _buildOptions(key: const ValueKey('options')),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBrandingSection() {
-    final design = Design.of(context);
+    final l10n = L10n.of(context);
     final settings = ref.watch(instituteSettingsProvider);
-    final name = settings?.name;
-    final instituteName = (name != null && name.isNotEmpty) ? name : 'CORTEX';
-
-    return SafeArea(
-      bottom: false,
-      child: Stack(
-        children: [
-          PageView(
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() => _currentPage = index);
-            },
-            children: [
-              _buildCarouselItem(
-                LucideIcons.globe,
-                'Learn Anywhere',
-                'Access courses and materials on the go.',
-              ),
-              _buildCarouselItem(
-                LucideIcons.barChart,
-                'Track Progress',
-                'Stay on top of your learning goals.',
-              ),
-              _buildCarouselItem(
-                LucideIcons.award,
-                'Achieve Success',
-                'Get certified and advance your career.',
-              ),
-            ],
-          ),
-          Positioned(
-            top: design.spacing.xxl,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  LucideIcons.graduationCap,
-                  color: design.colors.primary,
-                  size: 28,
-                ),
-                SizedBox(width: design.spacing.sm),
-                AppText.headline(
-                  instituteName,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            bottom: design.spacing.lg,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(3, (index) {
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  margin: EdgeInsets.symmetric(horizontal: design.spacing.xs),
-                  width: _currentPage == index ? 24 : 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: _currentPage == index
-                        ? design.colors.primary
-                        : design.colors.border,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                );
-              }),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCarouselItem(IconData icon, String title, String subtitle) {
-    final design = Design.of(context);
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: design.spacing.xxl),
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: EdgeInsets.all(design.spacing.xl),
-              decoration: BoxDecoration(
-                color: design.colors.primary.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, size: 64, color: design.colors.primary),
-            ),
-            SizedBox(height: design.spacing.xl),
-            AppText.headline(title, textAlign: TextAlign.center),
-            SizedBox(height: design.spacing.sm),
-            AppText.body(
-              subtitle,
-              color: design.colors.textSecondary,
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildOptions({required Key key}) {
-    final design = Design.of(context);
-    final settings = ref.watch(instituteSettingsProvider);
-    final allowedMethods =
-        settings?.allowedLoginMethods ?? const [LoginMethod.formLogin];
+    final disableForgotPassword = settings?.disableForgotPassword ?? true;
     final allowSignup = settings?.allowSignup ?? false;
-    final googleLoginEnabled = settings?.googleLoginEnabled ?? false;
-
-    final showOtp = allowedMethods.contains(LoginMethod.otpLogin);
-    final showForm = allowedMethods.contains(LoginMethod.formLogin);
-    final showSocial =
-        allowedMethods.contains(LoginMethod.socialLogin) && googleLoginEnabled;
 
     final loginIdLabel = settings?.loginIdLabel;
     final displayLoginIdLabel =
         (loginIdLabel != null && loginIdLabel.isNotEmpty)
         ? loginIdLabel
-        : 'Student ID';
+        : l10n.loginUsernameLabel;
+    final displayLoginIdHint = (loginIdLabel != null && loginIdLabel.isNotEmpty)
+        ? l10n.loginEnterFieldHint(loginIdLabel)
+        : l10n.loginUsernameHint;
 
-    Widget buildButton(
-      String label,
-      Widget icon,
-      VoidCallback onPressed,
-      bool isPrimary,
-    ) {
-      return isPrimary
-          ? AppButton.primary(
-              label: label,
-              fullWidth: true,
-              leading: icon,
-              onPressed: onPressed,
-            )
-          : AppButton.secondary(
-              label: label,
-              fullWidth: true,
-              leading: icon,
-              onPressed: onPressed,
-            );
-    }
+    final loginPasswordLabel = settings?.loginPasswordLabel;
+    final displayPasswordLabel =
+        (loginPasswordLabel != null && loginPasswordLabel.isNotEmpty)
+        ? loginPasswordLabel
+        : l10n.loginPasswordLabel;
+    final displayPasswordHint =
+        (loginPasswordLabel != null && loginPasswordLabel.isNotEmpty)
+        ? l10n.loginEnterFieldHint(loginPasswordLabel)
+        : l10n.loginPasswordHint;
 
-    final buttons = <Widget>[];
-    if (showOtp) {
-      buttons.add(
-        buildButton(
-          'Continue with Mobile Number',
-          const Icon(LucideIcons.smartphone),
-          () => context.push('/mobile-login'),
-          buttons.isEmpty,
-        ),
-      );
-    }
-    if (showForm) {
-      buttons.add(
-        buildButton(
-          'Continue with $displayLoginIdLabel',
-          const Icon(LucideIcons.mail),
-          () => context.push('/password-login'),
-          buttons.isEmpty,
-        ),
-      );
-    }
-    if (showSocial) {
-      buttons.add(
-        buildButton(
-          'Continue with Google',
-          const FaIcon(FontAwesomeIcons.google),
-          () => context.go('/home'),
-          buttons.isEmpty,
-        ),
-      );
-    }
+    final allowedMethods =
+        settings?.allowedLoginMethods ?? const [LoginMethod.formLogin];
+    final googleLoginEnabled = settings?.googleLoginEnabled ?? false;
+    final showOtp = allowedMethods.contains(LoginMethod.otpLogin);
+    final showSocial =
+        allowedMethods.contains(LoginMethod.socialLogin) && googleLoginEnabled;
 
-    return SingleChildScrollView(
-      key: key,
-      padding: EdgeInsets.all(design.spacing.xl),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          SizedBox(height: design.spacing.md),
-          AppText.headline('Welcome to learning', textAlign: TextAlign.center),
-          SizedBox(height: design.spacing.xs),
-          AppText.body(
-            allowSignup
-                ? 'Log in or sign up for an account'
-                : 'Log in to your account',
-            color: design.colors.textSecondary,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: design.spacing.xl),
-          for (int i = 0; i < buttons.length; i++) ...[
-            buttons[i],
-            if (i < buttons.length - 1) SizedBox(height: design.spacing.md),
-          ],
-          if (allowSignup) ...[
-            SizedBox(height: design.spacing.xxl),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+    return Scaffold(
+      backgroundColor: design.colors.surface,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                AppText.body('Don\'t have an account? '),
-                GestureDetector(
-                  child: AppText.body(
-                    'Sign up',
-                    color: design.colors.primary,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                const LoginBranding(),
+                SizedBox(height: design.spacing.xxl),
+                Container(
+                  width: double.infinity,
+                  constraints: const BoxConstraints(maxWidth: 400),
+                  padding: EdgeInsets.all(design.spacing.lg),
+                  decoration: BoxDecoration(
+                    color: design.colors.card,
+                    borderRadius: design.radius.card,
                   ),
-                  onTap: () => context.push('/signup'),
+                  child: AutofillGroup(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        AppSemantics.header(
+                          label: l10n.loginSignIn,
+                          child: AppText.display(
+                            l10n.loginSignIn,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        if (allowSignup) ...[
+                          SizedBox(height: design.spacing.sm),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              AppText.cardTitle(
+                                l10n.loginSignUpPrompt,
+                                color: design.colors.textSecondary,
+                              ),
+                              AppSemantics.button(
+                                label: l10n.loginSignUp,
+                                onTap: () => context.push('/signup'),
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: () => context.push('/signup'),
+                                  child: AppText.cardTitle(
+                                    l10n.loginSignUp,
+                                    color: design.colors.primary,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                        SizedBox(height: design.spacing.xl),
+                        AppText.cardTitle(
+                          displayLoginIdLabel,
+                          color: design.colors.textSecondary,
+                        ),
+                        SizedBox(height: design.spacing.xs),
+                        AppTextField(
+                          label: '',
+                          hintText: displayLoginIdHint,
+                          controller: _usernameController,
+                          autofocus: true,
+                          textStyle: design.typography.labelBold,
+                          textInputAction: TextInputAction.next,
+                          autofillHints: const [AutofillHints.username],
+                        ),
+                        SizedBox(height: design.spacing.lg),
+                        AppText.cardTitle(
+                          displayPasswordLabel,
+                          color: design.colors.textSecondary,
+                        ),
+                        SizedBox(height: design.spacing.xs),
+                        AppTextField(
+                          label: '',
+                          hintText: displayPasswordHint,
+                          controller: _passwordController,
+                          obscureText: _obscurePassword,
+                          textStyle: design.typography.labelBold,
+                          textInputAction: TextInputAction.done,
+                          autofillHints: const [AutofillHints.password],
+                          onSubmitted: (_) => _handlePasswordLogin(),
+                          suffixIcon: AppSemantics.button(
+                            label: _obscurePassword
+                                ? l10n.loginShowPassword
+                                : l10n.loginHidePassword,
+                            onTap: () {
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
+                            },
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () {
+                                setState(() {
+                                  _obscurePassword = !_obscurePassword;
+                                });
+                              },
+                              child: SizedBox(
+                                width: 48,
+                                height: 48,
+                                child: Center(
+                                  child: Icon(
+                                    _obscurePassword
+                                        ? LucideIcons.eye
+                                        : LucideIcons.eyeOff,
+                                    color: design.colors.textSecondary,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: design.spacing.md),
+                        if (!disableForgotPassword)
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: AppSemantics.button(
+                              label: l10n.loginForgotPassword,
+                              onTap: () => context.push('/forgot-password'),
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () => context.push('/forgot-password'),
+                                child: AppText.cardTitle(
+                                  l10n.loginForgotPassword,
+                                  color: design.colors.primary,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        if (_errorMessage != null) ...[
+                          SizedBox(height: design.spacing.md),
+                          AppText.bodySmall(
+                            _errorMessage!,
+                            color: design.colors.error,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                        SizedBox(height: design.spacing.xl),
+                        if (_isBusy)
+                          const Center(child: AppLoadingIndicator())
+                        else
+                          AppButton.primary(
+                            label: l10n.loginButton,
+                            fullWidth: true,
+                            onPressed: _handlePasswordLogin,
+                          ),
+
+                        // Optional Alternative Logins (Or divider)
+                        if (showSocial || showOtp) ...[
+                          SizedBox(height: design.spacing.lg),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Divider(
+                                  color: design.colors.border,
+                                  thickness: 1,
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: design.spacing.md,
+                                ),
+                                child: AppText.cardTitle(
+                                  l10n.loginOr,
+                                  color: design.colors.textSecondary,
+                                ),
+                              ),
+                              Expanded(
+                                child: Divider(
+                                  color: design.colors.border,
+                                  thickness: 1,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: design.spacing.lg),
+                          if (showOtp) ...[
+                            SizedBox(
+                              width: double.infinity,
+                              height: 48,
+                              child: SignInButtonBuilder(
+                                text: l10n.loginContinueWithMobile,
+                                icon: LucideIcons.smartphone,
+                                backgroundColor: const Color(0xFFFFFFFF),
+                                textColor: Colors.black87,
+                                iconColor: Colors.black87,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: design.radius.button,
+                                  side: BorderSide(color: design.colors.border),
+                                ),
+                                onPressed: () => context.push('/mobile-login'),
+                              ),
+                            ),
+                            SizedBox(height: design.spacing.md),
+                          ],
+                          if (showSocial) ...[
+                            SizedBox(
+                              width: double.infinity,
+                              height: 48,
+                              child: SignInButton(
+                                Buttons.google,
+                                // TODO: Implement Google SSO via auth provider
+                                text: l10n.loginContinueWithGoogle,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: design.radius.button,
+                                  side: BorderSide(color: design.colors.border),
+                                ),
+                                onPressed: () => context.go('/home'),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
-          ],
-        ],
+          ),
+        ),
       ),
     );
+  }
+
+  Future<void> _handlePasswordLogin() async {
+    final l10n = L10n.of(context);
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text;
+
+    if (username.isEmpty || password.isEmpty) {
+      setState(() {
+        _errorMessage = l10n.loginErrorUsernamePasswordRequired;
+      });
+      return;
+    }
+
+    if (_isBusy) return;
+    setState(() {
+      _isBusy = true;
+      _errorMessage = null;
+    });
+
+    try {
+      await ref
+          .read(authProvider.notifier)
+          .loginWithPassword(username: username, password: password);
+      if (mounted) context.go('/home');
+    } on ParallelLoginException catch (e) {
+      if (mounted) {
+        final success = await context.push<bool>(
+          '/login-activity',
+          extra: {'message': e.message},
+        );
+        if (mounted) {
+          if (success == true) {
+            context.go('/home');
+          } else {
+            await ref.read(authProvider.notifier).logout();
+          }
+        }
+      }
+    } on AuthException catch (error) {
+      if (mounted) setState(() => _errorMessage = error.message);
+    } catch (_) {
+      if (mounted) {
+        setState(() => _errorMessage = l10n.loginErrorGenericRequest);
+      }
+    } finally {
+      if (mounted) setState(() => _isBusy = false);
+    }
   }
 }

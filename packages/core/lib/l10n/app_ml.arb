@@ -35,6 +35,63 @@
   "loginErrorLockout": "ഈ അക്കൗണ്ട് ലോക്ക് ചെയ്തിരിക്കുന്നു. അഡ്മിനുമായി ബന്ധപ്പെടുക.",
   "loginErrorNetwork": "നെറ്റ്വർക്ക് പിശക്. ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക.",
   "loginErrorServer": "സെർവർ പിശക്. കുറച്ച് കഴിഞ്ഞ് വീണ്ടും ശ്രമിക്കുക.",
+  "loginSignIn": "ലോഗിൻ ചെയ്യുക",
+  "loginSignUp": "സൈൻ അപ്പ് ചെയ്യുക",
+  "loginSignUpPrompt": "അക്കൗണ്ട് ഇല്ലേ? ",
+  "loginAlreadyHaveAccount": "ഇതിനകം അക്കൗണ്ട് ഉണ്ടോ? ",
+  "loginForgotPassword": "പാസ്‌വേഡ് മറന്നോ?",
+  "loginOr": "അല്ലെങ്കിൽ",
+  "loginContinueWithMobile": "മൊബൈൽ ഉപയോഗിച്ച് തുടരുക",
+  "loginContinueWithGoogle": "Google ഉപയോഗിച്ച് തുടരുക",
+  "loginMobileLoginTitle": "മൊബൈൽ ലോഗിൻ",
+  "loginMobileLoginSubtitle": "തുടരാൻ നിങ്ങളുടെ ഫോൺ നമ്പർ നൽകുക",
+  "loginCountryCodeShortLabel": "കോഡ്",
+  "loginContinue": "തുടരുക",
+  "loginVerifyOtpTitle": "OTP സ്ഥിരീകരിക്കുക",
+  "loginVerify": "സ്ഥിരീകരിക്കുക",
+  "loginResendCodeIn": "{time} ൽ കോഡ് വീണ്ടും അയയ്ക്കുക",
+  "@loginResendCodeIn": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "loginDidntReceiveCode": "കോഡ് ലഭിച്ചില്ലേ? ",
+  "loginResend": "വീണ്ടും അയയ്ക്കുക",
+  "loginOtpError": "ദയവായി 4 അക്ക OTP നൽകുക",
+  "loginResendSuccess": "കോഡ് വിജയകരമായി വീണ്ടും അയച്ചു!",
+  "loginResendFailed": "കോഡ് വീണ്ടും അയയ്ക്കുന്നതിൽ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക.",
+  "loginForgotPasswordTitle": "പാസ്‌വേഡ് മറന്നു",
+  "loginForgotPasswordSubtitle": "നിങ്ങളുടെ അക്കൗണ്ടുമായി ബന്ധിപ്പിച്ചിരിക്കുന്ന ഇമെയിൽ നൽകുക. പാസ്‌വേഡ് പുനഃസജ്ജീകരിക്കാൻ ഒരു സ്ഥിരീകരണ കോഡ് അയയ്ക്കും.",
+  "loginForgotPasswordSent": "നിങ്ങളുടെ ഇമെയിലിലേക്ക് പാസ്‌വേഡ് റീസെറ്റ് ലിങ്ക് അയച്ചിട്ടുണ്ട്.",
+  "loginSendResetLink": "റീസെറ്റ് ലിങ്ക് അയയ്ക്കുക",
+  "loginBackToLogin": "ലോഗിൻ-ലേക്ക് മടങ്ങുക",
+  "loginEmailLabel": "ഇമെയിൽ",
+  "loginEmailHintFull": "നിങ്ങളുടെ ഇമെയിൽ നൽകുക",
+  "loginEmailRequired": "ദയവായി നിങ്ങളുടെ ഇമെയിൽ വിലാസം നൽകുക.",
+  "loginSignUpTitle": "സൈൻ അപ്പ്",
+  "loginFullNameLabel": "പൂർണ്ണ പേര്",
+  "loginFullNameHint": "നിങ്ങളുടെ പേര് നൽകുക",
+  "loginEmailHintId": "നിങ്ങളുടെ മെയിൽ ഐഡി നൽകുക",
+  "loginDateOfBirthLabel": "ജനനത്തീയതി",
+  "loginDateOfBirthHint": "18/03/2004",
+  "loginPhoneNumberShortHint": "92726-05921",
+  "loginSetPasswordLabel": "പാസ്‌വേഡ് സജ്ജീകരിക്കുക",
+  "loginRegister": "രജിസ്റ്റർ ചെയ്യുക",
+  "loginGoBack": "തിരിച്ചു പോകൂ",
+  "loginShowPassword": "പാസ്‌വേഡ് കാണിക്കുക",
+  "loginHidePassword": "പാസ്‌വേഡ് മറയ്ക്കുക",
+  "loginEnterFieldHint": "{field} നൽകുക",
+  "@loginEnterFieldHint": {
+    "placeholders": {
+      "field": { "type": "String" }
+    }
+  },
+  "loginOtpVerifySubtitle": "നിങ്ങളുടെ {phone} ലേക്ക് അയച്ച 4 അക്ക കോഡ് നൽകുക",
+  "@loginOtpVerifySubtitle": {
+    "placeholders": {
+      "phone": { "type": "String" }
+    }
+  },
   "welcomeMessage": "കോട്ടെക്സിലേക്ക് സ്വാഗതം",
   "courseLibraryTitle": "കോട്ടെക്സ്",
   "courseLibrarySubtitle": "കോഴ്സ് ലൈബ്രറി",

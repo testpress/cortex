@@ -1184,6 +1184,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.28.0"
+  sign_in_button:
+    dependency: transitive
+    description:
+      name: sign_in_button
+      sha256: "537f5dd0e18ef4503c48a3309cfd888bc4a72b275286ac6c5aaf9b91bc2522ca"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.0"
   skeletonizer:
     dependency: transitive
     description:

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../widgets/login_branding.dart';
 
 class MobileLoginScreen extends ConsumerStatefulWidget {
   const MobileLoginScreen({super.key});
@@ -45,70 +46,111 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
             : null,
       ),
       body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: design.spacing.xl,
-                vertical: design.spacing.md,
-              ),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight - design.spacing.xl * 2,
-                ),
-                child: IntrinsicHeight(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      AppText.headline('Mobile Login'),
-                      SizedBox(height: design.spacing.xxl),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 80,
-                            child: AppTextField(
-                              label: 'Code',
-                              hintText: l10n.loginCountryCodeHint,
-                              controller: _countryCodeController,
-                            ),
+        child: Align(
+          alignment: const Alignment(0, -0.2),
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const LoginBranding(),
+                SizedBox(height: design.spacing.xxl),
+                Container(
+                  width: double.infinity,
+                  constraints: const BoxConstraints(maxWidth: 400),
+                  padding: EdgeInsets.all(design.spacing.lg),
+                  decoration: BoxDecoration(
+                    color: design.colors.card,
+                    borderRadius: design.radius.card,
+                  ),
+                  child: AutofillGroup(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        AppSemantics.header(
+                          label: l10n.loginMobileLoginTitle,
+                          child: AppText.display(
+                            l10n.loginMobileLoginTitle,
+                            textAlign: TextAlign.left,
                           ),
-                          SizedBox(width: design.spacing.md),
-                          Expanded(
-                            child: AppTextField(
-                              label: l10n.loginPhoneNumberLabel,
-                              hintText: l10n.loginPhoneNumberHint,
-                              controller: _phoneController,
-                              keyboardType: TextInputType.phone,
-                              autofocus: true,
-                              textInputAction: TextInputAction.next,
-                              onSubmitted: (_) => _handleContinueToOtp(),
+                        ),
+                        SizedBox(height: design.spacing.sm),
+                        AppText.cardTitle(
+                          l10n.loginMobileLoginSubtitle,
+                          color: design.colors.textSecondary,
+                        ),
+                        SizedBox(height: design.spacing.xl),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: 80,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  AppText.cardTitle(
+                                    l10n.loginCountryCodeShortLabel,
+                                    color: design.colors.textSecondary,
+                                  ),
+                                  SizedBox(height: design.spacing.xs),
+                                  AppTextField(
+                                    label: '',
+                                    hintText: l10n.loginCountryCodeHint,
+                                    controller: _countryCodeController,
+                                    textStyle: design.typography.labelBold,
+                                  ),
+                                ],
+                              ),
                             ),
+                            SizedBox(width: design.spacing.md),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  AppText.cardTitle(
+                                    l10n.loginPhoneNumberLabel,
+                                    color: design.colors.textSecondary,
+                                  ),
+                                  SizedBox(height: design.spacing.xs),
+                                  AppTextField(
+                                    label: '',
+                                    hintText: l10n.loginPhoneNumberHint,
+                                    controller: _phoneController,
+                                    keyboardType: TextInputType.phone,
+                                    autofocus: true,
+                                    textStyle: design.typography.labelBold,
+                                    textInputAction: TextInputAction.done,
+                                    onSubmitted: (_) => _handleContinueToOtp(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (_errorMessage != null) ...[
+                          SizedBox(height: design.spacing.md),
+                          AppText.bodySmall(
+                            _errorMessage!,
+                            color: design.colors.error,
                           ),
                         ],
-                      ),
-                      if (_errorMessage != null) ...[
-                        SizedBox(height: design.spacing.md),
-                        AppText.bodySmall(
-                          _errorMessage!,
-                          color: design.colors.error,
-                        ),
+                        SizedBox(height: design.spacing.xxl),
+                        if (_isBusy)
+                          const Center(child: AppLoadingIndicator())
+                        else
+                          AppButton.primary(
+                            label: l10n.loginContinue,
+                            fullWidth: true,
+                            onPressed: _handleContinueToOtp,
+                          ),
                       ],
-                      const Spacer(),
-                      SizedBox(height: design.spacing.xxl),
-                      if (_isBusy)
-                        const Center(child: AppLoadingIndicator())
-                      else
-                        AppButton.primary(
-                          label: 'Continue',
-                          fullWidth: true,
-                          onPressed: _handleContinueToOtp,
-                        ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
+              ],
+            ),
+          ),
         ),
       ),
     );

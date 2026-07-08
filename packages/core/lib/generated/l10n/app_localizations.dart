@@ -312,6 +312,258 @@ abstract class AppLocalizations {
   /// **'Server error. Please try again shortly.'**
   String get loginErrorServer;
 
+  /// No description provided for @loginSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Log In'**
+  String get loginSignIn;
+
+  /// No description provided for @loginSignUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Up'**
+  String get loginSignUp;
+
+  /// No description provided for @loginSignUpPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account? '**
+  String get loginSignUpPrompt;
+
+  /// No description provided for @loginAlreadyHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account? '**
+  String get loginAlreadyHaveAccount;
+
+  /// No description provided for @loginForgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password?'**
+  String get loginForgotPassword;
+
+  /// No description provided for @loginOr.
+  ///
+  /// In en, this message translates to:
+  /// **'Or'**
+  String get loginOr;
+
+  /// No description provided for @loginContinueWithMobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Mobile'**
+  String get loginContinueWithMobile;
+
+  /// No description provided for @loginContinueWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get loginContinueWithGoogle;
+
+  /// No description provided for @loginMobileLoginTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile Login'**
+  String get loginMobileLoginTitle;
+
+  /// No description provided for @loginMobileLoginSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your phone number to proceed'**
+  String get loginMobileLoginSubtitle;
+
+  /// No description provided for @loginCountryCodeShortLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get loginCountryCodeShortLabel;
+
+  /// No description provided for @loginContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get loginContinue;
+
+  /// No description provided for @loginVerifyOtpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify OTP'**
+  String get loginVerifyOtpTitle;
+
+  /// No description provided for @loginVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get loginVerify;
+
+  /// No description provided for @loginResendCodeIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend code in {time}'**
+  String loginResendCodeIn(String time);
+
+  /// No description provided for @loginDidntReceiveCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Didn\'t receive the code? '**
+  String get loginDidntReceiveCode;
+
+  /// No description provided for @loginResend.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend'**
+  String get loginResend;
+
+  /// No description provided for @loginOtpError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid 4-digit OTP'**
+  String get loginOtpError;
+
+  /// No description provided for @loginResendSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Code Resent Successfully!'**
+  String get loginResendSuccess;
+
+  /// No description provided for @loginResendFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to resend code. Please try again.'**
+  String get loginResendFailed;
+
+  /// No description provided for @loginForgotPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password'**
+  String get loginForgotPasswordTitle;
+
+  /// No description provided for @loginForgotPasswordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the email linked to your account. We\'ll send a verification code to reset your password.'**
+  String get loginForgotPasswordSubtitle;
+
+  /// No description provided for @loginForgotPasswordSent.
+  ///
+  /// In en, this message translates to:
+  /// **'We have sent a password reset link to your email.'**
+  String get loginForgotPasswordSent;
+
+  /// No description provided for @loginSendResetLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Send reset link'**
+  String get loginSendResetLink;
+
+  /// No description provided for @loginBackToLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Login'**
+  String get loginBackToLogin;
+
+  /// No description provided for @loginEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get loginEmailLabel;
+
+  /// No description provided for @loginEmailHintFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email'**
+  String get loginEmailHintFull;
+
+  /// No description provided for @loginEmailRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your email address.'**
+  String get loginEmailRequired;
+
+  /// No description provided for @loginSignUpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up'**
+  String get loginSignUpTitle;
+
+  /// No description provided for @loginFullNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get loginFullNameLabel;
+
+  /// No description provided for @loginFullNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your name'**
+  String get loginFullNameHint;
+
+  /// No description provided for @loginEmailHintId.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your mail id'**
+  String get loginEmailHintId;
+
+  /// No description provided for @loginDateOfBirthLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of birth'**
+  String get loginDateOfBirthLabel;
+
+  /// No description provided for @loginDateOfBirthHint.
+  ///
+  /// In en, this message translates to:
+  /// **'18/03/2004'**
+  String get loginDateOfBirthHint;
+
+  /// No description provided for @loginPhoneNumberShortHint.
+  ///
+  /// In en, this message translates to:
+  /// **'92726-05921'**
+  String get loginPhoneNumberShortHint;
+
+  /// No description provided for @loginSetPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Password'**
+  String get loginSetPasswordLabel;
+
+  /// No description provided for @loginRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get loginRegister;
+
+  /// No description provided for @loginGoBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back'**
+  String get loginGoBack;
+
+  /// No description provided for @loginShowPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get loginShowPassword;
+
+  /// No description provided for @loginHidePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get loginHidePassword;
+
+  /// No description provided for @loginEnterFieldHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter {field}'**
+  String loginEnterFieldHint(String field);
+
+  /// No description provided for @loginOtpVerifySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the 4 digit code sent to your {phone}'**
+  String loginOtpVerifySubtitle(String phone);
+
   /// A welcome message for the user
   ///
   /// In en, this message translates to:

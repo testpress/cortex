@@ -123,6 +123,141 @@ class AppLocalizationsMl extends AppLocalizations {
       'സെർവർ പിശക്. കുറച്ച് കഴിഞ്ഞ് വീണ്ടും ശ്രമിക്കുക.';
 
   @override
+  String get loginSignIn => 'ലോഗിൻ ചെയ്യുക';
+
+  @override
+  String get loginSignUp => 'സൈൻ അപ്പ് ചെയ്യുക';
+
+  @override
+  String get loginSignUpPrompt => 'അക്കൗണ്ട് ഇല്ലേ? ';
+
+  @override
+  String get loginAlreadyHaveAccount => 'ഇതിനകം അക്കൗണ്ട് ഉണ്ടോ? ';
+
+  @override
+  String get loginForgotPassword => 'പാസ്‌വേഡ് മറന്നോ?';
+
+  @override
+  String get loginOr => 'അല്ലെങ്കിൽ';
+
+  @override
+  String get loginContinueWithMobile => 'മൊബൈൽ ഉപയോഗിച്ച് തുടരുക';
+
+  @override
+  String get loginContinueWithGoogle => 'Google ഉപയോഗിച്ച് തുടരുക';
+
+  @override
+  String get loginMobileLoginTitle => 'മൊബൈൽ ലോഗിൻ';
+
+  @override
+  String get loginMobileLoginSubtitle => 'തുടരാൻ നിങ്ങളുടെ ഫോൺ നമ്പർ നൽകുക';
+
+  @override
+  String get loginCountryCodeShortLabel => 'കോഡ്';
+
+  @override
+  String get loginContinue => 'തുടരുക';
+
+  @override
+  String get loginVerifyOtpTitle => 'OTP സ്ഥിരീകരിക്കുക';
+
+  @override
+  String get loginVerify => 'സ്ഥിരീകരിക്കുക';
+
+  @override
+  String loginResendCodeIn(String time) {
+    return '$time ൽ കോഡ് വീണ്ടും അയയ്ക്കുക';
+  }
+
+  @override
+  String get loginDidntReceiveCode => 'കോഡ് ലഭിച്ചില്ലേ? ';
+
+  @override
+  String get loginResend => 'വീണ്ടും അയയ്ക്കുക';
+
+  @override
+  String get loginOtpError => 'ദയവായി 4 അക്ക OTP നൽകുക';
+
+  @override
+  String get loginResendSuccess => 'കോഡ് വിജയകരമായി വീണ്ടും അയച്ചു!';
+
+  @override
+  String get loginResendFailed =>
+      'കോഡ് വീണ്ടും അയയ്ക്കുന്നതിൽ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get loginForgotPasswordTitle => 'പാസ്‌വേഡ് മറന്നു';
+
+  @override
+  String get loginForgotPasswordSubtitle =>
+      'നിങ്ങളുടെ അക്കൗണ്ടുമായി ബന്ധിപ്പിച്ചിരിക്കുന്ന ഇമെയിൽ നൽകുക. പാസ്‌വേഡ് പുനഃസജ്ജീകരിക്കാൻ ഒരു സ്ഥിരീകരണ കോഡ് അയയ്ക്കും.';
+
+  @override
+  String get loginForgotPasswordSent =>
+      'നിങ്ങളുടെ ഇമെയിലിലേക്ക് പാസ്‌വേഡ് റീസെറ്റ് ലിങ്ക് അയച്ചിട്ടുണ്ട്.';
+
+  @override
+  String get loginSendResetLink => 'റീസെറ്റ് ലിങ്ക് അയയ്ക്കുക';
+
+  @override
+  String get loginBackToLogin => 'ലോഗിൻ-ലേക്ക് മടങ്ങുക';
+
+  @override
+  String get loginEmailLabel => 'ഇമെയിൽ';
+
+  @override
+  String get loginEmailHintFull => 'നിങ്ങളുടെ ഇമെയിൽ നൽകുക';
+
+  @override
+  String get loginEmailRequired => 'ദയവായി നിങ്ങളുടെ ഇമെയിൽ വിലാസം നൽകുക.';
+
+  @override
+  String get loginSignUpTitle => 'സൈൻ അപ്പ്';
+
+  @override
+  String get loginFullNameLabel => 'പൂർണ്ണ പേര്';
+
+  @override
+  String get loginFullNameHint => 'നിങ്ങളുടെ പേര് നൽകുക';
+
+  @override
+  String get loginEmailHintId => 'നിങ്ങളുടെ മെയിൽ ഐഡി നൽകുക';
+
+  @override
+  String get loginDateOfBirthLabel => 'ജനനത്തീയതി';
+
+  @override
+  String get loginDateOfBirthHint => '18/03/2004';
+
+  @override
+  String get loginPhoneNumberShortHint => '92726-05921';
+
+  @override
+  String get loginSetPasswordLabel => 'പാസ്‌വേഡ് സജ്ജീകരിക്കുക';
+
+  @override
+  String get loginRegister => 'രജിസ്റ്റർ ചെയ്യുക';
+
+  @override
+  String get loginGoBack => 'തിരിച്ചു പോകൂ';
+
+  @override
+  String get loginShowPassword => 'പാസ്‌വേഡ് കാണിക്കുക';
+
+  @override
+  String get loginHidePassword => 'പാസ്‌വേഡ് മറയ്ക്കുക';
+
+  @override
+  String loginEnterFieldHint(String field) {
+    return '$field നൽകുക';
+  }
+
+  @override
+  String loginOtpVerifySubtitle(String phone) {
+    return 'നിങ്ങളുടെ $phone ലേക്ക് അയച്ച 4 അക്ക കോഡ് നൽകുക';
+  }
+
+  @override
   String get welcomeMessage => 'കോട്ടെക്സിലേക്ക് സ്വാഗതം';
 
   @override

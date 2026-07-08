@@ -122,6 +122,140 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginErrorServer => 'Server error. Please try again shortly.';
 
   @override
+  String get loginSignIn => 'Log In';
+
+  @override
+  String get loginSignUp => 'Sign Up';
+
+  @override
+  String get loginSignUpPrompt => 'Don\'t have an account? ';
+
+  @override
+  String get loginAlreadyHaveAccount => 'Already have an account? ';
+
+  @override
+  String get loginForgotPassword => 'Forgot Password?';
+
+  @override
+  String get loginOr => 'Or';
+
+  @override
+  String get loginContinueWithMobile => 'Continue with Mobile';
+
+  @override
+  String get loginContinueWithGoogle => 'Continue with Google';
+
+  @override
+  String get loginMobileLoginTitle => 'Mobile Login';
+
+  @override
+  String get loginMobileLoginSubtitle => 'Enter your phone number to proceed';
+
+  @override
+  String get loginCountryCodeShortLabel => 'Code';
+
+  @override
+  String get loginContinue => 'Continue';
+
+  @override
+  String get loginVerifyOtpTitle => 'Verify OTP';
+
+  @override
+  String get loginVerify => 'Verify';
+
+  @override
+  String loginResendCodeIn(String time) {
+    return 'Resend code in $time';
+  }
+
+  @override
+  String get loginDidntReceiveCode => 'Didn\'t receive the code? ';
+
+  @override
+  String get loginResend => 'Resend';
+
+  @override
+  String get loginOtpError => 'Please enter a valid 4-digit OTP';
+
+  @override
+  String get loginResendSuccess => 'Code Resent Successfully!';
+
+  @override
+  String get loginResendFailed => 'Failed to resend code. Please try again.';
+
+  @override
+  String get loginForgotPasswordTitle => 'Forgot password';
+
+  @override
+  String get loginForgotPasswordSubtitle =>
+      'Enter the email linked to your account. We\'ll send a verification code to reset your password.';
+
+  @override
+  String get loginForgotPasswordSent =>
+      'We have sent a password reset link to your email.';
+
+  @override
+  String get loginSendResetLink => 'Send reset link';
+
+  @override
+  String get loginBackToLogin => 'Back to Login';
+
+  @override
+  String get loginEmailLabel => 'Email';
+
+  @override
+  String get loginEmailHintFull => 'Enter your email';
+
+  @override
+  String get loginEmailRequired => 'Please enter your email address.';
+
+  @override
+  String get loginSignUpTitle => 'Sign up';
+
+  @override
+  String get loginFullNameLabel => 'Full Name';
+
+  @override
+  String get loginFullNameHint => 'Enter your name';
+
+  @override
+  String get loginEmailHintId => 'Enter your mail id';
+
+  @override
+  String get loginDateOfBirthLabel => 'Date of birth';
+
+  @override
+  String get loginDateOfBirthHint => '18/03/2004';
+
+  @override
+  String get loginPhoneNumberShortHint => '92726-05921';
+
+  @override
+  String get loginSetPasswordLabel => 'Set Password';
+
+  @override
+  String get loginRegister => 'Register';
+
+  @override
+  String get loginGoBack => 'Go back';
+
+  @override
+  String get loginShowPassword => 'Show password';
+
+  @override
+  String get loginHidePassword => 'Hide password';
+
+  @override
+  String loginEnterFieldHint(String field) {
+    return 'Enter $field';
+  }
+
+  @override
+  String loginOtpVerifySubtitle(String phone) {
+    return 'Enter the 4 digit code sent to your $phone';
+  }
+
+  @override
   String get welcomeMessage => 'Welcome to Cortex';
 
   @override

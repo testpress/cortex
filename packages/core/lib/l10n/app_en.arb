@@ -41,6 +41,63 @@
   "loginErrorLockout": "This account is locked. Contact your administrator.",
   "loginErrorNetwork": "Network error. Check your internet connection.",
   "loginErrorServer": "Server error. Please try again shortly.",
+  "loginSignIn": "Log In",
+  "loginSignUp": "Sign Up",
+  "loginSignUpPrompt": "Don't have an account? ",
+  "loginAlreadyHaveAccount": "Already have an account? ",
+  "loginForgotPassword": "Forgot Password?",
+  "loginOr": "Or",
+  "loginContinueWithMobile": "Continue with Mobile",
+  "loginContinueWithGoogle": "Continue with Google",
+  "loginMobileLoginTitle": "Mobile Login",
+  "loginMobileLoginSubtitle": "Enter your phone number to proceed",
+  "loginCountryCodeShortLabel": "Code",
+  "loginContinue": "Continue",
+  "loginVerifyOtpTitle": "Verify OTP",
+  "loginVerify": "Verify",
+  "loginResendCodeIn": "Resend code in {time}",
+  "@loginResendCodeIn": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "loginDidntReceiveCode": "Didn't receive the code? ",
+  "loginResend": "Resend",
+  "loginOtpError": "Please enter a valid 4-digit OTP",
+  "loginResendSuccess": "Code Resent Successfully!",
+  "loginResendFailed": "Failed to resend code. Please try again.",
+  "loginForgotPasswordTitle": "Forgot password",
+  "loginForgotPasswordSubtitle": "Enter the email linked to your account. We'll send a verification code to reset your password.",
+  "loginForgotPasswordSent": "We have sent a password reset link to your email.",
+  "loginSendResetLink": "Send reset link",
+  "loginBackToLogin": "Back to Login",
+  "loginEmailLabel": "Email",
+  "loginEmailHintFull": "Enter your email",
+  "loginEmailRequired": "Please enter your email address.",
+  "loginSignUpTitle": "Sign up",
+  "loginFullNameLabel": "Full Name",
+  "loginFullNameHint": "Enter your name",
+  "loginEmailHintId": "Enter your mail id",
+  "loginDateOfBirthLabel": "Date of birth",
+  "loginDateOfBirthHint": "18/03/2004",
+  "loginPhoneNumberShortHint": "92726-05921",
+  "loginSetPasswordLabel": "Set Password",
+  "loginRegister": "Register",
+  "loginGoBack": "Go back",
+  "loginShowPassword": "Show password",
+  "loginHidePassword": "Hide password",
+  "loginEnterFieldHint": "Enter {field}",
+  "@loginEnterFieldHint": {
+    "placeholders": {
+      "field": { "type": "String" }
+    }
+  },
+  "loginOtpVerifySubtitle": "Enter the 4 digit code sent to your {phone}",
+  "@loginOtpVerifySubtitle": {
+    "placeholders": {
+      "phone": { "type": "String" }
+    }
+  },
   "welcomeMessage": "Welcome to Cortex",
   "@welcomeMessage": {
     "description": "A welcome message for the user"

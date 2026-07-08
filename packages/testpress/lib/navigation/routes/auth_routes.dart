@@ -5,7 +5,6 @@ import 'package:profile/profile.dart';
 class AuthRoutes {
   static const _authPaths = {
     '/login',
-    '/password-login',
     '/mobile-login',
     '/signup',
     '/forgot-password',
@@ -33,10 +32,6 @@ class AuthRoutes {
       builder: (context, state) => const OnboardingScreen(),
     ),
     GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
-    GoRoute(
-      path: '/password-login',
-      builder: (context, state) => const PasswordLoginScreen(),
-    ),
     GoRoute(
       path: '/mobile-login',
       builder: (context, state) => const MobileLoginScreen(),
