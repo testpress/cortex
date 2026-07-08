@@ -75,8 +75,6 @@
   "loginEmailHintFull": "Enter your email",
   "loginEmailRequired": "Please enter your email address.",
   "loginSignUpTitle": "Sign up",
-  "loginFullNameLabel": "Full Name",
-  "loginFullNameHint": "Enter your name",
   "loginEmailHintId": "Enter your mail id",
   "loginSignupUsernameLabel": "Username",
   "loginSignupUsernameHint": "Enter your username",

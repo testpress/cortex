@@ -176,22 +176,26 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                                       delegates: const [
                                         CountryLocalizations.delegate,
                                       ],
-                                      child: CountryCodePicker(
-                                        onChanged: (code) {
-                                          _countryCodeController.text =
-                                              code.code ?? 'IN';
-                                        },
-                                        initialSelection: 'IN',
-                                        showCountryOnly: false,
-                                        showOnlyCountryWhenClosed: false,
-                                        alignLeft: false,
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 2.0,
+                                      child: AppSemantics.button(
+                                        label: l10n.loginCountryCodeLabel,
+                                        child: CountryCodePicker(
+                                          onChanged: (code) {
+                                            _countryCodeController.text =
+                                                code.code ?? 'IN';
+                                          },
+                                          initialSelection: 'IN',
+                                          showCountryOnly: false,
+                                          showOnlyCountryWhenClosed: false,
+                                          alignLeft: false,
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 2.0,
+                                          ),
+                                          textStyle: design.typography.labelBold
+                                              .copyWith(
+                                                color:
+                                                    design.colors.textPrimary,
+                                              ),
                                         ),
-                                        textStyle: design.typography.labelBold
-                                            .copyWith(
-                                              color: design.colors.textPrimary,
-                                            ),
                                       ),
                                     ),
                                   ),

@@ -69,8 +69,6 @@
   "loginEmailHintFull": "أدخل بريدك الإلكتروني",
   "loginEmailRequired": "يرجى إدخال عنوان بريدك الإلكتروني.",
   "loginSignUpTitle": "إنشاء حساب",
-  "loginFullNameLabel": "الاسم الكامل",
-  "loginFullNameHint": "أدخل اسمك",
   "loginEmailHintId": "أدخل معرّف بريدك الإلكتروني",
   "loginSignupUsernameLabel": "اسم المستخدم",
   "loginSignupUsernameHint": "أدخل اسم المستخدم",

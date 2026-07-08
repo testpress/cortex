@@ -486,18 +486,6 @@ abstract class AppLocalizations {
   /// **'Sign up'**
   String get loginSignUpTitle;
 
-  /// No description provided for @loginFullNameLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Full Name'**
-  String get loginFullNameLabel;
-
-  /// No description provided for @loginFullNameHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter your name'**
-  String get loginFullNameHint;
-
   /// No description provided for @loginEmailHintId.
   ///
   /// In en, this message translates to:
