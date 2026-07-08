@@ -185,18 +185,35 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                               obscureText: _obscurePassword,
                               textStyle: design.typography.labelBold,
                               textInputAction: TextInputAction.done,
-                              suffixIcon: GestureDetector(
+                              suffixIcon: AppSemantics.button(
+                                label: _obscurePassword
+                                    ? l10n.loginShowPassword
+                                    : l10n.loginHidePassword,
                                 onTap: () {
                                   setState(() {
                                     _obscurePassword = !_obscurePassword;
                                   });
                                 },
-                                child: Icon(
-                                  _obscurePassword
-                                      ? LucideIcons.eye
-                                      : LucideIcons.eyeOff,
-                                  color: design.colors.textSecondary,
-                                  size: 18,
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: () {
+                                    setState(() {
+                                      _obscurePassword = !_obscurePassword;
+                                    });
+                                  },
+                                  child: SizedBox(
+                                    width: 48,
+                                    height: 48,
+                                    child: Center(
+                                      child: Icon(
+                                        _obscurePassword
+                                            ? LucideIcons.eye
+                                            : LucideIcons.eyeOff,
+                                        color: design.colors.textSecondary,
+                                        size: 18,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -224,7 +241,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 top: design.spacing.md,
                 left: design.spacing.md,
                 child: AppSemantics.button(
-                  label: 'Go back',
+                  label: l10n.loginGoBack,
                   onTap: () => context.pop(),
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,

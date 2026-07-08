@@ -315,7 +315,7 @@ abstract class AppLocalizations {
   /// No description provided for @loginSignIn.
   ///
   /// In en, this message translates to:
-  /// **'Sign In'**
+  /// **'Log In'**
   String get loginSignIn;
 
   /// No description provided for @loginSignUp.
@@ -533,6 +533,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Register'**
   String get loginRegister;
+
+  /// No description provided for @loginGoBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back'**
+  String get loginGoBack;
+
+  /// No description provided for @loginShowPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get loginShowPassword;
+
+  /// No description provided for @loginHidePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get loginHidePassword;
+
+  /// No description provided for @loginEnterFieldHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter {field}'**
+  String loginEnterFieldHint(String field);
 
   /// No description provided for @loginOtpVerifySubtitle.
   ///

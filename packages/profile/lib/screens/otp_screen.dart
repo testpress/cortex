@@ -114,10 +114,13 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                             color: design.colors.textSecondary,
                           ),
                           SizedBox(height: design.spacing.xl),
-                          AppOtpInput(
-                            controller: _otpController,
-                            length: 4,
-                            onCompleted: (_) => _handleVerifyOtp(),
+                          Semantics(
+                            label: l10n.loginOtpCodeLabel,
+                            child: AppOtpInput(
+                              controller: _otpController,
+                              length: 4,
+                              onCompleted: (_) => _handleVerifyOtp(),
+                            ),
                           ),
                           if (_errorMessage != null) ...[
                             SizedBox(height: design.spacing.md),
@@ -188,7 +191,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                 top: design.spacing.md,
                 left: design.spacing.md,
                 child: AppSemantics.button(
-                  label: 'Go back',
+                  label: l10n.loginGoBack,
                   onTap: () => context.pop(),
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,

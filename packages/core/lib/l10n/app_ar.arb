@@ -77,6 +77,15 @@
   "loginPhoneNumberShortHint": "92726-05921",
   "loginSetPasswordLabel": "تعيين كلمة المرور",
   "loginRegister": "تسجيل",
+  "loginGoBack": "رجوع",
+  "loginShowPassword": "إظهار كلمة المرور",
+  "loginHidePassword": "إخفاء كلمة المرور",
+  "loginEnterFieldHint": "أدخل {field}",
+  "@loginEnterFieldHint": {
+    "placeholders": {
+      "field": { "type": "String" }
+    }
+  },
   "loginOtpVerifySubtitle": "أدخل الرمز المكون من 4 أرقام المُرسَل إلى {phone}",
   "@loginOtpVerifySubtitle": {
     "placeholders": {

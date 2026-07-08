@@ -122,7 +122,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginErrorServer => 'Server error. Please try again shortly.';
 
   @override
-  String get loginSignIn => 'Login';
+  String get loginSignIn => 'Log In';
 
   @override
   String get loginSignUp => 'Sign Up';
@@ -235,6 +235,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginRegister => 'Register';
+
+  @override
+  String get loginGoBack => 'Go back';
+
+  @override
+  String get loginShowPassword => 'Show password';
+
+  @override
+  String get loginHidePassword => 'Hide password';
+
+  @override
+  String loginEnterFieldHint(String field) {
+    return 'Enter $field';
+  }
 
   @override
   String loginOtpVerifySubtitle(String phone) {

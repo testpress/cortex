@@ -239,6 +239,20 @@ class AppLocalizationsMl extends AppLocalizations {
   String get loginRegister => 'രജിസ്റ്റർ ചെയ്യുക';
 
   @override
+  String get loginGoBack => 'തിരിച്ചു പോകൂ';
+
+  @override
+  String get loginShowPassword => 'പാസ്‌വേഡ് കാണിക്കുക';
+
+  @override
+  String get loginHidePassword => 'പാസ്‌വേഡ് മറയ്ക്കുക';
+
+  @override
+  String loginEnterFieldHint(String field) {
+    return '$field നൽകുക';
+  }
+
+  @override
   String loginOtpVerifySubtitle(String phone) {
     return 'നിങ്ങളുടെ $phone ലേക്ക് അയച്ച 4 അക്ക കോഡ് നൽകുക';
   }

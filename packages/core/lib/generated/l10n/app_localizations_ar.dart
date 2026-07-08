@@ -237,6 +237,20 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loginRegister => 'تسجيل';
 
   @override
+  String get loginGoBack => 'رجوع';
+
+  @override
+  String get loginShowPassword => 'إظهار كلمة المرور';
+
+  @override
+  String get loginHidePassword => 'إخفاء كلمة المرور';
+
+  @override
+  String loginEnterFieldHint(String field) {
+    return 'أدخل $field';
+  }
+
+  @override
   String loginOtpVerifySubtitle(String phone) {
     return 'أدخل الرمز المكون من 4 أرقام المُرسَل إلى $phone';
   }

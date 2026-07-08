@@ -77,6 +77,15 @@
   "loginPhoneNumberShortHint": "92726-05921",
   "loginSetPasswordLabel": "പാസ്‌വേഡ് സജ്ജീകരിക്കുക",
   "loginRegister": "രജിസ്റ്റർ ചെയ്യുക",
+  "loginGoBack": "തിരിച്ചു പോകൂ",
+  "loginShowPassword": "പാസ്‌വേഡ് കാണിക്കുക",
+  "loginHidePassword": "പാസ്‌വേഡ് മറയ്ക്കുക",
+  "loginEnterFieldHint": "{field} നൽകുക",
+  "@loginEnterFieldHint": {
+    "placeholders": {
+      "field": { "type": "String" }
+    }
+  },
   "loginOtpVerifySubtitle": "നിങ്ങളുടെ {phone} ലേക്ക് അയച്ച 4 അക്ക കോഡ് നൽകുക",
   "@loginOtpVerifySubtitle": {
     "placeholders": {

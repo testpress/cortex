@@ -83,6 +83,15 @@
   "loginPhoneNumberShortHint": "92726-05921",
   "loginSetPasswordLabel": "கடவுச்சொல் அமை",
   "loginRegister": "பதிவு செய்",
+  "loginGoBack": "திரும்பு",
+  "loginShowPassword": "கடவுச்சொல்லை காட்டு",
+  "loginHidePassword": "கடவுச்சொல்லை மறை",
+  "loginEnterFieldHint": "{field} உள்ளிடவும்",
+  "@loginEnterFieldHint": {
+    "placeholders": {
+      "field": { "type": "String" }
+    }
+  },
   "loginOtpVerifySubtitle": "உங்கள் {phone} க்கு அனுப்பப்பட்ட 4 இலக்க குறியீட்டை உள்ளிடவும்",
   "@loginOtpVerifySubtitle": {
     "placeholders": {

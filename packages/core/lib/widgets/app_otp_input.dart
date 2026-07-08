@@ -100,7 +100,7 @@ class _AppOtpInputState extends State<AppOtpInput> {
                         ? design.colors.primary
                         : hasChar
                         ? design.colors.textSecondary
-                        : const Color(0xFFEDF1F3),
+                        : design.colors.border,
                     width: isFocused ? 2.0 : 1.0,
                   ),
                 ),

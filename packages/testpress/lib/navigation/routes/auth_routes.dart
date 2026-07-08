@@ -32,7 +32,6 @@ class AuthRoutes {
       builder: (context, state) => const OnboardingScreen(),
     ),
     GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
-
     GoRoute(
       path: '/mobile-login',
       builder: (context, state) => const MobileLoginScreen(),

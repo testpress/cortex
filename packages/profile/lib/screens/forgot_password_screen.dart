@@ -121,7 +121,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                 top: design.spacing.md,
                 left: design.spacing.md,
                 child: AppSemantics.button(
-                  label: 'Go back',
+                  label: l10n.loginGoBack,
                   onTap: () => context.pop(),
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,

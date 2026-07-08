@@ -42,7 +42,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ? loginIdLabel
         : l10n.loginUsernameLabel;
     final displayLoginIdHint = (loginIdLabel != null && loginIdLabel.isNotEmpty)
-        ? "Enter $loginIdLabel"
+        ? l10n.loginEnterFieldHint(loginIdLabel)
         : l10n.loginUsernameHint;
 
     final loginPasswordLabel = settings?.loginPasswordLabel;
@@ -52,7 +52,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         : l10n.loginPasswordLabel;
     final displayPasswordHint =
         (loginPasswordLabel != null && loginPasswordLabel.isNotEmpty)
-        ? "Enter $loginPasswordLabel"
+        ? l10n.loginEnterFieldHint(loginPasswordLabel)
         : l10n.loginPasswordHint;
 
     final allowedMethods =
@@ -150,19 +150,35 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           textInputAction: TextInputAction.done,
                           autofillHints: const [AutofillHints.password],
                           onSubmitted: (_) => _handlePasswordLogin(),
-                          suffixIcon: GestureDetector(
-                            behavior: HitTestBehavior.opaque,
+                          suffixIcon: AppSemantics.button(
+                            label: _obscurePassword
+                                ? l10n.loginShowPassword
+                                : l10n.loginHidePassword,
                             onTap: () {
                               setState(() {
                                 _obscurePassword = !_obscurePassword;
                               });
                             },
-                            child: Icon(
-                              _obscurePassword
-                                  ? LucideIcons.eye
-                                  : LucideIcons.eyeOff,
-                              color: design.colors.textSecondary,
-                              size: 20,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () {
+                                setState(() {
+                                  _obscurePassword = !_obscurePassword;
+                                });
+                              },
+                              child: SizedBox(
+                                width: 48,
+                                height: 48,
+                                child: Center(
+                                  child: Icon(
+                                    _obscurePassword
+                                        ? LucideIcons.eye
+                                        : LucideIcons.eyeOff,
+                                    color: design.colors.textSecondary,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ),

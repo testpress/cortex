@@ -243,6 +243,20 @@ class AppLocalizationsTa extends AppLocalizations {
   String get loginRegister => 'பதிவு செய்';
 
   @override
+  String get loginGoBack => 'திரும்பு';
+
+  @override
+  String get loginShowPassword => 'கடவுச்சொல்லை காட்டு';
+
+  @override
+  String get loginHidePassword => 'கடவுச்சொல்லை மறை';
+
+  @override
+  String loginEnterFieldHint(String field) {
+    return '$field உள்ளிடவும்';
+  }
+
+  @override
   String loginOtpVerifySubtitle(String phone) {
     return 'உங்கள் $phone க்கு அனுப்பப்பட்ட 4 இலக்க குறியீட்டை உள்ளிடவும்';
   }

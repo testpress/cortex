@@ -83,6 +83,15 @@
   "loginPhoneNumberShortHint": "92726-05921",
   "loginSetPasswordLabel": "Set Password",
   "loginRegister": "Register",
+  "loginGoBack": "Go back",
+  "loginShowPassword": "Show password",
+  "loginHidePassword": "Hide password",
+  "loginEnterFieldHint": "Enter {field}",
+  "@loginEnterFieldHint": {
+    "placeholders": {
+      "field": { "type": "String" }
+    }
+  },
   "loginOtpVerifySubtitle": "Enter the 4 digit code sent to your {phone}",
   "@loginOtpVerifySubtitle": {
     "placeholders": {
