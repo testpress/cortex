@@ -1097,8 +1097,6 @@ class OnlineExamRepository implements ExamRepository {
       await _dataSource.reportQuestion(questionId, payload);
 
       _markQuestionReported(questionId);
-
-      _stateController.add(_currentState);
     } on ApiException catch (e) {
       if (e.statusCode == 400 &&
           e.message.toLowerCase().contains('already reported')) {
