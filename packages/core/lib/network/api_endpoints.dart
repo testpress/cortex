@@ -51,6 +51,8 @@ class ApiEndpoints {
 
   static String solutionsReview(String attemptId) =>
       '/api/v2.3/attempts/$attemptId/review/';
+  static String reportQuestion(String questionId) =>
+      '/api/v2.5/questions/$questionId/reportees/';
 
   // Exam Routing (v3 and v2.x hardcoded)
   static String examQuestions(String attemptId) =>

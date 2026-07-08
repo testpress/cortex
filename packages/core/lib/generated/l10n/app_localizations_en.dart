@@ -1143,6 +1143,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get labelReport => 'Report';
 
   @override
+  String get labelReported => 'Reported';
+
+  @override
   String get labelOverallSummary => 'Overall Summary';
 
   @override
@@ -1215,6 +1218,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reviewSubmitReport => 'Submit Report';
 
   @override
+  String get reviewReportSuccess => 'Report submitted successfully';
+
+  @override
+  String get reviewReportFailed => 'Failed to submit report';
+
+  @override
   String reviewReportIssueWithQuestion(int number) {
     return 'Report an issue with Question $number';
   }
@@ -1226,17 +1235,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reviewWriteCommentHint => 'Write your comment...';
 
   @override
-  String get reviewReportOptionIncorrect =>
-      'Incorrect answer marked as correct';
+  String get reviewReportOptionErrorInQuestion => 'Error in Question';
 
   @override
-  String get reviewReportOptionUnclear => 'Question is unclear';
+  String get reviewReportOptionIncorrectAnswer => 'Incorrect Answer';
 
   @override
-  String get reviewReportOptionWrongExplanation => 'Explanation is wrong';
+  String get reviewReportOptionNoExplanation => 'No Explanation';
 
   @override
-  String get reviewReportOptionOther => 'Other issue';
+  String get reviewReportOptionIncompleteExplanation =>
+      'Incomplete Explanation';
+
+  @override
+  String get reviewReportOptionOthers => 'Others';
 
   @override
   String get reviewReportDetailsHint => 'Additional details (optional)...';

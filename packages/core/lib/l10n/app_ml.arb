@@ -378,6 +378,7 @@
   "labelAskDoubt": "സംശയം ചോദിക്കുക",
   "labelComment": "അഭിപ്രായം",
   "labelReport": "റിപ്പോർട്ട്",
+  "labelReported": "റിപ്പോർട്ട് ചെയ്തു",
   "labelOverallSummary": "മൊത്തത്തിലുള്ള സംഗ്രഹം",
   "labelFilter": "ഫിൽട്ടർ:",
   "labelAccuracy": "കൃത്യത",
@@ -402,6 +403,8 @@
   "reviewPostComment": "അഭിപ്രായം പോസ്റ്റ് ചെയ്യുക",
   "reviewReportIssueTitle": "പ്രശ്നം റിപ്പോർട്ട് ചെയ്യുക",
   "reviewSubmitReport": "റിപ്പോർട്ട് സമർപ്പിക്കുക",
+  "reviewReportSuccess": "റിപ്പോർട്ട് വിജയകരമായി സമർപ്പിച്ചു",
+  "reviewReportFailed": "റിപ്പോർട്ട് സമർപ്പിക്കാനായില്ല",
   "reviewReportIssueWithQuestion": "ചോദ്യം {number}-ലെ പ്രശ്നം റിപ്പോർട്ട് ചെയ്യുക",
   "@reviewReportIssueWithQuestion": {
     "placeholders": {
@@ -412,10 +415,11 @@
   },
   "reviewDescribeDoubtHint": "നിങ്ങളുടെ സംശയം ഇവിടെ വിവരിക്കുക...",
   "reviewWriteCommentHint": "നിങ്ങളുടെ അഭിപ്രായം എഴുതുക...",
-  "reviewReportOptionIncorrect": "തെറ്റായ ഉത്തരം ശരിയായി രേഖപ്പെടുത്തി",
-  "reviewReportOptionUnclear": "ചോദ്യം വ്യക്തമല്ല",
-  "reviewReportOptionWrongExplanation": "വിശദീകരണം തെറ്റാണ്",
-  "reviewReportOptionOther": "മറ്റ് പ്രശ്നങ്ങൾ",
+  "reviewReportOptionErrorInQuestion": "ചോദ്യത്തിൽ തെറ്റ്",
+  "reviewReportOptionIncorrectAnswer": "തെറ്റായ ഉത്തരം",
+  "reviewReportOptionNoExplanation": "വിശദീകരണം ഇല്ല",
+  "reviewReportOptionIncompleteExplanation": "അപൂർണ്ണമായ വിശദീകരണം",
+  "reviewReportOptionOthers": "മറ്റുള്ളവ",
   "reviewReportDetailsHint": "കൂടുതൽ വിവരങ്ങൾ (ഓപ്ഷണൽ)...",
   "reviewShareThoughtsOnQuestion": "ചോദ്യം {number}-നെ കുറിച്ചുള്ള അഭിപ്രായം പങ്കുവെക്കുക",
   "@reviewShareThoughtsOnQuestion": {

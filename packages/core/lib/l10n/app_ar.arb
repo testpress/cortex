@@ -378,6 +378,7 @@
   "labelAskDoubt": "اسأل سؤال",
   "labelComment": "تعليق",
   "labelReport": "إبلاغ",
+  "labelReported": "تم الإبلاغ",
   "labelOverallSummary": "الملخص العام",
   "labelFilter": "تصفية:",
   "labelAccuracy": "الدقة",
@@ -402,6 +403,8 @@
   "reviewPostComment": "نشر التعليق",
   "reviewReportIssueTitle": "الإبلاغ عن مشكلة",
   "reviewSubmitReport": "إرسال البلاغ",
+  "reviewReportSuccess": "تم إرسال البلاغ بنجاح",
+  "reviewReportFailed": "فشل في إرسال البلاغ",
   "reviewReportIssueWithQuestion": "الإبلاغ عن مشكلة في السؤال {number}",
   "@reviewReportIssueWithQuestion": {
     "placeholders": {
@@ -412,10 +415,11 @@
   },
   "reviewDescribeDoubtHint": "صف سؤالك هنا...",
   "reviewWriteCommentHint": "اكتب تعليقك...",
-  "reviewReportOptionIncorrect": "الإجابة غير الصحيحة محددة كصحيحة",
-  "reviewReportOptionUnclear": "السؤال غير واضح",
-  "reviewReportOptionWrongExplanation": "الشرح خاطئ",
-  "reviewReportOptionOther": "مشكلة أخرى",
+  "reviewReportOptionErrorInQuestion": "خطأ في السؤال",
+  "reviewReportOptionIncorrectAnswer": "إجابة غير صحيحة",
+  "reviewReportOptionNoExplanation": "لا يوجد شرح",
+  "reviewReportOptionIncompleteExplanation": "شرح غير مكتمل",
+  "reviewReportOptionOthers": "أخرى",
   "reviewReportDetailsHint": "تفاصيل إضافية (اختياري)...",
   "reviewShareThoughtsOnQuestion": "شارك أفكارك حول السؤال {number}",
   "@reviewShareThoughtsOnQuestion": {

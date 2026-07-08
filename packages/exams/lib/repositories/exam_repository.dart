@@ -31,6 +31,7 @@ class ExamAttemptState {
   final Map<String, AnswerDto> answers;
   final Set<String> checkedQuestions;
   final Map<String, QuizReviewResultDto> quizReviews;
+  final Set<String> reportedQuestions;
   final int remainingSeconds;
   final bool isQuizMode;
   final String? errorMessage;
@@ -46,6 +47,7 @@ class ExamAttemptState {
     this.answers = const {},
     this.checkedQuestions = const {},
     this.quizReviews = const {},
+    this.reportedQuestions = const {},
     this.remainingSeconds = 0,
     this.isQuizMode = false,
     this.errorMessage,
@@ -62,6 +64,7 @@ class ExamAttemptState {
     Map<String, AnswerDto>? answers,
     Set<String>? checkedQuestions,
     Map<String, QuizReviewResultDto>? quizReviews,
+    Set<String>? reportedQuestions,
     int? remainingSeconds,
     bool? isQuizMode,
     String? errorMessage,
@@ -77,6 +80,7 @@ class ExamAttemptState {
       answers: answers ?? this.answers,
       checkedQuestions: checkedQuestions ?? this.checkedQuestions,
       quizReviews: quizReviews ?? this.quizReviews,
+      reportedQuestions: reportedQuestions ?? this.reportedQuestions,
       remainingSeconds: remainingSeconds ?? this.remainingSeconds,
       isQuizMode: isQuizMode ?? this.isQuizMode,
       errorMessage: errorMessage ?? this.errorMessage,
@@ -117,6 +121,13 @@ abstract class ExamRepository {
 
   Future<List<ReviewItemDto>> getReviewItems(String reviewUrl);
   Future<List<SubjectAnalyticsDto>> getSubjectAnalytics(String analyticsUrl);
+
+  Future<void> reportQuestion({
+    required String questionId,
+    required int type,
+    String? description,
+    int? examId,
+  });
 }
 
 class OnlineExamRepository implements ExamRepository {
@@ -1065,6 +1076,41 @@ class OnlineExamRepository implements ExamRepository {
     String analyticsUrl,
   ) async {
     return _dataSource.getSubjectAnalytics(analyticsUrl);
+  }
+
+  @override
+  Future<void> reportQuestion({
+    required String questionId,
+    required int type,
+    String? description,
+    int? examId,
+  }) async {
+    try {
+      final payload = {
+        'type': type,
+        if (description != null && description.isNotEmpty)
+          'description': description,
+        // ignore: use_null_aware_elements
+        if (examId != null) 'exam_id': examId,
+      };
+
+      await _dataSource.reportQuestion(questionId, payload);
+
+      _markQuestionReported(questionId);
+    } on ApiException catch (e) {
+      if (e.statusCode == 400 &&
+          e.message.toLowerCase().contains('already reported')) {
+        _markQuestionReported(questionId);
+      }
+      rethrow;
+    }
+  }
+
+  void _markQuestionReported(String questionId) {
+    _currentState = _currentState.copyWith(
+      reportedQuestions: {..._currentState.reportedQuestions, questionId},
+    );
+    _stateController.add(_currentState);
   }
 
   // ─── Dashboard / Discovery Support ─────────────────────────────────────────

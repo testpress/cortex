@@ -479,4 +479,14 @@ class OfflineExamRepository implements ExamRepository {
       ),
     );
   }
+
+  @override
+  Future<void> reportQuestion({
+    required String questionId,
+    required int type,
+    String? description,
+    int? examId,
+  }) async {
+    throw UnsupportedError('Offline reporting is not supported yet');
+  }
 }

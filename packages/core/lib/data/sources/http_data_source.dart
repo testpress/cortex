@@ -772,6 +772,17 @@ class HttpDataSource implements DataSource {
   }
 
   @override
+  Future<void> reportQuestion(
+    String questionId,
+    Map<String, dynamic> payload,
+  ) async {
+    await performNetworkRequest(
+      _dio.post(ApiEndpoints.reportQuestion(questionId), data: payload),
+      fromJson: (_) => null,
+    );
+  }
+
+  @override
   Future<AttemptDto> endExam(String attemptId) async {
     return performNetworkRequest(
       _dio.put(ApiEndpoints.endAttempt(attemptId)),

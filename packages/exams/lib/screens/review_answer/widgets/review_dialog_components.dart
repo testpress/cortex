@@ -1,5 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:core/data/data.dart';
+import '../../../providers/exam_providers.dart';
 
 class BaseReviewDialog extends StatefulWidget {
   final String title;
@@ -106,26 +109,40 @@ class _BaseReviewDialogState extends State<BaseReviewDialog> {
   }
 }
 
-class ReportReviewDialog extends StatefulWidget {
+class ReportReviewDialog extends ConsumerStatefulWidget {
+  final String questionId;
   final int questionNumber;
   final DesignConfig design;
   final AppLocalizations l10n;
-  final Function(int, String) onSubmit;
+  final BuildContext parentContext;
 
   const ReportReviewDialog({
     super.key,
+    required this.questionId,
     required this.questionNumber,
     required this.design,
     required this.l10n,
-    required this.onSubmit,
+    required this.parentContext,
   });
 
   @override
-  State<ReportReviewDialog> createState() => _ReportReviewDialogState();
+  ConsumerState<ReportReviewDialog> createState() => _ReportReviewDialogState();
 }
 
-class _ReportReviewDialogState extends State<ReportReviewDialog> {
+enum QuestionReportType {
+  errorInQuestion(1),
+  incorrectAnswer(2),
+  noExplanation(3),
+  incompleteExplanation(4),
+  others(5);
+
+  final int id;
+  const QuestionReportType(this.id);
+}
+
+class _ReportReviewDialogState extends ConsumerState<ReportReviewDialog> {
   int _selectedIndex = -1;
+  bool _isSubmitting = false;
   final _controller = TextEditingController();
   final _scrollController = ScrollController();
 
@@ -136,14 +153,57 @@ class _ReportReviewDialogState extends State<ReportReviewDialog> {
     super.dispose();
   }
 
+  Future<void> _submitReport() async {
+    if (_selectedIndex == -1) return;
+
+    setState(() => _isSubmitting = true);
+
+    final questionId = widget.questionId;
+    final examIdStr = ref.read(examAttemptProvider).exam?.id;
+    final examId = examIdStr != null ? int.tryParse(examIdStr) : null;
+
+    String? errorText;
+
+    try {
+      await ref
+          .read(examRepositoryProvider)
+          .reportQuestion(
+            questionId: questionId,
+            type: QuestionReportType.values[_selectedIndex].id,
+            description: _controller.text.trim(),
+            examId: examId,
+          );
+    } catch (e) {
+      errorText = e is ApiException
+          ? e.message
+          : widget.l10n.reviewReportFailed;
+    }
+
+    if (!mounted) return;
+    setState(() => _isSubmitting = false);
+    Navigator.pop(context);
+
+    if (!widget.parentContext.mounted) return;
+
+    if (errorText == null) {
+      AppToast.show(
+        widget.parentContext,
+        message: widget.l10n.reviewReportSuccess,
+      );
+    } else {
+      AppToast.show(widget.parentContext, message: errorText, isError: true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final options = [
-      widget.l10n.reviewReportOptionIncorrect,
-      widget.l10n.reviewReportOptionUnclear,
-      widget.l10n.reviewReportOptionWrongExplanation,
-      widget.l10n.reviewReportOptionOther,
+      widget.l10n.reviewReportOptionErrorInQuestion,
+      widget.l10n.reviewReportOptionIncorrectAnswer,
+      widget.l10n.reviewReportOptionNoExplanation,
+      widget.l10n.reviewReportOptionIncompleteExplanation,
+      widget.l10n.reviewReportOptionOthers,
     ];
 
     return Center(
@@ -315,9 +375,9 @@ class _ReportReviewDialogState extends State<ReportReviewDialog> {
                   const SizedBox(width: 12),
                   AppButton(
                     label: widget.l10n.reviewSubmitReport,
-                    onPressed: () {
-                      widget.onSubmit(_selectedIndex, _controller.text);
-                    },
+                    onPressed: _isSubmitting || _selectedIndex == -1
+                        ? null
+                        : _submitReport,
                     backgroundColor: design.colors.accent5,
                   ),
                 ],

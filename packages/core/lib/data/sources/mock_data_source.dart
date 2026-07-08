@@ -1290,6 +1290,14 @@ class MockDataSource implements DataSource {
   }
 
   @override
+  Future<void> reportQuestion(
+    String questionId,
+    Map<String, dynamic> payload,
+  ) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+  }
+
+  @override
   Future<void> submitOfflineExamAnswers(
     String examId,
     Map<String, dynamic> payload,

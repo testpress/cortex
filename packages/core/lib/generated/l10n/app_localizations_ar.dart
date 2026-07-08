@@ -1141,6 +1141,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get labelReport => 'إبلاغ';
 
   @override
+  String get labelReported => 'تم الإبلاغ';
+
+  @override
   String get labelOverallSummary => 'الملخص العام';
 
   @override
@@ -1213,6 +1216,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reviewSubmitReport => 'إرسال البلاغ';
 
   @override
+  String get reviewReportSuccess => 'تم إرسال البلاغ بنجاح';
+
+  @override
+  String get reviewReportFailed => 'فشل في إرسال البلاغ';
+
+  @override
   String reviewReportIssueWithQuestion(int number) {
     return 'الإبلاغ عن مشكلة في السؤال $number';
   }
@@ -1224,16 +1233,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reviewWriteCommentHint => 'اكتب تعليقك...';
 
   @override
-  String get reviewReportOptionIncorrect => 'الإجابة غير الصحيحة محددة كصحيحة';
+  String get reviewReportOptionErrorInQuestion => 'خطأ في السؤال';
 
   @override
-  String get reviewReportOptionUnclear => 'السؤال غير واضح';
+  String get reviewReportOptionIncorrectAnswer => 'إجابة غير صحيحة';
 
   @override
-  String get reviewReportOptionWrongExplanation => 'الشرح خاطئ';
+  String get reviewReportOptionNoExplanation => 'لا يوجد شرح';
 
   @override
-  String get reviewReportOptionOther => 'مشكلة أخرى';
+  String get reviewReportOptionIncompleteExplanation => 'شرح غير مكتمل';
+
+  @override
+  String get reviewReportOptionOthers => 'أخرى';
 
   @override
   String get reviewReportDetailsHint => 'تفاصيل إضافية (اختياري)...';

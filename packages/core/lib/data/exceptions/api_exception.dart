@@ -70,7 +70,7 @@ class ApiException implements Exception {
     if (error.type == DioExceptionType.badResponse) {
       final statusCode = error.response?.statusCode;
       final data = error.response?.data;
-      final backendMessage = _extractApiMessage(data);
+      final backendMessage = extractApiMessage(data);
 
       if (statusCode == 400 || statusCode == 422) {
         return ApiException(
@@ -149,7 +149,7 @@ class ApiException implements Exception {
     );
   }
 
-  static String? _extractApiMessage(dynamic responseData) {
+  static String? extractApiMessage(dynamic responseData) {
     if (responseData == null) return null;
     if (responseData is String && responseData.trim().isNotEmpty) {
       return responseData.trim();
