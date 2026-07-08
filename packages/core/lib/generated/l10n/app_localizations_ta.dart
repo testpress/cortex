@@ -219,19 +219,16 @@ class AppLocalizationsTa extends AppLocalizations {
   String get loginSignUpTitle => 'பதிவு செய்க';
 
   @override
-  String get loginFullNameLabel => 'முழு பெயர்';
-
-  @override
-  String get loginFullNameHint => 'உங்கள் பெயரை உள்ளிடவும்';
-
-  @override
   String get loginEmailHintId => 'உங்கள் மின்னஞ்சல் ஐடியை உள்ளிடவும்';
 
   @override
-  String get loginDateOfBirthLabel => 'பிறந்த தேதி';
+  String get loginSignupUsernameLabel => 'பயனர் பெயர்';
 
   @override
-  String get loginDateOfBirthHint => '18/03/2004';
+  String get loginSignupUsernameHint => 'உங்கள் பயனர் பெயரை உள்ளிடவும்';
+
+  @override
+  String get loginRequiredError => '*தேவையானது';
 
   @override
   String get loginPhoneNumberShortHint => '92726-05921';

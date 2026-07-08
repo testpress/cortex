@@ -213,19 +213,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginSignUpTitle => 'Sign up';
 
   @override
-  String get loginFullNameLabel => 'Full Name';
-
-  @override
-  String get loginFullNameHint => 'Enter your name';
-
-  @override
   String get loginEmailHintId => 'Enter your mail id';
 
   @override
-  String get loginDateOfBirthLabel => 'Date of birth';
+  String get loginSignupUsernameLabel => 'Username';
 
   @override
-  String get loginDateOfBirthHint => '18/03/2004';
+  String get loginSignupUsernameHint => 'Enter your username';
+
+  @override
+  String get loginRequiredError => '*Required';
 
   @override
   String get loginPhoneNumberShortHint => '92726-05921';

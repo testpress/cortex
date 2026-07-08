@@ -213,19 +213,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loginSignUpTitle => 'إنشاء حساب';
 
   @override
-  String get loginFullNameLabel => 'الاسم الكامل';
-
-  @override
-  String get loginFullNameHint => 'أدخل اسمك';
-
-  @override
   String get loginEmailHintId => 'أدخل معرّف بريدك الإلكتروني';
 
   @override
-  String get loginDateOfBirthLabel => 'تاريخ الميلاد';
+  String get loginSignupUsernameLabel => 'اسم المستخدم';
 
   @override
-  String get loginDateOfBirthHint => '18/03/2004';
+  String get loginSignupUsernameHint => 'أدخل اسم المستخدم';
+
+  @override
+  String get loginRequiredError => '*مطلوب';
 
   @override
   String get loginPhoneNumberShortHint => '92726-05921';

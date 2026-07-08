@@ -172,21 +172,36 @@ class ApiException implements Exception {
     final error = map['error']?.toString().trim();
     if (error != null && error.isNotEmpty) return error;
 
+    final messages = <String>[];
+
     final nonFieldErrors = map['non_field_errors'];
-    if (nonFieldErrors is List && nonFieldErrors.isNotEmpty) {
-      final first = nonFieldErrors.first?.toString().trim();
-      if (first != null && first.isNotEmpty) return first;
+    if (nonFieldErrors is List) {
+      for (final item in nonFieldErrors) {
+        final str = item?.toString().trim();
+        if (str != null && str.isNotEmpty) {
+          messages.add(str);
+        }
+      }
     }
 
     for (final entry in map.entries) {
+      if (entry.key == 'non_field_errors') continue;
+
       final value = entry.value;
-      if (value is List && value.isNotEmpty) {
-        final first = value.first?.toString().trim();
-        if (first != null && first.isNotEmpty) return first;
+      if (value is List) {
+        for (final item in value) {
+          final str = item?.toString().trim();
+          if (str != null && str.isNotEmpty) {
+            messages.add(str);
+          }
+        }
+      } else if (value is String && value.trim().isNotEmpty) {
+        messages.add(value.trim());
       }
-      if (value is String && value.trim().isNotEmpty) {
-        return value.trim();
-      }
+    }
+
+    if (messages.isNotEmpty) {
+      return messages.join('\n');
     }
 
     return null;

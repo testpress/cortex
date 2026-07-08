@@ -212,22 +212,19 @@ class AppLocalizationsMl extends AppLocalizations {
   String get loginEmailRequired => 'ദയവായി നിങ്ങളുടെ ഇമെയിൽ വിലാസം നൽകുക.';
 
   @override
-  String get loginSignUpTitle => 'സൈൻ അപ്പ്';
-
-  @override
-  String get loginFullNameLabel => 'പൂർണ്ണ പേര്';
-
-  @override
-  String get loginFullNameHint => 'നിങ്ങളുടെ പേര് നൽകുക';
+  String get loginSignUpTitle => 'സൈൻ അപ്പ് ചെയ്യുക';
 
   @override
   String get loginEmailHintId => 'നിങ്ങളുടെ മെയിൽ ഐഡി നൽകുക';
 
   @override
-  String get loginDateOfBirthLabel => 'ജനനത്തീയതി';
+  String get loginSignupUsernameLabel => 'ഉപയോക്തൃനാമം';
 
   @override
-  String get loginDateOfBirthHint => '18/03/2004';
+  String get loginSignupUsernameHint => 'നിങ്ങളുടെ ഉപയോക്തൃനാമം നൽകുക';
+
+  @override
+  String get loginRequiredError => '*ആവശ്യമാണ്';
 
   @override
   String get loginPhoneNumberShortHint => '92726-05921';

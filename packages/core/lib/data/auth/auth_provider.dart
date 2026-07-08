@@ -44,6 +44,24 @@ class Auth extends _$Auth {
     state = const AsyncData(true);
   }
 
+  Future<void> register({
+    required String username,
+    required String email,
+    required String password,
+    String? phone,
+    String? countryCode,
+  }) async {
+    await _repository.register(
+      username: username,
+      email: email,
+      password: password,
+      phone: phone,
+      countryCode: countryCode,
+    );
+
+    state = const AsyncData(true);
+  }
+
   Future<void> generateOtp({
     required String phoneNumber,
     required String countryCode,
