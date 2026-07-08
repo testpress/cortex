@@ -38,6 +38,15 @@ class _AppOtpInputState extends State<AppOtpInput> {
   }
 
   @override
+  void didUpdateWidget(covariant AppOtpInput oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller.removeListener(_onTextChanged);
+      widget.controller.addListener(_onTextChanged);
+    }
+  }
+
+  @override
   void dispose() {
     widget.controller.removeListener(_onTextChanged);
     _focusNode.removeListener(_onFocusChanged);
@@ -49,7 +58,9 @@ class _AppOtpInputState extends State<AppOtpInput> {
     if (widget.controller.text.length == widget.length) {
       widget.onCompleted?.call(widget.controller.text);
     }
-    setState(() {}); // Rebuild to update boxes
+    if (mounted) {
+      setState(() {}); // Rebuild to update boxes
+    }
   }
 
   @override

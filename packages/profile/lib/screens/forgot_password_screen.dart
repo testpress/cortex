@@ -30,9 +30,9 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
-    return Container(
-      color: design.colors.surface,
-      child: SafeArea(
+    return Scaffold(
+      backgroundColor: design.colors.surface,
+      body: SafeArea(
         child: Stack(
           children: [
             Align(

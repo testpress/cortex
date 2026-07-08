@@ -107,7 +107,12 @@ class AppTextField extends StatelessWidget {
                   minWidth: 0,
                   minHeight: 0,
                 ),
-                suffixIcon: suffixIcon,
+                suffixIcon: suffixIcon != null
+                    ? Padding(
+                        padding: EdgeInsets.only(right: design.spacing.md),
+                        child: suffixIcon,
+                      )
+                    : null,
                 contentPadding:
                     contentPadding ??
                     EdgeInsets.symmetric(
