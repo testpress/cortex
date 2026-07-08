@@ -218,6 +218,10 @@ class _ReviewAnswerDetailScreenState
                         ),
                         ReviewFooterActions(
                           l10n: l10n,
+                          isReported: ref
+                              .watch(examAttemptProvider)
+                              .reportedQuestions
+                              .contains(currentQuestion.id),
                           onAskDoubt: () => context.push(
                             '/home/discussions/doubts/ask?question_id=${Uri.encodeComponent(currentQuestion.id)}',
                           ),
@@ -319,11 +323,12 @@ class _ReviewAnswerDetailScreenState
       barrierDismissible: true,
       barrierLabel: l10n.reviewReportIssueTitle,
       barrierColor: design.colors.shadow.withValues(alpha: 0.6),
-      pageBuilder: (context, anim1, anim2) => ReportReviewDialog(
+      pageBuilder: (dialogContext, anim1, anim2) => ReportReviewDialog(
+        questionId: question.id,
         questionNumber: (_questions.indexOf(question) + 1),
         design: design,
         l10n: l10n,
-        onSubmit: (index, text) => Navigator.pop(context),
+        parentContext: context,
       ),
     );
   }

@@ -1019,6 +1019,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get labelReport => 'புகாரளி';
 
   @override
+  String get labelReported => 'புகாரளிக்கப்பட்டது';
+
+  @override
   String get labelOverallSummary => 'ஒட்டுமொத்த சுருக்கம்';
 
   @override
@@ -1091,6 +1094,12 @@ class AppLocalizationsTa extends AppLocalizations {
   String get reviewSubmitReport => 'புகாரைச் சமர்ப்பி';
 
   @override
+  String get reviewReportSuccess => 'புகார் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது';
+
+  @override
+  String get reviewReportFailed => 'புகாரைச் சமர்ப்பிக்க முடியவில்லை';
+
+  @override
   String reviewReportIssueWithQuestion(int number) {
     return 'கேள்வி $number இல் ஒரு சிக்கலைப் புகாரளி';
   }
@@ -1103,17 +1112,19 @@ class AppLocalizationsTa extends AppLocalizations {
   String get reviewWriteCommentHint => 'உங்கள் கருத்தை எழுதுங்கள்...';
 
   @override
-  String get reviewReportOptionIncorrect =>
-      'தவறான பதில் சரியானது என குறிக்கப்பட்டுள்ளது';
+  String get reviewReportOptionErrorInQuestion => 'கேள்வியில் பிழை';
 
   @override
-  String get reviewReportOptionUnclear => 'கேள்வி தெளிவாக இல்லை';
+  String get reviewReportOptionIncorrectAnswer => 'தவறான பதில்';
 
   @override
-  String get reviewReportOptionWrongExplanation => 'விளக்கம் தவறானது';
+  String get reviewReportOptionNoExplanation => 'விளக்கம் இல்லை';
 
   @override
-  String get reviewReportOptionOther => 'பிற சிக்கல்';
+  String get reviewReportOptionIncompleteExplanation => 'முழுமையற்ற விளக்கம்';
+
+  @override
+  String get reviewReportOptionOthers => 'மற்றவை';
 
   @override
   String get reviewReportDetailsHint =>

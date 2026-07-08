@@ -189,6 +189,9 @@ abstract class DataSource {
     AnswerDto answer,
   );
 
+  /// Report a question for errors (e.g. incorrect answer, unclear).
+  Future<void> reportQuestion(String questionId, Map<String, dynamic> payload);
+
   /// Send a heartbeat to maintain the attempt session.
   Future<AttemptDto> sendHeartbeat(String attemptId);
 

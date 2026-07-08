@@ -499,6 +499,7 @@
   "labelAskDoubt": "Ask Doubt",
   "labelComment": "Comment",
   "labelReport": "Report",
+  "labelReported": "Reported",
   "labelOverallSummary": "Overall Summary",
   "labelFilter": "Filter:",
 
@@ -524,6 +525,8 @@
   "reviewPostComment": "Post Comment",
   "reviewReportIssueTitle": "Report Issue",
   "reviewSubmitReport": "Submit Report",
+  "reviewReportSuccess": "Report submitted successfully",
+  "reviewReportFailed": "Failed to submit report",
   "reviewReportIssueWithQuestion": "Report an issue with Question {number}",
   "@reviewReportIssueWithQuestion": {
     "placeholders": {
@@ -534,10 +537,11 @@
   },
   "reviewDescribeDoubtHint": "Describe your doubt here...",
   "reviewWriteCommentHint": "Write your comment...",
-  "reviewReportOptionIncorrect": "Incorrect answer marked as correct",
-  "reviewReportOptionUnclear": "Question is unclear",
-  "reviewReportOptionWrongExplanation": "Explanation is wrong",
-  "reviewReportOptionOther": "Other issue",
+  "reviewReportOptionErrorInQuestion": "Error in Question",
+  "reviewReportOptionIncorrectAnswer": "Incorrect Answer",
+  "reviewReportOptionNoExplanation": "No Explanation",
+  "reviewReportOptionIncompleteExplanation": "Incomplete Explanation",
+  "reviewReportOptionOthers": "Others",
   "reviewReportDetailsHint": "Additional details (optional)...",
   "reviewShareThoughtsOnQuestion": "Share your thoughts on Question {number}",
   "@reviewShareThoughtsOnQuestion": {

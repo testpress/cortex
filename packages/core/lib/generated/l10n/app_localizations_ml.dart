@@ -1017,6 +1017,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get labelReport => 'റിപ്പോർട്ട്';
 
   @override
+  String get labelReported => 'റിപ്പോർട്ട് ചെയ്തു';
+
+  @override
   String get labelOverallSummary => 'മൊത്തത്തിലുള്ള സംഗ്രഹം';
 
   @override
@@ -1089,6 +1092,12 @@ class AppLocalizationsMl extends AppLocalizations {
   String get reviewSubmitReport => 'റിപ്പോർട്ട് സമർപ്പിക്കുക';
 
   @override
+  String get reviewReportSuccess => 'റിപ്പോർട്ട് വിജയകരമായി സമർപ്പിച്ചു';
+
+  @override
+  String get reviewReportFailed => 'റിപ്പോർട്ട് സമർപ്പിക്കാനായില്ല';
+
+  @override
   String reviewReportIssueWithQuestion(int number) {
     return 'ചോദ്യം $number-ലെ പ്രശ്നം റിപ്പോർട്ട് ചെയ്യുക';
   }
@@ -1100,17 +1109,19 @@ class AppLocalizationsMl extends AppLocalizations {
   String get reviewWriteCommentHint => 'നിങ്ങളുടെ അഭിപ്രായം എഴുതുക...';
 
   @override
-  String get reviewReportOptionIncorrect =>
-      'തെറ്റായ ഉത്തരം ശരിയായി രേഖപ്പെടുത്തി';
+  String get reviewReportOptionErrorInQuestion => 'ചോദ്യത്തിൽ തെറ്റ്';
 
   @override
-  String get reviewReportOptionUnclear => 'ചോദ്യം വ്യക്തമല്ല';
+  String get reviewReportOptionIncorrectAnswer => 'തെറ്റായ ഉത്തരം';
 
   @override
-  String get reviewReportOptionWrongExplanation => 'വിശദീകരണം തെറ്റാണ്';
+  String get reviewReportOptionNoExplanation => 'വിശദീകരണം ഇല്ല';
 
   @override
-  String get reviewReportOptionOther => 'മറ്റ് പ്രശ്നങ്ങൾ';
+  String get reviewReportOptionIncompleteExplanation => 'അപൂർണ്ണമായ വിശദീകരണം';
+
+  @override
+  String get reviewReportOptionOthers => 'മറ്റുള്ളവ';
 
   @override
   String get reviewReportDetailsHint => 'കൂടുതൽ വിവരങ്ങൾ (ഓപ്ഷണൽ)...';

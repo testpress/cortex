@@ -1877,6 +1877,12 @@ abstract class AppLocalizations {
   /// **'Report'**
   String get labelReport;
 
+  /// No description provided for @labelReported.
+  ///
+  /// In en, this message translates to:
+  /// **'Reported'**
+  String get labelReported;
+
   /// No description provided for @labelOverallSummary.
   ///
   /// In en, this message translates to:
@@ -2021,6 +2027,18 @@ abstract class AppLocalizations {
   /// **'Submit Report'**
   String get reviewSubmitReport;
 
+  /// No description provided for @reviewReportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Report submitted successfully'**
+  String get reviewReportSuccess;
+
+  /// No description provided for @reviewReportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to submit report'**
+  String get reviewReportFailed;
+
   /// No description provided for @reviewReportIssueWithQuestion.
   ///
   /// In en, this message translates to:
@@ -2039,29 +2057,35 @@ abstract class AppLocalizations {
   /// **'Write your comment...'**
   String get reviewWriteCommentHint;
 
-  /// No description provided for @reviewReportOptionIncorrect.
+  /// No description provided for @reviewReportOptionErrorInQuestion.
   ///
   /// In en, this message translates to:
-  /// **'Incorrect answer marked as correct'**
-  String get reviewReportOptionIncorrect;
+  /// **'Error in Question'**
+  String get reviewReportOptionErrorInQuestion;
 
-  /// No description provided for @reviewReportOptionUnclear.
+  /// No description provided for @reviewReportOptionIncorrectAnswer.
   ///
   /// In en, this message translates to:
-  /// **'Question is unclear'**
-  String get reviewReportOptionUnclear;
+  /// **'Incorrect Answer'**
+  String get reviewReportOptionIncorrectAnswer;
 
-  /// No description provided for @reviewReportOptionWrongExplanation.
+  /// No description provided for @reviewReportOptionNoExplanation.
   ///
   /// In en, this message translates to:
-  /// **'Explanation is wrong'**
-  String get reviewReportOptionWrongExplanation;
+  /// **'No Explanation'**
+  String get reviewReportOptionNoExplanation;
 
-  /// No description provided for @reviewReportOptionOther.
+  /// No description provided for @reviewReportOptionIncompleteExplanation.
   ///
   /// In en, this message translates to:
-  /// **'Other issue'**
-  String get reviewReportOptionOther;
+  /// **'Incomplete Explanation'**
+  String get reviewReportOptionIncompleteExplanation;
+
+  /// No description provided for @reviewReportOptionOthers.
+  ///
+  /// In en, this message translates to:
+  /// **'Others'**
+  String get reviewReportOptionOthers;
 
   /// No description provided for @reviewReportDetailsHint.
   ///

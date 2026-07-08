@@ -5,7 +5,8 @@ class ReviewFooterActions extends StatelessWidget {
   final AppLocalizations l10n;
   final VoidCallback onAskDoubt;
   final VoidCallback onComment;
-  final VoidCallback onReport;
+  final VoidCallback? onReport;
+  final bool isReported;
 
   const ReviewFooterActions({
     super.key,
@@ -13,6 +14,7 @@ class ReviewFooterActions extends StatelessWidget {
     required this.onAskDoubt,
     required this.onComment,
     required this.onReport,
+    this.isReported = false,
   });
 
   @override
@@ -61,7 +63,7 @@ class ReviewFooterActions extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             child: _FooterActionButton(
-              label: l10n.labelReport,
+              label: isReported ? l10n.labelReported : l10n.labelReport,
               icon: LucideIcons.flag,
               bg: design.colors.accent5.withValues(
                 alpha: design.isDark ? 0.2 : 0.08,
@@ -70,7 +72,7 @@ class ReviewFooterActions extends StatelessWidget {
               borderColor: design.colors.accent5.withValues(
                 alpha: design.isDark ? 0.4 : 0.2,
               ),
-              onTap: onReport,
+              onTap: isReported ? null : onReport,
             ),
           ),
         ],
@@ -85,7 +87,7 @@ class _FooterActionButton extends StatelessWidget {
   final Color bg;
   final Color textColor;
   final Color borderColor;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   const _FooterActionButton({
     required this.label,
@@ -98,22 +100,30 @@ class _FooterActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return AppSemantics.button(
+      label: label,
+      enabled: onTap != null,
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: borderColor),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: textColor, size: 16),
-            const SizedBox(width: 6),
-            AppText.caption(label, color: textColor),
-          ],
+      child: GestureDetector(
+        onTap: onTap,
+        child: Opacity(
+          opacity: onTap == null ? 0.5 : 1.0,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: borderColor),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, color: textColor, size: 16),
+                const SizedBox(width: 6),
+                AppText.caption(label, color: textColor),
+              ],
+            ),
+          ),
         ),
       ),
     );
