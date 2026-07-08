@@ -147,13 +147,13 @@ abstract class AppLocalizations {
   /// No description provided for @loginUsernameLabel.
   ///
   /// In en, this message translates to:
-  /// **'Username or email'**
+  /// **'Username'**
   String get loginUsernameLabel;
 
   /// No description provided for @loginUsernameHint.
   ///
   /// In en, this message translates to:
-  /// **'Enter username or email'**
+  /// **'Enter your username'**
   String get loginUsernameHint;
 
   /// No description provided for @loginPasswordLabel.
@@ -503,18 +503,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter your mail id'**
   String get loginEmailHintId;
-
-  /// No description provided for @loginDateOfBirthLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Date of birth'**
-  String get loginDateOfBirthLabel;
-
-  /// No description provided for @loginDateOfBirthHint.
-  ///
-  /// In en, this message translates to:
-  /// **'18/03/2004'**
-  String get loginDateOfBirthHint;
 
   /// No description provided for @loginPhoneNumberShortHint.
   ///

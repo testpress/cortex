@@ -31,10 +31,10 @@ class AppLocalizationsTa extends AppLocalizations {
   String get loginModeOtp => 'OTP';
 
   @override
-  String get loginUsernameLabel => 'பயனர் பெயர் அல்லது மின்னஞ்சல்';
+  String get loginUsernameLabel => 'பயனர் பெயர்';
 
   @override
-  String get loginUsernameHint => 'பயனர் பெயர் அல்லது மின்னஞ்சலை உள்ளிடவும்';
+  String get loginUsernameHint => 'உங்கள் பயனர் பெயரை உள்ளிடவும்';
 
   @override
   String get loginPasswordLabel => 'கடவுச்சொல்';
@@ -226,12 +226,6 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get loginEmailHintId => 'உங்கள் மின்னஞ்சல் ஐடியை உள்ளிடவும்';
-
-  @override
-  String get loginDateOfBirthLabel => 'பிறந்த தேதி';
-
-  @override
-  String get loginDateOfBirthHint => '18/03/2004';
 
   @override
   String get loginPhoneNumberShortHint => '92726-05921';

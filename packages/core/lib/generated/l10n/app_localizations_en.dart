@@ -31,10 +31,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginModeOtp => 'OTP';
 
   @override
-  String get loginUsernameLabel => 'Username or email';
+  String get loginUsernameLabel => 'Username';
 
   @override
-  String get loginUsernameHint => 'Enter username or email';
+  String get loginUsernameHint => 'Enter your username';
 
   @override
   String get loginPasswordLabel => 'Password';
@@ -220,12 +220,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginEmailHintId => 'Enter your mail id';
-
-  @override
-  String get loginDateOfBirthLabel => 'Date of birth';
-
-  @override
-  String get loginDateOfBirthHint => '18/03/2004';
 
   @override
   String get loginPhoneNumberShortHint => '92726-05921';

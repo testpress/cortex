@@ -34,6 +34,23 @@ class AuthRepository {
     await verifyLogin();
   }
 
+  Future<void> register({
+    required String username,
+    required String email,
+    required String password,
+    String? phone,
+    String? countryCode,
+  }) async {
+    await _apiService.register(
+      username: username,
+      email: email,
+      password: password,
+      phone: phone,
+      countryCode: countryCode,
+    );
+    await loginWithPassword(username: username, password: password);
+  }
+
   Future<void> generateOtp({
     required String phoneNumber,
     required String countryCode,

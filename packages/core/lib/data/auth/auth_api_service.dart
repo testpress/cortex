@@ -26,6 +26,27 @@ class AuthApiService {
     return _parseSession(response);
   }
 
+  Future<void> register({
+    required String username,
+    required String email,
+    required String password,
+    String? phone,
+    String? countryCode,
+  }) async {
+    final payload = <String, dynamic>{
+      'username': username,
+      'email': email,
+      'password': password,
+    };
+    if (phone != null && phone.isNotEmpty) {
+      payload['phone'] = phone;
+    }
+    if (countryCode != null && countryCode.isNotEmpty) {
+      payload['country_code'] = countryCode;
+    }
+    await _post(ApiEndpoints.register, payload);
+  }
+
   Future<void> generateOtp({
     required String phoneNumber,
     required String countryCode,

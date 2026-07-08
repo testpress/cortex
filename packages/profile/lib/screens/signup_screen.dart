@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import '../widgets/login_branding.dart';
 
 class SignupScreen extends ConsumerStatefulWidget {
@@ -12,19 +14,25 @@ class SignupScreen extends ConsumerStatefulWidget {
 
 class _SignupScreenState extends ConsumerState<SignupScreen> {
   final _nameController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
-  final _dobController = TextEditingController();
-  final _countryCodeController = TextEditingController(text: '+91');
+  final _countryCodeController = TextEditingController(text: 'IN');
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
-  final bool _isBusy = false;
+  bool _isBusy = false;
+  String? _errorMessage;
   bool _obscurePassword = true;
+  String? _nameError;
+  String? _usernameError;
+  String? _emailError;
+  String? _phoneError;
+  String? _passwordError;
 
   @override
   void dispose() {
     _nameController.dispose();
+    _usernameController.dispose();
     _emailController.dispose();
-    _dobController.dispose();
     _countryCodeController.dispose();
     _phoneController.dispose();
     _passwordController.dispose();
@@ -95,6 +103,24 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                             ),
                             SizedBox(height: design.spacing.xl),
 
+                            if (_errorMessage != null) ...[
+                              Container(
+                                padding: EdgeInsets.all(design.spacing.sm),
+                                decoration: BoxDecoration(
+                                  color: design.colors.error.withValues(
+                                    alpha: 0.1,
+                                  ),
+                                  borderRadius: BorderRadius.circular(
+                                    design.radius.sm,
+                                  ),
+                                ),
+                                child: AppText.label(
+                                  _errorMessage!,
+                                  color: design.colors.error,
+                                ),
+                              ),
+                              SizedBox(height: design.spacing.md),
+                            ],
                             AppText.cardTitle(
                               l10n.loginFullNameLabel,
                               color: design.colors.textSecondary,
@@ -104,6 +130,22 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                               label: '',
                               hintText: l10n.loginFullNameHint,
                               controller: _nameController,
+                              errorText: _nameError,
+                              textStyle: design.typography.labelBold,
+                              textInputAction: TextInputAction.next,
+                            ),
+                            SizedBox(height: design.spacing.md),
+
+                            AppText.cardTitle(
+                              l10n.loginUsernameLabel,
+                              color: design.colors.textSecondary,
+                            ),
+                            SizedBox(height: design.spacing.xs),
+                            AppTextField(
+                              label: '',
+                              hintText: l10n.loginUsernameHint,
+                              controller: _usernameController,
+                              errorText: _usernameError,
                               textStyle: design.typography.labelBold,
                               textInputAction: TextInputAction.next,
                             ),
@@ -118,21 +160,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                               label: '',
                               hintText: l10n.loginEmailHintId,
                               controller: _emailController,
+                              errorText: _emailError,
                               keyboardType: TextInputType.emailAddress,
-                              textStyle: design.typography.labelBold,
-                              textInputAction: TextInputAction.next,
-                            ),
-                            SizedBox(height: design.spacing.md),
-
-                            AppText.cardTitle(
-                              l10n.loginDateOfBirthLabel,
-                              color: design.colors.textSecondary,
-                            ),
-                            SizedBox(height: design.spacing.xs),
-                            AppTextField(
-                              label: '',
-                              hintText: l10n.loginDateOfBirthHint,
-                              controller: _dobController,
                               textStyle: design.typography.labelBold,
                               textInputAction: TextInputAction.next,
                             ),
@@ -147,23 +176,52 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Expanded(
-                                  flex: 2,
-                                  child: AppTextField(
-                                    label: '',
-                                    hintText: l10n.loginCountryCodeHint,
-                                    controller: _countryCodeController,
-                                    textStyle: design.typography.labelBold,
-                                    textInputAction: TextInputAction.next,
-                                    keyboardType: TextInputType.phone,
+                                  flex: 3,
+                                  child: Container(
+                                    height: 52,
+                                    decoration: BoxDecoration(
+                                      color: design.colors.card,
+                                      borderRadius: BorderRadius.circular(
+                                        design.radius.lg,
+                                      ),
+                                      border: Border.all(
+                                        color: design.colors.border,
+                                      ),
+                                    ),
+                                    child: Localizations.override(
+                                      context: context,
+                                      locale: const Locale('en'),
+                                      delegates: const [
+                                        CountryLocalizations.delegate,
+                                      ],
+                                      child: CountryCodePicker(
+                                        onChanged: (code) {
+                                          _countryCodeController.text =
+                                              code.code ?? 'IN';
+                                        },
+                                        initialSelection: 'IN',
+                                        showCountryOnly: false,
+                                        showOnlyCountryWhenClosed: false,
+                                        alignLeft: false,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 2.0,
+                                        ),
+                                        textStyle: design.typography.labelBold
+                                            .copyWith(
+                                              color: design.colors.textPrimary,
+                                            ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                                 SizedBox(width: design.spacing.sm),
                                 Expanded(
-                                  flex: 5,
+                                  flex: 6,
                                   child: AppTextField(
                                     label: '',
                                     hintText: l10n.loginPhoneNumberShortHint,
                                     controller: _phoneController,
+                                    errorText: _phoneError,
                                     keyboardType: TextInputType.phone,
                                     textStyle: design.typography.labelBold,
                                     textInputAction: TextInputAction.next,
@@ -182,6 +240,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                               label: '',
                               hintText: l10n.loginPasswordHint,
                               controller: _passwordController,
+                              errorText: _passwordError,
                               obscureText: _obscurePassword,
                               textStyle: design.typography.labelBold,
                               textInputAction: TextInputAction.done,
@@ -225,8 +284,70 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                               AppButton.primary(
                                 label: l10n.loginRegister,
                                 fullWidth: true,
-                                // TODO: Implement registration API call via auth provider
-                                onPressed: () => context.go('/home'),
+                                onPressed: () async {
+                                  final name = _nameController.text.trim();
+                                  final username = _usernameController.text
+                                      .trim();
+                                  final email = _emailController.text.trim();
+                                  final phone = _phoneController.text.trim();
+                                  final password = _passwordController.text;
+
+                                  setState(() {
+                                    _nameError = name.isEmpty
+                                        ? '*Required'
+                                        : null;
+                                    _usernameError = username.isEmpty
+                                        ? '*Required'
+                                        : null;
+                                    _emailError = email.isEmpty
+                                        ? '*Required'
+                                        : null;
+                                    _phoneError = phone.isEmpty
+                                        ? '*Required'
+                                        : null;
+                                    _passwordError = password.isEmpty
+                                        ? '*Required'
+                                        : null;
+                                  });
+
+                                  if (_nameError != null ||
+                                      _usernameError != null ||
+                                      _emailError != null ||
+                                      _phoneError != null ||
+                                      _passwordError != null) {
+                                    return;
+                                  }
+
+                                  setState(() {
+                                    _isBusy = true;
+                                    _errorMessage = null;
+                                  });
+                                  try {
+                                    await ref
+                                        .read(authProvider.notifier)
+                                        .register(
+                                          username: _usernameController.text,
+                                          email: _emailController.text,
+                                          password: _passwordController.text,
+                                          phone: _phoneController.text,
+                                          countryCode:
+                                              _countryCodeController.text,
+                                        );
+                                    if (!context.mounted) return;
+                                    context.go('/home');
+                                  } catch (e) {
+                                    if (mounted) {
+                                      setState(() {
+                                        if (e is ApiException) {
+                                          _errorMessage = e.message;
+                                        } else {
+                                          _errorMessage = e.toString();
+                                        }
+                                        _isBusy = false;
+                                      });
+                                    }
+                                  }
+                                },
                               ),
                           ],
                         ),
