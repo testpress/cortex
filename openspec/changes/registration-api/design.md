@@ -1,6 +1,6 @@
 ## Context
 
-The Registration API (`POST /api/v2.3/users/register/`) is currently not integrated into the Cortex app. The `SignupScreen` exists but acts as a stub, rendering a "Register" button that redirects to `/home` without triggering any backend call. To provide a seamless onboarding experience, the app needs to call the API, auto-login upon success, and correctly format the country code as an ISO Alpha-2 string (e.g. "IN") rather than a dial code ("+91"). In addition, the Date of Birth field is to be removed and a dedicated "Username" field added to match the API requirements.
+The Registration API (`POST /api/v2.3/register/`) is currently not integrated into the Cortex app. The `SignupScreen` exists but acts as a stub, rendering a "Register" button that redirects to `/home` without triggering any backend call. To provide a seamless onboarding experience, the app needs to call the API, auto-login upon success, and correctly format the country code as an ISO Alpha-2 string (e.g. "IN") rather than a dial code ("+91"). In addition, the Date of Birth field is to be removed and a dedicated "Username" field added to match the API requirements.
 
 ## Goals / Non-Goals
 
@@ -11,7 +11,6 @@ The Registration API (`POST /api/v2.3/users/register/`) is currently not integra
 
 **Non-Goals:**
 - Modifying the backend registration logic.
-- Building a full Country Picker UI (we will default to "IN" or prompt for Alpha-2 string).
 
 ## Decisions
 
@@ -23,7 +22,7 @@ The Registration API (`POST /api/v2.3/users/register/`) is currently not integra
 
 **3. UI Adjustments**
 - We will modify `SignupScreen` to include `_usernameController` and remove `_dobController`.
-- For `_countryCodeController`, we will change the default value to `"IN"` to satisfy backend validation.
+- For `_countryCodeController`, we will use the `country_code_picker` package to provide an interactive country picker. (Note: This package uses Material widgets internally and is granted an exception to ADR-0001 and ADR-0003 for this specific UI control to improve UX).
 
 ## Risks / Trade-offs
 

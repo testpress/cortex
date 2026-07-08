@@ -31,10 +31,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loginModeOtp => 'رمز التحقق';
 
   @override
-  String get loginUsernameLabel => 'اسم المستخدم';
+  String get loginUsernameLabel => 'اسم المستخدم أو البريد الإلكتروني';
 
   @override
-  String get loginUsernameHint => 'أدخل اسم المستخدم';
+  String get loginUsernameHint => 'أدخل اسم المستخدم أو البريد الإلكتروني';
 
   @override
   String get loginPasswordLabel => 'كلمة المرور';
@@ -220,6 +220,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get loginEmailHintId => 'أدخل معرّف بريدك الإلكتروني';
+
+  @override
+  String get loginSignupUsernameLabel => 'اسم المستخدم';
+
+  @override
+  String get loginSignupUsernameHint => 'أدخل اسم المستخدم';
+
+  @override
+  String get loginRequiredError => '*مطلوب';
 
   @override
   String get loginPhoneNumberShortHint => '92726-05921';

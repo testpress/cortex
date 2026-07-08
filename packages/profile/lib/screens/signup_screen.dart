@@ -13,7 +13,6 @@ class SignupScreen extends ConsumerStatefulWidget {
 }
 
 class _SignupScreenState extends ConsumerState<SignupScreen> {
-  final _nameController = TextEditingController();
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _countryCodeController = TextEditingController(text: 'IN');
@@ -22,7 +21,6 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   bool _isBusy = false;
   String? _errorMessage;
   bool _obscurePassword = true;
-  String? _nameError;
   String? _usernameError;
   String? _emailError;
   String? _phoneError;
@@ -30,7 +28,6 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
   @override
   void dispose() {
-    _nameController.dispose();
     _usernameController.dispose();
     _emailController.dispose();
     _countryCodeController.dispose();
@@ -122,28 +119,13 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                               SizedBox(height: design.spacing.md),
                             ],
                             AppText.cardTitle(
-                              l10n.loginFullNameLabel,
+                              l10n.loginSignupUsernameLabel,
                               color: design.colors.textSecondary,
                             ),
                             SizedBox(height: design.spacing.xs),
                             AppTextField(
                               label: '',
-                              hintText: l10n.loginFullNameHint,
-                              controller: _nameController,
-                              errorText: _nameError,
-                              textStyle: design.typography.labelBold,
-                              textInputAction: TextInputAction.next,
-                            ),
-                            SizedBox(height: design.spacing.md),
-
-                            AppText.cardTitle(
-                              l10n.loginUsernameLabel,
-                              color: design.colors.textSecondary,
-                            ),
-                            SizedBox(height: design.spacing.xs),
-                            AppTextField(
-                              label: '',
-                              hintText: l10n.loginUsernameHint,
+                              hintText: l10n.loginSignupUsernameHint,
                               controller: _usernameController,
                               errorText: _usernameError,
                               textStyle: design.typography.labelBold,
@@ -285,7 +267,6 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                                 label: l10n.loginRegister,
                                 fullWidth: true,
                                 onPressed: () async {
-                                  final name = _nameController.text.trim();
                                   final username = _usernameController.text
                                       .trim();
                                   final email = _emailController.text.trim();
@@ -293,25 +274,21 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                                   final password = _passwordController.text;
 
                                   setState(() {
-                                    _nameError = name.isEmpty
-                                        ? '*Required'
-                                        : null;
                                     _usernameError = username.isEmpty
-                                        ? '*Required'
+                                        ? l10n.loginRequiredError
                                         : null;
                                     _emailError = email.isEmpty
-                                        ? '*Required'
+                                        ? l10n.loginRequiredError
                                         : null;
                                     _phoneError = phone.isEmpty
-                                        ? '*Required'
+                                        ? l10n.loginRequiredError
                                         : null;
                                     _passwordError = password.isEmpty
-                                        ? '*Required'
+                                        ? l10n.loginRequiredError
                                         : null;
                                   });
 
-                                  if (_nameError != null ||
-                                      _usernameError != null ||
+                                  if (_usernameError != null ||
                                       _emailError != null ||
                                       _phoneError != null ||
                                       _passwordError != null) {
@@ -326,12 +303,13 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                                     await ref
                                         .read(authProvider.notifier)
                                         .register(
-                                          username: _usernameController.text,
-                                          email: _emailController.text,
-                                          password: _passwordController.text,
-                                          phone: _phoneController.text,
-                                          countryCode:
-                                              _countryCodeController.text,
+                                          username: username,
+                                          email: email,
+                                          password: password,
+                                          phone: phone,
+                                          countryCode: _countryCodeController
+                                              .text
+                                              .trim(),
                                         );
                                     if (!context.mounted) return;
                                     context.go('/home');

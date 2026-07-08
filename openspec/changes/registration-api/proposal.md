@@ -4,7 +4,7 @@ The signup screen in the Cortex app currently lacks backend integration. Users c
 
 ## What Changes
 
-- Integrate `POST /api/v2.3/users/register/` to register new users.
+- Integrate `POST /api/v2.3/register/` to register new users.
 - Automatically trigger `loginWithPassword` (which uses `/api/v2.5/auth-token/` and then fetches `me/`) upon a `201 Created` registration success so the user is logged in immediately.
 - Update the `SignupScreen` form fields:
   - Add a new "Username" field.
