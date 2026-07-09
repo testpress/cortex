@@ -1,6 +1,16 @@
 ## Context
 
-The Testpress backend unified Google Sign-In and Registration via the `/api/v2.3/social-auth/` endpoint. The client needs to generate an ID Token using the `google_sign_in` plugin, pass it to the backend under the `access_token` key, and handle the login session appropriately. There is no separate signup endpoint for Google users; the backend automatically handles on-the-fly registration.
+The Testpress backend unified Google Sign-In and Registration via the `/api/v2.2/social-auth/` endpoint. The client needs to generate an ID Token using the `google_sign_in` plugin, pass it to the backend under the `access_token` key, and handle the login session appropriately. There is no separate signup endpoint for Google users; the backend automatically handles on-the-fly registration.
+
+### Backend Integration
+The endpoint expects the following JSON payload:
+```json
+{
+  "provider": "GOOGLE",
+  "access_token": "<google_id_token>",
+  "user_id": "<google_user_id>"
+}
+```
 
 ## Goals / Non-Goals
 

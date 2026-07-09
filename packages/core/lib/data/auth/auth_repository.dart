@@ -2,7 +2,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import 'auth_api_service.dart';
 import 'auth_local_data_source.dart';
-import '../config/app_config.dart';
 import '../exceptions/api_exception.dart';
 import '../sources/data_source.dart';
 import 'types/auth_exception.dart';
@@ -11,14 +10,17 @@ class AuthRepository {
   final AuthApiService _apiService;
   final AuthLocalDataSource _localDataSource;
   final DataSource _dataSource;
+  final GoogleSignIn _googleSignIn;
 
   AuthRepository({
     required AuthApiService apiService,
     required AuthLocalDataSource localDataSource,
     required DataSource dataSource,
+    GoogleSignIn? googleSignIn,
   }) : _apiService = apiService,
        _localDataSource = localDataSource,
-       _dataSource = dataSource;
+       _dataSource = dataSource,
+       _googleSignIn = googleSignIn ?? GoogleSignIn();
 
   Future<bool> isUserLoggedIn() async {
     return _localDataSource.isUserLoggedIn();
@@ -38,32 +40,24 @@ class AuthRepository {
   }
 
   Future<void> loginWithGoogle() async {
-    // The serverClientId (Web Client ID) is typically required for the backend
-    // to verify the ID token. It is dynamically injected into AppConfig.
-    final serverClientId = AppConfig.googleServerClientId;
-
-    final googleSignIn = serverClientId.isNotEmpty
-        ? GoogleSignIn(serverClientId: serverClientId)
-        : GoogleSignIn();
-
     try {
-      await googleSignIn.signOut();
+      await _googleSignIn.signOut();
     } catch (_) {
       // Ignore any errors if sign out fails
     }
 
     // Explicitly request sign in to allow the user to select an account.
-    final googleUser = await googleSignIn.signIn();
+    final googleUser = await _googleSignIn.signIn();
 
     if (googleUser == null) {
-      throw AuthException.googleCancelled();
+      throw const GoogleSignInCancelledException();
     }
 
     final googleAuth = await googleUser.authentication;
     final idToken = googleAuth.idToken;
 
     if (idToken == null || idToken.isEmpty) {
-      throw AuthException.googleTokenFailed();
+      throw const GoogleSignInTokenFailedException();
     }
 
     final session = await _apiService.loginWithGoogle(

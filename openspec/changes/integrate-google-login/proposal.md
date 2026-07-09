@@ -1,6 +1,6 @@
 ## Why
 
-The app currently supports traditional username/password authentication, but users expect modern, seamless login experiences. Integrating Google Sign-In will reduce friction during onboarding, as it automatically registers new users or logs in existing ones via a unified backend endpoint (`/api/v2.3/social-auth/`), ultimately improving user acquisition and retention rates.
+The app currently supports traditional username/password authentication, but users expect modern, seamless login experiences. Integrating Google Sign-In will reduce friction during onboarding, as it automatically registers new users or logs in existing ones via a unified backend endpoint (`/api/v2.2/social-auth/`), ultimately improving user acquisition and retention rates.
 
 ## What Changes
 
@@ -12,7 +12,7 @@ The app currently supports traditional username/password authentication, but use
 ## Capabilities
 
 ### New Capabilities
-- `google-auth`: Handles the native Google Sign-In flow, ID token retrieval, and backend authentication mapping via the `/api/v2.3/social-auth/` endpoint.
+- `google-auth`: Handles the native Google Sign-In flow, ID token retrieval, and backend authentication mapping via the `/api/v2.2/social-auth/` endpoint.
 
 ### Modified Capabilities
 - `login-ui`: Updates the existing UI to connect the Google Sign-In button to the new `google-auth` capability and display relevant loading states and error messages.
@@ -20,6 +20,6 @@ The app currently supports traditional username/password authentication, but use
 ## Impact
 
 - **Dependencies**: Adds `google_sign_in` package to the project.
-- **APIs**: Integrates with `POST /api/v2.3/social-auth/` for unified login/signup.
+- **APIs**: Integrates with `POST /api/v2.2/social-auth/` for unified login/signup.
 - **Code**: Modifies `packages/profile/lib/screens/login_screen.dart` and the authentication provider (likely in `packages/core/lib/data/providers/auth_provider.dart` or similar).
 - **Configuration**: Will require Google Cloud / Firebase console setup for Client IDs across iOS and Android, including updating `Info.plist` and registering keystore SHA fingerprints.

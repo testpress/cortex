@@ -1,4 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+import '../config/app_config.dart';
 
 import 'auth_api_service.dart';
 import 'auth_local_data_source.dart';
@@ -18,11 +21,19 @@ final authLocalDataSourceProvider = Provider<AuthLocalDataSource>((ref) {
   return AuthLocalDataSource();
 });
 
+final googleSignInProvider = Provider<GoogleSignIn>((ref) {
+  final serverClientId = AppConfig.googleServerClientId;
+  return serverClientId.isNotEmpty
+      ? GoogleSignIn(serverClientId: serverClientId)
+      : GoogleSignIn();
+});
+
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   return AuthRepository(
     apiService: ref.watch(authApiServiceProvider),
     localDataSource: ref.watch(authLocalDataSourceProvider),
     dataSource: ref.watch(dataSourceProvider),
+    googleSignIn: ref.watch(googleSignInProvider),
   );
 });
 

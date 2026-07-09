@@ -6,7 +6,7 @@ The system SHALL use the `google_sign_in` plugin to authenticate users natively 
 #### Scenario: Successful Google Sign-In
 - **WHEN** the user initiates a Google Sign-In
 - **AND** successfully authenticates with Google
-- **THEN** the system SHALL send the ID token to `POST /api/v2.3/social-auth/` with provider "GOOGLE"
+- **THEN** the system SHALL send the ID token to `POST /api/v2.2/social-auth/` with provider "GOOGLE" and the `user_id`
 - **AND** save the returned JWT token to establish a session
 
 #### Scenario: Google Sign-In Cancellation

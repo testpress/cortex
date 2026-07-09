@@ -279,6 +279,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             else
                               AppSemantics.button(
                                 label: l10n.loginContinueWithGoogle,
+                                onTap: _handleGoogleLogin,
                                 child: SizedBox(
                                   width: double.infinity,
                                   height: 48,
@@ -334,19 +335,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           .loginWithPassword(username: username, password: password);
       if (mounted) context.go('/home');
     } on ParallelLoginException catch (e) {
-      if (mounted) {
-        final success = await context.push<bool>(
-          '/login-activity',
-          extra: {'message': e.message},
-        );
-        if (mounted) {
-          if (success == true) {
-            context.go('/home');
-          } else {
-            await ref.read(authProvider.notifier).logout();
-          }
-        }
-      }
+      await _handleParallelLogin(e);
     } on AuthException catch (error) {
       if (mounted) setState(() => _errorMessage = error.message);
     } catch (_) {
@@ -371,35 +360,35 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       await ref.read(authProvider.notifier).loginWithGoogle();
       if (mounted) context.go('/home');
     } on ParallelLoginException catch (e) {
+      await _handleParallelLogin(e);
+    } on GoogleSignInCancelledException {
+      if (mounted) setState(() => _errorMessage = null);
+    } on GoogleSignInTokenFailedException {
       if (mounted) {
-        final success = await context.push<bool>(
-          '/login-activity',
-          extra: {'message': e.message},
-        );
-        if (mounted) {
-          if (success == true) {
-            context.go('/home');
-          } else {
-            await ref.read(authProvider.notifier).logout();
-          }
-        }
+        setState(() => _errorMessage = l10n.loginErrorGoogleTokenFailed);
       }
     } on AuthException catch (error) {
-      if (mounted) {
-        if (error.message == 'cancelled') {
-          setState(() => _errorMessage = null);
-        } else if (error.message == 'google_token_failed') {
-          setState(() => _errorMessage = l10n.loginErrorGoogleTokenFailed);
-        } else {
-          setState(() => _errorMessage = error.message);
-        }
-      }
+      if (mounted) setState(() => _errorMessage = error.message);
     } catch (e, _) {
       if (mounted) {
         setState(() => _errorMessage = l10n.loginErrorGenericRequest);
       }
     } finally {
       if (mounted) setState(() => _isGoogleBusy = false);
+    }
+  }
+
+  Future<void> _handleParallelLogin(ParallelLoginException e) async {
+    if (!mounted) return;
+    final success = await context.push<bool>(
+      '/login-activity',
+      extra: {'message': e.message},
+    );
+    if (!mounted) return;
+    if (success == true) {
+      context.go('/home');
+    } else {
+      await ref.read(authProvider.notifier).logout();
     }
   }
 }

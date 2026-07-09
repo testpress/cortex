@@ -49,16 +49,6 @@ class AuthException extends ApiException {
     statusCode: statusCode,
   );
 
-  factory AuthException.googleCancelled() => const AuthException(
-    'cancelled', // Internal constant for UI to match
-    type: ApiErrorType.unknown,
-  );
-
-  factory AuthException.googleTokenFailed() => const AuthException(
-    'google_token_failed', // Internal constant for UI to match
-    type: ApiErrorType.unknown,
-  );
-
   factory AuthException.fromDio(DioException error) {
     // Leverage the base ApiException parsing logic
     final apiException = ApiException.fromDioException(error);
@@ -85,5 +75,21 @@ class ParallelLoginException extends AuthException {
         'Parallel login is restricted. Logout of other devices to continue.',
         type: ApiErrorType.forbidden,
         statusCode: 403,
+      );
+}
+
+class GoogleSignInCancelledException extends AuthException {
+  const GoogleSignInCancelledException()
+    : super(
+        'Google Sign-In was cancelled by the user.',
+        type: ApiErrorType.unknown,
+      );
+}
+
+class GoogleSignInTokenFailedException extends AuthException {
+  const GoogleSignInTokenFailedException()
+    : super(
+        'Failed to retrieve ID Token from Google.',
+        type: ApiErrorType.unknown,
       );
 }

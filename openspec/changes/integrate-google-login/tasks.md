@@ -8,7 +8,7 @@
 - [x] 2.1 Add `loginWithGoogle()` method in `packages/core/lib/data/providers/auth_provider.dart` (or wherever `authProvider` is defined)
 - [x] 2.2 Inside `loginWithGoogle()`, initialize `GoogleSignIn` and perform the native sign-in flow
 - [x] 2.3 On success, retrieve the `idToken` from Google auth credentials
-- [x] 2.4 Call backend `/api/v2.3/social-auth/` with payload `{"provider": "GOOGLE", "access_token": idToken}` to retrieve Testpress token
+- [x] 2.4 Call backend `/api/v2.2/social-auth/` with payload `{"provider": "GOOGLE", "access_token": idToken, "user_id": userId}` to retrieve Testpress token
 - [x] 2.5 Ensure the acquired token is persisted for the session
 
 ## 3. UI Integration
