@@ -41,7 +41,6 @@
   "loginErrorLockout": "This account is locked. Contact your administrator.",
   "loginErrorNetwork": "Network error. Check your internet connection.",
   "loginErrorServer": "Server error. Please try again shortly.",
-  "loginErrorGoogleSignInCancelled": "Google Sign-In was cancelled.",
   "loginErrorGoogleTokenFailed": "Failed to retrieve ID Token from Google.",
   "loginSignIn": "Log In",
   "loginSignUp": "Sign Up",

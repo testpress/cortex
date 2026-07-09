@@ -1,4 +1,5 @@
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/foundation.dart';
 
 import 'auth_api_service.dart';
 import 'auth_local_data_source.dart';
@@ -42,8 +43,9 @@ class AuthRepository {
   Future<void> loginWithGoogle() async {
     try {
       await _googleSignIn.signOut();
-    } catch (_) {
+    } catch (e) {
       // Ignore any errors if sign out fails
+      debugPrint('Google Sign-In signOut failed (ignored): $e');
     }
 
     // Explicitly request sign in to allow the user to select an account.

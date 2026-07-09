@@ -27,7 +27,7 @@ The endpoint expects the following JSON payload:
 
 - **Auth Provider Integration**: We will add a `loginWithGoogle()` function in `authProvider.notifier`. This keeps authentication logic centralized alongside password and OTP flows in `core/lib/data/providers/auth_provider.dart`.
 - **Plugin used**: `google_sign_in` official package from flutter.dev.
-- **Payload format**: We send `{"provider": "GOOGLE", "access_token": <id_token>}`. Note that the `access_token` key is explicitly required by the backend API, but its value must be Google's JWT `id_token`.
+- **Payload format**: We send `{"provider": "GOOGLE", "access_token": <id_token>, "user_id": <google_user_id>}`. Note that the `access_token` key is explicitly required by the backend API, but its value must be Google's JWT `id_token`.
 
 ## Risks / Trade-offs
 
