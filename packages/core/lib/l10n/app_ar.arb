@@ -35,6 +35,8 @@
   "loginErrorLockout": "تم قفل هذا الحساب. يرجى التواصل مع المسؤول.",
   "loginErrorNetwork": "خطأ في الشبكة. يرجى التحقق من اتصال الإنترنت.",
   "loginErrorServer": "خطأ في الخادم. يرجى المحاولة بعد قليل.",
+  "loginErrorGoogleSignInCancelled": "تم إلغاء تسجيل الدخول باستخدام جوجل.",
+  "loginErrorGoogleTokenFailed": "فشل في استرداد رمز الهوية من جوجل.",
   "loginSignIn": "تسجيل الدخول",
   "loginSignUp": "إنشاء حساب",
   "loginSignUpPrompt": "ليس لديك حساب؟ ",

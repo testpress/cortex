@@ -15,6 +15,13 @@ class AppConfig {
     defaultValue: 'https://lmsdemo.testpress.in/',
   );
 
+  /// Web Client ID used for Google Sign-In backend verification.
+  /// Dynamically injected via --dart-define during build scripts.
+  static const String googleServerClientId = String.fromEnvironment(
+    'GOOGLE_SERVER_CLIENT_ID',
+    defaultValue: '',
+  );
+
   // --- UI Feature Flags & Branding ---
   // These are automatically populated at compile-time when using:
   // --dart-define-from-file=../config/<institute_name>.json

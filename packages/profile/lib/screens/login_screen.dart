@@ -16,7 +16,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  bool _isBusy = false;
+  bool _isFormBusy = false;
+  bool _isGoogleBusy = false;
   bool _obscurePassword = true;
 
   String? _errorMessage;
@@ -211,7 +212,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                         ],
                         SizedBox(height: design.spacing.xl),
-                        if (_isBusy)
+                        if (_isFormBusy)
                           const Center(child: AppLoadingIndicator())
                         else
                           AppButton.primary(
@@ -270,21 +271,31 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             SizedBox(height: design.spacing.md),
                           ],
                           if (showSocial) ...[
-                            SizedBox(
-                              width: double.infinity,
-                              height: 48,
-                              child: SignInButton(
-                                Buttons.google,
-                                // TODO: Implement Google SSO via auth provider
-                                text: l10n.loginContinueWithGoogle,
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: design.radius.button,
-                                  side: BorderSide(color: design.colors.border),
+                            if (_isGoogleBusy)
+                              const SizedBox(
+                                height: 48,
+                                child: Center(child: AppLoadingIndicator()),
+                              )
+                            else
+                              AppSemantics.button(
+                                label: l10n.loginContinueWithGoogle,
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  height: 48,
+                                  child: SignInButton(
+                                    Buttons.google,
+                                    text: l10n.loginContinueWithGoogle,
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: design.radius.button,
+                                      side: BorderSide(
+                                        color: design.colors.border,
+                                      ),
+                                    ),
+                                    onPressed: _handleGoogleLogin,
+                                  ),
                                 ),
-                                onPressed: () => context.go('/home'),
                               ),
-                            ),
                           ],
                         ],
                       ],
@@ -311,9 +322,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       return;
     }
 
-    if (_isBusy) return;
+    if (_isFormBusy || _isGoogleBusy) return;
     setState(() {
-      _isBusy = true;
+      _isFormBusy = true;
       _errorMessage = null;
     });
 
@@ -343,7 +354,52 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         setState(() => _errorMessage = l10n.loginErrorGenericRequest);
       }
     } finally {
-      if (mounted) setState(() => _isBusy = false);
+      if (mounted) setState(() => _isFormBusy = false);
+    }
+  }
+
+  Future<void> _handleGoogleLogin() async {
+    final l10n = L10n.of(context);
+
+    if (_isFormBusy || _isGoogleBusy) return;
+    setState(() {
+      _isGoogleBusy = true;
+      _errorMessage = null;
+    });
+
+    try {
+      await ref.read(authProvider.notifier).loginWithGoogle();
+      if (mounted) context.go('/home');
+    } on ParallelLoginException catch (e) {
+      if (mounted) {
+        final success = await context.push<bool>(
+          '/login-activity',
+          extra: {'message': e.message},
+        );
+        if (mounted) {
+          if (success == true) {
+            context.go('/home');
+          } else {
+            await ref.read(authProvider.notifier).logout();
+          }
+        }
+      }
+    } on AuthException catch (error) {
+      if (mounted) {
+        if (error.message == 'cancelled') {
+          setState(() => _errorMessage = null);
+        } else if (error.message == 'google_token_failed') {
+          setState(() => _errorMessage = l10n.loginErrorGoogleTokenFailed);
+        } else {
+          setState(() => _errorMessage = error.message);
+        }
+      }
+    } catch (e, _) {
+      if (mounted) {
+        setState(() => _errorMessage = l10n.loginErrorGenericRequest);
+      }
+    } finally {
+      if (mounted) setState(() => _isGoogleBusy = false);
     }
   }
 }

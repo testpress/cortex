@@ -44,6 +44,12 @@ class Auth extends _$Auth {
     state = const AsyncData(true);
   }
 
+  Future<void> loginWithGoogle() async {
+    await _repository.loginWithGoogle();
+
+    state = const AsyncData(true);
+  }
+
   Future<void> register({
     required String username,
     required String email,

@@ -1,5 +1,8 @@
+import 'package:google_sign_in/google_sign_in.dart';
+
 import 'auth_api_service.dart';
 import 'auth_local_data_source.dart';
+import '../config/app_config.dart';
 import '../exceptions/api_exception.dart';
 import '../sources/data_source.dart';
 import 'types/auth_exception.dart';
@@ -28,6 +31,44 @@ class AuthRepository {
     final session = await _apiService.loginWithPassword(
       username: username,
       password: password,
+    );
+
+    await _localDataSource.saveToken(session.authToken);
+    await verifyLogin();
+  }
+
+  Future<void> loginWithGoogle() async {
+    // The serverClientId (Web Client ID) is typically required for the backend
+    // to verify the ID token. It is dynamically injected into AppConfig.
+    final serverClientId = AppConfig.googleServerClientId;
+
+    final googleSignIn = serverClientId.isNotEmpty
+        ? GoogleSignIn(serverClientId: serverClientId)
+        : GoogleSignIn();
+
+    try {
+      await googleSignIn.signOut();
+    } catch (_) {
+      // Ignore any errors if sign out fails
+    }
+
+    // Explicitly request sign in to allow the user to select an account.
+    final googleUser = await googleSignIn.signIn();
+
+    if (googleUser == null) {
+      throw AuthException.googleCancelled();
+    }
+
+    final googleAuth = await googleUser.authentication;
+    final idToken = googleAuth.idToken;
+
+    if (idToken == null || idToken.isEmpty) {
+      throw AuthException.googleTokenFailed();
+    }
+
+    final session = await _apiService.loginWithGoogle(
+      idToken: idToken,
+      userId: googleUser.id,
     );
 
     await _localDataSource.saveToken(session.authToken);

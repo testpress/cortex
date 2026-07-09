@@ -49,6 +49,16 @@ class AuthException extends ApiException {
     statusCode: statusCode,
   );
 
+  factory AuthException.googleCancelled() => const AuthException(
+    'cancelled', // Internal constant for UI to match
+    type: ApiErrorType.unknown,
+  );
+
+  factory AuthException.googleTokenFailed() => const AuthException(
+    'google_token_failed', // Internal constant for UI to match
+    type: ApiErrorType.unknown,
+  );
+
   factory AuthException.fromDio(DioException error) {
     // Leverage the base ApiException parsing logic
     final apiException = ApiException.fromDioException(error);

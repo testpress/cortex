@@ -312,6 +312,18 @@ abstract class AppLocalizations {
   /// **'Server error. Please try again shortly.'**
   String get loginErrorServer;
 
+  /// No description provided for @loginErrorGoogleSignInCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Sign-In was cancelled.'**
+  String get loginErrorGoogleSignInCancelled;
+
+  /// No description provided for @loginErrorGoogleTokenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to retrieve ID Token from Google.'**
+  String get loginErrorGoogleTokenFailed;
+
   /// No description provided for @loginSignIn.
   ///
   /// In en, this message translates to:
