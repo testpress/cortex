@@ -44,6 +44,7 @@ dependencies:
   media_scanner: ^2.2.0
   workmanager: ^0.9.0
   connectivity_plus: ^6.1.0
+  google_sign_in: ^6.2.1
 
 dev_dependencies:
   flutter_test:

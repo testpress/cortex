@@ -15,12 +15,16 @@ void main(List<String> args) async {
 
     final appName = remoteConfig['app_name'];
     final bundleId = remoteConfig['package_name'];
+
+    String? serverClientId = remoteConfig['server_client_id'] as String?;
+
     final appDir = Directory('app');
 
     print('Applying configuration for: $appName');
 
     downloadedFiles.addAll(await downloadAssets(remoteConfig, appDir.path));
     await updateBranding(appName, bundleId, appDir.path);
+    await updateIosGoogleConfig(appDir.path, remoteConfig);
     brandingUpdated = true;
 
     final iconConfig = await generateNativeIcons(appDir.path);
@@ -28,7 +32,13 @@ void main(List<String> args) async {
       downloadedFiles.add(iconConfig);
     }
 
-    await _runApp(appDir.path, appName, cliArgs.configPath, cliArgs.apiBaseUrl);
+    await _runApp(
+      appDir.path,
+      appName,
+      cliArgs.configPath,
+      cliArgs.apiBaseUrl,
+      serverClientId: serverClientId,
+    );
   } catch (e) {
     print('❌ Error: $e');
   } finally {
@@ -45,16 +55,22 @@ Future<void> _runApp(
   String workingDir,
   String appName,
   String configPath,
-  String apiBaseUrl,
-) async {
+  String apiBaseUrl, {
+  String? serverClientId,
+}) async {
   print('🚀 Running the app for $appName... (Hot reload enabled)');
+  final runArgs = [
+    'run',
+    '--dart-define-from-file=../$configPath',
+    '--dart-define=API_BASE_URL=$apiBaseUrl',
+  ];
+  if (serverClientId != null) {
+    runArgs.add('--dart-define=GOOGLE_SERVER_CLIENT_ID=$serverClientId');
+  }
+
   final runProcess = await Process.start(
     'flutter',
-    [
-      'run',
-      '--dart-define-from-file=../$configPath',
-      '--dart-define=API_BASE_URL=$apiBaseUrl',
-    ],
+    runArgs,
     workingDirectory: workingDir,
     mode: ProcessStartMode.inheritStdio,
   );

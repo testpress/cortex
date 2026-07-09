@@ -77,3 +77,19 @@ class ParallelLoginException extends AuthException {
         statusCode: 403,
       );
 }
+
+class GoogleSignInCancelledException extends AuthException {
+  const GoogleSignInCancelledException()
+    : super(
+        'Google Sign-In was cancelled by the user.',
+        type: ApiErrorType.unknown,
+      );
+}
+
+class GoogleSignInTokenFailedException extends AuthException {
+  const GoogleSignInTokenFailedException()
+    : super(
+        'Failed to retrieve ID Token from Google.',
+        type: ApiErrorType.unknown,
+      );
+}

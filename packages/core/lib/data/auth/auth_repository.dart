@@ -1,3 +1,6 @@
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/foundation.dart';
+
 import 'auth_api_service.dart';
 import 'auth_local_data_source.dart';
 import '../exceptions/api_exception.dart';
@@ -8,14 +11,17 @@ class AuthRepository {
   final AuthApiService _apiService;
   final AuthLocalDataSource _localDataSource;
   final DataSource _dataSource;
+  final GoogleSignIn _googleSignIn;
 
   AuthRepository({
     required AuthApiService apiService,
     required AuthLocalDataSource localDataSource,
     required DataSource dataSource,
+    GoogleSignIn? googleSignIn,
   }) : _apiService = apiService,
        _localDataSource = localDataSource,
-       _dataSource = dataSource;
+       _dataSource = dataSource,
+       _googleSignIn = googleSignIn ?? GoogleSignIn();
 
   Future<bool> isUserLoggedIn() async {
     return _localDataSource.isUserLoggedIn();
@@ -28,6 +34,37 @@ class AuthRepository {
     final session = await _apiService.loginWithPassword(
       username: username,
       password: password,
+    );
+
+    await _localDataSource.saveToken(session.authToken);
+    await verifyLogin();
+  }
+
+  Future<void> loginWithGoogle() async {
+    try {
+      await _googleSignIn.signOut();
+    } catch (e) {
+      // Ignore any errors if sign out fails
+      debugPrint('Google Sign-In signOut failed (ignored): $e');
+    }
+
+    // Explicitly request sign in to allow the user to select an account.
+    final googleUser = await _googleSignIn.signIn();
+
+    if (googleUser == null) {
+      throw const GoogleSignInCancelledException();
+    }
+
+    final googleAuth = await googleUser.authentication;
+    final idToken = googleAuth.idToken;
+
+    if (idToken == null || idToken.isEmpty) {
+      throw const GoogleSignInTokenFailedException();
+    }
+
+    final session = await _apiService.loginWithGoogle(
+      idToken: idToken,
+      userId: googleUser.id,
     );
 
     await _localDataSource.saveToken(session.authToken);

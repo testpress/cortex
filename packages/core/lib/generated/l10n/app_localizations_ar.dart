@@ -121,6 +121,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loginErrorServer => 'خطأ في الخادم. يرجى المحاولة بعد قليل.';
 
   @override
+  String get loginErrorGoogleTokenFailed =>
+      'فشل في استرداد رمز الهوية من جوجل.';
+
+  @override
   String get loginSignIn => 'تسجيل الدخول';
 
   @override

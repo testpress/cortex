@@ -194,6 +194,27 @@ Future<void> cleanupTempFiles(List<File> files) async {
   }
 }
 
+Future<void> updateIosGoogleConfig(
+  String appDirPath,
+  Map<String, dynamic> remoteConfig,
+) async {
+  print('Updating iOS Google Sign-In config...');
+  final iosClientId = remoteConfig['ios_client_id'] as String? ?? '';
+  String reversedClientId = '';
+  if (iosClientId.isNotEmpty) {
+    reversedClientId = iosClientId.split('.').reversed.join('.');
+  }
+
+  final configFile = File('$appDirPath/ios/Flutter/GoogleConfig.xcconfig');
+  if (!configFile.parent.existsSync()) {
+    configFile.parent.createSync(recursive: true);
+  }
+  await configFile.writeAsString('''
+GOOGLE_IOS_CLIENT_ID = $iosClientId
+GOOGLE_REVERSED_CLIENT_ID = $reversedClientId
+''');
+}
+
 Future<void> restoreGitChanges() async {
   print('🧹 Cleaning up native configuration changes...');
   final checkoutResult = await Process.run('git', [

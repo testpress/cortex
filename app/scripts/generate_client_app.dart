@@ -15,12 +15,16 @@ void main(List<String> args) async {
 
     final appName = remoteConfig['app_name'];
     final bundleId = remoteConfig['package_name'];
+
+    String? serverClientId = remoteConfig['server_client_id'] as String?;
+
     final appDir = Directory('app');
 
     print('Applying configuration for: $appName');
 
     downloadedFiles.addAll(await downloadAssets(remoteConfig, appDir.path));
     await updateBranding(appName, bundleId, appDir.path);
+    await updateIosGoogleConfig(appDir.path, remoteConfig);
     brandingUpdated = true;
 
     final iconConfig = await generateNativeIcons(appDir.path);
@@ -33,6 +37,7 @@ void main(List<String> args) async {
       appName,
       cliArgs.configPath,
       cliArgs.apiBaseUrl,
+      serverClientId: serverClientId,
     );
   } catch (e) {
     print('❌ Error: $e');
@@ -50,15 +55,25 @@ Future<bool> _buildApk(
   String workingDir,
   String appName,
   String configPath,
-  String apiBaseUrl,
-) async {
+  String apiBaseUrl, {
+  String? serverClientId,
+}) async {
   print('🚀 Building the APK for $appName... (This may take a few minutes)');
-  final buildProcess = await Process.start('flutter', [
+  final buildArgs = [
     'build',
     'apk',
     '--dart-define-from-file=../$configPath',
     '--dart-define=API_BASE_URL=$apiBaseUrl',
-  ], workingDirectory: workingDir);
+  ];
+  if (serverClientId != null) {
+    buildArgs.add('--dart-define=GOOGLE_SERVER_CLIENT_ID=$serverClientId');
+  }
+
+  final buildProcess = await Process.start(
+    'flutter',
+    buildArgs,
+    workingDirectory: workingDir,
+  );
 
   await stdout.addStream(buildProcess.stdout);
   await stderr.addStream(buildProcess.stderr);

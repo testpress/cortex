@@ -26,6 +26,19 @@ class AuthApiService {
     return _parseSession(response);
   }
 
+  Future<AuthApiResult> loginWithGoogle({
+    required String idToken,
+    required String userId,
+  }) async {
+    final response = await _post(ApiEndpoints.socialAuth, {
+      'provider': 'GOOGLE',
+      'access_token': idToken,
+      'user_id': userId,
+    });
+
+    return _parseSession(response);
+  }
+
   Future<void> register({
     required String username,
     required String email,

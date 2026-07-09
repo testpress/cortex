@@ -2,6 +2,7 @@ class ApiEndpoints {
   ApiEndpoints._();
 
   static const String login = '/api/v2.5/auth-token/';
+  static const String socialAuth = '/api/v2.2/social-auth/';
   static const String register = '/api/v2.3/register/';
   static const String generateOtp = '/api/v2.5/auth/generate-otp/';
   static const String verifyOtp = '/api/v2.5/auth/otp-login/';

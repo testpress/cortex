@@ -122,6 +122,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginErrorServer => 'Server error. Please try again shortly.';
 
   @override
+  String get loginErrorGoogleTokenFailed =>
+      'Failed to retrieve ID Token from Google.';
+
+  @override
   String get loginSignIn => 'Log In';
 
   @override
