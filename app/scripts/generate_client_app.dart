@@ -24,6 +24,7 @@ void main(List<String> args) async {
 
     downloadedFiles.addAll(await downloadAssets(remoteConfig, appDir.path));
     await updateBranding(appName, bundleId, appDir.path);
+    await updateIosGoogleConfig(appDir.path, remoteConfig);
     brandingUpdated = true;
 
     final iconConfig = await generateNativeIcons(appDir.path);

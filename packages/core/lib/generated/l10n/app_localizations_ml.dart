@@ -123,10 +123,6 @@ class AppLocalizationsMl extends AppLocalizations {
       'സെർവർ പിശക്. കുറച്ച് കഴിഞ്ഞ് വീണ്ടും ശ്രമിക്കുക.';
 
   @override
-  String get loginErrorGoogleSignInCancelled =>
-      'ഗൂഗിൾ വഴിയുള്ള സൈൻ-ഇൻ റദ്ദാക്കി.';
-
-  @override
   String get loginErrorGoogleTokenFailed =>
       'ഗൂഗിളിൽ നിന്ന് ഐഡി ടോക്കൺ ലഭ്യമാക്കുന്നതിൽ പരാജയപ്പെട്ടു.';
 

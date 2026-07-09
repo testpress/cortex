@@ -125,10 +125,6 @@ class AppLocalizationsTa extends AppLocalizations {
       'சேவையக பிழை. சிறிது நேரத்திற்குப் பிறகு மீண்டும் முயற்சிக்கவும்.';
 
   @override
-  String get loginErrorGoogleSignInCancelled =>
-      'கூகுள் உள்நுழைவு ரத்து செய்யப்பட்டது.';
-
-  @override
   String get loginErrorGoogleTokenFailed =>
       'கூகுளில் இருந்து அடையாள டோக்கனைப் பெறுவதில் தோல்வி.';
 
