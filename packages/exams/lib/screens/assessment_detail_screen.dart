@@ -568,56 +568,22 @@ class _AssessmentDetailScreenState
                 ),
                 SizedBox(height: design.spacing.xl),
                 if (widget.lesson?.allowRetake != false) ...[
-                  GestureDetector(
-                    onTap: _handleRetake,
-                    child: Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(
-                        vertical: design.spacing.md,
-                      ),
-                      decoration: BoxDecoration(
-                        color: design.colors.textPrimary,
-                        borderRadius: BorderRadius.circular(design.radius.md),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            LucideIcons.refreshCw,
-                            color: design.colors.textInverse,
-                            size: 20,
-                          ),
-                          SizedBox(width: design.spacing.sm),
-                          AppText.body(
-                            l10n.testRetake,
-                            color: design.colors.textInverse,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
+                  AppButton.primary(
+                    label: l10n.testRetake,
+                    onPressed: _handleRetake,
+                    fullWidth: true,
+                    backgroundColor: design.colors.textPrimary,
+                    foregroundColor: design.colors.textInverse,
+                    leading: const Icon(LucideIcons.refreshCw),
                   ),
                   SizedBox(height: design.spacing.md),
                 ],
-                GestureDetector(
-                  onTap: widget.onClose,
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(vertical: design.spacing.md),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: design.colors.border),
-                      borderRadius: BorderRadius.circular(design.radius.md),
-                    ),
-                    child: Center(
-                      child: AppText.headline(
-                        l10n.assessmentBackToChapter,
-                        style: TextStyle(
-                          fontSize: design.typographyScale.xl.fontSize,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
+                AppButton.secondary(
+                  label: l10n.assessmentBackToChapter,
+                  onPressed: widget.onClose,
+                  fullWidth: true,
+                  foregroundColor: design.colors.textPrimary,
+                  borderColor: design.colors.border,
                 ),
               ],
             ),
