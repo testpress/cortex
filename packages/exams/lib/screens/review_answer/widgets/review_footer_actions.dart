@@ -4,7 +4,6 @@ import 'package:core/core.dart';
 class ReviewFooterActions extends StatelessWidget {
   final AppLocalizations l10n;
   final VoidCallback onAskDoubt;
-  final VoidCallback onComment;
   final VoidCallback? onReport;
   final bool isReported;
 
@@ -12,7 +11,6 @@ class ReviewFooterActions extends StatelessWidget {
     super.key,
     required this.l10n,
     required this.onAskDoubt,
-    required this.onComment,
     required this.onReport,
     this.isReported = false,
   });
@@ -45,19 +43,6 @@ class ReviewFooterActions extends StatelessWidget {
                 alpha: design.isDark ? 0.4 : 0.2,
               ),
               onTap: onAskDoubt,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: _FooterActionButton(
-              label: l10n.labelComment,
-              icon: LucideIcons.messageCircle,
-              bg: design.colors.surfaceVariant.withValues(
-                alpha: design.isDark ? 0.5 : 1.0,
-              ),
-              textColor: design.colors.textSecondary,
-              borderColor: design.colors.border,
-              onTap: onComment,
             ),
           ),
           const SizedBox(width: 8),

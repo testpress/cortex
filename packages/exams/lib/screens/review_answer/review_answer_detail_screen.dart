@@ -225,8 +225,6 @@ class _ReviewAnswerDetailScreenState
                           onAskDoubt: () => context.push(
                             '/home/discussions/doubts/ask?question_id=${Uri.encodeComponent(currentQuestion.id)}',
                           ),
-                          onComment: () =>
-                              _showCommentDialog(currentQuestion, design, l10n),
                           onReport: () =>
                               _showReportDialog(currentQuestion, design, l10n),
                         ),
@@ -270,45 +268,6 @@ class _ReviewAnswerDetailScreenState
               ),
             ),
         ],
-      ),
-    );
-  }
-
-  void _showCommentDialog(
-    QuestionDto question,
-    DesignConfig design,
-    AppLocalizations l10n,
-  ) {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: l10n.reviewAddCommentTitle,
-      barrierColor: design.colors.shadow.withValues(alpha: 0.6),
-      pageBuilder: (context, anim1, anim2) => BaseReviewDialog(
-        title: l10n.reviewAddCommentTitle,
-        design: design,
-        submitLabel: l10n.reviewPostComment,
-        submitColor: design.colors.primary,
-        onCancel: () => Navigator.pop(context),
-        onSubmit: (val) => Navigator.pop(context),
-        contentBuilder: (controller) => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AppText.body(
-              l10n.reviewShareThoughtsOnQuestion(
-                _questions.indexOf(question) + 1,
-              ),
-              color: design.colors.textSecondary,
-            ),
-            SizedBox(height: design.spacing.md),
-            ReviewTextField(
-              hint: l10n.reviewWriteCommentHint,
-              design: design,
-              controller: controller,
-            ),
-          ],
-        ),
       ),
     );
   }
