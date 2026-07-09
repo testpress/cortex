@@ -20,6 +20,6 @@
 
 ## 4. Verification
 
-- [ ] 4.1 Verify successful Google Sign-in correctly initiates session and navigates to `/home`
-- [ ] 4.2 Verify cancelling the flow does not trigger any uncaught exceptions
-- [ ] 4.3 Verify parallel login issues gracefully fallback to the activity restriction screen
+- [x] 4.1 Verify successful Google Sign-in correctly initiates session and navigates to `/home`
+- [x] 4.2 Verify cancelling the flow does not trigger any uncaught exceptions
+- [x] 4.3 Verify parallel login issues gracefully fallback to the activity restriction screen
