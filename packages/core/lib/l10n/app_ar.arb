@@ -820,5 +820,16 @@
   "testSavedLocallyOffline": "تم حفظ الاختبار محليًا. ستكون النتائج متاحة بمجرد المزامنة.",
   "noAnswerGiven": "(لم يتم تقديم إجابة)",
   "correctAnswerLabel": "الإجابة الصحيحة:",
-  "errorOfflineDataNotFound": "لم يتم العثور على بيانات الاختبار. قد لا يتم إرسال إجاباتك."
+  "errorOfflineDataNotFound": "لم يتم العثور على بيانات الاختبار. قد لا يتم إرسال إجاباتك.",
+  "reviewScore": "النتيجة",
+  "reviewPerformanceExcellent": "أداء ممتاز",
+  "reviewPerformanceAverage": "أداء متوسط",
+  "reviewPerformanceLow": "يحتاج إلى تحسين",
+  "reviewAttempted": "تمت المحاولة",
+  "reviewCorrect": "صحيح",
+  "reviewAccuracy": "الدقة",
+  "reviewTimeTaken": "الوقت المستغرق",
+  "reviewRank": "المرتبة",
+  "reviewPercentile": "النسبة المئوية",
+  "reviewOfTotal": "من الإجمالي"
 }

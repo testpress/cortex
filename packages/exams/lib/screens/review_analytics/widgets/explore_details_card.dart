@@ -7,11 +7,13 @@ class ExploreActionTile extends StatelessWidget {
     required this.title,
     required this.description,
     required this.onTap,
+    this.iconData,
   });
 
   final String title;
   final String description;
   final VoidCallback onTap;
+  final IconData? iconData;
 
   @override
   Widget build(BuildContext context) {
@@ -30,16 +32,40 @@ class ExploreActionTile extends StatelessWidget {
             borderRadius: BorderRadius.circular(design.radius.md),
             border: Border.all(color: design.colors.border),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              AppText.body(
-                title,
-                color: design.colors.textPrimary,
-                style: const TextStyle(fontWeight: FontWeight.w600),
+              if (iconData != null) ...[
+                Container(
+                  padding: EdgeInsets.all(design.spacing.sm),
+                  decoration: BoxDecoration(
+                    color: design.colors.border.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(design.radius.md),
+                  ),
+                  child: Icon(
+                    iconData,
+                    size: design.iconSize.md,
+                    color: design.colors.textSecondary,
+                  ),
+                ),
+                SizedBox(width: design.spacing.sm),
+              ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AppText.body(
+                      title,
+                      color: design.colors.textPrimary,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(height: design.spacing.xs),
+                    AppText.caption(
+                      description,
+                      color: design.colors.textSecondary,
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: design.spacing.xs),
-              AppText.caption(description, color: design.colors.textSecondary),
             ],
           ),
         ),

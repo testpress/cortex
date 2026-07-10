@@ -2316,4 +2316,37 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get errorOfflineDataNotFound =>
       'لم يتم العثور على بيانات الاختبار. قد لا يتم إرسال إجاباتك.';
+
+  @override
+  String get reviewScore => 'النتيجة';
+
+  @override
+  String get reviewPerformanceExcellent => 'أداء ممتاز';
+
+  @override
+  String get reviewPerformanceAverage => 'أداء متوسط';
+
+  @override
+  String get reviewPerformanceLow => 'يحتاج إلى تحسين';
+
+  @override
+  String get reviewAttempted => 'تمت المحاولة';
+
+  @override
+  String get reviewCorrect => 'صحيح';
+
+  @override
+  String get reviewAccuracy => 'الدقة';
+
+  @override
+  String get reviewTimeTaken => 'الوقت المستغرق';
+
+  @override
+  String get reviewRank => 'المرتبة';
+
+  @override
+  String get reviewPercentile => 'النسبة المئوية';
+
+  @override
+  String get reviewOfTotal => 'من الإجمالي';
 }

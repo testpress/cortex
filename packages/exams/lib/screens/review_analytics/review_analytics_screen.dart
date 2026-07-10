@@ -90,6 +90,7 @@ class ReviewAnalyticsScreen extends ConsumerWidget {
                 ),
                 SizedBox(height: design.spacing.md),
                 ExploreActionTile(
+                  iconData: LucideIcons.layoutGrid,
                   title: l10n.reviewSubjectPerformanceTitle,
                   description: l10n.reviewSubjectPerformanceTileDesc,
                   onTap: () {
@@ -108,6 +109,7 @@ class ReviewAnalyticsScreen extends ConsumerWidget {
                 ),
                 SizedBox(height: design.spacing.sm),
                 ExploreActionTile(
+                  iconData: LucideIcons.fileText,
                   title: l10n.reviewExamReviewTitle,
                   description: l10n.reviewExamReviewDesc,
                   onTap: () {

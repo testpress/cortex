@@ -4240,6 +4240,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Exam data not found. Your answers may not be submitted.'**
   String get errorOfflineDataNotFound;
+
+  /// No description provided for @reviewScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Score'**
+  String get reviewScore;
+
+  /// No description provided for @reviewPerformanceExcellent.
+  ///
+  /// In en, this message translates to:
+  /// **'Excellent Performance'**
+  String get reviewPerformanceExcellent;
+
+  /// No description provided for @reviewPerformanceAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'Average Performance'**
+  String get reviewPerformanceAverage;
+
+  /// No description provided for @reviewPerformanceLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs Improvement'**
+  String get reviewPerformanceLow;
+
+  /// No description provided for @reviewAttempted.
+  ///
+  /// In en, this message translates to:
+  /// **'Attempted'**
+  String get reviewAttempted;
+
+  /// No description provided for @reviewCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct'**
+  String get reviewCorrect;
+
+  /// No description provided for @reviewAccuracy.
+  ///
+  /// In en, this message translates to:
+  /// **'Accuracy'**
+  String get reviewAccuracy;
+
+  /// No description provided for @reviewTimeTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Time Taken'**
+  String get reviewTimeTaken;
+
+  /// No description provided for @reviewRank.
+  ///
+  /// In en, this message translates to:
+  /// **'Rank'**
+  String get reviewRank;
+
+  /// No description provided for @reviewPercentile.
+  ///
+  /// In en, this message translates to:
+  /// **'Percentile'**
+  String get reviewPercentile;
+
+  /// No description provided for @reviewOfTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'of total'**
+  String get reviewOfTotal;
 }
 
 class _AppLocalizationsDelegate
