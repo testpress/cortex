@@ -821,5 +821,17 @@
   "testSavedLocallyOffline": "പരീക്ഷ ലോക്കലായി സേവ് ചെയ്തു. സിങ്ക് ചെയ്തുകഴിഞ്ഞാൽ ഫലങ്ങൾ ലഭ്യമാകും.",
   "noAnswerGiven": "(ഉത്തരം നൽകിയിട്ടില്ല)",
   "correctAnswerLabel": "ശരിയായ ഉത്തരം:",
-  "errorOfflineDataNotFound": "പരീക്ഷാ ഡാറ്റ കണ്ടെത്തിയില്ല. നിങ്ങളുടെ ഉത്തരങ്ങൾ സമർപ്പിച്ചേക്കില്ല."
+  "errorOfflineDataNotFound": "പരീക്ഷാ ഡാറ്റ കണ്ടെത്തിയില്ല. നിങ്ങളുടെ ഉത്തരങ്ങൾ സമർപ്പിച്ചേക്കില്ല.",
+  "reviewScore": "സ്കോർ",
+  "reviewPerformanceExcellent": "മികച്ച പ്രകടനം",
+  "reviewPerformanceAverage": "ശരാശരി പ്രകടനം",
+  "reviewPerformanceLow": "മെച്ചപ്പെടുത്തേണ്ടതുണ്ട്",
+  "reviewAttempted": "ശ്രമിച്ചവ",
+  "reviewCorrect": "ശരിയായവ",
+  "reviewAccuracy": "കൃത്യത",
+  "reviewTimeTaken": "എടുത്ത സമയം",
+  "reviewRank": "റാങ്ക്",
+  "reviewPercentile": "ശതമാനം",
+  "reviewOfTotal": "ആകെ",
+  "reviewOfStudents": "വിദ്യാർത്ഥികളിൽ"
 }

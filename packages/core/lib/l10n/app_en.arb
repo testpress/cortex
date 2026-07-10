@@ -1092,5 +1092,17 @@
   "errorOfflineDataNotFound": "Exam data not found. Your answers may not be submitted.",
   "@errorOfflineDataNotFound": {
     "description": "Error message when local offline exam data goes missing"
-  }
+  },
+  "reviewScore": "Score",
+  "reviewPerformanceExcellent": "Excellent Performance",
+  "reviewPerformanceAverage": "Average Performance",
+  "reviewPerformanceLow": "Needs Improvement",
+  "reviewAttempted": "Attempted",
+  "reviewCorrect": "Correct",
+  "reviewAccuracy": "Accuracy",
+  "reviewTimeTaken": "Time Taken",
+  "reviewRank": "Rank",
+  "reviewPercentile": "Percentile",
+  "reviewOfTotal": "of total",
+  "reviewOfStudents": "of students"
 }

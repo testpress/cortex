@@ -1071,5 +1071,17 @@
   "testSavedLocallyOffline": "தேர்வு லோக்கலாக சேமிக்கப்பட்டது. ஒத்திசைக்கப்பட்டதும் முடிவுகள் கிடைக்கும்.",
   "noAnswerGiven": "(பதில் அளிக்கப்படவில்லை)",
   "correctAnswerLabel": "சரியான பதில்:",
-  "errorOfflineDataNotFound": "தேர்வு தரவு கிடைக்கவில்லை. உங்கள் பதில்கள் சமர்ப்பிக்கப்படாமல் போகலாம்."
+  "errorOfflineDataNotFound": "தேர்வு தரவு கிடைக்கவில்லை. உங்கள் பதில்கள் சமர்ப்பிக்கப்படாமல் போகலாம்.",
+  "reviewScore": "மதிப்பெண்",
+  "reviewPerformanceExcellent": "சிறப்பான செயல்பாடு",
+  "reviewPerformanceAverage": "சராசரி செயல்பாடு",
+  "reviewPerformanceLow": "முன்னேற்றம் தேவை",
+  "reviewAttempted": "முயற்சித்தவை",
+  "reviewCorrect": "சரியானவை",
+  "reviewAccuracy": "துல்லியம்",
+  "reviewTimeTaken": "எடுத்துக்கொண்ட நேரம்",
+  "reviewRank": "தரம்",
+  "reviewPercentile": "சதவீதம்",
+  "reviewOfTotal": "மொத்தத்தில்",
+  "reviewOfStudents": "மாணவர்களில்"
 }

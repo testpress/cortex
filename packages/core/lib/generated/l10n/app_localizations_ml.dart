@@ -2353,4 +2353,40 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get errorOfflineDataNotFound =>
       'പരീക്ഷാ ഡാറ്റ കണ്ടെത്തിയില്ല. നിങ്ങളുടെ ഉത്തരങ്ങൾ സമർപ്പിച്ചേക്കില്ല.';
+
+  @override
+  String get reviewScore => 'സ്കോർ';
+
+  @override
+  String get reviewPerformanceExcellent => 'മികച്ച പ്രകടനം';
+
+  @override
+  String get reviewPerformanceAverage => 'ശരാശരി പ്രകടനം';
+
+  @override
+  String get reviewPerformanceLow => 'മെച്ചപ്പെടുത്തേണ്ടതുണ്ട്';
+
+  @override
+  String get reviewAttempted => 'ശ്രമിച്ചവ';
+
+  @override
+  String get reviewCorrect => 'ശരിയായവ';
+
+  @override
+  String get reviewAccuracy => 'കൃത്യത';
+
+  @override
+  String get reviewTimeTaken => 'എടുത്ത സമയം';
+
+  @override
+  String get reviewRank => 'റാങ്ക്';
+
+  @override
+  String get reviewPercentile => 'ശതമാനം';
+
+  @override
+  String get reviewOfTotal => 'ആകെ';
+
+  @override
+  String get reviewOfStudents => 'വിദ്യാർത്ഥികളിൽ';
 }

@@ -2345,4 +2345,40 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get errorOfflineDataNotFound =>
       'தேர்வு தரவு கிடைக்கவில்லை. உங்கள் பதில்கள் சமர்ப்பிக்கப்படாமல் போகலாம்.';
+
+  @override
+  String get reviewScore => 'மதிப்பெண்';
+
+  @override
+  String get reviewPerformanceExcellent => 'சிறப்பான செயல்பாடு';
+
+  @override
+  String get reviewPerformanceAverage => 'சராசரி செயல்பாடு';
+
+  @override
+  String get reviewPerformanceLow => 'முன்னேற்றம் தேவை';
+
+  @override
+  String get reviewAttempted => 'முயற்சித்தவை';
+
+  @override
+  String get reviewCorrect => 'சரியானவை';
+
+  @override
+  String get reviewAccuracy => 'துல்லியம்';
+
+  @override
+  String get reviewTimeTaken => 'எடுத்துக்கொண்ட நேரம்';
+
+  @override
+  String get reviewRank => 'தரம்';
+
+  @override
+  String get reviewPercentile => 'சதவீதம்';
+
+  @override
+  String get reviewOfTotal => 'மொத்தத்தில்';
+
+  @override
+  String get reviewOfStudents => 'மாணவர்களில்';
 }

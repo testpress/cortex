@@ -303,6 +303,7 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                           onReviewTapped: (attempt) {
                             final payload = ReviewRoutePayload(
                               attempt: attempt,
+                              exam: exam,
                               assessmentTitle:
                                   exam?.title ?? lesson?.title ?? '',
                               questions: const [],

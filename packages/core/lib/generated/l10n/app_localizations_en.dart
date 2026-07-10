@@ -2309,4 +2309,40 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorOfflineDataNotFound =>
       'Exam data not found. Your answers may not be submitted.';
+
+  @override
+  String get reviewScore => 'Score';
+
+  @override
+  String get reviewPerformanceExcellent => 'Excellent Performance';
+
+  @override
+  String get reviewPerformanceAverage => 'Average Performance';
+
+  @override
+  String get reviewPerformanceLow => 'Needs Improvement';
+
+  @override
+  String get reviewAttempted => 'Attempted';
+
+  @override
+  String get reviewCorrect => 'Correct';
+
+  @override
+  String get reviewAccuracy => 'Accuracy';
+
+  @override
+  String get reviewTimeTaken => 'Time Taken';
+
+  @override
+  String get reviewRank => 'Rank';
+
+  @override
+  String get reviewPercentile => 'Percentile';
+
+  @override
+  String get reviewOfTotal => 'of total';
+
+  @override
+  String get reviewOfStudents => 'of students';
 }
