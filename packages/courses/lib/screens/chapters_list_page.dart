@@ -75,7 +75,8 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
     if (filter == null || filter == CurriculumFilter.all) return null;
     // Note: The remote API natively groups subtypes for 'notes' and 'attachment'.
     // Fetching type=notes returns both standard notes and embedContent (HTML with iframes).
-    // Fetching type=attachment returns both standard attachments and pdfs.
+    // Fetching type=attachment returns standard attachments.
+    // Fetching type=pdf returns pdfs.
     return filter.name;
   }
 
@@ -149,14 +150,8 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                   : lessons.where((l) {
                       final targetTypes = switch (activeFilter) {
                         CurriculumFilter.video => [LessonType.video],
-                        CurriculumFilter.notes => [
-                            LessonType.notes,
-                            LessonType.embedContent
-                          ],
-                        CurriculumFilter.attachment => [
-                            LessonType.attachment,
-                            LessonType.pdf
-                          ],
+                        CurriculumFilter.pdf => [LessonType.pdf],
+                        CurriculumFilter.attachment => [LessonType.attachment],
                         CurriculumFilter.assessment => [LessonType.assessment],
                         CurriculumFilter.test => [LessonType.test],
                         CurriculumFilter.all => const <LessonType>[],

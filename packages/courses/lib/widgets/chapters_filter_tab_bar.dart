@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 enum CurriculumFilter {
   all,
   video,
-  notes,
+  pdf,
   attachment,
   assessment,
   test;
@@ -15,7 +15,7 @@ enum CurriculumFilter {
     return switch (this) {
       CurriculumFilter.all => l10n.labelContentsPlural,
       CurriculumFilter.video => l10n.filterVideo,
-      CurriculumFilter.notes => l10n.filterNotes,
+      CurriculumFilter.pdf => l10n.bookmarkFilterPDFs,
       CurriculumFilter.attachment => l10n.filterAttachment,
       CurriculumFilter.assessment => l10n.filterAssessment,
       CurriculumFilter.test => l10n.filterTest,
@@ -51,8 +51,8 @@ class ChaptersFilterTabBar extends StatelessWidget {
         icon: LucideIcons.playCircle,
       ),
       (
-        filter: CurriculumFilter.notes,
-        label: l10n.filterNotes,
+        filter: CurriculumFilter.pdf,
+        label: l10n.bookmarkFilterPDFs,
         icon: LucideIcons.fileText,
       ),
       (

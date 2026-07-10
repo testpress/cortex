@@ -100,6 +100,40 @@ class CurriculumParser {
           if (id != null && name != null) chapterNames[id] = name;
         }
       }
+
+      // Merge side-loaded entities for V3 API
+      final sideLoadedMappings = {
+        'attachments': ('attachment_id', 'attachment'),
+        'videos': ('video_id', 'video'),
+        'exams': ('exam_id', 'exam'),
+        'live_streams': ('live_stream_id', 'live_stream'),
+        'video_conferences': ('video_conference_id', 'video_conference'),
+        'text_contents': ('html_content_id', 'html_content'),
+      };
+
+      for (final entry in sideLoadedMappings.entries) {
+        final listKey = entry.key;
+        final idKey = entry.value.$1;
+        final objectKey = entry.value.$2;
+
+        final itemList = results[listKey] as List<dynamic>?;
+        if (itemList != null && list != null) {
+          final itemById = {
+            for (var item in itemList)
+              if (item is Map) item['id']?.toString(): item,
+          };
+          list = list.map((content) {
+            if (content is Map<String, dynamic>) {
+              final itemId = content[idKey]?.toString();
+              if (itemId != null && itemById.containsKey(itemId)) {
+                return Map<String, dynamic>.from(content)
+                  ..[objectKey] = itemById[itemId];
+              }
+            }
+            return content;
+          }).toList();
+        }
+      }
     } else if (results is List) {
       list = results;
     }
