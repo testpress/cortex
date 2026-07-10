@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' show FloatingActionButton;
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import 'package:core/data/data.dart';
+import 'package:exams/exams.dart';
 import 'widgets/bookmark_item.dart';
 import 'widgets/folder_item.dart';
 import 'widgets/bookmarks_header.dart';
@@ -106,10 +106,34 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
           context.push('/study/lesson/${bookmark.lessonId}');
         }
         break;
+      case 'question':
+      case 'userselectedanswer':
+        if (bookmark.attemptId != null) {
+          _navigateToReviewQuestion(context, bookmark);
+        }
+        break;
       default:
         // No-ops for unsupported types (post, exam, notice, etc.)
         break;
     }
+  }
+
+  void _navigateToReviewQuestion(BuildContext context, BookmarkDto bookmark) {
+    final attemptId = bookmark.attemptId!;
+    final navigator = Navigator.of(context);
+
+    navigator.push(
+      AppRoute(
+        page: ReviewAnswerDetailScreen(
+          assessmentTitle: bookmark.chapterName,
+          questions: const [],
+          attemptStates: const {},
+          attempt: AttemptDto(id: attemptId),
+          onBack: () => navigator.pop(),
+          initialQuestionId: bookmark.lessonId.toString(),
+        ),
+      ),
+    );
   }
 
   @override

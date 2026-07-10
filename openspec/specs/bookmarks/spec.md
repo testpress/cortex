@@ -31,8 +31,18 @@ The system SHALL navigate to the appropriate Detail page based on the bookmark c
 - **WHEN** the user taps a bookmark of type `forumpost`
 - **THEN** the system navigates to the Forum Post Detail screen (`/home/discussions/forum/posts/<slug>`).
 
+#### Scenario: User taps a question-type bookmark (from exam review)
+- **WHEN** the user taps a bookmark of type `question` or `userselectedanswer`
+- **AND** the bookmark has a locally-stored `attemptId`
+- **THEN** the system fetches review items for that attempt, finds the question index, and pushes `ReviewAnswerDetailScreen` with `initialQuestionIndex` set to that question.
+
+#### Scenario: User taps a question-type bookmark without attempt ID
+- **WHEN** the user taps a bookmark of type `question` or `userselectedanswer`
+- **AND** the bookmark does NOT have an `attemptId` (e.g., bookmarked from outside review)
+- **THEN** the system safely ignores the tap (no-op).
+
 #### Scenario: User taps an unsupported community bookmark
-- **WHEN** the user taps a bookmark of type `post`, `exam`, `notice`, or `question`
+- **WHEN** the user taps a bookmark of type `post`, `exam`, or `notice`
 - **THEN** the system safely ignores the tap (no-op) until detail routes exist for those types.
 
 ### Requirement: Bookmarks Filtering & Sorting

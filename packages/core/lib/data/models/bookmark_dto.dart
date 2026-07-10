@@ -74,6 +74,8 @@ class BookmarkDto {
   final bool isForumPost; // true when post.forum == true
   final DateTime? created;
 
+  final int? attemptId;
+
   const BookmarkDto({
     required this.id,
     this.folderId,
@@ -86,6 +88,7 @@ class BookmarkDto {
     this.slug,
     this.isForumPost = false,
     this.created,
+    this.attemptId,
   });
 
   BookmarkDto copyWith({
@@ -100,6 +103,7 @@ class BookmarkDto {
     String? slug,
     bool? isForumPost,
     DateTime? created,
+    int? attemptId,
   }) {
     return BookmarkDto(
       id: id ?? this.id,
@@ -113,6 +117,7 @@ class BookmarkDto {
       slug: slug ?? this.slug,
       isForumPost: isForumPost ?? this.isForumPost,
       created: created ?? this.created,
+      attemptId: attemptId ?? this.attemptId,
     );
   }
 
@@ -132,6 +137,9 @@ class BookmarkDto {
       created: json['created'] != null
           ? DateTime.tryParse(json['created'].toString())
           : null,
+      attemptId:
+          (json['attempt_id'] as num?)?.toInt() ??
+          (json['attemptId'] as num?)?.toInt(),
     );
   }
 
@@ -159,6 +167,8 @@ class BookmarkDto {
     final chaptersList = results['chapters'] as List<dynamic>? ?? [];
     final postsList = results['posts'] as List<dynamic>? ?? [];
     final questionsList = results['questions'] as List<dynamic>? ?? [];
+    final userSelectedAnswersList =
+        results['user_selected_answers'] as List<dynamic>? ?? [];
 
     // Map content_type_id -> model string (e.g., 57 -> 'chaptercontent', 110 -> 'post')
     final contentTypeMap = <int, String>{};
@@ -183,6 +193,7 @@ class BookmarkDto {
       String title = 'Unknown';
       String chapterName = '';
       String type = 'Unknown';
+      int? lessonIdOverride;
 
       if (modelName == 'chaptercontent') {
         final content = chapterContentsList.firstWhere(
@@ -235,6 +246,37 @@ class BookmarkDto {
           title = question['question_html'] as String? ?? 'Question';
           type = 'Question';
         }
+      } else if (modelName == 'userselectedanswer') {
+        final userAnswer = userSelectedAnswersList.firstWhere(
+          (ua) => ua is Map<String, dynamic> && ua['id'] == objectId,
+          orElse: () => null,
+        );
+        if (userAnswer != null && userAnswer is Map<String, dynamic>) {
+          final questionId = userAnswer['question_id'] as int?;
+          lessonIdOverride = questionId;
+          final apiAttemptId = (userAnswer['attempt_id'] as num?)?.toInt();
+          if (questionId != null) {
+            final question = questionsList.firstWhere(
+              (q) => q is Map<String, dynamic> && q['id'] == questionId,
+              orElse: () => null,
+            );
+            if (question != null && question is Map<String, dynamic>) {
+              title = question['question_html'] as String? ?? 'Question';
+            }
+          }
+          type = 'Question';
+          items.add(
+            BookmarkDto.fromJson(bookmark).copyWith(
+              title: title,
+              chapterName: chapterName,
+              type: type,
+              lessonId: lessonIdOverride,
+              created: created,
+              attemptId: apiAttemptId,
+            ),
+          );
+          continue;
+        }
       }
 
       items.add(
@@ -242,6 +284,7 @@ class BookmarkDto {
           title: title,
           chapterName: chapterName,
           type: type,
+          lessonId: lessonIdOverride,
           created: created,
         ),
       );

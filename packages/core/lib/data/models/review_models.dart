@@ -265,6 +265,8 @@ class ReviewItemDto {
       subject: question.subject ?? 'General',
       answerUrl: '',
       order: index,
+      bookmarkId: bookmarkId?.toString(),
+      userSelectedAnswerId: id,
     );
   }
 

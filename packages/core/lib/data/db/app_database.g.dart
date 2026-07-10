@@ -12576,6 +12576,17 @@ class $BookmarkItemsTableTable extends BookmarkItemsTable
     type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _attemptIdMeta = const VerificationMeta(
+    'attemptId',
+  );
+  @override
+  late final GeneratedColumn<int> attemptId = GeneratedColumn<int>(
+    'attempt_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -12588,6 +12599,7 @@ class $BookmarkItemsTableTable extends BookmarkItemsTable
     slug,
     isForumPost,
     created,
+    attemptId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -12669,6 +12681,12 @@ class $BookmarkItemsTableTable extends BookmarkItemsTable
         created.isAcceptableOrUnknown(data['created']!, _createdMeta),
       );
     }
+    if (data.containsKey('attempt_id')) {
+      context.handle(
+        _attemptIdMeta,
+        attemptId.isAcceptableOrUnknown(data['attempt_id']!, _attemptIdMeta),
+      );
+    }
     return context;
   }
 
@@ -12718,6 +12736,10 @@ class $BookmarkItemsTableTable extends BookmarkItemsTable
         DriftSqlType.dateTime,
         data['${effectivePrefix}created'],
       ),
+      attemptId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}attempt_id'],
+      ),
     );
   }
 
@@ -12739,6 +12761,7 @@ class BookmarkItemsTableData extends DataClass
   final String? slug;
   final bool isForumPost;
   final DateTime? created;
+  final int? attemptId;
   const BookmarkItemsTableData({
     required this.id,
     this.folderId,
@@ -12750,6 +12773,7 @@ class BookmarkItemsTableData extends DataClass
     this.slug,
     required this.isForumPost,
     this.created,
+    this.attemptId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -12778,6 +12802,9 @@ class BookmarkItemsTableData extends DataClass
     if (!nullToAbsent || created != null) {
       map['created'] = Variable<DateTime>(created);
     }
+    if (!nullToAbsent || attemptId != null) {
+      map['attempt_id'] = Variable<int>(attemptId);
+    }
     return map;
   }
 
@@ -12805,6 +12832,9 @@ class BookmarkItemsTableData extends DataClass
       created: created == null && nullToAbsent
           ? const Value.absent()
           : Value(created),
+      attemptId: attemptId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(attemptId),
     );
   }
 
@@ -12824,6 +12854,7 @@ class BookmarkItemsTableData extends DataClass
       slug: serializer.fromJson<String?>(json['slug']),
       isForumPost: serializer.fromJson<bool>(json['isForumPost']),
       created: serializer.fromJson<DateTime?>(json['created']),
+      attemptId: serializer.fromJson<int?>(json['attemptId']),
     );
   }
   @override
@@ -12840,6 +12871,7 @@ class BookmarkItemsTableData extends DataClass
       'slug': serializer.toJson<String?>(slug),
       'isForumPost': serializer.toJson<bool>(isForumPost),
       'created': serializer.toJson<DateTime?>(created),
+      'attemptId': serializer.toJson<int?>(attemptId),
     };
   }
 
@@ -12854,6 +12886,7 @@ class BookmarkItemsTableData extends DataClass
     Value<String?> slug = const Value.absent(),
     bool? isForumPost,
     Value<DateTime?> created = const Value.absent(),
+    Value<int?> attemptId = const Value.absent(),
   }) => BookmarkItemsTableData(
     id: id ?? this.id,
     folderId: folderId.present ? folderId.value : this.folderId,
@@ -12865,6 +12898,7 @@ class BookmarkItemsTableData extends DataClass
     slug: slug.present ? slug.value : this.slug,
     isForumPost: isForumPost ?? this.isForumPost,
     created: created.present ? created.value : this.created,
+    attemptId: attemptId.present ? attemptId.value : this.attemptId,
   );
   BookmarkItemsTableData copyWithCompanion(BookmarkItemsTableCompanion data) {
     return BookmarkItemsTableData(
@@ -12886,6 +12920,7 @@ class BookmarkItemsTableData extends DataClass
           ? data.isForumPost.value
           : this.isForumPost,
       created: data.created.present ? data.created.value : this.created,
+      attemptId: data.attemptId.present ? data.attemptId.value : this.attemptId,
     );
   }
 
@@ -12901,7 +12936,8 @@ class BookmarkItemsTableData extends DataClass
           ..write('chapterName: $chapterName, ')
           ..write('slug: $slug, ')
           ..write('isForumPost: $isForumPost, ')
-          ..write('created: $created')
+          ..write('created: $created, ')
+          ..write('attemptId: $attemptId')
           ..write(')'))
         .toString();
   }
@@ -12918,6 +12954,7 @@ class BookmarkItemsTableData extends DataClass
     slug,
     isForumPost,
     created,
+    attemptId,
   );
   @override
   bool operator ==(Object other) =>
@@ -12932,7 +12969,8 @@ class BookmarkItemsTableData extends DataClass
           other.chapterName == this.chapterName &&
           other.slug == this.slug &&
           other.isForumPost == this.isForumPost &&
-          other.created == this.created);
+          other.created == this.created &&
+          other.attemptId == this.attemptId);
 }
 
 class BookmarkItemsTableCompanion
@@ -12947,6 +12985,7 @@ class BookmarkItemsTableCompanion
   final Value<String?> slug;
   final Value<bool> isForumPost;
   final Value<DateTime?> created;
+  final Value<int?> attemptId;
   const BookmarkItemsTableCompanion({
     this.id = const Value.absent(),
     this.folderId = const Value.absent(),
@@ -12958,6 +12997,7 @@ class BookmarkItemsTableCompanion
     this.slug = const Value.absent(),
     this.isForumPost = const Value.absent(),
     this.created = const Value.absent(),
+    this.attemptId = const Value.absent(),
   });
   BookmarkItemsTableCompanion.insert({
     this.id = const Value.absent(),
@@ -12970,6 +13010,7 @@ class BookmarkItemsTableCompanion
     this.slug = const Value.absent(),
     this.isForumPost = const Value.absent(),
     this.created = const Value.absent(),
+    this.attemptId = const Value.absent(),
   }) : lessonId = Value(lessonId);
   static Insertable<BookmarkItemsTableData> custom({
     Expression<int>? id,
@@ -12982,6 +13023,7 @@ class BookmarkItemsTableCompanion
     Expression<String>? slug,
     Expression<bool>? isForumPost,
     Expression<DateTime>? created,
+    Expression<int>? attemptId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -12994,6 +13036,7 @@ class BookmarkItemsTableCompanion
       if (slug != null) 'slug': slug,
       if (isForumPost != null) 'is_forum_post': isForumPost,
       if (created != null) 'created': created,
+      if (attemptId != null) 'attempt_id': attemptId,
     });
   }
 
@@ -13008,6 +13051,7 @@ class BookmarkItemsTableCompanion
     Value<String?>? slug,
     Value<bool>? isForumPost,
     Value<DateTime?>? created,
+    Value<int?>? attemptId,
   }) {
     return BookmarkItemsTableCompanion(
       id: id ?? this.id,
@@ -13020,6 +13064,7 @@ class BookmarkItemsTableCompanion
       slug: slug ?? this.slug,
       isForumPost: isForumPost ?? this.isForumPost,
       created: created ?? this.created,
+      attemptId: attemptId ?? this.attemptId,
     );
   }
 
@@ -13056,6 +13101,9 @@ class BookmarkItemsTableCompanion
     if (created.present) {
       map['created'] = Variable<DateTime>(created.value);
     }
+    if (attemptId.present) {
+      map['attempt_id'] = Variable<int>(attemptId.value);
+    }
     return map;
   }
 
@@ -13071,7 +13119,8 @@ class BookmarkItemsTableCompanion
           ..write('chapterName: $chapterName, ')
           ..write('slug: $slug, ')
           ..write('isForumPost: $isForumPost, ')
-          ..write('created: $created')
+          ..write('created: $created, ')
+          ..write('attemptId: $attemptId')
           ..write(')'))
         .toString();
   }
@@ -22306,6 +22355,7 @@ typedef $$BookmarkItemsTableTableCreateCompanionBuilder =
       Value<String?> slug,
       Value<bool> isForumPost,
       Value<DateTime?> created,
+      Value<int?> attemptId,
     });
 typedef $$BookmarkItemsTableTableUpdateCompanionBuilder =
     BookmarkItemsTableCompanion Function({
@@ -22319,6 +22369,7 @@ typedef $$BookmarkItemsTableTableUpdateCompanionBuilder =
       Value<String?> slug,
       Value<bool> isForumPost,
       Value<DateTime?> created,
+      Value<int?> attemptId,
     });
 
 final class $$BookmarkItemsTableTableReferences
@@ -22411,6 +22462,11 @@ class $$BookmarkItemsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get attemptId => $composableBuilder(
+    column: $table.attemptId,
+    builder: (column) => ColumnFilters(column),
+  );
+
   $$BookmarkFoldersTableTableFilterComposer get folderId {
     final $$BookmarkFoldersTableTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -22489,6 +22545,11 @@ class $$BookmarkItemsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get attemptId => $composableBuilder(
+    column: $table.attemptId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$BookmarkFoldersTableTableOrderingComposer get folderId {
     final $$BookmarkFoldersTableTableOrderingComposer composer =
         $composerBuilder(
@@ -22558,6 +22619,9 @@ class $$BookmarkItemsTableTableAnnotationComposer
   GeneratedColumn<DateTime> get created =>
       $composableBuilder(column: $table.created, builder: (column) => column);
 
+  GeneratedColumn<int> get attemptId =>
+      $composableBuilder(column: $table.attemptId, builder: (column) => column);
+
   $$BookmarkFoldersTableTableAnnotationComposer get folderId {
     final $$BookmarkFoldersTableTableAnnotationComposer composer =
         $composerBuilder(
@@ -22626,6 +22690,7 @@ class $$BookmarkItemsTableTableTableManager
                 Value<String?> slug = const Value.absent(),
                 Value<bool> isForumPost = const Value.absent(),
                 Value<DateTime?> created = const Value.absent(),
+                Value<int?> attemptId = const Value.absent(),
               }) => BookmarkItemsTableCompanion(
                 id: id,
                 folderId: folderId,
@@ -22637,6 +22702,7 @@ class $$BookmarkItemsTableTableTableManager
                 slug: slug,
                 isForumPost: isForumPost,
                 created: created,
+                attemptId: attemptId,
               ),
           createCompanionCallback:
               ({
@@ -22650,6 +22716,7 @@ class $$BookmarkItemsTableTableTableManager
                 Value<String?> slug = const Value.absent(),
                 Value<bool> isForumPost = const Value.absent(),
                 Value<DateTime?> created = const Value.absent(),
+                Value<int?> attemptId = const Value.absent(),
               }) => BookmarkItemsTableCompanion.insert(
                 id: id,
                 folderId: folderId,
@@ -22661,6 +22728,7 @@ class $$BookmarkItemsTableTableTableManager
                 slug: slug,
                 isForumPost: isForumPost,
                 created: created,
+                attemptId: attemptId,
               ),
           withReferenceMapper: (p0) => p0
               .map(
