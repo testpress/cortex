@@ -15,7 +15,7 @@ When the user navigates back (pops the route), the video stops — but only beca
 ## Capabilities
 
 ### New Capabilities
-- `video-player-pause`: Expose `finalizePlayback()` / `restorePlayback()` on `CustomVideoPlayerState` and wire into Ask Doubt navigation.
+- `video-player-pause`: The application MUST expose `finalizePlayback()` / `restorePlayback()` on `CustomVideoPlayerState` and wire into Ask Doubt navigation.
 
 ## Impact
 

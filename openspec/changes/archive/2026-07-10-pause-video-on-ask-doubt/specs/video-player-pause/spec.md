@@ -1,6 +1,24 @@
 # Video Player Finalize on Ask Doubt
 
-## Interface
+## ADDED Requirements
+
+### Requirement: Video Player Lifecycle on Ask Doubt
+
+The player MUST properly finalize and restore video state when navigating to Ask Doubt.
+
+#### Scenario: Navigating to Ask Doubt
+- When the user taps "Ask Doubt"
+- Then the `onBeforeNavigate` callback MUST be invoked
+- And `CustomVideoPlayerState.finalizePlayback()` MUST finalize the interval, save the current position, and force sync the video attempt
+- And the player widget MUST be unmounted (`_isPlayerDestroyed = true` returning `SizedBox.shrink()`)
+
+#### Scenario: Returning from Ask Doubt
+- When the user returns from Ask Doubt
+- Then the `onResumeVideo` callback MUST be invoked
+- And `CustomVideoPlayerState.restorePlayback()` MUST clear the destroyed state
+- And the player MUST be recreated and seek to the saved position
+
+## Implementation Details
 
 ### `CustomVideoPlayerState`
 
@@ -51,9 +69,3 @@ onTap: () async {
 
 - `VideoLessonViewer` passes `onBeforeNavigate: () => _videoPlayerKey.currentState?.finalizePlayback()` and `onResumeVideo: () => _videoPlayerKey.currentState?.restorePlayback()`.
 - `VideoLessonDetailScreen` passes the same callbacks.
-
-## Behavior
-
-- User taps "Ask Doubt": interval finalized, position captured, progress force-synced, native player destroyed.
-- User returns from Ask Doubt: fresh player created, seeks to captured position (resumes from where left off).
-- Normal back button behavior is unchanged.
