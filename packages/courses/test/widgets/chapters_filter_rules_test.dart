@@ -10,7 +10,7 @@ void main() {
 
       expect(visible, contains(CurriculumFilter.all));
       expect(visible, contains(CurriculumFilter.video));
-      expect(visible, contains(CurriculumFilter.notes));
+      expect(visible, contains(CurriculumFilter.pdf));
       expect(visible, contains(CurriculumFilter.attachment));
       expect(visible, contains(CurriculumFilter.assessment));
       expect(visible, contains(CurriculumFilter.test));
@@ -22,7 +22,7 @@ void main() {
 
       expect(visible, contains(CurriculumFilter.all));
       expect(visible, contains(CurriculumFilter.video));
-      expect(visible, contains(CurriculumFilter.notes));
+      expect(visible, contains(CurriculumFilter.pdf));
       expect(visible, contains(CurriculumFilter.attachment));
       expect(visible, isNot(contains(CurriculumFilter.assessment)));
       expect(visible, isNot(contains(CurriculumFilter.test)));

@@ -79,7 +79,7 @@ void main() {
       // Verify filter chips
       expect(find.text('All'), findsOneWidget);
       expect(find.text('Videos'), findsOneWidget);
-      expect(find.text('Notes'), findsOneWidget);
+      expect(find.text('PDFs'), findsOneWidget);
       expect(find.text('Attachments'), findsOneWidget);
       expect(find.text('Assessments'), findsOneWidget);
       expect(find.text('Tests'), findsOneWidget);
@@ -109,7 +109,7 @@ void main() {
       // Verify filter chips: All, Videos, Notes, Attachments should exist
       expect(find.text('All'), findsOneWidget);
       expect(find.text('Videos'), findsOneWidget);
-      expect(find.text('Notes'), findsOneWidget);
+      expect(find.text('PDFs'), findsOneWidget);
       expect(find.text('Attachments'), findsOneWidget);
 
       // Assessments and Tests chips should NOT exist
