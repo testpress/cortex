@@ -25,6 +25,7 @@ class BookmarkItemsTable extends Table {
   TextColumn get slug => text().nullable()();
   BoolColumn get isForumPost => boolean().withDefault(const Constant(false))();
   DateTimeColumn get created => dateTime().nullable()();
+  IntColumn get attemptId => integer().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};

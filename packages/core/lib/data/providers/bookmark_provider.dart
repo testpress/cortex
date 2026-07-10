@@ -79,6 +79,7 @@ Future<BookmarkDto> addBookmark(
   required int lessonId,
   String? folder,
   String? bookmarkType,
+  int? attemptId,
 }) async {
   final repository = await ref.read(bookmarkRepositoryProvider.future);
   final bookmark = await repository.addBookmark(
@@ -86,6 +87,7 @@ Future<BookmarkDto> addBookmark(
     lessonId: lessonId,
     folder: folder,
     bookmarkType: bookmarkType,
+    attemptId: attemptId,
   );
 
   ref.invalidate(paginatedBookmarksProvider);

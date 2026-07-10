@@ -15,6 +15,7 @@ class BookmarkFoldersSheet extends ConsumerStatefulWidget {
     required this.onClose,
     required this.onCreateFolderRequest,
     required this.parentContext,
+    this.attemptId,
   });
 
   final int lessonId;
@@ -25,6 +26,10 @@ class BookmarkFoldersSheet extends ConsumerStatefulWidget {
   /// A stable context from the parent screen (e.g. orchestrator) that
   /// remains mounted after this sheet is dismissed. Used for toast display.
   final BuildContext parentContext;
+
+  /// Optional attempt ID so bookmarks created from exam review are
+  /// navigable back to the question's review page.
+  final int? attemptId;
 
   @override
   ConsumerState<BookmarkFoldersSheet> createState() =>
@@ -79,6 +84,7 @@ class _BookmarkFoldersSheetState extends ConsumerState<BookmarkFoldersSheet> {
             category: widget.category,
             lessonId: widget.lessonId,
             folder: folderName,
+            attemptId: widget.attemptId,
           ).future,
         );
       }
@@ -364,6 +370,7 @@ class CreateFolderDialog extends ConsumerStatefulWidget {
     this.initialName,
     this.folderId,
     required this.onClose,
+    this.attemptId,
   });
 
   final int? lessonId;
@@ -371,6 +378,7 @@ class CreateFolderDialog extends ConsumerStatefulWidget {
   final String? initialName;
   final int? folderId;
   final VoidCallback onClose;
+  final int? attemptId;
 
   bool get isRenameMode => folderId != null;
 
@@ -431,6 +439,7 @@ class _CreateFolderDialogState extends ConsumerState<CreateFolderDialog> {
               category: widget.category!,
               lessonId: widget.lessonId!,
               folder: newFolder.name,
+              attemptId: widget.attemptId,
             ).future,
           );
         }

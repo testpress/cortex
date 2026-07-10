@@ -47,6 +47,7 @@ class BookmarkRepository {
                   slug: row.slug,
                   isForumPost: row.isForumPost,
                   created: row.created,
+                  attemptId: row.attemptId,
                 ),
               )
               .toList();
@@ -71,6 +72,7 @@ class BookmarkRepository {
               slug: row.slug,
               isForumPost: row.isForumPost,
               created: row.created,
+              attemptId: row.attemptId,
             ),
           )
           .toList();
@@ -137,6 +139,7 @@ class BookmarkRepository {
               slug: row.slug,
               isForumPost: row.isForumPost,
               created: row.created,
+              attemptId: row.attemptId,
             ),
           )
           .toList();
@@ -226,6 +229,7 @@ class BookmarkRepository {
                 slug: Value(b.slug),
                 isForumPost: Value(b.isForumPost),
                 created: Value(b.created),
+                attemptId: Value(b.attemptId),
               );
             }).toList(),
             mode: InsertMode.insertOrReplace,
@@ -312,6 +316,7 @@ class BookmarkRepository {
     required int lessonId,
     String? folder,
     String? bookmarkType,
+    int? attemptId,
   }) async {
     final backendCategory = _mapToBackendCategory(category);
     final newBookmark = await _dataSource.createBookmark(
@@ -332,6 +337,7 @@ class BookmarkRepository {
               folderName: Value(newBookmark.folderName),
               lessonId: newBookmark.lessonId,
               bookmarkType: Value(newBookmark.bookmarkType),
+              attemptId: Value(attemptId),
             ),
           );
 

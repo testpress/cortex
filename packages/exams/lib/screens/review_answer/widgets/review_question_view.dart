@@ -18,6 +18,7 @@ class ReviewQuestionCard extends StatelessWidget {
   final bool isCorrect;
   final bool isUnanswered;
   final String questionNumber;
+  final VoidCallback? onBookmarkToggle;
 
   const ReviewQuestionCard({
     super.key,
@@ -27,6 +28,7 @@ class ReviewQuestionCard extends StatelessWidget {
     required this.isCorrect,
     required this.isUnanswered,
     required this.questionNumber,
+    this.onBookmarkToggle,
   });
 
   @override
@@ -61,6 +63,8 @@ class ReviewQuestionCard extends StatelessWidget {
               isCorrect: isCorrect,
               isUnanswered: isUnanswered,
               l10n: l10n,
+              bookmarkId: question.bookmarkId,
+              onBookmarkToggle: onBookmarkToggle,
             ),
             const SizedBox(height: 16),
 
@@ -97,12 +101,16 @@ class _QuestionHeader extends StatelessWidget {
   final bool isCorrect;
   final bool isUnanswered;
   final AppLocalizations l10n;
+  final String? bookmarkId;
+  final VoidCallback? onBookmarkToggle;
 
   const _QuestionHeader({
     required this.questionNumber,
     required this.isCorrect,
     required this.isUnanswered,
     required this.l10n,
+    this.bookmarkId,
+    this.onBookmarkToggle,
   });
 
   @override
@@ -148,13 +156,45 @@ class _QuestionHeader extends StatelessWidget {
               ),
             ],
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: bg,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: AppText.caption(label, color: text),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: bg,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: AppText.caption(label, color: text),
+              ),
+              const SizedBox(width: 8),
+              if (onBookmarkToggle != null)
+                AppSemantics.button(
+                  label: bookmarkId != null
+                      ? l10n.bookmarkActionRemoveBookmark
+                      : l10n.bookmarkSaveTo,
+                  onTap: onBookmarkToggle,
+                  child: GestureDetector(
+                    onTap: onBookmarkToggle,
+                    behavior: HitTestBehavior.opaque,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Icon(
+                        bookmarkId != null
+                            ? LucideIcons.bookmarkOff
+                            : LucideIcons.bookmark,
+                        size: 20,
+                        color: bookmarkId != null
+                            ? design.colors.primary
+                            : design.colors.textSecondary,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
         ],
       ),

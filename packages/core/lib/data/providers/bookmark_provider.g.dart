@@ -625,7 +625,7 @@ class _DeleteBookmarkFolderProviderElement
   int get folderId => (origin as DeleteBookmarkFolderProvider).folderId;
 }
 
-String _$addBookmarkHash() => r'7d60f31af11b18eb5656748bfaad7ac3b31808d8';
+String _$addBookmarkHash() => r'e076b85c4ea98ce40bd6c6b8622bd1d87948957f';
 
 /// Action to add a bookmark for a lesson.
 ///
@@ -650,12 +650,14 @@ class AddBookmarkFamily extends Family<AsyncValue<BookmarkDto>> {
     required int lessonId,
     String? folder,
     String? bookmarkType,
+    int? attemptId,
   }) {
     return AddBookmarkProvider(
       category: category,
       lessonId: lessonId,
       folder: folder,
       bookmarkType: bookmarkType,
+      attemptId: attemptId,
     );
   }
 
@@ -668,6 +670,7 @@ class AddBookmarkFamily extends Family<AsyncValue<BookmarkDto>> {
       lessonId: provider.lessonId,
       folder: provider.folder,
       bookmarkType: provider.bookmarkType,
+      attemptId: provider.attemptId,
     );
   }
 
@@ -698,6 +701,7 @@ class AddBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
     required int lessonId,
     String? folder,
     String? bookmarkType,
+    int? attemptId,
   }) : this._internal(
          (ref) => addBookmark(
            ref as AddBookmarkRef,
@@ -705,6 +709,7 @@ class AddBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
            lessonId: lessonId,
            folder: folder,
            bookmarkType: bookmarkType,
+           attemptId: attemptId,
          ),
          from: addBookmarkProvider,
          name: r'addBookmarkProvider',
@@ -718,6 +723,7 @@ class AddBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
          lessonId: lessonId,
          folder: folder,
          bookmarkType: bookmarkType,
+         attemptId: attemptId,
        );
 
   AddBookmarkProvider._internal(
@@ -731,12 +737,14 @@ class AddBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
     required this.lessonId,
     required this.folder,
     required this.bookmarkType,
+    required this.attemptId,
   }) : super.internal();
 
   final String category;
   final int lessonId;
   final String? folder;
   final String? bookmarkType;
+  final int? attemptId;
 
   @override
   Override overrideWith(
@@ -755,6 +763,7 @@ class AddBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
         lessonId: lessonId,
         folder: folder,
         bookmarkType: bookmarkType,
+        attemptId: attemptId,
       ),
     );
   }
@@ -770,7 +779,8 @@ class AddBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
         other.category == category &&
         other.lessonId == lessonId &&
         other.folder == folder &&
-        other.bookmarkType == bookmarkType;
+        other.bookmarkType == bookmarkType &&
+        other.attemptId == attemptId;
   }
 
   @override
@@ -780,6 +790,7 @@ class AddBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
     hash = _SystemHash.combine(hash, lessonId.hashCode);
     hash = _SystemHash.combine(hash, folder.hashCode);
     hash = _SystemHash.combine(hash, bookmarkType.hashCode);
+    hash = _SystemHash.combine(hash, attemptId.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -799,6 +810,9 @@ mixin AddBookmarkRef on AutoDisposeFutureProviderRef<BookmarkDto> {
 
   /// The parameter `bookmarkType` of this provider.
   String? get bookmarkType;
+
+  /// The parameter `attemptId` of this provider.
+  int? get attemptId;
 }
 
 class _AddBookmarkProviderElement
@@ -814,6 +828,8 @@ class _AddBookmarkProviderElement
   String? get folder => (origin as AddBookmarkProvider).folder;
   @override
   String? get bookmarkType => (origin as AddBookmarkProvider).bookmarkType;
+  @override
+  int? get attemptId => (origin as AddBookmarkProvider).attemptId;
 }
 
 String _$removeBookmarkHash() => r'00a4db2f5754d920583875c6e5c82ddfc0aed96e';

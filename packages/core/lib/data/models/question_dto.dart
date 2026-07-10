@@ -17,6 +17,8 @@ class QuestionDto {
   final String? essayText;
   final String? sectionName;
   final String? sectionId;
+  final String? bookmarkId;
+  final String? userSelectedAnswerId;
 
   const QuestionDto({
     required this.id,
@@ -36,6 +38,8 @@ class QuestionDto {
     this.essayText,
     this.sectionName,
     this.sectionId,
+    this.bookmarkId,
+    this.userSelectedAnswerId,
   });
 
   QuestionDto copyWith({
@@ -56,6 +60,8 @@ class QuestionDto {
     String? essayText,
     String? sectionName,
     String? sectionId,
+    String? bookmarkId,
+    String? userSelectedAnswerId,
   }) {
     return QuestionDto(
       id: id ?? this.id,
@@ -75,6 +81,8 @@ class QuestionDto {
       essayText: essayText ?? this.essayText,
       sectionName: sectionName ?? this.sectionName,
       sectionId: sectionId ?? this.sectionId,
+      bookmarkId: bookmarkId ?? this.bookmarkId,
+      userSelectedAnswerId: userSelectedAnswerId ?? this.userSelectedAnswerId,
     );
   }
 
@@ -180,6 +188,8 @@ class QuestionDto {
                       ? (data['attempt_section'] as Map)['id']
                       : data['attempt_section']))
               ?.toString(),
+      bookmarkId: (data['bookmark_id'] ?? json['bookmark_id'])?.toString(),
+      userSelectedAnswerId: json['user_selected_answer_id']?.toString(),
     );
   }
 
@@ -333,6 +343,8 @@ class QuestionDto {
       'essay_text': essayText,
       'sectionName': sectionName,
       'section_id': sectionId,
+      'bookmark_id': bookmarkId,
+      'user_selected_answer_id': userSelectedAnswerId,
     };
   }
 }

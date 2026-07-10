@@ -105,7 +105,7 @@ class ApiException implements Exception {
 
       if (statusCode == 404) {
         return ApiException(
-          backendMessage ?? 'The requested resource was not found.',
+          'The requested resource was not found.',
           type: ApiErrorType.notFound,
           statusCode: statusCode,
           data: data,

@@ -14,6 +14,18 @@ class BookmarkItem extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback? onMoreTap;
 
+  bool get _isQuestion {
+    final type = (item['contentType'] as String?)?.toLowerCase() ?? '';
+    return type == 'question' || type == 'userselectedanswer';
+  }
+
+  static final RegExp _htmlTagRegExp = RegExp(r'<[^>]*>', multiLine: true);
+
+  String get _plainTitle {
+    final raw = item['title'] as String? ?? '';
+    return raw.replaceAll(_htmlTagRegExp, '').trim();
+  }
+
   LessonType _parseLessonType(String type) {
     switch (type.toLowerCase()) {
       case 'video':
@@ -147,13 +159,22 @@ class BookmarkItem extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppText.bodySmall(
-                  item['title'] as String,
-                  color: design.colors.textPrimary,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                _isQuestion
+                    ? AppHtmlV2(
+                        data: item['title'] as String? ?? '',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        textHeight: 1.4,
+                        maxLines: 2,
+                        disableImageZoom: true,
+                      )
+                    : AppText.bodySmall(
+                        _plainTitle,
+                        color: design.colors.textPrimary,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                 SizedBox(height: design.spacing.xs),
                 Builder(
                   builder: (context) {

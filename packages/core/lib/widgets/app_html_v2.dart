@@ -25,14 +25,22 @@ class AppHtmlV2 extends StatelessWidget {
     this.backgroundColor,
     this.textColor,
     this.fontSize = 16,
+    this.fontWeight,
+    this.textHeight,
     this.padding = EdgeInsets.zero,
+    this.maxLines,
+    this.disableImageZoom = false,
   });
 
   final String data;
   final Color? backgroundColor;
   final Color? textColor;
   final double fontSize;
+  final FontWeight? fontWeight;
+  final double? textHeight;
   final EdgeInsets padding;
+  final int? maxLines;
+  final bool disableImageZoom;
 
   @override
   Widget build(BuildContext context) {
@@ -47,17 +55,20 @@ class AppHtmlV2 extends StatelessWidget {
       child: HtmlWidget(
         processedData,
 
-        onTapImage: (metadata) {
-          final sources = metadata.sources;
-          if (sources.isNotEmpty) {
-            final url = sources.first.url;
-            _showZoomableImage(context, url, design);
-          }
-        },
+        onTapImage: disableImageZoom
+            ? null
+            : (metadata) {
+                final sources = metadata.sources;
+                if (sources.isNotEmpty) {
+                  final url = sources.first.url;
+                  _showZoomableImage(context, url, design);
+                }
+              },
 
         factoryBuilder: () => _MathWidgetFactory(
           textColor: effectiveTextColor,
           fontSize: fontSize,
+          fontWeight: fontWeight,
           maxWidth: MediaQuery.of(context).size.width - 64,
         ),
 
@@ -99,71 +110,67 @@ class AppHtmlV2 extends StatelessWidget {
         textStyle: design.typography.body.copyWith(
           color: effectiveTextColor,
           fontSize: fontSize,
+          fontWeight: fontWeight,
+          height: textHeight ?? 1.35,
         ),
 
         customStylesBuilder: (element) {
           final tag = element.localName;
 
-          final Map<String, String> styles = {};
-          // We allow the backend's colors and font-families,
-          // but we will strictly override the font size below.
-
-          if (tag != 'math-tex') {
-            styles['font-size'] = '${fontSize}px';
-          }
-
-          // Detect if paragraph is inside a list item
-
+          Map<String, String>? styles;
+          var insideLi = false;
           var parent = element.parent;
 
           while (parent != null) {
             if (parent.localName == 'li') {
+              insideLi = true;
               break;
             }
 
             parent = parent.parent;
           }
 
-          // Paragraphs
           if (tag == 'p') {
-            styles['margin'] =
-                '0'; // Fixed the huge gap on the bottom of options
+            styles = {'margin': insideLi ? '0' : '0 0 14px 0'};
+          } else if (tag == 'div') {
+            styles = {'margin': '0'};
+          } else if (tag == 'ol' || tag == 'ul') {
+            styles = {'margin': '0 0 8px 0', 'padding-left': '20px'};
+          } else if (tag == 'li') {
+            styles = {'margin': '0 0 4px 0'};
+          } else if (tag == 'table') {
+            styles = {
+              'border-collapse': 'collapse',
+              'width': '100%',
+              'margin': '8px 0',
+            };
+          } else if (tag == 'td' || tag == 'th') {
+            styles = {'border': '1px solid currentColor', 'padding': '6px'};
+          } else if (tag == 'img') {
+            styles = {'max-width': '100%'};
           }
 
-          // Divs
-          if (tag == 'div') {
-            styles['margin'] = '0';
+          if (tag != 'math-tex') {
+            (styles ??= <String, String>{})['font-size'] = '${fontSize}px';
           }
 
-          // Ordered / unordered lists
-          if (tag == 'ol' || tag == 'ul') {
-            styles['margin'] = '0 0 8px 0';
-            styles['padding-left'] = '20px';
+          if (maxLines != null &&
+              (tag == 'p' ||
+                  tag == 'div' ||
+                  tag == 'li' ||
+                  tag == 'span' ||
+                  tag == 'h1' ||
+                  tag == 'h2' ||
+                  tag == 'h3' ||
+                  tag == 'h4' ||
+                  tag == 'h5' ||
+                  tag == 'h6')) {
+            styles ??= <String, String>{};
+            styles['max-lines'] = maxLines.toString();
+            styles['text-overflow'] = 'ellipsis';
           }
 
-          // List items
-          if (tag == 'li') {
-            styles['margin'] = '0 0 4px 0';
-          }
-
-          // Tables
-          if (tag == 'table') {
-            styles['border-collapse'] = 'collapse';
-            styles['width'] = '100%';
-            styles['margin'] = '8px 0';
-          }
-
-          if (tag == 'td' || tag == 'th') {
-            styles['border'] = '1px solid currentColor';
-            styles['padding'] = '6px';
-          }
-
-          // Images
-          if (tag == 'img') {
-            styles['max-width'] = '100%';
-          }
-
-          return styles.isNotEmpty ? styles : null;
+          return styles;
         },
       ),
     );
@@ -171,7 +178,7 @@ class AppHtmlV2 extends StatelessWidget {
 
   void _showZoomableImage(
     BuildContext context,
-    String imageUrl,
+    String url,
     DesignConfig design,
   ) {
     Navigator.of(context).push(
@@ -182,7 +189,7 @@ class AppHtmlV2 extends StatelessWidget {
         pageBuilder: (context, animation, secondaryAnimation) {
           return FadeTransition(
             opacity: animation,
-            child: _ZoomableImageViewer(imageUrl: imageUrl, design: design),
+            child: _ZoomableImageViewer(imageUrl: url, design: design),
           );
         },
       ),
@@ -336,11 +343,13 @@ class _MathWidgetFactory extends WidgetFactory {
   _MathWidgetFactory({
     required this.textColor,
     required this.fontSize,
+    this.fontWeight,
     required this.maxWidth,
   });
 
   final Color textColor;
   final double fontSize;
+  final FontWeight? fontWeight;
   final double maxWidth;
 
   @override
@@ -401,14 +410,19 @@ class _MathWidgetFactory extends WidgetFactory {
       // Prevents giant display-style inline equations from breaking line height
       mathStyle: MathStyle.text,
 
-      textStyle: TextStyle(color: textColor, fontSize: fontSize * 1.1),
+      textStyle: TextStyle(
+        color: textColor,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+      ),
 
       onErrorFallback: (error) {
         return Text(
           tex,
           style: TextStyle(
             color: const Color(0xFFFF0000),
-            fontSize: fontSize * 1.1,
+            fontSize: fontSize,
+            fontWeight: fontWeight,
           ),
         );
       },
@@ -421,14 +435,19 @@ class _MathWidgetFactory extends WidgetFactory {
 
       mathStyle: MathStyle.display,
 
-      textStyle: TextStyle(color: textColor, fontSize: fontSize * 1.2),
+      textStyle: TextStyle(
+        color: textColor,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+      ),
 
       onErrorFallback: (error) {
         return Text(
           tex,
           style: TextStyle(
             color: const Color(0xFFFF0000),
-            fontSize: fontSize * 1.2,
+            fontSize: fontSize,
+            fontWeight: fontWeight,
           ),
         );
       },
