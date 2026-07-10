@@ -2349,7 +2349,4 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get reviewOfTotal => 'من الإجمالي';
-
-  @override
-  String get reviewOfStudents => 'من الطلاب';
 }

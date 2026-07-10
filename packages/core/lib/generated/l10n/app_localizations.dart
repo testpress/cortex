@@ -4306,12 +4306,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'of total'**
   String get reviewOfTotal;
-
-  /// No description provided for @reviewOfStudents.
-  ///
-  /// In en, this message translates to:
-  /// **'of students'**
-  String get reviewOfStudents;
 }
 
 class _AppLocalizationsDelegate

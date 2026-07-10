@@ -1103,6 +1103,5 @@
   "reviewTimeTaken": "Time Taken",
   "reviewRank": "Rank",
   "reviewPercentile": "Percentile",
-  "reviewOfTotal": "of total",
-  "reviewOfStudents": "of students"
+  "reviewOfTotal": "of total"
 }

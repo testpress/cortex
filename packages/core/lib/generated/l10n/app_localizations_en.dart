@@ -2342,7 +2342,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reviewOfTotal => 'of total';
-
-  @override
-  String get reviewOfStudents => 'of students';
 }

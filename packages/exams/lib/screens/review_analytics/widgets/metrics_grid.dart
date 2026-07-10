@@ -1,5 +1,5 @@
 import 'package:core/core.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import '../../../models/analytics_overview.dart';
 import 'review_analytics_formatters.dart';
 
@@ -232,77 +232,74 @@ class _ScoreCard extends StatelessWidget {
         break;
     }
 
-    return Container(
-      padding: EdgeInsets.all(design.spacing.md),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: design.radius.card,
-        border: Border.all(color: stateColor.withValues(alpha: 0.15)),
-      ),
-      child: Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppText.labelBold(l10n.reviewScore),
-              SizedBox(height: design.spacing.xs),
-              Text.rich(
-                TextSpan(
-                  style: design.typography.display.copyWith(
-                    color: state == _PerformanceState.low
-                        ? design.colors.textPrimary
-                        : stateColor,
-                    fontWeight: FontWeight.w800,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: overview.totalScore.toDouble().toStringAsFixed(2),
+    return AppSemantics.container(
+      label: l10n.reviewScore,
+      child: Container(
+        padding: EdgeInsets.all(design.spacing.md),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: design.radius.card,
+          border: Border.all(color: stateColor.withValues(alpha: 0.15)),
+        ),
+        child: Row(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppText.labelBold(l10n.reviewScore),
+                SizedBox(height: design.spacing.xs),
+                Text.rich(
+                  TextSpan(
+                    style: design.typography.display.copyWith(
+                      color: state == _PerformanceState.low
+                          ? design.colors.textPrimary
+                          : stateColor,
+                      fontWeight: FontWeight.w800,
                     ),
-                    TextSpan(
-                      text: ' / ${overview.maxScore}',
-                      style: design.typography.title,
+                    children: [
+                      TextSpan(
+                        text: overview.totalScore.toDouble().toStringAsFixed(2),
+                      ),
+                      TextSpan(
+                        text: ' / ${overview.maxScore}',
+                        style: design.typography.title,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: design.spacing.md),
+                Row(
+                  children: [
+                    Icon(iconData, color: stateColor, size: design.iconSize.md),
+                    SizedBox(width: design.spacing.xs),
+                    AppText.labelBold(
+                      performanceText,
+                      color: stateColor,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
                   ],
                 ),
-              ),
-              SizedBox(height: design.spacing.md),
-              Row(
-                children: [
-                  Icon(iconData, color: stateColor, size: design.iconSize.md),
-                  SizedBox(width: design.spacing.xs),
-                  AppText.labelBold(
-                    performanceText,
-                    color: stateColor,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const Spacer(),
-          const Spacer(),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '${(overview.maxScore > 0 ? (overview.totalScore / overview.maxScore * 100) : 0.0).toStringAsFixed(1)}%',
-                style: design.typography.title.copyWith(
-                  fontWeight: FontWeight.w700,
+              ],
+            ),
+            const Spacer(),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AppText.cardTitle(
+                  '${(overview.maxScore > 0 ? (overview.totalScore / overview.maxScore * 100) : 0.0).toStringAsFixed(1)}%',
                   color: state == _PerformanceState.low
                       ? design.colors.textPrimary
                       : stateColor,
                 ),
-              ),
-              Text(
-                l10n.reviewOfTotal,
-                style: design.typography.bodySmall.copyWith(
+                AppText.cardSubtitle(
+                  l10n.reviewOfTotal,
                   color: design.colors.textSecondary,
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -436,13 +433,23 @@ class _ProgressBar extends StatelessWidget {
     return AppSemantics.progressValue(
       value: value,
       label: label,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(design.radius.sm),
-        child: LinearProgressIndicator(
-          value: value.clamp(0.0, 1.0),
-          minHeight: 4,
-          color: color,
-          backgroundColor: color.withValues(alpha: 0.15),
+      child: Container(
+        height: 4,
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(design.radius.sm),
+        ),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: FractionallySizedBox(
+            widthFactor: value.clamp(0.0, 1.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(design.radius.sm),
+              ),
+            ),
+          ),
         ),
       ),
     );

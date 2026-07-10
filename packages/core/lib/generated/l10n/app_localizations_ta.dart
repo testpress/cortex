@@ -2378,7 +2378,4 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get reviewOfTotal => 'மொத்தத்தில்';
-
-  @override
-  String get reviewOfStudents => 'மாணவர்களில்';
 }

@@ -2386,7 +2386,4 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get reviewOfTotal => 'ആകെ';
-
-  @override
-  String get reviewOfStudents => 'വിദ്യാർത്ഥികളിൽ';
 }
