@@ -74,8 +74,10 @@ class MetricsGrid extends StatelessWidget {
     final accuracyMetric = _MetricData(
       label: l10n.reviewAccuracy,
       value: '${overview.accuracy.toStringAsFixed(1)}%',
-      bottomText:
-          '${overview.correct} out of ${overview.attemptedQuestions} ${l10n.reviewCorrect.toLowerCase()}',
+      bottomText: l10n.testScoreSummary(
+        overview.correct,
+        overview.attemptedQuestions,
+      ),
       progressValue: overview.accuracy / 100.0,
       progressColor: design.colors.primary,
       iconData: LucideIcons.target,
@@ -88,7 +90,7 @@ class MetricsGrid extends StatelessWidget {
                   overview.totalTime!.inSeconds *
                   100)
               .toStringAsFixed(1)
-        : '0';
+        : null;
 
     final timeTakenMetric = _MetricData(
       label: l10n.reviewTimeTaken,
@@ -96,7 +98,9 @@ class MetricsGrid extends StatelessWidget {
       subValue: overview.totalTime != null
           ? ' / ${formatDuration(overview.totalTime, showUnit: true)}'
           : null,
-      bottomText: '$timePercent% ${l10n.reviewOfTotal}',
+      bottomText: timePercent != null
+          ? '$timePercent% ${l10n.reviewOfTotal}'
+          : null,
       progressValue:
           overview.totalTime != null && overview.totalTime!.inSeconds > 0
           ? ((overview.timeTaken?.inSeconds ?? 0) /
@@ -242,8 +246,8 @@ class _ScoreCard extends StatelessWidget {
             children: [
               AppText.labelBold(l10n.reviewScore),
               SizedBox(height: design.spacing.xs),
-              RichText(
-                text: TextSpan(
+              Text.rich(
+                TextSpan(
                   style: design.typography.display.copyWith(
                     color: state == _PerformanceState.low
                         ? design.colors.textPrimary
@@ -375,10 +379,8 @@ class _MetricCard extends StatelessWidget {
             SizedBox(height: design.spacing.sm),
             Align(
               alignment: Alignment.centerLeft,
-              child: RichText(
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                text: TextSpan(
+              child: Text.rich(
+                TextSpan(
                   style: design.typography.title.copyWith(
                     color: design.colors.textPrimary,
                     fontWeight: FontWeight.w700,
@@ -393,6 +395,8 @@ class _MetricCard extends StatelessWidget {
                       ),
                   ],
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             if (metric.bottomText != null) ...[
