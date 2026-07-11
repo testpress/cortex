@@ -6,14 +6,14 @@ When navigating to the Ask Doubt screen directly from the Dashboard "Resume Lear
 
 Instead of relying on UI route arguments to pass data from the Dashboard, we will implement a robust **Self-Healing Cache** pattern inside `CourseRepository`. By enforcing the Repository as the Single Source of Truth, the flow is updated as follows:
 
-- **Query Local DB:** Attempt `_db.getLessonDetails(lessonId)` using the strict `innerJoin`.
-- **Background Hydration:** If the joined tables fail or are missing, `CourseRepository.refreshLesson` will perform a non-blocking background fetch.
-- **API Extension:** It will parse the `chapter_slug` from the lesson payload, call a new `getChapterDetail(slug)` endpoint, and silently upsert the missing chapter to the database.
+- **Query Local DB:** MUST attempt `_db.getLessonDetails(lessonId)` using the strict `innerJoin`.
+- **Background Hydration:** If the joined tables fail or are missing, `CourseRepository.refreshLesson` MUST perform a non-blocking background fetch.
+- **API Extension:** It MUST parse the `chapter_slug` from the lesson payload, call a new `getChapterDetail(slug)` endpoint, and silently upsert the missing chapter to the database.
 
 ## Capabilities
 
 ### Modified Capabilities
-- `ui-ask-doubt-breadcrumb`: Displays the breadcrumb correctly by relying on the repository's background hydration to populate the missing parent tables.
+- `ui-ask-doubt-breadcrumb`: MUST display the breadcrumb correctly by relying on the repository's background hydration to populate the missing parent tables.
 
 ## Impact
 
