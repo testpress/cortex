@@ -196,16 +196,11 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
 
           return DoubtContextBadge(
             icon: icon,
-            text: isQuestion
-                ? widget.questionHtml ??
-                      l10n.questionIdArgs(widget.questionId.toString())
-                : data?.lessonTitle ?? widget.lessonTitle ?? l10n.lessonDetails,
-            breadcrumbs: isQuestion
-                ? widget.breadcrumbs
-                : [
-                    if (data?.courseTitle != null) data!.courseTitle,
-                    if (data?.chapterTitle != null) data!.chapterTitle,
-                  ],
+            text: data?.lessonTitle ?? widget.lessonTitle ?? l10n.lessonDetails,
+            breadcrumbs: [
+              if (data?.courseTitle != null) data!.courseTitle,
+              if (data?.chapterTitle != null) data!.chapterTitle,
+            ],
           );
         },
       );
@@ -214,8 +209,9 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
     return DoubtContextBadge(
       icon: icon,
       text: isQuestion
-          ? widget.questionHtml ?? 'Question ID: ${widget.questionId}'
-          : widget.lessonTitle ?? 'Lesson Details',
+          ? widget.questionHtml ??
+                l10n.questionIdArgs(widget.questionId.toString())
+          : widget.lessonTitle ?? l10n.lessonDetails,
       breadcrumbs: widget.breadcrumbs,
     );
   }

@@ -61,13 +61,14 @@ class HomeRoutes {
                       )
                     : null;
 
-                final extra = state.extra as Map<String, dynamic>?;
+                final extra = state.extra;
+                final extraMap = extra is Map ? extra : null;
                 final breadcrumbs =
-                    (extra?['breadcrumbs'] as List<dynamic>?)
+                    (extraMap?['breadcrumbs'] as List<dynamic>?)
                         ?.whereType<String>()
                         .toList() ??
                     const [];
-                final questionHtml = extra?['questionHtml'] as String?;
+                final questionHtml = extraMap?['questionHtml'] as String?;
 
                 return AskDoubtFormScreen(
                   chapterContentId: chapterContentId,

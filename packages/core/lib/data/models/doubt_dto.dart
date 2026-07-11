@@ -114,8 +114,8 @@ class DoubtDto {
 
     final chapterContent = json['chapter_content'];
     String? lessonId;
-    Map<String, dynamic>? chapterContentObj;
-    if (chapterContent is Map<String, dynamic>) {
+    Map? chapterContentObj;
+    if (chapterContent is Map) {
       chapterContentObj = chapterContent;
       lessonId = chapterContent['id']?.toString();
     } else {
@@ -123,10 +123,7 @@ class DoubtDto {
     }
 
     final question = json['question'];
-    Map<String, dynamic>? questionObj;
-    if (question is Map<String, dynamic>) {
-      questionObj = question;
-    }
+    final questionObj = question is Map ? question : null;
 
     return DoubtDto(
       id: json['id'].toString(),
