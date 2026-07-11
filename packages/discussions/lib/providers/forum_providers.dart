@@ -143,14 +143,19 @@ class GlobalForumFeed extends _$GlobalForumFeed {
   Future<GlobalForumFeedState> build({
     int? categoryId,
     String? searchQuery,
+    ForumActivityFilter? activityFilter,
+    ForumSort? sortOrder,
   }) async {
     if (searchQuery == null || searchQuery.isEmpty) {
       ref.keepAlive();
     }
     final repo = await ref.watch(forumRepositoryProvider.future);
+
     final response = await repo.fetchThreads(
       categoryId: categoryId,
       searchQuery: searchQuery,
+      sort: sortOrder,
+      activityFilter: activityFilter,
     );
     final nextPage = _extractPageNumber(response.next);
     return GlobalForumFeedState(
@@ -176,6 +181,8 @@ class GlobalForumFeed extends _$GlobalForumFeed {
         page: currentState.nextPage!,
         categoryId: categoryId,
         searchQuery: searchQuery,
+        sort: sortOrder,
+        activityFilter: activityFilter,
       );
 
       final existingIds = currentState.items.map((t) => t.threadId).toSet();

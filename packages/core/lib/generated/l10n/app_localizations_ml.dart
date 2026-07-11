@@ -1448,6 +1448,42 @@ class AppLocalizationsMl extends AppLocalizations {
   String get forumTitle => 'ചർച്ചാ ഫോറം';
 
   @override
+  String get forumFilterTitle => 'ഫിൽറ്ററുകൾ';
+
+  @override
+  String get forumFilterByActivity => 'പ്രവർത്തനം അനുസരിച്ച് ഫിൽറ്റർ ചെയ്യുക';
+
+  @override
+  String get forumFilterClearAll => 'എല്ലാം മായ്‌ക്കുക';
+
+  @override
+  String get forumBackSemantic => 'തിരികെ';
+
+  @override
+  String get forumFilterSemantic => 'ഫിൽറ്റർ';
+
+  @override
+  String get forumFilterActivityPosted => 'ഞാൻ പോസ്റ്റ് ചെയ്തത്';
+
+  @override
+  String get forumFilterActivityCommented => 'ഞാൻ കമന്റ് ചെയ്തത്';
+
+  @override
+  String get forumFilterActivityLiked => 'എനിക്ക് ഇഷ്ടപ്പെട്ടത്';
+
+  @override
+  String get forumFilterActivityBookmarked => 'ഞാൻ ബുക്ക്മാർക്ക് ചെയ്തത്';
+
+  @override
+  String get forumSortRecent => 'ഏറ്റവും പുതിയവ';
+
+  @override
+  String get forumSortMostLiked => 'കൂടുതൽ ഇഷ്ടപ്പെട്ടവ';
+
+  @override
+  String get forumSortMostViewed => 'കൂടുതൽ ആളുകൾ കണ്ടവ';
+
+  @override
   String get forumSelectCourse =>
       'ചർച്ചകൾ കാണുന്നതിനായി ഒരു കോഴ്സ് തിരഞ്ഞെടുക്കുക';
 

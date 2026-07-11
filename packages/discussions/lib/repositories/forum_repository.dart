@@ -22,11 +22,36 @@ class ForumRepository {
     int page = 1,
     int? categoryId,
     String? searchQuery,
+    ForumSort? sort,
+    ForumActivityFilter? activityFilter,
   }) async {
+    final sortString = switch (sort) {
+      ForumSort.recent => '-created',
+      ForumSort.mostLiked => '-upvotes',
+      ForumSort.mostViewed => '-views_count',
+      null => null,
+    };
+
+    final postedByMe = activityFilter == ForumActivityFilter.posted
+        ? true
+        : null;
+    final commentedByMe = activityFilter == ForumActivityFilter.commented
+        ? true
+        : null;
+    final likedByMe = activityFilter == ForumActivityFilter.liked ? true : null;
+    final bookmarkedByMe = activityFilter == ForumActivityFilter.bookmarked
+        ? true
+        : null;
+
     final response = await _source.getForumThreads(
       page: page,
       categoryId: categoryId,
       searchQuery: searchQuery,
+      sortString: sortString,
+      postedByMe: postedByMe,
+      commentedByMe: commentedByMe,
+      likedByMe: likedByMe,
+      bookmarkedByMe: bookmarkedByMe,
     );
     final companions = response.results.map(_dtoToCompanion).toList();
     await _db.upsertForumThreads(companions);

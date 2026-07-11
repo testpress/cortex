@@ -74,7 +74,7 @@ final createForumThreadProvider =
     );
 
 typedef _$CreateForumThread = AutoDisposeAsyncNotifier<void>;
-String _$globalForumFeedHash() => r'daaabf975050b926ac5fda9e7514e99275e18aa3';
+String _$globalForumFeedHash() => r'736c942f31480e9c06c8589528dd7157b96c7c81';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -101,8 +101,15 @@ abstract class _$GlobalForumFeed
     extends BuildlessAutoDisposeAsyncNotifier<GlobalForumFeedState> {
   late final int? categoryId;
   late final String? searchQuery;
+  late final ForumActivityFilter? activityFilter;
+  late final ForumSort? sortOrder;
 
-  FutureOr<GlobalForumFeedState> build({int? categoryId, String? searchQuery});
+  FutureOr<GlobalForumFeedState> build({
+    int? categoryId,
+    String? searchQuery,
+    ForumActivityFilter? activityFilter,
+    ForumSort? sortOrder,
+  });
 }
 
 /// See also [GlobalForumFeed].
@@ -115,10 +122,17 @@ class GlobalForumFeedFamily extends Family<AsyncValue<GlobalForumFeedState>> {
   const GlobalForumFeedFamily();
 
   /// See also [GlobalForumFeed].
-  GlobalForumFeedProvider call({int? categoryId, String? searchQuery}) {
+  GlobalForumFeedProvider call({
+    int? categoryId,
+    String? searchQuery,
+    ForumActivityFilter? activityFilter,
+    ForumSort? sortOrder,
+  }) {
     return GlobalForumFeedProvider(
       categoryId: categoryId,
       searchQuery: searchQuery,
+      activityFilter: activityFilter,
+      sortOrder: sortOrder,
     );
   }
 
@@ -129,6 +143,8 @@ class GlobalForumFeedFamily extends Family<AsyncValue<GlobalForumFeedState>> {
     return call(
       categoryId: provider.categoryId,
       searchQuery: provider.searchQuery,
+      activityFilter: provider.activityFilter,
+      sortOrder: provider.sortOrder,
     );
   }
 
@@ -155,22 +171,30 @@ class GlobalForumFeedProvider
           GlobalForumFeedState
         > {
   /// See also [GlobalForumFeed].
-  GlobalForumFeedProvider({int? categoryId, String? searchQuery})
-    : this._internal(
-        () => GlobalForumFeed()
-          ..categoryId = categoryId
-          ..searchQuery = searchQuery,
-        from: globalForumFeedProvider,
-        name: r'globalForumFeedProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$globalForumFeedHash,
-        dependencies: GlobalForumFeedFamily._dependencies,
-        allTransitiveDependencies:
-            GlobalForumFeedFamily._allTransitiveDependencies,
-        categoryId: categoryId,
-        searchQuery: searchQuery,
-      );
+  GlobalForumFeedProvider({
+    int? categoryId,
+    String? searchQuery,
+    ForumActivityFilter? activityFilter,
+    ForumSort? sortOrder,
+  }) : this._internal(
+         () => GlobalForumFeed()
+           ..categoryId = categoryId
+           ..searchQuery = searchQuery
+           ..activityFilter = activityFilter
+           ..sortOrder = sortOrder,
+         from: globalForumFeedProvider,
+         name: r'globalForumFeedProvider',
+         debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+             ? null
+             : _$globalForumFeedHash,
+         dependencies: GlobalForumFeedFamily._dependencies,
+         allTransitiveDependencies:
+             GlobalForumFeedFamily._allTransitiveDependencies,
+         categoryId: categoryId,
+         searchQuery: searchQuery,
+         activityFilter: activityFilter,
+         sortOrder: sortOrder,
+       );
 
   GlobalForumFeedProvider._internal(
     super._createNotifier, {
@@ -181,16 +205,25 @@ class GlobalForumFeedProvider
     required super.from,
     required this.categoryId,
     required this.searchQuery,
+    required this.activityFilter,
+    required this.sortOrder,
   }) : super.internal();
 
   final int? categoryId;
   final String? searchQuery;
+  final ForumActivityFilter? activityFilter;
+  final ForumSort? sortOrder;
 
   @override
   FutureOr<GlobalForumFeedState> runNotifierBuild(
     covariant GlobalForumFeed notifier,
   ) {
-    return notifier.build(categoryId: categoryId, searchQuery: searchQuery);
+    return notifier.build(
+      categoryId: categoryId,
+      searchQuery: searchQuery,
+      activityFilter: activityFilter,
+      sortOrder: sortOrder,
+    );
   }
 
   @override
@@ -200,7 +233,9 @@ class GlobalForumFeedProvider
       override: GlobalForumFeedProvider._internal(
         () => create()
           ..categoryId = categoryId
-          ..searchQuery = searchQuery,
+          ..searchQuery = searchQuery
+          ..activityFilter = activityFilter
+          ..sortOrder = sortOrder,
         from: from,
         name: null,
         dependencies: null,
@@ -208,6 +243,8 @@ class GlobalForumFeedProvider
         debugGetCreateSourceHash: null,
         categoryId: categoryId,
         searchQuery: searchQuery,
+        activityFilter: activityFilter,
+        sortOrder: sortOrder,
       ),
     );
   }
@@ -222,7 +259,9 @@ class GlobalForumFeedProvider
   bool operator ==(Object other) {
     return other is GlobalForumFeedProvider &&
         other.categoryId == categoryId &&
-        other.searchQuery == searchQuery;
+        other.searchQuery == searchQuery &&
+        other.activityFilter == activityFilter &&
+        other.sortOrder == sortOrder;
   }
 
   @override
@@ -230,6 +269,8 @@ class GlobalForumFeedProvider
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, categoryId.hashCode);
     hash = _SystemHash.combine(hash, searchQuery.hashCode);
+    hash = _SystemHash.combine(hash, activityFilter.hashCode);
+    hash = _SystemHash.combine(hash, sortOrder.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -244,6 +285,12 @@ mixin GlobalForumFeedRef
 
   /// The parameter `searchQuery` of this provider.
   String? get searchQuery;
+
+  /// The parameter `activityFilter` of this provider.
+  ForumActivityFilter? get activityFilter;
+
+  /// The parameter `sortOrder` of this provider.
+  ForumSort? get sortOrder;
 }
 
 class _GlobalForumFeedProviderElement
@@ -259,6 +306,11 @@ class _GlobalForumFeedProviderElement
   int? get categoryId => (origin as GlobalForumFeedProvider).categoryId;
   @override
   String? get searchQuery => (origin as GlobalForumFeedProvider).searchQuery;
+  @override
+  ForumActivityFilter? get activityFilter =>
+      (origin as GlobalForumFeedProvider).activityFilter;
+  @override
+  ForumSort? get sortOrder => (origin as GlobalForumFeedProvider).sortOrder;
 }
 
 // ignore_for_file: type=lint

@@ -1454,6 +1454,42 @@ class AppLocalizationsTa extends AppLocalizations {
   String get forumTitle => 'விவாத மன்றம்';
 
   @override
+  String get forumFilterTitle => 'வடிகட்டிகள்';
+
+  @override
+  String get forumFilterByActivity => 'செயல்பாட்டின்படி வடிகட்டுக';
+
+  @override
+  String get forumFilterClearAll => 'அனைத்தையும் அழி';
+
+  @override
+  String get forumBackSemantic => 'பின்செல்';
+
+  @override
+  String get forumFilterSemantic => 'வடிகட்டி';
+
+  @override
+  String get forumFilterActivityPosted => 'நான் பதிவிட்டது';
+
+  @override
+  String get forumFilterActivityCommented => 'நான் கருத்துத் தெரிவித்தது';
+
+  @override
+  String get forumFilterActivityLiked => 'நான் விரும்பியது';
+
+  @override
+  String get forumFilterActivityBookmarked => 'நான் குறித்தது';
+
+  @override
+  String get forumSortRecent => 'சமீபத்தியவை';
+
+  @override
+  String get forumSortMostLiked => 'அதிகம் விரும்பப்பட்டவை';
+
+  @override
+  String get forumSortMostViewed => 'அதிகம் பார்க்கப்பட்டவை';
+
+  @override
   String get forumSelectCourse =>
       'விவாதங்களைக் காண ஒரு பாடத்தைத் தேர்ந்தெடுக்கவும்';
 

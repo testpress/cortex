@@ -2693,6 +2693,78 @@ abstract class AppLocalizations {
   /// **'Discussion Forum'**
   String get forumTitle;
 
+  /// No description provided for @forumFilterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get forumFilterTitle;
+
+  /// No description provided for @forumFilterByActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by Activity'**
+  String get forumFilterByActivity;
+
+  /// No description provided for @forumFilterClearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear All'**
+  String get forumFilterClearAll;
+
+  /// No description provided for @forumBackSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get forumBackSemantic;
+
+  /// No description provided for @forumFilterSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get forumFilterSemantic;
+
+  /// No description provided for @forumFilterActivityPosted.
+  ///
+  /// In en, this message translates to:
+  /// **'Posted by me'**
+  String get forumFilterActivityPosted;
+
+  /// No description provided for @forumFilterActivityCommented.
+  ///
+  /// In en, this message translates to:
+  /// **'Commented by me'**
+  String get forumFilterActivityCommented;
+
+  /// No description provided for @forumFilterActivityLiked.
+  ///
+  /// In en, this message translates to:
+  /// **'Liked by me'**
+  String get forumFilterActivityLiked;
+
+  /// No description provided for @forumFilterActivityBookmarked.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarked by me'**
+  String get forumFilterActivityBookmarked;
+
+  /// No description provided for @forumSortRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent'**
+  String get forumSortRecent;
+
+  /// No description provided for @forumSortMostLiked.
+  ///
+  /// In en, this message translates to:
+  /// **'Most Liked'**
+  String get forumSortMostLiked;
+
+  /// No description provided for @forumSortMostViewed.
+  ///
+  /// In en, this message translates to:
+  /// **'Most Viewed'**
+  String get forumSortMostViewed;
+
   /// No description provided for @forumSelectCourse.
   ///
   /// In en, this message translates to:

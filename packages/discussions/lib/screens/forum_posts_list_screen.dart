@@ -1,11 +1,12 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
 import 'package:flutter/widgets.dart';
+import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../providers/forum_providers.dart';
+import '../widgets/forum_filter_bottom_sheet.dart';
 import '../widgets/forum_header.dart';
 
 class ForumPostsListScreen extends ConsumerStatefulWidget {
@@ -18,8 +19,11 @@ class ForumPostsListScreen extends ConsumerStatefulWidget {
 
 class _ForumPostsListScreenState extends ConsumerState<ForumPostsListScreen> {
   int? _selectedCategoryId;
+  ForumActivityFilter? _selectedActivityFilter;
+  ForumSort _selectedSortOrder = ForumSort.recent;
   String? _searchQuery;
   Timer? _debounceTimer;
+  bool _isFilterSheetOpen = false;
 
   @override
   void dispose() {
@@ -46,185 +50,282 @@ class _ForumPostsListScreenState extends ConsumerState<ForumPostsListScreen> {
       globalForumFeedProvider(
         categoryId: _selectedCategoryId,
         searchQuery: _searchQuery,
+        activityFilter: _selectedActivityFilter,
+        sortOrder: _selectedSortOrder,
       ),
     );
     final categoriesAsync = ref.watch(globalForumCategoriesProvider);
 
-    return SkeletonizerConfig(
-      data: SkeletonizerConfigData(
-        effect: ShimmerEffect(
-          baseColor: design.colors.skeleton,
-          highlightColor: design.colors.onSkeleton,
-          duration: MotionPreferences.duration(
-            context,
-            const Duration(milliseconds: 800),
-          ),
-        ),
-      ),
-      child: DecoratedBox(
-        decoration: BoxDecoration(color: design.colors.card),
-        child: Column(
-          children: [
-            ForumHeader(
-              title: l10n.forumTitle,
-              showDivider: false,
-              actions: [
-                AppFocusable(
-                  onTap: () {
-                    context.push('/home/discussions/forum/create');
-                  },
-                  borderRadius: BorderRadius.circular(design.radius.full),
-                  child: Padding(
+    final hasFilters = _selectedActivityFilter != null;
+
+    void handleCreatePost() => context.push('/home/discussions/forum/create');
+
+    return Stack(
+      children: [
+        Container(
+          color: design.colors.surface,
+          child: SkeletonizerConfig(
+            data: SkeletonizerConfigData(
+              effect: ShimmerEffect(
+                baseColor: design.colors.skeleton,
+                highlightColor: design.colors.onSkeleton,
+                duration: MotionPreferences.duration(
+                  context,
+                  const Duration(milliseconds: 800),
+                ),
+              ),
+            ),
+            child: DecoratedBox(
+              decoration: BoxDecoration(color: design.colors.card),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ForumHeader(
+                    title: l10n.forumTitle,
+                    showDivider: false,
+                    actions: [
+                      AppSemantics.button(
+                        label: l10n.forumFilterSemantic,
+                        onTap: () {
+                          setState(() => _isFilterSheetOpen = true);
+                        },
+                        child: AppFocusable(
+                          padding: const EdgeInsets.all(13),
+                          onTap: () {
+                            setState(() => _isFilterSheetOpen = true);
+                          },
+                          child: Stack(
+                            children: [
+                              Icon(
+                                LucideIcons.filter,
+                                color: design.colors.textPrimary,
+                                size: 22,
+                              ),
+                              if (hasFilters)
+                                Positioned(
+                                  top: 0,
+                                  right: 0,
+                                  child: Container(
+                                    width: 8,
+                                    height: 8,
+                                    decoration: BoxDecoration(
+                                      color: design.colors.primary,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
                     padding: EdgeInsets.symmetric(
-                      horizontal: design.spacing.sm,
+                      horizontal: design.spacing.md,
+                      vertical: design.spacing.sm,
                     ),
-                    child: AppText.labelSmall(
-                      l10n.forumCreatePost,
-                      color: design.colors.accent2,
+                    child: AppSearchBar(
+                      hintText: l10n.forumSearchDiscussions,
+                      onChanged: _onSearchChanged,
+                      backgroundColor: design.colors.surfaceVariant,
                     ),
                   ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: design.spacing.md,
-                vertical: design.spacing.sm,
-              ),
-              child: AppSearchBar(
-                hintText: l10n.forumSearchDiscussions,
-                onChanged: _onSearchChanged,
-                backgroundColor: design.colors.surfaceVariant,
-              ),
-            ),
-            _CategoryChips(
-              categoriesAsync: categoriesAsync,
-              selectedId: _selectedCategoryId,
-              onCategorySelected: (id) {
-                setState(() => _selectedCategoryId = id);
-              },
-            ),
-            Expanded(
-              child: Builder(
-                builder: (context) {
-                  final feedState =
-                      feedAsync.valueOrNull ??
-                      const GlobalForumFeedState(items: []);
-                  final isLoading =
-                      feedAsync.isLoading && feedState.items.isEmpty;
-                  final displayState = isLoading
-                      ? feedState.copyWith(items: _mockSkeletonThreads)
-                      : feedState;
-
-                  if (feedAsync.hasError && feedState.items.isEmpty) {
-                    return Center(
-                      child: AppText.body(l10n.errorGenericMessage),
-                    );
-                  }
-
-                  return Skeletonizer(
-                    enabled: isLoading,
-                    child: Column(
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: design.spacing.md,
+                      right: design.spacing.md,
+                      bottom: design.spacing.sm,
+                    ),
+                    child: Row(
                       children: [
-                        Container(height: 1, color: design.colors.divider),
                         Expanded(
-                          child: _ThreadList(
-                            state: displayState,
-                            onRefresh: () async {
-                              return ref.refresh(
-                                globalForumFeedProvider(
-                                  categoryId: _selectedCategoryId,
-                                  searchQuery: _searchQuery,
-                                ).future,
-                              );
-                            },
-                            onLoadMore: () {
-                              ref
-                                  .read(
-                                    globalForumFeedProvider(
-                                      categoryId: _selectedCategoryId,
-                                      searchQuery: _searchQuery,
-                                    ).notifier,
-                                  )
-                                  .loadMore();
-                            },
+                          child: _SegmentButton(
+                            label: l10n.forumSortRecent,
+                            isSelected: _selectedSortOrder == ForumSort.recent,
+                            onTap: () => setState(
+                              () => _selectedSortOrder = ForumSort.recent,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: design.spacing.sm),
+                        Expanded(
+                          child: _SegmentButton(
+                            label: l10n.forumSortMostLiked,
+                            isSelected:
+                                _selectedSortOrder == ForumSort.mostLiked,
+                            onTap: () => setState(
+                              () => _selectedSortOrder = ForumSort.mostLiked,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: design.spacing.sm),
+                        Expanded(
+                          child: _SegmentButton(
+                            label: l10n.forumSortMostViewed,
+                            isSelected:
+                                _selectedSortOrder == ForumSort.mostViewed,
+                            onTap: () => setState(
+                              () => _selectedSortOrder = ForumSort.mostViewed,
+                            ),
                           ),
                         ),
                       ],
                     ),
-                  );
-                },
+                  ),
+                  Container(
+                    height: 36,
+                    margin: EdgeInsets.only(bottom: design.spacing.sm),
+                    child: categoriesAsync.when(
+                      data: (categories) {
+                        return ListView.separated(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: design.spacing.md,
+                          ),
+                          scrollDirection: Axis.horizontal,
+                          itemCount: categories.length + 1,
+                          separatorBuilder: (a, b) =>
+                              SizedBox(width: design.spacing.sm),
+                          itemBuilder: (context, index) {
+                            if (index == 0) {
+                              return _CategoryChip(
+                                label: l10n.filterAll,
+                                isSelected: _selectedCategoryId == null,
+                                onTap: () =>
+                                    setState(() => _selectedCategoryId = null),
+                              );
+                            }
+                            final cat = categories[index - 1];
+                            return _CategoryChip(
+                              label: cat.name,
+                              isSelected: _selectedCategoryId == cat.id,
+                              onTap: () =>
+                                  setState(() => _selectedCategoryId = cat.id),
+                            );
+                          },
+                        );
+                      },
+                      loading: () => const Center(child: AppLoadingIndicator()),
+                      error: (err, stack) => const SizedBox(),
+                    ),
+                  ),
+                  Expanded(
+                    child: Builder(
+                      builder: (context) {
+                        final feedState =
+                            feedAsync.valueOrNull ??
+                            const GlobalForumFeedState(items: []);
+                        final isLoading =
+                            feedAsync.isLoading && feedState.items.isEmpty;
+                        final displayState = isLoading
+                            ? feedState.copyWith(items: _mockSkeletonThreads)
+                            : feedState;
+
+                        if (feedAsync.hasError && feedState.items.isEmpty) {
+                          return Center(
+                            child: AppText.body(l10n.errorGenericMessage),
+                          );
+                        }
+
+                        return Skeletonizer(
+                          enabled: isLoading,
+                          child: Column(
+                            children: [
+                              Container(height: 1, color: design.colors.border),
+                              Expanded(
+                                child: _ThreadList(
+                                  state: displayState,
+                                  onRefresh: () async {
+                                    return ref.refresh(
+                                      globalForumFeedProvider(
+                                        categoryId: _selectedCategoryId,
+                                        searchQuery: _searchQuery,
+                                        activityFilter: _selectedActivityFilter,
+                                        sortOrder: _selectedSortOrder,
+                                      ).future,
+                                    );
+                                  },
+                                  onLoadMore: () {
+                                    ref
+                                        .read(
+                                          globalForumFeedProvider(
+                                            categoryId: _selectedCategoryId,
+                                            searchQuery: _searchQuery,
+                                            activityFilter:
+                                                _selectedActivityFilter,
+                                            sortOrder: _selectedSortOrder,
+                                          ).notifier,
+                                        )
+                                        .loadMore();
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
-      ),
+
+        // FAB Replacement
+        Positioned(
+          bottom: design.spacing.lg + MediaQuery.of(context).padding.bottom,
+          right: design.spacing.lg,
+          child: AppSemantics.button(
+            label: l10n.forumCreatePost,
+            child: AppFocusable(
+              onTap: handleCreatePost,
+              borderRadius: BorderRadius.circular(design.radius.full),
+              child: Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: design.colors.primary,
+                  shape: BoxShape.circle,
+                  boxShadow: design.shadows.floating,
+                ),
+                child: Center(
+                  child: Icon(
+                    LucideIcons.plus,
+                    color: design.colors.textInverse,
+                    size: 24,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        // Bottom Sheet
+        AppBottomSheet(
+          isOpen: _isFilterSheetOpen,
+          onClose: () => setState(() => _isFilterSheetOpen = false),
+          child: ForumFilterBottomSheet(
+            initialActivityFilter: _selectedActivityFilter,
+            onApply: (activityFilter) {
+              setState(() {
+                _selectedActivityFilter = activityFilter;
+              });
+            },
+            onClose: () => setState(() => _isFilterSheetOpen = false),
+          ),
+        ),
+      ],
     );
   }
 }
 
-class _CategoryChips extends StatelessWidget {
-  final AsyncValue<List<ForumCategoryDto>> categoriesAsync;
-  final int? selectedId;
-  final ValueChanged<int?> onCategorySelected;
-
-  const _CategoryChips({
-    required this.categoriesAsync,
-    required this.selectedId,
-    required this.onCategorySelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-
-    final categories = categoriesAsync.valueOrNull ?? [];
-    final isLoading = categoriesAsync.isLoading && categories.isEmpty;
-    final displayCategories = isLoading ? _mockSkeletonCategories : categories;
-
-    if (categoriesAsync.hasError || (!isLoading && displayCategories.isEmpty)) {
-      return const SizedBox.shrink();
-    }
-
-    return Skeletonizer(
-      enabled: isLoading,
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: design.spacing.md,
-          vertical: design.spacing.sm,
-        ),
-        height: 48,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          itemCount: displayCategories.length + 1,
-          separatorBuilder: (_, _) => SizedBox(width: design.spacing.sm),
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              return _ChipButton(
-                label: L10n.of(context).filterAll,
-                isSelected: selectedId == null,
-                onTap: () => onCategorySelected(null),
-              );
-            }
-            final category = displayCategories[index - 1];
-            return _ChipButton(
-              label: category.name,
-              isSelected: selectedId == category.id,
-              onTap: () => onCategorySelected(category.id),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class _ChipButton extends StatelessWidget {
+class _SegmentButton extends StatelessWidget {
   final String label;
   final bool isSelected;
   final VoidCallback onTap;
 
-  const _ChipButton({
+  const _SegmentButton({
     required this.label,
     required this.isSelected,
     required this.onTap,
@@ -233,25 +334,90 @@ class _ChipButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final bgColor = isSelected
+        ? design.colors.primary
+        : design.colors.surfaceVariant;
+    final fgColor = isSelected
+        ? design.colors.textInverse
+        : design.colors.textPrimary;
 
     return AppSemantics.button(
       label: label,
       onTap: onTap,
-      child: GestureDetector(
+      child: AppFocusable(
         onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        borderRadius: BorderRadius.circular(design.radius.lg),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          child: Container(
+            height: 38,
+            decoration: BoxDecoration(
+              color: bgColor,
+              borderRadius: BorderRadius.circular(design.radius.lg),
+              border: isSelected
+                  ? null
+                  : Border.all(color: design.colors.border),
+            ),
+            child: Center(
+              child: AppText.caption(
+                label,
+                color: fgColor,
+                style: TextStyle(
+                  fontSize: 13,
+                  height: 1.25,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CategoryChip extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _CategoryChip({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    return AppSemantics.button(
+      label: label,
+      onTap: onTap,
+      child: AppFocusable(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(design.radius.full),
+        child: AnimatedContainer(
+          duration: MotionPreferences.duration(context, design.motion.fast),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
             color: isSelected
                 ? design.colors.primary
-                : design.colors.surfaceVariant,
+                : design.colors.surfaceVariant.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(design.radius.full),
+            border: isSelected ? null : Border.all(color: design.colors.border),
           ),
-          child: AppText.caption(
-            label,
-            color: isSelected
-                ? design.colors.textInverse
-                : design.colors.textPrimary,
+          child: Center(
+            child: AppText.caption(
+              label.toUpperCase(),
+              color: isSelected
+                  ? design.colors.textInverse
+                  : design.colors.textPrimary,
+              style: TextStyle(
+                fontSize: 11,
+                letterSpacing: 0.5,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+              ),
+            ),
           ),
         ),
       ),
@@ -344,7 +510,7 @@ class _ThreadListState extends State<_ThreadList> {
           itemCount:
               widget.state.items.length + (widget.state.isLoadingMore ? 1 : 0),
           separatorBuilder: (context, index) =>
-              Container(height: 1, color: design.colors.divider),
+              Container(height: 1, color: design.colors.border),
           itemBuilder: (context, index) {
             if (index >= widget.state.items.length) {
               return Skeletonizer(
@@ -372,33 +538,39 @@ class _ThreadItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    return GestureDetector(
+    return AppSemantics.button(
+      label: thread.title,
       onTap: () => context.push(
         '/home/discussions/forum/posts/${thread.slug}',
         extra: thread,
       ),
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: design.spacing.md,
-          vertical: design.spacing.md,
+      child: AppFocusable(
+        onTap: () => context.push(
+          '/home/discussions/forum/posts/${thread.slug}',
+          extra: thread,
         ),
-        color: design.colors.card,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AppText.cardTitle(thread.title, color: design.colors.textPrimary),
-            if (thread.summary.trim().isNotEmpty) ...[
-              const SizedBox(height: 6),
-              AppText.cardSubtitle(
-                thread.summary.trim(),
-                color: design.colors.textSecondary,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: design.spacing.md,
+            vertical: design.spacing.md,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AppText.cardTitle(thread.title, color: design.colors.textPrimary),
+              if (thread.summary.trim().isNotEmpty) ...[
+                const SizedBox(height: 6),
+                AppText.cardSubtitle(
+                  thread.summary.trim(),
+                  color: design.colors.textSecondary,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+              SizedBox(height: design.spacing.sm + 4),
+              _ThreadFooter(thread: thread),
             ],
-            const SizedBox(height: 12),
-            _ThreadFooter(thread: thread),
-          ],
+          ),
         ),
       ),
     );
@@ -526,17 +698,6 @@ String _formatDateSafe(String dateStr) {
   }
   return dateStr;
 }
-
-final _mockSkeletonCategories = List.generate(
-  4,
-  (i) => ForumCategoryDto(
-    id: i,
-    name: 'Category Name',
-    slug: 'cat-$i',
-    color: null,
-    order: i,
-  ),
-);
 
 final _mockSkeletonThreads = List.generate(
   5,

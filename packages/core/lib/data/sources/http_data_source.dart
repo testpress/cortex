@@ -272,6 +272,11 @@ class HttpDataSource implements DataSource {
     int page = 1,
     int? categoryId,
     String? searchQuery,
+    String? sortString,
+    bool? postedByMe,
+    bool? commentedByMe,
+    bool? likedByMe,
+    bool? bookmarkedByMe,
   }) async {
     return performNetworkRequest(
       _dio.get(
@@ -281,6 +286,11 @@ class HttpDataSource implements DataSource {
           'category': ?categoryId,
           if (searchQuery != null && searchQuery.isNotEmpty)
             'search': searchQuery,
+          'sort': ?sortString,
+          'posted_by_me': ?postedByMe,
+          'commented_by_me': ?commentedByMe,
+          'liked_by_me': ?likedByMe,
+          'bookmarked_by_me': ?bookmarkedByMe,
         },
       ),
       fromJson: (json) => PaginatedResponseDto<ForumThreadDto>.fromJson(
