@@ -2422,4 +2422,12 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get reviewOfTotal => 'ആകെ';
+
+  @override
+  String get lessonDetails => 'പാഠത്തിന്റെ വിശദാംശങ്ങൾ';
+
+  @override
+  String questionIdArgs(String id) {
+    return 'ചോദ്യ ഐഡി: $id';
+  }
 }

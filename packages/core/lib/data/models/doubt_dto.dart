@@ -30,6 +30,12 @@ class DoubtDto {
   /// The type of query (AI vs Mentor)
   final DoubtQueryType? queryType;
 
+  final String? subjectName;
+  final String? questionHtml;
+  final String? courseName;
+  final String? chapterName;
+  final String? lessonTitle;
+
   const DoubtDto({
     required this.id,
     this.topicId,
@@ -45,6 +51,11 @@ class DoubtDto {
     this.createdHumanized,
     this.replyCount,
     this.queryType,
+    this.subjectName,
+    this.questionHtml,
+    this.courseName,
+    this.chapterName,
+    this.lessonTitle,
   });
 
   factory DoubtDto.fromJson(
@@ -101,11 +112,27 @@ class DoubtDto {
       queryType = DoubtQueryType.mentor;
     }
 
+    final chapterContent = json['chapter_content'];
+    String? lessonId;
+    Map<String, dynamic>? chapterContentObj;
+    if (chapterContent is Map<String, dynamic>) {
+      chapterContentObj = chapterContent;
+      lessonId = chapterContent['id']?.toString();
+    } else {
+      lessonId = chapterContent?.toString();
+    }
+
+    final question = json['question'];
+    Map<String, dynamic>? questionObj;
+    if (question is Map<String, dynamic>) {
+      questionObj = question;
+    }
+
     return DoubtDto(
       id: json['id'].toString(),
       topicId: topicId,
       topicName: topicName,
-      lessonId: json['chapter_content']?.toString(),
+      lessonId: lessonId,
       title: json['title'] as String? ?? '',
       content: json['description'] as String? ?? '',
       studentName: studentName,
@@ -116,6 +143,11 @@ class DoubtDto {
           : DateTime.now(),
       createdHumanized: json['created_humanize'] as String?,
       queryType: queryType,
+      subjectName: questionObj?['subject_name'] as String?,
+      questionHtml: questionObj?['question_html'] as String?,
+      courseName: chapterContentObj?['course_name'] as String?,
+      chapterName: chapterContentObj?['chapter_name'] as String?,
+      lessonTitle: chapterContentObj?['lesson_title'] as String?,
     );
   }
 

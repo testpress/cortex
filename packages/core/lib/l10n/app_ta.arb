@@ -1094,5 +1094,7 @@
   "reviewTimeTaken": "எடுத்துக்கொண்ட நேரம்",
   "reviewRank": "தரம்",
   "reviewPercentile": "சதவீதம்",
-  "reviewOfTotal": "மொத்தத்தில்"
+  "reviewOfTotal": "மொத்தத்தில்",
+  "lessonDetails": "பாடம் விவரங்கள்",
+  "questionIdArgs": "கேள்வி ஐடி: {id}"
 }

@@ -447,7 +447,24 @@ class _DoubtHeaderCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (doubt.lessonId != null)
+          if (doubt.lessonTitle != null || doubt.questionHtml != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: DoubtContextBadge(
+                icon: doubt.questionHtml != null
+                    ? LucideIcons.helpCircle
+                    : LucideIcons.bookOpen,
+                text: doubt.questionHtml ?? doubt.lessonTitle ?? '',
+                breadcrumbs: [
+                  if (doubt.courseName?.isNotEmpty ?? false) doubt.courseName!,
+                  if (doubt.chapterName?.isNotEmpty ?? false)
+                    doubt.chapterName!,
+                  if (doubt.subjectName?.isNotEmpty ?? false)
+                    doubt.subjectName!,
+                ],
+              ),
+            )
+          else if (doubt.lessonId != null)
             _LessonContextBadge(lessonId: doubt.lessonId!),
           if (doubt.topicName != null) ...[
             _SubjectBadge(subject: doubt.topicName!),
@@ -524,8 +541,7 @@ class _LessonContextBadgeState extends ConsumerState<_LessonContextBadge> {
           child: DoubtContextBadge(
             icon: LucideIcons.bookOpen,
             text: data.lessonTitle,
-            courseName: data.courseTitle,
-            chapterName: data.chapterTitle,
+            breadcrumbs: [data.courseTitle, data.chapterTitle],
           ),
         );
       },

@@ -4,29 +4,27 @@ import 'package:core/core.dart';
 class DoubtContextBadge extends StatelessWidget {
   final IconData icon;
   final String text;
-  final String? courseName;
-  final String? chapterName;
+  final List<String> breadcrumbs;
 
   const DoubtContextBadge({
     super.key,
     required this.icon,
     required this.text,
-    this.courseName,
-    this.chapterName,
+    this.breadcrumbs = const [],
   });
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final course = courseName ?? '';
-    final chapter = chapterName ?? '';
-    final hasHierarchy = course.isNotEmpty || chapter.isNotEmpty;
+    final validBreadcrumbs = breadcrumbs
+        .where((b) => b.trim().isNotEmpty)
+        .toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (hasHierarchy) ...[
-          _BreadcrumbHeader(courseName: course, chapterName: chapter),
+        if (validBreadcrumbs.isNotEmpty) ...[
+          _BreadcrumbHeader(breadcrumbs: validBreadcrumbs),
           SizedBox(height: design.spacing.sm),
         ],
         _ContextPill(icon: icon, text: text),
@@ -36,60 +34,51 @@ class DoubtContextBadge extends StatelessWidget {
 }
 
 class _BreadcrumbHeader extends StatelessWidget {
-  final String courseName;
-  final String chapterName;
+  final List<String> breadcrumbs;
 
-  const _BreadcrumbHeader({
-    required this.courseName,
-    required this.chapterName,
-  });
+  const _BreadcrumbHeader({required this.breadcrumbs});
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    final semanticLabel = [
-      if (courseName.isNotEmpty) courseName,
-      if (chapterName.isNotEmpty) chapterName,
-    ].join(', ');
+    if (breadcrumbs.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final semanticLabel = breadcrumbs.join(', ');
+
+    final children = <Widget>[];
+    for (int i = 0; i < breadcrumbs.length; i++) {
+      children.add(
+        Flexible(
+          flex: 1,
+          fit: FlexFit.loose,
+          child: AppText.labelBold(
+            breadcrumbs[i],
+            color: design.colors.textPrimary,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      );
+      if (i < breadcrumbs.length - 1) {
+        children.add(
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: design.spacing.xs),
+            child: Icon(
+              LucideIcons.chevronRight,
+              size: design.iconSize.sm,
+              color: design.colors.textTertiary,
+            ),
+          ),
+        );
+      }
+    }
 
     return AppSemantics.container(
       label: semanticLabel,
-      child: Row(
-        children: [
-          if (courseName.isNotEmpty)
-            Flexible(
-              flex: 1,
-              fit: FlexFit.loose,
-              child: AppText.labelBold(
-                courseName,
-                color: design.colors.textPrimary,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          if (courseName.isNotEmpty && chapterName.isNotEmpty)
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: design.spacing.xs),
-              child: Icon(
-                LucideIcons.chevronRight,
-                size: design.iconSize.sm,
-                color: design.colors.textTertiary,
-              ),
-            ),
-          if (chapterName.isNotEmpty)
-            Flexible(
-              flex: 1,
-              fit: FlexFit.loose,
-              child: AppText.labelBold(
-                chapterName,
-                color: design.colors.textPrimary,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-        ],
-      ),
+      child: Row(mainAxisSize: MainAxisSize.min, children: children),
     );
   }
 }
@@ -119,11 +108,11 @@ class _ContextPill extends StatelessWidget {
           Icon(icon, size: design.iconSize.md, color: design.colors.accent2),
           SizedBox(width: design.spacing.sm),
           Expanded(
-            child: AppText.bodySmall(
-              text,
-              color: design.colors.accent2,
+            child: AppHtmlV2(
+              data: text,
+              textColor: design.colors.accent2,
+              fontSize: 12,
               maxLines: 1,
-              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],

@@ -844,5 +844,7 @@
   "reviewTimeTaken": "എടുത്ത സമയം",
   "reviewRank": "റാങ്ക്",
   "reviewPercentile": "ശതമാനം",
-  "reviewOfTotal": "ആകെ"
+  "reviewOfTotal": "ആകെ",
+  "lessonDetails": "പാഠത്തിന്റെ വിശദാംശങ്ങൾ",
+  "questionIdArgs": "ചോദ്യ ഐഡി: {id}"
 }

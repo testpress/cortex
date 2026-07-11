@@ -13,14 +13,19 @@ class AskDoubtFormScreen extends ConsumerStatefulWidget {
   final int? chapterContentId;
   final String? lessonTitle;
   final LessonType? lessonType;
+  final List<String> breadcrumbs;
+
   final int? questionId;
+  final String? questionHtml;
 
   const AskDoubtFormScreen({
     super.key,
     this.chapterContentId,
     this.lessonTitle,
     this.lessonType,
+    this.breadcrumbs = const [],
     this.questionId,
+    this.questionHtml,
   }) : assert(
          (chapterContentId == null && lessonTitle == null) ||
              questionId == null,
@@ -174,18 +179,33 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
         : widget.lessonType?.icon ?? LucideIcons.bookOpen;
 
     if (widget.chapterContentId != null && _lessonDetailsFuture != null) {
-      return FutureBuilder(
+      return FutureBuilder<
+        ({String lessonTitle, String chapterTitle, String courseTitle})?
+      >(
         future: _lessonDetailsFuture,
         builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return DoubtContextBadge(
+              icon: icon,
+              text: widget.lessonTitle ?? l10n.lessonDetails,
+              breadcrumbs: widget.breadcrumbs,
+            );
+          }
+
           final data = snapshot.data;
 
           return DoubtContextBadge(
             icon: icon,
             text: isQuestion
-                ? 'Question ID: ${widget.questionId}'
-                : data?.lessonTitle ?? widget.lessonTitle ?? 'Lesson Details',
-            courseName: data?.courseTitle,
-            chapterName: data?.chapterTitle,
+                ? widget.questionHtml ??
+                      l10n.questionIdArgs(widget.questionId.toString())
+                : data?.lessonTitle ?? widget.lessonTitle ?? l10n.lessonDetails,
+            breadcrumbs: isQuestion
+                ? widget.breadcrumbs
+                : [
+                    if (data?.courseTitle != null) data!.courseTitle,
+                    if (data?.chapterTitle != null) data!.chapterTitle,
+                  ],
           );
         },
       );
@@ -194,8 +214,9 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
     return DoubtContextBadge(
       icon: icon,
       text: isQuestion
-          ? 'Question ID: ${widget.questionId}'
+          ? widget.questionHtml ?? 'Question ID: ${widget.questionId}'
           : widget.lessonTitle ?? 'Lesson Details',
+      breadcrumbs: widget.breadcrumbs,
     );
   }
 

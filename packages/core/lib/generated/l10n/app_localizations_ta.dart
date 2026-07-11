@@ -2414,4 +2414,12 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get reviewOfTotal => 'மொத்தத்தில்';
+
+  @override
+  String get lessonDetails => 'பாடம் விவரங்கள்';
+
+  @override
+  String questionIdArgs(String id) {
+    return 'கேள்வி ஐடி: $id';
+  }
 }

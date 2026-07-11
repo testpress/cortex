@@ -61,11 +61,21 @@ class HomeRoutes {
                       )
                     : null;
 
+                final extra = state.extra as Map<String, dynamic>?;
+                final breadcrumbs =
+                    (extra?['breadcrumbs'] as List<dynamic>?)
+                        ?.whereType<String>()
+                        .toList() ??
+                    const [];
+                final questionHtml = extra?['questionHtml'] as String?;
+
                 return AskDoubtFormScreen(
                   chapterContentId: chapterContentId,
                   lessonTitle: lessonTitle,
                   lessonType: lessonType,
                   questionId: questionId,
+                  breadcrumbs: breadcrumbs,
+                  questionHtml: questionHtml,
                 );
               },
             ),
