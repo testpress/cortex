@@ -1279,6 +1279,57 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
+  String get examsEmptyStateDesc =>
+      'No exams available right now. Please check back later.';
+
+  @override
+  String get customExamTitle => 'தனிப்பயன் தேர்வு';
+
+  @override
+  String get customExamCourseSelectionInfo =>
+      'ஒரு பாடநெறியைத் தேர்ந்தெடுத்த பிறகு, பாடங்கள், கடினத்தன்மை நிலை, தேர்வு முறை மற்றும் கேள்விகளின் எண்ணிக்கையை நீங்கள் தேர்ந்தெடுக்கலாம்.';
+
+  @override
+  String get customExamLoadingCourse => 'பாடநெறியின் பெயர் ஏற்றப்படுகிறது...';
+
+  @override
+  String get customExamSelectedCourse => 'தேர்ந்தெடுக்கப்பட்ட பாடநெறி';
+
+  @override
+  String get customExamQuestionType => 'கேள்வி வகை';
+
+  @override
+  String get customExamSelectQuestionType =>
+      'கேள்விகளின் வகையைத் தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get customExamTestMode => 'தேர்வு முறை';
+
+  @override
+  String get customExamChooseTestExperience =>
+      'தேர்வு அனுபவத்தைத் தேர்வுசெய்யவும்';
+
+  @override
+  String get customExamNumberOfQuestions => 'கேள்விகளின் எண்ணிக்கை';
+
+  @override
+  String get customExamChooseNumberOfQuestions =>
+      'கேள்விகளின் எண்ணிக்கையைத் தேர்வுசெய்யவும்';
+
+  @override
+  String get customExamSelectOneOrMoreSubjects =>
+      'ஒன்று அல்லது அதற்கு மேற்பட்ட பாடங்களைத் தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get customExamSelectDifficultyLevel =>
+      'கடினத்தன்மை நிலையைத் தேர்ந்தெடுக்கவும்';
+
+  @override
+  String customExamRemoveItem(String item) {
+    return '$item ஐ அகற்று';
+  }
+
+  @override
   String get reviewEmptyStateMessage =>
       'இந்த வடிகட்டிக்கு கேள்விகள் எதுவும் கிடைக்கவில்லை.';
 
@@ -2201,16 +2252,16 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
-  String get customExamCreateTitle => 'பயிற்சி தேர்வை உருவாக்கவும்';
+  String get customExamCreateTitle => 'தனிப்பயன் தேர்வு';
 
   @override
-  String get customExamSelectCourse => 'பாடநெறியைத் தேர்ந்தெடுக்கவும்';
+  String get customExamSelectCourse => 'ஒரு பாடநெறியைத் தேர்ந்தெடுக்கவும்';
 
   @override
-  String get customExamSearchCourses => 'பாடநெறிகளைத் தேடுங்கள்...';
+  String get customExamSearchCourses => 'பாடநெறிகளைத் தேடுக';
 
   @override
-  String get customExamNoCoursesFound => 'பாடநெறிகள் எதுவும் கிடைக்கவில்லை.';
+  String get customExamNoCoursesFound => 'பாடநெறிகள் எதுவும் கிடைக்கவில்லை';
 
   @override
   String get customExamStepScope => 'படி 1: பயிற்சியின் வரம்பு';
@@ -2278,7 +2329,7 @@ class AppLocalizationsTa extends AppLocalizations {
       'நேரக் கணிப்பானுடன் உண்மையான தேர்வு போல எழுதுங்கள்; இறுதியில் முடிவைப் பெறுங்கள்';
 
   @override
-  String get customExamBtnCreate => 'பயிற்சி தேர்வை உருவாக்கவும்';
+  String get customExamBtnCreate => 'தனிப்பயன் தேர்வு';
 
   @override
   String get customExamBtnGoBack => 'திரும்பிச் செல்';
@@ -2287,6 +2338,35 @@ class AppLocalizationsTa extends AppLocalizations {
   String customExamCountLabel(int count) {
     return '$count கேள்விகள்';
   }
+
+  @override
+  String get customExamSelectAtLeastOneSubject =>
+      'குறைந்தபட்சம் ஒரு பாடத்தையாவது தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get customExamGenerateCustomExam => 'தனிப்பயன் தேர்வை உருவாக்கு';
+
+  @override
+  String get customExamPleaseSelectAtLeastOneQuestionType =>
+      'குறைந்தபட்சம் ஒரு கேள்வி வகையையாவது தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get customExamPleaseSelectTestMode =>
+      'தேர்வு முறையைத் தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get customExamErrorLoading => 'பாடநெறிகளை ஏற்றுவதில் பிழை';
+
+  @override
+  String get customExamSelectSubjects => 'பாடங்களைத் தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get customExamDailyLimitExhausted =>
+      'தனிப்பயன் தேர்வுகளுக்கான உங்கள் தினசரி வரம்புகள் முடிந்துவிட்டன.';
+
+  @override
+  String get customExamMonthlyLimitExhausted =>
+      'தனிப்பயன் தேர்வுகளுக்கான உங்கள் மாதாந்திர வரம்புகள் முடிந்துவிட்டன.';
 
   @override
   String get examsTabTitle => 'தேர்வுகள்';

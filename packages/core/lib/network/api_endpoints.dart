@@ -15,6 +15,10 @@ class ApiEndpoints {
   static String courseDetail(String id) => '/api/v3/courses/$id/';
   static String courseChapters(String id) => '/api/v3/courses/$id/chapters/';
   static String courseContents(String id) => '/api/v3/courses/$id/contents/';
+  static String customTestConfig(String id) =>
+      '/api/v3/courses/$id/custom-test-config/';
+  static String generateCustomExam(String id) =>
+      '/api/v3/courses/$id/custom-test/';
   static String runningContents(String id) =>
       '/api/v2.5/courses/$id/running_contents/';
   static String upcomingContents(String id) =>
@@ -68,7 +72,7 @@ class ApiEndpoints {
   static String startAttempt(String attemptId) =>
       '/api/v2.3/attempts/$attemptId/start/';
   static String endAttempt(String attemptId) =>
-      '/api/v2.3/attempts/$attemptId/end/';
+      '/api/v2.2/attempts/$attemptId/end/';
   static String reviewAttempt(String attemptId) =>
       '/api/v2.5/attempts/$attemptId/review/';
   static String startSection(String attemptId, String sectionOrder) =>

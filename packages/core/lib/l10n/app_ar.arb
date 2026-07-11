@@ -732,7 +732,7 @@
   "analyticsSelectTab": "تحديد علامة التبويب {label}",
   "filterEmptyStateMessage": "لم يتم العثور على {name}.",
   "labelExams": "امتحانات",
-  "customExamCreateTitle": "إنشاء امتحان تدريبي",
+  "customExamCreateTitle": "امتحان مخصص",
   "customExamSelectCourse": "اختر الدورة",
   "customExamSearchCourses": "البحث في الدورات...",
   "customExamNoCoursesFound": "لم يتم العثور على دورات.",
@@ -756,7 +756,7 @@
   "customExamModeQuizDesc": "احصل على ملاحظات وتفسيرات فورية بعد كل سؤال",
   "customExamModeTest": "اختبار",
   "customExamModeTestDesc": "محاولة كاختبار حقيقي مع مؤقت ونتيجة نهائية",
-  "customExamBtnCreate": "إنشاء امتحان تدريبي",
+  "customExamBtnCreate": "امتحان مخصص",
   "customExamBtnGoBack": "العودة",
   "customExamCountLabel": "{count} أسئلة",
   "@customExamCountLabel": {
@@ -845,6 +845,41 @@
   "reviewPercentile": "النسبة المئوية",
   "reviewOfTotal": "من الإجمالي",
   "lessonDetails": "تفاصيل الدرس",
-  "questionIdArgs": "معرف السؤال: {id}"
+  "questionIdArgs": "معرف السؤال: {id}",
+  "customExamCountLabel": "{count} أسئلة",
+  "@customExamCountLabel": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "customExamCreateTitle": "امتحان مخصص",
+  "customExamSelectAtLeastOneSubject": "يرجى تحديد موضوع واحد على الأقل",
+  "customExamSelectDifficultyLevel": "يرجى تحديد مستوى الصعوبة",
+  "customExamGenerateCustomExam": "إنشاء امتحان مخصص",
+  "customExamPleaseSelectAtLeastOneQuestionType": "يرجى تحديد نوع سؤال واحد على الأقل",
+  "customExamPleaseSelectTestMode": "يرجى تحديد وضع الاختبار",
+  "customExamSelectCourse": "اختر دورة",
+  "customExamSearchCourses": "البحث في الدورات",
+  "customExamErrorLoading": "خطأ في تحميل الدورات",
+  "customExamNoCoursesFound": "لم يتم العثور على دورات",
+  "customExamSelectSubjects": "حدد المواضيع",
+  "customExamDailyLimitExhausted": "لقد استنفدت حدودك اليومية للامتحانات المخصصة.",
+  "customExamMonthlyLimitExhausted": "لقد استنفدت حدودك الشهرية للامتحانات المخصصة.",
+  "customExamTitle": "امتحان مخصص",
+  "customExamCourseSelectionInfo": "بعد اختيار الدورة، يمكنك تحديد المواضيع، مستوى الصعوبة، وضع الاختبار وعدد الأسئلة.",
+  "customExamLoadingCourse": "جاري تحميل اسم الدورة...",
+  "customExamSelectedCourse": "الدورة المختارة",
+  "customExamQuestionType": "نوع السؤال",
+  "customExamSelectQuestionType": "حدد نوع الأسئلة",
+  "customExamTestMode": "وضع الاختبار",
+  "customExamChooseTestExperience": "اختر تجربة الاختبار",
+  "customExamNumberOfQuestions": "عدد الأسئلة",
+  "customExamChooseNumberOfQuestions": "اختر عدد الأسئلة",
+  "customExamSelectOneOrMoreSubjects": "حدد موضوعًا واحدًا أو أكثر",
+  "customExamRemoveItem": "إزالة {item}",
+  "@customExamRemoveItem": {
+    "placeholders": {
+      "item": { "type": "String" }
+    }
+  }
 }
-

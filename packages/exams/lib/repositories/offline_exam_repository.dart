@@ -118,6 +118,7 @@ class OfflineExamRepository implements ExamRepository {
     ExamDto exam, {
     bool isQuizMode = false,
     bool isPartial = false,
+    bool isCustomTest = false,
   }) async {
     await _startOfflineExam(exam, isQuizMode);
   }
@@ -128,8 +129,18 @@ class OfflineExamRepository implements ExamRepository {
     String contentAttemptsUrl, {
     bool isQuizMode = false,
     bool isPartial = false,
+    bool isCustomTest = false,
   }) async {
     await _startOfflineExam(exam, isQuizMode);
+  }
+
+  @override
+  Future<void> startCustomExam(
+    AttemptDto attempt, {
+    bool isCustomTest = true,
+    bool isQuizMode = false,
+  }) async {
+    throw UnimplementedError("Custom exams are not supported in offline mode");
   }
 
   /// Replaces remote image URLs with local cache paths for offline rendering.

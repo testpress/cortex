@@ -26,15 +26,20 @@ class TestDetailScreen extends ConsumerWidget {
   final bool isQuizMode;
   final bool isPartial;
   final bool isOfflineMode;
+  final bool isCustomTest;
   final VoidCallback onClose;
+
+  final AttemptDto? attempt;
 
   const TestDetailScreen({
     super.key,
     required this.testId,
     this.lesson,
+    this.attempt,
     this.isQuizMode = false,
     this.isPartial = false,
     this.isOfflineMode = false,
+    this.isCustomTest = false,
     required this.onClose,
   });
 
@@ -56,6 +61,7 @@ class TestDetailScreen extends ConsumerWidget {
             isQuizMode: isQuizMode,
             isPartial: isPartial,
             isOfflineMode: isOfflineMode,
+            isCustomTest: isCustomTest,
             onClose: onClose,
           ),
         ),
@@ -80,9 +86,11 @@ class TestDetailScreen extends ConsumerWidget {
     return _TestDetailContent(
       testId: testId,
       lesson: lesson,
+      attempt: attempt,
       isQuizMode: isQuizMode,
       isPartial: isPartial,
       isOfflineMode: isOfflineMode,
+      isCustomTest: isCustomTest,
       onClose: onClose,
     );
   }
@@ -91,17 +99,21 @@ class TestDetailScreen extends ConsumerWidget {
 class _TestDetailContent extends ConsumerStatefulWidget {
   final String testId;
   final LessonDto? lesson;
+  final AttemptDto? attempt;
   final bool isQuizMode;
   final bool isPartial;
   final bool isOfflineMode;
+  final bool isCustomTest;
   final VoidCallback onClose;
 
   const _TestDetailContent({
     required this.testId,
     this.lesson,
+    this.attempt,
     this.isQuizMode = false,
     this.isPartial = false,
     this.isOfflineMode = false,
+    this.isCustomTest = false,
     required this.onClose,
   });
 
@@ -135,7 +147,7 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
 
   void _initializeExam() {
     var state = ref.read(examAttemptProvider);
-    final status = state.status;
+    var status = state.status;
 
     if (status != ExamAttemptStatus.idle &&
         status != ExamAttemptStatus.error &&
@@ -146,10 +158,18 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
     if (state.exam != null && state.exam?.id != widget.testId) {
       ref.read(examAttemptProvider.notifier).reset();
       state = ref.read(examAttemptProvider);
+      status = state.status;
     }
 
     if (status == ExamAttemptStatus.idle ||
         (status == ExamAttemptStatus.loading && state.exam == null)) {
+      if (widget.attempt != null) {
+        ref
+            .read(examAttemptProvider.notifier)
+            .startCustomExam(widget.attempt!, isQuizMode: widget.isQuizMode);
+        return;
+      }
+
       final lessonDetailAsync = ref.read(lessonDetailProvider(widget.testId));
       final fetchedLesson = lessonDetailAsync.valueOrNull?.toDto();
       final lesson = widget.lesson?.mergeWith(fetchedLesson) ?? fetchedLesson;
@@ -187,6 +207,7 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
               attemptsUrl,
               isQuizMode: widget.isQuizMode,
               isPartial: widget.isPartial,
+              isCustomTest: widget.isCustomTest,
             );
       }
     }
@@ -219,18 +240,22 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
     final design = Design.of(context);
     final l10n = L10n.of(context);
     final state = ref.watch(examAttemptProvider);
-    final lessonDetailAsync = ref.watch(lessonDetailProvider(widget.testId));
+    final lessonDetailAsync = widget.isCustomTest
+        ? const AsyncValue<Lesson?>.data(null)
+        : ref.watch(lessonDetailProvider(widget.testId));
 
-    ref.listen<AsyncValue<Lesson?>>(lessonDetailProvider(widget.testId), (
-      previous,
-      next,
-    ) {
-      next.whenData((lesson) {
-        if (lesson != null) {
-          _initializeExam();
-        }
+    if (!widget.isCustomTest) {
+      ref.listen<AsyncValue<Lesson?>>(lessonDetailProvider(widget.testId), (
+        previous,
+        next,
+      ) {
+        next.whenData((lesson) {
+          if (lesson != null) {
+            _initializeExam();
+          }
+        });
       });
-    });
+    }
 
     ref.listen<ExamAttemptState>(examAttemptProvider, (previous, next) {
       if (previous?.status != ExamAttemptStatus.inProgress &&
@@ -336,6 +361,7 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
                 state.exam!,
                 isQuizMode: widget.isQuizMode,
                 isPartial: widget.isPartial,
+                isCustomTest: widget.isCustomTest,
               );
         },
       );

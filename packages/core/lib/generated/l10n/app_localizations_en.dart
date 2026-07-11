@@ -1265,6 +1265,54 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get examsEmptyStateDesc =>
+      'No exams available right now. Please check back later.';
+
+  @override
+  String get customExamTitle => 'Custom Exam';
+
+  @override
+  String get customExamCourseSelectionInfo =>
+      'After selecting a course, you can choose subjects, difficulty level, test mode and number of questions.';
+
+  @override
+  String get customExamLoadingCourse => 'Loading course name...';
+
+  @override
+  String get customExamSelectedCourse => 'Selected Course';
+
+  @override
+  String get customExamQuestionType => 'Question Type';
+
+  @override
+  String get customExamSelectQuestionType => 'Select the type of questions';
+
+  @override
+  String get customExamTestMode => 'Test Mode';
+
+  @override
+  String get customExamChooseTestExperience => 'Choose the test experience';
+
+  @override
+  String get customExamNumberOfQuestions => 'Number of Questions';
+
+  @override
+  String get customExamChooseNumberOfQuestions =>
+      'Choose the number of questions';
+
+  @override
+  String get customExamSelectOneOrMoreSubjects => 'Select one or more subjects';
+
+  @override
+  String get customExamSelectDifficultyLevel =>
+      'Please select a difficulty level';
+
+  @override
+  String customExamRemoveItem(String item) {
+    return 'Remove $item';
+  }
+
+  @override
   String get reviewEmptyStateMessage => 'No questions found for this filter.';
 
   @override
@@ -2166,16 +2214,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get customExamCreateTitle => 'Create Practice Exam';
+  String get customExamCreateTitle => 'Custom Exam';
 
   @override
-  String get customExamSelectCourse => 'Select Course';
+  String get customExamSelectCourse => 'Select a course';
 
   @override
-  String get customExamSearchCourses => 'Search courses...';
+  String get customExamSearchCourses => 'Search courses';
 
   @override
-  String get customExamNoCoursesFound => 'No courses found.';
+  String get customExamNoCoursesFound => 'No courses found';
 
   @override
   String get customExamStepScope => 'Step 1: Practice Scope';
@@ -2242,7 +2290,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Attempt like a real exam with a timer and final result';
 
   @override
-  String get customExamBtnCreate => 'Create Practice Exam';
+  String get customExamBtnCreate => 'Custom Exam';
 
   @override
   String get customExamBtnGoBack => 'Go back';
@@ -2251,6 +2299,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String customExamCountLabel(int count) {
     return '$count questions';
   }
+
+  @override
+  String get customExamSelectAtLeastOneSubject =>
+      'Please select at least one subject';
+
+  @override
+  String get customExamGenerateCustomExam => 'Generate Custom Exam';
+
+  @override
+  String get customExamPleaseSelectAtLeastOneQuestionType =>
+      'Please select at least one question type';
+
+  @override
+  String get customExamPleaseSelectTestMode => 'Please select a test mode';
+
+  @override
+  String get customExamErrorLoading => 'Error loading courses';
+
+  @override
+  String get customExamSelectSubjects => 'Select Subjects';
+
+  @override
+  String get customExamDailyLimitExhausted =>
+      'You have exhausted your daily limits for custom exams.';
+
+  @override
+  String get customExamMonthlyLimitExhausted =>
+      'You have exhausted your monthly limits for custom exams.';
 
   @override
   String get examsTabTitle => 'Exams';

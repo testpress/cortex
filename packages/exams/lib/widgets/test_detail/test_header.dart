@@ -51,7 +51,7 @@ class TestHeader extends StatelessWidget {
                   ],
                 ),
               ),
-              if (!isQuizMode)
+              if (!isQuizMode && exam.duration.isNotEmpty)
                 Container(
                   constraints: const BoxConstraints(minWidth: 72),
                   padding: EdgeInsets.symmetric(

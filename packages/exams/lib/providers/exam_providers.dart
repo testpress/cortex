@@ -71,15 +71,22 @@ class ExamAttempt extends _$ExamAttempt {
     ExamDto exam, {
     bool isQuizMode = false,
     bool isPartial = false,
+    bool isCustomTest = false,
   }) => ref
       .read(examRepositoryProvider)
-      .startStandaloneExam(exam, isQuizMode: isQuizMode, isPartial: isPartial);
+      .startStandaloneExam(
+        exam,
+        isQuizMode: isQuizMode,
+        isPartial: isPartial,
+        isCustomTest: isCustomTest,
+      );
 
   Future<void> startCourseLinkedExam(
     ExamDto exam,
     String contentAttemptsUrl, {
     bool isQuizMode = false,
     bool isPartial = false,
+    bool isCustomTest = false,
   }) => ref
       .read(examRepositoryProvider)
       .startCourseLinkedExam(
@@ -87,7 +94,13 @@ class ExamAttempt extends _$ExamAttempt {
         contentAttemptsUrl,
         isQuizMode: isQuizMode,
         isPartial: isPartial,
+        isCustomTest: isCustomTest,
       );
+
+  Future<void> startCustomExam(AttemptDto attempt, {bool isQuizMode = false}) =>
+      ref
+          .read(examRepositoryProvider)
+          .startCustomExam(attempt, isQuizMode: isQuizMode);
 
   Future<void> submitAnswer(String questionId, AnswerDto answer) =>
       ref.read(examRepositoryProvider).submitAnswer(questionId, answer);

@@ -13,22 +13,15 @@ class ExamsRoutes {
         GoRoute(
           path: 'create-custom-exam',
           parentNavigatorKey: rootNavigatorKey,
-          builder: (context, state) => Consumer(
-            builder: (context, ref, _) {
-              final coursesAsync = ref.watch(courseListProvider);
-              final courses = coursesAsync.asData?.value ?? <CourseDto>[];
-              return CustomExamOptionsScreen(
-                courses: courses,
-                onInitCourses: () =>
-                    ref.read(courseListProvider.notifier).initialize(),
-                onBack: () => context.pop(),
-                onCreateExam: (config) {
-                  // TODO: Initiate custom exam session with config once API is integrated.
-                  context.pop();
-                },
-              );
-            },
-          ),
+          builder: (context, state) => const CustomExamCourseSelectionScreen(),
+        ),
+        GoRoute(
+          path: 'custom-exam-config',
+          parentNavigatorKey: rootNavigatorKey,
+          builder: (context, state) {
+            final course = state.extra as CourseDto;
+            return CustomExamConfigScreen(course: course);
+          },
         ),
         GoRoute(
           path: 'course/:courseId/chapters',
@@ -235,16 +228,22 @@ class ExamsRoutes {
             final lesson = extra is LessonDto
                 ? extra
                 : (extra is Lesson ? extra.toDto() : null);
+            final attempt = extra is AttemptDto ? extra : null;
             final isQuizMode =
-                state.uri.queryParameters['isQuizMode'] == 'true';
+                state.uri.queryParameters['isQuizMode'] == 'true' ||
+                (attempt?.isQuizMode ?? false);
             final isPartial = state.uri.queryParameters['isPartial'] == 'true';
             final isOffline = state.uri.queryParameters['isOffline'] == 'true';
+            final isCustomTest =
+                state.uri.queryParameters['isCustomTest'] == 'true';
             return TestDetailScreen(
               testId: id,
               lesson: lesson,
+              attempt: attempt,
               isQuizMode: isQuizMode,
               isPartial: isPartial,
               isOfflineMode: isOffline,
+              isCustomTest: isCustomTest,
               onClose: () => context.pop(),
             );
           },

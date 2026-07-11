@@ -1262,6 +1262,52 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get examsEmptyStateDesc =>
+      'No exams available right now. Please check back later.';
+
+  @override
+  String get customExamTitle => 'امتحان مخصص';
+
+  @override
+  String get customExamCourseSelectionInfo =>
+      'بعد اختيار الدورة، يمكنك تحديد المواضيع، مستوى الصعوبة، وضع الاختبار وعدد الأسئلة.';
+
+  @override
+  String get customExamLoadingCourse => 'جاري تحميل اسم الدورة...';
+
+  @override
+  String get customExamSelectedCourse => 'الدورة المختارة';
+
+  @override
+  String get customExamQuestionType => 'نوع السؤال';
+
+  @override
+  String get customExamSelectQuestionType => 'حدد نوع الأسئلة';
+
+  @override
+  String get customExamTestMode => 'وضع الاختبار';
+
+  @override
+  String get customExamChooseTestExperience => 'اختر تجربة الاختبار';
+
+  @override
+  String get customExamNumberOfQuestions => 'عدد الأسئلة';
+
+  @override
+  String get customExamChooseNumberOfQuestions => 'اختر عدد الأسئلة';
+
+  @override
+  String get customExamSelectOneOrMoreSubjects => 'حدد موضوعًا واحدًا أو أكثر';
+
+  @override
+  String get customExamSelectDifficultyLevel => 'يرجى تحديد مستوى الصعوبة';
+
+  @override
+  String customExamRemoveItem(String item) {
+    return 'إزالة $item';
+  }
+
+  @override
   String get reviewEmptyStateMessage => 'لم يتم العثور على أسئلة لهذا الفلتر.';
 
   @override
@@ -2176,16 +2222,16 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get customExamCreateTitle => 'إنشاء امتحان تدريبي';
+  String get customExamCreateTitle => 'امتحان مخصص';
 
   @override
-  String get customExamSelectCourse => 'اختر الدورة';
+  String get customExamSelectCourse => 'اختر دورة';
 
   @override
-  String get customExamSearchCourses => 'البحث في الدورات...';
+  String get customExamSearchCourses => 'البحث في الدورات';
 
   @override
-  String get customExamNoCoursesFound => 'لم يتم العثور على دورات.';
+  String get customExamNoCoursesFound => 'لم يتم العثور على دورات';
 
   @override
   String get customExamStepScope => 'الخطوة 1: نطاق التدريب';
@@ -2252,7 +2298,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'محاولة كاختبار حقيقي مع مؤقت ونتيجة نهائية';
 
   @override
-  String get customExamBtnCreate => 'إنشاء امتحان تدريبي';
+  String get customExamBtnCreate => 'امتحان مخصص';
 
   @override
   String get customExamBtnGoBack => 'العودة';
@@ -2261,6 +2307,34 @@ class AppLocalizationsAr extends AppLocalizations {
   String customExamCountLabel(int count) {
     return '$count أسئلة';
   }
+
+  @override
+  String get customExamSelectAtLeastOneSubject =>
+      'يرجى تحديد موضوع واحد على الأقل';
+
+  @override
+  String get customExamGenerateCustomExam => 'إنشاء امتحان مخصص';
+
+  @override
+  String get customExamPleaseSelectAtLeastOneQuestionType =>
+      'يرجى تحديد نوع سؤال واحد على الأقل';
+
+  @override
+  String get customExamPleaseSelectTestMode => 'يرجى تحديد وضع الاختبار';
+
+  @override
+  String get customExamErrorLoading => 'خطأ في تحميل الدورات';
+
+  @override
+  String get customExamSelectSubjects => 'حدد المواضيع';
+
+  @override
+  String get customExamDailyLimitExhausted =>
+      'لقد استنفدت حدودك اليومية للامتحانات المخصصة.';
+
+  @override
+  String get customExamMonthlyLimitExhausted =>
+      'لقد استنفدت حدودك الشهرية للامتحانات المخصصة.';
 
   @override
   String get examsTabTitle => 'الامتحانات';

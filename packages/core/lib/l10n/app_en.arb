@@ -614,6 +614,25 @@
       "number": { "type": "String" }
     }
   },
+  "examsEmptyStateDesc": "No exams available right now. Please check back later.",
+  "customExamTitle": "Custom Exam",
+  "customExamCourseSelectionInfo": "After selecting a course, you can choose subjects, difficulty level, test mode and number of questions.",
+  "customExamLoadingCourse": "Loading course name...",
+  "customExamSelectedCourse": "Selected Course",
+  "customExamQuestionType": "Question Type",
+  "customExamSelectQuestionType": "Select the type of questions",
+  "customExamTestMode": "Test Mode",
+  "customExamChooseTestExperience": "Choose the test experience",
+  "customExamNumberOfQuestions": "Number of Questions",
+  "customExamChooseNumberOfQuestions": "Choose the number of questions",
+  "customExamSelectOneOrMoreSubjects": "Select one or more subjects",
+  "customExamSelectDifficultyLevel": "Select difficulty level",
+  "customExamRemoveItem": "Remove {item}",
+  "@customExamRemoveItem": {
+    "placeholders": {
+      "item": { "type": "String" }
+    }
+  },
   "reviewEmptyStateMessage": "No questions found for this filter.",
   "reviewAnswersTitle": "Review Answers - {title}",
   "@reviewAnswersTitle": {
@@ -1015,7 +1034,7 @@
       }
     }
   },
-  "customExamCreateTitle": "Create Practice Exam",
+  "customExamCreateTitle": "Custom Exam",
   "customExamSelectCourse": "Select Course",
   "customExamSearchCourses": "Search courses...",
   "customExamNoCoursesFound": "No courses found.",
@@ -1046,7 +1065,7 @@
   "customExamModeQuizDesc": "Get instant feedback and explanations after each question",
   "customExamModeTest": "Test",
   "customExamModeTestDesc": "Attempt like a real exam with a timer and final result",
-  "customExamBtnCreate": "Create Practice Exam",
+  "customExamBtnCreate": "Custom Exam",
   "customExamBtnGoBack": "Go back",
   "customExamCountLabel": "{count} questions",
   "@customExamCountLabel": {
@@ -1054,6 +1073,18 @@
       "count": { "type": "int" }
     }
   },
+  "customExamSelectAtLeastOneSubject": "Please select at least one subject",
+  "customExamSelectDifficultyLevel": "Please select a difficulty level",
+  "customExamGenerateCustomExam": "Generate Custom Exam",
+  "customExamPleaseSelectAtLeastOneQuestionType": "Please select at least one question type",
+  "customExamPleaseSelectTestMode": "Please select a test mode",
+  "customExamSelectCourse": "Select a course",
+  "customExamSearchCourses": "Search courses",
+  "customExamErrorLoading": "Error loading courses",
+  "customExamNoCoursesFound": "No courses found",
+  "customExamSelectSubjects": "Select Subjects",
+  "customExamDailyLimitExhausted": "You have exhausted your daily limits for custom exams.",
+  "customExamMonthlyLimitExhausted": "You have exhausted your monthly limits for custom exams.",
   "examsTabTitle": "Exams",
   "availableExamCoursesTitle": "Available Exam Courses",
   "testSubmitting": "Submitting test...",

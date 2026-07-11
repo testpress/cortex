@@ -10,6 +10,7 @@ abstract class DataSource {
     int pageSize = 10,
     String? search,
     dynamic tags,
+    bool? allowCustomTest,
   });
 
   /// Fetch full metadata for a single course from `/api/v3/courses/{id}/`.
@@ -156,6 +157,12 @@ abstract class DataSource {
   Future<List<PostCategoryDto>> getPostCategories();
 
   // ── Exams ───────────────────────────────────────────────────────────────
+
+  /// Fetch the custom test configuration for a specific course.
+  Future<CustomTestConfigDto> getCustomTestConfig(String courseId);
+
+  /// Generate a custom exam.
+  Future<AttemptDto> generateCustomExam(CustomExamGenerationRequestDto request);
 
   /// Fetch list of historical attempts.
   Future<List<AttemptDto>> getAttempts(String attemptsUrl);

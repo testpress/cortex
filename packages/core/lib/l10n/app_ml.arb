@@ -733,7 +733,7 @@
   "analyticsSelectTab": "{label} ടാബ് തിരഞ്ഞെടുക്കുക",
   "filterEmptyStateMessage": "{name} ഒന്നും കണ്ടെത്തിയില്ല.",
   "labelExams": "പരീക്ഷകൾ",
-  "customExamCreateTitle": "പ്രാക്ടീസ് പരീക്ഷ സൃഷ്ടിക്കുക",
+  "customExamCreateTitle": "കസ്റ്റം പരീക്ഷ",
   "customExamSelectCourse": "കോഴ്സ് തിരഞ്ഞെടുക്കുക",
   "customExamSearchCourses": "കോഴ്സുകൾ തിരയുക...",
   "customExamNoCoursesFound": "കോഴ്സുകളൊന്നും കണ്ടെത്തിയില്ല.",
@@ -757,7 +757,7 @@
   "customExamModeQuizDesc": "ഓരോ ചോദ്യത്തിനും ശേഷം ഉടനടി ഫീഡ്‌ബാക്കും വിശദീകരണങ്ങളും നേടുക",
   "customExamModeTest": "ടെസ്റ്റ്",
   "customExamModeTestDesc": "ടൈമറും അവസാന ഫലവുമുള്ള ഒരു യഥാർത്ഥ പരീക്ഷ പോലെ ശ്രമിക്കുക",
-  "customExamBtnCreate": "പ്രാക്ടീസ് പരീക്ഷ സൃഷ്ടിക്കുക",
+  "customExamBtnCreate": "കസ്റ്റം പരീക്ഷ",
   "customExamBtnGoBack": "തിരികെ പോവുക",
   "customExamCountLabel": "{count} ചോദ്യങ്ങൾ",
   "@customExamCountLabel": {
@@ -846,5 +846,41 @@
   "reviewPercentile": "ശതമാനം",
   "reviewOfTotal": "ആകെ",
   "lessonDetails": "പാഠത്തിന്റെ വിശദാംശങ്ങൾ",
-  "questionIdArgs": "ചോദ്യ ഐഡി: {id}"
+  "questionIdArgs": "ചോദ്യ ഐഡി: {id}",
+  "customExamCountLabel": "{count} ചോദ്യങ്ങൾ",
+  "@customExamCountLabel": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "customExamCreateTitle": "കസ്റ്റം പരീക്ഷ",
+  "customExamSelectAtLeastOneSubject": "ദയവായി ഒരു വിഷയമെങ്കിലും തിരഞ്ഞെടുക്കുക",
+  "customExamSelectDifficultyLevel": "ദയവായി കാഠിന്യ നില തിരഞ്ഞെടുക്കുക",
+  "customExamGenerateCustomExam": "കസ്റ്റം പരീക്ഷ സൃഷ്ടിക്കുക",
+  "customExamPleaseSelectAtLeastOneQuestionType": "ദയവായി ഒരു ചോദ്യരൂപമെങ്കിലും തിരഞ്ഞെടുക്കുക",
+  "customExamPleaseSelectTestMode": "ദയവായി പരീക്ഷാ രീതി തിരഞ്ഞെടുക്കുക",
+  "customExamSelectCourse": "ഒരു കോഴ്സ് തിരഞ്ഞെടുക്കുക",
+  "customExamSearchCourses": "കോഴ്സുകൾ തിരയുക",
+  "customExamErrorLoading": "കോഴ്സുകൾ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്",
+  "customExamNoCoursesFound": "കോഴ്സുകൾ ലഭ്യമല്ല",
+  "customExamSelectSubjects": "വിഷയങ്ങൾ തിരഞ്ഞെടുക്കുക",
+  "customExamDailyLimitExhausted": "കസ്റ്റം പരീക്ഷകൾക്കുള്ള നിങ്ങളുടെ പ്രതിദിന പരിധികൾ അവസാനിച്ചു.",
+  "customExamMonthlyLimitExhausted": "കസ്റ്റം പരീക്ഷകൾക്കുള്ള നിങ്ങളുടെ പ്രതിമാസ പരിധികൾ അവസാനിച്ചു.",
+  "customExamTitle": "കസ്റ്റം പരീക്ഷ",
+  "customExamCourseSelectionInfo": "ഒരു കോഴ്‌സ് തിരഞ്ഞെടുത്ത ശേഷം നിങ്ങൾക്ക് വിഷയങ്ങൾ, കാഠിന്യ നില, ടെസ്റ്റ് മോഡ്, ചോദ്യങ്ങളുടെ എണ്ണം എന്നിവ തിരഞ്ഞെടുക്കാം.",
+  "customExamLoadingCourse": "കോഴ്സിന്റെ പേര് ലോഡുചെയ്യുന്നു...",
+  "customExamSelectedCourse": "തിരഞ്ഞെടുത്ത കോഴ്സ്",
+  "customExamQuestionType": "ചോദ്യത്തിന്റെ തരം",
+  "customExamSelectQuestionType": "ചോദ്യങ്ങളുടെ തരം തിരഞ്ഞെടുക്കുക",
+  "customExamTestMode": "ടെസ്റ്റ് മോഡ്",
+  "customExamChooseTestExperience": "ടെസ്റ്റ് അനുഭവം തിരഞ്ഞെടുക്കുക",
+  "customExamNumberOfQuestions": "ചോദ്യങ്ങളുടെ എണ്ണം",
+  "customExamChooseNumberOfQuestions": "ചോദ്യങ്ങളുടെ എണ്ണം തിരഞ്ഞെടുക്കുക",
+  "customExamSelectOneOrMoreSubjects": "ഒന്നോ അതിലധികമോ വിഷയങ്ങൾ തിരഞ്ഞെടുക്കുക",
+  "customExamRemoveItem": "{item} നീക്കം ചെയ്യുക",
+  "@customExamRemoveItem": {
+    "placeholders": {
+      "item": { "type": "String" }
+    }
+  }
 }
