@@ -1435,6 +1435,42 @@ class AppLocalizationsAr extends AppLocalizations {
   String get forumTitle => 'منتدى المناقشة';
 
   @override
+  String get forumFilterTitle => 'عوامل التصفية';
+
+  @override
+  String get forumFilterByActivity => 'تصفية حسب النشاط';
+
+  @override
+  String get forumFilterClearAll => 'مسح الكل';
+
+  @override
+  String get forumBackSemantic => 'عودة';
+
+  @override
+  String get forumFilterSemantic => 'تصفية';
+
+  @override
+  String get forumFilterActivityPosted => 'نشرتها أنا';
+
+  @override
+  String get forumFilterActivityCommented => 'علقت عليها أنا';
+
+  @override
+  String get forumFilterActivityLiked => 'أعجبتني';
+
+  @override
+  String get forumFilterActivityBookmarked => 'أشرت إليها كمرجعية';
+
+  @override
+  String get forumSortRecent => 'الأحدث';
+
+  @override
+  String get forumSortMostLiked => 'الأكثر إعجاباً';
+
+  @override
+  String get forumSortMostViewed => 'الأكثر مشاهدة';
+
+  @override
   String get forumSelectCourse => 'اختر دورة لعرض المناقشات';
 
   @override

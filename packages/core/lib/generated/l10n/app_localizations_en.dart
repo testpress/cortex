@@ -1438,6 +1438,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forumTitle => 'Discussion Forum';
 
   @override
+  String get forumFilterTitle => 'Filters';
+
+  @override
+  String get forumFilterByActivity => 'Filter by Activity';
+
+  @override
+  String get forumFilterClearAll => 'Clear All';
+
+  @override
+  String get forumBackSemantic => 'Back';
+
+  @override
+  String get forumFilterSemantic => 'Filter';
+
+  @override
+  String get forumFilterActivityPosted => 'Posted by me';
+
+  @override
+  String get forumFilterActivityCommented => 'Commented by me';
+
+  @override
+  String get forumFilterActivityLiked => 'Liked by me';
+
+  @override
+  String get forumFilterActivityBookmarked => 'Bookmarked by me';
+
+  @override
+  String get forumSortRecent => 'Recent';
+
+  @override
+  String get forumSortMostLiked => 'Most Liked';
+
+  @override
+  String get forumSortMostViewed => 'Most Viewed';
+
+  @override
   String get forumSelectCourse => 'Select a course to view discussions';
 
   @override

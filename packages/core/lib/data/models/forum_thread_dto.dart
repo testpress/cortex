@@ -1,6 +1,12 @@
 /// Forum thread status.
 enum ForumThreadStatus { answered, unanswered, closed, archived, pending }
 
+/// Forum activity filters for narrowing down threads.
+enum ForumActivityFilter { posted, commented, liked, bookmarked }
+
+/// Forum sorting options.
+enum ForumSort { recent, mostLiked, mostViewed }
+
 /// Forum category DTO — maps to `/api/v2.3/forum/categories/`.
 class ForumCategoryDto {
   final int id;

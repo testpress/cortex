@@ -879,8 +879,54 @@ class MockDataSource implements DataSource {
     int page = 1,
     int? categoryId,
     String? searchQuery,
+    String? sortString,
+    bool? postedByMe,
+    bool? commentedByMe,
+    bool? likedByMe,
+    bool? bookmarkedByMe,
   }) async {
-    final results = mockForumThreads(page: page, categoryId: categoryId);
+    var results = mockForumThreads(page: page, categoryId: categoryId);
+
+    // Apply search filter
+    if (searchQuery != null && searchQuery.isNotEmpty) {
+      final query = searchQuery.toLowerCase();
+      results = results
+          .where(
+            (t) =>
+                t.title.toLowerCase().contains(query) ||
+                t.summary.toLowerCase().contains(query),
+          )
+          .toList();
+    }
+
+    // Apply activity filter (simulated)
+    if (postedByMe == true) {
+      results = results.where((t) => t.threadId % 2 == 0).toList();
+    } else if (commentedByMe == true) {
+      results = results.where((t) => t.replyCount > 2).toList();
+    } else if (likedByMe == true) {
+      results = results.where((t) => t.upvotes > 10).toList();
+    } else if (bookmarkedByMe == true) {
+      results = results.where((t) => t.threadId % 3 == 0).toList();
+    }
+
+    // Apply sort
+    if (sortString != null) {
+      results = List.from(results);
+      switch (sortString) {
+        case '-created':
+          results.sort((a, b) => b.threadId.compareTo(a.threadId));
+          break;
+        case '-upvotes':
+          results.sort((a, b) => b.upvotes.compareTo(a.upvotes));
+          break;
+        case '-views_count':
+          // Simulate most viewed by sorting by replies
+          results.sort((a, b) => b.replyCount.compareTo(a.replyCount));
+          break;
+      }
+    }
+
     return PaginatedResponseDto<ForumThreadDto>(
       results: results,
       count: results.length * 5,

@@ -66,6 +66,11 @@ abstract class DataSource {
     int page = 1,
     int? categoryId,
     String? searchQuery,
+    String? sortString,
+    bool? postedByMe,
+    bool? commentedByMe,
+    bool? likedByMe,
+    bool? bookmarkedByMe,
   });
 
   /// Fetch a single forum thread by slug.

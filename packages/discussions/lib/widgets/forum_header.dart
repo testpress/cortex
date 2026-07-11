@@ -19,6 +19,7 @@ class ForumHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     return Container(
       decoration: BoxDecoration(
@@ -40,10 +41,12 @@ class ForumHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Back arrow inline with title
-              GestureDetector(
+              AppSemantics.button(
+                label: l10n.forumBackSemantic,
                 onTap: () => context.pop(),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 2), // Optical alignment
+                child: AppFocusable(
+                  padding: const EdgeInsets.all(13),
+                  onTap: () => context.pop(),
                   child: Icon(
                     LucideIcons.arrowLeft,
                     color: design.colors.textPrimary,
