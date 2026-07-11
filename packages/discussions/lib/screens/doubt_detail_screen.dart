@@ -447,7 +447,27 @@ class _DoubtHeaderCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (doubt.lessonId != null)
+          if (doubt.lessonTitle != null || doubt.questionHtml != null)
+            Padding(
+              padding: EdgeInsets.only(bottom: design.spacing.sm + 4),
+              child: DoubtContextBadge(
+                icon: doubt.questionHtml != null
+                    ? LucideIcons.helpCircle
+                    : LucideIcons.bookOpen,
+                text: doubt.questionHtml ?? doubt.lessonTitle ?? '',
+                // Note: The API guarantees course/chapter (for lessons) and
+                // subjectName (for exam questions) are mutually exclusive.
+                // This prevents rendering "Course › Chapter › Subject".
+                breadcrumbs: [
+                  if (doubt.courseName?.isNotEmpty ?? false) doubt.courseName!,
+                  if (doubt.chapterName?.isNotEmpty ?? false)
+                    doubt.chapterName!,
+                  if (doubt.subjectName?.isNotEmpty ?? false)
+                    doubt.subjectName!,
+                ],
+              ),
+            )
+          else if (doubt.lessonId != null)
             _LessonContextBadge(lessonId: doubt.lessonId!),
           if (doubt.topicName != null) ...[
             _SubjectBadge(subject: doubt.topicName!),
@@ -511,6 +531,7 @@ class _LessonContextBadgeState extends ConsumerState<_LessonContextBadge> {
 
   @override
   Widget build(BuildContext context) {
+    final design = Design.of(context);
     return FutureBuilder(
       future: _detailsFuture,
       builder: (context, snapshot) {
@@ -520,12 +541,11 @@ class _LessonContextBadgeState extends ConsumerState<_LessonContextBadge> {
 
         final data = snapshot.data!;
         return Padding(
-          padding: const EdgeInsets.only(bottom: 12.0),
+          padding: EdgeInsets.only(bottom: design.spacing.sm + 4),
           child: DoubtContextBadge(
             icon: LucideIcons.bookOpen,
             text: data.lessonTitle,
-            courseName: data.courseTitle,
-            chapterName: data.chapterTitle,
+            breadcrumbs: [data.courseTitle, data.chapterTitle],
           ),
         );
       },

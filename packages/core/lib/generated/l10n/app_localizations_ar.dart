@@ -2385,4 +2385,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get reviewOfTotal => 'من الإجمالي';
+
+  @override
+  String get lessonDetails => 'تفاصيل الدرس';
+
+  @override
+  String questionIdArgs(String id) {
+    return 'معرف السؤال: $id';
+  }
 }

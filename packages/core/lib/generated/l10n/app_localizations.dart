@@ -4378,6 +4378,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'of total'**
   String get reviewOfTotal;
+
+  /// No description provided for @lessonDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Lesson Details'**
+  String get lessonDetails;
+
+  /// No description provided for @questionIdArgs.
+  ///
+  /// In en, this message translates to:
+  /// **'Question ID: {id}'**
+  String questionIdArgs(String id);
 }
 
 class _AppLocalizationsDelegate

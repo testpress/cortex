@@ -843,5 +843,8 @@
   "reviewTimeTaken": "الوقت المستغرق",
   "reviewRank": "المرتبة",
   "reviewPercentile": "النسبة المئوية",
-  "reviewOfTotal": "من الإجمالي"
+  "reviewOfTotal": "من الإجمالي",
+  "lessonDetails": "تفاصيل الدرس",
+  "questionIdArgs": "معرف السؤال: {id}"
 }
+

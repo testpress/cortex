@@ -332,6 +332,13 @@ class _ReviewAnswerDetailScreenState
                                   .contains(currentQuestion.id),
                               onAskDoubt: () => context.push(
                                 '/home/discussions/doubts/ask?question_id=${Uri.encodeComponent(currentQuestion.id)}',
+                                extra: {
+                                  'breadcrumbs': [
+                                    if (currentQuestion.subject.isNotEmpty)
+                                      currentQuestion.subject,
+                                  ],
+                                  'questionHtml': currentQuestion.text,
+                                },
                               ),
                               onReport: () => _showReportDialog(
                                 currentQuestion,

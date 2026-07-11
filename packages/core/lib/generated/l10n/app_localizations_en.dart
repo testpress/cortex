@@ -2378,4 +2378,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reviewOfTotal => 'of total';
+
+  @override
+  String get lessonDetails => 'Lesson Details';
+
+  @override
+  String questionIdArgs(String id) {
+    return 'Question ID: $id';
+  }
 }

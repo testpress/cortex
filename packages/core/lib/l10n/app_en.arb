@@ -1116,5 +1116,14 @@
   "reviewTimeTaken": "Time Taken",
   "reviewRank": "Rank",
   "reviewPercentile": "Percentile",
-  "reviewOfTotal": "of total"
+  "reviewOfTotal": "of total",
+  "lessonDetails": "Lesson Details",
+  "questionIdArgs": "Question ID: {id}",
+  "@questionIdArgs": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  }
 }
