@@ -21,6 +21,16 @@ class _CustomExamConfigScreenState
   bool _isSubjectSheetOpen = false;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        ref.invalidate(generateCustomExamProvider);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final course = widget.course;
     final design = Design.of(context);
@@ -48,13 +58,8 @@ class _CustomExamConfigScreenState
         final isQuizMode =
             selection.selectedTestMode?.toLowerCase().contains('quiz') == true;
 
-        // Cleanly pop the imperative CustomExamConfigScreen route first
         Navigator.of(context).pop();
 
-        // Reset the provider state so it doesn't linger if they ever come back
-        ref.invalidate(generateCustomExamProvider);
-
-        // Push the player using GoRouter on top of the underlying declarative route
         context.push(
           '/exams/test/$assessmentId/player?isQuizMode=$isQuizMode&isCustomTest=true',
           extra: attempt,
@@ -1051,90 +1056,89 @@ class _CustomExamConfigScreenState
     return AppBottomSheet(
       isOpen: _isSubjectSheetOpen,
       onClose: () => setState(() => _isSubjectSheetOpen = false),
-      child: SafeArea(
-        top: false,
-        child: Container(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.7,
-          ),
-          padding: EdgeInsets.fromLTRB(
-            design.spacing.lg,
-            design.spacing.md,
-            design.spacing.lg,
-            design.spacing.lg,
-          ),
-          decoration: BoxDecoration(
-            color: design.colors.card,
-            borderRadius: BorderRadius.all(Radius.circular(design.radius.xxl)),
-            boxShadow: design.shadows.floating,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Handle Bar
-              Align(
-                alignment: Alignment.center,
-                child: Container(
-                  width: design.spacing.xl * 1.5,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: design.colors.border,
-                    borderRadius: BorderRadius.circular(design.radius.full),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          design.spacing.sm,
+          0,
+          design.spacing.sm,
+          design.spacing.md,
+        ),
+        child: SafeArea(
+          top: false,
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.7,
+            ),
+            padding: EdgeInsets.fromLTRB(
+              design.spacing.lg,
+              design.spacing.md,
+              design.spacing.lg,
+              design.spacing.lg,
+            ),
+            decoration: BoxDecoration(
+              color: design.colors.card,
+              borderRadius: BorderRadius.all(
+                Radius.circular(design.radius.xxl),
+              ),
+              boxShadow: design.shadows.floating,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Handle Bar
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    width: design.spacing.xl * 1.5,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: design.colors.border,
+                      borderRadius: BorderRadius.circular(design.radius.full),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: design.spacing.lg),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  AppSemantics.header(
-                    label: l10n.customExamSelectSubjects,
-                    child: AppText.title(
-                      l10n.customExamSelectSubjects,
-                      color: design.colors.textPrimary,
-                    ),
-                  ),
-                  AppSemantics.button(
-                    label: l10n.commonCloseButton,
-                    onTap: () => setState(() => _isSubjectSheetOpen = false),
-                    child: GestureDetector(
-                      onTap: () => setState(() => _isSubjectSheetOpen = false),
-                      child: Icon(
-                        LucideIcons.x,
-                        color: design.colors.textSecondary,
+                SizedBox(height: design.spacing.lg),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    AppSemantics.header(
+                      label: l10n.customExamSelectSubjects,
+                      child: AppText.title(
+                        l10n.customExamSelectSubjects,
+                        color: design.colors.textPrimary,
                       ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: design.spacing.md),
-              Flexible(
-                child: AppSemantics.scrollableList(
-                  label: l10n.customExamSelectSubjects,
-                  itemCount: config.subjects.length,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    AppSemantics.button(
+                      label: l10n.commonCloseButton,
+                      onTap: () => setState(() => _isSubjectSheetOpen = false),
+                      child: GestureDetector(
+                        onTap: () =>
+                            setState(() => _isSubjectSheetOpen = false),
+                        child: Icon(
+                          LucideIcons.x,
+                          color: design.colors.textSecondary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: design.spacing.md),
+                Flexible(
+                  child: AppSemantics.scrollableList(
+                    label: l10n.customExamSelectSubjects,
                     itemCount: config.subjects.length,
-                    itemBuilder: (context, index) {
-                      final item = config.subjects[index];
-                      final isSelected = selection.selectedSubjects.contains(
-                        item.value,
-                      );
-                      return AppSemantics.button(
-                        label: item.label,
-                        onTap: () {
-                          ref
-                              .read(
-                                customExamSelectionProvider(
-                                  widget.course.id,
-                                ).notifier,
-                              )
-                              .toggleSubject(item.value);
-                        },
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      itemCount: config.subjects.length,
+                      itemBuilder: (context, index) {
+                        final item = config.subjects[index];
+                        final isSelected = selection.selectedSubjects.contains(
+                          item.value,
+                        );
+                        return AppSemantics.button(
+                          label: item.label,
                           onTap: () {
                             ref
                                 .read(
@@ -1144,35 +1148,48 @@ class _CustomExamConfigScreenState
                                 )
                                 .toggleSubject(item.value);
                           },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20.0,
-                              vertical: 12.0,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(child: AppText.body(item.label)),
-                                if (isSelected)
-                                  Icon(
-                                    LucideIcons.checkCircle2,
-                                    color: themeColor,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              ref
+                                  .read(
+                                    customExamSelectionProvider(
+                                      widget.course.id,
+                                    ).notifier,
                                   )
-                                else
-                                  Icon(
-                                    LucideIcons.circle,
-                                    color: design.colors.border,
-                                  ),
-                              ],
+                                  .toggleSubject(item.value);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20.0,
+                                vertical: 12.0,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(child: AppText.body(item.label)),
+                                  if (isSelected)
+                                    Icon(
+                                      LucideIcons.checkCircle2,
+                                      color: themeColor,
+                                    )
+                                  else
+                                    Icon(
+                                      LucideIcons.circle,
+                                      color: design.colors.border,
+                                    ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

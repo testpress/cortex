@@ -152,7 +152,7 @@ class _CustomExamCourseSelectionScreenState
             // ── Course list (white bg, bordered cards) ───────────────
             Expanded(
               child: ColoredBox(
-                color: design.colors.surface,
+                color: design.colors.card,
                 child: Skeletonizer(
                   enabled: coursesAsyncValue.isLoading,
                   ignoreContainers: true,

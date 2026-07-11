@@ -155,13 +155,19 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
       return;
     }
 
+    var didReset = false;
     if (state.exam != null && state.exam?.id != widget.testId) {
       ref.read(examAttemptProvider.notifier).reset();
       state = ref.read(examAttemptProvider);
       status = state.status;
+      didReset = true;
     }
 
-    if (status == ExamAttemptStatus.idle ||
+    // After a reset, reset() may not reflect synchronously in ref.read().
+    // If we just reset because the exam changed, we must start the new exam
+    // regardless of the stale status value.
+    if (didReset ||
+        status == ExamAttemptStatus.idle ||
         (status == ExamAttemptStatus.loading && state.exam == null)) {
       if (widget.attempt != null) {
         ref
@@ -753,9 +759,10 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
             if (_showPauseConfirmation)
               PauseConfirmationDialog(
                 disablePause:
-                    state.exam?.disableAttemptResume ??
-                    widget.lesson?.disableAttemptResume ??
-                    false,
+                    widget.isCustomTest ||
+                    (state.exam?.disableAttemptResume ??
+                        widget.lesson?.disableAttemptResume ??
+                        false),
                 onCancel: () => setState(() => _showPauseConfirmation = false),
                 onPause: () async {
                   setState(() => _showPauseConfirmation = false);
