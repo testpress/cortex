@@ -1,7 +1,6 @@
 import 'dart:developer' as dev;
 import 'package:flutter/foundation.dart';
 
-
 class QuizReviewResultDto {
   final String questionId;
   final List<String> selectedAnswers;

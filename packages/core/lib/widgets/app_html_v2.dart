@@ -67,29 +67,35 @@ class AppHtmlV2 extends StatelessWidget {
       RegExp(r'''style\s*=\s*(["'])(.*?)\1''', caseSensitive: false),
       (m) {
         final styleVal = m[2] ?? '';
-        final cleanProperties = styleVal.split(';').map((prop) {
-          final parts = prop.split(':');
-          if (parts.length < 2) return prop;
-          final key = parts[0].trim().toLowerCase();
-          const prohibited = {
-            'font-family',
-            'color',
-            'background-color',
-            'background',
-            'position',
-            'top',
-            'left',
-            'right',
-            'bottom',
-            'z-index',
-          };
-          if (prohibited.contains(key)) {
-            return '';
-          }
-          return prop;
-        }).where((p) => p.trim().isNotEmpty).join(';');
-        
-        return cleanProperties.trim().isEmpty ? '' : 'style=${m[1]}$cleanProperties${m[1]}';
+        final cleanProperties = styleVal
+            .split(';')
+            .map((prop) {
+              final parts = prop.split(':');
+              if (parts.length < 2) return prop;
+              final key = parts[0].trim().toLowerCase();
+              const prohibited = {
+                'font-family',
+                'color',
+                'background-color',
+                'background',
+                'position',
+                'top',
+                'left',
+                'right',
+                'bottom',
+                'z-index',
+              };
+              if (prohibited.contains(key)) {
+                return '';
+              }
+              return prop;
+            })
+            .where((p) => p.trim().isNotEmpty)
+            .join(';');
+
+        return cleanProperties.trim().isEmpty
+            ? ''
+            : 'style=${m[1]}$cleanProperties${m[1]}';
       },
     );
 
