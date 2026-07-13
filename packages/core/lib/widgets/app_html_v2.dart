@@ -42,13 +42,67 @@ class AppHtmlV2 extends StatelessWidget {
   final int? maxLines;
   final bool disableImageZoom;
 
+  String _sanitizeHtml(String html) {
+    var res = html;
+
+    // 1. Strip script tags entirely
+    res = res.replaceAll(
+      RegExp(r'<script[^>]*>[\s\S]*?</script>', caseSensitive: false),
+      '',
+    );
+
+    // 2. Strip event handlers (e.g. onload, onclick, onerror) — double-quoted
+    res = res.replaceAll(
+      RegExp(r'\son[a-zA-Z]+\s*=\s*"[^"]*"', caseSensitive: false),
+      '',
+    );
+    // Strip event handlers — single-quoted
+    res = res.replaceAll(
+      RegExp(r"\son[a-zA-Z]+\s*=\s*'[^']*'", caseSensitive: false),
+      '',
+    );
+
+    // 3. Clean inline style attributes to remove arbitrary colors, backgrounds, font-families, and positioning
+    res = res.replaceAllMapped(
+      RegExp(r'''style\s*=\s*(["'])(.*?)\1''', caseSensitive: false),
+      (m) {
+        final styleVal = m[2] ?? '';
+        final cleanProperties = styleVal.split(';').map((prop) {
+          final parts = prop.split(':');
+          if (parts.length < 2) return prop;
+          final key = parts[0].trim().toLowerCase();
+          const prohibited = {
+            'font-family',
+            'color',
+            'background-color',
+            'background',
+            'position',
+            'top',
+            'left',
+            'right',
+            'bottom',
+            'z-index',
+          };
+          if (prohibited.contains(key)) {
+            return '';
+          }
+          return prop;
+        }).where((p) => p.trim().isNotEmpty).join(';');
+        
+        return cleanProperties.trim().isEmpty ? '' : 'style=${m[1]}$cleanProperties${m[1]}';
+      },
+    );
+
+    return res;
+  }
+
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
     final effectiveTextColor = textColor ?? design.colors.textPrimary;
 
-    final processedData = _preprocessMath(data);
+    final processedData = _preprocessMath(_sanitizeHtml(data));
 
     return Padding(
       padding: padding,

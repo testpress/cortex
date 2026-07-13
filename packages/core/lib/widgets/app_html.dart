@@ -4,6 +4,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../design/design_provider.dart';
 import '../design/design_config.dart';
+import '../data/config/app_config.dart';
 import 'app_loading_indicator.dart';
 
 /// Controller for [AppHtml] that allows callers to inject JavaScript into
@@ -383,7 +384,43 @@ class _AppHtmlState extends State<AppHtml> {
     );
   }
 
+  bool _isValidImageUrl(String imageUrl) {
+    if (imageUrl.startsWith('data:image/')) {
+      return true;
+    }
+    final uri = Uri.tryParse(imageUrl);
+    if (uri == null) return false;
+
+    // Allow relative paths
+    if (!uri.hasScheme && !uri.hasAuthority) {
+      return true;
+    }
+
+    // Only allow http/https schemes
+    if (uri.scheme != 'http' && uri.scheme != 'https') {
+      return false;
+    }
+
+    // Host must match our API base URL or be a known trusted domain
+    final apiUri = Uri.tryParse(AppConfig.apiBaseUrl);
+    if (apiUri != null) {
+      if (uri.host == apiUri.host || uri.host.endsWith('.${apiUri.host}')) {
+        return true;
+      }
+    }
+
+    // Allow testpress domains as a safe fallback
+    if (uri.host.endsWith('.testpress.in') || uri.host == 'testpress.in') {
+      return true;
+    }
+
+    return false;
+  }
+
   void _showZoomableImage(BuildContext context, String imageUrl) {
+    if (!_isValidImageUrl(imageUrl)) {
+      return;
+    }
     final design = Design.of(context);
 
     Navigator.of(context).push(

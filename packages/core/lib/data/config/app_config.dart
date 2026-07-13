@@ -10,10 +10,29 @@ class AppConfig {
 
   /// Base URL for HTTP API calls.
   /// Reads from a --dart-define=API_BASE_URL=... at build/run time.
+  /// IMPORTANT: Always supply `--dart-define=API_BASE_URL=<url>` when building.
+  /// Leaving this empty will cause a startup assertion failure in release mode.
   static const String apiBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'https://lmsdemo.testpress.in/',
+    defaultValue: '',
   );
+
+  /// Validates critical compile-time configuration.
+  /// Call this at app startup (before runApp) in release builds.
+  /// In debug mode, an AssertionError is thrown; in release mode a
+  /// StateError is thrown to crash fast with a clear message.
+  static void validate() {
+    assert(
+      apiBaseUrl.isNotEmpty,
+      'API_BASE_URL is not set. Build with --dart-define=API_BASE_URL=https://your-instance.testpress.in/',
+    );
+    if (const bool.fromEnvironment('dart.vm.product') && apiBaseUrl.isEmpty) {
+      throw StateError(
+        'FATAL: API_BASE_URL must be set for production builds. '
+        'Build with --dart-define=API_BASE_URL=https://your-instance.testpress.in/',
+      );
+    }
+  }
 
   /// Web Client ID used for Google Sign-In backend verification.
   /// Dynamically injected via --dart-define during build scripts.

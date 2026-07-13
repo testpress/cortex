@@ -3,6 +3,7 @@ import 'dart:io' show Platform;
 import 'package:flutter/widgets.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:core/core.dart';
+import 'package:core/data/config/app_config.dart';
 import 'package:core/data/auth/auth_local_data_source.dart';
 
 /// A WebView-based viewer for HTML and Embedded lesson content.
@@ -78,12 +79,16 @@ class _LessonWebViewState extends State<LessonWebView> {
     if (widget.url != null) {
       final headers = <String, String>{};
       try {
-        final token = await AuthLocalDataSource().getToken();
-        if (token != null && token.isNotEmpty) {
-          headers['Authorization'] = 'JWT $token';
+        final uri = Uri.parse(widget.url!);
+        final apiUri = Uri.parse(AppConfig.apiBaseUrl);
+        if (uri.host == apiUri.host) {
+          final token = await AuthLocalDataSource().getToken();
+          if (token != null && token.isNotEmpty) {
+            headers['Authorization'] = 'JWT $token';
+          }
         }
       } catch (_) {
-        // Fall back to unauthenticated request if secure storage read fails.
+        // Fall back to unauthenticated request if secure storage read fails or URL is malformed.
       }
 
       _controller.loadRequest(Uri.parse(widget.url!), headers: headers);

@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,6 +24,15 @@ class DioFactory {
       ),
     );
 
+    if (!kIsWeb) {
+      final securityContext = SecurityContext(withTrustedRoots: true);
+      dio.httpClientAdapter = IOHttpClientAdapter(
+        createHttpClient: () {
+          return HttpClient(context: securityContext);
+        },
+      );
+    }
+
     dio.interceptors.add(UserAgentInterceptor());
     dio.interceptors.add(
       AuthInterceptor(getToken: getToken, onUnauthorized: onUnauthorized),
@@ -29,7 +40,8 @@ class DioFactory {
 
     if (kDebugMode) {
       dio.interceptors.add(
-        LogInterceptor(responseBody: true, requestBody: true),
+        // requestBody is false to avoid logging plaintext credentials (e.g. passwords during login).
+        LogInterceptor(responseBody: true, requestBody: false),
       );
     }
 

@@ -186,12 +186,14 @@ class OnlineExamRepository implements ExamRepository {
           e,
           stackTrace,
         ) {
-          dev.log(
-            'Failed to flush answer for $questionId',
-            name: 'ExamRepository',
-            error: e,
-            stackTrace: stackTrace,
-          );
+          if (kDebugMode) {
+            dev.log(
+              'Failed to flush answer for $questionId',
+              name: 'ExamRepository',
+              error: e,
+              stackTrace: stackTrace,
+            );
+          }
           return null;
         }),
       );
@@ -416,11 +418,13 @@ class OnlineExamRepository implements ExamRepository {
               .sendHeartbeat(attempt.id.toString())
               .then<AttemptDto?>((val) => val)
               .catchError((e) {
-                dev.log(
-                  'Failed to fetch initial heartbeat remaining time',
-                  name: 'ExamRepository',
-                  error: e,
-                );
+                if (kDebugMode) {
+                  dev.log(
+                    'Failed to fetch initial heartbeat remaining time',
+                    name: 'ExamRepository',
+                    error: e,
+                  );
+                }
                 return null;
               })
         : Future.value(null);
@@ -686,12 +690,14 @@ class OnlineExamRepository implements ExamRepository {
                 currentSection.order.toString(),
               )
               .catchError((e, stackTrace) {
-                dev.log(
-                  'Failed to end section on server, proceeding anyway',
-                  name: 'ExamRepository',
-                  error: e,
-                  stackTrace: stackTrace,
-                );
+                if (kDebugMode) {
+                  dev.log(
+                    'Failed to end section on server, proceeding anyway',
+                    name: 'ExamRepository',
+                    error: e,
+                    stackTrace: stackTrace,
+                  );
+                }
                 return SectionDto(
                   id: currentSection.id,
                   name: currentSection.name,
@@ -713,12 +719,14 @@ class OnlineExamRepository implements ExamRepository {
                 nextSection.order.toString(),
               )
               .catchError((e, stackTrace) {
-                dev.log(
-                  'Failed to start section on server, proceeding anyway',
-                  name: 'ExamRepository',
-                  error: e,
-                  stackTrace: stackTrace,
-                );
+                if (kDebugMode) {
+                  dev.log(
+                    'Failed to start section on server, proceeding anyway',
+                    name: 'ExamRepository',
+                    error: e,
+                    stackTrace: stackTrace,
+                  );
+                }
                 return SectionDto(
                   id: nextSection.id,
                   name: nextSection.name,
@@ -824,12 +832,14 @@ class OnlineExamRepository implements ExamRepository {
         // because the V3 API heartbeat endpoint dynamically returns 0:00:00 or static times,
         // which incorrectly overrides our local ticking timer.
       } catch (e, stackTrace) {
-        dev.log(
-          'Heartbeat failure',
-          name: 'ExamRepository',
-          error: e,
-          stackTrace: stackTrace,
-        );
+        if (kDebugMode) {
+          dev.log(
+            'Heartbeat failure',
+            name: 'ExamRepository',
+            error: e,
+            stackTrace: stackTrace,
+          );
+        }
       }
     });
   }
@@ -878,12 +888,14 @@ class OnlineExamRepository implements ExamRepository {
             );
             currentAnswers.remove(questionId);
             _emit(_currentState.copyWith(answers: currentAnswers));
-            dev.log(
-              'Failed to submit answer',
-              name: 'ExamRepository',
-              error: e,
-              stackTrace: stackTrace,
-            );
+            if (kDebugMode) {
+              dev.log(
+                'Failed to submit answer',
+                name: 'ExamRepository',
+                error: e,
+                stackTrace: stackTrace,
+              );
+            }
           }
         }
       },
@@ -951,12 +963,14 @@ class OnlineExamRepository implements ExamRepository {
       e,
       stackTrace,
     ) {
-      dev.log(
-        'Background submission failed for $questionId',
-        name: 'ExamRepository',
-        error: e,
-        stackTrace: stackTrace,
-      );
+      if (kDebugMode) {
+        dev.log(
+          'Background submission failed for $questionId',
+          name: 'ExamRepository',
+          error: e,
+          stackTrace: stackTrace,
+        );
+      }
       return null;
     });
   }
