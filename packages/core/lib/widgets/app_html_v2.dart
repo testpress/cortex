@@ -90,10 +90,7 @@ class AppHtmlV2 extends StatelessWidget {
 
     // 5. Clean quoted inline style attributes — remove prohibited properties
     res = res.replaceAllMapped(
-      RegExp(
-        r'''style\s*=\s*(["'])(.*?)\1''',
-        caseSensitive: false,
-      ),
+      RegExp(r'''style\s*=\s*(["'])(.*?)\1''', caseSensitive: false),
       (m) {
         final styleVal = m[2] ?? '';
         final cleanProperties = styleVal
