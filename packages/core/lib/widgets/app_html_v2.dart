@@ -3,11 +3,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../design/design_provider.dart';
 import '../design/design_config.dart';
 import 'app_loading_indicator.dart';
-
-import 'package:skeletonizer/skeletonizer.dart';
 
 /// Native HTML + LaTeX renderer.
 ///
@@ -42,13 +41,98 @@ class AppHtmlV2 extends StatelessWidget {
   final int? maxLines;
   final bool disableImageZoom;
 
+  String _sanitizeHtml(String html) {
+    var res = html;
+
+    // 1. Strip <script> tags entirely (tag + content)
+    res = res.replaceAll(
+      RegExp(r'<script[^>]*>[\s\S]*?</script>', caseSensitive: false),
+      '',
+    );
+
+    // 2. Strip event handlers (e.g. onload, onclick, onerror)
+    // Handles all HTML5 attribute separators (space, tab, newline, CR, FF,
+    // slash, period, colon) and quoted/unquoted attribute values.
+    res = res.replaceAll(
+      RegExp(
+        r'[\x20\x09\x0a\x0c\x0d\x2f\x2e\x3a]on[a-zA-Z]+'
+        r'\x20*=(?:\x22[^\x22]*\x22|\x27[^\x27]*\x27'
+        r'|[^\x20\x09\x0a\x0c\x0d\x22\x27>]+)',
+        caseSensitive: false,
+      ),
+      '',
+    );
+
+    // 3. Strip the jаvascript: URI scheme in href, src, srcdoc
+    // Handles all HTML5 attribute separators and quoted/unquoted values.
+    res = res.replaceAllMapped(
+      RegExp(
+        r'[\x20\x09\x0a\x0c\x0d\x2f\x2e\x3a](href|src|srcdoc)'
+        r'\x20*=\x20*(?:\x22javascript:[^\x22]*\x22'
+        r'|\x27javascript:[^\x27]*\x27'
+        r'|javascript:[^\x20\x09\x0a\x0c\x0d>]*)',
+        caseSensitive: false,
+      ),
+      (m) => '',
+    );
+
+    // 4. Strip unquoted inline style attributes entirely.
+    // Unquoted CSS can't be parsed reliably with regex, so we remove the
+    // entire attribute to prevent prohibited properties from passing through.
+    res = res.replaceAll(
+      RegExp(
+        r'[\x20\x09\x0a\x0c\x0d\x2f\x2e\x3a]style'
+        r'\x20*=\x20*[^\x20\x09\x0a\x0c\x0d\x22\x27>]+',
+        caseSensitive: false,
+      ),
+      '',
+    );
+
+    // 5. Clean quoted inline style attributes — remove prohibited properties
+    res = res.replaceAllMapped(
+      RegExp(r'''style\s*=\s*(["'])(.*?)\1''', caseSensitive: false),
+      (m) {
+        final styleVal = m[2] ?? '';
+        final cleanProperties = styleVal
+            .split(';')
+            .map((prop) {
+              final parts = prop.split(':');
+              if (parts.length < 2) return prop;
+              final key = parts[0].trim().toLowerCase();
+              const prohibited = {
+                'font-family',
+                'color',
+                'background-color',
+                'background',
+                'position',
+                'top',
+                'left',
+                'right',
+                'bottom',
+                'z-index',
+              };
+              if (prohibited.contains(key)) return '';
+              return prop;
+            })
+            .where((p) => p.trim().isNotEmpty)
+            .join(';');
+
+        return cleanProperties.trim().isEmpty
+            ? ''
+            : 'style=${m[1]}$cleanProperties${m[1]}';
+      },
+    );
+
+    return res;
+  }
+
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
     final effectiveTextColor = textColor ?? design.colors.textPrimary;
 
-    final processedData = _preprocessMath(data);
+    final processedData = _preprocessMath(_sanitizeHtml(data));
 
     return Padding(
       padding: padding,

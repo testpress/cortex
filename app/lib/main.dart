@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  AppConfig.validate();
   runApp(const ProviderScope(child: CortexAppRoot()));
 }
 

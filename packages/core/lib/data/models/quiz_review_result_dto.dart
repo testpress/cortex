@@ -1,4 +1,5 @@
 import 'dart:developer' as dev;
+import 'package:flutter/foundation.dart';
 
 class QuizReviewResultDto {
   final String questionId;
@@ -158,16 +159,18 @@ class QuizReviewResultDto {
               ?.toString(),
     );
 
-    dev.log(
-      'QuizReviewResultDto.fromJson parsed: '
-      'questionId=${parsed.questionId}, '
-      'selectedAnswers=${parsed.selectedAnswers}, '
-      'correctAnswers=${parsed.correctAnswers}, '
-      'result=${parsed.result}, '
-      'review=${parsed.review}, '
-      'hasExplanation=${parsed.explanationHtml != null && parsed.explanationHtml!.isNotEmpty}',
-      name: 'QuizReviewResultDto',
-    );
+    if (kDebugMode) {
+      dev.log(
+        'QuizReviewResultDto.fromJson parsed: '
+        'questionId=${parsed.questionId}, '
+        'selectedAnswers=${parsed.selectedAnswers}, '
+        'correctAnswers=${parsed.correctAnswers}, '
+        'result=${parsed.result}, '
+        'review=${parsed.review}, '
+        'hasExplanation=${parsed.explanationHtml != null && parsed.explanationHtml!.isNotEmpty}',
+        name: 'QuizReviewResultDto',
+      );
+    }
 
     return parsed;
   }

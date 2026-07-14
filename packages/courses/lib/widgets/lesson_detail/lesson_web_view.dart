@@ -3,6 +3,7 @@ import 'dart:io' show Platform;
 import 'package:flutter/widgets.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:core/core.dart';
+import 'package:core/data/config/app_config.dart';
 import 'package:core/data/auth/auth_local_data_source.dart';
 
 /// A WebView-based viewer for HTML and Embedded lesson content.
@@ -78,12 +79,28 @@ class _LessonWebViewState extends State<LessonWebView> {
     if (widget.url != null) {
       final headers = <String, String>{};
       try {
-        final token = await AuthLocalDataSource().getToken();
-        if (token != null && token.isNotEmpty) {
-          headers['Authorization'] = 'JWT $token';
+        final uri = Uri.parse(widget.url!);
+        if (uri.scheme != 'https') {
+          // Only attach JWT over HTTPS to prevent token leakage in plaintext.
+          throw FormatException('Non-HTTPS URL, skipping auth header');
+        }
+        final apiBaseUrl = AppConfig.apiBaseUrl;
+        if (apiBaseUrl.isEmpty) {
+          throw FormatException('apiBaseUrl is empty, skipping auth header');
+        }
+        final apiUri = Uri.parse(apiBaseUrl);
+        if (apiUri.host.isEmpty) {
+          throw FormatException('apiBaseUrl has no host, skipping auth header');
+        }
+        if (uri.host == apiUri.host) {
+          final token = await AuthLocalDataSource().getToken();
+          if (token != null && token.isNotEmpty) {
+            headers['Authorization'] = 'JWT $token';
+          }
         }
       } catch (_) {
-        // Fall back to unauthenticated request if secure storage read fails.
+        // Fall back to unauthenticated request if URL is non-HTTPS, apiBaseUrl is empty,
+        // secure storage read fails, or URL is malformed.
       }
 
       _controller.loadRequest(Uri.parse(widget.url!), headers: headers);
