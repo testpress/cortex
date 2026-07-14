@@ -84,8 +84,16 @@ class AppHtmlV2 extends StatelessWidget {
               if (parts.length < 2) return prop;
               final key = parts[0].trim().toLowerCase();
               const prohibited = {
-                'font-family', 'color', 'background-color', 'background',
-                'position', 'top', 'left', 'right', 'bottom', 'z-index',
+                'font-family',
+                'color',
+                'background-color',
+                'background',
+                'position',
+                'top',
+                'left',
+                'right',
+                'bottom',
+                'z-index',
               };
               if (prohibited.contains(key)) return '';
               return prop;
