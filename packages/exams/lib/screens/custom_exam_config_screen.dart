@@ -209,138 +209,162 @@ class _CustomExamConfigScreenState
                           }
                           final isLocked = lockedMessage != null;
 
-                          return AppSemantics.scrollableList(
-                            label: l10n.customExamTitle,
-                            itemCount: 6,
-                            child: ListView(
-                              padding: const EdgeInsets.all(20.0),
-                              children: [
-                                _buildHeaderCard(
-                                  design,
-                                  course,
-                                  themeColor,
-                                  context,
+                          return Column(
+                            children: [
+                              Expanded(
+                                child: AppSemantics.scrollableList(
+                                  label: l10n.customExamTitle,
+                                  itemCount: 6,
+                                  child: ListView(
+                                    padding: const EdgeInsets.all(20.0),
+                                    children: [
+                                      _buildHeaderCard(
+                                        design,
+                                        course,
+                                        themeColor,
+                                        context,
+                                      ),
+                                      const SizedBox(height: 32),
+
+                                      if (lockedMessage != null)
+                                        _buildLockedBanner(
+                                          design,
+                                          lockedMessage,
+                                        ),
+
+                                      if (configToDisplay.subjects.isNotEmpty)
+                                        _buildSubjectDropdownSection(
+                                          context: context,
+                                          design: design,
+                                          l10n: l10n,
+                                          title: l10n.customExamSelectSubjects,
+                                          subtitle: l10n
+                                              .customExamSelectOneOrMoreSubjects,
+                                          items: configToDisplay.subjects,
+                                          selectedValues: configAsync.isLoading
+                                              ? []
+                                              : selection.selectedSubjects,
+                                          onSelected:
+                                              isLocked || configAsync.isLoading
+                                              ? null
+                                              : (v) => ref
+                                                    .read(
+                                                      customExamSelectionProvider(
+                                                        course.id,
+                                                      ).notifier,
+                                                    )
+                                                    .toggleSubject(v),
+                                          themeColor: themeColor,
+                                        ),
+
+                                      if (configToDisplay
+                                          .difficultyLevels
+                                          .isNotEmpty)
+                                        _buildDifficultySection(
+                                          design: design,
+                                          l10n: l10n,
+                                          items:
+                                              configToDisplay.difficultyLevels,
+                                          selectedValues: configAsync.isLoading
+                                              ? []
+                                              : selection.selectedDifficulties,
+                                          onSelected:
+                                              isLocked || configAsync.isLoading
+                                              ? null
+                                              : (v) => ref
+                                                    .read(
+                                                      customExamSelectionProvider(
+                                                        course.id,
+                                                      ).notifier,
+                                                    )
+                                                    .toggleDifficulty(v),
+                                          onBatchSelected:
+                                              isLocked || configAsync.isLoading
+                                              ? null
+                                              : (v) => ref
+                                                    .read(
+                                                      customExamSelectionProvider(
+                                                        course.id,
+                                                      ).notifier,
+                                                    )
+                                                    .setDifficulties(v),
+                                          themeColor: themeColor,
+                                        ),
+
+                                      if (configToDisplay
+                                          .questionTypes
+                                          .isNotEmpty)
+                                        _buildMultiSelectionSection(
+                                          design: design,
+                                          title: l10n.customExamQuestionType,
+                                          subtitle:
+                                              l10n.customExamSelectQuestionType,
+                                          items: configToDisplay.questionTypes,
+                                          selectedValues: configAsync.isLoading
+                                              ? []
+                                              : selection.selectedQuestionTypes,
+                                          onSelected:
+                                              isLocked || configAsync.isLoading
+                                              ? null
+                                              : (v) => ref
+                                                    .read(
+                                                      customExamSelectionProvider(
+                                                        course.id,
+                                                      ).notifier,
+                                                    )
+                                                    .toggleQuestionType(v),
+                                          themeColor: themeColor,
+                                        ),
+
+                                      if (configToDisplay.testModes.isNotEmpty)
+                                        _buildSingleSelectionSection(
+                                          design: design,
+                                          title: l10n.customExamTestMode,
+                                          subtitle: l10n
+                                              .customExamChooseTestExperience,
+                                          items: configToDisplay.testModes,
+                                          selectedValue: configAsync.isLoading
+                                              ? null
+                                              : selection.selectedTestMode,
+                                          onSelected:
+                                              isLocked || configAsync.isLoading
+                                              ? null
+                                              : (v) => ref
+                                                    .read(
+                                                      customExamSelectionProvider(
+                                                        course.id,
+                                                      ).notifier,
+                                                    )
+                                                    .setTestMode(v),
+                                          themeColor: themeColor,
+                                        ),
+
+                                      _buildSliderSection(
+                                        design: design,
+                                        l10n: l10n,
+                                        selection: selection,
+                                        limits: configToDisplay.limits,
+                                        isLocked: isLocked,
+                                        themeColor: themeColor,
+                                        ref: ref,
+                                        courseId: course.id,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                const SizedBox(height: 32),
-
-                                if (lockedMessage != null)
-                                  _buildLockedBanner(design, lockedMessage),
-
-                                if (configToDisplay.subjects.isNotEmpty)
-                                  _buildSubjectDropdownSection(
-                                    context: context,
-                                    design: design,
-                                    l10n: l10n,
-                                    title: l10n.customExamSelectSubjects,
-                                    subtitle:
-                                        l10n.customExamSelectOneOrMoreSubjects,
-                                    items: configToDisplay.subjects,
-                                    selectedValues: configAsync.isLoading
-                                        ? []
-                                        : selection.selectedSubjects,
-                                    onSelected:
-                                        isLocked || configAsync.isLoading
-                                        ? null
-                                        : (v) => ref
-                                              .read(
-                                                customExamSelectionProvider(
-                                                  course.id,
-                                                ).notifier,
-                                              )
-                                              .toggleSubject(v),
-                                    themeColor: themeColor,
-                                  ),
-
-                                if (configToDisplay.difficultyLevels.isNotEmpty)
-                                  _buildDifficultySection(
-                                    design: design,
-                                    l10n: l10n,
-                                    items: configToDisplay.difficultyLevels,
-                                    selectedValues: configAsync.isLoading
-                                        ? []
-                                        : selection.selectedDifficulties,
-                                    onSelected:
-                                        isLocked || configAsync.isLoading
-                                        ? null
-                                        : (v) => ref
-                                              .read(
-                                                customExamSelectionProvider(
-                                                  course.id,
-                                                ).notifier,
-                                              )
-                                              .toggleDifficulty(v),
-                                    themeColor: themeColor,
-                                  ),
-
-                                if (configToDisplay.questionTypes.isNotEmpty)
-                                  _buildMultiSelectionSection(
-                                    design: design,
-                                    title: l10n.customExamQuestionType,
-                                    subtitle: l10n.customExamSelectQuestionType,
-                                    items: configToDisplay.questionTypes,
-                                    selectedValues: configAsync.isLoading
-                                        ? []
-                                        : selection.selectedQuestionTypes,
-                                    onSelected:
-                                        isLocked || configAsync.isLoading
-                                        ? null
-                                        : (v) => ref
-                                              .read(
-                                                customExamSelectionProvider(
-                                                  course.id,
-                                                ).notifier,
-                                              )
-                                              .toggleQuestionType(v),
-                                    themeColor: themeColor,
-                                  ),
-
-                                if (configToDisplay.testModes.isNotEmpty)
-                                  _buildSingleSelectionSection(
-                                    design: design,
-                                    title: l10n.customExamTestMode,
-                                    subtitle:
-                                        l10n.customExamChooseTestExperience,
-                                    items: configToDisplay.testModes,
-                                    selectedValue: configAsync.isLoading
-                                        ? null
-                                        : selection.selectedTestMode,
-                                    onSelected:
-                                        isLocked || configAsync.isLoading
-                                        ? null
-                                        : (v) => ref
-                                              .read(
-                                                customExamSelectionProvider(
-                                                  course.id,
-                                                ).notifier,
-                                              )
-                                              .setTestMode(v),
-                                    themeColor: themeColor,
-                                  ),
-
-                                _buildSliderSection(
-                                  design: design,
-                                  l10n: l10n,
-                                  selection: selection,
-                                  limits: configToDisplay.limits,
-                                  isLocked: isLocked,
-                                  themeColor: themeColor,
-                                  ref: ref,
-                                  courseId: course.id,
-                                ),
-                                const SizedBox(height: 40),
-                                _buildBottomBar(
-                                  context,
-                                  design,
-                                  l10n,
-                                  isLocked,
-                                  generateState.isLoading,
-                                  ref,
-                                  themeColor,
-                                  configToDisplay,
-                                  selection,
-                                ),
-                              ],
-                            ),
+                              ),
+                              _buildBottomBar(
+                                context,
+                                design,
+                                l10n,
+                                isLocked,
+                                generateState.isLoading,
+                                ref,
+                                themeColor,
+                                configToDisplay,
+                                selection,
+                              ),
+                            ],
                           );
                         },
                       ),
@@ -482,6 +506,7 @@ class _CustomExamConfigScreenState
     required List<CustomTestFilterOptionDto> items,
     required List<String> selectedValues,
     required Function(String)? onSelected,
+    required Function(List<String>)? onBatchSelected,
     required Color themeColor,
   }) {
     final allValues = items.map((e) => e.value).toList();
@@ -529,19 +554,13 @@ class _CustomExamConfigScreenState
                 label: l10n.customExamDiffMixed,
                 isSelected: isMixed,
                 isCheckbox: true,
-                onTap: onSelected == null
+                onTap: onBatchSelected == null
                     ? null
                     : () {
                         if (isMixed) {
-                          for (final val in allValues) {
-                            onSelected(val);
-                          }
+                          onBatchSelected([]);
                         } else {
-                          for (final val in allValues) {
-                            if (!selectedValues.contains(val)) {
-                              onSelected(val);
-                            }
-                          }
+                          onBatchSelected(allValues);
                         }
                       },
                 themeColor: themeColor,
@@ -702,11 +721,10 @@ class _CustomExamConfigScreenState
                           final localPosition = renderBox.globalToLocal(
                             details.globalPosition,
                           );
-                          final percent =
-                              ((localPosition.dx - padding) / trackWidth).clamp(
-                                0.0,
-                                1.0,
-                              );
+                          final percent = trackWidth <= 0
+                              ? 0.0
+                              : ((localPosition.dx - padding) / trackWidth)
+                                    .clamp(0.0, 1.0);
                           final newValue = (min + percent * (max - min))
                               .round();
                           ref
@@ -723,11 +741,10 @@ class _CustomExamConfigScreenState
                           final localPosition = renderBox.globalToLocal(
                             details.globalPosition,
                           );
-                          final percent =
-                              ((localPosition.dx - padding) / trackWidth).clamp(
-                                0.0,
-                                1.0,
-                              );
+                          final percent = trackWidth <= 0
+                              ? 0.0
+                              : ((localPosition.dx - padding) / trackWidth)
+                                    .clamp(0.0, 1.0);
                           final newValue = (min + percent * (max - min))
                               .round();
                           ref

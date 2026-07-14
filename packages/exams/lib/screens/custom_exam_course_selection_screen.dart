@@ -154,7 +154,9 @@ class _CustomExamCourseSelectionScreenState
               child: ColoredBox(
                 color: design.colors.card,
                 child: Skeletonizer(
-                  enabled: coursesAsyncValue.isLoading,
+                  enabled:
+                      coursesAsyncValue.isLoading &&
+                      !coursesAsyncValue.hasValue,
                   ignoreContainers: true,
                   effect: ShimmerEffect(
                     baseColor: design.colors.skeleton,

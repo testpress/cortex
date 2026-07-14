@@ -25,7 +25,7 @@ class AttemptDto {
   final int? lastViewedQuestionId;
   final int? attemptType;
 
-  int get activeId => userExamId ?? id ?? 0;
+  int? get activeId => userExamId ?? id;
 
   const AttemptDto({
     this.id,

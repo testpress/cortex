@@ -74,6 +74,10 @@ class CustomExamSelection extends _$CustomExamSelection {
     state = state.copyWith(selectedDifficulties: list);
   }
 
+  void setDifficulties(List<String> difficulties) {
+    state = state.copyWith(selectedDifficulties: difficulties);
+  }
+
   void toggleQuestionType(String type) {
     final list = List<String>.from(state.selectedQuestionTypes);
     if (list.contains(type)) {
