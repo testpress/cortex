@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart' show RefreshIndicator;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -331,11 +332,10 @@ class _InfoCourseCard extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(design.radius.md),
                       child: course.image?.isNotEmpty == true
-                          ? Image.network(
-                              course.image!,
+                          ? CachedNetworkImage(
+                              imageUrl: course.image!,
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Icon(
+                              errorWidget: (context, url, error) => Icon(
                                 LucideIcons.bookOpen,
                                 color: design.colors.textSecondary
                                     .withValues(alpha: 0.5),

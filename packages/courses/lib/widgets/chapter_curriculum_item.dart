@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:flutter/widgets.dart';
@@ -125,10 +126,10 @@ class ChapterCurriculumItem extends StatelessWidget {
     if (image != null && image.isNotEmpty) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(8),
-        child: Image.network(
-          image,
+        child: CachedNetworkImage(
+          imageUrl: image,
           fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => _DefaultIcon(theme: chapterTheme),
+          errorWidget: (_, __, ___) => _DefaultIcon(theme: chapterTheme),
         ),
       );
     }

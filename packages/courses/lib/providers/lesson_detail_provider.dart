@@ -6,7 +6,7 @@ import 'package:async/async.dart';
 part 'lesson_detail_provider.g.dart';
 
 /// Provider that fetches a specific lesson domain model by its ID.
-@riverpod
+@Riverpod(keepAlive: true)
 Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
   final repository = await ref.watch(courseRepositoryProvider.future);
 

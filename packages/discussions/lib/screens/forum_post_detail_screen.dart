@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:image_picker/image_picker.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../providers/forum_providers.dart';
@@ -355,10 +356,10 @@ class _ThreadImage extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(design.radius.lg),
       ),
-      child: Image.network(
-        imageUrl,
+      child: CachedNetworkImage(
+        imageUrl: imageUrl,
         fit: BoxFit.cover,
-        errorBuilder: (context, error, _) => const SizedBox.shrink(),
+        errorWidget: (context, error, _) => const SizedBox.shrink(),
       ),
     );
   }
@@ -777,11 +778,10 @@ class _AuthorAvatar extends StatelessWidget {
         shape: BoxShape.circle,
       ),
       child: avatarUrl != null
-          ? Image.network(
-              avatarUrl!,
+          ? CachedNetworkImage(
+              imageUrl: avatarUrl!,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) =>
-                  _fallbackIcon(design),
+              errorWidget: (context, url, error) => _fallbackIcon(design),
             )
           : _fallbackIcon(design),
     );

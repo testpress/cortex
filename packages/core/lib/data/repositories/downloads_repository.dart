@@ -81,6 +81,30 @@ class DownloadsRepository {
     });
   }
 
+  /// Watch a specific download from the DB by ID, mapped to a domain model.
+  Stream<DownloadItem?> watchDownload(String id) {
+    return (_db.select(
+      _db.downloadsTable,
+    )..where((tbl) => tbl.id.equals(id))).watchSingleOrNull().map((row) {
+      if (row == null) return null;
+      return DownloadItem(
+        id: row.id,
+        title: row.title,
+        course: row.course,
+        chapter: row.chapter,
+        sizeInBytes: row.sizeInBytes.toInt(),
+        downloadedDate: row.downloadedDate,
+        type: DownloadType.values[row.typeIndex],
+        status: DownloadStatus.values[row.statusIndex],
+        progress: row.progress,
+        thumbnailUrl: row.thumbnailUrl,
+        duration: row.duration,
+        fileType: row.fileType,
+        contentUrl: row.contentUrl,
+      );
+    });
+  }
+
   /// Starts an attachment download and owns the full lifecycle:
   /// insert "downloading" → receive progress updates → write "completed" or "error".
   Future<void> startAttachmentDownload(DownloadItem item, String url) async {
@@ -289,10 +313,5 @@ Stream<DownloadItem?> watchDownloadItem(
   String id,
 ) async* {
   final repo = await ref.watch(downloadsRepositoryProvider.future);
-  yield* repo.watchAllDownloads().map((list) {
-    for (var item in list) {
-      if (item.id == id) return item;
-    }
-    return null;
-  });
+  yield* repo.watchDownload(id);
 }
