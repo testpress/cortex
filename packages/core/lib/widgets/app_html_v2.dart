@@ -51,18 +51,28 @@ class AppHtmlV2 extends StatelessWidget {
       '',
     );
 
-    // 2. Strip event handlers (e.g. onload, onclick, onerror) — double-quoted
+    // 2. Strip event handlers (onload, onclick, onerror, etc.)
+    // Handles: onload="...", onload='...', onload=..., and <img/onload=...>
+    // Uses \x22 (") and \x27 (') to avoid Dart raw string delimiter issues.
     res = res.replaceAll(
-      RegExp(r'\son[a-zA-Z]+\s*=\s*"[^"]*"', caseSensitive: false),
-      '',
-    );
-    // Strip event handlers — single-quoted
-    res = res.replaceAll(
-      RegExp(r"\son[a-zA-Z]+\s*=\s*'[^']*'", caseSensitive: false),
+      RegExp(
+        r'\s?\/?\son[a-zA-Z]+\s*=\s*(?:\x22[^\x22]*\x22|\x27[^\x27]*\x27|\S+)',
+        caseSensitive: false,
+      ),
       '',
     );
 
-    // 3. Clean inline style attributes to remove arbitrary colors, backgrounds, font-families, and positioning
+    // 3. Strip javascript: URIs in href, src, srcdoc
+    // Uses \x22 (") and \x27 (') to avoid Dart raw string delimiter issues.
+    res = res.replaceAllMapped(
+      RegExp(
+        r'\s(href|src|srcdoc)\s*=\s*[\x22\x27]javascript:[^\x22\x27]*[\x22\x27]',
+        caseSensitive: false,
+      ),
+      (m) => '',
+    );
+
+    // 4. Clean inline style attributes to remove arbitrary colors, backgrounds, font-families, and positioning
     res = res.replaceAllMapped(
       RegExp(r'''style\s*=\s*(["'])(.*?)\1''', caseSensitive: false),
       (m) {

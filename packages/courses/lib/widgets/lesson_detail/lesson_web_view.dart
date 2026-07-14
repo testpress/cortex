@@ -80,7 +80,18 @@ class _LessonWebViewState extends State<LessonWebView> {
       final headers = <String, String>{};
       try {
         final uri = Uri.parse(widget.url!);
-        final apiUri = Uri.parse(AppConfig.apiBaseUrl);
+        if (uri.scheme != 'https') {
+          // Only attach JWT over HTTPS to prevent token leakage in plaintext.
+          throw FormatException('Non-HTTPS URL, skipping auth header');
+        }
+        final apiBaseUrl = AppConfig.apiBaseUrl;
+        if (apiBaseUrl.isEmpty) {
+          throw FormatException('apiBaseUrl is empty, skipping auth header');
+        }
+        final apiUri = Uri.parse(apiBaseUrl);
+        if (apiUri.host.isEmpty) {
+          throw FormatException('apiBaseUrl has no host, skipping auth header');
+        }
         if (uri.host == apiUri.host) {
           final token = await AuthLocalDataSource().getToken();
           if (token != null && token.isNotEmpty) {
@@ -88,7 +99,8 @@ class _LessonWebViewState extends State<LessonWebView> {
           }
         }
       } catch (_) {
-        // Fall back to unauthenticated request if secure storage read fails or URL is malformed.
+        // Fall back to unauthenticated request if URL is non-HTTPS, apiBaseUrl is empty,
+        // secure storage read fails, or URL is malformed.
       }
 
       _controller.loadRequest(Uri.parse(widget.url!), headers: headers);
