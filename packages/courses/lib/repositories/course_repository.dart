@@ -40,6 +40,10 @@ class CourseRepository {
 
   CourseRepository(this._db, this._source);
 
+  void dispose() {
+    _syncStatusController.close();
+  }
+
   // ── Courses ──────────────────────────────────────────────────────────────
 
   /// Live stream of all courses from the local DB (single source of truth).
@@ -51,14 +55,13 @@ class CourseRepository {
   Stream<List<CoursesTableData>> watchExamCourses() {
     return _db.watchAllCourses().map((courses) {
       return courses.where((course) {
-        final dto = rowToCourseDto(course);
-        final hasMobileAccess = dto.allowedDevices.any(
-          (d) => d.toLowerCase().contains('mobile'),
-        );
+        final devicesStr = (course.allowedDevices ?? '').toLowerCase();
+        final tagsStr = (course.tags ?? '').toLowerCase();
 
-        // If showExamTab is enabled, identify exams by tag or fallback to examsCount.
-        final isExamCourse = dto.tags.any((t) => t.toLowerCase() == 'exams') ||
-            (dto.tags.isEmpty && dto.examsCount > 0);
+        final hasMobileAccess = devicesStr.contains('mobile');
+        final isEmptyTags = tagsStr.isEmpty || tagsStr == '[]';
+        final isExamCourse = tagsStr.contains('"exams"') ||
+            (isEmptyTags && course.examsCount > 0);
 
         return isExamCourse && hasMobileAccess;
       }).toList();
@@ -69,12 +72,11 @@ class CourseRepository {
   Stream<List<CoursesTableData>> watchInfoCourses() {
     return _db.watchAllCourses().map((courses) {
       return courses.where((course) {
-        final dto = rowToCourseDto(course);
-        final hasMobileAccess = dto.allowedDevices.any(
-          (d) => d.toLowerCase().contains('mobile'),
-        );
-        return dto.tags.any((t) => t.toLowerCase() == 'info') &&
-            hasMobileAccess;
+        final devicesStr = (course.allowedDevices ?? '').toLowerCase();
+        final tagsStr = (course.tags ?? '').toLowerCase();
+
+        final hasMobileAccess = devicesStr.contains('mobile');
+        return tagsStr.contains('"info"') && hasMobileAccess;
       }).toList();
     });
   }
@@ -84,11 +86,12 @@ class CourseRepository {
   Stream<List<CoursesTableData>> watchStudyCourses() {
     return _db.watchAllCourses().map((courses) {
       return courses.where((course) {
-        final dto = rowToCourseDto(course);
+        final tagsStr = (course.tags ?? '').toLowerCase();
+        final isEmptyTags = tagsStr.isEmpty || tagsStr == '[]';
 
-        final isExamCourse = dto.tags.any((t) => t.toLowerCase() == 'exams') ||
-            (dto.tags.isEmpty && dto.examsCount > 0);
-        final isInfoCourse = dto.tags.any((t) => t.toLowerCase() == 'info');
+        final isExamCourse = tagsStr.contains('"exams"') ||
+            (isEmptyTags && course.examsCount > 0);
+        final isInfoCourse = tagsStr.contains('"info"');
 
         if (AppConfig.showExamTab && isExamCourse) return false;
         if (AppConfig.showInfoTab && isInfoCourse) return false;
@@ -351,7 +354,8 @@ class CourseRepository {
       Stream.value(null),
       (_db.select(_db.chaptersTable)..where((t) => t.courseId.equals(courseId)))
           .watch(),
-      _db.watchAllLessons(),
+      (_db.select(_db.lessonsTable)..where((t) => t.courseId.equals(courseId)))
+          .watch(),
     ]);
 
     yield* combinedWatcher.asyncMap((_) => getLocalCourseCurriculum(courseId));

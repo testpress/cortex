@@ -10,7 +10,9 @@ part 'course_list_provider.g.dart';
 Future<CourseRepository> courseRepository(Ref ref) async {
   final db = await ref.watch(appDatabaseProvider.future);
   final source = ref.watch(dataSourceProvider);
-  return CourseRepository(db, source);
+  final repo = CourseRepository(db, source);
+  ref.onDispose(() => repo.dispose());
+  return repo;
 }
 
 @Riverpod(keepAlive: true)
