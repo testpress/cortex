@@ -3,11 +3,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../design/design_provider.dart';
 import '../design/design_config.dart';
 import 'app_loading_indicator.dart';
-
-import 'package:skeletonizer/skeletonizer.dart';
 
 /// Native HTML + LaTeX renderer.
 ///
@@ -45,34 +44,35 @@ class AppHtmlV2 extends StatelessWidget {
   String _sanitizeHtml(String html) {
     var res = html;
 
-    // 1. Strip script tags entirely
+    // 1. Strip <script> tags entirely (tag + content)
     res = res.replaceAll(
       RegExp(r'<script[^>]*>[\s\S]*?</script>', caseSensitive: false),
       '',
     );
 
-    // 2. Strip event handlers (onload, onclick, onerror, etc.)
-    // Handles: onload="...", onload='...', onload=..., and <img/onload=...>
-    // Uses \x22 (") and \x27 (') to avoid Dart raw string delimiter issues.
+    // 2. Strip event handlers (e.g. onload, onclick, onerror)
+    // Matches <tag onXxx=...>, <tag/onXxx=...>, and unquoted values.
+    // Uses \x20 (space) and \x2f (/) to stay inside single-quote raw strings.
     res = res.replaceAll(
       RegExp(
-        r'\s?\/?\son[a-zA-Z]+\s*=\s*(?:\x22[^\x22]*\x22|\x27[^\x27]*\x27|\S+)',
+        r'(?:\x20|\x2f)on[a-zA-Z]+\x20*=(?:\x22[^\x22]*\x22|\x27[^\x27]*\x27|[^\x20\x22\x27>]+)',
         caseSensitive: false,
       ),
       '',
     );
 
-    // 3. Strip javascript: URIs in href, src, srcdoc
-    // Uses \x22 (") and \x27 (') to avoid Dart raw string delimiter issues.
+    // 3. Strip the jаvascript: URI scheme in href, src, srcdoc
+    // Handles quoted and unquoted values, with or without space before attr.
     res = res.replaceAllMapped(
       RegExp(
-        r'\s(href|src|srcdoc)\s*=\s*[\x22\x27]javascript:[^\x22\x27]*[\x22\x27]',
+        r'(?:\x20|\x2f)(href|src|srcdoc)\x20*=\x20*(?:\x22javascript:[^\x22]*\x22|\x27javascript:[^\x27]*\x27|javascript:[^\x20>]*)',
         caseSensitive: false,
       ),
       (m) => '',
     );
 
-    // 4. Clean inline style attributes to remove arbitrary colors, backgrounds, font-families, and positioning
+    // 4. Clean inline style attributes — remove prohibited properties
+    // Handles quoted (style="..." and style='...') values.
     res = res.replaceAllMapped(
       RegExp(r'''style\s*=\s*(["'])(.*?)\1''', caseSensitive: false),
       (m) {
@@ -84,20 +84,10 @@ class AppHtmlV2 extends StatelessWidget {
               if (parts.length < 2) return prop;
               final key = parts[0].trim().toLowerCase();
               const prohibited = {
-                'font-family',
-                'color',
-                'background-color',
-                'background',
-                'position',
-                'top',
-                'left',
-                'right',
-                'bottom',
-                'z-index',
+                'font-family', 'color', 'background-color', 'background',
+                'position', 'top', 'left', 'right', 'bottom', 'z-index',
               };
-              if (prohibited.contains(key)) {
-                return '';
-              }
+              if (prohibited.contains(key)) return '';
               return prop;
             })
             .where((p) => p.trim().isNotEmpty)
