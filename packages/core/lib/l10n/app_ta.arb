@@ -1099,6 +1099,7 @@
   "questionIdArgs": "கேள்வி ஐடி: {id}",
   "customExamCreateTitle": "தனிப்பயன் தேர்வு",
   "customExamSelectAtLeastOneSubject": "குறைந்தபட்சம் ஒரு பாடத்தையாவது தேர்ந்தெடுக்கவும்",
+  "customExamDifficultyLevel": "கடினத்தன்மை நிலை",
   "customExamSelectDifficultyLevel": "கடினத்தன்மை நிலையைத் தேர்ந்தெடுக்கவும்",
   "customExamGenerateCustomExam": "தனிப்பயன் தேர்வை உருவாக்கு",
   "customExamPleaseSelectAtLeastOneQuestionType": "குறைந்தபட்சம் ஒரு கேள்வி வகையையாவது தேர்ந்தெடுக்கவும்",

@@ -854,6 +854,7 @@
   },
   "customExamCreateTitle": "امتحان مخصص",
   "customExamSelectAtLeastOneSubject": "يرجى تحديد موضوع واحد على الأقل",
+  "customExamDifficultyLevel": "مستوى الصعوبة",
   "customExamSelectDifficultyLevel": "يرجى تحديد مستوى الصعوبة",
   "customExamGenerateCustomExam": "إنشاء امتحان مخصص",
   "customExamPleaseSelectAtLeastOneQuestionType": "يرجى تحديد نوع سؤال واحد على الأقل",

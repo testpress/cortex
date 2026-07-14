@@ -1304,8 +1304,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customExamSelectOneOrMoreSubjects => 'Select one or more subjects';
 
   @override
-  String get customExamSelectDifficultyLevel =>
-      'Please select a difficulty level';
+  String get customExamSelectDifficultyLevel => 'Select difficulty level';
 
   @override
   String customExamRemoveItem(String item) {
@@ -2303,6 +2302,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get customExamSelectAtLeastOneSubject =>
       'Please select at least one subject';
+
+  @override
+  String get customExamDifficultyLevel => 'Difficulty Level';
 
   @override
   String get customExamGenerateCustomExam => 'Generate Custom Exam';

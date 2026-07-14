@@ -2350,6 +2350,9 @@ class AppLocalizationsMl extends AppLocalizations {
       'ദയവായി ഒരു വിഷയമെങ്കിലും തിരഞ്ഞെടുക്കുക';
 
   @override
+  String get customExamDifficultyLevel => 'കാഠിന്യ നില';
+
+  @override
   String get customExamGenerateCustomExam => 'കസ്റ്റം പരീക്ഷ സൃഷ്ടിക്കുക';
 
   @override

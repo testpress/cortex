@@ -58,7 +58,7 @@ class _CustomExamConfigScreenState
         final isQuizMode =
             selection.selectedTestMode?.toLowerCase().contains('quiz') == true;
 
-        Navigator.of(context).pop();
+        context.pop();
 
         context.push(
           '/exams/test/$assessmentId/player?isQuizMode=$isQuizMode&isCustomTest=true',
@@ -98,7 +98,7 @@ class _CustomExamConfigScreenState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AppFocusable(
-                          onTap: () => Navigator.of(context).pop(),
+                          onTap: () => context.pop(),
                           borderRadius: BorderRadius.circular(design.radius.md),
                           child: Padding(
                             padding: EdgeInsets.all(design.spacing.xs),
@@ -398,7 +398,7 @@ class _CustomExamConfigScreenState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText.bodySmall(
-          'Selected Course',
+          L10n.of(context).customExamSelectedCourse,
           color: design.colors.textSecondary,
         ),
         const SizedBox(height: 8),
@@ -520,15 +520,15 @@ class _CustomExamConfigScreenState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppSemantics.header(
-            label: 'Difficulty Level',
+            label: l10n.customExamDifficultyLevel,
             child: AppText.body(
-              'Difficulty Level',
+              l10n.customExamDifficultyLevel,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(height: 4),
           AppText.bodySmall(
-            'Select difficulty level',
+            l10n.customExamSelectDifficultyLevel,
             color: design.colors.textSecondary,
           ),
           const SizedBox(height: 16),
@@ -916,12 +916,12 @@ class _CustomExamConfigScreenState
             ? SizedBox(
                 width: 20,
                 height: 20,
-                child: AppLoadingIndicator(color: const Color(0xFFFFFFFF)),
+                child: AppLoadingIndicator(color: design.colors.onPrimary),
               )
-            : const Icon(
+            : Icon(
                 LucideIcons.sparkles,
                 size: 20,
-                color: Color(0xFFFFFFFF),
+                color: design.colors.onPrimary,
               ),
       ),
     );
@@ -1002,7 +1002,7 @@ class _CustomExamConfigScreenState
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     AppText.body(
-                      'Select subjects',
+                      l10n.customExamSelectSubjects,
                       color: design.colors.textSecondary,
                     ),
                     Icon(
@@ -1030,26 +1030,30 @@ class _CustomExamConfigScreenState
                   label: l10n.customExamRemoveItem(item.label),
                   onTap: onSelected == null ? null : () => onSelected(val),
                   child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
                     onTap: onSelected == null ? null : () => onSelected(val),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: themeColor.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: themeColor.withValues(alpha: 0.2),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 11),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
                         ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          AppText.labelSmall(item.label, color: themeColor),
-                          const SizedBox(width: 6),
-                          Icon(LucideIcons.x, size: 14, color: themeColor),
-                        ],
+                        decoration: BoxDecoration(
+                          color: themeColor.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: themeColor.withValues(alpha: 0.2),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AppText.labelSmall(item.label, color: themeColor),
+                            const SizedBox(width: 6),
+                            Icon(LucideIcons.x, size: 14, color: themeColor),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -1130,11 +1134,16 @@ class _CustomExamConfigScreenState
                       label: l10n.commonCloseButton,
                       onTap: () => setState(() => _isSubjectSheetOpen = false),
                       child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
                         onTap: () =>
                             setState(() => _isSubjectSheetOpen = false),
-                        child: Icon(
-                          LucideIcons.x,
-                          color: design.colors.textSecondary,
+                        child: SizedBox(
+                          width: 48,
+                          height: 48,
+                          child: Icon(
+                            LucideIcons.x,
+                            color: design.colors.textSecondary,
+                          ),
                         ),
                       ),
                     ),

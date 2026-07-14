@@ -2313,6 +2313,9 @@ class AppLocalizationsAr extends AppLocalizations {
       'يرجى تحديد موضوع واحد على الأقل';
 
   @override
+  String get customExamDifficultyLevel => 'مستوى الصعوبة';
+
+  @override
   String get customExamGenerateCustomExam => 'إنشاء امتحان مخصص';
 
   @override

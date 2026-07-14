@@ -1074,7 +1074,7 @@
     }
   },
   "customExamSelectAtLeastOneSubject": "Please select at least one subject",
-  "customExamSelectDifficultyLevel": "Please select a difficulty level",
+  "customExamDifficultyLevel": "Difficulty Level",
   "customExamGenerateCustomExam": "Generate Custom Exam",
   "customExamPleaseSelectAtLeastOneQuestionType": "Please select at least one question type",
   "customExamPleaseSelectTestMode": "Please select a test mode",

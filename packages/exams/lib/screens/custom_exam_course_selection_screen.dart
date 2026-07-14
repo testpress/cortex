@@ -60,7 +60,7 @@ class _CustomExamCourseSelectionScreenState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppFocusable(
-                      onTap: () => Navigator.of(context).pop(),
+                      onTap: () => context.pop(),
                       borderRadius: BorderRadius.circular(design.radius.md),
                       child: Padding(
                         padding: EdgeInsets.all(design.spacing.xs),

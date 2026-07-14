@@ -182,7 +182,7 @@ class OnlineExamRepository implements ExamRepository {
     _submitTimers.clear();
     _pendingAnswers.clear();
 
-    final attemptId = _currentState.attempt?.activeId.toString();
+    final attemptId = _currentState.attempt?.activeId?.toString();
     if (attemptId == null) return;
 
     for (final entry in pending.entries) {
@@ -243,7 +243,7 @@ class OnlineExamRepository implements ExamRepository {
           );
           if (isQuizMode) {
             final db = await _dbFuture;
-            await db.setQuizModeAttempt(attempt.activeId.toString());
+            await db.setQuizModeAttempt(attempt.activeId!.toString());
           }
           await _initializeAttempt(
             exam,
@@ -274,7 +274,7 @@ class OnlineExamRepository implements ExamRepository {
             );
             if (isQuizMode) {
               final db = await _dbFuture;
-              await db.setQuizModeAttempt(newAttempt.activeId.toString());
+              await db.setQuizModeAttempt(newAttempt.activeId!.toString());
             }
             await _initializeAttempt(
               exam,
@@ -296,7 +296,7 @@ class OnlineExamRepository implements ExamRepository {
         );
         if (isQuizMode) {
           final db = await _dbFuture;
-          await db.setQuizModeAttempt(attempt.activeId.toString());
+          await db.setQuizModeAttempt(attempt.activeId!.toString());
         }
         await _initializeAttempt(
           exam,
@@ -341,7 +341,7 @@ class OnlineExamRepository implements ExamRepository {
           );
           if (isQuizMode) {
             final db = await _dbFuture;
-            await db.setQuizModeAttempt(attempt.activeId.toString());
+            await db.setQuizModeAttempt(attempt.activeId!.toString());
           }
           await _initializeAttempt(
             exam,
@@ -372,7 +372,7 @@ class OnlineExamRepository implements ExamRepository {
             );
             if (isQuizMode) {
               final db = await _dbFuture;
-              await db.setQuizModeAttempt(newAttempt.activeId.toString());
+              await db.setQuizModeAttempt(newAttempt.activeId!.toString());
             }
             await _initializeAttempt(
               exam,
@@ -394,7 +394,7 @@ class OnlineExamRepository implements ExamRepository {
         );
         if (isQuizMode) {
           final db = await _dbFuture;
-          await db.setQuizModeAttempt(attempt.activeId.toString());
+          await db.setQuizModeAttempt(attempt.activeId!.toString());
         }
         await _initializeAttempt(
           exam,
@@ -424,7 +424,7 @@ class OnlineExamRepository implements ExamRepository {
     // Create a dummy ExamDto to satisfy the repository's internal state.
     // Custom exams don't have a backing ExamDto.
     final dummyExam = ExamDto(
-      id: attempt.activeId.toString(),
+      id: attempt.activeId!.toString(),
       title: 'Custom Exam',
       duration:
           attempt.remainingTime ?? '', // Empty duration hides the timer in UI
@@ -469,12 +469,12 @@ class OnlineExamRepository implements ExamRepository {
         ? (isQuizMode ||
               attempt.isQuizMode ||
               await _dbFuture.then(
-                (db) => db.isQuizModeAttempt(attempt.activeId.toString()),
+                (db) => db.isQuizModeAttempt(attempt.activeId!.toString()),
               ))
         : isQuizMode;
     if (effectiveQuizMode) {
       final db = await _dbFuture;
-      await db.setQuizModeAttempt(attempt.activeId.toString());
+      await db.setQuizModeAttempt(attempt.activeId!.toString());
     }
     bool heartbeatFetched = false;
 
@@ -484,7 +484,7 @@ class OnlineExamRepository implements ExamRepository {
         (attempt.sections == null || attempt.sections!.isEmpty)) {
       try {
         currentAttempt = await _dataSource.sendHeartbeat(
-          attempt.activeId.toString(),
+          attempt.activeId!.toString(),
         );
         heartbeatFetched = true;
       } catch (_) {}
@@ -497,7 +497,7 @@ class OnlineExamRepository implements ExamRepository {
             !heartbeatFetched &&
             (attempt.remainingTime == null || isResume))
         ? _dataSource
-              .sendHeartbeat(attempt.activeId.toString())
+              .sendHeartbeat(attempt.activeId!.toString())
               .then<AttemptDto?>((val) => val)
               .catchError((e) {
                 dev.log(
@@ -522,7 +522,7 @@ class OnlineExamRepository implements ExamRepository {
         activeSection.remainingTime ?? activeSection.duration ?? exam.duration,
       );
 
-      final attemptIdStr = currentAttempt.activeId.toString();
+      final attemptIdStr = currentAttempt.activeId!.toString();
 
       final Future<List<QuestionDto>> questionsFuture =
           _sectionQuestionsCache.containsKey(attemptIdStr)
@@ -645,7 +645,7 @@ class OnlineExamRepository implements ExamRepository {
     } else {
       remainingSeconds = _parseDuration(attempt.remainingTime ?? exam.duration);
 
-      final attemptIdStr = attempt.activeId.toString();
+      final attemptIdStr = attempt.activeId!.toString();
       final Future<List<QuestionDto>> questionsFuture =
           _sectionQuestionsCache.containsKey(attemptIdStr)
           ? Future.value(_sectionQuestionsCache[attemptIdStr]!)
@@ -708,10 +708,10 @@ class OnlineExamRepository implements ExamRepository {
       // In Quiz Mode or Custom Test, we do not start countdown or heartbeat, and we don't handle timeout.
     } else if (remainingSeconds > 0) {
       _startCountdown();
-      _startHeartbeat(attempt.activeId.toString());
+      _startHeartbeat(attempt.activeId!.toString());
     } else if (attempt.state == 'Running' || attempt.state == 'running') {
       // Unlimited time exam (remainingSeconds == 0 but attempt is still running)
-      _startHeartbeat(attempt.activeId.toString());
+      _startHeartbeat(attempt.activeId!.toString());
     } else {
       _handleTimeOut();
     }
@@ -766,7 +766,7 @@ class OnlineExamRepository implements ExamRepository {
         futures.add(
           _dataSource
               .endSection(
-                _currentState.attempt!.activeId.toString(),
+                _currentState.attempt!.activeId!.toString(),
                 currentSection.order.toString(),
               )
               .catchError((e, stackTrace) {
@@ -793,7 +793,7 @@ class OnlineExamRepository implements ExamRepository {
         futures.add(
           _dataSource
               .startSection(
-                _currentState.attempt!.activeId.toString(),
+                _currentState.attempt!.activeId!.toString(),
                 nextSection.order.toString(),
               )
               .catchError((e, stackTrace) {
@@ -818,7 +818,7 @@ class OnlineExamRepository implements ExamRepository {
 
       await Future.wait(futures);
 
-      final attemptIdStr = _currentState.attempt!.activeId.toString();
+      final attemptIdStr = _currentState.attempt!.activeId!.toString();
       final allQuestions = _sectionQuestionsCache[attemptIdStr] ?? [];
       final List<QuestionDto> questions = allQuestions
           .where(
@@ -949,7 +949,7 @@ class OnlineExamRepository implements ExamRepository {
     _submitTimers[questionId] = Timer(
       const Duration(milliseconds: 1000),
       () async {
-        final attemptId = _currentState.attempt!.activeId.toString();
+        final attemptId = _currentState.attempt!.activeId!.toString();
         final pendingAns = _pendingAnswers.remove(questionId);
 
         if (pendingAns != null) {
@@ -986,7 +986,7 @@ class OnlineExamRepository implements ExamRepository {
     if (_currentState.attempt?.activeId == null) {
       return;
     }
-    final attemptId = _currentState.attempt!.activeId.toString();
+    final attemptId = _currentState.attempt!.activeId!.toString();
 
     // Flush any pending network debounce for this question to avoid conflicts
     _submitTimers[questionId]?.cancel();
@@ -1100,7 +1100,7 @@ class OnlineExamRepository implements ExamRepository {
 
   @override
   Future<void> endExam() async {
-    final attemptId = _currentState.attempt!.activeId.toString();
+    final attemptId = _currentState.attempt!.activeId!.toString();
 
     _emit(_currentState.copyWith(status: ExamAttemptStatus.submitting));
     stopCountdown();

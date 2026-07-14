@@ -855,6 +855,7 @@
   },
   "customExamCreateTitle": "കസ്റ്റം പരീക്ഷ",
   "customExamSelectAtLeastOneSubject": "ദയവായി ഒരു വിഷയമെങ്കിലും തിരഞ്ഞെടുക്കുക",
+  "customExamDifficultyLevel": "കാഠിന്യ നില",
   "customExamSelectDifficultyLevel": "ദയവായി കാഠിന്യ നില തിരഞ്ഞെടുക്കുക",
   "customExamGenerateCustomExam": "കസ്റ്റം പരീക്ഷ സൃഷ്ടിക്കുക",
   "customExamPleaseSelectAtLeastOneQuestionType": "ദയവായി ഒരു ചോദ്യരൂപമെങ്കിലും തിരഞ്ഞെടുക്കുക",

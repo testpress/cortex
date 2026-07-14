@@ -2432,7 +2432,7 @@ abstract class AppLocalizations {
   /// No description provided for @customExamSelectDifficultyLevel.
   ///
   /// In en, this message translates to:
-  /// **'Please select a difficulty level'**
+  /// **'Select difficulty level'**
   String get customExamSelectDifficultyLevel;
 
   /// No description provided for @customExamRemoveItem.
@@ -4240,6 +4240,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please select at least one subject'**
   String get customExamSelectAtLeastOneSubject;
+
+  /// No description provided for @customExamDifficultyLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Difficulty Level'**
+  String get customExamDifficultyLevel;
 
   /// No description provided for @customExamGenerateCustomExam.
   ///

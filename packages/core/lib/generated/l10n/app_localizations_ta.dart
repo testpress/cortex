@@ -2344,6 +2344,9 @@ class AppLocalizationsTa extends AppLocalizations {
       'குறைந்தபட்சம் ஒரு பாடத்தையாவது தேர்ந்தெடுக்கவும்';
 
   @override
+  String get customExamDifficultyLevel => 'கடினத்தன்மை நிலை';
+
+  @override
   String get customExamGenerateCustomExam => 'தனிப்பயன் தேர்வை உருவாக்கு';
 
   @override
