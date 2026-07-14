@@ -35,7 +35,9 @@ class CourseRepository {
     } else {
       _activeSyncIds.remove(courseId);
     }
-    _syncStatusController.add(Set.unmodifiable(_activeSyncIds));
+    if (!_syncStatusController.isClosed) {
+      _syncStatusController.add(Set.unmodifiable(_activeSyncIds));
+    }
   }
 
   CourseRepository(this._db, this._source);
@@ -52,32 +54,27 @@ class CourseRepository {
   }
 
   /// Live stream of courses filtered for the Exams tab.
+  ///
+  /// Tag and device filtering operates directly on the raw JSON strings stored
+  /// in the DB (e.g. [tags] = '["exams","study"]') using [String.contains].
+  /// This is safe because [_courseDtoToCompanion] always serializes via
+  /// [jsonEncode], which produces compact, double-quoted output with no
+  /// whitespace. If the serialization format ever changes, these checks must
+  /// be updated accordingly.
   Stream<List<CoursesTableData>> watchExamCourses() {
     return _db.watchAllCourses().map((courses) {
-      return courses.where((course) {
-        final devicesStr = (course.allowedDevices ?? '').toLowerCase();
-        final tagsStr = (course.tags ?? '').toLowerCase();
-
-        final hasMobileAccess = devicesStr.contains('mobile');
-        final isEmptyTags = tagsStr.isEmpty || tagsStr == '[]';
-        final isExamCourse = tagsStr.contains('"exams"') ||
-            (isEmptyTags && course.examsCount > 0);
-
-        return isExamCourse && hasMobileAccess;
-      }).toList();
+      return courses
+          .where((course) => course.isExamCourse && course.hasMobileAccess)
+          .toList();
     });
   }
 
   /// Live stream of courses filtered for the Info (Learning Resources) tab.
   Stream<List<CoursesTableData>> watchInfoCourses() {
     return _db.watchAllCourses().map((courses) {
-      return courses.where((course) {
-        final devicesStr = (course.allowedDevices ?? '').toLowerCase();
-        final tagsStr = (course.tags ?? '').toLowerCase();
-
-        final hasMobileAccess = devicesStr.contains('mobile');
-        return tagsStr.contains('"info"') && hasMobileAccess;
-      }).toList();
+      return courses
+          .where((course) => course.isInfoCourse && course.hasMobileAccess)
+          .toList();
     });
   }
 
@@ -86,15 +83,8 @@ class CourseRepository {
   Stream<List<CoursesTableData>> watchStudyCourses() {
     return _db.watchAllCourses().map((courses) {
       return courses.where((course) {
-        final tagsStr = (course.tags ?? '').toLowerCase();
-        final isEmptyTags = tagsStr.isEmpty || tagsStr == '[]';
-
-        final isExamCourse = tagsStr.contains('"exams"') ||
-            (isEmptyTags && course.examsCount > 0);
-        final isInfoCourse = tagsStr.contains('"info"');
-
-        if (AppConfig.showExamTab && isExamCourse) return false;
-        if (AppConfig.showInfoTab && isInfoCourse) return false;
+        if (AppConfig.showExamTab && course.isExamCourse) return false;
+        if (AppConfig.showInfoTab && course.isInfoCourse) return false;
         return true;
       }).toList();
     });
@@ -1282,4 +1272,17 @@ class LessonPaginationController {
     required this.fetchNextPage,
     required this.dispose,
   });
+}
+
+extension CoursesTableDataX on CoursesTableData {
+  String get devicesStr => (allowedDevices ?? '').toLowerCase();
+  String get tagsStr => (tags ?? '').toLowerCase();
+
+  bool get hasMobileAccess => devicesStr.contains('mobile');
+  bool get isEmptyTags => tagsStr.isEmpty || tagsStr == '[]';
+
+  bool get isExamCourse =>
+      tagsStr.contains('"exams"') || (isEmptyTags && examsCount > 0);
+
+  bool get isInfoCourse => tagsStr.contains('"info"');
 }
