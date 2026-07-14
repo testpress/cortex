@@ -4,6 +4,7 @@ import 'package:core/core.dart';
 import 'package:profile/profile.dart';
 import 'package:courses/courses.dart';
 import '../screens/announcements/announcements_list_screen.dart';
+import 'package:core/data/data.dart';
 
 class DashboardDrawer extends ConsumerWidget {
   const DashboardDrawer({super.key, this.isLandscape = false});
@@ -17,6 +18,8 @@ class DashboardDrawer extends ConsumerWidget {
 
     final l10n = L10n.of(context);
     final version = ref.watch(appVersionProvider).value ?? '...';
+    final enableCustomTest =
+        ref.watch(instituteSettingsProvider)?.enableCustomTest ?? false;
 
     return AppDrawer(
       isOpen: isOpen,
@@ -72,14 +75,15 @@ class DashboardDrawer extends ConsumerWidget {
                 context.go('/home/discussions/doubts');
               },
             ),
-            AppDrawerItem(
-              icon: LucideIcons.fileCheck,
-              label: l10n.drawerCustomExam,
-              action: () {
-                ref.read(isHomeDrawerOpenProvider.notifier).state = false;
-                context.push('/exams/create-custom-exam');
-              },
-            ),
+            if (enableCustomTest)
+              AppDrawerItem(
+                icon: LucideIcons.fileCheck,
+                label: l10n.drawerCustomExam,
+                action: () {
+                  ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                  context.push('/exams/create-custom-exam');
+                },
+              ),
 
             AppDrawerItem(
               icon: LucideIcons.download,

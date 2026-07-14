@@ -3,7 +3,8 @@ export 'package:core/data/data.dart';
 export 'screens/assessment_detail_screen.dart';
 export 'screens/test_detail_screen.dart';
 export 'screens/exam_prescreen.dart';
-export 'screens/custom_exam_options_screen.dart';
+export 'screens/custom_exam_course_selection_screen.dart';
+export 'screens/custom_exam_config_screen.dart';
 export 'screens/exams_screen.dart';
 export 'screens/review_answer/review_answer_detail_screen.dart';
 

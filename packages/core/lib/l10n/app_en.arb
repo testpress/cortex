@@ -59,7 +59,9 @@
   "loginResendCodeIn": "Resend code in {time}",
   "@loginResendCodeIn": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "loginDidntReceiveCode": "Didn't receive the code? ",
@@ -89,13 +91,17 @@
   "loginEnterFieldHint": "Enter {field}",
   "@loginEnterFieldHint": {
     "placeholders": {
-      "field": { "type": "String" }
+      "field": {
+        "type": "String"
+      }
     }
   },
   "loginOtpVerifySubtitle": "Enter the 4 digit code sent to your {phone}",
   "@loginOtpVerifySubtitle": {
     "placeholders": {
-      "phone": { "type": "String" }
+      "phone": {
+        "type": "String"
+      }
     }
   },
   "welcomeMessage": "Welcome to Cortex",
@@ -276,7 +282,6 @@
       }
     }
   },
-
   "achievementsLabel": "Achievements",
   "moreBadgesLabel": "+{count} more",
   "@moreBadgesLabel": {
@@ -321,7 +326,6 @@
   "filterNotes": "Notes",
   "filterAttachment": "Attachments",
   "resumeStudyHeader": "Resume Study",
-  "labelRetry": "Retry",
   "labelCompleted": "completed",
   "errorGenericTitle": "Something went wrong",
   "errorGenericMessage": "Failed to load data. Please check your connection and try again.",
@@ -559,7 +563,6 @@
   "labelReported": "Reported",
   "labelOverallSummary": "Overall Summary",
   "labelFilter": "Filter:",
-
   "labelAccuracy": "Accuracy",
   "labelScore": "Score",
   "labelTimeTaken": "Time Taken",
@@ -611,21 +614,50 @@
   "reviewQuestionLabel": "Question {number}",
   "@reviewQuestionLabel": {
     "placeholders": {
-      "number": { "type": "String" }
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "examsEmptyStateDesc": "No exams available right now. Please check back later.",
+  "customExamTitle": "Custom Exam",
+  "customExamCourseSelectionInfo": "After selecting a course, you can choose subjects, difficulty level, test mode and number of questions.",
+  "customExamLoadingCourse": "Loading course name...",
+  "customExamSelectedCourse": "Selected Course",
+  "customExamQuestionType": "Question Type",
+  "customExamSelectQuestionType": "Select the type of questions",
+  "customExamTestMode": "Test Mode",
+  "customExamChooseTestExperience": "Choose the test experience",
+  "customExamNumberOfQuestions": "Number of Questions",
+  "customExamChooseNumberOfQuestions": "Choose the number of questions",
+  "customExamSelectOneOrMoreSubjects": "Select one or more subjects",
+  "customExamSelectDifficultyLevel": "Select difficulty level",
+  "customExamRemoveItem": "Remove {item}",
+  "@customExamRemoveItem": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
     }
   },
   "reviewEmptyStateMessage": "No questions found for this filter.",
   "reviewAnswersTitle": "Review Answers - {title}",
   "@reviewAnswersTitle": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "reviewQuestionCount": "{current} of {total}",
   "@reviewQuestionCount": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "settingsAppearanceTitle": "Appearance",
@@ -680,7 +712,6 @@
   "editProfileLastNameHint": "Enter your last name",
   "labelMock": "Mock",
   "labelPractice": "Practice",
-
   "forumTitle": "Discussion Forum",
   "forumFilterTitle": "Filters",
   "forumFilterByActivity": "Filter by Activity",
@@ -727,7 +758,6 @@
   "forumPostSelectCategoryTitle": "Select Category",
   "forumButtonSubmit": "Submit",
   "forumButtonCancel": "Cancel",
-  "labelPractice": "Practice",
   "attachmentSize": "Size: {size}",
   "@attachmentSize": {
     "placeholders": {
@@ -876,13 +906,17 @@
   "bookmarkAddedToFolder": "Added bookmark to {folderName}",
   "@bookmarkAddedToFolder": {
     "placeholders": {
-      "folderName": { "type": "String" }
+      "folderName": {
+        "type": "String"
+      }
     }
   },
   "bookmarkRemovedFromFolder": "Removed bookmark from {folderName}",
   "@bookmarkRemovedFromFolder": {
     "placeholders": {
-      "folderName": { "type": "String" }
+      "folderName": {
+        "type": "String"
+      }
     }
   },
   "bookmarkRemoved": "Bookmark removed",
@@ -891,7 +925,9 @@
   "lessonSpecializedViewerRequired": "Specialized viewer required for {type}",
   "@lessonSpecializedViewerRequired": {
     "placeholders": {
-      "type": { "type": "String" }
+      "type": {
+        "type": "String"
+      }
     }
   },
   "leaderboardTitle": "Leaderboard",
@@ -922,7 +958,9 @@
   "forumRepliesCount": "{count,plural, =1{1 Reply} other{{count} Replies}}",
   "@forumRepliesCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "forumRoleInstructor": "Instructor",
@@ -933,7 +971,9 @@
   "bookmarkFolderItemsCount": "{count,plural, =1{1 item} other{{count} items}}",
   "@bookmarkFolderItemsCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "bookmarksTitle": "Bookmarks",
@@ -1015,10 +1055,10 @@
       }
     }
   },
-  "customExamCreateTitle": "Create Practice Exam",
-  "customExamSelectCourse": "Select Course",
-  "customExamSearchCourses": "Search courses...",
-  "customExamNoCoursesFound": "No courses found.",
+  "customExamCreateTitle": "Custom Exam",
+  "customExamSelectCourse": "Select a course",
+  "customExamSearchCourses": "Search courses",
+  "customExamNoCoursesFound": "No courses found",
   "customExamStepScope": "Step 1: Practice Scope",
   "customExamFullCourse": "Full Course Practice",
   "customExamCoverAllTopics": "Cover all topics",
@@ -1046,14 +1086,25 @@
   "customExamModeQuizDesc": "Get instant feedback and explanations after each question",
   "customExamModeTest": "Test",
   "customExamModeTestDesc": "Attempt like a real exam with a timer and final result",
-  "customExamBtnCreate": "Create Practice Exam",
+  "customExamBtnCreate": "Custom Exam",
   "customExamBtnGoBack": "Go back",
   "customExamCountLabel": "{count} questions",
   "@customExamCountLabel": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
+  "customExamSelectAtLeastOneSubject": "Please select at least one subject",
+  "customExamDifficultyLevel": "Difficulty Level",
+  "customExamGenerateCustomExam": "Generate Custom Exam",
+  "customExamPleaseSelectAtLeastOneQuestionType": "Please select at least one question type",
+  "customExamPleaseSelectTestMode": "Please select a test mode",
+  "customExamErrorLoading": "Error loading courses",
+  "customExamSelectSubjects": "Select Subjects",
+  "customExamDailyLimitExhausted": "You have exhausted your daily limits for custom exams.",
+  "customExamMonthlyLimitExhausted": "You have exhausted your monthly limits for custom exams.",
   "examsTabTitle": "Exams",
   "availableExamCoursesTitle": "Available Exam Courses",
   "testSubmitting": "Submitting test...",
@@ -1125,5 +1176,6 @@
         "type": "String"
       }
     }
-  }
+  },
+  "customExamPleaseSelectDifficultyLevel": "Please select a difficulty level"
 }

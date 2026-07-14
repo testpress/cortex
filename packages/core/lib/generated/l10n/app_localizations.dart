@@ -2357,6 +2357,90 @@ abstract class AppLocalizations {
   /// **'Question {number}'**
   String reviewQuestionLabel(String number);
 
+  /// No description provided for @examsEmptyStateDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'No exams available right now. Please check back later.'**
+  String get examsEmptyStateDesc;
+
+  /// No description provided for @customExamTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Exam'**
+  String get customExamTitle;
+
+  /// No description provided for @customExamCourseSelectionInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'After selecting a course, you can choose subjects, difficulty level, test mode and number of questions.'**
+  String get customExamCourseSelectionInfo;
+
+  /// No description provided for @customExamLoadingCourse.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading course name...'**
+  String get customExamLoadingCourse;
+
+  /// No description provided for @customExamSelectedCourse.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected Course'**
+  String get customExamSelectedCourse;
+
+  /// No description provided for @customExamQuestionType.
+  ///
+  /// In en, this message translates to:
+  /// **'Question Type'**
+  String get customExamQuestionType;
+
+  /// No description provided for @customExamSelectQuestionType.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the type of questions'**
+  String get customExamSelectQuestionType;
+
+  /// No description provided for @customExamTestMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Mode'**
+  String get customExamTestMode;
+
+  /// No description provided for @customExamChooseTestExperience.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the test experience'**
+  String get customExamChooseTestExperience;
+
+  /// No description provided for @customExamNumberOfQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of Questions'**
+  String get customExamNumberOfQuestions;
+
+  /// No description provided for @customExamChooseNumberOfQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the number of questions'**
+  String get customExamChooseNumberOfQuestions;
+
+  /// No description provided for @customExamSelectOneOrMoreSubjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Select one or more subjects'**
+  String get customExamSelectOneOrMoreSubjects;
+
+  /// No description provided for @customExamSelectDifficultyLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Select difficulty level'**
+  String get customExamSelectDifficultyLevel;
+
+  /// No description provided for @customExamRemoveItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {item}'**
+  String customExamRemoveItem(String item);
+
   /// No description provided for @reviewEmptyStateMessage.
   ///
   /// In en, this message translates to:
@@ -3992,25 +4076,25 @@ abstract class AppLocalizations {
   /// No description provided for @customExamCreateTitle.
   ///
   /// In en, this message translates to:
-  /// **'Create Practice Exam'**
+  /// **'Custom Exam'**
   String get customExamCreateTitle;
 
   /// No description provided for @customExamSelectCourse.
   ///
   /// In en, this message translates to:
-  /// **'Select Course'**
+  /// **'Select a course'**
   String get customExamSelectCourse;
 
   /// No description provided for @customExamSearchCourses.
   ///
   /// In en, this message translates to:
-  /// **'Search courses...'**
+  /// **'Search courses'**
   String get customExamSearchCourses;
 
   /// No description provided for @customExamNoCoursesFound.
   ///
   /// In en, this message translates to:
-  /// **'No courses found.'**
+  /// **'No courses found'**
   String get customExamNoCoursesFound;
 
   /// No description provided for @customExamStepScope.
@@ -4136,7 +4220,7 @@ abstract class AppLocalizations {
   /// No description provided for @customExamBtnCreate.
   ///
   /// In en, this message translates to:
-  /// **'Create Practice Exam'**
+  /// **'Custom Exam'**
   String get customExamBtnCreate;
 
   /// No description provided for @customExamBtnGoBack.
@@ -4150,6 +4234,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} questions'**
   String customExamCountLabel(int count);
+
+  /// No description provided for @customExamSelectAtLeastOneSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select at least one subject'**
+  String get customExamSelectAtLeastOneSubject;
+
+  /// No description provided for @customExamDifficultyLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Difficulty Level'**
+  String get customExamDifficultyLevel;
+
+  /// No description provided for @customExamGenerateCustomExam.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate Custom Exam'**
+  String get customExamGenerateCustomExam;
+
+  /// No description provided for @customExamPleaseSelectAtLeastOneQuestionType.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select at least one question type'**
+  String get customExamPleaseSelectAtLeastOneQuestionType;
+
+  /// No description provided for @customExamPleaseSelectTestMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a test mode'**
+  String get customExamPleaseSelectTestMode;
+
+  /// No description provided for @customExamErrorLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading courses'**
+  String get customExamErrorLoading;
+
+  /// No description provided for @customExamSelectSubjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Subjects'**
+  String get customExamSelectSubjects;
+
+  /// No description provided for @customExamDailyLimitExhausted.
+  ///
+  /// In en, this message translates to:
+  /// **'You have exhausted your daily limits for custom exams.'**
+  String get customExamDailyLimitExhausted;
+
+  /// No description provided for @customExamMonthlyLimitExhausted.
+  ///
+  /// In en, this message translates to:
+  /// **'You have exhausted your monthly limits for custom exams.'**
+  String get customExamMonthlyLimitExhausted;
 
   /// No description provided for @examsTabTitle.
   ///
@@ -4390,6 +4528,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Question ID: {id}'**
   String questionIdArgs(String id);
+
+  /// No description provided for @customExamPleaseSelectDifficultyLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a difficulty level'**
+  String get customExamPleaseSelectDifficultyLevel;
 }
 
 class _AppLocalizationsDelegate

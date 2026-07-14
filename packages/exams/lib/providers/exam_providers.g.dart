@@ -318,7 +318,7 @@ class _ExamAttemptsProviderElement
   String get attemptsUrl => (origin as ExamAttemptsProvider).attemptsUrl;
 }
 
-String _$examAttemptHash() => r'cd74666f286c00d5dc8b9a965480402afca9231a';
+String _$examAttemptHash() => r'9756ef1ff429e3b541dd2f14475110941bef956b';
 
 /// Notifier that manages the active exam attempt lifecycle.
 ///

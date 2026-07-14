@@ -52,6 +52,8 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
     final examCoursesState = ref.watch(examListProvider);
     final isSyncing = ref.watch(isSyncingExamsProvider);
     final isSyncingMore = ref.watch(isSyncingMoreExamsProvider);
+    final enableCustomTest =
+        ref.watch(instituteSettingsProvider)?.enableCustomTest ?? false;
 
     return DecoratedBox(
       decoration: BoxDecoration(color: design.colors.canvas),
@@ -220,15 +222,16 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
               ],
             ),
           ),
-          Positioned(
-            bottom: padding.bottom + design.spacing.md,
-            right: design.spacing.md,
-            child: AppButton.primary(
-              label: context.l10n.customExamCreateTitle,
-              leading: const Icon(LucideIcons.plus, size: 20),
-              onPressed: () => context.push('/exams/create-custom-exam'),
+          if (enableCustomTest)
+            Positioned(
+              bottom: padding.bottom + design.spacing.md,
+              right: design.spacing.md,
+              child: AppButton.primary(
+                label: context.l10n.customExamCreateTitle,
+                leading: const Icon(LucideIcons.plus, size: 20),
+                onPressed: () => context.push('/exams/create-custom-exam'),
+              ),
             ),
-          ),
         ],
       ),
     );

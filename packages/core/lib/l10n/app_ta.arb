@@ -59,7 +59,9 @@
   "loginResendCodeIn": "{time} நேரத்தில் குறியீட்டை மீண்டும் அனுப்பு",
   "@loginResendCodeIn": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "loginDidntReceiveCode": "குறியீடு வரவில்லையா? ",
@@ -89,13 +91,17 @@
   "loginEnterFieldHint": "{field} உள்ளிடவும்",
   "@loginEnterFieldHint": {
     "placeholders": {
-      "field": { "type": "String" }
+      "field": {
+        "type": "String"
+      }
     }
   },
   "loginOtpVerifySubtitle": "உங்கள் {phone} க்கு அனுப்பப்பட்ட 4 இலக்க குறியீட்டை உள்ளிடவும்",
   "@loginOtpVerifySubtitle": {
     "placeholders": {
-      "phone": { "type": "String" }
+      "phone": {
+        "type": "String"
+      }
     }
   },
   "welcomeMessage": "Cortex-க்கு வரவேற்கிறோம்",
@@ -276,7 +282,6 @@
       }
     }
   },
-
   "achievementsLabel": "சாதனைகள்",
   "moreBadgesLabel": "மேலும் {count}",
   "@moreBadgesLabel": {
@@ -983,10 +988,10 @@
   "analyticsSelectTab": "{label} தாவலைத் தேர்ந்தெடு",
   "filterEmptyStateMessage": "{name} எதுவும் கிடைக்கவில்லை.",
   "labelExams": "தேர்வுகள்",
-  "customExamCreateTitle": "பயிற்சி தேர்வை உருவாக்கவும்",
-  "customExamSelectCourse": "பாடநெறியைத் தேர்ந்தெடுக்கவும்",
-  "customExamSearchCourses": "பாடநெறிகளைத் தேடுங்கள்...",
-  "customExamNoCoursesFound": "பாடநெறிகள் எதுவும் கிடைக்கவில்லை.",
+  "customExamCreateTitle": "தனிப்பயன் தேர்வு",
+  "customExamSelectCourse": "ஒரு பாடநெறியைத் தேர்ந்தெடுக்கவும்",
+  "customExamSearchCourses": "பாடநெறிகளைத் தேடுக",
+  "customExamNoCoursesFound": "பாடநெறிகள் எதுவும் கிடைக்கவில்லை",
   "customExamStepScope": "படி 1: பயிற்சியின் வரம்பு",
   "customExamFullCourse": "முழு பாடநெறி பயிற்சி",
   "customExamCoverAllTopics": "அனைத்து தலைப்புகளையும் உள்ளடக்கும்",
@@ -1007,7 +1012,7 @@
   "customExamModeQuizDesc": "ஒவ்வொரு கேள்விக்கும் பிறகு உடனடி பின்னூட்டமும் விளக்கமும் பெறுங்கள்",
   "customExamModeTest": "தேர்வு",
   "customExamModeTestDesc": "நேரக் கணிப்பானுடன் உண்மையான தேர்வு போல எழுதுங்கள்; இறுதியில் முடிவைப் பெறுங்கள்",
-  "customExamBtnCreate": "பயிற்சி தேர்வை உருவாக்கவும்",
+  "customExamBtnCreate": "தனிப்பயன் தேர்வு",
   "customExamBtnGoBack": "திரும்பிச் செல்",
   "customExamCountLabel": "{count} கேள்விகள்",
   "@customExamCountLabel": {
@@ -1096,5 +1101,35 @@
   "reviewPercentile": "சதவீதம்",
   "reviewOfTotal": "மொத்தத்தில்",
   "lessonDetails": "பாடம் விவரங்கள்",
-  "questionIdArgs": "கேள்வி ஐடி: {id}"
+  "questionIdArgs": "கேள்வி ஐடி: {id}",
+  "customExamSelectAtLeastOneSubject": "குறைந்தபட்சம் ஒரு பாடத்தையாவது தேர்ந்தெடுக்கவும்",
+  "customExamDifficultyLevel": "கடினத்தன்மை நிலை",
+  "customExamSelectDifficultyLevel": "கடினத்தன்மை நிலையைத் தேர்ந்தெடுக்கவும்",
+  "customExamGenerateCustomExam": "தனிப்பயன் தேர்வை உருவாக்கு",
+  "customExamPleaseSelectAtLeastOneQuestionType": "குறைந்தபட்சம் ஒரு கேள்வி வகையையாவது தேர்ந்தெடுக்கவும்",
+  "customExamPleaseSelectTestMode": "தேர்வு முறையைத் தேர்ந்தெடுக்கவும்",
+  "customExamErrorLoading": "பாடநெறிகளை ஏற்றுவதில் பிழை",
+  "customExamSelectSubjects": "பாடங்களைத் தேர்ந்தெடுக்கவும்",
+  "customExamDailyLimitExhausted": "தனிப்பயன் தேர்வுகளுக்கான உங்கள் தினசரி வரம்புகள் முடிந்துவிட்டன.",
+  "customExamMonthlyLimitExhausted": "தனிப்பயன் தேர்வுகளுக்கான உங்கள் மாதாந்திர வரம்புகள் முடிந்துவிட்டன.",
+  "customExamTitle": "தனிப்பயன் தேர்வு",
+  "customExamCourseSelectionInfo": "ஒரு பாடநெறியைத் தேர்ந்தெடுத்த பிறகு, பாடங்கள், கடினத்தன்மை நிலை, தேர்வு முறை மற்றும் கேள்விகளின் எண்ணிக்கையை நீங்கள் தேர்ந்தெடுக்கலாம்.",
+  "customExamLoadingCourse": "பாடநெறியின் பெயர் ஏற்றப்படுகிறது...",
+  "customExamSelectedCourse": "தேர்ந்தெடுக்கப்பட்ட பாடநெறி",
+  "customExamQuestionType": "கேள்வி வகை",
+  "customExamSelectQuestionType": "கேள்விகளின் வகையைத் தேர்ந்தெடுக்கவும்",
+  "customExamTestMode": "தேர்வு முறை",
+  "customExamChooseTestExperience": "தேர்வு அனுபவத்தைத் தேர்வுசெய்யவும்",
+  "customExamNumberOfQuestions": "கேள்விகளின் எண்ணிக்கை",
+  "customExamChooseNumberOfQuestions": "கேள்விகளின் எண்ணிக்கையைத் தேர்வுசெய்யவும்",
+  "customExamSelectOneOrMoreSubjects": "ஒன்று அல்லது அதற்கு மேற்பட்ட பாடங்களைத் தேர்ந்தெடுக்கவும்",
+  "customExamRemoveItem": "{item} ஐ அகற்று",
+  "@customExamRemoveItem": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "customExamPleaseSelectDifficultyLevel": "தயவுசெய்து கடினத்தன்மை நிலையைத் தேர்ந்தெடுக்கவும்"
 }

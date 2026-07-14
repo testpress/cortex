@@ -53,7 +53,9 @@
   "loginResendCodeIn": "{time} ൽ കോഡ് വീണ്ടും അയയ്ക്കുക",
   "@loginResendCodeIn": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "loginDidntReceiveCode": "കോഡ് ലഭിച്ചില്ലേ? ",
@@ -83,13 +85,17 @@
   "loginEnterFieldHint": "{field} നൽകുക",
   "@loginEnterFieldHint": {
     "placeholders": {
-      "field": { "type": "String" }
+      "field": {
+        "type": "String"
+      }
     }
   },
   "loginOtpVerifySubtitle": "നിങ്ങളുടെ {phone} ലേക്ക് അയച്ച 4 അക്ക കോഡ് നൽകുക",
   "@loginOtpVerifySubtitle": {
     "placeholders": {
-      "phone": { "type": "String" }
+      "phone": {
+        "type": "String"
+      }
     }
   },
   "welcomeMessage": "കോട്ടെക്സിലേക്ക് സ്വാഗതം",
@@ -206,7 +212,6 @@
   "liveLabel": "ലൈവ്",
   "importantLabel": "പ്രധാനം",
   "testTypeLabel": "{type} ടെസ്റ്റ്",
-
   "achievementsLabel": "നേട്ടങ്ങൾ",
   "moreBadgesLabel": "+{count} കൂടുതൽ",
   "drawerMenuTitle": "മെനു",
@@ -238,7 +243,6 @@
   "filterAttachment": "അറ്റാച്ച്‌മെന്റുകൾ",
   "resumeStudyHeader": "പഠനം തുടരുക",
   "labelCompleted": "പൂർത്തിയായി",
-  "labelRetry": "വീണ്ടും ശ്രമിക്കുക",
   "errorGenericTitle": "എന്തോ തകരാർ സംഭവിച്ചു",
   "errorGenericMessage": "വിവരങ്ങൾ ലഭിക്കുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി നിങ്ങളുടെ ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിച്ചു വീണ്ടും ശ്രമിക്കുക.",
   "errorLessonLoad": "പാഠം ലോഡുചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു. നിങ്ങളുടെ കണക്ഷൻ പരിശോധിക്കുക.",
@@ -432,21 +436,29 @@
   "reviewQuestionLabel": "ചോദ്യം {number}",
   "@reviewQuestionLabel": {
     "placeholders": {
-      "number": { "type": "String" }
+      "number": {
+        "type": "String"
+      }
     }
   },
   "reviewEmptyStateMessage": "ഈ ഫിൽട്ടറിൽ ചോദ്യങ്ങളൊന്നും ലഭ്യമല്ല.",
   "reviewAnswersTitle": "ഉത്തരങ്ങൾ പരിശോധിക്കുക - {title}",
   "@reviewAnswersTitle": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "reviewQuestionCount": "{total}-ൽ {current}",
   "@reviewQuestionCount": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "settingsAppearanceTitle": "രൂപഭാവം",
@@ -547,7 +559,6 @@
   "forumPostSelectCategoryTitle": "വിഭാഗം തിരഞ്ഞെടുക്കുക",
   "forumButtonSubmit": "സമർപ്പിക്കുക",
   "forumButtonCancel": "റദ്ദാക്കുക",
-  "labelPractice": "പ്രാക്ടീസ്",
   "attachmentSize": "വലിപ്പം: {size}",
   "@attachmentSize": {
     "placeholders": {
@@ -631,13 +642,17 @@
   "bookmarkAddedToFolder": "ബുക്ക്മാർക്ക് {folderName}-ലേക്ക് ചേർത്തു",
   "@bookmarkAddedToFolder": {
     "placeholders": {
-      "folderName": { "type": "String" }
+      "folderName": {
+        "type": "String"
+      }
     }
   },
   "bookmarkRemovedFromFolder": "ബുക്ക്മാർക്ക് {folderName}-ൽ നിന്ന് നീക്കം ചെയ്തു",
   "@bookmarkRemovedFromFolder": {
     "placeholders": {
-      "folderName": { "type": "String" }
+      "folderName": {
+        "type": "String"
+      }
     }
   },
   "bookmarkRemoved": "ബുക്ക്മാർക്ക് നീക്കം ചെയ്തു",
@@ -646,7 +661,9 @@
   "lessonSpecializedViewerRequired": "{type}-ന് പ്രത്യേക വ്യൂവർ ആവശ്യമാണ്",
   "@lessonSpecializedViewerRequired": {
     "placeholders": {
-      "type": { "type": "String" }
+      "type": {
+        "type": "String"
+      }
     }
   },
   "leaderboardTitle": "ലീഡർബോർഡ്",
@@ -733,10 +750,10 @@
   "analyticsSelectTab": "{label} ടാബ് തിരഞ്ഞെടുക്കുക",
   "filterEmptyStateMessage": "{name} ഒന്നും കണ്ടെത്തിയില്ല.",
   "labelExams": "പരീക്ഷകൾ",
-  "customExamCreateTitle": "പ്രാക്ടീസ് പരീക്ഷ സൃഷ്ടിക്കുക",
-  "customExamSelectCourse": "കോഴ്സ് തിരഞ്ഞെടുക്കുക",
-  "customExamSearchCourses": "കോഴ്സുകൾ തിരയുക...",
-  "customExamNoCoursesFound": "കോഴ്സുകളൊന്നും കണ്ടെത്തിയില്ല.",
+  "customExamCreateTitle": "കസ്റ്റം പരീക്ഷ",
+  "customExamSelectCourse": "ഒരു കോഴ്സ് തിരഞ്ഞെടുക്കുക",
+  "customExamSearchCourses": "കോഴ്സുകൾ തിരയുക",
+  "customExamNoCoursesFound": "കോഴ്സുകൾ ലഭ്യമല്ല",
   "customExamStepScope": "ഘട്ടം 1: പ്രാക്ടീസ് സ്കോപ്പ്",
   "customExamFullCourse": "മുഴുവൻ കോഴ്സ് പ്രാക്ടീസ്",
   "customExamCoverAllTopics": "എല്ലാ വിഷയങ്ങളും ഉൾക്കൊള്ളുന്നു",
@@ -757,7 +774,7 @@
   "customExamModeQuizDesc": "ഓരോ ചോദ്യത്തിനും ശേഷം ഉടനടി ഫീഡ്‌ബാക്കും വിശദീകരണങ്ങളും നേടുക",
   "customExamModeTest": "ടെസ്റ്റ്",
   "customExamModeTestDesc": "ടൈമറും അവസാന ഫലവുമുള്ള ഒരു യഥാർത്ഥ പരീക്ഷ പോലെ ശ്രമിക്കുക",
-  "customExamBtnCreate": "പ്രാക്ടീസ് പരീക്ഷ സൃഷ്ടിക്കുക",
+  "customExamBtnCreate": "കസ്റ്റം പരീക്ഷ",
   "customExamBtnGoBack": "തിരികെ പോവുക",
   "customExamCountLabel": "{count} ചോദ്യങ്ങൾ",
   "@customExamCountLabel": {
@@ -846,5 +863,35 @@
   "reviewPercentile": "ശതമാനം",
   "reviewOfTotal": "ആകെ",
   "lessonDetails": "പാഠത്തിന്റെ വിശദാംശങ്ങൾ",
-  "questionIdArgs": "ചോദ്യ ഐഡി: {id}"
+  "questionIdArgs": "ചോദ്യ ഐഡി: {id}",
+  "customExamSelectAtLeastOneSubject": "ദയവായി ഒരു വിഷയമെങ്കിലും തിരഞ്ഞെടുക്കുക",
+  "customExamDifficultyLevel": "കാഠിന്യ നില",
+  "customExamSelectDifficultyLevel": "കാഠിന്യ നില തിരഞ്ഞെടുക്കുക",
+  "customExamGenerateCustomExam": "കസ്റ്റം പരീക്ഷ സൃഷ്ടിക്കുക",
+  "customExamPleaseSelectAtLeastOneQuestionType": "ദയവായി ഒരു ചോദ്യരൂപമെങ്കിലും തിരഞ്ഞെടുക്കുക",
+  "customExamPleaseSelectTestMode": "ദയവായി പരീക്ഷാ രീതി തിരഞ്ഞെടുക്കുക",
+  "customExamErrorLoading": "കോഴ്സുകൾ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്",
+  "customExamSelectSubjects": "വിഷയങ്ങൾ തിരഞ്ഞെടുക്കുക",
+  "customExamDailyLimitExhausted": "കസ്റ്റം പരീക്ഷകൾക്കുള്ള നിങ്ങളുടെ പ്രതിദിന പരിധികൾ അവസാനിച്ചു.",
+  "customExamMonthlyLimitExhausted": "കസ്റ്റം പരീക്ഷകൾക്കുള്ള നിങ്ങളുടെ പ്രതിമാസ പരിധികൾ അവസാനിച്ചു.",
+  "customExamTitle": "കസ്റ്റം പരീക്ഷ",
+  "customExamCourseSelectionInfo": "ഒരു കോഴ്‌സ് തിരഞ്ഞെടുത്ത ശേഷം നിങ്ങൾക്ക് വിഷയങ്ങൾ, കാഠിന്യ നില, ടെസ്റ്റ് മോഡ്, ചോദ്യങ്ങളുടെ എണ്ണം എന്നിവ തിരഞ്ഞെടുക്കാം.",
+  "customExamLoadingCourse": "കോഴ്സിന്റെ പേര് ലോഡുചെയ്യുന്നു...",
+  "customExamSelectedCourse": "തിരഞ്ഞെടുത്ത കോഴ്സ്",
+  "customExamQuestionType": "ചോദ്യത്തിന്റെ തരം",
+  "customExamSelectQuestionType": "ചോദ്യങ്ങളുടെ തരം തിരഞ്ഞെടുക്കുക",
+  "customExamTestMode": "ടെസ്റ്റ് മോഡ്",
+  "customExamChooseTestExperience": "ടെസ്റ്റ് അനുഭവം തിരഞ്ഞെടുക്കുക",
+  "customExamNumberOfQuestions": "ചോദ്യങ്ങളുടെ എണ്ണം",
+  "customExamChooseNumberOfQuestions": "ചോദ്യങ്ങളുടെ എണ്ണം തിരഞ്ഞെടുക്കുക",
+  "customExamSelectOneOrMoreSubjects": "ഒന്നോ അതിലധികമോ വിഷയങ്ങൾ തിരഞ്ഞെടുക്കുക",
+  "customExamRemoveItem": "{item} നീക്കം ചെയ്യുക",
+  "@customExamRemoveItem": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "customExamPleaseSelectDifficultyLevel": "ദയവായി കാഠിന്യ നില തിരഞ്ഞെടുക്കുക"
 }

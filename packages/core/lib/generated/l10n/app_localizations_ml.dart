@@ -1273,6 +1273,54 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
+  String get examsEmptyStateDesc =>
+      'No exams available right now. Please check back later.';
+
+  @override
+  String get customExamTitle => 'കസ്റ്റം പരീക്ഷ';
+
+  @override
+  String get customExamCourseSelectionInfo =>
+      'ഒരു കോഴ്‌സ് തിരഞ്ഞെടുത്ത ശേഷം നിങ്ങൾക്ക് വിഷയങ്ങൾ, കാഠിന്യ നില, ടെസ്റ്റ് മോഡ്, ചോദ്യങ്ങളുടെ എണ്ണം എന്നിവ തിരഞ്ഞെടുക്കാം.';
+
+  @override
+  String get customExamLoadingCourse => 'കോഴ്സിന്റെ പേര് ലോഡുചെയ്യുന്നു...';
+
+  @override
+  String get customExamSelectedCourse => 'തിരഞ്ഞെടുത്ത കോഴ്സ്';
+
+  @override
+  String get customExamQuestionType => 'ചോദ്യത്തിന്റെ തരം';
+
+  @override
+  String get customExamSelectQuestionType => 'ചോദ്യങ്ങളുടെ തരം തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get customExamTestMode => 'ടെസ്റ്റ് മോഡ്';
+
+  @override
+  String get customExamChooseTestExperience => 'ടെസ്റ്റ് അനുഭവം തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get customExamNumberOfQuestions => 'ചോദ്യങ്ങളുടെ എണ്ണം';
+
+  @override
+  String get customExamChooseNumberOfQuestions =>
+      'ചോദ്യങ്ങളുടെ എണ്ണം തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get customExamSelectOneOrMoreSubjects =>
+      'ഒന്നോ അതിലധികമോ വിഷയങ്ങൾ തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get customExamSelectDifficultyLevel => 'കാഠിന്യ നില തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String customExamRemoveItem(String item) {
+    return '$item നീക്കം ചെയ്യുക';
+  }
+
+  @override
   String get reviewEmptyStateMessage => 'ഈ ഫിൽട്ടറിൽ ചോദ്യങ്ങളൊന്നും ലഭ്യമല്ല.';
 
   @override
@@ -2210,16 +2258,16 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
-  String get customExamCreateTitle => 'പ്രാക്ടീസ് പരീക്ഷ സൃഷ്ടിക്കുക';
+  String get customExamCreateTitle => 'കസ്റ്റം പരീക്ഷ';
 
   @override
-  String get customExamSelectCourse => 'കോഴ്സ് തിരഞ്ഞെടുക്കുക';
+  String get customExamSelectCourse => 'ഒരു കോഴ്സ് തിരഞ്ഞെടുക്കുക';
 
   @override
-  String get customExamSearchCourses => 'കോഴ്സുകൾ തിരയുക...';
+  String get customExamSearchCourses => 'കോഴ്സുകൾ തിരയുക';
 
   @override
-  String get customExamNoCoursesFound => 'കോഴ്സുകളൊന്നും കണ്ടെത്തിയില്ല.';
+  String get customExamNoCoursesFound => 'കോഴ്സുകൾ ലഭ്യമല്ല';
 
   @override
   String get customExamStepScope => 'ഘട്ടം 1: പ്രാക്ടീസ് സ്കോപ്പ്';
@@ -2286,7 +2334,7 @@ class AppLocalizationsMl extends AppLocalizations {
       'ടൈമറും അവസാന ഫലവുമുള്ള ഒരു യഥാർത്ഥ പരീക്ഷ പോലെ ശ്രമിക്കുക';
 
   @override
-  String get customExamBtnCreate => 'പ്രാക്ടീസ് പരീക്ഷ സൃഷ്ടിക്കുക';
+  String get customExamBtnCreate => 'കസ്റ്റം പരീക്ഷ';
 
   @override
   String get customExamBtnGoBack => 'തിരികെ പോവുക';
@@ -2295,6 +2343,38 @@ class AppLocalizationsMl extends AppLocalizations {
   String customExamCountLabel(int count) {
     return '$count ചോദ്യങ്ങൾ';
   }
+
+  @override
+  String get customExamSelectAtLeastOneSubject =>
+      'ദയവായി ഒരു വിഷയമെങ്കിലും തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get customExamDifficultyLevel => 'കാഠിന്യ നില';
+
+  @override
+  String get customExamGenerateCustomExam => 'കസ്റ്റം പരീക്ഷ സൃഷ്ടിക്കുക';
+
+  @override
+  String get customExamPleaseSelectAtLeastOneQuestionType =>
+      'ദയവായി ഒരു ചോദ്യരൂപമെങ്കിലും തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get customExamPleaseSelectTestMode =>
+      'ദയവായി പരീക്ഷാ രീതി തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get customExamErrorLoading => 'കോഴ്സുകൾ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്';
+
+  @override
+  String get customExamSelectSubjects => 'വിഷയങ്ങൾ തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get customExamDailyLimitExhausted =>
+      'കസ്റ്റം പരീക്ഷകൾക്കുള്ള നിങ്ങളുടെ പ്രതിദിന പരിധികൾ അവസാനിച്ചു.';
+
+  @override
+  String get customExamMonthlyLimitExhausted =>
+      'കസ്റ്റം പരീക്ഷകൾക്കുള്ള നിങ്ങളുടെ പ്രതിമാസ പരിധികൾ അവസാനിച്ചു.';
 
   @override
   String get examsTabTitle => 'പരീക്ഷകൾ';
@@ -2430,4 +2510,8 @@ class AppLocalizationsMl extends AppLocalizations {
   String questionIdArgs(String id) {
     return 'ചോദ്യ ഐഡി: $id';
   }
+
+  @override
+  String get customExamPleaseSelectDifficultyLevel =>
+      'ദയവായി കാഠിന്യ നില തിരഞ്ഞെടുക്കുക';
 }

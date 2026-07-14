@@ -48,6 +48,7 @@ class MockDataSource implements DataSource {
     int pageSize = 10,
     String? search,
     dynamic tags,
+    bool? allowCustomTest,
   }) async {
     // Simulate API delay
     await Future.delayed(const Duration(milliseconds: 500));
@@ -1794,5 +1795,59 @@ class MockDataSource implements DataSource {
   @override
   Future<List<QuestionDto>> getOfflineExamQuestions(String examId) async {
     return [];
+  }
+
+  // ── Custom Exams ────────────────────────────────────────────────────────
+
+  @override
+  Future<CustomTestConfigDto> getCustomTestConfig(String courseId) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    return const CustomTestConfigDto(
+      subjects: [
+        CustomTestFilterOptionDto(value: 'Math', label: 'Math'),
+        CustomTestFilterOptionDto(value: 'Science', label: 'Science'),
+      ],
+      difficultyLevels: [
+        CustomTestFilterOptionDto(value: 'Easy', label: 'Easy'),
+        CustomTestFilterOptionDto(value: 'Medium', label: 'Medium'),
+        CustomTestFilterOptionDto(value: 'Hard', label: 'Hard'),
+      ],
+      questionTypes: [
+        CustomTestFilterOptionDto(
+          value: 'Multiple Choice',
+          label: 'Multiple Choice',
+        ),
+      ],
+      testModes: [
+        CustomTestFilterOptionDto(value: 'Practice', label: 'Practice'),
+        CustomTestFilterOptionDto(value: 'Exam', label: 'Exam'),
+      ],
+      limits: CustomTestLimitsDto(
+        maxQuestionsPerTest: 50,
+        dailyAttemptsAvailable: 10,
+        monthlyAttemptsAvailable: 100,
+      ),
+    );
+  }
+
+  @override
+  Future<AttemptDto> generateCustomExam(
+    CustomExamGenerationRequestDto request,
+  ) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    // Mock response with a dummy attempt.
+    return AttemptDto(
+      id: 9999,
+      date: '2023-01-01T00:00:00Z',
+      totalQuestions: request.numberOfQuestions,
+      score: '0',
+      rank: 0,
+      percentile: '0',
+      percentage: '0',
+      correctCount: 0,
+      incorrectCount: 0,
+      timeTaken: '00:00:00',
+      state: 'Running',
+    );
   }
 }

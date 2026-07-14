@@ -154,6 +154,17 @@ class ApiException implements Exception {
     if (responseData is String && responseData.trim().isNotEmpty) {
       return responseData.trim();
     }
+    if (responseData is List) {
+      final messages = <String>[];
+      for (final item in responseData) {
+        final str = item?.toString().trim();
+        if (str != null && str.isNotEmpty) {
+          messages.add(str);
+        }
+      }
+      if (messages.isNotEmpty) return messages.join('\n');
+      return null;
+    }
     if (responseData is! Map) return null;
 
     final map = responseData.cast<dynamic, dynamic>();

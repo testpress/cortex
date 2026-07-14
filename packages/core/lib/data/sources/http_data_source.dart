@@ -19,6 +19,7 @@ class HttpDataSource implements DataSource {
     int pageSize = 10,
     String? search,
     dynamic tags,
+    bool? allowCustomTest,
   }) async {
     try {
       return await performNetworkRequest(
@@ -29,6 +30,8 @@ class HttpDataSource implements DataSource {
             'page_size': pageSize,
             if (search != null && search.isNotEmpty) 'q': search,
             'tags': tags,
+            if (allowCustomTest != null)
+              'allow_custom_test': allowCustomTest.toString(),
           },
         ),
         fromJson: CourseDto.fromListResponse,
@@ -1134,6 +1137,29 @@ class HttpDataSource implements DataSource {
     await performNetworkRequest(
       _dio.delete(ApiEndpoints.deleteBookmark(bookmarkId)),
       fromJson: (data) => null,
+    );
+  }
+
+  // ── Custom Exams ────────────────────────────────────────────────────────
+
+  @override
+  Future<CustomTestConfigDto> getCustomTestConfig(String courseId) async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.customTestConfig(courseId)),
+      fromJson: (json) => CustomTestConfigDto.fromJson(json),
+    );
+  }
+
+  @override
+  Future<AttemptDto> generateCustomExam(
+    CustomExamGenerationRequestDto request,
+  ) async {
+    return performNetworkRequest(
+      _dio.post(
+        ApiEndpoints.generateCustomExam(request.courseId),
+        data: request.toJson(),
+      ),
+      fromJson: (json) => AttemptDto.fromJson(json),
     );
   }
 }
