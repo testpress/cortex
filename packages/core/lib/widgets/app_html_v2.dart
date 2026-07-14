@@ -51,30 +51,49 @@ class AppHtmlV2 extends StatelessWidget {
     );
 
     // 2. Strip event handlers (e.g. onload, onclick, onerror)
-    // Matches <tag onXxx=...>, <tag/onXxx=...>, and unquoted values.
-    // Uses \x20 (space) and \x2f (/) to stay inside single-quote raw strings.
+    // Handles all HTML5 attribute separators (space, tab, newline, CR, FF,
+    // slash, period, colon) and quoted/unquoted attribute values.
     res = res.replaceAll(
       RegExp(
-        r'(?:\x20|\x2f)on[a-zA-Z]+\x20*=(?:\x22[^\x22]*\x22|\x27[^\x27]*\x27|[^\x20\x22\x27>]+)',
+        r'[\x20\x09\x0a\x0c\x0d\x2f\x2e\x3a]on[a-zA-Z]+'
+        r'\x20*=(?:\x22[^\x22]*\x22|\x27[^\x27]*\x27'
+        r'|[^\x20\x09\x0a\x0c\x0d\x22\x27>]+)',
         caseSensitive: false,
       ),
       '',
     );
 
     // 3. Strip the jаvascript: URI scheme in href, src, srcdoc
-    // Handles quoted and unquoted values, with or without space before attr.
+    // Handles all HTML5 attribute separators and quoted/unquoted values.
     res = res.replaceAllMapped(
       RegExp(
-        r'(?:\x20|\x2f)(href|src|srcdoc)\x20*=\x20*(?:\x22javascript:[^\x22]*\x22|\x27javascript:[^\x27]*\x27|javascript:[^\x20>]*)',
+        r'[\x20\x09\x0a\x0c\x0d\x2f\x2e\x3a](href|src|srcdoc)'
+        r'\x20*=\x20*(?:\x22javascript:[^\x22]*\x22'
+        r'|\x27javascript:[^\x27]*\x27'
+        r'|javascript:[^\x20\x09\x0a\x0c\x0d>]*)',
         caseSensitive: false,
       ),
       (m) => '',
     );
 
-    // 4. Clean inline style attributes — remove prohibited properties
-    // Handles quoted (style="..." and style='...') values.
+    // 4. Strip unquoted inline style attributes entirely.
+    // Unquoted CSS can't be parsed reliably with regex, so we remove the
+    // entire attribute to prevent prohibited properties from passing through.
+    res = res.replaceAll(
+      RegExp(
+        r'[\x20\x09\x0a\x0c\x0d\x2f\x2e\x3a]style'
+        r'\x20*=\x20*[^\x20\x09\x0a\x0c\x0d\x22\x27>]+',
+        caseSensitive: false,
+      ),
+      '',
+    );
+
+    // 5. Clean quoted inline style attributes — remove prohibited properties
     res = res.replaceAllMapped(
-      RegExp(r'''style\s*=\s*(["'])(.*?)\1''', caseSensitive: false),
+      RegExp(
+        r'''style\s*=\s*(["'])(.*?)\1''',
+        caseSensitive: false,
+      ),
       (m) {
         final styleVal = m[2] ?? '';
         final cleanProperties = styleVal
