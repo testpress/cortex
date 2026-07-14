@@ -857,72 +857,76 @@ class _CustomExamConfigScreenState
   ) {
     return SafeArea(
       top: false,
-      child: AppButton.primary(
-        label: isLoading
-            ? l10n.labelLoading
-            : l10n.customExamGenerateCustomExam,
-        onPressed: isLocked || isLoading
-            ? null
-            : () {
-                if (config.subjects.isNotEmpty &&
-                    selection.selectedSubjects.isEmpty) {
-                  AppToast.show(
-                    context,
-                    message: l10n.customExamSelectAtLeastOneSubject,
-                    isError: true,
-                  );
-                  return;
-                }
-                if (config.difficultyLevels.isNotEmpty &&
-                    selection.selectedDifficulties.isEmpty) {
-                  AppToast.show(
-                    context,
-                    message: l10n.customExamPleaseSelectDifficultyLevel,
-                    isError: true,
-                  );
-                  return;
-                }
-                if (config.questionTypes.isNotEmpty &&
-                    selection.selectedQuestionTypes.isEmpty) {
-                  AppToast.show(
-                    context,
-                    message: l10n.customExamPleaseSelectAtLeastOneQuestionType,
-                    isError: true,
-                  );
-                  return;
-                }
-                if (config.testModes.isNotEmpty &&
-                    selection.selectedTestMode == null) {
-                  AppToast.show(
-                    context,
-                    message: l10n.customExamPleaseSelectTestMode,
-                    isError: true,
-                  );
-                  return;
-                }
+      child: Padding(
+        padding: EdgeInsets.all(design.spacing.md),
+        child: AppButton.primary(
+          label: isLoading
+              ? l10n.labelLoading
+              : l10n.customExamGenerateCustomExam,
+          onPressed: isLocked || isLoading
+              ? null
+              : () {
+                  if (config.subjects.isNotEmpty &&
+                      selection.selectedSubjects.isEmpty) {
+                    AppToast.show(
+                      context,
+                      message: l10n.customExamSelectAtLeastOneSubject,
+                      isError: true,
+                    );
+                    return;
+                  }
+                  if (config.difficultyLevels.isNotEmpty &&
+                      selection.selectedDifficulties.isEmpty) {
+                    AppToast.show(
+                      context,
+                      message: l10n.customExamPleaseSelectDifficultyLevel,
+                      isError: true,
+                    );
+                    return;
+                  }
+                  if (config.questionTypes.isNotEmpty &&
+                      selection.selectedQuestionTypes.isEmpty) {
+                    AppToast.show(
+                      context,
+                      message:
+                          l10n.customExamPleaseSelectAtLeastOneQuestionType,
+                      isError: true,
+                    );
+                    return;
+                  }
+                  if (config.testModes.isNotEmpty &&
+                      selection.selectedTestMode == null) {
+                    AppToast.show(
+                      context,
+                      message: l10n.customExamPleaseSelectTestMode,
+                      isError: true,
+                    );
+                    return;
+                  }
 
-                final req = ref
-                    .read(
-                      customExamSelectionProvider(widget.course.id).notifier,
-                    )
-                    .toGenerationRequest();
-                ref.read(generateCustomExamProvider.notifier).generate(req);
-              },
-        fullWidth: true,
-        backgroundColor: themeColor,
-        loading:
-            false, // Turn off built-in loading so we can show text + leading
-        leading: isLoading
-            ? SizedBox(
-                width: 20,
-                height: 20,
-                child: AppLoadingIndicator(color: design.colors.onPrimary),
-              )
-            : Icon(
-                LucideIcons.sparkles,
-                size: 20,
-                color: design.colors.onPrimary,
-              ),
+                  final req = ref
+                      .read(
+                        customExamSelectionProvider(widget.course.id).notifier,
+                      )
+                      .toGenerationRequest();
+                  ref.read(generateCustomExamProvider.notifier).generate(req);
+                },
+          fullWidth: true,
+          backgroundColor: themeColor,
+          loading:
+              false, // Turn off built-in loading so we can show text + leading
+          leading: isLoading
+              ? SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: AppLoadingIndicator(color: design.colors.onPrimary),
+                )
+              : Icon(
+                  LucideIcons.sparkles,
+                  size: 20,
+                  color: design.colors.onPrimary,
+                ),
+        ),
       ),
     );
   }
