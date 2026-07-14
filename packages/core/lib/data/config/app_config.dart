@@ -26,11 +26,25 @@ class AppConfig {
       apiBaseUrl.isNotEmpty,
       'API_BASE_URL is not set. Build with --dart-define=API_BASE_URL=https://your-instance.testpress.in/',
     );
-    if (const bool.fromEnvironment('dart.vm.product') && apiBaseUrl.isEmpty) {
-      throw StateError(
-        'FATAL: API_BASE_URL must be set for production builds. '
-        'Build with --dart-define=API_BASE_URL=https://your-instance.testpress.in/',
-      );
+    assert(
+      apiBaseUrl.startsWith('http://') || apiBaseUrl.startsWith('https://'),
+      'API_BASE_URL must start with http:// or https://. '
+      'Got: $apiBaseUrl',
+    );
+    if (const bool.fromEnvironment('dart.vm.product')) {
+      if (apiBaseUrl.isEmpty) {
+        throw StateError(
+          'FATAL: API_BASE_URL must be set for production builds. '
+          'Build with --dart-define=API_BASE_URL=https://your-instance.testpress.in/',
+        );
+      }
+      if (!apiBaseUrl.startsWith('http://') &&
+          !apiBaseUrl.startsWith('https://')) {
+        throw StateError(
+          'FATAL: API_BASE_URL must start with http:// or https://. '
+          'Got: $apiBaseUrl',
+        );
+      }
     }
   }
 

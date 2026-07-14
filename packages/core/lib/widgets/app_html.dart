@@ -403,7 +403,7 @@ class _AppHtmlState extends State<AppHtml> {
 
     // Host must match our API base URL or be a known trusted domain
     final apiUri = Uri.tryParse(AppConfig.apiBaseUrl);
-    if (apiUri != null) {
+    if (apiUri != null && apiUri.host.isNotEmpty) {
       if (uri.host == apiUri.host || uri.host.endsWith('.${apiUri.host}')) {
         return true;
       }
