@@ -59,7 +59,9 @@
   "loginResendCodeIn": "{time} நேரத்தில் குறியீட்டை மீண்டும் அனுப்பு",
   "@loginResendCodeIn": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "loginDidntReceiveCode": "குறியீடு வரவில்லையா? ",
@@ -89,13 +91,17 @@
   "loginEnterFieldHint": "{field} உள்ளிடவும்",
   "@loginEnterFieldHint": {
     "placeholders": {
-      "field": { "type": "String" }
+      "field": {
+        "type": "String"
+      }
     }
   },
   "loginOtpVerifySubtitle": "உங்கள் {phone} க்கு அனுப்பப்பட்ட 4 இலக்க குறியீட்டை உள்ளிடவும்",
   "@loginOtpVerifySubtitle": {
     "placeholders": {
-      "phone": { "type": "String" }
+      "phone": {
+        "type": "String"
+      }
     }
   },
   "welcomeMessage": "Cortex-க்கு வரவேற்கிறோம்",
@@ -276,7 +282,6 @@
       }
     }
   },
-
   "achievementsLabel": "சாதனைகள்",
   "moreBadgesLabel": "மேலும் {count}",
   "@moreBadgesLabel": {
@@ -984,9 +989,9 @@
   "filterEmptyStateMessage": "{name} எதுவும் கிடைக்கவில்லை.",
   "labelExams": "தேர்வுகள்",
   "customExamCreateTitle": "தனிப்பயன் தேர்வு",
-  "customExamSelectCourse": "பாடநெறியைத் தேர்ந்தெடுக்கவும்",
-  "customExamSearchCourses": "பாடநெறிகளைத் தேடுங்கள்...",
-  "customExamNoCoursesFound": "பாடநெறிகள் எதுவும் கிடைக்கவில்லை.",
+  "customExamSelectCourse": "ஒரு பாடநெறியைத் தேர்ந்தெடுக்கவும்",
+  "customExamSearchCourses": "பாடநெறிகளைத் தேடுக",
+  "customExamNoCoursesFound": "பாடநெறிகள் எதுவும் கிடைக்கவில்லை",
   "customExamStepScope": "படி 1: பயிற்சியின் வரம்பு",
   "customExamFullCourse": "முழு பாடநெறி பயிற்சி",
   "customExamCoverAllTopics": "அனைத்து தலைப்புகளையும் உள்ளடக்கும்",
@@ -1097,17 +1102,13 @@
   "reviewOfTotal": "மொத்தத்தில்",
   "lessonDetails": "பாடம் விவரங்கள்",
   "questionIdArgs": "கேள்வி ஐடி: {id}",
-  "customExamCreateTitle": "தனிப்பயன் தேர்வு",
   "customExamSelectAtLeastOneSubject": "குறைந்தபட்சம் ஒரு பாடத்தையாவது தேர்ந்தெடுக்கவும்",
   "customExamDifficultyLevel": "கடினத்தன்மை நிலை",
   "customExamSelectDifficultyLevel": "கடினத்தன்மை நிலையைத் தேர்ந்தெடுக்கவும்",
   "customExamGenerateCustomExam": "தனிப்பயன் தேர்வை உருவாக்கு",
   "customExamPleaseSelectAtLeastOneQuestionType": "குறைந்தபட்சம் ஒரு கேள்வி வகையையாவது தேர்ந்தெடுக்கவும்",
   "customExamPleaseSelectTestMode": "தேர்வு முறையைத் தேர்ந்தெடுக்கவும்",
-  "customExamSelectCourse": "ஒரு பாடநெறியைத் தேர்ந்தெடுக்கவும்",
-  "customExamSearchCourses": "பாடநெறிகளைத் தேடுக",
   "customExamErrorLoading": "பாடநெறிகளை ஏற்றுவதில் பிழை",
-  "customExamNoCoursesFound": "பாடநெறிகள் எதுவும் கிடைக்கவில்லை",
   "customExamSelectSubjects": "பாடங்களைத் தேர்ந்தெடுக்கவும்",
   "customExamDailyLimitExhausted": "தனிப்பயன் தேர்வுகளுக்கான உங்கள் தினசரி வரம்புகள் முடிந்துவிட்டன.",
   "customExamMonthlyLimitExhausted": "தனிப்பயன் தேர்வுகளுக்கான உங்கள் மாதாந்திர வரம்புகள் முடிந்துவிட்டன.",
@@ -1125,7 +1126,10 @@
   "customExamRemoveItem": "{item} ஐ அகற்று",
   "@customExamRemoveItem": {
     "placeholders": {
-      "item": { "type": "String" }
+      "item": {
+        "type": "String"
+      }
     }
-  }
+  },
+  "customExamPleaseSelectDifficultyLevel": "தயவுசெய்து கடினத்தன்மை நிலையைத் தேர்ந்தெடுக்கவும்"
 }

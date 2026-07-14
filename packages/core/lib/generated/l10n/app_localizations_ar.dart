@@ -1300,7 +1300,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get customExamSelectOneOrMoreSubjects => 'حدد موضوعًا واحدًا أو أكثر';
 
   @override
-  String get customExamSelectDifficultyLevel => 'يرجى تحديد مستوى الصعوبة';
+  String get customExamSelectDifficultyLevel => 'تحديد مستوى الصعوبة';
 
   @override
   String customExamRemoveItem(String item) {
@@ -2470,4 +2470,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String questionIdArgs(String id) {
     return 'معرف السؤال: $id';
   }
+
+  @override
+  String get customExamPleaseSelectDifficultyLevel =>
+      'يرجى تحديد مستوى الصعوبة';
 }

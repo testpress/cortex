@@ -4528,6 +4528,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Question ID: {id}'**
   String questionIdArgs(String id);
+
+  /// No description provided for @customExamPleaseSelectDifficultyLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a difficulty level'**
+  String get customExamPleaseSelectDifficultyLevel;
 }
 
 class _AppLocalizationsDelegate

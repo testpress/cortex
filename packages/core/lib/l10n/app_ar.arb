@@ -53,7 +53,9 @@
   "loginResendCodeIn": "إعادة إرسال الرمز خلال {time}",
   "@loginResendCodeIn": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "loginDidntReceiveCode": "لم تستلم الرمز؟ ",
@@ -83,13 +85,17 @@
   "loginEnterFieldHint": "أدخل {field}",
   "@loginEnterFieldHint": {
     "placeholders": {
-      "field": { "type": "String" }
+      "field": {
+        "type": "String"
+      }
     }
   },
   "loginOtpVerifySubtitle": "أدخل الرمز المكون من 4 أرقام المُرسَل إلى {phone}",
   "@loginOtpVerifySubtitle": {
     "placeholders": {
-      "phone": { "type": "String" }
+      "phone": {
+        "type": "String"
+      }
     }
   },
   "welcomeMessage": "مرحبًا بك في كورتيكس",
@@ -206,7 +212,6 @@
   "liveLabel": "مباشر",
   "importantLabel": "مهم",
   "testTypeLabel": "اختبار {type}",
-
   "achievementsLabel": "الإنجازات",
   "moreBadgesLabel": "+{count} أكثر",
   "drawerMenuTitle": "القائمة",
@@ -238,7 +243,6 @@
   "filterAttachment": "مرفقات",
   "resumeStudyHeader": "استئناف الدراسة",
   "labelCompleted": "مكتمل",
-  "labelRetry": "إعادة المحاولة",
   "errorGenericTitle": "حدث خطأ ما",
   "errorGenericMessage": "فشل تحميل البيانات. يرجى التحقق من اتصالك والمحاولة مرة أخرى.",
   "errorLessonLoad": "فشل تحميل الدرس. يرجى التحقق من اتصالك.",
@@ -432,21 +436,29 @@
   "reviewQuestionLabel": "سؤال {number}",
   "@reviewQuestionLabel": {
     "placeholders": {
-      "number": { "type": "String" }
+      "number": {
+        "type": "String"
+      }
     }
   },
   "reviewEmptyStateMessage": "لم يتم العثور على أسئلة لهذا الفلتر.",
   "reviewAnswersTitle": "مراجعة الإجابات - {title}",
   "@reviewAnswersTitle": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "reviewQuestionCount": "{current} من {total}",
   "@reviewQuestionCount": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "settingsAppearanceTitle": "المظهر",
@@ -547,7 +559,6 @@
   "forumPostSelectCategoryTitle": "اختر الفئة",
   "forumButtonSubmit": "إرسال",
   "forumButtonCancel": "إلغاء",
-  "labelPractice": "ممارسة",
   "attachmentSize": "الحجم: {size}",
   "@attachmentSize": {
     "placeholders": {
@@ -630,13 +641,17 @@
   "bookmarkAddedToFolder": "تمت إضافة الإشارة المرجعية إلى {folderName}",
   "@bookmarkAddedToFolder": {
     "placeholders": {
-      "folderName": { "type": "String" }
+      "folderName": {
+        "type": "String"
+      }
     }
   },
   "bookmarkRemovedFromFolder": "تمت إزالة الإشارة المرجعية من {folderName}",
   "@bookmarkRemovedFromFolder": {
     "placeholders": {
-      "folderName": { "type": "String" }
+      "folderName": {
+        "type": "String"
+      }
     }
   },
   "bookmarkRemoved": "تمت إزالة الإشارة المرجعية",
@@ -645,7 +660,9 @@
   "lessonSpecializedViewerRequired": "مطلوب عارض متخصص لـ {type}",
   "@lessonSpecializedViewerRequired": {
     "placeholders": {
-      "type": { "type": "String" }
+      "type": {
+        "type": "String"
+      }
     }
   },
   "leaderboardTitle": "المتصدرون",
@@ -733,9 +750,9 @@
   "filterEmptyStateMessage": "لم يتم العثور على {name}.",
   "labelExams": "امتحانات",
   "customExamCreateTitle": "امتحان مخصص",
-  "customExamSelectCourse": "اختر الدورة",
-  "customExamSearchCourses": "البحث في الدورات...",
-  "customExamNoCoursesFound": "لم يتم العثور على دورات.",
+  "customExamSelectCourse": "اختر دورة",
+  "customExamSearchCourses": "البحث في الدورات",
+  "customExamNoCoursesFound": "لم يتم العثور على دورات",
   "customExamStepScope": "الخطوة 1: نطاق التدريب",
   "customExamFullCourse": "تدريب على الدورة كاملة",
   "customExamCoverAllTopics": "تغطية جميع المواضيع",
@@ -846,23 +863,13 @@
   "reviewOfTotal": "من الإجمالي",
   "lessonDetails": "تفاصيل الدرس",
   "questionIdArgs": "معرف السؤال: {id}",
-  "customExamCountLabel": "{count} أسئلة",
-  "@customExamCountLabel": {
-    "placeholders": {
-      "count": { "type": "int" }
-    }
-  },
-  "customExamCreateTitle": "امتحان مخصص",
   "customExamSelectAtLeastOneSubject": "يرجى تحديد موضوع واحد على الأقل",
   "customExamDifficultyLevel": "مستوى الصعوبة",
-  "customExamSelectDifficultyLevel": "يرجى تحديد مستوى الصعوبة",
+  "customExamSelectDifficultyLevel": "تحديد مستوى الصعوبة",
   "customExamGenerateCustomExam": "إنشاء امتحان مخصص",
   "customExamPleaseSelectAtLeastOneQuestionType": "يرجى تحديد نوع سؤال واحد على الأقل",
   "customExamPleaseSelectTestMode": "يرجى تحديد وضع الاختبار",
-  "customExamSelectCourse": "اختر دورة",
-  "customExamSearchCourses": "البحث في الدورات",
   "customExamErrorLoading": "خطأ في تحميل الدورات",
-  "customExamNoCoursesFound": "لم يتم العثور على دورات",
   "customExamSelectSubjects": "حدد المواضيع",
   "customExamDailyLimitExhausted": "لقد استنفدت حدودك اليومية للامتحانات المخصصة.",
   "customExamMonthlyLimitExhausted": "لقد استنفدت حدودك الشهرية للامتحانات المخصصة.",
@@ -880,7 +887,10 @@
   "customExamRemoveItem": "إزالة {item}",
   "@customExamRemoveItem": {
     "placeholders": {
-      "item": { "type": "String" }
+      "item": {
+        "type": "String"
+      }
     }
-  }
+  },
+  "customExamPleaseSelectDifficultyLevel": "يرجى تحديد مستوى الصعوبة"
 }

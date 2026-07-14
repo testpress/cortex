@@ -2505,4 +2505,8 @@ class AppLocalizationsTa extends AppLocalizations {
   String questionIdArgs(String id) {
     return 'கேள்வி ஐடி: $id';
   }
+
+  @override
+  String get customExamPleaseSelectDifficultyLevel =>
+      'தயவுசெய்து கடினத்தன்மை நிலையைத் தேர்ந்தெடுக்கவும்';
 }

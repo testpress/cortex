@@ -877,7 +877,7 @@ class _CustomExamConfigScreenState
                     selection.selectedDifficulties.isEmpty) {
                   AppToast.show(
                     context,
-                    message: l10n.customExamSelectDifficultyLevel,
+                    message: l10n.customExamPleaseSelectDifficultyLevel,
                     isError: true,
                   );
                   return;

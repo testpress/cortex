@@ -1313,8 +1313,7 @@ class AppLocalizationsMl extends AppLocalizations {
       'ഒന്നോ അതിലധികമോ വിഷയങ്ങൾ തിരഞ്ഞെടുക്കുക';
 
   @override
-  String get customExamSelectDifficultyLevel =>
-      'ദയവായി കാഠിന്യ നില തിരഞ്ഞെടുക്കുക';
+  String get customExamSelectDifficultyLevel => 'കാഠിന്യ നില തിരഞ്ഞെടുക്കുക';
 
   @override
   String customExamRemoveItem(String item) {
@@ -2511,4 +2510,8 @@ class AppLocalizationsMl extends AppLocalizations {
   String questionIdArgs(String id) {
     return 'ചോദ്യ ഐഡി: $id';
   }
+
+  @override
+  String get customExamPleaseSelectDifficultyLevel =>
+      'ദയവായി കാഠിന്യ നില തിരഞ്ഞെടുക്കുക';
 }

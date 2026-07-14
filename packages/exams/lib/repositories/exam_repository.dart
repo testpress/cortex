@@ -423,17 +423,26 @@ class OnlineExamRepository implements ExamRepository {
   }) async {
     // Create a dummy ExamDto to satisfy the repository's internal state.
     // Custom exams don't have a backing ExamDto.
-    final dummyExam = ExamDto(
-      id: attempt.activeId!.toString(),
-      title: 'Custom Exam',
-      duration:
-          attempt.remainingTime ?? '', // Empty duration hides the timer in UI
-      questionCount: attempt.totalQuestions ?? 0,
-      attemptsUrl: '', // Not used since we already have the attempt
-    );
-
-    _emit(ExamAttemptState(status: ExamAttemptStatus.loading, exam: dummyExam));
+    ExamDto? dummyExam;
     try {
+      final attemptId = attempt.activeId?.toString();
+      if (attemptId == null) {
+        throw ApiException('Invalid attempt: Missing activeId');
+      }
+
+      dummyExam = ExamDto(
+        id: attemptId,
+        title: 'Custom Exam',
+        duration:
+            attempt.remainingTime ?? '', // Empty duration hides the timer in UI
+        questionCount: attempt.totalQuestions ?? 0,
+        attemptsUrl: '', // Not used since we already have the attempt
+      );
+
+      _emit(
+        ExamAttemptState(status: ExamAttemptStatus.loading, exam: dummyExam),
+      );
+
       await _initializeAttempt(
         dummyExam,
         attempt,
@@ -949,6 +958,7 @@ class OnlineExamRepository implements ExamRepository {
     _submitTimers[questionId] = Timer(
       const Duration(milliseconds: 1000),
       () async {
+        if (_currentState.attempt?.activeId == null) return;
         final attemptId = _currentState.attempt!.activeId!.toString();
         final pendingAns = _pendingAnswers.remove(questionId);
 

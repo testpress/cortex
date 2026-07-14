@@ -2464,4 +2464,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String questionIdArgs(String id) {
     return 'Question ID: $id';
   }
+
+  @override
+  String get customExamPleaseSelectDifficultyLevel =>
+      'Please select a difficulty level';
 }
