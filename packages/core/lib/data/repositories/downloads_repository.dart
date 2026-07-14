@@ -242,6 +242,12 @@ class DownloadsRepository {
 
   Future<void> purgeAllDownloads() async {
     final downloads = await _db.select(_db.downloadsTable).get();
+
+    // Guard the stream from re-inserting items while we're deleting them.
+    _deletedIds.addAll(downloads.map((r) => r.id));
+    _lastKnownState.clear();
+
+    // Service cleanup still needs per-item data to delete the physical files.
     for (final row in downloads) {
       final item = DownloadItem(
         id: row.id,
@@ -258,8 +264,11 @@ class DownloadsRepository {
         fileType: row.fileType,
         contentUrl: row.contentUrl,
       );
-      await deleteDownload(item);
+      await _service.deleteDownloadItem(item);
     }
+
+    // Single bulk DELETE instead of N individual statements.
+    await _db.delete(_db.downloadsTable).go();
   }
 }
 

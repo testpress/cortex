@@ -428,11 +428,11 @@ class CourseRepository {
     while (
         current != null && current.isNotEmpty && !visited.contains(current)) {
       visited.add(current);
-      chain.insert(0, current);
+      chain.add(current);
       current = chapterById[current]?.parentId;
     }
     if (chain.isEmpty) return ',$chapterId,';
-    return ',${chain.join(',')},';
+    return ',${chain.reversed.join(',')},'; // reversed: add() builds leaf→root, this restores root→leaf
   }
 
   /// Returns a clean pagination controller that internally coordinates the
