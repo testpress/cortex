@@ -1225,5 +1225,19 @@
         "type": "String"
       }
     }
+  },
+  "exploreDescription": "Description",
+  "exploreCurriculum": "Curriculum",
+  "exploreHaveDiscountCode": "Have a discount code?",
+  "explorePayInstallments": "Pay in installments",
+  "exploreDiscountCoupon": "Discount Coupon",
+  "exploreChoosePlan": "Choose a Plan",
+  "explorePayAmountNow": "Pay ₹{amount} now",
+  "@explorePayAmountNow": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
   }
 }

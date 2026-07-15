@@ -904,5 +904,19 @@
   "exploreProductsLabel": "ഉൽപ്പന്നങ്ങൾ",
   "exploreCategoriesLabel": "വിഭാഗങ്ങൾ",
   "explorePlanSelected": "{planName}, ₹{price}, തിരഞ്ഞെടുത്തു",
-  "explorePlanUnselected": "{planName}, ₹{price}"
+  "explorePlanUnselected": "{planName}, ₹{price}",
+  "exploreDescription": "വിവരണം",
+  "exploreCurriculum": "പാഠ്യപദ്ധതി",
+  "exploreHaveDiscountCode": "ഡിസ്കൗണ്ട് കോഡ് ഉണ്ടോ?",
+  "explorePayInstallments": "തവണകളായി അടയ്ക്കുക",
+  "exploreDiscountCoupon": "ഡിസ്കൗണ്ട് കൂപ്പൺ",
+  "exploreChoosePlan": "ഒരു പ്ലാൻ തിരഞ്ഞെടുക്കുക",
+  "explorePayAmountNow": "₹{amount} ഇപ്പോൾ അടയ്ക്കുക",
+  "@explorePayAmountNow": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  }
 }

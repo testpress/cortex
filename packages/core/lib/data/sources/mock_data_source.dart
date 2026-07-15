@@ -1092,6 +1092,49 @@ class MockDataSource implements DataSource {
   }
 
   @override
+  Future<ProductDto> getProduct(String slug) async {
+    return ProductDto(
+      id: 524,
+      title: 'Course C',
+      slug: slug,
+      price: '300.00',
+      courses: const [372],
+      hasCoupons: true,
+    );
+  }
+
+  @override
+  Future<OrderDto> createOrder(String productSlug) async {
+    return const OrderDto(
+      id: 101,
+      status: 'Draft',
+      total: '300.00',
+      subtotal: '300.00',
+    );
+  }
+
+  @override
+  Future<OrderDto> applyCoupon(int orderId, String couponCode) async {
+    if (couponCode == 'TEST50') {
+      return const OrderDto(
+        id: 101,
+        status: 'Draft',
+        total: '150.00',
+        subtotal: '300.00',
+      );
+    }
+    throw Exception('Invalid coupon code');
+  }
+
+  @override
+  Future<InstallmentPlansResponseDto> getInstallmentPlans(String slug) async {
+    return const InstallmentPlansResponseDto(
+      installmentPlans: [],
+      userInstallmentPlans: [],
+    );
+  }
+
+  @override
   Future<List<DashboardBannerDto>> getDashboardBanners() async {
     await Future.delayed(const Duration(milliseconds: 400));
     return [

@@ -2555,4 +2555,27 @@ class AppLocalizationsMl extends AppLocalizations {
   String explorePlanUnselected(String planName, String price) {
     return '$planName, ₹$price';
   }
+
+  @override
+  String get exploreDescription => 'വിവരണം';
+
+  @override
+  String get exploreCurriculum => 'പാഠ്യപദ്ധതി';
+
+  @override
+  String get exploreHaveDiscountCode => 'ഡിസ്കൗണ്ട് കോഡ് ഉണ്ടോ?';
+
+  @override
+  String get explorePayInstallments => 'തവണകളായി അടയ്ക്കുക';
+
+  @override
+  String get exploreDiscountCoupon => 'ഡിസ്കൗണ്ട് കൂപ്പൺ';
+
+  @override
+  String get exploreChoosePlan => 'ഒരു പ്ലാൻ തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String explorePayAmountNow(String amount) {
+    return '₹$amount ഇപ്പോൾ അടയ്ക്കുക';
+  }
 }

@@ -2509,4 +2509,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String explorePlanUnselected(String planName, String price) {
     return '$planName, ₹$price';
   }
+
+  @override
+  String get exploreDescription => 'Description';
+
+  @override
+  String get exploreCurriculum => 'Curriculum';
+
+  @override
+  String get exploreHaveDiscountCode => 'Have a discount code?';
+
+  @override
+  String get explorePayInstallments => 'Pay in installments';
+
+  @override
+  String get exploreDiscountCoupon => 'Discount Coupon';
+
+  @override
+  String get exploreChoosePlan => 'Choose a Plan';
+
+  @override
+  String explorePayAmountNow(String amount) {
+    return 'Pay ₹$amount now';
+  }
 }

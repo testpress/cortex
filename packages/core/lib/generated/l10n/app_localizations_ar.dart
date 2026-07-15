@@ -2515,4 +2515,27 @@ class AppLocalizationsAr extends AppLocalizations {
   String explorePlanUnselected(String planName, String price) {
     return '$planName، ₹$price';
   }
+
+  @override
+  String get exploreDescription => 'وصف';
+
+  @override
+  String get exploreCurriculum => 'المنهج';
+
+  @override
+  String get exploreHaveDiscountCode => 'هل لديك كود خصم؟';
+
+  @override
+  String get explorePayInstallments => 'الدفع على أقساط';
+
+  @override
+  String get exploreDiscountCoupon => 'كوبون الخصم';
+
+  @override
+  String get exploreChoosePlan => 'اختر خطة';
+
+  @override
+  String explorePayAmountNow(String amount) {
+    return 'ادفع ₹$amount الآن';
+  }
 }

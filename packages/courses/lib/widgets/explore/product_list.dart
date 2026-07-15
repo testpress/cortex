@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skeletonizer/skeletonizer.dart';
+
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../../providers/explore_providers.dart';
@@ -56,31 +56,28 @@ class ProductList extends ConsumerWidget {
   }) {
     final design = Design.of(context);
 
-    return Skeletonizer(
-      enabled: isLoading,
-      child: Padding(
-        padding: EdgeInsets.all(design.spacing.md),
-        child: AppSemantics.scrollableList(
-          label: L10n.of(context).exploreProductsLabel,
-          itemCount: products.length,
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final itemWidth = (constraints.maxWidth - design.spacing.md) / 2;
-              return Align(
-                alignment: Alignment.topLeft,
-                child: Wrap(
-                  spacing: design.spacing.md,
-                  runSpacing: design.spacing.md,
-                  children: products
-                      .map((p) => SizedBox(
-                            width: itemWidth,
-                            child: ProductCard(product: p),
-                          ))
-                      .toList(),
-                ),
-              );
-            },
-          ),
+    return Padding(
+      padding: EdgeInsets.all(design.spacing.md),
+      child: AppSemantics.scrollableList(
+        label: L10n.of(context).exploreProductsLabel,
+        itemCount: products.length,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final itemWidth = (constraints.maxWidth - design.spacing.md) / 2;
+            return Align(
+              alignment: Alignment.topLeft,
+              child: Wrap(
+                spacing: design.spacing.md,
+                runSpacing: design.spacing.md,
+                children: products
+                    .map((p) => SizedBox(
+                          width: itemWidth,
+                          child: ProductCard(product: p, isSkeleton: isLoading),
+                        ))
+                    .toList(),
+              ),
+            );
+          },
         ),
       ),
     );

@@ -2550,4 +2550,27 @@ class AppLocalizationsTa extends AppLocalizations {
   String explorePlanUnselected(String planName, String price) {
     return '$planName, ₹$price';
   }
+
+  @override
+  String get exploreDescription => 'விளக்கம்';
+
+  @override
+  String get exploreCurriculum => 'பாடத்திட்டம்';
+
+  @override
+  String get exploreHaveDiscountCode => 'தள்ளுபடி குறியீடு உள்ளதா?';
+
+  @override
+  String get explorePayInstallments => 'தவணைகளில் செலுத்தவும்';
+
+  @override
+  String get exploreDiscountCoupon => 'தள்ளுபடி கூப்பன்';
+
+  @override
+  String get exploreChoosePlan => 'ஒரு திட்டத்தை தேர்வு செய்யவும்';
+
+  @override
+  String explorePayAmountNow(String amount) {
+    return '₹$amount இப்போது செலுத்தவும்';
+  }
 }

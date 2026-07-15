@@ -76,6 +76,22 @@ class ExploreRepository {
     }
   }
 
+  Future<ProductDto> fetchProductDetail(String slug) async {
+    final response = await _source.getProduct(slug);
+    // Optionally update the cache with this detail. Since this returns more detail
+    // (like hasCoupons), we can update the specific product in the cache.
+    // For now we just return it.
+    return response;
+  }
+
+  Future<OrderDto> createOrder(String productSlug) async {
+    return _source.createOrder(productSlug);
+  }
+
+  Future<OrderDto> applyCoupon(int orderId, String couponCode) async {
+    return _source.applyCoupon(orderId, couponCode);
+  }
+
   // ── Categories ────────────────────────────────────────────────────────────
 
   List<ProductCategoryDto>? getCachedCategories(String cacheKey) =>
@@ -116,6 +132,10 @@ class ExploreRepository {
       search: search,
       page: page,
     ));
+  }
+
+  Future<InstallmentPlansResponseDto> getInstallmentPlans(String slug) async {
+    return _source.getInstallmentPlans(slug);
   }
 
   // ── Key builders ──────────────────────────────────────────────────────────

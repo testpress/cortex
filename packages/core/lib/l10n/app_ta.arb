@@ -1142,5 +1142,19 @@
   "exploreProductsLabel": "தயாரிப்புகள்",
   "exploreCategoriesLabel": "வகைகள்",
   "explorePlanSelected": "{planName}, ₹{price}, தேர்ந்தெடுக்கப்பட்டது",
-  "explorePlanUnselected": "{planName}, ₹{price}"
+  "explorePlanUnselected": "{planName}, ₹{price}",
+  "exploreDescription": "விளக்கம்",
+  "exploreCurriculum": "பாடத்திட்டம்",
+  "exploreHaveDiscountCode": "தள்ளுபடி குறியீடு உள்ளதா?",
+  "explorePayInstallments": "தவணைகளில் செலுத்தவும்",
+  "exploreDiscountCoupon": "தள்ளுபடி கூப்பன்",
+  "exploreChoosePlan": "ஒரு திட்டத்தை தேர்வு செய்யவும்",
+  "explorePayAmountNow": "₹{amount} இப்போது செலுத்தவும்",
+  "@explorePayAmountNow": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  }
 }

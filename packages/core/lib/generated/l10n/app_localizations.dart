@@ -4600,6 +4600,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{planName}, ₹{price}'**
   String explorePlanUnselected(String planName, String price);
+
+  /// No description provided for @exploreDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get exploreDescription;
+
+  /// No description provided for @exploreCurriculum.
+  ///
+  /// In en, this message translates to:
+  /// **'Curriculum'**
+  String get exploreCurriculum;
+
+  /// No description provided for @exploreHaveDiscountCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Have a discount code?'**
+  String get exploreHaveDiscountCode;
+
+  /// No description provided for @explorePayInstallments.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay in installments'**
+  String get explorePayInstallments;
+
+  /// No description provided for @exploreDiscountCoupon.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount Coupon'**
+  String get exploreDiscountCoupon;
+
+  /// No description provided for @exploreChoosePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a Plan'**
+  String get exploreChoosePlan;
+
+  /// No description provided for @explorePayAmountNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay ₹{amount} now'**
+  String explorePayAmountNow(String amount);
 }
 
 class _AppLocalizationsDelegate

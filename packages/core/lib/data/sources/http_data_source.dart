@@ -433,6 +433,45 @@ class HttpDataSource implements DataSource {
   }
 
   @override
+  Future<ProductDto> getProduct(String slug) async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.product(slug)),
+      fromJson: (data) => ProductDto.fromJson(data),
+    );
+  }
+
+  @override
+  Future<OrderDto> createOrder(String productSlug) async {
+    return performNetworkRequest(
+      _dio.post(
+        ApiEndpoints.createOrder,
+        data: {
+          'order_items': [
+            {'product': productSlug},
+          ],
+        },
+      ),
+      fromJson: (data) => OrderDto.fromJson(data),
+    );
+  }
+
+  @override
+  Future<OrderDto> applyCoupon(int orderId, String couponCode) async {
+    return performNetworkRequest(
+      _dio.post(ApiEndpoints.applyCoupon(orderId), data: {'code': couponCode}),
+      fromJson: (data) => OrderDto.fromJson(data),
+    );
+  }
+
+  @override
+  Future<InstallmentPlansResponseDto> getInstallmentPlans(String slug) async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.installmentPlans(slug)),
+      fromJson: (data) => InstallmentPlansResponseDto.fromJson(data),
+    );
+  }
+
+  @override
   Future<List<DashboardBannerDto>> getDashboardBanners() async {
     return performNetworkRequest(
       _dio.get(ApiEndpoints.bannerAds),

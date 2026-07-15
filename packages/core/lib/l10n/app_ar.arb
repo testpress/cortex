@@ -903,5 +903,19 @@
   "exploreProductsLabel": "المنتجات",
   "exploreCategoriesLabel": "الفئات",
   "explorePlanSelected": "{planName}، ₹{price}، محدد",
-  "explorePlanUnselected": "{planName}، ₹{price}"
+  "explorePlanUnselected": "{planName}، ₹{price}",
+  "exploreDescription": "وصف",
+  "exploreCurriculum": "المنهج",
+  "exploreHaveDiscountCode": "هل لديك كود خصم؟",
+  "explorePayInstallments": "الدفع على أقساط",
+  "exploreDiscountCoupon": "كوبون الخصم",
+  "exploreChoosePlan": "اختر خطة",
+  "explorePayAmountNow": "ادفع ₹{amount} الآن",
+  "@explorePayAmountNow": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  }
 }

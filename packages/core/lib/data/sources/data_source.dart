@@ -116,6 +116,17 @@ abstract class DataSource {
     String? search,
   });
 
+  Future<ProductDto> getProduct(String slug);
+
+  /// Create a draft order for a product
+  Future<OrderDto> createOrder(String productSlug);
+
+  /// Apply a coupon to an existing order
+  Future<OrderDto> applyCoupon(int orderId, String couponCode);
+
+  /// Fetch installment plans for a product
+  Future<InstallmentPlansResponseDto> getInstallmentPlans(String slug);
+
   /// Fetch hero banners for the dashboard from `/api/v3/dashboard/`.
   Future<List<DashboardBannerDto>> getDashboardBanners();
 

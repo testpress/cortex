@@ -1,27 +1,40 @@
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:flutter/widgets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 
 class ProductCard extends StatelessWidget {
-  const ProductCard({super.key, required this.product});
+  const ProductCard({
+    super.key,
+    required this.product,
+    this.isSkeleton = false,
+  });
 
   final ProductDto product;
+  final bool isSkeleton;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
     return AppSemantics.button(
-        label: product.title,
+      label: product.title,
+      onTap: () {
+        context.push('/explore/product/${product.slug}', extra: product);
+      },
+      child: AppCard(
+        padding: EdgeInsets.zero,
         onTap: () {
           context.push('/explore/product/${product.slug}', extra: product);
         },
-        child: AppCard(
-          padding: EdgeInsets.zero,
-          onTap: () {
-            context.push('/explore/product/${product.slug}', extra: product);
-          },
+        child: Skeletonizer(
+          enabled: isSkeleton,
+          ignoreContainers: true,
+          effect: ShimmerEffect(
+            baseColor: design.colors.skeleton,
+            highlightColor: design.colors.onSkeleton,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -84,7 +97,9 @@ class ProductCard extends StatelessWidget {
               ),
             ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
 

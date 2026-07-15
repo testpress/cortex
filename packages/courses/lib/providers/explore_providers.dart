@@ -2,6 +2,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
 import '../repositories/explore_repository.dart';
 
+export 'package:core/data/data.dart';
+
 part 'explore_providers.g.dart';
 
 @riverpod
@@ -47,4 +49,49 @@ Future<List<ProductDto>> storeProducts(StoreProductsRef ref) {
     search: query.isNotEmpty ? query : null,
     category: category,
   );
+}
+
+@riverpod
+Future<ProductDto> productDetail(
+  ProductDetailRef ref,
+  String slug,
+) {
+  final repo = ref.watch(exploreRepositoryProvider);
+  return repo.fetchProductDetail(slug);
+}
+
+@riverpod
+Future<InstallmentPlansResponseDto> productInstallmentPlans(
+  ProductInstallmentPlansRef ref,
+  String slug,
+) {
+  final repo = ref.watch(exploreRepositoryProvider);
+  return repo.getInstallmentPlans(slug);
+}
+
+@riverpod
+class ProductDiscountNotifier extends _$ProductDiscountNotifier {
+  @override
+  AsyncValue<OrderDto?> build(String slug) {
+    return const AsyncValue.data(null);
+  }
+
+  Future<void> applyCoupon(String code) async {
+    state = const AsyncValue.loading();
+    try {
+      final repo = ref.read(exploreRepositoryProvider);
+      // Create a draft order first
+      final order = await repo.createOrder(slug);
+      // Then apply coupon
+      final updatedOrder = await repo.applyCoupon(order.id, code);
+      state = AsyncValue.data(updatedOrder);
+    } catch (e, st) {
+      if (e is ApiException) {
+        state = AsyncValue.error(
+            ApiException.extractApiMessage(e.data) ?? e.message, st);
+      } else {
+        state = AsyncValue.error(e, st);
+      }
+    }
+  }
 }
