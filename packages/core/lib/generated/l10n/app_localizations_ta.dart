@@ -2509,4 +2509,45 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get customExamPleaseSelectDifficultyLevel =>
       'தயவுசெய்து கடினத்தன்மை நிலையைத் தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get exploreProductBack => 'பின்செல்க';
+
+  @override
+  String get exploreSelectPlan => 'திட்டத்தை தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get exploreBuyNow => 'இப்போது வாங்குங்கள்';
+
+  @override
+  String get exploreCheckoutComingSoon => 'செக்அவுட் செயல்முறை விரைவில் வரும்';
+
+  @override
+  String exploreValidityDays(String days) {
+    return 'செல்லுபடியாகும் காலம்: $days நாட்கள்';
+  }
+
+  @override
+  String exploreFromTo(String start, String end) {
+    return '$start முதல் $end வரை';
+  }
+
+  @override
+  String get exploreNoProductsFound => 'எந்த தயாரிப்புகளும் கிடைக்கவில்லை.';
+
+  @override
+  String get exploreProductsLabel => 'தயாரிப்புகள்';
+
+  @override
+  String get exploreCategoriesLabel => 'வகைகள்';
+
+  @override
+  String explorePlanSelected(String planName, String price) {
+    return '$planName, ₹$price, தேர்ந்தெடுக்கப்பட்டது';
+  }
+
+  @override
+  String explorePlanUnselected(String planName, String price) {
+    return '$planName, ₹$price';
+  }
 }

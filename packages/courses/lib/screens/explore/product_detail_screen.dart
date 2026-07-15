@@ -52,7 +52,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 AppSemantics.button(
-                  label: 'Back',
+                  label: L10n.of(context).exploreProductBack,
                   onTap: () => Navigator.pop(context),
                   child: GestureDetector(
                     onTap: () => Navigator.pop(context),
@@ -141,12 +141,22 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           AppHtmlV2(data: product.descriptionHtml),
                         SizedBox(height: design.spacing.xl),
                         if (product.prices.isNotEmpty) ...[
-                          const AppText.title('Select Plan',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          AppSemantics.header(
+                            label: L10n.of(context).exploreSelectPlan,
+                            child: AppText.title(
+                                L10n.of(context).exploreSelectPlan,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold)),
+                          ),
                           SizedBox(height: design.spacing.sm),
                           ...product.prices.map((price) {
                             final isSelected = _selectedPrice == price;
-                            return GestureDetector(
+                            return AppSemantics.button(
+                              label: isSelected
+                                  ? L10n.of(context).explorePlanSelected(
+                                      price.name, price.price)
+                                  : L10n.of(context).explorePlanUnselected(
+                                      price.name, price.price),
                               onTap: () =>
                                   setState(() => _selectedPrice = price),
                               child: Container(
@@ -205,7 +215,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                                   fontWeight: FontWeight.w600)),
                                           if (price.validity != null)
                                             AppText.sm(
-                                                'Validity: ${price.validity} days',
+                                                L10n.of(context)
+                                                    .exploreValidityDays(price
+                                                        .validity!
+                                                        .toString()),
                                                 color: design
                                                     .colors.textSecondary),
                                           if (price.startDate != null &&
@@ -213,7 +226,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                               price.endDate != null &&
                                               price.endDate!.isNotEmpty)
                                             AppText.sm(
-                                                'From ${price.startDate} to ${price.endDate}',
+                                                L10n.of(context).exploreFromTo(
+                                                    price.startDate!,
+                                                    price.endDate!),
                                                 color: design
                                                     .colors.textSecondary),
                                         ],
@@ -242,9 +257,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               child: AppButton.primary(
                 label: (product.buyNowText?.isNotEmpty == true)
                     ? product.buyNowText!
-                    : 'Buy Now',
+                    : L10n.of(context).exploreBuyNow,
                 onPressed: () {
-                  AppToast.show(context, message: 'Checkout flow coming soon');
+                  AppToast.show(context,
+                      message: L10n.of(context).exploreCheckoutComingSoon);
                 },
               ),
             ),

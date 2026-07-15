@@ -1131,5 +1131,16 @@
       }
     }
   },
-  "customExamPleaseSelectDifficultyLevel": "தயவுசெய்து கடினத்தன்மை நிலையைத் தேர்ந்தெடுக்கவும்"
+  "customExamPleaseSelectDifficultyLevel": "தயவுசெய்து கடினத்தன்மை நிலையைத் தேர்ந்தெடுக்கவும்",
+  "exploreProductBack": "பின்செல்க",
+  "exploreSelectPlan": "திட்டத்தை தேர்ந்தெடுக்கவும்",
+  "exploreBuyNow": "இப்போது வாங்குங்கள்",
+  "exploreCheckoutComingSoon": "செக்அவுட் செயல்முறை விரைவில் வரும்",
+  "exploreValidityDays": "செல்லுபடியாகும் காலம்: {days} நாட்கள்",
+  "exploreFromTo": "{start} முதல் {end} வரை",
+  "exploreNoProductsFound": "எந்த தயாரிப்புகளும் கிடைக்கவில்லை.",
+  "exploreProductsLabel": "தயாரிப்புகள்",
+  "exploreCategoriesLabel": "வகைகள்",
+  "explorePlanSelected": "{planName}, ₹{price}, தேர்ந்தெடுக்கப்பட்டது",
+  "explorePlanUnselected": "{planName}, ₹{price}"
 }

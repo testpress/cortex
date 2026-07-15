@@ -2474,4 +2474,45 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get customExamPleaseSelectDifficultyLevel =>
       'يرجى تحديد مستوى الصعوبة';
+
+  @override
+  String get exploreProductBack => 'رجوع';
+
+  @override
+  String get exploreSelectPlan => 'حدد الخطة';
+
+  @override
+  String get exploreBuyNow => 'اشتري الآن';
+
+  @override
+  String get exploreCheckoutComingSoon => 'عملية الدفع قريباً';
+
+  @override
+  String exploreValidityDays(String days) {
+    return 'الصلاحية: $days أيام';
+  }
+
+  @override
+  String exploreFromTo(String start, String end) {
+    return 'من $start إلى $end';
+  }
+
+  @override
+  String get exploreNoProductsFound => 'لم يتم العثور على منتجات.';
+
+  @override
+  String get exploreProductsLabel => 'المنتجات';
+
+  @override
+  String get exploreCategoriesLabel => 'الفئات';
+
+  @override
+  String explorePlanSelected(String planName, String price) {
+    return '$planName، ₹$price، محدد';
+  }
+
+  @override
+  String explorePlanUnselected(String planName, String price) {
+    return '$planName، ₹$price';
+  }
 }

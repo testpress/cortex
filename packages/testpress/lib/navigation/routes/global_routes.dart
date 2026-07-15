@@ -16,6 +16,12 @@ class GlobalRoutes {
         GoRoute(
           path: 'product/:slug',
           parentNavigatorKey: rootNavigatorKey,
+          redirect: (context, state) {
+            if (state.extra == null || state.extra is! ProductDto) {
+              return '/explore'; // Fallback for deep linking / web reload
+            }
+            return null;
+          },
           builder: (context, state) {
             final product = state.extra as ProductDto;
             return ProductDetailScreen(product: product);

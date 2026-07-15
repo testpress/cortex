@@ -40,7 +40,7 @@ class ProductList extends ConsumerWidget {
           return Center(
             child: Padding(
               padding: EdgeInsets.all(design.spacing.xl),
-              child: const AppText.body('No products found.'),
+              child: AppText.body(L10n.of(context).exploreNoProductsFound),
             ),
           );
         }
@@ -61,7 +61,7 @@ class ProductList extends ConsumerWidget {
       child: Padding(
         padding: EdgeInsets.all(design.spacing.md),
         child: AppSemantics.scrollableList(
-          label: 'Products',
+          label: L10n.of(context).exploreProductsLabel,
           itemCount: products.length,
           child: LayoutBuilder(
             builder: (context, constraints) {

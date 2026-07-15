@@ -892,5 +892,16 @@
       }
     }
   },
-  "customExamPleaseSelectDifficultyLevel": "يرجى تحديد مستوى الصعوبة"
+  "customExamPleaseSelectDifficultyLevel": "يرجى تحديد مستوى الصعوبة",
+  "exploreProductBack": "رجوع",
+  "exploreSelectPlan": "حدد الخطة",
+  "exploreBuyNow": "اشتري الآن",
+  "exploreCheckoutComingSoon": "عملية الدفع قريباً",
+  "exploreValidityDays": "الصلاحية: {days} أيام",
+  "exploreFromTo": "من {start} إلى {end}",
+  "exploreNoProductsFound": "لم يتم العثور على منتجات.",
+  "exploreProductsLabel": "المنتجات",
+  "exploreCategoriesLabel": "الفئات",
+  "explorePlanSelected": "{planName}، ₹{price}، محدد",
+  "explorePlanUnselected": "{planName}، ₹{price}"
 }

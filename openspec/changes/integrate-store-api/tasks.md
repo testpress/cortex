@@ -26,6 +26,5 @@
 
 ## 5. Purchasing Flow
 
-- [x] 5.1 Implement Plan Selection Dialog/BottomSheet for Subscription products.
-- [x] 5.2 Implement Duration/Pricing selection within the Plan Selection Dialog.
-- [x] 5.3 Wire up the final "Buy" action for both simple and subscription products.
+- [x] 5.1 Create `ProductDetailScreen` to display product information and plan selection.
+- [x] 5.2 Implement inline plan selection within `ProductDetailScreen`.

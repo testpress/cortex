@@ -19,7 +19,7 @@ class CategoryFilterBar extends ConsumerWidget {
         return SizedBox(
           height: 48,
           child: AppSemantics.scrollableList(
-            label: 'Categories',
+            label: L10n.of(context).exploreCategoriesLabel,
             itemCount: categories.length + 1,
             child: ListView.separated(
               padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
