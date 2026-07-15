@@ -39,6 +39,11 @@ Both cursor-based methods had identical relative URL resolution logic (`if (!nex
 
 - **Rationale:** Eliminates duplication and makes the URL resolution behavior explicit and testable.
 
+### 5. Remove dead `OfflineQuestionsResponseDto`
+After `getOfflineExamQuestions` switched to `fetchAllCursorPages` + `QuestionDto.parseOfflineQuestions`, `OfflineQuestionsResponseDto` had no remaining references. Removed as dead code.
+
+- **Rationale:** Keeping unused DTOs adds confusion and maintenance burden.
+
 ## Risks / Trade-offs
 
 - **Risk:** `fetchAllPaginatedPages` assumes a standard Django-style pagination envelope (`count`, `per_page`, `next`, `results`).

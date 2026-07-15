@@ -77,16 +77,16 @@ String? resolveNextUrl(String? next) {
 /// Fetches all pages of a cursor-based paginated endpoint sequentially.
 ///
 /// Starts from [initialUrl] and follows the `next` field in each response
-/// until it is null. Each page's raw JSON map is yielded via [pageExtractor]
-/// so callers can extract the items they need.
+/// until it is null. Returns each raw page response map so callers can
+/// parse them according to their own response shape.
 ///
-/// Returns a flat list of raw JSON maps across all pages.
+/// Returns a list of raw page response maps (one per page).
 Future<List<Map<String, dynamic>>> fetchAllCursorPages({
   required Dio dio,
   required String initialUrl,
   Map<String, dynamic>? queryParameters,
 }) async {
-  final List<Map<String, dynamic>> allItems = [];
+  final List<Map<String, dynamic>> allPages = [];
   String? nextUrl = initialUrl;
 
   while (nextUrl != null) {
@@ -99,14 +99,11 @@ Future<List<Map<String, dynamic>>> fetchAllCursorPages({
     );
 
     if (responseData is Map<String, dynamic>) {
-      final results = responseData['results'];
-      if (results is List) {
-        allItems.addAll(results.cast<Map<String, dynamic>>());
-      }
+      allPages.add(responseData);
     }
 
     nextUrl = resolveNextUrl(responseData['next'] as String?);
   }
 
-  return allItems;
+  return allPages;
 }

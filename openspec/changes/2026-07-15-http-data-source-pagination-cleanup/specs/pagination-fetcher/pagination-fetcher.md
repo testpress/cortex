@@ -35,14 +35,14 @@ Future<List<Map<String, dynamic>>> fetchAllCursorPages({
 
 **Behavior:**
 1. Starts from `initialUrl` and fetches the first page (with optional `queryParameters`).
-2. Extracts `results` list from each page response.
+2. Collects the raw page response map into the result list.
 3. Follows the `next` field in each response, resolving relative URLs via `resolveNextUrl`.
 4. Continues until `next` is null.
-5. Returns a flat `List<Map<String, dynamic>>` of all items across all pages.
+5. Returns a `List<Map<String, dynamic>>` where each element is a raw page response map (one per page).
 
 **Constraints:**
 - Fetches pages sequentially (cursor-based — each `next` URL depends on the previous response).
-- Assumes `{ next, results }` response shape.
+- Does not flatten or extract `results` — callers parse each page according to their own response shape.
 
 ### `resolveNextUrl` — Relative URL helper
 

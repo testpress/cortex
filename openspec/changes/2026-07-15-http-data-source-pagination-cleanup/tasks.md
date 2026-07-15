@@ -9,6 +9,7 @@
 - [x] 2.2 Refactor `getReviewItems` to use `fetchAllPaginatedPages` + DTO mapping + sorting.
 - [x] 2.3 Refactor `getOfflineExamQuestions` to use `fetchAllCursorPages` + `QuestionDto.parseOfflineQuestions`.
 - [x] 2.4 Refactor `_fetchFullCurriculum` to use `fetchAllCursorPages` + `CurriculumParser`.
+- [x] 2.5 Remove dead `OfflineQuestionsResponseDto` from `question_dto.dart`.
 
 ## 3. Verify
 

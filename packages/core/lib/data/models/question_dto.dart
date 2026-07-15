@@ -389,20 +389,3 @@ class QuestionOptionDto {
     return {'id': id, 'text': text, 'is_correct': isCorrect};
   }
 }
-
-/// DTO to encapsulate the paginated response for offline exams.
-class OfflineQuestionsResponseDto {
-  final String? nextUrl;
-  final List<QuestionDto> questions;
-
-  const OfflineQuestionsResponseDto({this.nextUrl, required this.questions});
-
-  factory OfflineQuestionsResponseDto.fromJson(Map<String, dynamic> json) {
-    final next = json['next'] as String?;
-    final parsedQuestions = QuestionDto.parseOfflineQuestions(json);
-    return OfflineQuestionsResponseDto(
-      nextUrl: next,
-      questions: parsedQuestions,
-    );
-  }
-}

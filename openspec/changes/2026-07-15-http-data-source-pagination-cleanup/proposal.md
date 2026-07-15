@@ -8,6 +8,7 @@
 - Extract `fetchAllCursorPages` — handles cursor-based pagination (sequential fetch following `next` URL).
 - Add `resolveNextUrl` helper for relative URL resolution.
 - Simplify four `HttpDataSource` methods to delegate pagination to the utilities and only perform DTO conversion.
+- Remove dead `OfflineQuestionsResponseDto` — no longer referenced after `getOfflineExamQuestions` switched to `QuestionDto.parseOfflineQuestions` directly.
 - No changes to the `DataSource` interface, repository layer, or consumers.
 
 ## Capabilities
