@@ -35,10 +35,16 @@ class CourseRepository {
     } else {
       _activeSyncIds.remove(courseId);
     }
-    _syncStatusController.add(Set.unmodifiable(_activeSyncIds));
+    if (!_syncStatusController.isClosed) {
+      _syncStatusController.add(Set.unmodifiable(_activeSyncIds));
+    }
   }
 
   CourseRepository(this._db, this._source);
+
+  void dispose() {
+    _syncStatusController.close();
+  }
 
   // ── Courses ──────────────────────────────────────────────────────────────
 
@@ -48,34 +54,27 @@ class CourseRepository {
   }
 
   /// Live stream of courses filtered for the Exams tab.
+  ///
+  /// Tag and device filtering operates directly on the raw JSON strings stored
+  /// in the DB (e.g. [tags] = '["exams","study"]') using [String.contains].
+  /// This is safe because [_courseDtoToCompanion] always serializes via
+  /// [jsonEncode], which produces compact, double-quoted output with no
+  /// whitespace. If the serialization format ever changes, these checks must
+  /// be updated accordingly.
   Stream<List<CoursesTableData>> watchExamCourses() {
     return _db.watchAllCourses().map((courses) {
-      return courses.where((course) {
-        final dto = rowToCourseDto(course);
-        final hasMobileAccess = dto.allowedDevices.any(
-          (d) => d.toLowerCase().contains('mobile'),
-        );
-
-        // If showExamTab is enabled, identify exams by tag or fallback to examsCount.
-        final isExamCourse = dto.tags.any((t) => t.toLowerCase() == 'exams') ||
-            (dto.tags.isEmpty && dto.examsCount > 0);
-
-        return isExamCourse && hasMobileAccess;
-      }).toList();
+      return courses
+          .where((course) => course.isExamCourse && course.hasMobileAccess)
+          .toList();
     });
   }
 
   /// Live stream of courses filtered for the Info (Learning Resources) tab.
   Stream<List<CoursesTableData>> watchInfoCourses() {
     return _db.watchAllCourses().map((courses) {
-      return courses.where((course) {
-        final dto = rowToCourseDto(course);
-        final hasMobileAccess = dto.allowedDevices.any(
-          (d) => d.toLowerCase().contains('mobile'),
-        );
-        return dto.tags.any((t) => t.toLowerCase() == 'info') &&
-            hasMobileAccess;
-      }).toList();
+      return courses
+          .where((course) => course.isInfoCourse && course.hasMobileAccess)
+          .toList();
     });
   }
 
@@ -84,14 +83,8 @@ class CourseRepository {
   Stream<List<CoursesTableData>> watchStudyCourses() {
     return _db.watchAllCourses().map((courses) {
       return courses.where((course) {
-        final dto = rowToCourseDto(course);
-
-        final isExamCourse = dto.tags.any((t) => t.toLowerCase() == 'exams') ||
-            (dto.tags.isEmpty && dto.examsCount > 0);
-        final isInfoCourse = dto.tags.any((t) => t.toLowerCase() == 'info');
-
-        if (AppConfig.showExamTab && isExamCourse) return false;
-        if (AppConfig.showInfoTab && isInfoCourse) return false;
+        if (AppConfig.showExamTab && course.isExamCourse) return false;
+        if (AppConfig.showInfoTab && course.isInfoCourse) return false;
         return true;
       }).toList();
     });
@@ -351,7 +344,8 @@ class CourseRepository {
       Stream.value(null),
       (_db.select(_db.chaptersTable)..where((t) => t.courseId.equals(courseId)))
           .watch(),
-      _db.watchAllLessons(),
+      (_db.select(_db.lessonsTable)..where((t) => t.courseId.equals(courseId)))
+          .watch(),
     ]);
 
     yield* combinedWatcher.asyncMap((_) => getLocalCourseCurriculum(courseId));
@@ -1278,4 +1272,17 @@ class LessonPaginationController {
     required this.fetchNextPage,
     required this.dispose,
   });
+}
+
+extension CoursesTableDataX on CoursesTableData {
+  String get devicesStr => (allowedDevices ?? '').toLowerCase();
+  String get tagsStr => (tags ?? '').toLowerCase();
+
+  bool get hasMobileAccess => devicesStr.contains('mobile');
+  bool get isEmptyTags => tagsStr.isEmpty || tagsStr == '[]';
+
+  bool get isExamCourse =>
+      tagsStr.contains('"exams"') || (isEmptyTags && examsCount > 0);
+
+  bool get isInfoCourse => tagsStr.contains('"info"');
 }

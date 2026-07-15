@@ -197,7 +197,9 @@ class AppDatabase extends _$AppDatabase {
 
   /// Watch all lessons for a specific course.
   Stream<List<LessonsTableData>> watchLessonsForCourse(String courseId) {
-    return watchAllLessons();
+    return (select(
+      lessonsTable,
+    )..where((t) => t.courseId.equals(courseId))).watch();
   }
 
   /// Watch lessons for a given chapter, ordered by index.
