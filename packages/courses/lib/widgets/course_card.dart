@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:flutter/widgets.dart';
@@ -41,10 +42,10 @@ class CourseCard extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(design.radius.md),
               child: (course.image != null && course.image!.isNotEmpty)
-                  ? Image.network(
-                      course.image!,
+                  ? CachedNetworkImage(
+                      imageUrl: course.image!,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Icon(
+                      errorWidget: (context, url, error) => Icon(
                         LucideIcons.bookOpen,
                         color: design.shortcutPalette.atIndex(1).foreground,
                         size: 24,

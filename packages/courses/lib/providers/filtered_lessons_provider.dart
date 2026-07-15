@@ -61,23 +61,27 @@ class FilteredLessons extends _$FilteredLessons {
       type: type,
     );
 
-    ref.onDispose(() {
-      _controller?.dispose();
-    });
-
-    _controller!.lessonsStream.listen((lessons) {
+    final lessonsSub = _controller!.lessonsStream.listen((lessons) {
       state = state.copyWith(
         lessons: lessons,
         isLoading: false,
       );
     });
 
-    _controller!.isLoadingMoreStream.listen((isLoadingMore) {
+    final isLoadingMoreSub =
+        _controller!.isLoadingMoreStream.listen((isLoadingMore) {
       state = state.copyWith(isLoadingMore: isLoadingMore);
     });
 
-    _controller!.hasMoreStream.listen((hasMore) {
+    final hasMoreSub = _controller!.hasMoreStream.listen((hasMore) {
       state = state.copyWith(hasMore: hasMore);
+    });
+
+    ref.onDispose(() {
+      lessonsSub.cancel();
+      isLoadingMoreSub.cancel();
+      hasMoreSub.cancel();
+      _controller?.dispose();
     });
 
     return const FilteredLessonsState(

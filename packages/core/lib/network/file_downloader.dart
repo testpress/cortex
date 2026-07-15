@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -71,8 +73,21 @@ class FileDownloader {
   }
 
   /// Resolves the local file path for a given URL and [StorageType].
+  ///
+  /// Uses SHA-256 of the full URL as the filename — collision-safe and always
+  /// exactly 64 hex characters, well within the 255-byte OS filename limit.
+  /// This avoids the overflow risk of base64-encoding long signed CDN URLs
+  /// (S3/CloudFront presigned URLs can exceed 255 bytes after base64 inflation).
   Future<String> getLocalPath(String url, StorageType type) async {
-    final fileName = url.split('/').last.split('?').first;
+    final hash = sha256.convert(utf8.encode(url)).toString();
+
+    // Attempt to preserve the file extension if one exists
+    final originalName = url.split('/').last.split('?').first;
+    final extension = originalName.contains('.')
+        ? '.${originalName.split('.').last}'
+        : '';
+
+    final fileName = '$hash$extension';
     final dir = await getDirectory(type);
     return '${dir.path}/$fileName';
   }

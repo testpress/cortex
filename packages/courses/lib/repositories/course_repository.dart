@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'package:async/async.dart';
 import 'dart:convert';
 import 'package:drift/drift.dart';
@@ -374,18 +375,84 @@ class CourseRepository {
   }
 
   /// Watches filtered lessons directly from the local database.
+  ///
+  /// Uses a manual switchMap via [StreamController] instead of [asyncExpand].
+  /// [asyncExpand] would block on the infinite inner DB stream, silently
+  /// dropping any chapter updates emitted while a query is active. The
+  /// switchMap pattern cancels the previous inner subscription on each new
+  /// outer event so the lesson results always reflect the latest chapter
+  /// hierarchy.
   Stream<List<LessonDto>> watchFilteredLessonsLocal(String courseId,
       {String? chapterId, String? type}) {
+    if (chapterId != null && chapterId.isNotEmpty) {
+      // ignore: close_sinks — closed inside onCancel below
+      late StreamController<List<LessonDto>> controller;
+      StreamSubscription<List<ChaptersTableData>>? outerSub;
+      StreamSubscription<List<LessonDto>>? innerSub;
+
+      void cancelInner() {
+        innerSub?.cancel();
+        innerSub = null;
+      }
+
+      controller = StreamController<List<LessonDto>>(
+        onListen: () {
+          outerSub = watchAllChapters(courseId).listen(
+            (allChapters) {
+              // Cancel the previous inner subscription before creating a new one.
+              cancelInner();
+
+              final descendantIds = _collectDescendants(allChapters, chapterId);
+              final query = _db.select(_db.lessonsTable).join([
+                leftOuterJoin(_db.chaptersTable,
+                    _db.chaptersTable.id.equalsExp(_db.lessonsTable.chapterId)),
+              ]);
+
+              query.where(_db.lessonsTable.chapterId.isIn(descendantIds));
+
+              if (type != null && type.isNotEmpty) {
+                if (type == LessonType.notes.name) {
+                  query.where(_db.lessonsTable.type.isIn(
+                      [LessonType.notes.name, LessonType.embedContent.name]));
+                } else {
+                  query.where(_db.lessonsTable.type.equals(type));
+                }
+              }
+
+              innerSub = query.watch().map((rows) {
+                return rows.map((row) {
+                  final lessonRow = row.readTable(_db.lessonsTable);
+                  final chapterRow = row.readTableOrNull(_db.chaptersTable);
+                  var dto = rowToLessonDto(lessonRow);
+                  if ((dto.chapterTitle == null || dto.chapterTitle!.isEmpty) &&
+                      chapterRow != null) {
+                    dto = dto.copyWith(chapterTitle: chapterRow.title);
+                  }
+                  return dto;
+                }).toList();
+              }).listen(
+                controller.add,
+                onError: controller.addError,
+              );
+            },
+            onError: controller.addError,
+          );
+        },
+        onCancel: () {
+          cancelInner();
+          outerSub?.cancel();
+        },
+      );
+
+      return controller.stream;
+    }
+
     final query = _db.select(_db.lessonsTable).join([
       leftOuterJoin(_db.chaptersTable,
           _db.chaptersTable.id.equalsExp(_db.lessonsTable.chapterId)),
     ]);
 
-    if (chapterId != null && chapterId.isNotEmpty) {
-      query.where(_db.lessonsTable.ancestorChapterIds.like('%,$chapterId,%'));
-    } else {
-      query.where(_db.lessonsTable.courseId.equals(courseId));
-    }
+    query.where(_db.lessonsTable.courseId.equals(courseId));
 
     if (type != null && type.isNotEmpty) {
       if (type == LessonType.notes.name) {
@@ -411,6 +478,26 @@ class CourseRepository {
     });
   }
 
+  List<String> _collectDescendants(
+      List<ChaptersTableData> allChapters, String rootId) {
+    final childrenMap = <String, List<String>>{};
+    for (final chapter in allChapters) {
+      if (chapter.parentId != null) {
+        childrenMap.putIfAbsent(chapter.parentId!, () => []).add(chapter.id);
+      }
+    }
+    final result = <String>[];
+    final visited = <String>{};
+    final queue = Queue<String>()..add(rootId);
+    while (queue.isNotEmpty) {
+      final current = queue.removeFirst();
+      if (!visited.add(current)) continue;
+      result.add(current);
+      queue.addAll(childrenMap[current] ?? []);
+    }
+    return result;
+  }
+
   String? _getApiCompatibleType(String? type) {
     if (type == 'test') return 'exam';
     if (type == 'assessment') return 'quiz';
@@ -428,11 +515,11 @@ class CourseRepository {
     while (
         current != null && current.isNotEmpty && !visited.contains(current)) {
       visited.add(current);
-      chain.insert(0, current);
+      chain.add(current);
       current = chapterById[current]?.parentId;
     }
     if (chain.isEmpty) return ',$chapterId,';
-    return ',${chain.join(',')},';
+    return ',${chain.reversed.join(',')},'; // reversed: add() builds leaf→root, this restores root→leaf
   }
 
   /// Returns a clean pagination controller that internally coordinates the

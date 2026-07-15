@@ -81,6 +81,30 @@ class DownloadsRepository {
     });
   }
 
+  /// Watch a specific download from the DB by ID, mapped to a domain model.
+  Stream<DownloadItem?> watchDownload(String id) {
+    return (_db.select(
+      _db.downloadsTable,
+    )..where((tbl) => tbl.id.equals(id))).watchSingleOrNull().map((row) {
+      if (row == null) return null;
+      return DownloadItem(
+        id: row.id,
+        title: row.title,
+        course: row.course,
+        chapter: row.chapter,
+        sizeInBytes: row.sizeInBytes.toInt(),
+        downloadedDate: row.downloadedDate,
+        type: DownloadType.values[row.typeIndex],
+        status: DownloadStatus.values[row.statusIndex],
+        progress: row.progress,
+        thumbnailUrl: row.thumbnailUrl,
+        duration: row.duration,
+        fileType: row.fileType,
+        contentUrl: row.contentUrl,
+      );
+    });
+  }
+
   /// Starts an attachment download and owns the full lifecycle:
   /// insert "downloading" → receive progress updates → write "completed" or "error".
   Future<void> startAttachmentDownload(DownloadItem item, String url) async {
@@ -242,6 +266,12 @@ class DownloadsRepository {
 
   Future<void> purgeAllDownloads() async {
     final downloads = await _db.select(_db.downloadsTable).get();
+
+    // Guard the stream from re-inserting items while we're deleting them.
+    _deletedIds.addAll(downloads.map((r) => r.id));
+    _lastKnownState.clear();
+
+    // Service cleanup still needs per-item data to delete the physical files.
     for (final row in downloads) {
       final item = DownloadItem(
         id: row.id,
@@ -258,8 +288,11 @@ class DownloadsRepository {
         fileType: row.fileType,
         contentUrl: row.contentUrl,
       );
-      await deleteDownload(item);
+      await _service.deleteDownloadItem(item);
     }
+
+    // Single bulk DELETE instead of N individual statements.
+    await _db.delete(_db.downloadsTable).go();
   }
 }
 
@@ -280,10 +313,5 @@ Stream<DownloadItem?> watchDownloadItem(
   String id,
 ) async* {
   final repo = await ref.watch(downloadsRepositoryProvider.future);
-  yield* repo.watchAllDownloads().map((list) {
-    for (var item in list) {
-      if (item.id == id) return item;
-    }
-    return null;
-  });
+  yield* repo.watchDownload(id);
 }

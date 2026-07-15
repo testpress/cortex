@@ -25,7 +25,7 @@ final downloadsRepositoryProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef DownloadsRepositoryRef = FutureProviderRef<DownloadsRepository>;
-String _$watchDownloadItemHash() => r'2634e2dbb5935b7593a24a3253d63bd2000fd9e0';
+String _$watchDownloadItemHash() => r'cb013f4c1745e900c1c81bff9e15c6a37835cd7f';
 
 /// Copied from Dart SDK
 class _SystemHash {

@@ -18,7 +18,6 @@ import 'package:mockito/src/dummies.dart' as _i8;
 // ignore_for_file: avoid_setters_without_getters
 // ignore_for_file: comment_references
 // ignore_for_file: deprecated_member_use
-// ignore_for_file: invalid_use_of_internal_member
 // ignore_for_file: deprecated_member_use_from_same_package
 // ignore_for_file: implementation_imports
 // ignore_for_file: invalid_use_of_visible_for_testing_member
@@ -27,6 +26,7 @@ import 'package:mockito/src/dummies.dart' as _i8;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
+// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeAuthApiResult_0 extends _i1.SmartFake implements _i2.AuthApiResult {
   _FakeAuthApiResult_0(Object parent, Invocation parentInvocation)
@@ -356,6 +356,58 @@ class MockAuthApiService extends _i1.Mock implements _i2.AuthApiService {
             ),
           )
           as _i6.Future<_i2.AuthApiResult>);
+
+  @override
+  _i6.Future<_i2.AuthApiResult> loginWithGoogle({
+    required String? idToken,
+    required String? userId,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#loginWithGoogle, [], {
+              #idToken: idToken,
+              #userId: userId,
+            }),
+            returnValue: _i6.Future<_i2.AuthApiResult>.value(
+              _FakeAuthApiResult_0(
+                this,
+                Invocation.method(#loginWithGoogle, [], {
+                  #idToken: idToken,
+                  #userId: userId,
+                }),
+              ),
+            ),
+            returnValueForMissingStub: _i6.Future<_i2.AuthApiResult>.value(
+              _FakeAuthApiResult_0(
+                this,
+                Invocation.method(#loginWithGoogle, [], {
+                  #idToken: idToken,
+                  #userId: userId,
+                }),
+              ),
+            ),
+          )
+          as _i6.Future<_i2.AuthApiResult>);
+
+  @override
+  _i6.Future<void> register({
+    required String? username,
+    required String? email,
+    required String? password,
+    String? phone,
+    String? countryCode,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#register, [], {
+              #username: username,
+              #email: email,
+              #password: password,
+              #phone: phone,
+              #countryCode: countryCode,
+            }),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
 
   @override
   _i6.Future<void> generateOtp({
@@ -881,6 +933,21 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
             ),
           )
           as _i4.$OfflineExamAnswersTableTable);
+
+  @override
+  _i3.Index get lessonsChapterIdx =>
+      (super.noSuchMethod(
+            Invocation.getter(#lessonsChapterIdx),
+            returnValue: _FakeIndex_27(
+              this,
+              Invocation.getter(#lessonsChapterIdx),
+            ),
+            returnValueForMissingStub: _FakeIndex_27(
+              this,
+              Invocation.getter(#lessonsChapterIdx),
+            ),
+          )
+          as _i3.Index);
 
   @override
   _i3.Index get weeklyRankIdx =>

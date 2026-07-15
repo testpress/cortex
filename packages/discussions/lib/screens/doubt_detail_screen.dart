@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:file_picker/file_picker.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
@@ -1000,10 +1001,10 @@ class _AttachmentThumbnail extends StatelessWidget {
             )
           : ClipRRect(
               borderRadius: BorderRadius.circular(design.radius.md),
-              child: Image.network(
-                url,
+              child: CachedNetworkImage(
+                imageUrl: url,
                 fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => Icon(
+                errorWidget: (_, _, _) => Icon(
                   LucideIcons.image,
                   size: 24,
                   color: design.colors.textSecondary,
