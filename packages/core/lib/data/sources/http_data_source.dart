@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:core/data/data.dart';
 import '../../network/network_utils.dart';
+import '../../network/pagination_fetcher.dart';
 import 'curriculum_parser.dart';
 
 /// HTTP data source stub — to be implemented when a real backend is available.
@@ -73,28 +74,14 @@ class HttpDataSource implements DataSource {
 
   @override
   Future<List<QuestionDto>> getOfflineExamQuestions(String examId) async {
-    final String initialUrl = ApiEndpoints.offlineExamQuestions(examId);
-    String? nextUrl = initialUrl;
+    final rawPages = await fetchAllCursorPages(
+      dio: _dio,
+      initialUrl: ApiEndpoints.offlineExamQuestions(examId),
+    );
 
-    final List<QuestionDto> allQuestions = [];
-
-    while (nextUrl != null) {
-      final response = await performNetworkRequest<OfflineQuestionsResponseDto>(
-        _dio.get(nextUrl),
-        fromJson: (json) => OfflineQuestionsResponseDto.fromJson(json),
-      );
-
-      allQuestions.addAll(response.questions);
-
-      final next = response.nextUrl;
-      if (next != null && !next.startsWith('http')) {
-        nextUrl = '${AppConfig.apiBaseUrl}$next';
-      } else {
-        nextUrl = next;
-      }
-    }
-
-    return allQuestions;
+    return rawPages
+        .expand((page) => QuestionDto.parseOfflineQuestions(page))
+        .toList();
   }
 
   @override
@@ -199,29 +186,19 @@ class HttpDataSource implements DataSource {
     String url, {
     Map<String, dynamic>? queryParameters,
   }) async {
-    final List<LessonDto> lessons = [];
-    final List<ChapterDto> chapters = [];
-    String? nextUrl = url;
+    final rawPages = await fetchAllCursorPages(
+      dio: _dio,
+      initialUrl: url,
+      queryParameters: queryParameters,
+    );
 
-    while (nextUrl != null) {
-      final responseData = await performNetworkRequest(
-        _dio.get(
-          nextUrl,
-          queryParameters: nextUrl == url ? queryParameters : null,
-        ),
-        fromJson: (data) => data,
-      );
+    final lessons = <LessonDto>[];
+    final chapters = <ChapterDto>[];
 
-      final curriculum = CurriculumParser.parseFullCurriculum(responseData);
+    for (final page in rawPages) {
+      final curriculum = CurriculumParser.parseFullCurriculum(page);
       lessons.addAll(curriculum.lessons);
       chapters.addAll(curriculum.chapters);
-
-      final next = responseData['next'] as String?;
-      if (next != null && !next.startsWith('http')) {
-        nextUrl = '${AppConfig.apiBaseUrl}$next';
-      } else {
-        nextUrl = next;
-      }
     }
 
     return CourseCurriculumDto(lessons: lessons, chapters: chapters);
@@ -876,62 +853,16 @@ class HttpDataSource implements DataSource {
       fromJson: (json) => json,
     );
 
-    final List<ReviewItemDto> allReviewItems = [];
-    final List<dynamic> firstPageList;
-    String? nextUrl;
-    int count = 0;
-    int perPage = 0;
-
-    if (firstPageData is List) {
-      firstPageList = firstPageData;
-    } else if (firstPageData is Map && firstPageData['results'] is List) {
-      firstPageList = firstPageData['results'] as List<dynamic>;
-      nextUrl = firstPageData['next'] as String?;
-      count = (firstPageData['count'] as int?) ?? 0;
-      perPage = (firstPageData['per_page'] as int?) ?? firstPageList.length;
-    } else {
-      firstPageList = [];
-    }
-
-    allReviewItems.addAll(
-      firstPageList.map(
-        (e) => ReviewItemDto.fromJson(e as Map<String, dynamic>),
-      ),
+    final rawItems = await fetchAllPaginatedPages(
+      dio: _dio,
+      url: reviewUrl,
+      firstPageData: firstPageData,
     );
 
-    if (nextUrl != null && nextUrl.isNotEmpty && count > 0 && perPage > 0) {
-      final int totalPages = (count / perPage).ceil();
-      if (totalPages > 1) {
-        final uri = Uri.parse(reviewUrl);
-        final List<Future<dynamic>> futureRequests = [];
+    final allReviewItems = rawItems
+        .map((json) => ReviewItemDto.fromJson(json))
+        .toList();
 
-        for (int page = 2; page <= totalPages; page++) {
-          final queryParams = Map<String, String>.from(uri.queryParameters);
-          queryParams['page'] = page.toString();
-          final pageUri = uri.replace(queryParameters: queryParams);
-          futureRequests.add(
-            performNetworkRequest(
-              _dio.get(pageUri.toString()),
-              fromJson: (json) => json,
-            ),
-          );
-        }
-
-        final List<dynamic> pagesData = await Future.wait(futureRequests);
-        for (final pageData in pagesData) {
-          if (pageData is Map && pageData['results'] is List) {
-            final list = pageData['results'] as List<dynamic>;
-            allReviewItems.addAll(
-              list.map(
-                (e) => ReviewItemDto.fromJson(e as Map<String, dynamic>),
-              ),
-            );
-          }
-        }
-      }
-    }
-
-    // Sort review items by index to preserve order
     allReviewItems.sort((a, b) => a.index.compareTo(b.index));
 
     return allReviewItems;
@@ -948,62 +879,13 @@ class HttpDataSource implements DataSource {
       fromJson: (json) => json,
     );
 
-    final List<SubjectAnalyticsDto> allSubjects = [];
-    final List<dynamic> firstPageList;
-    String? nextUrl;
-    int count = 0;
-    int perPage = 0;
-
-    if (firstPageData is List) {
-      firstPageList = firstPageData;
-    } else if (firstPageData is Map && firstPageData['results'] is List) {
-      firstPageList = firstPageData['results'] as List<dynamic>;
-      nextUrl = firstPageData['next'] as String?;
-      count = (firstPageData['count'] as int?) ?? 0;
-      perPage = (firstPageData['per_page'] as int?) ?? firstPageList.length;
-    } else {
-      firstPageList = [];
-    }
-
-    allSubjects.addAll(
-      firstPageList.map(
-        (e) => SubjectAnalyticsDto.fromJson(e as Map<String, dynamic>),
-      ),
+    final rawItems = await fetchAllPaginatedPages(
+      dio: _dio,
+      url: analyticsUrl,
+      firstPageData: firstPageData,
     );
 
-    if (nextUrl != null && nextUrl.isNotEmpty && count > 0 && perPage > 0) {
-      final int totalPages = (count / perPage).ceil();
-      if (totalPages > 1) {
-        final uri = Uri.parse(analyticsUrl);
-        final List<Future<dynamic>> futureRequests = [];
-
-        for (int page = 2; page <= totalPages; page++) {
-          final queryParams = Map<String, String>.from(uri.queryParameters);
-          queryParams['page'] = page.toString();
-          final pageUri = uri.replace(queryParameters: queryParams);
-          futureRequests.add(
-            performNetworkRequest(
-              _dio.get(pageUri.toString()),
-              fromJson: (json) => json,
-            ),
-          );
-        }
-
-        final List<dynamic> pagesData = await Future.wait(futureRequests);
-        for (final pageData in pagesData) {
-          if (pageData is Map && pageData['results'] is List) {
-            final list = pageData['results'] as List<dynamic>;
-            allSubjects.addAll(
-              list.map(
-                (e) => SubjectAnalyticsDto.fromJson(e as Map<String, dynamic>),
-              ),
-            );
-          }
-        }
-      }
-    }
-
-    return allSubjects;
+    return rawItems.map((json) => SubjectAnalyticsDto.fromJson(json)).toList();
   }
 
   @override
