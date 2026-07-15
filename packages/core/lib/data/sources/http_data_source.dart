@@ -412,10 +412,18 @@ class HttpDataSource implements DataSource {
     String? search,
   }) async {
     final queryParameters = <String, dynamic>{'page': page};
-    if (category != null) queryParameters['category'] = category;
-    if (categoryName != null) queryParameters['category_name'] = categoryName;
-    if (tag != null) queryParameters['tag'] = tag;
-    if (search != null && search.isNotEmpty) queryParameters['search'] = search;
+    if (category != null && category.isNotEmpty) {
+      queryParameters['category'] = category;
+    }
+    if (categoryName != null && categoryName.isNotEmpty) {
+      queryParameters['category_name'] = categoryName;
+    }
+    if (tag != null && tag.isNotEmpty) {
+      queryParameters['tag'] = tag;
+    }
+    if (search != null && search.isNotEmpty) {
+      queryParameters['search'] = search;
+    }
 
     return performNetworkRequest(
       _dio.get(ApiEndpoints.products, queryParameters: queryParameters),

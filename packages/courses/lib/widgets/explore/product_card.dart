@@ -37,12 +37,12 @@ class ProductCard extends StatelessWidget {
                       ? CachedNetworkImage(
                           imageUrl: product.image!,
                           fit: BoxFit.cover,
-                          placeholder: (_, __) =>
-                              _ImagePlaceholder(design: design),
-                          errorWidget: (_, __, ___) =>
-                              _ImagePlaceholder(design: design),
+                          placeholder: (context, url) =>
+                              const _ImagePlaceholder(),
+                          errorWidget: (context, url, error) =>
+                              const _ImagePlaceholder(),
                         )
-                      : _ImagePlaceholder(design: design),
+                      : const _ImagePlaceholder(),
                 ),
               ),
 
@@ -89,11 +89,12 @@ class ProductCard extends StatelessWidget {
 }
 
 class _ImagePlaceholder extends StatelessWidget {
-  const _ImagePlaceholder({required this.design});
-  final dynamic design;
+  const _ImagePlaceholder();
 
   @override
   Widget build(BuildContext context) {
+    final design = Design.of(context);
+
     return Container(
       color: design.colors.surfaceVariant,
       child: Center(

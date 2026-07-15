@@ -28,7 +28,7 @@ class ProductList extends ConsumerWidget {
     final productsAsync = ref.watch(storeProductsProvider);
 
     return productsAsync.when(
-      loading: () => _buildGrid(design, _skeletonProducts, isLoading: true),
+      loading: () => _buildGrid(context, _skeletonProducts, isLoading: true),
       error: (_, __) => SizedBox(
         height: MediaQuery.sizeOf(context).height * 0.6,
         child: AppErrorView(
@@ -44,16 +44,18 @@ class ProductList extends ConsumerWidget {
             ),
           );
         }
-        return _buildGrid(design, products, isLoading: false);
+        return _buildGrid(context, products, isLoading: false);
       },
     );
   }
 
   Widget _buildGrid(
-    dynamic design,
+    BuildContext context,
     List<ProductDto> products, {
     required bool isLoading,
   }) {
+    final design = Design.of(context);
+
     return Skeletonizer(
       enabled: isLoading,
       child: Padding(

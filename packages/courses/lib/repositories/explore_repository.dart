@@ -14,8 +14,19 @@ class ExploreRepository {
 
   // ── In-memory caches ──────────────────────────────────────────────────────
 
+  static const int _maxCacheSize = 20;
   final Map<String, List<ProductDto>> _productCache = {};
   final Map<String, List<ProductCategoryDto>> _categoryCache = {};
+
+  void _evictCache<T>(Map<String, T> cache) {
+    if (cache.length > _maxCacheSize) {
+      final keysToRemove =
+          cache.keys.take(cache.length - _maxCacheSize).toList();
+      for (final key in keysToRemove) {
+        cache.remove(key);
+      }
+    }
+  }
 
   // ── Products ──────────────────────────────────────────────────────────────
 
@@ -51,6 +62,7 @@ class ExploreRepository {
 
       // Wipe stale cache then write the fresh results.
       _productCache[cacheKey] = response.results;
+      _evictCache(_productCache);
       return response.results;
     } catch (e) {
       // Return cached data on error if available, otherwise rethrow.
@@ -76,6 +88,7 @@ class ExploreRepository {
     try {
       final response = await _source.getProductCategories(search: search);
       _categoryCache[cacheKey] = response.results;
+      _evictCache(_categoryCache);
       return response.results;
     } catch (e) {
       final cached = _categoryCache[cacheKey];

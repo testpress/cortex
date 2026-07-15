@@ -209,7 +209,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                                 color: design
                                                     .colors.textSecondary),
                                           if (price.startDate != null &&
-                                              price.endDate != null)
+                                              price.startDate!.isNotEmpty &&
+                                              price.endDate != null &&
+                                              price.endDate!.isNotEmpty)
                                             AppText.sm(
                                                 'From ${price.startDate} to ${price.endDate}',
                                                 color: design
