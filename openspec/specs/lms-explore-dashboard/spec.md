@@ -2,33 +2,18 @@
 
 ## Purpose
 The main landing experience for the Explore tab, coordinating the layout of featured content and discovery sections.
-
 ## Requirements
-
-### Requirement: Featured Content Carousel
-The system SHALL display a horizontal carousel of featured banners at the top of the Explore dashboard to highlight new launches, updates, or special sessions.
-
-#### Scenario: Navigating featured items
-- **WHEN** the user swipes left or right on the hero banner section
-- **THEN** the system SHALL navigate through the featured banners using a snapping animation
-- **AND** the system SHALL update the pagination indicator to reflect the current banner index
-
 ### Requirement: Course Discovery Sections
-The system SHALL provide distinct horizontal scrolling sections for "Trending Now" and "Recommended for You" courses to facilitate discovery.
+The system SHALL display store products fetched from the API instead of static mock discovery sections. The products should be rendered in a list or grid to facilitate marketplace browsing.
 
-#### Scenario: Viewing course details from discovery
-- **WHEN** the user selects a course card from any discovery section
-- **THEN** the system SHALL navigate to the Course Detail view for that specific course
+#### Scenario: Viewing product details from discovery
+- **WHEN** the user selects a product card from the store listing
+- **THEN** the system SHALL present the product purchase details (or plan selection if it is a subscription)
 
 ### Requirement: Quick Access Filtering
-The system SHALL provide a horizontal list of interactive "pills" (Trending, Recommended, Short Lessons, Popular, Study Tips) that allow the user to quickly navigate to specific sections of the Explore page.
+The system SHALL provide a horizontal list of interactive "pills" representing Store Categories (fetched from `/api/v2.5/products/categories/`) that allow the user to filter the products displayed on the page.
 
-#### Scenario: Tapping a filter pill
-- **WHEN** the user taps a specific pill in the filter bar (e.g., "Study Tips")
+#### Scenario: Tapping a category pill
+- **WHEN** the user taps a specific category pill in the filter bar
+- **THEN** the system SHALL re-fetch and display products for that category
 
-### Requirement: Popular Tests Data Fetching
-The system SHALL provide popular tests data for the Explore dashboard through the shared `DataSource` abstraction in `core`, ensuring zero runtime dependency on the `exams` package for discovery features.
-
-#### Scenario: Mock data source returns popular tests
-- **WHEN** `dataSourceProvider.getPopularTests()` is called in mock mode
-- **THEN** a list of `PopularTestDto` items is returned with complete metadata (title, time, duration, type).
