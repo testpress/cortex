@@ -52,6 +52,36 @@ class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
           as _i3.Future<void>);
 
   @override
+  _i3.Future<void> loginWithGoogle() =>
+      (super.noSuchMethod(
+            Invocation.method(#loginWithGoogle, []),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> register({
+    required String? username,
+    required String? email,
+    required String? password,
+    String? phone,
+    String? countryCode,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#register, [], {
+              #username: username,
+              #email: email,
+              #password: password,
+              #phone: phone,
+              #countryCode: countryCode,
+            }),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
   _i3.Future<void> generateOtp({
     required String? phoneNumber,
     required String? countryCode,

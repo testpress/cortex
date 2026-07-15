@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 
 /// Drift table for lessons inside a chapter.
+@TableIndex(name: 'lessons_chapter_idx', columns: {#chapterId})
 class LessonsTable extends Table {
   TextColumn get id => text()();
   TextColumn get chapterId => text()();

@@ -6,7 +6,7 @@ part of 'lesson_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$lessonDetailHash() => r'c2d69f4ef1417423393f0945f0b9a288ad06f83f';
+String _$lessonDetailHash() => r'69ad9a9a977e18b74b4a5b2782fb3db4ab84a726';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,20 +31,40 @@ class _SystemHash {
 
 /// Provider that fetches a specific lesson domain model by its ID.
 ///
+/// Uses a timed keep-alive: the provider stays cached for 5 minutes after its
+/// last listener drops (e.g. the user navigates away), then disposes itself.
+/// This avoids the unbounded memory growth of a static [keepAlive: true] while
+/// still providing fast re-entry for typical back-navigation patterns.
+///
 /// Copied from [lessonDetail].
 @ProviderFor(lessonDetail)
 const lessonDetailProvider = LessonDetailFamily();
 
 /// Provider that fetches a specific lesson domain model by its ID.
 ///
+/// Uses a timed keep-alive: the provider stays cached for 5 minutes after its
+/// last listener drops (e.g. the user navigates away), then disposes itself.
+/// This avoids the unbounded memory growth of a static [keepAlive: true] while
+/// still providing fast re-entry for typical back-navigation patterns.
+///
 /// Copied from [lessonDetail].
 class LessonDetailFamily extends Family<AsyncValue<Lesson?>> {
   /// Provider that fetches a specific lesson domain model by its ID.
+  ///
+  /// Uses a timed keep-alive: the provider stays cached for 5 minutes after its
+  /// last listener drops (e.g. the user navigates away), then disposes itself.
+  /// This avoids the unbounded memory growth of a static [keepAlive: true] while
+  /// still providing fast re-entry for typical back-navigation patterns.
   ///
   /// Copied from [lessonDetail].
   const LessonDetailFamily();
 
   /// Provider that fetches a specific lesson domain model by its ID.
+  ///
+  /// Uses a timed keep-alive: the provider stays cached for 5 minutes after its
+  /// last listener drops (e.g. the user navigates away), then disposes itself.
+  /// This avoids the unbounded memory growth of a static [keepAlive: true] while
+  /// still providing fast re-entry for typical back-navigation patterns.
   ///
   /// Copied from [lessonDetail].
   LessonDetailProvider call(
@@ -81,9 +101,19 @@ class LessonDetailFamily extends Family<AsyncValue<Lesson?>> {
 
 /// Provider that fetches a specific lesson domain model by its ID.
 ///
+/// Uses a timed keep-alive: the provider stays cached for 5 minutes after its
+/// last listener drops (e.g. the user navigates away), then disposes itself.
+/// This avoids the unbounded memory growth of a static [keepAlive: true] while
+/// still providing fast re-entry for typical back-navigation patterns.
+///
 /// Copied from [lessonDetail].
 class LessonDetailProvider extends AutoDisposeStreamProvider<Lesson?> {
   /// Provider that fetches a specific lesson domain model by its ID.
+  ///
+  /// Uses a timed keep-alive: the provider stays cached for 5 minutes after its
+  /// last listener drops (e.g. the user navigates away), then disposes itself.
+  /// This avoids the unbounded memory growth of a static [keepAlive: true] while
+  /// still providing fast re-entry for typical back-navigation patterns.
   ///
   /// Copied from [lessonDetail].
   LessonDetailProvider(

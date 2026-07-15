@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'course_list_provider.dart';
 import '../models/course_content.dart';
@@ -6,8 +7,25 @@ import 'package:async/async.dart';
 part 'lesson_detail_provider.g.dart';
 
 /// Provider that fetches a specific lesson domain model by its ID.
-@Riverpod(keepAlive: true)
+///
+/// Uses a timed keep-alive: the provider stays cached for 5 minutes after its
+/// last listener drops (e.g. the user navigates away), then disposes itself.
+/// This avoids the unbounded memory growth of a static [keepAlive: true] while
+/// still providing fast re-entry for typical back-navigation patterns.
+@riverpod
 Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
+  final link = ref.keepAlive();
+  Timer? disposeTimer;
+
+  ref.onCancel(() {
+    disposeTimer = Timer(const Duration(minutes: 5), link.close);
+  });
+  ref.onResume(() {
+    disposeTimer?.cancel();
+    disposeTimer = null;
+  });
+  ref.onDispose(() => disposeTimer?.cancel());
+
   final repository = await ref.watch(courseRepositoryProvider.future);
 
   final initial = await repository.getLesson(lessonId);

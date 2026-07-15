@@ -15975,6 +15975,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $OfflineExamDownloadsTableTable(this);
   late final $OfflineExamAnswersTableTable offlineExamAnswersTable =
       $OfflineExamAnswersTableTable(this);
+  late final Index lessonsChapterIdx = Index(
+    'lessons_chapter_idx',
+    'CREATE INDEX lessons_chapter_idx ON lessons_table (chapter_id)',
+  );
   late final Index weeklyRankIdx = Index(
     'weekly_rank_idx',
     'CREATE INDEX weekly_rank_idx ON weekly_leaderboard (rank)',
@@ -16029,6 +16033,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     subjectAnalyticsTable,
     offlineExamDownloadsTable,
     offlineExamAnswersTable,
+    lessonsChapterIdx,
     weeklyRankIdx,
     weeklyPointsIdx,
     monthlyRankIdx,
