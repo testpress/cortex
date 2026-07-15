@@ -383,21 +383,54 @@ class HttpDataSource implements DataSource {
       );
 
   @override
-  Future<List<ExploreBannerDto>> getExploreBanners() async =>
-      mockExploreBanners;
+  Future<PaginatedResponseDto<ProductCategoryDto>> getProductCategories({
+    int page = 1,
+    String? search,
+  }) async {
+    final queryParameters = <String, dynamic>{'page': page};
+    if (search != null && search.isNotEmpty) {
+      queryParameters['search'] = search;
+    }
+    return performNetworkRequest(
+      _dio.get(
+        ApiEndpoints.productCategories,
+        queryParameters: queryParameters,
+      ),
+      fromJson: (data) => PaginatedResponseDto<ProductCategoryDto>.fromJson(
+        data,
+        (json) => ProductCategoryDto.fromJson(json),
+      ),
+    );
+  }
 
   @override
-  Future<List<StudyTipDto>> getStudyTips() async => mockStudyTips;
+  Future<PaginatedResponseDto<ProductDto>> getProducts({
+    int page = 1,
+    String? category,
+    String? categoryName,
+    String? tag,
+    String? search,
+  }) async {
+    final queryParameters = <String, dynamic>{'page': page};
+    if (category != null && category.isNotEmpty) {
+      queryParameters['category'] = category;
+    }
+    if (categoryName != null && categoryName.isNotEmpty) {
+      queryParameters['category_name'] = categoryName;
+    }
+    if (tag != null && tag.isNotEmpty) {
+      queryParameters['tag'] = tag;
+    }
+    if (search != null && search.isNotEmpty) {
+      queryParameters['search'] = search;
+    }
 
-  @override
-  Future<List<ShortLessonDto>> getShortLessons() async => mockShortLessons;
-
-  @override
-  Future<List<DiscoveryCourseDto>> getDiscoveryCourses() async =>
-      mockDiscoveryCourses;
-
-  @override
-  Future<List<PopularTestDto>> getPopularTests() async => mockPopularTests;
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.products, queryParameters: queryParameters),
+      fromJson: (data) =>
+          StoreProductsResponseDto.fromJson(data).toPaginatedResponse(),
+    );
+  }
 
   @override
   Future<List<DashboardBannerDto>> getDashboardBanners() async {

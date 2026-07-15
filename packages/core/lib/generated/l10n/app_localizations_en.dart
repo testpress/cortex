@@ -2468,4 +2468,45 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get customExamPleaseSelectDifficultyLevel =>
       'Please select a difficulty level';
+
+  @override
+  String get exploreProductBack => 'Back';
+
+  @override
+  String get exploreSelectPlan => 'Select Plan';
+
+  @override
+  String get exploreBuyNow => 'Buy Now';
+
+  @override
+  String get exploreCheckoutComingSoon => 'Checkout flow coming soon';
+
+  @override
+  String exploreValidityDays(String days) {
+    return 'Validity: $days days';
+  }
+
+  @override
+  String exploreFromTo(String start, String end) {
+    return 'From $start to $end';
+  }
+
+  @override
+  String get exploreNoProductsFound => 'No products found.';
+
+  @override
+  String get exploreProductsLabel => 'Products';
+
+  @override
+  String get exploreCategoriesLabel => 'Categories';
+
+  @override
+  String explorePlanSelected(String planName, String price) {
+    return '$planName, ₹$price, selected';
+  }
+
+  @override
+  String explorePlanUnselected(String planName, String price) {
+    return '$planName, ₹$price';
+  }
 }

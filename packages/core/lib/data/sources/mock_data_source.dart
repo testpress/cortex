@@ -1048,21 +1048,48 @@ class MockDataSource implements DataSource {
   // ─────────────────────────────────────────────────────────────────────────
 
   @override
-  Future<List<ExploreBannerDto>> getExploreBanners() async =>
-      mockExploreBanners;
+  Future<PaginatedResponseDto<ProductCategoryDto>> getProductCategories({
+    int page = 1,
+    String? search,
+  }) async {
+    return PaginatedResponseDto(
+      count: 2,
+      results: [
+        ProductCategoryDto(id: 1, name: 'NEET Courses', slug: 'neet'),
+        ProductCategoryDto(id: 2, name: 'Subscription Pass', slug: 'pass'),
+      ],
+    );
+  }
 
   @override
-  Future<List<StudyTipDto>> getStudyTips() async => mockStudyTips;
-
-  @override
-  Future<List<ShortLessonDto>> getShortLessons() async => mockShortLessons;
-
-  @override
-  Future<List<DiscoveryCourseDto>> getDiscoveryCourses() async =>
-      mockDiscoveryCourses;
-
-  @override
-  Future<List<PopularTestDto>> getPopularTests() async => mockPopularTests;
+  Future<PaginatedResponseDto<ProductDto>> getProducts({
+    int page = 1,
+    String? category,
+    String? categoryName,
+    String? tag,
+    String? search,
+  }) async {
+    return PaginatedResponseDto(
+      count: 2,
+      results: [
+        ProductDto(
+          id: 524,
+          title: 'Course C',
+          slug: 'course-c',
+          price: '300.00',
+          courses: const [372],
+        ),
+        ProductDto(
+          id: 326,
+          title: 'Subscription Pass',
+          slug: 'subscription-pass',
+          price: '3000.00',
+          strikeThroughPrice: '5000.00',
+          courses: const [],
+        ),
+      ],
+    );
+  }
 
   @override
   Future<List<DashboardBannerDto>> getDashboardBanners() async {

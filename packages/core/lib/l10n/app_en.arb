@@ -1177,5 +1177,53 @@
       }
     }
   },
-  "customExamPleaseSelectDifficultyLevel": "Please select a difficulty level"
+  "customExamPleaseSelectDifficultyLevel": "Please select a difficulty level",
+  "exploreProductBack": "Back",
+  "exploreSelectPlan": "Select Plan",
+  "exploreBuyNow": "Buy Now",
+  "exploreCheckoutComingSoon": "Checkout flow coming soon",
+  "exploreValidityDays": "Validity: {days} days",
+  "@exploreValidityDays": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "exploreFromTo": "From {start} to {end}",
+  "@exploreFromTo": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "exploreNoProductsFound": "No products found.",
+  "exploreProductsLabel": "Products",
+  "exploreCategoriesLabel": "Categories",
+  "explorePlanSelected": "{planName}, ₹{price}, selected",
+  "@explorePlanSelected": {
+    "placeholders": {
+      "planName": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "explorePlanUnselected": "{planName}, ₹{price}",
+  "@explorePlanUnselected": {
+    "placeholders": {
+      "planName": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  }
 }

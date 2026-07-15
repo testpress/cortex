@@ -4534,6 +4534,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please select a difficulty level'**
   String get customExamPleaseSelectDifficultyLevel;
+
+  /// No description provided for @exploreProductBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get exploreProductBack;
+
+  /// No description provided for @exploreSelectPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Plan'**
+  String get exploreSelectPlan;
+
+  /// No description provided for @exploreBuyNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy Now'**
+  String get exploreBuyNow;
+
+  /// No description provided for @exploreCheckoutComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Checkout flow coming soon'**
+  String get exploreCheckoutComingSoon;
+
+  /// No description provided for @exploreValidityDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Validity: {days} days'**
+  String exploreValidityDays(String days);
+
+  /// No description provided for @exploreFromTo.
+  ///
+  /// In en, this message translates to:
+  /// **'From {start} to {end}'**
+  String exploreFromTo(String start, String end);
+
+  /// No description provided for @exploreNoProductsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No products found.'**
+  String get exploreNoProductsFound;
+
+  /// No description provided for @exploreProductsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Products'**
+  String get exploreProductsLabel;
+
+  /// No description provided for @exploreCategoriesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get exploreCategoriesLabel;
+
+  /// No description provided for @explorePlanSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'{planName}, ₹{price}, selected'**
+  String explorePlanSelected(String planName, String price);
+
+  /// No description provided for @explorePlanUnselected.
+  ///
+  /// In en, this message translates to:
+  /// **'{planName}, ₹{price}'**
+  String explorePlanUnselected(String planName, String price);
 }
 
 class _AppLocalizationsDelegate

@@ -2514,4 +2514,45 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get customExamPleaseSelectDifficultyLevel =>
       'ദയവായി കാഠിന്യ നില തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get exploreProductBack => 'മടങ്ങുക';
+
+  @override
+  String get exploreSelectPlan => 'പ്ലാൻ തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get exploreBuyNow => 'ഇപ്പോൾ വാങ്ങുക';
+
+  @override
+  String get exploreCheckoutComingSoon => 'ചെക്ക്ഔട്ട് പ്രക്രിയ ഉടൻ വരും';
+
+  @override
+  String exploreValidityDays(String days) {
+    return 'കാലാവധി: $days ദിവസങ്ങൾ';
+  }
+
+  @override
+  String exploreFromTo(String start, String end) {
+    return '$start മുതൽ $end വരെ';
+  }
+
+  @override
+  String get exploreNoProductsFound => 'ഉൽപ്പന്നങ്ങളൊന്നും കണ്ടെത്തിയില്ല.';
+
+  @override
+  String get exploreProductsLabel => 'ഉൽപ്പന്നങ്ങൾ';
+
+  @override
+  String get exploreCategoriesLabel => 'വിഭാഗങ്ങൾ';
+
+  @override
+  String explorePlanSelected(String planName, String price) {
+    return '$planName, ₹$price, തിരഞ്ഞെടുത്തു';
+  }
+
+  @override
+  String explorePlanUnselected(String planName, String price) {
+    return '$planName, ₹$price';
+  }
 }

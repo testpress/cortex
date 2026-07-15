@@ -893,5 +893,16 @@
       }
     }
   },
-  "customExamPleaseSelectDifficultyLevel": "ദയവായി കാഠിന്യ നില തിരഞ്ഞെടുക്കുക"
+  "customExamPleaseSelectDifficultyLevel": "ദയവായി കാഠിന്യ നില തിരഞ്ഞെടുക്കുക",
+  "exploreProductBack": "മടങ്ങുക",
+  "exploreSelectPlan": "പ്ലാൻ തിരഞ്ഞെടുക്കുക",
+  "exploreBuyNow": "ഇപ്പോൾ വാങ്ങുക",
+  "exploreCheckoutComingSoon": "ചെക്ക്ഔട്ട് പ്രക്രിയ ഉടൻ വരും",
+  "exploreValidityDays": "കാലാവധി: {days} ദിവസങ്ങൾ",
+  "exploreFromTo": "{start} മുതൽ {end} വരെ",
+  "exploreNoProductsFound": "ഉൽപ്പന്നങ്ങളൊന്നും കണ്ടെത്തിയില്ല.",
+  "exploreProductsLabel": "ഉൽപ്പന്നങ്ങൾ",
+  "exploreCategoriesLabel": "വിഭാഗങ്ങൾ",
+  "explorePlanSelected": "{planName}, ₹{price}, തിരഞ്ഞെടുത്തു",
+  "explorePlanUnselected": "{planName}, ₹{price}"
 }

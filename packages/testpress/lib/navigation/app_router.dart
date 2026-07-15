@@ -34,7 +34,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             NavTab.home => HomeRoutes.routes(_rootNavigatorKey),
             NavTab.study => StudyRoutes.routes(_rootNavigatorKey),
             NavTab.exams => ExamsRoutes.routes(_rootNavigatorKey),
-            NavTab.explore => GlobalRoutes.exploreRoutes,
+            NavTab.explore => GlobalRoutes.exploreRoutes(_rootNavigatorKey),
             NavTab.info => GlobalRoutes.infoRoutes(_rootNavigatorKey),
             NavTab.profile => ProfileRoutes.routes(_rootNavigatorKey),
           };
