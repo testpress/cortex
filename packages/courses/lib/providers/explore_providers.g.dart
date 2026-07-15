@@ -6,12 +6,11 @@ part of 'explore_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$exploreRepositoryHash() => r'1d85f266ddad418061da61ba3ceed6687dc11d9e';
+String _$exploreRepositoryHash() => r'4c95e5c2401066d1eec1c72699d21ac44959b948';
 
 /// See also [exploreRepository].
 @ProviderFor(exploreRepository)
-final exploreRepositoryProvider =
-    AutoDisposeProvider<ExploreRepository>.internal(
+final exploreRepositoryProvider = Provider<ExploreRepository>.internal(
   exploreRepository,
   name: r'exploreRepositoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -23,7 +22,7 @@ final exploreRepositoryProvider =
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef ExploreRepositoryRef = AutoDisposeProviderRef<ExploreRepository>;
+typedef ExploreRepositoryRef = ProviderRef<ExploreRepository>;
 String _$storeCategoriesHash() => r'94c3d0e9392a117a1928e5cf329b3688936853f3';
 
 /// See also [storeCategories].

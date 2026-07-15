@@ -22,7 +22,7 @@ class SelectedStoreCategory extends _$SelectedStoreCategory {
 
 // ── Repository provider ───────────────────────────────────────────────────
 
-@riverpod
+@Riverpod(keepAlive: true)
 ExploreRepository exploreRepository(ExploreRepositoryRef ref) {
   return ExploreRepository(source: ref.watch(dataSourceProvider));
 }

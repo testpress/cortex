@@ -18,43 +18,47 @@ class CategoryFilterBar extends ConsumerWidget {
 
         return SizedBox(
           height: 48,
-          child: ListView.separated(
-            padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-            scrollDirection: Axis.horizontal,
+          child: AppSemantics.scrollableList(
+            label: 'Categories',
             itemCount: categories.length + 1,
-            separatorBuilder: (context, index) =>
-                SizedBox(width: design.spacing.sm),
-            itemBuilder: (context, index) {
-              if (index == 0) {
-                // "All" filter
-                final isSelected = selectedCategory == null;
+            child: ListView.separated(
+              padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+              scrollDirection: Axis.horizontal,
+              itemCount: categories.length + 1,
+              separatorBuilder: (context, index) =>
+                  SizedBox(width: design.spacing.sm),
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  // "All" filter
+                  final isSelected = selectedCategory == null;
+                  return Center(
+                    child: AppChip(
+                      label: L10n.of(context).filterAll,
+                      isSelected: isSelected,
+                      onTap: () {
+                        ref
+                            .read(selectedStoreCategoryProvider.notifier)
+                            .select(null);
+                      },
+                    ),
+                  );
+                }
+                final category = categories[index - 1];
+                final isSelected = selectedCategory == category.id.toString();
+
                 return Center(
                   child: AppChip(
-                    label: 'All',
+                    label: category.name,
                     isSelected: isSelected,
                     onTap: () {
                       ref
                           .read(selectedStoreCategoryProvider.notifier)
-                          .select(null);
+                          .select(category.id.toString());
                     },
                   ),
                 );
-              }
-              final category = categories[index - 1];
-              final isSelected = selectedCategory == category.id.toString();
-
-              return Center(
-                child: AppChip(
-                  label: category.name,
-                  isSelected: isSelected,
-                  onTap: () {
-                    ref
-                        .read(selectedStoreCategoryProvider.notifier)
-                        .select(category.id.toString());
-                  },
-                ),
-              );
-            },
+              },
+            ),
           ),
         );
       },

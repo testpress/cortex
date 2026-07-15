@@ -58,23 +58,27 @@ class ProductList extends ConsumerWidget {
       enabled: isLoading,
       child: Padding(
         padding: EdgeInsets.all(design.spacing.md),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final itemWidth = (constraints.maxWidth - design.spacing.md) / 2;
-            return Align(
-              alignment: Alignment.topLeft,
-              child: Wrap(
-                spacing: design.spacing.md,
-                runSpacing: design.spacing.md,
-                children: products
-                    .map((p) => SizedBox(
-                          width: itemWidth,
-                          child: ProductCard(product: p),
-                        ))
-                    .toList(),
-              ),
-            );
-          },
+        child: AppSemantics.scrollableList(
+          label: 'Products',
+          itemCount: products.length,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final itemWidth = (constraints.maxWidth - design.spacing.md) / 2;
+              return Align(
+                alignment: Alignment.topLeft,
+                child: Wrap(
+                  spacing: design.spacing.md,
+                  runSpacing: design.spacing.md,
+                  children: products
+                      .map((p) => SizedBox(
+                            width: itemWidth,
+                            child: ProductCard(product: p),
+                          ))
+                      .toList(),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

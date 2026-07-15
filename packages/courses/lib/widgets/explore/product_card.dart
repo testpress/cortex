@@ -12,73 +12,79 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    return AppCard(
-      padding: EdgeInsets.zero,
-      onTap: () {
-        context.push('/explore/product/${product.slug}', extra: product);
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Cover image
-          AspectRatio(
-            aspectRatio: 16 / 9,
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(
-                topLeft: design.radius.card.topLeft,
-                topRight: design.radius.card.topRight,
-              ),
-              child: product.image != null && product.image!.isNotEmpty
-                  ? CachedNetworkImage(
-                      imageUrl: product.image!,
-                      fit: BoxFit.cover,
-                      placeholder: (_, __) => _ImagePlaceholder(design: design),
-                      errorWidget: (_, __, ___) =>
-                          _ImagePlaceholder(design: design),
-                    )
-                  : _ImagePlaceholder(design: design),
-            ),
-          ),
-
-          // Title & price
-          Padding(
-            padding: EdgeInsets.all(design.spacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AppText.cardTitle(
-                  product.title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+    return AppSemantics.button(
+        label: product.title,
+        onTap: () {
+          context.push('/explore/product/${product.slug}', extra: product);
+        },
+        child: AppCard(
+          padding: EdgeInsets.zero,
+          onTap: () {
+            context.push('/explore/product/${product.slug}', extra: product);
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Cover image
+              AspectRatio(
+                aspectRatio: 16 / 9,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    topLeft: design.radius.card.topLeft,
+                    topRight: design.radius.card.topRight,
+                  ),
+                  child: product.image != null && product.image!.isNotEmpty
+                      ? CachedNetworkImage(
+                          imageUrl: product.image!,
+                          fit: BoxFit.cover,
+                          placeholder: (_, __) =>
+                              _ImagePlaceholder(design: design),
+                          errorWidget: (_, __, ___) =>
+                              _ImagePlaceholder(design: design),
+                        )
+                      : _ImagePlaceholder(design: design),
                 ),
-                SizedBox(height: design.spacing.xs),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
+              ),
+
+              // Title & price
+              Padding(
+                padding: EdgeInsets.all(design.spacing.md),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppText.title(
-                      '₹${product.price}',
-                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    AppText.cardTitle(
+                      product.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    if (product.strikeThroughPrice != null &&
-                        product.strikeThroughPrice!.isNotEmpty) ...[
-                      SizedBox(width: design.spacing.xs),
-                      AppText.sm(
-                        '₹${product.strikeThroughPrice}',
-                        style: TextStyle(
-                          decoration: TextDecoration.lineThrough,
-                          color: design.colors.textSecondary,
+                    SizedBox(height: design.spacing.xs),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
+                      children: [
+                        AppText.title(
+                          '₹${product.price}',
+                          style: const TextStyle(fontWeight: FontWeight.w700),
                         ),
-                      ),
-                    ],
+                        if (product.strikeThroughPrice != null &&
+                            product.strikeThroughPrice!.isNotEmpty) ...[
+                          SizedBox(width: design.spacing.xs),
+                          AppText.sm(
+                            '₹${product.strikeThroughPrice}',
+                            style: TextStyle(
+                              decoration: TextDecoration.lineThrough,
+                              color: design.colors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        ));
   }
 }
 
