@@ -1,12 +1,28 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
 import '../../screens/bookmarks/bookmarks_screen.dart';
 
 class GlobalRoutes {
-  static List<RouteBase> get exploreRoutes => [
-    GoRoute(path: '/explore', builder: (context, state) => const ExplorePage()),
+  static List<RouteBase> exploreRoutes(
+    GlobalKey<NavigatorState> rootNavigatorKey,
+  ) => [
+    GoRoute(
+      path: '/explore',
+      builder: (context, state) => const ExplorePage(),
+      routes: [
+        GoRoute(
+          path: 'product/:slug',
+          parentNavigatorKey: rootNavigatorKey,
+          builder: (context, state) {
+            final product = state.extra as ProductDto;
+            return ProductDetailScreen(product: product);
+          },
+        ),
+      ],
+    ),
   ];
 
   static List<RouteBase> infoRoutes(

@@ -28,10 +28,10 @@ class AppChip extends StatelessWidget {
           duration: design.motion.fast,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
-            color: isSelected ? design.colors.accent2 : design.colors.card,
+            color: isSelected ? design.colors.primary : design.colors.card,
             borderRadius: design.radius.pill,
             border: Border.all(
-              color: isSelected ? design.colors.accent2 : design.colors.border,
+              color: isSelected ? design.colors.primary : design.colors.border,
             ),
           ),
           child: AppText.labelSmall(

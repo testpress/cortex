@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:developer' as dev;
 import 'package:core/data/data.dart';
-import '../models/test_dto.dart';
-import '../data/mock_tests.dart';
 
 import 'package:flutter/foundation.dart';
 
@@ -1228,16 +1226,6 @@ class OnlineExamRepository implements ExamRepository {
 
   /// Placeholder: no-op refresh.
   Future<void> refreshExams() async {}
-
-  Future<List<TestDto>> getUpcomingTests() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    return mockTests;
-  }
-
-  Future<List<TestDto>> getPopularTests() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    return mockPopularTests;
-  }
 
   // ─── Internal Helpers ──────────────────────────────────────────────────────
 

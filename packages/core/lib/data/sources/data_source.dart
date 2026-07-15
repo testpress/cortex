@@ -101,20 +101,20 @@ abstract class DataSource {
   /// Fetch per-lesson progress for a user.
   Future<List<UserProgressDto>> getUserProgress(String userId);
 
-  /// Fetch featured banners for Explore page.
-  Future<List<ExploreBannerDto>> getExploreBanners();
+  /// Fetch product categories for the Store page.
+  Future<PaginatedResponseDto<ProductCategoryDto>> getProductCategories({
+    int page = 1,
+    String? search,
+  });
 
-  /// Fetch study tips / articles.
-  Future<List<StudyTipDto>> getStudyTips();
-
-  /// Fetch short lessons for discovery.
-  Future<List<ShortLessonDto>> getShortLessons();
-
-  /// Fetch courses specifically formatted for the Discovery/Explore page.
-  Future<List<DiscoveryCourseDto>> getDiscoveryCourses();
-
-  /// Fetch popular tests for the Explore page.
-  Future<List<PopularTestDto>> getPopularTests();
+  /// Fetch products for the Store page.
+  Future<PaginatedResponseDto<ProductDto>> getProducts({
+    int page = 1,
+    String? category,
+    String? categoryName,
+    String? tag,
+    String? search,
+  });
 
   /// Fetch hero banners for the dashboard from `/api/v3/dashboard/`.
   Future<List<DashboardBannerDto>> getDashboardBanners();

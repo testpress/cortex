@@ -33,6 +33,7 @@ export 'providers/lesson_providers.dart';
 export 'providers/recent_activity_provider.dart';
 export 'providers/dashboard_providers.dart';
 export 'screens/explore/explore_page.dart';
+export 'screens/explore/product_detail_screen.dart';
 
 export 'explore_constants.dart';
 export 'providers/explore_providers.dart';

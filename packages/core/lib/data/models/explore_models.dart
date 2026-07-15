@@ -1,227 +1,202 @@
-/// DTO for featured banners on the Explore page.
-class ExploreBannerDto {
-  final String id;
-  final String title;
-  final String subtitle;
-  final String thumbnail;
-  final String ctaText;
+import 'paginated_response_dto.dart';
 
-  const ExploreBannerDto({
+/// DTO for product categories — from /api/v2.5/products/categories/.
+class ProductCategoryDto {
+  final int id;
+  final String name;
+  final String slug;
+
+  const ProductCategoryDto({
     required this.id,
-    required this.title,
-    required this.subtitle,
-    required this.thumbnail,
-    required this.ctaText,
+    required this.name,
+    required this.slug,
   });
 
-  factory ExploreBannerDto.fromJson(Map<String, dynamic> json) {
-    return ExploreBannerDto(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      subtitle: json['subtitle'] as String,
-      thumbnail: json['thumbnail'] as String,
-      ctaText: json['ctaText'] as String,
+  factory ProductCategoryDto.fromJson(Map<String, dynamic> json) {
+    return ProductCategoryDto(
+      id: json['id'] as int,
+      name: json['name'] as String,
+      slug: json['slug'] as String,
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'title': title,
-      'subtitle': subtitle,
-      'thumbnail': thumbnail,
-      'ctaText': ctaText,
-    };
-  }
+  Map<String, dynamic> toJson() => {'id': id, 'name': name, 'slug': slug};
 }
 
-/// DTO for study tips / blog posts.
-class StudyTipDto {
-  final String id;
-  final String title;
-  final String description;
-  final String thumbnail;
-  final String? tag;
-  final int? colorIndex; // Maps to design palette
-
-  const StudyTipDto({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.thumbnail,
-    this.tag,
-    this.colorIndex,
-  });
-
-  factory StudyTipDto.fromJson(Map<String, dynamic> json) {
-    return StudyTipDto(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      description: json['description'] as String,
-      thumbnail: json['thumbnail'] as String,
-      tag: json['tag'] as String?,
-      colorIndex: json['colorIndex'] as int?,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'title': title,
-      'description': description,
-      'thumbnail': thumbnail,
-      'tag': tag,
-      'colorIndex': colorIndex,
-    };
-  }
-}
-
-/// DTO for short lessons (micro-learning).
-class ShortLessonDto {
-  final String id;
-  final String title;
-  final String duration;
-  final String thumbnail;
-  final String author;
-  final String viewCount;
-  final bool isNew;
-
-  const ShortLessonDto({
-    required this.id,
-    required this.title,
-    required this.duration,
-    required this.thumbnail,
-    required this.author,
-    required this.viewCount,
-    this.isNew = false,
-  });
-
-  factory ShortLessonDto.fromJson(Map<String, dynamic> json) {
-    return ShortLessonDto(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      duration: json['duration'] as String,
-      thumbnail: json['thumbnail'] as String,
-      author: json['author'] as String? ?? 'Expert Faculty',
-      viewCount: json['viewCount'] as String? ?? '0 views',
-      isNew: json['isNew'] as bool? ?? false,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'title': title,
-      'duration': duration,
-      'thumbnail': thumbnail,
-      'author': author,
-      'viewCount': viewCount,
-      'isNew': isNew,
-    };
-  }
-}
-
-/// DTO for courses listed on the Explore page.
-class DiscoveryCourseDto {
-  final String id;
-  final String title;
-  final String thumbnail;
-  final String duration;
-  final String learnerCount;
+/// DTO for pricing tier (sideloaded in v2.4 API).
+class PriceDto {
+  final int id;
+  final String name;
   final String price;
-  final String? badge;
-  final bool isTrending;
-  final bool isRecommended;
+  final int? validity;
+  final String? startDate;
+  final String? endDate;
 
-  const DiscoveryCourseDto({
+  const PriceDto({
     required this.id,
-    required this.title,
-    required this.thumbnail,
-    required this.duration,
-    required this.learnerCount,
+    required this.name,
     required this.price,
-    this.badge,
-    this.isTrending = false,
-    this.isRecommended = false,
+    this.validity,
+    this.startDate,
+    this.endDate,
   });
 
-  factory DiscoveryCourseDto.fromJson(Map<String, dynamic> json) {
-    return DiscoveryCourseDto(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      thumbnail: json['thumbnail'] as String,
-      duration: json['duration'] as String,
-      learnerCount: json['learnerCount'] as String,
+  factory PriceDto.fromJson(Map<String, dynamic> json) {
+    return PriceDto(
+      id: json['id'] as int,
+      name: json['name'] as String,
       price: json['price'] as String,
-      badge: json['badge'] as String?,
-      isTrending: json['isTrending'] as bool? ?? false,
-      isRecommended: json['isRecommended'] as bool? ?? false,
+      validity: json['validity'] as int?,
+      startDate: json['start_date'] as String?,
+      endDate: json['end_date'] as String?,
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'title': title,
-      'thumbnail': thumbnail,
-      'duration': duration,
-      'learnerCount': learnerCount,
-      'price': price,
-      'badge': badge,
-      'isTrending': isTrending,
-      'isRecommended': isRecommended,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'price': price,
+    'validity': validity,
+    'start_date': startDate,
+    'end_date': endDate,
+  };
 }
 
-/// Test type for discovery.
-enum PopularTestType { mock, chapter, practice }
-
-/// DTO for tests listed on the Explore page.
-class PopularTestDto {
-  final String id;
+/// DTO for Products (Store items) — maps to /api/v2.4/products/.
+class ProductDto {
+  final int id;
   final String title;
-  final String time;
-  final String duration;
-  final PopularTestType type;
-  final String? thumbnail;
-  final bool isImportant;
+  final String slug;
+  final String descriptionHtml;
+  final String price;
+  final List<int> courses;
+  final String? image;
+  final String? strikeThroughPrice;
+  final String? buyNowText;
+  final String? category;
+  final List<PriceDto> prices;
 
-  const PopularTestDto({
+  const ProductDto({
     required this.id,
     required this.title,
-    required this.time,
-    required this.duration,
-    required this.type,
-    this.thumbnail,
-    this.isImportant = false,
+    required this.slug,
+    this.descriptionHtml = '',
+    required this.price,
+    required this.courses,
+    this.image,
+    this.strikeThroughPrice,
+    this.buyNowText,
+    this.category,
+    this.prices = const [],
   });
 
-  factory PopularTestDto.fromJson(Map<String, dynamic> json) {
-    return PopularTestDto(
-      id: json['id'] as String,
+  factory ProductDto.fromJson(
+    Map<String, dynamic> json, {
+    List<PriceDto> parsedPrices = const [],
+  }) {
+    return ProductDto(
+      id: json['id'] as int,
       title: json['title'] as String,
-      time: json['time'] as String,
-      duration: json['duration'] as String,
-      type: PopularTestType.values.firstWhere(
-        (e) => e.name == json['type'],
-        orElse: () => PopularTestType.practice,
-      ),
-
-      thumbnail: json['thumbnail'] as String?,
-      isImportant: json['isImportant'] as bool? ?? false,
+      slug: json['slug'] as String? ?? '',
+      descriptionHtml: json['description_html'] as String? ?? '',
+      price:
+          (json['current_price'] as String?) ??
+          (json['price'] as String?) ??
+          '',
+      courses:
+          (json['courses'] as List<dynamic>?)?.map((e) => e as int).toList() ??
+          [],
+      image: () {
+        if (json['image'] is String) return json['image'] as String?;
+        final images = json['images'] as List<dynamic>?;
+        if (images != null && images.isNotEmpty) {
+          final firstImg = images.first as Map<String, dynamic>?;
+          return firstImg?['medium'] as String? ??
+              firstImg?['original'] as String?;
+        }
+        return null;
+      }(),
+      strikeThroughPrice: json['strike_through_price'] as String?,
+      buyNowText: json['buy_now_text'] as String? ?? 'Buy Now',
+      category: json['category'] as String?,
+      prices: parsedPrices.isNotEmpty
+          ? parsedPrices
+          : (json['prices'] as List<dynamic>?)
+                    ?.whereType<Map<String, dynamic>>()
+                    .map((e) => PriceDto.fromJson(e))
+                    .toList() ??
+                [],
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'title': title,
-      'time': time,
-      'duration': duration,
-      'type': type.name,
-      'thumbnail': thumbnail,
-      'isImportant': isImportant,
-    };
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'title': title,
+    'slug': slug,
+    'description_html': descriptionHtml,
+    'current_price': price,
+    'courses': courses,
+    'image': image,
+    'strike_through_price': strikeThroughPrice,
+    'buy_now_text': buyNowText,
+    'category': category,
+    'prices': prices.map((p) => p.toJson()).toList(),
+  };
+}
+
+/// Parses the sideloaded envelope from /api/v2.4/products/.
+class StoreProductsResponseDto {
+  final int count;
+  final String? next;
+  final String? previous;
+  final List<ProductDto> products;
+
+  const StoreProductsResponseDto({
+    required this.count,
+    this.next,
+    this.previous,
+    required this.products,
+  });
+
+  factory StoreProductsResponseDto.fromJson(Map<String, dynamic> json) {
+    final results = json['results'] as Map<String, dynamic>? ?? {};
+
+    // Parse sideloaded prices
+    final pricesRaw = results['prices'] as List<dynamic>? ?? [];
+    final allPrices = pricesRaw
+        .map((e) => PriceDto.fromJson(e as Map<String, dynamic>))
+        .toList();
+
+    // Parse products and attach prices
+    final productsRaw = results['products'] as List<dynamic>? ?? [];
+    final parsedProducts = productsRaw.map((e) {
+      final productMap = e as Map<String, dynamic>;
+      final productPriceIds =
+          (productMap['prices'] as List<dynamic>?)
+              ?.map((id) => id as int)
+              .toList() ??
+          [];
+      final productPrices = allPrices
+          .where((p) => productPriceIds.contains(p.id))
+          .toList();
+
+      return ProductDto.fromJson(productMap, parsedPrices: productPrices);
+    }).toList();
+
+    return StoreProductsResponseDto(
+      count: json['count'] as int? ?? 0,
+      next: json['next'] as String?,
+      previous: json['previous'] as String?,
+      products: parsedProducts,
+    );
+  }
+
+  PaginatedResponseDto<ProductDto> toPaginatedResponse() {
+    return PaginatedResponseDto<ProductDto>(
+      count: count,
+      next: next,
+      previous: previous,
+      results: products,
+    );
   }
 }
