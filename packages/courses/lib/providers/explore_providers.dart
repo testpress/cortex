@@ -2,8 +2,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
 import '../repositories/explore_repository.dart';
 
-export 'package:core/data/data.dart';
-
 part 'explore_providers.g.dart';
 
 @riverpod

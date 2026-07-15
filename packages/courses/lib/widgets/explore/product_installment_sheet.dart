@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import '../../providers/explore_providers.dart';
+import 'package:core/data/data.dart';
 
 class ProductInstallmentSheet extends ConsumerStatefulWidget {
   final ProductDto product;
@@ -302,7 +303,7 @@ class _ProductInstallmentSheetState
                           ),
                         ],
                       );
-                    }).toList(),
+                    }),
                   ],
                 ),
               ),

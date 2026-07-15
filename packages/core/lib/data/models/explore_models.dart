@@ -167,8 +167,9 @@ class ProductDto {
         return rawCourses
             .map((e) {
               if (e is int) return e;
-              if (e is Map<String, dynamic> && e['id'] is int)
+              if (e is Map<String, dynamic> && e['id'] is int) {
                 return e['id'] as int;
+              }
               return -1;
             })
             .where((id) => id != -1)
@@ -312,8 +313,9 @@ class StoreProductsResponseDto {
           (productMap['courses'] as List<dynamic>?)
               ?.map((e) {
                 if (e is int) return e;
-                if (e is Map<String, dynamic> && e['id'] is int)
+                if (e is Map<String, dynamic> && e['id'] is int) {
                   return e['id'] as int;
+                }
                 return -1;
               })
               .where((id) => id != -1)

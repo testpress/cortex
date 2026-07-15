@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import '../../providers/explore_providers.dart';
+import 'package:core/data/data.dart';
 
 class ProductExpandableCourseCard extends StatefulWidget {
   final ProductCourseDto course;
@@ -25,10 +25,12 @@ class _ProductExpandableCourseCardState
     if (course.chaptersCount > 0) stats.add('${course.chaptersCount} Chapters');
     if (course.videosCount > 0) stats.add('${course.videosCount} Videos');
     if (course.examsCount > 0) stats.add('${course.examsCount} Exams');
-    if (course.attachmentsCount > 0)
+    if (course.attachmentsCount > 0) {
       stats.add('${course.attachmentsCount} Attachments');
-    if (course.htmlContentsCount > 0)
+    }
+    if (course.htmlContentsCount > 0) {
       stats.add('${course.htmlContentsCount} Notes');
+    }
 
     return Container(
       decoration: BoxDecoration(

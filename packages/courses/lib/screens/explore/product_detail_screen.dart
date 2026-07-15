@@ -6,6 +6,7 @@ import '../../widgets/explore/product_discount_sheet.dart';
 import '../../widgets/explore/product_installment_sheet.dart';
 import '../../widgets/explore/product_expandable_course_card.dart';
 import '../../providers/explore_providers.dart';
+import 'package:core/data/data.dart';
 
 class ProductDetailScreen extends ConsumerStatefulWidget {
   const ProductDetailScreen({
@@ -301,10 +302,32 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       Row(
                         children: [
                           if (product.hasCoupons)
-                            GestureDetector(
+                            AppSemantics.button(
+                              label: L10n.of(context).exploreHaveDiscountCode,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _isDiscountSheetOpen = true;
+                                  });
+                                },
+                                behavior: HitTestBehavior.opaque,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: design.spacing.xs),
+                                  child: AppText.labelBold(
+                                    L10n.of(context).exploreHaveDiscountCode,
+                                    color: design.colors.accent2,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          const Spacer(),
+                          AppSemantics.button(
+                            label: L10n.of(context).explorePayInstallments,
+                            child: GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  _isDiscountSheetOpen = true;
+                                  _isInstallmentsSheetOpen = true;
                                 });
                               },
                               behavior: HitTestBehavior.opaque,
@@ -312,25 +335,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                 padding: EdgeInsets.symmetric(
                                     vertical: design.spacing.xs),
                                 child: AppText.labelBold(
-                                  L10n.of(context).exploreHaveDiscountCode,
+                                  L10n.of(context).explorePayInstallments,
                                   color: design.colors.accent2,
                                 ),
-                              ),
-                            ),
-                          const Spacer(),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _isInstallmentsSheetOpen = true;
-                              });
-                            },
-                            behavior: HitTestBehavior.opaque,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: design.spacing.xs),
-                              child: AppText.labelBold(
-                                L10n.of(context).explorePayInstallments,
-                                color: design.colors.accent2,
                               ),
                             ),
                           ),
