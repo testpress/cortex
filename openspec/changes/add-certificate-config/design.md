@@ -22,4 +22,4 @@ The application relies on `AppConfig` (in `packages/core/lib/data/config/app_con
 ## Risks / Trade-offs
 
 - **Risk**: Incorrect JSON structure in the configuration file could cause the flag not to be read.
-  - **Mitigation**: Ensure that the JSON key is documented as `CERTIFICATE` and the `defaultValue: false` fallback is provided safely using `bool.fromEnvironment`.
+  - **Mitigation**: Ensure that the JSON key is documented as `SHOW_CERTIFICATE` and the `defaultValue: false` fallback is provided safely using `bool.fromEnvironment`.
