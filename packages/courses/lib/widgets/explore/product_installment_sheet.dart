@@ -278,7 +278,9 @@ class _ProductInstallmentSheetState
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     AppText.labelBold(
-                                      "${StringFormatter.getOrdinalSuffix(inst.order)} Installment",
+                                      L10n.of(context)
+                                          .exploreInstallmentOrdinal(
+                                              inst.order.toString()),
                                       color: inst.isPaid
                                           ? design.colors.success
                                           : design.colors.textSecondary,
@@ -310,21 +312,22 @@ class _ProductInstallmentSheetState
             ),
           ),
           Container(height: 1, color: design.colors.border),
-          Padding(
-            padding: EdgeInsets.fromLTRB(design.spacing.lg, design.spacing.lg,
-                design.spacing.lg, design.spacing.sm),
-            child: AppButton.primary(
-              label: L10n.of(context).explorePayAmountNow(plan.installments
-                  .firstWhere((i) => !i.isPaid,
-                      orElse: () => plan.installments.first)
-                  .price),
-              fullWidth: true,
-              backgroundColor: design.colors.accent2,
-              onPressed: () {
-                // TODO: Implement checkout
-              },
+          if (plan.installments.isNotEmpty)
+            Padding(
+              padding: EdgeInsets.fromLTRB(design.spacing.lg, design.spacing.lg,
+                  design.spacing.lg, design.spacing.sm),
+              child: AppButton.primary(
+                label: L10n.of(context).explorePayAmountNow(plan.installments
+                    .firstWhere((i) => !i.isPaid,
+                        orElse: () => plan.installments.first)
+                    .price),
+                fullWidth: true,
+                backgroundColor: design.colors.accent2,
+                onPressed: () {
+                  // TODO: Implement checkout
+                },
+              ),
             ),
-          ),
         ],
       ),
     );

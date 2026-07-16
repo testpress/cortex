@@ -4642,6 +4642,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pay ₹{amount} now'**
   String explorePayAmountNow(String amount);
+
+  /// No description provided for @exploreCouponAppliedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon applied successfully! New total: {total}'**
+  String exploreCouponAppliedSuccess(String total);
+
+  /// No description provided for @exploreStatisticsChapters.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 Chapter} other{{count} Chapters}}'**
+  String exploreStatisticsChapters(int count);
+
+  /// No description provided for @exploreStatisticsVideos.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 Video} other{{count} Videos}}'**
+  String exploreStatisticsVideos(int count);
+
+  /// No description provided for @exploreStatisticsExams.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 Exam} other{{count} Exams}}'**
+  String exploreStatisticsExams(int count);
+
+  /// No description provided for @exploreStatisticsAttachments.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 Attachment} other{{count} Attachments}}'**
+  String exploreStatisticsAttachments(int count);
+
+  /// No description provided for @exploreStatisticsNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 Note} other{{count} Notes}}'**
+  String exploreStatisticsNotes(int count);
+
+  /// No description provided for @exploreInstallmentOrdinal.
+  ///
+  /// In en, this message translates to:
+  /// **'{installment} Installment'**
+  String exploreInstallmentOrdinal(String installment);
 }
 
 class _AppLocalizationsDelegate

@@ -98,7 +98,8 @@ class _ProductDiscountSheetState extends ConsumerState<ProductDiscountSheet> {
               ] else if (discountState.hasValue &&
                   discountState.value != null) ...[
                 AppText.body(
-                  'Coupon applied successfully! New total: ${discountState.value!.total}',
+                  L10n.of(context)
+                      .exploreCouponAppliedSuccess(discountState.value!.total),
                   color: design.colors.success,
                 ),
                 SizedBox(height: design.spacing.md),

@@ -22,14 +22,20 @@ class _ProductExpandableCourseCardState
     final course = widget.course;
 
     final List<String> stats = [];
-    if (course.chaptersCount > 0) stats.add('${course.chaptersCount} Chapters');
-    if (course.videosCount > 0) stats.add('${course.videosCount} Videos');
-    if (course.examsCount > 0) stats.add('${course.examsCount} Exams');
+    if (course.chaptersCount > 0)
+      stats.add(
+          L10n.of(context).exploreStatisticsChapters(course.chaptersCount));
+    if (course.videosCount > 0)
+      stats.add(L10n.of(context).exploreStatisticsVideos(course.videosCount));
+    if (course.examsCount > 0)
+      stats.add(L10n.of(context).exploreStatisticsExams(course.examsCount));
     if (course.attachmentsCount > 0) {
-      stats.add('${course.attachmentsCount} Attachments');
+      stats.add(L10n.of(context)
+          .exploreStatisticsAttachments(course.attachmentsCount));
     }
     if (course.htmlContentsCount > 0) {
-      stats.add('${course.htmlContentsCount} Notes');
+      stats.add(
+          L10n.of(context).exploreStatisticsNotes(course.htmlContentsCount));
     }
 
     return Container(

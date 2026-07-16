@@ -131,7 +131,6 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         color: design.colors.textPrimary,
                       ),
                     ),
-                    SizedBox(width: 30),
                   ],
                 ),
               ),

@@ -69,8 +69,13 @@ Future<InstallmentPlansResponseDto> productInstallmentPlans(
 
 @riverpod
 class ProductDiscountNotifier extends _$ProductDiscountNotifier {
+  int? _orderId;
+
   @override
   AsyncValue<OrderDto?> build(String slug) {
+    ref.onDispose(() {
+      _orderId = null;
+    });
     return const AsyncValue.data(null);
   }
 
@@ -78,10 +83,11 @@ class ProductDiscountNotifier extends _$ProductDiscountNotifier {
     state = const AsyncValue.loading();
     try {
       final repo = ref.read(exploreRepositoryProvider);
-      // Create a draft order first
-      final order = await repo.createOrder(slug);
-      // Then apply coupon
-      final updatedOrder = await repo.applyCoupon(order.id, code);
+      // Reuse existing draft order if available to avoid creating multiple orders
+      final orderId = _orderId ?? (await repo.createOrder(slug)).id;
+      _orderId = orderId;
+
+      final updatedOrder = await repo.applyCoupon(orderId, code);
       state = AsyncValue.data(updatedOrder);
     } catch (e, st) {
       if (e is ApiException) {

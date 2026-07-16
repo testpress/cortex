@@ -167,7 +167,7 @@ class ProductDto {
         return rawCourses
             .map((e) {
               if (e is int) return e;
-              if (e is Map<String, dynamic> && e['id'] is int) {
+              if (e is Map && e['id'] is int) {
                 return e['id'] as int;
               }
               return -1;
@@ -202,14 +202,18 @@ class ProductDto {
         final List<ProductCourseDto> details = [];
         if (json['course'] != null && json['course'] is Map) {
           details.add(
-            ProductCourseDto.fromJson(json['course'] as Map<String, dynamic>),
+            ProductCourseDto.fromJson(
+              Map<String, dynamic>.from(json['course'] as Map),
+            ),
           );
         }
         if (json['courses'] != null && json['courses'] is List) {
           final coursesList = json['courses'] as List<dynamic>;
           for (final item in coursesList) {
-            if (item is Map<String, dynamic>) {
-              details.add(ProductCourseDto.fromJson(item));
+            if (item is Map) {
+              details.add(
+                ProductCourseDto.fromJson(Map<String, dynamic>.from(item)),
+              );
             }
           }
         }
@@ -292,7 +296,9 @@ class StoreProductsResponseDto {
     // Parse sideloaded courses
     final coursesRaw = results['courses'] as List<dynamic>? ?? [];
     final allCourses = coursesRaw
-        .map((e) => ProductCourseDto.fromJson(e as Map<String, dynamic>))
+        .map(
+          (e) => ProductCourseDto.fromJson(Map<String, dynamic>.from(e as Map)),
+        )
         .toList();
 
     // Parse products and attach prices & courses
@@ -313,7 +319,7 @@ class StoreProductsResponseDto {
           (productMap['courses'] as List<dynamic>?)
               ?.map((e) {
                 if (e is int) return e;
-                if (e is Map<String, dynamic> && e['id'] is int) {
+                if (e is Map && e['id'] is int) {
                   return e['id'] as int;
                 }
                 return -1;
@@ -408,7 +414,11 @@ class InstallmentPlanDto {
       displayName: json['display_name'] as String,
       installments:
           (json['installments'] as List<dynamic>?)
-              ?.map((e) => InstallmentDto.fromJson(e as Map<String, dynamic>))
+              ?.map(
+                (e) => InstallmentDto.fromJson(
+                  Map<String, dynamic>.from(e as Map),
+                ),
+              )
               .toList() ??
           [],
     );
@@ -429,7 +439,9 @@ class InstallmentPlansResponseDto {
       installmentPlans:
           (json['installment_plans'] as List<dynamic>?)
               ?.map(
-                (e) => InstallmentPlanDto.fromJson(e as Map<String, dynamic>),
+                (e) => InstallmentPlanDto.fromJson(
+                  Map<String, dynamic>.from(e as Map),
+                ),
               )
               .toList() ??
           [],
