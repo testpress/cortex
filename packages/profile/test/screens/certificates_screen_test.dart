@@ -121,78 +121,82 @@ void main() {
       expect(opened?.isLocked, isFalse);
     });
 
-    testWidgets('navigates Profile -> Certificates -> Preview -> back', (
-      tester,
-    ) async {
-      final router = GoRouter(
-        initialLocation: '/profile',
-        routes: [
-          GoRoute(
-            path: '/profile',
-            builder: (context, state) => ProfilePage(
-              onOpenCertificates: () =>
-                  context.pushNamed('profile-certificates'),
-            ),
-            routes: [
-              GoRoute(
-                name: 'profile-certificates',
-                path: 'certificates',
-                builder: (context, state) {
-                  return CertificatesScreen(
-                    onBack: () => context.pop(),
-                    onOpenPreview: (certificate) {
-                      context.pushNamed(
-                        'profile-certificate-preview',
-                        extra: certificate,
-                      );
-                    },
-                  );
-                },
-                routes: [
-                  GoRoute(
-                    name: 'profile-certificate-preview',
-                    path: 'preview',
-                    builder: (context, state) {
-                      return CertificatePreviewScreen(
-                        certificate: state.extra! as CourseCertificate,
-                        onClose: () => context.pop(),
-                      );
-                    },
-                  ),
-                ],
+    testWidgets(
+      'navigates Profile -> Certificates -> Preview -> back',
+      (tester) async {
+        final router = GoRouter(
+          initialLocation: '/profile',
+          routes: [
+            GoRoute(
+              path: '/profile',
+              builder: (context, state) => ProfilePage(
+                onOpenCertificates: () =>
+                    context.pushNamed('profile-certificates'),
               ),
-            ],
-          ),
-        ],
-      );
+              routes: [
+                GoRoute(
+                  name: 'profile-certificates',
+                  path: 'certificates',
+                  builder: (context, state) {
+                    return CertificatesScreen(
+                      onBack: () => context.pop(),
+                      onOpenPreview: (certificate) {
+                        context.pushNamed(
+                          'profile-certificate-preview',
+                          extra: certificate,
+                        );
+                      },
+                    );
+                  },
+                  routes: [
+                    GoRoute(
+                      name: 'profile-certificate-preview',
+                      path: 'preview',
+                      builder: (context, state) {
+                        return CertificatePreviewScreen(
+                          certificate: state.extra! as CourseCertificate,
+                          onClose: () => context.pop(),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        );
 
-      await tester.pumpWidget(wrapRouter(router));
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(wrapRouter(router));
+        await tester.pumpAndSettle();
 
-      final profileL10n = L10n.of(tester.element(find.byType(ProfilePage)));
-      final certificatesItem = find.text(profileL10n.profileCertificates);
-      await tester.ensureVisible(certificatesItem);
-      await tester.tap(certificatesItem, warnIfMissed: false);
-      await tester.pumpAndSettle();
+        final profileL10n = L10n.of(tester.element(find.byType(ProfilePage)));
+        final certificatesItem = find.text(profileL10n.profileCertificates);
+        await tester.ensureVisible(certificatesItem);
+        await tester.tap(certificatesItem, warnIfMissed: false);
+        await tester.pumpAndSettle();
 
-      expect(find.byType(CertificatesScreen), findsOneWidget);
+        expect(find.byType(CertificatesScreen), findsOneWidget);
 
-      final certificatesL10n = L10n.of(
-        tester.element(find.byType(CertificatesScreen)),
-      );
-      await tester.tap(find.text(certificatesL10n.certificatesViewCertificate));
-      await tester.pumpAndSettle();
+        final certificatesL10n = L10n.of(
+          tester.element(find.byType(CertificatesScreen)),
+        );
+        await tester.tap(
+          find.text(certificatesL10n.certificatesViewCertificate),
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.byType(CertificatePreviewScreen), findsOneWidget);
+        expect(find.byType(CertificatePreviewScreen), findsOneWidget);
 
-      final previewL10n = L10n.of(
-        tester.element(find.byType(CertificatePreviewScreen)),
-      );
-      expect(find.text(previewL10n.certificatesPreviewTitle), findsOneWidget);
+        final previewL10n = L10n.of(
+          tester.element(find.byType(CertificatePreviewScreen)),
+        );
+        expect(find.text(previewL10n.certificatesPreviewTitle), findsOneWidget);
 
-      await tester.tap(find.byIcon(LucideIcons.x));
-      await tester.pumpAndSettle();
-      expect(find.byType(CertificatesScreen), findsOneWidget);
-    });
+        await tester.tap(find.byIcon(LucideIcons.x));
+        await tester.pumpAndSettle();
+        expect(find.byType(CertificatesScreen), findsOneWidget);
+      },
+      skip: !AppConfig.showCertificate,
+    );
   });
 }

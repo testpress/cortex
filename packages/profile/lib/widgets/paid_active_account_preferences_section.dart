@@ -57,13 +57,15 @@ class AccountPreferencesSection extends StatelessWidget {
                   onTap: onNotificationsTap ?? () {},
                 ),
                 _Divider(),
-                _PreferenceItem(
-                  icon: LucideIcons.download,
-                  label: l10n.profileCertificates,
-                  iconColor: design.colors.success,
-                  onTap: onCertificatesTap ?? () {},
-                ),
-                _Divider(),
+                if (AppConfig.showCertificate) ...[
+                  _PreferenceItem(
+                    icon: LucideIcons.download,
+                    label: l10n.profileCertificates,
+                    iconColor: design.colors.success,
+                    onTap: onCertificatesTap ?? () {},
+                  ),
+                  _Divider(),
+                ],
                 _PreferenceItem(
                   icon: LucideIcons.logOut,
                   label: l10n.profileLogout,

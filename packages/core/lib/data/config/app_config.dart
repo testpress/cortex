@@ -114,6 +114,11 @@ class AppConfig {
     defaultValue: true,
   );
 
+  static const bool showCertificate = bool.fromEnvironment(
+    'SHOW_CERTIFICATE',
+    defaultValue: false,
+  );
+
   static const String instituteLogoUrl = String.fromEnvironment(
     'INSTITUTE_LOGO_URL',
     defaultValue: '',
