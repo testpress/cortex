@@ -15,9 +15,6 @@ export 'package:lucide_icons_flutter/lucide_icons.dart';
 export 'package:font_awesome_flutter/font_awesome_flutter.dart';
 export 'package:package_info_plus/package_info_plus.dart';
 
-// Utils
-export 'utils/string_formatter.dart';
-
 // Widgets
 export 'widgets/app_text.dart';
 export 'widgets/app_markdown.dart';

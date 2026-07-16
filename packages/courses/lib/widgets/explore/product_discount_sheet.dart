@@ -40,7 +40,9 @@ class _ProductDiscountSheetState extends ConsumerState<ProductDiscountSheet> {
     if (error is ApiException) {
       return ApiException.extractApiMessage(error.data) ?? error.message;
     }
-    return error.toString().replaceAll('Exception: ', '');
+    return error
+        .toString()
+        .replaceFirst(RegExp(r'^(?:Exception|Error):\s*'), '');
   }
 
   @override
@@ -109,7 +111,7 @@ class _ProductDiscountSheetState extends ConsumerState<ProductDiscountSheet> {
                   Expanded(
                     child: AppTextField(
                       label: "",
-                      hintText: "Enter Coupon Code",
+                      hintText: L10n.of(context).exploreCouponHint,
                       controller: _couponController,
                     ),
                   ),
@@ -120,7 +122,7 @@ class _ProductDiscountSheetState extends ConsumerState<ProductDiscountSheet> {
                           child: AppLoadingIndicator(),
                         )
                       : AppButton.primary(
-                          label: "APPLY",
+                          label: L10n.of(context).exploreApplyCoupon,
                           backgroundColor: design.colors.accent2,
                           onPressed: _applyCoupon,
                         ),

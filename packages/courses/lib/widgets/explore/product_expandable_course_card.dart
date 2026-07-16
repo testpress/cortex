@@ -103,12 +103,15 @@ class _ProductExpandableCourseCardState
                               ))
                           .toList(),
                     )
-                  : AppText.cardCaption('No content available'),
+                  : AppText.cardCaption(
+                      L10n.of(context).exploreNoContentAvailable),
             ),
             crossFadeState: _isExpanded
                 ? CrossFadeState.showSecond
                 : CrossFadeState.showFirst,
-            duration: design.motion.fast,
+            duration: MotionPreferences.shouldAnimate(context)
+                ? design.motion.fast
+                : Duration.zero,
           ),
         ],
       ),

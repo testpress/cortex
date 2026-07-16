@@ -4682,8 +4682,56 @@ abstract class AppLocalizations {
   /// No description provided for @exploreInstallmentOrdinal.
   ///
   /// In en, this message translates to:
-  /// **'{installment} Installment'**
+  /// **'Installment {installment}'**
   String exploreInstallmentOrdinal(String installment);
+
+  /// No description provided for @exploreCouponHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Coupon Code'**
+  String get exploreCouponHint;
+
+  /// No description provided for @exploreApplyCoupon.
+  ///
+  /// In en, this message translates to:
+  /// **'APPLY'**
+  String get exploreApplyCoupon;
+
+  /// No description provided for @exploreNoInstallmentPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'No installment plans available for this product.'**
+  String get exploreNoInstallmentPlans;
+
+  /// No description provided for @exploreLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get exploreLoading;
+
+  /// No description provided for @exploreFailedToLoadPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load plans'**
+  String get exploreFailedToLoadPlans;
+
+  /// No description provided for @exploreInstallmentPlansCalculationBase.
+  ///
+  /// In en, this message translates to:
+  /// **'Installment plans are calculated based on the original price of ₹{price}.'**
+  String exploreInstallmentPlansCalculationBase(String price);
+
+  /// No description provided for @explorePaidOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid on {date}'**
+  String explorePaidOn(String date);
+
+  /// No description provided for @exploreNoContentAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No content available'**
+  String get exploreNoContentAvailable;
 }
 
 class _AppLocalizationsDelegate

@@ -348,7 +348,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                             ? product.buyNowText!
                             : L10n.of(context).exploreBuyNow,
                         fullWidth: true,
-                        backgroundColor: design.colors.error,
+                        backgroundColor: design.colors.accent2,
                         onPressed: () {
                           AppToast.show(context,
                               message:

@@ -2641,6 +2641,35 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String exploreInstallmentOrdinal(String installment) {
-    return '$installment Installment';
+    return 'Installment $installment';
   }
+
+  @override
+  String get exploreCouponHint => 'Enter Coupon Code';
+
+  @override
+  String get exploreApplyCoupon => 'APPLY';
+
+  @override
+  String get exploreNoInstallmentPlans =>
+      'No installment plans available for this product.';
+
+  @override
+  String get exploreLoading => 'Loading...';
+
+  @override
+  String get exploreFailedToLoadPlans => 'Failed to load plans';
+
+  @override
+  String exploreInstallmentPlansCalculationBase(String price) {
+    return 'Installment plans are calculated based on the original price of ₹$price.';
+  }
+
+  @override
+  String explorePaidOn(String date) {
+    return 'Paid on $date';
+  }
+
+  @override
+  String get exploreNoContentAvailable => 'No content available';
 }

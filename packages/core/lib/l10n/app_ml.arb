@@ -967,12 +967,34 @@
       }
     }
   },
-  "exploreInstallmentOrdinal": "{installment} Installment",
+  "exploreInstallmentOrdinal": "Installment {installment}",
   "@exploreInstallmentOrdinal": {
     "placeholders": {
       "installment": {
         "type": "String"
       }
     }
-  }
+  },
+  "exploreCouponHint": "Enter Coupon Code",
+  "exploreApplyCoupon": "APPLY",
+  "exploreNoInstallmentPlans": "No installment plans available for this product.",
+  "exploreLoading": "Loading...",
+  "exploreFailedToLoadPlans": "Failed to load plans",
+  "exploreInstallmentPlansCalculationBase": "Installment plans are calculated based on the original price of ₹{price}.",
+  "@exploreInstallmentPlansCalculationBase": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "explorePaidOn": "Paid on {date}",
+  "@explorePaidOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "exploreNoContentAvailable": "No content available"
 }

@@ -73,9 +73,9 @@ class _ProductInstallmentSheetState
                       if (res.installmentPlans.isEmpty) {
                         return Padding(
                           padding: EdgeInsets.all(design.spacing.lg),
-                          child: const Center(
+                          child: Center(
                               child: AppText.body(
-                                  "No installment plans available for this product.")),
+                                  L10n.of(context).exploreNoInstallmentPlans)),
                         );
                       }
                       if (_selectedInstallmentPlan != null) {
@@ -87,13 +87,14 @@ class _ProductInstallmentSheetState
                     loading: () => Padding(
                       padding: const EdgeInsets.all(24.0),
                       child: Center(
-                          child: AppText.body("Loading...",
+                          child: AppText.body(L10n.of(context).exploreLoading,
                               color: design.colors.textSecondary)),
                     ),
                     error: (e, st) => Padding(
                       padding: const EdgeInsets.all(24.0),
                       child: Center(
-                          child: AppText.body("Failed to load plans",
+                          child: AppText.body(
+                              L10n.of(context).exploreFailedToLoadPlans,
                               color: design.colors.error)),
                     ),
                   );
@@ -120,7 +121,8 @@ class _ProductInstallmentSheetState
         Padding(
           padding: EdgeInsets.symmetric(horizontal: design.spacing.lg),
           child: AppText.bodySmall(
-            "Installment plans are calculated based on the original price of ₹${widget.product.price}.",
+            L10n.of(context)
+                .exploreInstallmentPlansCalculationBase(widget.product.price),
             color: design.colors.textSecondary,
           ),
         ),
@@ -296,7 +298,8 @@ class _ProductInstallmentSheetState
                                 if (inst.isPaid && inst.paidOn != null) ...[
                                   SizedBox(height: design.spacing.xs),
                                   AppText.bodySmall(
-                                    "Paid on ${inst.paidOn}",
+                                    L10n.of(context)
+                                        .explorePaidOn(inst.paidOn!),
                                     color: design.colors.success,
                                   ),
                                 ],
@@ -324,7 +327,8 @@ class _ProductInstallmentSheetState
                 fullWidth: true,
                 backgroundColor: design.colors.accent2,
                 onPressed: () {
-                  // TODO: Implement checkout
+                  AppToast.show(context,
+                      message: L10n.of(context).exploreCheckoutComingSoon);
                 },
               ),
             ),
