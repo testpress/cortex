@@ -1,4 +1,4 @@
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: Product Detail Presentation
 The system SHALL display product details including tabs for curriculum and action buttons for checkout.
