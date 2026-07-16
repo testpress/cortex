@@ -2641,35 +2641,36 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String exploreInstallmentOrdinal(String installment) {
-    return 'Installment $installment';
+    return 'ഗഡു $installment';
   }
 
   @override
-  String get exploreCouponHint => 'Enter Coupon Code';
+  String get exploreCouponHint => 'കൂപ്പൺ കോഡ് നൽകുക';
 
   @override
-  String get exploreApplyCoupon => 'APPLY';
+  String get exploreApplyCoupon => 'പ്രയോഗിക്കുക';
 
   @override
   String get exploreNoInstallmentPlans =>
-      'No installment plans available for this product.';
+      'ഈ ഉൽപ്പന്നത്തിന് ഇൻസ്റ്റാൾമെന്റ് പ്ലാനുകൾ ലഭ്യമല്ല.';
 
   @override
-  String get exploreLoading => 'Loading...';
+  String get exploreLoading => 'ലോഡ് ചെയ്യുന്നു...';
 
   @override
-  String get exploreFailedToLoadPlans => 'Failed to load plans';
+  String get exploreFailedToLoadPlans =>
+      'പ്ലാനുകൾ ലോഡുചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു';
 
   @override
   String exploreInstallmentPlansCalculationBase(String price) {
-    return 'Installment plans are calculated based on the original price of ₹$price.';
+    return '₹$price എന്ന യഥാർത്ഥ വിലയുടെ അടിസ്ഥാനത്തിലാണ് ഇൻസ്റ്റാൾമെന്റ് പ്ലാനുകൾ കണക്കാക്കുന്നത്.';
   }
 
   @override
   String explorePaidOn(String date) {
-    return 'Paid on $date';
+    return '$date-ൽ അടച്ചു';
   }
 
   @override
-  String get exploreNoContentAvailable => 'No content available';
+  String get exploreNoContentAvailable => 'ഉള്ളടക്കം ലഭ്യമല്ല';
 }

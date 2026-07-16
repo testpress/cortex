@@ -2601,35 +2601,35 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String exploreInstallmentOrdinal(String installment) {
-    return 'Installment $installment';
+    return 'القسط $installment';
   }
 
   @override
-  String get exploreCouponHint => 'Enter Coupon Code';
+  String get exploreCouponHint => 'أدخل رمز القسيمة';
 
   @override
-  String get exploreApplyCoupon => 'APPLY';
+  String get exploreApplyCoupon => 'تطبيق';
 
   @override
   String get exploreNoInstallmentPlans =>
-      'No installment plans available for this product.';
+      'لا توجد خطط تقسيط متاحة لهذا المنتج.';
 
   @override
-  String get exploreLoading => 'Loading...';
+  String get exploreLoading => 'جاري التحميل...';
 
   @override
-  String get exploreFailedToLoadPlans => 'Failed to load plans';
+  String get exploreFailedToLoadPlans => 'فشل تحميل الخطط';
 
   @override
   String exploreInstallmentPlansCalculationBase(String price) {
-    return 'Installment plans are calculated based on the original price of ₹$price.';
+    return 'يتم حساب خطط التقسيط بناءً على السعر الأصلي البالغ $price ₹.';
   }
 
   @override
   String explorePaidOn(String date) {
-    return 'Paid on $date';
+    return 'تم الدفع في $date';
   }
 
   @override
-  String get exploreNoContentAvailable => 'No content available';
+  String get exploreNoContentAvailable => 'لا يوجد محتوى متاح';
 }

@@ -2636,35 +2636,35 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String exploreInstallmentOrdinal(String installment) {
-    return 'Installment $installment';
+    return 'தவணை $installment';
   }
 
   @override
-  String get exploreCouponHint => 'Enter Coupon Code';
+  String get exploreCouponHint => 'கூப்பன் குறியீட்டை உள்ளிடவும்';
 
   @override
-  String get exploreApplyCoupon => 'APPLY';
+  String get exploreApplyCoupon => 'பயன்படுத்து';
 
   @override
   String get exploreNoInstallmentPlans =>
-      'No installment plans available for this product.';
+      'இந்த தயாரிப்புக்கு தவணைத் திட்டங்கள் எதுவும் இல்லை.';
 
   @override
-  String get exploreLoading => 'Loading...';
+  String get exploreLoading => 'ஏற்றுகிறது...';
 
   @override
-  String get exploreFailedToLoadPlans => 'Failed to load plans';
+  String get exploreFailedToLoadPlans => 'திட்டங்களை ஏற்றுவதில் தோல்வி';
 
   @override
   String exploreInstallmentPlansCalculationBase(String price) {
-    return 'Installment plans are calculated based on the original price of ₹$price.';
+    return '₹$price அசல் விலையின் அடிப்படையில் தவணைத் திட்டங்கள் கணக்கிடப்படுகின்றன.';
   }
 
   @override
   String explorePaidOn(String date) {
-    return 'Paid on $date';
+    return '$date இல் செலுத்தப்பட்டது';
   }
 
   @override
-  String get exploreNoContentAvailable => 'No content available';
+  String get exploreNoContentAvailable => 'உள்ளடக்கம் எதுவும் இல்லை';
 }

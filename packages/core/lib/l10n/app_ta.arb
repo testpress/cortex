@@ -1205,7 +1205,7 @@
       }
     }
   },
-  "exploreInstallmentOrdinal": "Installment {installment}",
+  "exploreInstallmentOrdinal": "தவணை {installment}",
   "@exploreInstallmentOrdinal": {
     "placeholders": {
       "installment": {
@@ -1213,12 +1213,12 @@
       }
     }
   },
-  "exploreCouponHint": "Enter Coupon Code",
-  "exploreApplyCoupon": "APPLY",
-  "exploreNoInstallmentPlans": "No installment plans available for this product.",
-  "exploreLoading": "Loading...",
-  "exploreFailedToLoadPlans": "Failed to load plans",
-  "exploreInstallmentPlansCalculationBase": "Installment plans are calculated based on the original price of ₹{price}.",
+  "exploreCouponHint": "கூப்பன் குறியீட்டை உள்ளிடவும்",
+  "exploreApplyCoupon": "பயன்படுத்து",
+  "exploreNoInstallmentPlans": "இந்த தயாரிப்புக்கு தவணைத் திட்டங்கள் எதுவும் இல்லை.",
+  "exploreLoading": "ஏற்றுகிறது...",
+  "exploreFailedToLoadPlans": "திட்டங்களை ஏற்றுவதில் தோல்வி",
+  "exploreInstallmentPlansCalculationBase": "₹{price} அசல் விலையின் அடிப்படையில் தவணைத் திட்டங்கள் கணக்கிடப்படுகின்றன.",
   "@exploreInstallmentPlansCalculationBase": {
     "placeholders": {
       "price": {
@@ -1226,7 +1226,7 @@
       }
     }
   },
-  "explorePaidOn": "Paid on {date}",
+  "explorePaidOn": "{date} இல் செலுத்தப்பட்டது",
   "@explorePaidOn": {
     "placeholders": {
       "date": {
@@ -1234,5 +1234,5 @@
       }
     }
   },
-  "exploreNoContentAvailable": "No content available"
+  "exploreNoContentAvailable": "உள்ளடக்கம் எதுவும் இல்லை"
 }

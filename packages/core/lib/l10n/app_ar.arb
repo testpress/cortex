@@ -966,7 +966,7 @@
       }
     }
   },
-  "exploreInstallmentOrdinal": "Installment {installment}",
+  "exploreInstallmentOrdinal": "القسط {installment}",
   "@exploreInstallmentOrdinal": {
     "placeholders": {
       "installment": {
@@ -974,12 +974,12 @@
       }
     }
   },
-  "exploreCouponHint": "Enter Coupon Code",
-  "exploreApplyCoupon": "APPLY",
-  "exploreNoInstallmentPlans": "No installment plans available for this product.",
-  "exploreLoading": "Loading...",
-  "exploreFailedToLoadPlans": "Failed to load plans",
-  "exploreInstallmentPlansCalculationBase": "Installment plans are calculated based on the original price of ₹{price}.",
+  "exploreCouponHint": "أدخل رمز القسيمة",
+  "exploreApplyCoupon": "تطبيق",
+  "exploreNoInstallmentPlans": "لا توجد خطط تقسيط متاحة لهذا المنتج.",
+  "exploreLoading": "جاري التحميل...",
+  "exploreFailedToLoadPlans": "فشل تحميل الخطط",
+  "exploreInstallmentPlansCalculationBase": "يتم حساب خطط التقسيط بناءً على السعر الأصلي البالغ {price} ₹.",
   "@exploreInstallmentPlansCalculationBase": {
     "placeholders": {
       "price": {
@@ -987,7 +987,7 @@
       }
     }
   },
-  "explorePaidOn": "Paid on {date}",
+  "explorePaidOn": "تم الدفع في {date}",
   "@explorePaidOn": {
     "placeholders": {
       "date": {
@@ -995,5 +995,5 @@
       }
     }
   },
-  "exploreNoContentAvailable": "No content available"
+  "exploreNoContentAvailable": "لا يوجد محتوى متاح"
 }

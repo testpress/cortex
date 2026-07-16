@@ -967,7 +967,7 @@
       }
     }
   },
-  "exploreInstallmentOrdinal": "Installment {installment}",
+  "exploreInstallmentOrdinal": "ഗഡു {installment}",
   "@exploreInstallmentOrdinal": {
     "placeholders": {
       "installment": {
@@ -975,12 +975,12 @@
       }
     }
   },
-  "exploreCouponHint": "Enter Coupon Code",
-  "exploreApplyCoupon": "APPLY",
-  "exploreNoInstallmentPlans": "No installment plans available for this product.",
-  "exploreLoading": "Loading...",
-  "exploreFailedToLoadPlans": "Failed to load plans",
-  "exploreInstallmentPlansCalculationBase": "Installment plans are calculated based on the original price of ₹{price}.",
+  "exploreCouponHint": "കൂപ്പൺ കോഡ് നൽകുക",
+  "exploreApplyCoupon": "പ്രയോഗിക്കുക",
+  "exploreNoInstallmentPlans": "ഈ ഉൽപ്പന്നത്തിന് ഇൻസ്റ്റാൾമെന്റ് പ്ലാനുകൾ ലഭ്യമല്ല.",
+  "exploreLoading": "ലോഡ് ചെയ്യുന്നു...",
+  "exploreFailedToLoadPlans": "പ്ലാനുകൾ ലോഡുചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു",
+  "exploreInstallmentPlansCalculationBase": "₹{price} എന്ന യഥാർത്ഥ വിലയുടെ അടിസ്ഥാനത്തിലാണ് ഇൻസ്റ്റാൾമെന്റ് പ്ലാനുകൾ കണക്കാക്കുന്നത്.",
   "@exploreInstallmentPlansCalculationBase": {
     "placeholders": {
       "price": {
@@ -988,7 +988,7 @@
       }
     }
   },
-  "explorePaidOn": "Paid on {date}",
+  "explorePaidOn": "{date}-ൽ അടച്ചു",
   "@explorePaidOn": {
     "placeholders": {
       "date": {
@@ -996,5 +996,5 @@
       }
     }
   },
-  "exploreNoContentAvailable": "No content available"
+  "exploreNoContentAvailable": "ഉള്ളടക്കം ലഭ്യമല്ല"
 }
