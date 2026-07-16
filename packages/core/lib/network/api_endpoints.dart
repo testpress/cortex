@@ -13,6 +13,12 @@ class ApiEndpoints {
   static const String loginActivity = '/api/v2.3/me/login_activity/';
   static const String productCategories = '/api/v2.5/products/categories/';
   static const String products = '/api/v2.4/products/';
+  static String product(String slug) => '/api/v2.4/products/$slug/';
+  static const String createOrder = '/api/v2.4/orders/';
+  static String applyCoupon(int orderId) =>
+      '/api/v2.4/orders/$orderId/apply-coupon/';
+  static String installmentPlans(String slug) =>
+      '/api/v3/products/$slug/installment-plans/';
   static const String courseList = '/api/v3/courses/';
   static String courseDetail(String id) => '/api/v3/courses/$id/';
   static String courseChapters(String id) => '/api/v3/courses/$id/chapters/';

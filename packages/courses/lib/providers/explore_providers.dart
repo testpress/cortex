@@ -48,3 +48,54 @@ Future<List<ProductDto>> storeProducts(StoreProductsRef ref) {
     category: category,
   );
 }
+
+@riverpod
+Future<ProductDto> productDetail(
+  ProductDetailRef ref,
+  String slug,
+) {
+  final repo = ref.watch(exploreRepositoryProvider);
+  return repo.fetchProductDetail(slug);
+}
+
+@riverpod
+Future<InstallmentPlansResponseDto> productInstallmentPlans(
+  ProductInstallmentPlansRef ref,
+  String slug,
+) {
+  final repo = ref.watch(exploreRepositoryProvider);
+  return repo.getInstallmentPlans(slug);
+}
+
+@riverpod
+class ProductDiscountNotifier extends _$ProductDiscountNotifier {
+  int? _orderId;
+
+  @override
+  AsyncValue<OrderDto?> build(String slug) {
+    ref.onDispose(() {
+      _orderId = null;
+    });
+    return const AsyncValue.data(null);
+  }
+
+  Future<void> applyCoupon(String code) async {
+    state = const AsyncValue.loading();
+    try {
+      final repo = ref.read(exploreRepositoryProvider);
+      // Reuse existing draft order if available to avoid creating multiple orders
+      final orderId = _orderId ?? (await repo.createOrder(slug)).id;
+      _orderId = orderId;
+
+      final updatedOrder = await repo.applyCoupon(orderId, code);
+      state = AsyncValue.data(updatedOrder);
+    } catch (e, st) {
+      if (e is ApiException) {
+        state = AsyncValue.error(
+            ApiException.extractApiMessage(e.data) ?? e.message, st);
+      } else {
+        state = AsyncValue.error(e, st);
+      }
+    }
+  }
+}

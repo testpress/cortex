@@ -2509,4 +2509,121 @@ class AppLocalizationsEn extends AppLocalizations {
   String explorePlanUnselected(String planName, String price) {
     return '$planName, ₹$price';
   }
+
+  @override
+  String get exploreDescription => 'Description';
+
+  @override
+  String get exploreCurriculum => 'Curriculum';
+
+  @override
+  String get exploreHaveDiscountCode => 'Have a discount code?';
+
+  @override
+  String get explorePayInstallments => 'Pay in installments';
+
+  @override
+  String get exploreDiscountCoupon => 'Discount Coupon';
+
+  @override
+  String get exploreChoosePlan => 'Choose a Plan';
+
+  @override
+  String explorePayAmountNow(String amount) {
+    return 'Pay ₹$amount now';
+  }
+
+  @override
+  String exploreCouponAppliedSuccess(String total) {
+    return 'Coupon applied successfully! New total: $total';
+  }
+
+  @override
+  String exploreStatisticsChapters(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Chapters',
+      one: '1 Chapter',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exploreStatisticsVideos(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Videos',
+      one: '1 Video',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exploreStatisticsExams(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Exams',
+      one: '1 Exam',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exploreStatisticsAttachments(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Attachments',
+      one: '1 Attachment',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exploreStatisticsNotes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Notes',
+      one: '1 Note',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exploreInstallmentOrdinal(String installment) {
+    return 'Installment $installment';
+  }
+
+  @override
+  String get exploreCouponHint => 'Enter Coupon Code';
+
+  @override
+  String get exploreApplyCoupon => 'APPLY';
+
+  @override
+  String get exploreNoInstallmentPlans =>
+      'No installment plans available for this product.';
+
+  @override
+  String get exploreLoading => 'Loading...';
+
+  @override
+  String get exploreFailedToLoadPlans => 'Failed to load plans';
+
+  @override
+  String exploreInstallmentPlansCalculationBase(String price) {
+    return 'Installment plans are calculated based on the original price of ₹$price.';
+  }
+
+  @override
+  String explorePaidOn(String date) {
+    return 'Paid on $date';
+  }
+
+  @override
+  String get exploreNoContentAvailable => 'No content available';
 }

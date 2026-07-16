@@ -904,5 +904,97 @@
   "exploreProductsLabel": "ഉൽപ്പന്നങ്ങൾ",
   "exploreCategoriesLabel": "വിഭാഗങ്ങൾ",
   "explorePlanSelected": "{planName}, ₹{price}, തിരഞ്ഞെടുത്തു",
-  "explorePlanUnselected": "{planName}, ₹{price}"
+  "explorePlanUnselected": "{planName}, ₹{price}",
+  "exploreDescription": "വിവരണം",
+  "exploreCurriculum": "പാഠ്യപദ്ധതി",
+  "exploreHaveDiscountCode": "ഡിസ്കൗണ്ട് കോഡ് ഉണ്ടോ?",
+  "explorePayInstallments": "തവണകളായി അടയ്ക്കുക",
+  "exploreDiscountCoupon": "ഡിസ്കൗണ്ട് കൂപ്പൺ",
+  "exploreChoosePlan": "ഒരു പ്ലാൻ തിരഞ്ഞെടുക്കുക",
+  "explorePayAmountNow": "₹{amount} ഇപ്പോൾ അടയ്ക്കുക",
+  "@explorePayAmountNow": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "exploreCouponAppliedSuccess": "Coupon applied successfully! New total: {total}",
+  "@exploreCouponAppliedSuccess": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "exploreStatisticsChapters": "{count, plural, =1{1 Chapter} other{{count} Chapters}}",
+  "@exploreStatisticsChapters": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "exploreStatisticsVideos": "{count, plural, =1{1 Video} other{{count} Videos}}",
+  "@exploreStatisticsVideos": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "exploreStatisticsExams": "{count, plural, =1{1 Exam} other{{count} Exams}}",
+  "@exploreStatisticsExams": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "exploreStatisticsAttachments": "{count, plural, =1{1 Attachment} other{{count} Attachments}}",
+  "@exploreStatisticsAttachments": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "exploreStatisticsNotes": "{count, plural, =1{1 Note} other{{count} Notes}}",
+  "@exploreStatisticsNotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "exploreInstallmentOrdinal": "ഗഡു {installment}",
+  "@exploreInstallmentOrdinal": {
+    "placeholders": {
+      "installment": {
+        "type": "String"
+      }
+    }
+  },
+  "exploreCouponHint": "കൂപ്പൺ കോഡ് നൽകുക",
+  "exploreApplyCoupon": "പ്രയോഗിക്കുക",
+  "exploreNoInstallmentPlans": "ഈ ഉൽപ്പന്നത്തിന് ഇൻസ്റ്റാൾമെന്റ് പ്ലാനുകൾ ലഭ്യമല്ല.",
+  "exploreLoading": "ലോഡ് ചെയ്യുന്നു...",
+  "exploreFailedToLoadPlans": "പ്ലാനുകൾ ലോഡുചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു",
+  "exploreInstallmentPlansCalculationBase": "₹{price} എന്ന യഥാർത്ഥ വിലയുടെ അടിസ്ഥാനത്തിലാണ് ഇൻസ്റ്റാൾമെന്റ് പ്ലാനുകൾ കണക്കാക്കുന്നത്.",
+  "@exploreInstallmentPlansCalculationBase": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "explorePaidOn": "{date}-ൽ അടച്ചു",
+  "@explorePaidOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "exploreNoContentAvailable": "ഉള്ളടക്കം ലഭ്യമല്ല"
 }

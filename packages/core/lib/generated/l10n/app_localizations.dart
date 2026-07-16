@@ -4600,6 +4600,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{planName}, ₹{price}'**
   String explorePlanUnselected(String planName, String price);
+
+  /// No description provided for @exploreDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get exploreDescription;
+
+  /// No description provided for @exploreCurriculum.
+  ///
+  /// In en, this message translates to:
+  /// **'Curriculum'**
+  String get exploreCurriculum;
+
+  /// No description provided for @exploreHaveDiscountCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Have a discount code?'**
+  String get exploreHaveDiscountCode;
+
+  /// No description provided for @explorePayInstallments.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay in installments'**
+  String get explorePayInstallments;
+
+  /// No description provided for @exploreDiscountCoupon.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount Coupon'**
+  String get exploreDiscountCoupon;
+
+  /// No description provided for @exploreChoosePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a Plan'**
+  String get exploreChoosePlan;
+
+  /// No description provided for @explorePayAmountNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay ₹{amount} now'**
+  String explorePayAmountNow(String amount);
+
+  /// No description provided for @exploreCouponAppliedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon applied successfully! New total: {total}'**
+  String exploreCouponAppliedSuccess(String total);
+
+  /// No description provided for @exploreStatisticsChapters.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 Chapter} other{{count} Chapters}}'**
+  String exploreStatisticsChapters(int count);
+
+  /// No description provided for @exploreStatisticsVideos.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 Video} other{{count} Videos}}'**
+  String exploreStatisticsVideos(int count);
+
+  /// No description provided for @exploreStatisticsExams.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 Exam} other{{count} Exams}}'**
+  String exploreStatisticsExams(int count);
+
+  /// No description provided for @exploreStatisticsAttachments.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 Attachment} other{{count} Attachments}}'**
+  String exploreStatisticsAttachments(int count);
+
+  /// No description provided for @exploreStatisticsNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 Note} other{{count} Notes}}'**
+  String exploreStatisticsNotes(int count);
+
+  /// No description provided for @exploreInstallmentOrdinal.
+  ///
+  /// In en, this message translates to:
+  /// **'Installment {installment}'**
+  String exploreInstallmentOrdinal(String installment);
+
+  /// No description provided for @exploreCouponHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Coupon Code'**
+  String get exploreCouponHint;
+
+  /// No description provided for @exploreApplyCoupon.
+  ///
+  /// In en, this message translates to:
+  /// **'APPLY'**
+  String get exploreApplyCoupon;
+
+  /// No description provided for @exploreNoInstallmentPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'No installment plans available for this product.'**
+  String get exploreNoInstallmentPlans;
+
+  /// No description provided for @exploreLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get exploreLoading;
+
+  /// No description provided for @exploreFailedToLoadPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load plans'**
+  String get exploreFailedToLoadPlans;
+
+  /// No description provided for @exploreInstallmentPlansCalculationBase.
+  ///
+  /// In en, this message translates to:
+  /// **'Installment plans are calculated based on the original price of ₹{price}.'**
+  String exploreInstallmentPlansCalculationBase(String price);
+
+  /// No description provided for @explorePaidOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid on {date}'**
+  String explorePaidOn(String date);
+
+  /// No description provided for @exploreNoContentAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No content available'**
+  String get exploreNoContentAvailable;
 }
 
 class _AppLocalizationsDelegate

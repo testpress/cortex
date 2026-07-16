@@ -2515,4 +2515,121 @@ class AppLocalizationsAr extends AppLocalizations {
   String explorePlanUnselected(String planName, String price) {
     return '$planName، ₹$price';
   }
+
+  @override
+  String get exploreDescription => 'وصف';
+
+  @override
+  String get exploreCurriculum => 'المنهج';
+
+  @override
+  String get exploreHaveDiscountCode => 'هل لديك كود خصم؟';
+
+  @override
+  String get explorePayInstallments => 'الدفع على أقساط';
+
+  @override
+  String get exploreDiscountCoupon => 'كوبون الخصم';
+
+  @override
+  String get exploreChoosePlan => 'اختر خطة';
+
+  @override
+  String explorePayAmountNow(String amount) {
+    return 'ادفع ₹$amount الآن';
+  }
+
+  @override
+  String exploreCouponAppliedSuccess(String total) {
+    return 'Coupon applied successfully! New total: $total';
+  }
+
+  @override
+  String exploreStatisticsChapters(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Chapters',
+      one: '1 Chapter',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exploreStatisticsVideos(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Videos',
+      one: '1 Video',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exploreStatisticsExams(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Exams',
+      one: '1 Exam',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exploreStatisticsAttachments(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Attachments',
+      one: '1 Attachment',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exploreStatisticsNotes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Notes',
+      one: '1 Note',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exploreInstallmentOrdinal(String installment) {
+    return 'القسط $installment';
+  }
+
+  @override
+  String get exploreCouponHint => 'أدخل رمز القسيمة';
+
+  @override
+  String get exploreApplyCoupon => 'تطبيق';
+
+  @override
+  String get exploreNoInstallmentPlans =>
+      'لا توجد خطط تقسيط متاحة لهذا المنتج.';
+
+  @override
+  String get exploreLoading => 'جاري التحميل...';
+
+  @override
+  String get exploreFailedToLoadPlans => 'فشل تحميل الخطط';
+
+  @override
+  String exploreInstallmentPlansCalculationBase(String price) {
+    return 'يتم حساب خطط التقسيط بناءً على السعر الأصلي البالغ $price ₹.';
+  }
+
+  @override
+  String explorePaidOn(String date) {
+    return 'تم الدفع في $date';
+  }
+
+  @override
+  String get exploreNoContentAvailable => 'لا يوجد محتوى متاح';
 }

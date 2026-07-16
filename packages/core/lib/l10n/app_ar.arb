@@ -903,5 +903,97 @@
   "exploreProductsLabel": "المنتجات",
   "exploreCategoriesLabel": "الفئات",
   "explorePlanSelected": "{planName}، ₹{price}، محدد",
-  "explorePlanUnselected": "{planName}، ₹{price}"
+  "explorePlanUnselected": "{planName}، ₹{price}",
+  "exploreDescription": "وصف",
+  "exploreCurriculum": "المنهج",
+  "exploreHaveDiscountCode": "هل لديك كود خصم؟",
+  "explorePayInstallments": "الدفع على أقساط",
+  "exploreDiscountCoupon": "كوبون الخصم",
+  "exploreChoosePlan": "اختر خطة",
+  "explorePayAmountNow": "ادفع ₹{amount} الآن",
+  "@explorePayAmountNow": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "exploreCouponAppliedSuccess": "Coupon applied successfully! New total: {total}",
+  "@exploreCouponAppliedSuccess": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "exploreStatisticsChapters": "{count, plural, =1{1 Chapter} other{{count} Chapters}}",
+  "@exploreStatisticsChapters": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "exploreStatisticsVideos": "{count, plural, =1{1 Video} other{{count} Videos}}",
+  "@exploreStatisticsVideos": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "exploreStatisticsExams": "{count, plural, =1{1 Exam} other{{count} Exams}}",
+  "@exploreStatisticsExams": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "exploreStatisticsAttachments": "{count, plural, =1{1 Attachment} other{{count} Attachments}}",
+  "@exploreStatisticsAttachments": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "exploreStatisticsNotes": "{count, plural, =1{1 Note} other{{count} Notes}}",
+  "@exploreStatisticsNotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "exploreInstallmentOrdinal": "القسط {installment}",
+  "@exploreInstallmentOrdinal": {
+    "placeholders": {
+      "installment": {
+        "type": "String"
+      }
+    }
+  },
+  "exploreCouponHint": "أدخل رمز القسيمة",
+  "exploreApplyCoupon": "تطبيق",
+  "exploreNoInstallmentPlans": "لا توجد خطط تقسيط متاحة لهذا المنتج.",
+  "exploreLoading": "جاري التحميل...",
+  "exploreFailedToLoadPlans": "فشل تحميل الخطط",
+  "exploreInstallmentPlansCalculationBase": "يتم حساب خطط التقسيط بناءً على السعر الأصلي البالغ {price} ₹.",
+  "@exploreInstallmentPlansCalculationBase": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "explorePaidOn": "تم الدفع في {date}",
+  "@explorePaidOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "exploreNoContentAvailable": "لا يوجد محتوى متاح"
 }

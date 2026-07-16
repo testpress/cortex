@@ -2550,4 +2550,121 @@ class AppLocalizationsTa extends AppLocalizations {
   String explorePlanUnselected(String planName, String price) {
     return '$planName, ₹$price';
   }
+
+  @override
+  String get exploreDescription => 'விளக்கம்';
+
+  @override
+  String get exploreCurriculum => 'பாடத்திட்டம்';
+
+  @override
+  String get exploreHaveDiscountCode => 'தள்ளுபடி குறியீடு உள்ளதா?';
+
+  @override
+  String get explorePayInstallments => 'தவணைகளில் செலுத்தவும்';
+
+  @override
+  String get exploreDiscountCoupon => 'தள்ளுபடி கூப்பன்';
+
+  @override
+  String get exploreChoosePlan => 'ஒரு திட்டத்தை தேர்வு செய்யவும்';
+
+  @override
+  String explorePayAmountNow(String amount) {
+    return '₹$amount இப்போது செலுத்தவும்';
+  }
+
+  @override
+  String exploreCouponAppliedSuccess(String total) {
+    return 'Coupon applied successfully! New total: $total';
+  }
+
+  @override
+  String exploreStatisticsChapters(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Chapters',
+      one: '1 Chapter',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exploreStatisticsVideos(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Videos',
+      one: '1 Video',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exploreStatisticsExams(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Exams',
+      one: '1 Exam',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exploreStatisticsAttachments(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Attachments',
+      one: '1 Attachment',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exploreStatisticsNotes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Notes',
+      one: '1 Note',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exploreInstallmentOrdinal(String installment) {
+    return 'தவணை $installment';
+  }
+
+  @override
+  String get exploreCouponHint => 'கூப்பன் குறியீட்டை உள்ளிடவும்';
+
+  @override
+  String get exploreApplyCoupon => 'பயன்படுத்து';
+
+  @override
+  String get exploreNoInstallmentPlans =>
+      'இந்த தயாரிப்புக்கு தவணைத் திட்டங்கள் எதுவும் இல்லை.';
+
+  @override
+  String get exploreLoading => 'ஏற்றுகிறது...';
+
+  @override
+  String get exploreFailedToLoadPlans => 'திட்டங்களை ஏற்றுவதில் தோல்வி';
+
+  @override
+  String exploreInstallmentPlansCalculationBase(String price) {
+    return '₹$price அசல் விலையின் அடிப்படையில் தவணைத் திட்டங்கள் கணக்கிடப்படுகின்றன.';
+  }
+
+  @override
+  String explorePaidOn(String date) {
+    return '$date இல் செலுத்தப்பட்டது';
+  }
+
+  @override
+  String get exploreNoContentAvailable => 'உள்ளடக்கம் எதுவும் இல்லை';
 }
