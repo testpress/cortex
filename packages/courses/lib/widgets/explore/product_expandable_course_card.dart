@@ -22,13 +22,16 @@ class _ProductExpandableCourseCardState
     final course = widget.course;
 
     final List<String> stats = [];
-    if (course.chaptersCount > 0)
+    if (course.chaptersCount > 0) {
       stats.add(
           L10n.of(context).exploreStatisticsChapters(course.chaptersCount));
-    if (course.videosCount > 0)
+    }
+    if (course.videosCount > 0) {
       stats.add(L10n.of(context).exploreStatisticsVideos(course.videosCount));
-    if (course.examsCount > 0)
+    }
+    if (course.examsCount > 0) {
       stats.add(L10n.of(context).exploreStatisticsExams(course.examsCount));
+    }
     if (course.attachmentsCount > 0) {
       stats.add(L10n.of(context)
           .exploreStatisticsAttachments(course.attachmentsCount));
