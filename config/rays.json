@@ -9,5 +9,6 @@
   "SHOW_EXAM_TAB": false,
   "SHOW_INFO_TAB": false,
   "SHOW_EXPLORE_TAB": true,
-  "SHOW_PROFILE_TAB": true
+  "SHOW_PROFILE_TAB": true,
+  "SHOW_CERTIFICATE": false
 }
