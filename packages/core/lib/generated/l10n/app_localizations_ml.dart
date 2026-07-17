@@ -2673,4 +2673,26 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get exploreNoContentAvailable => 'ഉള്ളടക്കം ലഭ്യമല്ല';
+
+  @override
+  String get paymentProcessing =>
+      'നിങ്ങളുടെ പേയ്മെൻ്റ് പ്രോസസ്സ് ചെയ്യുന്നു...';
+
+  @override
+  String get paymentSuccessful => 'പേയ്മെൻ്റ് വിജയിച്ചു!';
+
+  @override
+  String get paymentFailed => 'പേയ്മെൻ്റ് പരാജയപ്പെട്ടു';
+
+  @override
+  String get paymentStartLearning => 'പഠിക്കാൻ തുടങ്ങുക';
+
+  @override
+  String get paymentBackToHome => 'ഹോമിലേക്ക് മടങ്ങുക';
+
+  @override
+  String get paymentTryAgain => 'വീണ്ടും ശ്രമിക്കുക';
+
+  @override
+  String get paymentCancel => 'റദ്ദാക്കുക';
 }

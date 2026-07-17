@@ -357,15 +357,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                           if (!context.mounted) return;
                           final result = await PaymentProcessingScreen.start(
                             context,
-                            () async {
-                              final createdOrder =
-                                  await dataSource.createOrder(product.slug);
-                              if (createdOrder.status == 'Completed') {
-                                return createdOrder;
-                              }
-                              return await dataSource
-                                  .confirmOrder(createdOrder.id, {});
-                            },
+                            () => ref
+                                .read(exploreRepositoryProvider)
+                                .createAndConfirmOrder(product.slug),
                             dataSource,
                           );
 

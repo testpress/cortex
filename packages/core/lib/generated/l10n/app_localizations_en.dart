@@ -2626,4 +2626,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exploreNoContentAvailable => 'No content available';
+
+  @override
+  String get paymentProcessing => 'Processing your payment...';
+
+  @override
+  String get paymentSuccessful => 'Payment Successful!';
+
+  @override
+  String get paymentFailed => 'Payment Failed';
+
+  @override
+  String get paymentStartLearning => 'Start Learning';
+
+  @override
+  String get paymentBackToHome => 'Back to Home';
+
+  @override
+  String get paymentTryAgain => 'Try Again';
+
+  @override
+  String get paymentCancel => 'Cancel';
 }

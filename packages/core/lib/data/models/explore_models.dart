@@ -179,7 +179,9 @@ class ProductDto {
         if (json['image'] is String) return json['image'] as String?;
         final images = json['images'] as List<dynamic>?;
         if (images != null && images.isNotEmpty) {
-          final firstImg = images.first as Map<String, dynamic>?;
+          final firstImg = (images.first is Map)
+              ? Map<String, dynamic>.from(images.first as Map)
+              : null;
           return firstImg?['medium'] as String? ??
               firstImg?['original'] as String?;
         }
@@ -315,12 +317,14 @@ class StoreProductsResponseDto {
   });
 
   factory StoreProductsResponseDto.fromJson(Map<String, dynamic> json) {
-    final results = json['results'] as Map<String, dynamic>? ?? {};
+    final results = (json['results'] is Map)
+        ? Map<String, dynamic>.from(json['results'] as Map)
+        : <String, dynamic>{};
 
     // Parse sideloaded prices
     final pricesRaw = results['prices'] as List<dynamic>? ?? [];
     final allPrices = pricesRaw
-        .map((e) => PriceDto.fromJson(e as Map<String, dynamic>))
+        .map((e) => PriceDto.fromJson(Map<String, dynamic>.from(e as Map)))
         .toList();
 
     // Parse sideloaded courses
@@ -334,7 +338,7 @@ class StoreProductsResponseDto {
     // Parse products and attach prices & courses
     final productsRaw = results['products'] as List<dynamic>? ?? [];
     final parsedProducts = productsRaw.map((e) {
-      final productMap = e as Map<String, dynamic>;
+      final productMap = Map<String, dynamic>.from(e as Map);
 
       final productPriceIds =
           (productMap['prices'] as List<dynamic>?)

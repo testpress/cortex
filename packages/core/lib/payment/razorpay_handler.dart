@@ -33,7 +33,7 @@ class RazorpayHandler implements PaymentHandler {
     int amountInPaise = 0;
     try {
       final double total = double.parse(order.total);
-      amountInPaise = (total * 100).toInt();
+      amountInPaise = (total * 100).round();
     } catch (e) {
       debugPrint('Error parsing order total: $e');
       _onResult?.call('Failed', 'Invalid order amount');

@@ -85,7 +85,7 @@ class PayUHandler implements PaymentHandler, PayUCheckoutProProtocol {
 
   @override
   void onPaymentCancel(Map? isCancel) {
-    _onResult?.call('Failed', 'Payment cancelled');
+    _onResult?.call('Cancelled', 'Payment cancelled');
   }
 
   @override

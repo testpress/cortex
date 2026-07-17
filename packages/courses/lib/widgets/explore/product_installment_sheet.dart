@@ -333,14 +333,9 @@ class _ProductInstallmentSheetState
                   if (!context.mounted) return;
                   final result = await PaymentProcessingScreen.start(
                     context,
-                    () async {
-                      final createdOrder =
-                          await dataSource.createOrder(widget.product.slug);
-                      if (createdOrder.status == 'Completed') {
-                        return createdOrder;
-                      }
-                      return await dataSource.confirmOrder(createdOrder.id, {});
-                    },
+                    () => ref
+                        .read(exploreRepositoryProvider)
+                        .createAndConfirmOrder(widget.product.slug),
                     dataSource,
                   );
 

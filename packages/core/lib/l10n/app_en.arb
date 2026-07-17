@@ -1317,5 +1317,12 @@
       }
     }
   },
-  "exploreNoContentAvailable": "No content available"
+  "exploreNoContentAvailable": "No content available",
+  "paymentProcessing": "Processing your payment...",
+  "paymentSuccessful": "Payment Successful!",
+  "paymentFailed": "Payment Failed",
+  "paymentStartLearning": "Start Learning",
+  "paymentBackToHome": "Back to Home",
+  "paymentTryAgain": "Try Again",
+  "paymentCancel": "Cancel"
 }

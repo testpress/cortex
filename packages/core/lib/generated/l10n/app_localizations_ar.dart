@@ -2632,4 +2632,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get exploreNoContentAvailable => 'لا يوجد محتوى متاح';
+
+  @override
+  String get paymentProcessing => 'جاري معالجة الدفع...';
+
+  @override
+  String get paymentSuccessful => 'اكتمل الدفع بنجاح!';
+
+  @override
+  String get paymentFailed => 'فشل الدفع';
+
+  @override
+  String get paymentStartLearning => 'ابدأ التعلم';
+
+  @override
+  String get paymentBackToHome => 'العودة للرئيسية';
+
+  @override
+  String get paymentTryAgain => 'حاول مرة أخرى';
+
+  @override
+  String get paymentCancel => 'إلغاء';
 }

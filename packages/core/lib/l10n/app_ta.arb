@@ -1234,5 +1234,12 @@
       }
     }
   },
-  "exploreNoContentAvailable": "உள்ளடக்கம் எதுவும் இல்லை"
+  "exploreNoContentAvailable": "உள்ளடக்கம் எதுவும் இல்லை",
+  "paymentProcessing": "உங்கள் கட்டணத்தை செயலாக்குகிறது...",
+  "paymentSuccessful": "கட்டணம் வெற்றிகரமாக செலுத்தப்பட்டது!",
+  "paymentFailed": "கட்டணம் தோல்வியடைந்தது",
+  "paymentStartLearning": "கற்கத் தொடங்கு",
+  "paymentBackToHome": "முகப்புக்குத் திரும்பு",
+  "paymentTryAgain": "மீண்டும் முயற்சி செய்",
+  "paymentCancel": "ரத்துசெய்"
 }

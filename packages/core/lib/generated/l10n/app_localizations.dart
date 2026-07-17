@@ -4732,6 +4732,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No content available'**
   String get exploreNoContentAvailable;
+
+  /// No description provided for @paymentProcessing.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing your payment...'**
+  String get paymentProcessing;
+
+  /// No description provided for @paymentSuccessful.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Successful!'**
+  String get paymentSuccessful;
+
+  /// No description provided for @paymentFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Failed'**
+  String get paymentFailed;
+
+  /// No description provided for @paymentStartLearning.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Learning'**
+  String get paymentStartLearning;
+
+  /// No description provided for @paymentBackToHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Home'**
+  String get paymentBackToHome;
+
+  /// No description provided for @paymentTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
+  String get paymentTryAgain;
+
+  /// No description provided for @paymentCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get paymentCancel;
 }
 
 class _AppLocalizationsDelegate

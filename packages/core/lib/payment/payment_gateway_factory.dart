@@ -55,41 +55,44 @@ class PaymentGatewayFactory {
     }
 
     final completer = Completer<PaymentResult>();
+    final PaymentResult result;
 
-    await _activeHandler!.startPayment(
-      order: order,
-      onResult: (status, message) {
-        if (!completer.isCompleted) {
-          if (status == 'Completed') {
-            completer.complete(
-              PaymentResult(
-                status: PaymentResultStatus.success,
-                message: message,
-              ),
-            );
-          } else if (status == 'Cancelled') {
-            completer.complete(
-              PaymentResult(
-                status: PaymentResultStatus.cancelled,
-                message: message,
-              ),
-            );
-          } else {
-            completer.complete(
-              PaymentResult(
-                status: PaymentResultStatus.failed,
-                message: message,
-              ),
-            );
+    try {
+      await _activeHandler!.startPayment(
+        order: order,
+        onResult: (status, message) {
+          if (!completer.isCompleted) {
+            if (status == 'Completed') {
+              completer.complete(
+                PaymentResult(
+                  status: PaymentResultStatus.success,
+                  message: message,
+                ),
+              );
+            } else if (status == 'Cancelled') {
+              completer.complete(
+                PaymentResult(
+                  status: PaymentResultStatus.cancelled,
+                  message: message,
+                ),
+              );
+            } else {
+              completer.complete(
+                PaymentResult(
+                  status: PaymentResultStatus.failed,
+                  message: message,
+                ),
+              );
+            }
           }
-        }
-      },
-    );
+        },
+      );
 
-    final result = await completer.future;
-
-    _activeHandler?.dispose();
-    _activeHandler = null;
+      result = await completer.future;
+    } finally {
+      _activeHandler?.dispose();
+      _activeHandler = null;
+    }
 
     // Verify the payment status with our backend if the SDK reported success
     if (result.status == PaymentResultStatus.success) {

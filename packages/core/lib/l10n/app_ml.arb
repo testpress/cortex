@@ -996,5 +996,12 @@
       }
     }
   },
-  "exploreNoContentAvailable": "ഉള്ളടക്കം ലഭ്യമല്ല"
+  "exploreNoContentAvailable": "ഉള്ളടക്കം ലഭ്യമല്ല",
+  "paymentProcessing": "നിങ്ങളുടെ പേയ്മെൻ്റ് പ്രോസസ്സ് ചെയ്യുന്നു...",
+  "paymentSuccessful": "പേയ്മെൻ്റ് വിജയിച്ചു!",
+  "paymentFailed": "പേയ്മെൻ്റ് പരാജയപ്പെട്ടു",
+  "paymentStartLearning": "പഠിക്കാൻ തുടങ്ങുക",
+  "paymentBackToHome": "ഹോമിലേക്ക് മടങ്ങുക",
+  "paymentTryAgain": "വീണ്ടും ശ്രമിക്കുക",
+  "paymentCancel": "റദ്ദാക്കുക"
 }

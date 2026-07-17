@@ -88,6 +88,14 @@ class ExploreRepository {
     return _source.createOrder(productSlug);
   }
 
+  Future<OrderDto> createAndConfirmOrder(String productSlug) async {
+    final createdOrder = await _source.createOrder(productSlug);
+    if (createdOrder.status == 'Completed') {
+      return createdOrder;
+    }
+    return await _source.confirmOrder(createdOrder.id, {});
+  }
+
   Future<OrderDto> applyCoupon(int orderId, String couponCode) async {
     return _source.applyCoupon(orderId, couponCode);
   }

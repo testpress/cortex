@@ -89,13 +89,16 @@ class _PaymentProcessingScreenState extends State<PaymentProcessingScreen> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.all(design.spacing.xl),
-            child: _buildContent(context, design),
+    return PopScope(
+      canPop: _result != null && _result!.status != PaymentResultStatus.success,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.all(design.spacing.xl),
+              child: _buildContent(context, design),
+            ),
           ),
         ),
       ),
@@ -104,14 +107,14 @@ class _PaymentProcessingScreenState extends State<PaymentProcessingScreen> {
 
   Widget _buildContent(BuildContext context, DesignConfig design) {
     if (_result == null) {
-      return const Column(
+      return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          AppLoadingIndicator(),
-          SizedBox(height: 24),
+          const AppLoadingIndicator(),
+          const SizedBox(height: 24),
           Text(
-            'Processing your payment...',
-            style: TextStyle(
+            L10n.of(context).paymentProcessing,
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,
               color: Colors.black54,
@@ -132,7 +135,11 @@ class _PaymentProcessingScreenState extends State<PaymentProcessingScreen> {
           color: isSuccess ? design.colors.success : design.colors.error,
         ),
         SizedBox(height: design.spacing.xl),
-        AppText.title(isSuccess ? 'Payment Successful!' : 'Payment Failed'),
+        AppText.title(
+          isSuccess
+              ? L10n.of(context).paymentSuccessful
+              : L10n.of(context).paymentFailed,
+        ),
         SizedBox(height: design.spacing.sm),
         AppText.body(
           isSuccess
@@ -144,25 +151,25 @@ class _PaymentProcessingScreenState extends State<PaymentProcessingScreen> {
         SizedBox(height: design.spacing.xxl),
         if (isSuccess) ...[
           AppButton(
-            label: 'Start Learning',
+            label: L10n.of(context).paymentStartLearning,
             fullWidth: true,
             onPressed: () => context.go('/study'),
           ),
           SizedBox(height: design.spacing.md),
           AppButton.secondary(
-            label: 'Back to Home',
+            label: L10n.of(context).paymentBackToHome,
             fullWidth: true,
             onPressed: () => context.go('/home'),
           ),
         ] else ...[
           AppButton(
-            label: 'Try Again',
+            label: L10n.of(context).paymentTryAgain,
             fullWidth: true,
             onPressed: () => Navigator.of(context).pop(_result),
           ),
           SizedBox(height: design.spacing.md),
           AppButton.secondary(
-            label: 'Cancel',
+            label: L10n.of(context).paymentCancel,
             fullWidth: true,
             onPressed: () => Navigator.of(context).pop(_result),
           ),

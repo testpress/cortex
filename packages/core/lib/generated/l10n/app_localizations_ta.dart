@@ -2667,4 +2667,25 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get exploreNoContentAvailable => 'உள்ளடக்கம் எதுவும் இல்லை';
+
+  @override
+  String get paymentProcessing => 'உங்கள் கட்டணத்தை செயலாக்குகிறது...';
+
+  @override
+  String get paymentSuccessful => 'கட்டணம் வெற்றிகரமாக செலுத்தப்பட்டது!';
+
+  @override
+  String get paymentFailed => 'கட்டணம் தோல்வியடைந்தது';
+
+  @override
+  String get paymentStartLearning => 'கற்கத் தொடங்கு';
+
+  @override
+  String get paymentBackToHome => 'முகப்புக்குத் திரும்பு';
+
+  @override
+  String get paymentTryAgain => 'மீண்டும் முயற்சி செய்';
+
+  @override
+  String get paymentCancel => 'ரத்துசெய்';
 }

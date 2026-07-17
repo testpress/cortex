@@ -995,5 +995,12 @@
       }
     }
   },
-  "exploreNoContentAvailable": "لا يوجد محتوى متاح"
+  "exploreNoContentAvailable": "لا يوجد محتوى متاح",
+  "paymentProcessing": "جاري معالجة الدفع...",
+  "paymentSuccessful": "اكتمل الدفع بنجاح!",
+  "paymentFailed": "فشل الدفع",
+  "paymentStartLearning": "ابدأ التعلم",
+  "paymentBackToHome": "العودة للرئيسية",
+  "paymentTryAgain": "حاول مرة أخرى",
+  "paymentCancel": "إلغاء"
 }
