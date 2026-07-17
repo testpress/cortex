@@ -326,9 +326,28 @@ class _ProductInstallmentSheetState
                     .price),
                 fullWidth: true,
                 backgroundColor: design.colors.accent2,
-                onPressed: () {
-                  AppToast.show(context,
-                      message: L10n.of(context).exploreCheckoutComingSoon);
+                loading: false,
+                onPressed: () async {
+                  final dataSource = ref.read(dataSourceProvider);
+
+                  if (!context.mounted) return;
+                  final result = await PaymentProcessingScreen.start(
+                    context,
+                    () async {
+                      final createdOrder =
+                          await dataSource.createOrder(widget.product.slug);
+                      if (createdOrder.status == 'Completed') {
+                        return createdOrder;
+                      }
+                      return await dataSource.confirmOrder(createdOrder.id, {});
+                    },
+                    dataSource,
+                  );
+
+                  if (!context.mounted) return;
+                  if (result?.status == PaymentResultStatus.success) {
+                    ref.invalidate(productDetailProvider(widget.product.slug));
+                  }
                 },
               ),
             ),

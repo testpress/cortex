@@ -245,29 +245,59 @@ class OrderDto {
   final String status;
   final String total;
   final String subtotal;
+  final String? orderId;
+  final String? apiKey;
+  final String? productInfo;
+  final String? name;
+  final String? email;
+  final String? phone;
+  final String? pgUrl;
 
   const OrderDto({
     required this.id,
     required this.status,
     required this.total,
     required this.subtotal,
+    this.orderId,
+    this.apiKey,
+    this.productInfo,
+    this.name,
+    this.email,
+    this.phone,
+    this.pgUrl,
   });
 
   factory OrderDto.fromJson(Map<String, dynamic> json) {
     return OrderDto(
       id: json['id'] as int,
       status: json['status'] as String? ?? '',
-      total: json['total'] as String? ?? '0.00',
+      total: (json['amount'] ?? json['total'])?.toString() ?? '0.00',
       subtotal: json['subtotal'] as String? ?? '0.00',
+      orderId: json['order_id'] as String?,
+      apiKey: json['apikey'] as String?,
+      productInfo: json['product_info'] as String?,
+      name: json['name'] as String?,
+      email: json['email'] as String?,
+      phone: json['phone'] as String?,
+      pgUrl: json['pg_url'] as String?,
     );
   }
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'status': status,
-    'total': total,
-    'subtotal': subtotal,
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'status': status,
+      'total': total,
+      'subtotal': subtotal,
+      'order_id': orderId,
+      'apikey': apiKey,
+      'product_info': productInfo,
+      'name': name,
+      'email': email,
+      'phone': phone,
+      'pg_url': pgUrl,
+    };
+  }
 }
 
 /// Parses the sideloaded envelope from /api/v2.4/products/.

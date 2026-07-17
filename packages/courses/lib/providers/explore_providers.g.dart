@@ -42,24 +42,6 @@ final storeCategoriesProvider =
 // ignore: unused_element
 typedef StoreCategoriesRef
     = AutoDisposeFutureProviderRef<List<ProductCategoryDto>>;
-String _$storeProductsHash() => r'3c9d39b7bd49af70eb91c4aabfe82ecf8d3bee93';
-
-/// See also [storeProducts].
-@ProviderFor(storeProducts)
-final storeProductsProvider =
-    AutoDisposeFutureProvider<List<ProductDto>>.internal(
-  storeProducts,
-  name: r'storeProductsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$storeProductsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef StoreProductsRef = AutoDisposeFutureProviderRef<List<ProductDto>>;
 String _$productDetailHash() => r'88a0f21ad28703e4a21b53baede36b8f16d35a2c';
 
 /// Copied from Dart SDK
@@ -383,8 +365,25 @@ final selectedStoreCategoryProvider =
 );
 
 typedef _$SelectedStoreCategory = AutoDisposeNotifier<String?>;
+String _$storeProductsHash() => r'69512f244fedd235ee8375009eccd799bb10cdb8';
+
+/// See also [StoreProducts].
+@ProviderFor(StoreProducts)
+final storeProductsProvider = AutoDisposeAsyncNotifierProvider<StoreProducts,
+    PaginatedResponseDto<ProductDto>>.internal(
+  StoreProducts.new,
+  name: r'storeProductsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$storeProductsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$StoreProducts
+    = AutoDisposeAsyncNotifier<PaginatedResponseDto<ProductDto>>;
 String _$productDiscountNotifierHash() =>
-    r'9444f367ab29d49bc44a905da41fb86be161deef';
+    r'649e988c2a74f80440c8b3c1528fec0175c8b3c7';
 
 abstract class _$ProductDiscountNotifier
     extends BuildlessAutoDisposeNotifier<AsyncValue<OrderDto?>> {

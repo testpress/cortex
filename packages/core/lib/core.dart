@@ -74,3 +74,6 @@ export 'utils/lesson_type_icon_x.dart';
 export 'localization/localization_provider.dart';
 export 'localization/l10n_helper.dart';
 export 'generated/l10n/app_localizations.dart';
+
+// Payment
+export 'payment/payment.dart';

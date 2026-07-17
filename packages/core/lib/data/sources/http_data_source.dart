@@ -456,6 +456,33 @@ class HttpDataSource implements DataSource {
   }
 
   @override
+  Future<OrderDto> confirmOrder(
+    int orderId,
+    Map<String, dynamic> billingDetails,
+  ) async {
+    return performNetworkRequest(
+      _dio.put(ApiEndpoints.confirmOrder(orderId), data: billingDetails),
+      fromJson: (data) => OrderDto.fromJson(data),
+    );
+  }
+
+  @override
+  Future<OrderDto> refreshOrderStatus(int orderId) async {
+    return performNetworkRequest(
+      _dio.post(ApiEndpoints.refreshOrder(orderId)),
+      fromJson: (data) => OrderDto.fromJson(data),
+    );
+  }
+
+  @override
+  Future<String> generatePayUHash(String hashString) async {
+    return performNetworkRequest(
+      _dio.post(ApiEndpoints.payuDynamicHash, data: {'data': hashString}),
+      fromJson: (data) => data['hash'] as String,
+    );
+  }
+
+  @override
   Future<OrderDto> applyCoupon(int orderId, String couponCode) async {
     return performNetworkRequest(
       _dio.post(ApiEndpoints.applyCoupon(orderId), data: {'code': couponCode}),

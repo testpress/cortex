@@ -15,7 +15,7 @@ class ExploreRepository {
   // ── In-memory caches ──────────────────────────────────────────────────────
 
   static const int _maxCacheSize = 20;
-  final Map<String, List<ProductDto>> _productCache = {};
+  final Map<String, PaginatedResponseDto<ProductDto>> _productCache = {};
   final Map<String, List<ProductCategoryDto>> _categoryCache = {};
 
   void _evictCache<T>(Map<String, T> cache) {
@@ -32,7 +32,7 @@ class ExploreRepository {
 
   /// Returns cached products for the given [cacheKey] if available,
   /// otherwise fetches from the network and updates the cache.
-  List<ProductDto>? getCachedProducts(String cacheKey) =>
+  PaginatedResponseDto<ProductDto>? getCachedProducts(String cacheKey) =>
       _productCache[cacheKey];
 
   /// Fetches a fresh page of products from the network and updates cache.
@@ -42,7 +42,7 @@ class ExploreRepository {
   /// - Upserts the new results (replace-all).
   /// This ensures that if the backend returns fewer items than last time,
   /// no stale entries remain.
-  Future<List<ProductDto>> fetchProducts({
+  Future<PaginatedResponseDto<ProductDto>> fetchProducts({
     String? category,
     String? search,
     int page = 1,
@@ -61,13 +61,13 @@ class ExploreRepository {
       );
 
       // Wipe stale cache then write the fresh results.
-      _productCache[cacheKey] = response.results;
+      _productCache[cacheKey] = response;
       _evictCache(_productCache);
-      return response.results;
+      return response;
     } catch (e) {
       // Return cached data on error if available, otherwise rethrow.
       final cached = _productCache[cacheKey];
-      if (cached != null && cached.isNotEmpty) {
+      if (cached != null) {
         debugPrint(
             '[ExploreRepository] Network error, returning cached products: $e');
         return cached;
