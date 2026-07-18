@@ -53,18 +53,40 @@ class AppShell extends StatelessWidget {
                         ),
                       ],
                     )
-                  : Column(
+                  : Stack(
                       children: [
-                        Expanded(
+                        Positioned.fill(
                           child: SafeArea(
                             left: false,
                             right: false,
                             top: false,
                             bottom: bottomNavigationBar == null,
-                            child: child,
+                            child: bottomNavigationBar != null
+                                ? MediaQuery(
+                                    data: MediaQuery.of(context).copyWith(
+                                      padding: MediaQuery.of(context).padding
+                                          .copyWith(
+                                            bottom:
+                                                MediaQuery.of(
+                                                  context,
+                                                ).padding.bottom +
+                                                64 +
+                                                design.spacing.md,
+                                          ),
+                                    ),
+                                    child: child,
+                                  )
+                                : child,
                           ),
                         ),
-                        ?bottomNavigationBar,
+                        if (bottomNavigationBar != null)
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: SafeArea(
+                              top: false,
+                              child: bottomNavigationBar,
+                            ),
+                          ),
                       ],
                     ),
             ),
