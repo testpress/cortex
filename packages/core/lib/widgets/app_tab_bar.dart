@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import '../accessibility/app_semantics.dart';
 import '../design/design_provider.dart';
 
 class AppTabItem {
@@ -48,15 +49,15 @@ class AppTabBar extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: design.colors.card,
-        borderRadius: BorderRadius.circular(32),
+        borderRadius: design.radius.pill,
         boxShadow: [
           BoxShadow(
-            color: design.colors.textPrimary.withOpacity(0.15),
+            color: design.colors.textPrimary.withValues(alpha: 0.15),
             blurRadius: 24,
             offset: const Offset(0, 8),
           ),
           BoxShadow(
-            color: design.colors.textPrimary.withOpacity(0.05),
+            color: design.colors.textPrimary.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -73,7 +74,7 @@ class AppTabBar extends StatelessWidget {
               maxWidth: design.layout.tabletBreakpoint,
             ),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding: EdgeInsets.symmetric(horizontal: design.spacing.xs),
               height: 64, // Same as h-16 in React
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -88,37 +89,41 @@ class AppTabBar extends StatelessWidget {
 
                   return SizedBox(
                     width: 72,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
+                    child: AppSemantics.button(
+                      label: item.label,
                       onTap: () => onTabChange(item.id),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          item.iconBuilder != null
-                              ? item.iconBuilder!(
-                                  context,
-                                  isActive,
-                                  fgColor,
-                                  20,
-                                )
-                              : Icon(
-                                  isActive
-                                      ? (item.activeIcon ?? item.icon)
-                                      : item.icon,
-                                  size: 20, // Match w-5 h-5 in React
-                                  color: fgColor,
-                                ),
-                          SizedBox(height: design.spacing.xs),
-                          Text(
-                            item.label,
-                            style: design.typography.caption.copyWith(
-                              color: fgColor,
-                              fontWeight: isActive
-                                  ? FontWeight.w700
-                                  : FontWeight.w700,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => onTabChange(item.id),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            item.iconBuilder != null
+                                ? item.iconBuilder!(
+                                    context,
+                                    isActive,
+                                    fgColor,
+                                    20,
+                                  )
+                                : Icon(
+                                    isActive
+                                        ? (item.activeIcon ?? item.icon)
+                                        : item.icon,
+                                    size: 20, // Match w-5 h-5 in React
+                                    color: fgColor,
+                                  ),
+                            SizedBox(height: design.spacing.xs),
+                            Text(
+                              item.label,
+                              style: design.typography.caption.copyWith(
+                                color: fgColor,
+                                fontWeight: isActive
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   );

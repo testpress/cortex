@@ -66,8 +66,8 @@ class AppShell extends StatelessWidget {
                                     data: MediaQuery.of(context).copyWith(
                                       padding: MediaQuery.of(context).padding
                                           .copyWith(
-                                            bottom: 90,
-                                          ), // ~64px bar + 16px margin
+                                            bottom: 64 + design.spacing.md,
+                                          ),
                                     ),
                                     child: child,
                                   )
