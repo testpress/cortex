@@ -1,6 +1,6 @@
 ## 1. Network Layer & Models
 
-- [x] 1.1 Update `ApiEndpoints` class with `/api/v3/orders/`, `/api/v2.4/orders/{id}/confirm/`, `/api/v2.4/orders/{id}/refresh/`, and `/api/v2.4/payu/dynamic_hash/`
+- [x] 1.1 Update `ApiEndpoints` class with `/api/v3/orders/`, `/api/v2.4/orders/{id}/confirm/`, `/api/v2.5/orders/{id}/refresh/`, and `/api/v2.5/payu/dynamic_hash/`
 - [x] 1.2 Update `OrderDto` model to deserialize `apiKey` and `productInfo`
 - [x] 1.3 Add `currentPaymentApp` field to `InstituteSettings` model
 
