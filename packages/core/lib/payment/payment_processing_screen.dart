@@ -19,8 +19,8 @@ class PaymentProcessingScreen extends StatefulWidget {
     DataSource dataSource,
   ) {
     return Navigator.of(context).push<PaymentResult>(
-      MaterialPageRoute(
-        builder: (_) => PaymentProcessingScreen(
+      AppRoute(
+        page: PaymentProcessingScreen(
           createOrder: createOrder,
           dataSource: dataSource,
         ),
@@ -91,9 +91,9 @@ class _PaymentProcessingScreenState extends State<PaymentProcessingScreen> {
 
     return PopScope(
       canPop: _result != null && _result!.status != PaymentResultStatus.success,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
+      child: Material(
+        color: design.colors.canvas,
+        child: SafeArea(
           child: Center(
             child: Padding(
               padding: EdgeInsets.all(design.spacing.xl),
@@ -112,39 +112,58 @@ class _PaymentProcessingScreenState extends State<PaymentProcessingScreen> {
         children: [
           const AppLoadingIndicator(),
           const SizedBox(height: 24),
-          Text(
+          AppText.body(
             L10n.of(context).paymentProcessing,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: Colors.black54,
-            ),
+            color: design.colors.textSecondary,
           ),
         ],
       );
     }
 
-    final isSuccess = _result!.status == PaymentResultStatus.success;
+    final status = _result!.status;
+    final isSuccess = status == PaymentResultStatus.success;
+    final isPending = status == PaymentResultStatus.pending;
+    final isCancelled = status == PaymentResultStatus.cancelled;
+
+    IconData icon;
+    Color iconColor;
+    String title;
+    String description;
+
+    if (isSuccess) {
+      icon = LucideIcons.checkCircle2;
+      iconColor = design.colors.success;
+      title = L10n.of(context).paymentSuccessful;
+      description = L10n.of(context).paymentSuccessDescription;
+    } else if (isPending) {
+      icon = LucideIcons.clock;
+      iconColor = design.colors.warning;
+      title = L10n.of(context).paymentPending;
+      description =
+          _result!.message ?? L10n.of(context).paymentPendingDescription;
+    } else if (isCancelled) {
+      icon = LucideIcons.minusCircle;
+      iconColor = design.colors.textSecondary;
+      title = L10n.of(context).paymentCancelled;
+      description =
+          _result!.message ?? L10n.of(context).paymentCancelledDescription;
+    } else {
+      icon = LucideIcons.xCircle;
+      iconColor = design.colors.error;
+      title = L10n.of(context).paymentFailed;
+      description =
+          _result!.message ?? L10n.of(context).paymentFailedDescription;
+    }
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(
-          isSuccess ? Icons.check_circle : Icons.cancel,
-          size: 80,
-          color: isSuccess ? design.colors.success : design.colors.error,
-        ),
+        Icon(icon, size: 80, color: iconColor),
         SizedBox(height: design.spacing.xl),
-        AppText.title(
-          isSuccess
-              ? L10n.of(context).paymentSuccessful
-              : L10n.of(context).paymentFailed,
-        ),
+        AppSemantics.header(label: title, child: AppText.title(title)),
         SizedBox(height: design.spacing.sm),
         AppText.body(
-          isSuccess
-              ? 'Your enrollment has been confirmed successfully.'
-              : (_result!.message ?? 'Something went wrong. Please try again.'),
+          description,
           color: design.colors.textSecondary,
           textAlign: TextAlign.center,
         ),

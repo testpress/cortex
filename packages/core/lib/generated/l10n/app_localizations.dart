@@ -4745,11 +4745,47 @@ abstract class AppLocalizations {
   /// **'Payment Successful!'**
   String get paymentSuccessful;
 
+  /// No description provided for @paymentSuccessDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Your enrollment has been confirmed successfully.'**
+  String get paymentSuccessDescription;
+
   /// No description provided for @paymentFailed.
   ///
   /// In en, this message translates to:
   /// **'Payment Failed'**
   String get paymentFailed;
+
+  /// No description provided for @paymentFailedDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get paymentFailedDescription;
+
+  /// No description provided for @paymentPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Pending'**
+  String get paymentPending;
+
+  /// No description provided for @paymentPendingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Your payment is being processed.'**
+  String get paymentPendingDescription;
+
+  /// No description provided for @paymentCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Cancelled'**
+  String get paymentCancelled;
+
+  /// No description provided for @paymentCancelledDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'You cancelled the payment.'**
+  String get paymentCancelledDescription;
 
   /// No description provided for @paymentStartLearning.
   ///

@@ -2640,7 +2640,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get paymentSuccessful => 'اكتمل الدفع بنجاح!';
 
   @override
+  String get paymentSuccessDescription => 'تم تأكيد تسجيلك بنجاح.';
+
+  @override
   String get paymentFailed => 'فشل الدفع';
+
+  @override
+  String get paymentFailedDescription => 'حدث خطأ ما. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get paymentPending => 'الدفع قيد الانتظار';
+
+  @override
+  String get paymentPendingDescription => 'جاري معالجة دفعتك.';
+
+  @override
+  String get paymentCancelled => 'تم إلغاء الدفع';
+
+  @override
+  String get paymentCancelledDescription => 'لقد قمت بإلغاء الدفع.';
 
   @override
   String get paymentStartLearning => 'ابدأ التعلم';

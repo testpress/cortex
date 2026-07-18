@@ -2634,7 +2634,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paymentSuccessful => 'Payment Successful!';
 
   @override
+  String get paymentSuccessDescription =>
+      'Your enrollment has been confirmed successfully.';
+
+  @override
   String get paymentFailed => 'Payment Failed';
+
+  @override
+  String get paymentFailedDescription =>
+      'Something went wrong. Please try again.';
+
+  @override
+  String get paymentPending => 'Payment Pending';
+
+  @override
+  String get paymentPendingDescription => 'Your payment is being processed.';
+
+  @override
+  String get paymentCancelled => 'Payment Cancelled';
+
+  @override
+  String get paymentCancelledDescription => 'You cancelled the payment.';
 
   @override
   String get paymentStartLearning => 'Start Learning';

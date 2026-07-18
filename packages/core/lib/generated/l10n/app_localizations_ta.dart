@@ -2675,7 +2675,28 @@ class AppLocalizationsTa extends AppLocalizations {
   String get paymentSuccessful => 'கட்டணம் வெற்றிகரமாக செலுத்தப்பட்டது!';
 
   @override
+  String get paymentSuccessDescription =>
+      'உங்கள் பதிவு வெற்றிகரமாக உறுதிசெய்யப்பட்டுள்ளது.';
+
+  @override
   String get paymentFailed => 'கட்டணம் தோல்வியடைந்தது';
+
+  @override
+  String get paymentFailedDescription =>
+      'ஏதோ தவறு நடந்துவிட்டது. தயவுசெய்து மீண்டும் முயற்சிக்கவும்.';
+
+  @override
+  String get paymentPending => 'கட்டணம் நிலுவையில் உள்ளது';
+
+  @override
+  String get paymentPendingDescription => 'உங்கள் கட்டணம் செயலாக்கப்படுகிறது.';
+
+  @override
+  String get paymentCancelled => 'கட்டணம் ரத்துசெய்யப்பட்டது';
+
+  @override
+  String get paymentCancelledDescription =>
+      'நீங்கள் கட்டணத்தை ரத்து செய்துவிட்டீர்கள்.';
 
   @override
   String get paymentStartLearning => 'கற்கத் தொடங்கு';

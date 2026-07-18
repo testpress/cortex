@@ -1,0 +1,3 @@
+-dontwarn com.google.android.apps.nbu.paisa.inapp.client.api.**
+-dontwarn com.google.android.gms.auth.api.credentials.**
+-dontwarn com.payu.**

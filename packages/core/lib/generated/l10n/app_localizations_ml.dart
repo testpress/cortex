@@ -2682,7 +2682,28 @@ class AppLocalizationsMl extends AppLocalizations {
   String get paymentSuccessful => 'പേയ്മെൻ്റ് വിജയിച്ചു!';
 
   @override
+  String get paymentSuccessDescription =>
+      'നിങ്ങളുടെ എൻറോൾമെൻ്റ് വിജയകരമായി സ്ഥിരീകരിച്ചു.';
+
+  @override
   String get paymentFailed => 'പേയ്മെൻ്റ് പരാജയപ്പെട്ടു';
+
+  @override
+  String get paymentFailedDescription =>
+      'എന്തോ കുഴപ്പം സംഭവിച്ചു. ദയവായി വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get paymentPending => 'പേയ്മെൻ്റ് പെൻഡിംഗ്';
+
+  @override
+  String get paymentPendingDescription =>
+      'നിങ്ങളുടെ പേയ്മെൻ്റ് പ്രോസസ്സ് ചെയ്യുന്നു.';
+
+  @override
+  String get paymentCancelled => 'പേയ്മെൻ്റ് റദ്ദാക്കി';
+
+  @override
+  String get paymentCancelledDescription => 'നിങ്ങൾ പേയ്മെൻ്റ് റദ്ദാക്കി.';
 
   @override
   String get paymentStartLearning => 'പഠിക്കാൻ തുടങ്ങുക';
