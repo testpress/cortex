@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:payu_checkoutpro_flutter/payu_checkoutpro_flutter.dart';
 import 'package:payu_checkoutpro_flutter/PayUConstantKeys.dart';
 import '../data/models/explore_models.dart';
@@ -51,7 +52,8 @@ class PayUHandler implements PaymentHandler, PayUCheckoutProProtocol {
         payUPaymentParams: payUPaymentParams,
         payUCheckoutProConfig: <String, dynamic>{},
       );
-    } catch (e) {
+    } catch (e, stackTrace) {
+      debugPrint('PayU openCheckoutScreen error: $e\n$stackTrace');
       _onResult?.call('Failed', 'Failed to open PayU');
     }
   }
@@ -66,7 +68,8 @@ class PayUHandler implements PaymentHandler, PayUCheckoutProProtocol {
       _checkoutPro.hashGenerated(
         hash: <String, String>{hashName.toString(): generatedHash},
       );
-    } catch (e) {
+    } catch (e, stackTrace) {
+      debugPrint('PayU generateHash error: $e\n$stackTrace');
       _checkoutPro.hashGenerated(
         hash: <String, String>{hashName.toString(): ''},
       );
@@ -80,6 +83,7 @@ class PayUHandler implements PaymentHandler, PayUCheckoutProProtocol {
 
   @override
   void onPaymentFailure(dynamic response) {
+    debugPrint('PayU onPaymentFailure: $response');
     _onResult?.call('Failed', 'Payment failed');
   }
 
@@ -90,6 +94,7 @@ class PayUHandler implements PaymentHandler, PayUCheckoutProProtocol {
 
   @override
   void onError(Map? errorResponse) {
+    debugPrint('PayU onError: $errorResponse');
     _onResult?.call('Failed', 'Payment error');
   }
 

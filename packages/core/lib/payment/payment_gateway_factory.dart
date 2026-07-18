@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import '../data/config/institute_settings.dart';
 import '../data/models/explore_models.dart';
 import '../data/sources/data_source.dart';
@@ -109,7 +110,8 @@ class PaymentGatewayFactory {
             message: 'Payment is processing: ${refreshedOrder.status}',
           );
         }
-      } catch (e) {
+      } catch (e, stackTrace) {
+        debugPrint('Payment verification error: $e\n$stackTrace');
         return PaymentResult(
           status: PaymentResultStatus.failed,
           message: 'Failed to verify payment with server',

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../core.dart';
 import '../data/data.dart';
@@ -74,6 +74,7 @@ class _PaymentProcessingScreenState extends State<PaymentProcessingScreen> {
         });
       }
     } catch (e) {
+      debugPrint('Payment processing error: $e');
       if (mounted) {
         setState(() {
           _result = PaymentResult(
@@ -91,7 +92,7 @@ class _PaymentProcessingScreenState extends State<PaymentProcessingScreen> {
 
     return PopScope(
       canPop: _result != null && _result!.status != PaymentResultStatus.success,
-      child: Material(
+      child: Container(
         color: design.colors.canvas,
         child: SafeArea(
           child: Center(
