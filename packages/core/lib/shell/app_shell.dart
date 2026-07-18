@@ -66,7 +66,12 @@ class AppShell extends StatelessWidget {
                                     data: MediaQuery.of(context).copyWith(
                                       padding: MediaQuery.of(context).padding
                                           .copyWith(
-                                            bottom: 64 + design.spacing.md,
+                                            bottom:
+                                                MediaQuery.of(
+                                                  context,
+                                                ).padding.bottom +
+                                                64 +
+                                                design.spacing.md,
                                           ),
                                     ),
                                     child: child,
@@ -77,7 +82,10 @@ class AppShell extends StatelessWidget {
                         if (bottomNavigationBar != null)
                           Align(
                             alignment: Alignment.bottomCenter,
-                            child: bottomNavigationBar,
+                            child: SafeArea(
+                              top: false,
+                              child: bottomNavigationBar,
+                            ),
                           ),
                       ],
                     ),
