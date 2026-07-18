@@ -39,14 +39,57 @@ Future<List<ProductCategoryDto>> storeCategories(StoreCategoriesRef ref) {
 }
 
 @riverpod
-Future<List<ProductDto>> storeProducts(StoreProductsRef ref) {
-  final query = ref.watch(exploreSearchQueryProvider);
-  final category = ref.watch(selectedStoreCategoryProvider);
-  final repo = ref.watch(exploreRepositoryProvider);
-  return repo.fetchProducts(
-    search: query.isNotEmpty ? query : null,
-    category: category,
-  );
+class StoreProducts extends _$StoreProducts {
+  @override
+  Future<PaginatedResponseDto<ProductDto>> build() async {
+    final query = ref.watch(exploreSearchQueryProvider);
+    final category = ref.watch(selectedStoreCategoryProvider);
+    final repo = ref.watch(exploreRepositoryProvider);
+
+    return repo.fetchProducts(
+      search: query.isNotEmpty ? query : null,
+      category: category,
+      page: 1,
+    );
+  }
+
+  Future<void> fetchNextPage() async {
+    if (state.isLoading || state.isRefreshing || state.hasError) return;
+
+    final currentResponse = state.value;
+    if (currentResponse == null || currentResponse.next == null) return;
+
+    final query = ref.read(exploreSearchQueryProvider);
+    final category = ref.read(selectedStoreCategoryProvider);
+    final repo = ref.read(exploreRepositoryProvider);
+
+    // Extract page number from the next URL
+    int nextPage = 2;
+    try {
+      final uri = Uri.parse(currentResponse.next!);
+      nextPage = int.tryParse(uri.queryParameters['page'] ?? '') ?? 2;
+    } catch (_) {}
+
+    state = AsyncValue<PaginatedResponseDto<ProductDto>>.loading()
+        .copyWithPrevious(state);
+
+    try {
+      final response = await repo.fetchProducts(
+        search: query.isNotEmpty ? query : null,
+        category: category,
+        page: nextPage,
+      );
+
+      state = AsyncData(PaginatedResponseDto(
+        count: response.count,
+        next: response.next,
+        previous: response.previous,
+        results: [...currentResponse.results, ...response.results],
+      ));
+    } catch (e, st) {
+      state = AsyncError(e, st);
+    }
+  }
 }
 
 @riverpod

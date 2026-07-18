@@ -1317,5 +1317,18 @@
       }
     }
   },
-  "exploreNoContentAvailable": "No content available"
+  "exploreNoContentAvailable": "No content available",
+  "paymentProcessing": "Processing your payment...",
+  "paymentSuccessful": "Payment Successful!",
+  "paymentSuccessDescription": "Your enrollment has been confirmed successfully.",
+  "paymentFailed": "Payment Failed",
+  "paymentFailedDescription": "Something went wrong. Please try again.",
+  "paymentPending": "Payment Pending",
+  "paymentPendingDescription": "Your payment is being processed.",
+  "paymentCancelled": "Payment Cancelled",
+  "paymentCancelledDescription": "You cancelled the payment.",
+  "paymentStartLearning": "Start Learning",
+  "paymentBackToHome": "Back to Home",
+  "paymentTryAgain": "Try Again",
+  "paymentCancel": "Cancel"
 }

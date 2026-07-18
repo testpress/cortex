@@ -996,5 +996,23 @@
       }
     }
   },
-  "exploreNoContentAvailable": "ഉള്ളടക്കം ലഭ്യമല്ല"
+  "exploreNoContentAvailable": "ഉള്ളടക്കം ലഭ്യമല്ല",
+  "paymentProcessing": "നിങ്ങളുടെ പേയ്മെൻ്റ് പ്രോസസ്സ് ചെയ്യുന്നു...",
+  "paymentSuccessful": "പേയ്മെൻ്റ് വിജയിച്ചു!",
+  "paymentSuccessDescription": "നിങ്ങളുടെ എൻറോൾമെൻ്റ് വിജയകരമായി സ്ഥിരീകരിച്ചു.",
+  "paymentFailed": "പേയ്മെൻ്റ് പരാജയപ്പെട്ടു",
+  "paymentFailedDescription": "എന്തോ കുഴപ്പം സംഭവിച്ചു. ദയവായി വീണ്ടും ശ്രമിക്കുക.",
+  "paymentPending": "പേയ്മെൻ്റ് പെൻഡിംഗ്",
+  "paymentPendingDescription": "നിങ്ങളുടെ പേയ്മെൻ്റ് പ്രോസസ്സ് ചെയ്യുന്നു.",
+  "paymentCancelled": "പേയ്മെൻ്റ് റദ്ദാക്കി",
+  "paymentCancelledDescription": "നിങ്ങൾ പേയ്മെൻ്റ് റദ്ദാക്കി.",
+  "paymentStartLearning": "പഠിക്കാൻ തുടങ്ങുക",
+  "paymentBackToHome": "ഹോമിലേക്ക് മടങ്ങുക",
+  "paymentTryAgain": "വീണ്ടും ശ്രമിക്കുക",
+  "paymentCancel": "റദ്ദാക്കുക",
+  "examInstructions": "പരീക്ഷാ നിർദ്ദേശങ്ങൾ",
+  "examsEmptyStateDesc": "നിലവിൽ പരീക്ഷകളൊന്നും ലഭ്യമല്ല.",
+  "nextSection": "അടുത്ത വിഭാഗം",
+  "nextSubject": "അടുത്ത വിഷയം",
+  "startExam": "പരീക്ഷ തുടങ്ങുക"
 }

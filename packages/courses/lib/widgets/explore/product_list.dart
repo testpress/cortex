@@ -35,8 +35,8 @@ class ProductList extends ConsumerWidget {
           onRetry: () => ref.invalidate(storeProductsProvider),
         ),
       ),
-      data: (products) {
-        if (products.isEmpty) {
+      data: (response) {
+        if (response.results.isEmpty) {
           return Center(
             child: Padding(
               padding: EdgeInsets.all(design.spacing.xl),
@@ -44,7 +44,13 @@ class ProductList extends ConsumerWidget {
             ),
           );
         }
-        return _buildGrid(context, products, isLoading: false);
+
+        final displayList = [...response.results];
+        if (productsAsync.isLoading) {
+          displayList.addAll(_skeletonProducts.take(2));
+        }
+
+        return _buildGrid(context, displayList, isLoading: false);
       },
     );
   }
@@ -72,7 +78,10 @@ class ProductList extends ConsumerWidget {
                 children: products
                     .map((p) => SizedBox(
                           width: itemWidth,
-                          child: ProductCard(product: p, isSkeleton: isLoading),
+                          child: ProductCard(
+                            product: p,
+                            isSkeleton: isLoading || p.id == 0,
+                          ),
                         ))
                     .toList(),
               ),

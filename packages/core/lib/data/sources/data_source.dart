@@ -121,6 +121,18 @@ abstract class DataSource {
   /// Create a draft order for a product
   Future<OrderDto> createOrder(String productSlug);
 
+  /// Confirm an order to get payment gateway keys
+  Future<OrderDto> confirmOrder(
+    int orderId,
+    Map<String, dynamic> billingDetails,
+  );
+
+  /// Refresh order status after payment completion
+  Future<OrderDto> refreshOrderStatus(int orderId);
+
+  /// Generate PayU hash from the backend
+  Future<String> generatePayUHash(String hashString);
+
   /// Apply a coupon to an existing order
   Future<OrderDto> applyCoupon(int orderId, String couponCode);
 

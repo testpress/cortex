@@ -1114,6 +1114,41 @@ class MockDataSource implements DataSource {
   }
 
   @override
+  Future<OrderDto> confirmOrder(
+    int orderId,
+    Map<String, dynamic> billingDetails,
+  ) async {
+    return const OrderDto(
+      id: 101,
+      status: 'Confirmed',
+      total: '300.00',
+      subtotal: '300.00',
+      orderId: 'mock_razorpay_order_123',
+      apiKey: 'mock_api_key_123',
+      name: 'John Doe',
+      email: 'john.doe@example.com',
+      phone: '9999999999',
+      productInfo: 'Course Access',
+      pgUrl: 'https://test.payu.in/_payment',
+    );
+  }
+
+  @override
+  Future<OrderDto> refreshOrderStatus(int orderId) async {
+    return const OrderDto(
+      id: 101,
+      status: 'Completed',
+      total: '300.00',
+      subtotal: '300.00',
+    );
+  }
+
+  @override
+  Future<String> generatePayUHash(String hashString) async {
+    return 'mock_generated_hash_string';
+  }
+
+  @override
   Future<OrderDto> applyCoupon(int orderId, String couponCode) async {
     if (couponCode == 'TEST50') {
       return const OrderDto(

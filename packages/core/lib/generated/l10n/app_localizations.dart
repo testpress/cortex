@@ -4732,6 +4732,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No content available'**
   String get exploreNoContentAvailable;
+
+  /// No description provided for @paymentProcessing.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing your payment...'**
+  String get paymentProcessing;
+
+  /// No description provided for @paymentSuccessful.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Successful!'**
+  String get paymentSuccessful;
+
+  /// No description provided for @paymentSuccessDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Your enrollment has been confirmed successfully.'**
+  String get paymentSuccessDescription;
+
+  /// No description provided for @paymentFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Failed'**
+  String get paymentFailed;
+
+  /// No description provided for @paymentFailedDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get paymentFailedDescription;
+
+  /// No description provided for @paymentPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Pending'**
+  String get paymentPending;
+
+  /// No description provided for @paymentPendingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Your payment is being processed.'**
+  String get paymentPendingDescription;
+
+  /// No description provided for @paymentCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Cancelled'**
+  String get paymentCancelled;
+
+  /// No description provided for @paymentCancelledDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'You cancelled the payment.'**
+  String get paymentCancelledDescription;
+
+  /// No description provided for @paymentStartLearning.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Learning'**
+  String get paymentStartLearning;
+
+  /// No description provided for @paymentBackToHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Home'**
+  String get paymentBackToHome;
+
+  /// No description provided for @paymentTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
+  String get paymentTryAgain;
+
+  /// No description provided for @paymentCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get paymentCancel;
 }
 
 class _AppLocalizationsDelegate

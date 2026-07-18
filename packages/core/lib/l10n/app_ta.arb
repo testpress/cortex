@@ -1234,5 +1234,19 @@
       }
     }
   },
-  "exploreNoContentAvailable": "உள்ளடக்கம் எதுவும் இல்லை"
+  "exploreNoContentAvailable": "உள்ளடக்கம் எதுவும் இல்லை",
+  "paymentProcessing": "உங்கள் கட்டணத்தை செயலாக்குகிறது...",
+  "paymentSuccessful": "கட்டணம் வெற்றிகரமாக செலுத்தப்பட்டது!",
+  "paymentSuccessDescription": "உங்கள் பதிவு வெற்றிகரமாக உறுதிசெய்யப்பட்டுள்ளது.",
+  "paymentFailed": "கட்டணம் தோல்வியடைந்தது",
+  "paymentFailedDescription": "ஏதோ தவறு நடந்துவிட்டது. தயவுசெய்து மீண்டும் முயற்சிக்கவும்.",
+  "paymentPending": "கட்டணம் நிலுவையில் உள்ளது",
+  "paymentPendingDescription": "உங்கள் கட்டணம் செயலாக்கப்படுகிறது.",
+  "paymentCancelled": "கட்டணம் ரத்துசெய்யப்பட்டது",
+  "paymentCancelledDescription": "நீங்கள் கட்டணத்தை ரத்து செய்துவிட்டீர்கள்.",
+  "paymentStartLearning": "கற்கத் தொடங்கு",
+  "paymentBackToHome": "முகப்புக்குத் திரும்பு",
+  "paymentTryAgain": "மீண்டும் முயற்சி செய்",
+  "paymentCancel": "ரத்துசெய்",
+  "examsEmptyStateDesc": "தற்போது எந்த தேர்வுகளும் இல்லை."
 }

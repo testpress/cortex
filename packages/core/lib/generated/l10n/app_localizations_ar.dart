@@ -1262,8 +1262,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get examsEmptyStateDesc =>
-      'No exams available right now. Please check back later.';
+  String get examsEmptyStateDesc => 'لا توجد امتحانات متاحة حاليا.';
 
   @override
   String get customExamTitle => 'امتحان مخصص';
@@ -1758,10 +1757,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get doubtsFormFailedToLoadTopics => 'فشل تحميل المواضيع';
 
   @override
-  String get examInstructions => 'Exam Instructions';
+  String get examInstructions => 'تعليمات الامتحان';
 
   @override
-  String get startExam => 'Start Exam';
+  String get startExam => 'ابدأ الامتحان';
 
   @override
   String get examTotalQuestions => 'مجموع الأسئلة';
@@ -1800,13 +1799,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get actionGoBack => 'العودة';
 
   @override
-  String get nextSubject => 'Next Subject';
+  String get nextSubject => 'الموضوع التالي';
 
   @override
-  String get nextSection => 'Next Section';
+  String get nextSection => 'القسم التالي';
 
   @override
-  String get doubtDetailTitle => 'Doubt';
+  String get doubtDetailTitle => 'تفاصيل السؤال';
 
   @override
   String get errorFailedToLoadReplies => 'فشل تحميل الردود';
@@ -2632,4 +2631,43 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get exploreNoContentAvailable => 'لا يوجد محتوى متاح';
+
+  @override
+  String get paymentProcessing => 'جاري معالجة الدفع...';
+
+  @override
+  String get paymentSuccessful => 'اكتمل الدفع بنجاح!';
+
+  @override
+  String get paymentSuccessDescription => 'تم تأكيد تسجيلك بنجاح.';
+
+  @override
+  String get paymentFailed => 'فشل الدفع';
+
+  @override
+  String get paymentFailedDescription => 'حدث خطأ ما. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get paymentPending => 'الدفع قيد الانتظار';
+
+  @override
+  String get paymentPendingDescription => 'جاري معالجة دفعتك.';
+
+  @override
+  String get paymentCancelled => 'تم إلغاء الدفع';
+
+  @override
+  String get paymentCancelledDescription => 'لقد قمت بإلغاء الدفع.';
+
+  @override
+  String get paymentStartLearning => 'ابدأ التعلم';
+
+  @override
+  String get paymentBackToHome => 'العودة للرئيسية';
+
+  @override
+  String get paymentTryAgain => 'حاول مرة أخرى';
+
+  @override
+  String get paymentCancel => 'إلغاء';
 }

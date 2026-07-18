@@ -14,7 +14,12 @@ class ApiEndpoints {
   static const String productCategories = '/api/v2.5/products/categories/';
   static const String products = '/api/v2.4/products/';
   static String product(String slug) => '/api/v2.4/products/$slug/';
-  static const String createOrder = '/api/v2.4/orders/';
+  static const String createOrder = '/api/v3/orders/';
+  static String confirmOrder(int orderId) =>
+      '/api/v2.4/orders/$orderId/confirm/';
+  static String refreshOrder(int orderId) =>
+      '/api/v2.5/orders/$orderId/refresh/';
+  static const String payuDynamicHash = '/api/v2.5/payu/dynamic_hash/';
   static String applyCoupon(int orderId) =>
       '/api/v2.4/orders/$orderId/apply-coupon/';
   static String installmentPlans(String slug) =>

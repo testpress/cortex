@@ -1273,8 +1273,7 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
-  String get examsEmptyStateDesc =>
-      'No exams available right now. Please check back later.';
+  String get examsEmptyStateDesc => 'നിലവിൽ പരീക്ഷകളൊന്നും ലഭ്യമല്ല.';
 
   @override
   String get customExamTitle => 'കസ്റ്റം പരീക്ഷ';
@@ -1778,10 +1777,10 @@ class AppLocalizationsMl extends AppLocalizations {
       'വിഷയങ്ങൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു';
 
   @override
-  String get examInstructions => 'Exam Instructions';
+  String get examInstructions => 'പരീക്ഷാ നിർദ്ദേശങ്ങൾ';
 
   @override
-  String get startExam => 'Start Exam';
+  String get startExam => 'പരീക്ഷ തുടങ്ങുക';
 
   @override
   String get examTotalQuestions => 'മൊത്തം ചോദ്യങ്ങൾ';
@@ -1820,10 +1819,10 @@ class AppLocalizationsMl extends AppLocalizations {
   String get actionGoBack => 'തിരികെ പോകുക';
 
   @override
-  String get nextSubject => 'Next Subject';
+  String get nextSubject => 'അടുത്ത വിഷയം';
 
   @override
-  String get nextSection => 'Next Section';
+  String get nextSection => 'അടുത്ത വിഭാഗം';
 
   @override
   String get doubtDetailTitle => 'സംശയം';
@@ -2673,4 +2672,47 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get exploreNoContentAvailable => 'ഉള്ളടക്കം ലഭ്യമല്ല';
+
+  @override
+  String get paymentProcessing =>
+      'നിങ്ങളുടെ പേയ്മെൻ്റ് പ്രോസസ്സ് ചെയ്യുന്നു...';
+
+  @override
+  String get paymentSuccessful => 'പേയ്മെൻ്റ് വിജയിച്ചു!';
+
+  @override
+  String get paymentSuccessDescription =>
+      'നിങ്ങളുടെ എൻറോൾമെൻ്റ് വിജയകരമായി സ്ഥിരീകരിച്ചു.';
+
+  @override
+  String get paymentFailed => 'പേയ്മെൻ്റ് പരാജയപ്പെട്ടു';
+
+  @override
+  String get paymentFailedDescription =>
+      'എന്തോ കുഴപ്പം സംഭവിച്ചു. ദയവായി വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get paymentPending => 'പേയ്മെൻ്റ് പെൻഡിംഗ്';
+
+  @override
+  String get paymentPendingDescription =>
+      'നിങ്ങളുടെ പേയ്മെൻ്റ് പ്രോസസ്സ് ചെയ്യുന്നു.';
+
+  @override
+  String get paymentCancelled => 'പേയ്മെൻ്റ് റദ്ദാക്കി';
+
+  @override
+  String get paymentCancelledDescription => 'നിങ്ങൾ പേയ്മെൻ്റ് റദ്ദാക്കി.';
+
+  @override
+  String get paymentStartLearning => 'പഠിക്കാൻ തുടങ്ങുക';
+
+  @override
+  String get paymentBackToHome => 'ഹോമിലേക്ക് മടങ്ങുക';
+
+  @override
+  String get paymentTryAgain => 'വീണ്ടും ശ്രമിക്കുക';
+
+  @override
+  String get paymentCancel => 'റദ്ദാക്കുക';
 }

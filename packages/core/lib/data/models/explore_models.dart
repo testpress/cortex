@@ -179,7 +179,9 @@ class ProductDto {
         if (json['image'] is String) return json['image'] as String?;
         final images = json['images'] as List<dynamic>?;
         if (images != null && images.isNotEmpty) {
-          final firstImg = images.first as Map<String, dynamic>?;
+          final firstImg = (images.first is Map)
+              ? Map<String, dynamic>.from(images.first as Map)
+              : null;
           return firstImg?['medium'] as String? ??
               firstImg?['original'] as String?;
         }
@@ -245,29 +247,59 @@ class OrderDto {
   final String status;
   final String total;
   final String subtotal;
+  final String? orderId;
+  final String? apiKey;
+  final String? productInfo;
+  final String? name;
+  final String? email;
+  final String? phone;
+  final String? pgUrl;
 
   const OrderDto({
     required this.id,
     required this.status,
     required this.total,
     required this.subtotal,
+    this.orderId,
+    this.apiKey,
+    this.productInfo,
+    this.name,
+    this.email,
+    this.phone,
+    this.pgUrl,
   });
 
   factory OrderDto.fromJson(Map<String, dynamic> json) {
     return OrderDto(
       id: json['id'] as int,
       status: json['status'] as String? ?? '',
-      total: json['total'] as String? ?? '0.00',
+      total: (json['amount'] ?? json['total'])?.toString() ?? '0.00',
       subtotal: json['subtotal'] as String? ?? '0.00',
+      orderId: json['order_id'] as String?,
+      apiKey: json['apikey'] as String?,
+      productInfo: json['product_info'] as String?,
+      name: json['name'] as String?,
+      email: json['email'] as String?,
+      phone: json['phone'] as String?,
+      pgUrl: json['pg_url'] as String?,
     );
   }
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'status': status,
-    'total': total,
-    'subtotal': subtotal,
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'status': status,
+      'total': total,
+      'subtotal': subtotal,
+      'order_id': orderId,
+      'apikey': apiKey,
+      'product_info': productInfo,
+      'name': name,
+      'email': email,
+      'phone': phone,
+      'pg_url': pgUrl,
+    };
+  }
 }
 
 /// Parses the sideloaded envelope from /api/v2.4/products/.
@@ -285,12 +317,14 @@ class StoreProductsResponseDto {
   });
 
   factory StoreProductsResponseDto.fromJson(Map<String, dynamic> json) {
-    final results = json['results'] as Map<String, dynamic>? ?? {};
+    final results = (json['results'] is Map)
+        ? Map<String, dynamic>.from(json['results'] as Map)
+        : <String, dynamic>{};
 
     // Parse sideloaded prices
     final pricesRaw = results['prices'] as List<dynamic>? ?? [];
     final allPrices = pricesRaw
-        .map((e) => PriceDto.fromJson(e as Map<String, dynamic>))
+        .map((e) => PriceDto.fromJson(Map<String, dynamic>.from(e as Map)))
         .toList();
 
     // Parse sideloaded courses
@@ -304,7 +338,7 @@ class StoreProductsResponseDto {
     // Parse products and attach prices & courses
     final productsRaw = results['products'] as List<dynamic>? ?? [];
     final parsedProducts = productsRaw.map((e) {
-      final productMap = e as Map<String, dynamic>;
+      final productMap = Map<String, dynamic>.from(e as Map);
 
       final productPriceIds =
           (productMap['prices'] as List<dynamic>?)

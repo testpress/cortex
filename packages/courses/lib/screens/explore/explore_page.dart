@@ -77,12 +77,20 @@ class _ExplorePageState extends ConsumerState<ExplorePage> {
           ),
         ),
 
-        // Product List Section
         Expanded(
           child: Container(
             color: design.colors.canvas,
-            child: const SingleChildScrollView(
-              child: ProductList(),
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (ScrollNotification scrollInfo) {
+                if (scrollInfo.metrics.pixels >=
+                    scrollInfo.metrics.maxScrollExtent - 200) {
+                  ref.read(storeProductsProvider.notifier).fetchNextPage();
+                }
+                return false;
+              },
+              child: const SingleChildScrollView(
+                child: ProductList(),
+              ),
             ),
           ),
         ),
