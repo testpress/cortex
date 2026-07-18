@@ -1009,5 +1009,10 @@
   "paymentStartLearning": "പഠിക്കാൻ തുടങ്ങുക",
   "paymentBackToHome": "ഹോമിലേക്ക് മടങ്ങുക",
   "paymentTryAgain": "വീണ്ടും ശ്രമിക്കുക",
-  "paymentCancel": "റദ്ദാക്കുക"
+  "paymentCancel": "റദ്ദാക്കുക",
+  "examInstructions": "പരീക്ഷാ നിർദ്ദേശങ്ങൾ",
+  "examsEmptyStateDesc": "നിലവിൽ പരീക്ഷകളൊന്നും ലഭ്യമല്ല.",
+  "nextSection": "അടുത്ത വിഭാഗം",
+  "nextSubject": "അടുത്ത വിഷയം",
+  "startExam": "പരീക്ഷ തുടങ്ങുക"
 }

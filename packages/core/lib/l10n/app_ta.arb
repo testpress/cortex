@@ -1247,5 +1247,6 @@
   "paymentStartLearning": "கற்கத் தொடங்கு",
   "paymentBackToHome": "முகப்புக்குத் திரும்பு",
   "paymentTryAgain": "மீண்டும் முயற்சி செய்",
-  "paymentCancel": "ரத்துசெய்"
+  "paymentCancel": "ரத்துசெய்",
+  "examsEmptyStateDesc": "தற்போது எந்த தேர்வுகளும் இல்லை."
 }

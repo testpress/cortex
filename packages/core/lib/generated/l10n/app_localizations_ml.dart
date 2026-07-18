@@ -1273,8 +1273,7 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
-  String get examsEmptyStateDesc =>
-      'No exams available right now. Please check back later.';
+  String get examsEmptyStateDesc => 'നിലവിൽ പരീക്ഷകളൊന്നും ലഭ്യമല്ല.';
 
   @override
   String get customExamTitle => 'കസ്റ്റം പരീക്ഷ';
@@ -1778,10 +1777,10 @@ class AppLocalizationsMl extends AppLocalizations {
       'വിഷയങ്ങൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു';
 
   @override
-  String get examInstructions => 'Exam Instructions';
+  String get examInstructions => 'പരീക്ഷാ നിർദ്ദേശങ്ങൾ';
 
   @override
-  String get startExam => 'Start Exam';
+  String get startExam => 'പരീക്ഷ തുടങ്ങുക';
 
   @override
   String get examTotalQuestions => 'മൊത്തം ചോദ്യങ്ങൾ';
@@ -1820,10 +1819,10 @@ class AppLocalizationsMl extends AppLocalizations {
   String get actionGoBack => 'തിരികെ പോകുക';
 
   @override
-  String get nextSubject => 'Next Subject';
+  String get nextSubject => 'അടുത്ത വിഷയം';
 
   @override
-  String get nextSection => 'Next Section';
+  String get nextSection => 'അടുത്ത വിഭാഗം';
 
   @override
   String get doubtDetailTitle => 'സംശയം';

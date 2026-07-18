@@ -1279,8 +1279,7 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
-  String get examsEmptyStateDesc =>
-      'No exams available right now. Please check back later.';
+  String get examsEmptyStateDesc => 'தற்போது எந்த தேர்வுகளும் இல்லை.';
 
   @override
   String get customExamTitle => 'தனிப்பயன் தேர்வு';

@@ -1008,5 +1008,11 @@
   "paymentStartLearning": "ابدأ التعلم",
   "paymentBackToHome": "العودة للرئيسية",
   "paymentTryAgain": "حاول مرة أخرى",
-  "paymentCancel": "إلغاء"
+  "paymentCancel": "إلغاء",
+  "doubtDetailTitle": "تفاصيل السؤال",
+  "examInstructions": "تعليمات الامتحان",
+  "examsEmptyStateDesc": "لا توجد امتحانات متاحة حاليا.",
+  "nextSection": "القسم التالي",
+  "nextSubject": "الموضوع التالي",
+  "startExam": "ابدأ الامتحان"
 }
