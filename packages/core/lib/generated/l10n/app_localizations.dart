@@ -4355,12 +4355,6 @@ abstract class AppLocalizations {
   /// **'Analyze your performance across different subjects'**
   String get reviewSubjectPerformanceTileDesc;
 
-  /// No description provided for @reviewStoreDetailsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Store More Details'**
-  String get reviewStoreDetailsTitle;
-
   /// No description provided for @reviewExamReviewTitle.
   ///
   /// In en, this message translates to:
@@ -4810,6 +4804,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel'**
   String get paymentCancel;
+
+  /// No description provided for @reviewExploreDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore More Details'**
+  String get reviewExploreDetailsTitle;
 }
 
 class _AppLocalizationsDelegate

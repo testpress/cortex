@@ -1435,7 +1435,7 @@ class AppLocalizationsMl extends AppLocalizations {
   String get editProfileBack => 'പിന്നിലേക്ക്';
 
   @override
-  String get storeTabTitle => 'എക്സ്പ്ലോർ';
+  String get storeTabTitle => 'സ്റ്റോർ';
 
   @override
   String get storeSearchHint => 'കോഴ്സുകൾ, പാഠങ്ങൾ മുതൽ തിരയുക...';
@@ -2415,9 +2415,6 @@ class AppLocalizationsMl extends AppLocalizations {
       'വ്യത്യസ്ത വിഷയങ്ങളിലെ നിങ്ങളുടെ പ്രകടനം വിശകലനം ചെയ്യുക';
 
   @override
-  String get reviewStoreDetailsTitle => 'കൂടുതൽ വിവരങ്ങൾ പര്യവേക്ഷണം ചെയ്യുക';
-
-  @override
   String get reviewExamReviewTitle => 'പരീക്ഷ അവലോകനം';
 
   @override
@@ -2715,4 +2712,7 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get paymentCancel => 'റദ്ദാക്കുക';
+
+  @override
+  String get reviewExploreDetailsTitle => 'കൂടുതൽ വിവരങ്ങൾ പര്യവേക്ഷണം ചെയ്യുക';
 }

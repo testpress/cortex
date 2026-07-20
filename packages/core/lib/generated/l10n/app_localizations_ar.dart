@@ -1420,7 +1420,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get editProfileBack => 'عودة';
 
   @override
-  String get storeTabTitle => 'استكشاف';
+  String get storeTabTitle => 'المتجر';
 
   @override
   String get storeSearchHint => 'ابحث عن الدورات، الدروس، المواضيع...';
@@ -2376,9 +2376,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reviewSubjectPerformanceTileDesc => 'حلل أدائك في المواد المختلفة';
 
   @override
-  String get reviewStoreDetailsTitle => 'استكشف المزيد من التفاصيل';
-
-  @override
   String get reviewExamReviewTitle => 'مراجعة الامتحان';
 
   @override
@@ -2669,4 +2666,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get paymentCancel => 'إلغاء';
+
+  @override
+  String get reviewExploreDetailsTitle => 'استكشف المزيد من التفاصيل';
 }

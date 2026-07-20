@@ -1131,7 +1131,6 @@
   },
   "reviewPerformanceOverviewTitle": "Performance Overview",
   "reviewSubjectPerformanceTileDesc": "Analyze your performance across different subjects",
-  "reviewStoreDetailsTitle": "Store More Details",
   "reviewExamReviewTitle": "Exam Review",
   "reviewExamReviewDesc": "Review each question with answers and explanations",
   "reviewAnalyticsForTitle": "Review Analytics for {title}",
@@ -1330,5 +1329,6 @@
   "paymentStartLearning": "Start Learning",
   "paymentBackToHome": "Back to Home",
   "paymentTryAgain": "Try Again",
-  "paymentCancel": "Cancel"
+  "paymentCancel": "Cancel",
+  "reviewExploreDetailsTitle": "Explore More Details"
 }

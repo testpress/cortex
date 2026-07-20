@@ -494,7 +494,7 @@
   "editProfilePhotoLabel": "صورة الملف الشخصي",
   "editProfileChangePhoto": "تغيير الصورة",
   "editProfileBack": "عودة",
-  "storeTabTitle": "استكشاف",
+  "storeTabTitle": "المتجر",
   "storeSearchHint": "ابحث عن الدورات، الدروس، المواضيع...",
   "storeSearchResultsTitle": "نتائج البحث",
   "storeTrendingTitle": "الرائج الآن",
@@ -815,7 +815,6 @@
   },
   "reviewPerformanceOverviewTitle": "نظرة عامة على الأداء",
   "reviewSubjectPerformanceTileDesc": "حلل أدائك في المواد المختلفة",
-  "reviewStoreDetailsTitle": "استكشف المزيد من التفاصيل",
   "reviewExamReviewTitle": "مراجعة الامتحان",
   "reviewExamReviewDesc": "راجع كل سؤال مع الإجابات والشروحات",
   "defaultStudentName": "طالب",
@@ -1014,5 +1013,6 @@
   "examsEmptyStateDesc": "لا توجد امتحانات متاحة حاليا.",
   "nextSection": "القسم التالي",
   "nextSubject": "الموضوع التالي",
-  "startExam": "ابدأ الامتحان"
+  "startExam": "ابدأ الامتحان",
+  "reviewExploreDetailsTitle": "استكشف المزيد من التفاصيل"
 }

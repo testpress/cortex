@@ -347,7 +347,7 @@ class _ContextualHeroCardState extends State<ContextualHeroCard>
       HeroActionType.takeTest => 'Start Test',
       HeroActionType.prepareTest => 'Prepare for Test',
       HeroActionType.continueStudy => 'Continue Learning',
-      HeroActionType.storeCourses => 'Store Courses',
+      HeroActionType.storeCourses => 'View Courses',
       HeroActionType.startTrial => 'Start Free Trial',
       HeroActionType.upgradePrompt => 'Upgrade Now',
     };

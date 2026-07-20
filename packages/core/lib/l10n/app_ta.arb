@@ -665,7 +665,7 @@
   "editProfilePhotoLabel": "சுயவிவரப் புகைப்படம்",
   "editProfileChangePhoto": "புகைப்படத்தை மாற்று",
   "editProfileBack": "பின்செல்",
-  "storeTabTitle": "ஆராயுங்கள்",
+  "storeTabTitle": "ஸ்டோர்",
   "storeSearchHint": "பாடங்கள், தலைப்புகளைத் தேடுங்கள்...",
   "storeSearchResultsTitle": "தேடல் முடிவுகள்",
   "storeTrendingTitle": "தற்போது பிரபலமாக இருப்பவை",
@@ -1054,7 +1054,6 @@
   },
   "reviewPerformanceOverviewTitle": "செயல்திறன் கண்ணோட்டம்",
   "reviewSubjectPerformanceTileDesc": "வெவ்வேறு பாடங்களில் உங்கள் செயல்திறனை பகுப்பாய்வு செய்யுங்கள்",
-  "reviewStoreDetailsTitle": "கூடுதல் விவரங்களை ஆராயுங்கள்",
   "reviewExamReviewTitle": "தேர்வு மதிப்பாய்வு",
   "reviewExamReviewDesc": "பதில்கள் மற்றும் விளக்கங்களுடன் ஒவ்வொரு கேள்வியையும் மதிப்பாய்வு செய்யவும்",
   "defaultStudentName": "மாணவர்",
@@ -1248,5 +1247,6 @@
   "paymentBackToHome": "முகப்புக்குத் திரும்பு",
   "paymentTryAgain": "மீண்டும் முயற்சி செய்",
   "paymentCancel": "ரத்துசெய்",
-  "examsEmptyStateDesc": "தற்போது எந்த தேர்வுகளும் இல்லை."
+  "examsEmptyStateDesc": "தற்போது எந்த தேர்வுகளும் இல்லை.",
+  "reviewExploreDetailsTitle": "கூடுதல் விவரங்களை ஆராயுங்கள்"
 }

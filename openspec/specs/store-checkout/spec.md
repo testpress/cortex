@@ -1,7 +1,7 @@
-# explore-checkout Specification
+# store-checkout Specification
 
 ## Purpose
-TBD - created by archiving change explore-product-features. Update Purpose after archive.
+TBD - created by archiving change store-product-features. Update Purpose after archive.
 ## Requirements
 ### Requirement: Apply Coupon to Draft Order
 The system SHALL allow users to apply a coupon code to a product by creating a draft order and verifying the coupon.

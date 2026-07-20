@@ -1444,7 +1444,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get editProfileBack => 'பின்செல்';
 
   @override
-  String get storeTabTitle => 'ஆராயுங்கள்';
+  String get storeTabTitle => 'ஸ்டோர்';
 
   @override
   String get storeSearchHint => 'பாடங்கள், தலைப்புகளைத் தேடுங்கள்...';
@@ -2410,9 +2410,6 @@ class AppLocalizationsTa extends AppLocalizations {
       'வெவ்வேறு பாடங்களில் உங்கள் செயல்திறனை பகுப்பாய்வு செய்யுங்கள்';
 
   @override
-  String get reviewStoreDetailsTitle => 'கூடுதல் விவரங்களை ஆராயுங்கள்';
-
-  @override
   String get reviewExamReviewTitle => 'தேர்வு மதிப்பாய்வு';
 
   @override
@@ -2708,4 +2705,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get paymentCancel => 'ரத்துசெய்';
+
+  @override
+  String get reviewExploreDetailsTitle => 'கூடுதல் விவரங்களை ஆராயுங்கள்';
 }

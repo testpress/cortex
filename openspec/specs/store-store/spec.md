@@ -1,7 +1,7 @@
-# explore-store Specification
+# store-store Specification
 
 ## Purpose
-TBD - created by archiving change explore-product-features. Update Purpose after archive.
+TBD - created by archiving change store-product-features. Update Purpose after archive.
 ## Requirements
 ### Requirement: Product Detail Presentation
 The system SHALL display product details including tabs for curriculum and action buttons for checkout.

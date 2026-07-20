@@ -63,8 +63,8 @@ enum NavTab {
   AppTabItem toTabItem([InstituteSettings? settings]) {
     String currentLabel = label;
     if (this == NavTab.store &&
-        settings?.storeLabel != null &&
-        settings!.storeLabel.isNotEmpty) {
+        settings != null &&
+        settings.storeLabel.isNotEmpty) {
       currentLabel = settings.storeLabel;
     }
     return AppTabItem(id: id, label: currentLabel, icon: icon);

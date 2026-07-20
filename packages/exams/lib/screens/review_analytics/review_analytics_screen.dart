@@ -6,7 +6,7 @@ import 'package:core/data/data.dart';
 import '../../models/review_route_payload.dart';
 import 'review_analytics_controller.dart';
 import 'widgets/analytics_header.dart';
-import 'widgets/store_details_card.dart';
+import 'widgets/explore_details_card.dart';
 import 'widgets/metrics_grid.dart';
 
 class ReviewAnalyticsScreen extends ConsumerWidget {
@@ -82,14 +82,14 @@ class ReviewAnalyticsScreen extends ConsumerWidget {
                 MetricsGrid(overview: overview),
                 SizedBox(height: design.spacing.xl),
                 AppSemantics.header(
-                  label: l10n.reviewStoreDetailsTitle,
+                  label: l10n.reviewExploreDetailsTitle,
                   child: AppText.title(
-                    l10n.reviewStoreDetailsTitle,
+                    l10n.reviewExploreDetailsTitle,
                     style: const TextStyle(fontWeight: FontWeight.w700),
                   ),
                 ),
                 SizedBox(height: design.spacing.md),
-                StoreActionTile(
+                ExploreActionTile(
                   iconData: LucideIcons.layoutGrid,
                   title: l10n.reviewSubjectPerformanceTitle,
                   description: l10n.reviewSubjectPerformanceTileDesc,
@@ -108,7 +108,7 @@ class ReviewAnalyticsScreen extends ConsumerWidget {
                   },
                 ),
                 SizedBox(height: design.spacing.sm),
-                StoreActionTile(
+                ExploreActionTile(
                   iconData: LucideIcons.fileText,
                   title: l10n.reviewExamReviewTitle,
                   description: l10n.reviewExamReviewDesc,

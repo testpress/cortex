@@ -494,7 +494,7 @@
   "editProfilePhotoLabel": "പ്രൊഫൈൽ ഫോട്ടോ",
   "editProfileChangePhoto": "ഫോട്ടോ മാറ്റുക",
   "editProfileBack": "പിന്നിലേക്ക്",
-  "storeTabTitle": "എക്സ്പ്ലോർ",
+  "storeTabTitle": "സ്റ്റോർ",
   "storeSearchHint": "കോഴ്സുകൾ, പാഠങ്ങൾ മുതൽ തിരയുക...",
   "storeSearchResultsTitle": "തിരയൽ ഫലങ്ങൾ",
   "storeTrendingTitle": "ഇപ്പോൾ ട്രെൻഡിംഗിലുള്ളവ",
@@ -816,7 +816,6 @@
   },
   "reviewPerformanceOverviewTitle": "പ്രകടന അവലോകനം",
   "reviewSubjectPerformanceTileDesc": "വ്യത്യസ്ത വിഷയങ്ങളിലെ നിങ്ങളുടെ പ്രകടനം വിശകലനം ചെയ്യുക",
-  "reviewStoreDetailsTitle": "കൂടുതൽ വിവരങ്ങൾ പര്യവേക്ഷണം ചെയ്യുക",
   "reviewExamReviewTitle": "പരീക്ഷ അവലോകനം",
   "reviewExamReviewDesc": "ഉത്തരങ്ങളും വിശദീകരണങ്ങളും സഹിതം ഓരോ ചോദ്യവും അവലോകനം ചെയ്യുക",
   "defaultStudentName": "വിദ്യാർത്ഥി",
@@ -1014,5 +1013,6 @@
   "examsEmptyStateDesc": "നിലവിൽ പരീക്ഷകളൊന്നും ലഭ്യമല്ല.",
   "nextSection": "അടുത്ത വിഭാഗം",
   "nextSubject": "അടുത്ത വിഷയം",
-  "startExam": "പരീക്ഷ തുടങ്ങുക"
+  "startExam": "പരീക്ഷ തുടങ്ങുക",
+  "reviewExploreDetailsTitle": "കൂടുതൽ വിവരങ്ങൾ പര്യവേക്ഷണം ചെയ്യുക"
 }

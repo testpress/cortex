@@ -1,7 +1,7 @@
-# explore-curriculum Specification
+# store-curriculum Specification
 
 ## Purpose
-TBD - created by archiving change explore-product-features. Update Purpose after archive.
+TBD - created by archiving change store-product-features. Update Purpose after archive.
 ## Requirements
 ### Requirement: View Curriculum
 The system SHALL display the curriculum structure for a given product.

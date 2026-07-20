@@ -2370,9 +2370,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Analyze your performance across different subjects';
 
   @override
-  String get reviewStoreDetailsTitle => 'Store More Details';
-
-  @override
   String get reviewExamReviewTitle => 'Exam Review';
 
   @override
@@ -2667,4 +2664,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get paymentCancel => 'Cancel';
+
+  @override
+  String get reviewExploreDetailsTitle => 'Explore More Details';
 }
