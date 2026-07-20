@@ -1,6 +1,6 @@
-/// Common UI constants for the Explore package.
-class ExploreConstants {
-  ExploreConstants._();
+/// Common UI constants for the Store package.
+class StoreConstants {
+  StoreConstants._();
 
   /// Standard width for horizontal scrolling cards.
   static const double cardWidth = 240.0;

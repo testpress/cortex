@@ -1444,43 +1444,43 @@ class AppLocalizationsTa extends AppLocalizations {
   String get editProfileBack => 'பின்செல்';
 
   @override
-  String get exploreTabTitle => 'ஆராயுங்கள்';
+  String get storeTabTitle => 'ஸ்டோர்';
 
   @override
-  String get exploreSearchHint => 'பாடங்கள், தலைப்புகளைத் தேடுங்கள்...';
+  String get storeSearchHint => 'பாடங்கள், தலைப்புகளைத் தேடுங்கள்...';
 
   @override
-  String get exploreSearchResultsTitle => 'தேடல் முடிவுகள்';
+  String get storeSearchResultsTitle => 'தேடல் முடிவுகள்';
 
   @override
-  String get exploreTrendingTitle => 'தற்போது பிரபலமாக இருப்பவை';
+  String get storeTrendingTitle => 'தற்போது பிரபலமாக இருப்பவை';
 
   @override
-  String get exploreRecommendedTitle => 'உங்களுக்காக பரிந்துரைக்கப்படுகிறது';
+  String get storeRecommendedTitle => 'உங்களுக்காக பரிந்துரைக்கப்படுகிறது';
 
   @override
-  String get exploreShortLessonsTitle => 'அதிகம் பார்க்கப்பட்ட வீடியோக்கள்';
+  String get storeShortLessonsTitle => 'அதிகம் பார்க்கப்பட்ட வீடியோக்கள்';
 
   @override
-  String get explorePopularTestsTitle => 'பிரபலமான தேர்வுகள்';
+  String get storePopularTestsTitle => 'பிரபலமான தேர்வுகள்';
 
   @override
-  String get exploreStudyTipsTitle => 'கற்றல் குறிப்புகள் & புதுப்பிப்புகள்';
+  String get storeStudyTipsTitle => 'கற்றல் குறிப்புகள் & புதுப்பிப்புகள்';
 
   @override
-  String get exploreFilterTrending => 'பிரபலமானவை';
+  String get storeFilterTrending => 'பிரபலமானவை';
 
   @override
-  String get exploreFilterRecommended => 'பரிந்துரைக்கப்பட்டவை';
+  String get storeFilterRecommended => 'பரிந்துரைக்கப்பட்டவை';
 
   @override
-  String get exploreFilterShortLessons => 'குறுகிய பாடங்கள்';
+  String get storeFilterShortLessons => 'குறுகிய பாடங்கள்';
 
   @override
-  String get exploreFilterPopular => 'பிரபலமானவை';
+  String get storeFilterPopular => 'பிரபலமானவை';
 
   @override
-  String get exploreFilterStudyTips => 'கற்றல் குறிப்புகள்';
+  String get storeFilterStudyTips => 'கற்றல் குறிப்புகள்';
 
   @override
   String get editProfileFirstNameLabel => 'முதல் பெயர்';
@@ -2410,9 +2410,6 @@ class AppLocalizationsTa extends AppLocalizations {
       'வெவ்வேறு பாடங்களில் உங்கள் செயல்திறனை பகுப்பாய்வு செய்யுங்கள்';
 
   @override
-  String get reviewExploreDetailsTitle => 'கூடுதல் விவரங்களை ஆராயுங்கள்';
-
-  @override
   String get reviewExamReviewTitle => 'தேர்வு மதிப்பாய்வு';
 
   @override
@@ -2510,76 +2507,76 @@ class AppLocalizationsTa extends AppLocalizations {
       'தயவுசெய்து கடினத்தன்மை நிலையைத் தேர்ந்தெடுக்கவும்';
 
   @override
-  String get exploreProductBack => 'பின்செல்க';
+  String get storeProductBack => 'பின்செல்க';
 
   @override
-  String get exploreSelectPlan => 'திட்டத்தை தேர்ந்தெடுக்கவும்';
+  String get storeSelectPlan => 'திட்டத்தை தேர்ந்தெடுக்கவும்';
 
   @override
-  String get exploreBuyNow => 'இப்போது வாங்குங்கள்';
+  String get storeBuyNow => 'இப்போது வாங்குங்கள்';
 
   @override
-  String get exploreCheckoutComingSoon => 'செக்அவுட் செயல்முறை விரைவில் வரும்';
+  String get storeCheckoutComingSoon => 'செக்அவுட் செயல்முறை விரைவில் வரும்';
 
   @override
-  String exploreValidityDays(String days) {
+  String storeValidityDays(String days) {
     return 'செல்லுபடியாகும் காலம்: $days நாட்கள்';
   }
 
   @override
-  String exploreFromTo(String start, String end) {
+  String storeFromTo(String start, String end) {
     return '$start முதல் $end வரை';
   }
 
   @override
-  String get exploreNoProductsFound => 'எந்த தயாரிப்புகளும் கிடைக்கவில்லை.';
+  String get storeNoProductsFound => 'எந்த தயாரிப்புகளும் கிடைக்கவில்லை.';
 
   @override
-  String get exploreProductsLabel => 'தயாரிப்புகள்';
+  String get storeProductsLabel => 'தயாரிப்புகள்';
 
   @override
-  String get exploreCategoriesLabel => 'வகைகள்';
+  String get storeCategoriesLabel => 'வகைகள்';
 
   @override
-  String explorePlanSelected(String planName, String price) {
+  String storePlanSelected(String planName, String price) {
     return '$planName, ₹$price, தேர்ந்தெடுக்கப்பட்டது';
   }
 
   @override
-  String explorePlanUnselected(String planName, String price) {
+  String storePlanUnselected(String planName, String price) {
     return '$planName, ₹$price';
   }
 
   @override
-  String get exploreDescription => 'விளக்கம்';
+  String get storeDescription => 'விளக்கம்';
 
   @override
-  String get exploreCurriculum => 'பாடத்திட்டம்';
+  String get storeCurriculum => 'பாடத்திட்டம்';
 
   @override
-  String get exploreHaveDiscountCode => 'தள்ளுபடி குறியீடு உள்ளதா?';
+  String get storeHaveDiscountCode => 'தள்ளுபடி குறியீடு உள்ளதா?';
 
   @override
-  String get explorePayInstallments => 'தவணைகளில் செலுத்தவும்';
+  String get storePayInstallments => 'தவணைகளில் செலுத்தவும்';
 
   @override
-  String get exploreDiscountCoupon => 'தள்ளுபடி கூப்பன்';
+  String get storeDiscountCoupon => 'தள்ளுபடி கூப்பன்';
 
   @override
-  String get exploreChoosePlan => 'ஒரு திட்டத்தை தேர்வு செய்யவும்';
+  String get storeChoosePlan => 'ஒரு திட்டத்தை தேர்வு செய்யவும்';
 
   @override
-  String explorePayAmountNow(String amount) {
+  String storePayAmountNow(String amount) {
     return '₹$amount இப்போது செலுத்தவும்';
   }
 
   @override
-  String exploreCouponAppliedSuccess(String total) {
+  String storeCouponAppliedSuccess(String total) {
     return 'Coupon applied successfully! New total: $total';
   }
 
   @override
-  String exploreStatisticsChapters(int count) {
+  String storeStatisticsChapters(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -2590,7 +2587,7 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
-  String exploreStatisticsVideos(int count) {
+  String storeStatisticsVideos(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -2601,7 +2598,7 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
-  String exploreStatisticsExams(int count) {
+  String storeStatisticsExams(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -2612,7 +2609,7 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
-  String exploreStatisticsAttachments(int count) {
+  String storeStatisticsAttachments(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -2623,7 +2620,7 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
-  String exploreStatisticsNotes(int count) {
+  String storeStatisticsNotes(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -2634,38 +2631,38 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
-  String exploreInstallmentOrdinal(String installment) {
+  String storeInstallmentOrdinal(String installment) {
     return 'தவணை $installment';
   }
 
   @override
-  String get exploreCouponHint => 'கூப்பன் குறியீட்டை உள்ளிடவும்';
+  String get storeCouponHint => 'கூப்பன் குறியீட்டை உள்ளிடவும்';
 
   @override
-  String get exploreApplyCoupon => 'பயன்படுத்து';
+  String get storeApplyCoupon => 'பயன்படுத்து';
 
   @override
-  String get exploreNoInstallmentPlans =>
+  String get storeNoInstallmentPlans =>
       'இந்த தயாரிப்புக்கு தவணைத் திட்டங்கள் எதுவும் இல்லை.';
 
   @override
-  String get exploreLoading => 'ஏற்றுகிறது...';
+  String get storeLoading => 'ஏற்றுகிறது...';
 
   @override
-  String get exploreFailedToLoadPlans => 'திட்டங்களை ஏற்றுவதில் தோல்வி';
+  String get storeFailedToLoadPlans => 'திட்டங்களை ஏற்றுவதில் தோல்வி';
 
   @override
-  String exploreInstallmentPlansCalculationBase(String price) {
+  String storeInstallmentPlansCalculationBase(String price) {
     return '₹$price அசல் விலையின் அடிப்படையில் தவணைத் திட்டங்கள் கணக்கிடப்படுகின்றன.';
   }
 
   @override
-  String explorePaidOn(String date) {
+  String storePaidOn(String date) {
     return '$date இல் செலுத்தப்பட்டது';
   }
 
   @override
-  String get exploreNoContentAvailable => 'உள்ளடக்கம் எதுவும் இல்லை';
+  String get storeNoContentAvailable => 'உள்ளடக்கம் எதுவும் இல்லை';
 
   @override
   String get paymentProcessing => 'உங்கள் கட்டணத்தை செயலாக்குகிறது...';
@@ -2708,4 +2705,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get paymentCancel => 'ரத்துசெய்';
+
+  @override
+  String get reviewExploreDetailsTitle => 'கூடுதல் விவரங்களை ஆராயுங்கள்';
 }

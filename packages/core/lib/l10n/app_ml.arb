@@ -494,19 +494,19 @@
   "editProfilePhotoLabel": "പ്രൊഫൈൽ ഫോട്ടോ",
   "editProfileChangePhoto": "ഫോട്ടോ മാറ്റുക",
   "editProfileBack": "പിന്നിലേക്ക്",
-  "exploreTabTitle": "എക്സ്പ്ലോർ",
-  "exploreSearchHint": "കോഴ്സുകൾ, പാഠങ്ങൾ മുതൽ തിരയുക...",
-  "exploreSearchResultsTitle": "തിരയൽ ഫലങ്ങൾ",
-  "exploreTrendingTitle": "ഇപ്പോൾ ട്രെൻഡിംഗിലുള്ളവ",
-  "exploreRecommendedTitle": "നിങ്ങൾക്കായി ശുപാർശ ചെയ്യുന്നവ",
-  "exploreShortLessonsTitle": "ഏറ്റവും കൂടുതൽ കണ്ട വീഡിയോകൾ",
-  "explorePopularTestsTitle": "ജനപ്രിയ പരീക്ഷകൾ",
-  "exploreStudyTipsTitle": "പഠന നുറുങ്ങുകളും അപ്‌ഡേറ്റുകളും",
-  "exploreFilterTrending": "ട്രെൻഡിംഗ്",
-  "exploreFilterRecommended": "ശുപാർശ ചെയ്തവ",
-  "exploreFilterShortLessons": "ചെറിയ പാഠങ്ങൾ",
-  "exploreFilterPopular": "ജനപ്രിയം",
-  "exploreFilterStudyTips": "പഠന നുറുങ്ങുകൾ",
+  "storeTabTitle": "സ്റ്റോർ",
+  "storeSearchHint": "കോഴ്സുകൾ, പാഠങ്ങൾ മുതൽ തിരയുക...",
+  "storeSearchResultsTitle": "തിരയൽ ഫലങ്ങൾ",
+  "storeTrendingTitle": "ഇപ്പോൾ ട്രെൻഡിംഗിലുള്ളവ",
+  "storeRecommendedTitle": "നിങ്ങൾക്കായി ശുപാർശ ചെയ്യുന്നവ",
+  "storeShortLessonsTitle": "ഏറ്റവും കൂടുതൽ കണ്ട വീഡിയോകൾ",
+  "storePopularTestsTitle": "ജനപ്രിയ പരീക്ഷകൾ",
+  "storeStudyTipsTitle": "പഠന നുറുങ്ങുകളും അപ്‌ഡേറ്റുകളും",
+  "storeFilterTrending": "ട്രെൻഡിംഗ്",
+  "storeFilterRecommended": "ശുപാർശ ചെയ്തവ",
+  "storeFilterShortLessons": "ചെറിയ പാഠങ്ങൾ",
+  "storeFilterPopular": "ജനപ്രിയം",
+  "storeFilterStudyTips": "പഠന നുറുങ്ങുകൾ",
   "editProfileFirstNameLabel": "ആദ്യ പേര്",
   "editProfileFirstNameHint": "നിങ്ങളുടെ ആദ്യ പേര് നൽകുക",
   "editProfileLastNameLabel": "അവസാന പേര്",
@@ -816,7 +816,6 @@
   },
   "reviewPerformanceOverviewTitle": "പ്രകടന അവലോകനം",
   "reviewSubjectPerformanceTileDesc": "വ്യത്യസ്ത വിഷയങ്ങളിലെ നിങ്ങളുടെ പ്രകടനം വിശകലനം ചെയ്യുക",
-  "reviewExploreDetailsTitle": "കൂടുതൽ വിവരങ്ങൾ പര്യവേക്ഷണം ചെയ്യുക",
   "reviewExamReviewTitle": "പരീക്ഷ അവലോകനം",
   "reviewExamReviewDesc": "ഉത്തരങ്ങളും വിശദീകരണങ്ങളും സഹിതം ഓരോ ചോദ്യവും അവലോകനം ചെയ്യുക",
   "defaultStudentName": "വിദ്യാർത്ഥി",
@@ -894,109 +893,109 @@
     }
   },
   "customExamPleaseSelectDifficultyLevel": "ദയവായി കാഠിന്യ നില തിരഞ്ഞെടുക്കുക",
-  "exploreProductBack": "മടങ്ങുക",
-  "exploreSelectPlan": "പ്ലാൻ തിരഞ്ഞെടുക്കുക",
-  "exploreBuyNow": "ഇപ്പോൾ വാങ്ങുക",
-  "exploreCheckoutComingSoon": "ചെക്ക്ഔട്ട് പ്രക്രിയ ഉടൻ വരും",
-  "exploreValidityDays": "കാലാവധി: {days} ദിവസങ്ങൾ",
-  "exploreFromTo": "{start} മുതൽ {end} വരെ",
-  "exploreNoProductsFound": "ഉൽപ്പന്നങ്ങളൊന്നും കണ്ടെത്തിയില്ല.",
-  "exploreProductsLabel": "ഉൽപ്പന്നങ്ങൾ",
-  "exploreCategoriesLabel": "വിഭാഗങ്ങൾ",
-  "explorePlanSelected": "{planName}, ₹{price}, തിരഞ്ഞെടുത്തു",
-  "explorePlanUnselected": "{planName}, ₹{price}",
-  "exploreDescription": "വിവരണം",
-  "exploreCurriculum": "പാഠ്യപദ്ധതി",
-  "exploreHaveDiscountCode": "ഡിസ്കൗണ്ട് കോഡ് ഉണ്ടോ?",
-  "explorePayInstallments": "തവണകളായി അടയ്ക്കുക",
-  "exploreDiscountCoupon": "ഡിസ്കൗണ്ട് കൂപ്പൺ",
-  "exploreChoosePlan": "ഒരു പ്ലാൻ തിരഞ്ഞെടുക്കുക",
-  "explorePayAmountNow": "₹{amount} ഇപ്പോൾ അടയ്ക്കുക",
-  "@explorePayAmountNow": {
+  "storeProductBack": "മടങ്ങുക",
+  "storeSelectPlan": "പ്ലാൻ തിരഞ്ഞെടുക്കുക",
+  "storeBuyNow": "ഇപ്പോൾ വാങ്ങുക",
+  "storeCheckoutComingSoon": "ചെക്ക്ഔട്ട് പ്രക്രിയ ഉടൻ വരും",
+  "storeValidityDays": "കാലാവധി: {days} ദിവസങ്ങൾ",
+  "storeFromTo": "{start} മുതൽ {end} വരെ",
+  "storeNoProductsFound": "ഉൽപ്പന്നങ്ങളൊന്നും കണ്ടെത്തിയില്ല.",
+  "storeProductsLabel": "ഉൽപ്പന്നങ്ങൾ",
+  "storeCategoriesLabel": "വിഭാഗങ്ങൾ",
+  "storePlanSelected": "{planName}, ₹{price}, തിരഞ്ഞെടുത്തു",
+  "storePlanUnselected": "{planName}, ₹{price}",
+  "storeDescription": "വിവരണം",
+  "storeCurriculum": "പാഠ്യപദ്ധതി",
+  "storeHaveDiscountCode": "ഡിസ്കൗണ്ട് കോഡ് ഉണ്ടോ?",
+  "storePayInstallments": "തവണകളായി അടയ്ക്കുക",
+  "storeDiscountCoupon": "ഡിസ്കൗണ്ട് കൂപ്പൺ",
+  "storeChoosePlan": "ഒരു പ്ലാൻ തിരഞ്ഞെടുക്കുക",
+  "storePayAmountNow": "₹{amount} ഇപ്പോൾ അടയ്ക്കുക",
+  "@storePayAmountNow": {
     "placeholders": {
       "amount": {
         "type": "String"
       }
     }
   },
-  "exploreCouponAppliedSuccess": "Coupon applied successfully! New total: {total}",
-  "@exploreCouponAppliedSuccess": {
+  "storeCouponAppliedSuccess": "Coupon applied successfully! New total: {total}",
+  "@storeCouponAppliedSuccess": {
     "placeholders": {
       "total": {
         "type": "String"
       }
     }
   },
-  "exploreStatisticsChapters": "{count, plural, =1{1 Chapter} other{{count} Chapters}}",
-  "@exploreStatisticsChapters": {
+  "storeStatisticsChapters": "{count, plural, =1{1 Chapter} other{{count} Chapters}}",
+  "@storeStatisticsChapters": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "exploreStatisticsVideos": "{count, plural, =1{1 Video} other{{count} Videos}}",
-  "@exploreStatisticsVideos": {
+  "storeStatisticsVideos": "{count, plural, =1{1 Video} other{{count} Videos}}",
+  "@storeStatisticsVideos": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "exploreStatisticsExams": "{count, plural, =1{1 Exam} other{{count} Exams}}",
-  "@exploreStatisticsExams": {
+  "storeStatisticsExams": "{count, plural, =1{1 Exam} other{{count} Exams}}",
+  "@storeStatisticsExams": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "exploreStatisticsAttachments": "{count, plural, =1{1 Attachment} other{{count} Attachments}}",
-  "@exploreStatisticsAttachments": {
+  "storeStatisticsAttachments": "{count, plural, =1{1 Attachment} other{{count} Attachments}}",
+  "@storeStatisticsAttachments": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "exploreStatisticsNotes": "{count, plural, =1{1 Note} other{{count} Notes}}",
-  "@exploreStatisticsNotes": {
+  "storeStatisticsNotes": "{count, plural, =1{1 Note} other{{count} Notes}}",
+  "@storeStatisticsNotes": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "exploreInstallmentOrdinal": "ഗഡു {installment}",
-  "@exploreInstallmentOrdinal": {
+  "storeInstallmentOrdinal": "ഗഡു {installment}",
+  "@storeInstallmentOrdinal": {
     "placeholders": {
       "installment": {
         "type": "String"
       }
     }
   },
-  "exploreCouponHint": "കൂപ്പൺ കോഡ് നൽകുക",
-  "exploreApplyCoupon": "പ്രയോഗിക്കുക",
-  "exploreNoInstallmentPlans": "ഈ ഉൽപ്പന്നത്തിന് ഇൻസ്റ്റാൾമെന്റ് പ്ലാനുകൾ ലഭ്യമല്ല.",
-  "exploreLoading": "ലോഡ് ചെയ്യുന്നു...",
-  "exploreFailedToLoadPlans": "പ്ലാനുകൾ ലോഡുചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു",
-  "exploreInstallmentPlansCalculationBase": "₹{price} എന്ന യഥാർത്ഥ വിലയുടെ അടിസ്ഥാനത്തിലാണ് ഇൻസ്റ്റാൾമെന്റ് പ്ലാനുകൾ കണക്കാക്കുന്നത്.",
-  "@exploreInstallmentPlansCalculationBase": {
+  "storeCouponHint": "കൂപ്പൺ കോഡ് നൽകുക",
+  "storeApplyCoupon": "പ്രയോഗിക്കുക",
+  "storeNoInstallmentPlans": "ഈ ഉൽപ്പന്നത്തിന് ഇൻസ്റ്റാൾമെന്റ് പ്ലാനുകൾ ലഭ്യമല്ല.",
+  "storeLoading": "ലോഡ് ചെയ്യുന്നു...",
+  "storeFailedToLoadPlans": "പ്ലാനുകൾ ലോഡുചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു",
+  "storeInstallmentPlansCalculationBase": "₹{price} എന്ന യഥാർത്ഥ വിലയുടെ അടിസ്ഥാനത്തിലാണ് ഇൻസ്റ്റാൾമെന്റ് പ്ലാനുകൾ കണക്കാക്കുന്നത്.",
+  "@storeInstallmentPlansCalculationBase": {
     "placeholders": {
       "price": {
         "type": "String"
       }
     }
   },
-  "explorePaidOn": "{date}-ൽ അടച്ചു",
-  "@explorePaidOn": {
+  "storePaidOn": "{date}-ൽ അടച്ചു",
+  "@storePaidOn": {
     "placeholders": {
       "date": {
         "type": "String"
       }
     }
   },
-  "exploreNoContentAvailable": "ഉള്ളടക്കം ലഭ്യമല്ല",
+  "storeNoContentAvailable": "ഉള്ളടക്കം ലഭ്യമല്ല",
   "paymentProcessing": "നിങ്ങളുടെ പേയ്മെൻ്റ് പ്രോസസ്സ് ചെയ്യുന്നു...",
   "paymentSuccessful": "പേയ്മെൻ്റ് വിജയിച്ചു!",
   "paymentSuccessDescription": "നിങ്ങളുടെ എൻറോൾമെൻ്റ് വിജയകരമായി സ്ഥിരീകരിച്ചു.",
@@ -1014,5 +1013,6 @@
   "examsEmptyStateDesc": "നിലവിൽ പരീക്ഷകളൊന്നും ലഭ്യമല്ല.",
   "nextSection": "അടുത്ത വിഭാഗം",
   "nextSubject": "അടുത്ത വിഷയം",
-  "startExam": "പരീക്ഷ തുടങ്ങുക"
+  "startExam": "പരീക്ഷ തുടങ്ങുക",
+  "reviewExploreDetailsTitle": "കൂടുതൽ വിവരങ്ങൾ പര്യവേക്ഷണം ചെയ്യുക"
 }

@@ -1420,43 +1420,43 @@ class AppLocalizationsAr extends AppLocalizations {
   String get editProfileBack => 'عودة';
 
   @override
-  String get exploreTabTitle => 'استكشاف';
+  String get storeTabTitle => 'المتجر';
 
   @override
-  String get exploreSearchHint => 'ابحث عن الدورات، الدروس، المواضيع...';
+  String get storeSearchHint => 'ابحث عن الدورات، الدروس، المواضيع...';
 
   @override
-  String get exploreSearchResultsTitle => 'نتائج البحث';
+  String get storeSearchResultsTitle => 'نتائج البحث';
 
   @override
-  String get exploreTrendingTitle => 'الرائج الآن';
+  String get storeTrendingTitle => 'الرائج الآن';
 
   @override
-  String get exploreRecommendedTitle => 'موصى به لك';
+  String get storeRecommendedTitle => 'موصى به لك';
 
   @override
-  String get exploreShortLessonsTitle => 'الفيديوهات الأكثر مشاهدة';
+  String get storeShortLessonsTitle => 'الفيديوهات الأكثر مشاهدة';
 
   @override
-  String get explorePopularTestsTitle => 'الاختبارات الشائعة';
+  String get storePopularTestsTitle => 'الاختبارات الشائعة';
 
   @override
-  String get exploreStudyTipsTitle => 'نصائح الدراسة والتحديثات';
+  String get storeStudyTipsTitle => 'نصائح الدراسة والتحديثات';
 
   @override
-  String get exploreFilterTrending => 'رائج';
+  String get storeFilterTrending => 'رائج';
 
   @override
-  String get exploreFilterRecommended => 'موصى به';
+  String get storeFilterRecommended => 'موصى به';
 
   @override
-  String get exploreFilterShortLessons => 'دروس قصيرة';
+  String get storeFilterShortLessons => 'دروس قصيرة';
 
   @override
-  String get exploreFilterPopular => 'شائع';
+  String get storeFilterPopular => 'شائع';
 
   @override
-  String get exploreFilterStudyTips => 'نصائح الدراسة';
+  String get storeFilterStudyTips => 'نصائح الدراسة';
 
   @override
   String get editProfileFirstNameLabel => 'الاسم الأول';
@@ -2376,9 +2376,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reviewSubjectPerformanceTileDesc => 'حلل أدائك في المواد المختلفة';
 
   @override
-  String get reviewExploreDetailsTitle => 'استكشف المزيد من التفاصيل';
-
-  @override
   String get reviewExamReviewTitle => 'مراجعة الامتحان';
 
   @override
@@ -2475,76 +2472,76 @@ class AppLocalizationsAr extends AppLocalizations {
       'يرجى تحديد مستوى الصعوبة';
 
   @override
-  String get exploreProductBack => 'رجوع';
+  String get storeProductBack => 'رجوع';
 
   @override
-  String get exploreSelectPlan => 'حدد الخطة';
+  String get storeSelectPlan => 'حدد الخطة';
 
   @override
-  String get exploreBuyNow => 'اشتري الآن';
+  String get storeBuyNow => 'اشتري الآن';
 
   @override
-  String get exploreCheckoutComingSoon => 'عملية الدفع قريباً';
+  String get storeCheckoutComingSoon => 'عملية الدفع قريباً';
 
   @override
-  String exploreValidityDays(String days) {
+  String storeValidityDays(String days) {
     return 'الصلاحية: $days أيام';
   }
 
   @override
-  String exploreFromTo(String start, String end) {
+  String storeFromTo(String start, String end) {
     return 'من $start إلى $end';
   }
 
   @override
-  String get exploreNoProductsFound => 'لم يتم العثور على منتجات.';
+  String get storeNoProductsFound => 'لم يتم العثور على منتجات.';
 
   @override
-  String get exploreProductsLabel => 'المنتجات';
+  String get storeProductsLabel => 'المنتجات';
 
   @override
-  String get exploreCategoriesLabel => 'الفئات';
+  String get storeCategoriesLabel => 'الفئات';
 
   @override
-  String explorePlanSelected(String planName, String price) {
+  String storePlanSelected(String planName, String price) {
     return '$planName، ₹$price، محدد';
   }
 
   @override
-  String explorePlanUnselected(String planName, String price) {
+  String storePlanUnselected(String planName, String price) {
     return '$planName، ₹$price';
   }
 
   @override
-  String get exploreDescription => 'وصف';
+  String get storeDescription => 'وصف';
 
   @override
-  String get exploreCurriculum => 'المنهج';
+  String get storeCurriculum => 'المنهج';
 
   @override
-  String get exploreHaveDiscountCode => 'هل لديك كود خصم؟';
+  String get storeHaveDiscountCode => 'هل لديك كود خصم؟';
 
   @override
-  String get explorePayInstallments => 'الدفع على أقساط';
+  String get storePayInstallments => 'الدفع على أقساط';
 
   @override
-  String get exploreDiscountCoupon => 'كوبون الخصم';
+  String get storeDiscountCoupon => 'كوبون الخصم';
 
   @override
-  String get exploreChoosePlan => 'اختر خطة';
+  String get storeChoosePlan => 'اختر خطة';
 
   @override
-  String explorePayAmountNow(String amount) {
+  String storePayAmountNow(String amount) {
     return 'ادفع ₹$amount الآن';
   }
 
   @override
-  String exploreCouponAppliedSuccess(String total) {
+  String storeCouponAppliedSuccess(String total) {
     return 'Coupon applied successfully! New total: $total';
   }
 
   @override
-  String exploreStatisticsChapters(int count) {
+  String storeStatisticsChapters(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -2555,7 +2552,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String exploreStatisticsVideos(int count) {
+  String storeStatisticsVideos(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -2566,7 +2563,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String exploreStatisticsExams(int count) {
+  String storeStatisticsExams(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -2577,7 +2574,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String exploreStatisticsAttachments(int count) {
+  String storeStatisticsAttachments(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -2588,7 +2585,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String exploreStatisticsNotes(int count) {
+  String storeStatisticsNotes(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -2599,38 +2596,37 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String exploreInstallmentOrdinal(String installment) {
+  String storeInstallmentOrdinal(String installment) {
     return 'القسط $installment';
   }
 
   @override
-  String get exploreCouponHint => 'أدخل رمز القسيمة';
+  String get storeCouponHint => 'أدخل رمز القسيمة';
 
   @override
-  String get exploreApplyCoupon => 'تطبيق';
+  String get storeApplyCoupon => 'تطبيق';
 
   @override
-  String get exploreNoInstallmentPlans =>
-      'لا توجد خطط تقسيط متاحة لهذا المنتج.';
+  String get storeNoInstallmentPlans => 'لا توجد خطط تقسيط متاحة لهذا المنتج.';
 
   @override
-  String get exploreLoading => 'جاري التحميل...';
+  String get storeLoading => 'جاري التحميل...';
 
   @override
-  String get exploreFailedToLoadPlans => 'فشل تحميل الخطط';
+  String get storeFailedToLoadPlans => 'فشل تحميل الخطط';
 
   @override
-  String exploreInstallmentPlansCalculationBase(String price) {
+  String storeInstallmentPlansCalculationBase(String price) {
     return 'يتم حساب خطط التقسيط بناءً على السعر الأصلي البالغ $price ₹.';
   }
 
   @override
-  String explorePaidOn(String date) {
+  String storePaidOn(String date) {
     return 'تم الدفع في $date';
   }
 
   @override
-  String get exploreNoContentAvailable => 'لا يوجد محتوى متاح';
+  String get storeNoContentAvailable => 'لا يوجد محتوى متاح';
 
   @override
   String get paymentProcessing => 'جاري معالجة الدفع...';
@@ -2670,4 +2666,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get paymentCancel => 'إلغاء';
+
+  @override
+  String get reviewExploreDetailsTitle => 'استكشف المزيد من التفاصيل';
 }

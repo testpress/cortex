@@ -21,12 +21,12 @@ class ProductCard extends StatelessWidget {
     return AppSemantics.button(
       label: product.title,
       onTap: () {
-        context.push('/explore/product/${product.slug}', extra: product);
+        context.push('/store/product/${product.slug}', extra: product);
       },
       child: AppCard(
         padding: EdgeInsets.zero,
         onTap: () {
-          context.push('/explore/product/${product.slug}', extra: product);
+          context.push('/store/product/${product.slug}', extra: product);
         },
         child: Skeletonizer(
           enabled: isSkeleton,

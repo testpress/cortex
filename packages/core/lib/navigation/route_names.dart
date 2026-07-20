@@ -12,7 +12,7 @@ class AppRouteNames {
   static const home = 'home';
   static const study = 'study';
   static const exams = 'exams';
-  static const explore = 'explore';
+  static const store = 'store';
   static const profile = 'profile';
   static const info = 'info';
 }

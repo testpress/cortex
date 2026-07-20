@@ -2,10 +2,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/core.dart';
-import '../../widgets/explore/product_discount_sheet.dart';
-import '../../widgets/explore/product_installment_sheet.dart';
-import '../../widgets/explore/product_expandable_course_card.dart';
-import '../../providers/explore_providers.dart';
+import '../../widgets/store/product_discount_sheet.dart';
+import '../../widgets/store/product_installment_sheet.dart';
+import '../../widgets/store/product_expandable_course_card.dart';
+import '../../providers/store_providers.dart';
 import 'package:core/data/data.dart';
 
 class ProductDetailScreen extends ConsumerStatefulWidget {
@@ -111,7 +111,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     AppSemantics.button(
-                      label: L10n.of(context).exploreProductBack,
+                      label: L10n.of(context).storeProductBack,
                       onTap: () => Navigator.pop(context),
                       child: GestureDetector(
                         onTap: () => Navigator.pop(context),
@@ -212,9 +212,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                           ),
                                           SizedBox(width: design.spacing.xs),
                                           AppText.labelBold(
-                                            L10n.of(context)
-                                                .exploreValidityDays(
-                                                    validityDays.toString()),
+                                            L10n.of(context).storeValidityDays(
+                                                validityDays.toString()),
                                           ),
                                         ],
                                       ),
@@ -230,14 +229,12 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                         children: [
                                           _buildTab(
                                               context,
-                                              L10n.of(context)
-                                                  .exploreDescription,
+                                              L10n.of(context).storeDescription,
                                               0),
                                           SizedBox(width: design.spacing.md),
                                           _buildTab(
                                               context,
-                                              L10n.of(context)
-                                                  .exploreCurriculum,
+                                              L10n.of(context).storeCurriculum,
                                               1),
                                         ],
                                       ),
@@ -248,7 +245,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                       padding: EdgeInsets.only(
                                           bottom: design.spacing.sm),
                                       child: AppText.body(
-                                        L10n.of(context).exploreDescription,
+                                        L10n.of(context).storeDescription,
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w700),
                                       ),
@@ -261,7 +258,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                       padding: EdgeInsets.only(
                                           bottom: design.spacing.sm),
                                       child: AppText.body(
-                                        L10n.of(context).exploreCurriculum,
+                                        L10n.of(context).storeCurriculum,
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w700),
                                       ),
@@ -303,7 +300,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         children: [
                           if (product.hasCoupons)
                             AppSemantics.button(
-                              label: L10n.of(context).exploreHaveDiscountCode,
+                              label: L10n.of(context).storeHaveDiscountCode,
                               child: GestureDetector(
                                 onTap: () {
                                   setState(() {
@@ -315,7 +312,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                   padding: EdgeInsets.symmetric(
                                       vertical: design.spacing.xs),
                                   child: AppText.labelBold(
-                                    L10n.of(context).exploreHaveDiscountCode,
+                                    L10n.of(context).storeHaveDiscountCode,
                                     color: design.colors.accent2,
                                   ),
                                 ),
@@ -323,7 +320,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                             ),
                           const Spacer(),
                           AppSemantics.button(
-                            label: L10n.of(context).explorePayInstallments,
+                            label: L10n.of(context).storePayInstallments,
                             child: GestureDetector(
                               onTap: () {
                                 setState(() {
@@ -335,7 +332,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                 padding: EdgeInsets.symmetric(
                                     vertical: design.spacing.xs),
                                 child: AppText.labelBold(
-                                  L10n.of(context).explorePayInstallments,
+                                  L10n.of(context).storePayInstallments,
                                   color: design.colors.accent2,
                                 ),
                               ),
@@ -347,7 +344,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       AppButton.primary(
                         label: (product.buyNowText?.isNotEmpty == true)
                             ? product.buyNowText!
-                            : L10n.of(context).exploreBuyNow,
+                            : L10n.of(context).storeBuyNow,
                         fullWidth: true,
                         backgroundColor: design.colors.accent2,
                         loading: false,
@@ -358,7 +355,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                           final result = await PaymentProcessingScreen.start(
                             context,
                             () => ref
-                                .read(exploreRepositoryProvider)
+                                .read(storeRepositoryProvider)
                                 .createAndConfirmOrder(product.slug),
                             dataSource,
                           );

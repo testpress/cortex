@@ -7,7 +7,7 @@ TBD - created by archiving change integrate-store-api. Update Purpose after arch
 The system SHALL fetch and display a list of product categories from the `/api/v2.5/products/categories/` endpoint.
 
 #### Scenario: Successful category fetch
-- **WHEN** the user navigates to the Explore/Store tab
+- **WHEN** the user navigates to the Store/Store tab
 - **THEN** the system displays a filterable list of product categories
 
 ### Requirement: Browse Store Products

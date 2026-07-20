@@ -1,28 +1,28 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'explore_providers.dart';
+part of 'store_providers.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$exploreRepositoryHash() => r'4c95e5c2401066d1eec1c72699d21ac44959b948';
+String _$storeRepositoryHash() => r'4c95e5c2401066d1eec1c72699d21ac44959b948';
 
-/// See also [exploreRepository].
-@ProviderFor(exploreRepository)
-final exploreRepositoryProvider = Provider<ExploreRepository>.internal(
-  exploreRepository,
-  name: r'exploreRepositoryProvider',
+/// See also [storeRepository].
+@ProviderFor(storeRepository)
+final storeRepositoryProvider = Provider<StoreRepository>.internal(
+  storeRepository,
+  name: r'storeRepositoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$exploreRepositoryHash,
+      : _$storeRepositoryHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef ExploreRepositoryRef = ProviderRef<ExploreRepository>;
+typedef StoreRepositoryRef = ProviderRef<StoreRepository>;
 String _$storeCategoriesHash() => r'94c3d0e9392a117a1928e5cf329b3688936853f3';
 
 /// See also [storeCategories].
@@ -331,23 +331,22 @@ class _ProductInstallmentPlansProviderElement
   String get slug => (origin as ProductInstallmentPlansProvider).slug;
 }
 
-String _$exploreSearchQueryHash() =>
-    r'710279d17c0bcb58ded500a0618f44afe0e1cf7b';
+String _$storeSearchQueryHash() => r'710279d17c0bcb58ded500a0618f44afe0e1cf7b';
 
-/// See also [ExploreSearchQuery].
-@ProviderFor(ExploreSearchQuery)
-final exploreSearchQueryProvider =
-    AutoDisposeNotifierProvider<ExploreSearchQuery, String>.internal(
-  ExploreSearchQuery.new,
-  name: r'exploreSearchQueryProvider',
+/// See also [StoreSearchQuery].
+@ProviderFor(StoreSearchQuery)
+final storeSearchQueryProvider =
+    AutoDisposeNotifierProvider<StoreSearchQuery, String>.internal(
+  StoreSearchQuery.new,
+  name: r'storeSearchQueryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$exploreSearchQueryHash,
+      : _$storeSearchQueryHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$ExploreSearchQuery = AutoDisposeNotifier<String>;
+typedef _$StoreSearchQuery = AutoDisposeNotifier<String>;
 String _$selectedStoreCategoryHash() =>
     r'519b5b997948862a4adf7bdcc13676747fbda664';
 

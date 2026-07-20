@@ -104,11 +104,6 @@ class AppConfig {
     defaultValue: false,
   );
 
-  static const bool showExploreTab = bool.fromEnvironment(
-    'SHOW_EXPLORE_TAB',
-    defaultValue: true,
-  );
-
   static const bool showProfileTab = bool.fromEnvironment(
     'SHOW_PROFILE_TAB',
     defaultValue: true,

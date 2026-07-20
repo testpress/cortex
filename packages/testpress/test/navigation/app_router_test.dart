@@ -6,8 +6,11 @@ import 'package:testpress/navigation/app_router.dart';
 
 void main() {
   group('buildPrimaryNavigationItems', () {
-    test('keeps Profile as the default fifth destination', () {
-      final items = buildPrimaryNavigationItems();
+    test('keeps Profile as the last destination', () {
+      final defaultSettings = InstituteSettings.fromJson({
+        'store_enabled': true,
+      });
+      final items = buildPrimaryNavigationItems(defaultSettings);
 
       expect(items.length, 4);
       expect(items.last.id, '/profile');
@@ -18,7 +21,10 @@ void main() {
     test(
       'adds Info as the fourth destination when enabled',
       () {
-        final items = buildPrimaryNavigationItems();
+        final defaultSettings = InstituteSettings.fromJson({
+          'store_enabled': true,
+        });
+        final items = buildPrimaryNavigationItems(defaultSettings);
 
         expect(items.length, 5);
         expect(items[3].id, '/info');

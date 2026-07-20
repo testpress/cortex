@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
-import '../../providers/explore_providers.dart';
+import '../../providers/store_providers.dart';
 import 'package:core/data/data.dart';
 
 class ProductDiscountSheet extends ConsumerStatefulWidget {
@@ -89,7 +89,7 @@ class _ProductDiscountSheetState extends ConsumerState<ProductDiscountSheet> {
                 ),
               ),
               SizedBox(height: design.spacing.lg),
-              AppText.title(L10n.of(context).exploreDiscountCoupon),
+              AppText.title(L10n.of(context).storeDiscountCoupon),
               SizedBox(height: design.spacing.md),
               if (discountState.hasError) ...[
                 AppText.body(
@@ -101,7 +101,7 @@ class _ProductDiscountSheetState extends ConsumerState<ProductDiscountSheet> {
                   discountState.value != null) ...[
                 AppText.body(
                   L10n.of(context)
-                      .exploreCouponAppliedSuccess(discountState.value!.total),
+                      .storeCouponAppliedSuccess(discountState.value!.total),
                   color: design.colors.success,
                 ),
                 SizedBox(height: design.spacing.md),
@@ -111,7 +111,7 @@ class _ProductDiscountSheetState extends ConsumerState<ProductDiscountSheet> {
                   Expanded(
                     child: AppTextField(
                       label: "",
-                      hintText: L10n.of(context).exploreCouponHint,
+                      hintText: L10n.of(context).storeCouponHint,
                       controller: _couponController,
                     ),
                   ),
@@ -122,7 +122,7 @@ class _ProductDiscountSheetState extends ConsumerState<ProductDiscountSheet> {
                           child: AppLoadingIndicator(),
                         )
                       : AppButton.primary(
-                          label: L10n.of(context).exploreApplyCoupon,
+                          label: L10n.of(context).storeApplyCoupon,
                           backgroundColor: design.colors.accent2,
                           onPressed: _applyCoupon,
                         ),

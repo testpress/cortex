@@ -1,16 +1,16 @@
 import 'package:core/data/data.dart';
 import 'package:flutter/foundation.dart';
 
-/// Repository for the Explore / Store feature.
+/// Repository for the Store / Store feature.
 ///
 /// Owns the single source of truth for products and categories.
 /// Uses in-memory caching with a clean wipe-and-upsert strategy:
 /// if the backend returns fewer items than cached (e.g. items were deleted),
 /// the cache is fully replaced so stale entries never linger.
-class ExploreRepository {
+class StoreRepository {
   final DataSource _source;
 
-  ExploreRepository({required DataSource source}) : _source = source;
+  StoreRepository({required DataSource source}) : _source = source;
 
   // ── In-memory caches ──────────────────────────────────────────────────────
 
@@ -69,7 +69,7 @@ class ExploreRepository {
       final cached = _productCache[cacheKey];
       if (cached != null) {
         debugPrint(
-            '[ExploreRepository] Network error, returning cached products: $e');
+            '[StoreRepository] Network error, returning cached products: $e');
         return cached;
       }
       rethrow;
@@ -118,7 +118,7 @@ class ExploreRepository {
       final cached = _categoryCache[cacheKey];
       if (cached != null && cached.isNotEmpty) {
         debugPrint(
-            '[ExploreRepository] Network error, returning cached categories: $e');
+            '[StoreRepository] Network error, returning cached categories: $e');
         return cached;
       }
       rethrow;

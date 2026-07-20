@@ -34,7 +34,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             NavTab.home => HomeRoutes.routes(_rootNavigatorKey),
             NavTab.study => StudyRoutes.routes(_rootNavigatorKey),
             NavTab.exams => ExamsRoutes.routes(_rootNavigatorKey),
-            NavTab.explore => GlobalRoutes.exploreRoutes(_rootNavigatorKey),
+            NavTab.store => GlobalRoutes.storeRoutes(_rootNavigatorKey),
             NavTab.info => GlobalRoutes.infoRoutes(_rootNavigatorKey),
             NavTab.profile => ProfileRoutes.routes(_rootNavigatorKey),
           };
@@ -50,7 +50,7 @@ enum NavTab {
   home('/home', 'Home', LucideIcons.home),
   study('/study', 'Study', LucideIcons.bookOpen),
   exams('/exams', 'Exam', LucideIcons.fileText),
-  explore('/explore', 'Explore', LucideIcons.compass),
+  store('/store', 'Store', LucideIcons.store),
   info('/info', 'Info', LucideIcons.squarePlay),
   profile('/profile', 'Profile', LucideIcons.user);
 
@@ -60,14 +60,22 @@ enum NavTab {
 
   const NavTab(this.id, this.label, this.icon);
 
-  AppTabItem toTabItem() => AppTabItem(id: id, label: label, icon: icon);
+  AppTabItem toTabItem([InstituteSettings? settings]) {
+    String currentLabel = label;
+    if (this == NavTab.store &&
+        settings != null &&
+        settings.storeLabel.isNotEmpty) {
+      currentLabel = settings.storeLabel;
+    }
+    return AppTabItem(id: id, label: currentLabel, icon: icon);
+  }
 
-  static List<NavTab> active() {
+  static List<NavTab> active([InstituteSettings? settings]) {
     return values.where((tab) {
       return switch (tab) {
         NavTab.exams => AppConfig.showExamTab,
         NavTab.info => AppConfig.showInfoTab,
-        NavTab.explore => AppConfig.showExploreTab,
+        NavTab.store => settings?.storeEnabled ?? false,
         NavTab.profile => AppConfig.showProfileTab,
         _ => true,
       };
@@ -75,8 +83,8 @@ enum NavTab {
   }
 }
 
-List<AppTabItem> buildPrimaryNavigationItems() {
-  return NavTab.active().map((tab) => tab.toTabItem()).toList();
+List<AppTabItem> buildPrimaryNavigationItems([InstituteSettings? settings]) {
+  return NavTab.active(settings).map((tab) => tab.toTabItem(settings)).toList();
 }
 
 class _AppShellBuilder extends ConsumerWidget {
@@ -90,8 +98,9 @@ class _AppShellBuilder extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activeTabs = NavTab.active();
-    final items = activeTabs.map((tab) => tab.toTabItem()).toList();
+    final settings = ref.watch(instituteSettingsProvider);
+    final activeTabs = NavTab.active(settings);
+    final items = activeTabs.map((tab) => tab.toTabItem(settings)).toList();
     final isLogoutSheetOpen = ref.watch(isLogoutSheetOpenProvider);
     final activeTabId = allTabs[navigationShell.currentIndex].id;
 
