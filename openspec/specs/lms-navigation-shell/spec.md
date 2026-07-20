@@ -9,6 +9,7 @@ The system SHALL provide a persistent application shell that adapts its navigati
 #### Scenario: Vertical Mode (Portrait)
 - **GIVEN** the device is in portrait orientation (height > width)
 - **THEN** the shell MUST display the `AppTabBar` at the bottom, regardless of screen size (mobile or tablet).
+- **AND** the `AppTabBar` MUST float above the main content rather than occupying dedicated vertical space.
 
 #### Scenario: Horizontal Mode (Landscape)
 - **GIVEN** the device is in landscape orientation (width > height)
