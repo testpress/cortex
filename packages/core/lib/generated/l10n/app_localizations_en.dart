@@ -642,6 +642,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawerCustomExam => 'Custom Exam';
 
   @override
+  String get drawerOfflineExams => 'Offline Exams';
+
+  @override
+  String get noDownloadedExamAvailable => 'No downloaded exam available';
+
+  @override
   String get drawerReports => 'Reports';
 
   @override
@@ -2667,4 +2673,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reviewExploreDetailsTitle => 'Explore More Details';
+
+  @override
+  String get downloadedStatus => 'Downloaded';
+
+  @override
+  String get totalQuestionsLabel => 'Total Qus';
+
+  @override
+  String get deleteAction => 'Delete';
+
+  @override
+  String get attendExamAction => 'Attend Exam';
+
+  @override
+  String get examDeletedToast => 'Exam deleted';
+
+  @override
+  String get deleteExamTitle => 'Delete Exam?';
+
+  @override
+  String get deleteExamConfirmationMessage =>
+      'Are you sure you want to delete this downloaded exam?';
 }

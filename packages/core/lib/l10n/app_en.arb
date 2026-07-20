@@ -298,6 +298,8 @@
   "drawerForum": "Discussions Forum",
   "drawerDoubts": "Doubts",
   "drawerCustomExam": "Custom Exam",
+  "drawerOfflineExams": "Offline Exams",
+  "noDownloadedExamAvailable": "No downloaded exam available",
   "drawerReports": "Reports",
   "drawerProfile": "Profile",
   "drawerSettings": "App Settings",
@@ -1330,5 +1332,12 @@
   "paymentBackToHome": "Back to Home",
   "paymentTryAgain": "Try Again",
   "paymentCancel": "Cancel",
-  "reviewExploreDetailsTitle": "Explore More Details"
+  "reviewExploreDetailsTitle": "Explore More Details",
+  "downloadedStatus": "Downloaded",
+  "totalQuestionsLabel": "Total Qus",
+  "deleteAction": "Delete",
+  "attendExamAction": "Attend Exam",
+  "examDeletedToast": "Exam deleted",
+  "deleteExamTitle": "Delete Exam?",
+  "deleteExamConfirmationMessage": "Are you sure you want to delete this downloaded exam?"
 }

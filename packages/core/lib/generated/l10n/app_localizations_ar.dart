@@ -641,6 +641,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get drawerCustomExam => 'نموذج امتحان';
 
   @override
+  String get drawerOfflineExams => 'الامتحانات غير المتصلة';
+
+  @override
+  String get noDownloadedExamAvailable => 'لا يتوفر امتحان تم تنزيله';
+
+  @override
   String get drawerReports => 'التقارير الخاصة بك';
 
   @override
@@ -2669,4 +2675,26 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get reviewExploreDetailsTitle => 'استكشف المزيد من التفاصيل';
+
+  @override
+  String get downloadedStatus => 'تم التنزيل';
+
+  @override
+  String get totalQuestionsLabel => 'إجمالي الأسئلة';
+
+  @override
+  String get deleteAction => 'حذف';
+
+  @override
+  String get attendExamAction => 'حضور الامتحان';
+
+  @override
+  String get examDeletedToast => 'تم حذف الامتحان';
+
+  @override
+  String get deleteExamTitle => 'هل تريد حذف الامتحان؟';
+
+  @override
+  String get deleteExamConfirmationMessage =>
+      'هل أنت متأكد أنك تريد حذف هذا الامتحان المنزل؟';
 }

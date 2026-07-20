@@ -83,3 +83,4 @@ export 'services/pagination_service.dart';
 
 // Infra & Mocks
 export 'sources/mock_data.dart';
+export 'providers/offline_exams_provider.dart';

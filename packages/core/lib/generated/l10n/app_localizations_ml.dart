@@ -649,6 +649,13 @@ class AppLocalizationsMl extends AppLocalizations {
   String get drawerCustomExam => 'കസ്റ്റം എക്സാം';
 
   @override
+  String get drawerOfflineExams => 'ഓഫ്‌ലൈൻ പരീക്ഷകൾ';
+
+  @override
+  String get noDownloadedExamAvailable =>
+      'ഡൗൺലോഡ് ചെയ്ത പരീക്ഷയൊന്നും ലഭ്യമല്ല';
+
+  @override
   String get drawerReports => 'നിങ്ങളുടെ റിപ്പോർട്ട്';
 
   @override
@@ -2715,4 +2722,26 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get reviewExploreDetailsTitle => 'കൂടുതൽ വിവരങ്ങൾ പര്യവേക്ഷണം ചെയ്യുക';
+
+  @override
+  String get downloadedStatus => 'ഡൗൺലോഡ് ചെയ്തു';
+
+  @override
+  String get totalQuestionsLabel => 'ആകെ ചോദ്യങ്ങൾ';
+
+  @override
+  String get deleteAction => 'ഇല്ലാതാക്കുക';
+
+  @override
+  String get attendExamAction => 'പരീക്ഷയിൽ പങ്കെടുക്കുക';
+
+  @override
+  String get examDeletedToast => 'പരീക്ഷ ഇല്ലാതാക്കി';
+
+  @override
+  String get deleteExamTitle => 'പരീക്ഷ ഇല്ലാതാക്കണോ?';
+
+  @override
+  String get deleteExamConfirmationMessage =>
+      'ഈ ഡൗൺലോഡ് ചെയ്ത പരീക്ഷ ഇല്ലാതാക്കണമെന്ന് ഉറപ്പാണോ?';
 }

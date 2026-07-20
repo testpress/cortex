@@ -221,6 +221,8 @@
   "drawerForum": "منتدى المناقشات",
   "drawerDoubts": "الأسئلة",
   "drawerCustomExam": "نموذج امتحان",
+  "drawerOfflineExams": "الامتحانات غير المتصلة",
+  "noDownloadedExamAvailable": "لا يتوفر امتحان تم تنزيله",
   "drawerReports": "التقارير الخاصة بك",
   "drawerProfile": "الملف الشخصي",
   "drawerSettings": "إعدادات التطبيق",
@@ -1014,5 +1016,12 @@
   "nextSection": "القسم التالي",
   "nextSubject": "الموضوع التالي",
   "startExam": "ابدأ الامتحان",
-  "reviewExploreDetailsTitle": "استكشف المزيد من التفاصيل"
+  "reviewExploreDetailsTitle": "استكشف المزيد من التفاصيل",
+  "downloadedStatus": "تم التنزيل",
+  "totalQuestionsLabel": "إجمالي الأسئلة",
+  "deleteAction": "حذف",
+  "attendExamAction": "حضور الامتحان",
+  "examDeletedToast": "تم حذف الامتحان",
+  "deleteExamTitle": "هل تريد حذف الامتحان؟",
+  "deleteExamConfirmationMessage": "هل أنت متأكد أنك تريد حذف هذا الامتحان المنزل؟"
 }

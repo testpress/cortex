@@ -1260,6 +1260,18 @@ abstract class AppLocalizations {
   /// **'Custom Exam'**
   String get drawerCustomExam;
 
+  /// No description provided for @drawerOfflineExams.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline Exams'**
+  String get drawerOfflineExams;
+
+  /// No description provided for @noDownloadedExamAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No downloaded exam available'**
+  String get noDownloadedExamAvailable;
+
   /// No description provided for @drawerReports.
   ///
   /// In en, this message translates to:
@@ -4810,6 +4822,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Explore More Details'**
   String get reviewExploreDetailsTitle;
+
+  /// No description provided for @downloadedStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded'**
+  String get downloadedStatus;
+
+  /// No description provided for @totalQuestionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Qus'**
+  String get totalQuestionsLabel;
+
+  /// No description provided for @deleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteAction;
+
+  /// No description provided for @attendExamAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Attend Exam'**
+  String get attendExamAction;
+
+  /// No description provided for @examDeletedToast.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam deleted'**
+  String get examDeletedToast;
+
+  /// No description provided for @deleteExamTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Exam?'**
+  String get deleteExamTitle;
+
+  /// No description provided for @deleteExamConfirmationMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this downloaded exam?'**
+  String get deleteExamConfirmationMessage;
 }
 
 class _AppLocalizationsDelegate
