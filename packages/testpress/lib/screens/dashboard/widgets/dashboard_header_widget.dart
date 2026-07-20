@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart' as dto;
 import 'package:courses/courses.dart';
-import 'package:profile/profile.dart';
 
 class DashboardHeaderWidget extends ConsumerWidget {
   final bool isLandscape;

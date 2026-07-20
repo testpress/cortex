@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
-import 'package:profile/profile.dart';
+import 'package:core/core.dart';
+
 import 'dart:developer' as dev;
 
 part 'initialization_provider.g.dart';

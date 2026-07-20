@@ -5,8 +5,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 
-import '../providers/user_provider.dart';
-
 const double _kHeaderContentHeight = 60.0;
 
 class EditProfileScreen extends ConsumerStatefulWidget {

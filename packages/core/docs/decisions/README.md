@@ -12,6 +12,7 @@ ADRs provide historical context and reasoning for decisions that impact the enti
 - **0002**: SDK-First Monorepo Architecture
 - **0003**: Accessibility Contract
 - **0004**: Runtime DesignProvider
+- **0005**: User State in Core Package
 
 ## Format
 
