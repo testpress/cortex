@@ -5,6 +5,12 @@ class OfflineExamDownloadsTable extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get contentId => text()(); // lesson/content ID (local DB key)
   TextColumn get examId => text()(); // real exam primary key (for API calls)
+
+  // UI Metadata
+  TextColumn get title => text()();
+  TextColumn get duration => text()();
+  IntColumn get questionCount => integer()();
+
   TextColumn get questionsJson =>
       text()(); // blob — questions only, no fake attempt
   DateTimeColumn get downloadedAt => dateTime()();

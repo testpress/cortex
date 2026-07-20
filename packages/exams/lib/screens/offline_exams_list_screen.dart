@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-import 'package:courses/courses.dart';
 
 class OfflineExamsListScreen extends ConsumerWidget {
   const OfflineExamsListScreen({super.key});
@@ -163,10 +162,7 @@ class _OfflineExamCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
 
-    final lessonAsync = ref.watch(lessonDetailProvider(exam.contentId));
-    final lesson = lessonAsync.valueOrNull;
-    final title = lesson?.title ?? 'Exam ${exam.examId}';
-    final examMetadata = lesson?.exam;
+    final title = exam.title;
 
     return Padding(
       padding: EdgeInsets.only(bottom: design.spacing.md),
@@ -179,7 +175,7 @@ class _OfflineExamCard extends ConsumerWidget {
             children: [
               _ExamCardHeader(title: title),
               SizedBox(height: design.spacing.md),
-              _ExamCardStats(examMetadata: examMetadata),
+              _ExamCardStats(exam: exam),
               SizedBox(height: design.spacing.md),
               Container(height: 1, color: design.colors.border),
               SizedBox(height: design.spacing.md),
@@ -262,22 +258,17 @@ class _ExamCardHeader extends StatelessWidget {
 }
 
 class _ExamCardStats extends StatelessWidget {
-  final ExamDto? examMetadata;
+  final OfflineExamDownloadsTableData exam;
 
-  const _ExamCardStats({required this.examMetadata});
+  const _ExamCardStats({required this.exam});
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
-    final totalMarks = examMetadata != null
-        ? (examMetadata!.questionCount *
-              (double.tryParse(examMetadata!.markPerQuestion ?? '1') ?? 1.0))
-        : 0.0;
-    final marksStr = totalMarks == totalMarks.toInt()
-        ? totalMarks.toInt().toString()
-        : totalMarks.toString();
+    final totalMarks = exam.questionCount.toDouble();
+    final marksStr = totalMarks.toInt().toString();
 
     return Row(
       children: [
@@ -296,7 +287,7 @@ class _ExamCardStats extends StatelessWidget {
                       color: design.colors.textSecondary,
                     ),
                     SizedBox(height: design.spacing.xs),
-                    AppText.labelBold(examMetadata?.duration ?? '-'),
+                    AppText.labelBold(exam.duration),
                   ],
                 ),
               ),
@@ -324,7 +315,7 @@ class _ExamCardStats extends StatelessWidget {
                       color: design.colors.textSecondary,
                     ),
                     SizedBox(height: design.spacing.xs),
-                    AppText.labelBold('${examMetadata?.questionCount ?? 0}'),
+                    AppText.labelBold('${exam.questionCount}'),
                   ],
                 ),
               ),

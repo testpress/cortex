@@ -484,6 +484,9 @@ class OfflineExamRepository implements ExamRepository {
       OfflineExamDownloadsTableCompanion.insert(
         contentId: _contentId,
         examId: examData.id.toString(),
+        title: examData.title,
+        duration: examData.duration,
+        questionCount: examData.questionCount,
         downloadedAt: DateTime.now(),
         status: const drift.Value('DOWNLOADED'),
         questionsJson: questionsJsonStr,
