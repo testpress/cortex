@@ -77,3 +77,7 @@ export 'generated/l10n/app_localizations.dart';
 
 // Payment
 export 'payment/payment.dart';
+
+// User State
+export 'data/providers/user_provider.dart';
+export 'data/repositories/user_repository.dart';

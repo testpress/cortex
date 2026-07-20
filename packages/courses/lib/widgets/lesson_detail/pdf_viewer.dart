@@ -1,12 +1,15 @@
 import 'dart:io';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
+
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:core/data/data.dart';
 import 'lesson_detail_skeleton.dart';
+import 'watermark_overlay.dart';
 
 class AppPdfViewer extends ConsumerStatefulWidget {
   final String url;
@@ -27,10 +30,12 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   late PdfViewerController _controller;
   late final Ticker _ticker;
 
-  String? _localPath;
   String? _error;
   bool _isLoading = true;
   bool _isVisible = false;
+  String _watermarkText = '';
+  Widget? _cachedViewer;
+  String? _localPath;
 
   int _requestId = 0;
 
@@ -87,6 +92,8 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
     _prepareState();
 
     try {
+      unawaited(_fetchWatermark(id));
+
       final path = await _resolveSource();
 
       if (!_isValidRequest(id)) return;
@@ -99,6 +106,19 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
     }
   }
 
+  Future<void> _fetchWatermark(int id) async {
+    try {
+      final currentUser = await ref.read(userProvider.future);
+      if (!_isValidRequest(id)) return;
+
+      setState(() {
+        _watermarkText = currentUser?.username ?? '';
+      });
+    } catch (e, stackTrace) {
+      debugPrint('Failed to fetch user for watermark: $e\n$stackTrace');
+    }
+  }
+
   void _prepareState() {
     _muteTicker(true);
 
@@ -107,33 +127,61 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
       _error = null;
       _localPath = null;
       _isVisible = false;
+      _watermarkText = '';
       _totalHeight = 0;
       _lastProgress = -1;
+      _cachedViewer = null;
     });
   }
 
   Future<String?> _resolveSource() async {
-    final downloader = ref.read(fileDownloaderProvider);
+    if (_localPath != null) return _localPath;
 
-    final path = await downloader.getLocalPath(
+    final fileDownloader = ref.read(fileDownloaderProvider);
+    final path = await fileDownloader.getLocalPath(
       widget.url,
       StorageType.internalCache,
     );
 
     final file = File(path);
-
-    final isCached = await file.exists() && (await file.length()) > 0;
-
-    if (isCached) return path;
+    if (await file.exists() && (await file.length()) > 0) {
+      _localPath = path;
+      return path;
+    }
 
     _cacheInBackground(widget.url);
     return null;
   }
 
+  Future<void> _cacheInBackground(String url) async {
+    if (_localPath != null) return;
+    try {
+      final downloader = ref.read(fileDownloaderProvider);
+      final path = await downloader.download(
+        url: url,
+        type: StorageType.internalCache,
+        requireAuth: false,
+      );
+      if (mounted) {
+        _localPath = path;
+      }
+    } catch (_) {}
+  }
+
   void _handleSuccess(String? path) {
     setState(() {
-      _localPath = path;
       _isLoading = false;
+      _cachedViewer = path != null
+          ? SfPdfViewer.file(
+              File(path),
+              controller: _controller,
+              onDocumentLoaded: _onDocumentLoaded,
+            )
+          : SfPdfViewer.network(
+              widget.url,
+              controller: _controller,
+              onDocumentLoaded: _onDocumentLoaded,
+            );
     });
   }
 
@@ -148,47 +196,29 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
     return mounted && id == _requestId;
   }
 
-  // ---------------- CACHE ----------------
-
-  Future<void> _cacheInBackground(String url) async {
-    try {
-      final downloader = ref.read(fileDownloaderProvider);
-      await downloader.download(
-        url: url,
-        type: StorageType.internalCache,
-        requireAuth: false,
-      );
-    } catch (_) {}
-  }
-
-  // ---------------- VIEWER ----------------
-
   Widget _buildViewer() {
-    final viewer = _localPath != null
-        ? SfPdfViewer.file(
-            File(_localPath!),
-            controller: _controller,
-            onDocumentLoaded: _onDocumentLoaded,
-          )
-        : SfPdfViewer.network(
-            widget.url,
-            controller: _controller,
-            onDocumentLoaded: _onDocumentLoaded,
-          );
+    final viewer = _cachedViewer ?? const SizedBox.shrink();
+    final design = Design.of(context);
 
     return Stack(
       children: [
         AnimatedOpacity(
           opacity: _isVisible ? 1 : 0,
-          duration: const Duration(milliseconds: 200),
+          duration: MotionPreferences.duration(context, design.motion.normal),
           child: viewer,
         ),
-        if (!_isVisible) const LessonDetailSkeleton(lessonType: LessonType.pdf),
+        if (_isVisible &&
+            (InstituteSettings.current?.enableCoursePdfWatermarking ?? false))
+          WatermarkOverlay(
+            text: _watermarkText,
+            color: design.colors.onSurface.withValues(alpha: 0.15),
+          ),
+        if (!_isVisible) LessonDetailSkeleton(lessonType: LessonType.pdf),
       ],
     );
   }
 
-  Widget _buildError() => Center(child: Text(_error!));
+  Widget _buildError() => Center(child: AppText(_error!));
 
   // ---------------- BUILD ----------------
 
@@ -199,7 +229,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
     final design = Design.of(context);
 
     if (_isLoading) {
-      return const LessonDetailSkeleton(lessonType: LessonType.pdf);
+      return LessonDetailSkeleton(lessonType: LessonType.pdf);
     }
     if (_error != null) {
       return _buildError();

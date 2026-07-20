@@ -5,7 +5,6 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../widgets/login_activity_item.dart';
-import '../providers/profile_providers.dart';
 
 class LoginActivityScreen extends ConsumerStatefulWidget {
   const LoginActivityScreen({super.key, this.restrictionMessage});

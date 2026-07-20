@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../providers/profile_providers.dart';
-import '../providers/user_provider.dart';
+
 import '../widgets/paid_active_profile_header.dart';
 import '../widgets/paid_active_profile_snapshot.dart';
 import '../widgets/paid_active_enrolled_courses_section.dart';

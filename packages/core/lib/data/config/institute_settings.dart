@@ -37,6 +37,7 @@ class InstituteSettings {
   final bool isVideoDownloadEnabled;
   final bool activityFeedEnabled;
   final bool enableCustomTest;
+  final bool enableCoursePdfWatermarking;
 
   //Community and Discussions
   final bool postsEnabled;
@@ -80,6 +81,7 @@ class InstituteSettings {
     required this.isVideoDownloadEnabled,
     required this.activityFeedEnabled,
     required this.enableCustomTest,
+    required this.enableCoursePdfWatermarking,
     required this.postsEnabled,
     required this.postsLabel,
     required this.bookmarksEnabled,
@@ -134,6 +136,8 @@ class InstituteSettings {
           json['is_video_download_enabled'] as bool? ?? false,
       activityFeedEnabled: json['activity_feed_enabled'] as bool? ?? false,
       enableCustomTest: json['enable_custom_test'] as bool? ?? false,
+      enableCoursePdfWatermarking:
+          json['enable_course_pdf_watermarking'] as bool? ?? false,
 
       postsEnabled: json['posts_enabled'] as bool? ?? false,
       postsLabel: json['posts_label'] as String? ?? 'Posts',
