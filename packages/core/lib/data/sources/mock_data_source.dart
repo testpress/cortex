@@ -1479,7 +1479,10 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<AttemptDto> endExam(String attemptId) async {
+  Future<AttemptDto> endExam(
+    String attemptId, {
+    bool isContentExam = false,
+  }) async {
     await Future.delayed(const Duration(milliseconds: 800));
     return const AttemptDto(id: 999, score: '45/100');
   }

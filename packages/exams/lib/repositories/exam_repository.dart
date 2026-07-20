@@ -1144,7 +1144,17 @@ class OnlineExamRepository implements ExamRepository {
           } catch (_) {}
         }
       }
-      final finalAttempt = await _dataSource.endExam(attemptId);
+      final isContentExam =
+          _currentState.exam?.attemptsUrl.contains('/contents/') ?? false;
+      final contentAttemptId = _currentState.attempt?.contentAttemptId
+          ?.toString();
+      final idToEnd = (isContentExam && contentAttemptId != null)
+          ? contentAttemptId
+          : attemptId;
+      final finalAttempt = await _dataSource.endExam(
+        idToEnd,
+        isContentExam: isContentExam,
+      );
       stopHeartbeat();
       stopCountdown();
       _emit(

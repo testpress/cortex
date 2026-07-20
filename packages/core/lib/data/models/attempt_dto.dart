@@ -3,6 +3,7 @@ import 'section_dto.dart';
 /// Attempt DTO — represents an active or completed exam attempt.
 class AttemptDto {
   final int? id;
+  final int? contentAttemptId;
   final int? userExamId;
   final String? date;
   final String? state;
@@ -29,6 +30,7 @@ class AttemptDto {
 
   const AttemptDto({
     this.id,
+    this.contentAttemptId,
     this.userExamId,
     this.date,
     this.state,
@@ -54,6 +56,7 @@ class AttemptDto {
 
   AttemptDto copyWith({
     int? id,
+    int? contentAttemptId,
     int? userExamId,
     String? date,
     String? state,
@@ -78,6 +81,7 @@ class AttemptDto {
   }) {
     return AttemptDto(
       id: id ?? this.id,
+      contentAttemptId: contentAttemptId ?? this.contentAttemptId,
       userExamId: userExamId ?? this.userExamId,
       date: date ?? this.date,
       state: state ?? this.state,
@@ -119,6 +123,9 @@ class AttemptDto {
 
     return AttemptDto(
       id: int.tryParse((data['id'] ?? json['id']).toString()),
+      contentAttemptId: json['id'] != data['id']
+          ? int.tryParse(json['id']?.toString() ?? '')
+          : null,
       userExamId: int.tryParse(
         (data['userexam_id'] ?? json['userexam_id']).toString(),
       ),
@@ -199,6 +206,7 @@ class AttemptDto {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'content_attempt_id': contentAttemptId,
       'userexam_id': userExamId,
       'date': date,
       'state': state,

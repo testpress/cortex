@@ -241,7 +241,7 @@ abstract class DataSource {
   });
 
   /// End the exam attempt and finalize results.
-  Future<AttemptDto> endExam(String attemptId);
+  Future<AttemptDto> endExam(String attemptId, {bool isContentExam = false});
 
   /// Fetch all review items / solution details for an attempt.
   Future<List<ReviewItemDto>> getReviewItems(String reviewUrl);

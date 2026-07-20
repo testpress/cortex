@@ -895,9 +895,15 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<AttemptDto> endExam(String attemptId) async {
+  Future<AttemptDto> endExam(
+    String attemptId, {
+    bool isContentExam = false,
+  }) async {
+    final endpoint = isContentExam
+        ? ApiEndpoints.contentAttemptEnd(attemptId)
+        : ApiEndpoints.endAttempt(attemptId);
     return performNetworkRequest(
-      _dio.put(ApiEndpoints.endAttempt(attemptId)),
+      _dio.put(endpoint),
       fromJson: AttemptDto.fromJson,
     );
   }
