@@ -487,6 +487,7 @@ class OfflineExamRepository implements ExamRepository {
         title: examData.title,
         duration: examData.duration,
         questionCount: examData.questionCount,
+        markPerQuestion: drift.Value(examData.markPerQuestion),
         downloadedAt: DateTime.now(),
         status: const drift.Value('DOWNLOADED'),
         questionsJson: questionsJsonStr,

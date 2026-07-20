@@ -10,6 +10,7 @@ class OfflineExamDownloadsTable extends Table {
   TextColumn get title => text()();
   TextColumn get duration => text()();
   IntColumn get questionCount => integer()();
+  TextColumn get markPerQuestion => text().nullable()();
 
   TextColumn get questionsJson =>
       text()(); // blob — questions only, no fake attempt

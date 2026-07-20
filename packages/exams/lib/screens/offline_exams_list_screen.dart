@@ -271,9 +271,12 @@ class _ExamCardStats extends StatelessWidget {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
-    final totalMarks = exam.questionCount.toDouble();
-    final marksStr = totalMarks.toInt().toString();
-
+    final totalMarks =
+        exam.questionCount *
+        (double.tryParse(exam.markPerQuestion ?? '1') ?? 1.0);
+    final marksStr = totalMarks == totalMarks.toInt()
+        ? totalMarks.toInt().toString()
+        : totalMarks.toString();
     return Row(
       children: [
         Expanded(
@@ -461,34 +464,26 @@ class _DeleteExamConfirmationDialog extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                AppFocusable(
-                  onTap: () => Navigator.of(context).pop(false),
-                  borderRadius: BorderRadius.circular(design.radius.md),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: design.spacing.md,
-                      vertical: design.spacing.sm,
-                    ),
-                    child: AppText.labelBold(
-                      l10n.labelCancel,
-                      color: design.colors.textPrimary,
-                    ),
+                AppButton(
+                  variant: AppButtonVariant.secondary,
+                  label: l10n.labelCancel,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: design.spacing.md,
+                    vertical: design.spacing.sm,
                   ),
+                  onPressed: () => Navigator.of(context).pop(false),
                 ),
                 SizedBox(width: design.spacing.sm),
-                AppFocusable(
-                  onTap: () => Navigator.of(context).pop(true),
-                  borderRadius: BorderRadius.circular(design.radius.md),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: design.spacing.md,
-                      vertical: design.spacing.sm,
-                    ),
-                    child: AppText.labelBold(
-                      l10n.deleteAction,
-                      color: design.colors.error,
-                    ),
+                AppButton(
+                  variant: AppButtonVariant.secondary,
+                  label: l10n.deleteAction,
+                  foregroundColor: design.colors.error,
+                  borderColor: design.colors.error,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: design.spacing.md,
+                    vertical: design.spacing.sm,
                   ),
+                  onPressed: () => Navigator.of(context).pop(true),
                 ),
               ],
             ),
