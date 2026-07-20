@@ -1845,21 +1845,6 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
           as _i6.Future<List<_i4.OfflineExamDownloadsTableData>>);
 
   @override
-  _i6.Future<List<_i4.OfflineExamDownloadsTableData>> getAllOfflineExams() =>
-      (super.noSuchMethod(
-            Invocation.method(#getAllOfflineExams, []),
-            returnValue:
-                _i6.Future<List<_i4.OfflineExamDownloadsTableData>>.value(
-                  <_i4.OfflineExamDownloadsTableData>[],
-                ),
-            returnValueForMissingStub:
-                _i6.Future<List<_i4.OfflineExamDownloadsTableData>>.value(
-                  <_i4.OfflineExamDownloadsTableData>[],
-                ),
-          )
-          as _i6.Future<List<_i4.OfflineExamDownloadsTableData>>);
-
-  @override
   _i6.Stream<List<_i4.OfflineExamDownloadsTableData>> watchAllOfflineExams() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllOfflineExams, []),
