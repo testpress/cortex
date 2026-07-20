@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
@@ -50,17 +50,20 @@ class _OfflineExamsHeader extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppFocusable(
-              onTap: () => context.pop(),
-              borderRadius: BorderRadius.circular(design.radius.md),
-              child: Padding(
-                padding: EdgeInsets.all(design.spacing.xs),
+            AppSemantics.button(
+              label: l10n.actionGoBack,
+              child: AppFocusable(
+                onTap: () => context.pop(),
+                borderRadius: BorderRadius.circular(design.radius.md),
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 2.0),
-                  child: Icon(
-                    LucideIcons.arrowLeft,
-                    color: design.colors.textPrimary,
-                    size: design.iconSize.md,
+                  padding: EdgeInsets.all(design.spacing.xs),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 2.0),
+                    child: Icon(
+                      LucideIcons.arrowLeft,
+                      color: design.colors.textPrimary,
+                      size: design.iconSize.md,
+                    ),
                   ),
                 ),
               ),
@@ -111,7 +114,8 @@ class _OfflineExamsListBody extends ConsumerWidget {
         );
       },
       loading: () => const Center(child: AppLoadingIndicator()),
-      error: (err, stack) => Center(child: AppText.body(err.toString())),
+      error: (err, stack) =>
+          Center(child: AppErrorView(message: err.toString())),
     );
   }
 }
@@ -365,7 +369,6 @@ class _ExamCardActions extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         AppButton(
-          height: design.spacing.xl + design.spacing.sm, // 40px
           padding: EdgeInsets.symmetric(
             horizontal: design.spacing.md,
             vertical: design.spacing.xs,
@@ -381,36 +384,14 @@ class _ExamCardActions extends ConsumerWidget {
             color: design.colors.error,
           ),
           onPressed: () async {
-            final shouldDelete = await showDialog<bool>(
+            final shouldDelete = await showGeneralDialog<bool>(
               context: context,
-              builder: (context) {
-                return AlertDialog(
-                  backgroundColor: design.colors.card,
-                  title: AppText.headline(
-                    l10n.deleteExamTitle,
-                    color: design.colors.textPrimary,
-                  ),
-                  content: AppText.body(
-                    l10n.deleteExamConfirmationMessage,
-                    color: design.colors.textSecondary,
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: AppText.labelBold(
-                        l10n.labelCancel,
-                        color: design.colors.textPrimary,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      child: AppText.labelBold(
-                        l10n.deleteAction,
-                        color: design.colors.error,
-                      ),
-                    ),
-                  ],
-                );
+              barrierDismissible: true,
+              barrierLabel: l10n.labelCancel,
+              barrierColor: design.colors.overlay,
+              transitionDuration: const Duration(milliseconds: 200),
+              pageBuilder: (context, animation, secondaryAnimation) {
+                return const _DeleteExamConfirmationDialog();
               },
             );
 
@@ -424,23 +405,96 @@ class _ExamCardActions extends ConsumerWidget {
         ),
         SizedBox(width: design.spacing.sm),
         AppButton(
-          height: design.spacing.xl + design.spacing.sm, // 40px
           padding: EdgeInsets.symmetric(
             horizontal: design.spacing.md,
             vertical: design.spacing.xs,
           ),
           label: l10n.attendExamAction,
           variant: AppButtonVariant.primary,
-          leading: const Icon(
+          leading: Icon(
             LucideIcons.play,
             size: 18,
-            color: Color(0xFFFFFFFF),
+            color: design.colors.onPrimary,
           ),
           onPressed: () {
             context.push('/exams/test/${exam.contentId}');
           },
         ),
       ],
+    );
+  }
+}
+
+class _DeleteExamConfirmationDialog extends StatelessWidget {
+  const _DeleteExamConfirmationDialog();
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
+
+    return Center(
+      child: Container(
+        width: double.infinity,
+        constraints: const BoxConstraints(maxWidth: 480),
+        margin: EdgeInsets.all(design.spacing.xl),
+        padding: EdgeInsets.all(design.spacing.lg),
+        decoration: BoxDecoration(
+          color: design.colors.card,
+          borderRadius: BorderRadius.circular(design.radius.xl),
+          boxShadow: design.shadows.floating,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppText.headline(
+              l10n.deleteExamTitle,
+              color: design.colors.textPrimary,
+            ),
+            SizedBox(height: design.spacing.md),
+            AppText.body(
+              l10n.deleteExamConfirmationMessage,
+              color: design.colors.textSecondary,
+            ),
+            SizedBox(height: design.spacing.xl),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                AppFocusable(
+                  onTap: () => Navigator.of(context).pop(false),
+                  borderRadius: BorderRadius.circular(design.radius.md),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: design.spacing.md,
+                      vertical: design.spacing.sm,
+                    ),
+                    child: AppText.labelBold(
+                      l10n.labelCancel,
+                      color: design.colors.textPrimary,
+                    ),
+                  ),
+                ),
+                SizedBox(width: design.spacing.sm),
+                AppFocusable(
+                  onTap: () => Navigator.of(context).pop(true),
+                  borderRadius: BorderRadius.circular(design.radius.md),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: design.spacing.md,
+                      vertical: design.spacing.sm,
+                    ),
+                    child: AppText.labelBold(
+                      l10n.deleteAction,
+                      color: design.colors.error,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

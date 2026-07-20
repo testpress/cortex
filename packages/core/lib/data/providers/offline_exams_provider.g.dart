@@ -6,7 +6,7 @@ part of 'offline_exams_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$offlineExamsHash() => r'e5e88bcc9ff938164524aef5e92e64b18feb8801';
+String _$offlineExamsHash() => r'c645a403771d1a642fe775da5359f0ca4f826df5';
 
 /// See also [OfflineExams].
 @ProviderFor(OfflineExams)
