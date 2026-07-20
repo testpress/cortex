@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-import '../../providers/explore_providers.dart';
+import '../../providers/store_providers.dart';
 import 'product_card.dart';
 
 final _skeletonProducts = List.filled(
@@ -40,7 +40,7 @@ class ProductList extends ConsumerWidget {
           return Center(
             child: Padding(
               padding: EdgeInsets.all(design.spacing.xl),
-              child: AppText.body(L10n.of(context).exploreNoProductsFound),
+              child: AppText.body(L10n.of(context).storeNoProductsFound),
             ),
           );
         }
@@ -65,7 +65,7 @@ class ProductList extends ConsumerWidget {
     return Padding(
       padding: EdgeInsets.all(design.spacing.md),
       child: AppSemantics.scrollableList(
-        label: L10n.of(context).exploreProductsLabel,
+        label: L10n.of(context).storeProductsLabel,
         itemCount: products.length,
         child: LayoutBuilder(
           builder: (context, constraints) {

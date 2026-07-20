@@ -1,11 +1,11 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
-import '../repositories/explore_repository.dart';
+import '../repositories/store_repository.dart';
 
-part 'explore_providers.g.dart';
+part 'store_providers.g.dart';
 
 @riverpod
-class ExploreSearchQuery extends _$ExploreSearchQuery {
+class StoreSearchQuery extends _$StoreSearchQuery {
   @override
   String build() => '';
 
@@ -23,16 +23,16 @@ class SelectedStoreCategory extends _$SelectedStoreCategory {
 // ── Repository provider ───────────────────────────────────────────────────
 
 @Riverpod(keepAlive: true)
-ExploreRepository exploreRepository(ExploreRepositoryRef ref) {
-  return ExploreRepository(source: ref.watch(dataSourceProvider));
+StoreRepository storeRepository(StoreRepositoryRef ref) {
+  return StoreRepository(source: ref.watch(dataSourceProvider));
 }
 
 // ── Data providers ────────────────────────────────────────────────────────
 
 @riverpod
 Future<List<ProductCategoryDto>> storeCategories(StoreCategoriesRef ref) {
-  final query = ref.watch(exploreSearchQueryProvider);
-  final repo = ref.watch(exploreRepositoryProvider);
+  final query = ref.watch(storeSearchQueryProvider);
+  final repo = ref.watch(storeRepositoryProvider);
   return repo.fetchCategories(
     search: query.isNotEmpty ? query : null,
   );
@@ -42,9 +42,9 @@ Future<List<ProductCategoryDto>> storeCategories(StoreCategoriesRef ref) {
 class StoreProducts extends _$StoreProducts {
   @override
   Future<PaginatedResponseDto<ProductDto>> build() async {
-    final query = ref.watch(exploreSearchQueryProvider);
+    final query = ref.watch(storeSearchQueryProvider);
     final category = ref.watch(selectedStoreCategoryProvider);
-    final repo = ref.watch(exploreRepositoryProvider);
+    final repo = ref.watch(storeRepositoryProvider);
 
     return repo.fetchProducts(
       search: query.isNotEmpty ? query : null,
@@ -59,9 +59,9 @@ class StoreProducts extends _$StoreProducts {
     final currentResponse = state.value;
     if (currentResponse == null || currentResponse.next == null) return;
 
-    final query = ref.read(exploreSearchQueryProvider);
+    final query = ref.read(storeSearchQueryProvider);
     final category = ref.read(selectedStoreCategoryProvider);
-    final repo = ref.read(exploreRepositoryProvider);
+    final repo = ref.read(storeRepositoryProvider);
 
     // Extract page number from the next URL
     int nextPage = 2;
@@ -97,7 +97,7 @@ Future<ProductDto> productDetail(
   ProductDetailRef ref,
   String slug,
 ) {
-  final repo = ref.watch(exploreRepositoryProvider);
+  final repo = ref.watch(storeRepositoryProvider);
   return repo.fetchProductDetail(slug);
 }
 
@@ -106,7 +106,7 @@ Future<InstallmentPlansResponseDto> productInstallmentPlans(
   ProductInstallmentPlansRef ref,
   String slug,
 ) {
-  final repo = ref.watch(exploreRepositoryProvider);
+  final repo = ref.watch(storeRepositoryProvider);
   return repo.getInstallmentPlans(slug);
 }
 
@@ -125,7 +125,7 @@ class ProductDiscountNotifier extends _$ProductDiscountNotifier {
   Future<void> applyCoupon(String code) async {
     state = const AsyncValue.loading();
     try {
-      final repo = ref.read(exploreRepositoryProvider);
+      final repo = ref.read(storeRepositoryProvider);
       // Reuse existing draft order if available to avoid creating multiple orders
       final orderId = _orderId ?? (await repo.createOrder(slug)).id;
       _orderId = orderId;

@@ -1435,43 +1435,43 @@ class AppLocalizationsMl extends AppLocalizations {
   String get editProfileBack => 'പിന്നിലേക്ക്';
 
   @override
-  String get exploreTabTitle => 'എക്സ്പ്ലോർ';
+  String get storeTabTitle => 'എക്സ്പ്ലോർ';
 
   @override
-  String get exploreSearchHint => 'കോഴ്സുകൾ, പാഠങ്ങൾ മുതൽ തിരയുക...';
+  String get storeSearchHint => 'കോഴ്സുകൾ, പാഠങ്ങൾ മുതൽ തിരയുക...';
 
   @override
-  String get exploreSearchResultsTitle => 'തിരയൽ ഫലങ്ങൾ';
+  String get storeSearchResultsTitle => 'തിരയൽ ഫലങ്ങൾ';
 
   @override
-  String get exploreTrendingTitle => 'ഇപ്പോൾ ട്രെൻഡിംഗിലുള്ളവ';
+  String get storeTrendingTitle => 'ഇപ്പോൾ ട്രെൻഡിംഗിലുള്ളവ';
 
   @override
-  String get exploreRecommendedTitle => 'നിങ്ങൾക്കായി ശുപാർശ ചെയ്യുന്നവ';
+  String get storeRecommendedTitle => 'നിങ്ങൾക്കായി ശുപാർശ ചെയ്യുന്നവ';
 
   @override
-  String get exploreShortLessonsTitle => 'ഏറ്റവും കൂടുതൽ കണ്ട വീഡിയോകൾ';
+  String get storeShortLessonsTitle => 'ഏറ്റവും കൂടുതൽ കണ്ട വീഡിയോകൾ';
 
   @override
-  String get explorePopularTestsTitle => 'ജനപ്രിയ പരീക്ഷകൾ';
+  String get storePopularTestsTitle => 'ജനപ്രിയ പരീക്ഷകൾ';
 
   @override
-  String get exploreStudyTipsTitle => 'പഠന നുറുങ്ങുകളും അപ്‌ഡേറ്റുകളും';
+  String get storeStudyTipsTitle => 'പഠന നുറുങ്ങുകളും അപ്‌ഡേറ്റുകളും';
 
   @override
-  String get exploreFilterTrending => 'ട്രെൻഡിംഗ്';
+  String get storeFilterTrending => 'ട്രെൻഡിംഗ്';
 
   @override
-  String get exploreFilterRecommended => 'ശുപാർശ ചെയ്തവ';
+  String get storeFilterRecommended => 'ശുപാർശ ചെയ്തവ';
 
   @override
-  String get exploreFilterShortLessons => 'ചെറിയ പാഠങ്ങൾ';
+  String get storeFilterShortLessons => 'ചെറിയ പാഠങ്ങൾ';
 
   @override
-  String get exploreFilterPopular => 'ജനപ്രിയം';
+  String get storeFilterPopular => 'ജനപ്രിയം';
 
   @override
-  String get exploreFilterStudyTips => 'പഠന നുറുങ്ങുകൾ';
+  String get storeFilterStudyTips => 'പഠന നുറുങ്ങുകൾ';
 
   @override
   String get editProfileFirstNameLabel => 'ആദ്യ പേര്';
@@ -2415,7 +2415,7 @@ class AppLocalizationsMl extends AppLocalizations {
       'വ്യത്യസ്ത വിഷയങ്ങളിലെ നിങ്ങളുടെ പ്രകടനം വിശകലനം ചെയ്യുക';
 
   @override
-  String get reviewExploreDetailsTitle => 'കൂടുതൽ വിവരങ്ങൾ പര്യവേക്ഷണം ചെയ്യുക';
+  String get reviewStoreDetailsTitle => 'കൂടുതൽ വിവരങ്ങൾ പര്യവേക്ഷണം ചെയ്യുക';
 
   @override
   String get reviewExamReviewTitle => 'പരീക്ഷ അവലോകനം';
@@ -2515,76 +2515,76 @@ class AppLocalizationsMl extends AppLocalizations {
       'ദയവായി കാഠിന്യ നില തിരഞ്ഞെടുക്കുക';
 
   @override
-  String get exploreProductBack => 'മടങ്ങുക';
+  String get storeProductBack => 'മടങ്ങുക';
 
   @override
-  String get exploreSelectPlan => 'പ്ലാൻ തിരഞ്ഞെടുക്കുക';
+  String get storeSelectPlan => 'പ്ലാൻ തിരഞ്ഞെടുക്കുക';
 
   @override
-  String get exploreBuyNow => 'ഇപ്പോൾ വാങ്ങുക';
+  String get storeBuyNow => 'ഇപ്പോൾ വാങ്ങുക';
 
   @override
-  String get exploreCheckoutComingSoon => 'ചെക്ക്ഔട്ട് പ്രക്രിയ ഉടൻ വരും';
+  String get storeCheckoutComingSoon => 'ചെക്ക്ഔട്ട് പ്രക്രിയ ഉടൻ വരും';
 
   @override
-  String exploreValidityDays(String days) {
+  String storeValidityDays(String days) {
     return 'കാലാവധി: $days ദിവസങ്ങൾ';
   }
 
   @override
-  String exploreFromTo(String start, String end) {
+  String storeFromTo(String start, String end) {
     return '$start മുതൽ $end വരെ';
   }
 
   @override
-  String get exploreNoProductsFound => 'ഉൽപ്പന്നങ്ങളൊന്നും കണ്ടെത്തിയില്ല.';
+  String get storeNoProductsFound => 'ഉൽപ്പന്നങ്ങളൊന്നും കണ്ടെത്തിയില്ല.';
 
   @override
-  String get exploreProductsLabel => 'ഉൽപ്പന്നങ്ങൾ';
+  String get storeProductsLabel => 'ഉൽപ്പന്നങ്ങൾ';
 
   @override
-  String get exploreCategoriesLabel => 'വിഭാഗങ്ങൾ';
+  String get storeCategoriesLabel => 'വിഭാഗങ്ങൾ';
 
   @override
-  String explorePlanSelected(String planName, String price) {
+  String storePlanSelected(String planName, String price) {
     return '$planName, ₹$price, തിരഞ്ഞെടുത്തു';
   }
 
   @override
-  String explorePlanUnselected(String planName, String price) {
+  String storePlanUnselected(String planName, String price) {
     return '$planName, ₹$price';
   }
 
   @override
-  String get exploreDescription => 'വിവരണം';
+  String get storeDescription => 'വിവരണം';
 
   @override
-  String get exploreCurriculum => 'പാഠ്യപദ്ധതി';
+  String get storeCurriculum => 'പാഠ്യപദ്ധതി';
 
   @override
-  String get exploreHaveDiscountCode => 'ഡിസ്കൗണ്ട് കോഡ് ഉണ്ടോ?';
+  String get storeHaveDiscountCode => 'ഡിസ്കൗണ്ട് കോഡ് ഉണ്ടോ?';
 
   @override
-  String get explorePayInstallments => 'തവണകളായി അടയ്ക്കുക';
+  String get storePayInstallments => 'തവണകളായി അടയ്ക്കുക';
 
   @override
-  String get exploreDiscountCoupon => 'ഡിസ്കൗണ്ട് കൂപ്പൺ';
+  String get storeDiscountCoupon => 'ഡിസ്കൗണ്ട് കൂപ്പൺ';
 
   @override
-  String get exploreChoosePlan => 'ഒരു പ്ലാൻ തിരഞ്ഞെടുക്കുക';
+  String get storeChoosePlan => 'ഒരു പ്ലാൻ തിരഞ്ഞെടുക്കുക';
 
   @override
-  String explorePayAmountNow(String amount) {
+  String storePayAmountNow(String amount) {
     return '₹$amount ഇപ്പോൾ അടയ്ക്കുക';
   }
 
   @override
-  String exploreCouponAppliedSuccess(String total) {
+  String storeCouponAppliedSuccess(String total) {
     return 'Coupon applied successfully! New total: $total';
   }
 
   @override
-  String exploreStatisticsChapters(int count) {
+  String storeStatisticsChapters(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -2595,7 +2595,7 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
-  String exploreStatisticsVideos(int count) {
+  String storeStatisticsVideos(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -2606,7 +2606,7 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
-  String exploreStatisticsExams(int count) {
+  String storeStatisticsExams(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -2617,7 +2617,7 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
-  String exploreStatisticsAttachments(int count) {
+  String storeStatisticsAttachments(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -2628,7 +2628,7 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
-  String exploreStatisticsNotes(int count) {
+  String storeStatisticsNotes(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -2639,39 +2639,39 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
-  String exploreInstallmentOrdinal(String installment) {
+  String storeInstallmentOrdinal(String installment) {
     return 'ഗഡു $installment';
   }
 
   @override
-  String get exploreCouponHint => 'കൂപ്പൺ കോഡ് നൽകുക';
+  String get storeCouponHint => 'കൂപ്പൺ കോഡ് നൽകുക';
 
   @override
-  String get exploreApplyCoupon => 'പ്രയോഗിക്കുക';
+  String get storeApplyCoupon => 'പ്രയോഗിക്കുക';
 
   @override
-  String get exploreNoInstallmentPlans =>
+  String get storeNoInstallmentPlans =>
       'ഈ ഉൽപ്പന്നത്തിന് ഇൻസ്റ്റാൾമെന്റ് പ്ലാനുകൾ ലഭ്യമല്ല.';
 
   @override
-  String get exploreLoading => 'ലോഡ് ചെയ്യുന്നു...';
+  String get storeLoading => 'ലോഡ് ചെയ്യുന്നു...';
 
   @override
-  String get exploreFailedToLoadPlans =>
+  String get storeFailedToLoadPlans =>
       'പ്ലാനുകൾ ലോഡുചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു';
 
   @override
-  String exploreInstallmentPlansCalculationBase(String price) {
+  String storeInstallmentPlansCalculationBase(String price) {
     return '₹$price എന്ന യഥാർത്ഥ വിലയുടെ അടിസ്ഥാനത്തിലാണ് ഇൻസ്റ്റാൾമെന്റ് പ്ലാനുകൾ കണക്കാക്കുന്നത്.';
   }
 
   @override
-  String explorePaidOn(String date) {
+  String storePaidOn(String date) {
     return '$date-ൽ അടച്ചു';
   }
 
   @override
-  String get exploreNoContentAvailable => 'ഉള്ളടക്കം ലഭ്യമല്ല';
+  String get storeNoContentAvailable => 'ഉള്ളടക്കം ലഭ്യമല്ല';
 
   @override
   String get paymentProcessing =>

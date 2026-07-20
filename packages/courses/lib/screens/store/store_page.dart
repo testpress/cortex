@@ -2,18 +2,18 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 
-import '../../providers/explore_providers.dart';
-import '../../widgets/explore/category_filter_bar.dart';
-import '../../widgets/explore/product_list.dart';
+import '../../providers/store_providers.dart';
+import '../../widgets/store/category_filter_bar.dart';
+import '../../widgets/store/product_list.dart';
 
-class ExplorePage extends ConsumerStatefulWidget {
-  const ExplorePage({super.key});
+class StorePage extends ConsumerStatefulWidget {
+  const StorePage({super.key});
 
   @override
-  ConsumerState<ExplorePage> createState() => _ExplorePageState();
+  ConsumerState<StorePage> createState() => _StorePageState();
 }
 
-class _ExplorePageState extends ConsumerState<ExplorePage> {
+class _StorePageState extends ConsumerState<StorePage> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -53,17 +53,17 @@ class _ExplorePageState extends ConsumerState<ExplorePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppText.lg(
-                      l10n.exploreTabTitle,
+                      l10n.storeTabTitle,
                       style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
                     SizedBox(height: design.spacing.md),
                     AppSearchBar(
                       controller: _searchController,
-                      hintText: l10n.exploreSearchHint,
+                      hintText: l10n.storeSearchHint,
                       backgroundColor: design.colors.surface,
                       onChanged: (value) {
                         ref
-                            .read(exploreSearchQueryProvider.notifier)
+                            .read(storeSearchQueryProvider.notifier)
                             .update(value);
                       },
                     ),

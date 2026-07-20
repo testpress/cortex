@@ -19,7 +19,7 @@ export 'models/user_progress_dto.dart';
 export 'models/user_dto.dart';
 export 'models/settings_models.dart';
 export 'models/study_momentum_dto.dart';
-export 'models/explore_models.dart';
+export 'models/store_models.dart';
 export 'models/paginated_response_dto.dart';
 export 'models/dashboard_dto.dart';
 export 'models/exam_dto.dart';

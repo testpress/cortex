@@ -1,4 +1,4 @@
-import '../data/models/explore_models.dart';
+import '../data/models/store_models.dart';
 
 /// Abstract base class for payment gateway handlers
 abstract class PaymentHandler {

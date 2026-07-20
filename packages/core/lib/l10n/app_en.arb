@@ -693,19 +693,19 @@
   "editProfilePhotoLabel": "Profile Photo",
   "editProfileChangePhoto": "Change photo",
   "editProfileBack": "Back",
-  "exploreTabTitle": "Explore",
-  "exploreSearchHint": "Search courses, lessons, topics...",
-  "exploreSearchResultsTitle": "Search Results",
-  "exploreTrendingTitle": "Trending Now",
-  "exploreRecommendedTitle": "Recommended For You",
-  "exploreShortLessonsTitle": "Most Viewed Videos",
-  "explorePopularTestsTitle": "Popular Tests",
-  "exploreStudyTipsTitle": "Study Tips & Updates",
-  "exploreFilterTrending": "Trending",
-  "exploreFilterRecommended": "Recommended",
-  "exploreFilterShortLessons": "Short Lessons",
-  "exploreFilterPopular": "Popular",
-  "exploreFilterStudyTips": "Study Tips",
+  "storeTabTitle": "Store",
+  "storeSearchHint": "Search courses, lessons, topics...",
+  "storeSearchResultsTitle": "Search Results",
+  "storeTrendingTitle": "Trending Now",
+  "storeRecommendedTitle": "Recommended For You",
+  "storeShortLessonsTitle": "Most Viewed Videos",
+  "storePopularTestsTitle": "Popular Tests",
+  "storeStudyTipsTitle": "Study Tips & Updates",
+  "storeFilterTrending": "Trending",
+  "storeFilterRecommended": "Recommended",
+  "storeFilterShortLessons": "Short Lessons",
+  "storeFilterPopular": "Popular",
+  "storeFilterStudyTips": "Study Tips",
   "editProfileFirstNameLabel": "First Name",
   "editProfileFirstNameHint": "Enter your first name",
   "editProfileLastNameLabel": "Last Name",
@@ -1131,7 +1131,7 @@
   },
   "reviewPerformanceOverviewTitle": "Performance Overview",
   "reviewSubjectPerformanceTileDesc": "Analyze your performance across different subjects",
-  "reviewExploreDetailsTitle": "Explore More Details",
+  "reviewStoreDetailsTitle": "Store More Details",
   "reviewExamReviewTitle": "Exam Review",
   "reviewExamReviewDesc": "Review each question with answers and explanations",
   "reviewAnalyticsForTitle": "Review Analytics for {title}",
@@ -1178,20 +1178,20 @@
     }
   },
   "customExamPleaseSelectDifficultyLevel": "Please select a difficulty level",
-  "exploreProductBack": "Back",
-  "exploreSelectPlan": "Select Plan",
-  "exploreBuyNow": "Buy Now",
-  "exploreCheckoutComingSoon": "Checkout flow coming soon",
-  "exploreValidityDays": "Validity: {days} days",
-  "@exploreValidityDays": {
+  "storeProductBack": "Back",
+  "storeSelectPlan": "Select Plan",
+  "storeBuyNow": "Buy Now",
+  "storeCheckoutComingSoon": "Checkout flow coming soon",
+  "storeValidityDays": "Validity: {days} days",
+  "@storeValidityDays": {
     "placeholders": {
       "days": {
         "type": "String"
       }
     }
   },
-  "exploreFromTo": "From {start} to {end}",
-  "@exploreFromTo": {
+  "storeFromTo": "From {start} to {end}",
+  "@storeFromTo": {
     "placeholders": {
       "start": {
         "type": "String"
@@ -1201,11 +1201,11 @@
       }
     }
   },
-  "exploreNoProductsFound": "No products found.",
-  "exploreProductsLabel": "Products",
-  "exploreCategoriesLabel": "Categories",
-  "explorePlanSelected": "{planName}, ₹{price}, selected",
-  "@explorePlanSelected": {
+  "storeNoProductsFound": "No products found.",
+  "storeProductsLabel": "Products",
+  "storeCategoriesLabel": "Categories",
+  "storePlanSelected": "{planName}, ₹{price}, selected",
+  "@storePlanSelected": {
     "placeholders": {
       "planName": {
         "type": "String"
@@ -1215,8 +1215,8 @@
       }
     }
   },
-  "explorePlanUnselected": "{planName}, ₹{price}",
-  "@explorePlanUnselected": {
+  "storePlanUnselected": "{planName}, ₹{price}",
+  "@storePlanUnselected": {
     "placeholders": {
       "planName": {
         "type": "String"
@@ -1226,98 +1226,98 @@
       }
     }
   },
-  "exploreDescription": "Description",
-  "exploreCurriculum": "Curriculum",
-  "exploreHaveDiscountCode": "Have a discount code?",
-  "explorePayInstallments": "Pay in installments",
-  "exploreDiscountCoupon": "Discount Coupon",
-  "exploreChoosePlan": "Choose a Plan",
-  "explorePayAmountNow": "Pay ₹{amount} now",
-  "@explorePayAmountNow": {
+  "storeDescription": "Description",
+  "storeCurriculum": "Curriculum",
+  "storeHaveDiscountCode": "Have a discount code?",
+  "storePayInstallments": "Pay in installments",
+  "storeDiscountCoupon": "Discount Coupon",
+  "storeChoosePlan": "Choose a Plan",
+  "storePayAmountNow": "Pay ₹{amount} now",
+  "@storePayAmountNow": {
     "placeholders": {
       "amount": {
         "type": "String"
       }
     }
   },
-  "exploreCouponAppliedSuccess": "Coupon applied successfully! New total: {total}",
-  "@exploreCouponAppliedSuccess": {
+  "storeCouponAppliedSuccess": "Coupon applied successfully! New total: {total}",
+  "@storeCouponAppliedSuccess": {
     "placeholders": {
       "total": {
         "type": "String"
       }
     }
   },
-  "exploreStatisticsChapters": "{count, plural, =1{1 Chapter} other{{count} Chapters}}",
-  "@exploreStatisticsChapters": {
+  "storeStatisticsChapters": "{count, plural, =1{1 Chapter} other{{count} Chapters}}",
+  "@storeStatisticsChapters": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "exploreStatisticsVideos": "{count, plural, =1{1 Video} other{{count} Videos}}",
-  "@exploreStatisticsVideos": {
+  "storeStatisticsVideos": "{count, plural, =1{1 Video} other{{count} Videos}}",
+  "@storeStatisticsVideos": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "exploreStatisticsExams": "{count, plural, =1{1 Exam} other{{count} Exams}}",
-  "@exploreStatisticsExams": {
+  "storeStatisticsExams": "{count, plural, =1{1 Exam} other{{count} Exams}}",
+  "@storeStatisticsExams": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "exploreStatisticsAttachments": "{count, plural, =1{1 Attachment} other{{count} Attachments}}",
-  "@exploreStatisticsAttachments": {
+  "storeStatisticsAttachments": "{count, plural, =1{1 Attachment} other{{count} Attachments}}",
+  "@storeStatisticsAttachments": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "exploreStatisticsNotes": "{count, plural, =1{1 Note} other{{count} Notes}}",
-  "@exploreStatisticsNotes": {
+  "storeStatisticsNotes": "{count, plural, =1{1 Note} other{{count} Notes}}",
+  "@storeStatisticsNotes": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "exploreInstallmentOrdinal": "Installment {installment}",
-  "@exploreInstallmentOrdinal": {
+  "storeInstallmentOrdinal": "Installment {installment}",
+  "@storeInstallmentOrdinal": {
     "placeholders": {
       "installment": {
         "type": "String"
       }
     }
   },
-  "exploreCouponHint": "Enter Coupon Code",
-  "exploreApplyCoupon": "APPLY",
-  "exploreNoInstallmentPlans": "No installment plans available for this product.",
-  "exploreLoading": "Loading...",
-  "exploreFailedToLoadPlans": "Failed to load plans",
-  "exploreInstallmentPlansCalculationBase": "Installment plans are calculated based on the original price of ₹{price}.",
-  "@exploreInstallmentPlansCalculationBase": {
+  "storeCouponHint": "Enter Coupon Code",
+  "storeApplyCoupon": "APPLY",
+  "storeNoInstallmentPlans": "No installment plans available for this product.",
+  "storeLoading": "Loading...",
+  "storeFailedToLoadPlans": "Failed to load plans",
+  "storeInstallmentPlansCalculationBase": "Installment plans are calculated based on the original price of ₹{price}.",
+  "@storeInstallmentPlansCalculationBase": {
     "placeholders": {
       "price": {
         "type": "String"
       }
     }
   },
-  "explorePaidOn": "Paid on {date}",
-  "@explorePaidOn": {
+  "storePaidOn": "Paid on {date}",
+  "@storePaidOn": {
     "placeholders": {
       "date": {
         "type": "String"
       }
     }
   },
-  "exploreNoContentAvailable": "No content available",
+  "storeNoContentAvailable": "No content available",
   "paymentProcessing": "Processing your payment...",
   "paymentSuccessful": "Payment Successful!",
   "paymentSuccessDescription": "Your enrollment has been confirmed successfully.",

@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
-import '../../providers/explore_providers.dart';
+import '../../providers/store_providers.dart';
 
 class CategoryFilterBar extends ConsumerWidget {
   const CategoryFilterBar({super.key});
@@ -19,7 +19,7 @@ class CategoryFilterBar extends ConsumerWidget {
         return SizedBox(
           height: 48,
           child: AppSemantics.scrollableList(
-            label: L10n.of(context).exploreCategoriesLabel,
+            label: L10n.of(context).storeCategoriesLabel,
             itemCount: categories.length + 1,
             child: ListView.separated(
               padding: EdgeInsets.symmetric(horizontal: design.spacing.md),

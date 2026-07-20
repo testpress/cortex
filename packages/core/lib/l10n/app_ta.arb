@@ -665,19 +665,19 @@
   "editProfilePhotoLabel": "சுயவிவரப் புகைப்படம்",
   "editProfileChangePhoto": "புகைப்படத்தை மாற்று",
   "editProfileBack": "பின்செல்",
-  "exploreTabTitle": "ஆராயுங்கள்",
-  "exploreSearchHint": "பாடங்கள், தலைப்புகளைத் தேடுங்கள்...",
-  "exploreSearchResultsTitle": "தேடல் முடிவுகள்",
-  "exploreTrendingTitle": "தற்போது பிரபலமாக இருப்பவை",
-  "exploreRecommendedTitle": "உங்களுக்காக பரிந்துரைக்கப்படுகிறது",
-  "exploreShortLessonsTitle": "அதிகம் பார்க்கப்பட்ட வீடியோக்கள்",
-  "explorePopularTestsTitle": "பிரபலமான தேர்வுகள்",
-  "exploreStudyTipsTitle": "கற்றல் குறிப்புகள் & புதுப்பிப்புகள்",
-  "exploreFilterTrending": "பிரபலமானவை",
-  "exploreFilterRecommended": "பரிந்துரைக்கப்பட்டவை",
-  "exploreFilterShortLessons": "குறுகிய பாடங்கள்",
-  "exploreFilterPopular": "பிரபலமானவை",
-  "exploreFilterStudyTips": "கற்றல் குறிப்புகள்",
+  "storeTabTitle": "ஆராயுங்கள்",
+  "storeSearchHint": "பாடங்கள், தலைப்புகளைத் தேடுங்கள்...",
+  "storeSearchResultsTitle": "தேடல் முடிவுகள்",
+  "storeTrendingTitle": "தற்போது பிரபலமாக இருப்பவை",
+  "storeRecommendedTitle": "உங்களுக்காக பரிந்துரைக்கப்படுகிறது",
+  "storeShortLessonsTitle": "அதிகம் பார்க்கப்பட்ட வீடியோக்கள்",
+  "storePopularTestsTitle": "பிரபலமான தேர்வுகள்",
+  "storeStudyTipsTitle": "கற்றல் குறிப்புகள் & புதுப்பிப்புகள்",
+  "storeFilterTrending": "பிரபலமானவை",
+  "storeFilterRecommended": "பரிந்துரைக்கப்பட்டவை",
+  "storeFilterShortLessons": "குறுகிய பாடங்கள்",
+  "storeFilterPopular": "பிரபலமானவை",
+  "storeFilterStudyTips": "கற்றல் குறிப்புகள்",
   "editProfileFirstNameLabel": "முதல் பெயர்",
   "editProfileFirstNameHint": "உங்கள் முதல் பெயரை உள்ளிடவும்",
   "editProfileLastNameLabel": "கடைசி பெயர்",
@@ -1054,7 +1054,7 @@
   },
   "reviewPerformanceOverviewTitle": "செயல்திறன் கண்ணோட்டம்",
   "reviewSubjectPerformanceTileDesc": "வெவ்வேறு பாடங்களில் உங்கள் செயல்திறனை பகுப்பாய்வு செய்யுங்கள்",
-  "reviewExploreDetailsTitle": "கூடுதல் விவரங்களை ஆராயுங்கள்",
+  "reviewStoreDetailsTitle": "கூடுதல் விவரங்களை ஆராயுங்கள்",
   "reviewExamReviewTitle": "தேர்வு மதிப்பாய்வு",
   "reviewExamReviewDesc": "பதில்கள் மற்றும் விளக்கங்களுடன் ஒவ்வொரு கேள்வியையும் மதிப்பாய்வு செய்யவும்",
   "defaultStudentName": "மாணவர்",
@@ -1132,109 +1132,109 @@
     }
   },
   "customExamPleaseSelectDifficultyLevel": "தயவுசெய்து கடினத்தன்மை நிலையைத் தேர்ந்தெடுக்கவும்",
-  "exploreProductBack": "பின்செல்க",
-  "exploreSelectPlan": "திட்டத்தை தேர்ந்தெடுக்கவும்",
-  "exploreBuyNow": "இப்போது வாங்குங்கள்",
-  "exploreCheckoutComingSoon": "செக்அவுட் செயல்முறை விரைவில் வரும்",
-  "exploreValidityDays": "செல்லுபடியாகும் காலம்: {days} நாட்கள்",
-  "exploreFromTo": "{start} முதல் {end} வரை",
-  "exploreNoProductsFound": "எந்த தயாரிப்புகளும் கிடைக்கவில்லை.",
-  "exploreProductsLabel": "தயாரிப்புகள்",
-  "exploreCategoriesLabel": "வகைகள்",
-  "explorePlanSelected": "{planName}, ₹{price}, தேர்ந்தெடுக்கப்பட்டது",
-  "explorePlanUnselected": "{planName}, ₹{price}",
-  "exploreDescription": "விளக்கம்",
-  "exploreCurriculum": "பாடத்திட்டம்",
-  "exploreHaveDiscountCode": "தள்ளுபடி குறியீடு உள்ளதா?",
-  "explorePayInstallments": "தவணைகளில் செலுத்தவும்",
-  "exploreDiscountCoupon": "தள்ளுபடி கூப்பன்",
-  "exploreChoosePlan": "ஒரு திட்டத்தை தேர்வு செய்யவும்",
-  "explorePayAmountNow": "₹{amount} இப்போது செலுத்தவும்",
-  "@explorePayAmountNow": {
+  "storeProductBack": "பின்செல்க",
+  "storeSelectPlan": "திட்டத்தை தேர்ந்தெடுக்கவும்",
+  "storeBuyNow": "இப்போது வாங்குங்கள்",
+  "storeCheckoutComingSoon": "செக்அவுட் செயல்முறை விரைவில் வரும்",
+  "storeValidityDays": "செல்லுபடியாகும் காலம்: {days} நாட்கள்",
+  "storeFromTo": "{start} முதல் {end} வரை",
+  "storeNoProductsFound": "எந்த தயாரிப்புகளும் கிடைக்கவில்லை.",
+  "storeProductsLabel": "தயாரிப்புகள்",
+  "storeCategoriesLabel": "வகைகள்",
+  "storePlanSelected": "{planName}, ₹{price}, தேர்ந்தெடுக்கப்பட்டது",
+  "storePlanUnselected": "{planName}, ₹{price}",
+  "storeDescription": "விளக்கம்",
+  "storeCurriculum": "பாடத்திட்டம்",
+  "storeHaveDiscountCode": "தள்ளுபடி குறியீடு உள்ளதா?",
+  "storePayInstallments": "தவணைகளில் செலுத்தவும்",
+  "storeDiscountCoupon": "தள்ளுபடி கூப்பன்",
+  "storeChoosePlan": "ஒரு திட்டத்தை தேர்வு செய்யவும்",
+  "storePayAmountNow": "₹{amount} இப்போது செலுத்தவும்",
+  "@storePayAmountNow": {
     "placeholders": {
       "amount": {
         "type": "String"
       }
     }
   },
-  "exploreCouponAppliedSuccess": "Coupon applied successfully! New total: {total}",
-  "@exploreCouponAppliedSuccess": {
+  "storeCouponAppliedSuccess": "Coupon applied successfully! New total: {total}",
+  "@storeCouponAppliedSuccess": {
     "placeholders": {
       "total": {
         "type": "String"
       }
     }
   },
-  "exploreStatisticsChapters": "{count, plural, =1{1 Chapter} other{{count} Chapters}}",
-  "@exploreStatisticsChapters": {
+  "storeStatisticsChapters": "{count, plural, =1{1 Chapter} other{{count} Chapters}}",
+  "@storeStatisticsChapters": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "exploreStatisticsVideos": "{count, plural, =1{1 Video} other{{count} Videos}}",
-  "@exploreStatisticsVideos": {
+  "storeStatisticsVideos": "{count, plural, =1{1 Video} other{{count} Videos}}",
+  "@storeStatisticsVideos": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "exploreStatisticsExams": "{count, plural, =1{1 Exam} other{{count} Exams}}",
-  "@exploreStatisticsExams": {
+  "storeStatisticsExams": "{count, plural, =1{1 Exam} other{{count} Exams}}",
+  "@storeStatisticsExams": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "exploreStatisticsAttachments": "{count, plural, =1{1 Attachment} other{{count} Attachments}}",
-  "@exploreStatisticsAttachments": {
+  "storeStatisticsAttachments": "{count, plural, =1{1 Attachment} other{{count} Attachments}}",
+  "@storeStatisticsAttachments": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "exploreStatisticsNotes": "{count, plural, =1{1 Note} other{{count} Notes}}",
-  "@exploreStatisticsNotes": {
+  "storeStatisticsNotes": "{count, plural, =1{1 Note} other{{count} Notes}}",
+  "@storeStatisticsNotes": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "exploreInstallmentOrdinal": "தவணை {installment}",
-  "@exploreInstallmentOrdinal": {
+  "storeInstallmentOrdinal": "தவணை {installment}",
+  "@storeInstallmentOrdinal": {
     "placeholders": {
       "installment": {
         "type": "String"
       }
     }
   },
-  "exploreCouponHint": "கூப்பன் குறியீட்டை உள்ளிடவும்",
-  "exploreApplyCoupon": "பயன்படுத்து",
-  "exploreNoInstallmentPlans": "இந்த தயாரிப்புக்கு தவணைத் திட்டங்கள் எதுவும் இல்லை.",
-  "exploreLoading": "ஏற்றுகிறது...",
-  "exploreFailedToLoadPlans": "திட்டங்களை ஏற்றுவதில் தோல்வி",
-  "exploreInstallmentPlansCalculationBase": "₹{price} அசல் விலையின் அடிப்படையில் தவணைத் திட்டங்கள் கணக்கிடப்படுகின்றன.",
-  "@exploreInstallmentPlansCalculationBase": {
+  "storeCouponHint": "கூப்பன் குறியீட்டை உள்ளிடவும்",
+  "storeApplyCoupon": "பயன்படுத்து",
+  "storeNoInstallmentPlans": "இந்த தயாரிப்புக்கு தவணைத் திட்டங்கள் எதுவும் இல்லை.",
+  "storeLoading": "ஏற்றுகிறது...",
+  "storeFailedToLoadPlans": "திட்டங்களை ஏற்றுவதில் தோல்வி",
+  "storeInstallmentPlansCalculationBase": "₹{price} அசல் விலையின் அடிப்படையில் தவணைத் திட்டங்கள் கணக்கிடப்படுகின்றன.",
+  "@storeInstallmentPlansCalculationBase": {
     "placeholders": {
       "price": {
         "type": "String"
       }
     }
   },
-  "explorePaidOn": "{date} இல் செலுத்தப்பட்டது",
-  "@explorePaidOn": {
+  "storePaidOn": "{date} இல் செலுத்தப்பட்டது",
+  "@storePaidOn": {
     "placeholders": {
       "date": {
         "type": "String"
       }
     }
   },
-  "exploreNoContentAvailable": "உள்ளடக்கம் எதுவும் இல்லை",
+  "storeNoContentAvailable": "உள்ளடக்கம் எதுவும் இல்லை",
   "paymentProcessing": "உங்கள் கட்டணத்தை செயலாக்குகிறது...",
   "paymentSuccessful": "கட்டணம் வெற்றிகரமாக செலுத்தப்பட்டது!",
   "paymentSuccessDescription": "உங்கள் பதிவு வெற்றிகரமாக உறுதிசெய்யப்பட்டுள்ளது.",

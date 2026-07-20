@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:payu_checkoutpro_flutter/payu_checkoutpro_flutter.dart';
 import 'package:payu_checkoutpro_flutter/PayUConstantKeys.dart';
-import '../data/models/explore_models.dart';
+import '../data/models/store_models.dart';
 import 'payment_handler.dart';
 
 class PayUHandler implements PaymentHandler, PayUCheckoutProProtocol {

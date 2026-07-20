@@ -8,7 +8,6 @@
   "SHOW_RECENTLY_COMPLETED_SECTION": true,
   "SHOW_EXAM_TAB": true,
   "SHOW_INFO_TAB": true,
-  "SHOW_EXPLORE_TAB": false,
   "SHOW_PROFILE_TAB": false,
   "SHOW_CERTIFICATE": false,
   "INSTITUTE_LOGO_URL": "assets/images/brilliant_pala_logo.png"

@@ -494,19 +494,19 @@
   "editProfilePhotoLabel": "صورة الملف الشخصي",
   "editProfileChangePhoto": "تغيير الصورة",
   "editProfileBack": "عودة",
-  "exploreTabTitle": "استكشاف",
-  "exploreSearchHint": "ابحث عن الدورات، الدروس، المواضيع...",
-  "exploreSearchResultsTitle": "نتائج البحث",
-  "exploreTrendingTitle": "الرائج الآن",
-  "exploreRecommendedTitle": "موصى به لك",
-  "exploreShortLessonsTitle": "الفيديوهات الأكثر مشاهدة",
-  "explorePopularTestsTitle": "الاختبارات الشائعة",
-  "exploreStudyTipsTitle": "نصائح الدراسة والتحديثات",
-  "exploreFilterTrending": "رائج",
-  "exploreFilterRecommended": "موصى به",
-  "exploreFilterShortLessons": "دروس قصيرة",
-  "exploreFilterPopular": "شائع",
-  "exploreFilterStudyTips": "نصائح الدراسة",
+  "storeTabTitle": "استكشاف",
+  "storeSearchHint": "ابحث عن الدورات، الدروس، المواضيع...",
+  "storeSearchResultsTitle": "نتائج البحث",
+  "storeTrendingTitle": "الرائج الآن",
+  "storeRecommendedTitle": "موصى به لك",
+  "storeShortLessonsTitle": "الفيديوهات الأكثر مشاهدة",
+  "storePopularTestsTitle": "الاختبارات الشائعة",
+  "storeStudyTipsTitle": "نصائح الدراسة والتحديثات",
+  "storeFilterTrending": "رائج",
+  "storeFilterRecommended": "موصى به",
+  "storeFilterShortLessons": "دروس قصيرة",
+  "storeFilterPopular": "شائع",
+  "storeFilterStudyTips": "نصائح الدراسة",
   "editProfileFirstNameLabel": "الاسم الأول",
   "editProfileFirstNameHint": "أدخل اسمك الأول",
   "editProfileLastNameLabel": "اسم العائلة",
@@ -815,7 +815,7 @@
   },
   "reviewPerformanceOverviewTitle": "نظرة عامة على الأداء",
   "reviewSubjectPerformanceTileDesc": "حلل أدائك في المواد المختلفة",
-  "reviewExploreDetailsTitle": "استكشف المزيد من التفاصيل",
+  "reviewStoreDetailsTitle": "استكشف المزيد من التفاصيل",
   "reviewExamReviewTitle": "مراجعة الامتحان",
   "reviewExamReviewDesc": "راجع كل سؤال مع الإجابات والشروحات",
   "defaultStudentName": "طالب",
@@ -893,109 +893,109 @@
     }
   },
   "customExamPleaseSelectDifficultyLevel": "يرجى تحديد مستوى الصعوبة",
-  "exploreProductBack": "رجوع",
-  "exploreSelectPlan": "حدد الخطة",
-  "exploreBuyNow": "اشتري الآن",
-  "exploreCheckoutComingSoon": "عملية الدفع قريباً",
-  "exploreValidityDays": "الصلاحية: {days} أيام",
-  "exploreFromTo": "من {start} إلى {end}",
-  "exploreNoProductsFound": "لم يتم العثور على منتجات.",
-  "exploreProductsLabel": "المنتجات",
-  "exploreCategoriesLabel": "الفئات",
-  "explorePlanSelected": "{planName}، ₹{price}، محدد",
-  "explorePlanUnselected": "{planName}، ₹{price}",
-  "exploreDescription": "وصف",
-  "exploreCurriculum": "المنهج",
-  "exploreHaveDiscountCode": "هل لديك كود خصم؟",
-  "explorePayInstallments": "الدفع على أقساط",
-  "exploreDiscountCoupon": "كوبون الخصم",
-  "exploreChoosePlan": "اختر خطة",
-  "explorePayAmountNow": "ادفع ₹{amount} الآن",
-  "@explorePayAmountNow": {
+  "storeProductBack": "رجوع",
+  "storeSelectPlan": "حدد الخطة",
+  "storeBuyNow": "اشتري الآن",
+  "storeCheckoutComingSoon": "عملية الدفع قريباً",
+  "storeValidityDays": "الصلاحية: {days} أيام",
+  "storeFromTo": "من {start} إلى {end}",
+  "storeNoProductsFound": "لم يتم العثور على منتجات.",
+  "storeProductsLabel": "المنتجات",
+  "storeCategoriesLabel": "الفئات",
+  "storePlanSelected": "{planName}، ₹{price}، محدد",
+  "storePlanUnselected": "{planName}، ₹{price}",
+  "storeDescription": "وصف",
+  "storeCurriculum": "المنهج",
+  "storeHaveDiscountCode": "هل لديك كود خصم؟",
+  "storePayInstallments": "الدفع على أقساط",
+  "storeDiscountCoupon": "كوبون الخصم",
+  "storeChoosePlan": "اختر خطة",
+  "storePayAmountNow": "ادفع ₹{amount} الآن",
+  "@storePayAmountNow": {
     "placeholders": {
       "amount": {
         "type": "String"
       }
     }
   },
-  "exploreCouponAppliedSuccess": "Coupon applied successfully! New total: {total}",
-  "@exploreCouponAppliedSuccess": {
+  "storeCouponAppliedSuccess": "Coupon applied successfully! New total: {total}",
+  "@storeCouponAppliedSuccess": {
     "placeholders": {
       "total": {
         "type": "String"
       }
     }
   },
-  "exploreStatisticsChapters": "{count, plural, =1{1 Chapter} other{{count} Chapters}}",
-  "@exploreStatisticsChapters": {
+  "storeStatisticsChapters": "{count, plural, =1{1 Chapter} other{{count} Chapters}}",
+  "@storeStatisticsChapters": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "exploreStatisticsVideos": "{count, plural, =1{1 Video} other{{count} Videos}}",
-  "@exploreStatisticsVideos": {
+  "storeStatisticsVideos": "{count, plural, =1{1 Video} other{{count} Videos}}",
+  "@storeStatisticsVideos": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "exploreStatisticsExams": "{count, plural, =1{1 Exam} other{{count} Exams}}",
-  "@exploreStatisticsExams": {
+  "storeStatisticsExams": "{count, plural, =1{1 Exam} other{{count} Exams}}",
+  "@storeStatisticsExams": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "exploreStatisticsAttachments": "{count, plural, =1{1 Attachment} other{{count} Attachments}}",
-  "@exploreStatisticsAttachments": {
+  "storeStatisticsAttachments": "{count, plural, =1{1 Attachment} other{{count} Attachments}}",
+  "@storeStatisticsAttachments": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "exploreStatisticsNotes": "{count, plural, =1{1 Note} other{{count} Notes}}",
-  "@exploreStatisticsNotes": {
+  "storeStatisticsNotes": "{count, plural, =1{1 Note} other{{count} Notes}}",
+  "@storeStatisticsNotes": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "exploreInstallmentOrdinal": "القسط {installment}",
-  "@exploreInstallmentOrdinal": {
+  "storeInstallmentOrdinal": "القسط {installment}",
+  "@storeInstallmentOrdinal": {
     "placeholders": {
       "installment": {
         "type": "String"
       }
     }
   },
-  "exploreCouponHint": "أدخل رمز القسيمة",
-  "exploreApplyCoupon": "تطبيق",
-  "exploreNoInstallmentPlans": "لا توجد خطط تقسيط متاحة لهذا المنتج.",
-  "exploreLoading": "جاري التحميل...",
-  "exploreFailedToLoadPlans": "فشل تحميل الخطط",
-  "exploreInstallmentPlansCalculationBase": "يتم حساب خطط التقسيط بناءً على السعر الأصلي البالغ {price} ₹.",
-  "@exploreInstallmentPlansCalculationBase": {
+  "storeCouponHint": "أدخل رمز القسيمة",
+  "storeApplyCoupon": "تطبيق",
+  "storeNoInstallmentPlans": "لا توجد خطط تقسيط متاحة لهذا المنتج.",
+  "storeLoading": "جاري التحميل...",
+  "storeFailedToLoadPlans": "فشل تحميل الخطط",
+  "storeInstallmentPlansCalculationBase": "يتم حساب خطط التقسيط بناءً على السعر الأصلي البالغ {price} ₹.",
+  "@storeInstallmentPlansCalculationBase": {
     "placeholders": {
       "price": {
         "type": "String"
       }
     }
   },
-  "explorePaidOn": "تم الدفع في {date}",
-  "@explorePaidOn": {
+  "storePaidOn": "تم الدفع في {date}",
+  "@storePaidOn": {
     "placeholders": {
       "date": {
         "type": "String"
       }
     }
   },
-  "exploreNoContentAvailable": "لا يوجد محتوى متاح",
+  "storeNoContentAvailable": "لا يوجد محتوى متاح",
   "paymentProcessing": "جاري معالجة الدفع...",
   "paymentSuccessful": "اكتمل الدفع بنجاح!",
   "paymentSuccessDescription": "تم تأكيد تسجيلك بنجاح.",

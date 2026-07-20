@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
-import '../data/models/explore_models.dart';
+import '../data/models/store_models.dart';
 import 'payment_handler.dart';
 
 class RazorpayHandler implements PaymentHandler {

@@ -1,8 +1,8 @@
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 
-class ExploreActionTile extends StatelessWidget {
-  const ExploreActionTile({
+class StoreActionTile extends StatelessWidget {
+  const StoreActionTile({
     super.key,
     required this.title,
     required this.description,

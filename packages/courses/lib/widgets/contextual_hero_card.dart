@@ -7,7 +7,7 @@ enum HeroActionType {
   takeTest,
   continueStudy,
   prepareTest,
-  exploreCourses,
+  storeCourses,
   startTrial,
   upgradePrompt,
 }
@@ -309,7 +309,7 @@ class _ContextualHeroCardState extends State<ContextualHeroCard>
       HeroActionType.takeTest => design.colors.success,
       HeroActionType.continueStudy => design.colors.primary,
       HeroActionType.prepareTest => design.colors.primary,
-      HeroActionType.exploreCourses => design.colors.warning,
+      HeroActionType.storeCourses => design.colors.warning,
       HeroActionType.startTrial => design.colors.primary,
       HeroActionType.upgradePrompt => design.colors.primary,
     };
@@ -322,7 +322,7 @@ class _ContextualHeroCardState extends State<ContextualHeroCard>
       HeroActionType.takeTest => LucideIcons.fileText,
       HeroActionType.prepareTest => LucideIcons.clock,
       HeroActionType.continueStudy => LucideIcons.bookOpen,
-      HeroActionType.exploreCourses ||
+      HeroActionType.storeCourses ||
       HeroActionType.startTrial =>
         LucideIcons.sparkles,
       HeroActionType.upgradePrompt => LucideIcons.lock,
@@ -334,9 +334,7 @@ class _ContextualHeroCardState extends State<ContextualHeroCard>
       HeroActionType.joinClass => 'LIVE NOW',
       HeroActionType.takeTest => 'AVAILABLE NOW',
       HeroActionType.prepareTest => 'UPCOMING',
-      HeroActionType.exploreCourses ||
-      HeroActionType.startTrial =>
-        'FREE ACCESS',
+      HeroActionType.storeCourses || HeroActionType.startTrial => 'FREE ACCESS',
       HeroActionType.upgradePrompt => 'PREMIUM',
       _ => 'RECOMMENDED',
     };
@@ -349,7 +347,7 @@ class _ContextualHeroCardState extends State<ContextualHeroCard>
       HeroActionType.takeTest => 'Start Test',
       HeroActionType.prepareTest => 'Prepare for Test',
       HeroActionType.continueStudy => 'Continue Learning',
-      HeroActionType.exploreCourses => 'Explore Courses',
+      HeroActionType.storeCourses => 'Store Courses',
       HeroActionType.startTrial => 'Start Free Trial',
       HeroActionType.upgradePrompt => 'Upgrade Now',
     };

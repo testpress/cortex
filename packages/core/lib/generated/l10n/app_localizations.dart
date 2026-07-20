@@ -2657,83 +2657,83 @@ abstract class AppLocalizations {
   /// **'Back'**
   String get editProfileBack;
 
-  /// No description provided for @exploreTabTitle.
+  /// No description provided for @storeTabTitle.
   ///
   /// In en, this message translates to:
-  /// **'Explore'**
-  String get exploreTabTitle;
+  /// **'Store'**
+  String get storeTabTitle;
 
-  /// No description provided for @exploreSearchHint.
+  /// No description provided for @storeSearchHint.
   ///
   /// In en, this message translates to:
   /// **'Search courses, lessons, topics...'**
-  String get exploreSearchHint;
+  String get storeSearchHint;
 
-  /// No description provided for @exploreSearchResultsTitle.
+  /// No description provided for @storeSearchResultsTitle.
   ///
   /// In en, this message translates to:
   /// **'Search Results'**
-  String get exploreSearchResultsTitle;
+  String get storeSearchResultsTitle;
 
-  /// No description provided for @exploreTrendingTitle.
+  /// No description provided for @storeTrendingTitle.
   ///
   /// In en, this message translates to:
   /// **'Trending Now'**
-  String get exploreTrendingTitle;
+  String get storeTrendingTitle;
 
-  /// No description provided for @exploreRecommendedTitle.
+  /// No description provided for @storeRecommendedTitle.
   ///
   /// In en, this message translates to:
   /// **'Recommended For You'**
-  String get exploreRecommendedTitle;
+  String get storeRecommendedTitle;
 
-  /// No description provided for @exploreShortLessonsTitle.
+  /// No description provided for @storeShortLessonsTitle.
   ///
   /// In en, this message translates to:
   /// **'Most Viewed Videos'**
-  String get exploreShortLessonsTitle;
+  String get storeShortLessonsTitle;
 
-  /// No description provided for @explorePopularTestsTitle.
+  /// No description provided for @storePopularTestsTitle.
   ///
   /// In en, this message translates to:
   /// **'Popular Tests'**
-  String get explorePopularTestsTitle;
+  String get storePopularTestsTitle;
 
-  /// No description provided for @exploreStudyTipsTitle.
+  /// No description provided for @storeStudyTipsTitle.
   ///
   /// In en, this message translates to:
   /// **'Study Tips & Updates'**
-  String get exploreStudyTipsTitle;
+  String get storeStudyTipsTitle;
 
-  /// No description provided for @exploreFilterTrending.
+  /// No description provided for @storeFilterTrending.
   ///
   /// In en, this message translates to:
   /// **'Trending'**
-  String get exploreFilterTrending;
+  String get storeFilterTrending;
 
-  /// No description provided for @exploreFilterRecommended.
+  /// No description provided for @storeFilterRecommended.
   ///
   /// In en, this message translates to:
   /// **'Recommended'**
-  String get exploreFilterRecommended;
+  String get storeFilterRecommended;
 
-  /// No description provided for @exploreFilterShortLessons.
+  /// No description provided for @storeFilterShortLessons.
   ///
   /// In en, this message translates to:
   /// **'Short Lessons'**
-  String get exploreFilterShortLessons;
+  String get storeFilterShortLessons;
 
-  /// No description provided for @exploreFilterPopular.
+  /// No description provided for @storeFilterPopular.
   ///
   /// In en, this message translates to:
   /// **'Popular'**
-  String get exploreFilterPopular;
+  String get storeFilterPopular;
 
-  /// No description provided for @exploreFilterStudyTips.
+  /// No description provided for @storeFilterStudyTips.
   ///
   /// In en, this message translates to:
   /// **'Study Tips'**
-  String get exploreFilterStudyTips;
+  String get storeFilterStudyTips;
 
   /// No description provided for @editProfileFirstNameLabel.
   ///
@@ -4355,11 +4355,11 @@ abstract class AppLocalizations {
   /// **'Analyze your performance across different subjects'**
   String get reviewSubjectPerformanceTileDesc;
 
-  /// No description provided for @reviewExploreDetailsTitle.
+  /// No description provided for @reviewStoreDetailsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Explore More Details'**
-  String get reviewExploreDetailsTitle;
+  /// **'Store More Details'**
+  String get reviewStoreDetailsTitle;
 
   /// No description provided for @reviewExamReviewTitle.
   ///
@@ -4535,203 +4535,203 @@ abstract class AppLocalizations {
   /// **'Please select a difficulty level'**
   String get customExamPleaseSelectDifficultyLevel;
 
-  /// No description provided for @exploreProductBack.
+  /// No description provided for @storeProductBack.
   ///
   /// In en, this message translates to:
   /// **'Back'**
-  String get exploreProductBack;
+  String get storeProductBack;
 
-  /// No description provided for @exploreSelectPlan.
+  /// No description provided for @storeSelectPlan.
   ///
   /// In en, this message translates to:
   /// **'Select Plan'**
-  String get exploreSelectPlan;
+  String get storeSelectPlan;
 
-  /// No description provided for @exploreBuyNow.
+  /// No description provided for @storeBuyNow.
   ///
   /// In en, this message translates to:
   /// **'Buy Now'**
-  String get exploreBuyNow;
+  String get storeBuyNow;
 
-  /// No description provided for @exploreCheckoutComingSoon.
+  /// No description provided for @storeCheckoutComingSoon.
   ///
   /// In en, this message translates to:
   /// **'Checkout flow coming soon'**
-  String get exploreCheckoutComingSoon;
+  String get storeCheckoutComingSoon;
 
-  /// No description provided for @exploreValidityDays.
+  /// No description provided for @storeValidityDays.
   ///
   /// In en, this message translates to:
   /// **'Validity: {days} days'**
-  String exploreValidityDays(String days);
+  String storeValidityDays(String days);
 
-  /// No description provided for @exploreFromTo.
+  /// No description provided for @storeFromTo.
   ///
   /// In en, this message translates to:
   /// **'From {start} to {end}'**
-  String exploreFromTo(String start, String end);
+  String storeFromTo(String start, String end);
 
-  /// No description provided for @exploreNoProductsFound.
+  /// No description provided for @storeNoProductsFound.
   ///
   /// In en, this message translates to:
   /// **'No products found.'**
-  String get exploreNoProductsFound;
+  String get storeNoProductsFound;
 
-  /// No description provided for @exploreProductsLabel.
+  /// No description provided for @storeProductsLabel.
   ///
   /// In en, this message translates to:
   /// **'Products'**
-  String get exploreProductsLabel;
+  String get storeProductsLabel;
 
-  /// No description provided for @exploreCategoriesLabel.
+  /// No description provided for @storeCategoriesLabel.
   ///
   /// In en, this message translates to:
   /// **'Categories'**
-  String get exploreCategoriesLabel;
+  String get storeCategoriesLabel;
 
-  /// No description provided for @explorePlanSelected.
+  /// No description provided for @storePlanSelected.
   ///
   /// In en, this message translates to:
   /// **'{planName}, ₹{price}, selected'**
-  String explorePlanSelected(String planName, String price);
+  String storePlanSelected(String planName, String price);
 
-  /// No description provided for @explorePlanUnselected.
+  /// No description provided for @storePlanUnselected.
   ///
   /// In en, this message translates to:
   /// **'{planName}, ₹{price}'**
-  String explorePlanUnselected(String planName, String price);
+  String storePlanUnselected(String planName, String price);
 
-  /// No description provided for @exploreDescription.
+  /// No description provided for @storeDescription.
   ///
   /// In en, this message translates to:
   /// **'Description'**
-  String get exploreDescription;
+  String get storeDescription;
 
-  /// No description provided for @exploreCurriculum.
+  /// No description provided for @storeCurriculum.
   ///
   /// In en, this message translates to:
   /// **'Curriculum'**
-  String get exploreCurriculum;
+  String get storeCurriculum;
 
-  /// No description provided for @exploreHaveDiscountCode.
+  /// No description provided for @storeHaveDiscountCode.
   ///
   /// In en, this message translates to:
   /// **'Have a discount code?'**
-  String get exploreHaveDiscountCode;
+  String get storeHaveDiscountCode;
 
-  /// No description provided for @explorePayInstallments.
+  /// No description provided for @storePayInstallments.
   ///
   /// In en, this message translates to:
   /// **'Pay in installments'**
-  String get explorePayInstallments;
+  String get storePayInstallments;
 
-  /// No description provided for @exploreDiscountCoupon.
+  /// No description provided for @storeDiscountCoupon.
   ///
   /// In en, this message translates to:
   /// **'Discount Coupon'**
-  String get exploreDiscountCoupon;
+  String get storeDiscountCoupon;
 
-  /// No description provided for @exploreChoosePlan.
+  /// No description provided for @storeChoosePlan.
   ///
   /// In en, this message translates to:
   /// **'Choose a Plan'**
-  String get exploreChoosePlan;
+  String get storeChoosePlan;
 
-  /// No description provided for @explorePayAmountNow.
+  /// No description provided for @storePayAmountNow.
   ///
   /// In en, this message translates to:
   /// **'Pay ₹{amount} now'**
-  String explorePayAmountNow(String amount);
+  String storePayAmountNow(String amount);
 
-  /// No description provided for @exploreCouponAppliedSuccess.
+  /// No description provided for @storeCouponAppliedSuccess.
   ///
   /// In en, this message translates to:
   /// **'Coupon applied successfully! New total: {total}'**
-  String exploreCouponAppliedSuccess(String total);
+  String storeCouponAppliedSuccess(String total);
 
-  /// No description provided for @exploreStatisticsChapters.
+  /// No description provided for @storeStatisticsChapters.
   ///
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 Chapter} other{{count} Chapters}}'**
-  String exploreStatisticsChapters(int count);
+  String storeStatisticsChapters(int count);
 
-  /// No description provided for @exploreStatisticsVideos.
+  /// No description provided for @storeStatisticsVideos.
   ///
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 Video} other{{count} Videos}}'**
-  String exploreStatisticsVideos(int count);
+  String storeStatisticsVideos(int count);
 
-  /// No description provided for @exploreStatisticsExams.
+  /// No description provided for @storeStatisticsExams.
   ///
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 Exam} other{{count} Exams}}'**
-  String exploreStatisticsExams(int count);
+  String storeStatisticsExams(int count);
 
-  /// No description provided for @exploreStatisticsAttachments.
+  /// No description provided for @storeStatisticsAttachments.
   ///
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 Attachment} other{{count} Attachments}}'**
-  String exploreStatisticsAttachments(int count);
+  String storeStatisticsAttachments(int count);
 
-  /// No description provided for @exploreStatisticsNotes.
+  /// No description provided for @storeStatisticsNotes.
   ///
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 Note} other{{count} Notes}}'**
-  String exploreStatisticsNotes(int count);
+  String storeStatisticsNotes(int count);
 
-  /// No description provided for @exploreInstallmentOrdinal.
+  /// No description provided for @storeInstallmentOrdinal.
   ///
   /// In en, this message translates to:
   /// **'Installment {installment}'**
-  String exploreInstallmentOrdinal(String installment);
+  String storeInstallmentOrdinal(String installment);
 
-  /// No description provided for @exploreCouponHint.
+  /// No description provided for @storeCouponHint.
   ///
   /// In en, this message translates to:
   /// **'Enter Coupon Code'**
-  String get exploreCouponHint;
+  String get storeCouponHint;
 
-  /// No description provided for @exploreApplyCoupon.
+  /// No description provided for @storeApplyCoupon.
   ///
   /// In en, this message translates to:
   /// **'APPLY'**
-  String get exploreApplyCoupon;
+  String get storeApplyCoupon;
 
-  /// No description provided for @exploreNoInstallmentPlans.
+  /// No description provided for @storeNoInstallmentPlans.
   ///
   /// In en, this message translates to:
   /// **'No installment plans available for this product.'**
-  String get exploreNoInstallmentPlans;
+  String get storeNoInstallmentPlans;
 
-  /// No description provided for @exploreLoading.
+  /// No description provided for @storeLoading.
   ///
   /// In en, this message translates to:
   /// **'Loading...'**
-  String get exploreLoading;
+  String get storeLoading;
 
-  /// No description provided for @exploreFailedToLoadPlans.
+  /// No description provided for @storeFailedToLoadPlans.
   ///
   /// In en, this message translates to:
   /// **'Failed to load plans'**
-  String get exploreFailedToLoadPlans;
+  String get storeFailedToLoadPlans;
 
-  /// No description provided for @exploreInstallmentPlansCalculationBase.
+  /// No description provided for @storeInstallmentPlansCalculationBase.
   ///
   /// In en, this message translates to:
   /// **'Installment plans are calculated based on the original price of ₹{price}.'**
-  String exploreInstallmentPlansCalculationBase(String price);
+  String storeInstallmentPlansCalculationBase(String price);
 
-  /// No description provided for @explorePaidOn.
+  /// No description provided for @storePaidOn.
   ///
   /// In en, this message translates to:
   /// **'Paid on {date}'**
-  String explorePaidOn(String date);
+  String storePaidOn(String date);
 
-  /// No description provided for @exploreNoContentAvailable.
+  /// No description provided for @storeNoContentAvailable.
   ///
   /// In en, this message translates to:
   /// **'No content available'**
-  String get exploreNoContentAvailable;
+  String get storeNoContentAvailable;
 
   /// No description provided for @paymentProcessing.
   ///

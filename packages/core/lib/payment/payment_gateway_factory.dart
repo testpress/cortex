@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import '../data/config/institute_settings.dart';
-import '../data/models/explore_models.dart';
+import '../data/models/store_models.dart';
 import '../data/sources/data_source.dart';
 import 'payment_handler.dart';
 import 'payu_handler.dart';

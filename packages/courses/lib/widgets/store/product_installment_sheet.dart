@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
-import '../../providers/explore_providers.dart';
+import '../../providers/store_providers.dart';
 import 'package:core/data/data.dart';
 
 class ProductInstallmentSheet extends ConsumerStatefulWidget {
@@ -75,7 +75,7 @@ class _ProductInstallmentSheetState
                           padding: EdgeInsets.all(design.spacing.lg),
                           child: Center(
                               child: AppText.body(
-                                  L10n.of(context).exploreNoInstallmentPlans)),
+                                  L10n.of(context).storeNoInstallmentPlans)),
                         );
                       }
                       if (_selectedInstallmentPlan != null) {
@@ -87,14 +87,14 @@ class _ProductInstallmentSheetState
                     loading: () => Padding(
                       padding: const EdgeInsets.all(24.0),
                       child: Center(
-                          child: AppText.body(L10n.of(context).exploreLoading,
+                          child: AppText.body(L10n.of(context).storeLoading,
                               color: design.colors.textSecondary)),
                     ),
                     error: (e, st) => Padding(
                       padding: const EdgeInsets.all(24.0),
                       child: Center(
                           child: AppText.body(
-                              L10n.of(context).exploreFailedToLoadPlans,
+                              L10n.of(context).storeFailedToLoadPlans,
                               color: design.colors.error)),
                     ),
                   );
@@ -115,14 +115,14 @@ class _ProductInstallmentSheetState
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: design.spacing.lg),
-          child: AppText.title(L10n.of(context).exploreChoosePlan),
+          child: AppText.title(L10n.of(context).storeChoosePlan),
         ),
         SizedBox(height: design.spacing.xs),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: design.spacing.lg),
           child: AppText.bodySmall(
             L10n.of(context)
-                .exploreInstallmentPlansCalculationBase(widget.product.price),
+                .storeInstallmentPlansCalculationBase(widget.product.price),
             color: design.colors.textSecondary,
           ),
         ),
@@ -188,7 +188,7 @@ class _ProductInstallmentSheetState
             child: Row(
               children: [
                 AppSemantics.button(
-                  label: L10n.of(context).exploreProductBack,
+                  label: L10n.of(context).storeProductBack,
                   child: GestureDetector(
                     onTap: () {
                       setState(() {
@@ -203,7 +203,7 @@ class _ProductInstallmentSheetState
                           Icon(LucideIcons.arrowLeft,
                               size: 20, color: design.colors.textSecondary),
                           SizedBox(width: design.spacing.xs),
-                          AppText.body(L10n.of(context).exploreProductBack,
+                          AppText.body(L10n.of(context).storeProductBack,
                               color: design.colors.textSecondary),
                         ],
                       ),
@@ -225,7 +225,7 @@ class _ProductInstallmentSheetState
                         children: [
                           Icon(LucideIcons.arrowLeft, size: 18),
                           const SizedBox(width: 4),
-                          AppText.body(L10n.of(context).exploreProductBack),
+                          AppText.body(L10n.of(context).storeProductBack),
                         ],
                       ),
                     ),
@@ -280,9 +280,8 @@ class _ProductInstallmentSheetState
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     AppText.labelBold(
-                                      L10n.of(context)
-                                          .exploreInstallmentOrdinal(
-                                              inst.order.toString()),
+                                      L10n.of(context).storeInstallmentOrdinal(
+                                          inst.order.toString()),
                                       color: inst.isPaid
                                           ? design.colors.success
                                           : design.colors.textSecondary,
@@ -298,8 +297,7 @@ class _ProductInstallmentSheetState
                                 if (inst.isPaid && inst.paidOn != null) ...[
                                   SizedBox(height: design.spacing.xs),
                                   AppText.bodySmall(
-                                    L10n.of(context)
-                                        .explorePaidOn(inst.paidOn!),
+                                    L10n.of(context).storePaidOn(inst.paidOn!),
                                     color: design.colors.success,
                                   ),
                                 ],
@@ -320,7 +318,7 @@ class _ProductInstallmentSheetState
               padding: EdgeInsets.fromLTRB(design.spacing.lg, design.spacing.lg,
                   design.spacing.lg, design.spacing.sm),
               child: AppButton.primary(
-                label: L10n.of(context).explorePayAmountNow(plan.installments
+                label: L10n.of(context).storePayAmountNow(plan.installments
                     .firstWhere((i) => !i.isPaid,
                         orElse: () => plan.installments.first)
                     .price),
@@ -334,7 +332,7 @@ class _ProductInstallmentSheetState
                   final result = await PaymentProcessingScreen.start(
                     context,
                     () => ref
-                        .read(exploreRepositoryProvider)
+                        .read(storeRepositoryProvider)
                         .createAndConfirmOrder(widget.product.slug),
                     dataSource,
                   );

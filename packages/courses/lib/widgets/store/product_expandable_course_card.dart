@@ -23,22 +23,21 @@ class _ProductExpandableCourseCardState
 
     final List<String> stats = [];
     if (course.chaptersCount > 0) {
-      stats.add(
-          L10n.of(context).exploreStatisticsChapters(course.chaptersCount));
+      stats.add(L10n.of(context).storeStatisticsChapters(course.chaptersCount));
     }
     if (course.videosCount > 0) {
-      stats.add(L10n.of(context).exploreStatisticsVideos(course.videosCount));
+      stats.add(L10n.of(context).storeStatisticsVideos(course.videosCount));
     }
     if (course.examsCount > 0) {
-      stats.add(L10n.of(context).exploreStatisticsExams(course.examsCount));
+      stats.add(L10n.of(context).storeStatisticsExams(course.examsCount));
     }
     if (course.attachmentsCount > 0) {
-      stats.add(L10n.of(context)
-          .exploreStatisticsAttachments(course.attachmentsCount));
+      stats.add(
+          L10n.of(context).storeStatisticsAttachments(course.attachmentsCount));
     }
     if (course.htmlContentsCount > 0) {
-      stats.add(
-          L10n.of(context).exploreStatisticsNotes(course.htmlContentsCount));
+      stats
+          .add(L10n.of(context).storeStatisticsNotes(course.htmlContentsCount));
     }
 
     return Container(
@@ -104,7 +103,7 @@ class _ProductExpandableCourseCardState
                           .toList(),
                     )
                   : AppText.cardCaption(
-                      L10n.of(context).exploreNoContentAvailable),
+                      L10n.of(context).storeNoContentAvailable),
             ),
             crossFadeState: _isExpanded
                 ? CrossFadeState.showSecond

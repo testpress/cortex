@@ -6,19 +6,19 @@ import 'package:courses/courses.dart';
 import '../../screens/bookmarks/bookmarks_screen.dart';
 
 class GlobalRoutes {
-  static List<RouteBase> exploreRoutes(
+  static List<RouteBase> storeRoutes(
     GlobalKey<NavigatorState> rootNavigatorKey,
   ) => [
     GoRoute(
-      path: '/explore',
-      builder: (context, state) => const ExplorePage(),
+      path: '/store',
+      builder: (context, state) => const StorePage(),
       routes: [
         GoRoute(
           path: 'product/:slug',
           parentNavigatorKey: rootNavigatorKey,
           redirect: (context, state) {
             if (state.extra == null || state.extra is! ProductDto) {
-              return '/explore'; // Fallback for deep linking / web reload
+              return '/store'; // Fallback for deep linking / web reload
             }
             return null;
           },
