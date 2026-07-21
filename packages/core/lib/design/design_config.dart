@@ -301,7 +301,8 @@ class DesignColors {
 
   static const String _envPrimary = String.fromEnvironment('PRIMARY_COLOR');
 
-  static Color? _parseColor(String hex) {
+  @visibleForTesting
+  static Color? parseColor(String hex) {
     String formatted = hex.replaceAll('#', '').trim();
     if (formatted.startsWith('0x') || formatted.startsWith('0X')) {
       formatted = formatted.substring(2);
@@ -325,11 +326,11 @@ class DesignColors {
     Color onPrimaryContainer = const Color(0xFF1E1B4B);
 
     if (_envPrimary.isNotEmpty) {
-      final parsedColor = _parseColor(_envPrimary);
+      final parsedColor = parseColor(_envPrimary);
       if (parsedColor != null) {
         primary = parsedColor;
         onPrimary = _contrastingColor(primary);
-        primaryContainer = _lighten(primary, 0.9);
+        primaryContainer = lighten(primary, 0.8);
         onPrimaryContainer = _contrastingColor(primaryContainer);
       }
     }
@@ -390,11 +391,11 @@ class DesignColors {
     Color onPrimaryContainer = const Color(0xFFE0E7FF);
 
     if (_envPrimary.isNotEmpty) {
-      final parsedColor = _parseColor(_envPrimary);
+      final parsedColor = parseColor(_envPrimary);
       if (parsedColor != null) {
         primary = parsedColor;
         onPrimary = _contrastingColor(primary);
-        primaryContainer = _darken(primary, 0.8);
+        primaryContainer = darken(primary, 0.6);
         onPrimaryContainer = _contrastingColor(primaryContainer);
       }
     }
@@ -500,10 +501,10 @@ class DesignColors {
     final onError = _contrastingColor(error);
     final onWarning = _contrastingColor(warning);
 
-    final computedPrimaryContainer = primaryContainer ?? _lighten(primary, 0.9);
+    final computedPrimaryContainer = primaryContainer ?? lighten(primary, 0.9);
     final onPrimaryContainer = _contrastingColor(computedPrimaryContainer);
 
-    final computedSurfaceVariant = surfaceVariant ?? _lighten(surface, 0.98);
+    final computedSurfaceVariant = surfaceVariant ?? lighten(surface, 0.98);
     final onSurface = _contrastingColor(surface);
     final onSurfaceVariant = _contrastingColor(computedSurfaceVariant);
     final computedCard = card ?? const Color(0xFFFFFFFF);
@@ -550,7 +551,7 @@ class DesignColors {
       shadow: shadow,
       skeleton: skeleton ?? computedSurfaceVariant,
       onSkeleton:
-          onSkeleton ?? _lighten(skeleton ?? computedSurfaceVariant, 0.95),
+          onSkeleton ?? lighten(skeleton ?? computedSurfaceVariant, 0.95),
       transparent: transparent,
     );
   }
@@ -579,7 +580,8 @@ class DesignColors {
   }
 
   /// Lighten a color by a factor (0.0 = original, 1.0 = white)
-  static Color _lighten(Color color, double factor) {
+  @visibleForTesting
+  static Color lighten(Color color, double factor) {
     assert(factor >= 0.0 && factor <= 1.0);
     final double r = color.r + (1.0 - color.r) * factor;
     final double g = color.g + (1.0 - color.g) * factor;
@@ -588,7 +590,8 @@ class DesignColors {
   }
 
   /// Darken a color by a factor (0.0 = original, 1.0 = black)
-  static Color _darken(Color color, double factor) {
+  @visibleForTesting
+  static Color darken(Color color, double factor) {
     assert(factor >= 0.0 && factor <= 1.0);
     final double r = color.r * (1.0 - factor);
     final double g = color.g * (1.0 - factor);

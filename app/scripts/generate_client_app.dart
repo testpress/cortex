@@ -38,7 +38,7 @@ void main(List<String> args) async {
       cliArgs.configPath,
       cliArgs.apiBaseUrl,
       serverClientId: serverClientId,
-      primaryColor: remoteConfig['primary_color'] as String?,
+      primaryColor: remoteConfig['primary_color']?.toString(),
     );
   } catch (e) {
     print('❌ Error: $e');
