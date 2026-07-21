@@ -7,11 +7,13 @@ class UpdatesAnnouncementsSection extends StatelessWidget {
   const UpdatesAnnouncementsSection({
     super.key,
     required this.posts,
+    this.title,
     this.onViewAll,
     this.onItemTap,
   });
 
   final List<PostDto> posts;
+  final String? title;
   final VoidCallback? onViewAll;
   final void Function(PostDto)? onItemTap;
 
@@ -21,6 +23,8 @@ class UpdatesAnnouncementsSection extends StatelessWidget {
 
     final design = Design.of(context);
     final l10n = L10n.of(context);
+    final displayTitle =
+        (title ?? '').isNotEmpty ? title! : l10n.updatesAnnouncementsTitle;
 
     return Padding(
       padding: const EdgeInsets.only(top: 32),
@@ -33,7 +37,7 @@ class UpdatesAnnouncementsSection extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 AppText.title(
-                  l10n.updatesAnnouncementsTitle,
+                  displayTitle,
                   color: design.colors.textPrimary,
                 ),
                 AppSemantics.button(

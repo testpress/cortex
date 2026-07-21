@@ -18,8 +18,11 @@ class DashboardDrawer extends ConsumerWidget {
 
     final l10n = L10n.of(context);
     final version = ref.watch(appVersionProvider).value ?? '...';
-    final enableCustomTest =
-        ref.watch(instituteSettingsProvider)?.enableCustomTest ?? false;
+    final settings = ref.watch(instituteSettingsProvider);
+    final enableCustomTest = settings?.enableCustomTest ?? false;
+    final postsEnabled = settings?.postsEnabled ?? false;
+    final forumEnabled = settings?.forumEnabled ?? false;
+    final bookmarksEnabled = settings?.bookmarksEnabled ?? false;
 
     return AppDrawer(
       isOpen: isOpen,
@@ -32,25 +35,27 @@ class DashboardDrawer extends ConsumerWidget {
       sections: [
         AppDrawerSection(
           items: [
-            AppDrawerItem(
-              icon: LucideIcons.bookmark,
-              label: l10n.drawerBookmark,
-              action: () {
-                ref.read(isHomeDrawerOpenProvider.notifier).state = false;
-                context.push('/bookmarks');
-              },
-            ),
-            AppDrawerItem(
-              icon: LucideIcons.fileText,
-              label: l10n.drawerPosts,
-              action: () {
-                ref.read(isHomeDrawerOpenProvider.notifier).state = false;
-                Navigator.of(
-                  context,
-                  rootNavigator: true,
-                ).push(AppRoute(page: const AnnouncementsListScreen()));
-              },
-            ),
+            if (bookmarksEnabled)
+              AppDrawerItem(
+                icon: LucideIcons.bookmark,
+                label: settings?.bookmarksLabel ?? l10n.drawerBookmark,
+                action: () {
+                  ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                  context.push('/bookmarks');
+                },
+              ),
+            if (postsEnabled)
+              AppDrawerItem(
+                icon: LucideIcons.fileText,
+                label: settings?.postsLabel ?? l10n.drawerPosts,
+                action: () {
+                  ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                  Navigator.of(
+                    context,
+                    rootNavigator: true,
+                  ).push(AppRoute(page: const AnnouncementsListScreen()));
+                },
+              ),
             AppDrawerItem(
               icon: LucideIcons.pieChart,
               label: l10n.drawerAnalytics,
@@ -59,14 +64,15 @@ class DashboardDrawer extends ConsumerWidget {
                 context.push('/exams/analytics');
               },
             ),
-            AppDrawerItem(
-              icon: LucideIcons.messageSquare,
-              label: l10n.drawerForum,
-              action: () {
-                ref.read(isHomeDrawerOpenProvider.notifier).state = false;
-                context.go('/home/discussions/forum');
-              },
-            ),
+            if (forumEnabled)
+              AppDrawerItem(
+                icon: LucideIcons.messageSquare,
+                label: settings?.forumLabel ?? l10n.drawerForum,
+                action: () {
+                  ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                  context.go('/home/discussions/forum');
+                },
+              ),
             AppDrawerItem(
               icon: LucideIcons.messageCircleQuestionMark,
               label: l10n.drawerDoubts,

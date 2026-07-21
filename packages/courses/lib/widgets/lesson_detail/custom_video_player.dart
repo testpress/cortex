@@ -135,6 +135,8 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
+    final settings = ref.watch(instituteSettingsProvider);
+
     // Watch the provider to keep it alive while the video player is open
     if (_contentId != null) {
       ref.watch(videoAttemptNotifierProvider(_contentId!));
@@ -174,7 +176,7 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
         return TestpressPlayer(
           assetId: widget.assetId!,
           autoPlay: true,
-          showDownloadOption: true,
+          showDownloadOption: settings?.isVideoDownloadEnabled ?? false,
           metadata: {
             'course': _courseName,
             'chapter': _chapterName,

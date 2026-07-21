@@ -8,6 +8,11 @@ class TopLearnersSectionWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(dto.instituteSettingsProvider);
+    if (!(settings?.leaderboardEnabled ?? false)) {
+      return const SizedBox.shrink();
+    }
+
     final learnersState = ref.watch(
       learnersProvider(timeline: dto.LeaderboardTimeline.thisWeek, limit: 10),
     );
