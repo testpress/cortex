@@ -15,6 +15,7 @@ class InstituteSettings {
   //UI
   final bool dashboardEnabled;
   final bool leaderboardEnabled;
+  final String? leaderboardLabel;
 
   //Login settings
   final List<LoginMethod> allowedLoginMethods;
@@ -41,13 +42,13 @@ class InstituteSettings {
 
   //Community and Discussions
   final bool postsEnabled;
-  final String postsLabel;
+  final String? postsLabel;
 
   final bool bookmarksEnabled;
-  final String bookmarksLabel;
+  final String? bookmarksLabel;
 
   final bool forumEnabled;
-  final String forumLabel;
+  final String? forumLabel;
 
   final bool helpdeskEnabled;
 
@@ -65,6 +66,7 @@ class InstituteSettings {
     required this.timezone,
     required this.dashboardEnabled,
     required this.leaderboardEnabled,
+    required this.leaderboardLabel,
     required this.allowedLoginMethods,
     required this.allowSignup,
     required this.enableUserPhoto,
@@ -103,6 +105,7 @@ class InstituteSettings {
 
       dashboardEnabled: json['dashboard_enabled'] as bool? ?? false,
       leaderboardEnabled: json['leaderboard_enabled'] as bool? ?? false,
+      leaderboardLabel: json['leaderboard_label'] as String?,
 
       allowedLoginMethods: () {
         final parsed = (json['allowed_login_methods'] as List<dynamic>?)
@@ -140,11 +143,11 @@ class InstituteSettings {
           json['enable_course_pdf_watermarking'] as bool? ?? false,
 
       postsEnabled: json['posts_enabled'] as bool? ?? false,
-      postsLabel: json['posts_label'] as String? ?? 'Posts',
+      postsLabel: json['posts_label'] as String?,
       bookmarksEnabled: json['bookmarks_enabled'] as bool? ?? false,
-      bookmarksLabel: json['bookmarks_label'] as String? ?? 'Bookmarks',
+      bookmarksLabel: json['bookmarks_label'] as String?,
       forumEnabled: json['forum_enabled'] as bool? ?? false,
-      forumLabel: json['forum_label'] as String? ?? 'Discussions',
+      forumLabel: json['forum_label'] as String?,
       helpdeskEnabled: json['is_helpdesk_enabled'] as bool? ?? false,
 
       allowScreenshotInApp: json['allow_screenshot_in_app'] as bool? ?? false,
@@ -162,6 +165,7 @@ class InstituteSettings {
       'timezone': timezone,
       'dashboard_enabled': dashboardEnabled,
       'leaderboard_enabled': leaderboardEnabled,
+      'leaderboard_label': leaderboardLabel,
       'allowed_login_methods': allowedLoginMethods.map((e) {
         switch (e) {
           case LoginMethod.formLogin:

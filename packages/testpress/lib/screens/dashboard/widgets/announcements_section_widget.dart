@@ -11,10 +11,16 @@ class AnnouncementsSectionWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(dto.instituteSettingsProvider);
+    if (!(settings?.postsEnabled ?? false)) {
+      return const SizedBox.shrink();
+    }
+
     final announcements = ref.watch(dto.announcementsProvider);
 
     return announcements.when(
       data: (data) => UpdatesAnnouncementsSection(
+        title: settings?.postsLabel,
         posts: data.take(3).toList(),
         onViewAll: () {
           Navigator.of(

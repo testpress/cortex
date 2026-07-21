@@ -47,6 +47,12 @@ class TopLearnersScreen extends ConsumerWidget {
     final design = Design.of(context);
     final activeTab = ref.watch(leaderboardTabProvider);
     final l10n = L10n.of(context);
+    final settings = ref.watch(instituteSettingsProvider);
+    final leaderboardLabel = settings?.leaderboardLabel?.trim();
+    final displayTitle =
+        (leaderboardLabel != null && leaderboardLabel.isNotEmpty)
+            ? leaderboardLabel
+            : l10n.leaderboardTitle;
 
     return Container(
       color: design.colors.surface,
@@ -57,7 +63,7 @@ class TopLearnersScreen extends ConsumerWidget {
             // Header Area
             Container(
               decoration: BoxDecoration(
-                color: design.colors.surface,
+                color: design.colors.card,
                 border: Border(
                   bottom: BorderSide(
                     color: design.colors.border,
@@ -84,7 +90,7 @@ class TopLearnersScreen extends ConsumerWidget {
                           child: Container(
                             padding: EdgeInsets.all(design.spacing.xs),
                             child: Icon(
-                              LucideIcons.chevronLeft,
+                              LucideIcons.arrowLeft,
                               size: 24,
                               color: design.colors.textPrimary,
                             ),
@@ -93,7 +99,7 @@ class TopLearnersScreen extends ConsumerWidget {
                         SizedBox(width: design.spacing.xs),
                         Expanded(
                           child: AppText.headline(
-                            l10n.leaderboardTitle,
+                            displayTitle,
                             color: design.colors.textPrimary,
                           ),
                         ),

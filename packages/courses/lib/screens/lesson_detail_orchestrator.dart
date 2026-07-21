@@ -107,6 +107,10 @@ class _LessonDetailOrchestratorState
     final isBookmarked = lesson.bookmarkId != null;
     final parsedLessonId = int.tryParse(lesson.id) ?? 0;
 
+    final settings = ref.watch(instituteSettingsProvider);
+    final bookmarksEnabled = settings?.bookmarksEnabled ?? false;
+    final helpdeskEnabled = settings?.helpdeskEnabled ?? false;
+
     // Determine if we should show the "Mark as Completed" button in the header
     final supportsManualCompletion = [
       LessonType.pdf,
@@ -127,13 +131,15 @@ class _LessonDetailOrchestratorState
           isCompleted: isCompleted,
           progress: lesson.type == LessonType.pdf ? _readingProgress : null,
           onBack: () => Navigator.of(context).pop(),
-          onBookmarkToggle: () {
-            if (isBookmarked) {
-              _removeBookmark(lesson);
-            } else {
-              setState(() => _isBookmarkSheetOpen = true);
-            }
-          },
+          onBookmarkToggle: bookmarksEnabled
+              ? () {
+                  if (isBookmarked) {
+                    _removeBookmark(lesson);
+                  } else {
+                    setState(() => _isBookmarkSheetOpen = true);
+                  }
+                }
+              : null,
           onMarkAsCompleted: supportsManualCompletion ? _markAsCompleted : null,
           onNext: widget.onNext,
           onPrevious: widget.onPrevious,
@@ -142,6 +148,7 @@ class _LessonDetailOrchestratorState
           child: _buildLessonContent(context),
         ),
         if (lesson.isComplete &&
+            helpdeskEnabled &&
             [
               LessonType.pdf,
               LessonType.notes,
