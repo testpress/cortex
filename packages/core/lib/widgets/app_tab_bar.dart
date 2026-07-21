@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import '../accessibility/app_semantics.dart';
 import '../design/design_provider.dart';
+import '../motion/accessibility_motion.dart';
 
 class AppTabItem {
   const AppTabItem({
@@ -32,6 +33,9 @@ class AppTabBar extends StatelessWidget {
     required this.onTabChange,
   });
 
+  static const double _tabletMarginDivisor = 8.0;
+  static const double _phoneMarginDivisor = 20.0;
+
   final List<AppTabItem> items;
   final String activeItemId;
   final ValueChanged<String> onTabChange;
@@ -39,29 +43,17 @@ class AppTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final horizontalMargin = screenWidth >= design.layout.tabletBreakpoint
+        ? screenWidth / _tabletMarginDivisor
+        : screenWidth / _phoneMarginDivisor;
 
     return Container(
       margin: EdgeInsets.fromLTRB(
-        design.spacing.md,
+        horizontalMargin,
         0,
+        horizontalMargin,
         design.spacing.md,
-        design.spacing.md,
-      ),
-      decoration: BoxDecoration(
-        color: design.colors.card,
-        borderRadius: design.radius.pill,
-        boxShadow: [
-          BoxShadow(
-            color: design.colors.textPrimary.withValues(alpha: 0.15),
-            blurRadius: 24,
-            offset: const Offset(0, 8),
-          ),
-          BoxShadow(
-            color: design.colors.textPrimary.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: SafeArea(
         top: false,
@@ -74,62 +66,165 @@ class AppTabBar extends StatelessWidget {
               maxWidth: design.layout.tabletBreakpoint,
             ),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: design.spacing.xs),
-              height: 64, // Same as h-16 in React
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: items.map((item) {
-                  final isActive = item.id == activeItemId;
-                  // The React token mappings: textInverse maps to text-slate-800 mostly
-                  // but let's just use textPrimary for standard matching text slate-800
-                  // and textSecondary for muted state text slate-500
-                  final fgColor = isActive
-                      ? design.colors.textPrimary
-                      : design.colors.textSecondary;
+              decoration: BoxDecoration(
+                color: design.colors.card,
+                borderRadius: design.radius.pill,
+                boxShadow: [
+                  BoxShadow(
+                    color: design.colors.textPrimary.withValues(alpha: 0.20),
+                    blurRadius: 48,
+                    offset: const Offset(0, 16),
+                  ),
+                  BoxShadow(
+                    color: design.colors.textPrimary.withValues(alpha: 0.12),
+                    blurRadius: 24,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              padding: EdgeInsets.zero,
+              height: 64,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final tabWidth = items.isNotEmpty
+                      ? constraints.maxWidth / items.length
+                      : 0.0;
+                  final activeIndex = items.indexWhere(
+                    (item) => item.id == activeItemId,
+                  );
 
-                  return SizedBox(
-                    width: 72,
-                    child: AppSemantics.button(
-                      label: item.label,
-                      onTap: () => onTabChange(item.id),
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () => onTabChange(item.id),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            item.iconBuilder != null
-                                ? item.iconBuilder!(
-                                    context,
-                                    isActive,
-                                    fgColor,
-                                    20,
-                                  )
-                                : Icon(
-                                    isActive
-                                        ? (item.activeIcon ?? item.icon)
-                                        : item.icon,
-                                    size: 20, // Match w-5 h-5 in React
-                                    color: fgColor,
-                                  ),
-                            SizedBox(height: design.spacing.xs),
-                            Text(
-                              item.label,
-                              style: design.typography.caption.copyWith(
-                                color: fgColor,
-                                fontWeight: isActive
-                                    ? FontWeight.w700
-                                    : FontWeight.w500,
+                  return Stack(
+                    children: [
+                      AnimatedPositioned(
+                        duration: MotionPreferences.duration(
+                          context,
+                          design.motion.normal,
+                        ),
+                        curve: MotionPreferences.curve(
+                          context,
+                          design.motion.easeOut,
+                        ),
+                        left: activeIndex >= 0 ? activeIndex * tabWidth : 0,
+                        width: tabWidth,
+                        top: 0,
+                        bottom: 0,
+                        child: AnimatedOpacity(
+                          duration: MotionPreferences.duration(
+                            context,
+                            design.motion.normal,
+                          ),
+                          opacity: activeIndex >= 0 ? 1.0 : 0.0,
+                          child: Center(
+                            child: Container(
+                              margin: EdgeInsets.all(design.spacing.xs),
+                              decoration: BoxDecoration(
+                                color: design.colors.primary.withValues(
+                                  alpha: 0.10,
+                                ),
+                                borderRadius: design.radius.pill,
                               ),
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: items.map((item) {
+                          final isActive = item.id == activeItemId;
+                          return Expanded(
+                            key: ValueKey(item.id),
+                            child: _TabItemWidget(
+                              key: ValueKey('${item.id}_tab'),
+                              item: item,
+                              isActive: isActive,
+                              onTap: () => onTabChange(item.id),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
                   );
-                }).toList(),
+                },
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TabItemWidget extends StatelessWidget {
+  const _TabItemWidget({
+    super.key,
+    required this.item,
+    required this.isActive,
+    required this.onTap,
+  });
+
+  final AppTabItem item;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    final primaryColor = design.colors.primary;
+
+    final duration = MotionPreferences.duration(context, design.motion.normal);
+    final curve = MotionPreferences.curve(context, design.motion.easeOut);
+
+    return AppSemantics.button(
+      label: item.label,
+      onTap: onTap,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TweenAnimationBuilder<Color?>(
+                tween: ColorTween(
+                  begin: design.colors.textSecondary,
+                  end: isActive ? primaryColor : design.colors.textSecondary,
+                ),
+                duration: duration,
+                curve: curve,
+                builder: (context, color, child) {
+                  final currentColor = color ?? design.colors.textSecondary;
+                  if (item.iconBuilder != null) {
+                    return item.iconBuilder!(
+                      context,
+                      isActive,
+                      currentColor,
+                      20,
+                    );
+                  }
+                  return Icon(
+                    isActive ? (item.activeIcon ?? item.icon) : item.icon,
+                    size: 20,
+                    color: currentColor,
+                  );
+                },
+              ),
+              SizedBox(height: design.spacing.xs),
+              AnimatedDefaultTextStyle(
+                duration: duration,
+                curve: curve,
+                style: design.typography.caption.copyWith(
+                  color: isActive ? primaryColor : design.colors.textSecondary,
+                  fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+                ),
+                child: Text(
+                  item.label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
           ),
         ),
       ),
