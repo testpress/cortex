@@ -24,18 +24,18 @@ class DashboardDrawer extends ConsumerWidget {
     final forumEnabled = settings?.forumEnabled ?? false;
     final bookmarksEnabled = settings?.bookmarksEnabled ?? false;
 
-    final bookmarksLabel = settings?.bookmarksLabel.trim();
+    final bookmarksLabel = settings?.bookmarksLabel?.trim();
     final displayBookmarksLabel =
         (bookmarksLabel != null && bookmarksLabel.isNotEmpty)
         ? bookmarksLabel
         : l10n.drawerBookmark;
 
-    final postsLabel = settings?.postsLabel.trim();
+    final postsLabel = settings?.postsLabel?.trim();
     final displayPostsLabel = (postsLabel != null && postsLabel.isNotEmpty)
         ? postsLabel
         : l10n.drawerPosts;
 
-    final forumLabel = settings?.forumLabel.trim();
+    final forumLabel = settings?.forumLabel?.trim();
     final displayForumLabel = (forumLabel != null && forumLabel.isNotEmpty)
         ? forumLabel
         : l10n.drawerForum;

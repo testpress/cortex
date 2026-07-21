@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import '../models/course_content.dart';
 import '../providers/course_list_provider.dart';
 import '../widgets/lesson_detail/lesson_detail_header.dart';
@@ -56,6 +57,9 @@ class _PdfLessonDetailScreenState extends ConsumerState<PdfLessonDetailScreen> {
         ref.watch(lessonBookmarkProvider(widget.lesson.id)).valueOrNull ??
             false;
 
+    final settings = ref.watch(instituteSettingsProvider);
+    final bookmarksEnabled = settings?.bookmarksEnabled ?? false;
+
     return Container(
       color: design.colors.surface,
       child: Stack(
@@ -67,12 +71,14 @@ class _PdfLessonDetailScreenState extends ConsumerState<PdfLessonDetailScreen> {
                 lessonTitle: widget.lesson.title,
                 onBack: () => Navigator.of(context).pop(),
                 isBookmarked: isBookmarked,
-                onBookmarkToggle: () async {
-                  final repository = await ref.read(
-                    courseRepositoryProvider.future,
-                  );
-                  await repository.toggleLessonBookmark(widget.lesson.id);
-                },
+                onBookmarkToggle: bookmarksEnabled
+                    ? () async {
+                        final repository = await ref.read(
+                          courseRepositoryProvider.future,
+                        );
+                        await repository.toggleLessonBookmark(widget.lesson.id);
+                      }
+                    : null,
                 onDownload: () {
                   setState(() => _showDownloadFeedback = true);
                   Future.delayed(const Duration(seconds: 2), () {

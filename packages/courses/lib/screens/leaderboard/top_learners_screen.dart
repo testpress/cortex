@@ -48,7 +48,7 @@ class TopLearnersScreen extends ConsumerWidget {
     final activeTab = ref.watch(leaderboardTabProvider);
     final l10n = L10n.of(context);
     final settings = ref.watch(instituteSettingsProvider);
-    final leaderboardLabel = settings?.leaderboardLabel.trim();
+    final leaderboardLabel = settings?.leaderboardLabel?.trim();
     final displayTitle =
         (leaderboardLabel != null && leaderboardLabel.isNotEmpty)
             ? leaderboardLabel

@@ -24,7 +24,7 @@ class LessonDetailHeader extends StatelessWidget {
   final bool isBookmarked;
 
   /// Callback to toggle the bookmark state.
-  final VoidCallback onBookmarkToggle;
+  final VoidCallback? onBookmarkToggle;
 
   /// Callback to trigger content download.
   final VoidCallback onDownload;
@@ -99,16 +99,18 @@ class LessonDetailHeader extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _HeaderActionButton(
-                  icon: isBookmarked
-                      ? LucideIcons.bookmarkOff
-                      : LucideIcons.bookmark,
-                  onTap: onBookmarkToggle,
-                  ariaLabel: isBookmarked
-                      ? l10n.lessonBookmarkRemove
-                      : l10n.lessonBookmarkAdd,
-                ),
-                SizedBox(width: design.spacing.xs),
+                if (onBookmarkToggle != null)
+                  _HeaderActionButton(
+                    icon: isBookmarked
+                        ? LucideIcons.bookmarkOff
+                        : LucideIcons.bookmark,
+                    onTap: onBookmarkToggle!,
+                    ariaLabel: isBookmarked
+                        ? l10n.lessonBookmarkRemove
+                        : l10n.lessonBookmarkAdd,
+                  ),
+                if (onBookmarkToggle != null)
+                  SizedBox(width: design.spacing.xs),
                 _HeaderActionButton(
                   icon: LucideIcons.download,
                   onTap: onDownload,
