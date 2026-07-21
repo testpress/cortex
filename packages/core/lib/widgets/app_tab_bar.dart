@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/widgets.dart';
 import '../accessibility/app_semantics.dart';
 import '../design/design_provider.dart';
@@ -114,8 +113,7 @@ class AppTabBar extends StatelessWidget {
                           opacity: activeIndex >= 0 ? 1.0 : 0.0,
                           child: Center(
                             child: Container(
-                              height: 56,
-                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              margin: EdgeInsets.all(design.spacing.xs),
                               decoration: BoxDecoration(
                                 color: design.colors.primary.withValues(
                                   alpha: 0.10,
@@ -132,7 +130,9 @@ class AppTabBar extends StatelessWidget {
                         children: items.map((item) {
                           final isActive = item.id == activeItemId;
                           return Expanded(
+                            key: ValueKey(item.id),
                             child: _TabItemWidget(
+                              key: ValueKey('${item.id}_tab'),
                               item: item,
                               isActive: isActive,
                               onTap: () => onTabChange(item.id),
@@ -154,6 +154,7 @@ class AppTabBar extends StatelessWidget {
 
 class _TabItemWidget extends StatelessWidget {
   const _TabItemWidget({
+    super.key,
     required this.item,
     required this.isActive,
     required this.onTap,
@@ -206,7 +207,7 @@ class _TabItemWidget extends StatelessWidget {
                   );
                 },
               ),
-              const SizedBox(height: 6),
+              SizedBox(height: design.spacing.xs),
               AnimatedDefaultTextStyle(
                 duration: duration,
                 curve: curve,
