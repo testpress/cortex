@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tpstreams_player_sdk/tpstreams_player_sdk.dart';
+import '../services/sentry_service.dart';
 import '../auth/auth_provider.dart';
 import 'app_config.dart';
 import '../../workers/offline_exam_sync_worker.dart';
@@ -23,6 +24,9 @@ Future<void> sdkInitialization(SdkInitializationRef ref) async {
   }
 
   TestpressSDK.initialize(subdomain: subdomain, authToken: authToken);
+
+  // Initialize Sentry SDK
+  await ref.read(sentryServiceProvider).initialize();
 
   // Initialize background worker for offline exam syncing
   await OfflineExamSyncWorker.initialize();

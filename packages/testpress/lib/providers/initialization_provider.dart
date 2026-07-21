@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
 import 'package:core/core.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'dart:developer' as dev;
 
@@ -32,6 +33,9 @@ Future<void> appInitialization(AppInitializationRef ref) async {
     await userProgressRepo.refreshProgress(user.id);
   } catch (e, stack) {
     dev.log('App initialization failed', error: e, stackTrace: stack);
+    ref
+        .read(sentryServiceProvider)
+        .captureException(e, stackTrace: stack, level: SentryLevel.fatal);
 
     // Support offline mode: only rethrow if this is a first launch (no cached data).
     final cachedProfile = await userRepo.getCurrentProfile();
@@ -62,6 +66,9 @@ Future<void> settingsInitialization(SettingsInitializationRef ref) async {
     // Fail silently if unable to fetch settings, the app will use defaults
     // BUT rethrow if we don't even have cached settings (first launch offline)
     dev.log('Settings initialization failed', error: e, stackTrace: stack);
+    ref
+        .read(sentryServiceProvider)
+        .captureException(e, stackTrace: stack, level: SentryLevel.warning);
     final settingsRepo = ref.read(instituteSettingsRepositoryProvider);
     final cached = await settingsRepo.loadSettings();
     if (cached == null) {

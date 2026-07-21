@@ -1,9 +1,10 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core.dart';
 import '../data/data.dart';
 
-class PaymentProcessingScreen extends StatefulWidget {
+class PaymentProcessingScreen extends ConsumerStatefulWidget {
   final Future<OrderDto> Function() createOrder;
   final DataSource dataSource;
 
@@ -29,11 +30,12 @@ class PaymentProcessingScreen extends StatefulWidget {
   }
 
   @override
-  State<PaymentProcessingScreen> createState() =>
+  ConsumerState<PaymentProcessingScreen> createState() =>
       _PaymentProcessingScreenState();
 }
 
-class _PaymentProcessingScreenState extends State<PaymentProcessingScreen> {
+class _PaymentProcessingScreenState
+    extends ConsumerState<PaymentProcessingScreen> {
   late PaymentGatewayFactory _factory;
   bool _hasStartedPayment = false;
   PaymentResult? _result;
@@ -52,8 +54,11 @@ class _PaymentProcessingScreenState extends State<PaymentProcessingScreen> {
     if (_hasStartedPayment) return;
     _hasStartedPayment = true;
 
+    OrderDto? pendingOrder;
+
     try {
       final order = await widget.createOrder();
+      pendingOrder = order;
 
       if (order.status == 'Completed') {
         if (mounted) {
@@ -73,8 +78,19 @@ class _PaymentProcessingScreenState extends State<PaymentProcessingScreen> {
           _result = result;
         });
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       debugPrint('Payment processing error: $e');
+
+      ref
+          .read(sentryServiceProvider)
+          .captureException(
+            e,
+            stackTrace: stackTrace,
+            tags: pendingOrder != null
+                ? {'orderCreationId': pendingOrder.id.toString()}
+                : null,
+          );
+
       if (mounted) {
         setState(() {
           _result = PaymentResult(

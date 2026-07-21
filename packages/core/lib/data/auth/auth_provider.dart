@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../config/app_config.dart';
 
@@ -10,11 +11,15 @@ import '../../network/dio_provider.dart';
 import '../db/database_provider.dart';
 import '../sources/data_source_provider.dart';
 import '../../domain/usecases/app_reset_use_case.dart';
+import '../services/sentry_service.dart';
 
 part 'auth_provider.g.dart';
 
 final authApiServiceProvider = Provider((ref) {
-  return AuthApiService(dio: ref.watch(dioProvider));
+  return AuthApiService(
+    dio: ref.watch(dioProvider),
+    sentryService: ref.watch(sentryServiceProvider),
+  );
 });
 
 final authLocalDataSourceProvider = Provider<AuthLocalDataSource>((ref) {
@@ -113,7 +118,14 @@ class Auth extends _$Auth {
       await _repository.logout();
 
       state = const AsyncData(false);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      ref
+          .read(sentryServiceProvider)
+          .captureException(
+            e,
+            stackTrace: stackTrace,
+            level: SentryLevel.error,
+          );
       state = const AsyncData(false);
       rethrow;
     }

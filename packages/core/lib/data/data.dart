@@ -80,6 +80,7 @@ export 'providers/doubt_providers.dart';
 //service
 export 'services/downloads_service.dart';
 export 'services/pagination_service.dart';
+export 'services/sentry_service.dart';
 
 // Infra & Mocks
 export 'sources/mock_data.dart';
