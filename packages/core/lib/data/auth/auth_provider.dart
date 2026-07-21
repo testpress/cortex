@@ -1,6 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../config/app_config.dart';
 
@@ -124,7 +123,7 @@ class Auth extends _$Auth {
           .captureException(
             e,
             stackTrace: stackTrace,
-            level: SentryLevel.error,
+            level: AppErrorLevel.error,
           );
       state = const AsyncData(false);
       rethrow;

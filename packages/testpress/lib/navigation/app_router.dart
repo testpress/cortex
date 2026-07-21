@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'routes.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
@@ -21,7 +20,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/onboarding',
-    observers: [SentryNavigatorObserver()],
+    observers: [SentryService.createNavigatorObserver()],
     redirect: (context, state) =>
         AuthRoutes.redirect(context, state, isLoggedIn),
     routes: [

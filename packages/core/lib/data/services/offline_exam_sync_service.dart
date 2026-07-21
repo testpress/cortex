@@ -9,7 +9,6 @@ import '../db/app_database.dart';
 import '../db/database_provider.dart';
 import '../../network/dio_provider.dart';
 import '../sources/http_data_source.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'sentry_service.dart';
 
 part 'offline_exam_sync_service.g.dart';
@@ -44,7 +43,7 @@ class OfflineExamSyncService {
               _sentryService.captureException(
                 e,
                 stackTrace: stackTrace,
-                level: SentryLevel.warning,
+                level: AppErrorLevel.warning,
               );
             }
           }
@@ -81,7 +80,7 @@ class OfflineExamSyncService {
         _sentryService.captureException(
           e,
           stackTrace: stackTrace,
-          level: SentryLevel.error,
+          level: AppErrorLevel.error,
         );
         if (e is DioException) {
           final statusCode = e.response?.statusCode;

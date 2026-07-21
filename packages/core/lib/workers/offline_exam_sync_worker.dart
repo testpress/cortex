@@ -14,6 +14,10 @@ void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     WidgetsFlutterBinding.ensureInitialized();
 
+    // Initialize Sentry explicitly for this background isolate
+    final sentryService = SentryService();
+    await sentryService.initialize();
+
     if (task == OfflineExamSyncWorker.syncTaskName) {
       try {
         debugPrint("Background sync running for offline exams...");
@@ -28,7 +32,6 @@ void callbackDispatcher() {
         final db = AppDatabase();
         try {
           final api = HttpDataSource(dio: dio);
-          final sentryService = SentryService();
           final service = OfflineExamSyncService(db, api, sentryService);
 
           await service.syncPendingExams();
@@ -38,7 +41,7 @@ void callbackDispatcher() {
         }
       } catch (err, stackTrace) {
         debugPrint("Background sync failed: $err");
-        SentryService().captureException(err, stackTrace: stackTrace);
+        sentryService.captureException(err, stackTrace: stackTrace);
         return Future.value(false); // Retries based on workmanager config
       }
       return Future.value(true);

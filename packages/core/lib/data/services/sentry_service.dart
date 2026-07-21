@@ -1,11 +1,32 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:flutter/widgets.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../config/app_config.dart';
 import '../providers/user_provider.dart';
 import '../../network/network_utils.dart';
 
 part 'sentry_service.g.dart';
+
+/// Application-agnostic error levels for logging
+enum AppErrorLevel { info, warning, error, fatal, debug }
+
+extension AppErrorLevelMapper on AppErrorLevel {
+  SentryLevel get toSentryLevel {
+    switch (this) {
+      case AppErrorLevel.info:
+        return SentryLevel.info;
+      case AppErrorLevel.warning:
+        return SentryLevel.warning;
+      case AppErrorLevel.error:
+        return SentryLevel.error;
+      case AppErrorLevel.fatal:
+        return SentryLevel.fatal;
+      case AppErrorLevel.debug:
+        return SentryLevel.debug;
+    }
+  }
+}
 
 class SentryService {
   Future<void> initialize() async {
@@ -37,18 +58,22 @@ class SentryService {
     }
   }
 
+  /// Returns a navigation observer to track routing breadcrumbs without exposing Sentry types directly
+  static NavigatorObserver createNavigatorObserver() =>
+      SentryNavigatorObserver();
+
   /// Adds a breadcrumb to track user actions or system events leading up to an error.
   void addBreadcrumb({
     required String message,
     String? category,
-    SentryLevel? level,
+    AppErrorLevel? level,
     Map<String, dynamic>? data,
   }) {
     Sentry.addBreadcrumb(
       Breadcrumb(
         message: message,
         category: category,
-        level: level,
+        level: level?.toSentryLevel,
         data: data,
       ),
     );
@@ -57,7 +82,7 @@ class SentryService {
   Future<void> captureException(
     dynamic exception, {
     dynamic stackTrace,
-    SentryLevel? level,
+    AppErrorLevel? level,
     Map<String, String>? tags,
     Map<String, dynamic>? contexts,
   }) async {
@@ -65,7 +90,7 @@ class SentryService {
       exception,
       stackTrace: stackTrace,
       withScope: (scope) {
-        if (level != null) scope.level = level;
+        if (level != null) scope.level = level.toSentryLevel;
         if (tags != null) {
           tags.forEach((key, value) {
             scope.setTag(key, value);
@@ -82,13 +107,13 @@ class SentryService {
 
   Future<void> captureMessage(
     String message, {
-    SentryLevel? level,
+    AppErrorLevel? level,
     Map<String, String>? tags,
     Map<String, dynamic>? contexts,
   }) async {
     await Sentry.captureMessage(
       message,
-      level: level,
+      level: level?.toSentryLevel,
       withScope: (scope) {
         if (tags != null) {
           tags.forEach((key, value) {

@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:media_scanner/media_scanner.dart';
 import 'package:tpstreams_player_sdk/tpstreams_player_sdk.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import '../models/download_item.dart';
 import '../../network/file_downloader.dart';
 import 'sentry_service.dart';
@@ -57,7 +56,7 @@ class DownloadsService {
             _sentryService.captureException(
               e,
               stackTrace: stackTrace,
-              level: SentryLevel.warning,
+              level: AppErrorLevel.warning,
               contexts: {
                 'MediaScanner Error': {'savePath': savePath},
               },
@@ -91,7 +90,7 @@ class DownloadsService {
           _sentryService.captureException(
             e,
             stackTrace: stackTrace,
-            level: SentryLevel.warning,
+            level: AppErrorLevel.warning,
             contexts: {
               'MediaScanner Error': {'savePath': path},
             },
@@ -171,7 +170,7 @@ class DownloadsService {
         _sentryService.captureException(
           e,
           stackTrace: stackTrace,
-          level: SentryLevel.warning,
+          level: AppErrorLevel.warning,
           tags: {'action': 'pause'},
         );
       }
@@ -189,7 +188,7 @@ class DownloadsService {
         _sentryService.captureException(
           e,
           stackTrace: stackTrace,
-          level: SentryLevel.warning,
+          level: AppErrorLevel.warning,
           tags: {'action': 'resume'},
         );
       }
