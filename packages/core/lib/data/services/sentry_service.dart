@@ -130,7 +130,7 @@ class SentryService {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 SentryService sentryService(SentryServiceRef ref) {
   final service = SentryService();
 
