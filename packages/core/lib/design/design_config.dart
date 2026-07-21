@@ -299,7 +299,26 @@ class DesignColors {
   final Color onSkeleton;
   final Color transparent;
 
+  static const String _envPrimary = String.fromEnvironment('PRIMARY_COLOR');
+
   factory DesignColors.light() {
+    if (_envPrimary.isNotEmpty) {
+      final colorCode = int.tryParse(
+        _envPrimary.replaceAll('#', ''),
+        radix: 16,
+      );
+      if (colorCode != null) {
+        final parsedColor = Color(0xFF000000 | colorCode);
+        return DesignColors.smart(
+          primary: parsedColor,
+          surface: const Color(0xFFE9EEF4),
+          surfaceVariant: const Color(0xFFDEE5ED),
+          card: const Color(0xFFFFFFFF),
+          border: const Color(0xFFDEE5ED),
+          divider: const Color(0xFFDEE5ED),
+        );
+      }
+    }
     return const DesignColors(
       primary: Color(0xFF6366F1),
       onPrimary: Color(0xFFFFFFFF),
@@ -350,6 +369,23 @@ class DesignColors {
   }
 
   factory DesignColors.dark() {
+    if (_envPrimary.isNotEmpty) {
+      final colorCode = int.tryParse(
+        _envPrimary.replaceAll('#', ''),
+        radix: 16,
+      );
+      if (colorCode != null) {
+        final parsedColor = Color(0xFF000000 | colorCode);
+        return DesignColors.smart(
+          primary: parsedColor,
+          surface: const Color(0xFF18181B), // Zinc-900 (Main UI Surface)
+          surfaceVariant: const Color(0xFF27272A), // Zinc-800
+          card: const Color(0xFF27272A), // Zinc-800
+          border: const Color(0xFF3F3F46), // Zinc-700
+          divider: const Color(0xFF27272A),
+        );
+      }
+    }
     return const DesignColors(
       primary: Color(0xFF818CF8),
       onPrimary: Color(0xFFFFFFFF),
