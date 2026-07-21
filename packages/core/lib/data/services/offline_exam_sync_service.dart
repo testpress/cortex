@@ -9,14 +9,16 @@ import '../db/app_database.dart';
 import '../db/database_provider.dart';
 import '../../network/dio_provider.dart';
 import '../sources/http_data_source.dart';
+import 'sentry_service.dart';
 
 part 'offline_exam_sync_service.g.dart';
 
 class OfflineExamSyncService {
   final AppDatabase _db;
   final DataSource _api;
+  final SentryService _sentryService;
 
-  OfflineExamSyncService(this._db, this._api);
+  OfflineExamSyncService(this._db, this._api, this._sentryService);
 
   /// Background sync executor. Iterates pending exams, constructs payloads,
   /// pushes to backend, and marks them as synced by deleting them.
@@ -37,8 +39,12 @@ class OfflineExamSyncService {
               if (decoded is List) {
                 selectedOptions = decoded;
               }
-            } catch (e) {
-              // Ignore failure
+            } catch (e, stackTrace) {
+              _sentryService.captureException(
+                e,
+                stackTrace: stackTrace,
+                level: AppErrorLevel.warning,
+              );
             }
           }
 
@@ -69,8 +75,13 @@ class OfflineExamSyncService {
 
         // Mark as successfully synced in local DB by deleting the download and answers
         await _db.deleteDownload(download.id);
-      } catch (e) {
+      } catch (e, stackTrace) {
         debugPrint("Sync failed for offline exam ${download.id}: $e");
+        _sentryService.captureException(
+          e,
+          stackTrace: stackTrace,
+          level: AppErrorLevel.error,
+        );
         if (e is DioException) {
           final statusCode = e.response?.statusCode;
           // Permanent failure handling: 4xx errors (except 401 Auth, 408 Timeout, 429 Rate Limit)
@@ -94,5 +105,6 @@ Future<OfflineExamSyncService> offlineExamSyncService(Ref ref) async {
   final db = await ref.watch(appDatabaseProvider.future);
   final dio = ref.watch(dioProvider);
   final dataSource = HttpDataSource(dio: dio);
-  return OfflineExamSyncService(db, dataSource);
+  final sentryService = ref.watch(sentryServiceProvider);
+  return OfflineExamSyncService(db, dataSource, sentryService);
 }

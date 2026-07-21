@@ -6,7 +6,7 @@ part of 'app_reset_use_case.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$appResetUseCaseHash() => r'7916db19265bfcef36dfbf33749bca093c02c37d';
+String _$appResetUseCaseHash() => r'407531c42aab32676c993cea74e4a09973344966';
 
 /// See also [appResetUseCase].
 @ProviderFor(appResetUseCase)

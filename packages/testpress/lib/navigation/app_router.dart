@@ -20,6 +20,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/onboarding',
+    observers: [SentryService.createNavigatorObserver()],
     redirect: (context, state) =>
         AuthRoutes.redirect(context, state, isLoggedIn),
     routes: [

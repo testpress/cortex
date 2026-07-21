@@ -55,6 +55,13 @@ class AppConfig {
     defaultValue: '',
   );
 
+  /// DSN for Sentry error tracking
+  static const String sentryDsn = String.fromEnvironment(
+    'SENTRY_DSN',
+    defaultValue:
+        'https://442b7cef9ddbb5e16a2aaa897cbbaf0e@sentry.testpress.in/32',
+  );
+
   // --- UI Feature Flags & Branding ---
   // These are automatically populated at compile-time when using:
   // --dart-define-from-file=../config/<institute_name>.json

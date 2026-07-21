@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import '../../network/api_endpoints.dart';
+import '../services/sentry_service.dart';
 import 'types/auth_exception.dart';
 
 class AuthApiResult {
@@ -11,8 +12,11 @@ class AuthApiResult {
 
 class AuthApiService {
   final Dio _dio;
+  final SentryService _sentryService;
 
-  AuthApiService({required Dio dio}) : _dio = dio;
+  AuthApiService({required Dio dio, required SentryService sentryService})
+    : _dio = dio,
+      _sentryService = sentryService;
 
   Future<AuthApiResult> loginWithPassword({
     required String username,
@@ -130,7 +134,8 @@ class AuthApiService {
       );
 
       return response.data ?? <String, dynamic>{};
-    } on DioException catch (error) {
+    } on DioException catch (error, stackTrace) {
+      _sentryService.captureException(error, stackTrace: stackTrace);
       throw AuthException.fromDio(error);
     }
   }

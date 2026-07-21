@@ -4,6 +4,7 @@ import 'package:media_scanner/media_scanner.dart';
 import 'package:tpstreams_player_sdk/tpstreams_player_sdk.dart';
 import '../models/download_item.dart';
 import '../../network/file_downloader.dart';
+import 'sentry_service.dart';
 
 part 'downloads_service.g.dart';
 
@@ -13,8 +14,9 @@ part 'downloads_service.g.dart';
 class DownloadsService {
   final FileDownloader _fileDownloader;
   final TPStreamsDownloadManager _downloadManager = TPStreamsDownloadManager();
+  final SentryService _sentryService;
 
-  DownloadsService(this._fileDownloader);
+  DownloadsService(this._fileDownloader, this._sentryService);
 
   /// Exposes the live stream of download progress and states mapped to DownloadItem.
   Stream<List<DownloadItem>> get downloadsStream {
@@ -29,31 +31,51 @@ class DownloadsService {
     String url, {
     void Function(int progressPercent)? onProgress,
   }) async {
-    int lastProgress = 0;
-    final savePath = await _fileDownloader.download(
-      url: url,
-      type: StorageType.publicDownload,
-      onReceiveProgress: (count, total) {
-        if (total > 0) {
-          final percent = ((count / total) * 100).toInt();
-          if (percent != lastProgress) {
-            lastProgress = percent;
-            onProgress?.call(percent);
+    try {
+      int lastProgress = 0;
+      final savePath = await _fileDownloader.download(
+        url: url,
+        type: StorageType.publicDownload,
+        onReceiveProgress: (count, total) {
+          if (total > 0) {
+            final percent = ((count / total) * 100).toInt();
+            if (percent != lastProgress) {
+              lastProgress = percent;
+              onProgress?.call(percent);
+            }
+          }
+        },
+        requireAuth: false,
+      );
+
+      if (savePath != null) {
+        if (Platform.isAndroid) {
+          try {
+            await MediaScanner.loadMedia(path: savePath);
+          } catch (e, stackTrace) {
+            _sentryService.captureException(
+              e,
+              stackTrace: stackTrace,
+              level: AppErrorLevel.warning,
+              contexts: {
+                'MediaScanner Error': {'savePath': savePath},
+              },
+            );
           }
         }
-      },
-      requireAuth: false,
-    );
-
-    if (savePath != null) {
-      if (Platform.isAndroid) {
-        try {
-          await MediaScanner.loadMedia(path: savePath);
-        } catch (_) {}
+        return await File(savePath).length();
       }
-      return await File(savePath).length();
+      return null;
+    } catch (e, stackTrace) {
+      _sentryService.captureException(
+        e,
+        stackTrace: stackTrace,
+        contexts: {
+          'FileDownloader Error': {'url': url},
+        },
+      );
+      return null;
     }
-    return null;
   }
 
   /// Checks if the attachment exists and returns its size in bytes.
@@ -64,7 +86,16 @@ class DownloadsService {
       if (Platform.isAndroid) {
         try {
           await MediaScanner.loadMedia(path: path);
-        } catch (_) {}
+        } catch (e, stackTrace) {
+          _sentryService.captureException(
+            e,
+            stackTrace: stackTrace,
+            level: AppErrorLevel.warning,
+            contexts: {
+              'MediaScanner Error': {'savePath': path},
+            },
+          );
+        }
       }
       return await File(path).length();
     }
@@ -135,8 +166,13 @@ class DownloadsService {
     if (asset != null) {
       try {
         await _downloadManager.pauseDownload(asset);
-      } catch (e) {
-        // UnsupportedError on iOS
+      } catch (e, stackTrace) {
+        _sentryService.captureException(
+          e,
+          stackTrace: stackTrace,
+          level: AppErrorLevel.warning,
+          tags: {'action': 'pause'},
+        );
       }
     }
   }
@@ -148,8 +184,13 @@ class DownloadsService {
     if (asset != null) {
       try {
         await _downloadManager.resumeDownload(asset);
-      } catch (e) {
-        // UnsupportedError on iOS
+      } catch (e, stackTrace) {
+        _sentryService.captureException(
+          e,
+          stackTrace: stackTrace,
+          level: AppErrorLevel.warning,
+          tags: {'action': 'resume'},
+        );
       }
     }
   }
@@ -182,5 +223,6 @@ class DownloadsService {
 @Riverpod(keepAlive: true)
 DownloadsService downloadsService(DownloadsServiceRef ref) {
   final fileDownloader = ref.watch(fileDownloaderProvider);
-  return DownloadsService(fileDownloader);
+  final sentryService = ref.watch(sentryServiceProvider);
+  return DownloadsService(fileDownloader, sentryService);
 }

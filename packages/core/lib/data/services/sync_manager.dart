@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../workers/offline_exam_sync_worker.dart';
 import 'offline_exam_sync_service.dart';
+import 'sentry_service.dart';
 
 part 'sync_manager.g.dart';
 
@@ -29,8 +30,11 @@ class SyncManager {
             offlineExamSyncServiceProvider.future,
           );
           await syncService.syncPendingExams();
-        } catch (e) {
+        } catch (e, stackTrace) {
           debugPrint("Foreground sync attempt failed: $e");
+          _ref
+              .read(sentryServiceProvider)
+              .captureException(e, stackTrace: stackTrace);
           // If foreground sync fails, schedule a background task.
           // Workmanager handles ensuring this runs even if the app closes shortly after.
           OfflineExamSyncWorker.scheduleSync();

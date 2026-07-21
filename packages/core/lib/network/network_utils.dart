@@ -3,6 +3,9 @@ import 'package:dio/dio.dart';
 import '../data/exceptions/api_exception.dart';
 export '../data/exceptions/api_exception.dart';
 
+/// Optional callback to globally track network and parsing errors
+void Function(Object error, StackTrace stackTrace)? onNetworkErrorCapture;
+
 /// Orchestrates a network request with standardized error handling.
 /// Converts [DioException] into our semantic [ApiException].
 ///
@@ -23,9 +26,11 @@ Future<T> performNetworkRequest<T>(
       }
     }
     return fromJson(data) as T;
-  } on DioException catch (error) {
+  } on DioException catch (error, stackTrace) {
+    onNetworkErrorCapture?.call(error, stackTrace);
     throw ApiException.fromDioException(error);
-  } catch (e) {
+  } catch (e, stackTrace) {
+    onNetworkErrorCapture?.call(e, stackTrace);
     throw ApiException('An unexpected error occurred: $e');
   }
 }

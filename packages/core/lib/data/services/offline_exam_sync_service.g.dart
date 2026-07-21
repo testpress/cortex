@@ -7,7 +7,7 @@ part of 'offline_exam_sync_service.dart';
 // **************************************************************************
 
 String _$offlineExamSyncServiceHash() =>
-    r'e3887075a70e9b79e112cbc66b3066a83a5c2112';
+    r'3a94350ff35f41136ce5825ded392449f1b2eb3d';
 
 /// See also [offlineExamSyncService].
 @ProviderFor(offlineExamSyncService)

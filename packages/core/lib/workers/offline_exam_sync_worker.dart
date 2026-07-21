@@ -6,12 +6,17 @@ import '../data/sources/http_data_source.dart';
 import '../data/services/offline_exam_sync_service.dart';
 import '../data/auth/auth_local_data_source.dart';
 import '../network/dio_provider.dart';
+import '../data/services/sentry_service.dart';
 
 /// Top-level function required by workmanager to run in a background isolate.
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     WidgetsFlutterBinding.ensureInitialized();
+
+    // Initialize Sentry explicitly for this background isolate
+    final sentryService = SentryService();
+    await sentryService.initialize();
 
     if (task == OfflineExamSyncWorker.syncTaskName) {
       try {
@@ -27,15 +32,16 @@ void callbackDispatcher() {
         final db = AppDatabase();
         try {
           final api = HttpDataSource(dio: dio);
-          final service = OfflineExamSyncService(db, api);
+          final service = OfflineExamSyncService(db, api, sentryService);
 
           await service.syncPendingExams();
           debugPrint("Background sync completed successfully.");
         } finally {
           await db.close();
         }
-      } catch (err) {
+      } catch (err, stackTrace) {
         debugPrint("Background sync failed: $err");
+        sentryService.captureException(err, stackTrace: stackTrace);
         return Future.value(false); // Retries based on workmanager config
       }
       return Future.value(true);
