@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../lib/design/design_config.dart';
+import 'package:core/design/design_config.dart';
 
 void main() {
   group('DesignColors Parsing and Calculation Tests', () {

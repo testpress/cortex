@@ -5,8 +5,8 @@
 
 ## 2. Design System Injection
 
-- [x] 2.1 Add robust `_parseColor` helper to `packages/core/lib/design/design_config.dart`
-- [x] 2.2 Add `_darken` helper to `packages/core/lib/design/design_config.dart`
+- [x] 2.1 Add robust `parseColor` helper to `packages/core/lib/design/design_config.dart`
+- [x] 2.2 Add `darken` helper to `packages/core/lib/design/design_config.dart`
 - [x] 2.3 Refactor `DesignColors.light()` to compute dynamic colors and bypass `DesignColors.smart()`
 - [x] 2.4 Refactor `DesignColors.dark()` to compute dynamic colors and bypass `DesignColors.smart()`
 

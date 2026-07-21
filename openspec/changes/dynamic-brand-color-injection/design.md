@@ -21,9 +21,9 @@ The cortex Flutter app relies on white-label branding, pulling configuration fro
 *Alternatives Considered*: Code generation (temporarily generating a `client_branding.dart` file during build). Rejected because it dirties the git tree and risks breaking hot-reload workflows.
 
 **2. Bypass `DesignColors.smart()` inside factories**
-*Rationale*: `DesignColors.smart()` defaults to a generic light-mode theme. While great for rapid prototyping, it overrides the highly specific Slate/Zinc semantic grays defined in `DesignColors.light()` and `DesignColors.dark()`. By computing just the primary, onPrimary, and primaryContainers dynamically using a safe `_parseColor` helper and dropping them into the existing `DesignColors` constructor block, we preserve the exact design aesthetics while allowing dynamic primary injection.
+*Rationale*: `DesignColors.smart()` defaults to a generic light-mode theme. While great for rapid prototyping, it overrides the highly specific Slate/Zinc semantic grays defined in `DesignColors.light()` and `DesignColors.dark()`. By computing just the primary, onPrimary, and primaryContainers dynamically using a safe `parseColor` helper and dropping them into the existing `DesignColors` constructor block, we preserve the exact design aesthetics while allowing dynamic primary injection.
 
 ## Risks / Trade-offs
 
-- **[Risk] Unparseable Hex Code** → Mitigation: Implemented a robust `_parseColor` helper that validates string length and strips `0x` prefixes. Added a fallback mechanism with a `debugPrint` warning so the app seamlessly reverts to its default Indigo color without crashing.
-- **[Risk] Container Color Contrast** → Mitigation: `_darken(primary, 0.8)` is used for dark mode containers. If a client injects an already extremely dark brand color, the container might become near-black. This is an acceptable visual fallback, as `_contrastingColor` guarantees the text on top of it will flip to white for readability.
+- **[Risk] Unparseable Hex Code** → Mitigation: Implemented a robust `parseColor` helper that validates string length and strips `0x` prefixes. Added a fallback mechanism with a `debugPrint` warning so the app seamlessly reverts to its default Indigo color without crashing.
+- **[Risk] Container Color Contrast** → Mitigation: `darken(primary, 0.6)` is used for dark mode containers. If a client injects an already extremely dark brand color, the container might become near-black. This is an acceptable visual fallback, as `_contrastingColor` guarantees the text on top of it will flip to white for readability.
