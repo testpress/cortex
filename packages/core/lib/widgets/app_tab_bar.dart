@@ -33,6 +33,9 @@ class AppTabBar extends StatelessWidget {
     required this.onTabChange,
   });
 
+  static const double _tabletMarginDivisor = 8.0;
+  static const double _phoneMarginDivisor = 20.0;
+
   final List<AppTabItem> items;
   final String activeItemId;
   final ValueChanged<String> onTabChange;
@@ -42,8 +45,8 @@ class AppTabBar extends StatelessWidget {
     final design = Design.of(context);
     final screenWidth = MediaQuery.sizeOf(context).width;
     final horizontalMargin = screenWidth >= design.layout.tabletBreakpoint
-        ? screenWidth / 8
-        : screenWidth / 20;
+        ? screenWidth / _tabletMarginDivisor
+        : screenWidth / _phoneMarginDivisor;
 
     return Container(
       margin: EdgeInsets.fromLTRB(
