@@ -221,6 +221,8 @@
   "drawerForum": "ചർച്ചാ ഫോറം",
   "drawerDoubts": "സംശയങ്ങൾ",
   "drawerCustomExam": "കസ്റ്റം എക്സാം",
+  "drawerOfflineExams": "ഓഫ്‌ലൈൻ പരീക്ഷകൾ",
+  "noDownloadedExamAvailable": "ഡൗൺലോഡ് ചെയ്ത പരീക്ഷയൊന്നും ലഭ്യമല്ല",
   "drawerReports": "നിങ്ങളുടെ റിപ്പോർട്ട്",
   "drawerProfile": "പ്രൊഫൈൽ",
   "drawerSettings": "ആപ്പ് ക്രമീകരണങ്ങൾ",
@@ -1014,5 +1016,12 @@
   "nextSection": "അടുത്ത വിഭാഗം",
   "nextSubject": "അടുത്ത വിഷയം",
   "startExam": "പരീക്ഷ തുടങ്ങുക",
-  "reviewExploreDetailsTitle": "കൂടുതൽ വിവരങ്ങൾ പര്യവേക്ഷണം ചെയ്യുക"
+  "reviewExploreDetailsTitle": "കൂടുതൽ വിവരങ്ങൾ പര്യവേക്ഷണം ചെയ്യുക",
+  "downloadedStatus": "ഡൗൺലോഡ് ചെയ്തു",
+  "totalQuestionsLabel": "ആകെ ചോദ്യങ്ങൾ",
+  "deleteAction": "ഇല്ലാതാക്കുക",
+  "attendExamAction": "പരീക്ഷയിൽ പങ്കെടുക്കുക",
+  "examDeletedToast": "പരീക്ഷ ഇല്ലാതാക്കി",
+  "deleteExamTitle": "പരീക്ഷ ഇല്ലാതാക്കണോ?",
+  "deleteExamConfirmationMessage": "ഈ ഡൗൺലോഡ് ചെയ്ത പരീക്ഷ ഇല്ലാതാക്കണമെന്ന് ഉറപ്പാണോ?"
 }

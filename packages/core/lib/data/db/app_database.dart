@@ -546,6 +546,11 @@ class AppDatabase extends _$AppDatabase {
     )..where((t) => t.status.equals('PENDING_SYNC'))).get();
   }
 
+  /// Watch all downloaded offline exams for reactive UI updates.
+  Stream<List<OfflineExamDownloadsTableData>> watchAllOfflineExams() {
+    return select(offlineExamDownloadsTable).watch();
+  }
+
   /// Delete an entire download and cascade its answers.
   Future<void> deleteDownload(int downloadId) {
     return transaction(() async {

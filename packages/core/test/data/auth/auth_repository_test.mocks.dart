@@ -1845,6 +1845,17 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
           as _i6.Future<List<_i4.OfflineExamDownloadsTableData>>);
 
   @override
+  _i6.Stream<List<_i4.OfflineExamDownloadsTableData>> watchAllOfflineExams() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchAllOfflineExams, []),
+            returnValue:
+                _i6.Stream<List<_i4.OfflineExamDownloadsTableData>>.empty(),
+            returnValueForMissingStub:
+                _i6.Stream<List<_i4.OfflineExamDownloadsTableData>>.empty(),
+          )
+          as _i6.Stream<List<_i4.OfflineExamDownloadsTableData>>);
+
+  @override
   _i6.Future<void> deleteDownload(int? downloadId) =>
       (super.noSuchMethod(
             Invocation.method(#deleteDownload, [downloadId]),

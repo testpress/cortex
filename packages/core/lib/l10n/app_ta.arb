@@ -298,6 +298,8 @@
   "drawerForum": "விவாத மன்றம்",
   "drawerDoubts": "சந்தேகங்கள்",
   "drawerCustomExam": "தனிப்பயன் தேர்வு",
+  "drawerOfflineExams": "ஆஃப்லைன் தேர்வுகள்",
+  "noDownloadedExamAvailable": "பதிவிறக்கம் செய்யப்பட்ட தேர்வு எதுவும் இல்லை",
   "drawerReports": "அறிக்கைகள்",
   "drawerProfile": "சுயவிவரம்",
   "drawerSettings": "பயன்பாட்டு அமைப்புகள்",
@@ -1248,5 +1250,12 @@
   "paymentTryAgain": "மீண்டும் முயற்சி செய்",
   "paymentCancel": "ரத்துசெய்",
   "examsEmptyStateDesc": "தற்போது எந்த தேர்வுகளும் இல்லை.",
-  "reviewExploreDetailsTitle": "கூடுதல் விவரங்களை ஆராயுங்கள்"
+  "reviewExploreDetailsTitle": "கூடுதல் விவரங்களை ஆராயுங்கள்",
+  "downloadedStatus": "பதிவிறக்கம் செய்யப்பட்டது",
+  "totalQuestionsLabel": "மொத்த கேள்விகள்",
+  "deleteAction": "அழி",
+  "attendExamAction": "தேர்வில் கலந்து கொள்",
+  "examDeletedToast": "தேர்வு அழிக்கப்பட்டது",
+  "deleteExamTitle": "தேர்வை அழிக்க வேண்டுமா?",
+  "deleteExamConfirmationMessage": "பதிவிறக்கம் செய்யப்பட்ட இந்த தேர்வை அழிக்க வேண்டுமா?"
 }

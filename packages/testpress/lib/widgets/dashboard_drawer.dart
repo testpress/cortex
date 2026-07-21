@@ -77,13 +77,22 @@ class DashboardDrawer extends ConsumerWidget {
             ),
             if (enableCustomTest)
               AppDrawerItem(
-                icon: LucideIcons.fileCheck,
+                icon: LucideIcons.wandSparkles,
                 label: l10n.drawerCustomExam,
                 action: () {
                   ref.read(isHomeDrawerOpenProvider.notifier).state = false;
                   context.push('/exams/create-custom-exam');
                 },
               ),
+
+            AppDrawerItem(
+              icon: LucideIcons.clipboardCheck,
+              label: l10n.drawerOfflineExams,
+              action: () {
+                ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                context.push('/exams/offline');
+              },
+            ),
 
             AppDrawerItem(
               icon: LucideIcons.download,

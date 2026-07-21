@@ -14857,6 +14857,48 @@ class $OfflineExamDownloadsTableTable extends OfflineExamDownloadsTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _durationMeta = const VerificationMeta(
+    'duration',
+  );
+  @override
+  late final GeneratedColumn<String> duration = GeneratedColumn<String>(
+    'duration',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _questionCountMeta = const VerificationMeta(
+    'questionCount',
+  );
+  @override
+  late final GeneratedColumn<int> questionCount = GeneratedColumn<int>(
+    'question_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _markPerQuestionMeta = const VerificationMeta(
+    'markPerQuestion',
+  );
+  @override
+  late final GeneratedColumn<String> markPerQuestion = GeneratedColumn<String>(
+    'mark_per_question',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _questionsJsonMeta = const VerificationMeta(
     'questionsJson',
   );
@@ -14928,6 +14970,10 @@ class $OfflineExamDownloadsTableTable extends OfflineExamDownloadsTable
     id,
     contentId,
     examId,
+    title,
+    duration,
+    questionCount,
+    markPerQuestion,
     questionsJson,
     downloadedAt,
     startedAt,
@@ -14965,6 +15011,42 @@ class $OfflineExamDownloadsTableTable extends OfflineExamDownloadsTable
       );
     } else if (isInserting) {
       context.missing(_examIdMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('duration')) {
+      context.handle(
+        _durationMeta,
+        duration.isAcceptableOrUnknown(data['duration']!, _durationMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_durationMeta);
+    }
+    if (data.containsKey('question_count')) {
+      context.handle(
+        _questionCountMeta,
+        questionCount.isAcceptableOrUnknown(
+          data['question_count']!,
+          _questionCountMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_questionCountMeta);
+    }
+    if (data.containsKey('mark_per_question')) {
+      context.handle(
+        _markPerQuestionMeta,
+        markPerQuestion.isAcceptableOrUnknown(
+          data['mark_per_question']!,
+          _markPerQuestionMeta,
+        ),
+      );
     }
     if (data.containsKey('questions_json')) {
       context.handle(
@@ -15042,6 +15124,22 @@ class $OfflineExamDownloadsTableTable extends OfflineExamDownloadsTable
         DriftSqlType.string,
         data['${effectivePrefix}exam_id'],
       )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      duration: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}duration'],
+      )!,
+      questionCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}question_count'],
+      )!,
+      markPerQuestion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mark_per_question'],
+      ),
       questionsJson: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}questions_json'],
@@ -15080,6 +15178,10 @@ class OfflineExamDownloadsTableData extends DataClass
   final int id;
   final String contentId;
   final String examId;
+  final String title;
+  final String duration;
+  final int questionCount;
+  final String? markPerQuestion;
   final String questionsJson;
   final DateTime downloadedAt;
   final DateTime? startedAt;
@@ -15090,6 +15192,10 @@ class OfflineExamDownloadsTableData extends DataClass
     required this.id,
     required this.contentId,
     required this.examId,
+    required this.title,
+    required this.duration,
+    required this.questionCount,
+    this.markPerQuestion,
     required this.questionsJson,
     required this.downloadedAt,
     this.startedAt,
@@ -15103,6 +15209,12 @@ class OfflineExamDownloadsTableData extends DataClass
     map['id'] = Variable<int>(id);
     map['content_id'] = Variable<String>(contentId);
     map['exam_id'] = Variable<String>(examId);
+    map['title'] = Variable<String>(title);
+    map['duration'] = Variable<String>(duration);
+    map['question_count'] = Variable<int>(questionCount);
+    if (!nullToAbsent || markPerQuestion != null) {
+      map['mark_per_question'] = Variable<String>(markPerQuestion);
+    }
     map['questions_json'] = Variable<String>(questionsJson);
     map['downloaded_at'] = Variable<DateTime>(downloadedAt);
     if (!nullToAbsent || startedAt != null) {
@@ -15121,6 +15233,12 @@ class OfflineExamDownloadsTableData extends DataClass
       id: Value(id),
       contentId: Value(contentId),
       examId: Value(examId),
+      title: Value(title),
+      duration: Value(duration),
+      questionCount: Value(questionCount),
+      markPerQuestion: markPerQuestion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(markPerQuestion),
       questionsJson: Value(questionsJson),
       downloadedAt: Value(downloadedAt),
       startedAt: startedAt == null && nullToAbsent
@@ -15143,6 +15261,10 @@ class OfflineExamDownloadsTableData extends DataClass
       id: serializer.fromJson<int>(json['id']),
       contentId: serializer.fromJson<String>(json['contentId']),
       examId: serializer.fromJson<String>(json['examId']),
+      title: serializer.fromJson<String>(json['title']),
+      duration: serializer.fromJson<String>(json['duration']),
+      questionCount: serializer.fromJson<int>(json['questionCount']),
+      markPerQuestion: serializer.fromJson<String?>(json['markPerQuestion']),
       questionsJson: serializer.fromJson<String>(json['questionsJson']),
       downloadedAt: serializer.fromJson<DateTime>(json['downloadedAt']),
       startedAt: serializer.fromJson<DateTime?>(json['startedAt']),
@@ -15158,6 +15280,10 @@ class OfflineExamDownloadsTableData extends DataClass
       'id': serializer.toJson<int>(id),
       'contentId': serializer.toJson<String>(contentId),
       'examId': serializer.toJson<String>(examId),
+      'title': serializer.toJson<String>(title),
+      'duration': serializer.toJson<String>(duration),
+      'questionCount': serializer.toJson<int>(questionCount),
+      'markPerQuestion': serializer.toJson<String?>(markPerQuestion),
       'questionsJson': serializer.toJson<String>(questionsJson),
       'downloadedAt': serializer.toJson<DateTime>(downloadedAt),
       'startedAt': serializer.toJson<DateTime?>(startedAt),
@@ -15171,6 +15297,10 @@ class OfflineExamDownloadsTableData extends DataClass
     int? id,
     String? contentId,
     String? examId,
+    String? title,
+    String? duration,
+    int? questionCount,
+    Value<String?> markPerQuestion = const Value.absent(),
     String? questionsJson,
     DateTime? downloadedAt,
     Value<DateTime?> startedAt = const Value.absent(),
@@ -15181,6 +15311,12 @@ class OfflineExamDownloadsTableData extends DataClass
     id: id ?? this.id,
     contentId: contentId ?? this.contentId,
     examId: examId ?? this.examId,
+    title: title ?? this.title,
+    duration: duration ?? this.duration,
+    questionCount: questionCount ?? this.questionCount,
+    markPerQuestion: markPerQuestion.present
+        ? markPerQuestion.value
+        : this.markPerQuestion,
     questionsJson: questionsJson ?? this.questionsJson,
     downloadedAt: downloadedAt ?? this.downloadedAt,
     startedAt: startedAt.present ? startedAt.value : this.startedAt,
@@ -15195,6 +15331,14 @@ class OfflineExamDownloadsTableData extends DataClass
       id: data.id.present ? data.id.value : this.id,
       contentId: data.contentId.present ? data.contentId.value : this.contentId,
       examId: data.examId.present ? data.examId.value : this.examId,
+      title: data.title.present ? data.title.value : this.title,
+      duration: data.duration.present ? data.duration.value : this.duration,
+      questionCount: data.questionCount.present
+          ? data.questionCount.value
+          : this.questionCount,
+      markPerQuestion: data.markPerQuestion.present
+          ? data.markPerQuestion.value
+          : this.markPerQuestion,
       questionsJson: data.questionsJson.present
           ? data.questionsJson.value
           : this.questionsJson,
@@ -15218,6 +15362,10 @@ class OfflineExamDownloadsTableData extends DataClass
           ..write('id: $id, ')
           ..write('contentId: $contentId, ')
           ..write('examId: $examId, ')
+          ..write('title: $title, ')
+          ..write('duration: $duration, ')
+          ..write('questionCount: $questionCount, ')
+          ..write('markPerQuestion: $markPerQuestion, ')
           ..write('questionsJson: $questionsJson, ')
           ..write('downloadedAt: $downloadedAt, ')
           ..write('startedAt: $startedAt, ')
@@ -15233,6 +15381,10 @@ class OfflineExamDownloadsTableData extends DataClass
     id,
     contentId,
     examId,
+    title,
+    duration,
+    questionCount,
+    markPerQuestion,
     questionsJson,
     downloadedAt,
     startedAt,
@@ -15247,6 +15399,10 @@ class OfflineExamDownloadsTableData extends DataClass
           other.id == this.id &&
           other.contentId == this.contentId &&
           other.examId == this.examId &&
+          other.title == this.title &&
+          other.duration == this.duration &&
+          other.questionCount == this.questionCount &&
+          other.markPerQuestion == this.markPerQuestion &&
           other.questionsJson == this.questionsJson &&
           other.downloadedAt == this.downloadedAt &&
           other.startedAt == this.startedAt &&
@@ -15260,6 +15416,10 @@ class OfflineExamDownloadsTableCompanion
   final Value<int> id;
   final Value<String> contentId;
   final Value<String> examId;
+  final Value<String> title;
+  final Value<String> duration;
+  final Value<int> questionCount;
+  final Value<String?> markPerQuestion;
   final Value<String> questionsJson;
   final Value<DateTime> downloadedAt;
   final Value<DateTime?> startedAt;
@@ -15270,6 +15430,10 @@ class OfflineExamDownloadsTableCompanion
     this.id = const Value.absent(),
     this.contentId = const Value.absent(),
     this.examId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.duration = const Value.absent(),
+    this.questionCount = const Value.absent(),
+    this.markPerQuestion = const Value.absent(),
     this.questionsJson = const Value.absent(),
     this.downloadedAt = const Value.absent(),
     this.startedAt = const Value.absent(),
@@ -15281,6 +15445,10 @@ class OfflineExamDownloadsTableCompanion
     this.id = const Value.absent(),
     required String contentId,
     required String examId,
+    required String title,
+    required String duration,
+    required int questionCount,
+    this.markPerQuestion = const Value.absent(),
     required String questionsJson,
     required DateTime downloadedAt,
     this.startedAt = const Value.absent(),
@@ -15289,12 +15457,19 @@ class OfflineExamDownloadsTableCompanion
     this.elapsedSeconds = const Value.absent(),
   }) : contentId = Value(contentId),
        examId = Value(examId),
+       title = Value(title),
+       duration = Value(duration),
+       questionCount = Value(questionCount),
        questionsJson = Value(questionsJson),
        downloadedAt = Value(downloadedAt);
   static Insertable<OfflineExamDownloadsTableData> custom({
     Expression<int>? id,
     Expression<String>? contentId,
     Expression<String>? examId,
+    Expression<String>? title,
+    Expression<String>? duration,
+    Expression<int>? questionCount,
+    Expression<String>? markPerQuestion,
     Expression<String>? questionsJson,
     Expression<DateTime>? downloadedAt,
     Expression<DateTime>? startedAt,
@@ -15306,6 +15481,10 @@ class OfflineExamDownloadsTableCompanion
       if (id != null) 'id': id,
       if (contentId != null) 'content_id': contentId,
       if (examId != null) 'exam_id': examId,
+      if (title != null) 'title': title,
+      if (duration != null) 'duration': duration,
+      if (questionCount != null) 'question_count': questionCount,
+      if (markPerQuestion != null) 'mark_per_question': markPerQuestion,
       if (questionsJson != null) 'questions_json': questionsJson,
       if (downloadedAt != null) 'downloaded_at': downloadedAt,
       if (startedAt != null) 'started_at': startedAt,
@@ -15319,6 +15498,10 @@ class OfflineExamDownloadsTableCompanion
     Value<int>? id,
     Value<String>? contentId,
     Value<String>? examId,
+    Value<String>? title,
+    Value<String>? duration,
+    Value<int>? questionCount,
+    Value<String?>? markPerQuestion,
     Value<String>? questionsJson,
     Value<DateTime>? downloadedAt,
     Value<DateTime?>? startedAt,
@@ -15330,6 +15513,10 @@ class OfflineExamDownloadsTableCompanion
       id: id ?? this.id,
       contentId: contentId ?? this.contentId,
       examId: examId ?? this.examId,
+      title: title ?? this.title,
+      duration: duration ?? this.duration,
+      questionCount: questionCount ?? this.questionCount,
+      markPerQuestion: markPerQuestion ?? this.markPerQuestion,
       questionsJson: questionsJson ?? this.questionsJson,
       downloadedAt: downloadedAt ?? this.downloadedAt,
       startedAt: startedAt ?? this.startedAt,
@@ -15350,6 +15537,18 @@ class OfflineExamDownloadsTableCompanion
     }
     if (examId.present) {
       map['exam_id'] = Variable<String>(examId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (duration.present) {
+      map['duration'] = Variable<String>(duration.value);
+    }
+    if (questionCount.present) {
+      map['question_count'] = Variable<int>(questionCount.value);
+    }
+    if (markPerQuestion.present) {
+      map['mark_per_question'] = Variable<String>(markPerQuestion.value);
     }
     if (questionsJson.present) {
       map['questions_json'] = Variable<String>(questionsJson.value);
@@ -15378,6 +15577,10 @@ class OfflineExamDownloadsTableCompanion
           ..write('id: $id, ')
           ..write('contentId: $contentId, ')
           ..write('examId: $examId, ')
+          ..write('title: $title, ')
+          ..write('duration: $duration, ')
+          ..write('questionCount: $questionCount, ')
+          ..write('markPerQuestion: $markPerQuestion, ')
           ..write('questionsJson: $questionsJson, ')
           ..write('downloadedAt: $downloadedAt, ')
           ..write('startedAt: $startedAt, ')
@@ -23672,6 +23875,10 @@ typedef $$OfflineExamDownloadsTableTableCreateCompanionBuilder =
       Value<int> id,
       required String contentId,
       required String examId,
+      required String title,
+      required String duration,
+      required int questionCount,
+      Value<String?> markPerQuestion,
       required String questionsJson,
       required DateTime downloadedAt,
       Value<DateTime?> startedAt,
@@ -23684,6 +23891,10 @@ typedef $$OfflineExamDownloadsTableTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> contentId,
       Value<String> examId,
+      Value<String> title,
+      Value<String> duration,
+      Value<int> questionCount,
+      Value<String?> markPerQuestion,
       Value<String> questionsJson,
       Value<DateTime> downloadedAt,
       Value<DateTime?> startedAt,
@@ -23755,6 +23966,26 @@ class $$OfflineExamDownloadsTableTableFilterComposer
 
   ColumnFilters<String> get examId => $composableBuilder(
     column: $table.examId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get duration => $composableBuilder(
+    column: $table.duration,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get questionCount => $composableBuilder(
+    column: $table.questionCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get markPerQuestion => $composableBuilder(
+    column: $table.markPerQuestion,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -23839,6 +24070,26 @@ class $$OfflineExamDownloadsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get duration => $composableBuilder(
+    column: $table.duration,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get questionCount => $composableBuilder(
+    column: $table.questionCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get markPerQuestion => $composableBuilder(
+    column: $table.markPerQuestion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get questionsJson => $composableBuilder(
     column: $table.questionsJson,
     builder: (column) => ColumnOrderings(column),
@@ -23887,6 +24138,22 @@ class $$OfflineExamDownloadsTableTableAnnotationComposer
 
   GeneratedColumn<String> get examId =>
       $composableBuilder(column: $table.examId, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get duration =>
+      $composableBuilder(column: $table.duration, builder: (column) => column);
+
+  GeneratedColumn<int> get questionCount => $composableBuilder(
+    column: $table.questionCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get markPerQuestion => $composableBuilder(
+    column: $table.markPerQuestion,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get questionsJson => $composableBuilder(
     column: $table.questionsJson,
@@ -23987,6 +24254,10 @@ class $$OfflineExamDownloadsTableTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> contentId = const Value.absent(),
                 Value<String> examId = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> duration = const Value.absent(),
+                Value<int> questionCount = const Value.absent(),
+                Value<String?> markPerQuestion = const Value.absent(),
                 Value<String> questionsJson = const Value.absent(),
                 Value<DateTime> downloadedAt = const Value.absent(),
                 Value<DateTime?> startedAt = const Value.absent(),
@@ -23997,6 +24268,10 @@ class $$OfflineExamDownloadsTableTableTableManager
                 id: id,
                 contentId: contentId,
                 examId: examId,
+                title: title,
+                duration: duration,
+                questionCount: questionCount,
+                markPerQuestion: markPerQuestion,
                 questionsJson: questionsJson,
                 downloadedAt: downloadedAt,
                 startedAt: startedAt,
@@ -24009,6 +24284,10 @@ class $$OfflineExamDownloadsTableTableTableManager
                 Value<int> id = const Value.absent(),
                 required String contentId,
                 required String examId,
+                required String title,
+                required String duration,
+                required int questionCount,
+                Value<String?> markPerQuestion = const Value.absent(),
                 required String questionsJson,
                 required DateTime downloadedAt,
                 Value<DateTime?> startedAt = const Value.absent(),
@@ -24019,6 +24298,10 @@ class $$OfflineExamDownloadsTableTableTableManager
                 id: id,
                 contentId: contentId,
                 examId: examId,
+                title: title,
+                duration: duration,
+                questionCount: questionCount,
+                markPerQuestion: markPerQuestion,
                 questionsJson: questionsJson,
                 downloadedAt: downloadedAt,
                 startedAt: startedAt,

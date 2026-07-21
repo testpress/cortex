@@ -11,6 +11,11 @@ class ExamsRoutes {
       builder: (context, state) => const ExamsScreen(),
       routes: [
         GoRoute(
+          path: 'offline',
+          parentNavigatorKey: rootNavigatorKey,
+          builder: (context, state) => const OfflineExamsListScreen(),
+        ),
+        GoRoute(
           path: 'create-custom-exam',
           parentNavigatorKey: rootNavigatorKey,
           builder: (context, state) => const CustomExamCourseSelectionScreen(),

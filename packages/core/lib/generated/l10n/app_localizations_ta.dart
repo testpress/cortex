@@ -653,6 +653,13 @@ class AppLocalizationsTa extends AppLocalizations {
   String get drawerCustomExam => 'தனிப்பயன் தேர்வு';
 
   @override
+  String get drawerOfflineExams => 'ஆஃப்லைன் தேர்வுகள்';
+
+  @override
+  String get noDownloadedExamAvailable =>
+      'பதிவிறக்கம் செய்யப்பட்ட தேர்வு எதுவும் இல்லை';
+
+  @override
   String get drawerReports => 'அறிக்கைகள்';
 
   @override
@@ -2708,4 +2715,26 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get reviewExploreDetailsTitle => 'கூடுதல் விவரங்களை ஆராயுங்கள்';
+
+  @override
+  String get downloadedStatus => 'பதிவிறக்கம் செய்யப்பட்டது';
+
+  @override
+  String get totalQuestionsLabel => 'மொத்த கேள்விகள்';
+
+  @override
+  String get deleteAction => 'அழி';
+
+  @override
+  String get attendExamAction => 'தேர்வில் கலந்து கொள்';
+
+  @override
+  String get examDeletedToast => 'தேர்வு அழிக்கப்பட்டது';
+
+  @override
+  String get deleteExamTitle => 'தேர்வை அழிக்க வேண்டுமா?';
+
+  @override
+  String get deleteExamConfirmationMessage =>
+      'பதிவிறக்கம் செய்யப்பட்ட இந்த தேர்வை அழிக்க வேண்டுமா?';
 }
