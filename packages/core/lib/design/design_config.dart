@@ -313,7 +313,7 @@ class DesignColors {
       }
     }
     debugPrint(
-      '⚠️ Warning: PRIMARY_COLOR compiler flag "$hex" is invalid. Falling back to default brand color.',
+      'Warning: PRIMARY_COLOR compiler flag "$hex" is invalid. Falling back to default brand color.',
     );
     return null;
   }
