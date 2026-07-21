@@ -23,8 +23,10 @@ class UpdatesAnnouncementsSection extends StatelessWidget {
 
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final displayTitle =
-        (title ?? '').isNotEmpty ? title! : l10n.updatesAnnouncementsTitle;
+    final trimmedTitle = title?.trim();
+    final displayTitle = (trimmedTitle != null && trimmedTitle.isNotEmpty)
+        ? trimmedTitle
+        : l10n.updatesAnnouncementsTitle;
 
     return Padding(
       padding: const EdgeInsets.only(top: 32),

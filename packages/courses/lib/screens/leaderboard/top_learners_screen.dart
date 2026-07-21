@@ -48,9 +48,11 @@ class TopLearnersScreen extends ConsumerWidget {
     final activeTab = ref.watch(leaderboardTabProvider);
     final l10n = L10n.of(context);
     final settings = ref.watch(instituteSettingsProvider);
-    final displayTitle = (settings?.leaderboardLabel ?? '').isNotEmpty
-        ? settings!.leaderboardLabel
-        : l10n.leaderboardTitle;
+    final leaderboardLabel = settings?.leaderboardLabel.trim();
+    final displayTitle =
+        (leaderboardLabel != null && leaderboardLabel.isNotEmpty)
+            ? leaderboardLabel
+            : l10n.leaderboardTitle;
 
     return Container(
       color: design.colors.surface,

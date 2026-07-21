@@ -24,6 +24,22 @@ class DashboardDrawer extends ConsumerWidget {
     final forumEnabled = settings?.forumEnabled ?? false;
     final bookmarksEnabled = settings?.bookmarksEnabled ?? false;
 
+    final bookmarksLabel = settings?.bookmarksLabel.trim();
+    final displayBookmarksLabel =
+        (bookmarksLabel != null && bookmarksLabel.isNotEmpty)
+        ? bookmarksLabel
+        : l10n.drawerBookmark;
+
+    final postsLabel = settings?.postsLabel.trim();
+    final displayPostsLabel = (postsLabel != null && postsLabel.isNotEmpty)
+        ? postsLabel
+        : l10n.drawerPosts;
+
+    final forumLabel = settings?.forumLabel.trim();
+    final displayForumLabel = (forumLabel != null && forumLabel.isNotEmpty)
+        ? forumLabel
+        : l10n.drawerForum;
+
     return AppDrawer(
       isOpen: isOpen,
       fullPage: true,
@@ -38,7 +54,7 @@ class DashboardDrawer extends ConsumerWidget {
             if (bookmarksEnabled)
               AppDrawerItem(
                 icon: LucideIcons.bookmark,
-                label: settings?.bookmarksLabel ?? l10n.drawerBookmark,
+                label: displayBookmarksLabel,
                 action: () {
                   ref.read(isHomeDrawerOpenProvider.notifier).state = false;
                   context.push('/bookmarks');
@@ -47,7 +63,7 @@ class DashboardDrawer extends ConsumerWidget {
             if (postsEnabled)
               AppDrawerItem(
                 icon: LucideIcons.fileText,
-                label: settings?.postsLabel ?? l10n.drawerPosts,
+                label: displayPostsLabel,
                 action: () {
                   ref.read(isHomeDrawerOpenProvider.notifier).state = false;
                   Navigator.of(
@@ -67,7 +83,7 @@ class DashboardDrawer extends ConsumerWidget {
             if (forumEnabled)
               AppDrawerItem(
                 icon: LucideIcons.messageSquare,
-                label: settings?.forumLabel ?? l10n.drawerForum,
+                label: displayForumLabel,
                 action: () {
                   ref.read(isHomeDrawerOpenProvider.notifier).state = false;
                   context.go('/home/discussions/forum');
