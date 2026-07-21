@@ -20,4 +20,3 @@ The system SHALL NOT crash or display a broken image when a resolved local asset
 #### Scenario: Local image file is missing
 - **WHEN** `Image.asset()` fails to load an injected local image
 - **THEN** the system seamlessly falls back to a generic fallback component (e.g., standard text and a default icon) via `errorBuilder`
-

@@ -38,6 +38,7 @@ void main(List<String> args) async {
       cliArgs.configPath,
       cliArgs.apiBaseUrl,
       serverClientId: serverClientId,
+      primaryColor: remoteConfig['primary_color']?.toString(),
     );
   } catch (e) {
     print('❌ Error: $e');
@@ -57,6 +58,7 @@ Future<void> _runApp(
   String configPath,
   String apiBaseUrl, {
   String? serverClientId,
+  String? primaryColor,
 }) async {
   print('🚀 Running the app for $appName... (Hot reload enabled)');
   final runArgs = [
@@ -66,6 +68,9 @@ Future<void> _runApp(
   ];
   if (serverClientId != null) {
     runArgs.add('--dart-define=GOOGLE_SERVER_CLIENT_ID=$serverClientId');
+  }
+  if (primaryColor != null && primaryColor.isNotEmpty) {
+    runArgs.add('--dart-define=PRIMARY_COLOR=$primaryColor');
   }
 
   final runProcess = await Process.start(

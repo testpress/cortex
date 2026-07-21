@@ -38,6 +38,7 @@ void main(List<String> args) async {
       cliArgs.configPath,
       cliArgs.apiBaseUrl,
       serverClientId: serverClientId,
+      primaryColor: remoteConfig['primary_color']?.toString(),
     );
   } catch (e) {
     print('❌ Error: $e');
@@ -57,6 +58,7 @@ Future<bool> _buildApk(
   String configPath,
   String apiBaseUrl, {
   String? serverClientId,
+  String? primaryColor,
 }) async {
   print('🚀 Building the APK for $appName... (This may take a few minutes)');
   final buildArgs = [
@@ -67,6 +69,9 @@ Future<bool> _buildApk(
   ];
   if (serverClientId != null) {
     buildArgs.add('--dart-define=GOOGLE_SERVER_CLIENT_ID=$serverClientId');
+  }
+  if (primaryColor != null && primaryColor.isNotEmpty) {
+    buildArgs.add('--dart-define=PRIMARY_COLOR=$primaryColor');
   }
 
   final buildProcess = await Process.start(
