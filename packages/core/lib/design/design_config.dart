@@ -301,29 +301,41 @@ class DesignColors {
 
   static const String _envPrimary = String.fromEnvironment('PRIMARY_COLOR');
 
-  factory DesignColors.light() {
-    if (_envPrimary.isNotEmpty) {
-      final colorCode = int.tryParse(
-        _envPrimary.replaceAll('#', ''),
-        radix: 16,
-      );
+  static Color? _parseColor(String hex) {
+    String formatted = hex.replaceAll('#', '').trim();
+    if (formatted.startsWith('0x') || formatted.startsWith('0X')) {
+      formatted = formatted.substring(2);
+    }
+    if (formatted.length == 6) {
+      final colorCode = int.tryParse(formatted, radix: 16);
       if (colorCode != null) {
-        final parsedColor = Color(0xFF000000 | colorCode);
-        return DesignColors.smart(
-          primary: parsedColor,
-          surface: const Color(0xFFE9EEF4),
-          surfaceVariant: const Color(0xFFDEE5ED),
-          card: const Color(0xFFFFFFFF),
-          border: const Color(0xFFDEE5ED),
-          divider: const Color(0xFFDEE5ED),
-        );
+        return Color(0xFF000000 | colorCode);
       }
     }
-    return const DesignColors(
-      primary: Color(0xFF6366F1),
-      onPrimary: Color(0xFFFFFFFF),
-      primaryContainer: Color(0xFFE0E7FF),
-      onPrimaryContainer: Color(0xFF1E1B4B),
+    return null;
+  }
+
+  factory DesignColors.light() {
+    Color primary = const Color(0xFF6366F1);
+    Color onPrimary = const Color(0xFFFFFFFF);
+    Color primaryContainer = const Color(0xFFE0E7FF);
+    Color onPrimaryContainer = const Color(0xFF1E1B4B);
+
+    if (_envPrimary.isNotEmpty) {
+      final parsedColor = _parseColor(_envPrimary);
+      if (parsedColor != null) {
+        primary = parsedColor;
+        onPrimary = _contrastingColor(primary);
+        primaryContainer = _lighten(primary, 0.9);
+        onPrimaryContainer = _contrastingColor(primaryContainer);
+      }
+    }
+
+    return DesignColors(
+      primary: primary,
+      onPrimary: onPrimary,
+      primaryContainer: primaryContainer,
+      onPrimaryContainer: onPrimaryContainer,
       surface: Color(
         0xFFE9EEF4,
       ), // Slate-150 (L~0.93) - mid-ground for restrained separation
@@ -369,28 +381,26 @@ class DesignColors {
   }
 
   factory DesignColors.dark() {
+    Color primary = const Color(0xFF818CF8);
+    Color onPrimary = const Color(0xFFFFFFFF);
+    Color primaryContainer = const Color(0xFF1E1B4B);
+    Color onPrimaryContainer = const Color(0xFFE0E7FF);
+
     if (_envPrimary.isNotEmpty) {
-      final colorCode = int.tryParse(
-        _envPrimary.replaceAll('#', ''),
-        radix: 16,
-      );
-      if (colorCode != null) {
-        final parsedColor = Color(0xFF000000 | colorCode);
-        return DesignColors.smart(
-          primary: parsedColor,
-          surface: const Color(0xFF18181B), // Zinc-900 (Main UI Surface)
-          surfaceVariant: const Color(0xFF27272A), // Zinc-800
-          card: const Color(0xFF27272A), // Zinc-800
-          border: const Color(0xFF3F3F46), // Zinc-700
-          divider: const Color(0xFF27272A),
-        );
+      final parsedColor = _parseColor(_envPrimary);
+      if (parsedColor != null) {
+        primary = parsedColor;
+        onPrimary = _contrastingColor(primary);
+        primaryContainer = _darken(primary, 0.8);
+        onPrimaryContainer = _contrastingColor(primaryContainer);
       }
     }
-    return const DesignColors(
-      primary: Color(0xFF818CF8),
-      onPrimary: Color(0xFFFFFFFF),
-      primaryContainer: Color(0xFF1E1B4B), // Very dark indigo
-      onPrimaryContainer: Color(0xFFE0E7FF),
+
+    return DesignColors(
+      primary: primary,
+      onPrimary: onPrimary,
+      primaryContainer: primaryContainer, // Very dark indigo
+      onPrimaryContainer: onPrimaryContainer,
       surface: Color(0xFF18181B), // Zinc-900 (Main UI Surface)
       onSurface: Color(0xFFFAFAFA),
       surfaceVariant: Color(0xFF27272A), // Zinc-800
@@ -571,6 +581,15 @@ class DesignColors {
     final double r = color.r + (1.0 - color.r) * factor;
     final double g = color.g + (1.0 - color.g) * factor;
     final double b = color.b + (1.0 - color.b) * factor;
+    return Color.from(alpha: color.a, red: r, green: g, blue: b);
+  }
+
+  /// Darken a color by a factor (0.0 = original, 1.0 = black)
+  static Color _darken(Color color, double factor) {
+    assert(factor >= 0.0 && factor <= 1.0);
+    final double r = color.r * (1.0 - factor);
+    final double g = color.g * (1.0 - factor);
+    final double b = color.b * (1.0 - factor);
     return Color.from(alpha: color.a, red: r, green: g, blue: b);
   }
 
