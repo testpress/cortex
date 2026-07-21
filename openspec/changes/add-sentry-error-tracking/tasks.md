@@ -1,8 +1,6 @@
 ## 1. Setup & Dependencies
 
 - [x] 1.1 Add `sentry_flutter` dependency to `packages/core/pubspec.yaml`
-- [x] 1.2 Remove `sentry_flutter` from `packages/testpress/pubspec.yaml`
-- [x] 1.3 Add Kotlin compatibility workaround in `app/android/build.gradle.kts` for sentry_flutter plugin
 
 ## 2. Core Implementation
 
