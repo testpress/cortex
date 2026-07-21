@@ -467,6 +467,11 @@ class _DeleteExamConfirmationDialog extends StatelessWidget {
                 AppButton(
                   variant: AppButtonVariant.secondary,
                   label: l10n.labelCancel,
+                  foregroundColor: design.colors.textSecondary,
+                  backgroundColor: design.colors.textSecondary.withValues(
+                    alpha: 0.1,
+                  ),
+                  borderColor: design.colors.textSecondary,
                   padding: EdgeInsets.symmetric(
                     horizontal: design.spacing.md,
                     vertical: design.spacing.sm,
@@ -478,6 +483,7 @@ class _DeleteExamConfirmationDialog extends StatelessWidget {
                   variant: AppButtonVariant.secondary,
                   label: l10n.deleteAction,
                   foregroundColor: design.colors.error,
+                  backgroundColor: design.colors.error.withValues(alpha: 0.1),
                   borderColor: design.colors.error,
                   padding: EdgeInsets.symmetric(
                     horizontal: design.spacing.md,
