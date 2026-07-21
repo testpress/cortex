@@ -312,6 +312,9 @@ class DesignColors {
         return Color(0xFF000000 | colorCode);
       }
     }
+    debugPrint(
+      '⚠️ Warning: PRIMARY_COLOR compiler flag "$hex" is invalid. Falling back to default brand color.',
+    );
     return null;
   }
 
