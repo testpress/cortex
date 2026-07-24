@@ -66,6 +66,8 @@ class LessonsTable extends Table {
   BoolColumn get isAiEnabled => boolean().withDefault(const Constant(false))();
   TextColumn get aiNotesUrl => text().nullable()();
   TextColumn get lastWatchedDuration => text().nullable()();
+  BoolColumn get allowDownload =>
+      boolean().withDefault(const Constant(false))();
 
   @override
   Set<Column> get primaryKey => {id};

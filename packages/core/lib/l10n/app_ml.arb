@@ -1018,10 +1018,18 @@
   "startExam": "പരീക്ഷ തുടങ്ങുക",
   "reviewExploreDetailsTitle": "കൂടുതൽ വിവരങ്ങൾ പര്യവേക്ഷണം ചെയ്യുക",
   "downloadedStatus": "ഡൗൺലോഡ് ചെയ്തു",
+  "pdfWatermarkFallbackText": "ഡൗൺലോഡ് ചെയ്തു",
   "totalQuestionsLabel": "ആകെ ചോദ്യങ്ങൾ",
   "deleteAction": "ഇല്ലാതാക്കുക",
   "attendExamAction": "പരീക്ഷയിൽ പങ്കെടുക്കുക",
   "examDeletedToast": "പരീക്ഷ ഇല്ലാതാക്കി",
   "deleteExamTitle": "പരീക്ഷ ഇല്ലാതാക്കണോ?",
-  "deleteExamConfirmationMessage": "ഈ ഡൗൺലോഡ് ചെയ്ത പരീക്ഷ ഇല്ലാതാക്കണമെന്ന് ഉറപ്പാണോ?"
+  "deleteExamConfirmationMessage": "ഈ ഡൗൺലോഡ് ചെയ്ത പരീക്ഷ ഇല്ലാതാക്കണമെന്ന് ഉറപ്പാണോ?",
+  "alreadyDownloadedTitle": "നേരത്തെ ഡൗൺലോഡ് ചെയ്‌തു",
+  "alreadyDownloadedMessage": "ഈ ഫയൽ നിങ്ങളുടെ ഉപകരണത്തിൽ നിലവിലുണ്ട്.",
+  "openFileAction": "ഫയൽ തുറക്കുക",
+  "downloadAgainAction": "വീണ്ടും ഡൗൺലോഡ് ചെയ്യുക",
+  "downloadCompleted": "ഡൗൺലോഡ് പൂർത്തിയായി",
+  "downloadingFile": "ഡൗൺലോഡ് ചെയ്യുന്നു...",
+  "viewAction": "കാണുക"
 }

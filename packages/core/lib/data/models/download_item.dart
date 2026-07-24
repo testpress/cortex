@@ -1,6 +1,6 @@
 enum DownloadStatus { downloading, paused, completed, error }
 
-enum DownloadType { video, attachment }
+enum DownloadType { video, attachment, pdf }
 
 class DownloadItem {
   final String id;
@@ -16,6 +16,7 @@ class DownloadItem {
   final String? duration;
   final String? fileType;
   final String? contentUrl;
+  final String? filePath;
 
   const DownloadItem({
     required this.id,
@@ -31,6 +32,7 @@ class DownloadItem {
     this.duration,
     this.fileType,
     this.contentUrl,
+    this.filePath,
   });
 
   DownloadItem copyWith({
@@ -47,6 +49,7 @@ class DownloadItem {
     String? duration,
     String? fileType,
     String? contentUrl,
+    String? filePath,
   }) {
     return DownloadItem(
       id: id ?? this.id,
@@ -62,6 +65,7 @@ class DownloadItem {
       duration: duration ?? this.duration,
       fileType: fileType ?? this.fileType,
       contentUrl: contentUrl ?? this.contentUrl,
+      filePath: filePath ?? this.filePath,
     );
   }
 }

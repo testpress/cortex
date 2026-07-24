@@ -6,7 +6,7 @@ part of 'sentry_service.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$sentryServiceHash() => r'0dfba8a547edf37a90b6ca2dfd75af05de8d9cb7';
+String _$sentryServiceHash() => r'3cf1217a831ec96105e6437a9d0ab288c5a8c7c0';
 
 /// See also [sentryService].
 @ProviderFor(sentryService)

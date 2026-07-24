@@ -1334,10 +1334,18 @@
   "paymentCancel": "Cancel",
   "reviewExploreDetailsTitle": "Explore More Details",
   "downloadedStatus": "Downloaded",
+  "pdfWatermarkFallbackText": "Downloaded",
   "totalQuestionsLabel": "Total Qus",
   "deleteAction": "Delete",
   "attendExamAction": "Attend Exam",
   "examDeletedToast": "Exam deleted",
   "deleteExamTitle": "Delete Exam?",
-  "deleteExamConfirmationMessage": "Are you sure you want to delete this downloaded exam?"
+  "deleteExamConfirmationMessage": "Are you sure you want to delete this downloaded exam?",
+  "alreadyDownloadedTitle": "Already downloaded",
+  "alreadyDownloadedMessage": "This file is already in your device.",
+  "openFileAction": "Open File",
+  "downloadAgainAction": "Download Again",
+  "downloadCompleted": "Download completed",
+  "downloadingFile": "Downloading...",
+  "viewAction": "View"
 }

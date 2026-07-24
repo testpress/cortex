@@ -8,7 +8,7 @@ import '../data/mock_upcoming_tests.dart';
 
 part 'dashboard_providers.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<void> dashboardBootstrap(Ref ref) async {
   final repository = await ref.watch(dashboardRepositoryProvider.future);
   final leaderboardRepository =

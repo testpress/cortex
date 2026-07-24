@@ -12,12 +12,12 @@ import 'lesson_detail_skeleton.dart';
 import 'watermark_overlay.dart';
 
 class AppPdfViewer extends ConsumerStatefulWidget {
-  final String url;
+  final File file;
   final ValueChanged<double>? onProgressChanged;
 
   const AppPdfViewer({
     super.key,
-    required this.url,
+    required this.file,
     this.onProgressChanged,
   });
 
@@ -35,7 +35,6 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   bool _isVisible = false;
   String _watermarkText = '';
   Widget? _cachedViewer;
-  String? _localPath;
 
   int _requestId = 0;
 
@@ -71,7 +70,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   void didUpdateWidget(covariant AppPdfViewer oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (!_isSameDocument(oldWidget.url, widget.url)) {
+    if (oldWidget.file.path != widget.file.path) {
       _resetViewer();
       _load();
     }
@@ -108,7 +107,8 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
   Future<void> _fetchWatermark(int id) async {
     try {
-      final currentUser = await ref.read(userProvider.future);
+      final db = await ref.read(appDatabaseProvider.future);
+      final currentUser = await db.select(db.usersTable).getSingleOrNull();
       if (!_isValidRequest(id)) return;
 
       setState(() {
@@ -125,7 +125,6 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
     setState(() {
       _isLoading = true;
       _error = null;
-      _localPath = null;
       _isVisible = false;
       _watermarkText = '';
       _totalHeight = 0;
@@ -134,54 +133,22 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
     });
   }
 
-  Future<String?> _resolveSource() async {
-    if (_localPath != null) return _localPath;
-
-    final fileDownloader = ref.read(fileDownloaderProvider);
-    final path = await fileDownloader.getLocalPath(
-      widget.url,
-      StorageType.internalCache,
-    );
-
-    final file = File(path);
-    if (await file.exists() && (await file.length()) > 0) {
-      _localPath = path;
-      return path;
+  Future<String> _resolveSource() async {
+    if (await widget.file.exists() && await widget.file.length() > 0) {
+      return widget.file.path;
     }
 
-    _cacheInBackground(widget.url);
-    return null;
+    throw FileSystemException('Cached PDF file is missing', widget.file.path);
   }
 
-  Future<void> _cacheInBackground(String url) async {
-    if (_localPath != null) return;
-    try {
-      final downloader = ref.read(fileDownloaderProvider);
-      final path = await downloader.download(
-        url: url,
-        type: StorageType.internalCache,
-        requireAuth: false,
-      );
-      if (mounted) {
-        _localPath = path;
-      }
-    } catch (_) {}
-  }
-
-  void _handleSuccess(String? path) {
+  void _handleSuccess(String path) {
     setState(() {
       _isLoading = false;
-      _cachedViewer = path != null
-          ? SfPdfViewer.file(
-              File(path),
-              controller: _controller,
-              onDocumentLoaded: _onDocumentLoaded,
-            )
-          : SfPdfViewer.network(
-              widget.url,
-              controller: _controller,
-              onDocumentLoaded: _onDocumentLoaded,
-            );
+      _cachedViewer = SfPdfViewer.file(
+        File(path),
+        controller: _controller,
+        onDocumentLoaded: _onDocumentLoaded,
+      );
     });
   }
 
@@ -207,8 +174,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
           duration: MotionPreferences.duration(context, design.motion.normal),
           child: viewer,
         ),
-        if (_isVisible &&
-            (InstituteSettings.current?.enableCoursePdfWatermarking ?? false))
+        if (_isVisible)
           WatermarkOverlay(
             text: _watermarkText,
             color: design.colors.onSurface.withValues(alpha: 0.15),
@@ -308,12 +274,5 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   void _resetViewer() {
     _controller.dispose();
     _initController();
-  }
-
-  bool _isSameDocument(String a, String b) {
-    final uriA = Uri.parse(a);
-    final uriB = Uri.parse(b);
-
-    return uriA.host == uriB.host && uriA.path == uriB.path;
   }
 }

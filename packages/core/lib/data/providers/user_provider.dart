@@ -5,6 +5,7 @@ import 'package:core/data/auth/auth_provider.dart';
 import 'package:core/data/db/database_provider.dart';
 import 'package:core/data/sources/data_source_provider.dart';
 import '../repositories/user_repository.dart';
+import '../services/sentry_service.dart';
 
 part 'user_provider.g.dart';
 
@@ -22,11 +23,23 @@ Stream<UsersTableData?> user(UserRef ref) async* {
   final isLoggedIn = ref.watch(authProvider).asData?.value ?? false;
 
   if (!isLoggedIn) {
+    ref.read(sentryServiceProvider).clearUserContext();
     yield null;
     return;
   }
 
-  yield* userRepository.watchCurrentUser();
+  yield* userRepository.watchCurrentUser().map((user) {
+    if (user != null) {
+      ref
+          .read(sentryServiceProvider)
+          .setUserContext(
+            id: user.id.toString(),
+            username: user.username,
+            email: user.email,
+          );
+    }
+    return user;
+  });
 }
 
 /// Controller used to trigger profile-related actions like updates.

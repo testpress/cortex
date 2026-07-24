@@ -73,6 +73,7 @@ class LessonDto {
   final String? aiNotesUrl;
   final String? lastWatchedDuration;
   final ExamDto? exam;
+  final bool allowDownload;
 
   /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
   bool get isComplete {
@@ -140,6 +141,7 @@ class LessonDto {
     this.aiNotesUrl,
     this.lastWatchedDuration,
     this.exam,
+    this.allowDownload = false,
   });
 
   LessonDto copyWith({
@@ -188,6 +190,7 @@ class LessonDto {
     String? aiNotesUrl,
     String? lastWatchedDuration,
     ExamDto? exam,
+    bool? allowDownload,
   }) {
     return LessonDto(
       id: id ?? this.id,
@@ -235,6 +238,7 @@ class LessonDto {
       aiNotesUrl: aiNotesUrl ?? this.aiNotesUrl,
       lastWatchedDuration: lastWatchedDuration ?? this.lastWatchedDuration,
       exam: exam ?? this.exam,
+      allowDownload: allowDownload ?? this.allowDownload,
     );
   }
 
@@ -325,6 +329,7 @@ class LessonDto {
           ? other.streamStatus
           : streamStatus,
       showRecordedVideo: showRecordedVideo || other.showRecordedVideo,
+      allowDownload: allowDownload || other.allowDownload,
       isScheduled: isScheduled || other.isScheduled,
       scheduledMessage: (scheduledMessage?.isEmpty ?? true)
           ? other.scheduledMessage
@@ -677,6 +682,11 @@ class LessonDto {
       aiNotesUrl:
           json['ai_notes_url']?.toString() ?? json['aiNotesUrl']?.toString(),
       attemptsUrl: getString('attempts_url') ?? getString('attemptsUrl'),
+      allowDownload:
+          json['allow_download'] as bool? ??
+          (json['attachment'] as Map<String, dynamic>?)?['allow_download']
+              as bool? ??
+          false,
     );
   }
 
@@ -731,6 +741,7 @@ class LessonDto {
       'slug': slug,
       'chapterSlug': chapterSlug,
       'exam': exam?.toJson(),
+      'allowDownload': allowDownload,
     };
   }
 }

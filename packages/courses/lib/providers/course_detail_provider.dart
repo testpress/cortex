@@ -15,6 +15,12 @@ Stream<CourseDto?> courseDetail(CourseDetailRef ref, String courseId) async* {
   yield* repo.watchCourse(courseId);
 }
 
+/// Tracks retry counts per (courseId, parentId) to prevent infinite refresh loops.
+/// When chapters drop to empty after having data, the provider re-fetches from
+/// the network. Without a limit, this could loop indefinitely if the server
+/// consistently returns empty results.
+final _subChapterRetryCounts = <String, int>{};
+
 /// A provider that watches chapters for a specific parent (folder).
 /// Triggers a refresh if the folder has not been synced yet.
 @Riverpod(keepAlive: true)
@@ -43,14 +49,21 @@ Stream<List<ChapterDto>> subChapters(
   // silently re-fetch instead of yielding the empty state — which would
   // incorrectly flip the UI into lesson-list mode.
   bool hasNonEmptyData = localChapters.isNotEmpty;
+  final retryKey = '$courseId:${parentId ?? ''}';
 
   await for (final rows in repo.watchChapters(courseId, parentId: parentId)) {
     final chapters = rows.map((row) => repo.rowToChapterDto(row)).toList();
 
     if (chapters.isEmpty && hasNonEmptyData) {
       // Chapters were externally purged (e.g. refreshCourses cascade delete).
-      // Reset the flag first — if the re-fetch also returns empty, we should
-      // yield the empty state rather than loop indefinitely.
+      final retries = _subChapterRetryCounts[retryKey] ?? 0;
+      if (retries >= 2) {
+        // Already retried twice — yield empty state to avoid infinite loop.
+        _subChapterRetryCounts.remove(retryKey);
+        yield chapters;
+        continue;
+      }
+      _subChapterRetryCounts[retryKey] = retries + 1;
       hasNonEmptyData = false;
       try {
         final refreshed =
@@ -59,6 +72,7 @@ Stream<List<ChapterDto>> subChapters(
           // Server confirmed the folder is permanently empty.
           // Since no DB write occurs for empty results, watchChapters won't emit.
           // We must yield manually to unblock the UI.
+          _subChapterRetryCounts.remove(retryKey);
           yield chapters;
         }
       } catch (_) {
@@ -67,7 +81,10 @@ Stream<List<ChapterDto>> subChapters(
         yield chapters;
       }
     } else {
-      if (chapters.isNotEmpty) hasNonEmptyData = true;
+      if (chapters.isNotEmpty) {
+        hasNonEmptyData = true;
+        _subChapterRetryCounts.remove(retryKey);
+      }
       yield chapters;
     }
   }

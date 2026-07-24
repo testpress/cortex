@@ -1252,10 +1252,18 @@
   "examsEmptyStateDesc": "தற்போது எந்த தேர்வுகளும் இல்லை.",
   "reviewExploreDetailsTitle": "கூடுதல் விவரங்களை ஆராயுங்கள்",
   "downloadedStatus": "பதிவிறக்கம் செய்யப்பட்டது",
+  "pdfWatermarkFallbackText": "பதிவிறக்கம் செய்யப்பட்டது",
   "totalQuestionsLabel": "மொத்த கேள்விகள்",
   "deleteAction": "அழி",
   "attendExamAction": "தேர்வில் கலந்து கொள்",
   "examDeletedToast": "தேர்வு அழிக்கப்பட்டது",
   "deleteExamTitle": "தேர்வை அழிக்க வேண்டுமா?",
-  "deleteExamConfirmationMessage": "பதிவிறக்கம் செய்யப்பட்ட இந்த தேர்வை அழிக்க வேண்டுமா?"
+  "deleteExamConfirmationMessage": "பதிவிறக்கம் செய்யப்பட்ட இந்த தேர்வை அழிக்க வேண்டுமா?",
+  "alreadyDownloadedTitle": "ஏற்கனவே பதிவிறக்கப்பட்டது",
+  "alreadyDownloadedMessage": "இந்த கோப்பு உங்கள் சாதனத்தில் ஏற்கனவே உள்ளது.",
+  "openFileAction": "கோப்பைத் திற",
+  "downloadAgainAction": "மீண்டும் பதிவிறக்கு",
+  "downloadCompleted": "பதிவிறக்கம் முடிந்தது",
+  "downloadingFile": "பதிவிறக்கப்படுகிறது...",
+  "viewAction": "காண்க"
 }

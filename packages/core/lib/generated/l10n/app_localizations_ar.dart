@@ -2680,6 +2680,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get downloadedStatus => 'تم التنزيل';
 
   @override
+  String get pdfWatermarkFallbackText => 'تم التنزيل';
+
+  @override
   String get totalQuestionsLabel => 'إجمالي الأسئلة';
 
   @override
@@ -2697,4 +2700,25 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get deleteExamConfirmationMessage =>
       'هل أنت متأكد أنك تريد حذف هذا الامتحان المنزل؟';
+
+  @override
+  String get alreadyDownloadedTitle => 'تم التنزيل مسبقًا';
+
+  @override
+  String get alreadyDownloadedMessage => 'هذا الملف موجود بالفعل في جهازك.';
+
+  @override
+  String get openFileAction => 'فتح الملف';
+
+  @override
+  String get downloadAgainAction => 'تنزيل مرة أخرى';
+
+  @override
+  String get downloadCompleted => 'اكتمل التنزيل';
+
+  @override
+  String get downloadingFile => 'جاري التنزيل...';
+
+  @override
+  String get viewAction => 'عرض';
 }

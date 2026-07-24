@@ -55,7 +55,10 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
     final downloads = downloadsAsync.valueOrNull ?? [];
 
     final videos = downloads.byType(DownloadType.video);
-    final attachments = downloads.byType(DownloadType.attachment);
+    final attachments = [
+      ...downloads.byType(DownloadType.attachment),
+      ...downloads.byType(DownloadType.pdf),
+    ];
 
     final activeItems = _activeTab == DownloadType.video ? videos : attachments;
 
@@ -534,17 +537,28 @@ class _DownloadMeta extends StatelessWidget {
 
     return Row(
       children: [
-        AppText.cardCaption(item.progressText),
+        Flexible(
+          child: AppText.cardCaption(
+            item.progressText,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
         Padding(
           padding: EdgeInsets.symmetric(
             horizontal: design.spacing.xs,
           ),
           child: AppText.cardCaption('•'),
         ),
-        AppText.cardCaption(
-          item.metaText,
-          color:
-              item.status == DownloadStatus.error ? design.colors.error : null,
+        Flexible(
+          child: AppText.cardCaption(
+            item.metaText,
+            color: item.status == DownloadStatus.error
+                ? design.colors.error
+                : null,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ],
     );

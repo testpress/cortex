@@ -2720,6 +2720,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get downloadedStatus => 'பதிவிறக்கம் செய்யப்பட்டது';
 
   @override
+  String get pdfWatermarkFallbackText => 'பதிவிறக்கம் செய்யப்பட்டது';
+
+  @override
   String get totalQuestionsLabel => 'மொத்த கேள்விகள்';
 
   @override
@@ -2737,4 +2740,26 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get deleteExamConfirmationMessage =>
       'பதிவிறக்கம் செய்யப்பட்ட இந்த தேர்வை அழிக்க வேண்டுமா?';
+
+  @override
+  String get alreadyDownloadedTitle => 'ஏற்கனவே பதிவிறக்கப்பட்டது';
+
+  @override
+  String get alreadyDownloadedMessage =>
+      'இந்த கோப்பு உங்கள் சாதனத்தில் ஏற்கனவே உள்ளது.';
+
+  @override
+  String get openFileAction => 'கோப்பைத் திற';
+
+  @override
+  String get downloadAgainAction => 'மீண்டும் பதிவிறக்கு';
+
+  @override
+  String get downloadCompleted => 'பதிவிறக்கம் முடிந்தது';
+
+  @override
+  String get downloadingFile => 'பதிவிறக்கப்படுகிறது...';
+
+  @override
+  String get viewAction => 'காண்க';
 }

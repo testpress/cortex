@@ -24,7 +24,7 @@ final userRepositoryProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef UserRepositoryRef = AutoDisposeFutureProviderRef<UserRepository>;
-String _$userHash() => r'0bdd7424374c984544a7ba0443ce1845fa2a0975';
+String _$userHash() => r'4cdb4ee2cc5fed12ec6df3465a6a36b4db1212c0';
 
 /// Reactive provider that exposes the current user's profile metadata from the database.
 ///

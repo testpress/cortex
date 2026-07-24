@@ -3,7 +3,6 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter/widgets.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../config/app_config.dart';
-import '../providers/user_provider.dart';
 import '../../network/network_utils.dart';
 
 part 'sentry_service.g.dart';
@@ -128,31 +127,23 @@ class SentryService {
       },
     );
   }
+
+  void setUserContext({required String id, String? username, String? email}) {
+    Sentry.configureScope((scope) {
+      scope.setUser(SentryUser(id: id, username: username, email: email));
+    });
+  }
+
+  void clearUserContext() {
+    Sentry.configureScope((scope) {
+      scope.setUser(null);
+    });
+  }
 }
 
 @Riverpod(keepAlive: true)
 SentryService sentryService(SentryServiceRef ref) {
   final service = SentryService();
-
-  // Automatically sync Sentry's user context with the app's current user
-  ref.listen(userProvider, (previous, next) {
-    final user = next.valueOrNull;
-    if (user != null) {
-      Sentry.configureScope((scope) {
-        scope.setUser(
-          SentryUser(
-            id: user.id.toString(),
-            username: user.username,
-            email: user.email,
-          ),
-        );
-      });
-    } else {
-      Sentry.configureScope((scope) {
-        scope.setUser(null);
-      });
-    }
-  });
 
   return service;
 }

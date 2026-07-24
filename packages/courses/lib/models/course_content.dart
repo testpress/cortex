@@ -44,6 +44,7 @@ class Lesson {
     this.aiNotesUrl,
     this.lastWatchedDuration,
     this.exam,
+    this.allowDownload = false,
   });
 
   final String id;
@@ -89,6 +90,7 @@ class Lesson {
   final String? aiNotesUrl;
   final String? lastWatchedDuration;
   final ExamDto? exam;
+  final bool allowDownload;
 
   /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
   bool get isComplete {
@@ -151,6 +153,7 @@ class Lesson {
       aiNotesUrl: aiNotesUrl,
       lastWatchedDuration: lastWatchedDuration,
       exam: exam,
+      allowDownload: allowDownload,
     );
   }
 }
