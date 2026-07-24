@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../db/app_database.dart';
@@ -75,6 +76,7 @@ class DownloadsRepository {
               duration: row.duration,
               fileType: row.fileType,
               contentUrl: row.contentUrl,
+              filePath: row.filePath,
             ),
           )
           .toList();
@@ -101,6 +103,7 @@ class DownloadsRepository {
         duration: row.duration,
         fileType: row.fileType,
         contentUrl: row.contentUrl,
+        filePath: row.filePath,
       );
     });
   }
@@ -162,23 +165,35 @@ class DownloadsRepository {
     final activeVideoDownloads = await _service.getActiveVideoDownloads();
     final activeVideoIds = activeVideoDownloads.map((e) => e.id).toList();
 
-    // Verify attachment files exist on disk
-    final dbAttachments = await (_db.select(
-      _db.downloadsTable,
-    )..where((t) => t.typeIndex.equals(DownloadType.attachment.index))).get();
+    // Verify attachment and PDF files exist on disk
+    final dbFiles =
+        await (_db.select(_db.downloadsTable)..where(
+              (t) => t.typeIndex.isIn([
+                DownloadType.attachment.index,
+                DownloadType.pdf.index,
+              ]),
+            ))
+            .get();
 
-    final activeAttachmentIds = <String>[];
-    for (final attachment in dbAttachments) {
-      if (attachment.statusIndex != DownloadStatus.completed.index) {
-        activeAttachmentIds.add(attachment.id);
-      } else if (attachment.contentUrl != null) {
-        if (await _service.verifyAttachmentExists(attachment.contentUrl!)) {
-          activeAttachmentIds.add(attachment.id);
+    final activeFileIds = <String>[];
+    for (final file in dbFiles) {
+      if (file.statusIndex != DownloadStatus.completed.index) {
+        activeFileIds.add(file.id);
+      } else {
+        bool exists = false;
+        if (file.filePath != null) {
+          exists = await File(file.filePath!).exists();
+        }
+        if (!exists && file.contentUrl != null) {
+          exists = await _service.verifyAttachmentExists(file.contentUrl!);
+        }
+        if (exists) {
+          activeFileIds.add(file.id);
         }
       }
     }
 
-    final activeIds = [...activeVideoIds, ...activeAttachmentIds];
+    final activeIds = [...activeVideoIds, ...activeFileIds];
 
     await _db.batch((batch) {
       // 1. Remove stale records that are no longer active.
@@ -203,6 +218,7 @@ class DownloadsRepository {
               duration: Value(item.duration),
               fileType: Value(item.fileType),
               contentUrl: Value(item.contentUrl),
+              filePath: Value(item.filePath),
             ),
           ),
         );
@@ -229,6 +245,7 @@ class DownloadsRepository {
             duration: Value(item.duration),
             fileType: Value(item.fileType),
             contentUrl: Value(item.contentUrl),
+            filePath: Value(item.filePath),
           ),
         );
   }

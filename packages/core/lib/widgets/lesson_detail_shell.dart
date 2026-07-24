@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../design/design_provider.dart';
@@ -25,9 +26,11 @@ class LessonDetailShell extends StatelessWidget {
     this.onNext,
     this.onPrevious,
     this.onDownload,
+    this.isDownloading = false,
     this.headerActions,
     this.bottomBar,
     this.progress,
+    this.progressListenable,
     this.isCompleted = false,
     this.stickyFooter = true,
     this.backgroundColor,
@@ -66,6 +69,10 @@ class LessonDetailShell extends StatelessWidget {
   /// Optional callback for content download.
   final VoidCallback? onDownload;
 
+  /// Whether a download is currently in progress. Disables and greys out
+  /// the download button while true.
+  final bool isDownloading;
+
   /// Optional list of extra actions for the header.
   final List<Widget>? headerActions;
 
@@ -74,6 +81,9 @@ class LessonDetailShell extends StatelessWidget {
 
   /// Optional progress value (0.0 to 1.0) for the top progress bar.
   final double? progress;
+
+  /// Optional progress source that updates only the progress bar subtree.
+  final ValueListenable<double>? progressListenable;
 
   /// Whether the footer should be fixed at the bottom.
   final bool stickyFooter;
@@ -91,7 +101,15 @@ class LessonDetailShell extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeader(context, design),
-          if (progress != null) _buildProgressBar(design),
+          if (progressListenable != null)
+            ValueListenableBuilder<double>(
+              valueListenable: progressListenable!,
+              builder: (context, value, _) {
+                return _buildProgressBar(design, value);
+              },
+            )
+          else if (progress != null)
+            _buildProgressBar(design, progress!),
 
           Expanded(child: child),
           if (stickyFooter) _buildFooter(context),
@@ -368,7 +386,7 @@ class LessonDetailShell extends StatelessWidget {
                   _HeaderButton(
                     icon: LucideIcons.download,
                     label: 'Download content',
-                    onTap: onDownload!,
+                    onTap: isDownloading ? null : onDownload,
                   ),
                 ...?headerActions,
               ],
@@ -379,9 +397,9 @@ class LessonDetailShell extends StatelessWidget {
     );
   }
 
-  Widget _buildProgressBar(DesignConfig design) {
+  Widget _buildProgressBar(DesignConfig design, double value) {
     return AppSemantics.progressValue(
-      value: progress ?? 0,
+      value: value,
       label: 'Lesson progress',
       child: Container(
         width: double.infinity,
@@ -389,7 +407,7 @@ class LessonDetailShell extends StatelessWidget {
         color: design.colors.divider.withValues(alpha: 0.1),
         alignment: Alignment.centerLeft,
         child: FractionallySizedBox(
-          widthFactor: (progress ?? 0).clamp(0.005, 1.0),
+          widthFactor: value.clamp(0.005, 1.0),
           child: Container(height: 3, color: design.colors.primary),
         ),
       ),
@@ -406,17 +424,23 @@ class _HeaderButton extends StatelessWidget {
   const _HeaderButton({
     required this.icon,
     required this.label,
+    // nullable — passing null disables the button
     required this.onTap,
     this.iconColor,
   });
   final IconData icon;
   final String label;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final Color? iconColor;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final disabled = onTap == null;
+    final resolvedColor = disabled
+        ? design.colors.textPrimary.withValues(alpha: 0.35)
+        : (iconColor ?? design.colors.textPrimary);
+
     return Padding(
       padding: EdgeInsetsDirectional.only(start: design.spacing.sm),
       child: AppFocusable(
@@ -425,13 +449,7 @@ class _HeaderButton extends StatelessWidget {
         child: SizedBox(
           width: 36,
           height: 36,
-          child: Center(
-            child: Icon(
-              icon,
-              size: 20,
-              color: iconColor ?? design.colors.textPrimary,
-            ),
-          ),
+          child: Center(child: Icon(icon, size: 20, color: resolvedColor)),
         ),
       ),
     );

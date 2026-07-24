@@ -25,6 +25,24 @@ class DownloadsService {
     );
   }
 
+  /// Scans a file with the Android MediaScanner so it appears in public galleries/downloads.
+  Future<void> scanMediaIfAndroid(String path) async {
+    if (!Platform.isAndroid) return;
+
+    try {
+      await MediaScanner.loadMedia(path: path);
+    } catch (e, stackTrace) {
+      _sentryService.captureException(
+        e,
+        stackTrace: stackTrace,
+        level: AppErrorLevel.warning,
+        contexts: {
+          'MediaScanner Error': {'savePath': path},
+        },
+      );
+    }
+  }
+
   /// Downloads an attachment file and reports progress via [onProgress].
   /// Returns the final file size in bytes on success, or null on failure.
   Future<int?> downloadAttachment(
@@ -49,20 +67,7 @@ class DownloadsService {
       );
 
       if (savePath != null) {
-        if (Platform.isAndroid) {
-          try {
-            await MediaScanner.loadMedia(path: savePath);
-          } catch (e, stackTrace) {
-            _sentryService.captureException(
-              e,
-              stackTrace: stackTrace,
-              level: AppErrorLevel.warning,
-              contexts: {
-                'MediaScanner Error': {'savePath': savePath},
-              },
-            );
-          }
-        }
+        await scanMediaIfAndroid(savePath);
         return await File(savePath).length();
       }
       return null;
@@ -83,20 +88,7 @@ class DownloadsService {
   Future<int?> getExistingAttachmentSize(String url) async {
     final path = await getExistingAttachmentPath(url);
     if (path != null) {
-      if (Platform.isAndroid) {
-        try {
-          await MediaScanner.loadMedia(path: path);
-        } catch (e, stackTrace) {
-          _sentryService.captureException(
-            e,
-            stackTrace: stackTrace,
-            level: AppErrorLevel.warning,
-            contexts: {
-              'MediaScanner Error': {'savePath': path},
-            },
-          );
-        }
-      }
+      await scanMediaIfAndroid(path);
       return await File(path).length();
     }
     return null;
@@ -205,7 +197,28 @@ class DownloadsService {
   }
 
   Future<void> deleteDownloadItem(DownloadItem item) async {
-    if (item.type == DownloadType.attachment) {
+    if (item.type == DownloadType.pdf) {
+      if (item.filePath != null) {
+        try {
+          final file = File(item.filePath!);
+          if (await file.exists()) {
+            await file.delete();
+          }
+        } catch (e, st) {
+          _sentryService.captureException(
+            e,
+            stackTrace: st,
+            level: AppErrorLevel.error,
+            contexts: {
+              'DownloadService': {
+                'action': 'deleteDownloadItem',
+                'filePath': item.filePath,
+              },
+            },
+          );
+        }
+      }
+    } else if (item.type == DownloadType.attachment) {
       if (item.contentUrl != null) {
         final existingPath = await getExistingAttachmentPath(item.contentUrl!);
         if (existingPath != null) {

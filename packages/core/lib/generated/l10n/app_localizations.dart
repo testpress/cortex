@@ -4829,6 +4829,12 @@ abstract class AppLocalizations {
   /// **'Downloaded'**
   String get downloadedStatus;
 
+  /// No description provided for @pdfWatermarkFallbackText.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded'**
+  String get pdfWatermarkFallbackText;
+
   /// No description provided for @totalQuestionsLabel.
   ///
   /// In en, this message translates to:
@@ -4864,6 +4870,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure you want to delete this downloaded exam?'**
   String get deleteExamConfirmationMessage;
+
+  /// No description provided for @alreadyDownloadedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Already downloaded'**
+  String get alreadyDownloadedTitle;
+
+  /// No description provided for @alreadyDownloadedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is already in your device.'**
+  String get alreadyDownloadedMessage;
+
+  /// No description provided for @openFileAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Open File'**
+  String get openFileAction;
+
+  /// No description provided for @downloadAgainAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Download Again'**
+  String get downloadAgainAction;
+
+  /// No description provided for @downloadCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Download completed'**
+  String get downloadCompleted;
+
+  /// No description provided for @downloadingFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading...'**
+  String get downloadingFile;
+
+  /// No description provided for @viewAction.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get viewAction;
 }
 
 class _AppLocalizationsDelegate

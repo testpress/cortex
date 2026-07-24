@@ -128,6 +128,9 @@ class CourseList extends _$CourseList {
       await _pendingSyncRequest;
     }
 
+    // Clear chapter sync cache so chapters are re-fetched after a full course refresh.
+    _syncedCourses.clear();
+
     final currentSync = _performSync(isReset: true);
     _pendingSyncRequest = currentSync;
     _isPendingSyncReset = true;
@@ -183,12 +186,26 @@ class CourseList extends _$CourseList {
   }
 }
 
+/// Tracks which courses have already been synced to prevent re-fetching
+/// on every generator re-run. The generator re-runs when courseRepositoryProvider
+/// emits (e.g. after a course list refresh), which previously caused
+/// refreshChapters() to write to chaptersTable + coursesTable, triggering
+/// watchAllCourses() → courseListProvider → courseRepositoryProvider to emit
+/// again, creating a rebuild loop.
+final _syncedCourses = <String>{};
+
 /// Provider for a specific course's chapters.
 @Riverpod(keepAlive: true)
 Stream<List<ChapterDto>> courseChapters(
     CourseChaptersRef ref, String courseId) async* {
   final repo = await ref.watch(courseRepositoryProvider.future);
-  repo.refreshChapters(courseId).ignore();
+
+  // Only fetch from network once per course per provider lifecycle.
+  // The Set persists across generator re-runs because the provider instance stays alive.
+  if (!_syncedCourses.contains(courseId)) {
+    _syncedCourses.add(courseId);
+    repo.refreshChapters(courseId).ignore();
+  }
 
   yield* repo.watchChapters(courseId).map(
         (rows) => rows.map((row) => repo.rowToChapterDto(row)).toList(),

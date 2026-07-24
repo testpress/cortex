@@ -1018,10 +1018,18 @@
   "startExam": "ابدأ الامتحان",
   "reviewExploreDetailsTitle": "استكشف المزيد من التفاصيل",
   "downloadedStatus": "تم التنزيل",
+  "pdfWatermarkFallbackText": "تم التنزيل",
   "totalQuestionsLabel": "إجمالي الأسئلة",
   "deleteAction": "حذف",
   "attendExamAction": "حضور الامتحان",
   "examDeletedToast": "تم حذف الامتحان",
   "deleteExamTitle": "هل تريد حذف الامتحان؟",
-  "deleteExamConfirmationMessage": "هل أنت متأكد أنك تريد حذف هذا الامتحان المنزل؟"
+  "deleteExamConfirmationMessage": "هل أنت متأكد أنك تريد حذف هذا الامتحان المنزل؟",
+  "alreadyDownloadedTitle": "تم التنزيل مسبقًا",
+  "alreadyDownloadedMessage": "هذا الملف موجود بالفعل في جهازك.",
+  "openFileAction": "فتح الملف",
+  "downloadAgainAction": "تنزيل مرة أخرى",
+  "downloadCompleted": "اكتمل التنزيل",
+  "downloadingFile": "جاري التنزيل...",
+  "viewAction": "عرض"
 }
