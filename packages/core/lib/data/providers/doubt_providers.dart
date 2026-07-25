@@ -131,6 +131,13 @@ Stream<List<DoubtTopicDto>> doubtSubtopics(
 }
 
 @riverpod
+Stream<List<DoubtDto>> recentAiDoubts(RecentAiDoubtsRef ref) async* {
+  final repo = await ref.watch(doubtRepositoryProvider.future);
+  repo.syncDoubts(page: 1, queryType: DoubtQueryType.ai).ignore();
+  yield* repo.watchDoubts(queryType: DoubtQueryType.ai);
+}
+
+@riverpod
 class CreateDoubtNotifier extends _$CreateDoubtNotifier {
   @override
   FutureOr<void> build() {}

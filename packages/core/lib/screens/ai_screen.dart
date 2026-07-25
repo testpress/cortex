@@ -179,7 +179,7 @@ class AiScreen extends ConsumerWidget {
     DesignConfig design,
     AppLocalizations l10n,
   ) {
-    final repoAsync = ref.watch(doubtRepositoryProvider);
+    final recentDoubtsAsync = ref.watch(recentAiDoubtsProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -205,72 +205,61 @@ class AiScreen extends ConsumerWidget {
           ],
         ),
         SizedBox(height: design.spacing.md),
-        repoAsync.when(
-          data: (repo) => StreamBuilder<List<DoubtDto>>(
-            stream: repo.watchDoubts(queryType: DoubtQueryType.ai),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(child: AppLoadingIndicator());
-              }
-              final doubts = snapshot.data!.take(3).toList();
-              if (doubts.isEmpty) {
-                return AppCard(
-                  padding: EdgeInsets.all(design.spacing.lg),
-                  child: Center(
-                    child: AppText.body(l10n.aiSupportNoRecentDoubts),
-                  ),
-                );
-              }
+        recentDoubtsAsync.when(
+          data: (doubtsList) {
+            final doubts = doubtsList.take(3).toList();
+            if (doubts.isEmpty) {
+              return Center(child: AppText.body(l10n.aiSupportNoRecentDoubts));
+            }
 
-              return Column(
-                children: doubts.map((doubt) {
-                  IconData statusIcon;
-                  Color statusColor;
-                  Color statusBg;
-                  String statusText;
+            return Column(
+              children: doubts.map((doubt) {
+                IconData statusIcon;
+                Color statusColor;
+                Color statusBg;
+                String statusText;
 
-                  switch (doubt.status) {
-                    case DoubtStatus.resolved:
-                    case DoubtStatus.closed:
-                      statusIcon = LucideIcons.checkCircle2;
-                      statusColor = design.statusColors.completed.foreground;
-                      statusBg = design.statusColors.completed.background;
-                      statusText = l10n.aiSupportStatusAnswered;
-                      break;
-                    case DoubtStatus.active:
-                    case DoubtStatus.pending:
-                      statusIcon = LucideIcons.loader;
-                      statusColor = design.statusColors.upcoming.foreground;
-                      statusBg = design.statusColors.upcoming.background;
-                      statusText = l10n.aiSupportStatusProcessing;
-                      break;
-                  }
+                switch (doubt.status) {
+                  case DoubtStatus.resolved:
+                  case DoubtStatus.closed:
+                    statusIcon = LucideIcons.checkCircle2;
+                    statusColor = design.statusColors.completed.foreground;
+                    statusBg = design.statusColors.completed.background;
+                    statusText = l10n.aiSupportStatusAnswered;
+                    break;
+                  case DoubtStatus.active:
+                  case DoubtStatus.pending:
+                    statusIcon = LucideIcons.loader;
+                    statusColor = design.statusColors.upcoming.foreground;
+                    statusBg = design.statusColors.upcoming.background;
+                    statusText = l10n.aiSupportStatusProcessing;
+                    break;
+                }
 
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: design.spacing.md),
-                    child: AppSemantics.button(
-                      label: doubt.title,
+                return Padding(
+                  padding: EdgeInsets.only(bottom: design.spacing.md),
+                  child: AppSemantics.button(
+                    label: doubt.title,
+                    onTap: () => onDoubtTapped(doubt.id),
+                    child: AppFocusable(
                       onTap: () => onDoubtTapped(doubt.id),
-                      child: AppFocusable(
-                        onTap: () => onDoubtTapped(doubt.id),
-                        child: _buildHelpCard(
-                          design: design,
-                          icon: LucideIcons.messageCircleQuestionMark,
-                          iconColor: design.colors.accent2,
-                          title: doubt.title,
-                          timestamp: doubt.createdHumanized ?? '',
-                          statusText: statusText,
-                          statusColor: statusColor,
-                          statusBg: statusBg,
-                          statusIcon: statusIcon,
-                        ),
+                      child: _buildHelpCard(
+                        design: design,
+                        icon: LucideIcons.messageCircleQuestionMark,
+                        iconColor: design.colors.accent2,
+                        title: doubt.title,
+                        timestamp: doubt.createdHumanized ?? '',
+                        statusText: statusText,
+                        statusColor: statusColor,
+                        statusBg: statusBg,
+                        statusIcon: statusIcon,
                       ),
                     ),
-                  );
-                }).toList(),
-              );
-            },
-          ),
+                  ),
+                );
+              }).toList(),
+            );
+          },
           loading: () => const Center(child: AppLoadingIndicator()),
           error: (_, _) => const SizedBox(),
         ),
