@@ -680,6 +680,24 @@ class _DoubtSubtopicsProviderElement
   int? get parentId => (origin as DoubtSubtopicsProvider).parentId;
 }
 
+String _$recentAiDoubtsHash() => r'a960e30e6675f999d61ab7af67dc1e52569e9294';
+
+/// See also [recentAiDoubts].
+@ProviderFor(recentAiDoubts)
+final recentAiDoubtsProvider =
+    AutoDisposeStreamProvider<List<DoubtDto>>.internal(
+      recentAiDoubts,
+      name: r'recentAiDoubtsProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$recentAiDoubtsHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef RecentAiDoubtsRef = AutoDisposeStreamProviderRef<List<DoubtDto>>;
 String _$doubtTypeFilterHash() => r'f0ee277536fd3fb0cbd9ce3dfd3a4410ce73d0cd';
 
 /// See also [DoubtTypeFilter].

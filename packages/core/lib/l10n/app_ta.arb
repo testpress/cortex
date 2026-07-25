@@ -1257,5 +1257,27 @@
   "attendExamAction": "தேர்வில் கலந்து கொள்",
   "examDeletedToast": "தேர்வு அழிக்கப்பட்டது",
   "deleteExamTitle": "தேர்வை அழிக்க வேண்டுமா?",
-  "deleteExamConfirmationMessage": "பதிவிறக்கம் செய்யப்பட்ட இந்த தேர்வை அழிக்க வேண்டுமா?"
+  "deleteExamConfirmationMessage": "பதிவிறக்கம் செய்யப்பட்ட இந்த தேர்வை அழிக்க வேண்டுமா?",
+  "aiSupportTitle": "AI ஆதரவு",
+  "aiSupportGreeting": "வணக்கம் {userName} 👋",
+  "@aiSupportGreeting": {
+    "placeholders": {
+      "userName": {
+        "type": "String"
+      }
+    }
+  },
+  "aiSupportQuickActions": "விரைவான செயல்கள்",
+  "aiSupportAskDoubtTitle": "சந்தேகம் கேளுங்கள்",
+  "aiSupportAskDoubtSubtitle": "உங்கள் கேள்வியைப் படமெடுக்கவும், பதிவேற்றவும் அல்லது தட்டச்சு செய்யவும்",
+  "aiSupportAskNowButton": "இப்போது கேளுங்கள்",
+  "aiSupportAiExamTitle": "AI தேர்வு",
+  "aiSupportAiExamSubtitle": "பலவீனமான தலைப்புகள் அல்லது அத்தியாயங்களின் அடிப்படையில் AI பயிற்சி தேர்வுகளை உருவாக்கவும்",
+  "aiSupportCreateAiExamButton": "AI தேர்வை உருவாக்கு",
+  "aiSupportRecentHelp": "சமீபத்திய உதவி",
+  "aiSupportViewAll": "அனைத்தையும் காண்க",
+  "aiSupportNoRecentDoubts": "சமீபத்திய AI சந்தேகங்கள் இல்லை.",
+  "aiSupportStatusAnswered": "பதிலளிக்கப்பட்டது",
+  "aiSupportStatusProcessing": "செயலாக்கப்படுகிறது",
+  "aiSupportAskingAi": "AI-இடம் கேட்கிறது"
 }

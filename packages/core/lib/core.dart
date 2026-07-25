@@ -46,6 +46,9 @@ export 'widgets/app_toast.dart';
 // Shell
 export 'shell/app_shell.dart';
 
+// Screens
+export 'screens/ai_screen.dart';
+
 // Navigation
 export 'navigation/app_route.dart';
 export 'navigation/route_names.dart';

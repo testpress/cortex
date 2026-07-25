@@ -35,6 +35,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             NavTab.home => HomeRoutes.routes(_rootNavigatorKey),
             NavTab.study => StudyRoutes.routes(_rootNavigatorKey),
             NavTab.exams => ExamsRoutes.routes(_rootNavigatorKey),
+            NavTab.ai => AiRoutes.routes(_rootNavigatorKey),
             NavTab.store => GlobalRoutes.storeRoutes(_rootNavigatorKey),
             NavTab.info => GlobalRoutes.infoRoutes(_rootNavigatorKey),
             NavTab.profile => ProfileRoutes.routes(_rootNavigatorKey),
@@ -51,6 +52,7 @@ enum NavTab {
   home('/home', 'Home', LucideIcons.home),
   study('/study', 'Study', LucideIcons.bookOpen),
   exams('/exams', 'Exam', LucideIcons.fileText),
+  ai('/ai', 'AI', LucideIcons.sparkles),
   store('/store', 'Store', LucideIcons.store),
   info('/info', 'Info', LucideIcons.squarePlay),
   profile('/profile', 'Profile', LucideIcons.user);
@@ -78,6 +80,7 @@ enum NavTab {
         NavTab.info => AppConfig.showInfoTab,
         NavTab.store => settings?.storeEnabled ?? false,
         NavTab.profile => AppConfig.showProfileTab,
+        NavTab.ai => AppConfig.showAiTab,
         _ => true,
       };
     }).toList();

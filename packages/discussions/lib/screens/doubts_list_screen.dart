@@ -14,7 +14,8 @@ const doubtFilterOptions = [
 ];
 
 class DoubtsListScreen extends ConsumerStatefulWidget {
-  const DoubtsListScreen({super.key});
+  final DoubtQueryType? initialFilter;
+  const DoubtsListScreen({super.key, this.initialFilter});
 
   @override
   ConsumerState<DoubtsListScreen> createState() => _DoubtsListScreenState();
@@ -23,6 +24,18 @@ class DoubtsListScreen extends ConsumerStatefulWidget {
 class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
   String? _searchQuery;
   final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialFilter != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref
+            .read(doubtTypeFilterProvider.notifier)
+            .setFilter(widget.initialFilter);
+      });
+    }
+  }
 
   @override
   void dispose() {

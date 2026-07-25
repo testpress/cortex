@@ -17,6 +17,7 @@ class AskDoubtFormScreen extends ConsumerStatefulWidget {
 
   final int? questionId;
   final String? questionHtml;
+  final bool isAskAi;
 
   const AskDoubtFormScreen({
     super.key,
@@ -26,6 +27,7 @@ class AskDoubtFormScreen extends ConsumerStatefulWidget {
     this.breadcrumbs = const [],
     this.questionId,
     this.questionHtml,
+    this.isAskAi = false,
   }) : assert(
          (chapterContentId == null && lessonTitle == null) ||
              questionId == null,
@@ -98,7 +100,8 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         if (widget.chapterContentId != null ||
-                            widget.questionId != null) ...[
+                            widget.questionId != null ||
+                            widget.isAskAi) ...[
                           _contextLinkBadge(design, l10n),
                           const SizedBox(height: 16),
                         ],
@@ -174,9 +177,11 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
 
   Widget _contextLinkBadge(DesignConfig design, AppLocalizations l10n) {
     final isQuestion = widget.questionId != null;
-    final icon = isQuestion
-        ? LucideIcons.helpCircle
-        : widget.lessonType?.icon ?? LucideIcons.bookOpen;
+    final icon = widget.isAskAi
+        ? LucideIcons.sparkles
+        : (isQuestion
+              ? LucideIcons.helpCircle
+              : widget.lessonType?.icon ?? LucideIcons.bookOpen);
 
     if (widget.chapterContentId != null && _lessonDetailsFuture != null) {
       return FutureBuilder<
@@ -206,12 +211,16 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
       );
     }
 
+    final titleText = widget.isAskAi
+        ? l10n.aiSupportAskingAi
+        : (isQuestion
+              ? widget.questionHtml ??
+                    l10n.questionIdArgs(widget.questionId.toString())
+              : widget.lessonTitle ?? l10n.lessonDetails);
+
     return DoubtContextBadge(
       icon: icon,
-      text: isQuestion
-          ? widget.questionHtml ??
-                l10n.questionIdArgs(widget.questionId.toString())
-          : widget.lessonTitle ?? l10n.lessonDetails,
+      text: titleText,
       breadcrumbs: widget.breadcrumbs,
     );
   }
@@ -259,7 +268,13 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
               ),
               fullWidth: true,
               onPressed: canSubmit
-                  ? () => setState(() => _isSubmitSheetOpen = true)
+                  ? () {
+                      if (widget.isAskAi) {
+                        _submitDoubt(DoubtQueryType.ai);
+                      } else {
+                        setState(() => _isSubmitSheetOpen = true);
+                      }
+                    }
                   : null,
               height: 52,
               backgroundColor: canSubmit

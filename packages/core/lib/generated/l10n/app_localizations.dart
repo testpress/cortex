@@ -4864,6 +4864,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure you want to delete this downloaded exam?'**
   String get deleteExamConfirmationMessage;
+
+  /// No description provided for @aiSupportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Support'**
+  String get aiSupportTitle;
+
+  /// No description provided for @aiSupportGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hi {userName} 👋'**
+  String aiSupportGreeting(String userName);
+
+  /// No description provided for @aiSupportQuickActions.
+  ///
+  /// In en, this message translates to:
+  /// **'QUICK ACTIONS'**
+  String get aiSupportQuickActions;
+
+  /// No description provided for @aiSupportAskDoubtTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask a Doubt'**
+  String get aiSupportAskDoubtTitle;
+
+  /// No description provided for @aiSupportAskDoubtSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Snap, upload or type your question'**
+  String get aiSupportAskDoubtSubtitle;
+
+  /// No description provided for @aiSupportAskNowButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask Now'**
+  String get aiSupportAskNowButton;
+
+  /// No description provided for @aiSupportAiExamTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Exam'**
+  String get aiSupportAiExamTitle;
+
+  /// No description provided for @aiSupportAiExamSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create AI practice exams based on weak topics or chapters'**
+  String get aiSupportAiExamSubtitle;
+
+  /// No description provided for @aiSupportCreateAiExamButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Create AI Exam'**
+  String get aiSupportCreateAiExamButton;
+
+  /// No description provided for @aiSupportRecentHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'RECENT HELP'**
+  String get aiSupportRecentHelp;
+
+  /// No description provided for @aiSupportViewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
+  String get aiSupportViewAll;
+
+  /// No description provided for @aiSupportNoRecentDoubts.
+  ///
+  /// In en, this message translates to:
+  /// **'No recent AI doubts.'**
+  String get aiSupportNoRecentDoubts;
+
+  /// No description provided for @aiSupportStatusAnswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Answered'**
+  String get aiSupportStatusAnswered;
+
+  /// No description provided for @aiSupportStatusProcessing.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing'**
+  String get aiSupportStatusProcessing;
+
+  /// No description provided for @aiSupportAskingAi.
+  ///
+  /// In en, this message translates to:
+  /// **'ASKING AI'**
+  String get aiSupportAskingAi;
 }
 
 class _AppLocalizationsDelegate

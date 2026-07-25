@@ -1339,5 +1339,27 @@
   "attendExamAction": "Attend Exam",
   "examDeletedToast": "Exam deleted",
   "deleteExamTitle": "Delete Exam?",
-  "deleteExamConfirmationMessage": "Are you sure you want to delete this downloaded exam?"
+  "deleteExamConfirmationMessage": "Are you sure you want to delete this downloaded exam?",
+  "aiSupportTitle": "AI Support",
+  "aiSupportGreeting": "Hi {userName} 👋",
+  "@aiSupportGreeting": {
+    "placeholders": {
+      "userName": {
+        "type": "String"
+      }
+    }
+  },
+  "aiSupportQuickActions": "QUICK ACTIONS",
+  "aiSupportAskDoubtTitle": "Ask a Doubt",
+  "aiSupportAskDoubtSubtitle": "Snap, upload or type your question",
+  "aiSupportAskNowButton": "Ask Now",
+  "aiSupportAiExamTitle": "AI Exam",
+  "aiSupportAiExamSubtitle": "Create AI practice exams based on weak topics or chapters",
+  "aiSupportCreateAiExamButton": "Create AI Exam",
+  "aiSupportRecentHelp": "RECENT HELP",
+  "aiSupportViewAll": "View All",
+  "aiSupportNoRecentDoubts": "No recent AI doubts.",
+  "aiSupportStatusAnswered": "Answered",
+  "aiSupportStatusProcessing": "Processing",
+  "aiSupportAskingAi": "ASKING AI"
 }

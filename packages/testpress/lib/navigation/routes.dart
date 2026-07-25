@@ -4,3 +4,4 @@ export './routes/study_routes.dart';
 export './routes/exams_routes.dart';
 export './routes/profile_routes.dart';
 export './routes/global_routes.dart';
+export './routes/ai_routes.dart';
