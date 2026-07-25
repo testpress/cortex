@@ -878,7 +878,6 @@ class CourseRepository {
       }
     } catch (e, st) {
       _sentryService.captureException(e, stackTrace: st);
-      debugPrint('CourseRepository: Status refresh failed: $e');
     }
   }
 
@@ -934,7 +933,6 @@ class CourseRepository {
       await refreshChapters(courseId);
     } catch (e, st) {
       _sentryService.captureException(e, stackTrace: st);
-      debugPrint('CourseRepository: Failed to hydrate parents: $e');
     }
   }
 
@@ -948,7 +946,6 @@ class CourseRepository {
       }
     } catch (e, st) {
       _sentryService.captureException(e, stackTrace: st);
-      debugPrint('CourseRepository: Failed to hydrate nested chapter: $e');
     }
   }
 
@@ -1069,7 +1066,6 @@ class CourseRepository {
       }
     } catch (e, st) {
       _sentryService.captureException(e, stackTrace: st);
-      debugPrint('CourseRepository: Failed to update local DB after sync: $e');
     }
   }
 
@@ -1237,7 +1233,6 @@ class CourseRepository {
             }
           } catch (e, st) {
             _sentryService.captureException(e, stackTrace: st);
-            debugPrint('CourseRepository: Failed to decode exam metadata: $e');
           }
           return null;
         })(),
@@ -1330,8 +1325,7 @@ class CourseRepository {
   LessonType _parseType(String s) {
     try {
       return LessonType.values.byName(s);
-    } catch (e, st) {
-      _sentryService.captureException(e, stackTrace: st);
+    } catch (_) {
       // Compatibility with old DB strings or fuzzy inputs
       if (s.contains('live')) return LessonType.liveStream;
       if (s.contains('notes')) return LessonType.notes;
@@ -1341,6 +1335,8 @@ class CourseRepository {
       if (s.contains('pdf')) return LessonType.pdf;
       if (s.contains('test')) return LessonType.test;
       if (s.contains('assessment')) return LessonType.assessment;
+      _sentryService
+          .captureException(FormatException('Unknown LessonType: $s'));
       return LessonType.unknown;
     }
   }
@@ -1348,11 +1344,14 @@ class CourseRepository {
   LessonProgressStatus _parseStatus(String s) {
     try {
       return LessonProgressStatus.values.byName(s);
-    } catch (e, st) {
-      _sentryService.captureException(e, stackTrace: st);
+    } catch (_) {
       return LessonProgressStatus.values.firstWhere(
         (e) => e.name.toLowerCase() == s.toLowerCase(),
-        orElse: () => LessonProgressStatus.notStarted,
+        orElse: () {
+          _sentryService.captureException(
+              FormatException('Unknown LessonProgressStatus: $s'));
+          return LessonProgressStatus.notStarted;
+        },
       );
     }
   }
