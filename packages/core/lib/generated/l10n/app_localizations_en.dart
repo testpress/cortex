@@ -2740,4 +2740,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiSupportStatusProcessing => 'Processing';
+
+  @override
+  String get aiSupportAskingAi => 'ASKING AI';
 }

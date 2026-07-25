@@ -212,7 +212,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
     }
 
     final titleText = widget.isAskAi
-        ? 'ASKING AI'
+        ? l10n.aiSupportAskingAi
         : (isQuestion
               ? widget.questionHtml ??
                     l10n.questionIdArgs(widget.questionId.toString())

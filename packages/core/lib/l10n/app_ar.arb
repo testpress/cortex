@@ -1044,5 +1044,6 @@
   "aiSupportViewAll": "عرض الكل",
   "aiSupportNoRecentDoubts": "لا توجد شكوك حديثة.",
   "aiSupportStatusAnswered": "تم الرد",
-  "aiSupportStatusProcessing": "قيد المعالجة"
+  "aiSupportStatusProcessing": "قيد المعالجة",
+  "aiSupportAskingAi": "جاري سؤال الذكاء الاصطناعي"
 }

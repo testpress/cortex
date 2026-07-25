@@ -6,7 +6,16 @@ class AiRoutes {
     GoRoute(
       name: 'ai',
       path: '/ai',
-      builder: (context, state) => const AiScreen(),
+      builder: (context, state) => AiScreen(
+        onAskAiPressed: () =>
+            context.push('/home/discussions/doubts/ask?isAskAi=true'),
+        onCreateCustomExamPressed: () =>
+            context.push('/exams/create-custom-exam'),
+        onViewAllDoubtsPressed: () =>
+            context.push('/home/discussions/doubts?filter=ai'),
+        onDoubtTapped: (doubtId) =>
+            context.push('/home/discussions/doubts/$doubtId'),
+      ),
     ),
   ];
 }

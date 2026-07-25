@@ -40,7 +40,16 @@ class HomeRoutes {
         GoRoute(
           path: 'discussions/doubts',
           parentNavigatorKey: rootNavigatorKey,
-          builder: (context, state) => const DoubtsListScreen(),
+          builder: (context, state) {
+            final filterQuery = state.uri.queryParameters['filter'];
+            DoubtQueryType? initialFilter;
+            if (filterQuery == 'ai') {
+              initialFilter = DoubtQueryType.ai;
+            } else if (filterQuery == 'mentor') {
+              initialFilter = DoubtQueryType.mentor;
+            }
+            return DoubtsListScreen(initialFilter: initialFilter);
+          },
           routes: [
             GoRoute(
               path: 'ask',

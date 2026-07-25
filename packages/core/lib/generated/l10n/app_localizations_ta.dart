@@ -2783,4 +2783,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get aiSupportStatusProcessing => 'செயலாக்கப்படுகிறது';
+
+  @override
+  String get aiSupportAskingAi => 'AI-இடம் கேட்கிறது';
 }

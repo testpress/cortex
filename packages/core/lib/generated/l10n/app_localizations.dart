@@ -4948,6 +4948,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Processing'**
   String get aiSupportStatusProcessing;
+
+  /// No description provided for @aiSupportAskingAi.
+  ///
+  /// In en, this message translates to:
+  /// **'ASKING AI'**
+  String get aiSupportAskingAi;
 }
 
 class _AppLocalizationsDelegate

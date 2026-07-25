@@ -2790,4 +2790,7 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get aiSupportStatusProcessing => 'പ്രോസസ്സ് ചെയ്യുന്നു';
+
+  @override
+  String get aiSupportAskingAi => 'AI-യോട് ചോദിക്കുന്നു';
 }

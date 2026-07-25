@@ -2742,4 +2742,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get aiSupportStatusProcessing => 'قيد المعالجة';
+
+  @override
+  String get aiSupportAskingAi => 'جاري سؤال الذكاء الاصطناعي';
 }

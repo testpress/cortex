@@ -4,7 +4,18 @@ import '../core.dart';
 import '../data/data.dart';
 
 class AiScreen extends ConsumerWidget {
-  const AiScreen({super.key});
+  final VoidCallback onAskAiPressed;
+  final VoidCallback onCreateCustomExamPressed;
+  final VoidCallback onViewAllDoubtsPressed;
+  final void Function(String doubtId) onDoubtTapped;
+
+  const AiScreen({
+    super.key,
+    required this.onAskAiPressed,
+    required this.onCreateCustomExamPressed,
+    required this.onViewAllDoubtsPressed,
+    required this.onDoubtTapped,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -91,8 +102,7 @@ class AiScreen extends ConsumerWidget {
           subtitle: l10n.aiSupportAskDoubtSubtitle,
           buttonLabel: l10n.aiSupportAskNowButton,
           buttonIcon: LucideIcons.send,
-          onPressed: () =>
-              context.push('/home/discussions/doubts/ask?isAskAi=true'),
+          onPressed: onAskAiPressed,
         ),
         SizedBox(height: design.spacing.md),
 
@@ -104,7 +114,7 @@ class AiScreen extends ConsumerWidget {
           subtitle: l10n.aiSupportAiExamSubtitle,
           buttonLabel: l10n.aiSupportCreateAiExamButton,
           buttonIcon: LucideIcons.sparkles,
-          onPressed: () => context.push('/exams/create-custom-exam'),
+          onPressed: onCreateCustomExamPressed,
         ),
       ],
     );
@@ -181,16 +191,15 @@ class AiScreen extends ConsumerWidget {
               l10n.aiSupportRecentHelp,
               color: design.colors.textSecondary,
             ),
-            AppFocusable(
-              onTap: () {
-                ref
-                    .read(doubtTypeFilterProvider.notifier)
-                    .setFilter(DoubtQueryType.ai);
-                context.push('/home/discussions/doubts');
-              },
-              child: AppText.labelSmall(
-                l10n.aiSupportViewAll,
-                color: design.colors.primary,
+            AppSemantics.button(
+              label: l10n.aiSupportViewAll,
+              onTap: onViewAllDoubtsPressed,
+              child: AppFocusable(
+                onTap: onViewAllDoubtsPressed,
+                child: AppText.labelSmall(
+                  l10n.aiSupportViewAll,
+                  color: design.colors.primary,
+                ),
               ),
             ),
           ],
@@ -239,19 +248,22 @@ class AiScreen extends ConsumerWidget {
 
                   return Padding(
                     padding: EdgeInsets.only(bottom: design.spacing.md),
-                    child: AppFocusable(
-                      onTap: () =>
-                          context.push('/home/discussions/doubts/${doubt.id}'),
-                      child: _buildHelpCard(
-                        design: design,
-                        icon: LucideIcons.messageCircleQuestionMark,
-                        iconColor: design.colors.accent2,
-                        title: doubt.title,
-                        timestamp: doubt.createdHumanized ?? '',
-                        statusText: statusText,
-                        statusColor: statusColor,
-                        statusBg: statusBg,
-                        statusIcon: statusIcon,
+                    child: AppSemantics.button(
+                      label: doubt.title,
+                      onTap: () => onDoubtTapped(doubt.id),
+                      child: AppFocusable(
+                        onTap: () => onDoubtTapped(doubt.id),
+                        child: _buildHelpCard(
+                          design: design,
+                          icon: LucideIcons.messageCircleQuestionMark,
+                          iconColor: design.colors.accent2,
+                          title: doubt.title,
+                          timestamp: doubt.createdHumanized ?? '',
+                          statusText: statusText,
+                          statusColor: statusColor,
+                          statusBg: statusBg,
+                          statusIcon: statusIcon,
+                        ),
                       ),
                     ),
                   );

@@ -1044,5 +1044,6 @@
   "aiSupportViewAll": "എല്ലാം കാണുക",
   "aiSupportNoRecentDoubts": "സമീപകാല AI സംശയങ്ങളൊന്നുമില്ല.",
   "aiSupportStatusAnswered": "മറുപടി നൽകി",
-  "aiSupportStatusProcessing": "പ്രോസസ്സ് ചെയ്യുന്നു"
+  "aiSupportStatusProcessing": "പ്രോസസ്സ് ചെയ്യുന്നു",
+  "aiSupportAskingAi": "AI-യോട് ചോദിക്കുന്നു"
 }

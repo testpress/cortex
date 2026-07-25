@@ -680,12 +680,12 @@ class _DoubtSubtopicsProviderElement
   int? get parentId => (origin as DoubtSubtopicsProvider).parentId;
 }
 
-String _$doubtTypeFilterHash() => r'968d75151dcda2ac31af3c29440f17cab0401c3c';
+String _$doubtTypeFilterHash() => r'f0ee277536fd3fb0cbd9ce3dfd3a4410ce73d0cd';
 
 /// See also [DoubtTypeFilter].
 @ProviderFor(DoubtTypeFilter)
 final doubtTypeFilterProvider =
-    NotifierProvider<DoubtTypeFilter, DoubtQueryType?>.internal(
+    AutoDisposeNotifierProvider<DoubtTypeFilter, DoubtQueryType?>.internal(
       DoubtTypeFilter.new,
       name: r'doubtTypeFilterProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -695,7 +695,7 @@ final doubtTypeFilterProvider =
       allTransitiveDependencies: null,
     );
 
-typedef _$DoubtTypeFilter = Notifier<DoubtQueryType?>;
+typedef _$DoubtTypeFilter = AutoDisposeNotifier<DoubtQueryType?>;
 String _$doubtsSyncHash() => r'7f25f8e7a4e6e4da026eede2dd275ed11350b684';
 
 /// See also [DoubtsSync].

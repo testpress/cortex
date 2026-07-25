@@ -1278,5 +1278,6 @@
   "aiSupportViewAll": "அனைத்தையும் காண்க",
   "aiSupportNoRecentDoubts": "சமீபத்திய AI சந்தேகங்கள் இல்லை.",
   "aiSupportStatusAnswered": "பதிலளிக்கப்பட்டது",
-  "aiSupportStatusProcessing": "செயலாக்கப்படுகிறது"
+  "aiSupportStatusProcessing": "செயலாக்கப்படுகிறது",
+  "aiSupportAskingAi": "AI-இடம் கேட்கிறது"
 }

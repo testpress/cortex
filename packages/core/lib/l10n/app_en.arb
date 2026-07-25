@@ -1360,5 +1360,6 @@
   "aiSupportViewAll": "View All",
   "aiSupportNoRecentDoubts": "No recent AI doubts.",
   "aiSupportStatusAnswered": "Answered",
-  "aiSupportStatusProcessing": "Processing"
+  "aiSupportStatusProcessing": "Processing",
+  "aiSupportAskingAi": "ASKING AI"
 }
