@@ -2697,4 +2697,49 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get deleteExamConfirmationMessage =>
       'هل أنت متأكد أنك تريد حذف هذا الامتحان المنزل؟';
+
+  @override
+  String get aiSupportTitle => 'دعم الذكاء الاصطناعي';
+
+  @override
+  String aiSupportGreeting(String userName) {
+    return 'مرحباً $userName 👋';
+  }
+
+  @override
+  String get aiSupportQuickActions => 'إجراءات سريعة';
+
+  @override
+  String get aiSupportAskDoubtTitle => 'اسأل شكاً';
+
+  @override
+  String get aiSupportAskDoubtSubtitle => 'التقط أو حمّل أو اكتب سؤالك';
+
+  @override
+  String get aiSupportAskNowButton => 'اسأل الآن';
+
+  @override
+  String get aiSupportAiExamTitle => 'امتحان الذكاء الاصطناعي';
+
+  @override
+  String get aiSupportAiExamSubtitle =>
+      'قم بإنشاء امتحانات تدريبية بناءً على المواضيع الضعيفة';
+
+  @override
+  String get aiSupportCreateAiExamButton => 'إنشاء امتحان';
+
+  @override
+  String get aiSupportRecentHelp => 'المساعدة الأخيرة';
+
+  @override
+  String get aiSupportViewAll => 'عرض الكل';
+
+  @override
+  String get aiSupportNoRecentDoubts => 'لا توجد شكوك حديثة.';
+
+  @override
+  String get aiSupportStatusAnswered => 'تم الرد';
+
+  @override
+  String get aiSupportStatusProcessing => 'قيد المعالجة';
 }

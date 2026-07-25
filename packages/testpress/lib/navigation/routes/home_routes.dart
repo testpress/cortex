@@ -60,6 +60,7 @@ class HomeRoutes {
                         orElse: () => LessonType.unknown,
                       )
                     : null;
+                final isAskAi = state.uri.queryParameters['isAskAi'] == 'true';
 
                 final extra = state.extra;
                 final extraMap = extra is Map ? extra : null;
@@ -77,6 +78,7 @@ class HomeRoutes {
                   questionId: questionId,
                   breadcrumbs: breadcrumbs,
                   questionHtml: questionHtml,
+                  isAskAi: isAskAi,
                 );
               },
             ),

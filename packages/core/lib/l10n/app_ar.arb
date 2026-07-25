@@ -1023,5 +1023,26 @@
   "attendExamAction": "حضور الامتحان",
   "examDeletedToast": "تم حذف الامتحان",
   "deleteExamTitle": "هل تريد حذف الامتحان؟",
-  "deleteExamConfirmationMessage": "هل أنت متأكد أنك تريد حذف هذا الامتحان المنزل؟"
+  "deleteExamConfirmationMessage": "هل أنت متأكد أنك تريد حذف هذا الامتحان المنزل؟",
+  "aiSupportTitle": "دعم الذكاء الاصطناعي",
+  "aiSupportGreeting": "مرحباً {userName} 👋",
+  "@aiSupportGreeting": {
+    "placeholders": {
+      "userName": {
+        "type": "String"
+      }
+    }
+  },
+  "aiSupportQuickActions": "إجراءات سريعة",
+  "aiSupportAskDoubtTitle": "اسأل شكاً",
+  "aiSupportAskDoubtSubtitle": "التقط أو حمّل أو اكتب سؤالك",
+  "aiSupportAskNowButton": "اسأل الآن",
+  "aiSupportAiExamTitle": "امتحان الذكاء الاصطناعي",
+  "aiSupportAiExamSubtitle": "قم بإنشاء امتحانات تدريبية بناءً على المواضيع الضعيفة",
+  "aiSupportCreateAiExamButton": "إنشاء امتحان",
+  "aiSupportRecentHelp": "المساعدة الأخيرة",
+  "aiSupportViewAll": "عرض الكل",
+  "aiSupportNoRecentDoubts": "لا توجد شكوك حديثة.",
+  "aiSupportStatusAnswered": "تم الرد",
+  "aiSupportStatusProcessing": "قيد المعالجة"
 }

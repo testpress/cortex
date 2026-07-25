@@ -116,6 +116,11 @@ class AppConfig {
     defaultValue: true,
   );
 
+  static const bool showAiTab = bool.fromEnvironment(
+    'SHOW_AI_TAB',
+    defaultValue: false,
+  );
+
   static const bool showCertificate = bool.fromEnvironment(
     'SHOW_CERTIFICATE',
     defaultValue: false,

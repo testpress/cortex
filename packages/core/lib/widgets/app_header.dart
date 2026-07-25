@@ -14,19 +14,21 @@ class AppHeader extends StatelessWidget {
     this.subtitle,
     this.leading,
     this.actions,
+    this.backgroundColor,
   });
 
   final String title;
   final String? subtitle;
   final Widget? leading;
   final List<Widget>? actions;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     return Container(
       decoration: BoxDecoration(
-        color: design.colors.surface,
+        color: backgroundColor ?? design.colors.surface,
         border: Border(
           bottom: BorderSide(color: design.colors.divider, width: 1),
         ),

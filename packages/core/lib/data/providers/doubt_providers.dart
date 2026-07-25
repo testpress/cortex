@@ -12,7 +12,7 @@ Future<DoubtRepository> doubtRepository(DoubtRepositoryRef ref) async {
   );
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class DoubtTypeFilter extends _$DoubtTypeFilter {
   @override
   DoubtQueryType? build() => null;

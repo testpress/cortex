@@ -2695,4 +2695,49 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get deleteExamConfirmationMessage =>
       'Are you sure you want to delete this downloaded exam?';
+
+  @override
+  String get aiSupportTitle => 'AI Support';
+
+  @override
+  String aiSupportGreeting(String userName) {
+    return 'Hi $userName 👋';
+  }
+
+  @override
+  String get aiSupportQuickActions => 'QUICK ACTIONS';
+
+  @override
+  String get aiSupportAskDoubtTitle => 'Ask a Doubt';
+
+  @override
+  String get aiSupportAskDoubtSubtitle => 'Snap, upload or type your question';
+
+  @override
+  String get aiSupportAskNowButton => 'Ask Now';
+
+  @override
+  String get aiSupportAiExamTitle => 'AI Exam';
+
+  @override
+  String get aiSupportAiExamSubtitle =>
+      'Create AI practice exams based on weak topics or chapters';
+
+  @override
+  String get aiSupportCreateAiExamButton => 'Create AI Exam';
+
+  @override
+  String get aiSupportRecentHelp => 'RECENT HELP';
+
+  @override
+  String get aiSupportViewAll => 'View All';
+
+  @override
+  String get aiSupportNoRecentDoubts => 'No recent AI doubts.';
+
+  @override
+  String get aiSupportStatusAnswered => 'Answered';
+
+  @override
+  String get aiSupportStatusProcessing => 'Processing';
 }

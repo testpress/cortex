@@ -2744,4 +2744,50 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get deleteExamConfirmationMessage =>
       'ഈ ഡൗൺലോഡ് ചെയ്ത പരീക്ഷ ഇല്ലാതാക്കണമെന്ന് ഉറപ്പാണോ?';
+
+  @override
+  String get aiSupportTitle => 'AI പിന്തുണ';
+
+  @override
+  String aiSupportGreeting(String userName) {
+    return 'നമസ്കാരം $userName 👋';
+  }
+
+  @override
+  String get aiSupportQuickActions => 'പെട്ടെന്നുള്ള പ്രവർത്തനങ്ങൾ';
+
+  @override
+  String get aiSupportAskDoubtTitle => 'സംശയം ചോദിക്കുക';
+
+  @override
+  String get aiSupportAskDoubtSubtitle =>
+      'ചോദ്യം ഫോട്ടോ എടുക്കുകയോ അപ്‌ലോഡ് ചെയ്യുകയോ ടൈപ്പ് ചെയ്യുകയോ ചെയ്യുക';
+
+  @override
+  String get aiSupportAskNowButton => 'ഇപ്പോൾ ചോദിക്കുക';
+
+  @override
+  String get aiSupportAiExamTitle => 'AI പരീക്ഷ';
+
+  @override
+  String get aiSupportAiExamSubtitle =>
+      'ദുർബലമായ വിഷയങ്ങളെ അടിസ്ഥാനമാക്കി AI പരീക്ഷകൾ സൃഷ്ടിക്കുക';
+
+  @override
+  String get aiSupportCreateAiExamButton => 'AI പരീക്ഷ സൃഷ്ടിക്കുക';
+
+  @override
+  String get aiSupportRecentHelp => 'സമീപകാല സഹായം';
+
+  @override
+  String get aiSupportViewAll => 'എല്ലാം കാണുക';
+
+  @override
+  String get aiSupportNoRecentDoubts => 'സമീപകാല AI സംശയങ്ങളൊന്നുമില്ല.';
+
+  @override
+  String get aiSupportStatusAnswered => 'മറുപടി നൽകി';
+
+  @override
+  String get aiSupportStatusProcessing => 'പ്രോസസ്സ് ചെയ്യുന്നു';
 }
