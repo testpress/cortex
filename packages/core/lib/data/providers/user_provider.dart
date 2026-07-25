@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/db/app_database.dart';
-import 'package:core/data/auth/auth_provider.dart';
 import 'package:core/data/db/database_provider.dart';
 import 'package:core/data/sources/data_source_provider.dart';
 import '../repositories/user_repository.dart';
@@ -19,13 +18,6 @@ Future<UserRepository> userRepository(Ref ref) async {
 @riverpod
 Stream<UsersTableData?> user(UserRef ref) async* {
   final userRepository = await ref.watch(userRepositoryProvider.future);
-  final isLoggedIn = ref.watch(authProvider).asData?.value ?? false;
-
-  if (!isLoggedIn) {
-    yield null;
-    return;
-  }
-
   yield* userRepository.watchCurrentUser();
 }
 
