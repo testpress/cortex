@@ -133,7 +133,18 @@ Stream<List<DoubtTopicDto>> doubtSubtopics(
 @riverpod
 Stream<List<DoubtDto>> recentAiDoubts(RecentAiDoubtsRef ref) async* {
   final repo = await ref.watch(doubtRepositoryProvider.future);
-  repo.syncDoubts(page: 1, queryType: DoubtQueryType.ai).ignore();
+
+  final initialDoubts = await repo
+      .watchDoubts(queryType: DoubtQueryType.ai)
+      .first;
+  if (initialDoubts.isEmpty) {
+    try {
+      await repo.syncDoubts(page: 1, queryType: DoubtQueryType.ai);
+    } catch (_) {}
+  } else {
+    repo.syncDoubts(page: 1, queryType: DoubtQueryType.ai).ignore();
+  }
+
   yield* repo.watchDoubts(queryType: DoubtQueryType.ai);
 }
 

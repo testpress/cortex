@@ -680,7 +680,7 @@ class _DoubtSubtopicsProviderElement
   int? get parentId => (origin as DoubtSubtopicsProvider).parentId;
 }
 
-String _$recentAiDoubtsHash() => r'56eff6585c8b60ae5a149f0de2ef3f0ace97da67';
+String _$recentAiDoubtsHash() => r'a960e30e6675f999d61ab7af67dc1e52569e9294';
 
 /// See also [recentAiDoubts].
 @ProviderFor(recentAiDoubts)
