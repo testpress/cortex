@@ -24,9 +24,13 @@ final userRepositoryProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef UserRepositoryRef = AutoDisposeFutureProviderRef<UserRepository>;
-String _$userHash() => r'0bdd7424374c984544a7ba0443ce1845fa2a0975';
+String _$userHash() => r'154fc2a74bf7efc05f92a83b3bf269494361a77b';
 
 /// Reactive provider that exposes the current user's profile metadata from the database.
+/// NOTE: Do NOT watch `authProvider` here to check login state. `Auth.logout` triggers
+/// the `appResetUseCase` which purges the database, naturally clearing this stream.
+/// If this provider watches `authProvider`, it creates a circular dependency during logout
+/// (authProvider -> appResetUseCaseProvider -> sentryServiceProvider -> userProvider -> authProvider).
 ///
 /// Copied from [user].
 @ProviderFor(user)

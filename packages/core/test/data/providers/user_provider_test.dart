@@ -42,9 +42,12 @@ void main() {
       email: 'test@example.com',
     );
 
-    test('returns null when not logged in', () async {
+    test('returns null when repository yields null', () async {
+      when(
+        mockUserRepository.watchCurrentUser(),
+      ).thenAnswer((_) => Stream.value(null));
+
       final container = makeContainer(isLoggedIn: false);
-      await container.read(authProvider.future);
       final user = await container.read(userProvider.future);
       expect(user, isNull);
     });

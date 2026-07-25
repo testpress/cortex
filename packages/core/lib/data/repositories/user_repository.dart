@@ -12,6 +12,11 @@ class UserRepository {
     return _db.select(_db.usersTable).watchSingleOrNull();
   }
 
+  /// Clears the user from the local database immediately.
+  Future<void> clearCurrentUser() async {
+    await _db.delete(_db.usersTable).go();
+  }
+
   /// Fetches the cached profile metadata from the local database.
   Future<UsersTableData?> getCurrentProfile() async {
     return _db.select(_db.usersTable).getSingleOrNull();

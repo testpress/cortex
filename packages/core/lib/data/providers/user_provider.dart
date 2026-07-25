@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/db/app_database.dart';
-import 'package:core/data/auth/auth_provider.dart';
 import 'package:core/data/db/database_provider.dart';
 import 'package:core/data/sources/data_source_provider.dart';
 import '../repositories/user_repository.dart';
@@ -16,16 +15,13 @@ Future<UserRepository> userRepository(Ref ref) async {
 }
 
 /// Reactive provider that exposes the current user's profile metadata from the database.
+/// NOTE: Do NOT watch `authProvider` here to check login state. `Auth.logout` triggers
+/// the `appResetUseCase` which purges the database, naturally clearing this stream.
+/// If this provider watches `authProvider`, it creates a circular dependency during logout
+/// (authProvider -> appResetUseCaseProvider -> sentryServiceProvider -> userProvider -> authProvider).
 @riverpod
 Stream<UsersTableData?> user(UserRef ref) async* {
   final userRepository = await ref.watch(userRepositoryProvider.future);
-  final isLoggedIn = ref.watch(authProvider).asData?.value ?? false;
-
-  if (!isLoggedIn) {
-    yield null;
-    return;
-  }
-
   yield* userRepository.watchCurrentUser();
 }
 

@@ -8,24 +8,35 @@ import 'package:core/data/auth/auth_repository.dart';
 
 import 'package:core/domain/usecases/app_reset_use_case.dart';
 
-@GenerateNiceMocks([MockSpec<AuthRepository>(), MockSpec<AppResetUseCase>()])
+import 'package:core/data/repositories/user_repository.dart';
+import 'package:core/data/providers/user_provider.dart';
+
+@GenerateNiceMocks([
+  MockSpec<AuthRepository>(),
+  MockSpec<AppResetUseCase>(),
+  MockSpec<UserRepository>(),
+])
 import 'auth_provider_test.mocks.dart';
 
 void main() {
   late ProviderContainer container;
   late MockAuthRepository mockRepository;
   late MockAppResetUseCase mockResetUseCase;
+  late MockUserRepository mockUserRepo;
 
   setUp(() {
     mockRepository = MockAuthRepository();
     mockResetUseCase = MockAppResetUseCase();
+    mockUserRepo = MockUserRepository();
 
     when(mockResetUseCase.execute()).thenAnswer((_) async {});
+    when(mockUserRepo.clearCurrentUser()).thenAnswer((_) async {});
 
     container = ProviderContainer(
       overrides: [
         authRepositoryProvider.overrideWithValue(mockRepository),
         appResetUseCaseProvider.overrideWith((ref) => mockResetUseCase),
+        userRepositoryProvider.overrideWith((ref) async => mockUserRepo),
       ],
     );
   });

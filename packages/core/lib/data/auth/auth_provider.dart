@@ -11,6 +11,7 @@ import '../db/database_provider.dart';
 import '../sources/data_source_provider.dart';
 import '../../domain/usecases/app_reset_use_case.dart';
 import '../services/sentry_service.dart';
+import '../providers/user_provider.dart';
 
 part 'auth_provider.g.dart';
 
@@ -111,6 +112,10 @@ class Auth extends _$Auth {
 
   Future<void> logout() async {
     try {
+      // Safety net: explicitly clear the user row to guarantee no stale data leaks if the full purge fails
+      final userRepo = await ref.read(userRepositoryProvider.future);
+      await userRepo.clearCurrentUser();
+
       final resetUseCase = await ref.read(appResetUseCaseProvider.future);
       await resetUseCase.execute();
 
