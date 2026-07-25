@@ -1,5 +1,4 @@
 import 'package:core/data/data.dart';
-import 'package:flutter/foundation.dart';
 
 /// Repository for the Store / Store feature.
 ///
@@ -73,8 +72,6 @@ class StoreRepository {
       // Return cached data on error if available, otherwise rethrow.
       final cached = _productCache[cacheKey];
       if (cached != null) {
-        debugPrint(
-            '[StoreRepository] Network error, returning cached products: $e');
         return cached;
       }
       rethrow;
@@ -123,8 +120,6 @@ class StoreRepository {
       _sentryService.captureException(e, stackTrace: st);
       final cached = _categoryCache[cacheKey];
       if (cached != null && cached.isNotEmpty) {
-        debugPrint(
-            '[StoreRepository] Network error, returning cached categories: $e');
         return cached;
       }
       rethrow;

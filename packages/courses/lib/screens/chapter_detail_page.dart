@@ -41,6 +41,7 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final sentry = ref.read(sentryServiceProvider);
       try {
         final repo = await ref.read(courseRepositoryProvider.future);
         await Future.wait([
@@ -49,7 +50,7 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
               chapterId: widget.chapterId),
         ]);
       } catch (e, st) {
-        ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+        sentry.captureException(e, stackTrace: st);
         debugPrint('ChapterDetailPage: Background sync failed: $e');
       } finally {
         if (mounted) setState(() => _isSyncing = false);

@@ -14,9 +14,8 @@
 ## 3. UI and Screens Update
 
 - [x] 3.1 Update `DownloadsScreen` to capture exceptions in file processing.
-- [x] 3.2 Update `LessonWebView` to capture exceptions.
-- [x] 3.3 Update `PdfViewer`, `CustomVideoPlayer`, and `AttachmentViewer` to capture exceptions.
-- [x] 3.4 Update `LessonDetailOrchestrator` and `ChapterDetailPage` to capture exceptions.
+- [x] 3.2 Update `PdfViewer`, `CustomVideoPlayer`, and `AttachmentViewer` to capture exceptions.
+- [x] 3.3 Update `LessonDetailOrchestrator` and `ChapterDetailPage` to capture exceptions.
 
 ## 4. Routing Observers
 

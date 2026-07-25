@@ -86,6 +86,7 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
       return;
     }
 
+    final sentry = ref.read(sentryServiceProvider);
     try {
       final repo = await ref.read(courseRepositoryProvider.future);
       final details = await repo.getLessonDetails(widget.lessonId!);
@@ -97,7 +98,7 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
         });
       }
     } catch (e, st) {
-      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+      sentry.captureException(e, stackTrace: st);
       if (mounted) {
         setState(() {
           _isFetchingMetadata = false;

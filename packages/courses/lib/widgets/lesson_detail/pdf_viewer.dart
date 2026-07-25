@@ -91,6 +91,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
     _prepareState();
 
+    final sentry = ref.read(sentryServiceProvider);
     try {
       unawaited(_fetchWatermark(id));
 
@@ -100,7 +101,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
       _handleSuccess(path);
     } catch (e, st) {
-      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+      sentry.captureException(e, stackTrace: st);
       if (!_isValidRequest(id)) return;
 
       _handleError(e);
@@ -108,6 +109,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   }
 
   Future<void> _fetchWatermark(int id) async {
+    final sentry = ref.read(sentryServiceProvider);
     try {
       final currentUser = await ref.read(userProvider.future);
       if (!_isValidRequest(id)) return;
@@ -115,8 +117,8 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
       setState(() {
         _watermarkText = currentUser?.username ?? '';
       });
-    } catch (e, stackTrace) {
-      debugPrint('Failed to fetch user for watermark: $e\n$stackTrace');
+    } catch (e, st) {
+      sentry.captureException(e, stackTrace: st);
     }
   }
 
@@ -156,6 +158,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
   Future<void> _cacheInBackground(String url) async {
     if (_localPath != null) return;
+    final sentry = ref.read(sentryServiceProvider);
     try {
       final downloader = ref.read(fileDownloaderProvider);
       final path = await downloader.download(
@@ -167,7 +170,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
         _localPath = path;
       }
     } catch (e, st) {
-      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+      sentry.captureException(e, stackTrace: st);
     }
   }
 
