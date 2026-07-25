@@ -7,7 +7,7 @@ TBD - created by archiving change standardize-tab-headers. Update Purpose after 
 Primary content screens acting as root tabs MUST provide access to the global drawer navigation menu, and switch to a back button when pushed as a sub-page.
 
 #### Scenario: User navigates to root tab
-- **WHEN** the user is viewing the Study, Exam, Info, or Profile tab as a root bottom-navigation destination
+- **WHEN** the user is viewing the Study, Exam, Info, Profile, or AI tab as a root bottom-navigation destination
 - **THEN** the system displays a Hamburger Menu icon in the top-left of the static header
 - **THEN** tapping the icon opens the global side drawer
 
