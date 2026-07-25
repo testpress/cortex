@@ -63,7 +63,8 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
       await ref
           .read(downloadsProvider.notifier)
           .startAttachmentDownload(item, widget.url);
-    } catch (_) {
+    } catch (e, st) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

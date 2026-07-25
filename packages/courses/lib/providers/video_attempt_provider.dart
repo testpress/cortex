@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:core/data/data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'course_list_provider.dart';
@@ -82,7 +83,8 @@ class VideoAttemptNotifier extends _$VideoAttemptNotifier {
           r2.length >= 2 &&
           r1[0] == r2[0] &&
           r1[1] == r2[1]));
-    } catch (e) {
+    } catch (e, st) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
       // Ignore network errors during background sync
     } finally {
       _isSyncing = false;

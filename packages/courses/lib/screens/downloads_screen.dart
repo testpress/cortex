@@ -180,7 +180,9 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
           SnackBar(content: Text('Could not open file: ${result.message}')),
         );
       }
-    } catch (_) {}
+    } catch (e, st) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+    }
   }
 }
 

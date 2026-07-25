@@ -96,7 +96,8 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
           _isFetchingMetadata = false;
         });
       }
-    } catch (_) {
+    } catch (e, st) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
       if (mounted) {
         setState(() {
           _isFetchingMetadata = false;

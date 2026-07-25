@@ -99,7 +99,8 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
       if (!_isValidRequest(id)) return;
 
       _handleSuccess(path);
-    } catch (e) {
+    } catch (e, st) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
       if (!_isValidRequest(id)) return;
 
       _handleError(e);
@@ -165,7 +166,9 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
       if (mounted) {
         _localPath = path;
       }
-    } catch (_) {}
+    } catch (e, st) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+    }
   }
 
   void _handleSuccess(String? path) {

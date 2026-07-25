@@ -41,7 +41,9 @@ class CourseRepository {
     }
   }
 
-  CourseRepository(this._db, this._source);
+  final SentryService _sentryService;
+
+  CourseRepository(this._db, this._source, this._sentryService);
 
   void dispose() {
     _syncStatusController.close();
@@ -134,7 +136,8 @@ class CourseRepository {
             if (fetchedCourse == null) return null;
             course = fetchedCourse;
             localStreamCache = course; // Cache for the lifetime of this stream
-          } catch (e) {
+          } catch (e, st) {
+            _sentryService.captureException(e, stackTrace: st);
             rethrow;
           }
         }
@@ -786,7 +789,8 @@ class CourseRepository {
         }
 
         return finalSnapshot;
-      } catch (e) {
+      } catch (e, st) {
+        _sentryService.captureException(e, stackTrace: st);
         rethrow;
       } finally {
         _activeStructuralSyncs.remove(syncKey);
@@ -872,7 +876,8 @@ class CourseRepository {
       if (enrichedCompanions.isNotEmpty) {
         await _db.upsertLessons(enrichedCompanions);
       }
-    } catch (e) {
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
       debugPrint('CourseRepository: Status refresh failed: $e');
     }
   }
@@ -927,7 +932,8 @@ class CourseRepository {
     try {
       await refreshCourseDetail(courseId);
       await refreshChapters(courseId);
-    } catch (e) {
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
       debugPrint('CourseRepository: Failed to hydrate parents: $e');
     }
   }
@@ -940,7 +946,8 @@ class CourseRepository {
         final chapterDto = await _source.getChapterDetail(chapterSlug);
         await _db.upsertChapters([_chapterDtoToCompanion(chapterDto)]);
       }
-    } catch (e) {
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
       debugPrint('CourseRepository: Failed to hydrate nested chapter: $e');
     }
   }
@@ -968,7 +975,8 @@ class CourseRepository {
         dtoWithAttempts = dto.copyWith(
           lastWatchedDuration: lastWatched,
         );
-      } catch (e) {
+      } catch (e, st) {
+        _sentryService.captureException(e, stackTrace: st);
         // Log the error but allow the lesson refresh to succeed
         debugPrint(
             'CourseRepository: Failed to fetch last watched position: $e');
@@ -1031,7 +1039,8 @@ class CourseRepository {
     if (status == LessonProgressStatus.completed) {
       try {
         await _source.markLessonCompleted(id);
-      } catch (e) {
+      } catch (e, st) {
+        _sentryService.captureException(e, stackTrace: st);
         // Log error but don't block local success
         debugPrint('CourseRepository: Failed to sync completion to server: $e');
       }
@@ -1058,7 +1067,8 @@ class CourseRepository {
             existing.copyWith(lastWatchedDuration: lastWatchPosition);
         await _db.upsertLessons([_lessonDtoToCompanion(updated)]);
       }
-    } catch (e) {
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
       debugPrint('CourseRepository: Failed to update local DB after sync: $e');
     }
   }
@@ -1117,11 +1127,12 @@ class CourseRepository {
         isChaptersSynced: row.isChaptersSynced,
       );
 
-  static List<T> _safeDecodeList<T>(String? json) {
+  List<T> _safeDecodeList<T>(String? json) {
     if (json == null || json.isEmpty) return const [];
     try {
       return List<T>.from(jsonDecode(json));
-    } catch (_) {
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
       return const [];
     }
   }
@@ -1224,7 +1235,8 @@ class CourseRepository {
             if (decoded is Map<String, dynamic>) {
               return ExamDto.fromJson(decoded);
             }
-          } catch (e) {
+          } catch (e, st) {
+            _sentryService.captureException(e, stackTrace: st);
             debugPrint('CourseRepository: Failed to decode exam metadata: $e');
           }
           return null;
@@ -1318,7 +1330,8 @@ class CourseRepository {
   LessonType _parseType(String s) {
     try {
       return LessonType.values.byName(s);
-    } catch (_) {
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
       // Compatibility with old DB strings or fuzzy inputs
       if (s.contains('live')) return LessonType.liveStream;
       if (s.contains('notes')) return LessonType.notes;
@@ -1335,7 +1348,8 @@ class CourseRepository {
   LessonProgressStatus _parseStatus(String s) {
     try {
       return LessonProgressStatus.values.byName(s);
-    } catch (_) {
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
       return LessonProgressStatus.values.firstWhere(
         (e) => e.name.toLowerCase() == s.toLowerCase(),
         orElse: () => LessonProgressStatus.notStarted,

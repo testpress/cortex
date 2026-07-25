@@ -10,7 +10,11 @@ import 'package:flutter/foundation.dart';
 class StoreRepository {
   final DataSource _source;
 
-  StoreRepository({required DataSource source}) : _source = source;
+  final SentryService _sentryService;
+  StoreRepository(
+      {required DataSource source, required SentryService sentryService})
+      : _source = source,
+        _sentryService = sentryService;
 
   // ── In-memory caches ──────────────────────────────────────────────────────
 
@@ -64,7 +68,8 @@ class StoreRepository {
       _productCache[cacheKey] = response;
       _evictCache(_productCache);
       return response;
-    } catch (e) {
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
       // Return cached data on error if available, otherwise rethrow.
       final cached = _productCache[cacheKey];
       if (cached != null) {
@@ -114,7 +119,8 @@ class StoreRepository {
       _categoryCache[cacheKey] = response.results;
       _evictCache(_categoryCache);
       return response.results;
-    } catch (e) {
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
       final cached = _categoryCache[cacheKey];
       if (cached != null && cached.isNotEmpty) {
         debugPrint(
