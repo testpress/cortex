@@ -15,6 +15,10 @@ Future<UserRepository> userRepository(Ref ref) async {
 }
 
 /// Reactive provider that exposes the current user's profile metadata from the database.
+/// NOTE: Do NOT watch `authProvider` here to check login state. `Auth.logout` triggers
+/// the `appResetUseCase` which purges the database, naturally clearing this stream.
+/// If this provider watches `authProvider`, it creates a circular dependency during logout
+/// (authProvider -> appResetUseCaseProvider -> sentryServiceProvider -> userProvider -> authProvider).
 @riverpod
 Stream<UsersTableData?> user(UserRef ref) async* {
   final userRepository = await ref.watch(userRepositoryProvider.future);

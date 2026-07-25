@@ -49,6 +49,15 @@ class MockUserRepository extends _i1.Mock implements _i3.UserRepository {
           as _i4.Stream<_i2.UsersTableData?>);
 
   @override
+  _i4.Future<void> clearCurrentUser() =>
+      (super.noSuchMethod(
+            Invocation.method(#clearCurrentUser, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
   _i4.Future<_i2.UsersTableData?> getCurrentProfile() =>
       (super.noSuchMethod(
             Invocation.method(#getCurrentProfile, []),
