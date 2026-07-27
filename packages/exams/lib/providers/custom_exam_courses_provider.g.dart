@@ -6,7 +6,7 @@ part of 'custom_exam_courses_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$customExamCoursesHash() => r'78f98f9280dde682376bc98faf87079f22e4d493';
+String _$customExamCoursesHash() => r'd427e1dffa61913929a124719db640ff7138e9ff';
 
 /// See also [CustomExamCourses].
 @ProviderFor(CustomExamCourses)

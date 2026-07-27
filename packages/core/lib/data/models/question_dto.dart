@@ -133,6 +133,14 @@ class QuestionDto {
         'S' => 'shortAnswer',
         'N' => 'numerical',
         'E' => 'essay',
+        final String t when t.contains('Numerical') || t.contains('NAT') =>
+          'numerical',
+        final String t
+            when t.contains('Multiple Choice') || t.contains('MCQ') =>
+          'singleSelect',
+        final String t
+            when t.contains('Multiple Select') || t.contains('MSQ') =>
+          'multipleSelect',
         _ => 'singleSelect',
       },
       subject:
