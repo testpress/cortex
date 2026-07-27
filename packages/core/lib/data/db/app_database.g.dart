@@ -2015,6 +2015,36 @@ class $LessonsTableTable extends LessonsTable
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _allowDownloadMeta = const VerificationMeta(
+    'allowDownload',
+  );
+  @override
+  late final GeneratedColumn<bool> allowDownload = GeneratedColumn<bool>(
+    'allow_download',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("allow_download" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _watermarkBeforeDownloadMeta =
+      const VerificationMeta('watermarkBeforeDownload');
+  @override
+  late final GeneratedColumn<bool> watermarkBeforeDownload =
+      GeneratedColumn<bool>(
+        'watermark_before_download',
+        aliasedName,
+        false,
+        type: DriftSqlType.bool,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("watermark_before_download" IN (0, 1))',
+        ),
+        defaultValue: const Constant(false),
+      );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -2060,6 +2090,8 @@ class $LessonsTableTable extends LessonsTable
     start,
     end,
     hasEnded,
+    allowDownload,
+    watermarkBeforeDownload,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2415,6 +2447,24 @@ class $LessonsTableTable extends LessonsTable
         hasEnded.isAcceptableOrUnknown(data['has_ended']!, _hasEndedMeta),
       );
     }
+    if (data.containsKey('allow_download')) {
+      context.handle(
+        _allowDownloadMeta,
+        allowDownload.isAcceptableOrUnknown(
+          data['allow_download']!,
+          _allowDownloadMeta,
+        ),
+      );
+    }
+    if (data.containsKey('watermark_before_download')) {
+      context.handle(
+        _watermarkBeforeDownloadMeta,
+        watermarkBeforeDownload.isAcceptableOrUnknown(
+          data['watermark_before_download']!,
+          _watermarkBeforeDownloadMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -2596,6 +2646,14 @@ class $LessonsTableTable extends LessonsTable
         DriftSqlType.bool,
         data['${effectivePrefix}has_ended'],
       )!,
+      allowDownload: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}allow_download'],
+      )!,
+      watermarkBeforeDownload: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}watermark_before_download'],
+      )!,
     );
   }
 
@@ -2654,6 +2712,8 @@ class LessonsTableData extends DataClass
   final String? start;
   final String? end;
   final bool hasEnded;
+  final bool allowDownload;
+  final bool watermarkBeforeDownload;
   const LessonsTableData({
     required this.id,
     required this.chapterId,
@@ -2698,6 +2758,8 @@ class LessonsTableData extends DataClass
     this.start,
     this.end,
     required this.hasEnded,
+    required this.allowDownload,
+    required this.watermarkBeforeDownload,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2797,6 +2859,8 @@ class LessonsTableData extends DataClass
       map['end'] = Variable<String>(end);
     }
     map['has_ended'] = Variable<bool>(hasEnded);
+    map['allow_download'] = Variable<bool>(allowDownload);
+    map['watermark_before_download'] = Variable<bool>(watermarkBeforeDownload);
     return map;
   }
 
@@ -2893,6 +2957,8 @@ class LessonsTableData extends DataClass
           : Value(start),
       end: end == null && nullToAbsent ? const Value.absent() : Value(end),
       hasEnded: Value(hasEnded),
+      allowDownload: Value(allowDownload),
+      watermarkBeforeDownload: Value(watermarkBeforeDownload),
     );
   }
 
@@ -2951,6 +3017,10 @@ class LessonsTableData extends DataClass
       start: serializer.fromJson<String?>(json['start']),
       end: serializer.fromJson<String?>(json['end']),
       hasEnded: serializer.fromJson<bool>(json['hasEnded']),
+      allowDownload: serializer.fromJson<bool>(json['allowDownload']),
+      watermarkBeforeDownload: serializer.fromJson<bool>(
+        json['watermarkBeforeDownload'],
+      ),
     );
   }
   @override
@@ -3000,6 +3070,10 @@ class LessonsTableData extends DataClass
       'start': serializer.toJson<String?>(start),
       'end': serializer.toJson<String?>(end),
       'hasEnded': serializer.toJson<bool>(hasEnded),
+      'allowDownload': serializer.toJson<bool>(allowDownload),
+      'watermarkBeforeDownload': serializer.toJson<bool>(
+        watermarkBeforeDownload,
+      ),
     };
   }
 
@@ -3047,6 +3121,8 @@ class LessonsTableData extends DataClass
     Value<String?> start = const Value.absent(),
     Value<String?> end = const Value.absent(),
     bool? hasEnded,
+    bool? allowDownload,
+    bool? watermarkBeforeDownload,
   }) => LessonsTableData(
     id: id ?? this.id,
     chapterId: chapterId ?? this.chapterId,
@@ -3105,6 +3181,9 @@ class LessonsTableData extends DataClass
     start: start.present ? start.value : this.start,
     end: end.present ? end.value : this.end,
     hasEnded: hasEnded ?? this.hasEnded,
+    allowDownload: allowDownload ?? this.allowDownload,
+    watermarkBeforeDownload:
+        watermarkBeforeDownload ?? this.watermarkBeforeDownload,
   );
   LessonsTableData copyWithCompanion(LessonsTableCompanion data) {
     return LessonsTableData(
@@ -3209,6 +3288,12 @@ class LessonsTableData extends DataClass
       start: data.start.present ? data.start.value : this.start,
       end: data.end.present ? data.end.value : this.end,
       hasEnded: data.hasEnded.present ? data.hasEnded.value : this.hasEnded,
+      allowDownload: data.allowDownload.present
+          ? data.allowDownload.value
+          : this.allowDownload,
+      watermarkBeforeDownload: data.watermarkBeforeDownload.present
+          ? data.watermarkBeforeDownload.value
+          : this.watermarkBeforeDownload,
     );
   }
 
@@ -3257,7 +3342,9 @@ class LessonsTableData extends DataClass
           ..write('lastWatchedDuration: $lastWatchedDuration, ')
           ..write('start: $start, ')
           ..write('end: $end, ')
-          ..write('hasEnded: $hasEnded')
+          ..write('hasEnded: $hasEnded, ')
+          ..write('allowDownload: $allowDownload, ')
+          ..write('watermarkBeforeDownload: $watermarkBeforeDownload')
           ..write(')'))
         .toString();
   }
@@ -3307,6 +3394,8 @@ class LessonsTableData extends DataClass
     start,
     end,
     hasEnded,
+    allowDownload,
+    watermarkBeforeDownload,
   ]);
   @override
   bool operator ==(Object other) =>
@@ -3354,7 +3443,9 @@ class LessonsTableData extends DataClass
           other.lastWatchedDuration == this.lastWatchedDuration &&
           other.start == this.start &&
           other.end == this.end &&
-          other.hasEnded == this.hasEnded);
+          other.hasEnded == this.hasEnded &&
+          other.allowDownload == this.allowDownload &&
+          other.watermarkBeforeDownload == this.watermarkBeforeDownload);
 }
 
 class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
@@ -3401,6 +3492,8 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   final Value<String?> start;
   final Value<String?> end;
   final Value<bool> hasEnded;
+  final Value<bool> allowDownload;
+  final Value<bool> watermarkBeforeDownload;
   final Value<int> rowid;
   const LessonsTableCompanion({
     this.id = const Value.absent(),
@@ -3446,6 +3539,8 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.start = const Value.absent(),
     this.end = const Value.absent(),
     this.hasEnded = const Value.absent(),
+    this.allowDownload = const Value.absent(),
+    this.watermarkBeforeDownload = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   LessonsTableCompanion.insert({
@@ -3492,6 +3587,8 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.start = const Value.absent(),
     this.end = const Value.absent(),
     this.hasEnded = const Value.absent(),
+    this.allowDownload = const Value.absent(),
+    this.watermarkBeforeDownload = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        chapterId = Value(chapterId),
@@ -3543,6 +3640,8 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Expression<String>? start,
     Expression<String>? end,
     Expression<bool>? hasEnded,
+    Expression<bool>? allowDownload,
+    Expression<bool>? watermarkBeforeDownload,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -3591,6 +3690,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       if (start != null) 'start': start,
       if (end != null) 'end': end,
       if (hasEnded != null) 'has_ended': hasEnded,
+      if (allowDownload != null) 'allow_download': allowDownload,
+      if (watermarkBeforeDownload != null)
+        'watermark_before_download': watermarkBeforeDownload,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -3639,6 +3741,8 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Value<String?>? start,
     Value<String?>? end,
     Value<bool>? hasEnded,
+    Value<bool>? allowDownload,
+    Value<bool>? watermarkBeforeDownload,
     Value<int>? rowid,
   }) {
     return LessonsTableCompanion(
@@ -3685,6 +3789,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       start: start ?? this.start,
       end: end ?? this.end,
       hasEnded: hasEnded ?? this.hasEnded,
+      allowDownload: allowDownload ?? this.allowDownload,
+      watermarkBeforeDownload:
+          watermarkBeforeDownload ?? this.watermarkBeforeDownload,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -3823,6 +3930,14 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     if (hasEnded.present) {
       map['has_ended'] = Variable<bool>(hasEnded.value);
     }
+    if (allowDownload.present) {
+      map['allow_download'] = Variable<bool>(allowDownload.value);
+    }
+    if (watermarkBeforeDownload.present) {
+      map['watermark_before_download'] = Variable<bool>(
+        watermarkBeforeDownload.value,
+      );
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -3875,6 +3990,8 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
           ..write('start: $start, ')
           ..write('end: $end, ')
           ..write('hasEnded: $hasEnded, ')
+          ..write('allowDownload: $allowDownload, ')
+          ..write('watermarkBeforeDownload: $watermarkBeforeDownload, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -9837,6 +9954,21 @@ class $DownloadsTableTable extends DownloadsTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _isWatermarkedMeta = const VerificationMeta(
+    'isWatermarked',
+  );
+  @override
+  late final GeneratedColumn<bool> isWatermarked = GeneratedColumn<bool>(
+    'is_watermarked',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_watermarked" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -9853,6 +9985,7 @@ class $DownloadsTableTable extends DownloadsTable
     duration,
     fileType,
     contentUrl,
+    isWatermarked,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -9975,6 +10108,15 @@ class $DownloadsTableTable extends DownloadsTable
         contentUrl.isAcceptableOrUnknown(data['content_url']!, _contentUrlMeta),
       );
     }
+    if (data.containsKey('is_watermarked')) {
+      context.handle(
+        _isWatermarkedMeta,
+        isWatermarked.isAcceptableOrUnknown(
+          data['is_watermarked']!,
+          _isWatermarkedMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -10040,6 +10182,10 @@ class $DownloadsTableTable extends DownloadsTable
         DriftSqlType.string,
         data['${effectivePrefix}content_url'],
       ),
+      isWatermarked: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_watermarked'],
+      )!,
     );
   }
 
@@ -10094,6 +10240,9 @@ class DownloadsTableData extends DataClass
 
   /// Original download URL, required to safely manage physical file paths.
   final String? contentUrl;
+
+  /// Whether a watermark was applied to this download.
+  final bool isWatermarked;
   const DownloadsTableData({
     required this.id,
     required this.title,
@@ -10109,6 +10258,7 @@ class DownloadsTableData extends DataClass
     this.duration,
     this.fileType,
     this.contentUrl,
+    required this.isWatermarked,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -10137,6 +10287,7 @@ class DownloadsTableData extends DataClass
     if (!nullToAbsent || contentUrl != null) {
       map['content_url'] = Variable<String>(contentUrl);
     }
+    map['is_watermarked'] = Variable<bool>(isWatermarked);
     return map;
   }
 
@@ -10166,6 +10317,7 @@ class DownloadsTableData extends DataClass
       contentUrl: contentUrl == null && nullToAbsent
           ? const Value.absent()
           : Value(contentUrl),
+      isWatermarked: Value(isWatermarked),
     );
   }
 
@@ -10189,6 +10341,7 @@ class DownloadsTableData extends DataClass
       duration: serializer.fromJson<String?>(json['duration']),
       fileType: serializer.fromJson<String?>(json['fileType']),
       contentUrl: serializer.fromJson<String?>(json['contentUrl']),
+      isWatermarked: serializer.fromJson<bool>(json['isWatermarked']),
     );
   }
   @override
@@ -10209,6 +10362,7 @@ class DownloadsTableData extends DataClass
       'duration': serializer.toJson<String?>(duration),
       'fileType': serializer.toJson<String?>(fileType),
       'contentUrl': serializer.toJson<String?>(contentUrl),
+      'isWatermarked': serializer.toJson<bool>(isWatermarked),
     };
   }
 
@@ -10227,6 +10381,7 @@ class DownloadsTableData extends DataClass
     Value<String?> duration = const Value.absent(),
     Value<String?> fileType = const Value.absent(),
     Value<String?> contentUrl = const Value.absent(),
+    bool? isWatermarked,
   }) => DownloadsTableData(
     id: id ?? this.id,
     title: title ?? this.title,
@@ -10242,6 +10397,7 @@ class DownloadsTableData extends DataClass
     duration: duration.present ? duration.value : this.duration,
     fileType: fileType.present ? fileType.value : this.fileType,
     contentUrl: contentUrl.present ? contentUrl.value : this.contentUrl,
+    isWatermarked: isWatermarked ?? this.isWatermarked,
   );
   DownloadsTableData copyWithCompanion(DownloadsTableCompanion data) {
     return DownloadsTableData(
@@ -10269,6 +10425,9 @@ class DownloadsTableData extends DataClass
       contentUrl: data.contentUrl.present
           ? data.contentUrl.value
           : this.contentUrl,
+      isWatermarked: data.isWatermarked.present
+          ? data.isWatermarked.value
+          : this.isWatermarked,
     );
   }
 
@@ -10288,7 +10447,8 @@ class DownloadsTableData extends DataClass
           ..write('thumbnailUrl: $thumbnailUrl, ')
           ..write('duration: $duration, ')
           ..write('fileType: $fileType, ')
-          ..write('contentUrl: $contentUrl')
+          ..write('contentUrl: $contentUrl, ')
+          ..write('isWatermarked: $isWatermarked')
           ..write(')'))
         .toString();
   }
@@ -10309,6 +10469,7 @@ class DownloadsTableData extends DataClass
     duration,
     fileType,
     contentUrl,
+    isWatermarked,
   );
   @override
   bool operator ==(Object other) =>
@@ -10327,7 +10488,8 @@ class DownloadsTableData extends DataClass
           other.thumbnailUrl == this.thumbnailUrl &&
           other.duration == this.duration &&
           other.fileType == this.fileType &&
-          other.contentUrl == this.contentUrl);
+          other.contentUrl == this.contentUrl &&
+          other.isWatermarked == this.isWatermarked);
 }
 
 class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
@@ -10345,6 +10507,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
   final Value<String?> duration;
   final Value<String?> fileType;
   final Value<String?> contentUrl;
+  final Value<bool> isWatermarked;
   final Value<int> rowid;
   const DownloadsTableCompanion({
     this.id = const Value.absent(),
@@ -10361,6 +10524,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
     this.duration = const Value.absent(),
     this.fileType = const Value.absent(),
     this.contentUrl = const Value.absent(),
+    this.isWatermarked = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   DownloadsTableCompanion.insert({
@@ -10378,6 +10542,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
     this.duration = const Value.absent(),
     this.fileType = const Value.absent(),
     this.contentUrl = const Value.absent(),
+    this.isWatermarked = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        title = Value(title),
@@ -10402,6 +10567,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
     Expression<String>? duration,
     Expression<String>? fileType,
     Expression<String>? contentUrl,
+    Expression<bool>? isWatermarked,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -10419,6 +10585,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
       if (duration != null) 'duration': duration,
       if (fileType != null) 'file_type': fileType,
       if (contentUrl != null) 'content_url': contentUrl,
+      if (isWatermarked != null) 'is_watermarked': isWatermarked,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -10438,6 +10605,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
     Value<String?>? duration,
     Value<String?>? fileType,
     Value<String?>? contentUrl,
+    Value<bool>? isWatermarked,
     Value<int>? rowid,
   }) {
     return DownloadsTableCompanion(
@@ -10455,6 +10623,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
       duration: duration ?? this.duration,
       fileType: fileType ?? this.fileType,
       contentUrl: contentUrl ?? this.contentUrl,
+      isWatermarked: isWatermarked ?? this.isWatermarked,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -10504,6 +10673,9 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
     if (contentUrl.present) {
       map['content_url'] = Variable<String>(contentUrl.value);
     }
+    if (isWatermarked.present) {
+      map['is_watermarked'] = Variable<bool>(isWatermarked.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -10527,6 +10699,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
           ..write('duration: $duration, ')
           ..write('fileType: $fileType, ')
           ..write('contentUrl: $contentUrl, ')
+          ..write('isWatermarked: $isWatermarked, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -17159,6 +17332,8 @@ typedef $$LessonsTableTableCreateCompanionBuilder =
       Value<String?> start,
       Value<String?> end,
       Value<bool> hasEnded,
+      Value<bool> allowDownload,
+      Value<bool> watermarkBeforeDownload,
       Value<int> rowid,
     });
 typedef $$LessonsTableTableUpdateCompanionBuilder =
@@ -17206,6 +17381,8 @@ typedef $$LessonsTableTableUpdateCompanionBuilder =
       Value<String?> start,
       Value<String?> end,
       Value<bool> hasEnded,
+      Value<bool> allowDownload,
+      Value<bool> watermarkBeforeDownload,
       Value<int> rowid,
     });
 
@@ -17430,6 +17607,16 @@ class $$LessonsTableTableFilterComposer
 
   ColumnFilters<bool> get hasEnded => $composableBuilder(
     column: $table.hasEnded,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get allowDownload => $composableBuilder(
+    column: $table.allowDownload,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get watermarkBeforeDownload => $composableBuilder(
+    column: $table.watermarkBeforeDownload,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -17657,6 +17844,16 @@ class $$LessonsTableTableOrderingComposer
     column: $table.hasEnded,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get allowDownload => $composableBuilder(
+    column: $table.allowDownload,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get watermarkBeforeDownload => $composableBuilder(
+    column: $table.watermarkBeforeDownload,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$LessonsTableTableAnnotationComposer
@@ -17854,6 +18051,16 @@ class $$LessonsTableTableAnnotationComposer
 
   GeneratedColumn<bool> get hasEnded =>
       $composableBuilder(column: $table.hasEnded, builder: (column) => column);
+
+  GeneratedColumn<bool> get allowDownload => $composableBuilder(
+    column: $table.allowDownload,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get watermarkBeforeDownload => $composableBuilder(
+    column: $table.watermarkBeforeDownload,
+    builder: (column) => column,
+  );
 }
 
 class $$LessonsTableTableTableManager
@@ -17930,6 +18137,8 @@ class $$LessonsTableTableTableManager
                 Value<String?> start = const Value.absent(),
                 Value<String?> end = const Value.absent(),
                 Value<bool> hasEnded = const Value.absent(),
+                Value<bool> allowDownload = const Value.absent(),
+                Value<bool> watermarkBeforeDownload = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LessonsTableCompanion(
                 id: id,
@@ -17975,6 +18184,8 @@ class $$LessonsTableTableTableManager
                 start: start,
                 end: end,
                 hasEnded: hasEnded,
+                allowDownload: allowDownload,
+                watermarkBeforeDownload: watermarkBeforeDownload,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -18022,6 +18233,8 @@ class $$LessonsTableTableTableManager
                 Value<String?> start = const Value.absent(),
                 Value<String?> end = const Value.absent(),
                 Value<bool> hasEnded = const Value.absent(),
+                Value<bool> allowDownload = const Value.absent(),
+                Value<bool> watermarkBeforeDownload = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LessonsTableCompanion.insert(
                 id: id,
@@ -18067,6 +18280,8 @@ class $$LessonsTableTableTableManager
                 start: start,
                 end: end,
                 hasEnded: hasEnded,
+                allowDownload: allowDownload,
+                watermarkBeforeDownload: watermarkBeforeDownload,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -21187,6 +21402,7 @@ typedef $$DownloadsTableTableCreateCompanionBuilder =
       Value<String?> duration,
       Value<String?> fileType,
       Value<String?> contentUrl,
+      Value<bool> isWatermarked,
       Value<int> rowid,
     });
 typedef $$DownloadsTableTableUpdateCompanionBuilder =
@@ -21205,6 +21421,7 @@ typedef $$DownloadsTableTableUpdateCompanionBuilder =
       Value<String?> duration,
       Value<String?> fileType,
       Value<String?> contentUrl,
+      Value<bool> isWatermarked,
       Value<int> rowid,
     });
 
@@ -21284,6 +21501,11 @@ class $$DownloadsTableTableFilterComposer
 
   ColumnFilters<String> get contentUrl => $composableBuilder(
     column: $table.contentUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isWatermarked => $composableBuilder(
+    column: $table.isWatermarked,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -21366,6 +21588,11 @@ class $$DownloadsTableTableOrderingComposer
     column: $table.contentUrl,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get isWatermarked => $composableBuilder(
+    column: $table.isWatermarked,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$DownloadsTableTableAnnotationComposer
@@ -21428,6 +21655,11 @@ class $$DownloadsTableTableAnnotationComposer
     column: $table.contentUrl,
     builder: (column) => column,
   );
+
+  GeneratedColumn<bool> get isWatermarked => $composableBuilder(
+    column: $table.isWatermarked,
+    builder: (column) => column,
+  );
 }
 
 class $$DownloadsTableTableTableManager
@@ -21481,6 +21713,7 @@ class $$DownloadsTableTableTableManager
                 Value<String?> duration = const Value.absent(),
                 Value<String?> fileType = const Value.absent(),
                 Value<String?> contentUrl = const Value.absent(),
+                Value<bool> isWatermarked = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DownloadsTableCompanion(
                 id: id,
@@ -21497,6 +21730,7 @@ class $$DownloadsTableTableTableManager
                 duration: duration,
                 fileType: fileType,
                 contentUrl: contentUrl,
+                isWatermarked: isWatermarked,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -21515,6 +21749,7 @@ class $$DownloadsTableTableTableManager
                 Value<String?> duration = const Value.absent(),
                 Value<String?> fileType = const Value.absent(),
                 Value<String?> contentUrl = const Value.absent(),
+                Value<bool> isWatermarked = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DownloadsTableCompanion.insert(
                 id: id,
@@ -21531,6 +21766,7 @@ class $$DownloadsTableTableTableManager
                 duration: duration,
                 fileType: fileType,
                 contentUrl: contentUrl,
+                isWatermarked: isWatermarked,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

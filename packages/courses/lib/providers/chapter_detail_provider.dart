@@ -88,6 +88,8 @@ Stream<Chapter?> _watchChapter(
               htmlContent: l.htmlContent,
               attemptsUrl: l.attemptsUrl,
               slug: l.slug,
+              allowDownload: l.allowDownload,
+              watermarkBeforeDownload: l.watermarkBeforeDownload,
             ),
           )
           .toList(),

@@ -1018,12 +1018,14 @@
   "startExam": "പരീക്ഷ തുടങ്ങുക",
   "reviewExploreDetailsTitle": "കൂടുതൽ വിവരങ്ങൾ പര്യവേക്ഷണം ചെയ്യുക",
   "downloadedStatus": "ഡൗൺലോഡ് ചെയ്തു",
+  "pdfWatermarkFallbackText": "ഡൗൺലോഡ് ചെയ്തു",
   "totalQuestionsLabel": "ആകെ ചോദ്യങ്ങൾ",
   "deleteAction": "ഇല്ലാതാക്കുക",
   "attendExamAction": "പരീക്ഷയിൽ പങ്കെടുക്കുക",
   "examDeletedToast": "പരീക്ഷ ഇല്ലാതാക്കി",
   "deleteExamTitle": "പരീക്ഷ ഇല്ലാതാക്കണോ?",
   "deleteExamConfirmationMessage": "ഈ ഡൗൺലോഡ് ചെയ്ത പരീക്ഷ ഇല്ലാതാക്കണമെന്ന് ഉറപ്പാണോ?",
+
   "aiSupportTitle": "AI പിന്തുണ",
   "aiSupportGreeting": "നമസ്കാരം {userName} 👋",
   "@aiSupportGreeting": {
@@ -1046,7 +1048,7 @@
   "aiSupportStatusAnswered": "മറുപടി നൽകി",
   "aiSupportStatusProcessing": "പ്രോസസ്സ് ചെയ്യുന്നു",
   "aiSupportAskingAi": "AI-യോട് ചോദിക്കുന്നു",
-  "contentAccessEnded": "ഈ ഉള്ളടക്കത്തിലേക്കുള്ള നിങ്ങളുടെ ആക്‌സസ് അവസാനിച്ചു!",
+"contentAccessEnded": "ഈ ഉള്ളടക്കത്തിലേക്കുള്ള നിങ്ങളുടെ ആക്‌സസ് അവസാനിച്ചു!",
   "accessExpired": "ആക്‌സസ് കാലഹരണപ്പെട്ടു",
   "accessExpiredOn": "{date} ന് ആക്‌സസ് കാലഹരണപ്പെട്ടു",
   "@accessExpiredOn": {
@@ -1055,5 +1057,12 @@
         "type": "String"
       }
     }
-  }
-}
+  },
+  "alreadyDownloadedTitle": "നേരത്തെ ഡൗൺലോഡ് ചെയ്‌തു",
+  "alreadyDownloadedMessage": "ഈ ഫയൽ നിങ്ങളുടെ ഉപകരണത്തിൽ നിലവിലുണ്ട്.",
+  "openFileAction": "ഫയൽ തുറക്കുക",
+  "downloadAgainAction": "വീണ്ടും ഡൗൺലോഡ് ചെയ്യുക",
+  "downloadCompleted": "ഡൗൺലോഡ് പൂർത്തിയായി",
+  "downloadStarted": "ഡൗൺലോഡ് ആരംഭിച്ചു",
+  "downloadingFile": "ഡൗൺലോഡ് ചെയ്യുന്നു...",
+  "viewAction": "കാണുക"}

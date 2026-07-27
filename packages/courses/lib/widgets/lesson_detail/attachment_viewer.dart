@@ -77,7 +77,7 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
 
   Future<void> _openFile(DownloadItem item) async {
     final downloader = ref.read(fileDownloaderProvider);
-    final path =
+    final path = item.filePath ??
         await downloader.getLocalPath(widget.url, StorageType.publicDownload);
 
     // Check if the user manually deleted the file via File Explorer

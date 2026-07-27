@@ -1,5 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
+import '../models/course_content.dart';
+import 'course_list_provider.dart';
 
 part 'downloads_provider.g.dart';
 
@@ -14,7 +16,10 @@ class Downloads extends _$Downloads {
   @override
   Stream<List<DownloadItem>> build() async* {
     final repo = await ref.watch(downloadsRepositoryProvider.future);
-    yield* repo.watchAllDownloads();
+    yield* repo.watchAllDownloads().map(
+          (items) =>
+              items.where((item) => item.fileType != 'lesson_pdf').toList(),
+        );
   }
 
   /// Synchronizes the local database with active SDK state.
@@ -28,6 +33,33 @@ class Downloads extends _$Downloads {
   Future<void> startAttachmentDownload(DownloadItem item, String url) async {
     final repo = await ref.read(downloadsRepositoryProvider.future);
     await repo.startAttachmentDownload(item, url);
+  }
+
+  /// Starts a watermarked PDF lesson download.
+  Future<void> startPdfLessonDownload(Lesson lesson) async {
+    final downloadsRepo = await ref.read(downloadsRepositoryProvider.future);
+    final courseRepo = await ref.read(courseRepositoryProvider.future);
+    final details = await courseRepo.getLessonDetails(lesson.id);
+
+    final downloadItem = DownloadItem(
+      id: lesson.id,
+      title: lesson.title,
+      course: details?.courseTitle ?? 'Course',
+      chapter: details?.chapterTitle ?? 'Chapter',
+      sizeInBytes: 0,
+      type: DownloadType.attachment,
+      status: DownloadStatus.downloading,
+      progress: 0,
+      downloadedDate: DateTime.now().toIso8601String(),
+      fileType: 'lesson_pdf',
+      contentUrl: lesson.contentUrl!,
+    );
+
+    await downloadsRepo.startWatermarkedPdfDownload(
+      downloadItem,
+      lesson.contentUrl!,
+      applyWatermark: lesson.watermarkBeforeDownload,
+    );
   }
 
   /// Pauses an active download (video only — Android).

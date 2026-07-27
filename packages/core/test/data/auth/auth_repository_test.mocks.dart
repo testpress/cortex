@@ -3,7 +3,6 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-// ignore_for_file: invalid_use_of_internal_member
 import 'dart:async' as _i6;
 
 import 'package:core/data/auth/auth_api_service.dart' as _i2;

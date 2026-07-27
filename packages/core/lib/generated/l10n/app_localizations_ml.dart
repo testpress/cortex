@@ -2727,6 +2727,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get downloadedStatus => 'ഡൗൺലോഡ് ചെയ്തു';
 
   @override
+  String get pdfWatermarkFallbackText => 'ഡൗൺലോഡ് ചെയ്തു';
+
+  @override
   String get totalQuestionsLabel => 'ആകെ ചോദ്യങ്ങൾ';
 
   @override
@@ -2805,4 +2808,29 @@ class AppLocalizationsMl extends AppLocalizations {
   String accessExpiredOn(String date) {
     return '$date ന് ആക്‌സസ് കാലഹരണപ്പെട്ടു';
   }
+
+  @override
+  String get alreadyDownloadedTitle => 'നേരത്തെ ഡൗൺലോഡ് ചെയ്‌തു';
+
+  @override
+  String get alreadyDownloadedMessage =>
+      'ഈ ഫയൽ നിങ്ങളുടെ ഉപകരണത്തിൽ നിലവിലുണ്ട്.';
+
+  @override
+  String get openFileAction => 'ഫയൽ തുറക്കുക';
+
+  @override
+  String get downloadAgainAction => 'വീണ്ടും ഡൗൺലോഡ് ചെയ്യുക';
+
+  @override
+  String get downloadCompleted => 'ഡൗൺലോഡ് പൂർത്തിയായി';
+
+  @override
+  String get downloadStarted => 'ഡൗൺലോഡ് ആരംഭിച്ചു';
+
+  @override
+  String get downloadingFile => 'ഡൗൺലോഡ് ചെയ്യുന്നു...';
+
+  @override
+  String get viewAction => 'കാണുക';
 }

@@ -38,12 +38,7 @@ Stream<List<ChapterDto>> subChapters(
     await repo.refreshChapters(courseId, parentId: parentId);
   }
 
-  // 2. Stream DB changes. If data drops to empty after we've already emitted
-  // real data (e.g. a pull-to-refresh on the course list wiped the chapters),
-  // silently re-fetch instead of yielding the empty state — which would
-  // incorrectly flip the UI into lesson-list mode.
-  bool hasNonEmptyData = localChapters.isNotEmpty;
-
+  var hasNonEmptyData = localChapters.isNotEmpty;
   await for (final rows in repo.watchChapters(courseId, parentId: parentId)) {
     final chapters = rows.map((row) => repo.rowToChapterDto(row)).toList();
 

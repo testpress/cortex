@@ -2678,6 +2678,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get downloadedStatus => 'Downloaded';
 
   @override
+  String get pdfWatermarkFallbackText => 'Downloaded';
+
+  @override
   String get totalQuestionsLabel => 'Total Qus';
 
   @override
@@ -2754,4 +2757,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String accessExpiredOn(String date) {
     return 'Access expired on $date';
   }
+
+  @override
+  String get alreadyDownloadedTitle => 'Already downloaded';
+
+  @override
+  String get alreadyDownloadedMessage => 'This file is already in your device.';
+
+  @override
+  String get openFileAction => 'Open File';
+
+  @override
+  String get downloadAgainAction => 'Download Again';
+
+  @override
+  String get downloadCompleted => 'Download completed';
+
+  @override
+  String get downloadStarted => 'Download started';
+
+  @override
+  String get downloadingFile => 'Downloading...';
+
+  @override
+  String get viewAction => 'View';
 }

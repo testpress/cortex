@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:core/core.dart';
 
 class WatermarkOverlay extends StatelessWidget {
-  static const _kWatermarkAngleDeg = -60.0;
-  static const _kWatermarkFontSize = 70.0;
   static const _kWatermarkAlignmentX = -0.1;
 
   final String text;
@@ -26,12 +24,12 @@ class WatermarkOverlay extends StatelessWidget {
           child: Align(
             alignment: const Alignment(_kWatermarkAlignmentX, 0),
             child: Transform.rotate(
-              angle: _kWatermarkAngleDeg * math.pi / 180,
+              angle: WatermarkParams.angleDeg * math.pi / 180,
               child: AppText(
                 text,
                 style: TextStyle(
                   color: color,
-                  fontSize: _kWatermarkFontSize,
+                  fontSize: WatermarkParams.fontSize,
                   fontWeight: FontWeight.bold,
                 ),
               ),

@@ -46,6 +46,10 @@ class DownloadsTable extends Table {
   /// Original download URL, required to safely manage physical file paths.
   TextColumn get contentUrl => text().nullable()();
 
+  /// Whether a watermark was applied to this download.
+  BoolColumn get isWatermarked =>
+      boolean().withDefault(const Constant(false))();
+
   @override
   Set<Column> get primaryKey => {id};
 }

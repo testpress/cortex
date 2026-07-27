@@ -1018,12 +1018,14 @@
   "startExam": "ابدأ الامتحان",
   "reviewExploreDetailsTitle": "استكشف المزيد من التفاصيل",
   "downloadedStatus": "تم التنزيل",
+  "pdfWatermarkFallbackText": "تم التنزيل",
   "totalQuestionsLabel": "إجمالي الأسئلة",
   "deleteAction": "حذف",
   "attendExamAction": "حضور الامتحان",
   "examDeletedToast": "تم حذف الامتحان",
   "deleteExamTitle": "هل تريد حذف الامتحان؟",
   "deleteExamConfirmationMessage": "هل أنت متأكد أنك تريد حذف هذا الامتحان المنزل؟",
+
   "aiSupportTitle": "دعم الذكاء الاصطناعي",
   "aiSupportGreeting": "مرحباً {userName} 👋",
   "@aiSupportGreeting": {
@@ -1046,7 +1048,7 @@
   "aiSupportStatusAnswered": "تم الرد",
   "aiSupportStatusProcessing": "قيد المعالجة",
   "aiSupportAskingAi": "جاري سؤال الذكاء الاصطناعي",
-  "contentAccessEnded": "لقد انتهى وصولك إلى هذا المحتوى!",
+"contentAccessEnded": "لقد انتهى وصولك إلى هذا المحتوى!",
   "accessExpired": "انتهت صلاحية الوصول",
   "accessExpiredOn": "انتهت صلاحية الوصول في {date}",
   "@accessExpiredOn": {
@@ -1055,5 +1057,12 @@
         "type": "String"
       }
     }
-  }
-}
+  },
+  "alreadyDownloadedTitle": "تم التنزيل مسبقًا",
+  "alreadyDownloadedMessage": "هذا الملف موجود بالفعل في جهازك.",
+  "openFileAction": "فتح الملف",
+  "downloadAgainAction": "تنزيل مرة أخرى",
+  "downloadCompleted": "اكتمل التنزيل",
+  "downloadStarted": "بدأ التنزيل",
+  "downloadingFile": "جاري التنزيل...",
+  "viewAction": "عرض"}
