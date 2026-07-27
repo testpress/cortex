@@ -159,9 +159,13 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
   Future<void> _openAttachment(DownloadItem item) async {
     final sentry = ref.read(sentryServiceProvider);
     try {
-      final downloader = ref.read(fileDownloaderProvider);
-      final path = await downloader.getLocalPath(
-          item.contentUrl!, StorageType.publicDownload);
+      String path = item.filePath ?? '';
+
+      if (path.isEmpty) {
+        final downloader = ref.read(fileDownloaderProvider);
+        path = await downloader.getLocalPath(
+            item.contentUrl!, StorageType.publicDownload);
+      }
 
       final fileExists = await File(path).exists();
       if (!fileExists) {
@@ -537,17 +541,28 @@ class _DownloadMeta extends StatelessWidget {
 
     return Row(
       children: [
-        AppText.cardCaption(item.progressText),
+        Flexible(
+          child: AppText.cardCaption(
+            item.progressText,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
         Padding(
           padding: EdgeInsets.symmetric(
             horizontal: design.spacing.xs,
           ),
           child: AppText.cardCaption('•'),
         ),
-        AppText.cardCaption(
-          item.metaText,
-          color:
-              item.status == DownloadStatus.error ? design.colors.error : null,
+        Flexible(
+          child: AppText.cardCaption(
+            item.metaText,
+            color: item.status == DownloadStatus.error
+                ? design.colors.error
+                : null,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ],
     );

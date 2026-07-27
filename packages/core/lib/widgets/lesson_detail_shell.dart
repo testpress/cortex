@@ -91,7 +91,7 @@ class LessonDetailShell extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeader(context, design),
-          if (progress != null) _buildProgressBar(design),
+          if (progress != null) _buildProgressBar(design, progress!),
 
           Expanded(child: child),
           if (stickyFooter) _buildFooter(context),
@@ -368,7 +368,7 @@ class LessonDetailShell extends StatelessWidget {
                   _HeaderButton(
                     icon: LucideIcons.download,
                     label: 'Download content',
-                    onTap: onDownload!,
+                    onTap: onDownload,
                   ),
                 ...?headerActions,
               ],
@@ -379,9 +379,9 @@ class LessonDetailShell extends StatelessWidget {
     );
   }
 
-  Widget _buildProgressBar(DesignConfig design) {
+  Widget _buildProgressBar(DesignConfig design, double value) {
     return AppSemantics.progressValue(
-      value: progress ?? 0,
+      value: value,
       label: 'Lesson progress',
       child: Container(
         width: double.infinity,
@@ -389,7 +389,7 @@ class LessonDetailShell extends StatelessWidget {
         color: design.colors.divider.withValues(alpha: 0.1),
         alignment: Alignment.centerLeft,
         child: FractionallySizedBox(
-          widthFactor: (progress ?? 0).clamp(0.005, 1.0),
+          widthFactor: value.clamp(0.005, 1.0),
           child: Container(height: 3, color: design.colors.primary),
         ),
       ),
@@ -406,17 +406,23 @@ class _HeaderButton extends StatelessWidget {
   const _HeaderButton({
     required this.icon,
     required this.label,
+    // nullable — passing null disables the button
     required this.onTap,
     this.iconColor,
   });
   final IconData icon;
   final String label;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final Color? iconColor;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final disabled = onTap == null;
+    final resolvedColor = disabled
+        ? design.colors.textPrimary.withValues(alpha: 0.35)
+        : (iconColor ?? design.colors.textPrimary);
+
     return Padding(
       padding: EdgeInsetsDirectional.only(start: design.spacing.sm),
       child: AppFocusable(
@@ -425,13 +431,7 @@ class _HeaderButton extends StatelessWidget {
         child: SizedBox(
           width: 36,
           height: 36,
-          child: Center(
-            child: Icon(
-              icon,
-              size: 20,
-              color: iconColor ?? design.colors.textPrimary,
-            ),
-          ),
+          child: Center(child: Icon(icon, size: 20, color: resolvedColor)),
         ),
       ),
     );

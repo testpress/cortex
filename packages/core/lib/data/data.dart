@@ -44,6 +44,7 @@ export 'db/tables/subject_analytics_table.dart';
 export 'db/app_database.dart';
 export 'repositories/dashboard_repository.dart';
 export 'repositories/downloads_repository.dart';
+export 'services/pdf_downloader.dart';
 export 'repositories/leaderboard_repository.dart';
 export 'db/database_provider.dart';
 

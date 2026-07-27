@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 
@@ -12,12 +11,12 @@ import 'lesson_detail_skeleton.dart';
 import 'watermark_overlay.dart';
 
 class AppPdfViewer extends ConsumerStatefulWidget {
-  final String url;
+  final File file;
   final ValueChanged<double>? onProgressChanged;
 
   const AppPdfViewer({
     super.key,
-    required this.url,
+    required this.file,
     this.onProgressChanged,
   });
 
@@ -26,16 +25,14 @@ class AppPdfViewer extends ConsumerStatefulWidget {
 }
 
 class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
-    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin {
   late PdfViewerController _controller;
-  late final Ticker _ticker;
 
   String? _error;
   bool _isLoading = true;
   bool _isVisible = false;
   String _watermarkText = '';
   Widget? _cachedViewer;
-  String? _localPath;
 
   int _requestId = 0;
 
@@ -53,25 +50,19 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   void initState() {
     super.initState();
     _initController();
-    _initTicker();
     _load();
   }
 
   void _initController() {
     _controller = PdfViewerController();
-  }
-
-  void _initTicker() {
-    _ticker = createTicker((_) => _trackProgress())
-      ..muted = true
-      ..start();
+    _controller.addListener(_trackProgress);
   }
 
   @override
   void didUpdateWidget(covariant AppPdfViewer oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (!_isSameDocument(oldWidget.url, widget.url)) {
+    if (oldWidget.file.path != widget.file.path) {
       _resetViewer();
       _load();
     }
@@ -79,7 +70,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
   @override
   void dispose() {
-    _ticker.dispose();
+    _controller.removeListener(_trackProgress);
     _controller.dispose();
     super.dispose();
   }
@@ -123,12 +114,9 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   }
 
   void _prepareState() {
-    _muteTicker(true);
-
     setState(() {
       _isLoading = true;
       _error = null;
-      _localPath = null;
       _isVisible = false;
       _watermarkText = '';
       _totalHeight = 0;
@@ -137,57 +125,22 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
     });
   }
 
-  Future<String?> _resolveSource() async {
-    if (_localPath != null) return _localPath;
-
-    final fileDownloader = ref.read(fileDownloaderProvider);
-    final path = await fileDownloader.getLocalPath(
-      widget.url,
-      StorageType.internalCache,
-    );
-
-    final file = File(path);
-    if (await file.exists() && (await file.length()) > 0) {
-      _localPath = path;
-      return path;
+  Future<String> _resolveSource() async {
+    if (await widget.file.exists() && await widget.file.length() > 0) {
+      return widget.file.path;
     }
 
-    _cacheInBackground(widget.url);
-    return null;
+    throw FileSystemException('Cached PDF file is missing', widget.file.path);
   }
 
-  Future<void> _cacheInBackground(String url) async {
-    if (_localPath != null) return;
-    final sentry = ref.read(sentryServiceProvider);
-    try {
-      final downloader = ref.read(fileDownloaderProvider);
-      final path = await downloader.download(
-        url: url,
-        type: StorageType.internalCache,
-        requireAuth: false,
-      );
-      if (mounted) {
-        _localPath = path;
-      }
-    } catch (e, st) {
-      sentry.captureException(e, stackTrace: st);
-    }
-  }
-
-  void _handleSuccess(String? path) {
+  void _handleSuccess(String path) {
     setState(() {
       _isLoading = false;
-      _cachedViewer = path != null
-          ? SfPdfViewer.file(
-              File(path),
-              controller: _controller,
-              onDocumentLoaded: _onDocumentLoaded,
-            )
-          : SfPdfViewer.network(
-              widget.url,
-              controller: _controller,
-              onDocumentLoaded: _onDocumentLoaded,
-            );
+      _cachedViewer = SfPdfViewer.file(
+        File(path),
+        controller: _controller,
+        onDocumentLoaded: _onDocumentLoaded,
+      );
     });
   }
 
@@ -205,7 +158,6 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   Widget _buildViewer() {
     final viewer = _cachedViewer ?? const SizedBox.shrink();
     final design = Design.of(context);
-    final settings = ref.watch(instituteSettingsProvider);
 
     return Stack(
       children: [
@@ -214,7 +166,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
           duration: MotionPreferences.duration(context, design.motion.normal),
           child: viewer,
         ),
-        if (_isVisible && (settings?.enableCoursePdfWatermarking ?? false))
+        if (_isVisible)
           WatermarkOverlay(
             text: _watermarkText,
             color: design.colors.onSurface.withValues(alpha: 0.15),
@@ -260,7 +212,6 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
   void _onDocumentLoaded(PdfDocumentLoadedDetails details) {
     _totalHeight = _calculateTotalHeight(details);
-    _muteTicker(false);
 
     Future.delayed(const Duration(milliseconds: 100), () {
       if (mounted) {
@@ -288,8 +239,6 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   }
 
   void _trackProgress() {
-    if (_ticker.muted) return;
-
     if (_totalHeight > 0 && _viewportHeight > 0) {
       final offset = _controller.scrollOffset.dy;
       final max = _totalHeight - _viewportHeight;
@@ -305,21 +254,9 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
   // ---------------- HELPERS ----------------
 
-  void _muteTicker(bool value) {
-    if (_ticker.muted != value) {
-      _ticker.muted = value;
-    }
-  }
-
   void _resetViewer() {
+    _controller.removeListener(_trackProgress);
     _controller.dispose();
     _initController();
-  }
-
-  bool _isSameDocument(String a, String b) {
-    final uriA = Uri.parse(a);
-    final uriB = Uri.parse(b);
-
-    return uriA.host == uriB.host && uriA.path == uriB.path;
   }
 }

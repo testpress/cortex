@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../db/app_database.dart';
 import '../db/database_provider.dart';
 import '../models/download_item.dart';
 import '../services/downloads_service.dart';
-
+import '../providers/user_provider.dart';
+import 'user_repository.dart';
+import '../services/sentry_service.dart';
 part 'downloads_repository.g.dart';
 
 /// Orchestrates all download-related operations.
@@ -14,11 +17,18 @@ part 'downloads_repository.g.dart';
 class DownloadsRepository {
   final AppDatabase _db;
   final DownloadsService _service;
+  final UserRepository _userRepo;
+  final SentryService _sentryService;
   final Map<String, DownloadItem> _lastKnownState = {};
   final Set<String> _deletedIds = {};
   StreamSubscription<List<DownloadItem>>? _subscription;
 
-  DownloadsRepository(this._db, this._service) {
+  DownloadsRepository(
+    this._db,
+    this._service,
+    this._userRepo,
+    this._sentryService,
+  ) {
     _initStream();
   }
 
@@ -75,10 +85,37 @@ class DownloadsRepository {
               duration: row.duration,
               fileType: row.fileType,
               contentUrl: row.contentUrl,
+              filePath: row.filePath,
+              isWatermarked: row.isWatermarked,
             ),
           )
           .toList();
     });
+  }
+
+  /// Get a specific download from the DB by ID, mapped to a domain model.
+  Future<DownloadItem?> getDownload(String id) async {
+    final row = await (_db.select(
+      _db.downloadsTable,
+    )..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
+    if (row == null) return null;
+    return DownloadItem(
+      id: row.id,
+      title: row.title,
+      course: row.course,
+      chapter: row.chapter,
+      sizeInBytes: row.sizeInBytes.toInt(),
+      downloadedDate: row.downloadedDate,
+      type: DownloadType.values[row.typeIndex],
+      status: DownloadStatus.values[row.statusIndex],
+      progress: row.progress,
+      thumbnailUrl: row.thumbnailUrl,
+      duration: row.duration,
+      fileType: row.fileType,
+      contentUrl: row.contentUrl,
+      filePath: row.filePath,
+      isWatermarked: row.isWatermarked,
+    );
   }
 
   /// Watch a specific download from the DB by ID, mapped to a domain model.
@@ -101,6 +138,8 @@ class DownloadsRepository {
         duration: row.duration,
         fileType: row.fileType,
         contentUrl: row.contentUrl,
+        filePath: row.filePath,
+        isWatermarked: row.isWatermarked,
       );
     });
   }
@@ -128,7 +167,7 @@ class DownloadsRepository {
       await upsertDownload(item);
 
       // 2. Delegate the actual HTTP download to the service worker
-      final downloadedSize = await _service.downloadAttachment(
+      final result = await _service.downloadAttachment(
         url,
         onProgress: (progressPercent) {
           // 3. Persist progress updates as they arrive
@@ -137,12 +176,13 @@ class DownloadsRepository {
       );
 
       // 4. Persist the final "completed" state with actual file size
-      if (downloadedSize != null) {
+      if (result != null) {
         await upsertDownload(
           item.copyWith(
             status: DownloadStatus.completed,
             progress: 100,
-            sizeInBytes: downloadedSize,
+            sizeInBytes: result.$1,
+            filePath: result.$2,
           ),
         );
       } else {
@@ -157,28 +197,85 @@ class DownloadsRepository {
     }
   }
 
+  /// Starts a PDF download, optionally applying a watermark if enabled.
+  Future<void> startWatermarkedPdfDownload(
+    DownloadItem item,
+    String url, {
+    required bool applyWatermark,
+  }) async {
+    try {
+      await upsertDownload(item);
+
+      String? watermarkText;
+      if (applyWatermark) {
+        final currentUser = await _userRepo.getCurrentProfile();
+        watermarkText = currentUser?.username;
+        if (watermarkText == null || watermarkText.isEmpty) {
+          watermarkText = 'Downloaded';
+        }
+      }
+
+      final result = await _service.downloadWatermarkedPdf(
+        url: url,
+        title: item.title,
+        applyWatermark: applyWatermark,
+        watermarkText: watermarkText,
+        onProgress: (progressPercent) {
+          upsertDownload(item.copyWith(progress: progressPercent));
+        },
+      );
+
+      await upsertDownload(
+        item.copyWith(
+          status: DownloadStatus.completed,
+          progress: 100,
+          sizeInBytes: result.$1,
+          filePath: result.$2,
+          isWatermarked: applyWatermark,
+        ),
+      );
+    } catch (e, stackTrace) {
+      await upsertDownload(item.copyWith(status: DownloadStatus.error));
+      _sentryService.captureException(
+        e,
+        stackTrace: stackTrace,
+        contexts: {
+          'action': {'name': 'startWatermarkedPdfDownload'},
+          'downloadItem': {'id': item.id, 'title': item.title},
+        },
+      );
+    }
+  }
+
   /// Initial synchronization between SDKs and Database.
   Future<void> synchronize() async {
     final activeVideoDownloads = await _service.getActiveVideoDownloads();
     final activeVideoIds = activeVideoDownloads.map((e) => e.id).toList();
 
-    // Verify attachment files exist on disk
-    final dbAttachments = await (_db.select(
+    // Verify attachment and PDF files exist on disk
+    final dbFiles = await (_db.select(
       _db.downloadsTable,
     )..where((t) => t.typeIndex.equals(DownloadType.attachment.index))).get();
 
-    final activeAttachmentIds = <String>[];
-    for (final attachment in dbAttachments) {
-      if (attachment.statusIndex != DownloadStatus.completed.index) {
-        activeAttachmentIds.add(attachment.id);
-      } else if (attachment.contentUrl != null) {
-        if (await _service.verifyAttachmentExists(attachment.contentUrl!)) {
-          activeAttachmentIds.add(attachment.id);
+    final activeFileIds = <String>[];
+    for (final file in dbFiles) {
+      if (file.statusIndex != DownloadStatus.completed.index) {
+        activeFileIds.add(file.id);
+      } else {
+        bool exists = false;
+        if (file.filePath != null) {
+          exists = await File(file.filePath!).exists();
+        }
+        if (!exists && file.contentUrl != null) {
+          exists = await _service.verifyAttachmentExists(file.contentUrl!);
+        }
+        if (exists) {
+          activeFileIds.add(file.id);
         }
       }
     }
 
-    final activeIds = [...activeVideoIds, ...activeAttachmentIds];
+    final activeIds = [...activeVideoIds, ...activeFileIds];
 
     await _db.batch((batch) {
       // 1. Remove stale records that are no longer active.
@@ -203,6 +300,7 @@ class DownloadsRepository {
               duration: Value(item.duration),
               fileType: Value(item.fileType),
               contentUrl: Value(item.contentUrl),
+              filePath: Value(item.filePath),
             ),
           ),
         );
@@ -229,6 +327,7 @@ class DownloadsRepository {
             duration: Value(item.duration),
             fileType: Value(item.fileType),
             contentUrl: Value(item.contentUrl),
+            filePath: Value(item.filePath),
           ),
         );
   }
@@ -287,6 +386,7 @@ class DownloadsRepository {
         duration: row.duration,
         fileType: row.fileType,
         contentUrl: row.contentUrl,
+        filePath: row.filePath,
       );
       await _service.deleteDownloadItem(item);
     }
@@ -302,7 +402,9 @@ Future<DownloadsRepository> downloadsRepository(
 ) async {
   final db = await ref.watch(appDatabaseProvider.future);
   final service = ref.watch(downloadsServiceProvider);
-  final repo = DownloadsRepository(db, service);
+  final userRepo = await ref.watch(userRepositoryProvider.future);
+  final sentryService = ref.watch(sentryServiceProvider);
+  final repo = DownloadsRepository(db, service, userRepo, sentryService);
   ref.onDispose(() => repo.dispose());
   return repo;
 }

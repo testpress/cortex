@@ -6,7 +6,7 @@ part of 'downloads_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$downloadsHash() => r'005d68270a247ae6fca8f59c4bca3eaa97234d7f';
+String _$downloadsHash() => r'4ae59ad71b0a387c8b29e799f581f553f4c2024e';
 
 /// Single entry point for all download state and actions.
 /// Mirrors the [Auth] notifier pattern from auth_provider.dart.

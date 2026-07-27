@@ -69,6 +69,10 @@ class LessonsTable extends Table {
   TextColumn get start => text().nullable()();
   TextColumn get end => text().nullable()();
   BoolColumn get hasEnded => boolean().withDefault(const Constant(false))();
+  BoolColumn get allowDownload =>
+      boolean().withDefault(const Constant(false))();
+  BoolColumn get watermarkBeforeDownload =>
+      boolean().withDefault(const Constant(false))();
 
   @override
   Set<Column> get primaryKey => {id};

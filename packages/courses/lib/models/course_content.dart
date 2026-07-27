@@ -43,6 +43,8 @@ class Lesson {
     this.isAiEnabled = false,
     this.aiNotesUrl,
     this.lastWatchedDuration,
+    this.allowDownload = false,
+    this.watermarkBeforeDownload = false,
     this.exam,
     this.start,
     this.end,
@@ -94,6 +96,8 @@ class Lesson {
   final bool isAiEnabled;
   final String? aiNotesUrl;
   final String? lastWatchedDuration;
+  final bool allowDownload;
+  final bool watermarkBeforeDownload;
   final ExamDto? exam;
 
   /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
@@ -156,6 +160,8 @@ class Lesson {
       isAiEnabled: isAiEnabled,
       aiNotesUrl: aiNotesUrl,
       lastWatchedDuration: lastWatchedDuration,
+      allowDownload: allowDownload,
+      watermarkBeforeDownload: watermarkBeforeDownload,
       exam: exam,
       start: start,
       end: end,

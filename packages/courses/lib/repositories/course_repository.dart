@@ -1221,6 +1221,8 @@ class CourseRepository {
         isAiEnabled: row.isAiEnabled,
         aiNotesUrl: row.aiNotesUrl,
         lastWatchedDuration: row.lastWatchedDuration,
+        allowDownload: row.allowDownload,
+        watermarkBeforeDownload: row.watermarkBeforeDownload,
         exam: (() {
           final jsonStr = row.examMetadataJson;
           if (jsonStr == null || jsonStr.isEmpty) return null;
@@ -1318,6 +1320,8 @@ class CourseRepository {
         lastWatchedDuration: dto.lastWatchedDuration != null
             ? Value(dto.lastWatchedDuration)
             : const Value.absent(),
+        allowDownload: Value(dto.allowDownload),
+        watermarkBeforeDownload: Value(dto.watermarkBeforeDownload),
         examMetadataJson: dto.exam != null
             ? Value(jsonEncode(dto.exam!.toJson()))
             : const Value.absent(),

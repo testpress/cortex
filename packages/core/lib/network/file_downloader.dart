@@ -4,6 +4,7 @@ import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'dio_provider.dart';
@@ -102,21 +103,35 @@ class FileDownloader {
     bool requireAuth = false,
   }) async {
     // Permission handling for public downloads on Android
-    if (type == StorageType.publicDownload && Platform.isAndroid) {
-      var status = await Permission.storage.status;
-      if (!status.isGranted) {
-        status = await Permission.storage.request();
-      }
-      // On Android 13+, Permission.storage is automatically denied.
-      // However, apps are still allowed to write files to the public Downloads directory.
-      // Therefore, we do not abort if the status is denied. We proceed and let the
-      // actual file system operation throw an exception if it is truly blocked.
+    if (type == StorageType.publicDownload) {
+      await ensurePublicStoragePermission();
     }
 
     final savePath = await getLocalPath(url, type);
+    await downloadToPath(
+      url: url,
+      savePath: savePath,
+      cancelToken: cancelToken,
+      onReceiveProgress: onReceiveProgress,
+      requireAuth: requireAuth,
+    );
+
+    return savePath;
+  }
+
+  /// Downloads a file from [url] to an explicit [savePath].
+  ///
+  /// Higher-level cache services can use this to download into temporary files
+  /// and atomically promote them after validation.
+  Future<String> downloadToPath({
+    required String url,
+    required String savePath,
+    CancelToken? cancelToken,
+    void Function(int count, int total)? onReceiveProgress,
+    bool requireAuth = false,
+  }) async {
     final file = File(savePath);
 
-    // Ensure parent directory exists
     if (!await file.parent.exists()) {
       await file.parent.create(recursive: true);
     }
@@ -131,5 +146,24 @@ class FileDownloader {
     );
 
     return savePath;
+  }
+
+  /// Requests necessary permissions for public downloads on Android.
+  Future<void> ensurePublicStoragePermission() async {
+    if (!Platform.isAndroid) return;
+
+    final androidInfo = await DeviceInfoPlugin().androidInfo;
+    if (androidInfo.version.sdkInt < 29) {
+      var status = await Permission.storage.status;
+      if (!status.isGranted) {
+        status = await Permission.storage.request();
+        if (!status.isGranted) {
+          throw const FileSystemException('Storage permission denied by user');
+        }
+      }
+    }
+    // For SDK >= 29, Permission.storage might be automatically denied by the system,
+    // but apps are still allowed to write files to the public Downloads directory.
+    // We let it proceed, and the file system will throw an exception if truly blocked.
   }
 }

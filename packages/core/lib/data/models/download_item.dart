@@ -16,6 +16,8 @@ class DownloadItem {
   final String? duration;
   final String? fileType;
   final String? contentUrl;
+  final String? filePath;
+  final bool isWatermarked;
 
   const DownloadItem({
     required this.id,
@@ -31,6 +33,8 @@ class DownloadItem {
     this.duration,
     this.fileType,
     this.contentUrl,
+    this.filePath,
+    this.isWatermarked = false,
   });
 
   DownloadItem copyWith({
@@ -47,6 +51,8 @@ class DownloadItem {
     String? duration,
     String? fileType,
     String? contentUrl,
+    String? filePath,
+    bool? isWatermarked,
   }) {
     return DownloadItem(
       id: id ?? this.id,
@@ -62,6 +68,8 @@ class DownloadItem {
       duration: duration ?? this.duration,
       fileType: fileType ?? this.fileType,
       contentUrl: contentUrl ?? this.contentUrl,
+      filePath: filePath ?? this.filePath,
+      isWatermarked: isWatermarked ?? this.isWatermarked,
     );
   }
 }

@@ -75,6 +75,8 @@ class LessonDto {
   final bool isAiEnabled;
   final String? aiNotesUrl;
   final String? lastWatchedDuration;
+  final bool allowDownload;
+  final bool watermarkBeforeDownload;
   final ExamDto? exam;
 
   /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
@@ -145,6 +147,8 @@ class LessonDto {
     this.isAiEnabled = false,
     this.aiNotesUrl,
     this.lastWatchedDuration,
+    this.allowDownload = false,
+    this.watermarkBeforeDownload = false,
     this.exam,
   });
 
@@ -196,6 +200,8 @@ class LessonDto {
     bool? isAiEnabled,
     String? aiNotesUrl,
     String? lastWatchedDuration,
+    bool? allowDownload,
+    bool? watermarkBeforeDownload,
     ExamDto? exam,
   }) {
     return LessonDto(
@@ -246,6 +252,9 @@ class LessonDto {
       isAiEnabled: isAiEnabled ?? this.isAiEnabled,
       aiNotesUrl: aiNotesUrl ?? this.aiNotesUrl,
       lastWatchedDuration: lastWatchedDuration ?? this.lastWatchedDuration,
+      allowDownload: allowDownload ?? this.allowDownload,
+      watermarkBeforeDownload:
+          watermarkBeforeDownload ?? this.watermarkBeforeDownload,
       exam: exam ?? this.exam,
     );
   }
@@ -315,7 +324,6 @@ class LessonDto {
       lastWatchedDuration: (lastWatchedDuration?.isEmpty ?? true)
           ? other.lastWatchedDuration
           : lastWatchedDuration,
-      exam: other.exam ?? exam,
       isDetailFetched: isDetailFetched || other.isDetailFetched,
       bookmarkId: bookmarkId ?? other.bookmarkId,
       // Status flags: Prefer 'true' or more advanced progress
@@ -344,6 +352,10 @@ class LessonDto {
       scheduledMessage: (scheduledMessage?.isEmpty ?? true)
           ? other.scheduledMessage
           : scheduledMessage,
+      allowDownload: allowDownload || other.allowDownload,
+      watermarkBeforeDownload:
+          watermarkBeforeDownload || other.watermarkBeforeDownload,
+      exam: other.exam ?? exam,
       // Preserve specialized types (e.g. Attachment promoted to PDF, or Video promoted to Embed)
       type: (() {
         // If they are different, prefer the more specific one if one is 'attachment' or 'video'
@@ -695,6 +707,17 @@ class LessonDto {
       aiNotesUrl:
           json['ai_notes_url']?.toString() ?? json['aiNotesUrl']?.toString(),
       attemptsUrl: getString('attempts_url') ?? getString('attemptsUrl'),
+      allowDownload:
+          json['allow_download'] as bool? ??
+          (json['attachment'] as Map<String, dynamic>?)?['allow_download']
+              as bool? ??
+          false,
+      watermarkBeforeDownload:
+          json['watermark_before_download'] as bool? ??
+          (json['attachment']
+                  as Map<String, dynamic>?)?['watermark_before_download']
+              as bool? ??
+          false,
     );
   }
 
@@ -752,6 +775,8 @@ class LessonDto {
       'attemptsUrl': attemptsUrl,
       'slug': slug,
       'chapterSlug': chapterSlug,
+      'allowDownload': allowDownload,
+      'watermarkBeforeDownload': watermarkBeforeDownload,
       'exam': exam?.toJson(),
     };
   }
