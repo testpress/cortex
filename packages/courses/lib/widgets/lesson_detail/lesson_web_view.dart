@@ -3,8 +3,8 @@ import 'dart:io' show Platform;
 import 'package:flutter/widgets.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:core/core.dart';
-import 'package:core/data/config/app_config.dart';
 import 'package:core/data/auth/auth_local_data_source.dart';
+import 'package:core/data/data.dart';
 
 /// A WebView-based viewer for HTML and Embedded lesson content.
 class LessonWebView extends StatefulWidget {
@@ -98,7 +98,8 @@ class _LessonWebViewState extends State<LessonWebView> {
             headers['Authorization'] = 'JWT $token';
           }
         }
-      } catch (_) {
+      } catch (e, st) {
+        SentryService().captureException(e, stackTrace: st);
         // Fall back to unauthenticated request if URL is non-HTTPS, apiBaseUrl is empty,
         // secure storage read fails, or URL is malformed.
       }
@@ -196,7 +197,8 @@ class _LessonWebViewState extends State<LessonWebView> {
 
     try {
       await _controller.runJavaScript(script);
-    } catch (_) {
+    } catch (e, st) {
+      SentryService().captureException(e, stackTrace: st);
       // Non-fatal: page may block script execution.
     }
   }
@@ -251,7 +253,8 @@ class _LessonWebViewState extends State<LessonWebView> {
 
     try {
       await _controller.runJavaScript(script);
-    } catch (_) {
+    } catch (e, st) {
+      SentryService().captureException(e, stackTrace: st);
       // Non-fatal if the host page blocks runtime styling.
     }
   }

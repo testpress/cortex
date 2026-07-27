@@ -24,7 +24,10 @@ class SelectedStoreCategory extends _$SelectedStoreCategory {
 
 @Riverpod(keepAlive: true)
 StoreRepository storeRepository(StoreRepositoryRef ref) {
-  return StoreRepository(source: ref.watch(dataSourceProvider));
+  return StoreRepository(
+    source: ref.watch(dataSourceProvider),
+    sentryService: ref.watch(sentryServiceProvider),
+  );
 }
 
 // ── Data providers ────────────────────────────────────────────────────────
@@ -62,13 +65,16 @@ class StoreProducts extends _$StoreProducts {
     final query = ref.read(storeSearchQueryProvider);
     final category = ref.read(selectedStoreCategoryProvider);
     final repo = ref.read(storeRepositoryProvider);
+    final sentryService = ref.read(sentryServiceProvider);
 
     // Extract page number from the next URL
     int nextPage = 2;
     try {
       final uri = Uri.parse(currentResponse.next!);
       nextPage = int.tryParse(uri.queryParameters['page'] ?? '') ?? 2;
-    } catch (_) {}
+    } catch (e, st) {
+      sentryService.captureException(e, stackTrace: st);
+    }
 
     state = AsyncValue<PaginatedResponseDto<ProductDto>>.loading()
         .copyWithPrevious(state);

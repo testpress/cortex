@@ -84,13 +84,14 @@ class _LessonDetailOrchestratorState
     // Optimistic toast
     AppToast.show(context, message: l10n.bookmarkRemoved);
 
+    final sentry = ref.read(sentryServiceProvider);
     try {
       await ref.read(removeBookmarkProvider(
         bookmarkId: bookmarkId,
         lessonId: int.tryParse(lesson.id) ?? 0,
       ).future);
     } catch (e, stack) {
-      debugPrint('Error removing bookmark: $e\n$stack');
+      sentry.captureException(e, stackTrace: stack);
       if (mounted) {
         AppToast.show(
           context,

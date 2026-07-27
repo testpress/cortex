@@ -61,7 +61,8 @@ Stream<List<ChapterDto>> subChapters(
           // We must yield manually to unblock the UI.
           yield chapters;
         }
-      } catch (_) {
+      } catch (e, st) {
+        ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
         // Network failure: yield the empty state so the UI can show
         // a proper error or empty view rather than staying frozen.
         yield chapters;

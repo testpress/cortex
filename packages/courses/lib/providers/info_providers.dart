@@ -55,7 +55,8 @@ class InfoList extends _$InfoList {
     try {
       await currentSync;
       ref.read(infoSyncMetadataProvider.notifier).markSynced();
-    } catch (_) {
+    } catch (e, st) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
       // Allow retry on next initialize call by not marking as synced
     } finally {
       if (_pendingSyncRequest == currentSync) {

@@ -31,6 +31,7 @@ class AttachmentViewer extends ConsumerStatefulWidget {
 
 class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
   Future<void> _startDownload() async {
+    final sentry = ref.read(sentryServiceProvider);
     try {
       final repo = await ref.read(courseRepositoryProvider.future);
       final details = await repo.getLessonDetails(widget.id);
@@ -63,7 +64,8 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
       await ref
           .read(downloadsProvider.notifier)
           .startAttachmentDownload(item, widget.url);
-    } catch (_) {
+    } catch (e, st) {
+      sentry.captureException(e, stackTrace: st);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

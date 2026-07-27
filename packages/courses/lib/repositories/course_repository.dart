@@ -41,7 +41,9 @@ class CourseRepository {
     }
   }
 
-  CourseRepository(this._db, this._source);
+  final SentryService _sentryService;
+
+  CourseRepository(this._db, this._source, this._sentryService);
 
   void dispose() {
     _syncStatusController.close();
@@ -134,7 +136,8 @@ class CourseRepository {
             if (fetchedCourse == null) return null;
             course = fetchedCourse;
             localStreamCache = course; // Cache for the lifetime of this stream
-          } catch (e) {
+          } catch (e, st) {
+            _sentryService.captureException(e, stackTrace: st);
             rethrow;
           }
         }
@@ -786,7 +789,8 @@ class CourseRepository {
         }
 
         return finalSnapshot;
-      } catch (e) {
+      } catch (e, st) {
+        _sentryService.captureException(e, stackTrace: st);
         rethrow;
       } finally {
         _activeStructuralSyncs.remove(syncKey);
@@ -872,8 +876,8 @@ class CourseRepository {
       if (enrichedCompanions.isNotEmpty) {
         await _db.upsertLessons(enrichedCompanions);
       }
-    } catch (e) {
-      debugPrint('CourseRepository: Status refresh failed: $e');
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
     }
   }
 
@@ -927,8 +931,8 @@ class CourseRepository {
     try {
       await refreshCourseDetail(courseId);
       await refreshChapters(courseId);
-    } catch (e) {
-      debugPrint('CourseRepository: Failed to hydrate parents: $e');
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
     }
   }
 
@@ -940,8 +944,8 @@ class CourseRepository {
         final chapterDto = await _source.getChapterDetail(chapterSlug);
         await _db.upsertChapters([_chapterDtoToCompanion(chapterDto)]);
       }
-    } catch (e) {
-      debugPrint('CourseRepository: Failed to hydrate nested chapter: $e');
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
     }
   }
 
@@ -968,10 +972,8 @@ class CourseRepository {
         dtoWithAttempts = dto.copyWith(
           lastWatchedDuration: lastWatched,
         );
-      } catch (e) {
-        // Log the error but allow the lesson refresh to succeed
-        debugPrint(
-            'CourseRepository: Failed to fetch last watched position: $e');
+      } catch (e, st) {
+        _sentryService.captureException(e, stackTrace: st);
       }
     }
 
@@ -1031,9 +1033,8 @@ class CourseRepository {
     if (status == LessonProgressStatus.completed) {
       try {
         await _source.markLessonCompleted(id);
-      } catch (e) {
-        // Log error but don't block local success
-        debugPrint('CourseRepository: Failed to sync completion to server: $e');
+      } catch (e, st) {
+        _sentryService.captureException(e, stackTrace: st);
       }
     }
   }
@@ -1058,8 +1059,8 @@ class CourseRepository {
             existing.copyWith(lastWatchedDuration: lastWatchPosition);
         await _db.upsertLessons([_lessonDtoToCompanion(updated)]);
       }
-    } catch (e) {
-      debugPrint('CourseRepository: Failed to update local DB after sync: $e');
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
     }
   }
 
@@ -1117,11 +1118,12 @@ class CourseRepository {
         isChaptersSynced: row.isChaptersSynced,
       );
 
-  static List<T> _safeDecodeList<T>(String? json) {
+  List<T> _safeDecodeList<T>(String? json) {
     if (json == null || json.isEmpty) return const [];
     try {
       return List<T>.from(jsonDecode(json));
-    } catch (_) {
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
       return const [];
     }
   }
@@ -1224,8 +1226,8 @@ class CourseRepository {
             if (decoded is Map<String, dynamic>) {
               return ExamDto.fromJson(decoded);
             }
-          } catch (e) {
-            debugPrint('CourseRepository: Failed to decode exam metadata: $e');
+          } catch (e, st) {
+            _sentryService.captureException(e, stackTrace: st);
           }
           return null;
         })(),
@@ -1328,6 +1330,8 @@ class CourseRepository {
       if (s.contains('pdf')) return LessonType.pdf;
       if (s.contains('test')) return LessonType.test;
       if (s.contains('assessment')) return LessonType.assessment;
+      _sentryService
+          .captureException(FormatException('Unknown LessonType: $s'));
       return LessonType.unknown;
     }
   }
@@ -1338,7 +1342,11 @@ class CourseRepository {
     } catch (_) {
       return LessonProgressStatus.values.firstWhere(
         (e) => e.name.toLowerCase() == s.toLowerCase(),
-        orElse: () => LessonProgressStatus.notStarted,
+        orElse: () {
+          _sentryService.captureException(
+              FormatException('Unknown LessonProgressStatus: $s'));
+          return LessonProgressStatus.notStarted;
+        },
       );
     }
   }

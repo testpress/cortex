@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:core/data/data.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'course_list_provider.dart';
 import '../models/course_content.dart';
@@ -75,11 +76,13 @@ Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
     );
   });
 
+  final sentryService = ref.read(sentryServiceProvider);
   if (initial == null) {
     // First time load: Await fetch so the UI starts in a loading state
     try {
       await repository.refreshLesson(lessonId);
-    } catch (e) {
+    } catch (e, st) {
+      sentryService.captureException(e, stackTrace: st);
       rethrow;
     }
     yield* dbStream;

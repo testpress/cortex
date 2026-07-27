@@ -157,6 +157,7 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
   }
 
   Future<void> _openAttachment(DownloadItem item) async {
+    final sentry = ref.read(sentryServiceProvider);
     try {
       final downloader = ref.read(fileDownloaderProvider);
       final path = await downloader.getLocalPath(
@@ -180,7 +181,9 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
           SnackBar(content: Text('Could not open file: ${result.message}')),
         );
       }
-    } catch (_) {}
+    } catch (e, st) {
+      sentry.captureException(e, stackTrace: st);
+    }
   }
 }
 

@@ -10,7 +10,8 @@ part 'course_list_provider.g.dart';
 Future<CourseRepository> courseRepository(Ref ref) async {
   final db = await ref.watch(appDatabaseProvider.future);
   final source = ref.watch(dataSourceProvider);
-  final repo = CourseRepository(db, source);
+  final sentryService = ref.watch(sentryServiceProvider);
+  final repo = CourseRepository(db, source, sentryService);
   ref.onDispose(() => repo.dispose());
   return repo;
 }
@@ -152,6 +153,8 @@ class CourseList extends _$CourseList {
       ref.read(isSyncingMoreResults.notifier).state = true;
     }
 
+    final sentryService = ref.read(sentryServiceProvider);
+
     try {
       final repo = await ref.read(courseRepositoryProvider.future);
 
@@ -170,7 +173,8 @@ class CourseList extends _$CourseList {
           currentPage: _paginationTracker.nextPage,
         );
       }
-    } catch (e) {
+    } catch (e, st) {
+      sentryService.captureException(e, stackTrace: st);
       // Capture the error but don't rethrow (so stream from DB is still visible)
       ref.read(courseListSyncError.notifier).state = e;
     } finally {
@@ -235,6 +239,8 @@ class CourseSearch extends _$CourseSearch {
 
   Future<void> _performSearch(
       {required String query, required bool isReset}) async {
+    final sentryService = ref.read(sentryServiceProvider);
+
     try {
       final repo = await ref.read(courseRepositoryProvider.future);
       final page = isReset ? 1 : state.pagination.nextPage;
@@ -260,7 +266,8 @@ class CourseSearch extends _$CourseSearch {
         isLoading: false,
         pagination: newPagination,
       );
-    } catch (e) {
+    } catch (e, st) {
+      sentryService.captureException(e, stackTrace: st);
       state = state.copyWith(error: e, isLoading: false);
     } finally {
       _pendingRequest = null;
