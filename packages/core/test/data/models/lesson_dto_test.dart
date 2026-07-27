@@ -39,6 +39,27 @@ void main() {
       expect(dto.hasAttempts, false);
     });
 
+    test('parses expiry fields correctly (start, end, has_ended)', () {
+      final json = lessonJson();
+      json['start'] = '2023-01-01T00:00:00Z';
+      json['end'] = '2023-12-31T23:59:59Z';
+      json['has_ended'] = true;
+
+      final dto = LessonDto.fromJson(json);
+
+      expect(dto.start, '2023-01-01T00:00:00Z');
+      expect(dto.end, '2023-12-31T23:59:59Z');
+      expect(dto.hasEnded, true);
+    });
+
+    test('defaults expiry fields when missing', () {
+      final dto = LessonDto.fromJson(lessonJson());
+
+      expect(dto.start, isNull);
+      expect(dto.end, isNull);
+      expect(dto.hasEnded, false);
+    });
+
     test(
       'exam with attempts_count > 0 and explicit state=completed remains completed',
       () {

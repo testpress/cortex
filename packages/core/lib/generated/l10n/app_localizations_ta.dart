@@ -2786,4 +2786,16 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get aiSupportAskingAi => 'AI-இடம் கேட்கிறது';
+
+  @override
+  String get contentAccessEnded =>
+      'இந்த உள்ளடக்கத்திற்கான உங்கள் அணுகல் முடிந்துவிட்டது!';
+
+  @override
+  String get accessExpired => 'அணுகல் காலாவதியானது';
+
+  @override
+  String accessExpiredOn(String date) {
+    return '$date அன்று அணுகல் காலாவதியானது';
+  }
 }

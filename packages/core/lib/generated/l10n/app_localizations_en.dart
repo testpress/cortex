@@ -2743,4 +2743,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiSupportAskingAi => 'ASKING AI';
+
+  @override
+  String get contentAccessEnded => 'Your access to this content has ended!';
+
+  @override
+  String get accessExpired => 'Access expired';
+
+  @override
+  String accessExpiredOn(String date) {
+    return 'Access expired on $date';
+  }
 }

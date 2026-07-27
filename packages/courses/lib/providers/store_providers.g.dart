@@ -6,7 +6,7 @@ part of 'store_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$storeRepositoryHash() => r'4c95e5c2401066d1eec1c72699d21ac44959b948';
+String _$storeRepositoryHash() => r'f73873ec2973731a5b02d29cce1fa6d13b8d9b15';
 
 /// See also [storeRepository].
 @ProviderFor(storeRepository)
@@ -23,7 +23,7 @@ final storeRepositoryProvider = Provider<StoreRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef StoreRepositoryRef = ProviderRef<StoreRepository>;
-String _$storeCategoriesHash() => r'94c3d0e9392a117a1928e5cf329b3688936853f3';
+String _$storeCategoriesHash() => r'c9375b31d4be752ecfb3ad2fbf3b1de977506479';
 
 /// See also [storeCategories].
 @ProviderFor(storeCategories)
@@ -42,7 +42,7 @@ final storeCategoriesProvider =
 // ignore: unused_element
 typedef StoreCategoriesRef
     = AutoDisposeFutureProviderRef<List<ProductCategoryDto>>;
-String _$productDetailHash() => r'88a0f21ad28703e4a21b53baede36b8f16d35a2c';
+String _$productDetailHash() => r'edc24903f041f8b25c97bcded3c9a8d4fd0c7dd5';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -194,7 +194,7 @@ class _ProductDetailProviderElement
 }
 
 String _$productInstallmentPlansHash() =>
-    r'5e1d24b2067875ac1c64a8fd2e8a818383fb3c29';
+    r'3b3fd97abd128d2eb53084e7232b5a7e40a62390';
 
 /// See also [productInstallmentPlans].
 @ProviderFor(productInstallmentPlans)
@@ -331,7 +331,7 @@ class _ProductInstallmentPlansProviderElement
   String get slug => (origin as ProductInstallmentPlansProvider).slug;
 }
 
-String _$storeSearchQueryHash() => r'710279d17c0bcb58ded500a0618f44afe0e1cf7b';
+String _$storeSearchQueryHash() => r'cef4370a0c27a5f2184443d9f45287720c7bfdba';
 
 /// See also [StoreSearchQuery].
 @ProviderFor(StoreSearchQuery)
@@ -364,7 +364,7 @@ final selectedStoreCategoryProvider =
 );
 
 typedef _$SelectedStoreCategory = AutoDisposeNotifier<String?>;
-String _$storeProductsHash() => r'69512f244fedd235ee8375009eccd799bb10cdb8';
+String _$storeProductsHash() => r'f7874e664d48ae4ca996cf298d703867468b3bd7';
 
 /// See also [StoreProducts].
 @ProviderFor(StoreProducts)
@@ -382,7 +382,7 @@ final storeProductsProvider = AutoDisposeAsyncNotifierProvider<StoreProducts,
 typedef _$StoreProducts
     = AutoDisposeAsyncNotifier<PaginatedResponseDto<ProductDto>>;
 String _$productDiscountNotifierHash() =>
-    r'649e988c2a74f80440c8b3c1528fec0175c8b3c7';
+    r'5a72de820681e5ede8203c1b0794c19b1e99128a';
 
 abstract class _$ProductDiscountNotifier
     extends BuildlessAutoDisposeNotifier<AsyncValue<OrderDto?>> {

@@ -4954,6 +4954,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'ASKING AI'**
   String get aiSupportAskingAi;
+
+  /// No description provided for @contentAccessEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'Your access to this content has ended!'**
+  String get contentAccessEnded;
+
+  /// No description provided for @accessExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Access expired'**
+  String get accessExpired;
+
+  /// No description provided for @accessExpiredOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Access expired on {date}'**
+  String accessExpiredOn(String date);
 }
 
 class _AppLocalizationsDelegate

@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 /// Utility for formatting duration strings from the API.
 class TimeFormatter {
   /// Formats duration strings like "0.02:17" or "00:45:00" into "2min 17sec" or "45min".
@@ -106,6 +108,17 @@ class TimeFormatter {
       );
     } catch (_) {
       return Duration.zero;
+    }
+  }
+
+  /// Formats a date string like "2026-06-27T06:30:00Z" into "dd MMM yyyy"
+  static String? formatDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return null;
+    try {
+      final date = DateTime.parse(dateStr).toLocal();
+      return DateFormat('dd MMM yyyy, hh:mm a').format(date);
+    } catch (_) {
+      return null;
     }
   }
 }

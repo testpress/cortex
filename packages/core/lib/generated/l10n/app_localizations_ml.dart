@@ -2793,4 +2793,16 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get aiSupportAskingAi => 'AI-യോട് ചോദിക്കുന്നു';
+
+  @override
+  String get contentAccessEnded =>
+      'ഈ ഉള്ളടക്കത്തിലേക്കുള്ള നിങ്ങളുടെ ആക്‌സസ് അവസാനിച്ചു!';
+
+  @override
+  String get accessExpired => 'ആക്‌സസ് കാലഹരണപ്പെട്ടു';
+
+  @override
+  String accessExpiredOn(String date) {
+    return '$date ന് ആക്‌സസ് കാലഹരണപ്പെട്ടു';
+  }
 }

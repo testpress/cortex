@@ -47,6 +47,9 @@ class LessonDto {
   final bool allowRetake;
   final int maxRetakes;
   final String? image;
+  final String? start;
+  final String? end;
+  final bool hasEnded;
 
   // New fields for sequential navigation and rich content (v2.4+)
   final String? nextContentId;
@@ -121,6 +124,9 @@ class LessonDto {
     this.allowRetake = true,
     this.maxRetakes = -1,
     this.image,
+    this.start,
+    this.end,
+    this.hasEnded = false,
     this.nextContentId,
     this.previousContentId,
     this.htmlContent,
@@ -171,6 +177,9 @@ class LessonDto {
     bool? allowRetake,
     int? maxRetakes,
     String? image,
+    String? start,
+    String? end,
+    bool? hasEnded,
     String? description,
     String? nextContentId,
     String? previousContentId,
@@ -216,6 +225,9 @@ class LessonDto {
       allowRetake: allowRetake ?? this.allowRetake,
       maxRetakes: maxRetakes ?? this.maxRetakes,
       image: image ?? this.image,
+      start: start ?? this.start,
+      end: end ?? this.end,
+      hasEnded: hasEnded ?? this.hasEnded,
       description: description ?? this.description,
       nextContentId: nextContentId ?? this.nextContentId,
       previousContentId: previousContentId ?? this.previousContentId,
@@ -284,6 +296,9 @@ class LessonDto {
           ? other.ancestorChapterIds
           : ancestorChapterIds,
       image: (image?.isEmpty ?? true) ? other.image : image,
+      start: (start?.isEmpty ?? true) ? other.start : start,
+      end: (end?.isEmpty ?? true) ? other.end : end,
+      hasEnded: hasEnded || other.hasEnded,
       description: (description?.isEmpty ?? true)
           ? other.description
           : description,
@@ -612,6 +627,9 @@ class LessonDto {
       image:
           json['cover_image_medium'] as String? ??
           json['cover_image'] as String?,
+      start: getString('start'),
+      end: getString('end'),
+      hasEnded: json['has_ended'] as bool? ?? false,
       isRunning:
           json['is_running'] as bool? ??
           [
@@ -715,6 +733,10 @@ class LessonDto {
       'disableAttemptResume': disableAttemptResume,
       'allowRetake': allowRetake,
       'maxRetakes': maxRetakes,
+      'image': image,
+      'start': start,
+      'end': end,
+      'hasEnded': hasEnded,
       'nextContentId': nextContentId,
       'previousContentId': previousContentId,
       'htmlContent': htmlContent,

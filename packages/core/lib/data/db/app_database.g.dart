@@ -1982,6 +1982,39 @@ class $LessonsTableTable extends LessonsTable
         type: DriftSqlType.string,
         requiredDuringInsert: false,
       );
+  static const VerificationMeta _startMeta = const VerificationMeta('start');
+  @override
+  late final GeneratedColumn<String> start = GeneratedColumn<String>(
+    'start',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _endMeta = const VerificationMeta('end');
+  @override
+  late final GeneratedColumn<String> end = GeneratedColumn<String>(
+    'end',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _hasEndedMeta = const VerificationMeta(
+    'hasEnded',
+  );
+  @override
+  late final GeneratedColumn<bool> hasEnded = GeneratedColumn<bool>(
+    'has_ended',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("has_ended" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -2024,6 +2057,9 @@ class $LessonsTableTable extends LessonsTable
     isAiEnabled,
     aiNotesUrl,
     lastWatchedDuration,
+    start,
+    end,
+    hasEnded,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2361,6 +2397,24 @@ class $LessonsTableTable extends LessonsTable
         ),
       );
     }
+    if (data.containsKey('start')) {
+      context.handle(
+        _startMeta,
+        start.isAcceptableOrUnknown(data['start']!, _startMeta),
+      );
+    }
+    if (data.containsKey('end')) {
+      context.handle(
+        _endMeta,
+        end.isAcceptableOrUnknown(data['end']!, _endMeta),
+      );
+    }
+    if (data.containsKey('has_ended')) {
+      context.handle(
+        _hasEndedMeta,
+        hasEnded.isAcceptableOrUnknown(data['has_ended']!, _hasEndedMeta),
+      );
+    }
     return context;
   }
 
@@ -2530,6 +2584,18 @@ class $LessonsTableTable extends LessonsTable
         DriftSqlType.string,
         data['${effectivePrefix}last_watched_duration'],
       ),
+      start: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}start'],
+      ),
+      end: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}end'],
+      ),
+      hasEnded: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}has_ended'],
+      )!,
     );
   }
 
@@ -2585,6 +2651,9 @@ class LessonsTableData extends DataClass
   final bool isAiEnabled;
   final String? aiNotesUrl;
   final String? lastWatchedDuration;
+  final String? start;
+  final String? end;
+  final bool hasEnded;
   const LessonsTableData({
     required this.id,
     required this.chapterId,
@@ -2626,6 +2695,9 @@ class LessonsTableData extends DataClass
     required this.isAiEnabled,
     this.aiNotesUrl,
     this.lastWatchedDuration,
+    this.start,
+    this.end,
+    required this.hasEnded,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2718,6 +2790,13 @@ class LessonsTableData extends DataClass
     if (!nullToAbsent || lastWatchedDuration != null) {
       map['last_watched_duration'] = Variable<String>(lastWatchedDuration);
     }
+    if (!nullToAbsent || start != null) {
+      map['start'] = Variable<String>(start);
+    }
+    if (!nullToAbsent || end != null) {
+      map['end'] = Variable<String>(end);
+    }
+    map['has_ended'] = Variable<bool>(hasEnded);
     return map;
   }
 
@@ -2809,6 +2888,11 @@ class LessonsTableData extends DataClass
       lastWatchedDuration: lastWatchedDuration == null && nullToAbsent
           ? const Value.absent()
           : Value(lastWatchedDuration),
+      start: start == null && nullToAbsent
+          ? const Value.absent()
+          : Value(start),
+      end: end == null && nullToAbsent ? const Value.absent() : Value(end),
+      hasEnded: Value(hasEnded),
     );
   }
 
@@ -2864,6 +2948,9 @@ class LessonsTableData extends DataClass
       lastWatchedDuration: serializer.fromJson<String?>(
         json['lastWatchedDuration'],
       ),
+      start: serializer.fromJson<String?>(json['start']),
+      end: serializer.fromJson<String?>(json['end']),
+      hasEnded: serializer.fromJson<bool>(json['hasEnded']),
     );
   }
   @override
@@ -2910,6 +2997,9 @@ class LessonsTableData extends DataClass
       'isAiEnabled': serializer.toJson<bool>(isAiEnabled),
       'aiNotesUrl': serializer.toJson<String?>(aiNotesUrl),
       'lastWatchedDuration': serializer.toJson<String?>(lastWatchedDuration),
+      'start': serializer.toJson<String?>(start),
+      'end': serializer.toJson<String?>(end),
+      'hasEnded': serializer.toJson<bool>(hasEnded),
     };
   }
 
@@ -2954,6 +3044,9 @@ class LessonsTableData extends DataClass
     bool? isAiEnabled,
     Value<String?> aiNotesUrl = const Value.absent(),
     Value<String?> lastWatchedDuration = const Value.absent(),
+    Value<String?> start = const Value.absent(),
+    Value<String?> end = const Value.absent(),
+    bool? hasEnded,
   }) => LessonsTableData(
     id: id ?? this.id,
     chapterId: chapterId ?? this.chapterId,
@@ -3009,6 +3102,9 @@ class LessonsTableData extends DataClass
     lastWatchedDuration: lastWatchedDuration.present
         ? lastWatchedDuration.value
         : this.lastWatchedDuration,
+    start: start.present ? start.value : this.start,
+    end: end.present ? end.value : this.end,
+    hasEnded: hasEnded ?? this.hasEnded,
   );
   LessonsTableData copyWithCompanion(LessonsTableCompanion data) {
     return LessonsTableData(
@@ -3110,6 +3206,9 @@ class LessonsTableData extends DataClass
       lastWatchedDuration: data.lastWatchedDuration.present
           ? data.lastWatchedDuration.value
           : this.lastWatchedDuration,
+      start: data.start.present ? data.start.value : this.start,
+      end: data.end.present ? data.end.value : this.end,
+      hasEnded: data.hasEnded.present ? data.hasEnded.value : this.hasEnded,
     );
   }
 
@@ -3155,7 +3254,10 @@ class LessonsTableData extends DataClass
           ..write('videoSubtitleUrl: $videoSubtitleUrl, ')
           ..write('isAiEnabled: $isAiEnabled, ')
           ..write('aiNotesUrl: $aiNotesUrl, ')
-          ..write('lastWatchedDuration: $lastWatchedDuration')
+          ..write('lastWatchedDuration: $lastWatchedDuration, ')
+          ..write('start: $start, ')
+          ..write('end: $end, ')
+          ..write('hasEnded: $hasEnded')
           ..write(')'))
         .toString();
   }
@@ -3202,6 +3304,9 @@ class LessonsTableData extends DataClass
     isAiEnabled,
     aiNotesUrl,
     lastWatchedDuration,
+    start,
+    end,
+    hasEnded,
   ]);
   @override
   bool operator ==(Object other) =>
@@ -3246,7 +3351,10 @@ class LessonsTableData extends DataClass
           other.videoSubtitleUrl == this.videoSubtitleUrl &&
           other.isAiEnabled == this.isAiEnabled &&
           other.aiNotesUrl == this.aiNotesUrl &&
-          other.lastWatchedDuration == this.lastWatchedDuration);
+          other.lastWatchedDuration == this.lastWatchedDuration &&
+          other.start == this.start &&
+          other.end == this.end &&
+          other.hasEnded == this.hasEnded);
 }
 
 class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
@@ -3290,6 +3398,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   final Value<bool> isAiEnabled;
   final Value<String?> aiNotesUrl;
   final Value<String?> lastWatchedDuration;
+  final Value<String?> start;
+  final Value<String?> end;
+  final Value<bool> hasEnded;
   final Value<int> rowid;
   const LessonsTableCompanion({
     this.id = const Value.absent(),
@@ -3332,6 +3443,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.isAiEnabled = const Value.absent(),
     this.aiNotesUrl = const Value.absent(),
     this.lastWatchedDuration = const Value.absent(),
+    this.start = const Value.absent(),
+    this.end = const Value.absent(),
+    this.hasEnded = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   LessonsTableCompanion.insert({
@@ -3375,6 +3489,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.isAiEnabled = const Value.absent(),
     this.aiNotesUrl = const Value.absent(),
     this.lastWatchedDuration = const Value.absent(),
+    this.start = const Value.absent(),
+    this.end = const Value.absent(),
+    this.hasEnded = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        chapterId = Value(chapterId),
@@ -3423,6 +3540,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Expression<bool>? isAiEnabled,
     Expression<String>? aiNotesUrl,
     Expression<String>? lastWatchedDuration,
+    Expression<String>? start,
+    Expression<String>? end,
+    Expression<bool>? hasEnded,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -3468,6 +3588,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       if (aiNotesUrl != null) 'ai_notes_url': aiNotesUrl,
       if (lastWatchedDuration != null)
         'last_watched_duration': lastWatchedDuration,
+      if (start != null) 'start': start,
+      if (end != null) 'end': end,
+      if (hasEnded != null) 'has_ended': hasEnded,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -3513,6 +3636,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Value<bool>? isAiEnabled,
     Value<String?>? aiNotesUrl,
     Value<String?>? lastWatchedDuration,
+    Value<String?>? start,
+    Value<String?>? end,
+    Value<bool>? hasEnded,
     Value<int>? rowid,
   }) {
     return LessonsTableCompanion(
@@ -3556,6 +3682,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       isAiEnabled: isAiEnabled ?? this.isAiEnabled,
       aiNotesUrl: aiNotesUrl ?? this.aiNotesUrl,
       lastWatchedDuration: lastWatchedDuration ?? this.lastWatchedDuration,
+      start: start ?? this.start,
+      end: end ?? this.end,
+      hasEnded: hasEnded ?? this.hasEnded,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -3685,6 +3814,15 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
         lastWatchedDuration.value,
       );
     }
+    if (start.present) {
+      map['start'] = Variable<String>(start.value);
+    }
+    if (end.present) {
+      map['end'] = Variable<String>(end.value);
+    }
+    if (hasEnded.present) {
+      map['has_ended'] = Variable<bool>(hasEnded.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -3734,6 +3872,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
           ..write('isAiEnabled: $isAiEnabled, ')
           ..write('aiNotesUrl: $aiNotesUrl, ')
           ..write('lastWatchedDuration: $lastWatchedDuration, ')
+          ..write('start: $start, ')
+          ..write('end: $end, ')
+          ..write('hasEnded: $hasEnded, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -17015,6 +17156,9 @@ typedef $$LessonsTableTableCreateCompanionBuilder =
       Value<bool> isAiEnabled,
       Value<String?> aiNotesUrl,
       Value<String?> lastWatchedDuration,
+      Value<String?> start,
+      Value<String?> end,
+      Value<bool> hasEnded,
       Value<int> rowid,
     });
 typedef $$LessonsTableTableUpdateCompanionBuilder =
@@ -17059,6 +17203,9 @@ typedef $$LessonsTableTableUpdateCompanionBuilder =
       Value<bool> isAiEnabled,
       Value<String?> aiNotesUrl,
       Value<String?> lastWatchedDuration,
+      Value<String?> start,
+      Value<String?> end,
+      Value<bool> hasEnded,
       Value<int> rowid,
     });
 
@@ -17268,6 +17415,21 @@ class $$LessonsTableTableFilterComposer
 
   ColumnFilters<String> get lastWatchedDuration => $composableBuilder(
     column: $table.lastWatchedDuration,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get start => $composableBuilder(
+    column: $table.start,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get end => $composableBuilder(
+    column: $table.end,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get hasEnded => $composableBuilder(
+    column: $table.hasEnded,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -17480,6 +17642,21 @@ class $$LessonsTableTableOrderingComposer
     column: $table.lastWatchedDuration,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get start => $composableBuilder(
+    column: $table.start,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get end => $composableBuilder(
+    column: $table.end,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get hasEnded => $composableBuilder(
+    column: $table.hasEnded,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$LessonsTableTableAnnotationComposer
@@ -17668,6 +17845,15 @@ class $$LessonsTableTableAnnotationComposer
     column: $table.lastWatchedDuration,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get start =>
+      $composableBuilder(column: $table.start, builder: (column) => column);
+
+  GeneratedColumn<String> get end =>
+      $composableBuilder(column: $table.end, builder: (column) => column);
+
+  GeneratedColumn<bool> get hasEnded =>
+      $composableBuilder(column: $table.hasEnded, builder: (column) => column);
 }
 
 class $$LessonsTableTableTableManager
@@ -17741,6 +17927,9 @@ class $$LessonsTableTableTableManager
                 Value<bool> isAiEnabled = const Value.absent(),
                 Value<String?> aiNotesUrl = const Value.absent(),
                 Value<String?> lastWatchedDuration = const Value.absent(),
+                Value<String?> start = const Value.absent(),
+                Value<String?> end = const Value.absent(),
+                Value<bool> hasEnded = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LessonsTableCompanion(
                 id: id,
@@ -17783,6 +17972,9 @@ class $$LessonsTableTableTableManager
                 isAiEnabled: isAiEnabled,
                 aiNotesUrl: aiNotesUrl,
                 lastWatchedDuration: lastWatchedDuration,
+                start: start,
+                end: end,
+                hasEnded: hasEnded,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -17827,6 +18019,9 @@ class $$LessonsTableTableTableManager
                 Value<bool> isAiEnabled = const Value.absent(),
                 Value<String?> aiNotesUrl = const Value.absent(),
                 Value<String?> lastWatchedDuration = const Value.absent(),
+                Value<String?> start = const Value.absent(),
+                Value<String?> end = const Value.absent(),
+                Value<bool> hasEnded = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LessonsTableCompanion.insert(
                 id: id,
@@ -17869,6 +18064,9 @@ class $$LessonsTableTableTableManager
                 isAiEnabled: isAiEnabled,
                 aiNotesUrl: aiNotesUrl,
                 lastWatchedDuration: lastWatchedDuration,
+                start: start,
+                end: end,
+                hasEnded: hasEnded,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
