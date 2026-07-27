@@ -193,6 +193,7 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
   bool _hasSeekedToInitial = false;
   double? _pendingSeekPosition;
   bool _shouldIgnoreInitialCompletion = false;
+  double _initialSeekPos = 0.0;
 
   void _onPlayerCreated(TestpressPlayerController controller) {
     _controller = controller;
@@ -211,10 +212,14 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
                 .seek(Duration(milliseconds: (targetSeek * 1000).toInt()));
             _lastPosition = targetSeek;
             _currentIntervalStart = targetSeek;
+            _initialSeekPos = targetSeek;
             // Guard: If the initial position is close to the end, ignore the completion trigger
-            if (duration > 5.0 && targetSeek >= duration - 2.0) {
+            final nearEndThreshold = duration > 2.0 ? 2.0 : (duration * 0.5);
+            if (targetSeek >= duration - nearEndThreshold) {
               _shouldIgnoreInitialCompletion = true;
             }
+          } else {
+            _initialSeekPos = 0.0;
           }
           _hasSeekedToInitial = true;
           _pendingSeekPosition = null;
@@ -222,11 +227,13 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
         return;
       }
 
-      // Reset the ignore flag if the user seeks backwards or plays from before the end
-      if (_shouldIgnoreInitialCompletion &&
-          duration > 0.0 &&
-          currentPos < duration - 2.0) {
-        _shouldIgnoreInitialCompletion = false;
+      // Reset the ignore flag if the user seeks backwards or plays forward past the initial seek position
+      if (_shouldIgnoreInitialCompletion) {
+        final isProgressingForward = currentPos > _initialSeekPos + 0.1;
+        final isSeekingBackward = currentPos < _initialSeekPos - 0.5;
+        if (isProgressingForward || isSeekingBackward) {
+          _shouldIgnoreInitialCompletion = false;
+        }
       }
 
       // Detect seek (position jumped by more than 1.5s or went backwards)
