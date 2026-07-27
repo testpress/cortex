@@ -5009,6 +5009,12 @@ abstract class AppLocalizations {
   /// **'Download completed'**
   String get downloadCompleted;
 
+  /// No description provided for @downloadStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Download started'**
+  String get downloadStarted;
+
   /// No description provided for @downloadingFile.
   ///
   /// In en, this message translates to:

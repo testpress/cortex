@@ -2826,6 +2826,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get downloadCompleted => 'ഡൗൺലോഡ് പൂർത്തിയായി';
 
   @override
+  String get downloadStarted => 'ഡൗൺലോഡ് ആരംഭിച്ചു';
+
+  @override
   String get downloadingFile => 'ഡൗൺലോഡ് ചെയ്യുന്നു...';
 
   @override

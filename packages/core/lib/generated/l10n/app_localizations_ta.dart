@@ -2819,6 +2819,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get downloadCompleted => 'பதிவிறக்கம் முடிந்தது';
 
   @override
+  String get downloadStarted => 'பதிவிறக்கம் தொடங்கியது';
+
+  @override
   String get downloadingFile => 'பதிவிறக்கப்படுகிறது...';
 
   @override

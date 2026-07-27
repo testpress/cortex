@@ -19,6 +19,7 @@ Currently, the `AppPdfViewer` allows users to view PDFs, but there is no mechani
 
 - **Domain Model Changes**: Add `final bool allowDownload` and `final bool watermarkBeforeDownload` to `LessonDto` and `Lesson` (defaulting to `false`). Add both to `lessons_table.dart` (Schema v2) for offline support.
 - **UI Logic**: `LessonDetailOrchestrator` will conditionally show the download button based on `allowDownload`.
+- **Downloads Tab Visibility**: PDF Lessons shall not be displayed in the in-app Downloads screen. This screen is reserved exclusively for Videos and Attachments, while PDF lessons are managed via the course syllabus.
 - **PDF Download Engine**: Create a robust `PdfDownloader` in `packages/core` that downloads the raw PDF, optionally processes it via `syncfusion_flutter_pdf` in an isolate to stamp the user's name if `watermarkBeforeDownload` is true, and saves the final file to the public Downloads folder.
 - **Repository Integration**: Connect the `PdfDownloader` into `DownloadsRepository` under the `attachment` download type, using a title-based file path naming strategy (`$title.pdf`). Multiple clicks will download duplicates sequentially (e.g. `$title-1.pdf`), filling any numerical gaps if the user deletes intermediate files.
 - **Bug Fix**: Modify `PdfCacheRequest` to ignore signed `url` parameters during equality checks to stop flickering in the UI caused by CDN signature expirations.

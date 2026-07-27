@@ -17,7 +17,8 @@ class Downloads extends _$Downloads {
   Stream<List<DownloadItem>> build() async* {
     final repo = await ref.watch(downloadsRepositoryProvider.future);
     yield* repo.watchAllDownloads().map(
-          (items) => items.where((item) => item.fileType != 'pdf').toList(),
+          (items) =>
+              items.where((item) => item.fileType != 'lesson_pdf').toList(),
         );
   }
 
@@ -50,7 +51,7 @@ class Downloads extends _$Downloads {
       status: DownloadStatus.downloading,
       progress: 0,
       downloadedDate: DateTime.now().toIso8601String(),
-      fileType: 'pdf',
+      fileType: 'lesson_pdf',
       contentUrl: lesson.contentUrl!,
     );
 

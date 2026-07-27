@@ -64,11 +64,14 @@ class _LessonDetailOrchestratorState
     if (!mounted) return;
 
     if (mounted) {
-      AppToast.show(context, message: 'Download started');
+      AppToast.show(context, message: L10n.of(context).downloadStarted);
     }
 
     try {
       await ref.read(downloadsProvider.notifier).startPdfLessonDownload(lesson);
+      if (mounted) {
+        AppToast.show(context, message: L10n.of(context).downloadCompleted);
+      }
     } catch (e) {
       if (mounted) {
         AppToast.show(

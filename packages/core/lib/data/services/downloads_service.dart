@@ -141,35 +141,6 @@ class DownloadsService {
     return (await getExistingAttachmentPath(url)) != null;
   }
 
-  /// Checks if a watermarked PDF exists on disk using the title-based path
-  /// that [PdfDownloader] uses to save files (i.e. `$title.pdf`).
-  /// Returns the file size in bytes if found, or null if the file is missing.
-  Future<int?> getExistingPdfSize(String title) async {
-    try {
-      final dir = await _fileDownloader.getDirectory(
-        StorageType.publicDownload,
-      );
-      final path = '${dir.path}/${PdfDownloader.safeTitle(title)}.pdf';
-      final file = File(path);
-      if (await file.exists()) return await file.length();
-    } catch (_) {}
-    return null;
-  }
-
-  /// Deletes a cached PDF file based on its title if it exists.
-  Future<void> deleteExistingPdf(String title) async {
-    try {
-      final dir = await _fileDownloader.getDirectory(
-        StorageType.publicDownload,
-      );
-      final path = '${dir.path}/${PdfDownloader.safeTitle(title)}.pdf';
-      final file = File(path);
-      if (await file.exists()) {
-        await file.delete();
-      }
-    } catch (_) {}
-  }
-
   /// Fetches all active video downloads from the TPStreams SDK.
   /// Replace mock with real TPStreamsDownloadManager.getAllDownloads()
   Future<List<DownloadItem>> getActiveVideoDownloads() async {

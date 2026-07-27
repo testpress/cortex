@@ -2776,6 +2776,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get downloadCompleted => 'اكتمل التنزيل';
 
   @override
+  String get downloadStarted => 'بدأ التنزيل';
+
+  @override
   String get downloadingFile => 'جاري التنزيل...';
 
   @override

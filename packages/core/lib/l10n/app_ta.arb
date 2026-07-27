@@ -1297,5 +1297,6 @@
   "openFileAction": "கோப்பைத் திற",
   "downloadAgainAction": "மீண்டும் பதிவிறக்கு",
   "downloadCompleted": "பதிவிறக்கம் முடிந்தது",
+  "downloadStarted": "பதிவிறக்கம் தொடங்கியது",
   "downloadingFile": "பதிவிறக்கப்படுகிறது...",
   "viewAction": "காண்க"}

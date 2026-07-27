@@ -14,3 +14,8 @@ The system SHALL provide the capability to download PDF lessons directly from th
 #### Scenario: Saving PDF to public storage on explicit download
 - **WHEN** the user taps the download icon
 - **THEN** the system SHALL process the watermark and save the resulting file to a public directory (e.g., the user's Downloads folder) where they can access it externally.
+
+#### Scenario: In-app Downloads Screen Visibility
+- **GIVEN** a PDF lesson has been downloaded
+- **WHEN** the user navigates to the in-app Downloads screen
+- **THEN** the system SHALL NOT display the PDF lesson in the list. The Downloads screen is reserved for Videos and Attachments. PDF Lessons are accessed and managed via the course syllabus.

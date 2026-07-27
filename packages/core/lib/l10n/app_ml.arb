@@ -1063,5 +1063,6 @@
   "openFileAction": "ഫയൽ തുറക്കുക",
   "downloadAgainAction": "വീണ്ടും ഡൗൺലോഡ് ചെയ്യുക",
   "downloadCompleted": "ഡൗൺലോഡ് പൂർത്തിയായി",
+  "downloadStarted": "ഡൗൺലോഡ് ആരംഭിച്ചു",
   "downloadingFile": "ഡൗൺലോഡ് ചെയ്യുന്നു...",
   "viewAction": "കാണുക"}

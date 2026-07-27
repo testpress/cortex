@@ -2774,6 +2774,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get downloadCompleted => 'Download completed';
 
   @override
+  String get downloadStarted => 'Download started';
+
+  @override
   String get downloadingFile => 'Downloading...';
 
   @override

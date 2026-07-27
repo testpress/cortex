@@ -20,5 +20,5 @@ Currently, users cannot download PDFs directly from the in-app viewer. This chan
 
 ## Impact
 
-- **UI**: PDF viewer screen will gain a new download action button.
+- **UI**: PDF viewer screen will gain a new download action button. Downloaded PDF lessons will not be displayed in the in-app Downloads screen (reserved for videos and attachments).
 - **Watermark Logic**: The condition for applying watermarks in-app is removed. When a user downloads the PDF, the watermark is stamped onto the downloaded file only if `watermark_before_download` is true.

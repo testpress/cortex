@@ -1379,5 +1379,6 @@
   "openFileAction": "Open File",
   "downloadAgainAction": "Download Again",
   "downloadCompleted": "Download completed",
+  "downloadStarted": "Download started",
   "downloadingFile": "Downloading...",
   "viewAction": "View"}
