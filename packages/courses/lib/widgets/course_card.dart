@@ -19,100 +19,123 @@ class CourseCard extends StatelessWidget {
   final VoidCallback? onTap;
   final bool isSkeleton;
 
+  bool get _isMobileAllowed {
+    if (course.allowedDevices.isEmpty) return true;
+    return course.allowedDevices.any((d) => d.toLowerCase().contains('mobile'));
+  }
+
+  String get _allowedDevicesTitle {
+    if (course.allowedDevices.isEmpty) return 'Available only on the web.';
+    return 'Available only on the ${course.allowedDevices.join(' and ')}.';
+  }
+
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    final body = Row(
+    final body = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Skeleton.replace(
-          width: 48,
-          height: 48,
-          replacement: const Bone.circle(size: 48),
-          child: Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: (course.image != null && course.image!.isNotEmpty)
-                  ? null
-                  : design.shortcutPalette.atIndex(1).background,
-              borderRadius: BorderRadius.circular(design.radius.md),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(design.radius.md),
-              child: (course.image != null && course.image!.isNotEmpty)
-                  ? CachedNetworkImage(
-                      imageUrl: course.image!,
-                      fit: BoxFit.cover,
-                      errorWidget: (context, url, error) => Icon(
-                        LucideIcons.bookOpen,
-                        color: design.shortcutPalette.atIndex(1).foreground,
-                        size: 24,
-                      ),
-                    )
-                  : Icon(
-                      LucideIcons.bookOpen,
-                      color: design.shortcutPalette.atIndex(1).foreground,
-                      size: 24,
-                    ),
-            ),
-          ),
-        ),
-        SizedBox(width: design.spacing.md),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: AppText.cardTitle(
-                      course.title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  Icon(
-                    LucideIcons.chevronRight,
-                    color: design.colors.textSecondary.withValues(
-                      alpha: 0.3,
-                    ),
-                    size: 20,
-                  ),
-                ],
-              ),
-              SizedBox(height: design.spacing.xs),
-              AppText.caption(
-                '${L10n.of(context).curriculumChaptersCount(course.chapterCount)} · ${L10n.of(context).courseContentsCount(course.totalContents)}',
-                color: design.colors.textSecondary,
-              ),
-              SizedBox(height: design.spacing.md),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _ProgressStat(
-                    value: '${course.completedLessons}/${course.totalLessons}',
-                    label: L10n.of(context).labelLessonsPlural,
-                  ),
-                  _ProgressStat(
-                    value: course.formattedProgress,
-                    label: L10n.of(context).labelCompleted,
-                  ),
-                ],
-              ),
-              SizedBox(height: design.spacing.sm),
-              Semantics(
-                label: 'Course progress',
-                value: course.formattedProgress,
-                child: _ProgressBar(
-                  progress: (course.progress / 100.0).clamp(0.0, 1.0),
-                  color: design.colors.success,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Skeleton.replace(
+              width: 48,
+              height: 48,
+              replacement: const Bone.circle(size: 48),
+              child: Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: (course.image != null && course.image!.isNotEmpty)
+                      ? null
+                      : design.shortcutPalette.atIndex(1).background,
+                  borderRadius: BorderRadius.circular(design.radius.md),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(design.radius.md),
+                  child: (course.image != null && course.image!.isNotEmpty)
+                      ? CachedNetworkImage(
+                          imageUrl: course.image!,
+                          fit: BoxFit.cover,
+                          errorWidget: (context, url, error) => Icon(
+                            LucideIcons.bookOpen,
+                            color: design.shortcutPalette.atIndex(1).foreground,
+                            size: 24,
+                          ),
+                        )
+                      : Icon(
+                          LucideIcons.bookOpen,
+                          color: design.shortcutPalette.atIndex(1).foreground,
+                          size: 24,
+                        ),
                 ),
               ),
-            ],
-          ),
+            ),
+            SizedBox(width: design.spacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AppText.cardTitle(
+                          course.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Icon(
+                        _isMobileAllowed
+                            ? LucideIcons.chevronRight
+                            : LucideIcons.lock,
+                        color: design.colors.textSecondary.withValues(
+                          alpha: 0.3,
+                        ),
+                        size: 20,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: design.spacing.xs),
+                  AppText.caption(
+                    '${L10n.of(context).curriculumChaptersCount(course.chapterCount)} · ${L10n.of(context).courseContentsCount(course.totalContents)}',
+                    color: design.colors.textSecondary,
+                  ),
+                  if (_isMobileAllowed) ...[
+                    SizedBox(height: design.spacing.md),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _ProgressStat(
+                          value:
+                              '${course.completedLessons}/${course.totalLessons}',
+                          label: L10n.of(context).labelLessonsPlural,
+                        ),
+                        _ProgressStat(
+                          value: course.formattedProgress,
+                          label: L10n.of(context).labelCompleted,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: design.spacing.sm),
+                    Semantics(
+                      label: 'Course progress',
+                      value: course.formattedProgress,
+                      child: _ProgressBar(
+                        progress: (course.progress / 100.0).clamp(0.0, 1.0),
+                        color: design.colors.success,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
         ),
+        if (!_isMobileAllowed) ...[
+          _buildRestrictedWarning(design),
+        ],
       ],
     );
 
@@ -130,7 +153,7 @@ class CourseCard extends StatelessWidget {
       ),
     );
 
-    if (onTap == null) {
+    if (onTap == null || !_isMobileAllowed) {
       return card;
     }
 
@@ -141,6 +164,45 @@ class CourseCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: design.radius.card,
         child: card,
+      ),
+    );
+  }
+
+  Widget _buildRestrictedWarning(DesignConfig design) {
+    return Container(
+      margin: EdgeInsets.only(top: design.spacing.md),
+      padding: EdgeInsets.symmetric(
+        horizontal: design.spacing.sm,
+        vertical: design.spacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: design.colors.warning.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(design.radius.md),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(
+            LucideIcons.info,
+            color: design.colors.warning,
+            size: design.iconSize.lg,
+          ),
+          SizedBox(width: design.spacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppText.cardTitle(
+                  _allowedDevicesTitle,
+                ),
+                SizedBox(height: design.spacing.xs),
+                AppText.cardSubtitle(
+                  'This course is not available in the mobile app.',
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
