@@ -54,6 +54,20 @@ class LessonListItem extends StatelessWidget {
     final formattedEnd =
         lesson.end != null ? TimeFormatter.formatDate(lesson.end!) : null;
 
+    final guardedOnTap = isSkeleton
+        ? null
+        : () {
+            if (lesson.hasEnded) {
+              AppToast.show(
+                context,
+                message: L10n.of(context).contentAccessEnded,
+                isError: true,
+              );
+              return;
+            }
+            onTap?.call();
+          };
+
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
@@ -70,22 +84,10 @@ class LessonListItem extends StatelessWidget {
           highlightColor: design.colors.onSkeleton,
         ),
         child: AppSemantics.button(
-          label: 'Open lesson: ${lesson.title}',
-          onTap: isSkeleton ? () {} : (onTap ?? () {}),
+          label: L10n.of(context).openDetailedLesson(lesson.title),
+          onTap: guardedOnTap ?? () {},
           child: AppFocusable(
-            onTap: isSkeleton
-                ? null
-                : () {
-                    if (lesson.hasEnded) {
-                      AppToast.show(
-                        context,
-                        message: L10n.of(context).contentAccessEnded,
-                        isError: true,
-                      );
-                      return;
-                    }
-                    onTap?.call();
-                  },
+            onTap: guardedOnTap,
             borderRadius: BorderRadius.circular(12),
             child: IntrinsicHeight(
               child: Row(
