@@ -102,78 +102,86 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     final l10n = L10n.of(context);
     final padding = MediaQuery.paddingOf(context);
 
+    final viewInsets = MediaQuery.viewInsetsOf(context);
+
     // Padding for bottom area to handle safe area and consistent spacing
     final bottomPadding = padding.bottom + design.spacing.lg;
 
     return ColoredBox(
       color: design.colors.canvas,
-      child: Column(
-        children: [
-          _buildHeader(context, design, l10n),
-          Expanded(
-            child: AppScroll(
-              padding: EdgeInsets.fromLTRB(
-                padding.left > design.spacing.md
-                    ? padding.left
-                    : design.spacing.md,
-                design.spacing.md,
-                padding.right > design.spacing.md
-                    ? padding.right
-                    : design.spacing.md,
-                bottomPadding,
-              ),
-              children: [
-                AppText.headline(l10n.editProfileTitle),
-                if (_errorMessage != null) ...[
-                  SizedBox(height: design.spacing.md),
-                  AppText.bodySmall(_errorMessage!, color: design.colors.error),
+      child: Padding(
+        padding: EdgeInsets.only(bottom: viewInsets.bottom),
+        child: Column(
+          children: [
+            _buildHeader(context, design, l10n),
+            Expanded(
+              child: AppScroll(
+                padding: EdgeInsets.fromLTRB(
+                  padding.left > design.spacing.md
+                      ? padding.left
+                      : design.spacing.md,
+                  design.spacing.md,
+                  padding.right > design.spacing.md
+                      ? padding.right
+                      : design.spacing.md,
+                  bottomPadding,
+                ),
+                children: [
+                  AppText.headline(l10n.editProfileTitle),
+                  if (_errorMessage != null) ...[
+                    SizedBox(height: design.spacing.md),
+                    AppText.bodySmall(
+                      _errorMessage!,
+                      color: design.colors.error,
+                    ),
+                  ],
+                  SizedBox(height: design.spacing.xl),
+                  _buildAvatarSection(design, l10n),
+                  SizedBox(height: design.spacing.xxl),
+                  AppTextField(
+                    label: l10n.editProfileFirstNameLabel,
+                    hintText: l10n.editProfileFirstNameHint,
+                    controller: _firstNameController,
+                    errorText: _firstNameError,
+                    onChanged: (_) {
+                      if (_firstNameError != null) {
+                        setState(() => _firstNameError = null);
+                      }
+                    },
+                  ),
+                  SizedBox(height: design.spacing.lg),
+                  AppTextField(
+                    label: l10n.editProfileLastNameLabel,
+                    hintText: l10n.editProfileLastNameHint,
+                    controller: _lastNameController,
+                    errorText: _lastNameError,
+                    onChanged: (_) {
+                      if (_lastNameError != null) {
+                        setState(() => _lastNameError = null);
+                      }
+                    },
+                  ),
+                  SizedBox(height: design.spacing.lg),
+                  AppTextField(
+                    label: l10n.editProfileEmailLabel,
+                    hintText: l10n.editProfileEmailHint,
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    readOnly: true,
+                    helperText: l10n.editProfileEmailHelper,
+                  ),
+                  SizedBox(height: design.spacing.lg),
+                  AppTextField(
+                    label: l10n.editProfilePhoneLabel,
+                    hintText: l10n.editProfilePhoneHint,
+                    controller: _phoneController,
+                    keyboardType: TextInputType.phone,
+                  ),
                 ],
-                SizedBox(height: design.spacing.xl),
-                _buildAvatarSection(design, l10n),
-                SizedBox(height: design.spacing.xxl),
-                AppTextField(
-                  label: l10n.editProfileFirstNameLabel,
-                  hintText: l10n.editProfileFirstNameHint,
-                  controller: _firstNameController,
-                  errorText: _firstNameError,
-                  onChanged: (_) {
-                    if (_firstNameError != null) {
-                      setState(() => _firstNameError = null);
-                    }
-                  },
-                ),
-                SizedBox(height: design.spacing.lg),
-                AppTextField(
-                  label: l10n.editProfileLastNameLabel,
-                  hintText: l10n.editProfileLastNameHint,
-                  controller: _lastNameController,
-                  errorText: _lastNameError,
-                  onChanged: (_) {
-                    if (_lastNameError != null) {
-                      setState(() => _lastNameError = null);
-                    }
-                  },
-                ),
-                SizedBox(height: design.spacing.lg),
-                AppTextField(
-                  label: l10n.editProfileEmailLabel,
-                  hintText: l10n.editProfileEmailHint,
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  readOnly: true,
-                  helperText: l10n.editProfileEmailHelper,
-                ),
-                SizedBox(height: design.spacing.lg),
-                AppTextField(
-                  label: l10n.editProfilePhoneLabel,
-                  hintText: l10n.editProfilePhoneHint,
-                  controller: _phoneController,
-                  keyboardType: TextInputType.phone,
-                ),
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
