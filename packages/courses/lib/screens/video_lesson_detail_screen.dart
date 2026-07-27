@@ -147,8 +147,11 @@ class _VideoLessonDetailScreenState
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final initialPos =
-        double.tryParse(widget.lesson.lastWatchedDuration ?? '0') ?? 0.0;
+    final isCompleted =
+        widget.lesson.progressStatus == LessonProgressStatus.completed;
+    final initialPos = isCompleted
+        ? 0.0
+        : (double.tryParse(widget.lesson.lastWatchedDuration ?? '0') ?? 0.0);
 
     final padding = MediaQuery.of(context).padding;
     final l10n = L10n.of(context);
