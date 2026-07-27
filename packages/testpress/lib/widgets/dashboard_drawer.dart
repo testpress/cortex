@@ -128,14 +128,15 @@ class DashboardDrawer extends ConsumerWidget {
         ),
         AppDrawerSection(
           items: [
-            AppDrawerItem(
-              icon: LucideIcons.user,
-              label: l10n.drawerProfile,
-              action: () {
-                ref.read(isHomeDrawerOpenProvider.notifier).state = false;
-                context.go('/profile');
-              },
-            ),
+            if (!AppConfig.showProfileTab)
+              AppDrawerItem(
+                icon: LucideIcons.user,
+                label: l10n.drawerProfile,
+                action: () {
+                  ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                  context.go('/profile');
+                },
+              ),
             AppDrawerItem(
               icon: LucideIcons.settings,
               label: l10n.drawerSettings,
