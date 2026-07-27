@@ -176,8 +176,11 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
   }
 
   Widget _buildVideoSection(DesignConfig design) {
-    final initialPos =
-        double.tryParse(widget.lesson.lastWatchedDuration ?? '0') ?? 0.0;
+    final isCompleted =
+        widget.lesson.progressStatus == LessonProgressStatus.completed;
+    final initialPos = isCompleted
+        ? 0.0
+        : (double.tryParse(widget.lesson.lastWatchedDuration ?? '0') ?? 0.0);
 
     return CustomVideoPlayer(
       key: _videoPlayerKey,
