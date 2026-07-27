@@ -171,7 +171,7 @@ class _CustomExamConfigProviderElement
 }
 
 String _$customExamSelectionHash() =>
-    r'b99393795bf607e6b6610bbaf9b2232d58ba513a';
+    r'06e161fc44fa0f401cf64aa335e5516dff1f993a';
 
 abstract class _$CustomExamSelection
     extends BuildlessAutoDisposeNotifier<CustomExamSelectionState> {

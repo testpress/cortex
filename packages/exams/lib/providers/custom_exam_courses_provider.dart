@@ -4,7 +4,7 @@ import '../repositories/custom_exam_repository.dart';
 
 part 'custom_exam_courses_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class CustomExamCourses extends _$CustomExamCourses {
   @override
   FutureOr<List<CourseDto>> build() async {
