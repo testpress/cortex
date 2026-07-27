@@ -62,7 +62,7 @@ class TestTakingStrategy implements PaletteColorStrategy {
     AnswerDto? answer,
     DesignConfig design,
   ) {
-    final isSelected = answer != null && answer.selectedOptions.isNotEmpty;
+    final isSelected = answer != null && answer.hasAnswer;
     final isMarked = answer?.isMarked ?? false;
 
     if (isSelected && isMarked) {
@@ -120,14 +120,10 @@ class TestTakingStrategy implements PaletteColorStrategy {
   ) {
     return questions.where((q) {
       final a = answers[q.id];
-      if (a == null) return false;
-      if (q.type == 'shortAnswer' || q.type == 'numerical') {
-        return (a.shortText ?? '').trim().isNotEmpty;
+      if (a != null) {
+        return a.hasAnswer;
       }
-      if (q.type == 'essay') {
-        return (a.essayText ?? '').trim().isNotEmpty;
-      }
-      return a.selectedOptions.isNotEmpty;
+      return false;
     }).length;
   }
 }

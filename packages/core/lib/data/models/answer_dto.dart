@@ -9,6 +9,10 @@ class AnswerDto {
 
   bool get isMarked => review;
   List<String> get selectedOptions => selectedOptionIds;
+  bool get hasAnswer =>
+      selectedOptionIds.isNotEmpty ||
+      (shortText != null && shortText!.trim().isNotEmpty) ||
+      (essayText != null && essayText!.trim().isNotEmpty);
 
   AnswerDto({
     required this.questionId,

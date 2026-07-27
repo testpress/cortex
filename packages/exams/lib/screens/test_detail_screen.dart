@@ -467,12 +467,12 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
 
     // Count answered questions overall (across all sections)
     final answeredCount = state.answers.entries
-        .where((e) => e.value.selectedOptions.isNotEmpty)
+        .where((e) => e.value.hasAnswer)
         .length;
 
     // Count answered questions for the current section only
     final sectionAnsweredCount = allQuestions
-        .where((q) => state.answers[q.id]?.selectedOptions.isNotEmpty ?? false)
+        .where((q) => state.answers[q.id]?.hasAnswer ?? false)
         .length;
 
     // Calculate global question position and total question count across all sections
