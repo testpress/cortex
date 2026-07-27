@@ -6,12 +6,15 @@ part of 'custom_exam_courses_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$customExamCoursesHash() => r'd01c972b5af42afd2876845a53882342995856d3';
+String _$customExamCoursesHash() => r'd427e1dffa61913929a124719db640ff7138e9ff';
 
 /// See also [CustomExamCourses].
 @ProviderFor(CustomExamCourses)
 final customExamCoursesProvider =
-    AsyncNotifierProvider<CustomExamCourses, List<CourseDto>>.internal(
+    AutoDisposeAsyncNotifierProvider<
+      CustomExamCourses,
+      List<CourseDto>
+    >.internal(
       CustomExamCourses.new,
       name: r'customExamCoursesProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -21,6 +24,6 @@ final customExamCoursesProvider =
       allTransitiveDependencies: null,
     );
 
-typedef _$CustomExamCourses = AsyncNotifier<List<CourseDto>>;
+typedef _$CustomExamCourses = AutoDisposeAsyncNotifier<List<CourseDto>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
