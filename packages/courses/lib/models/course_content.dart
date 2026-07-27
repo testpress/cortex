@@ -44,6 +44,9 @@ class Lesson {
     this.aiNotesUrl,
     this.lastWatchedDuration,
     this.exam,
+    this.start,
+    this.end,
+    this.hasEnded = false,
   });
 
   final String id;
@@ -70,6 +73,9 @@ class Lesson {
   final String? image;
   final String? attemptsUrl;
   final String? slug;
+  final String? start;
+  final String? end;
+  final bool hasEnded;
 
   // New fields for LessonDetailShell (v2.4+)
   final String? nextContentId;
@@ -151,6 +157,9 @@ class Lesson {
       aiNotesUrl: aiNotesUrl,
       lastWatchedDuration: lastWatchedDuration,
       exam: exam,
+      start: start,
+      end: end,
+      hasEnded: hasEnded,
     );
   }
 }

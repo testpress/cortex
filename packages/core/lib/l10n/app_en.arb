@@ -1361,5 +1361,15 @@
   "aiSupportNoRecentDoubts": "No recent AI doubts.",
   "aiSupportStatusAnswered": "Answered",
   "aiSupportStatusProcessing": "Processing",
-  "aiSupportAskingAi": "ASKING AI"
+  "aiSupportAskingAi": "ASKING AI",
+  "contentAccessEnded": "Your access to this content has ended!",
+  "accessExpired": "Access expired",
+  "accessExpiredOn": "Access expired on {date}",
+  "@accessExpiredOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  }
 }

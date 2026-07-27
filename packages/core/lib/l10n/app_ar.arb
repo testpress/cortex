@@ -1045,5 +1045,15 @@
   "aiSupportNoRecentDoubts": "لا توجد شكوك حديثة.",
   "aiSupportStatusAnswered": "تم الرد",
   "aiSupportStatusProcessing": "قيد المعالجة",
-  "aiSupportAskingAi": "جاري سؤال الذكاء الاصطناعي"
+  "aiSupportAskingAi": "جاري سؤال الذكاء الاصطناعي",
+  "contentAccessEnded": "لقد انتهى وصولك إلى هذا المحتوى!",
+  "accessExpired": "انتهت صلاحية الوصول",
+  "accessExpiredOn": "انتهت صلاحية الوصول في {date}",
+  "@accessExpiredOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  }
 }

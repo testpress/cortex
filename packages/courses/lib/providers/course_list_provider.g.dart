@@ -6,7 +6,7 @@ part of 'course_list_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$courseRepositoryHash() => r'7c21414831be579679145943e92b9e9993710fe2';
+String _$courseRepositoryHash() => r'9020cdea6ea41202f2dd2c67c42416edf5ccc5d4';
 
 /// See also [courseRepository].
 @ProviderFor(courseRepository)
@@ -345,7 +345,7 @@ final courseSyncMetadataProvider =
 );
 
 typedef _$CourseSyncMetadata = Notifier<DateTime?>;
-String _$courseListHash() => r'9390387612afbabd582437ac431a05b64f4d1411';
+String _$courseListHash() => r'5c4261dbe18b4c9ac673110c41b16e673f68e3d1';
 
 /// See also [CourseList].
 @ProviderFor(CourseList)
@@ -360,7 +360,7 @@ final courseListProvider =
 );
 
 typedef _$CourseList = AutoDisposeStreamNotifier<List<CourseDto>>;
-String _$courseSearchHash() => r'770f25e1a505b2bf43f2399232dc309ea7ef55b7';
+String _$courseSearchHash() => r'754041d05a4e8fae2d0fc1636fa9563317e279d2';
 
 /// See also [CourseSearch].
 @ProviderFor(CourseSearch)

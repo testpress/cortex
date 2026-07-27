@@ -2745,4 +2745,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get aiSupportAskingAi => 'جاري سؤال الذكاء الاصطناعي';
+
+  @override
+  String get contentAccessEnded => 'لقد انتهى وصولك إلى هذا المحتوى!';
+
+  @override
+  String get accessExpired => 'انتهت صلاحية الوصول';
+
+  @override
+  String accessExpiredOn(String date) {
+    return 'انتهت صلاحية الوصول في $date';
+  }
 }

@@ -21,7 +21,19 @@ class ChapterContentItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final icon = _getIconForType(lesson.type);
-    final activeOnTap = isSkeleton ? null : onTap;
+    final activeOnTap = isSkeleton
+        ? null
+        : () {
+            if (lesson.hasEnded) {
+              AppToast.show(
+                context,
+                message: L10n.of(context).contentAccessEnded,
+                isError: true,
+              );
+              return;
+            }
+            onTap();
+          };
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -158,7 +170,9 @@ class ChapterContentItem extends StatelessWidget {
                     padding: const EdgeInsets.only(right: 16),
                     child: Center(
                       child: Icon(
-                        LucideIcons.chevronRight,
+                        lesson.hasEnded
+                            ? LucideIcons.lock
+                            : LucideIcons.chevronRight,
                         size: 20,
                         color:
                             design.colors.textSecondary.withValues(alpha: 0.5),
@@ -177,6 +191,15 @@ class ChapterContentItem extends StatelessWidget {
   String _buildSubtitle(BuildContext context) {
     final typeLabel = _getLabelForType(context, lesson.type);
     final duration = TimeFormatter.formatDuration(lesson.duration);
+
+    if (lesson.hasEnded) {
+      final dateStr =
+          lesson.end != null ? TimeFormatter.formatDate(lesson.end!) : null;
+      if (dateStr != null && dateStr.isNotEmpty) {
+        return L10n.of(context).accessExpiredOn(dateStr);
+      }
+      return L10n.of(context).accessExpired;
+    }
 
     if (duration == null ||
         duration.isEmpty ||

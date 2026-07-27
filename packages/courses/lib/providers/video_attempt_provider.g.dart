@@ -7,7 +7,7 @@ part of 'video_attempt_provider.dart';
 // **************************************************************************
 
 String _$videoAttemptNotifierHash() =>
-    r'e78198ca07077083bdd3c77b8122bbd0b9a61ff5';
+    r'c63a073fdab773aad4f5f9e3ab02b50fbfe3da51';
 
 /// Copied from Dart SDK
 class _SystemHash {

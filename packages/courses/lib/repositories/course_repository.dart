@@ -1201,6 +1201,9 @@ class CourseRepository {
         isUpcoming: row.isUpcoming,
         hasAttempts: row.hasAttempts,
         image: row.image,
+        start: row.start,
+        end: row.end,
+        hasEnded: row.hasEnded,
         nextContentId: row.nextContentId,
         previousContentId: row.previousContentId,
         htmlContent: row.htmlContent,
@@ -1273,6 +1276,9 @@ class CourseRepository {
         isUpcoming: Value(dto.isUpcoming),
         hasAttempts: Value(dto.hasAttempts),
         image: dto.image != null ? Value(dto.image) : const Value.absent(),
+        start: dto.start != null ? Value(dto.start) : const Value.absent(),
+        end: dto.end != null ? Value(dto.end) : const Value.absent(),
+        hasEnded: Value(dto.hasEnded),
         nextContentId: dto.nextContentId != null
             ? Value(dto.nextContentId)
             : const Value.absent(),

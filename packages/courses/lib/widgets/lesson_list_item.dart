@@ -51,6 +51,9 @@ class LessonListItem extends StatelessWidget {
       LessonType.unknown => LucideIcons.helpCircle,
     };
 
+    final formattedEnd =
+        lesson.end != null ? TimeFormatter.formatDate(lesson.end!) : null;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
@@ -70,7 +73,19 @@ class LessonListItem extends StatelessWidget {
           label: 'Open lesson: ${lesson.title}',
           onTap: isSkeleton ? () {} : (onTap ?? () {}),
           child: AppFocusable(
-            onTap: isSkeleton ? null : onTap,
+            onTap: isSkeleton
+                ? null
+                : () {
+                    if (lesson.hasEnded) {
+                      AppToast.show(
+                        context,
+                        message: L10n.of(context).contentAccessEnded,
+                        isError: true,
+                      );
+                      return;
+                    }
+                    onTap?.call();
+                  },
             borderRadius: BorderRadius.circular(12),
             child: IntrinsicHeight(
               child: Row(
@@ -136,7 +151,18 @@ class LessonListItem extends StatelessWidget {
                             const SizedBox(height: 6),
                             Row(
                               children: [
-                                if (lesson.type != LessonType.liveStream)
+                                if (lesson.hasEnded) ...[
+                                  Expanded(
+                                    child: AppText.cardSubtitle(
+                                      (formattedEnd != null &&
+                                              formattedEnd.isNotEmpty)
+                                          ? L10n.of(context)
+                                              .accessExpiredOn(formattedEnd)
+                                          : L10n.of(context).accessExpired,
+                                      color: design.colors.textSecondary,
+                                    ),
+                                  ),
+                                ] else if (lesson.type != LessonType.liveStream)
                                   LessonStatusBadge(
                                       status: lesson.progressStatus),
                               ],
@@ -150,7 +176,9 @@ class LessonListItem extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 14, right: 16),
                     child: Icon(
-                      LucideIcons.chevronRight,
+                      lesson.hasEnded
+                          ? LucideIcons.lock
+                          : LucideIcons.chevronRight,
                       color: design.colors.textSecondary.withValues(alpha: 0.5),
                       size: 20,
                     ),
