@@ -1,8 +1,9 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 
-class AccountPreferencesSection extends StatelessWidget {
+class AccountPreferencesSection extends ConsumerWidget {
   const AccountPreferencesSection({
     super.key,
     this.onEditProfileTap,
@@ -17,11 +18,11 @@ class AccountPreferencesSection extends StatelessWidget {
   final VoidCallback? onLogoutTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final allowProfileEdit =
-        InstituteSettings.current?.allowProfileEdit ?? false;
+    final settings = ref.watch(instituteSettingsProvider);
+    final allowProfileEdit = settings?.allowProfileEdit ?? false;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

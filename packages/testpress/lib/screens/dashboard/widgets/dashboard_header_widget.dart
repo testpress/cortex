@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
-import 'package:core/data/data.dart' as dto;
+import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
 
 class DashboardHeaderWidget extends ConsumerWidget {
@@ -11,12 +11,13 @@ class DashboardHeaderWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
-    final overrideLogoUrl = dto.AppConfig.instituteLogoUrl;
-    final apiLogoUrl = dto.InstituteSettings.current?.photo;
+    final settings = ref.watch(instituteSettingsProvider);
+    final overrideLogoUrl = AppConfig.instituteLogoUrl;
+    final apiLogoUrl = settings?.photo;
     final logoUrl = overrideLogoUrl.isNotEmpty
         ? overrideLogoUrl
         : (apiLogoUrl ?? '');
-    final instituteName = dto.InstituteSettings.current?.name ?? '';
+    final instituteName = settings?.name ?? '';
 
     return DashboardHeader(
       title: instituteName.isNotEmpty
@@ -25,7 +26,7 @@ class DashboardHeaderWidget extends ConsumerWidget {
       logoUrl: logoUrl.isNotEmpty ? logoUrl : null,
       isLandscape: isLandscape,
       backgroundColor: design.colors.card,
-      trailing: !dto.AppConfig.showProfileTab
+      trailing: !AppConfig.showProfileTab
           ? Consumer(
               builder: (context, ref, _) {
                 final user = ref.watch(userProvider).valueOrNull;

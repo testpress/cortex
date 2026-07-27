@@ -1,10 +1,11 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 
 import 'package:intl/intl.dart';
 
-class ProfileHeader extends StatelessWidget {
+class ProfileHeader extends ConsumerWidget {
   const ProfileHeader({
     super.key,
     required this.name,
@@ -19,10 +20,10 @@ class ProfileHeader extends StatelessWidget {
   final VoidCallback? onEditProfileTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
-    final allowProfileEdit =
-        InstituteSettings.current?.allowProfileEdit ?? false;
+    final settings = ref.watch(instituteSettingsProvider);
+    final allowProfileEdit = settings?.allowProfileEdit ?? false;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: design.spacing.md),

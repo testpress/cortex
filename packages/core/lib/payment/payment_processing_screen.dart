@@ -72,7 +72,8 @@ class _PaymentProcessingScreenState
         return;
       }
 
-      final result = await _factory.startPayment(order);
+      final settings = ref.read(instituteSettingsProvider);
+      final result = await _factory.startPayment(order, settings: settings);
       if (mounted) {
         setState(() {
           _result = result;
