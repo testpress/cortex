@@ -76,12 +76,13 @@ Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
     );
   });
 
+  final sentryService = ref.read(sentryServiceProvider);
   if (initial == null) {
     // First time load: Await fetch so the UI starts in a loading state
     try {
       await repository.refreshLesson(lessonId);
     } catch (e, st) {
-      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+      sentryService.captureException(e, stackTrace: st);
       rethrow;
     }
     yield* dbStream;

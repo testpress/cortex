@@ -153,6 +153,8 @@ class CourseList extends _$CourseList {
       ref.read(isSyncingMoreResults.notifier).state = true;
     }
 
+    final sentryService = ref.read(sentryServiceProvider);
+
     try {
       final repo = await ref.read(courseRepositoryProvider.future);
 
@@ -172,7 +174,7 @@ class CourseList extends _$CourseList {
         );
       }
     } catch (e, st) {
-      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+      sentryService.captureException(e, stackTrace: st);
       // Capture the error but don't rethrow (so stream from DB is still visible)
       ref.read(courseListSyncError.notifier).state = e;
     } finally {
@@ -237,6 +239,8 @@ class CourseSearch extends _$CourseSearch {
 
   Future<void> _performSearch(
       {required String query, required bool isReset}) async {
+    final sentryService = ref.read(sentryServiceProvider);
+
     try {
       final repo = await ref.read(courseRepositoryProvider.future);
       final page = isReset ? 1 : state.pagination.nextPage;
@@ -263,7 +267,7 @@ class CourseSearch extends _$CourseSearch {
         pagination: newPagination,
       );
     } catch (e, st) {
-      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+      sentryService.captureException(e, stackTrace: st);
       state = state.copyWith(error: e, isLoading: false);
     } finally {
       _pendingRequest = null;

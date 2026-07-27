@@ -62,6 +62,7 @@ class VideoAttemptNotifier extends _$VideoAttemptNotifier {
     _isSyncing = true;
     _keepAliveLink ??= ref.keepAlive();
 
+    final sentryService = ref.read(sentryServiceProvider);
     try {
       final repository = await ref.read(courseRepositoryProvider.future);
 
@@ -84,7 +85,7 @@ class VideoAttemptNotifier extends _$VideoAttemptNotifier {
           r1[0] == r2[0] &&
           r1[1] == r2[1]));
     } catch (e, st) {
-      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+      sentryService.captureException(e, stackTrace: st);
       // Ignore network errors during background sync
     } finally {
       _isSyncing = false;

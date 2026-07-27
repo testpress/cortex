@@ -974,9 +974,6 @@ class CourseRepository {
         );
       } catch (e, st) {
         _sentryService.captureException(e, stackTrace: st);
-        // Log the error but allow the lesson refresh to succeed
-        debugPrint(
-            'CourseRepository: Failed to fetch last watched position: $e');
       }
     }
 
@@ -1038,8 +1035,6 @@ class CourseRepository {
         await _source.markLessonCompleted(id);
       } catch (e, st) {
         _sentryService.captureException(e, stackTrace: st);
-        // Log error but don't block local success
-        debugPrint('CourseRepository: Failed to sync completion to server: $e');
       }
     }
   }

@@ -157,6 +157,7 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
   }
 
   Future<void> _openAttachment(DownloadItem item) async {
+    final sentry = ref.read(sentryServiceProvider);
     try {
       final downloader = ref.read(fileDownloaderProvider);
       final path = await downloader.getLocalPath(
@@ -181,7 +182,7 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
         );
       }
     } catch (e, st) {
-      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+      sentry.captureException(e, stackTrace: st);
     }
   }
 }
