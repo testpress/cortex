@@ -199,6 +199,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   Widget _buildViewer() {
     final viewer = _cachedViewer ?? const SizedBox.shrink();
     final design = Design.of(context);
+    final settings = ref.watch(instituteSettingsProvider);
 
     return Stack(
       children: [
@@ -207,8 +208,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
           duration: MotionPreferences.duration(context, design.motion.normal),
           child: viewer,
         ),
-        if (_isVisible &&
-            (InstituteSettings.current?.enableCoursePdfWatermarking ?? false))
+        if (_isVisible && (settings?.enableCoursePdfWatermarking ?? false))
           WatermarkOverlay(
             text: _watermarkText,
             color: design.colors.onSurface.withValues(alpha: 0.15),

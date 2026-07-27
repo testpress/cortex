@@ -14,15 +14,11 @@ class InstituteSettingsRepository {
 
   Future<InstituteSettings?> loadSettings() async {
     final settings = await _localDataSource.loadSettings();
-    if (settings != null) {
-      InstituteSettings.current = settings;
-    }
     return settings;
   }
 
   Future<InstituteSettings> refreshSettings() async {
     final settings = await _remoteDataSource.fetchInstituteSettings();
-    InstituteSettings.current = settings;
     await _localDataSource.saveSettings(settings);
     return settings;
   }

@@ -23,8 +23,10 @@ class PaymentGatewayFactory {
   PaymentGatewayFactory({required this.dataSource});
 
   /// Dynamically select and start the payment flow
-  Future<PaymentResult> startPayment(OrderDto order) async {
-    final settings = InstituteSettings.current;
+  Future<PaymentResult> startPayment(
+    OrderDto order, {
+    InstituteSettings? settings,
+  }) async {
     final gateway = settings?.currentPaymentApp.toLowerCase() ?? '';
 
     if (gateway == 'razorpay') {

@@ -5,8 +5,6 @@ enum LoginMethod { formLogin, socialLogin, otpLogin }
 
 @immutable
 class InstituteSettings {
-  static InstituteSettings? current;
-
   // APP Specific
   final String name;
   final String photo;

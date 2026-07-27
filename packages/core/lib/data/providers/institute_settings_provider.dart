@@ -24,5 +24,5 @@ final instituteSettingsRepositoryProvider =
     });
 
 final instituteSettingsProvider = StateProvider<InstituteSettings?>((ref) {
-  return InstituteSettings.current;
+  return null;
 });
