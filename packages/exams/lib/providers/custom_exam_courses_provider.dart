@@ -1,13 +1,20 @@
+import 'dart:async';
 import 'package:core/data/data.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../repositories/custom_exam_repository.dart';
 
 part 'custom_exam_courses_provider.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class CustomExamCourses extends _$CustomExamCourses {
   @override
   FutureOr<List<CourseDto>> build() async {
+    final link = ref.keepAlive();
+    final timer = Timer(const Duration(minutes: 5), () {
+      link.close();
+    });
+    ref.onDispose(() => timer.cancel());
+
     final repository = ref.watch(customExamRepositoryProvider);
 
     // Fetch courses with allow_custom_test=true

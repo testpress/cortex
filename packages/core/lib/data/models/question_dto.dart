@@ -133,13 +133,13 @@ class QuestionDto {
         'S' => 'shortAnswer',
         'N' => 'numerical',
         'E' => 'essay',
-        final String t when t.startsWith('NAT') || t.contains('Numerical') =>
+        final String t when t.contains('Numerical') || t.contains('NAT') =>
           'numerical',
         final String t
-            when t.startsWith('MCQ') || t.contains('Multiple Choice') =>
+            when t.contains('Multiple Choice') || t.contains('MCQ') =>
           'singleSelect',
         final String t
-            when t.startsWith('MSQ') || t.contains('Multiple Select') =>
+            when t.contains('Multiple Select') || t.contains('MSQ') =>
           'multipleSelect',
         _ => 'singleSelect',
       },

@@ -23,6 +23,26 @@ void main() {
         );
       },
     );
+
+    test('parses verbose string types correctly', () {
+      final natQuestion = QuestionDto.fromJson({
+        'id': '1',
+        'type': 'NAT, Numerical Answer Type',
+      });
+      expect(natQuestion.type, 'numerical');
+
+      final mcqQuestion = QuestionDto.fromJson({
+        'id': '2',
+        'type': 'MCQ, Multiple Choice Type',
+      });
+      expect(mcqQuestion.type, 'singleSelect');
+
+      final msqQuestion = QuestionDto.fromJson({
+        'id': '3',
+        'type': 'MSQ, Multiple Select Type',
+      });
+      expect(msqQuestion.type, 'multipleSelect');
+    });
   });
 
   group('AnswerDto', () {
