@@ -30,6 +30,7 @@ The system SHALL provide controls for video playback behavior and quality.
 - **THEN** the system MUST enable or disable the automatic transition to the next lesson upon current lesson completion.
 
 ### Requirement: Accessibility Options
+The system SHALL provide accessibility options to accommodate user preferences.
 
 #### Scenario: Scaling Text
 - **WHEN** user selects a text size (Small, Medium, or Large)
@@ -53,4 +54,12 @@ The system SHALL render custom radio indicator selection controls smoothly witho
 #### Scenario: Selection Animation Smoothness
 - **WHEN** the selection animation transitions to completion (reaches `animationValue = 1.0`)
 - **THEN** the inner background of the indicator MUST transition smoothly from `cardColor` to `fillColor` without any sudden visual jump, pop, or flash.
+
+### Requirement: Unified Semantic Typography
+The system SHALL resolve app settings tag elements through semantic `AppText` constructors to enforce typographic consistency.
+
+#### Scenario: Settings tag rendering
+- **WHEN** displaying the recommended or default quality settings tag inside a widget span
+- **THEN** it MUST use `AppText.labelSmall` with the appropriate design token styling overrides
+- **AND** it MUST NOT use a raw `Text` widget with manual style configurations.
 

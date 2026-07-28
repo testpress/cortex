@@ -103,3 +103,11 @@ The system SHALL display distinct icons and shortcut palette colors for communit
 - **AND** `notice` uses `LucideIcons.bell` and index 2
 - **AND** `question` uses `LucideIcons.helpCircle` and index 4.
 
+### Requirement: Unified Semantic Typography
+The system SHALL resolve all text elements on the bookmarks screen primarily through semantic `AppText` constructors to enforce typographic consistency.
+
+#### Scenario: Bookmarks error rendering
+- **WHEN** the bookmarks screen encounters an error
+- **THEN** it MUST display the error message using `AppText.body`
+- **AND** it MUST NOT use a raw `Text` widget.
+

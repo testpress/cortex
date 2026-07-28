@@ -28,3 +28,11 @@ The system SHALL submit the doubt with the associated lesson's ID as `chapter_co
 - **THEN** a success toast is displayed
 - **THEN** the FAB remains visible to allow further doubts
 
+### Requirement: Unified Semantic Typography
+The system SHALL resolve the Ask Doubt FAB text label through semantic `AppText` constructors to enforce typographic consistency.
+
+#### Scenario: FAB label rendering
+- **WHEN** the Ask Doubt FAB is rendered
+- **THEN** the text label MUST use `AppText.labelBold`
+- **AND** it MUST NOT use a raw `Text` widget.
+
