@@ -114,8 +114,7 @@ class _OfflineExamsListBody extends ConsumerWidget {
         );
       },
       loading: () => const Center(child: AppLoadingIndicator()),
-      error: (err, stack) =>
-          Center(child: AppErrorView(message: err.toString())),
+      error: (err, stack) => Center(child: AppErrorView(error: err)),
     );
   }
 }

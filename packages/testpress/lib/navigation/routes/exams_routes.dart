@@ -142,6 +142,7 @@ class ExamsRoutes {
                   ),
                   error: (error, _) {
                     return AppErrorView(
+                      error: error,
                       onRetry: () => ref.invalidate(lessonDetailProvider(id)),
                     );
                   },

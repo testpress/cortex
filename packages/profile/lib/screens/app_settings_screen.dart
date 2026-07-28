@@ -157,7 +157,7 @@ class _AppearanceSection extends ConsumerWidget {
             ),
           ),
           loading: () => const Center(child: AppLoadingIndicator()),
-          error: (_, _) => const AppErrorView(),
+          error: (err, _) => AppErrorView(error: err),
         ),
       ],
     );
@@ -253,7 +253,7 @@ class _LanguageSection extends ConsumerWidget {
             ),
           ),
           loading: () => const Center(child: AppLoadingIndicator()),
-          error: (_, _) => const AppErrorView(),
+          error: (err, _) => AppErrorView(error: err),
         ),
       ],
     );
@@ -337,7 +337,7 @@ class _PlaybackSection extends ConsumerWidget {
             ),
           ),
           loading: () => const Center(child: AppLoadingIndicator()),
-          error: (_, _) => const AppErrorView(),
+          error: (err, _) => AppErrorView(error: err),
         ),
       ],
     );
@@ -482,7 +482,7 @@ class _AccessibilitySection extends ConsumerWidget {
             ),
           ),
           loading: () => const Center(child: AppLoadingIndicator()),
-          error: (_, _) => const AppErrorView(),
+          error: (err, _) => AppErrorView(error: err),
         ),
       ],
     );

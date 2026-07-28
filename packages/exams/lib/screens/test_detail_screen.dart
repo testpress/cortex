@@ -75,7 +75,7 @@ class TestDetailScreen extends ConsumerWidget {
               : err.toString();
           return AppErrorView(
             title: 'Cannot Start Exam',
-            message: 'Failed to load offline exam: $errorMessage',
+            message: errorMessage,
             onRetry: () =>
                 ref.invalidate(offlineExamRepositoryFactoryProvider(testId)),
           );
