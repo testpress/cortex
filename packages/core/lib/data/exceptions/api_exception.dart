@@ -85,7 +85,10 @@ class ApiException implements Exception {
 
       if (statusCode == 401) {
         return ApiException(
-          backendMessage ?? 'You are not authorized to perform this action.',
+          // Pass the backend message as-is, or empty string if none.
+          // An empty message signals SessionExpiredDialog to show the
+          // localized sessionExpiredFallbackMessage in the user's locale.
+          backendMessage ?? '',
           type: ApiErrorType.unauthorized,
           statusCode: statusCode,
           data: data,
