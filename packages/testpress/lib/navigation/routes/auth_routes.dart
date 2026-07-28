@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import 'package:profile/profile.dart';
 
 class AuthRoutes {
@@ -13,8 +15,6 @@ class AuthRoutes {
     '/login-activity',
   };
 
-  static bool _isFirstLaunch = true;
-
   static String? redirect(
     BuildContext context,
     GoRouterState state,
@@ -22,25 +22,27 @@ class AuthRoutes {
   ) {
     final path = state.uri.path;
     final isAuthRoute = _authPaths.contains(path);
+    final container = ProviderScope.containerOf(context, listen: false);
 
     if (!isLoggedIn && !isAuthRoute) {
-      _isFirstLaunch = false;
+      container.read(hasShownOnboardingProvider.notifier).state = true;
       return '/login';
     }
     if (isLoggedIn && isAuthRoute) {
-      _isFirstLaunch = false;
+      container.read(hasShownOnboardingProvider.notifier).state = true;
       return '/home';
     }
 
     if (!isLoggedIn && path == '/onboarding') {
-      if (_isFirstLaunch) {
-        _isFirstLaunch = false;
+      final hasShown = container.read(hasShownOnboardingProvider);
+      if (!hasShown) {
+        container.read(hasShownOnboardingProvider.notifier).state = true;
         return null;
       }
       return '/login';
     }
 
-    _isFirstLaunch = false;
+    container.read(hasShownOnboardingProvider.notifier).state = true;
     return null;
   }
 

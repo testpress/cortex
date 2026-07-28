@@ -48,6 +48,11 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 /// Non-null = show the SessionExpiredDialog with this message.
 final sessionExpiredProvider = StateProvider<String?>((ref) => null);
 
+/// Tracks whether the onboarding screen has already been shown this app session.
+/// Stored in Riverpod so it resets between widget tests and stays consistent
+/// with how the rest of UI state is managed.
+final hasShownOnboardingProvider = StateProvider<bool>((ref) => false);
+
 @Riverpod(keepAlive: true)
 class Auth extends _$Auth {
   AuthRepository get _repository => ref.read(authRepositoryProvider);

@@ -270,8 +270,12 @@ class CourseSearch extends _$CourseSearch {
       );
     } catch (e, st) {
       sentryService.captureException(e, stackTrace: st);
-      // Suppress 401 errors — the SessionExpiredDialog handles UX globally
-      if (e is ApiException && e.type == ApiErrorType.unauthorized) return;
+      // Suppress 401 errors — the SessionExpiredDialog handles UX globally.
+      // Still reset isLoading so the search UI doesn't get stuck in a spinner.
+      if (e is ApiException && e.type == ApiErrorType.unauthorized) {
+        state = state.copyWith(isLoading: false);
+        return;
+      }
       state = state.copyWith(error: e, isLoading: false);
     } finally {
       _pendingRequest = null;

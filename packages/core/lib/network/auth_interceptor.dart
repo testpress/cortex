@@ -10,9 +10,6 @@ class AuthInterceptor extends Interceptor {
   final void Function(String message)? onSessionExpired;
   bool _isLoggingOut = false;
 
-  static const _fallbackMessage =
-      'Your session has expired. Please sign in again.';
-
   /// Paths that should not have an Authorization header attached.
   static const _authFlowPaths = [
     ApiEndpoints.login,
@@ -60,10 +57,9 @@ class AuthInterceptor extends Interceptor {
         if (!_isLoggingOut) {
           _isLoggingOut = true;
           final apiException = ApiException.fromDioException(err);
-          final message = apiException.message.isNotEmpty
-              ? apiException.message
-              : _fallbackMessage;
-          onSessionExpired?.call(message);
+          // Pass the backend message, or empty string if none — the dialog
+          // resolves an empty message to a localized fallback at render time.
+          onSessionExpired?.call(apiException.message);
         }
       }
     }

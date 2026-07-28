@@ -96,9 +96,9 @@ class _DialogCard extends StatelessWidget {
 
           SizedBox(height: design.spacing.sm),
 
-          // Backend API message
+          // Backend API message — fall back to localized string if empty
           AppText.body(
-            message,
+            message.isNotEmpty ? message : l10n.sessionExpiredFallbackMessage,
             color: design.colors.textSecondary,
             textAlign: TextAlign.center,
           ),
