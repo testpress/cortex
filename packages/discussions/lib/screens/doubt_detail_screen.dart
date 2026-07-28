@@ -130,36 +130,6 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
                   ),
                 ),
                 SizedBox(height: design.spacing.lg),
-
-                if (doubt != null && doubt.status != DoubtStatus.resolved)
-                  AppFocusable(
-                    onTap: () {
-                      _closeMenu();
-                      ref
-                          .read(postDoubtReplyNotifierProvider.notifier)
-                          .submit(doubtId: widget.doubtId, shouldResolve: true);
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: design.spacing.md,
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            LucideIcons.checkCircle,
-                            size: design.iconSize.md,
-                            color: design.colors.textPrimary,
-                          ),
-                          SizedBox(width: design.spacing.md),
-                          AppText.body(
-                            l10n.actionMarkAsResolved,
-                            color: design.colors.textPrimary,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
                 AppFocusable(
                   onTap: () {
                     _closeMenu();
