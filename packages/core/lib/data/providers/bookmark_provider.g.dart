@@ -625,7 +625,7 @@ class _DeleteBookmarkFolderProviderElement
   int get folderId => (origin as DeleteBookmarkFolderProvider).folderId;
 }
 
-String _$addBookmarkHash() => r'e076b85c4ea98ce40bd6c6b8622bd1d87948957f';
+String _$addBookmarkHash() => r'a015df68159af8cd813bede301681198772f8524';
 
 /// Action to add a bookmark for a lesson.
 ///
@@ -651,6 +651,8 @@ class AddBookmarkFamily extends Family<AsyncValue<BookmarkDto>> {
     String? folder,
     String? bookmarkType,
     int? attemptId,
+    String? title,
+    String? chapterName,
   }) {
     return AddBookmarkProvider(
       category: category,
@@ -658,6 +660,8 @@ class AddBookmarkFamily extends Family<AsyncValue<BookmarkDto>> {
       folder: folder,
       bookmarkType: bookmarkType,
       attemptId: attemptId,
+      title: title,
+      chapterName: chapterName,
     );
   }
 
@@ -671,6 +675,8 @@ class AddBookmarkFamily extends Family<AsyncValue<BookmarkDto>> {
       folder: provider.folder,
       bookmarkType: provider.bookmarkType,
       attemptId: provider.attemptId,
+      title: provider.title,
+      chapterName: provider.chapterName,
     );
   }
 
@@ -702,6 +708,8 @@ class AddBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
     String? folder,
     String? bookmarkType,
     int? attemptId,
+    String? title,
+    String? chapterName,
   }) : this._internal(
          (ref) => addBookmark(
            ref as AddBookmarkRef,
@@ -710,6 +718,8 @@ class AddBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
            folder: folder,
            bookmarkType: bookmarkType,
            attemptId: attemptId,
+           title: title,
+           chapterName: chapterName,
          ),
          from: addBookmarkProvider,
          name: r'addBookmarkProvider',
@@ -724,6 +734,8 @@ class AddBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
          folder: folder,
          bookmarkType: bookmarkType,
          attemptId: attemptId,
+         title: title,
+         chapterName: chapterName,
        );
 
   AddBookmarkProvider._internal(
@@ -738,6 +750,8 @@ class AddBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
     required this.folder,
     required this.bookmarkType,
     required this.attemptId,
+    required this.title,
+    required this.chapterName,
   }) : super.internal();
 
   final String category;
@@ -745,6 +759,8 @@ class AddBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
   final String? folder;
   final String? bookmarkType;
   final int? attemptId;
+  final String? title;
+  final String? chapterName;
 
   @override
   Override overrideWith(
@@ -764,6 +780,8 @@ class AddBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
         folder: folder,
         bookmarkType: bookmarkType,
         attemptId: attemptId,
+        title: title,
+        chapterName: chapterName,
       ),
     );
   }
@@ -780,7 +798,9 @@ class AddBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
         other.lessonId == lessonId &&
         other.folder == folder &&
         other.bookmarkType == bookmarkType &&
-        other.attemptId == attemptId;
+        other.attemptId == attemptId &&
+        other.title == title &&
+        other.chapterName == chapterName;
   }
 
   @override
@@ -791,6 +811,8 @@ class AddBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
     hash = _SystemHash.combine(hash, folder.hashCode);
     hash = _SystemHash.combine(hash, bookmarkType.hashCode);
     hash = _SystemHash.combine(hash, attemptId.hashCode);
+    hash = _SystemHash.combine(hash, title.hashCode);
+    hash = _SystemHash.combine(hash, chapterName.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -813,6 +835,12 @@ mixin AddBookmarkRef on AutoDisposeFutureProviderRef<BookmarkDto> {
 
   /// The parameter `attemptId` of this provider.
   int? get attemptId;
+
+  /// The parameter `title` of this provider.
+  String? get title;
+
+  /// The parameter `chapterName` of this provider.
+  String? get chapterName;
 }
 
 class _AddBookmarkProviderElement
@@ -830,6 +858,266 @@ class _AddBookmarkProviderElement
   String? get bookmarkType => (origin as AddBookmarkProvider).bookmarkType;
   @override
   int? get attemptId => (origin as AddBookmarkProvider).attemptId;
+  @override
+  String? get title => (origin as AddBookmarkProvider).title;
+  @override
+  String? get chapterName => (origin as AddBookmarkProvider).chapterName;
+}
+
+String _$moveBookmarkHash() => r'58f1a18700e200ff98d1f405c888f8a3e531c1d0';
+
+/// Action to move an existing bookmark to a new folder.
+///
+/// Copied from [moveBookmark].
+@ProviderFor(moveBookmark)
+const moveBookmarkProvider = MoveBookmarkFamily();
+
+/// Action to move an existing bookmark to a new folder.
+///
+/// Copied from [moveBookmark].
+class MoveBookmarkFamily extends Family<AsyncValue<BookmarkDto>> {
+  /// Action to move an existing bookmark to a new folder.
+  ///
+  /// Copied from [moveBookmark].
+  const MoveBookmarkFamily();
+
+  /// Action to move an existing bookmark to a new folder.
+  ///
+  /// Copied from [moveBookmark].
+  MoveBookmarkProvider call({
+    required List<int> oldBookmarkIds,
+    required String category,
+    required int lessonId,
+    String? folder,
+    String? bookmarkType,
+    int? attemptId,
+    String? title,
+    String? chapterName,
+  }) {
+    return MoveBookmarkProvider(
+      oldBookmarkIds: oldBookmarkIds,
+      category: category,
+      lessonId: lessonId,
+      folder: folder,
+      bookmarkType: bookmarkType,
+      attemptId: attemptId,
+      title: title,
+      chapterName: chapterName,
+    );
+  }
+
+  @override
+  MoveBookmarkProvider getProviderOverride(
+    covariant MoveBookmarkProvider provider,
+  ) {
+    return call(
+      oldBookmarkIds: provider.oldBookmarkIds,
+      category: provider.category,
+      lessonId: provider.lessonId,
+      folder: provider.folder,
+      bookmarkType: provider.bookmarkType,
+      attemptId: provider.attemptId,
+      title: provider.title,
+      chapterName: provider.chapterName,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'moveBookmarkProvider';
+}
+
+/// Action to move an existing bookmark to a new folder.
+///
+/// Copied from [moveBookmark].
+class MoveBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
+  /// Action to move an existing bookmark to a new folder.
+  ///
+  /// Copied from [moveBookmark].
+  MoveBookmarkProvider({
+    required List<int> oldBookmarkIds,
+    required String category,
+    required int lessonId,
+    String? folder,
+    String? bookmarkType,
+    int? attemptId,
+    String? title,
+    String? chapterName,
+  }) : this._internal(
+         (ref) => moveBookmark(
+           ref as MoveBookmarkRef,
+           oldBookmarkIds: oldBookmarkIds,
+           category: category,
+           lessonId: lessonId,
+           folder: folder,
+           bookmarkType: bookmarkType,
+           attemptId: attemptId,
+           title: title,
+           chapterName: chapterName,
+         ),
+         from: moveBookmarkProvider,
+         name: r'moveBookmarkProvider',
+         debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+             ? null
+             : _$moveBookmarkHash,
+         dependencies: MoveBookmarkFamily._dependencies,
+         allTransitiveDependencies:
+             MoveBookmarkFamily._allTransitiveDependencies,
+         oldBookmarkIds: oldBookmarkIds,
+         category: category,
+         lessonId: lessonId,
+         folder: folder,
+         bookmarkType: bookmarkType,
+         attemptId: attemptId,
+         title: title,
+         chapterName: chapterName,
+       );
+
+  MoveBookmarkProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.oldBookmarkIds,
+    required this.category,
+    required this.lessonId,
+    required this.folder,
+    required this.bookmarkType,
+    required this.attemptId,
+    required this.title,
+    required this.chapterName,
+  }) : super.internal();
+
+  final List<int> oldBookmarkIds;
+  final String category;
+  final int lessonId;
+  final String? folder;
+  final String? bookmarkType;
+  final int? attemptId;
+  final String? title;
+  final String? chapterName;
+
+  @override
+  Override overrideWith(
+    FutureOr<BookmarkDto> Function(MoveBookmarkRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: MoveBookmarkProvider._internal(
+        (ref) => create(ref as MoveBookmarkRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        oldBookmarkIds: oldBookmarkIds,
+        category: category,
+        lessonId: lessonId,
+        folder: folder,
+        bookmarkType: bookmarkType,
+        attemptId: attemptId,
+        title: title,
+        chapterName: chapterName,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<BookmarkDto> createElement() {
+    return _MoveBookmarkProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is MoveBookmarkProvider &&
+        other.oldBookmarkIds == oldBookmarkIds &&
+        other.category == category &&
+        other.lessonId == lessonId &&
+        other.folder == folder &&
+        other.bookmarkType == bookmarkType &&
+        other.attemptId == attemptId &&
+        other.title == title &&
+        other.chapterName == chapterName;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, oldBookmarkIds.hashCode);
+    hash = _SystemHash.combine(hash, category.hashCode);
+    hash = _SystemHash.combine(hash, lessonId.hashCode);
+    hash = _SystemHash.combine(hash, folder.hashCode);
+    hash = _SystemHash.combine(hash, bookmarkType.hashCode);
+    hash = _SystemHash.combine(hash, attemptId.hashCode);
+    hash = _SystemHash.combine(hash, title.hashCode);
+    hash = _SystemHash.combine(hash, chapterName.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin MoveBookmarkRef on AutoDisposeFutureProviderRef<BookmarkDto> {
+  /// The parameter `oldBookmarkIds` of this provider.
+  List<int> get oldBookmarkIds;
+
+  /// The parameter `category` of this provider.
+  String get category;
+
+  /// The parameter `lessonId` of this provider.
+  int get lessonId;
+
+  /// The parameter `folder` of this provider.
+  String? get folder;
+
+  /// The parameter `bookmarkType` of this provider.
+  String? get bookmarkType;
+
+  /// The parameter `attemptId` of this provider.
+  int? get attemptId;
+
+  /// The parameter `title` of this provider.
+  String? get title;
+
+  /// The parameter `chapterName` of this provider.
+  String? get chapterName;
+}
+
+class _MoveBookmarkProviderElement
+    extends AutoDisposeFutureProviderElement<BookmarkDto>
+    with MoveBookmarkRef {
+  _MoveBookmarkProviderElement(super.provider);
+
+  @override
+  List<int> get oldBookmarkIds =>
+      (origin as MoveBookmarkProvider).oldBookmarkIds;
+  @override
+  String get category => (origin as MoveBookmarkProvider).category;
+  @override
+  int get lessonId => (origin as MoveBookmarkProvider).lessonId;
+  @override
+  String? get folder => (origin as MoveBookmarkProvider).folder;
+  @override
+  String? get bookmarkType => (origin as MoveBookmarkProvider).bookmarkType;
+  @override
+  int? get attemptId => (origin as MoveBookmarkProvider).attemptId;
+  @override
+  String? get title => (origin as MoveBookmarkProvider).title;
+  @override
+  String? get chapterName => (origin as MoveBookmarkProvider).chapterName;
 }
 
 String _$removeBookmarkHash() => r'00a4db2f5754d920583875c6e5c82ddfc0aed96e';

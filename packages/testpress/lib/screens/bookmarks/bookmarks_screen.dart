@@ -480,7 +480,9 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
             child: _selectedBookmark != null
                 ? BookmarkFoldersSheet(
                     lessonId: _selectedBookmark!.lessonId,
-                    category: _selectedBookmark!.type,
+                    category:
+                        _selectedBookmark!.bookmarkType ??
+                        _selectedBookmark!.type,
                     parentContext: context,
                     onClose: () =>
                         setState(() => _isBookmarkFolderSheetOpen = false),
@@ -496,7 +498,8 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
           if (_isCreateFolderDialogOpen)
             CreateFolderDialog(
               lessonId: _selectedBookmark?.lessonId,
-              category: _selectedBookmark?.type,
+              category:
+                  _selectedBookmark?.bookmarkType ?? _selectedBookmark?.type,
               initialName: _selectedFolder?.name,
               folderId: _selectedFolder?.id,
               onClose: () => setState(() {

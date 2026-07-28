@@ -1928,6 +1928,10 @@ class AppLocalizationsMl extends AppLocalizations {
       'ഫോൾഡർ നിർമ്മിക്കുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.';
 
   @override
+  String get errorFailedToRenameFolder =>
+      'ഫോൾഡർ പുനർനാമകരണം ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
   String get bookmarkSaveToFolders =>
       'പ്ലേലിസ്റ്റിലേക്കോ ഫോൾഡറുകളിലേക്കോ സേവ് ചെയ്യുക';
 
@@ -1937,6 +1941,11 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String bookmarkAddedToFolder(String folderName) {
     return 'ബുക്ക്മാർക്ക് $folderName-ലേക്ക് ചേർത്തു';
+  }
+
+  @override
+  String bookmarkMovedToFolder(String folderName) {
+    return 'ബുക്ക്മാർക്ക് $folderName-ലേക്ക് മാറ്റി';
   }
 
   @override

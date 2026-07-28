@@ -1922,6 +1922,10 @@ class AppLocalizationsTa extends AppLocalizations {
       'கோப்புறையை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
 
   @override
+  String get errorFailedToRenameFolder =>
+      'கோப்புறையின் பெயரை மாற்ற முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
+
+  @override
   String get bookmarkSaveToFolders =>
       'பிளேலிஸ்ட் அல்லது கோப்புறைகளில் சேமிக்கவும்';
 
@@ -1931,6 +1935,11 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String bookmarkAddedToFolder(String folderName) {
     return '$folderName கோப்புறையில் புக்மார்க் சேர்க்கப்பட்டது';
+  }
+
+  @override
+  String bookmarkMovedToFolder(String folderName) {
+    return 'புக்மார்க் $folderName கோப்புக்கு மாற்றப்பட்டது';
   }
 
   @override

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:drift/drift.dart';
 
 import '../db/app_database.dart';
@@ -310,24 +311,81 @@ class BookmarkRepository {
     });
   }
 
-  /// Add a bookmark for a lesson, linking it optionally to a folder.
-  Future<BookmarkDto> addBookmark({
+  Future<void> _atomicLocalWrite({
+    required List<int> oldBookmarkIdsToDelete,
+    required BookmarkDto newBookmark,
+    required String? title,
+    required String? chapterName,
+    required String? slug,
+    required bool isForumPost,
+    required DateTime? created,
+    required int? attemptId,
     required String category,
-    required int lessonId,
-    String? folder,
-    String? bookmarkType,
-    int? attemptId,
+    required String? bookmarkType,
   }) async {
-    final backendCategory = _mapToBackendCategory(category);
-    final newBookmark = await _dataSource.createBookmark(
-      category: backendCategory,
-      lessonId: lessonId,
-      folder: folder,
-      bookmarkType: bookmarkType,
-    );
-
     await _db.transaction(() async {
-      // 1. Insert bookmark item locally
+      // 1. Decrement folder counts for old bookmarks and delete them (except if it is the updated row ID)
+      for (final oldId in oldBookmarkIdsToDelete) {
+        final oldItem = await (_db.select(
+          _db.bookmarkItemsTable,
+        )..where((tbl) => tbl.id.equals(oldId))).getSingleOrNull();
+
+        if (oldItem != null && oldItem.folderId != null) {
+          final folderRow =
+              await (_db.select(_db.bookmarkFoldersTable)
+                    ..where((tbl) => tbl.id.equals(oldItem.folderId!)))
+                  .getSingleOrNull();
+          if (folderRow != null) {
+            await (_db.update(
+              _db.bookmarkFoldersTable,
+            )..where((tbl) => tbl.id.equals(oldItem.folderId!))).write(
+              BookmarkFoldersTableCompanion(
+                bookmarksCount: Value(
+                  (folderRow.bookmarksCount - 1).clamp(0, 999999),
+                ),
+              ),
+            );
+          }
+        }
+        if (oldId != newBookmark.id) {
+          await (_db.delete(
+            _db.bookmarkItemsTable,
+          )..where((tbl) => tbl.id.equals(oldId))).go();
+        }
+      }
+
+      // 2. Delete any other duplicates for this lesson (just in case they weren't in oldBookmarkIdsToDelete)
+      final otherLocalBookmarks =
+          await (_db.select(_db.bookmarkItemsTable)..where(
+                (tbl) =>
+                    tbl.lessonId.equals(newBookmark.lessonId) &
+                    tbl.id.equals(newBookmark.id).not(),
+              ))
+              .get();
+
+      for (final ob in otherLocalBookmarks) {
+        await (_db.delete(
+          _db.bookmarkItemsTable,
+        )..where((tbl) => tbl.id.equals(ob.id))).go();
+        if (ob.folderId != null) {
+          final folderRow = await (_db.select(
+            _db.bookmarkFoldersTable,
+          )..where((tbl) => tbl.id.equals(ob.folderId!))).getSingleOrNull();
+          if (folderRow != null) {
+            await (_db.update(
+              _db.bookmarkFoldersTable,
+            )..where((tbl) => tbl.id.equals(ob.folderId!))).write(
+              BookmarkFoldersTableCompanion(
+                bookmarksCount: Value(
+                  (folderRow.bookmarksCount - 1).clamp(0, 999999),
+                ),
+              ),
+            );
+          }
+        }
+      }
+
+      // 3. Insert new bookmark item locally
       await _db
           .into(_db.bookmarkItemsTable)
           .insertOnConflictUpdate(
@@ -336,17 +394,22 @@ class BookmarkRepository {
               folderId: Value(newBookmark.folderId),
               folderName: Value(newBookmark.folderName),
               lessonId: newBookmark.lessonId,
-              bookmarkType: Value(newBookmark.bookmarkType),
+              bookmarkType: Value(bookmarkType ?? category),
               attemptId: Value(attemptId),
+              title: Value(title),
+              chapterName: Value(chapterName),
+              slug: Value(slug),
+              isForumPost: Value(isForumPost),
+              created: Value(created ?? DateTime.now()),
             ),
           );
 
-      // 2. Link bookmarkId in LessonsTable
+      // 4. Link bookmarkId in LessonsTable
       await (_db.update(_db.lessonsTable)
-            ..where((tbl) => tbl.id.equals(lessonId.toString())))
+            ..where((tbl) => tbl.id.equals(newBookmark.lessonId.toString())))
           .write(LessonsTableCompanion(bookmarkId: Value(newBookmark.id)));
 
-      // 3. Increment folder bookmark count locally if folderId exists
+      // 5. Increment folder bookmark count locally if folderId exists
       if (newBookmark.folderId != null) {
         final folderRow =
             await (_db.select(_db.bookmarkFoldersTable)
@@ -363,8 +426,177 @@ class BookmarkRepository {
         }
       }
     });
+  }
 
-    return newBookmark;
+  Future<BookmarkDto> addBookmark({
+    required String category,
+    required int lessonId,
+    String? folder,
+    String? bookmarkType,
+    int? attemptId,
+    String? title,
+    String? chapterName,
+  }) async {
+    final backendCategory = _mapToBackendCategory(category);
+    final newBookmark = await _dataSource.createBookmark(
+      category: backendCategory,
+      lessonId: lessonId,
+      folder: folder,
+      bookmarkType: bookmarkType,
+    );
+
+    // Fetch existing local metadata if it exists to preserve title, chapterName, etc.
+    // We order by id.desc() for determinism. Since title/chapterName are identical
+    // for the same lesson across all folders, any match is sufficient.
+    final existingLocal =
+        await (_db.select(_db.bookmarkItemsTable)
+              ..where((tbl) => tbl.lessonId.equals(lessonId))
+              ..orderBy([
+                (tbl) =>
+                    OrderingTerm(expression: tbl.id, mode: OrderingMode.desc),
+              ])
+              ..limit(1))
+            .getSingleOrNull();
+
+    String? localTitle = title ?? existingLocal?.title;
+    String? localChapterName = chapterName ?? existingLocal?.chapterName;
+    String? localSlug = existingLocal?.slug;
+    bool localIsForumPost = existingLocal?.isForumPost ?? false;
+    DateTime? localCreated = existingLocal?.created;
+
+    // Fallback to lessonsTable if it's a new lesson bookmark
+    if (localTitle == null) {
+      final lessonRow =
+          await (_db.select(_db.lessonsTable)
+                ..where((tbl) => tbl.id.equals(lessonId.toString()))
+                ..limit(1))
+              .getSingleOrNull();
+      if (lessonRow != null) {
+        localTitle = lessonRow.title;
+        localChapterName = lessonRow.chapterTitle;
+      }
+    }
+
+    await _atomicLocalWrite(
+      oldBookmarkIdsToDelete: [],
+      newBookmark: newBookmark,
+      title: localTitle,
+      chapterName: localChapterName,
+      slug: localSlug,
+      isForumPost: localIsForumPost,
+      created: localCreated,
+      attemptId: attemptId,
+      category: category,
+      bookmarkType: bookmarkType,
+    );
+
+    return BookmarkDto(
+      id: newBookmark.id,
+      folderId: newBookmark.folderId,
+      folderName: newBookmark.folderName,
+      lessonId: newBookmark.lessonId,
+      bookmarkType: bookmarkType ?? category,
+      type: category,
+      title: localTitle ?? '',
+      chapterName: localChapterName ?? '',
+      slug: localSlug,
+      isForumPost: localIsForumPost,
+      created: localCreated ?? DateTime.now(),
+      attemptId: attemptId,
+    );
+  }
+
+  /// Move an existing bookmark to a new folder, executing network requests
+  /// and local database updates atomically to prevent UI list flickering.
+  Future<BookmarkDto> moveBookmark({
+    required List<int> oldBookmarkIds,
+    required String category,
+    required int lessonId,
+    String? folder,
+    String? bookmarkType,
+    int? attemptId,
+    String? title,
+    String? chapterName,
+  }) async {
+    final backendCategory = _mapToBackendCategory(category);
+
+    // 1. Create the new bookmark first on the server. If this fails, the old bookmark remains active.
+    final newBookmark = await _dataSource.createBookmark(
+      category: backendCategory,
+      lessonId: lessonId,
+      folder: folder,
+      bookmarkType: bookmarkType,
+    );
+
+    // 2. Once creation succeeds, delete the old bookmarks sequentially on the backend.
+    // Skip deletion if the old ID is identical to the returned newBookmark ID (meaning the server updated the row instead of creating a new one).
+    for (final oldId in oldBookmarkIds) {
+      if (oldId == newBookmark.id) {
+        continue;
+      }
+      try {
+        await _dataSource.deleteBookmark(oldId.toString());
+      } catch (e) {
+        debugPrint('Failed to delete old bookmark $oldId on backend: $e');
+      }
+    }
+
+    // Fetch existing local metadata if it exists to preserve title, chapterName, etc.
+    final existingLocal =
+        await (_db.select(_db.bookmarkItemsTable)
+              ..where((tbl) => tbl.lessonId.equals(lessonId))
+              ..orderBy([
+                (tbl) =>
+                    OrderingTerm(expression: tbl.id, mode: OrderingMode.desc),
+              ])
+              ..limit(1))
+            .getSingleOrNull();
+
+    String? localTitle = title ?? existingLocal?.title;
+    String? localChapterName = chapterName ?? existingLocal?.chapterName;
+    String? localSlug = existingLocal?.slug;
+    bool localIsForumPost = existingLocal?.isForumPost ?? false;
+    DateTime? localCreated = existingLocal?.created;
+
+    if (localTitle == null) {
+      final lessonRow =
+          await (_db.select(_db.lessonsTable)
+                ..where((tbl) => tbl.id.equals(lessonId.toString()))
+                ..limit(1))
+              .getSingleOrNull();
+      if (lessonRow != null) {
+        localTitle = lessonRow.title;
+        localChapterName = lessonRow.chapterTitle;
+      }
+    }
+
+    await _atomicLocalWrite(
+      oldBookmarkIdsToDelete: oldBookmarkIds,
+      newBookmark: newBookmark,
+      title: localTitle,
+      chapterName: localChapterName,
+      slug: localSlug,
+      isForumPost: localIsForumPost,
+      created: localCreated,
+      attemptId: attemptId,
+      category: category,
+      bookmarkType: bookmarkType,
+    );
+
+    return BookmarkDto(
+      id: newBookmark.id,
+      folderId: newBookmark.folderId,
+      folderName: newBookmark.folderName,
+      lessonId: newBookmark.lessonId,
+      bookmarkType: bookmarkType ?? category,
+      type: category,
+      title: localTitle ?? '',
+      chapterName: localChapterName ?? '',
+      slug: localSlug,
+      isForumPost: localIsForumPost,
+      created: localCreated ?? DateTime.now(),
+      attemptId: attemptId,
+    );
   }
 
   /// Delete a bookmark by its server ID and remove/update local database references.
@@ -425,8 +657,14 @@ class BookmarkRepository {
       case 'attachment':
         return 'attachment';
       case 'notes':
-      case 'embedContent':
+      case 'embedcontent':
         return 'html';
+      case 'question':
+      case 'user_selected_answer':
+        return 'user_selected_answer';
+      case 'post':
+      case 'forumpost':
+        return 'post';
       default:
         return category;
     }

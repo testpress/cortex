@@ -16,7 +16,9 @@ class BookmarkItem extends StatelessWidget {
 
   bool get _isQuestion {
     final type = (item['contentType'] as String?)?.toLowerCase() ?? '';
-    return type == 'question' || type == 'userselectedanswer';
+    return type == 'question' ||
+        type == 'userselectedanswer' ||
+        type == 'user_selected_answer';
   }
 
   static final RegExp _htmlTagRegExp = RegExp(r'<[^>]*>', multiLine: true);
@@ -43,9 +45,11 @@ class BookmarkItem extends StatelessWidget {
       case 'assessment':
         return LessonType.test;
       case 'post':
+      case 'forumpost':
       case 'notice':
         return LessonType.notes;
       case 'question':
+      case 'user_selected_answer':
       default:
         return LessonType.unknown;
     }
@@ -60,6 +64,7 @@ class BookmarkItem extends StatelessWidget {
       case 'notice':
         return LucideIcons.bell;
       case 'question':
+      case 'user_selected_answer':
         return LucideIcons.helpCircle;
       default:
         return lessonType.icon;
@@ -79,6 +84,7 @@ class BookmarkItem extends StatelessWidget {
       case 'notice':
         return design.shortcutPalette.atIndex(2); // Orange
       case 'question':
+      case 'user_selected_answer':
         return design.shortcutPalette.atIndex(4); // Cyan
       default:
         return switch (lessonType) {

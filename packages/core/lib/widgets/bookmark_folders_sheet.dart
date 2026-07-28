@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core.dart';
 import '../data/providers/bookmark_provider.dart';
 import '../data/models/bookmark_dto.dart';
+import '../data/exceptions/api_exception.dart';
 
 /// A premium, platform-neutral bottom sheet widget that displays a list of
 /// bookmark folders, letting the user add/remove a lesson from them.
@@ -56,22 +57,19 @@ class _BookmarkFoldersSheetState extends ConsumerState<BookmarkFoldersSheet> {
     required List<BookmarkDto> existingBookmarks,
     required String? folderName,
   }) async {
+    final container = ProviderScope.containerOf(context);
+
     // 1. Close the bottom sheet instantly (YouTube-style)
     widget.onClose();
 
     final l10n = L10n.of(widget.parentContext);
+    bool isMove = false;
 
-    // 2. Show optimistic toast using the parent's stable context
-    final toastMessage = existingBookmarks.isNotEmpty
-        ? l10n.bookmarkRemoved
-        : l10n.bookmarkAddedToFolder(folderName ?? l10n.labelUncategorized);
-    AppToast.show(widget.parentContext, message: toastMessage);
-
-    // 3. Fire the API call in the background
+    // 2. Fire the API call in the background
     try {
       if (existingBookmarks.isNotEmpty) {
         for (final b in existingBookmarks) {
-          await ref.read(
+          await container.read(
             removeBookmarkProvider(
               bookmarkId: b.id,
               lessonId: widget.lessonId,
@@ -79,14 +77,54 @@ class _BookmarkFoldersSheetState extends ConsumerState<BookmarkFoldersSheet> {
           );
         }
       } else {
-        await ref.read(
-          addBookmarkProvider(
-            category: widget.category,
-            lessonId: widget.lessonId,
-            folder: folderName,
-            attemptId: widget.attemptId,
-          ).future,
-        );
+        // Find bookmarks in other folders to check if we are moving or adding
+        final activeBookmarks =
+            container
+                .read(bookmarksForLessonProvider(widget.lessonId))
+                .valueOrNull ??
+            [];
+        final otherBookmarks = activeBookmarks
+            .where((b) => b.folderName != folderName)
+            .toList();
+
+        if (otherBookmarks.isNotEmpty) {
+          isMove = true;
+          final oldBookmark = otherBookmarks.first;
+          await container.read(
+            moveBookmarkProvider(
+              oldBookmarkIds: otherBookmarks.map((b) => b.id).toList(),
+              category: widget.category,
+              lessonId: widget.lessonId,
+              folder: folderName,
+              attemptId: widget.attemptId,
+              title: oldBookmark.title,
+              chapterName: oldBookmark.chapterName,
+            ).future,
+          );
+        } else {
+          await container.read(
+            addBookmarkProvider(
+              category: widget.category,
+              lessonId: widget.lessonId,
+              folder: folderName,
+              attemptId: widget.attemptId,
+            ).future,
+          );
+        }
+      }
+
+      // 3. Show success toast using the parent's stable context only after successful completion
+      if (widget.parentContext.mounted) {
+        final toastMessage = existingBookmarks.isNotEmpty
+            ? l10n.bookmarkRemoved
+            : (isMove
+                  ? l10n.bookmarkMovedToFolder(
+                      folderName ?? l10n.labelUncategorized,
+                    )
+                  : l10n.bookmarkAddedToFolder(
+                      folderName ?? l10n.labelUncategorized,
+                    ));
+        AppToast.show(widget.parentContext, message: toastMessage);
       }
     } catch (e, stack) {
       debugPrint('Error updating bookmark: $e\n$stack');
@@ -416,6 +454,8 @@ class _CreateFolderDialogState extends ConsumerState<CreateFolderDialog> {
     final folderName = _nameController.text.trim();
     if (folderName.isEmpty || _isLoading) return;
 
+    final container = ProviderScope.containerOf(context);
+
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -423,25 +463,49 @@ class _CreateFolderDialogState extends ConsumerState<CreateFolderDialog> {
 
     try {
       if (widget.isRenameMode) {
-        await ref.read(
+        await container.read(
           updateBookmarkFolderProvider(widget.folderId!, folderName).future,
         );
       } else {
         // 1. Create the folder on server and save locally
-        final newFolder = await ref.read(
+        final newFolder = await container.read(
           createBookmarkFolderProvider(folderName).future,
         );
 
         // 2. Automatically select it for the current lesson if provided
         if (widget.lessonId != null && widget.category != null) {
-          await ref.read(
-            addBookmarkProvider(
-              category: widget.category!,
-              lessonId: widget.lessonId!,
-              folder: newFolder.name,
-              attemptId: widget.attemptId,
-            ).future,
-          );
+          final activeBookmarks =
+              container
+                  .read(bookmarksForLessonProvider(widget.lessonId!))
+                  .valueOrNull ??
+              [];
+          final otherBookmarks = activeBookmarks
+              .where((b) => b.folderName != newFolder.name)
+              .toList();
+
+          if (otherBookmarks.isNotEmpty) {
+            final oldBookmark = otherBookmarks.first;
+            await container.read(
+              moveBookmarkProvider(
+                oldBookmarkIds: otherBookmarks.map((b) => b.id).toList(),
+                category: widget.category!,
+                lessonId: widget.lessonId!,
+                folder: newFolder.name,
+                attemptId: widget.attemptId,
+                title: oldBookmark.title,
+                chapterName: oldBookmark.chapterName,
+              ).future,
+            );
+          } else {
+            await container.read(
+              addBookmarkProvider(
+                category: widget.category!,
+                lessonId: widget.lessonId!,
+                folder: newFolder.name,
+                attemptId: widget.attemptId,
+              ).future,
+            );
+          }
         }
       }
 
@@ -452,9 +516,11 @@ class _CreateFolderDialogState extends ConsumerState<CreateFolderDialog> {
       debugPrint('Error saving folder: $e\n$stack');
       if (mounted) {
         setState(() {
-          _errorMessage = widget.isRenameMode
-              ? 'Failed to rename folder.'
-              : L10n.of(context).errorFailedToCreateFolder;
+          _errorMessage = e is ApiException
+              ? e.message
+              : (widget.isRenameMode
+                    ? L10n.of(context).errorFailedToRenameFolder
+                    : L10n.of(context).errorFailedToCreateFolder);
           _isLoading = false;
         });
       }

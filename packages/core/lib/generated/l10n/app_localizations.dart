@@ -3497,6 +3497,12 @@ abstract class AppLocalizations {
   /// **'Failed to create folder. Please try again.'**
   String get errorFailedToCreateFolder;
 
+  /// No description provided for @errorFailedToRenameFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to rename folder. Please try again.'**
+  String get errorFailedToRenameFolder;
+
   /// No description provided for @bookmarkSaveToFolders.
   ///
   /// In en, this message translates to:
@@ -3514,6 +3520,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Added bookmark to {folderName}'**
   String bookmarkAddedToFolder(String folderName);
+
+  /// No description provided for @bookmarkMovedToFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved bookmark to {folderName}'**
+  String bookmarkMovedToFolder(String folderName);
 
   /// No description provided for @bookmarkRemovedFromFolder.
   ///

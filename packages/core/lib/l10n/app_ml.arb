@@ -639,10 +639,19 @@
   "hintExampleFolderName": "ഉദാഹരണത്തിന് ഫിസിക്സ്, റിവിഷൻ",
   "errorFailedToLoadFolders": "ഫോൾഡറുകൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.",
   "errorFailedToCreateFolder": "ഫോൾഡർ നിർമ്മിക്കുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.",
+  "errorFailedToRenameFolder": "ഫോൾഡർ പുനർനാമകരണം ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.",
   "bookmarkSaveToFolders": "പ്ലേലിസ്റ്റിലേക്കോ ഫോൾഡറുകളിലേക്കോ സേവ് ചെയ്യുക",
   "bookmarkSaveTo": "ഇതിലേക്ക് സേവ് ചെയ്യുക...",
   "bookmarkAddedToFolder": "ബുക്ക്മാർക്ക് {folderName}-ലേക്ക് ചേർത്തു",
   "@bookmarkAddedToFolder": {
+    "placeholders": {
+      "folderName": {
+        "type": "String"
+      }
+    }
+  },
+  "bookmarkMovedToFolder": "ബുക്ക്മാർക്ക് {folderName}-ലേക്ക് മാറ്റി",
+  "@bookmarkMovedToFolder": {
     "placeholders": {
       "folderName": {
         "type": "String"

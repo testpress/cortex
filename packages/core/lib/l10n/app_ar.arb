@@ -638,10 +638,19 @@
   "hintExampleFolderName": "مثل الفيزياء، المراجعة",
   "errorFailedToLoadFolders": "فشل تحميل المجلدات.",
   "errorFailedToCreateFolder": "فشل إنشاء المجلد. يرجى المحاولة مرة أخرى.",
+  "errorFailedToRenameFolder": "فشل إعادة تسمية المجلد. يرجى المحاولة مرة أخرى.",
   "bookmarkSaveToFolders": "حفظ في قائمة التشغيل أو المجلدات",
   "bookmarkSaveTo": "حفظ في...",
   "bookmarkAddedToFolder": "تمت إضافة الإشارة المرجعية إلى {folderName}",
   "@bookmarkAddedToFolder": {
+    "placeholders": {
+      "folderName": {
+        "type": "String"
+      }
+    }
+  },
+  "bookmarkMovedToFolder": "تم نقل الإشارة المرجعية إلى {folderName}",
+  "@bookmarkMovedToFolder": {
     "placeholders": {
       "folderName": {
         "type": "String"
