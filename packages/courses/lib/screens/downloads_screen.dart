@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -146,9 +146,7 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
         } else {
           if (mounted) {
             Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => OfflineVideoPlayerScreen(item: item),
-              ),
+              AppRoute(page: OfflineVideoPlayerScreen(item: item)),
             );
           }
         }
@@ -170,9 +168,10 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
       final fileExists = await File(path).exists();
       if (!fileExists) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text('File not found. It may have been deleted.')),
+          AppToast.show(
+            context,
+            message: 'File not found. It may have been deleted.',
+            isError: true,
           );
         }
         await ref.read(downloadsProvider.notifier).delete(item);
@@ -181,8 +180,10 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
 
       final result = await OpenFilex.open(path);
       if (result.type != ResultType.done && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not open file: ${result.message}')),
+        AppToast.show(
+          context,
+          message: 'Could not open file: ${result.message}',
+          isError: true,
         );
       }
     } catch (e, st) {
@@ -292,8 +293,10 @@ class _DownloadsList extends ConsumerWidget {
                   } catch (e, st) {
                     debugPrint('Delete Error: $e\n$st');
                     if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Failed to delete: $e')),
+                      AppToast.show(
+                        context,
+                        message: 'Failed to delete: $e',
+                        isError: true,
                       );
                     }
                   }
@@ -427,13 +430,9 @@ class _VideoThumbnail extends StatelessWidget {
                       design.radius.sm,
                     ),
                   ),
-                  child: Text(
+                  child: AppText.labelSmall(
                     item.duration!,
-                    style: const TextStyle(
-                      color: Color(0xFFFFFFFF),
-                      fontSize: 10,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    color: design.colors.textInverse,
                   ),
                 ),
               ),
@@ -465,13 +464,9 @@ class _AttachmentThumbnail extends StatelessWidget {
         ),
         if (item.fileType != null) ...[
           SizedBox(height: 2),
-          Text(
+          AppText.labelSmall(
             item.fileType!,
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: design.colors.textSecondary,
-            ),
+            color: design.colors.textSecondary,
           ),
         ],
       ],

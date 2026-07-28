@@ -32,11 +32,9 @@ class AskDoubtFab extends StatelessWidget {
               size: 20,
             ),
             const SizedBox(width: 8),
-            Text(
+            AppText.labelBold(
               L10n.of(context).labelAskDoubt,
-              style: design.typography.labelBold.copyWith(
-                color: design.colors.onPrimary,
-              ),
+              color: design.colors.onPrimary,
             ),
           ],
         ),

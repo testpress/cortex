@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
@@ -67,9 +67,10 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
     } catch (e, st) {
       sentry.captureException(e, stackTrace: st);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Could not start download. Please try again.')),
+        AppToast.show(
+          context,
+          message: 'Could not start download. Please try again.',
+          isError: true,
         );
       }
     }
@@ -84,9 +85,10 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
     final fileExists = await File(path).exists();
     if (!fileExists) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('File not found. It may have been deleted.')),
+        AppToast.show(
+          context,
+          message: 'File not found. It may have been deleted.',
+          isError: true,
         );
       }
       await ref.read(downloadsProvider.notifier).delete(item);
@@ -95,8 +97,10 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
 
     final result = await OpenFilex.open(path);
     if (result.type != ResultType.done && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not open file: ${result.message}')),
+      AppToast.show(
+        context,
+        message: 'Could not open file: ${result.message}',
+        isError: true,
       );
     }
   }
@@ -126,35 +130,42 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            Icons.file_present,
+            LucideIcons.fileText,
             size: 64,
             color: design.colors.primary,
           ),
           const SizedBox(height: 16),
-          Text(
+          AppText.title(
             widget.title,
-            style: design.typography.title,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 4),
-          Text(
+          AppText.caption(
             _getMetadataString(),
-            style: design.typography.caption,
           ),
           const SizedBox(height: 24),
           if (isDownloading) ...[
-            SizedBox(
+            Container(
+              height: 4,
               width: 200,
-              child: LinearProgressIndicator(
-                value: progress > 0 ? progress / 100.0 : null,
-                backgroundColor: design.colors.surfaceVariant,
-                color: design.colors.primary,
+              decoration: BoxDecoration(
+                color: design.colors.surfaceVariant,
+                borderRadius: BorderRadius.circular(design.radius.sm),
+              ),
+              alignment: Alignment.centerLeft,
+              child: FractionallySizedBox(
+                widthFactor: progress > 0 ? progress / 100.0 : 0.0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: design.colors.primary,
+                    borderRadius: BorderRadius.circular(design.radius.sm),
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 16),
-            Text(
+            AppText.bodySmall(
               progress > 0 ? '$progress%' : 'Downloading...',
-              style: design.typography.bodySmall,
             ),
           ] else
             AppButton(
@@ -168,10 +179,9 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
             ),
           if (isError) ...[
             const SizedBox(height: 16),
-            Text(
+            AppText.bodySmall(
               'Download failed. Please try again.',
-              style: design.typography.bodySmall
-                  .copyWith(color: design.colors.error),
+              color: design.colors.error,
             ),
           ],
         ],

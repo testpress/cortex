@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
@@ -36,20 +36,17 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
     final design = Design.of(context);
     final lesson = widget.lesson;
     final isCompleted = widget.isCompleted;
-    final cardBgColor = design.isDark ? const Color(0xFF202023) : Colors.white;
-    final textPrimary = design.colors.textPrimary;
-    final textSecondary = design.colors.textSecondary;
     final textMuted = design.colors.textSecondary.withValues(alpha: 0.7);
 
     return Opacity(
       opacity: 1.0,
       child: Container(
         decoration: BoxDecoration(
-          color: cardBgColor,
+          color: design.colors.card,
           borderRadius: BorderRadius.circular(design.spacing.md),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: design.isDark ? 0.2 : 0.04),
+              color: design.colors.shadow,
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -80,15 +77,10 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
-                          colors: design.isDark
-                              ? [
-                                  const Color(0xFF1E293B),
-                                  const Color(0xFF0F172A),
-                                ]
-                              : [
-                                  const Color(0xFFF1F5F9),
-                                  const Color(0xFFE2E8F0),
-                                ],
+                          colors: [
+                            design.colors.surfaceVariant,
+                            design.colors.canvas,
+                          ],
                         ),
                       ),
                       child: Center(
@@ -99,7 +91,7 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Icon(
-                            Icons.menu_book,
+                            LucideIcons.book,
                             color: design.colors.primary,
                             size: 24,
                           ),
@@ -118,16 +110,12 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.7),
+                          color: const Color(0xFF000000).withValues(alpha: 0.7),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Text(
+                        child: AppText.labelSmall(
                           '${lesson.progress!.toInt()}%',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          color: design.colors.textInverse,
                         ),
                       ),
                     ),
@@ -148,46 +136,42 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              AppText.cardTitle(
                                 lesson.title,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  height: 20 / 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: textPrimary,
-                                ),
                               ),
                               if (lesson.chapterTitle != null) ...[
                                 const SizedBox(height: 1),
-                                Text(
+                                AppText.cardSubtitle(
                                   lesson.chapterTitle!,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    height: 16 / 12,
-                                    color: textSecondary,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w400,
                                   ),
                                 ),
                               ],
                             ],
                           ),
                         ),
-                        Icon(Icons.chevron_right, size: 16, color: textMuted),
+                        Icon(
+                          LucideIcons.chevronRight,
+                          size: 16,
+                          color: textMuted,
+                        ),
                       ],
                     ),
                     const SizedBox(height: 6),
                     // Metadata
                     if (lesson.remainingDuration != null ||
                         lesson.totalDuration != null) ...[
-                      Text(
+                      AppText.cardCaption(
                         (lesson.remainingDuration != null && !isCompleted)
                             ? '${lesson.remainingDuration!} left'
                             : (lesson.totalDuration ??
                                   lesson.remainingDuration!),
-                        style: TextStyle(fontSize: 11, color: textMuted),
+                        color: textMuted,
                       ),
                     ],
                     // Progress Bar
@@ -277,14 +261,7 @@ class LessonCardsSectionWidget extends StatelessWidget {
             children: [
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: design.spacing.lg),
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: design.colors.textPrimary,
-                  ),
-                ),
+                child: AppText.title(title),
               ),
               SizedBox(height: design.spacing.sm),
               AppCarousel(

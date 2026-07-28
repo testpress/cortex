@@ -414,14 +414,12 @@ class _PlaybackSection extends ConsumerWidget {
                                         alignment:
                                             PlaceholderAlignment.baseline,
                                         baseline: TextBaseline.alphabetic,
-                                        child: Text(
+                                        child: AppText.labelSmall(
                                           '(${l10n.settingsRecommended})',
-                                          style: design.typography.labelSmall
-                                              .copyWith(
-                                                color:
-                                                    design.colors.textSecondary,
-                                                fontWeight: FontWeight.w400,
-                                              ),
+                                          color: design.colors.textSecondary,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -561,14 +559,12 @@ class _AccessibilitySection extends ConsumerWidget {
                                         alignment:
                                             PlaceholderAlignment.baseline,
                                         baseline: TextBaseline.alphabetic,
-                                        child: Text(
+                                        child: AppText.labelSmall(
                                           '(${l10n.settingsDefault})',
-                                          style: design.typography.labelSmall
-                                              .copyWith(
-                                                color:
-                                                    design.colors.textSecondary,
-                                                fontWeight: FontWeight.w400,
-                                              ),
+                                          color: design.colors.textSecondary,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                          ),
                                         ),
                                       ),
                                     ],

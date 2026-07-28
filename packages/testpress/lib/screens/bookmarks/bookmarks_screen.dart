@@ -238,7 +238,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
                           isLoading: true,
                         ),
                         error: (err, stack) =>
-                            Center(child: Text(l10n.errorGenericTitle)),
+                            Center(child: AppText.body(l10n.errorGenericTitle)),
                       )
                     : bookmarksAsync.when(
                         data: (bookmarks) => _buildBookmarksList(
@@ -254,7 +254,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
                           bookmarkFilter: bookmarkFilter,
                         ),
                         error: (err, stack) =>
-                            Center(child: Text(l10n.errorGenericTitle)),
+                            Center(child: AppText.body(l10n.errorGenericTitle)),
                       ),
               ),
             ],
