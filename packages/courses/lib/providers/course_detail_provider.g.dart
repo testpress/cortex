@@ -169,7 +169,7 @@ class _CourseDetailProviderElement extends StreamProviderElement<CourseDto?>
   String get courseId => (origin as CourseDetailProvider).courseId;
 }
 
-String _$subChaptersHash() => r'53e16c96303a898050844ed7c44af3e4a65793b6';
+String _$subChaptersHash() => r'8b858ac8bd6aec64a6f98b53cb5650f8d63fe460';
 
 /// A provider that watches chapters for a specific parent (folder).
 /// Triggers a refresh if the folder has not been synced yet.

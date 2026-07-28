@@ -1,3 +1,4 @@
+import 'package:core/design/design_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tpstreams_player_sdk/tpstreams_player_sdk.dart';
@@ -5,6 +6,7 @@ import 'package:core/data/data.dart';
 
 import '../../providers/course_list_provider.dart';
 import '../../providers/video_attempt_provider.dart';
+import '../../providers/video_watermark_config_provider.dart';
 
 class CustomVideoPlayer extends ConsumerStatefulWidget {
   final String? assetId;
@@ -197,6 +199,17 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
 
   void _onPlayerCreated(TestpressPlayerController controller) {
     _controller = controller;
+
+    final design = Design.of(context);
+    final fontSize = design.typography.headline.fontSize ?? 14.0;
+    final watermarkConfig = ref.read(videoWatermarkConfigProvider(fontSize));
+
+    if (watermarkConfig != null) {
+      controller.setWatermarks([watermarkConfig]).catchError((e, st) {
+        if (!mounted) return;
+        ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+      });
+    }
 
     controller.addListener(() {
       final isPlaying = controller.value.isPlaying;
