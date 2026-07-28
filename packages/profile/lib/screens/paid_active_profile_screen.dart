@@ -51,7 +51,9 @@ class ProfilePage extends ConsumerWidget {
               ),
               Expanded(
                 child: AppScroll(
-                  padding: EdgeInsets.zero,
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.paddingOf(context).bottom,
+                  ),
                   children: [
                     SizedBox(height: design.spacing.md),
 
@@ -84,7 +86,7 @@ class ProfilePage extends ConsumerWidget {
                             ),
                         loading: () => const SizedBox(height: 200),
                         error: (err, _) => AppErrorView(
-                          message: err.toString(),
+                          error: err,
                           onRetry: () => ref.invalidate(studyMomentumProvider),
                         ),
                       ),
@@ -97,7 +99,7 @@ class ProfilePage extends ConsumerWidget {
                             EnrolledCoursesSection(courses: courses),
                         loading: () => const SizedBox(height: 150),
                         error: (err, _) => AppErrorView(
-                          message: err.toString(),
+                          error: err,
                           onRetry: () =>
                               ref.invalidate(profileEnrollmentProvider),
                         ),
@@ -111,7 +113,7 @@ class ProfilePage extends ConsumerWidget {
                             RecentActivitySection(activities: activities),
                         loading: () => const SizedBox(height: 120),
                         error: (err, _) => AppErrorView(
-                          message: err.toString(),
+                          error: err,
                           onRetry: () =>
                               ref.invalidate(profileRecentActivityProvider),
                         ),

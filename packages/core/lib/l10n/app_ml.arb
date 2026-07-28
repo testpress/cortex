@@ -1078,5 +1078,12 @@
   "sessionExpiredTitle": "സെഷൻ അവസാനിച്ചു",
   "sessionExpiredIconSemantics": "സെഷൻ അവസാനിച്ചതിന്റെ ഐക്കൺ",
   "sessionExpiredLoginButton": "വീണ്ടും ലോഗിൻ ചെയ്യുക",
-  "sessionExpiredFallbackMessage": "നിങ്ങളുടെ സെഷൻ കാലഹരണപ്പെട്ടു. ദയവായി വീണ്ടും ലോഗിൻ ചെയ്യുക."
+  "sessionExpiredFallbackMessage": "നിങ്ങളുടെ സെഷൻ കാലഹരണപ്പെട്ടു. ദയവായി വീണ്ടും ലോഗിൻ ചെയ്യുക.",
+  "errorNoInternetTitle": "കണക്ഷൻ പിശക്",
+  "errorTimeoutTitle": "അഭ്യർത്ഥന സമയം കഴിഞ്ഞു",
+  "errorSessionExpiredTitle": "സെഷൻ അവസാനിച്ചു",
+  "errorAccessDeniedTitle": "പ്രവേശനം നിഷേധിച്ചു",
+  "errorNotFoundTitle": "കണ്ടെത്തിയില്ല",
+  "errorServerTitle": "സെർവർ പിശക്",
+  "errorRateLimitedTitle": "നിരവധി അഭ്യർത്ഥനകൾ"
 }

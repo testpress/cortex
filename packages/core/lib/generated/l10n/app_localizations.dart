@@ -5062,6 +5062,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your session has expired. Please sign in again.'**
   String get sessionExpiredFallbackMessage;
+
+  /// No description provided for @errorNoInternetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection Error'**
+  String get errorNoInternetTitle;
+
+  /// No description provided for @errorTimeoutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Request Timeout'**
+  String get errorTimeoutTitle;
+
+  /// No description provided for @errorSessionExpiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Session Expired'**
+  String get errorSessionExpiredTitle;
+
+  /// No description provided for @errorAccessDeniedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Access Denied'**
+  String get errorAccessDeniedTitle;
+
+  /// No description provided for @errorNotFoundTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Found'**
+  String get errorNotFoundTitle;
+
+  /// No description provided for @errorServerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Server Error'**
+  String get errorServerTitle;
+
+  /// No description provided for @errorRateLimitedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Too Many Requests'**
+  String get errorRateLimitedTitle;
 }
 
 class _AppLocalizationsDelegate

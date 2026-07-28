@@ -29,9 +29,10 @@ class ProductList extends ConsumerWidget {
 
     return productsAsync.when(
       loading: () => _buildGrid(context, _skeletonProducts, isLoading: true),
-      error: (_, __) => SizedBox(
+      error: (err, __) => SizedBox(
         height: MediaQuery.sizeOf(context).height * 0.6,
         child: AppErrorView(
+          error: err,
           onRetry: () => ref.invalidate(storeProductsProvider),
         ),
       ),

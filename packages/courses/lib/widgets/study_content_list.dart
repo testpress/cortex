@@ -160,7 +160,7 @@ class StudyContentList extends ConsumerWidget {
       error: (e, _) => SliverFillRemaining(
         hasScrollBody: false,
         child: AppErrorView(
-          message: 'Initialization failed: $e',
+          error: e,
           onRetry: () => ref.read(courseListProvider.notifier).initialize(),
         ),
       ),

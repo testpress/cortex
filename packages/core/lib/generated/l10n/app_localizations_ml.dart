@@ -2855,4 +2855,25 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get sessionExpiredFallbackMessage =>
       'നിങ്ങളുടെ സെഷൻ കാലഹരണപ്പെട്ടു. ദയവായി വീണ്ടും ലോഗിൻ ചെയ്യുക.';
+
+  @override
+  String get errorNoInternetTitle => 'കണക്ഷൻ പിശക്';
+
+  @override
+  String get errorTimeoutTitle => 'അഭ്യർത്ഥന സമയം കഴിഞ്ഞു';
+
+  @override
+  String get errorSessionExpiredTitle => 'സെഷൻ അവസാനിച്ചു';
+
+  @override
+  String get errorAccessDeniedTitle => 'പ്രവേശനം നിഷേധിച്ചു';
+
+  @override
+  String get errorNotFoundTitle => 'കണ്ടെത്തിയില്ല';
+
+  @override
+  String get errorServerTitle => 'സെർവർ പിശക്';
+
+  @override
+  String get errorRateLimitedTitle => 'നിരവധി അഭ്യർത്ഥനകൾ';
 }

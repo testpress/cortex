@@ -252,7 +252,7 @@ class _AnnouncementsListScreenState
               ),
               error: (error, stack) => Center(
                 child: AppErrorView(
-                  message: error.toString(),
+                  error: error,
                   onRetry: () =>
                       ref.read(announcementsProvider.notifier).refresh(),
                 ),

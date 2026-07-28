@@ -356,6 +356,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
         },
         error: (error, _) {
           return AppErrorView(
+            error: error,
             onRetry: () => ref.invalidate(
               subChaptersProvider(widget.courseId, widget.parentId),
             ),

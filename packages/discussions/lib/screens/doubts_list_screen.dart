@@ -170,7 +170,7 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
                   ),
                   error: (err, stack) => Center(
                     child: AppErrorView(
-                      message: l10n.errorGenericMessage,
+                      error: err,
                       onRetry: () {
                         ref.invalidate(doubtsListProvider);
                         ref.invalidate(doubtsSyncProvider);

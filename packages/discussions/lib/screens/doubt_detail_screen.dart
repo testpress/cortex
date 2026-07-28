@@ -74,8 +74,8 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
             true,
           ),
         ),
-        error: (_, _) => AppErrorView(
-          message: l10n.errorFailedToLoadDoubtDetails,
+        error: (err, _) => AppErrorView(
+          error: err,
           onRetry: () => ref.invalidate(doubtDetailProvider(widget.doubtId)),
         ),
       ),
@@ -406,8 +406,6 @@ class _RepliesList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = L10n.of(context);
-
     return repliesAsync.when(
       data: (replies) => SliverList.builder(
         itemCount: replies.length,
@@ -420,9 +418,10 @@ class _RepliesList extends ConsumerWidget {
           itemBuilder: (context, index) => _ReplyCard(reply: _dummyReply),
         ),
       ),
-      error: (_, _) => SliverToBoxAdapter(
+      error: (err, _) => SliverFillRemaining(
+        hasScrollBody: false,
         child: AppErrorView(
-          message: l10n.errorFailedToLoadReplies,
+          error: err,
           onRetry: () => ref.invalidate(doubtRepliesProvider(doubtId)),
         ),
       ),

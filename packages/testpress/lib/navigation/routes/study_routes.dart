@@ -86,7 +86,7 @@ class StudyRoutes {
                   ),
                   error: (error, _) {
                     return AppErrorView(
-                      message: L10n.of(context).errorLessonLoad,
+                      error: error,
                       onRetry: () => ref.invalidate(lessonDetailProvider(id)),
                     );
                   },

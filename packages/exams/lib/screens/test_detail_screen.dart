@@ -70,12 +70,9 @@ class TestDetailScreen extends ConsumerWidget {
           child: const Center(child: AppLoadingIndicator()),
         ),
         error: (err, stack) {
-          final errorMessage = err is ApiException
-              ? err.message
-              : err.toString();
           return AppErrorView(
             title: 'Cannot Start Exam',
-            message: 'Failed to load offline exam: $errorMessage',
+            error: err,
             onRetry: () =>
                 ref.invalidate(offlineExamRepositoryFactoryProvider(testId)),
           );
@@ -323,11 +320,8 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
           child: const Center(child: AppLoadingIndicator()),
         ),
         error: (err, stack) {
-          final errorMessage = err is ApiException
-              ? err.message
-              : err.toString();
           return AppErrorView(
-            message: errorMessage,
+            error: err,
             onRetry: () => ref.invalidate(lessonDetailProvider(widget.testId)),
           );
         },

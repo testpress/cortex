@@ -110,7 +110,7 @@ class GlobalRoutes {
                     final l10n = L10n.of(context);
                     return AppErrorView(
                       title: l10n.errorGenericTitle,
-                      message: l10n.errorLessonLoad,
+                      error: e,
                     );
                   },
                 );

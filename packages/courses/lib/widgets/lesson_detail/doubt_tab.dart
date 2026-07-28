@@ -123,7 +123,7 @@ class DoubtTab extends ConsumerWidget {
             context: context,
             child: Center(
               child: AppErrorView(
-                message: l10n.errorGenericMessage,
+                error: err,
                 onRetry: () => ref.invalidate(lessonDoubtsProvider(lessonId)),
               ),
             ),

@@ -2803,4 +2803,25 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get sessionExpiredFallbackMessage =>
       'Your session has expired. Please sign in again.';
+
+  @override
+  String get errorNoInternetTitle => 'Connection Error';
+
+  @override
+  String get errorTimeoutTitle => 'Request Timeout';
+
+  @override
+  String get errorSessionExpiredTitle => 'Session Expired';
+
+  @override
+  String get errorAccessDeniedTitle => 'Access Denied';
+
+  @override
+  String get errorNotFoundTitle => 'Not Found';
+
+  @override
+  String get errorServerTitle => 'Server Error';
+
+  @override
+  String get errorRateLimitedTitle => 'Too Many Requests';
 }
