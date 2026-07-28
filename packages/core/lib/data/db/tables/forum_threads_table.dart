@@ -21,6 +21,7 @@ class ForumThreadsTable extends Table {
   TextColumn get imageUrl => text().nullable()();
   TextColumn get categorySlug => text().nullable()();
   TextColumn get contentHtml => text().nullable()();
+  IntColumn get bookmarkId => integer().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};

@@ -64,6 +64,7 @@ class ForumThreadDto {
   final int downvotes;
   final ForumThreadStatus status;
   final String? imageUrl;
+  final int? bookmarkId;
 
   const ForumThreadDto({
     required this.threadId,
@@ -83,6 +84,7 @@ class ForumThreadDto {
     this.downvotes = 0,
     required this.status,
     this.imageUrl,
+    this.bookmarkId,
   });
 
   int get score => upvotes - downvotes;
@@ -136,6 +138,7 @@ class ForumThreadDto {
             : ForumThreadStatus.unanswered,
       ),
       imageUrl: _asString(json['image_url']),
+      bookmarkId: _asInt(json['bookmark_id']),
     );
   }
 

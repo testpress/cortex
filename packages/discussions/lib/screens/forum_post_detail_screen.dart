@@ -18,7 +18,7 @@ import '../widgets/forum_composer.dart';
 ///
 /// Displays the full thread content, replies, and the sticky reply input.
 /// Follows neutral UI semantics using core Design tokens exclusively.
-class ForumPostDetailScreen extends ConsumerWidget {
+class ForumPostDetailScreen extends ConsumerStatefulWidget {
   final String slug;
   final ForumThreadDto? initialThread;
 
@@ -29,19 +29,57 @@ class ForumPostDetailScreen extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ForumPostDetailScreen> createState() =>
+      _ForumPostDetailScreenState();
+}
+
+class _ForumPostDetailScreenState extends ConsumerState<ForumPostDetailScreen> {
+  bool _isBookmarkSheetOpen = false;
+  bool _isCreateFolderDialogOpen = false;
+
+  Future<void> _removeBookmark(ForumThreadDto thread) async {
+    final bookmarkId = thread.bookmarkId;
+    if (bookmarkId == null) return;
+
+    final l10n = L10n.of(context);
+    AppToast.show(context, message: l10n.bookmarkRemoved);
+
+    final sentry = ref.read(sentryServiceProvider);
+    try {
+      await ref.read(
+        removeBookmarkProvider(
+          bookmarkId: bookmarkId,
+          lessonId: thread.threadId,
+        ).future,
+      );
+      // Invalidate the thread provider to reflect bookmark state change
+      ref.invalidate(globalForumThreadDetailProvider(widget.slug));
+    } catch (e, stack) {
+      sentry.captureException(e, stackTrace: stack);
+      if (mounted) {
+        AppToast.show(
+          context,
+          message: L10n.of(context).errorFailedToRemoveBookmark,
+          isError: true,
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
-    var threadAsync = ref.watch(globalForumThreadDetailProvider(slug));
-    if (threadAsync.valueOrNull == null && initialThread != null) {
-      threadAsync = AsyncValue.data(initialThread!);
+    var threadAsync = ref.watch(globalForumThreadDetailProvider(widget.slug));
+    if (threadAsync.valueOrNull == null && widget.initialThread != null) {
+      threadAsync = AsyncValue.data(widget.initialThread!);
     }
 
     final thread = threadAsync.valueOrNull;
 
-    return SkeletonizerConfig(
+    final mainScreen = SkeletonizerConfig(
       data: SkeletonizerConfigData(
         effect: ShimmerEffect(
           baseColor: design.colors.skeleton,
@@ -60,7 +98,7 @@ class ForumPostDetailScreen extends ConsumerWidget {
             padding: EdgeInsets.only(bottom: bottomInset),
             child: Column(
               children: [
-                _buildHeader(design, l10n),
+                _buildHeader(design, l10n, thread),
                 _buildDivider(design),
                 Expanded(child: _buildBody(context, ref, l10n, threadAsync)),
                 if (thread != null)
@@ -71,25 +109,84 @@ class ForumPostDetailScreen extends ConsumerWidget {
         ),
       ),
     );
+
+    return Stack(
+      children: [
+        mainScreen,
+        if (thread != null)
+          AppBottomSheet(
+            key: const ValueKey('bookmark_sheet'),
+            isOpen: _isBookmarkSheetOpen,
+            onClose: () => setState(() => _isBookmarkSheetOpen = false),
+            child: BookmarkFoldersSheet(
+              lessonId: thread.threadId,
+              category: 'post',
+              parentContext: context,
+              onClose: () {
+                setState(() => _isBookmarkSheetOpen = false);
+                ref.invalidate(globalForumThreadDetailProvider(widget.slug));
+              },
+              onCreateFolderRequest: () {
+                setState(() {
+                  _isBookmarkSheetOpen = false;
+                  _isCreateFolderDialogOpen = true;
+                });
+              },
+            ),
+          ),
+        if (_isCreateFolderDialogOpen && thread != null)
+          CreateFolderDialog(
+            lessonId: thread.threadId,
+            category: 'post',
+            onClose: () {
+              setState(() => _isCreateFolderDialogOpen = false);
+              ref.invalidate(globalForumThreadDetailProvider(widget.slug));
+            },
+          ),
+      ],
+    );
   }
 
-  Widget _buildHeader(DesignConfig design, AppLocalizations l10n) {
+  Widget _buildHeader(
+    DesignConfig design,
+    AppLocalizations l10n,
+    ForumThreadDto? thread,
+  ) {
     return ForumHeader(
       title: l10n.forumDiscussion,
       showDivider: false,
       actions: [
-        AppFocusable(
-          onTap: () {},
-          borderRadius: BorderRadius.circular(design.radius.full),
-          child: Padding(
-            padding: EdgeInsets.all(design.spacing.xs),
-            child: Icon(
-              LucideIcons.moreVertical,
-              color: design.colors.textPrimary,
-              size: 18,
+        if (thread != null)
+          AppSemantics.button(
+            label: thread.bookmarkId != null
+                ? l10n.bookmarkActionRemoveBookmark
+                : l10n.drawerBookmark,
+            child: AppFocusable(
+              onTap: () {
+                if (thread.bookmarkId != null) {
+                  _removeBookmark(thread);
+                } else {
+                  setState(() => _isBookmarkSheetOpen = true);
+                }
+              },
+              borderRadius: BorderRadius.circular(design.radius.full),
+              child: SizedBox(
+                width: 48,
+                height: 48,
+                child: Center(
+                  child: Icon(
+                    thread.bookmarkId != null
+                        ? LucideIcons.bookmarkOff
+                        : LucideIcons.bookmark,
+                    color: thread.bookmarkId != null
+                        ? design.colors.primary
+                        : design.colors.textPrimary,
+                    size: 20,
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
       ],
     );
   }
@@ -108,7 +205,7 @@ class ForumPostDetailScreen extends ConsumerWidget {
       return Center(child: AppText.body(l10n.errorGenericMessage));
     }
 
-    final thread = threadAsync.valueOrNull ?? initialThread;
+    final thread = threadAsync.valueOrNull ?? widget.initialThread;
     final isLoading = threadAsync.isLoading && thread == null;
 
     if (thread == null && !isLoading) {

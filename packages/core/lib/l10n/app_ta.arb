@@ -916,7 +916,6 @@
   "loginActivityNoActivityFound": "உள்நுழைவு செயல்பாடு எதுவும் காணப்படவில்லை",
   "loginActivityLogoutOtherDevices": "பிற சாதனங்களிலிருந்து வெளியேறு",
   "loginActivityLogoutSuccess": "பிற சாதனங்களிலிருந்து வெற்றிகரமாக வெளியேறினீர்கள்",
-  "actionMarkAsResolved": "தீர்க்கப்பட்டதாகக் குறிக்கவும்",
   "actionCloseDoubt": "சந்தேகத்தை மூடு",
   "messageDoubtResolved": "இந்த சந்தேகம் தீர்க்கப்பட்டதாக குறிக்கப்பட்டுள்ளது.",
   "messageDiscussionClosed": "இந்த விவாத இழை மூடப்பட்டுள்ளது மற்றும் படிக்க மட்டுமே முடியும்.",

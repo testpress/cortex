@@ -691,7 +691,6 @@
   "loginActivityNoActivityFound": "لا يوجد نشاط تسجيل دخول",
   "loginActivityLogoutOtherDevices": "تسجيل الخروج من الأجهزة الأخرى",
   "loginActivityLogoutSuccess": "تم تسجيل الخروج من الأجهزة الأخرى بنجاح",
-  "actionMarkAsResolved": "تحديد كمحلول",
   "actionCloseDoubt": "إغلاق الشك",
   "messageDoubtResolved": "تم وضع علامة على هذا الشك كمحلول.",
   "messageDiscussionClosed": "موضوع النقاش هذا مغلق وللقراءة فقط.",

@@ -956,7 +956,7 @@
   "loginActivityNoActivityFound": "No login activity found",
   "loginActivityLogoutOtherDevices": "Logout other devices",
   "loginActivityLogoutSuccess": "Successfully logged out of other devices",
-  "actionMarkAsResolved": "Mark as Resolved",
+
   "actionCloseDoubt": "Close Doubt",
   "messageDoubtResolved": "This doubt has been marked as resolved.",
   "messageDiscussionClosed": "This discussion thread is closed and read-only.",

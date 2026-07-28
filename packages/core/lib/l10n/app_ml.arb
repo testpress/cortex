@@ -692,7 +692,6 @@
   "loginActivityNoActivityFound": "ലോഗിൻ ആക്റ്റിവിറ്റിയൊന്നും കണ്ടെത്തിയില്ല",
   "loginActivityLogoutOtherDevices": "മറ്റ് ഉപകരണങ്ങളിൽ നിന്ന് ലോഗൗട്ട് ചെയ്യുക",
   "loginActivityLogoutSuccess": "മറ്റ് ഉപകരണങ്ങളിൽ നിന്ന് വിജയകരമായി ലോഗൗട്ട് ചെയ്തു",
-  "actionMarkAsResolved": "പരിഹരിച്ചതായി അടയാളപ്പെടുത്തുക",
   "actionCloseDoubt": "സംശയം അടയ്ക്കുക",
   "messageDoubtResolved": "ഈ സംശയം പരിഹരിച്ചതായി അടയാളപ്പെടുത്തി.",
   "messageDiscussionClosed": "ഈ ചർച്ചാ ത്രെഡ് അടച്ചു, ഇത് വായിക്കാൻ മാത്രമേ കഴിയൂ.",

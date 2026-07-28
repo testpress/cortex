@@ -2019,9 +2019,6 @@ class AppLocalizationsMl extends AppLocalizations {
       'മറ്റ് ഉപകരണങ്ങളിൽ നിന്ന് വിജയകരമായി ലോഗൗട്ട് ചെയ്തു';
 
   @override
-  String get actionMarkAsResolved => 'പരിഹരിച്ചതായി അടയാളപ്പെടുത്തുക';
-
-  @override
   String get actionCloseDoubt => 'സംശയം അടയ്ക്കുക';
 
   @override

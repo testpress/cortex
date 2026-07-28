@@ -1977,9 +1977,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Successfully logged out of other devices';
 
   @override
-  String get actionMarkAsResolved => 'Mark as Resolved';
-
-  @override
   String get actionCloseDoubt => 'Close Doubt';
 
   @override

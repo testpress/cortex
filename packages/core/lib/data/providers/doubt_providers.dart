@@ -197,7 +197,6 @@ class PostDoubtReplyNotifier extends _$PostDoubtReplyNotifier {
   Future<void> submit({
     required String doubtId,
     String? comment,
-    bool? shouldResolve,
     bool? shouldClose,
     List<String> attachments = const [],
   }) async {
@@ -221,7 +220,6 @@ class PostDoubtReplyNotifier extends _$PostDoubtReplyNotifier {
       await repo.postDoubtReply(
         doubtId: doubtId,
         comment: finalContent,
-        shouldResolve: shouldResolve,
         shouldClose: shouldClose,
       );
     });
