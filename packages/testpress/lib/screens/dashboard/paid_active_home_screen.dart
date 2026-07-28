@@ -56,7 +56,11 @@ class _HomeLayout extends ConsumerWidget {
             DashboardHeaderWidget(isLandscape: isLandscape),
             Expanded(
               child: AppScroll(
-                padding: EdgeInsets.symmetric(vertical: design.spacing.md),
+                padding: EdgeInsets.only(
+                  top: design.spacing.md,
+                  bottom:
+                      design.spacing.md + MediaQuery.paddingOf(context).bottom,
+                ),
                 children: [
                   const GreetingSectionWidget(),
                   const TopCarouselSectionWidget(),
