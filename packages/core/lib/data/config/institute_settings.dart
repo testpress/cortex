@@ -1,7 +1,17 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 
 /// Defines the allowed login methods for an institute.
 enum LoginMethod { formLogin, socialLogin, otpLogin }
+
+enum VideoWatermarkType { dynamic, static }
+
+enum VideoWatermarkPosition {
+  topLeft,
+  topRight,
+  bottomLeft,
+  bottomRight,
+  middle,
+}
 
 @immutable
 class InstituteSettings {
@@ -51,6 +61,8 @@ class InstituteSettings {
 
   //Security Settings
   final bool allowScreenshotInApp;
+  final VideoWatermarkType? videoWatermarkType;
+  final VideoWatermarkPosition? videoWatermarkPosition;
 
   //Store Settings
   final bool storeEnabled;
@@ -91,9 +103,18 @@ class InstituteSettings {
     required this.storeEnabled,
     required this.storeLabel,
     required this.currentPaymentApp,
+    this.videoWatermarkType,
+    this.videoWatermarkPosition,
   });
 
   factory InstituteSettings.fromJson(Map<String, dynamic> json) {
+    final watermarkType = (json['video_watermark_type'] as String?)
+        ?.trim()
+        .toLowerCase();
+    final watermarkPosition = (json['video_watermark_position'] as String?)
+        ?.trim()
+        .toLowerCase();
+
     return InstituteSettings(
       name: json['name'] as String? ?? '',
       photo: json['photo'] as String? ?? '',
@@ -149,6 +170,19 @@ class InstituteSettings {
       storeEnabled: json['store_enabled'] as bool? ?? false,
       storeLabel: json['store_label'] as String? ?? 'Store',
       currentPaymentApp: json['current_payment_app'] as String? ?? '',
+      videoWatermarkType: switch (watermarkType) {
+        'dynamic' => VideoWatermarkType.dynamic,
+        'static' => VideoWatermarkType.static,
+        _ => null,
+      },
+      videoWatermarkPosition: switch (watermarkPosition) {
+        'top left' => VideoWatermarkPosition.topLeft,
+        'top right' => VideoWatermarkPosition.topRight,
+        'bottom left' => VideoWatermarkPosition.bottomLeft,
+        'bottom right' => VideoWatermarkPosition.bottomRight,
+        'middle' => VideoWatermarkPosition.middle,
+        _ => null,
+      },
     );
   }
 
@@ -196,6 +230,19 @@ class InstituteSettings {
       'store_enabled': storeEnabled,
       'store_label': storeLabel,
       'current_payment_app': currentPaymentApp,
+      'video_watermark_type': switch (videoWatermarkType) {
+        VideoWatermarkType.dynamic => 'dynamic',
+        VideoWatermarkType.static => 'static',
+        null => null,
+      },
+      'video_watermark_position': switch (videoWatermarkPosition) {
+        VideoWatermarkPosition.topLeft => 'top left',
+        VideoWatermarkPosition.topRight => 'top right',
+        VideoWatermarkPosition.bottomLeft => 'bottom left',
+        VideoWatermarkPosition.bottomRight => 'bottom right',
+        VideoWatermarkPosition.middle => 'middle',
+        null => null,
+      },
     };
   }
 }
