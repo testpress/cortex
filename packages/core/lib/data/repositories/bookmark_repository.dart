@@ -324,7 +324,7 @@ class BookmarkRepository {
     required String? bookmarkType,
   }) async {
     await _db.transaction(() async {
-      // 1. Decrement folder counts for old bookmarks and delete them
+      // 1. Decrement folder counts for old bookmarks and delete them (except if it is the updated row ID)
       for (final oldId in oldBookmarkIdsToDelete) {
         final oldItem = await (_db.select(
           _db.bookmarkItemsTable,
@@ -347,9 +347,11 @@ class BookmarkRepository {
             );
           }
         }
-        await (_db.delete(
-          _db.bookmarkItemsTable,
-        )..where((tbl) => tbl.id.equals(oldId))).go();
+        if (oldId != newBookmark.id) {
+          await (_db.delete(
+            _db.bookmarkItemsTable,
+          )..where((tbl) => tbl.id.equals(oldId))).go();
+        }
       }
 
       // 2. Delete any other duplicates for this lesson (just in case they weren't in oldBookmarkIdsToDelete)
@@ -527,8 +529,11 @@ class BookmarkRepository {
     );
 
     // 2. Once creation succeeds, delete the old bookmarks sequentially on the backend.
-    // Wrap in try-catch to tolerate partial remote failures (e.g. if one was already deleted on server).
+    // Skip deletion if the old ID is identical to the returned newBookmark ID (meaning the server updated the row instead of creating a new one).
     for (final oldId in oldBookmarkIds) {
+      if (oldId == newBookmark.id) {
+        continue;
+      }
       try {
         await _dataSource.deleteBookmark(oldId.toString());
       } catch (e) {
