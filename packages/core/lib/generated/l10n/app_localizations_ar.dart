@@ -1898,6 +1898,10 @@ class AppLocalizationsAr extends AppLocalizations {
       'فشل إنشاء المجلد. يرجى المحاولة مرة أخرى.';
 
   @override
+  String get errorFailedToRenameFolder =>
+      'فشل إعادة تسمية المجلد. يرجى المحاولة مرة أخرى.';
+
+  @override
   String get bookmarkSaveToFolders => 'حفظ في قائمة التشغيل أو المجلدات';
 
   @override

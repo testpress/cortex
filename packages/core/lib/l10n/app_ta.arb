@@ -862,6 +862,7 @@
   "hintExampleFolderName": "உதாரணமாக: இயற்பியல், திருப்புதல்",
   "errorFailedToLoadFolders": "கோப்புறைகளை ஏற்ற முடியவில்லை.",
   "errorFailedToCreateFolder": "கோப்புறையை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
+  "errorFailedToRenameFolder": "கோப்புறையின் பெயரை மாற்ற முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
   "bookmarkSaveToFolders": "பிளேலிஸ்ட் அல்லது கோப்புறைகளில் சேமிக்கவும்",
   "bookmarkSaveTo": "சேமி...",
   "bookmarkAddedToFolder": "{folderName} கோப்புறையில் புக்மார்க் சேர்க்கப்பட்டது",

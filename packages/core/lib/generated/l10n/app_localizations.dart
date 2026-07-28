@@ -3497,6 +3497,12 @@ abstract class AppLocalizations {
   /// **'Failed to create folder. Please try again.'**
   String get errorFailedToCreateFolder;
 
+  /// No description provided for @errorFailedToRenameFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to rename folder. Please try again.'**
+  String get errorFailedToRenameFolder;
+
   /// No description provided for @bookmarkSaveToFolders.
   ///
   /// In en, this message translates to:

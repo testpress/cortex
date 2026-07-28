@@ -1890,6 +1890,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Failed to create folder. Please try again.';
 
   @override
+  String get errorFailedToRenameFolder =>
+      'Failed to rename folder. Please try again.';
+
+  @override
   String get bookmarkSaveToFolders => 'Save to playlist or folders';
 
   @override

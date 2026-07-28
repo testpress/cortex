@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core.dart';
 import '../data/providers/bookmark_provider.dart';
 import '../data/models/bookmark_dto.dart';
+import '../data/exceptions/api_exception.dart';
 
 /// A premium, platform-neutral bottom sheet widget that displays a list of
 /// bookmark folders, letting the user add/remove a lesson from them.
@@ -491,9 +492,11 @@ class _CreateFolderDialogState extends ConsumerState<CreateFolderDialog> {
       debugPrint('Error saving folder: $e\n$stack');
       if (mounted) {
         setState(() {
-          _errorMessage = widget.isRenameMode
-              ? 'Failed to rename folder.'
-              : L10n.of(context).errorFailedToCreateFolder;
+          _errorMessage = e is ApiException
+              ? e.message
+              : (widget.isRenameMode
+                    ? L10n.of(context).errorFailedToRenameFolder
+                    : L10n.of(context).errorFailedToCreateFolder);
           _isLoading = false;
         });
       }

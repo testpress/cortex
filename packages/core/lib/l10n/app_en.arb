@@ -903,6 +903,7 @@
   "hintExampleFolderName": "e.g. Physics, Revision",
   "errorFailedToLoadFolders": "Failed to load folders.",
   "errorFailedToCreateFolder": "Failed to create folder. Please try again.",
+  "errorFailedToRenameFolder": "Failed to rename folder. Please try again.",
   "bookmarkSaveToFolders": "Save to playlist or folders",
   "bookmarkSaveTo": "Save to...",
   "bookmarkAddedToFolder": "Added bookmark to {folderName}",

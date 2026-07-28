@@ -1922,6 +1922,10 @@ class AppLocalizationsTa extends AppLocalizations {
       'கோப்புறையை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
 
   @override
+  String get errorFailedToRenameFolder =>
+      'கோப்புறையின் பெயரை மாற்ற முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
+
+  @override
   String get bookmarkSaveToFolders =>
       'பிளேலிஸ்ட் அல்லது கோப்புறைகளில் சேமிக்கவும்';
 
