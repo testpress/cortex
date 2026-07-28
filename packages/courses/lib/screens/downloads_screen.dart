@@ -146,10 +146,7 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
         } else {
           if (mounted) {
             Navigator.of(context).push(
-              PageRouteBuilder(
-                pageBuilder: (context, animation, secondaryAnimation) =>
-                    OfflineVideoPlayerScreen(item: item),
-              ),
+              AppRoute(page: OfflineVideoPlayerScreen(item: item)),
             );
           }
         }

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
@@ -36,18 +36,17 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
     final design = Design.of(context);
     final lesson = widget.lesson;
     final isCompleted = widget.isCompleted;
-    final cardBgColor = design.isDark ? const Color(0xFF202023) : Colors.white;
     final textMuted = design.colors.textSecondary.withValues(alpha: 0.7);
 
     return Opacity(
       opacity: 1.0,
       child: Container(
         decoration: BoxDecoration(
-          color: cardBgColor,
+          color: design.colors.card,
           borderRadius: BorderRadius.circular(design.spacing.md),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: design.isDark ? 0.2 : 0.04),
+              color: design.colors.shadow,
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -78,15 +77,10 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
-                          colors: design.isDark
-                              ? [
-                                  const Color(0xFF1E293B),
-                                  const Color(0xFF0F172A),
-                                ]
-                              : [
-                                  const Color(0xFFF1F5F9),
-                                  const Color(0xFFE2E8F0),
-                                ],
+                          colors: [
+                            design.colors.surfaceVariant,
+                            design.colors.canvas,
+                          ],
                         ),
                       ),
                       child: Center(
@@ -97,7 +91,7 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Icon(
-                            Icons.menu_book,
+                            LucideIcons.book,
                             color: design.colors.primary,
                             size: 24,
                           ),
@@ -116,7 +110,7 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.7),
+                          color: const Color(0xFF000000).withValues(alpha: 0.7),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: AppText.labelSmall(
@@ -153,12 +147,19 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
                                   lesson.chapterTitle!,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                  ),
                                 ),
                               ],
                             ],
                           ),
                         ),
-                        Icon(Icons.chevron_right, size: 16, color: textMuted),
+                        Icon(
+                          LucideIcons.chevronRight,
+                          size: 16,
+                          color: textMuted,
+                        ),
                       ],
                     ),
                     const SizedBox(height: 6),

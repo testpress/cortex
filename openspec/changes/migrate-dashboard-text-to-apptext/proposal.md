@@ -12,6 +12,12 @@ Migrate all occurrences of raw `Text` widgets in the following areas to use the 
 - Attachment viewer title, caption, download progress, download failure, and warning SnackBars.
 - Video quality setting recommendations/defaults labels in the App Settings screen.
 
+Additionally, to enforce strict compliance with the platform-neutral UI architecture guidelines (ADR 0001):
+- Remove `import 'package:flutter/material.dart';` from modified files, replacing it with `import 'package:flutter/widgets.dart';`.
+- Replace Material `SnackBar` and `ScaffoldMessenger` alerts in the downloads screen and attachment viewer with platform-neutral `AppToast.show` notifications.
+- Replace `MaterialPageRoute` in the downloads screen with the design system's transition-aware `AppRoute` primitive.
+- Replace Material `Icons` references with neutral `LucideIcons`.
+
 ## Capabilities
 
 ### New Capabilities
