@@ -24,25 +24,33 @@ class AuthRoutes {
     final isAuthRoute = _authPaths.contains(path);
     final container = ProviderScope.containerOf(context, listen: false);
 
+    // Helper: defer provider writes out of the build phase.
+    // GoRouter's redirect runs during didChangeDependencies, so synchronous
+    // Riverpod mutations crash with "Tried to modify a provider while the
+    // widget tree was building". Reads are synchronous and safe.
+    void markShown() => Future.microtask(
+      () => container.read(hasShownOnboardingProvider.notifier).state = true,
+    );
+
     if (!isLoggedIn && !isAuthRoute) {
-      container.read(hasShownOnboardingProvider.notifier).state = true;
+      markShown();
       return '/login';
     }
     if (isLoggedIn && isAuthRoute) {
-      container.read(hasShownOnboardingProvider.notifier).state = true;
+      markShown();
       return '/home';
     }
 
     if (!isLoggedIn && path == '/onboarding') {
       final hasShown = container.read(hasShownOnboardingProvider);
       if (!hasShown) {
-        container.read(hasShownOnboardingProvider.notifier).state = true;
+        markShown();
         return null;
       }
       return '/login';
     }
 
-    container.read(hasShownOnboardingProvider.notifier).state = true;
+    markShown();
     return null;
   }
 
