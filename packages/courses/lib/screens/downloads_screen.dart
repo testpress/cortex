@@ -432,7 +432,7 @@ class _VideoThumbnail extends StatelessWidget {
                   ),
                   child: AppText.labelSmall(
                     item.duration!,
-                    color: const Color(0xFFFFFFFF),
+                    color: design.colors.textInverse,
                   ),
                 ),
               ),

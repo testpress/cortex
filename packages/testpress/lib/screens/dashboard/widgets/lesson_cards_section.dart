@@ -115,7 +115,7 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
                         ),
                         child: AppText.labelSmall(
                           '${lesson.progress!.toInt()}%',
-                          color: const Color(0xFFFFFFFF),
+                          color: design.colors.textInverse,
                         ),
                       ),
                     ),
