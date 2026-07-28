@@ -1986,9 +1986,6 @@ class AppLocalizationsAr extends AppLocalizations {
       'تم تسجيل الخروج من الأجهزة الأخرى بنجاح';
 
   @override
-  String get actionMarkAsResolved => 'تحديد كمحلول';
-
-  @override
   String get actionCloseDoubt => 'إغلاق الشك';
 
   @override

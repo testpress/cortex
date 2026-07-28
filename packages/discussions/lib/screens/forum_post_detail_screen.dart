@@ -120,9 +120,12 @@ class _ForumPostDetailScreenState extends ConsumerState<ForumPostDetailScreen> {
             onClose: () => setState(() => _isBookmarkSheetOpen = false),
             child: BookmarkFoldersSheet(
               lessonId: thread.threadId,
-              category: 'discussion',
+              category: 'post',
               parentContext: context,
-              onClose: () => setState(() => _isBookmarkSheetOpen = false),
+              onClose: () {
+                setState(() => _isBookmarkSheetOpen = false);
+                ref.invalidate(globalForumThreadDetailProvider(widget.slug));
+              },
               onCreateFolderRequest: () {
                 setState(() {
                   _isBookmarkSheetOpen = false;
@@ -134,8 +137,11 @@ class _ForumPostDetailScreenState extends ConsumerState<ForumPostDetailScreen> {
         if (_isCreateFolderDialogOpen && thread != null)
           CreateFolderDialog(
             lessonId: thread.threadId,
-            category: 'discussion',
-            onClose: () => setState(() => _isCreateFolderDialogOpen = false),
+            category: 'post',
+            onClose: () {
+              setState(() => _isCreateFolderDialogOpen = false);
+              ref.invalidate(globalForumThreadDetailProvider(widget.slug));
+            },
           ),
       ],
     );
@@ -151,25 +157,33 @@ class _ForumPostDetailScreenState extends ConsumerState<ForumPostDetailScreen> {
       showDivider: false,
       actions: [
         if (thread != null)
-          AppFocusable(
-            onTap: () {
-              if (thread.bookmarkId != null) {
-                _removeBookmark(thread);
-              } else {
-                setState(() => _isBookmarkSheetOpen = true);
-              }
-            },
-            borderRadius: BorderRadius.circular(design.radius.full),
-            child: Padding(
-              padding: EdgeInsets.all(design.spacing.xs),
-              child: Icon(
-                thread.bookmarkId != null
-                    ? LucideIcons.bookmarkOff
-                    : LucideIcons.bookmark,
-                color: thread.bookmarkId != null
-                    ? design.colors.primary
-                    : design.colors.textPrimary,
-                size: 20,
+          AppSemantics.button(
+            label: thread.bookmarkId != null
+                ? l10n.bookmarkActionRemoveBookmark
+                : l10n.drawerBookmark,
+            child: AppFocusable(
+              onTap: () {
+                if (thread.bookmarkId != null) {
+                  _removeBookmark(thread);
+                } else {
+                  setState(() => _isBookmarkSheetOpen = true);
+                }
+              },
+              borderRadius: BorderRadius.circular(design.radius.full),
+              child: SizedBox(
+                width: 48,
+                height: 48,
+                child: Center(
+                  child: Icon(
+                    thread.bookmarkId != null
+                        ? LucideIcons.bookmarkOff
+                        : LucideIcons.bookmark,
+                    color: thread.bookmarkId != null
+                        ? design.colors.primary
+                        : design.colors.textPrimary,
+                    size: 20,
+                  ),
+                ),
               ),
             ),
           ),

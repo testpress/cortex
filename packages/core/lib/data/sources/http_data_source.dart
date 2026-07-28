@@ -770,12 +770,10 @@ class HttpDataSource implements DataSource {
   Future<DoubtReplyDto> postDoubtReply({
     required String doubtId,
     String? comment,
-    bool? shouldResolve,
     bool? shouldClose,
   }) async {
     final Map<String, dynamic> body = {};
     if (comment != null) body['comment'] = comment;
-    if (shouldResolve != null) body['should_resolve'] = shouldResolve;
     if (shouldClose != null) body['should_close'] = shouldClose;
 
     return performNetworkRequest(

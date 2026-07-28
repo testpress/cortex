@@ -170,6 +170,7 @@ class ForumRepository {
     ),
     imageUrl: row.imageUrl,
     contentHtml: row.contentHtml,
+    bookmarkId: row.bookmarkId,
   );
 
   ForumThreadsTableCompanion _dtoToCompanion(ForumThreadDto dto) =>
@@ -189,6 +190,7 @@ class ForumRepository {
         imageUrl: Value(dto.imageUrl),
         categorySlug: Value(dto.categorySlug),
         contentHtml: Value(dto.contentHtml),
+        bookmarkId: Value(dto.bookmarkId),
       );
 
   ForumCommentDto _commentRowToDto(ForumCommentsTableData row) =>

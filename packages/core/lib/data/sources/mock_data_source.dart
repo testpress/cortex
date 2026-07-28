@@ -1695,7 +1695,6 @@ class MockDataSource implements DataSource {
   Future<DoubtReplyDto> postDoubtReply({
     required String doubtId,
     String? comment,
-    bool? shouldResolve,
     bool? shouldClose,
   }) async {
     await Future.delayed(const Duration(milliseconds: 300));
@@ -1703,9 +1702,7 @@ class MockDataSource implements DataSource {
     final index = mockDoubts.indexWhere((d) => d.id == doubtId);
     if (index != -1) {
       var newStatus = mockDoubts[index].status;
-      if (shouldResolve == true) {
-        newStatus = DoubtStatus.resolved;
-      } else if (shouldClose == true) {
+      if (shouldClose == true) {
         newStatus = DoubtStatus.closed;
       } else if (mockDoubts[index].status == DoubtStatus.resolved) {
         newStatus = DoubtStatus.active;

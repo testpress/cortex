@@ -140,13 +140,11 @@ class DoubtRepository {
   Future<void> postDoubtReply({
     required String doubtId,
     String? comment,
-    bool? shouldResolve,
     bool? shouldClose,
   }) async {
     final response = await _dataSource.postDoubtReply(
       doubtId: doubtId,
       comment: comment,
-      shouldResolve: shouldResolve,
       shouldClose: shouldClose,
     );
 
@@ -162,9 +160,7 @@ class DoubtRepository {
     )..where((t) => t.id.equals(doubtId))).getSingleOrNull();
     if (existing != null) {
       var updatedStatus = existing.status;
-      if (shouldResolve == true) {
-        updatedStatus = DoubtStatus.resolved.name;
-      } else if (shouldClose == true) {
+      if (shouldClose == true) {
         updatedStatus = DoubtStatus.closed.name;
       }
       await (_db.update(

@@ -1598,14 +1598,12 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
   _i3.Future<_i2.DoubtReplyDto> postDoubtReply({
     required String? doubtId,
     String? comment,
-    bool? shouldResolve,
     bool? shouldClose,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#postDoubtReply, [], {
               #doubtId: doubtId,
               #comment: comment,
-              #shouldResolve: shouldResolve,
               #shouldClose: shouldClose,
             }),
             returnValue: _i3.Future<_i2.DoubtReplyDto>.value(
@@ -1614,7 +1612,6 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
                 Invocation.method(#postDoubtReply, [], {
                   #doubtId: doubtId,
                   #comment: comment,
-                  #shouldResolve: shouldResolve,
                   #shouldClose: shouldClose,
                 }),
               ),
@@ -1625,7 +1622,6 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
                 Invocation.method(#postDoubtReply, [], {
                   #doubtId: doubtId,
                   #comment: comment,
-                  #shouldResolve: shouldResolve,
                   #shouldClose: shouldClose,
                 }),
               ),

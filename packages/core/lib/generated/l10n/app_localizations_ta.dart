@@ -2013,9 +2013,6 @@ class AppLocalizationsTa extends AppLocalizations {
       'பிற சாதனங்களிலிருந்து வெற்றிகரமாக வெளியேறினீர்கள்';
 
   @override
-  String get actionMarkAsResolved => 'தீர்க்கப்பட்டதாகக் குறிக்கவும்';
-
-  @override
   String get actionCloseDoubt => 'சந்தேகத்தை மூடு';
 
   @override

@@ -4572,6 +4572,17 @@ class $ForumThreadsTableTable extends ForumThreadsTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _bookmarkIdMeta = const VerificationMeta(
+    'bookmarkId',
+  );
+  @override
+  late final GeneratedColumn<int> bookmarkId = GeneratedColumn<int>(
+    'bookmark_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -4589,6 +4600,7 @@ class $ForumThreadsTableTable extends ForumThreadsTable
     imageUrl,
     categorySlug,
     contentHtml,
+    bookmarkId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4713,6 +4725,12 @@ class $ForumThreadsTableTable extends ForumThreadsTable
         ),
       );
     }
+    if (data.containsKey('bookmark_id')) {
+      context.handle(
+        _bookmarkIdMeta,
+        bookmarkId.isAcceptableOrUnknown(data['bookmark_id']!, _bookmarkIdMeta),
+      );
+    }
     return context;
   }
 
@@ -4782,6 +4800,10 @@ class $ForumThreadsTableTable extends ForumThreadsTable
         DriftSqlType.string,
         data['${effectivePrefix}content_html'],
       ),
+      bookmarkId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}bookmark_id'],
+      ),
     );
   }
 
@@ -4812,6 +4834,7 @@ class ForumThreadsTableData extends DataClass
   final String? imageUrl;
   final String? categorySlug;
   final String? contentHtml;
+  final int? bookmarkId;
   const ForumThreadsTableData({
     required this.id,
     this.courseId,
@@ -4828,6 +4851,7 @@ class ForumThreadsTableData extends DataClass
     this.imageUrl,
     this.categorySlug,
     this.contentHtml,
+    this.bookmarkId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -4858,6 +4882,9 @@ class ForumThreadsTableData extends DataClass
     }
     if (!nullToAbsent || contentHtml != null) {
       map['content_html'] = Variable<String>(contentHtml);
+    }
+    if (!nullToAbsent || bookmarkId != null) {
+      map['bookmark_id'] = Variable<int>(bookmarkId);
     }
     return map;
   }
@@ -4891,6 +4918,9 @@ class ForumThreadsTableData extends DataClass
       contentHtml: contentHtml == null && nullToAbsent
           ? const Value.absent()
           : Value(contentHtml),
+      bookmarkId: bookmarkId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bookmarkId),
     );
   }
 
@@ -4915,6 +4945,7 @@ class ForumThreadsTableData extends DataClass
       imageUrl: serializer.fromJson<String?>(json['imageUrl']),
       categorySlug: serializer.fromJson<String?>(json['categorySlug']),
       contentHtml: serializer.fromJson<String?>(json['contentHtml']),
+      bookmarkId: serializer.fromJson<int?>(json['bookmarkId']),
     );
   }
   @override
@@ -4936,6 +4967,7 @@ class ForumThreadsTableData extends DataClass
       'imageUrl': serializer.toJson<String?>(imageUrl),
       'categorySlug': serializer.toJson<String?>(categorySlug),
       'contentHtml': serializer.toJson<String?>(contentHtml),
+      'bookmarkId': serializer.toJson<int?>(bookmarkId),
     };
   }
 
@@ -4955,6 +4987,7 @@ class ForumThreadsTableData extends DataClass
     Value<String?> imageUrl = const Value.absent(),
     Value<String?> categorySlug = const Value.absent(),
     Value<String?> contentHtml = const Value.absent(),
+    Value<int?> bookmarkId = const Value.absent(),
   }) => ForumThreadsTableData(
     id: id ?? this.id,
     courseId: courseId.present ? courseId.value : this.courseId,
@@ -4971,6 +5004,7 @@ class ForumThreadsTableData extends DataClass
     imageUrl: imageUrl.present ? imageUrl.value : this.imageUrl,
     categorySlug: categorySlug.present ? categorySlug.value : this.categorySlug,
     contentHtml: contentHtml.present ? contentHtml.value : this.contentHtml,
+    bookmarkId: bookmarkId.present ? bookmarkId.value : this.bookmarkId,
   );
   ForumThreadsTableData copyWithCompanion(ForumThreadsTableCompanion data) {
     return ForumThreadsTableData(
@@ -5001,6 +5035,9 @@ class ForumThreadsTableData extends DataClass
       contentHtml: data.contentHtml.present
           ? data.contentHtml.value
           : this.contentHtml,
+      bookmarkId: data.bookmarkId.present
+          ? data.bookmarkId.value
+          : this.bookmarkId,
     );
   }
 
@@ -5021,7 +5058,8 @@ class ForumThreadsTableData extends DataClass
           ..write('status: $status, ')
           ..write('imageUrl: $imageUrl, ')
           ..write('categorySlug: $categorySlug, ')
-          ..write('contentHtml: $contentHtml')
+          ..write('contentHtml: $contentHtml, ')
+          ..write('bookmarkId: $bookmarkId')
           ..write(')'))
         .toString();
   }
@@ -5043,6 +5081,7 @@ class ForumThreadsTableData extends DataClass
     imageUrl,
     categorySlug,
     contentHtml,
+    bookmarkId,
   );
   @override
   bool operator ==(Object other) =>
@@ -5062,7 +5101,8 @@ class ForumThreadsTableData extends DataClass
           other.status == this.status &&
           other.imageUrl == this.imageUrl &&
           other.categorySlug == this.categorySlug &&
-          other.contentHtml == this.contentHtml);
+          other.contentHtml == this.contentHtml &&
+          other.bookmarkId == this.bookmarkId);
 }
 
 class ForumThreadsTableCompanion
@@ -5082,6 +5122,7 @@ class ForumThreadsTableCompanion
   final Value<String?> imageUrl;
   final Value<String?> categorySlug;
   final Value<String?> contentHtml;
+  final Value<int?> bookmarkId;
   final Value<int> rowid;
   const ForumThreadsTableCompanion({
     this.id = const Value.absent(),
@@ -5099,6 +5140,7 @@ class ForumThreadsTableCompanion
     this.imageUrl = const Value.absent(),
     this.categorySlug = const Value.absent(),
     this.contentHtml = const Value.absent(),
+    this.bookmarkId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ForumThreadsTableCompanion.insert({
@@ -5117,6 +5159,7 @@ class ForumThreadsTableCompanion
     this.imageUrl = const Value.absent(),
     this.categorySlug = const Value.absent(),
     this.contentHtml = const Value.absent(),
+    this.bookmarkId = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        title = Value(title),
@@ -5140,6 +5183,7 @@ class ForumThreadsTableCompanion
     Expression<String>? imageUrl,
     Expression<String>? categorySlug,
     Expression<String>? contentHtml,
+    Expression<int>? bookmarkId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -5158,6 +5202,7 @@ class ForumThreadsTableCompanion
       if (imageUrl != null) 'image_url': imageUrl,
       if (categorySlug != null) 'category_slug': categorySlug,
       if (contentHtml != null) 'content_html': contentHtml,
+      if (bookmarkId != null) 'bookmark_id': bookmarkId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -5178,6 +5223,7 @@ class ForumThreadsTableCompanion
     Value<String?>? imageUrl,
     Value<String?>? categorySlug,
     Value<String?>? contentHtml,
+    Value<int?>? bookmarkId,
     Value<int>? rowid,
   }) {
     return ForumThreadsTableCompanion(
@@ -5196,6 +5242,7 @@ class ForumThreadsTableCompanion
       imageUrl: imageUrl ?? this.imageUrl,
       categorySlug: categorySlug ?? this.categorySlug,
       contentHtml: contentHtml ?? this.contentHtml,
+      bookmarkId: bookmarkId ?? this.bookmarkId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -5248,6 +5295,9 @@ class ForumThreadsTableCompanion
     if (contentHtml.present) {
       map['content_html'] = Variable<String>(contentHtml.value);
     }
+    if (bookmarkId.present) {
+      map['bookmark_id'] = Variable<int>(bookmarkId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -5272,6 +5322,7 @@ class ForumThreadsTableCompanion
           ..write('imageUrl: $imageUrl, ')
           ..write('categorySlug: $categorySlug, ')
           ..write('contentHtml: $contentHtml, ')
+          ..write('bookmarkId: $bookmarkId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -18555,6 +18606,7 @@ typedef $$ForumThreadsTableTableCreateCompanionBuilder =
       Value<String?> imageUrl,
       Value<String?> categorySlug,
       Value<String?> contentHtml,
+      Value<int?> bookmarkId,
       Value<int> rowid,
     });
 typedef $$ForumThreadsTableTableUpdateCompanionBuilder =
@@ -18574,6 +18626,7 @@ typedef $$ForumThreadsTableTableUpdateCompanionBuilder =
       Value<String?> imageUrl,
       Value<String?> categorySlug,
       Value<String?> contentHtml,
+      Value<int?> bookmarkId,
       Value<int> rowid,
     });
 
@@ -18658,6 +18711,11 @@ class $$ForumThreadsTableTableFilterComposer
 
   ColumnFilters<String> get contentHtml => $composableBuilder(
     column: $table.contentHtml,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get bookmarkId => $composableBuilder(
+    column: $table.bookmarkId,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -18745,6 +18803,11 @@ class $$ForumThreadsTableTableOrderingComposer
     column: $table.contentHtml,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get bookmarkId => $composableBuilder(
+    column: $table.bookmarkId,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$ForumThreadsTableTableAnnotationComposer
@@ -18812,6 +18875,11 @@ class $$ForumThreadsTableTableAnnotationComposer
     column: $table.contentHtml,
     builder: (column) => column,
   );
+
+  GeneratedColumn<int> get bookmarkId => $composableBuilder(
+    column: $table.bookmarkId,
+    builder: (column) => column,
+  );
 }
 
 class $$ForumThreadsTableTableTableManager
@@ -18869,6 +18937,7 @@ class $$ForumThreadsTableTableTableManager
                 Value<String?> imageUrl = const Value.absent(),
                 Value<String?> categorySlug = const Value.absent(),
                 Value<String?> contentHtml = const Value.absent(),
+                Value<int?> bookmarkId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ForumThreadsTableCompanion(
                 id: id,
@@ -18886,6 +18955,7 @@ class $$ForumThreadsTableTableTableManager
                 imageUrl: imageUrl,
                 categorySlug: categorySlug,
                 contentHtml: contentHtml,
+                bookmarkId: bookmarkId,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -18905,6 +18975,7 @@ class $$ForumThreadsTableTableTableManager
                 Value<String?> imageUrl = const Value.absent(),
                 Value<String?> categorySlug = const Value.absent(),
                 Value<String?> contentHtml = const Value.absent(),
+                Value<int?> bookmarkId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ForumThreadsTableCompanion.insert(
                 id: id,
@@ -18922,6 +18993,7 @@ class $$ForumThreadsTableTableTableManager
                 imageUrl: imageUrl,
                 categorySlug: categorySlug,
                 contentHtml: contentHtml,
+                bookmarkId: bookmarkId,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

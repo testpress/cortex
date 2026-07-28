@@ -306,7 +306,6 @@ abstract class DataSource {
   Future<DoubtReplyDto> postDoubtReply({
     required String doubtId,
     String? comment,
-    bool? shouldResolve,
     bool? shouldClose,
   });
 

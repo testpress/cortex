@@ -3647,12 +3647,6 @@ abstract class AppLocalizations {
   /// **'Successfully logged out of other devices'**
   String get loginActivityLogoutSuccess;
 
-  /// No description provided for @actionMarkAsResolved.
-  ///
-  /// In en, this message translates to:
-  /// **'Mark as Resolved'**
-  String get actionMarkAsResolved;
-
   /// No description provided for @actionCloseDoubt.
   ///
   /// In en, this message translates to:
