@@ -56,22 +56,18 @@ class _BookmarkFoldersSheetState extends ConsumerState<BookmarkFoldersSheet> {
     required List<BookmarkDto> existingBookmarks,
     required String? folderName,
   }) async {
+    final container = ProviderScope.containerOf(context);
+
     // 1. Close the bottom sheet instantly (YouTube-style)
     widget.onClose();
 
     final l10n = L10n.of(widget.parentContext);
 
-    // 2. Show optimistic toast using the parent's stable context
-    final toastMessage = existingBookmarks.isNotEmpty
-        ? l10n.bookmarkRemoved
-        : l10n.bookmarkAddedToFolder(folderName ?? l10n.labelUncategorized);
-    AppToast.show(widget.parentContext, message: toastMessage);
-
-    // 3. Fire the API call in the background
+    // 2. Fire the API call in the background
     try {
       if (existingBookmarks.isNotEmpty) {
         for (final b in existingBookmarks) {
-          await ref.read(
+          await container.read(
             removeBookmarkProvider(
               bookmarkId: b.id,
               lessonId: widget.lessonId,
@@ -79,7 +75,7 @@ class _BookmarkFoldersSheetState extends ConsumerState<BookmarkFoldersSheet> {
           );
         }
       } else {
-        await ref.read(
+        await container.read(
           addBookmarkProvider(
             category: widget.category,
             lessonId: widget.lessonId,
@@ -87,6 +83,14 @@ class _BookmarkFoldersSheetState extends ConsumerState<BookmarkFoldersSheet> {
             attemptId: widget.attemptId,
           ).future,
         );
+      }
+
+      // 3. Show success toast using the parent's stable context only after successful completion
+      if (widget.parentContext.mounted) {
+        final toastMessage = existingBookmarks.isNotEmpty
+            ? l10n.bookmarkRemoved
+            : l10n.bookmarkAddedToFolder(folderName ?? l10n.labelUncategorized);
+        AppToast.show(widget.parentContext, message: toastMessage);
       }
     } catch (e, stack) {
       debugPrint('Error updating bookmark: $e\n$stack');
