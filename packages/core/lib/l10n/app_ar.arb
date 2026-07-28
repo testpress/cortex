@@ -648,6 +648,14 @@
       }
     }
   },
+  "bookmarkMovedToFolder": "تم نقل الإشارة المرجعية إلى {folderName}",
+  "@bookmarkMovedToFolder": {
+    "placeholders": {
+      "folderName": {
+        "type": "String"
+      }
+    }
+  },
   "bookmarkRemovedFromFolder": "تمت إزالة الإشارة المرجعية من {folderName}",
   "@bookmarkRemovedFromFolder": {
     "placeholders": {

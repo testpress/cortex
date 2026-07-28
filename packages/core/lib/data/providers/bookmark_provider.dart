@@ -80,6 +80,8 @@ Future<BookmarkDto> addBookmark(
   String? folder,
   String? bookmarkType,
   int? attemptId,
+  String? title,
+  String? chapterName,
 }) async {
   final repository = await ref.read(bookmarkRepositoryProvider.future);
   final bookmark = await repository.addBookmark(
@@ -88,6 +90,39 @@ Future<BookmarkDto> addBookmark(
     folder: folder,
     bookmarkType: bookmarkType,
     attemptId: attemptId,
+    title: title,
+    chapterName: chapterName,
+  );
+
+  ref.invalidate(paginatedBookmarksProvider);
+  ref.invalidate(bookmarkFoldersProvider);
+
+  return bookmark;
+}
+
+/// Action to move an existing bookmark to a new folder.
+@riverpod
+Future<BookmarkDto> moveBookmark(
+  MoveBookmarkRef ref, {
+  required int oldBookmarkId,
+  required String category,
+  required int lessonId,
+  String? folder,
+  String? bookmarkType,
+  int? attemptId,
+  String? title,
+  String? chapterName,
+}) async {
+  final repository = await ref.read(bookmarkRepositoryProvider.future);
+  final bookmark = await repository.moveBookmark(
+    oldBookmarkId: oldBookmarkId,
+    category: category,
+    lessonId: lessonId,
+    folder: folder,
+    bookmarkType: bookmarkType,
+    attemptId: attemptId,
+    title: title,
+    chapterName: chapterName,
   );
 
   ref.invalidate(paginatedBookmarksProvider);

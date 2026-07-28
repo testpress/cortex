@@ -913,6 +913,14 @@
       }
     }
   },
+  "bookmarkMovedToFolder": "Moved bookmark to {folderName}",
+  "@bookmarkMovedToFolder": {
+    "placeholders": {
+      "folderName": {
+        "type": "String"
+      }
+    }
+  },
   "bookmarkRemovedFromFolder": "Removed bookmark from {folderName}",
   "@bookmarkRemovedFromFolder": {
     "placeholders": {

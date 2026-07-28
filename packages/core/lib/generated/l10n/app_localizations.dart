@@ -3515,6 +3515,12 @@ abstract class AppLocalizations {
   /// **'Added bookmark to {folderName}'**
   String bookmarkAddedToFolder(String folderName);
 
+  /// No description provided for @bookmarkMovedToFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved bookmark to {folderName}'**
+  String bookmarkMovedToFolder(String folderName);
+
   /// No description provided for @bookmarkRemovedFromFolder.
   ///
   /// In en, this message translates to:

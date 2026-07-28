@@ -1901,6 +1901,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String bookmarkMovedToFolder(String folderName) {
+    return 'Moved bookmark to $folderName';
+  }
+
+  @override
   String bookmarkRemovedFromFolder(String folderName) {
     return 'Removed bookmark from $folderName';
   }

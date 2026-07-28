@@ -649,6 +649,14 @@
       }
     }
   },
+  "bookmarkMovedToFolder": "ബുക്ക്മാർക്ക് {folderName}-ലേക്ക് മാറ്റി",
+  "@bookmarkMovedToFolder": {
+    "placeholders": {
+      "folderName": {
+        "type": "String"
+      }
+    }
+  },
   "bookmarkRemovedFromFolder": "ബുക്ക്മാർക്ക് {folderName}-ൽ നിന്ന് നീക്കം ചെയ്തു",
   "@bookmarkRemovedFromFolder": {
     "placeholders": {

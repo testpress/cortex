@@ -1934,6 +1934,11 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
+  String bookmarkMovedToFolder(String folderName) {
+    return 'புக்மார்க் $folderName கோப்புக்கு மாற்றப்பட்டது';
+  }
+
+  @override
   String bookmarkRemovedFromFolder(String folderName) {
     return '$folderName கோப்புறையிலிருந்து புக்மார்க் அகற்றப்பட்டது';
   }

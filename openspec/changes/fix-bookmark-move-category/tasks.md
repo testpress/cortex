@@ -9,3 +9,4 @@
 
 - [x] 2.1 Verify the packages compile successfully by running `flutter analyze` in `packages/core` and `packages/testpress` (or root).
 - [x] 2.2 Run tests in `packages/core` to ensure no regressions are introduced.
+- [x] 2.3 Add unit tests verifying category mapping and metadata preservation in `BookmarkRepository`.

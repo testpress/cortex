@@ -1940,6 +1940,11 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
+  String bookmarkMovedToFolder(String folderName) {
+    return 'ബുക്ക്മാർക്ക് $folderName-ലേക്ക് മാറ്റി';
+  }
+
+  @override
   String bookmarkRemovedFromFolder(String folderName) {
     return 'ബുക്ക്മാർക്ക് $folderName-ൽ നിന്ന് നീക്കം ചെയ്തു';
   }

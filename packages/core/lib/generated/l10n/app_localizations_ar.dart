@@ -1909,6 +1909,11 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String bookmarkMovedToFolder(String folderName) {
+    return 'تم نقل الإشارة المرجعية إلى $folderName';
+  }
+
+  @override
   String bookmarkRemovedFromFolder(String folderName) {
     return 'تمت إزالة الإشارة المرجعية من $folderName';
   }

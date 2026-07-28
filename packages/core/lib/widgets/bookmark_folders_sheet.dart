@@ -62,6 +62,7 @@ class _BookmarkFoldersSheetState extends ConsumerState<BookmarkFoldersSheet> {
     widget.onClose();
 
     final l10n = L10n.of(widget.parentContext);
+    bool isMove = false;
 
     // 2. Fire the API call in the background
     try {
@@ -75,21 +76,53 @@ class _BookmarkFoldersSheetState extends ConsumerState<BookmarkFoldersSheet> {
           );
         }
       } else {
-        await container.read(
-          addBookmarkProvider(
-            category: widget.category,
-            lessonId: widget.lessonId,
-            folder: folderName,
-            attemptId: widget.attemptId,
-          ).future,
-        );
+        // Find bookmarks in other folders to check if we are moving or adding
+        final activeBookmarks =
+            container
+                .read(bookmarksForLessonProvider(widget.lessonId))
+                .valueOrNull ??
+            [];
+        final otherBookmarks = activeBookmarks
+            .where((b) => b.folderName != folderName)
+            .toList();
+
+        if (otherBookmarks.isNotEmpty) {
+          isMove = true;
+          final oldBookmark = otherBookmarks.first;
+          await container.read(
+            moveBookmarkProvider(
+              oldBookmarkId: oldBookmark.id,
+              category: widget.category,
+              lessonId: widget.lessonId,
+              folder: folderName,
+              attemptId: widget.attemptId,
+              title: oldBookmark.title,
+              chapterName: oldBookmark.chapterName,
+            ).future,
+          );
+        } else {
+          await container.read(
+            addBookmarkProvider(
+              category: widget.category,
+              lessonId: widget.lessonId,
+              folder: folderName,
+              attemptId: widget.attemptId,
+            ).future,
+          );
+        }
       }
 
       // 3. Show success toast using the parent's stable context only after successful completion
       if (widget.parentContext.mounted) {
         final toastMessage = existingBookmarks.isNotEmpty
             ? l10n.bookmarkRemoved
-            : l10n.bookmarkAddedToFolder(folderName ?? l10n.labelUncategorized);
+            : (isMove
+                  ? l10n.bookmarkMovedToFolder(
+                      folderName ?? l10n.labelUncategorized,
+                    )
+                  : l10n.bookmarkAddedToFolder(
+                      folderName ?? l10n.labelUncategorized,
+                    ));
         AppToast.show(widget.parentContext, message: toastMessage);
       }
     } catch (e, stack) {
@@ -420,6 +453,8 @@ class _CreateFolderDialogState extends ConsumerState<CreateFolderDialog> {
     final folderName = _nameController.text.trim();
     if (folderName.isEmpty || _isLoading) return;
 
+    final container = ProviderScope.containerOf(context);
+
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -427,18 +462,18 @@ class _CreateFolderDialogState extends ConsumerState<CreateFolderDialog> {
 
     try {
       if (widget.isRenameMode) {
-        await ref.read(
+        await container.read(
           updateBookmarkFolderProvider(widget.folderId!, folderName).future,
         );
       } else {
         // 1. Create the folder on server and save locally
-        final newFolder = await ref.read(
+        final newFolder = await container.read(
           createBookmarkFolderProvider(folderName).future,
         );
 
         // 2. Automatically select it for the current lesson if provided
         if (widget.lessonId != null && widget.category != null) {
-          await ref.read(
+          await container.read(
             addBookmarkProvider(
               category: widget.category!,
               lessonId: widget.lessonId!,

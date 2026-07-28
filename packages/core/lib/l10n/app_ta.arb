@@ -872,6 +872,14 @@
       }
     }
   },
+  "bookmarkMovedToFolder": "புக்மார்க் {folderName} கோப்புக்கு மாற்றப்பட்டது",
+  "@bookmarkMovedToFolder": {
+    "placeholders": {
+      "folderName": {
+        "type": "String"
+      }
+    }
+  },
   "bookmarkRemovedFromFolder": "{folderName} கோப்புறையிலிருந்து புக்மார்க் அகற்றப்பட்டது",
   "@bookmarkRemovedFromFolder": {
     "placeholders": {
