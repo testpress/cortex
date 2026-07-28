@@ -1078,5 +1078,12 @@
   "sessionExpiredTitle": "انتهت الجلسة",
   "sessionExpiredIconSemantics": "أيقونة انتهاء الجلسة",
   "sessionExpiredLoginButton": "تسجيل الدخول مرة أخرى",
-  "sessionExpiredFallbackMessage": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى."
+  "sessionExpiredFallbackMessage": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى.",
+  "errorNoInternetTitle": "خطأ في الاتصال",
+  "errorTimeoutTitle": "انتهاء مهلة الطلب",
+  "errorSessionExpiredTitle": "انتهت الجلسة",
+  "errorAccessDeniedTitle": "تم رفض الوصول",
+  "errorNotFoundTitle": "غير موجود",
+  "errorServerTitle": "خطأ في الخادم",
+  "errorRateLimitedTitle": "طلبات كثيرة جداً"
 }

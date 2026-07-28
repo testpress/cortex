@@ -235,29 +235,6 @@ class ApiException implements Exception {
     return null;
   }
 
-  String get title {
-    switch (type) {
-      case ApiErrorType.noInternet:
-        return 'Connection Error';
-      case ApiErrorType.timeout:
-        return 'Request Timeout';
-      case ApiErrorType.unauthorized:
-        return 'Session Expired';
-      case ApiErrorType.forbidden:
-        return 'Access Denied';
-      case ApiErrorType.notFound:
-        return 'Not Found';
-      case ApiErrorType.serverError:
-        return 'Server Error';
-      case ApiErrorType.rateLimited:
-        return 'Too Many Requests';
-      case ApiErrorType.badRequest:
-      case ApiErrorType.malformedResponse:
-      case ApiErrorType.unknown:
-        return 'Something went wrong';
-    }
-  }
-
   @override
   String toString() => message;
 }

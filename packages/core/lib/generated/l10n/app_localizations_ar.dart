@@ -2805,4 +2805,25 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get sessionExpiredFallbackMessage =>
       'انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى.';
+
+  @override
+  String get errorNoInternetTitle => 'خطأ في الاتصال';
+
+  @override
+  String get errorTimeoutTitle => 'انتهاء مهلة الطلب';
+
+  @override
+  String get errorSessionExpiredTitle => 'انتهت الجلسة';
+
+  @override
+  String get errorAccessDeniedTitle => 'تم رفض الوصول';
+
+  @override
+  String get errorNotFoundTitle => 'غير موجود';
+
+  @override
+  String get errorServerTitle => 'خطأ في الخادم';
+
+  @override
+  String get errorRateLimitedTitle => 'طلبات كثيرة جداً';
 }

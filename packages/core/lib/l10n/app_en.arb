@@ -1394,5 +1394,12 @@
   "sessionExpiredTitle": "Session Ended",
   "sessionExpiredIconSemantics": "Session ended icon",
   "sessionExpiredLoginButton": "Login Again",
-  "sessionExpiredFallbackMessage": "Your session has expired. Please sign in again."
+  "sessionExpiredFallbackMessage": "Your session has expired. Please sign in again.",
+  "errorNoInternetTitle": "Connection Error",
+  "errorTimeoutTitle": "Request Timeout",
+  "errorSessionExpiredTitle": "Session Expired",
+  "errorAccessDeniedTitle": "Access Denied",
+  "errorNotFoundTitle": "Not Found",
+  "errorServerTitle": "Server Error",
+  "errorRateLimitedTitle": "Too Many Requests"
 }

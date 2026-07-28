@@ -44,10 +44,35 @@ class AppErrorView extends StatelessWidget {
 
     if (error is ApiException) {
       final apiError = error as ApiException;
-      displayTitle ??= apiError.title;
+      switch (apiError.type) {
+        case ApiErrorType.noInternet:
+          displayTitle ??= l10n.errorNoInternetTitle;
+          break;
+        case ApiErrorType.timeout:
+          displayTitle ??= l10n.errorTimeoutTitle;
+          break;
+        case ApiErrorType.unauthorized:
+          displayTitle ??= l10n.errorSessionExpiredTitle;
+          break;
+        case ApiErrorType.forbidden:
+          displayTitle ??= l10n.errorAccessDeniedTitle;
+          break;
+        case ApiErrorType.notFound:
+          displayTitle ??= l10n.errorNotFoundTitle;
+          break;
+        case ApiErrorType.serverError:
+          displayTitle ??= l10n.errorServerTitle;
+          break;
+        case ApiErrorType.rateLimited:
+          displayTitle ??= l10n.errorRateLimitedTitle;
+          break;
+        case ApiErrorType.badRequest:
+        case ApiErrorType.malformedResponse:
+        case ApiErrorType.unknown:
+          displayTitle ??= l10n.errorGenericTitle;
+          break;
+      }
       displayMessage ??= apiError.message;
-    } else if (error != null) {
-      displayMessage ??= error.toString();
     }
 
     displayTitle ??= l10n.errorGenericTitle;

@@ -2848,4 +2848,25 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get sessionExpiredFallbackMessage =>
       'உங்கள் அமர்வு காலாவதியாகிவிட்டது. தயவுசெய்து மீண்டும் உள்நுழையவும்.';
+
+  @override
+  String get errorNoInternetTitle => 'இணைப்பு பிழை';
+
+  @override
+  String get errorTimeoutTitle => 'கோரிக்கை நேரம் முடிந்தது';
+
+  @override
+  String get errorSessionExpiredTitle => 'அமர்வு முடிந்தது';
+
+  @override
+  String get errorAccessDeniedTitle => 'அணுகல் மறுக்கப்பட்டது';
+
+  @override
+  String get errorNotFoundTitle => 'கிடைக்கவில்லை';
+
+  @override
+  String get errorServerTitle => 'சேவையக பிழை';
+
+  @override
+  String get errorRateLimitedTitle => 'மிக அதிக கோரிக்கைகள்';
 }
