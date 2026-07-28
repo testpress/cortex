@@ -1,4 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../config/app_config.dart';
@@ -41,6 +42,16 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
     googleSignIn: ref.watch(googleSignInProvider),
   );
 });
+
+/// Holds the session-expired message from a 401 response.
+/// `null` = no session expiry in progress.
+/// Non-null = show the SessionExpiredDialog with this message.
+final sessionExpiredProvider = StateProvider<String?>((ref) => null);
+
+/// Tracks whether the onboarding screen has already been shown this app session.
+/// Stored in Riverpod so it resets between widget tests and stays consistent
+/// with how the rest of UI state is managed.
+final hasShownOnboardingProvider = StateProvider<bool>((ref) => false);
 
 @Riverpod(keepAlive: true)
 class Auth extends _$Auth {

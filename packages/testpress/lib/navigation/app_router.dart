@@ -107,6 +107,7 @@ class _AppShellBuilder extends ConsumerWidget {
     final items = activeTabs.map((tab) => tab.toTabItem(settings)).toList();
     final isLogoutSheetOpen = ref.watch(isLogoutSheetOpenProvider);
     final activeTabId = allTabs[navigationShell.currentIndex].id;
+    final sessionExpiredMessage = ref.watch(sessionExpiredProvider);
 
     void closeSheet() =>
         ref.read(isLogoutSheetOpenProvider.notifier).state = false;
@@ -115,32 +116,47 @@ class _AppShellBuilder extends ConsumerWidget {
       builder: (context, constraints) {
         final isLandscape = constraints.maxWidth > constraints.maxHeight;
 
-        return AppShell(
-          bottomNavigationBar: AppTabBar(
-            items: items,
-            activeItemId: activeTabId,
-            onTabChange: (id) =>
-                _onTabItemTapped(navigationShell, id, allTabs: allTabs),
-          ),
-          navigationRail: AppNavigationRail(
-            items: items,
-            activeItemId: activeTabId,
-            onTabChange: (id) =>
-                _onTabItemTapped(navigationShell, id, allTabs: allTabs),
-          ),
-          drawer: DashboardDrawer(isLandscape: isLandscape),
-          bottomSheet: AppBottomSheet(
-            isOpen: isLogoutSheetOpen,
-            onClose: closeSheet,
-            child: LogoutConfirmationSheet(
-              onConfirm: () {
-                closeSheet();
-                ref.read(authProvider.notifier).logout();
-              },
-              onCancel: closeSheet,
+        return Stack(
+          children: [
+            AppShell(
+              bottomNavigationBar: AppTabBar(
+                items: items,
+                activeItemId: activeTabId,
+                onTabChange: (id) =>
+                    _onTabItemTapped(navigationShell, id, allTabs: allTabs),
+              ),
+              navigationRail: AppNavigationRail(
+                items: items,
+                activeItemId: activeTabId,
+                onTabChange: (id) =>
+                    _onTabItemTapped(navigationShell, id, allTabs: allTabs),
+              ),
+              drawer: DashboardDrawer(isLandscape: isLandscape),
+              bottomSheet: AppBottomSheet(
+                isOpen: isLogoutSheetOpen,
+                onClose: closeSheet,
+                child: LogoutConfirmationSheet(
+                  onConfirm: () {
+                    closeSheet();
+                    ref.read(authProvider.notifier).logout();
+                  },
+                  onCancel: closeSheet,
+                ),
+              ),
+              child: navigationShell,
             ),
-          ),
-          child: navigationShell,
+            // Session expired overlay — shown above all content when a 401 fires
+            if (sessionExpiredMessage != null)
+              Positioned.fill(
+                child: SessionExpiredDialog(
+                  message: sessionExpiredMessage,
+                  onSignIn: () async {
+                    await ref.read(authProvider.notifier).logout();
+                    ref.read(sessionExpiredProvider.notifier).state = null;
+                  },
+                ),
+              ),
+          ],
         );
       },
     );

@@ -5038,6 +5038,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View'**
   String get viewAction;
+
+  /// No description provided for @sessionExpiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Session Ended'**
+  String get sessionExpiredTitle;
+
+  /// No description provided for @sessionExpiredIconSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Session ended icon'**
+  String get sessionExpiredIconSemantics;
+
+  /// No description provided for @sessionExpiredLoginButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Login Again'**
+  String get sessionExpiredLoginButton;
+
+  /// No description provided for @sessionExpiredFallbackMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your session has expired. Please sign in again.'**
+  String get sessionExpiredFallbackMessage;
 }
 
 class _AppLocalizationsDelegate

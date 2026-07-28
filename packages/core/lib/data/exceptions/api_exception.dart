@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
 
 enum ApiErrorType {
@@ -84,7 +85,10 @@ class ApiException implements Exception {
 
       if (statusCode == 401) {
         return ApiException(
-          backendMessage ?? 'You are not authorized to perform this action.',
+          // Pass the backend message as-is, or empty string if none.
+          // An empty message signals SessionExpiredDialog to show the
+          // localized sessionExpiredFallbackMessage in the user's locale.
+          backendMessage ?? '',
           type: ApiErrorType.unauthorized,
           statusCode: statusCode,
           data: data,
@@ -152,7 +156,20 @@ class ApiException implements Exception {
   static String? extractApiMessage(dynamic responseData) {
     if (responseData == null) return null;
     if (responseData is String && responseData.trim().isNotEmpty) {
-      return responseData.trim();
+      final trimmed = responseData.trim();
+      if ((trimmed.startsWith('{') && trimmed.endsWith('}')) ||
+          (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
+        try {
+          final decoded = jsonDecode(trimmed);
+          final nestedMsg = extractApiMessage(decoded);
+          if (nestedMsg != null && nestedMsg.isNotEmpty) {
+            return nestedMsg;
+          }
+        } catch (_) {
+          // Fall through to returning raw string if JSON parsing fails
+        }
+      }
+      return trimmed;
     }
     if (responseData is List) {
       final messages = <String>[];

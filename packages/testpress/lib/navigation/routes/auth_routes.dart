@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import 'package:profile/profile.dart';
 
 class AuthRoutes {
@@ -20,9 +22,27 @@ class AuthRoutes {
   ) {
     final path = state.uri.path;
     final isAuthRoute = _authPaths.contains(path);
+    final container = ProviderScope.containerOf(context, listen: false);
 
-    if (!isLoggedIn && !isAuthRoute) return '/onboarding';
-    if (isLoggedIn && isAuthRoute) return '/home';
+    if (!isLoggedIn && !isAuthRoute) {
+      container.read(hasShownOnboardingProvider.notifier).state = true;
+      return '/login';
+    }
+    if (isLoggedIn && isAuthRoute) {
+      container.read(hasShownOnboardingProvider.notifier).state = true;
+      return '/home';
+    }
+
+    if (!isLoggedIn && path == '/onboarding') {
+      final hasShown = container.read(hasShownOnboardingProvider);
+      if (!hasShown) {
+        container.read(hasShownOnboardingProvider.notifier).state = true;
+        return null;
+      }
+      return '/login';
+    }
+
+    container.read(hasShownOnboardingProvider.notifier).state = true;
     return null;
   }
 

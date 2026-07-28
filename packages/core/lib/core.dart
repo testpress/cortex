@@ -42,6 +42,7 @@ export 'widgets/dashboard_header.dart';
 export 'widgets/lesson_detail_shell.dart';
 export 'widgets/bookmark_folders_sheet.dart';
 export 'widgets/app_toast.dart';
+export 'widgets/session_expired_dialog.dart';
 
 // Shell
 export 'shell/app_shell.dart';

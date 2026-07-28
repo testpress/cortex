@@ -26,7 +26,7 @@ void callbackDispatcher() {
 
         final dio = DioFactory.createBackgroundDio(
           getToken: () => authLocalDataSource.getToken(),
-          onUnauthorized: () {},
+          onSessionExpired: (_) {},
         );
 
         final db = AppDatabase();

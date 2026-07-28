@@ -1308,4 +1308,9 @@
   "downloadCompleted": "பதிவிறக்கம் முடிந்தது",
   "downloadStarted": "பதிவிறக்கம் தொடங்கியது",
   "downloadingFile": "பதிவிறக்கப்படுகிறது...",
-  "viewAction": "காண்க"}
+  "viewAction": "காண்க",
+  "sessionExpiredTitle": "அமர்வு முடிந்தது",
+  "sessionExpiredIconSemantics": "அமர்வு முடிந்ததற்கான ஐகான்",
+  "sessionExpiredLoginButton": "மீண்டும் உள்நுழைக",
+  "sessionExpiredFallbackMessage": "உங்கள் அமர்வு காலாவதியாகிவிட்டது. தயவுசெய்து மீண்டும் உள்நுழையவும்."
+}

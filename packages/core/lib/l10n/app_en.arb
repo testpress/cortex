@@ -1390,4 +1390,9 @@
   "downloadCompleted": "Download completed",
   "downloadStarted": "Download started",
   "downloadingFile": "Downloading...",
-  "viewAction": "View"}
+  "viewAction": "View",
+  "sessionExpiredTitle": "Session Ended",
+  "sessionExpiredIconSemantics": "Session ended icon",
+  "sessionExpiredLoginButton": "Login Again",
+  "sessionExpiredFallbackMessage": "Your session has expired. Please sign in again."
+}
