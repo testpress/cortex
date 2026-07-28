@@ -92,7 +92,7 @@ class _BookmarkFoldersSheetState extends ConsumerState<BookmarkFoldersSheet> {
           final oldBookmark = otherBookmarks.first;
           await container.read(
             moveBookmarkProvider(
-              oldBookmarkId: oldBookmark.id,
+              oldBookmarkIds: otherBookmarks.map((b) => b.id).toList(),
               category: widget.category,
               lessonId: widget.lessonId,
               folder: folderName,
@@ -474,14 +474,38 @@ class _CreateFolderDialogState extends ConsumerState<CreateFolderDialog> {
 
         // 2. Automatically select it for the current lesson if provided
         if (widget.lessonId != null && widget.category != null) {
-          await container.read(
-            addBookmarkProvider(
-              category: widget.category!,
-              lessonId: widget.lessonId!,
-              folder: newFolder.name,
-              attemptId: widget.attemptId,
-            ).future,
-          );
+          final activeBookmarks =
+              container
+                  .read(bookmarksForLessonProvider(widget.lessonId!))
+                  .valueOrNull ??
+              [];
+          final otherBookmarks = activeBookmarks
+              .where((b) => b.folderName != newFolder.name)
+              .toList();
+
+          if (otherBookmarks.isNotEmpty) {
+            final oldBookmark = otherBookmarks.first;
+            await container.read(
+              moveBookmarkProvider(
+                oldBookmarkIds: otherBookmarks.map((b) => b.id).toList(),
+                category: widget.category!,
+                lessonId: widget.lessonId!,
+                folder: newFolder.name,
+                attemptId: widget.attemptId,
+                title: oldBookmark.title,
+                chapterName: oldBookmark.chapterName,
+              ).future,
+            );
+          } else {
+            await container.read(
+              addBookmarkProvider(
+                category: widget.category!,
+                lessonId: widget.lessonId!,
+                folder: newFolder.name,
+                attemptId: widget.attemptId,
+              ).future,
+            );
+          }
         }
       }
 

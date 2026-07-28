@@ -864,7 +864,7 @@ class _AddBookmarkProviderElement
   String? get chapterName => (origin as AddBookmarkProvider).chapterName;
 }
 
-String _$moveBookmarkHash() => r'4eab9858258eea8241f1431205491d99f947c39a';
+String _$moveBookmarkHash() => r'58f1a18700e200ff98d1f405c888f8a3e531c1d0';
 
 /// Action to move an existing bookmark to a new folder.
 ///
@@ -885,7 +885,7 @@ class MoveBookmarkFamily extends Family<AsyncValue<BookmarkDto>> {
   ///
   /// Copied from [moveBookmark].
   MoveBookmarkProvider call({
-    required int oldBookmarkId,
+    required List<int> oldBookmarkIds,
     required String category,
     required int lessonId,
     String? folder,
@@ -895,7 +895,7 @@ class MoveBookmarkFamily extends Family<AsyncValue<BookmarkDto>> {
     String? chapterName,
   }) {
     return MoveBookmarkProvider(
-      oldBookmarkId: oldBookmarkId,
+      oldBookmarkIds: oldBookmarkIds,
       category: category,
       lessonId: lessonId,
       folder: folder,
@@ -911,7 +911,7 @@ class MoveBookmarkFamily extends Family<AsyncValue<BookmarkDto>> {
     covariant MoveBookmarkProvider provider,
   ) {
     return call(
-      oldBookmarkId: provider.oldBookmarkId,
+      oldBookmarkIds: provider.oldBookmarkIds,
       category: provider.category,
       lessonId: provider.lessonId,
       folder: provider.folder,
@@ -945,7 +945,7 @@ class MoveBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
   ///
   /// Copied from [moveBookmark].
   MoveBookmarkProvider({
-    required int oldBookmarkId,
+    required List<int> oldBookmarkIds,
     required String category,
     required int lessonId,
     String? folder,
@@ -956,7 +956,7 @@ class MoveBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
   }) : this._internal(
          (ref) => moveBookmark(
            ref as MoveBookmarkRef,
-           oldBookmarkId: oldBookmarkId,
+           oldBookmarkIds: oldBookmarkIds,
            category: category,
            lessonId: lessonId,
            folder: folder,
@@ -973,7 +973,7 @@ class MoveBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
          dependencies: MoveBookmarkFamily._dependencies,
          allTransitiveDependencies:
              MoveBookmarkFamily._allTransitiveDependencies,
-         oldBookmarkId: oldBookmarkId,
+         oldBookmarkIds: oldBookmarkIds,
          category: category,
          lessonId: lessonId,
          folder: folder,
@@ -990,7 +990,7 @@ class MoveBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.oldBookmarkId,
+    required this.oldBookmarkIds,
     required this.category,
     required this.lessonId,
     required this.folder,
@@ -1000,7 +1000,7 @@ class MoveBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
     required this.chapterName,
   }) : super.internal();
 
-  final int oldBookmarkId;
+  final List<int> oldBookmarkIds;
   final String category;
   final int lessonId;
   final String? folder;
@@ -1022,7 +1022,7 @@ class MoveBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        oldBookmarkId: oldBookmarkId,
+        oldBookmarkIds: oldBookmarkIds,
         category: category,
         lessonId: lessonId,
         folder: folder,
@@ -1042,7 +1042,7 @@ class MoveBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
   @override
   bool operator ==(Object other) {
     return other is MoveBookmarkProvider &&
-        other.oldBookmarkId == oldBookmarkId &&
+        other.oldBookmarkIds == oldBookmarkIds &&
         other.category == category &&
         other.lessonId == lessonId &&
         other.folder == folder &&
@@ -1055,7 +1055,7 @@ class MoveBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, oldBookmarkId.hashCode);
+    hash = _SystemHash.combine(hash, oldBookmarkIds.hashCode);
     hash = _SystemHash.combine(hash, category.hashCode);
     hash = _SystemHash.combine(hash, lessonId.hashCode);
     hash = _SystemHash.combine(hash, folder.hashCode);
@@ -1071,8 +1071,8 @@ class MoveBookmarkProvider extends AutoDisposeFutureProvider<BookmarkDto> {
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 mixin MoveBookmarkRef on AutoDisposeFutureProviderRef<BookmarkDto> {
-  /// The parameter `oldBookmarkId` of this provider.
-  int get oldBookmarkId;
+  /// The parameter `oldBookmarkIds` of this provider.
+  List<int> get oldBookmarkIds;
 
   /// The parameter `category` of this provider.
   String get category;
@@ -1102,7 +1102,8 @@ class _MoveBookmarkProviderElement
   _MoveBookmarkProviderElement(super.provider);
 
   @override
-  int get oldBookmarkId => (origin as MoveBookmarkProvider).oldBookmarkId;
+  List<int> get oldBookmarkIds =>
+      (origin as MoveBookmarkProvider).oldBookmarkIds;
   @override
   String get category => (origin as MoveBookmarkProvider).category;
   @override

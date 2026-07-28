@@ -38,13 +38,20 @@ In `BookmarkFoldersSheet._toggleBookmark`, move the `AppToast.show` invocation f
 
 Before inserting the updated bookmark into `bookmarkItemsTable`, retrieve any existing local database row for that `lessonId` to extract the `title`, `chapterName`, `slug`, `isForumPost`, and `created` values. If the row is not found (a new bookmark), try looking up the title and chapter from `lessonsTable` as a fallback. Pass these resolved values to the insert call and return a fully populated `BookmarkDto`.
 
-### Decision 5: Clean up old bookmarks in other folders on move
+### Decision 5: Clean up old bookmarks in other folders via atomic moveBookmark
 
-In `BookmarkFoldersSheet._toggleBookmark`, before calling `addBookmarkProvider` to add the bookmark to the new folder, query the currently active bookmarks for the lesson (`bookmarksForLessonProvider`). Identify any bookmarks associated with different folders (`folderName != newFolderName`) and delete them sequentially using `removeBookmarkProvider` before adding the new one.
+Instead of doing sequential delete-then-add calls on the client widget side (which causes list items to disappear/flicker and is prone to partial failure data loss), we introduce a dedicated, atomic `moveBookmark` repository method and `moveBookmarkProvider`.
+
+This method:
+1. Sequentially creates the new bookmark first on the server (ensuring that a failure does not leave the item unbookmarked).
+2. Deletes all old bookmarks in other folders sequentially on the backend (wrapped in try-catch to tolerate partial remote failures).
+3. Performs all database changes (deleting old rows, cleaning duplicates, inserting the new row, and shifting folder counts) inside a single local database transaction to prevent UI flickering.
+
+This atomic flow is invoked from both the bottom sheet selection (`_toggleBookmark`) and the new folder dialog (`_saveFolder`) when the lesson is already bookmarked in another folder.
 
 ### Decision 6: Use stable `ProviderContainer` to avoid widget disposal crashes
 
-Extract the stable `ProviderContainer` from the active context using `ProviderScope.containerOf(context)` as the first operation in `_toggleBookmark`. Close the sheet instantly, and execute all sequential provider read operations using `container.read()` instead of `ref.read()`. This prevents the `Cannot use "ref" after the widget was disposed` exception.
+Extract the stable `ProviderContainer` from the active context using `ProviderScope.containerOf(context)` as the first operation in `_toggleBookmark` and `_saveFolder`. Close the sheet/dialog instantly, and execute all sequential provider read operations using `container.read()` instead of `ref.read()`. This prevents the `Cannot use "ref" after the widget was disposed` exception.
 
 ```dart
     final container = ProviderScope.containerOf(context);
@@ -52,11 +59,8 @@ Extract the stable `ProviderContainer` from the active context using `ProviderSc
 
     try {
       ...
-      // Query currently active bookmarks
-      final activeBookmarks = container.read(bookmarksForLessonProvider(widget.lessonId)).valueOrNull ?? [];
-      ...
-      // Add bookmark to folder B
-      await container.read(addBookmarkProvider(...).future);
+      // Move bookmark atomically
+      await container.read(moveBookmarkProvider(...).future);
       ...
     } catch (e) {
       ...

@@ -110,5 +110,113 @@ void main() {
       expect(dbRow.folderName, equals('Physics'));
       expect(dbRow.title, equals('My Question Title'));
     });
+
+    test(
+      'moveBookmark performs sequence of delete + create and cleans up local database',
+      () async {
+        // 1. Seed two old bookmarks in Folder A (id: 10)
+        await db
+            .into(db.bookmarkFoldersTable)
+            .insert(
+              BookmarkFoldersTableCompanion.insert(
+                id: const Value(10),
+                name: 'Folder A',
+                bookmarksCount: const Value(2),
+              ),
+            );
+        await db
+            .into(db.bookmarkFoldersTable)
+            .insert(
+              BookmarkFoldersTableCompanion.insert(
+                id: const Value(20),
+                name: 'Folder B',
+                bookmarksCount: const Value(0),
+              ),
+            );
+
+        await db
+            .into(db.bookmarkItemsTable)
+            .insert(
+              BookmarkItemsTableCompanion.insert(
+                id: const Value(111),
+                folderId: const Value(10),
+                folderName: const Value('Folder A'),
+                lessonId: 100,
+                title: const Value('Lesson Title'),
+                chapterName: const Value('Chapter Name'),
+                bookmarkType: const Value('user_selected_answer'),
+              ),
+            );
+        await db
+            .into(db.bookmarkItemsTable)
+            .insert(
+              BookmarkItemsTableCompanion.insert(
+                id: const Value(222),
+                folderId: const Value(10),
+                folderName: const Value('Folder A'),
+                lessonId: 100,
+                title: const Value('Lesson Title'),
+                chapterName: const Value('Chapter Name'),
+                bookmarkType: const Value('user_selected_answer'),
+              ),
+            );
+
+        // 2. Setup mock responses
+        final newBookmarkResponse = BookmarkDto(
+          id: 333,
+          folderId: 20,
+          folderName: 'Folder B',
+          lessonId: 100,
+          bookmarkType: 'user_selected_answer',
+        );
+
+        when(
+          mockSource.createBookmark(
+            category: anyNamed('category'),
+            lessonId: anyNamed('lessonId'),
+            folder: anyNamed('folder'),
+            bookmarkType: anyNamed('bookmarkType'),
+          ),
+        ).thenAnswer((_) async => newBookmarkResponse);
+
+        when(mockSource.deleteBookmark(any)).thenAnswer((_) async => {});
+
+        // 3. Move the bookmark
+        await repository.moveBookmark(
+          oldBookmarkIds: const [111, 222],
+          category: 'user_selected_answer',
+          lessonId: 100,
+          folder: 'Folder B',
+        );
+
+        // 4. Verify API calls are sequenced correctly (create first, then delete)
+        verifyInOrder([
+          mockSource.createBookmark(
+            category: 'user_selected_answer',
+            lessonId: 100,
+            folder: 'Folder B',
+            bookmarkType: anyNamed('bookmarkType'),
+          ),
+          mockSource.deleteBookmark('111'),
+          mockSource.deleteBookmark('222'),
+        ]);
+
+        // 5. Verify local DB state: old ones are deleted, new one is inserted
+        final remainingBookmarks = await db.select(db.bookmarkItemsTable).get();
+        expect(remainingBookmarks.length, equals(1));
+        expect(remainingBookmarks.first.id, equals(333));
+        expect(remainingBookmarks.first.folderId, equals(20));
+
+        // Verify folder counts: Folder A count decremented by 2 (to 0), Folder B count incremented by 1
+        final folderA = await (db.select(
+          db.bookmarkFoldersTable,
+        )..where((tbl) => tbl.id.equals(10))).getSingle();
+        final folderB = await (db.select(
+          db.bookmarkFoldersTable,
+        )..where((tbl) => tbl.id.equals(20))).getSingle();
+        expect(folderA.bookmarksCount, equals(0));
+        expect(folderB.bookmarksCount, equals(1));
+      },
+    );
   });
 }

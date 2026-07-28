@@ -104,7 +104,7 @@ Future<BookmarkDto> addBookmark(
 @riverpod
 Future<BookmarkDto> moveBookmark(
   MoveBookmarkRef ref, {
-  required int oldBookmarkId,
+  required List<int> oldBookmarkIds,
   required String category,
   required int lessonId,
   String? folder,
@@ -115,7 +115,7 @@ Future<BookmarkDto> moveBookmark(
 }) async {
   final repository = await ref.read(bookmarkRepositoryProvider.future);
   final bookmark = await repository.moveBookmark(
-    oldBookmarkId: oldBookmarkId,
+    oldBookmarkIds: oldBookmarkIds,
     category: category,
     lessonId: lessonId,
     folder: folder,
