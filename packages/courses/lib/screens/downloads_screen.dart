@@ -172,7 +172,9 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-                content: Text('File not found. It may have been deleted.')),
+                content: AppText.body(
+                    'File not found. It may have been deleted.',
+                    color: Color(0xFFFFFFFF))),
           );
         }
         await ref.read(downloadsProvider.notifier).delete(item);
@@ -182,7 +184,9 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
       final result = await OpenFilex.open(path);
       if (result.type != ResultType.done && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not open file: ${result.message}')),
+          SnackBar(
+              content: AppText.body('Could not open file: ${result.message}',
+                  color: const Color(0xFFFFFFFF))),
         );
       }
     } catch (e, st) {
@@ -293,7 +297,9 @@ class _DownloadsList extends ConsumerWidget {
                     debugPrint('Delete Error: $e\n$st');
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Failed to delete: $e')),
+                        SnackBar(
+                            content: AppText.body('Failed to delete: $e',
+                                color: const Color(0xFFFFFFFF))),
                       );
                     }
                   }
@@ -427,13 +433,9 @@ class _VideoThumbnail extends StatelessWidget {
                       design.radius.sm,
                     ),
                   ),
-                  child: Text(
+                  child: AppText.labelSmall(
                     item.duration!,
-                    style: const TextStyle(
-                      color: Color(0xFFFFFFFF),
-                      fontSize: 10,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    color: const Color(0xFFFFFFFF),
                   ),
                 ),
               ),
@@ -465,13 +467,9 @@ class _AttachmentThumbnail extends StatelessWidget {
         ),
         if (item.fileType != null) ...[
           SizedBox(height: 2),
-          Text(
+          AppText.labelSmall(
             item.fileType!,
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: design.colors.textSecondary,
-            ),
+            color: design.colors.textSecondary,
           ),
         ],
       ],

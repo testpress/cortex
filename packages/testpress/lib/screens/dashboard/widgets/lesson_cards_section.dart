@@ -37,8 +37,6 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
     final lesson = widget.lesson;
     final isCompleted = widget.isCompleted;
     final cardBgColor = design.isDark ? const Color(0xFF202023) : Colors.white;
-    final textPrimary = design.colors.textPrimary;
-    final textSecondary = design.colors.textSecondary;
     final textMuted = design.colors.textSecondary.withValues(alpha: 0.7);
 
     return Opacity(
@@ -121,13 +119,9 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
                           color: Colors.black.withValues(alpha: 0.7),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Text(
+                        child: AppText.labelSmall(
                           '${lesson.progress!.toInt()}%',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          color: const Color(0xFFFFFFFF),
                         ),
                       ),
                     ),
@@ -148,28 +142,17 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              AppText.cardTitle(
                                 lesson.title,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  height: 20 / 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: textPrimary,
-                                ),
                               ),
                               if (lesson.chapterTitle != null) ...[
                                 const SizedBox(height: 1),
-                                Text(
+                                AppText.cardSubtitle(
                                   lesson.chapterTitle!,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    height: 16 / 12,
-                                    color: textSecondary,
-                                  ),
                                 ),
                               ],
                             ],
@@ -182,12 +165,12 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
                     // Metadata
                     if (lesson.remainingDuration != null ||
                         lesson.totalDuration != null) ...[
-                      Text(
+                      AppText.cardCaption(
                         (lesson.remainingDuration != null && !isCompleted)
                             ? '${lesson.remainingDuration!} left'
                             : (lesson.totalDuration ??
                                   lesson.remainingDuration!),
-                        style: TextStyle(fontSize: 11, color: textMuted),
+                        color: textMuted,
                       ),
                     ],
                     // Progress Bar
@@ -277,14 +260,7 @@ class LessonCardsSectionWidget extends StatelessWidget {
             children: [
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: design.spacing.lg),
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: design.colors.textPrimary,
-                  ),
-                ),
+                child: AppText.title(title),
               ),
               SizedBox(height: design.spacing.sm),
               AppCarousel(

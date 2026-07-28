@@ -69,7 +69,9 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              content: Text('Could not start download. Please try again.')),
+              content: AppText.body(
+                  'Could not start download. Please try again.',
+                  color: Color(0xFFFFFFFF))),
         );
       }
     }
@@ -86,7 +88,8 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              content: Text('File not found. It may have been deleted.')),
+              content: AppText.body('File not found. It may have been deleted.',
+                  color: Color(0xFFFFFFFF))),
         );
       }
       await ref.read(downloadsProvider.notifier).delete(item);
@@ -96,7 +99,9 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
     final result = await OpenFilex.open(path);
     if (result.type != ResultType.done && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not open file: ${result.message}')),
+        SnackBar(
+            content: AppText.body('Could not open file: ${result.message}',
+                color: const Color(0xFFFFFFFF))),
       );
     }
   }
@@ -131,15 +136,13 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
             color: design.colors.primary,
           ),
           const SizedBox(height: 16),
-          Text(
+          AppText.title(
             widget.title,
-            style: design.typography.title,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 4),
-          Text(
+          AppText.caption(
             _getMetadataString(),
-            style: design.typography.caption,
           ),
           const SizedBox(height: 24),
           if (isDownloading) ...[
@@ -152,9 +155,8 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
               ),
             ),
             const SizedBox(height: 16),
-            Text(
+            AppText.bodySmall(
               progress > 0 ? '$progress%' : 'Downloading...',
-              style: design.typography.bodySmall,
             ),
           ] else
             AppButton(
@@ -168,10 +170,9 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
             ),
           if (isError) ...[
             const SizedBox(height: 16),
-            Text(
+            AppText.bodySmall(
               'Download failed. Please try again.',
-              style: design.typography.bodySmall
-                  .copyWith(color: design.colors.error),
+              color: design.colors.error,
             ),
           ],
         ],
