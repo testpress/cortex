@@ -175,6 +175,8 @@ class CourseList extends _$CourseList {
       }
     } catch (e, st) {
       sentryService.captureException(e, stackTrace: st);
+      // Suppress 401 errors — the SessionExpiredDialog handles UX globally
+      if (e is ApiException && e.type == ApiErrorType.unauthorized) return;
       // Capture the error but don't rethrow (so stream from DB is still visible)
       ref.read(courseListSyncError.notifier).state = e;
     } finally {
@@ -268,6 +270,8 @@ class CourseSearch extends _$CourseSearch {
       );
     } catch (e, st) {
       sentryService.captureException(e, stackTrace: st);
+      // Suppress 401 errors — the SessionExpiredDialog handles UX globally
+      if (e is ApiException && e.type == ApiErrorType.unauthorized) return;
       state = state.copyWith(error: e, isLoading: false);
     } finally {
       _pendingRequest = null;

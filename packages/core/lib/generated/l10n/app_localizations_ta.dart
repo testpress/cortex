@@ -2835,4 +2835,17 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get viewAction => 'காண்க';
+
+  @override
+  String get sessionExpiredTitle => 'அமர்வு முடிந்தது';
+
+  @override
+  String get sessionExpiredIconSemantics => 'அமர்வு முடிந்ததற்கான ஐகான்';
+
+  @override
+  String get sessionExpiredLoginButton => 'மீண்டும் உள்நுழைக';
+
+  @override
+  String get sessionExpiredFallbackMessage =>
+      'உங்கள் அமர்வு காலாவதியாகிவிட்டது. தயவுசெய்து மீண்டும் உள்நுழையவும்.';
 }

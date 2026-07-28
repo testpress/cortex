@@ -2842,4 +2842,17 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get viewAction => 'കാണുക';
+
+  @override
+  String get sessionExpiredTitle => 'സെഷൻ അവസാനിച്ചു';
+
+  @override
+  String get sessionExpiredIconSemantics => 'സെഷൻ അവസാനിച്ചതിന്റെ ഐക്കൺ';
+
+  @override
+  String get sessionExpiredLoginButton => 'വീണ്ടും ലോഗിൻ ചെയ്യുക';
+
+  @override
+  String get sessionExpiredFallbackMessage =>
+      'നിങ്ങളുടെ സെഷൻ കാലഹരണപ്പെട്ടു. ദയവായി വീണ്ടും ലോഗിൻ ചെയ്യുക.';
 }

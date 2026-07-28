@@ -13,6 +13,8 @@ class AuthRoutes {
     '/login-activity',
   };
 
+  static bool _isFirstLaunch = true;
+
   static String? redirect(
     BuildContext context,
     GoRouterState state,
@@ -21,8 +23,24 @@ class AuthRoutes {
     final path = state.uri.path;
     final isAuthRoute = _authPaths.contains(path);
 
-    if (!isLoggedIn && !isAuthRoute) return '/onboarding';
-    if (isLoggedIn && isAuthRoute) return '/home';
+    if (!isLoggedIn && !isAuthRoute) {
+      _isFirstLaunch = false;
+      return '/login';
+    }
+    if (isLoggedIn && isAuthRoute) {
+      _isFirstLaunch = false;
+      return '/home';
+    }
+
+    if (!isLoggedIn && path == '/onboarding') {
+      if (_isFirstLaunch) {
+        _isFirstLaunch = false;
+        return null;
+      }
+      return '/login';
+    }
+
+    _isFirstLaunch = false;
     return null;
   }
 

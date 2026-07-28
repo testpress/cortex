@@ -2792,4 +2792,17 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get viewAction => 'عرض';
+
+  @override
+  String get sessionExpiredTitle => 'انتهت الجلسة';
+
+  @override
+  String get sessionExpiredIconSemantics => 'أيقونة انتهاء الجلسة';
+
+  @override
+  String get sessionExpiredLoginButton => 'تسجيل الدخول مرة أخرى';
+
+  @override
+  String get sessionExpiredFallbackMessage =>
+      'انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى.';
 }

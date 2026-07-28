@@ -1,13 +1,17 @@
 import 'package:dio/dio.dart';
 import 'api_endpoints.dart';
+import '../data/exceptions/api_exception.dart';
 
 /// Attaches the JWT authentication token to the Authorization header.
 /// Fetches the token asynchronously from storage to ensure it's always fresh.
-/// Also handles global 401 Unauthorized responses to trigger session invalidation.
+/// Also handles global 401 Unauthorized responses to trigger session expiry dialog.
 class AuthInterceptor extends Interceptor {
   final Future<String?> Function() getToken;
-  final void Function()? onUnauthorized;
+  final void Function(String message)? onSessionExpired;
   bool _isLoggingOut = false;
+
+  static const _fallbackMessage =
+      'Your session has expired. Please sign in again.';
 
   /// Paths that should not have an Authorization header attached.
   static const _authFlowPaths = [
@@ -17,7 +21,7 @@ class AuthInterceptor extends Interceptor {
     ApiEndpoints.resetPassword,
   ];
 
-  AuthInterceptor({required this.getToken, this.onUnauthorized});
+  AuthInterceptor({required this.getToken, this.onSessionExpired});
 
   @override
   void onRequest(
@@ -55,7 +59,11 @@ class AuthInterceptor extends Interceptor {
       if (!isAuthFlowPath && !isLogoutRequest) {
         if (!_isLoggingOut) {
           _isLoggingOut = true;
-          onUnauthorized?.call();
+          final apiException = ApiException.fromDioException(err);
+          final message = apiException.message.isNotEmpty
+              ? apiException.message
+              : _fallbackMessage;
+          onSessionExpired?.call(message);
         }
       }
     }

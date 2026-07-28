@@ -12,7 +12,7 @@ import 'auth_interceptor.dart';
 class DioFactory {
   static Dio createBackgroundDio({
     required Future<String?> Function() getToken,
-    void Function()? onUnauthorized,
+    void Function(String message)? onSessionExpired,
   }) {
     final dio = Dio(
       BaseOptions(
@@ -35,7 +35,7 @@ class DioFactory {
 
     dio.interceptors.add(UserAgentInterceptor());
     dio.interceptors.add(
-      AuthInterceptor(getToken: getToken, onUnauthorized: onUnauthorized),
+      AuthInterceptor(getToken: getToken, onSessionExpired: onSessionExpired),
     );
 
     if (kDebugMode) {
@@ -55,6 +55,7 @@ class DioFactory {
 final Provider<Dio> dioProvider = Provider<Dio>((ref) {
   return DioFactory.createBackgroundDio(
     getToken: () => ref.read(authLocalDataSourceProvider).getToken(),
-    onUnauthorized: () => ref.read(authProvider.notifier).logout(),
+    onSessionExpired: (msg) =>
+        ref.read(sessionExpiredProvider.notifier).state = msg,
   );
 });

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
 
 enum ApiErrorType {
@@ -152,7 +153,20 @@ class ApiException implements Exception {
   static String? extractApiMessage(dynamic responseData) {
     if (responseData == null) return null;
     if (responseData is String && responseData.trim().isNotEmpty) {
-      return responseData.trim();
+      final trimmed = responseData.trim();
+      if ((trimmed.startsWith('{') && trimmed.endsWith('}')) ||
+          (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
+        try {
+          final decoded = jsonDecode(trimmed);
+          final nestedMsg = extractApiMessage(decoded);
+          if (nestedMsg != null && nestedMsg.isNotEmpty) {
+            return nestedMsg;
+          }
+        } catch (_) {
+          // Fall through to returning raw string if JSON parsing fails
+        }
+      }
+      return trimmed;
     }
     if (responseData is List) {
       final messages = <String>[];

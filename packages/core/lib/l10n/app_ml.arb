@@ -1074,4 +1074,9 @@
   "downloadCompleted": "ഡൗൺലോഡ് പൂർത്തിയായി",
   "downloadStarted": "ഡൗൺലോഡ് ആരംഭിച്ചു",
   "downloadingFile": "ഡൗൺലോഡ് ചെയ്യുന്നു...",
-  "viewAction": "കാണുക"}
+  "viewAction": "കാണുക",
+  "sessionExpiredTitle": "സെഷൻ അവസാനിച്ചു",
+  "sessionExpiredIconSemantics": "സെഷൻ അവസാനിച്ചതിന്റെ ഐക്കൺ",
+  "sessionExpiredLoginButton": "വീണ്ടും ലോഗിൻ ചെയ്യുക",
+  "sessionExpiredFallbackMessage": "നിങ്ങളുടെ സെഷൻ കാലഹരണപ്പെട്ടു. ദയവായി വീണ്ടും ലോഗിൻ ചെയ്യുക."
+}

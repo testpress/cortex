@@ -2790,4 +2790,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get viewAction => 'View';
+
+  @override
+  String get sessionExpiredTitle => 'Session Ended';
+
+  @override
+  String get sessionExpiredIconSemantics => 'Session ended icon';
+
+  @override
+  String get sessionExpiredLoginButton => 'Login Again';
+
+  @override
+  String get sessionExpiredFallbackMessage =>
+      'Your session has expired. Please sign in again.';
 }
