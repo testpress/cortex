@@ -209,7 +209,15 @@ class AiScreen extends ConsumerWidget {
           data: (doubtsList) {
             final doubts = doubtsList.take(3).toList();
             if (doubts.isEmpty) {
-              return Center(child: AppText.body(l10n.aiSupportNoRecentDoubts));
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: design.spacing.xxxl),
+                child: Center(
+                  child: AppText.body(
+                    l10n.aiSupportNoRecentDoubts,
+                    color: design.colors.textSecondary,
+                  ),
+                ),
+              );
             }
 
             return Column(
