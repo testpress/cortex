@@ -263,12 +263,12 @@ class _CustomExamBuilderScreenState
             ),
           ),
           SizedBox(height: design.spacing.md),
-          AppText.headline(
+          AppText.title(
             l10n.customExamEmptyStateTitle,
             color: design.colors.textPrimary,
           ),
           SizedBox(height: design.spacing.xs),
-          AppText.body(
+          AppText.bodySmall(
             l10n.customExamEmptyStateDesc,
             color: design.colors.textSecondary,
             textAlign: TextAlign.center,
@@ -347,14 +347,9 @@ class _CustomExamBuilderScreenState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(
-                child: AppText.cardTitle(
-                  block.subjectName,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-              ),
+              Expanded(child: AppText.cardTitle(block.subjectName)),
               AppIconButton(
                 accessibilityLabel: 'Remove ${block.subjectName}',
                 onTap: () => ref
@@ -366,7 +361,7 @@ class _CustomExamBuilderScreenState
               ),
             ],
           ),
-          SizedBox(height: design.spacing.md),
+          SizedBox(height: design.spacing.xs),
           Container(height: 1, color: design.colors.divider),
           SizedBox(height: design.spacing.md),
           _cardRow(
