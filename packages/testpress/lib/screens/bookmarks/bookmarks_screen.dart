@@ -344,7 +344,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
                       _buildOption(
                         context,
                         LucideIcons.trash2,
-                        'Delete Folder',
+                        l10n.dialogDeleteFolderTitle,
                         design,
                         isDestructive: true,
                         onTap: () async {
@@ -353,6 +353,14 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
                           setState(() {
                             _isFolderOptionsOpen = false;
                           });
+
+                          final confirmed = await showConfirmationDialog(
+                            context,
+                            title: l10n.dialogDeleteFolderTitle,
+                            content: l10n.dialogDeleteFolderContent,
+                            confirmText: l10n.deleteAction,
+                          );
+                          if (!confirmed || !mounted) return;
 
                           try {
                             await ref.read(
@@ -438,7 +446,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
                       _buildOption(
                         context,
                         LucideIcons.trash2,
-                        'Remove Bookmark',
+                        l10n.dialogRemoveBookmarkTitle,
                         design,
                         isDestructive: true,
                         onTap: () async {
@@ -447,6 +455,14 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
                           setState(() {
                             _isBookmarkOptionsOpen = false;
                           });
+
+                          final confirmed = await showConfirmationDialog(
+                            context,
+                            title: l10n.dialogRemoveBookmarkTitle,
+                            content: l10n.dialogRemoveBookmarkContent,
+                            confirmText: l10n.labelRemove,
+                          );
+                          if (!confirmed || !mounted) return;
 
                           try {
                             await ref.read(

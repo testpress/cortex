@@ -1084,5 +1084,18 @@
   "errorAccessDeniedTitle": "تم رفض الوصول",
   "errorNotFoundTitle": "غير موجود",
   "errorServerTitle": "خطأ في الخادم",
-  "errorRateLimitedTitle": "طلبات كثيرة جداً"
+  "errorRateLimitedTitle": "طلبات كثيرة جداً",
+  "labelConfirm": "تأكيد",
+  "labelRemove": "إزالة",
+  "labelClose": "إغلاق",
+  "dialogDeleteVideoTitle": "حذف الفيديو",
+  "dialogDeleteVideoContent": "هل أنت متأكد أنك تريد حذف هذا الفيديو المحمل؟",
+  "dialogDeleteDownloadTitle": "حذف التنزيل",
+  "dialogDeleteDownloadContent": "هل أنت متأكد أنك تريد حذف هذا العنصر المحمل؟",
+  "dialogRemoveBookmarkTitle": "إزالة الإشارة المرجعية",
+  "dialogRemoveBookmarkContent": "هل أنت متأكد أنك تريد إزالة هذه الإشارة المرجعية؟",
+  "dialogCloseDoubtTitle": "إغلاق الاستفسار",
+  "dialogCloseDoubtContent": "هل أنت متأكد أنك تريد إغلاق هذا الاستفسار؟",
+  "dialogDeleteFolderTitle": "حذف المجلد",
+  "dialogDeleteFolderContent": "هل أنت متأكد أنك تريد حذف هذا المجلد؟"
 }

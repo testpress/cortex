@@ -2873,4 +2873,48 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get errorRateLimitedTitle => 'നിരവധി അഭ്യർത്ഥനകൾ';
+
+  @override
+  String get labelConfirm => 'ഉറപ്പാക്കുക';
+
+  @override
+  String get labelRemove => 'നീക്കംചെയ്യുക';
+
+  @override
+  String get labelClose => 'അടയ്ക്കുക';
+
+  @override
+  String get dialogDeleteVideoTitle => 'വീഡിയോ ഡിലീറ്റ് ചെയ്യുക';
+
+  @override
+  String get dialogDeleteVideoContent =>
+      'ഡൗൺലോഡ് ചെയ്ത ഈ വീഡിയോ ഡിലീറ്റ് ചെയ്യണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?';
+
+  @override
+  String get dialogDeleteDownloadTitle => 'ഡൗൺലോഡ് ഡിലീറ്റ് ചെയ്യുക';
+
+  @override
+  String get dialogDeleteDownloadContent =>
+      'ഡൗൺലോഡ് ചെയ്ത ഈ ഐറ്റം ഡിലീറ്റ് ചെയ്യണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?';
+
+  @override
+  String get dialogRemoveBookmarkTitle => 'ബുക്ക്മാർക്ക് നീക്കംചെയ്യുക';
+
+  @override
+  String get dialogRemoveBookmarkContent =>
+      'ഈ ബുക്ക്മാർക്ക് നീക്കംചെയ്യണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?';
+
+  @override
+  String get dialogCloseDoubtTitle => 'സംശയം അടയ്ക്കുക';
+
+  @override
+  String get dialogCloseDoubtContent =>
+      'ഈ സംശയം ക്ലോസ് ചെയ്യണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?';
+
+  @override
+  String get dialogDeleteFolderTitle => 'ഫോൾഡർ ഡിലീറ്റ് ചെയ്യുക';
+
+  @override
+  String get dialogDeleteFolderContent =>
+      'ഈ ഫോൾഡർ ഡിലീറ്റ് ചെയ്യണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?';
 }

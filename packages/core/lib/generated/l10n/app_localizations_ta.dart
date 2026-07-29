@@ -2866,4 +2866,48 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get errorRateLimitedTitle => 'மிக அதிக கோரிக்கைகள்';
+
+  @override
+  String get labelConfirm => 'உறுதி செய்';
+
+  @override
+  String get labelRemove => 'அகற்று';
+
+  @override
+  String get labelClose => 'மூடு';
+
+  @override
+  String get dialogDeleteVideoTitle => 'வீடியோவை நீக்கு';
+
+  @override
+  String get dialogDeleteVideoContent =>
+      'பதிவிறக்கப்பட்ட இந்த வீடியோவை நிச்சயமாக நீக்க விரும்புகிறீர்களா?';
+
+  @override
+  String get dialogDeleteDownloadTitle => 'பதிவிறக்கத்தை நீக்கு';
+
+  @override
+  String get dialogDeleteDownloadContent =>
+      'பதிவிறக்கப்பட்ட இந்த உருப்படியை நிச்சயமாக நீக்க விரும்புகிறீர்களா?';
+
+  @override
+  String get dialogRemoveBookmarkTitle => 'புத்தகக்குறியை அகற்று';
+
+  @override
+  String get dialogRemoveBookmarkContent =>
+      'இந்த புத்தகக்குறியை நிச்சயமாக அகற்ற விரும்புகிறீர்களா?';
+
+  @override
+  String get dialogCloseDoubtTitle => 'சந்தேகத்தை மூடு';
+
+  @override
+  String get dialogCloseDoubtContent =>
+      'இந்த சந்தேகத்தை நிச்சயமாக மூட விரும்புகிறீர்களா?';
+
+  @override
+  String get dialogDeleteFolderTitle => 'கோப்புறையை நீக்கு';
+
+  @override
+  String get dialogDeleteFolderContent =>
+      'இந்த கோப்புறையை நிச்சயமாக நீக்க விரும்புகிறீர்களா?';
 }

@@ -1084,5 +1084,18 @@
   "errorAccessDeniedTitle": "പ്രവേശനം നിഷേധിച്ചു",
   "errorNotFoundTitle": "കണ്ടെത്തിയില്ല",
   "errorServerTitle": "സെർവർ പിശക്",
-  "errorRateLimitedTitle": "നിരവധി അഭ്യർത്ഥനകൾ"
+  "errorRateLimitedTitle": "നിരവധി അഭ്യർത്ഥനകൾ",
+  "labelConfirm": "ഉറപ്പാക്കുക",
+  "labelRemove": "നീക്കംചെയ്യുക",
+  "labelClose": "അടയ്ക്കുക",
+  "dialogDeleteVideoTitle": "വീഡിയോ ഡിലീറ്റ് ചെയ്യുക",
+  "dialogDeleteVideoContent": "ഡൗൺലോഡ് ചെയ്ത ഈ വീഡിയോ ഡിലീറ്റ് ചെയ്യണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?",
+  "dialogDeleteDownloadTitle": "ഡൗൺലോഡ് ഡിലീറ്റ് ചെയ്യുക",
+  "dialogDeleteDownloadContent": "ഡൗൺലോഡ് ചെയ്ത ഈ ഐറ്റം ഡിലീറ്റ് ചെയ്യണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?",
+  "dialogRemoveBookmarkTitle": "ബുക്ക്മാർക്ക് നീക്കംചെയ്യുക",
+  "dialogRemoveBookmarkContent": "ഈ ബുക്ക്മാർക്ക് നീക്കംചെയ്യണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?",
+  "dialogCloseDoubtTitle": "സംശയം അടയ്ക്കുക",
+  "dialogCloseDoubtContent": "ഈ സംശയം ക്ലോസ് ചെയ്യണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?",
+  "dialogDeleteFolderTitle": "ഫോൾഡർ ഡിലീറ്റ് ചെയ്യുക",
+  "dialogDeleteFolderContent": "ഈ ഫോൾഡർ ഡിലീറ്റ് ചെയ്യണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?"
 }

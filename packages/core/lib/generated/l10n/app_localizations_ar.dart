@@ -2823,4 +2823,48 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorRateLimitedTitle => 'طلبات كثيرة جداً';
+
+  @override
+  String get labelConfirm => 'تأكيد';
+
+  @override
+  String get labelRemove => 'إزالة';
+
+  @override
+  String get labelClose => 'إغلاق';
+
+  @override
+  String get dialogDeleteVideoTitle => 'حذف الفيديو';
+
+  @override
+  String get dialogDeleteVideoContent =>
+      'هل أنت متأكد أنك تريد حذف هذا الفيديو المحمل؟';
+
+  @override
+  String get dialogDeleteDownloadTitle => 'حذف التنزيل';
+
+  @override
+  String get dialogDeleteDownloadContent =>
+      'هل أنت متأكد أنك تريد حذف هذا العنصر المحمل؟';
+
+  @override
+  String get dialogRemoveBookmarkTitle => 'إزالة الإشارة المرجعية';
+
+  @override
+  String get dialogRemoveBookmarkContent =>
+      'هل أنت متأكد أنك تريد إزالة هذه الإشارة المرجعية؟';
+
+  @override
+  String get dialogCloseDoubtTitle => 'إغلاق الاستفسار';
+
+  @override
+  String get dialogCloseDoubtContent =>
+      'هل أنت متأكد أنك تريد إغلاق هذا الاستفسار؟';
+
+  @override
+  String get dialogDeleteFolderTitle => 'حذف المجلد';
+
+  @override
+  String get dialogDeleteFolderContent =>
+      'هل أنت متأكد أنك تريد حذف هذا المجلد؟';
 }

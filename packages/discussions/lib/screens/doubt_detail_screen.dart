@@ -131,8 +131,15 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
                 ),
                 SizedBox(height: design.spacing.lg),
                 AppFocusable(
-                  onTap: () {
+                  onTap: () async {
                     _closeMenu();
+                    final confirmed = await showConfirmationDialog(
+                      context,
+                      title: l10n.dialogCloseDoubtTitle,
+                      content: l10n.dialogCloseDoubtContent,
+                      confirmText: l10n.labelClose,
+                    );
+                    if (!confirmed || !mounted) return;
                     ref
                         .read(postDoubtReplyNotifierProvider.notifier)
                         .submit(doubtId: widget.doubtId, shouldClose: true);

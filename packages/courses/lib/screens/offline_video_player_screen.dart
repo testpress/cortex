@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../widgets/lesson_detail/custom_video_player.dart';
@@ -170,9 +169,19 @@ class _OfflineVideoPlayerScreenState
                     AppFocusable(
                       onTap: () async {
                         setState(() => _isSheetOpen = false);
-                        await ref.read(downloadsProvider.notifier).delete(item);
-                        if (context.mounted) {
-                          Navigator.of(context).pop();
+                        final confirmed = await showConfirmationDialog(
+                          context,
+                          title: l10n.dialogDeleteVideoTitle,
+                          content: l10n.dialogDeleteVideoContent,
+                          confirmText: l10n.deleteAction,
+                        );
+                        if (confirmed && context.mounted) {
+                          await ref
+                              .read(downloadsProvider.notifier)
+                              .delete(item);
+                          if (context.mounted) {
+                            Navigator.of(context).pop();
+                          }
                         }
                       },
                       child: Padding(

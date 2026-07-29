@@ -386,18 +386,14 @@ class _ExamCardActions extends ConsumerWidget {
             color: design.colors.error,
           ),
           onPressed: () async {
-            final shouldDelete = await showGeneralDialog<bool>(
-              context: context,
-              barrierDismissible: true,
-              barrierLabel: l10n.labelCancel,
-              barrierColor: design.colors.overlay,
-              transitionDuration: const Duration(milliseconds: 200),
-              pageBuilder: (context, animation, secondaryAnimation) {
-                return const _DeleteExamConfirmationDialog();
-              },
+            final shouldDelete = await showConfirmationDialog(
+              context,
+              title: l10n.deleteExamTitle,
+              content: l10n.deleteExamConfirmationMessage,
+              confirmText: l10n.deleteAction,
             );
 
-            if (shouldDelete == true) {
+            if (shouldDelete == true && context.mounted) {
               await ref.read(offlineExamsProvider.notifier).deleteExam(exam.id);
               if (context.mounted) {
                 AppToast.show(context, message: l10n.examDeletedToast);
@@ -423,78 +419,6 @@ class _ExamCardActions extends ConsumerWidget {
           },
         ),
       ],
-    );
-  }
-}
-
-class _DeleteExamConfirmationDialog extends StatelessWidget {
-  const _DeleteExamConfirmationDialog();
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-    final l10n = L10n.of(context);
-
-    return Center(
-      child: Container(
-        width: double.infinity,
-        constraints: const BoxConstraints(maxWidth: 480),
-        margin: EdgeInsets.all(design.spacing.xl),
-        padding: EdgeInsets.all(design.spacing.lg),
-        decoration: BoxDecoration(
-          color: design.colors.card,
-          borderRadius: BorderRadius.circular(design.radius.xl),
-          boxShadow: design.shadows.floating,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AppText.headline(
-              l10n.deleteExamTitle,
-              color: design.colors.textPrimary,
-            ),
-            SizedBox(height: design.spacing.md),
-            AppText.body(
-              l10n.deleteExamConfirmationMessage,
-              color: design.colors.textSecondary,
-            ),
-            SizedBox(height: design.spacing.xl),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                AppButton(
-                  variant: AppButtonVariant.secondary,
-                  label: l10n.labelCancel,
-                  foregroundColor: design.colors.textSecondary,
-                  backgroundColor: design.colors.textSecondary.withValues(
-                    alpha: 0.1,
-                  ),
-                  borderColor: design.colors.textSecondary,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacing.md,
-                    vertical: design.spacing.sm,
-                  ),
-                  onPressed: () => Navigator.of(context).pop(false),
-                ),
-                SizedBox(width: design.spacing.sm),
-                AppButton(
-                  variant: AppButtonVariant.secondary,
-                  label: l10n.deleteAction,
-                  foregroundColor: design.colors.error,
-                  backgroundColor: design.colors.error.withValues(alpha: 0.1),
-                  borderColor: design.colors.error,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacing.md,
-                    vertical: design.spacing.sm,
-                  ),
-                  onPressed: () => Navigator.of(context).pop(true),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
