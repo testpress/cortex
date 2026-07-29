@@ -1414,5 +1414,34 @@
   "dialogCloseDoubtTitle": "Close Doubt",
   "dialogCloseDoubtContent": "Are you sure you want to close this doubt?",
   "dialogDeleteFolderTitle": "Delete Folder",
-  "dialogDeleteFolderContent": "Are you sure you want to delete this folder?"
+  "dialogDeleteFolderContent": "Are you sure you want to delete this folder?",
+  "customExamSelectModeTitle": "Select Mode",
+  "customExamSelectModeDesc": "Choose how you want to take this exam.",
+  "customExamPracticeQuizTitle": "Practice Quiz",
+  "customExamPracticeQuizDesc": "Answers revealed immediately",
+  "customExamRegularTitle": "Regular Exam",
+  "customExamRegularDesc": "Timed · results at the end",
+  "customExamGenerating": "Generating...",
+  "customExamStart": "Start Exam",
+  "customExamNext": "Next",
+  "customExamAll": "All",
+  "customExamErrorLoadingConfig": "Error loading config",
+  "customExamNumberOfQuestions": "Number of Questions",
+  "customExamQuestionsLabel": "Questions",
+  "customExamDifficultyLevel": "Difficulty Level",
+  "customExamQuestionTypes": "Question Types",
+  "customExamAllSubjects": "All Subjects",
+  "customExamAllOfSubject": "All of {subject}",
+  "@customExamAllOfSubject": {
+    "placeholders": {
+      "subject": {
+        "type": "String"
+      }
+    }
+  },
+  "customExamTitle": "Custom Exam",
+  "customExamEmptyStateTitle": "No Questionnaires added yet",
+  "customExamEmptyStateDesc": "Build your perfect test by combining subjects, difficulties, and question types.",
+  "customExamAddQuestionnaire": "Add Questionnaire",
+  "customExamAddMoreQuestionnaires": "Add more Questionnaires"
 }

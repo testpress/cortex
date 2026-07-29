@@ -2867,4 +2867,64 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get dialogDeleteFolderContent =>
       'هل أنت متأكد أنك تريد حذف هذا المجلد؟';
+
+  @override
+  String get customExamSelectModeTitle => 'حدد الوضع';
+
+  @override
+  String get customExamSelectModeDesc => 'اختر كيف تريد إجراء هذا الاختبار.';
+
+  @override
+  String get customExamPracticeQuizTitle => 'اختبار تدريبي';
+
+  @override
+  String get customExamPracticeQuizDesc => 'تظهر الإجابات على الفور';
+
+  @override
+  String get customExamRegularTitle => 'امتحان عادي';
+
+  @override
+  String get customExamRegularDesc => 'محدد بوقت · النتائج في النهاية';
+
+  @override
+  String get customExamGenerating => 'جارٍ الإنشاء...';
+
+  @override
+  String get customExamStart => 'ابدأ الامتحان';
+
+  @override
+  String get customExamNext => 'التالي';
+
+  @override
+  String get customExamAll => 'الكل';
+
+  @override
+  String get customExamErrorLoadingConfig => 'حدث خطأ أثناء تحميل التكوين';
+
+  @override
+  String get customExamQuestionsLabel => 'أسئلة';
+
+  @override
+  String get customExamQuestionTypes => 'أنواع الأسئلة';
+
+  @override
+  String get customExamAllSubjects => 'جميع المواد';
+
+  @override
+  String customExamAllOfSubject(String subject) {
+    return 'كل من $subject';
+  }
+
+  @override
+  String get customExamEmptyStateTitle => 'لم تتم إضافة استبيانات بعد';
+
+  @override
+  String get customExamEmptyStateDesc =>
+      'ابنِ اختبارك المثالي من خلال الجمع بين المواد ومستويات الصعوبة وأنواع الأسئلة.';
+
+  @override
+  String get customExamAddQuestionnaire => 'إضافة استبيان';
+
+  @override
+  String get customExamAddMoreQuestionnaires => 'إضافة المزيد من الاستبيانات';
 }

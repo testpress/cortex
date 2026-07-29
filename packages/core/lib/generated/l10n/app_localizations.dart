@@ -5176,6 +5176,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure you want to delete this folder?'**
   String get dialogDeleteFolderContent;
+
+  /// No description provided for @customExamSelectModeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Mode'**
+  String get customExamSelectModeTitle;
+
+  /// No description provided for @customExamSelectModeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how you want to take this exam.'**
+  String get customExamSelectModeDesc;
+
+  /// No description provided for @customExamPracticeQuizTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice Quiz'**
+  String get customExamPracticeQuizTitle;
+
+  /// No description provided for @customExamPracticeQuizDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Answers revealed immediately'**
+  String get customExamPracticeQuizDesc;
+
+  /// No description provided for @customExamRegularTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Regular Exam'**
+  String get customExamRegularTitle;
+
+  /// No description provided for @customExamRegularDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Timed · results at the end'**
+  String get customExamRegularDesc;
+
+  /// No description provided for @customExamGenerating.
+  ///
+  /// In en, this message translates to:
+  /// **'Generating...'**
+  String get customExamGenerating;
+
+  /// No description provided for @customExamStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Exam'**
+  String get customExamStart;
+
+  /// No description provided for @customExamNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get customExamNext;
+
+  /// No description provided for @customExamAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get customExamAll;
+
+  /// No description provided for @customExamErrorLoadingConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading config'**
+  String get customExamErrorLoadingConfig;
+
+  /// No description provided for @customExamQuestionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Questions'**
+  String get customExamQuestionsLabel;
+
+  /// No description provided for @customExamQuestionTypes.
+  ///
+  /// In en, this message translates to:
+  /// **'Question Types'**
+  String get customExamQuestionTypes;
+
+  /// No description provided for @customExamAllSubjects.
+  ///
+  /// In en, this message translates to:
+  /// **'All Subjects'**
+  String get customExamAllSubjects;
+
+  /// No description provided for @customExamAllOfSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'All of {subject}'**
+  String customExamAllOfSubject(String subject);
+
+  /// No description provided for @customExamEmptyStateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No Questionnaires added yet'**
+  String get customExamEmptyStateTitle;
+
+  /// No description provided for @customExamEmptyStateDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Build your perfect test by combining subjects, difficulties, and question types.'**
+  String get customExamEmptyStateDesc;
+
+  /// No description provided for @customExamAddQuestionnaire.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Questionnaire'**
+  String get customExamAddQuestionnaire;
+
+  /// No description provided for @customExamAddMoreQuestionnaires.
+  ///
+  /// In en, this message translates to:
+  /// **'Add more Questionnaires'**
+  String get customExamAddMoreQuestionnaires;
 }
 
 class _AppLocalizationsDelegate

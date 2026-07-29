@@ -25,7 +25,7 @@ class ExamsRoutes {
           parentNavigatorKey: rootNavigatorKey,
           builder: (context, state) {
             final course = state.extra as CourseDto;
-            return CustomExamConfigScreen(course: course);
+            return CustomExamBuilderScreen(courseId: course.id);
           },
         ),
         GoRoute(

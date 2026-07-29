@@ -21,6 +21,7 @@ export 'widgets/app_markdown.dart';
 export 'widgets/app_html.dart';
 export 'widgets/app_html_v2.dart';
 export 'widgets/app_button.dart';
+export 'widgets/app_icon_button.dart';
 export 'widgets/app_card.dart';
 export 'widgets/app_header.dart';
 export 'widgets/app_scroll.dart';

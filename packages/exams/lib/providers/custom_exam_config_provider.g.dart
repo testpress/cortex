@@ -36,16 +36,28 @@ abstract class _$CustomExamConfig
   FutureOr<CustomTestConfigDto> build(String courseId);
 }
 
-/// See also [CustomExamConfig].
+/// Fetches the configuration (subjects, difficulties, question types, limits)
+/// for the custom exam builder. Cached per-course by Riverpod.
+///
+/// Copied from [CustomExamConfig].
 @ProviderFor(CustomExamConfig)
 const customExamConfigProvider = CustomExamConfigFamily();
 
-/// See also [CustomExamConfig].
+/// Fetches the configuration (subjects, difficulties, question types, limits)
+/// for the custom exam builder. Cached per-course by Riverpod.
+///
+/// Copied from [CustomExamConfig].
 class CustomExamConfigFamily extends Family<AsyncValue<CustomTestConfigDto>> {
-  /// See also [CustomExamConfig].
+  /// Fetches the configuration (subjects, difficulties, question types, limits)
+  /// for the custom exam builder. Cached per-course by Riverpod.
+  ///
+  /// Copied from [CustomExamConfig].
   const CustomExamConfigFamily();
 
-  /// See also [CustomExamConfig].
+  /// Fetches the configuration (subjects, difficulties, question types, limits)
+  /// for the custom exam builder. Cached per-course by Riverpod.
+  ///
+  /// Copied from [CustomExamConfig].
   CustomExamConfigProvider call(String courseId) {
     return CustomExamConfigProvider(courseId);
   }
@@ -72,14 +84,20 @@ class CustomExamConfigFamily extends Family<AsyncValue<CustomTestConfigDto>> {
   String? get name => r'customExamConfigProvider';
 }
 
-/// See also [CustomExamConfig].
+/// Fetches the configuration (subjects, difficulties, question types, limits)
+/// for the custom exam builder. Cached per-course by Riverpod.
+///
+/// Copied from [CustomExamConfig].
 class CustomExamConfigProvider
     extends
         AutoDisposeAsyncNotifierProviderImpl<
           CustomExamConfig,
           CustomTestConfigDto
         > {
-  /// See also [CustomExamConfig].
+  /// Fetches the configuration (subjects, difficulties, question types, limits)
+  /// for the custom exam builder. Cached per-course by Riverpod.
+  ///
+  /// Copied from [CustomExamConfig].
   CustomExamConfigProvider(String courseId)
     : this._internal(
         () => CustomExamConfig()..courseId = courseId,
@@ -170,157 +188,12 @@ class _CustomExamConfigProviderElement
   String get courseId => (origin as CustomExamConfigProvider).courseId;
 }
 
-String _$customExamSelectionHash() =>
-    r'b99393795bf607e6b6610bbaf9b2232d58ba513a';
-
-abstract class _$CustomExamSelection
-    extends BuildlessAutoDisposeNotifier<CustomExamSelectionState> {
-  late final String courseId;
-
-  CustomExamSelectionState build(String courseId);
-}
-
-/// See also [CustomExamSelection].
-@ProviderFor(CustomExamSelection)
-const customExamSelectionProvider = CustomExamSelectionFamily();
-
-/// See also [CustomExamSelection].
-class CustomExamSelectionFamily extends Family<CustomExamSelectionState> {
-  /// See also [CustomExamSelection].
-  const CustomExamSelectionFamily();
-
-  /// See also [CustomExamSelection].
-  CustomExamSelectionProvider call(String courseId) {
-    return CustomExamSelectionProvider(courseId);
-  }
-
-  @override
-  CustomExamSelectionProvider getProviderOverride(
-    covariant CustomExamSelectionProvider provider,
-  ) {
-    return call(provider.courseId);
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'customExamSelectionProvider';
-}
-
-/// See also [CustomExamSelection].
-class CustomExamSelectionProvider
-    extends
-        AutoDisposeNotifierProviderImpl<
-          CustomExamSelection,
-          CustomExamSelectionState
-        > {
-  /// See also [CustomExamSelection].
-  CustomExamSelectionProvider(String courseId)
-    : this._internal(
-        () => CustomExamSelection()..courseId = courseId,
-        from: customExamSelectionProvider,
-        name: r'customExamSelectionProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$customExamSelectionHash,
-        dependencies: CustomExamSelectionFamily._dependencies,
-        allTransitiveDependencies:
-            CustomExamSelectionFamily._allTransitiveDependencies,
-        courseId: courseId,
-      );
-
-  CustomExamSelectionProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.courseId,
-  }) : super.internal();
-
-  final String courseId;
-
-  @override
-  CustomExamSelectionState runNotifierBuild(
-    covariant CustomExamSelection notifier,
-  ) {
-    return notifier.build(courseId);
-  }
-
-  @override
-  Override overrideWith(CustomExamSelection Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: CustomExamSelectionProvider._internal(
-        () => create()..courseId = courseId,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        courseId: courseId,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeNotifierProviderElement<
-    CustomExamSelection,
-    CustomExamSelectionState
-  >
-  createElement() {
-    return _CustomExamSelectionProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is CustomExamSelectionProvider && other.courseId == courseId;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, courseId.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin CustomExamSelectionRef
-    on AutoDisposeNotifierProviderRef<CustomExamSelectionState> {
-  /// The parameter `courseId` of this provider.
-  String get courseId;
-}
-
-class _CustomExamSelectionProviderElement
-    extends
-        AutoDisposeNotifierProviderElement<
-          CustomExamSelection,
-          CustomExamSelectionState
-        >
-    with CustomExamSelectionRef {
-  _CustomExamSelectionProviderElement(super.provider);
-
-  @override
-  String get courseId => (origin as CustomExamSelectionProvider).courseId;
-}
-
 String _$generateCustomExamHash() =>
     r'0526d6ae2fcee39b2164d00d5c7561dc8bd28a27';
 
-/// See also [GenerateCustomExam].
+/// Manages the API call to generate a custom exam from the built blocks.
+///
+/// Copied from [GenerateCustomExam].
 @ProviderFor(GenerateCustomExam)
 final generateCustomExamProvider =
     AutoDisposeAsyncNotifierProvider<GenerateCustomExam, AttemptDto?>.internal(

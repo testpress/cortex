@@ -2865,4 +2865,65 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get dialogDeleteFolderContent =>
       'Are you sure you want to delete this folder?';
+
+  @override
+  String get customExamSelectModeTitle => 'Select Mode';
+
+  @override
+  String get customExamSelectModeDesc =>
+      'Choose how you want to take this exam.';
+
+  @override
+  String get customExamPracticeQuizTitle => 'Practice Quiz';
+
+  @override
+  String get customExamPracticeQuizDesc => 'Answers revealed immediately';
+
+  @override
+  String get customExamRegularTitle => 'Regular Exam';
+
+  @override
+  String get customExamRegularDesc => 'Timed · results at the end';
+
+  @override
+  String get customExamGenerating => 'Generating...';
+
+  @override
+  String get customExamStart => 'Start Exam';
+
+  @override
+  String get customExamNext => 'Next';
+
+  @override
+  String get customExamAll => 'All';
+
+  @override
+  String get customExamErrorLoadingConfig => 'Error loading config';
+
+  @override
+  String get customExamQuestionsLabel => 'Questions';
+
+  @override
+  String get customExamQuestionTypes => 'Question Types';
+
+  @override
+  String get customExamAllSubjects => 'All Subjects';
+
+  @override
+  String customExamAllOfSubject(String subject) {
+    return 'All of $subject';
+  }
+
+  @override
+  String get customExamEmptyStateTitle => 'No Questionnaires added yet';
+
+  @override
+  String get customExamEmptyStateDesc =>
+      'Build your perfect test by combining subjects, difficulties, and question types.';
+
+  @override
+  String get customExamAddQuestionnaire => 'Add Questionnaire';
+
+  @override
+  String get customExamAddMoreQuestionnaires => 'Add more Questionnaires';
 }
