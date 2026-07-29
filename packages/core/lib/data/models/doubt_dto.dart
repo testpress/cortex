@@ -105,7 +105,7 @@ class DoubtDto {
         DoubtStatus.active;
 
     DoubtQueryType? queryType;
-    final qtStr = json['query_type']?.toString().toLowerCase();
+    final qtStr = json['query_type_display']?.toString().toLowerCase();
     if (qtStr == 'ai') {
       queryType = DoubtQueryType.ai;
     } else if (qtStr == 'mentor') {
