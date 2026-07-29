@@ -1097,5 +1097,32 @@
   "dialogCloseDoubtTitle": "إغلاق الاستفسار",
   "dialogCloseDoubtContent": "هل أنت متأكد أنك تريد إغلاق هذا الاستفسار؟",
   "dialogDeleteFolderTitle": "حذف المجلد",
-  "dialogDeleteFolderContent": "هل أنت متأكد أنك تريد حذف هذا المجلد؟"
+  "dialogDeleteFolderContent": "هل أنت متأكد أنك تريد حذف هذا المجلد؟",
+  "customExamSelectModeTitle": "حدد الوضع",
+  "customExamSelectModeDesc": "اختر كيف تريد إجراء هذا الاختبار.",
+  "customExamPracticeQuizTitle": "اختبار تدريبي",
+  "customExamPracticeQuizDesc": "تظهر الإجابات على الفور",
+  "customExamRegularTitle": "امتحان عادي",
+  "customExamRegularDesc": "محدد بوقت · النتائج في النهاية",
+  "customExamGenerating": "جارٍ الإنشاء...",
+  "customExamStart": "ابدأ الامتحان",
+  "customExamConfigureSubjects": "تكوين المواد",
+  "customExamNumberOfQuestions": "عدد الأسئلة",
+  "customExamQuestionsLabel": "أسئلة",
+  "customExamDifficultyLevel": "مستوى الصعوبة",
+  "customExamQuestionTypes": "أنواع الأسئلة",
+  "customExamAllSubjects": "جميع المواد",
+  "customExamAllOfSubject": "كل من {subject}",
+  "@customExamAllOfSubject": {
+    "placeholders": {
+      "subject": {
+        "type": "String"
+      }
+    }
+  },
+  "customExamTitle": "امتحان مخصص",
+  "customExamEmptyStateTitle": "لم تتم إضافة استبيانات بعد",
+  "customExamEmptyStateDesc": "ابنِ اختبارك المثالي من خلال الجمع بين المواد ومستويات الصعوبة وأنواع الأسئلة.",
+  "customExamAddQuestionnaire": "إضافة استبيان",
+  "customExamAddMoreQuestionnaires": "إضافة المزيد من الاستبيانات"
 }

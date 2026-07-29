@@ -1331,5 +1331,32 @@
   "dialogCloseDoubtTitle": "சந்தேகத்தை மூடு",
   "dialogCloseDoubtContent": "இந்த சந்தேகத்தை நிச்சயமாக மூட விரும்புகிறீர்களா?",
   "dialogDeleteFolderTitle": "கோப்புறையை நீக்கு",
-  "dialogDeleteFolderContent": "இந்த கோப்புறையை நிச்சயமாக நீக்க விரும்புகிறீர்களா?"
+  "dialogDeleteFolderContent": "இந்த கோப்புறையை நிச்சயமாக நீக்க விரும்புகிறீர்களா?",
+  "customExamSelectModeTitle": "பயன்முறையைத் தேர்ந்தெடுக்கவும்",
+  "customExamSelectModeDesc": "இந்தத் தேர்வை எவ்வாறு எழுத விரும்புகிறீர்கள் என்பதைத் தேர்ந்தெடுக்கவும்.",
+  "customExamPracticeQuizTitle": "பயிற்சி வினாடிவினா",
+  "customExamPracticeQuizDesc": "பதில்கள் உடனடியாகக் காட்டப்படும்",
+  "customExamRegularTitle": "வழக்கமான தேர்வு",
+  "customExamRegularDesc": "நேரக் கட்டுப்பாடு · முடிவுகள் கடைசியில்",
+  "customExamGenerating": "உருவாக்கப்படுகிறது...",
+  "customExamStart": "தேர்வைத் தொடங்குக",
+  "customExamConfigureSubjects": "பாடங்களை அமைக்கவும்",
+  "customExamNumberOfQuestions": "கேள்விகளின் எண்ணிக்கை",
+  "customExamQuestionsLabel": "கேள்விகள்",
+  "customExamDifficultyLevel": "கடினத்தன்மை நிலை",
+  "customExamQuestionTypes": "கேள்வி வகைகள்",
+  "customExamAllSubjects": "அனைத்து பாடங்களும்",
+  "customExamAllOfSubject": "முழுமையான {subject}",
+  "@customExamAllOfSubject": {
+    "placeholders": {
+      "subject": {
+        "type": "String"
+      }
+    }
+  },
+  "customExamTitle": "விருப்பத் தேர்வு",
+  "customExamEmptyStateTitle": "இதுவரை எந்த கேள்விகளும் சேர்க்கப்படவில்லை",
+  "customExamEmptyStateDesc": "பாடங்கள், கடினத்தன்மை நிலைகள் மற்றும் கேள்வி வகைகளை ஒருங்கிணைத்து உங்கள் தேர்வை உருவாக்குங்கள்.",
+  "customExamAddQuestionnaire": "கேள்விகளைச் சேர்",
+  "customExamAddMoreQuestionnaires": "மேலும் கேள்விகளைச் சேர்"
 }

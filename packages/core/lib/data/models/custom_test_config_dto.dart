@@ -51,8 +51,58 @@ class CustomTestFilterOptionDto {
   }
 }
 
+class CustomTestSubjectDto {
+  final int id;
+  final String name;
+  final int? parentId;
+  final int questionsCount;
+  final List<CustomTestFilterOptionDto> availableDifficulties;
+  final List<CustomTestFilterOptionDto> availableTypes;
+
+  const CustomTestSubjectDto({
+    required this.id,
+    required this.name,
+    this.parentId,
+    required this.questionsCount,
+    this.availableDifficulties = const [],
+    this.availableTypes = const [],
+  });
+
+  factory CustomTestSubjectDto.fromJson(Map<String, dynamic> json) {
+    return CustomTestSubjectDto(
+      id: json['id'] as int,
+      name: json['name'] as String? ?? '',
+      parentId: json['parent_id'] as int?,
+      questionsCount: json['questions_count'] as int? ?? 0,
+      availableDifficulties:
+          (json['available_difficulties'] as List<dynamic>?)
+              ?.map((e) => CustomTestFilterOptionDto.fromJson(e))
+              .toList() ??
+          const [],
+      availableTypes:
+          (json['available_types'] as List<dynamic>?)
+              ?.map((e) => CustomTestFilterOptionDto.fromJson(e))
+              .toList() ??
+          const [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'parent_id': parentId,
+      'questions_count': questionsCount,
+      'available_difficulties': availableDifficulties
+          .map((e) => e.toJson())
+          .toList(),
+      'available_types': availableTypes.map((e) => e.toJson()).toList(),
+    };
+  }
+}
+
 class CustomTestConfigDto {
-  final List<CustomTestFilterOptionDto> subjects;
+  final List<CustomTestSubjectDto> subjects;
   final List<CustomTestFilterOptionDto> difficultyLevels;
   final List<CustomTestFilterOptionDto> questionTypes;
   final List<CustomTestFilterOptionDto> testModes;
@@ -68,7 +118,13 @@ class CustomTestConfigDto {
 
   factory CustomTestConfigDto.fromJson(Map<String, dynamic> json) {
     return CustomTestConfigDto(
-      subjects: _parseOptionsList(json['subjects']),
+      subjects:
+          (json['subjects'] as List<dynamic>?)
+              ?.map(
+                (e) => CustomTestSubjectDto.fromJson(e as Map<String, dynamic>),
+              )
+              .toList() ??
+          const [],
       difficultyLevels: _parseOptionsList(json['difficulty_levels']),
       questionTypes: _parseOptionsList(json['question_types']),
       testModes: _parseOptionsList(json['test_modes']),
@@ -88,7 +144,7 @@ class CustomTestConfigDto {
 
   Map<String, dynamic> toJson() {
     return {
-      'subjects': subjects,
+      'subjects': subjects.map((e) => e.toJson()).toList(),
       'difficulty_levels': difficultyLevels,
       'question_types': questionTypes,
       'test_modes': testModes,

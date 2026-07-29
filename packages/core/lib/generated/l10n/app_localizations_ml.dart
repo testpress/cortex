@@ -2917,4 +2917,59 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get dialogDeleteFolderContent =>
       'ഈ ഫോൾഡർ ഡിലീറ്റ് ചെയ്യണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?';
+
+  @override
+  String get customExamSelectModeTitle => 'മോഡ് തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get customExamSelectModeDesc =>
+      'ഈ പരീക്ഷ നിങ്ങൾ എങ്ങനെ എഴുതാൻ ആഗ്രഹിക്കുന്നു എന്ന് തിരഞ്ഞെടുക്കുക.';
+
+  @override
+  String get customExamPracticeQuizTitle => 'പ്രാക്ടീസ് ക്വിസ്';
+
+  @override
+  String get customExamPracticeQuizDesc => 'ഉത്തരങ്ങൾ ഉടൻ കാണാം';
+
+  @override
+  String get customExamRegularTitle => 'റെഗുലർ പരീക്ഷ';
+
+  @override
+  String get customExamRegularDesc => 'സമയബന്ധിതം · ഫലങ്ങൾ അവസാനം';
+
+  @override
+  String get customExamGenerating => 'ഉണ്ടാക്കുന്നു...';
+
+  @override
+  String get customExamStart => 'പരീക്ഷ തുടങ്ങുക';
+
+  @override
+  String get customExamConfigureSubjects => 'വിഷയങ്ങൾ ക്രമീകരിക്കുക';
+
+  @override
+  String get customExamQuestionsLabel => 'ചോദ്യങ്ങൾ';
+
+  @override
+  String get customExamQuestionTypes => 'ചോദ്യ തരങ്ങൾ';
+
+  @override
+  String get customExamAllSubjects => 'എല്ലാ വിഷയങ്ങളും';
+
+  @override
+  String customExamAllOfSubject(String subject) {
+    return '$subject പൂർണ്ണമായും';
+  }
+
+  @override
+  String get customExamEmptyStateTitle => 'ചോദ്യങ്ങൾ ഒന്നും ചേർത്തിട്ടില്ല';
+
+  @override
+  String get customExamEmptyStateDesc =>
+      'വിഷയങ്ങളും കാഠിന്യ നിലകളും ചോദ്യ തരങ്ങളും കൂട്ടിച്ചേർത്ത് നിങ്ങളുടെ പരീക്ഷ നിർമ്മിക്കുക.';
+
+  @override
+  String get customExamAddQuestionnaire => 'ചോദ്യങ്ങൾ ചേർക്കുക';
+
+  @override
+  String get customExamAddMoreQuestionnaires => 'കൂടുതൽ ചോദ്യങ്ങൾ ചേർക്കുക';
 }

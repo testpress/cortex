@@ -1909,8 +1909,8 @@ class MockDataSource implements DataSource {
     await Future.delayed(const Duration(milliseconds: 500));
     return const CustomTestConfigDto(
       subjects: [
-        CustomTestFilterOptionDto(value: 'Math', label: 'Math'),
-        CustomTestFilterOptionDto(value: 'Science', label: 'Science'),
+        CustomTestSubjectDto(id: 1, name: 'Physics', questionsCount: 50),
+        CustomTestSubjectDto(id: 2, name: 'Chemistry', questionsCount: 50),
       ],
       difficultyLevels: [
         CustomTestFilterOptionDto(value: 'Easy', label: 'Easy'),
@@ -1944,7 +1944,9 @@ class MockDataSource implements DataSource {
     return AttemptDto(
       id: 9999,
       date: '2023-01-01T00:00:00Z',
-      totalQuestions: request.numberOfQuestions,
+      totalQuestions: request.questionnaires.isNotEmpty
+          ? request.questionnaires.first.numberOfQuestions
+          : 15,
       score: '0',
       rank: 0,
       percentile: '0',

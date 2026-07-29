@@ -1289,7 +1289,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get examsEmptyStateDesc => 'தற்போது எந்த தேர்வுகளும் இல்லை.';
 
   @override
-  String get customExamTitle => 'தனிப்பயன் தேர்வு';
+  String get customExamTitle => 'விருப்பத் தேர்வு';
 
   @override
   String get customExamCourseSelectionInfo =>
@@ -2910,4 +2910,60 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get dialogDeleteFolderContent =>
       'இந்த கோப்புறையை நிச்சயமாக நீக்க விரும்புகிறீர்களா?';
+
+  @override
+  String get customExamSelectModeTitle => 'பயன்முறையைத் தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get customExamSelectModeDesc =>
+      'இந்தத் தேர்வை எவ்வாறு எழுத விரும்புகிறீர்கள் என்பதைத் தேர்ந்தெடுக்கவும்.';
+
+  @override
+  String get customExamPracticeQuizTitle => 'பயிற்சி வினாடிவினா';
+
+  @override
+  String get customExamPracticeQuizDesc => 'பதில்கள் உடனடியாகக் காட்டப்படும்';
+
+  @override
+  String get customExamRegularTitle => 'வழக்கமான தேர்வு';
+
+  @override
+  String get customExamRegularDesc => 'நேரக் கட்டுப்பாடு · முடிவுகள் கடைசியில்';
+
+  @override
+  String get customExamGenerating => 'உருவாக்கப்படுகிறது...';
+
+  @override
+  String get customExamStart => 'தேர்வைத் தொடங்குக';
+
+  @override
+  String get customExamConfigureSubjects => 'பாடங்களை அமைக்கவும்';
+
+  @override
+  String get customExamQuestionsLabel => 'கேள்விகள்';
+
+  @override
+  String get customExamQuestionTypes => 'கேள்வி வகைகள்';
+
+  @override
+  String get customExamAllSubjects => 'அனைத்து பாடங்களும்';
+
+  @override
+  String customExamAllOfSubject(String subject) {
+    return 'முழுமையான $subject';
+  }
+
+  @override
+  String get customExamEmptyStateTitle =>
+      'இதுவரை எந்த கேள்விகளும் சேர்க்கப்படவில்லை';
+
+  @override
+  String get customExamEmptyStateDesc =>
+      'பாடங்கள், கடினத்தன்மை நிலைகள் மற்றும் கேள்வி வகைகளை ஒருங்கிணைத்து உங்கள் தேர்வை உருவாக்குங்கள்.';
+
+  @override
+  String get customExamAddQuestionnaire => 'கேள்விகளைச் சேர்';
+
+  @override
+  String get customExamAddMoreQuestionnaires => 'மேலும் கேள்விகளைச் சேர்';
 }

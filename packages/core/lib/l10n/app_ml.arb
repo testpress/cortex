@@ -1097,5 +1097,32 @@
   "dialogCloseDoubtTitle": "സംശയം അടയ്ക്കുക",
   "dialogCloseDoubtContent": "ഈ സംശയം ക്ലോസ് ചെയ്യണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?",
   "dialogDeleteFolderTitle": "ഫോൾഡർ ഡിലീറ്റ് ചെയ്യുക",
-  "dialogDeleteFolderContent": "ഈ ഫോൾഡർ ഡിലീറ്റ് ചെയ്യണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?"
+  "dialogDeleteFolderContent": "ഈ ഫോൾഡർ ഡിലീറ്റ് ചെയ്യണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?",
+  "customExamSelectModeTitle": "മോഡ് തിരഞ്ഞെടുക്കുക",
+  "customExamSelectModeDesc": "ഈ പരീക്ഷ നിങ്ങൾ എങ്ങനെ എഴുതാൻ ആഗ്രഹിക്കുന്നു എന്ന് തിരഞ്ഞെടുക്കുക.",
+  "customExamPracticeQuizTitle": "പ്രാക്ടീസ് ക്വിസ്",
+  "customExamPracticeQuizDesc": "ഉത്തരങ്ങൾ ഉടൻ കാണാം",
+  "customExamRegularTitle": "റെഗുലർ പരീക്ഷ",
+  "customExamRegularDesc": "സമയബന്ധിതം · ഫലങ്ങൾ അവസാനം",
+  "customExamGenerating": "ഉണ്ടാക്കുന്നു...",
+  "customExamStart": "പരീക്ഷ തുടങ്ങുക",
+  "customExamConfigureSubjects": "വിഷയങ്ങൾ ക്രമീകരിക്കുക",
+  "customExamNumberOfQuestions": "ചോദ്യങ്ങളുടെ എണ്ണം",
+  "customExamQuestionsLabel": "ചോദ്യങ്ങൾ",
+  "customExamDifficultyLevel": "കാഠിന്യ നില",
+  "customExamQuestionTypes": "ചോദ്യ തരങ്ങൾ",
+  "customExamAllSubjects": "എല്ലാ വിഷയങ്ങളും",
+  "customExamAllOfSubject": "{subject} പൂർണ്ണമായും",
+  "@customExamAllOfSubject": {
+    "placeholders": {
+      "subject": {
+        "type": "String"
+      }
+    }
+  },
+  "customExamTitle": "കസ്റ്റം പരീക്ഷ",
+  "customExamEmptyStateTitle": "ചോദ്യങ്ങൾ ഒന്നും ചേർത്തിട്ടില്ല",
+  "customExamEmptyStateDesc": "വിഷയങ്ങളും കാഠിന്യ നിലകളും ചോദ്യ തരങ്ങളും കൂട്ടിച്ചേർത്ത് നിങ്ങളുടെ പരീക്ഷ നിർമ്മിക്കുക.",
+  "customExamAddQuestionnaire": "ചോദ്യങ്ങൾ ചേർക്കുക",
+  "customExamAddMoreQuestionnaires": "കൂടുതൽ ചോദ്യങ്ങൾ ചേർക്കുക"
 }
