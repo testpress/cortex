@@ -22,11 +22,19 @@ The system SHALL retrieve the custom exam configuration parameters for a specifi
 - **THEN** system fetches the configuration from `/api/v3/courses/<course_id>/custom-test-config/` and proceeds to the configuration screen
 
 ### Requirement: Custom Exam Parameter Selection
-The system SHALL allow the user to select filters such as subjects, difficulty levels, and question types based on the retrieved course configuration.
+The system SHALL allow the user to build a custom exam by adding one or more subject blocks, configuring the number of questions, difficulty levels, and question types for each block based on the retrieved course configuration.
 
-#### Scenario: User configures exam parameters
-- **WHEN** user is on the configuration screen
-- **THEN** system displays dropdowns or selection chips for available subjects, difficulties, and question types
+#### Scenario: User configures a single subject block
+- **WHEN** user selects a subject (root or nested) and configures its parameters
+- **THEN** system saves this configuration as a discrete block in the exam payload
+
+#### Scenario: User configures multiple subject blocks
+- **WHEN** user repeats the subject selection process
+- **THEN** system appends the new configuration to the list of blocks
+
+#### Scenario: User leaves parameters unselected
+- **WHEN** user leaves difficulty or question types blank for a block
+- **THEN** system interprets this as no restriction and sends empty arrays `[]` in the block payload
 
 ### Requirement: Question Count Restriction
 The system SHALL restrict the user from requesting more questions than the `max_questions_per_test` defined in the configuration.
@@ -47,9 +55,13 @@ The system SHALL display the remaining daily and monthly attempts and prevent ge
 - **THEN** system allows them to configure and press the Generate button
 
 ### Requirement: Custom Exam Generation
-The system SHALL submit the user's selected configuration to generate the custom exam and handle the backend response appropriately.
+The system SHALL submit the user's configured blocks as an array of `questionnaires` to generate the custom exam and handle the backend response appropriately.
 
 #### Scenario: User submits generation request
-- **WHEN** user presses the Generate button with valid selections
-- **THEN** system sends the configuration payload to the backend and navigates to the resulting exam state based on the response
+- **WHEN** user presses the Start button with at least one configured block
+- **THEN** system sends the `questionnaires` array payload to the backend and navigates to the resulting exam state based on the response
+
+#### Scenario: Rate limit exceeded
+- **WHEN** the backend returns a 403 Forbidden due to daily or monthly limits
+- **THEN** system SHALL catch the error and display the detailed error message to the user
 
