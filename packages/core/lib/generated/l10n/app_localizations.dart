@@ -5225,11 +5225,23 @@ abstract class AppLocalizations {
   /// **'Start Exam'**
   String get customExamStart;
 
-  /// No description provided for @customExamConfigureSubjects.
+  /// No description provided for @customExamNext.
   ///
   /// In en, this message translates to:
-  /// **'Configure Subjects'**
-  String get customExamConfigureSubjects;
+  /// **'Next'**
+  String get customExamNext;
+
+  /// No description provided for @customExamAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get customExamAll;
+
+  /// No description provided for @customExamErrorLoadingConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading config'**
+  String get customExamErrorLoadingConfig;
 
   /// No description provided for @customExamQuestionsLabel.
   ///

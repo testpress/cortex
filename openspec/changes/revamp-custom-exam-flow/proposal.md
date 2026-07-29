@@ -8,6 +8,7 @@ The current custom exam flow needs a revamp to support a more granular and modul
 - Display configured subject blocks as summary cards on the Builder screen, allowing the user to add more or remove existing blocks without navigating away.
 - **BREAKING:** Update the POST `/api/v3/courses/{course_id}/custom-test/` payload to use the new `questionnaires` array format.
 - Add robust error handling for API limits (daily/monthly) by catching and displaying HTTP 403 error messages.
+- Conditionally hide the custom exam Floating Action Button (FAB) on the Exams tab if the AI tab feature flag is enabled, to prevent UI conflicts.
 
 ## Capabilities
 

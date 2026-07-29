@@ -2937,7 +2937,13 @@ class AppLocalizationsTa extends AppLocalizations {
   String get customExamStart => 'தேர்வைத் தொடங்குக';
 
   @override
-  String get customExamConfigureSubjects => 'பாடங்களை அமைக்கவும்';
+  String get customExamNext => 'அடுத்து';
+
+  @override
+  String get customExamAll => 'அனைத்தும்';
+
+  @override
+  String get customExamErrorLoadingConfig => 'உள்ளமைவை ஏற்றுவதில் பிழை';
 
   @override
   String get customExamQuestionsLabel => 'கேள்விகள்';

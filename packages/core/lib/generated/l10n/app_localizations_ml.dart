@@ -2944,7 +2944,14 @@ class AppLocalizationsMl extends AppLocalizations {
   String get customExamStart => 'പരീക്ഷ തുടങ്ങുക';
 
   @override
-  String get customExamConfigureSubjects => 'വിഷയങ്ങൾ ക്രമീകരിക്കുക';
+  String get customExamNext => 'അടുത്തത്';
+
+  @override
+  String get customExamAll => 'എല്ലാം';
+
+  @override
+  String get customExamErrorLoadingConfig =>
+      'കോൺഫിഗറേഷൻ ലോഡ് ചെയ്യുന്നതിൽ പിശക്';
 
   @override
   String get customExamQuestionsLabel => 'ചോദ്യങ്ങൾ';

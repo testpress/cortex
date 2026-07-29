@@ -2893,7 +2893,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get customExamStart => 'ابدأ الامتحان';
 
   @override
-  String get customExamConfigureSubjects => 'تكوين المواد';
+  String get customExamNext => 'التالي';
+
+  @override
+  String get customExamAll => 'الكل';
+
+  @override
+  String get customExamErrorLoadingConfig => 'حدث خطأ أثناء تحميل التكوين';
 
   @override
   String get customExamQuestionsLabel => 'أسئلة';

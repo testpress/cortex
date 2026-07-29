@@ -89,7 +89,7 @@ class _CustomExamSubjectBottomSheetState
                   height: 200,
                   child: Center(
                     child: AppText.body(
-                      'Error loading config',
+                      l10n.customExamErrorLoadingConfig,
                       color: design.colors.error,
                     ),
                   ),

@@ -167,24 +167,12 @@ class _CustomExamBuilderScreenState
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            AppSemantics.button(
-              label: 'Go back',
+            AppIconButton(
+              accessibilityLabel: 'Go back',
               onTap: () => context.pop(),
-              child: GestureDetector(
-                onTap: () => context.pop(),
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    top: design.spacing.xs,
-                    bottom: design.spacing.xs,
-                    right: design.spacing.xs,
-                  ),
-                  child: Icon(
-                    LucideIcons.arrowLeft,
-                    color: design.colors.textPrimary,
-                    size: design.iconSize.lg,
-                  ),
-                ),
-              ),
+              icon: LucideIcons.arrowLeft,
+              color: design.colors.textPrimary,
+              size: design.iconSize.lg,
             ),
             Expanded(
               child: AppSemantics.header(
@@ -209,6 +197,8 @@ class _CustomExamBuilderScreenState
     EdgeInsets padding,
     CustomExamBuilderState builderState,
   ) {
+    final l10n = L10n.of(context);
+
     return DecoratedBox(
       decoration: BoxDecoration(
         color: design.colors.card,
@@ -225,13 +215,13 @@ class _CustomExamBuilderScreenState
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             AppSemantics.button(
-              label: 'Next',
+              label: l10n.customExamNext,
               enabled: builderState.blocks.isNotEmpty,
               onTap: builderState.blocks.isEmpty
                   ? () {}
                   : () => setState(() => _isModeBottomSheetOpen = true),
               child: AppButton.primary(
-                label: 'Next',
+                label: l10n.customExamNext,
                 onPressed: builderState.blocks.isEmpty
                     ? null
                     : () => setState(() => _isModeBottomSheetOpen = true),
@@ -338,10 +328,10 @@ class _CustomExamBuilderScreenState
   ) {
     final l10n = L10n.of(context);
     final diffText = block.difficultyLabels.isEmpty
-        ? 'All'
+        ? l10n.customExamAll
         : block.difficultyLabels.join(' · ');
     final typesText = block.questionTypeLabels.isEmpty
-        ? 'All'
+        ? l10n.customExamAll
         : block.questionTypeLabels.join(' · ');
 
     return Container(
@@ -365,21 +355,14 @@ class _CustomExamBuilderScreenState
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
               ),
-              AppSemantics.button(
-                label: 'Remove ${block.subjectName}',
+              AppIconButton(
+                accessibilityLabel: 'Remove ${block.subjectName}',
                 onTap: () => ref
                     .read(customExamBuilderProvider(widget.courseId).notifier)
                     .removeBlock(index),
-                child: GestureDetector(
-                  onTap: () => ref
-                      .read(customExamBuilderProvider(widget.courseId).notifier)
-                      .removeBlock(index),
-                  child: Icon(
-                    LucideIcons.trash2,
-                    size: design.iconSize.md,
-                    color: design.colors.error,
-                  ),
-                ),
+                icon: LucideIcons.trash2,
+                size: design.iconSize.md,
+                color: design.colors.error,
               ),
             ],
           ),

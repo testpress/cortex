@@ -2892,7 +2892,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customExamStart => 'Start Exam';
 
   @override
-  String get customExamConfigureSubjects => 'Configure Subjects';
+  String get customExamNext => 'Next';
+
+  @override
+  String get customExamAll => 'All';
+
+  @override
+  String get customExamErrorLoadingConfig => 'Error loading config';
 
   @override
   String get customExamQuestionsLabel => 'Questions';

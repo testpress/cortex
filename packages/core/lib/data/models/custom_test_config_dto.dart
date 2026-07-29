@@ -145,9 +145,9 @@ class CustomTestConfigDto {
   Map<String, dynamic> toJson() {
     return {
       'subjects': subjects.map((e) => e.toJson()).toList(),
-      'difficulty_levels': difficultyLevels,
-      'question_types': questionTypes,
-      'test_modes': testModes,
+      'difficulty_levels': difficultyLevels.map((e) => e.toJson()).toList(),
+      'question_types': questionTypes.map((e) => e.toJson()).toList(),
+      'test_modes': testModes.map((e) => e.toJson()).toList(),
       'limits': limits.toJson(),
     };
   }
