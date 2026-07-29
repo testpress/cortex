@@ -8,7 +8,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-
 import '../providers/downloads_provider.dart';
 import '../widgets/downloads_header.dart';
 import 'offline_video_player_screen.dart';
@@ -288,6 +287,15 @@ class _DownloadsList extends ConsumerWidget {
                 item: item,
                 onAction: () => onAction(item),
                 onDelete: () async {
+                  final l10n = L10n.of(context);
+                  final confirmed = await showConfirmationDialog(
+                    context,
+                    title: l10n.dialogDeleteDownloadTitle,
+                    content: l10n.dialogDeleteDownloadContent,
+                    confirmText: l10n.deleteAction,
+                  );
+                  if (!confirmed || !context.mounted) return;
+
                   try {
                     await ref.read(downloadsProvider.notifier).delete(item);
                   } catch (e, st) {

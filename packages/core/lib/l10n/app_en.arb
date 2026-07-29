@@ -1401,5 +1401,18 @@
   "errorAccessDeniedTitle": "Access Denied",
   "errorNotFoundTitle": "Not Found",
   "errorServerTitle": "Server Error",
-  "errorRateLimitedTitle": "Too Many Requests"
+  "errorRateLimitedTitle": "Too Many Requests",
+  "labelConfirm": "Confirm",
+  "labelRemove": "Remove",
+  "labelClose": "Close",
+  "dialogDeleteVideoTitle": "Delete Video",
+  "dialogDeleteVideoContent": "Are you sure you want to delete this downloaded video?",
+  "dialogDeleteDownloadTitle": "Delete Download",
+  "dialogDeleteDownloadContent": "Are you sure you want to delete this downloaded item?",
+  "dialogRemoveBookmarkTitle": "Remove Bookmark",
+  "dialogRemoveBookmarkContent": "Are you sure you want to remove this bookmark?",
+  "dialogCloseDoubtTitle": "Close Doubt",
+  "dialogCloseDoubtContent": "Are you sure you want to close this doubt?",
+  "dialogDeleteFolderTitle": "Delete Folder",
+  "dialogDeleteFolderContent": "Are you sure you want to delete this folder?"
 }

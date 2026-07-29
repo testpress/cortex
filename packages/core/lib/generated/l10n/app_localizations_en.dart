@@ -2821,4 +2821,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorRateLimitedTitle => 'Too Many Requests';
+
+  @override
+  String get labelConfirm => 'Confirm';
+
+  @override
+  String get labelRemove => 'Remove';
+
+  @override
+  String get labelClose => 'Close';
+
+  @override
+  String get dialogDeleteVideoTitle => 'Delete Video';
+
+  @override
+  String get dialogDeleteVideoContent =>
+      'Are you sure you want to delete this downloaded video?';
+
+  @override
+  String get dialogDeleteDownloadTitle => 'Delete Download';
+
+  @override
+  String get dialogDeleteDownloadContent =>
+      'Are you sure you want to delete this downloaded item?';
+
+  @override
+  String get dialogRemoveBookmarkTitle => 'Remove Bookmark';
+
+  @override
+  String get dialogRemoveBookmarkContent =>
+      'Are you sure you want to remove this bookmark?';
+
+  @override
+  String get dialogCloseDoubtTitle => 'Close Doubt';
+
+  @override
+  String get dialogCloseDoubtContent =>
+      'Are you sure you want to close this doubt?';
+
+  @override
+  String get dialogDeleteFolderTitle => 'Delete Folder';
+
+  @override
+  String get dialogDeleteFolderContent =>
+      'Are you sure you want to delete this folder?';
 }

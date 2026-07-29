@@ -42,6 +42,14 @@ class _ForumPostDetailScreenState extends ConsumerState<ForumPostDetailScreen> {
     if (bookmarkId == null) return;
 
     final l10n = L10n.of(context);
+    final confirmed = await showConfirmationDialog(
+      context,
+      title: l10n.dialogRemoveBookmarkTitle,
+      content: l10n.dialogRemoveBookmarkContent,
+      confirmText: l10n.labelRemove,
+    );
+    if (!confirmed || !mounted) return;
+
     AppToast.show(context, message: l10n.bookmarkRemoved);
 
     final sentry = ref.read(sentryServiceProvider);
@@ -742,6 +750,7 @@ class _StickyReplyInputState extends ConsumerState<_StickyReplyInput> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -771,7 +780,7 @@ class _StickyReplyInputState extends ConsumerState<_StickyReplyInput> {
             onToggleToolbar: _toggleToolbar,
             onSend: _handleSend,
             isLoading: ref.watch(postForumCommentProvider).isLoading,
-            l10n: AppLocalizations.of(context)!,
+            l10n: l10n,
           ),
         ],
       ),

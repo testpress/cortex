@@ -165,7 +165,15 @@ class _ReviewAnswerDetailScreenState
     final bookmarkId = question.bookmarkId;
     if (bookmarkId == null) return;
 
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = L10n.of(context);
+    final confirmed = await showConfirmationDialog(
+      context,
+      title: l10n.dialogRemoveBookmarkTitle,
+      content: l10n.dialogRemoveBookmarkContent,
+      confirmText: l10n.labelRemove,
+    );
+    if (!confirmed || !mounted) return;
+
     AppToast.show(context, message: l10n.bookmarkRemoved);
 
     try {
@@ -199,7 +207,7 @@ class _ReviewAnswerDetailScreenState
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = L10n.of(context);
 
     if (_isLoading) {
       return Container(

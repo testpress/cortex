@@ -1318,5 +1318,18 @@
   "errorAccessDeniedTitle": "அணுகல் மறுக்கப்பட்டது",
   "errorNotFoundTitle": "கிடைக்கவில்லை",
   "errorServerTitle": "சேவையக பிழை",
-  "errorRateLimitedTitle": "மிக அதிக கோரிக்கைகள்"
+  "errorRateLimitedTitle": "மிக அதிக கோரிக்கைகள்",
+  "labelConfirm": "உறுதி செய்",
+  "labelRemove": "அகற்று",
+  "labelClose": "மூடு",
+  "dialogDeleteVideoTitle": "வீடியோவை நீக்கு",
+  "dialogDeleteVideoContent": "பதிவிறக்கப்பட்ட இந்த வீடியோவை நிச்சயமாக நீக்க விரும்புகிறீர்களா?",
+  "dialogDeleteDownloadTitle": "பதிவிறக்கத்தை நீக்கு",
+  "dialogDeleteDownloadContent": "பதிவிறக்கப்பட்ட இந்த உருப்படியை நிச்சயமாக நீக்க விரும்புகிறீர்களா?",
+  "dialogRemoveBookmarkTitle": "புத்தகக்குறியை அகற்று",
+  "dialogRemoveBookmarkContent": "இந்த புத்தகக்குறியை நிச்சயமாக அகற்ற விரும்புகிறீர்களா?",
+  "dialogCloseDoubtTitle": "சந்தேகத்தை மூடு",
+  "dialogCloseDoubtContent": "இந்த சந்தேகத்தை நிச்சயமாக மூட விரும்புகிறீர்களா?",
+  "dialogDeleteFolderTitle": "கோப்புறையை நீக்கு",
+  "dialogDeleteFolderContent": "இந்த கோப்புறையை நிச்சயமாக நீக்க விரும்புகிறீர்களா?"
 }

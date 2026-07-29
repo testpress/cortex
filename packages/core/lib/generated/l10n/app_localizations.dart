@@ -5098,6 +5098,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Too Many Requests'**
   String get errorRateLimitedTitle;
+
+  /// No description provided for @labelConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get labelConfirm;
+
+  /// No description provided for @labelRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get labelRemove;
+
+  /// No description provided for @labelClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get labelClose;
+
+  /// No description provided for @dialogDeleteVideoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Video'**
+  String get dialogDeleteVideoTitle;
+
+  /// No description provided for @dialogDeleteVideoContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this downloaded video?'**
+  String get dialogDeleteVideoContent;
+
+  /// No description provided for @dialogDeleteDownloadTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Download'**
+  String get dialogDeleteDownloadTitle;
+
+  /// No description provided for @dialogDeleteDownloadContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this downloaded item?'**
+  String get dialogDeleteDownloadContent;
+
+  /// No description provided for @dialogRemoveBookmarkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Bookmark'**
+  String get dialogRemoveBookmarkTitle;
+
+  /// No description provided for @dialogRemoveBookmarkContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to remove this bookmark?'**
+  String get dialogRemoveBookmarkContent;
+
+  /// No description provided for @dialogCloseDoubtTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Close Doubt'**
+  String get dialogCloseDoubtTitle;
+
+  /// No description provided for @dialogCloseDoubtContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to close this doubt?'**
+  String get dialogCloseDoubtContent;
+
+  /// No description provided for @dialogDeleteFolderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Folder'**
+  String get dialogDeleteFolderTitle;
+
+  /// No description provided for @dialogDeleteFolderContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this folder?'**
+  String get dialogDeleteFolderContent;
 }
 
 class _AppLocalizationsDelegate
