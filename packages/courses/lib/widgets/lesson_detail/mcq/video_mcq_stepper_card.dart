@@ -30,121 +30,37 @@ class VideoMcqStepperCard extends StatelessWidget {
     this.onSeek,
   });
 
-  int? _parseTimestampToSeconds(String timestampStr) {
-    final parts = timestampStr
-        .split(':')
-        .map((e) => int.tryParse(e.trim()) ?? 0)
-        .toList();
-    if (parts.length == 2) {
-      return parts[0] * 60 + parts[1];
-    } else if (parts.length == 3) {
-      return parts[0] * 3600 + parts[1] * 60 + parts[2];
-    }
-    return null;
-  }
-
   Widget _buildTextWithTimestamps(
     BuildContext context,
     String text,
     DesignConfig design, {
     Color? textColor,
   }) {
-    final regExp = RegExp(r'(\d{1,2}:\d{2}(?::\d{2})?)');
-    final matches = regExp.allMatches(text);
-    final color = textColor ?? design.colors.textPrimary;
-
-    if (matches.isEmpty) {
-      return AppText.body(
-        text,
-        color: color,
-      );
-    }
-
-    final spans = <InlineSpan>[];
-    int lastMatchEnd = 0;
-
-    for (final match in matches) {
-      if (match.start > lastMatchEnd) {
-        final precedingText = text.substring(lastMatchEnd, match.start);
-        spans.add(
-          TextSpan(
-            text: precedingText,
-            style: TextStyle(
-              color: color,
-              fontSize: 15,
-              height: 1.4,
-            ),
-          ),
-        );
-      }
-
-      final timeStr = match.group(0)!;
-      final seconds = _parseTimestampToSeconds(timeStr);
-
-      spans.add(
-        WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: AppSemantics.button(
-            label: 'Play video at $timeStr',
-            child: AppFocusable(
-              onTap: seconds != null && onSeek != null
-                  ? () => onSeek!(Duration(seconds: seconds))
-                  : null,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(
-                  minWidth: 48,
-                  minHeight: 48,
-                ),
-                child: Center(
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 2),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: design.colors.accent2.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(design.radius.sm),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          LucideIcons.play,
-                          color: design.colors.accent2,
-                          size: 11,
-                        ),
-                        const SizedBox(width: 3),
-                        AppText.labelBold(
-                          timeStr,
-                          color: design.colors.accent2,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-
-      lastMatchEnd = match.end;
-    }
-
-    if (lastMatchEnd < text.length) {
-      spans.add(
-        TextSpan(
-          text: text.substring(lastMatchEnd),
-          style: TextStyle(
-            color: color,
-            fontSize: 15,
-            height: 1.4,
-          ),
-        ),
-      );
-    }
-
-    return Text.rich(
-      TextSpan(children: spans),
+    // Convert bare timestamps like "4:23" to markdown links "[4:23](timestamp:4:23)"
+    // so AppMarkdown renders them as tappable blue links — consistent with ai_tab.dart.
+    final converted = text.replaceAllMapped(
+      RegExp(r'(\d{1,2}:\d{2}(?::\d{2})?)'),
+      (m) => '[${m.group(1)}](timestamp:${m.group(1)})',
+    );
+    return AppMarkdown(
+      data: converted,
+      onTapLink: (url) {
+        if (url.startsWith('timestamp:')) {
+          final timeStr = url.substring('timestamp:'.length);
+          final parts = timeStr
+              .split(':')
+              .map((e) => int.tryParse(e.trim()) ?? 0)
+              .toList();
+          final seconds = parts.length == 2
+              ? parts[0] * 60 + parts[1]
+              : parts.length == 3
+                  ? parts[0] * 3600 + parts[1] * 60 + parts[2]
+                  : null;
+          if (seconds != null) {
+            onSeek?.call(Duration(seconds: seconds));
+          }
+        }
+      },
     );
   }
 
