@@ -49,7 +49,7 @@ final learnLensRepositoryProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef LearnLensRepositoryRef = AutoDisposeProviderRef<LearnLensRepository>;
-String _$learnlensSessionHash() => r'02dd6e9eb1ad4d0de37778f48ed43693dac845a2';
+String _$learnlensSessionHash() => r'87b48bec25c73cecfaee219958172cbcf2bc9646';
 
 /// Copied from Dart SDK
 class _SystemHash {

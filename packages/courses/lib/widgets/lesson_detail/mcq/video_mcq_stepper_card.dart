@@ -90,27 +90,36 @@ class VideoMcqStepperCard extends StatelessWidget {
               onTap: seconds != null && onSeek != null
                   ? () => onSeek!(Duration(seconds: seconds))
                   : null,
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 2),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: design.colors.accent2.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(design.radius.sm),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  minWidth: 48,
+                  minHeight: 48,
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      LucideIcons.play,
-                      color: design.colors.accent2,
-                      size: 11,
+                child: Center(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 2),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: design.colors.accent2.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(design.radius.sm),
                     ),
-                    const SizedBox(width: 3),
-                    AppText.labelBold(
-                      timeStr,
-                      color: design.colors.accent2,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          LucideIcons.play,
+                          color: design.colors.accent2,
+                          size: 11,
+                        ),
+                        const SizedBox(width: 3),
+                        AppText.labelBold(
+                          timeStr,
+                          color: design.colors.accent2,
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -247,31 +256,34 @@ class VideoMcqStepperCard extends StatelessWidget {
                     : L10n.of(context).videoMcqSeeHint,
                 child: AppFocusable(
                   onTap: onToggleHint,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: design.spacing.xs,
-                      vertical: design.spacing.xs,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      minWidth: 48,
+                      minHeight: 48,
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          LucideIcons.lightbulb,
-                          color: showHint
-                              ? design.colors.accent2
-                              : design.colors.textSecondary,
-                          size: 16,
-                        ),
-                        SizedBox(width: design.spacing.xs),
-                        AppText.labelBold(
-                          showHint
-                              ? L10n.of(context).videoMcqHideHint
-                              : L10n.of(context).videoMcqSeeHint,
-                          color: showHint
-                              ? design.colors.accent2
-                              : design.colors.textSecondary,
-                        ),
-                      ],
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            LucideIcons.lightbulb,
+                            color: showHint
+                                ? design.colors.accent2
+                                : design.colors.textSecondary,
+                            size: 16,
+                          ),
+                          SizedBox(width: design.spacing.xs),
+                          AppText.labelBold(
+                            showHint
+                                ? L10n.of(context).videoMcqHideHint
+                                : L10n.of(context).videoMcqSeeHint,
+                            color: showHint
+                                ? design.colors.accent2
+                                : design.colors.textSecondary,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
