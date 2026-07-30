@@ -318,6 +318,7 @@
   "videoAiThinking": "ചിന്തിക്കുന്നു",
   "videoAiError": "ക്ഷമിക്കണം, ഒരു തകരാർ സംഭവിച്ചു. ദയവായി വീണ്ടും ശ്രമിക്കുക.",
   "videoAiSessionError": "AI സെഷൻ ആരംഭിക്കാൻ കഴിഞ്ഞില്ല. വീണ്ടും ശ്രമിക്കുക.",
+  "videoMcqSessionError": "ക്വിസ് നിർമ്മിക്കാൻ AI സെഷൻ ആരംഭിക്കാൻ കഴിഞ്ഞില്ല. വീണ്ടും ശ്രമിക്കുക.",
   "videoMcqPracticeQuizTitle": "AI പരിശീലന ക്വിസ്",
   "videoMcqPracticeQuizSubtitle": "ഈ വീഡിയോ പാഠത്തെ അടിസ്ഥാനമാക്കി മൾട്ടിപ്പിൾ ചോയ്സ് ചോദ്യങ്ങൾ നിർമ്മിക്കുക.",
   "videoMcqGenerateButton": "ചോദ്യങ്ങൾ നിർമ്മിക്കുക",

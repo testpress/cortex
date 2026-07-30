@@ -989,6 +989,10 @@ class AppLocalizationsMl extends AppLocalizations {
       'AI സെഷൻ ആരംഭിക്കാൻ കഴിഞ്ഞില്ല. വീണ്ടും ശ്രമിക്കുക.';
 
   @override
+  String get videoMcqSessionError =>
+      'ക്വിസ് നിർമ്മിക്കാൻ AI സെഷൻ ആരംഭിക്കാൻ കഴിഞ്ഞില്ല. വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
   String get videoMcqPracticeQuizTitle => 'AI പരിശീലന ക്വിസ്';
 
   @override

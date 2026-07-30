@@ -476,6 +476,7 @@
   "videoAiThinking": "Thinking",
   "videoAiError": "Sorry, I encountered an error while processing your request. Please try again.",
   "videoAiSessionError": "Unable to start AI session. Please try again.",
+  "videoMcqSessionError": "Unable to start AI session for quiz generation. Please try again.",
   "videoMcqPracticeQuizTitle": "AI Practice Quiz",
   "videoMcqPracticeQuizSubtitle": "Generate multiple-choice questions tailored to this video lesson.",
   "videoMcqGenerateButton": "Generate MCQs",

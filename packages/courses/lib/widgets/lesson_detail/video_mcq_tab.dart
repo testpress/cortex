@@ -66,7 +66,7 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
     if (sessionToken.isEmpty) {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'Unable to start AI session for quiz generation.';
+        _errorMessage = L10n.of(context).videoMcqSessionError;
       });
       return;
     }

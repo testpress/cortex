@@ -318,6 +318,7 @@
   "videoAiThinking": "جاري التفكير...",
   "videoAiError": "عذرًا، حدث خطأ أثناء معالجة طلبك. يرجى المحاولة مرة أخرى.",
   "videoAiSessionError": "تعذر بدء جلسة الذكاء الاصطناعي. يرجى المحاولة مرة أخرى.",
+  "videoMcqSessionError": "تعذر بدء جلسة الذكاء الاصطناعي لإنشاء الاختبار. يرجى المحاولة مرة أخرى.",
   "videoMcqPracticeQuizTitle": "اختبار تدريبي بالذكاء الاصطناعي",
   "videoMcqPracticeQuizSubtitle": "أنشئ أسئلة من متعدد مخصصة لدرس الفيديو هذا.",
   "videoMcqGenerateButton": "إنشاء الأسئلة",

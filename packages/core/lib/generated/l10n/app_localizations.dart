@@ -1847,6 +1847,12 @@ abstract class AppLocalizations {
   /// **'Unable to start AI session. Please try again.'**
   String get videoAiSessionError;
 
+  /// No description provided for @videoMcqSessionError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to start AI session for quiz generation. Please try again.'**
+  String get videoMcqSessionError;
+
   /// No description provided for @videoMcqPracticeQuizTitle.
   ///
   /// In en, this message translates to:

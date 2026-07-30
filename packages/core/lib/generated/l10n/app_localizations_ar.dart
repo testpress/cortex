@@ -979,6 +979,10 @@ class AppLocalizationsAr extends AppLocalizations {
       'تعذر بدء جلسة الذكاء الاصطناعي. يرجى المحاولة مرة أخرى.';
 
   @override
+  String get videoMcqSessionError =>
+      'تعذر بدء جلسة الذكاء الاصطناعي لإنشاء الاختبار. يرجى المحاولة مرة أخرى.';
+
+  @override
   String get videoMcqPracticeQuizTitle => 'اختبار تدريبي بالذكاء الاصطناعي';
 
   @override

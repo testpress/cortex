@@ -980,6 +980,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Unable to start AI session. Please try again.';
 
   @override
+  String get videoMcqSessionError =>
+      'Unable to start AI session for quiz generation. Please try again.';
+
+  @override
   String get videoMcqPracticeQuizTitle => 'AI Practice Quiz';
 
   @override

@@ -350,10 +350,26 @@ class __ThreeDotWavingIndicatorState extends State<_ThreeDotWavingIndicator>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
-    )..repeat();
+    _controller = AnimationController(vsync: this);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final design = Design.of(context);
+    final duration = MotionPreferences.duration(
+      context,
+      design.motion.slow,
+    );
+    _controller.duration = duration;
+
+    if (MotionPreferences.shouldAnimate(context)) {
+      if (!_controller.isAnimating) {
+        _controller.repeat();
+      }
+    } else {
+      _controller.stop();
+    }
   }
 
   @override
@@ -364,6 +380,28 @@ class __ThreeDotWavingIndicatorState extends State<_ThreeDotWavingIndicator>
 
   @override
   Widget build(BuildContext context) {
+    final shouldAnimate = MotionPreferences.shouldAnimate(context);
+
+    // When reduced motion is on, render three static dots with no animation.
+    if (!shouldAnimate) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: List.generate(3, (_) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 1.5),
+            child: Container(
+              width: 3.5,
+              height: 3.5,
+              decoration: BoxDecoration(
+                color: widget.color,
+                shape: BoxShape.circle,
+              ),
+            ),
+          );
+        }),
+      );
+    }
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {

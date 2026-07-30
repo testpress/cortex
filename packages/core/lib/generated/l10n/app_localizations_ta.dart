@@ -993,6 +993,10 @@ class AppLocalizationsTa extends AppLocalizations {
       'AI அமர்வைத் தொடங்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
 
   @override
+  String get videoMcqSessionError =>
+      'வினாடி வினாவைத் தொடங்க AI அமர்வைப் பெற முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
+
+  @override
   String get videoMcqPracticeQuizTitle => 'AI பயிற்சி வினாடி வினா';
 
   @override
