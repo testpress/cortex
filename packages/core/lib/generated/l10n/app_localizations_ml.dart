@@ -905,7 +905,7 @@ class AppLocalizationsMl extends AppLocalizations {
   String get videoLessonTabAskDoubt => 'സംശയം ചോദിക്കുക';
 
   @override
-  String get videoLessonTabAiSupport => 'AI സഹായം';
+  String get videoLessonTabAiSupport => 'AI ചാറ്റ്';
 
   @override
   String get videoLessonLectureNotes => 'ലെക്ചർ കുറിപ്പുകൾ';
@@ -950,18 +950,85 @@ class AppLocalizationsMl extends AppLocalizations {
   String get videoLessonPending => 'കാത്തിരിക്കുന്നു';
 
   @override
-  String get videoLessonAiAssistant => 'AI പഠന സഹായി';
-
-  @override
-  String get videoLessonAiHelp => 'നിങ്ങളുടെ ചോദ്യങ്ങൾക്ക് തൽക്ഷണ സഹായം നേടുക';
-
-  @override
   String get videoLessonAiHint =>
       'ഈ ലെക്ചറിനെക്കുറിച്ച് AI-യോട് എന്തും ചോദിക്കുക...';
 
   @override
-  String get videoLessonAiDisclaimer =>
-      'AI ഉത്തരങ്ങൾ തൽക്ഷണം ജനറേറ്റ് ചെയ്യുന്നു, ലെക്ചർ ഉള്ളടക്കത്തെ അടിസ്ഥാനമാക്കിയുള്ളതാണ്';
+  String get videoLessonTabMcq => 'പരിശീലന ചോദ്യങ്ങൾ';
+
+  @override
+  String get videoMcqGenerating => 'AI ഉപയോഗിച്ച് ചോദ്യങ്ങൾ നിർമ്മിക്കുന്നു...';
+
+  @override
+  String get videoMcqRetry => 'വീണ്ടും ശ്രമിക്കുക';
+
+  @override
+  String get videoMcqNoQuestionsGenerated => 'ചോദ്യങ്ങൾ നിർമ്മിച്ചിട്ടില്ല';
+
+  @override
+  String get videoMcqNoQuestionsDesc =>
+      'ഈ വീഡിയോ പാഠത്തിനായി ചോദ്യങ്ങൾ ഇതുവരെ ലഭ്യമായിട്ടില്ല.';
+
+  @override
+  String get videoMcqFailedToLoad =>
+      'ചോദ്യങ്ങൾ ലഭ്യമാക്കാൻ കഴിഞ്ഞില്ല. വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get videoAiGreeting =>
+      'നമസ്കാരം! ഞാൻ നിങ്ങളുടെ AI പഠന സഹായിയാണ്. ഈ ലെക്ചറിനെക്കുറിച്ച് എന്തും ചോദിക്കാം!';
+
+  @override
+  String get videoAiThinking => 'ചിന്തിക്കുന്നു...';
+
+  @override
+  String get videoAiError =>
+      'ക്ഷമിക്കണം, ഒരു തകരാർ സംഭവിച്ചു. ദയവായി വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get videoAiSessionError =>
+      'AI സെഷൻ ആരംഭിക്കാൻ കഴിഞ്ഞില്ല. വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get videoMcqPracticeQuizTitle => 'AI പരിശീലന ക്വിസ്';
+
+  @override
+  String get videoMcqPracticeQuizSubtitle =>
+      'ഈ വീഡിയോ പാഠത്തെ അടിസ്ഥാനമാക്കി മൾട്ടിപ്പിൾ ചോയ്സ് ചോദ്യങ്ങൾ നിർമ്മിക്കുക.';
+
+  @override
+  String get videoMcqGenerateButton => 'ചോദ്യങ്ങൾ നിർമ്മിക്കുക';
+
+  @override
+  String get videoMcqSeeHint => 'സൂചന കാണുക';
+
+  @override
+  String get videoMcqHideHint => 'സൂചന മറയ്ക്കുക';
+
+  @override
+  String get videoMcqExplanation => 'വിശദീകരണം';
+
+  @override
+  String get videoMcqQuizCompleted => 'ക്വിസ് പൂർത്തിയായി!';
+
+  @override
+  String get videoMcqRetakeQuiz => 'വീണ്ടും ചെയ്യുക';
+
+  @override
+  String get videoMcqBack => 'മടങ്ങുക';
+
+  @override
+  String get videoMcqQuizOptions => 'ക്വിസ് ഓപ്ഷനുകൾ';
+
+  @override
+  String get videoMcqDifficultyLevel => 'കാഠിന്യ നിലവാരം';
+
+  @override
+  String get videoMcqApplyOptions => 'ഓപ്ഷനുകൾ ബാധകമാക്കുക';
+
+  @override
+  String videoMcqQuestionsCount(int count) {
+    return '$count ചോദ്യങ്ങൾ';
+  }
 
   @override
   String get testExit => 'ടെസ്റ്റ് പുറത്തുകടക്കുക';

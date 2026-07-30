@@ -424,6 +424,19 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
           as _i3.Future<List<_i2.ForumCategoryDto>>);
 
   @override
+  _i3.Future<Map<String, dynamic>> createAiSession(int? contentId) =>
+      (super.noSuchMethod(
+            Invocation.method(#createAiSession, [contentId]),
+            returnValue: _i3.Future<Map<String, dynamic>>.value(
+              <String, dynamic>{},
+            ),
+            returnValueForMissingStub: _i3.Future<Map<String, dynamic>>.value(
+              <String, dynamic>{},
+            ),
+          )
+          as _i3.Future<Map<String, dynamic>>);
+
+  @override
   _i3.Future<_i2.PaginatedResponseDto<_i2.ForumThreadDto>> getForumThreads({
     int? page = 1,
     int? categoryId,

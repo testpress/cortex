@@ -12,6 +12,7 @@ import '../widgets/lesson_detail/attachment_viewer.dart';
 import '../utils/pdf_cache_service.dart';
 import '../widgets/lesson_detail/ask_doubt_fab.dart';
 import '../widgets/lesson_detail/lesson_detail_skeleton.dart';
+import '../widgets/lesson_detail/video_mcq_filter_sheet.dart';
 import '../providers/downloads_provider.dart';
 
 /// Orchestrator that decides which viewer to show for a given lesson.
@@ -49,10 +50,14 @@ class _LessonDetailOrchestratorState
   bool _alreadyMarkedComplete = false;
   bool _isBookmarkSheetOpen = false;
   bool _isCreateFolderDialogOpen = false;
+  final ValueNotifier<bool> _isMcqFilterSheetOpen = ValueNotifier<bool>(false);
+  String _mcqDifficulty = 'medium';
+  int _mcqQuestionCount = 5;
 
   @override
   void dispose() {
     _readingProgress.dispose();
+    _isMcqFilterSheetOpen.dispose();
     super.dispose();
   }
 
@@ -183,6 +188,7 @@ class _LessonDetailOrchestratorState
           onPrevious: widget.onPrevious,
           stickyFooter: lesson.type != LessonType.video &&
               lesson.type != LessonType.liveStream,
+          resizeToAvoidBottomInset: false,
           child: _buildLessonContent(context),
         ),
         if (lesson.isComplete &&
@@ -229,6 +235,27 @@ class _LessonDetailOrchestratorState
             },
           ),
         ),
+        ValueListenableBuilder<bool>(
+          valueListenable: _isMcqFilterSheetOpen,
+          builder: (context, isOpen, _) {
+            return AppBottomSheet(
+              key: const ValueKey('mcq_filter_sheet'),
+              isOpen: isOpen,
+              onClose: () => _isMcqFilterSheetOpen.value = false,
+              child: VideoMcqFilterSheet(
+                difficulty: _mcqDifficulty,
+                questionCount: _mcqQuestionCount,
+                onApply: (difficulty, questionCount) {
+                  setState(() {
+                    _mcqDifficulty = difficulty;
+                    _mcqQuestionCount = questionCount;
+                  });
+                  _isMcqFilterSheetOpen.value = false;
+                },
+              ),
+            );
+          },
+        ),
         if (_isCreateFolderDialogOpen)
           CreateFolderDialog(
             lessonId: parsedLessonId,
@@ -268,6 +295,9 @@ class _LessonDetailOrchestratorState
             onNext: onNext,
             onPrevious: onPrevious,
           ),
+          onOpenMcqFilterSheet: () => _isMcqFilterSheetOpen.value = true,
+          mcqDifficulty: _mcqDifficulty,
+          mcqQuestionCount: _mcqQuestionCount,
         );
       case LessonType.pdf:
         if (lesson.contentUrl != null) {

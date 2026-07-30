@@ -36,6 +36,7 @@ export 'models/post_dto.dart';
 export 'models/quiz_review_result_dto.dart';
 export 'models/custom_test_config_dto.dart';
 export 'models/custom_exam_generation_dto.dart';
+export 'models/learnlens_dto.dart';
 
 // Database
 export 'db/tables/dashboard_tables.dart';

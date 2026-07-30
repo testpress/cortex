@@ -73,6 +73,9 @@ class LessonDto {
   final bool enableTranscript;
   final String? videoSubtitleUrl;
   final bool isAiEnabled;
+  final bool canEnableLearnlensAi;
+  final String? learnlensAssetId;
+  final String? learnlensAssetStatus;
   final String? aiNotesUrl;
   final String? lastWatchedDuration;
   final bool allowDownload;
@@ -145,6 +148,9 @@ class LessonDto {
     this.enableTranscript = false,
     this.videoSubtitleUrl,
     this.isAiEnabled = false,
+    this.canEnableLearnlensAi = false,
+    this.learnlensAssetId,
+    this.learnlensAssetStatus,
     this.aiNotesUrl,
     this.lastWatchedDuration,
     this.allowDownload = false,
@@ -198,6 +204,9 @@ class LessonDto {
     bool? enableTranscript,
     String? videoSubtitleUrl,
     bool? isAiEnabled,
+    bool? canEnableLearnlensAi,
+    String? learnlensAssetId,
+    String? learnlensAssetStatus,
     String? aiNotesUrl,
     String? lastWatchedDuration,
     bool? allowDownload,
@@ -250,6 +259,9 @@ class LessonDto {
       enableTranscript: enableTranscript ?? this.enableTranscript,
       videoSubtitleUrl: videoSubtitleUrl ?? this.videoSubtitleUrl,
       isAiEnabled: isAiEnabled ?? this.isAiEnabled,
+      canEnableLearnlensAi: canEnableLearnlensAi ?? this.canEnableLearnlensAi,
+      learnlensAssetId: learnlensAssetId ?? this.learnlensAssetId,
+      learnlensAssetStatus: learnlensAssetStatus ?? this.learnlensAssetStatus,
       aiNotesUrl: aiNotesUrl ?? this.aiNotesUrl,
       lastWatchedDuration: lastWatchedDuration ?? this.lastWatchedDuration,
       allowDownload: allowDownload ?? this.allowDownload,
@@ -320,6 +332,13 @@ class LessonDto {
           ? other.videoSubtitleUrl
           : videoSubtitleUrl,
       isAiEnabled: isAiEnabled || other.isAiEnabled,
+      canEnableLearnlensAi: canEnableLearnlensAi || other.canEnableLearnlensAi,
+      learnlensAssetId: (learnlensAssetId?.isEmpty ?? true)
+          ? other.learnlensAssetId
+          : learnlensAssetId,
+      learnlensAssetStatus: (learnlensAssetStatus?.isEmpty ?? true)
+          ? other.learnlensAssetStatus
+          : learnlensAssetStatus,
       aiNotesUrl: (aiNotesUrl?.isEmpty ?? true) ? other.aiNotesUrl : aiNotesUrl,
       lastWatchedDuration: (lastWatchedDuration?.isEmpty ?? true)
           ? other.lastWatchedDuration
@@ -700,10 +719,10 @@ class LessonDto {
         }
         return vs?.toString();
       }(),
-      isAiEnabled:
-          json['is_ai_enabled'] as bool? ??
-          json['isAiEnabled'] as bool? ??
-          false,
+      isAiEnabled: json['is_ai_enabled'] as bool? ?? false,
+      canEnableLearnlensAi: json['can_enable_learnlens_ai'] as bool? ?? false,
+      learnlensAssetId: json['learnlens_asset_id'] as String?,
+      learnlensAssetStatus: json['learnlens_asset_status'] as String?,
       aiNotesUrl:
           json['ai_notes_url']?.toString() ?? json['aiNotesUrl']?.toString(),
       attemptsUrl: getString('attempts_url') ?? getString('attemptsUrl'),
@@ -770,6 +789,9 @@ class LessonDto {
       'enableTranscript': enableTranscript,
       'videoSubtitleUrl': videoSubtitleUrl,
       'isAiEnabled': isAiEnabled,
+      'canEnableLearnlensAi': canEnableLearnlensAi,
+      'learnlensAssetId': learnlensAssetId,
+      'learnlensAssetStatus': learnlensAssetStatus,
       'aiNotesUrl': aiNotesUrl,
       'lastWatchedDuration': lastWatchedDuration,
       'attemptsUrl': attemptsUrl,

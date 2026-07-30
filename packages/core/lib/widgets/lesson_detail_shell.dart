@@ -31,6 +31,7 @@ class LessonDetailShell extends StatelessWidget {
     this.isCompleted = false,
     this.stickyFooter = true,
     this.backgroundColor,
+    this.resizeToAvoidBottomInset = false,
   });
 
   /// The main title of the lesson.
@@ -81,21 +82,31 @@ class LessonDetailShell extends StatelessWidget {
   /// Optional background color override (defaults to design.colors.surface).
   final Color? backgroundColor;
 
+  /// When true, the shell pads its content by the keyboard inset height,
+  /// so the composer/input is never hidden behind the keyboard.
+  /// Equivalent to Scaffold's resizeToAvoidBottomInset behaviour.
+  final bool resizeToAvoidBottomInset;
+
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final bottomInset = resizeToAvoidBottomInset
+        ? MediaQuery.of(context).viewInsets.bottom
+        : 0.0;
 
     return Container(
       color: backgroundColor ?? design.colors.surface,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(context, design),
-          if (progress != null) _buildProgressBar(design, progress!),
-
-          Expanded(child: child),
-          if (stickyFooter) _buildFooter(context),
-        ],
+      child: Padding(
+        padding: EdgeInsets.only(bottom: bottomInset),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(context, design),
+            if (progress != null) _buildProgressBar(design, progress!),
+            Expanded(child: child),
+            if (stickyFooter) _buildFooter(context),
+          ],
+        ),
       ),
     );
   }

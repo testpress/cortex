@@ -41,6 +41,9 @@ class Lesson {
     this.enableTranscript = false,
     this.videoSubtitleUrl,
     this.isAiEnabled = false,
+    this.canEnableLearnlensAi = false,
+    this.learnlensAssetId,
+    this.learnlensAssetStatus,
     this.aiNotesUrl,
     this.lastWatchedDuration,
     this.allowDownload = false,
@@ -94,6 +97,9 @@ class Lesson {
   final bool enableTranscript;
   final String? videoSubtitleUrl;
   final bool isAiEnabled;
+  final bool canEnableLearnlensAi;
+  final String? learnlensAssetId;
+  final String? learnlensAssetStatus;
   final String? aiNotesUrl;
   final String? lastWatchedDuration;
   final bool allowDownload;
@@ -158,6 +164,9 @@ class Lesson {
       enableTranscript: enableTranscript,
       videoSubtitleUrl: videoSubtitleUrl,
       isAiEnabled: isAiEnabled,
+      canEnableLearnlensAi: canEnableLearnlensAi,
+      learnlensAssetId: learnlensAssetId,
+      learnlensAssetStatus: learnlensAssetStatus,
       aiNotesUrl: aiNotesUrl,
       lastWatchedDuration: lastWatchedDuration,
       allowDownload: allowDownload,
@@ -191,4 +200,4 @@ class Chapter {
   final List<Lesson> lessons;
 }
 
-enum VideoLessonTab { notes, transcript, askDoubt, aiSupport }
+enum VideoLessonTab { notes, transcript, askDoubt, aiSupport, aiMcq }

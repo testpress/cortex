@@ -3,6 +3,7 @@ import 'package:core/core.dart';
 import '../../models/course_content.dart';
 import 'custom_video_player.dart';
 import 'video_tabs.dart';
+import 'video_mcq_tab.dart';
 
 /// A rich video viewer component that includes the player, title, and tabs.
 /// Designed to be used within [LessonDetailOrchestrator].
@@ -12,11 +13,17 @@ class VideoLessonViewer extends StatefulWidget {
     required this.lesson,
     this.onComplete,
     this.footerBuilder,
+    this.onOpenMcqFilterSheet,
+    this.mcqDifficulty = 'medium',
+    this.mcqQuestionCount = 10,
   });
 
   final Lesson lesson;
   final VoidCallback? onComplete;
   final WidgetBuilder? footerBuilder;
+  final VoidCallback? onOpenMcqFilterSheet;
+  final String mcqDifficulty;
+  final int mcqQuestionCount;
 
   @override
   State<VideoLessonViewer> createState() => _VideoLessonViewerState();
@@ -44,8 +51,14 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
     }
     // Doubt is always enabled
     tabs.add(VideoLessonTab.askDoubt);
-    if (lesson.isAiEnabled) {
+
+    final bool isAiAvailable = lesson.isAiEnabled &&
+        lesson.canEnableLearnlensAi &&
+        lesson.learnlensAssetStatus?.toLowerCase() == 'completed';
+
+    if (isAiAvailable) {
       tabs.add(VideoLessonTab.aiSupport);
+      tabs.add(VideoLessonTab.aiMcq);
     }
     return tabs;
   }
@@ -158,7 +171,21 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
           onResumeVideo: () => _videoPlayerKey.currentState?.restorePlayback(),
         );
       case VideoLessonTab.aiSupport:
-        return _buildTabContent(AITab(lesson: widget.lesson));
+        return AITab(
+          lesson: widget.lesson,
+          onSeek: _handleSeek,
+          footerBuilder: widget.footerBuilder,
+        );
+      case VideoLessonTab.aiMcq:
+        return _buildTabContent(
+          VideoMcqTab(
+            lesson: widget.lesson,
+            onSeek: _handleSeek,
+            onOpenFilterSheet: widget.onOpenMcqFilterSheet,
+            difficulty: widget.mcqDifficulty,
+            questionCount: widget.mcqQuestionCount,
+          ),
+        );
     }
   }
 
@@ -169,8 +196,22 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
       slivers: [
         isSliver ? child : SliverToBoxAdapter(child: child),
         if (widget.footerBuilder != null)
-          SliverToBoxAdapter(child: widget.footerBuilder!(context)),
-        SliverToBoxAdapter(child: SizedBox(height: design.spacing.sm)),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            fillOverscroll: false,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  widget.footerBuilder!(context),
+                  SizedBox(height: design.spacing.sm),
+                ],
+              ),
+            ),
+          )
+        else
+          SliverToBoxAdapter(child: SizedBox(height: design.spacing.sm)),
       ],
     );
   }
@@ -202,6 +243,8 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
         return Tab(text: L10n.of(context).videoLessonTabAskDoubt);
       case VideoLessonTab.aiSupport:
         return Tab(text: L10n.of(context).videoLessonTabAiSupport);
+      case VideoLessonTab.aiMcq:
+        return Tab(text: L10n.of(context).videoLessonTabMcq);
     }
   }
 

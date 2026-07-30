@@ -893,7 +893,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get videoLessonTabAskDoubt => 'اسأل سؤال';
 
   @override
-  String get videoLessonTabAiSupport => 'دعم AI';
+  String get videoLessonTabAiSupport => 'دردشة AI';
 
   @override
   String get videoLessonLectureNotes => 'ملاحظات المحاضرة';
@@ -939,18 +939,86 @@ class AppLocalizationsAr extends AppLocalizations {
   String get videoLessonPending => 'قيد الانتظار';
 
   @override
-  String get videoLessonAiAssistant => 'مساعد الدراسة بالذكاء الاصطناعي';
-
-  @override
-  String get videoLessonAiHelp => 'احصل على مساعدة فورية لأسئلتك';
-
-  @override
   String get videoLessonAiHint =>
       'اسأل الذكاء الاصطناعي أي شيء عن هذه المحاضرة...';
 
   @override
-  String get videoLessonAiDisclaimer =>
-      'يتم إنشاء ردود الذكاء الاصطناعي فوريًا بناءً على محتوى المحاضرة';
+  String get videoLessonTabMcq => 'أسئلة التدريب';
+
+  @override
+  String get videoMcqGenerating =>
+      'جاري إنشاء أسئلة التدريب باستخدام الذكاء الاصطناعي...';
+
+  @override
+  String get videoMcqRetry => 'إعادة المحاولة';
+
+  @override
+  String get videoMcqNoQuestionsGenerated => 'لم يتم إنشاء أي أسئلة';
+
+  @override
+  String get videoMcqNoQuestionsDesc =>
+      'لا توجد أسئلة تدريبية متاحة لدرس الفيديو هذا حتى الآن.';
+
+  @override
+  String get videoMcqFailedToLoad =>
+      'فشل في تحميل أسئلة الاختبار. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get videoAiGreeting =>
+      'مرحبًا! أنا مساعدك التعليمي بالذكاء الاصطناعي. لا تتردد في سؤالي عن أي شيء يخص هذه المحاضرة!';
+
+  @override
+  String get videoAiThinking => 'جاري التفكير...';
+
+  @override
+  String get videoAiError =>
+      'عذرًا، حدث خطأ أثناء معالجة طلبك. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get videoAiSessionError =>
+      'تعذر بدء جلسة الذكاء الاصطناعي. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get videoMcqPracticeQuizTitle => 'اختبار تدريبي بالذكاء الاصطناعي';
+
+  @override
+  String get videoMcqPracticeQuizSubtitle =>
+      'أنشئ أسئلة من متعدد مخصصة لدرس الفيديو هذا.';
+
+  @override
+  String get videoMcqGenerateButton => 'إنشاء الأسئلة';
+
+  @override
+  String get videoMcqSeeHint => 'إظهار التلميح';
+
+  @override
+  String get videoMcqHideHint => 'إخفاء التلميح';
+
+  @override
+  String get videoMcqExplanation => 'الشرح';
+
+  @override
+  String get videoMcqQuizCompleted => 'اكتمل الاختبار!';
+
+  @override
+  String get videoMcqRetakeQuiz => 'إعادة الاختبار';
+
+  @override
+  String get videoMcqBack => 'رجوع';
+
+  @override
+  String get videoMcqQuizOptions => 'خيارات الاختبار';
+
+  @override
+  String get videoMcqDifficultyLevel => 'مستوى الصعوبة';
+
+  @override
+  String get videoMcqApplyOptions => 'تطبيق الخيارات';
+
+  @override
+  String videoMcqQuestionsCount(int count) {
+    return '$count أسئلة';
+  }
 
   @override
   String get testExit => 'خروج من الاختبار';

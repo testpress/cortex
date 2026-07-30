@@ -62,6 +62,9 @@ abstract class DataSource {
   /// Fetch all forum categories (global, not course-scoped).
   Future<List<ForumCategoryDto>> getForumCategories();
 
+  /// Creates a new AI Session for the given content.
+  Future<Map<String, dynamic>> createAiSession(int contentId);
+
   /// Fetch paginated global forum threads, optionally filtered by category.
   Future<PaginatedResponseDto<ForumThreadDto>> getForumThreads({
     int page = 1,
