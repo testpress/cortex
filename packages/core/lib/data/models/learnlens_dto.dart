@@ -100,4 +100,24 @@ class LearnLensQuizQuestionDto {
       startSec: sec,
     );
   }
+
+  /// Checks whether the given [option] at [optionIndex] matches [correctAnswer].
+  bool isOptionCorrect(String option, int optionIndex) {
+    final cleanOpt = option.trim().toLowerCase();
+    final cleanAns = correctAnswer.trim().toLowerCase();
+    if (cleanOpt.isEmpty || cleanAns.isEmpty) return false;
+    if (cleanOpt == cleanAns) return true;
+
+    final letter = String.fromCharCode(65 + optionIndex).toLowerCase();
+    if (cleanAns == letter ||
+        cleanAns == 'option $letter' ||
+        cleanAns.startsWith('$letter)') ||
+        cleanAns.startsWith('$letter.')) {
+      return true;
+    }
+
+    if (cleanOpt.startsWith(cleanAns)) return true;
+
+    return false;
+  }
 }

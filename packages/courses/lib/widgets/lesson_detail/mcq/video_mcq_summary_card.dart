@@ -16,25 +16,6 @@ class VideoMcqSummaryCard extends StatelessWidget {
     required this.onBack,
   });
 
-  bool _isOptionCorrect(String option, String correctAnswer, int optionIndex) {
-    final cleanOpt = option.trim().toLowerCase();
-    final cleanAns = correctAnswer.trim().toLowerCase();
-    if (cleanOpt.isEmpty || cleanAns.isEmpty) return false;
-    if (cleanOpt == cleanAns) return true;
-
-    final letter = String.fromCharCode(65 + optionIndex).toLowerCase();
-    if (cleanAns == letter ||
-        cleanAns == 'option $letter' ||
-        cleanAns.startsWith('$letter)') ||
-        cleanAns.startsWith('$letter.')) {
-      return true;
-    }
-
-    if (cleanOpt.startsWith(cleanAns)) return true;
-
-    return false;
-  }
-
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
@@ -45,8 +26,7 @@ class VideoMcqSummaryCard extends StatelessWidget {
       if (ans != null) {
         final q = questions[i];
         final optIndex = q.options.indexOf(ans);
-        if (optIndex != -1 &&
-            _isOptionCorrect(ans, q.correctAnswer, optIndex)) {
+        if (optIndex != -1 && q.isOptionCorrect(ans, optIndex)) {
           correctCount++;
         }
       }

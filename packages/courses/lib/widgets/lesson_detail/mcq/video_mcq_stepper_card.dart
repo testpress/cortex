@@ -30,25 +30,6 @@ class VideoMcqStepperCard extends StatelessWidget {
     this.onSeek,
   });
 
-  bool _isOptionCorrect(String option, String correctAnswer, int optionIndex) {
-    final cleanOpt = option.trim().toLowerCase();
-    final cleanAns = correctAnswer.trim().toLowerCase();
-    if (cleanOpt.isEmpty || cleanAns.isEmpty) return false;
-    if (cleanOpt == cleanAns) return true;
-
-    final letter = String.fromCharCode(65 + optionIndex).toLowerCase();
-    if (cleanAns == letter ||
-        cleanAns == 'option $letter' ||
-        cleanAns.startsWith('$letter)') ||
-        cleanAns.startsWith('$letter.')) {
-      return true;
-    }
-
-    if (cleanOpt.startsWith(cleanAns)) return true;
-
-    return false;
-  }
-
   int? _parseTimestampToSeconds(String timestampStr) {
     final parts = timestampStr
         .split(':')
@@ -189,7 +170,7 @@ class VideoMcqStepperCard extends StatelessWidget {
               final option = entry.value;
               final isOptionSelected = selectedOption == option;
               final isOptionCorrect =
-                  _isOptionCorrect(option, question.correctAnswer, optionIndex);
+                  question.isOptionCorrect(option, optionIndex);
 
               Color optionBg = design.colors.surface;
               Color optionBorder = design.colors.divider;
