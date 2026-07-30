@@ -87,6 +87,7 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
       });
     } catch (e, stack) {
       debugPrint('Error loading quiz: $e\n$stack');
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       setState(() {
         _isLoading = false;
         _errorMessage = L10n.of(context).videoMcqFailedToLoad;

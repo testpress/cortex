@@ -40,6 +40,7 @@ class LearnlensSession extends _$LearnlensSession {
     } catch (e, stack) {
       debugPrint(
           'Error creating LearnLens session for contentId $contentId: $e\n$stack');
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       return null;
     }
   }

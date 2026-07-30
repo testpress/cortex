@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
-import 'package:core/data/config/app_config.dart';
+import 'package:core/data/data.dart';
 import '../../models/course_content.dart';
 import '../../providers/learnlens_provider.dart';
 
@@ -137,8 +137,9 @@ class _AITabState extends ConsumerState<AITab>
         _isSubmitting = false;
       });
       _scrollToBottom(design);
-    } catch (e) {
-      debugPrint('Error sending AI chat message: $e');
+    } catch (e, stack) {
+      debugPrint('Error sending AI chat message: $e\n$stack');
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       setState(() {
         if (_messages.isNotEmpty && _messages.last.isLoading) {
           _messages.removeLast();
