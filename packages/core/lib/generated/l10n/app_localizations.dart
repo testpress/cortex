@@ -1700,7 +1700,7 @@ abstract class AppLocalizations {
   /// No description provided for @videoLessonTabAiSupport.
   ///
   /// In en, this message translates to:
-  /// **'AI Support'**
+  /// **'AI Chat'**
   String get videoLessonTabAiSupport;
 
   /// No description provided for @videoLessonLectureNotes.
@@ -1781,29 +1781,197 @@ abstract class AppLocalizations {
   /// **'Pending'**
   String get videoLessonPending;
 
-  /// No description provided for @videoLessonAiAssistant.
-  ///
-  /// In en, this message translates to:
-  /// **'AI Study Assistant'**
-  String get videoLessonAiAssistant;
-
-  /// No description provided for @videoLessonAiHelp.
-  ///
-  /// In en, this message translates to:
-  /// **'Get instant help with your questions'**
-  String get videoLessonAiHelp;
-
   /// No description provided for @videoLessonAiHint.
   ///
   /// In en, this message translates to:
   /// **'Ask AI anything about this lecture...'**
   String get videoLessonAiHint;
 
-  /// No description provided for @videoLessonAiDisclaimer.
+  /// No description provided for @videoLessonTabMcq.
   ///
   /// In en, this message translates to:
-  /// **'AI responses are generated instantly and based on lecture content'**
-  String get videoLessonAiDisclaimer;
+  /// **'MCQ'**
+  String get videoLessonTabMcq;
+
+  /// No description provided for @videoMcqGenerating.
+  ///
+  /// In en, this message translates to:
+  /// **'Generating practice questions with AI...'**
+  String get videoMcqGenerating;
+
+  /// No description provided for @videoMcqRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get videoMcqRetry;
+
+  /// No description provided for @videoMcqNoQuestionsGenerated.
+  ///
+  /// In en, this message translates to:
+  /// **'No questions generated'**
+  String get videoMcqNoQuestionsGenerated;
+
+  /// No description provided for @videoMcqNoQuestionsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no practice MCQs available for this video lesson yet.'**
+  String get videoMcqNoQuestionsDesc;
+
+  /// No description provided for @videoMcqFailedToLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load MCQ questions. Please try again.'**
+  String get videoMcqFailedToLoad;
+
+  /// No description provided for @videoAiGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello! I\'m your AI study assistant. Ask me anything about this lecture!'**
+  String get videoAiGreeting;
+
+  /// No description provided for @videoAiThinking.
+  ///
+  /// In en, this message translates to:
+  /// **'Thinking'**
+  String get videoAiThinking;
+
+  /// No description provided for @videoAiError.
+  ///
+  /// In en, this message translates to:
+  /// **'Sorry, I encountered an error while processing your request. Please try again.'**
+  String get videoAiError;
+
+  /// No description provided for @videoAiSessionError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to start AI session. Please try again.'**
+  String get videoAiSessionError;
+
+  /// No description provided for @videoMcqSessionError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to start AI session for quiz generation. Please try again.'**
+  String get videoMcqSessionError;
+
+  /// No description provided for @videoMcqPracticeQuizTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Practice Quiz'**
+  String get videoMcqPracticeQuizTitle;
+
+  /// No description provided for @videoMcqPracticeQuizSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate multiple-choice questions tailored to this video lesson.'**
+  String get videoMcqPracticeQuizSubtitle;
+
+  /// No description provided for @videoMcqGenerateButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate MCQs'**
+  String get videoMcqGenerateButton;
+
+  /// No description provided for @videoMcqSeeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'See Hint'**
+  String get videoMcqSeeHint;
+
+  /// No description provided for @videoMcqHideHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide Hint'**
+  String get videoMcqHideHint;
+
+  /// No description provided for @videoMcqExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Explanation'**
+  String get videoMcqExplanation;
+
+  /// No description provided for @videoMcqQuizCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiz Completed!'**
+  String get videoMcqQuizCompleted;
+
+  /// No description provided for @videoMcqRetakeQuiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Retake Quiz'**
+  String get videoMcqRetakeQuiz;
+
+  /// No description provided for @videoMcqBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get videoMcqBack;
+
+  /// No description provided for @videoMcqQuizOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiz Options'**
+  String get videoMcqQuizOptions;
+
+  /// No description provided for @videoMcqDifficultyLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Difficulty Level'**
+  String get videoMcqDifficultyLevel;
+
+  /// No description provided for @videoMcqApplyOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply Options'**
+  String get videoMcqApplyOptions;
+
+  /// No description provided for @videoMcqQuestionsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Questions'**
+  String videoMcqQuestionsCount(int count);
+
+  /// No description provided for @videoMcqDifficultyEasy.
+  ///
+  /// In en, this message translates to:
+  /// **'Easy'**
+  String get videoMcqDifficultyEasy;
+
+  /// No description provided for @videoMcqDifficultyMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get videoMcqDifficultyMedium;
+
+  /// No description provided for @videoMcqDifficultyHard.
+  ///
+  /// In en, this message translates to:
+  /// **'Hard'**
+  String get videoMcqDifficultyHard;
+
+  /// No description provided for @videoMcqPreviousQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous Question'**
+  String get videoMcqPreviousQuestion;
+
+  /// No description provided for @videoMcqNextQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Next Question'**
+  String get videoMcqNextQuestion;
+
+  /// No description provided for @videoAiSendMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Message'**
+  String get videoAiSendMessage;
+
+  /// No description provided for @videoMcqScoreSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{correct} out of {total} Correct ({percentage}%)'**
+  String videoMcqScoreSummary(int correct, int total, int percentage);
 
   /// No description provided for @testExit.
   ///

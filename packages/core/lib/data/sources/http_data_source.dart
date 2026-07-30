@@ -258,6 +258,14 @@ class HttpDataSource implements DataSource {
   );
 
   @override
+  Future<Map<String, dynamic>> createAiSession(int contentId) async {
+    return performNetworkRequest(
+      _dio.post(ApiEndpoints.createAiSession(contentId), data: {}),
+      fromJson: (data) => data as Map<String, dynamic>,
+    );
+  }
+
+  @override
   Future<List<ForumCategoryDto>> getForumCategories() async {
     return performNetworkRequest(
       _dio.get(ApiEndpoints.forumCategories),

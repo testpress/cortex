@@ -1,26 +1,172 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import '../../models/course_content.dart';
+import '../../providers/learnlens_provider.dart';
 
-class AITab extends StatefulWidget {
+class AITab extends ConsumerStatefulWidget {
   final Lesson lesson;
+  final ValueChanged<Duration>? onSeek;
+  final WidgetBuilder? footerBuilder;
 
-  const AITab({super.key, required this.lesson});
+  const AITab({
+    super.key,
+    required this.lesson,
+    this.onSeek,
+    this.footerBuilder,
+  });
 
   @override
-  State<AITab> createState() => _AITabState();
+  ConsumerState<AITab> createState() => _AITabState();
 }
 
-class _AITabState extends State<AITab> with AutomaticKeepAliveClientMixin {
+class _ChatMessage {
+  final String text;
+  final bool isAi;
+  final bool isLoading;
+
+  const _ChatMessage({
+    required this.text,
+    required this.isAi,
+    this.isLoading = false,
+  });
+}
+
+class _AITabState extends ConsumerState<AITab>
+    with AutomaticKeepAliveClientMixin {
   final _controller = TextEditingController();
+  final List<_ChatMessage> _messages = [];
+  String _conversationId = '';
+  bool _isSubmitting = false;
 
   @override
   bool get wantKeepAlive => true;
 
+  bool _hasAddedGreeting = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_hasAddedGreeting) {
+      _hasAddedGreeting = true;
+      _messages.add(
+        _ChatMessage(
+          text: L10n.of(context).videoAiGreeting,
+          isAi: true,
+        ),
+      );
+    }
+  }
+
   @override
   void dispose() {
     _controller.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  String _processMarkdown(String raw) {
+    var processed =
+        raw.replaceAll(RegExp(r'<style>.*?</style>', dotAll: true), '');
+    processed = processed.replaceAllMapped(
+      RegExp(r'<span class="video-timestamp">(.*?)</span>'),
+      (match) => '[${match.group(1)}](timestamp:${match.group(1)})',
+    );
+    return processed;
+  }
+
+  Future<void> _sendMessage() async {
+    final query = _controller.text.trim();
+    if (query.isEmpty || _isSubmitting) return;
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
+
+    _controller.clear();
+    setState(() {
+      _messages.add(_ChatMessage(text: query, isAi: false));
+      _messages.add(
+        const _ChatMessage(text: '', isAi: true, isLoading: true),
+      );
+      _isSubmitting = true;
+    });
+    _scrollToBottom(design);
+
+    final contentId = int.tryParse(widget.lesson.id) ?? 0;
+    final sessionMap =
+        await ref.read(learnlensSessionProvider(contentId).future);
+
+    final sessionToken = sessionMap?['session_token'] as String? ?? '';
+    final orgUuid = AppConfig.learnLensOrgUuid;
+    final assetId = widget.lesson.learnlensAssetId ??
+        widget.lesson.contentUrl ??
+        widget.lesson.id;
+
+    if (sessionToken.isEmpty) {
+      setState(() {
+        if (_messages.isNotEmpty && _messages.last.isLoading) {
+          _messages.removeLast();
+        }
+        _messages.add(
+          _ChatMessage(
+            text: l10n.videoAiSessionError,
+            isAi: true,
+          ),
+        );
+        _isSubmitting = false;
+      });
+      return;
+    }
+
+    try {
+      final repository = ref.read(learnLensRepositoryProvider);
+      final chatResponse = await repository.submitChat(
+        orgUuid: orgUuid,
+        assetId: assetId,
+        sessionToken: sessionToken,
+        query: query,
+        conversationId: _conversationId,
+      );
+
+      setState(() {
+        _conversationId = chatResponse.conversationId;
+        if (_messages.isNotEmpty && _messages.last.isLoading) {
+          _messages.removeLast();
+        }
+        _messages.add(_ChatMessage(text: chatResponse.answer, isAi: true));
+        _isSubmitting = false;
+      });
+      _scrollToBottom(design);
+    } catch (e, stack) {
+      debugPrint('Error sending AI chat message: $e\n$stack');
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
+      setState(() {
+        if (_messages.isNotEmpty && _messages.last.isLoading) {
+          _messages.removeLast();
+        }
+        _messages.add(
+          _ChatMessage(
+            text: l10n.videoAiError,
+            isAi: true,
+          ),
+        );
+        _isSubmitting = false;
+      });
+    }
+  }
+
+  final _scrollController = ScrollController();
+
+  void _scrollToBottom(DesignConfig design) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: design.motion.normal,
+          curve: design.motion.easeOut,
+        );
+      }
+    });
   }
 
   @override
@@ -28,153 +174,84 @@ class _AITabState extends State<AITab> with AutomaticKeepAliveClientMixin {
     super.build(context);
     final design = Design.of(context);
     final l10n = L10n.of(context);
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final isKeyboardOpen = bottomInset > 0;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: EdgeInsets.only(
-            left: design.spacing.md,
-            right: design.spacing.md,
-            top: design.spacing.md,
+        // Scrollable messages area
+        Expanded(
+          child: AppSemantics.scrollableList(
+            itemCount: _messages.length,
+            label: 'AI Chat Messages',
+            child: ListView.builder(
+              controller: _scrollController,
+              padding: EdgeInsets.all(design.spacing.md),
+              itemCount: _messages.length,
+              itemBuilder: (context, index) {
+                return _buildChatBubble(_messages[index], design);
+              },
+            ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: EdgeInsets.all(design.spacing.md),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      design.colors.accent2.withValues(alpha: 0.15),
-                      design.colors.accent2.withValues(alpha: 0.05),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(design.radius.md),
-                  border: Border.all(
-                    color: design.colors.accent2.withValues(alpha: 0.2),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      LucideIcons.sparkles,
-                      color: design.colors.accent2,
-                      size: 24,
-                    ),
-                    SizedBox(width: design.spacing.sm),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AppText.subtitle(
-                            l10n.videoLessonAiAssistant,
-                            color: design.colors.textPrimary,
-                            style: const TextStyle(fontWeight: FontWeight.w700),
-                          ),
-                          AppText.caption(
-                            l10n.videoLessonAiHelp,
-                            color: design.colors.textSecondary,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+        ),
+        // Pinned composer at bottom
+        Container(
+          padding: EdgeInsets.fromLTRB(
+            design.spacing.md,
+            design.spacing.sm,
+            design.spacing.md,
+            design.spacing.sm + bottomInset,
+          ),
+          decoration: BoxDecoration(
+            color: design.colors.surface,
+            border: Border(
+              top: BorderSide(
+                color: design.colors.divider.withValues(alpha: 0.5),
               ),
-              SizedBox(height: design.spacing.md),
-              _buildChatBubble(
-                'Hello! I\'m your AI study assistant. I can help you understand the First Law of Thermodynamics better. Feel free to ask me anything about this lecture!',
-                true,
-                design,
-              ),
-              _buildChatBubble(
-                'Can you explain with a practical example?',
-                false,
-                design,
-              ),
-              _buildChatBubble(
-                'Sure! Think of a pressure cooker: When you heat it, you add energy (Q) to the system. The steam inside does work (W) by pushing the pressure valve. The remaining energy increases the internal energy (U). This perfectly demonstrates ΔU = Q - W!',
-                true,
-                design,
-              ),
-              SizedBox(height: design.spacing.sm),
-              Row(
+            ),
+          ),
+          child: ValueListenableBuilder<TextEditingValue>(
+            valueListenable: _controller,
+            builder: (context, value, _) {
+              final isDirty = value.text.trim().isNotEmpty;
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
-                    child: Material(
-                      type: MaterialType.transparency,
-                      child: TextField(
-                        controller: _controller,
-                        style: const TextStyle(fontSize: 14),
-                        decoration: InputDecoration(
-                          hintText: l10n.videoLessonAiHint,
-                          hintStyle: TextStyle(
-                            color: design.colors.textTertiary,
-                            fontSize: 13,
-                          ),
-                          filled: true,
-                          fillColor: design.colors.surface,
-                          border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(design.radius.md),
-                            borderSide:
-                                BorderSide(color: design.colors.divider),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(design.radius.md),
-                            borderSide:
-                                BorderSide(color: design.colors.divider),
-                          ),
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: design.spacing.md,
-                            vertical: design.spacing.sm,
-                          ),
-                        ),
+                    child: AppTextField(
+                      label: '',
+                      controller: _controller,
+                      hintText: l10n.videoLessonAiHint,
+                      onSubmitted: _isSubmitting ? null : (_) => _sendMessage(),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: design.spacing.md,
+                        vertical: design.spacing.sm,
                       ),
                     ),
                   ),
                   SizedBox(width: design.spacing.sm),
-                  ValueListenableBuilder<TextEditingValue>(
-                    valueListenable: _controller,
-                    builder: (context, value, _) {
-                      final isDirty = value.text.trim().isNotEmpty;
-                      return AppFocusable(
-                        onTap: () {},
-                        child: Container(
-                          padding: EdgeInsets.all(design.spacing.sm),
-                          decoration: BoxDecoration(
-                            color: isDirty
-                                ? design.colors.accent2
-                                : design.colors.accent2.withValues(alpha: 0.4),
-                            borderRadius:
-                                BorderRadius.circular(design.radius.sm),
-                          ),
-                          child: Icon(
-                            LucideIcons.send,
-                            color: design.colors.textInverse,
-                            size: 18,
-                          ),
-                        ),
-                      );
-                    },
+                  AppIconButton(
+                    icon: LucideIcons.sendHorizontal,
+                    onTap: isDirty && !_isSubmitting ? _sendMessage : () {},
+                    accessibilityLabel: l10n.videoAiSendMessage,
+                    color: isDirty && !_isSubmitting
+                        ? design.colors.accent2
+                        : design.colors.textTertiary,
                   ),
                 ],
-              ),
-              SizedBox(height: design.spacing.xs),
-              AppText.caption(
-                l10n.videoLessonAiDisclaimer,
-                color: design.colors.textTertiary,
-                style: const TextStyle(fontSize: 11, height: 1.4),
-              ),
-            ],
+              );
+            },
           ),
         ),
+        if (widget.footerBuilder != null && !isKeyboardOpen)
+          widget.footerBuilder!(context),
       ],
     );
   }
 
-  Widget _buildChatBubble(String text, bool isAI, DesignConfig design) {
+  Widget _buildChatBubble(_ChatMessage message, DesignConfig design) {
+    final isAI = message.isAi;
     return Padding(
       padding: EdgeInsets.only(bottom: design.spacing.md),
       child: Row(
@@ -216,17 +293,143 @@ class _AITabState extends State<AITab> with AutomaticKeepAliveClientMixin {
                 ),
                 border: isAI ? Border.all(color: design.colors.divider) : null,
               ),
-              child: AppText.body(
-                text,
-                color: isAI
-                    ? design.colors.textPrimary
-                    : design.colors.textInverse,
-                style: const TextStyle(fontSize: 13, height: 1.4),
-              ),
+              child: message.isLoading
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AppText.caption(
+                          L10n.of(context).videoAiThinking,
+                          color: design.colors.textSecondary,
+                        ),
+                        SizedBox(width: design.spacing.xs),
+                        _ThreeDotWavingIndicator(
+                            color: design.colors.textSecondary),
+                      ],
+                    )
+                  : isAI
+                      ? AppMarkdown(
+                          data: _processMarkdown(message.text),
+                          selectable: true,
+                          onTapLink: (url) {
+                            if (url.startsWith('timestamp:')) {
+                              final timeStr =
+                                  url.substring('timestamp:'.length);
+                              final duration =
+                                  TimeFormatter.parseDuration(timeStr);
+                              widget.onSeek?.call(duration);
+                            }
+                          },
+                        )
+                      : AppText.body(
+                          message.text,
+                          color: design.colors.textInverse,
+                          style: const TextStyle(fontSize: 13, height: 1.4),
+                        ),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ThreeDotWavingIndicator extends StatefulWidget {
+  final Color color;
+
+  const _ThreeDotWavingIndicator({required this.color});
+
+  @override
+  State<_ThreeDotWavingIndicator> createState() =>
+      __ThreeDotWavingIndicatorState();
+}
+
+class __ThreeDotWavingIndicatorState extends State<_ThreeDotWavingIndicator>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final design = Design.of(context);
+    final duration = MotionPreferences.duration(
+      context,
+      design.motion.slow,
+    );
+    _controller.duration = duration;
+
+    if (MotionPreferences.shouldAnimate(context)) {
+      if (!_controller.isAnimating) {
+        _controller.repeat();
+      }
+    } else {
+      _controller.stop();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final shouldAnimate = MotionPreferences.shouldAnimate(context);
+
+    // When reduced motion is on, render three static dots with no animation.
+    if (!shouldAnimate) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: List.generate(3, (_) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 1.5),
+            child: Container(
+              width: 3.5,
+              height: 3.5,
+              decoration: BoxDecoration(
+                color: widget.color,
+                shape: BoxShape.circle,
+              ),
+            ),
+          );
+        }),
+      );
+    }
+
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(3, (index) {
+            final delay = index * 0.2;
+            final value = (_controller.value - delay) % 1.0;
+            final double dy =
+                (value < 0.5) ? (value * 2 * -4.0) : ((1.0 - value) * 2 * -4.0);
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 1.5),
+              child: Transform.translate(
+                offset: Offset(0, dy.clamp(-4.0, 0.0)),
+                child: Container(
+                  width: 3.5,
+                  height: 3.5,
+                  decoration: BoxDecoration(
+                    color: widget.color,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            );
+          }),
+        );
+      },
     );
   }
 }

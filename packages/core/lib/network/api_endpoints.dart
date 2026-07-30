@@ -126,4 +126,13 @@ class ApiEndpoints {
   static String helpdeskTicketFollowup(String id) =>
       '/api/v3/helpdesk/$id/followup/';
   static const String imageUploadV3 = '/api/v3/upload-image/';
+
+  // LearnLens
+  static String learnLensChat(String orgUuid, String assetId) =>
+      '/api/v2/$orgUuid/assets/$assetId/chat/';
+  static String learnLensQuiz(String orgUuid, String assetId) =>
+      '/api/v2/$orgUuid/assets/$assetId/quiz/';
+
+  static String createAiSession(int contentId) =>
+      '/api/v3/contents/$contentId/ai-sessions/create/';
 }

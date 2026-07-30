@@ -64,6 +64,10 @@ class LessonsTable extends Table {
       boolean().withDefault(const Constant(false))();
   TextColumn get videoSubtitleUrl => text().nullable()(); // Stores subtitle URL
   BoolColumn get isAiEnabled => boolean().withDefault(const Constant(false))();
+  BoolColumn get canEnableLearnlensAi =>
+      boolean().withDefault(const Constant(false))();
+  TextColumn get learnlensAssetId => text().nullable()();
+  TextColumn get learnlensAssetStatus => text().nullable()();
   TextColumn get aiNotesUrl => text().nullable()();
   TextColumn get lastWatchedDuration => text().nullable()();
   TextColumn get start => text().nullable()();

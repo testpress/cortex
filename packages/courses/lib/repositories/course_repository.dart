@@ -1219,6 +1219,9 @@ class CourseRepository {
         enableTranscript: row.enableTranscript,
         videoSubtitleUrl: row.videoSubtitleUrl,
         isAiEnabled: row.isAiEnabled,
+        canEnableLearnlensAi: row.canEnableLearnlensAi,
+        learnlensAssetId: row.learnlensAssetId,
+        learnlensAssetStatus: row.learnlensAssetStatus,
         aiNotesUrl: row.aiNotesUrl,
         lastWatchedDuration: row.lastWatchedDuration,
         allowDownload: row.allowDownload,
@@ -1314,6 +1317,13 @@ class CourseRepository {
             ? Value(dto.videoSubtitleUrl)
             : const Value.absent(),
         isAiEnabled: Value(dto.isAiEnabled),
+        canEnableLearnlensAi: Value(dto.canEnableLearnlensAi),
+        learnlensAssetId: dto.learnlensAssetId != null
+            ? Value(dto.learnlensAssetId)
+            : const Value.absent(),
+        learnlensAssetStatus: dto.learnlensAssetStatus != null
+            ? Value(dto.learnlensAssetStatus)
+            : const Value.absent(),
         aiNotesUrl: dto.aiNotesUrl != null
             ? Value(dto.aiNotesUrl)
             : const Value.absent(),

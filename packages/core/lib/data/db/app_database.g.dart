@@ -1960,6 +1960,42 @@ class $LessonsTableTable extends LessonsTable
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _canEnableLearnlensAiMeta =
+      const VerificationMeta('canEnableLearnlensAi');
+  @override
+  late final GeneratedColumn<bool> canEnableLearnlensAi = GeneratedColumn<bool>(
+    'can_enable_learnlens_ai',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("can_enable_learnlens_ai" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _learnlensAssetIdMeta = const VerificationMeta(
+    'learnlensAssetId',
+  );
+  @override
+  late final GeneratedColumn<String> learnlensAssetId = GeneratedColumn<String>(
+    'learnlens_asset_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _learnlensAssetStatusMeta =
+      const VerificationMeta('learnlensAssetStatus');
+  @override
+  late final GeneratedColumn<String> learnlensAssetStatus =
+      GeneratedColumn<String>(
+        'learnlens_asset_status',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _aiNotesUrlMeta = const VerificationMeta(
     'aiNotesUrl',
   );
@@ -2085,6 +2121,9 @@ class $LessonsTableTable extends LessonsTable
     enableTranscript,
     videoSubtitleUrl,
     isAiEnabled,
+    canEnableLearnlensAi,
+    learnlensAssetId,
+    learnlensAssetStatus,
     aiNotesUrl,
     lastWatchedDuration,
     start,
@@ -2411,6 +2450,33 @@ class $LessonsTableTable extends LessonsTable
         ),
       );
     }
+    if (data.containsKey('can_enable_learnlens_ai')) {
+      context.handle(
+        _canEnableLearnlensAiMeta,
+        canEnableLearnlensAi.isAcceptableOrUnknown(
+          data['can_enable_learnlens_ai']!,
+          _canEnableLearnlensAiMeta,
+        ),
+      );
+    }
+    if (data.containsKey('learnlens_asset_id')) {
+      context.handle(
+        _learnlensAssetIdMeta,
+        learnlensAssetId.isAcceptableOrUnknown(
+          data['learnlens_asset_id']!,
+          _learnlensAssetIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('learnlens_asset_status')) {
+      context.handle(
+        _learnlensAssetStatusMeta,
+        learnlensAssetStatus.isAcceptableOrUnknown(
+          data['learnlens_asset_status']!,
+          _learnlensAssetStatusMeta,
+        ),
+      );
+    }
     if (data.containsKey('ai_notes_url')) {
       context.handle(
         _aiNotesUrlMeta,
@@ -2626,6 +2692,18 @@ class $LessonsTableTable extends LessonsTable
         DriftSqlType.bool,
         data['${effectivePrefix}is_ai_enabled'],
       )!,
+      canEnableLearnlensAi: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}can_enable_learnlens_ai'],
+      )!,
+      learnlensAssetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}learnlens_asset_id'],
+      ),
+      learnlensAssetStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}learnlens_asset_status'],
+      ),
       aiNotesUrl: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}ai_notes_url'],
@@ -2707,6 +2785,9 @@ class LessonsTableData extends DataClass
   final bool enableTranscript;
   final String? videoSubtitleUrl;
   final bool isAiEnabled;
+  final bool canEnableLearnlensAi;
+  final String? learnlensAssetId;
+  final String? learnlensAssetStatus;
   final String? aiNotesUrl;
   final String? lastWatchedDuration;
   final String? start;
@@ -2753,6 +2834,9 @@ class LessonsTableData extends DataClass
     required this.enableTranscript,
     this.videoSubtitleUrl,
     required this.isAiEnabled,
+    required this.canEnableLearnlensAi,
+    this.learnlensAssetId,
+    this.learnlensAssetStatus,
     this.aiNotesUrl,
     this.lastWatchedDuration,
     this.start,
@@ -2846,6 +2930,13 @@ class LessonsTableData extends DataClass
       map['video_subtitle_url'] = Variable<String>(videoSubtitleUrl);
     }
     map['is_ai_enabled'] = Variable<bool>(isAiEnabled);
+    map['can_enable_learnlens_ai'] = Variable<bool>(canEnableLearnlensAi);
+    if (!nullToAbsent || learnlensAssetId != null) {
+      map['learnlens_asset_id'] = Variable<String>(learnlensAssetId);
+    }
+    if (!nullToAbsent || learnlensAssetStatus != null) {
+      map['learnlens_asset_status'] = Variable<String>(learnlensAssetStatus);
+    }
     if (!nullToAbsent || aiNotesUrl != null) {
       map['ai_notes_url'] = Variable<String>(aiNotesUrl);
     }
@@ -2946,6 +3037,13 @@ class LessonsTableData extends DataClass
           ? const Value.absent()
           : Value(videoSubtitleUrl),
       isAiEnabled: Value(isAiEnabled),
+      canEnableLearnlensAi: Value(canEnableLearnlensAi),
+      learnlensAssetId: learnlensAssetId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(learnlensAssetId),
+      learnlensAssetStatus: learnlensAssetStatus == null && nullToAbsent
+          ? const Value.absent()
+          : Value(learnlensAssetStatus),
       aiNotesUrl: aiNotesUrl == null && nullToAbsent
           ? const Value.absent()
           : Value(aiNotesUrl),
@@ -3010,6 +3108,13 @@ class LessonsTableData extends DataClass
       enableTranscript: serializer.fromJson<bool>(json['enableTranscript']),
       videoSubtitleUrl: serializer.fromJson<String?>(json['videoSubtitleUrl']),
       isAiEnabled: serializer.fromJson<bool>(json['isAiEnabled']),
+      canEnableLearnlensAi: serializer.fromJson<bool>(
+        json['canEnableLearnlensAi'],
+      ),
+      learnlensAssetId: serializer.fromJson<String?>(json['learnlensAssetId']),
+      learnlensAssetStatus: serializer.fromJson<String?>(
+        json['learnlensAssetStatus'],
+      ),
       aiNotesUrl: serializer.fromJson<String?>(json['aiNotesUrl']),
       lastWatchedDuration: serializer.fromJson<String?>(
         json['lastWatchedDuration'],
@@ -3065,6 +3170,9 @@ class LessonsTableData extends DataClass
       'enableTranscript': serializer.toJson<bool>(enableTranscript),
       'videoSubtitleUrl': serializer.toJson<String?>(videoSubtitleUrl),
       'isAiEnabled': serializer.toJson<bool>(isAiEnabled),
+      'canEnableLearnlensAi': serializer.toJson<bool>(canEnableLearnlensAi),
+      'learnlensAssetId': serializer.toJson<String?>(learnlensAssetId),
+      'learnlensAssetStatus': serializer.toJson<String?>(learnlensAssetStatus),
       'aiNotesUrl': serializer.toJson<String?>(aiNotesUrl),
       'lastWatchedDuration': serializer.toJson<String?>(lastWatchedDuration),
       'start': serializer.toJson<String?>(start),
@@ -3116,6 +3224,9 @@ class LessonsTableData extends DataClass
     bool? enableTranscript,
     Value<String?> videoSubtitleUrl = const Value.absent(),
     bool? isAiEnabled,
+    bool? canEnableLearnlensAi,
+    Value<String?> learnlensAssetId = const Value.absent(),
+    Value<String?> learnlensAssetStatus = const Value.absent(),
     Value<String?> aiNotesUrl = const Value.absent(),
     Value<String?> lastWatchedDuration = const Value.absent(),
     Value<String?> start = const Value.absent(),
@@ -3174,6 +3285,13 @@ class LessonsTableData extends DataClass
         ? videoSubtitleUrl.value
         : this.videoSubtitleUrl,
     isAiEnabled: isAiEnabled ?? this.isAiEnabled,
+    canEnableLearnlensAi: canEnableLearnlensAi ?? this.canEnableLearnlensAi,
+    learnlensAssetId: learnlensAssetId.present
+        ? learnlensAssetId.value
+        : this.learnlensAssetId,
+    learnlensAssetStatus: learnlensAssetStatus.present
+        ? learnlensAssetStatus.value
+        : this.learnlensAssetStatus,
     aiNotesUrl: aiNotesUrl.present ? aiNotesUrl.value : this.aiNotesUrl,
     lastWatchedDuration: lastWatchedDuration.present
         ? lastWatchedDuration.value
@@ -3279,6 +3397,15 @@ class LessonsTableData extends DataClass
       isAiEnabled: data.isAiEnabled.present
           ? data.isAiEnabled.value
           : this.isAiEnabled,
+      canEnableLearnlensAi: data.canEnableLearnlensAi.present
+          ? data.canEnableLearnlensAi.value
+          : this.canEnableLearnlensAi,
+      learnlensAssetId: data.learnlensAssetId.present
+          ? data.learnlensAssetId.value
+          : this.learnlensAssetId,
+      learnlensAssetStatus: data.learnlensAssetStatus.present
+          ? data.learnlensAssetStatus.value
+          : this.learnlensAssetStatus,
       aiNotesUrl: data.aiNotesUrl.present
           ? data.aiNotesUrl.value
           : this.aiNotesUrl,
@@ -3338,6 +3465,9 @@ class LessonsTableData extends DataClass
           ..write('enableTranscript: $enableTranscript, ')
           ..write('videoSubtitleUrl: $videoSubtitleUrl, ')
           ..write('isAiEnabled: $isAiEnabled, ')
+          ..write('canEnableLearnlensAi: $canEnableLearnlensAi, ')
+          ..write('learnlensAssetId: $learnlensAssetId, ')
+          ..write('learnlensAssetStatus: $learnlensAssetStatus, ')
           ..write('aiNotesUrl: $aiNotesUrl, ')
           ..write('lastWatchedDuration: $lastWatchedDuration, ')
           ..write('start: $start, ')
@@ -3389,6 +3519,9 @@ class LessonsTableData extends DataClass
     enableTranscript,
     videoSubtitleUrl,
     isAiEnabled,
+    canEnableLearnlensAi,
+    learnlensAssetId,
+    learnlensAssetStatus,
     aiNotesUrl,
     lastWatchedDuration,
     start,
@@ -3439,6 +3572,9 @@ class LessonsTableData extends DataClass
           other.enableTranscript == this.enableTranscript &&
           other.videoSubtitleUrl == this.videoSubtitleUrl &&
           other.isAiEnabled == this.isAiEnabled &&
+          other.canEnableLearnlensAi == this.canEnableLearnlensAi &&
+          other.learnlensAssetId == this.learnlensAssetId &&
+          other.learnlensAssetStatus == this.learnlensAssetStatus &&
           other.aiNotesUrl == this.aiNotesUrl &&
           other.lastWatchedDuration == this.lastWatchedDuration &&
           other.start == this.start &&
@@ -3487,6 +3623,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   final Value<bool> enableTranscript;
   final Value<String?> videoSubtitleUrl;
   final Value<bool> isAiEnabled;
+  final Value<bool> canEnableLearnlensAi;
+  final Value<String?> learnlensAssetId;
+  final Value<String?> learnlensAssetStatus;
   final Value<String?> aiNotesUrl;
   final Value<String?> lastWatchedDuration;
   final Value<String?> start;
@@ -3534,6 +3673,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.enableTranscript = const Value.absent(),
     this.videoSubtitleUrl = const Value.absent(),
     this.isAiEnabled = const Value.absent(),
+    this.canEnableLearnlensAi = const Value.absent(),
+    this.learnlensAssetId = const Value.absent(),
+    this.learnlensAssetStatus = const Value.absent(),
     this.aiNotesUrl = const Value.absent(),
     this.lastWatchedDuration = const Value.absent(),
     this.start = const Value.absent(),
@@ -3582,6 +3724,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.enableTranscript = const Value.absent(),
     this.videoSubtitleUrl = const Value.absent(),
     this.isAiEnabled = const Value.absent(),
+    this.canEnableLearnlensAi = const Value.absent(),
+    this.learnlensAssetId = const Value.absent(),
+    this.learnlensAssetStatus = const Value.absent(),
     this.aiNotesUrl = const Value.absent(),
     this.lastWatchedDuration = const Value.absent(),
     this.start = const Value.absent(),
@@ -3635,6 +3780,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Expression<bool>? enableTranscript,
     Expression<String>? videoSubtitleUrl,
     Expression<bool>? isAiEnabled,
+    Expression<bool>? canEnableLearnlensAi,
+    Expression<String>? learnlensAssetId,
+    Expression<String>? learnlensAssetStatus,
     Expression<String>? aiNotesUrl,
     Expression<String>? lastWatchedDuration,
     Expression<String>? start,
@@ -3684,6 +3832,11 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       if (enableTranscript != null) 'enable_transcript': enableTranscript,
       if (videoSubtitleUrl != null) 'video_subtitle_url': videoSubtitleUrl,
       if (isAiEnabled != null) 'is_ai_enabled': isAiEnabled,
+      if (canEnableLearnlensAi != null)
+        'can_enable_learnlens_ai': canEnableLearnlensAi,
+      if (learnlensAssetId != null) 'learnlens_asset_id': learnlensAssetId,
+      if (learnlensAssetStatus != null)
+        'learnlens_asset_status': learnlensAssetStatus,
       if (aiNotesUrl != null) 'ai_notes_url': aiNotesUrl,
       if (lastWatchedDuration != null)
         'last_watched_duration': lastWatchedDuration,
@@ -3736,6 +3889,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Value<bool>? enableTranscript,
     Value<String?>? videoSubtitleUrl,
     Value<bool>? isAiEnabled,
+    Value<bool>? canEnableLearnlensAi,
+    Value<String?>? learnlensAssetId,
+    Value<String?>? learnlensAssetStatus,
     Value<String?>? aiNotesUrl,
     Value<String?>? lastWatchedDuration,
     Value<String?>? start,
@@ -3784,6 +3940,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       enableTranscript: enableTranscript ?? this.enableTranscript,
       videoSubtitleUrl: videoSubtitleUrl ?? this.videoSubtitleUrl,
       isAiEnabled: isAiEnabled ?? this.isAiEnabled,
+      canEnableLearnlensAi: canEnableLearnlensAi ?? this.canEnableLearnlensAi,
+      learnlensAssetId: learnlensAssetId ?? this.learnlensAssetId,
+      learnlensAssetStatus: learnlensAssetStatus ?? this.learnlensAssetStatus,
       aiNotesUrl: aiNotesUrl ?? this.aiNotesUrl,
       lastWatchedDuration: lastWatchedDuration ?? this.lastWatchedDuration,
       start: start ?? this.start,
@@ -3913,6 +4072,19 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     if (isAiEnabled.present) {
       map['is_ai_enabled'] = Variable<bool>(isAiEnabled.value);
     }
+    if (canEnableLearnlensAi.present) {
+      map['can_enable_learnlens_ai'] = Variable<bool>(
+        canEnableLearnlensAi.value,
+      );
+    }
+    if (learnlensAssetId.present) {
+      map['learnlens_asset_id'] = Variable<String>(learnlensAssetId.value);
+    }
+    if (learnlensAssetStatus.present) {
+      map['learnlens_asset_status'] = Variable<String>(
+        learnlensAssetStatus.value,
+      );
+    }
     if (aiNotesUrl.present) {
       map['ai_notes_url'] = Variable<String>(aiNotesUrl.value);
     }
@@ -3985,6 +4157,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
           ..write('enableTranscript: $enableTranscript, ')
           ..write('videoSubtitleUrl: $videoSubtitleUrl, ')
           ..write('isAiEnabled: $isAiEnabled, ')
+          ..write('canEnableLearnlensAi: $canEnableLearnlensAi, ')
+          ..write('learnlensAssetId: $learnlensAssetId, ')
+          ..write('learnlensAssetStatus: $learnlensAssetStatus, ')
           ..write('aiNotesUrl: $aiNotesUrl, ')
           ..write('lastWatchedDuration: $lastWatchedDuration, ')
           ..write('start: $start, ')
@@ -17378,6 +17553,9 @@ typedef $$LessonsTableTableCreateCompanionBuilder =
       Value<bool> enableTranscript,
       Value<String?> videoSubtitleUrl,
       Value<bool> isAiEnabled,
+      Value<bool> canEnableLearnlensAi,
+      Value<String?> learnlensAssetId,
+      Value<String?> learnlensAssetStatus,
       Value<String?> aiNotesUrl,
       Value<String?> lastWatchedDuration,
       Value<String?> start,
@@ -17427,6 +17605,9 @@ typedef $$LessonsTableTableUpdateCompanionBuilder =
       Value<bool> enableTranscript,
       Value<String?> videoSubtitleUrl,
       Value<bool> isAiEnabled,
+      Value<bool> canEnableLearnlensAi,
+      Value<String?> learnlensAssetId,
+      Value<String?> learnlensAssetStatus,
       Value<String?> aiNotesUrl,
       Value<String?> lastWatchedDuration,
       Value<String?> start,
@@ -17633,6 +17814,21 @@ class $$LessonsTableTableFilterComposer
 
   ColumnFilters<bool> get isAiEnabled => $composableBuilder(
     column: $table.isAiEnabled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get canEnableLearnlensAi => $composableBuilder(
+    column: $table.canEnableLearnlensAi,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get learnlensAssetId => $composableBuilder(
+    column: $table.learnlensAssetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get learnlensAssetStatus => $composableBuilder(
+    column: $table.learnlensAssetStatus,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -17871,6 +18067,21 @@ class $$LessonsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get canEnableLearnlensAi => $composableBuilder(
+    column: $table.canEnableLearnlensAi,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get learnlensAssetId => $composableBuilder(
+    column: $table.learnlensAssetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get learnlensAssetStatus => $composableBuilder(
+    column: $table.learnlensAssetStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get aiNotesUrl => $composableBuilder(
     column: $table.aiNotesUrl,
     builder: (column) => ColumnOrderings(column),
@@ -18084,6 +18295,21 @@ class $$LessonsTableTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<bool> get canEnableLearnlensAi => $composableBuilder(
+    column: $table.canEnableLearnlensAi,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get learnlensAssetId => $composableBuilder(
+    column: $table.learnlensAssetId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get learnlensAssetStatus => $composableBuilder(
+    column: $table.learnlensAssetStatus,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get aiNotesUrl => $composableBuilder(
     column: $table.aiNotesUrl,
     builder: (column) => column,
@@ -18183,6 +18409,9 @@ class $$LessonsTableTableTableManager
                 Value<bool> enableTranscript = const Value.absent(),
                 Value<String?> videoSubtitleUrl = const Value.absent(),
                 Value<bool> isAiEnabled = const Value.absent(),
+                Value<bool> canEnableLearnlensAi = const Value.absent(),
+                Value<String?> learnlensAssetId = const Value.absent(),
+                Value<String?> learnlensAssetStatus = const Value.absent(),
                 Value<String?> aiNotesUrl = const Value.absent(),
                 Value<String?> lastWatchedDuration = const Value.absent(),
                 Value<String?> start = const Value.absent(),
@@ -18230,6 +18459,9 @@ class $$LessonsTableTableTableManager
                 enableTranscript: enableTranscript,
                 videoSubtitleUrl: videoSubtitleUrl,
                 isAiEnabled: isAiEnabled,
+                canEnableLearnlensAi: canEnableLearnlensAi,
+                learnlensAssetId: learnlensAssetId,
+                learnlensAssetStatus: learnlensAssetStatus,
                 aiNotesUrl: aiNotesUrl,
                 lastWatchedDuration: lastWatchedDuration,
                 start: start,
@@ -18279,6 +18511,9 @@ class $$LessonsTableTableTableManager
                 Value<bool> enableTranscript = const Value.absent(),
                 Value<String?> videoSubtitleUrl = const Value.absent(),
                 Value<bool> isAiEnabled = const Value.absent(),
+                Value<bool> canEnableLearnlensAi = const Value.absent(),
+                Value<String?> learnlensAssetId = const Value.absent(),
+                Value<String?> learnlensAssetStatus = const Value.absent(),
                 Value<String?> aiNotesUrl = const Value.absent(),
                 Value<String?> lastWatchedDuration = const Value.absent(),
                 Value<String?> start = const Value.absent(),
@@ -18326,6 +18561,9 @@ class $$LessonsTableTableTableManager
                 enableTranscript: enableTranscript,
                 videoSubtitleUrl: videoSubtitleUrl,
                 isAiEnabled: isAiEnabled,
+                canEnableLearnlensAi: canEnableLearnlensAi,
+                learnlensAssetId: learnlensAssetId,
+                learnlensAssetStatus: learnlensAssetStatus,
                 aiNotesUrl: aiNotesUrl,
                 lastWatchedDuration: lastWatchedDuration,
                 start: start,

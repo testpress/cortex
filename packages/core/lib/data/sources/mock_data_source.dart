@@ -876,6 +876,16 @@ class MockDataSource implements DataSource {
       mockForumCategories;
 
   @override
+  Future<Map<String, dynamic>> createAiSession(int contentId) async {
+    return {
+      'session_token': 'mock-session-token',
+      'expiresAt': DateTime.now()
+          .add(const Duration(hours: 1))
+          .toIso8601String(),
+    };
+  }
+
+  @override
   Future<PaginatedResponseDto<ForumThreadDto>> getForumThreads({
     int page = 1,
     int? categoryId,

@@ -345,7 +345,7 @@ final courseSyncMetadataProvider =
 );
 
 typedef _$CourseSyncMetadata = Notifier<DateTime?>;
-String _$courseListHash() => r'5c4261dbe18b4c9ac673110c41b16e673f68e3d1';
+String _$courseListHash() => r'6741d1f5cc13fd5bdfeedeae4a4fd2356c3eb9d1';
 
 /// See also [CourseList].
 @ProviderFor(CourseList)
@@ -360,7 +360,7 @@ final courseListProvider =
 );
 
 typedef _$CourseList = AutoDisposeStreamNotifier<List<CourseDto>>;
-String _$courseSearchHash() => r'754041d05a4e8fae2d0fc1636fa9563317e279d2';
+String _$courseSearchHash() => r'390cf82b8c17adf4b01d07b1a00dfc00ba4d3e16';
 
 /// See also [CourseSearch].
 @ProviderFor(CourseSearch)

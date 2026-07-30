@@ -896,7 +896,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get videoLessonTabAskDoubt => 'Ask Doubt';
 
   @override
-  String get videoLessonTabAiSupport => 'AI Support';
+  String get videoLessonTabAiSupport => 'AI Chat';
 
   @override
   String get videoLessonLectureNotes => 'Lecture Notes';
@@ -942,17 +942,111 @@ class AppLocalizationsEn extends AppLocalizations {
   String get videoLessonPending => 'Pending';
 
   @override
-  String get videoLessonAiAssistant => 'AI Study Assistant';
-
-  @override
-  String get videoLessonAiHelp => 'Get instant help with your questions';
-
-  @override
   String get videoLessonAiHint => 'Ask AI anything about this lecture...';
 
   @override
-  String get videoLessonAiDisclaimer =>
-      'AI responses are generated instantly and based on lecture content';
+  String get videoLessonTabMcq => 'MCQ';
+
+  @override
+  String get videoMcqGenerating => 'Generating practice questions with AI...';
+
+  @override
+  String get videoMcqRetry => 'Retry';
+
+  @override
+  String get videoMcqNoQuestionsGenerated => 'No questions generated';
+
+  @override
+  String get videoMcqNoQuestionsDesc =>
+      'There are no practice MCQs available for this video lesson yet.';
+
+  @override
+  String get videoMcqFailedToLoad =>
+      'Failed to load MCQ questions. Please try again.';
+
+  @override
+  String get videoAiGreeting =>
+      'Hello! I\'m your AI study assistant. Ask me anything about this lecture!';
+
+  @override
+  String get videoAiThinking => 'Thinking';
+
+  @override
+  String get videoAiError =>
+      'Sorry, I encountered an error while processing your request. Please try again.';
+
+  @override
+  String get videoAiSessionError =>
+      'Unable to start AI session. Please try again.';
+
+  @override
+  String get videoMcqSessionError =>
+      'Unable to start AI session for quiz generation. Please try again.';
+
+  @override
+  String get videoMcqPracticeQuizTitle => 'AI Practice Quiz';
+
+  @override
+  String get videoMcqPracticeQuizSubtitle =>
+      'Generate multiple-choice questions tailored to this video lesson.';
+
+  @override
+  String get videoMcqGenerateButton => 'Generate MCQs';
+
+  @override
+  String get videoMcqSeeHint => 'See Hint';
+
+  @override
+  String get videoMcqHideHint => 'Hide Hint';
+
+  @override
+  String get videoMcqExplanation => 'Explanation';
+
+  @override
+  String get videoMcqQuizCompleted => 'Quiz Completed!';
+
+  @override
+  String get videoMcqRetakeQuiz => 'Retake Quiz';
+
+  @override
+  String get videoMcqBack => 'Back';
+
+  @override
+  String get videoMcqQuizOptions => 'Quiz Options';
+
+  @override
+  String get videoMcqDifficultyLevel => 'Difficulty Level';
+
+  @override
+  String get videoMcqApplyOptions => 'Apply Options';
+
+  @override
+  String videoMcqQuestionsCount(int count) {
+    return '$count Questions';
+  }
+
+  @override
+  String get videoMcqDifficultyEasy => 'Easy';
+
+  @override
+  String get videoMcqDifficultyMedium => 'Medium';
+
+  @override
+  String get videoMcqDifficultyHard => 'Hard';
+
+  @override
+  String get videoMcqPreviousQuestion => 'Previous Question';
+
+  @override
+  String get videoMcqNextQuestion => 'Next Question';
+
+  @override
+  String get videoAiSendMessage => 'Send Message';
+
+  @override
+  String videoMcqScoreSummary(int correct, int total, int percentage) {
+    return '$correct out of $total Correct ($percentage%)';
+  }
 
   @override
   String get testExit => 'Exit Test';
