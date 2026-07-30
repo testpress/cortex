@@ -473,7 +473,7 @@
   "videoMcqNoQuestionsDesc": "There are no practice MCQs available for this video lesson yet.",
   "videoMcqFailedToLoad": "Failed to load MCQ questions. Please try again.",
   "videoAiGreeting": "Hello! I'm your AI study assistant. Ask me anything about this lecture!",
-  "videoAiThinking": "Thinking...",
+  "videoAiThinking": "Thinking",
   "videoAiError": "Sorry, I encountered an error while processing your request. Please try again.",
   "videoAiSessionError": "Unable to start AI session. Please try again.",
   "videoMcqPracticeQuizTitle": "AI Practice Quiz",

@@ -297,18 +297,13 @@ class _AITabState extends ConsumerState<AITab>
                   ? Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: AppLoadingIndicator(
-                            color: design.colors.accent2,
-                          ),
-                        ),
-                        SizedBox(width: design.spacing.sm),
                         AppText.caption(
                           L10n.of(context).videoAiThinking,
                           color: design.colors.textSecondary,
                         ),
+                        SizedBox(width: design.spacing.xs),
+                        _ThreeDotWavingIndicator(
+                            color: design.colors.textSecondary),
                       ],
                     )
                   : isAI
@@ -334,6 +329,69 @@ class _AITabState extends ConsumerState<AITab>
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ThreeDotWavingIndicator extends StatefulWidget {
+  final Color color;
+
+  const _ThreeDotWavingIndicator({required this.color});
+
+  @override
+  State<_ThreeDotWavingIndicator> createState() =>
+      __ThreeDotWavingIndicatorState();
+}
+
+class __ThreeDotWavingIndicatorState extends State<_ThreeDotWavingIndicator>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(3, (index) {
+            final delay = index * 0.2;
+            final value = (_controller.value - delay) % 1.0;
+            final double dy =
+                (value < 0.5) ? (value * 2 * -4.0) : ((1.0 - value) * 2 * -4.0);
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 1.5),
+              child: Transform.translate(
+                offset: Offset(0, dy.clamp(-4.0, 0.0)),
+                child: Container(
+                  width: 3.5,
+                  height: 3.5,
+                  decoration: BoxDecoration(
+                    color: widget.color,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            );
+          }),
+        );
+      },
     );
   }
 }

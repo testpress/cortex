@@ -1832,7 +1832,7 @@ abstract class AppLocalizations {
   /// No description provided for @videoAiThinking.
   ///
   /// In en, this message translates to:
-  /// **'Thinking...'**
+  /// **'Thinking'**
   String get videoAiThinking;
 
   /// No description provided for @videoAiError.

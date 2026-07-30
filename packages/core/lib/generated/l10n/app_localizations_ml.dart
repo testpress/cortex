@@ -978,7 +978,7 @@ class AppLocalizationsMl extends AppLocalizations {
       'നമസ്കാരം! ഞാൻ നിങ്ങളുടെ AI പഠന സഹായിയാണ്. ഈ ലെക്ചറിനെക്കുറിച്ച് എന്തും ചോദിക്കാം!';
 
   @override
-  String get videoAiThinking => 'ചിന്തിക്കുന്നു...';
+  String get videoAiThinking => 'ചിന്തിക്കുന്നു';
 
   @override
   String get videoAiError =>

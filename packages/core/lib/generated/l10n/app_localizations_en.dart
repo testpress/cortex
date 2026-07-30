@@ -969,7 +969,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Hello! I\'m your AI study assistant. Ask me anything about this lecture!';
 
   @override
-  String get videoAiThinking => 'Thinking...';
+  String get videoAiThinking => 'Thinking';
 
   @override
   String get videoAiError =>

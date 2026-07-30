@@ -982,7 +982,7 @@ class AppLocalizationsTa extends AppLocalizations {
       'வணக்கம்! நான் உங்கள் AI கற்றல் உதவியாளர். இந்த விரிவுரையைப் பற்றி எது வேண்டுமானாலும் கேட்கலாம்!';
 
   @override
-  String get videoAiThinking => 'சிந்திக்கிறது...';
+  String get videoAiThinking => 'சிந்திக்கிறது';
 
   @override
   String get videoAiError =>
