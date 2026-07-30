@@ -16,13 +16,22 @@ class VideoMcqSummaryCard extends StatelessWidget {
     required this.onBack,
   });
 
-  bool _isOptionCorrect(String option, String correctAnswer) {
-    final cleanOpt = option.trim();
-    final cleanAns = correctAnswer.trim();
+  bool _isOptionCorrect(String option, String correctAnswer, int optionIndex) {
+    final cleanOpt = option.trim().toLowerCase();
+    final cleanAns = correctAnswer.trim().toLowerCase();
     if (cleanOpt.isEmpty || cleanAns.isEmpty) return false;
     if (cleanOpt == cleanAns) return true;
+
+    final letter = String.fromCharCode(65 + optionIndex).toLowerCase();
+    if (cleanAns == letter ||
+        cleanAns == 'option $letter' ||
+        cleanAns.startsWith('$letter)') ||
+        cleanAns.startsWith('$letter.')) {
+      return true;
+    }
+
     if (cleanOpt.startsWith(cleanAns)) return true;
-    if (cleanAns.startsWith(cleanOpt[0])) return true;
+
     return false;
   }
 
@@ -33,8 +42,13 @@ class VideoMcqSummaryCard extends StatelessWidget {
     int correctCount = 0;
     for (int i = 0; i < questions.length; i++) {
       final ans = selectedAnswers[i];
-      if (ans != null && _isOptionCorrect(ans, questions[i].correctAnswer)) {
-        correctCount++;
+      if (ans != null) {
+        final q = questions[i];
+        final optIndex = q.options.indexOf(ans);
+        if (optIndex != -1 &&
+            _isOptionCorrect(ans, q.correctAnswer, optIndex)) {
+          correctCount++;
+        }
       }
     }
     final percentage = questions.isNotEmpty

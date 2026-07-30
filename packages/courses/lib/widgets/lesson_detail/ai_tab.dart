@@ -181,13 +181,17 @@ class _AITabState extends ConsumerState<AITab>
       children: [
         // Scrollable messages area
         Expanded(
-          child: ListView.builder(
-            controller: _scrollController,
-            padding: EdgeInsets.all(design.spacing.md),
+          child: AppSemantics.scrollableList(
             itemCount: _messages.length,
-            itemBuilder: (context, index) {
-              return _buildChatBubble(_messages[index], design);
-            },
+            label: 'AI Chat Messages',
+            child: ListView.builder(
+              controller: _scrollController,
+              padding: EdgeInsets.all(design.spacing.md),
+              itemCount: _messages.length,
+              itemBuilder: (context, index) {
+                return _buildChatBubble(_messages[index], design);
+              },
+            ),
           ),
         ),
         // Pinned composer at bottom

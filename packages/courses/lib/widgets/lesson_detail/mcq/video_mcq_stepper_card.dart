@@ -30,13 +30,22 @@ class VideoMcqStepperCard extends StatelessWidget {
     this.onSeek,
   });
 
-  bool _isOptionCorrect(String option, String correctAnswer) {
-    final cleanOpt = option.trim();
-    final cleanAns = correctAnswer.trim();
+  bool _isOptionCorrect(String option, String correctAnswer, int optionIndex) {
+    final cleanOpt = option.trim().toLowerCase();
+    final cleanAns = correctAnswer.trim().toLowerCase();
     if (cleanOpt.isEmpty || cleanAns.isEmpty) return false;
     if (cleanOpt == cleanAns) return true;
+
+    final letter = String.fromCharCode(65 + optionIndex).toLowerCase();
+    if (cleanAns == letter ||
+        cleanAns == 'option $letter' ||
+        cleanAns.startsWith('$letter)') ||
+        cleanAns.startsWith('$letter.')) {
+      return true;
+    }
+
     if (cleanOpt.startsWith(cleanAns)) return true;
-    if (cleanAns.startsWith(cleanOpt[0])) return true;
+
     return false;
   }
 
@@ -94,31 +103,34 @@ class VideoMcqStepperCard extends StatelessWidget {
       spans.add(
         WidgetSpan(
           alignment: PlaceholderAlignment.middle,
-          child: AppFocusable(
-            onTap: seconds != null && onSeek != null
-                ? () => onSeek!(Duration(seconds: seconds))
-                : null,
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 2),
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: design.colors.accent2.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(design.radius.sm),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    LucideIcons.play,
-                    color: design.colors.accent2,
-                    size: 11,
-                  ),
-                  const SizedBox(width: 3),
-                  AppText.labelBold(
-                    timeStr,
-                    color: design.colors.accent2,
-                  ),
-                ],
+          child: AppSemantics.button(
+            label: 'Play video at $timeStr',
+            child: AppFocusable(
+              onTap: seconds != null && onSeek != null
+                  ? () => onSeek!(Duration(seconds: seconds))
+                  : null,
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: design.colors.accent2.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(design.radius.sm),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      LucideIcons.play,
+                      color: design.colors.accent2,
+                      size: 11,
+                    ),
+                    const SizedBox(width: 3),
+                    AppText.labelBold(
+                      timeStr,
+                      color: design.colors.accent2,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -172,10 +184,12 @@ class VideoMcqStepperCard extends StatelessWidget {
             SizedBox(height: design.spacing.lg),
 
             // Options List
-            ...question.options.map((option) {
+            ...question.options.asMap().entries.map((entry) {
+              final optionIndex = entry.key;
+              final option = entry.value;
               final isOptionSelected = selectedOption == option;
               final isOptionCorrect =
-                  _isOptionCorrect(option, question.correctAnswer);
+                  _isOptionCorrect(option, question.correctAnswer, optionIndex);
 
               Color optionBg = design.colors.surface;
               Color optionBorder = design.colors.divider;
@@ -206,33 +220,37 @@ class VideoMcqStepperCard extends StatelessWidget {
 
               return Padding(
                 padding: EdgeInsets.only(bottom: design.spacing.md),
-                child: AppFocusable(
-                  onTap: isAnswered ? null : () => onSelectOption(option),
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: design.spacing.md,
-                      vertical: design.spacing.md,
-                    ),
-                    decoration: BoxDecoration(
-                      color: optionBg,
-                      borderRadius: BorderRadius.circular(design.radius.md),
-                      border: Border.all(color: optionBorder),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: AppText.cardTitle(
-                            option,
-                            color: optionTextColor,
-                            style: const TextStyle(fontWeight: FontWeight.w400),
+                child: AppSemantics.button(
+                  label: isOptionSelected ? '$option, selected' : option,
+                  child: AppFocusable(
+                    onTap: isAnswered ? null : () => onSelectOption(option),
+                    child: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: design.spacing.md,
+                        vertical: design.spacing.md,
+                      ),
+                      decoration: BoxDecoration(
+                        color: optionBg,
+                        borderRadius: BorderRadius.circular(design.radius.md),
+                        border: Border.all(color: optionBorder),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: AppText.cardTitle(
+                              option,
+                              color: optionTextColor,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w400),
+                            ),
                           ),
-                        ),
-                        if (iconWidget != null) ...[
-                          SizedBox(width: design.spacing.xs),
-                          iconWidget,
+                          if (iconWidget != null) ...[
+                            SizedBox(width: design.spacing.xs),
+                            iconWidget,
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -242,30 +260,38 @@ class VideoMcqStepperCard extends StatelessWidget {
             // Hint Button (Below Options - Only shown before answer is selected)
             if (!isAnswered && question.hint.isNotEmpty) ...[
               SizedBox(height: design.spacing.xs),
-              AppFocusable(
-                onTap: onToggleHint,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: design.spacing.xs),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        LucideIcons.lightbulb,
-                        color: showHint
-                            ? design.colors.accent2
-                            : design.colors.textSecondary,
-                        size: 16,
-                      ),
-                      SizedBox(width: design.spacing.xs),
-                      AppText.labelBold(
-                        showHint
-                            ? L10n.of(context).videoMcqHideHint
-                            : L10n.of(context).videoMcqSeeHint,
-                        color: showHint
-                            ? design.colors.accent2
-                            : design.colors.textSecondary,
-                      ),
-                    ],
+              AppSemantics.button(
+                label: showHint
+                    ? L10n.of(context).videoMcqHideHint
+                    : L10n.of(context).videoMcqSeeHint,
+                child: AppFocusable(
+                  onTap: onToggleHint,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: design.spacing.xs,
+                      vertical: design.spacing.xs,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          LucideIcons.lightbulb,
+                          color: showHint
+                              ? design.colors.accent2
+                              : design.colors.textSecondary,
+                          size: 16,
+                        ),
+                        SizedBox(width: design.spacing.xs),
+                        AppText.labelBold(
+                          showHint
+                              ? L10n.of(context).videoMcqHideHint
+                              : L10n.of(context).videoMcqSeeHint,
+                          color: showHint
+                              ? design.colors.accent2
+                              : design.colors.textSecondary,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
