@@ -359,7 +359,8 @@ class VideoMcqStepperCard extends StatelessWidget {
                   AppIconButton(
                     icon: LucideIcons.chevronLeft,
                     onTap: onPrevious,
-                    accessibilityLabel: 'Previous Question',
+                    accessibilityLabel:
+                        L10n.of(context).videoMcqPreviousQuestion,
                   )
                 else
                   const SizedBox(width: 48, height: 48),
@@ -370,7 +371,7 @@ class VideoMcqStepperCard extends StatelessWidget {
                 AppIconButton(
                   icon: LucideIcons.chevronRight,
                   onTap: onNext,
-                  accessibilityLabel: 'Next Question',
+                  accessibilityLabel: L10n.of(context).videoMcqNextQuestion,
                 ),
               ],
             ),

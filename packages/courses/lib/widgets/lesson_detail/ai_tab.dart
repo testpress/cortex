@@ -233,7 +233,7 @@ class _AITabState extends ConsumerState<AITab>
                   AppIconButton(
                     icon: LucideIcons.sendHorizontal,
                     onTap: isDirty && !_isSubmitting ? _sendMessage : () {},
-                    accessibilityLabel: 'Send Message',
+                    accessibilityLabel: l10n.videoAiSendMessage,
                     color: isDirty && !_isSubmitting
                         ? design.colors.accent2
                         : design.colors.textTertiary,

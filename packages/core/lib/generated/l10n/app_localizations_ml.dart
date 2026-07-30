@@ -1031,6 +1031,29 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
+  String get videoMcqDifficultyEasy => 'എളുപ്പം';
+
+  @override
+  String get videoMcqDifficultyMedium => 'ഇടത്തരം';
+
+  @override
+  String get videoMcqDifficultyHard => 'കഠിനം';
+
+  @override
+  String get videoMcqPreviousQuestion => 'മുൻപത്തെ ചോദ്യം';
+
+  @override
+  String get videoMcqNextQuestion => 'അടുത്ത ചോദ്യം';
+
+  @override
+  String get videoAiSendMessage => 'സന്ദേശം അയക്കുക';
+
+  @override
+  String videoMcqScoreSummary(int correct, int total, int percentage) {
+    return '$total-ൽ $correct ശരിയാണ് ($percentage%)';
+  }
+
+  @override
   String get testExit => 'ടെസ്റ്റ് പുറത്തുകടക്കുക';
 
   @override

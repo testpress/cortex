@@ -496,6 +496,26 @@
       }
     }
   },
+  "videoMcqDifficultyEasy": "Easy",
+  "videoMcqDifficultyMedium": "Medium",
+  "videoMcqDifficultyHard": "Hard",
+  "videoMcqPreviousQuestion": "Previous Question",
+  "videoMcqNextQuestion": "Next Question",
+  "videoAiSendMessage": "Send Message",
+  "videoMcqScoreSummary": "{correct} out of {total} Correct ({percentage}%)",
+  "@videoMcqScoreSummary": {
+    "placeholders": {
+      "correct": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "percentage": {
+        "type": "int"
+      }
+    }
+  },
   "testExit": "Exit Test",
   "testTimeLeft": "{time} left",
   "testQuestionXofY": "Question {index} of {total}",

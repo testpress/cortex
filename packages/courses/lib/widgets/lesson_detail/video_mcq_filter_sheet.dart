@@ -92,21 +92,21 @@ class _VideoMcqFilterSheetState extends State<VideoMcqFilterSheet> {
               Row(
                 children: [
                   _buildChip(
-                    label: 'Easy',
+                    label: L10n.of(context).videoMcqDifficultyEasy,
                     isSelected: _selectedDifficulty == 'easy',
                     onTap: () => setState(() => _selectedDifficulty = 'easy'),
                     design: design,
                   ),
                   SizedBox(width: design.spacing.sm),
                   _buildChip(
-                    label: 'Medium',
+                    label: L10n.of(context).videoMcqDifficultyMedium,
                     isSelected: _selectedDifficulty == 'medium',
                     onTap: () => setState(() => _selectedDifficulty = 'medium'),
                     design: design,
                   ),
                   SizedBox(width: design.spacing.sm),
                   _buildChip(
-                    label: 'Hard',
+                    label: L10n.of(context).videoMcqDifficultyHard,
                     isSelected: _selectedDifficulty == 'hard',
                     onTap: () => setState(() => _selectedDifficulty = 'hard'),
                     design: design,

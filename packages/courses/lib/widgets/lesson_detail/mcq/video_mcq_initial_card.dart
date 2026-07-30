@@ -21,6 +21,12 @@ class VideoMcqInitialCard extends StatelessWidget {
 
     final l10n = L10n.of(context);
 
+    final localizedDifficulty = switch (difficulty.toLowerCase()) {
+      'easy' => l10n.videoMcqDifficultyEasy,
+      'hard' => l10n.videoMcqDifficultyHard,
+      _ => l10n.videoMcqDifficultyMedium,
+    };
+
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: design.spacing.md,
@@ -74,7 +80,7 @@ class VideoMcqInitialCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(design.radius.sm),
                 ),
                 child: AppText.labelBold(
-                  '${difficulty[0].toUpperCase()}${difficulty.substring(1)} • ${l10n.videoMcqQuestionsCount(questionCount)}',
+                  '$localizedDifficulty • ${l10n.videoMcqQuestionsCount(questionCount)}',
                   color: design.colors.accent2,
                 ),
               ),

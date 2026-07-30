@@ -87,7 +87,11 @@ class VideoMcqSummaryCard extends StatelessWidget {
             ),
             SizedBox(height: design.spacing.xs),
             AppText.subtitle(
-              '$correctCount out of ${questions.length} Correct ($percentage%)',
+              L10n.of(context).videoMcqScoreSummary(
+                correctCount,
+                questions.length,
+                percentage,
+              ),
               color: design.colors.textSecondary,
             ),
             SizedBox(height: design.spacing.lg),

@@ -1925,6 +1925,48 @@ abstract class AppLocalizations {
   /// **'{count} Questions'**
   String videoMcqQuestionsCount(int count);
 
+  /// No description provided for @videoMcqDifficultyEasy.
+  ///
+  /// In en, this message translates to:
+  /// **'Easy'**
+  String get videoMcqDifficultyEasy;
+
+  /// No description provided for @videoMcqDifficultyMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get videoMcqDifficultyMedium;
+
+  /// No description provided for @videoMcqDifficultyHard.
+  ///
+  /// In en, this message translates to:
+  /// **'Hard'**
+  String get videoMcqDifficultyHard;
+
+  /// No description provided for @videoMcqPreviousQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous Question'**
+  String get videoMcqPreviousQuestion;
+
+  /// No description provided for @videoMcqNextQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Next Question'**
+  String get videoMcqNextQuestion;
+
+  /// No description provided for @videoAiSendMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Message'**
+  String get videoAiSendMessage;
+
+  /// No description provided for @videoMcqScoreSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{correct} out of {total} Correct ({percentage}%)'**
+  String videoMcqScoreSummary(int correct, int total, int percentage);
+
   /// No description provided for @testExit.
   ///
   /// In en, this message translates to:

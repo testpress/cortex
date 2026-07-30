@@ -1022,6 +1022,29 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get videoMcqDifficultyEasy => 'Easy';
+
+  @override
+  String get videoMcqDifficultyMedium => 'Medium';
+
+  @override
+  String get videoMcqDifficultyHard => 'Hard';
+
+  @override
+  String get videoMcqPreviousQuestion => 'Previous Question';
+
+  @override
+  String get videoMcqNextQuestion => 'Next Question';
+
+  @override
+  String get videoAiSendMessage => 'Send Message';
+
+  @override
+  String videoMcqScoreSummary(int correct, int total, int percentage) {
+    return '$correct out of $total Correct ($percentage%)';
+  }
+
+  @override
   String get testExit => 'Exit Test';
 
   @override

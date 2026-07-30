@@ -1035,6 +1035,29 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
+  String get videoMcqDifficultyEasy => 'எளிது';
+
+  @override
+  String get videoMcqDifficultyMedium => 'நடுத்தரம்';
+
+  @override
+  String get videoMcqDifficultyHard => 'கடினம்';
+
+  @override
+  String get videoMcqPreviousQuestion => 'முந்தைய வினா';
+
+  @override
+  String get videoMcqNextQuestion => 'அடுத்த வினா';
+
+  @override
+  String get videoAiSendMessage => 'செய்தி அனுப்பு';
+
+  @override
+  String videoMcqScoreSummary(int correct, int total, int percentage) {
+    return '$total-இல் $correct சரியானவை ($percentage%)';
+  }
+
+  @override
   String get testExit => 'தேர்விலிருந்து வெளியேறு';
 
   @override
