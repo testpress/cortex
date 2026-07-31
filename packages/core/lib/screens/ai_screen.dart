@@ -5,14 +5,12 @@ import '../data/data.dart';
 
 class AiScreen extends ConsumerWidget {
   final VoidCallback onAskAiPressed;
-  final VoidCallback onCreateCustomExamPressed;
   final VoidCallback onViewAllDoubtsPressed;
   final void Function(String doubtId) onDoubtTapped;
 
   const AiScreen({
     super.key,
     required this.onAskAiPressed,
-    required this.onCreateCustomExamPressed,
     required this.onViewAllDoubtsPressed,
     required this.onDoubtTapped,
   });
@@ -103,18 +101,6 @@ class AiScreen extends ConsumerWidget {
           buttonLabel: l10n.aiSupportAskNowButton,
           buttonIcon: LucideIcons.send,
           onPressed: onAskAiPressed,
-        ),
-        SizedBox(height: design.spacing.md),
-
-        _buildQuickActionCard(
-          design: design,
-          accentColor: design.colors.accent3,
-          cardIcon: LucideIcons.fileText,
-          title: l10n.aiSupportAiExamTitle,
-          subtitle: l10n.aiSupportAiExamSubtitle,
-          buttonLabel: l10n.aiSupportCreateAiExamButton,
-          buttonIcon: LucideIcons.sparkles,
-          onPressed: onCreateCustomExamPressed,
         ),
       ],
     );

@@ -9,8 +9,6 @@ class AiRoutes {
       builder: (context, state) => AiScreen(
         onAskAiPressed: () =>
             context.push('/home/discussions/doubts/ask?isAskAi=true'),
-        onCreateCustomExamPressed: () =>
-            context.push('/exams/create-custom-exam'),
         onViewAllDoubtsPressed: () =>
             context.push('/home/discussions/doubts?filter=ai'),
         onDoubtTapped: (doubtId) =>

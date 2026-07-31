@@ -222,7 +222,7 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
               ],
             ),
           ),
-          if (enableCustomTest && !AppConfig.showAiTab)
+          if (enableCustomTest)
             Positioned(
               bottom: padding.bottom + design.spacing.md,
               right: design.spacing.md,
