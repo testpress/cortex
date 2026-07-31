@@ -25,3 +25,4 @@
 - [x] 4.3 Toggle and speed survive app restart.
 - [x] 4.4 Restore does not delay playback and shows the non-blocking notification with working Reset.
 - [x] 4.5 `flutter analyze` and relevant unit/widget tests pass.
+- [x] 4.6 QA: during buffering, seeking, or pausing, the remembered speed is never silently overwritten; a restored speed (e.g. 2x) stays intact after playback hiccups and variable-frame-rate content.
