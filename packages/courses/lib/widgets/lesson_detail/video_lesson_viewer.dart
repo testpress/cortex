@@ -184,22 +184,18 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
                 right: 0,
                 child: Align(
                   alignment: Alignment.bottomCenter,
-                  child: Material(
-                    elevation: 4.0,
-                    borderRadius: BorderRadius.circular(18.0),
-                    clipBehavior: Clip.antiAlias,
-                    child: AppButton.primary(
-                      label: L10n.of(context).videoLessonSyncToVideo,
-                      onPressed: () {
-                        _isAutoScrollEnabledNotifier.value = true;
-                      },
-                      height: 36.0,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: design.spacing.md),
-                      leading:
-                          const Icon(Icons.sync, size: 16, color: Colors.white),
-                      labelStyle: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.bold),
+                  child: AppButton.primary(
+                    label: L10n.of(context).videoLessonSyncToVideo,
+                    onPressed: () {
+                      _isAutoScrollEnabledNotifier.value = true;
+                    },
+                    height: 48.0,
+                    padding:
+                        EdgeInsets.symmetric(horizontal: design.spacing.md),
+                    leading: Icon(
+                      LucideIcons.refreshCw,
+                      size: design.iconSize.sm,
+                      color: design.colors.onPrimary,
                     ),
                   ),
                 ),

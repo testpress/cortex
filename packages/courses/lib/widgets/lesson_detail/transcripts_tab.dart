@@ -358,26 +358,42 @@ class _TranscriptsTabState extends ConsumerState<TranscriptsTab>
       color: design.colors.accent2,
     );
 
-    return Padding(
-      padding: EdgeInsets.only(bottom: isLast ? 0 : design.spacing.lg),
-      child: GestureDetector(
-        onTap: onTap,
-        behavior: HitTestBehavior.opaque,
-        child: Text.rich(
-          TextSpan(
-            children: [
+    final lineContent = ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 48),
+      child: Padding(
+        padding: EdgeInsets.only(bottom: isLast ? 0 : design.spacing.lg),
+        child: GestureDetector(
+          onTap: onTap,
+          behavior: HitTestBehavior.opaque,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text.rich(
               TextSpan(
-                text: '$time  ',
-                style: timeStyle,
+                children: [
+                  TextSpan(
+                    text: '$time  ',
+                    style: timeStyle,
+                  ),
+                  TextSpan(
+                    text: text,
+                    style: textStyle,
+                  ),
+                ],
               ),
-              TextSpan(
-                text: text,
-                style: textStyle,
-              ),
-            ],
+            ),
           ),
         ),
       ),
+    );
+
+    if (onTap == null) {
+      return lineContent;
+    }
+
+    return AppSemantics.button(
+      label: '$time. $text',
+      onTap: onTap,
+      child: lineContent,
     );
   }
 
@@ -391,29 +407,33 @@ class _TranscriptsTabState extends ConsumerState<TranscriptsTab>
         }
         return false;
       },
-      child: SingleChildScrollView(
-        controller: _scrollController,
-        physics: const ClampingScrollPhysics(),
-        padding: EdgeInsets.all(design.spacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (int index = 0; index < cues.length; index++)
-              Container(
-                key: _itemKeys.putIfAbsent(index, () => GlobalKey()),
-                child: _buildTranscriptLine(
-                  cues[index].displayStartTime,
-                  cues[index].text,
-                  design,
-                  isLast: index == cues.length - 1,
-                  isActive: index == _activeCueIndex,
-                  onTap: () {
-                    widget.isAutoScrollEnabledNotifier?.value = true;
-                    _handleSeek(cues[index].displayStartTime);
-                  },
+      child: AppSemantics.scrollableList(
+        itemCount: cues.length,
+        label: L10n.of(context).videoLessonTranscript,
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          physics: const ClampingScrollPhysics(),
+          padding: EdgeInsets.all(design.spacing.md),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (int index = 0; index < cues.length; index++)
+                Container(
+                  key: _itemKeys.putIfAbsent(index, () => GlobalKey()),
+                  child: _buildTranscriptLine(
+                    cues[index].displayStartTime,
+                    cues[index].text,
+                    design,
+                    isLast: index == cues.length - 1,
+                    isActive: index == _activeCueIndex,
+                    onTap: () {
+                      widget.isAutoScrollEnabledNotifier?.value = true;
+                      _handleSeek(cues[index].displayStartTime);
+                    },
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );
