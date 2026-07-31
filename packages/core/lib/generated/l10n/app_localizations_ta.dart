@@ -905,6 +905,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get videoLessonTabTranscript => 'டிரான்ஸ்கிரிப்ட்';
 
   @override
+  String get videoLessonSyncToVideo => 'வீடியோவுடன் ஒத்திசை';
+
+  @override
   String get videoLessonTabAskDoubt => 'சந்தேகம் கேள்';
 
   @override

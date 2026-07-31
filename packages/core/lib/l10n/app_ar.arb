@@ -292,6 +292,7 @@
   "openDetailedLesson": "افتح الدرس: {title}",
   "videoLessonTabNotes": "ملاحظات",
   "videoLessonTabTranscript": "النص",
+  "videoLessonSyncToVideo": "مزامنة مع الفيديو",
   "videoLessonTabAskDoubt": "اسأل سؤال",
   "videoLessonTabAiSupport": "دردشة AI",
   "videoLessonLectureNotes": "ملاحظات المحاضرة",

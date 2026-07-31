@@ -890,6 +890,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get videoLessonTabTranscript => 'النص';
 
   @override
+  String get videoLessonSyncToVideo => 'مزامنة مع الفيديو';
+
+  @override
   String get videoLessonTabAskDoubt => 'اسأل سؤال';
 
   @override

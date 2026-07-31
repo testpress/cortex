@@ -893,6 +893,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get videoLessonTabTranscript => 'Transcript';
 
   @override
+  String get videoLessonSyncToVideo => 'Sync to Video';
+
+  @override
   String get videoLessonTabAskDoubt => 'Ask Doubt';
 
   @override

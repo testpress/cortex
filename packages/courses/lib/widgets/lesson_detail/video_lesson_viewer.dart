@@ -34,6 +34,9 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
   late TabController _tabController;
   late List<VideoLessonTab> _activeTabs;
   final _videoPlayerKey = GlobalKey<CustomVideoPlayerState>();
+  final _videoPositionNotifier = ValueNotifier<Duration>(Duration.zero);
+  final _isAutoScrollEnabledNotifier = ValueNotifier<bool>(true);
+  int _currentTabIndex = 0;
 
   void _handleSeek(Duration target) {
     _videoPlayerKey.currentState?.seek(target);
@@ -70,6 +73,20 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
       vsync: this,
       animationDuration: Duration.zero,
     );
+    _currentTabIndex = _tabController.index;
+    _tabController.addListener(_handleTabSelection);
+  }
+
+  void _handleTabSelection() {
+    if (_tabController.index != _currentTabIndex) {
+      _currentTabIndex = _tabController.index;
+      final isTranscriptTab =
+          _activeTabs[_currentTabIndex] == VideoLessonTab.transcript;
+      if (isTranscriptTab) {
+        _isAutoScrollEnabledNotifier.value = true;
+      }
+      setState(() {});
+    }
   }
 
   @override
@@ -95,6 +112,7 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
     }
 
     if (tabsChanged) {
+      _tabController.removeListener(_handleTabSelection);
       _tabController.dispose();
       _activeTabs = newTabs;
       _tabController = TabController(
@@ -102,12 +120,16 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
         vsync: this,
         animationDuration: Duration.zero,
       );
+      _tabController.addListener(_handleTabSelection);
     }
   }
 
   @override
   void dispose() {
+    _tabController.removeListener(_handleTabSelection);
     _tabController.dispose();
+    _videoPositionNotifier.dispose();
+    _isAutoScrollEnabledNotifier.dispose();
     super.dispose();
   }
 
@@ -117,34 +139,70 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Stack(
       children: [
-        // By keeping the tree structure identical (Column -> SizedBox -> Player),
-        // Flutter will NOT kill and recreate the video player state.
-        // We simply shrink its background height in landscape to prevent the 264px overflow.
-        SizedBox(
-          height: isLandscape ? 0 : null,
-          child: _buildVideoSection(design),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            color: design.colors.surface,
-            border: Border(
-              bottom: BorderSide(
-                color: design.colors.divider.withValues(alpha: 0.5),
-                width: 1,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // By keeping the tree structure identical (Column -> SizedBox -> Player),
+            // Flutter will NOT kill and recreate the video player state.
+            // We simply shrink its background height in landscape to prevent the 264px overflow.
+            SizedBox(
+              height: isLandscape ? 0 : null,
+              child: _buildVideoSection(design),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: design.colors.surface,
+                border: Border(
+                  bottom: BorderSide(
+                    color: design.colors.divider.withValues(alpha: 0.5),
+                    width: 1,
+                  ),
+                ),
+              ),
+              child: _buildTabBar(context, design),
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                physics: const NeverScrollableScrollPhysics(),
+                children: _activeTabs.map(_buildTabWidget).toList(),
               ),
             ),
-          ),
-          child: _buildTabBar(context, design),
+          ],
         ),
-        Expanded(
-          child: TabBarView(
-            controller: _tabController,
-            physics: const NeverScrollableScrollPhysics(),
-            children: _activeTabs.map(_buildTabWidget).toList(),
-          ),
+        ValueListenableBuilder<bool>(
+          valueListenable: _isAutoScrollEnabledNotifier,
+          builder: (context, isAutoScrollEnabled, _) {
+            final isTranscriptTab =
+                _activeTabs[_tabController.index] == VideoLessonTab.transcript;
+            if (!isAutoScrollEnabled && isTranscriptTab) {
+              return Positioned(
+                bottom: widget.footerBuilder != null ? 60 : 12,
+                left: 0,
+                right: 0,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: AppButton.primary(
+                    label: L10n.of(context).videoLessonSyncToVideo,
+                    onPressed: () {
+                      _isAutoScrollEnabledNotifier.value = true;
+                    },
+                    height: 48.0,
+                    padding:
+                        EdgeInsets.symmetric(horizontal: design.spacing.md),
+                    leading: Icon(
+                      LucideIcons.refreshCw,
+                      size: design.iconSize.sm,
+                      color: design.colors.onPrimary,
+                    ),
+                  ),
+                ),
+              );
+            }
+            return const SizedBox.shrink();
+          },
         ),
       ],
     );
@@ -158,10 +216,14 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
                 lesson: widget.lesson, isSliver: true, onSeek: _handleSeek),
             isSliver: true);
       case VideoLessonTab.transcript:
-        return _buildTabContent(
-            TranscriptsTab(
-                lesson: widget.lesson, isSliver: true, onSeek: _handleSeek),
-            isSliver: true);
+        return TranscriptsTab(
+          lesson: widget.lesson,
+          onSeek: _handleSeek,
+          videoPositionNotifier: _videoPositionNotifier,
+          isAutoScrollEnabledNotifier: _isAutoScrollEnabledNotifier,
+          isActive:
+              _activeTabs[_tabController.index] == VideoLessonTab.transcript,
+        );
       case VideoLessonTab.askDoubt:
         return DoubtTab(
           lesson: widget.lesson,
@@ -191,6 +253,7 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
 
   Widget _buildTabContent(Widget child, {bool isSliver = false}) {
     final design = Design.of(context);
+
     return CustomScrollView(
       physics: const ClampingScrollPhysics(),
       slivers: [
@@ -230,6 +293,12 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
       thumbnailUrl: widget.lesson.image,
       initialPosition: initialPos,
       onComplete: widget.onComplete,
+      onPositionChanged: (pos) {
+        _videoPositionNotifier.value = pos;
+      },
+      onSeekOccurred: () {
+        _isAutoScrollEnabledNotifier.value = true;
+      },
     );
   }
 
