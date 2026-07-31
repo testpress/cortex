@@ -1504,6 +1504,22 @@ class AppLocalizationsTa extends AppLocalizations {
   String get settingsAutoPlaySubtitle => 'அடுத்த பாடத்தை தானாகத் தொடங்கு';
 
   @override
+  String get settingsRememberPlaybackSpeed =>
+      'பிளேபேக் வேகத்தை நினைவில் கொள்ளவும்';
+
+  @override
+  String get settingsRememberPlaybackSpeedSubtitle =>
+      'கடைசியாகப் பயன்படுத்திய வேகத்தில் ஒவ்வொரு வீடியோவையும் தொடங்கவும்';
+
+  @override
+  String playbackSpeedRestored(String speed) {
+    return '${speed}x வேகத்தில் இயங்குகிறது';
+  }
+
+  @override
+  String get playbackSpeedReset => 'மீட்டமை';
+
+  @override
   String get settingsHighContrastSubtitle => 'காட்சி முரண்பாட்டை அதிகரிக்கவும்';
 
   @override

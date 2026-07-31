@@ -1479,6 +1479,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsAutoPlaySubtitle => 'بدء الدرس التالي تلقائيًا';
 
   @override
+  String get settingsRememberPlaybackSpeed => 'تذكر سرعة التشغيل';
+
+  @override
+  String get settingsRememberPlaybackSpeedSubtitle =>
+      'ابدأ كل فيديو بالسرعة التي استخدمتها آخر مرة';
+
+  @override
+  String playbackSpeedRestored(String speed) {
+    return 'يتم التشغيل بسرعة ${speed}x';
+  }
+
+  @override
+  String get playbackSpeedReset => 'إعادة تعيين';
+
+  @override
   String get settingsHighContrastSubtitle => 'زيادة التباين البصري';
 
   @override

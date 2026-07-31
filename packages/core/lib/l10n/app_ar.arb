@@ -510,6 +510,17 @@
   "settingsRecommended": "موصى به",
   "settingsDefault": "افتراضي",
   "settingsAutoPlaySubtitle": "بدء الدرس التالي تلقائيًا",
+  "settingsRememberPlaybackSpeed": "تذكر سرعة التشغيل",
+  "settingsRememberPlaybackSpeedSubtitle": "ابدأ كل فيديو بالسرعة التي استخدمتها آخر مرة",
+  "playbackSpeedRestored": "يتم التشغيل بسرعة {speed}x",
+  "@playbackSpeedRestored": {
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
+  "playbackSpeedReset": "إعادة تعيين",
   "settingsHighContrastSubtitle": "زيادة التباين البصري",
   "editProfileTitle": "تعديل الملف الشخصي",
   "editProfileNameLabel": "الاسم الكامل",

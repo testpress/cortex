@@ -129,6 +129,7 @@ class AppDatabase extends _$AppDatabase {
           textSize: AppSettingsDefaults.textSize,
           highContrast: AppSettingsDefaults.highContrast,
           appLanguage: AppSettingsDefaults.appLanguage,
+          rememberPlaybackSpeed: AppSettingsDefaults.rememberPlaybackSpeed,
         );
       }
       return entry;
@@ -136,10 +137,30 @@ class AppDatabase extends _$AppDatabase {
   }
 
   /// Update app settings.
-  Future<void> updateSettings(AppSettingsTableCompanion companion) {
+  Future<void> updateSettings(AppSettingsTableCompanion companion) async {
+    // Ensure the singleton row exists before applying a partial update,
+    // otherwise an UPDATE would affect zero rows.
+    await into(appSettingsTable).insert(
+      const AppSettingsTableCompanion(id: Value(1)),
+      mode: InsertMode.insertOrIgnore,
+    );
     return (update(
       appSettingsTable,
-    )..where((t) => t.id.equals(1))).write(companion);
+    )..where((t) => t.id.equals(1))).write(companion).then((_) {});
+  }
+
+  /// Toggle whether the last-used playback speed is remembered globally.
+  Future<void> setRememberPlaybackSpeed(bool enabled) {
+    return updateSettings(
+      AppSettingsTableCompanion(rememberPlaybackSpeed: Value(enabled)),
+    );
+  }
+
+  /// Persist the last-used global playback speed (only while the toggle is on).
+  Future<void> setGlobalPlaybackSpeed(double speed) {
+    return updateSettings(
+      AppSettingsTableCompanion(globalPlaybackSpeed: Value(speed)),
+    );
   }
 
   /// Marks an attempt ID as quiz-mode in the DB.

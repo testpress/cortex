@@ -22,6 +22,13 @@ class AppSettingsTable extends Table {
   TextColumn get appLanguage =>
       text().withDefault(const Constant(AppSettingsDefaults.appLanguage))();
 
+  BoolColumn get rememberPlaybackSpeed => boolean().withDefault(
+    const Constant(AppSettingsDefaults.rememberPlaybackSpeed),
+  )();
+
+  /// Last-used global playback speed (e.g. 2.0). Null when not set.
+  RealColumn get globalPlaybackSpeed => real().nullable()();
+
   /// JSON-encoded map of attemptId → true for quiz-mode attempts.
   /// Used to restore quiz mode on resume when the backend drops `attempt_type`.
   TextColumn get quizModeAttemptsJson => text().nullable()();

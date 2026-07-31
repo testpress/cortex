@@ -34,41 +34,6 @@ class AppearanceSettingsNotifier extends _$AppearanceSettingsNotifier {
 }
 
 @Riverpod(keepAlive: true)
-class PlaybackSettingsNotifier extends _$PlaybackSettingsNotifier {
-  @override
-  Future<PlaybackSettings> build() async {
-    final repository = await ref.watch(settingsRepositoryProvider.future);
-    final settings = await repository.getSettings();
-
-    final quality = VideoQuality.values.firstWhere(
-      (e) => e.name == settings.videoQuality,
-      orElse: () => VideoQuality.auto,
-    );
-
-    return PlaybackSettings(
-      quality: quality,
-      autoPlayNext: settings.autoPlayNext,
-    );
-  }
-
-  Future<void> updateQuality(VideoQuality quality) async {
-    final repository = await ref.read(settingsRepositoryProvider.future);
-    await repository.updateSettings(videoQuality: quality.name);
-
-    final current = await future;
-    state = AsyncValue.data(current.copyWith(quality: quality));
-  }
-
-  Future<void> updateAutoPlay(bool enabled) async {
-    final repository = await ref.read(settingsRepositoryProvider.future);
-    await repository.updateSettings(autoPlayNext: enabled);
-
-    final current = await future;
-    state = AsyncValue.data(current.copyWith(autoPlayNext: enabled));
-  }
-}
-
-@Riverpod(keepAlive: true)
 class AccessibilitySettingsNotifier extends _$AccessibilitySettingsNotifier {
   @override
   Future<AccessibilitySettings> build() async {

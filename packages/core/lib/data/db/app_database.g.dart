@@ -6595,6 +6595,32 @@ class $AppSettingsTableTable extends AppSettingsTable
     requiredDuringInsert: false,
     defaultValue: const Constant(AppSettingsDefaults.appLanguage),
   );
+  static const VerificationMeta _rememberPlaybackSpeedMeta =
+      const VerificationMeta('rememberPlaybackSpeed');
+  @override
+  late final GeneratedColumn<bool> rememberPlaybackSpeed =
+      GeneratedColumn<bool>(
+        'remember_playback_speed',
+        aliasedName,
+        false,
+        type: DriftSqlType.bool,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("remember_playback_speed" IN (0, 1))',
+        ),
+        defaultValue: const Constant(AppSettingsDefaults.rememberPlaybackSpeed),
+      );
+  static const VerificationMeta _globalPlaybackSpeedMeta =
+      const VerificationMeta('globalPlaybackSpeed');
+  @override
+  late final GeneratedColumn<double> globalPlaybackSpeed =
+      GeneratedColumn<double>(
+        'global_playback_speed',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _quizModeAttemptsJsonMeta =
       const VerificationMeta('quizModeAttemptsJson');
   @override
@@ -6615,6 +6641,8 @@ class $AppSettingsTableTable extends AppSettingsTable
     textSize,
     highContrast,
     appLanguage,
+    rememberPlaybackSpeed,
+    globalPlaybackSpeed,
     quizModeAttemptsJson,
   ];
   @override
@@ -6683,6 +6711,24 @@ class $AppSettingsTableTable extends AppSettingsTable
         ),
       );
     }
+    if (data.containsKey('remember_playback_speed')) {
+      context.handle(
+        _rememberPlaybackSpeedMeta,
+        rememberPlaybackSpeed.isAcceptableOrUnknown(
+          data['remember_playback_speed']!,
+          _rememberPlaybackSpeedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('global_playback_speed')) {
+      context.handle(
+        _globalPlaybackSpeedMeta,
+        globalPlaybackSpeed.isAcceptableOrUnknown(
+          data['global_playback_speed']!,
+          _globalPlaybackSpeedMeta,
+        ),
+      );
+    }
     if (data.containsKey('quiz_mode_attempts_json')) {
       context.handle(
         _quizModeAttemptsJsonMeta,
@@ -6729,6 +6775,14 @@ class $AppSettingsTableTable extends AppSettingsTable
         DriftSqlType.string,
         data['${effectivePrefix}app_language'],
       )!,
+      rememberPlaybackSpeed: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}remember_playback_speed'],
+      )!,
+      globalPlaybackSpeed: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}global_playback_speed'],
+      ),
       quizModeAttemptsJson: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}quiz_mode_attempts_json'],
@@ -6751,6 +6805,10 @@ class AppSettingsTableData extends DataClass
   final String textSize;
   final bool highContrast;
   final String appLanguage;
+  final bool rememberPlaybackSpeed;
+
+  /// Last-used global playback speed (e.g. 2.0). Null when not set.
+  final double? globalPlaybackSpeed;
 
   /// JSON-encoded map of attemptId → true for quiz-mode attempts.
   /// Used to restore quiz mode on resume when the backend drops `attempt_type`.
@@ -6763,6 +6821,8 @@ class AppSettingsTableData extends DataClass
     required this.textSize,
     required this.highContrast,
     required this.appLanguage,
+    required this.rememberPlaybackSpeed,
+    this.globalPlaybackSpeed,
     this.quizModeAttemptsJson,
   });
   @override
@@ -6775,6 +6835,10 @@ class AppSettingsTableData extends DataClass
     map['text_size'] = Variable<String>(textSize);
     map['high_contrast'] = Variable<bool>(highContrast);
     map['app_language'] = Variable<String>(appLanguage);
+    map['remember_playback_speed'] = Variable<bool>(rememberPlaybackSpeed);
+    if (!nullToAbsent || globalPlaybackSpeed != null) {
+      map['global_playback_speed'] = Variable<double>(globalPlaybackSpeed);
+    }
     if (!nullToAbsent || quizModeAttemptsJson != null) {
       map['quiz_mode_attempts_json'] = Variable<String>(quizModeAttemptsJson);
     }
@@ -6790,6 +6854,10 @@ class AppSettingsTableData extends DataClass
       textSize: Value(textSize),
       highContrast: Value(highContrast),
       appLanguage: Value(appLanguage),
+      rememberPlaybackSpeed: Value(rememberPlaybackSpeed),
+      globalPlaybackSpeed: globalPlaybackSpeed == null && nullToAbsent
+          ? const Value.absent()
+          : Value(globalPlaybackSpeed),
       quizModeAttemptsJson: quizModeAttemptsJson == null && nullToAbsent
           ? const Value.absent()
           : Value(quizModeAttemptsJson),
@@ -6809,6 +6877,12 @@ class AppSettingsTableData extends DataClass
       textSize: serializer.fromJson<String>(json['textSize']),
       highContrast: serializer.fromJson<bool>(json['highContrast']),
       appLanguage: serializer.fromJson<String>(json['appLanguage']),
+      rememberPlaybackSpeed: serializer.fromJson<bool>(
+        json['rememberPlaybackSpeed'],
+      ),
+      globalPlaybackSpeed: serializer.fromJson<double?>(
+        json['globalPlaybackSpeed'],
+      ),
       quizModeAttemptsJson: serializer.fromJson<String?>(
         json['quizModeAttemptsJson'],
       ),
@@ -6825,6 +6899,8 @@ class AppSettingsTableData extends DataClass
       'textSize': serializer.toJson<String>(textSize),
       'highContrast': serializer.toJson<bool>(highContrast),
       'appLanguage': serializer.toJson<String>(appLanguage),
+      'rememberPlaybackSpeed': serializer.toJson<bool>(rememberPlaybackSpeed),
+      'globalPlaybackSpeed': serializer.toJson<double?>(globalPlaybackSpeed),
       'quizModeAttemptsJson': serializer.toJson<String?>(quizModeAttemptsJson),
     };
   }
@@ -6837,6 +6913,8 @@ class AppSettingsTableData extends DataClass
     String? textSize,
     bool? highContrast,
     String? appLanguage,
+    bool? rememberPlaybackSpeed,
+    Value<double?> globalPlaybackSpeed = const Value.absent(),
     Value<String?> quizModeAttemptsJson = const Value.absent(),
   }) => AppSettingsTableData(
     id: id ?? this.id,
@@ -6846,6 +6924,10 @@ class AppSettingsTableData extends DataClass
     textSize: textSize ?? this.textSize,
     highContrast: highContrast ?? this.highContrast,
     appLanguage: appLanguage ?? this.appLanguage,
+    rememberPlaybackSpeed: rememberPlaybackSpeed ?? this.rememberPlaybackSpeed,
+    globalPlaybackSpeed: globalPlaybackSpeed.present
+        ? globalPlaybackSpeed.value
+        : this.globalPlaybackSpeed,
     quizModeAttemptsJson: quizModeAttemptsJson.present
         ? quizModeAttemptsJson.value
         : this.quizModeAttemptsJson,
@@ -6869,6 +6951,12 @@ class AppSettingsTableData extends DataClass
       appLanguage: data.appLanguage.present
           ? data.appLanguage.value
           : this.appLanguage,
+      rememberPlaybackSpeed: data.rememberPlaybackSpeed.present
+          ? data.rememberPlaybackSpeed.value
+          : this.rememberPlaybackSpeed,
+      globalPlaybackSpeed: data.globalPlaybackSpeed.present
+          ? data.globalPlaybackSpeed.value
+          : this.globalPlaybackSpeed,
       quizModeAttemptsJson: data.quizModeAttemptsJson.present
           ? data.quizModeAttemptsJson.value
           : this.quizModeAttemptsJson,
@@ -6885,6 +6973,8 @@ class AppSettingsTableData extends DataClass
           ..write('textSize: $textSize, ')
           ..write('highContrast: $highContrast, ')
           ..write('appLanguage: $appLanguage, ')
+          ..write('rememberPlaybackSpeed: $rememberPlaybackSpeed, ')
+          ..write('globalPlaybackSpeed: $globalPlaybackSpeed, ')
           ..write('quizModeAttemptsJson: $quizModeAttemptsJson')
           ..write(')'))
         .toString();
@@ -6899,6 +6989,8 @@ class AppSettingsTableData extends DataClass
     textSize,
     highContrast,
     appLanguage,
+    rememberPlaybackSpeed,
+    globalPlaybackSpeed,
     quizModeAttemptsJson,
   );
   @override
@@ -6912,6 +7004,8 @@ class AppSettingsTableData extends DataClass
           other.textSize == this.textSize &&
           other.highContrast == this.highContrast &&
           other.appLanguage == this.appLanguage &&
+          other.rememberPlaybackSpeed == this.rememberPlaybackSpeed &&
+          other.globalPlaybackSpeed == this.globalPlaybackSpeed &&
           other.quizModeAttemptsJson == this.quizModeAttemptsJson);
 }
 
@@ -6923,6 +7017,8 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
   final Value<String> textSize;
   final Value<bool> highContrast;
   final Value<String> appLanguage;
+  final Value<bool> rememberPlaybackSpeed;
+  final Value<double?> globalPlaybackSpeed;
   final Value<String?> quizModeAttemptsJson;
   const AppSettingsTableCompanion({
     this.id = const Value.absent(),
@@ -6932,6 +7028,8 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
     this.textSize = const Value.absent(),
     this.highContrast = const Value.absent(),
     this.appLanguage = const Value.absent(),
+    this.rememberPlaybackSpeed = const Value.absent(),
+    this.globalPlaybackSpeed = const Value.absent(),
     this.quizModeAttemptsJson = const Value.absent(),
   });
   AppSettingsTableCompanion.insert({
@@ -6942,6 +7040,8 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
     this.textSize = const Value.absent(),
     this.highContrast = const Value.absent(),
     this.appLanguage = const Value.absent(),
+    this.rememberPlaybackSpeed = const Value.absent(),
+    this.globalPlaybackSpeed = const Value.absent(),
     this.quizModeAttemptsJson = const Value.absent(),
   });
   static Insertable<AppSettingsTableData> custom({
@@ -6952,6 +7052,8 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
     Expression<String>? textSize,
     Expression<bool>? highContrast,
     Expression<String>? appLanguage,
+    Expression<bool>? rememberPlaybackSpeed,
+    Expression<double>? globalPlaybackSpeed,
     Expression<String>? quizModeAttemptsJson,
   }) {
     return RawValuesInsertable({
@@ -6962,6 +7064,10 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
       if (textSize != null) 'text_size': textSize,
       if (highContrast != null) 'high_contrast': highContrast,
       if (appLanguage != null) 'app_language': appLanguage,
+      if (rememberPlaybackSpeed != null)
+        'remember_playback_speed': rememberPlaybackSpeed,
+      if (globalPlaybackSpeed != null)
+        'global_playback_speed': globalPlaybackSpeed,
       if (quizModeAttemptsJson != null)
         'quiz_mode_attempts_json': quizModeAttemptsJson,
     });
@@ -6975,6 +7081,8 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
     Value<String>? textSize,
     Value<bool>? highContrast,
     Value<String>? appLanguage,
+    Value<bool>? rememberPlaybackSpeed,
+    Value<double?>? globalPlaybackSpeed,
     Value<String?>? quizModeAttemptsJson,
   }) {
     return AppSettingsTableCompanion(
@@ -6985,6 +7093,9 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
       textSize: textSize ?? this.textSize,
       highContrast: highContrast ?? this.highContrast,
       appLanguage: appLanguage ?? this.appLanguage,
+      rememberPlaybackSpeed:
+          rememberPlaybackSpeed ?? this.rememberPlaybackSpeed,
+      globalPlaybackSpeed: globalPlaybackSpeed ?? this.globalPlaybackSpeed,
       quizModeAttemptsJson: quizModeAttemptsJson ?? this.quizModeAttemptsJson,
     );
   }
@@ -7013,6 +7124,16 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
     if (appLanguage.present) {
       map['app_language'] = Variable<String>(appLanguage.value);
     }
+    if (rememberPlaybackSpeed.present) {
+      map['remember_playback_speed'] = Variable<bool>(
+        rememberPlaybackSpeed.value,
+      );
+    }
+    if (globalPlaybackSpeed.present) {
+      map['global_playback_speed'] = Variable<double>(
+        globalPlaybackSpeed.value,
+      );
+    }
     if (quizModeAttemptsJson.present) {
       map['quiz_mode_attempts_json'] = Variable<String>(
         quizModeAttemptsJson.value,
@@ -7031,6 +7152,8 @@ class AppSettingsTableCompanion extends UpdateCompanion<AppSettingsTableData> {
           ..write('textSize: $textSize, ')
           ..write('highContrast: $highContrast, ')
           ..write('appLanguage: $appLanguage, ')
+          ..write('rememberPlaybackSpeed: $rememberPlaybackSpeed, ')
+          ..write('globalPlaybackSpeed: $globalPlaybackSpeed, ')
           ..write('quizModeAttemptsJson: $quizModeAttemptsJson')
           ..write(')'))
         .toString();
@@ -19803,6 +19926,8 @@ typedef $$AppSettingsTableTableCreateCompanionBuilder =
       Value<String> textSize,
       Value<bool> highContrast,
       Value<String> appLanguage,
+      Value<bool> rememberPlaybackSpeed,
+      Value<double?> globalPlaybackSpeed,
       Value<String?> quizModeAttemptsJson,
     });
 typedef $$AppSettingsTableTableUpdateCompanionBuilder =
@@ -19814,6 +19939,8 @@ typedef $$AppSettingsTableTableUpdateCompanionBuilder =
       Value<String> textSize,
       Value<bool> highContrast,
       Value<String> appLanguage,
+      Value<bool> rememberPlaybackSpeed,
+      Value<double?> globalPlaybackSpeed,
       Value<String?> quizModeAttemptsJson,
     });
 
@@ -19858,6 +19985,16 @@ class $$AppSettingsTableTableFilterComposer
 
   ColumnFilters<String> get appLanguage => $composableBuilder(
     column: $table.appLanguage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get rememberPlaybackSpeed => $composableBuilder(
+    column: $table.rememberPlaybackSpeed,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get globalPlaybackSpeed => $composableBuilder(
+    column: $table.globalPlaybackSpeed,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -19911,6 +20048,16 @@ class $$AppSettingsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get rememberPlaybackSpeed => $composableBuilder(
+    column: $table.rememberPlaybackSpeed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get globalPlaybackSpeed => $composableBuilder(
+    column: $table.globalPlaybackSpeed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get quizModeAttemptsJson => $composableBuilder(
     column: $table.quizModeAttemptsJson,
     builder: (column) => ColumnOrderings(column),
@@ -19954,6 +20101,16 @@ class $$AppSettingsTableTableAnnotationComposer
 
   GeneratedColumn<String> get appLanguage => $composableBuilder(
     column: $table.appLanguage,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get rememberPlaybackSpeed => $composableBuilder(
+    column: $table.rememberPlaybackSpeed,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get globalPlaybackSpeed => $composableBuilder(
+    column: $table.globalPlaybackSpeed,
     builder: (column) => column,
   );
 
@@ -20007,6 +20164,8 @@ class $$AppSettingsTableTableTableManager
                 Value<String> textSize = const Value.absent(),
                 Value<bool> highContrast = const Value.absent(),
                 Value<String> appLanguage = const Value.absent(),
+                Value<bool> rememberPlaybackSpeed = const Value.absent(),
+                Value<double?> globalPlaybackSpeed = const Value.absent(),
                 Value<String?> quizModeAttemptsJson = const Value.absent(),
               }) => AppSettingsTableCompanion(
                 id: id,
@@ -20016,6 +20175,8 @@ class $$AppSettingsTableTableTableManager
                 textSize: textSize,
                 highContrast: highContrast,
                 appLanguage: appLanguage,
+                rememberPlaybackSpeed: rememberPlaybackSpeed,
+                globalPlaybackSpeed: globalPlaybackSpeed,
                 quizModeAttemptsJson: quizModeAttemptsJson,
               ),
           createCompanionCallback:
@@ -20027,6 +20188,8 @@ class $$AppSettingsTableTableTableManager
                 Value<String> textSize = const Value.absent(),
                 Value<bool> highContrast = const Value.absent(),
                 Value<String> appLanguage = const Value.absent(),
+                Value<bool> rememberPlaybackSpeed = const Value.absent(),
+                Value<double?> globalPlaybackSpeed = const Value.absent(),
                 Value<String?> quizModeAttemptsJson = const Value.absent(),
               }) => AppSettingsTableCompanion.insert(
                 id: id,
@@ -20036,6 +20199,8 @@ class $$AppSettingsTableTableTableManager
                 textSize: textSize,
                 highContrast: highContrast,
                 appLanguage: appLanguage,
+                rememberPlaybackSpeed: rememberPlaybackSpeed,
+                globalPlaybackSpeed: globalPlaybackSpeed,
                 quizModeAttemptsJson: quizModeAttemptsJson,
               ),
           withReferenceMapper: (p0) => p0

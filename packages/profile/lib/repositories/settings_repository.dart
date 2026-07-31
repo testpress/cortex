@@ -20,6 +20,8 @@ class SettingsRepository {
     String? textSize,
     bool? highContrast,
     String? appLanguage,
+    bool? rememberPlaybackSpeed,
+    double? globalPlaybackSpeed,
   }) {
     return _db.updateSettings(
       AppSettingsTableCompanion(
@@ -38,6 +40,12 @@ class SettingsRepository {
             : const Value.absent(),
         appLanguage: appLanguage != null
             ? Value(appLanguage)
+            : const Value.absent(),
+        rememberPlaybackSpeed: rememberPlaybackSpeed != null
+            ? Value(rememberPlaybackSpeed)
+            : const Value.absent(),
+        globalPlaybackSpeed: globalPlaybackSpeed != null
+            ? Value(globalPlaybackSpeed)
             : const Value.absent(),
       ),
     );

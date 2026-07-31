@@ -1264,6 +1264,24 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
           as _i6.Future<void>);
 
   @override
+  _i6.Future<void> setRememberPlaybackSpeed(bool? enabled) =>
+      (super.noSuchMethod(
+            Invocation.method(#setRememberPlaybackSpeed, [enabled]),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> setGlobalPlaybackSpeed(double? speed) =>
+      (super.noSuchMethod(
+            Invocation.method(#setGlobalPlaybackSpeed, [speed]),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
   _i6.Future<void> setQuizModeAttempt(String? attemptId) =>
       (super.noSuchMethod(
             Invocation.method(#setQuizModeAttempt, [attemptId]),
