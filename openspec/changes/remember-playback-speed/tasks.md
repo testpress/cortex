@@ -20,8 +20,8 @@
 
 ## 4. Verify
 
-- [ ] 4.1 Toggle on: set 2x in one video → next video starts at 2x.
-- [ ] 4.2 Toggle off: speed change not persisted; saved speed ignored, videos start at 1x.
-- [ ] 4.3 Toggle and speed survive app restart.
-- [ ] 4.4 Restore does not delay playback and shows the non-blocking notification with working Reset.
+- [x] 4.1 Toggle on: set 2x in one video → next video starts at 2x.
+- [x] 4.2 Toggle off: speed change not persisted; saved speed ignored, videos start at 1x.
+- [x] 4.3 Toggle and speed survive app restart.
+- [x] 4.4 Restore does not delay playback and shows the non-blocking notification with working Reset.
 - [x] 4.5 `flutter analyze` and relevant unit/widget tests pass.
