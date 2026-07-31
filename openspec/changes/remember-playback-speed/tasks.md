@@ -1,7 +1,7 @@
 ## 1. Core Settings Layer
 
-- [x] 1.1 Add `rememberPlaybackSpeed` (bool, default true) and `globalPlaybackSpeed` (double?, nullable) to `PlaybackSettings` + `AppSettingsDefaults` in `settings_models.dart`.
-- [x] 1.2 Add columns to `AppSettingsTable`: `rememberPlaybackSpeed` (bool, default true), `globalPlaybackSpeed` (real, nullable).
+- [x] 1.1 Add `rememberPlaybackSpeed` (bool, default false) and `globalPlaybackSpeed` (double?, nullable) to `PlaybackSettings` + `AppSettingsDefaults` in `settings_models.dart`.
+- [x] 1.2 Add columns to `AppSettingsTable`: `rememberPlaybackSpeed` (bool, default false), `globalPlaybackSpeed` (real, nullable).
 - [x] 1.3 Regenerate drift schema and add defaults to the singleton row insert/read fallback in `app_database.dart`.
 - [x] 1.4 Add DAO helpers: read toggle + global speed, update toggle, update global speed.
 

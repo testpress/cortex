@@ -17,15 +17,10 @@ class AppToast {
   ///
   /// [context] must belong to a widget that stays alive (e.g. the
   /// orchestrator/screen that owns the bottom sheet, not the sheet itself).
-  ///
-  /// When [actionLabel] and [onAction] are provided, the toast renders an
-  /// inline action button instead of the default success/error icon.
   static void show(
     BuildContext context, {
     required String message,
     bool isError = false,
-    String? actionLabel,
-    VoidCallback? onAction,
   }) {
     final fToast = FToast();
     fToast.init(context);
@@ -33,32 +28,17 @@ class AppToast {
     final design = Design.of(context);
 
     fToast.showToast(
-      child: _buildCapsule(
-        design,
-        message,
-        isError,
-        actionLabel: actionLabel,
-        onAction: onAction == null
-            ? null
-            : () {
-                onAction();
-                fToast.removeCustomToast();
-              },
-      ),
+      child: _buildCapsule(design, message, isError),
       gravity: ToastGravity.BOTTOM,
-      toastDuration: actionLabel != null
-          ? const Duration(seconds: 4)
-          : const Duration(milliseconds: 2500),
+      toastDuration: const Duration(milliseconds: 2500),
     );
   }
 
   static Widget _buildCapsule(
     DesignConfig design,
     String message,
-    bool isError, {
-    String? actionLabel,
-    VoidCallback? onAction,
-  }) {
+    bool isError,
+  ) {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: design.spacing.md,
@@ -72,28 +52,15 @@ class AppToast {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (actionLabel == null) ...[
-            Icon(
-              isError ? LucideIcons.alertTriangle : LucideIcons.check,
-              size: 20,
-              color: isError ? design.colors.error : design.colors.success,
-            ),
-            SizedBox(width: design.spacing.sm),
-          ],
+          Icon(
+            isError ? LucideIcons.alertTriangle : LucideIcons.check,
+            size: 20,
+            color: isError ? design.colors.error : design.colors.success,
+          ),
+          SizedBox(width: design.spacing.sm),
           Flexible(
             child: AppText.labelBold(message, color: design.colors.textInverse),
           ),
-          if (actionLabel != null && onAction != null) ...[
-            SizedBox(width: design.spacing.md),
-            GestureDetector(
-              onTap: onAction,
-              behavior: HitTestBehavior.opaque,
-              child: AppText.labelBold(
-                actionLabel,
-                color: design.colors.accent2,
-              ),
-            ),
-          ],
         ],
       ),
     );

@@ -325,13 +325,13 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
   Future<void> _restorePlaybackSpeed(
       TestpressPlayerController controller) async {
     try {
-      final db = await ref.read(appDatabaseProvider.future);
-      final settings = await db.getAppSettings();
+      final playbackSettings =
+          await ref.read(playbackSettingsNotifierProvider.future);
 
       if (!mounted) return;
-      if (!settings.rememberPlaybackSpeed) return;
+      if (!playbackSettings.rememberPlaybackSpeed) return;
 
-      final saved = settings.globalPlaybackSpeed;
+      final saved = playbackSettings.globalPlaybackSpeed;
       if (saved == null || saved <= 0 || saved == 1.0) return;
 
       await controller.setPlaybackSpeed(saved);
@@ -383,12 +383,24 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
             ),
           ),
           SizedBox(width: design.spacing.md),
-          GestureDetector(
+          AppSemantics.button(
+            label: l10n.playbackSpeedReset,
             onTap: () => _resetPlaybackSpeed(_controller!),
-            behavior: HitTestBehavior.opaque,
-            child: AppText.labelBold(
-              l10n.playbackSpeedReset,
-              color: design.colors.accent2,
+            child: GestureDetector(
+              onTap: () => _resetPlaybackSpeed(_controller!),
+              behavior: HitTestBehavior.opaque,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  minWidth: 48,
+                  minHeight: 48,
+                ),
+                child: Center(
+                  child: AppText.labelBold(
+                    l10n.playbackSpeedReset,
+                    color: design.colors.accent2,
+                  ),
+                ),
+              ),
             ),
           ),
         ],
@@ -461,11 +473,12 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
 
   Future<void> _persistPlaybackSpeed(double speed) async {
     try {
-      final db = await ref.read(appDatabaseProvider.future);
-      final settings = await db.getAppSettings();
+      final settings = await ref.read(playbackSettingsNotifierProvider.future);
       if (!mounted) return;
       if (!settings.rememberPlaybackSpeed) return;
-      await db.setGlobalPlaybackSpeed(speed);
+      await ref
+          .read(playbackSettingsNotifierProvider.notifier)
+          .updateGlobalPlaybackSpeed(speed);
     } catch (e, st) {
       if (!mounted) return;
       ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
